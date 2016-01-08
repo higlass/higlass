@@ -23,10 +23,15 @@ gene2refseq = (sc.textFile(op.join(base_dir, "data/gene2refseq"))
 schemaGene2Refseq = sqlContext.inferSchema(gene2refseq)
 schemaGene2Refseq.registerTempTable("gene2refseq")
 
-gene_pubmed = sqlContext.sql("select geneid, count(*) as cnt from gene2pubmed group by geneid order by cnt desc")
+gene_starts = sqlContext.sql('select gene2refseq.geneid, start_pos, pmid from gene2pubmed, gene2refseq  where gene2pubmed.geneid = gene2refseq.geneid')
+gene_starts.registerTempTable('gene_starts')
+
+gene_pubmed = sqlContext.sql("select geneid, start_pos, count(*) as cnt from gene_starts group by geneid, start_pos order by cnt desc")
+gene_pubmed.take(1)
+
 gene_pubmed.registerTempTable('gene_pubmed')
 
-result = sqlContext.sql('select gene2refseq.geneid, start_pos from gene_pubmed, gene2refseq  where gene_pubmed.geneid = gene2refseq.geneid')
+gene_starts = sqlContext.sql('select gene2refseq.geneid, start_pos from gene2pubmed, gene2refseq  where gene2pubmed.geneid = gene2refseq.geneid')
 result.take(1)
 
 gene_info = (sc.textFile(op.join(base_dir, "data/gene_info"))
