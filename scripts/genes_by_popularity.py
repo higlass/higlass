@@ -1,6 +1,7 @@
 import os.path as op
 base_dir = '/scr/fluidspace/pkerp/projects/genbank'
 
+
 from pyspark.sql import *
 sqlContext = SQLContext(sc)
 # get the gene_id -> pubmed mapping
