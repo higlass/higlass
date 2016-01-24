@@ -27,8 +27,8 @@ gene2refseq = (sc.textFile(op.join(base_dir, "data/gene2refseq"))
 gene_info = (sc.textFile(op.join(base_dir, "data/gene_info"))
              .filter(lambda x: x[0] != '#')
              .map(lambda x: x.split('\t'))
-             .map(lambda x: { 'taxid': x[0],
-                              'geneid': x[1],
+             .map(lambda x: { 'taxid': int(x[0]),
+                              'geneid': int(x[1]),
                               'description': x[8],
                               'symbol': x[2],
                               'name': x[11]}))
