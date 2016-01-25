@@ -5,3 +5,4 @@ temp/**
 data/**
 data
 output/**
+notebooks/.ipynb_checkpoints/**
