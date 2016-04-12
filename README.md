@@ -1,2 +1,2 @@
-# 4DN_matrix-viewer
+# 4DN Matrix Viewer
 Fast contact matrix visualization for the web.
