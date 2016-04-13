@@ -35,10 +35,10 @@ width of a tile at zoom_level `z` is then `top_level_width / (2 ** z)`.
 The tile at zoom level `z` and position `p` should contain a representation of
 the data located in the range `[min_pos[i] + p * tile_width, min_pos[i] + (p+1)
 * tile_width)`. Individidual tiles contain a `tile_start_pos` and a
-  `tile_end_pos` which denote the boundaries of the data that this tile
-  contains.  This information can be calculated if the bounds of the top level
-  tile and the zoom level are known, but are included in each individual tile
-  for the sake of convenience.
+`tile_end_pos` which denote the boundaries of the data that this tile
+contains.  This information can be calculated if the bounds of the top level
+tile and the zoom level are known, but are included in each individual tile
+for the sake of convenience.
 
     {
       "tile_start_pos": [
