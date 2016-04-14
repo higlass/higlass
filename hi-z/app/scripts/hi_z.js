@@ -28,7 +28,8 @@ export function MassiveMatrixPlot() {
     let shownTiles = new Set();
     let pointMarkId = (d) => { return `p-${d.uid}`; };
             function countTransform(count) {
-                return Math.sqrt(count + 1);
+                return Math.sqrt(Math.sqrt(count + 1));
+                //return Math.log(count);
                 //return count;
             }
 
@@ -81,8 +82,11 @@ export function MassiveMatrixPlot() {
             // check to make sure all the tiles we're trying to display
             // are already loaded
             let allLoaded = true;
+            let allData = [];
             tiles.forEach((t) => {
                 allLoaded = allLoaded && isTileLoaded(t);
+                if (isTileLoaded(t))
+                    allData = allData.concat(loadedTiles[tileId(t)].shown);
             });
             if (!allLoaded)
                 return;
@@ -123,6 +127,9 @@ export function MassiveMatrixPlot() {
             })
 
             gTilesExit.remove();
+            let allCounts = allData.map((x) => { return +x.count; });
+            valueScale.domain([countTransform(Math.min.apply(null, allCounts)),
+                               countTransform(Math.max.apply(null, allCounts))])
             
             // only redraw if the tiles have changed
             if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
@@ -226,8 +233,7 @@ export function MassiveMatrixPlot() {
 
             valueScale = d3.scale.linear()
             .domain([countTransform(minValue+1), countTransform(maxValue+1)])
-            .range([0, 3]);
-
+            .range([0, 8]);
 
             xOrigScale = xScale.copy();
             yOrigScale = yScale.copy();
