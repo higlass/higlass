@@ -1,0 +1,43 @@
+svg {
+  font: 10px sans-serif;
+}
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke-width: .5px;
+}
+
+.x.axis path {
+  stroke: #000;
+}
+
+.x.axis line {
+  stroke: #fff;
+  stroke-opacity: .5;
+}
+
+.y.axis line {
+  stroke: #ddd;
+}
+
+.data-point {
+    stroke: black;
+    stroke-width: 0px;
+    fill: #888888;
+}
+
+.pane {
+    fill: transparent;
+    stroke: transparent;
+}
+.resort-name {
+    font: 11px sans-serif;
+}
+
+.hovered {
+    stroke-width: 1px;
+}

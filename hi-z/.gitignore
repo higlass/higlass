@@ -1,0 +1,11 @@
+**/*.un~
+**/*.swn
+**/*.swo
+**/*.swp
+*.pyc
+.DS_Store
+data/
+tiles/
+node_modules/
+bower_components/
+.tmp/
