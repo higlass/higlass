@@ -130,22 +130,22 @@ def make_all_tiles(entries, dim_names, max_zoom, min_value_field,
     :return: A set of tiles, each one containing a position which
              is an array of length n, where n is equal to len(dim_names) 
     '''
+
     # record the minimum and maximum values in each dimension
     mins = [min(map(lambda x: x[pos], entries)) for pos in dim_names]
     maxs = [max(map(lambda x: x[pos], entries)) for pos in dim_names]
 
-    min_value = min(map(lambda x: x[min_value_field], entries))
-    max_value = max(map(lambda x: x[max_value_field], entries))
+    if len(entries) > 0:
+        min_value = entries[0][min_value_field]
+        max_value = entries[0][max_value_field]
+    else:
+        min_value = 0
+        max_value = 0
+
+    print >>sys.stderr, "max_value:", max_value
 
     tileset_info = {}
 
-    tileset_info['min_importance'] = (min(map(lambda x: float(x[importance_field]), entries)))
-    tileset_info['max_importance'] = (max(map(lambda x: float(x[importance_field]), entries)))
-    tileset_info['min_pos'] = mins
-    tileset_info['max_pos'] = maxs
-    tileset_info['max_value'] = max_value
-    tileset_info['min_value'] = min_value
-    tileset_info['max_zoom'] = max_zoom
 
     # the largest width along one axis
     # we need this so we can create square tiles
@@ -161,6 +161,11 @@ def make_all_tiles(entries, dim_names, max_zoom, min_value_field,
         data_subset = split_data(entries, dim_names, mins, maxs, zl, max_tile_dim)
         max_data_length = max(map(lambda x: len(x['shown']), data_subset.values()))
 
+        min_value = min([min_value] + map(lambda x: float(x[min_value_field]), entries))
+        max_value = max([max_value] + map(lambda x: float(x[max_value_field]), entries))
+
+        print >>sys.stderr, "max_value:", max_value
+
         entries = halve_resolution(entries)
 
         '''
@@ -174,6 +179,13 @@ def make_all_tiles(entries, dim_names, max_zoom, min_value_field,
         data_subsets.append(data_subset)
 
     #data_subsets = [split_data(entries, dim_names, mins, maxs, zl, max_tile_dim) for zl in range(max_zoom)]
+    tileset_info['min_importance'] = (min(map(lambda x: float(x[importance_field]), entries)))
+    tileset_info['max_importance'] = (max(map(lambda x: float(x[importance_field]), entries)))
+    tileset_info['min_pos'] = mins
+    tileset_info['max_pos'] = maxs
+    tileset_info['max_value'] = max_value
+    tileset_info['min_value'] = min_value
+    tileset_info['max_zoom'] = max_zoom
     
 
     return {"tileset_info": tileset_info, "tiles": data_subsets}
