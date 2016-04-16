@@ -33,6 +33,13 @@ def halve_resolution(entries):
     pos1_diffs = []
     pos2_diffs = []
 
+    # iterate over consecutive entries in the sparse matrix format
+    # 16000000        16000000        12.0
+    # 16200000        16200000        4.0
+    # 16100000        16300000        1.0
+    # with the purpose of determining the minimum distance between 
+    # two entries on each axis (100000, 100000)
+    # (trying to determine the resolution of the grid)
     for first, second in it.izip(entries, entries[1:]):
         if second['pos1'] - first['pos1'] > 0:
             pos1_diffs += [second['pos1'] - first['pos1']]
