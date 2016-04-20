@@ -10,6 +10,8 @@ export function MassiveMatrixPlot() {
     var margin = {'top': 30, 'left': 30, 'bottom': 30, 'right': 40};
     let tileDirectory = null;
 
+    let yAxis = null, xAxis = null;
+
     let xOrigScale = null, yOrigScale = null;
     let xScale = null, yScale = null, valueScale = null;
     let widthScale = null;
@@ -91,6 +93,7 @@ export function MassiveMatrixPlot() {
             if (!allLoaded)
                 return;
             
+            console.log('tiles:', tiles);
             let gTiles = gMain.selectAll('.tile-g')
             .data(tiles, tileId)
 
@@ -98,6 +101,7 @@ export function MassiveMatrixPlot() {
             let gTilesExit = gTiles.exit()
 
             gTilesEnter.append('g')
+             .attr('id', (d) => 'i-' + tileId(d))
             .classed('tile-g', true)
             .each(function(tile) {
                 let gTile = d3.select(this);
@@ -106,7 +110,6 @@ export function MassiveMatrixPlot() {
                     return;
 
                 let data = loadedTiles[tileId(tile)].shown;
-
                 //let labelSort = (a,b) => { return b.area - a.area; };
                 //let elevationSort = (a,b) => { return b.max_elev - a.max_elev; };
                 //data.sort(labelSort);
@@ -149,6 +152,8 @@ export function MassiveMatrixPlot() {
         }
 
         function refreshTiles(currentTiles) {
+            console.log('currentTiles:', currentTiles.map((d) => { return d.toString(); }));
+
             // be shown and add those that should be shown
             currentTiles.forEach((tile) => {
                 if (!isTileLoaded(tile) && !isTileLoading(tile)) {
@@ -159,8 +164,13 @@ export function MassiveMatrixPlot() {
                     //console.log('loading...', tilePath);
                     d3.json(tilePath,
                             function(error, data) {
+                                if (error != null) {
+                                    loadedTiles[tileId(tile)] = {'shown': []}
+                                } else {
+                                    loadedTiles[tileId(tile)] = data;
+                                }
+
                                 delete loadingTiles[tileId(tile)];
-                                loadedTiles[tileId(tile)] = data;
                                 showTiles(currentTiles);
                             });
                 } else {
@@ -190,6 +200,10 @@ export function MassiveMatrixPlot() {
         var gYAxis = gEnter.append("g")
         .attr("class", "y axis")
         .attr("transform", "translate(" + (width - margin.right) + "," + margin.top + ")");
+
+        var gXAxis = gEnter.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(" + (margin.left) + "," + (height - margin.bottom) + ")");
 
         gMain = gEnter.append('g')
         .classed('main-g', true)
@@ -233,7 +247,7 @@ export function MassiveMatrixPlot() {
 
             valueScale = d3.scale.linear()
             .domain([countTransform(minValue+1), countTransform(maxValue+1)])
-            .range([0, 8]);
+            .range([2, 8]);
 
             xOrigScale = xScale.copy();
             yOrigScale = yScale.copy();
@@ -243,13 +257,20 @@ export function MassiveMatrixPlot() {
             .scaleExtent([1,Math.pow(2, maxZoom-1)])
             //.xExtent(xScaleDomain);
 
-            var yAxis = d3.svg.axis()
+            yAxis = d3.svg.axis()
             .scale(yScale)
             .orient("right")
             .tickSize(-(width - margin.left - margin.right))
             .tickPadding(6);
 
+            xAxis = d3.svg.axis()
+            .scale(xScale)
+            .orient("bottom")
+            .tickSize(-(height - margin.top - margin.bottom))
+            .tickPadding(6);
+
             gYAxis.call(yAxis);
+            gXAxis.call(xAxis);
 
             refreshTiles([[0,0,0]]);
         });
@@ -270,7 +291,6 @@ export function MassiveMatrixPlot() {
 
         function zoomed() {
             //console.log('maxZoom:', maxZoom);
-            console.log('zoomed:...');
             var reset_s = 0;
 
             //console.log('zoom.scale()', zoom.scale());
@@ -323,13 +343,20 @@ export function MassiveMatrixPlot() {
             // draw the scene, if we're zooming, then we need to check if we
             // need to redraw the tiles, otherwise it's irrelevant
             //
+            gYAxis.call(yAxis);
+            gXAxis.call(xAxis);
 
             gMain.selectAll('.data-point')
             .attr('cx', d => { 
-                //console.log('dp:', d.pos1, xScale.domain(), xScale(d.pos1));
-                return xScale(d.pos1); })
-            .attr('cy', d => { return yScale(d.pos2); })
-            .attr('r', d => { return valueScale(countTransform(d.count+1)); })
+                return xScale(d.pos[0]); })
+            .attr('cy', d => { return yScale(d.pos[1]); })
+            .attr('r', d => { 
+                /*
+                  console.log('d.count:', d.count, countTransform(d.count+1),
+                             valueScale(countTransform(d.count+1)));
+                             */
+                return valueScale(countTransform(d.count+1)); 
+            })
 
             // this will become the tiling code
             let zoomLevel = Math.round(Math.log(zoom.scale()) / Math.LN2) + 1;

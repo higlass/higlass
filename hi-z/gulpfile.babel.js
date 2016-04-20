@@ -34,8 +34,10 @@ gulp.task('scripts', () => {
 });
 
 gulp.task('data', () => {
+    del('.tmp/jsons/**/*.json');
+
     return gulp.src('jsons/**/*.json')
-                    .pipe(gulp.dest('.tmp/jsons'));
+            .pipe(gulp.dest('.tmp/jsons'));
 });
 
 function lint(files, options) {
@@ -128,6 +130,7 @@ gulp.task('serve', ['styles', 'scripts', 'fonts', 'data'], () => {
   gulp.watch('app/styles/**/*.css', ['styles']);
   gulp.watch('app/scripts/**/*.js', ['scripts']);
   gulp.watch('app/fonts/**/*', ['fonts']);
+  gulp.watch('jsons/**/*.json', ['data']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);
 });
 
