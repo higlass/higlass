@@ -236,6 +236,7 @@ def make_tiles_from_file(filename, options):
 
             for zoom_tileset in tileset['tiles']:
                 for key in zoom_tileset:
+                    print "key:", key
                     outpath = op.join(options.output_dir, '/'.join(map(str, key)) + '.json')
                     outdir = op.dirname(outpath)
 
