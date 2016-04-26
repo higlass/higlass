@@ -11,13 +11,8 @@ svg {
   stroke-width: .5px;
 }
 
-.x.axis path {
-  stroke: #000;
-}
-
 .x.axis line {
-  stroke: #fff;
-  stroke-opacity: .5;
+  stroke: #ddd;
 }
 
 .y.axis line {
