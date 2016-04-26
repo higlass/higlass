@@ -1,0 +1,3 @@
+## Starting the spark notebook
+
+ipython notebook --profile=pyspark --no-browser
