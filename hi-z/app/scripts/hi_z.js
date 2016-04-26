@@ -7,11 +7,12 @@ export function MassiveMatrixPlot() {
     var minX = 0, maxX = 0, minY = 0, maxY = 0;
     let minValue = 0, maxValue = 0;
     var maxZoom = 1;
-    var margin = {'top': 30, 'left': 30, 'bottom': 30, 'right': 40};
+    var margin = {'top': 30, 'left': 30, 'bottom': 30, 'right': 80};
     let tileDirectory = null;
 
     let yAxis = null, xAxis = null;
 
+    let totalHeight = null, totalWidth = null;
     let xOrigScale = null, yOrigScale = null;
     let xScale = null, yScale = null, valueScale = null;
     let widthScale = null;
@@ -93,7 +94,6 @@ export function MassiveMatrixPlot() {
             if (!allLoaded)
                 return;
             
-            console.log('tiles:', tiles);
             let gTiles = gMain.selectAll('.tile-g')
             .data(tiles, tileId)
 
@@ -152,8 +152,6 @@ export function MassiveMatrixPlot() {
         }
 
         function refreshTiles(currentTiles) {
-            console.log('currentTiles:', currentTiles.map((d) => { return d.toString(); }));
-
             // be shown and add those that should be shown
             currentTiles.forEach((tile) => {
                 if (!isTileLoaded(tile) && !isTileLoading(tile)) {
@@ -213,9 +211,9 @@ export function MassiveMatrixPlot() {
         .attr("id", "clip")
         .append("rect")
         .attr("x", 0)
-        .attr("y", -margin.top)
+        .attr("y", 0)
         .attr("width", width - margin.left - margin.right)
-        .attr("height", height);
+        .attr("height", height - margin.top - margin.bottom);
 
 
         d3.json(tileDirectory + '/tile_info.json', function(error, tile_info) {
@@ -234,6 +232,9 @@ export function MassiveMatrixPlot() {
 
             maxZoom = tile_info.max_zoom;
 
+            totalWidth = tile_info.max_width;
+            totalHeight = tile_info.max_width;
+
             xScaleDomain = [minX, maxX];
             yScaleDomain = [minY, maxY];
 
@@ -247,7 +248,7 @@ export function MassiveMatrixPlot() {
 
             valueScale = d3.scale.linear()
             .domain([countTransform(minValue+1), countTransform(maxValue+1)])
-            .range([2, 8]);
+            .range([0, 8]);
 
             xOrigScale = xScale.copy();
             yOrigScale = yScale.copy();
@@ -305,7 +306,6 @@ export function MassiveMatrixPlot() {
             reset_s += 1;
           }
           if (reset_s == 2) { // Both axes are full resolution. Reset.
-              console.log("here");
             zoom.scale(1);
             zoom.translate([0,0]);
           }
@@ -364,8 +364,11 @@ export function MassiveMatrixPlot() {
             // the ski areas are positioned according to their
             // cumulative widths, which means the tiles need to also
             // be calculated according to cumulative width
+            
+            /*
             let totalWidth = maxX - minX;
             let totalHeight = maxY - minY;
+            */
 
             var tileWidth = totalWidth /  Math.pow(2, zoomLevel);
             var tileHeight = totalHeight / Math.pow(2, zoomLevel);
