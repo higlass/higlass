@@ -1,5 +1,6 @@
 import '../styles/hi_z.css';
 import d3 from 'd3';
+import PIXI from 'pixi.js';
 
 export function MassiveMatrixPlot() {
     var width = 550;
@@ -20,6 +21,10 @@ export function MassiveMatrixPlot() {
 
     let loadedTiles = {};
     let loadingTiles = {};
+
+    let renderer = null;
+    let pMain = null;
+    let tileGraphics = {};       // the pixi graphics objects which will contain the tiles
 
     let minArea = 0;
     let maxArea = 0;
@@ -86,6 +91,9 @@ export function MassiveMatrixPlot() {
             // are already loaded
             let allLoaded = true;
             let allData = [];
+
+            let shownTiles = {};
+
             tiles.forEach((t) => {
                 allLoaded = allLoaded && isTileLoaded(t);
                 if (isTileLoaded(t))
@@ -93,6 +101,49 @@ export function MassiveMatrixPlot() {
             });
             if (!allLoaded)
                 return;
+
+            let allCounts = allData.map((x) => { return +x.count; });
+            valueScale.domain([countTransform(Math.min.apply(null, allCounts)),
+                               countTransform(Math.max.apply(null, allCounts))])
+
+            for (let i = 0; i < tiles.length; i++) {
+                shownTiles[tileId(tiles[i])] = true;
+
+                // check if we already have graphics for these tiles
+                if (!(tileId(tiles[i]) in tileGraphics)) {
+                    // tile isn't loaded into a pixi graphics container
+                    // load that sucker
+                    let newGraphics = new PIXI.Graphics();
+
+                    let data = loadedTiles[tileId(tiles[i])].shown;
+                    newGraphics.beginFill(0x333333);
+                    for (let j = 0; j < data.length; j++) {
+                        let pX = xOrigScale(data[j].pos[0]);
+                        let pY = yOrigScale(data[j].pos[1]);
+
+                        let nodeSize = valueScale(countTransform(data[j].count + 1));
+                        console.log('zoom.scale():', zoom.scale());
+                        newGraphics.drawCircle(xOrigScale(data[j].pos[0]),
+                                                yOrigScale(data[j].pos[1]),
+                                                nodeSize + 0.01);
+                    }
+
+                    // draw all the data points
+                    // since they're on a grid, we have to draw them in the reference frame of 
+                    // the tile
+                    tileGraphics[tileId(tiles[i])] = newGraphics;
+                    pMain.addChild(newGraphics);
+
+                }
+            }
+
+            for (let tileIdStr in tileGraphics) {
+                if (!(tileIdStr in shownTiles)) {
+                    console.log('removing tile:', tileIdStr);
+                    pMain.removeChild(tileGraphics[tileIdStr]);
+                    delete tileGraphics[tileIdStr];
+                }
+            }
             
             let gTiles = gMain.selectAll('.tile-g')
             .data(tiles, tileId)
@@ -130,9 +181,6 @@ export function MassiveMatrixPlot() {
             })
 
             gTilesExit.remove();
-            let allCounts = allData.map((x) => { return +x.count; });
-            valueScale.domain([countTransform(Math.min.apply(null, allCounts)),
-                               countTransform(Math.max.apply(null, allCounts))])
             
             // only redraw if the tiles have changed
             if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
@@ -177,9 +225,29 @@ export function MassiveMatrixPlot() {
             });
         }
 
+        var pixiCanvas = selection.append('canvas')
+        .attr('width', width)
+        .attr('height', height)
+
+        renderer = PIXI.autoDetectRenderer(width, height, 
+                                       { backgroundColor: 0xdddddd,
+                                           antialias: true, 
+                                           view: pixiCanvas.node() });
+
         // setup the data-agnostic parts of the chart
         var svg = selection.append('svg')
         var gEnter = svg.append("g");
+
+        var stage = new PIXI.Container();
+        pMain = new PIXI.Graphics();
+        stage.addChild(pMain);
+
+        animate()
+        function animate() {
+            renderer.render(stage)
+            requestAnimationFrame(animate);
+        }
+
 
         svg.attr('width', width)
         .attr('height', height);
@@ -336,6 +404,12 @@ export function MassiveMatrixPlot() {
             }
           }
 
+          pMain.position.x = zoom.translate()[0];
+          pMain.position.y = zoom.translate()[1];
+          pMain.scale.x = zoom.scale();
+          pMain.scale.y = zoom.scale();
+
+
             draw();
         }
 
@@ -343,6 +417,7 @@ export function MassiveMatrixPlot() {
             // draw the scene, if we're zooming, then we need to check if we
             // need to redraw the tiles, otherwise it's irrelevant
             //
+
             gYAxis.call(yAxis);
             gXAxis.call(xAxis);
 
