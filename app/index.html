@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+<meta charset="utf-8">
+<title>Example</title>
+</head>
+<body>
+
+<!-- build:js scripts/goomba.js -->
+<script src='scripts/gene.js'></script>
+<!-- endbuild -->
+
+<div id="circle"></div>
+
+<script type='text/javascript'>
+
+let svg = d3.select('#circle').append('svg')
+.attr('width', 400)
+.attr('height', 400)
+
+let genePlot = GenePlot()
+    .width(300)
+    .height(50)
+    .xPos(0)
+    .yPos(0)
+
+let gMain = svg.append('g')
+.classed('g-main', true)
+
+//let data = []
+
+</script>
+</body>
+</html>

@@ -6,3 +6,6 @@ data/**
 data
 output/**
 notebooks/.ipynb_checkpoints/**
+.tmp
+bower_components/
+node_modules/
