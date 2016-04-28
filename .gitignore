@@ -6,6 +6,7 @@ data/**
 data
 output/**
 notebooks/.ipynb_checkpoints/**
+notebooks/**/*.log
 .tmp
 bower_components/
 node_modules/
