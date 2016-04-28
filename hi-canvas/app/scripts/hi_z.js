@@ -128,7 +128,7 @@ export class TileManager {
         });
 
         // Count transfer function. Initial function is identity.
-        this._transfer = (count) => Math.log(1 + count);
+        this._transfer = (count) => Math.log2(1 + Math.log2(1 + Math.log2(1 + count))); //Math.log(1 + Math.log(1 + count));
     }
 
     // Set view coordinates and zoom level.
@@ -161,7 +161,7 @@ export class TileManager {
         this.portPixelMaxY = this.portMaxY / pixelSpan;
 
         // Tiles to be resolved / requested as top left corners, derived from covered port locations.
-        let marginTiles = 1;    // Tiles added to sides to pre-fetch.
+        let marginTiles = 2;    // Tiles added to sides to pre-fetch.
         let marginLocations = marginTiles * tileSpan;
 
         let tilesTopLeft = this.tileTopLeft(this.portMinX, this.portMinY, activeZoom);
@@ -537,7 +537,7 @@ export class FileServer extends DataServer {
 
                 // Dense tile format.
                 if(isFinite(tile[0])) {
-                    matrix = new Uint32Array(tile);
+                    matrix = new Float64Array(tile);   //new Uint32Array(tile);
 
                     // Normalize count to bin density.
                     for(let i = 0; i < matrix.length; i++) matrix[i] /= pixelArea;
@@ -545,7 +545,7 @@ export class FileServer extends DataServer {
                 // Sparse tile format.
                 else {
 
-                    matrix = new Uint32Array(this.info.tileSize * this.info.tileSize);
+                    matrix = new Float64Array(this.info.tileSize * this.info.tileSize);
 
                     //console.log(tile);
 
@@ -662,6 +662,7 @@ DataServerDriver.MAX_DENSITY  = 1000000;     // Maximum frequency count for loci
 DataServerDriver.WAVES        = 20;          // Number of sinusoids to append in the entire data set.
 
 // Heated object color map lookup table.
+// Perceptually linearized: http://www.cs.uml.edu/~haim/ColorCenter/HOCM.htm
 var heatedObjectMap = [
     [  0,   0,   0],
     [ 35,   0,   0],
