@@ -13,6 +13,6 @@
     24855000.0,
     27985000.0
   ],
-  "bins": 128,
-  "granularity": 5000
+  "bins_per_dimension": 128,
+  "data_granularity": 5000
 }

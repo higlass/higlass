@@ -33,7 +33,7 @@ export class MatrixView {
 
         // Mouse wheel to view translation (zoom).
         /*this.canvas.onmousewheel = (event) => {
-            var zoomDelta = event.wheelDelta > 0 ? 1 : -1;
+            var zoomDelta = event.wheelDelta === 0 ? 0 : .1 * (event.wheelDelta / Math.abs(event.wheelDelta));   //event.wheelDelta > 0 ? 1 : -1;
 
             if(this._tileManager) this._tileManager.translate(0, 0, zoomDelta);
         };*/
@@ -133,15 +133,20 @@ export class TileManager {
 
     // Set view coordinates and zoom level.
     focusOn(centerCoordinates) {
+        console.log("Zoom: " + centerCoordinates.zoom);
+
+
         // Update port coordinates.
         if(centerCoordinates) this.centerCoordinates = centerCoordinates;
+
+        var activeZoom = Math.round(centerCoordinates.zoom);
 
         var portWidth = this.context.canvas.width;
         var portHeight = this.context.canvas.height;
 
         // Dataset locations covered by port.
-        let pixelSpan = globalPixelSpan(this.dataSetInfo, centerCoordinates.zoom); //this.pixelSpan(centerCoordinates.zoom);
-        let tileSpan = globalTileSpan(this.dataSetInfo, centerCoordinates.zoom);   //this.tileSpan(centerCoordinates.zoom);
+        let pixelSpan = globalPixelSpan(this.dataSetInfo, activeZoom);
+        let tileSpan = globalTileSpan(this.dataSetInfo, activeZoom);
         let portHalvedWidth = Math.floor(.5 * portWidth) * pixelSpan;
         let portHalvedHeight = Math.floor(.5 * portHeight) * pixelSpan;
 
@@ -159,10 +164,10 @@ export class TileManager {
         let marginTiles = 1;    // Tiles added to sides to pre-fetch.
         let marginLocations = marginTiles * tileSpan;
 
-        let tilesTopLeft = this.tileTopLeft(this.portMinX, this.portMinY, centerCoordinates.zoom);
+        let tilesTopLeft = this.tileTopLeft(this.portMinX, this.portMinY, activeZoom);
         tilesTopLeft[0] -= marginLocations;
         tilesTopLeft[1] -= marginLocations;
-        let tilesBottomRight = this.tileTopLeft(this.portMaxX, this.portMaxY, centerCoordinates.zoom);
+        let tilesBottomRight = this.tileTopLeft(this.portMaxX, this.portMaxY, activeZoom);
         tilesBottomRight[0] += marginLocations;
         tilesBottomRight[1] += marginLocations;
 
@@ -170,14 +175,14 @@ export class TileManager {
         this.tiles = this.tiles.filter(t =>
             tilesTopLeft[0] <= t.minX && t.minX < tilesBottomRight[0] &&
             tilesTopLeft[1] <= t.minY && t.minY < tilesBottomRight[1] &&
-            this.centerCoordinates.zoom === t.zoom);    // Zoom level constraint will change at some point.
+            activeZoom === t.zoom);    // Zoom level constraint will change at some point.
         this.tileMap = {};
         this.tiles.forEach(t => this.tileMap[t.toString()] = t);
 
         // Request tiles that are not present already.
         for(let i = tilesTopLeft[0]; i < tilesBottomRight[0]; i += tileSpan) {
             for(let j = tilesTopLeft[1]; j < tilesBottomRight[1]; j += tileSpan) {
-                this.requestTile(i, j, i + tileSpan, j + tileSpan, centerCoordinates.zoom);
+                this.requestTile(i, j, i + tileSpan, j + tileSpan, activeZoom);
             }
         }
 
@@ -187,7 +192,7 @@ export class TileManager {
 
     // Translate focus by given pixel and level units.
     translate(dX, dY, dZ) {
-        var pixelSpan = globalPixelSpan(this.dataSetInfo, this.centerCoordinates.zoom); //this.pixelSpan(this.centerCoordinates.zoom);
+        var pixelSpan = globalPixelSpan(this.dataSetInfo, this.centerCoordinates.zoom);
         this.focusOn(this.centerCoordinates.translate(dX * pixelSpan, dY * pixelSpan, dZ));
 
         // Repaint all tiles.
@@ -205,7 +210,7 @@ export class TileManager {
 
     // Paint a single tile. Does not clear canvas.
     paintTile(tile) {
-        var pixelSpan = globalPixelSpan(this.dataSetInfo, this.centerCoordinates.zoom);    //this.pixelSpan(this.centerCoordinates.zoom);
+        var pixelSpan = globalPixelSpan(this.dataSetInfo, this.centerCoordinates.zoom);
 
         if(tile.imageData) {
             var tilePixelMinX = tile.minX / pixelSpan;
@@ -276,22 +281,8 @@ export class TileManager {
                 this.tiles.push(newTile);
 
                 this.dataServer.tile(this.dataSet, minX, minY, zoom).then(counts => {
-                    /*var p = new Parallel(newTile);
-                    p.spawn((newTile) => {
-                        //newTile.load(counts);
-                        //return newTile;
-                        return newTile;
-                    }).then(() => {
-                        console.log("Loaded");
-                        this.transformTile();
-                    });*/
-
                     newTile.load(counts);
                     this.transformTile(newTile);
-
-                    //newTile.counts = tileCounts;
-                    //this.transformTile(newTile);
-                    //this.paint(newTile);   // Paint only requested tile.
                 });
             }
         }
@@ -306,30 +297,6 @@ export class TileManager {
     transformTile(tile) {
         tile.transform(this._transfer, this.dataSetInfo.maxDensity);
         this.paintTile(tile);
-
-        /*// Transform if counts are available.
-        if(tile.counts !== null && tile.counts.length > 0) {
-            //var tileSize = this.dataSetInfo.tileSize;
-            var counts = tile.counts;
-            //var tileData = new ImageData(tileSize, tileSize);
-            var tileArray = tile.imageData.data;
-            for (var i = 0; i < counts.length; i++) {
-                var intensity = this._transfer(counts[i] / this.dataSetInfo.maxDensity);
-                var discretized = Math.floor(255 * (1 - intensity));
-
-                // Set pixel channels. Apply a heat object color map.
-                let aI = 4 * i;
-                tileArray[aI]   = heatedObjectMap[discretized][0];   // Red.
-                tileArray[aI+1] = heatedObjectMap[discretized][1];   // Green.
-                tileArray[aI+2] = heatedObjectMap[discretized][2];   // Blue.
-                tileArray[aI+3] = 255;                               // Fix alpha to full.
-            }
-
-            //tile.imageData = tileData;
-
-            // Paint tile with new image.
-            this.paint(tile);
-        }*/
     }
 
     // Fetch tile that contains given coordinates, at given zoom level.
@@ -337,16 +304,6 @@ export class TileManager {
         var topLeft = this.tileTopLeft(x, y, zoom);
         return this.tileMap[topLeft[0] + "," + topLeft[1] + "," + zoom] || null;
     }
-
-    // The number of data set locations spanned (along one axis) by a pixel at the given zoom level.
-    /*pixelSpan(zoom) {
-        return Math.pow(2, this.dataSetInfo.levels - zoom);
-    }
-
-    // The number of data set locations spanned (along one axis) by a tile at the given zoom level.
-    tileSpan(zoom) {
-        return this.dataSetInfo.tileSize * this.pixelSpan(zoom);
-    }*/
 
     // Determine identifying top left tile coordinates. (Truncate by resolution at power of two.)
     tileTopLeft(x, y, zoom) {
@@ -417,6 +374,7 @@ class ManagedTile {
                 var discretized = Math.floor(255 * (1 - intensity));
 
                 if(!heatedObjectMap[discretized]) {
+                    console.log("Count: " + this.counts[i]);
                     console.log("Discretized: " + discretized);
                 }
 
@@ -488,7 +446,9 @@ export class MatrixCoordinates {
     constructor(x, y, zoom) {
         this.x = x;
         this.y = y;
-        this.zoom = zoom;
+        this.zoom = zoom;                       // Floating zoom level.
+        this.distantZoom = Math.floor(zoom);    // High discrete zoom level (lower detail).
+        this.lowZoom = Math.ceil(zoom);         // Low discrete zoom level (higher detail).
     }
 
     toString() {
@@ -516,6 +476,100 @@ export class DataServer {
     // Request tile density at given position (absolute at top left). Returns Promise<Uint32Array>
     tile(dataSet, xPos, yPos, level) {
         return null;
+    }
+}
+
+// Client-side server driver, for testing purposes.
+export class FileServer extends DataServer {
+
+    constructor(baseURL) {
+        super();
+
+        this.baseURL = baseURL;
+        this.info = null;
+    }
+
+    dataSets() {
+        // List of tile data sets present in the jsons folder.
+        var folders = ["chr1_5kb"];     //["5k", "512k", "512k_dense"];
+
+        return new Promise((resolve, reject) => resolve(folders));
+    }
+
+    // Respond to test data set, error for other data set requests.
+    dataSetInfo(dataSet) {
+        var that = this;
+        return $.getJSON(this.baseURL + "/" + dataSet + "/tile_info.json").then(
+            (tileInfo) => {
+                that.info = new DataSetInfo(
+                    tileInfo.min_pos,
+                    tileInfo.max_pos,
+                    tileInfo.max_width,
+                    tileInfo.bins_per_dimension,
+                    tileInfo.data_granularity,
+                    tileInfo.max_zoom + Math.log2(tileInfo.bins_per_dimension),
+                    tileInfo.max_value
+                );
+
+                console.log(that.info);
+
+                return that.info;
+            }
+        );
+    }
+
+    // Generate tile information.
+    tile(dataSet, xPos, yPos, zoom) {
+        var pixelSpan = globalPixelSpan(this.info, zoom);
+        var tileSpan = globalTileSpan(this.info, zoom);
+
+        var tileZoom = zoom - Math.log2(this.info.tileSize);
+        var tileX = (xPos - this.info.minimum[0]) / tileSpan;
+        var tileY = (yPos - this.info.minimum[1]) / tileSpan;
+
+        return $.getJSON(this.baseURL + "/" + dataSet + "/" + tileZoom + "/" + tileX + "/" + tileY + ".json").then(
+            (tile) => {
+                var matrix = null;
+
+                // Convert count to density of loci area. Use bins as minimum unit to mitigate floating point errors.
+                var pixelWidth = pixelSpan / this.info.granularity;
+                var pixelArea = pixelWidth * pixelWidth;
+
+                // Dense tile format.
+                if(isFinite(tile[0])) {
+                    matrix = new Uint32Array(tile);
+
+                    // Normalize count to bin density.
+                    for(let i = 0; i < matrix.length; i++) matrix[i] /= pixelArea;
+                }
+                // Sparse tile format.
+                else {
+
+                    matrix = new Uint32Array(this.info.tileSize * this.info.tileSize);
+
+                    //console.log(tile);
+
+                    tile.forEach(cell => {
+                        var cX = Math.floor(cell.pos[0] - xPos) / pixelSpan;
+                        var cY = Math.floor(cell.pos[1] - yPos) / pixelSpan;
+
+                        var mP = cX + cY * this.info.tileSize;  // Matrix x,y to flat coordinate.
+                        matrix[mP] = cell.count / pixelArea;    // Normalize count to bin density.
+
+                        //console.log(mP);
+                    });
+
+                    //console.log(matrix);
+                }
+
+                return matrix;
+            },
+            (error) => {
+                console.log("Handle error");
+
+                return null;
+            }
+        );
     }
 }
 
@@ -550,16 +604,6 @@ export class DataServerDriver extends DataServer {
 
     // Generate tile information.
     tile(dataSet, xPos, yPos, zoom) {
-        /*var levelSkip = Math.pow(2, level);
-        var matrix = _.range(DataServerDriver.TILE_SIZE).map(xR =>
-            _.range(DataServerDriver.TILE_SIZE).map(yR =>
-                Math.max(0, DataServerDriver.MAX_DENSITY - Math.abs((xPos + xR * levelSkip) - (yPos + yR * levelSkip)))
-            )
-        );
-
-        var flatMatrix = _.flatten(matrix); // Expect input of numbers (43 byte, value upper bound of ~16 million).
-        var flat32 = new Uint32Array(flatMatrix);*/
-
         let pixelSpan = Math.pow(2, DataServerDriver.LEVELS - zoom);
         let waveFactor = 2 * Math.PI * DataServerDriver.WAVES / DataServerDriver.MAXIMUM;
 
@@ -616,142 +660,6 @@ DataServerDriver.GRANULARITY  = 1;           // Identity.
 DataServerDriver.LEVELS       = 20;          // Zoom level of data set. (log2 SIZE - log2 TILE_SIZE)
 DataServerDriver.MAX_DENSITY  = 1000000;     // Maximum frequency count for loci pair.
 DataServerDriver.WAVES        = 20;          // Number of sinusoids to append in the entire data set.
-
-// Client-side server driver, for testing purposes.
-export class FileServer extends DataServer {
-
-    constructor() {
-        super();
-
-        this.info = null;
-    }
-
-    dataSets() {
-        // List of tile data sets present in the jsons folder.
-        var folders = ["5k", "512k"];
-
-        return new Promise((resolve, reject) => resolve(folders));
-    }
-
-    // Respond to test data set, error for other data set requests.
-    dataSetInfo(dataSet) {
-        var that = this;
-        return $.getJSON("jsons/" + dataSet + "/tile_info.json").then(
-            (tileInfo) => {
-                that.info = new DataSetInfo(
-                    tileInfo.min_pos,
-                    tileInfo.max_pos,
-                    tileInfo.max_width,
-                    tileInfo.bins,
-                    tileInfo.granularity,
-                    tileInfo.max_zoom + Math.log2(tileInfo.bins),
-                    tileInfo.max_value
-                );
-
-                console.log(that.info);
-
-                return that.info;
-            }
-        );
-
-        /*return new Promise((resolve, reject) => {
-            if(dataSet === "512k") {
-                resolve(new DataSetInfo(
-                    DataServerDriver.MINIMUM,
-                    DataServerDriver.MAXIMUM,
-                    DataServerDriver.TILE_SIZE,
-                    DataServerDriver.LEVELS,
-                    DataServerDriver.MAX_DENSITY
-                ));
-            } else {
-                reject(Error("Data set information could not be retrieved"));
-            }
-        });*/
-    }
-
-    // Generate tile information.
-    tile(dataSet, xPos, yPos, zoom) {
-        var pixelSpan = globalPixelSpan(this.info, zoom);   //Math.pow(2, this.info.levels - zoom);
-        var tileSpan = globalTileSpan(this.info, zoom);     //this.info.tileSize * pixelSpan;
-
-        var tileZoom = zoom - Math.log2(this.info.tileSize);
-        var tileX = (xPos - this.info.minimum[0]) / tileSpan;   //Math.floor((xPos - this.info.minimum[0]) / tileSpan);
-        var tileY = (yPos - this.info.minimum[1]) / tileSpan;   //Math.floor((yPos - this.info.minimum[1]) / tileSpan);
-
-        //console.log("Tile pos: " + xPos + ", " + yPos);
-
-        var request = "jsons/" + dataSet + "/" + tileZoom + "/" + tileX + "/" + tileY + ".json";
-
-        //console.log("Tile request: " + request);
-
-        //var that = this;
-        return $.getJSON(request).then(
-            (tile) => {
-                var pixelWidth = pixelSpan / this.info.granularity;     // Modulate to mitigate floating point error.
-                var pixelArea = pixelWidth * pixelWidth;
-
-                let matrix = new Uint32Array(this.info.tileSize * this.info.tileSize);
-
-                tile.forEach(cell => {
-                    var cX = Math.floor(cell.pos[0] - xPos) / pixelSpan;
-                    var cY = Math.floor(cell.pos[1] - yPos) / pixelSpan;
-
-                    //console.log("Relative coordinates: " + cX + ", " + cY);
-
-                    var mP = cX + cY * this.info.tileSize;
-                    //console.log(mP);
-
-                    //if(cell.count < 0) console.log("Cell count error:" + cell.count);
-
-                    matrix[mP] = cell.count / pixelArea;    // Normalize count to bin density.
-                });
-
-                //console.log(matrix);
-
-                /*for(let i = 0; i < matrix.length; i++) {
-                    var x = xPos + (i % this.info.tileSize) * pixelSpan;
-                    var y = yPos + Math.floor(i / this.info.tileSize) * pixelSpan;
-
-                    //console.log("Pos: " + x + "," + y);
-
-                    // Sinus wave.
-                    matrix[i] = this.info.maxDensity;   //.25 * (Math.sin(waveFactor * x) + 1 + Math.sin(waveFactor * y) + 1) * this.info.maxDensity;
-
-                    // Line pattern.
-                    //matrix[i] = (i % 2) === 0 ? 0.25 * DataServerDriver.MAX_DENSITY : 0; //Math.random() * DataServerDriver.MAX_DENSITY;
-                }*/
-
-                return matrix;
-            },
-            (error) => {
-                console.log("Handle error");
-
-                return null;
-            }
-        );
-
-        /*let pixelSpan = Math.pow(2, this.info.levels - zoom);
-
-        let waveFactor = 2 * Math.PI * DataServerDriver.WAVES / this.info.maximum;
-
-        let matrix = new Uint32Array(this.info.tileSize * this.info.tileSize);
-        for(let i = 0; i < matrix.length; i++) {
-            var x = xPos + (i % this.info.tileSize) * pixelSpan;
-            var y = yPos + Math.floor(i / this.info.tileSize) * pixelSpan;
-
-            //console.log("Pos: " + x + "," + y);
-
-            // Sinus wave.
-            matrix[i] = .25 * (Math.sin(waveFactor * x) + 1 + Math.sin(waveFactor * y) + 1) * this.info.maxDensity;
-
-            // Line pattern.
-            //matrix[i] = (i % 2) === 0 ? 0.25 * DataServerDriver.MAX_DENSITY : 0; //Math.random() * DataServerDriver.MAX_DENSITY;
-        }
-        var flat32 = matrix;
-
-        return new Promise((resolve, reject) => resolve(flat32));*/
-    }
-}
 
 // Heated object color map lookup table.
 var heatedObjectMap = [
