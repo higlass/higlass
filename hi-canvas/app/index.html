@@ -6,6 +6,9 @@
 </head>
 <body>
 
+<script src="bower_components/parallel.js/lib/parallel.js"></script>
+<script src="bower_components/jquery/dist/jquery.js"></script>
+
 <!-- build:js scripts/hi_z.js -->
 <script src='scripts/hi_z.js'></script>
 <!-- endbuild -->
@@ -13,10 +16,10 @@
 <div id="mmv-area"></div>
 
 <script type='text/javascript'>
-    let server = new hi_z.DataServerDriver();
-    //let tileManager = new hi_z.TileManager(server, "test");
+    //let server = new hi_z.DataServerDriver();
+    let server = new hi_z.FileServer();
     let mmv = new hi_z.MatrixView(document.getElementById('mmv-area'), 800, 600, server);
-    mmv.dataSet = "test";
+    mmv.dataSet = "512k";
 
     // Fit view to browser dimensions.
     mmv.width = window.innerWidth - 20;
