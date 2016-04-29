@@ -43,6 +43,26 @@ export function GenePlot() {
                     .attr('height', height)
                     .classed('exon-rect', true);
                 }
+
+                // draw the arrows in the direction that this transcript is facing
+                let start = 0;
+                while (start < width) {
+                    gMain.append('line')
+                    .attr('x1', start + 3)
+                    .attr('y1', (1 / 4.) * height)
+                    .attr('x2', start)
+                    .attr('y2', height / 2)
+                    .classed('arrow-line', true)
+
+                    gMain.append('line')
+                    .attr('x1', start + 3)
+                    .attr('y1', (3 / 4.) * height)
+                    .attr('x2', start)
+                    .attr('y2', height / 2)
+                    .classed('arrow-line', true)
+
+                     start += 10;
+                }
         });
     }
 
