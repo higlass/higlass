@@ -1,12 +1,49 @@
+import '../styles/gene.css';
+
 import d3 from 'd3';
+import {getRadius} from './helper_module.js';
 
-function GenePlot() {
+
+export function GenePlot() {
+    let width = 300;
+    let height = 20;
+    let xPos = 0;
+    let yPos = 0;
+    let arrowSpace = 10;     // the space betweent the arrows indicating the direction
+                             // of the transcript
+
     function chart(selection) {
-        let width = 300;
-        let height = 20;
-        let xPos = 0;
-        let yPos = 0;
+        selection.each(function(geneJson) {
+            console.log('geneJson:', geneJson);
+                let gMain = d3.select(this).append('g');
 
+                let xScale = d3.scale.linear()
+                .domain([+geneJson.txStart, +geneJson.txEnd])
+                .range([0,width]);
+
+                console.log('gMain:', gMain);
+                gMain.append('line')
+                .attr('x1', 0)
+                .attr('x2', width)
+                .attr('y1', height / 2)
+                .attr('y2', height / 2)
+                .classed('gene-line', true);
+
+                for (let i = 0; i < geneJson.exonStarts.length; i++) {
+                    let exStart = +geneJson.exonStarts[i];
+                    let exEnd = +geneJson.exonEnds[i];
+
+                    console.log('geneJson.exonStarts[i]', exStart, xScale(exStart));
+                    console.log('geneJson.exonEnds[i]', exEnd, xScale(exEnd));
+
+                    gMain.append('rect')
+                    .attr('x', xScale(exStart))
+                    .attr('y', 0)
+                    .attr('width', xScale(exEnd) - xScale(exStart))
+                    .attr('height', height)
+                    .classed('exon-rect', true);
+                }
+        });
     }
 
     chart.width = function(_) {

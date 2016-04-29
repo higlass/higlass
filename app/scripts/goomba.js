@@ -1,5 +1,8 @@
 import d3 from 'd3';
 import {getRadius} from './helper_module.js';
+import {GenePlot} from './gene.js';
+
+export {GenePlot} from './gene.js';
 
 export function drawCircle(divName) {
    let svg = d3.select(divName)
