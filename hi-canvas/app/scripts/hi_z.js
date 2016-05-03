@@ -102,15 +102,17 @@ export class TileManager {
             this.dataSetInfo = info;
 
             // Focus on center of entire matrix.
+            var zoom = Math.log2(info.tileSize);
             this.focusOn(new MatrixCoordinates(
                 Math.floor(.5 * (info.minimum[0] + info.maximum[0])),
                 Math.floor(.5 * (info.minimum[0] + info.maximum[0])),
-                Math.log2(info.tileSize)
+                zoom,
+                Math.floor(zoom)
             ));
         });
 
         // Count transfer function. Initial function is identity.
-        this._transfer = (count) => count > 0 ? Math.log2(1 + Math.log2(1 + count)) : 0; //Math.log(1 + Math.log(1 + count));
+        this._transfer = (count) => count > 0 ? Math.log2(1 + Math.log2(1 + count)) : 0;
     }
 
     // Initialize or update off-canvas buffer.
@@ -121,8 +123,6 @@ export class TileManager {
             this.buffer.width = canvas.width;
             this.buffer.height = canvas.height;
             this.bufferContext = this.buffer.getContext("2d");
-
-            console.log("Update buffer.");
         }
     }
 
@@ -138,7 +138,7 @@ export class TileManager {
 
         // Request upper and lower zoom level tiles.
         this.queueTileRequests(centerCoordinates.upperZoom);
-        this.queueTileRequests(centerCoordinates.lowerZoom);
+        this.queueTileRequests(centerCoordinates.upperZoom + 1);
         if(centerCoordinates.upperZoom - 1 >= Math.floor(Math.log2(this.dataSetInfo.tileSize)))
             this.queueTileRequests(centerCoordinates.upperZoom - 1);
 
@@ -246,13 +246,16 @@ export class TileManager {
 
         var zoomPart = this.centerCoordinates.zoom - this.centerCoordinates.upperZoom;
 
-        var widthCut = .25 * zoomPart * this.buffer.width;      // factor 0.5 for window size,
-        var heightCut = .25 * zoomPart * this.buffer.height;    // times factor 0.5 for next zoom level.
+        // Switch to no interpolation when zoomPart > 2 (going beyond deepest zoom level).
+        this.context.imageSmoothingEnabled = zoomPart < 2;
+
+        var widthCut = Math.pow(.5, zoomPart) * this.buffer.width;      //.5 * .5 * zoomPart * this.buffer.width;      // factor 0.5 for window size,
+        var heightCut = Math.pow(.5, zoomPart) * this.buffer.height;    //.5 * .5 * zoomPart * this.buffer.height;  // times factor 0.5 for next zoom level.
 
         // Transfer scaled buffer to canvas.
         this.context.drawImage(this.buffer,
-            widthCut, heightCut,
-            this.buffer.width - 2 * widthCut, this.buffer.height - 2 * heightCut,
+            .5 * (this.buffer.width - widthCut), .5 * (this.buffer.height - heightCut), //widthCut, heightCut,
+            widthCut, heightCut,    //this.buffer.width - 2 * widthCut, this.buffer.height - 2 * heightCut,
             0, 0,
             this.context.canvas.width, this.context.canvas.height);
     }
@@ -438,30 +441,6 @@ class ManagedTile {
                 // Alpha channel has already been filled.
             }
         }
-
-        /*var p = new Parallel({
-            counts: counts,
-            transfer: transferFunction
-        });
-        p.spawn((d) => {
-            // Transform if counts are available.
-            if(this.counts !== null && this.counts.length > 0) {
-                var tileArray = this.imageData.data;
-                for (var i = 0; i < this.counts.length; i++) {
-                    var intensity = transferFunction(this.counts[i] / maxDensity);
-                    var discretized = Math.floor(255 * (1 - intensity));
-
-                    // Set pixel channels. Apply a heat object color map.
-                    let aI = 4 * i;
-                    tileArray[aI]   = heatedObjectMap[discretized][0];   // Red.
-                    tileArray[aI+1] = heatedObjectMap[discretized][1];   // Green.
-                    tileArray[aI+2] = heatedObjectMap[discretized][2];   // Blue.
-                    tileArray[aI+3] = 255;                               // Fix alpha to full.
-                }
-            }
-        }).then((d) => {
-            this.image
-        });*/
     }
 
     equals(that) {
@@ -495,12 +474,11 @@ class DataSetInfo {
 
 // Matrix coordinates.
 export class MatrixCoordinates {
-    constructor(x, y, zoom) {
+    constructor(x, y, zoom, upperZoom) {
         this.x = x;
         this.y = y;
-        this.zoom = zoom;                      // Floating zoom level.
-        this.upperZoom = Math.floor(zoom);     // High discrete zoom level (lower detail).
-        this.lowerZoom = Math.floor(zoom) + 1; // Low discrete zoom level (higher detail).
+        this.zoom = zoom;              // Floating zoom level.
+        this.upperZoom = upperZoom;    // Active zoom level.
     }
 
     toString() {
@@ -517,7 +495,8 @@ export class MatrixCoordinates {
         return new MatrixCoordinates(
             Math.min(Math.max(this.x, dataSetInfo.minimum[0]), dataSetInfo.maximum[0]),
             Math.min(Math.max(this.y, dataSetInfo.minimum[1]), dataSetInfo.maximum[1]),
-            Math.min(Math.max(this.zoom, Math.floor(Math.log2(dataSetInfo.tileSize))), dataSetInfo.levels)
+            Math.max(this.zoom, Math.floor(Math.log2(dataSetInfo.tileSize))),   //Math.min(Math.max(this.zoom, Math.floor(Math.log2(dataSetInfo.tileSize))), dataSetInfo.levels)
+            Math.max(Math.min(Math.floor(this.zoom), dataSetInfo.levels), 0)
         );
     }
 }
@@ -669,36 +648,6 @@ export class DataServerDriver extends DataServer {
         var flat32 = matrix;
 
         return new Promise((resolve, reject) => resolve(flat32));
-
-        // Asynchronous and parallel generation of tile data.
-        /*var p = new Parallel({
-            dataSet: dataSet,
-            xPos: xPos,
-            yPos: yPos,
-            zoom: zoom,
-            levels: DataServerDriver.LEVELS,
-            tileSize: DataServerDriver.TILE_SIZE,
-            waves: DataServerDriver.WAVES,
-            maxDensity: DataServerDriver.MAX_DENSITY
-        });
-        return p.spawn((d) => {
-             let pixelSpan = Math.pow(2, d.levels - d.zoom);
-             let waveFactor = 2 * Math.PI * d.waves / d.maxDensity;
-
-             let matrix = new Uint32Array(d.tileSize * d.tileSize);
-             for(let i = 0; i < matrix.length; i++) {
-                 var x = d.xPos + (i % d.tileSize) * pixelSpan;
-                 var y = d.yPos + Math.floor(i / d.tileSize) * pixelSpan;
-
-                 // Sinus wave.
-                 matrix[i] = .25 * (Math.sin(waveFactor * x) + 1 + Math.sin(waveFactor * y) + 1) * d.maxDensity;
-
-                 // Line pattern.
-                 //matrix[i] = (i % 2) === 0 ? 0.25 * DataServerDriver.MAX_DENSITY : 0; //Math.random() * DataServerDriver.MAX_DENSITY;
-             }
-
-            return matrix;
-        });*/
     }
 }
 DataServerDriver.MINIMUM      = 0;
