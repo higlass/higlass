@@ -14,8 +14,8 @@
 
 <script type='text/javascript'>
     //let server = new hi_z.DataServerDriver();
-    let server = new hi_z.FileServer("http://pkerp.s3-website-us-east-1.amazonaws.com/tiles");     //("jsons");
-    let mmv = new hi_z.MatrixView(document.getElementById('mmv-area'), 800, 600, server);
+    var server = new hi_z.FileServer("http://pkerp.s3-website-us-east-1.amazonaws.com/tiles");     //("jsons");
+    var mmv = new hi_z.MatrixView(document.getElementById('mmv-area'), 800, 600, server);
     mmv.dataSet = "chr1_5kb";   //"512k_dense";
 
     // Fit view to browser dimensions.
