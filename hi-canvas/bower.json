@@ -22,7 +22,6 @@
   "dependencies": {
     "d3": "~3.5.13",
     "jquery": "~2.2.0",
-    "lodash": "^4.11.1",
-    "paralleljs": "paralleljs#*"
+    "lodash": "^4.11.1"
   }
 }
