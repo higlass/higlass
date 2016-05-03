@@ -1,3 +1,6 @@
+import $ from 'jquery';
+import _ from 'lodash';
+
 export class MatrixView {
     constructor(parentElement, width, height, dataServer) {
         // Create and initialize canvas.
@@ -42,19 +45,6 @@ export class MatrixView {
         window.onmousewheel = (event) => {
             event.preventDefault(); // Prevent default scrolling behavior.
         };
-
-        // Key press '[' and ']' to change zoom level.
-        // Key press numbers to change transfer threshold to .key
-        /*var regExprDigit = /[0-9]|\./;
-        window.onkeypress = (event) => {
-            var pressedChar = String.fromCharCode(event.keyCode);
-
-            // Change transfer function.
-            if(regExprDigit.test(pressedChar)) {
-                var factor = .1 * Number(pressedChar);
-                this._tileManager.transfer = (count) => count > factor ? count : Math.random();
-            }
-        };*/
     }
 
     get width() {
@@ -131,6 +121,8 @@ export class TileManager {
             this.buffer.width = canvas.width;
             this.buffer.height = canvas.height;
             this.bufferContext = this.buffer.getContext("2d");
+
+            console.log("Update buffer.");
         }
     }
 
@@ -181,11 +173,12 @@ export class TileManager {
         let portMinY = this.centerCoordinates.y - portHalvedHeight;
         let portMaxY = this.centerCoordinates.y + portHalvedHeight;
 
-        let portPixelMinX = this.portMinX / pixelSpan;
-        let portPixelMaxX = this.portMaxX / pixelSpan;
-        let portPixelMinY = this.portMinY / pixelSpan;
-        let portPixelMaxY = this.portMaxY / pixelSpan;
+        let portPixelMinX = portMinX / pixelSpan;
+        let portPixelMaxX = portMaxX / pixelSpan;
+        let portPixelMinY = portMinY / pixelSpan;
+        let portPixelMaxY = portMaxY / pixelSpan;
 
+        // Store port bounds of active zoom level.
         if(zoom === this.centerCoordinates.upperZoom) {
             this.portMinX = portMinX;
             this.portMaxX = portMaxX;
@@ -209,16 +202,6 @@ export class TileManager {
         tilesBottomRight[0] += marginLocations;
         tilesBottomRight[1] += marginLocations;
 
-        // Dispose of the present tiles that we do not need anymore.
-        /*this.tiles = this.tiles.filter(t =>
-            (t.zoom === this.centerCoordinates.upperZoom || t.zoom === this.centerCoordinates.lowerZoom) &&
-            (zoom !== t.zoom ||
-                (tilesTopLeft[0] <= t.minX && t.minX < tilesBottomRight[0] &&
-                 tilesTopLeft[1] <= t.minY && t.minY < tilesBottomRight[1]))
-        );    // Zoom level constraint will change at some point.
-        this.tileMap = {};
-        this.tiles.forEach(t => this.tileMap[t.toString()] = t);*/
-
         // Request tiles that are not present already.
         /*var xRequests = [];
          var yRequests = [];
@@ -229,7 +212,6 @@ export class TileManager {
 
         for(let i = tilesTopLeft[0]; i < tilesBottomRight[0]; i += tileSpan) {
             for(let j = tilesTopLeft[1]; j < tilesBottomRight[1]; j += tileSpan) {
-                //this.requestTile(i, j, i + tileSpan, j + tileSpan, zoom);
                 var requestTile = new ManagedTile(i, j, i + tileSpan, j + tileSpan, zoom);
                 this.requestTiles.push(requestTile);
             }
@@ -251,7 +233,6 @@ export class TileManager {
     // Repaint all tiles.
     paint() {
         // Clear canvas.
-        //this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
         this.bufferContext.clearRect(0, 0, this.buffer.width, this.buffer.height);
 
         // Paint tiles.
@@ -265,19 +246,15 @@ export class TileManager {
 
         var zoomPart = this.centerCoordinates.zoom - this.centerCoordinates.upperZoom;
 
-        if(zoomPart > 0) {
-            var widthCut = .25 * zoomPart * this.buffer.width;      // factor 0.5 for window size,
-            var heightCut = .25 * zoomPart * this.buffer.height;    // times factor 0.5 for next zoom level.
+        var widthCut = .25 * zoomPart * this.buffer.width;      // factor 0.5 for window size,
+        var heightCut = .25 * zoomPart * this.buffer.height;    // times factor 0.5 for next zoom level.
 
-            // Transfer scaled buffer to canvas.
-            this.context.drawImage(this.buffer,
-                widthCut, heightCut,
-                this.buffer.width - 2 * widthCut, this.buffer.height - 2 * heightCut,
-                0, 0,
-                this.context.canvas.width, this.context.canvas.height);
-        } else {
-            this.context.drawImage(this.buffer, 0, 0);
-        }
+        // Transfer scaled buffer to canvas.
+        this.context.drawImage(this.buffer,
+            widthCut, heightCut,
+            this.buffer.width - 2 * widthCut, this.buffer.height - 2 * heightCut,
+            0, 0,
+            this.context.canvas.width, this.context.canvas.height);
     }
 
     // Paint a single tile. Does not clear canvas.
@@ -523,7 +500,7 @@ export class MatrixCoordinates {
         this.y = y;
         this.zoom = zoom;                      // Floating zoom level.
         this.upperZoom = Math.floor(zoom);     // High discrete zoom level (lower detail).
-        this.lowerZoom = Math.ceil(zoom);      // Low discrete zoom level (higher detail).
+        this.lowerZoom = Math.floor(zoom) + 1; // Low discrete zoom level (higher detail).
     }
 
     toString() {
