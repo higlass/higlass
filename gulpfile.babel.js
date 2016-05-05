@@ -33,6 +33,13 @@ gulp.task('scripts', () => {
     .pipe(reload({stream: true}));
 });
 
+gulp.task('data', () => {
+    del('.tmp/jsons/**/*.json');
+
+    return gulp.src('jsons/**/*.json')
+            .pipe(gulp.dest('.tmp/jsons'));
+});
+
 function lint(files, options) {
   return () => {
     return gulp.src(files)
@@ -101,7 +108,7 @@ gulp.task('extras', () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('serve', ['styles', 'scripts', 'fonts'], () => {
+gulp.task('serve', ['styles', 'scripts', 'fonts', 'data'], () => {
   browserSync({
     notify: false,
     port: 9000,
@@ -123,6 +130,7 @@ gulp.task('serve', ['styles', 'scripts', 'fonts'], () => {
   gulp.watch('app/styles/**/*.css', ['styles']);
   gulp.watch('app/scripts/**/*.js', ['scripts']);
   gulp.watch('app/fonts/**/*', ['fonts']);
+  gulp.watch('jsons/**/*.json', ['data']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);
 });
 
