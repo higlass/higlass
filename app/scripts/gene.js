@@ -25,8 +25,6 @@ export function GenePlot() {
         let geneJson = lineGene.data()[0];
         let lineLength = xScale(geneJson.txEnd) - xScale(geneJson.txStart);
 
-        console.log('lineLength:', lineLength);
-
         if (lineLength < 4) {
             // if we're so zoomed out that the genes are barely visible
             // just draw a circle instead
@@ -52,7 +50,6 @@ export function GenePlot() {
 
     function chart(selection) {
         selection.each(function(geneJson) {
-            console.log('geneJson:', geneJson);
                 geneJson.chromOffset = geneJson.genomeTxStart - geneJson.txStart;
                 let gMain = d3.select(this).append('g');
 

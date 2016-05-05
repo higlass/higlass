@@ -1,3 +1,7 @@
+svg {
+  font: 10px sans-serif;
+}
+
 .pane {
     fill: transparent;
     stroke: transparent;

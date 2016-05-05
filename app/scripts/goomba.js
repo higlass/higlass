@@ -6,24 +6,7 @@ import {TiledArea} from './tiled_area.js';
 export {GenePlot} from './gene.js';
 
 export function Goomba() {
-    let width = 500, height=300;
-
-    function drawDataPoint(xScale, yScale) {
-        // draw a single data point in a tile
-        let genePlot = GenePlot();
-
-        function drawRefGene(selection) {
-            genePlot.xScale(xScale);
-            selection.each(function(d) {
-                d3.select(this).call(genePlot);
-
-                genePlot.draw();
-            });
-            console.log('drawing:', selection);
-        }
-
-        return drawRefGene;
-    }
+    let width = 700, height=300;
 
     function chart(selection) {
         selection.each(function(tileDirectory) {
@@ -32,7 +15,7 @@ export function Goomba() {
             let tiledArea = TiledArea().width(width)
             .height(height)
             .tileDirectory(tileDirectory)
-            .drawDataPoint(drawDataPoint);
+            .dataPointLayout(GenePlot);
 
             gMain.call(tiledArea)
         });

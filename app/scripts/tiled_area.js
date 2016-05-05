@@ -37,7 +37,7 @@ export function TiledArea() {
                 //return Math.log(count);
                 //return count;
             }
-    let drawDataPoint = null; //the function to draw each data point in the tile
+    let dataPointLayout = null; //the function to draw each data point in the tile
 
     function tileId(tile) {
         // uniquely identify the tile with a string
@@ -91,6 +91,7 @@ export function TiledArea() {
             let gTilesEnter = gTiles.enter()
             let gTilesExit = gTiles.exit()
 
+            // add all the new tiles
             gTilesEnter.append('g')
             .classed('tile-g', true)
             .each(function(tile) {
@@ -104,26 +105,29 @@ export function TiledArea() {
                 //let labelSort = (a,b) => { return b.area - a.area; };
                 //let elevationSort = (a,b) => { return b.max_elev - a.max_elev; };
                 //data.sort(labelSort);
+                data.map((d) => { d.pointLayout = dataPointLayout().xScale(xScale); })
 
+                // draw each point
                 gDataPoints = gTile.selectAll('.data-g')
-                .data(data, pointId)
+                .data(data)
                 .enter()
                 .append('g')
                 .classed('data-g', true)
+                .each(function(d) {
+                    d3.select(this).call(d.pointLayout);
+                    d.pointLayout.draw();
+                });
             })
 
             gTilesExit.remove();
+            /*
             let allCounts = allData.map((x) => { return +x.count; });
             valueScale.domain([countTransform(Math.min.apply(null, allCounts)),
                                countTransform(Math.max.apply(null, allCounts))])
+            */
             
             // only redraw if the tiles have changed
             if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
-                /*
-                tiles.forEach((t) => {
-                    console.log('t:', t);
-                });
-                */
                 draw();
             }
 
@@ -236,6 +240,7 @@ export function TiledArea() {
             xAxis = d3.svg.axis()
             .scale(xScale)
             .orient('bottom')
+            .ticks(3);
             gXAxis.call(xAxis);
 
             yAxis = d3.svg.axis()
@@ -270,7 +275,6 @@ export function TiledArea() {
 
         function zoomed() {
             //console.log('maxZoom:', maxZoom);
-            console.log('zoomed:...');
             var reset_s = 0;
 
             //console.log('zoom.scale()', zoom.scale());
@@ -285,7 +289,6 @@ export function TiledArea() {
             reset_s += 1;
           }
           if (reset_s == 2) { // Both axes are full resolution. Reset.
-              console.log("here");
             zoom.scale(1);
             zoom.translate([0,0]);
           }
@@ -327,10 +330,13 @@ export function TiledArea() {
             gYAxis.call(yAxis);
 
             gMain.selectAll('.data-g')
-            .call(drawDataPoint(xScale, yScale))
+            .each((d) => { d.pointLayout.draw(); });
 
             // this will become the tiling code
             let zoomLevel = Math.round(Math.log(zoom.scale()) / Math.LN2) + 1;
+
+            if (zoomLevel > maxZoom)
+                zoomLevel = maxZoom;
 
             // the ski areas are positioned according to their
             // cumulative widths, which means the tiles need to also
@@ -351,8 +357,6 @@ export function TiledArea() {
                 let cols = d3.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight),
                                     Math.ceil(((zoom.y().domain()[1] - minY) - epsilon) / tileHeight));
 
-
-                                
                 for (let i = 0; i < rows.length; i++) {
                     for (let j = 0; j < cols.length; j++) {
                         tiles.push([zoomLevel, rows[i], cols[j]]);
@@ -366,7 +370,6 @@ export function TiledArea() {
             /*
             let tiles = [];
             */
-           console.log('tiles:', tiles)
             refreshTiles(tiles);
         }
     }
@@ -424,9 +427,9 @@ export function TiledArea() {
         return zoomTo;
     };
 
-    chart.drawDataPoint = function(_) {
-        if (!arguments.length) return drawDataPoint;
-        else drawDataPoint = _;
+    chart.dataPointLayout = function(_) {
+        if (!arguments.length) return dataPointLayout;
+        else dataPointLayout = _;
         return chart;
     };
 
