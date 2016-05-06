@@ -41,7 +41,8 @@
     "main-bower-files": "~2.11.1",
     "webpack": "~1.12.14",
     "webpack-stream": "~3.1.0",
-    "wiredep": "~3.0.0"
+    "wiredep": "~3.0.0",
+    "zoomable_labels": "^0.1.0"
   },
   "eslintConfig": {
     "env": {

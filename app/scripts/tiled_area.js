@@ -19,9 +19,9 @@ export function TiledArea() {
 
     let loadedTiles = {};
     let loadingTiles = {};
+    let dispatch = d3.dispatch('draw');
 
     let xAxis = null;
-    let yAxis = null;
 
     let minArea = 0;
     let maxArea = 0;
@@ -114,7 +114,8 @@ export function TiledArea() {
                 .append('g')
                 .classed('data-g', true)
                 .each(function(d) {
-                    d3.select(this).call(d.pointLayout);
+                    d3.select(this)
+                    .call(d.pointLayout);
                     d.pointLayout.draw();
                 });
             })
@@ -146,7 +147,6 @@ export function TiledArea() {
                     let tileSubPath = tile.join('/') + '.json'
                     let tilePath = tileDirectory + "/" + tileSubPath;
                     loadingTiles[tileId(tile)] = true;
-                    //console.log('loading...', tilePath);
                     d3.json(tilePath,
                             function(error, data) {
                                 delete loadingTiles[tileId(tile)];
@@ -165,6 +165,7 @@ export function TiledArea() {
         var zoom = d3.behavior.zoom()
         .on("zoom", zoomed);
 
+        console.log('height:', height);
         gEnter.insert("rect", "g")
         .attr("class", "pane")
         .attr("width", width)
@@ -234,7 +235,8 @@ export function TiledArea() {
             yOrigScale = yScale.copy();
 
             zoom.x(xScale)
-            .scaleExtent([1,Math.pow(2, maxZoom-1)])
+            //.scaleExtent([1,Math.pow(2, maxZoom-1)])
+            .scaleExtent([1,Math.pow(2, maxZoom+8)])
             //.xExtent(xScaleDomain);
         
             xAxis = d3.svg.axis()
@@ -242,14 +244,6 @@ export function TiledArea() {
             .orient('bottom')
             .ticks(3);
             gXAxis.call(xAxis);
-
-            yAxis = d3.svg.axis()
-            .scale(yScale)
-            .orient("right")
-            //.tickSize(-(width - margin.left - margin.right))
-            //.tickPadding(6);
-
-            gYAxis.call(yAxis);
 
             if (!oneDimensional) {
                 zoom.y(yScale)
@@ -274,10 +268,7 @@ export function TiledArea() {
         };
 
         function zoomed() {
-            //console.log('maxZoom:', maxZoom);
             var reset_s = 0;
-
-            //console.log('zoom.scale()', zoom.scale());
 
           if ((xScale.domain()[1] - xScale.domain()[0]) >= (maxX - minX)) {
             zoom.x(xScale.domain([minX, maxX]));
@@ -327,10 +318,11 @@ export function TiledArea() {
             // need to redraw the tiles, otherwise it's irrelevant
             //
             gXAxis.call(xAxis);
-            gYAxis.call(yAxis);
 
             gMain.selectAll('.data-g')
-            .each((d) => { d.pointLayout.draw(); });
+            .each((d) => { 
+                d.pointLayout.draw(); 
+            });
 
             // this will become the tiling code
             let zoomLevel = Math.round(Math.log(zoom.scale()) / Math.LN2) + 1;
@@ -370,6 +362,8 @@ export function TiledArea() {
             /*
             let tiles = [];
             */
+           dispatch.draw();
+
             refreshTiles(tiles);
         }
     }
@@ -432,6 +426,11 @@ export function TiledArea() {
         else dataPointLayout = _;
         return chart;
     };
+
+    chart.on = function(event, _) {
+        dispatch.on(event, _);
+        return chart;
+    }
 
     return chart;
 }

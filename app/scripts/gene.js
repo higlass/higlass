@@ -6,7 +6,7 @@ import {getRadius} from './helper_module.js';
 
 export function GenePlot() {
     let width = 300;
-    let height = 20;
+    let height = 10;
     let xPos = 0;
     let yPos = 0;
     let arrowSpace = 10;     // the space betweent the arrows indicating the direction
@@ -18,46 +18,66 @@ export function GenePlot() {
     let lineGene = null;
     let rectExons = [];
     let circleGene = null;
-
     let exonRects = null;
+    let geneLabels = null;
 
     function draw() {
         let geneJson = lineGene.data()[0];
         let lineLength = xScale(geneJson.txEnd) - xScale(geneJson.txStart);
 
-        if (lineLength < 4) {
+        if (lineLength < 10) {
             // if we're so zoomed out that the genes are barely visible
             // just draw a circle instead
-            circleGene.attr('visibility', 'visible')
+
+            circleGene.style('opacity', 1.)
             .attr('cx', (d) => { return xScale(+geneJson.txStart + geneJson.chromOffset); })
             .attr('cy', (d) => { return height / 2})
             .attr('r', 5)
+            .classed('gene-marker', true)
+
+            exonRects.attr('visibility', 'hidden');
         } else {
+            circleGene.style('opacity', 0.);
+
             exonRects.attr('x', (d) => xScale(d[0]))
                     .attr('y', 0)
                     .attr('width', (d) => xScale(d[1]) - xScale(d[0]))
                     //.attr('width', 10)
                     .attr('height', height)
-                    .attr('visibility', 'visible');
+                    .attr('visibility', 'visible')
+                    .attr('id', (d) => { return `c-${geneJson.refseqid}`})
 
             lineGene.attr('x1', (d) => xScale(d.chromOffset + +d.txStart))
                     .attr('x2', (d) => xScale(d.chromOffset + +d.txEnd))
                     .attr('y1', height / 2)
                     .attr('y2', height / 2)
-                    .attr('visibility', 'visible');
+                    .attr('visibility', 'visible')
+                    .attr('id', (d) => { return `c-${geneJson.refseqid}`})
         }
+
+        geneLabels.attr('x', (d) => {
+            return xScale((+geneJson.txStart + +geneJson.txEnd) / 2 + geneJson.chromOffset); })
+        .attr('y', -5);
     }
 
     function chart(selection) {
         selection.each(function(geneJson) {
                 geneJson.chromOffset = geneJson.genomeTxStart - geneJson.txStart;
-                let gMain = d3.select(this).append('g');
+                let gMain = d3.select(this);
 
                 lineGene = gMain.append('line')
                 .classed('gene-line', true);
 
                 circleGene = gMain.append('circle')
-                .classed('gene-circle', true);
+                .classed('gene-circle', true)
+                .attr('id', (d) => { 
+                    return `n-${geneJson.refseqid}`;
+                })
+
+                geneLabels = gMain.append('text')
+                .classed('gene-label', true)
+                .text((d) => { return d.geneName; })
+                .attr('text-anchor', 'middle')
 
                 function zip(arrays) {
                     return arrays[0].map(function(_,i){
