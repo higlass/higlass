@@ -26,8 +26,24 @@ export function Goomba() {
             .height(height)
             .tileDirectory(tileDirectory)
             .dataPointLayout(GenePlot)
-            .on('draw', () => { gMain.call(zoomableLabels); })
+            //.on('draw', () => { gMain.call(zoomableLabels); })
             .xScale(xScale);
+
+            let chromAxisPlot = goomba.ChromosomeAxisPlot()
+            .width(width)
+            .xScale(goombaPlot.xScale());
+
+            let gChromAxis = gMain.append('g')
+            .attr('transform', `translate(0,${height})`)
+            .classed('g-axis', true)
+            .datum('jsons/hg19/chromInfo.txt')
+            .call(chromAxisPlot);
+
+            tiledArea.on('draw', () => {
+                gMain.call(zoomableLabels);
+                chromAxisPlot.draw();
+            });
+            //tiledArea.on('draw', () => { chromAxisPlot.draw(); });
 
             gMain.call(tiledArea)
 
@@ -49,6 +65,11 @@ export function Goomba() {
     chart.xScale = function(_) {
         if (!arguments.length) return xScale;
         xScale = _;
+        return chart;
+    }
+
+    chart.on = function(event, _) {
+        dispatch.on(event, _);
         return chart;
     }
 

@@ -218,8 +218,7 @@ export function TiledArea() {
             xScaleDomain = [minX, maxX];
             yScaleDomain = [minY, maxY];
 
-            xScale = d3.scale.linear()
-            .domain(xScaleDomain)
+            xScale.domain(xScaleDomain)
             .range([0, width - margin.left - margin.right]);
 
             yScale = d3.scale.linear()
