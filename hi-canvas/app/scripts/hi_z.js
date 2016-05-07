@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import d3 from 'd3';
 
 export class MatrixView {
     constructor(parentElement, width, height, dataServer) {
@@ -18,33 +19,44 @@ export class MatrixView {
         // Mouse drag to view translation (pan).
         this._mouseDragged = false;
         this._mousePosition = null;
-        this.canvas.onmousedown = (event) => {
+        $(this.canvas).on("mousedown", (event) => {
             this._mouseDragged = true;
             this._mousePosition = [event.clientX, event.clientY];
-        };
-        this.canvas.onmouseup = () => {
+            
+            // Switch to drag cursor.
+            this.canvas.style.cursor = 'all-scroll';
+        });
+        $(this.canvas).on("mouseup", () => {
             this._mouseDragged = false;
-        };
-        this.canvas.onmousemove = (event) => {
+            
+            // Switch back to pointing cursor.
+            this.canvas.style.cursor = 'pointer';   
+        });
+        $(this.canvas).on("mousemove", (event) => {
             if(this._mouseDragged) {
                 var dX = event.clientX - this._mousePosition[0];
                 var dY = event.clientY - this._mousePosition[1];
 
                 if(this._tileManager) this._tileManager.translate(-dX, -dY, 0);
-
+                
                 this._mousePosition = [event.clientX, event.clientY];
             }
-        };
+        });
 
         // Mouse wheel to view translation (zoom).
-        this.canvas.onmousewheel = (event) => {
-            var zoomDelta = event.wheelDelta === 0 ? 0 : .02 * (event.wheelDelta / Math.abs(event.wheelDelta));   //event.wheelDelta > 0 ? 1 : -1;
-
-            if(this._tileManager) this._tileManager.translate(0, 0, zoomDelta);
-        };
-        window.onmousewheel = (event) => {
+        $(this.canvas).on("mousewheel", (event) => {
+            if(this._tileManager) {
+                var mouseDelta = event.originalEvent.wheelDelta;
+                var zoomDelta = .1 * mouseDelta / Math.abs(mouseDelta);
+                this._tileManager.zoom(event.clientX, event.clientY, zoomDelta);
+            }
+        });
+        $(window).on("mousewheel", (event) => {
             event.preventDefault(); // Prevent default scrolling behavior.
-        };
+        });
+        
+        // Hand cursor.
+        this.canvas.style.cursor = 'pointer';
     }
 
     get width() {
@@ -131,16 +143,17 @@ export class TileManager {
         this.updateBuffer();
 
         // Update port coordinates.
-        if(centerCoordinates) this.centerCoordinates = centerCoordinates;
+        if(centerCoordinates)
+            this.centerCoordinates = centerCoordinates.constrained(this.dataSetInfo);
 
         // Prepare collection of desired tiles.
         this.requestTiles = [];
 
         // Request upper and lower zoom level tiles.
-        this.queueTileRequests(centerCoordinates.upperZoom);
-        this.queueTileRequests(centerCoordinates.upperZoom + 1);
-        if(centerCoordinates.upperZoom - 1 >= Math.floor(Math.log2(this.dataSetInfo.tileSize)))
-            this.queueTileRequests(centerCoordinates.upperZoom - 1);
+        this.queueTileRequests(this.centerCoordinates.upperZoom);
+        this.queueTileRequests(this.centerCoordinates.upperZoom + 1);
+        if(this.centerCoordinates.upperZoom - 1 >= Math.floor(Math.log2(this.dataSetInfo.tileSize)))
+            this.queueTileRequests(this.centerCoordinates.upperZoom - 1);
 
         // Transfer old tiles.
         var oldTileMap = this.tileMap || {};
@@ -229,6 +242,22 @@ export class TileManager {
         // Repaint all tiles.
         this.paint();
     }
+    
+    // Zoom at given mouse coordinate.
+    zoom(mX, mY, dZ) {
+        var pixelSpan = globalPixelSpan(this.dataSetInfo, this.centerCoordinates.zoom);
+        
+        // Translate mouse coordinates to center.
+        var vcX = mX - .5 * this.buffer.width;
+        var vcY = mY - .5 * this.buffer.height;
+        
+        // Determine mouse vector change to center, on scale.
+        var cF = Math.pow(2, dZ);
+        var cX = Math.round(cF * vcX - vcX);
+        var cY = Math.round(cF * vcY - vcY);
+        
+        this.translate(cX, cY, dZ);
+    }
 
     // Repaint all tiles.
     paint() {
@@ -249,13 +278,13 @@ export class TileManager {
         // Switch to no interpolation when zoomPart > 2 (going beyond deepest zoom level).
         this.context.imageSmoothingEnabled = zoomPart < 2;
 
-        var widthCut = Math.pow(.5, zoomPart) * this.buffer.width;      //.5 * .5 * zoomPart * this.buffer.width;      // factor 0.5 for window size,
-        var heightCut = Math.pow(.5, zoomPart) * this.buffer.height;    //.5 * .5 * zoomPart * this.buffer.height;  // times factor 0.5 for next zoom level.
+        var widthCut = Math.pow(.5, zoomPart) * this.buffer.width;
+        var heightCut = Math.pow(.5, zoomPart) * this.buffer.height;
 
         // Transfer scaled buffer to canvas.
         this.context.drawImage(this.buffer,
-            .5 * (this.buffer.width - widthCut), .5 * (this.buffer.height - heightCut), //widthCut, heightCut,
-            widthCut, heightCut,    //this.buffer.width - 2 * widthCut, this.buffer.height - 2 * heightCut,
+            .5 * (this.buffer.width - widthCut), .5 * (this.buffer.height - heightCut),
+            widthCut, heightCut,
             0, 0,
             this.context.canvas.width, this.context.canvas.height);
     }
@@ -279,7 +308,6 @@ export class TileManager {
                 var tileCanvasMinX = tilePixelMinX - this.portPixelMinX;
                 var tileCanvasMinY = tilePixelMinY - this.portPixelMinY;
 
-                //this.context.putImageData(tile.imageData, tileCanvasMinX, tileCanvasMinY);
                 this.bufferContext.putImageData(tile.imageData, tileCanvasMinX, tileCanvasMinY);
 
                 if(propagate) this.paintBuffer();
@@ -444,8 +472,7 @@ class ManagedTile {
     }
 
     equals(that) {
-        return
-            this.minX === that.minX &&
+        return this.minX === that.minX &&
             this.minY === that.minY &&
             this.maxX === that.maxX &&
             this.maxY === that.maxY &&
@@ -492,11 +519,13 @@ export class MatrixCoordinates {
 
     // Constrain coordinates to data set dimensions.
     constrained(dataSetInfo) {
+        let zoom = Math.max(this.zoom, Math.floor(Math.log2(dataSetInfo.tileSize)));
+        
         return new MatrixCoordinates(
             Math.min(Math.max(this.x, dataSetInfo.minimum[0]), dataSetInfo.maximum[0]),
             Math.min(Math.max(this.y, dataSetInfo.minimum[1]), dataSetInfo.maximum[1]),
-            Math.max(this.zoom, Math.floor(Math.log2(dataSetInfo.tileSize))),   //Math.min(Math.max(this.zoom, Math.floor(Math.log2(dataSetInfo.tileSize))), dataSetInfo.levels)
-            Math.max(Math.min(Math.floor(this.zoom), dataSetInfo.levels), 0)
+            zoom,   //Math.min(Math.max(this.zoom, Math.floor(Math.log2(dataSetInfo.tileSize))), dataSetInfo.levels)
+            Math.min(Math.floor(zoom), dataSetInfo.levels)
         );
     }
 }
@@ -522,10 +551,11 @@ export class DataServer {
 // Client-side server driver, for testing purposes.
 export class FileServer extends DataServer {
 
-    constructor(baseURL) {
+    constructor(baseURL, mirrorUpperTriangle) {
         super();
 
         this.baseURL = baseURL;
+        this.mirrorUpperTriangle = mirrorUpperTriangle || false;
         this.info = null;
     }
 
@@ -566,6 +596,14 @@ export class FileServer extends DataServer {
         var tileZoom = zoom - Math.log2(this.info.tileSize);
         var tileX = (xPos - this.info.minimum[0]) / tileSpan;
         var tileY = (yPos - this.info.minimum[1]) / tileSpan;
+        
+        // Swap tile coordinates when mirroring the upper triangle.
+        var mirrored = this.mirrorUpperTriangle && tileX > tileY;
+        if(mirrored) {
+            var swap = tileX;
+            tileX = tileY;
+            tileY = swap;
+        }
 
         return $.getJSON(this.baseURL + "/" + dataSet + "/" + tileZoom + "/" + tileX + "/" + tileY + ".json").then(
             (tile) => {
@@ -592,6 +630,25 @@ export class FileServer extends DataServer {
                         var mP = cX + cY * this.info.tileSize;  // Matrix x,y to flat coordinate.
                         matrix[mP] = cell.count / pixelArea;    // Normalize count to bin density.
                     });
+                }
+                
+                
+                // Diagonal tile is mirrored.
+                if(tileX === tileY) {
+                    var matrixDim = Math.sqrt(matrix.length);
+                    for(let i = 0; i < matrixDim; i++) for(let j = 0; j < i; j++)
+                        matrix[matrixDim * j + i] = matrix[matrixDim * i + j];
+                }
+                
+                // Transpose matrix for mirrored upper triangle.
+                if(mirrored) {
+                    var matrixDim = Math.sqrt(matrix.length);
+                    var swap;
+                    for(let i = 0; i < matrixDim; i++) for(let j = 0; j < i; j++) {
+                        swap = matrix[matrixDim * i + j];
+                        matrix[matrixDim * i + j] = matrix[matrixDim * j + i];
+                        matrix[matrixDim * j + i] = swap;
+                    }
                 }
 
                 return matrix;

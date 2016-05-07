@@ -29,17 +29,13 @@
 
 <script type='text/javascript'>
     //let server = new hi_z.DataServerDriver();
-    var server = new hi_z.FileServer("http://pkerp.s3-website-us-east-1.amazonaws.com/tiles");     //("jsons");
+    var server = new hi_z.FileServer("http://pkerp.s3-website-us-east-1.amazonaws.com/tiles", true);     //("jsons");
     var mmv = new hi_z.MatrixView(document.getElementById('mmv-area'), 800, 600, server);
     mmv.dataSet = "chr1_5kb";   //"512k_dense";
 
     // Fit view to browser dimensions.
     mmv.width = window.innerWidth - 20;
     mmv.height = window.innerHeight - 20;
-
-    //server.dataSets().then((names) => {console.log(names);});
-    //server.dataSetInfo("test").then((info) => {console.log(info);});
-    //server.tile("test", 0, 0, 0).then((tile) => {console.log(tile);});
 
     //tileManager.focusOn(new hi_z.MatrixCoordinates(300, 300, 8), 800, 600);
 </script>
