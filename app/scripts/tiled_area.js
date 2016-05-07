@@ -165,7 +165,6 @@ export function TiledArea() {
         var zoom = d3.behavior.zoom()
         .on("zoom", zoomed);
 
-        console.log('height:', height);
         gEnter.insert("rect", "g")
         .attr("class", "pane")
         .attr("width", width)
@@ -325,7 +324,7 @@ export function TiledArea() {
             });
 
             // this will become the tiling code
-            let zoomLevel = Math.round(Math.log(zoom.scale()) / Math.LN2) + 1;
+            let zoomLevel = Math.round(Math.log(zoom.scale()) / Math.LN2) + 2;
 
             if (zoomLevel > maxZoom)
                 zoomLevel = maxZoom;
@@ -429,6 +428,12 @@ export function TiledArea() {
 
     chart.on = function(event, _) {
         dispatch.on(event, _);
+        return chart;
+    }
+
+    chart.xScale = function(_) {
+        if (!arguments) return xScale;
+        else xScale = _;
         return chart;
     }
 

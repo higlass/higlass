@@ -1,0 +1,1 @@
+[{"count": "48", "exonEnds": "92502285,92509351,92617671", "txStart": "92500575", "cdsEnd": "92617428", "geneName": "HTR7", "genomeTxStart": "1928144278", "chr": "chr10", "pos": [1928144278.0], "strand": "-", "cdsStart": "92502242", "refseqid": "NM_000872", "exonCount": "3", "genomeTxEnd": "1928261374", "txEnd": "92617671", "exonStarts": "92500575,92508595,92616889"}]

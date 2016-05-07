@@ -36,7 +36,7 @@ gulp.task('scripts', () => {
 gulp.task('data', () => {
     del('.tmp/jsons/**/*.json');
 
-    return gulp.src('jsons/**/*.json')
+    return gulp.src('jsons/**/*')
             .pipe(gulp.dest('.tmp/jsons'));
 });
 

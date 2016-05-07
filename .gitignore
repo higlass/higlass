@@ -10,3 +10,4 @@ notebooks/.ipynb_checkpoints/**
 bower_components/
 node_modules/
 jsons/
+.DS_Store

@@ -2,7 +2,7 @@
 <html lang="">
 <head>
 <meta charset="utf-8">
-<title>Example</title>
+<title>Goomba</title>
 </head>
 <body>
 
@@ -45,10 +45,23 @@ let goombaPlot = goomba.Goomba()
     .width(width)
     .height(height);
 
+
 let gMain = svg.append('g')
 .classed('g-main', true)
+//.datum('http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles')
 .datum('jsons/tiles')
 .call(goombaPlot)
+
+let chromAxisPlot = goomba.ChromosomeAxisPlot()
+.width(width)
+.xScale(goombaPlot.xScale());
+
+let gChromAxis = svg.append('g')
+.attr('transform', `translate(0,${height})`)
+.classed('g-axis', true)
+.datum('jsons/hg19/chromInfo.txt')
+.call(chromAxisPlot);
+
 
 //let data = []
 

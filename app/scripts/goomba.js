@@ -5,9 +5,11 @@ import {TiledArea} from './tiled_area.js';
 import {ZoomableLabels} from 'zoomable_labels';
 
 export {GenePlot} from './gene.js';
+export {ChromosomeAxisPlot} from './ChromosomeAxisPlot.js';
 
 export function Goomba() {
     let width = 700, height=40;
+    let xScale = d3.scale.linear();
 
     function chart(selection) {
         selection.each(function(tileDirectory) {
@@ -20,12 +22,12 @@ export function Goomba() {
             .labelMarkerId((d) => { return `n-${d.refseqid}`})
             .uidString('refseqid')
 
-            console.log('height:', height);
             let tiledArea = TiledArea().width(width)
             .height(height)
             .tileDirectory(tileDirectory)
             .dataPointLayout(GenePlot)
-            .on('draw', () => { gMain.call(zoomableLabels); });
+            .on('draw', () => { gMain.call(zoomableLabels); })
+            .xScale(xScale);
 
             gMain.call(tiledArea)
 
@@ -41,6 +43,12 @@ export function Goomba() {
     chart.height = function(_) {
         if (!arguments.length) return height;
         height = _;
+        return chart;
+    }
+
+    chart.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        xScale = _;
         return chart;
     }
 
