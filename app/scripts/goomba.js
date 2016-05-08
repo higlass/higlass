@@ -34,7 +34,7 @@ export function Goomba() {
             .xScale(goombaPlot.xScale());
 
             let gChromAxis = gMain.append('g')
-            .attr('transform', `translate(0,${height})`)
+            .attr('transform', `translate(30,${height - 20})`)
             .classed('g-axis', true)
             .datum('jsons/hg19/chromInfo.txt')
             .call(chromAxisPlot);

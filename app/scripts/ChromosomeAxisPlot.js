@@ -10,6 +10,9 @@ export function ChromosomeAxisPlot() {
     .markerClass('.chromosome-label')
     .uidString('id')
 
+    let xAxis = null;
+    let gAxis = null;
+
     function chart(selection) {
         selection.each(function(d) {
             gSelect = d3.select(this);
@@ -20,13 +23,46 @@ export function ChromosomeAxisPlot() {
                 
                 for (let i = 0; i < data.length; i++) {
                     if (i == 0) 
-                        cumValues.push({'id': 0, 'chr': data[i][0], 'pos': +data[i][1]});
+                        cumValues.push({'id': 0, 'chr': data[i][0], 'pos': 0});
                     else 
-                        cumValues.push({'id': i, 'chr': data[i][0], 'pos': cumValues[i-1].pos + +data[i][1]});
+                        cumValues.push({'id': i, 'chr': data[i][0], 'pos': cumValues[i-1].pos + +data[i-1][1]});
                 }
 
+                gAxis = gSelect.append('g')
+                .classed('x axis', true);
+
+                console.log('cumValues:', cumValues);
+
+                let bisect = d3.bisector(function(d) { return d.pos; }).left;
+
+                xAxis = d3.svg.axis()
+                .scale(xScale)
+                .orient('bottom')
+                .tickFormat(function(d) {
+                    let xdom = xScale.domain();
+                    let chrIdx = bisect(cumValues, d);
+                    chrIdx = chrIdx == 0 ? 0 : chrIdx - 1;  //if the starting position is 0, then we can have a chrIdx of 0
+
+                    console.log('chrIdx:', d, chrIdx, cumValues[chrIdx]);
+
+                    let chr = cumValues[chrIdx].chr;
+                    let valInChr = d - cumValues[chrIdx].pos
+
+                    console.log('chr:', chr);
+
+                    if (xdom[1] - xdom[0] > 1000000) {
+
+                    }
+
+                    console.log('xdom:', xdom);
+                    return chr + "." +  valInChr;
+                })
+                .ticks(3)
+
                 // we always want to display the chromosome names in the middle of the 
+                
                 // visible region of the chromosome
+                /*
                 gChromLabels = gSelect.selectAll('.chromosome-label')
                 .data(cumValues)
                 .enter()
@@ -35,6 +71,7 @@ export function ChromosomeAxisPlot() {
                 .attr('id', (d) => {return `n->{d.id}`})
                 .classed('chromosome-label', true)
                 .text((d) => d.chr);
+                */
 
                 draw();
             });
@@ -42,8 +79,10 @@ export function ChromosomeAxisPlot() {
     }
 
     function draw () {
-        gChromLabels.attr('x', (d) => { return xScale(d.pos); });
-        gSelect.call(zoomableLabels);
+        //gChromLabels.attr('x', (d) => { return xScale(d.pos); });
+        //gSelect.call(zoomableLabels);
+        if (xAxis != null)
+            gAxis.call(xAxis);
     }
 
     chart.draw = draw;
