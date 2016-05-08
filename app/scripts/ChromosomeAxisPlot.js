@@ -38,6 +38,34 @@ export function ChromosomeAxisPlot() {
                 xAxis = d3.svg.axis()
                 .scale(xScale)
                 .orient('bottom')
+                .tickValues(function() {
+                    if (xScale != null) {
+                        console.log('xScale.domain()[0]', xScale.domain()[0], xScale.domain()[1])
+                        console.log('bs0:', bisect(cumValues, xScale.domain()[0]))
+                        console.log('bs1:', bisect(cumValues, xScale.domain()[1]))
+
+                        let ticks = xScale.ticks(3);
+                        let chrLeft = bisect(cumValues, ticks[0]);
+                        let chrRight = bisect(cumValues, ticks[ticks.length-1]);
+
+                        if (chrLeft != chrRight) {
+                            let ticks = xScale.ticks(3);
+                            console.log('ticks:', ticks);
+                            return ticks;
+                        } else {
+                            let scale = null;
+                            if (chrLeft != data.length - 1)
+                                scale = d3.scale.linear().domain([0, cumValues[chrLeft+1].pos - cumValues[chrLeft].pos])
+                            else
+                                scale = d3.scale.linear().domain([0, +data[data.length-1][1]]);
+                            
+                            console.log('ticks:', scale.ticks(3));
+                            return scale.ticks(3).map((x) => { return cumValues[chrLeft].pos + x });
+                        }
+                    }
+
+                    return [];
+                }) 
                 .tickFormat(function(d) {
                     let xdom = xScale.domain();
                     let chrIdx = bisect(cumValues, d);
@@ -55,7 +83,7 @@ export function ChromosomeAxisPlot() {
                     }
 
                     console.log('xdom:', xdom);
-                    return chr + "." +  valInChr;
+                    return chr + " " +  valInChr;
                 })
                 .ticks(3)
 
