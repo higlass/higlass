@@ -5,11 +5,13 @@ import {TiledArea} from './tiled_area.js';
 import {ZoomableLabels} from 'zoomable_labels';
 
 export {GenePlot} from './gene.js';
-export {ChromosomeAxisPlot} from './ChromosomeAxisPlot.js';
+export {ChromosomeAxis} from './ChromosomeAxis.js';
 
 export function Goomba() {
     let width = 700, height=40;
     let xScale = d3.scale.linear();
+    let chromAxis = goomba.ChromosomeAxis('/jsons/hg19/chromInfo.txt')
+        .xScale(xScale);
 
     function chart(selection) {
         selection.each(function(tileDirectory) {
@@ -29,19 +31,14 @@ export function Goomba() {
             //.on('draw', () => { gMain.call(zoomableLabels); })
             .xScale(xScale);
 
-            let chromAxisPlot = goomba.ChromosomeAxisPlot()
-            .width(width)
-            .xScale(goombaPlot.xScale());
-
             let gChromAxis = gMain.append('g')
             .attr('transform', `translate(30,${height - 20})`)
             .classed('g-axis', true)
-            .datum('jsons/hg19/chromInfo.txt')
-            .call(chromAxisPlot);
+            .call(chromAxis);
 
             tiledArea.on('draw', () => {
                 gMain.call(zoomableLabels);
-                chromAxisPlot.draw();
+                gChromAxis.call(chromAxis);
             });
             //tiledArea.on('draw', () => { chromAxisPlot.draw(); });
 

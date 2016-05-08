@@ -1,0 +1,9 @@
+.genome-scale {
+    stroke: red;
+}
+
+path {
+    stroke: black;
+    stroke-width: 1;
+    fill: transparent;
+}

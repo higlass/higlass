@@ -241,7 +241,7 @@ export function TiledArea() {
             .scale(xScale)
             .orient('bottom')
             .ticks(3);
-            gXAxis.call(xAxis);
+            //gXAxis.call(xAxis);
 
             if (!oneDimensional) {
                 zoom.y(yScale)
@@ -315,7 +315,7 @@ export function TiledArea() {
             // draw the scene, if we're zooming, then we need to check if we
             // need to redraw the tiles, otherwise it's irrelevant
             //
-            gXAxis.call(xAxis);
+            //gXAxis.call(xAxis);
 
             gMain.selectAll('.data-g')
             .each((d) => { 
