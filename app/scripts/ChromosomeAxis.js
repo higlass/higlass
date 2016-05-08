@@ -81,26 +81,22 @@ export function ChromosomeAxis(chromInfoFile) {
 
             textLeftChr.attr('x', xScale.range()[0])
             .attr('text-anchor', 'start')
+            .attr('dy', '1.2em');
 
             textRightChr.attr('x', xScale.range()[1])
             .attr('text-anchor', 'end')
+            .attr('dy', '1.2em');
 
             if (cumValues == null)
                 return;
 
-            console.log('cumValues', cumValues);
-
             let chrLeft = cumValues[bisect(cumValues, xScale.domain()[0])].chr
             let chrRight = cumValues[bisect(cumValues, xScale.domain()[1])].chr
-
-            console.log('chrLeft:', chrLeft);
-            console.log('chrRight:', chrRight);
 
             textLeftChr.text(chrLeft)
             textRightChr.text(chrRight)
 
             let ticks = xScale.ticks(5);
-            console.log('ticks:', ticks)
             let tickSpan = ticks[1] - ticks[0]
             let tickWidth = xScale(ticks[1]) - xScale(ticks[0]);
 
@@ -109,7 +105,6 @@ export function ChromosomeAxis(chromInfoFile) {
             let tickHeight = 4;
             let tickFormat = d3.format(",d")
 
-            console.log('tickWidth:', tickWidth);
             pathScale.attr('d', `M${scaleMid - tickWidth / 2},${tickHeight}` + 
                                  `L${scaleMid - tickWidth / 2}, 0` + 
                                  `L${scaleMid + tickWidth / 2}, 0` + 
@@ -126,10 +121,8 @@ export function ChromosomeAxis(chromInfoFile) {
             gAxis.call(xAxis);
 
         let ticks = xScale.ticks(5);
-        console.log('ticks:', ticks)
         let tickSpan = ticks[1] - ticks[0]
         let tickWidth = xScale(ticks[1]) - xScale(ticks[0]);
-        console.log('tickWidth:', tickWidth, tickSpan);
 
         lineScale.attr('x2', xScale.range()[1]);
         lineScale.attr('x1', xScale.range()[1] - tickWidth);

@@ -7,7 +7,7 @@ export function TiledArea() {
     var minX = 0, maxX = 0, minY = 0, maxY = 0;
     let minValue = 0, maxValue = 0;
     var maxZoom = 1;
-    var margin = {'top': 30, 'left': 30, 'bottom': 30, 'right': 40};
+    var margin = {'top': 30, 'left': 30, 'bottom': 30, 'right': 30};
     let tileDirectory = null;
 
     let oneDimensional = true;     // will these be 1D tiles or 2D?
@@ -165,13 +165,7 @@ export function TiledArea() {
         var zoom = d3.behavior.zoom()
         .on("zoom", zoomed);
 
-        gEnter.insert("rect", "g")
-        .attr("class", "pane")
-        .attr("width", width)
-        .attr("height", height)
-        .attr('pointer-events', 'all')
 
-        gEnter.call(zoom);
 
         var gYAxis = gEnter.append("g")
         .attr("class", "y axis")
@@ -185,6 +179,12 @@ export function TiledArea() {
         .classed('main-g', true)
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
+        gMain.insert("rect", "g")
+        .attr("class", "pane")
+        .attr("width", width)
+        .attr("height", height)
+        .attr('pointer-events', 'all')
+
         gMain.append("clipPath")
         .attr("id", "clip")
         .append("rect")
@@ -193,6 +193,9 @@ export function TiledArea() {
         .attr("width", width - margin.left - margin.right)
         .attr("height", height);
 
+        gMain.style('clip-path', 'url(#clip)')
+
+        gMain.call(zoom);
 
         d3.json(tileDirectory + '/tile_info.json', function(error, tile_info) {
             // set up the data-dependent sections of the chart
