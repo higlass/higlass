@@ -1,3 +1,11 @@
 ## Starting the spark notebook
 
 ipython notebook --profile=pyspark --no-browser
+
+## refGene.txt.gz can be downloaded here:
+
+# This implies that its coordinates are relative to the hg19 assembly
+
+http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/refGene.txt.gz
+
+
