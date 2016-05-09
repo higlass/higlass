@@ -43,9 +43,13 @@ export function GenePlot() {
                 return importanceScale(Math.sqrt(d.count)) })
             .classed('gene-marker', true)
 
-            exonRects.attr('visibility', 'hidden');
+            //exonRects.attr('visibility', 'hidden');
+            exonRects.style('opacity', 0.)
+            lineGene.style('opacity', 0.)
         } else {
             circleGene.style('opacity', 0.);
+            exonRects.style('opacity', 1.)
+            lineGene.style('opacity', 1.)
 
             exonRects.attr('x', (d) => xScale(d[0]))
                     .attr('y', 0)
