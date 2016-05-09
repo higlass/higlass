@@ -23,8 +23,8 @@ export function TiledArea() {
 
     let xAxis = null;
 
-    let minArea = 0;
-    let maxArea = 0;
+    let minArea = 0, maxArea = 0;
+    let minImportance = 0, maxImportance = 0;
     let xScaleDomain = null, yScaleDomain = null;
 
     let labelSort = (a,b) => { return b.area - a.area; };
@@ -105,7 +105,12 @@ export function TiledArea() {
                 //let labelSort = (a,b) => { return b.area - a.area; };
                 //let elevationSort = (a,b) => { return b.max_elev - a.max_elev; };
                 //data.sort(labelSort);
-                data.map((d) => { d.pointLayout = dataPointLayout().xScale(xScale); })
+                data.map((d) => { 
+                    d.pointLayout = dataPointLayout()
+                    .xScale(xScale)
+                    .minImportance(minImportance)
+                    .maxImportance(maxImportance); 
+                })
 
                 // draw each point
                 gDataPoints = gTile.selectAll('.data-g')
@@ -215,6 +220,9 @@ export function TiledArea() {
 
             minArea = tile_info.min_importance;
             maxArea = tile_info.max_importance;
+
+            minImportance = tile_info.min_importance;
+            maxImportance = tile_info.max_importance;
 
             maxZoom = tile_info.max_zoom;
 

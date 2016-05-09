@@ -21,9 +21,16 @@ export function GenePlot() {
     let exonRects = null;
     let geneLabels = null;
 
+    let minImportance = 0;
+    let maxImportance = 0;
+
     function draw() {
         let geneJson = lineGene.data()[0];
         let lineLength = xScale(geneJson.txEnd) - xScale(geneJson.txStart);
+
+        let importanceScale = d3.scale.linear()
+        .domain([Math.sqrt(minImportance), Math.sqrt(maxImportance)])
+        .range([1,3])
 
         if (lineLength < 10) {
             // if we're so zoomed out that the genes are barely visible
@@ -32,7 +39,8 @@ export function GenePlot() {
             circleGene.style('opacity', 1.)
             .attr('cx', (d) => { return xScale(+geneJson.txStart + geneJson.chromOffset); })
             .attr('cy', (d) => { return height / 2})
-            .attr('r', 5)
+            .attr('r', (d) => { 
+                return importanceScale(Math.sqrt(d.count)) })
             .classed('gene-marker', true)
 
             exonRects.attr('visibility', 'hidden');
@@ -148,6 +156,18 @@ export function GenePlot() {
         xScale = _;
         return chart;
     };
+
+    chart.minImportance = function(_) {
+        if (!arguments.length) return minImportance;
+        minImportance = _;
+        return chart;
+    }
+
+    chart.maxImportance = function(_) {
+        if (!arguments.length) return maxImportance;
+        maxImportance = _;
+        return chart;
+    }
 
     chart.draw = draw;
 
