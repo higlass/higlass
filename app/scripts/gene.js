@@ -30,7 +30,7 @@ export function GenePlot() {
 
         let importanceScale = d3.scale.linear()
         .domain([Math.sqrt(minImportance), Math.sqrt(maxImportance)])
-        .range([1,3])
+        .range([1,6])
 
         if (lineLength < 10) {
             // if we're so zoomed out that the genes are barely visible

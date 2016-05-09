@@ -4,4 +4,4 @@ ipython notebook --profile=pyspark --no-browser
 
 eval $(ssh-agent)
 ssh-add ~/devenv-key.pem
-rsync -avz ubuntu@52.32.97.221:/data/refgene-tiles/ jsons/tiles
+rsync -avz ubuntu@52.32.97.221:/data/refgene-tiles-small/ jsons/tiles
