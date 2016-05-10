@@ -97,12 +97,13 @@ export function MassiveMatrixPlot() {
             tiles.forEach((t) => {
                 allLoaded = allLoaded && isTileLoaded(t);
                 if (isTileLoaded(t))
-                    allData = allData.concat(loadedTiles[tileId(t)].shown);
+                    allData = allData.concat(loadedTiles[tileId(t)]);
             });
             if (!allLoaded)
                 return;
 
-            let allCounts = allData.map((x) => { return +x.count; });
+            let allCounts = allData;
+            //let allCounts = allData.map((x) => { return +x.count; });
             valueScale.domain([countTransform(Math.min.apply(null, allCounts)),
                                countTransform(Math.max.apply(null, allCounts))])
 
@@ -115,7 +116,8 @@ export function MassiveMatrixPlot() {
                     // load that sucker
                     let newGraphics = new PIXI.Graphics();
 
-                    let data = loadedTiles[tileId(tiles[i])].shown;
+                    let data = loadedTiles[tileId(tiles[i])];
+
                     newGraphics.beginFill(0x333333);
                     for (let j = 0; j < data.length; j++) {
                         let pX = xOrigScale(data[j].pos[0]);
