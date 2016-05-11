@@ -18,7 +18,7 @@
 <body>
     <div class="main-div">
 
-    <h1>Moonshine: Distilling Hi-C data for public consumption </h1>
+    <h1>HiGlass: Multi-resolution HiC data display</h1>
     <hr>
 
     <p>
@@ -59,7 +59,7 @@
     list into a set of 'tiles' which can be displayed at different zoom levels.
     Low resolution tiles aggregate the data in the high-resolution tiles and
     thus limit the total amount of data that needs to be displayed at any zoom
-    level. The result, a viewer we dubbed Moonshine, opens a window into a 1Gb
+    level. The result, a viewer we dubbed HiGlass, opens a window into a 1Gb
     data set that can be explored through a browser on nearly any desktop
     computer.  
     </p>
@@ -78,7 +78,7 @@
     fact, almost identical.  The only difference is the coordinate system used.
     Where in maps data (e.g. countries, cities, streets) is indexed by its latitude
     and longitude, here it is indexed by chromosome positions. The instantiation
-    a moonshine container is dead simple:
+    a higlass container is dead simple:
 
     <pre>
 <script src='scripts/hi_z.js'></script>
@@ -106,7 +106,7 @@ function(error, tile_info) {
     </pre>
 
     We just point our container to the source of tiles and attach it to an HTML
-    element.  The rest is handled by moonshine. It's source code can be found
+    element.  The rest is handled by higlass. It's source code can be found
     on <a href="https://github.com/hms-dbmi/4DN_matrix-viewer">GitHub</a>.
     
     </p> </div>
