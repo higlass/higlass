@@ -74,6 +74,10 @@ export function Goomba() {
     chart.xScale = function(_) {
         if (!arguments.length) return xScale;
         xScale = _;
+
+        if (tiledArea != null)
+            tiledArea.xScale(_);
+
         return chart;
     }
 
