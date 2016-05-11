@@ -13,10 +13,12 @@ svg {
 
 .x.axis line {
   stroke: #ddd;
+  stroke-width: 1px;
 }
 
 .y.axis line {
   stroke: #ddd;
+  stroke-width: 1px;
 }
 
 .data-point {
