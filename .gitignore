@@ -1,6 +1,8 @@
 *.swp
 *.un~
-hi-pixi
+.DS_Store
+.tmp
+node_modules
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
