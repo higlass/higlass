@@ -9,6 +9,7 @@ export function TiledArea() {
     var maxZoom = 1;
     var margin = {'top': 30, 'left': 30, 'bottom': 30, 'right': 30};
     let tileDirectory = null;
+    let currentZoom = 1;
 
     let oneDimensional = true;     // will these be 1D tiles or 2D?
 
@@ -199,6 +200,8 @@ export function TiledArea() {
             }
           }
 
+            currentZoom = zoom.scale();
+
             draw();
         }
     }
@@ -334,7 +337,7 @@ export function TiledArea() {
             });
 
             // this will become the tiling code
-            let zoomLevel = Math.round(Math.log(zoom.scale()) / Math.LN2) + 2;
+            let zoomLevel = Math.round(Math.log(currentZoom) / Math.LN2) + 2;
 
             if (zoomLevel > maxZoom)
                 zoomLevel = maxZoom;
@@ -373,8 +376,11 @@ export function TiledArea() {
             */
            dispatch.draw();
 
+           console.log('tiles:', tiles);
             refreshTiles(tiles);
         }
+
+    chart.draw = draw;
 
     chart.width = function(_) {
         if (!arguments.length) return width;
@@ -438,6 +444,12 @@ export function TiledArea() {
     chart.zoom = function(_) {
         if (!arguments.length) return zoom;
         else zoom = _;
+        return chart;
+    }
+
+    chart.currentZoom = function(_) {
+        if (!arguments.length) return currentZoom;
+        else currentZoom = _;
         return chart;
     }
 

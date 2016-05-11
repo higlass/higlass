@@ -15,6 +15,7 @@ export function Goomba() {
 
     let zoom = d3.behavior.zoom();
     let tiledArea = null;
+    let currentZoom = 1;
 
     function chart(selection) {
         selection.each(function(tileDirectory) {
@@ -89,6 +90,17 @@ export function Goomba() {
     chart.draw = function() {
         tiledArea.draw();
     }
+
+    chart.currentZoom = function(_) {
+        if (!arguments.length) return currentZoom;
+        else currentZoom = _;
+
+        if (tiledArea != null)
+            tiledArea.currentZoom(_);
+
+        return chart;
+    }
+
 
     return chart;
 }

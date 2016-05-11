@@ -44,13 +44,11 @@ geneJson = {
 let xScale = d3.scale.linear()
     .domain([12,34]);
 
-let zoom = d3.behavior.zoom()
 
 let goombaPlot = goomba.Goomba()
     .width(width)
     .height(height)
     .xScale(xScale)
-    .zoom(zoom);
 
 let gMain = svg.append('g')
 .classed('g-main', true)
@@ -60,6 +58,7 @@ let gMain = svg.append('g')
 
     console.log('xScale3:', xScale.domain())
 
+let zoom = d3.behavior.zoom().on('zoom', zoomed)
 
 let gScrolly = svg.append('g')
 .append('rect')
@@ -70,6 +69,9 @@ let gScrolly = svg.append('g')
 
 function zoomed() {
     console.log('zoomed:', xScale.domain());
+    goombaPlot.xScale(goombaPlot.xScale().domain([10000,2000000]));
+    goombaPlot.currentZoom(8);
+    goombaPlot.draw();
 }
 
 //let data = []
