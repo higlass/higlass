@@ -177,6 +177,7 @@ export function MassiveMatrixPlot() {
             });
         }
 
+
         // setup the data-agnostic parts of the chart
         var svg = selection.append('svg')
         var gEnter = svg.append("g");
@@ -186,6 +187,11 @@ export function MassiveMatrixPlot() {
 
         var zoom = d3.behavior.zoom()
         .on("zoom", zoomed);
+
+        let canvas = selection.append('canvas')
+            .attr('width', width)
+            .attr('height', height)
+            .call(zoom)
 
         gEnter.insert("rect", "g")
         .attr("class", "pane")
