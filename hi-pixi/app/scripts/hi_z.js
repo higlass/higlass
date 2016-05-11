@@ -281,7 +281,7 @@ export function MassiveMatrixPlot() {
         .style('top', `${margin.top}px`)
         .style('position', 'absolute')
 
-        renderer = PIXI.autoDetectRenderer(width - margin.left - margin.right, height - margin.top - margin.bottom, 
+        renderer = PIXI.autoDetectRenderer(width - margin.right, height - margin.top - margin.bottom, 
                                        { 
                                            //backgroundColor: 0xdddddd,
                                            backgroundColor: 0xffffff,
