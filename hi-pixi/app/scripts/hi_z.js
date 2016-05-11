@@ -8,7 +8,7 @@ export function MassiveMatrixPlot() {
     var minX = 0, maxX = 0, minY = 0, maxY = 0;
     let minValue = 0, maxValue = 0;
     var maxZoom = 1;
-    var margin = {'top': 30, 'left': 30, 'bottom': 30, 'right': 80};
+    var margin = {'top': 50, 'left': 30, 'bottom': 30, 'right': 80};
     let tileDirectory = null;
 
     let yAxis = null, xAxis = null;
@@ -18,6 +18,8 @@ export function MassiveMatrixPlot() {
     let xScale = null, yScale = null, valueScale = null;
     let widthScale = null;
     let zoomTo = null;
+
+    let zoom = null;
 
     let loadedTiles = {};
     let loadingTiles = {};
@@ -29,6 +31,7 @@ export function MassiveMatrixPlot() {
     let minArea = 0;
     let maxArea = 0;
     let xScaleDomain = null, yScaleDomain = null;
+    let zoomCallback = null;
 
     let labelSort = (a,b) => { return b.area - a.area; };
     let gMain = null;
@@ -40,6 +43,10 @@ export function MassiveMatrixPlot() {
                 //return Math.log(count);
                 //return count;
             }
+
+    let drawingCanvas = document.createElement('canvas');
+    drawingCanvas.width = 256;
+    drawingCanvas.height = 256;
 
     function tileId(tile) {
         // uniquely identify the tile with a string
@@ -83,7 +90,7 @@ export function MassiveMatrixPlot() {
             return d.uid;
         }
 
-        function tileDataToCanvas(data) {
+        function tileDataToCanvas(data, canvasWidth, canvasHeight) {
             let canvas = document.createElement('canvas');
             canvas.width = 256;
             canvas.height = 256;
@@ -94,16 +101,15 @@ export function MassiveMatrixPlot() {
             ctx.fillRect(0,0,canvas.width, canvas.height);
 
             let pix = ctx.createImageData(canvas.width, canvas.height);
-            /*
             let pixelValues = data.map((d,i) => {
                 let rgbIdx = Math.floor(valueScale(d));
                 let rgb = heatedObjectMap[Math.floor(valueScale(d))];
+
                 pix.data[i*4] = rgb[0];
                 pix.data[i*4+1] = rgb[1];
                 pix.data[i*4+2] = rgb[2];
-                pix.data[i*4+3] = 1;
+                pix.data[i*4+3] = 255;
             });
-            */
             ctx.putImageData(pix, 0,0);
 
             return canvas;
@@ -157,22 +163,30 @@ export function MassiveMatrixPlot() {
 
                     let tileWidth = totalWidth / Math.pow(2, zoomLevel);
                     let tileHeight = totalHeight / Math.pow(2, zoomLevel);
-                    
+
                     let tileX = minX + xTilePos * tileWidth;
                     let tileY = minY + yTilePos * tileHeight;
 
+                    let tileEndX = minX + (xTilePos+1) * tileWidth;
+                    let tileEndY = minY + (yTilePos+1) * tileHeight;
+
+
                     sprite.x = xOrigScale(tileX);
                     sprite.y = yOrigScale(tileY);
+                    sprite.width = xOrigScale(tileEndX) - xOrigScale(tileX)
+                    sprite.height = yOrigScale(tileEndY) - yOrigScale(tileY)
 
-                    //console.log('sprite.position:', sprite.position);
                     newGraphics.addChild(sprite);
+                    tileGraphics[tileId(tiles[i])] = newGraphics;
+
+                    console.log('adding child:', tiles[i]);
                     pMain.addChild(newGraphics);
                 }
             }
 
             for (let tileIdStr in tileGraphics) {
                 if (!(tileIdStr in shownTiles)) {
-                    console.log('removing tile:', tileIdStr);
+                    console.log('removing child:', tileIdStr);
                     pMain.removeChild(tileGraphics[tileIdStr]);
                     delete tileGraphics[tileIdStr];
                 }
@@ -242,7 +256,6 @@ export function MassiveMatrixPlot() {
                     let tileSubPath = tile.join('/') + '.json'
                     let tilePath = tileDirectory + "/" + tileSubPath;
                     loadingTiles[tileId(tile)] = true;
-                    console.log('loading...', tilePath);
 
                     d3.json(tilePath,
                             function(error, data) {
@@ -262,17 +275,29 @@ export function MassiveMatrixPlot() {
         }
 
         var pixiCanvas = selection.append('canvas')
-        .attr('width', width)
-        .attr('height', height)
+        .attr('width', 0)
+        .attr('height', 0)
+        .style('left', `${margin.left}px`)
+        .style('top', `${margin.top}px`)
+        .style('position', 'absolute')
 
-        renderer = PIXI.autoDetectRenderer(width, height, 
-                                       { backgroundColor: 0xdddddd,
+        renderer = PIXI.autoDetectRenderer(width - margin.left - margin.right, height - margin.top - margin.bottom, 
+                                       { 
+                                           //backgroundColor: 0xdddddd,
+                                           backgroundColor: 0xffffff,
                                            antialias: true, 
                                            view: pixiCanvas.node() });
 
         // setup the data-agnostic parts of the chart
         var svg = selection.append('svg')
-        var gEnter = svg.append("g");
+        .attr('width', width)
+        .attr('height', height)
+        .style('left', 0)
+        .style('top', 0)
+        .style('position', 'absolute');
+
+        var gEnter = svg.append("g")
+        .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
         var stage = new PIXI.Container();
         pMain = new PIXI.Graphics();
@@ -284,10 +309,7 @@ export function MassiveMatrixPlot() {
             requestAnimationFrame(animate);
         }
 
-        svg.attr('width', width)
-        .attr('height', height);
-
-        var zoom = d3.behavior.zoom()
+        zoom = d3.behavior.zoom()
         .on("zoom", zoomed);
 
         gEnter.insert("rect", "g")
@@ -300,15 +322,15 @@ export function MassiveMatrixPlot() {
 
         var gYAxis = gEnter.append("g")
         .attr("class", "y axis")
-        .attr("transform", "translate(" + (width - margin.right) + "," + margin.top + ")");
+        .attr("transform", "translate(" + (width - margin.right) + ",0)");
 
         var gXAxis = gEnter.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(" + (margin.left) + "," + (height - margin.bottom) + ")");
+        .attr("transform", "translate(0," + (height - margin.bottom - margin.top) + ")");
 
         gMain = gEnter.append('g')
         .classed('main-g', true)
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+        .attr('transform', 'translate(' + margin.left + ',0)');
 
         gMain.append("clipPath")
         .attr("id", "clip")
@@ -351,7 +373,7 @@ export function MassiveMatrixPlot() {
 
             valueScale = d3.scale.linear()
             .domain([countTransform(minValue+1), countTransform(maxValue+1)])
-            .range([0,255]);
+            .range([255,0]);
 
             xOrigScale = xScale.copy();
             yOrigScale = yScale.copy();
@@ -365,13 +387,15 @@ export function MassiveMatrixPlot() {
             .scale(yScale)
             .orient("right")
             .tickSize(-(width - margin.left - margin.right))
-            .tickPadding(6);
+            .tickPadding(6)
+            .ticks(4);
 
             xAxis = d3.svg.axis()
             .scale(xScale)
             .orient("bottom")
             .tickSize(-(height - margin.top - margin.bottom))
-            .tickPadding(6);
+            .tickPadding(6)
+            .ticks(4);
 
             gYAxis.call(yAxis);
             gXAxis.call(xAxis);
@@ -394,10 +418,7 @@ export function MassiveMatrixPlot() {
         };
 
         function zoomed() {
-            //console.log('maxZoom:', maxZoom);
             var reset_s = 0;
-
-            //console.log('zoom.scale()', zoom.scale());
 
           if ((xScale.domain()[1] - xScale.domain()[0]) >= (maxX - minX)) {
             zoom.x(xScale.domain([minX, maxX]));
@@ -439,12 +460,16 @@ export function MassiveMatrixPlot() {
             }
           }
 
+          // control the pixi zooming
           pMain.position.x = zoom.translate()[0];
           pMain.position.y = zoom.translate()[1];
           pMain.scale.x = zoom.scale();
           pMain.scale.y = zoom.scale();
 
-          console.log('pMain.scale:', pMain.scale);
+          //console.log('pMain.scale:', pMain.scale);
+          //
+          if (zoomCallback)
+              zoomCallback(xScale, zoom.scale());
 
             draw();
         }
@@ -561,6 +586,20 @@ export function MassiveMatrixPlot() {
         // 
         return zoomTo;
     };
+
+    chart.xScale = function(_) {
+        return xScale;
+    };
+
+    chart.zoomLevel = function(_) {
+        return zoom.scale();
+    };
+
+    chart.zoomCallback = function(_) {
+        if (!arguments.length) return zoomCallback;
+        else zoomCallback = _;
+        return chart;
+    }
 
     return chart;
 }

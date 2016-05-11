@@ -36,6 +36,8 @@ export function MassiveMatrixPlot() {
                 //return count;
             }
 
+    let tileGraphics = {};       // the pixi graphics objects which will contain the tiles
+
     function tileId(tile) {
         // uniquely identify the tile with a string
         return tile.join("/");
@@ -78,6 +80,32 @@ export function MassiveMatrixPlot() {
             return d.uid;
         }
 
+        function tileDataToCanvas(data) {
+            let canvas = document.createElement('canvas');
+            canvas.width = 256;
+            canvas.height = 256;
+
+            let ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0,0,canvas.width, canvas.height);
+
+            let pix = ctx.createImageData(canvas.width, canvas.height);
+            /*
+            let pixelValues = data.map((d,i) => {
+                let rgbIdx = Math.floor(valueScale(d));
+                let rgb = heatedObjectMap[Math.floor(valueScale(d))];
+                pix.data[i*4] = rgb[0];
+                pix.data[i*4+1] = rgb[1];
+                pix.data[i*4+2] = rgb[2];
+                pix.data[i*4+3] = 1;
+            });
+            */
+            ctx.putImageData(pix, 0,0);
+
+            return canvas;
+        }
+
         function showTiles(tiles) {
             // refresh the display and make sure the tiles that need to be
             // displayed are displayed
@@ -86,13 +114,66 @@ export function MassiveMatrixPlot() {
             // are already loaded
             let allLoaded = true;
             let allData = [];
+
+            let shownTiles = {};
+
             tiles.forEach((t) => {
                 allLoaded = allLoaded && isTileLoaded(t);
                 if (isTileLoaded(t))
-                    allData = allData.concat(loadedTiles[tileId(t)].shown);
+                    allData = allData.concat(loadedTiles[tileId(t)]);
             });
             if (!allLoaded)
                 return;
+
+            let allCounts = allData;
+            let minCounts = Number.MAX_VALUE;
+            let maxCounts = Number.MIN_VALUE;
+
+            for (let i = 0; i < allCounts.length; i++) {
+                if (allCounts[i] < minCounts)
+                    minCounts = allCounts[i];
+                if (allCounts[i] > maxCounts)
+                    maxCounts = allCounts[i];
+            }
+            //let allCounts = allData.map((x) => { return +x.count; });
+            valueScale.domain([minCounts, maxCounts])
+
+            for (let i = 0; i < tiles.length; i++) {
+                shownTiles[tileId(tiles[i])] = true;
+
+                // check if we already have graphics for these tiles
+                if (!(tileId(tiles[i]) in tileGraphics)) {
+                    // tile isn't loaded into a pixi graphics container
+                    // load that sucker
+                    let newGraphics = new PIXI.Graphics();
+
+                    let canvas = tileDataToCanvas(loadedTiles[tileId(tiles[i])]);
+                    let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+
+                    let zoomLevel = tiles[i][0], xTilePos = tiles[i][1], yTilePos = tiles[i][2];
+
+                    let tileWidth = totalWidth / Math.pow(2, zoomLevel);
+                    let tileHeight = totalHeight / Math.pow(2, zoomLevel);
+                    
+                    let tileX = minX + xTilePos * tileWidth;
+                    let tileY = minY + yTilePos * tileHeight;
+
+                    sprite.x = xOrigScale(tileX);
+                    sprite.y = yOrigScale(tileY);
+
+                    //console.log('sprite.position:', sprite.position);
+                    newGraphics.addChild(sprite);
+                    pMain.addChild(newGraphics);
+                }
+            }
+
+            for (let tileIdStr in tileGraphics) {
+                if (!(tileIdStr in shownTiles)) {
+                    console.log('removing tile:', tileIdStr);
+                    pMain.removeChild(tileGraphics[tileIdStr]);
+                    delete tileGraphics[tileIdStr];
+                }
+            }
             
             let gTiles = gMain.selectAll('.tile-g')
             .data(tiles, tileId)
@@ -109,6 +190,7 @@ export function MassiveMatrixPlot() {
                 if (loadedTiles[tileId(tile)] === undefined)
                     return;
 
+            /*
                 let data = loadedTiles[tileId(tile)].shown;
                 //let labelSort = (a,b) => { return b.area - a.area; };
                 //let elevationSort = (a,b) => { return b.max_elev - a.max_elev; };
@@ -127,12 +209,10 @@ export function MassiveMatrixPlot() {
                 //.on('mouseover', skiAreaMouseover)
                 //.on('mouseout', skiAreaMouseout)
                 .attr("clip-path", "url(#clip)")
+                */
             })
 
             gTilesExit.remove();
-            let allCounts = allData.map((x) => { return +x.count; });
-            valueScale.domain([countTransform(Math.min.apply(null, allCounts)),
-                               countTransform(Math.max.apply(null, allCounts))])
             
             // only redraw if the tiles have changed
             if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
@@ -143,6 +223,7 @@ export function MassiveMatrixPlot() {
                 */
                 draw();
             }
+
 
         }
 

@@ -6,19 +6,46 @@
 </head>
 <body>
 
+<script src="https://rawgit.com/pkerpedjiev/goomba/zoomable-genes/dist/scripts/goomba.js"></script>
 <!-- build:js scripts/hi_z.js -->
 <script src='scripts/hi_z.js'></script>
 <!-- endbuild -->
 
 <div id="mmv-area">
-    <canvas id='pixiCanvas' />
+    <svg id="goombaPlot"></svg>
 </div>
 
 <script type='text/javascript'>
 
+    let width = 650, height=400;
+
 let mmvPlot = hi_z.MassiveMatrixPlot()
-    .width(850)
-    .height(500);
+    .width(width)
+    .height(height);
+
+    let svg = d3.select('#goombaPlot')
+    .attr('width', width)
+    .attr('height', 80);
+
+        let goombaPlot = goomba.Goomba()
+            .width(width)
+            .height(80)
+
+            let gMain = svg.append('g')
+            .classed('g-main', true)
+            .datum('http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-small')
+            //.datum('jsons/tiles')
+            .call(goombaPlot)
+
+    function zoomCallback(scale, zoomLevel) {
+
+        let xScale = goombaPlot.xScale();
+        xScale.domain(scale.domain())
+
+            goombaPlot.xScale(xScale)
+            .currentZoom(zoomLevel)
+            .draw();
+    }
 
     d3.json('http://pkerp.s3-website-us-east-1.amazonaws.com/tiles/chr1_5kb/tile_info.json', function(error, tile_info) {
         //console.log('tile_info:', tile_info);
@@ -27,7 +54,8 @@ let mmvPlot = hi_z.MassiveMatrixPlot()
             .minY(tile_info.min_pos[1])
             .maxY(tile_info.max_pos[1])
             .maxZoom(tile_info.max_zoom)
-            .tileDirectory('http://pkerp.s3-website-us-east-1.amazonaws.com/tiles/chr1_5kb');
+            .tileDirectory('http://pkerp.s3-website-us-east-1.amazonaws.com/tiles/chr1_5kb')
+            .zoomCallback(zoomCallback);
 
         d3.select('#mmv-area')
             //.datum(data)
