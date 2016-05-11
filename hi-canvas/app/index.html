@@ -21,6 +21,8 @@
 <!-- endbower -->
 <!-- endbuild -->
 
+<script src="https://rawgit.com/pkerpedjiev/goomba/zoomable-genes/dist/scripts/goomba.js"></script>
+
 <!-- build:js scripts/hi_z.js -->
 <script src='scripts/hi_z.js'></script>
 <!-- endbuild -->
@@ -28,14 +30,47 @@
 <div id="mmv-area"></div>
 
 <script type='text/javascript'>
+
+        let width = 460;
+    let height = 80;
+
+    let svg = d3.select('#mmv-area').append('svg')
+    .attr('width', width)
+    .attr('height', height)
+
+    let xScale = d3.scale.linear()
+    let zoom = d3.behavior.zoom()
+
+    let goombaPlot = goomba.Goomba()
+            .width(width)
+            .height(height)
+            .xScale(xScale);
+
+            let gMain = svg.append('g')
+            .classed('g-main', true)
+            .datum('http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-small')
+            //.datum('jsons/tiles')
+            .call(goombaPlot)
+
+    function zoomCallback(scale, zoomLevel) {
+        console.log('scale:', scale.domain());
+
+        let xScale = goombaPlot.xScale();
+        xScale.domain(scale.domain())
+
+            goombaPlot.xScale(xScale)
+            .currentZoom(zoomLevel)
+            .draw();
+    }
+
     //let server = new hi_z.DataServerDriver();
     var server = new hi_z.FileServer("http://pkerp.s3-website-us-east-1.amazonaws.com/tiles", true);     //("jsons");
-    var mmv = new hi_z.MatrixView(document.getElementById('mmv-area'), 800, 600, server);
+    var mmv = new hi_z.MatrixView(document.getElementById('mmv-area'), 400, 400, server, zoomCallback);
     mmv.dataSet = "chr1_5kb";   //"512k_dense";
 
     // Fit view to browser dimensions.
-    mmv.width = window.innerWidth - 20;
-    mmv.height = window.innerHeight - 20;
+    mmv.width = 400;
+    mmv.height = 400;
 
     //tileManager.focusOn(new hi_z.MatrixCoordinates(300, 300, 8), 800, 600);
 </script>

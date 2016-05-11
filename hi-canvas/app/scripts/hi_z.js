@@ -3,12 +3,17 @@ import _ from 'lodash';
 import d3 from 'd3';
 
 export class MatrixView {
-    constructor(parentElement, width, height, dataServer) {
+    constructor(parentElement, width, height, dataServer, zoomCallback) {
         // Create and initialize canvas.
         this.canvas = document.createElement("canvas");
         parentElement.appendChild(this.canvas);
         this.canvas.width = width;
         this.canvas.height = height;
+
+        d3.select(this.canvas)
+            .style('top', '50px')
+            .style('left', '30px')
+            .style('position', 'absolute')
 
         // TODO: Correct for canvas high DPI screen case.
 
@@ -31,6 +36,8 @@ export class MatrixView {
             
             // Switch back to pointing cursor.
             this.canvas.style.cursor = 'pointer';   
+                zoomCallback(d3.scale.linear().domain([this._tileManager.portMinX, this._tileManager.portMaxX]),
+                    this._tileManager.centerCoordinates.zoom - 7);
         });
         $(this.canvas).on("mousemove", (event) => {
             if(this._mouseDragged) {
@@ -40,6 +47,8 @@ export class MatrixView {
                 if(this._tileManager) this._tileManager.translate(-dX, -dY, 0);
                 
                 this._mousePosition = [event.clientX, event.clientY];
+
+
             }
         });
 
@@ -52,6 +61,10 @@ export class MatrixView {
 
                 var zoomDelta = .1 * mouseDelta / Math.abs(mouseDelta);
                 this._tileManager.zoom(event.clientX, event.clientY, zoomDelta);
+
+console.log('this._tile', this._tileManager.centerCoordinates);
+                zoomCallback(d3.scale.linear().domain([this._tileManager.portMinX, this._tileManager.portMaxX]),
+                    this._tileManager.centerCoordinates.zoom - 7);
             }
         });
         $(window).on("mousewheel", (event) => {
