@@ -13,6 +13,9 @@ export function Goomba() {
     let chromAxis = goomba.ChromosomeAxis('/jsons/hg19/chromInfo.txt')
         .xScale(xScale);
 
+    let zoom = d3.behavior.zoom();
+    let tiledArea = null;
+
     function chart(selection) {
         selection.each(function(tileDirectory) {
             let gMain = d3.select(this).append('g');
@@ -24,12 +27,15 @@ export function Goomba() {
             .labelMarkerId((d) => { return `n-${d.refseqid}`})
             .uidString('refseqid')
 
-            let tiledArea = TiledArea().width(width)
+            tiledArea = TiledArea().width(width)
             .height(height)
             .tileDirectory(tileDirectory)
             .dataPointLayout(GenePlot)
             //.on('draw', () => { gMain.call(zoomableLabels); })
-            .xScale(xScale);
+            .xScale(xScale)
+            .zoom(zoom);
+
+            console.log('xScale', xScale.domain());
 
             let gChromAxis = gMain.append('g')
             .attr('transform', `translate(30,${height - 20})`)
@@ -59,6 +65,12 @@ export function Goomba() {
         return chart;
     }
 
+    chart.zoom = function(_) {
+        if (!arguments.length) return zoom;
+        zoom = _;
+        return chart;
+    }
+
     chart.xScale = function(_) {
         if (!arguments.length) return xScale;
         xScale = _;
@@ -68,6 +80,10 @@ export function Goomba() {
     chart.on = function(event, _) {
         dispatch.on(event, _);
         return chart;
+    }
+
+    chart.draw = function() {
+        tiledArea.draw();
     }
 
     return chart;

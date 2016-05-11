@@ -26,6 +26,7 @@ export function TiledArea() {
     let minArea = 0, maxArea = 0;
     let minImportance = 0, maxImportance = 0;
     let xScaleDomain = null, yScaleDomain = null;
+    let zoom = d3.behavior.zoom();
 
     let labelSort = (a,b) => { return b.area - a.area; };
     let gMain = null;
@@ -45,132 +46,11 @@ export function TiledArea() {
     }
 
     function chart(selection) {
-        function isTileLoading(tile) {
-            // check if a particular tile is currently being loaded
-
-            if (tileId(tile) in loadingTiles)
-                return true;
-            else
-                return false;
-        }
-
-        function isTileLoaded(tile) {
-            // check if a particular tile is already loaded
-            // go through the shownTiles dictionary to check
-            // if this tile is already loaded
-
-            if (tileId(tile) in loadedTiles)
-                return true;
-            else
-                return false;
-        }
-
-        function pointId(d) {
-            return d.uid;
-        }
-
-        function showTiles(tiles) {
-            // refresh the display and make sure the tiles that need to be
-            // displayed are displayed
-            
-            // check to make sure all the tiles we're trying to display
-            // are already loaded
-            let allLoaded = true;
-            let allData = [];
-            tiles.forEach((t) => {
-                allLoaded = allLoaded && isTileLoaded(t);
-                if (isTileLoaded(t))
-                    allData = allData.concat(loadedTiles[tileId(t)]);
-            });
-            if (!allLoaded)
-                return;
-            
-            let gTiles = gMain.selectAll('.tile-g')
-            .data(tiles, tileId)
-
-            let gTilesEnter = gTiles.enter()
-            let gTilesExit = gTiles.exit()
-
-            // add all the new tiles
-            gTilesEnter.append('g')
-            .classed('tile-g', true)
-            .each(function(tile) {
-                let gTile = d3.select(this);
-
-                if (loadedTiles[tileId(tile)] === undefined)
-                    return;
-
-                let data = loadedTiles[tileId(tile)];
-
-                //let labelSort = (a,b) => { return b.area - a.area; };
-                //let elevationSort = (a,b) => { return b.max_elev - a.max_elev; };
-                //data.sort(labelSort);
-                data.map((d) => { 
-                    d.pointLayout = dataPointLayout()
-                    .xScale(xScale)
-                    .minImportance(minImportance)
-                    .maxImportance(maxImportance); 
-                })
-
-                // draw each point
-                gDataPoints = gTile.selectAll('.data-g')
-                .data(data)
-                .enter()
-                .append('g')
-                .classed('data-g', true)
-                .each(function(d) {
-                    d3.select(this)
-                    .call(d.pointLayout);
-                    d.pointLayout.draw();
-                });
-            })
-
-            gTilesExit.remove();
-            /*
-            let allCounts = allData.map((x) => { return +x.count; });
-            valueScale.domain([countTransform(Math.min.apply(null, allCounts)),
-                               countTransform(Math.max.apply(null, allCounts))])
-            */
-            
-            // only redraw if the tiles have changed
-            if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
-                draw();
-            }
-
-        }
-
-        function removeTile(tile) {
-            // remove all of the elements associated with this tile
-            //
-        }
-
-        function refreshTiles(currentTiles) {
-            // be shown and add those that should be shown
-            currentTiles.forEach((tile) => {
-                if (!isTileLoaded(tile) && !isTileLoading(tile)) {
-                    // if the tile isn't loaded, load it
-                    let tileSubPath = tile.join('/') + '.json'
-                    let tilePath = tileDirectory + "/" + tileSubPath;
-                    loadingTiles[tileId(tile)] = true;
-                    d3.json(tilePath,
-                            function(error, data) {
-                                delete loadingTiles[tileId(tile)];
-                                loadedTiles[tileId(tile)] = data;
-                                showTiles(currentTiles);
-                            });
-                } else {
-                    showTiles(currentTiles);
-                }
-            });
-        }
 
         // setup the data-agnostic parts of the chart
         var gEnter = selection.append("g");
 
-        var zoom = d3.behavior.zoom()
-        .on("zoom", zoomed);
-
-
+        zoom.on("zoom", zoomed);
 
         var gYAxis = gEnter.append("g")
         .attr("class", "y axis")
@@ -321,6 +201,126 @@ export function TiledArea() {
 
             draw();
         }
+    }
+
+        function isTileLoading(tile) {
+            // check if a particular tile is currently being loaded
+
+            if (tileId(tile) in loadingTiles)
+                return true;
+            else
+                return false;
+        }
+
+        function isTileLoaded(tile) {
+            // check if a particular tile is already loaded
+            // go through the shownTiles dictionary to check
+            // if this tile is already loaded
+
+            if (tileId(tile) in loadedTiles)
+                return true;
+            else
+                return false;
+        }
+
+        function pointId(d) {
+            return d.uid;
+        }
+
+        function showTiles(tiles) {
+            // refresh the display and make sure the tiles that need to be
+            // displayed are displayed
+            
+            // check to make sure all the tiles we're trying to display
+            // are already loaded
+            let allLoaded = true;
+            let allData = [];
+            tiles.forEach((t) => {
+                allLoaded = allLoaded && isTileLoaded(t);
+                if (isTileLoaded(t))
+                    allData = allData.concat(loadedTiles[tileId(t)]);
+            });
+            if (!allLoaded)
+                return;
+            
+            let gTiles = gMain.selectAll('.tile-g')
+            .data(tiles, tileId)
+
+            let gTilesEnter = gTiles.enter()
+            let gTilesExit = gTiles.exit()
+
+            // add all the new tiles
+            gTilesEnter.append('g')
+            .classed('tile-g', true)
+            .each(function(tile) {
+                let gTile = d3.select(this);
+
+                if (loadedTiles[tileId(tile)] === undefined)
+                    return;
+
+                let data = loadedTiles[tileId(tile)];
+
+                //let labelSort = (a,b) => { return b.area - a.area; };
+                //let elevationSort = (a,b) => { return b.max_elev - a.max_elev; };
+                //data.sort(labelSort);
+                data.map((d) => { 
+                    d.pointLayout = dataPointLayout()
+                    .xScale(xScale)
+                    .minImportance(minImportance)
+                    .maxImportance(maxImportance); 
+                })
+
+                // draw each point
+                gDataPoints = gTile.selectAll('.data-g')
+                .data(data)
+                .enter()
+                .append('g')
+                .classed('data-g', true)
+                .each(function(d) {
+                    d3.select(this)
+                    .call(d.pointLayout);
+                    d.pointLayout.draw();
+                });
+            })
+
+            gTilesExit.remove();
+            /*
+            let allCounts = allData.map((x) => { return +x.count; });
+            valueScale.domain([countTransform(Math.min.apply(null, allCounts)),
+                               countTransform(Math.max.apply(null, allCounts))])
+            */
+            
+            // only redraw if the tiles have changed
+            if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
+                draw();
+            }
+
+        }
+
+        function removeTile(tile) {
+            // remove all of the elements associated with this tile
+            //
+        }
+
+        function refreshTiles(currentTiles) {
+            // be shown and add those that should be shown
+            currentTiles.forEach((tile) => {
+                if (!isTileLoaded(tile) && !isTileLoading(tile)) {
+                    // if the tile isn't loaded, load it
+                    let tileSubPath = tile.join('/') + '.json'
+                    let tilePath = tileDirectory + "/" + tileSubPath;
+                    loadingTiles[tileId(tile)] = true;
+                    d3.json(tilePath,
+                            function(error, data) {
+                                delete loadingTiles[tileId(tile)];
+                                loadedTiles[tileId(tile)] = data;
+                                showTiles(currentTiles);
+                            });
+                } else {
+                    showTiles(currentTiles);
+                }
+            });
+        }
 
         function draw() {
             // draw the scene, if we're zooming, then we need to check if we
@@ -375,7 +375,6 @@ export function TiledArea() {
 
             refreshTiles(tiles);
         }
-    }
 
     chart.width = function(_) {
         if (!arguments.length) return width;
@@ -435,6 +434,12 @@ export function TiledArea() {
         else dataPointLayout = _;
         return chart;
     };
+
+    chart.zoom = function(_) {
+        if (!arguments.length) return zoom;
+        else zoom = _;
+        return chart;
+    }
 
     chart.on = function(event, _) {
         dispatch.on(event, _);
