@@ -9,7 +9,7 @@ export function MassiveMatrixPlot() {
     var minX = 0, maxX = 0, minY = 0, maxY = 0;
     let minValue = 0, maxValue = 0;
     var maxZoom = 1;
-    var margin = {'top': 50, 'left': 30, 'bottom': 30, 'right': 80};
+    var margin = {'top': 50, 'left': 30, 'bottom': 30, 'right': 120};
     let tileDirectory = null;
 
     let yAxis = null, xAxis = null;
