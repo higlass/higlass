@@ -8,17 +8,19 @@ svg {
 
 .axis path, .axis line {
   fill: none;
-  stroke-width: .5px;
+  stroke-width: 0px;
 }
 
 .x.axis line {
   stroke: #ddd;
-  stroke-width: 1px;
+  stroke-width: 2px;
+  stroke-opacity: 0.4;
 }
 
 .y.axis line {
   stroke: #ddd;
-  stroke-width: 1px;
+  stroke-width: 2px;
+  stroke-opacity: 0.4;
 }
 
 .data-point {
