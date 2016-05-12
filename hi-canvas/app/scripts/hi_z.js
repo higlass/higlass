@@ -57,7 +57,6 @@ export class MatrixView {
             if(this._tileManager) {
                 var mouseDelta = event.originalEvent.wheelDelta;
                 if (mouseDelta == 0) return;
-                console.log('mouseDelta:', mouseDelta);
 
                 var zoomDelta = .1 * mouseDelta / Math.abs(mouseDelta);
                 this._tileManager.zoom(event.clientX, event.clientY, zoomDelta);

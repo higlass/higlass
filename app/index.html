@@ -122,8 +122,13 @@ var mmvPlot = higlass.MassiveMatrixPlot()
     .attr('width', width)
     .attr('height', 80);
 
+    // goomba gets drawn with a margin of 30 on the left
+    // and a margin of 30 on the right
+    // whereas higlass gets drawn with a margin of 30 on the left
+    // and 120 on the right
+    // thus goomba needs to be 90 smaller
         var goombaPlot = goomba.Goomba()
-            .width(width - 60)
+            .width(width - 90)
             .height(80)
 
             var gMain = svg.append('g')
