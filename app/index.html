@@ -81,10 +81,10 @@
     a higlass container is dead simple:
 
     <pre>
-let width = 650, height=400;
-let data_dir = 'http://pkerp.s3-website-us-east-1.amazonaws.com/tiles/chr1_5kb/';
+var width = 650, height=400;
+var data_dir = 'http://pkerp.s3-website-us-east-1.amazonaws.com/tiles/chr1_5kb/';
 
-let mmvPlot = higlass.MassiveMatrixPlot()
+var mmvPlot = higlass.MassiveMatrixPlot()
     .width(width)
     .height(height);
 
@@ -112,21 +112,21 @@ function(error, tile_info) {
 
 <script type='text/javascript'>
 
-    let width = 650, height=400;
+    var width = 650, height=400;
 
-let mmvPlot = higlass.MassiveMatrixPlot()
+var mmvPlot = higlass.MassiveMatrixPlot()
     .width(width)
     .height(height);
 
-    let svg = d3.select('#goombaPlot')
+    var svg = d3.select('#goombaPlot')
     .attr('width', width)
     .attr('height', 80);
 
-        let goombaPlot = goomba.Goomba()
+        var goombaPlot = goomba.Goomba()
             .width(width - 60)
             .height(80)
 
-            let gMain = svg.append('g')
+            var gMain = svg.append('g')
             .classed('g-main', true)
             .datum('http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-small')
             //.datum('jsons/tiles')
@@ -134,7 +134,7 @@ let mmvPlot = higlass.MassiveMatrixPlot()
 
     function zoomCallback(scale, zoomLevel) {
 
-        let xScale = goombaPlot.xScale();
+        var xScale = goombaPlot.xScale();
         xScale.domain(scale.domain())
 
             goombaPlot.xScale(xScale)
