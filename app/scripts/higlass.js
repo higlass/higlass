@@ -34,6 +34,9 @@ export function MassiveMatrixPlot() {
     let xScaleDomain = null, yScaleDomain = null;
     let zoomCallback = null;
 
+    let transferFunction = (count) => count > 0 ? Math.log2(1 + Math.log2(1 + count)) : 0;
+    let maxTransfer = 1;
+
     let labelSort = (a,b) => { return b.area - a.area; };
     let gMain = null;
     let gDataPoints = null;
@@ -79,7 +82,6 @@ export function MassiveMatrixPlot() {
             d3.select(this)
             .classed('hovered', true);
 
-            console.log('mouseover:', d.name, d.uid);
         }
 
         function skiAreaMouseout(d) {
@@ -91,8 +93,10 @@ export function MassiveMatrixPlot() {
             return d.uid;
         }
 
-        function tileDataToCanvas(data, canvasWidth, canvasHeight) {
+        function tileDataToCanvas(data, zoomLevel) {
             let canvas = document.createElement('canvas');
+            let zoomFactor = Math.pow(2, 2 * (maxZoom - zoomLevel));
+
             canvas.width = 256;
             canvas.height = 256;
 
@@ -104,7 +108,11 @@ export function MassiveMatrixPlot() {
             let pix = ctx.createImageData(canvas.width, canvas.height);
             let pixelValues = data.map((d,i) => {
                 let rgbIdx = Math.floor(valueScale(d));
-                let rgb = heatedObjectMap[Math.floor(valueScale(d))];
+                d = d / zoomFactor;
+                let intensity = transferFunction(d) / maxTransfer;
+                let discretized = Math.floor(255 * (1 - intensity));
+
+                let rgb = heatedObjectMap[discretized];
 
                 pix.data[i*4] = rgb[0];
                 pix.data[i*4+1] = rgb[1];
@@ -129,24 +137,9 @@ export function MassiveMatrixPlot() {
 
             tiles.forEach((t) => {
                 allLoaded = allLoaded && isTileLoaded(t);
-                if (isTileLoaded(t))
-                    allData = allData.concat(loadedTiles[tileId(t)]);
             });
             if (!allLoaded)
                 return;
-
-            let allCounts = allData;
-            let minCounts = Number.MAX_VALUE;
-            let maxCounts = Number.MIN_VALUE;
-
-            for (let i = 0; i < allCounts.length; i++) {
-                if (allCounts[i] < minCounts)
-                    minCounts = allCounts[i];
-                if (allCounts[i] > maxCounts)
-                    maxCounts = allCounts[i];
-            }
-            //let allCounts = allData.map((x) => { return +x.count; });
-            valueScale.domain([minCounts, maxCounts])
 
             for (let i = 0; i < tiles.length; i++) {
                 shownTiles[tileId(tiles[i])] = true;
@@ -157,7 +150,7 @@ export function MassiveMatrixPlot() {
                     // load that sucker
                     let newGraphics = new PIXI.Graphics();
 
-                    let canvas = tileDataToCanvas(loadedTiles[tileId(tiles[i])]);
+                    let canvas = tileDataToCanvas(loadedTiles[tileId(tiles[i])], tiles[i][0]);
                     let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
 
                     let zoomLevel = tiles[i][0], xTilePos = tiles[i][1], yTilePos = tiles[i][2];
@@ -180,14 +173,12 @@ export function MassiveMatrixPlot() {
                     newGraphics.addChild(sprite);
                     tileGraphics[tileId(tiles[i])] = newGraphics;
 
-                    console.log('adding child:', tiles[i]);
                     pMain.addChild(newGraphics);
                 }
             }
 
             for (let tileIdStr in tileGraphics) {
                 if (!(tileIdStr in shownTiles)) {
-                    console.log('removing child:', tileIdStr);
                     pMain.removeChild(tileGraphics[tileIdStr]);
                     delete tileGraphics[tileIdStr];
                 }
@@ -282,7 +273,7 @@ export function MassiveMatrixPlot() {
         .style('top', `${margin.top}px`)
         .style('position', 'absolute')
 
-        renderer = PIXI.autoDetectRenderer(width - margin.right, height - margin.top - margin.bottom, 
+        renderer = PIXI.autoDetectRenderer(width - margin.right - margin.left, height - margin.top - margin.bottom, 
                                        { 
                                            //backgroundColor: 0xdddddd,
                                            backgroundColor: 0xffffff,
@@ -323,7 +314,7 @@ export function MassiveMatrixPlot() {
 
         var gYAxis = gEnter.append("g")
         .attr("class", "y axis")
-        .attr("transform", "translate(" + (width - margin.right) + ",0)");
+        .attr("transform", "translate(" + (width - margin.right - margin.left) + ",0)");
 
         var gXAxis = gEnter.append("g")
         .attr("class", "x axis")
@@ -331,10 +322,9 @@ export function MassiveMatrixPlot() {
 
         gMain = gEnter.append('g')
         .classed('main-g', true)
-        .attr('transform', 'translate(' + margin.left + ',0)');
 
         gMain.append("clipPath")
-        .attr("id", "clip")
+        .attr("id", "clipHiC")
         .append("rect")
         .attr("x", 0)
         .attr("y", 0)
@@ -352,6 +342,8 @@ export function MassiveMatrixPlot() {
 
             minValue = tile_info.min_value;
             maxValue = tile_info.max_value;
+
+            maxTransfer = transferFunction(maxValue);
 
             minArea = tile_info.min_importance;
             maxArea = tile_info.max_importance;
@@ -467,7 +459,6 @@ export function MassiveMatrixPlot() {
           pMain.scale.x = zoom.scale();
           pMain.scale.y = zoom.scale();
 
-          //console.log('pMain.scale:', pMain.scale);
           //
           if (zoomCallback)
               zoomCallback(xScale, zoom.scale());
