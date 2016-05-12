@@ -1,4 +1,40 @@
-.main-div {
-    width: 650px;
-    margin: auto;
+@import url(https://fonts.googleapis.com/css?family=Fira+Sans:400,300,300italic,400italic,500,500italic,700,700italic);
+@import url(https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700,700italic);
+
+/*
+When setting the primary font stack, apply it to the Pure grid units along
+with `html`, `button`, `input`, `select`, and `textarea`. Pure Grids use
+specific font stacks to ensure the greatest OS/browser compatibility.
+*/
+html, button, input, select, textarea,
+.pure-g [class *= "pure-u"] {
+    /* Set your content font stack here: */
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.pure-g h1 {
+  font-size: 20pt;
+  font-weight: 400;
+}
+
+.pure-g p {
+  font-size: 13pt;
+  font-weight: 300;
+}
+
+.pure-g > div {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.l-box {
+    padding: 1em;
+}
+
+#sticky-mmv {
+    display: block;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 1em;  
 }
