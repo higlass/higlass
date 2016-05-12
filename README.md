@@ -6,7 +6,7 @@ data sets.
 
 ## Live Example
 
-A live example can be found [here]() (LINK TO BE ADDED SOON, 2016.05.11).
+A live example can be found [here](http://hms-dbmi.github.io/higlass/).
 
 ## Code Sample
 
@@ -51,11 +51,11 @@ container being used to display this.
 
 Low resolution:
 
-<img src="https://raw.githubusercontent.com/hms-dbmi/4DN_matrix-viewer/develop/doc/img/higlass_screenshot1.png" width=600></img>
+<a href="http://hms-dbmi.github.io/higlass/"><img src="https://raw.githubusercontent.com/hms-dbmi/4DN_matrix-viewer/develop/doc/img/higlass_screenshot1.png" width=600></img></a>
 
 High resolution:
 
-<img src="https://raw.githubusercontent.com/hms-dbmi/4DN_matrix-viewer/develop/doc/img/higlass_screenshot2.png" width=600></img>
+<a href="http://hms-dbmi.github.io/higlass/"><img src="https://raw.githubusercontent.com/hms-dbmi/4DN_matrix-viewer/develop/doc/img/higlass_screenshot2.png" width=600></img></a>
 
 ## Development
 
