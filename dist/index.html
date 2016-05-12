@@ -51,11 +51,4 @@ let gScrolly = svg.append('g')
 .attr('fill', 'gray')
 .call(zoom)
 
-function zoomed() {
-    console.log('zoomed:', xScale.domain());
-    goombaPlot.xScale(goombaPlot.xScale().domain([10000,2000000]));
-    goombaPlot.currentZoom(8);
-    goombaPlot.draw();
-}
-
 //let data = []</script></body></html>

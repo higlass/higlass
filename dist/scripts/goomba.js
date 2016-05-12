@@ -121,8 +121,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            //.on('draw', () => { gMain.call(zoomableLabels); })
 	            .xScale(xScale).zoom(zoom);
 
-	            console.log('xScale', xScale.domain());
-
 	            var gChromAxis = gMain.append('g').attr('transform', 'translate(30,' + (height - 20) + ')').classed('g-axis', true).call(chromAxis);
 
 	            tiledArea.on('draw', function () {
@@ -20632,7 +20630,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        */
 	        dispatch.draw();
 
-	        console.log('tiles:', tiles);
 	        refreshTiles(tiles);
 	    }
 

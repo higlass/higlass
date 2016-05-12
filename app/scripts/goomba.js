@@ -36,8 +36,6 @@ export function Goomba() {
             .xScale(xScale)
             .zoom(zoom);
 
-            console.log('xScale', xScale.domain());
-
             let gChromAxis = gMain.append('g')
             .attr('transform', `translate(30,${height - 20})`)
             .classed('g-axis', true)
