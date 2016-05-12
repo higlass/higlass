@@ -155,7 +155,12 @@ export function MassiveMatrixPlot() {
                     let newGraphics = new PIXI.Graphics();
 
                     let canvas = loadedTiles[tileId(tiles[i])].canvas; //tileDataToCanvas(loadedTiles[tileId(tiles[i])].data, tiles[i][0]);
-                    let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+                    let sprite = null;
+
+                    if (tiles[i][0] == maxZoom)
+                        sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+                    else
+                        sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
                     //let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
 
                     let zoomLevel = tiles[i][0], xTilePos = tiles[i][1], yTilePos = tiles[i][2];
