@@ -57,6 +57,10 @@ export function MassiveMatrixPlot() {
         return tile.join("/");
     }
 
+    function transposedTileId(tile) {
+        return [tile[0], tile[2], tile[1]].join('/');
+    }
+
     function chart(selection) {
         function isTileLoading(tile) {
             // check if a particular tile is currently being loaded
@@ -102,7 +106,7 @@ export function MassiveMatrixPlot() {
 
             let ctx = canvas.getContext('2d');
 
-            ctx.fillStyle = 'white';
+            ctx.fillStyle = 'transparent';
             ctx.fillRect(0,0,canvas.width, canvas.height);
 
             let pix = ctx.createImageData(canvas.width, canvas.height);
@@ -150,7 +154,7 @@ export function MassiveMatrixPlot() {
                     // load that sucker
                     let newGraphics = new PIXI.Graphics();
 
-                    let canvas = tileDataToCanvas(loadedTiles[tileId(tiles[i])], tiles[i][0]);
+                    let canvas = loadedTiles[tileId(tiles[i])].canvas; //tileDataToCanvas(loadedTiles[tileId(tiles[i])].data, tiles[i][0]);
                     let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
 
                     let zoomLevel = tiles[i][0], xTilePos = tiles[i][1], yTilePos = tiles[i][2];
@@ -252,9 +256,13 @@ export function MassiveMatrixPlot() {
                     d3.json(tilePath,
                             function(error, data) {
                                 if (error != null) {
-                                    loadedTiles[tileId(tile)] = [];
+                                    loadedTiles[tileId(tile)] = {data: []};
+                                    let canvas = tileDataToCanvas([], tile[0]);
+                                    loadedTiles[tileId(tile)].canvas = canvas;
                                 } else {
-                                    loadedTiles[tileId(tile)] = data;
+                                    loadedTiles[tileId(tile)] = {data: data};
+                                    let canvas = tileDataToCanvas(data, tile[0]);
+                                    loadedTiles[tileId(tile)].canvas = canvas;
                                 }
 
                                 delete loadingTiles[tileId(tile)];
@@ -306,8 +314,8 @@ export function MassiveMatrixPlot() {
 
         gEnter.insert("rect", "g")
         .attr("class", "pane")
-        .attr("width", width)
-        .attr("height", height)
+        .attr("width", width - margin.left - margin.right)
+        .attr("height", height - margin.top - margin.bottom)
         .attr('pointer-events', 'all')
 
         gEnter.call(zoom);
