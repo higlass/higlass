@@ -39,3 +39,7 @@ html, button, input, select, textarea,
     position: sticky;
     top: 1em;  
 }
+
+.pure-g .caption {
+  font-size: 9pt;
+}
