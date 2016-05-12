@@ -373,7 +373,7 @@ export function MassiveMatrixPlot() {
 
             zoom.x(xScale)
             .y(yScale)
-            .scaleExtent([1,Math.pow(2, maxZoom-1)])
+            .scaleExtent([1,Math.pow(2, maxZoom + 2)])
             //.xExtent(xScaleDomain);
 
             yAxis = d3.svg.axis()
@@ -488,6 +488,9 @@ export function MassiveMatrixPlot() {
 
             // this will become the tiling code
             let zoomLevel = Math.round(Math.log(zoom.scale()) / Math.LN2) + 1;
+
+            if (zoomLevel > maxZoom)
+                return;
 
             // the ski areas are positioned according to their
             // cumulative widths, which means the tiles need to also
