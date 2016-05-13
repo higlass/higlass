@@ -92,55 +92,106 @@
             remarkably similar to how popular online mapping tools work. It is, in
             fact, almost identical.  The only difference is the coordinate system used.
             Where in maps data (e.g. countries, cities, streets) is indexed by its latitude
-            and longitude, here it is indexed by chromosome positions. The instantiation
+            and longitude, here it is indexed by chromosome positions. 
+
+            <h3>Source code</h3>
+            
+            <p>
+            The instantiation
             of a higlass container is dead simple:
+            </p>
 
             <pre>
                 <code class="javascript ">
-var width = 850, height=800;
+var width = 700, height=5500;
+
 var data_dir = 'http://pkerp.s3-website-us-east-1.amazonaws.com/tiles/chr1_5kb/';
-
-var mmvPlot = higlass.MassiveMatrixPlot()
+var mmvPlot1 = higlass.MassiveMatrixPlot()
     .width(width)
-    .height(height);
+    .height(height)
+    .nTicks(4)
+    .zoomCallback(zoomCallback);
 
-
-d3.json(data_dir + 'tile_info.json', 
-function(error, tile_info) {
-    mmvPlot.minX(tile_info.min_pos[0])
-        .maxX(tile_info.max_pos[0])
-        .minY(tile_info.min_pos[1])
-        .maxY(tile_info.max_pos[1])
-        .maxZoom(tile_info.max_zoom)
-        .tileDirectory(data_dir)
-        .zoomCallback(zoomCallback);
-
-    d3.select('#mmv-area')
-        .call(mmvPlot)
-});
+d3.select('#mmv-area')
+.datum( 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
+.call(mmvPlot1)
                 </code>
             </pre>
             <p>
-            We just point our container to the source of tiles and attach it to an HTML element.  The rest is handled by higlass. Its source code can be found on <a href="https://github.com/hms-dbmi/4DN_matrix-viewer">GitHub</a>.
+
+            We just point our container to the source of tiles and attach it to
+            an HTML element. The rest is handled by higlass. Multiple
+            containers can be instantiated using the standard d3 data binding
+            pattern:
+            </p>
+
+<pre>
+<code class="javascript">
+var tileData = [ 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles', 
+                 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
+
+var zoomDispatch = d3.dispatch('zoom');
+
+var mmvPlot2 = higlass.MassiveMatrixPlot()
+    .width(350)
+    .height(250)
+    .nTicks(2)
+    .zoomDispatch(zoomDispatch)
+    .margin({'top': 10, 'left': 30, 'bottom': 30, 'right': 120});
+
+var plotAreas = d3.select("#multiple-plots")
+.selectAll(".hic-plot-area")
+.data(tileData)
+
+d3.select("#multiple-plots")
+.selectAll('.hic-plot-area')
+.call(mmvPlot2)
+</code>
+</pre>
+            
+            
+            <p>
+            The source code for higlass can be found on <a href="https://github.com/hms-dbmi/4DN_matrix-viewer">GitHub</a>.
             </p>
         </div>
         
         <div class="pure-u-1 pure-u-md-3-5 l-box"> 
-            <div id="sticky-mmv">
+            <div id="sticky-mmv" style>
                 <p><b>Use mouse or trackpad to zoom and pan</b></p>
-                <div id="mmv-area" style="position:relative; height:550px;" >
+                <table><tr><td align="center" style="width: 650px">GM12778</td></tr></table>
+                <div id="mmv-area" style="position:relative; height:550px; width: 700px" >
                     <svg id="goombaPlot"></svg>
                 </div>
                 <p class="caption">
                     GM12878 (Chromosome 1) - 5 KB resolution<br>
                     <i>Source: <a href="http://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63525&format=file&file=GSE63525%5FGM12878%5Fprimary%5Fintrachromosomal%5Fcontact%5Fmatrices%2Etar%2Egz">GEO GSE63525 - GSE63525_GM12878_primary_intrachromosomal_contact_matrices.tar.gz</a></i>
                 </p>
+                <br>
+
+                <p><b>Synchronized zooming</b></p>
 
                 <div id="multiple-plots" style="position:relative; height:300px">
                     <table>
                         <tr>
-                            <td>HMEC<br><div id="HMEC" class='hic-plot-area' style="position: relative; height: 200px; width: 350px"></div></td>
-                            <td>HUVEC<br><div id="HUVEC" class='hic-plot-area' style="position: relative; height: 200px"></div></td>
+                            <td align="center">HMEC</td>
+                            <td align="center">HUVEC</td>
+                        <tr>
+                            <td align="center"><div id="HMEC" class='hic-plot-area' style="position: relative; height: 250px; width: 350px"></div></td>
+                            <td align="center"><div id="HUVEC" class='hic-plot-area' style="position: relative; height: 250px; width: 350px"></div></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p class="caption">
+                                HMEC (Chromosome 1) - 5 KB resolution<br>
+                                <i>Source: <a href="http://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63525">GEO GSE63525</a></i>
+                                </p>
+                            </td>
+                            <td>
+                                <p class="caption">
+                                HUVEC (Chromosome 1) - 5 KB resolution<br>
+                                <i>Source: <a href="http://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63525">GEO GSE63525</a></i>
+                                </p>
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -187,46 +238,37 @@ var mmvPlot = higlass.MassiveMatrixPlot()
     }
 
 
-    //d3.json('http://pkerp.s3-website-us-east-1.amazonaws.com/mirrored_tiles/chr1_5kb/tile_info.json', function(error, tile_info) {
-/*
-    var tiles_dir = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'
-    d3.json(tiles_dir + '/tile_info.json', function(error, tile_info) {
-        //console.log('tile_info:', tile_info);
-            mmvPlot
-            .tileDirectory(tiles_dir)
-            .zoomCallback(zoomCallback);
 
-        d3.select('#mmv-area')
-            //.datum(data)
-            .call(mmvPlot)
-    });
-*/
+var mmvPlot1 = higlass.MassiveMatrixPlot()
+    .width(width)
+    .height(height)
+    .nTicks(4)
+    .zoomCallback(zoomCallback);
 
-var tiles_dir1 = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'
-var tiles_dir2 = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'
+d3.select('#mmv-area')
+.datum( 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
+.call(mmvPlot1)
 
-var tileData = [tiles_dir1, tiles_dir2];
-var smallWidth = 350;
-var smallHeight = 250;
 
-mmvPlot1 = higlass.MassiveMatrixPlot()
-    .width(smallWidth)
-    .height(smallHeight);
+var tileData = [ 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles', 
+                 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
+
+var zoomDispatch = d3.dispatch('zoom');
+
+var mmvPlot2 = higlass.MassiveMatrixPlot()
+    .width(350)
+    .height(250)
+    .nTicks(2)
+    .zoomDispatch(zoomDispatch)
+    .margin({'top': 10, 'left': 30, 'bottom': 30, 'right': 120});
 
 var plotAreas = d3.select("#multiple-plots")
 .selectAll(".hic-plot-area")
 .data(tileData)
 
-plotAreas.exit()
-.remove()
-
-plotAreas.enter()
-.append('div')
-.classed('.hic-plot-area',true)
-
 d3.select("#multiple-plots")
 .selectAll('.hic-plot-area')
-.call(mmvPlot1)
+.call(mmvPlot2)
 
 </script>
 </body>
