@@ -5,13 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
 
     <!--[if lte IE 8]>
-        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
     <![endif]-->
     <!--[if gt IE 8]><!-->
-        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
     <!--<![endif]-->
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css">
@@ -20,7 +20,7 @@
 
     <title>HiGlass: Multi-resolution Hi-C data display</title>
 </head>
-    
+
 <script src="https://rawgit.com/pkerpedjiev/goomba/zoomable-genes/dist/scripts/goomba.js"></script>
 
 <!-- build:css styles/style.css -->
@@ -78,7 +78,7 @@
             thus limit the total amount of data that needs to be displayed at any zoom
             level. The result, a viewer we dubbed HiGlass, opens a window into a 1Gb
             data set that can be explored through a browser on nearly any desktop
-            computer.  
+            computer.
             </p>
 
             <p>
@@ -92,10 +92,10 @@
             remarkably similar to how popular online mapping tools work. It is, in
             fact, almost identical.  The only difference is the coordinate system used.
             Where in maps data (e.g. countries, cities, streets) is indexed by its latitude
-            and longitude, here it is indexed by chromosome positions. 
+            and longitude, here it is indexed by chromosome positions.
 
             <h3>Source code</h3>
-            
+
             <p>
             The instantiation
             of a higlass container is dead simple:
@@ -105,7 +105,7 @@
                 <code class="javascript ">
 var width = 700, height=550;
 
-var data_dir = 'http://pkerp.s3-website-us-east-1.amazonaws.com/tiles/chr1_5kb/';
+var data_dir = '//s3.amazonaws.com/pkerp/tiles/chr1_5kb/';
 var mmvPlot1 = higlass.MassiveMatrixPlot()
     .width(width)
     .height(height)
@@ -113,7 +113,7 @@ var mmvPlot1 = higlass.MassiveMatrixPlot()
     .zoomCallback(zoomCallback);
 
 d3.select('#mmv-area')
-.datum( 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
+.datum( '//s3.amazonaws.com/pkerp/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
 .call(mmvPlot1)
                 </code>
             </pre>
@@ -127,8 +127,8 @@ d3.select('#mmv-area')
 
 <pre>
 <code class="javascript">
-var tileData = [ 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles', 
-                 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
+var tileData = [ '//s3.amazonaws.com/pkerp/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles',
+                 '//s3.amazonaws.com/pkerp/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
 
 var zoomDispatch = d3.dispatch('zoom');
 
@@ -148,14 +148,14 @@ d3.select("#multiple-plots")
 .call(mmvPlot2)
 </code>
 </pre>
-            
-            
+
+
             <p>
             The source code for higlass can be found on <a href="https://github.com/hms-dbmi/4DN_matrix-viewer">GitHub</a>.
             </p>
         </div>
-        
-        <div class="pure-u-1 pure-u-md-3-5 l-box"> 
+
+        <div class="pure-u-1 pure-u-md-3-5 l-box">
             <div id="sticky-mmv" style>
                 <p><b>Use mouse or trackpad to zoom and pan</b></p>
                 <table><tr><td align="center" style="width: 650px">GM12778</td></tr></table>
@@ -198,7 +198,7 @@ d3.select("#multiple-plots")
             </div>
         </div>
     </div>
-    
+
 
 <script type='text/javascript'>
 
@@ -223,7 +223,7 @@ var mmvPlot = higlass.MassiveMatrixPlot()
 
             var gMain = svg.append('g')
             .classed('g-main', true)
-            .datum('http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-small')
+            .datum('//s3.amazonaws.com/pkerp/data/hg19/refgene-tiles-small')
             //.datum('jsons/tiles')
             .call(goombaPlot)
 
@@ -246,12 +246,12 @@ var mmvPlot1 = higlass.MassiveMatrixPlot()
     .zoomCallback(zoomCallback);
 
 d3.select('#mmv-area')
-.datum( 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
+.datum( '//s3.amazonaws.com/pkerp/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
 .call(mmvPlot1)
 
 
-var tileData = [ 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles', 
-                 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
+var tileData = [ '//s3.amazonaws.com/pkerp/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles',
+                 '//s3.amazonaws.com/pkerp/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
 
 var zoomDispatch = d3.dispatch('zoom');
 
