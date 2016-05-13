@@ -10,8 +10,12 @@ export {ChromosomeAxis} from './ChromosomeAxis.js';
 export function Goomba() {
     let width = 700, height=40;
     let xScale = d3.scale.linear();
+    /*
     let chromAxis = goomba.ChromosomeAxis('/jsons/hg19/chromInfo.txt')
         .xScale(xScale);
+        */
+    let drawAxis = false;
+    let chromAxis = null;
 
     let zoom = d3.behavior.zoom();
     let tiledArea = null;
@@ -37,21 +41,33 @@ export function Goomba() {
             .zoom(zoom);
 
             console.log('xScale', xScale.domain());
+            if (drawAxis)
+                chromAxis = goomba.ChromosomeAxis('/jsons/hg19/chromInfo.txt')
+                    .xScale(xScale);
 
-            let gChromAxis = gMain.append('g')
-            .attr('transform', `translate(30,${height - 20})`)
-            .classed('g-axis', true)
-            .call(chromAxis);
+            let gChromAxis = null
+            if (drawAxis)
+                gChromAxis = gMain.append('g')
+                .attr('transform', `translate(30,${height - 20})`)
+                .classed('g-axis', true)
+                .call(chromAxis);
 
             tiledArea.on('draw', () => {
                 gMain.call(zoomableLabels);
-                gChromAxis.call(chromAxis);
+                if (drawAxis)
+                    gChromAxis.call(chromAxis);
             });
             //tiledArea.on('draw', () => { chromAxisPlot.draw(); });
 
             gMain.call(tiledArea)
 
         });
+    }
+
+    chart.drawAxis = function(_) {
+        if (!arguments.length) return drawAxis;
+        else drawAxis = _;
+        return chart;
     }
 
     chart.width = function(_) {

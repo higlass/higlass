@@ -49,6 +49,7 @@ let goombaPlot = goomba.Goomba()
     .width(width)
     .height(height)
     .xScale(xScale)
+    .drawAxis(true);
 
 let gMain = svg.append('g')
 .classed('g-main', true)
@@ -58,14 +59,11 @@ let gMain = svg.append('g')
 
     console.log('xScale3:', xScale.domain())
 
-let zoom = d3.behavior.zoom().on('zoom', zoomed)
-
 let gScrolly = svg.append('g')
 .append('rect')
 .attr('width', 200)
 .attr('height', 300)
 .attr('fill', 'gray')
-.call(zoom)
 
 //let data = []
 

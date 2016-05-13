@@ -103,7 +103,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var width = 700,
 	        height = 40;
 	    var xScale = _d2.default.scale.linear();
-	    var chromAxis = goomba.ChromosomeAxis('/jsons/hg19/chromInfo.txt').xScale(xScale);
+	    /*
+	    let chromAxis = goomba.ChromosomeAxis('/jsons/hg19/chromInfo.txt')
+	        .xScale(xScale);
+	        */
+	    var drawAxis = false;
+	    var chromAxis = null;
 
 	    var zoom = _d2.default.behavior.zoom();
 	    var tiledArea = null;
@@ -122,18 +127,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	            .xScale(xScale).zoom(zoom);
 
 	            console.log('xScale', xScale.domain());
+	            if (drawAxis) chromAxis = goomba.ChromosomeAxis('/jsons/hg19/chromInfo.txt').xScale(xScale);
 
-	            var gChromAxis = gMain.append('g').attr('transform', 'translate(30,' + (height - 20) + ')').classed('g-axis', true).call(chromAxis);
+	            var gChromAxis = null;
+	            if (drawAxis) gChromAxis = gMain.append('g').attr('transform', 'translate(30,' + (height - 20) + ')').classed('g-axis', true).call(chromAxis);
 
 	            tiledArea.on('draw', function () {
 	                gMain.call(zoomableLabels);
-	                gChromAxis.call(chromAxis);
+	                if (drawAxis) gChromAxis.call(chromAxis);
 	            });
 	            //tiledArea.on('draw', () => { chromAxisPlot.draw(); });
 
 	            gMain.call(tiledArea);
 	        });
 	    }
+
+	    chart.drawAxis = function (_) {
+	        if (!arguments.length) return drawAxis;else drawAxis = _;
+	        return chart;
+	    };
 
 	    chart.width = function (_) {
 	        if (!arguments.length) return width;
