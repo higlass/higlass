@@ -376,7 +376,6 @@ export function TiledArea() {
             */
            dispatch.draw();
 
-           console.log('tiles:', tiles);
             refreshTiles(tiles);
         }
 

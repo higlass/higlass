@@ -20644,7 +20644,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        */
 	        dispatch.draw();
 
-	        console.log('tiles:', tiles);
 	        refreshTiles(tiles);
 	    }
 
