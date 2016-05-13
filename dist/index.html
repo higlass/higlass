@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang=""><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css"><!--[if lte IE 8]>
-        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
-    <![endif]--><!--[if gt IE 8]><!--><link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css"><!--<![endif]--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css"><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><title>HiGlass: Multi-resolution Hi-C data display</title></head><script src="https://rawgit.com/pkerpedjiev/goomba/zoomable-genes/dist/scripts/goomba.js"></script><link rel="stylesheet" href="styles/style.css"><script src="scripts/higlass.js"></script><body><div class="pure-g"><div class="pure-u-1 pure-u-md-2-5 l-box"><h1>HiGlass: Multi-resolution Hi-C data display</h1><p>Each human cell has about 2 meters of DNA. This DNA is packaged within a nucleus that is only microns thick. This is the equivalent of stuffing a string stretching from New York to Los Angeles into a container the size of a soccer ball. Needless to say, the arrangement is very compact and necessitates many contacts between distant regions of the DNA. To elucidate the nature and location of these interactions, Hi-C assays generate large amounts of information about which parts of human chromosomes are physically near to each other. In its simplest form, this is a three-column list:</p><pre>
+<!DOCTYPE html><html lang=""><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css"><!--[if lte IE 8]>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+    <![endif]--><!--[if gt IE 8]><!--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css"><!--<![endif]--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css"><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><title>HiGlass: Multi-resolution Hi-C data display</title></head><script src="https://rawgit.com/pkerpedjiev/goomba/zoomable-genes/dist/scripts/goomba.js"></script><link rel="stylesheet" href="styles/style.css"><script src="scripts/higlass.js"></script><body><div class="pure-g"><div class="pure-u-1 pure-u-md-2-5 l-box"><h1>HiGlass: Multi-resolution Hi-C data display</h1><p>Each human cell has about 2 meters of DNA. This DNA is packaged within a nucleus that is only microns thick. This is the equivalent of stuffing a string stretching from New York to Los Angeles into a container the size of a soccer ball. Needless to say, the arrangement is very compact and necessitates many contacts between distant regions of the DNA. To elucidate the nature and location of these interactions, Hi-C assays generate large amounts of information about which parts of human chromosomes are physically near to each other. In its simplest form, this is a three-column list:</p><pre>
             <code class="nohighlight">
 50000   50000   1.0
 60000   60000   1.0
@@ -12,7 +12,7 @@
                 <code class="javascript">
 var width = 700, height=550;
 
-var data_dir = 'http://pkerp.s3-website-us-east-1.amazonaws.com/tiles/chr1_5kb/';
+var data_dir = '//s3.amazonaws.com/pkerp/tiles/chr1_5kb/';
 var mmvPlot1 = higlass.MassiveMatrixPlot()
     .width(width)
     .height(height)
@@ -20,13 +20,13 @@ var mmvPlot1 = higlass.MassiveMatrixPlot()
     .zoomCallback(zoomCallback);
 
 d3.select('#mmv-area')
-.datum( 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
+.datum( '//s3.amazonaws.com/pkerp/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
 .call(mmvPlot1)
                 </code>
             </pre><p>We just point our container to the source of tiles and attach it to an HTML element. The rest is handled by higlass. Multiple containers can be instantiated using the standard d3 data binding pattern:</p><pre>
 <code class="javascript">
-var tileData = [ 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles', 
-                 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
+var tileData = [ '//s3.amazonaws.com/pkerp/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles',
+                 '//s3.amazonaws.com/pkerp/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
 
 var zoomDispatch = d3.dispatch('zoom');
 
@@ -66,7 +66,7 @@ var mmvPlot = higlass.MassiveMatrixPlot()
 
             var gMain = svg.append('g')
             .classed('g-main', true)
-            .datum('http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-small')
+            .datum('//s3.amazonaws.com/pkerp/data/hg19/refgene-tiles-small')
             //.datum('jsons/tiles')
             .call(goombaPlot)
 
@@ -89,12 +89,12 @@ var mmvPlot1 = higlass.MassiveMatrixPlot()
     .zoomCallback(zoomCallback);
 
 d3.select('#mmv-area')
-.datum( 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
+.datum( '//s3.amazonaws.com/pkerp/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
 .call(mmvPlot1)
 
 
-var tileData = [ 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles', 
-                 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
+var tileData = [ '//s3.amazonaws.com/pkerp/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles',
+                 '//s3.amazonaws.com/pkerp/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
 
 var zoomDispatch = d3.dispatch('zoom');
 
