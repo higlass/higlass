@@ -34,9 +34,11 @@ html, button, input, select, textarea,
 
 #sticky-mmv {
     display: block;
+    /*
     position: -webkit-sticky;
     position: -moz-sticky;    
     position: sticky;
+    */
     top: 1em;  
 }
 
