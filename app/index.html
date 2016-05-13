@@ -139,8 +139,8 @@ function(error, tile_info) {
                 <div id="multiple-plots" style="position:relative; height:300px">
                     <table>
                         <tr>
-                            <td>HMEC<br><div id="HMEC" style="position: relative; height: 200px; width: 350px"></div></td>
-                            <td>HUVEC<br><div id="HUVEC" style="position: relative; height: 200px"></div></td>
+                            <td>HMEC<br><div id="HMEC" class='hic-plot-area' style="position: relative; height: 200px; width: 350px"></div></td>
+                            <td>HUVEC<br><div id="HUVEC" class='hic-plot-area' style="position: relative; height: 200px"></div></td>
                         </tr>
                     </table>
                 </div>
@@ -188,6 +188,7 @@ var mmvPlot = higlass.MassiveMatrixPlot()
 
 
     //d3.json('http://pkerp.s3-website-us-east-1.amazonaws.com/mirrored_tiles/chr1_5kb/tile_info.json', function(error, tile_info) {
+/*
     var tiles_dir = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'
     d3.json(tiles_dir + '/tile_info.json', function(error, tile_info) {
         //console.log('tile_info:', tile_info);
@@ -199,9 +200,12 @@ var mmvPlot = higlass.MassiveMatrixPlot()
             //.datum(data)
             .call(mmvPlot)
     });
+*/
 
 var tiles_dir1 = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'
+var tiles_dir2 = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'
 
+var tileData = [tiles_dir1, tiles_dir2];
 var smallWidth = 350;
 var smallHeight = 250;
 
@@ -209,24 +213,20 @@ mmvPlot1 = higlass.MassiveMatrixPlot()
     .width(smallWidth)
     .height(smallHeight);
 
-    mmvPlot1.tileDirectory(tiles_dir1)
+var plotAreas = d3.select("#multiple-plots")
+.selectAll(".hic-plot-area")
+.data(tileData)
 
-d3.select('#HMEC')
-    //.datum(data)
-    .call(mmvPlot1)
+plotAreas.exit()
+.remove()
 
-var tiles_dir2 = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'
+plotAreas.enter()
+.append('div')
+.classed('.hic-plot-area',true)
 
-var mmvPlot2 = higlass.MassiveMatrixPlot()
-    .width(smallWidth)
-    .height(smallHeight);
-
-    mmvPlot2.tileDirectory(tiles_dir2)
-
-d3.select('#HUVEC')
-    //.datum(data)
-    .call(mmvPlot2)
-
+d3.select("#multiple-plots")
+.selectAll('.hic-plot-area')
+.call(mmvPlot1)
 
 </script>
 </body>
