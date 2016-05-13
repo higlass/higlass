@@ -103,7 +103,7 @@
 
             <pre>
                 <code class="javascript ">
-var width = 700, height=5500;
+var width = 700, height=550;
 
 var data_dir = 'http://pkerp.s3-website-us-east-1.amazonaws.com/tiles/chr1_5kb/';
 var mmvPlot1 = higlass.MassiveMatrixPlot()
@@ -260,7 +260,7 @@ var mmvPlot2 = higlass.MassiveMatrixPlot()
     .height(250)
     .nTicks(2)
     .zoomDispatch(zoomDispatch)
-    .margin({'top': 10, 'left': 30, 'bottom': 30, 'right': 120});
+    .margin({'top': 10, 'left': 10, 'bottom': 30, 'right': 120});
 
 var plotAreas = d3.select("#multiple-plots")
 .selectAll(".hic-plot-area")
