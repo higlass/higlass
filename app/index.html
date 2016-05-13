@@ -135,6 +135,15 @@ function(error, tile_info) {
                     GM12878 (Chromosome 1) - 5 KB resolution<br>
                     <i>Source: <a href="http://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63525&format=file&file=GSE63525%5FGM12878%5Fprimary%5Fintrachromosomal%5Fcontact%5Fmatrices%2Etar%2Egz">GEO GSE63525 - GSE63525_GM12878_primary_intrachromosomal_contact_matrices.tar.gz</a></i>
                 </p>
+
+                <div id="multiple-plots" style="position:relative; height:300px">
+                    <table>
+                        <tr>
+                            <td>HMEC<br><div id="HMEC" style="position: relative; height: 200px; width: 350px"></div></td>
+                            <td>HUVEC<br><div id="HUVEC" style="position: relative; height: 200px"></div></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -177,15 +186,12 @@ var mmvPlot = higlass.MassiveMatrixPlot()
             .draw();
     }
 
+
     //d3.json('http://pkerp.s3-website-us-east-1.amazonaws.com/mirrored_tiles/chr1_5kb/tile_info.json', function(error, tile_info) {
-    var tiles_dir = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'
+    var tiles_dir = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'
     d3.json(tiles_dir + '/tile_info.json', function(error, tile_info) {
         //console.log('tile_info:', tile_info);
-        mmvPlot.minX(tile_info.min_pos[0])
-            .maxX(tile_info.max_pos[0])
-            .minY(tile_info.min_pos[1])
-            .maxY(tile_info.max_pos[1])
-            .maxZoom(tile_info.max_zoom)
+            mmvPlot
             .tileDirectory(tiles_dir)
             .zoomCallback(zoomCallback);
 
@@ -193,6 +199,34 @@ var mmvPlot = higlass.MassiveMatrixPlot()
             //.datum(data)
             .call(mmvPlot)
     });
+
+var tiles_dir1 = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'
+
+var smallWidth = 350;
+var smallHeight = 250;
+
+mmvPlot1 = higlass.MassiveMatrixPlot()
+    .width(smallWidth)
+    .height(smallHeight);
+
+    mmvPlot1.tileDirectory(tiles_dir1)
+
+d3.select('#HMEC')
+    //.datum(data)
+    .call(mmvPlot1)
+
+var tiles_dir2 = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'
+
+var mmvPlot2 = higlass.MassiveMatrixPlot()
+    .width(smallWidth)
+    .height(smallHeight);
+
+    mmvPlot2.tileDirectory(tiles_dir2)
+
+d3.select('#HUVEC')
+    //.datum(data)
+    .call(mmvPlot2)
+
 
 </script>
 </body>
