@@ -177,14 +177,16 @@ var mmvPlot = higlass.MassiveMatrixPlot()
             .draw();
     }
 
-    d3.json('http://pkerp.s3-website-us-east-1.amazonaws.com/mirrored_tiles/chr1_5kb/tile_info.json', function(error, tile_info) {
+    //d3.json('http://pkerp.s3-website-us-east-1.amazonaws.com/mirrored_tiles/chr1_5kb/tile_info.json', function(error, tile_info) {
+    var tiles_dir = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'
+    d3.json(tiles_dir + '/tile_info.json', function(error, tile_info) {
         //console.log('tile_info:', tile_info);
         mmvPlot.minX(tile_info.min_pos[0])
             .maxX(tile_info.max_pos[0])
             .minY(tile_info.min_pos[1])
             .maxY(tile_info.max_pos[1])
             .maxZoom(tile_info.max_zoom)
-            .tileDirectory('http://pkerp.s3-website-us-east-1.amazonaws.com/mirrored_tiles/chr1_5kb')
+            .tileDirectory(tiles_dir)
             .zoomCallback(zoomCallback);
 
         d3.select('#mmv-area')
