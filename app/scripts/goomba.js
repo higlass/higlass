@@ -15,7 +15,6 @@ export function Goomba() {
         .xScale(xScale);
         */
     let drawAxis = false;
-    let chromAxis = null;
 
     let zoom = d3.behavior.zoom();
     let tiledArea = null;
@@ -41,21 +40,9 @@ export function Goomba() {
             .zoom(zoom);
 
             console.log('xScale', xScale.domain());
-            if (drawAxis)
-                chromAxis = goomba.ChromosomeAxis('/jsons/hg19/chromInfo.txt')
-                    .xScale(xScale);
-
-            let gChromAxis = null
-            if (drawAxis)
-                gChromAxis = gMain.append('g')
-                .attr('transform', `translate(30,${height - 20})`)
-                .classed('g-axis', true)
-                .call(chromAxis);
 
             tiledArea.on('draw', () => {
                 gMain.call(zoomableLabels);
-                if (drawAxis)
-                    gChromAxis.call(chromAxis);
             });
             //tiledArea.on('draw', () => { chromAxisPlot.draw(); });
 

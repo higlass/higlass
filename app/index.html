@@ -17,38 +17,24 @@
 let width = 600;
 let height = 80;
 
+let margin = {'left': 30, 'top': 10, 'right': 30, 'bottom': 10};
+
+var chromInfo = '/jsons/hg19/chromInfo.txt';
+
+var chromInfoPlot = goomba.ChromosomeAxis()
+    .width(width - margin.left - margin.top);
+
 let svg = d3.select('#circle').append('svg')
 .attr('width', width)
 .attr('height', height)
 
-/*
-let genePlot = goomba.GenePlot()
-    .width(300)
-    .height(10)
-    .xPos(0)
-    .yPos(0)
-
-geneJson = {
-    name:'NM_001126112',
-    chr: '17',
-    strand: '-',
-    txStart: '7571719',
-    txEnd: '7590868',
-    cdsStart: '7572926',
-    cdsEnd: '7579912',
-    exonStarts: [7571719,7573926,7576852,7577018,7577498,7578176,7578370,7579311,7579699,7579838,7590694],
-    exonEnds: [7573008,7574033,7576926,7577155,7577608,7578289,7578554,7579590,7579721,7579937,7590868]
-}
-*/
-
-let xScale = d3.scale.linear()
-    .domain([12,34]);
-
+svg.append('g')
+.datum(chromInfo)
+.call(chromInfoPlot);
 
 let goombaPlot = goomba.Goomba()
     .width(width)
     .height(height)
-    .xScale(xScale)
     .drawAxis(true);
 
 let gMain = svg.append('g')
@@ -57,13 +43,13 @@ let gMain = svg.append('g')
 //.datum('jsons/tiles')
 .call(goombaPlot)
 
-    console.log('xScale3:', xScale.domain())
-
+/*
 let gScrolly = svg.append('g')
 .append('rect')
 .attr('width', 200)
 .attr('height', 300)
 .attr('fill', 'gray')
+*/
 
 //let data = []
 
