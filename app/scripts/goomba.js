@@ -6,6 +6,7 @@ import {ZoomableLabels} from 'zoomable_labels';
 
 export {GenePlot} from './gene.js';
 export {ChromosomeAxis} from './ChromosomeAxis.js';
+export {ChromosomeInfo} from './ChromosomeInfo.js';
 
 export function Goomba() {
     let width = 700, height=40;

@@ -10,6 +10,7 @@ export function ChromosomeAxis(chromInfoFile) {
             d3.text(d, (text) => {
                 let gChromLabels = null;
                 let gSelect = null;
+                console.log('text:', text);
 
                 /*
                 let zoomableLabels = ZoomableLabels()
