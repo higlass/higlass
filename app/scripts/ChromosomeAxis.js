@@ -5,10 +5,9 @@ export function ChromosomeAxis(chromInfoFile) {
     let bisect = d3.bisector(function(d) { return d.pos; }).left;
     let width = 600;
 
-
     function chart(selection) {
         selection.each(function(d) {
-            d3.text(d, function(text) {
+            d3.text(d, (text) => {
                 let gChromLabels = null;
                 let gSelect = null;
 
