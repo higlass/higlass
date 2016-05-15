@@ -1,4 +1,3 @@
-import d3 from 'd3';
 import {getRadius} from './helper_module.js';
 import {GenePlot} from './gene.js';
 import {TiledArea} from './tiled_area.js';
@@ -7,6 +6,8 @@ import {ZoomableLabels} from 'zoomable_labels';
 export {GenePlot} from './gene.js';
 export {ChromosomeAxis} from './ChromosomeAxis.js';
 export {ChromosomeInfo} from './ChromosomeInfo.js';
+export {TiledArea} from './tiled_area.js';
+export {ZoomableLabels} from 'zoomable_labels';
 
 export function Goomba() {
     let width = 700, height=40;
@@ -20,9 +21,12 @@ export function Goomba() {
     let zoom = d3.behavior.zoom();
     let tiledArea = null;
     let currentZoom = 1;
+    let zoomDispatch = null;
 
     function chart(selection) {
         selection.each(function(tileDirectory) {
+            let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
+
             let gMain = d3.select(this).append('g');
 
             let zoomableLabels = ZoomableLabels()
@@ -39,6 +43,10 @@ export function Goomba() {
             //.on('draw', () => { gMain.call(zoomableLabels); })
             .xScale(xScale)
             .zoom(zoom);
+                
+            function zoomHere() {
+                localZoomDispatch.zoom(zoom.translate(), zoom.scale());
+            }
 
             console.log('xScale', xScale.domain());
 

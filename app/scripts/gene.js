@@ -1,8 +1,6 @@
 import '../styles/gene.css';
 
-import d3 from 'd3';
 import {getRadius} from './helper_module.js';
-
 
 export function GenePlot() {
     let width = 300;

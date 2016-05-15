@@ -24,6 +24,9 @@ module.exports = {
         loader: 'style!css'
       }
     ],
+    externals: {
+        'd3': 'd3'
+               },
     resolve: {
       extensions: ['.js', '.jsx']
     }

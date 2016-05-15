@@ -18,45 +18,54 @@ let width = 600;
 let height = 80;
 
 let margin = {'left': 30, 'top': 10, 'right': 30, 'bottom': 10};
+let tileDirectory = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-small'
 
 var chromInfoFilename = '/jsons/hg19/chromInfo.txt';
-goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
-    console.log('chromInfo:', chromInfo);
-
-});
-
-var chromInfoPlot = goomba.ChromosomeAxis()
-    .width(width - margin.left - margin.right);
-
-let svg = d3.select('#circle').append('svg')
+var svg = d3.select('#circle').append('svg')
 .attr('width', width)
 .attr('height', height)
 
-svg.append('g')
-.attr('transform', 'translate(' + margin.left + ',0)')
-.datum(chromInfoFilename)
-.call(chromInfoPlot);
-
-let goombaPlot = goomba.Goomba()
-    .width(width)
-    .height(height)
-    .drawAxis(true);
-
-let gMain = svg.append('g')
-.classed('g-main', true)
-.datum('http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-small')
-//.datum('jsons/tiles')
-.call(goombaPlot)
+goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
+    let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
 
     /*
-let gScrolly = svg.append('g')
-.append('rect')
-.attr('width', 200)
-.attr('height', 300)
-.attr('fill', 'gray')
-*/
+    console.log('chromInfo:', chromInfo);
+    let zoomDispatch = d3.dispatch('zoom');
 
-//let data = []
+    var chromInfoPlot = goomba.ChromosomeAxis()
+    .width(width - margin.left - margin.right)
+    .zoomDispatch(zoomDispatch);
+
+    svg.append('g')
+    .attr('transform', 'translate(' + margin.left + ',0)')
+    .datum(chromInfo)
+    .call(chromInfoPlot);
+    */
+
+    let tiledArea = goomba.TiledArea().width(width)
+    .height(height)
+    .tileDirectory(tileDirectory)
+    .dataPointLayout(goomba.GenePlot)
+    .xScale(xScale)
+
+
+    let gMain = svg.append('g')
+    .classed('g-main', true)
+    .datum(tileDirectory)
+    //.datum('jsons/tiles')
+    .call(tiledArea)
+
+    let zoomableLabels = goomba.ZoomableLabels()
+    .markerClass('.gene-marker')
+    .labelClass('.gene-label')
+    .labelParent(gMain)
+    .labelMarkerId((d) => { return `n-${d.refseqid}`})
+    .uidString('refseqid')
+
+    tiledArea.on('draw', () => {
+        gMain.call(zoomableLabels);
+    });
+});
 
 </script>
 </body>

@@ -4,35 +4,19 @@ import d3 from 'd3';
 export function ChromosomeAxis(chromInfoFile) {
     let bisect = d3.bisector(function(d) { return d.pos; }).left;
     let width = 600;
+    let zoomDispatch = null;
 
     function chart(selection) {
         selection.each(function(d) {
-            d3.text(d, (text) => {
+                let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
                 let gChromLabels = null;
                 let gSelect = null;
-                console.log('text:', text);
 
-                /*
-                let zoomableLabels = ZoomableLabels()
-                .labelClass('.chromosome-label')
-                .markerClass('.chromosome-label')
-                .uidString('id')
-                */
-
+                let cumValues = d.cumPositions;
                 let xScale = d3.scale.linear().range([0, width]);
                 let xAxis = null;
                 let gAxis = null;
                 let lineScale = null;
-
-                let data = d3.tsv.parseRows(text);
-                let cumValues = [];
-
-                for (let i = 0; i < data.length; i++) {
-                    if (i == 0) 
-                        cumValues.push({'id': 0, 'chr': data[i][0], 'pos': 0});
-                    else 
-                        cumValues.push({'id': i, 'chr': data[i][0], 'pos': cumValues[i-1].pos + +data[i-1][1]});
-                }
 
                 gSelect = d3.select(this);
 
@@ -129,7 +113,6 @@ export function ChromosomeAxis(chromInfoFile) {
                        textLeftChr.attr('x', 0);
                        textRightChr.attr('x', 0 + xScale.range()[1]);
                    }
-            })
         });
     }
 
@@ -142,6 +125,12 @@ export function ChromosomeAxis(chromInfoFile) {
     chart.xScale = function(_) {
         if (!arguments.length) return xScale;
         else xScale = _;
+        return chart;
+    }
+
+    chart.zoomDispatch = function(_) {
+        if (!arguments.length) return zoomDispatch;
+        else zoomDispatch = _;
         return chart;
     }
 
