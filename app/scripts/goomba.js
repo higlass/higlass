@@ -40,7 +40,6 @@ export function Goomba() {
             .height(height)
             .tileDirectory(tileDirectory)
             .dataPointLayout(GenePlot)
-            //.on('draw', () => { gMain.call(zoomableLabels); })
             .xScale(xScale)
             .zoom(zoom);
                 

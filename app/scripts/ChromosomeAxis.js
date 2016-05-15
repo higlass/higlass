@@ -1,10 +1,12 @@
 import '../styles/ChromosomeAxis.css';
 import d3 from 'd3';
+import slugid from 'slugid';
 
 export function ChromosomeAxis(chromInfoFile) {
     let bisect = d3.bisector(function(d) { return d.pos; }).left;
     let width = 600;
     let zoomDispatch = null;
+    let xScale = d3.scale.linear();
 
     function chart(selection) {
         selection.each(function(d) {
@@ -17,6 +19,8 @@ export function ChromosomeAxis(chromInfoFile) {
                 let xAxis = null;
                 let gAxis = null;
                 let lineScale = null;
+                let slugId = slugid.nice();
+                let zoom = d3.behavior.zoom().x(xScale);
 
                 gSelect = d3.select(this);
 
@@ -95,6 +99,17 @@ export function ChromosomeAxis(chromInfoFile) {
                                        textScale.attr('x', scaleMid)
                                        .text(tickFormat(tickSpan) + " bp");
 
+                localZoomDispatch.on('zoom.' + slugId, zoomChanged);
+
+                function zoomChanged(translate, scale) {
+                    console.log('zoomChanged');
+                    // something changed the zoom.
+                    zoom.translate(translate);
+                    zoom.scale(scale);
+
+                    draw();
+                }
+
                    function draw () {
                        //gChromLabels.attr('x', (d) => { return xScale(d.pos); });
                        //gSelect.call(zoomableLabels);
@@ -105,10 +120,12 @@ export function ChromosomeAxis(chromInfoFile) {
                        let tickSpan = ticks[1] - ticks[0]
                        let tickWidth = xScale(ticks[1]) - xScale(ticks[0]);
 
+                       /*
                        lineScale.attr('x2', xScale.range()[1]);
                        lineScale.attr('x1', xScale.range()[1] - tickWidth);
                        lineScale.attr('y1', 10)
                        lineScale.attr('y2', 10)
+                       */
 
                        textLeftChr.attr('x', 0);
                        textRightChr.attr('x', 0 + xScale.range()[1]);

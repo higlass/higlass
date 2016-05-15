@@ -1,3 +1,4 @@
+import slugid from 'slugid';
 import '../styles/tiled_area.css';
 
 export function TiledArea() {
@@ -16,6 +17,7 @@ export function TiledArea() {
     let loadedTiles = {};
     let loadingTiles = {};
     let dispatch = d3.dispatch('draw');
+    let zoomDispatch = null;
 
     let xAxis = null;
 
@@ -40,16 +42,18 @@ export function TiledArea() {
 
     function chart(selection) {
         selection.each(function(tileDirectory) {
+            let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             let minX = 0, maxX = 0, minY = 0, maxY = 0,
                 minImportance = 0, maxImportance = 0;
             let currentZoom = 1, maxZoom = 1;
 
             let zoom = d3.behavior.zoom();
+            let slugId = slugid.nice();
 
             // setup the data-agnostic parts of the chart
             var gEnter = selection.append("g");
 
-            zoom.on("zoom", zoomed);
+            zoom.on("zoom", zoomHere);
 
             var gYAxis = gEnter.append("g")
             .attr("class", "y axis")
@@ -80,6 +84,20 @@ export function TiledArea() {
                 gMain.style('clip-path', 'url(#clip)')
 
                 gMain.call(zoom);
+
+                localZoomDispatch.on('zoom.' + slugId, zoomChanged);
+
+                function zoomChanged(translate, scale) {
+                    // something changed the zoom.
+                    zoom.translate(translate);
+                    zoom.scale(scale);
+
+                    zoomed();
+                }
+
+                function zoomHere() {
+                    localZoomDispatch.zoom(zoom.translate(), zoom.scale());
+                }
 
                 function isTileLoading(tile) {
                     // check if a particular tile is currently being loaded
@@ -269,7 +287,6 @@ export function TiledArea() {
                 };
 
                 function zoomed() {
-                    console.log('here:');
                     var reset_s = 0;
 
                     if ((xScale.domain()[1] - xScale.domain()[0]) >= (maxX - minX)) {
@@ -453,6 +470,18 @@ export function TiledArea() {
     chart.xScale = function(_) {
         if (!arguments) return xScale;
         else xScale = _;
+        return chart;
+    }
+
+    chart.margin = function(_) {
+        if (!arguments) return margin;
+        else margin = _;
+        return chart;
+    }
+
+    chart.zoomDispatch = function(_) {
+        if (!arguments) return zoomDispatch;
+        else zoomDispatch = _;
         return chart;
     }
 

@@ -28,25 +28,26 @@ var svg = d3.select('#circle').append('svg')
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
 
-    /*
     console.log('chromInfo:', chromInfo);
     let zoomDispatch = d3.dispatch('zoom');
 
     var chromInfoPlot = goomba.ChromosomeAxis()
     .width(width - margin.left - margin.right)
+    .xScale(xScale)
     .zoomDispatch(zoomDispatch);
 
     svg.append('g')
     .attr('transform', 'translate(' + margin.left + ',0)')
     .datum(chromInfo)
     .call(chromInfoPlot);
-    */
 
     let tiledArea = goomba.TiledArea().width(width)
     .height(height)
     .tileDirectory(tileDirectory)
     .dataPointLayout(goomba.GenePlot)
     .xScale(xScale)
+    .margin({'left': 30, 'top': 30, 'right': 30, 'bottom': 10})
+    .zoomDispatch(zoomDispatch);
 
 
     let gMain = svg.append('g')
