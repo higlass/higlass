@@ -291,8 +291,11 @@ export function TiledArea() {
                 function zoomed() {
                     var reset_s = 0;
 
-                    if ((xScale.domain()[1] - xScale.domain()[0]) >= (maxX - minX)) {
-                        zoom.x(xScale.domain([minX, maxX]));
+                    let minAllowedX = xScaleDomain[0];
+                    let maxAllowedX = xScaleDomain[1];
+
+                    if ((xScale.domain()[1] - xScale.domain()[0]) >= (maxAllowedX - minAllowedX)) {
+                        zoom.x(xScale.domain([minAllowedX, maxAllowedX]));
                         reset_s = 1;
                     }
                     if ((yScale.domain()[1] - yScale.domain()[0]) >= (maxY - minY)) {
@@ -305,15 +308,15 @@ export function TiledArea() {
                         zoom.translate([0,0]);
                     }
                     else {
-                        if (xScale.domain()[0] < minX) {
-                            xScale.domain([minX, xScale.domain()[1] - xScale.domain()[0] + minX]);
+                        if (xScale.domain()[0] < minAllowedX) {
+                            xScale.domain([minAllowedX, xScale.domain()[1] - xScale.domain()[0] + minAllowedX]);
 
                             zoom.translate([xOrigScale.range()[0] - xOrigScale(xScale.domain()[0]) * zoom.scale(),
                                     zoom.translate()[1]])
                         }
-                        if (xScale.domain()[1] > maxX) {
-                            var xdom0 = xScale.domain()[0] - xScale.domain()[1] + maxX;
-                            xScale.domain([xdom0, maxX]);
+                        if (xScale.domain()[1] > maxAllowedX) {
+                            var xdom0 = xScale.domain()[0] - xScale.domain()[1] + maxAllowedX;
+                            xScale.domain([xdom0, maxAllowedX]);
 
                             zoom.translate([xOrigScale.range()[0] - xOrigScale(xScale.domain()[0]) * zoom.scale(),
                                     zoom.translate()[1]])
@@ -359,12 +362,11 @@ export function TiledArea() {
 
                     maxZoom = tile_info.max_zoom;
 
-                    if (domain != null) {
-                        minX = domain[0];
-                        maxX = domain[1];
-                    }
+                    if (domain == null)
+                        xScaleDomain = [minX, maxX];
+                    else
+                        xScaleDomain = domain;
 
-                    xScaleDomain = [minX, maxX];
                     yScaleDomain = [minY, maxY];
 
                     xScale.domain(xScaleDomain)
