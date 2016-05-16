@@ -6,7 +6,6 @@ export function TiledArea() {
     var height = 400;
     var margin = {'top': 30, 'left': 30, 'bottom': 30, 'right': 30};
 
-
     let oneDimensional = true;     // will these be 1D tiles or 2D?
 
     let xOrigScale = null, yOrigScale = null;
@@ -15,19 +14,13 @@ export function TiledArea() {
     let zoomTo = null;
     let domain = null;
 
-    let loadedTiles = {};
-    let loadingTiles = {};
     let dispatch = d3.dispatch('draw');
     let zoomDispatch = null;
 
     let xAxis = null;
 
-    let xScaleDomain = null, yScaleDomain = null;
-
     let labelSort = (a,b) => { return b.area - a.area; };
-    let gMain = null;
     let gDataPoints = null;
-    let shownTiles = new Set();
     let pointMarkId = (d) => { return `p-${d.uid}`; };
     function countTransform(count) {
         return Math.sqrt(Math.sqrt(count + 1));
@@ -43,6 +36,12 @@ export function TiledArea() {
 
     function chart(selection) {
         selection.each(function(tileDirectory) {
+            let xScaleDomain = null, yScaleDomain = null;
+            let loadedTiles = {};
+            let loadingTiles = {};
+            let shownTiles = new Set();
+
+            console.log('tileDirectory:', tileDirectory);
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             let minX = 0, maxX = 0, minY = 0, maxY = 0,
                 minImportance = 0, maxImportance = 0;
@@ -52,22 +51,24 @@ export function TiledArea() {
             let zoom = d3.behavior.zoom();
             let slugId = slugid.nice();
 
+            console.log('slugId:', slugId, tileDirectory);
+
             // setup the data-agnostic parts of the chart
-            var gEnter = selection.append("g");
+            var gEnter = d3.select(this).append("g");
 
             zoom.on("zoom", zoomHere);
 
-            var gYAxis = gEnter.append("g")
+            let gYAxis = gEnter.append("g")
             .attr("class", "y axis")
             .attr("transform", "translate(" + (width - margin.right) + "," + margin.top + ")");
 
-        var gXAxis = gEnter.append("g")
-            .attr("class", "y axis")
-            .attr("transform", "translate(" + (margin.left) + "," + (height - margin.bottom) + ")");
+            let gXAxis = gEnter.append("g")
+                .attr("class", "y axis")
+                .attr("transform", "translate(" + (margin.left) + "," + (height - margin.bottom) + ")");
 
-        gMain = gEnter.append('g')
-            .classed('main-g', true)
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+            let gMain = gEnter.append('g')
+                .classed('main-g', true)
+                .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
                 gMain.insert("rect", "g")
                 .attr("class", "pane")
@@ -208,6 +209,7 @@ export function TiledArea() {
                             let tileSubPath = tile.join('/') + '.json';
                             let tilePath = tileDirectory + "/" + tileSubPath;
                             loadingTiles[tileId(tile)] = true;
+                            console.log('tilePath:', tilePath);
                             d3.json(tilePath, function(error, data) {
                                 delete loadingTiles[tileId(tile)];
                                 loadedTiles[tileId(tile)] = data;
@@ -224,6 +226,7 @@ export function TiledArea() {
                     // need to redraw the tiles, otherwise it's irrelevant
                     //
                     //gXAxis.call(xAxis);
+                    console.log('drawing...', slugId);
 
                     gMain.selectAll('.data-g')
                         .each((d) => { 
@@ -439,12 +442,6 @@ export function TiledArea() {
     chart.maxZoom = function(_) {
         if (!arguments.length) return maxZoom;
         maxZoom = _;
-        return chart;
-    };
-
-    chart.tileDirectory = function(_) {
-        if (!arguments.length) return tileDirectory;
-        tileDirectory = _;
         return chart;
     };
 
