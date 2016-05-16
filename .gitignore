@@ -1,4 +1,5 @@
 **/*.un~
+*.swo
 **/*.swp
 **/*#
 temp/**
@@ -10,3 +11,5 @@ notebooks/**/*.log
 .tmp
 bower_components/
 node_modules/
+jsons/
+.DS_Store
