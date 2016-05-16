@@ -16,3 +16,9 @@ rsync -avz ubuntu@52.32.97.221:/data/refgene-tiles-small/ jsons/tiles
 ### Sample reads set
 
 samtools view -h  data/GM12878_SRR1658581_10pc_3_R1_hg19.bwt2glob.bam | head -n 65536 | samtools view -Sb > data/65536.bam
+
+### Sample tracks from Encode project
+
+GM12878 cell line RNAseq
+
+https://www.encodeproject.org/experiments/ENCSR000CVT/

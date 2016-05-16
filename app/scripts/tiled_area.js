@@ -46,7 +46,7 @@ export function TiledArea() {
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             let minX = 0, maxX = 0, minY = 0, maxY = 0,
                 minImportance = 0, maxImportance = 0;
-            let currentZoom = 1, maxZoom = 1;
+            let  maxZoom = 1;
             let xScale = d3.scale.linear();
 
             let zoom = d3.behavior.zoom();
@@ -205,15 +205,14 @@ export function TiledArea() {
                     currentTiles.forEach((tile) => {
                         if (!isTileLoaded(tile) && !isTileLoading(tile)) {
                             // if the tile isn't loaded, load it
-                            let tileSubPath = tile.join('/') + '.json'
-                        let tilePath = tileDirectory + "/" + tileSubPath;
-                    loadingTiles[tileId(tile)] = true;
-                    d3.json(tilePath,
-                        function(error, data) {
-                            delete loadingTiles[tileId(tile)];
-                            loadedTiles[tileId(tile)] = data;
-                            showTiles(currentTiles);
-                        });
+                            let tileSubPath = tile.join('/') + '.json';
+                            let tilePath = tileDirectory + "/" + tileSubPath;
+                            loadingTiles[tileId(tile)] = true;
+                            d3.json(tilePath, function(error, data) {
+                                delete loadingTiles[tileId(tile)];
+                                loadedTiles[tileId(tile)] = data;
+                                showTiles(currentTiles);
+                            });
                         } else {
                             showTiles(currentTiles);
                         }
@@ -232,7 +231,7 @@ export function TiledArea() {
                         });
 
                     // this will become the tiling code
-                    let zoomLevel = Math.round(Math.log(currentZoom) / Math.LN2) + 2;
+                    let zoomLevel = Math.round(Math.log(zoom.scale()) / Math.LN2) + 2;
 
                     if (zoomLevel > maxZoom)
                         zoomLevel = maxZoom;
@@ -265,10 +264,6 @@ export function TiledArea() {
                         rows.forEach((r) => { tiles.push([zoomLevel, r]);});
 
                     }
-                    // hey hye
-                    /*
-                       let tiles = [];
-                       */
                     dispatch.draw();
 
                     refreshTiles(tiles);
@@ -341,7 +336,6 @@ export function TiledArea() {
                     // set up the data-dependent sections of the chart
                     minX = tile_info.min_pos[0];
                     maxX = tile_info.max_pos[0] + 0.001;
-                    let currentZoom = 1;
 
                     if (!oneDimensional) {
                         minY = tile_info.min_pos[1];

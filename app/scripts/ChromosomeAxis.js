@@ -77,19 +77,12 @@ export function ChromosomeAxis(chromInfoFile) {
                 if (cumValues == null)
                     return;
 
-                console.log("bisect", bisect(cumValues, xScale.domain()[1]));
-                console.log('cumValues.length:', cumValues.length)
-
-
                 localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
                 function zoomChanged(translate, scale) {
-                    console.log('zoomChanged');
                     // something changed the zoom.
                     zoom.translate(translate);
                     zoom.scale(scale);
-
-                    console.log('x.domain():', xScale.domain());
 
                     draw();
                 }
@@ -120,9 +113,6 @@ export function ChromosomeAxis(chromInfoFile) {
 
                 textLeftChr.text(chrLeft)
                 textRightChr.text(chrRight)
-
-                       console.log('tickSpan:', tickSpan);
-
                        pathScale.attr('d', `M${scaleMid - tickWidth / 2},${tickHeight}` + 
                                       `L${scaleMid - tickWidth / 2}, 0` + 
                                           `L${scaleMid + tickWidth / 2}, 0` + 
