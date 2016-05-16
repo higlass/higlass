@@ -39,6 +39,7 @@
     "gulp-useref": "^3.0.7",
     "gulp-webpack": "~1.5.0",
     "main-bower-files": "~2.11.1",
+    "slugid": "^1.1.0",
     "webpack": "~1.12.14",
     "webpack-stream": "~3.1.0",
     "wiredep": "~3.0.0",

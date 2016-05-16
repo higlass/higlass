@@ -6,16 +6,16 @@ export function ChromosomeAxis(chromInfoFile) {
     let bisect = d3.bisector(function(d) { return d.pos; }).left;
     let width = 600;
     let zoomDispatch = null;
-    let xScale = d3.scale.linear();
+    let domain = [0,1];
 
     function chart(selection) {
         selection.each(function(d) {
                 let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
                 let gChromLabels = null;
                 let gSelect = null;
+                let xScale = d3.scale.linear().domain(domain).range([0,width]);
 
                 let cumValues = d.cumPositions;
-                let xScale = d3.scale.linear().range([0, width]);
                 let xAxis = null;
                 let gAxis = null;
                 let lineScale = null;
@@ -77,27 +77,9 @@ export function ChromosomeAxis(chromInfoFile) {
                 if (cumValues == null)
                     return;
 
-                let chrLeft = cumValues[bisect(cumValues, xScale.domain()[0])].chr
-                let chrRight = cumValues[bisect(cumValues, xScale.domain()[1])].chr
+                console.log("bisect", bisect(cumValues, xScale.domain()[1]));
+                console.log('cumValues.length:', cumValues.length)
 
-                textLeftChr.text(chrLeft)
-                textRightChr.text(chrRight)
-
-                let ticks = xScale.ticks(5);
-                let tickSpan = ticks[1] - ticks[0]
-                let tickWidth = xScale(ticks[1]) - xScale(ticks[0]);
-
-                let scaleMid = (xScale.range()[1] - xScale.range()[0]) / 2
-
-                let tickHeight = 4;
-                let tickFormat = d3.format(",d")
-
-                pathScale.attr('d', `M${scaleMid - tickWidth / 2},${tickHeight}` + 
-                               `L${scaleMid - tickWidth / 2}, 0` + 
-                                   `L${scaleMid + tickWidth / 2}, 0` + 
-                                       `L${scaleMid + tickWidth / 2},${tickHeight}`)
-                                       textScale.attr('x', scaleMid)
-                                       .text(tickFormat(tickSpan) + " bp");
 
                 localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
@@ -106,6 +88,8 @@ export function ChromosomeAxis(chromInfoFile) {
                     // something changed the zoom.
                     zoom.translate(translate);
                     zoom.scale(scale);
+
+                    console.log('x.domain():', xScale.domain());
 
                     draw();
                 }
@@ -120,6 +104,33 @@ export function ChromosomeAxis(chromInfoFile) {
                        let tickSpan = ticks[1] - ticks[0]
                        let tickWidth = xScale(ticks[1]) - xScale(ticks[0]);
 
+                       let scaleMid = (xScale.range()[1] - xScale.range()[0]) / 2
+
+                       let tickHeight = 4;
+                       let tickFormat = d3.format(",d")
+
+                        let chrLeft = cumValues[bisect(cumValues, xScale.domain()[0])].chr
+                        
+                       let bsRight =  bisect(cumValues, xScale.domain()[1])
+
+                       if (bsRight == cumValues.length)
+                           bsRight -= 1
+
+                        let chrRight = cumValues[bsRight].chr
+
+                textLeftChr.text(chrLeft)
+                textRightChr.text(chrRight)
+
+                       console.log('tickSpan:', tickSpan);
+
+                       pathScale.attr('d', `M${scaleMid - tickWidth / 2},${tickHeight}` + 
+                                      `L${scaleMid - tickWidth / 2}, 0` + 
+                                          `L${scaleMid + tickWidth / 2}, 0` + 
+                                              `L${scaleMid + tickWidth / 2},${tickHeight}`)
+
+                                              textScale.attr('x', scaleMid)
+                                              .text(tickFormat(tickSpan) + " bp");
+
                        /*
                        lineScale.attr('x2', xScale.range()[1]);
                        lineScale.attr('x1', xScale.range()[1] - tickWidth);
@@ -130,6 +141,8 @@ export function ChromosomeAxis(chromInfoFile) {
                        textLeftChr.attr('x', 0);
                        textRightChr.attr('x', 0 + xScale.range()[1]);
                    }
+
+                   draw();
         });
     }
 
@@ -142,6 +155,12 @@ export function ChromosomeAxis(chromInfoFile) {
     chart.xScale = function(_) {
         if (!arguments.length) return xScale;
         else xScale = _;
+        return chart;
+    }
+
+    chart.domain = function(_) {
+        if (!arguments.length) return domain;
+        else domain = _;
         return chart;
     }
 

@@ -33,7 +33,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 
     var chromInfoPlot = goomba.ChromosomeAxis()
     .width(width - margin.left - margin.right)
-    .xScale(xScale)
+    .domain(xScale.domain())
     .zoomDispatch(zoomDispatch);
 
     svg.append('g')
@@ -45,7 +45,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .height(height)
     .tileDirectory(tileDirectory)
     .dataPointLayout(goomba.GenePlot)
-    .xScale(xScale)
+    .domain(xScale.domain())
     .margin({'left': 30, 'top': 30, 'right': 30, 'bottom': 10})
     .zoomDispatch(zoomDispatch);
 

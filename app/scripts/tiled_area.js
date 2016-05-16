@@ -13,6 +13,7 @@ export function TiledArea() {
     let xScale = null, yScale = null, valueScale = null;
     let widthScale = null;
     let zoomTo = null;
+    let domain = null;
 
     let loadedTiles = {};
     let loadingTiles = {};
@@ -46,6 +47,7 @@ export function TiledArea() {
             let minX = 0, maxX = 0, minY = 0, maxY = 0,
                 minImportance = 0, maxImportance = 0;
             let currentZoom = 1, maxZoom = 1;
+            let xScale = d3.scale.linear();
 
             let zoom = d3.behavior.zoom();
             let slugId = slugid.nice();
@@ -357,6 +359,11 @@ export function TiledArea() {
 
                     maxZoom = tile_info.max_zoom;
 
+                    if (domain != null) {
+                        minX = domain[0];
+                        maxX = domain[1];
+                    }
+
                     xScaleDomain = [minX, maxX];
                     yScaleDomain = [minY, maxY];
 
@@ -476,6 +483,12 @@ export function TiledArea() {
     chart.margin = function(_) {
         if (!arguments) return margin;
         else margin = _;
+        return chart;
+    }
+
+    chart.domain = function(_) {
+        if (!arguments) return domain;
+        else domain = _;
         return chart;
     }
 
