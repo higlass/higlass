@@ -71,6 +71,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .uidString('refseqid')
 
     tiledArea.on('draw', () => {
+        gTracks.call(zoomableLabels);
         //gMain.call(zoomableLabels);
     });
 });

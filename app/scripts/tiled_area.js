@@ -41,7 +41,6 @@ export function TiledArea() {
             let loadingTiles = {};
             let shownTiles = new Set();
 
-            console.log('tileDirectory:', tileDirectory);
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             let minX = 0, maxX = 0, minY = 0, maxY = 0,
                 minImportance = 0, maxImportance = 0;
@@ -50,8 +49,6 @@ export function TiledArea() {
 
             let zoom = d3.behavior.zoom();
             let slugId = slugid.nice();
-
-            console.log('slugId:', slugId, tileDirectory);
 
             // setup the data-agnostic parts of the chart
             var gEnter = d3.select(this).append("g");
@@ -209,7 +206,6 @@ export function TiledArea() {
                             let tileSubPath = tile.join('/') + '.json';
                             let tilePath = tileDirectory + "/" + tileSubPath;
                             loadingTiles[tileId(tile)] = true;
-                            console.log('tilePath:', tilePath);
                             d3.json(tilePath, function(error, data) {
                                 delete loadingTiles[tileId(tile)];
                                 loadedTiles[tileId(tile)] = data;
@@ -226,7 +222,6 @@ export function TiledArea() {
                     // need to redraw the tiles, otherwise it's irrelevant
                     //
                     //gXAxis.call(xAxis);
-                    console.log('drawing...', slugId);
 
                     gMain.selectAll('.data-g')
                         .each((d) => { 
