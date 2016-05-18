@@ -5,6 +5,7 @@ import {ZoomableLabels} from 'zoomable_labels';
 
 export {GenePlot} from './gene.js';
 export {GeneTileLayout} from './gene.js';
+export {WiggleTileLayout} from './WiggleTrack.js';
 export {ChromosomeAxis} from './ChromosomeAxis.js';
 export {ChromosomeInfo} from './ChromosomeInfo.js';
 export {TiledArea} from './tiled_area.js';

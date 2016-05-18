@@ -15,7 +15,7 @@
 <script type='text/javascript'>
 
 let width = 600;
-let height = 80;
+let height = 140;
 
 let trackHeight = 30;
 let margin = {'left': 30, 'top': 10, 'right': 30, 'bottom': 10};
@@ -46,6 +46,10 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 
     let tileLayout = goomba.GeneTileLayout();
 
+    let gMain = svg.append('g')
+    .classed('g-main', true);
+
+    /////////////////////////////
     let tiledArea = goomba.TiledArea().width(width)
     .height(height)
     .dataPointLayout(goomba.GenePlot)
@@ -54,10 +58,8 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .margin({'left': 30, 'top': 30, 'right': 30, 'bottom': 10})
     .zoomDispatch(zoomDispatch);
 
-    let gMain = svg.append('g')
-    .classed('g-main', true);
-
-    let gTracks = gMain
+    let gGeneTracks = gMain
+        .append('g')
     .selectAll('g')
     .data(tileDirectories)
     .enter()
@@ -74,8 +76,31 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .uidString('refseqid')
 
     tiledArea.on('draw', () => {
-        gTracks.call(zoomableLabels);
+        gGeneTracks.call(zoomableLabels);
     });
+    ////////////////////////
+
+    let wiggleTileArea = goomba.TiledArea().width(width)
+    .height(height)
+    .dataPointLayout(goomba.GenePlot)
+    .tileLayout(goomba.WiggleTileLayout())
+    .domain(xScale.domain())
+    .margin({'left': 30, 'top': 30, 'right': 30, 'bottom': 10})
+    .zoomDispatch(zoomDispatch);
+
+    let gWiggleTracks = gMain
+    .append('g')
+    .attr('transform', 'translate(0,' + (tileDirectories.length * trackHeight) + ')')
+    .selectAll('g')
+    .data(['https://s3.amazonaws.com/pkerp/data/ENCODE/2016-05-16-GM12878-RNASeq/tiles'])
+    .enter()
+    .append('g')
+    .attr('transform', (d,i) => { return 'translate(0,' + i * trackHeight + ')'; })
+    .classed('track-g', true)
+    .call(wiggleTileArea)
+
+    
+    //let gWiggleTracks = gMain.
 });
 
 </script>

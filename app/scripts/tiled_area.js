@@ -44,7 +44,8 @@ export function TiledArea() {
 
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             let minX = 0, maxX = 0, minY = 0, maxY = 0,
-                minImportance = 0, maxImportance = 0;
+                minImportance = 0, maxImportance = 0,
+                minValue = 0, maxValue = 0;
             let  maxZoom = 1;
             let xScale = d3.scale.linear();
 
@@ -174,7 +175,12 @@ export function TiledArea() {
                             loadingTiles[tileId(tile)] = true;
                             d3.json(tilePath, function(error, data) {
                                 delete loadingTiles[tileId(tile)];
-                                loadedTiles[tileId(tile)] = {'tileId': tileId(tile), 'data': data};
+                                loadedTiles[tileId(tile)] = {'tileId': tileId(tile), 
+                                    'tilePos': tile,
+                                    'xRange': [minX, maxX],
+                                    'importanceRange': [minImportance, maxImportance],
+                                    'valueRange': [minValue, maxValue],
+                                    'data': data,};
                                 showTiles(currentTiles);
                             });
                         } else {
@@ -316,8 +322,8 @@ export function TiledArea() {
                         maxY = 1;
                     }
 
-                    let minValue = tile_info.min_value;
-                    let maxValue = tile_info.max_value;
+                    minValue = tile_info.min_value;
+                    maxValue = tile_info.max_value;
 
                     let minArea = tile_info.min_importance;
                     let maxArea = tile_info.max_importance;
