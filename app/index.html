@@ -44,9 +44,12 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .datum(chromInfo)
     .call(chromInfoPlot);
 
+    let tileLayout = goomba.GeneTileLayout();
+
     let tiledArea = goomba.TiledArea().width(width)
     .height(height)
     .dataPointLayout(goomba.GenePlot)
+    .tileLayout(tileLayout)
     .domain(xScale.domain())
     .margin({'left': 30, 'top': 30, 'right': 30, 'bottom': 10})
     .zoomDispatch(zoomDispatch);
