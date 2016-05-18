@@ -4,6 +4,7 @@ var webpack = require('webpack');
 module.exports = {
   context: __dirname + '/app',
   entry: {
+    transfer: ['./scripts/transfer.js'],
     hi_z: ['./scripts/hi_z.js']
   },
   output: {
