@@ -153,13 +153,6 @@ export function TiledArea() {
 
                     gTilesExit.remove();
 
-                    // draw the tiles
-                    gMain.selectAll('.tile-g')
-                    .call(tileLayout
-                            .xScale(xScale)
-                            .minImportance(minImportance)
-                            .maxImportance(maxImportance));
-
                     // only redraw if the tiles have changed
                     if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
                         draw();
@@ -202,6 +195,11 @@ export function TiledArea() {
                             d.pointLayout.draw(); 
                         });
                     */
+                    gMain.selectAll('.tile-g')
+                    .call(tileLayout
+                            .xScale(xScale)
+                            .minImportance(minImportance)
+                            .maxImportance(maxImportance));
 
                     // this will become the tiling code
                     let zoomLevel = Math.round(Math.log(zoom.scale()) / Math.LN2) + 2;

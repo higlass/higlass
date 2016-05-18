@@ -7,17 +7,10 @@ export function GeneTileLayout() {
     let genePlotLayout = GenePlot();
     let minImportance = 0;
     let maxImportance = 0;
+    let genePlot = GenePlot();
 
     function chart(selection) {
         selection.each(function(tileG) {
-            // for each tile, draw all the genes located on that tile 
-            tileG.data.map((d) => { 
-                d.pointLayout = GenePlot()
-                    .xScale(xScale)
-                    .minImportance(minImportance)
-                    .maxImportance(maxImportance); 
-            });
-
             let gDataPoints = d3.select(this).selectAll('.data-g')
                 .data(tileG.data, (d) => { return d.refseqid; })
 
@@ -28,11 +21,10 @@ export function GeneTileLayout() {
                 gDataPoints.exit()
                 .remove()
 
-
-                d3.select(this).selectAll('.data-g')
+                gDataPoints
                 .each(function(d) {
                     d3.select(this)
-                        .call(d.pointLayout);
+                        .call(genePlot);
                     //d.pointLayout.draw();
                 });
         });
@@ -41,18 +33,21 @@ export function GeneTileLayout() {
     chart.minImportance = function(_) {
         if (!arguments.length) return minImportance;
         minImportance = _;
+        genePlot.minImportance(minImportance);
         return chart;
     }
 
     chart.maxImportance = function(_) {
         if (!arguments.length) return maxImportance;
         maxImportance = _;
+        genePlot.maxImportance(maxImportance);
         return chart;
     }
 
     chart.xScale = function(_) {
         if (!arguments.length) return xScale;
         xScale = _;
+        genePlot.xScale(xScale);
         return chart;
     }
     //function 
@@ -79,8 +74,6 @@ export function GenePlot() {
                 geneJson.chromOffset = geneJson.genomeTxStart - geneJson.txStart;
                 let gMain = d3.select(this);
 
-                console.log('appending:');
-
                 /////////////////
                 let lineGene = gMain.selectAll('line')
                     .data([0])
@@ -95,7 +88,7 @@ export function GenePlot() {
                 lineGene = gMain.append('line')
                 /////////////////
 
-                let circleGene = gMain.selectAll('gene-cirlce')
+                let circleGene = gMain.selectAll('.gene-circle')
                 .data([geneJson])
 
                 circleGene.enter()
