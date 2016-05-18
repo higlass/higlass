@@ -728,7 +728,7 @@ DataServerDriver.WAVES        = 20;          // Number of sinusoids to append in
 
 // Heated object color map lookup table.
 // Perceptually linearized: http://www.cs.uml.edu/~haim/ColorCenter/HOCM.htm
-var heatedObjectMap = [
+export var heatedObjectMap = [
     [  0,   0,   0],
     [ 35,   0,   0],
     [ 52,   0,   0],
