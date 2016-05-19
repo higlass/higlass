@@ -32,7 +32,7 @@
     
     // Adjust transfer function domain when data set maximum intensity is known.
     server.dataSetInfo(mmv.dataSet).then(info => {
-        transferEditor.domain = [0, info.maxDensity];
+        transferEditor.domain = [0.01, info.maxDensity];
     });
     
     // Listen to transfer function changes.

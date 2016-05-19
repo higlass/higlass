@@ -27,36 +27,40 @@ export class PiecewiseLinearTransferFunction {
         var extendedControlPoints = _.concat(prunedControlPoints, [point]);             // Extended.
         extendedControlPoints.sort((l, r) => l[0] - r[0]);                              // Maintain x-axis consistency.
         
-        // Construct the same object type, including the extra control point.
-        return new this.constructor(extendedControlPoints);
+        // Create control points to cover entire domain.
+        var newControlPoints = new this.constructor(extendedControlPoints);
+        newControlPoints.coverDomain(fixedDomain);
+        
+        return newControlPoints;
     }
     
     // Remove given control point.
-    removeControlPoint(index) {
-        var prunedControlPoints = _.clone(this.controlPoints);
-        _.pullAt(prunedControlPoints, index);
+    removeControlPoint(index, fixedDomain) {
+        var result = this;
         
-        // Construct the same object type, minus the given control point.
-        return new this.constructor(prunedControlPoints);
+        // First and last points cannot be removed.
+        if(index > 0 && index < this._controlPoints.length - 1) {
+            var prunedControlPoints = _.clone(this.controlPoints);
+            _.pullAt(prunedControlPoints, index);
+            
+            // Create control points to cover entire domain.
+            result = new this.constructor(prunedControlPoints);
+            result.coverDomain(fixedDomain);
+        }
+        
+        return result;
     }
     
-    // Map given density to a value in [0,1].
-    map(density) {
+    // Create control points to cover entire domain.
+    coverDomain(domain) {
+        if(domain) {
+            var firstControl = _.first(this._controlPoints);
+            var lastControl = _.last(this._controlPoints);
+            
+            firstControl[0] = Math.min(firstControl[0], domain[0]);
+            lastControl[0] = Math.max(lastControl[0], domain[1]);
+        }
     }
-    
-    // Convert to a binned mapping, for performance.
-    /*binnedMap(bins) {
-        // Construct value bins. Assume function domain lies between first and last control point.
-        var binsM1 = bins - 1;
-        var lowerBound = _.first(this.controlPoints)[0];
-        var upperBound = _.last(this.controlPoints)[0];
-        
-        var delta = upperBound - lowerBound;
-        var values = _.range(bins).map(i => lowerBound + (i * delta) / binsM1);
-        var mappedBins = values.map(v => this.map(v));
-        
-        return (density) => mappedBins[Math.floor(bins * (density - lowerBound) / delta)];
-    }*/
     
     // Convert to a binned mapping, for performance, but using an intermediary log scale to improve large range resolution.
     binnedMap(bins) {
@@ -72,7 +76,7 @@ export class PiecewiseLinearTransferFunction {
         return (density) => {
             // Protect bin bounds.
             var binIndex = Math.floor(bins * (Math.log(density + 1) - lowerBound) / delta); // Look up bin in log domain.
-            binIndex = Math.min(Math.max(0, binIndex), binsM1);
+            binIndex = Math.min(Math.max(0, binIndex), binsM1); // Clamp bins (off-domain values are extrapolated with nearest neighbor approach).
             
             return mappedBins[binIndex];
         };
@@ -101,37 +105,6 @@ export class PiecewiseLinearTransferFunction {
         return result;
     }
 }
-
-// Specification of object that transforms counts to image data (color mapped).
-/*export class TileColorMapper {
-    // Take a transfer function that maps a domain to a range of [0, 1].
-    constructor(transferFunction) {
-        this._transferFunction = transferFunction;
-    }
-    
-    // Map counts (flat array of length N) to imageData with four channels
-    // red, green, blue, alpha, as a flat array of length 4 * N. The alpha
-    // is set to 1 by default and should not be altered.
-    transform(counts, imageArray, dataSetInfo) {
-    }
-}
-
-export class HeatedObjectColorMapper extends TileColorMapper {
-    transform(counts, imageArray, dataSetInfo) {
-        // Normalize by max transfer value.
-        for (let i = 0; i < counts.length; i++) {
-            // Assume transfer function range is [0, 1] for now.
-            let transferred = this._transferFunction(counts[i]);
-
-            // Set pixel channels. Apply a heat object color map.
-            let aI = 4 * i;
-            imageArray[aI]   = heatedObjectMap[transferred][0];   // Red.
-            imageArray[aI+1] = heatedObjectMap[transferred][1];   // Green.
-            imageArray[aI+2] = heatedObjectMap[transferred][2];   // Blue.
-            // Alpha channel has been filled already.
-        }
-    }
-}*/
 
 export class TransferFunctionEditor {
     constructor(parentElement, width, height, mapColors) {
@@ -201,7 +174,7 @@ export class TransferFunctionEditor {
         this.y = d3.scale.linear()
                    .domain([0, 1])
                    .range([this._innerHeight, 0]);
-        this.domain = [0, 1];
+        this.domain = [1, 2];   // Initiate with arbitrary domain.
         
         // Interaction.
         var mousePlotCoordinates = (element) => {
@@ -239,24 +212,31 @@ export class TransferFunctionEditor {
         this.background.on("mouseup", () => {
             if(this.dragControlDot) {
                 this.dragControlDot = false;
-                //this.transferFunction = this.futureTransferFunction;
                 this.futureTransferFunction = null;
+            }
+        });
+        
+        // Delete focused control point on key press.
+        d3.select("body").on("keydown", () => {
+            var code = d3.event.keyCode;
+            
+            if(this.focused >= 0 && (code === 8 || code === 46)) {
+                this.transferFunction = this.transferFunction.removeControlPoint(this.focused, this.domain);
             }
         });
     }
     
-    // Domain of transfer function. The range is fixed to [0,1].
+    // Get the transfer function input domain. The range is fixed to [0,1].
     get domain() {
         return this._domain;
     }
     
+    // Set the transfer function input domain. Both bounds should be greater than zero, because it is a log scale.
     set domain(interval) {
-        // Limit interval to just above 0 to prevent log scale issues.
-        this._domain = _.clone(interval);
-        if(this._domain[0] <= 0) this._domain[0] = 0.01;
+        this._domain = _.clone(interval);   // Clone interval for protection.
         
         // Plot scale matches domain. Clamp to prevent log scale issue.
-        this.x = d3.scale.log().clamp(true)           //.linear()
+        this.x = d3.scale.log().clamp(true)
                    .domain(this._domain)
                    .range([0, this._innerWidth]);
         
@@ -302,8 +282,9 @@ export class TransferFunctionEditor {
                   .call(xA);
         
         // Control dots.
+        var controlPoints = this._transferFunction.controlPoints;
         var controlDots = this.controlDots.selectAll("circle")
-                              .data(this._transferFunction.controlPoints);
+                              .data(controlPoints);
                               
         controlDots.enter()
                    .append("circle")
@@ -315,6 +296,25 @@ export class TransferFunctionEditor {
                    
         controlDots.exit()
                    .remove();
+                   
+        // Control delte markers.
+        var controlDeleteMarkers = this.controlDots.selectAll("text")
+                                       .data(controlPoints);
+        
+        controlDeleteMarkers.enter()
+                            .append("text")
+                            .attr("class", "transferDel")
+                            .attr("text-anchor", "middle");
+        
+        controlDeleteMarkers.attr("x", d => this.x(d[0]))
+                            .attr("y", d => this.y(d[1]) + (d[1] > .5 ? 4 * this._dotRadius : -this._dotRadius))
+                            .text((d, i) => i > 0 && i < controlPoints.length - 1 ? "\u00D7" : "")
+                            .on("click", (d, i) => {
+                                this.transferFunction = this.transferFunction.removeControlPoint(i, this.domain);
+                            });
+                            
+        controlDeleteMarkers.exit()
+                            .remove();
         
         // Adjust control point coordinates on drag.
         controlDots.on("mousedown", (d, i) => {
@@ -333,6 +333,14 @@ export class TransferFunctionEditor {
         controlDots.on("mousemove", (d, i) => {
             this.futureTransferFunction = null;
         });
+        
+        // Focus hovered dot for possible deletion.
+        controlDots.on("mouseover", (d, i) => {
+            this.focused = i;
+        });
+        controlDots.on("mouseout", (d, i) => {
+            this.focused = null;
+        });
                    
         // Connecting line.
         var linePath = d3.svg.line()
@@ -341,21 +349,6 @@ export class TransferFunctionEditor {
                          .interpolate("linear");
         this.line.attr("d", linePath(this.transferFunction.controlPoints));
         this.futureLine.attr("d", this.futureTransferFunction ? linePath(this.futureTransferFunction.controlPoints) : []);
-    }
-    
-    get dataSetInfo() {
-        return this._dataSetInfo;
-    }
-    
-    set dataSetInfo(dataSetInfo) {
-        this._dataSetInfo = dataSetInfo;
-        
-        // If data set info is not null, then initiate transfer function to identity.
-        if(dataSetInfo) {
-            this._transfer = (count) => count / dataSetInfo.maxDensity;
-        } else {
-            this._transfer = null;
-        }
     }
     
     // Add change listener.
