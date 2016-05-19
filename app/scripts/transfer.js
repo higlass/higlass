@@ -104,6 +104,12 @@ export class PiecewiseLinearTransferFunction {
             }
         }
         
+        // Fix out of bounds error -> clamp when out of range. This mitigates floating point precision issues.
+        if(!result) {
+            if(density < this._controlXs[0]) result = this._controlYs[0];
+            if(density > this._controlXs[this._controlXs.length-1]) result = this._controlYs[this._controlXs.length-1];
+        }
+        
         return result;
     }
 }

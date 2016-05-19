@@ -366,7 +366,7 @@ export function MassiveMatrixPlot() {
                 maxValue = tile_info.max_value;
 
                 if (transferEditor != null) {
-                    transferEditor.domain = [0.01, maxValue+1];
+                    transferEditor.domain = [0.001, maxValue+1];
                     //transferFunction = tF.binnedMap(10000);
 
                     transferEditor.onChange(tF => {
