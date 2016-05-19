@@ -298,7 +298,7 @@ export class TransferFunctionEditor {
                    .remove();
                    
         // Control delte markers.
-        var controlDeleteMarkers = this.controlDots.selectAll("text")
+        /*var controlDeleteMarkers = this.controlDots.selectAll("text")
                                        .data(controlPoints);
         
         controlDeleteMarkers.enter()
@@ -314,7 +314,7 @@ export class TransferFunctionEditor {
                             });
                             
         controlDeleteMarkers.exit()
-                            .remove();
+                            .remove();*/
         
         // Adjust control point coordinates on drag.
         controlDots.on("mousedown", (d, i) => {
@@ -327,6 +327,10 @@ export class TransferFunctionEditor {
                 this.dragControlDot = false;
                 this.futureTransferFunction = null;
             }
+        });
+        
+        controlDots.on("click", (d, i) => {
+            this.transferFunction = this.transferFunction.removeControlPoint(i, this.domain);
         });
         
         // Remove future transfer function on dot hover.
