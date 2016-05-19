@@ -1,3 +1,5 @@
+import '../styles/transfer.css';
+
 import $ from 'jquery';
 import _ from 'lodash';
 import d3 from 'd3';
