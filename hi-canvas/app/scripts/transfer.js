@@ -39,7 +39,7 @@ export class PiecewiseLinearTransferFunction {
         var result = this;
         
         // First and last points cannot be removed.
-        if(index > 0 && index < this.controlPoints.length - 1) {
+        if(index > 0 && index < this._controlPoints.length - 1) {
             var prunedControlPoints = _.clone(this.controlPoints);
             _.pullAt(prunedControlPoints, index);
             
@@ -215,6 +215,15 @@ export class TransferFunctionEditor {
                 this.futureTransferFunction = null;
             }
         });
+        
+        // Delete focused control point on key press.
+        d3.select("body").on("keydown", () => {
+            var code = d3.event.keyCode;
+            
+            if(this.focused >= 0 && (code === 8 || code === 46)) {
+                this.transferFunction = this.transferFunction.removeControlPoint(this.focused, this.domain);
+            }
+        });
     }
     
     // Get the transfer function input domain. The range is fixed to [0,1].
@@ -273,8 +282,9 @@ export class TransferFunctionEditor {
                   .call(xA);
         
         // Control dots.
+        var controlPoints = this._transferFunction.controlPoints;
         var controlDots = this.controlDots.selectAll("circle")
-                              .data(this._transferFunction.controlPoints);
+                              .data(controlPoints);
                               
         controlDots.enter()
                    .append("circle")
@@ -286,6 +296,25 @@ export class TransferFunctionEditor {
                    
         controlDots.exit()
                    .remove();
+                   
+        // Control delte markers.
+        var controlDeleteMarkers = this.controlDots.selectAll("text")
+                                       .data(controlPoints);
+        
+        controlDeleteMarkers.enter()
+                            .append("text")
+                            .attr("class", "transferDel")
+                            .attr("text-anchor", "middle");
+        
+        controlDeleteMarkers.attr("x", d => this.x(d[0]))
+                            .attr("y", d => this.y(d[1]) + (d[1] > .5 ? 4 * this._dotRadius : -this._dotRadius))
+                            .text((d, i) => i > 0 && i < controlPoints.length - 1 ? "\u00D7" : "")
+                            .on("click", (d, i) => {
+                                this.transferFunction = this.transferFunction.removeControlPoint(i, this.domain);
+                            });
+                            
+        controlDeleteMarkers.exit()
+                            .remove();
         
         // Adjust control point coordinates on drag.
         controlDots.on("mousedown", (d, i) => {
@@ -303,6 +332,14 @@ export class TransferFunctionEditor {
         // Remove future transfer function on dot hover.
         controlDots.on("mousemove", (d, i) => {
             this.futureTransferFunction = null;
+        });
+        
+        // Focus hovered dot for possible deletion.
+        controlDots.on("mouseover", (d, i) => {
+            this.focused = i;
+        });
+        controlDots.on("mouseout", (d, i) => {
+            this.focused = null;
         });
                    
         // Connecting line.

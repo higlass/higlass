@@ -43,3 +43,7 @@
 .transferAxis text {
   font: 10px sans-serif;
 }
+
+.transferDel {
+    cursor: pointer;
+}
