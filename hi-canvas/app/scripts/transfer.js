@@ -1,0 +1,375 @@
+import $ from 'jquery';
+import _ from 'lodash';
+import d3 from 'd3';
+
+// Transfer function that is a piecewise linear, defined by control points (ordered by domain value).
+export class PiecewiseLinearTransferFunction {
+       
+    // Construct from 2D control points.
+    constructor(controlPoints) {
+        this._controlPoints = controlPoints;
+        this._controlXs = this._controlPoints.map(p => p[0]);
+        this._controlYs = this._controlPoints.map(p => p[1]);
+    }
+    
+    // 2D Control points.
+    get controlPoints() {
+        return this._controlPoints;
+    }
+    
+    set controlPoints(points) {
+        this._controlPoints = points;
+    }
+    
+    // Return new transfer function with control point inserted.
+    insertControlPoint(point, fixedDomain) {
+        var prunedControlPoints = this.controlPoints.filter(p => p[0] !== point[0]);    // Filtered out possible existing point at same x-coordinate. 
+        var extendedControlPoints = _.concat(prunedControlPoints, [point]);             // Extended.
+        extendedControlPoints.sort((l, r) => l[0] - r[0]);                              // Maintain x-axis consistency.
+        
+        // Construct the same object type, including the extra control point.
+        return new this.constructor(extendedControlPoints);
+    }
+    
+    // Remove given control point.
+    removeControlPoint(index) {
+        var prunedControlPoints = _.clone(this.controlPoints);
+        _.pullAt(prunedControlPoints, index);
+        
+        // Construct the same object type, minus the given control point.
+        return new this.constructor(prunedControlPoints);
+    }
+    
+    // Map given density to a value in [0,1].
+    map(density) {
+    }
+    
+    // Convert to a binned mapping, for performance.
+    /*binnedMap(bins) {
+        // Construct value bins. Assume function domain lies between first and last control point.
+        var binsM1 = bins - 1;
+        var lowerBound = _.first(this.controlPoints)[0];
+        var upperBound = _.last(this.controlPoints)[0];
+        
+        var delta = upperBound - lowerBound;
+        var values = _.range(bins).map(i => lowerBound + (i * delta) / binsM1);
+        var mappedBins = values.map(v => this.map(v));
+        
+        return (density) => mappedBins[Math.floor(bins * (density - lowerBound) / delta)];
+    }*/
+    
+    // Convert to a binned mapping, for performance, but using an intermediary log scale to improve large range resolution.
+    binnedMap(bins) {
+        // Construct value bins. Assume function domain lies between first and last control point.
+        var binsM1 = bins - 1;
+        var lowerBound = Math.log(_.first(this.controlPoints)[0] + 1);  // Space bins in log domain.
+        var upperBound = Math.log(_.last(this.controlPoints)[0] + 1);
+        
+        var delta = upperBound - lowerBound;
+        var values = _.range(bins).map(i => lowerBound + (i * delta) / binsM1);
+        var mappedBins = values.map(v => this.map(Math.exp(v) - 1));    // Convert mapped values back to regular domain.
+        
+        return (density) => {
+            // Protect bin bounds.
+            var binIndex = Math.floor(bins * (Math.log(density + 1) - lowerBound) / delta); // Look up bin in log domain.
+            binIndex = Math.min(Math.max(0, binIndex), binsM1);
+            
+            return mappedBins[binIndex];
+        };
+    }
+    
+    // Map given density to a value in [0,1], stick to linear interpolation for now.
+    map(density) {
+        var result = Number.NaN;
+        
+        // Find index of density.
+        for(let i = 0; i < this._controlXs.length - 1; i++) {
+            let lowerX = this._controlXs[i];
+            let upperX = this._controlXs[i+1];
+            
+            if(lowerX <= density && density <= upperX) {
+                let lowerXLog = Math.log(lowerX + 1);
+                let upperXLog = Math.log(upperX + 1);
+                let deltaX = upperXLog - lowerXLog;
+                let lowerY = this._controlYs[i];
+                let upperY = this._controlYs[i+1];
+                let z = (Math.log(density + 1) - lowerXLog) / deltaX;
+                result = (1 - z) * lowerY + z * upperY;
+            }
+        }
+        
+        return result;
+    }
+}
+
+// Specification of object that transforms counts to image data (color mapped).
+/*export class TileColorMapper {
+    // Take a transfer function that maps a domain to a range of [0, 1].
+    constructor(transferFunction) {
+        this._transferFunction = transferFunction;
+    }
+    
+    // Map counts (flat array of length N) to imageData with four channels
+    // red, green, blue, alpha, as a flat array of length 4 * N. The alpha
+    // is set to 1 by default and should not be altered.
+    transform(counts, imageArray, dataSetInfo) {
+    }
+}
+
+export class HeatedObjectColorMapper extends TileColorMapper {
+    transform(counts, imageArray, dataSetInfo) {
+        // Normalize by max transfer value.
+        for (let i = 0; i < counts.length; i++) {
+            // Assume transfer function range is [0, 1] for now.
+            let transferred = this._transferFunction(counts[i]);
+
+            // Set pixel channels. Apply a heat object color map.
+            let aI = 4 * i;
+            imageArray[aI]   = heatedObjectMap[transferred][0];   // Red.
+            imageArray[aI+1] = heatedObjectMap[transferred][1];   // Green.
+            imageArray[aI+2] = heatedObjectMap[transferred][2];   // Blue.
+            // Alpha channel has been filled already.
+        }
+    }
+}*/
+
+export class TransferFunctionEditor {
+    constructor(parentElement, width, height, mapColors) {
+        this._parentElement = parentElement;
+        
+        this._axisWidth = 20;
+        this._width = width - this._axisWidth;
+        this._height = height - this._axisWidth;
+        this._mapColors = mapColors;
+        
+        this._dotRadius = 4;    // Radius of transfer dots.
+        this._dotExpanse = 8;   // Hovered dot radius.
+        this._innerWidth = this._width - 2 * this._dotExpanse;
+        this._innerHeight = this._height - 2 * this._dotExpanse;
+        
+        // Change event listeners.
+        this.changeListeners = [];
+        
+        // SVG Canvas.
+        this.svg = d3.select(parentElement)
+                     .append("svg")
+                     .attr("width", width)
+                     .attr("height", height)
+                     .append("g")
+                     .attr("transform", "translate(" + this._dotExpanse + "," + this._dotExpanse + ")");
+        
+        // Background rectangle to coordinate mouse actions.
+        var baseTransform = "translate(" + this._axisWidth + ",0)";
+        this.background = this.svg.append("rect")
+                                  .attr("class", "transferPlot")
+                                  .attr("transform", baseTransform)
+                                  .attr("width", this._innerWidth)
+                                  .attr("height", this._innerHeight);
+        
+        // Sampled transfer function polyline, including future transfer function.
+        this.line = this.svg
+                        .append("path")
+                        .attr("transform", baseTransform)
+                        .attr("class", "transferLine");
+        this.futureLine = this.svg
+                              .append("path")
+                              .attr("transform", baseTransform)
+                              .attr("class", "futureTransferLine");
+                              
+        // X and Y axes. X axis is domain dependent and volatile, updated in updateScene function.
+        this.xAxis = this.svg.append("g")
+                             .attr("class", "transferAxis");
+        this.yAxis = this.svg.append("g").selectAll("rect")
+                             .data(_.range(this._innerHeight));
+        this.yAxis.enter()
+                  .append("rect")
+                  .attr("x", 0)
+                  .attr("y", d => d)
+                  .attr("width", .5 * this._axisWidth)
+                  .attr("height", 1)
+                  .style("fill", (d, i) => {
+                      let val = i / (this._innerHeight - 1);
+                      let color = mapColors[Math.floor((1 - val) * (mapColors.length - 1))];
+                      return "rgb(" + color[0] + "," + color[1] + "," + color[2] + ")";
+                  });
+        
+        // Control point dots.
+        this.controlDots = this.svg.append("g")
+                                   .attr("transform", baseTransform);
+                     
+        // X and Y axis scales. Y axis domain is a constant [0,1].
+        this.y = d3.scale.linear()
+                   .domain([0, 1])
+                   .range([this._innerHeight, 0]);
+        this.domain = [0, 1];
+        
+        // Interaction.
+        var mousePlotCoordinates = (element) => {
+            var eCs = d3.mouse(element.node());
+            return [this.x.invert(eCs[0]), this.y.invert(eCs[1])];
+        }
+        
+        // On mouse background movement, adjust future transfer function.
+        this.background.on("mousemove", (d) => {
+            var newPoint = mousePlotCoordinates(this.background);
+            
+            if(this.dragControlDot) {
+                // Constrain new point to left- or right-most if it is at the rim.
+                this.transferFunction = this.oldTransferFunction.insertControlPoint(newPoint, this.domain);
+            } else {
+                this.futureTransferFunction = this.transferFunction.insertControlPoint(newPoint);
+            }
+        });
+        
+        this.svg.on("mousedown", () => {
+            d3.event.preventDefault();
+        });
+        
+        // Remove future transfer on mouse exit from plot.
+        this.background.on("mouseout", () => this.futureTransferFunction = null);
+        
+        // On mouse background click, adopt future transfer function.
+        this.background.on("click", () => {
+            this.transferFunction = this.futureTransferFunction;
+            this.futureTransferFunction = null;
+            this.signalChange();
+        });
+        
+        // Swap transfer function on dragged control dot release.
+        this.background.on("mouseup", () => {
+            if(this.dragControlDot) {
+                this.dragControlDot = false;
+                //this.transferFunction = this.futureTransferFunction;
+                this.futureTransferFunction = null;
+            }
+        });
+    }
+    
+    // Domain of transfer function. The range is fixed to [0,1].
+    get domain() {
+        return this._domain;
+    }
+    
+    set domain(interval) {
+        // Limit interval to just above 0 to prevent log scale issues.
+        this._domain = _.clone(interval);
+        if(this._domain[0] <= 0) this._domain[0] = 0.01;
+        
+        // Plot scale matches domain. Clamp to prevent log scale issue.
+        this.x = d3.scale.log().clamp(true)           //.linear()
+                   .domain(this._domain)
+                   .range([0, this._innerWidth]);
+        
+        // Initialize transfer function with identity.
+        this.transferFunction = new PiecewiseLinearTransferFunction([
+            [interval[0], 0],
+            [interval[1], 1]
+        ]);
+        
+        // Possible future transfer function, for added point at mouse.
+        this.futureTransferFunction = null;
+    }
+    
+    // Transfer function that is active.
+    get transferFunction() {
+        return this._transferFunction;
+    }
+    
+    set transferFunction(tF) {
+        this._transferFunction = tF;
+        this.updateScene();
+        this.signalChange();
+    }
+    
+    // Possible future transfer function.
+    get futureTransferFunction() {
+        return this._futureTransferFunction;
+    }
+    
+    set futureTransferFunction(fTF) {
+        this._futureTransferFunction = fTF;
+        this.updateScene();
+    }
+    
+    // Update scene elements.
+    updateScene() {
+        // X axis.
+        var xA = d3.svg.axis()
+                       .scale(this.x)
+                       .ticks(5, "s");
+        var yShift = this._innerHeight + this._dotExpanse;
+        this.xAxis.attr("transform", "translate(" + this._axisWidth + "," + yShift + ")")
+                  .call(xA);
+        
+        // Control dots.
+        var controlDots = this.controlDots.selectAll("circle")
+                              .data(this._transferFunction.controlPoints);
+                              
+        controlDots.enter()
+                   .append("circle")
+                   .attr("class", "transferDot")
+                   .attr("r", this._dotRadius);
+        
+        controlDots.attr("cx", d => this.x(d[0]))
+                   .attr("cy", d => this.y(d[1]));
+                   
+        controlDots.exit()
+                   .remove();
+        
+        // Adjust control point coordinates on drag.
+        controlDots.on("mousedown", (d, i) => {
+            this.oldTransferFunction = this.transferFunction.removeControlPoint(i);
+            this.dragControlDot = true;
+        });
+        
+        controlDots.on("mouseup", () => {
+            if(this.dragControlDot) {
+                this.dragControlDot = false;
+                this.futureTransferFunction = null;
+            }
+        });
+        
+        // Remove future transfer function on dot hover.
+        controlDots.on("mousemove", (d, i) => {
+            this.futureTransferFunction = null;
+        });
+                   
+        // Connecting line.
+        var linePath = d3.svg.line()
+                         .x((d) => this.x(d[0]))
+                         .y((d) => this.y(d[1]))
+                         .interpolate("linear");
+        this.line.attr("d", linePath(this.transferFunction.controlPoints));
+        this.futureLine.attr("d", this.futureTransferFunction ? linePath(this.futureTransferFunction.controlPoints) : []);
+    }
+    
+    get dataSetInfo() {
+        return this._dataSetInfo;
+    }
+    
+    set dataSetInfo(dataSetInfo) {
+        this._dataSetInfo = dataSetInfo;
+        
+        // If data set info is not null, then initiate transfer function to identity.
+        if(dataSetInfo) {
+            this._transfer = (count) => count / dataSetInfo.maxDensity;
+        } else {
+            this._transfer = null;
+        }
+    }
+    
+    // Add change listener.
+    onChange(listener) {
+        this.changeListeners.push(listener);
+    }
+    
+    // Remove change listener (by reference).
+    removeOnChange(listener) {
+        _.pull(this.changeListeners, listener);
+    }
+    
+    // Propagate transfer function change.
+    signalChange() {
+        this.changeListeners.forEach(l => l(this.transferFunction));
+    }
+}

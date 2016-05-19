@@ -23,8 +23,5 @@
     "d3": "~3.5.13",
     "jquery": "~2.2.0",
     "lodash": "^4.11.1"
-  },
-  "devDependencies": {
-    "parallel.js": "paralleljs#*"
   }
 }

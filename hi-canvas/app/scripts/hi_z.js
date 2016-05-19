@@ -3,17 +3,12 @@ import _ from 'lodash';
 import d3 from 'd3';
 
 export class MatrixView {
-    constructor(parentElement, width, height, dataServer, zoomCallback) {
+    constructor(parentElement, width, height, dataServer) {
         // Create and initialize canvas.
         this.canvas = document.createElement("canvas");
         parentElement.appendChild(this.canvas);
         this.canvas.width = width;
         this.canvas.height = height;
-
-        d3.select(this.canvas)
-            .style('top', '50px')
-            .style('left', '30px')
-            .style('position', 'absolute')
 
         // TODO: Correct for canvas high DPI screen case.
 
@@ -36,8 +31,6 @@ export class MatrixView {
             
             // Switch back to pointing cursor.
             this.canvas.style.cursor = 'pointer';   
-                zoomCallback(d3.scale.linear().domain([this._tileManager.portMinX, this._tileManager.portMaxX]),
-                    this._tileManager.centerCoordinates.zoom - 7);
         });
         $(this.canvas).on("mousemove", (event) => {
             if(this._mouseDragged) {
@@ -47,8 +40,6 @@ export class MatrixView {
                 if(this._tileManager) this._tileManager.translate(-dX, -dY, 0);
                 
                 this._mousePosition = [event.clientX, event.clientY];
-
-
             }
         });
 
@@ -56,14 +47,8 @@ export class MatrixView {
         $(this.canvas).on("mousewheel", (event) => {
             if(this._tileManager) {
                 var mouseDelta = event.originalEvent.wheelDelta;
-                if (mouseDelta == 0) return;
-
                 var zoomDelta = .1 * mouseDelta / Math.abs(mouseDelta);
                 this._tileManager.zoom(event.clientX, event.clientY, zoomDelta);
-
-console.log('this._tile', this._tileManager.centerCoordinates);
-                zoomCallback(d3.scale.linear().domain([this._tileManager.portMinX, this._tileManager.portMaxX]),
-                    this._tileManager.centerCoordinates.zoom - 7);
             }
         });
         $(window).on("mousewheel", (event) => {
@@ -97,6 +82,15 @@ console.log('this._tile', this._tileManager.centerCoordinates);
     set dataSet(dataSet) {
         this._dataSet = dataSet;
         this._tileManager = new TileManager(this._dataServer, dataSet, this.canvas.getContext("2d"));
+    }
+    
+    // Delegate setting of transfer function to tile manager.
+    set transfer(tF) {
+        if(this._tileManager) this._tileManager.transfer = tF;
+    }
+    
+    get transfer() {
+        return this._tileManager ? this._tileManager.transfer : null;
     }
 
     paint() {
@@ -136,10 +130,11 @@ export class TileManager {
                 zoom,
                 Math.floor(zoom)
             ));
-        });
 
-        // Count transfer function. Initial function is identity.
-        this._transfer = (count) => count > 0 ? Math.log2(1 + Math.log2(1 + count)) : 0;
+            // Count transfer function. Initial function is identity.
+            //this._transfer = (count) => count > 0 ? Math.log2(1 + Math.log2(1 + count)) : 0;
+            this._transfer = (count) => count / info.maxDensity;
+        });
     }
 
     // Initialize or update off-canvas buffer.
@@ -468,10 +463,11 @@ class ManagedTile {
             var tileArray = this.imageData.data;
             var maxTransfer = transferFunction(maxDensity);
             for (var i = 0; i < this.counts.length; i++) {
-                var intensity = transferFunction(this.counts[i]) / maxTransfer;
+                var intensity = transferFunction(this.counts[i]);   // / maxTransfer;   // Assume transfer function does proper normalization to [0,1].
                 var discretized = Math.floor(255 * (1 - intensity));
 
                 if(!heatedObjectMap[discretized]) {
+                    console.log("Intensity: " + intensity);
                     console.log("Count: " + this.counts[i]);
                     console.log("Discretized: " + discretized);
                 }
@@ -732,7 +728,7 @@ DataServerDriver.WAVES        = 20;          // Number of sinusoids to append in
 
 // Heated object color map lookup table.
 // Perceptually linearized: http://www.cs.uml.edu/~haim/ColorCenter/HOCM.htm
-var heatedObjectMap = [
+export var heatedObjectMap = [
     [  0,   0,   0],
     [ 35,   0,   0],
     [ 52,   0,   0],
