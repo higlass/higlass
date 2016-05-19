@@ -321,6 +321,7 @@ export class TransferFunctionEditor {
         // Adjust control point coordinates on drag.
         controlDots.on("mousedown", (d, i) => {
             this.oldTransferFunction = this.transferFunction.removeControlPoint(i);
+            this.transferFunction = this.oldTransferFunction;
             this.dragControlDot = true;
         });
         
@@ -329,10 +330,6 @@ export class TransferFunctionEditor {
                 this.dragControlDot = false;
                 this.futureTransferFunction = null;
             }
-        });
-        
-        controlDots.on("click", (d, i) => {
-            this.transferFunction = this.transferFunction.removeControlPoint(i, this.domain);
         });
         
         // Remove future transfer function on dot hover.
