@@ -1,0 +1,41 @@
+.transferPlot {
+    cursor: pointer;
+    fill: rgba(0,0,0,0);
+}
+
+.transferDot {
+    fill: rgb(70, 70, 70);
+    stroke: white;
+    cursor: move;
+}
+
+.transferDot:hover {
+    fill: black;
+    stroke: black;
+    stroke-width: 4px;
+}
+
+.transferLine {
+    stroke: rgb(70, 70, 70);
+    stroke-width: 2;
+    fill: none;
+}
+
+.futureTransferLine {
+    stroke: rgb(100, 100, 100);
+    stroke-width: 2;
+    stroke-dasharray: 5, 5;
+    fill: none;
+    pointer-events: none;
+}
+
+.transferAxis path,
+.transferAxis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.transferAxis text {
+  font: 10px sans-serif;
+}
