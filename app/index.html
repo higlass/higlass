@@ -195,6 +195,14 @@ d3.select("#multiple-plots")
                         </tr>
                     </table>
                 </div>
+                <br>
+                <br>
+                <b>Transfer Function Editor</b>
+                <div style="position:relative; height:550px; width: 700px" >
+                    <div id="mmv-plot-with-transfer" style="position:relative; height:550px; width: 700px" >
+                    </div>
+                    <div id="mmv-transfer-function-editor" style="position: absolute; left: 30px; top: 50px; height: 70px; width=200px; background: rgba(255, 255, 255, 0.7);"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -239,6 +247,7 @@ var mmvPlot = higlass.MassiveMatrixPlot()
 
 
 
+///////////////////////////
 var mmvPlot1 = higlass.MassiveMatrixPlot()
     .width(width)
     .height(height)
@@ -248,6 +257,7 @@ var mmvPlot1 = higlass.MassiveMatrixPlot()
 d3.select('#mmv-area')
 .datum( '//s3.amazonaws.com/pkerp/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
 .call(mmvPlot1)
+//////////////////////////////
 
 
 var tileData = [ '//s3.amazonaws.com/pkerp/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles',
@@ -269,6 +279,22 @@ var plotAreas = d3.select("#multiple-plots")
 d3.select("#multiple-plots")
 .selectAll('.hic-plot-area')
 .call(mmvPlot2)
+///////////////////////////////////////////////
+
+var transferEditor = new higlass.TransferFunctionEditor(document.getElementById('mmv-transfer-function-editor'), 150, 70, higlass.heatedObjectMap);
+console.log('transferEditor:', transferEditor);
+
+var mmvPlot3 = higlass.MassiveMatrixPlot()
+    .width(width)
+    .height(height)
+    .nTicks(4)
+    .zoomCallback(zoomCallback)
+    .transferEditor(transferEditor);
+
+d3.select('#mmv-plot-with-transfer')
+.datum( '//s3.amazonaws.com/pkerp/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
+.call(mmvPlot3)
+
 
 </script>
 </body>
