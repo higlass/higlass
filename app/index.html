@@ -30,6 +30,7 @@ var svg = d3.select('#circle').append('svg')
 
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
+    //let xScale = d3.scale.linear().domain([0, 200000000])
 
     console.log('chromInfo:', chromInfo);
     let zoomDispatch = d3.dispatch('zoom');

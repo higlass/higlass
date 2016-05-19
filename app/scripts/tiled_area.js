@@ -176,6 +176,7 @@ export function TiledArea() {
                             d3.json(tilePath, function(error, data) {
                                 delete loadingTiles[tileId(tile)];
                                 loadedTiles[tileId(tile)] = {'tileId': tileId(tile), 
+                                    'maxZoom': maxZoom,
                                     'tilePos': tile,
                                     'xRange': [minX, maxX],
                                     'importanceRange': [minImportance, maxImportance],
