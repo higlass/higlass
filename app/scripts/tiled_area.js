@@ -209,7 +209,9 @@ export function TiledArea() {
                             .maxImportance(maxImportance));
 
                     // this will become the tiling code
-                    let zoomLevel = Math.round(Math.log(zoom.scale()) / Math.LN2) + 2;
+                    let zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
+                    let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 2;
+
 
                     if (zoomLevel > maxZoom)
                         zoomLevel = maxZoom;
@@ -225,6 +227,9 @@ export function TiledArea() {
 
                     let epsilon = 0.000001;
                     let tiles = [];
+
+                    console.log('zoomLevel', zoomLevel, 
+                               zoom.scale(), zoomScale)
 
                     let rows = d3.range(Math.floor((zoom.x().domain()[0] - minX) / tileWidth),
                             Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth));
