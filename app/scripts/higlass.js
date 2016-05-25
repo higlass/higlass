@@ -18,6 +18,7 @@ export function MassiveMatrixPlot() {
 
     function chart(selection) {
         selection.each(function(tileDirectory) {
+            let resolution = 256;
             let minX = 0, maxX = 0, minY = 0, maxY = 0;
             let totalHeight = null, totalWidth = null;
             let maxZoom = 1;
@@ -321,23 +322,44 @@ export function MassiveMatrixPlot() {
                 //
             }
 
+            function loadTileData(tile_value) {
+                console.log('loading tile:', tile_value);
+                if ('dense' in tile_value)
+                    return tile_value['dense'];
+                else if ('sparse' in tile_value) {
+                    console.log('sparse:', tile_value);
+                    let values = Array.apply(null, 
+                            Array(resolution * resolution))
+                    for (let i = 0; i < tile_value.sparse.length; i++) {
+                        values[tile_value.sparse[i].pos[0] * resolution +
+                               tile_value.sparse[i].pos[1]] = tile_value.sparse[i].count;
+                        return values;
+                    }
+
+                } else {
+                    return [];
+                }
+
+            }
+
             function refreshTiles(currentTiles) {
                 // be shown and add those that should be shown
                 currentTiles.forEach((tile) => {
                     if (!isTileLoaded(tile) && !isTileLoading(tile)) {
                         // if the tile isn't loaded, load it
-                        let tileSubPath = tile.join('/') + '.json'
+                        let tileSubPath = tile.join('.')
                             let tilePath = tileDirectory + "/" + tileSubPath;
                         loadingTiles[tileId(tile)] = true;
 
                         d3.json(tilePath,
-                                function(error, data) {
+                                function(error, tile_json) {
                                     if (error != null) {
                                         loadedTiles[tileId(tile)] = {data: []};
                                         let canvas = tileDataToCanvas([], tile[0]);
                                         loadedTiles[tileId(tile)].canvas = canvas;
                                         loadedTiles[tileId(tile)].pos = tile;
                                     } else {
+                                        let data = loadTileData(tile_json._source.tile_value);
                                         loadedTiles[tileId(tile)] = {data: data};
                                         let canvas = tileDataToCanvas(data, tile[0]);
                                         loadedTiles[tileId(tile)].canvas = canvas;
@@ -354,8 +376,13 @@ export function MassiveMatrixPlot() {
             }
 
 
-            d3.json(tileDirectory + '/tile_info.json', function(error, tile_info) {
+            d3.json(tileDirectory + '/tileset_info', function(error, tile_info) {
                 // set up the data-dependent sections of the chart
+                console.log('tile_info:', tile_info);
+                tile_info = tile_info._source.tile_value;
+
+                resolution = tile_info.bins_per_dimension;
+
                 minX = tile_info.min_pos[0];
                 maxX = tile_info.max_pos[0] + 0.001;
 
@@ -551,7 +578,7 @@ export function MassiveMatrixPlot() {
 
     function tileId(tile) {
         // uniquely identify the tile with a string
-        return tile.join("/");
+        return tile.join(".");
     }
 
     function pointId(d) {
