@@ -155,6 +155,8 @@ export function MassiveMatrixPlot() {
                 let zoomFactor = Math.pow(2, 2 * (maxZoom - zoomLevel));
 
                 var maxTransfer = transferFunction(maxValue);
+                console.log('maxTransfer:', maxTransfer, transferFunction(2000), maxValue);
+
                 let pixelValues = data.map((d,i) => {
                     let rgbIdx = Math.floor(valueScale(d));
                     d = d / zoomFactor;
@@ -323,11 +325,9 @@ export function MassiveMatrixPlot() {
             }
 
             function loadTileData(tile_value) {
-                console.log('loading tile:', tile_value);
                 if ('dense' in tile_value)
                     return tile_value['dense'];
                 else if ('sparse' in tile_value) {
-                    console.log('sparse:', tile_value);
                     let values = Array.apply(null, 
                             Array(resolution * resolution))
                     for (let i = 0; i < tile_value.sparse.length; i++) {
