@@ -212,10 +212,7 @@ d3.select("#multiple-plots")
 
     var width = 700, height=550;
 
-var mmvPlot = higlass.MassiveMatrixPlot()
-    .width(width)
-    .height(height);
-
+    /*
     var svg = d3.select('#goombaPlot')
     .attr('width', width)
     .attr('height', 80);
@@ -234,8 +231,10 @@ var mmvPlot = higlass.MassiveMatrixPlot()
             .datum('//s3.amazonaws.com/pkerp/data/hg19/refgene-tiles-small')
             //.datum('jsons/tiles')
             .call(goombaPlot)
+    */
 
     function zoomCallback(scale, zoomLevel) {
+        return;
 
         var xScale = goombaPlot.xScale();
         xScale.domain(scale.domain())
@@ -247,6 +246,7 @@ var mmvPlot = higlass.MassiveMatrixPlot()
 
 
 
+
 ///////////////////////////
 var mmvPlot1 = higlass.MassiveMatrixPlot()
     .width(width)
@@ -255,11 +255,12 @@ var mmvPlot1 = higlass.MassiveMatrixPlot()
     .zoomCallback(zoomCallback);
 
 d3.select('#mmv-area')
-.datum( '//s3.amazonaws.com/pkerp/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
+.datum( '//127.0.0.1:9200/test/tiles')
 .call(mmvPlot1)
 //////////////////////////////
 
 
+    /*
 var tileData = [ '//s3.amazonaws.com/pkerp/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles',
                  '//s3.amazonaws.com/pkerp/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
 
@@ -280,6 +281,7 @@ d3.select("#multiple-plots")
 .selectAll('.hic-plot-area')
 .call(mmvPlot2)
 ///////////////////////////////////////////////
+*/
 
 var transferEditor = new higlass.TransferFunctionEditor(document.getElementById('mmv-transfer-function-editor'), 150, 70, higlass.heatedObjectMap);
 console.log('transferEditor:', transferEditor);
@@ -292,7 +294,7 @@ var mmvPlot3 = higlass.MassiveMatrixPlot()
     .transferEditor(transferEditor);
 
 d3.select('#mmv-plot-with-transfer')
-.datum( '//s3.amazonaws.com/pkerp/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
+.datum( '//127.0.0.1:9200/test/tiles')
 .call(mmvPlot3)
 
 
