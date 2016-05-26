@@ -331,10 +331,10 @@ export function MassiveMatrixPlot() {
                     let values = Array.apply(null, 
                             Array(resolution * resolution))
                     for (let i = 0; i < tile_value.sparse.length; i++) {
-                        values[tile_value.sparse[i].pos[0] * resolution +
-                               tile_value.sparse[i].pos[1]] = tile_value.sparse[i].count;
-                        return values;
+                        values[tile_value.sparse[i].pos[1] * resolution +
+                               tile_value.sparse[i].pos[0]] = tile_value.sparse[i].count;
                     }
+                    return values;
 
                 } else {
                     return [];
