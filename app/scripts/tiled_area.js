@@ -47,7 +47,6 @@ export function TiledArea() {
                 minImportance = 0, maxImportance = 0,
                 minValue = 0, maxValue = 0;
             let  maxZoom = 1;
-            let xScale = d3.scale.linear();
 
             let zoom = d3.behavior.zoom();
             let slugId = slugid.nice();
@@ -343,12 +342,17 @@ export function TiledArea() {
 
                     yScaleDomain = [minY, maxY];
 
-                    xScale.domain(xScaleDomain)
-                        .range([0, width - margin.left - margin.right]);
+                    if (xScale == null) {
+                        xScale = d3.scale.linear()
+                            .domain(xScaleDomain)
+                            .range([0, width - margin.left - margin.right]);
+                    }
 
-                    yScale = d3.scale.linear()
-                        .domain(yScaleDomain)
-                        .range([height - margin.top - margin.bottom, 0]);
+                    if (yScale == null) {
+                        yScale = d3.scale.linear()
+                            .domain(yScaleDomain)
+                            .range([height - margin.top - margin.bottom, 0]);
+                    }
 
                     valueScale = d3.scale.linear()
                         .domain([countTransform(minValue+1), countTransform(maxValue+1)])
