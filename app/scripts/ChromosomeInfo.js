@@ -17,6 +17,7 @@ export function ChromosomeInfo(filepath, success) {
         }
 
         let chromInfo = {'cumPositions': cumValues,
+                         'chrPositions': chrPositions,
                           'totalLength': totalLength }
 
         success(chromInfo);

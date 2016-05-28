@@ -12803,6 +12803,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        var chromInfo = { 'cumPositions': cumValues,
+	            'chrPositions': chrPositions,
 	            'totalLength': totalLength };
 
 	        success(chromInfo);
