@@ -66,7 +66,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.ChromosomeAxis = exports.GenePlot = undefined;
+	exports.ZoomableLabels = exports.TiledArea = exports.ChromosomeInfo = exports.ChromosomeAxis = exports.WiggleTileLayout = exports.GeneTileLayout = exports.GenePlot = undefined;
 
 	var _gene = __webpack_require__(2);
 
@@ -74,6 +74,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    enumerable: true,
 	    get: function get() {
 	        return _gene.GenePlot;
+	    }
+	});
+	Object.defineProperty(exports, 'GeneTileLayout', {
+	    enumerable: true,
+	    get: function get() {
+	        return _gene.GeneTileLayout;
+	    }
+	});
+
+	var _WiggleTrack = __webpack_require__(8);
+
+	Object.defineProperty(exports, 'WiggleTileLayout', {
+	    enumerable: true,
+	    get: function get() {
+	        return _WiggleTrack.WiggleTileLayout;
 	    }
 	});
 
@@ -85,56 +100,72 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return _ChromosomeAxis.ChromosomeAxis;
 	    }
 	});
+
+	var _ChromosomeInfo = __webpack_require__(21);
+
+	Object.defineProperty(exports, 'ChromosomeInfo', {
+	    enumerable: true,
+	    get: function get() {
+	        return _ChromosomeInfo.ChromosomeInfo;
+	    }
+	});
+
+	var _tiled_area = __webpack_require__(22);
+
+	Object.defineProperty(exports, 'TiledArea', {
+	    enumerable: true,
+	    get: function get() {
+	        return _tiled_area.TiledArea;
+	    }
+	});
+
+	var _zoomable_labels = __webpack_require__(25);
+
+	Object.defineProperty(exports, 'ZoomableLabels', {
+	    enumerable: true,
+	    get: function get() {
+	        return _zoomable_labels.ZoomableLabels;
+	    }
+	});
 	exports.Goomba = Goomba;
 
-	var _d = __webpack_require__(7);
-
-	var _d2 = _interopRequireDefault(_d);
-
-	var _helper_module = __webpack_require__(8);
-
-	var _tiled_area = __webpack_require__(13);
-
-	var _zoomable_labels = __webpack_require__(12);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _helper_module = __webpack_require__(7);
 
 	function Goomba() {
 	    var width = 700,
 	        height = 40;
-	    var xScale = _d2.default.scale.linear();
+	    var xScale = d3.scale.linear();
 	    /*
 	    let chromAxis = goomba.ChromosomeAxis('/jsons/hg19/chromInfo.txt')
 	        .xScale(xScale);
 	        */
 	    var drawAxis = false;
-	    var chromAxis = null;
 
-	    var zoom = _d2.default.behavior.zoom();
+	    var zoom = d3.behavior.zoom();
 	    var tiledArea = null;
 	    var currentZoom = 1;
+	    var zoomDispatch = null;
 
 	    function chart(selection) {
 	        selection.each(function (tileDirectory) {
-	            var gMain = _d2.default.select(this).append('g');
+	            var localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
+
+	            var gMain = d3.select(this).append('g');
 
 	            var zoomableLabels = (0, _zoomable_labels.ZoomableLabels)().markerClass('.gene-marker').labelClass('.gene-label').labelParent(gMain).labelMarkerId(function (d) {
 	                return 'n-' + d.refseqid;
 	            }).uidString('refseqid');
 
-	            tiledArea = (0, _tiled_area.TiledArea)().width(width).height(height).tileDirectory(tileDirectory).dataPointLayout(_gene.GenePlot)
-	            //.on('draw', () => { gMain.call(zoomableLabels); })
-	            .xScale(xScale).zoom(zoom);
+	            tiledArea = (0, _tiled_area.TiledArea)().width(width).height(height).tileDirectory(tileDirectory).dataPointLayout(_gene.GenePlot).xScale(xScale).zoom(zoom);
+
+	            function zoomHere() {
+	                localZoomDispatch.zoom(zoom.translate(), zoom.scale());
+	            }
 
 	            console.log('xScale', xScale.domain());
-	            if (drawAxis) chromAxis = goomba.ChromosomeAxis('/jsons/hg19/chromInfo.txt').xScale(xScale);
-
-	            var gChromAxis = null;
-	            if (drawAxis) gChromAxis = gMain.append('g').attr('transform', 'translate(30,' + (height - 20) + ')').classed('g-axis', true).call(chromAxis);
 
 	            tiledArea.on('draw', function () {
 	                gMain.call(zoomableLabels);
-	                if (drawAxis) gChromAxis.call(chromAxis);
 	            });
 	            //tiledArea.on('draw', () => { chromAxisPlot.draw(); });
 
@@ -203,17 +234,61 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	exports.GeneTileLayout = GeneTileLayout;
 	exports.GenePlot = GenePlot;
 
 	__webpack_require__(3);
 
-	var _d = __webpack_require__(7);
+	var _helper_module = __webpack_require__(7);
 
-	var _d2 = _interopRequireDefault(_d);
+	function GeneTileLayout() {
+	    var xScale = null;
+	    var genePlotLayout = GenePlot();
+	    var minImportance = 0;
+	    var maxImportance = 0;
+	    var genePlot = GenePlot();
 
-	var _helper_module = __webpack_require__(8);
+	    function chart(selection) {
+	        selection.each(function (tileG) {
+	            var gDataPoints = d3.select(this).selectAll('.data-g').data(tileG.data, function (d) {
+	                return d.refseqid;
+	            });
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	            gDataPoints.enter().append('g').classed('data-g', true);
+
+	            gDataPoints.exit().remove();
+
+	            gDataPoints.each(function (d) {
+	                d3.select(this).call(genePlot);
+	                //d.pointLayout.draw();
+	            });
+	        });
+	    }
+
+	    chart.minImportance = function (_) {
+	        if (!arguments.length) return minImportance;
+	        minImportance = _;
+	        genePlot.minImportance(minImportance);
+	        return chart;
+	    };
+
+	    chart.maxImportance = function (_) {
+	        if (!arguments.length) return maxImportance;
+	        maxImportance = _;
+	        genePlot.maxImportance(maxImportance);
+	        return chart;
+	    };
+
+	    chart.xScale = function (_) {
+	        if (!arguments.length) return xScale;
+	        xScale = _;
+	        genePlot.xScale(xScale);
+	        return chart;
+	    };
+	    //function
+
+	    return chart;
+	}
 
 	function GenePlot() {
 	    var width = 300;
@@ -226,79 +301,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var xScale = null;
 	    var gMain = null;
 
-	    var lineGene = null;
-	    var rectExons = [];
-	    var circleGene = null;
-	    var exonRects = null;
-	    var geneLabels = null;
-
 	    var minImportance = 0;
 	    var maxImportance = 0;
-
-	    function draw() {
-	        var geneJson = lineGene.data()[0];
-	        var lineLength = xScale(geneJson.txEnd) - xScale(geneJson.txStart);
-
-	        var importanceScale = _d2.default.scale.linear().domain([Math.sqrt(minImportance), Math.sqrt(maxImportance)]).range([1, 6]);
-
-	        if (lineLength < 10) {
-	            // if we're so zoomed out that the genes are barely visible
-	            // just draw a circle instead
-
-	            circleGene.style('opacity', 1.).attr('cx', function (d) {
-	                return xScale(+geneJson.txStart + geneJson.chromOffset);
-	            }).attr('cy', function (d) {
-	                return height / 2;
-	            }).attr('r', function (d) {
-	                return importanceScale(Math.sqrt(d.count));
-	            }).classed('gene-marker', true);
-
-	            //exonRects.attr('visibility', 'hidden');
-	            exonRects.style('opacity', 0.);
-	            lineGene.style('opacity', 0.);
-	        } else {
-	            circleGene.style('opacity', 0.);
-	            exonRects.style('opacity', 1.);
-	            lineGene.style('opacity', 1.);
-
-	            exonRects.attr('x', function (d) {
-	                return xScale(d[0]);
-	            }).attr('y', 0).attr('width', function (d) {
-	                return xScale(d[1]) - xScale(d[0]);
-	            })
-	            //.attr('width', 10)
-	            .attr('height', height).attr('visibility', 'visible').attr('id', function (d) {
-	                return 'c-' + geneJson.refseqid;
-	            });
-
-	            lineGene.attr('x1', function (d) {
-	                return xScale(d.chromOffset + +d.txStart);
-	            }).attr('x2', function (d) {
-	                return xScale(d.chromOffset + +d.txEnd);
-	            }).attr('y1', height / 2).attr('y2', height / 2).attr('visibility', 'visible').attr('id', function (d) {
-	                return 'c-' + geneJson.refseqid;
-	            });
-	        }
-
-	        geneLabels.attr('x', function (d) {
-	            return xScale((+geneJson.txStart + +geneJson.txEnd) / 2 + geneJson.chromOffset);
-	        }).attr('y', -5);
-	    }
 
 	    function chart(selection) {
 	        selection.each(function (geneJson) {
 	            geneJson.chromOffset = geneJson.genomeTxStart - geneJson.txStart;
-	            var gMain = _d2.default.select(this);
+	            var gMain = d3.select(this);
 
-	            lineGene = gMain.append('line').classed('gene-line', true);
+	            /////////////////
+	            var lineGene = gMain.selectAll('line').data([0]);
 
-	            circleGene = gMain.append('circle').classed('gene-circle', true).attr('id', function (d) {
+	            lineGene.enter().append('line').classed('gene-line', true);
+
+	            lineGene.exit().remove();
+
+	            lineGene = gMain.append('line');
+	            /////////////////
+
+	            var circleGene = gMain.selectAll('.gene-circle').data([geneJson]);
+
+	            circleGene.enter().append('circle').classed('gene-circle', true).attr('id', function (d) {
 	                return 'n-' + geneJson.refseqid;
 	            });
 
-	            geneLabels = gMain.append('text').classed('gene-label', true).text(function (d) {
+	            circleGene.exit().remove();
+
+	            ///////////////
+	            var geneLabels = gMain.selectAll('.gene-label').data([geneJson]);
+
+	            geneLabels.enter().append('text').classed('gene-label', true).text(function (d) {
 	                return d.geneName;
 	            }).attr('text-anchor', 'middle');
+
+	            geneLabels.exit().remove();
 
 	            function zip(arrays) {
 	                return arrays[0].map(function (_, i) {
@@ -312,27 +348,63 @@ return /******/ (function(modules) { // webpackBootstrap
 	            exons = exons.map(function (d) {
 	                return [geneJson.chromOffset + +d[0], geneJson.chromOffset + +d[1]];
 	            });
-	            exonRects = gMain.selectAll('rect').data(exons).enter().append('rect').classed('exon-rect', true);
+	            var exonRects = gMain.selectAll('rect').data(exons);
 
-	            // draw the arrows in the direction that this transcript is facing
-	            /*
-	            let start = 0;
-	            while (start < width) {
-	                gMain.append('line')
-	                .attr('x1', start + 3)
-	                .attr('y1', (1 / 4.) * height)
-	                .attr('x2', start)
-	                .attr('y2', height / 2)
-	                .classed('arrow-line', true)
-	                 gMain.append('line')
-	                .attr('x1', start + 3)
-	                .attr('y1', (3 / 4.) * height)
-	                .attr('x2', start)
-	                .attr('y2', height / 2)
-	                .classed('arrow-line', true)
-	                  start += 10;
+	            exonRects.enter().append('rect').classed('exon-rect', true);
+
+	            exonRects.exit().remove();
+
+	            function draw() {
+	                var geneJson = lineGene.data()[0];
+	                var lineLength = xScale(geneJson.txEnd) - xScale(geneJson.txStart);
+
+	                var importanceScale = d3.scale.linear().domain([Math.sqrt(minImportance), Math.sqrt(maxImportance)]).range([1, 6]);
+
+	                if (lineLength < 10) {
+	                    // if we're so zoomed out that the genes are barely visible
+	                    // just draw a circle instead
+
+	                    circleGene.style('opacity', 1.).attr('cx', function (d) {
+	                        return xScale(+geneJson.txStart + geneJson.chromOffset);
+	                    }).attr('cy', function (d) {
+	                        return height / 2;
+	                    }).attr('r', function (d) {
+	                        return importanceScale(Math.sqrt(d.count));
+	                    }).classed('gene-marker', true);
+
+	                    //exonRects.attr('visibility', 'hidden');
+	                    exonRects.style('opacity', 0.);
+	                    lineGene.style('opacity', 0.);
+	                } else {
+	                    circleGene.style('opacity', 0.);
+	                    exonRects.style('opacity', 1.);
+	                    lineGene.style('opacity', 1.);
+
+	                    exonRects.attr('x', function (d) {
+	                        return xScale(d[0]);
+	                    }).attr('y', 0).attr('width', function (d) {
+	                        return xScale(d[1]) - xScale(d[0]);
+	                    })
+	                    //.attr('width', 10)
+	                    .attr('height', height).attr('visibility', 'visible').attr('id', function (d) {
+	                        return 'c-' + geneJson.refseqid;
+	                    });
+
+	                    lineGene.attr('x1', function (d) {
+	                        return xScale(d.chromOffset + +d.txStart);
+	                    }).attr('x2', function (d) {
+	                        return xScale(d.chromOffset + +d.txEnd);
+	                    }).attr('y1', height / 2).attr('y2', height / 2).attr('visibility', 'visible').attr('id', function (d) {
+	                        return 'c-' + geneJson.refseqid;
+	                    });
+	                }
+
+	                geneLabels.attr('x', function (d) {
+	                    return xScale((+geneJson.txStart + +geneJson.txEnd) / 2 + geneJson.chromOffset);
+	                }).attr('y', -5);
 	            }
-	            */
+
+	            draw();
 	        });
 	    }
 
@@ -377,8 +449,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        maxImportance = _;
 	        return chart;
 	    };
-
-	    chart.draw = draw;
 
 	    return chart;
 	}
@@ -733,6 +803,285 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 7 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.getRadius = getRadius;
+	function getRadius() {
+	    return 30;
+	}
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.WiggleTileLayout = WiggleTileLayout;
+	function WiggleTileLayout() {
+	    var xScale = null;
+	    var minImportance = 0;
+	    var maxImportance = 0;
+	    var height = 20;
+
+	    function chart(selection) {
+	        selection.each(function (tile) {
+	            var yScale = d3.scale.linear().domain([0, tile.valueRange[1]]).range([0, height]);
+
+	            var gDataPoints = d3.select(this).selectAll('.data-g').data(tile.data);
+
+	            //console.log('tile.data:', tile.data);
+
+	            gDataPoints.enter().append('rect').classed('data-g', true);
+
+	            gDataPoints.exit().remove();
+
+	            var tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
+
+	            // this scale should go from an index in the data array to
+	            // a position in the genome coordinates
+	            var tileXScale = d3.scale.linear().domain([0, tile.data.length]).range([tile.xRange[0] + tile.tilePos[1] * tileWidth, tile.xRange[0] + (tile.tilePos[1] + 1) * tileWidth]);
+
+	            gDataPoints.attr('x', function (d, i) {
+	                return xScale(tileXScale(i));
+	            }).attr('width', function (d, i) {
+	                return xScale(tileXScale(i + 1)) - xScale(tileXScale(i));
+	            }).attr('height', function (d, i) {
+	                var toScale = d / Math.pow(2, tile.maxZoom - tile.tilePos[0]);
+	                //console.log('yScale.domain()', yScale.domain(), toScale)
+
+	                return yScale(toScale);
+	            }).classed('wiggle-bar', true);
+	        });
+	    }
+
+	    chart.minImportance = function (_) {
+	        if (!arguments.length) return minImportance;
+	        minImportance = _;
+	        return chart;
+	    };
+
+	    chart.maxImportance = function (_) {
+	        if (!arguments.length) return maxImportance;
+	        maxImportance = _;
+	        return chart;
+	    };
+
+	    chart.xScale = function (_) {
+	        if (!arguments.length) return xScale;
+	        xScale = _;
+	        return chart;
+	    };
+
+	    chart.height = function (_) {
+	        if (!arguments.length) return height;
+	        height = _;
+	        return chart;
+	    };
+	    //function
+
+	    return chart;
+	}
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.ChromosomeAxis = ChromosomeAxis;
+
+	__webpack_require__(10);
+
+	var _d = __webpack_require__(12);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _slugid = __webpack_require__(13);
+
+	var _slugid2 = _interopRequireDefault(_slugid);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function ChromosomeAxis(chromInfoFile) {
+	    var bisect = _d2.default.bisector(function (d) {
+	        return d.pos;
+	    }).left;
+	    var width = 600;
+	    var zoomDispatch = null;
+	    var domain = [0, 1];
+
+	    function chart(selection) {
+	        selection.each(function (d) {
+	            var localZoomDispatch = zoomDispatch == null ? _d2.default.dispatch('zoom') : zoomDispatch;
+	            var gChromLabels = null;
+	            var gSelect = null;
+	            var xScale = _d2.default.scale.linear().domain(domain).range([0, width]);
+
+	            var cumValues = d.cumPositions;
+	            var xAxis = null;
+	            var gAxis = null;
+	            var lineScale = null;
+	            var slugId = _slugid2.default.nice();
+	            var zoom = _d2.default.behavior.zoom().x(xScale);
+
+	            gSelect = _d2.default.select(this);
+
+	            var gAxisData = gSelect.selectAll('g').data([0]);
+
+	            gAxisData.enter().append('g');
+
+	            gAxisData.exit().remove();
+
+	            gAxis = gSelect.selectAll('g');
+
+	            gAxis.selectAll('.text-left').data([0]).enter().append('text').classed('text-left', true);
+
+	            gAxis.selectAll('.text-right').data([0]).enter().append('text').classed('text-right', true);
+
+	            gAxis.selectAll('.scale-path').data([0]).enter().append('path').classed('scale-path', true);
+
+	            gAxis.selectAll('.text-scale').data([0]).enter().append('text').classed('text-scale', true).attr('text-anchor', 'middle').attr('dy', '1.2em');
+
+	            var textLeftChr = gAxis.select('.text-left');
+	            var textRightChr = gAxis.select('.text-right');
+	            var pathScale = gAxis.select('.scale-path');
+	            var textScale = gAxis.select('.text-scale');
+
+	            textLeftChr.attr('x', xScale.range()[0]).attr('text-anchor', 'start').attr('dy', '1.2em');
+
+	            textRightChr.attr('x', xScale.range()[1]).attr('text-anchor', 'end').attr('dy', '1.2em');
+
+	            if (cumValues == null) return;
+
+	            localZoomDispatch.on('zoom.' + slugId, zoomChanged);
+
+	            function zoomChanged(translate, scale) {
+	                // something changed the zoom.
+	                zoom.translate(translate);
+	                zoom.scale(scale);
+
+	                draw();
+	            }
+
+	            function draw() {
+	                //gChromLabels.attr('x', (d) => { return xScale(d.pos); });
+	                //gSelect.call(zoomableLabels);
+	                if (xAxis != null) gAxis.call(xAxis);
+
+	                var ticks = xScale.ticks(5);
+	                var tickSpan = ticks[1] - ticks[0];
+	                var tickWidth = xScale(ticks[1]) - xScale(ticks[0]);
+
+	                var scaleMid = (xScale.range()[1] - xScale.range()[0]) / 2;
+
+	                var tickHeight = 4;
+	                var tickFormat = _d2.default.format(",d");
+
+	                var chrLeft = cumValues[bisect(cumValues, xScale.domain()[0])].chr;
+
+	                var bsRight = bisect(cumValues, xScale.domain()[1]);
+
+	                if (bsRight == cumValues.length) bsRight -= 1;
+
+	                var chrRight = cumValues[bsRight].chr;
+
+	                textLeftChr.text(chrLeft);
+	                textRightChr.text(chrRight);
+	                pathScale.attr('d', 'M' + (scaleMid - tickWidth / 2) + ',' + tickHeight + ('L' + (scaleMid - tickWidth / 2) + ', 0') + ('L' + (scaleMid + tickWidth / 2) + ', 0') + ('L' + (scaleMid + tickWidth / 2) + ',' + tickHeight));
+
+	                textScale.attr('x', scaleMid).text(tickFormat(tickSpan) + " bp");
+
+	                /*
+	                lineScale.attr('x2', xScale.range()[1]);
+	                lineScale.attr('x1', xScale.range()[1] - tickWidth);
+	                lineScale.attr('y1', 10)
+	                lineScale.attr('y2', 10)
+	                */
+
+	                textLeftChr.attr('x', 0);
+	                textRightChr.attr('x', 0 + xScale.range()[1]);
+	            }
+
+	            draw();
+	        });
+	    }
+
+	    chart.width = function (_) {
+	        if (!arguments.length) return width;else width = _;
+	        return chart;
+	    };
+
+	    chart.xScale = function (_) {
+	        if (!arguments.length) return xScale;else xScale = _;
+	        return chart;
+	    };
+
+	    chart.domain = function (_) {
+	        if (!arguments.length) return domain;else domain = _;
+	        return chart;
+	    };
+
+	    chart.zoomDispatch = function (_) {
+	        if (!arguments.length) return zoomDispatch;else zoomDispatch = _;
+	        return chart;
+	    };
+
+	    return chart;
+	}
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(11);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(6)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./ChromosomeAxis.css", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./ChromosomeAxis.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(5)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".genome-scale {\n    stroke: red;\n}\n\npath {\n    stroke: black;\n    stroke-width: 1;\n    fill: transparent;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function() {
@@ -10291,21 +10640,2139 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 
 /***/ },
-/* 8 */
-/***/ function(module, exports) {
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	// The MIT License (MIT)
+	//
+	// Copyright (c) 2014 Jonas Finnemann Jensen
+	//
+	// Permission is hereby granted, free of charge, to any person obtaining a copy
+	// of this software and associated documentation files (the "Software"), to deal
+	// in the Software without restriction, including without limitation the rights
+	// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	// copies of the Software, and to permit persons to whom the Software is
+	// furnished to do so, subject to the following conditions:
+	//
+	// The above copyright notice and this permission notice shall be included in
+	// all copies or substantial portions of the Software.
+	//
+	// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	// THE SOFTWARE.
 
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.getRadius = getRadius;
-	function getRadius() {
-	    return 30;
-	}
+	module.exports = __webpack_require__(14);
+
 
 /***/ },
-/* 9 */
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(Buffer) {// The MIT License (MIT)
+	//
+	// Copyright (c) 2014 Jonas Finnemann Jensen
+	//
+	// Permission is hereby granted, free of charge, to any person obtaining a copy
+	// of this software and associated documentation files (the "Software"), to deal
+	// in the Software without restriction, including without limitation the rights
+	// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	// copies of the Software, and to permit persons to whom the Software is
+	// furnished to do so, subject to the following conditions:
+	//
+	// The above copyright notice and this permission notice shall be included in
+	// all copies or substantial portions of the Software.
+	//
+	// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	// THE SOFTWARE.
+
+	var uuid = __webpack_require__(19);
+
+	/**
+	 * Returns the given uuid as a 22 character slug. This can be a regular v4
+	 * slug or a "nice" slug.
+	 */
+	exports.encode = function(uuid_) {
+	  var bytes   = uuid.parse(uuid_);
+	  var base64  = (new Buffer(bytes)).toString('base64');
+	  var slug = base64
+	              .replace(/\+/g, '-')  // Replace + with - (see RFC 4648, sec. 5)
+	              .replace(/\//g, '_')  // Replace / with _ (see RFC 4648, sec. 5)
+	              .substring(0, 22);    // Drop '==' padding
+	  return slug;
+	};
+
+	/**
+	 * Returns the uuid represented by the given v4 or "nice" slug
+	 */
+	exports.decode = function(slug) {
+	  var base64 = slug
+	                  .replace(/-/g, '+')
+	                  .replace(/_/g, '/')
+	                  + '==';
+	  return uuid.unparse(new Buffer(base64, 'base64'));
+	};
+
+	/**
+	 * Returns a randomly generated uuid v4 compliant slug
+	 */
+	exports.v4 = function() {
+	  var bytes   = uuid.v4(null, new Buffer(16));
+	  var base64  = bytes.toString('base64');
+	  var slug = base64
+	              .replace(/\+/g, '-')  // Replace + with - (see RFC 4648, sec. 5)
+	              .replace(/\//g, '_')  // Replace / with _ (see RFC 4648, sec. 5)
+	              .substring(0, 22);    // Drop '==' padding
+	  return slug;
+	};
+
+	/** 
+	 * Returns a randomly generated uuid v4 compliant slug which conforms to a set
+	 * of "nice" properties, at the cost of some entropy. Currently this means one
+	 * extra fixed bit (the first bit of the uuid is set to 0) which guarantees the
+	 * slug will begin with [A-Za-f]. For example such slugs don't require special
+	 * handling when used as command line parameters (whereas non-nice slugs may
+	 * start with `-` which can confuse command line tools).
+	 *
+	 * Potentially other "nice" properties may be added in future to further
+	 * restrict the range of potential uuids that may be generated.
+	 */
+	exports.nice = function() {
+	  var bytes   = uuid.v4(null, new Buffer(16));
+	  bytes[0] = bytes[0] & 0x7f;  // unset first bit to ensure [A-Za-f] first char
+	  var base64  = bytes.toString('base64');
+	  var slug = base64
+	              .replace(/\+/g, '-')  // Replace + with - (see RFC 4648, sec. 5)
+	              .replace(/\//g, '_')  // Replace / with _ (see RFC 4648, sec. 5)
+	              .substring(0, 22);    // Drop '==' padding
+	  return slug;
+	};
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15).Buffer))
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
+	 * The buffer module from node.js, for the browser.
+	 *
+	 * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+	 * @license  MIT
+	 */
+	/* eslint-disable no-proto */
+
+	'use strict'
+
+	var base64 = __webpack_require__(16)
+	var ieee754 = __webpack_require__(17)
+	var isArray = __webpack_require__(18)
+
+	exports.Buffer = Buffer
+	exports.SlowBuffer = SlowBuffer
+	exports.INSPECT_MAX_BYTES = 50
+	Buffer.poolSize = 8192 // not used by this implementation
+
+	var rootParent = {}
+
+	/**
+	 * If `Buffer.TYPED_ARRAY_SUPPORT`:
+	 *   === true    Use Uint8Array implementation (fastest)
+	 *   === false   Use Object implementation (most compatible, even IE6)
+	 *
+	 * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
+	 * Opera 11.6+, iOS 4.2+.
+	 *
+	 * Due to various browser bugs, sometimes the Object implementation will be used even
+	 * when the browser supports typed arrays.
+	 *
+	 * Note:
+	 *
+	 *   - Firefox 4-29 lacks support for adding new properties to `Uint8Array` instances,
+	 *     See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
+	 *
+	 *   - Safari 5-7 lacks support for changing the `Object.prototype.constructor` property
+	 *     on objects.
+	 *
+	 *   - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
+	 *
+	 *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
+	 *     incorrect length in some situations.
+
+	 * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
+	 * get the Object implementation, which is slower but behaves correctly.
+	 */
+	Buffer.TYPED_ARRAY_SUPPORT = global.TYPED_ARRAY_SUPPORT !== undefined
+	  ? global.TYPED_ARRAY_SUPPORT
+	  : typedArraySupport()
+
+	function typedArraySupport () {
+	  function Bar () {}
+	  try {
+	    var arr = new Uint8Array(1)
+	    arr.foo = function () { return 42 }
+	    arr.constructor = Bar
+	    return arr.foo() === 42 && // typed array instances can be augmented
+	        arr.constructor === Bar && // constructor can be set
+	        typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
+	        arr.subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
+	  } catch (e) {
+	    return false
+	  }
+	}
+
+	function kMaxLength () {
+	  return Buffer.TYPED_ARRAY_SUPPORT
+	    ? 0x7fffffff
+	    : 0x3fffffff
+	}
+
+	/**
+	 * Class: Buffer
+	 * =============
+	 *
+	 * The Buffer constructor returns instances of `Uint8Array` that are augmented
+	 * with function properties for all the node `Buffer` API functions. We use
+	 * `Uint8Array` so that square bracket notation works as expected -- it returns
+	 * a single octet.
+	 *
+	 * By augmenting the instances, we can avoid modifying the `Uint8Array`
+	 * prototype.
+	 */
+	function Buffer (arg) {
+	  if (!(this instanceof Buffer)) {
+	    // Avoid going through an ArgumentsAdaptorTrampoline in the common case.
+	    if (arguments.length > 1) return new Buffer(arg, arguments[1])
+	    return new Buffer(arg)
+	  }
+
+	  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+	    this.length = 0
+	    this.parent = undefined
+	  }
+
+	  // Common case.
+	  if (typeof arg === 'number') {
+	    return fromNumber(this, arg)
+	  }
+
+	  // Slightly less common case.
+	  if (typeof arg === 'string') {
+	    return fromString(this, arg, arguments.length > 1 ? arguments[1] : 'utf8')
+	  }
+
+	  // Unusual.
+	  return fromObject(this, arg)
+	}
+
+	function fromNumber (that, length) {
+	  that = allocate(that, length < 0 ? 0 : checked(length) | 0)
+	  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+	    for (var i = 0; i < length; i++) {
+	      that[i] = 0
+	    }
+	  }
+	  return that
+	}
+
+	function fromString (that, string, encoding) {
+	  if (typeof encoding !== 'string' || encoding === '') encoding = 'utf8'
+
+	  // Assumption: byteLength() return value is always < kMaxLength.
+	  var length = byteLength(string, encoding) | 0
+	  that = allocate(that, length)
+
+	  that.write(string, encoding)
+	  return that
+	}
+
+	function fromObject (that, object) {
+	  if (Buffer.isBuffer(object)) return fromBuffer(that, object)
+
+	  if (isArray(object)) return fromArray(that, object)
+
+	  if (object == null) {
+	    throw new TypeError('must start with number, buffer, array or string')
+	  }
+
+	  if (typeof ArrayBuffer !== 'undefined') {
+	    if (object.buffer instanceof ArrayBuffer) {
+	      return fromTypedArray(that, object)
+	    }
+	    if (object instanceof ArrayBuffer) {
+	      return fromArrayBuffer(that, object)
+	    }
+	  }
+
+	  if (object.length) return fromArrayLike(that, object)
+
+	  return fromJsonObject(that, object)
+	}
+
+	function fromBuffer (that, buffer) {
+	  var length = checked(buffer.length) | 0
+	  that = allocate(that, length)
+	  buffer.copy(that, 0, 0, length)
+	  return that
+	}
+
+	function fromArray (that, array) {
+	  var length = checked(array.length) | 0
+	  that = allocate(that, length)
+	  for (var i = 0; i < length; i += 1) {
+	    that[i] = array[i] & 255
+	  }
+	  return that
+	}
+
+	// Duplicate of fromArray() to keep fromArray() monomorphic.
+	function fromTypedArray (that, array) {
+	  var length = checked(array.length) | 0
+	  that = allocate(that, length)
+	  // Truncating the elements is probably not what people expect from typed
+	  // arrays with BYTES_PER_ELEMENT > 1 but it's compatible with the behavior
+	  // of the old Buffer constructor.
+	  for (var i = 0; i < length; i += 1) {
+	    that[i] = array[i] & 255
+	  }
+	  return that
+	}
+
+	function fromArrayBuffer (that, array) {
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    // Return an augmented `Uint8Array` instance, for best performance
+	    array.byteLength
+	    that = Buffer._augment(new Uint8Array(array))
+	  } else {
+	    // Fallback: Return an object instance of the Buffer class
+	    that = fromTypedArray(that, new Uint8Array(array))
+	  }
+	  return that
+	}
+
+	function fromArrayLike (that, array) {
+	  var length = checked(array.length) | 0
+	  that = allocate(that, length)
+	  for (var i = 0; i < length; i += 1) {
+	    that[i] = array[i] & 255
+	  }
+	  return that
+	}
+
+	// Deserialize { type: 'Buffer', data: [1,2,3,...] } into a Buffer object.
+	// Returns a zero-length buffer for inputs that don't conform to the spec.
+	function fromJsonObject (that, object) {
+	  var array
+	  var length = 0
+
+	  if (object.type === 'Buffer' && isArray(object.data)) {
+	    array = object.data
+	    length = checked(array.length) | 0
+	  }
+	  that = allocate(that, length)
+
+	  for (var i = 0; i < length; i += 1) {
+	    that[i] = array[i] & 255
+	  }
+	  return that
+	}
+
+	if (Buffer.TYPED_ARRAY_SUPPORT) {
+	  Buffer.prototype.__proto__ = Uint8Array.prototype
+	  Buffer.__proto__ = Uint8Array
+	} else {
+	  // pre-set for values that may exist in the future
+	  Buffer.prototype.length = undefined
+	  Buffer.prototype.parent = undefined
+	}
+
+	function allocate (that, length) {
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    // Return an augmented `Uint8Array` instance, for best performance
+	    that = Buffer._augment(new Uint8Array(length))
+	    that.__proto__ = Buffer.prototype
+	  } else {
+	    // Fallback: Return an object instance of the Buffer class
+	    that.length = length
+	    that._isBuffer = true
+	  }
+
+	  var fromPool = length !== 0 && length <= Buffer.poolSize >>> 1
+	  if (fromPool) that.parent = rootParent
+
+	  return that
+	}
+
+	function checked (length) {
+	  // Note: cannot use `length < kMaxLength` here because that fails when
+	  // length is NaN (which is otherwise coerced to zero.)
+	  if (length >= kMaxLength()) {
+	    throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
+	                         'size: 0x' + kMaxLength().toString(16) + ' bytes')
+	  }
+	  return length | 0
+	}
+
+	function SlowBuffer (subject, encoding) {
+	  if (!(this instanceof SlowBuffer)) return new SlowBuffer(subject, encoding)
+
+	  var buf = new Buffer(subject, encoding)
+	  delete buf.parent
+	  return buf
+	}
+
+	Buffer.isBuffer = function isBuffer (b) {
+	  return !!(b != null && b._isBuffer)
+	}
+
+	Buffer.compare = function compare (a, b) {
+	  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
+	    throw new TypeError('Arguments must be Buffers')
+	  }
+
+	  if (a === b) return 0
+
+	  var x = a.length
+	  var y = b.length
+
+	  var i = 0
+	  var len = Math.min(x, y)
+	  while (i < len) {
+	    if (a[i] !== b[i]) break
+
+	    ++i
+	  }
+
+	  if (i !== len) {
+	    x = a[i]
+	    y = b[i]
+	  }
+
+	  if (x < y) return -1
+	  if (y < x) return 1
+	  return 0
+	}
+
+	Buffer.isEncoding = function isEncoding (encoding) {
+	  switch (String(encoding).toLowerCase()) {
+	    case 'hex':
+	    case 'utf8':
+	    case 'utf-8':
+	    case 'ascii':
+	    case 'binary':
+	    case 'base64':
+	    case 'raw':
+	    case 'ucs2':
+	    case 'ucs-2':
+	    case 'utf16le':
+	    case 'utf-16le':
+	      return true
+	    default:
+	      return false
+	  }
+	}
+
+	Buffer.concat = function concat (list, length) {
+	  if (!isArray(list)) throw new TypeError('list argument must be an Array of Buffers.')
+
+	  if (list.length === 0) {
+	    return new Buffer(0)
+	  }
+
+	  var i
+	  if (length === undefined) {
+	    length = 0
+	    for (i = 0; i < list.length; i++) {
+	      length += list[i].length
+	    }
+	  }
+
+	  var buf = new Buffer(length)
+	  var pos = 0
+	  for (i = 0; i < list.length; i++) {
+	    var item = list[i]
+	    item.copy(buf, pos)
+	    pos += item.length
+	  }
+	  return buf
+	}
+
+	function byteLength (string, encoding) {
+	  if (typeof string !== 'string') string = '' + string
+
+	  var len = string.length
+	  if (len === 0) return 0
+
+	  // Use a for loop to avoid recursion
+	  var loweredCase = false
+	  for (;;) {
+	    switch (encoding) {
+	      case 'ascii':
+	      case 'binary':
+	      // Deprecated
+	      case 'raw':
+	      case 'raws':
+	        return len
+	      case 'utf8':
+	      case 'utf-8':
+	        return utf8ToBytes(string).length
+	      case 'ucs2':
+	      case 'ucs-2':
+	      case 'utf16le':
+	      case 'utf-16le':
+	        return len * 2
+	      case 'hex':
+	        return len >>> 1
+	      case 'base64':
+	        return base64ToBytes(string).length
+	      default:
+	        if (loweredCase) return utf8ToBytes(string).length // assume utf8
+	        encoding = ('' + encoding).toLowerCase()
+	        loweredCase = true
+	    }
+	  }
+	}
+	Buffer.byteLength = byteLength
+
+	function slowToString (encoding, start, end) {
+	  var loweredCase = false
+
+	  start = start | 0
+	  end = end === undefined || end === Infinity ? this.length : end | 0
+
+	  if (!encoding) encoding = 'utf8'
+	  if (start < 0) start = 0
+	  if (end > this.length) end = this.length
+	  if (end <= start) return ''
+
+	  while (true) {
+	    switch (encoding) {
+	      case 'hex':
+	        return hexSlice(this, start, end)
+
+	      case 'utf8':
+	      case 'utf-8':
+	        return utf8Slice(this, start, end)
+
+	      case 'ascii':
+	        return asciiSlice(this, start, end)
+
+	      case 'binary':
+	        return binarySlice(this, start, end)
+
+	      case 'base64':
+	        return base64Slice(this, start, end)
+
+	      case 'ucs2':
+	      case 'ucs-2':
+	      case 'utf16le':
+	      case 'utf-16le':
+	        return utf16leSlice(this, start, end)
+
+	      default:
+	        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+	        encoding = (encoding + '').toLowerCase()
+	        loweredCase = true
+	    }
+	  }
+	}
+
+	Buffer.prototype.toString = function toString () {
+	  var length = this.length | 0
+	  if (length === 0) return ''
+	  if (arguments.length === 0) return utf8Slice(this, 0, length)
+	  return slowToString.apply(this, arguments)
+	}
+
+	Buffer.prototype.equals = function equals (b) {
+	  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
+	  if (this === b) return true
+	  return Buffer.compare(this, b) === 0
+	}
+
+	Buffer.prototype.inspect = function inspect () {
+	  var str = ''
+	  var max = exports.INSPECT_MAX_BYTES
+	  if (this.length > 0) {
+	    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
+	    if (this.length > max) str += ' ... '
+	  }
+	  return '<Buffer ' + str + '>'
+	}
+
+	Buffer.prototype.compare = function compare (b) {
+	  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
+	  if (this === b) return 0
+	  return Buffer.compare(this, b)
+	}
+
+	Buffer.prototype.indexOf = function indexOf (val, byteOffset) {
+	  if (byteOffset > 0x7fffffff) byteOffset = 0x7fffffff
+	  else if (byteOffset < -0x80000000) byteOffset = -0x80000000
+	  byteOffset >>= 0
+
+	  if (this.length === 0) return -1
+	  if (byteOffset >= this.length) return -1
+
+	  // Negative offsets start from the end of the buffer
+	  if (byteOffset < 0) byteOffset = Math.max(this.length + byteOffset, 0)
+
+	  if (typeof val === 'string') {
+	    if (val.length === 0) return -1 // special case: looking for empty string always fails
+	    return String.prototype.indexOf.call(this, val, byteOffset)
+	  }
+	  if (Buffer.isBuffer(val)) {
+	    return arrayIndexOf(this, val, byteOffset)
+	  }
+	  if (typeof val === 'number') {
+	    if (Buffer.TYPED_ARRAY_SUPPORT && Uint8Array.prototype.indexOf === 'function') {
+	      return Uint8Array.prototype.indexOf.call(this, val, byteOffset)
+	    }
+	    return arrayIndexOf(this, [ val ], byteOffset)
+	  }
+
+	  function arrayIndexOf (arr, val, byteOffset) {
+	    var foundIndex = -1
+	    for (var i = 0; byteOffset + i < arr.length; i++) {
+	      if (arr[byteOffset + i] === val[foundIndex === -1 ? 0 : i - foundIndex]) {
+	        if (foundIndex === -1) foundIndex = i
+	        if (i - foundIndex + 1 === val.length) return byteOffset + foundIndex
+	      } else {
+	        foundIndex = -1
+	      }
+	    }
+	    return -1
+	  }
+
+	  throw new TypeError('val must be string, number or Buffer')
+	}
+
+	// `get` is deprecated
+	Buffer.prototype.get = function get (offset) {
+	  console.log('.get() is deprecated. Access using array indexes instead.')
+	  return this.readUInt8(offset)
+	}
+
+	// `set` is deprecated
+	Buffer.prototype.set = function set (v, offset) {
+	  console.log('.set() is deprecated. Access using array indexes instead.')
+	  return this.writeUInt8(v, offset)
+	}
+
+	function hexWrite (buf, string, offset, length) {
+	  offset = Number(offset) || 0
+	  var remaining = buf.length - offset
+	  if (!length) {
+	    length = remaining
+	  } else {
+	    length = Number(length)
+	    if (length > remaining) {
+	      length = remaining
+	    }
+	  }
+
+	  // must be an even number of digits
+	  var strLen = string.length
+	  if (strLen % 2 !== 0) throw new Error('Invalid hex string')
+
+	  if (length > strLen / 2) {
+	    length = strLen / 2
+	  }
+	  for (var i = 0; i < length; i++) {
+	    var parsed = parseInt(string.substr(i * 2, 2), 16)
+	    if (isNaN(parsed)) throw new Error('Invalid hex string')
+	    buf[offset + i] = parsed
+	  }
+	  return i
+	}
+
+	function utf8Write (buf, string, offset, length) {
+	  return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
+	}
+
+	function asciiWrite (buf, string, offset, length) {
+	  return blitBuffer(asciiToBytes(string), buf, offset, length)
+	}
+
+	function binaryWrite (buf, string, offset, length) {
+	  return asciiWrite(buf, string, offset, length)
+	}
+
+	function base64Write (buf, string, offset, length) {
+	  return blitBuffer(base64ToBytes(string), buf, offset, length)
+	}
+
+	function ucs2Write (buf, string, offset, length) {
+	  return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
+	}
+
+	Buffer.prototype.write = function write (string, offset, length, encoding) {
+	  // Buffer#write(string)
+	  if (offset === undefined) {
+	    encoding = 'utf8'
+	    length = this.length
+	    offset = 0
+	  // Buffer#write(string, encoding)
+	  } else if (length === undefined && typeof offset === 'string') {
+	    encoding = offset
+	    length = this.length
+	    offset = 0
+	  // Buffer#write(string, offset[, length][, encoding])
+	  } else if (isFinite(offset)) {
+	    offset = offset | 0
+	    if (isFinite(length)) {
+	      length = length | 0
+	      if (encoding === undefined) encoding = 'utf8'
+	    } else {
+	      encoding = length
+	      length = undefined
+	    }
+	  // legacy write(string, encoding, offset, length) - remove in v0.13
+	  } else {
+	    var swap = encoding
+	    encoding = offset
+	    offset = length | 0
+	    length = swap
+	  }
+
+	  var remaining = this.length - offset
+	  if (length === undefined || length > remaining) length = remaining
+
+	  if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
+	    throw new RangeError('attempt to write outside buffer bounds')
+	  }
+
+	  if (!encoding) encoding = 'utf8'
+
+	  var loweredCase = false
+	  for (;;) {
+	    switch (encoding) {
+	      case 'hex':
+	        return hexWrite(this, string, offset, length)
+
+	      case 'utf8':
+	      case 'utf-8':
+	        return utf8Write(this, string, offset, length)
+
+	      case 'ascii':
+	        return asciiWrite(this, string, offset, length)
+
+	      case 'binary':
+	        return binaryWrite(this, string, offset, length)
+
+	      case 'base64':
+	        // Warning: maxLength not taken into account in base64Write
+	        return base64Write(this, string, offset, length)
+
+	      case 'ucs2':
+	      case 'ucs-2':
+	      case 'utf16le':
+	      case 'utf-16le':
+	        return ucs2Write(this, string, offset, length)
+
+	      default:
+	        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+	        encoding = ('' + encoding).toLowerCase()
+	        loweredCase = true
+	    }
+	  }
+	}
+
+	Buffer.prototype.toJSON = function toJSON () {
+	  return {
+	    type: 'Buffer',
+	    data: Array.prototype.slice.call(this._arr || this, 0)
+	  }
+	}
+
+	function base64Slice (buf, start, end) {
+	  if (start === 0 && end === buf.length) {
+	    return base64.fromByteArray(buf)
+	  } else {
+	    return base64.fromByteArray(buf.slice(start, end))
+	  }
+	}
+
+	function utf8Slice (buf, start, end) {
+	  end = Math.min(buf.length, end)
+	  var res = []
+
+	  var i = start
+	  while (i < end) {
+	    var firstByte = buf[i]
+	    var codePoint = null
+	    var bytesPerSequence = (firstByte > 0xEF) ? 4
+	      : (firstByte > 0xDF) ? 3
+	      : (firstByte > 0xBF) ? 2
+	      : 1
+
+	    if (i + bytesPerSequence <= end) {
+	      var secondByte, thirdByte, fourthByte, tempCodePoint
+
+	      switch (bytesPerSequence) {
+	        case 1:
+	          if (firstByte < 0x80) {
+	            codePoint = firstByte
+	          }
+	          break
+	        case 2:
+	          secondByte = buf[i + 1]
+	          if ((secondByte & 0xC0) === 0x80) {
+	            tempCodePoint = (firstByte & 0x1F) << 0x6 | (secondByte & 0x3F)
+	            if (tempCodePoint > 0x7F) {
+	              codePoint = tempCodePoint
+	            }
+	          }
+	          break
+	        case 3:
+	          secondByte = buf[i + 1]
+	          thirdByte = buf[i + 2]
+	          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80) {
+	            tempCodePoint = (firstByte & 0xF) << 0xC | (secondByte & 0x3F) << 0x6 | (thirdByte & 0x3F)
+	            if (tempCodePoint > 0x7FF && (tempCodePoint < 0xD800 || tempCodePoint > 0xDFFF)) {
+	              codePoint = tempCodePoint
+	            }
+	          }
+	          break
+	        case 4:
+	          secondByte = buf[i + 1]
+	          thirdByte = buf[i + 2]
+	          fourthByte = buf[i + 3]
+	          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80 && (fourthByte & 0xC0) === 0x80) {
+	            tempCodePoint = (firstByte & 0xF) << 0x12 | (secondByte & 0x3F) << 0xC | (thirdByte & 0x3F) << 0x6 | (fourthByte & 0x3F)
+	            if (tempCodePoint > 0xFFFF && tempCodePoint < 0x110000) {
+	              codePoint = tempCodePoint
+	            }
+	          }
+	      }
+	    }
+
+	    if (codePoint === null) {
+	      // we did not generate a valid codePoint so insert a
+	      // replacement char (U+FFFD) and advance only 1 byte
+	      codePoint = 0xFFFD
+	      bytesPerSequence = 1
+	    } else if (codePoint > 0xFFFF) {
+	      // encode to utf16 (surrogate pair dance)
+	      codePoint -= 0x10000
+	      res.push(codePoint >>> 10 & 0x3FF | 0xD800)
+	      codePoint = 0xDC00 | codePoint & 0x3FF
+	    }
+
+	    res.push(codePoint)
+	    i += bytesPerSequence
+	  }
+
+	  return decodeCodePointsArray(res)
+	}
+
+	// Based on http://stackoverflow.com/a/22747272/680742, the browser with
+	// the lowest limit is Chrome, with 0x10000 args.
+	// We go 1 magnitude less, for safety
+	var MAX_ARGUMENTS_LENGTH = 0x1000
+
+	function decodeCodePointsArray (codePoints) {
+	  var len = codePoints.length
+	  if (len <= MAX_ARGUMENTS_LENGTH) {
+	    return String.fromCharCode.apply(String, codePoints) // avoid extra slice()
+	  }
+
+	  // Decode in chunks to avoid "call stack size exceeded".
+	  var res = ''
+	  var i = 0
+	  while (i < len) {
+	    res += String.fromCharCode.apply(
+	      String,
+	      codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
+	    )
+	  }
+	  return res
+	}
+
+	function asciiSlice (buf, start, end) {
+	  var ret = ''
+	  end = Math.min(buf.length, end)
+
+	  for (var i = start; i < end; i++) {
+	    ret += String.fromCharCode(buf[i] & 0x7F)
+	  }
+	  return ret
+	}
+
+	function binarySlice (buf, start, end) {
+	  var ret = ''
+	  end = Math.min(buf.length, end)
+
+	  for (var i = start; i < end; i++) {
+	    ret += String.fromCharCode(buf[i])
+	  }
+	  return ret
+	}
+
+	function hexSlice (buf, start, end) {
+	  var len = buf.length
+
+	  if (!start || start < 0) start = 0
+	  if (!end || end < 0 || end > len) end = len
+
+	  var out = ''
+	  for (var i = start; i < end; i++) {
+	    out += toHex(buf[i])
+	  }
+	  return out
+	}
+
+	function utf16leSlice (buf, start, end) {
+	  var bytes = buf.slice(start, end)
+	  var res = ''
+	  for (var i = 0; i < bytes.length; i += 2) {
+	    res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256)
+	  }
+	  return res
+	}
+
+	Buffer.prototype.slice = function slice (start, end) {
+	  var len = this.length
+	  start = ~~start
+	  end = end === undefined ? len : ~~end
+
+	  if (start < 0) {
+	    start += len
+	    if (start < 0) start = 0
+	  } else if (start > len) {
+	    start = len
+	  }
+
+	  if (end < 0) {
+	    end += len
+	    if (end < 0) end = 0
+	  } else if (end > len) {
+	    end = len
+	  }
+
+	  if (end < start) end = start
+
+	  var newBuf
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    newBuf = Buffer._augment(this.subarray(start, end))
+	  } else {
+	    var sliceLen = end - start
+	    newBuf = new Buffer(sliceLen, undefined)
+	    for (var i = 0; i < sliceLen; i++) {
+	      newBuf[i] = this[i + start]
+	    }
+	  }
+
+	  if (newBuf.length) newBuf.parent = this.parent || this
+
+	  return newBuf
+	}
+
+	/*
+	 * Need to make sure that buffer isn't trying to write out of bounds.
+	 */
+	function checkOffset (offset, ext, length) {
+	  if ((offset % 1) !== 0 || offset < 0) throw new RangeError('offset is not uint')
+	  if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
+	}
+
+	Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
+	  offset = offset | 0
+	  byteLength = byteLength | 0
+	  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+	  var val = this[offset]
+	  var mul = 1
+	  var i = 0
+	  while (++i < byteLength && (mul *= 0x100)) {
+	    val += this[offset + i] * mul
+	  }
+
+	  return val
+	}
+
+	Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
+	  offset = offset | 0
+	  byteLength = byteLength | 0
+	  if (!noAssert) {
+	    checkOffset(offset, byteLength, this.length)
+	  }
+
+	  var val = this[offset + --byteLength]
+	  var mul = 1
+	  while (byteLength > 0 && (mul *= 0x100)) {
+	    val += this[offset + --byteLength] * mul
+	  }
+
+	  return val
+	}
+
+	Buffer.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 1, this.length)
+	  return this[offset]
+	}
+
+	Buffer.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 2, this.length)
+	  return this[offset] | (this[offset + 1] << 8)
+	}
+
+	Buffer.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 2, this.length)
+	  return (this[offset] << 8) | this[offset + 1]
+	}
+
+	Buffer.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 4, this.length)
+
+	  return ((this[offset]) |
+	      (this[offset + 1] << 8) |
+	      (this[offset + 2] << 16)) +
+	      (this[offset + 3] * 0x1000000)
+	}
+
+	Buffer.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 4, this.length)
+
+	  return (this[offset] * 0x1000000) +
+	    ((this[offset + 1] << 16) |
+	    (this[offset + 2] << 8) |
+	    this[offset + 3])
+	}
+
+	Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
+	  offset = offset | 0
+	  byteLength = byteLength | 0
+	  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+	  var val = this[offset]
+	  var mul = 1
+	  var i = 0
+	  while (++i < byteLength && (mul *= 0x100)) {
+	    val += this[offset + i] * mul
+	  }
+	  mul *= 0x80
+
+	  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+
+	  return val
+	}
+
+	Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
+	  offset = offset | 0
+	  byteLength = byteLength | 0
+	  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+	  var i = byteLength
+	  var mul = 1
+	  var val = this[offset + --i]
+	  while (i > 0 && (mul *= 0x100)) {
+	    val += this[offset + --i] * mul
+	  }
+	  mul *= 0x80
+
+	  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+
+	  return val
+	}
+
+	Buffer.prototype.readInt8 = function readInt8 (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 1, this.length)
+	  if (!(this[offset] & 0x80)) return (this[offset])
+	  return ((0xff - this[offset] + 1) * -1)
+	}
+
+	Buffer.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 2, this.length)
+	  var val = this[offset] | (this[offset + 1] << 8)
+	  return (val & 0x8000) ? val | 0xFFFF0000 : val
+	}
+
+	Buffer.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 2, this.length)
+	  var val = this[offset + 1] | (this[offset] << 8)
+	  return (val & 0x8000) ? val | 0xFFFF0000 : val
+	}
+
+	Buffer.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 4, this.length)
+
+	  return (this[offset]) |
+	    (this[offset + 1] << 8) |
+	    (this[offset + 2] << 16) |
+	    (this[offset + 3] << 24)
+	}
+
+	Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 4, this.length)
+
+	  return (this[offset] << 24) |
+	    (this[offset + 1] << 16) |
+	    (this[offset + 2] << 8) |
+	    (this[offset + 3])
+	}
+
+	Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 4, this.length)
+	  return ieee754.read(this, offset, true, 23, 4)
+	}
+
+	Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 4, this.length)
+	  return ieee754.read(this, offset, false, 23, 4)
+	}
+
+	Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 8, this.length)
+	  return ieee754.read(this, offset, true, 52, 8)
+	}
+
+	Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 8, this.length)
+	  return ieee754.read(this, offset, false, 52, 8)
+	}
+
+	function checkInt (buf, value, offset, ext, max, min) {
+	  if (!Buffer.isBuffer(buf)) throw new TypeError('buffer must be a Buffer instance')
+	  if (value > max || value < min) throw new RangeError('value is out of bounds')
+	  if (offset + ext > buf.length) throw new RangeError('index out of range')
+	}
+
+	Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  byteLength = byteLength | 0
+	  if (!noAssert) checkInt(this, value, offset, byteLength, Math.pow(2, 8 * byteLength), 0)
+
+	  var mul = 1
+	  var i = 0
+	  this[offset] = value & 0xFF
+	  while (++i < byteLength && (mul *= 0x100)) {
+	    this[offset + i] = (value / mul) & 0xFF
+	  }
+
+	  return offset + byteLength
+	}
+
+	Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  byteLength = byteLength | 0
+	  if (!noAssert) checkInt(this, value, offset, byteLength, Math.pow(2, 8 * byteLength), 0)
+
+	  var i = byteLength - 1
+	  var mul = 1
+	  this[offset + i] = value & 0xFF
+	  while (--i >= 0 && (mul *= 0x100)) {
+	    this[offset + i] = (value / mul) & 0xFF
+	  }
+
+	  return offset + byteLength
+	}
+
+	Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0)
+	  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+	  this[offset] = (value & 0xff)
+	  return offset + 1
+	}
+
+	function objectWriteUInt16 (buf, value, offset, littleEndian) {
+	  if (value < 0) value = 0xffff + value + 1
+	  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; i++) {
+	    buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
+	      (littleEndian ? i : 1 - i) * 8
+	  }
+	}
+
+	Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value & 0xff)
+	    this[offset + 1] = (value >>> 8)
+	  } else {
+	    objectWriteUInt16(this, value, offset, true)
+	  }
+	  return offset + 2
+	}
+
+	Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value >>> 8)
+	    this[offset + 1] = (value & 0xff)
+	  } else {
+	    objectWriteUInt16(this, value, offset, false)
+	  }
+	  return offset + 2
+	}
+
+	function objectWriteUInt32 (buf, value, offset, littleEndian) {
+	  if (value < 0) value = 0xffffffff + value + 1
+	  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; i++) {
+	    buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff
+	  }
+	}
+
+	Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset + 3] = (value >>> 24)
+	    this[offset + 2] = (value >>> 16)
+	    this[offset + 1] = (value >>> 8)
+	    this[offset] = (value & 0xff)
+	  } else {
+	    objectWriteUInt32(this, value, offset, true)
+	  }
+	  return offset + 4
+	}
+
+	Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value >>> 24)
+	    this[offset + 1] = (value >>> 16)
+	    this[offset + 2] = (value >>> 8)
+	    this[offset + 3] = (value & 0xff)
+	  } else {
+	    objectWriteUInt32(this, value, offset, false)
+	  }
+	  return offset + 4
+	}
+
+	Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) {
+	    var limit = Math.pow(2, 8 * byteLength - 1)
+
+	    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+	  }
+
+	  var i = 0
+	  var mul = 1
+	  var sub = value < 0 ? 1 : 0
+	  this[offset] = value & 0xFF
+	  while (++i < byteLength && (mul *= 0x100)) {
+	    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
+	  }
+
+	  return offset + byteLength
+	}
+
+	Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) {
+	    var limit = Math.pow(2, 8 * byteLength - 1)
+
+	    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+	  }
+
+	  var i = byteLength - 1
+	  var mul = 1
+	  var sub = value < 0 ? 1 : 0
+	  this[offset + i] = value & 0xFF
+	  while (--i >= 0 && (mul *= 0x100)) {
+	    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
+	  }
+
+	  return offset + byteLength
+	}
+
+	Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80)
+	  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+	  if (value < 0) value = 0xff + value + 1
+	  this[offset] = (value & 0xff)
+	  return offset + 1
+	}
+
+	Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value & 0xff)
+	    this[offset + 1] = (value >>> 8)
+	  } else {
+	    objectWriteUInt16(this, value, offset, true)
+	  }
+	  return offset + 2
+	}
+
+	Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value >>> 8)
+	    this[offset + 1] = (value & 0xff)
+	  } else {
+	    objectWriteUInt16(this, value, offset, false)
+	  }
+	  return offset + 2
+	}
+
+	Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value & 0xff)
+	    this[offset + 1] = (value >>> 8)
+	    this[offset + 2] = (value >>> 16)
+	    this[offset + 3] = (value >>> 24)
+	  } else {
+	    objectWriteUInt32(this, value, offset, true)
+	  }
+	  return offset + 4
+	}
+
+	Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+	  if (value < 0) value = 0xffffffff + value + 1
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value >>> 24)
+	    this[offset + 1] = (value >>> 16)
+	    this[offset + 2] = (value >>> 8)
+	    this[offset + 3] = (value & 0xff)
+	  } else {
+	    objectWriteUInt32(this, value, offset, false)
+	  }
+	  return offset + 4
+	}
+
+	function checkIEEE754 (buf, value, offset, ext, max, min) {
+	  if (value > max || value < min) throw new RangeError('value is out of bounds')
+	  if (offset + ext > buf.length) throw new RangeError('index out of range')
+	  if (offset < 0) throw new RangeError('index out of range')
+	}
+
+	function writeFloat (buf, value, offset, littleEndian, noAssert) {
+	  if (!noAssert) {
+	    checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38)
+	  }
+	  ieee754.write(buf, value, offset, littleEndian, 23, 4)
+	  return offset + 4
+	}
+
+	Buffer.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
+	  return writeFloat(this, value, offset, true, noAssert)
+	}
+
+	Buffer.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
+	  return writeFloat(this, value, offset, false, noAssert)
+	}
+
+	function writeDouble (buf, value, offset, littleEndian, noAssert) {
+	  if (!noAssert) {
+	    checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308)
+	  }
+	  ieee754.write(buf, value, offset, littleEndian, 52, 8)
+	  return offset + 8
+	}
+
+	Buffer.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
+	  return writeDouble(this, value, offset, true, noAssert)
+	}
+
+	Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
+	  return writeDouble(this, value, offset, false, noAssert)
+	}
+
+	// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+	Buffer.prototype.copy = function copy (target, targetStart, start, end) {
+	  if (!start) start = 0
+	  if (!end && end !== 0) end = this.length
+	  if (targetStart >= target.length) targetStart = target.length
+	  if (!targetStart) targetStart = 0
+	  if (end > 0 && end < start) end = start
+
+	  // Copy 0 bytes; we're done
+	  if (end === start) return 0
+	  if (target.length === 0 || this.length === 0) return 0
+
+	  // Fatal error conditions
+	  if (targetStart < 0) {
+	    throw new RangeError('targetStart out of bounds')
+	  }
+	  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
+	  if (end < 0) throw new RangeError('sourceEnd out of bounds')
+
+	  // Are we oob?
+	  if (end > this.length) end = this.length
+	  if (target.length - targetStart < end - start) {
+	    end = target.length - targetStart + start
+	  }
+
+	  var len = end - start
+	  var i
+
+	  if (this === target && start < targetStart && targetStart < end) {
+	    // descending copy from end
+	    for (i = len - 1; i >= 0; i--) {
+	      target[i + targetStart] = this[i + start]
+	    }
+	  } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
+	    // ascending copy from start
+	    for (i = 0; i < len; i++) {
+	      target[i + targetStart] = this[i + start]
+	    }
+	  } else {
+	    target._set(this.subarray(start, start + len), targetStart)
+	  }
+
+	  return len
+	}
+
+	// fill(value, start=0, end=buffer.length)
+	Buffer.prototype.fill = function fill (value, start, end) {
+	  if (!value) value = 0
+	  if (!start) start = 0
+	  if (!end) end = this.length
+
+	  if (end < start) throw new RangeError('end < start')
+
+	  // Fill 0 bytes; we're done
+	  if (end === start) return
+	  if (this.length === 0) return
+
+	  if (start < 0 || start >= this.length) throw new RangeError('start out of bounds')
+	  if (end < 0 || end > this.length) throw new RangeError('end out of bounds')
+
+	  var i
+	  if (typeof value === 'number') {
+	    for (i = start; i < end; i++) {
+	      this[i] = value
+	    }
+	  } else {
+	    var bytes = utf8ToBytes(value.toString())
+	    var len = bytes.length
+	    for (i = start; i < end; i++) {
+	      this[i] = bytes[i % len]
+	    }
+	  }
+
+	  return this
+	}
+
+	/**
+	 * Creates a new `ArrayBuffer` with the *copied* memory of the buffer instance.
+	 * Added in Node 0.12. Only available in browsers that support ArrayBuffer.
+	 */
+	Buffer.prototype.toArrayBuffer = function toArrayBuffer () {
+	  if (typeof Uint8Array !== 'undefined') {
+	    if (Buffer.TYPED_ARRAY_SUPPORT) {
+	      return (new Buffer(this)).buffer
+	    } else {
+	      var buf = new Uint8Array(this.length)
+	      for (var i = 0, len = buf.length; i < len; i += 1) {
+	        buf[i] = this[i]
+	      }
+	      return buf.buffer
+	    }
+	  } else {
+	    throw new TypeError('Buffer.toArrayBuffer not supported in this browser')
+	  }
+	}
+
+	// HELPER FUNCTIONS
+	// ================
+
+	var BP = Buffer.prototype
+
+	/**
+	 * Augment a Uint8Array *instance* (not the Uint8Array class!) with Buffer methods
+	 */
+	Buffer._augment = function _augment (arr) {
+	  arr.constructor = Buffer
+	  arr._isBuffer = true
+
+	  // save reference to original Uint8Array set method before overwriting
+	  arr._set = arr.set
+
+	  // deprecated
+	  arr.get = BP.get
+	  arr.set = BP.set
+
+	  arr.write = BP.write
+	  arr.toString = BP.toString
+	  arr.toLocaleString = BP.toString
+	  arr.toJSON = BP.toJSON
+	  arr.equals = BP.equals
+	  arr.compare = BP.compare
+	  arr.indexOf = BP.indexOf
+	  arr.copy = BP.copy
+	  arr.slice = BP.slice
+	  arr.readUIntLE = BP.readUIntLE
+	  arr.readUIntBE = BP.readUIntBE
+	  arr.readUInt8 = BP.readUInt8
+	  arr.readUInt16LE = BP.readUInt16LE
+	  arr.readUInt16BE = BP.readUInt16BE
+	  arr.readUInt32LE = BP.readUInt32LE
+	  arr.readUInt32BE = BP.readUInt32BE
+	  arr.readIntLE = BP.readIntLE
+	  arr.readIntBE = BP.readIntBE
+	  arr.readInt8 = BP.readInt8
+	  arr.readInt16LE = BP.readInt16LE
+	  arr.readInt16BE = BP.readInt16BE
+	  arr.readInt32LE = BP.readInt32LE
+	  arr.readInt32BE = BP.readInt32BE
+	  arr.readFloatLE = BP.readFloatLE
+	  arr.readFloatBE = BP.readFloatBE
+	  arr.readDoubleLE = BP.readDoubleLE
+	  arr.readDoubleBE = BP.readDoubleBE
+	  arr.writeUInt8 = BP.writeUInt8
+	  arr.writeUIntLE = BP.writeUIntLE
+	  arr.writeUIntBE = BP.writeUIntBE
+	  arr.writeUInt16LE = BP.writeUInt16LE
+	  arr.writeUInt16BE = BP.writeUInt16BE
+	  arr.writeUInt32LE = BP.writeUInt32LE
+	  arr.writeUInt32BE = BP.writeUInt32BE
+	  arr.writeIntLE = BP.writeIntLE
+	  arr.writeIntBE = BP.writeIntBE
+	  arr.writeInt8 = BP.writeInt8
+	  arr.writeInt16LE = BP.writeInt16LE
+	  arr.writeInt16BE = BP.writeInt16BE
+	  arr.writeInt32LE = BP.writeInt32LE
+	  arr.writeInt32BE = BP.writeInt32BE
+	  arr.writeFloatLE = BP.writeFloatLE
+	  arr.writeFloatBE = BP.writeFloatBE
+	  arr.writeDoubleLE = BP.writeDoubleLE
+	  arr.writeDoubleBE = BP.writeDoubleBE
+	  arr.fill = BP.fill
+	  arr.inspect = BP.inspect
+	  arr.toArrayBuffer = BP.toArrayBuffer
+
+	  return arr
+	}
+
+	var INVALID_BASE64_RE = /[^+\/0-9A-Za-z-_]/g
+
+	function base64clean (str) {
+	  // Node strips out invalid characters like \n and \t from the string, base64-js does not
+	  str = stringtrim(str).replace(INVALID_BASE64_RE, '')
+	  // Node converts strings with length < 2 to ''
+	  if (str.length < 2) return ''
+	  // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
+	  while (str.length % 4 !== 0) {
+	    str = str + '='
+	  }
+	  return str
+	}
+
+	function stringtrim (str) {
+	  if (str.trim) return str.trim()
+	  return str.replace(/^\s+|\s+$/g, '')
+	}
+
+	function toHex (n) {
+	  if (n < 16) return '0' + n.toString(16)
+	  return n.toString(16)
+	}
+
+	function utf8ToBytes (string, units) {
+	  units = units || Infinity
+	  var codePoint
+	  var length = string.length
+	  var leadSurrogate = null
+	  var bytes = []
+
+	  for (var i = 0; i < length; i++) {
+	    codePoint = string.charCodeAt(i)
+
+	    // is surrogate component
+	    if (codePoint > 0xD7FF && codePoint < 0xE000) {
+	      // last char was a lead
+	      if (!leadSurrogate) {
+	        // no lead yet
+	        if (codePoint > 0xDBFF) {
+	          // unexpected trail
+	          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+	          continue
+	        } else if (i + 1 === length) {
+	          // unpaired lead
+	          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+	          continue
+	        }
+
+	        // valid lead
+	        leadSurrogate = codePoint
+
+	        continue
+	      }
+
+	      // 2 leads in a row
+	      if (codePoint < 0xDC00) {
+	        if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+	        leadSurrogate = codePoint
+	        continue
+	      }
+
+	      // valid surrogate pair
+	      codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000
+	    } else if (leadSurrogate) {
+	      // valid bmp char, but last char was a lead
+	      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+	    }
+
+	    leadSurrogate = null
+
+	    // encode utf8
+	    if (codePoint < 0x80) {
+	      if ((units -= 1) < 0) break
+	      bytes.push(codePoint)
+	    } else if (codePoint < 0x800) {
+	      if ((units -= 2) < 0) break
+	      bytes.push(
+	        codePoint >> 0x6 | 0xC0,
+	        codePoint & 0x3F | 0x80
+	      )
+	    } else if (codePoint < 0x10000) {
+	      if ((units -= 3) < 0) break
+	      bytes.push(
+	        codePoint >> 0xC | 0xE0,
+	        codePoint >> 0x6 & 0x3F | 0x80,
+	        codePoint & 0x3F | 0x80
+	      )
+	    } else if (codePoint < 0x110000) {
+	      if ((units -= 4) < 0) break
+	      bytes.push(
+	        codePoint >> 0x12 | 0xF0,
+	        codePoint >> 0xC & 0x3F | 0x80,
+	        codePoint >> 0x6 & 0x3F | 0x80,
+	        codePoint & 0x3F | 0x80
+	      )
+	    } else {
+	      throw new Error('Invalid code point')
+	    }
+	  }
+
+	  return bytes
+	}
+
+	function asciiToBytes (str) {
+	  var byteArray = []
+	  for (var i = 0; i < str.length; i++) {
+	    // Node's code seems to be doing this and not & 0x7F..
+	    byteArray.push(str.charCodeAt(i) & 0xFF)
+	  }
+	  return byteArray
+	}
+
+	function utf16leToBytes (str, units) {
+	  var c, hi, lo
+	  var byteArray = []
+	  for (var i = 0; i < str.length; i++) {
+	    if ((units -= 2) < 0) break
+
+	    c = str.charCodeAt(i)
+	    hi = c >> 8
+	    lo = c % 256
+	    byteArray.push(lo)
+	    byteArray.push(hi)
+	  }
+
+	  return byteArray
+	}
+
+	function base64ToBytes (str) {
+	  return base64.toByteArray(base64clean(str))
+	}
+
+	function blitBuffer (src, dst, offset, length) {
+	  for (var i = 0; i < length; i++) {
+	    if ((i + offset >= dst.length) || (i >= src.length)) break
+	    dst[i + offset] = src[i]
+	  }
+	  return i
+	}
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15).Buffer, (function() { return this; }())))
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+	;(function (exports) {
+		'use strict';
+
+	  var Arr = (typeof Uint8Array !== 'undefined')
+	    ? Uint8Array
+	    : Array
+
+		var PLUS   = '+'.charCodeAt(0)
+		var SLASH  = '/'.charCodeAt(0)
+		var NUMBER = '0'.charCodeAt(0)
+		var LOWER  = 'a'.charCodeAt(0)
+		var UPPER  = 'A'.charCodeAt(0)
+		var PLUS_URL_SAFE = '-'.charCodeAt(0)
+		var SLASH_URL_SAFE = '_'.charCodeAt(0)
+
+		function decode (elt) {
+			var code = elt.charCodeAt(0)
+			if (code === PLUS ||
+			    code === PLUS_URL_SAFE)
+				return 62 // '+'
+			if (code === SLASH ||
+			    code === SLASH_URL_SAFE)
+				return 63 // '/'
+			if (code < NUMBER)
+				return -1 //no match
+			if (code < NUMBER + 10)
+				return code - NUMBER + 26 + 26
+			if (code < UPPER + 26)
+				return code - UPPER
+			if (code < LOWER + 26)
+				return code - LOWER + 26
+		}
+
+		function b64ToByteArray (b64) {
+			var i, j, l, tmp, placeHolders, arr
+
+			if (b64.length % 4 > 0) {
+				throw new Error('Invalid string. Length must be a multiple of 4')
+			}
+
+			// the number of equal signs (place holders)
+			// if there are two placeholders, than the two characters before it
+			// represent one byte
+			// if there is only one, then the three characters before it represent 2 bytes
+			// this is just a cheap hack to not do indexOf twice
+			var len = b64.length
+			placeHolders = '=' === b64.charAt(len - 2) ? 2 : '=' === b64.charAt(len - 1) ? 1 : 0
+
+			// base64 is 4/3 + up to two characters of the original data
+			arr = new Arr(b64.length * 3 / 4 - placeHolders)
+
+			// if there are placeholders, only get up to the last complete 4 chars
+			l = placeHolders > 0 ? b64.length - 4 : b64.length
+
+			var L = 0
+
+			function push (v) {
+				arr[L++] = v
+			}
+
+			for (i = 0, j = 0; i < l; i += 4, j += 3) {
+				tmp = (decode(b64.charAt(i)) << 18) | (decode(b64.charAt(i + 1)) << 12) | (decode(b64.charAt(i + 2)) << 6) | decode(b64.charAt(i + 3))
+				push((tmp & 0xFF0000) >> 16)
+				push((tmp & 0xFF00) >> 8)
+				push(tmp & 0xFF)
+			}
+
+			if (placeHolders === 2) {
+				tmp = (decode(b64.charAt(i)) << 2) | (decode(b64.charAt(i + 1)) >> 4)
+				push(tmp & 0xFF)
+			} else if (placeHolders === 1) {
+				tmp = (decode(b64.charAt(i)) << 10) | (decode(b64.charAt(i + 1)) << 4) | (decode(b64.charAt(i + 2)) >> 2)
+				push((tmp >> 8) & 0xFF)
+				push(tmp & 0xFF)
+			}
+
+			return arr
+		}
+
+		function uint8ToBase64 (uint8) {
+			var i,
+				extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
+				output = "",
+				temp, length
+
+			function encode (num) {
+				return lookup.charAt(num)
+			}
+
+			function tripletToBase64 (num) {
+				return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F)
+			}
+
+			// go through the array every three bytes, we'll deal with trailing stuff later
+			for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
+				temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+				output += tripletToBase64(temp)
+			}
+
+			// pad the end with zeros, but make sure to not forget the extra bytes
+			switch (extraBytes) {
+				case 1:
+					temp = uint8[uint8.length - 1]
+					output += encode(temp >> 2)
+					output += encode((temp << 4) & 0x3F)
+					output += '=='
+					break
+				case 2:
+					temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1])
+					output += encode(temp >> 10)
+					output += encode((temp >> 4) & 0x3F)
+					output += encode((temp << 2) & 0x3F)
+					output += '='
+					break
+			}
+
+			return output
+		}
+
+		exports.toByteArray = b64ToByteArray
+		exports.fromByteArray = uint8ToBase64
+	}( false ? (this.base64js = {}) : exports))
+
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+	  var e, m
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var nBits = -7
+	  var i = isLE ? (nBytes - 1) : 0
+	  var d = isLE ? -1 : 1
+	  var s = buffer[offset + i]
+
+	  i += d
+
+	  e = s & ((1 << (-nBits)) - 1)
+	  s >>= (-nBits)
+	  nBits += eLen
+	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  m = e & ((1 << (-nBits)) - 1)
+	  e >>= (-nBits)
+	  nBits += mLen
+	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+	  if (e === 0) {
+	    e = 1 - eBias
+	  } else if (e === eMax) {
+	    return m ? NaN : ((s ? -1 : 1) * Infinity)
+	  } else {
+	    m = m + Math.pow(2, mLen)
+	    e = e - eBias
+	  }
+	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+	}
+
+	exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+	  var e, m, c
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+	  var i = isLE ? 0 : (nBytes - 1)
+	  var d = isLE ? 1 : -1
+	  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+	  value = Math.abs(value)
+
+	  if (isNaN(value) || value === Infinity) {
+	    m = isNaN(value) ? 1 : 0
+	    e = eMax
+	  } else {
+	    e = Math.floor(Math.log(value) / Math.LN2)
+	    if (value * (c = Math.pow(2, -e)) < 1) {
+	      e--
+	      c *= 2
+	    }
+	    if (e + eBias >= 1) {
+	      value += rt / c
+	    } else {
+	      value += rt * Math.pow(2, 1 - eBias)
+	    }
+	    if (value * c >= 2) {
+	      e++
+	      c /= 2
+	    }
+
+	    if (e + eBias >= eMax) {
+	      m = 0
+	      e = eMax
+	    } else if (e + eBias >= 1) {
+	      m = (value * c - 1) * Math.pow(2, mLen)
+	      e = e + eBias
+	    } else {
+	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+	      e = 0
+	    }
+	  }
+
+	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+	  e = (e << mLen) | m
+	  eLen += mLen
+	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+	  buffer[offset + i - d] |= s * 128
+	}
+
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	var toString = {}.toString;
+
+	module.exports = Array.isArray || function (arr) {
+	  return toString.call(arr) == '[object Array]';
+	};
+
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//     uuid.js
+	//
+	//     Copyright (c) 2010-2012 Robert Kieffer
+	//     MIT License - http://opensource.org/licenses/mit-license.php
+
+	// Unique ID creation requires a high quality random # generator.  We feature
+	// detect to determine the best RNG source, normalizing to a function that
+	// returns 128-bits of randomness, since that's what's usually required
+	var _rng = __webpack_require__(20);
+
+	// Maps for number <-> hex string conversion
+	var _byteToHex = [];
+	var _hexToByte = {};
+	for (var i = 0; i < 256; i++) {
+	  _byteToHex[i] = (i + 0x100).toString(16).substr(1);
+	  _hexToByte[_byteToHex[i]] = i;
+	}
+
+	// **`parse()` - Parse a UUID into it's component bytes**
+	function parse(s, buf, offset) {
+	  var i = (buf && offset) || 0, ii = 0;
+
+	  buf = buf || [];
+	  s.toLowerCase().replace(/[0-9a-f]{2}/g, function(oct) {
+	    if (ii < 16) { // Don't overflow!
+	      buf[i + ii++] = _hexToByte[oct];
+	    }
+	  });
+
+	  // Zero out remaining bytes if string was short
+	  while (ii < 16) {
+	    buf[i + ii++] = 0;
+	  }
+
+	  return buf;
+	}
+
+	// **`unparse()` - Convert UUID byte array (ala parse()) into a string**
+	function unparse(buf, offset) {
+	  var i = offset || 0, bth = _byteToHex;
+	  return  bth[buf[i++]] + bth[buf[i++]] +
+	          bth[buf[i++]] + bth[buf[i++]] + '-' +
+	          bth[buf[i++]] + bth[buf[i++]] + '-' +
+	          bth[buf[i++]] + bth[buf[i++]] + '-' +
+	          bth[buf[i++]] + bth[buf[i++]] + '-' +
+	          bth[buf[i++]] + bth[buf[i++]] +
+	          bth[buf[i++]] + bth[buf[i++]] +
+	          bth[buf[i++]] + bth[buf[i++]];
+	}
+
+	// **`v1()` - Generate time-based UUID**
+	//
+	// Inspired by https://github.com/LiosK/UUID.js
+	// and http://docs.python.org/library/uuid.html
+
+	// random #'s we need to init node and clockseq
+	var _seedBytes = _rng();
+
+	// Per 4.5, create and 48-bit node id, (47 random bits + multicast bit = 1)
+	var _nodeId = [
+	  _seedBytes[0] | 0x01,
+	  _seedBytes[1], _seedBytes[2], _seedBytes[3], _seedBytes[4], _seedBytes[5]
+	];
+
+	// Per 4.2.2, randomize (14 bit) clockseq
+	var _clockseq = (_seedBytes[6] << 8 | _seedBytes[7]) & 0x3fff;
+
+	// Previous uuid creation time
+	var _lastMSecs = 0, _lastNSecs = 0;
+
+	// See https://github.com/broofa/node-uuid for API details
+	function v1(options, buf, offset) {
+	  var i = buf && offset || 0;
+	  var b = buf || [];
+
+	  options = options || {};
+
+	  var clockseq = options.clockseq !== undefined ? options.clockseq : _clockseq;
+
+	  // UUID timestamps are 100 nano-second units since the Gregorian epoch,
+	  // (1582-10-15 00:00).  JSNumbers aren't precise enough for this, so
+	  // time is handled internally as 'msecs' (integer milliseconds) and 'nsecs'
+	  // (100-nanoseconds offset from msecs) since unix epoch, 1970-01-01 00:00.
+	  var msecs = options.msecs !== undefined ? options.msecs : new Date().getTime();
+
+	  // Per 4.2.1.2, use count of uuid's generated during the current clock
+	  // cycle to simulate higher resolution clock
+	  var nsecs = options.nsecs !== undefined ? options.nsecs : _lastNSecs + 1;
+
+	  // Time since last uuid creation (in msecs)
+	  var dt = (msecs - _lastMSecs) + (nsecs - _lastNSecs)/10000;
+
+	  // Per 4.2.1.2, Bump clockseq on clock regression
+	  if (dt < 0 && options.clockseq === undefined) {
+	    clockseq = clockseq + 1 & 0x3fff;
+	  }
+
+	  // Reset nsecs if clock regresses (new clockseq) or we've moved onto a new
+	  // time interval
+	  if ((dt < 0 || msecs > _lastMSecs) && options.nsecs === undefined) {
+	    nsecs = 0;
+	  }
+
+	  // Per 4.2.1.2 Throw error if too many uuids are requested
+	  if (nsecs >= 10000) {
+	    throw new Error('uuid.v1(): Can\'t create more than 10M uuids/sec');
+	  }
+
+	  _lastMSecs = msecs;
+	  _lastNSecs = nsecs;
+	  _clockseq = clockseq;
+
+	  // Per 4.1.4 - Convert from unix epoch to Gregorian epoch
+	  msecs += 12219292800000;
+
+	  // `time_low`
+	  var tl = ((msecs & 0xfffffff) * 10000 + nsecs) % 0x100000000;
+	  b[i++] = tl >>> 24 & 0xff;
+	  b[i++] = tl >>> 16 & 0xff;
+	  b[i++] = tl >>> 8 & 0xff;
+	  b[i++] = tl & 0xff;
+
+	  // `time_mid`
+	  var tmh = (msecs / 0x100000000 * 10000) & 0xfffffff;
+	  b[i++] = tmh >>> 8 & 0xff;
+	  b[i++] = tmh & 0xff;
+
+	  // `time_high_and_version`
+	  b[i++] = tmh >>> 24 & 0xf | 0x10; // include version
+	  b[i++] = tmh >>> 16 & 0xff;
+
+	  // `clock_seq_hi_and_reserved` (Per 4.2.2 - include variant)
+	  b[i++] = clockseq >>> 8 | 0x80;
+
+	  // `clock_seq_low`
+	  b[i++] = clockseq & 0xff;
+
+	  // `node`
+	  var node = options.node || _nodeId;
+	  for (var n = 0; n < 6; n++) {
+	    b[i + n] = node[n];
+	  }
+
+	  return buf ? buf : unparse(b);
+	}
+
+	// **`v4()` - Generate random UUID**
+
+	// See https://github.com/broofa/node-uuid for API details
+	function v4(options, buf, offset) {
+	  // Deprecated - 'format' argument, as supported in v1.2
+	  var i = buf && offset || 0;
+
+	  if (typeof(options) == 'string') {
+	    buf = options == 'binary' ? new Array(16) : null;
+	    options = null;
+	  }
+	  options = options || {};
+
+	  var rnds = options.random || (options.rng || _rng)();
+
+	  // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+	  rnds[6] = (rnds[6] & 0x0f) | 0x40;
+	  rnds[8] = (rnds[8] & 0x3f) | 0x80;
+
+	  // Copy bytes to buffer, if provided
+	  if (buf) {
+	    for (var ii = 0; ii < 16; ii++) {
+	      buf[i + ii] = rnds[ii];
+	    }
+	  }
+
+	  return buf || unparse(rnds);
+	}
+
+	// Export public API
+	var uuid = v4;
+	uuid.v1 = v1;
+	uuid.v4 = v4;
+	uuid.parse = parse;
+	uuid.unparse = unparse;
+
+	module.exports = uuid;
+
+
+/***/ },
+/* 20 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {
+	var rng;
+
+	if (global.crypto && crypto.getRandomValues) {
+	  // WHATWG crypto-based RNG - http://wiki.whatwg.org/wiki/Crypto
+	  // Moderately fast, high quality
+	  var _rnds8 = new Uint8Array(16);
+	  rng = function whatwgRNG() {
+	    crypto.getRandomValues(_rnds8);
+	    return _rnds8;
+	  };
+	}
+
+	if (!rng) {
+	  // Math.random()-based (RNG)
+	  //
+	  // If all else fails, use Math.random().  It's fast, but is of unspecified
+	  // quality.
+	  var  _rnds = new Array(16);
+	  rng = function() {
+	    for (var i = 0, r; i < 16; i++) {
+	      if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
+	      _rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
+	    }
+
+	    return _rnds;
+	  };
+	}
+
+	module.exports = rng;
+
+
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10313,123 +12780,486 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.ChromosomeAxis = ChromosomeAxis;
+	exports.ChromosomeInfo = ChromosomeInfo;
 
-	__webpack_require__(10);
-
-	var _d = __webpack_require__(7);
+	var _d = __webpack_require__(12);
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _zoomable_labels = __webpack_require__(12);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function ChromosomeInfo(filepath, success) {
+	    _d2.default.text(filepath, function (text) {
+	        var data = _d2.default.tsv.parseRows(text);
+	        var cumValues = [];
+	        var totalLength = 0;
+
+	        for (var i = 0; i < data.length; i++) {
+	            totalLength += +data[i][1];
+
+	            cumValues.push({ 'id': i, 'chr': data[i][0], 'pos': totalLength - +data[i][1] });
+	        }
+
+	        var chromInfo = { 'cumPositions': cumValues,
+	            'totalLength': totalLength };
+
+	        success(chromInfo);
+	    });
+	}
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.TiledArea = TiledArea;
+
+	var _slugid = __webpack_require__(13);
+
+	var _slugid2 = _interopRequireDefault(_slugid);
+
+	__webpack_require__(23);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function ChromosomeAxis(chromInfoFile) {
-	    var xScale = null;
-	    var gChromLabels = null;
-	    var gSelect = null;
-	    var zoomableLabels = (0, _zoomable_labels.ZoomableLabels)().labelClass('.chromosome-label').markerClass('.chromosome-label').uidString('id');
+	function TiledArea() {
+	    var width = 550;
+	    var height = 400;
+	    var margin = { 'top': 30, 'left': 30, 'bottom': 30, 'right': 30 };
+
+	    var oneDimensional = true; // will these be 1D tiles or 2D?
+
+	    var xOrigScale = null,
+	        yOrigScale = null;
+	    var xScale = null,
+	        yScale = null,
+	        valueScale = null;
+	    var widthScale = null;
+	    var zoomTo = null;
+	    var domain = null;
+	    var tileLayout = null;
+
+	    var dispatch = d3.dispatch('draw');
+	    var zoomDispatch = null;
 
 	    var xAxis = null;
-	    var gAxis = null;
-	    var lineScale = null;
 
-	    var textLeftChr = null;
-	    var textRightChr = null;
+	    var labelSort = function labelSort(a, b) {
+	        return b.area - a.area;
+	    };
+	    var gDataPoints = null;
+	    var pointMarkId = function pointMarkId(d) {
+	        return 'p-' + d.uid;
+	    };
+	    function countTransform(count) {
+	        return Math.sqrt(Math.sqrt(count + 1));
+	        //return Math.log(count);
+	        //return count;
+	    }
+	    var dataPointLayout = null; //the function to draw each data point in the tile
 
-	    var bisect = _d2.default.bisector(function (d) {
-	        return d.pos;
-	    }).left;
-	    var cumValues = null;
-
-	    _d2.default.text(chromInfoFile, function (text) {
-	        var data = _d2.default.tsv.parseRows(text);
-	        cumValues = [];
-
-	        for (var i = 0; i < data.length; i++) {
-	            if (i == 0) cumValues.push({ 'id': 0, 'chr': data[i][0], 'pos': 0 });else cumValues.push({ 'id': i, 'chr': data[i][0], 'pos': cumValues[i - 1].pos + +data[i - 1][1] });
-	        }
-	    });
+	    function tileId(tile) {
+	        // uniquely identify the tile with a string
+	        return tile.join("/");
+	    }
 
 	    function chart(selection) {
-	        selection.each(function (d) {
-	            gSelect = _d2.default.select(this);
+	        selection.each(function (tileDirectory) {
+	            var xScaleDomain = null,
+	                yScaleDomain = null;
+	            var loadedTiles = {};
+	            var loadingTiles = {};
+	            var shownTiles = new Set();
 
-	            var gAxisData = gSelect.selectAll('g').data([0]);
+	            var localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
+	            var minX = 0,
+	                maxX = 0,
+	                minY = 0,
+	                maxY = 0,
+	                minImportance = 0,
+	                maxImportance = 0,
+	                minValue = 0,
+	                maxValue = 0;
+	            var maxZoom = 1;
+	            var xScale = d3.scale.linear();
 
-	            gAxisData.enter().append('g');
+	            var zoom = d3.behavior.zoom();
+	            var slugId = _slugid2.default.nice();
 
-	            gAxisData.exit().remove();
+	            // setup the data-agnostic parts of the chart
+	            var gEnter = d3.select(this).append("g");
 
-	            var gAxis = gSelect.selectAll('g');
+	            zoom.on("zoom", zoomHere);
 
-	            gAxis.selectAll('.text-left').data([0]).enter().append('text').classed('text-left', true);
+	            var gYAxis = gEnter.append("g").attr("class", "y axis").attr("transform", "translate(" + (width - margin.right) + "," + margin.top + ")");
 
-	            gAxis.selectAll('.text-right').data([0]).enter().append('text').classed('text-right', true);
+	            var gXAxis = gEnter.append("g").attr("class", "y axis").attr("transform", "translate(" + margin.left + "," + (height - margin.bottom) + ")");
 
-	            gAxis.selectAll('.scale-path').data([0]).enter().append('path').classed('scale-path', true);
+	            var gMain = gEnter.append('g').classed('main-g', true).attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-	            gAxis.selectAll('.text-scale').data([0]).enter().append('text').classed('text-scale', true).attr('text-anchor', 'middle').attr('dy', '1.2em');
+	            gMain.insert("rect", "g").attr("class", "pane").attr("width", width).attr("height", height).attr('pointer-events', 'all');
 
-	            var textLeftChr = gAxis.select('.text-left');
-	            var textRightChr = gAxis.select('.text-right');
-	            var pathScale = gAxis.select('.scale-path');
-	            var textScale = gAxis.select('.text-scale');
+	            gMain.append("clipPath").attr("id", "clip").append("rect").attr("x", 0).attr("y", -margin.top).attr("width", width - margin.left - margin.right).attr("height", height);
 
-	            textLeftChr.attr('x', xScale.range()[0]).attr('text-anchor', 'start').attr('dy', '1.2em');
+	            gMain.style('clip-path', 'url(#clip)');
 
-	            textRightChr.attr('x', xScale.range()[1]).attr('text-anchor', 'end').attr('dy', '1.2em');
+	            gMain.call(zoom);
 
-	            if (cumValues == null) return;
+	            localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
-	            var chrLeft = cumValues[bisect(cumValues, xScale.domain()[0])].chr;
-	            var chrRight = cumValues[bisect(cumValues, xScale.domain()[1])].chr;
+	            function zoomChanged(translate, scale) {
+	                // something changed the zoom.
+	                zoom.translate(translate);
+	                zoom.scale(scale);
 
-	            textLeftChr.text(chrLeft);
-	            textRightChr.text(chrRight);
+	                zoomed();
+	            }
 
-	            var ticks = xScale.ticks(5);
-	            var tickSpan = ticks[1] - ticks[0];
-	            var tickWidth = xScale(ticks[1]) - xScale(ticks[0]);
+	            function zoomHere() {
+	                localZoomDispatch.zoom(zoom.translate(), zoom.scale());
+	            }
 
-	            var scaleMid = (xScale.range()[1] - xScale.range()[0]) / 2;
+	            function isTileLoading(tile) {
+	                // check if a particular tile is currently being loaded
 
-	            var tickHeight = 4;
-	            var tickFormat = _d2.default.format(",d");
+	                if (tileId(tile) in loadingTiles) return true;else return false;
+	            }
 
-	            pathScale.attr('d', 'M' + (scaleMid - tickWidth / 2) + ',' + tickHeight + ('L' + (scaleMid - tickWidth / 2) + ', 0') + ('L' + (scaleMid + tickWidth / 2) + ', 0') + ('L' + (scaleMid + tickWidth / 2) + ',' + tickHeight));
-	            textScale.attr('x', scaleMid).text(tickFormat(tickSpan) + " bp");
+	            function isTileLoaded(tile) {
+	                // check if a particular tile is already loaded
+	                // go through the shownTiles dictionary to check
+	                // if this tile is already loaded
+
+	                if (tileId(tile) in loadedTiles) return true;else return false;
+	            }
+
+	            function pointId(d) {
+	                return d.uid;
+	            }
+
+	            function showTiles(tiles) {
+	                // refresh the display and make sure the tiles that need to be
+	                // displayed are displayed
+
+	                // check to make sure all the tiles we're trying to display
+	                // are already loaded
+	                var allLoaded = true;
+	                tiles.forEach(function (t) {
+	                    allLoaded = allLoaded && isTileLoaded(t);
+	                });
+	                if (!allLoaded) return;
+
+	                var visibleTiles = tiles.map(function (d) {
+	                    return loadedTiles[tileId(d)];
+	                }).filter(function (d) {
+	                    return d != undefined;
+	                }).filter(function (d) {
+	                    return d.data != undefined;
+	                });
+
+	                var gTiles = gMain.selectAll('.tile-g').data(visibleTiles, function (d) {
+	                    return d.tileId;
+	                }); //the point key
+
+	                var gTilesEnter = gTiles.enter();
+	                var gTilesExit = gTiles.exit();
+
+	                // add all the new tiles
+	                gTilesEnter.append('g').classed('tile-g', true);
+
+	                gTilesExit.remove();
+
+	                // only redraw if the tiles have changed
+	                if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
+	                    draw();
+	                }
+	            }
+
+	            function removeTile(tile) {
+	                // remove all of the elements associated with this tile
+	                //
+	            }
+
+	            function refreshTiles(currentTiles) {
+	                // be shown and add those that should be shown
+	                currentTiles.forEach(function (tile) {
+	                    if (!isTileLoaded(tile) && !isTileLoading(tile)) {
+	                        // if the tile isn't loaded, load it
+	                        var tileSubPath = tile.join('/') + '.json';
+	                        var tilePath = tileDirectory + "/" + tileSubPath;
+	                        loadingTiles[tileId(tile)] = true;
+	                        d3.json(tilePath, function (error, data) {
+	                            delete loadingTiles[tileId(tile)];
+	                            loadedTiles[tileId(tile)] = { 'tileId': tileId(tile),
+	                                'maxZoom': maxZoom,
+	                                'tilePos': tile,
+	                                'xRange': [minX, maxX],
+	                                'importanceRange': [minImportance, maxImportance],
+	                                'valueRange': [minValue, maxValue],
+	                                'data': data };
+	                            showTiles(currentTiles);
+	                        });
+	                    } else {
+	                        showTiles(currentTiles);
+	                    }
+	                });
+	            }
+
+	            function draw() {
+	                // draw the scene, if we're zooming, then we need to check if we
+	                // need to redraw the tiles, otherwise it's irrelevant
+	                //
+	                //gXAxis.call(xAxis);
+
+	                /*
+	                gMain.selectAll('.data-g')
+	                    .each((d) => { 
+	                        d.pointLayout.draw(); 
+	                    });
+	                */
+	                gMain.selectAll('.tile-g').call(tileLayout.xScale(xScale).minImportance(minImportance).maxImportance(maxImportance));
+
+	                // this will become the tiling code
+	                var zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
+	                var zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 2;
+
+	                if (zoomLevel > maxZoom) zoomLevel = maxZoom;
+
+	                // the ski areas are positioned according to their
+	                // cumulative widths, which means the tiles need to also
+	                // be calculated according to cumulative width
+	                var totalWidth = maxX - minX;
+	                var totalHeight = maxY - minY;
+
+	                var tileWidth = totalWidth / Math.pow(2, zoomLevel);
+	                var tileHeight = totalHeight / Math.pow(2, zoomLevel);
+
+	                var epsilon = 0.000001;
+	                var tiles = [];
+
+	                console.log('zoomLevel', zoomLevel, zoom.scale(), zoomScale);
+
+	                var rows = d3.range(Math.floor((zoom.x().domain()[0] - minX) / tileWidth), Math.ceil((zoom.x().domain()[1] - minX - epsilon) / tileWidth));
+
+	                if (!oneDimensional) {
+	                    var cols = d3.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight), Math.ceil((zoom.y().domain()[1] - minY - epsilon) / tileHeight));
+
+	                    for (var i = 0; i < rows.length; i++) {
+	                        for (var j = 0; j < cols.length; j++) {
+	                            tiles.push([zoomLevel, rows[i], cols[j]]);
+	                        }
+	                    }
+	                } else {
+	                    rows.forEach(function (r) {
+	                        tiles.push([zoomLevel, r]);
+	                    });
+	                }
+	                dispatch.draw();
+
+	                refreshTiles(tiles);
+	            }
+
+	            function zoomTo(xValue, yValue, value) {
+	                // zoom to a particular location on the genome
+
+	                var scale = 1 / (20 / totalWidth);
+	                var translate = [xOrigScale.range()[0] - xOrigScale((xValue - 10 - value) * scale), yOrigScale.range()[0] - yOrigScale((yValue - 10 - value) * scale)];
+
+	                gEnter.transition().duration(750).call(zoom.translate(translate).scale(scale).event);
+
+	                // so the visible area needs to encompass [cumarea - 10, cumarea + 20]
+	            };
+
+	            function zoomed() {
+	                var reset_s = 0;
+
+	                var minAllowedX = xScaleDomain[0];
+	                var maxAllowedX = xScaleDomain[1];
+
+	                if (xScale.domain()[1] - xScale.domain()[0] >= maxAllowedX - minAllowedX) {
+	                    zoom.x(xScale.domain([minAllowedX, maxAllowedX]));
+	                    reset_s = 1;
+	                }
+	                if (yScale.domain()[1] - yScale.domain()[0] >= maxY - minY) {
+	                    //zoom.y(yScale.domain([minY, maxY]));
+	                    zoom.y(yScale.domain([minY, maxY]));
+	                    reset_s += 1;
+	                }
+	                if (reset_s == 2) {
+	                    // Both axes are full resolution. Reset.
+	                    zoom.scale(1);
+	                    zoom.translate([0, 0]);
+	                } else {
+	                    if (xScale.domain()[0] < minAllowedX) {
+	                        xScale.domain([minAllowedX, xScale.domain()[1] - xScale.domain()[0] + minAllowedX]);
+
+	                        zoom.translate([xOrigScale.range()[0] - xOrigScale(xScale.domain()[0]) * zoom.scale(), zoom.translate()[1]]);
+	                    }
+	                    if (xScale.domain()[1] > maxAllowedX) {
+	                        var xdom0 = xScale.domain()[0] - xScale.domain()[1] + maxAllowedX;
+	                        xScale.domain([xdom0, maxAllowedX]);
+
+	                        zoom.translate([xOrigScale.range()[0] - xOrigScale(xScale.domain()[0]) * zoom.scale(), zoom.translate()[1]]);
+	                    }
+	                    if (yScale.domain()[0] < minY) {
+	                        yScale.domain([minY, yScale.domain()[1] - yScale.domain()[0] + minY]);
+
+	                        zoom.translate([zoom.translate()[0], yOrigScale.range()[0] - yOrigScale(yScale.domain()[0]) * zoom.scale()]);
+	                    }
+	                    if (yScale.domain()[1] > maxY) {
+	                        var ydom0 = yScale.domain()[0] - yScale.domain()[1] + maxY;
+	                        yScale.domain([ydom0, maxY]);
+
+	                        zoom.translate([zoom.translate()[0], yOrigScale.range()[0] - yOrigScale(yScale.domain()[0]) * zoom.scale()]);
+	                    }
+	                }
+
+	                draw();
+	            }
+
+	            d3.json(tileDirectory + '/tile_info.json', function (error, tile_info) {
+	                // set up the data-dependent sections of the chart
+	                minX = tile_info.min_pos[0];
+	                maxX = tile_info.max_pos[0] + 0.001;
+
+	                if (!oneDimensional) {
+	                    minY = tile_info.min_pos[1];
+	                    maxY = tile_info.max_pos[1];
+	                } else {
+	                    minY = 0;
+	                    maxY = 1;
+	                }
+
+	                minValue = tile_info.min_value;
+	                maxValue = tile_info.max_value;
+
+	                var minArea = tile_info.min_importance;
+	                var maxArea = tile_info.max_importance;
+
+	                minImportance = tile_info.min_importance;
+	                maxImportance = tile_info.max_importance;
+
+	                maxZoom = tile_info.max_zoom;
+
+	                if (domain == null) xScaleDomain = [minX, maxX];else xScaleDomain = domain;
+
+	                yScaleDomain = [minY, maxY];
+
+	                xScale.domain(xScaleDomain).range([0, width - margin.left - margin.right]);
+
+	                yScale = d3.scale.linear().domain(yScaleDomain).range([height - margin.top - margin.bottom, 0]);
+
+	                valueScale = d3.scale.linear().domain([countTransform(minValue + 1), countTransform(maxValue + 1)]).range([0, 8]);
+
+	                xOrigScale = xScale.copy();
+	                yOrigScale = yScale.copy();
+
+	                zoom.x(xScale)
+	                //.scaleExtent([1,Math.pow(2, maxZoom-1)])
+	                .scaleExtent([1, Math.pow(2, maxZoom + 8)]);
+	                //.xExtent(xScaleDomain);
+
+	                xAxis = d3.svg.axis().scale(xScale).orient('bottom').ticks(3);
+	                //gXAxis.call(xAxis);
+
+	                if (!oneDimensional) {
+	                    zoom.y(yScale);
+	                    refreshTiles([[0, 0, 0]]);
+	                } else {
+	                    refreshTiles([[0, 0]]);
+	                }
+	            });
 	        });
 	    }
 
-	    function draw() {
-	        //gChromLabels.attr('x', (d) => { return xScale(d.pos); });
-	        //gSelect.call(zoomableLabels);
-	        if (xAxis != null) gAxis.call(xAxis);
-
-	        var ticks = xScale.ticks(5);
-	        var tickSpan = ticks[1] - ticks[0];
-	        var tickWidth = xScale(ticks[1]) - xScale(ticks[0]);
-
-	        lineScale.attr('x2', xScale.range()[1]);
-	        lineScale.attr('x1', xScale.range()[1] - tickWidth);
-	        lineScale.attr('y1', 10);
-	        lineScale.attr('y2', 10);
-
-	        textLeftChr.attr('x', 0);
-	        textRightChr.attr('x', 0 + xScale.range()[1]);
-	    }
-
-	    chart.draw = draw;
-
 	    chart.width = function (_) {
-	        if (!arguments.length) return width;else width = _;
+	        if (!arguments.length) return width;
+	        width = _;
+	        return chart;
+	    };
+
+	    chart.height = function (_) {
+	        if (!arguments.length) return height;
+	        height = _;
+	        return chart;
+	    };
+
+	    chart.minX = function (_) {
+	        if (!arguments.length) return minX;
+	        minX = _;
+	        return chart;
+	    };
+
+	    chart.minY = function (_) {
+	        if (!arguments.length) return minY;
+	        minY = _;
+	        return chart;
+	    };
+
+	    chart.maxX = function (_) {
+	        if (!arguments.length) return maxX;
+	        maxX = _;
+	        return chart;
+	    };
+
+	    chart.maxY = function (_) {
+	        if (!arguments.length) return maxY;
+	        maxY = _;
+	        return chart;
+	    };
+
+	    chart.maxZoom = function (_) {
+	        if (!arguments.length) return maxZoom;
+	        maxZoom = _;
+	        return chart;
+	    };
+
+	    chart.zoomTo = function (_) {
+	        //
+	        return zoomTo;
+	    };
+
+	    chart.dataPointLayout = function (_) {
+	        if (!arguments.length) return dataPointLayout;else dataPointLayout = _;
+	        return chart;
+	    };
+
+	    chart.zoom = function (_) {
+	        if (!arguments.length) return zoom;else zoom = _;
+	        return chart;
+	    };
+
+	    chart.on = function (event, _) {
+	        dispatch.on(event, _);
 	        return chart;
 	    };
 
 	    chart.xScale = function (_) {
-	        if (!arguments.length) return xScale;else xScale = _;
+	        if (!arguments) return xScale;else xScale = _;
+	        return chart;
+	    };
+
+	    chart.margin = function (_) {
+	        if (!arguments) return margin;else margin = _;
+	        return chart;
+	    };
+
+	    chart.domain = function (_) {
+	        if (!arguments) return domain;else domain = _;
+	        return chart;
+	    };
+
+	    chart.zoomDispatch = function (_) {
+	        if (!arguments) return zoomDispatch;else zoomDispatch = _;
+	        return chart;
+	    };
+
+	    chart.tileLayout = function (_) {
+	        if (!arguments) return tileLayout;else tileLayout = _;
 	        return chart;
 	    };
 
@@ -10437,13 +13267,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 10 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(11);
+	var content = __webpack_require__(24);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(6)(content, {});
@@ -10452,8 +13282,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./ChromosomeAxis.css", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./ChromosomeAxis.css");
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./tiled_area.css", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./tiled_area.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -10463,7 +13293,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 11 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(5)();
@@ -10471,13 +13301,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	// module
-	exports.push([module.id, ".genome-scale {\n    stroke: red;\n}\n\npath {\n    stroke: black;\n    stroke-width: 1;\n    fill: transparent;\n}\n", ""]);
+	exports.push([module.id, "svg {\n  font: 10px sans-serif;\n}\n\n.pane {\n    fill: transparent;\n    stroke: transparent;\n}\n\n.axis {\n  shape-rendering: crispEdges;\n}\n\n.axis path, .axis line {\n  fill: none;\n  stroke-width: .5px;\n}\n\n.x.axis line {\n  stroke: #ddd;\n}\n\n.y.axis line {\n  stroke: #ddd;\n}\n\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 12 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function webpackUniversalModuleDefinition(root, factory) {
@@ -20290,485 +23120,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	/******/ ])
 	});
 	;
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.TiledArea = TiledArea;
-
-	__webpack_require__(14);
-
-	var _d = __webpack_require__(7);
-
-	var _d2 = _interopRequireDefault(_d);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function TiledArea() {
-	    var width = 550;
-	    var height = 400;
-	    var minX = 0,
-	        maxX = 0,
-	        minY = 0,
-	        maxY = 0;
-	    var minValue = 0,
-	        maxValue = 0;
-	    var maxZoom = 1;
-	    var margin = { 'top': 30, 'left': 30, 'bottom': 30, 'right': 30 };
-	    var tileDirectory = null;
-	    var currentZoom = 1;
-
-	    var oneDimensional = true; // will these be 1D tiles or 2D?
-
-	    var xOrigScale = null,
-	        yOrigScale = null;
-	    var xScale = null,
-	        yScale = null,
-	        valueScale = null;
-	    var widthScale = null;
-	    var zoomTo = null;
-
-	    var loadedTiles = {};
-	    var loadingTiles = {};
-	    var dispatch = _d2.default.dispatch('draw');
-
-	    var xAxis = null;
-
-	    var minArea = 0,
-	        maxArea = 0;
-	    var minImportance = 0,
-	        maxImportance = 0;
-	    var xScaleDomain = null,
-	        yScaleDomain = null;
-	    var zoom = _d2.default.behavior.zoom();
-
-	    var labelSort = function labelSort(a, b) {
-	        return b.area - a.area;
-	    };
-	    var gMain = null;
-	    var gDataPoints = null;
-	    var shownTiles = new Set();
-	    var pointMarkId = function pointMarkId(d) {
-	        return 'p-' + d.uid;
-	    };
-	    function countTransform(count) {
-	        return Math.sqrt(Math.sqrt(count + 1));
-	        //return Math.log(count);
-	        //return count;
-	    }
-	    var dataPointLayout = null; //the function to draw each data point in the tile
-
-	    function tileId(tile) {
-	        // uniquely identify the tile with a string
-	        return tile.join("/");
-	    }
-
-	    function chart(selection) {
-
-	        // setup the data-agnostic parts of the chart
-	        var gEnter = selection.append("g");
-
-	        zoom.on("zoom", zoomed);
-
-	        var gYAxis = gEnter.append("g").attr("class", "y axis").attr("transform", "translate(" + (width - margin.right) + "," + margin.top + ")");
-
-	        var gXAxis = gEnter.append("g").attr("class", "y axis").attr("transform", "translate(" + margin.left + "," + (height - margin.bottom) + ")");
-
-	        gMain = gEnter.append('g').classed('main-g', true).attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-	        gMain.insert("rect", "g").attr("class", "pane").attr("width", width).attr("height", height).attr('pointer-events', 'all');
-
-	        gMain.append("clipPath").attr("id", "clip").append("rect").attr("x", 0).attr("y", -margin.top).attr("width", width - margin.left - margin.right).attr("height", height);
-
-	        gMain.style('clip-path', 'url(#clip)');
-
-	        gMain.call(zoom);
-
-	        _d2.default.json(tileDirectory + '/tile_info.json', function (error, tile_info) {
-	            // set up the data-dependent sections of the chart
-	            minX = tile_info.min_pos[0];
-	            maxX = tile_info.max_pos[0] + 0.001;
-
-	            if (!oneDimensional) {
-	                minY = tile_info.min_pos[1];
-	                maxY = tile_info.max_pos[1];
-	            } else {
-	                minY = 0;
-	                maxY = 1;
-	            }
-
-	            minValue = tile_info.min_value;
-	            maxValue = tile_info.max_value;
-
-	            minArea = tile_info.min_importance;
-	            maxArea = tile_info.max_importance;
-
-	            minImportance = tile_info.min_importance;
-	            maxImportance = tile_info.max_importance;
-
-	            maxZoom = tile_info.max_zoom;
-
-	            xScaleDomain = [minX, maxX];
-	            yScaleDomain = [minY, maxY];
-
-	            xScale.domain(xScaleDomain).range([0, width - margin.left - margin.right]);
-
-	            yScale = _d2.default.scale.linear().domain(yScaleDomain).range([height - margin.top - margin.bottom, 0]);
-
-	            valueScale = _d2.default.scale.linear().domain([countTransform(minValue + 1), countTransform(maxValue + 1)]).range([0, 8]);
-
-	            xOrigScale = xScale.copy();
-	            yOrigScale = yScale.copy();
-
-	            zoom.x(xScale)
-	            //.scaleExtent([1,Math.pow(2, maxZoom-1)])
-	            .scaleExtent([1, Math.pow(2, maxZoom + 8)]);
-	            //.xExtent(xScaleDomain);
-
-	            xAxis = _d2.default.svg.axis().scale(xScale).orient('bottom').ticks(3);
-	            //gXAxis.call(xAxis);
-
-	            if (!oneDimensional) {
-	                zoom.y(yScale);
-	                refreshTiles([[0, 0, 0]]);
-	            } else {
-	                refreshTiles([[0, 0]]);
-	            }
-	        });
-
-	        zoomTo = function zoomTo(xValue, yValue, value) {
-	            // zoom to a particular location on the genome
-
-	            var scale = 1 / (20 / totalWidth);
-	            var translate = [xOrigScale.range()[0] - xOrigScale((xValue - 10 - value) * scale), yOrigScale.range()[0] - yOrigScale((yValue - 10 - value) * scale)];
-
-	            gEnter.transition().duration(750).call(zoom.translate(translate).scale(scale).event);
-
-	            // so the visible area needs to encompass [cumarea - 10, cumarea + 20]
-	        };
-
-	        function zoomed() {
-	            var reset_s = 0;
-
-	            if (xScale.domain()[1] - xScale.domain()[0] >= maxX - minX) {
-	                zoom.x(xScale.domain([minX, maxX]));
-	                reset_s = 1;
-	            }
-	            if (yScale.domain()[1] - yScale.domain()[0] >= maxY - minY) {
-	                //zoom.y(yScale.domain([minY, maxY]));
-	                zoom.y(yScale.domain([minY, maxY]));
-	                reset_s += 1;
-	            }
-	            if (reset_s == 2) {
-	                // Both axes are full resolution. Reset.
-	                zoom.scale(1);
-	                zoom.translate([0, 0]);
-	            } else {
-	                if (xScale.domain()[0] < minX) {
-	                    xScale.domain([minX, xScale.domain()[1] - xScale.domain()[0] + minX]);
-
-	                    zoom.translate([xOrigScale.range()[0] - xOrigScale(xScale.domain()[0]) * zoom.scale(), zoom.translate()[1]]);
-	                }
-	                if (xScale.domain()[1] > maxX) {
-	                    var xdom0 = xScale.domain()[0] - xScale.domain()[1] + maxX;
-	                    xScale.domain([xdom0, maxX]);
-
-	                    zoom.translate([xOrigScale.range()[0] - xOrigScale(xScale.domain()[0]) * zoom.scale(), zoom.translate()[1]]);
-	                }
-	                if (yScale.domain()[0] < minY) {
-	                    yScale.domain([minY, yScale.domain()[1] - yScale.domain()[0] + minY]);
-
-	                    zoom.translate([zoom.translate()[0], yOrigScale.range()[0] - yOrigScale(yScale.domain()[0]) * zoom.scale()]);
-	                }
-	                if (yScale.domain()[1] > maxY) {
-	                    var ydom0 = yScale.domain()[0] - yScale.domain()[1] + maxY;
-	                    yScale.domain([ydom0, maxY]);
-
-	                    zoom.translate([zoom.translate()[0], yOrigScale.range()[0] - yOrigScale(yScale.domain()[0]) * zoom.scale()]);
-	                }
-	            }
-
-	            currentZoom = zoom.scale();
-
-	            draw();
-	        }
-	    }
-
-	    function isTileLoading(tile) {
-	        // check if a particular tile is currently being loaded
-
-	        if (tileId(tile) in loadingTiles) return true;else return false;
-	    }
-
-	    function isTileLoaded(tile) {
-	        // check if a particular tile is already loaded
-	        // go through the shownTiles dictionary to check
-	        // if this tile is already loaded
-
-	        if (tileId(tile) in loadedTiles) return true;else return false;
-	    }
-
-	    function pointId(d) {
-	        return d.uid;
-	    }
-
-	    function showTiles(tiles) {
-	        // refresh the display and make sure the tiles that need to be
-	        // displayed are displayed
-
-	        // check to make sure all the tiles we're trying to display
-	        // are already loaded
-	        var allLoaded = true;
-	        var allData = [];
-	        tiles.forEach(function (t) {
-	            allLoaded = allLoaded && isTileLoaded(t);
-	            if (isTileLoaded(t)) allData = allData.concat(loadedTiles[tileId(t)]);
-	        });
-	        if (!allLoaded) return;
-
-	        var gTiles = gMain.selectAll('.tile-g').data(tiles, tileId);
-
-	        var gTilesEnter = gTiles.enter();
-	        var gTilesExit = gTiles.exit();
-
-	        // add all the new tiles
-	        gTilesEnter.append('g').classed('tile-g', true).each(function (tile) {
-	            var gTile = _d2.default.select(this);
-
-	            if (loadedTiles[tileId(tile)] === undefined) return;
-
-	            var data = loadedTiles[tileId(tile)];
-
-	            //let labelSort = (a,b) => { return b.area - a.area; };
-	            //let elevationSort = (a,b) => { return b.max_elev - a.max_elev; };
-	            //data.sort(labelSort);
-	            data.map(function (d) {
-	                d.pointLayout = dataPointLayout().xScale(xScale).minImportance(minImportance).maxImportance(maxImportance);
-	            });
-
-	            // draw each point
-	            gDataPoints = gTile.selectAll('.data-g').data(data).enter().append('g').classed('data-g', true).each(function (d) {
-	                _d2.default.select(this).call(d.pointLayout);
-	                d.pointLayout.draw();
-	            });
-	        });
-
-	        gTilesExit.remove();
-	        /*
-	        let allCounts = allData.map((x) => { return +x.count; });
-	        valueScale.domain([countTransform(Math.min.apply(null, allCounts)),
-	                           countTransform(Math.max.apply(null, allCounts))])
-	        */
-
-	        // only redraw if the tiles have changed
-	        if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
-	            draw();
-	        }
-	    }
-
-	    function removeTile(tile) {
-	        // remove all of the elements associated with this tile
-	        //
-	    }
-
-	    function refreshTiles(currentTiles) {
-	        // be shown and add those that should be shown
-	        currentTiles.forEach(function (tile) {
-	            if (!isTileLoaded(tile) && !isTileLoading(tile)) {
-	                // if the tile isn't loaded, load it
-	                var tileSubPath = tile.join('/') + '.json';
-	                var tilePath = tileDirectory + "/" + tileSubPath;
-	                loadingTiles[tileId(tile)] = true;
-	                _d2.default.json(tilePath, function (error, data) {
-	                    delete loadingTiles[tileId(tile)];
-	                    loadedTiles[tileId(tile)] = data;
-	                    showTiles(currentTiles);
-	                });
-	            } else {
-	                showTiles(currentTiles);
-	            }
-	        });
-	    }
-
-	    function draw() {
-	        // draw the scene, if we're zooming, then we need to check if we
-	        // need to redraw the tiles, otherwise it's irrelevant
-	        //
-	        //gXAxis.call(xAxis);
-
-	        gMain.selectAll('.data-g').each(function (d) {
-	            d.pointLayout.draw();
-	        });
-
-	        // this will become the tiling code
-	        var zoomLevel = Math.round(Math.log(currentZoom) / Math.LN2) + 2;
-
-	        if (zoomLevel > maxZoom) zoomLevel = maxZoom;
-
-	        // the ski areas are positioned according to their
-	        // cumulative widths, which means the tiles need to also
-	        // be calculated according to cumulative width
-	        var totalWidth = maxX - minX;
-	        var totalHeight = maxY - minY;
-
-	        var tileWidth = totalWidth / Math.pow(2, zoomLevel);
-	        var tileHeight = totalHeight / Math.pow(2, zoomLevel);
-
-	        var epsilon = 0.000001;
-	        var tiles = [];
-
-	        var rows = _d2.default.range(Math.floor((zoom.x().domain()[0] - minX) / tileWidth), Math.ceil((zoom.x().domain()[1] - minX - epsilon) / tileWidth));
-
-	        if (!oneDimensional) {
-	            var cols = _d2.default.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight), Math.ceil((zoom.y().domain()[1] - minY - epsilon) / tileHeight));
-
-	            for (var i = 0; i < rows.length; i++) {
-	                for (var j = 0; j < cols.length; j++) {
-	                    tiles.push([zoomLevel, rows[i], cols[j]]);
-	                }
-	            }
-	        } else {
-	            rows.forEach(function (r) {
-	                tiles.push([zoomLevel, r]);
-	            });
-	        }
-	        // hey hye
-	        /*
-	        let tiles = [];
-	        */
-	        dispatch.draw();
-
-	        refreshTiles(tiles);
-	    }
-
-	    chart.draw = draw;
-
-	    chart.width = function (_) {
-	        if (!arguments.length) return width;
-	        width = _;
-	        return chart;
-	    };
-
-	    chart.height = function (_) {
-	        if (!arguments.length) return height;
-	        height = _;
-	        return chart;
-	    };
-
-	    chart.minX = function (_) {
-	        if (!arguments.length) return minX;
-	        minX = _;
-	        return chart;
-	    };
-
-	    chart.minY = function (_) {
-	        if (!arguments.length) return minY;
-	        minY = _;
-	        return chart;
-	    };
-
-	    chart.maxX = function (_) {
-	        if (!arguments.length) return maxX;
-	        maxX = _;
-	        return chart;
-	    };
-
-	    chart.maxY = function (_) {
-	        if (!arguments.length) return maxY;
-	        maxY = _;
-	        return chart;
-	    };
-
-	    chart.maxZoom = function (_) {
-	        if (!arguments.length) return maxZoom;
-	        maxZoom = _;
-	        return chart;
-	    };
-
-	    chart.tileDirectory = function (_) {
-	        if (!arguments.length) return tileDirectory;
-	        tileDirectory = _;
-	        return chart;
-	    };
-
-	    chart.zoomTo = function (_) {
-	        //
-	        return zoomTo;
-	    };
-
-	    chart.dataPointLayout = function (_) {
-	        if (!arguments.length) return dataPointLayout;else dataPointLayout = _;
-	        return chart;
-	    };
-
-	    chart.zoom = function (_) {
-	        if (!arguments.length) return zoom;else zoom = _;
-	        return chart;
-	    };
-
-	    chart.currentZoom = function (_) {
-	        if (!arguments.length) return currentZoom;else currentZoom = _;
-	        return chart;
-	    };
-
-	    chart.on = function (event, _) {
-	        dispatch.on(event, _);
-	        return chart;
-	    };
-
-	    chart.xScale = function (_) {
-	        if (!arguments) return xScale;else xScale = _;
-	        return chart;
-	    };
-
-	    return chart;
-	}
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(15);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(6)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./tiled_area.css", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./tiled_area.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(5)();
-	// imports
-
-
-	// module
-	exports.push([module.id, "svg {\n  font: 10px sans-serif;\n}\n\n.pane {\n    fill: transparent;\n    stroke: transparent;\n}\n\n.axis {\n  shape-rendering: crispEdges;\n}\n\n.axis path, .axis line {\n  fill: none;\n  stroke-width: .5px;\n}\n\n.x.axis line {\n  stroke: #ddd;\n}\n\n.y.axis line {\n  stroke: #ddd;\n}\n\n", ""]);
-
-	// exports
-
 
 /***/ }
 /******/ ])

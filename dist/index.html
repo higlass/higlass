@@ -1,52 +1,89 @@
 <!DOCTYPE html><html lang=""><head><meta charset="utf-8"><title>Goomba</title></head><body><script src="scripts/goomba.js"></script><div id="circle"></div><script type="text/javascript">let width = 600;
-let height = 80;
+let height = 140;
 
-let svg = d3.select('#circle').append('svg')
+let trackHeight = 30;
+let margin = {'left': 30, 'top': 10, 'right': 30, 'bottom': 10};
+let tileDirectory = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-plus'
+let tileDirectories = ['http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-plus',
+                       'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-minus']
+
+var chromInfoFilename = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/chromInfo.txt';
+var svg = d3.select('#circle').append('svg')
 .attr('width', width)
 .attr('height', height)
 
-/*
-let genePlot = goomba.GenePlot()
-    .width(300)
-    .height(10)
-    .xPos(0)
-    .yPos(0)
+goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
+    let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
+    //let xScale = d3.scale.linear().domain([0, 200000000])
 
-geneJson = {
-    name:'NM_001126112',
-    chr: '17',
-    strand: '-',
-    txStart: '7571719',
-    txEnd: '7590868',
-    cdsStart: '7572926',
-    cdsEnd: '7579912',
-    exonStarts: [7571719,7573926,7576852,7577018,7577498,7578176,7578370,7579311,7579699,7579838,7590694],
-    exonEnds: [7573008,7574033,7576926,7577155,7577608,7578289,7578554,7579590,7579721,7579937,7590868]
-}
-*/
+    console.log('chromInfo:', chromInfo);
+    let zoomDispatch = d3.dispatch('zoom');
 
-let xScale = d3.scale.linear()
-    .domain([12,34]);
+    var chromInfoPlot = goomba.ChromosomeAxis()
+    .width(width - margin.left - margin.right)
+    .domain(xScale.domain())
+    .zoomDispatch(zoomDispatch);
 
+    svg.append('g')
+    .attr('transform', 'translate(' + margin.left + ',0)')
+    .datum(chromInfo)
+    .call(chromInfoPlot);
 
-let goombaPlot = goomba.Goomba()
-    .width(width)
+    let tileLayout = goomba.GeneTileLayout();
+
+    let gMain = svg.append('g')
+    .classed('g-main', true);
+
+    /////////////////////////////
+    let tiledArea = goomba.TiledArea().width(width)
     .height(height)
-    .xScale(xScale)
-    .drawAxis(true);
+    .dataPointLayout(goomba.GenePlot)
+    .tileLayout(tileLayout)
+    .domain(xScale.domain())
+    .margin({'left': 30, 'top': 30, 'right': 30, 'bottom': 10})
+    .zoomDispatch(zoomDispatch);
 
-let gMain = svg.append('g')
-.classed('g-main', true)
-.datum('http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-small')
-//.datum('jsons/tiles')
-.call(goombaPlot)
+    let gGeneTracks = gMain
+        .append('g')
+    .selectAll('g')
+    .data(tileDirectories)
+    .enter()
+    .append('g')
+    .attr('transform', (d,i) => { return 'translate(0,' + i * trackHeight + ')'; })
+    .classed('track-g', true)
+    .call(tiledArea)
 
-    console.log('xScale3:', xScale.domain())
+    let zoomableLabels = goomba.ZoomableLabels()
+    .markerClass('.gene-marker')
+    .labelClass('.gene-label')
+    .labelParent(gMain)
+    .labelMarkerId((d) => { return `n-${d.refseqid}`})
+    .uidString('refseqid')
 
-let gScrolly = svg.append('g')
-.append('rect')
-.attr('width', 200)
-.attr('height', 300)
-.attr('fill', 'gray')
+    tiledArea.on('draw', () => {
+        gGeneTracks.call(zoomableLabels);
+    });
+    ////////////////////////
 
-//let data = []</script></body></html>
+    let wiggleTileArea = goomba.TiledArea().width(width)
+    .height(height)
+    .dataPointLayout(goomba.GenePlot)
+    .tileLayout(goomba.WiggleTileLayout())
+    .domain(xScale.domain())
+    .margin({'left': 30, 'top': 30, 'right': 30, 'bottom': 10})
+    .zoomDispatch(zoomDispatch);
+
+    let gWiggleTracks = gMain
+    .append('g')
+    .attr('transform', 'translate(0,' + (tileDirectories.length * trackHeight) + ')')
+    .selectAll('g')
+    .data(['https://s3.amazonaws.com/pkerp/data/ENCODE/2016-05-16-GM12878-RNASeq/tiles'])
+    .enter()
+    .append('g')
+    .attr('transform', (d,i) => { return 'translate(0,' + i * trackHeight + ')'; })
+    .classed('track-g', true)
+    .call(wiggleTileArea)
+
+    
+    //let gWiggleTracks = gMain.
+});</script></body></html>
