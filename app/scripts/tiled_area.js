@@ -228,9 +228,6 @@ export function TiledArea() {
                     let epsilon = 0.000001;
                     let tiles = [];
 
-                    console.log('zoomLevel', zoomLevel, 
-                               zoom.scale(), zoomScale)
-
                     let rows = d3.range(Math.floor((zoom.x().domain()[0] - minX) / tileWidth),
                             Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth));
 

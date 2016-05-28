@@ -162,8 +162,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                localZoomDispatch.zoom(zoom.translate(), zoom.scale());
 	            }
 
-	            console.log('xScale', xScale.domain());
-
 	            tiledArea.on('draw', function () {
 	                gMain.call(zoomableLabels);
 	            });
@@ -13040,8 +13038,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                var epsilon = 0.000001;
 	                var tiles = [];
-
-	                console.log('zoomLevel', zoomLevel, zoom.scale(), zoomScale);
 
 	                var rows = d3.range(Math.floor((zoom.x().domain()[0] - minX) / tileWidth), Math.ceil((zoom.x().domain()[1] - minX - epsilon) / tileWidth));
 

@@ -49,8 +49,6 @@ export function Goomba() {
                 localZoomDispatch.zoom(zoom.translate(), zoom.scale());
             }
 
-            console.log('xScale', xScale.domain());
-
             tiledArea.on('draw', () => {
                 gMain.call(zoomableLabels);
             });
