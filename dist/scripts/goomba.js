@@ -12888,7 +12888,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                minValue = 0,
 	                maxValue = 0;
 	            var maxZoom = 1;
-	            var xScale = d3.scale.linear();
 
 	            var zoom = d3.behavior.zoom();
 	            var slugId = _slugid2.default.nice();
@@ -13150,9 +13149,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                yScaleDomain = [minY, maxY];
 
-	                xScale.domain(xScaleDomain).range([0, width - margin.left - margin.right]);
+	                if (xScale == null) {
+	                    xScale = d3.scale.linear().domain(xScaleDomain).range([0, width - margin.left - margin.right]);
+	                }
 
-	                yScale = d3.scale.linear().domain(yScaleDomain).range([height - margin.top - margin.bottom, 0]);
+	                if (yScale == null) {
+	                    yScale = d3.scale.linear().domain(yScaleDomain).range([height - margin.top - margin.bottom, 0]);
+	                }
 
 	                valueScale = d3.scale.linear().domain([countTransform(minValue + 1), countTransform(maxValue + 1)]).range([0, 8]);
 
