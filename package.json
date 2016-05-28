@@ -1,6 +1,6 @@
 {
   "name": "goomba",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/scripts/goomba.js",
