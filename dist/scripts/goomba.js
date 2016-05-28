@@ -12790,12 +12790,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _d2.default.text(filepath, function (text) {
 	        var data = _d2.default.tsv.parseRows(text);
 	        var cumValues = [];
+	        var chrPositions = {};
 	        var totalLength = 0;
 
 	        for (var i = 0; i < data.length; i++) {
 	            totalLength += +data[i][1];
 
-	            cumValues.push({ 'id': i, 'chr': data[i][0], 'pos': totalLength - +data[i][1] });
+	            var newValue = { 'id': i, 'chr': data[i][0], 'pos': totalLength - +data[i][1] };
+
+	            cumValues.push(newValue);
+	            chrPositions[newValue.chr] = newValue;
 	        }
 
 	        var chromInfo = { 'cumPositions': cumValues,
