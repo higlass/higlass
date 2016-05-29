@@ -155,7 +155,7 @@ export function MassiveMatrixPlot() {
                 let zoomFactor = Math.pow(2, 2 * (maxZoom - zoomLevel));
 
                 var maxTransfer = transferFunction(maxValue);
-                console.log('maxTransfer:', maxTransfer, transferFunction(2000), maxValue);
+                //console.log('maxTransfer:', maxTransfer, transferFunction(2000), maxValue);
 
                 let pixelValues = data.map((d,i) => {
                     let rgbIdx = Math.floor(valueScale(d));
