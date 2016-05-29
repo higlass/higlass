@@ -971,6 +971,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                draw();
 	            }
+	            console.log('cumValues:', cumValues);
 
 	            function draw() {
 	                //gChromLabels.attr('x', (d) => { return xScale(d.pos); });
@@ -986,16 +987,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var tickHeight = 4;
 	                var tickFormat = _d2.default.format(",d");
 
-	                var chrLeft = cumValues[bisect(cumValues, xScale.domain()[0])].chr;
+	                var bsLeft = bisect(cumValues, xScale.domain()[0]);
+	                if (bsLeft == 0) bsLeft += 1;
+
+	                var chrLeft = cumValues[bsLeft - 1].chr;
 
 	                var bsRight = bisect(cumValues, xScale.domain()[1]);
 
 	                if (bsRight == cumValues.length) bsRight -= 1;
 
-	                var chrRight = cumValues[bsRight].chr;
+	                var chrRight = cumValues[bsRight - 1].chr;
 
-	                textLeftChr.text(chrLeft);
-	                textRightChr.text(chrRight);
+	                var leftInChrPos = Math.floor(xScale.domain()[0] - cumValues[bsLeft - 1].pos);
+	                var rightInChrPos = Math.floor(xScale.domain()[1] - cumValues[bsRight - 1].pos);
+
+	                textLeftChr.text(chrLeft + ":" + tickFormat(leftInChrPos));
+	                textRightChr.text(chrRight + ":" + tickFormat(rightInChrPos));
 	                pathScale.attr('d', 'M' + (scaleMid - tickWidth / 2) + ',' + tickHeight + ('L' + (scaleMid - tickWidth / 2) + ', 0') + ('L' + (scaleMid + tickWidth / 2) + ', 0') + ('L' + (scaleMid + tickWidth / 2) + ',' + tickHeight));
 
 	                textScale.attr('x', scaleMid).text(tickFormat(tickSpan) + " bp");
