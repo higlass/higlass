@@ -29,8 +29,8 @@ var svg = d3.select('#circle').append('svg')
 .attr('height', height)
 
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
-    //let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
-    let xScale = d3.scale.linear().domain([0, 200000000])
+    let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
+    //let xScale = d3.scale.linear().domain([0, 200000000])
 
     console.log('chromInfo:', chromInfo);
     let zoomDispatch = d3.dispatch('zoom');
@@ -56,7 +56,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .dataPointLayout(goomba.GenePlot)
     .tileLayout(tileLayout)
     .domain(xScale.domain())
-    .margin({'left': 30, 'top': 30, 'right': 30, 'bottom': 10})
+    .margin({'left': 30, 'top': 50, 'right': 30, 'bottom': 10})
     .zoomDispatch(zoomDispatch);
 
     let gGeneTracks = gMain
@@ -81,6 +81,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     });
     ////////////////////////
 
+    /*
     let wiggleTileArea = goomba.TiledArea().width(width)
     .height(height)
     .dataPointLayout(goomba.GenePlot)
@@ -99,6 +100,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .attr('transform', (d,i) => { return 'translate(0,' + i * trackHeight + ')'; })
     .classed('track-g', true)
     .call(wiggleTileArea)
+    */
 
     
     //let gWiggleTracks = gMain.
