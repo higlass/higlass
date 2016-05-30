@@ -95,7 +95,7 @@ export function GenePlot() {
                 .append('circle')
                 .classed('gene-circle', true)
                 .attr('id', (d) => { 
-                    return `n-${geneJson.refseqid}`;
+                    return `n-${geneJson.uid}`;
                 })
 
                 circleGene.exit().remove()
