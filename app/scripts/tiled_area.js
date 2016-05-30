@@ -211,6 +211,8 @@ export function TiledArea() {
                     let zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
                     let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 1;
 
+                    console.log('zoomScale:', zoomScale, minX,  maxX, d3.range(8,10));
+
 
                     if (zoomLevel > maxZoom)
                         zoomLevel = maxZoom;
@@ -227,8 +229,8 @@ export function TiledArea() {
                     let epsilon = 0.000001;
                     let tiles = [];
 
-                    let rows = d3.range(Math.floor((zoom.x().domain()[0] - minX) / tileWidth),
-                            Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth));
+                    let rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
+                            Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth)));
 
                     if (! oneDimensional ) {
                         let cols = d3.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight),
@@ -243,6 +245,9 @@ export function TiledArea() {
                         rows.forEach((r) => { tiles.push([zoomLevel, r]);});
 
                     }
+
+                    console.log('rows:', rows)
+
                     dispatch.draw();
 
                     refreshTiles(tiles);
@@ -335,6 +340,7 @@ export function TiledArea() {
 
                     maxZoom = tile_info.max_zoom;
 
+                    console.log('domain:', domain);
                     if (domain == null)
                         xScaleDomain = [minX, maxX];
                     else

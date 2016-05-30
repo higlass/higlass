@@ -144,7 +144,6 @@ export function ZoomableLabels() {
         markerObjs.filter((d) => { return !d.markerShown; })
         .attr('visibility', 'hidden');
 
-
     }
 
     chart.labelPosition = function(_) {
