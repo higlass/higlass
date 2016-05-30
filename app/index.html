@@ -11,7 +11,7 @@
 <!-- endbuild -->
 
 <div class="ui-widget" id='position-search-div'>
-    <input type="text"  id="position-search-text" placeholder="chr1:100000 to chr1:200000" onkeypress="keyPressed(event)">
+    <input type="text"  id="position-search-text" placeholder="chr1:100000 to chr1:200000" onkeypress="keyPressed(event)" style="left:30px">
     <span class="input-group-btn">
         <button class="btn btn-default" type="button" id='position-search-button' onclick="searchPosition()">Go!</button>
     </span>
@@ -27,8 +27,8 @@ let height = 140;
 let trackHeight = 30;
 let margin = {'left': 30, 'top': 10, 'right': 30, 'bottom': 10};
 let tileDirectory = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-plus'
-let tileDirectories = ['http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-plus',
-                       'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-minus']
+let tileDirectories = ['http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-plus']
+                       //'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-minus']
 
 var chromInfoFilename = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/chromInfo.txt';
 var svg = d3.select('#circle').append('svg')

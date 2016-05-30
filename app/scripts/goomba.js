@@ -1,7 +1,6 @@
 import {getRadius} from './helper_module.js';
 import {GenePlot} from './gene.js';
 import {TiledArea} from './tiled_area.js';
-import {ZoomableLabels} from 'zoomable_labels';
 
 export {GenePlot} from './gene.js';
 export {GeneTileLayout} from './gene.js';
@@ -9,7 +8,7 @@ export {WiggleTileLayout} from './WiggleTrack.js';
 export {ChromosomeAxis} from './ChromosomeAxis.js';
 export {ChromosomeInfo} from './ChromosomeInfo.js';
 export {TiledArea} from './tiled_area.js';
-export {ZoomableLabels} from 'zoomable_labels';
+export {ZoomableLabels} from './zoomable_labels';
 export {SearchField} from './search_field.js';
 
 export function Goomba() {
