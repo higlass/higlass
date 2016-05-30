@@ -10,6 +10,13 @@
 <script src='scripts/goomba.js'></script>
 <!-- endbuild -->
 
+<div class="ui-widget" id='position-search-div'>
+    <input type="text"  id="position-search-text" placeholder="chr1:100000 to chr1:200000" onkeypress="keyPressed(event)">
+    <span class="input-group-btn">
+        <button class="btn btn-default" type="button" id='position-search-button' onclick="searchPosition()">Go!</button>
+    </span>
+</div>
+
 <div id="circle"></div>
 
 <script type='text/javascript'>
@@ -28,12 +35,18 @@ var svg = d3.select('#circle').append('svg')
 .attr('width', width)
 .attr('height', height)
 
+let searchField = null;
+
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
+        .range([0, width - margin.left - margin.right]);
+
+
     //let xScale = d3.scale.linear().domain([0, 200000000])
 
     console.log('chromInfo:', chromInfo);
     let zoomDispatch = d3.dispatch('zoom');
+    searchField = new goomba.SearchField(chromInfo, xScale.copy(), zoomDispatch);
 
     var chromInfoPlot = goomba.ChromosomeAxis()
     .width(width - margin.left - margin.right)
@@ -79,6 +92,8 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     tiledArea.on('draw', () => {
         gGeneTracks.call(zoomableLabels);
     });
+
+
     ////////////////////////
 
     /*
@@ -105,6 +120,21 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     
     //let gWiggleTracks = gMain.
 });
+
+function searchPosition() {
+    var text = d3.select('#position-search-text').property('value');
+
+    var pos = searchField.searchPosition(text);
+    
+    console.log('text:', text, 'pos:', pos);
+}
+
+function keyPressed(e) {
+    if(e.keyCode === 13){
+        console.log('enter pressed');
+        searchPosition();
+    }
+}
 
 </script>
 </body>
