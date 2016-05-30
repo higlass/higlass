@@ -12,7 +12,11 @@ export class SearchField {
         // or   chr2:20000
         var positionParts = positionText.split(':');
         var chr = positionParts[0];
-        var pos = +positionParts[1];
+
+        var pos = 0;
+        if (positionParts.length > 1)
+            pos = +positionParts[1];
+
         let retPos = null;
 
         if (isNaN(pos))
@@ -100,10 +104,10 @@ export class SearchField {
     zoomTo(scale, range) {
         let value = range[0];
         console.log('value:', value)
-            let zoomScale = (scale.domain()[1] - scale.domain()[0]) / (range[1] - range[0])
+        let zoomScale = (scale.domain()[1] - scale.domain()[0]) / (range[1] - range[0])
 
-            console.log('scale.domain():', scale.domain())
+        console.log('scale.domain():', scale.domain())
 
-                                           return {'scale': zoomScale, 'translate': scale.range()[0] - scale(value * zoomScale)}
+        return {'scale': zoomScale, 'translate': scale.range()[0] - scale(value * zoomScale)}
     }
 }
