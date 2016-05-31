@@ -41,6 +41,7 @@ export function TiledArea() {
             let loadedTiles = {};
             let loadingTiles = {};
             let shownTiles = new Set();
+            let concreteTileLayout = null;
 
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             let minX = 0, maxX = 0, minY = 0, maxY = 0,
@@ -202,7 +203,7 @@ export function TiledArea() {
                         });
                     */
                     gMain.selectAll('.tile-g')
-                    .call(tileLayout
+                    .call(concreteTileLayout
                             .xScale(xScale)
                             .minImportance(minImportance)
                             .maxImportance(maxImportance));
@@ -210,9 +211,6 @@ export function TiledArea() {
                     // this will become the tiling code
                     let zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
                     let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 1;
-
-                    console.log('zoomScale:', zoomScale, minX,  maxX, d3.range(8,10));
-
 
                     if (zoomLevel > maxZoom)
                         zoomLevel = maxZoom;
@@ -245,8 +243,6 @@ export function TiledArea() {
                         rows.forEach((r) => { tiles.push([zoomLevel, r]);});
 
                     }
-
-                    console.log('rows:', rows)
 
                     dispatch.draw();
 
@@ -320,6 +316,7 @@ export function TiledArea() {
                     // set up the data-dependent sections of the chart
                     minX = tile_info.min_pos[0];
                     maxX = tile_info.max_pos[0] + 0.001;
+                    concreteTileLayout = tileLayout(tile_info);
 
                     if (!oneDimensional) {
                         minY = tile_info.min_pos[1];
@@ -340,7 +337,6 @@ export function TiledArea() {
 
                     maxZoom = tile_info.max_zoom;
 
-                    console.log('domain:', domain);
                     if (domain == null)
                         xScaleDomain = [minX, maxX];
                     else

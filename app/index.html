@@ -58,7 +58,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .datum(chromInfo)
     .call(chromInfoPlot);
 
-    let tileLayout = goomba.GeneTileLayout();
+    let tileLayout = goomba.GeneTileLayout;
 
     let gMain = svg.append('g')
     .classed('g-main', true);
@@ -99,7 +99,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     let wiggleTileArea = goomba.TiledArea().width(width)
     .height(height)
     .dataPointLayout(goomba.GenePlot)
-    .tileLayout(goomba.WiggleTileLayout())
+    .tileLayout(goomba.WiggleTileLayout)
     .domain(xScale.domain())
     .margin({'left': 30, 'top': 30, 'right': 30, 'bottom': 10})
     .zoomDispatch(zoomDispatch);
@@ -114,9 +114,6 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .attr('transform', (d,i) => { return 'translate(0,' + i * trackHeight + ')'; })
     .classed('track-g', true)
     .call(wiggleTileArea)
-
-    
-    //let gWiggleTracks = gMain.
 });
 
 function searchPosition() {

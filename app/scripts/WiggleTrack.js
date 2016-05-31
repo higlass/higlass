@@ -1,16 +1,37 @@
-export function WiggleTileLayout() {
+export function WiggleTileLayout(tile_info) {
     let xScale = null;
     let minImportance = 0;
     let maxImportance = 0;
     let height = 20;
+    let resolution = tile_info.bins_per_dimension;
+    console.log('wiggle tile_info:', tile_info)
+
+    function loadTileData(tile_value) {
+        if ('dense' in tile_value)
+            return tile_value['dense'];
+        else if ('sparse' in tile_value) {
+            let values = Array.apply(null, 
+                    Array(resolution)).map(Number.prototype.valueOf,0);
+            for (let i = 0; i < tile_value.sparse.length; i++) {
+                values[ tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
+            }
+            return values;
+
+        } else {
+            return [];
+        }
+
+    }
 
     function chart(selection) {
         selection.each(function(tile) {
             let yScale = d3.scale.linear().domain([0, tile.valueRange[1]])
             .range([0, height])
 
+            let tileData = loadTileData(tile.data);
+
             let gDataPoints = d3.select(this).selectAll('.data-g')
-                .data(tile.data)
+                .data(tileData)
 
                 //console.log('tile.data:', tile.data);
 
@@ -25,7 +46,7 @@ export function WiggleTileLayout() {
 
                 // this scale should go from an index in the data array to 
                 // a position in the genome coordinates
-                let tileXScale = d3.scale.linear().domain([0, tile.data.length])
+                let tileXScale = d3.scale.linear().domain([0, tileData.length])
                 .range([tile.xRange[0] + tile.tilePos[1] * tileWidth, 
                        tile.xRange[0] + (tile.tilePos[1] + 1) * tileWidth]  );
 
