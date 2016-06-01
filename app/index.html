@@ -51,10 +51,11 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     var chromInfoPlot = goomba.ChromosomeAxis()
     .width(width - margin.left - margin.right)
     .domain(xScale.domain())
+    .orient('top')
     .zoomDispatch(zoomDispatch);
 
     svg.append('g')
-    .attr('transform', 'translate(' + margin.left + ',0)')
+    .attr('transform', 'translate(' + margin.left + ',20)')
     .datum(chromInfo)
     .call(chromInfoPlot);
 
@@ -108,10 +109,11 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .append('g')
     .attr('transform', 'translate(0,' + (tileDirectories.length * trackHeight) + ')')
     .selectAll('g')
-    .data(['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
+    //.data(['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
+    .data(['jsons/sample_data/E116-DNase.fc.signal.bigwig.bedGraph.genome.100000.tiles'])
     .enter()
     .append('g')
-    .attr('transform', (d,i) => { return 'translate(0,' + i * trackHeight + ')'; })
+    .attr('transform', (d,i) => { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
     .classed('track-g', true)
     .call(wiggleTileArea)
 });

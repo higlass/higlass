@@ -2,6 +2,11 @@
     stroke: red;
 }
 
+.center-tick {
+    stroke: black;
+    stroke-width: 1;
+}
+
 path {
     stroke: black;
     stroke-width: 1;

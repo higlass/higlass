@@ -7,6 +7,7 @@ export function ChromosomeAxis(chromInfoFile) {
     let width = 600;
     let zoomDispatch = null;
     let domain = [0,1];
+    let orient = 'top';
 
     function chart(selection) {
         selection.each(function(d) {
@@ -35,17 +36,17 @@ export function ChromosomeAxis(chromInfoFile) {
 
                 gAxis =  gSelect.selectAll('g')
 
-                gAxis.selectAll('.text-left')
+                gAxis.selectAll('.text-center')
                 .data([0])
                 .enter()
                 .append('text')
-                .classed('text-left', true)
+                .classed('text-center', true)
 
-                gAxis.selectAll('.text-right')
+                gAxis.selectAll('.center-tick')
                 .data([0])
                 .enter()
-                .append('text')
-                .classed('text-right', true);
+                .append('line')
+                .classed('center-tick', true);
 
                 gAxis.selectAll('.scale-path')
                 .data([0])
@@ -61,18 +62,19 @@ export function ChromosomeAxis(chromInfoFile) {
                 .attr('text-anchor', 'middle')
                 .attr('dy', '1.2em');
 
-                let textLeftChr = gAxis.select('.text-left')
-                let textRightChr = gAxis.select('.text-right')
-                let pathScale = gAxis.select('.scale-path')
-                let textScale = gAxis.select('.text-scale')
+                let textCenterChr = gAxis.select('.text-center');
+                let pathScale = gAxis.select('.scale-path');
+                let textScale = gAxis.select('.text-scale');
+                let centerTick = gAxis.select('.center-tick');
 
-                textLeftChr.attr('x', xScale.range()[0])
-                .attr('text-anchor', 'start')
-                .attr('dy', '1.2em');
-
-                textRightChr.attr('x', xScale.range()[1])
-                .attr('text-anchor', 'end')
-                .attr('dy', '1.2em');
+                if (orient == 'top') {
+                    textCenterChr.attr('x', (xScale.range()[1] + xScale.range()[0]) / 2)
+                    .attr('text-anchor', 'middle')
+                    .attr('dy', '-0.5em');
+                } else {
+                    // FIXME
+                }
+                
 
                 if (cumValues == null)
                     return;
@@ -97,37 +99,54 @@ export function ChromosomeAxis(chromInfoFile) {
                        let ticks = xScale.ticks(5);
                        let tickSpan = ticks[1] - ticks[0]
                        let tickWidth = xScale(ticks[1]) - xScale(ticks[0]);
+                       let midDomain = (xScale.domain()[1] + xScale.domain()[0]) / 2;
+                       let midRange = (xScale.range()[0] + xScale.range()[1]) / 2;
 
-                       let scaleMid = (xScale.range()[1] - xScale.range()[0]) / 2
+                       let scaleMid = xScale.range()[1] - tickWidth / 2; //(xScale.range()[1] - xScale.range()[0]) / 2
 
                        let tickHeight = 4;
                        let tickFormat = d3.format(",d")
 
-                        let bsLeft = bisect(cumValues, xScale.domain()[0])
-                        if (bsLeft == 0)
-                            bsLeft += 1
+                       let bsCenter = bisect(cumValues, midDomain);
 
-                        let chrLeft = cumValues[bsLeft-1].chr
-                        
-                       let bsRight =  bisect(cumValues, xScale.domain()[1])
+                       if (bsCenter == 0)
+                           bsCenter += 1;
+                       if (bsCenter == cumValues.length)
+                           bsCenter -= 1;
 
-                       if (bsRight == cumValues.length)
-                           bsRight -= 1
+                       let chrCenter = cumValues[bsCenter-1].chr
+                        let centerInChrPos = Math.floor(midDomain - cumValues[bsCenter - 1].pos);
 
-                        let chrRight = cumValues[bsRight-1].chr
+                        textCenterChr.text(chrCenter + ":" + tickFormat(centerInChrPos))
 
-                        let leftInChrPos = Math.floor(xScale.domain()[0] - cumValues[bsLeft - 1].pos);
-                        let rightInChrPos = Math.floor(xScale.domain()[1] - cumValues[bsRight - 1].pos);
 
-                        textLeftChr.text(chrLeft + ":" + tickFormat(leftInChrPos))
-                        textRightChr.text(chrRight + ":" + tickFormat(rightInChrPos))
-                       pathScale.attr('d', `M${scaleMid - tickWidth / 2},${tickHeight}` + 
-                                      `L${scaleMid - tickWidth / 2}, 0` + 
-                                          `L${scaleMid + tickWidth / 2}, 0` + 
-                                              `L${scaleMid + tickWidth / 2},${tickHeight}`)
+                        if (orient == 'top') {
+                            // this scale will be at the top of the plot, so orient the ticks up
+                            pathScale.attr('d', `M${scaleMid - tickWidth / 2},-${tickHeight}` + 
+                                    `L${scaleMid - tickWidth / 2}, 0` + 
+                                    `L${scaleMid + tickWidth / 2}, 0` + 
+                                    `L${scaleMid + tickWidth / 2},-${tickHeight}`)
 
-                                              textScale.attr('x', scaleMid)
-                                              .text(tickFormat(tickSpan) + " bp");
+                            textScale.attr('dy', '-0.5em')
+                        } else {
+                            // this scale will be at the bottom of the plot, so orient the ticks
+                            // down
+                            pathScale.attr('d', `M${scaleMid - tickWidth / 2},${tickHeight}` + 
+                                    `L${scaleMid - tickWidth / 2}, 0` + 
+                                    `L${scaleMid + tickWidth / 2}, 0` + 
+                                    `L${scaleMid + tickWidth / 2},${tickHeight}`)
+
+                        }
+
+                       textScale.attr('x', xScale.range()[1] - 5)
+                        .attr('text-anchor', 'end')
+                       .text(tickFormat(tickSpan) + " bp");
+
+
+                       centerTick.attr('x1', midRange)
+                           .attr('x2', midRange)
+                           .attr('y1', 0)
+                           .attr('y2', tickHeight)
 
                        /*
                        lineScale.attr('x2', xScale.range()[1]);
@@ -135,9 +154,6 @@ export function ChromosomeAxis(chromInfoFile) {
                        lineScale.attr('y1', 10)
                        lineScale.attr('y2', 10)
                        */
-
-                       textLeftChr.attr('x', 0);
-                       textRightChr.attr('x', 0 + xScale.range()[1]);
                    }
 
                    draw();
@@ -165,6 +181,12 @@ export function ChromosomeAxis(chromInfoFile) {
     chart.zoomDispatch = function(_) {
         if (!arguments.length) return zoomDispatch;
         else zoomDispatch = _;
+        return chart;
+    }
+
+    chart.orient = function(_) {
+        if (!arguments.length) return orient;
+        else orient = _;
         return chart;
     }
 
