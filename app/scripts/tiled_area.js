@@ -247,8 +247,6 @@ export function TiledArea() {
 
                     dispatch.draw();
 
-                    console.log('zoom:', zoomLevel, rows)
-
                     refreshTiles(tiles);
                 }
 
@@ -268,6 +266,9 @@ export function TiledArea() {
 
                 function zoomed() {
                     var reset_s = 0;
+
+                    if (xScaleDomain == null)
+                        return;
 
                     let minAllowedX = xScaleDomain[0];
                     let maxAllowedX = xScaleDomain[1];
