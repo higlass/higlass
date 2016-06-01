@@ -215,6 +215,7 @@ export function TiledArea() {
                     if (zoomLevel > maxZoom)
                         zoomLevel = maxZoom;
 
+
                     // the ski areas are positioned according to their
                     // cumulative widths, which means the tiles need to also
                     // be calculated according to cumulative width
@@ -245,6 +246,8 @@ export function TiledArea() {
                     }
 
                     dispatch.draw();
+
+                    console.log('zoom:', zoomLevel, rows)
 
                     refreshTiles(tiles);
                 }

@@ -75,8 +75,8 @@ export function GenePlot() {
                 let gMain = d3.select(this);
 
                 /////////////////
-                let lineGene = gMain.selectAll('line')
-                    .data([0])
+                let lineGene = gMain.selectAll('.gene-line')
+                    .data([geneJson])
 
                 lineGene.enter()
                 .append('line')
@@ -85,7 +85,7 @@ export function GenePlot() {
                 lineGene.exit()
                 .remove()
 
-                lineGene = gMain.append('line')
+                lineGene = gMain.selectAll('.gene-line')
                 /////////////////
 
                 let circleGene = gMain.selectAll('.gene-circle')
@@ -166,8 +166,8 @@ export function GenePlot() {
                                 .attr('visibility', 'visible')
                                 .attr('id', (d) => { return `c-${geneJson.refseqid}`})
 
-                                lineGene.attr('x1', (d) => xScale(d.chromOffset + +d.txStart))
-                                .attr('x2', (d) => xScale(d.chromOffset + +d.txEnd))
+                                lineGene.attr('x1', (d) => { return xScale(d.chromOffset + +d.txStart) })
+                                .attr('x2', (d) => { return xScale(d.chromOffset + +d.txEnd) })
                                 .attr('y1', height / 2)
                                 .attr('y2', height / 2)
                                 .attr('visibility', 'visible')
