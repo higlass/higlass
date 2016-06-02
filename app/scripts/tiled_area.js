@@ -170,10 +170,15 @@ export function TiledArea() {
                     currentTiles.forEach((tile) => {
                         if (!isTileLoaded(tile) && !isTileLoading(tile)) {
                             // if the tile isn't loaded, load it
-                            let tileSubPath = tile.join('/') + '.json';
+                            let tileSubPath = tile.join('.');
                             let tilePath = tileDirectory + "/" + tileSubPath;
                             loadingTiles[tileId(tile)] = true;
                             d3.json(tilePath, function(error, data) {
+                                if (error != null)
+                                    return;     // tile probably wasn't found
+
+                                data = data._source.tile_value;
+                                console.log('data:', data);
                                 delete loadingTiles[tileId(tile)];
                                 loadedTiles[tileId(tile)] = {'tileId': tileId(tile), 
                                     'maxZoom': maxZoom,
@@ -316,8 +321,11 @@ export function TiledArea() {
                     draw();
                 }
 
-                d3.json(tileDirectory + '/tile_info.json', function(error, tile_info) {
+                d3.json(tileDirectory + '/tileset_info', function(error, tile_info) {
                     // set up the data-dependent sections of the chart
+                    tile_info = tile_info._source.tile_value;
+
+                    console.log('tile_info:', tile_info);
                     minX = tile_info.min_pos[0];
                     maxX = tile_info.max_pos[0] + 0.001;
                     concreteTileLayout = tileLayout(tile_info);

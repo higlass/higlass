@@ -27,15 +27,11 @@ let height = 140;
 let trackHeight = 30;
 let margin = {'left': 30, 'top': 10, 'right': 30, 'bottom': 10};
 let tileDirectory = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-plus'
-/*
-let tileDirectories = ['http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-minus',
-                       'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-plus']
-                       */
 
-let tileDirectories = ['jsons/hg19/refgene-tiles-plus.tiles',
-                       'jsons/hg19/refgene-tiles-minus.tiles']
+let tileDirectories = ['//localhost:9200/hg19/refgene-tiles-minus',
+                       '//localhost:9200/hg19/refgene-tiles-plus']
 
-var chromInfoFilename = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/chromInfo.txt';
+var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
 var svg = d3.select('#circle').append('svg')
 .attr('width', width)
 .attr('height', height)
@@ -50,6 +46,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     //let xScale = d3.scale.linear().domain([0, 200000000])
 
     console.log('chromInfo:', chromInfo);
+    console.log('xScale.domain()', xScale.domain());
     let zoomDispatch = d3.dispatch('zoom');
     searchField = new goomba.SearchField(chromInfo, xScale.copy(), zoomDispatch);
 
@@ -102,6 +99,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 
     ////////////////////////
 
+    /*
     let wiggleTileArea = goomba.TiledArea().width(width)
     .height(height)
     .dataPointLayout(goomba.GenePlot)
@@ -121,6 +119,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .attr('transform', (d,i) => { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
     .classed('track-g', true)
     .call(wiggleTileArea)
+    */
 });
 
 function searchPosition() {
