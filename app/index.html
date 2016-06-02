@@ -43,6 +43,8 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .range([0, width - margin.left - margin.right]);
 
 
+    let scaleExtent = [1, chromInfo.totalLength / 100]
+
     //let xScale = d3.scale.linear().domain([0, 200000000])
 
     console.log('chromInfo:', chromInfo);
@@ -72,6 +74,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .dataPointLayout(goomba.GenePlot)
     .tileLayout(tileLayout)
     .domain(xScale.domain())
+    .scaleExtent(scaleExtent)
     .margin({'left': 30, 'top': 50, 'right': 30, 'bottom': 10})
     .zoomDispatch(zoomDispatch);
 
@@ -99,12 +102,12 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 
     ////////////////////////
 
-    /*
     let wiggleTileArea = goomba.TiledArea().width(width)
     .height(height)
     .dataPointLayout(goomba.GenePlot)
     .tileLayout(goomba.WiggleTileLayout)
     .domain(xScale.domain())
+    .scaleExtent(scaleExtent)
     .margin({'left': 30, 'top': 30, 'right': 30, 'bottom': 10})
     .zoomDispatch(zoomDispatch);
 
@@ -113,13 +116,12 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .attr('transform', 'translate(0,' + (tileDirectories.length * trackHeight) + ')')
     .selectAll('g')
     //.data(['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
-    .data(['jsons/sample_data/E116-DNase.fc.signal.bigwig.bedGraph.genome.100000.tiles'])
+    .data(['jsons/sample_data/E116-DNase.fc.signal.bigwig.bedGraph.genome.100000'])
     .enter()
     .append('g')
     .attr('transform', (d,i) => { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
     .classed('track-g', true)
     .call(wiggleTileArea)
-    */
 });
 
 function searchPosition() {

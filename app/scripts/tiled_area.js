@@ -14,6 +14,7 @@ export function TiledArea() {
     let zoomTo = null;
     let domain = null;
     let tileLayout = null;
+    let scaleExtent = null;
 
     let dispatch = d3.dispatch('draw');
     let zoomDispatch = null;
@@ -93,6 +94,8 @@ export function TiledArea() {
                     // something changed the zoom.
                     zoom.translate(translate);
                     zoom.scale(scale);
+
+                    console.log('zoom.domain():', zoom.x().domain(), minX, maxX)
 
                     zoomed();
                 }
@@ -178,7 +181,6 @@ export function TiledArea() {
                                     return;     // tile probably wasn't found
 
                                 data = data._source.tile_value;
-                                console.log('data:', data);
                                 delete loadingTiles[tileId(tile)];
                                 loadedTiles[tileId(tile)] = {'tileId': tileId(tile), 
                                     'maxZoom': maxZoom,
@@ -375,9 +377,14 @@ export function TiledArea() {
                     xOrigScale = xScale.copy();
                     yOrigScale = yScale.copy();
 
-                    zoom.x(xScale)
-                        //.scaleExtent([1,Math.pow(2, maxZoom-1)])
-                        .scaleExtent([1,Math.pow(2, maxZoom+8)])
+                    if (scaleExtent == null)
+                        zoom.x(xScale)
+                            //.scaleExtent([1,Math.pow(2, maxZoom-1)])
+                            .scaleExtent([1,Math.pow(2, maxZoom+8)])
+                    else
+                        zoom.x(xScale)
+                            .scaleExtent(scaleExtent);
+
                         //.xExtent(xScaleDomain);
 
                         xAxis = d3.svg.axis()
@@ -489,6 +496,12 @@ export function TiledArea() {
     chart.tileLayout = function(_) {
         if (!arguments) return tileLayout;
         else tileLayout = _;
+        return chart;
+    }
+
+    chart.scaleExtent = function(_) {
+        if (!arguments) return scaleExtent;
+        else scaleExtent = _;
         return chart;
     }
 
