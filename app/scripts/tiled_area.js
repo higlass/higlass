@@ -44,6 +44,9 @@ export function TiledArea() {
             let shownTiles = new Set();
             let concreteTileLayout = null;
 
+            let minVisibleValue = null;
+            let maxVisibleValue = null;
+
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             let minX = 0, maxX = 0, minY = 0, maxY = 0,
                 minImportance = 0, maxImportance = 0,
@@ -95,8 +98,6 @@ export function TiledArea() {
                     zoom.translate(translate);
                     zoom.scale(scale);
 
-                    console.log('zoom.domain():', zoom.x().domain(), minX, maxX)
-
                     zoomed();
                 }
 
@@ -145,6 +146,9 @@ export function TiledArea() {
                         .filter((d) => { return d != undefined; })
                         .filter((d) => { return d.data != undefined; });
 
+                    minVisibleValue = Math.min( ...visibleTiles.map((x) => x.valueRange[0]));
+                    maxVisibleValue = Math.max( ...visibleTiles.map((x) => x.valueRange[1]));
+
                     let gTiles = gMain.selectAll('.tile-g')
                         .data(visibleTiles, (d) => { return d.tileId; });         //the point key
 
@@ -187,7 +191,7 @@ export function TiledArea() {
                                     'tilePos': tile,
                                     'xRange': [minX, maxX],
                                     'importanceRange': [minImportance, maxImportance],
-                                    'valueRange': [minValue, maxValue],
+                                    'valueRange': [data.min_value, data.max_value],
                                     'data': data,};
                                 showTiles(currentTiles);
                             });
@@ -213,7 +217,9 @@ export function TiledArea() {
                     .call(concreteTileLayout
                             .xScale(xScale)
                             .minImportance(minImportance)
-                            .maxImportance(maxImportance));
+                            .maxImportance(maxImportance)
+                            .minVisibleValue(minVisibleValue)
+                            .maxVisibleValue(maxVisibleValue));
 
                     // this will become the tiling code
                     let zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
@@ -327,7 +333,6 @@ export function TiledArea() {
                     // set up the data-dependent sections of the chart
                     tile_info = tile_info._source.tile_value;
 
-                    console.log('tile_info:', tile_info);
                     minX = tile_info.min_pos[0];
                     maxX = tile_info.max_pos[0] + 0.001;
                     concreteTileLayout = tileLayout(tile_info);
