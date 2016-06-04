@@ -1,5 +1,6 @@
-.DS_Store
+npm-debug.log
 **/*.un~
+*.swo
 **/*.swp
 **/*#
 temp/**
@@ -7,6 +8,9 @@ data/**
 data
 output/**
 notebooks/.ipynb_checkpoints/**
+notebooks/**/*.log
 .tmp
 bower_components/
 node_modules/
+jsons/
+.DS_Store

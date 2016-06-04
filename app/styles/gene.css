@@ -4,6 +4,12 @@
     opacity: 0.5;
 }
 
+.gene-circle {
+    stroke: black;
+    stroke-width: 1px;
+    opacity: 1;
+}
+
 .exon-rect {
     fill: black;
     opacity: 1;

@@ -1,0 +1,1 @@
+[{"count": "5", "exonEnds": "8138390,8138830,8139308", "txStart": "8137984", "cdsEnd": "8138684", "geneName": "VCX2", "genomeTxStart": "1400933674", "chr": "chrX", "pos": [1400933674.0], "strand": "-", "cdsStart": "8138072", "refseqid": "NM_016378", "exonCount": "3", "genomeTxEnd": "1400934998", "txEnd": "8139308", "exonStarts": "8137984,8138582,8139147"}]
