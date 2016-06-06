@@ -11,7 +11,7 @@
 <!-- endbuild -->
 
 <div class="ui-widget" id='position-search-div'>
-    <input type="text"  id="position-search-text" placeholder="chr1:100000 to chr1:200000" onkeypress="keyPressed(event)" style="left:30px">
+    <input type="text"  id="position-search-text" value="chr1 to chr1:100000" onkeypress="keyPressed(event)" style="left:30px">
     <span class="input-group-btn">
         <button class="btn btn-default" type="button" id='position-search-button' onclick="searchPosition()">Go!</button>
     </span>
@@ -28,11 +28,11 @@ let trackHeight = 30;
 let margin = {'left': 30, 'top': 10, 'right': 30, 'bottom': 10};
 let tileDirectory = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-plus'
 
-/*
 let tileDirectories = [];
-*/
+/*
 let tileDirectories = ['//localhost:9200/hg19/refgene-tiles-minus',
                        '//localhost:9200/hg19/refgene-tiles-plus']
+                       */
 
 var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
 var svg = d3.select('#circle').append('svg')
@@ -119,7 +119,8 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .attr('transform', 'translate(0,' + (tileDirectories.length * trackHeight) + ')')
     .selectAll('g')
     //.data(['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
-    .data(['jsons/sample_data/E116-DNase.fc.signal.bigwig.bedGraph.genome.100000'])
+    .data(['//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
+    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.gz'])
     .enter()
     .append('g')
     .attr('transform', (d,i) => { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })

@@ -60,7 +60,6 @@ export function WiggleTileLayout(tile_info) {
                 })
                 .attr('height', function(d, i) {
                     let toScale = d / Math.pow(2, tile.maxZoom - tile.tilePos[0])
-                    //console.log('yScale.domain()', yScale.domain(), toScale)
 
                     return yScale(d);
                 })
