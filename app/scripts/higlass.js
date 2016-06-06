@@ -328,6 +328,7 @@ export function MassiveMatrixPlot() {
                 if ('dense' in tile_value)
                     return tile_value['dense'];
                 else if ('sparse' in tile_value) {
+                    console.log('resolution:', resolution);
                     let values = Array.apply(null, 
                             Array(resolution * resolution))
                     for (let i = 0; i < tile_value.sparse.length; i++) {
@@ -360,6 +361,9 @@ export function MassiveMatrixPlot() {
                                         loadedTiles[tileId(tile)].pos = tile;
                                     } else {
                                         let data = loadTileData(tile_json._source.tile_value);
+                                        console.log('data:', data);
+                                        console.log('tilePath:', tilePath);
+
                                         loadedTiles[tileId(tile)] = {data: data};
                                         let canvas = tileDataToCanvas(data, tile[0]);
                                         loadedTiles[tileId(tile)].canvas = canvas;
@@ -411,8 +415,8 @@ export function MassiveMatrixPlot() {
 
                 maxZoom = tile_info.max_zoom;
 
-                totalWidth = tile_info.max_width;
-                totalHeight = tile_info.max_width;
+                //totalWidth = tile_info.max_width;
+                //totalHeight = tile_info.max_width;
 
                 xScaleDomain = [minX, maxX];
                 yScaleDomain = [minY, maxY];
@@ -456,20 +460,6 @@ export function MassiveMatrixPlot() {
 
                 refreshTiles([[0,0,0]]);
             });
-
-            function zoomTo(xValue, yValue, value) {
-                // zoom to a particular location on the genome
-
-                let scale = 1 / (20 / totalWidth);
-                let translate = [xOrigScale.range()[0] - xOrigScale((xValue - 10 - value) * scale), 
-                    yOrigScale.range()[0] - yOrigScale((yValue - 10 - value) * scale)];
-
-                gEnter.transition()
-                    .duration(750)
-                    .call(zoom.translate(translate).scale(scale).event);
-
-                // so the visible area needs to encompass [cumarea - 10, cumarea + 20]
-            };
 
             function zoomed() {
                 var reset_s = 0;
@@ -540,6 +530,9 @@ export function MassiveMatrixPlot() {
                 if (zoomLevel > maxZoom)
                     return;
 
+                let totalWidth = maxX - minX;
+                let totalHeight = maxY - minY;
+
                 var tileWidth = totalWidth /  Math.pow(2, zoomLevel);
                 var tileHeight = totalHeight / Math.pow(2, zoomLevel);
 
@@ -564,6 +557,10 @@ export function MassiveMatrixPlot() {
                    let tiles = [];
                    rows.forEach((r) => { tiles.push([zoomLevel, r]);});
                    */
+                //console.log('tiles:', minX, zoom.x().domain(), tileWidth, zoom.scale(), totalWidth);
+                console.log('zoomLevel:', zoomLevel);
+                console.log('rows:', rows);
+                console.log('cols:', cols);
                 refreshTiles(tiles);
             }
         });
