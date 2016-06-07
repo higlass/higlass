@@ -50,6 +50,16 @@ export function GeneTileLayout() {
         genePlot.xScale(xScale);
         return chart;
     }
+
+    chart.minVisibleValue = function(_) {
+        // not relevant for this type of layout
+        return chart;
+    }
+
+    chart.maxVisibleValue = function(_) {
+        // not relevant for this type of layout
+        return chart;
+    }
     //function 
     
     return chart;

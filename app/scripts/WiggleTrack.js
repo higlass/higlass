@@ -4,6 +4,8 @@ export function WiggleTileLayout(tile_info) {
     let maxImportance = 0;
     let height = 20;
     let resolution = tile_info.bins_per_dimension;
+    let minVisibleValue = 0;
+    let maxVisibleValue =  0;
     console.log('wiggle tile_info:', tile_info)
 
     function loadTileData(tile_value) {
@@ -25,7 +27,7 @@ export function WiggleTileLayout(tile_info) {
 
     function chart(selection) {
         selection.each(function(tile) {
-            let yScale = d3.scale.linear().domain([0, tile.valueRange[1]])
+            let yScale = d3.scale.linear().domain([0, maxVisibleValue])
             .range([0, height])
 
             let tileData = loadTileData(tile.data);
@@ -58,9 +60,8 @@ export function WiggleTileLayout(tile_info) {
                 })
                 .attr('height', function(d, i) {
                     let toScale = d / Math.pow(2, tile.maxZoom - tile.tilePos[0])
-                    //console.log('yScale.domain()', yScale.domain(), toScale)
 
-                    return yScale(toScale);
+                    return yScale(d);
                 })
                 .classed('wiggle-bar', true);
         });
@@ -89,6 +90,19 @@ export function WiggleTileLayout(tile_info) {
         height = _;
         return chart;
     }
+
+    chart.minVisibleValue = function(_) {
+        if (!arguments.length) return minVisibleValue;
+        minVisibleValue = _;
+        return chart;
+    }
+
+    chart.maxVisibleValue = function(_) {
+        if (!arguments.length) return maxVisibleValue;
+        maxVisibleValue = _;
+        return chart;
+    }
+
     //function 
     
     return chart;

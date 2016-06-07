@@ -14,6 +14,7 @@ export function TiledArea() {
     let zoomTo = null;
     let domain = null;
     let tileLayout = null;
+    let scaleExtent = null;
 
     let dispatch = d3.dispatch('draw');
     let zoomDispatch = null;
@@ -42,6 +43,9 @@ export function TiledArea() {
             let loadingTiles = {};
             let shownTiles = new Set();
             let concreteTileLayout = null;
+
+            let minVisibleValue = null;
+            let maxVisibleValue = null;
 
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             let minX = 0, maxX = 0, minY = 0, maxY = 0,
@@ -135,12 +139,16 @@ export function TiledArea() {
                     tiles.forEach((t) => {
                         allLoaded = allLoaded && isTileLoaded(t);
                     });
+
                     if (!allLoaded)
                         return;
 
                     let visibleTiles = tiles.map((d) => { return loadedTiles[tileId(d)]; })
                         .filter((d) => { return d != undefined; })
                         .filter((d) => { return d.data != undefined; });
+
+                    minVisibleValue = Math.min( ...visibleTiles.map((x) => x.valueRange[0]));
+                    maxVisibleValue = Math.max( ...visibleTiles.map((x) => x.valueRange[1]));
 
                     let gTiles = gMain.selectAll('.tile-g')
                         .data(visibleTiles, (d) => { return d.tileId; });         //the point key
@@ -170,17 +178,25 @@ export function TiledArea() {
                     currentTiles.forEach((tile) => {
                         if (!isTileLoaded(tile) && !isTileLoading(tile)) {
                             // if the tile isn't loaded, load it
-                            let tileSubPath = tile.join('/') + '.json';
+                            let tileSubPath = tile.join('.');
                             let tilePath = tileDirectory + "/" + tileSubPath;
                             loadingTiles[tileId(tile)] = true;
                             d3.json(tilePath, function(error, data) {
+                                if (error != null) {
+                                    loadedTiles[tileId(tile)] = {};
+
+                                    showTiles(currentTiles);
+                                    return;     // tile probably wasn't found
+                                }
+
+                                data = data._source.tile_value;
                                 delete loadingTiles[tileId(tile)];
                                 loadedTiles[tileId(tile)] = {'tileId': tileId(tile), 
                                     'maxZoom': maxZoom,
                                     'tilePos': tile,
                                     'xRange': [minX, maxX],
                                     'importanceRange': [minImportance, maxImportance],
-                                    'valueRange': [minValue, maxValue],
+                                    'valueRange': [data.min_value, data.max_value],
                                     'data': data,};
                                 showTiles(currentTiles);
                             });
@@ -206,7 +222,9 @@ export function TiledArea() {
                     .call(concreteTileLayout
                             .xScale(xScale)
                             .minImportance(minImportance)
-                            .maxImportance(maxImportance));
+                            .maxImportance(maxImportance)
+                            .minVisibleValue(minVisibleValue)
+                            .maxVisibleValue(maxVisibleValue));
 
                     // this will become the tiling code
                     let zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
@@ -273,51 +291,39 @@ export function TiledArea() {
                     let minAllowedX = xScaleDomain[0];
                     let maxAllowedX = xScaleDomain[1];
 
-                    if ((xScale.domain()[1] - xScale.domain()[0]) >= (maxAllowedX - minAllowedX)) {
-                        zoom.x(xScale.domain([minAllowedX, maxAllowedX]));
-                        reset_s = 1;
+                    // constrain the scales to the allowed regions
+                    if (xScale.domain()[0] < minAllowedX) {
+                        xScale.domain([minAllowedX, xScale.domain()[1] - xScale.domain()[0] + minAllowedX]);
+
+                        zoom.translate([xOrigScale.range()[0] - xOrigScale(xScale.domain()[0]) * zoom.scale(),
+                                zoom.translate()[1]])
                     }
-                    if ((yScale.domain()[1] - yScale.domain()[0]) >= (maxY - minY)) {
-                        //zoom.y(yScale.domain([minY, maxY]));
-                        zoom.y(yScale.domain([minY, maxY]));
-                        reset_s += 1;
+                    if (xScale.domain()[1] > maxAllowedX) {
+                        var xdom0 = xScale.domain()[0] - xScale.domain()[1] + maxAllowedX;
+                        xScale.domain([xdom0, maxAllowedX]);
+
+                        zoom.translate([xOrigScale.range()[0] - xOrigScale(xScale.domain()[0]) * zoom.scale(),
+                                zoom.translate()[1]])
                     }
-                    if (reset_s == 2) { // Both axes are full resolution. Reset.
-                        zoom.scale(1);
-                        zoom.translate([0,0]);
+                    if (yScale.domain()[0] < minY) {
+                        yScale.domain([minY, yScale.domain()[1] - yScale.domain()[0] + minY]);
+
+                        zoom.translate([zoom.translate()[0], yOrigScale.range()[0] - yOrigScale(yScale.domain()[0]) * zoom.scale()])
                     }
-                    else {
-                        if (xScale.domain()[0] < minAllowedX) {
-                            xScale.domain([minAllowedX, xScale.domain()[1] - xScale.domain()[0] + minAllowedX]);
+                    if (yScale.domain()[1] > maxY) {
+                        var ydom0 = yScale.domain()[0] - yScale.domain()[1] + maxY;
+                        yScale.domain([ydom0, maxY]);
 
-                            zoom.translate([xOrigScale.range()[0] - xOrigScale(xScale.domain()[0]) * zoom.scale(),
-                                    zoom.translate()[1]])
-                        }
-                        if (xScale.domain()[1] > maxAllowedX) {
-                            var xdom0 = xScale.domain()[0] - xScale.domain()[1] + maxAllowedX;
-                            xScale.domain([xdom0, maxAllowedX]);
-
-                            zoom.translate([xOrigScale.range()[0] - xOrigScale(xScale.domain()[0]) * zoom.scale(),
-                                    zoom.translate()[1]])
-                        }
-                        if (yScale.domain()[0] < minY) {
-                            yScale.domain([minY, yScale.domain()[1] - yScale.domain()[0] + minY]);
-
-                            zoom.translate([zoom.translate()[0], yOrigScale.range()[0] - yOrigScale(yScale.domain()[0]) * zoom.scale()])
-                        }
-                        if (yScale.domain()[1] > maxY) {
-                            var ydom0 = yScale.domain()[0] - yScale.domain()[1] + maxY;
-                            yScale.domain([ydom0, maxY]);
-
-                            zoom.translate([zoom.translate()[0], yOrigScale.range()[0] - yOrigScale(yScale.domain()[0]) * zoom.scale()])
-                        }
+                        zoom.translate([zoom.translate()[0], yOrigScale.range()[0] - yOrigScale(yScale.domain()[0]) * zoom.scale()])
                     }
 
                     draw();
                 }
 
-                d3.json(tileDirectory + '/tile_info.json', function(error, tile_info) {
+                d3.json(tileDirectory + '/tileset_info', function(error, tile_info) {
                     // set up the data-dependent sections of the chart
+                    tile_info = tile_info._source.tile_value;
+
                     minX = tile_info.min_pos[0];
                     maxX = tile_info.max_pos[0] + 0.001;
                     concreteTileLayout = tileLayout(tile_info);
@@ -367,9 +373,14 @@ export function TiledArea() {
                     xOrigScale = xScale.copy();
                     yOrigScale = yScale.copy();
 
-                    zoom.x(xScale)
-                        //.scaleExtent([1,Math.pow(2, maxZoom-1)])
-                        .scaleExtent([1,Math.pow(2, maxZoom+8)])
+                    if (scaleExtent == null)
+                        zoom.x(xScale)
+                            //.scaleExtent([1,Math.pow(2, maxZoom-1)])
+                            .scaleExtent([1,Math.pow(2, maxZoom+8)])
+                    else
+                        zoom.x(xScale)
+                            .scaleExtent(scaleExtent);
+
                         //.xExtent(xScaleDomain);
 
                         xAxis = d3.svg.axis()
@@ -481,6 +492,12 @@ export function TiledArea() {
     chart.tileLayout = function(_) {
         if (!arguments) return tileLayout;
         else tileLayout = _;
+        return chart;
+    }
+
+    chart.scaleExtent = function(_) {
+        if (!arguments) return scaleExtent;
+        else scaleExtent = _;
         return chart;
     }
 
