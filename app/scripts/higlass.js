@@ -15,6 +15,7 @@ export function MassiveMatrixPlot() {
     let zoomDispatch = null;
     let zoomCallback = null;
     let transferEditor = null;
+    let xDomain = null, yDomain = null;
 
     function chart(selection) {
         selection.each(function(tileDirectory) {
@@ -415,11 +416,23 @@ export function MassiveMatrixPlot() {
 
                 maxZoom = tile_info.max_zoom;
 
+                console.log('xDomain:', xDomain);
+                console.log('yDomain:', yDomain);
+
+                if (xDomain == null) {
+                    xScaleDomain = [minX, maxX];
+                } else {
+                    xScaleDomain = xDomain;
+                }
+
+                if (yDomain == null) {
+                    yScaleDomain = [minY, maxY];
+                } else {
+                    yScaleDomain = yDomain;
+                }
+
                 //totalWidth = tile_info.max_width;
                 //totalHeight = tile_info.max_width;
-
-                xScaleDomain = [minX, maxX];
-                yScaleDomain = [minY, maxY];
 
                 xScale = d3.scale.linear()
                     .domain(xScaleDomain)
@@ -670,6 +683,18 @@ export function MassiveMatrixPlot() {
     chart.transferEditor = function(_) {
         if (!arguments.length) return transferEditor;
         else transferEditor = _;
+        return chart;
+    }
+
+    chart.xDomain = function(_) {
+        if (!arguments.length) return xDomain;
+        else xDomain = _;
+        return chart;
+    }
+
+    chart.yDomain = function(_) {
+        if (!arguments.length) return yDomain;
+        else yDomain = _;
         return chart;
     }
 
