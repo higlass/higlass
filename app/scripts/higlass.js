@@ -1,3 +1,4 @@
+import slugid from 'slugid';
 import '../styles/higlass.css';
 
 import d3 from 'd3';
@@ -50,6 +51,7 @@ export function MassiveMatrixPlot() {
             let gDataPoints = null;
             let shownTiles = new Set();
             let pointMarkId = (d) => { return `p-${d.uid}`; };
+            let slugId = slugid.nice();
 
             var pixiCanvas = d3.select(this).append('canvas')
                 .attr('width', 0)
@@ -119,7 +121,7 @@ export function MassiveMatrixPlot() {
 
 
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
-            localZoomDispatch.on('zoom.' + tileDirectory, zoomChanged);
+            localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
             function zoomHere() {
                 localZoomDispatch.zoom(zoom.translate(), zoom.scale());
