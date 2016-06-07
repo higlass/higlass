@@ -245,20 +245,24 @@ d3.select("#multiple-plots")
     }
 
 
-
-
 ///////////////////////////
+var margin = {'top': 50, 'left': 30, 'bottom': 30, 'right': 120};
+var xScale = d3.scale.linear().domain([0, 10000000])
+    .range([0, width - margin.left - margin.right]);
+
 var mmvPlot1 = higlass.MassiveMatrixPlot()
     .width(width)
     .height(height)
     .nTicks(4)
+    .margin(margin)
+    .xDomain(xScale.domain())
+    .yDomain(xScale.domain())
     .zoomCallback(zoomCallback);
 
 d3.select('#mmv-area')
 .datum( '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.10000000.gz')
 .call(mmvPlot1)
 //////////////////////////////
-
 
     /*
 var tileData = [ '//s3.amazonaws.com/pkerp/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles',
