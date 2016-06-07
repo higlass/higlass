@@ -95,11 +95,8 @@ export function TiledArea() {
 
                 function zoomChanged(translate, scale) {
                     // something changed the zoom.
-                    console.log('zoom changed:', translate, scale);
                     zoom.translate(translate);
                     zoom.scale(scale);
-
-                    console.log('zoom.scale:', zoom.scale())
 
                     zoomed();
                 }

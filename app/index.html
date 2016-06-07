@@ -40,7 +40,8 @@ var svg = d3.select('#circle').append('svg')
 let searchField = null;
 
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
-    let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
+    //let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
+    let xScale = d3.scale.linear().domain([0, 10000000])
         .range([0, width - margin.left - margin.right]);
 
 
