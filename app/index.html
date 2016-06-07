@@ -247,7 +247,7 @@ d3.select("#multiple-plots")
 
 ///////////////////////////
 var margin = {'top': 50, 'left': 30, 'bottom': 30, 'right': 120};
-var xScale = d3.scale.linear().domain([0, 10000000])
+var xScale = d3.scale.linear().domain([0, 5000000])
     .range([0, width - margin.left - margin.right]);
 
 var mmvPlot1 = higlass.MassiveMatrixPlot()
@@ -260,7 +260,7 @@ var mmvPlot1 = higlass.MassiveMatrixPlot()
     .zoomCallback(zoomCallback);
 
 d3.select('#mmv-area')
-.datum( '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.10000000.gz')
+.datum( '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz')
 .call(mmvPlot1)
 //////////////////////////////
 
