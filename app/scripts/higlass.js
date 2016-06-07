@@ -251,55 +251,28 @@ export function MassiveMatrixPlot() {
 
             function changeTextures() {
                 // go through each tile shown tile and change its texture
+                // this is normally called when the value of the color scale changes
+                // it's a little slow at the moment so it's unused
+                console.log('changing textures');
                 for (let tileId in loadedTiles) {
                     loadedTiles[tileId].canvasChanged = true;
                 }
 
-                let nd = new Date();
-                let prevTime = nd.getTime();
-                let i = 0;
-                let busy = false;
-
-                let shownTileIds = [];
-
-                //console.log('shownTiles:', shownTiles);
-                for (let tileId in shownTiles)
-                    shownTileIds.push(tileId);
-
-                let processor = setInterval(function() {
-                    if (!busy) {
-                        busy = true;
-                        //console.log('changing...');
-                        let tileId = shownTileIds[i];
-                        //console.log('i:', i, 'shownTileIds:', shownTileIds, 'tileId:', tileId);
-                        if (tileId in tileGraphics) {
-                            let sprite = tileGraphics[tileId].children[0];
-                            let canvas = getCanvas(tileId);
-                            let tile = loadedTiles[tileId];
-
-                            let texture = null;
-                            if (tile.pos[0] == maxZoom)
-                                texture = PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST);
-                            else
-                                texture = PIXI.Texture.fromCanvas(canvas);
-
-                            sprite.texture = texture;
-
-                            setSpriteProperties(sprite, loadedTiles[tileId].pos);
-                    }
-                        
-                        if (++i == shownTileIds.length) {
-                            clearInterval(processor);
-                        }
-                        busy = false;
-                    }
-
-
-                }, 200);
-
                 for (let tileId in shownTiles) {
+                    let sprite = tileGraphics[tileId].children[0];
+                    let canvas = getCanvas(tileId);
+                    let tile = loadedTiles[tileId];
+
+                    let texture = null;
+                    if (tile.pos[0] == maxZoom)
+                        texture = PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST);
+                    else
+                        texture = PIXI.Texture.fromCanvas(canvas);
+
+                    sprite.texture = texture;
+                    
+                    setSpriteProperties(sprite, loadedTiles[tileId].pos);
                 };
-                console.log('elapsedTime:', nd.getTime(), prevTime,  nd.getTime() - prevTime);
 
             }
 
@@ -379,7 +352,7 @@ export function MassiveMatrixPlot() {
                 maxVisibleValue = Math.max( ...visibleTiles.map((x) => x.valueRange[1]));
 
                 if (prevMinVisibleValue != minVisibleValue || prevMaxVisibleValue != maxVisibleValue) {
-                    changeTextures();
+                    //changeTextures();
                 }
 
                 let gTiles = gMain.selectAll('.tile-g')
