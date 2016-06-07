@@ -264,9 +264,8 @@ d3.select('#mmv-area')
 .call(mmvPlot1)
 //////////////////////////////
 
-    /*
-var tileData = [ '//s3.amazonaws.com/pkerp/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles',
-                 '//s3.amazonaws.com/pkerp/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
+var tileData = [  '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz',
+                 '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz'];
 
 var zoomDispatch = d3.dispatch('zoom');
 
@@ -274,6 +273,9 @@ var mmvPlot2 = higlass.MassiveMatrixPlot()
     .width(350)
     .height(250)
     .nTicks(2)
+    //.margin(margin)
+    .xDomain(xScale.domain())
+    .yDomain(xScale.domain())
     .zoomDispatch(zoomDispatch)
     .margin({'top': 10, 'left': 10, 'bottom': 30, 'right': 120});
 
@@ -299,7 +301,6 @@ var mmvPlot3 = higlass.MassiveMatrixPlot()
 d3.select('#mmv-plot-with-transfer')
 .datum( '//127.0.0.1:9200/test/tiles')
 .call(mmvPlot3)
-*/
 
 
 </script>
