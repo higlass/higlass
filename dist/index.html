@@ -17,8 +17,8 @@ var svg = d3.select('#circle').append('svg')
 let searchField = null;
 
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
-    //let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
-    let xScale = d3.scale.linear().domain([0, 10000000])
+    let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
+    //let xScale = d3.scale.linear().domain([0, 10000000])
         .range([0, width - margin.left - margin.right]);
 
 
@@ -96,7 +96,9 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .selectAll('g')
     //.data(['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
     .data(['//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
-    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.gz'])
+    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz',
+    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz'])
+
     .enter()
     .append('g')
     .attr('transform', (d,i) => { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })

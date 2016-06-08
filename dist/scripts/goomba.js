@@ -92,7 +92,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	});
 
-	var _ChromosomeAxis = __webpack_require__(9);
+	var _ChromosomeAxis = __webpack_require__(11);
 
 	Object.defineProperty(exports, 'ChromosomeAxis', {
 	    enumerable: true,
@@ -101,7 +101,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	});
 
-	var _ChromosomeInfo = __webpack_require__(21);
+	var _ChromosomeInfo = __webpack_require__(23);
 
 	Object.defineProperty(exports, 'ChromosomeInfo', {
 	    enumerable: true,
@@ -110,7 +110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	});
 
-	var _tiled_area = __webpack_require__(22);
+	var _tiled_area = __webpack_require__(24);
 
 	Object.defineProperty(exports, 'TiledArea', {
 	    enumerable: true,
@@ -119,7 +119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	});
 
-	var _zoomable_labels = __webpack_require__(25);
+	var _zoomable_labels = __webpack_require__(27);
 
 	Object.defineProperty(exports, 'ZoomableLabels', {
 	    enumerable: true,
@@ -128,7 +128,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	});
 
-	var _search_field = __webpack_require__(26);
+	var _search_field = __webpack_require__(28);
 
 	Object.defineProperty(exports, 'SearchField', {
 	    enumerable: true,
@@ -834,7 +834,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 8 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -842,6 +842,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	exports.WiggleTileLayout = WiggleTileLayout;
+
+	__webpack_require__(9);
+
 	function WiggleTileLayout(tile_info) {
 	    var xScale = null;
 	    var minImportance = 0;
@@ -941,6 +944,46 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(10);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(6)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./wiggle.css", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./wiggle.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(5)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".wiggle-bar {\n    fill: black;\n    stroke-width: 1px;\n    stroke: black;\n    opacity: .5;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -948,13 +991,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.ChromosomeAxis = ChromosomeAxis;
 
-	__webpack_require__(10);
+	__webpack_require__(12);
 
-	var _d = __webpack_require__(12);
+	var _d = __webpack_require__(14);
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _slugid = __webpack_require__(13);
+	var _slugid = __webpack_require__(15);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -1107,13 +1150,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(11);
+	var content = __webpack_require__(13);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(6)(content, {});
@@ -1133,7 +1176,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(5)();
@@ -1147,7 +1190,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;!function() {
@@ -10706,7 +10749,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// The MIT License (MIT)
@@ -10731,11 +10774,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	// THE SOFTWARE.
 
-	module.exports = __webpack_require__(14);
+	module.exports = __webpack_require__(16);
 
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {// The MIT License (MIT)
@@ -10760,7 +10803,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	// THE SOFTWARE.
 
-	var uuid = __webpack_require__(19);
+	var uuid = __webpack_require__(21);
 
 	/**
 	 * Returns the given uuid as a 22 character slug. This can be a regular v4
@@ -10822,10 +10865,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return slug;
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17).Buffer))
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -10838,9 +10881,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict'
 
-	var base64 = __webpack_require__(16)
-	var ieee754 = __webpack_require__(17)
-	var isArray = __webpack_require__(18)
+	var base64 = __webpack_require__(18)
+	var ieee754 = __webpack_require__(19)
+	var isArray = __webpack_require__(20)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -12377,10 +12420,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return i
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -12510,7 +12553,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -12600,7 +12643,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -12611,7 +12654,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//     uuid.js
@@ -12622,7 +12665,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// Unique ID creation requires a high quality random # generator.  We feature
 	// detect to determine the best RNG source, normalizing to a function that
 	// returns 128-bits of randomness, since that's what's usually required
-	var _rng = __webpack_require__(20);
+	var _rng = __webpack_require__(22);
 
 	// Maps for number <-> hex string conversion
 	var _byteToHex = [];
@@ -12800,7 +12843,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {
@@ -12838,7 +12881,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12848,7 +12891,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.ChromosomeInfo = ChromosomeInfo;
 
-	var _d = __webpack_require__(12);
+	var _d = __webpack_require__(14);
 
 	var _d2 = _interopRequireDefault(_d);
 
@@ -12879,7 +12922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -12889,11 +12932,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.TiledArea = TiledArea;
 
-	var _slugid = __webpack_require__(13);
+	var _slugid = __webpack_require__(15);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
-	__webpack_require__(23);
+	__webpack_require__(25);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13360,13 +13403,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(24);
+	var content = __webpack_require__(26);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(6)(content, {});
@@ -13386,7 +13429,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(5)();
@@ -13400,7 +13443,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -13410,7 +13453,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.ZoomableLabels = ZoomableLabels;
 
-	var _d = __webpack_require__(12);
+	var _d = __webpack_require__(14);
 
 	var _d2 = _interopRequireDefault(_d);
 
@@ -13590,7 +13633,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports) {
 
 	'use strict';
