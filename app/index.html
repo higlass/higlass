@@ -21,7 +21,7 @@
     <title>HiGlass: Multi-resolution Hi-C data display</title>
 </head>
 
-<script src="https://rawgit.com/pkerpedjiev/goomba/zoomable-genes/dist/scripts/goomba.js"></script>
+<script src="https://rawgit.com/pkerpedjiev/goomba/master/dist/scripts/goomba.js"></script>
 
 <!-- build:css styles/style.css -->
 <link rel="stylesheet" href="styles/page.css" />
@@ -212,11 +212,11 @@ d3.select("#multiple-plots")
 
     var width = 700, height=550;
 
-    /*
     var svg = d3.select('#goombaPlot')
     .attr('width', width)
-    .attr('height', 80);
+    .attr('height', 300);
 
+    /*
     // goomba gets drawn with a margin of 30 on the left
     // and a margin of 30 on the right
     // whereas higlass gets drawn with a margin of 30 on the left
@@ -233,61 +233,131 @@ d3.select("#multiple-plots")
             .call(goombaPlot)
     */
 
-    function zoomCallback(scale, zoomLevel) {
-        return;
-
-        var xScale = goombaPlot.xScale();
-        xScale.domain(scale.domain())
-
-            goombaPlot.xScale(xScale)
-            .currentZoom(zoomLevel)
-            .draw();
-    }
-
-
-///////////////////////////
 var margin = {'top': 50, 'left': 30, 'bottom': 30, 'right': 120};
-var xScale = d3.scale.linear().domain([0, 5000000])
-    .range([0, width - margin.left - margin.right]);
+let tileDirectories = ['//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/refgene-tiles-minus',
+                       '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/refgene-tiles-plus']
+var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
+let trackHeight = 25;
 
-var mmvPlot1 = higlass.MassiveMatrixPlot()
-    .width(width)
+
+goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
+///////////////////////////
+    var xScale = d3.scale.linear().domain([0, 5000000])
+        .range([0, width - margin.left - margin.right]);
+
+    var zoomDispatch = d3.dispatch('zoom');
+
+    var chromInfoPlot = goomba.ChromosomeAxis()
+    .width(width - margin.left - margin.right)
+    .domain(xScale.domain())
+    .orient('top')
+    .zoomDispatch(zoomDispatch);
+
+    svg.append('g')
+    .attr('transform', 'translate(' + margin.left + ',20)')
+    .datum(chromInfo)
+    .call(chromInfoPlot);
+
+    let tileLayout = goomba.GeneTileLayout;
+
+    let gMain = svg.append('g')
+    .classed('g-main', true);
+
+    /////////////////////////////
+    let tiledArea = goomba.TiledArea().width(width)
     .height(height)
-    .nTicks(4)
-    .margin(margin)
-    .xDomain(xScale.domain())
-    .yDomain(xScale.domain())
-    .zoomCallback(zoomCallback);
+    .dataPointLayout(goomba.GenePlot)
+    .tileLayout(tileLayout)
+    .domain(xScale.domain())
+    //.scaleExtent(scaleExtent)
+    .margin({'left': 30, 'top': 50, 'right': 120, 'bottom': 10})
+    .zoomDispatch(zoomDispatch);
 
-d3.select('#mmv-area')
-.datum( '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz')
-.call(mmvPlot1)
+    let gGeneTracks = gMain
+        .append('g')
+    .selectAll('g')
+    .data(tileDirectories)
+    .enter()
+    .append('g')
+    .attr('transform', (d,i) => { return 'translate(0,' + i * trackHeight + ')'; })
+    .classed('track-g', true)
+    .call(tiledArea)
+
+    let zoomableLabels = goomba.ZoomableLabels()
+    .markerClass('.gene-marker')
+    .labelClass('.gene-label')
+    .labelParent(gMain)
+    .labelMarkerId((d) => { return `n-${d.uid}`})
+    .uidString('uid')
+
+    tiledArea.on('draw', () => {
+        gGeneTracks.call(zoomableLabels);
+    });
+    //////////////////////////////////////////
+
+    let wiggleTileArea = goomba.TiledArea().width(width)
+    .height(height)
+    .dataPointLayout(goomba.GenePlot)
+    .tileLayout(goomba.WiggleTileLayout)
+    .domain(xScale.domain())
+    .margin({'left': 30, 'top': 30, 'right': 120, 'bottom': 10})
+    .zoomDispatch(zoomDispatch);
+
+    let gWiggleTracks = gMain
+    .append('g')
+    .attr('transform', 'translate(0,' + (20) + ')')
+    .selectAll('g')
+    //.data(['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
+    .data(['//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
+    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz',
+    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz'])
+
+    .enter()
+    .append('g')
+    .attr('transform', (d,i) => { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
+    .classed('track-g', true)
+    .call(wiggleTileArea)
+
+    var mmvPlot1 = higlass.MassiveMatrixPlot()
+        .width(width)
+        .height(height)
+        .nTicks(4)
+        .margin({'top': 150, 'left': 30, 'bottom': 30, 'right': 120})
+        .xDomain(xScale.domain())
+        .yDomain(xScale.domain())
+        .zoomDispatch(zoomDispatch)
+
+        d3.select('#mmv-area')
+        .datum( '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz')
+        .call(mmvPlot1)
 //////////////////////////////
 
-var tileData = [  '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz',
-                 '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz'];
+        var tileData = [  '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz',
+    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz'];
 
-var zoomDispatch = d3.dispatch('zoom');
+    var zoomDispatch1 = d3.dispatch('zoom');
 
-var mmvPlot2 = higlass.MassiveMatrixPlot()
-    .width(350)
-    .height(250)
-    .nTicks(2)
-    //.margin(margin)
-    .xDomain(xScale.domain())
-    .yDomain(xScale.domain())
-    .zoomDispatch(zoomDispatch)
-    .margin({'top': 10, 'left': 10, 'bottom': 30, 'right': 120});
+    var mmvPlot2 = higlass.MassiveMatrixPlot()
+        .width(350)
+        .height(250)
+        .nTicks(2)
+        //.margin(margin)
+        .xDomain(xScale.domain())
+        .yDomain(xScale.domain())
+        .zoomDispatch(zoomDispatch1)
+        .margin({'top': 10, 'left': 10, 'bottom': 30, 'right': 120});
 
-var plotAreas = d3.select("#multiple-plots")
-.selectAll(".hic-plot-area")
-.data(tileData)
+    var plotAreas = d3.select("#multiple-plots")
+        .selectAll(".hic-plot-area")
+        .data(tileData)
 
-d3.select("#multiple-plots")
-.selectAll('.hic-plot-area')
-.call(mmvPlot2)
+        d3.select("#multiple-plots")
+        .selectAll('.hic-plot-area')
+        .call(mmvPlot2)
+});
 ///////////////////////////////////////////////
 
+/*
 var transferEditor = new higlass.TransferFunctionEditor(document.getElementById('mmv-transfer-function-editor'), 150, 70, higlass.heatedObjectMap);
 console.log('transferEditor:', transferEditor);
 
@@ -295,12 +365,12 @@ var mmvPlot3 = higlass.MassiveMatrixPlot()
     .width(width)
     .height(height)
     .nTicks(4)
-    .zoomCallback(zoomCallback)
     .transferEditor(transferEditor);
 
 d3.select('#mmv-plot-with-transfer')
 .datum( '//127.0.0.1:9200/test/tiles')
 .call(mmvPlot3)
+    */
 
 
 </script>
