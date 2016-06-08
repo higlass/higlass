@@ -1,3 +1,5 @@
+import '../styles/wiggle.css';
+
 export function WiggleTileLayout(tile_info) {
     let xScale = null;
     let minImportance = 0;
