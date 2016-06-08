@@ -5,6 +5,18 @@ Display zoomable gene annotations.
 First genes need to be annotated with an importance and then partitiioned
 into tiles. The visual layer can then decide how to display them.
 
+## Serve Locally
+
+```
+gulp serve
+```
+
+## Build for external use
+
+```
+gulp build
+```
+
 ## Search Field
 
 Goomba provides a search field for zooming into locations on the genome. Its semantics
@@ -34,3 +46,10 @@ Will zoom to the region between chr1 and chr2 on one axis and between chr3 and
 chr4 on the other. If only one dimension is specified (i.e. no `and` keyword)
 and two axes are provided, then both axes will be moved to the range specified
 in the first dimension.
+
+
+## Testing
+
+```
+gulp test
+```

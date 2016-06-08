@@ -7,6 +7,7 @@ var webpack = require('webpack-stream');
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import browserSync from 'browser-sync';
+import jasmine from 'jasmine';
 import del from 'del';
 import {stream as wiredep} from 'wiredep';
 

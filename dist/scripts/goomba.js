@@ -13772,7 +13772,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                xZoomParams = this.zoomTo(this.xOrigScale, range1);
 	                yZoomParams = this.zoomTo(this.yOrigScale, range2);
 
-	                this.zoomDispatch.zoom([xZoomParams.translate, 0], xZoomParams.scale);
+	                var translate = [xZoomParams.translate, yZoomParams.translate];
+	                var scale = xZoomParams.scale;
+
+	                this.zoomDispatch.zoom(translate, scale);
+
+	                return [translate, scale];
 	            } else if (range1 != null) {
 	                // adjust the x-axis
 	                console.log('range1:', range1);
@@ -13787,7 +13792,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                // assuming that xOrigScale and yOrigScale are the same, then
 	                // xZoomParams.scale should work here
 	                // otherwise we could want to choose the larger zoom value of
-	                this.zoomDispatch.zoom([xZoomParams.translate, yZoomParams.translate], xZoomParams.scale);
+	                var _translate = [xZoomParams.translate, yZoomParams.translate];
+	                var _scale = xZoomParams.scale;
+
+	                this.zoomDispatch.zoom(_translate, _scale);
+	                return [_translate, _scale];
 	            } else if (range2 != null) {
 	                //adjust the y-axis
 	                console.log('range2:', range2);
