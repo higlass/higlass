@@ -1,8 +1,9 @@
 export class SearchField {
 
-    constructor(chromInfo, xOrigScale, zoomDispatch) {
+    constructor(chromInfo, xOrigScale, yOrigScale, zoomDispatch) {
         this.chromInfo = chromInfo;
         this.xOrigScale = xOrigScale;
+        this.yOrigScale = yOrigScale;
         this.zoomDispatch = zoomDispatch;
     }
 
@@ -28,6 +29,20 @@ export class SearchField {
             retPos = null;
 
         return retPos;
+    }
+
+    matchRangesToLarger(range1, range2) {
+        // if one range is wider than the other, then adjust the other
+        // so that it is just as wide
+        let smaller = null, larger = null;
+
+        if ((range1[1] - range1[0]) < (range2[1] - range2[0])) {
+            let toExpand = (range2[1] - range2[0]) - (range1[1] - range1[0]);
+            return [[range1[0] - toExpand / 2, range1[1] + toExpand /2], range2];
+        } else {
+            let toExpand = (range1[1] - range1[0]) - (range2[1] - range2[0]);
+            return [range1, [range2[0] - toExpand / 2, range2[1] + toExpand / 2]]
+        }
     }
 
     getSearchRange(term) {
@@ -82,16 +97,33 @@ export class SearchField {
         }
 
         if (range1 != null && range2 != null) {
-            console.log('range1:', range1);
-            console.log('range2:', range2);
+            [range1, range2] = this.matchRangesToLarger(range1, range2);
+
+            console.log('range1:', range1, 'range2:', range2);
+
+            xZoomParams = this.zoomTo(this.xOrigScale, range1);
+            yZoomParams = this.zoomTo(this.yOrigScale, range2);
+
+            this.zoomDispatch.zoom([xZoomParams.translate,0], 
+                                    xZoomParams.scale);
         } else if (range1 != null) {
             // adjust the x-axis
             console.log('range1:', range1);
 
-            var zoomParams = this.zoomTo(this.xOrigScale, range1);
+            var xZoomParams = this.zoomTo(this.xOrigScale, 
+                                          range1);
+            var yZoomParams = this.zoomTo(this.yOrigScale,
+                                          range1);
+            // here we have to find out which range is wider and adjust
+            // the other one to match
+            console.log('xZoomParams:', xZoomParams);
+            console.log('yZoomParams:', yZoomParams);
 
-            console.log('zoomParams:', zoomParams);
-            this.zoomDispatch.zoom([zoomParams.translate,0], zoomParams.scale);
+            // assuming that xOrigScale and yOrigScale are the same, then
+            // xZoomParams.scale should work here
+            // otherwise we could want to choose the larger zoom value of
+            this.zoomDispatch.zoom([xZoomParams.translate,yZoomParams.translate], 
+                                    xZoomParams.scale);
         } else if (range2 != null) {
             //adjust the y-axis
             console.log('range2:', range2);

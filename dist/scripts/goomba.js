@@ -859,7 +859,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if ('dense' in tile_value) return tile_value['dense'];else if ('sparse' in tile_value) {
 	            var values = Array.apply(null, Array(resolution)).map(Number.prototype.valueOf, 0);
 	            for (var i = 0; i < tile_value.sparse.length; i++) {
-	                values[tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
+	                if ('pos' in tile_value.sparse[i]) values[tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;else values[tile_value.sparse[i][0]] = tile_value.sparse[i][1];
 	            }
 	            return values;
 	        } else {
@@ -12996,6 +12996,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var minVisibleValue = null;
 	            var maxVisibleValue = null;
 
+	            var totalWidth = null;
+	            var totalHeight = null;
+
 	            var localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
 	            var minX = 0,
 	                maxX = 0,
@@ -13133,7 +13136,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                            loadedTiles[tileId(tile)] = { 'tileId': tileId(tile),
 	                                'maxZoom': maxZoom,
 	                                'tilePos': tile,
-	                                'xRange': [minX, maxX],
+	                                'xRange': [minX, minX + totalWidth],
 	                                'importanceRange': [minImportance, maxImportance],
 	                                'valueRange': [data.min_value, data.max_value],
 	                                'data': data };
@@ -13168,8 +13171,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                // the ski areas are positioned according to their
 	                // cumulative widths, which means the tiles need to also
 	                // be calculated according to cumulative width
-	                var totalWidth = maxX - minX;
-	                var totalHeight = maxY - minY;
+	                //
 
 	                var tileWidth = totalWidth / Math.pow(2, zoomLevel);
 	                var tileHeight = totalHeight / Math.pow(2, zoomLevel);
@@ -13281,6 +13283,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                if (yScale == null) {
 	                    yScale = d3.scale.linear().domain(yScaleDomain).range([height - margin.top - margin.bottom, 0]);
+	                }
+
+	                if ('max_width' in tile_info) {
+	                    totalWidth = tile_info.max_width;
+	                    totalHeight = tile_info.max_width;
+	                } else {
+	                    totalWidth = maxX - minX;
+	                    totalHeight = maxY - minY;
 	                }
 
 	                valueScale = d3.scale.linear().domain([countTransform(minValue + 1), countTransform(maxValue + 1)]).range([0, 8]);
@@ -13642,16 +13652,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var SearchField = exports.SearchField = function () {
-	    function SearchField(chromInfo, xOrigScale, zoomDispatch) {
+	    function SearchField(chromInfo, xOrigScale, yOrigScale, zoomDispatch) {
 	        _classCallCheck(this, SearchField);
 
 	        this.chromInfo = chromInfo;
 	        this.xOrigScale = xOrigScale;
+	        this.yOrigScale = yOrigScale;
 	        this.zoomDispatch = zoomDispatch;
 	    }
 
@@ -13674,6 +13687,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (chr in this.chromInfo.chrPositions) retPos = this.chromInfo.chrPositions[chr].pos + pos;else retPos = null;
 
 	            return retPos;
+	        }
+	    }, {
+	        key: 'matchRangesToLarger',
+	        value: function matchRangesToLarger(range1, range2) {
+	            // if one range is wider than the other, then adjust the other
+	            // so that it is just as wide
+	            var smaller = null,
+	                larger = null;
+
+	            if (range1[1] - range1[0] < range2[1] - range2[0]) {
+	                var toExpand = range2[1] - range2[0] - (range1[1] - range1[0]);
+	                return [[range1[0] - toExpand / 2, range1[1] + toExpand / 2], range2];
+	            } else {
+	                var _toExpand = range1[1] - range1[0] - (range2[1] - range2[0]);
+	                return [range1, [range2[0] - _toExpand / 2, range2[1] + _toExpand / 2]];
+	            }
 	        }
 	    }, {
 	        key: 'getSearchRange',
@@ -13730,16 +13759,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 
 	            if (range1 != null && range2 != null) {
-	                console.log('range1:', range1);
-	                console.log('range2:', range2);
+	                var _matchRangesToLarger = this.matchRangesToLarger(range1, range2);
+
+	                var _matchRangesToLarger2 = _slicedToArray(_matchRangesToLarger, 2);
+
+	                range1 = _matchRangesToLarger2[0];
+	                range2 = _matchRangesToLarger2[1];
+
+
+	                console.log('range1:', range1, 'range2:', range2);
+
+	                xZoomParams = this.zoomTo(this.xOrigScale, range1);
+	                yZoomParams = this.zoomTo(this.yOrigScale, range2);
+
+	                this.zoomDispatch.zoom([xZoomParams.translate, 0], xZoomParams.scale);
 	            } else if (range1 != null) {
 	                // adjust the x-axis
 	                console.log('range1:', range1);
 
-	                var zoomParams = this.zoomTo(this.xOrigScale, range1);
+	                var xZoomParams = this.zoomTo(this.xOrigScale, range1);
+	                var yZoomParams = this.zoomTo(this.yOrigScale, range1);
+	                // here we have to find out which range is wider and adjust
+	                // the other one to match
+	                console.log('xZoomParams:', xZoomParams);
+	                console.log('yZoomParams:', yZoomParams);
 
-	                console.log('zoomParams:', zoomParams);
-	                this.zoomDispatch.zoom([zoomParams.translate, 0], zoomParams.scale);
+	                // assuming that xOrigScale and yOrigScale are the same, then
+	                // xZoomParams.scale should work here
+	                // otherwise we could want to choose the larger zoom value of
+	                this.zoomDispatch.zoom([xZoomParams.translate, yZoomParams.translate], xZoomParams.scale);
 	            } else if (range2 != null) {
 	                //adjust the y-axis
 	                console.log('range2:', range2);

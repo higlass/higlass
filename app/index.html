@@ -11,7 +11,7 @@
 <!-- endbuild -->
 
 <div class="ui-widget" id='position-search-div'>
-    <input type="text"  id="position-search-text" value="chr1 to chr1:100000" onkeypress="keyPressed(event)" style="left:30px">
+    <input type="text"  id="position-search-text" value="chr1 to chr1:100000 and chr2:10 to chr2:10000" onkeypress="keyPressed(event)" style="left:30px">
     <span class="input-group-btn">
         <button class="btn btn-default" type="button" id='position-search-button' onclick="searchPosition()">Go!</button>
     </span>
@@ -52,7 +52,8 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     console.log('chromInfo:', chromInfo);
     console.log('xScale.domain()', xScale.domain());
     let zoomDispatch = d3.dispatch('zoom');
-    searchField = new goomba.SearchField(chromInfo, xScale.copy(), zoomDispatch);
+    searchField = new goomba.SearchField(chromInfo, xScale.copy(), 
+                                         xScale.copy(), zoomDispatch);
 
     var chromInfoPlot = goomba.ChromosomeAxis()
     .width(width - margin.left - margin.right)

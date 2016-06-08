@@ -24,3 +24,13 @@ are best described by way of example.
     - Region between chr1:1000 and the start of chr2
 * `chr1 and chr2`
     - Show chr1 on x-axis and chr2 on y-axis. If the viewer is 1D, then only show the region encompassing chr1
+
+The search field can search along two dimensions. Two separate ranges are
+separated using the 'and' word:
+
+`chr1 to chr2 and chr3 to chr4`
+
+Will zoom to the region between chr1 and chr2 on one axis and between chr3 and
+chr4 on the other. If only one dimension is specified (i.e. no `and` keyword)
+and two axes are provided, then both axes will be moved to the range specified
+in the first dimension.

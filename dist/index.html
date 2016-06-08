@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang=""><head><meta charset="utf-8"><title>Goomba</title></head><body><script src="scripts/goomba.js"></script><div class="ui-widget" id="position-search-div"><input type="text" id="position-search-text" value="chr1 to chr1:100000" onkeypress="keyPressed(event)" style="left:30px"> <span class="input-group-btn"><button class="btn btn-default" type="button" id="position-search-button" onclick="searchPosition()">Go!</button></span></div><div id="circle"></div><script type="text/javascript">let width = 600;
+<!DOCTYPE html><html lang=""><head><meta charset="utf-8"><title>Goomba</title></head><body><script src="scripts/goomba.js"></script><div class="ui-widget" id="position-search-div"><input type="text" id="position-search-text" value="chr1 to chr1:100000 and chr2:10 to chr2:10000" onkeypress="keyPressed(event)" style="left:30px"> <span class="input-group-btn"><button class="btn btn-default" type="button" id="position-search-button" onclick="searchPosition()">Go!</button></span></div><div id="circle"></div><script type="text/javascript">let width = 600;
 let height = 240;
 
 let trackHeight = 30;
@@ -29,7 +29,8 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     console.log('chromInfo:', chromInfo);
     console.log('xScale.domain()', xScale.domain());
     let zoomDispatch = d3.dispatch('zoom');
-    searchField = new goomba.SearchField(chromInfo, xScale.copy(), zoomDispatch);
+    searchField = new goomba.SearchField(chromInfo, xScale.copy(), 
+                                         xScale.copy(), zoomDispatch);
 
     var chromInfoPlot = goomba.ChromosomeAxis()
     .width(width - margin.left - margin.right)
@@ -51,7 +52,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     let tiledArea = goomba.TiledArea().width(width)
     .height(height)
     .dataPointLayout(goomba.GenePlot)
-    .tileLayout(tileLayout)
+    .tileLayout(goomba.GeneTileLayout)
     .domain(xScale.domain())
     .scaleExtent(scaleExtent)
     .margin({'left': 30, 'top': 50, 'right': 30, 'bottom': 10})
@@ -94,7 +95,8 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .append('g')
     .attr('transform', 'translate(0,' + (tileDirectories.length * trackHeight) + ')')
     .selectAll('g')
-    //.data(['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
+    //.data(['//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878InputStdSig.bigWig.bedGraph.genome.sorted.gz'])
+
     .data(['//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
     '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz',
     '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz'])
