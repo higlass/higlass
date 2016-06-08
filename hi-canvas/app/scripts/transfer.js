@@ -72,6 +72,7 @@ export class PiecewiseLinearTransferFunction {
         var upperBound = Math.log(_.last(this.controlPoints)[0] + 1);
         
         var delta = upperBound - lowerBound;
+        
         var values = _.range(bins).map(i => lowerBound + (i * delta) / binsM1);
         var mappedBins = values.map(v => this.map(Math.exp(v) - 1));    // Convert mapped values back to regular domain.
         
@@ -97,11 +98,18 @@ export class PiecewiseLinearTransferFunction {
                 let lowerXLog = Math.log(lowerX + 1);
                 let upperXLog = Math.log(upperX + 1);
                 let deltaX = upperXLog - lowerXLog;
+                
                 let lowerY = this._controlYs[i];
                 let upperY = this._controlYs[i+1];
                 let z = (Math.log(density + 1) - lowerXLog) / deltaX;
                 result = (1 - z) * lowerY + z * upperY;
             }
+        }
+        
+        // Fix out of bounds error -> clamp when out of range.
+        if(!result) {
+            if(density < this._controlXs[0]) result = this._controlYs[0];
+            if(density > this._controlXs[this._controlXs.length-1]) result = this._controlYs[this._controlXs.length-1];
         }
         
         return result;
