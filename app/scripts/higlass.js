@@ -128,6 +128,8 @@ export function MassiveMatrixPlot() {
             }
 
             function zoomChanged(translate, scale) {
+                console.log('zoomed:', translate, scale);
+
                 // something changed the zoom.
                 zoom.translate(translate);
                 zoom.scale(scale);
@@ -393,8 +395,14 @@ export function MassiveMatrixPlot() {
                     let values = Array.apply(null, 
                             Array(resolution * resolution)).map(Number.prototype.valueOf, 0);
                     for (let i = 0; i < tile_value.sparse.length; i++) {
-                        values[tile_value.sparse[i].pos[1] * resolution +
-                               tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
+                        if ('pos' in tile_value.sparse[i]) {
+                            values[tile_value.sparse[i].pos[1] * resolution +
+                                   tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
+                        } else {
+                            values[tile_value.sparse[i][0][1] * resolution +
+                                   tile_value.sparse[i][0][0]] = tile_value.sparse[i][1];
+
+                        }
                     }
                     return values;
 
@@ -502,7 +510,7 @@ export function MassiveMatrixPlot() {
 
                 yScale = d3.scale.linear()
                     .domain(yScaleDomain)
-                    .range([height - margin.top - margin.bottom, 0]);
+                    .range([0, height - margin.top - margin.bottom]);
 
                 valueScale = d3.scale.linear()
                     .domain([countTransform(minValue+1), countTransform(maxValue+1)])

@@ -159,6 +159,14 @@ d3.select("#multiple-plots")
             <div id="sticky-mmv" style>
                 <p><b>Use mouse or trackpad to zoom and pan</b></p>
                 <table><tr><td align="center" style="width: 650px">GM12778</td></tr></table>
+                <tr><td align="center">
+<div class="ui-widget" id='position-search-div'>
+    <input type="text"  id="position-search-text" value="chr1 to chr1:100000" onkeypress="keyPressed(event)" style="left:30px">
+    <span class="input-group-btn">
+        <button class="btn btn-default" type="button" id='position-search-button' onclick="searchPosition()">Go!</button>
+    </span>
+</div>
+                    </td></tr></table>
                 <div id="mmv-area" style="position:relative; height:550px; width: 700px" >
                     <svg id="goombaPlot"></svg>
                 </div>
@@ -238,6 +246,7 @@ let tileDirectories = ['//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.a
                        '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/refgene-tiles-plus']
 var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
 let trackHeight = 25;
+let searchField = null;
 
 
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
@@ -318,11 +327,16 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .classed('track-g', true)
     .call(wiggleTileArea)
 
+    let mmvMargin = {'top': 150, 'left': 30, 'bottom': 30, 'right': 120};
+    let yScale = d3.scale.linear().domain(xScale.domain())
+            .range([0, height - mmvMargin.top - mmvMargin.bottom]);
+    searchField = new goomba.SearchField(chromInfo, xScale.copy(), yScale.copy(), zoomDispatch);
+
     var mmvPlot1 = higlass.MassiveMatrixPlot()
         .width(width)
         .height(height)
         .nTicks(4)
-        .margin({'top': 150, 'left': 30, 'bottom': 30, 'right': 120})
+        .margin(mmvMargin)
         .xDomain(xScale.domain())
         .yDomain(xScale.domain())
         .zoomDispatch(zoomDispatch)
@@ -337,6 +351,9 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 
     var zoomDispatch1 = d3.dispatch('zoom');
 
+    console.log('searchField');
+
+    let mmvMargin2 = {'top': 10, 'left': 10, 'bottom': 30, 'right': 120};
     var mmvPlot2 = higlass.MassiveMatrixPlot()
         .width(350)
         .height(250)
@@ -345,7 +362,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .xDomain(xScale.domain())
         .yDomain(xScale.domain())
         .zoomDispatch(zoomDispatch1)
-        .margin({'top': 10, 'left': 10, 'bottom': 30, 'right': 120});
+        .margin(mmvMargin2);
 
     var plotAreas = d3.select("#multiple-plots")
         .selectAll(".hic-plot-area")
@@ -372,6 +389,20 @@ d3.select('#mmv-plot-with-transfer')
 .call(mmvPlot3)
     */
 
+function searchPosition() {
+    var text = d3.select('#position-search-text').property('value');
+
+    var pos = searchField.searchPosition(text);
+    
+    console.log('text:', text, 'pos:', pos);
+}
+
+function keyPressed(e) {
+    if(e.keyCode === 13){
+        console.log('enter pressed');
+        searchPosition();
+    }
+}
 
 </script>
 </body>
