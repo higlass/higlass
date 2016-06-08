@@ -47,6 +47,9 @@ export function TiledArea() {
             let minVisibleValue = null;
             let maxVisibleValue = null;
 
+            let totalWidth = null;
+            let totalHeight = null;
+
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             let minX = 0, maxX = 0, minY = 0, maxY = 0,
                 minImportance = 0, maxImportance = 0,
@@ -194,7 +197,7 @@ export function TiledArea() {
                                 loadedTiles[tileId(tile)] = {'tileId': tileId(tile), 
                                     'maxZoom': maxZoom,
                                     'tilePos': tile,
-                                    'xRange': [minX, maxX],
+                                    'xRange': [minX, minX + totalWidth],
                                     'importanceRange': [minImportance, maxImportance],
                                     'valueRange': [data.min_value, data.max_value],
                                     'data': data,};
@@ -237,8 +240,7 @@ export function TiledArea() {
                     // the ski areas are positioned according to their
                     // cumulative widths, which means the tiles need to also
                     // be calculated according to cumulative width
-                    let totalWidth = maxX - minX;
-                    let totalHeight = maxY - minY;
+                    //
 
                     var tileWidth = totalWidth /  Math.pow(2, zoomLevel);
                     var tileHeight = totalHeight / Math.pow(2, zoomLevel);
@@ -364,6 +366,14 @@ export function TiledArea() {
                         yScale = d3.scale.linear()
                             .domain(yScaleDomain)
                             .range([height - margin.top - margin.bottom, 0]);
+                    }
+
+                    if ('max_width' in tile_info) {
+                        totalWidth = tile_info.max_width;
+                        totalHeight = tile_info.max_width
+                    } else {
+                        totalWidth = maxX - minX;
+                        totalHeight = maxY - minY;
                     }
 
                     valueScale = d3.scale.linear()
