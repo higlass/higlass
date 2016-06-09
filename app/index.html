@@ -120,9 +120,14 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .selectAll('g')
     //.data(['//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878InputStdSig.bigWig.bedGraph.genome.sorted.gz'])
 
-    .data(['//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
+    .data([
+        /*
+        '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
     '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz',
-    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz'])
+    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz',
+    */
+    '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com/hg19/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.gz'
+    ])
 
     .enter()
     .append('g')
