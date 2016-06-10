@@ -307,6 +307,7 @@ export function MassiveMatrixPlot() {
                 if (!allLoaded)
                     return;
 
+                // don't process tiles that are outside of the viewport (i.e. from previous zooming)
                 let visibleTiles = tiles.map((d) => { return loadedTiles[tileId(d)]; })
                     .filter((d) => { return d != undefined; })
                     .filter((d) => { return d.data != undefined; })
@@ -627,11 +628,7 @@ export function MassiveMatrixPlot() {
                 let epsilon = 0.000001;
                 let tiles = [];
 
-                /*
-                let rows = d3.range(Math.floor((zoom.x().domain()[0] - minX) / tileWidth),
-                        Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth));
-
-                */
+                // the visible tile positions are calculated here
                     let rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
                             Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth)));
 
