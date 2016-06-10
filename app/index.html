@@ -242,11 +242,17 @@ d3.select("#multiple-plots")
     */
 
 var margin = {'top': 50, 'left': 30, 'bottom': 30, 'right': 120};
-let tileDirectories = ['//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/refgene-tiles-minus',
-                       '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/refgene-tiles-plus']
+let tileDirectories = [
+    
+    /*
+    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/refgene-tiles-minus',
+    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/refgene-tiles-plus'
+    */
+]
 var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
 let trackHeight = 25;
 let searchField = null;
+let awsDomain = 'search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
 
 
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
@@ -330,6 +336,10 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     let mmvMargin = {'top': 150, 'left': 30, 'bottom': 30, 'right': 120};
     let yScale = d3.scale.linear().domain(xScale.domain())
             .range([0, height - mmvMargin.top - mmvMargin.bottom]);
+
+            console.log('xScale.domain()', xScale.domain(), xScale.range())
+            console.log('yScale.domain()', yScale.domain(), yScale.range())
+
     searchField = new goomba.SearchField(chromInfo, xScale.copy(), yScale.copy(), zoomDispatch);
 
     var mmvPlot1 = higlass.MassiveMatrixPlot()
@@ -342,7 +352,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .zoomDispatch(zoomDispatch)
 
         d3.select('#mmv-area')
-        .datum( '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz')
+        .datum( '//' + awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
         .call(mmvPlot1)
 //////////////////////////////
 
