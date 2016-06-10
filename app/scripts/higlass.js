@@ -395,7 +395,9 @@ export function MassiveMatrixPlot() {
                     let values = Array.apply(null, 
                             Array(resolution * resolution)).map(Number.prototype.valueOf, 0);
                     for (let i = 0; i < tile_value.sparse.length; i++) {
-                        if ('pos' in tile_value.sparse[i]) {
+
+                        if ('pos'in tile_value.sparse[i]) {
+
                             values[tile_value.sparse[i].pos[1] * resolution +
                                    tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
                         } else {
