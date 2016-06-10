@@ -32,12 +32,6 @@
 <!-- endbuild -->
 
 <body>
-    <div class="ui-widget" id='position-search-div'>
-        <input type="text"  id="position-search-text" value="chr1:1000000 to chr1:2000000" onkeypress="keyPressed(event)" style="left:30px">
-        <span class="input-group-btn">
-            <button class="btn btn-default" type="button" id='position-search-button' onclick="searchPosition()">Go!</button>
-        </span>
-    </div>
     <div id="mmv-area" style="position:relative; height:550px; width: 700px" >
         <svg id="goombaPlot"></svg>
     </div>
@@ -69,21 +63,17 @@
             .call(goombaPlot)
     */
 
-var margin = {'top': 50, 'left': 30, 'bottom': 30, 'right': 120};
 var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
-let trackHeight = 25;
-let searchField = null;
 let awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
-
 
 
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 ///////////////////////////
+    let mmvMargin = {'top': 30, 'left': 30, 'bottom': 30, 'right': 120};
     var xScale = d3.scale.linear().domain([0, 5000000])
-        .range([0, width - margin.left - margin.right]);
+        .range([0, width - mmvMargin.left - mmvMargin.right]);
 
     var zoomDispatch = d3.dispatch('zoom');
-    let mmvMargin = {'top': 150, 'left': 30, 'bottom': 30, 'right': 120};
 
     var mmvPlot1 = higlass.MassiveMatrixPlot()
         .width(width)
@@ -97,147 +87,9 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         d3.select('#mmv-area')
         .datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
         .call(mmvPlot1)
-
-///////////////////// Goomba below
-
-    let tileDirectories = [
-        awsDomain + '/hg19/refgene-tiles-minus',
-        awsDomain + '/hg19/refgene-tiles-plus'
-    ]
-
-    var chromInfoPlot = goomba.ChromosomeAxis()
-    .width(width - margin.left - margin.right)
-    .domain(xScale.domain())
-    .orient('top')
-    .zoomDispatch(zoomDispatch);
-
-    svg.append('g')
-    .attr('transform', 'translate(' + margin.left + ',20)')
-    .datum(chromInfo)
-    .call(chromInfoPlot);
-
-    let tileLayout = goomba.GeneTileLayout;
-
-    let gMain = svg.append('g')
-    .classed('g-main', true);
-
-    gMain.append('text')
-        .attr('x', width - margin.right + 15)
-        .attr('y', 53)
-        .text('Genes (+)')
-
-    gMain.append('text')
-        .attr('x', width - margin.right + 15)
-        .attr('y', 78)
-        .text('Genes (-)')
-
-    gMain.append('text')
-        .attr('x', width - margin.right + 15)
-        .attr('y', 103)
-        .text('CTCF')
-
-    gMain.append('text')
-        .attr('x', width - margin.right + 15)
-        .attr('y', 128)
-        .text('DNase')
-
-        /*
-    gMain.append('text')
-        .attr('x', width - margin.right)
-        .attr('y', 45)
-        .text('Genes (-)')
-        */
-
-    /////////////////////////////
-    let tiledArea = goomba.TiledArea().width(width)
-    .height(height)
-    .dataPointLayout(goomba.GenePlot)
-    .tileLayout(tileLayout)
-    .domain(xScale.domain())
-    //.scaleExtent(scaleExtent)
-    .margin({'left': 30, 'top': 50, 'right': 120, 'bottom': 10})
-    .zoomDispatch(zoomDispatch);
-
-    let gGeneTracks = gMain
-        .append('g')
-    .selectAll('g')
-    .data(tileDirectories)
-    .enter()
-    .append('g')
-    .attr('transform', (d,i) => { return 'translate(0,' + i * trackHeight + ')'; })
-    .classed('track-g', true)
-    .call(tiledArea)
-
-    let zoomableLabels = goomba.ZoomableLabels()
-    .markerClass('.gene-marker')
-    .labelClass('.gene-label')
-    .labelParent(gMain)
-    .labelMarkerId((d) => { return `n-${d.uid}`})
-    .uidString('uid')
-
-    tiledArea.on('draw', () => {
-        gGeneTracks.call(zoomableLabels);
-    });
-    //////////////////////////////////////////
-
-    let wiggleTileArea = goomba.TiledArea().width(width)
-    .height(height)
-    .dataPointLayout(goomba.GenePlot)
-    .tileLayout(goomba.WiggleTileLayout)
-    .domain(xScale.domain())
-    .margin({'left': 30, 'top': 30, 'right': 120, 'bottom': 10})
-    .zoomDispatch(zoomDispatch);
-
-    let gWiggleTracks = gMain
-    .append('g')
-    .attr('transform', 'translate(0,' + (20) + ')')
-    .selectAll('g')
-    //.data(['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
-    .data([
-        awsDomain + '/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
-        awsDomain + '/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz'
-
-        //awsDomain +  '/hg19/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz'
-    ])
-
-    .enter()
-    .append('g')
-    .attr('transform', (d,i) => { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
-    .classed('track-g', true)
-    .call(wiggleTileArea)
-
-    let yScale = d3.scale.linear().domain(xScale.domain())
-            .range([0, height - mmvMargin.top - mmvMargin.bottom]);
-
-            console.log('xScale.domain()', xScale.domain(), xScale.range())
-            console.log('yScale.domain()', yScale.domain(), yScale.range())
-
-    searchField = new goomba.SearchField(chromInfo, xScale.copy(), yScale.copy(), zoomDispatch);
-
-        var tileData = [  awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz',
-    awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz'];
-
-    var zoomDispatch1 = d3.dispatch('zoom');
-
-    console.log('searchField');
-
 });
 ///////////////////////////////////////////////
 
-function searchPosition() {
-    var text = d3.select('#position-search-text').property('value');
-
-    var pos = searchField.searchPosition(text);
-    
-    console.log('text:', text, 'pos:', pos);
-}
-
-function keyPressed(e) {
-    if(e.keyCode === 13){
-        console.log('enter pressed');
-        searchPosition();
-    }
-}
 
 </script>
 </body>
