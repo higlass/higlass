@@ -32,188 +32,16 @@
 <!-- endbuild -->
 
 <body>
-    <div class="pure-g">
-        <div class="pure-u-1 pure-u-md-2-5 l-box">
-            <h1>HiGlass: Multi-resolution Hi-C data display</h1>
-
-            <p>
-            Each human cell has about 2 meters of DNA. This DNA is packaged within a
-            nucleus that is only microns thick.  This is the equivalent of stuffing a
-            string stretching from New York to Los Angeles into a container the size of
-            a soccer ball. Needless to say, the arrangement is very compact and
-            necessitates many contacts between distant regions of the DNA. To elucidate
-            the nature and location of these interactions, Hi-C assays generate large
-            amounts of information about which parts of human chromosomes are physically
-            near to each other. In its simplest form, this is a three-column list:
-            </p>
-
-            <pre>
-            <code class="nohighlight">
-50000   50000   1.0
-60000   60000   1.0
-560000  565000  2.0
-565000  565000  23.0
-565000  570000  1.0
-            </code>
-            </pre>
-            <p>
-            The first and second columns are locations on the genome and the third
-            is a frequency of how often contacts between these regions are observed.
-            The data in this example has a resolution of 5 Kb, indicating that we have
-            aggregated contacts into bins of 5,000 DNA bases. Given the size of the
-            human genome (~3e9 base pairs), a map of all 5 Kb contacts could be as
-            large as 3.6e11 contacts (6e5 x 6e5). In practice, many regions are not in
-            close proximity with each other which means that the contact data is in a
-            much smaller sparse contact list.
-            </p>
-
-            <p>
-            In the case of chromosome 1, which has approximately 2.5e8 nucleotides,
-            the contact list has 42,447,494 entries. This table takes up nearly 1Gb of
-            storage space uncompressed. Displaying such a large amount of data at once
-            is beyond the capabilities of anything but the most sophisticated and
-            powerful computers. To overcome this challenge, we break up the contact
-            list into a set of 'tiles' which can be displayed at different zoom levels.
-            Low resolution tiles aggregate the data in the high-resolution tiles and
-            thus limit the total amount of data that needs to be displayed at any zoom
-            level. The result, a viewer we dubbed HiGlass, opens a window into a 1Gb
-            data set that can be explored through a browser on nearly any desktop
-            computer.
-            </p>
-
-            <p>
-            The axes here show the position along a chromosome for which contact data is
-            shown. The colors indicate the frequency and the dots on top show the positions
-            of various annotated genes. The sizes of the dots reflect how cited these
-            genes are.
-            </p>
-
-            <p> The astute observer will note that this method of displaying data is
-            remarkably similar to how popular online mapping tools work. It is, in
-            fact, almost identical.  The only difference is the coordinate system used.
-            Where in maps data (e.g. countries, cities, streets) is indexed by its latitude
-            and longitude, here it is indexed by chromosome positions.
-
-            <h3>Source code</h3>
-
-            <p>
-            The instantiation
-            of a higlass container is dead simple:
-            </p>
-
-            <pre>
-                <code class="javascript ">
-var width = 700, height=550;
-
-var data_dir = '//s3.amazonaws.com/pkerp/tiles/chr1_5kb/';
-var mmvPlot1 = higlass.MassiveMatrixPlot()
-    .width(width)
-    .height(height)
-    .nTicks(4)
-    .zoomCallback(zoomCallback);
-
-d3.select('#mmv-area')
-.datum( '//s3.amazonaws.com/pkerp/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
-.call(mmvPlot1)
-                </code>
-            </pre>
-            <p>
-
-            We just point our container to the source of tiles and attach it to
-            an HTML element. The rest is handled by higlass. Multiple
-            containers can be instantiated using the standard d3 data binding
-            pattern:
-            </p>
-
-<pre>
-<code class="javascript">
-var tileData = [ '//s3.amazonaws.com/pkerp/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles',
-                 '//s3.amazonaws.com/pkerp/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
-
-var zoomDispatch = d3.dispatch('zoom');
-
-var mmvPlot2 = higlass.MassiveMatrixPlot()
-    .width(350)
-    .height(250)
-    .nTicks(2)
-    .zoomDispatch(zoomDispatch)
-    .margin({'top': 10, 'left': 30, 'bottom': 30, 'right': 120});
-
-var plotAreas = d3.select("#multiple-plots")
-.selectAll(".hic-plot-area")
-.data(tileData)
-
-d3.select("#multiple-plots")
-.selectAll('.hic-plot-area')
-.call(mmvPlot2)
-</code>
-</pre>
-
-
-            <p>
-            The source code for higlass can be found on <a href="https://github.com/hms-dbmi/4DN_matrix-viewer">GitHub</a>.
-            </p>
-        </div>
-
-        <div class="pure-u-1 pure-u-md-3-5 l-box">
-            <div id="sticky-mmv" style>
-                <p><b>Use mouse or trackpad to zoom and pan</b></p>
-                <table><tr><td align="center" style="width: 650px">GM12778</td></tr></table>
-                <tr><td align="center">
-<div class="ui-widget" id='position-search-div'>
-    <input type="text"  id="position-search-text" value="chr1:1000000 to chr1:2000000" onkeypress="keyPressed(event)" style="left:30px">
-    <span class="input-group-btn">
-        <button class="btn btn-default" type="button" id='position-search-button' onclick="searchPosition()">Go!</button>
-    </span>
-</div>
-                    </td></tr></table>
-                <div id="mmv-area" style="position:relative; height:550px; width: 700px" >
-                    <svg id="goombaPlot"></svg>
-                </div>
-                <p class="caption">
-                    GM12878 (Chromosome 1) - 5 KB resolution<br>
-                    <i>Source: <a href="http://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63525&format=file&file=GSE63525%5FGM12878%5Fprimary%5Fintrachromosomal%5Fcontact%5Fmatrices%2Etar%2Egz">GEO GSE63525 - GSE63525_GM12878_primary_intrachromosomal_contact_matrices.tar.gz</a></i>
-                </p>
-                <br>
-
-                <p><b>Synchronized zooming</b></p>
-
-                <div id="multiple-plots" style="position:relative; height:300px">
-                    <table>
-                        <tr>
-                            <td align="center">HMEC</td>
-                            <td align="center">HUVEC</td>
-                        <tr>
-                            <td align="center"><div id="HMEC" class='hic-plot-area' style="position: relative; height: 250px; width: 350px"></div></td>
-                            <td align="center"><div id="HUVEC" class='hic-plot-area' style="position: relative; height: 250px; width: 350px"></div></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <p class="caption">
-                                HMEC (Chromosome 1) - 5 KB resolution<br>
-                                <i>Source: <a href="http://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63525">GEO GSE63525</a></i>
-                                </p>
-                            </td>
-                            <td>
-                                <p class="caption">
-                                HUVEC (Chromosome 1) - 5 KB resolution<br>
-                                <i>Source: <a href="http://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63525">GEO GSE63525</a></i>
-                                </p>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <br>
-                <br>
-                <b>Transfer Function Editor</b>
-                <div style="position:relative; height:550px; width: 700px" >
-                    <div id="mmv-plot-with-transfer" style="position:relative; height:550px; width: 700px" >
-                    </div>
-                    <div id="mmv-transfer-function-editor" style="position: absolute; left: 30px; top: 50px; height: 70px; width=200px; background: rgba(255, 255, 255, 0.7);"></div>
-                </div>
-            </div>
-        </div>
+    <div class="ui-widget" id='position-search-div'>
+        <input type="text"  id="position-search-text" value="chr1:1000000 to chr1:2000000" onkeypress="keyPressed(event)" style="left:30px">
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="button" id='position-search-button' onclick="searchPosition()">Go!</button>
+        </span>
     </div>
+    <div id="mmv-area" style="position:relative; height:550px; width: 700px" >
+        <svg id="goombaPlot"></svg>
+    </div>
+</body>
 
 
 <script type='text/javascript'>
@@ -247,10 +75,6 @@ let trackHeight = 25;
 let searchField = null;
 let awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
 
-let tileDirectories = [
-    awsDomain + '/hg19/refgene-tiles-minus',
-    awsDomain + '/hg19/refgene-tiles-plus'
-]
 
 
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
@@ -259,6 +83,27 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .range([0, width - margin.left - margin.right]);
 
     var zoomDispatch = d3.dispatch('zoom');
+    let mmvMargin = {'top': 150, 'left': 30, 'bottom': 30, 'right': 120};
+
+    var mmvPlot1 = higlass.MassiveMatrixPlot()
+        .width(width)
+        .height(height)
+        .nTicks(4)
+        .margin(mmvMargin)
+        .xDomain(xScale.domain())
+        .yDomain(xScale.domain())
+        .zoomDispatch(zoomDispatch)
+
+        d3.select('#mmv-area')
+        .datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
+        .call(mmvPlot1)
+
+///////////////////// Goomba below
+
+    let tileDirectories = [
+        awsDomain + '/hg19/refgene-tiles-minus',
+        awsDomain + '/hg19/refgene-tiles-plus'
+    ]
 
     var chromInfoPlot = goomba.ChromosomeAxis()
     .width(width - margin.left - margin.right)
@@ -361,7 +206,6 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .classed('track-g', true)
     .call(wiggleTileArea)
 
-    let mmvMargin = {'top': 150, 'left': 30, 'bottom': 30, 'right': 120};
     let yScale = d3.scale.linear().domain(xScale.domain())
             .range([0, height - mmvMargin.top - mmvMargin.bottom]);
 
@@ -370,62 +214,17 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 
     searchField = new goomba.SearchField(chromInfo, xScale.copy(), yScale.copy(), zoomDispatch);
 
-    var mmvPlot1 = higlass.MassiveMatrixPlot()
-        .width(width)
-        .height(height)
-        .nTicks(4)
-        .margin(mmvMargin)
-        .xDomain(xScale.domain())
-        .yDomain(xScale.domain())
-        .zoomDispatch(zoomDispatch)
 
-        d3.select('#mmv-area')
-        .datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
-        .call(mmvPlot1)
-//////////////////////////////
+        var tileData = [  awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz',
+    awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz'];
 
-        var tileData = [  awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz',
-    awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz'];
 
     var zoomDispatch1 = d3.dispatch('zoom');
 
     console.log('searchField');
 
-    let mmvMargin2 = {'top': 10, 'left': 10, 'bottom': 30, 'right': 120};
-    var mmvPlot2 = higlass.MassiveMatrixPlot()
-        .width(350)
-        .height(250)
-        .nTicks(2)
-        //.margin(margin)
-        .xDomain(xScale.domain())
-        .yDomain(xScale.domain())
-        .zoomDispatch(zoomDispatch1)
-        .margin(mmvMargin2);
-
-    var plotAreas = d3.select("#multiple-plots")
-        .selectAll(".hic-plot-area")
-        .data(tileData)
-
-        d3.select("#multiple-plots")
-        .selectAll('.hic-plot-area')
-        .call(mmvPlot2)
 });
 ///////////////////////////////////////////////
-
-/*
-var transferEditor = new higlass.TransferFunctionEditor(document.getElementById('mmv-transfer-function-editor'), 150, 70, higlass.heatedObjectMap);
-console.log('transferEditor:', transferEditor);
-
-var mmvPlot3 = higlass.MassiveMatrixPlot()
-    .width(width)
-    .height(height)
-    .nTicks(4)
-    .transferEditor(transferEditor);
-
-d3.select('#mmv-plot-with-transfer')
-.datum( '//127.0.0.1:9200/test/tiles')
-.call(mmvPlot3)
-    */
 
 function searchPosition() {
     var text = d3.select('#position-search-text').property('value');
