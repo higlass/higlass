@@ -161,7 +161,7 @@ d3.select("#multiple-plots")
                 <table><tr><td align="center" style="width: 650px">GM12778</td></tr></table>
                 <tr><td align="center">
 <div class="ui-widget" id='position-search-div'>
-    <input type="text"  id="position-search-text" value="chr1 to chr1:100000" onkeypress="keyPressed(event)" style="left:30px">
+    <input type="text"  id="position-search-text" value="chr1:1000000 to chr1:2000000" onkeypress="keyPressed(event)" style="left:30px">
     <span class="input-group-btn">
         <button class="btn btn-default" type="button" id='position-search-button' onclick="searchPosition()">Go!</button>
     </span>
@@ -242,17 +242,15 @@ d3.select("#multiple-plots")
     */
 
 var margin = {'top': 50, 'left': 30, 'bottom': 30, 'right': 120};
-let tileDirectories = [
-    
-    /*
-    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/refgene-tiles-minus',
-    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/refgene-tiles-plus'
-    */
-]
 var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
 let trackHeight = 25;
 let searchField = null;
-let awsDomain = 'search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
+let awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
+
+let tileDirectories = [
+    awsDomain + '/hg19/refgene-tiles-minus',
+    awsDomain + '/hg19/refgene-tiles-plus'
+]
 
 
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
@@ -277,6 +275,33 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 
     let gMain = svg.append('g')
     .classed('g-main', true);
+
+    gMain.append('text')
+        .attr('x', width - margin.right + 15)
+        .attr('y', 53)
+        .text('Genes (+)')
+
+    gMain.append('text')
+        .attr('x', width - margin.right + 15)
+        .attr('y', 78)
+        .text('Genes (-)')
+
+    gMain.append('text')
+        .attr('x', width - margin.right + 15)
+        .attr('y', 103)
+        .text('CTCF')
+
+    gMain.append('text')
+        .attr('x', width - margin.right + 15)
+        .attr('y', 128)
+        .text('DNase')
+
+        /*
+    gMain.append('text')
+        .attr('x', width - margin.right)
+        .attr('y', 45)
+        .text('Genes (-)')
+        */
 
     /////////////////////////////
     let tiledArea = goomba.TiledArea().width(width)
@@ -323,9 +348,12 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .attr('transform', 'translate(0,' + (20) + ')')
     .selectAll('g')
     //.data(['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
-    .data(['//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
-    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz',
-    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz'])
+    .data([
+        awsDomain + '/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
+        awsDomain + '/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz'
+
+        //awsDomain +  '/hg19/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz'
+    ])
 
     .enter()
     .append('g')
@@ -352,12 +380,12 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .zoomDispatch(zoomDispatch)
 
         d3.select('#mmv-area')
-        .datum( '//' + awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
+        .datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
         .call(mmvPlot1)
 //////////////////////////////
 
-        var tileData = [  '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz',
-    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz'];
+        var tileData = [  awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz',
+    awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.genome.mirrored.sorted.5M.gz'];
 
     var zoomDispatch1 = d3.dispatch('zoom');
 
