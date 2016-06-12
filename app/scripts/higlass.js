@@ -25,6 +25,7 @@ export function MassiveMatrixPlot() {
             let totalHeight = null, totalWidth = null;
             let maxZoom = 1;
             let yAxis = null, xAxis = null;
+            let mirrorTiles = false;
 
             let xOrigScale = null, yOrigScale = null;
             let xScale = null, yScale = null, valueScale = null;
@@ -128,7 +129,7 @@ export function MassiveMatrixPlot() {
             }
 
             function zoomChanged(translate, scale) {
-                console.log('zoomed:', translate, scale);
+                //console.log('zoomed:', translate, scale);
 
                 // something changed the zoom.
                 zoom.translate(translate);
@@ -198,7 +199,7 @@ export function MassiveMatrixPlot() {
                             pix.data[i*4] = rgb[0];
                             pix.data[i*4+1] = rgb[1];
                             pix.data[i*4+2] = rgb[2];
-                            pix.data[i*4+3] = 255;
+                            pix.data[i*4+3] = 150;
                         });
                     } catch (err) {
                         console.log('lastD:', lastD, data);
@@ -246,10 +247,34 @@ export function MassiveMatrixPlot() {
                 let tileEndX = minX + (xTilePos+1) * tileWidth;
                 let tileEndY = minY + (yTilePos+1) * tileHeight;
 
-                sprite.x = xOrigScale(tileX);
-                sprite.y = yOrigScale(tileY);
+                console.log('tile:', tile);
+                
+                let spriteWidth = xOrigScale(tileEndX) - xOrigScale(tileX) ;
+                let spriteHeight = yOrigScale(tileEndY) - yOrigScale(tileY)
+
                 sprite.width = xOrigScale(tileEndX) - xOrigScale(tileX)
-                    sprite.height = yOrigScale(tileEndY) - yOrigScale(tileY)
+                sprite.height = yOrigScale(tileEndY) - yOrigScale(tileY)
+
+                if (tile.mirrored) {
+                    // this is a mirrored tile that represents the other half of a 
+                    // triangular matrix
+                    sprite.x = xOrigScale(tileX);
+                    sprite.y = yOrigScale(tileY);
+
+                    sprite.pivot = [xOrigScale.range()[1] / 2, yOrigScale.range()[1] / 2];
+                    sprite.rotation = -Math.PI / 2;
+                    sprite.scale.x *= -1;
+
+                    sprite.width = spriteHeight;
+                    sprite.height = spriteWidth;
+                } else {
+                    sprite.x = xOrigScale(tileX);
+                    sprite.y = yOrigScale(tileY);
+                }
+
+
+                //console.log('sprite.anchor:', sprite.anchor, sprite.scale.x, sprite.scale.y);
+                //sprite.anchor.x = 0.0;
 
             }
 
@@ -636,8 +661,31 @@ export function MassiveMatrixPlot() {
 
 
                 for (let i = 0; i < rows.length; i++) {
-                    for (let j = 0; j < cols.length; j++) {
-                        tiles.push([zoomLevel, rows[i], cols[j]]);
+                    for (let j = 0; j < cols.length; j++) { 
+                        if (mirrorTiles) {
+                            if (rows[i] >= cols[j]) {
+                                let newTile = [zoomLevel, cols[j], rows[i]];
+                                newTile.mirrored = true;
+                                tiles.push(newTile); 
+                            } else {
+                                let newTile = [zoomLevel, rows[i], cols[j]];
+                                newTile.mirrored = false;
+                                tiles.push(newTile); 
+
+                            }
+
+                            if (rows[i] == cols[j]) {
+                                let newTile = [zoomLevel, rows[i], cols[j]];
+                                newTile.mirrored = false;
+                                tiles.push(newTile);
+                            }
+
+                        } else {
+                            let newTile = [zoomLevel, rows[i], cols[j]];
+                            newTile.mirrored = false;
+
+                            tiles.push(newTile)
+                        }
                     }
                 }
                 // hey hye
@@ -664,7 +712,7 @@ export function MassiveMatrixPlot() {
 
     function tileId(tile) {
         // uniquely identify the tile with a string
-        return tile.join(".");
+        return tile.join(".") + '.' + tile.mirrored;
     }
 
     function pointId(d) {
