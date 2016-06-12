@@ -25,7 +25,7 @@ export function MassiveMatrixPlot() {
             let totalHeight = null, totalWidth = null;
             let maxZoom = 1;
             let yAxis = null, xAxis = null;
-            let mirrorTiles = false;
+            let mirrorTiles = true;
 
             let xOrigScale = null, yOrigScale = null;
             let xScale = null, yScale = null, valueScale = null;
@@ -188,6 +188,10 @@ export function MassiveMatrixPlot() {
                                console.log('discretized:', discretized, intensity)
                                */
 
+                              /*
+                            if (i % 100 == 0)
+                                console.log('rgbIdx:', rgbIdx);
+                                */
                             let rgb = heatedObjectMap[rgbIdx];
 
                             /*
@@ -199,7 +203,7 @@ export function MassiveMatrixPlot() {
                             pix.data[i*4] = rgb[0];
                             pix.data[i*4+1] = rgb[1];
                             pix.data[i*4+2] = rgb[2];
-                            pix.data[i*4+3] = 150;
+                            pix.data[i*4+3] = rgb[3];
                         });
                     } catch (err) {
                         console.log('lastD:', lastD, data);
@@ -258,8 +262,8 @@ export function MassiveMatrixPlot() {
                 if (tile.mirrored) {
                     // this is a mirrored tile that represents the other half of a 
                     // triangular matrix
-                    sprite.x = xOrigScale(tileX);
-                    sprite.y = yOrigScale(tileY);
+                    sprite.x = xOrigScale(tileY);
+                    sprite.y = yOrigScale(tileX);
 
                     sprite.pivot = [xOrigScale.range()[1] / 2, yOrigScale.range()[1] / 2];
                     sprite.rotation = -Math.PI / 2;
@@ -635,7 +639,7 @@ export function MassiveMatrixPlot() {
 
                 // this will become the tiling code
                 let zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
-                let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 1;
+                let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 2;
 
                 if (zoomLevel > maxZoom)
                     return;
