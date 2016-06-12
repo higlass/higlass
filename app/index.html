@@ -84,7 +84,8 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .zoomDispatch(zoomDispatch)
 
         d3.select('#mmv-area')
-        .datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
+        .datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
         .call(mmvPlot1)
 });
 ///////////////////////////////////////////////
