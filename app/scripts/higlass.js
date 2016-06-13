@@ -129,8 +129,6 @@ export function MassiveMatrixPlot() {
             }
 
             function zoomChanged(translate, scale) {
-                //console.log('zoomed:', translate, scale);
-
                 // something changed the zoom.
                 zoom.translate(translate);
                 zoom.scale(scale);
@@ -159,20 +157,12 @@ export function MassiveMatrixPlot() {
             }
 
             function setPix(pix, data, zoomLevel) {
-                //console.log('maxZoom:', maxZoom);
-                
                 let zoomFactor = Math.pow(2, 2 * (maxZoom - zoomLevel));
 
                 var maxTransfer = transferFunction(maxValue);
-                //console.log('maxTransfer:', maxTransfer);
-                //console.log('maxTransfer:', maxTransfer, transferFunction(2000), maxValue);
                 valueScale.domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
 
-                //console.log('sdfsdfs data:', data);
-                //console.log('valueScale.domain():', valueScale.domain());
-
                 let lastD = null;
-                //console.log('time before:', getTime());
 
                     try {
                         let pixelValues = data.map((d,i) => {
@@ -181,24 +171,8 @@ export function MassiveMatrixPlot() {
 
                             let rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(countTransform(d)))))
 
-                            /*
-                               d = d / zoomFactor;
-                               let intensity = transferFunction(d) / maxTransfer;
-                               let discretized = Math.floor(255 * (1 - intensity));
-                               console.log('discretized:', discretized, intensity)
-                               */
-
-                              /*
-                            if (i % 100 == 0)
-                                console.log('rgbIdx:', rgbIdx);
-                                */
                             let rgb = heatedObjectMap[rgbIdx];
 
-                            /*
-                               if (i % 1000 == 0) {
-                               console.log('rgbIdx:', i, d, rgbIdx, rgb);
-                               }
-                               */
 
                             pix.data[i*4] = rgb[0];
                             pix.data[i*4+1] = rgb[1];
@@ -208,11 +182,6 @@ export function MassiveMatrixPlot() {
                     } catch (err) {
                         console.log('lastD:', lastD, data);
                         console.log('minVisibleValue, maxVisibleValue', minVisibleValue, maxVisibleValue);
-                        /*
-                           console.log('rgbIdx:', rgbIdx);
-                           return pix;
-                           */
-                        //console.log("Err:", err);
                     }
 
 
@@ -251,8 +220,6 @@ export function MassiveMatrixPlot() {
                 let tileEndX = minX + (xTilePos+1) * tileWidth;
                 let tileEndY = minY + (yTilePos+1) * tileHeight;
 
-                console.log('tile:', tile);
-                
                 let spriteWidth = xOrigScale(tileEndX) - xOrigScale(tileX) ;
                 let spriteHeight = yOrigScale(tileEndY) - yOrigScale(tileY)
 
@@ -286,7 +253,6 @@ export function MassiveMatrixPlot() {
                 // go through each tile shown tile and change its texture
                 // this is normally called when the value of the color scale changes
                 // it's a little slow at the moment so it's unused
-                console.log('changing textures');
                 for (let tileId in loadedTiles) {
                     loadedTiles[tileId].canvasChanged = true;
                 }
@@ -363,12 +329,32 @@ export function MassiveMatrixPlot() {
 
                         setSpriteProperties(sprite, tiles[i]);
 
+                        let tile = tiles[i];
+                        let xTilePos = tile[1];
+                        let yTilePos = tile[2];
+                        let tileWidth = totalWidth / Math.pow(2, tile[0]);
+                        let tileHeight = totalHeight / Math.pow(2, tile[0]);
+
+                        let tileX = minX + xTilePos * tileWidth;
+                        let tileY = minY + yTilePos * tileHeight;
+
+                        let tileEndX = minX + (xTilePos+1) * tileWidth;
+                        let tileEndY = minY + (yTilePos+1) * tileHeight;
+
+
+                        //newGraphics.beginFill(0xFFFF00);
+
+                        // set the line style to have a width of 5 and set the color to red
+                        
                             newGraphics.addChild(sprite);
+                        newGraphics.lineStyle(5, 0xFF0000);
+                        newGraphics.drawRect(tileX, tileY, tileEndX - tileX, tileEndY - tileY);
                         tileGraphics[tileId(tiles[i])] = newGraphics;
 
                         pMain.addChild(newGraphics);
                     } else {
                         //let canvas = //tileDataToCanvas(loadedTiles[tileId(tiles[i])].data, tiles[i][0]);
+                        //console.log('tile:', tileId(tiles[i]), loadedTiles[tileId(tiles[i])]);
                     }
                 }
 
@@ -409,6 +395,7 @@ export function MassiveMatrixPlot() {
                 gTilesExit.remove();
 
                 // only redraw if the tiles have changed
+                
                 if (gTilesEnter.size() > 0 || gTilesExit.size() > 0)
                     draw();
             }
@@ -424,11 +411,16 @@ export function MassiveMatrixPlot() {
                 else if ('sparse' in tile_value) {
                     let values = Array.apply(null, 
                             Array(resolution * resolution)).map(Number.prototype.valueOf, 0);
+                    console.log('values:', values);
+
                     for (let i = 0; i < tile_value.sparse.length; i++) {
                         if ('pos' in tile_value.sparse[i]) {
                             values[tile_value.sparse[i].pos[1] * resolution +
                                    tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
                         } else {
+                            let x = tile_value.sparse[i][0];
+                            if (x[0] > x[1])
+                                console.log('tile_value.sparse[i][0]', tile_value.sparse[i][0])
                             values[tile_value.sparse[i][0][1] * resolution +
                                    tile_value.sparse[i][0][0]] = tile_value.sparse[i][1];
 
@@ -450,6 +442,7 @@ export function MassiveMatrixPlot() {
                         let tileSubPath = tile.join('.')
                             let tilePath = tileDirectory + "/" + tileSubPath;
                         loadingTiles[tileId(tile)] = true;
+                        console.log('loading:', tileId(tile));
 
                         d3.json(tilePath,
                                 function(error, tile_json) {
@@ -571,6 +564,16 @@ export function MassiveMatrixPlot() {
                 gYAxis.call(yAxis);
                 gXAxis.call(xAxis);
 
+                let newTiles = []
+
+                let newTile = [0,0,0]
+                newTile.mirrored = true;
+                newTiles.push(newTile);
+
+                newTile = [0,0,0]
+                newTile.mirrored = false;
+                newTiles.push(newTile);
+
                 refreshTiles([[0,0,0]]);
             });
 
@@ -639,7 +642,8 @@ export function MassiveMatrixPlot() {
 
                 // this will become the tiling code
                 let zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
-                let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 2;
+                let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 0;
+                console.log('zoomLevel', zoomLevel);
 
                 if (zoomLevel > maxZoom)
                     return;
@@ -701,6 +705,7 @@ export function MassiveMatrixPlot() {
                 //console.log('rows:', zoomLevel, rows, zoom.x().domain(), tileWidth);
                 //console.log('cols:', cols);
                 
+                console.log('tiles:', tiles);
 
                 refreshTiles(tiles);
             }
