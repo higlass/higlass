@@ -411,7 +411,6 @@ export function MassiveMatrixPlot() {
                 else if ('sparse' in tile_value) {
                     let values = Array.apply(null, 
                             Array(resolution * resolution)).map(Number.prototype.valueOf, 0);
-                    console.log('values:', values);
 
                     for (let i = 0; i < tile_value.sparse.length; i++) {
                         if ('pos' in tile_value.sparse[i]) {
@@ -419,8 +418,6 @@ export function MassiveMatrixPlot() {
                                    tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
                         } else {
                             let x = tile_value.sparse[i][0];
-                            if (x[0] > x[1])
-                                console.log('tile_value.sparse[i][0]', tile_value.sparse[i][0])
                             values[tile_value.sparse[i][0][1] * resolution +
                                    tile_value.sparse[i][0][0]] = tile_value.sparse[i][1];
 
@@ -642,7 +639,7 @@ export function MassiveMatrixPlot() {
 
                 // this will become the tiling code
                 let zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
-                let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 0;
+                let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 1;
                 console.log('zoomLevel', zoomLevel);
 
                 if (zoomLevel > maxZoom)

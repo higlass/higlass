@@ -63,7 +63,8 @@
     */
 
 var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
-let awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
+//let awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
+let awsDomain = '//52.23.165.123:9200';
 
 
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
@@ -85,8 +86,8 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .zoomDispatch(zoomDispatch)
 
         d3.select('#mmv-area')
-        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
-        .datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
+        //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
         .call(mmvPlot1)
 });
 ///////////////////////////////////////////////
