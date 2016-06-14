@@ -165,6 +165,7 @@ export function MassiveMatrixPlot() {
                 let lastD = null;
 
                     try {
+                        let t1 = new Date.getTime();
                         let pixelValues = data.map((d,i) => {
                             lastD = d;
                             let ct = countTransform(d);
@@ -179,6 +180,7 @@ export function MassiveMatrixPlot() {
                             pix.data[i*4+2] = rgb[2];
                             pix.data[i*4+3] = rgb[3];
                         });
+                        console.log('pixelValue loading', new Date().getTime() - t1);
                     } catch (err) {
                         console.log('lastD:', lastD, data);
                         console.log('minVisibleValue, maxVisibleValue', minVisibleValue, maxVisibleValue);
