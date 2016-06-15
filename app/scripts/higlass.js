@@ -17,7 +17,10 @@ export function MassiveMatrixPlot() {
     let zoomCallback = null;
     let transferEditor = null;
     let xDomain = null, yDomain = null;
-
+    
+    let drawRectZoom = 1;
+    let rectData;
+    
     function chart(selection) {
         selection.each(function(tileDirectory) {
             let resolution = 256;
@@ -75,8 +78,12 @@ export function MassiveMatrixPlot() {
                 .style('top', 0)
                 .style('position', 'absolute');
 
+            
+
             var gEnter = svg.append("g")
-                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+                .attr('transform', `translate(${margin.left}, ${margin.top})`)
+                .classed('g-enter', true);
+
 
             var stage = new PIXI.Container();
             pMain = new PIXI.Graphics();
@@ -102,11 +109,16 @@ export function MassiveMatrixPlot() {
 
             var gYAxis = gEnter.append("g")
                 .attr("class", "y axis")
-                .attr("transform", "translate(" + (width - margin.right - margin.left) + ",0)");
+                .attr("transform", "translate("  + (width - margin.right - margin.left) + ",0)");
+
+            var debug = gEnter.append("svg")
+                .attr("width", width - margin.left - margin.right)
+                .attr("height", height - margin.top - margin.bottom)
+                .attr("id", "debug");
 
             var gXAxis = gEnter.append("g")
                 .attr("class", "x axis")
-                .attr("transform", "translate(0," + (height - margin.bottom - margin.top) + ")");
+                .attr("transform", "translate(0,"+ (height - margin.bottom - margin.top) + ")");
 
             gMain = gEnter.append('g')
                 .classed('main-g', true)
@@ -593,11 +605,78 @@ export function MassiveMatrixPlot() {
                 pMain.position.y = zoom.translate()[1];
                 pMain.scale.x = zoom.scale();
                 pMain.scale.y = zoom.scale();
+                console.log("zoom scale" + zoom.scale());
+                 document.getElementById("debug").innerHTML = '';
+               console.log("zoom level" + (Math.round(Math.log(zoom.scale()) / Math.LN2) + 1));
+                if((Math.round(Math.log(zoom.scale()) / Math.LN2) + 1) != drawRectZoom){
+            //     let zoomLevel = ;
+                   
+                    drawRectZoom = Math.round(Math.log(zoom.scale()) / Math.LN2) + 1;
+                    console.log("rect scale" + zoom.scale());
+                   // rectInfo(drawRectZo
+                    drawRect(drawRectZoom);
+                }
+                
+                
 
                 if (zoomCallback)
                     zoomCallback(xScale, zoom.scale());
 
                 draw();
+                drawRect(drawRectZoom);
+
+            }
+
+
+            function drawRect(zoomlevel) {
+               document.getElementById("debug").innerHTML = ''; 
+                var rectData = rectInfo(zoomlevel);
+                debug.selectAll('rect.boxy')
+                    .data(rectData)
+                    .enter()
+                    .append('rect').classed('boxy', true);
+
+                debug.selectAll('rect.boxy')
+                    .style('fill-opacity',0)
+                    .style("stroke-opacity", 1)
+                    .style("stroke", "black")
+                    .attr('x', function(d) { return xScale(d.x)})
+                    .attr('y', function(d) {  return yScale(d.y)})
+                   .attr('width', function(d) { return d.width})
+                  .attr('height', function(d) { return d.height});
+
+
+                 debug.append("text")
+                  .classed('data', true)
+                  .attr("x", function(d) { return xScale(d.x)})
+                  .attr("y", function(d) { return yScale(d.y)}) // Center text
+                  .attr("fill","#fff")
+                  .style("stroke-width", 1)
+                  .style({"font-size":"18px","z-index":"999999999"})
+                  .style("text-anchor", "middle")
+                  .text(function(d) { return 100;});
+            }
+
+            function rectInfo(zoomlevel){
+                document.getElementById("debug").innerHTML = ''; 
+                rectData = [];
+                console.log("zoom level is " + zoomlevel);
+                var len = Math.pow(2, zoomlevel);
+                let length = (maxX - minX)/Math.pow(2, zoomlevel);
+                let w = (width - margin.left - margin.right)/ Math.pow(2, 1);
+                let h = (height - margin.top - margin.bottom)/ Math.pow(2, 1);
+                console.log("the width is" + w);
+                for (var i = 0; i < len; i++) {
+                    for(var j=0; j < len; j++) {
+                        rectData.push({
+                            x: 0+length*i,
+                            y: 0+length*j,
+                            width: zoom.scale()* w,
+                            height: zoom.scale()*h
+                        });
+                    }
+                }
+                return rectData;
             }
 
             function draw() {
