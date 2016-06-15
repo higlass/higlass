@@ -10,13 +10,6 @@
 <script src='scripts/goomba.js'></script>
 <!-- endbuild -->
 
-<div class="ui-widget" id='position-search-div'>
-    <input type="text"  id="position-search-text" value="chr1 to chr1:100000 and chr2:10 to chr2:10000" onkeypress="keyPressed(event)" style="left:30px">
-    <span class="input-group-btn">
-        <button class="btn btn-default" type="button" id='position-search-button' onclick="searchPosition()">Go!</button>
-    </span>
-</div>
-
 <div id="circle"></div>
 
 <script type='text/javascript'>
@@ -34,12 +27,28 @@ let tileDirectories = [awsDomain + '/hg19/refgene-tiles-minus',
                        awsDomain + '/hg19/refgene-tiles-plus']
 
 var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
+
+var bigDiv = d3.select('#circle').append('div')
+.classed('big-div', true)
+.attr('width', width)
+.attr('height', height)
+
 var svg = d3.select('#circle').append('svg')
 .attr('width', width)
 .attr('height', height)
 
-let searchField = null;
+var draggableTrack = goomba.DraggableTrack().width(width)
+    .height(height)
 
+d3.select('.big-div')
+.selectAll('.track')
+.data([{'width': 100, 'height': 15})
+.enter()
+    .append('div')
+    .classed('track', true)
+    .call(draggableTrack);
+
+    /*
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
     //let xScale = d3.scale.linear().domain([0, 10000000])
@@ -53,8 +62,6 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     console.log('chromInfo:', chromInfo);
     console.log('xScale.domain()', xScale.domain());
     let zoomDispatch = d3.dispatch('zoom');
-    searchField = new goomba.SearchField(chromInfo, xScale.copy(), 
-                                         xScale.copy(), zoomDispatch);
 
     var chromInfoPlot = goomba.ChromosomeAxis()
     .width(width - margin.left - margin.right)
@@ -73,42 +80,9 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .classed('g-main', true);
 
     /////////////////////////////
-    let tiledArea = goomba.TiledArea().width(width)
-    .height(height)
-    .dataPointLayout(goomba.GenePlot)
-    .tileLayout(goomba.GeneTileLayout)
-    .domain(xScale.domain())
-    .scaleExtent(scaleExtent)
-    .margin({'left': 30, 'top': 50, 'right': 30, 'bottom': 10})
-    .zoomDispatch(zoomDispatch);
-
-    let gGeneTracks = gMain
-        .append('g')
-    .selectAll('g')
-    .data(tileDirectories)
-    .enter()
-    .append('g')
-    .attr('transform', (d,i) => { return 'translate(0,' + i * trackHeight + ')'; })
-    .classed('track-g', true)
-    .call(tiledArea)
-
-    let zoomableLabels = goomba.ZoomableLabels()
-    .markerClass('.gene-marker')
-    .labelClass('.gene-label')
-    .labelParent(gMain)
-    .labelMarkerId((d) => { return `n-${d.uid}`})
-    .uidString('uid')
-
-    tiledArea.on('draw', () => {
-        gGeneTracks.call(zoomableLabels);
-    });
-
-
-    ////////////////////////
 
     let wiggleTileArea = goomba.TiledArea().width(width)
     .height(height)
-    .dataPointLayout(goomba.GenePlot)
     .tileLayout(goomba.WiggleTileLayout)
     .domain(xScale.domain())
     .scaleExtent(scaleExtent)
@@ -122,12 +96,6 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     //.data(['//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878InputStdSig.bigWig.bedGraph.genome.sorted.gz'])
 
     .data([
-        /*
-        '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
-    '//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz',
-    awsDomain + '/hg19/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.gz',
-        awsDomain + '/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz'
-    */
         awsDomain + '/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz'
     ])
 
@@ -137,21 +105,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .classed('track-g', true)
     .call(wiggleTileArea)
 });
-
-function searchPosition() {
-    var text = d3.select('#position-search-text').property('value');
-
-    var pos = searchField.searchPosition(text);
-    
-    console.log('text:', text, 'pos:', pos);
-}
-
-function keyPressed(e) {
-    if(e.keyCode === 13){
-        console.log('enter pressed');
-        searchPosition();
-    }
-}
+*/
 
 </script>
 </body>

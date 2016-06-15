@@ -10,6 +10,7 @@ export {ChromosomeInfo} from './ChromosomeInfo.js';
 export {TiledArea} from './tiled_area.js';
 export {ZoomableLabels} from './zoomable_labels';
 export {SearchField} from './search_field.js';
+export {DraggableTrack} from './DraggableTrack.js';
 
 export function Goomba() {
     let width = 700, height=40;
