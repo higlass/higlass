@@ -165,7 +165,7 @@ export function MassiveMatrixPlot() {
                 let lastD = null;
 
                     try {
-                        let t1 = new Date.getTime();
+                        let t1 = new Date().getTime();
                         let pixelValues = data.map((d,i) => {
                             lastD = d;
                             let ct = countTransform(d);
@@ -182,8 +182,9 @@ export function MassiveMatrixPlot() {
                         });
                         console.log('pixelValue loading', new Date().getTime() - t1);
                     } catch (err) {
-                        console.log('lastD:', lastD, data);
-                        console.log('minVisibleValue, maxVisibleValue', minVisibleValue, maxVisibleValue);
+                        console.log('ERROR:', err);
+                        //console.log('lastD:', lastD, data);
+                        //console.log('minVisibleValue, maxVisibleValue', minVisibleValue, maxVisibleValue);
                     }
 
 
@@ -330,27 +331,8 @@ export function MassiveMatrixPlot() {
                         //let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
 
                         setSpriteProperties(sprite, tiles[i]);
-
-                        let tile = tiles[i];
-                        let xTilePos = tile[1];
-                        let yTilePos = tile[2];
-                        let tileWidth = totalWidth / Math.pow(2, tile[0]);
-                        let tileHeight = totalHeight / Math.pow(2, tile[0]);
-
-                        let tileX = minX + xTilePos * tileWidth;
-                        let tileY = minY + yTilePos * tileHeight;
-
-                        let tileEndX = minX + (xTilePos+1) * tileWidth;
-                        let tileEndY = minY + (yTilePos+1) * tileHeight;
-
-
-                        //newGraphics.beginFill(0xFFFF00);
-
-                        // set the line style to have a width of 5 and set the color to red
                         
-                            newGraphics.addChild(sprite);
-                        newGraphics.lineStyle(5, 0xFF0000);
-                        newGraphics.drawRect(tileX, tileY, tileEndX - tileX, tileEndY - tileY);
+                        newGraphics.addChild(sprite);
                         tileGraphics[tileId(tiles[i])] = newGraphics;
 
                         pMain.addChild(newGraphics);
@@ -408,6 +390,7 @@ export function MassiveMatrixPlot() {
             }
 
             function loadTileData(tile_value) {
+                let t1 = new Date().getTime();
                 if ('dense' in tile_value)
                     return tile_value['dense'];
                 else if ('sparse' in tile_value) {
@@ -425,6 +408,8 @@ export function MassiveMatrixPlot() {
 
                         }
                     }
+
+                    console.log('tile loading time:', new Date().getTime() - t1);
                     return values;
 
                 } else {
@@ -642,7 +627,6 @@ export function MassiveMatrixPlot() {
                 // this will become the tiling code
                 let zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
                 let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 1;
-                console.log('zoomLevel', zoomLevel);
 
                 if (zoomLevel > maxZoom)
                     return;
@@ -704,7 +688,7 @@ export function MassiveMatrixPlot() {
                 //console.log('rows:', zoomLevel, rows, zoom.x().domain(), tileWidth);
                 //console.log('cols:', cols);
                 
-                console.log('tiles:', tiles);
+                //console.log('tiles:', tiles);
 
                 refreshTiles(tiles);
             }
