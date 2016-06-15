@@ -431,7 +431,7 @@ export function MassiveMatrixPlot() {
             }
 
             function refreshTiles(currentTiles) {
-                tileStatus = [];
+                //tileStatus = [];
                 // be shown and add those that should be shown
                 currentTiles.forEach((tile) => {
                     if (!isTileLoaded(tile) && !isTileLoading(tile)) {
@@ -444,20 +444,28 @@ export function MassiveMatrixPlot() {
                         if(!tileStatus[tile[1]])
                         {
                             tileStatus[tile[1]]= [];
+                            if(!tileStatus[tile[1]][tile[2]])
+                            {
+                                tileStatus[tile[1]][tile[2]] = {};   
+                            }
                         }
 
                         tileStatus[tile[1]][tile[2]] = {'status':'Not Loaded'};
+
+                        console.log(tileStatus);
                       
                         let speed;
                         let speedArray;
                         let speedTotal;
                         let averageSpeed;
-                        console.log(tileId(tile));
+                       
 
 
                         d3.json(tilePath)
                         .on("progress", function() {
 
+                                console.log(tile);
+                                console.log(tileStatus);
                                 speed = parseFloat(d3.event.loaded)/parseFloat(d3.event.timeStamp);
                                 if (!('speed' in tileStatus[tile[1]][tile[2]]))
                                 {
@@ -506,7 +514,9 @@ export function MassiveMatrixPlot() {
                                         loadedTiles[tileId(tile)].canvas = canvas;
                                         loadedTiles[tileId(tile)].pos = tile;
                                         loadedTiles[tileId(tile)].valueRange = [tile_value.min_value, tile_value.max_value];
+                                        console.log(tile);
                                         tileStatus[tile[1]][tile[2]]['status'] = 'Loaded';
+
                                     }
 
                                     delete loadingTiles[tileId(tile)];
