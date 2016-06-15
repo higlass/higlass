@@ -33,6 +33,8 @@ export function MassiveMatrixPlot() {
             let loadedTiles = {};
             let loadingTiles = {};
 
+            let tileStatus = [];
+
             let renderer = null;
             let pMain = null;
             let tileGraphics = {};       // the pixi graphics objects which will contain the tiles
@@ -416,6 +418,7 @@ export function MassiveMatrixPlot() {
             }
 
             function refreshTiles(currentTiles) {
+                tileStatus = [];
                 // be shown and add those that should be shown
                 currentTiles.forEach((tile) => {
                     if (!isTileLoaded(tile) && !isTileLoading(tile)) {
@@ -424,13 +427,63 @@ export function MassiveMatrixPlot() {
                             let tilePath = tileDirectory + "/" + tileSubPath;
                         loadingTiles[tileId(tile)] = true;
 
-                        d3.json(tilePath,
-                                function(error, tile_json) {
+
+                        if(!tileStatus[tile[1]])
+                        {
+                            tileStatus[tile[1]]= [];
+                        }
+
+                        tileStatus[tile[1]][tile[2]] = {'status':'Not Loaded'};
+                      
+                        let speed;
+                        let speedArray;
+                        let speedTotal;
+                        let averageSpeed;
+                        console.log(tileId(tile));
+
+                        d3.json(tilePath)
+                           
+                            .on("progress", function() {
+
+                                speed = parseFloat(d3.event.loaded)/parseFloat(d3.event.timeStamp);
+                                if (!('speed' in tileStatus[tile[1]][tile[2]]))
+                                {
+                                    speedArray = [];
+                                    speedArray.push(speed);
+                                    tileStatus[tile[1]][tile[2]] = {'status':'Loading','speed': speedArray};
+                                    console.log(tileStatus);
+
+                                }
+                                else
+                                {
+
+                                    speedArray = tileStatus[tile[1]][tile[2]]['speed'];
+                                    speedArray.push(speed);
+                                    speedTotal = 0;
+                                    for(let i = 0; i < speedArray.length; i++) {
+                                        speedTotal += speedArray[i];
+                                    }
+                                    averageSpeed = speedTotal / speedArray.length;
+                                    tileStatus[tile[1]][tile[2]] = {'status':'Loading','speed': speedArray, 'averageSpeed': averageSpeed};
+
+
+
+                                }
+                             
+
+                                //tileStatus[tileId(tile)] = {'Status':}
+
+
+
+                            })
+                            .get(function(error, tile_json) {
                                     if (error != null) {
                                         loadedTiles[tileId(tile)] = {data: []};
                                         let canvas = tileDataToCanvas([], tile[0]);
                                         loadedTiles[tileId(tile)].canvas = canvas;
                                         loadedTiles[tileId(tile)].pos = tile;
+                                        tileStatus[tile[1]][tile[2]] = {'status':'Error','Message':String(error.statusText)};
+
                                     } else {
                                         let tile_value = tile_json._source.tile_value;
                                         let data = loadTileData(tile_value);
@@ -440,11 +493,13 @@ export function MassiveMatrixPlot() {
                                         loadedTiles[tileId(tile)].canvas = canvas;
                                         loadedTiles[tileId(tile)].pos = tile;
                                         loadedTiles[tileId(tile)].valueRange = [tile_value.min_value, tile_value.max_value];
+                                        tileStatus[tile[1]][tile[2]]['status'] = 'Loaded';
                                     }
 
                                     delete loadingTiles[tileId(tile)];
                                     showTiles(currentTiles);
                                 });
+
                     } else {
                         showTiles(currentTiles);
                     }
