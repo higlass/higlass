@@ -1,3 +1,4 @@
+import '../styles/DraggableTrack.css';
 import d3 from 'd3';
 
 export function DraggableTrack() {
@@ -15,13 +16,25 @@ export function DraggableTrack() {
             if ('width' in d)
                 trackWidth = d.width;
 
-
+            if ('height' in d)
+                trackHeight = d.height;
 
             console.log('div:', div)
 
+            
+            let topRight  = div.selectAll('.top-right-handle')
+            .data([1])
+            .enter()
+            .append('div')
+            .classed('top-right-handle', true)
+            .style('position', 'absolute')
+            .style('right', '0px')
+            .style('width', '5px')
+            .style('height', '5px')
+
             div.style('position', 'relative')
-               .style('width', width + 'px')
-               .style('height', height + 'px')
+               .style('width', trackWidth + 'px')
+               .style('height', trackHeight + 'px')
                .style('background-color', '#eeeeee');
         });
 
