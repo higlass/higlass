@@ -1,3 +1,23 @@
 .top-right-handle {
     border-right: black solid;
+    border-top: black solid;
+}
+
+.top-left-handle {
+    border-left: black solid;
+    border-top: black solid;
+}
+
+.bottom-right-handle {
+    border-right: black solid;
+    border-bottom: black solid;
+}
+
+.bottom-left-handle {
+    border-left: black solid;
+    border-bottom: black solid;
+}
+
+.bottom-handle {
+    border: black solid 1px;
 }
