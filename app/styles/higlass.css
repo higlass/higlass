@@ -41,6 +41,16 @@ svg {
     stroke-width: 1px;
 }
 
-/*.debug {
-  width: 
+/*div.tooltip {
+    position: absolute;
+    text-align: left;
+    width: 170px;
+    height: 75px;
+    padding: 8px;
+    font: 12px "Comic Sans MS";
+    background: rgb(164,164,164) ;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+    line-height:130%
 }*/

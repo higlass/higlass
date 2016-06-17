@@ -8,6 +8,8 @@ import {heatedObjectMap} from './colormaps.js'
 export {TransferFunctionEditor} from './transfer.js';
 export {heatedObjectMap} from './colormaps.js';
 
+
+
 export function MassiveMatrixPlot() {
     var width = 550;
     var height = 400;
@@ -21,6 +23,8 @@ export function MassiveMatrixPlot() {
     let drawRectZoom = 1;
     let rectData;
     
+    let showDebug = 0;
+
     function chart(selection) {
         selection.each(function(tileDirectory) {
             let resolution = 256;
@@ -117,6 +121,10 @@ export function MassiveMatrixPlot() {
                 .attr("width", width - margin.left - margin.right)
                 .attr("height", height - margin.top - margin.bottom)
                 .attr("id", "debug");
+            
+            /*var tooltip = d3.select("body").append("div")    
+                .attr("class", "tooltip")               
+                .style("opacity", 0.9);*/
 
             var gXAxis = gEnter.append("g")
                 .attr("class", "x axis")
@@ -137,12 +145,22 @@ export function MassiveMatrixPlot() {
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
+            d3.selectAll("#mode input[name=debug]").on("change", function() {
+                document.getElementById("debug").innerHTML = "";
+                if(this.value == "debug") {
+                    showDebug = 1;
+                    drawRect(drawRectZoom);
+                } else {
+                    showDebug = 0;
+                }
+            });
+
             function zoomHere() {
                 localZoomDispatch.zoom(zoom.translate(), zoom.scale());
             }
 
             function zoomChanged(translate, scale) {
-                console.log('zoomed:', translate, scale);
+           //     console.log('zoomed:', translate, scale);
 
                 // something changed the zoom.
                 zoom.translate(translate);
@@ -151,7 +169,8 @@ export function MassiveMatrixPlot() {
                 zoomed();
             }
 
-            function isTileLoading(tile) {
+
+            function isTileLoading(tile) {//1.1.1
                 // check if a particular tile is currently being loaded
 
                 if (tileId(tile) in loadingTiles)
@@ -159,6 +178,8 @@ export function MassiveMatrixPlot() {
                 else
                     return false;
             }
+
+
 
             function isTileLoaded(tile) {
                 // check if a particular tile is already loaded
@@ -215,8 +236,8 @@ export function MassiveMatrixPlot() {
                             pix.data[i*4+3] = 255;
                         });
                     } catch (err) {
-                        console.log('lastD:', lastD, data);
-                        console.log('minVisibleValue, maxVisibleValue', minVisibleValue, maxVisibleValue);
+                      //  console.log('lastD:', lastD, data);
+                        //console.log('minVisibleValue, maxVisibleValue', minVisibleValue, maxVisibleValue);
                         /*
                            console.log('rgbIdx:', rgbIdx);
                            return pix;
@@ -271,7 +292,7 @@ export function MassiveMatrixPlot() {
                 // go through each tile shown tile and change its texture
                 // this is normally called when the value of the color scale changes
                 // it's a little slow at the moment so it's unused
-                console.log('changing textures');
+              //  console.log('changing textures');
                 for (let tileId in loadedTiles) {
                     loadedTiles[tileId].canvasChanged = true;
                 }
@@ -347,8 +368,14 @@ export function MassiveMatrixPlot() {
                         //let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
 
                         setSpriteProperties(sprite, tiles[i]);
-
-                            newGraphics.addChild(sprite);
+                        //to see the sprites
+                      /*  newGraphics.lineStyle(2, 0x0000FF, 1);
+                        newGraphics.moveTo(sprite.x, sprite.y);
+                        newGraphics.lineTo(sprite.x+sprite.width, sprite.y);
+                        newGraphics.lineTo(sprite.x+sprite.width, sprite.y+sprite.height);
+                        newGraphics.lineTo(sprite.x, sprite.y+sprite.height);
+                        newGraphics.lineTo(sprite.x, sprite.y);*/
+                        newGraphics.addChild(sprite);
                         tileGraphics[tileId(tiles[i])] = newGraphics;
 
                         pMain.addChild(newGraphics);
@@ -428,7 +455,7 @@ export function MassiveMatrixPlot() {
             }
 
             function refreshTiles(currentTiles) {
-                tileStatus = [];
+                
                 // be shown and add those that should be shown
                 currentTiles.forEach((tile) => {
                     if (!isTileLoaded(tile) && !isTileLoading(tile)) {
@@ -437,62 +464,48 @@ export function MassiveMatrixPlot() {
                             let tilePath = tileDirectory + "/" + tileSubPath;
                         loadingTiles[tileId(tile)] = true;
 
-
-                        if(!tileStatus[tile[1]])
+                        if(!tileStatus[tile[0]])
                         {
-                            tileStatus[tile[1]]= [];
+                            tileStatus[tile[0]] = [];
                         }
+                        if(!tileStatus[tile[0]][tile[1]])
+                        {
+                            tileStatus[tile[0]][tile[1]]= [];
 
-                        tileStatus[tile[1]][tile[2]] = {'status':'Not Loaded'};
-                      
-                        let speed;
-                        let speedArray;
-                        let speedTotal;
-                        let averageSpeed;
-                        console.log(tileId(tile));
+                        }
+                        if(!tileStatus[tile[0]][tile[1]][tile[2]])
+                        {
 
+                            tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Not Loaded'};
+                        }
+                           
+                        let Loaded;
+                        let Time;
 
                         d3.json(tilePath)
                         .on("progress", function() {
 
-                                speed = parseFloat(d3.event.loaded)/parseFloat(d3.event.timeStamp);
-                                if (!('speed' in tileStatus[tile[1]][tile[2]]))
-                                {
-                                    speedArray = [];
-                                    speedArray.push(speed);
-                                    tileStatus[tile[1]][tile[2]] = {'status':'Loading','speed': speedArray};
-                                    console.log(tileStatus);
-
-                                }
-                                else
-                                {
-
-                                    speedArray = tileStatus[tile[1]][tile[2]]['speed'];
-                                    speedArray.push(speed);
-                                    speedTotal = 0;
-                                    for(let i = 0; i < speedArray.length; i++) {
-                                        speedTotal += speedArray[i];
-                                    }
-                                    averageSpeed = speedTotal / speedArray.length;
-                                    tileStatus[tile[1]][tile[2]] = {'status':'Loading','speed': speedArray, 'averageSpeed': averageSpeed};
-
-
-
-                                }
-                             
-
-                                //tileStatus[tileId(tile)] = {'Status':}
-
-
-
+                               
+                                Loaded = d3.event.loaded;
+                                Time = d3.event.timeStamp;
+                                tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loading','TimeElapsed':Math.round(Time/1000)+"sec",'Loaded':Math.round(Loaded/1000)+"kB"};
+                              //  console.log(tileStatus);                             
                             })
-                            .get(function(error, tile_json) {
+                        .on("load",function() {
+
+                           // console.log("loaded");
+                            Loaded = d3.event.loaded;
+                            Time = d3.event.timeStamp;
+                            tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loaded','TimeElapsed':Time/1000,'Loaded':Loaded/1000};
+                    })
+                    .get(function(error, tile_json) {
                                     if (error != null) {
                                         loadedTiles[tileId(tile)] = {data: []};
                                         let canvas = tileDataToCanvas([], tile[0]);
                                         loadedTiles[tileId(tile)].canvas = canvas;
                                         loadedTiles[tileId(tile)].pos = tile;
-                                        tileStatus[tile[1]][tile[2]] = {'status':'Error','Message':String(error.statusText)};
+                                         tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Error','Message':String(error.statusText)};
+        //                                tileStatus[tile[1]][tile[2]] = {'status':'Error','Message':String(error.statusText)};
 
                                     } else {
                                         let tile_value = tile_json._source.tile_value;
@@ -503,7 +516,10 @@ export function MassiveMatrixPlot() {
                                         loadedTiles[tileId(tile)].canvas = canvas;
                                         loadedTiles[tileId(tile)].pos = tile;
                                         loadedTiles[tileId(tile)].valueRange = [tile_value.min_value, tile_value.max_value];
-                                        tileStatus[tile[1]][tile[2]]['status'] = 'Loaded';
+          //                              tileStatus[tile[1]][tile[2]]['status'] = 'Loaded';
+                                        tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loaded'};
+                                 //       console.log(tileStatus);
+                                   //     console.log(d3.event);
                                     }
 
                                     delete loadingTiles[tileId(tile)];
@@ -518,7 +534,7 @@ export function MassiveMatrixPlot() {
 
             d3.json(tileDirectory + '/tileset_info', function(error, tile_info) {
                 // set up the data-dependent sections of the chart
-                console.log('tile_info:', tile_info);
+             //   console.log('tile_info:', tile_info);
                 tile_info = tile_info._source.tile_value;
 
                 resolution = tile_info.bins_per_dimension;
@@ -588,10 +604,9 @@ export function MassiveMatrixPlot() {
 
                 zoom.x(xScale)
                     .y(yScale)
-                    .scaleExtent([1,Math.pow(2, maxZoom + 2)])
-                    //.xExtent(xScaleDomain);
+                    .scaleExtent([1,Math.pow(2, maxZoom + 2)]);
 
-                    yAxis = d3.svg.axis()
+                yAxis = d3.svg.axis()
                     .scale(yScale)
                     .orient("right")
                     .tickSize(-(width - margin.left - margin.right))
@@ -659,17 +674,8 @@ export function MassiveMatrixPlot() {
                 pMain.position.y = zoom.translate()[1];
                 pMain.scale.x = zoom.scale();
                 pMain.scale.y = zoom.scale();
-                console.log("zoom scale" + zoom.scale());
-                 document.getElementById("debug").innerHTML = '';
-               console.log("zoom level" + (Math.round(Math.log(zoom.scale()) / Math.LN2) + 1));
-                if((Math.round(Math.log(zoom.scale()) / Math.LN2) + 1) != drawRectZoom){
-            //     let zoomLevel = ;
-                   
-                    drawRectZoom = Math.round(Math.log(zoom.scale()) / Math.LN2) + 1;
-                    console.log("rect scale" + zoom.scale());
-                   // rectInfo(drawRectZo
-                    drawRect(drawRectZoom);
-                }
+                
+                
                 
                 
 
@@ -677,7 +683,18 @@ export function MassiveMatrixPlot() {
                     zoomCallback(xScale, zoom.scale());
 
                 draw();
-                drawRect(drawRectZoom);
+
+                document.getElementById("debug").innerHTML = '';
+                if((Math.round(Math.log(zoom.scale()) / Math.LN2) + 1) != drawRectZoom){
+                    drawRectZoom = Math.round(Math.log(zoom.scale()) / Math.LN2) + 1;
+                   if(showDebug == 1) {
+                        drawRect(drawRectZoom);
+                    }
+                }
+                if(showDebug == 1) {
+                    drawRect(drawRectZoom);
+                }
+               
 
             }
 
@@ -685,10 +702,14 @@ export function MassiveMatrixPlot() {
             function drawRect(zoomlevel) {
                document.getElementById("debug").innerHTML = ''; 
                 var rectData = rectInfo(zoomlevel);
+
+               
+       
                 debug.selectAll('rect.boxy')
                     .data(rectData)
                     .enter()
-                    .append('rect').classed('boxy', true);
+                    .append('rect').classed('boxy', true);     
+                
 
                 debug.selectAll('text.rectText')
                     .data(rectData)
@@ -696,40 +717,82 @@ export function MassiveMatrixPlot() {
                     .append('text')
                     .classed('rectText', true)
                     .text('zoom level: '+ zoomlevel)
-                    .text(function(d) { return d.id})
+                    .text(function(d) { return d.id + " "+ d.message})
                     .attr('x', function(d) { return xScale(d.x)+5})
                     .attr('y', function(d) { return yScale(d.y)+10})
                     .attr('fill', 'black');
 
+
                 debug.selectAll('rect.boxy')
-                    .style('fill-opacity',0)
+                    .style('fill-opacity',0.2)
+                    .style('fill', function(d) { return d.color})
                     .style("stroke-opacity", 1)
-                    .style("stroke", "black")
+                    .style("stroke", function(d) { return d.color})
                     .attr('x', function(d) { return xScale(d.x)})
                     .attr('y', function(d) {  return yScale(d.y)})
-                   .attr('width', function(d) { return d.width})
-                  .attr('height', function(d) { return d.height});
+                    .attr('width', function(d) { return d.width})
+                    .attr('height', function(d) { return d.height})
+                    .append("svg:title")
+                    .text(function(d) { return "Tile zoom: " + zoomlevel + "\n"  + "Tile id" +d.id });
+
+             /*       .on("mouseover", function(d) {      
+                    tooltip.transition()        
+                        .duration(200)      
+                        .style("opacity", 0.9);  
+                    tooltip.html("<strong>Tile zoom: </strong>" + zoomlevel + "<br/>"  + "Tile id" +d.id)  
+                        .style("left", (d3.event.pageX) + 10+ "px")     
+                        .style("top", (d3.event.pageY - 28) + "px");   
+                    })                  
+                .on("mouseout", function(d) {       
+                    tooltip.transition()        
+                        .duration(500)      
+                        .style("opacity", 0);   
+                });
+*/
+               
 
 
             }
 
             function rectInfo(zoomlevel){
+
                 document.getElementById("debug").innerHTML = ''; 
                 rectData = [];
-                console.log("zoom level is " + zoomlevel);
                 var len = Math.pow(2, zoomlevel);
-                let length = (maxX - minX)/Math.pow(2, zoomlevel);
-                let w = (width - margin.left - margin.right)/ Math.pow(2, 1);
-                let h = (height - margin.top - margin.bottom)/ Math.pow(2, 1);
-                console.log("the width is" + w);
+                let length = totalWidth/Math.pow(2, zoomlevel);
+                let w = length/(maxX-minX)* (width - margin.left - margin.right);
+                let message;
+                let color = "orange";
+                let h =  length/(maxX-minX)* (height - margin.top - margin.bottom);
                 for (var i = 0; i < len; i++) {
                     for(var j=0; j < len; j++) {
+                        message = "";
+                        if(tileStatus[zoomlevel] != null && tileStatus[zoomlevel][i] != null && tileStatus[zoomlevel][i][j] != null) {
+                            message += "Status: "+ tileStatus[zoomlevel][i][j].status;             
+                            if(tileStatus[zoomlevel][i][j].status == "Error") {
+                                message += " \n" + tileStatus[zoomlevel][i][j].Message;
+                                color = "red";
+                            } else if (tileStatus[zoomlevel][i][j].status == "Loading") {
+                                message += " \nTime Elapsed: " + tileStatus[zoomlevel][i][j].TimeElapsed + " \nAmount Loaded: " + tileStatus[zoomlevel][i][j].Loaded;
+                                color = "blue";
+                            } else if(tileStatus[zoomlevel][i][j].status == "Loaded") {
+                                color = "green";
+                            } else {
+                                color = "orange";
+                            }
+                        }
+                        else {
+                            message = "not requested";
+                            color = "gray";
+                        }   
                         rectData.push({
                             x: 0+length*i,
                             y: 0+length*j,
                             width: zoom.scale()* w,
                             height: zoom.scale()*h,
-                            id: 'Zoom level: ' + zoomlevel + '\n'+'Tile id: ('+i+', '+j+')'
+                            id: '('+ zoomlevel +', '+i+', '+j+')',
+                            message: message,
+                            color: color
                         });
                     }
                 }
@@ -777,14 +840,6 @@ export function MassiveMatrixPlot() {
                     }
                 }
                 // hey hye
-                /*
-                   let tiles = [];
-                   rows.forEach((r) => { tiles.push([zoomLevel, r]);});
-                   */
-               
-                //console.log('rows:', zoomLevel, rows, zoom.x().domain(), tileWidth);
-                //console.log('cols:', cols);
-                
 
                 refreshTiles(tiles);
             }
