@@ -733,7 +733,7 @@ export function MassiveMatrixPlot() {
                     .attr('width', function(d) { return d.width})
                     .attr('height', function(d) { return d.height})
                     .append("svg:title")
-                    .text(function(d) { return "Tile zoom: " + zoomlevel + "\n"  + "Tile id" +d.id });
+                    .text(function(d) { return "Tile zoom: " + zoomlevel + "\n"  + "Tile id: " +d.id + "\n"  + d.message });
 
              /*       .on("mouseover", function(d) {      
                     tooltip.transition()        
