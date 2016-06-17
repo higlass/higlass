@@ -468,42 +468,51 @@ export function MassiveMatrixPlot() {
                             let tilePath = tileDirectory + "/" + tileSubPath;
                         loadingTiles[tileId(tile)] = true;
 
-                        if(!tileStatus[tile[0]])
+                        if(showDebug == 1)
                         {
 
-                            tileStatus[tile[0]] = [];
-                        }
-                        if(!tileStatus[tile[0]][tile[1]])
-                        {
-                            tileStatus[tile[0]][tile[1]]= [];
+                            if(!tileStatus[tile[0]])
+                            {
+
+                                tileStatus[tile[0]] = [];
+                            }
+                            if(!tileStatus[tile[0]][tile[1]])
+                            {
+                                tileStatus[tile[0]][tile[1]]= [];
 
 
-                        }
-                        if(!tileStatus[tile[0]][tile[1]][tile[2]])
-                        {
+                            }
+                            if(!tileStatus[tile[0]][tile[1]][tile[2]])
+                            {
 
-                            tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Not Loaded'};
+                                tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Not Loaded'};
+                            }
+
+
+                            let Loaded;
+                            let Time;
+
                         }
-                           
-                        let Loaded;
-                        let Time;
 
                         d3.json(tilePath)
                         .on("progress", function() {
-
-
-                               
+                              if(showDebug == 1)
+                              { 
                                 Loaded = d3.event.loaded;
                                 Time = d3.event.timeStamp;
                                 tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loading','TimeElapsed':Math.round(Time/1000)+"sec",'Loaded':Math.round(Loaded/1000)+"kB"};
+                              }
                               //  console.log(tileStatus);                             
                             })
                         .on("load",function() {
 
                            // console.log("loaded");
-                            Loaded = d3.event.loaded;
-                            Time = d3.event.timeStamp;
-                            tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loaded','TimeElapsed':Time/1000,'Loaded':Loaded/1000};
+                            if(showDebug == 1)
+                            { 
+                                Loaded = d3.event.loaded;
+                                Time = d3.event.timeStamp;
+                                tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loaded','TimeElapsed':Time/1000,'Loaded':Loaded/1000};
+                            }
                     })
                     .get(function(error, tile_json) {
                                     if (error != null) {
@@ -511,7 +520,10 @@ export function MassiveMatrixPlot() {
                                         let canvas = tileDataToCanvas([], tile[0]);
                                         loadedTiles[tileId(tile)].canvas = canvas;
                                         loadedTiles[tileId(tile)].pos = tile;
+                                        if(showDebug == 1)
+                                        {
                                          tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Error','Message':String(error.statusText)};
+                                        }
         //                                tileStatus[tile[1]][tile[2]] = {'status':'Error','Message':String(error.statusText)};
 
                                     } else {
@@ -525,7 +537,10 @@ export function MassiveMatrixPlot() {
                                         loadedTiles[tileId(tile)].valueRange = [tile_value.min_value, tile_value.max_value];
 
           //                              tileStatus[tile[1]][tile[2]]['status'] = 'Loaded';
+                                        if(showDebug == 1)
+                                        {
                                         tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loaded'};
+                                        }
                                  //       console.log(tileStatus);
                                    //     console.log(d3.event);
                                     }
