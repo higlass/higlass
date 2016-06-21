@@ -21,8 +21,8 @@ export function MassiveMatrixPlot() {
     let xDomain = null, yDomain =  null;
     let drawRectZoom = 1;
     let rectData;
-    
-
+    var x = [[{1:2, 2:1}], [{1:600, 2:70},{1:1, 2:2}]];
+    console.log(x);
     let showDebug = 0;
 
     function chart(selection) {
@@ -74,7 +74,8 @@ export function MassiveMatrixPlot() {
                             //backgroundColor: 0xdddddd,
                             backgroundColor: 0xffffff,
                          antialias: true, 
-                         view: pixiCanvas.node() });
+                         view: pixiCanvas.node() 
+                        });
 
             // setup the data-agnostic parts of the chart
             var svg = d3.select(this).append('svg')
@@ -135,7 +136,7 @@ export function MassiveMatrixPlot() {
             gMain = gEnter.append('g')
                 .classed('main-g', true)
 
-                gMain.append("clipPath")
+            gMain.append("clipPath")
                 .attr("id", "clipHiC")
                 .append("rect")
                 .attr("x", 0)
@@ -151,7 +152,10 @@ export function MassiveMatrixPlot() {
                 document.getElementById("debug").innerHTML = "";
                 if(this.value == "debug") {
                     showDebug = 1;
-                    drawRect(drawRectZoom);
+                    loadedTiles = {};
+                    loadingTiles = {};
+                    draw();
+                   // drawRect(drawRectZoom);
                 } else {
                     showDebug = 0;
                 }
@@ -363,20 +367,20 @@ export function MassiveMatrixPlot() {
                         let sprite = null;
 
                         if (tiles[i][0] == maxZoom) {
-                            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
-                        } else {
-                            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
-                        }
-                        //let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+                                    sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+                                } else {
+                                    sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+                                }
+                                //let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
 
-                        setSpriteProperties(sprite, tiles[i]);
-                        //to see the sprites
-                      /*  newGraphics.lineStyle(2, 0x0000FF, 1);
-                        newGraphics.moveTo(sprite.x, sprite.y);
-                        newGraphics.lineTo(sprite.x+sprite.width, sprite.y);
-                        newGraphics.lineTo(sprite.x+sprite.width, sprite.y+sprite.height);
-                        newGraphics.lineTo(sprite.x, sprite.y+sprite.height);
-                        newGraphics.lineTo(sprite.x, sprite.y);*/
+                                setSpriteProperties(sprite, tiles[i]);
+                                //to see the sprites
+                              /*  newGraphics.lineStyle(2, 0x0000FF, 1);
+                                newGraphics.moveTo(sprite.x, sprite.y);
+                                newGraphics.lineTo(sprite.x+sprite.width, sprite.y);
+                                newGraphics.lineTo(sprite.x+sprite.width, sprite.y+sprite.height);
+                                newGraphics.lineTo(sprite.x, sprite.y+sprite.height);
+                                newGraphics.lineTo(sprite.x, sprite.y);*/
                         newGraphics.addChild(sprite);
                         tileGraphics[tileId(tiles[i])] = newGraphics;
 
@@ -522,7 +526,9 @@ export function MassiveMatrixPlot() {
                                         loadedTiles[tileId(tile)].pos = tile;
                                         if(showDebug == 1)
                                         {
+
                                          tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Error','Message':String(error.statusText)};
+                                        drawRect(drawRectZoom);
                                         }
         //                                tileStatus[tile[1]][tile[2]] = {'status':'Error','Message':String(error.statusText)};
 
@@ -540,6 +546,7 @@ export function MassiveMatrixPlot() {
                                         if(showDebug == 1)
                                         {
                                         tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loaded'};
+                                        drawRect(drawRectZoom);                                        
                                         }
                                  //       console.log(tileStatus);
                                    //     console.log(d3.event);
@@ -711,6 +718,7 @@ export function MassiveMatrixPlot() {
                 if((Math.round(Math.log(zoom.scale()) / Math.LN2) + 1) != drawRectZoom){
                     drawRectZoom = Math.round(Math.log(zoom.scale()) / Math.LN2) + 1;
                    if(showDebug == 1) {
+
                         drawRect(drawRectZoom);
                     }
                 }
