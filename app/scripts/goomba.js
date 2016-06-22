@@ -4,6 +4,7 @@ import {TiledArea} from './tiled_area.js';
 
 export {GenePlot} from './gene.js';
 export {GeneTileLayout} from './gene.js';
+export {WigglePixiTrack} from './WigglePixiTrack.js';
 export {WiggleTileLayout} from './WiggleTrack.js';
 export {ChromosomeAxis} from './ChromosomeAxis.js';
 export {ChromosomeInfo} from './ChromosomeInfo.js';

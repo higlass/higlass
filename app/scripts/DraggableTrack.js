@@ -1,13 +1,16 @@
 import '../styles/DraggableTrack.css';
 import d3 from 'd3';
+import slugid from 'slugid';
 
 export function DraggableTrack() {
     let width = 200;
     let height = 200;
+    let resizeDispatch = null;
 
     function chart(selection) {
-        console.log('selection:', selection);
         selection.each(function(d) {
+            let localResizeDispatch = resizeDispatch == null ? d3.dispatch('resize') :
+                resizeDispatch;
             let div = d3.select(this);
 
             let trackWidth = width;
@@ -24,8 +27,6 @@ export function DraggableTrack() {
             d.height = trackHeight;
             d.width = trackWidth;
 
-            console.log('div:', div)
-
             // handles for resizing
             let topLeft  = div.selectAll('.top-left-handle')
             .data([1])
@@ -36,6 +37,7 @@ export function DraggableTrack() {
             .style('left', '0px')
             .style('width', '5px')
             .style('height', '5px')
+            .style('cursor', 'nwse-resize')
 
             
             let topRight  = div.selectAll('.top-right-handle')
@@ -47,6 +49,7 @@ export function DraggableTrack() {
             .style('right', '0px')
             .style('width', '5px')
             .style('height', '5px')
+            .style('cursor', 'nesw-resize')
 
             let bottomRight  = div.selectAll('.bottom-right-handle')
             .data([1])
@@ -58,6 +61,7 @@ export function DraggableTrack() {
             .style('bottom', '0px')
             .style('width', '5px')
             .style('height', '5px')
+            .style('cursor', 'nwse-resize')
 
             let bottomLeft  = div.selectAll('.bottom-left-handle')
             .data([1])
@@ -69,6 +73,7 @@ export function DraggableTrack() {
             .style('bottom', '0px')
             .style('width', '5px')
             .style('height', '5px')
+            .style('cursor', 'nesw-resize')
 
             let bottomHandleWidth = 20;
 
@@ -87,6 +92,29 @@ export function DraggableTrack() {
 
             let resizable = div;
 
+            let slugId = slugid.nice();
+            localResizeDispatch.on('resize.' + slugId, sizeChanged);
+
+            function sizeChanged(params) {
+                console.log('params:', params);
+                d.top = params.top;
+                d.left = params.left;
+
+                d.width = params.width;
+                d.height = params.height;
+
+                resizable.style('height', params.height + 'px');
+                resizable.style('top', params.top + "px"); 
+                resizable.style('left', params.left + 'px');
+                resizable.style('width', params.width + 'px');
+
+                draw();
+            }
+
+            function changeSize(params) {
+                console.log('params:', params);
+                localResizeDispatch.resize(params);
+            }
 
             let topHandleDrag = function() {
                 let y = d3.mouse(this.parentNode)[1];
@@ -101,12 +129,12 @@ export function DraggableTrack() {
                     newHeight = trackHeight;
                 }
 
-                resizable.style('height', (newHeight) + 'px');
-                resizable.style('top', newTop + "px"); 
 
                 d.top = newTop;
                 d.height = newHeight;
 
+                changeSize({'top': newTop, 'left': d.left,
+                            'width': d.width, 'height': newHeight});
             }
 
             let leftHandleDrag = function() {
@@ -133,6 +161,9 @@ export function DraggableTrack() {
                 d.left = newLeft;
                 d.width = newWidth;
 
+                changeSize({'top': d.top, 'left': newLeft,
+                            'width': newWidth, 'height': d.height});
+
             }
 
             let rightHandleDrag = function() {
@@ -144,6 +175,9 @@ export function DraggableTrack() {
                 resizable.style('width', x + 'px');
 
                 d.width = x;
+
+                changeSize({'top': d.top, 'left': d.left,
+                            'width': x, 'height': d.height});
             }
 
             let bottomHandleDrag = function() {
@@ -154,23 +188,17 @@ export function DraggableTrack() {
                 y = Math.max(trackHeight, y);
                 resizable.style('height', y + 'px');
                 d.height = y;
+
+                changeSize({'top': d.top, 'left': d.left,
+                            'width': d.width, 'height': y});
             }
 
-            let bottomMove = function() {
-                let ms = d3.mouse(this.parentNode.parentNode);
-
-                console.log('d3.event:', d3.event.dx, d3.event.dy);
-
-                resizable.style('top', (d.top + ms[1] - d.mousePos[1]) + 'px');
-                resizable.style('left', (d.left + ms[0] - d.mousePos[0]) + 'px');
-            }
 
             let dragTopLeftResize = d3.behavior.drag()
             .on('drag', function() {
                 // Determine resizer position relative to resizable (parent)
                 topHandleDrag.bind(this)();
                 leftHandleDrag.bind(this)();
-                draw();
             });
 
             let dragBottomLeftResize = d3.behavior.drag()
@@ -178,7 +206,7 @@ export function DraggableTrack() {
                 // Determine resizer position relative to resizable (parent)
                 bottomHandleDrag.bind(this)();
                 leftHandleDrag.bind(this)();
-                draw();
+
             });
 
             let dragBottomRightResize = d3.behavior.drag()
@@ -186,30 +214,38 @@ export function DraggableTrack() {
                 // Determine resizer position relative to resizable (parent)
                 bottomHandleDrag.bind(this)();
                 rightHandleDrag.bind(this)();
-                draw();
+
             });
 
             let dragTopRightResize = d3.behavior.drag()
             .on('drag', function() {
                 topHandleDrag.bind(this)();
                 rightHandleDrag.bind(this)();
-                draw();
+
             });
+
+            let bottomMove = function() {
+                let ms = d3.mouse(this.parentNode.parentNode);
+
+                changeSize({'top': dragStartTop + ms[1] - dragStartMousePos[1],
+                             'left': dragStartLeft + ms[0] - dragStartMousePos[0],
+                             'width': d.width, 'height': d.height});
+            }
+
+            let dragStartTop = null;
+            let dragStartLeft = null;
+            let dragStartMousePos = null;
 
             let dragBottom = d3.behavior.drag()
             .on('dragstart', function() {
-                d.mousePos = d3.mouse(this.parentNode.parentNode);  
+                dragStartTop = d.top;
+                dragStartLeft = d.left;
+
+                dragStartMousePos = d3.mouse(this.parentNode.parentNode);  
             })
             .on('drag', function() {
                 bottomMove.bind(this)();
-                draw();
             })
-            .on('dragend', function() {
-                let ms = d3.mouse(this.parentNode.parentNode);
-                
-                d.left += ms[0] - d.mousePos[0];
-                d.top += ms[1] -d.mousePos[1];
-            });
 
             topRight.call(dragTopRightResize);
             topLeft.call(dragTopLeftResize);
@@ -240,6 +276,12 @@ export function DraggableTrack() {
     chart.height = function(_) {
         if (!arguments.length) return height;
         else height = _;
+        return chart;
+    }
+
+    chart.resizeDispatch = function(_) {
+        if (!arguments.length) return resizeDispatch;
+        else resizeDispatch = _;
         return chart;
     }
 
