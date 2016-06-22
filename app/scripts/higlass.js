@@ -25,6 +25,7 @@ export function MassiveMatrixPlot() {
             let totalHeight = null, totalWidth = null;
             let maxZoom = 1;
             let yAxis = null, xAxis = null;
+            let mirrorTiles = true;
 
             let xOrigScale = null, yOrigScale = null;
             let xScale = null, yScale = null, valueScale = null;
@@ -156,56 +157,34 @@ export function MassiveMatrixPlot() {
             }
 
             function setPix(pix, data, zoomLevel) {
-                //console.log('maxZoom:', maxZoom);
-                
                 let zoomFactor = Math.pow(2, 2 * (maxZoom - zoomLevel));
 
                 var maxTransfer = transferFunction(maxValue);
-                //console.log('maxTransfer:', maxTransfer);
-                //console.log('maxTransfer:', maxTransfer, transferFunction(2000), maxValue);
                 valueScale.domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
 
-                //console.log('sdfsdfs data:', data);
-                //console.log('valueScale.domain():', valueScale.domain());
-
                 let lastD = null;
-                //console.log('time before:', getTime());
 
                     try {
+                        let t1 = new Date().getTime();
                         let pixelValues = data.map((d,i) => {
                             lastD = d;
                             let ct = countTransform(d);
 
                             let rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(countTransform(d)))))
 
-                            /*
-                               d = d / zoomFactor;
-                               let intensity = transferFunction(d) / maxTransfer;
-                               let discretized = Math.floor(255 * (1 - intensity));
-                               console.log('discretized:', discretized, intensity)
-                               */
-
                             let rgb = heatedObjectMap[rgbIdx];
 
-                            /*
-                               if (i % 1000 == 0) {
-                               console.log('rgbIdx:', i, d, rgbIdx, rgb);
-                               }
-                               */
 
                             pix.data[i*4] = rgb[0];
                             pix.data[i*4+1] = rgb[1];
                             pix.data[i*4+2] = rgb[2];
-                            pix.data[i*4+3] = 255;
+                            pix.data[i*4+3] = rgb[3];
                         });
+                        console.log('pixelValue loading', new Date().getTime() - t1);
                     } catch (err) {
-                        console.log('lastD:', lastD, data);
-                        console.log('minVisibleValue, maxVisibleValue', minVisibleValue, maxVisibleValue);
-                        /*
-                           console.log('rgbIdx:', rgbIdx);
-                           return pix;
-                           */
-                        //console.log("Err:", err);
+                        console.log('ERROR:', err);
+                        //console.log('lastD:', lastD, data);
+                        //console.log('minVisibleValue, maxVisibleValue', minVisibleValue, maxVisibleValue);
                     }
 
 
@@ -244,10 +223,32 @@ export function MassiveMatrixPlot() {
                 let tileEndX = minX + (xTilePos+1) * tileWidth;
                 let tileEndY = minY + (yTilePos+1) * tileHeight;
 
-                sprite.x = xOrigScale(tileX);
-                sprite.y = yOrigScale(tileY);
+                let spriteWidth = xOrigScale(tileEndX) - xOrigScale(tileX) ;
+                let spriteHeight = yOrigScale(tileEndY) - yOrigScale(tileY)
+
                 sprite.width = xOrigScale(tileEndX) - xOrigScale(tileX)
-                    sprite.height = yOrigScale(tileEndY) - yOrigScale(tileY)
+                sprite.height = yOrigScale(tileEndY) - yOrigScale(tileY)
+
+                if (tile.mirrored) {
+                    // this is a mirrored tile that represents the other half of a 
+                    // triangular matrix
+                    sprite.x = xOrigScale(tileY);
+                    sprite.y = yOrigScale(tileX);
+
+                    sprite.pivot = [xOrigScale.range()[1] / 2, yOrigScale.range()[1] / 2];
+                    sprite.rotation = -Math.PI / 2;
+                    sprite.scale.x *= -1;
+
+                    sprite.width = spriteHeight;
+                    sprite.height = spriteWidth;
+                } else {
+                    sprite.x = xOrigScale(tileX);
+                    sprite.y = yOrigScale(tileY);
+                }
+
+
+                //console.log('sprite.anchor:', sprite.anchor, sprite.scale.x, sprite.scale.y);
+                //sprite.anchor.x = 0.0;
 
             }
 
@@ -255,7 +256,6 @@ export function MassiveMatrixPlot() {
                 // go through each tile shown tile and change its texture
                 // this is normally called when the value of the color scale changes
                 // it's a little slow at the moment so it's unused
-                console.log('changing textures');
                 for (let tileId in loadedTiles) {
                     loadedTiles[tileId].canvasChanged = true;
                 }
@@ -305,6 +305,7 @@ export function MassiveMatrixPlot() {
                 if (!allLoaded)
                     return;
 
+                // don't process tiles that are outside of the viewport (i.e. from previous zooming)
                 let visibleTiles = tiles.map((d) => { return loadedTiles[tileId(d)]; })
                     .filter((d) => { return d != undefined; })
                     .filter((d) => { return d.data != undefined; })
@@ -330,13 +331,14 @@ export function MassiveMatrixPlot() {
                         //let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
 
                         setSpriteProperties(sprite, tiles[i]);
-
-                            newGraphics.addChild(sprite);
+                        
+                        newGraphics.addChild(sprite);
                         tileGraphics[tileId(tiles[i])] = newGraphics;
 
                         pMain.addChild(newGraphics);
                     } else {
                         //let canvas = //tileDataToCanvas(loadedTiles[tileId(tiles[i])].data, tiles[i][0]);
+                        //console.log('tile:', tileId(tiles[i]), loadedTiles[tileId(tiles[i])]);
                     }
                 }
 
@@ -377,6 +379,7 @@ export function MassiveMatrixPlot() {
                 gTilesExit.remove();
 
                 // only redraw if the tiles have changed
+                
                 if (gTilesEnter.size() > 0 || gTilesExit.size() > 0)
                     draw();
             }
@@ -387,21 +390,26 @@ export function MassiveMatrixPlot() {
             }
 
             function loadTileData(tile_value) {
+                let t1 = new Date().getTime();
                 if ('dense' in tile_value)
                     return tile_value['dense'];
                 else if ('sparse' in tile_value) {
                     let values = Array.apply(null, 
                             Array(resolution * resolution)).map(Number.prototype.valueOf, 0);
+
                     for (let i = 0; i < tile_value.sparse.length; i++) {
-                        if ('pos'in tile_value.sparse[i]) {
+                        if ('pos' in tile_value.sparse[i]) {
                             values[tile_value.sparse[i].pos[1] * resolution +
                                    tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
                         } else {
+                            let x = tile_value.sparse[i][0];
                             values[tile_value.sparse[i][0][1] * resolution +
                                    tile_value.sparse[i][0][0]] = tile_value.sparse[i][1];
 
                         }
                     }
+
+                    console.log('tile loading time:', new Date().getTime() - t1);
                     return values;
 
                 } else {
@@ -418,6 +426,7 @@ export function MassiveMatrixPlot() {
                         let tileSubPath = tile.join('.')
                             let tilePath = tileDirectory + "/" + tileSubPath;
                         loadingTiles[tileId(tile)] = true;
+                        console.log('loading:', tileId(tile));
 
                         d3.json(tilePath,
                                 function(error, tile_json) {
@@ -508,7 +517,7 @@ export function MassiveMatrixPlot() {
 
                 yScale = d3.scale.linear()
                     .domain(yScaleDomain)
-                    .range([height - margin.top - margin.bottom, 0]);
+                    .range([0, height - margin.top - margin.bottom]);
 
                 valueScale = d3.scale.linear()
                     .domain([countTransform(minValue+1), countTransform(maxValue+1)])
@@ -538,6 +547,16 @@ export function MassiveMatrixPlot() {
 
                 gYAxis.call(yAxis);
                 gXAxis.call(xAxis);
+
+                let newTiles = []
+
+                let newTile = [0,0,0]
+                newTile.mirrored = true;
+                newTiles.push(newTile);
+
+                newTile = [0,0,0]
+                newTile.mirrored = false;
+                newTiles.push(newTile);
 
                 refreshTiles([[0,0,0]]);
             });
@@ -623,11 +642,7 @@ export function MassiveMatrixPlot() {
                 let epsilon = 0.000001;
                 let tiles = [];
 
-                /*
-                let rows = d3.range(Math.floor((zoom.x().domain()[0] - minX) / tileWidth),
-                        Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth));
-
-                */
+                // the visible tile positions are calculated here
                     let rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
                             Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth)));
 
@@ -637,8 +652,31 @@ export function MassiveMatrixPlot() {
 
 
                 for (let i = 0; i < rows.length; i++) {
-                    for (let j = 0; j < cols.length; j++) {
-                        tiles.push([zoomLevel, rows[i], cols[j]]);
+                    for (let j = 0; j < cols.length; j++) { 
+                        if (mirrorTiles) {
+                            if (rows[i] >= cols[j]) {
+                                let newTile = [zoomLevel, cols[j], rows[i]];
+                                newTile.mirrored = true;
+                                tiles.push(newTile); 
+                            } else {
+                                let newTile = [zoomLevel, rows[i], cols[j]];
+                                newTile.mirrored = false;
+                                tiles.push(newTile); 
+
+                            }
+
+                            if (rows[i] == cols[j]) {
+                                let newTile = [zoomLevel, rows[i], cols[j]];
+                                newTile.mirrored = false;
+                                tiles.push(newTile);
+                            }
+
+                        } else {
+                            let newTile = [zoomLevel, rows[i], cols[j]];
+                            newTile.mirrored = false;
+
+                            tiles.push(newTile)
+                        }
                     }
                 }
                 // hey hye
@@ -650,6 +688,7 @@ export function MassiveMatrixPlot() {
                 //console.log('rows:', zoomLevel, rows, zoom.x().domain(), tileWidth);
                 //console.log('cols:', cols);
                 
+                //console.log('tiles:', tiles);
 
                 refreshTiles(tiles);
             }
@@ -665,7 +704,7 @@ export function MassiveMatrixPlot() {
 
     function tileId(tile) {
         // uniquely identify the tile with a string
-        return tile.join(".");
+        return tile.join(".") + '.' + tile.mirrored;
     }
 
     function pointId(d) {
