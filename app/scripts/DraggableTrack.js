@@ -3,6 +3,8 @@ import d3 from 'd3';
 import slugid from 'slugid';
 
 export function DraggableTrack() {
+    let minWidth = 20;
+    let minHeight = 15;
     let width = 200;
     let height = 200;
     let resizeDispatch = null;
@@ -11,6 +13,9 @@ export function DraggableTrack() {
         selection.each(function(d) {
             let localResizeDispatch = resizeDispatch == null ? d3.dispatch('resize') :
                 resizeDispatch;
+            let slugId = slugid.nice();
+            localResizeDispatch.on('resize.' + slugId, sizeChanged);
+
             let div = d3.select(this);
 
             let trackWidth = width;
@@ -92,11 +97,8 @@ export function DraggableTrack() {
 
             let resizable = div;
 
-            let slugId = slugid.nice();
-            localResizeDispatch.on('resize.' + slugId, sizeChanged);
 
             function sizeChanged(params) {
-                console.log('params:', params);
                 d.top = params.top;
                 d.left = params.left;
 
@@ -124,14 +126,16 @@ export function DraggableTrack() {
                 let newHeight = prevHeight - y;
                 let newTop = currTop;
 
-                if (newHeight < trackHeight) {
-                    newTop = currTop - (trackHeight - newHeight);
-                    newHeight = trackHeight;
+                if (newHeight < minHeight) {
+                    newTop = currTop - (minHeight - newHeight);
+                    newHeight = minHeight;
                 }
 
 
                 d.top = newTop;
                 d.height = newHeight;
+
+                console.log('newHeight:', newHeight);
 
                 changeSize({'top': newTop, 'left': d.left,
                             'width': d.width, 'height': newHeight});
@@ -150,9 +154,9 @@ export function DraggableTrack() {
                 let newWidth = prevWidth - x;
                 let newLeft = currLeft;
 
-                if (newWidth < 50) {
-                    newLeft = currLeft - (50 - newWidth);
-                    newWidth = 50;
+                if (newWidth < minWidth) {
+                    newLeft = currLeft - (minWidth - newWidth);
+                    newWidth = minWidth;
                 }
 
                 resizable.style('width', (newWidth) + 'px');
@@ -171,7 +175,7 @@ export function DraggableTrack() {
                 let x = d3.mouse(this.parentNode)[0];
                 // Avoid negative or really small widths
 
-                x = Math.max(50, x);
+                x = Math.max(minWidth, x);
                 resizable.style('width', x + 'px');
 
                 d.width = x;
@@ -185,7 +189,7 @@ export function DraggableTrack() {
                 let y = d3.mouse(this.parentNode)[1];
                 // Avoid negative or really small widths
 
-                y = Math.max(trackHeight, y);
+                y = Math.max(minHeight, y);
                 resizable.style('height', y + 'px');
                 d.height = y;
 
@@ -273,9 +277,21 @@ export function DraggableTrack() {
         return chart;
     }
 
+    chart.minWidth = function(_) {
+        if (!arguments.length) return minWidth;
+        else minWidth = _;
+        return chart;
+    }
+
     chart.height = function(_) {
         if (!arguments.length) return height;
         else height = _;
+        return chart;
+    }
+
+    chart.minHeight = function(_) {
+        if (!arguments.length) return minHeight;
+        else minHeight = _;
         return chart;
     }
 

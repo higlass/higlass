@@ -1,12 +1,18 @@
 import PIXI from 'pixi.js';
+import slugid from 'slugid';
 
 export function WigglePixiTrack() {
     let width = 200;
     let height = 15;
+    let resizeDispatch = null;
 
     let chart = function(selection) {
         selection.each(function(d) {
-            console.log('wp d:', d);
+            let localResizeDispatch = resizeDispatch == null ? d3.dispatch('resize') :
+                resizeDispatch;
+            let slugId = slugid.nice();
+            localResizeDispatch.on('resize.' + slugId, sizeChanged);
+
             width = d.width;
             height = d.height;
 
@@ -66,6 +72,10 @@ export function WigglePixiTrack() {
                 requestAnimationFrame( animate );
             }
 
+            function sizeChanged(params) {
+                console.log('resizing renderer', params);
+                renderer.resize(params.width, params.height);
+            }
         });
     }
 
@@ -78,6 +88,12 @@ export function WigglePixiTrack() {
     chart.height = function(_) {
         if (!arguments.length) return height;
         else height = _;
+        return chart;
+    }
+
+    chart.resizeDispatch = function(_) {
+        if (!arguments.length) return resizeDispatch;
+        else resizeDispatch = _;
         return chart;
     }
 
