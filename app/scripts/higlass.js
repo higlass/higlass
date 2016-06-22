@@ -180,7 +180,7 @@ export function MassiveMatrixPlot() {
                             pix.data[i*4+2] = rgb[2];
                             pix.data[i*4+3] = rgb[3];
                         });
-                        console.log('pixelValue loading', new Date().getTime() - t1);
+                        //console.log('pixelValue loading', new Date().getTime() - t1);
                     } catch (err) {
                         console.log('ERROR:', err);
                         //console.log('lastD:', lastD, data);
@@ -409,7 +409,7 @@ export function MassiveMatrixPlot() {
                         }
                     }
 
-                    console.log('tile loading time:', new Date().getTime() - t1);
+                    //console.log('tile loading time:', new Date().getTime() - t1);
                     return values;
 
                 } else {
@@ -426,7 +426,7 @@ export function MassiveMatrixPlot() {
                         let tileSubPath = tile.join('.')
                             let tilePath = tileDirectory + "/" + tileSubPath;
                         loadingTiles[tileId(tile)] = true;
-                        console.log('loading:', tileId(tile));
+                        //console.log('loading:', tileId(tile));
 
                         d3.json(tilePath,
                                 function(error, tile_json) {
