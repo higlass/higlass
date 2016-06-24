@@ -41,7 +41,11 @@ svg {
     stroke-width: 1px;
 }
 
-/*div.tooltip {
+rect {
+    pointer-events: none;
+}
+
+div.tooltip {
     position: absolute;
     text-align: left;
     width: 170px;
@@ -53,5 +57,5 @@ svg {
     border-radius: 8px;
     pointer-events: none;
     line-height:130%
-}*/
+}
 
