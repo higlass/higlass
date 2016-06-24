@@ -16,7 +16,9 @@
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    
     <script>hljs.initHighlightingOnLoad();</script>
 
     <title>HiGlass: Multi-resolution Hi-C data display</title>
@@ -32,7 +34,7 @@
 <!-- endbuild -->
 
 <body>
-   <div style="position:relative; padding-left: 25px; padding-top: 14px; font-size: 30px " id="mode">
+   <div style="position:relative; padding-left: 25px; padding-top: 14px;  " id="mode">
         <input type="radio" name="debug" value="standard" checked >Standard Mode
         <input type="radio" name="debug" value="debug" style="margin-left: 60px">Debug Mode
         
@@ -53,7 +55,7 @@
     } else {
         width = window.innerHeight *1.1;
     }
-    height = width * 0.85;
+    height = width * 0.8;
 
     var svg = d3.select('#goombaPlot')
     .attr('width', width)
@@ -108,6 +110,7 @@ $(window).resize(function() {
     location.reload();
   //resize just happened, pixels changed
 });
+
 
 </script>
 </body>

@@ -79,18 +79,13 @@ export function MassiveMatrixPlot() {
 
             // setup the data-agnostic parts of the chart
             var svg = d3.select(this)
-          //      .classed("svg-container", true)
                 .append('svg')
+                .classed("mainSVG", true)
                 .attr('width', width)
                 .attr('height', height)
                 .style('left', 0)
                 .style('top', 0)
                 .style('position', 'absolute');
-             //responsive SVG needs these 2 attributes and no width and height attr
-              /* .attr("preserveAspectRatio", "xMinYMin meet")
-               .attr("viewBox", "0 0 700 550")
-               //class to make it responsive
-               .classed("svg-content-responsive", true);*/
        
 
             var gEnter = svg.append("g")
@@ -208,6 +203,14 @@ export function MassiveMatrixPlot() {
                 else
                     return false;
             }
+
+            $("svg.mainSVG").mousemove(function(e) {
+             //   document.Form1.posx.value = e.pageX;
+               // mous = e.pageY;
+               var parentOffset = $(this).parent().offset(); 
+              // console.log("offset " +parentOffset.left);\
+                console.log(xScale.invert(e.pageX - parentOffset.left - margin.left)  + " " + yScale.invert(e.pageY - parentOffset.top - margin.top));
+            })
 
             function setPix(pix, data, zoomLevel) {
                 //console.log('maxZoom:', maxZoom);
@@ -364,6 +367,7 @@ export function MassiveMatrixPlot() {
                     .filter((d) => { return d != undefined; })
                     .filter((d) => { return d.data != undefined; })
                     .filter((d) => { return d.data.length > 0; });
+              //  console.log("visible tiles are "+ visibleTiles);
 
                 for (let i = 0; i < tiles.length; i++) {
                     shownTiles[tileId(tiles[i])] = true;
