@@ -78,13 +78,19 @@ export function MassiveMatrixPlot() {
                         });
 
             // setup the data-agnostic parts of the chart
-            var svg = d3.select(this).append('svg')
+            var svg = d3.select(this)
+          //      .classed("svg-container", true)
+                .append('svg')
                 .attr('width', width)
                 .attr('height', height)
                 .style('left', 0)
                 .style('top', 0)
                 .style('position', 'absolute');
-
+             //responsive SVG needs these 2 attributes and no width and height attr
+              /* .attr("preserveAspectRatio", "xMinYMin meet")
+               .attr("viewBox", "0 0 700 550")
+               //class to make it responsive
+               .classed("svg-content-responsive", true);*/
        
 
             var gEnter = svg.append("g")
