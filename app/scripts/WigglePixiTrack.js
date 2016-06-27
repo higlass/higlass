@@ -6,6 +6,7 @@ export function WigglePixiTrack() {
     let width = 200;
     let height = 15;
     let resizeDispatch = null;
+    let xScale = d3.scale.linear();
 
     function tileId(tile) {
         // uniquely identify the tile with a string
@@ -60,7 +61,8 @@ export function WigglePixiTrack() {
             .range([0, d.height]);
 
             let drawTile = function(graphics, tile) {
-                let tileData = loadTileData(tile);
+                let tileData = loadTileData(tile.data);
+                console.log('tileData:', tileData);
 
                 let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
                 // this scale should go from an index in the data array to 
@@ -73,30 +75,20 @@ export function WigglePixiTrack() {
 
                 graphics.lineStyle(2, 0x0000FF, 1);
                 graphics.beginFill(0xFF700B, 1);
-                graphics.drawRect(50, 250, 120, 120);
-            }
 
-            for (let i = 0; i < tileData.length; i++) {
-                shownTiles[tileData[i].tileId] = true;
+                for (let i = 0; i < tileData.length; i++) {
+                    let xPos = xScale(tileXScale(i));
+                    let yPos = d.height - yScale(tileData[i]);
+                    let height = yScale(tileData[i])
+                    let width = xScale(tileXScale(i+1)) - xScale(tileXScale(i));
 
-                if (!(tileData[i].tileId in d.tileGraphics)) {
-                    // we don't have a graphics object for this tile
-                    // so we need to create one
-                     let newGraphics = new PIXI.Graphics();
-                     drawTile(newGraphics, tileData[i]);
-                     pMain.addGraphics(newGraphics)
-                     d.tileGraphics[tileData[i].tileId] = newGraphics
-                } 
-            }
-
-            for (let tileIdStr in d.tileGraphics) {
-                if (!(tileIdStr in shownTiles)) {
-                    //we're displaying graphics that are no longer necessary,
-                    //so we need to get rid of them
-                    pMain.removeChild(d.tileGraphics[tileIdStr]);
-                    delete d.tileGraphics[tileIdStr];
+                    if (height > 0 && width > 0) {
+                        console.log('drawRect', xPos, yPos, width, height);
+                        graphics.drawRect(xPos, yPos, width, height);
+                    }
                 }
             }
+
 
             console.log('WigglePixiTrack', d);
             let tiles = d3.select(this).selectAll('.tile-g');
@@ -110,11 +102,15 @@ export function WigglePixiTrack() {
             d3.select(this).on('resize', function(e) {
                 console.log('resize:', e);
             });
-            let canvas = d3.select(this).append('canvas');
+            
+            d3.select(this).selectAll('canvas')
+            .data([1])
+            .enter()
+            .append('canvas');
 
-            return;
+            let canvas = d3.select(this).selectAll('canvas');
 
-            var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true,
+            var renderer = PIXI.autoDetectRenderer(d.width, d.height, { antialias: true,
             view: canvas.node() });
 
             // create the root of the scene graph
@@ -123,7 +119,9 @@ export function WigglePixiTrack() {
             stage.interactive = true;
 
             var graphics = new PIXI.Graphics();
+            var pMain = new PIXI.Graphics();
 
+            /*
             // set a fill and line style
             graphics.beginFill(0xFF3300);
             graphics.lineStyle(4, 0xffd900, 1);
@@ -151,8 +149,10 @@ export function WigglePixiTrack() {
             graphics.beginFill(0xFFFF0B, 0.5);
             graphics.drawCircle(470, 90,60);
             graphics.endFill();
+            */
 
             stage.addChild(graphics);
+            stage.addChild(pMain);
 
             // run the render loop
             animate();
@@ -166,6 +166,28 @@ export function WigglePixiTrack() {
                 console.log('resizing renderer', params);
                 yScale.range([0, params.height]);
                 renderer.resize(params.width, params.height);
+            }
+
+            for (let i = 0; i < tileData.length; i++) {
+                shownTiles[tileData[i].tileId] = true;
+
+                if (!(tileData[i].tileId in d.tileGraphics)) {
+                    // we don't have a graphics object for this tile
+                    // so we need to create one
+                     let newGraphics = new PIXI.Graphics();
+                     drawTile(newGraphics, tileData[i]);
+                     pMain.addChild(newGraphics)
+                     d.tileGraphics[tileData[i].tileId] = newGraphics
+                } 
+            }
+
+            for (let tileIdStr in d.tileGraphics) {
+                if (!(tileIdStr in shownTiles)) {
+                    //we're displaying graphics that are no longer necessary,
+                    //so we need to get rid of them
+                    pMain.removeChild(d.tileGraphics[tileIdStr]);
+                    delete d.tileGraphics[tileIdStr];
+                }
             }
 
         });
@@ -186,6 +208,12 @@ export function WigglePixiTrack() {
     chart.resizeDispatch = function(_) {
         if (!arguments.length) return resizeDispatch;
         else resizeDispatch = _;
+        return chart;
+    }
+
+    chart.xScale = function(_) {
+        if (!arguments.length) return xScale;
+        else xScale = _;
         return chart;
     }
 

@@ -39,6 +39,8 @@ var svg = d3.select('#circle').append('svg')
 .attr('height', height)
 
 let resizeDispatch = d3.dispatch('resize');
+let xScale = d3.scale.linear().domain([0, 10000000])
+    .range([0, width - margin.left - margin.right]);
 
 var draggableTrack = goomba.DraggableTrack()
     .width(width)
@@ -46,6 +48,7 @@ var draggableTrack = goomba.DraggableTrack()
     .resizeDispatch(resizeDispatch);
 
 var wigglePixiTrack = goomba.WigglePixiTrack()
+    .xScale(xScale)
     .resizeDispatch(resizeDispatch);
 
 let tracks = d3.select('.big-div')
