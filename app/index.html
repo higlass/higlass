@@ -20,7 +20,8 @@ let height = 240;
 let trackHeight = 30;
 let margin = {'left': 30, 'top': 10, 'right': 30, 'bottom': 10};
 let tileDirectory = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-plus'
-let awsDomain = '//52.23.165.123:9872';
+//let awsDomain = '//52.23.165.123:9872';
+let awsDomain = '//localhost:9200';
 
 //let tileDirectories = [];
 let tileDirectories = [awsDomain + '/hg19/refgene-tiles-minus',
@@ -47,15 +48,22 @@ var draggableTrack = goomba.DraggableTrack()
 var wigglePixiTrack = goomba.WigglePixiTrack()
     .resizeDispatch(resizeDispatch);
 
-
-d3.select('.big-div')
+let tracks = d3.select('.big-div')
 .selectAll('.track')
-.data([{'width': 800, 'height': 600}])
+.data([{'width': 800, 'height': 60, 
+        'source': awsDomain + '/tiles_test/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz'}])
 .enter()
 .append('div')
 .classed('track', true)
 .call(draggableTrack)
-.call(wigglePixiTrack);
+
+var tiledArea = goomba.GenericTiledArea()
+    .tileType('div')
+    .tilesChanged(function() {
+        tracks.call(wigglePixiTrack) });
+
+
+tracks.call(tiledArea)
 
     /*
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {

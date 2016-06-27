@@ -1,10 +1,37 @@
 import PIXI from 'pixi.js';
 import slugid from 'slugid';
+import d3 from 'd3';
 
 export function WigglePixiTrack() {
     let width = 200;
     let height = 15;
     let resizeDispatch = null;
+
+    function tileId(tile) {
+        // uniquely identify the tile with a string
+        return tile.join(".") + '.' + tile.mirrored;
+    }
+
+    function loadTileData(tile_value) {
+        if ('dense' in tile_value)
+            return tile_value['dense'];
+        else if ('sparse' in tile_value) {
+            let values = Array.apply(null, 
+                    Array(resolution)).map(Number.prototype.valueOf,0);
+            for (let i = 0; i < tile_value.sparse.length; i++) {
+                if ('pos' in tile_value.sparse[i])
+                    values[ tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
+                else
+                    values[ tile_value.sparse[i][0]] = tile_value.sparse[i][1];
+
+            }
+            return values;
+
+        } else {
+            return [];
+        }
+
+    }
 
     let chart = function(selection) {
         selection.each(function(d) {
@@ -12,6 +39,69 @@ export function WigglePixiTrack() {
                 resizeDispatch;
             let slugId = slugid.nice();
             localResizeDispatch.on('resize.' + slugId, sizeChanged);
+
+            if (!('tileGraphics' in d)) {
+                d.tileGraphics = {};
+            }
+
+            let tileData = d3.select(this).selectAll('.tile-g').data();
+            let shownTiles = {};
+
+            console.log('tileData:', tileData);
+
+            let minVisibleValue = Math.min(...tileData.map((x) => x.valueRange[0]));
+            let maxVisibleValue = Math.max(...tileData.map((x) => x.valueRange[1]));
+
+            console.log('minVisibleValue', minVisibleValue);
+            console.log('maxVisibleValue', maxVisibleValue);
+
+            let yScale = d3.scale.linear()
+            .domain([0, maxVisibleValue])
+            .range([0, d.height]);
+
+            let drawTile = function(graphics, tile) {
+                let tileData = loadTileData(tile);
+
+                let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
+                // this scale should go from an index in the data array to 
+                // a position in the genome coordinates
+                let tileXScale = d3.scale.linear().domain([0, tileData.length])
+                .range([tile.xRange[0] + tile.tilePos[1] * tileWidth, 
+                       tile.xRange[0] + (tile.tilePos[1] + 1) * tileWidth]  );
+
+                console.log('tileWidth:', tileWidth);
+
+                graphics.lineStyle(2, 0x0000FF, 1);
+                graphics.beginFill(0xFF700B, 1);
+                graphics.drawRect(50, 250, 120, 120);
+            }
+
+            for (let i = 0; i < tileData.length; i++) {
+                shownTiles[tileData[i].tileId] = true;
+
+                if (!(tileData[i].tileId in d.tileGraphics)) {
+                    // we don't have a graphics object for this tile
+                    // so we need to create one
+                     let newGraphics = new PIXI.Graphics();
+                     drawTile(newGraphics, tileData[i]);
+                     pMain.addGraphics(newGraphics)
+                     d.tileGraphics[tileData[i].tileId] = newGraphics
+                } 
+            }
+
+            for (let tileIdStr in d.tileGraphics) {
+                if (!(tileIdStr in shownTiles)) {
+                    //we're displaying graphics that are no longer necessary,
+                    //so we need to get rid of them
+                    pMain.removeChild(d.tileGraphics[tileIdStr]);
+                    delete d.tileGraphics[tileIdStr];
+                }
+            }
+
+            console.log('WigglePixiTrack', d);
+            let tiles = d3.select(this).selectAll('.tile-g');
+
+            console.log('tiles:', tiles, tiles.data());
 
             width = d.width;
             height = d.height;
@@ -21,6 +111,8 @@ export function WigglePixiTrack() {
                 console.log('resize:', e);
             });
             let canvas = d3.select(this).append('canvas');
+
+            return;
 
             var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true,
             view: canvas.node() });
@@ -60,22 +152,22 @@ export function WigglePixiTrack() {
             graphics.drawCircle(470, 90,60);
             graphics.endFill();
 
-
             stage.addChild(graphics);
 
             // run the render loop
             animate();
 
             function animate() {
-
                 renderer.render(stage);
                 requestAnimationFrame( animate );
             }
 
             function sizeChanged(params) {
                 console.log('resizing renderer', params);
+                yScale.range([0, params.height]);
                 renderer.resize(params.width, params.height);
             }
+
         });
     }
 
