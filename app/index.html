@@ -16,11 +16,13 @@
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    
     <script>hljs.initHighlightingOnLoad();</script>
 
     <title>HiGlass: Multi-resolution Hi-C data display</title>
 </head>
-
 <script src="https://rawgit.com/pkerpedjiev/goomba/master/dist/scripts/goomba.js"></script>
 
 <!-- build:css styles/style.css -->
@@ -32,15 +34,34 @@
 <!-- endbuild -->
 
 <body>
+<<<<<<< HEAD
     <div id="mmv-area" style="position:relative; height:550px; width: 700px" >
     <svg id="goombaPlot" style="position:relative; height:550px; width: 700px" >
+=======
+   <div style="position:relative; padding-left: 25px; padding-top: 14px;  " id="mode">
+        <input type="radio" name="debug" value="standard" checked >Standard Mode
+        <input type="radio" name="debug" value="debug" style="margin-left: 60px">Debug Mode
+        
+   </div>
+
+    <div id="mmv-area" style="position:relative; height:550px; width: 700px">
+
+>>>>>>> Vanilla-Alex
     </div>
+    <div id="tooltip" style="position: absolute; background-color: rgba(128,128,128,0.4); padding: 10px; border-radius:10px"></div>
 </body>
 
 
 <script type='text/javascript'>
 
-    var width = 700, height=550;
+// style="margin-top: 155px;margin-left: 32px;
+    var width, height;
+    if(window.innerWidth < window.innerHeight) {
+        width = window.innerWidth * 1;
+    } else {
+        width = window.innerHeight *1.1;
+    }
+    height = width * 0.8;
 
     var svg = d3.select('#goombaPlot')
     .attr('width', width)
@@ -64,11 +85,16 @@
     */
 
 var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
+<<<<<<< HEAD
 let trackHeight = 35;
 //let awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
 let awsDomain = '//52.23.165.123:9872';
 let tileDirectories = [awsDomain + '/hg19/refgene-tiles-minus',
                        awsDomain + '/hg19/refgene-tiles-plus']
+=======
+//let awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
+let awsDomain = '//52.23.165.123:9872';
+>>>>>>> Vanilla-Alex
 
 
 var margin = {'top': 20, 'left': 30, 'bottom': 30, 'right': 120};
@@ -170,6 +196,11 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .call(wiggleTileArea)
 });
 ///////////////////////////////////////////////
+
+$(window).resize(function() {
+    location.reload();
+  //resize just happened, pixels changed
+});
 
 
 </script>

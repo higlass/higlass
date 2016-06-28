@@ -8,6 +8,8 @@ import {heatedObjectMap} from './colormaps.js'
 export {TransferFunctionEditor} from './transfer.js';
 export {heatedObjectMap} from './colormaps.js';
 
+
+
 export function MassiveMatrixPlot() {
     var width = 550;
     var height = 400;
@@ -16,7 +18,12 @@ export function MassiveMatrixPlot() {
     let zoomDispatch = null;
     let zoomCallback = null;
     let transferEditor = null;
-    let xDomain = null, yDomain = null;
+    let xDomain = null, yDomain =  null;
+    let drawRectZoom = 1;
+    let rectData;
+    let showDebug = 0;
+
+    var sparseData;
 
     function chart(selection) {
         selection.each(function(tileDirectory) {
@@ -33,6 +40,8 @@ export function MassiveMatrixPlot() {
 
             let loadedTiles = {};
             let loadingTiles = {};
+
+            let tileStatus = [];
 
             let renderer = null;
             let pMain = null;
@@ -66,18 +75,24 @@ export function MassiveMatrixPlot() {
                             //backgroundColor: 0xdddddd,
                             backgroundColor: 0xffffff,
                          antialias: true, 
-                         view: pixiCanvas.node() });
+                         view: pixiCanvas.node() 
+                        });
 
             // setup the data-agnostic parts of the chart
-            var svg = d3.select(this).append('svg')
+            var svg = d3.select(this)
+                .append('svg')
+                .classed("mainSVG", true)
                 .attr('width', width)
                 .attr('height', height)
                 .style('left', 0)
                 .style('top', 0)
                 .style('position', 'absolute');
+       
 
             var gEnter = svg.append("g")
-                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+                .attr('transform', `translate(${margin.left}, ${margin.top})`)
+                .classed('g-enter', true);
+
 
             var stage = new PIXI.Container();
             pMain = new PIXI.Graphics();
@@ -103,16 +118,33 @@ export function MassiveMatrixPlot() {
 
             var gYAxis = gEnter.append("g")
                 .attr("class", "y axis")
-                .attr("transform", "translate(" + (width - margin.right - margin.left) + ",0)");
+
+                .attr("transform", "translate("  + (width - margin.right - margin.left) + ",0)");
+
+            var debug = gEnter.append("svg")
+                .attr("width", width - margin.left - margin.right)
+                .attr("height", height - margin.top - margin.bottom)
+                .attr("id", "debug");
+            
+            //enables hovering
+            /*var invisible =  d3.select("body").append("div").append("svg")
+                .attr("width", width - margin.left - margin.right)
+                .attr("height", height - margin.top - margin.bottom)
+                .attr("id", "invisible");
+            
+            var tooltip = d3.select("body").append("div")    
+                .attr("class", "tooltip")               
+                .style("opacity", 0.9);*/
 
             var gXAxis = gEnter.append("g")
                 .attr("class", "x axis")
-                .attr("transform", "translate(0," + (height - margin.bottom - margin.top) + ")");
+                .attr("transform", "translate(0,"+ (height - margin.bottom - margin.top) + ")");
+
 
             gMain = gEnter.append('g')
                 .classed('main-g', true)
 
-                gMain.append("clipPath")
+            gMain.append("clipPath")
                 .attr("id", "clipHiC")
                 .append("rect")
                 .attr("x", 0)
@@ -124,11 +156,28 @@ export function MassiveMatrixPlot() {
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
+            d3.selectAll("#mode input[name=debug]").on("change", function() {
+                document.getElementById("debug").innerHTML = "";
+                if(this.value == "debug") {
+                    showDebug = 1;
+                    loadedTiles = {};
+                    loadingTiles = {};
+                    draw();
+                } else {
+                    showDebug = 0;
+                }
+            });
+
             function zoomHere() {
                 localZoomDispatch.zoom(zoom.translate(), zoom.scale());
             }
 
             function zoomChanged(translate, scale) {
+<<<<<<< HEAD
+=======
+           //     console.log('zoomed:', translate, scale);
+
+>>>>>>> Vanilla-Alex
                 // something changed the zoom.
                 zoom.translate(translate);
                 zoom.scale(scale);
@@ -136,7 +185,8 @@ export function MassiveMatrixPlot() {
                 zoomed();
             }
 
-            function isTileLoading(tile) {
+
+            function isTileLoading(tile) {//1.1.1
                 // check if a particular tile is currently being loaded
 
                 if (tileId(tile) in loadingTiles)
@@ -144,6 +194,8 @@ export function MassiveMatrixPlot() {
                 else
                     return false;
             }
+
+
 
             function isTileLoaded(tile) {
                 // check if a particular tile is already loaded
@@ -156,6 +208,76 @@ export function MassiveMatrixPlot() {
                     return false;
             }
 
+            $("svg.mainSVG").mousemove(function(e) {
+
+               $("#tooltip").empty();
+                $('#tooltip').hide();
+
+               var parentOffset = $(this).parent().offset();
+               let maxW, maxH;
+               maxW = $("canvas").width();
+               maxH = $("canvas").height();
+              
+                
+               if((e.pageX - parentOffset.left - margin.left) > 0 && (e.pageX - parentOffset.left - margin.left) <= maxW 
+                    && (e.pageY - parentOffset.top - margin.top) > 0 && (e.pageY - parentOffset.top - margin.top) <= maxH){
+                    $('#tooltip').show();
+                    let length, tileX, tileY, xIndex, yIndex;
+                    let index, value;
+
+                    let xpos = Math.floor(xScale.invert(e.pageX - parentOffset.left - margin.left)/1000)*1000;
+                    let ypos = Math.floor(yScale.invert(e.pageY - parentOffset.top - margin.top)/1000)*1000;
+                   
+                    for(let tileId in shownTiles) {
+                    //console.log("tile id " + tileId);
+                   
+
+                   // tile's data 
+                   //console.log(loadedTiles[tileId]);
+
+                   //tile's length in bp
+                    length = totalWidth/Math.pow(2, loadedTiles[tileId].pos[0]);
+                    //console.log(length);
+
+                    //tile's starting point
+                    tileX = length*loadedTiles[tileId].pos[1];
+                    tileY = length*loadedTiles[tileId].pos[2];
+
+                    //console.log(tileX+" "+tileY);
+                    //console.log(xpos+" "+ tileX +" " + ypos+ " "+ tileY + " "+length);
+                    if(xpos >= tileX && xpos < (tileX+length) && ypos >= tileY && ypos < (tileY+length)){
+                        // iplagt belongs to this tile
+                        $("#tooltip").css('top', (e.pageY+10)+'px');
+                        $("#tooltip").css('left', (e.pageX+10)+'px');
+                        $("#tooltip").append("<span >The tile's id is " + tileId + " </span><br/>");
+                       
+                        if(loadedTiles[tileId].pos[0] == 5) {
+                            xIndex = (xpos-tileX)/length * 256;
+                            yIndex = (ypos-tileY)/length * 256;
+
+                            
+                            index = yIndex*256 + xIndex;
+                            value = loadedTiles[tileId].data[index];
+                            if(value != null) {
+                                $("#tooltip").append("<span>The value at (" + xpos + ", " + ypos + ") is " + value + ".</span>");
+                            }
+                        }
+                        break;
+                        
+                    }
+
+               }
+            
+               
+               }
+              // console.log("Shown Tiles" + shownTiles[0]);
+              // console.log(Math.floor(xScale.invert(e.pageX - parentOffset.left - margin.left)/1000)  + " " + Math.floor(yScale.invert(e.pageY - parentOffset.top - margin.top)/1000));
+            });
+
+            $("svg.mainSVG").mouseleave(function(e) {
+                $('#tooltip').empty();
+                $('#tooltip').hide();
+            });
             function setPix(pix, data, zoomLevel) {
                 let zoomFactor = Math.pow(2, 2 * (maxZoom - zoomLevel));
 
@@ -182,9 +304,19 @@ export function MassiveMatrixPlot() {
                         });
                         //console.log('pixelValue loading', new Date().getTime() - t1);
                     } catch (err) {
+<<<<<<< HEAD
                         console.log('ERROR:', err);
                         //console.log('lastD:', lastD, data);
                         //console.log('minVisibleValue, maxVisibleValue', minVisibleValue, maxVisibleValue);
+=======
+                      //  console.log('lastD:', lastD, data);
+                        //console.log('minVisibleValue, maxVisibleValue', minVisibleValue, maxVisibleValue);
+                        /*
+                           console.log('rgbIdx:', rgbIdx);
+                           return pix;
+                           */
+                        //console.log("Err:", err);
+>>>>>>> Vanilla-Alex
                     }
 
 
@@ -256,6 +388,10 @@ export function MassiveMatrixPlot() {
                 // go through each tile shown tile and change its texture
                 // this is normally called when the value of the color scale changes
                 // it's a little slow at the moment so it's unused
+<<<<<<< HEAD
+=======
+              //  console.log('changing textures');
+>>>>>>> Vanilla-Alex
                 for (let tileId in loadedTiles) {
                     loadedTiles[tileId].canvasChanged = true;
                 }
@@ -310,6 +446,7 @@ export function MassiveMatrixPlot() {
                     .filter((d) => { return d != undefined; })
                     .filter((d) => { return d.data != undefined; })
                     .filter((d) => { return d.data.length > 0; });
+              //  console.log("visible tiles are "+ visibleTiles);
 
                 for (let i = 0; i < tiles.length; i++) {
                     shownTiles[tileId(tiles[i])] = true;
@@ -324,6 +461,7 @@ export function MassiveMatrixPlot() {
                         let sprite = null;
 
                         if (tiles[i][0] == maxZoom) {
+<<<<<<< HEAD
                             sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
                         } else {
                             sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
@@ -332,6 +470,22 @@ export function MassiveMatrixPlot() {
 
                         setSpriteProperties(sprite, tiles[i]);
                         
+=======
+                                    sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+                                } else {
+                                    sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+                                }
+                                //let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+
+                                setSpriteProperties(sprite, tiles[i]);
+                                //to see the sprites
+                              /*  newGraphics.lineStyle(2, 0x0000FF, 1);
+                                newGraphics.moveTo(sprite.x, sprite.y);
+                                newGraphics.lineTo(sprite.x+sprite.width, sprite.y);
+                                newGraphics.lineTo(sprite.x+sprite.width, sprite.y+sprite.height);
+                                newGraphics.lineTo(sprite.x, sprite.y+sprite.height);
+                                newGraphics.lineTo(sprite.x, sprite.y);*/
+>>>>>>> Vanilla-Alex
                         newGraphics.addChild(sprite);
                         tileGraphics[tileId(tiles[i])] = newGraphics;
 
@@ -398,6 +552,7 @@ export function MassiveMatrixPlot() {
                             Array(resolution * resolution)).map(Number.prototype.valueOf, 0);
 
                     for (let i = 0; i < tile_value.sparse.length; i++) {
+
                         if ('pos' in tile_value.sparse[i]) {
                             values[tile_value.sparse[i].pos[1] * resolution +
                                    tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
@@ -412,6 +567,7 @@ export function MassiveMatrixPlot() {
                     //console.log('tile loading time:', new Date().getTime() - t1);
                     return values;
 
+
                 } else {
                     return [];
                 }
@@ -419,6 +575,8 @@ export function MassiveMatrixPlot() {
             }
 
             function refreshTiles(currentTiles) {
+
+                
                 // be shown and add those that should be shown
                 currentTiles.forEach((tile) => {
                     if (!isTileLoaded(tile) && !isTileLoading(tile)) {
@@ -428,13 +586,67 @@ export function MassiveMatrixPlot() {
                         loadingTiles[tileId(tile)] = true;
                         //console.log('loading:', tileId(tile));
 
-                        d3.json(tilePath,
-                                function(error, tile_json) {
+                        if(showDebug == 1)
+                        {
+
+                            if(!tileStatus[tile[0]])
+                            {
+
+                                tileStatus[tile[0]] = [];
+                            }
+                            if(!tileStatus[tile[0]][tile[1]])
+                            {
+                                tileStatus[tile[0]][tile[1]]= [];
+
+
+                            }
+                            if(!tileStatus[tile[0]][tile[1]][tile[2]])
+                            {
+
+                                tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Not Loaded'};
+                            }
+
+
+                            let Loaded;
+                            let Time;
+
+                        }
+
+                    d3.json(tilePath)
+                        .on("progress", function() {
+                              if(showDebug == 1)
+                              { 
+                               // Loaded = d3.event.loaded;
+                              //  Time = d3.event.timeStamp;
+                                tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loading'};
+                              }
+                              //  console.log(tileStatus);                             
+                            })
+                        .on("load",function() {
+
+                           // console.log("loaded");
+                            if(showDebug == 1)
+                            { 
+                             //   Loaded = d3.event.loaded;
+                                //Time = d3.event.timeStamp;
+                                tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loaded'};
+                            }
+                    })
+                    .get(function(error, tile_json) {
                                     if (error != null) {
                                         loadedTiles[tileId(tile)] = {data: []};
                                         let canvas = tileDataToCanvas([], tile[0]);
                                         loadedTiles[tileId(tile)].canvas = canvas;
                                         loadedTiles[tileId(tile)].pos = tile;
+                                        if(showDebug == 1)
+                                        {
+
+                                        tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Error','Message':String(error.statusText)};
+                                        
+                                   
+                                        }
+        //                                tileStatus[tile[1]][tile[2]] = {'status':'Error','Message':String(error.statusText)};
+
                                     } else {
                                         let tile_value = tile_json._source.tile_value;
                                         let data = loadTileData(tile_value);
@@ -444,11 +656,20 @@ export function MassiveMatrixPlot() {
                                         loadedTiles[tileId(tile)].canvas = canvas;
                                         loadedTiles[tileId(tile)].pos = tile;
                                         loadedTiles[tileId(tile)].valueRange = [tile_value.min_value, tile_value.max_value];
+
+          //                              tileStatus[tile[1]][tile[2]]['status'] = 'Loaded';
+                                        if(showDebug == 1)
+                                        {
+                                            tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loaded'};                          
+                                        }
+                                 //       console.log(tileStatus);
+                                   //     console.log(d3.event);
                                     }
 
                                     delete loadingTiles[tileId(tile)];
                                     showTiles(currentTiles);
                                 });
+
                     } else {
                         showTiles(currentTiles);
                     }
@@ -458,7 +679,7 @@ export function MassiveMatrixPlot() {
 
             d3.json(tileDirectory + '/tileset_info', function(error, tile_info) {
                 // set up the data-dependent sections of the chart
-                console.log('tile_info:', tile_info);
+             //   console.log('tile_info:', tile_info);
                 tile_info = tile_info._source.tile_value;
 
                 resolution = tile_info.bins_per_dimension;
@@ -528,10 +749,9 @@ export function MassiveMatrixPlot() {
 
                 zoom.x(xScale)
                     .y(yScale)
-                    .scaleExtent([1,Math.pow(2, maxZoom + 2)])
-                    //.xExtent(xScaleDomain);
+                    .scaleExtent([1,Math.pow(2, maxZoom + 2)]);
 
-                    yAxis = d3.svg.axis()
+                yAxis = d3.svg.axis()
                     .scale(yScale)
                     .orient("right")
                     .tickSize(-(width - margin.left - margin.right))
@@ -610,11 +830,133 @@ export function MassiveMatrixPlot() {
                 pMain.scale.x = zoom.scale();
                 pMain.scale.y = zoom.scale();
 
+                
+                
+            
                 if (zoomCallback)
                     zoomCallback(xScale, zoom.scale());
 
                 draw();
+
+                
+
             }
+
+            function drawRect(tiles) {
+                document.getElementById("debug").innerHTML = ''; 
+                var rectData = rectInfo(tiles);
+
+                var x = 0;
+
+               // debug
+
+                
+       
+                debug.selectAll('rect.boxy')
+                    .data(rectData)
+                    .enter()
+                    .append('rect').classed('boxy', true);
+                    //.on("mouseover", function(){alert(hello)});     
+                
+
+                debug.selectAll('text.rectText')
+                    .data(rectData)
+                    .enter()
+                    .append('text')
+                    .classed('rectText', true)
+                    .text(function(d) { return d.id + " "+ d.message})
+                    .attr('x', function(d) { return xScale(d.x)+5})
+                    .attr('y', function(d) { return yScale(d.y)+10})
+                    .attr('fill', 'black');
+
+
+                debug.selectAll('rect.boxy')
+                    .style('fill-opacity',0.2)
+                    .style('fill', function(d) { return d.color})
+                    .style("stroke-opacity", 1)
+                    .style("stroke", function(d) { return d.color})
+                    .attr('x', function(d) { return xScale(d.x)})
+                    .attr('y', function(d) {  return yScale(d.y)})
+                    .attr('width', function(d) { return d.width})
+                    .attr('height', function(d) { return d.height})
+                    .append("rect:title")
+                    .text(function(d) { return "Tile zoom: " + tiles[0][0] + "\n"  + "Tile id: " +d.id + "\n"  + d.message })
+                    .attr('pointer-events', 'all');
+            }
+
+            function rectInfo(tiles){
+                document.getElementById("debug").innerHTML = '';
+                rectData = [];
+                let zoomlevel = tiles[0][0];
+                let length = totalWidth/Math.pow(2, zoomlevel);
+                let w = length/(maxX-minX)* (width - margin.left - margin.right);
+                let h =  length/(maxX-minX)* (height - margin.top - margin.bottom);
+                let message;
+                let color;
+                for (var i = 0; i < tiles.length; i++) {
+                     message = "";
+                    if(tileStatus[zoomlevel] != null && tileStatus[zoomlevel][tiles[i][1]] != null && tileStatus[zoomlevel][tiles[i][1]][tiles[i][2]] != null) {
+                            message += "Status: "+ tileStatus[zoomlevel][tiles[i][1]][tiles[i][2]].status;             
+                            if(tileStatus[zoomlevel][tiles[i][1]][tiles[i][2]].status == "Error") {
+                                message += " \n" + tileStatus[zoomlevel][tiles[i][1]][tiles[i][2]].Message;
+                                color = "red";
+                            } else if (tileStatus[zoomlevel][tiles[i][1]][tiles[i][2]].status == "Loading") {
+                                message += " \nTime Elapsed: " + tileStatus[zoomlevel][tiles[i][1]][tiles[i][2]].TimeElapsed + " \nAmount Loaded: " + tileStatus[zoomlevel][tiles[i][1]][tiles[i][2]].Loaded;
+                                color = "blue";
+                            } else if(tileStatus[zoomlevel][tiles[i][1]][tiles[i][2]].status == "Loaded") {
+                                color = "green";
+                            } else {
+                                color = "orange";
+                            }
+                        }
+                        else {
+                            message = "not requested";
+                            color = "gray";
+                        }   
+                        rectData.push({
+                            x: 0+length*tiles[i][1],
+                            y: 0+length*tiles[i][2],
+                            width: zoom.scale()* w,
+                            height: zoom.scale()*h,
+                            id: '('+ tiles[i][0] +', '+tiles[i][1]+', '+tiles[i][2]+')',
+                            message: message,
+                            color: color
+                        });
+                }
+            
+                return rectData;
+            }
+
+           
+           /*  function drawInvisible(){
+                document.getElementById("invisible").innerHTML = "";
+
+                var data = [];
+                data.push({x: 32, y:54, value: 2});
+
+                gEnter.selectAll(".dot")
+                .data(data)
+                .enter().append("circle")
+                .attr("class", "dot")
+                .attr("r", 10)
+                .attr("cx", function(d) {return d.x})
+                .attr("cy", function(d) {return d.y})
+                .style("fill", "red") 
+                .on("mouseover", function(d) {
+                  tooltip.transition()
+                       .duration(200)
+                       .style("opacity", .9);
+                  tooltip.html("hello" + d.value)
+                       .style("left", (d3.event.pageX + 5) + "px")
+                       .style("top", (d3.event.pageY - 28) + "px");
+                })
+              .on("mouseout", function(d) {
+                  tooltip.transition()
+                       .duration(500)
+                       .style("opacity", 0);
+              });
+            }*/
+            
 
             function draw() {
                 // draw the scene, if we're zooming, then we need to check if we
@@ -628,13 +970,16 @@ export function MassiveMatrixPlot() {
                 let zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
                 let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 1;
 
-                if (zoomLevel > maxZoom)
-                    return;
 
-                /*
-                let totalWidth = maxX - minX;
-                let totalHeight = maxY - minY;
-                */
+                //Changed from return since refresh tiles wasnt being called, since no more tiles are loaded
+                // zoom level stays at max zoom
+                if (zoomLevel > maxZoom){
+                   // return;
+               /*    if(zoomLevel == 8) {
+                        drawInvisible();
+                   }*/
+                   zoomLevel = maxZoom;
+                }
 
                 var tileWidth = totalWidth /  Math.pow(2, zoomLevel);
                 var tileHeight = totalHeight / Math.pow(2, zoomLevel);
@@ -643,7 +988,7 @@ export function MassiveMatrixPlot() {
                 let tiles = [];
 
                 // the visible tile positions are calculated here
-                    let rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
+                let rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
                             Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth)));
 
                 let cols = d3.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight),
@@ -652,6 +997,7 @@ export function MassiveMatrixPlot() {
 
 
                 for (let i = 0; i < rows.length; i++) {
+<<<<<<< HEAD
                     for (let j = 0; j < cols.length; j++) { 
                         if (mirrorTiles) {
                             if (rows[i] >= cols[j]) {
@@ -677,24 +1023,29 @@ export function MassiveMatrixPlot() {
 
                             tiles.push(newTile)
                         }
+=======
+                    for (let j = 0; j < cols.length; j++) {
+                        tiles.push([zoomLevel, rows[i], cols[j]]);                   
+>>>>>>> Vanilla-Alex
                     }
                 }
                 // hey hye
-                /*
-                   let tiles = [];
-                   rows.forEach((r) => { tiles.push([zoomLevel, r]);});
-                   */
-               
-                //console.log('rows:', zoomLevel, rows, zoom.x().domain(), tileWidth);
-                //console.log('cols:', cols);
                 
+<<<<<<< HEAD
                 //console.log('tiles:', tiles);
 
+=======
+>>>>>>> Vanilla-Alex
                 refreshTiles(tiles);
+                if(showDebug == 1) {
+                    drawRect(tiles);
+                }
             }
         });
     }
     //endchart
+
+   
 
     function countTransform(count) {
         return Math.sqrt(Math.sqrt(count + 1));
