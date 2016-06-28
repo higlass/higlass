@@ -39,22 +39,23 @@ var svg = d3.select('#circle').append('svg')
 .attr('height', height)
 
 let resizeDispatch = d3.dispatch('resize');
-let xScale = d3.scale.linear().domain([0, 10000000])
-    .range([0, width - margin.left - margin.right]);
+let xScale = d3.scale.linear().domain([0, 5000000])
+    .range([0, width]);
 
 var draggableTrack = goomba.DraggableTrack()
     .width(width)
-    .height(trackHeight)
-    .resizeDispatch(resizeDispatch);
+    .height(trackHeight);
 
 var wigglePixiTrack = goomba.WigglePixiTrack()
-    .xScale(xScale)
-    .resizeDispatch(resizeDispatch);
+    .xScale(xScale);
 
 let tracks = d3.select('.big-div')
 .selectAll('.track')
-.data([{'width': 800, 'height': 60, 
-        'source': awsDomain + '/tiles_test/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz'}])
+.data([{'width': width, 'height': 60, 
+        'source': awsDomain + '/tiles_test/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz'},
+       {'width': width, 'height': 60, 
+        'source': awsDomain + '/tiles_test/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz'}
+])
 .enter()
 .append('div')
 .classed('track', true)
