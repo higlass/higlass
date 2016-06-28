@@ -48,8 +48,6 @@ export function WigglePixiTrack() {
             let tileData = d3.select(this).selectAll('.tile-g').data();
             let shownTiles = {};
 
-            console.log('tileData:', tileData);
-
             let minVisibleValue = Math.min(...tileData.map((x) => x.valueRange[0]));
             let maxVisibleValue = Math.max(...tileData.map((x) => x.valueRange[1]));
 
@@ -62,7 +60,6 @@ export function WigglePixiTrack() {
 
             let drawTile = function(graphics, tile) {
                 let tileData = loadTileData(tile.data);
-                console.log('tileData:', tileData);
 
                 let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
                 // this scale should go from an index in the data array to 
@@ -83,7 +80,7 @@ export function WigglePixiTrack() {
                     let width = xScale(tileXScale(i+1)) - xScale(tileXScale(i));
 
                     if (height > 0 && width > 0) {
-                        console.log('drawRect', xPos, yPos, width, height);
+                        //console.log('drawRect', xPos, yPos, width, height);
                         graphics.drawRect(xPos, yPos, width, height);
                     }
                 }
@@ -108,10 +105,16 @@ export function WigglePixiTrack() {
             .enter()
             .append('canvas');
 
-            let canvas = d3.select(this).selectAll('canvas');
+            let canvas = d3.select(this).select('canvas');
+            console.log('canvas:', canvas);
 
-            var renderer = PIXI.autoDetectRenderer(d.width, d.height, { antialias: true,
-            view: canvas.node() });
+
+            if (!('renderer' in d)) {
+                d.renderer = PIXI.autoDetectRenderer(d.width, d.height, { antialias: true,
+                view: canvas.node() });
+            }
+
+            var renderer = d.renderer;
 
             // create the root of the scene graph
             var stage = new PIXI.Container();
@@ -120,6 +123,8 @@ export function WigglePixiTrack() {
 
             var graphics = new PIXI.Graphics();
             var pMain = new PIXI.Graphics();
+
+            console.log('new pMain');
 
             /*
             // set a fill and line style

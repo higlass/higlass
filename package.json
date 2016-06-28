@@ -42,6 +42,7 @@
     "jasmine": "^2.4.1",
     "main-bower-files": "~2.11.1",
     "mversion": "^1.10.1",
+    "pixi.js": "^3.0.11",
     "slugid": "^1.1.0",
     "style-loader": "^0.13.1",
     "webpack": "~1.12.14",
