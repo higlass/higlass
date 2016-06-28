@@ -31,12 +31,15 @@ var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt'
 
 var bigDiv = d3.select('#circle').append('div')
 .classed('big-div', true)
-.attr('width', width)
-.attr('height', height)
+.style('width', width)
+.style('height', height)
+.style('top', '0px')
+.style('left', '0px')
+.style('position', 'absolute')
 
 var bigSvg = bigDiv.append('svg')
-.attr('top', 0)
-.attr('left', 0)
+.attr('top', '0px')
+.attr('left', '0px')
 .attr('position', 'absolute')
 .attr('width', width)
 .attr('height', height)
@@ -81,6 +84,8 @@ let tracks = d3.select('.big-div')
 
 var tiledArea = goomba.GenericTiledArea()
     .tileType('div')
+    .width(width)
+    //.domain(xScale.domain())
     .zoomDispatch(zoomDispatch)
     .tilesChanged(function() {
         tracks.call(wigglePixiTrack) });

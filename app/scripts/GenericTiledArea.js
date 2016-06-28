@@ -3,7 +3,6 @@ import slugid from 'slugid';
 export function GenericTiledArea() {
     var width = 550;
     var height = 400;
-    var margin = {'top': 30, 'left': 30, 'bottom': 30, 'right': 30};
 
     let oneDimensional = true;     // will these be 1D tiles or 2D?
 
@@ -222,8 +221,13 @@ export function GenericTiledArea() {
                 let epsilon = 0.000001;
                 let tiles = [];
 
+                console.log('zx:', zoom.x().domain(), minX, zoom.scale(), zoom.translate());
+                console.log('sdfs:', xOrigScale.invert(zoom.translate()[0] / zoom.scale()));
+                console.log('xOrigScale.domain()', xOrigScale.domain(), xOrigScale.range());
+
                 let rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
                                     Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth)));
+                console.log('rows:', rows, tileWidth, totalWidth)
 
                                     if (! oneDimensional ) {
                                         let cols = d3.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight),
@@ -326,19 +330,21 @@ export function GenericTiledArea() {
                     xScaleDomain = [minX, maxX];
                 else
                     xScaleDomain = domain;
+                
+                console.log('xScaleDomain:', xScaleDomain);
 
                 yScaleDomain = [minY, maxY];
 
                 if (xScale == null) {
                     xScale = d3.scale.linear()
                     .domain(xScaleDomain)
-                    .range([0, width - margin.left - margin.right]);
+                    .range([0, width]);
                 }
 
                 if (yScale == null) {
                     yScale = d3.scale.linear()
                     .domain(yScaleDomain)
-                    .range([height - margin.top - margin.bottom, 0]);
+                    .range([height, 0]);
                 }
 
                 if ('max_width' in tile_info) {
@@ -451,12 +457,6 @@ export function GenericTiledArea() {
     chart.xScale = function(_) {
         if (!arguments) return xScale;
         else xScale = _;
-        return chart;
-    }
-
-    chart.margin = function(_) {
-        if (!arguments) return margin;
-        else margin = _;
         return chart;
     }
 

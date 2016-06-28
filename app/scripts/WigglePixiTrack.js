@@ -85,7 +85,7 @@ export function WigglePixiTrack() {
 
                     if (height > 0 && width > 0) {
                         if (i % 1 == 0) {
-                            //console.log('drawRect', xPos, yPos, width, height);
+                            console.log('drawRect', xPos, yPos, width, height);
                             graphics.drawRect(xPos, yPos, width, height);
                         }
                     }
@@ -174,8 +174,11 @@ export function WigglePixiTrack() {
                     d.tileGraphics[tileIdStr].scale.x = scale;
                 }
                 */
+                //console.log('translate[0]', translate[0], scale)
                 d.pMain.position.x = translate[0];
                 d.pMain.scale.x = scale;
+
+                console.log('position:', translate[0], scale);
             }
         });
     }
