@@ -37,6 +37,15 @@ var bigDiv = d3.select('#circle').append('div')
 .style('left', '0px')
 .style('position', 'absolute')
 
+var bigCanvas = bigDiv.append('canvas')
+.style('position', 'absolute')
+.style('top', '0px')
+.style('left', '0px');
+
+var pixiRenderer = PIXI.autoDetectRenderer(width, height, { antialiased: true,
+                                                            view: bigCanvas.node(),
+                                                            'transparent': true});
+
 var bigSvg = bigDiv.append('svg')
 .attr('top', '0px')
 .attr('left', '0px')
@@ -47,6 +56,9 @@ var bigSvg = bigDiv.append('svg')
 let bigRect = bigSvg.append('rect')
 .attr('width', width)
 .attr('height', height)
+.style('fill', 'transparent')
+.style('stroke', 'yellow')
+.style('stroke-width', '5px')
 
 let xScale = d3.scale.linear().domain([0, 5000000])
     .range([0, width]);
@@ -55,6 +67,7 @@ let zoomDispatch = d3.dispatch('zoom');
 var zoom = d3.behavior.zoom()
     .x(xScale)
     .on('zoom', function() {
+        console.log('zooming...');
         zoomDispatch.zoom(zoom.translate(), zoom.scale());
     });
 
@@ -69,16 +82,21 @@ var draggableTrack = goomba.DraggableTrack()
 
 var wigglePixiTrack = goomba.WigglePixiTrack()
     .xScale(xScale.copy())
+    .pixiRenderer(pixiRenderer)
     .zoomDispatch(zoomDispatch);
+
+
+trackData = [
+        {'width': width, 'height': 80, 
+        'source': awsDomain + '/tiles_test/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz'},
+];
 
 let tracks = d3.select('.big-div')
 .selectAll('.track')
-.data([
-        {'width': width, 'height': 80, 
-        'source': awsDomain + '/tiles_test/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz'},
-])
+.data(trackData)
 .enter()
 .append('div')
+.style('opacity', 0.5)
 .classed('track', true)
 .call(draggableTrack)
 
@@ -91,6 +109,23 @@ var tiledArea = goomba.GenericTiledArea()
         tracks.call(wigglePixiTrack) });
 
 tracks.call(tiledArea)
+
+animate();
+
+//console.log('rendering stage:', trackData[i].stage);
+console.log('trackData:', trackData);
+
+function animate() {
+    //console.log('animating...');
+    //console.log('trackData:', trackData);
+    for (let i = 0; i < trackData.length; i++) {
+        if ('stage' in trackData[i])  {
+            //console.log('rendering stage:', trackData[i].stage);
+            pixiRenderer.render(trackData[i].stage);
+        }
+    }
+    requestAnimationFrame( animate );
+}
 
     /*
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {

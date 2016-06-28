@@ -9,6 +9,7 @@ export function WigglePixiTrack() {
     let xScale = d3.scale.linear();
     let zoomDispatch = null;
     let resolution = 256;
+    let pixiRenderer = null;
 
     function tileId(tile) {
         // uniquely identify the tile with a string
@@ -41,6 +42,15 @@ export function WigglePixiTrack() {
             if (!('resizeDispatch' in d)) {
                 d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize') : resizeDispatch;
             }
+
+            if (!('translate' in d)) {
+                d.translate = [0,0];
+            }
+
+            if (!('scale' in d)) {
+                d.scale = 1;
+            }
+
             let localResizeDispatch = d.resizeDispatch;
             let slugId = slugid.nice();
             localResizeDispatch.on('resize.' + slugId, sizeChanged);
@@ -84,10 +94,8 @@ export function WigglePixiTrack() {
                     let width = xScale(tileXScale(i+1)) - xScale(tileXScale(i));
 
                     if (height > 0 && width > 0) {
-                        if (i % 1 == 0) {
-                            console.log('drawRect', xPos, yPos, width, height);
-                            graphics.drawRect(xPos, yPos, width, height);
-                        }
+                        //console.log('drawRect:', xPos, yPos, width, height);
+                        graphics.drawRect(xPos, yPos, width, height);
                     }
                 }
             }
@@ -106,10 +114,12 @@ export function WigglePixiTrack() {
             let canvas = d3.select(this).select('canvas');
 
 
-            if (!('renderer' in d)) {
+            if (!('pMain' in d)) {
+                /*
                 d.renderer = PIXI.autoDetectRenderer(d.width, d.height, { antialias: true,
                                                                           view: canvas.node(),
                                                                           transparent: true });
+                */
 
                 var stage = new PIXI.Container();
                 stage.interactive = true;
@@ -128,20 +138,14 @@ export function WigglePixiTrack() {
             // create the root of the scene graph
 
             // run the render loop
-            animate();
-
-            function animate() {
-                renderer.render(stage);
-                requestAnimationFrame( animate );
-            }
 
             function sizeChanged(params) {
                 yScale.range([0, params.height]);
                 console.log('params:', params);
                 console.log('d.pMain.position:', d.pMain.position);
                 console.log('d:', d);
-                renderer.resize(params.width, params.height);
-                d.pMain.position.x = -params.left;
+                //renderer.resize(params.width, params.height);
+                d.pMain.position.x = d.translate[0] - params.left;
             }
 
             for (let i = 0; i < tileData.length; i++) {
@@ -175,10 +179,11 @@ export function WigglePixiTrack() {
                 }
                 */
                 //console.log('translate[0]', translate[0], scale)
-                d.pMain.position.x = translate[0];
-                d.pMain.scale.x = scale;
+                d.translate = translate;
+                d.scale = scale;
 
-                console.log('position:', translate[0], scale);
+                d.pMain.position.x = d.translate[0] - d.left;
+                d.pMain.scale.x = scale;
             }
         });
     }
@@ -210,6 +215,12 @@ export function WigglePixiTrack() {
     chart.zoomDispatch = function(_) {
         if (!arguments.length) return zoomDispatch;
         else zoomDispatch = _;
+        return chart;
+    }
+
+    chart.pixiRenderer = function(_) {
+        if (!arguments.length) return pixiRenderer;
+        else pixiRenderer = _;
         return chart;
     }
 

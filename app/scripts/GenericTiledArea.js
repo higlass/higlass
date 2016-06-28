@@ -218,7 +218,7 @@ export function GenericTiledArea() {
                 var tileWidth = totalWidth /  Math.pow(2, zoomLevel);
                 var tileHeight = totalHeight / Math.pow(2, zoomLevel);
 
-                let epsilon = 0.000001;
+                let epsilon = 0.0000001;
                 let tiles = [];
 
                 console.log('zx:', zoom.x().domain(), minX, zoom.scale(), zoom.translate());
@@ -227,6 +227,8 @@ export function GenericTiledArea() {
 
                 let rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
                                     Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth)));
+                console.log('mm:', Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth));
+
                 console.log('rows:', rows, tileWidth, totalWidth)
 
                                     if (! oneDimensional ) {
@@ -271,6 +273,7 @@ export function GenericTiledArea() {
                 let minAllowedX = xScaleDomain[0];
                 let maxAllowedX = xScaleDomain[1];
 
+                /*
                 // constrain the scales to the allowed regions
                 if (xScale.domain()[0] < minAllowedX) {
                     xScale.domain([minAllowedX, xScale.domain()[1] - xScale.domain()[0] + minAllowedX]);
@@ -296,6 +299,7 @@ export function GenericTiledArea() {
 
                     zoom.translate([zoom.translate()[0], yOrigScale.range()[0] - yOrigScale(yScale.domain()[0]) * zoom.scale()])
                 }
+                */
 
                 draw();
             }
