@@ -173,11 +173,6 @@ export function MassiveMatrixPlot() {
             }
 
             function zoomChanged(translate, scale) {
-<<<<<<< HEAD
-=======
-           //     console.log('zoomed:', translate, scale);
-
->>>>>>> Vanilla-Alex
                 // something changed the zoom.
                 zoom.translate(translate);
                 zoom.scale(scale);
@@ -304,19 +299,11 @@ export function MassiveMatrixPlot() {
                         });
                         //console.log('pixelValue loading', new Date().getTime() - t1);
                     } catch (err) {
-<<<<<<< HEAD
+
                         console.log('ERROR:', err);
                         //console.log('lastD:', lastD, data);
                         //console.log('minVisibleValue, maxVisibleValue', minVisibleValue, maxVisibleValue);
-=======
-                      //  console.log('lastD:', lastD, data);
-                        //console.log('minVisibleValue, maxVisibleValue', minVisibleValue, maxVisibleValue);
-                        /*
-                           console.log('rgbIdx:', rgbIdx);
-                           return pix;
-                           */
-                        //console.log("Err:", err);
->>>>>>> Vanilla-Alex
+
                     }
 
 
@@ -388,10 +375,7 @@ export function MassiveMatrixPlot() {
                 // go through each tile shown tile and change its texture
                 // this is normally called when the value of the color scale changes
                 // it's a little slow at the moment so it's unused
-<<<<<<< HEAD
-=======
-              //  console.log('changing textures');
->>>>>>> Vanilla-Alex
+
                 for (let tileId in loadedTiles) {
                     loadedTiles[tileId].canvasChanged = true;
                 }
@@ -461,7 +445,7 @@ export function MassiveMatrixPlot() {
                         let sprite = null;
 
                         if (tiles[i][0] == maxZoom) {
-<<<<<<< HEAD
+
                             sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
                         } else {
                             sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
@@ -469,23 +453,14 @@ export function MassiveMatrixPlot() {
                         //let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
 
                         setSpriteProperties(sprite, tiles[i]);
-                        
-=======
-                                    sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
-                                } else {
-                                    sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
-                                }
-                                //let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
-
-                                setSpriteProperties(sprite, tiles[i]);
-                                //to see the sprites
-                              /*  newGraphics.lineStyle(2, 0x0000FF, 1);
+                         /*  newGraphics.lineStyle(2, 0x0000FF, 1);
                                 newGraphics.moveTo(sprite.x, sprite.y);
                                 newGraphics.lineTo(sprite.x+sprite.width, sprite.y);
                                 newGraphics.lineTo(sprite.x+sprite.width, sprite.y+sprite.height);
                                 newGraphics.lineTo(sprite.x, sprite.y+sprite.height);
                                 newGraphics.lineTo(sprite.x, sprite.y);*/
->>>>>>> Vanilla-Alex
+                        
+
                         newGraphics.addChild(sprite);
                         tileGraphics[tileId(tiles[i])] = newGraphics;
 
@@ -997,7 +972,7 @@ export function MassiveMatrixPlot() {
 
 
                 for (let i = 0; i < rows.length; i++) {
-<<<<<<< HEAD
+
                     for (let j = 0; j < cols.length; j++) { 
                         if (mirrorTiles) {
                             if (rows[i] >= cols[j]) {
@@ -1023,19 +998,12 @@ export function MassiveMatrixPlot() {
 
                             tiles.push(newTile)
                         }
-=======
-                    for (let j = 0; j < cols.length; j++) {
-                        tiles.push([zoomLevel, rows[i], cols[j]]);                   
->>>>>>> Vanilla-Alex
+
                     }
                 }
                 // hey hye
                 
-<<<<<<< HEAD
-                //console.log('tiles:', tiles);
 
-=======
->>>>>>> Vanilla-Alex
                 refreshTiles(tiles);
                 if(showDebug == 1) {
                     drawRect(tiles);
