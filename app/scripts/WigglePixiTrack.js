@@ -58,6 +58,7 @@ export function WigglePixiTrack() {
             .range([0, d.height]);
 
             let drawTile = function(graphics, tile) {
+                console.log('drawing tile:', d, tile, d.renderer);
                 let tileData = loadTileData(tile.data);
 
                 let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
@@ -66,9 +67,6 @@ export function WigglePixiTrack() {
                 let tileXScale = d3.scale.linear().domain([0, tileData.length])
                 .range([tile.xRange[0] + tile.tilePos[1] * tileWidth, 
                        tile.xRange[0] + (tile.tilePos[1] + 1) * tileWidth]  );
-
-                console.log('tileXScale.range', tileXScale.range());
-                console.log('tile', tile);
 
                 graphics.lineStyle(2, 0x0000FF, 1);
                 graphics.beginFill(0xFF700B, 1);
@@ -80,8 +78,8 @@ export function WigglePixiTrack() {
                     let width = xScale(tileXScale(i+1)) - xScale(tileXScale(i));
 
                     if (height > 0 && width > 0) {
-                        if (i % 10 == 0)
-                            //console.log('drawRect', xPos, yPos, width, height);
+                        if (i % 100 == 0)
+                            console.log('drawRect', xPos, yPos, width, height);
                         graphics.drawRect(xPos, yPos, width, height);
                     }
                 }
@@ -103,21 +101,24 @@ export function WigglePixiTrack() {
 
             if (!('renderer' in d)) {
                 d.renderer = PIXI.autoDetectRenderer(d.width, d.height, { antialias: true,
-                view: canvas.node() });
+                                                                          view: canvas.node(),
+                                                                          transparent: true });
+
+                var stage = new PIXI.Container();
+                stage.interactive = true;
+
+                var pMain = new PIXI.Graphics();
+                stage.addChild(pMain);
+
+                d.pMain = pMain;
+                d.stage = stage;
             }
 
             var renderer = d.renderer;
+            var stage = d.stage;
+            var pMain = d.pMain;
 
             // create the root of the scene graph
-            var stage = new PIXI.Container();
-
-            stage.interactive = true;
-
-            var graphics = new PIXI.Graphics();
-            var pMain = new PIXI.Graphics();
-
-            stage.addChild(graphics);
-            stage.addChild(pMain);
 
             // run the render loop
             animate();

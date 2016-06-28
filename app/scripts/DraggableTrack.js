@@ -123,7 +123,6 @@ export function DraggableTrack() {
             }
 
             function changeSize(params) {
-                console.log('params:', params);
                 localResizeDispatch.resize(params);
             }
 
