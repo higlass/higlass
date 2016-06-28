@@ -205,13 +205,75 @@ export function MassiveMatrixPlot() {
             }
 
             $("svg.mainSVG").mousemove(function(e) {
-             //   document.Form1.posx.value = e.pageX;
-               // mous = e.pageY;
-               var parentOffset = $(this).parent().offset(); 
-              // console.log("offset " +parentOffset.left);\
-                console.log(xScale.invert(e.pageX - parentOffset.left - margin.left)  + " " + yScale.invert(e.pageY - parentOffset.top - margin.top));
-            })
 
+               $("#tooltip").empty();
+                $('#tooltip').hide();
+
+               var parentOffset = $(this).parent().offset();
+               let maxW, maxH;
+               maxW = $("canvas").width();
+               maxH = $("canvas").height();
+              
+                
+               if((e.pageX - parentOffset.left - margin.left) > 0 && (e.pageX - parentOffset.left - margin.left) <= maxW 
+                    && (e.pageY - parentOffset.top - margin.top) > 0 && (e.pageY - parentOffset.top - margin.top) <= maxH){
+                    $('#tooltip').show();
+                    let length, tileX, tileY, xIndex, yIndex;
+                    let index, value;
+
+                    let xpos = Math.floor(xScale.invert(e.pageX - parentOffset.left - margin.left)/1000)*1000;
+                    let ypos = Math.floor(yScale.invert(e.pageY - parentOffset.top - margin.top)/1000)*1000;
+                   
+                    for(let tileId in shownTiles) {
+                    //console.log("tile id " + tileId);
+                   
+
+                   // tile's data 
+                   //console.log(loadedTiles[tileId]);
+
+                   //tile's length in bp
+                    length = totalWidth/Math.pow(2, loadedTiles[tileId].pos[0]);
+                    //console.log(length);
+
+                    //tile's starting point
+                    tileX = length*loadedTiles[tileId].pos[1];
+                    tileY = length*loadedTiles[tileId].pos[2];
+
+                    //console.log(tileX+" "+tileY);
+                    //console.log(xpos+" "+ tileX +" " + ypos+ " "+ tileY + " "+length);
+                    if(xpos >= tileX && xpos < (tileX+length) && ypos >= tileY && ypos < (tileY+length)){
+                        // iplagt belongs to this tile
+                        $("#tooltip").css('top', (e.pageY+10)+'px');
+                        $("#tooltip").css('left', (e.pageX+10)+'px');
+                        $("#tooltip").append("<span >The tile's id is " + tileId + " </span><br/>");
+                       
+                        if(loadedTiles[tileId].pos[0] == 5) {
+                            xIndex = (xpos-tileX)/length * 256;
+                            yIndex = (ypos-tileY)/length * 256;
+
+                            
+                            index = yIndex*256 + xIndex;
+                            value = loadedTiles[tileId].data[index];
+                            if(value != null) {
+                                $("#tooltip").append("<span>The value at (" + xpos + ", " + ypos + ") is " + value + ".</span>");
+                            }
+                        }
+                        break;
+                        
+                    }
+
+               }
+            
+               
+               }
+              // console.log("Shown Tiles" + shownTiles[0]);
+              // console.log(Math.floor(xScale.invert(e.pageX - parentOffset.left - margin.left)/1000)  + " " + Math.floor(yScale.invert(e.pageY - parentOffset.top - margin.top)/1000));
+            });
+
+            $("svg.mainSVG").mouseleave(function(e) {
+                $('#tooltip').empty();
+                $('#tooltip').hide();
+            });
             function setPix(pix, data, zoomLevel) {
                 //console.log('maxZoom:', maxZoom);
                 
