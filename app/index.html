@@ -76,8 +76,8 @@ let mmvMargin = {'top': 150, 'left': 30, 'bottom': 30, 'right': 120};
 
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 ///////////////////////////
-    var xScale = d3.scale.linear().domain([0, 5000000])
-    //var xScale = d3.scale.linear().domain([0, 3137161264])
+    //var xScale = d3.scale.linear().domain([0, 5000000])
+    var xScale = d3.scale.linear().domain([0, 3137161264])
         .range([0, width - mmvMargin.left - mmvMargin.right]);
 
     var zoomDispatch = d3.dispatch('zoom');
@@ -92,7 +92,8 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .zoomDispatch(zoomDispatch)
 
         d3.select('#mmv-area')
-        .datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
+        .datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
         //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
         .call(mmvPlot1)
