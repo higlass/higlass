@@ -34,27 +34,45 @@ var bigDiv = d3.select('#circle').append('div')
 .attr('width', width)
 .attr('height', height)
 
-var svg = d3.select('#circle').append('svg')
+var bigSvg = bigDiv.append('svg')
+.attr('top', 0)
+.attr('left', 0)
+.attr('position', 'absolute')
 .attr('width', width)
 .attr('height', height)
 
-let resizeDispatch = d3.dispatch('resize');
+let bigRect = bigSvg.append('rect')
+.attr('width', width)
+.attr('height', height)
+
 let xScale = d3.scale.linear().domain([0, 5000000])
     .range([0, width]);
+
+let zoomDispatch = d3.dispatch('zoom');
+var zoom = d3.behavior.zoom()
+    .x(xScale)
+    .on('zoom', function() {
+        zoomDispatch.zoom(zoom.translate(), zoom.scale());
+    });
+
+
+bigRect.call(zoom);
+
+let resizeDispatch = d3.dispatch('resize');
 
 var draggableTrack = goomba.DraggableTrack()
     .width(width)
     .height(trackHeight);
 
 var wigglePixiTrack = goomba.WigglePixiTrack()
-    .xScale(xScale);
+    .xScale(xScale.copy())
+    .zoomDispatch(zoomDispatch);
 
 let tracks = d3.select('.big-div')
 .selectAll('.track')
-.data([{'width': width, 'height': 60, 
+.data([
+        {'width': width, 'height': 80, 
         'source': awsDomain + '/tiles_test/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz'},
-       {'width': 300, 'height': 60, 
-        'source': awsDomain + '/tiles_test/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz'}
 ])
 .enter()
 .append('div')
@@ -63,6 +81,7 @@ let tracks = d3.select('.big-div')
 
 var tiledArea = goomba.GenericTiledArea()
     .tileType('div')
+    .zoomDispatch(zoomDispatch)
     .tilesChanged(function() {
         tracks.call(wigglePixiTrack) });
 

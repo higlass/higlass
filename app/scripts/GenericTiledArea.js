@@ -132,12 +132,12 @@ export function GenericTiledArea() {
                 gTilesEnter.append(tileType)
                 .classed('tile-g', true)
 
-                console.log('appended tile-g');
 
                 gTilesExit.remove();
 
                 // only redraw if the tiles have changed
                 if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
+                    console.log('tilesChanged', xScale.domain());
                     tilesChanged();
                     draw();
                 }
