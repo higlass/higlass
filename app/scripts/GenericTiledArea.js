@@ -136,7 +136,7 @@ export function GenericTiledArea() {
 
                 // only redraw if the tiles have changed
                 if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
-                    console.log('tilesChanged', xScale.domain());
+                    //console.log('tilesChanged', xScale.domain());
                     tilesChanged();
                     draw();
                 }
@@ -221,9 +221,11 @@ export function GenericTiledArea() {
                 let epsilon = 0.0000001;
                 let tiles = [];
 
+                /*
                 console.log('zx:', zoom.x().domain(), minX, zoom.scale(), zoom.translate());
                 console.log('sdfs:', xOrigScale.invert(zoom.translate()[0] / zoom.scale()));
                 console.log('xOrigScale.domain()', xOrigScale.domain(), xOrigScale.range());
+                */
 
                 let rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
                                     Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth)));

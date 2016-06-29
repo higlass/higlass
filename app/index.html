@@ -14,7 +14,7 @@
 
 <script type='text/javascript'>
 
-let width = 600;
+let width = 448;
 let height = 240;
 
 let trackHeight = 30;
@@ -40,11 +40,14 @@ var bigDiv = d3.select('#circle').append('div')
 var bigCanvas = bigDiv.append('canvas')
 .style('position', 'absolute')
 .style('top', '0px')
-.style('left', '0px');
+.style('left', '0px')
+.style('pointer-events', 'none');
 
 var pixiRenderer = PIXI.autoDetectRenderer(width, height, { antialiased: true,
                                                             view: bigCanvas.node(),
                                                             'transparent': true});
+var stage = new PIXI.Container();
+stage.interactive = true;
 
 var bigSvg = bigDiv.append('svg')
 .attr('top', '0px')
@@ -83,11 +86,14 @@ var draggableTrack = goomba.DraggableTrack()
 var wigglePixiTrack = goomba.WigglePixiTrack()
     .xScale(xScale.copy())
     .pixiRenderer(pixiRenderer)
+    .pixiStage(stage)
     .zoomDispatch(zoomDispatch);
 
 
 trackData = [
         {'width': width, 'height': 80, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 60, 
         'source': awsDomain + '/tiles_test/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz'},
 ];
 
@@ -118,12 +124,16 @@ console.log('trackData:', trackData);
 function animate() {
     //console.log('animating...');
     //console.log('trackData:', trackData);
-    for (let i = 0; i < trackData.length; i++) {
+    //for (let i = 0; i < trackData.length; i++) {
+     pixiRenderer.render(stage);
+     /*
+     for (let i = 1; i >= 0; i--) {
         if ('stage' in trackData[i])  {
-            //console.log('rendering stage:', trackData[i].stage);
+            //console.log('rendering stage:', i, trackData[i].stage);
             pixiRenderer.render(trackData[i].stage);
         }
     }
+    */
     requestAnimationFrame( animate );
 }
 

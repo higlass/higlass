@@ -9,7 +9,7 @@ export function WigglePixiTrack() {
     let xScale = d3.scale.linear();
     let zoomDispatch = null;
     let resolution = 256;
-    let pixiRenderer = null;
+    let pixiStage = null;
 
     function tileId(tile) {
         // uniquely identify the tile with a string
@@ -106,29 +106,18 @@ export function WigglePixiTrack() {
             width = d.width;
             height = d.height;
 
-            d3.select(this).selectAll('canvas')
-            .data([1])
-            .enter()
-            .append('canvas');
+            if (!('pixiStage' in d)) {
+                d.stage = pixiStage; 
+            }
 
-            let canvas = d3.select(this).select('canvas');
-
+            var stage = d.stage;
 
             if (!('pMain' in d)) {
-                /*
-                d.renderer = PIXI.autoDetectRenderer(d.width, d.height, { antialias: true,
-                                                                          view: canvas.node(),
-                                                                          transparent: true });
-                */
-
-                var stage = new PIXI.Container();
-                stage.interactive = true;
 
                 var pMain = new PIXI.Graphics();
                 stage.addChild(pMain);
 
                 d.pMain = pMain;
-                d.stage = stage;
             }
 
             var renderer = d.renderer;
@@ -145,7 +134,9 @@ export function WigglePixiTrack() {
                 console.log('d.pMain.position:', d.pMain.position);
                 console.log('d:', d);
                 //renderer.resize(params.width, params.height);
-                d.pMain.position.x = d.translate[0] - params.left;
+                //d.pMain.position.x = d.translate[0] - params.left;
+                //d.pMain.position.x = params.left;
+                d.pMain.position.y = params.top;
             }
 
             for (let i = 0; i < tileData.length; i++) {
@@ -218,9 +209,9 @@ export function WigglePixiTrack() {
         return chart;
     }
 
-    chart.pixiRenderer = function(_) {
-        if (!arguments.length) return pixiRenderer;
-        else pixiRenderer = _;
+    chart.pixiStage = function(_) {
+        if (!arguments.length) return pixiStage;
+        else pixiStage = _;
         return chart;
     }
 
