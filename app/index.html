@@ -85,7 +85,6 @@ var draggableTrack = goomba.DraggableTrack()
 
 var wigglePixiTrack = goomba.WigglePixiTrack()
     .xScale(xScale.copy())
-    .pixiRenderer(pixiRenderer)
     .pixiStage(stage)
     .zoomDispatch(zoomDispatch);
 
@@ -93,8 +92,10 @@ var wigglePixiTrack = goomba.WigglePixiTrack()
 trackData = [
         {'width': width, 'height': 80, 
         'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        /*
         {'width': width, 'height': 60, 
         'source': awsDomain + '/tiles_test/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz'},
+        */
 ];
 
 let tracks = d3.select('.big-div')

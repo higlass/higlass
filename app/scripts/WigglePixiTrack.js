@@ -71,7 +71,7 @@ export function WigglePixiTrack() {
 
             let yScale = d3.scale.linear()
             .domain([0, maxVisibleValue])
-            .range([0, d.height]);
+            .range([0, 1]);
 
             let drawTile = function(graphics, tile) {
                 console.log('drawing tile:', tile.tileId, xScale.domain(), xScale.range());
@@ -89,12 +89,13 @@ export function WigglePixiTrack() {
 
                 for (let i = 0; i < tileData.length; i++) {
                     let xPos = xScale(tileXScale(i));
-                    let yPos = d.height - yScale(tileData[i]);
+                    //let yPos = -(d.height - yScale(tileData[i]));
+                    let yPos = -1; //-(d.height - yScale(tileData[i]));
                     let height = yScale(tileData[i])
                     let width = xScale(tileXScale(i+1)) - xScale(tileXScale(i));
 
                     if (height > 0 && width > 0) {
-                        //console.log('drawRect:', xPos, yPos, width, height);
+                        console.log('drawRect:', xPos, yPos, width, height);
                         graphics.drawRect(xPos, yPos, width, height);
                     }
                 }
@@ -118,6 +119,8 @@ export function WigglePixiTrack() {
                 stage.addChild(pMain);
 
                 d.pMain = pMain;
+
+                sizeChanged();
             }
 
             var renderer = d.renderer;
@@ -128,15 +131,18 @@ export function WigglePixiTrack() {
 
             // run the render loop
 
-            function sizeChanged(params) {
-                yScale.range([0, params.height]);
+            function sizeChanged() {
+                yScale.range([0, d.height]);
+                /*
                 console.log('params:', params);
                 console.log('d.pMain.position:', d.pMain.position);
                 console.log('d:', d);
+                */
                 //renderer.resize(params.width, params.height);
                 //d.pMain.position.x = d.translate[0] - params.left;
                 //d.pMain.position.x = params.left;
-                d.pMain.position.y = params.top;
+                d.pMain.position.y = d.top;
+                d.pMain.scale.y = -d.height;
             }
 
             for (let i = 0; i < tileData.length; i++) {
@@ -173,8 +179,13 @@ export function WigglePixiTrack() {
                 d.translate = translate;
                 d.scale = scale;
 
-                d.pMain.position.x = d.translate[0] - d.left;
                 d.pMain.scale.x = scale;
+                d.pMain.position.x = d.translate[0];
+
+                sizeChanged();
+                /*
+                d.pMain.scale.y = -d.height;
+                */
             }
         });
     }
