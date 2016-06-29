@@ -894,7 +894,7 @@ export function MassiveMatrixPlot() {
                 let h =  length/(maxX-minX)* (height - margin.top - margin.bottom);
                 let message;
                 let color;
-                console.log("tiles" + tiles[0].mirrored);
+             //   console.log("tiles" + tiles[0].mirrored);
                 for (var i = 0; i < tiles.length; i++) {
                     message = "";
                     if(tileStatus[zoomlevel] != null && tileStatus[zoomlevel][tiles[i][1]] != null && tileStatus[zoomlevel][tiles[i][1]][tiles[i][2]] != null) {
@@ -917,7 +917,7 @@ export function MassiveMatrixPlot() {
                         }   
                         
                         if(tiles[i][1] != tiles[i][2]) {
-                            console.log(tiles[i][1] + " " + tiles[i][2])
+                            
                             rectData.push({
                                 y: 0+length*tiles[i][1],
                                 x: 0+length*tiles[i][2],
@@ -939,9 +939,15 @@ export function MassiveMatrixPlot() {
                         });
                 }
                 console.log("size" + rectData.length);
-                rectData = jQuery.unique( rectData );
-                console.log("size" + rectData.length);
-                return rectData;
+                let uniqueRect = [], uniqueID = [];
+                for(var i=0; i<rectData.length; i++) {
+                    if(uniqueID.indexOf(rectData[i].id) === -1) {
+                        uniqueRect.push(rectData[i]);
+                        uniqueID.push(rectData[i].id);
+                    }
+                }
+
+                return uniqueRect;
             }
 
            
