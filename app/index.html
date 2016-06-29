@@ -15,7 +15,7 @@
 <script type='text/javascript'>
 
 let width = 448;
-let height = 240;
+let height = 440;
 
 let trackHeight = 30;
 let margin = {'left': 30, 'top': 10, 'right': 30, 'bottom': 10};
@@ -70,7 +70,6 @@ let zoomDispatch = d3.dispatch('zoom');
 var zoom = d3.behavior.zoom()
     .x(xScale)
     .on('zoom', function() {
-        console.log('zooming...');
         zoomDispatch.zoom(zoom.translate(), zoom.scale());
     });
 
@@ -90,7 +89,79 @@ var wigglePixiTrack = goomba.WigglePixiTrack()
 
 
 trackData = [
-        {'width': width, 'height': 80, 
+        {'width': width, 'height': 50, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 8, 
         'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
         /*
         {'width': width, 'height': 60, 

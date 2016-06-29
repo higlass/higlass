@@ -74,7 +74,7 @@ export function WigglePixiTrack() {
             .range([0, 1]);
 
             let drawTile = function(graphics, tile) {
-                console.log('drawing tile:', tile.tileId, xScale.domain(), xScale.range());
+                //console.log('drawing tile:', tile.tileId, xScale.domain(), xScale.range());
                 let tileData = loadTileData(tile.data);
 
                 let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
@@ -95,7 +95,6 @@ export function WigglePixiTrack() {
                     let width = xScale(tileXScale(i+1)) - xScale(tileXScale(i));
 
                     if (height > 0 && width > 0) {
-                        console.log('drawRect:', xPos, yPos, width, height);
                         graphics.drawRect(xPos, yPos, width, height);
                     }
                 }
@@ -162,7 +161,6 @@ export function WigglePixiTrack() {
                 if (!(tileIdStr in shownTiles)) {
                     //we're displaying graphics that are no longer necessary,
                     //so we need to get rid of them
-                    console.log('removing tile:', tileIdStr);
                     pMain.removeChild(d.tileGraphics[tileIdStr]);
                     delete d.tileGraphics[tileIdStr];
                 }
@@ -175,7 +173,6 @@ export function WigglePixiTrack() {
                     d.tileGraphics[tileIdStr].scale.x = scale;
                 }
                 */
-                //console.log('translate[0]', translate[0], scale)
                 d.translate = translate;
                 d.scale = scale;
 

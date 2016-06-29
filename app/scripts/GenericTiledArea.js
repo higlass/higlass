@@ -229,9 +229,10 @@ export function GenericTiledArea() {
 
                 let rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
                                     Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth)));
+                /*
                 console.log('mm:', Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth));
-
                 console.log('rows:', rows, tileWidth, totalWidth)
+                */
 
                                     if (! oneDimensional ) {
                                         let cols = d3.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight),
