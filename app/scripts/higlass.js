@@ -126,15 +126,7 @@ export function MassiveMatrixPlot() {
                 .attr("height", height - margin.top - margin.bottom)
                 .attr("id", "debug");
             
-            //enables hovering
-            /*var invisible =  d3.select("body").append("div").append("svg")
-                .attr("width", width - margin.left - margin.right)
-                .attr("height", height - margin.top - margin.bottom)
-                .attr("id", "invisible");
-            
-            var tooltip = d3.select("body").append("div")    
-                .attr("class", "tooltip")               
-                .style("opacity", 0.9);*/
+          
 
             var gXAxis = gEnter.append("g")
                 .attr("class", "x axis")
@@ -234,12 +226,14 @@ export function MassiveMatrixPlot() {
                     tileY = length*loadedTiles[tileId].pos[2];
 
                     if(xpos >= tileX && xpos < (tileX+length) && ypos >= tileY && ypos < (tileY+length)){
-                        
-
-                        // it belongs to this tile
                         $("#tooltip").css('top', (e.pageY+10)+'px');
                         $("#tooltip").css('left', (e.pageX+10)+'px');
-                        $("#tooltip").append("<span >The tile's id is " + tileId + " </span><br/>");
+                        if(showDebug == 1) {
+                            // it belongs to this tile
+                            
+                            $("#tooltip").append("<span >The tile's id is " + tileId + " </span><br/>");
+                        }
+                        
                        
                        // if(loadedTiles[tileId].pos[0] == 5) {
 
@@ -261,10 +255,15 @@ export function MassiveMatrixPlot() {
                         
                     }
                     if(xpos >= tileY && xpos < (tileY+length) && ypos >= tileX && ypos < (tileX+length)){
-                        // iplagt belongs to this tile
+                       
+
                         $("#tooltip").css('top', (e.pageY+10)+'px');
                         $("#tooltip").css('left', (e.pageX+10)+'px');
-                        $("#tooltip").append("<span >The tile is mirror of the tile " + tileId + " </span><br/>");
+                        if(showDebug == 1) {
+                            // it belongs to this tile
+                            $("#tooltip").append("<span >The tile is mirror of the tile " + tileId + " </span><br/>");
+                        }
+                        
                        
                        // if(loadedTiles[tileId].pos[0] == 5) {
                             yIndex = (xpos-tileY)/length * 256;
