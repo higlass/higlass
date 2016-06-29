@@ -224,11 +224,6 @@ export function MassiveMatrixPlot() {
                     let ypos = Math.floor(yScale.invert(e.pageY - parentOffset.top - margin.top)/1000)*1000;
                    
                     for(let tileId in shownTiles) {
-                    //console.log("tile id " + tileId);
-                   
-
-                   // tile's data 
-                   //console.log(loadedTiles[tileId]);
 
                    //tile's length in bp
                     length = totalWidth/Math.pow(2, loadedTiles[tileId].pos[0]);
@@ -238,28 +233,53 @@ export function MassiveMatrixPlot() {
                     tileX = length*loadedTiles[tileId].pos[1];
                     tileY = length*loadedTiles[tileId].pos[2];
 
-                    //console.log(tileX+" "+tileY);
-                    //console.log(xpos+" "+ tileX +" " + ypos+ " "+ tileY + " "+length);
                     if(xpos >= tileX && xpos < (tileX+length) && ypos >= tileY && ypos < (tileY+length)){
-                        // iplagt belongs to this tile
+                        
+
+                        // it belongs to this tile
                         $("#tooltip").css('top', (e.pageY+10)+'px');
                         $("#tooltip").css('left', (e.pageX+10)+'px');
                         $("#tooltip").append("<span >The tile's id is " + tileId + " </span><br/>");
                        
-                        if(loadedTiles[tileId].pos[0] == 5) {
+                       // if(loadedTiles[tileId].pos[0] == 5) {
+
                             xIndex = (xpos-tileX)/length * 256;
                             yIndex = (ypos-tileY)/length * 256;
-
+                            if(xpos > ypos){
+                                index = Math.floor(xIndex*256 + yIndex);
+                            } else {
+                                index = Math.floor(yIndex*256 + xIndex);
+                            }
                             
-                            index = yIndex*256 + xIndex;
+                            
                             value = loadedTiles[tileId].data[index];
                             if(value != null) {
                                 $("#tooltip").append("<span>The value at (" + xpos + ", " + ypos + ") is " + value + ".</span>");
-                            }
-                        }
+                            } 
+                      //  }
                         break;
                         
                     }
+                    if(xpos >= tileY && xpos < (tileY+length) && ypos >= tileX && ypos < (tileX+length)){
+                        // iplagt belongs to this tile
+                        $("#tooltip").css('top', (e.pageY+10)+'px');
+                        $("#tooltip").css('left', (e.pageX+10)+'px');
+                        $("#tooltip").append("<span >The tile is mirror of the tile " + tileId + " </span><br/>");
+                       
+                       // if(loadedTiles[tileId].pos[0] == 5) {
+                            yIndex = (xpos-tileY)/length * 256;
+                            xIndex = (ypos-tileX)/length * 256;
+
+                            
+                            index = Math.floor(yIndex*256 + xIndex);
+                            value = loadedTiles[tileId].data[index];
+                            if(value != null) {
+                                $("#tooltip").append("<span>The value at (" + xpos + ", " + ypos + ") is " + value + ".</span>");
+                            } 
+                       // } 
+                        break;
+                        
+                    } 
 
                }
             
@@ -635,7 +655,8 @@ export function MassiveMatrixPlot() {
           //                              tileStatus[tile[1]][tile[2]]['status'] = 'Loaded';
                                         if(showDebug == 1)
                                         {
-                                            tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loaded'};                          
+                                            tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loaded'};
+                                            draw();                          
                                         }
                                  //       console.log(tileStatus);
                                    //     console.log(d3.event);
@@ -649,6 +670,7 @@ export function MassiveMatrixPlot() {
                         showTiles(currentTiles);
                     }
                 });
+                
             }
 
 
@@ -826,7 +848,11 @@ export function MassiveMatrixPlot() {
                // debug
 
                 
-       
+          /*      var nest = d3.nest()
+                  .key(function(d) { return d.id; })
+                  .entries(rectData);
+
+*/
                 debug.selectAll('rect.boxy')
                     .data(rectData)
                     .enter()
@@ -868,8 +894,9 @@ export function MassiveMatrixPlot() {
                 let h =  length/(maxX-minX)* (height - margin.top - margin.bottom);
                 let message;
                 let color;
+                console.log("tiles" + tiles[0].mirrored);
                 for (var i = 0; i < tiles.length; i++) {
-                     message = "";
+                    message = "";
                     if(tileStatus[zoomlevel] != null && tileStatus[zoomlevel][tiles[i][1]] != null && tileStatus[zoomlevel][tiles[i][1]][tiles[i][2]] != null) {
                             message += "Status: "+ tileStatus[zoomlevel][tiles[i][1]][tiles[i][2]].status;             
                             if(tileStatus[zoomlevel][tiles[i][1]][tiles[i][2]].status == "Error") {
@@ -888,6 +915,19 @@ export function MassiveMatrixPlot() {
                             message = "not requested";
                             color = "gray";
                         }   
+                        
+                        if(tiles[i][1] != tiles[i][2]) {
+                            console.log(tiles[i][1] + " " + tiles[i][2])
+                            rectData.push({
+                                y: 0+length*tiles[i][1],
+                                x: 0+length*tiles[i][2],
+                                width: zoom.scale()* w,
+                                height: zoom.scale()*h,
+                                id: '('+ tiles[i][0] +', '+tiles[i][1]+', '+tiles[i][2]+') mirror',
+                                message: message,
+                                color: color
+                            });
+                        }
                         rectData.push({
                             x: 0+length*tiles[i][1],
                             y: 0+length*tiles[i][2],
@@ -898,7 +938,9 @@ export function MassiveMatrixPlot() {
                             color: color
                         });
                 }
-            
+                console.log("size" + rectData.length);
+                rectData = jQuery.unique( rectData );
+                console.log("size" + rectData.length);
                 return rectData;
             }
 
@@ -1006,6 +1048,7 @@ export function MassiveMatrixPlot() {
 
                 refreshTiles(tiles);
                 if(showDebug == 1) {
+                    document.getElementById("debug").innerHTML = '';
                     drawRect(tiles);
                 }
             }
