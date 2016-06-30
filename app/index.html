@@ -41,7 +41,7 @@
         
    </div>
     <div id="mmv-area" style="position:relative; height:550px; width: 700px" >
-    <svg id="goombaPlot" style="position:relative; height:550px; width: 700px" >
+    <svg id="goombaPlot" style="position:relative;" >
 
 
 
@@ -134,6 +134,11 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 
     let gMain = svg.append('g')
     .classed('g-main', true);
+
+    var debug1D = svg.append('g')
+    .attr("id", "d1D")
+    .append('svg')
+    .attr("id", "debug1D"); 
 
     /////////////////////////////
     let tiledArea = goomba.TiledArea().width(width)
