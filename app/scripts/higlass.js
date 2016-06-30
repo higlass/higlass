@@ -969,17 +969,18 @@ export function MassiveMatrixPlot() {
                 let cols = d3.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight),
                         Math.ceil(((zoom.y().domain()[1] - minY) - epsilon) / tileHeight));
 
-
-
                 for (let i = 0; i < rows.length; i++) {
 
                     for (let j = 0; j < cols.length; j++) { 
                         if (mirrorTiles) {
                             if (rows[i] >= cols[j]) {
+                                // if we're in the upper triangular part of the matrix, then we need to load
+                                // a mirrored tile
                                 let newTile = [zoomLevel, cols[j], rows[i]];
                                 newTile.mirrored = true;
                                 tiles.push(newTile); 
                             } else {
+                                // otherwise, load an original tile
                                 let newTile = [zoomLevel, rows[i], cols[j]];
                                 newTile.mirrored = false;
                                 tiles.push(newTile); 
@@ -987,6 +988,7 @@ export function MassiveMatrixPlot() {
                             }
 
                             if (rows[i] == cols[j]) {
+                                // on the diagonal, load original tiles
                                 let newTile = [zoomLevel, rows[i], cols[j]];
                                 newTile.mirrored = false;
                                 tiles.push(newTile);
@@ -1001,8 +1003,6 @@ export function MassiveMatrixPlot() {
 
                     }
                 }
-                // hey hye
-                
 
                 refreshTiles(tiles);
                 if(showDebug == 1) {
