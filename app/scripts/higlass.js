@@ -94,6 +94,8 @@ export function MassiveMatrixPlot() {
                 .classed('g-enter', true);
 
 
+            
+
             var stage = new PIXI.Container();
             pMain = new PIXI.Graphics();
             stage.addChild(pMain);
@@ -513,7 +515,7 @@ export function MassiveMatrixPlot() {
                     let gTilesEnter = gTiles.enter()
                     let gTilesExit = gTiles.exit()
 
-                    gTilesEnter.append('g')
+                gTilesEnter.append('g')
                     .attr('id', (d) => 'i-' + tileId(d))
                     .classed('tile-g', true)
                     .each(function(tile) {
@@ -522,7 +524,7 @@ export function MassiveMatrixPlot() {
                         if (loadedTiles[tileId(tile)] === undefined)
                         return;
 
-                    })
+                    });
 
                 gTilesExit.remove();
 
@@ -840,23 +842,49 @@ export function MassiveMatrixPlot() {
 
             function drawRect(tiles) {
                 document.getElementById("debug").innerHTML = ''; 
+                document.getElementById("debug1D").innerHTML = ""
+               // var debug1D = document.getElementById("debug1D");
+
                 var rectData = rectInfo(tiles);
+                var rect1DData = [];
+                var x = [];
 
-                var x = 0;
+              d3.select("#debug1D").attr("width", width - margin.left - margin.right)
+                    .attr("height", height - margin.top - margin.bottom);
+              d3.select("#d1D")
+               .attr('transform', 'translate('+margin.left+', '+0+')');
 
-               // debug
+               for(var i=0; i<rectData.length; i++) {
+                    if(x.indexOf(rectData[i].x) === -1) {
+                        rect1DData.push(rectData[i]);
+                        x.push(rectData[i].x);
+                    }
+                }
 
-                
-          /*      var nest = d3.nest()
-                  .key(function(d) { return d.id; })
-                  .entries(rectData);
 
-*/
+                d3.select("#debug1D").selectAll('rect.boxy1d')
+                    .data(rect1DData)
+                    .enter()
+                    .append('rect').classed('boxy1d', true);
+            
+                d3.select("#debug1D").selectAll('rect.boxy1d')
+                    .style('fill-opacity',0.2)
+                    .style('fill', function(d) { return d.color})
+                    .style("stroke-opacity", 1)
+                    .style("stroke", function(d) { return d.color})
+                    .attr('x', function(d) { return xScale(d.x)})
+                    .attr('y', function(d) {  return 35})
+                    .attr('width', function(d) { return d.width})
+                    .attr('height', 100)
+                    .attr('pointer-events', 'all');
+
                 debug.selectAll('rect.boxy')
                     .data(rectData)
                     .enter()
                     .append('rect').classed('boxy', true);
-                    //.on("mouseover", function(){alert(hello)});     
+                    //.on("mouseover", function(){alert(hello)}); 
+
+
                 
 
                 debug.selectAll('text.rectText')
@@ -937,7 +965,6 @@ export function MassiveMatrixPlot() {
                             color: color
                         });
                 }
-                console.log("size" + rectData.length);
                 let uniqueRect = [], uniqueID = [];
                 for(var i=0; i<rectData.length; i++) {
                     if(uniqueID.indexOf(rectData[i].id) === -1) {
@@ -996,10 +1023,6 @@ export function MassiveMatrixPlot() {
                 //Changed from return since refresh tiles wasnt being called, since no more tiles are loaded
                 // zoom level stays at max zoom
                 if (zoomLevel > maxZoom){
-                   // return;
-               /*    if(zoomLevel == 8) {
-                        drawInvisible();
-                   }*/
                    zoomLevel = maxZoom;
                 }
 
