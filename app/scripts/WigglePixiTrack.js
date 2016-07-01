@@ -10,6 +10,7 @@ export function WigglePixiTrack() {
     let zoomDispatch = null;
     let resolution = 256;
     let pixiStage = null;
+    let inD = 0;
 
     function tileId(tile) {
         // uniquely identify the tile with a string
@@ -39,6 +40,9 @@ export function WigglePixiTrack() {
 
     let chart = function(selection) {
         selection.each(function(d) {
+            inD += 1;
+            console.log('inD:', inD);
+
             if (!('resizeDispatch' in d)) {
                 d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize') : resizeDispatch;
             }
@@ -51,128 +55,101 @@ export function WigglePixiTrack() {
                 d.scale = 1;
             }
 
+            if (!('tileGraphics' in d)) {
+                d.tileGraphics = {};
+            }
+
+            if (!('pixiStage' in d)) {
+                d.stage = pixiStage; 
+            }
+
+            if (!('pMain' in d)) {
+
+                let pMain = new PIXI.Graphics();
+                d.stage.addChild(pMain);
+
+                d.pMain = pMain;
+
+            }
+                
+            function redrawTile() {
+                let tileData = d3.select(this).selectAll('.tile-g').data();
+                let minVisibleValue = Math.min(...tileData.map((x) => x.valueRange[0]));
+                let maxVisibleValue = Math.max(...tileData.map((x) => x.valueRange[1]));
+
+                let yScale = d3.scale.linear()
+                .domain([0, maxVisibleValue])
+                .range([0, 1]);
+
+                let drawTile = function(graphics, tile) {
+                    //console.log('drawing tile:', tile.tileId, xScale.domain(), xScale.range());
+                    let tileData = loadTileData(tile.data);
+
+                    let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
+                    // this scale should go from an index in the data array to 
+                    // a position in the genome coordinates
+                    let tileXScale = d3.scale.linear().domain([0, tileData.length])
+                    .range([tile.xRange[0] + tile.tilePos[1] * tileWidth, 
+                           tile.xRange[0] + (tile.tilePos[1] + 1) * tileWidth]  );
+
+                    graphics.lineStyle(0, 0x0000FF, 1);
+                    graphics.beginFill(0xFF700B, 1);
+
+                    for (let i = 0; i < tileData.length; i++) {
+                        let xPos = xScale(tileXScale(i));
+                        //let yPos = -(d.height - yScale(tileData[i]));
+                        let yPos = -1; //-(d.height - yScale(tileData[i]));
+                        let height = yScale(tileData[i])
+                        let width = xScale(tileXScale(i+1)) - xScale(tileXScale(i));
+
+                        if (height > 0 && width > 0) {
+                            graphics.drawRect(xPos, yPos, width, height);
+                        }
+                    }
+                }
+
+                let shownTiles = {};
+
+                for (let i = 0; i < tileData.length; i++) {
+                    shownTiles[tileData[i].tileId] = true;
+
+                    if (!(tileData[i].tileId in d.tileGraphics)) {
+                        // we don't have a graphics object for this tile
+                        // so we need to create one
+                         let newGraphics = new PIXI.Graphics();
+                         drawTile(newGraphics, tileData[i]);
+                         d.pMain.addChild(newGraphics)
+                         d.tileGraphics[tileData[i].tileId] = newGraphics
+                    } 
+                }
+
+                for (let tileIdStr in d.tileGraphics) {
+                    if (!(tileIdStr in shownTiles)) {
+                        //we're displaying graphics that are no longer necessary,
+                        //so we need to get rid of them
+                        d.pMain.removeChild(d.tileGraphics[tileIdStr]);
+                        delete d.tileGraphics[tileIdStr];
+                    }
+                }
+            }
+
+            redrawTile.bind(this)();
+
             let localResizeDispatch = d.resizeDispatch;
+            //console.log('localResizeDispatch', d.resizeDispatch);
+
             let slugId = slugid.nice();
             localResizeDispatch.on('resize.' + slugId, sizeChanged);
 
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
-
-            if (!('tileGraphics' in d)) {
-                d.tileGraphics = {};
-            }
-
-            let tileData = d3.select(this).selectAll('.tile-g').data();
-            let shownTiles = {};
-
-            let minVisibleValue = Math.min(...tileData.map((x) => x.valueRange[0]));
-            let maxVisibleValue = Math.max(...tileData.map((x) => x.valueRange[1]));
-
-            let yScale = d3.scale.linear()
-            .domain([0, maxVisibleValue])
-            .range([0, 1]);
-
-            let drawTile = function(graphics, tile) {
-                //console.log('drawing tile:', tile.tileId, xScale.domain(), xScale.range());
-                let tileData = loadTileData(tile.data);
-
-                let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
-                // this scale should go from an index in the data array to 
-                // a position in the genome coordinates
-                let tileXScale = d3.scale.linear().domain([0, tileData.length])
-                .range([tile.xRange[0] + tile.tilePos[1] * tileWidth, 
-                       tile.xRange[0] + (tile.tilePos[1] + 1) * tileWidth]  );
-
-                graphics.lineStyle(0, 0x0000FF, 1);
-                graphics.beginFill(0xFF700B, 1);
-
-                for (let i = 0; i < tileData.length; i++) {
-                    let xPos = xScale(tileXScale(i));
-                    //let yPos = -(d.height - yScale(tileData[i]));
-                    let yPos = -1; //-(d.height - yScale(tileData[i]));
-                    let height = yScale(tileData[i])
-                    let width = xScale(tileXScale(i+1)) - xScale(tileXScale(i));
-
-                    if (height > 0 && width > 0) {
-                        graphics.drawRect(xPos, yPos, width, height);
-                    }
-                }
-            }
-
-
-            let tiles = d3.select(this).selectAll('.tile-g');
-
-            width = d.width;
-            height = d.height;
-
-            if (!('pixiStage' in d)) {
-                d.stage = pixiStage; 
-            }
-
-            var stage = d.stage;
-
-            if (!('pMain' in d)) {
-
-                var pMain = new PIXI.Graphics();
-                stage.addChild(pMain);
-
-                d.pMain = pMain;
-
-                sizeChanged();
-            }
-
-            var renderer = d.renderer;
-            var stage = d.stage;
-            var pMain = d.pMain;
-
-            // create the root of the scene graph
-
-            // run the render loop
-
             function sizeChanged() {
-                yScale.range([0, d.height]);
-                /*
-                console.log('params:', params);
-                console.log('d.pMain.position:', d.pMain.position);
-                console.log('d:', d);
-                */
-                //renderer.resize(params.width, params.height);
-                //d.pMain.position.x = d.translate[0] - params.left;
-                //d.pMain.position.x = params.left;
                 d.pMain.position.y = d.top;
                 d.pMain.scale.y = -d.height;
             }
 
-            for (let i = 0; i < tileData.length; i++) {
-                shownTiles[tileData[i].tileId] = true;
-
-                if (!(tileData[i].tileId in d.tileGraphics)) {
-                    // we don't have a graphics object for this tile
-                    // so we need to create one
-                     let newGraphics = new PIXI.Graphics();
-                     drawTile(newGraphics, tileData[i]);
-                     pMain.addChild(newGraphics)
-                     d.tileGraphics[tileData[i].tileId] = newGraphics
-                } 
-            }
-
-            for (let tileIdStr in d.tileGraphics) {
-                if (!(tileIdStr in shownTiles)) {
-                    //we're displaying graphics that are no longer necessary,
-                    //so we need to get rid of them
-                    pMain.removeChild(d.tileGraphics[tileIdStr]);
-                    delete d.tileGraphics[tileIdStr];
-                }
-            }
-
             function zoomChanged(translate, scale) {
-                /*
-                for (let tileIdStr in d.tileGraphics) {
-                    d.tileGraphics[tileIdStr].position.x = translate[0];
-                    d.tileGraphics[tileIdStr].scale.x = scale;
-                }
-                */
                 d.translate = translate;
                 d.scale = scale;
 
@@ -180,10 +157,9 @@ export function WigglePixiTrack() {
                 d.pMain.position.x = d.translate[0];
 
                 sizeChanged();
-                /*
-                d.pMain.scale.y = -d.height;
-                */
             }
+
+            sizeChanged();
         });
     }
 
