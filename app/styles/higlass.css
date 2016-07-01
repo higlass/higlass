@@ -58,19 +58,3 @@ div.tooltip {
     pointer-events: none;
     line-height:130%
 }
-
-/*.svg-container {
-    display: inline-block;
-    position: relative;
-    width: 70%;
-    padding-bottom: 100%; /* aspect ratio 
-    vertical-align: top;
-    overflow: hidden;
-}
-.svg-content-responsive {
-    display: inline-block;
-    position: absolute;
-    top: 10px;
-    left: 0;
-}
-*/
