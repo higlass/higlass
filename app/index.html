@@ -113,8 +113,9 @@ var tiledArea = goomba.GenericTiledArea()
     .width(width)
     //.domain(xScale.domain())
     .zoomDispatch(zoomDispatch)
-    .tilesChanged(function() {
-        tracks.call(wigglePixiTrack) });
+    .tilesChanged(function(d) {
+        d3.select(this).call(wigglePixiTrack);
+        });
 
 tracks.call(tiledArea)
 

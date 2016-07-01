@@ -37,6 +37,7 @@ export function GenericTiledArea() {
 
     function chart(selection) {
         selection.each(function(d) {
+            let element = this;
             let xScaleDomain = null, yScaleDomain = null;
             let loadedTiles = {};
             let loadingTiles = {};
@@ -136,8 +137,7 @@ export function GenericTiledArea() {
 
                 // only redraw if the tiles have changed
                 if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
-                    //console.log('tilesChanged', xScale.domain());
-                    tilesChanged();
+                    tilesChanged.bind(element)(d);
                     draw();
                 }
             }
@@ -338,8 +338,6 @@ export function GenericTiledArea() {
                 else
                     xScaleDomain = domain;
                 
-                console.log('xScaleDomain:', xScaleDomain);
-
                 yScaleDomain = [minY, maxY];
 
                 if (xScale == null) {

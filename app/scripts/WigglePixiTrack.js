@@ -41,7 +41,6 @@ export function WigglePixiTrack() {
     let chart = function(selection) {
         selection.each(function(d) {
             inD += 1;
-            console.log('inD:', inD);
 
             if (!('resizeDispatch' in d)) {
                 d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize') : resizeDispatch;
