@@ -259,7 +259,6 @@ export function MassiveMatrixPlot() {
                             value = loadedTiles[tileId].data[index];
                             if(value != null) {
                                 $("#tooltip").append("<span>The value at (" + xpos + ", " + ypos + ") is " + value + ".</span>");
-                                $("#tooltip").append("<br/><span>xIndex: " + xIndex + "</span><br/><span>yIndex: " + yIndex + "</span><br/><span>Converted index is: " + index + ".</span>");
                             } 
                       //  }
                         break;
@@ -285,7 +284,6 @@ export function MassiveMatrixPlot() {
                             value = loadedTiles[tileId].data[index];
                             if(value != null) {
                                 $("#tooltip").append("<span>The value at (" + xpos + ", " + ypos + ") is " + value + ".</span>");
-                                $("#tooltip").append("<br/><span>xIndex: " + xIndex + "</span><br/><span>yIndex: " + yIndex + "</span><br/><span>Converted index is: " + index + ".</span>");
                             } 
                        // } 
                         break;
