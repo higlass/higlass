@@ -106,10 +106,10 @@ export function MassiveMatrixPlot() {
 
             animate()
 
-                function animate() {
-                    renderer.render(stage)
-                        requestAnimationFrame(animate);
-                }
+            function animate() {
+                renderer.render(stage)
+                requestAnimationFrame(animate);
+            }
 
             let zoom = d3.behavior.zoom()
                 .on("zoom", zoomHere)
@@ -203,7 +203,6 @@ export function MassiveMatrixPlot() {
                     if ('path1' in loadedTiles[tileId(tile)] && 'path2' in loadedTiles[tileId(tile)])
                         return true;
                 }
-                console.log('not loaded');
                 return false;
             }
 
@@ -312,7 +311,6 @@ export function MassiveMatrixPlot() {
 
                 let t1 = new Date().getTime();
 
-                console.log('data1:', data1, 'data2:', data2);
                 let rgbIdx = 0, ct=0;
 
                     try {
@@ -401,8 +399,39 @@ export function MassiveMatrixPlot() {
                     sprite.x = xOrigScale(tileX);
                     sprite.y = yOrigScale(tileY);
                 }
+            }
 
+            function getClippingPath(tile) {
+                let g = new PIXI.Graphics();
 
+                let zoomLevel = tile[0], xTilePos = tile[1], yTilePos = tile[2];
+
+                let tileWidth = totalWidth / Math.pow(2, zoomLevel);
+                let tileHeight = totalHeight / Math.pow(2, zoomLevel);
+
+                let tileX = minX + xTilePos * tileWidth;
+                let tileY = minY + yTilePos * tileHeight;
+
+                let tileEndX = minX + (xTilePos+1) * tileWidth;
+                let tileEndY = minY + (yTilePos+1) * tileHeight;
+
+                g.beginFill();
+                console.log('tileX:', tileX, 'tileY:', tileY);
+                
+                if (tile[1] == tile[2]) {
+                    g.drawPolygon([0, 0,
+                                   0, tileHeight,
+                                   tileWidth, tileHeight]);
+                } else {
+                    g.drawPolygon([0, 0,
+                                   0, tileHeight,
+                                   tileWidth, tileHeight,
+                                    tileWidth, 0]);
+
+                }
+                g.endFill();
+
+                return g;
             }
 
             function changeTextures() {
@@ -490,7 +519,6 @@ export function MassiveMatrixPlot() {
                         // load that sucker
                         let newGraphics = new PIXI.Graphics();
 
-                        console.log('tile:', loadedTiles[tileId(tiles[i])]);
                         let canvas = tileDataToCanvas(loadedTiles[tileId(tiles[i])].path1.data, loadedTiles[tileId(tiles[i])].path2.data);
                         //let canvas = getCanvas(tileId(tiles[i])); //loadedTiles[tileId(tiles[i])].canvas; //tileDataToCanvas(loadedTiles[tileId(tiles[i])].data, tiles[i][0]);
                         let sprite = null;
@@ -511,8 +539,13 @@ export function MassiveMatrixPlot() {
                                 newGraphics.lineTo(sprite.x, sprite.y+sprite.height);
                                 newGraphics.lineTo(sprite.x, sprite.y);*/
                         
+                        let maskGraphics = getClippingPath(tiles[i]);
+                        setSpriteProperties(maskGraphics, tiles[i]);
 
+                        console.log('maskGraphics:', maskGraphics);
                         newGraphics.addChild(sprite);
+                        newGraphics.addChild(maskGraphics);
+                        newGraphics.mask = maskGraphics;
                         tileGraphics[tileId(tiles[i])] = newGraphics;
 
                         pMain.addChild(newGraphics);
@@ -598,7 +631,6 @@ export function MassiveMatrixPlot() {
                 // be shown and add those that should be shown
                 currentTiles.forEach((tile) => {
                     if (!isTileLoaded(tile) && !isTileLoading(tile)) {
-                        console.log('trying to load:', tile);
                         // if the tile isn't loaded, load it
                         let tileSubPath = tile.join('.')
                         let tilePath1 = tileDirectory1 + "/" + tileSubPath;
@@ -676,8 +708,6 @@ export function MassiveMatrixPlot() {
                                         }
                                     }
 
-                                    console.log('loaded 2', loadedTiles[tileId(tile)]);
-
                                     delete loadingTiles[tileId(tile) + ".2"];
                                     showTiles(currentTiles);
                                 });
@@ -724,13 +754,11 @@ export function MassiveMatrixPlot() {
                                         }
                                     }
 
-                                    console.log('loaded 1', loadedTiles[tileId(tile)]);
                                     delete loadingTiles[tileId(tile) + ".1"];
                                     showTiles(currentTiles);
                                 });
 
                     } else {
-                        console.log('not loading...', currentTiles);
                         showTiles(currentTiles);
                     }
                 });
