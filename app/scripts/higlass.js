@@ -27,7 +27,7 @@ export function MassiveMatrixPlot() {
     var sparseData;
 
     function chart(selection) {
-        selection.each(function(tileDirectory) {
+        selection.each(function([tileDirectory1, tileDirectory2]) {
             let resolution = 256;
             let minX = 0, maxX = 0, minY = 0, maxY = 0;
             let totalHeight = null, totalWidth = null;
@@ -187,12 +187,11 @@ export function MassiveMatrixPlot() {
             function isTileLoading(tile) {//1.1.1
                 // check if a particular tile is currently being loaded
 
-                if (tileId(tile) in loadingTiles)
+                if (((tileId(tile) +".1") in loadingTiles) || (tileId(tile) + ".2") in loadingTiles)
                     return true;
                 else
                     return false;
             }
-
 
 
             function isTileLoaded(tile) {
@@ -200,13 +199,17 @@ export function MassiveMatrixPlot() {
                 // go through the shownTiles dictionary to check
                 // if this tile is already loaded
 
-                if (tileId(tile) in loadedTiles)
-                    return true;
-                else
-                    return false;
+                if (tileId(tile) in loadedTiles) {
+                    if ('path1' in loadedTiles[tileId(tile)] && 'path2' in loadedTiles[tileId(tile)])
+                        return true;
+                }
+                console.log('not loaded');
+                return false;
             }
 
             $("svg.mainSVG").mousemove(function(e) {
+                return; //turn off tooltips for difference displays 
+
                 //genter mousemov
                $("#tooltip").empty();
                 $('#tooltip').hide();
@@ -302,20 +305,29 @@ export function MassiveMatrixPlot() {
                 $('#tooltip').hide();
             });
 
-            function setPix(pix, data, zoomLevel) {
-                let zoomFactor = Math.pow(2, 2 * (maxZoom - zoomLevel));
-
+            function setPix(pix, data1, data2) {
                 var maxTransfer = transferFunction(maxValue);
-                valueScale.domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
+                //valueScale.domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
+                valueScale.domain([-1,1]);
+
                 let t1 = new Date().getTime();
+
+                console.log('data1:', data1, 'data2:', data2);
+                let rgbIdx = 0, ct=0;
 
                     try {
                         let t1 = new Date().getTime();
-                        for (let i = 0; i < data.length; i++) {
-                            let d = data[i];
-                            let ct = countTransform(d);
+                        for (let i = 0; i < data1.length; i++) {
+                            if (data1[i] == -1 || data2[i] == -1) {
+                                // no data for this point, make it transparent
+                                pix.data[i*4+3] = 255;
+                            }
 
-                            let rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
+                            let d = Math.log((data1[i] + 1.) / (data2[i] + 1.));
+                            //console.log('d:', d);
+                            ct = d; //countTransform(d);
+
+                            rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
 
                             let rgb = heatedObjectMap[rgbIdx];
 
@@ -327,6 +339,7 @@ export function MassiveMatrixPlot() {
                         };
                     } catch (err) {
 
+                        console.log('ct:', ct, 'rgbIdx:', rgbIdx);
                         console.log('ERROR:', err);
 
                     }
@@ -335,9 +348,9 @@ export function MassiveMatrixPlot() {
             }
 
 
-            function tileDataToCanvas(data, zoomLevel) {
+            function tileDataToCanvas(data1, data2, zoomLevel) {
+                console.log('tileDataToCanvas');
                 let canvas = document.createElement('canvas');
-                let zoomFactor = Math.pow(2, 2 * (maxZoom - zoomLevel));
 
                 canvas.width = 256;
                 canvas.height = 256;
@@ -348,7 +361,7 @@ export function MassiveMatrixPlot() {
                 ctx.fillRect(0,0,canvas.width, canvas.height);
 
                 let pix = ctx.createImageData(canvas.width, canvas.height);
-                pix = setPix(pix, data, zoomLevel);
+                pix = setPix(pix, data1, data2);
                 ctx.putImageData(pix, 0,0);
 
                 return canvas;
@@ -477,7 +490,8 @@ export function MassiveMatrixPlot() {
                         // load that sucker
                         let newGraphics = new PIXI.Graphics();
 
-                        let canvas = tileDataToCanvas(loadedTiles[tileId(tiles[i])].data);
+                        console.log('tile:', loadedTiles[tileId(tiles[i])]);
+                        let canvas = tileDataToCanvas(loadedTiles[tileId(tiles[i])].path1.data, loadedTiles[tileId(tiles[i])].path2.data);
                         //let canvas = getCanvas(tileId(tiles[i])); //loadedTiles[tileId(tiles[i])].canvas; //tileDataToCanvas(loadedTiles[tileId(tiles[i])].data, tiles[i][0]);
                         let sprite = null;
 
@@ -584,10 +598,14 @@ export function MassiveMatrixPlot() {
                 // be shown and add those that should be shown
                 currentTiles.forEach((tile) => {
                     if (!isTileLoaded(tile) && !isTileLoading(tile)) {
+                        console.log('trying to load:', tile);
                         // if the tile isn't loaded, load it
                         let tileSubPath = tile.join('.')
-                            let tilePath = tileDirectory + "/" + tileSubPath;
-                        loadingTiles[tileId(tile)] = true;
+                        let tilePath1 = tileDirectory1 + "/" + tileSubPath;
+                        let tilePath2 = tileDirectory2 + "/" + tileSubPath;
+
+                        loadingTiles[tileId(tile) + ".1"] = true;
+                        loadingTiles[tileId(tile) + ".2"] = true;
 
                         if(showDebug == 1)
                         {
@@ -615,7 +633,8 @@ export function MassiveMatrixPlot() {
 
                         }
 
-                    d3.json(tilePath)
+                    loadedTiles[tileId(tile)] = {};
+                    d3.json(tilePath2)
                         .on("progress", function() {
                               if(showDebug == 1)
                               { 
@@ -630,9 +649,9 @@ export function MassiveMatrixPlot() {
                     })
                     .get(function(error, tile_json) {
                                     if (error != null) {
-                                        loadedTiles[tileId(tile)] = {data: []};
-                                        let canvas = tileDataToCanvas([], tile[0]);
-                                        loadedTiles[tileId(tile)].canvas = canvas;
+                                        loadedTiles[tileId(tile)].path2 = {data: loadTileData({'sparse': []})};
+                                        //let canvas = tileDataToCanvas([], tile[0]);
+                                        //loadedTiles[tileId(tile)].canvas = canvas;
                                         loadedTiles[tileId(tile)].pos = tile;
                                         if(showDebug == 1)
                                         {
@@ -646,11 +665,9 @@ export function MassiveMatrixPlot() {
                                         let tile_value = tile_json._source.tile_value;
                                         let data = loadTileData(tile_value);
 
-                                        loadedTiles[tileId(tile)] = {data: data};
-                                        let canvas = tileDataToCanvas(data, tile[0]);
-                                        loadedTiles[tileId(tile)].canvas = canvas;
+                                        loadedTiles[tileId(tile)].path2 = {data: data};
                                         loadedTiles[tileId(tile)].pos = tile;
-                                        loadedTiles[tileId(tile)].valueRange = [tile_value.min_value, tile_value.max_value];
+                                        loadedTiles[tileId(tile)].path2.valueRange = [tile_value.min_value, tile_value.max_value];
 
                                         if(showDebug == 1)
                                         {
@@ -659,11 +676,61 @@ export function MassiveMatrixPlot() {
                                         }
                                     }
 
-                                    delete loadingTiles[tileId(tile)];
+                                    console.log('loaded 2', loadedTiles[tileId(tile)]);
+
+                                    delete loadingTiles[tileId(tile) + ".2"];
+                                    showTiles(currentTiles);
+                                });
+
+                    d3.json(tilePath1)
+                        .on("progress", function() {
+                              if(showDebug == 1)
+                              { 
+                                tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loading'};
+                              }                           
+                            })
+                        .on("load",function() {
+                            if(showDebug == 1)
+                            { 
+                                tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loaded'};
+                            }
+                    })
+                    .get(function(error, tile_json) {
+                                    if (error != null) {
+                                        loadedTiles[tileId(tile)].path2 = {data: loadTileData({'sparse': []})};
+                                        //let canvas = tileDataToCanvas([], tile[0]);
+                                        //loadedTiles[tileId(tile)].canvas = canvas;
+                                        loadedTiles[tileId(tile)].pos = tile;
+                                        if(showDebug == 1)
+                                        {
+
+                                        tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Error','Message':String(error.statusText)};
+                                        
+                                   
+                                        }
+
+                                    } else {
+                                        let tile_value = tile_json._source.tile_value;
+                                        let data = loadTileData(tile_value);
+
+                                        loadedTiles[tileId(tile)].path1 = {data: data};
+                                        loadedTiles[tileId(tile)].pos = tile;
+                                        loadedTiles[tileId(tile)].path1.valueRange = [tile_value.min_value, tile_value.max_value];
+
+                                        if(showDebug == 1)
+                                        {
+                                            tileStatus[tile[0]][tile[1]][tile[2]] = {'status':'Loaded'};
+                                            draw();                          
+                                        }
+                                    }
+
+                                    console.log('loaded 1', loadedTiles[tileId(tile)]);
+                                    delete loadingTiles[tileId(tile) + ".1"];
                                     showTiles(currentTiles);
                                 });
 
                     } else {
+                        console.log('not loading...', currentTiles);
                         showTiles(currentTiles);
                     }
                 });
@@ -671,7 +738,7 @@ export function MassiveMatrixPlot() {
             }
 
 
-            d3.json(tileDirectory + '/tileset_info', function(error, tile_info) {
+            d3.json(tileDirectory1 + '/tileset_info', function(error, tile_info) {
                 // set up the data-dependent sections of the chart
              //   console.log('tile_info:', tile_info);
                 tile_info = tile_info._source.tile_value;
@@ -1112,12 +1179,6 @@ export function MassiveMatrixPlot() {
     chart.maxZoom = function(_) {
         if (!arguments.length) return maxZoom;
         maxZoom = _;
-        return chart;
-    };
-
-    chart.tileDirectory = function(_) {
-        if (!arguments.length) return tileDirectory;
-        tileDirectory = _;
         return chart;
     };
 

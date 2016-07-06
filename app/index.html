@@ -120,7 +120,8 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         d3.select('#mmv-area')
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
-        .datum( awsDomain + '/hg19/Rao2014-HMEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz')
+        .datum( [awsDomain + '/hg19/Rao2014-HMEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz',
+                awsDomain + "/hg19/Rao2014-HUVEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz"])
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
         //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
         .call(mmvPlot1)
