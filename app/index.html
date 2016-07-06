@@ -35,24 +35,37 @@
 
 <body>
 
-   <div style="position:relative; padding-left: 25px; padding-top: 14px;  " id="mode">
-        <input type="radio" name="debug" value="standard" checked >Standard Mode
-        <input type="radio" name="debug" value="debug" style="margin-left: 60px">Debug Mode
-        
-   </div>
-    <div id="mmv-area" style="position:relative; height:550px; width: 700px" >
+    <table>
+        <tr>
+            <td>
+    <div id="mmv-area" style="position:relative; height:500px; width: 580px" >
     <svg id="goombaPlot" style="position:relative;" >
-
-
-
     </div>
-    <div id="tooltip" style="position: absolute; background-color: rgba(128,128,128,0.4); padding: 10px; border-radius:10px"></div>
+            </td>
+            <td>
+
+    <div id="mmv-area1" style="position:relative; height:500px; width: 580px" >
+
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+
+            </td>
+            <td>
+    <div id="mmv-area2" style="position:relative; height:500px; width: 580px" >
+
+            </td>
+        </tr>
+    </table>
 </body>
 
 
 <script type='text/javascript'>
 
 // style="margin-top: 155px;margin-left: 32px;
+/*
     var width, height;
     if(window.innerWidth < window.innerHeight) {
         width = window.innerWidth * 1;
@@ -60,6 +73,9 @@
         width = window.innerHeight *1.1;
     }
     height = width * 0.8;
+    */
+    var width = 600;
+    var height = 500;
 
     var svg = d3.select('#goombaPlot')
     .attr('width', width)
@@ -105,9 +121,28 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     var xScale = d3.scale.linear().domain([0, 3137161264])
         .range([0, width - mmvMargin.left - mmvMargin.right]);
 
-    var zoomDispatch = d3.dispatch('zoom');
+    var zoomDispatch = d3.dispatch('zoom', 'zoomend');
 
-    var mmvPlot1 = higlass.MassiveMatrixPlot()
+    var mmvPlot1 = higlass.DoubleMassiveMatrixPlot()
+        .width(width)
+        .height(height + 80)
+        .nTicks(4)
+        .margin(mmvMargin)
+        .chromInfo(chromInfo)
+        .xDomain(xScale.domain())
+        .yDomain(xScale.domain())
+        .zoomDispatch(zoomDispatch)
+
+        d3.select('#mmv-area1')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .datum( [awsDomain + '/hg19/Rao2014-HMEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz',
+                awsDomain + "/hg19/Rao2014-HUVEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz"])
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
+        //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .call(mmvPlot1)
+
+    var mmvPlot2 = higlass.MassiveMatrixPlot()
         .width(width)
         .height(height + 80)
         .nTicks(4)
@@ -120,11 +155,18 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         d3.select('#mmv-area')
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
-        .datum( [awsDomain + '/hg19/Rao2014-HMEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz',
-                awsDomain + "/hg19/Rao2014-HUVEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz"])
+        .datum( [awsDomain + '/hg19/Rao2014-HMEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz'])
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
         //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
-        .call(mmvPlot1)
+        .call(mmvPlot2)
+
+        d3.select('#mmv-area2')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .datum( [awsDomain + '/hg19/Rao2014-HUVEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz'])
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
+        //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .call(mmvPlot2)
 
     var chromInfoPlot = goomba.ChromosomeAxis()
     .width(width - margin.left - margin.right)
@@ -205,10 +247,12 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 });
 ///////////////////////////////////////////////
 
+    /*
 $(window).resize(function() {
     location.reload();
   //resize just happened, pixels changed
 });
+    */
 
 
 </script>
