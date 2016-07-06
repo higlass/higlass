@@ -8,8 +8,7 @@ import {heatedObjectMap} from './colormaps.js'
 export {TransferFunctionEditor} from './transfer.js';
 export {heatedObjectMap} from './colormaps.js';
 export {DoubleMassiveMatrixPlot} from './double_higlass.js'
-
-
+export {CrosshairsPlot} from './CrosshairsPlot.js';
 
 export function MassiveMatrixPlot() {
     var width = 550;
@@ -17,6 +16,7 @@ export function MassiveMatrixPlot() {
     var margin = {'top': 50, 'left': 30, 'bottom': 30, 'right': 120};
     let nTicks = 4;
     let zoomDispatch = null;
+    let locationDispatch = null;
     let zoomCallback = null;
     let transferEditor = null;
     let xDomain = null, yDomain =  null;
@@ -124,6 +124,12 @@ export function MassiveMatrixPlot() {
                 
                 gEnter.call(zoom);
 
+            gEnter.on('mousemove', moveHere);
+
+            function moveHere() {
+                localLocationDispatch.move([xScale.invert(d3.mouse(this)[0]), yScale.invert(d3.mouse(this)[1])]) 
+            }
+
             var gYAxis = gEnter.append("g")
                 .attr("class", "y axis")
 
@@ -141,6 +147,9 @@ export function MassiveMatrixPlot() {
                 .attr("transform", "translate(0,"+ (height - margin.bottom - margin.top) + ")");
 
 
+            var gCrossHairs = gEnter.append('g')
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+
             gMain = gEnter.append('g')
                 .classed('main-g', true)
 
@@ -155,6 +164,7 @@ export function MassiveMatrixPlot() {
 
 
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom', 'zoomend') : zoomDispatch;
+            let localLocationDispatch = locationDispatch == null ? d3.dispatch('move') : locationDispatch;
 
             localZoomDispatch.on('zoom.' + slugId, zoomChanged);
             localZoomDispatch.on('zoomend.' + slugId, zoomEnded);
@@ -1160,6 +1170,12 @@ export function MassiveMatrixPlot() {
     chart.zoomDispatch = function(_) {
         if (!arguments.length) return zoomDispatch;
         else zoomDispatch = _;
+        return chart;
+    }
+
+    chart.locationDispatch = function(_) {
+        if (!arguments.length) return locationDispatch;
+        else locationDispatch = _;
         return chart;
     }
 

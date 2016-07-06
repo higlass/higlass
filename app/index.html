@@ -122,6 +122,10 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .range([0, width - mmvMargin.left - mmvMargin.right]);
 
     var zoomDispatch = d3.dispatch('zoom', 'zoomend');
+    var locationDispatch = d3.dispatch('move');
+
+    var crosshairsPlot = higlass.CrosshairsPlot()
+        .locationDispatch(locationDispatch);
 
     var mmvPlot1 = higlass.DoubleMassiveMatrixPlot()
         .width(width)
@@ -132,6 +136,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .xDomain(xScale.domain())
         .yDomain(xScale.domain())
         .zoomDispatch(zoomDispatch)
+        .locationDispatch(locationDispatch)
 
         d3.select('#mmv-area1')
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
@@ -141,6 +146,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
         //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
         .call(mmvPlot1)
+        .call(crosshairsPlot)
 
     var mmvPlot2 = higlass.MassiveMatrixPlot()
         .width(width)
@@ -151,6 +157,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .xDomain(xScale.domain())
         .yDomain(xScale.domain())
         .zoomDispatch(zoomDispatch)
+        .locationDispatch(locationDispatch)
 
         d3.select('#mmv-area')
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
@@ -159,6 +166,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
         //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
         .call(mmvPlot2)
+        .call(crosshairsPlot)
 
         d3.select('#mmv-area2')
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
@@ -167,6 +175,11 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
         //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
         .call(mmvPlot2)
+        .call(crosshairsPlot)
+
+    locationDispatch.on('move', function(loc) {
+        console.log('loc:',  loc);
+    });
 
     var chromInfoPlot = goomba.ChromosomeAxis()
     .width(width - margin.left - margin.right)

@@ -16,6 +16,7 @@ export function DoubleMassiveMatrixPlot() {
     var margin = {'top': 50, 'left': 30, 'bottom': 30, 'right': 120};
     let nTicks = 4;
     let zoomDispatch = null;
+    let locationDispatch = null;
     let zoomCallback = null;
     let transferEditor = null;
     let xDomain = null, yDomain =  null;
@@ -123,6 +124,12 @@ export function DoubleMassiveMatrixPlot() {
                 
                 gEnter.call(zoom);
 
+            gEnter.on('mousemove', moveHere);
+
+            function moveHere() {
+                localLocationDispatch.move([xScale.invert(d3.mouse(this)[0]), yScale.invert(d3.mouse(this)[1])]) 
+            }
+
             var gYAxis = gEnter.append("g")
                 .attr("class", "y axis")
 
@@ -153,7 +160,8 @@ export function DoubleMassiveMatrixPlot() {
                 .attr("height", height - margin.top - margin.bottom);
 
 
-            let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
+            let localLocationDispatch = locationDispatch == null ? d3.dispatch('move') : locationDispatch;
+            let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom', 'zoomend') : zoomDispatch;
 
             localZoomDispatch.on('zoom.' + slugId, zoomChanged);
             localZoomDispatch.on('zoomend.' + slugId, zoomEnded);
@@ -1247,6 +1255,12 @@ export function DoubleMassiveMatrixPlot() {
     chart.zoomDispatch = function(_) {
         if (!arguments.length) return zoomDispatch;
         else zoomDispatch = _;
+        return chart;
+    }
+
+    chart.locationDispatch = function(_) {
+        if (!arguments.length) return locationDispatch;
+        else locationDispatch = _;
         return chart;
     }
 
