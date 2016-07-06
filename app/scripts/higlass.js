@@ -22,6 +22,7 @@ export function MassiveMatrixPlot() {
     let drawRectZoom = 1;
     let rectData;
     let showDebug = 0;
+    let chromInfo = null;
 
     var sparseData;
 
@@ -96,12 +97,8 @@ export function MassiveMatrixPlot() {
                     coordinates = d3.mouse(this);
                     var x = coordinates[0];
                     var y = coordinates[1];
-                    console.log("x"+ x +"y" + y);
                 })
                 .classed('g-enter', true);
-
-
-            
 
             var stage = new PIXI.Container();
             pMain = new PIXI.Graphics();
@@ -115,7 +112,10 @@ export function MassiveMatrixPlot() {
                 }
 
             let zoom = d3.behavior.zoom()
-                .on("zoom", zoomHere);
+                .on("zoom", zoomHere)
+                .on('zoomend', function() {
+                    calculateNewTiles();
+                });
 
             gEnter.insert("rect", "g")
                 .attr("class", "pane")
@@ -307,16 +307,15 @@ export function MassiveMatrixPlot() {
 
                 var maxTransfer = transferFunction(maxValue);
                 valueScale.domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
-
-                let lastD = null;
+                let t1 = new Date().getTime();
 
                     try {
                         let t1 = new Date().getTime();
-                        let pixelValues = data.map((d,i) => {
-                            lastD = d;
+                        for (let i = 0; i < data.length; i++) {
+                            let d = data[i];
                             let ct = countTransform(d);
 
-                            let rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(countTransform(d)))))
+                            let rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
 
                             let rgb = heatedObjectMap[rgbIdx];
 
@@ -325,13 +324,12 @@ export function MassiveMatrixPlot() {
                             pix.data[i*4+1] = rgb[1];
                             pix.data[i*4+2] = rgb[2];
                             pix.data[i*4+3] = rgb[3];
-                        });
+                        };
                     } catch (err) {
 
                         console.log('ERROR:', err);
 
                     }
-
 
                 return pix;
             }
@@ -454,8 +452,24 @@ export function MassiveMatrixPlot() {
                     .filter((d) => { return d.data != undefined; })
                     .filter((d) => { return d.data.length > 0; });
 
+                let prevMinVisibleValue = minVisibleValue;
+                let prevMaxVisibleValue = maxVisibleValue;
+
+                minVisibleValue = Math.min( ...visibleTiles.map((x) => x.valueRange[0]));
+                maxVisibleValue = Math.max( ...visibleTiles.map((x) => x.valueRange[1]));
+
                 for (let i = 0; i < tiles.length; i++) {
                     shownTiles[tileId(tiles[i])] = true;
+
+                    if (prevMinVisibleValue != minVisibleValue || prevMaxVisibleValue != maxVisibleValue) {
+                        // we need to rescale our data which means redrawing it...
+                        // and redrawing it means removing the graphics we have for it
+                        let tileIdStr = tileId(tiles[i]);
+                        if (tileIdStr in tileGraphics) {
+                            pMain.removeChild(tileGraphics[tileIdStr]);
+                            delete tileGraphics[tileIdStr];
+                        }
+                    }
 
                     // check if we already have graphics for these tiles
                     if (!(tileId(tiles[i]) in tileGraphics)) {
@@ -463,7 +477,8 @@ export function MassiveMatrixPlot() {
                         // load that sucker
                         let newGraphics = new PIXI.Graphics();
 
-                        let canvas = getCanvas(tileId(tiles[i])); //loadedTiles[tileId(tiles[i])].canvas; //tileDataToCanvas(loadedTiles[tileId(tiles[i])].data, tiles[i][0]);
+                        let canvas = tileDataToCanvas(loadedTiles[tileId(tiles[i])].data);
+                        //let canvas = getCanvas(tileId(tiles[i])); //loadedTiles[tileId(tiles[i])].canvas; //tileDataToCanvas(loadedTiles[tileId(tiles[i])].data, tiles[i][0]);
                         let sprite = null;
 
                         if (tiles[i][0] == maxZoom) {
@@ -500,11 +515,6 @@ export function MassiveMatrixPlot() {
                     }
                 }
 
-                let prevMinVisibleValue = minVisibleValue;
-                let prevMaxVisibleValue = maxVisibleValue;
-
-                minVisibleValue = Math.min( ...visibleTiles.map((x) => x.valueRange[0]));
-                maxVisibleValue = Math.max( ...visibleTiles.map((x) => x.valueRange[1]));
 
                 if (prevMinVisibleValue != minVisibleValue || prevMaxVisibleValue != maxVisibleValue) {
                     //changeTextures();
@@ -571,8 +581,6 @@ export function MassiveMatrixPlot() {
             }
 
             function refreshTiles(currentTiles) {
-
-                
                 // be shown and add those that should be shown
                 currentTiles.forEach((tile) => {
                     if (!isTileLoaded(tile) && !isTileLoading(tile)) {
@@ -667,6 +675,7 @@ export function MassiveMatrixPlot() {
                 // set up the data-dependent sections of the chart
              //   console.log('tile_info:', tile_info);
                 tile_info = tile_info._source.tile_value;
+                console.log('tile_info:', tile_info);
 
                 resolution = tile_info.bins_per_dimension;
 
@@ -764,7 +773,8 @@ export function MassiveMatrixPlot() {
                 newTile.mirrored = false;
                 newTiles.push(newTile);
 
-                refreshTiles([[0,0,0]]);
+                //refreshTiles([[0,0,0]]);
+                calculateNewTiles();
             });
 
             function zoomed() {
@@ -961,15 +971,7 @@ export function MassiveMatrixPlot() {
                 return uniqueRect;
             }
 
-
-            function draw() {
-                // draw the scene, if we're zooming, then we need to check if we
-                // need to redraw the tiles, otherwise it's irrelevant
-                //
-
-                gYAxis.call(yAxis);
-                gXAxis.call(xAxis);
-
+            function calculateNewTiles() {
                 // this will become the tiling code
                 let zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
                 let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 1;
@@ -1035,8 +1037,24 @@ export function MassiveMatrixPlot() {
                     document.getElementById("debug1D").innerHTML = "";
                     drawRect(tiles);
                 }
+
             }
+
+
+            function draw() {
+                // draw the scene, if we're zooming, then we need to check if we
+                // need to redraw the tiles, otherwise it's irrelevant
+                //
+
+                gYAxis.call(yAxis);
+                gXAxis.call(xAxis);
+
+
+            }
+
+
         });
+
     }
     //endchart
 
@@ -1155,6 +1173,12 @@ export function MassiveMatrixPlot() {
     chart.yDomain = function(_) {
         if (!arguments.length) return yDomain;
         else yDomain = _;
+        return chart;
+    }
+
+    chart.chromInfo = function(_) {
+        if (!arguments.length) return chromInfo;
+        else chromInfo = _;
         return chart;
     }
 

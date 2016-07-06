@@ -87,8 +87,12 @@ var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt'
 let trackHeight = 35;
 //let awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
 let awsDomain = '//52.23.165.123:9872';
-let tileDirectories = [awsDomain + '/hg19/refgene-tiles-minus',
-                       awsDomain + '/hg19/refgene-tiles-plus']
+let tileDirectories = [
+    /*
+    awsDomain + '/hg19/refgene-tiles-minus',
+                       awsDomain + '/hg19/refgene-tiles-plus'
+                       */
+]
 
 
 
@@ -108,13 +112,15 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .height(height + 80)
         .nTicks(4)
         .margin(mmvMargin)
+        .chromInfo(chromInfo)
         .xDomain(xScale.domain())
         .yDomain(xScale.domain())
         .zoomDispatch(zoomDispatch)
 
         d3.select('#mmv-area')
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
-        .datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .datum( awsDomain + '/hg19/Rao2014-HMEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz')
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
         //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
         .call(mmvPlot1)
@@ -186,8 +192,9 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .selectAll('g')
     //.data(['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
     .data([//awsDomain + '/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
-    awsDomain + '/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz',
-    awsDomain + 'x/hg19/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz'])
+    awsDomain + '/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz'
+    //awsDomain + 'x/hg19/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz'
+    ])
 
     .enter()
     .append('g')
