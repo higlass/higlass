@@ -848,9 +848,6 @@ export function MassiveMatrixPlot() {
                 pMain.position.y = zoom.translate()[1];
                 pMain.scale.x = zoom.scale();
                 pMain.scale.y = zoom.scale();
-
-                
-                
             
                 if (zoomCallback)
                     zoomCallback(xScale, zoom.scale());

@@ -38,23 +38,20 @@
     <table>
         <tr>
             <td>
-    <div id="mmv-area" style="position:relative; height:500px; width: 580px" >
+    <div id="mmv-area" style="position:relative; height:350px; width: 390px" >
     <svg id="goombaPlot" style="position:relative;" >
     </div>
             </td>
             <td>
-
-    <div id="mmv-area1" style="position:relative; height:500px; width: 580px" >
-
-
+    <div id="mmv-area2" style="position:relative; height:350px; width: 390px" >
+            </td>
+            <td>
+    <div id="mmv-area1" style="position:relative; height:350px; width: 390px" >
             </td>
         </tr>
         <tr>
-            <td>
 
-            </td>
             <td>
-    <div id="mmv-area2" style="position:relative; height:500px; width: 580px" >
 
             </td>
         </tr>
@@ -74,8 +71,8 @@
     }
     height = width * 0.8;
     */
-    var width = 600;
-    var height = 500;
+    var width = 430;
+    var height = 350;
 
     var svg = d3.select('#goombaPlot')
     .attr('width', width)
@@ -125,7 +122,13 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     var locationDispatch = d3.dispatch('move');
 
     var crosshairsPlot = higlass.CrosshairsPlot()
-        .locationDispatch(locationDispatch);
+        .zoomDispatch(zoomDispatch)
+        .locationDispatch(locationDispatch)
+        .width(width)
+        .height(height + 80)
+        .margin(mmvMargin)
+        .xDomain(xScale.domain())
+        .yDomain(xScale.domain());
 
     var mmvPlot1 = higlass.DoubleMassiveMatrixPlot()
         .width(width)

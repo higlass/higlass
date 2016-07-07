@@ -1,9 +1,9 @@
-line .x-crosshair {
+.x-crosshair {
     stroke: red;
     stroke-width: 1pt;
 }
 
-line .y-crosshair {
+.y-crosshair {
     stroke: red;
     stroke-width: 1pt;
 }
