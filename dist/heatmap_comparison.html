@@ -1,85 +1,6 @@
-<!DOCTYPE html>
-<html lang="">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
-
-    <!--[if lte IE 8]>
+<!DOCTYPE html><html lang=""><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css"><!--[if lte IE 8]>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
-    <![endif]-->
-    <!--[if gt IE 8]><!-->
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
-    <!--<![endif]-->
-
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-    
-    <script>hljs.initHighlightingOnLoad();</script>
-
-    <title>HiGlass: Multi-resolution Hi-C data display</title>
-</head>
-<script src="https://rawgit.com/pkerpedjiev/goomba/master/dist/scripts/goomba.js"></script>
-
-<!-- build:css styles/style.css -->
-<link rel="stylesheet" href="styles/page.css" />
-<!-- endbuild -->
-
-<!-- build:js scripts/higlass.js -->
-<script src='scripts/higlass.js'></script>
-<!-- endbuild -->
-
-<body>
-    <div style='margin-left: 20px;'>
-    <h2> Comparing contact maps from different cell lines </h2>
-
-    <br>
-    <table>
-        <tr>
-            <td style="text-align: center;">
-                <b>HMEC</b>
-            </td>
-            <td style="text-align: center;">
-                <b>HUVEC</b>
-            </td>
-            <td style="text-align: center;">
-                <b>HMEC / HUVEC</b>
-            </td>
-        <tr>
-            <td>
-    <div id="mmv-area" style="position:relative; height:350px; width: 390px" >
-    <svg id="goombaPlot" style="position:relative;" >
-    </div>
-            </td>
-            <td>
-    <div id="mmv-area2" style="position:relative; height:350px; width: 390px" >
-    <svg id="goombaPlot" style="position:relative;" >
-            </td>
-            <td>
-    <div id="mmv-area1" style="position:relative; height:350px; width: 390px" >
-    <svg id="goombaPlot" style="position:relative;" >
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3">
-                <br>
-    The comparison in the third column is done by simply dividing the values from the HMEC cell line by the values in the HUVEC cell line. The wiggle track
-    on top shows values from a CTCF binding assay.
-
-            </td>
-        </tr>
-    </table>
-    </div>
-</body>
-
-
-<script type='text/javascript'>
-
-// style="margin-top: 155px;margin-left: 32px;
+    <![endif]--><!--[if gt IE 8]><!--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css"><!--<![endif]--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css"><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script><script>hljs.initHighlightingOnLoad();</script><title>HiGlass: Multi-resolution Hi-C data display</title></head><script src="https://rawgit.com/pkerpedjiev/goomba/master/dist/scripts/goomba.js"></script><link rel="stylesheet" href="styles/style.css"><script src="scripts/higlass.js"></script><body><div style="margin-left: 20px"><h2>Comparing contact maps from different cell lines</h2><br><table><tr><td style="text-align: center"><b>HMEC</b></td><td style="text-align: center"><b>HUVEC</b></td><td style="text-align: center"><b>HMEC / HUVEC</b></td></tr><tr><td><div id="mmv-area" style="position:relative; height:350px; width: 390px"><svg id="goombaPlot" style="position:relative"></svg></div></td><td><div id="mmv-area2" style="position:relative; height:350px; width: 390px"><svg id="goombaPlot" style="position:relative"></svg></div></td><td><div id="mmv-area1" style="position:relative; height:350px; width: 390px"><svg id="goombaPlot" style="position:relative"></svg></div></td></tr><tr><td colspan="3"><br>The comparison in the third column is done by simply dividing the values from the HMEC cell line by the values in the HUVEC cell line. The wiggle track on top shows values from a CTCF binding assay.</td></tr></table></div></body><script type="text/javascript">// style="margin-top: 155px;margin-left: 32px;
 /*
     var width, height;
     if(window.innerWidth < window.innerHeight) {
@@ -286,9 +207,4 @@ $(window).resize(function() {
     location.reload();
   //resize just happened, pixels changed
 });
-    */
-
-
-</script>
-</body>
-</html>
+    */</script></html>

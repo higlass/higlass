@@ -765,18 +765,27 @@ export function MassiveMatrixPlot() {
                     .y(yScale)
                     .scaleExtent([1,Math.pow(2, maxZoom + 2)]);
 
+                    console.log('chromInfo:', chromInfo);
+
+                function formatChromPosition([chrom, pos]) {
+                    var format = d3.format(',')
+                    return chrom + ':' + format(pos);
+                }
+
                 yAxis = d3.svg.axis()
                     .scale(yScale)
                     .orient("right")
                     .tickSize(-(width - margin.left - margin.right))
                     .tickPadding(6)
-                    .ticks(nTicks);
+                    .ticks(nTicks)
+                    .tickFormat(function(x) { return formatChromPosition(chromInfo.genomePosToChrPos(x)); } );
 
                 xAxis = d3.svg.axis()
                     .scale(xScale)
                     .orient("bottom")
                     .tickSize(-(height - margin.top - margin.bottom))
                     .tickPadding(6)
+                    .tickFormat(function(x) { return formatChromPosition(chromInfo.genomePosToChrPos(x)); } )
                     .ticks(nTicks);
 
                 gYAxis.call(yAxis);
