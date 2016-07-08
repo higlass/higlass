@@ -1,14 +1,14 @@
 <!DOCTYPE html><html lang=""><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css"><!--[if lte IE 8]>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
-    <![endif]--><!--[if gt IE 8]><!--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css"><!--<![endif]--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css"><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script><title>HiGlass: Multi-resolution Hi-C data display</title></head><script src="https://rawgit.com/pkerpedjiev/goomba/master/dist/scripts/goomba.js"></script><link rel="stylesheet" href="styles/style.css"><body><div style="margin-left: 20px"><h2>Zoomable gene tracks</h2>Gene annotation tracks can give us an idea of where genes are located.<br><br><div id="chromosome-info" style="height: 120px"></div>Wiggle tracks tell us about sequencing experiments like CTCF binding assays:<div id="wiggle-tracks-1" style="height: 60px"></div>Or DNAse sensitivity assays:<div id="wiggle-tracks-2" style="height: 60px"></div></div><script type="text/javascript">let width = 600;
-let height = 240;
+    <![endif]--><!--[if gt IE 8]><!--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css"><!--<![endif]--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css"><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script><title>HiGlass: Multi-resolution Hi-C data display</title></head><script src="https://rawgit.com/pkerpedjiev/goomba/master/dist/scripts/goomba.js"></script><link rel="stylesheet" href="styles/style.css"><body><div style="margin-left: 20px"><h2>Zoomable gene tracks</h2>Gene annotation tracks can give us an idea of where genes are located.<br><br><div id="chromosome-info" style="height: 120px"></div>Wiggle tracks tell us about sequencing experiments like CTCF binding assays:<div id="wiggle-tracks-1" style="height: 60px"></div>Or DNAse sensitivity assays:<div id="wiggle-tracks-2" style="height: 60px"></div></div><script type="text/javascript">var width = 600;
+var height = 240;
 
-let trackHeight = 30;
-let margin = {'left': 30, 'top': 20, 'right': 30, 'bottom': 10};
-let tileDirectory = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-plus'
+var trackHeight = 30;
+var margin = {'left': 30, 'top': 20, 'right': 30, 'bottom': 10};
+var tileDirectory = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-plus'
 
-let awsDomain = '//52.23.165.123:9872';
-let tileDirectories = [awsDomain + '/hg19/refgene-tiles-minus',
+var awsDomain = '//52.23.165.123:9872';
+var tileDirectories = [awsDomain + '/hg19/refgene-tiles-minus',
                        awsDomain + '/hg19/refgene-tiles-plus'];
 
 var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
@@ -16,21 +16,21 @@ var svg = d3.select('#chromosome-info').append('svg')
 .attr('width', width)
 .attr('height', height)
 
-let searchField = null;
+var searchField = null;
 
-goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
-    let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
-    //let xScale = d3.scale.linear().domain([0, 10000000])
+goomba.ChromosomeInfo(chromInfoFilename, function(chromInfo) {
+    var xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
+    //var xScale = d3.scale.linear().domain([0, 10000000])
         .range([0, width - margin.left - margin.right]);
 
 
-    let scaleExtent = [1, chromInfo.totalLength / 100]
+    var scaleExtent = [1, chromInfo.totalLength / 100]
 
-    //let xScale = d3.scale.linear().domain([0, 200000000])
+    //var xScale = d3.scale.linear().domain([0, 200000000])
 
     console.log('chromInfo:', chromInfo);
     console.log('xScale.domain()', xScale.domain());
-    let zoomDispatch = d3.dispatch('zoom');
+    var zoomDispatch = d3.dispatch('zoom');
     searchField = new goomba.SearchField(chromInfo, xScale.copy(), 
                                          xScale.copy(), zoomDispatch);
 
@@ -45,14 +45,14 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .datum(chromInfo)
     .call(chromInfoPlot);
 
-    let gMain = svg.append('g')
+    var gMain = svg.append('g')
     .classed('g-main', true);
 
-    let tileLayout = goomba.GeneTileLayout;
+    var tileLayout = goomba.GeneTileLayout;
 
 
     /////////////////////////////
-    let tiledArea = goomba.TiledArea().width(width)
+    var tiledArea = goomba.TiledArea().width(width)
     .height(height)
     .dataPointLayout(goomba.GenePlot)
     .tileLayout(goomba.GeneTileLayout)
@@ -61,24 +61,24 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .margin({'left': 30, 'top': 50, 'right': 30, 'bottom': 10})
     .zoomDispatch(zoomDispatch);
 
-    let gGeneTracks = gMain
+    var gGeneTracks = gMain
         .append('g')
     .selectAll('g')
     .data(tileDirectories)
     .enter()
     .append('g')
-    .attr('transform', (d,i) => { return 'translate(0,' + i * trackHeight + ')'; })
+    .attr('transform', function(d,i) { return 'translate(0,' + i * trackHeight + ')'; })
     .classed('track-g', true)
     .call(tiledArea)
 
-    let zoomableLabels = goomba.ZoomableLabels()
+    var zoomableLabels = goomba.ZoomableLabels()
     .markerClass('.gene-marker')
     .labelClass('.gene-label')
     .labelParent(gMain)
-    .labelMarkerId((d) => { return `n-${d.uid}`})
+    .labelMarkerId(function(d) { return `n-${d.uid}`})
     .uidString('uid')
 
-    tiledArea.on('draw', () => {
+    tiledArea.on('draw', function() {
         gGeneTracks.call(zoomableLabels);
     });
 
@@ -91,7 +91,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     gMain = svg.append('g')
     .classed('g-main', true);
 
-    let wiggleTileArea = goomba.TiledArea().width(width)
+    var wiggleTileArea = goomba.TiledArea().width(width)
     .height(height)
     .dataPointLayout(goomba.GenePlot)
     .tileLayout(goomba.WiggleTileLayout)
@@ -100,7 +100,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .margin({'left': 30, 'top': 0, 'right': 30, 'bottom': 10})
     .zoomDispatch(zoomDispatch);
 
-    let gWiggleTracks = gMain
+    var gWiggleTracks = gMain
     .append('g')
     .attr('transform', 'translate(0,' + (0) + ')')
     .selectAll('g')
@@ -117,7 +117,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 
     .enter()
     .append('g')
-    .attr('transform', (d,i) => { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
+    .attr('transform', function(d,i) { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
     .classed('track-g', true)
     .call(wiggleTileArea)
 
@@ -146,7 +146,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 
     .enter()
     .append('g')
-    .attr('transform', (d,i) => { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
+    .attr('transform', function(d,i) { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
     .classed('track-g', true)
     .call(wiggleTileArea)
 });

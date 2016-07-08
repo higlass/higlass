@@ -24,20 +24,20 @@
     */
 
 var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
-let trackHeight = 25;
-//let awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
-let awsDomain = '//52.23.165.123:9872';
-let tileDirectories = [awsDomain + '/hg19/refgene-tiles-minus',
+var trackHeight = 25;
+//var awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
+var awsDomain = '//52.23.165.123:9872';
+var tileDirectories = [awsDomain + '/hg19/refgene-tiles-minus',
                        awsDomain + '/hg19/refgene-tiles-plus']
 
 
 var margin = {'top': 20, 'left': 30, 'bottom': 30, 'right': 120};
-let mmvMargin = {'top': 150, 'left': 30, 'bottom': 30, 'right': 120};
+var mmvMargin = {'top': 150, 'left': 30, 'bottom': 30, 'right': 120};
 
-goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
+goomba.ChromosomeInfo(chromInfoFilename, function(chromInfo) {
 ///////////////////////////
-    var xScale = d3.scale.linear().domain([0, 5000000])
-    //var xScale = d3.scale.linear().domain([0, 3137161264])
+    //var xScale = d3.scale.linear().domain([0, 5000000])
+    var xScale = d3.scale.linear().domain([0, 3137161264])
         .range([0, width - mmvMargin.left - mmvMargin.right]);
 
     var zoomDispatch = d3.dispatch('zoom', 'zoomend');
@@ -53,7 +53,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .chromInfo(chromInfo);
 
         d3.select('#mmv-area')
-        .datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
+        .datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
         //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
         //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
         .call(mmvPlot1)
@@ -69,13 +69,13 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .datum(chromInfo)
     .call(chromInfoPlot);
 
-    let tileLayout = goomba.GeneTileLayout;
+    var tileLayout = goomba.GeneTileLayout;
 
-    let gMain = svg.append('g')
+    var gMain = svg.append('g')
     .classed('g-main', true);
 
     /////////////////////////////
-    let tiledArea = goomba.TiledArea().width(width)
+    var tiledArea = goomba.TiledArea().width(width)
     .height(height)
     .dataPointLayout(goomba.GenePlot)
     .tileLayout(tileLayout)
@@ -84,29 +84,29 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .margin({'left': 30, 'top': 50, 'right': 120, 'bottom': 10})
     .zoomDispatch(zoomDispatch);
 
-    let gGeneTracks = gMain
+    var gGeneTracks = gMain
         .append('g')
     .selectAll('g')
     .data(tileDirectories)
     .enter()
     .append('g')
-    .attr('transform', (d,i) => { return 'translate(0,' + i * trackHeight + ')'; })
+    .attr('transform', function(d,i) { return 'translate(0,' + i * trackHeight + ')'; })
     .classed('track-g', true)
     .call(tiledArea)
 
-    let zoomableLabels = goomba.ZoomableLabels()
+    var zoomableLabels = goomba.ZoomableLabels()
     .markerClass('.gene-marker')
     .labelClass('.gene-label')
     .labelParent(gMain)
-    .labelMarkerId((d) => { return `n-${d.uid}`})
+    .labelMarkerId(function(d) { return `n-${d.uid}`})
     .uidString('uid')
 
-    tiledArea.on('draw', () => {
+    tiledArea.on('draw', function() {
         gGeneTracks.call(zoomableLabels);
     });
     //////////////////////////////////////////
 
-    let wiggleTileArea = goomba.TiledArea().width(width)
+    var wiggleTileArea = goomba.TiledArea().width(width)
     .height(height)
     .dataPointLayout(goomba.GenePlot)
     .tileLayout(goomba.WiggleTileLayout)
@@ -114,7 +114,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .margin({'left': 30, 'top': 65, 'right': 120, 'bottom': 10})
     .zoomDispatch(zoomDispatch);
 
-    let gWiggleTracks = gMain
+    var gWiggleTracks = gMain
     .append('g')
     .attr('transform', 'translate(0,' + (20) + ')')
     .selectAll('g')
@@ -125,7 +125,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 
     .enter()
     .append('g')
-    .attr('transform', (d,i) => { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
+    .attr('transform', function(d,i) { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
     .classed('track-g', true)
     .call(wiggleTileArea)
 });

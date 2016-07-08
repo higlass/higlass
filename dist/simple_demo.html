@@ -11,10 +11,10 @@ chr8 565000 chrX  570000  1.0
             </code>
             </pre></td><td style="text-align: center"><p><b>Output Display</b></p><div id="mmv-area" style="position:relative; height:450px; width: 530px"></div></td></tr></table>And describe it however it want.</div><script type="text/javascript">var width = 630, height=450;
 
-let awsDomain = '//52.23.165.123:9872';
+var awsDomain = '//52.23.165.123:9872';
 var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
 
-goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
+goomba.ChromosomeInfo(chromInfoFilename, function(chromInfo) {
     var xScale = d3.scale.linear().domain([0, 3137161264])
         .range([0, width]);
 
@@ -25,7 +25,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 
 
     console.log('here chromInfo:', chromInfo);
-let mmvMargin = {'top': 10, 'left': 30, 'bottom': 30, 'right': 120};
+var mmvMargin = {'top': 10, 'left': 30, 'bottom': 30, 'right': 120};
 var mmvPlot1 = higlass.MassiveMatrixPlot()
     .width(width)
     .margin(mmvMargin)
