@@ -28,6 +28,7 @@ export function MassiveMatrixPlot() {
     var sparseData;
 
     function chart(selection) {
+        console.log('version .11');
         selection.each(function(tileDirectory) {
             let resolution = 256;
             let minX = 0, maxX = 0, minY = 0, maxY = 0;
@@ -726,9 +727,6 @@ export function MassiveMatrixPlot() {
 
                 maxZoom = tile_info.max_zoom;
 
-                console.log('xDomain:', xDomain);
-                console.log('yDomain:', yDomain);
-
                 if (xDomain == null) {
                     xScaleDomain = [minX, maxX];
                 } else {
@@ -764,8 +762,6 @@ export function MassiveMatrixPlot() {
                 zoom.x(xScale)
                     .y(yScale)
                     .scaleExtent([1,Math.pow(2, maxZoom + 2)]);
-
-                    console.log('chromInfo:', chromInfo);
 
                 function formatChromPosition([chrom, pos]) {
                     var format = d3.format(',')

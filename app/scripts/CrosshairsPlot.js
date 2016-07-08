@@ -24,7 +24,6 @@ export function CrosshairsPlot() {
             .domain(yDomain)
             .range([0, height - margin.top - margin.bottom]);
 
-            console.log('svg:',svg);
         var gCoordinates = svg.append('g')
         .classed('coordinates-g', true)
         //.attr('transform', `translate(${margin.left}, ${margin.top})`)

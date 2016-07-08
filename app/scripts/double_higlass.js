@@ -340,7 +340,6 @@ export function DoubleMassiveMatrixPlot() {
                             }
 
                             let d = Math.log((data1[i] + 1.) / (data2[i] + 1.));
-                            //console.log('d:', d);
                             ct = d; //countTransform(d);
 
                             rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
@@ -365,7 +364,6 @@ export function DoubleMassiveMatrixPlot() {
 
 
             function tileDataToCanvas(tile, data1, data2, zoomLevel) {
-                console.log('tileDataToCanvas');
                 let canvas = document.createElement('canvas');
 
                 canvas.width = 256;
@@ -402,7 +400,6 @@ export function DoubleMassiveMatrixPlot() {
                 sprite.height = yOrigScale(tileEndY) - yOrigScale(tileY)
 
                 if (tile.mirrored) {
-                    console.log('tile:', tile);
                     // this is a mirrored tile that represents the other half of a 
                     // triangular matrix
                     sprite.x = xOrigScale(tileY);
@@ -435,7 +432,6 @@ export function DoubleMassiveMatrixPlot() {
                 let tileEndY = minY + (yTilePos+1) * tileHeight;
 
                 g.beginFill();
-                console.log('tileX:', tileX, 'tileY:', tileY);
                 
                 if (tile[1] == tile[2]) {
                     g.drawPolygon([0, 0,
@@ -561,7 +557,6 @@ export function DoubleMassiveMatrixPlot() {
                         let maskGraphics = getClippingPath(tiles[i]);
                         setSpriteProperties(maskGraphics, tiles[i]);
 
-                        console.log('maskGraphics:', maskGraphics);
                         newGraphics.addChild(sprite);
                         //newGraphics.addChild(maskGraphics);
                         //newGraphics.mask = maskGraphics;
@@ -820,9 +815,6 @@ export function DoubleMassiveMatrixPlot() {
                 maxArea = tile_info.max_importance;
 
                 maxZoom = tile_info.max_zoom;
-
-                console.log('xDomain:', xDomain);
-                console.log('yDomain:', yDomain);
 
                 if (xDomain == null) {
                     xScaleDomain = [minX, maxX];

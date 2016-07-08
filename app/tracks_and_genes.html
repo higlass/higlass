@@ -16,6 +16,7 @@
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+    <script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
     <script>hljs.initHighlightingOnLoad();</script>
 
     <title>HiGlass: Multi-resolution Hi-C data display</title>
@@ -80,7 +81,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     //var xScale = d3.scale.linear().domain([0, 3137161264])
         .range([0, width - mmvMargin.left - mmvMargin.right]);
 
-    var zoomDispatch = d3.dispatch('zoom');
+    var zoomDispatch = d3.dispatch('zoom', 'zoomend');
 
     var mmvPlot1 = higlass.MassiveMatrixPlot()
         .width(width)
@@ -90,6 +91,7 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
         .xDomain(xScale.domain())
         .yDomain(xScale.domain())
         .zoomDispatch(zoomDispatch)
+        .chromInfo(chromInfo);
 
         d3.select('#mmv-area')
         .datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
