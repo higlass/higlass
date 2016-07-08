@@ -28,7 +28,7 @@ export function MassiveMatrixPlot() {
     var sparseData;
 
     function chart(selection) {
-        console.log('version .11');
+        console.log('version .12');
         selection.each(function(tileDirectory) {
             let resolution = 256;
             let minX = 0, maxX = 0, minY = 0, maxY = 0;
