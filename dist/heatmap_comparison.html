@@ -1,138 +1,6 @@
-<!DOCTYPE html>
-<html lang="">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
-
-    <!--[if lte IE 8]>
+<!DOCTYPE html><html lang=""><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css"><!--[if lte IE 8]>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
-    <![endif]-->
-    <!--[if gt IE 8]><!-->
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css">
-    <!--<![endif]-->
-
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-    
-    <script>hljs.initHighlightingOnLoad();</script>
-
-    <title>HiGlass: Multi-resolution Hi-C data display</title>
-</head>
-<script src="https://rawgit.com/pkerpedjiev/goomba/master/dist/scripts/goomba.js"></script>
-
-<!-- build:css styles/style.css -->
-<link rel="stylesheet" href="styles/page.css" />
-<!-- endbuild -->
-
-<!-- build:js scripts/higlass.js -->
-<script src='scripts/higlass.js'></script>
-<!-- endbuild -->
-
-<body>
-
-    <div style='margin-left: 20px;'>
-    <h2>HiGlass: Web based massive matrix display</h2>
-
-    HiGlass is a tool for displaying and comparing large matrices within a web page.
-    The example below demonstrates its use with contact matrices obtained from
-    chromosome capture assays (HiC). The matrices in the upper row show data from
-    two different cell lines (HMEC and HUVEC). The bottom row shows the ratio of the
-    values from the HMEC data to the values from the HUVEC data.
-
-    <br>
-    <br>
-
-    <table>
-        <tr>
-            <td style="text-align: center;">
-                <b>HMEC</b>
-            </td>
-            <td style="text-align: center;">
-                <b>HUVEC</b>
-            </td>
-        <tr>
-            <td>
-    <div id="mmv-area" style="position:relative; height:350px; width: 390px" >
-    <svg id="goombaPlot" style="position:relative;" >
-    </div>
-            </td>
-            <td>
-    <div id="mmv-area2" style="position:relative; height:350px; width: 390px" >
-    <svg id="goombaPlot" style="position:relative;" >
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td style="text-align: center;">
-                <b>HMEC / HUVEC</b>
-            </td>
-
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-    <div id="mmv-area1" style="position:relative; height:350px; width: 390px" >
-    <svg id="goombaPlot" style="position:relative;" >
-            </td>
-        </tr>
-        <tr>
-
-            <td>
-
-            </td>
-        </tr>
-    </table>
-
-    <h3>Other examples</h3>
-
-    <table>
-        <tr>
-            <td>
-                <a href="simple_demo.html">1. A lonely container</a>
-            </td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>
-                <a href="tracks_demo_2.html">2. Zoomable gene tracks</a>
-            </td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>
-                <a href="tracks_and_genes.html">3. Mix and match</a>
-            </td>
-            <td></td>
-        </tr>
-    </table>
-
-    <h3>Source code</h3>
-    The examples above rely on three software packages:
-
-    <ul>
-        <li><b><a href="https://github.com/hms-dbmi/clodius">Clodius</a></b> - Tile matrix data</li>
-        <li><b><a href="https://github.com/hms-dbmi/higlass">HiGlass</a></b> - Display large tiled 2D matrices</li>
-        <li><b><a href="https://github.com/pkerpedjiev/goomba">Goomba</a></b> - Zoomable gene annotations and wiggle tracks</li>
-    </ul>
-
-    <h3>Contact</h3>
-    HiGlass is developed within the <a href="http://gehlenborglab.org">Gehlenborg Lab</a>. For technical questions please get in touch with <a href="mailto://nils@hms.harvard.edu">Nils Gehlenborg</a> or <a href="mailto://pkerp@hms.harvard.edu">Peter Kerpedjiev</a>.
-
-    <h3>Funding</h3>
-    This work was supported by funding from the National Institutes for Health (U01CA200059).
-
-    </div>
-</body>
-
-
-<script type='text/javascript'>
-
-// style="margin-top: 155px;margin-left: 32px;
+    <![endif]--><!--[if gt IE 8]><!--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css"><!--<![endif]--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css"><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script><script>hljs.initHighlightingOnLoad();</script><title>HiGlass: Multi-resolution Hi-C data display</title></head><script src="https://rawgit.com/pkerpedjiev/goomba/master/dist/scripts/goomba.js"></script><link rel="stylesheet" href="styles/style.css"><script src="scripts/higlass.js"></script><body><div style="margin-left: 20px"><h2>Comparing contact maps from different cell lines</h2><br><table><tr><td style="text-align: center"><b>HMEC</b></td><td style="text-align: center"><b>HUVEC</b></td><td style="text-align: center"><b>HMEC / HUVEC</b></td></tr><tr><td><div id="mmv-area" style="position:relative; height:350px; width: 390px"><svg id="goombaPlot" style="position:relative"></svg></div></td><td><div id="mmv-area2" style="position:relative; height:350px; width: 390px"><svg id="goombaPlot" style="position:relative"></svg></div></td><td><div id="mmv-area1" style="position:relative; height:350px; width: 390px"><svg id="goombaPlot" style="position:relative"></svg></div></td></tr><tr><td colspan="3"><br>The comparison in the third column is done by simply dividing the values from the HMEC cell line by the values in the HUVEC cell line. The wiggle track on top shows values from a CTCF binding assay.</td></tr></table></div></body><script type="text/javascript">// style="margin-top: 155px;margin-left: 32px;
 /*
     var width, height;
     if(window.innerWidth < window.innerHeight) {
@@ -168,10 +36,10 @@
 
 var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
 
-var trackHeight = 35;
-//var awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
-var awsDomain = '//52.23.165.123:9872';
-var tileDirectories = [
+let trackHeight = 35;
+//let awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
+let awsDomain = '//52.23.165.123:9872';
+let tileDirectories = [
     /*
     awsDomain + '/hg19/refgene-tiles-minus',
                        awsDomain + '/hg19/refgene-tiles-plus'
@@ -181,9 +49,9 @@ var tileDirectories = [
 
 
 var margin = {'top': 20, 'left': 30, 'bottom': 30, 'right': 50};
-var mmvMargin = {'top': 70, 'left': 30, 'bottom': 30, 'right': 120};
+let mmvMargin = {'top': 70, 'left': 30, 'bottom': 30, 'right': 120};
 
-goomba.ChromosomeInfo(chromInfoFilename, function(chromInfo) {
+goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
 ///////////////////////////
     //var xScale = d3.scale.linear().domain([0, 5000000])
     var xScale = d3.scale.linear().domain([0, 3137161264])
@@ -204,7 +72,7 @@ goomba.ChromosomeInfo(chromInfoFilename, function(chromInfo) {
     var mmvPlot1 = higlass.DoubleMassiveMatrixPlot()
         .width(width)
         .height(height + 80)
-        .nTicks(4)
+        .nTicks(3)
         .margin(mmvMargin)
         .chromInfo(chromInfo)
         .xDomain(xScale.domain())
@@ -225,7 +93,7 @@ goomba.ChromosomeInfo(chromInfoFilename, function(chromInfo) {
     var mmvPlot2 = higlass.MassiveMatrixPlot()
         .width(width)
         .height(height + 80)
-        .nTicks(4)
+        .nTicks(3)
         .margin(mmvMargin)
         .chromInfo(chromInfo)
         .xDomain(xScale.domain())
@@ -266,9 +134,9 @@ goomba.ChromosomeInfo(chromInfoFilename, function(chromInfo) {
     .datum(chromInfo)
     .call(chromInfoPlot);
 
-    var tileLayout = goomba.GeneTileLayout;
+    let tileLayout = goomba.GeneTileLayout;
 
-    var gMain = svg.append('g')
+    let gMain = svg.append('g')
     .classed('g-main', true);
 
     var debug1D = svg.append('g')
@@ -277,7 +145,7 @@ goomba.ChromosomeInfo(chromInfoFilename, function(chromInfo) {
     .attr("id", "debug1D"); 
 
     /////////////////////////////
-    var tiledArea = goomba.TiledArea().width(width)
+    let tiledArea = goomba.TiledArea().width(width)
     .height(height)
     .dataPointLayout(goomba.GenePlot)
     .tileLayout(tileLayout)
@@ -286,29 +154,29 @@ goomba.ChromosomeInfo(chromInfoFilename, function(chromInfo) {
     .margin({'left': 30, 'top': 50, 'right': 120, 'bottom': 10})
     .zoomDispatch(zoomDispatch);
 
-    var gGeneTracks = gMain
+    let gGeneTracks = gMain
         .append('g')
     .selectAll('g')
     .data(tileDirectories)
     .enter()
     .append('g')
-    .attr('transform', function(d,i) { return 'translate(0,' + i * trackHeight + ')'; })
+    .attr('transform', (d,i) => { return 'translate(0,' + i * trackHeight + ')'; })
     .classed('track-g', true)
     .call(tiledArea)
 
-    var zoomableLabels = goomba.ZoomableLabels()
+    let zoomableLabels = goomba.ZoomableLabels()
     .markerClass('.gene-marker')
     .labelClass('.gene-label')
     .labelParent(gMain)
-    .labelMarkerId(function(d) { return `n-${d.uid}`})
+    .labelMarkerId((d) => { return `n-${d.uid}`})
     .uidString('uid')
 
-    tiledArea.on('draw', function()  {
+    tiledArea.on('draw', () => {
         gGeneTracks.call(zoomableLabels);
     });
     //////////////////////////////////////////
 
-    var wiggleTileArea = goomba.TiledArea().width(width)
+    let wiggleTileArea = goomba.TiledArea().width(width)
     .height(height)
     .dataPointLayout(goomba.GenePlot)
     .tileLayout(goomba.WiggleTileLayout)
@@ -316,7 +184,7 @@ goomba.ChromosomeInfo(chromInfoFilename, function(chromInfo) {
     .margin({'left': 30, 'top': 15, 'right': 120, 'bottom': 10})
     .zoomDispatch(zoomDispatch);
 
-    var gWiggleTracks = gMain
+    let gWiggleTracks = gMain
     .append('g')
     .attr('transform', 'translate(0,' + (5) + ')')
     .selectAll('g')
@@ -328,7 +196,7 @@ goomba.ChromosomeInfo(chromInfoFilename, function(chromInfo) {
 
     .enter()
     .append('g')
-    .attr('transform', function(d,i) { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
+    .attr('transform', (d,i) => { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
     .classed('track-g', true)
     .call(wiggleTileArea)
 });
@@ -339,19 +207,10 @@ $(window).resize(function() {
     location.reload();
   //resize just happened, pixels changed
 });
-    */
-
-
-</script>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    */</script><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
           })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-77756807-1', 'auto');
-    ga('send', 'pageview');
-
-</script>
-</body>
-</html>
+    ga('send', 'pageview');</script></html>

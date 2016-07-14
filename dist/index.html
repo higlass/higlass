@@ -1,60 +1,23 @@
 <!DOCTYPE html><html lang=""><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css"><!--[if lte IE 8]>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
-    <![endif]--><!--[if gt IE 8]><!--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css"><!--<![endif]--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css"><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><title>HiGlass: Multi-resolution Hi-C data display</title></head><script src="https://rawgit.com/pkerpedjiev/goomba/zoomable-genes/dist/scripts/goomba.js"></script><link rel="stylesheet" href="styles/style.css"><script src="scripts/higlass.js"></script><body><div class="pure-g"><div class="pure-u-1 pure-u-md-2-5 l-box"><h1>HiGlass: Multi-resolution Hi-C data display</h1><p>Each human cell has about 2 meters of DNA. This DNA is packaged within a nucleus that is only microns thick. This is the equivalent of stuffing a string stretching from New York to Los Angeles into a container the size of a soccer ball. Needless to say, the arrangement is very compact and necessitates many contacts between distant regions of the DNA. To elucidate the nature and location of these interactions, Hi-C assays generate large amounts of information about which parts of human chromosomes are physically near to each other. In its simplest form, this is a three-column list:</p><pre>
-            <code class="nohighlight">
-50000   50000   1.0
-60000   60000   1.0
-560000  565000  2.0
-565000  565000  23.0
-565000  570000  1.0
-            </code>
-            </pre><p>The first and second columns are locations on the genome and the third is a frequency of how often contacts between these regions are observed. The data in this example has a resolution of 5 Kb, indicating that we have aggregated contacts into bins of 5,000 DNA bases. Given the size of the human genome (~3e9 base pairs), a map of all 5 Kb contacts could be as large as 3.6e11 contacts (6e5 x 6e5). In practice, many regions are not in close proximity with each other which means that the contact data is in a much smaller sparse contact list.</p><p>In the case of chromosome 1, which has approximately 2.5e8 nucleotides, the contact list has 42,447,494 entries. This table takes up nearly 1Gb of storage space uncompressed. Displaying such a large amount of data at once is beyond the capabilities of anything but the most sophisticated and powerful computers. To overcome this challenge, we break up the contact list into a set of 'tiles' which can be displayed at different zoom levels. Low resolution tiles aggregate the data in the high-resolution tiles and thus limit the total amount of data that needs to be displayed at any zoom level. The result, a viewer we dubbed HiGlass, opens a window into a 1Gb data set that can be explored through a browser on nearly any desktop computer.</p><p>The axes here show the position along a chromosome for which contact data is shown. The colors indicate the frequency and the dots on top show the positions of various annotated genes. The sizes of the dots reflect how cited these genes are.</p><p>The astute observer will note that this method of displaying data is remarkably similar to how popular online mapping tools work. It is, in fact, almost identical. The only difference is the coordinate system used. Where in maps data (e.g. countries, cities, streets) is indexed by its latitude and longitude, here it is indexed by chromosome positions.</p><h3>Source code</h3><p>The instantiation of a higlass container is dead simple:</p><pre>
-                <code class="javascript">
-var width = 700, height=550;
+    <![endif]--><!--[if gt IE 8]><!--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css"><!--<![endif]--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css"><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script><script>hljs.initHighlightingOnLoad();</script><title>HiGlass: Multi-resolution Hi-C data display</title></head><script src="https://rawgit.com/pkerpedjiev/goomba/master/dist/scripts/goomba.js"></script><link rel="stylesheet" href="styles/style.css"><script src="scripts/higlass.js"></script><body><div style="margin-left: 20px"><h2>HiGlass: Web based massive matrix display</h2>HiGlass is a tool for displaying and comparing large matrices within a web page. The example below demonstrates its use with contact matrices obtained from chromosome capture assays (HiC). The matrices in the upper row show data from two different cell lines (HMEC and HUVEC). The bottom row shows the ratio of the values from the HMEC data to the values from the HUVEC data.<br><br><table><tr><td style="text-align: center"><b>HMEC</b></td><td style="text-align: center"><b>HUVEC</b></td></tr><tr><td><div id="mmv-area" style="position:relative; height:350px; width: 390px"><svg id="goombaPlot" style="position:relative"></svg></div></td><td><div id="mmv-area2" style="position:relative; height:350px; width: 390px"><svg id="goombaPlot" style="position:relative"></svg></div></td></tr><tr><td></td><td style="text-align: center"><b>HMEC / HUVEC</b></td></tr><tr><td></td><td><div id="mmv-area1" style="position:relative; height:350px; width: 390px"><svg id="goombaPlot" style="position:relative"></svg></div></td></tr><tr><td></td></tr></table><h3>Other examples</h3><table><tr><td><a href="simple_demo.html">1. A lonely container</a></td><td></td></tr><tr><td><a href="tracks_demo_2.html">2. Zoomable gene tracks</a></td><td></td></tr><tr><td><a href="tracks_and_genes.html">3. Mix and match</a></td><td></td></tr></table><h3>Source code</h3>The examples above rely on three software packages:<ul><li><b><a href="https://github.com/hms-dbmi/clodius">Clodius</a></b> - Tile matrix data</li><li><b><a href="https://github.com/hms-dbmi/higlass">HiGlass</a></b> - Display large tiled 2D matrices</li><li><b><a href="https://github.com/pkerpedjiev/goomba">Goomba</a></b> - Zoomable gene annotations and wiggle tracks</li></ul><h3>Contact</h3>HiGlass is developed within the <a href="http://gehlenborglab.org">Gehlenborg Lab</a>. For technical questions please get in touch with <a href="mailto://nils@hms.harvard.edu">Nils Gehlenborg</a> or <a href="mailto://pkerp@hms.harvard.edu">Peter Kerpedjiev</a>.<h3>Funding</h3>This work was supported by funding from the National Institutes for Health (U01CA200059).</div></body><script type="text/javascript">// style="margin-top: 155px;margin-left: 32px;
+/*
+    var width, height;
+    if(window.innerWidth < window.innerHeight) {
+        width = window.innerWidth * 1;
+    } else {
+        width = window.innerHeight *1.1;
+    }
+    height = width * 0.8;
+    */
+    var width = 430;
+    var height = 270;
 
-var data_dir = '//s3.amazonaws.com/pkerp/tiles/chr1_5kb/';
-var mmvPlot1 = higlass.MassiveMatrixPlot()
-    .width(width)
-    .height(height)
-    .nTicks(4)
-    .zoomCallback(zoomCallback);
-
-d3.select('#mmv-area')
-.datum( '//s3.amazonaws.com/pkerp/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
-.call(mmvPlot1)
-                </code>
-            </pre><p>We just point our container to the source of tiles and attach it to an HTML element. The rest is handled by higlass. Multiple containers can be instantiated using the standard d3 data binding pattern:</p><pre>
-<code class="javascript">
-var tileData = [ '//s3.amazonaws.com/pkerp/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles',
-                 '//s3.amazonaws.com/pkerp/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
-
-var zoomDispatch = d3.dispatch('zoom');
-
-var mmvPlot2 = higlass.MassiveMatrixPlot()
-    .width(350)
-    .height(250)
-    .nTicks(2)
-    .zoomDispatch(zoomDispatch)
-    .margin({'top': 10, 'left': 30, 'bottom': 30, 'right': 120});
-
-var plotAreas = d3.select("#multiple-plots")
-.selectAll(".hic-plot-area")
-.data(tileData)
-
-d3.select("#multiple-plots")
-.selectAll('.hic-plot-area')
-.call(mmvPlot2)
-</code>
-</pre><p>The source code for higlass can be found on <a href="https://github.com/hms-dbmi/4DN_matrix-viewer">GitHub</a>.</p></div><div class="pure-u-1 pure-u-md-3-5 l-box"><div id="sticky-mmv" style><p><b>Use mouse or trackpad to zoom and pan</b></p><table><tr><td align="center" style="width: 650px">GM12778</td></tr></table><div id="mmv-area" style="position:relative; height:550px; width: 700px"><svg id="goombaPlot"></svg></div><p class="caption">GM12878 (Chromosome 1) - 5 KB resolution<br><i>Source: <a href="http://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63525&format=file&file=GSE63525%5FGM12878%5Fprimary%5Fintrachromosomal%5Fcontact%5Fmatrices%2Etar%2Egz">GEO GSE63525 - GSE63525_GM12878_primary_intrachromosomal_contact_matrices.tar.gz</a></i></p><br><p><b>Synchronized zooming</b></p><div id="multiple-plots" style="position:relative; height:300px"><table><tr><td align="center">HMEC</td><td align="center">HUVEC</td></tr><tr><td align="center"><div id="HMEC" class="hic-plot-area" style="position: relative; height: 250px; width: 350px"></div></td><td align="center"><div id="HUVEC" class="hic-plot-area" style="position: relative; height: 250px; width: 350px"></div></td></tr><tr><td><p class="caption">HMEC (Chromosome 1) - 5 KB resolution<br><i>Source: <a href="http://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63525">GEO GSE63525</a></i></p></td><td><p class="caption">HUVEC (Chromosome 1) - 5 KB resolution<br><i>Source: <a href="http://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE63525">GEO GSE63525</a></i></p></td></tr></table></div></div></div></div><script type="text/javascript">var width = 700, height=550;
-
-var mmvPlot = higlass.MassiveMatrixPlot()
-    .width(width)
-    .height(height);
-
-    var svg = d3.select('#goombaPlot')
+    var svg = d3.selectAll('#goombaPlot')
     .attr('width', width)
-    .attr('height', 80);
+    .attr('height', 300);
 
+    /*
     // goomba gets drawn with a margin of 30 on the left
     // and a margin of 30 on the right
     // whereas higlass gets drawn with a margin of 30 on the left
@@ -69,46 +32,185 @@ var mmvPlot = higlass.MassiveMatrixPlot()
             .datum('//s3.amazonaws.com/pkerp/data/hg19/refgene-tiles-small')
             //.datum('jsons/tiles')
             .call(goombaPlot)
+    */
 
-    function zoomCallback(scale, zoomLevel) {
+var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
 
-        var xScale = goombaPlot.xScale();
-        xScale.domain(scale.domain())
+var trackHeight = 35;
+//var awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
+var awsDomain = '//52.23.165.123:9872';
+var tileDirectories = [
+    /*
+    awsDomain + '/hg19/refgene-tiles-minus',
+                       awsDomain + '/hg19/refgene-tiles-plus'
+    */
+]
 
-            goombaPlot.xScale(xScale)
-            .currentZoom(zoomLevel)
-            .draw();
-    }
 
 
+var margin = {'top': 20, 'left': 30, 'bottom': 30, 'right': 50};
+var mmvMargin = {'top': 70, 'left': 30, 'bottom': 30, 'right': 120};
 
-var mmvPlot1 = higlass.MassiveMatrixPlot()
-    .width(width)
+goomba.ChromosomeInfo(chromInfoFilename, function(chromInfo) {
+///////////////////////////
+    //var xScale = d3.scale.linear().domain([0, 5000000])
+    var xScale = d3.scale.linear().domain([0, 3137161264])
+        .range([0, width - mmvMargin.left - mmvMargin.right]);
+
+    var zoomDispatch = d3.dispatch('zoom', 'zoomend');
+    var locationDispatch = d3.dispatch('move');
+
+    var crosshairsPlot = higlass.CrosshairsPlot()
+        .zoomDispatch(zoomDispatch)
+        .locationDispatch(locationDispatch)
+        .width(width)
+        .height(height + 80)
+        .margin(mmvMargin)
+        .xDomain(xScale.domain())
+        .yDomain(xScale.domain());
+
+    var mmvPlot1 = higlass.DoubleMassiveMatrixPlot()
+        .width(width)
+        .height(height + 80)
+        .nTicks(4)
+        .margin(mmvMargin)
+        .chromInfo(chromInfo)
+        .xDomain(xScale.domain())
+        .yDomain(xScale.domain())
+        .zoomDispatch(zoomDispatch)
+        .locationDispatch(locationDispatch)
+
+        d3.select('#mmv-area1')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .datum( [awsDomain + '/hg19/Rao2014-HMEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz',
+                awsDomain + "/hg19/Rao2014-HUVEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz"])
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
+        //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .call(mmvPlot1)
+        .call(crosshairsPlot)
+
+    var mmvPlot2 = higlass.MassiveMatrixPlot()
+        .width(width)
+        .height(height + 80)
+        .nTicks(4)
+        .margin(mmvMargin)
+        .chromInfo(chromInfo)
+        .xDomain(xScale.domain())
+        .yDomain(xScale.domain())
+        .zoomDispatch(zoomDispatch)
+        .locationDispatch(locationDispatch)
+
+        d3.select('#mmv-area')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .datum( [awsDomain + '/hg19/Rao2014-HMEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz'])
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
+        //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .call(mmvPlot2)
+        .call(crosshairsPlot)
+
+        d3.select('#mmv-area2')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .datum( [awsDomain + '/hg19/Rao2014-HUVEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz'])
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
+        //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .call(mmvPlot2)
+        .call(crosshairsPlot)
+
+    locationDispatch.on('move', function(loc) {
+        console.log('loc:',  loc);
+    });
+
+    var chromInfoPlot = goomba.ChromosomeAxis()
+    .width(width - margin.left - margin.right)
+    .domain(xScale.domain())
+    .orient('top')
+    .zoomDispatch(zoomDispatch);
+
+    svg.append('g')
+    .attr('transform', 'translate(' + margin.left + ',20)')
+    .datum(chromInfo)
+    .call(chromInfoPlot);
+
+    var tileLayout = goomba.GeneTileLayout;
+
+    var gMain = svg.append('g')
+    .classed('g-main', true);
+
+    var debug1D = svg.append('g')
+    .attr("id", "d1D")
+    .append('svg')
+    .attr("id", "debug1D"); 
+
+    /////////////////////////////
+    var tiledArea = goomba.TiledArea().width(width)
     .height(height)
-    .nTicks(4)
-    .zoomCallback(zoomCallback);
+    .dataPointLayout(goomba.GenePlot)
+    .tileLayout(tileLayout)
+    .domain(xScale.domain())
+    //.scaleExtent(scaleExtent)
+    .margin({'left': 30, 'top': 50, 'right': 120, 'bottom': 10})
+    .zoomDispatch(zoomDispatch);
 
-d3.select('#mmv-area')
-.datum( '//s3.amazonaws.com/pkerp/data/rao_et_al/GM12878_primary/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles')
-.call(mmvPlot1)
+    var gGeneTracks = gMain
+        .append('g')
+    .selectAll('g')
+    .data(tileDirectories)
+    .enter()
+    .append('g')
+    .attr('transform', function(d,i) { return 'translate(0,' + i * trackHeight + ')'; })
+    .classed('track-g', true)
+    .call(tiledArea)
 
+    var zoomableLabels = goomba.ZoomableLabels()
+    .markerClass('.gene-marker')
+    .labelClass('.gene-label')
+    .labelParent(gMain)
+    .labelMarkerId(function(d) { return `n-${d.uid}`})
+    .uidString('uid')
 
-var tileData = [ '//s3.amazonaws.com/pkerp/data/rao_et_al/HMEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles',
-                 '//s3.amazonaws.com/pkerp/data/rao_et_al/HUVEC/5kb_resolution_intrachromosomal/chr1/MAPQGE30/chr1_5kb.RAWobserved.tiles'];
+    tiledArea.on('draw', function()  {
+        gGeneTracks.call(zoomableLabels);
+    });
+    //////////////////////////////////////////
 
-var zoomDispatch = d3.dispatch('zoom');
+    var wiggleTileArea = goomba.TiledArea().width(width)
+    .height(height)
+    .dataPointLayout(goomba.GenePlot)
+    .tileLayout(goomba.WiggleTileLayout)
+    .domain(xScale.domain())
+    .margin({'left': 30, 'top': 15, 'right': 120, 'bottom': 10})
+    .zoomDispatch(zoomDispatch);
 
-var mmvPlot2 = higlass.MassiveMatrixPlot()
-    .width(350)
-    .height(250)
-    .nTicks(2)
-    .zoomDispatch(zoomDispatch)
-    .margin({'top': 10, 'left': 10, 'bottom': 30, 'right': 120});
+    var gWiggleTracks = gMain
+    .append('g')
+    .attr('transform', 'translate(0,' + (5) + ')')
+    .selectAll('g')
+    //.data(['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
+    .data([//awsDomain + '/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
+    awsDomain + '/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz'
+    //awsDomain + 'x/hg19/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz'
+    ])
 
-var plotAreas = d3.select("#multiple-plots")
-.selectAll(".hic-plot-area")
-.data(tileData)
+    .enter()
+    .append('g')
+    .attr('transform', function(d,i) { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
+    .classed('track-g', true)
+    .call(wiggleTileArea)
+});
+///////////////////////////////////////////////
 
-d3.select("#multiple-plots")
-.selectAll('.hic-plot-area')
-.call(mmvPlot2)</script></body></html>
+    /*
+$(window).resize(function() {
+    location.reload();
+  //resize just happened, pixels changed
+});
+    */</script><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-77756807-1', 'auto');
+    ga('send', 'pageview');</script></html>
