@@ -77,13 +77,14 @@
 <script type='text/javascript'>
 
 var awsDomain = '//52.23.165.123:9872';
+var assembly = 'mm9'
 var higlassDescription = {
     trackHeight: 25,
-    chromInfoFile: 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt',
+    chromInfoFile: 'https://s3.amazonaws.com/pkerp/data/' + assembly + '/chromInfo.txt',
     tileTracks: [{ 'type': 'GeneTrack',
-                   'data': awsDomain + 'hg19/refgene-tiles-minus'},
+                   'data': awsDomain + '/' + assembly + '/refgene-tiles-minus'},
                  { 'type': 'GeneTrack',
-                   'data': awsDomain + 'hg19/refgene-tiles-plus'}]
+                   'data': awsDomain + '/' + assembly + '/refgene-tiles-plus'}]
 }
 var searchField = null;
 
@@ -114,8 +115,8 @@ function createHiglass() {
 
     var trackHeight = 25;
     //var awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
-    var tileDirectories = [awsDomain + '/hg19/refgene-tiles-minus',
-                           awsDomain + '/hg19/refgene-tiles-plus']
+    var tileDirectories = [awsDomain + '/' + assembly + '/refgene-tiles-minus',
+                           awsDomain + '/' + assembly + '/refgene-tiles-plus']
                            
 
 
