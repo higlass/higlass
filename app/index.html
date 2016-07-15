@@ -3,19 +3,45 @@
 <head>
 <meta charset="utf-8">
 <title>Goomba</title>
+<style type="text/css">
+    .canvasjs-chart-credit {
+    display:none;
+}
+</style>
 </head>
-<body>
+<body > <!-- onload="easel();" -->
 
 <!-- build:js scripts/goomba.js -->
 <script src='scripts/goomba.js'></script>
-<!-- endbuild -->
+<!-- endbuild 
 
-<div id="circle"></div>
+<div style="position:relative; padding-left: 25px; padding-top: 14px;  " id="mode">
+        <input type="radio" name="type" value="line" checked >Line
+        <input type="radio" name="type" value="column" style="margin-left: 20px">Bar
+        <input type="radio" name="type" value="scatter" style="margin-left: 20px">Point
+        <input type="radio" name="type" value="heatmap" style="margin-left: 20px">Heatmap
+</div>-->
+<canvas id="demoCanvas" width="440" height="300" style="margin-top:60px"></canvas>
+<!--<div id="chartContainer" style="height: 90px; width: 430px; margin-top: 114px"></div>-->
+<div id="circle">
+</div>
+
+<!-- canvas js -->
+
+<div id="chartContainer" style="height: 90px; width: 460px; margin-top: 114px; margin-left:-20px;"></div>
+<script src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+<!-- Easel JS trial-->
+<script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 
 <script type='text/javascript'>
 
-let width = 448;
-let height = 440;
+
+
+let width = 1000;//448
+let height = 440;//440
 
 let trackHeight = 30;
 let margin = {'left': 30, 'top': 10, 'right': 30, 'bottom': 10};
@@ -29,11 +55,12 @@ let tileDirectories = [awsDomain + '/hg19/refgene-tiles-minus',
 
 var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
 
+
 var bigDiv = d3.select('#circle').append('div')
 .classed('big-div', true)
 .style('width', width)
 .style('height', height)
-.style('top', '0px')
+.style('top', '60px')
 .style('left', '0px')
 .style('position', 'absolute')
 
@@ -49,12 +76,17 @@ var pixiRenderer = PIXI.autoDetectRenderer(width, height, { antialiased: true,
 var stage = new PIXI.Container();
 stage.interactive = true;
 
+/** EASEL CODE */
+
+
 var bigSvg = bigDiv.append('svg')
 .attr('top', '0px')
 .attr('left', '0px')
 .attr('position', 'absolute')
 .attr('width', width)
 .attr('height', height)
+
+
 
 let bigRect = bigSvg.append('rect')
 .attr('width', width)
@@ -82,15 +114,22 @@ var draggableTrack = goomba.DraggableTrack()
     .width(width)
     .height(trackHeight);
 
-var wigglePixiTrack = goomba.WigglePixiTrack()
+/*var wigglePixiTrack = goomba.WigglePixiTrack()
+    .xScale(xScale.copy())
+    .pixiStage(stage)
+    .zoomDispatch(zoomDispatch);
+var wigglePixiTrack = goomba.WiggleCanvasTrack2()
+    .xScale(xScale.copy())
+    .pixiStage(stage)
+    .zoomDispatch(zoomDispatch);*/
+
+    var stageE = new createjs.Stage("demoCanvas");
+var wigglePixiTrack = goomba.WigglePixiLine()
     .xScale(xScale.copy())
     .pixiStage(stage)
     .zoomDispatch(zoomDispatch);
 
-
 trackData = [
-        {'width': width, 'height': 50, 
-        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
         {'width': width, 'height': 50, 
         'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
         /*
@@ -104,7 +143,7 @@ let tracks = d3.select('.big-div')
 .data(trackData)
 .enter()
 .append('div')
-.style('opacity', 0.5)
+.style('opacity', 0.5) 
 .classed('track', true)
 .call(draggableTrack)
 
@@ -129,6 +168,7 @@ function animate() {
     //console.log('trackData:', trackData);
     //for (let i = 0; i < trackData.length; i++) {
      pixiRenderer.render(stage);
+//stageE.update();
      /*
      for (let i = 1; i >= 0; i--) {
         if ('stage' in trackData[i])  {
@@ -140,7 +180,30 @@ function animate() {
     requestAnimationFrame( animate );
 }
 
-    /*
+
+
+/** Easel test */
+function easel(){
+
+    var g = new createjs.Graphics();
+     g.setStrokeStyle(1);
+     g.beginStroke("#000000");
+     g.beginFill("red");
+     g.drawCircle(0,0,30);
+    // stageE.addChild(g);
+    var x = new createjs.Container();
+    stageE.addChild(x);
+    stageE.update();
+  /*  var circle = new createjs.Shape();
+    circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
+    circle.x = 100;
+    circle.y = 100;
+    stageE.addChild(circle);
+    stageE.update();*/
+}
+
+
+ /*   
 goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
     //let xScale = d3.scale.linear().domain([0, 10000000])
@@ -198,7 +261,6 @@ goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
     .call(wiggleTileArea)
 });
 */
-
 </script>
 </body>
 </html>
