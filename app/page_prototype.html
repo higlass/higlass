@@ -49,7 +49,7 @@
                         <td>
                             <input type="text"  id="dataset-origin-text" value="//52.23.165.123:9872/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz" onkeypress="keyPressed(event)" style="left:30px; width: 380px">
                             <span class="input-group-btn">
-                                <button class="btn btn-default" type="button" id='position-search-button' onclick="searchPosition()">Go!</button>
+                                <button class="btn btn-default" type="button" id='position-search-button' onclick="loadDataset()">Go!</button>
                             </span>
                         </td>
                     </tr>
@@ -67,8 +67,8 @@
                 </table>
             </div>
             <br>
+    <svg id="goombaPlot" style="position:relative; height:100px; width: 700px" >
     <div id="mmv-area" style="position:relative; height:550px; width: 700px" >
-    <svg id="goombaPlot" style="position:relative; height:550px; width: 700px" >
     </div>
     </div>
 </body>
@@ -76,6 +76,7 @@
 
 <script type='text/javascript'>
 
+/*
 var awsDomain = '//52.23.165.123:9872';
 var assembly = 'mm9'
 var higlassDescription = {
@@ -86,14 +87,19 @@ var higlassDescription = {
                  { 'type': 'GeneTrack',
                    'data': awsDomain + '/' + assembly + '/refgene-tiles-plus'}]
 }
+*/
 var searchField = null;
 
-function createHiglass() {
-        var width = 700, height=650;
+function createHiglass(awsDomain, assembly, datasetName) {
+        var width = 700, height=500;
 
+
+        d3.select('#mmv-area').selectAll('*').remove();
         var svg = d3.select('#goombaPlot')
         .attr('width', width)
         .attr('height', 300);
+
+        svg.selectAll('*').remove();
 
         /*
         // goomba gets drawn with a margin of 30 on the left
@@ -115,15 +121,16 @@ function createHiglass() {
 
     var trackHeight = 25;
     //var awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
-    var tileDirectories = [awsDomain + '/' + assembly + '/refgene-tiles-minus',
-                           awsDomain + '/' + assembly + '/refgene-tiles-plus']
+    var tileDirectories = ['//' + awsDomain + '/' + assembly + '/refgene-tiles-minus',
+                           '//' + awsDomain + '/' + assembly + '/refgene-tiles-plus']
+    var chromInfoFile = 'https://s3.amazonaws.com/pkerp/data/' + assembly + '/chromInfo.txt';
                            
 
 
     var margin = {'top': 20, 'left': 30, 'bottom': 30, 'right': 120};
-    var mmvMargin = {'top': 160, 'left': 30, 'bottom': 30, 'right': 120};
+    var mmvMargin = {'top': 10, 'left': 30, 'bottom': 30, 'right': 120};
 
-    goomba.ChromosomeInfo(higlassDescription.chromInfoFile, function(chromInfo) {
+    goomba.ChromosomeInfo(chromInfoFile, function(chromInfo) {
     ///////////////////////////
         //var xScale = d3.scale.linear().domain([0, 5000000])
         console.log('chromInfo:', chromInfo);
@@ -145,7 +152,7 @@ function createHiglass() {
             .chromInfo(chromInfo);
 
             d3.select('#mmv-area')
-            .datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
+            .datum( '//' + awsDomain + '/' + assembly + '/' + datasetName )
             //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
             //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
             .call(mmvPlot1)
@@ -210,9 +217,12 @@ function createHiglass() {
         .append('g')
         .attr('transform', 'translate(0,' + (20) + ')')
         .selectAll('g')
-        //.data(['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
+        .data([
+        /*
+        ['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
         .data([awsDomain + '/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
         awsDomain + '/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz'
+        */
         ])
 
         .enter()
@@ -232,14 +242,28 @@ function createHiglass() {
             console.log('text:', text, 'pos:', pos);
         }
 
+        function loadDataset() {
+            var text = d3.select('#dataset-origin-text').property('value');
+            console.log('text:', text);
+
+            var parts = text.split('//')[1].split('/');
+            var awsDomain = parts[0];
+            var assembly = parts[parts.length-2];
+            var datasetName = parts[parts.length-1];
+
+            createHiglass(awsDomain, assembly, datasetName);
+        }
+
+/*
     function keyPressed(e) {
         if(e.keyCode === 13){
             console.log('enter pressed');
             searchPosition();
         }
     }
+    */
 
-createHiglass();
+createHiglass('52.23.165.123:9872', 'mm9', 'Dixon2012-J1-NcoI-R1-filtered.5kb.cool.reduced.genome.gz' );
 ///////////////////////////////////////////////
 
 
