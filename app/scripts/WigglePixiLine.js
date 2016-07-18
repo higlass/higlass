@@ -91,11 +91,16 @@ export function WigglePixiLine() {
                 .domain([0, maxVisibleValue])
                 .range([0, 1]);
 
-                xPoints = [];
-                yPoints = [];
-                tileIDs = [];
+                
+                let reset = function(){
+                    xPoints = [];
+                    yPoints = [];
+                    tileIDs = [];
+                }
+                
 
                 let drawTile = function(graphics, tile) {
+
                     //console.log('drawing tile:', tile.tileId, xScale.domain(), xScale.range());
                     let tileData = loadTileData(tile.data);
 
@@ -111,6 +116,8 @@ export function WigglePixiLine() {
                     graphics.lineStyle(1, 0x0000FF, 1);
                    // graphics.beginFill(0xFF700B, 1);
                     let j = 0;
+                    //console.log("tiledata length" + tileData.length);
+
                     for (let i = 0; i < tileData.length; i++) {
 
 
@@ -127,17 +134,19 @@ export function WigglePixiLine() {
                        yPoints.push(50 - 50*height);
 
                        if(j == 0){
-                            graphics.moveTo(xPos, 50 - 50*height);
+                            graphics.moveTo(xPos*d.scale, 50 - 50*height);
                             j++;
                         }
 
-                        graphics.lineTo(xScale(tileXScale(i+1)), 50 - 50*yScale(tileData[i+1]));
+                        graphics.lineTo(xScale(tileXScale(i+1))*d.scale, 50 - 50*yScale(tileData[i+1]));
                         
                     }
+                    //console.log(xPoints);
                 }
 
                 let shownTiles = {};
                 shownT = {};
+                let k = 0;
                 for (let i = 0; i < tileData.length; i++) {
                     shownTiles[tileData[i].tileId] = true;
                     shownT[tileData[i].tileId] = true;
@@ -145,6 +154,12 @@ export function WigglePixiLine() {
                     if (!(tileData[i].tileId in d.tileGraphics)) {
                         // we don't have a graphics object for this tile
                         // so we need to create one
+                        
+                        if(k == 0){
+                           reset();
+                           k++; 
+                        }
+                         
                          let newGraphics = new PIXI.Graphics();
                          drawTile(newGraphics, tileData[i]);
                          d.pMain.addChild(newGraphics);
@@ -205,20 +220,31 @@ export function WigglePixiLine() {
                     }
                     d.pMain.removeChild(d.tileGraphics[1000]);
                     delete d.tileGraphics[1000];
+                   // console.log("deleted");
 
                     let graphics = new PIXI.Graphics();
                     graphics.lineStyle(1, 0x0000FF, 1);
                     let j = 0;
+                    //console.log("xpoints" +xPoints.length);
+                    let width = Math.round(xPoints[1]*scale-xPoints[0]*scale);
+
                     for(let i = 0; i < xPoints.length-1; i++){
 
+                        if(Math.abs(Math.round(xPoints[i+1]*scale-xPoints[i]*scale) - width) > 3) { 
+                            graphics.lineStyle(0, 0xFF0000, 1);
+                        } else {
+                            graphics.lineStyle(1, 0x0000FF, 1);       
+                        }    
+
                         if(j == 0){
-                            graphics.moveTo(xPoints[i]*scale, yPoints[i]);
-                            j++;
-                        }
+                                graphics.moveTo(xPoints[i]*scale, yPoints[i]);
+                                j++;
+                            }
 
                         graphics.lineTo(xPoints[i+1]*scale, yPoints[i+1]);
 
                     }
+
                     d.pMain.addChild(graphics);
 
                     d.tileGraphics[1000] = graphics;
