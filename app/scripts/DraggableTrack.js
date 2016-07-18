@@ -8,6 +8,7 @@ export function DraggableTrack() {
     let width = 200;
     let height = 200;
     let resizeDispatch = null;
+    let closeClicked = () => {};
 
     function chart(selection) {
         let currTop = 0;
@@ -15,7 +16,7 @@ export function DraggableTrack() {
         selection.each(function(d, i) {
 
             if (!('resizeDispatch' in d)) {
-                d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize') : resizeDispatch;
+                d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize', 'close') : resizeDispatch;
             }
             let localResizeDispatch = d.resizeDispatch;
 
@@ -63,6 +64,29 @@ export function DraggableTrack() {
             .style('width', '5px')
             .style('height', '5px')
             .style('cursor', 'nesw-resize')
+
+            let closeHandle = div.selectAll('.close-handle')
+            .data([1])
+            .enter()
+            .append('div')
+            .style('position', 'absolute')
+            .style('right', '5px')
+            .style('width', '10px')
+            .style('height', '5px')
+            .style('top', '2px')
+            .style('opacity', 0.5)
+            .on('mouseover', function(d) {
+                d3.select(this).style('opacity', 1);
+            })
+            .on('mouseout', function(d) {
+                d3.select(this).style('opacity', 0.5);
+            })
+            .on('click', function(d1) {
+                self.closeClicked(d,i);
+            })
+            .append('img')
+            .attr('src', 'images/cross.svg')
+            .attr('width', '10px')
 
             let bottomRight  = div.selectAll('.bottom-right-handle')
             .data([1])
@@ -310,6 +334,12 @@ export function DraggableTrack() {
     chart.resizeDispatch = function(_) {
         if (!arguments.length) return resizeDispatch;
         else resizeDispatch = _;
+        return chart;
+    }
+
+    chart.closeClicked = function(_) {
+        if (!arguments.length) return closeClicked;
+        else closeClicked = _;
         return chart;
     }
 

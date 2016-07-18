@@ -43,7 +43,7 @@ export function WigglePixiTrack() {
             inD += 1;
 
             if (!('resizeDispatch' in d)) {
-                d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize') : resizeDispatch;
+                d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize', 'close') : resizeDispatch;
             }
 
             if (!('translate' in d)) {
@@ -139,6 +139,7 @@ export function WigglePixiTrack() {
 
             let slugId = slugid.nice();
             localResizeDispatch.on('resize.' + slugId, sizeChanged);
+            localResizeDispatch.on('close.' + slugId, closeClicked);
 
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             localZoomDispatch.on('zoom.' + slugId, zoomChanged);
@@ -146,6 +147,14 @@ export function WigglePixiTrack() {
             function sizeChanged() {
                 d.pMain.position.y = d.top;
                 d.pMain.scale.y = -d.height;
+            }
+
+            function closeClicked() {
+                localZoomDispatch.on('zoom.' + slugId, () => {});
+                localResizeDispatch.on('resize.' + slugId, () => {});
+                localResizeDispatch.on('close.' + slugId, () => {});
+                d.stage.removeChild(d.pMain);
+                delete d.pMain;
             }
 
             function zoomChanged(translate, scale) {

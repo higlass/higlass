@@ -101,6 +101,12 @@ export function GenericTiledArea() {
                 return d.uid;
             }
 
+            if ('resizeDispatch' in d) {
+                d.resizeDispatch.on('close.' + slugId, function(d) {
+                    localZoomDispatch.on('zoom.' + slugId, null);
+                });
+            }
+
             function showTiles(tiles) {
                 // refresh the display and make sure the tiles that need to be
                 // displayed are displayed
