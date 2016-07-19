@@ -2,6 +2,7 @@ import React from 'react';
 import PIXI from 'pixi.js';
 import d3 from 'd3';
 import {DraggableDiv} from './DraggableDiv.js';
+import slugid from 'slugid';
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
@@ -13,7 +14,8 @@ export class MultiTrackContainer extends React.Component {
             width: 448,     // should be changeable on resize
             height: 40,     // should change in response to the addition of new tracks
                             // or user resize
-            tracks: [{source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'}]
+            tracks: [{source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz',
+                      uid: slugid.nice()}]
         };
 
         this.animate = this.animate.bind(this);
@@ -46,6 +48,10 @@ export class MultiTrackContainer extends React.Component {
         this.frame = requestAnimationFrame(this.animate);
     }
 
+    trackSizeChanged(newSize) {
+        console.log('trackSizeChanged', newSize);
+    }
+
     render() {
         let divStyle = { height: this.state.height, 
                          width: this.state.width,
@@ -62,8 +68,20 @@ export class MultiTrackContainer extends React.Component {
             <div style={divStyle} ref={(c) => this.bigDiv = c}>
                 <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
                 <img src="images/plus.svg" width="20px" style={imgStyle}/>
+                { this.state.tracks.map(function(track) 
+                        {
 
-                <DraggableDiv width={100} height={40} top={0} left={0}/>
+                            return <DraggableDiv width={100} 
+                                                 height={40} 
+                                                 top={0} 
+                                                 left={0} 
+                                                 sizeChanged={this.trackSizeChanged} 
+                                                 key={track.uid}
+                                                 uid={track.uid}
+                                    />;
+
+                        }.bind(this)) 
+                }
             </div>
         );
     }

@@ -25,6 +25,7 @@ export class DraggableDiv extends React.Component {
         this.minHeight = 15;
 
         this.state = {
+            uid: props.key,
             width: props.width,
             height: props.height,
             top: props.top,
@@ -40,42 +41,44 @@ export class DraggableDiv extends React.Component {
     }
 
     dragBottomLeftFunc() {
-            let ms = d3.mouse(this.divContainer.parentNode);
+        let ms = d3.mouse(this.divContainer.parentNode);
 
-            let newHeight = this.dragStartHeight + (ms[1] - this.dragStartMousePos[1]);
-            newHeight = newHeight > this.minHeight ? newHeight : this.minHeight;
+        let newHeight = this.dragStartHeight + (ms[1] - this.dragStartMousePos[1]);
+        newHeight = newHeight > this.minHeight ? newHeight : this.minHeight;
 
-            let newWidth = this.dragStartWidth - (ms[0] - this.dragStartMousePos[0]);
-            newWidth = newWidth > this.minWidth ? newWidth : this.minWidth;
+        let newWidth = this.dragStartWidth - (ms[0] - this.dragStartMousePos[0]);
+        newWidth = newWidth > this.minWidth ? newWidth : this.minWidth;
 
-            let newLeft = this.dragStartLeft + ms[0] - this.dragStartMousePos[0];
-            newLeft = newWidth > this.minWidth ? newLeft : this.dragStartLeft + this.dragStartWidth - this.minWidth;
+        let newLeft = this.dragStartLeft + ms[0] - this.dragStartMousePos[0];
+        newLeft = newWidth > this.minWidth ? newLeft : this.dragStartLeft + this.dragStartWidth - this.minWidth;
 
-            let newState = {'top': this.state.top,
-                        'left': newLeft,
-                        'width': newWidth,
-                        'height': newHeight};
-            this.setState(newState);
+        let newState = {'top': this.state.top,
+            'left': newLeft,
+            'width': newWidth,
+            'height': newHeight};
+        this.setState(newState);
 
-            d3.event.sourceEvent.stopPropagation();
+        d3.event.sourceEvent.stopPropagation();
+        this.sizeChanged()
     }
 
     dragBottomRightFunc() {
-            let ms = d3.mouse(this.divContainer.parentNode);
+        let ms = d3.mouse(this.divContainer.parentNode);
 
-            let newWidth = this.dragStartWidth + (ms[0] - this.dragStartMousePos[0]);
-            newWidth = newWidth > this.minWidth ? newWidth : this.minWidth;
+        let newWidth = this.dragStartWidth + (ms[0] - this.dragStartMousePos[0]);
+        newWidth = newWidth > this.minWidth ? newWidth : this.minWidth;
 
-            let newHeight = this.dragStartHeight + (ms[1] - this.dragStartMousePos[1]);
-            newHeight = newHeight > this.minHeight ? newHeight : this.minHeight;
+        let newHeight = this.dragStartHeight + (ms[1] - this.dragStartMousePos[1]);
+        newHeight = newHeight > this.minHeight ? newHeight : this.minHeight;
 
-            let newState = {'top': this.state.top,
-                        'left': this.state.left,
-                        'width': newWidth,
-                        'height': newHeight };
-            this.setState(newState);
+        let newState = {'top': this.state.top,
+            'left': this.state.left,
+            'width': newWidth,
+            'height': newHeight };
+        this.setState(newState);
 
-            d3.event.sourceEvent.stopPropagation();
+        d3.event.sourceEvent.stopPropagation();
+        this.sizeChanged();
     }
 
 
@@ -99,6 +102,7 @@ export class DraggableDiv extends React.Component {
         this.setState(newState);
 
         d3.event.sourceEvent.stopPropagation();
+        this.sizeChanged();
     }
 
     dragTopLeftFunc() {
@@ -124,6 +128,8 @@ export class DraggableDiv extends React.Component {
         this.setState(newState);
 
         d3.event.sourceEvent.stopPropagation();
+
+        this.sizeChanged();
     }
 
     dragStart() {
@@ -136,6 +142,13 @@ export class DraggableDiv extends React.Component {
         this.dragStartLeft = this.state.left;
 
         d3.event.sourceEvent.stopPropagation();
+
+    }
+
+    sizeChanged() {
+        if ('sizeChanged' in this.props) {
+            this.props.sizeChanged(this.state);
+        }
     }
 
     render() {
