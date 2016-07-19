@@ -24,7 +24,7 @@ gulp.task('styles', () => {
 });
 
 gulp.task('scripts', () => {
-  return gulp.src('app/scripts/**/*.js')
+  return gulp.src(['app/scripts/**/*.js', 'app/scripts/**/*.jsx'])
     .pipe($.plumber())
     .pipe($.sourcemaps.init())
     .pipe($.babel())
@@ -129,7 +129,7 @@ gulp.task('serve', ['styles', 'scripts', 'fonts', 'data'], () => {
   ]).on('change', reload);
 
   gulp.watch('app/styles/**/*.css', ['styles']);
-  gulp.watch('app/scripts/**/*.js', ['scripts']);
+  gulp.watch(['app/scripts/**/*.js', 'app/scripts/**/*.jsx'], ['scripts']);
   gulp.watch('app/fonts/**/*', ['fonts']);
   gulp.watch('jsons/**/*.json', ['data']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);

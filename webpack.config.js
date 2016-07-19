@@ -3,7 +3,7 @@ var webpack = require('webpack');
 
 module.exports = {
   context: __dirname + '/app',
-  entry: {goomba: ['./scripts/goomba.js']},
+  entry: {main: ['./scripts/main.jsx']},
   output: {
     path: __dirname + '/build',
     filename: '[name].js',
@@ -13,7 +13,7 @@ module.exports = {
   module: {
     loaders: [
       { 
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
