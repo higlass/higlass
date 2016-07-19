@@ -1,16 +1,19 @@
 import React from 'react';
 import PIXI from 'pixi.js';
 import d3 from 'd3';
+import {DraggableDiv} from './DraggableDiv.js';
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
         super(props);
 
+        this.awsDomain = '//52.23.165.123:9872';
+
         this.state =  {
             width: 448,     // should be changeable on resize
             height: 40,     // should change in response to the addition of new tracks
                             // or user resize
-            tracks: []
+            tracks: [{source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'}]
         };
 
         this.animate = this.animate.bind(this);
@@ -59,6 +62,8 @@ export class MultiTrackContainer extends React.Component {
             <div style={divStyle} ref={(c) => this.bigDiv = c}>
                 <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
                 <img src="images/plus.svg" width="20px" style={imgStyle}/>
+
+                <DraggableDiv width={100} height={40} top={0} left={0}/>
             </div>
         );
     }

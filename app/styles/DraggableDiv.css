@@ -1,0 +1,23 @@
+.ne-handle {
+    border-right: black solid;
+    border-top: black solid;
+}
+
+.nw-handle {
+    border-left: black solid;
+    border-top: black solid;
+}
+
+.se-handle {
+    border-right: black solid;
+    border-bottom: black solid;
+}
+
+.sw-handle {
+    border-left: black solid;
+    border-bottom: black solid;
+}
+
+.bottom-handle {
+    border: black solid 1px;
+}
