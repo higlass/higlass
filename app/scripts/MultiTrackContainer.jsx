@@ -11,14 +11,21 @@ export class MultiTrackContainer extends React.Component {
         this.awsDomain = '//52.23.165.123:9872';
         this.trackHeight = 30;
 
+        let tracks = [
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice()},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice()},
+        ];
+
+        let trackDict = {};
+        tracks.forEach(function(track, i) {
+            trackDict[track.uid] = track;
+        });
+
         this.state =  {
             width: 448,     // should be changeable on resize
             height: 40,     // should change in response to the addition of new tracks
                             // or user resize
-            tracks: [
-                     {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice()},
-                     {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice()},
-            ]
+            tracks: trackDict
         };
 
         this.animate = this.animate.bind(this);
@@ -52,7 +59,20 @@ export class MultiTrackContainer extends React.Component {
     }
 
     trackSizeChanged(newSize) {
-        console.log('trackSizeChanged', newSize);
+        this.state.tracks[newSize.uid].width = newSize.width;
+        this.state.tracks[newSize.uid].height = newSize.height;
+        this.state.tracks[newSize.uid].left = newSize.left;
+        this.state.tracks[newSize.uid].top = newSize.top;
+
+        console.log(this.state.tracks);
+    }
+
+    trackClosed(trackId) {
+        let tracks = this.state.tracks;
+        delete tracks[trackId];
+        this.setState({
+            tracks: tracks
+        });
     }
 
     render() {
@@ -67,11 +87,15 @@ export class MultiTrackContainer extends React.Component {
                             width: this.width,
                             height: this.height };
 
+        let trackList = []
+        for (let uid in this.state.tracks)
+            trackList.push(this.state.tracks[uid]);
+
         return(
             <div style={divStyle} ref={(c) => this.bigDiv = c}>
                 <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
                 <img src="images/plus.svg" width="20px" style={imgStyle}/>
-                { this.state.tracks.map(function(track, i) 
+                { trackList.map(function(track, i) 
                         {
 
                             console.log('track.uid:', track.uid, i);
@@ -79,7 +103,8 @@ export class MultiTrackContainer extends React.Component {
                                                  height={40} 
                                                  top={i * this.trackHeight} 
                                                  left={0} 
-                                                 sizeChanged={this.trackSizeChanged} 
+                                                 sizeChanged={this.trackSizeChanged.bind(this)} 
+                                                 trackClosed={this.trackClosed.bind(this)}
                                                  key={track.uid}
                                                  uid={track.uid}
                                     />;

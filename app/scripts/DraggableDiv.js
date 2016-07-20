@@ -44,6 +44,7 @@ export class DraggableDiv extends React.Component {
         d3.select(this.swHandle).call(this.dragBottomLeft);
         d3.select(this.seHandle).call(this.dragBottomRight);
         d3.select(this.bottomHandle).call(this.dragBottom);
+        d3.select(this.closeHandle).on('click', this.closeClicked.bind(this));
     }
 
     dragBottomFunc() {
@@ -170,6 +171,12 @@ export class DraggableDiv extends React.Component {
         }
     }
 
+    closeClicked() {
+        console.log('close clicked');
+        this.props.trackClosed(this.state.uid);
+    }
+
+
     render() {
             let divStyle = { position: 'absolute',
                              top: this.state.top,
@@ -207,6 +214,13 @@ export class DraggableDiv extends React.Component {
                               width: this.bottomHandleWidth,
                               height: 6,
                               cursor: 'move' };
+
+            let closeStyle = { position: 'absolute',
+                               right: 5,
+                               width: 10,
+                               height: 5,
+                               top: 2,
+                               opacity: 0.5 }
                             
             return (
                     <div style={divStyle} ref={(c) => this.divContainer = c} >
@@ -222,6 +236,10 @@ export class DraggableDiv extends React.Component {
                         <div style={bottomStyle} ref={(c) => this.bottomHandle = c} 
                             className = 'bottom-handle' />
 
+                        <div style={closeStyle} ref={(c) => this.closeHandle = c}
+                            className = 'close-handle' >
+                            <img src="images/cross.svg" width="10px" />
+                        </div>
                     </div>
                    );
     }
