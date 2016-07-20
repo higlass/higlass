@@ -20,17 +20,22 @@ export class DraggableDiv extends React.Component {
         this.dragBottomLeft = d3.behavior.drag()
                               .on('dragstart', this.dragStart.bind(this))
                               .on('drag', this.dragBottomLeftFunc.bind(this));
+        this.dragBottom = d3.behavior.drag()
+                              .on('dragstart', this.dragStart.bind(this))
+                              .on('drag', this.dragBottomFunc.bind(this));
 
         this.minWidth = 20;
         this.minHeight = 15;
+        this.bottomHandleWidth = 20;
 
         this.state = {
-            uid: props.key,
+            uid: props.uid,
             width: props.width,
             height: props.height,
             top: props.top,
             left: props.left
         }
+        console.log('this.state.top:', this.state.top);
     }
 
     componentDidMount() {
@@ -38,6 +43,20 @@ export class DraggableDiv extends React.Component {
         d3.select(this.nwHandle).call(this.dragTopLeft);
         d3.select(this.swHandle).call(this.dragBottomLeft);
         d3.select(this.seHandle).call(this.dragBottomRight);
+        d3.select(this.bottomHandle).call(this.dragBottom);
+    }
+
+    dragBottomFunc() {
+        let ms = d3.mouse(this.divContainer.parentNode);
+
+        let newTop = this.dragStartTop + ms[1] - this.dragStartMousePos[1];
+        let newLeft = this.dragStartLeft + ms[0] - this.dragStartMousePos[0];
+        let newWidth = this.state.width; 
+        let newHeight = this.state.height;
+
+        this.setState({'top': newTop,
+            'left': newLeft });
+
     }
 
     dragBottomLeftFunc() {
@@ -182,7 +201,13 @@ export class DraggableDiv extends React.Component {
                             width: 5,
                             height: 5,
                             cursor: 'nwse-resize'};
-                              
+            let bottomStyle = { position: 'absolute',
+                              left: (this.state.width / 2 - this.bottomHandleWidth / 2),
+                              bottom: -4,
+                              width: this.bottomHandleWidth,
+                              height: 6,
+                              cursor: 'move' };
+                            
             return (
                     <div style={divStyle} ref={(c) => this.divContainer = c} >
                         <div style={neStyle} ref={(c) => this.neHandle = c }
@@ -193,6 +218,10 @@ export class DraggableDiv extends React.Component {
                             className = 'sw-handle' />
                         <div style={seStyle} ref={(c) => this.seHandle = c} 
                             className = 'se-handle' />
+
+                        <div style={bottomStyle} ref={(c) => this.bottomHandle = c} 
+                            className = 'bottom-handle' />
+
                     </div>
                    );
     }

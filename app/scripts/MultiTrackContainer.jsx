@@ -9,13 +9,16 @@ export class MultiTrackContainer extends React.Component {
         super(props);
 
         this.awsDomain = '//52.23.165.123:9872';
+        this.trackHeight = 30;
 
         this.state =  {
             width: 448,     // should be changeable on resize
             height: 40,     // should change in response to the addition of new tracks
                             // or user resize
-            tracks: [{source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz',
-                      uid: slugid.nice()}]
+            tracks: [
+                     {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice()},
+                     {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice()},
+            ]
         };
 
         this.animate = this.animate.bind(this);
@@ -68,12 +71,13 @@ export class MultiTrackContainer extends React.Component {
             <div style={divStyle} ref={(c) => this.bigDiv = c}>
                 <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
                 <img src="images/plus.svg" width="20px" style={imgStyle}/>
-                { this.state.tracks.map(function(track) 
+                { this.state.tracks.map(function(track, i) 
                         {
 
+                            console.log('track.uid:', track.uid, i);
                             return <DraggableDiv width={100} 
                                                  height={40} 
-                                                 top={0} 
+                                                 top={i * this.trackHeight} 
                                                  left={0} 
                                                  sizeChanged={this.trackSizeChanged} 
                                                  key={track.uid}
