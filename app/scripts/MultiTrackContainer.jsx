@@ -3,6 +3,7 @@ import PIXI from 'pixi.js';
 import d3 from 'd3';
 import {DraggableDiv} from './DraggableDiv.js';
 import slugid from 'slugid';
+import {GenericTiledArea} from './GenericTiledArea.js';
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
@@ -10,6 +11,9 @@ export class MultiTrackContainer extends React.Component {
 
         this.awsDomain = '//52.23.165.123:9872';
         this.trackHeight = 30;
+
+        let width = 448;
+        let height = 80;
 
         let tracks = [
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice()},
@@ -19,17 +23,46 @@ export class MultiTrackContainer extends React.Component {
         let trackDict = {};
         tracks.forEach(function(track, i) {
             trackDict[track.uid] = track;
+
         });
 
         this.state =  {
-            width: 448,     // should be changeable on resize
-            height: 40,     // should change in response to the addition of new tracks
+            width: width,     // should be changeable on resize
+            height: height,     // should change in response to the addition of new tracks
                             // or user resize
             tracks: trackDict
         };
 
         this.animate = this.animate.bind(this);
-        this.zoom = d3.behavior.zoom().on('zoom', () => { console.log('zoomed'); }) ;
+        this.xScale = d3.scale.linear().domain(this.props.domain).range([0, this.state.width]);
+        this.zoom = d3.behavior.zoom()
+                      .on('zoom', this.handleZoom.bind(this))
+                      .on('zoomend', this.handleZoomEnd.bind(this))
+                      .x(this.xScale);
+
+        this.zoomDispatch = d3.dispatch('zoom', 'zoomend')
+
+        this.tiledArea = GenericTiledArea()
+            .tileType('div')
+            .width(this.state.width)
+            .domain(this.xScale.domain())
+            .zoomDispatch(this.zoomDispatch)
+            .tilesChanged(function(d) {
+                console.log('d:', d);
+                d3.select(this).call(wigglePixiTrack);
+            });
+
+    }
+
+    handleZoom() {
+        console.log('zoomed', this.xScale.domain());
+    }
+
+    handleZoomEnd() {
+        //console.log('zoomEnded', this.xScale.domain());
+        for (let trackId in this.state.tracks) {
+            this.state.tracks[trackId].tiledArea.zoomChanged(this.zoom.translate(), this.zoom.scale());
+        };
     }
 
     handleResize(newDimensions) {
@@ -67,6 +100,15 @@ export class MultiTrackContainer extends React.Component {
         console.log(this.state.tracks);
     }
 
+    updateTracks() {
+        let trackList = [];
+        for (let trackId in this.state.tracks) 
+            trackList.push(this.state.tracks[trackId]);
+
+        d3.select(this.bigDiv).selectAll('.track')
+            .call(this.tiledArea);
+    }
+
     trackClosed(trackId) {
         let tracks = this.state.tracks;
         delete tracks[trackId];
@@ -92,14 +134,13 @@ export class MultiTrackContainer extends React.Component {
             trackList.push(this.state.tracks[uid]);
 
         return(
-            <div style={divStyle} ref={(c) => this.bigDiv = c}>
+            <div style={divStyle} ref={(c) => this.bigDiv = c} >
                 <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
                 <img src="images/plus.svg" width="20px" style={imgStyle}/>
                 { trackList.map(function(track, i) 
                         {
-
-                            console.log('track.uid:', track.uid, i);
-                            return <DraggableDiv width={100} 
+                            return (<DraggableDiv 
+                                                 width={100} 
                                                  height={40} 
                                                  top={i * this.trackHeight} 
                                                  left={0} 
@@ -107,7 +148,8 @@ export class MultiTrackContainer extends React.Component {
                                                  trackClosed={this.trackClosed.bind(this)}
                                                  key={track.uid}
                                                  uid={track.uid}
-                                    />;
+                                                 className='track'
+                                    >Hi</DraggableDiv>);
 
                         }.bind(this)) 
                 }

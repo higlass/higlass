@@ -221,9 +221,9 @@ export class DraggableDiv extends React.Component {
                                height: 5,
                                top: 2,
                                opacity: 0.5 }
-                            
+
             return (
-                    <div style={divStyle} ref={(c) => this.divContainer = c} >
+                    <div style={divStyle} ref={(c) => this.divContainer = c} className={this.props.className}>
                         <div style={neStyle} ref={(c) => this.neHandle = c }
                             className="ne-handle" />
                         <div style={nwStyle} ref={(c) => this.nwHandle = c} 

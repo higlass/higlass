@@ -56,7 +56,8 @@ export function GenericTiledArea() {
             let  maxZoom = 1;
 
             let zoom = d3.behavior.zoom();
-            let slugId = slugid.nice();
+            let slugId = d.uid;
+            console.log('slugId');
 
             // setup the data-agnostic parts of the chart
             var gMain = d3.select(this)
