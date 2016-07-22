@@ -4,21 +4,30 @@ import d3 from 'd3';
 import {DraggableDiv} from './DraggableDiv.js';
 import slugid from 'slugid';
 import {GenericTiledArea} from './GenericTiledArea.js';
+import {WigglePixiTrack} from './WigglePixiTrack.js';
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
         super(props);
 
         this.awsDomain = '//52.23.165.123:9872';
-        this.trackHeight = 30;
+        this.initialTrackHeight = 30;
+        this.initialTrackWidth = 300;
 
         let width = 448;
-        let height = 80;
+        let height = 400;
 
         let tracks = [
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice()},
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice()},
         ];
+
+        for (let i = 0; i < tracks.length; i++) {
+            tracks[i].left = 0;
+            tracks[i].top = i * this.initialTrackHeight;
+            tracks[i].width = this.initialTrackWidth;
+            tracks[i].height = this.initialTrackHeight;
+        };
 
         let trackDict = {};
         tracks.forEach(function(track, i) {
@@ -40,29 +49,22 @@ export class MultiTrackContainer extends React.Component {
                       .on('zoomend', this.handleZoomEnd.bind(this))
                       .x(this.xScale);
 
-        this.zoomDispatch = d3.dispatch('zoom', 'zoomend')
+        this.zoomDispatch = d3.dispatch('zoom', 'zoomend');
 
         this.tiledArea = GenericTiledArea()
             .tileType('div')
             .width(this.state.width)
             .domain(this.xScale.domain())
             .zoomDispatch(this.zoomDispatch)
-            .tilesChanged(function(d) {
-                console.log('d:', d);
-                d3.select(this).call(wigglePixiTrack);
-            });
-
     }
 
     handleZoom() {
-        console.log('zoomed', this.xScale.domain());
+        this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
     }
 
     handleZoomEnd() {
         //console.log('zoomEnded', this.xScale.domain());
-        for (let trackId in this.state.tracks) {
-            this.state.tracks[trackId].tiledArea.zoomChanged(this.zoom.translate(), this.zoom.scale());
-        };
+        this.zoomDispatch.zoomend(this.zoom.translate(), this.zoom.scale());
     }
 
     handleResize(newDimensions) {
@@ -81,9 +83,23 @@ export class MultiTrackContainer extends React.Component {
                                                   transparent: true } )
         this.stage = new PIXI.Container();
         this.stage.interactive = true;
+        this.wigglePixiTrack = WigglePixiTrack()
+            .xScale(this.xScale.copy())
+            .pixiStage(this.stage)
+            .resizeDispatch(this.resizeDispatch)
+            .zoomDispatch(this.zoomDispatch);
 
         this.animate();
         d3.select(this.bigDiv).call(this.zoom);
+        let wigglePixiTrack = this.wigglePixiTrack;
+
+        this.tiledArea.tilesChanged(function(d) {
+                console.log('d:', d);
+                d3.select(this).call(wigglePixiTrack);
+                console.log('e');
+            });
+
+        this.updateTracks();
     }
 
     animate() {
@@ -97,7 +113,10 @@ export class MultiTrackContainer extends React.Component {
         this.state.tracks[newSize.uid].left = newSize.left;
         this.state.tracks[newSize.uid].top = newSize.top;
 
-        console.log(this.state.tracks);
+        // when the track's size is changed we have to update the
+        // PIXI elements that are drawn for it
+        if ('resizeDispatch' in this.state.tracks[newSize.uid])
+            this.state.tracks[newSize.uid].resizeDispatch.resize();
     }
 
     updateTracks() {
@@ -106,11 +125,22 @@ export class MultiTrackContainer extends React.Component {
             trackList.push(this.state.tracks[trackId]);
 
         d3.select(this.bigDiv).selectAll('.track')
+            .data(trackList)
             .call(this.tiledArea);
     }
 
     trackClosed(trackId) {
+
         let tracks = this.state.tracks;
+
+        // remove all the d3 event handlers for this track
+        this.zoomDispatch.on('zoom.' + trackId, null);
+        this.zoomDispatch.on('zoomend.' + trackId, null);
+
+        tracks[trackId].resizeDispatch.on('resize.' + trackId, null);
+        tracks[trackId].resizeDispatch.on('close.' + trackId, null);
+        tracks[trackId].resizeDispatch.close();
+
         delete tracks[trackId];
         this.setState({
             tracks: tracks
@@ -140,10 +170,10 @@ export class MultiTrackContainer extends React.Component {
                 { trackList.map(function(track, i) 
                         {
                             return (<DraggableDiv 
-                                                 width={100} 
-                                                 height={40} 
-                                                 top={i * this.trackHeight} 
-                                                 left={0} 
+                                                 width={track.width} 
+                                                 height={track.height} 
+                                                 top={track.top} 
+                                                 left={track.left} 
                                                  sizeChanged={this.trackSizeChanged.bind(this)} 
                                                  trackClosed={this.trackClosed.bind(this)}
                                                  key={track.uid}

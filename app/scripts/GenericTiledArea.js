@@ -50,7 +50,7 @@ export function GenericTiledArea() {
             let totalWidth = null;
             let totalHeight = null;
 
-            let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
+            let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom', 'zoomend') : zoomDispatch;
             let minX = 0, maxX = 0, minY = 0, maxY = 0, minImportance = 0, maxImportance = 0, minValue = 0, maxValue = 0;
 
             let  maxZoom = 1;
@@ -62,9 +62,9 @@ export function GenericTiledArea() {
             // setup the data-agnostic parts of the chart
             var gMain = d3.select(this)
 
-            zoom.on("zoom", zoomHere);
+            zoom.on("zoomend", zoomHere);
 
-            localZoomDispatch.on('zoom.' + slugId, zoomChanged);
+            localZoomDispatch.on('zoomend.' + slugId, zoomChanged);
 
             function zoomChanged(translate, scale) {
                 // something changed the zoom.

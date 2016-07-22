@@ -94,7 +94,7 @@ export function TiledArea() {
 
                 gMain.call(zoom);
 
-                localZoomDispatch.on('zoom.' + slugId, zoomChanged);
+                localZoomDispatch.on('zoomend.' + slugId, zoomChanged);
 
                 function zoomChanged(translate, scale) {
                     // something changed the zoom.

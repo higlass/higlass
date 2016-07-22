@@ -58,6 +58,7 @@ export class DraggableDiv extends React.Component {
         this.setState({'top': newTop,
             'left': newLeft });
 
+        this.sizeChanged();
     }
 
     dragBottomLeftFunc() {
@@ -183,7 +184,8 @@ export class DraggableDiv extends React.Component {
                              left: this.state.left,
                              width: this.state.width,
                              height: this.state.height,
-                             'backgroundColor': '#eeeeee' };
+                             'backgroundColor': '#eeeeee',
+                             opacity: 0.5 };
 
             let neStyle = { position: 'absolute',
                             right: 0,
