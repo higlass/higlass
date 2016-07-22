@@ -19,7 +19,7 @@ export class MultiTrackContainer extends React.Component {
 
         let tracks = [
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice()},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice()},
+                 {source: this.awsDomain + '/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice()},
         ];
 
         for (let i = 0; i < tracks.length; i++) {
@@ -63,7 +63,6 @@ export class MultiTrackContainer extends React.Component {
     }
 
     handleZoomEnd() {
-        //console.log('zoomEnded', this.xScale.domain());
         this.zoomDispatch.zoomend(this.zoom.translate(), this.zoom.scale());
     }
 
@@ -94,9 +93,7 @@ export class MultiTrackContainer extends React.Component {
         let wigglePixiTrack = this.wigglePixiTrack;
 
         this.tiledArea.tilesChanged(function(d) {
-                console.log('d:', d);
                 d3.select(this).call(wigglePixiTrack);
-                console.log('e');
             });
 
         this.updateTracks();

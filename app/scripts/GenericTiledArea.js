@@ -64,7 +64,7 @@ export function GenericTiledArea() {
 
             zoom.on("zoomend", zoomHere);
 
-            localZoomDispatch.on('zoomend.' + slugId, zoomChanged);
+            localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
             function zoomChanged(translate, scale) {
                 // something changed the zoom.
