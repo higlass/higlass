@@ -70,11 +70,16 @@ export function WigglePixiTrack() {
                 d.pMain = pMain;
 
             }
+
+            let zoomLevel = null;
                 
             function redrawTile() {
                 let tileData = d3.select(this).selectAll('.tile-g').data();
                 let minVisibleValue = Math.min(...tileData.map((x) => x.valueRange[0]));
                 let maxVisibleValue = Math.max(...tileData.map((x) => x.valueRange[1]));
+
+                console.log('tileData:', tileData);
+                zoomLevel = tileData[0].tilePos[0];
 
                 let yScale = d3.scale.linear()
                 .domain([0, maxVisibleValue])
@@ -102,7 +107,7 @@ export function WigglePixiTrack() {
                         let width = xScale(tileXScale(i+1)) - xScale(tileXScale(i));
 
                         if (height > 0 && width > 0) {
-                            console.log('xPos:', xPos);
+                            //console.log('xPos:', xPos);
                             graphics.drawRect(xPos, yPos, width, height);
                         }
                     }
@@ -160,6 +165,7 @@ export function WigglePixiTrack() {
 
             function zoomChanged(translate, scale) {
                 //console.log('d.translate', d.translate, scale);
+                console.log('zoomLevel:', zoomLevel);
                 d.translate = translate;
                 d.scale = scale;
 
