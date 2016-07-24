@@ -40,6 +40,7 @@ export function WigglePixiTrack() {
 
     let chart = function(selection) {
         selection.each(function(d) {
+            console.log('eachxx');
             inD += 1;
 
             if (!('resizeDispatch' in d)) {
@@ -143,9 +144,11 @@ export function WigglePixiTrack() {
             let localResizeDispatch = d.resizeDispatch;
             //console.log('localResizeDispatch', d.resizeDispatch);
 
-            let slugId = slugid.nice();
+            let slugId = d.uid + '.wiggle';
+            //let slugId = slugid.nice();
             localResizeDispatch.on('resize.' + slugId, sizeChanged);
             localResizeDispatch.on('close.' + slugId, closeClicked);
+            console.log('called');
 
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             localZoomDispatch.on('zoom.' + slugId, zoomChanged);
