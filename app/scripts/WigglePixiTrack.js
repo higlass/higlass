@@ -74,18 +74,25 @@ export function WigglePixiTrack() {
             }
 
             let zoomLevel = null;
+            let localXScale = null;
                 
             function redrawTile() {
                 let tileData = d3.select(this).selectAll('.tile-g').data();
                 let minVisibleValue = Math.min(...tileData.map((x) => x.valueRange[0]));
                 let maxVisibleValue = Math.max(...tileData.map((x) => x.valueRange[1]));
 
-                console.log('tileData:', tileData);
                 zoomLevel = tileData[0].tilePos[0];
+                //let tileWidth = (tileData[0].xRange[1] - tileData[0].xRange[0]) / Math.pow(2, zoomLevel);
+                let minXRange = Math.min(...tileData.map((x) => x.tileXRange[0]));
+                let maxXRange = Math.max(...tileData.map((x) => x.tileXRange[1]));
 
-                let localXScale = d3.scale.linear()
-                    .range([0, Math.pow(2, zoomLevel) * width])
-                    .domain(dataDomain);
+                console.log('tileData:', tileData, minXRange, maxXRange);
+
+                console.log('tileData:', tileData);
+
+                localXScale = d3.scale.linear()
+                    .range([0, width])
+                    .domain([minXRange, maxXRange]);
 
                 let yScale = d3.scale.linear()
                 .domain([0, maxVisibleValue])
@@ -106,7 +113,9 @@ export function WigglePixiTrack() {
                     graphics.beginFill(0xFF700B, 1);
 
                     for (let i = 0; i < tileData.length; i++) {
+                        //console.log('tileXScale(i)', tileXScale(i), localXScale.domain());
                         let xPos = localXScale(tileXScale(i));
+                        //console.log('xPos:', xPos);
                         //let yPos = -(d.height - yScale(tileData[i]));
                         let yPos = -1; //-(d.height - yScale(tileData[i]));
                         let height = yScale(tileData[i])
@@ -117,6 +126,8 @@ export function WigglePixiTrack() {
                             graphics.drawRect(xPos, yPos, width, height);
                         }
                     }
+
+                    console.log('tile:', tile, tileWidth);
                 }
 
                 let shownTiles = {};
@@ -173,14 +184,17 @@ export function WigglePixiTrack() {
 
             function zoomChanged(translate, scale) {
                 //console.log('d.translate', d.translate, scale);
-                console.log('zoomLevel:', zoomLevel);
                 d.translate = translate;
+                console.log('localXScale:', localXScale.domain(), scale);
                 d.scale = scale / Math.pow(2, zoomLevel);
 
-                console.log('d.scale:', d.scale);
+                //console.log('d.translate:', d.translate, 'd.scale:', d.scale);
 
                 d.pMain.scale.x = scale / Math.pow(2, zoomLevel);
-                d.pMain.position.x = d.translate[0];
+                d.pMain.position.x = d.translate[0] + scale * xScale(localXScale.domain()[0]);
+
+                console.log('d.pMain.position.x:', d.pMain.position.x, scale * xScale(localXScale.domain()[0]));
+
 
                 sizeChanged();
             }

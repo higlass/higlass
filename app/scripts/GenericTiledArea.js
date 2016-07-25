@@ -172,10 +172,14 @@ export function GenericTiledArea() {
 
                             data = data._source.tile_value;
                             delete loadingTiles[tileId(tile)];
+                            let tileWidth = (totalWidth) / Math.pow(2, tile[0]);
+                            console.log('tileWidth:', tileWidth);
+
                             loadedTiles[tileId(tile)] = {'tileId': tileId(tile), 
                                 'maxZoom': maxZoom,
                                 'tilePos': tile,
                                 'xRange': [minX, minX + totalWidth],
+                                'tileXRange': [minX + tile[1] * tileWidth, minX + (tile[1] + 1) * tileWidth],
                                 'importanceRange': [minImportance, maxImportance],
                                 'valueRange': [data.min_value, data.max_value],
                                 'data': data,};
