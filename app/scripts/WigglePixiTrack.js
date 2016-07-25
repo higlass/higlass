@@ -11,6 +11,7 @@ export function WigglePixiTrack() {
     let resolution = 256;
     let pixiStage = null;
     let inD = 0;
+    let dataDomain = [];
 
     function tileId(tile) {
         // uniquely identify the tile with a string
@@ -82,6 +83,10 @@ export function WigglePixiTrack() {
                 console.log('tileData:', tileData);
                 zoomLevel = tileData[0].tilePos[0];
 
+                let localXScale = d3.scale.linear()
+                    .range([0, Math.pow(2, zoomLevel) * width])
+                    .domain(dataDomain);
+
                 let yScale = d3.scale.linear()
                 .domain([0, maxVisibleValue])
                 .range([0, 1]);
@@ -101,11 +106,11 @@ export function WigglePixiTrack() {
                     graphics.beginFill(0xFF700B, 1);
 
                     for (let i = 0; i < tileData.length; i++) {
-                        let xPos = xScale(tileXScale(i));
+                        let xPos = localXScale(tileXScale(i));
                         //let yPos = -(d.height - yScale(tileData[i]));
                         let yPos = -1; //-(d.height - yScale(tileData[i]));
                         let height = yScale(tileData[i])
-                        let width = xScale(tileXScale(i+1)) - xScale(tileXScale(i));
+                        let width = localXScale(tileXScale(i+1)) - localXScale(tileXScale(i));
 
                         if (height > 0 && width > 0) {
                             //console.log('xPos:', xPos);
@@ -170,9 +175,11 @@ export function WigglePixiTrack() {
                 //console.log('d.translate', d.translate, scale);
                 console.log('zoomLevel:', zoomLevel);
                 d.translate = translate;
-                d.scale = scale;
+                d.scale = scale / Math.pow(2, zoomLevel);
 
-                d.pMain.scale.x = scale;
+                console.log('d.scale:', d.scale);
+
+                d.pMain.scale.x = scale / Math.pow(2, zoomLevel);
                 d.pMain.position.x = d.translate[0];
 
                 sizeChanged();
@@ -215,6 +222,18 @@ export function WigglePixiTrack() {
     chart.pixiStage = function(_) {
         if (!arguments.length) return pixiStage;
         else pixiStage = _;
+        return chart;
+    }
+
+    chart.width = function(_) {
+        if (!arguments.length) return width;
+        else width = _;
+        return chart;
+    }
+
+    chart.dataDomain = function(_) {
+        if (!arguments.length) return dataDomain;
+        else dataDomain = _;
         return chart;
     }
 

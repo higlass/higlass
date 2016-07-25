@@ -84,6 +84,8 @@ export class MultiTrackContainer extends React.Component {
         this.stage.interactive = true;
         this.wigglePixiTrack = WigglePixiTrack()
             .xScale(this.xScale.copy())
+            .width(this.state.width)
+            .dataDomain(this.props.domain)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
