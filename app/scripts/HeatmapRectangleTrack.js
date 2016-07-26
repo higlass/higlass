@@ -1,3 +1,4 @@
+import {heatedObjectMap} from './colormaps.js';
 import PIXI from 'pixi.js';
 import slugid from 'slugid';
 import d3 from 'd3';
@@ -16,6 +17,9 @@ export function HeatmapRectangleTrack() {
     let pixiStage = null;
     let inD = 0;
     let dataDomain = [];
+    let transferFunction = (count) => count > 0 ? Math.log2(1 + Math.log2(1 + count)) : 0;
+    let valueScale = d3.scale.linear()
+                    .range([255,0]);
 
     function tileId(tile) {
         // uniquely identify the tile with a string
@@ -23,23 +27,129 @@ export function HeatmapRectangleTrack() {
     }
 
     function loadTileData(tile_value) {
+        let t1 = new Date().getTime();
         if ('dense' in tile_value)
             return tile_value['dense'];
         else if ('sparse' in tile_value) {
             let values = Array.apply(null, 
-                    Array(resolution)).map(Number.prototype.valueOf,0);
-            for (let i = 0; i < tile_value.sparse.length; i++) {
-                if ('pos' in tile_value.sparse[i])
-                    values[ tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
-                else
-                    values[ tile_value.sparse[i][0]] = tile_value.sparse[i][1];
+                    Array(resolution * resolution)).map(Number.prototype.valueOf, 0);
 
+            for (let i = 0; i < tile_value.sparse.length; i++) {
+
+                if ('pos' in tile_value.sparse[i]) {
+                    values[tile_value.sparse[i].pos[1] * resolution +
+                        tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
+                } else {
+                    let x = tile_value.sparse[i][0];
+                    values[tile_value.sparse[i][0][1] * resolution +
+                        tile_value.sparse[i][0][0]] = tile_value.sparse[i][1];
+
+                }
             }
+
             return values;
+
 
         } else {
             return [];
         }
+
+    }
+
+    function tileDataToCanvas(data, minVisibleValue, maxVisibleValue) {
+        let canvas = document.createElement('canvas');
+
+        canvas.width = 256;
+        canvas.height = 256;
+
+        let ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = 'transparent';
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+
+        let pix = ctx.createImageData(canvas.width, canvas.height);
+        pix = setPix(pix, data, minVisibleValue, maxVisibleValue);
+        ctx.putImageData(pix, 0,0);
+
+        return canvas;
+    }
+
+    function countTransform(count) {
+        return Math.sqrt(Math.sqrt(count + 1));
+    }
+
+    function setPix(pix, data, minVisibleValue, maxVisibleValue) {
+        valueScale.domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
+        let t1 = new Date().getTime();
+
+        try {
+            let t1 = new Date().getTime();
+            for (let i = 0; i < data.length; i++) {
+                let d = data[i];
+                let ct = countTransform(d);
+
+                let rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
+                let rgb = heatedObjectMap[rgbIdx];
+
+
+                pix.data[i*4] = rgb[0];
+                pix.data[i*4+1] = rgb[1];
+                pix.data[i*4+2] = rgb[2];
+                pix.data[i*4+3] = rgb[3];
+            };
+        } catch (err) {
+
+            console.log('ERROR:', err);
+
+        }
+
+        return pix;
+    }
+
+    function setSpriteProperties(sprite, tile) {
+        console.log('tile:', tile);
+        let zoomLevel = tile.tilePos[0], xTilePos = tile.tilePos[1], yTilePos = tile.tilePos[2];
+
+        let totalWidth = tile.xRange[1] - tile.xRange[0];
+        let totalHeight = tile.xRange[1] - tile.xRange[0];
+
+        let minX = tile.xRange[0];
+        let minY = tile.yRange[0];
+
+        let tileWidth = totalWidth / Math.pow(2, zoomLevel);
+        let tileHeight = totalHeight / Math.pow(2, zoomLevel);
+
+        let tileX = minX + xTilePos * tileWidth;
+        let tileY = minY + yTilePos * tileHeight;
+
+        let tileEndX = minX + (xTilePos+1) * tileWidth;
+        let tileEndY = minY + (yTilePos+1) * tileHeight;
+
+        let spriteWidth = tile.xOrigScale(tileEndX) - tile.xOrigScale(tileX) ;
+        let spriteHeight = tile.yOrigScale(tileEndY) - tile.yOrigScale(tileY)
+
+            sprite.width = tile.xOrigScale(tileEndX) - tile.xOrigScale(tileX)
+            sprite.height = tile.yOrigScale(tileEndY) - tile.yOrigScale(tileY)
+
+            if (tile.mirrored) {
+                // this is a mirrored tile that represents the other half of a 
+                // triangular matrix
+                sprite.x = xOrigScale(tileY);
+                sprite.y = yOrigScale(tileX);
+
+                sprite.pivot = [xOrigScale.range()[1] / 2, yOrigScale.range()[1] / 2];
+                sprite.rotation = -Math.PI / 2;
+                sprite.scale.x *= -1;
+
+                sprite.width = spriteHeight;
+                sprite.height = spriteWidth;
+            } else {
+                sprite.x = tile.xOrigScale(tileX);
+                sprite.y = tile.yOrigScale(tileY);
+
+                console.log('sprite.x:', sprite.x, 'sprite.y:', sprite.y)
+            }
+
 
     }
 
@@ -81,91 +191,76 @@ export function HeatmapRectangleTrack() {
             let dataWidth = null;
             let prevTranslate = null;
             let prevScale = null;
+
+            let minVisibleValue = null;
+            let maxVisibleValue = null;
                 
             function redrawTile() {
-                let tileData = d3.select(this).selectAll('.tile-g').data();
-                let minVisibleValue = Math.min(...tileData.map((x) => x.valueRange[0]));
-                let maxVisibleValue = Math.max(...tileData.map((x) => x.valueRange[1]));
+                let tiles = d3.select(this).selectAll('.tile-g').data();
 
-                dataWidth = tileData[0].xRange[1] - tileData[0].xRange[0];
+                let prevMinVisibleValue = minVisibleValue;
+                let prevMaxVisibleValue = maxVisibleValue;
 
-                zoomLevel = tileData[0].tilePos[0];
-                let tileWidth = (tileData[0].xRange[1] - tileData[0].xRange[0]) / Math.pow(2, zoomLevel);
-                let minXRange = Math.min(...tileData.map((x) => x.tileXRange[0]));
-                let maxXRange = Math.max(...tileData.map((x) => x.tileXRange[1]));
-
-                localXScale = d3.scale.linear()
-                    .range([0, width])
-                    .domain([minXRange, minXRange + 2 * tileWidth ]);
-
-                if (d.translate != null && d.scale != null) {
-                    // change the zoom and scale before redrawing new elements
-                    // helps to avoid flickering
-                    zoomChanged(d.translate, d.scale);
-                }
-
-                let yScale = d3.scale.linear()
-                .domain([0, maxVisibleValue])
-                .range([0, 1]);
-
-                let drawTile = function(graphics, tile) {
-                    let tileData = loadTileData(tile.data);
-
-                    let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
-                    // this scale should go from an index in the data array to 
-                    // a position in the genome coordinates
-                    let tileXScale = d3.scale.linear().domain([0, tileData.length])
-                    .range([tile.xRange[0] + tile.tilePos[1] * tileWidth, 
-                           tile.xRange[0] + (tile.tilePos[1] + 1) * tileWidth]  );
-
-                    graphics.lineStyle(0, 0x0000FF, 1);
-                    graphics.beginFill(0xFF700B, 1);
-
-                    for (let i = 0; i < tileData.length; i++) {
-                        //console.log('tileXScale(i)', tileXScale(i), localXScale.domain());
-                        let xPos = localXScale(tileXScale(i));
-                        //let yPos = -(d.height - yScale(tileData[i]));
-                        let yPos = -1; //-(d.height - yScale(tileData[i]));
-                        let height = yScale(tileData[i])
-                        let width = localXScale(tileXScale(i+1)) - localXScale(tileXScale(i));
-
-                        if (height > 0 && width > 0) {
-                            graphics.drawRect(xPos, yPos, width, height);
-                        }
-                    }
-
-                }
+                minVisibleValue = Math.min( ...tiles.map((x) => x.valueRange[0]));
+                maxVisibleValue = Math.max( ...tiles.map((x) => x.valueRange[1]));
 
                 let shownTiles = {};
 
-                console.log('redrawing tile');
-                for (let i = 0; i < tileData.length; i++) {
-                    shownTiles[tileData[i].tileId] = true;
-                    
-                    if (tileData[i].tileId in d.tileGraphics) {
-                        d.pMain.removeChild(d.tileGraphics[tileData[i].tileId]);
-                        delete d.tileGraphics[tileData[i].tileId];
-                    }
+                for (let i = 0; i < tiles.length; i++) {
+                    let tileData = loadTileData(tiles[i].data);
+                    shownTiles[tiles[i].tileId] = true;
 
-                    for (let tileIdStr in d.tileGraphics) {
-                        if (!(tileIdStr in shownTiles)) {
-                            //we're displaying graphics that are no longer necessary,
-                            //so we need to get rid of them
+                    if (prevMinVisibleValue != minVisibleValue || prevMaxVisibleValue != maxVisibleValue) {
+                        // we need to rescale our data which means redrawing it...
+                        // and redrawing it means removing the graphics we have for it
+                        let tileIdStr = tiles[i].tileId;
+                        if (tileIdStr in d.tileGraphics) {
                             d.pMain.removeChild(d.tileGraphics[tileIdStr]);
                             delete d.tileGraphics[tileIdStr];
                         }
                     }
 
-                    if (!(tileData[i].tileId in d.tileGraphics)) {
-                        // we don't have a graphics object for this tile
-                        // so we need to create one
-                         let newGraphics = new PIXI.Graphics();
-                         drawTile(newGraphics, tileData[i]);
-                         d.pMain.addChild(newGraphics)
-                         d.tileGraphics[tileData[i].tileId] = newGraphics
-                    } 
+                    // check if we already have graphics for these tiles
+                    if (!(tiles[i].tileId in d.tileGraphics)) {
+                        // tile isn't loaded into a pixi graphics container
+                        // load that sucker
+                        let newGraphics = new PIXI.Graphics();
+
+                        let canvas = tileDataToCanvas(tileData,  minVisibleValue, maxVisibleValue);
+                        let sprite = null;
+
+                        if (tiles[i].tilePos == tiles[i].maxZoom) {
+
+                            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+                        } else {
+                            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+                        }
+                        //let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+
+                        setSpriteProperties(sprite, tiles[i]);
+                         /*  newGraphics.lineStyle(2, 0x0000FF, 1);
+                                newGraphics.moveTo(sprite.x, sprite.y);
+                                newGraphics.lineTo(sprite.x+sprite.width, sprite.y);
+                                newGraphics.lineTo(sprite.x+sprite.width, sprite.y+sprite.height);
+                                newGraphics.lineTo(sprite.x, sprite.y+sprite.height);
+                                newGraphics.lineTo(sprite.x, sprite.y);*/
+                        
+
+                        newGraphics.addChild(sprite);
+                        d.tileGraphics[tiles[i].tileId] = newGraphics;
+
+                        d.pMain.addChild(newGraphics);
+                    } else {
+
+                    }
                 }
 
+                for (let tileIdStr in d.tileGraphics) {
+                    if (!(tileIdStr in shownTiles)) {
+                        d.pMain.removeChild(d.tileGraphics[tileIdStr]);
+                        delete d.tileGraphics[tileIdStr];
+                    }
+                }
             }
 
             redrawTile.bind(this)();
@@ -181,8 +276,10 @@ export function HeatmapRectangleTrack() {
             localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
             function sizeChanged() {
+                /*
                 d.pMain.position.y = d.top;
                 d.pMain.scale.y = -d.height;
+                */
             }
 
             function closeClicked() {
@@ -194,26 +291,11 @@ export function HeatmapRectangleTrack() {
             }
 
             function zoomChanged(translate, scale) {
-                sizeChanged();
 
-                d.translate = translate;
-                d.scale = scale;
-
-                let scaleModifier = (localXScale.domain()[1] - localXScale.domain()[0]) / (xScale.domain()[1] - xScale.domain()[0])
-                let newStart = localXScale.domain()[0]
-                let xWidth = xScale.domain()[1] - xScale.domain()[0]
-                zoomedXScale = xScale.copy();
-                let zoomedLocalScale = localXScale.copy();
-                let newScale = scale * scaleModifier;
-
-                console.log('newStart:', newStart);
-
-                zoomedXScale.domain(xScale.range()
-                                          .map(function(x) { return (x - translate[0]) / scale })
-                                          .map(xScale.invert))
-
-                d.pMain.position.x =  zoomedXScale(newStart);
-                d.pMain.scale.x = newScale;
+                d.pMain.position.x =  translate[0];
+                d.pMain.position.y = translate[1];
+                d.pMain.scale.x = scale;
+                d.pMain.scale.y = scale;
             }
 
             sizeChanged();

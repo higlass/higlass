@@ -176,10 +176,14 @@ export function GenericTiledArea() {
                                 'maxZoom': maxZoom,
                                 'tilePos': tile,
                                 'xRange': [minX, minX + totalWidth],
+                                'yRange': [minY, minY + totalHeight],
                                 'tileXRange': [minX + tile[1] * tileWidth, minX + (tile[1] + 1) * tileWidth],
                                 'importanceRange': [minImportance, maxImportance],
                                 'valueRange': [data.min_value, data.max_value],
-                                'data': data,};
+                                'data': data,
+                                'xOrigScale': xOrigScale,
+                                'yOrigScale': yOrigScale 
+                            };
                                 showTiles(currentTiles);
                         });
                     } else {
