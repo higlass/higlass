@@ -5,6 +5,7 @@ import {DraggableDiv} from './DraggableDiv.js';
 import slugid from 'slugid';
 import {GenericTiledArea} from './GenericTiledArea.js';
 import {WigglePixiTrack} from './WigglePixiTrack.js';
+import {HeatmapRectangleTrack} from './HeatmapRectangleTrack.js'
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
@@ -18,7 +19,8 @@ export class MultiTrackContainer extends React.Component {
         let height = 400;
 
         let tracks = [
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice()},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'bar'},
+                 {source: this.awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz', uid: slugid.nice(), type: 'heatmap'},
                  /*
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
@@ -78,7 +80,10 @@ export class MultiTrackContainer extends React.Component {
         };
 
         this.animate = this.animate.bind(this);
+
         this.xScale = d3.scale.linear().domain(this.props.domain).range([0, this.state.width]);
+        this.yScale = d3.scale.linear().domain(this.props.domain).range([0, this.state.height]);
+
         this.zoom = d3.behavior.zoom()
                       .on('zoom', this.handleZoom.bind(this))
                       .on('zoomend', this.handleZoomEnd.bind(this))
@@ -88,6 +93,13 @@ export class MultiTrackContainer extends React.Component {
 
         this.tiledArea = GenericTiledArea()
             .tileType('div')
+            .width(this.state.width)
+            .domain(this.xScale.domain())
+            .zoomDispatch(this.zoomDispatch)
+
+        this.twoDTiledArea = GenericTiledArea()
+            .tileType('div')
+            .oneDimensional(false)
             .width(this.state.width)
             .domain(this.xScale.domain())
             .zoomDispatch(this.zoomDispatch)
@@ -117,21 +129,34 @@ export class MultiTrackContainer extends React.Component {
                                                   transparent: true } )
         this.stage = new PIXI.Container();
         this.stage.interactive = true;
-        this.wigglePixiTrack = WigglePixiTrack()
+        let wigglePixiTrack = WigglePixiTrack()
             .xScale(this.xScale.copy())
             .width(this.state.width)
             .dataDomain(this.props.domain)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
+        let heatmapRectangleTrack = HeatmapRectangleTrack()
+            .xScale(this.xScale.copy())
+            .yScale(this.yScale.copy())
+            .width(this.state.width)
+            .dataDomain(this.props.domain)
+            .pixiStage(this.stage)
+            .resizeDispatch(this.resizeDispatch)
+            .zoomDispatch(this.zoomDispatch); 
 
         this.animate();
         d3.select(this.bigDiv).call(this.zoom);
-        let wigglePixiTrack = this.wigglePixiTrack;
 
         this.tiledArea.tilesChanged(function(d) {
-                d3.select(this).call(wigglePixiTrack);
+                if (d.type == 'bar')
+                    d3.select(this).call(wigglePixiTrack);
             });
+
+        this.twoDTiledArea.tilesChanged(function(d) {
+            if (d.type == 'heatmap')
+                d3.select(this).call(heatmapRectangleTrack);
+        });
 
         this.updateTracks();
     }
@@ -154,13 +179,23 @@ export class MultiTrackContainer extends React.Component {
     }
 
     updateTracks() {
-        let trackList = [];
-        for (let trackId in this.state.tracks) 
-            trackList.push(this.state.tracks[trackId]);
+        let oneDTrackList = [];
+        let twoDTrackList = [];
 
-        d3.select(this.bigDiv).selectAll('.track')
-            .data(trackList)
+        for (let trackId in this.state.tracks) {
+            if (this.state.tracks[trackId].type == 'heatmap')
+                twoDTrackList.push(this.state.tracks[trackId]);
+            else
+                oneDTrackList.push(this.state.tracks[trackId]);
+        }
+
+        d3.select(this.bigDiv).selectAll('.one-d')
+            .data(oneDTrackList)
             .call(this.tiledArea);
+
+        d3.select(this.bigDiv).selectAll('.two-d')
+            .data(twoDTrackList)
+            .call(this.twoDTiledArea);
     }
 
     trackClosed(trackId) {
@@ -179,6 +214,14 @@ export class MultiTrackContainer extends React.Component {
         this.setState({
             tracks: tracks
         });
+    }
+
+    trackDimension(track) {
+        // used in render() to identify what types of tracks are being displayed
+        if (track.type == 'heatmap')
+            return 'two-d';
+        else
+            return 'one-d';
     }
 
     render() {
@@ -212,7 +255,7 @@ export class MultiTrackContainer extends React.Component {
                                                  trackClosed={this.trackClosed.bind(this)}
                                                  key={track.uid}
                                                  uid={track.uid}
-                                                 className='track'
+                                                 className={'track ' + this.trackDimension(track)}
                                     >Hi</DraggableDiv>);
 
                         }.bind(this)) 

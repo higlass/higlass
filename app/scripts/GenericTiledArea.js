@@ -9,7 +9,6 @@ export function GenericTiledArea() {
     let xOrigScale = null, yOrigScale = null;
     let xScale = null, yScale = null, valueScale = null;
     let widthScale = null;
-    let zoomTo = null;
     let domain = null;
     let scaleExtent = null;
 
@@ -28,7 +27,6 @@ export function GenericTiledArea() {
         //return Math.log(count);
         //return count;
     }
-    let dataPointLayout = null; //the function to draw each data point in the tile
 
     function tileId(tile) {
         // uniquely identify the tile with a string
@@ -231,12 +229,6 @@ export function GenericTiledArea() {
                 let epsilon = 0.0000001;
                 let tiles = [];
 
-                /*
-                console.log('zx:', zoom.x().domain(), minX, zoom.scale(), zoom.translate());
-                console.log('sdfs:', xOrigScale.invert(zoom.translate()[0] / zoom.scale()));
-                console.log('xOrigScale.domain()', xOrigScale.domain(), xOrigScale.range());
-                */
-
                 let rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
                                     Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth)));
                 /*
@@ -262,20 +254,6 @@ export function GenericTiledArea() {
 
                                     refreshTiles(tiles);
             }
-
-            function zoomTo(xValue, yValue, value) {
-                // zoom to a particular location on the genome
-
-                let scale = 1 / (20 / totalWidth);
-                let translate = [xOrigScale.range()[0] - xOrigScale((xValue - 10 - value) * scale), 
-                    yOrigScale.range()[0] - yOrigScale((yValue - 10 - value) * scale)];
-
-                gEnter.transition()
-                .duration(750)
-                .call(zoom.translate(translate).scale(scale).event);
-
-                // so the visible area needs to encompass [cumarea - 10, cumarea + 20]
-            };
 
             function zoomed() {
                 var reset_s = 0;
@@ -404,6 +382,12 @@ export function GenericTiledArea() {
         });
     }
 
+    chart.oneDimensional = function(_) {
+        if (!arguments.length) return oneDimensional;
+        oneDimensional = _;
+        return chart;
+    };
+
 
     chart.width = function(_) {
         if (!arguments.length) return width;
@@ -444,17 +428,6 @@ export function GenericTiledArea() {
     chart.maxZoom = function(_) {
         if (!arguments.length) return maxZoom;
         maxZoom = _;
-        return chart;
-    };
-
-    chart.zoomTo = function(_) {
-        // 
-        return zoomTo;
-    };
-
-    chart.dataPointLayout = function(_) {
-        if (!arguments.length) return dataPointLayout;
-        else dataPointLayout = _;
         return chart;
     };
 
