@@ -76,6 +76,8 @@ export function WigglePixiTrack() {
             let zoomLevel = null;
             let localXScale = null;
             let dataWidth = null;
+            let prevTranslate = null;
+            let prevScale = null;
                 
             function redrawTile() {
                 let tileData = d3.select(this).selectAll('.tile-g').data();
@@ -92,6 +94,12 @@ export function WigglePixiTrack() {
                 localXScale = d3.scale.linear()
                     .range([0, width])
                     .domain([minXRange, minXRange + 2 * tileWidth ]);
+
+                if (d.translate != null && d.scale != null) {
+                    // change the zoom and scale before redrawing new elements
+                    // helps to avoid flickering
+                    zoomChanged(d.translate, d.scale);
+                }
 
                 let yScale = d3.scale.linear()
                 .domain([0, maxVisibleValue])
@@ -127,12 +135,22 @@ export function WigglePixiTrack() {
 
                 let shownTiles = {};
 
+                console.log('redrawing tile');
                 for (let i = 0; i < tileData.length; i++) {
                     shownTiles[tileData[i].tileId] = true;
                     
                     if (tileData[i].tileId in d.tileGraphics) {
                         d.pMain.removeChild(d.tileGraphics[tileData[i].tileId]);
                         delete d.tileGraphics[tileData[i].tileId];
+                    }
+
+                    for (let tileIdStr in d.tileGraphics) {
+                        if (!(tileIdStr in shownTiles)) {
+                            //we're displaying graphics that are no longer necessary,
+                            //so we need to get rid of them
+                            d.pMain.removeChild(d.tileGraphics[tileIdStr]);
+                            delete d.tileGraphics[tileIdStr];
+                        }
                     }
 
                     if (!(tileData[i].tileId in d.tileGraphics)) {
@@ -145,14 +163,6 @@ export function WigglePixiTrack() {
                     } 
                 }
 
-                for (let tileIdStr in d.tileGraphics) {
-                    if (!(tileIdStr in shownTiles)) {
-                        //we're displaying graphics that are no longer necessary,
-                        //so we need to get rid of them
-                        d.pMain.removeChild(d.tileGraphics[tileIdStr]);
-                        delete d.tileGraphics[tileIdStr];
-                    }
-                }
             }
 
             redrawTile.bind(this)();
@@ -181,6 +191,11 @@ export function WigglePixiTrack() {
             }
 
             function zoomChanged(translate, scale) {
+                sizeChanged();
+
+                d.translate = translate;
+                d.scale = scale;
+
                 let scaleModifier = (localXScale.domain()[1] - localXScale.domain()[0]) / (xScale.domain()[1] - xScale.domain()[0])
                 let newStart = localXScale.domain()[0]
                 let xWidth = xScale.domain()[1] - xScale.domain()[0]
@@ -188,20 +203,14 @@ export function WigglePixiTrack() {
                 let zoomedLocalScale = localXScale.copy();
                 let newScale = scale * scaleModifier;
 
+                console.log('newStart:', newStart);
+
                 zoomedXScale.domain(xScale.range()
                                           .map(function(x) { return (x - translate[0]) / scale })
                                           .map(xScale.invert))
 
-                
-
                 d.pMain.position.x =  zoomedXScale(newStart);
                 d.pMain.scale.x = newScale;
-
-                //d.pMain.position.x = d.translate[0] + scale * xScale(localXScale.domain()[0]);
-
-
-
-                sizeChanged();
             }
 
             sizeChanged();

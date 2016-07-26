@@ -19,14 +19,49 @@ export class MultiTrackContainer extends React.Component {
 
         let tracks = [
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice()},
+                 /*
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 */
                  //{source: this.awsDomain + '/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice()},
         ];
 
+        let currentTop = 0;
         for (let i = 0; i < tracks.length; i++) {
+            let trackHeight = this.initialTrackHeight;
+            let trackWidth = this.initialTrackWidth;
+
+            if ('trackHeight' in tracks[i])
+                trackHeight = tracks[i].trackHeight;
+            if ('trackWidth' in tracks[i])
+                trackWidth = tracks[i].trackWidth;
+
+            console.log('trackHeight', trackHeight);
+
             tracks[i].left = 0;
-            tracks[i].top = i * this.initialTrackHeight;
-            tracks[i].width = this.initialTrackWidth;
-            tracks[i].height = this.initialTrackHeight;
+            tracks[i].top = currentTop
+            tracks[i].width = trackWidth;
+            tracks[i].height = trackHeight;
+
+            currentTop += trackHeight;
         };
 
         let trackDict = {};
@@ -95,7 +130,6 @@ export class MultiTrackContainer extends React.Component {
         let wigglePixiTrack = this.wigglePixiTrack;
 
         this.tiledArea.tilesChanged(function(d) {
-                console.log('tilesChanged');
                 d3.select(this).call(wigglePixiTrack);
             });
 
