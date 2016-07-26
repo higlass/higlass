@@ -42,7 +42,6 @@ export function WigglePixiTrack() {
 
     let chart = function(selection) {
         selection.each(function(d) {
-            console.log('eachxx');
             inD += 1;
 
             if (!('resizeDispatch' in d)) {
@@ -86,27 +85,19 @@ export function WigglePixiTrack() {
                 dataWidth = tileData[0].xRange[1] - tileData[0].xRange[0];
 
                 zoomLevel = tileData[0].tilePos[0];
-                //let tileWidth = (tileData[0].xRange[1] - tileData[0].xRange[0]) / Math.pow(2, zoomLevel);
+                let tileWidth = (tileData[0].xRange[1] - tileData[0].xRange[0]) / Math.pow(2, zoomLevel);
                 let minXRange = Math.min(...tileData.map((x) => x.tileXRange[0]));
                 let maxXRange = Math.max(...tileData.map((x) => x.tileXRange[1]));
 
-                console.log('tileData:', tileData, minXRange, maxXRange);
-
-                console.log('tileData:', tileData);
-
                 localXScale = d3.scale.linear()
                     .range([0, width])
-                    .domain([minXRange, maxXRange]);
-
-                console.log('localXScale.domain()', localXScale.domain());
+                    .domain([minXRange, minXRange + 2 * tileWidth ]);
 
                 let yScale = d3.scale.linear()
                 .domain([0, maxVisibleValue])
                 .range([0, 1]);
 
                 let drawTile = function(graphics, tile) {
-                    console.log('drawing tile');
-                    //console.log('drawing tile:', tile.tileId, xScale.domain(), xScale.range());
                     let tileData = loadTileData(tile.data);
 
                     let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
@@ -122,25 +113,27 @@ export function WigglePixiTrack() {
                     for (let i = 0; i < tileData.length; i++) {
                         //console.log('tileXScale(i)', tileXScale(i), localXScale.domain());
                         let xPos = localXScale(tileXScale(i));
-                        //console.log('xPos:', xPos);
                         //let yPos = -(d.height - yScale(tileData[i]));
                         let yPos = -1; //-(d.height - yScale(tileData[i]));
                         let height = yScale(tileData[i])
                         let width = localXScale(tileXScale(i+1)) - localXScale(tileXScale(i));
 
                         if (height > 0 && width > 0) {
-                            //console.log('xPos:', xPos);
                             graphics.drawRect(xPos, yPos, width, height);
                         }
                     }
 
-                    console.log('tile:', tile, tileWidth);
                 }
 
                 let shownTiles = {};
 
                 for (let i = 0; i < tileData.length; i++) {
                     shownTiles[tileData[i].tileId] = true;
+                    
+                    if (tileData[i].tileId in d.tileGraphics) {
+                        d.pMain.removeChild(d.tileGraphics[tileData[i].tileId]);
+                        delete d.tileGraphics[tileData[i].tileId];
+                    }
 
                     if (!(tileData[i].tileId in d.tileGraphics)) {
                         // we don't have a graphics object for this tile
@@ -165,13 +158,11 @@ export function WigglePixiTrack() {
             redrawTile.bind(this)();
 
             let localResizeDispatch = d.resizeDispatch;
-            //console.log('localResizeDispatch', d.resizeDispatch);
 
             let slugId = d.uid + '.wiggle';
             //let slugId = slugid.nice();
             localResizeDispatch.on('resize.' + slugId, sizeChanged);
             localResizeDispatch.on('close.' + slugId, closeClicked);
-            console.log('called');
 
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
             localZoomDispatch.on('zoom.' + slugId, zoomChanged);
@@ -190,31 +181,24 @@ export function WigglePixiTrack() {
             }
 
             function zoomChanged(translate, scale) {
-                //console.log('d.translate', d.translate, scale);
                 let scaleModifier = (localXScale.domain()[1] - localXScale.domain()[0]) / (xScale.domain()[1] - xScale.domain()[0])
                 let newStart = localXScale.domain()[0]
                 let xWidth = xScale.domain()[1] - xScale.domain()[0]
-                
-
-                console.log('scaleModifier', scaleModifier);
-                d.translate = translate;
-                console.log('localXScale:', localXScale.domain(), scale, xScale.domain());
-                d.scale = scale / Math.pow(2, zoomLevel);
+                zoomedXScale = xScale.copy();
+                let zoomedLocalScale = localXScale.copy();
+                let newScale = scale * scaleModifier;
 
                 zoomedXScale.domain(xScale.range()
                                           .map(function(x) { return (x - translate[0]) / scale })
                                           .map(xScale.invert))
 
-                //console.log('d.translate:', d.translate, 'd.scale:', d.scale);
+                
 
-                let newScale = scale * scaleModifier * 1.2;
+                d.pMain.position.x =  zoomedXScale(newStart);
                 d.pMain.scale.x = newScale;
-                console.log('newScale:', newScale, translate[0], xScale(newStart));
-                d.pMain.position.x =  translate[0]  + scale * xScale(newStart);
 
                 //d.pMain.position.x = d.translate[0] + scale * xScale(localXScale.domain()[0]);
 
-                console.log('d.pMain.position.x:', d.pMain.position.x);
 
 
                 sizeChanged();
