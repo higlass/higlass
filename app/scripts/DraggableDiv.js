@@ -45,6 +45,7 @@ export class DraggableDiv extends React.Component {
         d3.select(this.seHandle).call(this.dragBottomRight);
         d3.select(this.bottomHandle).call(this.dragBottom);
         d3.select(this.closeHandle).on('click', this.closeClicked.bind(this));
+        d3.select(this.rotateHandle).on('click', this.rotateClicked.bind(this));
     }
 
     dragBottomFunc() {
@@ -172,6 +173,11 @@ export class DraggableDiv extends React.Component {
         }
     }
 
+    rotateClicked() {
+        console.log('rotate clicked');
+        this.props.trackRotated(this.state.uid);
+    }
+
     closeClicked() {
         console.log('close clicked');
         this.props.trackClosed(this.state.uid);
@@ -218,11 +224,13 @@ export class DraggableDiv extends React.Component {
                               cursor: 'move' };
 
             let closeStyle = { position: 'absolute',
-                               right: 5,
+                               right: 23,
                                width: 10,
                                height: 5,
                                top: 2,
                                opacity: 0.5 }
+
+            let iStyle = { display: 'inline', 'marginRight': 3 };
 
             return (
                     <div style={divStyle} ref={(c) => this.divContainer = c} className={this.props.className}>
@@ -238,9 +246,9 @@ export class DraggableDiv extends React.Component {
                         <div style={bottomStyle} ref={(c) => this.bottomHandle = c} 
                             className = 'bottom-handle' />
 
-                        <div style={closeStyle} ref={(c) => this.closeHandle = c}
-                            className = 'close-handle' >
-                            <img src="images/cross.svg" width="10px" />
+                        <div style={closeStyle} className = 'close-handle' >
+                            <i className='fa fa-rotate-left' style={iStyle} ref={(c) => this.rotateHandle = c}></i>
+                            <i className='fa fa-close' style={iStyle} ref={(c)=> this.closeHandle = c}></i>
                         </div>
                     </div>
                    );

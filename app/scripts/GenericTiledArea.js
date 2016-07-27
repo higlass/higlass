@@ -11,6 +11,7 @@ export function GenericTiledArea() {
     let widthScale = null;
     let domain = null;
     let scaleExtent = null;
+    let horizontal = true;
 
     let dispatch = d3.dispatch('draw');
     let zoomDispatch = null;
@@ -55,7 +56,6 @@ export function GenericTiledArea() {
 
             let zoom = d3.behavior.zoom();
             let slugId = d.uid;
-            console.log('slugId');
 
             // setup the data-agnostic parts of the chart
             var gMain = d3.select(this)
@@ -66,7 +66,13 @@ export function GenericTiledArea() {
 
             function zoomChanged(translate, scale) {
                 // something changed the zoom.
-                zoom.translate(translate);
+                if (horizontal) 
+                    zoom.translate(translate);
+                else
+                    // if we're displaying a vertical scale, then we need to 
+                    // reverse the translation
+                    zoom.translate([translate[1], translate[0]]);
+
                 zoom.scale(scale);
 
                 zoomed();
@@ -233,30 +239,27 @@ export function GenericTiledArea() {
                 let epsilon = 0.0000001;
                 let tiles = [];
 
-                let rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
-                                    Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth)));
-                /*
-                console.log('mm:', Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth));
-                console.log('rows:', rows, tileWidth, totalWidth)
-                */
+                let rows = null;
 
-                                    if (! oneDimensional ) {
-                                        let cols = d3.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight),
-                                                            Math.ceil(((zoom.y().domain()[1] - minY) - epsilon) / tileHeight));
+                rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
+                                Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth)));
 
-                                                            for (let i = 0; i < rows.length; i++) {
-                                                                for (let j = 0; j < cols.length; j++) {
-                                                                    tiles.push([zoomLevel, rows[i], cols[j]]);
-                                                                }
-                                                            }
-                                    } else {
-                                        rows.forEach((r) => { tiles.push([zoomLevel, r]);});
+                if (! oneDimensional ) {
+                    let cols = d3.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight),
+                            Math.ceil(((zoom.y().domain()[1] - minY) - epsilon) / tileHeight));
 
-                                    }
+                    for (let i = 0; i < rows.length; i++) {
+                        for (let j = 0; j < cols.length; j++) {
+                            tiles.push([zoomLevel, rows[i], cols[j]]);
+                        }
+                    }
+                } else {
+                    rows.forEach((r) => { tiles.push([zoomLevel, r]);});
+                }
 
-                                    dispatch.draw();
+                dispatch.draw();
 
-                                    refreshTiles(tiles);
+                refreshTiles(tiles);
             }
 
             function zoomed() {
@@ -341,7 +344,7 @@ export function GenericTiledArea() {
                 if (yScale == null) {
                     yScale = d3.scale.linear()
                     .domain(yScaleDomain)
-                    .range([height, 0]);
+                    .range([0, height]);
                 }
 
                 if ('max_width' in tile_info) {
@@ -485,6 +488,12 @@ export function GenericTiledArea() {
     chart.tilesChanged = function(_) {
         if (!arguments) return tilesChanged;
         else tilesChanged = _;
+        return chart;
+    }
+
+    chart.horizontal = function(_) {
+        if (!arguments) return horizontal;
+        else horizontal = _;
         return chart;
     }
 

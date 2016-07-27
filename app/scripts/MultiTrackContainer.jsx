@@ -5,7 +5,9 @@ import {DraggableDiv} from './DraggableDiv.js';
 import slugid from 'slugid';
 import {GenericTiledArea} from './GenericTiledArea.js';
 import {WigglePixiTrack} from './WigglePixiTrack.js';
+import {LeftWigglePixiTrack} from './LeftWigglePixiTrack.js';
 import {HeatmapRectangleTrack} from './HeatmapRectangleTrack.js'
+import {AddTrackDiv} from './AddTrackDiv.js'
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
@@ -19,8 +21,9 @@ export class MultiTrackContainer extends React.Component {
         let height = 400;
 
         let tracks = [
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'bar'},
-                 {source: this.awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz', uid: slugid.nice(), type: 'heatmap'},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-bar'},
+                 {source: this.awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz', uid: slugid.nice(), type: 'heatmap', trackHeight: 200},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'left-bar', trackHeight: height, trackWidth: 30},
                  /*
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
@@ -91,11 +94,20 @@ export class MultiTrackContainer extends React.Component {
 
         this.zoomDispatch = d3.dispatch('zoom', 'zoomend');
 
-        this.tiledArea = GenericTiledArea()
+        this.horizontalTiledArea = GenericTiledArea()
             .tileType('div')
             .width(this.state.width)
             .domain(this.xScale.domain())
             .zoomDispatch(this.zoomDispatch)
+            .horizontal(true);
+
+        this.verticalTiledArea = GenericTiledArea()
+            .tileType('div')
+            .width(this.state.height)   // since this is a vertical tiled area, the width is actually the height
+                                        // of the viewable area
+            .domain(this.xScale.domain())
+            .zoomDispatch(this.zoomDispatch)
+            .horizontal(false)
 
         this.twoDTiledArea = GenericTiledArea()
             .tileType('div')
@@ -121,6 +133,11 @@ export class MultiTrackContainer extends React.Component {
                 });
     }
 
+    handleTrackAdded(newTrack) {
+        // a new track was added
+
+    }
+
     componentDidMount() {
         this.renderer = PIXI.autoDetectRenderer(this.state.width, 
                                                 this.state.height, 
@@ -132,10 +149,21 @@ export class MultiTrackContainer extends React.Component {
         let wigglePixiTrack = WigglePixiTrack()
             .xScale(this.xScale.copy())
             .width(this.state.width)
+            .height(this.state.height)
             .dataDomain(this.props.domain)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
+
+        let leftWigglePixiTrack = LeftWigglePixiTrack()
+            .yScale(this.yScale.copy())
+            .width(this.state.width)
+            .height(this.state.height)
+            .dataDomain(this.props.domain)
+            .pixiStage(this.stage)
+            .resizeDispatch(this.resizeDispatch)
+            .zoomDispatch(this.zoomDispatch);
+
         let heatmapRectangleTrack = HeatmapRectangleTrack()
             .xScale(this.xScale.copy())
             .yScale(this.yScale.copy())
@@ -148,10 +176,17 @@ export class MultiTrackContainer extends React.Component {
         this.animate();
         d3.select(this.bigDiv).call(this.zoom);
 
-        this.tiledArea.tilesChanged(function(d) {
-                if (d.type == 'bar')
+        this.horizontalTiledArea.tilesChanged(function(d) {
+                if (d.type == 'top-bar')
                     d3.select(this).call(wigglePixiTrack);
             });
+
+        this.verticalTiledArea.tilesChanged(function(d) {
+                if (d.type == 'left-bar')
+                    d3.select(this).call(leftWigglePixiTrack);
+            });
+
+
 
         this.twoDTiledArea.tilesChanged(function(d) {
             if (d.type == 'heatmap')
@@ -179,23 +214,34 @@ export class MultiTrackContainer extends React.Component {
     }
 
     updateTracks() {
-        let oneDTrackList = [];
+        let oneDHorizontalTrackList = [];
+        let oneDVerticalTrackList = [];
         let twoDTrackList = [];
 
         for (let trackId in this.state.tracks) {
             if (this.state.tracks[trackId].type == 'heatmap')
                 twoDTrackList.push(this.state.tracks[trackId]);
-            else
-                oneDTrackList.push(this.state.tracks[trackId]);
+            else if (this.state.tracks[trackId].type == 'left-bar')
+                oneDVerticalTrackList.push(this.state.tracks[trackId]);
+            else if (this.state.tracks[trackId].type == 'top-bar')
+                oneDHorizontalTrackList.push(this.state.tracks[trackId]);
         }
 
-        d3.select(this.bigDiv).selectAll('.one-d')
-            .data(oneDTrackList)
-            .call(this.tiledArea);
+        d3.select(this.bigDiv).selectAll('.one-d-horizontal')
+            .data(oneDHorizontalTrackList)
+            .call(this.horizontalTiledArea);
+
+        d3.select(this.bigDiv).selectAll('.one-d-vertical')
+            .data(oneDVerticalTrackList)
+            .call(this.verticalTiledArea);
 
         d3.select(this.bigDiv).selectAll('.two-d')
             .data(twoDTrackList)
             .call(this.twoDTiledArea);
+    }
+
+    trackRotated(trackId) {
+
     }
 
     trackClosed(trackId) {
@@ -205,6 +251,8 @@ export class MultiTrackContainer extends React.Component {
         // remove all the d3 event handlers for this track
         this.zoomDispatch.on('zoom.' + trackId, null);
         this.zoomDispatch.on('zoomend.' + trackId, null);
+
+        this.stage.removeChild(tracks[trackId].pAbove);
 
         tracks[trackId].resizeDispatch.on('resize.' + trackId, null);
         tracks[trackId].resizeDispatch.on('close.' + trackId, null);
@@ -220,8 +268,10 @@ export class MultiTrackContainer extends React.Component {
         // used in render() to identify what types of tracks are being displayed
         if (track.type == 'heatmap')
             return 'two-d';
-        else
-            return 'one-d';
+        else if (track.type == 'left-bar')
+            return 'one-d-vertical';
+        else if (track.type == 'top-bar')
+            return 'one-d-horizontal';
     }
 
     render() {
@@ -235,15 +285,20 @@ export class MultiTrackContainer extends React.Component {
                             left: 0,
                             width: this.width,
                             height: this.height };
+        let addTrackDivStyle = { position: 'relative'
+        };
 
         let trackList = []
         for (let uid in this.state.tracks)
             trackList.push(this.state.tracks[uid]);
 
+        //<img src="images/plus.svg" width="20px" style={imgStyle}/>
         return(
             <div style={divStyle} ref={(c) => this.bigDiv = c} >
                 <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
-                <img src="images/plus.svg" width="20px" style={imgStyle}/>
+                <div style={addTrackDivStyle}>
+                    <AddTrackDiv />
+                </div>
                 { trackList.map(function(track, i) 
                         {
                             return (<DraggableDiv 
@@ -253,6 +308,7 @@ export class MultiTrackContainer extends React.Component {
                                                  left={track.left} 
                                                  sizeChanged={this.trackSizeChanged.bind(this)} 
                                                  trackClosed={this.trackClosed.bind(this)}
+                                                 trackRotated={this.trackRotated.bind(this)}
                                                  key={track.uid}
                                                  uid={track.uid}
                                                  className={'track ' + this.trackDimension(track)}

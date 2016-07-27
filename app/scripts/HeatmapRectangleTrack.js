@@ -107,7 +107,6 @@ export function HeatmapRectangleTrack() {
     }
 
     function setSpriteProperties(sprite, tile) {
-        console.log('tile:', tile);
         let zoomLevel = tile.tilePos[0], xTilePos = tile.tilePos[1], yTilePos = tile.tilePos[2];
 
         let totalWidth = tile.xRange[1] - tile.xRange[0];
@@ -147,10 +146,9 @@ export function HeatmapRectangleTrack() {
                 sprite.x = tile.xOrigScale(tileX);
                 sprite.y = tile.yOrigScale(tileY);
 
-                console.log('sprite.x:', sprite.x, 'sprite.y:', sprite.y)
+                console.log('sprite.x:', sprite.x);
+                console.log('sprite.y:', sprite.y);
             }
-
-
     }
 
     let chart = function(selection) {
@@ -288,11 +286,6 @@ export function HeatmapRectangleTrack() {
             localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
             function sizeChanged() {
-                //console.log('d.top:', d.top)
-                /*
-                d.pMain.position.y = d.top;
-                d.pMain.scale.y = -d.height;
-                */
                 d.pMask.position.x = d.left;
                 d.pMask.position.y = d.top;
 

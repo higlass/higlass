@@ -83,7 +83,6 @@ export function WigglePixiTrack() {
                 d.pMask = pMask;
 
                 pMain.mask = pMask;
-
             }
 
             let zoomLevel = null;
@@ -132,7 +131,6 @@ export function WigglePixiTrack() {
                     graphics.beginFill(0xFF700B, 1);
 
                     for (let i = 0; i < tileData.length; i++) {
-                        //console.log('tileXScale(i)', tileXScale(i), localXScale.domain());
                         let xPos = localXScale(tileXScale(i));
                         //let yPos = -(d.height - yScale(tileData[i]));
                         let yPos = -1; //-(d.height - yScale(tileData[i]));
@@ -148,7 +146,6 @@ export function WigglePixiTrack() {
 
                 let shownTiles = {};
 
-                console.log('redrawing tile');
                 for (let i = 0; i < tileData.length; i++) {
                     shownTiles[tileData[i].tileId] = true;
                     
@@ -221,8 +218,6 @@ export function WigglePixiTrack() {
                 zoomedXScale = xScale.copy();
                 let zoomedLocalScale = localXScale.copy();
                 let newScale = scale * scaleModifier;
-
-                console.log('newStart:', newStart);
 
                 zoomedXScale.domain(xScale.range()
                                           .map(function(x) { return (x - translate[0]) / scale })
