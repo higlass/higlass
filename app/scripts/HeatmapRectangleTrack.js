@@ -145,9 +145,6 @@ export function HeatmapRectangleTrack() {
             } else {
                 sprite.x = tile.xOrigScale(tileX);
                 sprite.y = tile.yOrigScale(tileY);
-
-                console.log('sprite.x:', sprite.x);
-                console.log('sprite.y:', sprite.y);
             }
     }
 
