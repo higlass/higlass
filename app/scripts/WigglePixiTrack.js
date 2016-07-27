@@ -67,9 +67,22 @@ export function WigglePixiTrack() {
             if (!('pMain' in d)) {
 
                 let pMain = new PIXI.Graphics();
-                d.stage.addChild(pMain);
+                let pAbove = new PIXI.Graphics();
+                let pMask = new PIXI.Graphics();
 
+                pMask.beginFill();
+                pMask.drawRect(0, 0, 1, 1);
+                pMask.endFill();
+
+                pAbove.addChild(pMain);
+                pAbove.addChild(pMask);
+                d.stage.addChild(pAbove);
+
+                d.pAbove = pAbove;
                 d.pMain = pMain;
+                d.pMask = pMask;
+
+                pMain.mask = pMask;
 
             }
 
@@ -180,6 +193,12 @@ export function WigglePixiTrack() {
             function sizeChanged() {
                 d.pMain.position.y = d.top;
                 d.pMain.scale.y = -d.height;
+
+                d.pMask.position.x = d.left;
+                d.pMask.position.y = d.top;
+
+                d.pMask.scale.x = d.width;
+                d.pMask.scale.y = d.height;
             }
 
             function closeClicked() {
