@@ -21,30 +21,32 @@ export class MultiTrackContainer extends React.Component {
         let height = 400;
 
         let tracks = [
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-bar'},
-                 {source: this.awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz', uid: slugid.nice(), type: 'heatmap', trackHeight: 200},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'left-bar', trackHeight: height, trackWidth: 30},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
+                 {source: this.awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz', uid: slugid.nice(), type: 'heatmap', height: height},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'left-bar', height: height, width: 20},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'left-bar', height: height, width: 20},
                  /*
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), trackHeight: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), height: 10},
                  */
                  //{source: this.awsDomain + '/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice()},
         ];
@@ -54,10 +56,10 @@ export class MultiTrackContainer extends React.Component {
             let trackHeight = this.initialTrackHeight;
             let trackWidth = this.initialTrackWidth;
 
-            if ('trackHeight' in tracks[i])
-                trackHeight = tracks[i].trackHeight;
-            if ('trackWidth' in tracks[i])
-                trackWidth = tracks[i].trackWidth;
+            if ('height' in tracks[i])
+                trackHeight = tracks[i].height;
+            if ('width' in tracks[i])
+                trackWidth = tracks[i].width;
 
             console.log('trackHeight', trackHeight);
 
@@ -115,6 +117,79 @@ export class MultiTrackContainer extends React.Component {
             .width(this.state.width)
             .domain(this.xScale.domain())
             .zoomDispatch(this.zoomDispatch)
+
+        this.tracksToPositions = { 'top-bar': 'top', 'left-bar': 'left', 
+                                   'right-bar': 'right', 'heatmap': 'center' };
+
+        this.arrangeTracks();
+    }
+
+    arrangeTracks() {
+        // arrange the tracks so that the left are neatly on the left, the top are neatly on top
+        // and the center is positioned right in the center
+        let leftMargin = 0;
+        let topMargin = 0;
+        let bottomMargin = 0;
+        let rightMargin = 0;
+
+        let currentTop = 0;
+        let currentLeft = 0;
+
+        for (let trackId in this.state.tracks) {
+            let track = this.state.tracks[trackId];
+
+            if (this.tracksToPositions[track.type] == 'top')
+                topMargin += track.height;
+            if (this.tracksToPositions[track.type] == 'left')
+                leftMargin += track.width;
+            if (this.tracksToPositions[track.type] == 'right')
+                rightMargin += track.width;
+            if (this.tracksToPositions[track.type] == 'bottom')
+                bottomMargin += track.width;
+        }
+
+        let currentRightLeft = this.width - rightMargin;
+        let currentBottomTop = this.height - bottomMargin;
+
+        for (let trackId in this.state.tracks) {
+            let track = this.state.tracks[trackId];
+
+            if (this.tracksToPositions[track.type] == 'top') {
+                track.left = leftMargin;
+                track.top = currentTop;
+                track.width = this.state.width - leftMargin - rightMargin;
+                currentTop += track.height;
+            }
+
+            if (this.tracksToPositions[track.type] == 'left') {
+                track.top = topMargin;
+                track.left = currentLeft;
+                track.height = this.state.height - topMargin - bottomMargin;
+                currentLeft += track.width;
+            }
+
+            if (this.tracksToPositions[track.type] == 'right') {
+                track.top = topMargin;
+                track.left = currentRightLeft;
+                track.height = this.state.height - topMargin - bottomMargin;
+                currentRightLeft += track.width;
+            }
+
+            if (this.tracksToPositions[track.type] == 'bottom') {
+                track.left = leftMargin;
+                track.top = currentBottomTop;
+                track.width = this.state.width - leftMargin - rightMargin;
+                currentBottomTop += track.height;
+            }
+
+            if (this.tracksToPositions[track.type] == 'center') {
+                track.left = leftMargin;
+                track.top = topMargin;
+                track.width = this.state.width - leftMargin - rightMargin;
+                track.height = this.state.height - topMargin - bottomMargin;
+            }
+        }
+
     }
 
     handleZoom() {
