@@ -83,7 +83,6 @@ export function WigglePixiLine() {
 
             function redrawTile() {
                 tileData = d3.select(this).selectAll('.tile-g').data();
-                console.log('h tileData[0]:', tileData[0].tileId);
 
                 let minVisibleValue = Math.min(...tileData.map((x) => x.valueRange[0]));
                 let maxVisibleValue = Math.max(...tileData.map((x) => x.valueRange[1]));
@@ -198,7 +197,6 @@ export function WigglePixiLine() {
                                           .map(xScale.invert))
 
                 if (drawTile != null) {
-                    console.log('z tileData[0]:', tileData[0].tileId);
                     for (let i = 0; i < tileData.length; i++) {
                         let tileGraphics = d.tileGraphics[tileData[i].tileId]
                         drawTile(tileGraphics, tileData[i], zoomedXScale);

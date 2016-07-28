@@ -99,17 +99,35 @@ export function TopGeneLabelsTrack() {
                     let tileData = tile.data;
                     graphics.clear();
 
+
                     let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
                     // this scale should go from an index in the data array to 
                     // a position in the genome coordinates
                     graphics.lineStyle(0, 0x0000FF, 1);
                     graphics.beginFill(0xFF700B, 1);
 
+                    while (graphics.children[0]) { graphics.removeChild(graphics.children[0]); };
+                    console.log('-------------');
+
                     for (let i = 0; i < tileData.length; i++) {
                         let xPos = zoomedXScale(tileData[i].txStart);
+
+                        let text = new PIXI.Text(tileData[i].geneName, {font:"10px Arial", 
+                                                                       fill:"red", 
+                                                                       textBaseLine: "middle"});
+                        text.anchor.x = 0.5;
+                        text.anchor.y = 1;
+
+                        graphics.addChild(text)
+
                         //let yPos = -(d.height - yScale(tileData[i]));
                         let height = yScale(Math.log(+tileData[i].count+1))
                         let width = yScale(Math.log(+tileData[i].count+1));
+
+                        text.position.x = xPos;
+                        text.position.y = yPos + 5;
+
+                        console.log('tileData[i]', tileData[i].geneName, xPos);
 
                         let yPos = (d.height - height) / 2 ; //-(d.height - yScale(tileData[i]));
 
