@@ -43,6 +43,8 @@ export function GenericTiledArea() {
             let shownTiles = new Set();
             let tileDirectory = d.source;
 
+            console.log('tileDirectory:', tileDirectory);
+
             let minVisibleValue = null;
             let maxVisibleValue = null;
 

@@ -24,8 +24,8 @@ export class DraggableDiv extends React.Component {
                               .on('dragstart', this.dragStart.bind(this))
                               .on('drag', this.dragBottomFunc.bind(this));
 
-        this.minWidth = 20;
-        this.minHeight = 15;
+        this.minWidth = 10;
+        this.minHeight = 10;
         this.bottomHandleWidth = 20;
 
         this.state = {

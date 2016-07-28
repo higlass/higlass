@@ -8,6 +8,7 @@ import {WigglePixiTrack} from './WigglePixiTrack.js';
 import {LeftWigglePixiTrack} from './LeftWigglePixiTrack.js';
 import {HeatmapRectangleTrack} from './HeatmapRectangleTrack.js'
 import {AddTrackDiv} from './AddTrackDiv.js'
+import {TopGeneLabelsTrack} from './TopGeneLabelsTrack.js'
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
@@ -22,6 +23,7 @@ export class MultiTrackContainer extends React.Component {
 
         let tracks = [
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
+                 //{source: this.awsDomain + '/hg19/refgene-tiles-plus', uid: slugid.nice(), type: 'top-gene-labels', height: 20},
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
                  {source: this.awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz', uid: slugid.nice(), type: 'heatmap', height: height},
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'left-bar', height: height, width: 20},
@@ -119,6 +121,7 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch)
 
         this.tracksToPositions = { 'top-bar': 'top', 'left-bar': 'left', 
+                                   'top-gene-labels': 'top',
                                    'right-bar': 'right', 'heatmap': 'center' };
 
         this.arrangeTracks();
@@ -248,12 +251,22 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
 
+        let topGeneLabels = TopGeneLabelsTrack()
+            .xScale(this.xScale.copy())
+            .width(this.state.width)
+            .dataDomain(this.props.domain)
+            .pixiStage(this.stage)
+            .resizeDispatch(this.resizeDispatch)
+            .zoomDispatch(this.zoomDispatch);
+
         this.animate();
         d3.select(this.bigDiv).call(this.zoom);
 
         this.horizontalTiledArea.tilesChanged(function(d) {
                 if (d.type == 'top-bar')
                     d3.select(this).call(wigglePixiTrack);
+                else if (d.type == 'top-gene-labels')
+                    d3.select(this).call(topGeneLabels);
             });
 
         this.verticalTiledArea.tilesChanged(function(d) {
@@ -298,6 +311,8 @@ export class MultiTrackContainer extends React.Component {
                 twoDTrackList.push(this.state.tracks[trackId]);
             else if (this.state.tracks[trackId].type == 'left-bar')
                 oneDVerticalTrackList.push(this.state.tracks[trackId]);
+            else if (this.state.tracks[trackId].type == 'top-gene-labels')
+                oneDHorizontalTrackList.push(this.state.tracks[trackId]);
             else if (this.state.tracks[trackId].type == 'top-bar')
                 oneDHorizontalTrackList.push(this.state.tracks[trackId]);
         }
@@ -346,6 +361,8 @@ export class MultiTrackContainer extends React.Component {
         else if (track.type == 'left-bar')
             return 'one-d-vertical';
         else if (track.type == 'top-bar')
+            return 'one-d-horizontal';
+        else if (track.type == 'top-gene-labels')
             return 'one-d-horizontal';
     }
 
