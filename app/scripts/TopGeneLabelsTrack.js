@@ -1,6 +1,7 @@
 import PIXI from 'pixi.js';
 import slugid from 'slugid';
 import d3 from 'd3';
+import boxIntersect from 'box-intersect';
 
 export function TopGeneLabelsTrack() {
     let width = 200;
@@ -70,19 +71,21 @@ export function TopGeneLabelsTrack() {
             let prevScale = null;
             let drawTile = null;
             let tileData = null;
+            let allTiles = null;
                 
             function redrawTile() {
-                tileData = d3.select(this).selectAll('.tile-g').data();
+                allTiles = d3.select(this).selectAll('.tile-g').data();
+                allTiles.map((x) => { x.texts = []; });
 
-                let minVisibleValue = Math.min(...tileData.map((x) => x.importanceRange[0]));
-                let maxVisibleValue = Math.max(...tileData.map((x) => x.importanceRange[1]));
+                let minVisibleValue = Math.min(...allTiles.map((x) => x.importanceRange[0]));
+                let maxVisibleValue = Math.max(...allTiles.map((x) => x.importanceRange[1]));
 
-                dataWidth = tileData[0].xRange[1] - tileData[0].xRange[0];
+                dataWidth = allTiles[0].xRange[1] - allTiles[0].xRange[0];
 
-                zoomLevel = tileData[0].tilePos[0];
-                let tileWidth = (tileData[0].xRange[1] - tileData[0].xRange[0]) / Math.pow(2, zoomLevel);
-                let minXRange = Math.min(...tileData.map((x) => x.tileXRange[0]));
-                let maxXRange = Math.max(...tileData.map((x) => x.tileXRange[1]));
+                zoomLevel = allTiles[0].tilePos[0];
+                let tileWidth = (allTiles[0].xRange[1] - allTiles[0].xRange[0]) / Math.pow(2, zoomLevel);
+                let minXRange = Math.min(...allTiles.map((x) => x.tileXRange[0]));
+                let maxXRange = Math.max(...allTiles.map((x) => x.tileXRange[1]));
 
 
                 if (d.translate != null && d.scale != null) {
@@ -109,42 +112,65 @@ export function TopGeneLabelsTrack() {
                     while (graphics.children[0]) { graphics.removeChild(graphics.children[0]); };
                     console.log('-------------');
 
+                    tile.texts = [];
+
                     for (let i = 0; i < tileData.length; i++) {
                         let xPos = zoomedXScale(tileData[i].txStart);
 
+                        //let yPos = -(d.height - yScale(tileData[i]));
+                        let height = yScale(Math.log(+tileData[i].count+1))
+                        let width = yScale(Math.log(+tileData[i].count+1));
+                        let yPos = (d.height - height) / 2 + 5 ; //-(d.height - yScale(tileData[i]));
+
                         let text = new PIXI.Text(tileData[i].geneName, {font:"10px Arial", 
-                                                                       fill:"red", 
-                                                                       textBaseLine: "middle"});
+                                                                       fill:"red"});
+                        tile.texts.push(text);
+
                         text.anchor.x = 0.5;
                         text.anchor.y = 1;
 
                         graphics.addChild(text)
 
-                        //let yPos = -(d.height - yScale(tileData[i]));
-                        let height = yScale(Math.log(+tileData[i].count+1))
-                        let width = yScale(Math.log(+tileData[i].count+1));
-
                         text.position.x = xPos;
-                        text.position.y = yPos + 5;
+                        text.position.y = yPos - 2;
 
-                        console.log('tileData[i]', tileData[i].geneName, xPos);
+                        console.log('tileData[i]', tileData[i].geneName, xPos, yPos, tileData[i].count, d.height, height);
 
-                        let yPos = (d.height - height) / 2 ; //-(d.height - yScale(tileData[i]));
 
                         if (height > 0 && width > 0) {
                             graphics.drawRect(xPos, yPos, width, height);
                         }
                     }
+
+                    let allGenes = [].concat.apply([], allTiles.map((x) => { return x.data; }));
+                    let allTexts = [].concat.apply([], allTiles.map((x) => { 
+                                                return x.texts; 
+                                        }));
+                    let allBoxes = allTexts.map((x) => { 
+                                        let b = x.getBounds();
+                                        return [b.x, b.y, b.x + b.width, b.y + b.height];
+                                    });
+
+                    let result = boxIntersect(allBoxes, function(i, j) {
+                        if (+allGenes[i].count > +allGenes[j].count) {
+                            allTexts[j].alpha = 0; 
+                        } else {
+                            allTexts[i].alpha = 0; 
+                        }
+                    });
+                    //console.log('tile.texts:', allBoxes, allGenes);
+
+                    // hide all overlapping texts
                 }
 
                 let shownTiles = {};
 
-                for (let i = 0; i < tileData.length; i++) {
-                    shownTiles[tileData[i].tileId] = true;
+                for (let i = 0; i < allTiles.length; i++) {
+                    shownTiles[allTiles[i].tileId] = true;
                     
-                    if (tileData[i].tileId in d.tileGraphics) {
-                        d.pMain.removeChild(d.tileGraphics[tileData[i].tileId]);
-                        delete d.tileGraphics[tileData[i].tileId];
+                    if (allTiles[i].tileId in d.tileGraphics) {
+                        d.pMain.removeChild(d.tileGraphics[allTiles[i].tileId]);
+                        delete d.tileGraphics[allTiles[i].tileId];
                     }
 
                     for (let tileIdStr in d.tileGraphics) {
@@ -156,13 +182,13 @@ export function TopGeneLabelsTrack() {
                         }
                     }
 
-                    if (!(tileData[i].tileId in d.tileGraphics)) {
+                    if (!(allTiles[i].tileId in d.tileGraphics)) {
                         // we don't have a graphics object for this tile
                         // so we need to create one
                          let newGraphics = new PIXI.Graphics();
-                         drawTile(newGraphics, tileData[i], zoomedXScale);
+                         drawTile(newGraphics, allTiles[i], zoomedXScale);
                          d.pMain.addChild(newGraphics)
-                         d.tileGraphics[tileData[i].tileId] = newGraphics
+                         d.tileGraphics[allTiles[i].tileId] = newGraphics
                     } 
                 }
 
@@ -210,9 +236,9 @@ export function TopGeneLabelsTrack() {
                                           .map(xScale.invert))
 
                 if (drawTile != null) {
-                    for (let i = 0; i < tileData.length; i++) {
-                        let tileGraphics = d.tileGraphics[tileData[i].tileId]
-                        drawTile(tileGraphics, tileData[i], zoomedXScale);
+                    for (let i = 0; i < allTiles.length; i++) {
+                        let tileGraphics = d.tileGraphics[allTiles[i].tileId]
+                        drawTile(tileGraphics, allTiles[i], zoomedXScale);
                     }
                 }
             }

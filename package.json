@@ -70,7 +70,8 @@
     }
   },
   "dependencies": {
-    "yeoman-generator": "^0.22.5",
-    "d3": "~3.5.16"
+    "box-intersect": "^1.0.1",
+    "d3": "~3.5.16",
+    "yeoman-generator": "^0.22.5"
   }
 }
