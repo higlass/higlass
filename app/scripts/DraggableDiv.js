@@ -191,7 +191,7 @@ export class DraggableDiv extends React.Component {
                              width: this.state.width,
                              height: this.state.height,
                              'backgroundColor': '#eeeeee',
-                             opacity: 0.5 };
+                             opacity: 0.1 };
 
             let neStyle = { position: 'absolute',
                             right: 0,

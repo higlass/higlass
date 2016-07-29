@@ -102,7 +102,6 @@ export function TopGeneLabelsTrack() {
                     let tileData = tile.data;
                     graphics.clear();
 
-
                     let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
                     // this scale should go from an index in the data array to 
                     // a position in the genome coordinates
@@ -110,12 +109,14 @@ export function TopGeneLabelsTrack() {
                     graphics.beginFill(0xFF700B, 1);
 
                     while (graphics.children[0]) { graphics.removeChild(graphics.children[0]); };
-                    console.log('-------------');
 
                     tile.texts = [];
 
                     for (let i = 0; i < tileData.length; i++) {
-                        let xPos = zoomedXScale(tileData[i].txStart);
+                        let xStartPos = zoomedXScale(tileData[i].txStart);
+                        let xEndPos = zoomedXScale(tileData[i].txEnd);
+
+                        let xPos = (xEndPos + xStartPos) / 2;
 
                         //let yPos = -(d.height - yScale(tileData[i]));
                         let height = yScale(Math.log(+tileData[i].count+1))
@@ -135,7 +136,32 @@ export function TopGeneLabelsTrack() {
                         text.position.y = yPos - 2;
 
                         if (height > 0 && width > 0) {
-                            graphics.drawRect(xPos, yPos, width, height);
+                            if (xEndPos - xPos > 10) {
+                                // only draw exons if we're zoomed in far enough to see them
+
+                                let lineHeight = 2;
+                                let exonHeight = 5;
+                                let yPos = (d.height - lineHeight) / 2 + 5 ; //-(d.height - yScale(tileData[i]));
+                                let width = xEndPos - xStartPos;
+
+                                let yExonPos = (d.height - exonHeight) / 2 + 5;
+
+                                graphics.drawRect(xStartPos, yPos, width, lineHeight);
+
+                                let exonStarts = tileData[i].exonStarts.split(',');
+                                let exonEnds = tileData[i].exonEnds.split(',');
+
+                                for (let j = 0; j < exonStarts.length; j++) {
+                                    let exonStart = +exonStarts[j];
+                                    let exonEnd = +exonEnds[j];
+
+                                    graphics.drawRect(zoomedXScale(exonStart), yExonPos, 
+                                            zoomedXScale(exonEnd) - zoomedXScale(exonStart), exonHeight);
+                                }
+                                
+                            } else {
+                                graphics.drawRect(xPos, yPos, width, height);
+                            }
                         }
                     }
 

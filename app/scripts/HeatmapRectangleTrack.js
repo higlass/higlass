@@ -103,6 +103,8 @@ export function HeatmapRectangleTrack() {
 
         }
 
+        console.log('setPix:', new Date().getTime() - t1);
+
         return pix;
     }
 
