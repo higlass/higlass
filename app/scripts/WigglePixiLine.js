@@ -132,10 +132,10 @@ export function WigglePixiLine() {
                        // }
 
                        if(j == 0){
-                            graphics.moveTo(xPos, 50 - 50*height);
+                            graphics.moveTo(xPos, d.height - d.height *height);
                             j++;
                         }
-                        graphics.lineTo(zoomedXScale(tileXScale(i+1)), 50 - 50*yScale(tileData[i+1]));
+                        graphics.lineTo(zoomedXScale(tileXScale(i+1)), d.height - d.height *yScale(tileData[i+1]));
                     }
                 }
 

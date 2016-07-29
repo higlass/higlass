@@ -23,7 +23,7 @@ export class MultiTrackContainer extends React.Component {
         let height = 400;
 
         let tracks = [
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-line', height: 10},
+                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-line', height: 20},
                  {source: this.awsDomain + '/hg19/refgene-tiles-plus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
                  {source: this.awsDomain + '/hg19/refgene-tiles-minus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
@@ -119,6 +119,7 @@ export class MultiTrackContainer extends React.Component {
             .tileType('div')
             .oneDimensional(false)
             .width(this.state.width)
+            .height(this.state.height)
             .domain(this.xScale.domain())
             .zoomDispatch(this.zoomDispatch)
 
@@ -255,6 +256,7 @@ export class MultiTrackContainer extends React.Component {
             .xScale(this.xScale.copy())
             .yScale(this.yScale.copy())
             .width(this.state.width)
+            .height(this.state.height)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
