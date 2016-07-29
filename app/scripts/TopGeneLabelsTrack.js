@@ -134,9 +134,6 @@ export function TopGeneLabelsTrack() {
                         text.position.x = xPos;
                         text.position.y = yPos - 2;
 
-                        console.log('tileData[i]', tileData[i].geneName, xPos, yPos, tileData[i].count, d.height, height);
-
-
                         if (height > 0 && width > 0) {
                             graphics.drawRect(xPos, yPos, width, height);
                         }
@@ -147,8 +144,10 @@ export function TopGeneLabelsTrack() {
                                                 return x.texts; 
                                         }));
                     let allBoxes = allTexts.map((x) => { 
+                                        x.updateTransform();
                                         let b = x.getBounds();
-                                        return [b.x, b.y, b.x + b.width, b.y + b.height];
+                                        let box = [b.x, b.y, b.x + b.width, b.y + b.height];
+                                        return box;
                                     });
 
                     let result = boxIntersect(allBoxes, function(i, j) {

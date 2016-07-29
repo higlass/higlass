@@ -79,18 +79,18 @@ export function WigglePixiLine() {
             
             let zoomLevel = null;
             let drawTile = null;
-            let tileData = null;
+            let allTiles = null;
 
             function redrawTile() {
-                tileData = d3.select(this).selectAll('.tile-g').data();
+                allTiles = d3.select(this).selectAll('.tile-g').data();
 
-                let minVisibleValue = Math.min(...tileData.map((x) => x.valueRange[0]));
-                let maxVisibleValue = Math.max(...tileData.map((x) => x.valueRange[1]));
+                let minVisibleValue = Math.min(...allTiles.map((x) => x.valueRange[0]));
+                let maxVisibleValue = Math.max(...allTiles.map((x) => x.valueRange[1]));
 
-                zoomLevel = tileData[0].tilePos[0];
-                let tileWidth = (tileData[0].xRange[1] - tileData[0].xRange[0]) / Math.pow(2, zoomLevel);
-                let minXRange = Math.min(...tileData.map((x) => x.tileXRange[0]));
-                let maxXRange = Math.max(...tileData.map((x) => x.tileXRange[1]));
+                zoomLevel = allTiles[0].tilePos[0];
+                let tileWidth = (allTiles[0].xRange[1] - allTiles[0].xRange[0]) / Math.pow(2, zoomLevel);
+                let minXRange = Math.min(...allTiles.map((x) => x.tileXRange[0]));
+                let maxXRange = Math.max(...allTiles.map((x) => x.tileXRange[1]));
 
                 let yScale = d3.scale.linear()
                 .domain([0, maxVisibleValue])
@@ -141,12 +141,12 @@ export function WigglePixiLine() {
 
                 let shownTiles = {};
 
-                for (let i = 0; i < tileData.length; i++) {
-                    shownTiles[tileData[i].tileId] = true;
+                for (let i = 0; i < allTiles.length; i++) {
+                    shownTiles[allTiles[i].tileId] = true;
                     
-                    if (tileData[i].tileId in d.tileGraphics) {
-                        d.pMain.removeChild(d.tileGraphics[tileData[i].tileId]);
-                        delete d.tileGraphics[tileData[i].tileId];
+                    if (allTiles[i].tileId in d.tileGraphics) {
+                        d.pMain.removeChild(d.tileGraphics[allTiles[i].tileId]);
+                        delete d.tileGraphics[allTiles[i].tileId];
                     }
 
                     for (let tileIdStr in d.tileGraphics) {
@@ -158,13 +158,13 @@ export function WigglePixiLine() {
                         }
                     }
 
-                    if (!(tileData[i].tileId in d.tileGraphics)) {
+                    if (!(allTiles[i].tileId in d.tileGraphics)) {
                         // we don't have a graphics object for this tile
                         // so we need to create one
                          let newGraphics = new PIXI.Graphics();
-                         drawTile(newGraphics, tileData[i]);
+                         drawTile(newGraphics, allTiles[i]);
                          d.pMain.addChild(newGraphics)
-                         d.tileGraphics[tileData[i].tileId] = newGraphics
+                         d.tileGraphics[allTiles[i].tileId] = newGraphics
                     } 
                 }
 
@@ -197,9 +197,9 @@ export function WigglePixiLine() {
                                           .map(xScale.invert))
 
                 if (drawTile != null) {
-                    for (let i = 0; i < tileData.length; i++) {
-                        let tileGraphics = d.tileGraphics[tileData[i].tileId]
-                        drawTile(tileGraphics, tileData[i], zoomedXScale);
+                    for (let i = 0; i < allTiles.length; i++) {
+                        let tileGraphics = d.tileGraphics[allTiles[i].tileId]
+                        drawTile(tileGraphics, allTiles[i], zoomedXScale);
                     }
                 }
             }
