@@ -68,6 +68,10 @@ export function WigglePixiLine() {
                 d.stage = pixiStage; 
             }
 
+            if (!('preHeight' in d)) {
+                d.preHeight = d.height; 
+            }
+
             if (!('pMain' in d)) {
 
                 let pMain = new PIXI.Graphics();
@@ -132,10 +136,10 @@ export function WigglePixiLine() {
                        // }
 
                        if(j == 0){
-                            graphics.moveTo(xPos, 50 - 50*height);
+                            graphics.moveTo(xPos, d.height - d.height*height);
                             j++;
                         }
-                        graphics.lineTo(zoomedXScale(tileXScale(i+1)), 50 - 50*yScale(tileData[i+1]));
+                        graphics.lineTo(zoomedXScale(tileXScale(i+1)), d.height - d.height*yScale(tileData[i+1]));
                     }
                 }
 
@@ -183,6 +187,15 @@ export function WigglePixiLine() {
             function sizeChanged() {
                 d.pMain.position.y = d.top;
             //    d.pMain.scale.y = d.height;
+                if(d.preHeight != d.height){
+                    if (drawTile != null) {
+                        for (let i = 0; i < allTiles.length; i++) {
+                            let tileGraphics = d.tileGraphics[allTiles[i].tileId]
+                            drawTile(tileGraphics, allTiles[i], zoomedXScale);
+                        }
+                    }
+                }
+                d.preHeight = d.height;
             }
 
             function zoomChanged(translate, scale) {
