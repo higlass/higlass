@@ -2,7 +2,7 @@ import PIXI from 'pixi.js';
 import slugid from 'slugid';
 import d3 from 'd3';
 
-export function WigglePixiLine() {
+export function WigglePixiPoint() {
     let width = 200;//200
     let height = 15;//15
     let resizeDispatch = null;
@@ -92,7 +92,6 @@ export function WigglePixiLine() {
 
                 pMain.mask = pMask;
 
-
             }
             
             let zoomLevel = null;
@@ -132,7 +131,7 @@ export function WigglePixiLine() {
                     .range([tile.xRange[0] + tile.tilePos[1] * tileWidth, 
                            tile.xRange[0] + (tile.tilePos[1] + 1) * tileWidth]  );
 
-                    graphics.lineStyle(1, 0x0000FF, 1);
+                    graphics.lineStyle(1, 0xFF0000, 1);
                    // graphics.beginFill(0xFF700B, 1);
                     let j = 0;
 
@@ -145,15 +144,8 @@ export function WigglePixiLine() {
                         let height = yScale(tileData[i])
                         let width = zoomedXScale(tileXScale(i+1)) - zoomedXScale(tileXScale(i));
 
-                       // if (height > 0 && width > 0) {
-                         //   graphics.drawRect(xPos, yPos, width, height);
-                       // }
-
-                       if(j == 0){
-                            graphics.moveTo(xPos, d.height - d.height*height);
-                            j++;
-                        }
-                        graphics.lineTo(zoomedXScale(tileXScale(i+1)), d.height - d.height*yScale(tileData[i+1]));
+                       
+                        graphics.drawRect(zoomedXScale(tileXScale(i+1)), d.height - d.height*yScale(tileData[i+1]) , 1, 1);
                     }
                 }
 
@@ -192,7 +184,7 @@ export function WigglePixiLine() {
 
             let localResizeDispatch = d.resizeDispatch;
 
-            let slugId = d.uid + '.line';
+            let slugId = d.uid + '.point';
             localResizeDispatch.on('resize.' + slugId, sizeChanged);
 
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
