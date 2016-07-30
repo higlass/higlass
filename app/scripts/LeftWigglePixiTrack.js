@@ -107,8 +107,6 @@ export function LeftWigglePixiTrack() {
                     .range([0, height])
                     .domain([minRange, minRange + 2 * tileWidth ]);
 
-                console.log('height:', height);
-
                 if (d.translate != null && d.scale != null) {
                     // change the zoom and scale before redrawing new elements
                     // helps to avoid flickering

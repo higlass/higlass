@@ -1,0 +1,205 @@
+<!DOCTYPE html><html lang=""><head><meta charset="utf-8"><title>Goomba</title></head><body><script src="scripts/goomba.js"></script><div id="circle"></div><script type="text/javascript">let width = 448;
+let height = 440;
+
+let trackHeight = 30;
+let margin = {'left': 30, 'top': 10, 'right': 30, 'bottom': 10};
+let tileDirectory = 'http://pkerp.s3-website-us-east-1.amazonaws.com/data/hg19/refgene-tiles-plus'
+let awsDomain = '//52.23.165.123:9872';
+//let awsDomain = '//localhost:9200';
+
+//let tileDirectories = [];
+let tileDirectories = [awsDomain + '/hg19/refgene-tiles-minus',
+                       awsDomain + '/hg19/refgene-tiles-plus']
+
+var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
+
+var bigDiv = d3.select('#circle').append('div')
+.classed('big-div', true)
+.style('width', width)
+.style('height', height)
+.style('top', '0px')
+.style('left', '0px')
+.style('position', 'absolute')
+
+var bigCanvas = bigDiv.append('canvas')
+.style('position', 'absolute')
+.style('top', '0px')
+.style('left', '0px')
+.style('pointer-events', 'none');
+
+var pixiRenderer = PIXI.autoDetectRenderer(width, height, { antialiased: true,
+                                                            view: bigCanvas.node(),
+                                                            'transparent': true});
+var stage = new PIXI.Container();
+stage.interactive = true;
+
+var bigSvg = bigDiv.append('svg')
+.attr('top', '0px')
+.attr('left', '0px')
+.attr('position', 'absolute')
+.attr('width', width)
+.attr('height', height)
+
+let bigRect = bigSvg.append('rect')
+.attr('width', width)
+.attr('height', height)
+.style('fill', 'transparent')
+.style('stroke', 'yellow')
+.style('stroke-width', '5px')
+
+let xScale = d3.scale.linear().domain([0, 5000000])
+    .range([0, width]);
+
+let zoomDispatch = d3.dispatch('zoom');
+var zoom = d3.behavior.zoom()
+    .x(xScale)
+    .on('zoom', function() {
+        zoomDispatch.zoom(zoom.translate(), zoom.scale());
+    });
+
+
+bigRect.call(zoom);
+
+var trackData = [
+        {'width': width, 'height': 50, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        {'width': width, 'height': 50, 
+        'source': awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz'},
+        /*
+        {'width': width, 'height': 60, 
+        'source': awsDomain + '/tiles_test/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz'},
+        */
+];
+
+function closeClicked(d, i) {
+    //console.log('closeclicked:', i, d);
+    d.resizeDispatch.close();
+    console.log('i:', i);
+    trackData.splice(i, 1);
+    console.log('trackData:', trackData);
+    createPlot();
+};
+
+var draggableTrack = goomba.DraggableTrack()
+    .width(width)
+    .height(trackHeight)
+    .closeClicked(closeClicked);
+
+var wigglePixiTrack = goomba.WigglePixiTrack()
+    .xScale(xScale.copy())
+    .pixiStage(stage)
+    .zoomDispatch(zoomDispatch);
+
+var tiledArea = goomba.GenericTiledArea()
+    .tileType('div')
+    .width(width)
+    //.domain(xScale.domain())
+    .zoomDispatch(zoomDispatch)
+    .tilesChanged(function(d) {
+        d3.select(this).call(wigglePixiTrack);
+        });
+
+function createPlot() {
+    console.log('createPlot...');
+    let tracks = d3.select('.big-div')
+    .selectAll('.track')
+    .data(trackData)
+
+    tracks.exit()
+    .remove();
+
+    tracks.enter()
+    .append('div')
+    .style('opacity', 0.5)
+    .classed('track', true)
+    .call(draggableTrack)
+
+    tracks = d3.select('.big-div')
+    .selectAll('.track')
+
+
+    console.log('tracks:', tracks);
+    tracks.call(tiledArea)
+}
+
+createPlot();
+
+animate();
+
+//console.log('rendering stage:', trackData[i].stage);
+console.log('trackData:', trackData);
+
+function animate() {
+    //console.log('animating...');
+    //console.log('trackData:', trackData);
+    //for (let i = 0; i < trackData.length; i++) {
+     pixiRenderer.render(stage);
+     /*
+     for (let i = 1; i >= 0; i--) {
+        if ('stage' in trackData[i])  {
+            //console.log('rendering stage:', i, trackData[i].stage);
+            pixiRenderer.render(trackData[i].stage);
+        }
+    }
+    */
+    requestAnimationFrame( animate );
+}
+
+    /*
+goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
+    let xScale = d3.scale.linear().domain([0, chromInfo.totalLength])
+    //let xScale = d3.scale.linear().domain([0, 10000000])
+        .range([0, width - margin.left - margin.right]);
+
+
+    let scaleExtent = [1, chromInfo.totalLength / 100]
+
+    //let xScale = d3.scale.linear().domain([0, 200000000])
+
+    console.log('chromInfo:', chromInfo);
+    console.log('xScale.domain()', xScale.domain());
+    let zoomDispatch = d3.dispatch('zoom');
+
+    var chromInfoPlot = goomba.ChromosomeAxis()
+    .width(width - margin.left - margin.right)
+    .domain(xScale.domain())
+    .orient('top')
+    .zoomDispatch(zoomDispatch);
+
+    svg.append('g')
+    .attr('transform', 'translate(' + margin.left + ',20)')
+    .datum(chromInfo)
+    .call(chromInfoPlot);
+
+    let tileLayout = goomba.GeneTileLayout;
+
+    let gMain = svg.append('g')
+    .classed('g-main', true);
+
+    /////////////////////////////
+
+    let wiggleTileArea = goomba.TiledArea().width(width)
+    .height(height)
+    .tileLayout(goomba.WiggleTileLayout)
+    .domain(xScale.domain())
+    .scaleExtent(scaleExtent)
+    .margin({'left': 30, 'top': 30, 'right': 30, 'bottom': 10})
+    .zoomDispatch(zoomDispatch);
+
+    let gWiggleTracks = gMain
+    .append('g')
+    .attr('transform', 'translate(0,' + (tileDirectories.length * trackHeight) + ')')
+    .selectAll('g')
+    //.data(['//search-es4dn-z7rzz4kevtoyh5pfjkmjg5jsga.us-east-1.es.amazonaws.com/hg19/wgEncodeSydhTfbsGm12878InputStdSig.bigWig.bedGraph.genome.sorted.gz'])
+
+    .data([
+        awsDomain + '/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz'
+    ])
+
+    .enter()
+    .append('g')
+    .attr('transform', (d,i) => { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
+    .classed('track-g', true)
+    .call(wiggleTileArea)
+});
+*/</script></body></html>

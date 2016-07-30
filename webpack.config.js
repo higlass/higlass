@@ -3,7 +3,9 @@ var webpack = require('webpack');
 
 module.exports = {
   context: __dirname + '/app',
-  entry: {main: ['./scripts/main.jsx']},
+  entry: {
+      main: ['./scripts/main.jsx'],
+      worker: ['./scripts/worker.js']},
   output: {
     path: __dirname + '/build',
     filename: '[name].js',

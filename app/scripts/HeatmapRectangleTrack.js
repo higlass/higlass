@@ -21,12 +21,23 @@ export function HeatmapRectangleTrack() {
     let valueScale = d3.scale.linear()
                     .range([255,0]);
 
+    let tileDataLoaded = null;
+    let worker = new Worker('scripts/worker.js');
+    worker.postMessage = worker.webkitPostMessage || worker.postMessage;
+
+        worker.addEventListener('message', function(e) {
+            //should only ever receive a message in the event that workerSetPix completed;
+            if (tileDataLoaded != null) 
+                tileDataLoaded(e.data.tile, e.data.pixData)
+        }, false);
+
     function tileId(tile) {
         // uniquely identify the tile with a string
         return tile.join(".") + '.' + tile.mirrored;
     }
 
     function loadTileData(tile_value) {
+        console.log('loadTileData:');
         let t1 = new Date().getTime();
         if ('dense' in tile_value)
             return tile_value['dense'];
@@ -56,7 +67,7 @@ export function HeatmapRectangleTrack() {
 
     }
 
-    function tileDataToCanvas(data, minVisibleValue, maxVisibleValue) {
+    function tileDataToCanvas(pixData, minVisibleValue, maxVisibleValue) {
         let canvas = document.createElement('canvas');
 
         canvas.width = 256;
@@ -67,8 +78,8 @@ export function HeatmapRectangleTrack() {
         ctx.fillStyle = 'transparent';
         ctx.fillRect(0,0,canvas.width, canvas.height);
 
-        let pix = ctx.createImageData(canvas.width, canvas.height);
-        pix = setPix(pix, data, minVisibleValue, maxVisibleValue);
+        let pix = new ImageData(pixData, canvas.width, canvas.height);
+
         ctx.putImageData(pix, 0,0);
 
         return canvas;
@@ -78,9 +89,10 @@ export function HeatmapRectangleTrack() {
         return Math.sqrt(Math.sqrt(count + 1));
     }
 
-    function setPix(pix, data, minVisibleValue, maxVisibleValue) {
+    function setPix(size, data, minVisibleValue, maxVisibleValue) {
         valueScale.domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
         let t1 = new Date().getTime();
+        let pixData = new Uint8ClampedArray(size * 4);
 
         try {
             let t1 = new Date().getTime();
@@ -92,20 +104,17 @@ export function HeatmapRectangleTrack() {
                 let rgb = heatedObjectMap[rgbIdx];
 
 
-                pix.data[i*4] = rgb[0];
-                pix.data[i*4+1] = rgb[1];
-                pix.data[i*4+2] = rgb[2];
-                pix.data[i*4+3] = rgb[3];
+                pixData[i*4] = rgb[0];
+                pixData[i*4+1] = rgb[1];
+                pixData[i*4+2] = rgb[2];
+                pixData[i*4+3] = rgb[3];
             };
         } catch (err) {
-
             console.log('ERROR:', err);
-
+            return pixData;
         }
 
-        console.log('setPix:', new Date().getTime() - t1);
-
-        return pix;
+        return pixData;
     }
 
     function setSpriteProperties(sprite, tile) {
@@ -203,6 +212,8 @@ export function HeatmapRectangleTrack() {
 
             let minVisibleValue = null;
             let maxVisibleValue = null;
+
+
                 
             function redrawTile() {
                 let tiles = d3.select(this).selectAll('.tile-g').data();
@@ -215,9 +226,38 @@ export function HeatmapRectangleTrack() {
 
                 let shownTiles = {};
 
+                tileDataLoaded = function(tile, pixData) {
+                    let canvas = tileDataToCanvas(pixData,  minVisibleValue, maxVisibleValue);
+                    let tileId = tile.tileId;
+                    console.log('tileDataLoaded:', tile.tileId);
+
+                    tile.xOrigScale = d3.scale.linear().domain(tile.xOrigDomain).range(tile.xOrigRange);
+                    tile.yOrigScale = d3.scale.linear().domain(tile.yOrigDomain).range(tile.yOrigRange);
+
+                    shownTiles[tileId] = true;
+
+                    // tile isn't loaded into a pixi graphics container
+                    // load that sucker
+                    let newGraphics = new PIXI.Graphics();
+                    let sprite = null;
+
+                    if (tile.tilePos == tile.maxZoom) {
+
+                        sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+                    } else {
+                        sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+                    }
+                    setSpriteProperties(sprite, tile);
+
+
+                    newGraphics.addChild(sprite);
+                    d.tileGraphics[tileId] = newGraphics;
+
+                    d.pMain.addChild(newGraphics);
+
+                }
+
                 for (let i = 0; i < tiles.length; i++) {
-                    let tileData = loadTileData(tiles[i].data);
-                    shownTiles[tiles[i].tileId] = true;
 
                     if (prevMinVisibleValue != minVisibleValue || prevMaxVisibleValue != maxVisibleValue) {
                         // we need to rescale our data which means redrawing it...
@@ -231,34 +271,22 @@ export function HeatmapRectangleTrack() {
 
                     // check if we already have graphics for these tiles
                     if (!(tiles[i].tileId in d.tileGraphics)) {
-                        // tile isn't loaded into a pixi graphics container
-                        // load that sucker
-                        let newGraphics = new PIXI.Graphics();
+                        let tileWidth = 256;
 
-                        let canvas = tileDataToCanvas(tileData,  minVisibleValue, maxVisibleValue);
-                        let sprite = null;
 
-                        if (tiles[i].tilePos == tiles[i].maxZoom) {
+                        //let tileData = loadTileData(tiles[i].data);
+                        //let pixData = setPix(tileWidth * tileWidth, tileData, minVisibleValue, maxVisibleValue);
+                        worker.postMessage(JSON.stringify({'tile': { 'data': tiles[i].data,
+                                                      'tileId': tiles[i].tileId,
+                                                      'tilePos': tiles[i].tilePos,
+                                                      'xRange': tiles[i].xRange,
+                                                      'yRange': tiles[i].yRange,
+                                                      'xOrigDomain': tiles[i].xOrigScale.domain(),
+                                                      'xOrigRange': tiles[i].xOrigScale.range(),
+                                                      'yOrigDomain': tiles[i].yOrigScale.domain(),
+                                                      'yOrigRange': tiles[i].yOrigScale.range() },
+                            minVisibleValue: minVisibleValue, maxVisibleValue: maxVisibleValue}))
 
-                            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
-                        } else {
-                            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
-                        }
-                        //let sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
-
-                        setSpriteProperties(sprite, tiles[i]);
-                         /*  newGraphics.lineStyle(2, 0x0000FF, 1);
-                                newGraphics.moveTo(sprite.x, sprite.y);
-                                newGraphics.lineTo(sprite.x+sprite.width, sprite.y);
-                                newGraphics.lineTo(sprite.x+sprite.width, sprite.y+sprite.height);
-                                newGraphics.lineTo(sprite.x, sprite.y+sprite.height);
-                                newGraphics.lineTo(sprite.x, sprite.y);*/
-                        
-
-                        newGraphics.addChild(sprite);
-                        d.tileGraphics[tiles[i].tileId] = newGraphics;
-
-                        d.pMain.addChild(newGraphics);
                     } else {
 
                     }
