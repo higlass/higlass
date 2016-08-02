@@ -21,8 +21,8 @@ export class MultiTrackContainer extends React.Component {
         this.initialTrackHeight = 30;
         this.initialTrackWidth = 300;
 
-        let width = 2000;
-        let height = 2000;
+        let width = 400;
+        let height = 400;
 
         let tracks = [
                  {source: this.awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz', uid: slugid.nice(), type: 'heatmap', height: height},
@@ -130,6 +130,7 @@ export class MultiTrackContainer extends React.Component {
             .height(this.state.height)
             .domain(this.xScale.domain())
             .zoomDispatch(this.zoomDispatch)
+            .mirrorTiles(true)
 
         this.tracksToPositions = { 'top-bar': 'top', 'left-bar': 'left', 
                                     'top-line': 'top',

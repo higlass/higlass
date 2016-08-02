@@ -17,6 +17,7 @@ export function GenericTiledArea() {
     let zoomDispatch = null;
     let tileType = 'div';
     let tilesChanged = function() { };
+    let mirrorTiles = false;
 
     let xAxis = null;
 
@@ -31,7 +32,7 @@ export function GenericTiledArea() {
 
     function tileId(tile) {
         // uniquely identify the tile with a string
-        return tile.join("/");
+        return tile.join("/") + '.' + tile.mirrored;
     }
 
     function chart(selection) {
@@ -197,7 +198,8 @@ export function GenericTiledArea() {
                                 'data': new Float32Array(tileData).buffer,
                                 'type': tileType,
                                 'xOrigScale': xOrigScale,
-                                'yOrigScale': yOrigScale 
+                                'yOrigScale': yOrigScale ,
+                                'mirrored': tile.mirrored
                             };
                                 showTiles(currentTiles);
                         });
@@ -258,7 +260,34 @@ export function GenericTiledArea() {
 
                     for (let i = 0; i < rows.length; i++) {
                         for (let j = 0; j < cols.length; j++) {
-                            tiles.push([zoomLevel, rows[i], cols[j]]);
+                            if (mirrorTiles) {
+                                if (rows[i] >= cols[j]) {
+                                    // if we're in the upper triangular part of the matrix, then we need to load
+                                    // a mirrored tile
+                                    let newTile = [zoomLevel, cols[j], rows[i]];
+                                    newTile.mirrored = true;
+                                    tiles.push(newTile); 
+                                } else {
+                                    // otherwise, load an original tile
+                                    let newTile = [zoomLevel, rows[i], cols[j]];
+                                    newTile.mirrored = false;
+                                    tiles.push(newTile); 
+
+                                }
+
+                                if (rows[i] == cols[j]) {
+                                    // on the diagonal, load original tiles
+                                    let newTile = [zoomLevel, rows[i], cols[j]];
+                                    newTile.mirrored = false;
+                                    tiles.push(newTile);
+                                }
+
+                            } else {
+                                let newTile = [zoomLevel, rows[i], cols[j]];
+                                newTile.mirrored = false;
+
+                                tiles.push(newTile)
+                            }
                         }
                     }
                 } else {
@@ -502,6 +531,12 @@ export function GenericTiledArea() {
     chart.horizontal = function(_) {
         if (!arguments) return horizontal;
         else horizontal = _;
+        return chart;
+    }
+
+    chart.mirrorTiles = function(_) {
+        if (!arguments) return mirrorTiles;
+        else mirrorTiles = _;
         return chart;
     }
 

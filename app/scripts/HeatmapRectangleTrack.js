@@ -117,10 +117,10 @@ export function HeatmapRectangleTrack() {
             if (tile.mirrored) {
                 // this is a mirrored tile that represents the other half of a 
                 // triangular matrix
-                sprite.x = xOrigScale(tileY);
-                sprite.y = yOrigScale(tileX);
+                sprite.x = tile.xOrigScale(tileY);
+                sprite.y = tile.yOrigScale(tileX);
 
-                sprite.pivot = [xOrigScale.range()[1] / 2, yOrigScale.range()[1] / 2];
+                sprite.pivot = [tile.xOrigScale.range()[1] / 2, tile.yOrigScale.range()[1] / 2];
                 sprite.rotation = -Math.PI / 2;
                 sprite.scale.x *= -1;
 
@@ -218,7 +218,6 @@ export function HeatmapRectangleTrack() {
                         }
                     }
 
-                    console.log('tileIdsToKeep:', tileIdsToKeep, d.pMain.children);
                 }
 
                 tileDataLoaded = function(shownTileId, tile, pixData) {
@@ -252,11 +251,8 @@ export function HeatmapRectangleTrack() {
 
                         d.pMain.addChild(newGraphics);
 
-                        //console.log('visibleTiles', visibleTiles, shownTiles);
                     }
 
-                    console.log('numRendering:', numRendering, 'rendering:', d.rendering);
-                    console.log('visibleTiles:', visibleTiles)
                     if (!numRendering && allIn(visibleTiles, d.tileGraphics)) {
                         // only clear out graphics when we're done rendering
                         removeAllGraphicsExcept(visibleTiles);
@@ -274,9 +270,9 @@ export function HeatmapRectangleTrack() {
                         d.rendering[createShownTileId(tiles[i].tileId)] = true;
                         //let tileData = loadTileData(tiles[i].data);
                         //let pixData = setPix(tileWidth * tileWidth, tileData, minVisibleValue, maxVisibleValue);
-                        //console.log('data:', tiles[i].data);
                         let workerObj = {'shownTileId': createShownTileId(tiles[i].tileId),
                                                       'tile': { 'data': tiles[i].data.slice(0),
+                                                      'mirrored': tiles[i].mirrored,
                                                       'type': tiles[i].type,
                                                       'dataLength': tiles[i].data.length,
                                                       'tileId': tiles[i].tileId,
