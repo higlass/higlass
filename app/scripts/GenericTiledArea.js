@@ -43,11 +43,6 @@ export function GenericTiledArea() {
             let shownTiles = new Set();
             let tileDirectory = d.source;
 
-            console.log('tileDirectory:', tileDirectory);
-
-            let minVisibleValue = null;
-            let maxVisibleValue = null;
-
             let totalWidth = null;
             let totalHeight = null;
 
@@ -120,6 +115,7 @@ export function GenericTiledArea() {
 
                 // check to make sure all the tiles we're trying to display
                 // are already loaded
+                let t1 = new Date().getTime();
                 let allLoaded = true;
                 tiles.forEach((t) => {
                     allLoaded = allLoaded && isTileLoaded(t);
@@ -132,9 +128,6 @@ export function GenericTiledArea() {
                 .filter((d) => { return d != undefined; })
                 .filter((d) => { return d.data != undefined; });
 
-                minVisibleValue = Math.min( ...visibleTiles.map((x) => x.valueRange[0]));
-                maxVisibleValue = Math.max( ...visibleTiles.map((x) => x.valueRange[1]));
-
                 let gTiles = gMain.selectAll('.tile-g')
                 .data(visibleTiles, (d) => { return d.tileId; });         //the point key
 
@@ -145,11 +138,11 @@ export function GenericTiledArea() {
                 gTilesEnter.append(tileType)
                 .classed('tile-g', true)
 
-
                 gTilesExit.remove();
 
                 // only redraw if the tiles have changed
                 if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
+                    let t2 = new Date().getTime();
                     tilesChanged.bind(element)(d);
                     draw();
                 }
@@ -176,9 +169,22 @@ export function GenericTiledArea() {
                                 return;     // tile probably wasn't found
                             }
 
-                            data = data._source.tile_value;
+                            let tile_value = data._source.tile_value;
                             delete loadingTiles[tileId(tile)];
                             let tileWidth = (totalWidth) / Math.pow(2, tile[0]);
+                            let tileData = null;
+
+                            let tileType = null;
+                            if ('sparse' in tile_value) {
+                                tileType = 'sparse';
+                                tileData = tile_value['sparse'];
+                            }
+
+                            if ('dense' in tile_value) {
+                                tileType = 'dense';
+                                tileData = tile_value['dense']
+                            }
+
 
                             loadedTiles[tileId(tile)] = {'tileId': tileId(tile), 
                                 'maxZoom': maxZoom,
@@ -187,17 +193,17 @@ export function GenericTiledArea() {
                                 'yRange': [minY, minY + totalHeight],
                                 'tileXRange': [minX + tile[1] * tileWidth, minX + (tile[1] + 1) * tileWidth],
                                 'importanceRange': [minImportance, maxImportance],
-                                'valueRange': [data.min_value, data.max_value],
-                                'data': data,
+                                'valueRange': [tile_value.min_value, tile_value.max_value],
+                                'data': new Float32Array(tileData).buffer,
+                                'type': tileType,
                                 'xOrigScale': xOrigScale,
                                 'yOrigScale': yOrigScale 
                             };
                                 showTiles(currentTiles);
                         });
-                    } else {
-                        showTiles(currentTiles);
                     }
                 });
+                showTiles(currentTiles);
             }
 
             function draw() {
@@ -224,11 +230,11 @@ export function GenericTiledArea() {
 
                 // this will become the tiling code
                 let zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
-                let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + 1;
+                let addedZoom = Math.ceil(Math.log(width / 256) / Math.LN2);
+                let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + addedZoom;
 
                 if (zoomLevel > maxZoom)
                     zoomLevel = maxZoom;
-
 
                 // the ski areas are positioned according to their
                 // cumulative widths, which means the tiles need to also
@@ -307,7 +313,6 @@ export function GenericTiledArea() {
             d3.json(tileDirectory + '/tileset_info', function(error, tile_info) {
                 // set up the data-dependent sections of the chart
                 tile_info = tile_info._source.tile_value;
-                console.log('tile_info:', tile_info);
 
                 minX = tile_info.min_pos[0];
                 maxX = tile_info.max_pos[0] + 0.001;

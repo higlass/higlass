@@ -5,33 +5,41 @@ function countTransform(count) {
     return Math.sqrt(Math.sqrt(count + 1));
 }
 
-function workerLoadTileData(tile_value) {
+function workerLoadTileData(tile_value, tile_type) {
     let resolution = 256;
+    let totalPoss = 0;
 
     let t1 = new Date().getTime();
-    if ('dense' in tile_value)
-        return tile_value['dense'];
-    else if ('sparse' in tile_value) {
+    if (tile_type == 'dense')
+        return tile_value;
+    else if (tile_type == 'sparse') {
         let values = []
         for (let i = 0; i < resolution * resolution; i++)
             values.push(0);
 
-        for (let i = 0; i < tile_value.sparse.length; i++) {
+        let i = 0;
+        while (i < tile_value.length) {
+            let value = tile_value[i];
+            let num_poss = tile_value[i+1];
+            i += 2;
 
-            if ('pos' in tile_value.sparse[i]) {
-                values[tile_value.sparse[i].pos[1] * resolution +
-                    tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
-            } else {
-                let x = tile_value.sparse[i][0];
-                values[tile_value.sparse[i][0][1] * resolution +
-                    tile_value.sparse[i][0][0]] = tile_value.sparse[i][1];
+            let xs = [], ys = [];
 
+            for (let j = 0; j < num_poss; j++)
+                xs.push(tile_value[i + j]);
+
+            for (let j = 0; j < num_poss; j++)
+                ys.push(tile_value[i + num_poss + j ]);
+
+            for (let j = 0; j < num_poss; j++) {
+                values[ys[j] * resolution +
+                    xs[j]] = value;
             }
+
+            i += num_poss *= 2;
         }
 
         return values;
-
-
     } else {
         return [];
     }
@@ -39,14 +47,12 @@ function workerLoadTileData(tile_value) {
 }
 
 function workerSetPix(size, data, minVisibleValue, maxVisibleValue) {
-        let valueScale = d3.scale.linear().range([0,255])
-        .domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
+        let valueScale = d3.scale.linear().range([255,0])
+        .domain([countTransform(0), countTransform(maxVisibleValue)])
 
-        let t1 = new Date().getTime();
         let pixData = new Uint8ClampedArray(size * 4);
 
         try {
-            let t1 = new Date().getTime();
             for (let i = 0; i < data.length; i++) {
                 let d = data[i];
                 let ct = countTransform(d);
@@ -70,11 +76,25 @@ function workerSetPix(size, data, minVisibleValue, maxVisibleValue) {
 
 self.addEventListener('message', function(e) {
     //should only be called when workerSetPix needs to be called
-    let passedData = JSON.parse(e.data)
-        //console.log('tile:', passedData.tile);
-    //console.log('passedData:', passedData);
-    let tileData = workerLoadTileData(passedData.tile.data)
+    let passedData = e.data;
+    let inputTileData = new Float32Array(passedData.tile.data, 0, passedData.tile.dataLength);
+
+    let tileData = workerLoadTileData(inputTileData, passedData.tile.type)
     let pixOutput = workerSetPix(256 * 256, tileData, passedData.minVisibleValue, passedData.maxVisibleValue);
 
-    self.postMessage({tile: passedData.tile, pixData: pixOutput});
+    let returnObj = {
+        shownTileId: passedData.shownTileId, 
+        tile: {
+            tilePos: passedData.tile.tilePos,
+            maxZoom: passedData.tile.maxZoom,
+            xOrigDomain: passedData.tile.xOrigDomain,
+            yOrigDomain: passedData.tile.yOrigDomain,
+            xOrigRange: passedData.tile.xOrigRange,
+            yOrigRange: passedData.tile.yOrigRange,
+            xRange: passedData.tile.xRange,
+            yRange: passedData.tile.yRange,
+            mirrored: passedData.tile.mirrored
+        }, pixData: pixOutput
+    }
+    self.postMessage(returnObj, [returnObj.pixData.buffer]);
 }, false);
