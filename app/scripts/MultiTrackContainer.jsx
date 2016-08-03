@@ -10,6 +10,7 @@ import {WigglePixiPoint} from './WigglePixiPoint.js';
 import {WigglePixiHeatmap} from './WigglePixiHeatmap.js';
 import {LeftWigglePixiTrack} from './LeftWigglePixiTrack.js';
 import {HeatmapRectangleTrack} from './HeatmapRectangleTrack.js'
+import {DiagonalHeatmapRectangleTrack} from './DiagonalHeatmapTrack.js'
 import {AddTrackDiv} from './AddTrackDiv.js'
 import {TopGeneLabelsTrack} from './TopGeneLabelsTrack.js'
 
@@ -21,20 +22,21 @@ export class MultiTrackContainer extends React.Component {
         this.initialTrackHeight = 30;
         this.initialTrackWidth = 300;
 
-        let width = 400;
-        let height = 400;
+        let width = 800;
+        let height = 800;
 
         let tracks = [
-                 {source: this.awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz', uid: slugid.nice(), type: 'heatmap', height: height},
+                 {source: this.awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: height},
 
                  /*
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-line', height: 20},
+                 {source: this.awsDomain + '/hg19/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-line', height: 20},
+                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-line', height: 20},
+                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.5M.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
+                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.5M.gz', uid: slugid.nice(), type: 'left-bar', height: height, width: 20},
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-point', height: 10},
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-heatmap', height: 10},
-                 {source: this.awsDomain + '/hg19/refgene-tiles-plus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
                  {source: this.awsDomain + '/hg19/refgene-tiles-minus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'left-bar', height: height, width: 20},
                  {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'left-bar', height: height, width: 20},
                  */
                  /*
@@ -136,6 +138,7 @@ export class MultiTrackContainer extends React.Component {
                                     'top-line': 'top',
                                     'top-point': 'top',
                                     'top-heatmap': 'top',
+                                    'top-diagonal-heatmap': 'top',
                                    'top-gene-labels': 'top',
                                    'right-bar': 'right', 'heatmap': 'center' };
 
@@ -288,6 +291,15 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
 
+        let diagonalHeatmapTrack = DiagonalHeatmapRectangleTrack()
+            .xScale(this.xScale.copy())
+            .yScale(this.yScale.copy())
+            .width(this.state.width)
+            .height(this.state.height)
+            .pixiStage(this.stage)
+            .resizeDispatch(this.resizeDispatch)
+            .zoomDispatch(this.zoomDispatch); 
+
         let topGeneLabels = TopGeneLabelsTrack()
             .xScale(this.xScale.copy())
             .width(this.state.width)
@@ -307,6 +319,8 @@ export class MultiTrackContainer extends React.Component {
                     d3.select(this).call(wigglePixiPoint);
                 if (d.type == 'top-heatmap')
                     d3.select(this).call(wigglePixiHeatmap);
+                if (d.type == 'top-diagonal-heatmap')
+                    d3.select(this).call(diagonalHeatmapTrack);
                 else if (d.type == 'top-gene-labels')
                     d3.select(this).call(topGeneLabels);
             });
@@ -363,6 +377,8 @@ export class MultiTrackContainer extends React.Component {
                 oneDHorizontalTrackList.push(this.state.tracks[trackId]);
             else if (this.state.tracks[trackId].type == 'top-heatmap')
                 oneDHorizontalTrackList.push(this.state.tracks[trackId]);
+            else if (this.state.tracks[trackId].type == 'top-diagonal-heatmap')
+                oneDHorizontalTrackList.push(this.state.tracks[trackId]);
         }
 
         d3.select(this.bigDiv).selectAll('.one-d-horizontal')
@@ -415,6 +431,8 @@ export class MultiTrackContainer extends React.Component {
         else if (track.type == 'top-point')
             return 'one-d-horizontal';
         else if (track.type == 'top-heatmap')
+            return 'one-d-horizontal';
+        else if (track.type == 'top-diagonal-heatmap')
             return 'one-d-horizontal';
         else if (track.type == 'top-gene-labels')
             return 'one-d-horizontal';

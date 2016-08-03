@@ -186,7 +186,6 @@ export function GenericTiledArea() {
                                 tileData = tile_value['dense']
                             }
 
-
                             loadedTiles[tileId(tile)] = {'tileId': tileId(tile), 
                                 'maxZoom': maxZoom,
                                 'tilePos': tile,
@@ -195,7 +194,7 @@ export function GenericTiledArea() {
                                 'tileXRange': [minX + tile[1] * tileWidth, minX + (tile[1] + 1) * tileWidth],
                                 'importanceRange': [minImportance, maxImportance],
                                 'valueRange': [tile_value.min_value, tile_value.max_value],
-                                'data': new Float32Array(tileData).buffer,
+                                'data': new Float32Array(tileData),
                                 'type': tileType,
                                 'xOrigScale': xOrigScale,
                                 'yOrigScale': yOrigScale ,

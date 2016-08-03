@@ -3,7 +3,7 @@ import PIXI from 'pixi.js';
 import slugid from 'slugid';
 import d3 from 'd3';
 
-export function HeatmapRectangleTrack() {
+export function DiagonalHeatmapRectangleTrack() {
     let width = 200;
     let height = 15;
     let resizeDispatch = null;
