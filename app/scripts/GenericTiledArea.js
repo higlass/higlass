@@ -172,21 +172,12 @@ export function GenericTiledArea() {
 
                             let tile_value = data._source.tile_value;
                             delete loadingTiles[tileId(tile)];
+
                             let tileWidth = (totalWidth) / Math.pow(2, tile[0]);
                             let tileData = null;
 
                             let tileType = null;
-                            if ('sparse' in tile_value) {
-                                tileType = 'sparse';
-                                tileData = tile_value['sparse'];
-                            }
-
-                            if ('dense' in tile_value) {
-                                tileType = 'dense';
-                                tileData = tile_value['dense']
-                            }
-
-                            loadedTiles[tileId(tile)] = {'tileId': tileId(tile), 
+                            let loadedTile = {'tileId': tileId(tile), 
                                 'maxZoom': maxZoom,
                                 'tilePos': tile,
                                 'xRange': [minX, minX + totalWidth],
@@ -194,12 +185,25 @@ export function GenericTiledArea() {
                                 'tileXRange': [minX + tile[1] * tileWidth, minX + (tile[1] + 1) * tileWidth],
                                 'importanceRange': [minImportance, maxImportance],
                                 'valueRange': [tile_value.min_value, tile_value.max_value],
-                                'data': new Float32Array(tileData),
-                                'type': tileType,
                                 'xOrigScale': xOrigScale,
                                 'yOrigScale': yOrigScale ,
                                 'mirrored': tile.mirrored
                             };
+
+                            if ('sparse' in tile_value) {
+                                loadedTile['data'] = new Float32Array(tile_value['sparse']);
+                                loadedTile['type'] = 'sparse';
+                            } else if ('dense' in tile_value) {
+                                loadedTile['data'] = new Float32Array(tile_value['dense']);
+                                loadedTile['type'] = 'dense';
+                            } else {
+                                loadedTile['data'] = tile_value;
+                                loadedTile['type'] = 'other';
+
+                            }
+                            
+                            loadedTiles[tileId(tile)] = loadedTile;
+
                                 showTiles(currentTiles);
                         });
                     }

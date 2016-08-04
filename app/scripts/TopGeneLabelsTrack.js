@@ -113,8 +113,10 @@ export function TopGeneLabelsTrack() {
                     tile.texts = [];
 
                     for (let i = 0; i < tileData.length; i++) {
-                        let xStartPos = zoomedXScale(tileData[i].txStart);
-                        let xEndPos = zoomedXScale(tileData[i].txEnd);
+                        let genomeOffset = tileData[i].genomeTxStart - tileData[i].txStart;
+
+                        let xStartPos = zoomedXScale(tileData[i].txStart + genomeOffset);
+                        let xEndPos = zoomedXScale(tileData[i].txEnd + genomeOffset);
 
                         let xPos = (xEndPos + xStartPos) / 2;
 
@@ -152,8 +154,8 @@ export function TopGeneLabelsTrack() {
                                 let exonEnds = tileData[i].exonEnds.split(',');
 
                                 for (let j = 0; j < exonStarts.length; j++) {
-                                    let exonStart = +exonStarts[j];
-                                    let exonEnd = +exonEnds[j];
+                                    let exonStart = +exonStarts[j] + genomeOffset;
+                                    let exonEnd = +exonEnds[j] + genomeOffset;
 
                                     graphics.drawRect(zoomedXScale(exonStart), yExonPos, 
                                             zoomedXScale(exonEnd) - zoomedXScale(exonStart), exonHeight);
