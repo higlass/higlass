@@ -1,31 +1,45 @@
 import '../styles/ChromosomeAxis.css';
 import d3 from 'd3';
 import slugid from 'slugid';
+import {ChromosomeInfo} from './ChromosomeInfo.js';
 
-export function ChromosomeAxis(chromInfoFile) {
+export function TopChromosomeAxis() {
     let bisect = d3.bisector(function(d) { return d.pos; }).left;
     let width = 600;
     let zoomDispatch = null;
+    let resizeDispatch = null;
     let domain = [0,1];
     let orient = 'top';
+    let xScale = null;
 
     function chart(selection) {
         selection.each(function(d) {
                 let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
                 let gChromLabels = null;
-                let gSelect = null;
-                let xScale = d3.scale.linear().domain(domain).range([0,width]);
+                let chromInfo = null;
 
-                let cumValues = d.cumPositions;
-                let xAxis = null;
+                ChromosomeInfo(d.source, function(newChromInfo) {
+                    chromInfo = newChromInfo;
+                    console.log('chromInfo:', chromInfo);
+                    draw();
+                });
+
                 let gAxis = null;
                 let lineScale = null;
                 let slugId = slugid.nice();
                 let zoom = d3.behavior.zoom().x(xScale);
 
-                gSelect = d3.select(this);
+                let svg = d3.select(this).selectAll('svg')
+                    .data([d])
 
-                let gAxisData = gSelect.selectAll('g')
+                xScale.range([0, d.width]);
+
+                svg.enter()
+                .append('svg')
+                .style('width', (d) => { console.log('width:', d.width); return d.width;}) 
+                .style('height', (d) => {return d.height;}) 
+
+                let gAxisData = svg.selectAll('g')
                 .data([0])
 
                 gAxisData.enter()
@@ -34,7 +48,8 @@ export function ChromosomeAxis(chromInfoFile) {
                 gAxisData.exit()
                 .remove()
 
-                gAxis =  gSelect.selectAll('g')
+                gAxis =  svg.selectAll('g')
+                .attr('transform', 'translate(0,15)');
 
                 gAxis.selectAll('.text-center')
                 .data([0])
@@ -76,9 +91,6 @@ export function ChromosomeAxis(chromInfoFile) {
                 }
                 
 
-                if (cumValues == null)
-                    return;
-
                 localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
                 function zoomChanged(translate, scale) {
@@ -88,14 +100,14 @@ export function ChromosomeAxis(chromInfoFile) {
 
                     draw();
                 }
-                           console.log('cumValues:', cumValues);
 
                    function draw () {
+                       if (chromInfo == null)
+                           return;
+
+                        let cumValues = chromInfo.cumPositions;
                        //gChromLabels.attr('x', (d) => { return xScale(d.pos); });
                        //gSelect.call(zoomableLabels);
-                       if (xAxis != null)
-                           gAxis.call(xAxis);
-
                        let ticks = xScale.ticks(5);
                        let tickSpan = ticks[1] - ticks[0]
                        let tickWidth = xScale(ticks[1]) - xScale(ticks[0]);
@@ -181,6 +193,12 @@ export function ChromosomeAxis(chromInfoFile) {
     chart.zoomDispatch = function(_) {
         if (!arguments.length) return zoomDispatch;
         else zoomDispatch = _;
+        return chart;
+    }
+
+    chart.resizeDispatch = function(_) {
+        if (!arguments.length) return resizeDispatch;
+        else resizeDispatch = _;
         return chart;
     }
 

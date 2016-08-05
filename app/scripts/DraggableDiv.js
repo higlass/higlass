@@ -190,8 +190,8 @@ export class DraggableDiv extends React.Component {
                              left: this.state.left,
                              width: this.state.width,
                              height: this.state.height,
-                             'backgroundColor': '#eeeeee',
-                             opacity: 0.1 };
+                             'backgroundColor': '#ffffff',
+                             opacity: this.props.opacity };
 
             let neStyle = { position: 'absolute',
                             right: 0,
@@ -247,10 +247,12 @@ export class DraggableDiv extends React.Component {
                             className = 'bottom-handle' />
 
                         <div style={closeStyle} className = 'close-handle' >
-                            <i className='fa fa-rotate-left' style={iStyle} ref={(c) => this.rotateHandle = c}></i>
-                            <i className='fa fa-close' style={iStyle} ref={(c)=> this.closeHandle = c}></i>
                         </div>
                     </div>
                    );
+                            /*
+                            <i className='fa fa-rotate-left' style={iStyle} ref={(c) => this.rotateHandle = c}></i>
+                            <i className='fa fa-close' style={iStyle} ref={(c)=> this.closeHandle = c}></i>
+                            */
     }
 }
