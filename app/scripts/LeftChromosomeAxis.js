@@ -112,7 +112,6 @@ export function LeftChromosomeAxis() {
                         let cumValues = chromInfo.cumPositions;
                        //gChromLabels.attr('x', (d) => { return yScale(d.pos); });
                        //gSelect.call(zoomableLabels);
-                       console.log('yScale.range()', yScale.range());
 
                        let ticks = yScale.ticks(5);
                        let tickSpan = ticks[1] - ticks[0]
