@@ -368,13 +368,14 @@ export function GenericTiledArea() {
 
                 maxZoom = tile_info.max_zoom;
 
-                if (domain == null)
+                if (domain == null) {
                     xScaleDomain = [minX, maxX];
-                else
+                    yScaleDomain = [minX, maxX];
+                } else {
                     xScaleDomain = domain;
+                    yScaleDomain = domain;
+                }
                 
-                yScaleDomain = [minY, maxY];
-
                 if (xScale == null) {
                     xScale = d3.scale.linear()
                     .domain(xScaleDomain)
@@ -404,11 +405,11 @@ export function GenericTiledArea() {
 
                 if (scaleExtent == null)
                     zoom.x(xScale)
-                //.scaleExtent([1,Math.pow(2, maxZoom-1)])
-                .scaleExtent([1,Math.pow(2, maxZoom+8)])
+                        //.scaleExtent([1,Math.pow(2, maxZoom-1)])
+                        .scaleExtent([1,Math.pow(2, maxZoom+8)])
                 else
                     zoom.x(xScale)
-                .scaleExtent(scaleExtent);
+                        .scaleExtent(scaleExtent);
 
                 //.xExtent(xScaleDomain);
 
@@ -419,7 +420,13 @@ export function GenericTiledArea() {
                 //gXAxis.call(xAxis);
 
                 if (!oneDimensional) {
-                    zoom.y(yScale)
+                    if (scaleExtent == null)
+                        zoom.y(yScale)
+                            //.scaleExtent([1,Math.pow(2, maxZoom-1)])
+                            .scaleExtent([1,Math.pow(2, maxZoom+8)])
+                    else
+                        zoom.y(yScale)
+                        .scaleExtent(scaleExtent);
                     refreshTiles([[0,0,0]]);
                 } else {
                     refreshTiles([[0,0]]);

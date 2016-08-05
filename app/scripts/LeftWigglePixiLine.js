@@ -94,8 +94,6 @@ export function WigglePixiLine() {
                 .domain([0, maxVisibleValue])
                 .range([0, 1]);
 
-                console.log('allTiles:', allTiles);
-
                 if (d.translate != null && d.scale != null) {
                     // change the zoom and scale before redrawing new elements
                     // helps to avoid flickering

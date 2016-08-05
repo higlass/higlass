@@ -36,8 +36,12 @@ export class MultiTrackContainer extends React.Component {
 
                  {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
                  {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
+                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-empty', height: 3},
+                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-heatmap', height: 10},
+                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-empty', height: 3},
+
                  {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'left-bar', width: 20},
-                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'left-line', width: 20},
+                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'left-empty', width: 3},
 
                  /*
                  {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
@@ -93,8 +97,6 @@ export class MultiTrackContainer extends React.Component {
                 trackHeight = tracks[i].height;
             if ('width' in tracks[i])
                 trackWidth = tracks[i].width;
-
-            console.log('trackHeight', trackHeight);
 
             tracks[i].left = 0;
             tracks[i].top = currentTop
@@ -154,7 +156,7 @@ export class MultiTrackContainer extends React.Component {
             .tileType('div')
             .width(this.state.height)   // since this is a vertical tiled area, the width is actually the height
                                         // of the viewable area
-            .domain(this.xScale.domain())
+            .domain(this.yScale.domain())
             .zoomDispatch(this.zoomDispatch)
             .horizontal(false)
 
@@ -175,6 +177,8 @@ export class MultiTrackContainer extends React.Component {
                                    'top-gene-labels': 'top',
                                    'top-chromosome-axis': 'top',
                                    'left-chromosome-axis': 'left',
+                                   'left-empty': 'left',
+                                   'top-empty': 'top',
                                    'right-bar': 'right', 'heatmap': 'center' };
 
         this.arrangeTracks();

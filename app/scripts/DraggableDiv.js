@@ -35,7 +35,6 @@ export class DraggableDiv extends React.Component {
             top: props.top,
             left: props.left
         }
-        console.log('this.state.top:', this.state.top);
     }
 
     componentDidMount() {
