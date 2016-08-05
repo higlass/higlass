@@ -94,7 +94,7 @@ export function WigglePixiHeatmap() {
                 .range([0, 1]);
 
                 let drawTile = function(graphics, tile) {
-                    let tileData = load1DTileData(tile.data);
+                    let tileData = load1DTileData(tile.data, tile.type);
 
                     let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
                     // this scale should go from an index in the data array to 

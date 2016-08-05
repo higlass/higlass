@@ -77,6 +77,9 @@ export function TopGeneLabelsTrack() {
                 allTiles = d3.select(this).selectAll('.tile-g').data();
                 allTiles.map((x) => { x.texts = []; });
 
+                if (allTiles.length  == 0)
+                    return;
+
                 let minVisibleValue = Math.min(...allTiles.map((x) => x.importanceRange[0]));
                 let maxVisibleValue = Math.max(...allTiles.map((x) => x.importanceRange[1]));
 
@@ -106,17 +109,20 @@ export function TopGeneLabelsTrack() {
                     // this scale should go from an index in the data array to 
                     // a position in the genome coordinates
                     graphics.lineStyle(0, 0x0000FF, 1);
-                    graphics.beginFill(0xFF700B, 1);
+                    graphics.beginFill(0xFF700B, 0.5);
 
                     while (graphics.children[0]) { graphics.removeChild(graphics.children[0]); };
 
                     tile.texts = [];
 
                     for (let i = 0; i < tileData.length; i++) {
-                        let genomeOffset = tileData[i].genomeTxStart - tileData[i].txStart;
+                        let genomeOffset = +tileData[i].genomeTxStart - tileData[i].txStart;
 
-                        let xStartPos = zoomedXScale(tileData[i].txStart + genomeOffset);
-                        let xEndPos = zoomedXScale(tileData[i].txEnd + genomeOffset);
+
+                        let xStartPos = zoomedXScale(+tileData[i].txStart + genomeOffset);
+                        let xEndPos = zoomedXScale(+tileData[i].txEnd + genomeOffset);
+
+                        //console.log('xStartPos:', xStartPos, 'txStart:', tileData[i].txStart, "genomeOffset", genomeOffset);
 
                         let xPos = (xEndPos + xStartPos) / 2;
 

@@ -22,17 +22,31 @@ export class MultiTrackContainer extends React.Component {
         this.initialTrackHeight = 30;
         this.initialTrackWidth = 300;
 
-        let width = 400;
-        let height = 400;
+        let width = 600;
+        let height = 600;
 
         let tracks = [
-                 //{source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'heatmap', height: height},
-
-                 //{source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 //{source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 //{source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
                  {source: this.awsDomain + '/hg19/refgene-tiles-plus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
                  {source: this.awsDomain + '/hg19/refgene-tiles-minus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
+                 /*
+                 {source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'heatmap', height: height},
+
+                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
+                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
+                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'left-bar', width: 20},
+                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'left-line', width: 20},
+                 */
+
+                 /*
+                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
+                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
+                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Elk112771IggmusSig.bigWig.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
+                 {source: this.awsDomain + '/hg19.1/E044-H3K27me3.fc.signal.bigwig.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
+                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
+                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
+                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
+                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Elk112771IggmusSig.bigWig.genome.sorted.gz', uid: slugid.nice(), type: 'top-heatmap', height: 10},
+                 {source: this.awsDomain + '/hg19.1/E044-H3K27me3.fc.signal.bigwig.genome.sorted.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
                  /*
                  {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-line', height: 20},
                  {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.5M.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
@@ -461,12 +475,14 @@ export class MultiTrackContainer extends React.Component {
             trackList.push(this.state.tracks[uid]);
 
         //<img src="images/plus.svg" width="20px" style={imgStyle}/>
-        return(
-            <div style={divStyle} ref={(c) => this.bigDiv = c} >
-                <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
+        /*
                 <div style={addTrackDivStyle}>
                     <AddTrackDiv />
                 </div>
+                */
+        return(
+            <div style={divStyle} ref={(c) => this.bigDiv = c} >
+                <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
                 { trackList.map(function(track, i) 
                         {
                             return (<DraggableDiv 
