@@ -76,6 +76,9 @@ export function LeftWigglePixiTrack() {
                 let minVisibleValue = Math.min(...tileData.map((x) => x.valueRange[0]));
                 let maxVisibleValue = Math.max(...tileData.map((x) => x.valueRange[1]));
 
+                if (tileData.length == 0)
+                    return;
+
                 dataWidth = tileData[0].xRange[1] - tileData[0].xRange[0];
 
                 zoomLevel = tileData[0].tilePos[0];
@@ -191,6 +194,9 @@ export function LeftWigglePixiTrack() {
 
                 d.translate = translate;
                 d.scale = scale;
+
+                if (localYScale == null)
+                    return;
 
                 //console.log('translate:', translate);
 

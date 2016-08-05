@@ -382,6 +382,12 @@ export class MultiTrackContainer extends React.Component {
         });
 
         this.updateTracks();
+        d3.select(this.bigDiv)
+            .transition()
+            .delay(1000)
+            .duration(15000)
+            .ease('linear')
+            .call(this.zoom.translate([-6091225.646378613, -6091157.500879494]).scale(14603.2311647761).event);
     }
 
     animate() {

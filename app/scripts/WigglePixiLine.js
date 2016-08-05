@@ -85,6 +85,9 @@ export function WigglePixiLine() {
                 let minVisibleValue = Math.min(...allTiles.map((x) => x.valueRange[0]));
                 let maxVisibleValue = Math.max(...allTiles.map((x) => x.valueRange[1]));
 
+                if (allTiles.length == 0)
+                    return;
+
                 zoomLevel = allTiles[0].tilePos[0];
                 let tileWidth = (allTiles[0].xRange[1] - allTiles[0].xRange[0]) / Math.pow(2, zoomLevel);
                 let minXRange = Math.min(...allTiles.map((x) => x.tileXRange[0]));

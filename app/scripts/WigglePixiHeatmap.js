@@ -74,6 +74,9 @@ export function WigglePixiHeatmap() {
                 let minVisibleValue = Math.min(...tileData.map((x) => x.valueRange[0]));
                 let maxVisibleValue = Math.max(...tileData.map((x) => x.valueRange[1]));
 
+                if (tileData.length == 0)
+                    return;
+
                 zoomLevel = tileData[0].tilePos[0];
                 let tileWidth = (tileData[0].xRange[1] - tileData[0].xRange[0]) / Math.pow(2, zoomLevel);
                 let minXRange = Math.min(...tileData.map((x) => x.tileXRange[0]));
@@ -194,6 +197,9 @@ export function WigglePixiHeatmap() {
 
                 d.translate = translate;
                 d.scale = scale;
+
+                if (localXScale == null)
+                    return;
 
                 let scaleModifier = (localXScale.domain()[1] - localXScale.domain()[0]) / (xScale.domain()[1] - xScale.domain()[0])
                 let newStart = localXScale.domain()[0]
