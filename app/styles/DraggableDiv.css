@@ -20,7 +20,7 @@
 .sw-handle {
     border-left: black solid;
     border-bottom: black solid;
-    opacity: 0;
+    opacity: 1;
 }
 
 .bottom-handle {

@@ -256,7 +256,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
                         newGraphics.rotation = -3 * Math.PI / 4;
                         newGraphics.scale.y = 1 / Math.sqrt(2);
                         newGraphics.scale.x = -1 / Math.sqrt(2);
-                        newGraphics.position.y = 100;
+                        newGraphics.position.y = d.height; 
                         d.tileGraphics[shownTileId] = newGraphics;
 
 
@@ -337,7 +337,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
             function zoomChanged(translate, scale) {
 
                 d.pMain.position.x =  translate[0];
-                d.pMain.position.y = translate[1];
+                d.pMain.position.y = d.height * (1 - scale)//#translate[1];
                 d.pMain.scale.x = scale;
                 d.pMain.scale.y = scale;
             }
