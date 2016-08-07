@@ -10,7 +10,7 @@ import {WigglePixiPoint} from './WigglePixiPoint.js';
 import {WigglePixiHeatmap} from './WigglePixiHeatmap.js';
 import {LeftWigglePixiTrack} from './LeftWigglePixiTrack.js';
 import {HeatmapRectangleTrack} from './HeatmapRectangleTrack.js'
-import {DiagonalHeatmapRectangleTrack} from './DiagonalHeatmapTrack.js'
+import {TopDiagonalHeatmapRectangleTrack} from './TopDiagonalHeatmapTrack.js'
 import {AddTrackDiv} from './AddTrackDiv.js'
 import {TopGeneLabelsTrack} from './TopGeneLabelsTrack.js'
 import {TopChromosomeAxis} from './TopChromosomeAxis.js'
@@ -28,6 +28,8 @@ export class MultiTrackContainer extends React.Component {
         let height = 600;
 
         let tracks = [
+                 {source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: height},
+                 /*
                  {source: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt', uid: slugid.nice(), type: 'top-chromosome-axis', height: 35}, {source: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt', uid: slugid.nice(), type: 'left-chromosome-axis', width: 35},
 
                  {source: this.awsDomain + '/hg19/refgene-tiles-plus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
@@ -42,6 +44,7 @@ export class MultiTrackContainer extends React.Component {
 
                  {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'left-bar', width: 20},
                  {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'left-empty', width: 3},
+                 */
 
                  /*
                  {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
@@ -120,6 +123,14 @@ export class MultiTrackContainer extends React.Component {
             .width(this.state.width)
             .height(this.state.height)
             .resizeDispatch(this.resizeDispatch)
+            .zoomDispatch(this.zoomDispatch)
+
+        this.horizontalDiagonalTiledArea = GenericTiledArea()
+            .tileType('div')
+            .oneDimensional(false)
+            .width(this.state.width)
+            .height(this.state.height)
+            .domain(this.xScale.domain())
             .zoomDispatch(this.zoomDispatch)
 
         this.horizontalTiledArea = GenericTiledArea()
@@ -308,7 +319,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
 
-        let diagonalHeatmapTrack = DiagonalHeatmapRectangleTrack()
+        let diagonalHeatmapTrack = TopDiagonalHeatmapRectangleTrack()
             .xScale(this.xScale.copy())
             .yScale(this.yScale.copy())
             .width(this.state.width)
@@ -328,6 +339,12 @@ export class MultiTrackContainer extends React.Component {
         this.animate();
         d3.select(this.bigDiv).call(this.zoom);
 
+        this.horizontalDiagonalTiledArea.tilesChanged(function(d) {
+            console.log('here');
+            if (d.type == 'top-diagonal-heatmap')
+                d3.select(this).call(diagonalHeatmapTrack);
+        });
+
         this.horizontalTiledArea.tilesChanged(function(d) {
                 if (d.type == 'top-bar')
                     d3.select(this).call(wigglePixiTrack);
@@ -337,8 +354,6 @@ export class MultiTrackContainer extends React.Component {
                     d3.select(this).call(wigglePixiPoint);
                 if (d.type == 'top-heatmap')
                     d3.select(this).call(wigglePixiHeatmap);
-                if (d.type == 'top-diagonal-heatmap')
-                    d3.select(this).call(diagonalHeatmapTrack);
                 if (d.type == 'top-gene-labels')
                     d3.select(this).call(topGeneLabels);
                 if (d.type == 'top-chromosome-axis')
@@ -389,6 +404,7 @@ export class MultiTrackContainer extends React.Component {
 
     updateTracks() {
         let oneDHorizontalTrackList = [];
+        let oneDHorizontalDiagonalTrackList = [];
         let oneDVerticalTrackList = [];
         let twoDTrackList = [];
         let horizontalAxisList = [];
@@ -414,7 +430,7 @@ export class MultiTrackContainer extends React.Component {
             else if (this.state.tracks[trackId].type == 'top-heatmap')
                 oneDHorizontalTrackList.push(this.state.tracks[trackId]);
             else if (this.state.tracks[trackId].type == 'top-diagonal-heatmap')
-                oneDHorizontalTrackList.push(this.state.tracks[trackId]);
+                oneDHorizontalDiagonalTrackList.push(this.state.tracks[trackId]);
         }
 
         d3.select(this.bigDiv).selectAll('.horizontal-axis')
@@ -424,6 +440,10 @@ export class MultiTrackContainer extends React.Component {
         d3.select(this.bigDiv).selectAll('.vertical-axis')
             .data(verticalAxisList)
             .call(this.leftChromosomeAxis);
+
+        d3.select(this.bigDiv).selectAll('.one-d-horizontal-diagonal')
+            .data(oneDHorizontalDiagonalTrackList)
+            .call(this.horizontalDiagonalTiledArea);
 
         d3.select(this.bigDiv).selectAll('.one-d-horizontal')
             .data(oneDHorizontalTrackList)
@@ -477,7 +497,7 @@ export class MultiTrackContainer extends React.Component {
         else if (track.type == 'top-heatmap')
             return 'one-d-horizontal';
         else if (track.type == 'top-diagonal-heatmap')
-            return 'one-d-horizontal';
+            return 'one-d-horizontal-diagonal';
         else if (track.type == 'top-gene-labels')
             return 'one-d-horizontal';
         else if (track.type == 'top-chromosome-axis')
