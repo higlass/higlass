@@ -260,8 +260,8 @@ export function GenericTiledArea() {
 
                 if (diagonal) {
                     for (let i = 0; i < rows.length; i++) 
-                        for (let j = 0; j < rows.length; j++) 
-                            tiles.push([zoomLevel, rows[j], rows[i]]);
+                        for (let j = i; j < rows.length; j++) 
+                            tiles.push([zoomLevel, rows[i], rows[j]]);
                 } else {
 
                     if (! oneDimensional ) {

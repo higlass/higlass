@@ -246,16 +246,9 @@ export function TopDiagonalHeatmapRectangleTrack() {
                         }
 
 
-                        /*
-                        newGraphics.pivot = [tile.xOrigScale.range()[1]/2, 
-                                             tile.yOrigScale.range()[1]/2]
-                                             */
-                        //newGraphics.anchor = [0.5, 0.5];
-                        console.log('pivot:', newGraphics.pivot, 'position:', newGraphics.position)
-
-                        newGraphics.rotation = -3 * Math.PI / 4;
                         newGraphics.scale.y = 1 / Math.sqrt(2);
                         newGraphics.scale.x = -1 / Math.sqrt(2);
+                        newGraphics.rotation = -3 * Math.PI / 4;
                         newGraphics.position.y = d.height; 
                         d.tileGraphics[shownTileId] = newGraphics;
 
