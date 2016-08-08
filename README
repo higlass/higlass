@@ -4,3 +4,28 @@ python scripts/make_tiles.py -o jsons/tiles -p pos1,pos2 --min-value count --max
 
 # Move a newly built page to the gh-pages branch
 rm -rf /tmp/dist/; cp -r dist /tmp; git checkout gh-pages; cp -r /tmp/dist/* .
+jG
+## Starting the spark notebook
+
+ipython notebook --profile=pyspark --no-browser
+
+## refGene.txt.gz can be downloaded here:
+
+# This implies that its coordinates are relative to the hg19 assembly
+
+http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/refGene.txt.gz
+
+
+eval $(ssh-agent)
+ssh-add ~/devenv-key.pem
+rsync -avz ubuntu@52.32.97.221:/data/refgene-tiles-small/ jsons/tiles
+
+### Sample reads set
+
+samtools view -h  data/GM12878_SRR1658581_10pc_3_R1_hg19.bwt2glob.bam | head -n 65536 | samtools view -Sb > data/65536.bam
+
+### Sample tracks from Encode project
+
+GM12878 cell line RNAseq
+
+https://www.encodeproject.org/experiments/ENCSR000CVT/

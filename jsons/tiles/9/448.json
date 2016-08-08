@@ -1,0 +1,1 @@
+[{"count": "73", "exonEnds": "3413047,3418213,3456578,3458406", "txStart": "3412853", "cdsEnd": "3457938", "geneName": "TGIF1", "genomeTxStart": "2740050487", "chr": "chr18", "pos": [2740050487.0], "strand": "+", "cdsStart": "3456395", "refseqid": "NM_001278686", "exonCount": "4", "genomeTxEnd": "2740096040", "txEnd": "3458406", "exonStarts": "3412853,3418140,3456351,3457362"}]

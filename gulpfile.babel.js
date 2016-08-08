@@ -7,6 +7,7 @@ var webpack = require('webpack-stream');
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import browserSync from 'browser-sync';
+import jasmine from 'jasmine';
 import del from 'del';
 import {stream as wiredep} from 'wiredep';
 
@@ -23,7 +24,7 @@ gulp.task('styles', () => {
 });
 
 gulp.task('scripts', () => {
-  return gulp.src('app/scripts/**/*.js')
+  return gulp.src(['app/scripts/**/*.js', 'app/scripts/**/*.jsx'])
     .pipe($.plumber())
     .pipe($.sourcemaps.init())
     .pipe($.babel())
@@ -62,7 +63,7 @@ gulp.task('html', ['styles', 'scripts'], () => {
   return gulp.src('app/*.html')
     .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
     .pipe($.debug())
-    .pipe($.if('*.js', $.uglify()))
+    //.pipe($.if('*.js', $.uglify()))
     .pipe($.if('*.css', $.cssnano()))
     .pipe($.if('*.html', $.htmlmin({collapseWhitespace: true})))
     .pipe(gulp.dest('dist'));
@@ -70,7 +71,7 @@ gulp.task('html', ['styles', 'scripts'], () => {
 
 gulp.task('buildJs', ['styles', 'scripts'], () => {
     return gulp.src(['.tmp/scripts/**/*.js'])
-    .pipe($.uglify())
+    //.pipe($.uglify())
     .pipe(gulp.dest('dist/scripts'))
 });
 
@@ -128,7 +129,7 @@ gulp.task('serve', ['styles', 'scripts', 'fonts', 'data'], () => {
   ]).on('change', reload);
 
   gulp.watch('app/styles/**/*.css', ['styles']);
-  gulp.watch('app/scripts/**/*.js', ['scripts']);
+  gulp.watch(['app/scripts/**/*.js', 'app/scripts/**/*.jsx'], ['scripts']);
   gulp.watch('app/fonts/**/*', ['fonts']);
   gulp.watch('jsons/**/*.json', ['data']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);

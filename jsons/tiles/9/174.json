@@ -1,0 +1,1 @@
+[{"count": "2", "exonEnds": "5030429,5043823", "txStart": "5030205", "cdsEnd": "5043823", "geneName": "LYRM4-AS1", "genomeTxStart": "1067572165", "chr": "chr6", "pos": [1067572165.0], "strand": "+", "cdsStart": "5043823", "refseqid": "NR_126018", "exonCount": "2", "genomeTxEnd": "1067585783", "txEnd": "5043823", "exonStarts": "5030205,5042821"}]

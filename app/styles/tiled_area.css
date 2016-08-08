@@ -1,0 +1,26 @@
+svg {
+  font: 10px sans-serif;
+}
+
+.pane {
+    fill: transparent;
+    stroke: transparent;
+}
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke-width: .5px;
+}
+
+.x.axis line {
+  stroke: #ddd;
+}
+
+.y.axis line {
+  stroke: #ddd;
+}
+
