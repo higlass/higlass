@@ -18,6 +18,7 @@ export function GenericTiledArea() {
     let tileType = 'div';
     let tilesChanged = function() { };
     let mirrorTiles = false;
+    let diagonal = false;
 
     let xAxis = null;
 
@@ -257,47 +258,55 @@ export function GenericTiledArea() {
                 rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
                                 Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth)));
 
-                if (! oneDimensional ) {
-                    let cols = d3.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight),
-                            Math.ceil(((zoom.y().domain()[1] - minY) - epsilon) / tileHeight));
+                if (diagonal) {
+                    for (let i = 0; i < rows.length; i++) 
+                        for (let j = 0; j < rows.length; j++) 
+                            tiles.push([zoomLevel, rows[j], rows[i]]);
+                } else {
 
-                    for (let i = 0; i < rows.length; i++) {
-                        for (let j = 0; j < cols.length; j++) {
-                            if (mirrorTiles) {
-                                if (rows[i] >= cols[j]) {
-                                    // if we're in the upper triangular part of the matrix, then we need to load
-                                    // a mirrored tile
-                                    let newTile = [zoomLevel, cols[j], rows[i]];
-                                    newTile.mirrored = true;
-                                    tiles.push(newTile); 
+                    if (! oneDimensional ) {
+                        let cols = d3.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight),
+                                Math.ceil(((zoom.y().domain()[1] - minY) - epsilon) / tileHeight));
+
+                        for (let i = 0; i < rows.length; i++) {
+                            for (let j = 0; j < cols.length; j++) {
+                                if (mirrorTiles) {
+                                    if (rows[i] >= cols[j]) {
+                                        // if we're in the upper triangular part of the matrix, then we need to load
+                                        // a mirrored tile
+                                        let newTile = [zoomLevel, cols[j], rows[i]];
+                                        newTile.mirrored = true;
+                                        tiles.push(newTile); 
+                                    } else {
+                                        // otherwise, load an original tile
+                                        let newTile = [zoomLevel, rows[i], cols[j]];
+                                        newTile.mirrored = false;
+                                        tiles.push(newTile); 
+
+                                    }
+
+                                    if (rows[i] == cols[j]) {
+                                        // on the diagonal, load original tiles
+                                        let newTile = [zoomLevel, rows[i], cols[j]];
+                                        newTile.mirrored = false;
+                                        tiles.push(newTile);
+                                    }
+
                                 } else {
-                                    // otherwise, load an original tile
                                     let newTile = [zoomLevel, rows[i], cols[j]];
                                     newTile.mirrored = false;
-                                    tiles.push(newTile); 
 
+                                    tiles.push(newTile)
                                 }
-
-                                if (rows[i] == cols[j]) {
-                                    // on the diagonal, load original tiles
-                                    let newTile = [zoomLevel, rows[i], cols[j]];
-                                    newTile.mirrored = false;
-                                    tiles.push(newTile);
-                                }
-
-                            } else {
-                                let newTile = [zoomLevel, rows[i], cols[j]];
-                                newTile.mirrored = false;
-
-                                tiles.push(newTile)
                             }
                         }
+                    } else {
+                        rows.forEach((r) => { tiles.push([zoomLevel, r]);});
                     }
-                } else {
-                    rows.forEach((r) => { tiles.push([zoomLevel, r]);});
                 }
 
                 dispatch.draw();
+                //console.log('tiles:', tiles);
 
                 refreshTiles(tiles);
             }
@@ -547,6 +556,12 @@ export function GenericTiledArea() {
     chart.mirrorTiles = function(_) {
         if (!arguments) return mirrorTiles;
         else mirrorTiles = _;
+        return chart;
+    }
+
+    chart.diagonal = function(_) {
+        if (!arguments) return diagonal;
+        else diagonal = _;
         return chart;
     }
 

@@ -3,7 +3,7 @@ import PIXI from 'pixi.js';
 import slugid from 'slugid';
 import d3 from 'd3';
 
-export function DiagonalHeatmapRectangleTrack() {
+export function TopDiagonalHeatmapRectangleTrack() {
     let width = 200;
     let height = 15;
     let resizeDispatch = null;
@@ -111,25 +111,22 @@ export function DiagonalHeatmapRectangleTrack() {
         let spriteWidth = tile.xOrigScale(tileEndX) - tile.xOrigScale(tileX) ;
         let spriteHeight = tile.yOrigScale(tileEndY) - tile.yOrigScale(tileY)
 
-            sprite.width = tile.xOrigScale(tileEndX) - tile.xOrigScale(tileX)
-            sprite.height = tile.yOrigScale(tileEndY) - tile.yOrigScale(tileY)
+            // this is a mirrored tile that represents the other half of a 
+            // triangular matrix
+            sprite.x = tile.xOrigScale(tileX);
+            sprite.y = tile.yOrigScale(tileY);
 
-            if (tile.mirrored) {
-                // this is a mirrored tile that represents the other half of a 
-                // triangular matrix
-                sprite.x = tile.xOrigScale(tileY);
-                sprite.y = tile.yOrigScale(tileX);
+            /*
+            console.log('tilePos:', tile.tilePos, 'sprite.x:', sprite.x, sprite.y);
 
-                sprite.pivot = [tile.xOrigScale.range()[1] / 2, tile.yOrigScale.range()[1] / 2];
-                sprite.rotation = -Math.PI / 2;
-                sprite.scale.x *= -1;
+            sprite.pivot = [tile.xOrigScale.range()[1] / 2, tile.yOrigScale.range()[1] / 2];
+            //sprite.pivot = [0,0];
+            sprite.rotation = - 3 * Math.PI / 4;
+            //sprite.scale.x *= -1;
+            */
 
-                sprite.width = spriteHeight;
-                sprite.height = spriteWidth;
-            } else {
-                sprite.x = tile.xOrigScale(tileX);
-                sprite.y = tile.yOrigScale(tileY);
-            }
+            sprite.width = spriteHeight;
+            sprite.height = spriteWidth;
     }
 
     let chart = function(selection) {
@@ -247,7 +244,21 @@ export function DiagonalHeatmapRectangleTrack() {
                         if (shownTileId in d.tileGraphics) {
                             console.log("LOADING duplicate tile");
                         }
+
+
+                        /*
+                        newGraphics.pivot = [tile.xOrigScale.range()[1]/2, 
+                                             tile.yOrigScale.range()[1]/2]
+                                             */
+                        //newGraphics.anchor = [0.5, 0.5];
+                        console.log('pivot:', newGraphics.pivot, 'position:', newGraphics.position)
+
+                        newGraphics.rotation = -3 * Math.PI / 4;
+                        newGraphics.scale.y = 1 / Math.sqrt(2);
+                        newGraphics.scale.x = -1 / Math.sqrt(2);
+                        newGraphics.position.y = d.height; 
                         d.tileGraphics[shownTileId] = newGraphics;
+
 
                         d.pMain.addChild(newGraphics);
 
@@ -326,7 +337,7 @@ export function DiagonalHeatmapRectangleTrack() {
             function zoomChanged(translate, scale) {
 
                 d.pMain.position.x =  translate[0];
-                d.pMain.position.y = translate[1];
+                d.pMain.position.y = d.height * (1 - scale)//#translate[1];
                 d.pMain.scale.x = scale;
                 d.pMain.scale.y = scale;
             }
