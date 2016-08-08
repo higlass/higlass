@@ -7,7 +7,7 @@
   ],
   "description": "Massive matrix viewer",
   "main": [
-    "dist/scripts/hi z.js"
+    "dist/scripts/hi_z.js"
   ],
   "moduleType": "es6",
   "keywords": [ ],
@@ -21,7 +21,8 @@
   ],
   "dependencies": {
     "d3": "~3.5.13",
-    "jquery": "~2.2.0"
-  },
-  "version": "0.8.1"
+    "jquery": "~2.2.0",
+    "font-awesome": "fontawesome#^4.6.3"
+  }
+>>>>>>> 87e5b25f969dfa5c4d0996f8553a2c86b78c66c7
 }
