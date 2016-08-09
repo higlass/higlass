@@ -1,0 +1,26 @@
+{
+    "ecmaVersion": 6,
+    "libs": [
+        "d3",
+        "jquery",
+    ],
+    "loadEagerly": [
+        "app/scripts/*.js"
+    ],
+    "dontLoad": [
+    ],
+    "plugins": {
+        "complete_strings": {},
+        "node": {},
+        "angular": {},
+        "requirejs": {
+            "baseURL": "./",
+            "paths": {}
+        },
+        "modules": {},
+        "es_modules": {},
+        "doc_comment": {
+            "fullDocs": true
+        }
+    }
+}
