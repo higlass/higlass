@@ -24,18 +24,21 @@ export class MultiTrackContainer extends React.Component {
         this.initialTrackHeight = 30;
         this.initialTrackWidth = 300;
 
-        let width = 2500;
+        let width = 600;
         let height = 600;
 
         let tracks = [
-                 //{source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 100},
+                 {source: this.awsDomain + '/hg19.1/mm9.NCAPH2.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 100},
+                 {source: this.awsDomain + '/hg19.1/mm9.UNTR.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 100},
+                 {source: this.awsDomain + '/hg19.1/mm9.TAM.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 100},
                  //{source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'heatmap', height: 200},
                  {source: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt', uid: slugid.nice(), type: 'top-chromosome-axis', height: 35}, 
-                 {source: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt', uid: slugid.nice(), type: 'left-chromosome-axis', width: 35},
+                 //{source: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt', uid: slugid.nice(), type: 'left-chromosome-axis', width: 35},
 
                  //{source: this.awsDomain + '/hg19/refgene-tiles-plus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
                  //{source: this.awsDomain + '/hg19/refgene-tiles-minus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
+                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
+                 /*
                  {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
                  {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
                  {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
@@ -51,6 +54,7 @@ export class MultiTrackContainer extends React.Component {
                  {source: this.awsDomain + '/hg19.1/E044-H3K27me3.fc.signal.bigwig.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
                  {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'left-bar', height: 20, width: 20},
                  //{source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'heatmap', height: height},
+                 */
 
                  /*
                  {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
@@ -565,7 +569,9 @@ export class MultiTrackContainer extends React.Component {
                                                  uid={track.uid}
                                                  opacity={this.trackOpacity(track)}
                                                  className={'track ' + this.trackDimension(track)}
-                                    >Hi</DraggableDiv>);
+                                    >
+                                    
+                                    </DraggableDiv>);
 
                         }.bind(this)) 
                 }

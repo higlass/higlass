@@ -96,6 +96,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
         let totalWidth = tile.xRange[1] - tile.xRange[0];
         let totalHeight = tile.xRange[1] - tile.xRange[0];
 
+
         let minX = tile.xRange[0];
         let minY = tile.yRange[0];
 
@@ -131,6 +132,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
 
     let chart = function(selection) {
         selection.each(function(d) {
+            let currentTranslate = [0,0], currentScale = 1;
             inD += 1;
 
             if (!('resizeDispatch' in d)) {
@@ -172,6 +174,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
                 d.pMask = pMask;
 
                 pMain.mask = pMask;
+                d.pMain.position.y = d.top + d.height * (1 - currentScale);
             }
 
             if (!('rendering' in d)) {
@@ -249,7 +252,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
                         newGraphics.scale.y = 1 / Math.sqrt(2);
                         newGraphics.scale.x = -1 / Math.sqrt(2);
                         newGraphics.rotation = -3 * Math.PI / 4;
-                        newGraphics.position.y = d.height; 
+                        newGraphics.position.y = d.height;
                         d.tileGraphics[shownTileId] = newGraphics;
 
 
@@ -313,7 +316,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
 
             function sizeChanged() {
                 d.pMask.position.x = d.left;
-                d.pMask.position.y = d.top;
+                d.pMask.position.y = d.top + d.height * (1 - currentScale);
 
                 d.pMask.scale.x = d.width;
                 d.pMask.scale.y = d.height;
@@ -328,9 +331,11 @@ export function TopDiagonalHeatmapRectangleTrack() {
             }
 
             function zoomChanged(translate, scale) {
+                currentTranslate = translate;
+                currentScale = scale;
 
                 d.pMain.position.x =  translate[0];
-                d.pMain.position.y = d.height * (1 - scale)//#translate[1];
+                d.pMain.position.y = d.top + d.height * (1 - scale)//#translate[1];
                 d.pMain.scale.x = scale;
                 d.pMain.scale.y = scale;
             }
