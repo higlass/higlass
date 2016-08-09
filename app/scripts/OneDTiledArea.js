@@ -13,7 +13,7 @@ class OneDTiledArea {
         d3.json(this.baseUrl + '/tileset_info', function(error, tile_info) {
             this.tileset_info = tile_info;
 
-            this.xScale.domain([tile_info.min_pos[0], tile_info.max_pos[0]);
+            this.xScale.domain([tile_info.min_pos[0], tile_info.max_pos[0]]);
         });
     }
 
@@ -22,7 +22,7 @@ class OneDTiledArea {
         // the zoom level changed, so we have to recalculate which tiles are visible
         this.zoomedXScale.domain(this.xScale.range()
                 .map(function(x) { return (x - translate[0]) / scale })
-                .map(xScale.invert)
+                .map(xScale.invert));
                                     
         let zoomScale = Math.max((this.tileset_info.min_pos[0] - this.tileset_info.max_pos[0]) / 
                                  (zoomedXScale.domain()[1] - zoomedXScale.domain()[0]), 1);

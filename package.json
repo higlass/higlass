@@ -70,9 +70,9 @@
     }
   },
   "dependencies": {
+    "box-intersect": "^1.0.1",
     "d3": "~3.5.16",
     "pixi.js": "^3.0.11",
-    "box-intersect": "^1.0.1",
     "yeoman-generator": "^0.22.5"
   }
 }

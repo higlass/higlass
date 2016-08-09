@@ -2,6 +2,7 @@ import {heatedObjectMap} from './colormaps.js';
 import PIXI from 'pixi.js';
 import slugid from 'slugid';
 import d3 from 'd3';
+import {workerProcess2DTile} from './worker.js';
 
 export function TopDiagonalHeatmapRectangleTrack() {
     let width = 200;
@@ -20,6 +21,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
     let transferFunction = (count) => count > 0 ? Math.log2(1 + Math.log2(1 + count)) : 0;
     let valueScale = d3.scale.linear()
                     .range([255,0]);
+    let threadPool = null;
 
     let tileDataLoaded = function() {};
     let worker = new Worker('scripts/worker.js');
@@ -280,6 +282,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
                         let workerObj = {'shownTileId': createShownTileId(tiles[i].tileId),
                                                       'tile': { 'data': tiles[i].data.buffer.slice(0),
                                                       'mirrored': tiles[i].mirrored,
+                                                      'uid': d.uid + '.thread',
                                                       'type': tiles[i].type,
                                                       'dataLength': tiles[i].data.length,
                                                       'tileId': tiles[i].tileId,
@@ -292,10 +295,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
                                                       'yOrigDomain': tiles[i].yOrigScale.domain(),
                                                       'yOrigRange': tiles[i].yOrigScale.range() },
                             minVisibleValue: minVisibleValue, maxVisibleValue: maxVisibleValue}
-
-
                         worker.postMessage(workerObj, [workerObj.tile.data]);
-
                     } else {
 
                     }
@@ -395,6 +395,12 @@ export function TopDiagonalHeatmapRectangleTrack() {
     chart.dataDomain = function(_) {
         if (!arguments.length) return dataDomain;
         else dataDomain = _;
+        return chart;
+    }
+
+    chart.threadPool = function(_) {
+        if (!arguments.length) return threadPool;
+        else threadPool = _;
         return chart;
     }
 

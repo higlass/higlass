@@ -15,6 +15,7 @@ import {AddTrackDiv} from './AddTrackDiv.js'
 import {TopGeneLabelsTrack} from './TopGeneLabelsTrack.js'
 import {TopChromosomeAxis} from './TopChromosomeAxis.js'
 import {LeftChromosomeAxis} from './LeftChromosomeAxis.js'
+import {Pool} from 'threads';
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
@@ -135,6 +136,7 @@ export class MultiTrackContainer extends React.Component {
             .height(this.state.height)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch)
+
 
         this.horizontalDiagonalTiledArea = GenericTiledArea()
             .tileType('div')
@@ -331,11 +333,14 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
 
+        let threadPool = new Pool();
+        console.log('threadPool:', threadPool);
         let diagonalHeatmapTrack = TopDiagonalHeatmapRectangleTrack()
             .xScale(this.xScale.copy())
             .yScale(this.yScale.copy())
             .width(this.state.width)
             .height(this.state.height)
+            .threadPool(threadPool)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
