@@ -180,6 +180,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
                 minVisibleValue = Math.min( ...tiles.map((x) => x.valueRange[0]));
                 maxVisibleValue = Math.max( ...tiles.map((x) => x.valueRange[1]));
 
+
                 let visibleTiles = {};
 
                 function createShownTileId(tileId) {
@@ -287,12 +288,13 @@ export function TopDiagonalHeatmapRectangleTrack() {
 
             let localResizeDispatch = d.resizeDispatch;
 
-            let slugId = d.uid + '.wiggle';
+            let slugId = d.uid + '.top_diagonal';
             //let slugId = slugid.nice();
             localResizeDispatch.on('resize.' + slugId, sizeChanged);
             localResizeDispatch.on('close.' + slugId, closeClicked);
 
             let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
+            console.log('localZoomDispatch');
             localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
             function sizeChanged() {
@@ -312,6 +314,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
             }
 
             function zoomChanged(translate, scale) {
+                console.log('translating:', translate, 'scale:', scale);
                 currentTranslate = translate;
                 currentScale = scale;
 
@@ -322,6 +325,12 @@ export function TopDiagonalHeatmapRectangleTrack() {
             }
 
             sizeChanged();
+            if (d.translate != null && d.scale != null) {
+                // change the zoom and scale before redrawing new elements
+                // helps to avoid flickering
+                console.log('d.translate', d.translate, 'd.scale', d.scale);
+                zoomChanged(d.translate, d.scale);
+            }
         });
     }
 

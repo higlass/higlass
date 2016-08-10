@@ -95,6 +95,7 @@ export function TopChromosomeAxis() {
 
                 function zoomChanged(translate, scale) {
                     // something changed the zoom.
+                    console.log('chromosome axis zc', translate, scale);
                     zoom.translate(translate);
                     zoom.scale(scale);
 

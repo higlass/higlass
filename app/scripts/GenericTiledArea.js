@@ -145,7 +145,8 @@ export function GenericTiledArea() {
                 // only redraw if the tiles have changed
                 if (gTilesEnter.size() > 0 || gTilesExit.size() > 0) {
                     let t2 = new Date().getTime();
-                    tilesChanged.bind(element)(d);
+                    console.log('tilesChanged:');
+                    tilesChanged(d, element);
                     draw();
                 }
             }

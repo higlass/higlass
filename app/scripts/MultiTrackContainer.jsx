@@ -31,9 +31,11 @@ export class MultiTrackContainer extends React.Component {
         this.displayConfig = { chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromInfo.txt'}
 
         this.displayConfig.tracks = [
-                 //{source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'heatmap', height: 200},
-                 //{source: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt', uid: slugid.nice(), type: 'left-chromosome-axis', width: 35},
+                 {source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 200},
+                 {source: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt', uid: slugid.nice(), type: 'top-chromosome-axis', width: 35},
 
+                 //{source: this.awsDomain + '/hg19/refgene-tiles-plus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
+                 //{source: this.awsDomain + '/hg19/refgene-tiles-minus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
                  /*
                  {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
                  {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
@@ -112,6 +114,9 @@ export class MultiTrackContainer extends React.Component {
 
         this.xScale = d3.scale.linear().domain(this.props.domain).range([0, this.state.width]);
         this.yScale = d3.scale.linear().domain(this.props.domain).range([0, this.state.height]);
+
+        this.xOrigScale = this.xScale.copy();
+        this.yOrigScale = this.yScale.copy();
 
         this.zoom = d3.behavior.zoom()
                       .on('zoom', this.handleZoom.bind(this))
@@ -252,10 +257,12 @@ export class MultiTrackContainer extends React.Component {
     }
 
     handleZoom() {
+        console.log('handling zoom');
         this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
     }
 
     handleZoomEnd() {
+        console.log('handling zoomend');
         this.zoomDispatch.zoomend(this.zoom.translate(), this.zoom.scale());
     }
 
@@ -349,39 +356,51 @@ export class MultiTrackContainer extends React.Component {
         this.animate();
         d3.select(this.bigDiv).call(this.zoom);
 
-        this.horizontalDiagonalTiledArea.tilesChanged(function(d) {
+        this.horizontalDiagonalTiledArea.tilesChanged(function(d, element) {
+            d.translate = this.zoom.translate();
+            d.scale = this.zoom.scale();
+
             if (d.type == 'top-diagonal-heatmap')
-                d3.select(this).call(diagonalHeatmapTrack);
-        });
+                d3.select(element).call(diagonalHeatmapTrack);
+        }.bind(this));
 
-        this.horizontalTiledArea.tilesChanged(function(d) {
+        this.horizontalTiledArea.tilesChanged(function(d, element) {
+                d.translate = this.zoom.translate();
+                d.scale = this.zoom.scale();
+
                 if (d.type == 'top-bar')
-                    d3.select(this).call(wigglePixiTrack);
+                    d3.select(element).call(wigglePixiTrack);
                 if (d.type == 'top-line')
-                    d3.select(this).call(wigglePixiLine);
+                    d3.select(element).call(wigglePixiLine);
                 if (d.type == 'top-point')
-                    d3.select(this).call(wigglePixiPoint);
+                    d3.select(element).call(wigglePixiPoint);
                 if (d.type == 'top-heatmap')
-                    d3.select(this).call(wigglePixiHeatmap);
+                    d3.select(element).call(wigglePixiHeatmap);
                 if (d.type == 'top-gene-labels')
-                    d3.select(this).call(topGeneLabels);
+                    d3.select(element).call(topGeneLabels);
                 if (d.type == 'top-chromosome-axis')
-                    d3.select(this).call(topChromosomeAxis);
-            });
+                    d3.select(element).call(topChromosomeAxis);
+            }.bind(this));
 
-        this.verticalTiledArea.tilesChanged(function(d) {
+        this.verticalTiledArea.tilesChanged(function(d, element) {
+                d.translate = this.zoom.translate();
+                d.scale = this.zoom.scale();
+
                 if (d.type == 'left-bar')
-                    d3.select(this).call(leftWigglePixiTrack);
+                    d3.select(element).call(leftWigglePixiTrack);
                 if (d.type == 'left-chromosome-axis')
-                    d3.select(this).call(leftChromosomeAxis);
-            });
+                    d3.select(element).call(leftChromosomeAxis);
+            }.bind(this));
 
 
 
-        this.twoDTiledArea.tilesChanged(function(d) {
+        this.twoDTiledArea.tilesChanged(function(d, element) {
+            d.translate = this.zoom.translate();
+            d.scale = this.zoom.scale();
+
             if (d.type == 'heatmap')
-                d3.select(this).call(heatmapRectangleTrack);
-        });
+                d3.select(element).call(heatmapRectangleTrack);
+        }.bind(this));
 
         this.updateTracks();
         /*
@@ -522,8 +541,49 @@ export class MultiTrackContainer extends React.Component {
             return 0.1;
     }
 
-    zoomToGenomePosition() {
+    zoomTo(scale, range) {
+        let value = range[0];
+        let zoomScale = (scale.domain()[1] - scale.domain()[0]) / (range[1] - range[0])
 
+        return {'scale': zoomScale, 'translate': scale.range()[0] - scale(value * zoomScale)}
+    }
+
+    zoomToGenomePosition(range1, range2) {
+        let translate = [0,0], scale=1;
+        if (range1 != null && range2 != null) {
+
+            xZoomParams = this.zoomTo(this.xOrigScale, range1);
+            yZoomParams = this.zoomTo(this.yOrigScale, range2);
+
+            let translate = [xZoomParams.translate, yZoomParams.translate];
+            let scale = xZoomParams.scale;
+
+        } else if (range1 != null) {
+            // adjust the x-axis
+            console.log('range1:', range1);
+
+            var xZoomParams = this.zoomTo(this.xOrigScale, 
+                                          range1);
+            var yZoomParams = this.zoomTo(this.yOrigScale,
+                                          range1);
+            // here we have to find out which range is wider and adjust
+            // the other one to match
+
+            // assuming that xOrigScale and yOrigScale are the same, then
+            // xZoomParams.scale should work here
+            // otherwise we could want to choose the larger zoom value of
+            translate = [xZoomParams.translate,yZoomParams.translate]
+            scale = xZoomParams.scale;
+
+        } else if (range2 != null) {
+            //adjust the y-axis
+            console.log('range2:', range2);
+        }
+
+        console.log('translate:', translate, 'scale:', scale);
+        this.zoom.translate(translate);
+        this.zoom.scale(scale);
+        this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
     }
 
     render() {
@@ -559,7 +619,7 @@ export class MultiTrackContainer extends React.Component {
                 <div>
             <div style={searchDivStyle}>
                 <GenomePositionSearchBox 
-                    zoomToGenomePositionHandler={this.zoomToGenomePosition}
+                    zoomToGenomePositionHandler={this.zoomToGenomePosition.bind(this)}
                     chromInfoPath={this.displayConfig.chromInfoPath}
                     />
             </div>

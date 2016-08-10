@@ -1,10 +1,7 @@
 export class SearchField {
 
-    constructor(chromInfo, xOrigScale, yOrigScale, zoomDispatch) {
+    constructor(chromInfo) {
         this.chromInfo = chromInfo;
-        this.xOrigScale = xOrigScale;
-        this.yOrigScale = yOrigScale;
-        this.zoomDispatch = zoomDispatch;
     }
 
     parsePosition(positionText) {
@@ -98,55 +95,9 @@ export class SearchField {
 
         if (range1 != null && range2 != null) {
             [range1, range2] = this.matchRangesToLarger(range1, range2);
-
-            console.log('range1:', range1, 'range2:', range2);
-
-            xZoomParams = this.zoomTo(this.xOrigScale, range1);
-            yZoomParams = this.zoomTo(this.yOrigScale, range2);
-
-            let translate = [xZoomParams.translate, yZoomParams.translate];
-            let scale = xZoomParams.scale;
-
-            this.zoomDispatch.zoom(translate, scale);
-
-            return [translate, scale];
-        } else if (range1 != null) {
-            // adjust the x-axis
-            console.log('range1:', range1);
-
-            var xZoomParams = this.zoomTo(this.xOrigScale, 
-                                          range1);
-            var yZoomParams = this.zoomTo(this.yOrigScale,
-                                          range1);
-            // here we have to find out which range is wider and adjust
-            // the other one to match
-            console.log('xZoomParams:', xZoomParams);
-            console.log('yZoomParams:', yZoomParams);
-
-            // assuming that xOrigScale and yOrigScale are the same, then
-            // xZoomParams.scale should work here
-            // otherwise we could want to choose the larger zoom value of
-            let translate = [xZoomParams.translate,yZoomParams.translate]
-            let scale = xZoomParams.scale;
-
-            this.zoomDispatch.zoom(translate, scale);
-            return [translate, scale];
-        } else if (range2 != null) {
-            //adjust the y-axis
-            console.log('range2:', range2);
         }
 
-
-        // move the zoom to the appropriate ranges
+        return [range1, range2];
     }
 
-    zoomTo(scale, range) {
-        let value = range[0];
-        console.log('value:', value)
-        let zoomScale = (scale.domain()[1] - scale.domain()[0]) / (range[1] - range[0])
-
-        console.log('scale.domain():', scale.domain())
-
-        return {'scale': zoomScale, 'translate': scale.range()[0] - scale(value * zoomScale)}
-    }
 }
