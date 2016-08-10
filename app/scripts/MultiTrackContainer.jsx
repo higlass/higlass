@@ -15,6 +15,7 @@ import {AddTrackDiv} from './AddTrackDiv.js'
 import {TopGeneLabelsTrack} from './TopGeneLabelsTrack.js'
 import {TopChromosomeAxis} from './TopChromosomeAxis.js'
 import {LeftChromosomeAxis} from './LeftChromosomeAxis.js'
+import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx'
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
@@ -27,18 +28,19 @@ export class MultiTrackContainer extends React.Component {
         let width = 600;
         let height = 600;
 
-        let tracks = [
+        this.displayConfig = { chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromInfo.txt'}
+
+        this.displayConfig.tracks = [
+                 //{source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'heatmap', height: 200},
+                 //{source: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt', uid: slugid.nice(), type: 'left-chromosome-axis', width: 35},
+
                  {source: this.awsDomain + '/hg19.1/mm9.NCAPH2.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 100},
                  {source: this.awsDomain + '/hg19.1/mm9.UNTR.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 100},
                  {source: this.awsDomain + '/hg19.1/mm9.TAM.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 100},
                  {source: this.awsDomain + '/hg19.1/mm9.NIPBL.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 100},
-                 //{source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'heatmap', height: 200},
-                 {source: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt', uid: slugid.nice(), type: 'top-chromosome-axis', height: 35}, 
-                 //{source: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt', uid: slugid.nice(), type: 'left-chromosome-axis', width: 35},
-
-                 //{source: this.awsDomain + '/hg19/refgene-tiles-plus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
-                 //{source: this.awsDomain + '/hg19/refgene-tiles-minus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
+                 {source: this.awsDomain + '/hg19.1/mm9.refgene-tiles-plus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
+                 {source: this.awsDomain + '/hg19.1/mm9.refgene-tiles-minus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
+                 {source: this.awsDomain + '/hg19.1/mm9.WT_8097_ChIPK4me3__VS__WT_8097_Input.fc.signal.bw.genome.sorted.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
                  /*
                  {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
                  {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
@@ -81,6 +83,7 @@ export class MultiTrackContainer extends React.Component {
                  //{source: this.awsDomain + '/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice()},
         ];
 
+        let tracks = this.displayConfig.tracks;
         let currentTop = 0;
         for (let i = 0; i < tracks.length; i++) {
             let trackHeight = this.initialTrackHeight;
@@ -526,7 +529,12 @@ export class MultiTrackContainer extends React.Component {
             return 0.1;
     }
 
+    zoomToGenomePosition() {
+
+    }
+
     render() {
+        let searchDivStyle = { width: this.state.width };
         let divStyle = { height: this.state.height, 
                          width: this.state.width,
                          position: 'relative' }
@@ -555,6 +563,13 @@ export class MultiTrackContainer extends React.Component {
                 </div>
                 */
         return(
+                <div>
+            <div style={searchDivStyle}>
+                <GenomePositionSearchBox 
+                    zoomToGenomePositionHandler={this.zoomToGenomePosition}
+                    chromInfoPath={this.displayConfig.chromInfoPath}
+                    />
+            </div>
             <div style={divStyle} ref={(c) => this.bigDiv = c} >
                 <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
                 { trackList.map(function(track, i) 
@@ -578,6 +593,7 @@ export class MultiTrackContainer extends React.Component {
                         }.bind(this)) 
                 }
             </div>
+                </div>
         );
     }
 }

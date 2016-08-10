@@ -157,6 +157,7 @@ export function GenericTiledArea() {
 
             function refreshTiles(currentTiles) {
                 // be shown and add those that should be shown
+
                 currentTiles.forEach((tile) => {
                     if (!isTileLoaded(tile) && !isTileLoading(tile)) {
                         // if the tile isn't loaded, load it

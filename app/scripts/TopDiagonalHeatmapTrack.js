@@ -43,6 +43,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
 
     function tileDataToCanvas(pixData, minVisibleValue, maxVisibleValue) {
         let canvas = document.createElement('canvas');
+        let t1 =  new Date().getTime();
 
         canvas.width = 256;
         canvas.height = 256;
@@ -61,32 +62,6 @@ export function TopDiagonalHeatmapRectangleTrack() {
 
     function countTransform(count) {
         return Math.sqrt(Math.sqrt(count + 1));
-    }
-
-    function setPix(size, data, minVisibleValue, maxVisibleValue) {
-        valueScale.domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
-        let pixData = new Uint8ClampedArray(size * 4);
-
-        try {
-            for (let i = 0; i < data.length; i++) {
-                let d = data[i];
-                let ct = countTransform(d);
-
-                let rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
-                let rgb = heatedObjectMap[rgbIdx];
-
-
-                pixData[i*4] = rgb[0];
-                pixData[i*4+1] = rgb[1];
-                pixData[i*4+2] = rgb[2];
-                pixData[i*4+3] = rgb[3];
-            };
-        } catch (err) {
-            console.log('ERROR:', err);
-            return pixData;
-        }
-
-        return pixData;
     }
 
     function allIn(set1, set2) {
@@ -272,7 +247,6 @@ export function TopDiagonalHeatmapRectangleTrack() {
                     }
                 }
 
-                let t1 = new Date().getTime();
                 for (let i = 0; i < tiles.length; i++) {
 
                     // check if we already have graphics for these tiles

@@ -27,7 +27,6 @@ export class WorkerPool {
             currentWorker.postMessage(workPacket[0],
                                       workPacket[1]);
             currentWorker.onmessage = (e) => {
-                console.log('got message:', e);
                 this.freeWorkers.push(currentWorker);
                 workPacket[2](e);
                 this.startWork();
