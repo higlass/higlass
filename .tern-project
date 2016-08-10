@@ -2,7 +2,7 @@
     "ecmaVersion": 6,
     "libs": [
         "d3",
-        "jquery",
+        "jquery"
     ],
     "loadEagerly": [
         "app/scripts/*.js"

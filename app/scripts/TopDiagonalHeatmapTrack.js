@@ -3,6 +3,7 @@ import PIXI from 'pixi.js';
 import slugid from 'slugid';
 import d3 from 'd3';
 import {workerProcess2DTile} from './worker.js';
+import {WorkerPool} from './WorkerPool.js';
 
 export function TopDiagonalHeatmapRectangleTrack() {
     let width = 200;
@@ -23,7 +24,9 @@ export function TopDiagonalHeatmapRectangleTrack() {
                     .range([255,0]);
     let threadPool = null;
 
-    let tileDataLoaded = function() {};
+    let workerPool = new WorkerPool('scripts/worker.js', 2);
+
+    /*
     let worker = new Worker('scripts/worker.js');
     worker.postMessage = worker.webkitPostMessage || worker.postMessage;
 
@@ -31,6 +34,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
             //should only ever receive a message in the event that workerSetPix completed;
             tileDataLoaded(e.data.shownTileId, e.data.tile, e.data.pixData)
         }, false);
+        */
 
     function tileId(tile) {
         // uniquely identify the tile with a string
@@ -222,7 +226,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
 
                 }
 
-                tileDataLoaded = function(shownTileId, tile, pixData) {
+                function tileDataLoaded(shownTileId, tile, pixData) {
                     let canvas = tileDataToCanvas(pixData,  minVisibleValue, maxVisibleValue);
 
                     delete d.rendering[shownTileId];
@@ -295,7 +299,10 @@ export function TopDiagonalHeatmapRectangleTrack() {
                                                       'yOrigDomain': tiles[i].yOrigScale.domain(),
                                                       'yOrigRange': tiles[i].yOrigScale.range() },
                             minVisibleValue: minVisibleValue, maxVisibleValue: maxVisibleValue}
-                        worker.postMessage(workerObj, [workerObj.tile.data]);
+                        //worker.postMessage(workerObj, [workerObj.tile.data]);
+                        workerPool.submitMessage(workerObj, [workerObj.tile.data], function(e) {
+                            tileDataLoaded(e.data.shownTileId, e.data.tile, e.data.pixData);
+                        })
                     } else {
 
                     }

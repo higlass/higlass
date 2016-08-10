@@ -15,7 +15,6 @@ import {AddTrackDiv} from './AddTrackDiv.js'
 import {TopGeneLabelsTrack} from './TopGeneLabelsTrack.js'
 import {TopChromosomeAxis} from './TopChromosomeAxis.js'
 import {LeftChromosomeAxis} from './LeftChromosomeAxis.js'
-import {Pool} from 'threads';
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
@@ -32,6 +31,7 @@ export class MultiTrackContainer extends React.Component {
                  {source: this.awsDomain + '/hg19.1/mm9.NCAPH2.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 100},
                  {source: this.awsDomain + '/hg19.1/mm9.UNTR.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 100},
                  {source: this.awsDomain + '/hg19.1/mm9.TAM.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 100},
+                 {source: this.awsDomain + '/hg19.1/mm9.NIPBL.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 100},
                  //{source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'heatmap', height: 200},
                  {source: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt', uid: slugid.nice(), type: 'top-chromosome-axis', height: 35}, 
                  //{source: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt', uid: slugid.nice(), type: 'left-chromosome-axis', width: 35},
@@ -333,14 +333,11 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
 
-        let threadPool = new Pool();
-        console.log('threadPool:', threadPool);
         let diagonalHeatmapTrack = TopDiagonalHeatmapRectangleTrack()
             .xScale(this.xScale.copy())
             .yScale(this.yScale.copy())
             .width(this.state.width)
             .height(this.state.height)
-            .threadPool(threadPool)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
