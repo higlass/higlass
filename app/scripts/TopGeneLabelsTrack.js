@@ -258,7 +258,6 @@ export function TopGeneLabelsTrack() {
             }
 
             function zoomChanged(translate, scale) {
-                console.log('geneTrack zoom changed:', translate, scale);
                 sizeChanged();
 
                 d.translate = translate;

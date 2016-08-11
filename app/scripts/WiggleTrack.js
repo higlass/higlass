@@ -8,7 +8,6 @@ export function WiggleTileLayout(tile_info) {
     let resolution = tile_info.bins_per_dimension;
     let minVisibleValue = 0;
     let maxVisibleValue =  0;
-    console.log('wiggle tile_info:', tile_info)
 
     function loadTileData(tile_value) {
         if ('dense' in tile_value)
@@ -40,8 +39,6 @@ export function WiggleTileLayout(tile_info) {
 
             let gDataPoints = d3.select(this).selectAll('.data-g')
                 .data(tileData)
-
-                //console.log('tile.data:', tile.data);
 
                 gDataPoints.enter()
                 .append('rect')

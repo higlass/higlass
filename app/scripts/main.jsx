@@ -13,5 +13,3 @@ ReactDOM.render(
     </div>,
         document.getElementById('circle')
     );
-
-console.log('\'Allo \'Allo!');
