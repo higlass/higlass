@@ -41,8 +41,8 @@ export class GenomePositionSearchBox extends React.Component {
                 <FormGroup bsSize='small'>
                 <InputGroup>
                 <FormControl type="text" onKeyPress={this.searchFieldKeyPress.bind(this)} ref="searchFieldText"
-                placeholder="chr2:10000000 to chr2:200000000" 
-                defaultValue="chr2:10000000 to chr2:200000000" 
+                placeholder="chr2:100000000 to chr2:200000000" 
+                defaultValue="chr2:100000000 to chr2:200000000" 
                 />
                 <InputGroup.Button>
                     <Button bsSize='small' onClick={this.buttonClick.bind(this)}>

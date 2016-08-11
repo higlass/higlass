@@ -25,17 +25,14 @@ export class MultiTrackContainer extends React.Component {
         this.initialTrackHeight = 30;
         this.initialTrackWidth = 300;
 
-        let width = 600;
-        let height = 600;
-
-        this.displayConfig = { chromInfoPath: '//s3.amazonaws.com/pkerp/data/mm9/chromInfo.txt'}
+        this.displayConfig = { chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt'}
 
         this.displayConfig.tracks = [
                  {source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 200},
-                 {source: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt', uid: slugid.nice(), type: 'top-chromosome-axis', width: 35},
+                 {source:this.displayConfig.chromInfoPath, uid: slugid.nice(), type: 'top-chromosome-axis', width: 35},
 
-                 //{source: this.awsDomain + '/hg19/refgene-tiles-plus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
-                 //{source: this.awsDomain + '/hg19/refgene-tiles-minus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
+                 {source: this.awsDomain + '/hg19/refgene-tiles-plus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
+                 {source: this.awsDomain + '/hg19/refgene-tiles-minus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
                  /*
                  {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
                  {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
@@ -104,8 +101,8 @@ export class MultiTrackContainer extends React.Component {
         });
 
         this.state =  {
-            width: width,     // should be changeable on resize
-            height: height,     // should change in response to the addition of new tracks
+            width: this.props.width,     // should be changeable on resize
+            height: this.props.height,     // should change in response to the addition of new tracks
                             // or user resize
             tracks: trackDict
         };
@@ -144,7 +141,7 @@ export class MultiTrackContainer extends React.Component {
             .oneDimensional(false)
             .diagonal(true)
             .width(this.state.width)
-            .height(this.state.height)
+            .height(this.state.width)
             .domain(this.xScale.domain())
             .zoomDispatch(this.zoomDispatch)
 
@@ -257,12 +254,10 @@ export class MultiTrackContainer extends React.Component {
     }
 
     handleZoom() {
-        console.log('handling zoom');
         this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
     }
 
     handleZoomEnd() {
-        console.log('handling zoomend');
         this.zoomDispatch.zoomend(this.zoom.translate(), this.zoom.scale());
     }
 
@@ -596,13 +591,13 @@ export class MultiTrackContainer extends React.Component {
                          position: 'absolute' }
         let canvasStyle = { top: 0,
                             left: 0,
-                            width: this.width,
+                            width: this.state.width,
                             height: this.height };
         let addTrackDivStyle = { position: 'relative'
         };
 
         let svgStyle = { height: 20,
-                         width: this.width,
+                         width: this.state.width,
         }
 
         let trackList = []

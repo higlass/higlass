@@ -5,7 +5,11 @@ import $ from 'jquery';
 
 ReactDOM.render(
     <div>
-        <MultiTrackContainer domain={[0,2500000000]} />
+        <MultiTrackContainer 
+            domain={[0,2500000000]} 
+            width={600}
+            height={400}
+        />
     </div>,
         document.getElementById('circle')
     );
