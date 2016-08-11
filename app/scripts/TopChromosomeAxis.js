@@ -20,7 +20,6 @@ export function TopChromosomeAxis() {
 
                 ChromosomeInfo(d.source, function(newChromInfo) {
                     chromInfo = newChromInfo;
-                    console.log('chromInfo:', chromInfo);
                     draw();
                 });
 
@@ -36,7 +35,7 @@ export function TopChromosomeAxis() {
 
                 svg.enter()
                 .append('svg')
-                .style('width', (d) => { console.log('width:', d.width); return d.width;}) 
+                .style('width', (d) => { return d.width;}) 
                 .style('height', (d) => {return d.height;}) 
 
                 let gAxisData = svg.selectAll('g')
@@ -95,7 +94,6 @@ export function TopChromosomeAxis() {
 
                 function zoomChanged(translate, scale) {
                     // something changed the zoom.
-                    console.log('chromosome axis zc', translate, scale);
                     zoom.translate(translate);
                     zoom.scale(scale);
 

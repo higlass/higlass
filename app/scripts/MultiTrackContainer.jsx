@@ -19,80 +19,36 @@ import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx'
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
+        console.log("mt");
         super(props);
 
         this.awsDomain = '//52.23.165.123:9872';
         this.initialTrackHeight = 30;
         this.initialTrackWidth = 300;
 
-        this.displayConfig = { chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt'}
-
-        this.displayConfig.tracks = [
-                 {source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'top-diagonal-heatmap', height: 200},
-                 {source:this.displayConfig.chromInfoPath, uid: slugid.nice(), type: 'top-chromosome-axis', width: 35},
-
-                 {source: this.awsDomain + '/hg19/refgene-tiles-plus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
-                 {source: this.awsDomain + '/hg19/refgene-tiles-minus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
-                 /*
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Elk112771IggmusSig.bigWig.genome.sorted.gz', uid: slugid.nice(), type: 'top-heatmap', height: 20},
-                 {source: this.awsDomain + '/hg19.1/E044-H3K27me3.fc.signal.bigwig.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'left-bar', height: 20, width: 20},
-                 //{source: this.awsDomain + '/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz', uid: slugid.nice(), type: 'heatmap', height: height},
-                 */
-
-                 /*
-                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
-                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-empty', height: 3},
-                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-heatmap', height: 10},
-                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'top-empty', height: 3},
-
-                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'left-bar', width: 20},
-                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz', uid: slugid.nice(), type: 'left-empty', width: 3},
-                 */
-
-                 /*
-                 {source: this.awsDomain + '/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-line', height: 20},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.5M.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
-                 {source: this.awsDomain + '/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.5M.gz', uid: slugid.nice(), type: 'left-bar', height: height, width: 20},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-point', height: 10},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-heatmap', height: 10},
-                 {source: this.awsDomain + '/hg19/refgene-tiles-minus', uid: slugid.nice(), type: 'top-gene-labels', height: 25},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'top-bar', height: 20},
-                 {source: this.awsDomain + '/tiles_test/wgEncodeCrgMapabilityAlign36mer.bw.genome.sorted.short.gz', uid: slugid.nice(), type: 'left-bar', height: height, width: 20},
-                 */
-                 //{source: this.awsDomain + '/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz', uid: slugid.nice()},
-        ];
-
-        let tracks = this.displayConfig.tracks;
+        let tracks = this.props.viewConfig.tracks;
         let currentTop = 0;
         for (let i = 0; i < tracks.length; i++) {
             let trackHeight = this.initialTrackHeight;
             let trackWidth = this.initialTrackWidth;
+            let trackId = slugid.nice();
 
             if ('height' in tracks[i])
                 trackHeight = tracks[i].height;
             if ('width' in tracks[i])
                 trackWidth = tracks[i].width;
+            if ('uid' in tracks[i])
+                trackId = tracks[i].uid;
 
             tracks[i].left = 0;
             tracks[i].top = currentTop
             tracks[i].width = trackWidth;
             tracks[i].height = trackHeight;
+            tracks[i].uid = trackId;
 
             currentTop += trackHeight;
         };
+        console.log('tracks:', tracks);
 
         let trackDict = {};
         tracks.forEach(function(track, i) {
@@ -101,16 +57,16 @@ export class MultiTrackContainer extends React.Component {
         });
 
         this.state =  {
-            width: this.props.width,     // should be changeable on resize
-            height: this.props.height,     // should change in response to the addition of new tracks
+            width: this.props.viewConfig.width,     // should be changeable on resize
+            height: this.props.viewConfig.height,     // should change in response to the addition of new tracks
                             // or user resize
             tracks: trackDict
         };
 
         this.animate = this.animate.bind(this);
 
-        this.xScale = d3.scale.linear().domain(this.props.domain).range([0, this.state.width]);
-        this.yScale = d3.scale.linear().domain(this.props.domain).range([0, this.state.height]);
+        this.xScale = d3.scale.linear().domain(this.props.viewConfig.domain).range([0, this.state.width]);
+        this.yScale = d3.scale.linear().domain(this.props.viewConfig.domain).range([0, this.state.height]);
 
         this.xOrigScale = this.xScale.copy();
         this.yOrigScale = this.yScale.copy();
@@ -586,6 +542,8 @@ export class MultiTrackContainer extends React.Component {
         let divStyle = { height: this.state.height, 
                          width: this.state.width,
                          position: 'relative' }
+        let viewStyle = this.props.viewConfig.viewStyle;
+
         let imgStyle = { right: 10,
                          bottom: 10,
                          position: 'absolute' }
@@ -611,11 +569,11 @@ export class MultiTrackContainer extends React.Component {
                 </div>
                 */
         return(
-                <div>
+                <div style={viewStyle}>
             <div style={searchDivStyle}>
                 <GenomePositionSearchBox 
                     zoomToGenomePositionHandler={this.zoomToGenomePosition.bind(this)}
-                    chromInfoPath={this.displayConfig.chromInfoPath}
+                    chromInfoPath={this.props.viewConfig.chromInfoPath}
                     />
             </div>
             <div style={divStyle} ref={(c) => this.bigDiv = c} >
