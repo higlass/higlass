@@ -304,6 +304,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
             }
 
             function zoomChanged(translate, scale) {
+                console.log('td zc',d.uid, translate, scale);
                 currentTranslate = translate;
                 currentScale = scale;
 
@@ -317,6 +318,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
             if (d.translate != null && d.scale != null) {
                 // change the zoom and scale before redrawing new elements
                 // helps to avoid flickering
+                console.log('d.translate:', d.translate);
                 zoomChanged(d.translate, d.scale);
             }
         });

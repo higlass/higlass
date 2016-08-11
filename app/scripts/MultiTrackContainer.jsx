@@ -22,6 +22,7 @@ export class MultiTrackContainer extends React.Component {
         console.log("mt");
         super(props);
 
+        this.uid = slugid.nice();
         this.awsDomain = '//52.23.165.123:9872';
         this.initialTrackHeight = 30;
         this.initialTrackWidth = 300;
@@ -76,7 +77,17 @@ export class MultiTrackContainer extends React.Component {
                       .on('zoomend', this.handleZoomEnd.bind(this))
                       .x(this.xScale);
 
-        this.zoomDispatch = d3.dispatch('zoom', 'zoomend');
+        if (typeof this.props.viewConfig.zoomDispatch == 'undefined')
+            this.zoomDispatch = d3.dispatch('zoom', 'zoomend');
+        else
+            this.zoomDispatch = this.props.viewConfig.zoomDispatch
+
+        this.zoomDispatch.on('zoom', function(translate, scale) {
+            // update our current zoom behavior whenever there's a zoom event
+            // from somewhere
+            this.zoom.translate(translate);
+            this.zoom.scale(scale);
+        }.bind(this));
 
         this.topChromosomeAxis = TopChromosomeAxis()
             .xScale(this.xScale.copy())
@@ -210,6 +221,7 @@ export class MultiTrackContainer extends React.Component {
     }
 
     handleZoom() {
+        //console.log('handling zoom', this.uid);
         this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
     }
 
