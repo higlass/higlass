@@ -245,6 +245,7 @@ export class MultiTrackContainer extends React.Component {
                                                 { view: this.canvas,
                                                   antialias: true, 
                                                   transparent: true } )
+        console.log('renderer:', this.renderer);
         this.stage = new PIXI.Container();
         this.stage.interactive = true;
         let wigglePixiTrack = WigglePixiTrack()
