@@ -19,7 +19,6 @@ import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx'
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
-        console.log("mt");
         super(props);
 
         this.uid = slugid.nice();
@@ -49,7 +48,6 @@ export class MultiTrackContainer extends React.Component {
 
             currentTop += trackHeight;
         };
-        console.log('tracks:', tracks);
 
         let trackDict = {};
         tracks.forEach(function(track, i) {
@@ -82,7 +80,7 @@ export class MultiTrackContainer extends React.Component {
         else
             this.zoomDispatch = this.props.viewConfig.zoomDispatch
 
-        this.zoomDispatch.on('zoom', function(translate, scale) {
+        this.zoomDispatch.on('zoom.' + this.uid, function(translate, scale) {
             // update our current zoom behavior whenever there's a zoom event
             // from somewhere
             this.zoom.translate(translate);
@@ -221,7 +219,6 @@ export class MultiTrackContainer extends React.Component {
     }
 
     handleZoom() {
-        //console.log('handling zoom', this.uid);
         this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
     }
 
@@ -523,7 +520,6 @@ export class MultiTrackContainer extends React.Component {
 
         } else if (range1 != null) {
             // adjust the x-axis
-            console.log('range1:', range1);
 
             var xZoomParams = this.zoomTo(this.xOrigScale, 
                                           range1);
@@ -540,10 +536,8 @@ export class MultiTrackContainer extends React.Component {
 
         } else if (range2 != null) {
             //adjust the y-axis
-            console.log('range2:', range2);
         }
 
-        console.log('translate:', translate, 'scale:', scale);
         this.zoom.translate(translate);
         this.zoom.scale(scale);
         this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());

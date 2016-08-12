@@ -59,8 +59,6 @@ export function GenericTiledArea() {
             // setup the data-agnostic parts of the chart
             var gMain = d3.select(this)
 
-            zoom.on("zoomend", zoomHere);
-
             localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
             function zoomChanged(translate, scale) {
@@ -75,10 +73,6 @@ export function GenericTiledArea() {
                 zoom.scale(scale);
 
                 zoomed();
-            }
-
-            function zoomHere() {
-                localZoomDispatch.zoom(zoom.translate(), zoom.scale());
             }
 
             function isTileLoading(tile) {
