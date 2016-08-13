@@ -150,6 +150,10 @@ export class MultiTrackContainer extends React.Component {
         this.arrangeTracks();
     }
 
+    updateDimensions() {
+
+    }
+
     arrangeTracks() {
         // arrange the tracks so that the left are neatly on the left, the top are neatly on top
         // and the center is positioned right in the center
@@ -545,10 +549,9 @@ export class MultiTrackContainer extends React.Component {
     }
 
     render() {
-        let searchDivStyle = { width: this.state.width };
-        let divStyle = { height: this.state.height, 
-                         width: this.state.width,
-                         position: 'relative' }
+        let searchDivStyle = {};
+        let divStyle = { position: 'relative' }
+
         let viewStyle = this.props.viewConfig.viewStyle;
 
         let imgStyle = { right: 10,
@@ -556,13 +559,12 @@ export class MultiTrackContainer extends React.Component {
                          position: 'absolute' }
         let canvasStyle = { top: 0,
                             left: 0,
-                            width: this.state.width,
-                            height: this.height };
+                            width: '100%'}
         let addTrackDivStyle = { position: 'relative'
         };
 
         let svgStyle = { height: 20,
-                         width: this.state.width,
+                         width: '100%'
         }
 
         let trackList = []
@@ -576,8 +578,8 @@ export class MultiTrackContainer extends React.Component {
                 </div>
                 */
         return(
-                <div style={viewStyle}>
-            <div style={searchDivStyle}>
+            <div style={viewStyle}>
+            <div>
                 <GenomePositionSearchBox 
                     zoomToGenomePositionHandler={this.zoomToGenomePosition.bind(this)}
                     chromInfoPath={this.props.viewConfig.chromInfoPath}
@@ -587,7 +589,14 @@ export class MultiTrackContainer extends React.Component {
                 <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
                 { trackList.map(function(track, i) 
                         {
-                            return (<DraggableDiv 
+                            return (
+                                <div 
+                                                 className={'track ' + this.trackDimension(track)}
+                                                 key={track.uid}
+                                                 />
+                                
+                                                 /*
+                                <DraggableDiv 
                                                  width={track.width} 
                                                  height={track.height} 
                                                  top={track.top} 
@@ -595,13 +604,13 @@ export class MultiTrackContainer extends React.Component {
                                                  sizeChanged={this.trackSizeChanged.bind(this)} 
                                                  trackClosed={this.trackClosed.bind(this)}
                                                  trackRotated={this.trackRotated.bind(this)}
-                                                 key={track.uid}
                                                  uid={track.uid}
                                                  opacity={this.trackOpacity(track)}
-                                                 className={'track ' + this.trackDimension(track)}
                                     >
                                     
-                                    </DraggableDiv>);
+                                    </DraggableDiv>
+                                    */
+                                    );
 
                         }.bind(this)) 
                 }
