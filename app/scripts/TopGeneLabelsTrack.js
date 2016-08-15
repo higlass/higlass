@@ -122,8 +122,6 @@ export function TopGeneLabelsTrack() {
                         let xStartPos = zoomedXScale(+tileData[i].txStart + genomeOffset);
                         let xEndPos = zoomedXScale(+tileData[i].txEnd + genomeOffset);
 
-                        //console.log('xStartPos:', xStartPos, 'txStart:', tileData[i].txStart, "genomeOffset", genomeOffset);
-
                         let xPos = (xEndPos + xStartPos) / 2;
 
                         //let yPos = -(d.height - yScale(tileData[i]));
@@ -191,7 +189,6 @@ export function TopGeneLabelsTrack() {
                             allTexts[i].alpha = 0; 
                         }
                     });
-                    //console.log('tile.texts:', allBoxes, allGenes);
 
                     // hide all overlapping texts
                 }

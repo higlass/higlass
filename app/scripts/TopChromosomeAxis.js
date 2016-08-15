@@ -15,7 +15,6 @@ export function TopChromosomeAxis() {
 
     function chart(selection) {
         selection.each(function(d) {
-            console.log('called:');
 
             if (!('resizeDispatch' in d)) {
                 d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize') : resizeDispatch;
@@ -143,8 +142,6 @@ export function TopChromosomeAxis() {
                         let cumValues = chromInfo.cumPositions;
                        //gChromLabels.attr('x', (d) => { return zoomedXScale(d.pos); });
                        //gSelect.call(zoomableLabels);
-                       console.log('xScale.domain()', xScale.domain());
-                       console.log('draw zoomedXScale', zoomedXScale.domain());
                        let ticks = zoomedXScale.ticks(5);
                        let tickSpan = ticks[1] - ticks[0]
                        let tickWidth = zoomedXScale(ticks[1]) - zoomedXScale(ticks[0]);

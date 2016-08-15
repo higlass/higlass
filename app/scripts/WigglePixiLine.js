@@ -118,7 +118,6 @@ export function WigglePixiLine() {
                     graphics.lineStyle(1, 0x0000FF, 1);
                    // graphics.beginFill(0xFF700B, 1);
                     let j = 0;
-                    console.log('zoomedXScale.domain()', zoomedXScale.domain());
 
                     for (let i = 0; i < tileData.length; i++) {
 
