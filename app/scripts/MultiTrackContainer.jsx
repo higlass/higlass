@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PIXI from 'pixi.js';
 import d3 from 'd3';
 import {DraggableDiv} from './DraggableDiv.js';
@@ -64,8 +65,8 @@ export class MultiTrackContainer extends React.Component {
 
         this.animate = this.animate.bind(this);
 
-        this.xScale = d3.scale.linear().domain(this.props.viewConfig.domain).range([0, this.state.width]);
-        this.yScale = d3.scale.linear().domain(this.props.viewConfig.domain).range([0, this.state.height]);
+        this.xScale = d3.scale.linear().domain(this.props.viewConfig.domain);
+        this.yScale = d3.scale.linear().domain(this.props.viewConfig.domain);
 
         this.xOrigScale = this.xScale.copy();
         this.yOrigScale = this.yScale.copy();
@@ -87,53 +88,6 @@ export class MultiTrackContainer extends React.Component {
             this.zoom.scale(scale);
         }.bind(this));
 
-        this.topChromosomeAxis = TopChromosomeAxis()
-            .xScale(this.xScale.copy())
-            .width(this.state.width)
-            .resizeDispatch(this.resizeDispatch)
-            .zoomDispatch(this.zoomDispatch)
-
-        this.leftChromosomeAxis = LeftChromosomeAxis()
-            .yScale(this.yScale.copy())
-            .width(this.state.width)
-            .height(this.state.height)
-            .resizeDispatch(this.resizeDispatch)
-            .zoomDispatch(this.zoomDispatch)
-
-
-        this.horizontalDiagonalTiledArea = GenericTiledArea()
-            .tileType('div')
-            .oneDimensional(false)
-            .diagonal(true)
-            .width(this.state.width)
-            .height(this.state.width)
-            .domain(this.xScale.domain())
-            .zoomDispatch(this.zoomDispatch)
-
-        this.horizontalTiledArea = GenericTiledArea()
-            .tileType('div')
-            .width(this.state.width)
-            .height(this.state.height)
-            .domain(this.xScale.domain())
-            .zoomDispatch(this.zoomDispatch)
-            .horizontal(true);
-
-        this.verticalTiledArea = GenericTiledArea()
-            .tileType('div')
-            .width(this.state.height)   // since this is a vertical tiled area, the width is actually the height
-                                        // of the viewable area
-            .domain(this.yScale.domain())
-            .zoomDispatch(this.zoomDispatch)
-            .horizontal(false)
-
-        this.twoDTiledArea = GenericTiledArea()
-            .tileType('div')
-            .oneDimensional(false)
-            .width(this.state.width)
-            .height(this.state.height)
-            .domain(this.xScale.domain())
-            .zoomDispatch(this.zoomDispatch)
-            .mirrorTiles(true)
 
         this.tracksToPositions = { 'top-bar': 'top', 'left-bar': 'left', 
                                     'top-line': 'top',
@@ -147,11 +101,30 @@ export class MultiTrackContainer extends React.Component {
                                    'top-empty': 'top',
                                    'right-bar': 'right', 'heatmap': 'center' };
 
-        this.arrangeTracks();
+        this.setHeight();
+    }
+
+    updateView() {
+        //d3.selectAll('
     }
 
     updateDimensions() {
+        console.log('updating dimensions', this.element.offsetWidth)
+        this.width = this.element.offsetWidth;
+        this.renderer.resize(this.width, this.height);
 
+        for (let uid in this.state.tracks) {
+            this.state.tracks[uid].width = this.width;
+            console.log('track...', this.state.tracks[uid]);
+            console.log('stage...', this.stage);
+
+            if ('resizeDispatch' in this.state.tracks[uid]) {
+                console.log('resizing...', this.state.tracks[uid]);
+                this.state.tracks[uid].resizeDispatch.resize();
+            }
+        }
+        // change out all the scales and then call everything again
+        
     }
 
     arrangeTracks() {
@@ -187,36 +160,36 @@ export class MultiTrackContainer extends React.Component {
             if (this.tracksToPositions[track.type] == 'top') {
                 track.left = leftMargin;
                 track.top = currentTop;
-                track.width = this.state.width - leftMargin - rightMargin;
+                track.width = this.width - leftMargin - rightMargin;
                 currentTop += track.height;
             }
 
             if (this.tracksToPositions[track.type] == 'left') {
                 track.top = topMargin;
                 track.left = currentLeft;
-                track.height = this.state.height - topMargin - bottomMargin;
+                track.height = this.height - topMargin - bottomMargin;
                 currentLeft += track.width;
             }
 
             if (this.tracksToPositions[track.type] == 'right') {
                 track.top = topMargin;
                 track.left = currentRightLeft;
-                track.height = this.state.height - topMargin - bottomMargin;
+                track.height = this.height - topMargin - bottomMargin;
                 currentRightLeft += track.width;
             }
 
             if (this.tracksToPositions[track.type] == 'bottom') {
                 track.left = leftMargin;
                 track.top = currentBottomTop;
-                track.width = this.state.width - leftMargin - rightMargin;
+                track.width = this.width - leftMargin - rightMargin;
                 currentBottomTop += track.height;
             }
 
             if (this.tracksToPositions[track.type] == 'center') {
                 track.left = leftMargin;
                 track.top = topMargin;
-                track.width = this.state.width - leftMargin - rightMargin;
-                track.height = this.state.height - topMargin - bottomMargin;
+                track.width = this.width  - leftMargin - rightMargin;
+                track.height = this.height - topMargin - bottomMargin;
             }
         }
 
@@ -243,51 +216,135 @@ export class MultiTrackContainer extends React.Component {
 
     }
 
+    setHeight() {
+        this.height = this.state.height;
+
+        if (typeof this.height == 'undefined') {
+            this.height = 0;
+
+            for (let i = 0; i < this.props.viewConfig.tracks.length; i++)  {
+                console.log('track[i]:', this.props.viewConfig.tracks[i].height);
+                this.height += this.props.viewConfig.tracks[i].height;
+            }
+        }
+
+    }
+
     componentDidMount() {
-        this.renderer = PIXI.autoDetectRenderer(this.state.width, 
-                                                this.state.height, 
+        console.log('width:', ReactDOM.findDOMNode(this).offsetWidth);
+        console.log('state width:', this.state.width, this.height);
+        this.element = ReactDOM.findDOMNode(this);
+        window.addEventListener('resize', this.updateDimensions.bind(this));
+
+        this.width = this.state.width;
+
+        if (typeof this.width == 'undefined') {
+            this.width = this.element.offsetWidth;
+        }
+
+        console.log('this.width:', this.width)
+        console.log('this.height:', this.height);
+
+        this.xScale.range([0, this.width]);
+        this.yScale.range([0, this.height]);
+
+        this.arrangeTracks();
+
+        this.renderer = PIXI.autoDetectRenderer(this.width,
+                                                this.height,
                                                 { view: this.canvas,
                                                   antialias: true, 
                                                   transparent: true } )
         console.log('renderer:', this.renderer);
         this.stage = new PIXI.Container();
         this.stage.interactive = true;
+
+        this.xScaleDependencies = [];
+        this.yScaleDependencies = [];
+
+        this.topChromosomeAxis = TopChromosomeAxis()
+            .xScale(this.xScale.copy())
+            .width(this.width)
+            .resizeDispatch(this.resizeDispatch)
+            .zoomDispatch(this.zoomDispatch)
+
+        this.leftChromosomeAxis = LeftChromosomeAxis()
+            .yScale(this.yScale.copy())
+            .width(this.width)
+            .height(this.height)
+            .resizeDispatch(this.resizeDispatch)
+            .zoomDispatch(this.zoomDispatch)
+
+
+        this.horizontalDiagonalTiledArea = GenericTiledArea()
+            .tileType('div')
+            .oneDimensional(false)
+            .diagonal(true)
+            .width(this.width)
+            .height(this.width)
+            .domain(this.xScale.domain())
+            .zoomDispatch(this.zoomDispatch)
+
+        this.horizontalTiledArea = GenericTiledArea()
+            .tileType('div')
+            .width(this.width)
+            .height(this.height)
+            .domain(this.xScale.domain())
+            .zoomDispatch(this.zoomDispatch)
+            .horizontal(true);
+
+        this.verticalTiledArea = GenericTiledArea()
+            .tileType('div')
+            .width(this.height)   // since this is a vertical tiled area, the width is actually the height
+                                        // of the viewable area
+            .domain(this.yScale.domain())
+            .zoomDispatch(this.zoomDispatch)
+            .horizontal(false)
+
+        this.twoDTiledArea = GenericTiledArea()
+            .tileType('div')
+            .oneDimensional(false)
+            .width(this.width)
+            .height(this.height)
+            .domain(this.xScale.domain())
+            .zoomDispatch(this.zoomDispatch)
+            .mirrorTiles(true)
         let wigglePixiTrack = WigglePixiTrack()
             .xScale(this.xScale.copy())
-            .width(this.state.width)
-            .height(this.state.height)
+            .width(this.width)
+            .height(this.height)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
         let wigglePixiLine = WigglePixiLine()
             .xScale(this.xScale.copy())
-            .width(this.state.width)
-            .height(this.state.height)
+            .width(this.width)
+            .height(this.height)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
         let wigglePixiPoint = WigglePixiPoint()
             .xScale(this.xScale.copy())
-            .width(this.state.width)
-            .height(this.state.height)
+            .width(this.width)
+            .height(this.height)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
         let wigglePixiHeatmap = WigglePixiHeatmap()
             .xScale(this.xScale.copy())
-            .width(this.state.width)
-            .height(this.state.height)
+            .width(this.width)
+            .height(this.height)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
         let leftWigglePixiTrack = LeftWigglePixiTrack()
             .yScale(this.yScale.copy())
-            .width(this.state.width)
-            .height(this.state.height)
+            .width(this.width)
+            .height(this.height)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
@@ -295,8 +352,8 @@ export class MultiTrackContainer extends React.Component {
         let heatmapRectangleTrack = HeatmapRectangleTrack()
             .xScale(this.xScale.copy())
             .yScale(this.yScale.copy())
-            .width(this.state.width)
-            .height(this.state.height)
+            .width(this.width)
+            .height(this.height)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
@@ -304,15 +361,15 @@ export class MultiTrackContainer extends React.Component {
         let diagonalHeatmapTrack = TopDiagonalHeatmapRectangleTrack()
             .xScale(this.xScale.copy())
             .yScale(this.yScale.copy())
-            .width(this.state.width)
-            .height(this.state.height)
+            .width(this.width)
+            .height(this.height)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
 
         let topGeneLabels = TopGeneLabelsTrack()
             .xScale(this.xScale.copy())
-            .width(this.state.width)
+            .width(this.width)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
@@ -328,6 +385,7 @@ export class MultiTrackContainer extends React.Component {
             if (d.type == 'top-diagonal-heatmap')
                 d3.select(element).call(diagonalHeatmapTrack);
         }.bind(this));
+
 
         this.horizontalTiledArea.tilesChanged(function(d, element) {
                 d.translate = this.zoom.translate();
@@ -559,13 +617,15 @@ export class MultiTrackContainer extends React.Component {
                          position: 'absolute' }
         let canvasStyle = { top: 0,
                             left: 0,
-                            width: '100%'}
+                            width: '100%',
+                            height: this.height }
         let addTrackDivStyle = { position: 'relative'
         };
 
         let svgStyle = { height: 20,
                          width: '100%'
         }
+        console.log('canvasStyle:', canvasStyle)
 
         let trackList = []
         for (let uid in this.state.tracks)

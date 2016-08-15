@@ -21,13 +21,12 @@ export class HiGlassApp extends React.Component {
     "viewStyle": {
       "float": "left",
       "margin": "5px",
-      "width": "100%"
+      "width": "50%"
     },
     "tracks": [
       {
         "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
-        "type": "top-chromosome-axis",
-        "width": 35
+        "type": "top-chromosome-axis"
       },
       {
         "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",
@@ -80,17 +79,6 @@ export class HiGlassApp extends React.Component {
 
         console.log('handling submit:', this.state.viewConfig);
     }
-
-    /*
-    updateDimensions() {
-        let width =ReactDOM.findDOMNode(this.displayPanel).offsetWidth;
-        console.log('new width:', width);
-    }
-
-    componentDidMount() {
-        window.addEventListener('resize', this.updateDimensions.bind(this));
-    }
-    */
 
     render() {
         let divStyle = {"paddingLeft": "20px",

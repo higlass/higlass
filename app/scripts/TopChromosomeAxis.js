@@ -14,6 +14,13 @@ export function TopChromosomeAxis() {
 
     function chart(selection) {
         selection.each(function(d) {
+            if (!('resizeDispatch' in d)) {
+                d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize') : resizeDispatch;
+            }
+
+            let slugId = d.uid + '.top-axis';
+            d.resizeDispatch.on('resize.' + slugId, sizeChanged.bind(this));
+
                 let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
                 let gChromLabels = null;
                 let chromInfo = null;
@@ -25,7 +32,6 @@ export function TopChromosomeAxis() {
 
                 let gAxis = null;
                 let lineScale = null;
-                let slugId = slugid.nice();
                 let zoom = d3.behavior.zoom().x(xScale);
 
                 let svg = d3.select(this).selectAll('svg')
@@ -81,15 +87,6 @@ export function TopChromosomeAxis() {
                 let textScale = gAxis.select('.text-scale');
                 let centerTick = gAxis.select('.center-tick');
 
-                if (orient == 'top') {
-                    textCenterChr.attr('x', (xScale.range()[1] + xScale.range()[0]) / 2)
-                    .attr('text-anchor', 'middle')
-                    .attr('dy', '-0.5em');
-                } else {
-                    // FIXME
-                }
-                
-
                 localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
                 function zoomChanged(translate, scale) {
@@ -100,9 +97,26 @@ export function TopChromosomeAxis() {
                     draw();
                 }
 
+            function sizeChanged() {
+                let svg = d3.select(this).selectAll('svg')
+                svg.style('width', d.width);
+                xScale.range([0, d.width]);
+                draw();
+            }
+
                    function draw () {
                        if (chromInfo == null)
                            return;
+
+                       if (orient == 'top') {
+                           textCenterChr.attr('x', (xScale.range()[1] + xScale.range()[0]) / 2)
+                           .attr('text-anchor', 'middle')
+                           .attr('dy', '-0.5em');
+                       } else {
+                           // FIXME
+                       }
+
+                       console.log('xScale.doman()', xScale.domain(), xScale.range());
 
                         let cumValues = chromInfo.cumPositions;
                        //gChromLabels.attr('x', (d) => { return xScale(d.pos); });

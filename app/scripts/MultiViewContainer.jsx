@@ -16,9 +16,9 @@ export class MultiViewContainer extends React.Component {
 
     render() {
         console.log('rendering multi view container', this.props.viewConfig);
-        let divStyle = {float: 'left', width: '50%'};
+        let divStyle = {float: 'left', width: '100%'};
         return (
-            <div style={divStyle}>
+            <div style={divStyle} className="MultiViewContainer">
                 { this.props.viewConfig.map(function(view, i) 
                     {
                     return (<MultiTrackContainer
