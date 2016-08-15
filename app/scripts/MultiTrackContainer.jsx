@@ -73,8 +73,7 @@ export class MultiTrackContainer extends React.Component {
 
         this.zoom = d3.behavior.zoom()
                       .on('zoom', this.handleZoom.bind(this))
-                      .on('zoomend', this.handleZoomEnd.bind(this))
-                      .x(this.xScale);
+                      .on('zoomend', this.handleZoomEnd.bind(this));
 
         if (typeof this.props.viewConfig.zoomDispatch == 'undefined')
             this.zoomDispatch = d3.dispatch('zoom', 'zoomend');
@@ -109,17 +108,30 @@ export class MultiTrackContainer extends React.Component {
     }
 
     updateDimensions() {
-        console.log('updating dimensions', this.element.offsetWidth)
-        this.width = this.element.offsetWidth;
+        let cs = window.getComputedStyle(this.element, null);
+
+        this.prevWidth = this.width;
+        this.width = this.element.offsetWidth 
+                     - parseInt(cs.getPropertyValue('padding-left'), 10)
+                     - parseInt(cs.getPropertyValue('padding-right'), 10);
+        
+        if (typeof this.prevWidth != 'undefined') {
+            let currentDomainWidth = this.xOrigScale.domain()[1] - this.xOrigScale.domain()[0]; 
+            let nextDomainWidth = currentDomainWidth * (this.width / this.prevWidth);
+
+            this.xOrigScale.domain([this.xOrigScale.domain()[0], 
+                               this.xOrigScale.domain()[0] + nextDomainWidth]);
+            this.xOrigScale.range([0, this.width]);
+
+            this.topChromosomeAxis.xScale(this.xOrigScale.copy());
+        }
+
         this.renderer.resize(this.width, this.height);
 
         for (let uid in this.state.tracks) {
             this.state.tracks[uid].width = this.width;
-            console.log('track...', this.state.tracks[uid]);
-            console.log('stage...', this.stage);
 
             if ('resizeDispatch' in this.state.tracks[uid]) {
-                console.log('resizing...', this.state.tracks[uid]);
                 this.state.tracks[uid].resizeDispatch.resize();
             }
         }
@@ -223,7 +235,6 @@ export class MultiTrackContainer extends React.Component {
             this.height = 0;
 
             for (let i = 0; i < this.props.viewConfig.tracks.length; i++)  {
-                console.log('track[i]:', this.props.viewConfig.tracks[i].height);
                 this.height += this.props.viewConfig.tracks[i].height;
             }
         }
@@ -231,31 +242,22 @@ export class MultiTrackContainer extends React.Component {
     }
 
     componentDidMount() {
-        console.log('width:', ReactDOM.findDOMNode(this).offsetWidth);
-        console.log('state width:', this.state.width, this.height);
         this.element = ReactDOM.findDOMNode(this);
         window.addEventListener('resize', this.updateDimensions.bind(this));
-
-        this.width = this.state.width;
-
-        if (typeof this.width == 'undefined') {
-            this.width = this.element.offsetWidth;
-        }
-
-        console.log('this.width:', this.width)
-        console.log('this.height:', this.height);
-
-        this.xScale.range([0, this.width]);
-        this.yScale.range([0, this.height]);
-
-        this.arrangeTracks();
 
         this.renderer = PIXI.autoDetectRenderer(this.width,
                                                 this.height,
                                                 { view: this.canvas,
                                                   antialias: true, 
                                                   transparent: true } )
-        console.log('renderer:', this.renderer);
+
+        this.updateDimensions();
+
+        this.xScale.range([0, this.width]);
+        this.yScale.range([0, this.height]);
+
+        this.arrangeTracks();
+
         this.stage = new PIXI.Container();
         this.stage.interactive = true;
 
@@ -625,7 +627,6 @@ export class MultiTrackContainer extends React.Component {
         let svgStyle = { height: 20,
                          width: '100%'
         }
-        console.log('canvasStyle:', canvasStyle)
 
         let trackList = []
         for (let uid in this.state.tracks)

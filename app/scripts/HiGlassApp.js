@@ -7,20 +7,17 @@ export class HiGlassApp extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            //viewConfig : []
+        let oneWindow = `
 
-            viewConfig : JSON.parse(`
-                                    [
   {
     "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
     "domain": [
       0,
-      2500000000
+      3000000000
     ],
     "viewStyle": {
       "float": "left",
-      "margin": "5px",
+      "padding": "5px",
       "width": "50%"
     },
     "tracks": [
@@ -41,11 +38,13 @@ export class HiGlassApp extends React.Component {
       }
     ]
   }
-]
 `
-            )
+    this.state = {
+        //viewConfig : []
 
-        }
+        viewConfig : [JSON.parse(oneWindow), JSON.parse(oneWindow)]
+    }
+
     }
 
     updateLinkedViews(viewConfig) {
@@ -67,7 +66,6 @@ export class HiGlassApp extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
 
-        console.log('this.refs:', this.refs);
         let configText = ReactDOM.findDOMNode(this.refs.textConfigInput).value;
         let viewConfig = JSON.parse(configText);
         this.updateLinkedViews(viewConfig);
@@ -77,13 +75,11 @@ export class HiGlassApp extends React.Component {
              viewConfig : viewConfig
          });
 
-        console.log('handling submit:', this.state.viewConfig);
     }
 
     render() {
         let divStyle = {"paddingLeft": "20px",
                         "paddingRight": "20px"}
-        console.log('rendering HiGlassApp:', this.state.viewConfig);
         return (
                 <div style={divStyle}>
                 <Panel header='Input' bsSize={'small'}>

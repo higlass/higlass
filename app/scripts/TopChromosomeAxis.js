@@ -11,9 +11,12 @@ export function TopChromosomeAxis() {
     let domain = [0,1];
     let orient = 'top';
     let xScale = null;
+    let zoomedXScale = d3.scale.linear();
 
     function chart(selection) {
         selection.each(function(d) {
+            console.log('called:');
+
             if (!('resizeDispatch' in d)) {
                 d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize') : resizeDispatch;
             }
@@ -32,7 +35,7 @@ export function TopChromosomeAxis() {
 
                 let gAxis = null;
                 let lineScale = null;
-                let zoom = d3.behavior.zoom().x(xScale);
+                let zoom = d3.behavior.zoom();
 
                 let svg = d3.select(this).selectAll('svg')
                     .data([d])
@@ -100,34 +103,55 @@ export function TopChromosomeAxis() {
             function sizeChanged() {
                 let svg = d3.select(this).selectAll('svg')
                 svg.style('width', d.width);
-                xScale.range([0, d.width]);
+                /*
+                console.log('d.width:', d.width, xScale.domain());
+                console.log('zoom.translate1()', zoom.translate(), zoom.scale());
+                let prevTranslate = zoom.translate();
+                let prevScale = zoom.scale();
+
+                zoom.x(xScale);
+                zoom.translate(prevTranslate);
+                zoom.scale(prevScale);
+                */
+
+                //console.log('zoom.translate2()', zoom.translate(), zoom.scale());
+
+                // translate and scale have to change to keep the center in the same place
+                //
                 draw();
             }
 
                    function draw () {
+                    zoomedXScale.range(xScale.range());
+                    zoomedXScale.domain(xScale.range()
+                                              .map(function(x) { return (x - zoom.translate()[0]) / zoom.scale() })
+                                              .map(xScale.invert))
+
                        if (chromInfo == null)
                            return;
 
                        if (orient == 'top') {
-                           textCenterChr.attr('x', (xScale.range()[1] + xScale.range()[0]) / 2)
+                           textCenterChr.attr('x', (zoomedXScale.range()[1] + zoomedXScale.range()[0]) / 2)
                            .attr('text-anchor', 'middle')
                            .attr('dy', '-0.5em');
                        } else {
                            // FIXME
                        }
 
-                       console.log('xScale.doman()', xScale.domain(), xScale.range());
+                       //console.log('zoomedXScale.doman()', zoomedXScale.domain(), zoomedXScale.range());
 
                         let cumValues = chromInfo.cumPositions;
-                       //gChromLabels.attr('x', (d) => { return xScale(d.pos); });
+                       //gChromLabels.attr('x', (d) => { return zoomedXScale(d.pos); });
                        //gSelect.call(zoomableLabels);
-                       let ticks = xScale.ticks(5);
+                       console.log('xScale.domain()', xScale.domain());
+                       console.log('draw zoomedXScale', zoomedXScale.domain());
+                       let ticks = zoomedXScale.ticks(5);
                        let tickSpan = ticks[1] - ticks[0]
-                       let tickWidth = xScale(ticks[1]) - xScale(ticks[0]);
-                       let midDomain = (xScale.domain()[1] + xScale.domain()[0]) / 2;
-                       let midRange = (xScale.range()[0] + xScale.range()[1]) / 2;
+                       let tickWidth = zoomedXScale(ticks[1]) - zoomedXScale(ticks[0]);
+                       let midDomain = (zoomedXScale.domain()[1] + zoomedXScale.domain()[0]) / 2;
+                       let midRange = (zoomedXScale.range()[0] + zoomedXScale.range()[1]) / 2;
 
-                       let scaleMid = xScale.range()[1] - tickWidth / 2; //(xScale.range()[1] - xScale.range()[0]) / 2
+                       let scaleMid = zoomedXScale.range()[1] - tickWidth / 2; //(zoomedXScale.range()[1] - zoomedXScale.range()[0]) / 2
 
                        let tickHeight = 4;
                        let tickFormat = d3.format(",d")
@@ -163,7 +187,7 @@ export function TopChromosomeAxis() {
 
                         }
 
-                       textScale.attr('x', xScale.range()[1] - 5)
+                       textScale.attr('x', zoomedXScale.range()[1] - 5)
                         .attr('text-anchor', 'end')
                        .text(tickFormat(tickSpan) + " bp");
 
@@ -174,8 +198,8 @@ export function TopChromosomeAxis() {
                            .attr('y2', tickHeight)
 
                        /*
-                       lineScale.attr('x2', xScale.range()[1]);
-                       lineScale.attr('x1', xScale.range()[1] - tickWidth);
+                       lineScale.attr('x2', zoomedXScale.range()[1]);
+                       lineScale.attr('x1', zoomedXScale.range()[1] - tickWidth);
                        lineScale.attr('y1', 10)
                        lineScale.attr('y2', 10)
                        */
