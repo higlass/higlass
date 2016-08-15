@@ -1,7 +1,9 @@
+import '../styles/HiGlassApp.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {MultiViewContainer} from './MultiViewContainer.jsx';
-import {Button, Panel, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
+import {HiGlassInput} from './HiGlassInput.jsx';
+import {Button, Panel, FormGroup, ControlLabel, FormControl, SafeAnchor} from 'react-bootstrap';
 
 export class HiGlassApp extends React.Component {
     constructor(props) {
@@ -21,6 +23,11 @@ export class HiGlassApp extends React.Component {
       "width": "50%"
     },
     "tracks": [
+        {
+        "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",
+        "type": "top-diagonal-heatmap",
+        "height": 200
+      },
       {
         "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
         "type": "top-chromosome-axis"
@@ -39,10 +46,13 @@ export class HiGlassApp extends React.Component {
     ]
   }
 `
+    this.defaultViewString = JSON.stringify([JSON.parse(oneWindow), JSON.parse(oneWindow)]);
+
     this.state = {
         //viewConfig : []
 
-        viewConfig : [JSON.parse(oneWindow), JSON.parse(oneWindow)]
+        viewConfig : JSON.parse(this.defaultViewString),
+        inputOpen: false
     }
 
     }
@@ -62,11 +72,8 @@ export class HiGlassApp extends React.Component {
         }
 
     }
-        
-    handleSubmit(event) {
-        event.preventDefault();
 
-        let configText = ReactDOM.findDOMNode(this.refs.textConfigInput).value;
+    handleNewConfig(configText) {
         let viewConfig = JSON.parse(configText);
         this.updateLinkedViews(viewConfig);
 
@@ -75,36 +82,29 @@ export class HiGlassApp extends React.Component {
              viewConfig : viewConfig
          });
 
-    }
+    };
+        
 
     render() {
         let divStyle = {"paddingLeft": "20px",
                         "paddingRight": "20px"}
+
+        let toolbarStyle = {"position": "relative",
+                       "top": "-1px"};
+
         return (
                 <div style={divStyle}>
-                <Panel header='Input' bsSize={'small'}>
-                <form onSubmit={this.handleSubmit.bind(this)}>
-                   <FormGroup controlId="formControlsTextarea">
-                         <ControlLabel>Textarea</ControlLabel>
-                               <FormControl 
-                                 componentClass="textarea" rows={5} 
-                                 defaultValue={JSON.stringify(this.state.viewConfig,null,2)} 
-                                 ref='textConfigInput' 
-                                />
 
-                                   </FormGroup>
-                        <Button
-                            className="pull-right"
-                            bsStyle="primary"
-                            type="submit"
-                    >Submit</Button>
-                    </form>
-                </Panel>
-
-                <Panel header='Display' ref='displayPanel'>
+                <Panel 
+                    ref='displayPanel'
+                    className="higlass-display"
+                    >
                     <MultiViewContainer viewConfig={this.state.viewConfig}
                     />
                 </Panel>
+                <HiGlassInput currentConfig={this.defaultViewString} 
+                        onNewConfig={this.handleNewConfig.bind(this)} 
+                        />
                 </div>
         );
     }
