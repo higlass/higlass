@@ -79,7 +79,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var rectangularOneWindow = JSON.parse('\n    [\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "100%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n        {\n        "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",\n        "type": "heatmap",\n        "height": 400\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      }\n\n    ],\n    "zoomLock" : 0\n  }\n]\n');
+	var rectangularOneWindow = JSON.parse('\n    [\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "100%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n        {\n        "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",\n        "type": "heatmap",\n        "height": 300\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      },\n      {\n        "type": "top-empty",\n        "height": 5\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "left-bar",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n\n    ],\n    "zoomLock" : 0\n  }\n]\n');
 
 	_reactDom2.default.render(_react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: JSON.stringify(rectangularOneWindow) }), document.getElementById('rectangular'));
 
@@ -24275,6 +24275,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (typeof this.topChromosomeAxis != 'undefined') {
 	                this.topChromosomeAxis.xScale(this.xOrigScale.copy());
 	                this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
+	                this.leftWigglePixiTrack.yScale(this.yOrigScale.copy());
 	            }
 
 	            this.xOrigScale.range([0, this.width]);
@@ -24440,7 +24441,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var wigglePixiHeatmap = (0, _WigglePixiHeatmap.WigglePixiHeatmap)().xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            var leftWigglePixiTrack = (0, _LeftWigglePixiTrack.LeftWigglePixiTrack)().yScale(this.yScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            var leftWigglePixiTrack = (0, _LeftWigglePixiTrack.LeftWigglePixiTrack)().yScale(this.yOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
 	            var heatmapRectangleTrack = (0, _HeatmapRectangleTrack.HeatmapRectangleTrack)().xScale(this.xOrigScale.copy()).yScale(this.yOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
@@ -24668,7 +24669,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    trackList.map(function (track, i) {
 	                        return _react2.default.createElement('div', {
 	                            className: 'track ' + this.trackDimension(track),
-	                            style: { left: track.left, top: track.top, width: track.width, height: track.height, position: 'absolute' },
+	                            style: { left: track.left, top: track.top, position: 'absolute' },
 	                            key: track.uid
 	                        })
 
