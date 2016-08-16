@@ -79,7 +79,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	_reactDom2.default.render(_react2.default.createElement(_HiGlassApp.HiGlassApp, null), document.getElementById('circle'));
+	var rectangularOneWindow = JSON.parse('\n    [\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "100%"\n    },\n    "tracks": [\n        {\n        "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",\n        "type": "heatmap",\n        "height": 400\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis"\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      }\n    ],\n    "zoomLock" : 0\n  }\n]\n');
+	_reactDom2.default.render(_react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: JSON.stringify(rectangularOneWindow) }), document.getElementById('rectangular'));
+
+	var triangularOneWindow = JSON.parse('\n    [\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n        {\n        "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",\n        "type": "top-diagonal-heatmap",\n        "height": 100\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis"\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      }\n    ],\n    "zoomLock" : 0\n  }\n]\n');
+	var triangularTwoWindow = JSON.stringify(triangularOneWindow.concat(triangularOneWindow), null, 2);
+
+	_reactDom2.default.render(_react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: triangularTwoWindow }), document.getElementById('triangular-1'));
+
+	var oneDOneWindow = JSON.parse('\n    [\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "100%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis"\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-minus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-bar",\n        "height": 25\n      }\n    ],\n    "zoomLock" : 0\n  }\n]\n');
+
+	_reactDom2.default.render(_react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: JSON.stringify(oneDOneWindow) }), document.getElementById('one-dimensional'));
 
 /***/ },
 /* 2 */
@@ -21491,13 +21501,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(HiGlassApp).call(this, props));
 
-	        var oneWindow = '\n\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n        {\n        "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",\n        "type": "top-diagonal-heatmap",\n        "height": 200\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis"\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      }\n    ],\n    "zoomLock" : 0\n  }\n';
-	        _this.defaultViewString = JSON.stringify([JSON.parse(oneWindow), JSON.parse(oneWindow)], null, 2);
-
 	        _this.state = {
 	            //viewConfig : []
 
-	            viewConfig: JSON.parse(_this.defaultViewString),
+	            viewConfig: JSON.parse(_this.props.viewConfigString),
 	            inputOpen: false
 	        };
 
@@ -21534,8 +21541,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var divStyle = { "paddingLeft": "20px",
-	                "paddingRight": "20px" };
+	            /*
+	            let divStyle = {"paddingLeft": "20px",
+	                            "paddingRight": "20px"}
+	            */
+	            var divStyle = {};
 
 	            var toolbarStyle = { "position": "relative",
 	                "top": "-1px" };
@@ -24224,7 +24234,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            width: _this.props.viewConfig.width, // should be changeable on resize
 	            height: _this.props.viewConfig.height, // should change in response to the addition of new tracks
 	            // or user resize
-	            tracks: trackDict
+	            tracks: trackDict,
+	            tracksList: tracks
 	        };
 
 	        _this.animate = _this.animate.bind(_this);
@@ -24309,7 +24320,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var currentTop = 0;
 	            var currentLeft = 0;
 
-	            for (var trackId in this.state.tracks) {
+	            for (var i = 0; i < this.state.tracksList.length; i++) {
+	                var trackId = this.state.tracksList[i].uid;
 	                var track = this.state.tracks[trackId];
 
 	                if (this.tracksToPositions[track.type] == 'top') topMargin += track.height;
@@ -24321,8 +24333,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var currentRightLeft = this.width - rightMargin;
 	            var currentBottomTop = this.height - bottomMargin;
 
-	            for (var _trackId in this.state.tracks) {
+	            for (var _i = 0; _i < this.state.tracksList.length; _i++) {
+	                var _trackId = this.state.tracksList[_i].uid;
 	                var _track = this.state.tracks[_trackId];
+	                console.log('track:', _track);
 
 	                if (this.tracksToPositions[_track.type] == 'top') {
 	                    _track.left = leftMargin;
@@ -24640,10 +24654,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                width: '100%'
 	            };
 
-	            var trackList = [];
-	            for (var uid in this.state.tracks) {
-	                trackList.push(this.state.tracks[uid]);
-	            } //<img src="images/plus.svg" width="20px" style={imgStyle}/>
+	            var trackList = this.state.tracksList;
+	            console.log('trackList:', trackList);
+
+	            //<img src="images/plus.svg" width="20px" style={imgStyle}/>
 	            /*
 	                    <div style={addTrackDivStyle}>
 	                        <AddTrackDiv />

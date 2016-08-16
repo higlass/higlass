@@ -60,7 +60,8 @@ export class MultiTrackContainer extends React.Component {
             width: this.props.viewConfig.width,     // should be changeable on resize
             height: this.props.viewConfig.height,     // should change in response to the addition of new tracks
                             // or user resize
-            tracks: trackDict
+            tracks: trackDict,
+            tracksList: tracks
         };
 
         this.animate = this.animate.bind(this);
@@ -150,7 +151,8 @@ export class MultiTrackContainer extends React.Component {
         let currentTop = 0;
         let currentLeft = 0;
 
-        for (let trackId in this.state.tracks) {
+        for (let i = 0; i < this.state.tracksList.length; i++) {
+            let trackId = this.state.tracksList[i].uid;
             let track = this.state.tracks[trackId];
 
             if (this.tracksToPositions[track.type] == 'top')
@@ -166,8 +168,10 @@ export class MultiTrackContainer extends React.Component {
         let currentRightLeft = this.width - rightMargin;
         let currentBottomTop = this.height - bottomMargin;
 
-        for (let trackId in this.state.tracks) {
+        for (let i = 0; i < this.state.tracksList.length; i++) {
+            let trackId = this.state.tracksList[i].uid;
             let track = this.state.tracks[trackId];
+            console.log('track:', track);
 
             if (this.tracksToPositions[track.type] == 'top') {
                 track.left = leftMargin;
@@ -628,9 +632,8 @@ export class MultiTrackContainer extends React.Component {
                          width: '100%'
         }
 
-        let trackList = []
-        for (let uid in this.state.tracks)
-            trackList.push(this.state.tracks[uid]);
+        let trackList = this.state.tracksList;
+        console.log('trackList:', trackList);
 
         //<img src="images/plus.svg" width="20px" style={imgStyle}/>
         /*

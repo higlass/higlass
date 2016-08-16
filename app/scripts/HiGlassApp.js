@@ -9,50 +9,10 @@ export class HiGlassApp extends React.Component {
     constructor(props) {
         super(props);
 
-        let oneWindow = `
-
-  {
-    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
-    "domain": [
-      0,
-      3000000000
-    ],
-    "viewStyle": {
-      "float": "left",
-      "padding": "5px",
-      "width": "50%"
-    },
-    "tracks": [
-        {
-        "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",
-        "type": "top-diagonal-heatmap",
-        "height": 200
-      },
-      {
-        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
-        "type": "top-chromosome-axis"
-      },
-      {
-        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",
-        "type": "top-gene-labels",
-        "height": 25
-      },
-
-      {
-        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",
-        "type": "top-line",
-        "height": 25
-      }
-    ],
-    "zoomLock" : 0
-  }
-`
-    this.defaultViewString = JSON.stringify([JSON.parse(oneWindow), JSON.parse(oneWindow)], null, 2);
-
     this.state = {
         //viewConfig : []
 
-        viewConfig : JSON.parse(this.defaultViewString),
+        viewConfig : JSON.parse(this.props.viewConfigString),
         inputOpen: false
     }
 
@@ -90,8 +50,11 @@ export class HiGlassApp extends React.Component {
         
 
     render() {
+        /*
         let divStyle = {"paddingLeft": "20px",
                         "paddingRight": "20px"}
+        */
+       let divStyle = {};
 
         let toolbarStyle = {"position": "relative",
                        "top": "-1px"};
