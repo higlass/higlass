@@ -32,7 +32,7 @@ export class HiGlassInput extends React.Component {
                    <FormGroup controlId="formControlsTextarea">
                          <ControlLabel>Track configuration</ControlLabel>
                                <FormControl 
-                                 componentClass="textarea" rows={5} 
+                                 componentClass="textarea" rows={8} 
                                  defaultValue={this.props.currentConfig} 
                                  ref='textConfigInput' 
                                 />

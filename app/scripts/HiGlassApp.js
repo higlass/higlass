@@ -43,10 +43,11 @@ export class HiGlassApp extends React.Component {
         "type": "top-line",
         "height": 25
       }
-    ]
+    ],
+    "zoomLock" : 0
   }
 `
-    this.defaultViewString = JSON.stringify([JSON.parse(oneWindow), JSON.parse(oneWindow)]);
+    this.defaultViewString = JSON.stringify([JSON.parse(oneWindow), JSON.parse(oneWindow)], null, 2);
 
     this.state = {
         //viewConfig : []
@@ -54,6 +55,8 @@ export class HiGlassApp extends React.Component {
         viewConfig : JSON.parse(this.defaultViewString),
         inputOpen: false
     }
+
+    this.updateLinkedViews(this.state.viewConfig);
 
     }
 
@@ -64,10 +67,11 @@ export class HiGlassApp extends React.Component {
             else {
                 let zoomLock = viewConfig[i].zoomLock;
                 if (typeof viewConfig[zoomLock].zoomDispatch == 'undefined') {
-                    console.log('ERROR: view requests zoom lock to another view with an undefined zoomDispatch:', zoomLock);
+                    console.log('WARNING: view requests zoom lock to another view with an undefined zoomDispatch:', zoomLock);
+                    viewConfig[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
+                } else {
+                    viewConfig[i].zoomDispatch = viewConfig[zoomLock].zoomDispatch;
                 }
-
-                viewConfig[i].zoomDispatch = viewConfig[zoomLock].zoomDispatch;
             }
         }
 
