@@ -131,6 +131,7 @@ export class MultiTrackContainer extends React.Component {
         if (typeof this.topChromosomeAxis != 'undefined') {
             this.topChromosomeAxis.xScale(this.xOrigScale.copy());
             this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
+            this.leftWigglePixiTrack.yScale(this.yOrigScale.copy());
 
         }
 
@@ -365,7 +366,7 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch);
 
         let leftWigglePixiTrack = LeftWigglePixiTrack()
-            .yScale(this.yScale.copy())
+            .yScale(this.yOrigScale.copy())
             .width(this.width)
             .height(this.height)
             .pixiStage(this.stage)
@@ -671,7 +672,7 @@ export class MultiTrackContainer extends React.Component {
                             return (
                                 <div 
                                                  className={'track ' + this.trackDimension(track)}
-                                                 style={{left: track.left, top: track.top, width: track.width, height: track.height, position: 'absolute'}}
+                                                 style={{left: track.left, top: track.top, position: 'absolute'}}
                                                  key={track.uid}
                                                  />
                                 
