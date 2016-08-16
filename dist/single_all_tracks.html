@@ -1,0 +1,168 @@
+<!DOCTYPE html><html lang=""><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css"><!--[if lte IE 8]>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
+    <![endif]--><!--[if gt IE 8]><!--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css"><!--<![endif]--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css"><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script><script>hljs.initHighlightingOnLoad();</script><title>HiGlass: Multi-resolution Hi-C data display</title></head><script src="https://rawgit.com/pkerpedjiev/goomba/master/dist/scripts/goomba.js"></script><link rel="stylesheet" href="styles/style.css"><script src="scripts/higlass.js"></script><body><div style="margin-left: 20px"><h2>2D Heatmap with annotations and zoomable tracks</h2><br><table><tr><td><div id="mmv-area" style="position:relative; height:520px; width: 390px"><svg id="goombaPlot" style="position:relative"></svg></div></td></tr><tr><td colspan="1"><br>The comparison in the third column is done by simply dividing the values from the HMEC cell line by the values in the HUVEC cell line. The wiggle track on top shows values from a CTCF binding assay.</td></tr></table></div></body><script type="text/javascript">// style="margin-top: 155px;margin-left: 32px;
+/*
+    var width, height;
+    if(window.innerWidth < window.innerHeight) {
+        width = window.innerWidth * 1;
+    } else {
+        width = window.innerHeight *1.1;
+    }
+    height = width * 0.8;
+    */
+    var width = 500;
+    var height = 420;
+
+    var svg = d3.selectAll('#goombaPlot')
+    .attr('width', width)
+    .attr('height', 300);
+
+    /*
+    // goomba gets drawn with a margin of 30 on the left
+    // and a margin of 30 on the right
+    // whereas higlass gets drawn with a margin of 30 on the left
+    // and 120 on the right
+    // thus goomba needs to be 90 smaller
+        var goombaPlot = goomba.Goomba()
+            .width(width - 90)
+            .height(80)
+
+            var gMain = svg.append('g')
+            .classed('g-main', true)
+            .datum('//s3.amazonaws.com/pkerp/data/hg19/refgene-tiles-small')
+            //.datum('jsons/tiles')
+            .call(goombaPlot)
+    */
+
+var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
+
+let trackHeight = 35;
+//let awsDomain = '//search-higlass-ssxwuix6kow3sekyeresi7ay5e.us-east-1.es.amazonaws.com';
+let awsDomain = '//52.23.165.123:9872';
+let tileDirectories = [
+    awsDomain + '/hg19/refgene-tiles-minus',
+    awsDomain + '/hg19/refgene-tiles-plus'
+]
+
+
+
+var margin = {'top': 20, 'left': 30, 'bottom': 30, 'right': 50};
+let mmvMargin = {'top': 150, 'left': 30, 'bottom': 30, 'right': 120};
+
+goomba.ChromosomeInfo(chromInfoFilename, (chromInfo) => {
+///////////////////////////
+    //var xScale = d3.scale.linear().domain([0, 5000000])
+    var xScale = d3.scale.linear().domain([0, 3137161264])
+        .range([0, width - mmvMargin.left - mmvMargin.right]);
+
+    var zoomDispatch = d3.dispatch('zoom', 'zoomend');
+    var locationDispatch = d3.dispatch('move');
+
+    var mmvPlot2 = higlass.MassiveMatrixPlot()
+        .width(width)
+        .height(height + 80)
+        .nTicks(3)
+        .margin(mmvMargin)
+        .chromInfo(chromInfo)
+        .xDomain(xScale.domain())
+        .yDomain(xScale.domain())
+        .zoomDispatch(zoomDispatch)
+        .locationDispatch(locationDispatch)
+
+        d3.select('#mmv-area')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.5M.gz')
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .datum( [awsDomain + '/hg19/Rao2014-HMEC-MboI-allreps-filtered.5kb.cool.reduced.genome.gz'])
+        //.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.mmmili.gz')
+        //.datum( awsDomain + '/hg19/Dixon2015-H1hESC_ES-HindIII-allreps-filtered.1kb.cool.reduced.genome.gz')
+        .call(mmvPlot2)
+
+    locationDispatch.on('move', function(loc) {
+        console.log('loc:',  loc);
+    });
+
+    var chromInfoPlot = goomba.ChromosomeAxis()
+    .width(width - margin.left - margin.right)
+    .domain(xScale.domain())
+    .orient('top')
+    .zoomDispatch(zoomDispatch);
+
+    svg.append('g')
+    .attr('transform', 'translate(' + margin.left + ',20)')
+    .datum(chromInfo)
+    .call(chromInfoPlot);
+
+    let tileLayout = goomba.GeneTileLayout;
+
+    let gMain = svg.append('g')
+    .classed('g-main', true);
+
+    var debug1D = svg.append('g')
+    .attr("id", "d1D")
+    .append('svg')
+    .attr("id", "debug1D"); 
+
+    /////////////////////////////
+    let tiledArea = goomba.TiledArea().width(width)
+    .height(height)
+    .dataPointLayout(goomba.GenePlot)
+    .tileLayout(tileLayout)
+    .domain(xScale.domain())
+    //.scaleExtent(scaleExtent)
+    .margin({'left': 30, 'top': 50, 'right': 120, 'bottom': 10})
+    .zoomDispatch(zoomDispatch);
+
+    let gGeneTracks = gMain
+        .append('g')
+    .selectAll('g')
+    .data(tileDirectories)
+    .enter()
+    .append('g')
+    .attr('transform', (d,i) => { return 'translate(0,' + i * trackHeight + ')'; })
+    .classed('track-g', true)
+    .call(tiledArea)
+
+    let zoomableLabels = goomba.ZoomableLabels()
+    .markerClass('.gene-marker')
+    .labelClass('.gene-label')
+    .labelParent(gMain)
+    .labelMarkerId((d) => { return `n-${d.uid}`})
+    .uidString('uid')
+
+    tiledArea.on('draw', () => {
+        gGeneTracks.call(zoomableLabels);
+    });
+    //////////////////////////////////////////
+
+    let wiggleTileArea = goomba.TiledArea().width(width)
+    .height(height)
+    .dataPointLayout(goomba.GenePlot)
+    .tileLayout(goomba.WiggleTileLayout)
+    .domain(xScale.domain())
+    .margin({'left': 30, 'top': 15, 'right': 120, 'bottom': 10})
+    .zoomDispatch(zoomDispatch);
+
+    let gWiggleTracks = gMain
+    .append('g')
+    .attr('transform', 'translate(0,' + (80) + ')')
+    .selectAll('g')
+    //.data(['https://s3.amazonaws.com/pkerp/data/served/hg19/E116-DNase.fc.signal.bigwig'])
+    .data([//awsDomain + '/hg19/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz',
+    awsDomain + '/hg19/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz'
+    //awsDomain + 'x/hg19/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz'
+    ])
+
+    .enter()
+    .append('g')
+    .attr('transform', (d,i) => { return 'translate(0,' + (i * trackHeight + margin.top) + ')'; })
+    .classed('track-g', true)
+    .call(wiggleTileArea)
+});
+///////////////////////////////////////////////
+
+    /*
+$(window).resize(function() {
+    location.reload();
+  //resize just happened, pixels changed
+});
+    */</script></html>

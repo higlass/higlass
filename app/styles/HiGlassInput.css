@@ -1,0 +1,9 @@
+div.higlass-edit-panel {
+    border-top: 0px;
+    border-bottom: 0px;
+    position: relative;
+    top: -2px;
+    margin-bottom: 0px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}

@@ -3,7 +3,9 @@ var webpack = require('webpack');
 
 module.exports = {
   context: __dirname + '/app',
-  entry: {higlass: ['./scripts/higlass.js']},
+  entry: {
+      main: ['./scripts/main.jsx'],
+      worker: ['./scripts/worker.js']},
   output: {
     path: __dirname + '/build',
     filename: '[name].js',
@@ -13,11 +15,11 @@ module.exports = {
   module: {
     loaders: [
       { 
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
-          presets: ['es2015']
+          presets: ['es2015', 'react']
         }
       }, {
         test: /\.css$/,
@@ -30,6 +32,9 @@ module.exports = {
             loader: 'transform?brfs'
         }
     ],
+    externals: {
+        'd3': 'd3'
+               },
     resolve: {
       extensions: ['.js', '.jsx']
     }

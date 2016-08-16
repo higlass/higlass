@@ -1,0 +1,22 @@
+.gene-line {
+    stroke: black;
+    stroke-width: 1px;
+    opacity: 0.5;
+}
+
+.gene-circle {
+    stroke: black;
+    stroke-width: 1px;
+    opacity: 1;
+}
+
+.exon-rect {
+    fill: black;
+    opacity: 1;
+}
+
+.arrow-line {
+    stroke: black;
+    stroke-width: 1px;
+    opacity: 0.5;
+}
