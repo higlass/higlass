@@ -9,6 +9,8 @@ export class HiGlassApp extends React.Component {
     constructor(props) {
         super(props);
 
+    this.defaultViewString = JSON.stringify(JSON.parse(this.props.viewConfigString), null, 2);
+
     this.state = {
         //viewConfig : []
 
