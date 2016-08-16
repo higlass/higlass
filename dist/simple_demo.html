@@ -1,48 +1,9 @@
-<!DOCTYPE html><html lang=""><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css"><!--[if lte IE 8]>
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-old-ie-min.css">
-    <![endif]--><!--[if gt IE 8]><!--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/grids-responsive-min.css"><!--<![endif]--><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/default.min.css"><script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script><script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script><title>HiGlass: Multi-resolution Hi-C data display</title></head><script src="https://rawgit.com/pkerpedjiev/goomba/master/dist/scripts/goomba.js"></script><link rel="stylesheet" href="styles/style.css"><script src="scripts/higlass.js"></script><body><div style="margin-left: 20px"><h2>Browser-based contact matrix viewer</h2>Displaying contact matrix data in web viewer lets us place it wherever we want.<table><tr><td style="vertical-align: top"><p><b>Input data:</b></p><pre>
-            <code class="nohighlight">
-chr1 50000 chr1   50000   1.0
-chr1 60000 chr1   60000   1.0
-chr1 560000 chr2  565000  2.0
-chr1 565000 chr7  565000  23.0
-chr8 565000 chrX  570000  1.0
-...
-            </code>
-            </pre></td><td style="text-align: center"><p><b>Output Display</b></p><div id="mmv-area" style="position:relative; height:450px; width: 530px"></div></td></tr></table>And describe it however it want.</div><script type="text/javascript">var width = 630, height=450;
-
-var awsDomain = '//52.23.165.123:9872';
-var chromInfoFilename = 'https://s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt';
-
-goomba.ChromosomeInfo(chromInfoFilename, function(chromInfo) {
-    var xScale = d3.scale.linear().domain([0, 3137161264])
-        .range([0, width]);
-
-    var svg = d3.select('#goombaPlot')
-    .attr('width', width)
-    .attr('height', 80);
-    var zoomDispatch1 = d3.dispatch('zoom', 'zoomend');
-
-
-    console.log('here chromInfo:', chromInfo);
-var mmvMargin = {'top': 10, 'left': 30, 'bottom': 30, 'right': 120};
-var mmvPlot1 = higlass.MassiveMatrixPlot()
-    .width(width)
-    .margin(mmvMargin)
-    .height(height)
-    .zoomDispatch(zoomDispatch1)
-    .nTicks(4)
-    .chromInfo(chromInfo)
-
-d3.select('#mmv-area')
-.datum( awsDomain + '/hg19/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz')
-.call(mmvPlot1)
-
-
-});</script><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+<!DOCTYPE html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HiGlass</title><style type="text/css">.canvasjs-chart-credit {
+    display:none;
+}</style><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css"><link rel="stylesheet" href="styles/page.css"></head><div style="margin: 15px"><div id="rectangular"></div></div><script src="scripts/main.js"></script><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
           })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-77756807-1', 'auto');
-    ga('send', 'pageview');</script></body></html>
+    ga('send', 'pageview');</script>
