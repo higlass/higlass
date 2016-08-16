@@ -505,6 +505,12 @@ export function GenericTiledArea() {
         return chart;
     }
 
+    chart.yScale = function(_) {
+        if (!arguments) return yScale;
+        else yScale = _;
+        return chart;
+    }
+
     chart.domain = function(_) {
         if (!arguments) return domain;
         else domain = _;

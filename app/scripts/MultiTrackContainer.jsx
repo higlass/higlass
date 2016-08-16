@@ -27,6 +27,19 @@ export class MultiTrackContainer extends React.Component {
         this.initialTrackHeight = 30;
         this.initialTrackWidth = 300;
 
+        this.tracksToPositions = { 'top-bar': 'top', 
+                                    'left-bar': 'left', 
+                                    'top-line': 'top',
+                                    'top-point': 'top',
+                                    'top-heatmap': 'top',
+                                    'top-diagonal-heatmap': 'top',
+                                   'top-gene-labels': 'top',
+                                   'top-chromosome-axis': 'top',
+                                   'left-chromosome-axis': 'left',
+                                   'left-empty': 'left',
+                                   'top-empty': 'top',
+                                   'right-bar': 'right', 'heatmap': 'center' };
+
         let tracks = this.props.viewConfig.tracks;
         let currentTop = 0;
         for (let i = 0; i < tracks.length; i++) {
@@ -89,19 +102,9 @@ export class MultiTrackContainer extends React.Component {
         }.bind(this));
 
 
-        this.tracksToPositions = { 'top-bar': 'top', 'left-bar': 'left', 
-                                    'top-line': 'top',
-                                    'top-point': 'top',
-                                    'top-heatmap': 'top',
-                                    'top-diagonal-heatmap': 'top',
-                                   'top-gene-labels': 'top',
-                                   'top-chromosome-axis': 'top',
-                                   'left-chromosome-axis': 'left',
-                                   'left-empty': 'left',
-                                   'top-empty': 'top',
-                                   'right-bar': 'right', 'heatmap': 'center' };
 
         this.setHeight();
+        this.arrangeTracks();
     }
 
     updateView() {
@@ -122,15 +125,19 @@ export class MultiTrackContainer extends React.Component {
 
             this.xOrigScale.domain([this.xOrigScale.domain()[0], 
                                this.xOrigScale.domain()[0] + nextDomainWidth]);
-            this.xOrigScale.range([0, this.width]);
 
             this.topChromosomeAxis.xScale(this.xOrigScale.copy());
+            this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
         }
 
+        this.xOrigScale.range([0, this.width]);
+        this.yOrigScale.range([0, this.height]);
         this.renderer.resize(this.width, this.height);
 
         for (let uid in this.state.tracks) {
-            this.state.tracks[uid].width = this.width;
+            if (this.tracksToPositions[this.state.tracks[uid].type] == 'top' ||
+                this.tracksToPositions[this.state.tracks[uid].type] == 'center')
+                    this.state.tracks[uid].width = this.width;
 
             if ('resizeDispatch' in this.state.tracks[uid]) {
                 this.state.tracks[uid].resizeDispatch.resize();
@@ -143,10 +150,10 @@ export class MultiTrackContainer extends React.Component {
     arrangeTracks() {
         // arrange the tracks so that the left are neatly on the left, the top are neatly on top
         // and the center is positioned right in the center
-        let leftMargin = 0;
-        let topMargin = 0;
-        let bottomMargin = 0;
-        let rightMargin = 0;
+        this.leftMargin = 0;
+        this.topMargin = 0;
+        this.bottomMargin = 0;
+        this.rightMargin = 0;
 
         let currentTop = 0;
         let currentLeft = 0;
@@ -156,56 +163,57 @@ export class MultiTrackContainer extends React.Component {
             let track = this.state.tracks[trackId];
 
             if (this.tracksToPositions[track.type] == 'top')
-                topMargin += track.height;
+                this.topMargin += track.height;
             if (this.tracksToPositions[track.type] == 'left')
-                leftMargin += track.width;
+                this.leftMargin += track.width;
             if (this.tracksToPositions[track.type] == 'right')
-                rightMargin += track.width;
+                this.rightMargin += track.width;
             if (this.tracksToPositions[track.type] == 'bottom')
-                bottomMargin += track.width;
+                this.bottomMargin += track.height;
         }
 
-        let currentRightLeft = this.width - rightMargin;
-        let currentBottomTop = this.height - bottomMargin;
+        let currentRightLeft = this.width - this.rightMargin;
+        let currentBottomTop = this.height - this.bottomMargin;
 
         for (let i = 0; i < this.state.tracksList.length; i++) {
             let trackId = this.state.tracksList[i].uid;
             let track = this.state.tracks[trackId];
-            console.log('track:', track);
+            track.leftMargin = this.leftMargin;
+            track.topMargin = this.topMargin;
 
             if (this.tracksToPositions[track.type] == 'top') {
-                track.left = leftMargin;
+                track.left = this.leftMargin;
                 track.top = currentTop;
-                track.width = this.width - leftMargin - rightMargin;
+                track.width = this.width - this.leftMargin - this.rightMargin;
                 currentTop += track.height;
             }
 
             if (this.tracksToPositions[track.type] == 'left') {
-                track.top = topMargin;
+                track.top = this.topMargin;
                 track.left = currentLeft;
-                track.height = this.height - topMargin - bottomMargin;
+                track.height = this.height - this.topMargin - this.bottomMargin;
                 currentLeft += track.width;
             }
 
             if (this.tracksToPositions[track.type] == 'right') {
-                track.top = topMargin;
+                track.top = this.topMargin;
                 track.left = currentRightLeft;
-                track.height = this.height - topMargin - bottomMargin;
+                track.height = this.height - this.topMargin - this.bottomMargin;
                 currentRightLeft += track.width;
             }
 
             if (this.tracksToPositions[track.type] == 'bottom') {
-                track.left = leftMargin;
+                track.left = this.leftMargin;
                 track.top = currentBottomTop;
-                track.width = this.width - leftMargin - rightMargin;
+                track.width = this.width - this.leftMargin - this.rightMargin;
                 currentBottomTop += track.height;
             }
 
             if (this.tracksToPositions[track.type] == 'center') {
-                track.left = leftMargin;
-                track.top = topMargin;
-                track.width = this.width  - leftMargin - rightMargin;
-                track.height = this.height - topMargin - bottomMargin;
+                track.left = this.leftMargin;
+                track.top = this.topMargin;
+                track.width = this.width  - this.leftMargin - this.rightMargin;
+                track.height = this.height - this.topMargin - this.bottomMargin;
             }
         }
 
@@ -255,10 +263,11 @@ export class MultiTrackContainer extends React.Component {
                                                   antialias: true, 
                                                   transparent: true } )
 
+        PIXI.RESOLUTION=2;
         this.updateDimensions();
 
-        this.xScale.range([0, this.width]);
-        this.yScale.range([0, this.height]);
+        this.xScale.range([this.leftMargin, this.width]);
+        this.yScale.range([this.topMargin, this.height]);
 
         this.arrangeTracks();
 
@@ -269,13 +278,13 @@ export class MultiTrackContainer extends React.Component {
         this.yScaleDependencies = [];
 
         this.topChromosomeAxis = TopChromosomeAxis()
-            .xScale(this.xScale.copy())
+            .xScale(this.xOrigScale.copy())
             .width(this.width)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch)
 
         this.leftChromosomeAxis = LeftChromosomeAxis()
-            .yScale(this.yScale.copy())
+            .yScale(this.yOrigScale.copy())
             .width(this.width)
             .height(this.height)
             .resizeDispatch(this.resizeDispatch)
@@ -289,12 +298,15 @@ export class MultiTrackContainer extends React.Component {
             .width(this.width)
             .height(this.width)
             .domain(this.xScale.domain())
+            .xScale(this.xScale)
+            .yScale(this.yScale)
             .zoomDispatch(this.zoomDispatch)
 
         this.horizontalTiledArea = GenericTiledArea()
             .tileType('div')
             .width(this.width)
             .height(this.height)
+            .xScale(this.xOrigScale.copy())
             .domain(this.xScale.domain())
             .zoomDispatch(this.zoomDispatch)
             .horizontal(true);
@@ -304,6 +316,7 @@ export class MultiTrackContainer extends React.Component {
             .width(this.height)   // since this is a vertical tiled area, the width is actually the height
                                         // of the viewable area
             .domain(this.yScale.domain())
+            .yScale(this.yOrigScale.copy())
             .zoomDispatch(this.zoomDispatch)
             .horizontal(false)
 
@@ -312,11 +325,13 @@ export class MultiTrackContainer extends React.Component {
             .oneDimensional(false)
             .width(this.width)
             .height(this.height)
+            .xScale(this.xOrigScale.copy())
+            .yScale(this.yOrigScale.copy())
             .domain(this.xScale.domain())
             .zoomDispatch(this.zoomDispatch)
             .mirrorTiles(true)
         let wigglePixiTrack = WigglePixiTrack()
-            .xScale(this.xScale.copy())
+            .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
             .pixiStage(this.stage)
@@ -324,7 +339,7 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch);
 
         let wigglePixiLine = WigglePixiLine()
-            .xScale(this.xScale.copy())
+            .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
             .pixiStage(this.stage)
@@ -332,7 +347,7 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch);
 
         let wigglePixiPoint = WigglePixiPoint()
-            .xScale(this.xScale.copy())
+            .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
             .pixiStage(this.stage)
@@ -340,7 +355,7 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch);
 
         let wigglePixiHeatmap = WigglePixiHeatmap()
-            .xScale(this.xScale.copy())
+            .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
             .pixiStage(this.stage)
@@ -356,8 +371,8 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch);
 
         let heatmapRectangleTrack = HeatmapRectangleTrack()
-            .xScale(this.xScale.copy())
-            .yScale(this.yScale.copy())
+            .xScale(this.xOrigScale.copy())
+            .yScale(this.yOrigScale.copy())
             .width(this.width)
             .height(this.height)
             .pixiStage(this.stage)
@@ -365,7 +380,7 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch); 
 
         let diagonalHeatmapTrack = TopDiagonalHeatmapRectangleTrack()
-            .xScale(this.xScale.copy())
+            .xScale(this.xOrigScale.copy())
             .yScale(this.yScale.copy())
             .width(this.width)
             .height(this.height)
@@ -374,7 +389,7 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch); 
 
         let topGeneLabels = TopGeneLabelsTrack()
-            .xScale(this.xScale.copy())
+            .xScale(this.xOrigScale.copy())
             .width(this.width)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
@@ -589,7 +604,6 @@ export class MultiTrackContainer extends React.Component {
 
         } else if (range1 != null) {
             // adjust the x-axis
-
             var xZoomParams = this.zoomTo(this.xOrigScale, 
                                           range1);
             var yZoomParams = this.zoomTo(this.yOrigScale,
@@ -633,7 +647,6 @@ export class MultiTrackContainer extends React.Component {
         }
 
         let trackList = this.state.tracksList;
-        console.log('trackList:', trackList);
 
         //<img src="images/plus.svg" width="20px" style={imgStyle}/>
         /*
@@ -656,6 +669,7 @@ export class MultiTrackContainer extends React.Component {
                             return (
                                 <div 
                                                  className={'track ' + this.trackDimension(track)}
+                                                 style={{left: track.left, top: track.top, width: track.width, height: track.height, position: 'absolute'}}
                                                  key={track.uid}
                                                  />
                                 

@@ -39,8 +39,6 @@ export function TopChromosomeAxis() {
                 let svg = d3.select(this).selectAll('svg')
                     .data([d])
 
-                xScale.range([0, d.width]);
-
                 svg.enter()
                 .append('svg')
                 .style('width', (d) => { return d.width;}) 
@@ -56,7 +54,7 @@ export function TopChromosomeAxis() {
                 .remove()
 
                 gAxis =  svg.selectAll('g')
-                .attr('transform', 'translate(0,15)');
+                .attr('transform', 'translate(' + (-d.leftMargin) + ',15)');
 
                 gAxis.selectAll('.text-center')
                 .data([0])
@@ -102,21 +100,6 @@ export function TopChromosomeAxis() {
             function sizeChanged() {
                 let svg = d3.select(this).selectAll('svg')
                 svg.style('width', d.width);
-                /*
-                console.log('d.width:', d.width, xScale.domain());
-                console.log('zoom.translate1()', zoom.translate(), zoom.scale());
-                let prevTranslate = zoom.translate();
-                let prevScale = zoom.scale();
-
-                zoom.x(xScale);
-                zoom.translate(prevTranslate);
-                zoom.scale(prevScale);
-                */
-
-                //console.log('zoom.translate2()', zoom.translate(), zoom.scale());
-
-                // translate and scale have to change to keep the center in the same place
-                //
                 draw();
             }
 
@@ -137,7 +120,6 @@ export function TopChromosomeAxis() {
                            // FIXME
                        }
 
-                       //console.log('zoomedXScale.doman()', zoomedXScale.domain(), zoomedXScale.range());
 
                         let cumValues = chromInfo.cumPositions;
                        //gChromLabels.attr('x', (d) => { return zoomedXScale(d.pos); });
