@@ -21501,6 +21501,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(HiGlassApp).call(this, props));
 
+	        _this.defaultViewString = JSON.stringify(JSON.parse(_this.props.viewConfigString), null, 2);
+
 	        _this.state = {
 	            //viewConfig : []
 
