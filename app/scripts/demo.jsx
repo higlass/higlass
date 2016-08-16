@@ -17,6 +17,11 @@ let rectangularOneWindow = JSON.parse(`
       "width": "100%"
     },
     "tracks": [
+      {
+        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+        "type": "top-chromosome-axis",
+        "height": 25
+      },
         {
         "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",
         "type": "heatmap",
@@ -24,7 +29,8 @@ let rectangularOneWindow = JSON.parse(`
       },
       {
         "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
-        "type": "top-chromosome-axis"
+        "type": "left-chromosome-axis",
+        "width": 25
       },
       {
         "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",
@@ -37,6 +43,7 @@ let rectangularOneWindow = JSON.parse(`
         "type": "top-line",
         "height": 25
       }
+
     ],
     "zoomLock" : 0
   }

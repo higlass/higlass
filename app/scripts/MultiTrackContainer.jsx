@@ -22,6 +22,9 @@ export class MultiTrackContainer extends React.Component {
     constructor(props) {
         super(props);
 
+        this.width = 500;  //default sizes
+        this.height = 200;
+
         this.uid = slugid.nice();
         this.awsDomain = '//52.23.165.123:9872';
         this.initialTrackHeight = 30;
@@ -126,6 +129,9 @@ export class MultiTrackContainer extends React.Component {
             this.xOrigScale.domain([this.xOrigScale.domain()[0], 
                                this.xOrigScale.domain()[0] + nextDomainWidth]);
 
+        }
+
+        if (typeof this.topChromosomeAxis != 'undefined') {
             this.topChromosomeAxis.xScale(this.xOrigScale.copy());
             this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
         }
@@ -380,7 +386,7 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch); 
 
         let diagonalHeatmapTrack = TopDiagonalHeatmapRectangleTrack()
-            .xScale(this.xOrigScale.copy())
+            .xScale(this.xScale.copy())
             .yScale(this.yScale.copy())
             .width(this.width)
             .height(this.height)
@@ -647,6 +653,9 @@ export class MultiTrackContainer extends React.Component {
         }
 
         let trackList = this.state.tracksList;
+        trackList.map(function(track, i) {
+            console.log('track.width:', track.width);
+        });
 
         //<img src="images/plus.svg" width="20px" style={imgStyle}/>
         /*
