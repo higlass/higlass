@@ -15,7 +15,6 @@ export class MultiViewContainer extends React.Component {
 
 
     render() {
-        console.log('rendering multi view container', this.props.viewConfig);
         let divStyle = {float: 'left', width: '100%'};
         return (
             <div style={divStyle} className="MultiViewContainer">

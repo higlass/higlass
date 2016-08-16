@@ -204,8 +204,6 @@ export function TopDiagonalHeatmapRectangleTrack() {
                         tile.xOrigScale = d3.scale.linear().domain(tile.xOrigDomain).range(tile.xOrigRange);
                         tile.yOrigScale = d3.scale.linear().domain(tile.yOrigDomain).range(tile.yOrigRange);
 
-                        console.log('tile.xOrigScale', tile.xOrigScale.domain(), tile.xOrigScale.range());
-
                         // tile isn't loaded into a pixi graphics container
                         // load that sucker
                         let newGraphics = new PIXI.Graphics();
@@ -227,8 +225,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
                         newGraphics.scale.y = 1 / Math.sqrt(2);
                         newGraphics.scale.x = -1 / Math.sqrt(2);
                         newGraphics.rotation = -3 * Math.PI / 4;
-                        //newGraphics.position.y = d.height;
-                        newGraphics.position.y = 0;
+                        newGraphics.position.y = d.height;
                         d.tileGraphics[shownTileId] = newGraphics;
 
 
@@ -297,7 +294,6 @@ export function TopDiagonalHeatmapRectangleTrack() {
                 d.pMask.scale.x = d.width;
                 d.pMask.scale.y = d.height;
 
-                console.log('d.pMask.position', d.pMask.position.x, d.pMask.position.y);
             }
 
             function closeClicked() {

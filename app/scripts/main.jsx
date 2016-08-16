@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import {HiGlassApp} from './HiGlassApp.js';
 import $ from 'jquery';
 
-/*
 let rectangularOneWindow = JSON.parse(`
     [
   {
@@ -55,7 +54,6 @@ ReactDOM.render(
         <HiGlassApp viewConfigString={JSON.stringify(rectangularOneWindow)}/>
     , document.getElementById('rectangular')
     );
-    */
 
 let triangularOneWindow = JSON.parse(`
     [
@@ -68,21 +66,35 @@ let triangularOneWindow = JSON.parse(`
     "viewStyle": {
       "float": "left",
       "padding": "5px",
-      "width": "100%"
+      "width": "50%"
     },
     "tracks": [
         {
         "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",
         "type": "top-diagonal-heatmap",
-        "height": 300
+        "height": 100
+      },
+      {
+        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+        "type": "top-chromosome-axis"
+      },
+      {
+        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",
+        "type": "top-gene-labels",
+        "height": 25
+      },
+
+      {
+        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",
+        "type": "top-line",
+        "height": 25
       }
     ],
     "zoomLock" : 0
   }
 ]
 `)
-//let triangularTwoWindow = JSON.stringify(triangularOneWindow.concat(triangularOneWindow), null, 2);
-let triangularTwoWindow = JSON.stringify(triangularOneWindow);
+let triangularTwoWindow = JSON.stringify(triangularOneWindow.concat(triangularOneWindow), null, 2);
 
 
 ReactDOM.render(
@@ -90,7 +102,6 @@ ReactDOM.render(
     , document.getElementById('triangular-1')
     );
 
-/*
 let oneDOneWindow = JSON.parse(`
     [
   {
@@ -147,4 +158,3 @@ ReactDOM.render(
         <HiGlassApp viewConfigString={JSON.stringify(oneDOneWindow)}/>
     , document.getElementById('one-dimensional')
     );
-    */
