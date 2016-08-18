@@ -27,6 +27,7 @@ export function WigglePixiLine() {
     let chart = function(selection) {
         selection.each(function(d) {
             inD += 1;
+            console.log('called:...');
 
             if (!('resizeDispatch' in d)) {
                 d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize') : resizeDispatch;
@@ -57,16 +58,19 @@ export function WigglePixiLine() {
                 let pMain = new PIXI.Graphics();
                 let pAbove = new PIXI.Graphics();
                 let pMask = new PIXI.Graphics();
+                let pAxis = new PIXI.Graphics();
 
                 pMask.beginFill();
                 pMask.drawRect(0, 0, 1, 1);
                 pMask.endFill();
 
                 pAbove.addChild(pMain);
+                pAbove.addChild(pAxis);
                 pAbove.addChild(pMask);
                 d.stage.addChild(pAbove);
 
                 d.pAbove = pAbove;
+                d.pAxis = pAxis;
                 d.pMain = pMain;
                 d.pMask = pMask;
 
@@ -74,9 +78,27 @@ export function WigglePixiLine() {
 
 
             }
+
+            if (!('maxText' in d)) {
+                d.maxText = new PIXI.Text("", {font: '8px Arial', fill: "black"});
+                d.maxTextBg = new PIXI.Graphics();
+
+                d.pAxis.addChild(d.maxText);
+                d.pAxis.addChild(d.maxTextBg);
+            }
+
+            if (!('minText' in d)) {
+                d.minText = new PIXI.Text("", {font: '8px Arial', fill: "black"});
+                d.minTextBg = new PIXI.Graphics();
+
+                d.pAxis.addChild(d.minText);
+                d.pAxis.addChild(d.minTextBg);
+            }
+
             
             let zoomLevel = null;
             let drawTile = null;
+            let drawAxis = null;
             let allTiles = null;
 
             function redrawTile() {
@@ -102,7 +124,52 @@ export function WigglePixiLine() {
                     // helps to avoid flickering
                     zoomChanged(d.translate, d.scale);
                 }
+
+                d.pAxis.removeChild(d.maxTextBg);
+                d.pAxis.removeChild(d.minTextBg);
+
+                d.maxTextBg = new PIXI.Graphics();
+                d.minTextBg = new PIXI.Graphics();
+
+                d.pAxis.addChild(d.maxTextBg);
+                d.pAxis.addChild(d.minTextBg);
+
+                d.maxTextBg.beginFill(0xFFFFFF,1);
+                d.minTextBg.beginFill(0xFFFFFF,1);
+                //d.maxTextBg.drawRect(0, 0, 30, 9);
                 
+
+                d.pAxis.removeChild(d.maxText);
+                d.pAxis.removeChild(d.minText);
+
+                let format = d3.format(".2s")
+
+                d.maxText = new PIXI.Text(format(maxVisibleValue), {font: '9px Arial', fill: "black"});
+
+                d.maxText.anchor.x = 0;
+                d.maxText.anchor.y = 0;
+
+                d.maxText.position.x = d.left + 0;
+                d.maxText.position.y = 0;
+
+                d.pAxis.addChild(d.maxText);
+                let bounds = d.maxText.getBounds();
+                d.maxTextBg.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+
+                d.minText = new PIXI.Text(format(minVisibleValue), {font: '9px Arial', fill: "black"});
+
+                d.minText.anchor.x = 0;
+                d.minText.anchor.y = 1;
+
+                d.minText.position.x = d.left + 0;
+                d.minText.position.y = d.height;
+
+                d.pAxis.addChild(d.minText);
+
+                bounds = d.minText.getBounds();
+                console.log('min bounds:', bounds);
+                d.minTextBg.drawRect(bounds.x, bounds.y + d.height, bounds.width, bounds.height);
+
 
                 drawTile = function(graphics, tile) {
                     let tileData = load1DTileData(tile.data, tile.type);
@@ -123,14 +190,13 @@ export function WigglePixiLine() {
 
 
                         let xPos = zoomedXScale(tileXScale(i));
-                        //let yPos = -(d.height - yScale(tileData[i]));
-                        let yPos = -1; //-(d.height - yScale(tileData[i]));
                         let height = yScale(tileData[i])
                         let width = zoomedXScale(tileXScale(i+1)) - zoomedXScale(tileXScale(i));
 
                        // if (height > 0 && width > 0) {
                          //   graphics.drawRect(xPos, yPos, width, height);
                        // }
+                        //console.log('xPos:', xPos, d.height * yScale(tileData[i+1]));
 
                        if(j == 0){
                             graphics.moveTo(xPos, d.height - d.height*height);
@@ -183,6 +249,7 @@ export function WigglePixiLine() {
 
             function sizeChanged() {
                 d.pMain.position.y = d.top;
+                d.pAxis.position.y = d.top;
             //    d.pMain.scale.y = d.height;
                 if(d.preHeight != d.height){
                     if (drawTile != null) {

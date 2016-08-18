@@ -131,8 +131,6 @@ export class MultiTrackContainer extends React.Component {
         if (typeof this.topChromosomeAxis != 'undefined') {
             this.topChromosomeAxis.xScale(this.xOrigScale.copy());
             this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
-            this.leftWigglePixiTrack.yScale(this.yOrigScale.copy());
-
         }
 
         this.xOrigScale.range([0, this.width]);

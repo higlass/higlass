@@ -155,19 +155,19 @@ let oneDOneWindow = JSON.parse(`
       {
         "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",
         "type": "top-line",
-        "height": 25
+        "height": 45
       },
 
       {
         "source": "//52.23.165.123:9872/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz",
         "type": "top-line",
-        "height": 25
+        "height": 45
       },
 
       {
         "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz",
         "type": "top-bar",
-        "height": 25
+        "height": 45
       }
     ],
     "zoomLock" : 0
