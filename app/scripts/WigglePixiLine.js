@@ -11,7 +11,6 @@ export function WigglePixiLine() {
     let zoomDispatch = null;
     let resolution = 256;
     let pixiStage = null;
-    let inD = 0;
     var xPoints;
     var yPoints;
     var tileIDs;
@@ -26,9 +25,6 @@ export function WigglePixiLine() {
 
     let chart = function(selection) {
         selection.each(function(d) {
-            inD += 1;
-            console.log('called:...');
-
             if (!('resizeDispatch' in d)) {
                 d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize') : resizeDispatch;
             }
@@ -154,7 +150,7 @@ export function WigglePixiLine() {
 
                 d.pAxis.addChild(d.maxText);
                 let bounds = d.maxText.getBounds();
-                d.maxTextBg.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+                d.maxTextBg.drawRect(d.left + bounds.x, bounds.y, bounds.width, bounds.height);
 
                 d.minText = new PIXI.Text(format(minVisibleValue), {font: '9px Arial', fill: "black"});
 
@@ -168,7 +164,7 @@ export function WigglePixiLine() {
 
                 bounds = d.minText.getBounds();
                 console.log('min bounds:', bounds);
-                d.minTextBg.drawRect(bounds.x, bounds.y + d.height, bounds.width, bounds.height);
+                d.minTextBg.drawRect(d.left + bounds.x, bounds.y + d.height, bounds.width, bounds.height);
 
 
                 drawTile = function(graphics, tile) {
