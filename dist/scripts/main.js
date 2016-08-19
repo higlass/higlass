@@ -96,7 +96,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  console.log('Error:', e);
 	}
 
-	var oneDOneWindow = JSON.parse('\n    [\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "100%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis"\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-minus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-bar",\n        "height": 25\n      }\n    ],\n    "zoomLock" : 0\n  }\n]\n');
+	var oneDOneWindow = JSON.parse('\n    [\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "100%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis"\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-minus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 45\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/E116-DNase.fc.signal.bigwig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 45\n      },\n\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-bar",\n        "height": 45\n      }\n    ],\n    "zoomLock" : 0\n  }\n]\n');
 
 	try {
 	  _reactDom2.default.render(_react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: JSON.stringify(oneDOneWindow) }), document.getElementById('one-dimensional'));
@@ -24293,7 +24293,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (typeof this.topChromosomeAxis != 'undefined') {
 	                this.topChromosomeAxis.xScale(this.xOrigScale.copy());
 	                this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
-	                this.leftWigglePixiTrack.yScale(this.yOrigScale.copy());
 	            }
 
 	            this.xOrigScale.range([0, this.width]);
@@ -65066,7 +65065,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var zoomDispatch = null;
 	    var resolution = 256;
 	    var pixiStage = null;
-	    var inD = 0;
 	    var xPoints;
 	    var yPoints;
 	    var tileIDs;
@@ -65081,8 +65079,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var chart = function chart(selection) {
 	        selection.each(function (d) {
-	            inD += 1;
-
 	            if (!('resizeDispatch' in d)) {
 	                d.resizeDispatch = resizeDispatch == null ? _d2.default.dispatch('resize') : resizeDispatch;
 	            }
@@ -65112,24 +65108,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var pMain = new _pixi2.default.Graphics();
 	                var pAbove = new _pixi2.default.Graphics();
 	                var pMask = new _pixi2.default.Graphics();
+	                var pAxis = new _pixi2.default.Graphics();
 
 	                pMask.beginFill();
 	                pMask.drawRect(0, 0, 1, 1);
 	                pMask.endFill();
 
 	                pAbove.addChild(pMain);
+	                pAbove.addChild(pAxis);
 	                pAbove.addChild(pMask);
 	                d.stage.addChild(pAbove);
 
 	                d.pAbove = pAbove;
+	                d.pAxis = pAxis;
 	                d.pMain = pMain;
 	                d.pMask = pMask;
 
 	                pMain.mask = pMask;
 	            }
 
+	            if (!('maxText' in d)) {
+	                d.maxText = new _pixi2.default.Text("", { font: '8px Arial', fill: "black" });
+	                d.maxTextBg = new _pixi2.default.Graphics();
+
+	                d.pAxis.addChild(d.maxText);
+	                d.pAxis.addChild(d.maxTextBg);
+	            }
+
+	            if (!('minText' in d)) {
+	                d.minText = new _pixi2.default.Text("", { font: '8px Arial', fill: "black" });
+	                d.minTextBg = new _pixi2.default.Graphics();
+
+	                d.pAxis.addChild(d.minText);
+	                d.pAxis.addChild(d.minTextBg);
+	            }
+
 	            var zoomLevel = null;
 	            var drawTile = null;
+	            var drawAxis = null;
 	            var allTiles = null;
 
 	            function redrawTile() {
@@ -65161,6 +65177,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    zoomChanged(d.translate, d.scale);
 	                }
 
+	                d.pAxis.removeChild(d.maxTextBg);
+	                d.pAxis.removeChild(d.minTextBg);
+
+	                d.maxTextBg = new _pixi2.default.Graphics();
+	                d.minTextBg = new _pixi2.default.Graphics();
+
+	                d.pAxis.addChild(d.maxTextBg);
+	                d.pAxis.addChild(d.minTextBg);
+
+	                d.maxTextBg.beginFill(0xFFFFFF, 1);
+	                d.minTextBg.beginFill(0xFFFFFF, 1);
+	                //d.maxTextBg.drawRect(0, 0, 30, 9);
+
+	                d.pAxis.removeChild(d.maxText);
+	                d.pAxis.removeChild(d.minText);
+
+	                var format = _d2.default.format(".2s");
+
+	                d.maxText = new _pixi2.default.Text(format(maxVisibleValue), { font: '9px Arial', fill: "black" });
+
+	                d.maxText.anchor.x = 0;
+	                d.maxText.anchor.y = 0;
+
+	                d.maxText.position.x = d.left + 0;
+	                d.maxText.position.y = 0;
+
+	                d.pAxis.addChild(d.maxText);
+	                var bounds = d.maxText.getBounds();
+	                d.maxTextBg.drawRect(d.left + bounds.x, bounds.y, bounds.width, bounds.height);
+
+	                d.minText = new _pixi2.default.Text(format(minVisibleValue), { font: '9px Arial', fill: "black" });
+
+	                d.minText.anchor.x = 0;
+	                d.minText.anchor.y = 1;
+
+	                d.minText.position.x = d.left + 0;
+	                d.minText.position.y = d.height;
+
+	                d.pAxis.addChild(d.minText);
+
+	                bounds = d.minText.getBounds();
+	                d.minTextBg.drawRect(d.left + bounds.x, bounds.y + d.height, bounds.width, bounds.height);
+
 	                drawTile = function drawTile(graphics, tile) {
 	                    var tileData = (0, _TileData.load1DTileData)(tile.data, tile.type);
 	                    graphics.clear();
@@ -65177,14 +65236,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    for (var i = 0; i < tileData.length; i++) {
 
 	                        var xPos = zoomedXScale(tileXScale(i));
-	                        //let yPos = -(d.height - yScale(tileData[i]));
-	                        var yPos = -1; //-(d.height - yScale(tileData[i]));
 	                        var _height = yScale(tileData[i]);
 	                        var _width = zoomedXScale(tileXScale(i + 1)) - zoomedXScale(tileXScale(i));
 
 	                        // if (height > 0 && width > 0) {
 	                        //   graphics.drawRect(xPos, yPos, width, height);
 	                        // }
+	                        //console.log('xPos:', xPos, d.height * yScale(tileData[i+1]));
 
 	                        if (j == 0) {
 	                            graphics.moveTo(xPos, d.height - d.height * _height);
@@ -65236,6 +65294,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            function sizeChanged() {
 	                d.pMain.position.y = d.top;
+	                d.pAxis.position.y = d.top;
 	                //    d.pMain.scale.y = d.height;
 	                if (d.preHeight != d.height) {
 	                    if (drawTile != null) {

@@ -163,7 +163,6 @@ export function WigglePixiLine() {
                 d.pAxis.addChild(d.minText);
 
                 bounds = d.minText.getBounds();
-                console.log('min bounds:', bounds);
                 d.minTextBg.drawRect(d.left + bounds.x, bounds.y + d.height, bounds.width, bounds.height);
 
 
