@@ -53,6 +53,8 @@ export class MultiTrackContainer extends React.Component {
                 trackWidth = tracks[i].width;
             if ('uid' in tracks[i])
                 trackId = tracks[i].uid;
+            if ('colorRange' in tracks[i]) 
+                tracks[i].colorScale = this.initColorScale(tracks[i].colorRange)
 
             tracks[i].left = 0;
             tracks[i].top = currentTop
@@ -106,6 +108,8 @@ export class MultiTrackContainer extends React.Component {
         this.setHeight();
         this.arrangeTracks();
     }
+
+
 
     updateView() {
         //d3.selectAll('
@@ -456,6 +460,51 @@ export class MultiTrackContainer extends React.Component {
             .ease('linear')
             .call(this.zoom.translate([-6091225.646378613, -6091157.500879494]).scale(14603.2311647761).event);
             */
+    }
+
+    initColorScale(colorScaleRange, colorScaleDomain = null) {
+        let colorValues = colorScaleRange.map((x) => {
+            console.log('x', x, 'rgb:', d3.rgb(x));    
+            return d3.rgb(x);
+        });
+
+        console.log('colorScaleRange:', colorScaleRange);
+        console.log('colorValues:', colorValues);
+
+        // go from a d3 linear scale to 0 - 256 array of rgba value
+        let d3Scale = d3.scale.linear()
+            .range(colorValues);
+        let domain = [1,256];
+
+        if (colorScaleDomain) {
+            d3Scale.domain(colorScaleRange);
+        } else {
+            let start = 1, end = 256;
+            let width = end - start;
+            let numPivots = colorScaleRange.length - 2;
+            domain = [start];
+
+            for (let i = 0; i < numPivots; i++) {
+                domain.push(start + (i+1) * width / (numPivots + 1))
+            }
+
+            domain.push(end);
+            console.log('domain:', domain);
+        }
+        d3Scale.domain(domain);
+
+        console.log('colorScaleRange:', colorScaleRange, d3Scale.domain(), d3Scale.range());
+        let scaleArray = [];
+        let colorArray = [255, 255, 255, 0];
+        for (let i = 0; i < 256; i++) {
+            let colorRgb = d3.rgb(d3Scale(i));
+            let colorArray = [colorRgb.r, colorRgb.g, colorRgb.b, 255];
+            scaleArray.push(colorArray);
+        }
+        scaleArray[255] = [255,255,255,0];
+
+        console.log('scaleArray:', scaleArray);
+        return scaleArray;
     }
 
     animate() {

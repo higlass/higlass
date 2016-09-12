@@ -25,7 +25,8 @@ let rectangularOneWindow = JSON.parse(`
         {
         "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",
         "type": "heatmap",
-        "height": 300
+        "height": 300,
+        "colorRange": ["white", "yellow", "black", "purple"]
       },
       {
         "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",

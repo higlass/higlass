@@ -11,13 +11,10 @@ export function HeatmapRectangleTrack() {
     let xScale = d3.scale.linear();
     let yScale = d3.scale.linear();
 
-    let zoomedXScale = d3.scale.linear();
     let zoomDispatch = null;
-    let resolution = 256;
     let pixiStage = null;
     let inD = 0;
     let dataDomain = [];
-    let transferFunction = (count) => count > 0 ? Math.log2(1 + Math.log2(1 + count)) : 0;
     let valueScale = d3.scale.linear()
                     .range([255,0]);
 
@@ -55,32 +52,6 @@ export function HeatmapRectangleTrack() {
 
     function countTransform(count) {
         return Math.sqrt(Math.sqrt(count + 1));
-    }
-
-    function setPix(size, data, minVisibleValue, maxVisibleValue) {
-        valueScale.domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
-        let pixData = new Uint8ClampedArray(size * 4);
-
-        try {
-            for (let i = 0; i < data.length; i++) {
-                let d = data[i];
-                let ct = countTransform(d);
-
-                let rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
-                let rgb = heatedObjectMap[rgbIdx];
-
-
-                pixData[i*4] = rgb[0];
-                pixData[i*4+1] = rgb[1];
-                pixData[i*4+2] = rgb[2];
-                pixData[i*4+3] = rgb[3];
-            };
-        } catch (err) {
-            console.log('ERROR:', err);
-            return pixData;
-        }
-
-        return pixData;
     }
 
     function allIn(set1, set2) {
@@ -135,6 +106,7 @@ export function HeatmapRectangleTrack() {
     let chart = function(selection) {
         selection.each(function(d) {
             inD += 1;
+            console.log('d:', d);
 
             if (!('resizeDispatch' in d)) {
                 d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize', 'close') : resizeDispatch;
@@ -270,6 +242,7 @@ export function HeatmapRectangleTrack() {
                         d.rendering[createShownTileId(tiles[i].tileId)] = true;
                         //let tileData = loadTileData(tiles[i].data);
                         //let pixData = setPix(tileWidth * tileWidth, tileData, minVisibleValue, maxVisibleValue);
+                        //console.log('d.colorScale:', d.colorScale);
                         let workerObj = {'shownTileId': createShownTileId(tiles[i].tileId),
                                                       'tile': { 'data': tiles[i].data.buffer.slice(0),
                                                       'mirrored': tiles[i].mirrored,
@@ -280,12 +253,12 @@ export function HeatmapRectangleTrack() {
                                                       'xRange': tiles[i].xRange,
                                                       'yRange': tiles[i].yRange,
                                                       'maxZoom': tiles[i].maxZoom,
+                                                      'colorScale': d.colorScale,
                                                       'xOrigDomain': tiles[i].xOrigScale.domain(),
                                                       'xOrigRange': tiles[i].xOrigScale.range(),
                                                       'yOrigDomain': tiles[i].yOrigScale.domain(),
                                                       'yOrigRange': tiles[i].yOrigScale.range() },
                             minVisibleValue: minVisibleValue, maxVisibleValue: maxVisibleValue}
-
 
                         worker.postMessage(workerObj, [workerObj.tile.data]);
 
@@ -339,55 +312,55 @@ export function HeatmapRectangleTrack() {
         if (!arguments.length) return width;
         else width = _;
         return chart;
-    }
+    };
 
     chart.height = function(_) {
         if (!arguments.length) return height;
         else height = _;
         return chart;
-    }
+    };
 
     chart.resizeDispatch = function(_) {
         if (!arguments.length) return resizeDispatch;
         else resizeDispatch = _;
         return chart;
-    }
+    };
 
     chart.xScale = function(_) {
         if (!arguments.length) return xScale;
         else xScale = _;
         return chart;
-    }
+    };
 
     chart.yScale = function(_) {
         if (!arguments.length) return yScale;
         else yScale = _;
         return chart;
-    }
+    };
 
     chart.zoomDispatch = function(_) {
         if (!arguments.length) return zoomDispatch;
         else zoomDispatch = _;
         return chart;
-    }
+    };
 
     chart.pixiStage = function(_) {
         if (!arguments.length) return pixiStage;
         else pixiStage = _;
         return chart;
-    }
+    };
 
     chart.width = function(_) {
         if (!arguments.length) return width;
         else width = _;
         return chart;
-    }
+    };
 
     chart.dataDomain = function(_) {
         if (!arguments.length) return dataDomain;
         else dataDomain = _;
         return chart;
-    }
+    };
 
     return chart;
 }

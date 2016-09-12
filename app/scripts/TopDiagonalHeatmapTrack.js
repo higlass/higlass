@@ -200,7 +200,6 @@ export function TopDiagonalHeatmapRectangleTrack() {
                     let numRendering = Object.keys(d.rendering).length;
 
                     if (shownTileId in visibleTiles) {
-
                         tile.xOrigScale = d3.scale.linear().domain(tile.xOrigDomain).range(tile.xOrigRange);
                         tile.yOrigScale = d3.scale.linear().domain(tile.yOrigDomain).range(tile.yOrigRange);
 
@@ -230,7 +229,6 @@ export function TopDiagonalHeatmapRectangleTrack() {
 
 
                         d.pMain.addChild(newGraphics);
-
                     }
 
                     if (!numRendering && allIn(visibleTiles, d.tileGraphics)) {
@@ -260,6 +258,7 @@ export function TopDiagonalHeatmapRectangleTrack() {
                                                       'xRange': tiles[i].xRange,
                                                       'yRange': tiles[i].yRange,
                                                       'maxZoom': tiles[i].maxZoom,
+                                                      'colorScale': d.colorScale,
                                                       'xOrigDomain': tiles[i].xOrigScale.domain(),
                                                       'xOrigRange': tiles[i].xOrigScale.range(),
                                                       'yOrigDomain': tiles[i].yOrigScale.domain(),
