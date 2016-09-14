@@ -106,7 +106,6 @@ export function HeatmapRectangleTrack() {
     let chart = function(selection) {
         selection.each(function(d) {
             inD += 1;
-            console.log('d:', d);
 
             if (!('resizeDispatch' in d)) {
                 d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize', 'close') : resizeDispatch;

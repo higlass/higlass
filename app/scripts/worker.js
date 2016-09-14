@@ -50,7 +50,6 @@ function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale =
         .domain([countTransform(0), countTransform(maxVisibleValue)])
 
     let pixData = new Uint8ClampedArray(size * 4);
-    console.log('colorScale:', colorScale);
 
     if (colorScale == null)
         colorScale = heatedObjectMap;

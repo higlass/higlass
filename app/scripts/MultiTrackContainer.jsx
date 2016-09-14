@@ -14,6 +14,7 @@ import {HeatmapRectangleTrack} from './HeatmapRectangleTrack.js'
 import {TopDiagonalHeatmapRectangleTrack} from './TopDiagonalHeatmapTrack.js'
 import {AddTrackDiv} from './AddTrackDiv.js'
 import {TopGeneLabelsTrack} from './TopGeneLabelsTrack.js'
+import {LeftGeneLabelsTrack} from './LeftGeneLabelsTrack.js'
 import {TopChromosomeAxis} from './TopChromosomeAxis.js'
 import {LeftChromosomeAxis} from './LeftChromosomeAxis.js'
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx'
@@ -34,6 +35,7 @@ export class MultiTrackContainer extends React.Component {
                                     'top-heatmap': 'top',
                                     'top-diagonal-heatmap': 'top',
                                    'top-gene-labels': 'top',
+                                   'left-gene-labels': 'left',
                                    'top-chromosome-axis': 'top',
                                    'left-chromosome-axis': 'left',
                                    'left-empty': 'left',
@@ -181,6 +183,8 @@ export class MultiTrackContainer extends React.Component {
 
         let currentRightLeft = this.width - this.rightMargin;
         let currentBottomTop = this.height - this.bottomMargin;
+
+        console.log('this.leftMargin:', this.leftMargin);
 
         for (let i = 0; i < this.state.tracksList.length; i++) {
             let trackId = this.state.tracksList[i].uid;
@@ -400,6 +404,13 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
+        let leftGeneLabels = LeftGeneLabelsTrack()
+            .yScale(this.yOrigScale.copy())
+            .width(this.width)
+            .pixiStage(this.stage)
+            .resizeDispatch(this.resizeDispatch)
+            .zoomDispatch(this.zoomDispatch);
+
 
         this.animate();
         d3.select(this.bigDiv).call(this.zoom);
@@ -437,6 +448,8 @@ export class MultiTrackContainer extends React.Component {
 
                 if (d.type == 'left-bar')
                     d3.select(element).call(leftWigglePixiTrack);
+                if (d.type == 'left-gene-labels')
+                    d3.select(element).call(leftGeneLabels);
                 if (d.type == 'left-chromosome-axis')
                     d3.select(element).call(leftChromosomeAxis);
             }.bind(this));
@@ -464,12 +477,8 @@ export class MultiTrackContainer extends React.Component {
 
     initColorScale(colorScaleRange, colorScaleDomain = null) {
         let colorValues = colorScaleRange.map((x) => {
-            console.log('x', x, 'rgb:', d3.rgb(x));    
             return d3.rgb(x);
         });
-
-        console.log('colorScaleRange:', colorScaleRange);
-        console.log('colorValues:', colorValues);
 
         // go from a d3 linear scale to 0 - 256 array of rgba value
         let d3Scale = d3.scale.linear()
@@ -489,11 +498,9 @@ export class MultiTrackContainer extends React.Component {
             }
 
             domain.push(end);
-            console.log('domain:', domain);
         }
         d3Scale.domain(domain);
 
-        console.log('colorScaleRange:', colorScaleRange, d3Scale.domain(), d3Scale.range());
         let scaleArray = [];
         let colorArray = [255, 255, 255, 0];
         for (let i = 0; i < 256; i++) {
@@ -503,7 +510,6 @@ export class MultiTrackContainer extends React.Component {
         }
         scaleArray[255] = [255,255,255,0];
 
-        console.log('scaleArray:', scaleArray);
         return scaleArray;
     }
 
@@ -539,6 +545,8 @@ export class MultiTrackContainer extends React.Component {
                 oneDVerticalTrackList.push(this.state.tracks[trackId]);
             else if (this.state.tracks[trackId].type == 'top-gene-labels')
                 oneDHorizontalTrackList.push(this.state.tracks[trackId]);
+            else if (this.state.tracks[trackId].type == 'left-gene-labels')
+                oneDVerticalTrackList.push(this.state.tracks[trackId]);
             else if (this.state.tracks[trackId].type == 'top-chromosome-axis')
                 horizontalAxisList.push(this.state.tracks[trackId]);
             else if (this.state.tracks[trackId].type == 'left-chromosome-axis')
@@ -621,6 +629,8 @@ export class MultiTrackContainer extends React.Component {
         else if (track.type == 'top-diagonal-heatmap')
             return 'one-d-horizontal-diagonal';
         else if (track.type == 'top-gene-labels')
+            return 'one-d-horizontal';
+        else if (track.type == 'left-gene-labels')
             return 'one-d-horizontal';
         else if (track.type == 'top-chromosome-axis')
             return 'horizontal-axis';

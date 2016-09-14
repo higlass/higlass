@@ -35,6 +35,11 @@ let rectangularOneWindow = JSON.parse(`
       },
       {
         "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",
+        "type": "left-gene-labels",
+        "width": 50
+      },
+      {
+        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",
         "type": "top-gene-labels",
         "height": 25
       },
