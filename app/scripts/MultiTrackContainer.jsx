@@ -184,8 +184,6 @@ export class MultiTrackContainer extends React.Component {
         let currentRightLeft = this.width - this.rightMargin;
         let currentBottomTop = this.height - this.bottomMargin;
 
-        console.log('this.leftMargin:', this.leftMargin);
-
         for (let i = 0; i < this.state.tracksList.length; i++) {
             let trackId = this.state.tracksList[i].uid;
             let track = this.state.tracks[trackId];
@@ -631,7 +629,7 @@ export class MultiTrackContainer extends React.Component {
         else if (track.type == 'top-gene-labels')
             return 'one-d-horizontal';
         else if (track.type == 'left-gene-labels')
-            return 'one-d-horizontal';
+            return 'one-d-vertical';
         else if (track.type == 'top-chromosome-axis')
             return 'horizontal-axis';
         else if (track.type == 'left-chromosome-axis')

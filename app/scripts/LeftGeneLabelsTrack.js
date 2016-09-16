@@ -112,9 +112,23 @@ export function LeftGeneLabelsTrack() {
 
                     while (graphics.children[0]) { graphics.removeChild(graphics.children[0]); };
 
-                    tile.texts = [];
+                    tile.textGenes = [];
+                    // keep track of which genes have already been drawn (genes may be duplicated in
+                    // adjacent tiles to make sure they're drawn properly)
+                    let drawnGenes = [].concat.apply([], allTiles.map((x) => { return x.textGenes; }));
+                    let drawnGeneUids = {}
+                    for (let i = 0; i < drawnGenes.length; i++) {
+                        if (typeof drawnGenes[i] != 'undefined') {
+                           drawnGeneUids[drawnGenes[i].gene.uid] = true;
+                        }
+                    }
 
                     for (let i = 0; i < tileData.length; i++) {
+                        // if it's already drawn, don't draw it anymore
+                        if (tileData[i].uid in drawnGeneUids)
+                            continue;
+                        drawnGeneUids[tileData[i].uid] = true;
+
                         let genomeOffset = +tileData[i].genomeTxStart - tileData[i].txStart;
 
                         let yStartPos = zoomedYScale(+tileData[i].txStart + genomeOffset);
@@ -129,7 +143,7 @@ export function LeftGeneLabelsTrack() {
 
                         let text = new PIXI.Text(tileData[i].geneName, {font:"10px Arial", 
                                                                        fill:"red"});
-                        tile.texts.push(text);
+                        tile.textGenes.push({ 'gene': tileData[i], 'text': text});
 
                         text.anchor.x = 0.5;
                         text.anchor.y = 1;
@@ -144,14 +158,13 @@ export function LeftGeneLabelsTrack() {
                             if (yEndPos - yPos > 10) {
                                 // only draw exons if we're zoomed in far enough to see them
 
-                                let lineHeight = 2;
-                                let exonHeight = 5;
-                                let yPos = (d.height - lineHeight) / 2 + 5 ; //-(d.height - yScale(tileData[i]));
-                                let width = yEndPos - yStartPos;
+                                let lineWidth = 2;
+                                let exonWidth = 5;
+                                let xPos = (d.width - lineWidth) / 2 + 5 ; //-(d.height - yScale(tileData[i]));
+                                let height = yEndPos - yStartPos;
+                                let xExonPos = (d.width - exonWidth) / 2 + 5;
 
-                                let yExonPos = (d.height - exonHeight) / 2 + 5;
-
-                                graphics.drawRect(yStartPos, yPos, width, lineHeight);
+                                graphics.drawRect(xPos, yStartPos, lineWidth, height);
 
                                 let exonStarts = tileData[i].exonStarts.split(',');
                                 let exonEnds = tileData[i].exonEnds.split(',');
@@ -160,8 +173,10 @@ export function LeftGeneLabelsTrack() {
                                     let exonStart = +exonStarts[j] + genomeOffset;
                                     let exonEnd = +exonEnds[j] + genomeOffset;
 
-                                    graphics.drawRect(zoomedYScale(exonStart), yExonPos, 
-                                            zoomedYScale(exonEnd) - zoomedYScale(exonStart), exonHeight);
+                                    graphics.drawRect(xExonPos, 
+                                                      zoomedYScale(exonStart), 
+                                                      exonWidth, 
+                                            zoomedYScale(exonEnd) - zoomedYScale(exonStart)); 
                                 }
                                 
                             } else {
@@ -169,12 +184,25 @@ export function LeftGeneLabelsTrack() {
                             }
                         }
                     }
+                    // all gene objects along with the text objects labelling them
+                    let allTextGenes = [].concat.apply([], allTiles.map((x) => { return x.textGenes; }));
+                    let textGenesDict = {};
+                    for (let i = 0; i < allTextGenes.length; i++) {
+                        if (typeof allTextGenes[i] != 'undefined') {
+                            if (allTextGenes[i].gene.uid in textGenesDict) {
+                                allTextGenes[i].text.alpha = 0;
+                                continue;
+                            }
+                            textGenesDict[allTextGenes[i].gene.uid] = allTextGenes[i]; 
+                        }
+                    }
 
-                    let allGenes = [].concat.apply([], allTiles.map((x) => { return x.data; }));
-                    let allTexts = [].concat.apply([], allTiles.map((x) => { 
-                                                return x.texts; 
-                                        }));
-                    let allBoxes = allTexts.map((x) => { 
+                    let selectTextGenes = [];
+                    for (let key in textGenesDict)
+                        selectTextGenes.push(textGenesDict[key]);
+
+                    let allBoxes = selectTextGenes.map((y) => { 
+                                        let x = y.text;
                                         x.updateTransform();
                                         let b = x.getBounds();
                                         let box = [b.x, b.y, b.x + b.width, b.y + b.height];
@@ -182,10 +210,10 @@ export function LeftGeneLabelsTrack() {
                                     });
 
                     let result = boxIntersect(allBoxes, function(i, j) {
-                        if (+allGenes[i].count > +allGenes[j].count) {
-                            allTexts[j].alpha = 0; 
+                        if (+selectTextGenes[i].gene.count > +selectTextGenes[j].gene.count) {
+                            selectTextGenes[j].text.alpha = 0; 
                         } else {
-                            allTexts[i].alpha = 0; 
+                            selectTextGenes[i].text.alpha = 0; 
                         }
                     });
 

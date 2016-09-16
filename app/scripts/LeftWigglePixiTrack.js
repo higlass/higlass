@@ -198,8 +198,6 @@ export function LeftWigglePixiTrack() {
                 if (localYScale == null)
                     return;
 
-                //console.log('translate:', translate);
-
                 let scaleModifier = (localYScale.domain()[1] - localYScale.domain()[0]) / (yScale.domain()[1] - yScale.domain()[0])
                 let newStart = localYScale.domain()[0]
                 zoomedYScale = yScale.copy();
