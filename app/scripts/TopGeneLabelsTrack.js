@@ -115,7 +115,22 @@ export function TopGeneLabelsTrack() {
 
                     tile.textGenes = [];
 
+                    // keep track of which genes have already been drawn (genes may be duplicated in
+                    // adjacent tiles to make sure they're drawn properly)
+                    let drawnGenes = [].concat.apply([], allTiles.map((x) => { return x.textGenes; }));
+                    let drawnGeneUids = {}
+                    for (let i = 0; i < drawnGenes.length; i++) {
+                        if (typeof drawnGenes[i] != 'undefined') {
+                           drawnGeneUids[drawnGenes[i].gene.uid] = true;
+                        }
+                    }
+
                     for (let i = 0; i < tileData.length; i++) {
+                        // if it's already drawn, don't draw it anymore
+                        if (tileData[i].uid in drawnGeneUids)
+                            continue;
+                        drawnGeneUids[tileData[i].uid] = true;
+
                         let genomeOffset = +tileData[i].genomeTxStart - tileData[i].txStart;
 
 
@@ -131,7 +146,8 @@ export function TopGeneLabelsTrack() {
 
                         let text = new PIXI.Text(tileData[i].geneName, {font:"10px Arial", 
                                                                        fill:"red"});
-                        console.log('adding text:', tileData[i].uid);
+
+                                         
                         tile.textGenes.push({ 'gene': tileData[i], 'text': text});
 
                         text.anchor.x = 0.5;
@@ -141,6 +157,8 @@ export function TopGeneLabelsTrack() {
 
                         text.position.x = xPos;
                         text.position.y = yPos - 2;
+
+                        let drawn = {};
 
                         if (height > 0 && width > 0) {
                             if (xEndPos - xPos > 10) {
@@ -175,8 +193,15 @@ export function TopGeneLabelsTrack() {
                     // all gene objects along with the text objects labelling them
                     let allTextGenes = [].concat.apply([], allTiles.map((x) => { return x.textGenes; }));
                     let textGenesDict = {};
-                    for (let i = 0; i < allTextGenes.length; i++)
-                        textGenesDict[allTextGenes[i].gene.uid] = allTextGenes[i]; 
+                    for (let i = 0; i < allTextGenes.length; i++) {
+                        if (typeof allTextGenes[i] != 'undefined') {
+                            if (allTextGenes[i].gene.uid in textGenesDict) {
+                                allTextGenes[i].text.alpha = 0;
+                                continue;
+                            }
+                            textGenesDict[allTextGenes[i].gene.uid] = allTextGenes[i]; 
+                        }
+                    }
 
                     let selectTextGenes = [];
                     for (let key in textGenesDict)
@@ -189,16 +214,12 @@ export function TopGeneLabelsTrack() {
                                         let box = [b.x, b.y, b.x + b.width, b.y + b.height];
                                         return box;
                                     });
-                    console.log('allBoxes:', allBoxes);
 
                     let result = boxIntersect(allBoxes, function(i, j) {
-                        console.log('i,j', i,j);
-                        if (+allGenes[i].count > +allGenes[j].count) {
-                            console.log('hiding:', allGenes[j].uid);
-                            allTexts[j].alpha = 0; 
+                        if (+selectTextGenes[i].gene.count > +selectTextGenes[j].gene.count) {
+                            selectTextGenes[j].text.alpha = 0; 
                         } else {
-                            console.log('hiding:', allGenes[i].uid);
-                            allTexts[i].alpha = 0; 
+                            selectTextGenes[i].text.alpha = 0; 
                         }
                     });
 
