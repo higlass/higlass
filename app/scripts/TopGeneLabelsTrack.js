@@ -113,7 +113,7 @@ export function TopGeneLabelsTrack() {
 
                     while (graphics.children[0]) { graphics.removeChild(graphics.children[0]); };
 
-                    tile.texts = [];
+                    tile.textGenes = [];
 
                     for (let i = 0; i < tileData.length; i++) {
                         let genomeOffset = +tileData[i].genomeTxStart - tileData[i].txStart;
@@ -131,7 +131,8 @@ export function TopGeneLabelsTrack() {
 
                         let text = new PIXI.Text(tileData[i].geneName, {font:"10px Arial", 
                                                                        fill:"red"});
-                        tile.texts.push(text);
+                        console.log('adding text:', tileData[i].uid);
+                        tile.textGenes.push({ 'gene': tileData[i], 'text': text});
 
                         text.anchor.x = 0.5;
                         text.anchor.y = 1;
@@ -171,21 +172,32 @@ export function TopGeneLabelsTrack() {
                         }
                     }
 
-                    let allGenes = [].concat.apply([], allTiles.map((x) => { return x.data; }));
-                    let allTexts = [].concat.apply([], allTiles.map((x) => { 
-                                                return x.texts; 
-                                        }));
-                    let allBoxes = allTexts.map((x) => { 
+                    // all gene objects along with the text objects labelling them
+                    let allTextGenes = [].concat.apply([], allTiles.map((x) => { return x.textGenes; }));
+                    let textGenesDict = {};
+                    for (let i = 0; i < allTextGenes.length; i++)
+                        textGenesDict[allTextGenes[i].gene.uid] = allTextGenes[i]; 
+
+                    let selectTextGenes = [];
+                    for (let key in textGenesDict)
+                        selectTextGenes.push(textGenesDict[key]);
+
+                    let allBoxes = selectTextGenes.map((y) => { 
+                                        let x = y.text;
                                         x.updateTransform();
                                         let b = x.getBounds();
                                         let box = [b.x, b.y, b.x + b.width, b.y + b.height];
                                         return box;
                                     });
+                    console.log('allBoxes:', allBoxes);
 
                     let result = boxIntersect(allBoxes, function(i, j) {
+                        console.log('i,j', i,j);
                         if (+allGenes[i].count > +allGenes[j].count) {
+                            console.log('hiding:', allGenes[j].uid);
                             allTexts[j].alpha = 0; 
                         } else {
+                            console.log('hiding:', allGenes[i].uid);
                             allTexts[i].alpha = 0; 
                         }
                     });
