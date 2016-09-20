@@ -1,22 +1,63 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://s3.amazonaws.com/pkerp/public/reveal.js/css/reveal.css">
-        <link rel="stylesheet" href="https://s3.amazonaws.com/pkerp/public/reveal.js/css/theme/white.css">
+        <link rel="stylesheet" href="https://s3.amazonaws.com/pkerp/public/reveal.js/css/theme/serif.css">
     </head>
+<style>
+
+body {
+    background: #FFFFFF;
+    background-color: #FFFFFF; 
+}
+
+
+</style>
     <body>
         <div class="reveal">
             <div class="slides">
                 <section>
-                    <div id="simple1"></div>
+                    <h2>HiGlass</h2>
+                    <h4>Building a multi-resolution, web-based, Hi-C data display</h4>
+                    <br>
+                    <br>
+                    <p>Peter Kerpedjiev</p>
+                    <p>Gehlenborg Lab</p>
+                    <p>Harvard Medical School</p>
+                </section>
+                <section>
+                    <h2>What?</h2> 
+                    <ul>
+                        <li class='fragment'>Multi-resolution</li>
+                        <li class='fragment'>Web-based</li>
+                        <li class='fragment'>Hi-C data display</li>
+                    </ul>
+
+                </section>
+                <section>
+                    <h2>Why?</h2>
+                    <ul>
+                        <li class='fragment'>Usability</li>
+                        <li class='fragment'>Versatility</li>
+                        <li class='fragment'>Reproducibility</li>
+                    </ul>
                 </section>
                 <section>Slide 2
                 
+                </section>
+                <section>Slide 2
+                
+                </section>
+                <section style="display: block !important;">
+                    <h4>Stuff</h4>
+                    <div id="simple1" style="width: 600px; height: 400px; margin: auto;"></div>
                 </section>
             </div>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.3.0/js/reveal.min.js"></script>
         <script>
-            Reveal.initialize();
+Reveal.initialize({
+    viewDistance: 10000
+});
         </script>
         <script src='scripts/main.js'></script>
     </body>

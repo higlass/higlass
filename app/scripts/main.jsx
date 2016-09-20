@@ -65,11 +65,10 @@ let simple1 = JSON.parse(`
 
                 ],
                 "zoomLock" : 0,
-                "searchBar": false
+                "searchBox": false
             }
             ],
             "editable": false
-
         }
 `);
 

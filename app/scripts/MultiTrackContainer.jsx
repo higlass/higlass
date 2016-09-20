@@ -124,6 +124,7 @@ export class MultiTrackContainer extends React.Component {
         this.width = this.element.offsetWidth 
                      - parseInt(cs.getPropertyValue('padding-left'), 10)
                      - parseInt(cs.getPropertyValue('padding-right'), 10);
+        console.log('update width:', this.width, 'offsetWidth:', this.element.offsetWidth);
         
         if (typeof this.prevWidth != 'undefined') {
             let currentDomainWidth = this.xOrigScale.domain()[1] - this.xOrigScale.domain()[0]; 
@@ -229,7 +230,6 @@ export class MultiTrackContainer extends React.Component {
     }
 
     handleZoom() {
-        console.log('handling zoom');
         this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
     }
 
@@ -267,6 +267,7 @@ export class MultiTrackContainer extends React.Component {
         this.element = ReactDOM.findDOMNode(this);
         window.addEventListener('resize', this.updateDimensions.bind(this));
 
+        console.log('this.width:', this.width, 'this.height:', this.height);
         this.renderer = PIXI.autoDetectRenderer(this.width,
                                                 this.height,
                                                 { view: this.canvas,
