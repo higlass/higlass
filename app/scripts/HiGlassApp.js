@@ -23,16 +23,16 @@ export class HiGlassApp extends React.Component {
     }
 
     updateLinkedViews(viewConfig) {
-        for (let i = 0; i < viewConfig.length; i++) {
-            if (typeof viewConfig[i].zoomLock ==  'undefined')
-                viewConfig[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
+        for (let i = 0; i < viewConfig.views.length; i++) {
+            if (typeof viewConfig.views[i].zoomLock ==  'undefined')
+                viewConfig.views[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
             else {
-                let zoomLock = viewConfig[i].zoomLock;
-                if (typeof viewConfig[zoomLock].zoomDispatch == 'undefined') {
+                let zoomLock = viewConfig.views[i].zoomLock;
+                if (typeof viewConfig.views[zoomLock].zoomDispatch == 'undefined') {
                     console.log('WARNING: view requests zoom lock to another view with an undefined zoomDispatch:', zoomLock);
-                    viewConfig[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
+                    viewConfig.views[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
                 } else {
-                    viewConfig[i].zoomDispatch = viewConfig[zoomLock].zoomDispatch;
+                    viewConfig.views[i].zoomDispatch = viewConfig.views[zoomLock].zoomDispatch;
                 }
             }
         }
@@ -68,12 +68,14 @@ export class HiGlassApp extends React.Component {
                     ref='displayPanel'
                     className="higlass-display"
                     >
-                    <MultiViewContainer viewConfig={this.state.viewConfig}
+                    <MultiViewContainer viewConfig={this.state.viewConfig.views}
                     />
                 </Panel>
-                <HiGlassInput currentConfig={this.defaultViewString} 
+                { (() => { if (this.state.viewConfig.editable) {
+                return <HiGlassInput currentConfig={this.defaultViewString} 
                         onNewConfig={this.handleNewConfig.bind(this)} 
                         />
+                                                      }})() }
                 </div>
         );
     }

@@ -229,6 +229,7 @@ export class MultiTrackContainer extends React.Component {
     }
 
     handleZoom() {
+        console.log('handling zoom');
         this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
     }
 
@@ -686,7 +687,8 @@ export class MultiTrackContainer extends React.Component {
 
     render() {
         let searchDivStyle = {};
-        let divStyle = { position: 'relative' }
+        let divStyle = { position: 'relative',
+                         className: 'big-div' }
 
         let viewStyle = this.props.viewConfig.viewStyle;
 
@@ -715,10 +717,13 @@ export class MultiTrackContainer extends React.Component {
         return(
             <div style={viewStyle}>
             <div>
-                <GenomePositionSearchBox 
+                { (() => {
+                    if (this.props.viewConfig.searchBox) {
+                return <GenomePositionSearchBox 
                     zoomToGenomePositionHandler={this.zoomToGenomePosition.bind(this)}
                     chromInfoPath={this.props.viewConfig.chromInfoPath}
                     />
+                    }})() }
             </div>
             <div style={divStyle} ref={(c) => this.bigDiv = c} >
                 <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
