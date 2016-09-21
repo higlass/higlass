@@ -10,13 +10,17 @@ body {
     background-color: #FFFFFF; 
 }
 
+.reveal section img {
+    border: none;
+}
+
 
 </style>
     <body>
         <div class="reveal">
             <div class="slides">
                 <section>
-                    <h2>HiGlass</h2>
+                    <h4>HiGlass</h2>
                     <h4>Building a multi-resolution, web-based, Hi-C data display</h4>
                     <br>
                     <br>
@@ -25,38 +29,195 @@ body {
                     <p>Harvard Medical School</p>
                 </section>
                 <section>
-                    <h2>What?</h2> 
-                    <ul>
-                        <li class='fragment'>Multi-resolution</li>
-                        <li class='fragment'>Web-based</li>
-                        <li class='fragment'>Hi-C data display</li>
-                    </ul>
+                    <h4>What?</h4> <br><br>
+                    <table>
+                        <tr>
+                            <td class='fragment'>
+                                Multi-resolution<br>
+                            <img src="images/presentation-4dn/higlass_multiresolution.png" height="300px" border="none"/><br
+                            </td>
+                            <td class='fragment'>
+                                Web-based<br>
+                                <img src="images/presentation-4dn/higlass_browser.png" height="300px"/><br
+                            </td>
+                                <td class='fragment'>
+                                    Hi-C Data Display<br>
+                                <img src="images/presentation-4dn/higlass_zoomed_in.png" height="300px"/><br
+                                </td>
+                        </tr>
+                    </table>
+                </section>
+                <section>
+                    <h4>Why?</h4><br><br>
+                    <b>Usability</b><br>
+                    <img src="images/presentation-4dn/higlass_zooming.gif" height="300px"/><br>
+                        Effortlessly pan and zoom
+                </section>
+
+                <section>
+                    <h4>Why?</h4><br><br>
+                        <b>Usability</b><br>
+                        <img src="images/presentation-4dn/higlass_browse_to.gif" height="400px"/><br>
+                        Access viewer from a web page
+                </section>
+
+                <section>
+                    <h4>Why?</h4><br><br>
+                        <b>Versatility</b><br>
+                        <img src="images/presentation-4dn/line_zooming.gif" width="400px"/><br>
+                        Zoomable lines
+                </section>
+
+                <section>
+                    <h4>Why?</h4><br><br>
+                        <b>Versatility</b><br>
+                        <img src="images/presentation-4dn/bar_zooming.gif" width="400px"/><br>
+                        Zoomable bars
+                </section>
+
+                <section>
+                    <h4>Why?</h4><br><br>
+                        <b>Versatility</b><br>
+                        <img src="images/presentation-4dn/gene_zooming.gif" width="400px"/><br>
+                        Zoomable gene annotations
+                </section>
+
+                <section>
+                    <h4>Why?</h4><br><br>
+                        <b>Versatility</b><br>
+                        <img src="images/presentation-4dn/all_zooming.gif" width="400px"/><br>
+                        Zoomable everything
+                </section>
+
+                <section>
+                    <h4>Why?</h4><br><br>
+                        <b>Comparison</b><br>
+                        <img src="images/presentation-4dn/comparison_zooming.gif" width="400px"/><br>
+                        Simultaneously zoom into two different datasets
+                </section>
+
+                <section>
+                    <h4>How?</h4><br><br>
+                    <b>Client / Server Architecture</b><br><br>
+
+                        <ul>
+                            <li class='fragment'>Data resides on the server</li>
+                            <li class='fragment'>Visualization resides on the client</li>
+                        </ul>
+                </section>
+
+                <section>
+                    <h4>How?</h4><br><br>
+                    <b>Data resides on the server (cloud)</b><br><br>
+
+                    Present: Elasticsearch stores a database of <i>tiles</i><br>
+
+                    <br>
+                    <div class='fragment'>Each <i>tile</i> contains the values that can be seen on the screen at particular zoom level and location</div>
+                    <br>
+
+                    <div class='fragment'>Future: Tiles dynamically loaded from cooler and HiC files</div>
+                </section>
+
+                <section>
+                    <h4>How?</h4><br><br>
+                    <b>Tile Example:</b><br><br>
+<pre>
+{
+    "tile_value": {"max_value": 53137.01228744652, "min_value": 0.0,
+        "dense": [0.0, 0.0, 0.0, 0.0, 0.0...[65526 more values]... 
+                  1639.6605, 2564.1854, 7815.50706, 27623.40794, 0.0], 
+    },
+    "tile_id": "3.2.2"
+}
+</pre>
+                </section>
+
+
+                <section>
+                    <h4>How?</h4><br><br>
+                    <b>Visualization resides on the client (web browser)</b><br><br>
+
+                    Converts tile data to a visual representation.<br>
+
+<pre>
+[29.0285, 27.97826,... 36.40484, 21.0694]
+</pre>
+Becomes
+<div class='fragment'>
+    <img src="images/presentation-4dn/line_example.png" height="50" /> 
+</div>
+<div>
+or
+<div class='fragment'>
+    <img src="images/presentation-4dn/heatmap_example.png" height="103" /> 
+</div>
+</div>
 
                 </section>
                 <section>
-                    <h2>Why?</h2>
+                    <h4>How?</h4><br><br>
+                    <b>Visualization resides on the client (web browser)</b><br><br>
+
+                    Browser keeps track of:
                     <ul>
-                        <li class='fragment'>Usability</li>
+                        <li class='fragment'>Zoom Level (0 to 14 for 1KB Hi-C data)</li>
+                        <li class='fragment'>X range (0 to ~3e9)</li>
+                        <li class='fragment'>Y range (0 to ~3e9)</li>
+                    </ul>
+
+                <section>
+                    <ul>
+                        <li class='fragment'><b>Usability</b></li>
+                            * Effortlessly zoom and pan
+                            * Access viewer from a web page
+                            * Compare different data sets
                         <li class='fragment'>Versatility</li>
+                            * Display different types of data
+                            * Line
+                            * Bar
+                            * Gene annotations
                         <li class='fragment'>Reproducibility</li>
+                            * Share a link to a region of the genome (upcoming)
+                            * Request all of the information required to recreate this view
                     </ul>
                 </section>
-                <section>Slide 2
-                
+
+                <section>
+                    <h4>How?</h4>
+                    <ul>
+                        <li class='fragment'>Tiling</li>
+                            * User pans or zooms to a region
+                            * Visible tiles are calculated by aggregation
+                            * Relevant tiles are returned
+                        <li class='fragment'>Elasticsearch</li>
+                            * All tiling data is stored on elasticsearch
+                        <li class='fragment'>Pixi.js</li>
+                            * Everything is rendered using Pixi.js with
+                              graphics card support
+                    </ul>
                 </section>
-                <section>Slide 2
-                
+
+                <section>
+                    <h4>What's next</h4>
+                    <ul>
+                        <li class='fragment'>Cooler Tiles</li>
+                        <li class='fragment'>HiC Tiles</li>
+                        <li class='fragment'>User Data Upload</li>
+                        <li class='fragment'>Better handling of normalization</li>
+                    </ul>
                 </section>
                 <section style="display: block !important;">
                     <h4>Stuff</h4>
-                    <div id="simple1" style="width: 600px; height: 400px; margin: auto;"></div>
+                    <!-- <div id="simple1" style="width: 600px; height: 400px; margin: auto;"></div> -->
                 </section>
             </div>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.3.0/js/reveal.min.js"></script>
         <script>
 Reveal.initialize({
-    viewDistance: 10000
+    viewDistance: 10000,
+    maxScale: 1.0
 });
         </script>
         <script src='scripts/main.js'></script>
