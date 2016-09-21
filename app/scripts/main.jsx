@@ -25,6 +25,7 @@ let rectangularOneWindow = JSON.parse(`
         {
         "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",
         "type": "heatmap",
+        "maxZoom": 9,
         "height": 300
       },
       {

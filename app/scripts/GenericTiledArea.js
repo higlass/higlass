@@ -369,7 +369,10 @@ export function GenericTiledArea() {
                 minImportance = tile_info.min_importance;
                 maxImportance = tile_info.max_importance;
 
-                maxZoom = tile_info.max_zoom;
+                if ('maxZoom' in d && d.maxZoom < tile_info.max_zoom) {
+                    maxZoom = d.maxZoom;
+                } else
+                   maxZoom = tile_info.max_zoom;
 
                 if (domain == null) {
                     xScaleDomain = [minX, maxX];
