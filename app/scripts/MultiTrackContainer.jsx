@@ -124,6 +124,7 @@ export class MultiTrackContainer extends React.Component {
         this.width = this.element.offsetWidth 
                      - parseInt(cs.getPropertyValue('padding-left'), 10)
                      - parseInt(cs.getPropertyValue('padding-right'), 10);
+        console.log('update width:', this.width, 'offsetWidth:', this.element.offsetWidth);
         
         if (typeof this.prevWidth != 'undefined') {
             let currentDomainWidth = this.xOrigScale.domain()[1] - this.xOrigScale.domain()[0]; 
@@ -266,6 +267,7 @@ export class MultiTrackContainer extends React.Component {
         this.element = ReactDOM.findDOMNode(this);
         window.addEventListener('resize', this.updateDimensions.bind(this));
 
+        console.log('this.width:', this.width, 'this.height:', this.height);
         this.renderer = PIXI.autoDetectRenderer(this.width,
                                                 this.height,
                                                 { view: this.canvas,
@@ -686,7 +688,8 @@ export class MultiTrackContainer extends React.Component {
 
     render() {
         let searchDivStyle = {};
-        let divStyle = { position: 'relative' }
+        let divStyle = { position: 'relative',
+                         className: 'big-div' }
 
         let viewStyle = this.props.viewConfig.viewStyle;
 
@@ -715,10 +718,13 @@ export class MultiTrackContainer extends React.Component {
         return(
             <div style={viewStyle}>
             <div>
-                <GenomePositionSearchBox 
+                { (() => {
+                    if (this.props.viewConfig.searchBox) {
+                return <GenomePositionSearchBox 
                     zoomToGenomePositionHandler={this.zoomToGenomePosition.bind(this)}
                     chromInfoPath={this.props.viewConfig.chromInfoPath}
                     />
+                    }})() }
             </div>
             <div style={divStyle} ref={(c) => this.bigDiv = c} >
                 <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
