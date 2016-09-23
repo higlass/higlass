@@ -715,6 +715,7 @@ export class MultiTrackContainer extends React.Component {
                     <AddTrackDiv />
                 </div>
                 */
+
         return(
             <div style={viewStyle}>
             <div>

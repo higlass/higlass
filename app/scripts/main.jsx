@@ -133,7 +133,8 @@ let rectangularOneWindow = JSON.parse(`
                 }
 
                 ],
-                "zoomLock" : 0
+                "zoomLock" : 0,
+                "searchBox": true
             }
             ],
             "editable": true
@@ -185,7 +186,8 @@ let triangularOneWindow = JSON.parse(`
                     "height": 25
                 }
                 ],
-                "zoomLock" : 0
+                "zoomLock" : 0,
+                "searchBox" : true
             }
             ],
             "editable": true
@@ -254,7 +256,8 @@ let oneDOneWindow = JSON.parse(`
                     "height": 45
                 }
                 ],
-                "zoomLock" : 0
+                "zoomLock" : 0,
+                "searchBox" : true
             }
             ], 
             "editable": true
@@ -288,4 +291,263 @@ ReactDOM.render(
     console.log('error:', e);
 }
 
+let zoomableBar = JSON.parse(`
+        { "views":
+            [
+            {
+                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+                "domain": [
+                    0,
+                    3000000000
+                ],
+                "viewStyle": {
+                    "float": "left",
+                    "padding": "5px",
+                    "width": "100%"
+                },
+                "tracks": [
+                {
+                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",
+                    "type": "top-bar",
+                    "height": 25
+                }
 
+                ]
+            }
+            ],
+            "editable": false
+        }
+`);
+
+try {
+ReactDOM.render(
+        <HiGlassApp viewConfigString={JSON.stringify(zoomableBar)}/>
+    , document.getElementById('zoomable-bar')
+    );
+} catch (e) {
+    console.log('error:', e);
+}
+
+
+let zoomableLine = JSON.parse(`
+        { "views":
+            [
+            {
+                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+                "domain": [
+                    0,
+                    3000000000
+                ],
+                "viewStyle": {
+                    "float": "left",
+                    "padding": "5px",
+                    "width": "100%"
+                },
+                "tracks": [
+                {
+                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",
+                    "type": "top-line",
+                    "height": 25
+                }
+
+                ]
+            }
+            ],
+            "editable": false
+        }
+`);
+
+try {
+ReactDOM.render(
+        <HiGlassApp viewConfigString={JSON.stringify(zoomableLine)} />
+    , document.getElementById('zoomable-line')
+    );
+} catch (e) {
+    console.log('error:', e);
+}
+
+let zoomableGenes = JSON.parse(`
+        { "views":
+            [
+            {
+                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+                "domain": [
+                    0,
+                    3000000000
+                ],
+                "viewStyle": {
+                    "float": "left",
+                    "padding": "5px",
+                    "width": "100%"
+                },
+                "tracks": [
+                {
+                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",
+                    "type": "top-gene-labels",
+                    "height": 25
+                },
+                {
+                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-minus",
+                    "type": "top-gene-labels",
+                    "height": 25
+                }
+
+                ]
+            }
+            ],
+            "editable": false
+        }
+`);
+
+try {
+ReactDOM.render(
+        <HiGlassApp viewConfigString={JSON.stringify(zoomableGenes)}/>
+    , document.getElementById('zoomable-genes')
+    );
+} catch (e) {
+    console.log('error:', e);
+}
+
+let zoomableEverything = JSON.parse(`
+        { "views":
+            [
+            {
+                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+                "domain": [
+                    0,
+                    3000000000
+                ],
+                "viewStyle": {
+                    "float": "left",
+                    "padding": "5px",
+                    "width": "100%"
+                },
+                "tracks": [
+                {
+                    "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+                    "type": "top-chromosome-axis",
+                    "height": 25
+                },
+                {
+                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",
+                    "type": "top-gene-labels",
+                    "height": 25
+                },
+                {
+                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-minus",
+                    "type": "top-gene-labels",
+                    "height": 25
+                },
+                {
+                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",
+                    "type": "top-line",
+                    "height": 25
+                },
+                {
+                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.bigWig.bedGraph.genome.sorted.gz",
+                    "type": "top-bar",
+                    "height": 45
+                }
+
+                ]
+            }
+            ],
+            "editable": false
+        }
+`);
+
+try {
+ReactDOM.render(
+        <HiGlassApp viewConfigString={JSON.stringify(zoomableEverything)}/>
+    , document.getElementById('zoomable-everything')
+    );
+} catch (e) {
+    console.log('error:', e);
+}
+
+let normalizationDemo = JSON.parse(`
+
+{ "views": 
+[
+  {
+    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+    "domain": [
+      0,
+      3000000000
+    ],
+    "viewStyle": {
+      "float": "left",
+      "padding": "5px",
+      "width": "50%"
+    },
+    "tracks": [
+      {
+        "source": "//52.23.165.123:9872/hg19/Dixon2015-H1_hESC-HindIII-allreps-filtered.50kb.cool.unbalanced.genome.sorted.gz",
+        "type": "top-diagonal-heatmap",
+        "height": 200
+      },
+      {
+        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+        "type": "top-chromosome-axis"
+      },
+      {
+        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",
+        "type": "top-gene-labels",
+        "height": 25
+      },
+      {
+        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",
+        "type": "top-line",
+        "height": 25
+      }
+    ],
+    "zoomLock": 0,
+    "searchBox": true
+  },
+  {
+    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+    "domain": [
+      0,
+      3000000000
+    ],
+    "viewStyle": {
+      "float": "left",
+      "padding": "5px",
+      "width": "50%"
+    },
+    "tracks": [
+      {
+        "source": "//52.23.165.123:9872/hg19/Dixon2015-H1_hESC-HindIII-allreps-filtered.50kb.cool.genome.sorted.gz",
+        "type": "top-diagonal-heatmap",
+        "height": 200
+      },
+      {
+        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+        "type": "top-chromosome-axis"
+      },
+      {
+        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",
+        "type": "top-gene-labels",
+        "height": 25
+      },
+      {
+        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",
+        "type": "top-line",
+        "height": 25
+      }
+    ],
+    "zoomLock": 0,
+    "searchBox": true
+  }
+]
+}
+`);
+
+try {
+ReactDOM.render(
+        <HiGlassApp viewConfigString={JSON.stringify(normalizationDemo)}/>
+    , document.getElementById('comparison-demo')
+    );
+} catch (e) {
+    console.log('error:', e);
+}

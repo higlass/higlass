@@ -9651,7 +9651,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function workerLoadTileData(tile_value, tile_type) {
 	    var resolution = 256;
-	    var totalPoss = 0;
 
 	    var t1 = new Date().getTime();
 	    if (tile_type == 'dense') return tile_value;else if (tile_type == 'sparse') {
@@ -9685,9 +9684,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function workerSetPix(size, data, minVisibleValue, maxVisibleValue) {
+	    var colorScale = arguments.length <= 4 || arguments[4] === undefined ? null : arguments[4];
+
 	    var valueScale = _d2.default.scale.linear().range([255, 0]).domain([countTransform(0), countTransform(maxVisibleValue)]);
 
 	    var pixData = new Uint8ClampedArray(size * 4);
+
+	    if (colorScale == null) colorScale = _colormaps.heatedObjectMap;
 
 	    try {
 	        for (var i = 0; i < data.length; i++) {
@@ -9695,13 +9698,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var ct = countTransform(d);
 
 	            var rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(ct))));
-	            var rgb = _colormaps.heatedObjectMap[rgbIdx];
+	            var rgb = colorScale[rgbIdx];
 
 	            pixData[i * 4] = rgb[0];
 	            pixData[i * 4 + 1] = rgb[1];
 	            pixData[i * 4 + 2] = rgb[2];
 	            pixData[i * 4 + 3] = rgb[3];
-	        };
+	        }
+	        ;
 	    } catch (err) {
 	        console.log('ERROR:', err);
 	        return pixData;
@@ -9716,7 +9720,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var inputTileData = new Float32Array(passedData.tile.data, 0, passedData.tile.dataLength);
 
 	    var tileData = workerLoadTileData(inputTileData, passedData.tile.type);
-	    var pixOutput = workerSetPix(256 * 256, tileData, passedData.minVisibleValue, passedData.maxVisibleValue);
+	    var pixOutput = workerSetPix(256 * 256, tileData, passedData.minVisibleValue, passedData.maxVisibleValue, passedData.tile.colorScale);
+	    //console.log('passedData:', passedData);
+	    //console.log('colorScale:', passedData.tile.colorScale);
 
 	    var returnObj = {
 	        shownTileId: passedData.shownTileId,
@@ -9735,13 +9741,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    self.postMessage(returnObj, [returnObj.pixData.buffer]);
 	}, false);
 
+	/*
 	module.exports = function (passedData, done) {
-	    var inputTileData = new Float32Array(passedData.tile.data, 0, passedData.tile.dataLength);
+	    let inputTileData = new Float32Array(passedData.tile.data, 0, passedData.tile.dataLength);
 
-	    var tileData = workerLoadTileData(inputTileData, passedData.tile.type);
-	    var pixOutput = workerSetPix(256 * 256, tileData, passedData.minVisibleValue, passedData.maxVisibleValue);
+	    let tileData = workerLoadTileData(inputTileData, passedData.tile.type);
+	    let pixOutput = workerSetPix(256 * 256, tileData, 
+	            passedData.minVisibleValue, 
+	            passedData.maxVisibleValue,
+	            colorScale = passedData.colorScale);
 
-	    var returnObj = {
+	    let returnObj = {
 	        shownTileId: passedData.shownTileId,
 	        tile: {
 	            tilePos: passedData.tile.tilePos,
@@ -9758,6 +9768,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    done(returnObj, [returnObj.pixData.buffer]);
 	};
+	*/
 
 /***/ }
 
