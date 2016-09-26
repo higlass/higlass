@@ -24299,14 +24299,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            trackDict[track.uid] = track;
 	        });
 
-	        _this.state = {
-	            width: _this.props.viewConfig.width, // should be changeable on resize
-	            height: _this.props.viewConfig.height, // should change in response to the addition of new tracks
-	            // or user resize
-	            tracks: trackDict,
-	            tracksList: tracks
-	        };
-
 	        _this.animate = _this.animate.bind(_this);
 
 	        _this.xScale = _d2.default.scale.linear().domain(_this.props.viewConfig.domain);
@@ -24314,6 +24306,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        _this.xOrigScale = _this.xScale.copy();
 	        _this.yOrigScale = _this.yScale.copy();
+
+	        _this.zoomedXScale = _this.xScale.copy();
+	        _this.zoomedYScale = _this.yScale.copy();
+
+	        _this.state = {
+	            width: _this.props.viewConfig.width, // should be changeable on resize
+	            height: _this.props.viewConfig.height, // should change in response to the addition of new tracks
+	            // or user resize
+	            tracks: trackDict,
+	            tracksList: tracks,
+	            xRange: _this.xOrigScale.range(),
+	            yRange: _this.yOrigScale.range(),
+	            xDomain: _this.xOrigScale.domain(),
+	            yDomain: _this.yOrigScale.domain()
+	        };
 
 	        _this.zoom = _d2.default.behavior.zoom().on('zoom', _this.handleZoom.bind(_this)).on('zoomend', _this.handleZoomEnd.bind(_this));
 
@@ -24328,6 +24335,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        _this.setHeight();
 	        _this.arrangeTracks();
+
+	        /*
+	        this.setState({
+	            xRange: this.xOrigScale.range(),
+	            yRange: this.yOrigScale.range(),
+	            xDomain: this.xOrigScale.domain(),
+	            yDomain: this.yOrigScale.domain()
+	        });
+	        */
 	        return _this;
 	    }
 
@@ -24360,6 +24376,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.xOrigScale.range([0, this.width]);
 	            this.yOrigScale.range([0, this.height]);
 	            this.renderer.resize(this.width, this.height);
+
+	            this.setState({
+	                xRange: this.xOrigScale.range(),
+	                yRange: this.yOrigScale.range(),
+	                xDomain: this.xOrigScale.domain(),
+	                yDomain: this.yOrigScale.domain()
+	            });
+	            console.log('setting xRange:', this.state.xRange);
 
 	            for (var uid in this.state.tracks) {
 	                if (this.tracksToPositions[this.state.tracks[uid].type] == 'top' || this.tracksToPositions[this.state.tracks[uid].type] == 'center') this.state.tracks[uid].width = this.width;
@@ -24441,6 +24465,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'handleZoom',
 	        value: function handleZoom() {
+	            var translate = this.zoom.translate();
+	            var scale = this.zoom.scale();
+
+	            this.zoomedXScale.range(this.xOrigScale.range());
+	            this.zoomedXScale.domain(this.xOrigScale.range().map(function (x) {
+	                return (x - translate[0]) / scale;
+	            }).map(this.xOrigScale.invert));
+
+	            this.zoomedYScale.range(this.yOrigScale.range());
+	            this.zoomedYScale.domain(this.yOrigScale.range().map(function (y) {
+	                return (y - translate[1]) / scale;
+	            }).map(this.yOrigScale.invert));
+
+	            //console.log('this.zoomedXScale.domain():', this.zoomedXScale.domain());
 	            this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
 	        }
 	    }, {
@@ -24783,7 +24821,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        if (_this2.props.viewConfig.searchBox) {
 	                            return _react2.default.createElement(_GenomePositionSearchBox.GenomePositionSearchBox, {
 	                                zoomToGenomePositionHandler: _this2.zoomToGenomePosition.bind(_this2),
-	                                chromInfoPath: _this2.props.viewConfig.chromInfoPath
+	                                chromInfoPath: _this2.props.viewConfig.chromInfoPath,
+	                                zoomDispatch: _this2.zoomDispatch,
+	                                xRange: _this2.state.xRange,
+	                                yRange: _this2.state.yRange,
+	                                xDomain: _this2.state.xDomain,
+	                                yDomain: _this2.state.yDomain
 	                            });
 	                        }
 	                    }()
@@ -89581,6 +89624,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _d2 = __webpack_require__(325);
+
+	var _d3 = _interopRequireDefault(_d2);
+
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -89588,6 +89635,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _reactDom = __webpack_require__(36);
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _slugid = __webpack_require__(182);
+
+	var _slugid2 = _interopRequireDefault(_slugid);
 
 	var _reactBootstrap = __webpack_require__(342);
 
@@ -89611,8 +89662,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GenomePositionSearchBox).call(this, props));
 
+	        _this.uid = _slugid2.default.nice();
 	        _this.chromInfo = null;
+	        _this.chromInfoBisector = _d3.default.bisector(function (d) {
+	            return d.pos;
+	        }).left;
 	        _this.searchField = null;
+	        _this.props.zoomDispatch.on('zoom.' + _this.uid, _this.zoomed.bind(_this));
+
+	        _this.xOrigScale = _d3.default.scale.linear().domain(_this.props.xDomain).range(_this.props.xRange);
+	        _this.yOrigScale = _d3.default.scale.linear().domain(_this.props.yDomain).range(_this.props.yRange);
+
+	        console.log('xDomain:', _this.props.xDomain);
+
+	        _this.zoomedXScale = _this.xOrigScale.copy();
+	        _this.zoomedYScale = _this.yOrigScale.copy();
 
 	        (0, _ChromosomeInfo.ChromosomeInfo)(_this.props.chromInfoPath, function (newChromInfo) {
 	            _this.chromInfo = newChromInfo;
@@ -89623,6 +89687,47 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    _createClass(GenomePositionSearchBox, [{
+	        key: 'absoluteToChr',
+	        value: function absoluteToChr(absPosition) {
+	            var insertPoint = this.chromInfoBisector(this.chromInfo.cumPositions, absPosition);
+
+	            if (insertPoint > 0) insertPoint -= 1;
+
+	            return [this.chromInfo.cumPositions[insertPoint].chr, absPosition - this.chromInfo.cumPositions[insertPoint].pos];
+	        }
+	    }, {
+	        key: 'zoomed',
+	        value: function zoomed(translate, scale) {
+	            this.xOrigScale.domain(this.props.xDomain);
+	            this.yOrigScale.domain(this.props.yDomain);
+
+	            this.xOrigScale.range(this.props.xRange);
+	            this.yOrigScale.range(this.props.yRange);
+
+	            this.zoomedXScale.range(this.xOrigScale.range());
+	            this.zoomedXScale.domain(this.xOrigScale.range().map(function (x) {
+	                return (x - translate[0]) / scale;
+	            }).map(this.xOrigScale.invert));
+
+	            this.zoomedYScale.range(this.yOrigScale.range());
+	            this.zoomedYScale.domain(this.yOrigScale.range().map(function (y) {
+	                return (y - translate[1]) / scale;
+	            }).map(this.yOrigScale.invert));
+
+	            var x1 = this.absoluteToChr(this.zoomedXScale.domain()[0]);
+	            var x2 = this.absoluteToChr(this.zoomedXScale.domain()[1]);
+
+	            var y1 = this.absoluteToChr(this.zoomedYScale.domain()[0]);
+	            var y2 = this.absoluteToChr(this.zoomedYScale.domain()[1]);
+
+	            //console.log('x1:', x1, 'x2:', x2, 'y1:', y1, 'y2:', y2)
+
+	            var positionString = x1[0] + ':' + Math.floor(x1[1]) + ' to ' + x2[0] + ':' + Math.ceil(x2[1]);
+	            positionString += " and " + y1[0] + ':' + Math.floor(y1[1]) + ' to ' + y2[0] + ':' + Math.ceil(y2[1]);
+
+	            _reactDom2.default.findDOMNode(this.refs.searchFieldText).value = positionString;
+	        }
+	    }, {
 	        key: 'buttonClick',
 	        value: function buttonClick() {
 	            var searchFieldValue = _reactDom2.default.findDOMNode(this.refs.searchFieldText).value;
