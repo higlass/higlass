@@ -138,7 +138,8 @@ export class MultiTrackContainer extends React.Component {
         let cs = window.getComputedStyle(this.element, null);
 
         this.prevWidth = this.width;
-        this.width = this.element.offsetWidth 
+        this.width = Math.floor(this.element.offsetWidth / 2) * 2  //make sure that the width is always even to prevent
+                                                         //rounding errors
                      - parseInt(cs.getPropertyValue('padding-left'), 10)
                      - parseInt(cs.getPropertyValue('padding-right'), 10);
         console.log('update width:', this.width, 'offsetWidth:', this.element.offsetWidth);
