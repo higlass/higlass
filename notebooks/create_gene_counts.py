@@ -2,8 +2,9 @@
 
 import argparse
 import genome_utils as gu
-import sys
 import os.path as op
+import shortuuid
+import sys
 
 import pyspark
 sc = pyspark.SparkContext()

@@ -5,10 +5,10 @@ import shutil
 
 # create a directory to store intermediate output files
 def get_outfile(table_name, data_dir, assembly):
-    data_dir = op.expanduser("~/data")
+    data_dir = op.expanduser("~/data/genbank-output/")
     output_dir = op.join(data_dir, assembly)   # where all of the intermediate output will be stored
 
-    outfile = op.join(output_dir, 'genbank-output/{}'.format(table_name))
+    outfile = op.join(output_dir, '{}'.format(table_name))
     if op.exists(outfile):
         shutil.rmtree(outfile)
     return outfile
