@@ -73,13 +73,6 @@ export class MultiTrackContainer extends React.Component {
 
         });
 
-        this.state =  {
-            width: this.props.viewConfig.width,     // should be changeable on resize
-            height: this.props.viewConfig.height,     // should change in response to the addition of new tracks
-                            // or user resize
-            tracks: trackDict,
-            tracksList: tracks
-        };
 
         this.animate = this.animate.bind(this);
 
@@ -88,6 +81,21 @@ export class MultiTrackContainer extends React.Component {
 
         this.xOrigScale = this.xScale.copy();
         this.yOrigScale = this.yScale.copy();
+
+        this.zoomedXScale = this.xScale.copy();
+        this.zoomedYScale = this.yScale.copy();
+
+        this.state =  {
+            width: this.props.viewConfig.width,     // should be changeable on resize
+            height: this.props.viewConfig.height,     // should change in response to the addition of new tracks
+                            // or user resize
+            tracks: trackDict,
+            tracksList: tracks,
+            xRange: this.xOrigScale.range(),
+            yRange: this.yOrigScale.range(),
+            xDomain: this.xOrigScale.domain(),
+            yDomain: this.yOrigScale.domain()
+        };
 
         this.zoom = d3.behavior.zoom()
                       .on('zoom', this.handleZoom.bind(this))
@@ -109,6 +117,15 @@ export class MultiTrackContainer extends React.Component {
 
         this.setHeight();
         this.arrangeTracks();
+
+        /*
+        this.setState({
+            xRange: this.xOrigScale.range(),
+            yRange: this.yOrigScale.range(),
+            xDomain: this.xOrigScale.domain(),
+            yDomain: this.yOrigScale.domain()
+        });
+        */
     }
 
 
@@ -143,6 +160,15 @@ export class MultiTrackContainer extends React.Component {
         this.xOrigScale.range([0, this.width]);
         this.yOrigScale.range([0, this.height]);
         this.renderer.resize(this.width, this.height);
+
+
+        this.setState({
+            xRange: this.xOrigScale.range(),
+            yRange: this.yOrigScale.range(),
+            xDomain: this.xOrigScale.domain(),
+            yDomain: this.yOrigScale.domain()
+        });
+        console.log('setting xRange:', this.state.xRange);
 
         for (let uid in this.state.tracks) {
             if (this.tracksToPositions[this.state.tracks[uid].type] == 'top' ||
@@ -230,6 +256,20 @@ export class MultiTrackContainer extends React.Component {
     }
 
     handleZoom() {
+        let translate = this.zoom.translate();
+        let scale = this.zoom.scale();
+
+        this.zoomedXScale.range(this.xOrigScale.range());
+        this.zoomedXScale.domain(this.xOrigScale.range()
+                                  .map(function(x) { return (x - translate[0]) / scale })
+                                  .map(this.xOrigScale.invert))
+
+        this.zoomedYScale.range(this.yOrigScale.range());
+        this.zoomedYScale.domain(this.yOrigScale.range()
+                                  .map(function(y) { return (y - translate[1]) / scale })
+                                  .map(this.yOrigScale.invert))
+
+        //console.log('this.zoomedXScale.domain():', this.zoomedXScale.domain());
         this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
     }
 
@@ -724,6 +764,11 @@ export class MultiTrackContainer extends React.Component {
                 return <GenomePositionSearchBox 
                     zoomToGenomePositionHandler={this.zoomToGenomePosition.bind(this)}
                     chromInfoPath={this.props.viewConfig.chromInfoPath}
+                    zoomDispatch={this.zoomDispatch}
+                    xRange={this.state.xRange}
+                    yRange={this.state.yRange}
+                    xDomain={this.state.xDomain}
+                    yDomain={this.state.yDomain}
                     />
                     }})() }
             </div>
