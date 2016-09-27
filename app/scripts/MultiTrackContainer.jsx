@@ -40,17 +40,24 @@ export class MultiTrackContainer extends React.Component {
                                    'left-chromosome-axis': 'left',
                                    'left-empty': 'left',
                                    'top-empty': 'top',
-                                   'right-bar': 'right', 'heatmap': 'center' };
+                                   'right-bar': 'right', 
+                                   'heatmap': 'center' };
 
         let tracks = this.props.viewConfig.tracks;
         let currentTop = 0;
+        this.heightSpecified = true;     // do any of the tracks request a particular height?
         for (let i = 0; i < tracks.length; i++) {
             let trackHeight = this.initialTrackHeight;
             let trackWidth = this.initialTrackWidth;
             let trackId = slugid.nice();
 
-            if ('height' in tracks[i])
+            if (this.tracksToPositions[tracks[i].type] == 'center')
+                if (!('height' in tracks[i]))
+                    this.heightSpecified = false;
+
+            if ('height' in tracks[i]) {
                 trackHeight = tracks[i].height;
+            }
             if ('width' in tracks[i])
                 trackWidth = tracks[i].width;
             if ('uid' in tracks[i])
@@ -138,11 +145,17 @@ export class MultiTrackContainer extends React.Component {
         let cs = window.getComputedStyle(this.element, null);
 
         this.prevWidth = this.width;
-        this.width = Math.floor(this.element.offsetWidth / 2) * 2  //make sure that the width is always even to prevent
-                                                         //rounding errors
+        console.log('this.element.offsetWidth:', this.element.offsetWidth, "this.element.parent:", this.element.getBoundingClientRect().width);
+        //let offsetWidth = Math.floor(this.element.parentNode.offsetWidth / 2);
+
+
+        this.width = Math.floor(this.element.getBoundingClientRect().width)
                      - parseInt(cs.getPropertyValue('padding-left'), 10)
                      - parseInt(cs.getPropertyValue('padding-right'), 10);
         console.log('update width:', this.width, 'offsetWidth:', this.element.offsetWidth);
+
+        if (!this.heightSpecified)
+            this.height = this.width
         
         if (typeof this.prevWidth != 'undefined') {
             let currentDomainWidth = this.xOrigScale.domain()[1] - this.xOrigScale.domain()[0]; 
@@ -175,6 +188,10 @@ export class MultiTrackContainer extends React.Component {
             if (this.tracksToPositions[this.state.tracks[uid].type] == 'top' ||
                 this.tracksToPositions[this.state.tracks[uid].type] == 'center')
                     this.state.tracks[uid].width = this.width;
+
+            if (this.tracksToPositions[this.state.tracks[uid].type] == 'left' ||
+                this.tracksToPositions[this.state.tracks[uid].type] == 'center') 
+                    this.state.tracks[uid].height = this.height;
 
             if ('resizeDispatch' in this.state.tracks[uid]) {
                 this.state.tracks[uid].resizeDispatch.resize();
@@ -296,6 +313,8 @@ export class MultiTrackContainer extends React.Component {
 
         if (typeof this.height == 'undefined') {
             this.height = 0;
+
+            console.log('setting height:', this.props.viewConfig.tracks);
 
             for (let i = 0; i < this.props.viewConfig.tracks.length; i++)  {
                 this.height += this.props.viewConfig.tracks[i].height;

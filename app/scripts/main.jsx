@@ -543,9 +543,152 @@ let normalizationDemo = JSON.parse(`
 }
 `);
 
+let gridDemo = JSON.parse(`
+{
+ "views": [
+  {
+    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+    "domain": [
+      0,
+      3000000000
+    ],
+    "viewStyle": {
+      "float": "left",
+      "padding": "5px",
+      "width": "50%"
+    },
+    "tracks": [
+      {
+        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+        "type": "top-chromosome-axis",
+        "height": 25
+      },
+      {
+        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_16.reads_1000000.dups_100.res_256.contacts.genome",
+        "type": "heatmap"
+      },
+      {
+        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+        "type": "left-chromosome-axis",
+        "width": 25
+      },
+      {
+        "type": "left-empty",
+        "width": 5
+      }
+    ],
+    "zoomLock": 0
+  },
+  {
+    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+    "domain": [
+      0,
+      3000000000
+    ],
+    "viewStyle": {
+      "float": "left",
+      "padding": "5px",
+      "width": "50%"
+    },
+    "tracks": [
+      {
+        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+        "type": "top-chromosome-axis",
+        "height": 25
+      },
+      {
+        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_32.reads_1000000.dups_100.res_256.contacts.genome",
+        "type": "heatmap"
+      },
+      {
+        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+        "type": "left-chromosome-axis",
+        "width": 25
+      },
+      {
+        "type": "left-empty",
+        "width": 5
+      }
+    ],
+    "zoomLock": 0
+  },
+  {
+    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+    "domain": [
+      0,
+      3000000000
+    ],
+    "viewStyle": {
+      "float": "left",
+      "padding": "5px",
+      "width": "50%"
+    },
+    "tracks": [
+      {
+        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+        "type": "top-chromosome-axis",
+        "height": 25
+      },
+      {
+        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_64.reads_1000000.dups_100.res_256.contacts.genome",
+        "type": "heatmap"
+      },
+      {
+        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+        "type": "left-chromosome-axis",
+        "width": 25
+      },
+      {
+        "type": "left-empty",
+        "width": 5
+      }
+    ],
+    "zoomLock": 0
+  },
+  {
+    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+    "domain": [
+      0,
+      3000000000
+    ],
+    "viewStyle": {
+      "float": "left",
+      "padding": "5px",
+      "width": "50%"
+    },
+    "tracks": [
+      {
+        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+        "type": "top-chromosome-axis",
+        "height": 25
+      },
+      {
+        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_128.reads_1000000.dups_100.res_256.contacts.genome",
+        "type": "heatmap"
+      },
+      {
+        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+        "type": "left-chromosome-axis",
+        "width": 25
+      },
+      {
+        "type": "left-empty",
+        "width": 5
+      }
+    ],
+    "zoomLock": 0
+  }
+],
+"editable": true
+}
+
+`);
+
+
 try {
 ReactDOM.render(
-        <HiGlassApp viewConfigString={JSON.stringify(normalizationDemo)}/>
+//        <HiGlassApp viewConfigString={JSON.stringify(normalizationDemo)}/>
+        <HiGlassApp viewConfigString={JSON.stringify(gridDemo)}/>
     , document.getElementById('comparison-demo')
     );
 } catch (e) {

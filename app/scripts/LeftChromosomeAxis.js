@@ -16,6 +16,13 @@ export function LeftChromosomeAxis() {
 
     function chart(selection) {
         selection.each(function(d) {
+                if (!('resizeDispatch' in d)) {
+                    d.resizeDispatch = resizeDispatch == null ? d3.dispatch('resize') : resizeDispatch;
+                }
+
+                let slugId = d.uid + '.top-axis';
+                d.resizeDispatch.on('resize.' + slugId, sizeChanged.bind(this));
+
                 let localZoomDispatch = zoomDispatch == null ? d3.dispatch('zoom') : zoomDispatch;
                 let gChromLabels = null;
                 let chromInfo = null;
@@ -28,7 +35,6 @@ export function LeftChromosomeAxis() {
                 let xAxis = null;
                 let gAxis = null;
                 let lineScale = null;
-                let slugId = slugid.nice();
                 let zoom = d3.behavior.zoom();
 
                 let svg = d3.select(this).selectAll('svg')
@@ -96,6 +102,12 @@ export function LeftChromosomeAxis() {
 
                 localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
+                function sizeChanged() {
+                    let svg = d3.select(this).selectAll('svg')
+                        svg.style('height', d.height);
+                    draw();
+                }
+
                 function zoomChanged(translate, scale) {
                     // something changed the zoom.
                     zoom.translate(translate);
@@ -118,6 +130,16 @@ export function LeftChromosomeAxis() {
 
                        if (chromInfo == null)
                            return;
+
+                       if (orient == 'top') {
+                           let yMid =  (zoomedYScale.range()[1] + zoomedYScale.range()[0]) / 2;
+                           textCenterChr
+                            .attr('transform', `translate(0,${yMid})rotate(-90)`)
+                           .attr('text-anchor', 'middle')
+                           .attr('dy', '-0.5em')
+                       } else {
+                           // FIXME
+                       }
 
                         let cumValues = chromInfo.cumPositions;
                        //gChromLabels.attr('x', (d) => { return zoomedYScale(d.pos); });
