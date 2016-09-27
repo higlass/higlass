@@ -21,7 +21,9 @@ export function TopGeneLabelsTrack() {
     }
 
     let chart = function(selection) {
+        console.log('called', selection);
         selection.each(function(d) {
+            console.log('called1:', selection);
             inD += 1;
 
             if (!('resizeDispatch' in d)) {
@@ -77,6 +79,19 @@ export function TopGeneLabelsTrack() {
                 allTiles = d3.select(this).selectAll('.tile-g').data();
                 allTiles.map((x) => { x.texts = []; });
 
+                // check if we need to remove any graphics because the tiles
+                // they represent are no longer visible
+                let shownTiles = {};
+
+                for (let tileIdStr in d.tileGraphics) {
+                    if (!(tileIdStr in shownTiles)) {
+                        //we're displaying graphics that are no longer necessary,
+                        //so we need to get rid of them
+                        d.pMain.removeChild(d.tileGraphics[tileIdStr]);
+                        delete d.tileGraphics[tileIdStr];
+                    }
+                }
+
                 if (allTiles.length  == 0)
                     return;
 
@@ -87,6 +102,8 @@ export function TopGeneLabelsTrack() {
 
                 zoomLevel = allTiles[0].tilePos[0];
                 let tileWidth = (allTiles[0].xRange[1] - allTiles[0].xRange[0]) / Math.pow(2, zoomLevel);
+                console.log('tileWidth:', tileWidth, allTiles[0].xRange[0] + tileWidth * (allTiles[0].tilePos[1]),
+                                                    allTiles[0].xRange[0] + tileWidth * (allTiles[0].tilePos[1] + 1));
                 let minXRange = Math.min(...allTiles.map((x) => x.tileXRange[0]));
                 let maxXRange = Math.max(...allTiles.map((x) => x.tileXRange[1]));
 
@@ -138,6 +155,7 @@ export function TopGeneLabelsTrack() {
                         let xEndPos = zoomedXScale(+tileData[i].txEnd + genomeOffset);
 
                         let xPos = (xEndPos + xStartPos) / 2;
+                        //console.log('text:', tileData[i].geneName, 'xPos:', xPos);
 
                         //let yPos = -(d.height - yScale(tileData[i]));
                         let height = yScale(Math.log(+tileData[i].count+1))
@@ -226,8 +244,8 @@ export function TopGeneLabelsTrack() {
                     // hide all overlapping texts
                 }
 
-                let shownTiles = {};
 
+                // checking
                 for (let i = 0; i < allTiles.length; i++) {
                     shownTiles[allTiles[i].tileId] = true;
                     
@@ -236,14 +254,6 @@ export function TopGeneLabelsTrack() {
                         delete d.tileGraphics[allTiles[i].tileId];
                     }
 
-                    for (let tileIdStr in d.tileGraphics) {
-                        if (!(tileIdStr in shownTiles)) {
-                            //we're displaying graphics that are no longer necessary,
-                            //so we need to get rid of them
-                            d.pMain.removeChild(d.tileGraphics[tileIdStr]);
-                            delete d.tileGraphics[tileIdStr];
-                        }
-                    }
 
                     if (!(allTiles[i].tileId in d.tileGraphics)) {
                         // we don't have a graphics object for this tile
@@ -254,6 +264,7 @@ export function TopGeneLabelsTrack() {
                          d.tileGraphics[allTiles[i].tileId] = newGraphics
                     } 
                 }
+
 
             }
 

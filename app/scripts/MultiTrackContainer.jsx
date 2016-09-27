@@ -135,8 +135,6 @@ export class MultiTrackContainer extends React.Component {
         */
     }
 
-
-
     updateView() {
         //d3.selectAll('
     }
