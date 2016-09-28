@@ -21,9 +21,7 @@ export function TopGeneLabelsTrack() {
     }
 
     let chart = function(selection) {
-        console.log('called', selection);
         selection.each(function(d) {
-            console.log('called1:', selection);
             inD += 1;
 
             if (!('resizeDispatch' in d)) {
@@ -102,8 +100,7 @@ export function TopGeneLabelsTrack() {
 
                 zoomLevel = allTiles[0].tilePos[0];
                 let tileWidth = (allTiles[0].xRange[1] - allTiles[0].xRange[0]) / Math.pow(2, zoomLevel);
-                console.log('tileWidth:', tileWidth, allTiles[0].xRange[0] + tileWidth * (allTiles[0].tilePos[1]),
-                                                    allTiles[0].xRange[0] + tileWidth * (allTiles[0].tilePos[1] + 1));
+
                 let minXRange = Math.min(...allTiles.map((x) => x.tileXRange[0]));
                 let maxXRange = Math.max(...allTiles.map((x) => x.tileXRange[1]));
 

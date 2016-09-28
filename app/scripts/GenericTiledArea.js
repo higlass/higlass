@@ -303,7 +303,6 @@ export function GenericTiledArea() {
                 dispatch.draw();
 
 
-                console.log('xDomain:', zoom.x().domain(), 'visibleTiles:', tiles);
                 refreshTiles(tiles);
             }
 

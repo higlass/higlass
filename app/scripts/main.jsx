@@ -708,7 +708,7 @@ ReactDOM.render(
                "type":"top-chromosome-axis"
             },
             {
-               "source":"//52.23.165.123:9872/hg19/refgene-tiles-minus",
+               "source":"//54.197.186.181:9872/hg19/refgene-tiles-minus",
                "type":"top-gene-labels",
                "height":25
             }
