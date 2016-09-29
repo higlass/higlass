@@ -3,7 +3,7 @@ python scripts/make_tiles.py -o jsons/tiles -p pos1,pos2 --min-value count --max
 
 
 # Move a newly built page to the gh-pages branch
-rm -rf /tmp/dist/; cp -r dist /tmp; git checkout gh-pages; cp -r /tmp/dist/* .; cp demo.html index.html;
+gulp build; git commit -am "New build"; rm -rf /tmp/dist/; cp -r dist /tmp; git checkout gh-pages; cp -r /tmp/dist/* .; cp demo.html index.html;
 
 ## Starting the spark notebook
 
