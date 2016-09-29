@@ -155,8 +155,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var normalizationDemo = JSON.parse('\n\n{ "views": \n[\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//52.23.165.123:9872/hg19/Dixon2015-H1_hESC-HindIII-allreps-filtered.50kb.cool.unbalanced.genome.sorted.gz",\n        "type": "top-diagonal-heatmap",\n        "height": 200\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis"\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      }\n    ],\n    "zoomLock": 0,\n    "searchBox": true\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//52.23.165.123:9872/hg19/Dixon2015-H1_hESC-HindIII-allreps-filtered.50kb.cool.genome.sorted.gz",\n        "type": "top-diagonal-heatmap",\n        "height": 200\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis"\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      }\n    ],\n    "zoomLock": 0,\n    "searchBox": true\n  }\n]\n}\n');
 
+	var gridDemo = JSON.parse('\n{\n "views": [\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_16.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_32.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_64.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_128.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  }\n],\n"editable": true\n}\n\n');
+
 	try {
-	    _reactDom2.default.render(_react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: JSON.stringify(normalizationDemo) }), document.getElementById('comparison-demo'));
+	    _reactDom2.default.render(
+	    //        <HiGlassApp viewConfigString={JSON.stringify(normalizationDemo)}/>
+	    _react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: '\n{\n   "views":[\n      {\n         "chromInfoPath":"//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n         "domain":[\n            0,\n            3000000000\n         ],\n         "viewStyle":{\n            "float":"left",\n            "padding":"5px",\n            "width":"100%"\n         },\n         "tracks":[\n            {\n               "source":"//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n               "type":"top-chromosome-axis"\n            },\n            {\n               "source":"//54.197.186.181:9872/hg19/refgene-tiles-minus",\n               "type":"top-gene-labels",\n               "height":25\n            }\n         ],\n         "zoomLock":0,\n         "searchBox":true\n      }\n   ],\n   "editable":true\n}\n' }), document.getElementById('comparison-demo'));
 	} catch (e) {
 	    console.log('error:', e);
 	}
@@ -24271,16 +24275,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	            'left-chromosome-axis': 'left',
 	            'left-empty': 'left',
 	            'top-empty': 'top',
-	            'right-bar': 'right', 'heatmap': 'center' };
+	            'right-bar': 'right',
+	            'heatmap': 'center' };
 
 	        var tracks = _this.props.viewConfig.tracks;
 	        var currentTop = 0;
+	        _this.heightSpecified = true; // do any of the tracks request a particular height?
 	        for (var i = 0; i < tracks.length; i++) {
 	            var trackHeight = _this.initialTrackHeight;
 	            var trackWidth = _this.initialTrackWidth;
 	            var trackId = _slugid2.default.nice();
 
-	            if ('height' in tracks[i]) trackHeight = tracks[i].height;
+	            if (_this.tracksToPositions[tracks[i].type] == 'center') if (!('height' in tracks[i])) _this.heightSpecified = false;
+
+	            if ('height' in tracks[i]) {
+	                trackHeight = tracks[i].height;
+	            }
 	            if ('width' in tracks[i]) trackWidth = tracks[i].width;
 	            if ('uid' in tracks[i]) trackId = tracks[i].uid;
 	            if ('colorRange' in tracks[i]) tracks[i].colorScale = _this.initColorScale(tracks[i].colorRange);
@@ -24358,10 +24368,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var cs = window.getComputedStyle(this.element, null);
 
 	            this.prevWidth = this.width;
-	            this.width = Math.floor(this.element.offsetWidth / 2) * 2 //make sure that the width is always even to prevent
-	            //rounding errors
-	             - parseInt(cs.getPropertyValue('padding-left'), 10) - parseInt(cs.getPropertyValue('padding-right'), 10);
+	            console.log('this.element.offsetWidth:', this.element.offsetWidth, "this.element.parent:", this.element.getBoundingClientRect().width);
+	            //let offsetWidth = Math.floor(this.element.parentNode.offsetWidth / 2);
+
+	            this.width = Math.floor(this.element.getBoundingClientRect().width) - parseInt(cs.getPropertyValue('padding-left'), 10) - parseInt(cs.getPropertyValue('padding-right'), 10);
 	            console.log('update width:', this.width, 'offsetWidth:', this.element.offsetWidth);
+
+	            if (!this.heightSpecified) this.height = this.width;
 
 	            if (typeof this.prevWidth != 'undefined') {
 	                var currentDomainWidth = this.xOrigScale.domain()[1] - this.xOrigScale.domain()[0];
@@ -24389,6 +24402,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            for (var uid in this.state.tracks) {
 	                if (this.tracksToPositions[this.state.tracks[uid].type] == 'top' || this.tracksToPositions[this.state.tracks[uid].type] == 'center') this.state.tracks[uid].width = this.width;
+
+	                if (this.tracksToPositions[this.state.tracks[uid].type] == 'left' || this.tracksToPositions[this.state.tracks[uid].type] == 'center') this.state.tracks[uid].height = this.height;
 
 	                if ('resizeDispatch' in this.state.tracks[uid]) {
 	                    this.state.tracks[uid].resizeDispatch.resize();
@@ -24509,6 +24524,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            if (typeof this.height == 'undefined') {
 	                this.height = 0;
+
+	                console.log('setting height:', this.props.viewConfig.tracks);
 
 	                for (var i = 0; i < this.props.viewConfig.tracks.length; i++) {
 	                    this.height += this.props.viewConfig.tracks[i].height;
@@ -86334,6 +86351,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    x.texts = [];
 	                });
 
+	                // check if we need to remove any graphics because the tiles
+	                // they represent are no longer visible
+	                var shownTiles = {};
+
+	                for (var tileIdStr in d.tileGraphics) {
+	                    if (!(tileIdStr in shownTiles)) {
+	                        //we're displaying graphics that are no longer necessary,
+	                        //so we need to get rid of them
+	                        d.pMain.removeChild(d.tileGraphics[tileIdStr]);
+	                        delete d.tileGraphics[tileIdStr];
+	                    }
+	                }
+
 	                if (allTiles.length == 0) return;
 
 	                var minVisibleValue = Math.min.apply(Math, _toConsumableArray(allTiles.map(function (x) {
@@ -86347,6 +86377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                zoomLevel = allTiles[0].tilePos[0];
 	                var tileWidth = (allTiles[0].xRange[1] - allTiles[0].xRange[0]) / Math.pow(2, zoomLevel);
+
 	                var minXRange = Math.min.apply(Math, _toConsumableArray(allTiles.map(function (x) {
 	                    return x.tileXRange[0];
 	                })));
@@ -86401,6 +86432,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        var xEndPos = zoomedXScale(+tileData[_i].txEnd + genomeOffset);
 
 	                        var xPos = (xEndPos + xStartPos) / 2;
+	                        //console.log('text:', tileData[i].geneName, 'xPos:', xPos);
 
 	                        //let yPos = -(d.height - yScale(tileData[i]));
 	                        var _height = yScale(Math.log(+tileData[_i].count + 1));
@@ -86487,23 +86519,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    // hide all overlapping texts
 	                };
 
-	                var shownTiles = {};
-
+	                // checking
 	                for (var i = 0; i < allTiles.length; i++) {
 	                    shownTiles[allTiles[i].tileId] = true;
 
 	                    if (allTiles[i].tileId in d.tileGraphics) {
 	                        d.pMain.removeChild(d.tileGraphics[allTiles[i].tileId]);
 	                        delete d.tileGraphics[allTiles[i].tileId];
-	                    }
-
-	                    for (var tileIdStr in d.tileGraphics) {
-	                        if (!(tileIdStr in shownTiles)) {
-	                            //we're displaying graphics that are no longer necessary,
-	                            //so we need to get rid of them
-	                            d.pMain.removeChild(d.tileGraphics[tileIdStr]);
-	                            delete d.tileGraphics[tileIdStr];
-	                        }
 	                    }
 
 	                    if (!(allTiles[i].tileId in d.tileGraphics)) {
@@ -89444,6 +89466,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    function chart(selection) {
 	        selection.each(function (d) {
+	            if (!('resizeDispatch' in d)) {
+	                d.resizeDispatch = resizeDispatch == null ? _d2.default.dispatch('resize') : resizeDispatch;
+	            }
+
+	            var slugId = d.uid + '.top-axis';
+	            d.resizeDispatch.on('resize.' + slugId, sizeChanged.bind(this));
+
 	            var localZoomDispatch = zoomDispatch == null ? _d2.default.dispatch('zoom') : zoomDispatch;
 	            var gChromLabels = null;
 	            var chromInfo = null;
@@ -89456,7 +89485,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var xAxis = null;
 	            var gAxis = null;
 	            var lineScale = null;
-	            var slugId = _slugid2.default.nice();
 	            var zoom = _d2.default.behavior.zoom();
 
 	            var svg = _d2.default.select(this).selectAll('svg').data([d]);
@@ -89499,6 +89527,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
+	            function sizeChanged() {
+	                var svg = _d2.default.select(this).selectAll('svg');
+	                svg.style('height', d.height);
+	                draw();
+	            }
+
 	            function zoomChanged(translate, scale) {
 	                // something changed the zoom.
 	                zoom.translate(translate);
@@ -89520,6 +89554,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }).map(yScale.invert));
 
 	                if (chromInfo == null) return;
+
+	                if (orient == 'top') {
+	                    var _yMid = (zoomedYScale.range()[1] + zoomedYScale.range()[0]) / 2;
+	                    textCenterChr.attr('transform', 'translate(0,' + _yMid + ')rotate(-90)').attr('text-anchor', 'middle').attr('dy', '-0.5em');
+	                } else {
+	                    // FIXME
+	                }
 
 	                var cumValues = chromInfo.cumPositions;
 	                //gChromLabels.attr('x', (d) => { return zoomedYScale(d.pos); });
