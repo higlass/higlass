@@ -158,7 +158,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var gridDemo = JSON.parse('\n{\n "views": [\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_16.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_32.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_64.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_128.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  }\n],\n"editable": true\n}\n\n');
 
 	try {
-	    _reactDom2.default.render(_react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: JSON.stringify(normalizationDemo) }), document.getElementById('comparison-demo'));
+	    _reactDom2.default.render(
+	    //<HiGlassApp viewConfigString={JSON.stringify(normalizationDemo)}/>
+	    _react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: JSON.stringify(rectangularOneWindow) }), document.getElementById('comparison-demo'));
 	} catch (e) {
 	    console.log('error:', e);
 	}
@@ -24278,11 +24280,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var tracks = _this.props.viewConfig.tracks;
 	        var currentTop = 0;
+	        _this.twoD = false; // are there any 2D tracks? this affects how the genomic
+	        // coordinates are displayed in the search box
 	        _this.heightSpecified = true; // do any of the tracks request a particular height?
 	        for (var i = 0; i < tracks.length; i++) {
 	            var trackHeight = _this.initialTrackHeight;
 	            var trackWidth = _this.initialTrackWidth;
 	            var trackId = _slugid2.default.nice();
+
+	            if (_this.tracksToPositions[tracks[i].type] == 'left' || _this.tracksToPositions[tracks[i].type] == 'center') _this.twoD = true;
 
 	            if (_this.tracksToPositions[tracks[i].type] == 'center') if (!('height' in tracks[i])) _this.heightSpecified = false;
 
@@ -24633,6 +24639,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                .ease('linear')
 	                .call(this.zoom.translate([-6091225.646378613, -6091157.500879494]).scale(14603.2311647761).event);
 	                */
+
+	            // do a quick zoom to set the genome position in the searchBox
+	            this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
 	        }
 	    }, {
 	        key: 'initColorScale',
@@ -24772,8 +24781,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                xZoomParams = this.zoomTo(this.xOrigScale, range1);
 	                yZoomParams = this.zoomTo(this.yOrigScale, range2);
 
-	                var _translate = [xZoomParams.translate, yZoomParams.translate];
-	                var _scale = xZoomParams.scale;
+	                translate = [xZoomParams.translate, yZoomParams.translate];
+	                scale = xZoomParams.scale;
 	            } else if (range1 != null) {
 	                // adjust the x-axis
 	                var xZoomParams = this.zoomTo(this.xOrigScale, range1);
@@ -24843,7 +24852,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                                xRange: _this2.state.xRange,
 	                                yRange: _this2.state.yRange,
 	                                xDomain: _this2.state.xDomain,
-	                                yDomain: _this2.state.yDomain
+	                                yDomain: _this2.state.yDomain,
+	                                twoD: _this2.twoD
 	                            });
 	                        }
 	                    }()
@@ -89722,6 +89732,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        (0, _ChromosomeInfo.ChromosomeInfo)(_this.props.chromInfoPath, function (newChromInfo) {
 	            _this.chromInfo = newChromInfo;
 	            _this.searchField = new _search_field.SearchField(_this.chromInfo);
+
+	            console.log('loaded chrominfo');
+	            _this.setPositionText();
 	        });
 
 	        return _this;
@@ -89754,6 +89767,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.zoomedYScale.domain(this.yOrigScale.range().map(function (y) {
 	                return (y - translate[1]) / scale;
 	            }).map(this.yOrigScale.invert));
+	            this.setPositionText();
+	        }
+	    }, {
+	        key: 'setPositionText',
+	        value: function setPositionText() {
+	            if (this.chromInfo == null) return; // chromosome info hasn't been loaded yet
 
 	            var x1 = this.absoluteToChr(this.zoomedXScale.domain()[0]);
 	            var x2 = this.absoluteToChr(this.zoomedXScale.domain()[1]);
@@ -89763,8 +89782,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            //console.log('x1:', x1, 'x2:', x2, 'y1:', y1, 'y2:', y2)
 
-	            var positionString = x1[0] + ':' + Math.floor(x1[1]) + ' to ' + x2[0] + ':' + Math.ceil(x2[1]);
-	            positionString += " and " + y1[0] + ':' + Math.floor(y1[1]) + ' to ' + y2[0] + ':' + Math.ceil(y2[1]);
+	            var positionString = null;
+
+	            if (x1[0] != x2[0]) positionString = x1[0] + ':' + Math.floor(x1[1]) + '-' + x2[0] + ':' + Math.ceil(x2[1]);else positionString = x1[0] + ':' + Math.floor(x1[1]) + '-' + Math.ceil(x2[1]);
+
+	            if (this.props.twoD) {
+	                if (y1[0] != y2[0]) positionString += " and " + y1[0] + ':' + Math.floor(y1[1]) + '-' + y2[0] + ':' + Math.ceil(y2[1]);else positionString += " and " + y1[0] + ':' + Math.floor(y1[1]) + '-' + Math.ceil(y2[1]);
+	            }
 
 	            _reactDom2.default.findDOMNode(this.refs.searchFieldText).value = positionString;
 	        }
@@ -89805,7 +89829,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    null,
 	                    _react2.default.createElement(_reactBootstrap.FormControl, { type: 'text', onKeyPress: this.searchFieldKeyPress.bind(this), ref: 'searchFieldText'
 	                        //defaultValue="chr2:100000000 to chr2:200000000"
-	                        , defaultValue: 'chrX:12900000 to chrX:12970000'
+	                        , defaultValue: 'chr4:190,998,876-191,000,255'
 	                    }),
 	                    _react2.default.createElement(
 	                        _reactBootstrap.InputGroup.Button,
@@ -89850,22 +89874,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _createClass(SearchField, [{
 	        key: 'parsePosition',
 	        value: function parsePosition(positionText) {
+	            var prevChr = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
 	            // Parse chr:position strings...
 	            // i.e. chr1:1000
 	            // or   chr2:20000
 	            var positionParts = positionText.split(':');
-	            var chr = positionParts[0];
-
+	            var chr = null;
 	            var pos = 0;
-	            if (positionParts.length > 1) pos = +positionParts[1];
+
+	            if (positionParts.length > 1) {
+	                chr = positionParts[0];
+	                pos = +positionParts[1].replace(/,/g, ''); //chromosome specified
+	            } else {
+	                    pos = +positionParts[0].replace(/,/g, ''); // no chromosome specified
+	                    chr = null;
+	                }
 
 	            var retPos = null;
 
 	            if (isNaN(pos)) retPos = null;
 
-	            if (chr in this.chromInfo.chrPositions) retPos = this.chromInfo.chrPositions[chr].pos + pos;else retPos = null;
+	            if (chr == null) chr = prevChr;
 
-	            return retPos;
+	            if (chr in this.chromInfo.chrPositions) {
+	                retPos = this.chromInfo.chrPositions[chr].pos + pos;
+	            } else {
+	                console.log("Search error: No chromInfo specified");
+	                retPos = null;
+	            }
+
+	            return [chr, pos, retPos];
 	        }
 	    }, {
 	        key: 'matchRangesToLarger',
@@ -89895,21 +89934,38 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            if (term.length == 0) return null;
 
-	            var parts = term.split(' to ');
+	            var parts = term.split('-');
 	            var pos1 = null,
 	                pos2 = null;
 	            var range = null;
 
-	            if (parts[0].indexOf('to ') == 0) {
+	            if (parts[0].indexOf('-') == 0) {
 	                parts[0] = parts[0].slice(3, parts[0].length);
 	            }
 
-	            if (parts.length > 1) {
-	                pos1 = this.parsePosition(parts[0]);
-	                pos2 = this.parsePosition(parts[1]);
+	            console.log('parts:', parts);
 
-	                range = [pos1, pos2];
+	            if (parts.length > 1) {
+	                var _parsePosition = this.parsePosition(parts[0]);
+
+	                var _parsePosition2 = _slicedToArray(_parsePosition, 3);
+
+	                var chr1 = _parsePosition2[0];
+	                var chrPos1 = _parsePosition2[1];
+	                var genomePos1 = _parsePosition2[2];
+
+	                var _parsePosition3 = this.parsePosition(parts[1], chr1);
+
+	                var _parsePosition4 = _slicedToArray(_parsePosition3, 3);
+
+	                var chr2 = _parsePosition4[0];
+	                var chrPos2 = _parsePosition4[1];
+	                var genomePos2 = _parsePosition4[2];
+
+
+	                range = [genomePos1, genomePos2];
 	            } else {
+	                // only a locus specified and no range
 	                pos1 = this.parsePosition(parts[0]);
 
 	                range = [pos1 - 8000000, pos1 + 8000000];
@@ -89920,9 +89976,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'searchPosition',
 	        value: function searchPosition(text) {
+	            console.log('text:', text);
 	            var range1 = null,
 	                range2 = null;
-
 	            var parts = text.split(' and ');
 
 	            if (parts.length > 1) {
