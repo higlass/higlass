@@ -687,41 +687,7 @@ let gridDemo = JSON.parse(`
 
 try {
 ReactDOM.render(
-//        <HiGlassApp viewConfigString={JSON.stringify(normalizationDemo)}/>
-        <HiGlassApp viewConfigString={`
-{
-   "views":[
-      {
-         "chromInfoPath":"//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
-         "domain":[
-            0,
-            3000000000
-         ],
-         "viewStyle":{
-            "float":"left",
-            "padding":"5px",
-            "width":"100%"
-         },
-         "tracks":[
-            {
-               "source":"//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
-               "type":"top-chromosome-axis"
-            },
-            {
-               "source":"//54.197.186.181:9872/hg19/refgene-tiles-minus",
-               "type":"top-gene-labels",
-               "height":25
-            }
-         ],
-         "zoomLock":0,
-         "searchBox":true
-      }
-   ],
-   "editable":true
-}
-` 
-        
-        }/>
+    <HiGlassApp viewConfigString={JSON.stringify(normalizationDemo)}/>
     , document.getElementById('comparison-demo')
     );
 } catch (e) {
