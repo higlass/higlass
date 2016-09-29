@@ -29,6 +29,9 @@ export class GenomePositionSearchBox extends React.Component {
         ChromosomeInfo(this.props.chromInfoPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;  
             this.searchField = new SearchField(this.chromInfo);
+
+            console.log('loaded chrominfo');
+            this.setPositionText();
         });
 
     }
@@ -60,6 +63,12 @@ export class GenomePositionSearchBox extends React.Component {
         this.zoomedYScale.domain(this.yOrigScale.range()
                                   .map(function(y) { return (y - translate[1]) / scale })
                                   .map(this.yOrigScale.invert))
+        this.setPositionText();
+    }
+
+    setPositionText() {
+        if (this.chromInfo == null)
+            return;                 // chromosome info hasn't been loaded yet
 
         let x1 = this.absoluteToChr(this.zoomedXScale.domain()[0]);
         let x2 = this.absoluteToChr(this.zoomedXScale.domain()[1]);
@@ -69,8 +78,20 @@ export class GenomePositionSearchBox extends React.Component {
 
         //console.log('x1:', x1, 'x2:', x2, 'y1:', y1, 'y2:', y2)
 
-        let positionString = x1[0] + ':' + Math.floor(x1[1]) + ' to ' + x2[0] + ':' + Math.ceil(x2[1]);
-        positionString += " and " +  y1[0] + ':' + Math.floor(y1[1]) + ' to ' + y2[0] + ':' + Math.ceil(y2[1]);
+
+        let positionString = null;
+
+        if (x1[0] != x2[0])
+            positionString = x1[0] + ':' + Math.floor(x1[1]) + '-' + x2[0] + ':' + Math.ceil(x2[1]);
+        else
+            positionString = x1[0] + ':' + Math.floor(x1[1]) + '-' + Math.ceil(x2[1]);
+
+        if (this.props.twoD) {
+            if (y1[0] != y2[0])
+                positionString += " and " +  y1[0] + ':' + Math.floor(y1[1]) + '-' + y2[0] + ':' + Math.ceil(y2[1]);
+            else
+                positionString += " and " +  y1[0] + ':' + Math.floor(y1[1]) + '-' + Math.ceil(y2[1]);
+        }
 
         ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
     }
@@ -99,7 +120,7 @@ export class GenomePositionSearchBox extends React.Component {
                 <InputGroup>
                 <FormControl type="text" onKeyPress={this.searchFieldKeyPress.bind(this)} ref="searchFieldText"
                 //defaultValue="chr2:100000000 to chr2:200000000" 
-                defaultValue="chrX:12900000 to chrX:12970000" 
+                defaultValue="chr4:190,998,876-191,000,255" 
                 />
                 <InputGroup.Button>
                     <Button bsSize='small' onClick={this.buttonClick.bind(this)}>

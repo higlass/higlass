@@ -45,11 +45,17 @@ export class MultiTrackContainer extends React.Component {
 
         let tracks = this.props.viewConfig.tracks;
         let currentTop = 0;
+        this.twoD = false;               // are there any 2D tracks? this affects how the genomic
+                                         // coordinates are displayed in the search box
         this.heightSpecified = true;     // do any of the tracks request a particular height?
         for (let i = 0; i < tracks.length; i++) {
             let trackHeight = this.initialTrackHeight;
             let trackWidth = this.initialTrackWidth;
             let trackId = slugid.nice();
+
+            if (this.tracksToPositions[tracks[i].type] == 'left' ||
+                this.tracksToPositions[tracks[i].type] == 'center')
+                this.twoD = true
 
             if (this.tracksToPositions[tracks[i].type] == 'center')
                 if (!('height' in tracks[i]))
@@ -531,6 +537,9 @@ export class MultiTrackContainer extends React.Component {
             .ease('linear')
             .call(this.zoom.translate([-6091225.646378613, -6091157.500879494]).scale(14603.2311647761).event);
             */
+
+        // do a quick zoom to set the genome position in the searchBox
+        this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale()); 
     }
 
     initColorScale(colorScaleRange, colorScaleDomain = null) {
@@ -717,9 +726,8 @@ export class MultiTrackContainer extends React.Component {
             xZoomParams = this.zoomTo(this.xOrigScale, range1);
             yZoomParams = this.zoomTo(this.yOrigScale, range2);
 
-            let translate = [xZoomParams.translate, yZoomParams.translate];
-            let scale = xZoomParams.scale;
-
+            translate = [xZoomParams.translate, yZoomParams.translate];
+            scale = xZoomParams.scale;
         } else if (range1 != null) {
             // adjust the x-axis
             var xZoomParams = this.zoomTo(this.xOrigScale, 
@@ -787,6 +795,7 @@ export class MultiTrackContainer extends React.Component {
                     yRange={this.state.yRange}
                     xDomain={this.state.xDomain}
                     yDomain={this.state.yDomain}
+                    twoD={this.twoD}
                     />
                     }})() }
             </div>

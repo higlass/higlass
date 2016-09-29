@@ -687,7 +687,8 @@ let gridDemo = JSON.parse(`
 
 try {
 ReactDOM.render(
-    <HiGlassApp viewConfigString={JSON.stringify(normalizationDemo)}/>
+    //<HiGlassApp viewConfigString={JSON.stringify(normalizationDemo)}/>
+    <HiGlassApp viewConfigString={JSON.stringify(rectangularOneWindow)}/>
     , document.getElementById('comparison-demo')
     );
 } catch (e) {

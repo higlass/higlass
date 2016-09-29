@@ -4,28 +4,38 @@ export class SearchField {
         this.chromInfo = chromInfo;
     }
 
-    parsePosition(positionText) {
+    parsePosition(positionText, prevChr = null) {
         // Parse chr:position strings...
         // i.e. chr1:1000
         // or   chr2:20000
         var positionParts = positionText.split(':');
-        var chr = positionParts[0];
+        let chr = null;
+        let pos = 0;
 
-        var pos = 0;
-        if (positionParts.length > 1)
-            pos = +positionParts[1];
+        if (positionParts.length > 1) {
+            chr = positionParts[0];
+            pos = +positionParts[1].replace(/,/g, '');    //chromosome specified
+        } else {
+            pos = +positionParts[0].replace(/,/g, ''); // no chromosome specified
+            chr = null;
+        }
 
         let retPos = null;
 
         if (isNaN(pos))
             retPos = null;
 
-        if (chr in this.chromInfo.chrPositions)
-            retPos = this.chromInfo.chrPositions[chr].pos + pos;
-        else
-            retPos = null;
+        if (chr == null)
+            chr = prevChr
 
-        return retPos;
+        if (chr in this.chromInfo.chrPositions) {
+            retPos = this.chromInfo.chrPositions[chr].pos + pos;
+        } else {
+            console.log("Search error: No chromInfo specified");
+            retPos = null;
+        }
+
+        return [chr, pos, retPos];
     }
 
     matchRangesToLarger(range1, range2) {
@@ -53,21 +63,24 @@ export class SearchField {
         if (term.length == 0)
             return null;
 
-        var parts = term.split(' to ');
+        var parts = term.split('-');
         var pos1 = null, pos2 = null;
         var range = null;
 
 
-        if (parts[0].indexOf('to ') == 0) {
+        if (parts[0].indexOf('-') == 0) {
             parts[0] = parts[0].slice(3, parts[0].length)
         }
 
-        if (parts.length > 1) {
-            pos1 = this.parsePosition(parts[0]);
-            pos2 = this.parsePosition(parts[1]);
+        console.log('parts:', parts)
 
-            range = [pos1, pos2];
+        if (parts.length > 1) {
+            let [chr1, chrPos1, genomePos1] = this.parsePosition(parts[0]);
+            let [chr2, chrPos2, genomePos2]  = this.parsePosition(parts[1], chr1);
+
+            range = [genomePos1, genomePos2];
         } else {
+            // only a locus specified and no range
             pos1 = this.parsePosition(parts[0]);
 
             range = [pos1 - 8000000, pos1 + 8000000];
@@ -77,8 +90,8 @@ export class SearchField {
     }
 
     searchPosition(text) {
+        console.log('text:', text);
         var range1 = null, range2 = null;
-
         var parts = text.split(' and ');
 
         if (parts.length > 1) {
