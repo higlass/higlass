@@ -539,7 +539,9 @@ let normalizationDemo = JSON.parse(`
     "zoomLock": 0,
     "searchBox": true
   }
-]
+],
+"editable": true
+
 }
 `);
 
