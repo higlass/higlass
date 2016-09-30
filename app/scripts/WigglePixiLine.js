@@ -274,6 +274,8 @@ export function WigglePixiLine() {
                                           .map(function(x) { return (x - translate[0]) / scale })
                                           .map(xScale.invert))
 
+                console.log('line:', zoomedXScale.range(), zoomedXScale.domain());
+
                 if (drawTile != null) {
                     for (let i = 0; i < allTiles.length; i++) {
                         let tileGraphics = d.tileGraphics[allTiles[i].tileId]

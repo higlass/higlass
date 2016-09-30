@@ -171,6 +171,7 @@ export class MultiTrackContainer extends React.Component {
         }
 
         if (typeof this.topChromosomeAxis != 'undefined') {
+            console.log('updating axes....');
             this.topChromosomeAxis.xScale(this.xOrigScale.copy());
             this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
         }
@@ -725,6 +726,12 @@ export class MultiTrackContainer extends React.Component {
 
             xZoomParams = this.zoomTo(this.xOrigScale, range1);
             yZoomParams = this.zoomTo(this.yOrigScale, range2);
+
+            console.log('range1:', range1);
+            console.log('range2:', range2);
+
+            console.log('xZoomParams:', xZoomParams, this.xOrigScale.range());
+            console.log('yZoomParams:', yZoomParams, this.yOrigScale.range());
 
             translate = [xZoomParams.translate, yZoomParams.translate];
             scale = xZoomParams.scale;
