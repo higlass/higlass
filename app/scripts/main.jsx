@@ -716,16 +716,6 @@ let developmentDemo = JSON.parse(`
           "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
           "type": "top-chromosome-axis"
         },
-                    {
-          "source": "//54.197.186.181:9872/hg19/refgene-tiles-minus",
-          "type": "top-gene-labels",
-          "height": 25
-        },
-                    {
-          "source": "//52.23.165.123:9872/hg19.1/E005-H3K27me3.fc.signal.bigwig.genome.sorted.gz",
-          "type": "top-line",
-          "height": 25
-        },
             {
                "source":"//54.197.186.181:9872/hg19.1/hg19.read_length_16.reads_2000000.dups_100.res_256.contacts.genome",
                "type":"heatmap"
@@ -734,15 +724,6 @@ let developmentDemo = JSON.parse(`
                "source":"//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
                "type":"left-chromosome-axis",
                "width":25
-            },
-            {
-          "source": "//54.197.186.181:9872/hg19/refgene-tiles-minus",
-          "type": "left-gene-labels",
-          "width": 25
-        },
-            {
-               "type":"left-empty",
-               "width":5
             }
          ],
          "searchBox": true,

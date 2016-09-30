@@ -174,6 +174,9 @@ export class MultiTrackContainer extends React.Component {
             console.log('updating axes....');
             this.topChromosomeAxis.xScale(this.xOrigScale.copy());
             this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
+            this.topGeneLabels.xScale(this.xOrigScale.copy());
+            this.horizontalTiledArea.xScale(this.xOrigScale.copy());
+            this.twoDTiledArea.xScale(this.xOrigScale.copy());
         }
 
         this.xOrigScale.range([0, this.width]);
@@ -462,7 +465,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
 
-        let topGeneLabels = TopGeneLabelsTrack()
+        this.topGeneLabels = TopGeneLabelsTrack()
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .pixiStage(this.stage)
@@ -502,7 +505,7 @@ export class MultiTrackContainer extends React.Component {
                 if (d.type == 'top-heatmap')
                     d3.select(element).call(wigglePixiHeatmap);
                 if (d.type == 'top-gene-labels')
-                    d3.select(element).call(topGeneLabels);
+                    d3.select(element).call(this.topGeneLabels);
                 if (d.type == 'top-chromosome-axis')
                     d3.select(element).call(topChromosomeAxis);
             }.bind(this));

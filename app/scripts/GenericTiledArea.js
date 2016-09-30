@@ -20,6 +20,9 @@ export function GenericTiledArea() {
     let mirrorTiles = false;
     let diagonal = false;
 
+    let zoomedXScale = d3.scale.linear();
+    let zoomedYScale = d3.scale.linear();
+
     let xAxis = null;
 
     let labelSort = (a,b) => { return b.area - a.area; };
@@ -62,15 +65,27 @@ export function GenericTiledArea() {
             localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
             function zoomChanged(translate, scale) {
-                // something changed the zoom.
-                if (horizontal) 
-                    zoom.translate(translate);
-                else
-                    // if we're displaying a vertical scale, then we need to 
-                    // reverse the translation
-                    zoom.translate([translate[1], translate[0]]);
+                zoomedXScale.range(xScale.range());
+                zoomedYScale.range(yScale.range());
 
-                zoom.scale(scale);
+                // something changed the zoom.
+                if (horizontal)  {
+                    zoomedXScale.domain(xScale.range()
+                                              .map(function(x) { return (x - translate[0]) / scale })
+                                              .map(xScale.invert))
+
+                    zoomedYScale.domain(yScale.range()
+                                              .map(function(x) { return (x - translate[1]) / scale })
+                                              .map(yScale.invert))
+                } else {
+                    zoomedXScale.domain(xScale.range()
+                                              .map(function(x) { return (x - translate[1]) / scale })
+                                              .map(xScale.invert))
+
+                    zoomedYScale.domain(yScale.range()
+                                              .map(function(x) { return (x - translate[0]) / scale })
+                                              .map(yScale.invert))
+                }
 
                 zoomed();
             }
@@ -230,7 +245,8 @@ export function GenericTiledArea() {
                             */
 
                 // this will become the tiling code
-                let zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
+                let zoomScale = Math.max((maxX - minX) / (zoomedXScale.domain()[1] - zoomedXScale.domain()[0]), 1);
+                console.log('xScale.domain():', zoomedXScale.domain());
                 let addedZoom = Math.ceil(Math.log(width / 256) / Math.LN2);
                 let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + addedZoom;
 
@@ -250,8 +266,10 @@ export function GenericTiledArea() {
 
                 let rows = null;
 
-                rows = d3.range(Math.max(0,Math.floor((zoom.x().domain()[0] - minX) / tileWidth)),
-                                Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoom.x().domain()[1] - minX) - epsilon) / tileWidth)));
+                rows = d3.range(Math.max(0,Math.floor((zoomXScale().domain()[0] - minX) / tileWidth)),
+                                Math.min(Math.pow(2, zoomLevel), Math.ceil(((zoomedXScale.domain()[1] - minX) - epsilon) / tileWidth)));
+                console.log('zoomedXScale.domain():', zoomedXScale.domain(), rows);
+
 
                 if (diagonal) {
                     for (let i = 0; i < rows.length; i++) 
@@ -260,8 +278,9 @@ export function GenericTiledArea() {
                 } else {
 
                     if (! oneDimensional ) {
-                        let cols = d3.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight),
-                                Math.ceil(((zoom.y().domain()[1] - minY) - epsilon) / tileHeight));
+                        let cols = d3.range(Math.floor((zoomedYScale().domain()[0] - minY) / tileHeight),
+                                Math.ceil(((zoomedYScale().domain()[1] - minY) - epsilon) / tileHeight));
+                        console.log('zoomedYScale().domain():', zoomedYScale().domain(), rows);
 
                         for (let i = 0; i < rows.length; i++) {
                             for (let j = 0; j < cols.length; j++) {
@@ -303,6 +322,7 @@ export function GenericTiledArea() {
                 dispatch.draw();
 
 
+                console.log('tiles:', tiles);
                 refreshTiles(tiles);
             }
 
@@ -410,13 +430,15 @@ export function GenericTiledArea() {
                 xOrigScale = xScale.copy();
                 yOrigScale = yScale.copy();
 
+                /*
                 if (scaleExtent == null)
-                    zoom.x(xScale)
+                    zoomedXScale(xScale)
                         //.scaleExtent([1,Math.pow(2, maxZoom-1)])
                         .scaleExtent([1,Math.pow(2, maxZoom+8)])
                 else
-                    zoom.x(xScale)
+                    zoomedXScale(xScale)
                         .scaleExtent(scaleExtent);
+                */
 
                 //.xExtent(xScaleDomain);
 
@@ -428,11 +450,11 @@ export function GenericTiledArea() {
 
                 if (!oneDimensional) {
                     if (scaleExtent == null)
-                        zoom.y(yScale)
+                        zoomedYScale(yScale)
                             //.scaleExtent([1,Math.pow(2, maxZoom-1)])
                             .scaleExtent([1,Math.pow(2, maxZoom+8)])
                     else
-                        zoom.y(yScale)
+                        zoomedYScale(yScale)
                         .scaleExtent(scaleExtent);
                     refreshTiles([[0,0,0]]);
                 } else {
