@@ -128,7 +128,7 @@ export class MultiTrackContainer extends React.Component {
 
 
 
-        this.setHeight();
+        //this.setHeight();
         this.arrangeTracks();
 
         /*
@@ -149,6 +149,11 @@ export class MultiTrackContainer extends React.Component {
         let cs = window.getComputedStyle(this.element, null);
 
         this.prevWidth = this.width;
+        this.prevHeight = this.height;
+
+        console.log("this.prevWidth:", this.prevWidth)
+        console.log("this.prevHeight:", this.prevHeight)
+
         console.log('this.element.offsetWidth:', this.element.offsetWidth, "this.element.parent:", this.element.getBoundingClientRect().width);
         //let offsetWidth = Math.floor(this.element.parentNode.offsetWidth / 2);
 
@@ -170,18 +175,30 @@ export class MultiTrackContainer extends React.Component {
 
         }
 
+        if (typeof this.prevHeight != 'undefined') {
+            let currentDomainHeight = this.yOrigScale.domain()[1] - this.yOrigScale.domain()[0]; 
+            let nextDomainHeight = currentDomainHeight * (this.height / this.prevHeight);
+
+            this.yOrigScale.domain([this.yOrigScale.domain()[0], 
+                               this.yOrigScale.domain()[0] + nextDomainHeight]);
+
+        }
+
+
+        this.xOrigScale.range([0, this.width]);
+        this.yOrigScale.range([0, this.height]);
+        this.renderer.resize(this.width, this.height);
+
         if (typeof this.topChromosomeAxis != 'undefined') {
             console.log('updating axes....');
             this.topChromosomeAxis.xScale(this.xOrigScale.copy());
             this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
             this.topGeneLabels.xScale(this.xOrigScale.copy());
             this.horizontalTiledArea.xScale(this.xOrigScale.copy());
-            this.twoDTiledArea.xScale(this.xOrigScale.copy());
-        }
 
-        this.xOrigScale.range([0, this.width]);
-        this.yOrigScale.range([0, this.height]);
-        this.renderer.resize(this.width, this.height);
+            this.twoDTiledArea.xScale(this.xOrigScale.copy());
+            this.twoDTiledArea.yScale(this.yOrigScale.copy());
+        }
 
 
         this.setState({

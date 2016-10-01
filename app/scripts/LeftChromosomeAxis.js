@@ -128,6 +128,8 @@ export function LeftChromosomeAxis() {
                                               .map(function(x) { return (x - zoom.translate()[1]) / zoom.scale() })
                                               .map(yScale.invert))
 
+                    console.log('zoomedYScale.range:', zoomedYScale.range(), zoomedYScale.domain());
+
                        if (chromInfo == null)
                            return;
 
