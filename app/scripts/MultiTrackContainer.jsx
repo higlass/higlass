@@ -193,13 +193,23 @@ export class MultiTrackContainer extends React.Component {
             console.log('updating axes....');
             this.topChromosomeAxis.xScale(this.xOrigScale.copy());
             this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
+            this.leftGeneLabels.yScale(this.yOrigScale.copy());
             this.topGeneLabels.xScale(this.xOrigScale.copy());
             this.horizontalTiledArea.xScale(this.xOrigScale.copy());
-
-            this.twoDTiledArea.xScale(this.xOrigScale.copy());
-            this.twoDTiledArea.yScale(this.yOrigScale.copy());
+            this.horizontalDiagonalTiledArea.xScale(this.xOrigScale.copy());
+            this.verticalTiledArea.yScale(this.yOrigScale.copy());
+            this.wigglePixiTrack.xScale(this.xOrigScale.copy());
+            this.wigglePixiLine.xScale(this.xOrigScale.copy());
+            this.wigglePixiPoint.xScale(this.xOrigScale.copy());
+            this.wigglePixiHeatmap.xScale(this.xOrigScale.copy());
+            this.leftWigglePixiTrack.yScale(this.yOrigScale.copy());
+            this.heatmapRectangleTrack.xScale(this.xOrigScale.copy())
+                                      .yScale(this.yOrigScale.copy());
+            this.twoDTiledArea.xScale(this.xOrigScale.copy())
+                              .yScale(this.yOrigScale.copy());
+            this.diagonalHeatmapTrack.xScale(this.xOrigScale.copy())
+                                     .yScale(this.yOrigScale.copy());
         }
-
 
         this.setState({
             xRange: this.xOrigScale.range(),
@@ -223,6 +233,7 @@ export class MultiTrackContainer extends React.Component {
             }
         }
         // change out all the scales and then call everything again
+        this.handleZoom();
         
     }
 
@@ -424,7 +435,8 @@ export class MultiTrackContainer extends React.Component {
             .domain(this.xScale.domain())
             .zoomDispatch(this.zoomDispatch)
             .mirrorTiles(true)
-        let wigglePixiTrack = WigglePixiTrack()
+
+        this.wigglePixiTrack = WigglePixiTrack()
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -432,7 +444,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
-        let wigglePixiLine = WigglePixiLine()
+        this.wigglePixiLine = WigglePixiLine()
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -440,7 +452,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
-        let wigglePixiPoint = WigglePixiPoint()
+        this.wigglePixiPoint = WigglePixiPoint()
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -448,7 +460,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
-        let wigglePixiHeatmap = WigglePixiHeatmap()
+        this.wigglePixiHeatmap = WigglePixiHeatmap()
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -456,7 +468,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
-        let leftWigglePixiTrack = LeftWigglePixiTrack()
+        this.leftWigglePixiTrack = LeftWigglePixiTrack()
             .yScale(this.yOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -464,7 +476,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
-        let heatmapRectangleTrack = HeatmapRectangleTrack()
+        this.heatmapRectangleTrack = HeatmapRectangleTrack()
             .xScale(this.xOrigScale.copy())
             .yScale(this.yOrigScale.copy())
             .width(this.width)
@@ -473,7 +485,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
 
-        let diagonalHeatmapTrack = TopDiagonalHeatmapRectangleTrack()
+        this.diagonalHeatmapTrack = TopDiagonalHeatmapRectangleTrack()
             .xScale(this.xScale.copy())
             .yScale(this.yScale.copy())
             .width(this.width)
@@ -489,7 +501,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
-        let leftGeneLabels = LeftGeneLabelsTrack()
+        this.leftGeneLabels = LeftGeneLabelsTrack()
             .yScale(this.yOrigScale.copy())
             .width(this.width)
             .pixiStage(this.stage)
@@ -505,7 +517,7 @@ export class MultiTrackContainer extends React.Component {
             d.scale = this.zoom.scale();
 
             if (d.type == 'top-diagonal-heatmap')
-                d3.select(element).call(diagonalHeatmapTrack);
+                d3.select(element).call(this.diagonalHeatmapTrack);
         }.bind(this));
 
 
@@ -514,17 +526,17 @@ export class MultiTrackContainer extends React.Component {
                 d.scale = this.zoom.scale();
 
                 if (d.type == 'top-bar')
-                    d3.select(element).call(wigglePixiTrack);
+                    d3.select(element).call(this.wigglePixiTrack);
                 if (d.type == 'top-line')
-                    d3.select(element).call(wigglePixiLine);
+                    d3.select(element).call(this.wigglePixiLine);
                 if (d.type == 'top-point')
-                    d3.select(element).call(wigglePixiPoint);
+                    d3.select(element).call(this.wigglePixiPoint);
                 if (d.type == 'top-heatmap')
-                    d3.select(element).call(wigglePixiHeatmap);
+                    d3.select(element).call(this.wigglePixiHeatmap);
                 if (d.type == 'top-gene-labels')
                     d3.select(element).call(this.topGeneLabels);
                 if (d.type == 'top-chromosome-axis')
-                    d3.select(element).call(topChromosomeAxis);
+                    d3.select(element).call(this.topChromosomeAxis);
             }.bind(this));
 
         this.verticalTiledArea.tilesChanged(function(d, element) {
@@ -532,11 +544,11 @@ export class MultiTrackContainer extends React.Component {
                 d.scale = this.zoom.scale();
 
                 if (d.type == 'left-bar')
-                    d3.select(element).call(leftWigglePixiTrack);
+                    d3.select(element).call(this.leftWigglePixiTrack);
                 if (d.type == 'left-gene-labels')
-                    d3.select(element).call(leftGeneLabels);
+                    d3.select(element).call(this.leftGeneLabels);
                 if (d.type == 'left-chromosome-axis')
-                    d3.select(element).call(leftChromosomeAxis);
+                    d3.select(element).call(this.leftChromosomeAxis);
             }.bind(this));
 
 
@@ -546,7 +558,7 @@ export class MultiTrackContainer extends React.Component {
             d.scale = this.zoom.scale();
 
             if (d.type == 'heatmap')
-                d3.select(element).call(heatmapRectangleTrack);
+                d3.select(element).call(this.heatmapRectangleTrack);
         }.bind(this));
 
         this.updateTracks();

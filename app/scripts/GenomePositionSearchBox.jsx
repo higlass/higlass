@@ -21,8 +21,6 @@ export class GenomePositionSearchBox extends React.Component {
         this.yOrigScale = d3.scale.linear().domain(this.props.yDomain)
                           .range(this.props.yRange);
 
-        console.log('xDomain:', this.props.xDomain);
-
         this.zoomedXScale = this.xOrigScale.copy();
         this.zoomedYScale = this.yOrigScale.copy();
 
@@ -30,7 +28,6 @@ export class GenomePositionSearchBox extends React.Component {
             this.chromInfo = newChromInfo;  
             this.searchField = new SearchField(this.chromInfo);
 
-            console.log('loaded chrominfo');
             this.setPositionText();
         });
 
@@ -80,17 +77,18 @@ export class GenomePositionSearchBox extends React.Component {
 
 
         let positionString = null;
+        let format = d3.format(",d")
 
         if (x1[0] != x2[0])
-            positionString = x1[0] + ':' + Math.floor(x1[1]) + '-' + x2[0] + ':' + Math.ceil(x2[1]);
+            positionString = x1[0] + ':' + format(Math.floor(x1[1])) + '-' + x2[0] + ':' + format(Math.ceil(x2[1]));
         else
-            positionString = x1[0] + ':' + Math.floor(x1[1]) + '-' + Math.ceil(x2[1]);
+            positionString = x1[0] + ':' + format(Math.floor(x1[1])) + '-' + format(Math.ceil(x2[1]));
 
         if (this.props.twoD) {
             if (y1[0] != y2[0])
-                positionString += " and " +  y1[0] + ':' + Math.floor(y1[1]) + '-' + y2[0] + ':' + Math.ceil(y2[1]);
+                positionString += " and " +  y1[0] + ':' + format(Math.floor(y1[1])) + '-' + y2[0] + ':' + format(Math.ceil(y2[1]));
             else
-                positionString += " and " +  y1[0] + ':' + Math.floor(y1[1]) + '-' + Math.ceil(y2[1]);
+                positionString += " and " +  y1[0] + ':' + format(Math.floor(y1[1])) + '-' + format(Math.ceil(y2[1]));
         }
 
         ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
