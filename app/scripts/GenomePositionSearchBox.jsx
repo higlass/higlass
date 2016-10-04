@@ -73,9 +73,6 @@ export class GenomePositionSearchBox extends React.Component {
         let y1 = this.absoluteToChr(this.zoomedYScale.domain()[0]);
         let y2 = this.absoluteToChr(this.zoomedYScale.domain()[1]);
 
-        //console.log('x1:', x1, 'x2:', x2, 'y1:', y1, 'y2:', y2)
-
-
         let positionString = null;
         let format = d3.format(",d")
 
@@ -96,7 +93,6 @@ export class GenomePositionSearchBox extends React.Component {
 
     buttonClick() {
         let searchFieldValue = ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
-        console.log('value:', searchFieldValue);
 
         if (this.searchField != null) {
             let [range1, range2] = this.searchField.searchPosition(searchFieldValue);

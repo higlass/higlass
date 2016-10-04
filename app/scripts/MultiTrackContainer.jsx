@@ -128,7 +128,7 @@ export class MultiTrackContainer extends React.Component {
 
 
 
-        //this.setHeight();
+        if (this.heightSpecified) this.setHeight();
         this.arrangeTracks();
 
         /*
@@ -151,20 +151,17 @@ export class MultiTrackContainer extends React.Component {
         this.prevWidth = this.width;
         this.prevHeight = this.height;
 
-        console.log("this.prevWidth:", this.prevWidth)
-        console.log("this.prevHeight:", this.prevHeight)
-
-        console.log('this.element.offsetWidth:', this.element.offsetWidth, "this.element.parent:", this.element.getBoundingClientRect().width);
         //let offsetWidth = Math.floor(this.element.parentNode.offsetWidth / 2);
 
 
         this.width = Math.floor(this.element.getBoundingClientRect().width)
                      - parseInt(cs.getPropertyValue('padding-left'), 10)
                      - parseInt(cs.getPropertyValue('padding-right'), 10);
-        console.log('update width:', this.width, 'offsetWidth:', this.element.offsetWidth);
 
         if (!this.heightSpecified)
             this.height = this.width
+        else
+            this.setHeight();
         
         if (typeof this.prevWidth != 'undefined') {
             let currentDomainWidth = this.xOrigScale.domain()[1] - this.xOrigScale.domain()[0]; 
@@ -190,7 +187,6 @@ export class MultiTrackContainer extends React.Component {
         this.renderer.resize(this.width, this.height);
 
         if (typeof this.topChromosomeAxis != 'undefined') {
-            console.log('updating axes....');
             this.topChromosomeAxis.xScale(this.xOrigScale.copy());
             this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
             this.leftGeneLabels.yScale(this.yOrigScale.copy());
@@ -217,7 +213,6 @@ export class MultiTrackContainer extends React.Component {
             xDomain: this.xOrigScale.domain(),
             yDomain: this.yOrigScale.domain()
         });
-        console.log('setting xRange:', this.state.xRange);
 
         for (let uid in this.state.tracks) {
             if (this.tracksToPositions[this.state.tracks[uid].type] == 'top' ||
@@ -323,7 +318,6 @@ export class MultiTrackContainer extends React.Component {
                                   .map(function(y) { return (y - translate[1]) / scale })
                                   .map(this.yOrigScale.invert))
 
-        //console.log('this.zoomedXScale.domain():', this.zoomedXScale.domain());
         this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
     }
 
@@ -350,11 +344,13 @@ export class MultiTrackContainer extends React.Component {
         if (typeof this.height == 'undefined') {
             this.height = 0;
 
-            console.log('setting height:', this.props.viewConfig.tracks);
-
             for (let i = 0; i < this.props.viewConfig.tracks.length; i++)  {
-                this.height += this.props.viewConfig.tracks[i].height;
+                if (this.tracksToPositions[this.props.viewConfig.tracks[i].type] == 'top' ||
+                    this.tracksToPositions[this.props.viewConfig.tracks[i].type] == 'center') {
+                        this.height += this.props.viewConfig.tracks[i].height;
+                }
             }
+
         }
 
     }
@@ -363,7 +359,6 @@ export class MultiTrackContainer extends React.Component {
         this.element = ReactDOM.findDOMNode(this);
         window.addEventListener('resize', this.updateDimensions.bind(this));
 
-        console.log('this.width:', this.width, 'this.height:', this.height);
         this.renderer = PIXI.autoDetectRenderer(this.width,
                                                 this.height,
                                                 { view: this.canvas,
@@ -758,12 +753,6 @@ export class MultiTrackContainer extends React.Component {
 
             xZoomParams = this.zoomTo(this.xOrigScale, range1);
             yZoomParams = this.zoomTo(this.yOrigScale, range2);
-
-            console.log('range1:', range1);
-            console.log('range2:', range2);
-
-            console.log('xZoomParams:', xZoomParams, this.xOrigScale.range());
-            console.log('yZoomParams:', yZoomParams, this.yOrigScale.range());
 
             translate = [xZoomParams.translate, yZoomParams.translate];
             scale = xZoomParams.scale;

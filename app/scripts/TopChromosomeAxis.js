@@ -105,11 +105,9 @@ export function TopChromosomeAxis() {
 
                    function draw () {
                     zoomedXScale.range(xScale.range());
-                    console.log('zoomedXScale.range:', zoomedXScale.range(), zoomedXScale.domain());
                     zoomedXScale.domain(xScale.range()
                                               .map(function(x) { return (x - zoom.translate()[0]) / zoom.scale() })
                                               .map(xScale.invert))
-                    console.log('tl: zoomChanged:' , zoomedXScale.domain());
 
                        if (chromInfo == null)
                            return;

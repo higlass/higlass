@@ -188,11 +188,6 @@ export function WigglePixiLine() {
                         let height = yScale(tileData[i])
                         let width = zoomedXScale(tileXScale(i+1)) - zoomedXScale(tileXScale(i));
 
-                       // if (height > 0 && width > 0) {
-                         //   graphics.drawRect(xPos, yPos, width, height);
-                       // }
-                        //console.log('xPos:', xPos, d.height * yScale(tileData[i+1]));
-
                        if(j == 0){
                             graphics.moveTo(xPos, d.height - d.height*height);
                             j++;
@@ -273,8 +268,6 @@ export function WigglePixiLine() {
                 zoomedXScale.domain(xScale.range()
                                           .map(function(x) { return (x - translate[0]) / scale })
                                           .map(xScale.invert))
-
-                console.log('line:', zoomedXScale.range(), zoomedXScale.domain());
 
                 if (drawTile != null) {
                     for (let i = 0; i < allTiles.length; i++) {

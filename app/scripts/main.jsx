@@ -566,7 +566,7 @@ let gridDemo = JSON.parse(`
         "height": 25
       },
       {
-        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_16.reads_1000000.dups_100.res_256.contacts.genome",
+        "source": "//52.45.229.11:9872/hg19.1/hg19.read_length_16.reads_1000000.dups_100.res_256.contacts.genome",
         "type": "heatmap"
       },
       {
@@ -599,7 +599,7 @@ let gridDemo = JSON.parse(`
         "height": 25
       },
       {
-        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_32.reads_1000000.dups_100.res_256.contacts.genome",
+        "source": "//52.45.229.11:9872/hg19.1/hg19.read_length_32.reads_1000000.dups_100.res_256.contacts.genome",
         "type": "heatmap"
       },
       {
@@ -632,7 +632,7 @@ let gridDemo = JSON.parse(`
         "height": 25
       },
       {
-        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_64.reads_1000000.dups_100.res_256.contacts.genome",
+        "source": "//52.45.229.11:9872/hg19.1/hg19.read_length_64.reads_1000000.dups_100.res_256.contacts.genome",
         "type": "heatmap"
       },
       {
@@ -665,7 +665,7 @@ let gridDemo = JSON.parse(`
         "height": 25
       },
       {
-        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_128.reads_1000000.dups_100.res_256.contacts.genome",
+        "source": "//52.45.229.11:9872/hg19.1/hg19.read_length_128.reads_1000000.dups_100.res_256.contacts.genome",
         "type": "heatmap"
       },
       {
@@ -717,7 +717,7 @@ let developmentDemo = JSON.parse(`
           "type": "top-chromosome-axis"
         },
             {
-               "source":"//54.197.186.181:9872/hg19.1/hg19.read_length_16.reads_2000000.dups_100.res_256.contacts.genome",
+               "source":"//52.45.229.11:9872/hg19.1/hg19.read_length_16.reads_2000000.dups_100.res_256.contacts.genome",
                "type":"heatmap"
             },
             {
