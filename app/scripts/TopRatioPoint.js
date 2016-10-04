@@ -1,8 +1,9 @@
 import PIXI from 'pixi.js';
 import slugid from 'slugid';
 import d3 from 'd3';
+import {load1DRatioTileData} from './TileData.js';
 
-export function WigglePixiPoint() {
+export function TopRatioPoint() {
     let width = 200;//200
     let height = 15;//15
     let resizeDispatch = null;
@@ -21,6 +22,27 @@ export function WigglePixiPoint() {
     function tileId(tile) {
         // uniquely identify the tile with a string
         return tile.join(".") + '.' + tile.mirrored;
+    }
+
+    function loadTileData(tile_value) {
+        if ('dense' in tile_value)
+            return tile_value['dense'];
+        else if ('sparse' in tile_value) {
+            let values = Array.apply(null, 
+                    Array(resolution)).map(Number.prototype.valueOf,0);
+            for (let i = 0; i < tile_value.sparse.length; i++) {
+                if ('pos' in tile_value.sparse[i])
+                    values[ tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
+                else
+                    values[ tile_value.sparse[i][0]] = tile_value.sparse[i][1];
+
+            }
+            return values;
+
+        } else {
+            return [];
+        }
+
     }
 
     let chart = function(selection) {
@@ -79,6 +101,8 @@ export function WigglePixiPoint() {
 
             function redrawTile() {
                 allTiles = d3.select(this).selectAll('.tile-g').data();
+                console.log('top ratio all tiles:', allTiles);
+
 
                 let minVisibleValue = Math.min(...allTiles.map((x) => x.valueRange[0]));
                 let maxVisibleValue = Math.max(...allTiles.map((x) => x.valueRange[1]));
@@ -100,7 +124,7 @@ export function WigglePixiPoint() {
                 
 
                 drawTile = function(graphics, tile) {
-                    let tileData = load1DTileData(tile.data, tile.type);
+                    let tileData = load1DRatioTileData(tile.data, tile.type);
                     graphics.clear();
 
                     let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
@@ -123,7 +147,7 @@ export function WigglePixiPoint() {
                         let height = yScale(tileData[i])
                         let width = zoomedXScale(tileXScale(i+1)) - zoomedXScale(tileXScale(i));
 
-                       
+                        //console.log('drawingRect:', zoomedXScale(tileXScale(i+1)), d.height - d.height*yScale(tileData[i+1]));
                         graphics.drawRect(zoomedXScale(tileXScale(i+1)), d.height - d.height*yScale(tileData[i+1]) , 1, 1);
                     }
                 }
