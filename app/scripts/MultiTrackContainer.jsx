@@ -38,6 +38,7 @@ export class MultiTrackContainer extends React.Component {
                                    'left-gene-labels': 'left',
                                    'top-chromosome-axis': 'top',
                                    'left-chromosome-axis': 'left',
+                                   'top-ratio-point': 'top',
                                    'left-empty': 'left',
                                    'top-empty': 'top',
                                    'right-bar': 'right', 
@@ -162,6 +163,8 @@ export class MultiTrackContainer extends React.Component {
             this.height = this.width
         else
             this.setHeight();
+
+        this.setState({'height': this.height });
         
         if (typeof this.prevWidth != 'undefined') {
             let currentDomainWidth = this.xOrigScale.domain()[1] - this.xOrigScale.domain()[0]; 
