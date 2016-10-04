@@ -28,21 +28,8 @@ export class MultiTrackContainer extends React.Component {
         this.initialTrackHeight = 30;
         this.initialTrackWidth = 300;
 
-        this.tracksToPositions = { 'top-bar': 'top', 
-                                    'left-bar': 'left', 
-                                    'top-line': 'top',
-                                    'top-point': 'top',
-                                    'top-heatmap': 'top',
-                                    'top-diagonal-heatmap': 'top',
-                                   'top-gene-labels': 'top',
-                                   'left-gene-labels': 'left',
-                                   'top-chromosome-axis': 'top',
-                                   'left-chromosome-axis': 'left',
-                                   'top-ratio-point': 'top',
-                                   'left-empty': 'left',
-                                   'top-empty': 'top',
-                                   'right-bar': 'right', 
-                                   'heatmap': 'center' };
+        this.initLayouts();
+        this.setupTrackDescriptions();
 
         let tracks = this.props.viewConfig.tracks;
         let currentTop = 0;
@@ -54,11 +41,11 @@ export class MultiTrackContainer extends React.Component {
             let trackWidth = this.initialTrackWidth;
             let trackId = slugid.nice();
 
-            if (this.tracksToPositions[tracks[i].type] == 'left' ||
-                this.tracksToPositions[tracks[i].type] == 'center')
+            if (this.trackDescriptions[tracks[i].type].position == 'left' ||
+                this.trackDescriptions[tracks[i].type].position == 'center')
                 this.twoD = true
 
-            if (this.tracksToPositions[tracks[i].type] == 'center')
+            if (this.trackDescriptions[tracks[i].type].position == 'center')
                 if (!('height' in tracks[i]))
                     this.heightSpecified = false;
 
@@ -86,7 +73,6 @@ export class MultiTrackContainer extends React.Component {
             trackDict[track.uid] = track;
 
         });
-
 
         this.animate = this.animate.bind(this);
 
@@ -218,12 +204,12 @@ export class MultiTrackContainer extends React.Component {
         });
 
         for (let uid in this.state.tracks) {
-            if (this.tracksToPositions[this.state.tracks[uid].type] == 'top' ||
-                this.tracksToPositions[this.state.tracks[uid].type] == 'center')
+            if (this.trackDescriptions[this.state.tracks[uid].type].position == 'top' ||
+                this.trackDescriptions[this.state.tracks[uid].type].position == 'center')
                     this.state.tracks[uid].width = this.width;
 
-            if (this.tracksToPositions[this.state.tracks[uid].type] == 'left' ||
-                this.tracksToPositions[this.state.tracks[uid].type] == 'center') 
+            if (this.trackDescriptions[this.state.tracks[uid].type].position == 'left' ||
+                this.trackDescriptions[this.state.tracks[uid].type].position == 'center') 
                     this.state.tracks[uid].height = this.height;
 
             if ('resizeDispatch' in this.state.tracks[uid]) {
@@ -250,13 +236,13 @@ export class MultiTrackContainer extends React.Component {
             let trackId = this.state.tracksList[i].uid;
             let track = this.state.tracks[trackId];
 
-            if (this.tracksToPositions[track.type] == 'top')
+            if (this.trackDescriptions[track.type].position == 'top')
                 this.topMargin += track.height;
-            if (this.tracksToPositions[track.type] == 'left')
+            if (this.trackDescriptions[track.type].position == 'left')
                 this.leftMargin += track.width;
-            if (this.tracksToPositions[track.type] == 'right')
+            if (this.trackDescriptions[track.type].position == 'right')
                 this.rightMargin += track.width;
-            if (this.tracksToPositions[track.type] == 'bottom')
+            if (this.trackDescriptions[track.type].position == 'bottom')
                 this.bottomMargin += track.height;
         }
 
@@ -269,35 +255,35 @@ export class MultiTrackContainer extends React.Component {
             track.leftMargin = this.leftMargin;
             track.topMargin = this.topMargin;
 
-            if (this.tracksToPositions[track.type] == 'top') {
+            if (this.trackDescriptions[track.type].position == 'top') {
                 track.left = this.leftMargin;
                 track.top = currentTop;
                 track.width = this.width - this.leftMargin - this.rightMargin;
                 currentTop += track.height;
             }
 
-            if (this.tracksToPositions[track.type] == 'left') {
+            if (this.trackDescriptions[track.type].position == 'left') {
                 track.top = this.topMargin;
                 track.left = currentLeft;
                 track.height = this.height - this.topMargin - this.bottomMargin;
                 currentLeft += track.width;
             }
 
-            if (this.tracksToPositions[track.type] == 'right') {
+            if (this.trackDescriptions[track.type].position == 'right') {
                 track.top = this.topMargin;
                 track.left = currentRightLeft;
                 track.height = this.height - this.topMargin - this.bottomMargin;
                 currentRightLeft += track.width;
             }
 
-            if (this.tracksToPositions[track.type] == 'bottom') {
+            if (this.trackDescriptions[track.type].position == 'bottom') {
                 track.left = this.leftMargin;
                 track.top = currentBottomTop;
                 track.width = this.width - this.leftMargin - this.rightMargin;
                 currentBottomTop += track.height;
             }
 
-            if (this.tracksToPositions[track.type] == 'center') {
+            if (this.trackDescriptions[track.type].position == 'center') {
                 track.left = this.leftMargin;
                 track.top = this.topMargin;
                 track.width = this.width  - this.leftMargin - this.rightMargin;
@@ -348,14 +334,39 @@ export class MultiTrackContainer extends React.Component {
             this.height = 0;
 
             for (let i = 0; i < this.props.viewConfig.tracks.length; i++)  {
-                if (this.tracksToPositions[this.props.viewConfig.tracks[i].type] == 'top' ||
-                    this.tracksToPositions[this.props.viewConfig.tracks[i].type] == 'center') {
+                if (this.trackDescriptions[this.props.viewConfig.tracks[i].type].position == 'top' ||
+                    this.trackDescriptions[this.props.viewConfig.tracks[i].type].position == 'center') {
                         this.height += this.props.viewConfig.tracks[i].height;
                 }
             }
 
         }
 
+    }
+
+    initLayouts() {
+        this.topChromosomeAxis = TopChromosomeAxis();
+        this.leftChromosomeAxis = LeftChromosomeAxis()
+        this.horizontalDiagonalTiledArea = GenericTiledArea()
+        this.horizontalTiledArea = GenericTiledArea()
+        this.verticalTiledArea = GenericTiledArea()
+        this.twoDTiledArea = GenericTiledArea()
+        this.wigglePixiTrack = WigglePixiTrack()
+        this.wigglePixiLine = WigglePixiLine()
+        this.wigglePixiPoint = WigglePixiPoint()
+        this.wigglePixiHeatmap = WigglePixiHeatmap()
+        this.leftWigglePixiTrack = LeftWigglePixiTrack()
+        this.heatmapRectangleTrack = HeatmapRectangleTrack()
+        this.diagonalHeatmapTrack = TopDiagonalHeatmapRectangleTrack()
+        this.topGeneLabels = TopGeneLabelsTrack()
+        this.leftGeneLabels = LeftGeneLabelsTrack()
+
+        this.oneDHorizontalTrackList = [];
+        this.oneDHorizontalDiagonalTrackList = [];
+        this.oneDVerticalTrackList = [];
+        this.twoDTrackList = [];
+        this.horizontalAxisList = [];
+        this.verticalAxisList = [];
     }
 
     componentDidMount() {
@@ -382,21 +393,20 @@ export class MultiTrackContainer extends React.Component {
         this.xScaleDependencies = [];
         this.yScaleDependencies = [];
 
-        this.topChromosomeAxis = TopChromosomeAxis()
+        this.topChromosomeAxis
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch)
 
-        this.leftChromosomeAxis = LeftChromosomeAxis()
+        this.leftChromosomeAxis
             .yScale(this.yOrigScale.copy())
             .width(this.width)
             .height(this.height)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch)
 
-
-        this.horizontalDiagonalTiledArea = GenericTiledArea()
+        this.horizontalDiagonalTiledArea
             .tileType('div')
             .oneDimensional(false)
             .diagonal(true)
@@ -405,7 +415,7 @@ export class MultiTrackContainer extends React.Component {
             .domain(this.xScale.domain())
             .zoomDispatch(this.zoomDispatch)
 
-        this.horizontalTiledArea = GenericTiledArea()
+        this.horizontalTiledArea
             .tileType('div')
             .width(this.width)
             .height(this.height)
@@ -414,7 +424,7 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch)
             .horizontal(true);
 
-        this.verticalTiledArea = GenericTiledArea()
+        this.verticalTiledArea
             .tileType('div')
             .width(this.height)   // since this is a vertical tiled area, the width is actually the height
                                         // of the viewable area
@@ -423,7 +433,7 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch)
             .horizontal(false)
 
-        this.twoDTiledArea = GenericTiledArea()
+        this.twoDTiledArea
             .tileType('div')
             .oneDimensional(false)
             .width(this.width)
@@ -434,7 +444,7 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch)
             .mirrorTiles(true)
 
-        this.wigglePixiTrack = WigglePixiTrack()
+        this.wigglePixiTrack
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -442,7 +452,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
-        this.wigglePixiLine = WigglePixiLine()
+        this.wigglePixiLine
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -450,7 +460,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
-        this.wigglePixiPoint = WigglePixiPoint()
+        this.wigglePixiPoint
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -458,7 +468,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
-        this.wigglePixiHeatmap = WigglePixiHeatmap()
+        this.wigglePixiHeatmap
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -466,7 +476,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
-        this.leftWigglePixiTrack = LeftWigglePixiTrack()
+        this.leftWigglePixiTrack
             .yScale(this.yOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -474,7 +484,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
-        this.heatmapRectangleTrack = HeatmapRectangleTrack()
+        this.heatmapRectangleTrack
             .xScale(this.xOrigScale.copy())
             .yScale(this.yOrigScale.copy())
             .width(this.width)
@@ -483,7 +493,7 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
 
-        this.diagonalHeatmapTrack = TopDiagonalHeatmapRectangleTrack()
+        this.diagonalHeatmapTrack
             .xScale(this.xScale.copy())
             .yScale(this.yScale.copy())
             .width(this.width)
@@ -492,14 +502,14 @@ export class MultiTrackContainer extends React.Component {
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
 
-        this.topGeneLabels = TopGeneLabelsTrack()
+        this.topGeneLabels
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
 
-        this.leftGeneLabels = LeftGeneLabelsTrack()
+        this.leftGeneLabels
             .yScale(this.yOrigScale.copy())
             .width(this.width)
             .pixiStage(this.stage)
@@ -518,45 +528,23 @@ export class MultiTrackContainer extends React.Component {
                 d3.select(element).call(this.diagonalHeatmapTrack);
         }.bind(this));
 
-
         this.horizontalTiledArea.tilesChanged(function(d, element) {
                 d.translate = this.zoom.translate();
                 d.scale = this.zoom.scale();
-
-                if (d.type == 'top-bar')
-                    d3.select(element).call(this.wigglePixiTrack);
-                if (d.type == 'top-line')
-                    d3.select(element).call(this.wigglePixiLine);
-                if (d.type == 'top-point')
-                    d3.select(element).call(this.wigglePixiPoint);
-                if (d.type == 'top-heatmap')
-                    d3.select(element).call(this.wigglePixiHeatmap);
-                if (d.type == 'top-gene-labels')
-                    d3.select(element).call(this.topGeneLabels);
-                if (d.type == 'top-chromosome-axis')
-                    d3.select(element).call(this.topChromosomeAxis);
+                d3.select(element).call(this.trackDescriptions[d.type].layout)
             }.bind(this));
 
         this.verticalTiledArea.tilesChanged(function(d, element) {
                 d.translate = this.zoom.translate();
                 d.scale = this.zoom.scale();
-
-                if (d.type == 'left-bar')
-                    d3.select(element).call(this.leftWigglePixiTrack);
-                if (d.type == 'left-gene-labels')
-                    d3.select(element).call(this.leftGeneLabels);
-                if (d.type == 'left-chromosome-axis')
-                    d3.select(element).call(this.leftChromosomeAxis);
+                d3.select(element).call(this.trackDescriptions[d.type].layout)
             }.bind(this));
-
 
 
         this.twoDTiledArea.tilesChanged(function(d, element) {
             d.translate = this.zoom.translate();
             d.scale = this.zoom.scale();
-
-            if (d.type == 'heatmap')
-                d3.select(element).call(this.heatmapRectangleTrack);
+            d3.select(element).call(this.trackDescriptions[d.type].layout)
         }.bind(this));
 
         this.updateTracks();
@@ -629,64 +617,153 @@ export class MultiTrackContainer extends React.Component {
     }
 
     updateTracks() {
-        let oneDHorizontalTrackList = [];
-        let oneDHorizontalDiagonalTrackList = [];
-        let oneDVerticalTrackList = [];
-        let twoDTrackList = [];
-        let horizontalAxisList = [];
-        let verticalAxisList = [];
+        // called from componentDidMount
+        this.oneDHorizontalTrackList = [];
+        this.oneDHorizontalDiagonalTrackList = [];
+        this.oneDVerticalTrackList = [];
+        this.twoDTrackList = [];
+        this.horizontalAxisList = [];
+        this.verticalAxisList = [];
+        
+        let tracksPerDimensions = {};
+
 
         for (let trackId in this.state.tracks) {
-            if (this.state.tracks[trackId].type == 'heatmap')
-                twoDTrackList.push(this.state.tracks[trackId]);
-            else if (this.state.tracks[trackId].type == 'left-bar')
-                oneDVerticalTrackList.push(this.state.tracks[trackId]);
-            else if (this.state.tracks[trackId].type == 'top-gene-labels')
-                oneDHorizontalTrackList.push(this.state.tracks[trackId]);
-            else if (this.state.tracks[trackId].type == 'left-gene-labels')
-                oneDVerticalTrackList.push(this.state.tracks[trackId]);
-            else if (this.state.tracks[trackId].type == 'top-chromosome-axis')
-                horizontalAxisList.push(this.state.tracks[trackId]);
-            else if (this.state.tracks[trackId].type == 'left-chromosome-axis')
-                verticalAxisList.push(this.state.tracks[trackId]);
-            else if (this.state.tracks[trackId].type == 'top-bar')
-                oneDHorizontalTrackList.push(this.state.tracks[trackId]);
-            else if (this.state.tracks[trackId].type == 'top-line')
-                oneDHorizontalTrackList.push(this.state.tracks[trackId]);
-            else if (this.state.tracks[trackId].type == 'top-point')
-                oneDHorizontalTrackList.push(this.state.tracks[trackId]);
-            else if (this.state.tracks[trackId].type == 'top-heatmap')
-                oneDHorizontalTrackList.push(this.state.tracks[trackId]);
-            else if (this.state.tracks[trackId].type == 'top-diagonal-heatmap')
-                oneDHorizontalDiagonalTrackList.push(this.state.tracks[trackId]);
+            let trackDimensions = this.trackDescriptions[this.state.tracks[trackId].type].dimension;
+
+            if (!(trackDimensions in tracksPerDimensions))
+                tracksPerDimensions[trackDimensions] = [];
+
+            tracksPerDimensions[trackDimensions].push(this.state.tracks[trackId]);
         }
 
-        d3.select(this.bigDiv).selectAll('.horizontal-axis')
-            .data(horizontalAxisList)
-            .call(this.topChromosomeAxis);
+        for (let trackDimensions in tracksPerDimensions) {
+            let handler = this.trackDimensionsHandlers[trackDimensions];
 
-        d3.select(this.bigDiv).selectAll('.vertical-axis')
-            .data(verticalAxisList)
-            .call(this.leftChromosomeAxis);
+            if (handler == null)
+                continue
 
-        d3.select(this.bigDiv).selectAll('.one-d-horizontal-diagonal')
-            .data(oneDHorizontalDiagonalTrackList)
-            .call(this.horizontalDiagonalTiledArea);
+            if (typeof handler == 'undefined') {
+                console.log('WARNING: undefined handler for track dimensions:', trackDimensions);
+                continue;
+            }
+                
+                
+            d3.select(this.bigDiv).selectAll('.' + trackDimensions)
+              .data(tracksPerDimensions[trackDimensions])
+              .call(this.trackDimensionsHandlers[trackDimensions])
+        }
 
-        d3.select(this.bigDiv).selectAll('.one-d-horizontal')
-            .data(oneDHorizontalTrackList)
-            .call(this.horizontalTiledArea);
-
-        d3.select(this.bigDiv).selectAll('.one-d-vertical')
-            .data(oneDVerticalTrackList)
-            .call(this.verticalTiledArea);
-
-        d3.select(this.bigDiv).selectAll('.two-d')
-            .data(twoDTrackList)
-            .call(this.twoDTiledArea);
     }
 
     trackRotated(trackId) {
+
+    }
+
+    setupTrackDescriptions() {
+        this.trackDescriptions = { 
+            'top-bar': 
+                {
+                 'position': 'top',
+                 'layout': this.wigglePixiTrack,
+                 'dimension': 'one-d-horizontal'
+                },
+            'left-bar': 
+                {
+                    'position': 'left',
+                    'layout': this.leftWigglePixiTrack,
+                    'dimension': 'one-d-vertical'
+                }, 
+            'top-line': 
+                {
+                    'position': 'top',
+                    'layout': this.wigglePixiLine,
+                    'dimension': 'one-d-horizontal'
+                },
+            'top-point': 
+                {
+                    'position': 'top',
+                    'layout': this.wigglePixiPoint,
+                    'dimension': 'one-d-horizontal'
+                },
+            'top-ratio-point': 
+                {
+                    'position': 'top',
+                    'layout': null,
+                    'dimension': 'one-d-horizontal'
+                },
+            'top-heatmap': 
+                {
+                    'position': 'top',
+                    'layout': this.wigglePixiHeatmap,
+                    'dimension': 'one-d-horizontal'
+                },
+            'top-diagonal-heatmap': 
+                {
+                    'position': 'top',
+                    'layout': this.diagonalHeatmapTrack,
+                    'dimension': 'one-d-horizontal-diagonal'
+                },
+            'top-gene-labels': 
+                {
+                    'position': 'top',
+                    'layout': this.topGeneLabels,
+                    'dimension': 'one-d-horizontal'
+                },
+            'left-gene-labels': 
+                {
+                    'position': 'left',
+                    'layout': this.leftGeneLabels,
+                    'dimension': 'one-d-vertical'
+                },
+            'top-chromosome-axis': 
+                {
+                    'position': 'top',
+                    'layout': this.topChromosomeAxis,
+                    'dimension': 'horizontal-axis'
+                },
+            'left-chromosome-axis': 
+                {
+                    'position': 'left',
+                    'layout': this.leftChromosomeAxis,
+                    'dimension': 'vertical-axis'
+                },
+            'left-empty': 
+                {
+                    'position': 'left',
+                    'layout': null,
+                    'dimension': 'empty'
+                },
+            'top-empty': 
+                {
+                    'position': 'top',
+                    'layout': null,
+                    'dimension': 'empty'
+                    
+                },
+            'right-bar': 
+                {
+                    'position': 'right',
+                    'layout': null,
+                    'dimension': 'one-d-vertical'
+                }, 
+            'heatmap': 
+                {
+                    'position': 'center',
+                    'layout': this.heatmapRectangleTrack,
+                    'dimension': 'two-d'
+                } 
+            };
+
+        this.trackDimensionsHandlers = {
+            'horizontal-axis': this.topChromosomeAxis,
+            'vertical-axis': this.leftChromosomeAxis,
+            'one-d-horizontal-diagonal': this.horizontalDiagonalTiledArea,
+            'one-d-horizontal': this.horizontalTiledArea,
+            'one-d-vertical': this.verticalTiledArea,
+            'two-d': this.twoDTiledArea,
+            'empty': null
+        };
 
     }
 
@@ -711,29 +788,7 @@ export class MultiTrackContainer extends React.Component {
     }
 
     trackDimension(track) {
-        // used in render() to identify what types of tracks are being displayed
-        if (track.type == 'heatmap')
-            return 'two-d';
-        else if (track.type == 'left-bar')
-            return 'one-d-vertical';
-        else if (track.type == 'top-bar')
-            return 'one-d-horizontal';
-        else if (track.type == 'top-line')
-            return 'one-d-horizontal';
-        else if (track.type == 'top-point')
-            return 'one-d-horizontal';
-        else if (track.type == 'top-heatmap')
-            return 'one-d-horizontal';
-        else if (track.type == 'top-diagonal-heatmap')
-            return 'one-d-horizontal-diagonal';
-        else if (track.type == 'top-gene-labels')
-            return 'one-d-horizontal';
-        else if (track.type == 'left-gene-labels')
-            return 'one-d-vertical';
-        else if (track.type == 'top-chromosome-axis')
-            return 'horizontal-axis';
-        else if (track.type == 'left-chromosome-axis')
-            return 'vertical-axis';
+        return this.trackDescriptions[track.type].dimension;
     }
 
     trackOpacity(track) {
