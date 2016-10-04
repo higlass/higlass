@@ -27,7 +27,6 @@ export function load1DTileData(tile_value, tile_type) {
 
 export function load1DRatioTileData(tile_value, tile_type) {
     let toReturn = null;
-    console.log('loading 1D ratio', tile_value);
     if (tile_type == 'dense') {
         toReturn = [];
 
@@ -66,11 +65,9 @@ export function load1DRatioTileData(tile_value, tile_type) {
     }
 
     let ratios= [];
-    console.log('toReturn:', toReturn);
     for (let i = 0; i < toReturn.length; i++) {
         ratios.push(toReturn[i][0] / toReturn[i][1]);
     }
 
-    console.log('ratios:', ratios);
     return ratios;
 }

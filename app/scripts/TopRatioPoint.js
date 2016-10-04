@@ -139,6 +139,8 @@ export function TopRatioPoint() {
                     let j = 0;
 
                     for (let i = 0; i < tileData.length; i++) {
+                        if (isNaN(tileData[i]))
+                            continue;
 
 
                         let xPos = zoomedXScale(tileXScale(i));
