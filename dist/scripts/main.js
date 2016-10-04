@@ -165,7 +165,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    console.log('error:', e);
 	}
 
-	var developmentDemo = JSON.parse('\n        {\n   "views":[\n      {\n         "chromInfoPath":"//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n         "domain":[\n            0,\n            3000000000\n         ],\n         "viewStyle":{\n            "float":"left",\n            "padding":"5px",\n            "width":"100%"\n         },\n         "tracks":[\n             {\n          "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n          "type": "top-chromosome-axis"\n        },\n            {\n               "source":"//52.45.229.11:9872/hg19.1/hg19.read_length_16.reads_2000000.dups_100.res_256.contacts.genome",\n               "type":"heatmap"\n            },\n            {\n               "source":"//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n               "type":"left-chromosome-axis",\n               "width":25\n            }\n         ],\n         "searchBox": true,\n         "zoomLock":0\n      }\n   ],\n   "editable":true\n}\n');
+	var developmentDemo = JSON.parse('\n        { "views":\n            [\n            {\n                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                "domain": [\n                    0,\n                    3000000000\n                ],\n                "viewStyle": {\n                    "float": "left",\n                    "padding": "5px",\n                    "width": "100%"\n                },\n                "tracks": [\n                {\n                    "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                    "type": "top-chromosome-axis",\n                    "height": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",\n                    "type": "heatmap",\n                    "height": 300\n                },\n                {\n                    "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                    "type": "left-chromosome-axis",\n                    "width": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n                    "type": "left-gene-labels",\n                    "width": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n                    "type": "top-gene-labels",\n                    "height": 25\n                },\n\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n                    "type": "top-line",\n                    "height": 25\n                },\n                {\n                    "type": "top-empty",\n                    "height": 5\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n                    "type": "left-bar",\n                    "width": 25\n                },\n                {\n                    "type": "left-empty",\n                    "width": 5\n                }\n\n                ],\n                "zoomLock" : 0,\n                "searchBox": false\n            }\n            ],\n            "editable": false\n        }\n        ');
 
 	try {
 	    _reactDom2.default.render(_react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: JSON.stringify(developmentDemo) }), document.getElementById('development-demo'));
@@ -24281,6 +24281,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            'left-gene-labels': 'left',
 	            'top-chromosome-axis': 'top',
 	            'left-chromosome-axis': 'left',
+	            'top-ratio-point': 'top',
 	            'left-empty': 'left',
 	            'top-empty': 'top',
 	            'right-bar': 'right',
@@ -24387,6 +24388,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.width = Math.floor(this.element.getBoundingClientRect().width) - parseInt(cs.getPropertyValue('padding-left'), 10) - parseInt(cs.getPropertyValue('padding-right'), 10);
 
 	            if (!this.heightSpecified) this.height = this.width;else this.setHeight();
+
+	            this.setState({ 'height': this.height });
 
 	            if (typeof this.prevWidth != 'undefined') {
 	                var currentDomainWidth = this.xOrigScale.domain()[1] - this.xOrigScale.domain()[0];
