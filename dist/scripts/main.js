@@ -153,14 +153,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    console.log('error:', e);
 	}
 
-	var normalizationDemo = JSON.parse('\n\n{ "views": \n[\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//52.23.165.123:9872/hg19/Dixon2015-H1_hESC-HindIII-allreps-filtered.50kb.cool.unbalanced.genome.sorted.gz",\n        "type": "top-diagonal-heatmap",\n        "height": 200\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis"\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      }\n    ],\n    "zoomLock": 0,\n    "searchBox": true\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//52.23.165.123:9872/hg19/Dixon2015-H1_hESC-HindIII-allreps-filtered.50kb.cool.genome.sorted.gz",\n        "type": "top-diagonal-heatmap",\n        "height": 200\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis"\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      }\n    ],\n    "zoomLock": 0,\n    "searchBox": true\n  }\n]\n}\n');
+	var normalizationDemo = JSON.parse('\n\n{ "views": \n[\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//52.23.165.123:9872/hg19/Dixon2015-H1_hESC-HindIII-allreps-filtered.50kb.cool.unbalanced.genome.sorted.gz",\n        "type": "top-diagonal-heatmap",\n        "height": 200\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis"\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      }\n    ],\n    "zoomLock": 0,\n    "searchBox": true\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//52.23.165.123:9872/hg19/Dixon2015-H1_hESC-HindIII-allreps-filtered.50kb.cool.genome.sorted.gz",\n        "type": "top-diagonal-heatmap",\n        "height": 200\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis"\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n        "type": "top-gene-labels",\n        "height": 25\n      },\n      {\n        "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n        "type": "top-line",\n        "height": 25\n      }\n    ],\n    "zoomLock": 0,\n    "searchBox": true\n  }\n],\n"editable": true\n\n}\n');
 
-	var gridDemo = JSON.parse('\n{\n "views": [\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_16.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_32.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_64.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//54.197.186.181:9872/hg19.1/hg19.read_length_128.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  }\n],\n"editable": true\n}\n\n');
+	var gridDemo = JSON.parse('\n{\n "views": [\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//52.45.229.11:9872/hg19.1/hg19.read_length_16.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//52.45.229.11:9872/hg19.1/hg19.read_length_32.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//52.45.229.11:9872/hg19.1/hg19.read_length_64.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  },\n  {\n    "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n    "domain": [\n      0,\n      3000000000\n    ],\n    "viewStyle": {\n      "float": "left",\n      "padding": "5px",\n      "width": "50%"\n    },\n    "tracks": [\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "top-chromosome-axis",\n        "height": 25\n      },\n      {\n        "source": "//52.45.229.11:9872/hg19.1/hg19.read_length_128.reads_1000000.dups_100.res_256.contacts.genome",\n        "type": "heatmap"\n      },\n      {\n        "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n        "type": "left-chromosome-axis",\n        "width": 25\n      },\n      {\n        "type": "left-empty",\n        "width": 5\n      }\n    ],\n    "zoomLock": 0\n  }\n],\n"editable": true\n}\n\n');
 
 	try {
 	    _reactDom2.default.render(_react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: JSON.stringify(normalizationDemo) })
 	    //<HiGlassApp viewConfigString={JSON.stringify(rectangularOneWindow)}/>
 	    , document.getElementById('comparison-demo'));
+	} catch (e) {
+	    console.log('error:', e);
+	}
+
+	var developmentDemo = JSON.parse('\n        {\n   "views":[\n      {\n         "chromInfoPath":"//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n         "domain":[\n            0,\n            3000000000\n         ],\n         "viewStyle":{\n            "float":"left",\n            "padding":"5px",\n            "width":"100%"\n         },\n         "tracks":[\n             {\n          "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n          "type": "top-chromosome-axis"\n        },\n            {\n               "source":"//52.45.229.11:9872/hg19.1/hg19.read_length_16.reads_2000000.dups_100.res_256.contacts.genome",\n               "type":"heatmap"\n            },\n            {\n               "source":"//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n               "type":"left-chromosome-axis",\n               "width":25\n            }\n         ],\n         "searchBox": true,\n         "zoomLock":0\n      }\n   ],\n   "editable":true\n}\n');
+
+	try {
+	    _reactDom2.default.render(_react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: JSON.stringify(developmentDemo) }), document.getElementById('development-demo'));
 	} catch (e) {
 	    console.log('error:', e);
 	}
@@ -24347,7 +24355,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.zoom.scale(scale);
 	        }.bind(_this));
 
-	        _this.setHeight();
+	        if (_this.heightSpecified) _this.setHeight();
 	        _this.arrangeTracks();
 
 	        /*
@@ -24372,13 +24380,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var cs = window.getComputedStyle(this.element, null);
 
 	            this.prevWidth = this.width;
-	            console.log('this.element.offsetWidth:', this.element.offsetWidth, "this.element.parent:", this.element.getBoundingClientRect().width);
+	            this.prevHeight = this.height;
+
 	            //let offsetWidth = Math.floor(this.element.parentNode.offsetWidth / 2);
 
 	            this.width = Math.floor(this.element.getBoundingClientRect().width) - parseInt(cs.getPropertyValue('padding-left'), 10) - parseInt(cs.getPropertyValue('padding-right'), 10);
-	            console.log('update width:', this.width, 'offsetWidth:', this.element.offsetWidth);
 
-	            if (!this.heightSpecified) this.height = this.width;
+	            if (!this.heightSpecified) this.height = this.width;else this.setHeight();
 
 	            if (typeof this.prevWidth != 'undefined') {
 	                var currentDomainWidth = this.xOrigScale.domain()[1] - this.xOrigScale.domain()[0];
@@ -24387,14 +24395,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.xOrigScale.domain([this.xOrigScale.domain()[0], this.xOrigScale.domain()[0] + nextDomainWidth]);
 	            }
 
-	            if (typeof this.topChromosomeAxis != 'undefined') {
-	                this.topChromosomeAxis.xScale(this.xOrigScale.copy());
-	                this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
+	            if (typeof this.prevHeight != 'undefined') {
+	                var currentDomainHeight = this.yOrigScale.domain()[1] - this.yOrigScale.domain()[0];
+	                var nextDomainHeight = currentDomainHeight * (this.height / this.prevHeight);
+
+	                this.yOrigScale.domain([this.yOrigScale.domain()[0], this.yOrigScale.domain()[0] + nextDomainHeight]);
 	            }
 
 	            this.xOrigScale.range([0, this.width]);
 	            this.yOrigScale.range([0, this.height]);
 	            this.renderer.resize(this.width, this.height);
+
+	            if (typeof this.topChromosomeAxis != 'undefined') {
+	                this.topChromosomeAxis.xScale(this.xOrigScale.copy());
+	                this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
+	                this.leftGeneLabels.yScale(this.yOrigScale.copy());
+	                this.topGeneLabels.xScale(this.xOrigScale.copy());
+	                this.horizontalTiledArea.xScale(this.xOrigScale.copy());
+	                this.horizontalDiagonalTiledArea.xScale(this.xOrigScale.copy());
+	                this.verticalTiledArea.yScale(this.yOrigScale.copy());
+	                this.wigglePixiTrack.xScale(this.xOrigScale.copy());
+	                this.wigglePixiLine.xScale(this.xOrigScale.copy());
+	                this.wigglePixiPoint.xScale(this.xOrigScale.copy());
+	                this.wigglePixiHeatmap.xScale(this.xOrigScale.copy());
+	                this.leftWigglePixiTrack.yScale(this.yOrigScale.copy());
+	                this.heatmapRectangleTrack.xScale(this.xOrigScale.copy()).yScale(this.yOrigScale.copy());
+	                this.twoDTiledArea.xScale(this.xOrigScale.copy()).yScale(this.yOrigScale.copy());
+	                this.diagonalHeatmapTrack.xScale(this.xOrigScale.copy()).yScale(this.yOrigScale.copy());
+	            }
 
 	            this.setState({
 	                xRange: this.xOrigScale.range(),
@@ -24402,7 +24430,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                xDomain: this.xOrigScale.domain(),
 	                yDomain: this.yOrigScale.domain()
 	            });
-	            console.log('setting xRange:', this.state.xRange);
 
 	            for (var uid in this.state.tracks) {
 	                if (this.tracksToPositions[this.state.tracks[uid].type] == 'top' || this.tracksToPositions[this.state.tracks[uid].type] == 'center') this.state.tracks[uid].width = this.width;
@@ -24414,6 +24441,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	            }
 	            // change out all the scales and then call everything again
+	            this.handleZoom();
 	        }
 	    }, {
 	        key: 'arrangeTracks',
@@ -24499,7 +24527,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return (y - translate[1]) / scale;
 	            }).map(this.yOrigScale.invert));
 
-	            //console.log('this.zoomedXScale.domain():', this.zoomedXScale.domain());
 	            this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
 	        }
 	    }, {
@@ -24529,10 +24556,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (typeof this.height == 'undefined') {
 	                this.height = 0;
 
-	                console.log('setting height:', this.props.viewConfig.tracks);
-
 	                for (var i = 0; i < this.props.viewConfig.tracks.length; i++) {
-	                    this.height += this.props.viewConfig.tracks[i].height;
+	                    if (this.tracksToPositions[this.props.viewConfig.tracks[i].type] == 'top' || this.tracksToPositions[this.props.viewConfig.tracks[i].type] == 'center') {
+	                        this.height += this.props.viewConfig.tracks[i].height;
+	                    }
 	                }
 	            }
 	        }
@@ -24542,7 +24569,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.element = _reactDom2.default.findDOMNode(this);
 	            window.addEventListener('resize', this.updateDimensions.bind(this));
 
-	            console.log('this.width:', this.width, 'this.height:', this.height);
 	            this.renderer = _pixi2.default.autoDetectRenderer(this.width, this.height, { view: this.canvas,
 	                antialias: true,
 	                transparent: true });
@@ -24574,23 +24600,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	            .domain(this.yScale.domain()).yScale(this.yOrigScale.copy()).zoomDispatch(this.zoomDispatch).horizontal(false);
 
 	            this.twoDTiledArea = (0, _GenericTiledArea.GenericTiledArea)().tileType('div').oneDimensional(false).width(this.width).height(this.height).xScale(this.xOrigScale.copy()).yScale(this.yOrigScale.copy()).domain(this.xScale.domain()).zoomDispatch(this.zoomDispatch).mirrorTiles(true);
-	            var wigglePixiTrack = (0, _WigglePixiTrack.WigglePixiTrack)().xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            var wigglePixiLine = (0, _WigglePixiLine.WigglePixiLine)().xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.wigglePixiTrack = (0, _WigglePixiTrack.WigglePixiTrack)().xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            var wigglePixiPoint = (0, _WigglePixiPoint.WigglePixiPoint)().xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.wigglePixiLine = (0, _WigglePixiLine.WigglePixiLine)().xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            var wigglePixiHeatmap = (0, _WigglePixiHeatmap.WigglePixiHeatmap)().xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.wigglePixiPoint = (0, _WigglePixiPoint.WigglePixiPoint)().xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            var leftWigglePixiTrack = (0, _LeftWigglePixiTrack.LeftWigglePixiTrack)().yScale(this.yOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.wigglePixiHeatmap = (0, _WigglePixiHeatmap.WigglePixiHeatmap)().xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            var heatmapRectangleTrack = (0, _HeatmapRectangleTrack.HeatmapRectangleTrack)().xScale(this.xOrigScale.copy()).yScale(this.yOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.leftWigglePixiTrack = (0, _LeftWigglePixiTrack.LeftWigglePixiTrack)().yScale(this.yOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            var diagonalHeatmapTrack = (0, _TopDiagonalHeatmapTrack.TopDiagonalHeatmapRectangleTrack)().xScale(this.xScale.copy()).yScale(this.yScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.heatmapRectangleTrack = (0, _HeatmapRectangleTrack.HeatmapRectangleTrack)().xScale(this.xOrigScale.copy()).yScale(this.yOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            var topGeneLabels = (0, _TopGeneLabelsTrack.TopGeneLabelsTrack)().xScale(this.xOrigScale.copy()).width(this.width).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.diagonalHeatmapTrack = (0, _TopDiagonalHeatmapTrack.TopDiagonalHeatmapRectangleTrack)().xScale(this.xScale.copy()).yScale(this.yScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            var leftGeneLabels = (0, _LeftGeneLabelsTrack.LeftGeneLabelsTrack)().yScale(this.yOrigScale.copy()).width(this.width).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.topGeneLabels = (0, _TopGeneLabelsTrack.TopGeneLabelsTrack)().xScale(this.xOrigScale.copy()).width(this.width).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+
+	            this.leftGeneLabels = (0, _LeftGeneLabelsTrack.LeftGeneLabelsTrack)().yScale(this.yOrigScale.copy()).width(this.width).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
 	            this.animate();
 	            _d2.default.select(this.bigDiv).call(this.zoom);
@@ -24599,35 +24626,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	                d.translate = this.zoom.translate();
 	                d.scale = this.zoom.scale();
 
-	                if (d.type == 'top-diagonal-heatmap') _d2.default.select(element).call(diagonalHeatmapTrack);
+	                if (d.type == 'top-diagonal-heatmap') _d2.default.select(element).call(this.diagonalHeatmapTrack);
 	            }.bind(this));
 
 	            this.horizontalTiledArea.tilesChanged(function (d, element) {
 	                d.translate = this.zoom.translate();
 	                d.scale = this.zoom.scale();
 
-	                if (d.type == 'top-bar') _d2.default.select(element).call(wigglePixiTrack);
-	                if (d.type == 'top-line') _d2.default.select(element).call(wigglePixiLine);
-	                if (d.type == 'top-point') _d2.default.select(element).call(wigglePixiPoint);
-	                if (d.type == 'top-heatmap') _d2.default.select(element).call(wigglePixiHeatmap);
-	                if (d.type == 'top-gene-labels') _d2.default.select(element).call(topGeneLabels);
-	                if (d.type == 'top-chromosome-axis') _d2.default.select(element).call(topChromosomeAxis);
+	                if (d.type == 'top-bar') _d2.default.select(element).call(this.wigglePixiTrack);
+	                if (d.type == 'top-line') _d2.default.select(element).call(this.wigglePixiLine);
+	                if (d.type == 'top-point') _d2.default.select(element).call(this.wigglePixiPoint);
+	                if (d.type == 'top-heatmap') _d2.default.select(element).call(this.wigglePixiHeatmap);
+	                if (d.type == 'top-gene-labels') _d2.default.select(element).call(this.topGeneLabels);
+	                if (d.type == 'top-chromosome-axis') _d2.default.select(element).call(this.topChromosomeAxis);
 	            }.bind(this));
 
 	            this.verticalTiledArea.tilesChanged(function (d, element) {
 	                d.translate = this.zoom.translate();
 	                d.scale = this.zoom.scale();
 
-	                if (d.type == 'left-bar') _d2.default.select(element).call(leftWigglePixiTrack);
-	                if (d.type == 'left-gene-labels') _d2.default.select(element).call(leftGeneLabels);
-	                if (d.type == 'left-chromosome-axis') _d2.default.select(element).call(leftChromosomeAxis);
+	                if (d.type == 'left-bar') _d2.default.select(element).call(this.leftWigglePixiTrack);
+	                if (d.type == 'left-gene-labels') _d2.default.select(element).call(this.leftGeneLabels);
+	                if (d.type == 'left-chromosome-axis') _d2.default.select(element).call(this.leftChromosomeAxis);
 	            }.bind(this));
 
 	            this.twoDTiledArea.tilesChanged(function (d, element) {
 	                d.translate = this.zoom.translate();
 	                d.scale = this.zoom.scale();
 
-	                if (d.type == 'heatmap') _d2.default.select(element).call(heatmapRectangleTrack);
+	                if (d.type == 'heatmap') _d2.default.select(element).call(this.heatmapRectangleTrack);
 	            }.bind(this));
 
 	            this.updateTracks();
@@ -64386,6 +64413,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var mirrorTiles = false;
 	    var diagonal = false;
 
+	    var zoomedXScale = d3.scale.linear();
+	    var zoomedYScale = d3.scale.linear();
+
 	    var xAxis = null;
 
 	    var labelSort = function labelSort(a, b) {
@@ -64440,13 +64470,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	            localZoomDispatch.on('zoom.' + slugId, zoomChanged);
 
 	            function zoomChanged(translate, scale) {
-	                // something changed the zoom.
-	                if (horizontal) zoom.translate(translate);else
-	                    // if we're displaying a vertical scale, then we need to
-	                    // reverse the translation
-	                    zoom.translate([translate[1], translate[0]]);
+	                if (xScale) zoomedXScale.range(xScale.range());
 
-	                zoom.scale(scale);
+	                if (yScale) zoomedYScale.range(yScale.range());
+
+	                // something changed the zoom.
+	                if (horizontal) {
+	                    if (xScale) zoomedXScale.domain(xScale.range().map(function (x) {
+	                        return (x - translate[0]) / scale;
+	                    }).map(xScale.invert));
+
+	                    if (yScale) zoomedYScale.domain(yScale.range().map(function (x) {
+	                        return (x - translate[1]) / scale;
+	                    }).map(yScale.invert));
+	                } else {
+	                    if (xScale) zoomedXScale.domain(xScale.range().map(function (x) {
+	                        return (x - translate[1]) / scale;
+	                    }).map(xScale.invert));
+
+	                    if (yScale) zoomedYScale.domain(yScale.range().map(function (x) {
+	                        return (x - translate[0]) / scale;
+	                    }).map(yScale.invert));
+	                }
 
 	                zoomed();
 	            }
@@ -64602,8 +64647,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                          */
 
 	                // this will become the tiling code
-	                var zoomScale = Math.max((maxX - minX) / (xScale.domain()[1] - xScale.domain()[0]), 1);
-	                var addedZoom = Math.ceil(Math.log(width / 256) / Math.LN2);
+	                var rangeWidth = zoomedXScale.range()[1] - zoomedXScale.range()[0];
+	                var zoomScale = Math.max((maxX - minX) / (zoomedXScale.domain()[1] - zoomedXScale.domain()[0]), 1);
+	                var addedZoom = Math.max(0, Math.ceil(Math.log(rangeWidth / 256) / Math.LN2));
 	                var zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + addedZoom;
 
 	                if (zoomLevel > maxZoom) zoomLevel = maxZoom;
@@ -64621,7 +64667,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                var rows = null;
 
-	                rows = d3.range(Math.max(0, Math.floor((zoom.x().domain()[0] - minX) / tileWidth)), Math.min(Math.pow(2, zoomLevel), Math.ceil((zoom.x().domain()[1] - minX - epsilon) / tileWidth)));
+	                rows = d3.range(Math.max(0, Math.floor((zoomedXScale.domain()[0] - minX) / tileWidth)), Math.min(Math.pow(2, zoomLevel), Math.ceil((zoomedXScale.domain()[1] - minX - epsilon) / tileWidth)));
 
 	                if (diagonal) {
 	                    for (var i = 0; i < rows.length; i++) {
@@ -64632,7 +64678,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                } else {
 
 	                    if (!oneDimensional) {
-	                        var cols = d3.range(Math.floor((zoom.y().domain()[0] - minY) / tileHeight), Math.ceil((zoom.y().domain()[1] - minY - epsilon) / tileHeight));
+	                        var cols = d3.range(Math.floor((zoomedYScale.domain()[0] - minY) / tileHeight), Math.ceil((zoomedYScale.domain()[1] - minY - epsilon) / tileHeight));
 
 	                        for (var _i = 0; _i < rows.length; _i++) {
 	                            for (var _j = 0; _j < cols.length; _j++) {
@@ -64768,9 +64814,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	                xOrigScale = xScale.copy();
 	                yOrigScale = yScale.copy();
 
-	                if (scaleExtent == null) zoom.x(xScale)
-	                //.scaleExtent([1,Math.pow(2, maxZoom-1)])
-	                .scaleExtent([1, Math.pow(2, maxZoom + 8)]);else zoom.x(xScale).scaleExtent(scaleExtent);
+	                /*
+	                if (scaleExtent == null)
+	                    zoomedXScale(xScale)
+	                        //.scaleExtent([1,Math.pow(2, maxZoom-1)])
+	                        .scaleExtent([1,Math.pow(2, maxZoom+8)])
+	                else
+	                    zoomedXScale(xScale)
+	                        .scaleExtent(scaleExtent);
+	                */
 
 	                //.xExtent(xScaleDomain);
 
@@ -64778,9 +64830,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	                //gXAxis.call(xAxis);
 
 	                if (!oneDimensional) {
-	                    if (scaleExtent == null) zoom.y(yScale)
-	                    //.scaleExtent([1,Math.pow(2, maxZoom-1)])
-	                    .scaleExtent([1, Math.pow(2, maxZoom + 8)]);else zoom.y(yScale).scaleExtent(scaleExtent);
+	                    /*
+	                    if (scaleExtent == null)
+	                        zoomedYScale(yScale)
+	                            //.scaleExtent([1,Math.pow(2, maxZoom-1)])
+	                            .scaleExtent([1,Math.pow(2, maxZoom+8)])
+	                    else
+	                        zoomedYScale(yScale)
+	                        .scaleExtent(scaleExtent);
+	                    */
 	                    refreshTiles([[0, 0, 0]]);
 	                } else {
 	                    refreshTiles([[0, 0]]);
@@ -65423,11 +65481,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        var xPos = zoomedXScale(tileXScale(i));
 	                        var _height = yScale(tileData[i]);
 	                        var _width = zoomedXScale(tileXScale(i + 1)) - zoomedXScale(tileXScale(i));
-
-	                        // if (height > 0 && width > 0) {
-	                        //   graphics.drawRect(xPos, yPos, width, height);
-	                        // }
-	                        //console.log('xPos:', xPos, d.height * yScale(tileData[i+1]));
 
 	                        if (j == 0) {
 	                            graphics.moveTo(xPos, d.height - d.height * _height);
@@ -89724,8 +89777,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this.xOrigScale = _d3.default.scale.linear().domain(_this.props.xDomain).range(_this.props.xRange);
 	        _this.yOrigScale = _d3.default.scale.linear().domain(_this.props.yDomain).range(_this.props.yRange);
 
-	        console.log('xDomain:', _this.props.xDomain);
-
 	        _this.zoomedXScale = _this.xOrigScale.copy();
 	        _this.zoomedYScale = _this.yOrigScale.copy();
 
@@ -89733,7 +89784,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _this.chromInfo = newChromInfo;
 	            _this.searchField = new _search_field.SearchField(_this.chromInfo);
 
-	            console.log('loaded chrominfo');
 	            _this.setPositionText();
 	        });
 
@@ -89780,14 +89830,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var y1 = this.absoluteToChr(this.zoomedYScale.domain()[0]);
 	            var y2 = this.absoluteToChr(this.zoomedYScale.domain()[1]);
 
-	            //console.log('x1:', x1, 'x2:', x2, 'y1:', y1, 'y2:', y2)
-
 	            var positionString = null;
+	            var format = _d3.default.format(",d");
 
-	            if (x1[0] != x2[0]) positionString = x1[0] + ':' + Math.floor(x1[1]) + '-' + x2[0] + ':' + Math.ceil(x2[1]);else positionString = x1[0] + ':' + Math.floor(x1[1]) + '-' + Math.ceil(x2[1]);
+	            if (x1[0] != x2[0]) positionString = x1[0] + ':' + format(Math.floor(x1[1])) + '-' + x2[0] + ':' + format(Math.ceil(x2[1]));else positionString = x1[0] + ':' + format(Math.floor(x1[1])) + '-' + format(Math.ceil(x2[1]));
 
 	            if (this.props.twoD) {
-	                if (y1[0] != y2[0]) positionString += " and " + y1[0] + ':' + Math.floor(y1[1]) + '-' + y2[0] + ':' + Math.ceil(y2[1]);else positionString += " and " + y1[0] + ':' + Math.floor(y1[1]) + '-' + Math.ceil(y2[1]);
+	                if (y1[0] != y2[0]) positionString += " and " + y1[0] + ':' + format(Math.floor(y1[1])) + '-' + y2[0] + ':' + format(Math.ceil(y2[1]));else positionString += " and " + y1[0] + ':' + format(Math.floor(y1[1])) + '-' + format(Math.ceil(y2[1]));
 	            }
 
 	            _reactDom2.default.findDOMNode(this.refs.searchFieldText).value = positionString;
@@ -89796,7 +89845,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'buttonClick',
 	        value: function buttonClick() {
 	            var searchFieldValue = _reactDom2.default.findDOMNode(this.refs.searchFieldText).value;
-	            console.log('value:', searchFieldValue);
 
 	            if (this.searchField != null) {
 	                var _searchField$searchPo = this.searchField.searchPosition(searchFieldValue);
