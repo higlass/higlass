@@ -761,7 +761,7 @@ let developmentDemo = JSON.parse(`
                 "searchBox": false
             }
             ],
-            "editable": false
+            "editable": true
         }
         `);
 

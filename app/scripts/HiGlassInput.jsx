@@ -8,7 +8,6 @@ export class HiGlassInput extends React.Component {
         super(props);
 
         this.state = {
-            inputOpen : false
         }
     }
 
@@ -20,13 +19,17 @@ export class HiGlassInput extends React.Component {
         this.props.onNewConfig(configText);
     }
 
+    componentWillReceiveProps(newProps) {
+        console.log('HGI newProps:', newProps);
+    }
+
     render() {
         return (
                 <div>
                 <Panel bsSize={'small'}
                     collapsible
                     className="higlass-edit-panel"
-                    expanded={this.state.inputOpen}
+                    expanded={this.props.inputOpen}
                 >
                 <form onSubmit={this.handleSubmit.bind(this)}>
                    <FormGroup controlId="formControlsTextarea">
@@ -45,7 +48,9 @@ export class HiGlassInput extends React.Component {
                     >Submit</Button>
                     </form>
                 </Panel>
-                <SafeAnchor className='edit-higlass' onClick= { () => this.setState({ inputOpen: !this.state.inputOpen })}>Edit</SafeAnchor>
+                <SafeAnchor className='edit-higlass' onClick= { this.props.handleOpen }>
+                Edit
+                </SafeAnchor>
                 </div>
 
 

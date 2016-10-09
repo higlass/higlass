@@ -892,8 +892,12 @@ export class MultiTrackContainer extends React.Component {
                             return (
                                 <div 
                                                  className={'track ' + this.trackDimension(track)}
-                                                 style={{left: track.left, top: track.top, position: 'absolute'}}
-                                                 key={track.uid}
+                                                 style={{left: track.left, 
+                                                         top: track.top, 
+                                                         width: track.width,
+                                                         height: track.height,
+                                                         position: 'absolute'}}
+                                                        key={track.uid}
                                                  />
                                 
                                                  /*
