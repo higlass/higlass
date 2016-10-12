@@ -80,25 +80,44 @@ export function TopRatioPoint() {
                 let pMain = new PIXI.Graphics();
                 let pAbove = new PIXI.Graphics();
                 let pMask = new PIXI.Graphics();
+                let pAxis = new PIXI.Graphics();
 
                 pMask.beginFill();
                 pMask.drawRect(0, 0, 1, 1);
                 pMask.endFill();
 
                 pAbove.addChild(pMain);
+                pAbove.addChild(pAxis);
                 pAbove.addChild(pMask);
                 d.stage.addChild(pAbove);
 
                 d.pAbove = pAbove;
+                d.pAxis = pAxis;
                 d.pMain = pMain;
                 d.pMask = pMask;
 
                 pMain.mask = pMask;
+            }
 
+            if (!('maxText' in d)) {
+                d.maxText = new PIXI.Text("", {font: '8px Arial', fill: "black"});
+                d.maxTextBg = new PIXI.Graphics();
+
+                d.pAxis.addChild(d.maxText);
+                d.pAxis.addChild(d.maxTextBg);
+            }
+
+            if (!('minText' in d)) {
+                d.minText = new PIXI.Text("", {font: '8px Arial', fill: "black"});
+                d.minTextBg = new PIXI.Graphics();
+
+                d.pAxis.addChild(d.minText);
+                d.pAxis.addChild(d.minTextBg);
             }
             
             let zoomLevel = null;
             let drawTile = null;
+            let drawAxis = null;
             let allTiles = null;
 
             function redrawTile() {
@@ -147,6 +166,50 @@ export function TopRatioPoint() {
                     // helps to avoid flickering
                     zoomChanged(d.translate, d.scale);
                 }
+
+                d.pAxis.removeChild(d.maxTextBg);
+                d.pAxis.removeChild(d.minTextBg);
+
+                d.maxTextBg = new PIXI.Graphics();
+                d.minTextBg = new PIXI.Graphics();
+
+                d.pAxis.addChild(d.maxTextBg);
+                d.pAxis.addChild(d.minTextBg);
+
+                d.maxTextBg.beginFill(0xFFFFFF,1);
+                d.minTextBg.beginFill(0xFFFFFF,1);
+                //d.maxTextBg.drawRect(0, 0, 30, 9);
+                
+
+                d.pAxis.removeChild(d.maxText);
+                d.pAxis.removeChild(d.minText);
+
+                let format = d3.format(".2s")
+
+                d.maxText = new PIXI.Text(format(maxVisibleValue), {font: '9px Arial', fill: "black"});
+
+                d.maxText.anchor.x = 0;
+                d.maxText.anchor.y = 0;
+
+                d.maxText.position.x = d.left + 0;
+                d.maxText.position.y = 0 + d.top;
+
+                d.pAxis.addChild(d.maxText);
+                let bounds = d.maxText.getBounds();
+                d.maxTextBg.drawRect(d.left + bounds.x, d.top + bounds.y, bounds.width, bounds.height);
+
+                d.minText = new PIXI.Text(format(minVisibleValue), {font: '9px Arial', fill: "black"});
+
+                d.minText.anchor.x = 0;
+                d.minText.anchor.y = 1;
+
+                d.minText.position.x = d.left + 0;
+                d.minText.position.y = d.height + d.top;
+
+                d.pAxis.addChild(d.minText);
+
+                bounds = d.minText.getBounds();
+                d.minTextBg.drawRect(d.left + bounds.x, bounds.y + d.height + d.top, bounds.width, bounds.height);
                 
 
                 drawTile = function(graphics, tile) {
@@ -166,8 +229,10 @@ export function TopRatioPoint() {
                     let j = 0;
 
                     for (let i = 0; i < tileData.length; i++) {
-                        if (isNaN(tileData[i]))
+                        if (isNaN(tileData[i])) {
+                            console.log('NaN');
                             continue;
+                        }
 
 
                         let xPos = zoomedXScale(tileXScale(i));
