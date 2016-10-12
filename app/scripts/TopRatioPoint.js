@@ -2,6 +2,7 @@ import PIXI from 'pixi.js';
 import slugid from 'slugid';
 import d3 from 'd3';
 import {load1DRatioTileData} from './TileData.js';
+import {LRUCache} from './lru.js';
 
 export function TopRatioPoint() {
     let width = 200;//200
@@ -18,6 +19,7 @@ export function TopRatioPoint() {
     var shownT = {};
     var preScale = 1; 
     let zoomedXScale = d3.scale.linear();
+    let lruCache = new LRUCache(20); //cache the tile data for 10 tiles
 
     function tileId(tile) {
         // uniquely identify the tile with a string
@@ -102,10 +104,34 @@ export function TopRatioPoint() {
             function redrawTile() {
                 allTiles = d3.select(this).selectAll('.tile-g').data();
                 console.log('top ratio all tiles:', allTiles);
+                
+                let mins = [];
+                let maxs = [];
+
+                for (let i = 0; i < allTiles.length; i++) {
+                    let tile = allTiles[i];
+                    let loadedTileData = lruCache.get(tile.tileId);
+
+                    if (!loadedTileData) {
+                        loadedTileData = load1DRatioTileData(tile.data, tile.type);
+                        lruCache.put(tile.tileId, loadedTileData);
+                    }
+
+                    console.log('loadedTileData', loadedTileData);
+                    mins.push(loadedTileData.min);
+                    maxs.push(loadedTileData.max);
+                }
 
 
+                /*
                 let minVisibleValue = Math.min(...allTiles.map((x) => x.valueRange[0]));
                 let maxVisibleValue = Math.max(...allTiles.map((x) => x.valueRange[1]));
+                */
+                let minVisibleValue = Math.min.apply(Math, mins);
+                let maxVisibleValue = Math.max.apply(Math, maxs);
+
+                console.log('minVisibleValue:', minVisibleValue);
+                console.log('maxVisibleValue:', maxVisibleValue);
 
                 zoomLevel = allTiles[0].tilePos[0];
                 let tileWidth = (allTiles[0].xRange[1] - allTiles[0].xRange[0]) / Math.pow(2, zoomLevel);
@@ -124,7 +150,8 @@ export function TopRatioPoint() {
                 
 
                 drawTile = function(graphics, tile) {
-                    let tileData = load1DRatioTileData(tile.data, tile.type);
+                    let loadedTileData = lruCache.get(tile.tileId); 
+                    let tileData = loadedTileData.data
                     graphics.clear();
 
                     let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);

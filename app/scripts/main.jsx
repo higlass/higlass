@@ -731,12 +731,12 @@ let developmentDemo = JSON.parse(`
                 {
                     "source": "//52.23.165.123:9872/hg19/hg19.UMB5144.all_bins.sorted.genome.gz",
                     "type": "top-ratio-point",
-                    "height": 25
+                    "height": 50
                 }
 
                 ],
                 "zoomLock" : 0,
-                "searchBox": false
+                "searchBox": true
             }
             ],
             "editable": true

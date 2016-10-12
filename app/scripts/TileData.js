@@ -65,9 +65,17 @@ export function load1DRatioTileData(tile_value, tile_type) {
     }
 
     let ratios= [];
+    let realRatios = [];
+
     for (let i = 0; i < toReturn.length; i++) {
-        ratios.push(toReturn[i][0] / toReturn[i][1]);
+        let ratio = toReturn[i][0] / toReturn[i][1]
+        ratios.push(ratio);
+
+        // keep track of the non-NA ratios so that we can get their min and max
+        if (!isNaN(ratio))
+            realRatios.push(ratio);
     }
 
-    return ratios;
+    console.log('realRatios', realRatios);
+    return {'min': Math.min.apply(Math, realRatios), 'max': Math.max.apply(Math, realRatios), 'data': ratios};
 }

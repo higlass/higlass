@@ -16,7 +16,7 @@
  *
  *  removed  <--  <--  <--  <--  <--  <--  <--  <--  <--  <--  <--  added
  */
-function LRUCache (limit) {
+export function LRUCache (limit) {
   // Current size of the cache. (Read-only).
   this.size = 0;
   // Maximum number of items this cache can hold.
