@@ -233,6 +233,7 @@ export function TopRatioPoint() {
                             console.log('NaN');
                             continue;
                         }
+                        console.log('value:', tileData[i]);
 
 
                         let xPos = zoomedXScale(tileXScale(i));
@@ -242,7 +243,7 @@ export function TopRatioPoint() {
                         let width = zoomedXScale(tileXScale(i+1)) - zoomedXScale(tileXScale(i));
 
                         //console.log('drawingRect:', zoomedXScale(tileXScale(i+1)), d.height - d.height*yScale(tileData[i+1]));
-                        graphics.drawRect(zoomedXScale(tileXScale(i+1)), d.height - d.height*yScale(tileData[i+1]) , 1, 1);
+                        graphics.drawRect(zoomedXScale(tileXScale(i)), d.height - d.height*yScale(tileData[i]) , 1, 1);
                     }
                 }
 
