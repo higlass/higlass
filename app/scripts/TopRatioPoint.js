@@ -122,7 +122,6 @@ export function TopRatioPoint() {
 
             function redrawTile() {
                 allTiles = d3.select(this).selectAll('.tile-g').data();
-                console.log('top ratio all tiles:', allTiles);
                 
                 let mins = [];
                 let maxs = [];
@@ -136,7 +135,6 @@ export function TopRatioPoint() {
                         lruCache.put(tile.tileId, loadedTileData);
                     }
 
-                    console.log('loadedTileData', loadedTileData);
                     mins.push(loadedTileData.min);
                     maxs.push(loadedTileData.max);
                 }
@@ -148,9 +146,6 @@ export function TopRatioPoint() {
                 */
                 let minVisibleValue = Math.min.apply(Math, mins);
                 let maxVisibleValue = Math.max.apply(Math, maxs);
-
-                console.log('minVisibleValue:', minVisibleValue);
-                console.log('maxVisibleValue:', maxVisibleValue);
 
                 zoomLevel = allTiles[0].tilePos[0];
                 let tileWidth = (allTiles[0].xRange[1] - allTiles[0].xRange[0]) / Math.pow(2, zoomLevel);
@@ -233,8 +228,6 @@ export function TopRatioPoint() {
                             console.log('NaN');
                             continue;
                         }
-                        console.log('value:', tileData[i]);
-
 
                         let xPos = zoomedXScale(tileXScale(i));
                         //let yPos = -(d.height - yScale(tileData[i]));
