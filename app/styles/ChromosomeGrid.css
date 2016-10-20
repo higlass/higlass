@@ -1,0 +1,18 @@
+svg {
+      font: 10px sans-serif;
+  }
+
+.genome-scale {
+    stroke: red;
+}
+
+.center-tick {
+    stroke: black;
+    stroke-width: 1;
+}
+
+path {
+    stroke: black;
+    stroke-width: 1;
+    fill: transparent;
+}
