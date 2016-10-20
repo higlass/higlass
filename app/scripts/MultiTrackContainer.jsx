@@ -19,6 +19,7 @@ import {ChromosomeGrid} from './ChromosomeGrid.js';
 import {TopChromosomeAxis} from './TopChromosomeAxis.js'
 import {LeftChromosomeAxis} from './LeftChromosomeAxis.js'
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx'
+import {TopRatioPoint} from './TopRatioPoint.js';
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
@@ -374,6 +375,7 @@ export class MultiTrackContainer extends React.Component {
         this.wigglePixiTrack = WigglePixiTrack()
         this.wigglePixiLine = WigglePixiLine()
         this.wigglePixiPoint = WigglePixiPoint()
+        this.topRatioPoint = TopRatioPoint()
         this.wigglePixiHeatmap = WigglePixiHeatmap()
         this.leftWigglePixiTrack = LeftWigglePixiTrack()
         this.heatmapRectangleTrack = HeatmapRectangleTrack()
@@ -489,6 +491,14 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch);
 
         this.wigglePixiPoint
+            .xScale(this.xOrigScale.copy())
+            .width(this.width)
+            .height(this.height)
+            .pixiStage(this.stage)
+            .resizeDispatch(this.resizeDispatch)
+            .zoomDispatch(this.zoomDispatch);
+
+        this.topRatioPoint
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -727,7 +737,7 @@ export class MultiTrackContainer extends React.Component {
             'top-ratio-point': 
                 {
                     'position': 'top',
-                    'layout': null,
+                    'layout': this.topRatioPoint,
                     'dimension': 'one-d-horizontal'
                 },
             'top-heatmap': 
