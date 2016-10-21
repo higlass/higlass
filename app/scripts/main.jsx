@@ -721,6 +721,11 @@ let developmentDemo = JSON.parse(`
                     "type": "top-gene-labels",
                     "height": 25
                 },
+                {
+                    "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",
+                    "type": "top-diagonal-heatmap",
+                    "height": 80
+                },
 
                 {
                     "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",
@@ -732,6 +737,11 @@ let developmentDemo = JSON.parse(`
                     "source": "//52.23.165.123:9872/hg19/hg19.UMB5144.all_bins.sorted.genome.gz",
                     "type": "top-ratio-point",
                     "height": 50
+                },
+                {
+                    "source": "//52.45.229.11:9872/hg19/UMB5144__B1000_l03.BICseq.out",
+                    "type": "top-cnv-interval",
+                    "overlay": true
                 }
                 ],
                 "zoomLock" : 0,

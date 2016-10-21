@@ -20,6 +20,7 @@ import {TopChromosomeAxis} from './TopChromosomeAxis.js'
 import {LeftChromosomeAxis} from './LeftChromosomeAxis.js'
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx'
 import {TopRatioPoint} from './TopRatioPoint.js';
+import {TopCNVInterval} from './TopCNVInterval.js';
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
@@ -272,6 +273,10 @@ export class MultiTrackContainer extends React.Component {
                     track.right = this.state.tracksList[i-1].right;
                     track.width = this.state.tracksList[i-1].width;
                     track.height = this.state.tracksList[i-1].height;
+                    
+                    // store the track above this one as it's parent so that we can
+                    // get visible vaues from it for proper scaling
+                    track.parentTrack = this.state.tracksList[i-1];
                 }
             }
 
@@ -376,6 +381,7 @@ export class MultiTrackContainer extends React.Component {
         this.wigglePixiLine = WigglePixiLine()
         this.wigglePixiPoint = WigglePixiPoint()
         this.topRatioPoint = TopRatioPoint()
+        this.topCNVInterval = TopCNVInterval()
         this.wigglePixiHeatmap = WigglePixiHeatmap()
         this.leftWigglePixiTrack = LeftWigglePixiTrack()
         this.heatmapRectangleTrack = HeatmapRectangleTrack()
@@ -499,6 +505,14 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch);
 
         this.topRatioPoint
+            .xScale(this.xOrigScale.copy())
+            .width(this.width)
+            .height(this.height)
+            .pixiStage(this.stage)
+            .resizeDispatch(this.resizeDispatch)
+            .zoomDispatch(this.zoomDispatch);
+
+        this.topCNVInterval
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -738,6 +752,12 @@ export class MultiTrackContainer extends React.Component {
                 {
                     'position': 'top',
                     'layout': this.topRatioPoint,
+                    'dimension': 'one-d-horizontal'
+                },
+            'top-cnv-interval': 
+                {
+                    'position': 'top',
+                    'layout': this.topCNVInterval,
                     'dimension': 'one-d-horizontal'
                 },
             'top-heatmap': 

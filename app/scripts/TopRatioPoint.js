@@ -144,8 +144,16 @@ export function TopRatioPoint() {
                 let minVisibleValue = Math.min(...allTiles.map((x) => x.valueRange[0]));
                 let maxVisibleValue = Math.max(...allTiles.map((x) => x.valueRange[1]));
                 */
-                let minVisibleValue = Math.min.apply(Math, mins);
-                let maxVisibleValue = Math.max.apply(Math, maxs);
+                if (d.parentTrack) {
+                    d.minVisibleValue = d.parentTrack.minVisibleValue;
+                    d.maxVisibleValue = d.parentTrack.maxVisibleValue;
+                } else {
+                    d.minVisibleValue = Math.min.apply(Math, mins);
+                    d.maxVisibleValue = Math.max.apply(Math, maxs);
+                }
+
+                let minVisibleValue = d.minVisibleValue;
+                let maxVisibleValue = d.maxVisibleValue;
 
                 zoomLevel = allTiles[0].tilePos[0];
                 let tileWidth = (allTiles[0].xRange[1] - allTiles[0].xRange[0]) / Math.pow(2, zoomLevel);
@@ -225,7 +233,6 @@ export function TopRatioPoint() {
 
                     for (let i = 0; i < tileData.length; i++) {
                         if (isNaN(tileData[i])) {
-                            console.log('NaN');
                             continue;
                         }
 
