@@ -1,7 +1,10 @@
 import '../styles/HiGlassApp.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import slugid from 'slugid';
 import {MultiViewContainer} from './MultiViewContainer.jsx';
+import {MultiTrackContainer} from './MultiTrackContainer.jsx';
+import {MultiTrackEditContainer} from './MultiTrackContainer.jsx';
 import {HiGlassInput} from './HiGlassInput.jsx';
 import {Button, Panel, FormGroup, ControlLabel, FormControl, SafeAnchor} from 'react-bootstrap';
 
@@ -14,15 +17,20 @@ export class HiGlassApp extends React.Component {
     this.state = {
         //viewConfig : []
 
-        viewConfig : JSON.parse(this.props.viewConfigString),
+        viewConfig : { 
+            object: JSON.parse(this.props.viewConfigString),
+            text: JSON.stringify(JSON.parse(this.props.viewConfigString))
+        },
         inputOpen: false
     }
 
-    this.updateLinkedViews(this.state.viewConfig);
+    console.log('this.state:', this.state);
+    this.updateLinkedViews(this.state.viewConfig.object);
 
     }
 
     updateLinkedViews(viewConfig) {
+        console.log('updating linked views:', viewConfig);
         for (let i = 0; i < viewConfig.views.length; i++) {
             if (typeof viewConfig.views[i].zoomLock ==  'undefined')
                 viewConfig.views[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
@@ -45,11 +53,24 @@ export class HiGlassApp extends React.Component {
 
         this.setState(
          {
-             viewConfig : viewConfig
+             viewConfig : { 
+                 object: viewConfig,
+                 text: JSON.stringify(viewConfig)
+             }
          });
 
     };
         
+    handleOpen() {
+        console.log('handling open...');
+        this.setState({
+            'inputOpen': !this.state.inputOpen
+        });
+    }
+
+    handleViewEdit(newViewConfig) {
+
+    }
 
     render() {
         /*
@@ -60,6 +81,12 @@ export class HiGlassApp extends React.Component {
 
         let toolbarStyle = {"position": "relative",
                        "top": "-1px"};
+                    /*
+                    <MultiViewEditContainer viewConfig={this.state.viewConfig}
+                    handleEdit={this.handleViewEdit.bind(this)}
+                    visible={this.state.inputOpen}
+                        />
+                        */
 
         return (
                 <div style={divStyle}>
@@ -68,12 +95,24 @@ export class HiGlassApp extends React.Component {
                     ref='displayPanel'
                     className="higlass-display"
                     >
-                    <MultiViewContainer viewConfig={this.state.viewConfig.views}
-                    />
+                    <MultiViewContainer viewConfig={this.state.viewConfig} >
+                    { 
+                        this.state.viewConfig.object.views.map(function(view, i) 
+                                                             {
+                                                                 return (<MultiTrackContainer
+                                                                         viewConfig ={view}
+                                                                         key={slugid.nice()}
+                                                                         />)
+                                                             })
+                    }
+                    </MultiViewContainer>
+
                 </Panel>
-                { (() => { if (this.state.viewConfig.editable) {
+                { (() => { if (this.state.viewConfig.object.editable) {
                 return <HiGlassInput currentConfig={this.defaultViewString} 
                         onNewConfig={this.handleNewConfig.bind(this)} 
+                        inputOpen={this.state.inputOpen}
+                        handleOpen={this.handleOpen.bind(this)}
                         />
                                                       }})() }
                 </div>

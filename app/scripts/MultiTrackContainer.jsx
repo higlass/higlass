@@ -15,9 +15,11 @@ import {TopDiagonalHeatmapRectangleTrack} from './TopDiagonalHeatmapTrack.js'
 import {AddTrackDiv} from './AddTrackDiv.js'
 import {TopGeneLabelsTrack} from './TopGeneLabelsTrack.js'
 import {LeftGeneLabelsTrack} from './LeftGeneLabelsTrack.js'
+import {ChromosomeGrid} from './ChromosomeGrid.js';
 import {TopChromosomeAxis} from './TopChromosomeAxis.js'
 import {LeftChromosomeAxis} from './LeftChromosomeAxis.js'
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx'
+import {TopRatioPoint} from './TopRatioPoint.js';
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
@@ -45,7 +47,8 @@ export class MultiTrackContainer extends React.Component {
                 this.trackDescriptions[tracks[i].type].position == 'center')
                 this.twoD = true
 
-            if (this.trackDescriptions[tracks[i].type].position == 'center')
+            if (this.trackDescriptions[tracks[i].type].position == 'center' && 
+                this.trackDescriptions[tracks[i].type].overlay == false)
                 if (!('height' in tracks[i]))
                     this.heightSpecified = false;
 
@@ -178,6 +181,8 @@ export class MultiTrackContainer extends React.Component {
         if (typeof this.topChromosomeAxis != 'undefined') {
             this.topChromosomeAxis.xScale(this.xOrigScale.copy());
             this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
+            this.chromosomeGrid.xScale(this.xOrigScale.copy());
+            this.chromosomeGrid.yScale(this.yOrigScale.copy());
             this.leftGeneLabels.yScale(this.yOrigScale.copy());
             this.topGeneLabels.xScale(this.xOrigScale.copy());
             this.horizontalTiledArea.xScale(this.xOrigScale.copy());
@@ -236,6 +241,9 @@ export class MultiTrackContainer extends React.Component {
             let trackId = this.state.tracksList[i].uid;
             let track = this.state.tracks[trackId];
 
+            if (track.overlay)
+                continue;       //overlay tracks don't have their dimensions counted
+
             if (this.trackDescriptions[track.type].position == 'top')
                 this.topMargin += track.height;
             if (this.trackDescriptions[track.type].position == 'left')
@@ -254,6 +262,18 @@ export class MultiTrackContainer extends React.Component {
             let track = this.state.tracks[trackId];
             track.leftMargin = this.leftMargin;
             track.topMargin = this.topMargin;
+
+            if (track.overlay) {
+                if (i == 0) {
+                    console.log("The first track can't be an overlay track");
+                    continue;
+                } else {
+                    track.left = this.state.tracksList[i-1].left;
+                    track.right = this.state.tracksList[i-1].right;
+                    track.width = this.state.tracksList[i-1].width;
+                    track.height = this.state.tracksList[i-1].height;
+                }
+            }
 
             if (this.trackDescriptions[track.type].position == 'top') {
                 track.left = this.leftMargin;
@@ -346,7 +366,8 @@ export class MultiTrackContainer extends React.Component {
 
     initLayouts() {
         this.topChromosomeAxis = TopChromosomeAxis();
-        this.leftChromosomeAxis = LeftChromosomeAxis()
+        this.leftChromosomeAxis = LeftChromosomeAxis();
+        this.chromosomeGrid = ChromosomeGrid();
         this.horizontalDiagonalTiledArea = GenericTiledArea()
         this.horizontalTiledArea = GenericTiledArea()
         this.verticalTiledArea = GenericTiledArea()
@@ -354,6 +375,7 @@ export class MultiTrackContainer extends React.Component {
         this.wigglePixiTrack = WigglePixiTrack()
         this.wigglePixiLine = WigglePixiLine()
         this.wigglePixiPoint = WigglePixiPoint()
+        this.topRatioPoint = TopRatioPoint()
         this.wigglePixiHeatmap = WigglePixiHeatmap()
         this.leftWigglePixiTrack = LeftWigglePixiTrack()
         this.heatmapRectangleTrack = HeatmapRectangleTrack()
@@ -400,6 +422,14 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch)
 
         this.leftChromosomeAxis
+            .yScale(this.yOrigScale.copy())
+            .width(this.width)
+            .height(this.height)
+            .resizeDispatch(this.resizeDispatch)
+            .zoomDispatch(this.zoomDispatch)
+
+        this.chromosomeGrid
+            .xScale(this.xOrigScale.copy())
             .yScale(this.yOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -461,6 +491,14 @@ export class MultiTrackContainer extends React.Component {
             .zoomDispatch(this.zoomDispatch);
 
         this.wigglePixiPoint
+            .xScale(this.xOrigScale.copy())
+            .width(this.width)
+            .height(this.height)
+            .pixiStage(this.stage)
+            .resizeDispatch(this.resizeDispatch)
+            .zoomDispatch(this.zoomDispatch);
+
+        this.topRatioPoint
             .xScale(this.xOrigScale.copy())
             .width(this.width)
             .height(this.height)
@@ -635,6 +673,15 @@ export class MultiTrackContainer extends React.Component {
                 tracksPerDimensions[trackDimensions] = [];
 
             tracksPerDimensions[trackDimensions].push(this.state.tracks[trackId]);
+            console.log('track-dimensions', trackDimensions);
+
+            /*
+            for (let i = 0; i < this.state.tracks[trackId].overlays.length; i++) {
+                console.log('adding overlay:', trackDimensions);
+                // add overlays, they should have the same dimensions
+                tracksPerDimensions[trackDimensions].push(this.state.tracks[trackId].overlays[i]);
+            }
+            */
         }
 
         for (let trackDimensions in tracksPerDimensions) {
@@ -651,6 +698,7 @@ export class MultiTrackContainer extends React.Component {
                 
             d3.select(this.bigDiv).selectAll('.' + trackDimensions)
               .data(tracksPerDimensions[trackDimensions])
+              .each(function(d) { console.log('calling... ', d); })
               .call(this.trackDimensionsHandlers[trackDimensions])
         }
 
@@ -689,7 +737,7 @@ export class MultiTrackContainer extends React.Component {
             'top-ratio-point': 
                 {
                     'position': 'top',
-                    'layout': null,
+                    'layout': this.topRatioPoint,
                     'dimension': 'one-d-horizontal'
                 },
             'top-heatmap': 
@@ -752,12 +800,19 @@ export class MultiTrackContainer extends React.Component {
                     'position': 'center',
                     'layout': this.heatmapRectangleTrack,
                     'dimension': 'two-d'
-                } 
+                },
+            'chromosome-grid':
+                {
+                    'position': 'center',
+                    'layout': this.chromsomeGrid,
+                    'dimension': 'chromosome-grid'
+                }
             };
 
         this.trackDimensionsHandlers = {
             'horizontal-axis': this.topChromosomeAxis,
             'vertical-axis': this.leftChromosomeAxis,
+            'chromosome-grid': this.chromosomeGrid,
             'one-d-horizontal-diagonal': this.horizontalDiagonalTiledArea,
             'one-d-horizontal': this.horizontalTiledArea,
             'one-d-vertical': this.verticalTiledArea,
@@ -794,8 +849,8 @@ export class MultiTrackContainer extends React.Component {
     trackOpacity(track) {
         if (track.type == 'top-chromosome-axis' || track.type == 'left-chromosome-axis')
             return 1.;
-        else
-            return 0.1;
+        else if (track.type == 'chromosome-grid') return 0.5
+        else return 0.1;
     }
 
     zoomTo(scale, range) {
@@ -892,8 +947,12 @@ export class MultiTrackContainer extends React.Component {
                             return (
                                 <div 
                                                  className={'track ' + this.trackDimension(track)}
-                                                 style={{left: track.left, top: track.top, position: 'absolute'}}
-                                                 key={track.uid}
+                                                 style={{left: track.left, 
+                                                         top: track.top, 
+                                                         width: track.width,
+                                                         height: track.height,
+                                                         position: 'absolute'}}
+                                                        key={track.uid}
                                                  />
                                 
                                                  /*
