@@ -735,7 +735,9 @@ let developmentDemo = JSON.parse(`
                 }
                 ],
                 "zoomLock" : 0,
-                "searchBox": true
+                "searchBox": {
+                    "autocompleteSource": "//52.45.229.11:9872/hg19/autocomplete"
+                }
             }
             ],
             "editable": true

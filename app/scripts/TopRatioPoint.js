@@ -225,7 +225,6 @@ export function TopRatioPoint() {
 
                     for (let i = 0; i < tileData.length; i++) {
                         if (isNaN(tileData[i])) {
-                            console.log('NaN');
                             continue;
                         }
 

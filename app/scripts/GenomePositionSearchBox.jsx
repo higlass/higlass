@@ -1,7 +1,9 @@
 import d3 from 'd3';
+import {queue} from 'd3-queue';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
+import Autocomplete from 'react-autocomplete';
 import {FormGroup,FormControl,InputGroup,Glyphicon,Button} from 'react-bootstrap';
 import {ChromosomeInfo} from './ChromosomeInfo.js';
 import {SearchField} from './search_field.js';
@@ -31,6 +33,30 @@ export class GenomePositionSearchBox extends React.Component {
             this.setPositionText();
         });
 
+        this.state = {
+            value: "chr4:190,998,876-191,000,255",
+            loading: false,
+            genes: []
+        };
+
+        this.styles = {
+                  item: {
+                    padding: '2px 6px',
+                    cursor: 'default',
+                    "zIndex": 1000
+                  },
+
+                  highlightedItem: {
+                    color: 'white',
+                    background: 'hsl(200, 50%, 50%)',
+                    padding: '2px 6px',
+                    cursor: 'default'
+                  },
+
+                  menu: {
+                    border: 'solid 1px #ccc'
+                  }
+                }
     }
 
     absoluteToChr(absPosition) {
@@ -88,11 +114,94 @@ export class GenomePositionSearchBox extends React.Component {
                 positionString += " and " +  y1[0] + ':' + format(Math.floor(y1[1])) + '-' + format(Math.ceil(y2[1]));
         }
 
-        ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
+        //ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
+        this.setState({"value": positionString});
+    }
+
+    replaceGenesWithLoadedPositions(genePositions) {
+        // iterate over all non-position oriented words and try
+        // to replace them with the positions loaded from the suggestions
+        // database
+        let spaceParts = this.state.value.split(' ');
+
+        for (let i = 0; i < spaceParts.length; i++) {
+            let dashParts = spaceParts[i].split('-');
+
+            for (let j = 0; j < dashParts.length; j++) {
+                // if we're in this function, this gene name must have been loaded
+                let genePosition = genePositions[dashParts[j].toLowerCase()];
+
+                if (!genePosition) {
+                    //console.log("Error: gene position undefined...", dashParts[j].toLowerCase()); 
+                    continue;
+                }
+
+                if (dashParts.length == 1) {
+                    // no range, just a position
+                    console.log('genePosition:', genePosition);
+                    dashParts[j] = genePosition.chr + ":" + genePosition.txStart + '-' + genePosition.txEnd;
+                } else {
+                    if (j == 0) {
+                        // first part of a range
+
+                        dashParts[j] = genePosition.chr + ":" + genePosition.txStart;
+                    } else {
+                        // last part of a range
+
+                        dashParts[j] = genePosition.chr + ":" + genePosition.txEnd;
+                    }
+                } 
+
+                spaceParts[i] = dashParts.join('-');
+            }
+        }
+
+        let newValue = spaceParts.join(' ');
+        this.setState({value: newValue});
+    }
+
+    replaceGenesWithPositions(genePositions) {
+        // replace any gene names in the input with their corresponding positions
+        let value_parts = this.state.value.split(/[ -]/);
+        let q = queue();
+
+        for (let i = 0; i < value_parts.length; i++) {
+            let [chr, pos, retPos] = this.searchField.parsePosition(value_parts[i]);
+
+            console.log('value_parts:', value_parts[i], 'chr:', chr, 'pos:', pos, 'retPos:', retPos);
+
+            if (retPos == null) {
+                // not a chromsome position, let's see if it's a gene name
+               let url = this.props.autocompleteSource + "/ac_" + value_parts[i].toLowerCase(); 
+               console.log('deferring:', url);
+               q = q.defer(d3.json, url);
+                  
+            }
+        }
+
+        q.awaitAll((error, files) => {
+            console.log('error:', error);
+            console.log('files:', files);
+
+            let genePositions = {};
+
+            // extract the position of the top match from the list of files
+            for (let i = 0; i < files.length; i++) {
+                genePositions[files[i]._source.suggestions[0].geneName.toLowerCase()] =
+                    files[i]._source.suggestions[0];
+            }
+
+            this.replaceGenesWithLoadedPositions(genePositions);
+        });
+        //console.log('value_parts:', value_parts);
     }
 
     buttonClick() {
-        let searchFieldValue = ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
+        this.replaceGenesWithPositions();
+        return;
+
+        let searchFieldValue = this.state.value; //ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
+        console.log('searchFieldValue:', searchFieldValue);
 
         if (this.searchField != null) {
             let [range1, range2] = this.searchField.searchPosition(searchFieldValue);
@@ -108,17 +217,75 @@ export class GenomePositionSearchBox extends React.Component {
         }
     }
 
+    pathJoin(parts, sep){
+        var separator = sep || '/';
+        var replace   = new RegExp(separator+'{1,}', 'g');
+        return parts.join(separator).replace(replace, separator);
+    }
+
+
+    onAutocompleteChange(event, value) {
+        console.log('autocomplete change value:', value);
+        this.setState({ value, loading: true });
+
+        let parts = value.split(' ');
+        console.log('parts', parts);
+
+        console.log('this.props.autocompleteSource', this.props.autocompleteSource);
+        // no autocomplete repository is provided, so we don't try to autcomplete anything
+        if (!this.props.autocompleteSource)
+            return;
+
+        this.setState({loading: true});
+        // send out a request for the autcomplete suggestions
+        let url = this.props.autocompleteSource + "/ac_" + parts[parts.length-1];
+        d3.json(url, (error, data) => {
+            if (error) {
+                this.setState({loading: false, genes: []});
+                return;
+            }
+
+            // we've received a list of autocomplete suggestions
+            this.setState({loading: false, genes: data._source.suggestions }); 
+        });
+    }
+
+    geneSelected(value, objct) {
+        console.log('value:', value, 'object', objct);
+
+        let parts = this.state.value.split(' ')
+        let valid_parts = parts.slice(0, parts.length-1);
+
+        this.setState({value: valid_parts.concat(objct.geneName).join(" ")});
+        console.log('valid_parts');
+    }
+
     render() {
         return(
                 <FormGroup bsSize='small'>
                 <InputGroup>
-                <FormControl type="text" onKeyPress={this.searchFieldKeyPress.bind(this)} ref="searchFieldText"
-                //defaultValue="chr2:100000000 to chr2:200000000" 
-                defaultValue="chr4:190,998,876-191,000,255" 
-                />
+                    <div style={{"zIndex": 999, "position": "relative"}}>
+                    <Autocomplete
+                        value={this.state.value}
+                        items={this.state.genes}
+                        onChange = {this.onAutocompleteChange.bind(this)}
+                         onSelect={(value, objct) => this.geneSelected(value, objct) }
+                        getItemValue={(item) => item.geneName}
+                        inputProps={{"className": "form-control"}}
+                        wrapperStyle={{width: "100%"}}
+                        renderItem={(item, isHighlighted) => (
+                            <div
+                              style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
+                              key={item.refseqid}
+                              id={item.refseqid}
+                            >{item.geneName}</div>
+                          )}
+                    />
+                    </div>
+
                 <InputGroup.Button>
-                    <Button bsSize='small' onClick={this.buttonClick.bind(this)}>
-                    <Glyphicon glyph='search'></Glyphicon>
+                    <Button bsSize="small" onClick={this.buttonClick.bind(this)}>
+                    <Glyphicon glyph="search"></Glyphicon>
                     </Button>
                 </InputGroup.Button>
                 </InputGroup>
@@ -126,3 +293,5 @@ export class GenomePositionSearchBox extends React.Component {
             );
     }
 }
+                /*
+                */

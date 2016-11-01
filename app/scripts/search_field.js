@@ -31,10 +31,12 @@ export class SearchField {
         if (chr in this.chromInfo.chrPositions) {
             retPos = this.chromInfo.chrPositions[chr].pos + pos;
         } else {
-            console.log("Search error: No chromInfo specified");
+            console.log("Search error: No chromInfo specified or chromosome (" + 
+                    chr + ") not in chromInfo");
             retPos = null;
         }
 
+        // retPos is the genome position of this pair
         return [chr, pos, retPos];
     }
 
