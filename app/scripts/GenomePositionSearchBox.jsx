@@ -160,7 +160,7 @@ export class GenomePositionSearchBox extends React.Component {
         this.setState({value: newValue});
     }
 
-    replaceGenesWithPositions(genePositions) {
+    replaceGenesWithPositions(finished) {
         // replace any gene names in the input with their corresponding positions
         let value_parts = this.state.value.split(/[ -]/);
         let q = queue();
@@ -173,16 +173,12 @@ export class GenomePositionSearchBox extends React.Component {
             if (retPos == null) {
                 // not a chromsome position, let's see if it's a gene name
                let url = this.props.autocompleteSource + "/ac_" + value_parts[i].toLowerCase(); 
-               console.log('deferring:', url);
                q = q.defer(d3.json, url);
                   
             }
         }
 
         q.awaitAll((error, files) => {
-            console.log('error:', error);
-            console.log('files:', files);
-
             let genePositions = {};
 
             // extract the position of the top match from the list of files
@@ -192,22 +188,23 @@ export class GenomePositionSearchBox extends React.Component {
             }
 
             this.replaceGenesWithLoadedPositions(genePositions);
+
+            finished();
         });
         //console.log('value_parts:', value_parts);
     }
 
     buttonClick() {
-        this.replaceGenesWithPositions();
-        return;
+        this.replaceGenesWithPositions(function() {
+            let searchFieldValue = this.state.value; //ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
+            console.log('searchFieldValue:', searchFieldValue);
 
-        let searchFieldValue = this.state.value; //ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
-        console.log('searchFieldValue:', searchFieldValue);
+            if (this.searchField != null) {
+                let [range1, range2] = this.searchField.searchPosition(searchFieldValue);
 
-        if (this.searchField != null) {
-            let [range1, range2] = this.searchField.searchPosition(searchFieldValue);
-
-            this.props.zoomToGenomePositionHandler(range1, range2);
-        }
+                this.props.zoomToGenomePositionHandler(range1, range2);
+            }
+        }.bind(this));
     }
 
     searchFieldKeyPress(target) {
