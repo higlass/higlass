@@ -115,10 +115,11 @@ export function TopCNVInterval() {
                         lruCache.put(tile.tileId, loadedTileData);
                     }
 
-                    mins.push(+loadedTileData.log2copyRatio);
-                    maxs.push(+loadedTileData.log2copyRatio);
+                    for (let i = 0; i < loadedTileData.length; i++) {
+                        mins.push(+loadedTileData[i].log2_copyRatio);
+                        maxs.push(+loadedTileData[i].log2_copyRatio);
+                    }
                 }
-
 
                 /*
                 let minVisibleValue = Math.min(...allTiles.map((x) => x.valueRange[0]));

@@ -38,7 +38,6 @@ export function load1DRatioTileData(tile_value, tile_type) {
     else if (tile_type == 'sparse') {
         let resolution = 256;
         let values = [];
-        console.log('tile_value:', tile_value);
 
         for (let i = 0; i < resolution; i++)
             values.push([0,0]);

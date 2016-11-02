@@ -741,7 +741,7 @@ let developmentDemo = JSON.parse(`
                 {
                     "source": "//52.45.229.11:9872/hg19/UMB5144__B1000_l03.BICseq.out",
                     "type": "top-cnv-interval",
-                    "overlay": true
+                    "height": 50
                 }
                 ],
                 "zoomLock" : 0,
