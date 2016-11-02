@@ -69,8 +69,6 @@ export function load1DRatioTileData(tile_value, tile_type) {
 
     for (let i = 0; i < toReturn.length; i++) {
         let ratio = toReturn[i][0] / toReturn[i][1];
-        if (ratio > 2)
-            console.log('toReturn:', toReturn[i][0], toReturn[i][1], ratio);
         ratios.push(ratio);
 
         // keep track of the non-NA ratios so that we can get their min and max

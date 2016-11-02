@@ -4,7 +4,7 @@ import d3 from 'd3';
 import {load1DRatioTileData} from './TileData.js';
 import {LRUCache} from './lru.js';
 
-export function TopRatioPoint() {
+export function TopCNVInterval() {
     let width = 200;//200
     let height = 15;//15
     let resizeDispatch = null;
@@ -24,27 +24,6 @@ export function TopRatioPoint() {
     function tileId(tile) {
         // uniquely identify the tile with a string
         return tile.join(".") + '.' + tile.mirrored;
-    }
-
-    function loadTileData(tile_value) {
-        if ('dense' in tile_value)
-            return tile_value['dense'];
-        else if ('sparse' in tile_value) {
-            let values = Array.apply(null, 
-                    Array(resolution)).map(Number.prototype.valueOf,0);
-            for (let i = 0; i < tile_value.sparse.length; i++) {
-                if ('pos' in tile_value.sparse[i])
-                    values[ tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;
-                else
-                    values[ tile_value.sparse[i][0]] = tile_value.sparse[i][1];
-
-            }
-            return values;
-
-        } else {
-            return [];
-        }
-
     }
 
     let chart = function(selection) {
@@ -131,12 +110,13 @@ export function TopRatioPoint() {
                     let loadedTileData = lruCache.get(tile.tileId);
 
                     if (!loadedTileData) {
-                        loadedTileData = load1DRatioTileData(tile.data, tile.type);
+                        loadedTileData = tile.data
+                        console.log('loadedTileData:', loadedTileData);
                         lruCache.put(tile.tileId, loadedTileData);
                     }
 
-                    mins.push(loadedTileData.min);
-                    maxs.push(loadedTileData.max);
+                    mins.push(+loadedTileData.log2copyRatio);
+                    maxs.push(+loadedTileData.log2copyRatio);
                 }
 
 
@@ -170,54 +150,58 @@ export function TopRatioPoint() {
                     zoomChanged(d.translate, d.scale);
                 }
 
-                d.pAxis.removeChild(d.maxTextBg);
-                d.pAxis.removeChild(d.minTextBg);
+                if (!d.parentTrack) {
+                    d.pAxis.removeChild(d.maxTextBg);
+                    d.pAxis.removeChild(d.minTextBg);
 
-                d.maxTextBg = new PIXI.Graphics();
-                d.minTextBg = new PIXI.Graphics();
+                    d.maxTextBg = new PIXI.Graphics();
+                    d.minTextBg = new PIXI.Graphics();
 
-                d.pAxis.addChild(d.maxTextBg);
-                d.pAxis.addChild(d.minTextBg);
+                    d.pAxis.addChild(d.maxTextBg);
+                    d.pAxis.addChild(d.minTextBg);
 
-                d.maxTextBg.beginFill(0xFFFFFF,1);
-                d.minTextBg.beginFill(0xFFFFFF,1);
-                //d.maxTextBg.drawRect(0, 0, 30, 9);
-                
+                    d.maxTextBg.beginFill(0xFFFFFF,1);
+                    d.minTextBg.beginFill(0xFFFFFF,1);
+                    //d.maxTextBg.drawRect(0, 0, 30, 9);
+                    
 
-                d.pAxis.removeChild(d.maxText);
-                d.pAxis.removeChild(d.minText);
+                    d.pAxis.removeChild(d.maxText);
+                    d.pAxis.removeChild(d.minText);
 
-                let format = d3.format(".2s")
+                    let format = d3.format(".2s")
 
-                d.maxText = new PIXI.Text(format(maxVisibleValue), {font: '9px Arial', fill: "black"});
+                    d.maxText = new PIXI.Text(format(maxVisibleValue), {font: '9px Arial', fill: "black"});
 
-                d.maxText.anchor.x = 0;
-                d.maxText.anchor.y = 0;
+                    d.maxText.anchor.x = 0;
+                    d.maxText.anchor.y = 0;
 
-                d.maxText.position.x = d.left + 0;
-                d.maxText.position.y = 0 + d.top;
+                    d.maxText.position.x = d.left + 0;
+                    d.maxText.position.y = 0 + d.top;
 
-                d.pAxis.addChild(d.maxText);
-                let bounds = d.maxText.getBounds();
-                d.maxTextBg.drawRect(d.left + bounds.x, d.top + bounds.y, bounds.width, bounds.height);
+                    d.pAxis.addChild(d.maxText);
 
-                d.minText = new PIXI.Text(format(minVisibleValue), {font: '9px Arial', fill: "black"});
+                    // only show axis labels if this track isn't drawn as an overlay
+                    let bounds = d.maxText.getBounds();
+                    d.maxTextBg.drawRect(d.left + bounds.x, d.top + bounds.y, bounds.width, bounds.height);
+                    d.minText = new PIXI.Text(format(minVisibleValue), {font: '9px Arial', fill: "black"});
 
-                d.minText.anchor.x = 0;
-                d.minText.anchor.y = 1;
+                    d.minText.anchor.x = 0;
+                    d.minText.anchor.y = 1;
 
-                d.minText.position.x = d.left + 0;
-                d.minText.position.y = d.height + d.top;
+                    d.minText.position.x = d.left + 0;
+                    d.minText.position.y = d.height + d.top;
 
-                d.pAxis.addChild(d.minText);
+                    d.pAxis.addChild(d.minText);
 
-                bounds = d.minText.getBounds();
-                d.minTextBg.drawRect(d.left + bounds.x, bounds.y + d.height + d.top, bounds.width, bounds.height);
+                    bounds = d.minText.getBounds();
+                    d.minTextBg.drawRect(d.left + bounds.x, bounds.y + d.height + d.top, bounds.width, bounds.height);
+                }
                 
 
                 drawTile = function(graphics, tile) {
                     let loadedTileData = lruCache.get(tile.tileId); 
-                    let tileData = loadedTileData.data
+                    let tileData = loadedTileData
+                    console.log('tileData:', tileData);
                     graphics.clear();
 
                     let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
@@ -231,20 +215,7 @@ export function TopRatioPoint() {
                    // graphics.beginFill(0xFF700B, 1);
                     let j = 0;
 
-                    for (let i = 0; i < tileData.length; i++) {
-                        if (isNaN(tileData[i])) {
-                            continue;
-                        }
-
-                        let xPos = zoomedXScale(tileXScale(i));
-                        //let yPos = -(d.height - yScale(tileData[i]));
-                        let yPos = -1; //-(d.height - yScale(tileData[i]));
-                        let height = yScale(tileData[i])
-                        let width = zoomedXScale(tileXScale(i+1)) - zoomedXScale(tileXScale(i));
-
-                        //console.log('drawingRect:', zoomedXScale(tileXScale(i+1)), d.height - d.height*yScale(tileData[i+1]));
-                        graphics.drawRect(zoomedXScale(tileXScale(i)), d.height - d.height*yScale(tileData[i]) , 1, 1);
-                    }
+                    console.log('tileData:', tileData);
                 }
 
                 let shownTiles = {};

@@ -177,7 +177,7 @@ export function GenericTiledArea() {
                 currentTiles.forEach((tile) => {
                     if (!isTileLoaded(tile) && !isTileLoading(tile)) {
                         // if the tile isn't loaded, load it
-                        let tileSubPath = tile.join('.');
+                        let tileSubPath = tile.join('.');    //tile = [1,1] e.g. 1.1 or tile=[3,4,16] -> 3.4.16
                         let tilePath = tileDirectory + "/" + tileSubPath;
                         loadingTiles[tileId(tile)] = true;
                         d3.json(tilePath, function(error, data) {

@@ -737,6 +737,11 @@ let developmentDemo = JSON.parse(`
                     "source": "//52.23.165.123:9872/hg19/hg19.UMB5144.all_bins.sorted.genome.gz",
                     "type": "top-ratio-point",
                     "height": 50
+                },
+                {
+                    "source": "//52.45.229.11:9872/hg19/UMB5144__B1000_l03.BICseq.out",
+                    "type": "top-cnv-interval",
+                    "overlay": true
                 }
                 ],
                 "zoomLock" : 0,
