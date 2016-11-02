@@ -208,10 +208,13 @@ export class GenomePositionSearchBox extends React.Component {
     }
 
     searchFieldKeyPress(target) {
+        console.log('keypressed:', target.charCode);
         // if the user hits enter, act as if they clicked the button
+        /*
         if (target.charCode == 13) {
             this.buttonClick();
         }
+        */
     }
 
     pathJoin(parts, sep){
@@ -225,7 +228,7 @@ export class GenomePositionSearchBox extends React.Component {
         console.log('autocomplete change value:', value);
         this.setState({ value, loading: true });
 
-        let parts = value.split(' ');
+        let parts = value.split(/[ -]/);
         console.log('parts', parts);
 
         console.log('this.props.autocompleteSource', this.props.autocompleteSource);
@@ -235,7 +238,7 @@ export class GenomePositionSearchBox extends React.Component {
 
         this.setState({loading: true});
         // send out a request for the autcomplete suggestions
-        let url = this.props.autocompleteSource + "/ac_" + parts[parts.length-1];
+        let url = this.props.autocompleteSource + "/ac_" + parts[parts.length-1].toLowerCase();
         d3.json(url, (error, data) => {
             if (error) {
                 this.setState({loading: false, genes: []});
@@ -250,11 +253,16 @@ export class GenomePositionSearchBox extends React.Component {
     geneSelected(value, objct) {
         console.log('value:', value, 'object', objct);
 
-        let parts = this.state.value.split(' ')
-        let valid_parts = parts.slice(0, parts.length-1);
+        let parts = this.state.value.split(' ');
+        let dash_parts = parts[parts.length-1].split('-');
 
-        this.setState({value: valid_parts.concat(objct.geneName).join(" ")});
-        console.log('valid_parts');
+        let new_dash_parts = dash_parts.slice(0, dash_parts.length-1);
+        new_dash_parts = new_dash_parts.concat(objct.geneName).join('-');
+
+        let new_parts = parts.splice(0, parts.length-1);
+        new_parts = new_parts.concat(new_dash_parts).join(' ');
+
+        this.setState({value: new_parts});
     }
 
     render() {
@@ -266,7 +274,8 @@ export class GenomePositionSearchBox extends React.Component {
                         value={this.state.value}
                         items={this.state.genes}
                         onChange = {this.onAutocompleteChange.bind(this)}
-                         onSelect={(value, objct) => this.geneSelected(value, objct) }
+                        onSelect={(value, objct) => this.geneSelected(value, objct) }
+                        onKeyDown={ this.searchFieldKeyPress.bind(this) }
                         getItemValue={(item) => item.geneName}
                         inputProps={{"className": "form-control"}}
                         wrapperStyle={{width: "100%"}}

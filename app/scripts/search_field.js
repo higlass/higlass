@@ -88,6 +88,9 @@ export class SearchField {
             range = [pos1 - 8000000, pos1 + 8000000];
         }
 
+        if (range[0] > range[1])
+            return [range[1], range[0]];
+
         return range;
     }
 
