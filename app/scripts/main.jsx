@@ -721,6 +721,11 @@ let developmentDemo = JSON.parse(`
                     "type": "top-gene-labels",
                     "height": 25
                 },
+                {
+                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-minus",
+                    "type": "top-gene-labels",
+                    "height": 25
+                },
 
                 {
                     "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",
@@ -735,7 +740,9 @@ let developmentDemo = JSON.parse(`
                 }
                 ],
                 "zoomLock" : 0,
-                "searchBox": true
+                "searchBox": {
+                    "autocompleteSource": "//52.45.229.11:9872/hg19/autocomplete"
+                }
             }
             ],
             "editable": true

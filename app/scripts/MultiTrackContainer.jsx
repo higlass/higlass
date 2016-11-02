@@ -937,6 +937,7 @@ export class MultiTrackContainer extends React.Component {
                     xDomain={this.state.xDomain}
                     yDomain={this.state.yDomain}
                     twoD={this.twoD}
+                    autocompleteSource={this.props.viewConfig.searchBox.autocompleteSource}
                     />
                     }})() }
             </div>

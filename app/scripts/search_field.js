@@ -31,10 +31,12 @@ export class SearchField {
         if (chr in this.chromInfo.chrPositions) {
             retPos = this.chromInfo.chrPositions[chr].pos + pos;
         } else {
-            console.log("Search error: No chromInfo specified");
+            console.log("Search error: No chromInfo specified or chromosome (" + 
+                    chr + ") not in chromInfo");
             retPos = null;
         }
 
+        // retPos is the genome position of this pair
         return [chr, pos, retPos];
     }
 
@@ -86,6 +88,9 @@ export class SearchField {
             range = [pos1 - 8000000, pos1 + 8000000];
         }
 
+        if (range[0] > range[1])
+            return [range[1], range[0]];
+
         return range;
     }
 
@@ -99,11 +104,11 @@ export class SearchField {
             // although it's possible that the first axis will be empty
             // i.e. someone enters " and p53"
             // in that case, we only move the second axis and keep the first where it is
-            range1 = this.getSearchRange(parts[0]);
-            range2 = this.getSearchRange(parts[1]);
+            range1 = this.getSearchRange(parts[0].split(' ')[0]);
+            range2 = this.getSearchRange(parts[1].split(' ')[0]);
         } else {
             // we just need to position the first axis
-            range1 = this.getSearchRange(parts[0]);
+            range1 = this.getSearchRange(parts[0].split(' ')[0]);
         }
 
         if (range1 != null && range2 != null) {
