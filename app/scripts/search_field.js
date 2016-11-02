@@ -104,11 +104,11 @@ export class SearchField {
             // although it's possible that the first axis will be empty
             // i.e. someone enters " and p53"
             // in that case, we only move the second axis and keep the first where it is
-            range1 = this.getSearchRange(parts[0]);
-            range2 = this.getSearchRange(parts[1]);
+            range1 = this.getSearchRange(parts[0].split(' ')[0]);
+            range2 = this.getSearchRange(parts[1].split(' ')[0]);
         } else {
             // we just need to position the first axis
-            range1 = this.getSearchRange(parts[0]);
+            range1 = this.getSearchRange(parts[0].split(' ')[0]);
         }
 
         if (range1 != null && range2 != null) {

@@ -26,6 +26,8 @@ export class GenomePositionSearchBox extends React.Component {
         this.zoomedXScale = this.xOrigScale.copy();
         this.zoomedYScale = this.yOrigScale.copy();
 
+        this.prevParts = [];
+
         ChromosomeInfo(this.props.chromInfoPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;  
             this.searchField = new SearchField(this.chromInfo);
@@ -114,6 +116,8 @@ export class GenomePositionSearchBox extends React.Component {
                 positionString += " and " +  y1[0] + ':' + format(Math.floor(y1[1])) + '-' + format(Math.ceil(y2[1]));
         }
 
+        this.prevParts = positionString.split(/[ -]/);
+
         //ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
         this.setState({"value": positionString});
     }
@@ -138,7 +142,6 @@ export class GenomePositionSearchBox extends React.Component {
 
                 if (dashParts.length == 1) {
                     // no range, just a position
-                    console.log('genePosition:', genePosition);
                     dashParts[j] = genePosition.chr + ":" + genePosition.txStart + '-' + genePosition.txEnd;
                 } else {
                     if (j == 0) {
@@ -157,6 +160,7 @@ export class GenomePositionSearchBox extends React.Component {
         }
 
         let newValue = spaceParts.join(' ');
+        this.prevParts = newValue.split(/[ -]/);
         this.setState({value: newValue});
     }
 
@@ -167,8 +171,6 @@ export class GenomePositionSearchBox extends React.Component {
 
         for (let i = 0; i < value_parts.length; i++) {
             let [chr, pos, retPos] = this.searchField.parsePosition(value_parts[i]);
-
-            console.log('value_parts:', value_parts[i], 'chr:', chr, 'pos:', pos, 'retPos:', retPos);
 
             if (retPos == null) {
                 // not a chromsome position, let's see if it's a gene name
@@ -191,16 +193,21 @@ export class GenomePositionSearchBox extends React.Component {
 
             finished();
         });
-        //console.log('value_parts:', value_parts);
     }
 
     buttonClick() {
+        this.setState({'genes': []});  //no menu should be open
+
         this.replaceGenesWithPositions(function() {
             let searchFieldValue = this.state.value; //ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
-            console.log('searchFieldValue:', searchFieldValue);
 
             if (this.searchField != null) {
                 let [range1, range2] = this.searchField.searchPosition(searchFieldValue);
+
+                if ((range1 && (isNaN(range1[0]) || isNaN(range1[1]))) ||
+                    (range2 && (isNaN(range2[0]) || isNaN(range2[1])))) {
+                    return;
+                }
 
                 this.props.zoomToGenomePositionHandler(range1, range2);
             }
@@ -208,7 +215,6 @@ export class GenomePositionSearchBox extends React.Component {
     }
 
     searchFieldKeyPress(target) {
-        console.log('keypressed:', target.charCode);
         // if the user hits enter, act as if they clicked the button
         /*
         if (target.charCode == 13) {
@@ -225,20 +231,33 @@ export class GenomePositionSearchBox extends React.Component {
 
 
     onAutocompleteChange(event, value) {
-        console.log('autocomplete change value:', value);
         this.setState({ value, loading: true });
 
         let parts = value.split(/[ -]/);
-        console.log('parts', parts);
+        this.changedPart = null;
 
-        console.log('this.props.autocompleteSource', this.props.autocompleteSource);
+        for (let i = 0; i < parts.length; i++) {
+            if (i == this.prevParts.length) {
+                // new part added
+                this.changedPart = i;
+                break;
+            }
+
+            if (parts[i] != this.prevParts[i]) {
+                this.changedPart = i;
+                break;
+            }
+        }
+
+        this.prevParts = parts;
+
         // no autocomplete repository is provided, so we don't try to autcomplete anything
         if (!this.props.autocompleteSource)
             return;
 
         this.setState({loading: true});
         // send out a request for the autcomplete suggestions
-        let url = this.props.autocompleteSource + "/ac_" + parts[parts.length-1].toLowerCase();
+        let url = this.props.autocompleteSource + "/ac_" + parts[this.changedPart].toLowerCase();
         d3.json(url, (error, data) => {
             if (error) {
                 this.setState({loading: false, genes: []});
@@ -251,18 +270,32 @@ export class GenomePositionSearchBox extends React.Component {
     }
 
     geneSelected(value, objct) {
-        console.log('value:', value, 'object', objct);
 
         let parts = this.state.value.split(' ');
-        let dash_parts = parts[parts.length-1].split('-');
+        let partCount = this.changedPart;
 
+        // change the part that was selected
+        for (let i = 0; i < parts.length; i++) {
+            let dash_parts = parts[i].split('-');
+            if (partCount > dash_parts.length-1) {
+               partCount -= dash_parts.length; 
+            } else {
+                dash_parts[partCount] = objct.geneName;                
+                parts[i] = dash_parts.join('-')
+                break;
+            }
+        }
+
+        /*
         let new_dash_parts = dash_parts.slice(0, dash_parts.length-1);
         new_dash_parts = new_dash_parts.concat(objct.geneName).join('-');
 
         let new_parts = parts.splice(0, parts.length-1);
         new_parts = new_parts.concat(new_dash_parts).join(' ');
+        */
 
-        this.setState({value: new_parts});
+        this.prevParts = parts.join(' ').split(/[ -]/);
+        this.setState({value: parts.join(' '), genes: []});
     }
 
     render() {
@@ -290,9 +323,12 @@ export class GenomePositionSearchBox extends React.Component {
                     </div>
 
                 <InputGroup.Button>
-                    <Button bsSize="small" onClick={this.buttonClick.bind(this)}>
-                    <Glyphicon glyph="search"></Glyphicon>
-                    </Button>
+
+                    <div style={{"zIndex": 1000, "position": "relative"}}>
+                        <Button bsSize="small" onClick={this.buttonClick.bind(this)}>
+                        <Glyphicon glyph="search"></Glyphicon>
+                        </Button>
+                    </div>
                 </InputGroup.Button>
                 </InputGroup>
                 </FormGroup>
