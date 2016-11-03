@@ -141,9 +141,11 @@ export function TopCNVInterval() {
                 let minXRange = Math.min(...allTiles.map((x) => x.tileXRange[0]));
                 let maxXRange = Math.max(...allTiles.map((x) => x.tileXRange[1]));
 
+                let margin = 2;
+                let marginFraction = margin / d.height;
                 let yScale = d3.scale.linear()
                 .domain([minVisibleValue, maxVisibleValue])
-                .range([0, 1]);
+                .range([marginFraction, 1. - marginFraction ]);
 
                 if (d.translate != null && d.scale != null) {
                     // change the zoom and scale before redrawing new elements
