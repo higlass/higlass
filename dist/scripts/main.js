@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _HiGlassApp = __webpack_require__(176);
 
-	var _jquery = __webpack_require__(617);
+	var _jquery = __webpack_require__(629);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
@@ -81,7 +81,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var simple1 = JSON.parse('\n        { "views":\n            [\n            {\n                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                "domain": [\n                    0,\n                    3000000000\n                ],\n                "viewStyle": {\n                    "float": "left",\n                    "padding": "5px",\n                    "width": "100%"\n                },\n                "tracks": [\n                {\n                    "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                    "type": "top-chromosome-axis",\n                    "height": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",\n                    "type": "heatmap",\n                    "height": 300\n                },\n                {\n                    "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                    "type": "left-chromosome-axis",\n                    "width": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n                    "type": "left-gene-labels",\n                    "width": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n                    "type": "top-gene-labels",\n                    "height": 25\n                },\n\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n                    "type": "top-line",\n                    "height": 25\n                },\n                {\n                    "type": "top-empty",\n                    "height": 5\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n                    "type": "left-bar",\n                    "width": 25\n                },\n                {\n                    "type": "left-empty",\n                    "width": 5\n                }\n\n                ],\n                "zoomLock" : 0,\n                "searchBox": false\n            }\n            ],\n            "editable": false\n        }\n');
 
-	var rectangularOneWindow = JSON.parse('\n        { "views":\n            [\n            {\n                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                "domain": [\n                    0,\n                    3000000000\n                ],\n                "viewStyle": {\n                    "float": "left",\n                    "padding": "5px",\n                    "width": "100%"\n                },\n                "tracks": [\n                {\n                    "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                    "type": "top-chromosome-axis",\n                    "height": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",\n                    "type": "heatmap",\n                    "height": 300\n                },\n                {\n                    "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                    "type": "left-chromosome-axis",\n                    "width": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n                    "type": "left-gene-labels",\n                    "width": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n                    "type": "top-gene-labels",\n                    "height": 25\n                },\n\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n                    "type": "top-line",\n                    "height": 25\n                },\n                {\n                    "type": "top-empty",\n                    "height": 5\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n                    "type": "left-bar",\n                    "width": 25\n                },\n                {\n                    "type": "left-empty",\n                    "width": 5\n                }\n\n                ],\n                "zoomLock" : 0,\n                "searchBox": true\n            }\n            ],\n            "editable": true\n                }\n');
+	var rectangularOneWindow = JSON.parse('\n        { "views":\n            [\n            {\n                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                "domain": [\n                    0,\n                    3000000000\n                ],\n                "viewStyle": {\n                    "float": "left",\n                    "padding": "5px",\n                    "width": "100%"\n                },\n                "tracks": [\n                {\n                    "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                    "type": "top-chromosome-axis",\n                    "height": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",\n                    "type": "heatmap"\n                },\n                {\n                    "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                    "type": "left-chromosome-axis",\n                    "width": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n                    "type": "left-gene-labels",\n                    "width": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n                    "type": "top-gene-labels",\n                    "height": 25\n                },\n\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n                    "type": "top-line",\n                    "height": 25\n                },\n                {\n                    "type": "top-empty",\n                    "height": 5\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n                    "type": "left-bar",\n                    "width": 25\n                },\n                {\n                    "type": "left-empty",\n                    "width": 5\n                }\n\n                ],\n                "zoomLock" : 0,\n                "searchBox": true\n            }\n            ],\n            "editable": true\n                }\n');
 
 	try {
 	    _reactDom2.default.render(_react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: JSON.stringify(rectangularOneWindow) }), document.getElementById('rectangular'));
@@ -165,7 +165,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    console.log('error:', e);
 	}
 
-	var developmentDemo = JSON.parse('\n        { "views":\n            [\n            {\n                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                "domain": [\n                    0,\n                    3000000000\n                ],\n                "viewStyle": {\n                    "float": "left",\n                    "padding": "5px",\n                    "width": "100%"\n                },\n                "tracks": [\n                {\n                    "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                    "type": "top-chromosome-axis",\n                    "height": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",\n                    "type": "heatmap",\n                    "height": 300\n                },\n                {\n                    "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                    "type": "left-chromosome-axis",\n                    "width": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n                    "type": "left-gene-labels",\n                    "width": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n                    "type": "top-gene-labels",\n                    "height": 25\n                },\n\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n                    "type": "top-line",\n                    "height": 25\n                },\n                {\n                    "type": "top-empty",\n                    "height": 5\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n                    "type": "left-bar",\n                    "width": 25\n                },\n                {\n                    "type": "left-empty",\n                    "width": 5\n                }\n\n                ],\n                "zoomLock" : 0,\n                "searchBox": false\n            }\n            ],\n            "editable": false\n        }\n        ');
+	var developmentDemo = JSON.parse('\n        { "views":\n            [\n            {\n                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                "domain": [\n                    0,\n                    3000000000\n                ],\n                "viewStyle": {\n                    "float": "left",\n                    "padding": "5px",\n                    "width": "100%"\n                },\n                "tracks": [\n                {\n                    "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",\n                    "type": "top-chromosome-axis",\n                    "height": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",\n                    "type": "top-gene-labels",\n                    "height": 25\n                },\n                {\n                    "source": "//52.23.165.123:9872/hg19/refgene-tiles-minus",\n                    "type": "top-gene-labels",\n                    "height": 25\n                },\n\n                {\n                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",\n                    "type": "top-line",\n                    "height": 25\n                },\n\n                {\n                    "source": "//52.23.165.123:9872/hg19/hg19.UMB5144.all_bins.sorted.genome.gz",\n                    "type": "top-ratio-point",\n                    "height": 50\n                },\n                {\n                    "source": "//52.45.229.11:9872/hg19/UMB5144__B1000_l03.BICseq.out",\n                    "type": "top-cnv-interval",\n                    "height": 50\n                }\n                ],\n                "zoomLock" : 0,\n                "searchBox": {\n                    "autocompleteSource": "//52.45.229.11:9872/hg19/autocomplete"\n                }\n            }\n            ],\n            "editable": true\n        }\n        ');
 
 	try {
 	    _reactDom2.default.render(_react2.default.createElement(_HiGlassApp.HiGlassApp, { viewConfigString: JSON.stringify(developmentDemo) }), document.getElementById('development-demo'));
@@ -21536,9 +21536,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _MultiViewContainer = __webpack_require__(181);
+	var _slugid = __webpack_require__(181);
 
-	var _HiGlassInput = __webpack_require__(614);
+	var _slugid2 = _interopRequireDefault(_slugid);
+
+	var _MultiViewContainer = __webpack_require__(189);
+
+	var _MultiTrackContainer = __webpack_require__(190);
+
+	var _HiGlassInput = __webpack_require__(626);
 
 	var _reactBootstrap = __webpack_require__(342);
 
@@ -21563,11 +21569,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this.state = {
 	            //viewConfig : []
 
-	            viewConfig: JSON.parse(_this.props.viewConfigString),
+	            viewConfig: {
+	                object: JSON.parse(_this.props.viewConfigString),
+	                text: JSON.stringify(JSON.parse(_this.props.viewConfigString))
+	            },
 	            inputOpen: false
 	        };
 
-	        _this.updateLinkedViews(_this.state.viewConfig);
+	        console.log('this.state:', _this.state);
+	        _this.updateLinkedViews(_this.state.viewConfig.object);
 
 	        return _this;
 	    }
@@ -21575,6 +21585,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _createClass(HiGlassApp, [{
 	        key: 'updateLinkedViews',
 	        value: function updateLinkedViews(viewConfig) {
+	            console.log('updating linked views:', viewConfig);
 	            for (var i = 0; i < viewConfig.views.length; i++) {
 	                if (typeof viewConfig.views[i].zoomLock == 'undefined') viewConfig.views[i].zoomDispatch = d3.dispatch('zoom', 'zoomend');else {
 	                    var zoomLock = viewConfig.views[i].zoomLock;
@@ -21594,9 +21605,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.updateLinkedViews(viewConfig);
 
 	            this.setState({
-	                viewConfig: viewConfig
+	                viewConfig: {
+	                    object: viewConfig,
+	                    text: JSON.stringify(viewConfig)
+	                }
 	            });
 	        }
+	    }, {
+	        key: 'handleOpen',
+	        value: function handleOpen() {
+	            console.log('handling open...');
+	            this.setState({
+	                'inputOpen': !this.state.inputOpen
+	            });
+	        }
+	    }, {
+	        key: 'handleViewEdit',
+	        value: function handleViewEdit(newViewConfig) {}
 	    }, {
 	        key: 'render',
 	        value: function render() {
@@ -21610,6 +21635,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var toolbarStyle = { "position": "relative",
 	                "top": "-1px" };
+	            /*
+	            <MultiViewEditContainer viewConfig={this.state.viewConfig}
+	            handleEdit={this.handleViewEdit.bind(this)}
+	            visible={this.state.inputOpen}
+	                />
+	                */
 
 	            return _react2.default.createElement(
 	                'div',
@@ -21620,13 +21651,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        ref: 'displayPanel',
 	                        className: 'higlass-display'
 	                    },
-	                    _react2.default.createElement(_MultiViewContainer.MultiViewContainer, { viewConfig: this.state.viewConfig.views
-	                    })
+	                    _react2.default.createElement(
+	                        _MultiViewContainer.MultiViewContainer,
+	                        { viewConfig: this.state.viewConfig },
+	                        this.state.viewConfig.object.views.map(function (view, i) {
+	                            return _react2.default.createElement(_MultiTrackContainer.MultiTrackContainer, {
+	                                viewConfig: view,
+	                                key: _slugid2.default.nice()
+	                            });
+	                        })
+	                    )
 	                ),
 	                function () {
-	                    if (_this2.state.viewConfig.editable) {
+	                    if (_this2.state.viewConfig.object.editable) {
 	                        return _react2.default.createElement(_HiGlassInput.HiGlassInput, { currentConfig: _this2.defaultViewString,
-	                            onNewConfig: _this2.handleNewConfig.bind(_this2)
+	                            onNewConfig: _this2.handleNewConfig.bind(_this2),
+	                            inputOpen: _this2.state.inputOpen,
+	                            handleOpen: _this2.handleOpen.bind(_this2)
 	                        });
 	                    }
 	                }()
@@ -21989,76 +22030,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.MultiViewContainer = undefined;
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(2);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _slugid = __webpack_require__(182);
-
-	var _slugid2 = _interopRequireDefault(_slugid);
-
-	var _reactDom = __webpack_require__(36);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-
-	var _MultiTrackContainer = __webpack_require__(190);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var MultiViewContainer = exports.MultiViewContainer = function (_React$Component) {
-	    _inherits(MultiViewContainer, _React$Component);
-
-	    function MultiViewContainer(props) {
-	        _classCallCheck(this, MultiViewContainer);
-
-	        console.log('hi');
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(MultiViewContainer).call(this, props));
-	    }
-
-	    _createClass(MultiViewContainer, [{
-	        key: 'componentWillReceiveProps',
-	        value: function componentWillReceiveProps(newProps) {
-	            console.log('newProps:', newProps);
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var divStyle = { float: 'left', width: '100%' };
-	            return _react2.default.createElement(
-	                'div',
-	                { style: divStyle, className: 'MultiViewContainer' },
-	                this.props.viewConfig.map(function (view, i) {
-	                    return _react2.default.createElement(_MultiTrackContainer.MultiTrackContainer, {
-	                        viewConfig: view,
-	                        key: _slugid2.default.nice()
-	                    });
-	                })
-	            );
-	        }
-	    }]);
-
-	    return MultiViewContainer;
-	}(_react2.default.Component);
-
-/***/ },
-/* 182 */
-/***/ function(module, exports, __webpack_require__) {
-
 	// The MIT License (MIT)
 	//
 	// Copyright (c) 2014 Jonas Finnemann Jensen
@@ -22081,11 +22052,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	// THE SOFTWARE.
 
-	module.exports = __webpack_require__(183);
+	module.exports = __webpack_require__(182);
 
 
 /***/ },
-/* 183 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {// The MIT License (MIT)
@@ -22110,7 +22081,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	// THE SOFTWARE.
 
-	var uuid = __webpack_require__(188);
+	var uuid = __webpack_require__(187);
 
 	/**
 	 * Returns the given uuid as a 22 character slug. This can be a regular v4
@@ -22172,10 +22143,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return slug;
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(183).Buffer))
 
 /***/ },
-/* 184 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer, global) {/*!
@@ -22188,9 +22159,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict'
 
-	var base64 = __webpack_require__(185)
-	var ieee754 = __webpack_require__(186)
-	var isArray = __webpack_require__(187)
+	var base64 = __webpack_require__(184)
+	var ieee754 = __webpack_require__(185)
+	var isArray = __webpack_require__(186)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -23727,10 +23698,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return i
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(184).Buffer, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(183).Buffer, (function() { return this; }())))
 
 /***/ },
-/* 185 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -23860,7 +23831,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 186 */
+/* 185 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -23950,7 +23921,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 187 */
+/* 186 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -23961,7 +23932,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 188 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	//     uuid.js
@@ -23972,7 +23943,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// Unique ID creation requires a high quality random # generator.  We feature
 	// detect to determine the best RNG source, normalizing to a function that
 	// returns 128-bits of randomness, since that's what's usually required
-	var _rng = __webpack_require__(189);
+	var _rng = __webpack_require__(188);
 
 	// Maps for number <-> hex string conversion
 	var _byteToHex = [];
@@ -24150,7 +24121,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 189 */
+/* 188 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {
@@ -24188,6 +24159,83 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+/* 189 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.MultiViewContainer = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _slugid = __webpack_require__(181);
+
+	var _slugid2 = _interopRequireDefault(_slugid);
+
+	var _reactDom = __webpack_require__(36);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _MultiTrackContainer = __webpack_require__(190);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var MultiViewContainer = exports.MultiViewContainer = function (_React$Component) {
+	    _inherits(MultiViewContainer, _React$Component);
+
+	    function MultiViewContainer(props) {
+	        _classCallCheck(this, MultiViewContainer);
+
+	        console.log('hi', props);
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(MultiViewContainer).call(this, props));
+	    }
+
+	    _createClass(MultiViewContainer, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(newProps) {
+	            console.log('newProps:', newProps);
+	        }
+	    }, {
+	        key: 'shouldComponentUpdate',
+	        value: function shouldComponentUpdate(nextProps, nextState) {
+	            console.log('oldProps.text:', this.props.viewConfig.text);
+	            console.log('newProps.text:', nextProps.viewConfig.text);
+	            if (nextProps.viewConfig.text == this.props.viewConfig.text) {
+	                console.log('not updating...');
+	                return false;
+	            }
+
+	            return true;
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var divStyle = { float: 'left', width: '100%' };
+	            return _react2.default.createElement(
+	                'div',
+	                { style: divStyle, className: 'MultiViewContainer' },
+	                this.props.children
+	            );
+	        }
+	    }]);
+
+	    return MultiViewContainer;
+	}(_react2.default.Component);
+
+/***/ },
 /* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -24218,7 +24266,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _DraggableDiv = __webpack_require__(326);
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -24244,11 +24292,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _LeftGeneLabelsTrack = __webpack_require__(606);
 
-	var _TopChromosomeAxis = __webpack_require__(607);
+	var _ChromosomeGrid = __webpack_require__(607);
 
-	var _LeftChromosomeAxis = __webpack_require__(611);
+	var _TopChromosomeAxis = __webpack_require__(611);
 
-	var _GenomePositionSearchBox = __webpack_require__(612);
+	var _LeftChromosomeAxis = __webpack_require__(614);
+
+	var _GenomePositionSearchBox = __webpack_require__(615);
+
+	var _TopRatioPoint = __webpack_require__(623);
+
+	var _TopCNVInterval = __webpack_require__(625);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24271,21 +24325,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this.initialTrackHeight = 30;
 	        _this.initialTrackWidth = 300;
 
-	        _this.tracksToPositions = { 'top-bar': 'top',
-	            'left-bar': 'left',
-	            'top-line': 'top',
-	            'top-point': 'top',
-	            'top-heatmap': 'top',
-	            'top-diagonal-heatmap': 'top',
-	            'top-gene-labels': 'top',
-	            'left-gene-labels': 'left',
-	            'top-chromosome-axis': 'top',
-	            'left-chromosome-axis': 'left',
-	            'top-ratio-point': 'top',
-	            'left-empty': 'left',
-	            'top-empty': 'top',
-	            'right-bar': 'right',
-	            'heatmap': 'center' };
+	        _this.initLayouts();
+	        _this.setupTrackDescriptions();
 
 	        var tracks = _this.props.viewConfig.tracks;
 	        var currentTop = 0;
@@ -24297,9 +24338,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var trackWidth = _this.initialTrackWidth;
 	            var trackId = _slugid2.default.nice();
 
-	            if (_this.tracksToPositions[tracks[i].type] == 'left' || _this.tracksToPositions[tracks[i].type] == 'center') _this.twoD = true;
+	            if (_this.trackDescriptions[tracks[i].type].position == 'left' || _this.trackDescriptions[tracks[i].type].position == 'center') _this.twoD = true;
 
-	            if (_this.tracksToPositions[tracks[i].type] == 'center') if (!('height' in tracks[i])) _this.heightSpecified = false;
+	            if (_this.trackDescriptions[tracks[i].type].position == 'center' && _this.trackDescriptions[tracks[i].type].overlay == false) if (!('height' in tracks[i])) _this.heightSpecified = false;
 
 	            if ('height' in tracks[i]) {
 	                trackHeight = tracks[i].height;
@@ -24412,6 +24453,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (typeof this.topChromosomeAxis != 'undefined') {
 	                this.topChromosomeAxis.xScale(this.xOrigScale.copy());
 	                this.leftChromosomeAxis.yScale(this.yOrigScale.copy());
+	                this.chromosomeGrid.xScale(this.xOrigScale.copy());
+	                this.chromosomeGrid.yScale(this.yOrigScale.copy());
 	                this.leftGeneLabels.yScale(this.yOrigScale.copy());
 	                this.topGeneLabels.xScale(this.xOrigScale.copy());
 	                this.horizontalTiledArea.xScale(this.xOrigScale.copy());
@@ -24435,9 +24478,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 
 	            for (var uid in this.state.tracks) {
-	                if (this.tracksToPositions[this.state.tracks[uid].type] == 'top' || this.tracksToPositions[this.state.tracks[uid].type] == 'center') this.state.tracks[uid].width = this.width;
+	                if (this.trackDescriptions[this.state.tracks[uid].type].position == 'top' || this.trackDescriptions[this.state.tracks[uid].type].position == 'center') this.state.tracks[uid].width = this.width;
 
-	                if (this.tracksToPositions[this.state.tracks[uid].type] == 'left' || this.tracksToPositions[this.state.tracks[uid].type] == 'center') this.state.tracks[uid].height = this.height;
+	                if (this.trackDescriptions[this.state.tracks[uid].type].position == 'left' || this.trackDescriptions[this.state.tracks[uid].type].position == 'center') this.state.tracks[uid].height = this.height;
 
 	                if ('resizeDispatch' in this.state.tracks[uid]) {
 	                    this.state.tracks[uid].resizeDispatch.resize();
@@ -24463,10 +24506,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var trackId = this.state.tracksList[i].uid;
 	                var track = this.state.tracks[trackId];
 
-	                if (this.tracksToPositions[track.type] == 'top') this.topMargin += track.height;
-	                if (this.tracksToPositions[track.type] == 'left') this.leftMargin += track.width;
-	                if (this.tracksToPositions[track.type] == 'right') this.rightMargin += track.width;
-	                if (this.tracksToPositions[track.type] == 'bottom') this.bottomMargin += track.height;
+	                if (track.overlay) continue; //overlay tracks don't have their dimensions counted
+
+	                if (this.trackDescriptions[track.type].position == 'top') this.topMargin += track.height;
+	                if (this.trackDescriptions[track.type].position == 'left') this.leftMargin += track.width;
+	                if (this.trackDescriptions[track.type].position == 'right') this.rightMargin += track.width;
+	                if (this.trackDescriptions[track.type].position == 'bottom') this.bottomMargin += track.height;
 	            }
 
 	            var currentRightLeft = this.width - this.rightMargin;
@@ -24478,35 +24523,51 @@ return /******/ (function(modules) { // webpackBootstrap
 	                _track.leftMargin = this.leftMargin;
 	                _track.topMargin = this.topMargin;
 
-	                if (this.tracksToPositions[_track.type] == 'top') {
+	                if (_track.overlay) {
+	                    if (_i == 0) {
+	                        console.log("The first track can't be an overlay track");
+	                        continue;
+	                    } else {
+	                        _track.left = this.state.tracksList[_i - 1].left;
+	                        _track.right = this.state.tracksList[_i - 1].right;
+	                        _track.width = this.state.tracksList[_i - 1].width;
+	                        _track.height = this.state.tracksList[_i - 1].height;
+
+	                        // store the track above this one as it's parent so that we can
+	                        // get visible vaues from it for proper scaling
+	                        _track.parentTrack = this.state.tracksList[_i - 1];
+	                    }
+	                }
+
+	                if (this.trackDescriptions[_track.type].position == 'top') {
 	                    _track.left = this.leftMargin;
 	                    _track.top = currentTop;
 	                    _track.width = this.width - this.leftMargin - this.rightMargin;
 	                    currentTop += _track.height;
 	                }
 
-	                if (this.tracksToPositions[_track.type] == 'left') {
+	                if (this.trackDescriptions[_track.type].position == 'left') {
 	                    _track.top = this.topMargin;
 	                    _track.left = currentLeft;
 	                    _track.height = this.height - this.topMargin - this.bottomMargin;
 	                    currentLeft += _track.width;
 	                }
 
-	                if (this.tracksToPositions[_track.type] == 'right') {
+	                if (this.trackDescriptions[_track.type].position == 'right') {
 	                    _track.top = this.topMargin;
 	                    _track.left = currentRightLeft;
 	                    _track.height = this.height - this.topMargin - this.bottomMargin;
 	                    currentRightLeft += _track.width;
 	                }
 
-	                if (this.tracksToPositions[_track.type] == 'bottom') {
+	                if (this.trackDescriptions[_track.type].position == 'bottom') {
 	                    _track.left = this.leftMargin;
 	                    _track.top = currentBottomTop;
 	                    _track.width = this.width - this.leftMargin - this.rightMargin;
 	                    currentBottomTop += _track.height;
 	                }
 
-	                if (this.tracksToPositions[_track.type] == 'center') {
+	                if (this.trackDescriptions[_track.type].position == 'center') {
 	                    _track.left = this.leftMargin;
 	                    _track.top = this.topMargin;
 	                    _track.width = this.width - this.leftMargin - this.rightMargin;
@@ -24560,11 +24621,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.height = 0;
 
 	                for (var i = 0; i < this.props.viewConfig.tracks.length; i++) {
-	                    if (this.tracksToPositions[this.props.viewConfig.tracks[i].type] == 'top' || this.tracksToPositions[this.props.viewConfig.tracks[i].type] == 'center') {
+	                    if (this.trackDescriptions[this.props.viewConfig.tracks[i].type].position == 'top' || this.trackDescriptions[this.props.viewConfig.tracks[i].type].position == 'center') {
 	                        this.height += this.props.viewConfig.tracks[i].height;
 	                    }
 	                }
 	            }
+	        }
+	    }, {
+	        key: 'initLayouts',
+	        value: function initLayouts() {
+	            this.topChromosomeAxis = (0, _TopChromosomeAxis.TopChromosomeAxis)();
+	            this.leftChromosomeAxis = (0, _LeftChromosomeAxis.LeftChromosomeAxis)();
+	            this.chromosomeGrid = (0, _ChromosomeGrid.ChromosomeGrid)();
+	            this.horizontalDiagonalTiledArea = (0, _GenericTiledArea.GenericTiledArea)();
+	            this.horizontalTiledArea = (0, _GenericTiledArea.GenericTiledArea)();
+	            this.verticalTiledArea = (0, _GenericTiledArea.GenericTiledArea)();
+	            this.twoDTiledArea = (0, _GenericTiledArea.GenericTiledArea)();
+	            this.wigglePixiTrack = (0, _WigglePixiTrack.WigglePixiTrack)();
+	            this.wigglePixiLine = (0, _WigglePixiLine.WigglePixiLine)();
+	            this.wigglePixiPoint = (0, _WigglePixiPoint.WigglePixiPoint)();
+	            this.topRatioPoint = (0, _TopRatioPoint.TopRatioPoint)();
+	            this.topCNVInterval = (0, _TopCNVInterval.TopCNVInterval)();
+	            this.wigglePixiHeatmap = (0, _WigglePixiHeatmap.WigglePixiHeatmap)();
+	            this.leftWigglePixiTrack = (0, _LeftWigglePixiTrack.LeftWigglePixiTrack)();
+	            this.heatmapRectangleTrack = (0, _HeatmapRectangleTrack.HeatmapRectangleTrack)();
+	            this.diagonalHeatmapTrack = (0, _TopDiagonalHeatmapTrack.TopDiagonalHeatmapRectangleTrack)();
+	            this.topGeneLabels = (0, _TopGeneLabelsTrack.TopGeneLabelsTrack)();
+	            this.leftGeneLabels = (0, _LeftGeneLabelsTrack.LeftGeneLabelsTrack)();
+
+	            this.oneDHorizontalTrackList = [];
+	            this.oneDHorizontalDiagonalTrackList = [];
+	            this.oneDVerticalTrackList = [];
+	            this.twoDTrackList = [];
+	            this.horizontalAxisList = [];
+	            this.verticalAxisList = [];
 	        }
 	    }, {
 	        key: 'componentDidMount',
@@ -24590,37 +24680,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.xScaleDependencies = [];
 	            this.yScaleDependencies = [];
 
-	            this.topChromosomeAxis = (0, _TopChromosomeAxis.TopChromosomeAxis)().xScale(this.xOrigScale.copy()).width(this.width).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.topChromosomeAxis.xScale(this.xOrigScale.copy()).width(this.width).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            this.leftChromosomeAxis = (0, _LeftChromosomeAxis.LeftChromosomeAxis)().yScale(this.yOrigScale.copy()).width(this.width).height(this.height).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.leftChromosomeAxis.yScale(this.yOrigScale.copy()).width(this.width).height(this.height).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            this.horizontalDiagonalTiledArea = (0, _GenericTiledArea.GenericTiledArea)().tileType('div').oneDimensional(false).diagonal(true).width(this.width).height(this.width).domain(this.xScale.domain()).zoomDispatch(this.zoomDispatch);
+	            this.chromosomeGrid.xScale(this.xOrigScale.copy()).yScale(this.yOrigScale.copy()).width(this.width).height(this.height).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            this.horizontalTiledArea = (0, _GenericTiledArea.GenericTiledArea)().tileType('div').width(this.width).height(this.height).xScale(this.xOrigScale.copy()).domain(this.xScale.domain()).zoomDispatch(this.zoomDispatch).horizontal(true);
+	            this.horizontalDiagonalTiledArea.tileType('div').oneDimensional(false).diagonal(true).width(this.width).height(this.width).domain(this.xScale.domain()).zoomDispatch(this.zoomDispatch);
 
-	            this.verticalTiledArea = (0, _GenericTiledArea.GenericTiledArea)().tileType('div').width(this.height) // since this is a vertical tiled area, the width is actually the height
+	            this.horizontalTiledArea.tileType('div').width(this.width).height(this.height).xScale(this.xOrigScale.copy()).domain(this.xScale.domain()).zoomDispatch(this.zoomDispatch).horizontal(true);
+
+	            this.verticalTiledArea.tileType('div').width(this.height) // since this is a vertical tiled area, the width is actually the height
 	            // of the viewable area
 	            .domain(this.yScale.domain()).yScale(this.yOrigScale.copy()).zoomDispatch(this.zoomDispatch).horizontal(false);
 
-	            this.twoDTiledArea = (0, _GenericTiledArea.GenericTiledArea)().tileType('div').oneDimensional(false).width(this.width).height(this.height).xScale(this.xOrigScale.copy()).yScale(this.yOrigScale.copy()).domain(this.xScale.domain()).zoomDispatch(this.zoomDispatch).mirrorTiles(true);
+	            this.twoDTiledArea.tileType('div').oneDimensional(false).width(this.width).height(this.height).xScale(this.xOrigScale.copy()).yScale(this.yOrigScale.copy()).domain(this.xScale.domain()).zoomDispatch(this.zoomDispatch).mirrorTiles(true);
 
-	            this.wigglePixiTrack = (0, _WigglePixiTrack.WigglePixiTrack)().xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.wigglePixiTrack.xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            this.wigglePixiLine = (0, _WigglePixiLine.WigglePixiLine)().xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.wigglePixiLine.xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            this.wigglePixiPoint = (0, _WigglePixiPoint.WigglePixiPoint)().xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.wigglePixiPoint.xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            this.wigglePixiHeatmap = (0, _WigglePixiHeatmap.WigglePixiHeatmap)().xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.topRatioPoint.xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            this.leftWigglePixiTrack = (0, _LeftWigglePixiTrack.LeftWigglePixiTrack)().yScale(this.yOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.topCNVInterval.xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            this.heatmapRectangleTrack = (0, _HeatmapRectangleTrack.HeatmapRectangleTrack)().xScale(this.xOrigScale.copy()).yScale(this.yOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.wigglePixiHeatmap.xScale(this.xOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            this.diagonalHeatmapTrack = (0, _TopDiagonalHeatmapTrack.TopDiagonalHeatmapRectangleTrack)().xScale(this.xScale.copy()).yScale(this.yScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.leftWigglePixiTrack.yScale(this.yOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            this.topGeneLabels = (0, _TopGeneLabelsTrack.TopGeneLabelsTrack)().xScale(this.xOrigScale.copy()).width(this.width).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.heatmapRectangleTrack.xScale(this.xOrigScale.copy()).yScale(this.yOrigScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
-	            this.leftGeneLabels = (0, _LeftGeneLabelsTrack.LeftGeneLabelsTrack)().yScale(this.yOrigScale.copy()).width(this.width).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+	            this.diagonalHeatmapTrack.xScale(this.xScale.copy()).yScale(this.yScale.copy()).width(this.width).height(this.height).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+
+	            this.topGeneLabels.xScale(this.xOrigScale.copy()).width(this.width).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
+
+	            this.leftGeneLabels.yScale(this.yOrigScale.copy()).width(this.width).pixiStage(this.stage).resizeDispatch(this.resizeDispatch).zoomDispatch(this.zoomDispatch);
 
 	            this.animate();
 	            _d2.default.select(this.bigDiv).call(this.zoom);
@@ -24635,29 +24731,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.horizontalTiledArea.tilesChanged(function (d, element) {
 	                d.translate = this.zoom.translate();
 	                d.scale = this.zoom.scale();
-
-	                if (d.type == 'top-bar') _d2.default.select(element).call(this.wigglePixiTrack);
-	                if (d.type == 'top-line') _d2.default.select(element).call(this.wigglePixiLine);
-	                if (d.type == 'top-point') _d2.default.select(element).call(this.wigglePixiPoint);
-	                if (d.type == 'top-heatmap') _d2.default.select(element).call(this.wigglePixiHeatmap);
-	                if (d.type == 'top-gene-labels') _d2.default.select(element).call(this.topGeneLabels);
-	                if (d.type == 'top-chromosome-axis') _d2.default.select(element).call(this.topChromosomeAxis);
+	                _d2.default.select(element).call(this.trackDescriptions[d.type].layout);
 	            }.bind(this));
 
 	            this.verticalTiledArea.tilesChanged(function (d, element) {
 	                d.translate = this.zoom.translate();
 	                d.scale = this.zoom.scale();
-
-	                if (d.type == 'left-bar') _d2.default.select(element).call(this.leftWigglePixiTrack);
-	                if (d.type == 'left-gene-labels') _d2.default.select(element).call(this.leftGeneLabels);
-	                if (d.type == 'left-chromosome-axis') _d2.default.select(element).call(this.leftChromosomeAxis);
+	                _d2.default.select(element).call(this.trackDescriptions[d.type].layout);
 	            }.bind(this));
 
 	            this.twoDTiledArea.tilesChanged(function (d, element) {
 	                d.translate = this.zoom.translate();
 	                d.scale = this.zoom.scale();
-
-	                if (d.type == 'heatmap') _d2.default.select(element).call(this.heatmapRectangleTrack);
+	                _d2.default.select(element).call(this.trackDescriptions[d.type].layout);
 	            }.bind(this));
 
 	            this.updateTracks();
@@ -24735,32 +24821,154 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'updateTracks',
 	        value: function updateTracks() {
-	            var oneDHorizontalTrackList = [];
-	            var oneDHorizontalDiagonalTrackList = [];
-	            var oneDVerticalTrackList = [];
-	            var twoDTrackList = [];
-	            var horizontalAxisList = [];
-	            var verticalAxisList = [];
+	            // called from componentDidMount
+	            this.oneDHorizontalTrackList = [];
+	            this.oneDHorizontalDiagonalTrackList = [];
+	            this.oneDVerticalTrackList = [];
+	            this.twoDTrackList = [];
+	            this.horizontalAxisList = [];
+	            this.verticalAxisList = [];
+
+	            var tracksPerDimensions = {};
 
 	            for (var trackId in this.state.tracks) {
-	                if (this.state.tracks[trackId].type == 'heatmap') twoDTrackList.push(this.state.tracks[trackId]);else if (this.state.tracks[trackId].type == 'left-bar') oneDVerticalTrackList.push(this.state.tracks[trackId]);else if (this.state.tracks[trackId].type == 'top-gene-labels') oneDHorizontalTrackList.push(this.state.tracks[trackId]);else if (this.state.tracks[trackId].type == 'left-gene-labels') oneDVerticalTrackList.push(this.state.tracks[trackId]);else if (this.state.tracks[trackId].type == 'top-chromosome-axis') horizontalAxisList.push(this.state.tracks[trackId]);else if (this.state.tracks[trackId].type == 'left-chromosome-axis') verticalAxisList.push(this.state.tracks[trackId]);else if (this.state.tracks[trackId].type == 'top-bar') oneDHorizontalTrackList.push(this.state.tracks[trackId]);else if (this.state.tracks[trackId].type == 'top-line') oneDHorizontalTrackList.push(this.state.tracks[trackId]);else if (this.state.tracks[trackId].type == 'top-point') oneDHorizontalTrackList.push(this.state.tracks[trackId]);else if (this.state.tracks[trackId].type == 'top-heatmap') oneDHorizontalTrackList.push(this.state.tracks[trackId]);else if (this.state.tracks[trackId].type == 'top-diagonal-heatmap') oneDHorizontalDiagonalTrackList.push(this.state.tracks[trackId]);
+	                var trackDimensions = this.trackDescriptions[this.state.tracks[trackId].type].dimension;
+
+	                if (!(trackDimensions in tracksPerDimensions)) tracksPerDimensions[trackDimensions] = [];
+
+	                tracksPerDimensions[trackDimensions].push(this.state.tracks[trackId]);
+	                console.log('track-dimensions', trackDimensions);
+
+	                /*
+	                for (let i = 0; i < this.state.tracks[trackId].overlays.length; i++) {
+	                    console.log('adding overlay:', trackDimensions);
+	                    // add overlays, they should have the same dimensions
+	                    tracksPerDimensions[trackDimensions].push(this.state.tracks[trackId].overlays[i]);
+	                }
+	                */
 	            }
 
-	            _d2.default.select(this.bigDiv).selectAll('.horizontal-axis').data(horizontalAxisList).call(this.topChromosomeAxis);
+	            for (var _trackDimensions in tracksPerDimensions) {
+	                var handler = this.trackDimensionsHandlers[_trackDimensions];
 
-	            _d2.default.select(this.bigDiv).selectAll('.vertical-axis').data(verticalAxisList).call(this.leftChromosomeAxis);
+	                if (handler == null) continue;
 
-	            _d2.default.select(this.bigDiv).selectAll('.one-d-horizontal-diagonal').data(oneDHorizontalDiagonalTrackList).call(this.horizontalDiagonalTiledArea);
+	                if (typeof handler == 'undefined') {
+	                    console.log('WARNING: undefined handler for track dimensions:', _trackDimensions);
+	                    continue;
+	                }
 
-	            _d2.default.select(this.bigDiv).selectAll('.one-d-horizontal').data(oneDHorizontalTrackList).call(this.horizontalTiledArea);
-
-	            _d2.default.select(this.bigDiv).selectAll('.one-d-vertical').data(oneDVerticalTrackList).call(this.verticalTiledArea);
-
-	            _d2.default.select(this.bigDiv).selectAll('.two-d').data(twoDTrackList).call(this.twoDTiledArea);
+	                _d2.default.select(this.bigDiv).selectAll('.' + _trackDimensions).data(tracksPerDimensions[_trackDimensions]).each(function (d) {
+	                    console.log('calling... ', d);
+	                }).call(this.trackDimensionsHandlers[_trackDimensions]);
+	            }
 	        }
 	    }, {
 	        key: 'trackRotated',
 	        value: function trackRotated(trackId) {}
+	    }, {
+	        key: 'setupTrackDescriptions',
+	        value: function setupTrackDescriptions() {
+	            this.trackDescriptions = {
+	                'top-bar': {
+	                    'position': 'top',
+	                    'layout': this.wigglePixiTrack,
+	                    'dimension': 'one-d-horizontal'
+	                },
+	                'left-bar': {
+	                    'position': 'left',
+	                    'layout': this.leftWigglePixiTrack,
+	                    'dimension': 'one-d-vertical'
+	                },
+	                'top-line': {
+	                    'position': 'top',
+	                    'layout': this.wigglePixiLine,
+	                    'dimension': 'one-d-horizontal'
+	                },
+	                'top-point': {
+	                    'position': 'top',
+	                    'layout': this.wigglePixiPoint,
+	                    'dimension': 'one-d-horizontal'
+	                },
+	                'top-ratio-point': {
+	                    'position': 'top',
+	                    'layout': this.topRatioPoint,
+	                    'dimension': 'one-d-horizontal'
+	                },
+	                'top-cnv-interval': {
+	                    'position': 'top',
+	                    'layout': this.topCNVInterval,
+	                    'dimension': 'one-d-horizontal'
+	                },
+	                'top-heatmap': {
+	                    'position': 'top',
+	                    'layout': this.wigglePixiHeatmap,
+	                    'dimension': 'one-d-horizontal'
+	                },
+	                'top-diagonal-heatmap': {
+	                    'position': 'top',
+	                    'layout': this.diagonalHeatmapTrack,
+	                    'dimension': 'one-d-horizontal-diagonal'
+	                },
+	                'top-gene-labels': {
+	                    'position': 'top',
+	                    'layout': this.topGeneLabels,
+	                    'dimension': 'one-d-horizontal'
+	                },
+	                'left-gene-labels': {
+	                    'position': 'left',
+	                    'layout': this.leftGeneLabels,
+	                    'dimension': 'one-d-vertical'
+	                },
+	                'top-chromosome-axis': {
+	                    'position': 'top',
+	                    'layout': this.topChromosomeAxis,
+	                    'dimension': 'horizontal-axis'
+	                },
+	                'left-chromosome-axis': {
+	                    'position': 'left',
+	                    'layout': this.leftChromosomeAxis,
+	                    'dimension': 'vertical-axis'
+	                },
+	                'left-empty': {
+	                    'position': 'left',
+	                    'layout': null,
+	                    'dimension': 'empty'
+	                },
+	                'top-empty': {
+	                    'position': 'top',
+	                    'layout': null,
+	                    'dimension': 'empty'
+
+	                },
+	                'right-bar': {
+	                    'position': 'right',
+	                    'layout': null,
+	                    'dimension': 'one-d-vertical'
+	                },
+	                'heatmap': {
+	                    'position': 'center',
+	                    'layout': this.heatmapRectangleTrack,
+	                    'dimension': 'two-d'
+	                },
+	                'chromosome-grid': {
+	                    'position': 'center',
+	                    'layout': this.chromsomeGrid,
+	                    'dimension': 'chromosome-grid'
+	                }
+	            };
+
+	            this.trackDimensionsHandlers = {
+	                'horizontal-axis': this.topChromosomeAxis,
+	                'vertical-axis': this.leftChromosomeAxis,
+	                'chromosome-grid': this.chromosomeGrid,
+	                'one-d-horizontal-diagonal': this.horizontalDiagonalTiledArea,
+	                'one-d-horizontal': this.horizontalTiledArea,
+	                'one-d-vertical': this.verticalTiledArea,
+	                'two-d': this.twoDTiledArea,
+	                'empty': null
+	            };
+	        }
 	    }, {
 	        key: 'trackClosed',
 	        value: function trackClosed(trackId) {
@@ -24785,13 +24993,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'trackDimension',
 	        value: function trackDimension(track) {
-	            // used in render() to identify what types of tracks are being displayed
-	            if (track.type == 'heatmap') return 'two-d';else if (track.type == 'left-bar') return 'one-d-vertical';else if (track.type == 'top-bar') return 'one-d-horizontal';else if (track.type == 'top-line') return 'one-d-horizontal';else if (track.type == 'top-point') return 'one-d-horizontal';else if (track.type == 'top-heatmap') return 'one-d-horizontal';else if (track.type == 'top-diagonal-heatmap') return 'one-d-horizontal-diagonal';else if (track.type == 'top-gene-labels') return 'one-d-horizontal';else if (track.type == 'left-gene-labels') return 'one-d-vertical';else if (track.type == 'top-chromosome-axis') return 'horizontal-axis';else if (track.type == 'left-chromosome-axis') return 'vertical-axis';
+	            return this.trackDescriptions[track.type].dimension;
 	        }
 	    }, {
 	        key: 'trackOpacity',
 	        value: function trackOpacity(track) {
-	            if (track.type == 'top-chromosome-axis' || track.type == 'left-chromosome-axis') return 1.;else return 0.1;
+	            if (track.type == 'top-chromosome-axis' || track.type == 'left-chromosome-axis') return 1.;else if (track.type == 'chromosome-grid') return 0.5;else return 0.1;
 	        }
 	    }, {
 	        key: 'zoomTo',
@@ -24883,7 +25090,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                                yRange: _this2.state.yRange,
 	                                xDomain: _this2.state.xDomain,
 	                                yDomain: _this2.state.yDomain,
-	                                twoD: _this2.twoD
+	                                twoD: _this2.twoD,
+	                                autocompleteSource: _this2.props.viewConfig.searchBox.autocompleteSource
 	                            });
 	                        }
 	                    }()
@@ -24899,7 +25107,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    trackList.map(function (track, i) {
 	                        return _react2.default.createElement('div', {
 	                            className: 'track ' + this.trackDimension(track),
-	                            style: { left: track.left, top: track.top, position: 'absolute' },
+	                            style: { left: track.left,
+	                                top: track.top,
+	                                width: track.width,
+	                                height: track.height,
+	                                position: 'absolute' },
 	                            key: track.uid
 	                        })
 
@@ -64387,7 +64599,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.GenericTiledArea = GenericTiledArea;
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -64576,7 +64788,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                currentTiles.forEach(function (tile) {
 	                    if (!isTileLoaded(tile) && !isTileLoading(tile)) {
 	                        // if the tile isn't loaded, load it
-	                        var tileSubPath = tile.join('.');
+	                        var tileSubPath = tile.join('.'); //tile = [1,1] e.g. 1.1 or tile=[3,4,16] -> 3.4.16
 	                        var tilePath = tileDirectory + "/" + tileSubPath;
 	                        loadingTiles[tileId(tile)] = true;
 	                        d3.json(tilePath, function (error, data) {
@@ -64981,7 +65193,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _pixi2 = _interopRequireDefault(_pixi);
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -65251,6 +65463,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	exports.load1DTileData = load1DTileData;
+	exports.load1DRatioTileData = load1DRatioTileData;
 	function load1DTileData(tile_value, tile_type) {
 	    if (tile_type == 'dense') return tile_value;else if (tile_type == 'sparse') {
 	        var resolution = 256;
@@ -65274,6 +65487,56 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	}
 
+	function load1DRatioTileData(tile_value, tile_type) {
+	    var toReturn = null;
+	    if (tile_type == 'dense') {
+	        toReturn = [];
+
+	        for (var i = 0; i < tile_value.length;) {
+	            toReturn.push([tile_value[i], tile_value[i + 1]]);
+	            i += 2;
+	        }
+	    } else if (tile_type == 'sparse') {
+	        var resolution = 256;
+	        var values = [];
+
+	        for (var _i2 = 0; _i2 < resolution; _i2++) {
+	            values.push([0, 0]);
+	        }var _i = 0;
+
+	        while (_i < tile_value.length) {
+	            var value = [tile_value[_i], tile_value[_i + 1]];
+	            var num_poss = tile_value[_i + 2];
+	            console.log('num_poss:', num_poss);
+	            _i += 3;
+	            var xs = [];
+
+	            for (var j = 0; j < num_poss; j++) {
+	                values[tile_value[_i + j]] = value;
+	                console.log("setting values at pos:", tile_value[_i + j], value);
+	            }
+
+	            _i += num_poss;
+	        }
+	        toReturn = values;
+	    } else {
+	        return [];
+	    }
+
+	    var ratios = [];
+	    var realRatios = [];
+
+	    for (var _i3 = 0; _i3 < toReturn.length; _i3++) {
+	        var ratio = toReturn[_i3][0] / toReturn[_i3][1];
+	        ratios.push(ratio);
+
+	        // keep track of the non-NA ratios so that we can get their min and max
+	        if (!isNaN(ratio)) realRatios.push(ratio);
+	    }
+
+	    return { 'min': Math.min.apply(Math, realRatios), 'max': Math.max.apply(Math, realRatios), 'data': ratios };
+	}
+
 /***/ },
 /* 332 */
 /***/ function(module, exports, __webpack_require__) {
@@ -65289,7 +65552,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _pixi2 = _interopRequireDefault(_pixi);
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -65625,7 +65888,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _pixi2 = _interopRequireDefault(_pixi);
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -65656,18 +65919,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function tileId(tile) {
 	        // uniquely identify the tile with a string
 	        return tile.join(".") + '.' + tile.mirrored;
-	    }
-
-	    function loadTileData(tile_value) {
-	        if ('dense' in tile_value) return tile_value['dense'];else if ('sparse' in tile_value) {
-	            var values = Array.apply(null, Array(resolution)).map(Number.prototype.valueOf, 0);
-	            for (var i = 0; i < tile_value.sparse.length; i++) {
-	                if ('pos' in tile_value.sparse[i]) values[tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;else values[tile_value.sparse[i][0]] = tile_value.sparse[i][1];
-	            }
-	            return values;
-	        } else {
-	            return [];
-	        }
 	    }
 
 	    var chart = function chart(selection) {
@@ -65751,7 +66002,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 
 	                drawTile = function drawTile(graphics, tile) {
-	                    var tileData = loadTileData(tile.data);
+	                    var tileData = load1DTileData(tile.data, tile.type);
 	                    graphics.clear();
 
 	                    var tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
@@ -65906,7 +66157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _pixi2 = _interopRequireDefault(_pixi);
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -66183,7 +66434,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _pixi2 = _interopRequireDefault(_pixi);
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -66468,7 +66719,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _pixi2 = _interopRequireDefault(_pixi);
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -66859,7 +67110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _pixi2 = _interopRequireDefault(_pixi);
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -86323,7 +86574,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _pixi2 = _interopRequireDefault(_pixi);
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -87060,7 +87311,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    BUFFER[i].length = 0
 	  }
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(184).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(183).Buffer))
 
 /***/ },
 /* 598 */
@@ -88841,7 +89092,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _pixi2 = _interopRequireDefault(_pixi);
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -89215,7 +89466,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.TopChromosomeAxis = TopChromosomeAxis;
+	exports.ChromosomeGrid = ChromosomeGrid;
 
 	__webpack_require__(608);
 
@@ -89223,7 +89474,268 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
+
+	var _slugid2 = _interopRequireDefault(_slugid);
+
+	var _ChromosomeInfo = __webpack_require__(610);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function ChromosomeGrid() {
+	    var bisect = _d2.default.bisector(function (d) {
+	        return d.pos;
+	    }).left;
+	    var width = 600,
+	        height = 600;
+	    var zoomDispatch = null;
+	    var resizeDispatch = null;
+	    var domain = [0, 1];
+	    var orient = 'top';
+	    var xScale = null,
+	        yScale = null;
+	    var zoomedXScale = _d2.default.scale.linear();
+	    var zoomedYScale = _d2.default.scale.linear();
+
+	    function chart(selection) {
+	        selection.each(function (d) {
+	            console.log('chromosome-grid called');
+
+	            if (!('resizeDispatch' in d)) {
+	                d.resizeDispatch = resizeDispatch == null ? _d2.default.dispatch('resize') : resizeDispatch;
+	            }
+
+	            var slugId = d.uid + '.top-axis';
+	            d.resizeDispatch.on('resize.' + slugId, sizeChanged.bind(this));
+
+	            var localZoomDispatch = zoomDispatch == null ? _d2.default.dispatch('zoom') : zoomDispatch;
+	            var gChromLabels = null;
+	            var chromInfo = null;
+	            var cumValues = null;
+
+	            var verticalLines = null;
+	            var horizontalLines = null;
+
+	            var gHorizontalLines = null;
+	            var gVerticalLines = null;
+	            var lineXScale = null;
+	            var lineYScale = null;
+
+	            var zoom = _d2.default.behavior.zoom();
+
+	            // create one svg
+	            var svg = _d2.default.select(this).selectAll('svg').data([d]);
+
+	            svg.enter().append('svg').style('width', function (d) {
+	                return d.width;
+	            }).style('height', function (d) {
+	                return d.height;
+	            }).style('opacity', 0.5).classed('chromosome-grid', true);
+
+	            var gGridData = svg.selectAll('g').data([0]);
+
+	            gGridData.enter().append('g');
+
+	            gGridData.exit().remove();
+
+	            var gGrid = svg.selectAll('g').attr('transform', 'translate(' + -d.leftMargin + ',0)');
+
+	            (0, _ChromosomeInfo.ChromosomeInfo)(d.source, function (newChromInfo) {
+	                chromInfo = newChromInfo;
+
+	                cumValues = chromInfo.cumPositions;
+	                gGrid.selectAll('.horizontal-line').data(cumValues).enter().append('path').classed('horizontal-line', true);
+
+	                gGrid.selectAll('.vertical-line').data(cumValues).enter().append('path').classed('vertical-line', true);
+
+	                horizontalLines = gGrid.selectAll('.horizontal-line');
+	                verticalLines = gGrid.selectAll('.vertical-line');
+	                draw();
+	            });
+
+	            localZoomDispatch.on('zoom.' + slugId, zoomChanged);
+
+	            function zoomChanged(translate, scale) {
+	                // something changed the zoom.
+	                zoom.translate(translate);
+	                zoom.scale(scale);
+
+	                draw();
+	            }
+
+	            function sizeChanged() {
+	                var svg = _d2.default.select(this).selectAll('svg');
+	                svg.style('width', d.width);
+	                draw();
+	            }
+
+	            function draw() {
+	                zoomedXScale.range(xScale.range());
+	                zoomedXScale.domain(xScale.range().map(function (x) {
+	                    return (x - zoom.translate()[0]) / zoom.scale();
+	                }).map(xScale.invert));
+
+	                zoomedYScale.range(yScale.range());
+	                zoomedYScale.domain(yScale.range().map(function (y) {
+	                    return (y - zoom.translate()[1]) / zoom.scale();
+	                }).map(yScale.invert));
+
+	                if (chromInfo == null) return;
+
+	                verticalLines.attr('d', function (d) {
+	                    return 'M ' + zoomedXScale(d.pos) + ' ' + zoomedYScale(0) + ' L ' + zoomedXScale(d.pos) + ' ' + zoomedYScale(chromInfo.totalLength);
+	                });
+	                horizontalLines.attr('d', function (d) {
+	                    return 'M ' + zoomedXScale(0) + ' ' + zoomedYScale(d.pos) + ' L ' + zoomedXScale(chromInfo.totalLength) + ' ' + zoomedYScale(d.pos);
+	                });
+	            }
+
+	            draw();
+	        });
+	    }
+
+	    chart.width = function (_) {
+	        if (!arguments.length) return width;else width = _;
+	        return chart;
+	    };
+
+	    chart.height = function (_) {
+	        if (!arguments.length) return height;else height = _;
+	        return chart;
+	    };
+
+	    chart.xScale = function (_) {
+	        if (!arguments.length) return xScale;else xScale = _;
+	        return chart;
+	    };
+
+	    chart.yScale = function (_) {
+	        if (!arguments.length) return yScale;else yScale = _;
+	        return chart;
+	    };
+
+	    chart.domain = function (_) {
+	        if (!arguments.length) return domain;else domain = _;
+	        return chart;
+	    };
+
+	    chart.zoomDispatch = function (_) {
+	        if (!arguments.length) return zoomDispatch;else zoomDispatch = _;
+	        return chart;
+	    };
+
+	    chart.resizeDispatch = function (_) {
+	        if (!arguments.length) return resizeDispatch;else resizeDispatch = _;
+	        return chart;
+	    };
+
+	    chart.orient = function (_) {
+	        if (!arguments.length) return orient;else orient = _;
+	        return chart;
+	    };
+
+	    return chart;
+	}
+
+/***/ },
+/* 608 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(609);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(180)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./ChromosomeGrid.css", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./ChromosomeGrid.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 609 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(179)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "svg {\n      font: 10px sans-serif;\n  }\n\n.genome-scale {\n    stroke: red;\n}\n\n.center-tick {\n    stroke: black;\n    stroke-width: 1;\n}\n\npath {\n    stroke: black;\n    stroke-width: 1;\n    fill: transparent;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 610 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.ChromosomeInfo = ChromosomeInfo;
+
+	var _d = __webpack_require__(325);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function ChromosomeInfo(filepath, success) {
+	    _d2.default.text(filepath, function (text) {
+	        var data = _d2.default.tsv.parseRows(text);
+	        var cumValues = [];
+	        var chrPositions = {};
+	        var totalLength = 0;
+
+	        for (var i = 0; i < data.length; i++) {
+	            totalLength += +data[i][1];
+
+	            var newValue = { 'id': i, 'chr': data[i][0], 'pos': totalLength - +data[i][1] };
+
+	            cumValues.push(newValue);
+	            chrPositions[newValue.chr] = newValue;
+	        }
+
+	        var chromInfo = { 'cumPositions': cumValues,
+	            'chrPositions': chrPositions,
+	            'totalLength': totalLength };
+
+	        success(chromInfo);
+	    });
+	}
+
+/***/ },
+/* 611 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.TopChromosomeAxis = TopChromosomeAxis;
+
+	__webpack_require__(612);
+
+	var _d = __webpack_require__(325);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -89410,13 +89922,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 608 */
+/* 612 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(609);
+	var content = __webpack_require__(613);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(180)(content, {});
@@ -89436,7 +89948,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 609 */
+/* 613 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(179)();
@@ -89450,48 +89962,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 610 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.ChromosomeInfo = ChromosomeInfo;
-
-	var _d = __webpack_require__(325);
-
-	var _d2 = _interopRequireDefault(_d);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function ChromosomeInfo(filepath, success) {
-	    _d2.default.text(filepath, function (text) {
-	        var data = _d2.default.tsv.parseRows(text);
-	        var cumValues = [];
-	        var chrPositions = {};
-	        var totalLength = 0;
-
-	        for (var i = 0; i < data.length; i++) {
-	            totalLength += +data[i][1];
-
-	            var newValue = { 'id': i, 'chr': data[i][0], 'pos': totalLength - +data[i][1] };
-
-	            cumValues.push(newValue);
-	            chrPositions[newValue.chr] = newValue;
-	        }
-
-	        var chromInfo = { 'cumPositions': cumValues,
-	            'chrPositions': chrPositions,
-	            'totalLength': totalLength };
-
-	        success(chromInfo);
-	    });
-	}
-
-/***/ },
-/* 611 */
+/* 614 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -89501,13 +89972,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.LeftChromosomeAxis = LeftChromosomeAxis;
 
-	__webpack_require__(608);
+	__webpack_require__(612);
 
 	var _d = __webpack_require__(325);
 
 	var _d2 = _interopRequireDefault(_d);
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
 
@@ -89717,7 +90188,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 612 */
+/* 615 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -89735,6 +90206,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _d3 = _interopRequireDefault(_d2);
 
+	var _d3Queue = __webpack_require__(616);
+
 	var _react = __webpack_require__(2);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -89743,15 +90216,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _slugid = __webpack_require__(182);
+	var _slugid = __webpack_require__(181);
 
 	var _slugid2 = _interopRequireDefault(_slugid);
+
+	var _reactAutocomplete = __webpack_require__(617);
+
+	var _reactAutocomplete2 = _interopRequireDefault(_reactAutocomplete);
 
 	var _reactBootstrap = __webpack_require__(342);
 
 	var _ChromosomeInfo = __webpack_require__(610);
 
-	var _search_field = __webpack_require__(613);
+	var _search_field = __webpack_require__(622);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -89783,6 +90260,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this.zoomedXScale = _this.xOrigScale.copy();
 	        _this.zoomedYScale = _this.yOrigScale.copy();
 
+	        _this.prevParts = [];
+
 	        (0, _ChromosomeInfo.ChromosomeInfo)(_this.props.chromInfoPath, function (newChromInfo) {
 	            _this.chromInfo = newChromInfo;
 	            _this.searchField = new _search_field.SearchField(_this.chromInfo);
@@ -89790,6 +90269,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _this.setPositionText();
 	        });
 
+	        _this.state = {
+	            value: "chr4:190,998,876-191,000,255",
+	            loading: false,
+	            genes: []
+	        };
+
+	        _this.styles = {
+	            item: {
+	                padding: '2px 6px',
+	                cursor: 'default',
+	                "zIndex": 1000
+	            },
+
+	            highlightedItem: {
+	                color: 'white',
+	                background: 'hsl(200, 50%, 50%)',
+	                padding: '2px 6px',
+	                cursor: 'default'
+	            },
+
+	            menu: {
+	                border: 'solid 1px #ccc'
+	            }
+	        };
 	        return _this;
 	    }
 
@@ -89842,53 +90345,256 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (y1[0] != y2[0]) positionString += " and " + y1[0] + ':' + format(Math.floor(y1[1])) + '-' + y2[0] + ':' + format(Math.ceil(y2[1]));else positionString += " and " + y1[0] + ':' + format(Math.floor(y1[1])) + '-' + format(Math.ceil(y2[1]));
 	            }
 
-	            _reactDom2.default.findDOMNode(this.refs.searchFieldText).value = positionString;
+	            this.prevParts = positionString.split(/[ -]/);
+
+	            //ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
+	            this.setState({ "value": positionString });
+	        }
+	    }, {
+	        key: 'replaceGenesWithLoadedPositions',
+	        value: function replaceGenesWithLoadedPositions(genePositions) {
+	            // iterate over all non-position oriented words and try
+	            // to replace them with the positions loaded from the suggestions
+	            // database
+	            var spaceParts = this.state.value.split(' ');
+
+	            for (var i = 0; i < spaceParts.length; i++) {
+	                var dashParts = spaceParts[i].split('-');
+
+	                for (var j = 0; j < dashParts.length; j++) {
+	                    // if we're in this function, this gene name must have been loaded
+	                    var genePosition = genePositions[dashParts[j].toLowerCase()];
+
+	                    if (!genePosition) {
+	                        //console.log("Error: gene position undefined...", dashParts[j].toLowerCase());
+	                        continue;
+	                    }
+
+	                    if (dashParts.length == 1) {
+	                        // no range, just a position
+	                        dashParts[j] = genePosition.chr + ":" + genePosition.txStart + '-' + genePosition.txEnd;
+	                    } else {
+	                        if (j == 0) {
+	                            // first part of a range
+
+	                            dashParts[j] = genePosition.chr + ":" + genePosition.txStart;
+	                        } else {
+	                            // last part of a range
+
+	                            dashParts[j] = genePosition.chr + ":" + genePosition.txEnd;
+	                        }
+	                    }
+
+	                    spaceParts[i] = dashParts.join('-');
+	                }
+	            }
+
+	            var newValue = spaceParts.join(' ');
+	            this.prevParts = newValue.split(/[ -]/);
+	            this.setState({ value: newValue });
+	        }
+	    }, {
+	        key: 'replaceGenesWithPositions',
+	        value: function replaceGenesWithPositions(finished) {
+	            var _this2 = this;
+
+	            // replace any gene names in the input with their corresponding positions
+	            var value_parts = this.state.value.split(/[ -]/);
+	            var q = (0, _d3Queue.queue)();
+
+	            for (var i = 0; i < value_parts.length; i++) {
+	                var _searchField$parsePos = this.searchField.parsePosition(value_parts[i]);
+
+	                var _searchField$parsePos2 = _slicedToArray(_searchField$parsePos, 3);
+
+	                var chr = _searchField$parsePos2[0];
+	                var pos = _searchField$parsePos2[1];
+	                var retPos = _searchField$parsePos2[2];
+
+
+	                if (retPos == null) {
+	                    // not a chromsome position, let's see if it's a gene name
+	                    var url = this.props.autocompleteSource + "/ac_" + value_parts[i].toLowerCase();
+	                    q = q.defer(_d3.default.json, url);
+	                }
+	            }
+
+	            q.awaitAll(function (error, files) {
+	                var genePositions = {};
+
+	                // extract the position of the top match from the list of files
+	                for (var _i = 0; _i < files.length; _i++) {
+	                    genePositions[files[_i]._source.suggestions[0].geneName.toLowerCase()] = files[_i]._source.suggestions[0];
+	                }
+
+	                _this2.replaceGenesWithLoadedPositions(genePositions);
+
+	                finished();
+	            });
 	        }
 	    }, {
 	        key: 'buttonClick',
 	        value: function buttonClick() {
-	            var searchFieldValue = _reactDom2.default.findDOMNode(this.refs.searchFieldText).value;
+	            this.setState({ 'genes': [] }); //no menu should be open
 
-	            if (this.searchField != null) {
-	                var _searchField$searchPo = this.searchField.searchPosition(searchFieldValue);
+	            this.replaceGenesWithPositions(function () {
+	                var searchFieldValue = this.state.value; //ReactDOM.findDOMNode( this.refs.searchFieldText ).value;
 
-	                var _searchField$searchPo2 = _slicedToArray(_searchField$searchPo, 2);
+	                if (this.searchField != null) {
+	                    var _searchField$searchPo = this.searchField.searchPosition(searchFieldValue);
 
-	                var range1 = _searchField$searchPo2[0];
-	                var range2 = _searchField$searchPo2[1];
+	                    var _searchField$searchPo2 = _slicedToArray(_searchField$searchPo, 2);
+
+	                    var range1 = _searchField$searchPo2[0];
+	                    var range2 = _searchField$searchPo2[1];
 
 
-	                this.props.zoomToGenomePositionHandler(range1, range2);
-	            }
+	                    if (range1 && (isNaN(range1[0]) || isNaN(range1[1])) || range2 && (isNaN(range2[0]) || isNaN(range2[1]))) {
+	                        return;
+	                    }
+
+	                    this.props.zoomToGenomePositionHandler(range1, range2);
+	                }
+	            }.bind(this));
 	        }
 	    }, {
 	        key: 'searchFieldKeyPress',
 	        value: function searchFieldKeyPress(target) {
 	            // if the user hits enter, act as if they clicked the button
+	            /*
 	            if (target.charCode == 13) {
 	                this.buttonClick();
 	            }
+	            */
+	        }
+	    }, {
+	        key: 'pathJoin',
+	        value: function pathJoin(parts, sep) {
+	            var separator = sep || '/';
+	            var replace = new RegExp(separator + '{1,}', 'g');
+	            return parts.join(separator).replace(replace, separator);
+	        }
+	    }, {
+	        key: 'onAutocompleteChange',
+	        value: function onAutocompleteChange(event, value) {
+	            var _this3 = this;
+
+	            this.setState({ value: value, loading: true });
+
+	            var parts = value.split(/[ -]/);
+	            this.changedPart = null;
+
+	            for (var i = 0; i < parts.length; i++) {
+	                if (i == this.prevParts.length) {
+	                    // new part added
+	                    this.changedPart = i;
+	                    break;
+	                }
+
+	                if (parts[i] != this.prevParts[i]) {
+	                    this.changedPart = i;
+	                    break;
+	                }
+	            }
+
+	            this.prevParts = parts;
+
+	            // no autocomplete repository is provided, so we don't try to autcomplete anything
+	            if (!this.props.autocompleteSource) return;
+
+	            this.setState({ loading: true });
+	            // send out a request for the autcomplete suggestions
+	            var url = this.props.autocompleteSource + "/ac_" + parts[this.changedPart].toLowerCase();
+	            _d3.default.json(url, function (error, data) {
+	                if (error) {
+	                    _this3.setState({ loading: false, genes: [] });
+	                    return;
+	                }
+
+	                // we've received a list of autocomplete suggestions
+	                _this3.setState({ loading: false, genes: data._source.suggestions });
+	            });
+	        }
+	    }, {
+	        key: 'geneSelected',
+	        value: function geneSelected(value, objct) {
+
+	            var parts = this.state.value.split(' ');
+	            var partCount = this.changedPart;
+
+	            // change the part that was selected
+	            for (var i = 0; i < parts.length; i++) {
+	                var dash_parts = parts[i].split('-');
+	                if (partCount > dash_parts.length - 1) {
+	                    partCount -= dash_parts.length;
+	                } else {
+	                    dash_parts[partCount] = objct.geneName;
+	                    parts[i] = dash_parts.join('-');
+	                    break;
+	                }
+	            }
+
+	            /*
+	            let new_dash_parts = dash_parts.slice(0, dash_parts.length-1);
+	            new_dash_parts = new_dash_parts.concat(objct.geneName).join('-');
+	             let new_parts = parts.splice(0, parts.length-1);
+	            new_parts = new_parts.concat(new_dash_parts).join(' ');
+	            */
+
+	            this.prevParts = parts.join(' ').split(/[ -]/);
+	            this.setState({ value: parts.join(' '), genes: [] });
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var _this4 = this;
+
 	            return _react2.default.createElement(
 	                _reactBootstrap.FormGroup,
 	                { bsSize: 'small' },
 	                _react2.default.createElement(
 	                    _reactBootstrap.InputGroup,
 	                    null,
-	                    _react2.default.createElement(_reactBootstrap.FormControl, { type: 'text', onKeyPress: this.searchFieldKeyPress.bind(this), ref: 'searchFieldText'
-	                        //defaultValue="chr2:100000000 to chr2:200000000"
-	                        , defaultValue: 'chr4:190,998,876-191,000,255'
-	                    }),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { style: { "zIndex": 999, "position": "relative" } },
+	                        _react2.default.createElement(_reactAutocomplete2.default, {
+	                            value: this.state.value,
+	                            items: this.state.genes,
+	                            onChange: this.onAutocompleteChange.bind(this),
+	                            onSelect: function onSelect(value, objct) {
+	                                return _this4.geneSelected(value, objct);
+	                            },
+	                            onKeyDown: this.searchFieldKeyPress.bind(this),
+	                            getItemValue: function getItemValue(item) {
+	                                return item.geneName;
+	                            },
+	                            inputProps: { "className": "form-control" },
+	                            wrapperStyle: { width: "100%" },
+	                            renderItem: function renderItem(item, isHighlighted) {
+	                                return _react2.default.createElement(
+	                                    'div',
+	                                    {
+	                                        style: isHighlighted ? _this4.styles.highlightedItem : _this4.styles.item,
+	                                        key: item.refseqid,
+	                                        id: item.refseqid
+	                                    },
+	                                    item.geneName
+	                                );
+	                            }
+	                        })
+	                    ),
 	                    _react2.default.createElement(
 	                        _reactBootstrap.InputGroup.Button,
 	                        null,
 	                        _react2.default.createElement(
-	                            _reactBootstrap.Button,
-	                            { bsSize: 'small', onClick: this.buttonClick.bind(this) },
-	                            _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'search' })
+	                            'div',
+	                            { style: { "zIndex": 1000, "position": "relative" } },
+	                            _react2.default.createElement(
+	                                _reactBootstrap.Button,
+	                                { bsSize: 'small', onClick: this.buttonClick.bind(this) },
+	                                _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'search' })
+	                            )
 	                        )
 	                    )
 	                )
@@ -89898,9 +90604,1104 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return GenomePositionSearchBox;
 	}(_react2.default.Component);
+	/*
+	*/
 
 /***/ },
-/* 613 */
+/* 616 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// https://d3js.org/d3-queue/ Version 3.0.3. Copyright 2016 Mike Bostock.
+	(function (global, factory) {
+	   true ? factory(exports) :
+	  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	  (factory((global.d3 = global.d3 || {})));
+	}(this, (function (exports) { 'use strict';
+
+	var slice = [].slice;
+
+	var noabort = {};
+
+	function Queue(size) {
+	  if (!(size >= 1)) throw new Error;
+	  this._size = size;
+	  this._call =
+	  this._error = null;
+	  this._tasks = [];
+	  this._data = [];
+	  this._waiting =
+	  this._active =
+	  this._ended =
+	  this._start = 0; // inside a synchronous task callback?
+	}
+
+	Queue.prototype = queue.prototype = {
+	  constructor: Queue,
+	  defer: function(callback) {
+	    if (typeof callback !== "function" || this._call) throw new Error;
+	    if (this._error != null) return this;
+	    var t = slice.call(arguments, 1);
+	    t.push(callback);
+	    ++this._waiting, this._tasks.push(t);
+	    poke(this);
+	    return this;
+	  },
+	  abort: function() {
+	    if (this._error == null) abort(this, new Error("abort"));
+	    return this;
+	  },
+	  await: function(callback) {
+	    if (typeof callback !== "function" || this._call) throw new Error;
+	    this._call = function(error, results) { callback.apply(null, [error].concat(results)); };
+	    maybeNotify(this);
+	    return this;
+	  },
+	  awaitAll: function(callback) {
+	    if (typeof callback !== "function" || this._call) throw new Error;
+	    this._call = callback;
+	    maybeNotify(this);
+	    return this;
+	  }
+	};
+
+	function poke(q) {
+	  if (!q._start) {
+	    try { start(q); } // let the current task complete
+	    catch (e) {
+	      if (q._tasks[q._ended + q._active - 1]) abort(q, e); // task errored synchronously
+	      else if (!q._data) throw e; // await callback errored synchronously
+	    }
+	  }
+	}
+
+	function start(q) {
+	  while (q._start = q._waiting && q._active < q._size) {
+	    var i = q._ended + q._active,
+	        t = q._tasks[i],
+	        j = t.length - 1,
+	        c = t[j];
+	    t[j] = end(q, i);
+	    --q._waiting, ++q._active;
+	    t = c.apply(null, t);
+	    if (!q._tasks[i]) continue; // task finished synchronously
+	    q._tasks[i] = t || noabort;
+	  }
+	}
+
+	function end(q, i) {
+	  return function(e, r) {
+	    if (!q._tasks[i]) return; // ignore multiple callbacks
+	    --q._active, ++q._ended;
+	    q._tasks[i] = null;
+	    if (q._error != null) return; // ignore secondary errors
+	    if (e != null) {
+	      abort(q, e);
+	    } else {
+	      q._data[i] = r;
+	      if (q._waiting) poke(q);
+	      else maybeNotify(q);
+	    }
+	  };
+	}
+
+	function abort(q, e) {
+	  var i = q._tasks.length, t;
+	  q._error = e; // ignore active callbacks
+	  q._data = undefined; // allow gc
+	  q._waiting = NaN; // prevent starting
+
+	  while (--i >= 0) {
+	    if (t = q._tasks[i]) {
+	      q._tasks[i] = null;
+	      if (t.abort) {
+	        try { t.abort(); }
+	        catch (e) { /* ignore */ }
+	      }
+	    }
+	  }
+
+	  q._active = NaN; // allow notification
+	  maybeNotify(q);
+	}
+
+	function maybeNotify(q) {
+	  if (!q._active && q._call) {
+	    var d = q._data;
+	    q._data = undefined; // allow gc
+	    q._call(q._error, d);
+	  }
+	}
+
+	function queue(concurrency) {
+	  return new Queue(arguments.length ? +concurrency : Infinity);
+	}
+
+	exports.queue = queue;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+	})));
+
+/***/ },
+/* 617 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = __webpack_require__(618);
+
+/***/ },
+/* 618 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var React = __webpack_require__(2);
+
+	var _require = __webpack_require__(36);
+
+	var findDOMNode = _require.findDOMNode;
+
+	var scrollIntoView = __webpack_require__(619);
+
+	var _debugStates = [];
+
+	var Autocomplete = React.createClass({
+	  displayName: 'Autocomplete',
+
+	  propTypes: {
+	    value: React.PropTypes.any,
+	    onChange: React.PropTypes.func,
+	    onSelect: React.PropTypes.func,
+	    shouldItemRender: React.PropTypes.func,
+	    sortItems: React.PropTypes.func,
+	    getItemValue: React.PropTypes.func.isRequired,
+	    renderItem: React.PropTypes.func.isRequired,
+	    renderMenu: React.PropTypes.func,
+	    menuStyle: React.PropTypes.object,
+	    inputProps: React.PropTypes.object,
+	    wrapperProps: React.PropTypes.object,
+	    wrapperStyle: React.PropTypes.object,
+	    autoHighlight: React.PropTypes.bool,
+	    onMenuVisibilityChange: React.PropTypes.func,
+	    open: React.PropTypes.bool,
+	    debug: React.PropTypes.bool
+	  },
+
+	  getDefaultProps: function getDefaultProps() {
+	    return {
+	      value: '',
+	      wrapperProps: {},
+	      wrapperStyle: {
+	        display: 'inline-block'
+	      },
+	      inputProps: {},
+	      onChange: function onChange() {},
+	      onSelect: function onSelect(value, item) {},
+	      renderMenu: function renderMenu(items, value, style) {
+	        return React.createElement('div', { style: _extends({}, style, this.menuStyle), children: items });
+	      },
+	      shouldItemRender: function shouldItemRender() {
+	        return true;
+	      },
+	      menuStyle: {
+	        borderRadius: '3px',
+	        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
+	        background: 'rgba(255, 255, 255, 0.9)',
+	        padding: '2px 0',
+	        fontSize: '90%',
+	        position: 'fixed',
+	        overflow: 'auto',
+	        maxHeight: '50%' },
+	      // TODO: don't cheat, let it flow to the bottom
+	      autoHighlight: true,
+	      onMenuVisibilityChange: function onMenuVisibilityChange() {}
+	    };
+	  },
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      isOpen: false,
+	      highlightedIndex: null
+	    };
+	  },
+
+	  componentWillMount: function componentWillMount() {
+	    this._ignoreBlur = false;
+	    this._performAutoCompleteOnUpdate = false;
+	    this._performAutoCompleteOnKeyUp = false;
+	  },
+
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    this._performAutoCompleteOnUpdate = true;
+	    // If `items` has changed we want to reset `highlightedIndex`
+	    // since it probably no longer refers to a relevant item
+	    if (this.props.items !== nextProps.items ||
+	    // The entries in `items` may have been changed even though the
+	    // object reference remains the same, double check by seeing
+	    // if `highlightedIndex` points to an existing item
+	    this.state.highlightedIndex >= nextProps.items.length) {
+	      this.setState({ highlightedIndex: null });
+	    }
+	  },
+
+	  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
+	    if (this.state.isOpen === true && prevState.isOpen === false) this.setMenuPositions();
+
+	    if (this.state.isOpen && this._performAutoCompleteOnUpdate) {
+	      this._performAutoCompleteOnUpdate = false;
+	      this.maybeAutoCompleteText();
+	    }
+
+	    this.maybeScrollItemIntoView();
+	    if (prevState.isOpen !== this.state.isOpen) {
+	      this.props.onMenuVisibilityChange(this.state.isOpen);
+	    }
+	  },
+
+	  maybeScrollItemIntoView: function maybeScrollItemIntoView() {
+	    if (this.state.isOpen === true && this.state.highlightedIndex !== null) {
+	      var itemNode = this.refs['item-' + this.state.highlightedIndex];
+	      var menuNode = this.refs.menu;
+	      scrollIntoView(findDOMNode(itemNode), findDOMNode(menuNode), { onlyScrollIfNeeded: true });
+	    }
+	  },
+
+	  handleKeyDown: function handleKeyDown(event) {
+	    if (this.keyDownHandlers[event.key]) this.keyDownHandlers[event.key].call(this, event);else {
+	      this.setState({
+	        highlightedIndex: null,
+	        isOpen: true
+	      });
+	    }
+	  },
+
+	  handleChange: function handleChange(event) {
+	    this._performAutoCompleteOnKeyUp = true;
+	    this.props.onChange(event, event.target.value);
+	  },
+
+	  handleKeyUp: function handleKeyUp() {
+	    if (this._performAutoCompleteOnKeyUp) {
+	      this._performAutoCompleteOnKeyUp = false;
+	      this.maybeAutoCompleteText();
+	    }
+	  },
+
+	  keyDownHandlers: {
+	    ArrowDown: function ArrowDown(event) {
+	      event.preventDefault();
+	      var itemsLength = this.getFilteredItems().length;
+	      if (!itemsLength) return;
+	      var highlightedIndex = this.state.highlightedIndex;
+
+	      var index = highlightedIndex === null || highlightedIndex === itemsLength - 1 ? 0 : highlightedIndex + 1;
+	      this._performAutoCompleteOnKeyUp = true;
+	      this.setState({
+	        highlightedIndex: index,
+	        isOpen: true
+	      });
+	    },
+
+	    ArrowUp: function ArrowUp(event) {
+	      event.preventDefault();
+	      var itemsLength = this.getFilteredItems().length;
+	      if (!itemsLength) return;
+	      var highlightedIndex = this.state.highlightedIndex;
+
+	      var index = highlightedIndex === 0 || highlightedIndex === null ? itemsLength - 1 : highlightedIndex - 1;
+	      this._performAutoCompleteOnKeyUp = true;
+	      this.setState({
+	        highlightedIndex: index,
+	        isOpen: true
+	      });
+	    },
+
+	    Enter: function Enter(event) {
+	      var _this = this;
+
+	      if (this.state.isOpen === false) {
+	        // menu is closed so there is no selection to accept -> do nothing
+	        return;
+	      } else if (this.state.highlightedIndex == null) {
+	        // input has focus but no menu item is selected + enter is hit -> close the menu, highlight whatever's in input
+	        this.setState({
+	          isOpen: false
+	        }, function () {
+	          _this.refs.input.select();
+	        });
+	      } else {
+	        // text entered + menu item has been highlighted + enter is hit -> update value to that of selected menu item, close the menu
+	        event.preventDefault();
+	        var item = this.getFilteredItems()[this.state.highlightedIndex];
+	        var value = this.props.getItemValue(item);
+	        this.setState({
+	          isOpen: false,
+	          highlightedIndex: null
+	        }, function () {
+	          //this.refs.input.focus() // TODO: file issue
+	          _this.refs.input.setSelectionRange(value.length, value.length);
+	          _this.props.onSelect(value, item);
+	        });
+	      }
+	    },
+
+	    Escape: function Escape(event) {
+	      this.setState({
+	        highlightedIndex: null,
+	        isOpen: false
+	      });
+	    }
+	  },
+
+	  getFilteredItems: function getFilteredItems() {
+	    var _this2 = this;
+
+	    var items = this.props.items;
+
+	    if (this.props.shouldItemRender) {
+	      items = items.filter(function (item) {
+	        return _this2.props.shouldItemRender(item, _this2.props.value);
+	      });
+	    }
+
+	    if (this.props.sortItems) {
+	      items.sort(function (a, b) {
+	        return _this2.props.sortItems(a, b, _this2.props.value);
+	      });
+	    }
+
+	    return items;
+	  },
+
+	  maybeAutoCompleteText: function maybeAutoCompleteText() {
+	    if (!this.props.autoHighlight || this.props.value === '') return;
+	    var highlightedIndex = this.state.highlightedIndex;
+
+	    var items = this.getFilteredItems();
+	    if (items.length === 0) return;
+	    var matchedItem = highlightedIndex !== null ? items[highlightedIndex] : items[0];
+	    var itemValue = this.props.getItemValue(matchedItem);
+	    var itemValueDoesMatch = itemValue.toLowerCase().indexOf(this.props.value.toLowerCase()) === 0;
+	    if (itemValueDoesMatch && highlightedIndex === null) this.setState({ highlightedIndex: 0 });
+	  },
+
+	  setMenuPositions: function setMenuPositions() {
+	    var node = this.refs.input;
+	    var rect = node.getBoundingClientRect();
+	    var computedStyle = global.window.getComputedStyle(node);
+	    var marginBottom = parseInt(computedStyle.marginBottom, 10) || 0;
+	    var marginLeft = parseInt(computedStyle.marginLeft, 10) || 0;
+	    var marginRight = parseInt(computedStyle.marginRight, 10) || 0;
+	    this.setState({
+	      menuTop: rect.bottom + marginBottom,
+	      menuLeft: rect.left + marginLeft,
+	      menuWidth: rect.width + marginLeft + marginRight
+	    });
+	  },
+
+	  highlightItemFromMouse: function highlightItemFromMouse(index) {
+	    this.setState({ highlightedIndex: index });
+	  },
+
+	  selectItemFromMouse: function selectItemFromMouse(item) {
+	    var _this3 = this;
+
+	    var value = this.props.getItemValue(item);
+	    this.setState({
+	      isOpen: false,
+	      highlightedIndex: null
+	    }, function () {
+	      _this3.props.onSelect(value, item);
+	      _this3.refs.input.focus();
+	    });
+	  },
+
+	  setIgnoreBlur: function setIgnoreBlur(ignore) {
+	    this._ignoreBlur = ignore;
+	  },
+
+	  renderMenu: function renderMenu() {
+	    var _this4 = this;
+
+	    var items = this.getFilteredItems().map(function (item, index) {
+	      var element = _this4.props.renderItem(item, _this4.state.highlightedIndex === index, { cursor: 'default' });
+	      return React.cloneElement(element, {
+	        onMouseDown: function onMouseDown() {
+	          return _this4.setIgnoreBlur(true);
+	        }, // Ignore blur to prevent menu from de-rendering before we can process click
+	        onMouseEnter: function onMouseEnter() {
+	          return _this4.highlightItemFromMouse(index);
+	        },
+	        onClick: function onClick() {
+	          return _this4.selectItemFromMouse(item);
+	        },
+	        ref: 'item-' + index
+	      });
+	    });
+	    var style = {
+	      left: this.state.menuLeft,
+	      top: this.state.menuTop,
+	      minWidth: this.state.menuWidth
+	    };
+	    var menu = this.props.renderMenu(items, this.props.value, style);
+	    return React.cloneElement(menu, { ref: 'menu' });
+	  },
+
+	  handleInputBlur: function handleInputBlur() {
+	    if (this._ignoreBlur) return;
+	    this.setState({
+	      isOpen: false,
+	      highlightedIndex: null
+	    });
+	  },
+
+	  handleInputFocus: function handleInputFocus() {
+	    if (this._ignoreBlur) {
+	      this.setIgnoreBlur(false);
+	      return;
+	    }
+	    // We don't want `selectItemFromMouse` to trigger when
+	    // the user clicks into the input to focus it, so set this
+	    // flag to cancel out the logic in `handleInputClick`.
+	    // The event order is:  MouseDown -> Focus -> MouseUp -> Click
+	    this._ignoreClick = true;
+	    this.setState({ isOpen: true });
+	  },
+
+	  isInputFocused: function isInputFocused() {
+	    var el = this.refs.input;
+	    return el.ownerDocument && el === el.ownerDocument.activeElement;
+	  },
+
+	  handleInputClick: function handleInputClick() {
+	    // Input will not be focused if it's disabled
+	    if (this.isInputFocused() && this.state.isOpen === false) this.setState({ isOpen: true });else if (this.state.highlightedIndex !== null && !this._ignoreClick) this.selectItemFromMouse(this.getFilteredItems()[this.state.highlightedIndex]);
+	    this._ignoreClick = false;
+	  },
+
+	  render: function render() {
+	    var _this5 = this;
+
+	    if (this.props.debug) {
+	      // you don't like it, you love it
+	      _debugStates.push({
+	        id: _debugStates.length,
+	        state: this.state
+	      });
+	    }
+
+	    return React.createElement(
+	      'div',
+	      _extends({ style: _extends({}, this.props.wrapperStyle) }, this.props.wrapperProps),
+	      React.createElement('input', _extends({}, this.props.inputProps, {
+	        role: 'combobox',
+	        'aria-autocomplete': 'list',
+	        autoComplete: 'off',
+	        ref: 'input',
+	        onFocus: this.handleInputFocus,
+	        onBlur: this.handleInputBlur,
+	        onChange: function (event) {
+	          return _this5.handleChange(event);
+	        },
+	        onKeyDown: function (event) {
+	          return _this5.handleKeyDown(event);
+	        },
+	        onKeyUp: function (event) {
+	          return _this5.handleKeyUp(event);
+	        },
+	        onClick: this.handleInputClick,
+	        value: this.props.value
+	      })),
+	      ('open' in this.props ? this.props.open : this.state.isOpen) && this.renderMenu(),
+	      this.props.debug && React.createElement(
+	        'pre',
+	        { style: { marginLeft: 300 } },
+	        JSON.stringify(_debugStates.slice(_debugStates.length - 5, _debugStates.length), null, 2)
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Autocomplete;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 619 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(620);
+
+
+/***/ },
+/* 620 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var util = __webpack_require__(621);
+
+	function scrollIntoView(elem, container, config) {
+	  config = config || {};
+	  // document 归一化到 window
+	  if (container.nodeType === 9) {
+	    container = util.getWindow(container);
+	  }
+
+	  var allowHorizontalScroll = config.allowHorizontalScroll;
+	  var onlyScrollIfNeeded = config.onlyScrollIfNeeded;
+	  var alignWithTop = config.alignWithTop;
+	  var alignWithLeft = config.alignWithLeft;
+
+	  allowHorizontalScroll = allowHorizontalScroll === undefined ? true : allowHorizontalScroll;
+
+	  var isWin = util.isWindow(container);
+	  var elemOffset = util.offset(elem);
+	  var eh = util.outerHeight(elem);
+	  var ew = util.outerWidth(elem);
+	  var containerOffset, ch, cw, containerScroll,
+	    diffTop, diffBottom, win,
+	    winScroll, ww, wh;
+
+	  if (isWin) {
+	    win = container;
+	    wh = util.height(win);
+	    ww = util.width(win);
+	    winScroll = {
+	      left: util.scrollLeft(win),
+	      top: util.scrollTop(win)
+	    };
+	    // elem 相对 container 可视视窗的距离
+	    diffTop = {
+	      left: elemOffset.left - winScroll.left,
+	      top: elemOffset.top - winScroll.top
+	    };
+	    diffBottom = {
+	      left: elemOffset.left + ew - (winScroll.left + ww),
+	      top: elemOffset.top + eh - (winScroll.top + wh)
+	    };
+	    containerScroll = winScroll;
+	  } else {
+	    containerOffset = util.offset(container);
+	    ch = container.clientHeight;
+	    cw = container.clientWidth;
+	    containerScroll = {
+	      left: container.scrollLeft,
+	      top: container.scrollTop
+	    };
+	    // elem 相对 container 可视视窗的距离
+	    // 注意边框, offset 是边框到根节点
+	    diffTop = {
+	      left: elemOffset.left - (containerOffset.left +
+	      (parseFloat(util.css(container, 'borderLeftWidth')) || 0)),
+	      top: elemOffset.top - (containerOffset.top +
+	      (parseFloat(util.css(container, 'borderTopWidth')) || 0))
+	    };
+	    diffBottom = {
+	      left: elemOffset.left + ew -
+	      (containerOffset.left + cw +
+	      (parseFloat(util.css(container, 'borderRightWidth')) || 0)),
+	      top: elemOffset.top + eh -
+	      (containerOffset.top + ch +
+	      (parseFloat(util.css(container, 'borderBottomWidth')) || 0))
+	    };
+	  }
+
+	  if (diffTop.top < 0 || diffBottom.top > 0) {
+	    // 强制向上
+	    if (alignWithTop === true) {
+	      util.scrollTop(container, containerScroll.top + diffTop.top);
+	    } else if (alignWithTop === false) {
+	      util.scrollTop(container, containerScroll.top + diffBottom.top);
+	    } else {
+	      // 自动调整
+	      if (diffTop.top < 0) {
+	        util.scrollTop(container, containerScroll.top + diffTop.top);
+	      } else {
+	        util.scrollTop(container, containerScroll.top + diffBottom.top);
+	      }
+	    }
+	  } else {
+	    if (!onlyScrollIfNeeded) {
+	      alignWithTop = alignWithTop === undefined ? true : !!alignWithTop;
+	      if (alignWithTop) {
+	        util.scrollTop(container, containerScroll.top + diffTop.top);
+	      } else {
+	        util.scrollTop(container, containerScroll.top + diffBottom.top);
+	      }
+	    }
+	  }
+
+	  if (allowHorizontalScroll) {
+	    if (diffTop.left < 0 || diffBottom.left > 0) {
+	      // 强制向上
+	      if (alignWithLeft === true) {
+	        util.scrollLeft(container, containerScroll.left + diffTop.left);
+	      } else if (alignWithLeft === false) {
+	        util.scrollLeft(container, containerScroll.left + diffBottom.left);
+	      } else {
+	        // 自动调整
+	        if (diffTop.left < 0) {
+	          util.scrollLeft(container, containerScroll.left + diffTop.left);
+	        } else {
+	          util.scrollLeft(container, containerScroll.left + diffBottom.left);
+	        }
+	      }
+	    } else {
+	      if (!onlyScrollIfNeeded) {
+	        alignWithLeft = alignWithLeft === undefined ? true : !!alignWithLeft;
+	        if (alignWithLeft) {
+	          util.scrollLeft(container, containerScroll.left + diffTop.left);
+	        } else {
+	          util.scrollLeft(container, containerScroll.left + diffBottom.left);
+	        }
+	      }
+	    }
+	  }
+	}
+
+	module.exports = scrollIntoView;
+
+
+/***/ },
+/* 621 */
+/***/ function(module, exports) {
+
+	var RE_NUM = /[\-+]?(?:\d*\.|)\d+(?:[eE][\-+]?\d+|)/.source;
+
+	function getClientPosition(elem) {
+	  var box, x, y;
+	  var doc = elem.ownerDocument;
+	  var body = doc.body;
+	  var docElem = doc && doc.documentElement;
+	  // 根据 GBS 最新数据，A-Grade Browsers 都已支持 getBoundingClientRect 方法，不用再考虑传统的实现方式
+	  box = elem.getBoundingClientRect();
+
+	  // 注：jQuery 还考虑减去 docElem.clientLeft/clientTop
+	  // 但测试发现，这样反而会导致当 html 和 body 有边距/边框样式时，获取的值不正确
+	  // 此外，ie6 会忽略 html 的 margin 值，幸运地是没有谁会去设置 html 的 margin
+
+	  x = box.left;
+	  y = box.top;
+
+	  // In IE, most of the time, 2 extra pixels are added to the top and left
+	  // due to the implicit 2-pixel inset border.  In IE6/7 quirks mode and
+	  // IE6 standards mode, this border can be overridden by setting the
+	  // document element's border to zero -- thus, we cannot rely on the
+	  // offset always being 2 pixels.
+
+	  // In quirks mode, the offset can be determined by querying the body's
+	  // clientLeft/clientTop, but in standards mode, it is found by querying
+	  // the document element's clientLeft/clientTop.  Since we already called
+	  // getClientBoundingRect we have already forced a reflow, so it is not
+	  // too expensive just to query them all.
+
+	  // ie 下应该减去窗口的边框吧，毕竟默认 absolute 都是相对窗口定位的
+	  // 窗口边框标准是设 documentElement ,quirks 时设置 body
+	  // 最好禁止在 body 和 html 上边框 ，但 ie < 9 html 默认有 2px ，减去
+	  // 但是非 ie 不可能设置窗口边框，body html 也不是窗口 ,ie 可以通过 html,body 设置
+	  // 标准 ie 下 docElem.clientTop 就是 border-top
+	  // ie7 html 即窗口边框改变不了。永远为 2
+	  // 但标准 firefox/chrome/ie9 下 docElem.clientTop 是窗口边框，即使设了 border-top 也为 0
+
+	  x -= docElem.clientLeft || body.clientLeft || 0;
+	  y -= docElem.clientTop || body.clientTop || 0;
+
+	  return {left: x, top: y};
+	}
+
+	function getScroll(w, top) {
+	  var ret = w['page' + (top ? 'Y' : 'X') + 'Offset'];
+	  var method = 'scroll' + (top ? 'Top' : 'Left');
+	  if (typeof ret !== 'number') {
+	    var d = w.document;
+	    //ie6,7,8 standard mode
+	    ret = d.documentElement[method];
+	    if (typeof ret !== 'number') {
+	      //quirks mode
+	      ret = d.body[method];
+	    }
+	  }
+	  return ret;
+	}
+
+	function getScrollLeft(w) {
+	  return getScroll(w);
+	}
+
+	function getScrollTop(w) {
+	  return getScroll(w, true);
+	}
+
+	function getOffset(el) {
+	  var pos = getClientPosition(el);
+	  var doc = el.ownerDocument;
+	  var w = doc.defaultView || doc.parentWindow;
+	  pos.left += getScrollLeft(w);
+	  pos.top += getScrollTop(w);
+	  return pos;
+	}
+	function _getComputedStyle(elem, name, computedStyle) {
+	  var val = '';
+	  var d = elem.ownerDocument;
+
+	  // https://github.com/kissyteam/kissy/issues/61
+	  if ((computedStyle = (computedStyle || d.defaultView.getComputedStyle(elem, null)))) {
+	    val = computedStyle.getPropertyValue(name) || computedStyle[name];
+	  }
+
+	  return val;
+	}
+
+	var _RE_NUM_NO_PX = new RegExp('^(' + RE_NUM + ')(?!px)[a-z%]+$', 'i');
+	var RE_POS = /^(top|right|bottom|left)$/,
+	  CURRENT_STYLE = 'currentStyle',
+	  RUNTIME_STYLE = 'runtimeStyle',
+	  LEFT = 'left',
+	  PX = 'px';
+
+	function _getComputedStyleIE(elem, name) {
+	  // currentStyle maybe null
+	  // http://msdn.microsoft.com/en-us/library/ms535231.aspx
+	  var ret = elem[CURRENT_STYLE] && elem[CURRENT_STYLE][name];
+
+	  // 当 width/height 设置为百分比时，通过 pixelLeft 方式转换的 width/height 值
+	  // 一开始就处理了! CUSTOM_STYLE.height,CUSTOM_STYLE.width ,cssHook 解决@2011-08-19
+	  // 在 ie 下不对，需要直接用 offset 方式
+	  // borderWidth 等值也有问题，但考虑到 borderWidth 设为百分比的概率很小，这里就不考虑了
+
+	  // From the awesome hack by Dean Edwards
+	  // http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
+	  // If we're not dealing with a regular pixel number
+	  // but a number that has a weird ending, we need to convert it to pixels
+	  // exclude left right for relativity
+	  if (_RE_NUM_NO_PX.test(ret) && !RE_POS.test(name)) {
+	    // Remember the original values
+	    var style = elem.style,
+	      left = style[LEFT],
+	      rsLeft = elem[RUNTIME_STYLE][LEFT];
+
+	    // prevent flashing of content
+	    elem[RUNTIME_STYLE][LEFT] = elem[CURRENT_STYLE][LEFT];
+
+	    // Put in the new values to get a computed value out
+	    style[LEFT] = name === 'fontSize' ? '1em' : (ret || 0);
+	    ret = style.pixelLeft + PX;
+
+	    // Revert the changed values
+	    style[LEFT] = left;
+
+	    elem[RUNTIME_STYLE][LEFT] = rsLeft;
+	  }
+	  return ret === '' ? 'auto' : ret;
+	}
+
+	var getComputedStyleX;
+	if (typeof window !== 'undefined') {
+	  getComputedStyleX = window.getComputedStyle ? _getComputedStyle : _getComputedStyleIE;
+	}
+
+	// 设置 elem 相对 elem.ownerDocument 的坐标
+	function setOffset(elem, offset) {
+	  // set position first, in-case top/left are set even on static elem
+	  if (css(elem, 'position') === 'static') {
+	    elem.style.position = 'relative';
+	  }
+
+	  var old = getOffset(elem),
+	    ret = {},
+	    current, key;
+
+	  for (key in offset) {
+	    current = parseFloat(css(elem, key)) || 0;
+	    ret[key] = current + offset[key] - old[key];
+	  }
+	  css(elem, ret);
+	}
+
+	function each(arr, fn) {
+	  for (var i = 0; i < arr.length; i++) {
+	    fn(arr[i]);
+	  }
+	}
+
+	function isBorderBoxFn(elem) {
+	  return getComputedStyleX(elem, 'boxSizing') === 'border-box';
+	}
+
+	var BOX_MODELS = ['margin', 'border', 'padding'],
+	  CONTENT_INDEX = -1,
+	  PADDING_INDEX = 2,
+	  BORDER_INDEX = 1,
+	  MARGIN_INDEX = 0;
+
+	function swap(elem, options, callback) {
+	  var old = {},
+	    style = elem.style,
+	    name;
+
+	  // Remember the old values, and insert the new ones
+	  for (name in options) {
+	    old[name] = style[name];
+	    style[name] = options[name];
+	  }
+
+	  callback.call(elem);
+
+	  // Revert the old values
+	  for (name in options) {
+	    style[name] = old[name];
+	  }
+	}
+
+	function getPBMWidth(elem, props, which) {
+	  var value = 0, prop, j, i;
+	  for (j = 0; j < props.length; j++) {
+	    prop = props[j];
+	    if (prop) {
+	      for (i = 0; i < which.length; i++) {
+	        var cssProp;
+	        if (prop === 'border') {
+	          cssProp = prop + which[i] + 'Width';
+	        } else {
+	          cssProp = prop + which[i];
+	        }
+	        value += parseFloat(getComputedStyleX(elem, cssProp)) || 0;
+	      }
+	    }
+	  }
+	  return value;
+	}
+
+	/**
+	 * A crude way of determining if an object is a window
+	 * @member util
+	 */
+	function isWindow(obj) {
+	  // must use == for ie8
+	  /*jshint eqeqeq:false*/
+	  return obj != null && obj == obj.window;
+	}
+
+	var domUtils = {};
+
+	each(['Width', 'Height'], function (name) {
+	  domUtils['doc' + name] = function (refWin) {
+	    var d = refWin.document;
+	    return Math.max(
+	      //firefox chrome documentElement.scrollHeight< body.scrollHeight
+	      //ie standard mode : documentElement.scrollHeight> body.scrollHeight
+	      d.documentElement['scroll' + name],
+	      //quirks : documentElement.scrollHeight 最大等于可视窗口多一点？
+	      d.body['scroll' + name],
+	      domUtils['viewport' + name](d));
+	  };
+
+	  domUtils['viewport' + name] = function (win) {
+	    // pc browser includes scrollbar in window.innerWidth
+	    var prop = 'client' + name,
+	      doc = win.document,
+	      body = doc.body,
+	      documentElement = doc.documentElement,
+	      documentElementProp = documentElement[prop];
+	    // 标准模式取 documentElement
+	    // backcompat 取 body
+	    return doc.compatMode === 'CSS1Compat' && documentElementProp ||
+	      body && body[prop] || documentElementProp;
+	  };
+	});
+
+	/*
+	 得到元素的大小信息
+	 @param elem
+	 @param name
+	 @param {String} [extra]  'padding' : (css width) + padding
+	 'border' : (css width) + padding + border
+	 'margin' : (css width) + padding + border + margin
+	 */
+	function getWH(elem, name, extra) {
+	  if (isWindow(elem)) {
+	    return name === 'width' ? domUtils.viewportWidth(elem) : domUtils.viewportHeight(elem);
+	  } else if (elem.nodeType === 9) {
+	    return name === 'width' ? domUtils.docWidth(elem) : domUtils.docHeight(elem);
+	  }
+	  var which = name === 'width' ? ['Left', 'Right'] : ['Top', 'Bottom'],
+	    borderBoxValue = name === 'width' ? elem.offsetWidth : elem.offsetHeight;
+	  var computedStyle = getComputedStyleX(elem);
+	  var isBorderBox = isBorderBoxFn(elem, computedStyle);
+	  var cssBoxValue = 0;
+	  if (borderBoxValue == null || borderBoxValue <= 0) {
+	    borderBoxValue = undefined;
+	    // Fall back to computed then un computed css if necessary
+	    cssBoxValue = getComputedStyleX(elem, name);
+	    if (cssBoxValue == null || (Number(cssBoxValue)) < 0) {
+	      cssBoxValue = elem.style[name] || 0;
+	    }
+	    // Normalize '', auto, and prepare for extra
+	    cssBoxValue = parseFloat(cssBoxValue) || 0;
+	  }
+	  if (extra === undefined) {
+	    extra = isBorderBox ? BORDER_INDEX : CONTENT_INDEX;
+	  }
+	  var borderBoxValueOrIsBorderBox = borderBoxValue !== undefined || isBorderBox;
+	  var val = borderBoxValue || cssBoxValue;
+	  if (extra === CONTENT_INDEX) {
+	    if (borderBoxValueOrIsBorderBox) {
+	      return val - getPBMWidth(elem, ['border', 'padding'],
+	          which, computedStyle);
+	    } else {
+	      return cssBoxValue;
+	    }
+	  } else if (borderBoxValueOrIsBorderBox) {
+	    return val + (extra === BORDER_INDEX ? 0 :
+	        (extra === PADDING_INDEX ?
+	          -getPBMWidth(elem, ['border'], which, computedStyle) :
+	          getPBMWidth(elem, ['margin'], which, computedStyle)));
+	  } else {
+	    return cssBoxValue + getPBMWidth(elem, BOX_MODELS.slice(extra),
+	        which, computedStyle);
+	  }
+	}
+
+	var cssShow = {position: 'absolute', visibility: 'hidden', display: 'block'};
+
+	// fix #119 : https://github.com/kissyteam/kissy/issues/119
+	function getWHIgnoreDisplay(elem) {
+	  var val, args = arguments;
+	  // in case elem is window
+	  // elem.offsetWidth === undefined
+	  if (elem.offsetWidth !== 0) {
+	    val = getWH.apply(undefined, args);
+	  } else {
+	    swap(elem, cssShow, function () {
+	      val = getWH.apply(undefined, args);
+	    });
+	  }
+	  return val;
+	}
+
+	each(['width', 'height'], function (name) {
+	  var first = name.charAt(0).toUpperCase() + name.slice(1);
+	  domUtils['outer' + first] = function (el, includeMargin) {
+	    return el && getWHIgnoreDisplay(el, name, includeMargin ? MARGIN_INDEX : BORDER_INDEX);
+	  };
+	  var which = name === 'width' ? ['Left', 'Right'] : ['Top', 'Bottom'];
+
+	  domUtils[name] = function (elem, val) {
+	    if (val !== undefined) {
+	      if (elem) {
+	        var computedStyle = getComputedStyleX(elem);
+	        var isBorderBox = isBorderBoxFn(elem);
+	        if (isBorderBox) {
+	          val += getPBMWidth(elem, ['padding', 'border'], which, computedStyle);
+	        }
+	        return css(elem, name, val);
+	      }
+	      return;
+	    }
+	    return elem && getWHIgnoreDisplay(elem, name, CONTENT_INDEX);
+	  };
+	});
+
+	function css(el, name, value) {
+	  if (typeof name === 'object') {
+	    for (var i in name) {
+	      css(el, i, name[i]);
+	    }
+	    return;
+	  }
+	  if (typeof value !== 'undefined') {
+	    if (typeof value === 'number') {
+	      value = value + 'px';
+	    }
+	    el.style[name] = value;
+	  } else {
+	    return getComputedStyleX(el, name);
+	  }
+	}
+
+	function mix(to, from) {
+	  for (var i in from) {
+	    to[i] = from[i];
+	  }
+	  return to;
+	}
+
+	var utils = module.exports = {
+	  getWindow: function (node) {
+	    var doc = node.ownerDocument || node;
+	    return doc.defaultView || doc.parentWindow;
+	  },
+	  offset: function (el, value) {
+	    if (typeof value !== 'undefined') {
+	      setOffset(el, value);
+	    } else {
+	      return getOffset(el);
+	    }
+	  },
+	  isWindow: isWindow,
+	  each: each,
+	  css: css,
+	  clone: function (obj) {
+	    var ret = {};
+	    for (var i in obj) {
+	      ret[i] = obj[i];
+	    }
+	    var overflow = obj.overflow;
+	    if (overflow) {
+	      for (i in obj) {
+	        ret.overflow[i] = obj.overflow[i];
+	      }
+	    }
+	    return ret;
+	  },
+	  mix: mix,
+	  scrollLeft: function (w, v) {
+	    if (isWindow(w)) {
+	      if (v === undefined) {
+	        return getScrollLeft(w);
+	      } else {
+	        window.scrollTo(v, getScrollTop(w));
+	      }
+	    } else {
+	      if (v === undefined) {
+	        return w.scrollLeft;
+	      } else {
+	        w.scrollLeft = v;
+	      }
+	    }
+	  },
+	  scrollTop: function (w, v) {
+	    if (isWindow(w)) {
+	      if (v === undefined) {
+	        return getScrollTop(w);
+	      } else {
+	        window.scrollTo(getScrollLeft(w), v);
+	      }
+	    } else {
+	      if (v === undefined) {
+	        return w.scrollTop;
+	      } else {
+	        w.scrollTop = v;
+	      }
+	    }
+	  },
+	  merge: function () {
+	    var ret = {};
+	    for (var i = 0; i < arguments.length; i++) {
+	      utils.mix(ret, arguments[i]);
+	    }
+	    return ret;
+	  },
+	  viewportWidth: 0,
+	  viewportHeight: 0
+	};
+
+	mix(utils, domUtils);
+
+
+/***/ },
+/* 622 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -89951,10 +91752,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (chr in this.chromInfo.chrPositions) {
 	                retPos = this.chromInfo.chrPositions[chr].pos + pos;
 	            } else {
-	                console.log("Search error: No chromInfo specified");
+	                console.log("Search error: No chromInfo specified or chromosome (" + chr + ") not in chromInfo");
 	                retPos = null;
 	            }
 
+	            // retPos is the genome position of this pair
 	            return [chr, pos, retPos];
 	        }
 	    }, {
@@ -90022,6 +91824,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                range = [pos1 - 8000000, pos1 + 8000000];
 	            }
 
+	            if (range[0] > range[1]) return [range[1], range[0]];
+
 	            return range;
 	        }
 	    }, {
@@ -90037,11 +91841,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                // although it's possible that the first axis will be empty
 	                // i.e. someone enters " and p53"
 	                // in that case, we only move the second axis and keep the first where it is
-	                range1 = this.getSearchRange(parts[0]);
-	                range2 = this.getSearchRange(parts[1]);
+	                range1 = this.getSearchRange(parts[0].split(' ')[0]);
+	                range2 = this.getSearchRange(parts[1].split(' ')[0]);
 	            } else {
 	                // we just need to position the first axis
-	                range1 = this.getSearchRange(parts[0]);
+	                range1 = this.getSearchRange(parts[0].split(' ')[0]);
 	            }
 
 	            if (range1 != null && range2 != null) {
@@ -90061,7 +91865,1034 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 
 /***/ },
-/* 614 */
+/* 623 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.TopRatioPoint = TopRatioPoint;
+
+	var _pixi = __webpack_require__(191);
+
+	var _pixi2 = _interopRequireDefault(_pixi);
+
+	var _slugid = __webpack_require__(181);
+
+	var _slugid2 = _interopRequireDefault(_slugid);
+
+	var _d = __webpack_require__(325);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _TileData = __webpack_require__(331);
+
+	var _lru = __webpack_require__(624);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function TopRatioPoint() {
+	    var width = 200; //200
+	    var height = 15; //15
+	    var resizeDispatch = null;
+	    var xScale = _d2.default.scale.linear();
+	    var zoomDispatch = null;
+	    var resolution = 256;
+	    var pixiStage = null;
+	    var inD = 0;
+	    var xPoints;
+	    var yPoints;
+	    var tileIDs;
+	    var shownT = {};
+	    var preScale = 1;
+	    var zoomedXScale = _d2.default.scale.linear();
+	    var lruCache = new _lru.LRUCache(20); //cache the tile data for 10 tiles
+
+	    function tileId(tile) {
+	        // uniquely identify the tile with a string
+	        return tile.join(".") + '.' + tile.mirrored;
+	    }
+
+	    function loadTileData(tile_value) {
+	        if ('dense' in tile_value) return tile_value['dense'];else if ('sparse' in tile_value) {
+	            var values = Array.apply(null, Array(resolution)).map(Number.prototype.valueOf, 0);
+	            for (var i = 0; i < tile_value.sparse.length; i++) {
+	                if ('pos' in tile_value.sparse[i]) values[tile_value.sparse[i].pos[0]] = tile_value.sparse[i].value;else values[tile_value.sparse[i][0]] = tile_value.sparse[i][1];
+	            }
+	            return values;
+	        } else {
+	            return [];
+	        }
+	    }
+
+	    var chart = function chart(selection) {
+	        selection.each(function (d) {
+	            inD += 1;
+
+	            if (!('resizeDispatch' in d)) {
+	                d.resizeDispatch = resizeDispatch == null ? _d2.default.dispatch('resize') : resizeDispatch;
+	            }
+
+	            if (!('translate' in d)) {
+	                d.translate = [0, 0];
+	            }
+
+	            if (!('scale' in d)) {
+	                d.scale = 1;
+	            }
+
+	            if (!('tileGraphics' in d)) {
+	                d.tileGraphics = {};
+	            }
+
+	            if (!('pixiStage' in d)) {
+	                d.stage = pixiStage;
+	            }
+
+	            if (!('preHeight' in d)) {
+	                d.preHeight = d.height;
+	            }
+
+	            if (!('pMain' in d)) {
+
+	                var pMain = new _pixi2.default.Graphics();
+	                var pAbove = new _pixi2.default.Graphics();
+	                var pMask = new _pixi2.default.Graphics();
+	                var pAxis = new _pixi2.default.Graphics();
+
+	                pMask.beginFill();
+	                pMask.drawRect(0, 0, 1, 1);
+	                pMask.endFill();
+
+	                pAbove.addChild(pMain);
+	                pAbove.addChild(pAxis);
+	                pAbove.addChild(pMask);
+	                d.stage.addChild(pAbove);
+
+	                d.pAbove = pAbove;
+	                d.pAxis = pAxis;
+	                d.pMain = pMain;
+	                d.pMask = pMask;
+
+	                pMain.mask = pMask;
+	            }
+
+	            if (!('maxText' in d)) {
+	                d.maxText = new _pixi2.default.Text("", { font: '8px Arial', fill: "black" });
+	                d.maxTextBg = new _pixi2.default.Graphics();
+
+	                d.pAxis.addChild(d.maxText);
+	                d.pAxis.addChild(d.maxTextBg);
+	            }
+
+	            if (!('minText' in d)) {
+	                d.minText = new _pixi2.default.Text("", { font: '8px Arial', fill: "black" });
+	                d.minTextBg = new _pixi2.default.Graphics();
+
+	                d.pAxis.addChild(d.minText);
+	                d.pAxis.addChild(d.minTextBg);
+	            }
+
+	            var zoomLevel = null;
+	            var drawTile = null;
+	            var drawAxis = null;
+	            var allTiles = null;
+
+	            function redrawTile() {
+	                allTiles = _d2.default.select(this).selectAll('.tile-g').data();
+
+	                var mins = [];
+	                var maxs = [];
+
+	                for (var i = 0; i < allTiles.length; i++) {
+	                    var tile = allTiles[i];
+	                    var loadedTileData = lruCache.get(tile.tileId);
+
+	                    if (!loadedTileData) {
+	                        loadedTileData = (0, _TileData.load1DRatioTileData)(tile.data, tile.type);
+	                        lruCache.put(tile.tileId, loadedTileData);
+	                    }
+
+	                    mins.push(loadedTileData.min);
+	                    maxs.push(loadedTileData.max);
+	                }
+
+	                /*
+	                let minVisibleValue = Math.min(...allTiles.map((x) => x.valueRange[0]));
+	                let maxVisibleValue = Math.max(...allTiles.map((x) => x.valueRange[1]));
+	                */
+	                if (d.parentTrack) {
+	                    d.minVisibleValue = d.parentTrack.minVisibleValue;
+	                    d.maxVisibleValue = d.parentTrack.maxVisibleValue;
+	                } else {
+	                    d.minVisibleValue = Math.min.apply(Math, mins);
+	                    d.maxVisibleValue = Math.max.apply(Math, maxs);
+	                }
+
+	                var minVisibleValue = d.minVisibleValue;
+	                var maxVisibleValue = d.maxVisibleValue;
+
+	                zoomLevel = allTiles[0].tilePos[0];
+	                var tileWidth = (allTiles[0].xRange[1] - allTiles[0].xRange[0]) / Math.pow(2, zoomLevel);
+	                var minXRange = Math.min.apply(Math, _toConsumableArray(allTiles.map(function (x) {
+	                    return x.tileXRange[0];
+	                })));
+	                var maxXRange = Math.max.apply(Math, _toConsumableArray(allTiles.map(function (x) {
+	                    return x.tileXRange[1];
+	                })));
+
+	                var yScale = _d2.default.scale.linear().domain([0, maxVisibleValue]).range([0, 1]);
+
+	                if (d.translate != null && d.scale != null) {
+	                    // change the zoom and scale before redrawing new elements
+	                    // helps to avoid flickering
+	                    zoomChanged(d.translate, d.scale);
+	                }
+
+	                d.pAxis.removeChild(d.maxTextBg);
+	                d.pAxis.removeChild(d.minTextBg);
+
+	                d.maxTextBg = new _pixi2.default.Graphics();
+	                d.minTextBg = new _pixi2.default.Graphics();
+
+	                d.pAxis.addChild(d.maxTextBg);
+	                d.pAxis.addChild(d.minTextBg);
+
+	                d.maxTextBg.beginFill(0xFFFFFF, 1);
+	                d.minTextBg.beginFill(0xFFFFFF, 1);
+	                //d.maxTextBg.drawRect(0, 0, 30, 9);
+
+	                d.pAxis.removeChild(d.maxText);
+	                d.pAxis.removeChild(d.minText);
+
+	                var format = _d2.default.format(".2s");
+
+	                d.maxText = new _pixi2.default.Text(format(maxVisibleValue), { font: '9px Arial', fill: "black" });
+
+	                d.maxText.anchor.x = 0;
+	                d.maxText.anchor.y = 0;
+
+	                d.maxText.position.x = d.left + 0;
+	                d.maxText.position.y = 0 + d.top;
+
+	                d.pAxis.addChild(d.maxText);
+	                var bounds = d.maxText.getBounds();
+	                d.maxTextBg.drawRect(d.left + bounds.x, d.top + bounds.y, bounds.width, bounds.height);
+
+	                d.minText = new _pixi2.default.Text(format(minVisibleValue), { font: '9px Arial', fill: "black" });
+
+	                d.minText.anchor.x = 0;
+	                d.minText.anchor.y = 1;
+
+	                d.minText.position.x = d.left + 0;
+	                d.minText.position.y = d.height + d.top;
+
+	                d.pAxis.addChild(d.minText);
+
+	                bounds = d.minText.getBounds();
+	                d.minTextBg.drawRect(d.left + bounds.x, bounds.y + d.height + d.top, bounds.width, bounds.height);
+
+	                drawTile = function drawTile(graphics, tile) {
+	                    var loadedTileData = lruCache.get(tile.tileId);
+	                    var tileData = loadedTileData.data;
+	                    graphics.clear();
+
+	                    var tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
+	                    // this scale should go from an index in the data array to
+	                    // a position in the genome coordinates
+	                    var tileXScale = _d2.default.scale.linear().domain([0, tileData.length]).range([tile.xRange[0] + tile.tilePos[1] * tileWidth, tile.xRange[0] + (tile.tilePos[1] + 1) * tileWidth]);
+
+	                    graphics.lineStyle(1, 0xFF0000, 1);
+	                    // graphics.beginFill(0xFF700B, 1);
+	                    var j = 0;
+
+	                    for (var _i = 0; _i < tileData.length; _i++) {
+	                        if (isNaN(tileData[_i])) {
+	                            continue;
+	                        }
+
+	                        var xPos = zoomedXScale(tileXScale(_i));
+	                        //let yPos = -(d.height - yScale(tileData[i]));
+	                        var yPos = -1; //-(d.height - yScale(tileData[i]));
+	                        var _height = yScale(tileData[_i]);
+	                        var _width = zoomedXScale(tileXScale(_i + 1)) - zoomedXScale(tileXScale(_i));
+
+	                        //console.log('drawingRect:', zoomedXScale(tileXScale(i+1)), d.height - d.height*yScale(tileData[i+1]));
+	                        graphics.drawRect(zoomedXScale(tileXScale(_i)), d.height - d.height * yScale(tileData[_i]), 1, 1);
+	                    }
+	                };
+
+	                var shownTiles = {};
+
+	                for (var _i2 = 0; _i2 < allTiles.length; _i2++) {
+	                    shownTiles[allTiles[_i2].tileId] = true;
+
+	                    if (allTiles[_i2].tileId in d.tileGraphics) {
+	                        d.pMain.removeChild(d.tileGraphics[allTiles[_i2].tileId]);
+	                        delete d.tileGraphics[allTiles[_i2].tileId];
+	                    }
+
+	                    for (var tileIdStr in d.tileGraphics) {
+	                        if (!(tileIdStr in shownTiles)) {
+	                            //we're displaying graphics that are no longer necessary,
+	                            //so we need to get rid of them
+	                            d.pMain.removeChild(d.tileGraphics[tileIdStr]);
+	                            delete d.tileGraphics[tileIdStr];
+	                        }
+	                    }
+
+	                    if (!(allTiles[_i2].tileId in d.tileGraphics)) {
+	                        // we don't have a graphics object for this tile
+	                        // so we need to create one
+	                        var newGraphics = new _pixi2.default.Graphics();
+	                        drawTile(newGraphics, allTiles[_i2]);
+	                        d.pMain.addChild(newGraphics);
+	                        d.tileGraphics[allTiles[_i2].tileId] = newGraphics;
+	                    }
+	                }
+	            }
+
+	            redrawTile.bind(this)();
+
+	            var localResizeDispatch = d.resizeDispatch;
+
+	            var slugId = d.uid + '.point';
+	            localResizeDispatch.on('resize.' + slugId, sizeChanged);
+
+	            var localZoomDispatch = zoomDispatch == null ? _d2.default.dispatch('zoom') : zoomDispatch;
+	            localZoomDispatch.on('zoom.' + slugId, zoomChanged);
+
+	            function sizeChanged() {
+	                d.pMain.position.y = d.top;
+	                //    d.pMain.scale.y = d.height;
+	                if (d.preHeight != d.height) {
+	                    if (drawTile != null) {
+	                        for (var i = 0; i < allTiles.length; i++) {
+	                            var tileGraphics = d.tileGraphics[allTiles[i].tileId];
+	                            drawTile(tileGraphics, allTiles[i], zoomedXScale);
+	                        }
+	                    }
+	                }
+	                d.preHeight = d.height;
+
+	                d.pMask.position.x = d.left;
+	                d.pMask.position.y = d.top;
+
+	                d.pMask.scale.x = d.width;
+	                d.pMask.scale.y = d.height;
+	            }
+
+	            function zoomChanged(translate, scale) {
+	                sizeChanged();
+
+	                d.translate = translate;
+	                d.scale = scale;
+
+	                zoomedXScale = xScale.copy();
+	                zoomedXScale.domain(xScale.range().map(function (x) {
+	                    return (x - translate[0]) / scale;
+	                }).map(xScale.invert));
+
+	                if (drawTile != null) {
+	                    for (var i = 0; i < allTiles.length; i++) {
+	                        var tileGraphics = d.tileGraphics[allTiles[i].tileId];
+	                        drawTile(tileGraphics, allTiles[i], zoomedXScale);
+	                    }
+	                }
+	            }
+
+	            sizeChanged();
+	        });
+	    };
+
+	    chart.width = function (_) {
+	        if (!arguments.length) return width;else width = _;
+	        return chart;
+	    };
+
+	    chart.height = function (_) {
+	        if (!arguments.length) return height;else height = _;
+	        return chart;
+	    };
+
+	    chart.resizeDispatch = function (_) {
+	        if (!arguments.length) return resizeDispatch;else resizeDispatch = _;
+	        return chart;
+	    };
+
+	    chart.xScale = function (_) {
+	        if (!arguments.length) return xScale;else xScale = _;
+	        return chart;
+	    };
+
+	    chart.zoomDispatch = function (_) {
+	        if (!arguments.length) return zoomDispatch;else zoomDispatch = _;
+	        return chart;
+	    };
+
+	    chart.pixiStage = function (_) {
+	        if (!arguments.length) return pixiStage;else pixiStage = _;
+	        return chart;
+	    };
+
+	    return chart;
+	}
+
+/***/ },
+/* 624 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	exports.LRUCache = LRUCache;
+	/**
+	 * A doubly linked list-based Least Recently Used (LRU) cache. Will keep most
+	 * recently used items while discarding least recently used items when its limit
+	 * is reached.
+	 *
+	 * Licensed under MIT. Copyright (c) 2010 Rasmus Andersson <http://hunch.se/>
+	 * See README.md for details.
+	 *
+	 * Illustration of the design:
+	 *
+	 *       entry             entry             entry             entry
+	 *       ______            ______            ______            ______
+	 *      | head |.newer => |      |.newer => |      |.newer => | tail |
+	 *      |  A   |          |  B   |          |  C   |          |  D   |
+	 *      |______| <= older.|______| <= older.|______| <= older.|______|
+	 *
+	 *  removed  <--  <--  <--  <--  <--  <--  <--  <--  <--  <--  <--  added
+	 */
+	function LRUCache(limit) {
+	  // Current size of the cache. (Read-only).
+	  this.size = 0;
+	  // Maximum number of items this cache can hold.
+	  this.limit = limit;
+	  this._keymap = {};
+	}
+
+	/**
+	 * Put <value> into the cache associated with <key>. Returns the entry which was
+	 * removed to make room for the new entry. Otherwise undefined is returned
+	 * (i.e. if there was enough room already).
+	 */
+	LRUCache.prototype.put = function (key, value) {
+	  var entry = { key: key, value: value };
+	  // Note: No protection agains replacing, and thus orphan entries. By design.
+	  this._keymap[key] = entry;
+	  if (this.tail) {
+	    // link previous tail to the new tail (entry)
+	    this.tail.newer = entry;
+	    entry.older = this.tail;
+	  } else {
+	    // we're first in -- yay
+	    this.head = entry;
+	  }
+	  // add new entry to the end of the linked list -- it's now the freshest entry.
+	  this.tail = entry;
+	  if (this.size === this.limit) {
+	    // we hit the limit -- remove the head
+	    return this.shift();
+	  } else {
+	    // increase the size counter
+	    this.size++;
+	  }
+	};
+
+	/**
+	 * Purge the least recently used (oldest) entry from the cache. Returns the
+	 * removed entry or undefined if the cache was empty.
+	 *
+	 * If you need to perform any form of finalization of purged items, this is a
+	 * good place to do it. Simply override/replace this function:
+	 *
+	 *   var c = new LRUCache(123);
+	 *   c.shift = function() {
+	 *     var entry = LRUCache.prototype.shift.call(this);
+	 *     doSomethingWith(entry);
+	 *     return entry;
+	 *   }
+	 */
+	LRUCache.prototype.shift = function () {
+	  // todo: handle special case when limit == 1
+	  var entry = this.head;
+	  if (entry) {
+	    if (this.head.newer) {
+	      // advance the list
+	      this.head = this.head.newer;
+	      this.head.older = undefined;
+	    } else {
+	      // the cache is exhausted
+	      this.head = undefined;
+	      this.tail = undefined;
+	    }
+	    // Remove last strong reference to <entry> and remove links from the purged
+	    // entry being returned:
+	    entry.newer = entry.older = undefined;
+	    // delete is slow, but we need to do this to avoid uncontrollable growth:
+	    delete this._keymap[entry.key];
+	    this.size--;
+	  }
+	  return entry;
+	};
+
+	/**
+	 * Get and register recent use of <key>. Returns the value associated with <key>
+	 * or undefined if not in cache.
+	 */
+	LRUCache.prototype.get = function (key, returnEntry) {
+	  // First, find our cache entry
+	  var entry = this._keymap[key];
+	  if (entry === undefined) return; // Not cached. Sorry.
+	  // As <key> was found in the cache, register it as being requested recently
+	  if (entry === this.tail) {
+	    // Already the most recenlty used entry, so no need to update the list
+	    return returnEntry ? entry : entry.value;
+	  }
+	  // HEAD--------------TAIL
+	  //   <.older   .newer>
+	  //  <--- add direction --
+	  //   A  B  C  <D>  E
+	  if (entry.newer) {
+	    if (entry === this.head) this.head = entry.newer;
+	    entry.newer.older = entry.older; // C <-- E.
+	  }
+	  if (entry.older) entry.older.newer = entry.newer; // C. --> E
+	  entry.newer = undefined; // D --x
+	  entry.older = this.tail; // D. --> E
+	  if (this.tail) this.tail.newer = entry; // E. <-- D
+	  this.tail = entry;
+	  return returnEntry ? entry : entry.value;
+	};
+
+	// ----------------------------------------------------------------------------
+	// Following code is optional and can be removed without breaking the core
+	// functionality.
+
+	/**
+	 * Check if <key> is in the cache without registering recent use. Feasible if
+	 * you do not want to chage the state of the cache, but only "peek" at it.
+	 * Returns the entry associated with <key> if found, or undefined if not found.
+	 */
+	LRUCache.prototype.find = function (key) {
+	  return this._keymap[key];
+	};
+
+	/**
+	 * Update the value of entry with <key>. Returns the old value, or undefined if
+	 * entry was not in the cache.
+	 */
+	LRUCache.prototype.set = function (key, value) {
+	  var oldvalue,
+	      entry = this.get(key, true);
+	  if (entry) {
+	    oldvalue = entry.value;
+	    entry.value = value;
+	  } else {
+	    oldvalue = this.put(key, value);
+	    if (oldvalue) oldvalue = oldvalue.value;
+	  }
+	  return oldvalue;
+	};
+
+	/**
+	 * Remove entry <key> from cache and return its value. Returns undefined if not
+	 * found.
+	 */
+	LRUCache.prototype.remove = function (key) {
+	  var entry = this._keymap[key];
+	  if (!entry) return;
+	  delete this._keymap[entry.key]; // need to do delete unfortunately
+	  if (entry.newer && entry.older) {
+	    // relink the older entry with the newer entry
+	    entry.older.newer = entry.newer;
+	    entry.newer.older = entry.older;
+	  } else if (entry.newer) {
+	    // remove the link to us
+	    entry.newer.older = undefined;
+	    // link the newer entry to head
+	    this.head = entry.newer;
+	  } else if (entry.older) {
+	    // remove the link to us
+	    entry.older.newer = undefined;
+	    // link the newer entry to head
+	    this.tail = entry.older;
+	  } else {
+	    // if(entry.older === undefined && entry.newer === undefined) {
+	    this.head = this.tail = undefined;
+	  }
+
+	  this.size--;
+	  return entry.value;
+	};
+
+	/** Removes all entries */
+	LRUCache.prototype.removeAll = function () {
+	  // This should be safe, as we never expose strong refrences to the outside
+	  this.head = this.tail = undefined;
+	  this.size = 0;
+	  this._keymap = {};
+	};
+
+	/**
+	 * Return an array containing all keys of entries stored in the cache object, in
+	 * arbitrary order.
+	 */
+	if (typeof Object.keys === 'function') {
+	  LRUCache.prototype.keys = function () {
+	    return Object.keys(this._keymap);
+	  };
+	} else {
+	  LRUCache.prototype.keys = function () {
+	    var keys = [];
+	    for (var k in this._keymap) {
+	      keys.push(k);
+	    }return keys;
+	  };
+	}
+
+	/**
+	 * Call `fun` for each entry. Starting with the newest entry if `desc` is a true
+	 * value, otherwise starts with the oldest (head) enrty and moves towards the
+	 * tail.
+	 *
+	 * `fun` is called with 3 arguments in the context `context`:
+	 *   `fun.call(context, Object key, Object value, LRUCache self)`
+	 */
+	LRUCache.prototype.forEach = function (fun, context, desc) {
+	  var entry;
+	  if (context === true) {
+	    desc = true;context = undefined;
+	  } else if ((typeof context === 'undefined' ? 'undefined' : _typeof(context)) !== 'object') context = this;
+	  if (desc) {
+	    entry = this.tail;
+	    while (entry) {
+	      fun.call(context, entry.key, entry.value, this);
+	      entry = entry.older;
+	    }
+	  } else {
+	    entry = this.head;
+	    while (entry) {
+	      fun.call(context, entry.key, entry.value, this);
+	      entry = entry.newer;
+	    }
+	  }
+	};
+
+	/** Returns a JSON (array) representation */
+	LRUCache.prototype.toJSON = function () {
+	  var s = [],
+	      entry = this.head;
+	  while (entry) {
+	    s.push({ key: entry.key.toJSON(), value: entry.value.toJSON() });
+	    entry = entry.newer;
+	  }
+	  return s;
+	};
+
+	/** Returns a String representation */
+	LRUCache.prototype.toString = function () {
+	  var s = '',
+	      entry = this.head;
+	  while (entry) {
+	    s += String(entry.key) + ':' + entry.value;
+	    entry = entry.newer;
+	    if (entry) s += ' < ';
+	  }
+	  return s;
+	};
+
+/***/ },
+/* 625 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.TopCNVInterval = TopCNVInterval;
+
+	var _pixi = __webpack_require__(191);
+
+	var _pixi2 = _interopRequireDefault(_pixi);
+
+	var _slugid = __webpack_require__(181);
+
+	var _slugid2 = _interopRequireDefault(_slugid);
+
+	var _d = __webpack_require__(325);
+
+	var _d2 = _interopRequireDefault(_d);
+
+	var _TileData = __webpack_require__(331);
+
+	var _lru = __webpack_require__(624);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function TopCNVInterval() {
+	    var width = 200; //200
+	    var height = 15; //15
+	    var resizeDispatch = null;
+	    var xScale = _d2.default.scale.linear();
+	    var zoomDispatch = null;
+	    var resolution = 256;
+	    var pixiStage = null;
+	    var inD = 0;
+	    var xPoints;
+	    var yPoints;
+	    var tileIDs;
+	    var shownT = {};
+	    var preScale = 1;
+	    var zoomedXScale = _d2.default.scale.linear();
+	    var lruCache = new _lru.LRUCache(20); //cache the tile data for 10 tiles
+
+	    function tileId(tile) {
+	        // uniquely identify the tile with a string
+	        return tile.join(".") + '.' + tile.mirrored;
+	    }
+
+	    var chart = function chart(selection) {
+	        selection.each(function (d) {
+	            inD += 1;
+
+	            if (!('resizeDispatch' in d)) {
+	                d.resizeDispatch = resizeDispatch == null ? _d2.default.dispatch('resize') : resizeDispatch;
+	            }
+
+	            if (!('translate' in d)) {
+	                d.translate = [0, 0];
+	            }
+
+	            if (!('scale' in d)) {
+	                d.scale = 1;
+	            }
+
+	            if (!('tileGraphics' in d)) {
+	                d.tileGraphics = {};
+	            }
+
+	            if (!('pixiStage' in d)) {
+	                d.stage = pixiStage;
+	            }
+
+	            if (!('preHeight' in d)) {
+	                d.preHeight = d.height;
+	            }
+
+	            if (!('pMain' in d)) {
+
+	                var pMain = new _pixi2.default.Graphics();
+	                var pAbove = new _pixi2.default.Graphics();
+	                var pMask = new _pixi2.default.Graphics();
+	                var pAxis = new _pixi2.default.Graphics();
+
+	                pMask.beginFill();
+	                pMask.drawRect(0, 0, 1, 1);
+	                pMask.endFill();
+
+	                pAbove.addChild(pMain);
+	                pAbove.addChild(pAxis);
+	                pAbove.addChild(pMask);
+	                d.stage.addChild(pAbove);
+
+	                d.pAbove = pAbove;
+	                d.pAxis = pAxis;
+	                d.pMain = pMain;
+	                d.pMask = pMask;
+
+	                pMain.mask = pMask;
+	            }
+
+	            if (!('maxText' in d)) {
+	                d.maxText = new _pixi2.default.Text("", { font: '8px Arial', fill: "black" });
+	                d.maxTextBg = new _pixi2.default.Graphics();
+
+	                d.pAxis.addChild(d.maxText);
+	                d.pAxis.addChild(d.maxTextBg);
+	            }
+
+	            if (!('minText' in d)) {
+	                d.minText = new _pixi2.default.Text("", { font: '8px Arial', fill: "black" });
+	                d.minTextBg = new _pixi2.default.Graphics();
+
+	                d.pAxis.addChild(d.minText);
+	                d.pAxis.addChild(d.minTextBg);
+	            }
+
+	            var zoomLevel = null;
+	            var drawTile = null;
+	            var drawAxis = null;
+	            var allTiles = null;
+
+	            function redrawTile() {
+	                allTiles = _d2.default.select(this).selectAll('.tile-g').data();
+
+	                var mins = [];
+	                var maxs = [];
+
+	                for (var i = 0; i < allTiles.length; i++) {
+	                    var tile = allTiles[i];
+	                    var loadedTileData = lruCache.get(tile.tileId);
+
+	                    if (!loadedTileData) {
+	                        loadedTileData = tile.data;
+	                        //console.log('loadedTileData:', loadedTileData);
+	                        lruCache.put(tile.tileId, loadedTileData);
+	                    }
+
+	                    for (var _i = 0; _i < loadedTileData.length; _i++) {
+	                        mins.push(+loadedTileData[_i].log2_copyRatio);
+	                        maxs.push(+loadedTileData[_i].log2_copyRatio);
+	                    }
+	                }
+
+	                /*
+	                let minVisibleValue = Math.min(...allTiles.map((x) => x.valueRange[0]));
+	                let maxVisibleValue = Math.max(...allTiles.map((x) => x.valueRange[1]));
+	                */
+	                if (d.parentTrack) {
+	                    d.minVisibleValue = d.parentTrack.minVisibleValue;
+	                    d.maxVisibleValue = d.parentTrack.maxVisibleValue;
+	                } else {
+	                    d.minVisibleValue = Math.min.apply(Math, mins);
+	                    d.maxVisibleValue = Math.max.apply(Math, maxs);
+	                }
+
+	                var minVisibleValue = d.minVisibleValue;
+	                var maxVisibleValue = d.maxVisibleValue;
+
+	                zoomLevel = allTiles[0].tilePos[0];
+	                var tileWidth = (allTiles[0].xRange[1] - allTiles[0].xRange[0]) / Math.pow(2, zoomLevel);
+	                var minXRange = Math.min.apply(Math, _toConsumableArray(allTiles.map(function (x) {
+	                    return x.tileXRange[0];
+	                })));
+	                var maxXRange = Math.max.apply(Math, _toConsumableArray(allTiles.map(function (x) {
+	                    return x.tileXRange[1];
+	                })));
+
+	                var margin = 2;
+	                var marginFraction = margin / d.height;
+	                var yScale = _d2.default.scale.linear().domain([minVisibleValue, maxVisibleValue]).range([marginFraction, 1. - marginFraction]);
+
+	                if (d.translate != null && d.scale != null) {
+	                    // change the zoom and scale before redrawing new elements
+	                    // helps to avoid flickering
+	                    zoomChanged(d.translate, d.scale);
+	                }
+
+	                if (!d.parentTrack) {
+	                    d.pAxis.removeChild(d.maxTextBg);
+	                    d.pAxis.removeChild(d.minTextBg);
+
+	                    d.maxTextBg = new _pixi2.default.Graphics();
+	                    d.minTextBg = new _pixi2.default.Graphics();
+
+	                    d.pAxis.addChild(d.maxTextBg);
+	                    d.pAxis.addChild(d.minTextBg);
+
+	                    d.maxTextBg.beginFill(0xFFFFFF, 1);
+	                    d.minTextBg.beginFill(0xFFFFFF, 1);
+	                    //d.maxTextBg.drawRect(0, 0, 30, 9);
+
+	                    d.pAxis.removeChild(d.maxText);
+	                    d.pAxis.removeChild(d.minText);
+
+	                    var format = _d2.default.format(".2s");
+
+	                    d.maxText = new _pixi2.default.Text(format(maxVisibleValue), { font: '9px Arial', fill: "black" });
+
+	                    d.maxText.anchor.x = 0;
+	                    d.maxText.anchor.y = 0;
+
+	                    d.maxText.position.x = d.left + 0;
+	                    d.maxText.position.y = 0 + d.top;
+
+	                    d.pAxis.addChild(d.maxText);
+
+	                    // only show axis labels if this track isn't drawn as an overlay
+	                    var bounds = d.maxText.getBounds();
+	                    d.maxTextBg.drawRect(d.left + bounds.x, d.top + bounds.y, bounds.width, bounds.height);
+	                    d.minText = new _pixi2.default.Text(format(minVisibleValue), { font: '9px Arial', fill: "black" });
+
+	                    d.minText.anchor.x = 0;
+	                    d.minText.anchor.y = 1;
+
+	                    d.minText.position.x = d.left + 0;
+	                    d.minText.position.y = d.height + d.top;
+
+	                    d.pAxis.addChild(d.minText);
+
+	                    bounds = d.minText.getBounds();
+	                    d.minTextBg.drawRect(d.left + bounds.x, bounds.y + d.height + d.top, bounds.width, bounds.height);
+	                }
+
+	                drawTile = function drawTile(graphics, tile) {
+	                    var loadedTileData = lruCache.get(tile.tileId);
+	                    var tileData = loadedTileData;
+	                    //console.log('tileData:', tileData);
+	                    graphics.clear();
+
+	                    var tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
+	                    // this scale should go from an index in the data array to
+	                    // a position in the genome coordinates
+
+	                    graphics.lineStyle(1, 0xFF00FF, 1);
+	                    // graphics.beginFill(0xFF700B, 1);
+	                    var j = 0;
+
+	                    //console.log('tileData:', tileData);
+	                    for (var _i2 = 0; _i2 < tileData.length; _i2++) {
+	                        // for each data point, either draw a point if the resulting line is less than 5px long, or else draw
+	                        // a line which is the width of the region
+	                        var x1 = zoomedXScale(+tileData[_i2].start);
+	                        var x2 = zoomedXScale(+tileData[_i2].end);
+	                        var y = yScale(+tileData[_i2].log2_copyRatio);
+	                        var topY = y;
+	                        var pointWidth = 4;
+
+	                        if (x2 - x1 < 5) {
+	                            var leftX = (x2 + x1) / 2 - pointWidth / 2;
+	                            graphics.drawRect(leftX, d.height - d.height * topY - 2, pointWidth, pointWidth);
+	                        } else {
+	                            graphics.drawRect(x1, d.height - d.height * topY - 2, x2 - x1, pointWidth);
+	                        }
+
+	                        //console.log('x1', x1, 'x2', x2, 'y', y, 'yScale:', yScale.domain(), yScale.range());
+	                    }
+	                };
+
+	                var shownTiles = {};
+
+	                for (var _i3 = 0; _i3 < allTiles.length; _i3++) {
+	                    shownTiles[allTiles[_i3].tileId] = true;
+
+	                    if (allTiles[_i3].tileId in d.tileGraphics) {
+	                        d.pMain.removeChild(d.tileGraphics[allTiles[_i3].tileId]);
+	                        delete d.tileGraphics[allTiles[_i3].tileId];
+	                    }
+
+	                    for (var tileIdStr in d.tileGraphics) {
+	                        if (!(tileIdStr in shownTiles)) {
+	                            //we're displaying graphics that are no longer necessary,
+	                            //so we need to get rid of them
+	                            d.pMain.removeChild(d.tileGraphics[tileIdStr]);
+	                            delete d.tileGraphics[tileIdStr];
+	                        }
+	                    }
+
+	                    if (!(allTiles[_i3].tileId in d.tileGraphics)) {
+	                        // we don't have a graphics object for this tile
+	                        // so we need to create one
+	                        var newGraphics = new _pixi2.default.Graphics();
+	                        drawTile(newGraphics, allTiles[_i3]);
+	                        d.pMain.addChild(newGraphics);
+	                        d.tileGraphics[allTiles[_i3].tileId] = newGraphics;
+	                    }
+	                }
+	            }
+
+	            redrawTile.bind(this)();
+
+	            var localResizeDispatch = d.resizeDispatch;
+
+	            var slugId = d.uid + '.point';
+	            localResizeDispatch.on('resize.' + slugId, sizeChanged);
+
+	            var localZoomDispatch = zoomDispatch == null ? _d2.default.dispatch('zoom') : zoomDispatch;
+	            localZoomDispatch.on('zoom.' + slugId, zoomChanged);
+
+	            function sizeChanged() {
+	                d.pMain.position.y = d.top;
+	                //    d.pMain.scale.y = d.height;
+	                if (d.preHeight != d.height) {
+	                    if (drawTile != null) {
+	                        for (var i = 0; i < allTiles.length; i++) {
+	                            var tileGraphics = d.tileGraphics[allTiles[i].tileId];
+	                            drawTile(tileGraphics, allTiles[i], zoomedXScale);
+	                        }
+	                    }
+	                }
+	                d.preHeight = d.height;
+
+	                d.pMask.position.x = d.left;
+	                d.pMask.position.y = d.top;
+
+	                d.pMask.scale.x = d.width;
+	                d.pMask.scale.y = d.height;
+	            }
+
+	            function zoomChanged(translate, scale) {
+	                sizeChanged();
+
+	                d.translate = translate;
+	                d.scale = scale;
+
+	                zoomedXScale = xScale.copy();
+	                zoomedXScale.domain(xScale.range().map(function (x) {
+	                    return (x - translate[0]) / scale;
+	                }).map(xScale.invert));
+
+	                if (drawTile != null) {
+	                    for (var i = 0; i < allTiles.length; i++) {
+	                        var tileGraphics = d.tileGraphics[allTiles[i].tileId];
+	                        drawTile(tileGraphics, allTiles[i], zoomedXScale);
+	                    }
+	                }
+	            }
+
+	            sizeChanged();
+	        });
+	    };
+
+	    chart.width = function (_) {
+	        if (!arguments.length) return width;else width = _;
+	        return chart;
+	    };
+
+	    chart.height = function (_) {
+	        if (!arguments.length) return height;else height = _;
+	        return chart;
+	    };
+
+	    chart.resizeDispatch = function (_) {
+	        if (!arguments.length) return resizeDispatch;else resizeDispatch = _;
+	        return chart;
+	    };
+
+	    chart.xScale = function (_) {
+	        if (!arguments.length) return xScale;else xScale = _;
+	        return chart;
+	    };
+
+	    chart.zoomDispatch = function (_) {
+	        if (!arguments.length) return zoomDispatch;else zoomDispatch = _;
+	        return chart;
+	    };
+
+	    chart.pixiStage = function (_) {
+	        if (!arguments.length) return pixiStage;else pixiStage = _;
+	        return chart;
+	    };
+
+	    return chart;
+	}
+
+/***/ },
+/* 626 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -90073,7 +92904,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	__webpack_require__(615);
+	__webpack_require__(627);
 
 	var _react = __webpack_require__(2);
 
@@ -90101,9 +92932,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(HiGlassInput).call(this, props));
 
-	        _this.state = {
-	            inputOpen: false
-	        };
+	        _this.state = {};
 	        return _this;
 	    }
 
@@ -90117,10 +92946,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.props.onNewConfig(configText);
 	        }
 	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(newProps) {
+	            console.log('HGI newProps:', newProps);
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this2 = this;
-
 	            return _react2.default.createElement(
 	                'div',
 	                null,
@@ -90129,7 +92961,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    { bsSize: 'small',
 	                        collapsible: true,
 	                        className: 'higlass-edit-panel',
-	                        expanded: this.state.inputOpen
+	                        expanded: this.props.inputOpen
 	                    },
 	                    _react2.default.createElement(
 	                        'form',
@@ -90161,9 +92993,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                ),
 	                _react2.default.createElement(
 	                    _reactBootstrap.SafeAnchor,
-	                    { className: 'edit-higlass', onClick: function onClick() {
-	                            return _this2.setState({ inputOpen: !_this2.state.inputOpen });
-	                        } },
+	                    { className: 'edit-higlass', onClick: this.props.handleOpen },
 	                    'Edit'
 	                )
 	            );
@@ -90174,13 +93004,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	}(_react2.default.Component);
 
 /***/ },
-/* 615 */
+/* 627 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(616);
+	var content = __webpack_require__(628);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(180)(content, {});
@@ -90200,7 +93030,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 616 */
+/* 628 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(179)();
@@ -90214,7 +93044,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 617 */
+/* 629 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*eslint-disable no-unused-vars*/
