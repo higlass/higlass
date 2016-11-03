@@ -111,7 +111,7 @@ export function TopCNVInterval() {
 
                     if (!loadedTileData) {
                         loadedTileData = tile.data
-                        console.log('loadedTileData:', loadedTileData);
+                        //console.log('loadedTileData:', loadedTileData);
                         lruCache.put(tile.tileId, loadedTileData);
                     }
 
@@ -142,7 +142,7 @@ export function TopCNVInterval() {
                 let maxXRange = Math.max(...allTiles.map((x) => x.tileXRange[1]));
 
                 let yScale = d3.scale.linear()
-                .domain([0, maxVisibleValue])
+                .domain([minVisibleValue, maxVisibleValue])
                 .range([0, 1]);
 
                 if (d.translate != null && d.scale != null) {
@@ -202,21 +202,37 @@ export function TopCNVInterval() {
                 drawTile = function(graphics, tile) {
                     let loadedTileData = lruCache.get(tile.tileId); 
                     let tileData = loadedTileData
-                    console.log('tileData:', tileData);
+                    //console.log('tileData:', tileData);
                     graphics.clear();
 
                     let tileWidth = (tile.xRange[1] - tile.xRange[0]) / Math.pow(2, tile.tilePos[0]);
                     // this scale should go from an index in the data array to 
                     // a position in the genome coordinates
-                    let tileXScale = d3.scale.linear().domain([0, tileData.length])
-                    .range([tile.xRange[0] + tile.tilePos[1] * tileWidth, 
-                           tile.xRange[0] + (tile.tilePos[1] + 1) * tileWidth]  );
 
-                    graphics.lineStyle(1, 0xFF0000, 1);
+                    graphics.lineStyle(1, 0xFF00FF, 1);
                    // graphics.beginFill(0xFF700B, 1);
                     let j = 0;
 
-                    console.log('tileData:', tileData);
+                    //console.log('tileData:', tileData);
+                    for (let i = 0; i < tileData.length; i++) {
+                        // for each data point, either draw a point if the resulting line is less than 5px long, or else draw
+                        // a line which is the width of the region
+                        let x1 = zoomedXScale(+tileData[i].start);
+                        let x2 = zoomedXScale(+tileData[i].end);
+                        let y = yScale(+tileData[i].log2_copyRatio);
+                        let topY = y;
+                        let pointWidth = 4;
+
+
+                        if (x2 - x1 < 5) {
+                            let leftX = (x2 + x1) / 2 - pointWidth / 2;
+                            graphics.drawRect(leftX, d.height - d.height * topY - 2, pointWidth, pointWidth);
+                        } else {
+                            graphics.drawRect(x1, d.height - d.height * topY - 2, x2 - x1, pointWidth);
+                        }
+                        
+                       //console.log('x1', x1, 'x2', x2, 'y', y, 'yScale:', yScale.domain(), yScale.range());
+                    }
                 }
 
                 let shownTiles = {};
