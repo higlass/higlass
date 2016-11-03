@@ -170,9 +170,12 @@ export class GenomePositionSearchBox extends React.Component {
         let q = queue();
 
         for (let i = 0; i < value_parts.length; i++) {
+            if (value_parts[i].length == 0)
+                continue
+
             let [chr, pos, retPos] = this.searchField.parsePosition(value_parts[i]);
 
-            if (retPos == null) {
+            if (retPos == null || isNaN(retPos)) {
                 // not a chromsome position, let's see if it's a gene name
                let url = this.props.autocompleteSource + "/ac_" + value_parts[i].toLowerCase(); 
                q = q.defer(d3.json, url);
@@ -181,17 +184,19 @@ export class GenomePositionSearchBox extends React.Component {
         }
 
         q.awaitAll((error, files) => {
-            let genePositions = {};
+            if (files) {
+                let genePositions = {};
 
-            // extract the position of the top match from the list of files
-            for (let i = 0; i < files.length; i++) {
-                genePositions[files[i]._source.suggestions[0].geneName.toLowerCase()] =
-                    files[i]._source.suggestions[0];
+                // extract the position of the top match from the list of files
+                for (let i = 0; i < files.length; i++) {
+                    genePositions[files[i]._source.suggestions[0].geneName.toLowerCase()] =
+                        files[i]._source.suggestions[0];
+                }
+
+                this.replaceGenesWithLoadedPositions(genePositions);
+
+                finished();
             }
-
-            this.replaceGenesWithLoadedPositions(genePositions);
-
-            finished();
         });
     }
 
@@ -255,18 +260,22 @@ export class GenomePositionSearchBox extends React.Component {
         if (!this.props.autocompleteSource)
             return;
 
-        this.setState({loading: true});
-        // send out a request for the autcomplete suggestions
-        let url = this.props.autocompleteSource + "/ac_" + parts[this.changedPart].toLowerCase();
-        d3.json(url, (error, data) => {
-            if (error) {
-                this.setState({loading: false, genes: []});
-                return;
-            }
+        console.log('parts:', parts);
+        if (this.changedPart != null) {
+            // if something has changed in the input text
+            this.setState({loading: true});
+            // send out a request for the autcomplete suggestions
+            let url = this.props.autocompleteSource + "/ac_" + parts[this.changedPart].toLowerCase();
+            d3.json(url, (error, data) => {
+                if (error) {
+                    this.setState({loading: false, genes: []});
+                    return;
+                }
 
-            // we've received a list of autocomplete suggestions
-            this.setState({loading: false, genes: data._source.suggestions }); 
-        });
+                // we've received a list of autocomplete suggestions
+                this.setState({loading: false, genes: data._source.suggestions }); 
+            });
+        }
     }
 
     geneSelected(value, objct) {

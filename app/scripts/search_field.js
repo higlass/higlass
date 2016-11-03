@@ -28,7 +28,9 @@ export class SearchField {
         if (chr == null)
             chr = prevChr
 
-        if (chr in this.chromInfo.chrPositions) {
+        if (chr == null) {
+            retPos = pos;
+        } else if (chr in this.chromInfo.chrPositions) {
             retPos = this.chromInfo.chrPositions[chr].pos + pos;
         } else {
             console.log("Search error: No chromInfo specified or chromosome (" + 
@@ -65,7 +67,10 @@ export class SearchField {
         if (term.length == 0)
             return null;
 
-        var parts = term.split('-');
+        // shitty ass regex to deal with negative positions (which aren't even valid genomic coordinates)
+        var parts = term.split(/([0-9,a-z:A-Z-]+?[0-9]+)-([0-9,a-z:A-Z-]+)/);   //split on a 
+        parts = parts.filter((d) => { return d.length > 0 });
+
         var pos1 = null, pos2 = null;
         var range = null;
 
@@ -108,7 +113,7 @@ export class SearchField {
             range2 = this.getSearchRange(parts[1].split(' ')[0]);
         } else {
             // we just need to position the first axis
-            range1 = this.getSearchRange(parts[0].split(' ')[0]);
+            range1 = this.getSearchRange(parts[0]);
         }
 
         if (range1 != null && range2 != null) {
