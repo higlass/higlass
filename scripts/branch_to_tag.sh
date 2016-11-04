@@ -13,7 +13,7 @@ git show-ref --verify --quiet refs/heads/${BRANCHNAME}
 if [ $? == 0 ]; then
    git checkout ${BRANCHNAME}
    git tag ${BRANCHNAME}
-   git checkout master
+   git checkout develop
    git branch ${BRANCHNAME} -d
    echo " "
    echo "Updated list branches, sorted chronologically: "
