@@ -161,7 +161,6 @@ export function TopGeneLabelsTrack() {
 
                         let text = new PIXI.Text(tileData[i].geneName, {font:"10px Arial", 
                                                                        fill:"red"});
-
                                          
                         tile.textGenes.push({ 'gene': tileData[i], 'text': text});
 
@@ -232,10 +231,8 @@ export function TopGeneLabelsTrack() {
 
                     let result = boxIntersect(allBoxes, function(i, j) {
                         if (+selectTextGenes[i].gene.count > +selectTextGenes[j].gene.count) {
-                            //console.log('hiding:', selectTextGenes[i].gene.geneName);
                             selectTextGenes[j].text.alpha = 0; 
                         } else {
-                            //console.log('hiding:', selectTextGenes[i].gene.geneName);
                             selectTextGenes[i].text.alpha = 0; 
                         }
                     });
