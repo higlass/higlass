@@ -69,7 +69,12 @@ export class MultiViewContainer extends React.Component {
           // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
           // and set `measureBeforeMount={true}`.
           useCSSTransforms={this.state.mounted}>
-          {this.generateDOM()}
+            { this.props.children.map(function(c,i) {
+                return <div className="MultiViewContainer" key={i}>
+                    {c}
+                </div>
+
+            })}
         </ResponsiveReactGridLayout>
       </div>
     );
@@ -77,7 +82,7 @@ export class MultiViewContainer extends React.Component {
 }
 
 function generateLayout() {
-    let numElements = 24;
+    let numElements = 1;
     let numRows = Math.ceil(Math.sqrt(numElements));
     //let numCols = Math.ceil(numElements / numRows);
     let numCols = 4;
@@ -92,8 +97,8 @@ function generateLayout() {
         layouts.push({
             x: Math.floor(i % numCols),
             y: Math.floor(i / numCols),
-            w: 1,
-            h: 1,
+            w: 5,
+            h: 5,
             i: i.toString()
         });
     }
