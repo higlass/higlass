@@ -21,6 +21,7 @@ import {LeftChromosomeAxis} from './LeftChromosomeAxis.js'
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx'
 import {TopRatioPoint} from './TopRatioPoint.js';
 import {TopCNVInterval} from './TopCNVInterval.js';
+import {ResizeSensor,ElementQueries} from 'css-element-queries';
 
 export class MultiTrackContainer extends React.Component {
     constructor(props) {
@@ -142,6 +143,8 @@ export class MultiTrackContainer extends React.Component {
         this.prevWidth = this.width;
         this.prevHeight = this.height;
 
+        //console.log('updating dimensions:', this.width);
+
         //let offsetWidth = Math.floor(this.element.parentNode.offsetWidth / 2);
 
 
@@ -155,13 +158,35 @@ export class MultiTrackContainer extends React.Component {
             this.setHeight();
 
         this.setState({'height': this.height });
+
+        this.xOrigScale.range([0, this.width]);
+        this.yOrigScale.range([0, this.height]);
+
+        // the scale domains shouldn't change when zooming
         
         if (typeof this.prevWidth != 'undefined') {
             let currentDomainWidth = this.xOrigScale.domain()[1] - this.xOrigScale.domain()[0]; 
             let nextDomainWidth = currentDomainWidth * (this.width / this.prevWidth);
 
-            this.xOrigScale.domain([this.xOrigScale.domain()[0], 
-                               this.xOrigScale.domain()[0] + nextDomainWidth]);
+            let scale = this.zoom.scale();
+            let translate = this.zoom.translate();
+
+            // the implied zoom domain before zooming
+            this.xOrigScale.range([0, this.prevWidth]);
+            let prevZoomedDomain = (this.xOrigScale.range()
+                                      .map(function(x) { return (x - translate[0]) / scale })
+                                      .map(this.xOrigScale.invert))
+
+            // the new scale
+            let newXScale = this.xOrigScale.copy();
+            newXScale.range([0, this.width]);
+
+            // calculate a new translation that would keep the implied (after zooming)
+            // zoom domain equal to that before zooming
+            let newTranslate = -newXScale(prevZoomedDomain[0]) * scale;
+
+            this.zoom.translate([newTranslate, translate[1]]);
+            this.xOrigScale.range([0, this.width]);
 
         }
 
@@ -175,8 +200,6 @@ export class MultiTrackContainer extends React.Component {
         }
 
 
-        this.xOrigScale.range([0, this.width]);
-        this.yOrigScale.range([0, this.height]);
         this.renderer.resize(this.width, this.height);
 
         if (typeof this.topChromosomeAxis != 'undefined') {
@@ -191,6 +214,8 @@ export class MultiTrackContainer extends React.Component {
             this.verticalTiledArea.yScale(this.yOrigScale.copy());
             this.wigglePixiTrack.xScale(this.xOrigScale.copy());
             this.wigglePixiLine.xScale(this.xOrigScale.copy());
+            this.topRatioPoint.xScale(this.xOrigScale.copy());
+            this.topCNVInterval.xScale(this.xOrigScale.copy());
             this.wigglePixiPoint.xScale(this.xOrigScale.copy());
             this.wigglePixiHeatmap.xScale(this.xOrigScale.copy());
             this.leftWigglePixiTrack.yScale(this.yOrigScale.copy());
@@ -399,7 +424,12 @@ export class MultiTrackContainer extends React.Component {
 
     componentDidMount() {
         this.element = ReactDOM.findDOMNode(this);
-        window.addEventListener('resize', this.updateDimensions.bind(this));
+        ElementQueries.listen();
+        this.resizeSensor = new ResizeSensor(this.element, function() {
+            this.updateDimensions();
+        }.bind(this));
+
+        //window.addEventListener('resize', this.updateDimensions.bind(this));
 
         this.renderer = PIXI.autoDetectRenderer(this.width,
                                                 this.height,
@@ -712,7 +742,6 @@ export class MultiTrackContainer extends React.Component {
                 
             d3.select(this.bigDiv).selectAll('.' + trackDimensions)
               .data(tracksPerDimensions[trackDimensions])
-              .each(function(d) { console.log('calling... ', d); })
               .call(this.trackDimensionsHandlers[trackDimensions])
         }
 
@@ -965,13 +994,14 @@ export class MultiTrackContainer extends React.Component {
                 <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
                 { trackList.map(function(track, i) 
                         {
+                            //console.log('track.top:', track.top, 'track.width:', track.width, 'track.height:', track.height);
                             return (
                                 <div 
                                                  className={'track ' + this.trackDimension(track)}
                                                  style={{left: track.left, 
                                                          top: track.top, 
-                                                         width: track.width,
-                                                         height: track.height,
+                                                         width: track.width ? track.width : this.initialTrackWidth,
+                                                         height: track.height ? track.height : this.initialTrackHeight,
                                                          position: 'absolute'}}
                                                         key={track.uid}
                                                  />

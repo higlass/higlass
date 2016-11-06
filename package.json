@@ -77,6 +77,8 @@
     "react-autocomplete": "^1.3.1",
     "react-dimensions": "^1.3.0",
     "react-grid-layout": "^0.13.9",
-    "yeoman-generator": "^0.22.5"
+    "yeoman-generator": "^0.22.5",
+    "css-element-queries": "github:marcj/css-element-queries"
+    
   }
 }

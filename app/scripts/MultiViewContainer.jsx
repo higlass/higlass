@@ -54,7 +54,7 @@ export class MultiViewContainer extends React.Component {
   };
 
   onResize(layout, oldItem, newItem, placeholder, e, element) {
-      console.log('layout:', layout, 'oldItem:', oldItem, 'newItem:', newItem, 'placeholder:', placeholder, 'e:', e, 'element:', element);
+      //console.log('layout:', layout, 'oldItem:', oldItem, 'newItem:', newItem, 'placeholder:', placeholder, 'e:', e, 'element:', element);
 
   }
 
