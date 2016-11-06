@@ -67,6 +67,7 @@ export class MultiViewContainer extends React.Component {
           onBreakpointChange={this.onBreakpointChange.bind(this)}
           onLayoutChange={this.onLayoutChange}
           onResize={this.onResize.bind(this)}
+          draggableHandle={'.multitrack-header'}
           // WidthProvider option
           measureBeforeMount={false}
           // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)

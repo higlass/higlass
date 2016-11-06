@@ -973,7 +973,7 @@ export class MultiTrackContainer extends React.Component {
 
         return(
             <div style={viewStyle}>
-            <div style={{"width": this.width, "height": 16, "position": "relative", "border": "solid 1px", "margin-bottom": 4, "opacity": 0.6}} className="multitrack-header">
+            <div style={{"width": this.width, "height": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} className="multitrack-header">
                 <img src="images/cross.svg" width="10px" style={imgStyle}/>
             </div>
 
