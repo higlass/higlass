@@ -53,6 +53,11 @@ export class MultiViewContainer extends React.Component {
     });
   };
 
+  onResize(layout, oldItem, newItem, placeholder, e, element) {
+      console.log('layout:', layout, 'oldItem:', oldItem, 'newItem:', newItem, 'placeholder:', placeholder, 'e:', e, 'element:', element);
+
+  }
+
   render() {
     return (
       <div>
@@ -64,13 +69,14 @@ export class MultiViewContainer extends React.Component {
           layouts={this.state.layouts}
           onBreakpointChange={this.onBreakpointChange.bind(this)}
           onLayoutChange={this.onLayoutChange}
+          onResize={this.onResize.bind(this)}
           // WidthProvider option
           measureBeforeMount={false}
           // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
           // and set `measureBeforeMount={true}`.
           useCSSTransforms={this.state.mounted}>
             { this.props.children.map(function(c,i) {
-                return <div className="MultiViewContainer" key={i}>
+                return <div key={i}>
                     {c}
                 </div>
 
