@@ -4,6 +4,8 @@ import slugid from 'slugid';
 import ReactDOM from 'react-dom';
 import {MultiTrackContainer} from './MultiTrackContainer.jsx';
 import {Responsive, WidthProvider} from 'react-grid-layout';
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -42,7 +44,7 @@ export class MultiViewContainer extends React.Component {
   };
 
   onLayoutChange(layout, layouts) {
-    this.props.onLayoutChange(layout, layouts);
+    //this.props.onLayoutChange(layout, layouts);
   };
 
   onNewLayout() {
@@ -60,7 +62,7 @@ export class MultiViewContainer extends React.Component {
         <ResponsiveReactGridLayout
           {...this.props}
           layouts={this.state.layouts}
-          onBreakpointChange={this.onBreakpointChange}
+          onBreakpointChange={this.onBreakpointChange.bind(this)}
           onLayoutChange={this.onLayoutChange}
           // WidthProvider option
           measureBeforeMount={false}
@@ -76,20 +78,27 @@ export class MultiViewContainer extends React.Component {
 
 function generateLayout() {
     let numElements = 24;
-    let numRows = Math.ceil(Math.sqrt(length));
-    let numCols = Math.ceil(numElements / numRows);
+    let numRows = Math.ceil(Math.sqrt(numElements));
+    //let numCols = Math.ceil(numElements / numRows);
+    let numCols = 4;
+
+    console.log('numCols:', numCols);
+    console.log('numRows:', numRows);
 
     let layouts = [];
 
     for (let i = 0; i < numElements; i++) {
+        console.log('i:', i, 'x:', Math.floor(i % numCols), 'y:', Math.floor(i / numCols));
         layouts.push({
             x: Math.floor(i % numCols),
-            y: i / numCols,
+            y: Math.floor(i / numCols),
             w: 1,
             h: 1,
             i: i.toString()
         });
     }
+
+    console.log('layouts:', layouts);
 
     /*
   return _.map(_.range(0, 25), function (item, i) {
@@ -166,5 +175,4 @@ MultiViewContainer.defaultProps = {
     initialLayout: generateLayout()
   }
 MultiViewContainer.propTypes = {
-    onLayoutChange: React.PropTypes.func.isRequired
   }
