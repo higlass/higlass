@@ -61,9 +61,6 @@ export class MultiViewContainer extends React.Component {
   render() {
     return (
       <div>
-        <div>Current Breakpoint: {this.state.currentBreakpoint} ({this.props.cols[this.state.currentBreakpoint]} columns)
-        </div>
-        <button onClick={this.onNewLayout}>Generate New Layout</button>
         <ResponsiveReactGridLayout
           {...this.props}
           layouts={this.state.layouts}

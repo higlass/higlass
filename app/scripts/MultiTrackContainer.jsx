@@ -950,7 +950,7 @@ export class MultiTrackContainer extends React.Component {
         let viewStyle = this.props.viewConfig.viewStyle;
 
         let imgStyle = { right: 10,
-                         bottom: 10,
+                        top: 2,
                          position: 'absolute' }
         let canvasStyle = { top: 0,
                             left: 0,
@@ -965,7 +965,6 @@ export class MultiTrackContainer extends React.Component {
 
         let trackList = this.state.tracksList;
 
-        //<img src="images/plus.svg" width="20px" style={imgStyle}/>
         /*
                 <div style={addTrackDivStyle}>
                     <AddTrackDiv />
@@ -974,6 +973,10 @@ export class MultiTrackContainer extends React.Component {
 
         return(
             <div style={viewStyle}>
+            <div style={{"width": this.width, "height": 16, "position": "relative", "border": "solid 1px", "margin-bottom": 4, "opacity": 0.6}} className="multitrack-header">
+                <img src="images/cross.svg" width="10px" style={imgStyle}/>
+            </div>
+
             <div>
                 { (() => {
                     if (this.props.viewConfig.searchBox) {
