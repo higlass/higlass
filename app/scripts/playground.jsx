@@ -48,7 +48,8 @@ let developmentDemo = JSON.parse(`
                 "zoomLock" : 0,
                 "searchBox": {
                     "autocompleteSource": "//52.45.229.11:9872/hg19/autocomplete"
-                }
+                },
+                "layout": {"x":0,"y":0,"w":6,"h":7,"minH":7,"maxH":7,"i":"UPOrvJV5RaaEzca7G7PNBw"}
             }
             ],
             "editable": true

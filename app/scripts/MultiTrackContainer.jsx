@@ -143,8 +143,6 @@ export class MultiTrackContainer extends React.Component {
         this.prevWidth = this.width;
         this.prevHeight = this.height;
 
-        //console.log('updating dimensions:', this.width);
-
         //let offsetWidth = Math.floor(this.element.parentNode.offsetWidth / 2);
 
 
@@ -717,7 +715,6 @@ export class MultiTrackContainer extends React.Component {
                 tracksPerDimensions[trackDimensions] = [];
 
             tracksPerDimensions[trackDimensions].push(this.state.tracks[trackId]);
-            console.log('track-dimensions', trackDimensions);
 
             /*
             for (let i = 0; i < this.state.tracks[trackId].overlays.length; i++) {
@@ -738,12 +735,6 @@ export class MultiTrackContainer extends React.Component {
                 console.log('WARNING: undefined handler for track dimensions:', trackDimensions);
                 continue;
             }
-                
-            console.log('ss:', 
-                d3.select(this.bigDiv).selectAll('.' + trackDimensions)
-                  .data(tracksPerDimensions[trackDimensions]))
-            console.log('handler:',
-              this.trackDimensionsHandlers[trackDimensions])
                 
             d3.select(this.bigDiv).selectAll('.' + trackDimensions)
               .data(tracksPerDimensions[trackDimensions])

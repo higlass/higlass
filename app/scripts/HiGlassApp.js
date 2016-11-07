@@ -95,7 +95,10 @@ export class HiGlassApp extends React.Component {
                     ref='displayPanel'
                     className="higlass-display"
                     >
-                    <MultiViewContainer viewConfig={this.state.viewConfig} >
+                    <MultiViewContainer 
+                        onNewConfig={this.handleNewConfig.bind(this)}
+                        viewConfig={this.state.viewConfig} 
+                    >
                     { 
                         this.state.viewConfig.object.views.map(function(view, i) 
                                                              {
