@@ -13,20 +13,37 @@ export class HiGlassApp extends React.Component {
         super(props);
 
     this.defaultViewString = JSON.stringify(JSON.parse(this.props.viewConfigString), null, 2);
+    let viewConfigObject = JSON.parse(this.props.viewConfigString);
+    this.addUids(viewConfigObject)
 
     this.state = {
         //viewConfig : []
 
         viewConfig : { 
-            object: JSON.parse(this.props.viewConfigString),
-            text: JSON.stringify(JSON.parse(this.props.viewConfigString))
+            object: viewConfigObject,
+            text: JSON.stringify(viewConfigObject)
         },
         inputOpen: false
     }
+    //this.handleNewConfig(this.props.viewConfigString);
 
     console.log('this.state:', this.state);
     this.updateLinkedViews(this.state.viewConfig.object);
 
+    }
+
+    addUids(viewConfigObject) {
+        /**
+         * Add a uid to each view in the viewConfig. Useful for identifying views
+         * that get closed in other portions of the application.
+         *
+         */
+        for (let i = 0; i < viewConfigObject.views.length; i++) {
+            if ('uid' in viewConfigObject.views[i])
+                continue
+
+            viewConfigObject.views[i].uid = slugid.nice();
+        }
     }
 
     updateLinkedViews(viewConfig) {
@@ -48,14 +65,16 @@ export class HiGlassApp extends React.Component {
     }
 
     handleNewConfig(configText) {
-        let viewConfig = JSON.parse(configText);
-        this.updateLinkedViews(viewConfig);
+        let viewConfigObject = JSON.parse(configText);
+        this.addUids(viewConfigObject);
+
+        this.updateLinkedViews(viewConfigObject);
 
         this.setState(
          {
              viewConfig : { 
-                 object: viewConfig,
-                 text: JSON.stringify(viewConfig)
+                 object: viewConfigObject,
+                 text: JSON.stringify(viewConfigObject)
              }
          });
 
@@ -92,9 +111,9 @@ export class HiGlassApp extends React.Component {
                 <div style={divStyle}>
 
                 <Panel 
-                    ref='displayPanel'
                     className="higlass-display"
-                    >
+                    ref='displayPanel'
+                >
                     <MultiViewContainer 
                         onNewConfig={this.handleNewConfig.bind(this)}
                         viewConfig={this.state.viewConfig} 
@@ -103,8 +122,8 @@ export class HiGlassApp extends React.Component {
                         this.state.viewConfig.object.views.map(function(view, i) 
                                                              {
                                                                  return (<MultiTrackContainer
-                                                                         viewConfig ={view}
                                                                          key={slugid.nice()}
+                                                                         viewConfig={view}
                                                                          />)
                                                              })
                     }
@@ -112,14 +131,18 @@ export class HiGlassApp extends React.Component {
 
                 </Panel>
                 { (() => { if (this.state.viewConfig.object.editable) {
-                return <HiGlassInput currentConfig={this.defaultViewString} 
-                        onNewConfig={this.handleNewConfig.bind(this)} 
-                        inputOpen={this.state.inputOpen}
+                return (<HiGlassInput 
+                        currentConfig={this.defaultViewString} 
                         handleOpen={this.handleOpen.bind(this)}
-                        />
+                        inputOpen={this.state.inputOpen}
+                        onNewConfig={this.handleNewConfig.bind(this)} 
+                        />)
                                                       }})() }
                 </div>
         );
     }
 }
 
+HiGlassApp.propTypes = {
+    viewConfigString: React.PropTypes.string
+}

@@ -33,7 +33,7 @@ export class GenomePositionSearchBox extends React.Component {
             this.chromInfo = newChromInfo;  
             this.searchField = new SearchField(this.chromInfo);
 
-            //this.setPositionText();
+            this.setPositionText();
         });
 
         this.state = {

@@ -69,7 +69,6 @@ export class MultiViewContainer extends React.Component {
 
     for (let i = 0; i < viewConfig.tracks.length; i++) {
         let track = viewConfig.tracks[i];
-        console.log('track.height:', track.height);
 
         if (!track.height)
             totalHeight += minTrackHeight;
@@ -100,6 +99,42 @@ export class MultiViewContainer extends React.Component {
     return layout;
   }
 
+  handleCloseView(uid) {
+      /**
+       * A view needs to be closed. Remove it from from the viewConfig and then clean
+       * up all of its connections (zoom links, workers, etc...)
+       *
+       * @param {uid} This view's identifier
+       */
+    
+      console.log('closing a view:', uid);
+      let viewConfigObject = JSON.parse(this.props.viewConfig.text);
+
+      // check if this is the only view
+      // if it is, don't close it (display an error message)
+      if (viewConfigObject.views.length == 1) {
+            console.log("Can't close the only view");
+            return;
+      }
+
+
+      let viewsToClose = viewConfigObject.views.filter((d) => { return d.uid == uid; });
+
+      console.log('views to close:', viewsToClose);
+      // send an event to the app telling it that we're closing some views so 
+      // that it can clean up after them
+
+      let filteredViews = viewConfigObject.views.filter((d) => { 
+          console.log('d:', d);
+          return d.uid != uid;
+      });
+      console.log('filteredViews:', filteredViews);
+      viewConfigObject.views = filteredViews;
+      let newViewConfigText = JSON.stringify(viewConfigObject);
+
+      this.props.onNewConfig(newViewConfigText);
+  }
+
   handleAddView() {
       /**
        * User clicked on the "Add View" button. We'll duplicate the last
@@ -108,7 +143,7 @@ export class MultiViewContainer extends React.Component {
       console.log('addView clicked');
       console.log('this.viewConfig:', this.props.viewConfig);
 
-      let freshViewConfig = JSON.parse(this.props.viewConfig.text)
+      let freshViewConfig = JSON.parse(this.props.viewConfig.text);
       let views = freshViewConfig.views;
       let lastView = views[views.length-1];
 
@@ -123,9 +158,9 @@ export class MultiViewContainer extends React.Component {
 
           if ('layout' in view) {
               if ('minH' in view.layout)
-                    maxY = Math.max(maxY, view.layout.y + view.layout.minH);
+                    maxY += Math.max(maxY, view.layout.y + view.layout.minH);
               else
-                    maxY = Math.max(maxY, view.layout.y + 1);
+                    maxY += Math.max(maxY, view.layout.y + 1);
           }
       }
 
@@ -135,6 +170,9 @@ export class MultiViewContainer extends React.Component {
       // place this new view below all the others
       newView.layout.x = 0;
       newView.layout.y = maxY;
+
+      // give it its own unique id
+      newView.uid = slugid.nice();
 
       freshViewConfig.views.push(newView); 
       let newViewConfigText = JSON.stringify(freshViewConfig);
@@ -153,15 +191,17 @@ export class MultiViewContainer extends React.Component {
       <div>
         <ResponsiveReactGridLayout
           {...this.props}
+          draggableHandle={'.multitrack-header'}
+          measureBeforeMount={false}
           onBreakpointChange={this.onBreakpointChange.bind(this)}
           onLayoutChange={this.handleLayoutChange}
           onResize={this.onResize.bind(this)}
-          draggableHandle={'.multitrack-header'}
+
           // WidthProvider option
-          measureBeforeMount={false}
           // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
           // and set `measureBeforeMount={true}`.
-          useCSSTransforms={this.state.mounted}>
+          useCSSTransforms={this.state.mounted}
+        >
             { this.props.children.map(function(c,i) {
                 let layout = this.generateViewLayout(c.props.viewConfig);
                 console.log('layout:', JSON.stringify(layout));
@@ -175,6 +215,7 @@ export class MultiViewContainer extends React.Component {
                                 style={{"width": this.width, "height": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} 
                             >
                                 <img 
+                                    onClick={() => { this.handleCloseView(c.props.viewConfig.uid)}}
                                     src="images/cross.svg" 
                                     style={imgStyle}
                                     width="10px" 
