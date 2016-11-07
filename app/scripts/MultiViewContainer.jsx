@@ -58,6 +58,34 @@ export class MultiViewContainer extends React.Component {
 
   }
 
+  generateViewLayout(viewConfig) {
+    let minTrackHeight = 30;
+    let totalHeight = 0
+
+    for (let i = 0; i < viewConfig.tracks.length; i++) {
+        let track = viewConfig.tracks[i];
+
+        if (!track.height)
+            totalHeight += minTrackHeight;
+        else
+            totalHeight += track.height;
+    }
+
+    let heightGrid = Math.ceil(totalHeight / this.props.rowHeight);
+
+    let layout = {
+        x: 0,
+        y: 0,
+        w: 6,
+        h: heightGrid,
+        minH: heightGrid,
+        maxH: heightGrid,
+        i: slugid.nice()
+    };
+
+    return layout;
+  }
+
   render() {
     return (
       <div>
@@ -74,11 +102,13 @@ export class MultiViewContainer extends React.Component {
           // and set `measureBeforeMount={true}`.
           useCSSTransforms={this.state.mounted}>
             { this.props.children.map(function(c,i) {
-                return <div key={i}>
+                let layout = this.generateViewLayout(c.props.viewConfig);
+
+                return <div key={i} data-grid={layout}>
                     {c}
                 </div>
 
-            })}
+            }.bind(this))}
         </ResponsiveReactGridLayout>
       </div>
     );
@@ -91,25 +121,33 @@ function generateLayout() {
     //let numCols = Math.ceil(numElements / numRows);
     let numCols = 4;
 
+    return [{
+        x: 0,
+        y: 0,
+        w: 1,
+        h: 1,
+        i: 0
+    }];
+
+    /*
     console.log('numCols:', numCols);
     console.log('numRows:', numRows);
 
     let layouts = [];
 
+    // look at only a single child for now
+    let c = this.props.children[0];
+
+
+    let totalHeightGrid = Math.ceil(totalHeight / this.props.rowHeight);
+    console.log(totalHeightGrid);
+
     for (let i = 0; i < numElements; i++) {
         console.log('i:', i, 'x:', Math.floor(i % numCols), 'y:', Math.floor(i / numCols));
-        layouts.push({
-            x: Math.floor(i % numCols),
-            y: Math.floor(i / numCols),
-            w: 5,
-            h: 5,
-            i: i.toString()
-        });
     }
 
     console.log('layouts:', layouts);
 
-    /*
   return _.map(_.range(0, 25), function (item, i) {
     var y = Math.ceil(Math.random() * 4) + 1;
     return {
@@ -180,7 +218,7 @@ function generateLayout() {
 MultiViewContainer.defaultProps = {
     className: "layout",
     rowHeight: 30,
-    cols: {lg: 12, md: 10, sm: 6, xs: 4, xxs: 2},
+    cols: {lg: 6, md: 6, sm: 6, xs: 6, xxs: 6},
     initialLayout: generateLayout()
   }
 MultiViewContainer.propTypes = {
