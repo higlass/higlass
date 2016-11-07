@@ -24,6 +24,7 @@ export class HiGlassInput extends React.Component {
     }
 
     render() {
+        console.log('re-rendering...');
         return (
                 <div>
                 <Panel bsSize={'small'}

@@ -739,6 +739,11 @@ export class MultiTrackContainer extends React.Component {
                 continue;
             }
                 
+            console.log('ss:', 
+                d3.select(this.bigDiv).selectAll('.' + trackDimensions)
+                  .data(tracksPerDimensions[trackDimensions]))
+            console.log('handler:',
+              this.trackDimensionsHandlers[trackDimensions])
                 
             d3.select(this.bigDiv).selectAll('.' + trackDimensions)
               .data(tracksPerDimensions[trackDimensions])
@@ -949,9 +954,6 @@ export class MultiTrackContainer extends React.Component {
 
         let viewStyle = this.props.viewConfig.viewStyle;
 
-        let imgStyle = { right: 10,
-                        top: 2,
-                         position: 'absolute' }
         let canvasStyle = { top: 0,
                             left: 0,
                             width: '100%',
@@ -973,9 +975,6 @@ export class MultiTrackContainer extends React.Component {
 
         return(
             <div style={viewStyle}>
-            <div style={{"width": this.width, "height": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} className="multitrack-header">
-                <img src="images/cross.svg" width="10px" style={imgStyle}/>
-            </div>
 
             <div>
                 { (() => {

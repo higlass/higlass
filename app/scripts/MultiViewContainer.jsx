@@ -28,9 +28,16 @@ export class MultiViewContainer extends React.Component {
   generateDOM() {
     return _.map(this.state.layouts.lg, function (l, i) {
       return (
-        <div key={i} className={l.static ? 'static' : ''}>
+        <div 
+        className={l.static ? 'static' : ''}
+        key={i} 
+        >
           {l.static ?
-            <span className="text" title="This item is static and cannot be removed or resized.">Static - {i}</span>
+            <span className="text" 
+                  title="This item is static and cannot be removed or resized."
+            >
+                  Static - {i}
+            </span>
             : <span className="text">{i}</span>
           }
         </div>);
@@ -43,7 +50,7 @@ export class MultiViewContainer extends React.Component {
     });
   };
 
-  onLayoutChange(layout, layouts) {
+  handleLayoutChange(layout, layouts) {
     //this.props.onLayoutChange(layout, layouts);
   };
 
@@ -64,6 +71,7 @@ export class MultiViewContainer extends React.Component {
 
     for (let i = 0; i < viewConfig.tracks.length; i++) {
         let track = viewConfig.tracks[i];
+        console.log('track.height:', track.height);
 
         if (!track.height)
             totalHeight += minTrackHeight;
@@ -71,6 +79,9 @@ export class MultiViewContainer extends React.Component {
             totalHeight += track.height;
     }
 
+    if (viewConfig.searchBox)
+        totalHeight += 30;
+    
     let heightGrid = Math.ceil(totalHeight / this.props.rowHeight);
 
     let layout = {
@@ -87,13 +98,16 @@ export class MultiViewContainer extends React.Component {
   }
 
   render() {
+    let imgStyle = { right: 10,
+                    top: 2,
+                     position: 'absolute' }
     return (
       <div>
         <ResponsiveReactGridLayout
           {...this.props}
           layouts={this.state.layouts}
           onBreakpointChange={this.onBreakpointChange.bind(this)}
-          onLayoutChange={this.onLayoutChange}
+          onLayoutChange={this.handleLayoutChange}
           onResize={this.onResize.bind(this)}
           draggableHandle={'.multitrack-header'}
           // WidthProvider option
@@ -105,7 +119,10 @@ export class MultiViewContainer extends React.Component {
                 let layout = this.generateViewLayout(c.props.viewConfig);
 
                 return <div key={i} data-grid={layout}>
-                    {c}
+                <div style={{"width": this.width, "height": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} className="multitrack-header">
+                    <img src="images/cross.svg" width="10px" style={imgStyle}/>
+                </div>
+                        {c}
                 </div>
 
             }.bind(this))}

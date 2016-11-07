@@ -25,6 +25,7 @@ export class GenomePositionSearchBox extends React.Component {
 
         this.zoomedXScale = this.xOrigScale.copy();
         this.zoomedYScale = this.yOrigScale.copy();
+        this.mounted = false;
 
         this.prevParts = [];
 
@@ -32,7 +33,7 @@ export class GenomePositionSearchBox extends React.Component {
             this.chromInfo = newChromInfo;  
             this.searchField = new SearchField(this.chromInfo);
 
-            this.setPositionText();
+            //this.setPositionText();
         });
 
         this.state = {
@@ -91,7 +92,15 @@ export class GenomePositionSearchBox extends React.Component {
         this.setPositionText();
     }
 
+    componentDidMount() {
+        this.mounted = true;
+        this.setPositionText();
+    }
+
     setPositionText() {
+        if (!this.mounted)
+            return;
+
         if (this.chromInfo == null)
             return;                 // chromosome info hasn't been loaded yet
 
@@ -119,7 +128,7 @@ export class GenomePositionSearchBox extends React.Component {
         this.prevParts = positionString.split(/[ -]/);
 
         //ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
-        this.setState({"value": positionString});
+        //this.setState({"value": positionString});
     }
 
     replaceGenesWithLoadedPositions(genePositions) {
