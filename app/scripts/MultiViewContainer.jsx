@@ -196,7 +196,7 @@ export class MultiViewContainer extends React.Component {
       let newViewConfigText = JSON.stringify(freshViewConfig);
 
       console.log('lastView:', lastView);
-      console.log('newViewConfig:', newViewConfigText);
+      //console.log('newViewConfig:', newViewConfigText);
 
       this.props.onNewConfig(newViewConfigText);
   }
@@ -222,15 +222,17 @@ export class MultiViewContainer extends React.Component {
         >
             { this.props.children.map(function(c,i) {
                 let layout = this.generateViewLayout(c.props.viewConfig);
+                /*
                 if ('layout' in c.props.viewConfig) {
                     layout = c.props.viewConfig.layout;
                 }
+                */
                 console.log('layout:', JSON.stringify(layout));
                 console.log('i:', i)
 
                 return (<div 
                             data-grid={layout}
-                            key={slugid.nice()}
+                            key={"p" + c.props.viewConfig.uid}
                         >
                             <div 
                                 className="multitrack-header"

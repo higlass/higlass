@@ -429,7 +429,14 @@ export class MultiTrackContainer extends React.Component {
 
         //window.addEventListener('resize', this.updateDimensions.bind(this));
 
+        /*
         this.renderer = PIXI.autoDetectRenderer(this.width,
+                                                this.height,
+                                                { view: this.canvas,
+                                                  antialias: true, 
+                                                  transparent: true } )
+        */
+        this.renderer = new PIXI.CanvasRenderer(this.width,
                                                 this.height,
                                                 { view: this.canvas,
                                                   antialias: true, 
