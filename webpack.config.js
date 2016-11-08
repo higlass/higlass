@@ -4,6 +4,7 @@ var webpack = require('webpack');
 module.exports = {
   context: __dirname + '/app',
   entry: {
+      higlass: ['./scripts/higlass.jsx'],
       main: ['./scripts/main.jsx'],
       worker: ['./scripts/worker.js']},
   output: {
