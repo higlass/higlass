@@ -128,11 +128,33 @@ export class MultiViewContainer extends React.Component {
           console.log('d:', d);
           return d.uid != uid;
       });
+
+      this.removeZoomDispatch(filteredViews);
+
       console.log('filteredViews:', filteredViews);
       viewConfigObject.views = filteredViews;
       let newViewConfigText = JSON.stringify(viewConfigObject);
+      console.log('newViewConfigText:', newViewConfigText);
 
       this.props.onNewConfig(newViewConfigText);
+  }
+
+  removeZoomDispatch(views) {
+      /**
+       * Remove all zoom dispatches from views so that
+       * we don't have issues when recreating them.
+       *
+       * @param {views} An array of views
+       * @return views The same set of views, with any zoomDispatch members excised
+       */
+      for (let i = 0; i < views.length; i++) {
+          let view = views[i];
+
+        if ('zoomDispatch' in view)
+            delete view.zoomDispatch;
+      }
+
+      return views;
   }
 
   handleAddView() {
@@ -152,10 +174,6 @@ export class MultiViewContainer extends React.Component {
       for (let i = 0; i < views.length; i++) {
           let view = views[i];
 
-          // we don't want to serialize zoom dispatches
-          if ('zoomDispatch' in view)
-              delete view.zoomDispatch;
-
           if ('layout' in view) {
               if ('minH' in view.layout)
                     maxY += Math.max(maxY, view.layout.y + view.layout.minH);
@@ -164,6 +182,7 @@ export class MultiViewContainer extends React.Component {
           }
       }
 
+      this.removeZoomDispatch(views);
 
       let newView = JSON.parse(JSON.stringify(lastView));   //ghetto copy
 
