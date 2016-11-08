@@ -1,6 +1,6 @@
 {
   "name": "hi_z",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Massive matrix viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/scripts/hi_z.js",
