@@ -14,26 +14,42 @@ The following code shows how to instantiate a `HiGlass` container and use it to 
 a set of pre-generated tiles hosted on AWS S3 bucket.
 
 ```
-let width = 650, height=400;
+<div id="higlass-component" style="width: 400px;"></div>
 
-let mmvPlot = higlass.MassiveMatrixPlot()
-    .width(width)
-    .height(height);
+<script src='scripts/higlass.js'></script>
+<script type="text/javascript">
+var rectangularOneWindow = JSON.parse(`
+{"views":
+    [
+      {
+        "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+        "domain": [
+          0,
+          3000000000
+        ],
+        "viewStyle": {
+          "float": "left",
+          "padding": "5px",
+          "width": "100%"
+        },
+        "tracks": [
+            {
+            "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",
+            "type": "heatmap",
+            "height": 300
+          }
+        ]
+      }
+    ],
+    "editable": true
+}
+`)
 
-d3.json('http://pkerp.s3-website-us-east-1.amazonaws.com/tiles/chr1_5kb/tile_info.json', function(error, tile_info) {
-    //console.log('tile_info:', tile_info);
-    mmvPlot.minX(tile_info.min_pos[0])
-        .maxX(tile_info.max_pos[0])
-        .minY(tile_info.min_pos[1])
-        .maxY(tile_info.max_pos[1])
-        .maxZoom(tile_info.max_zoom)
-        .tileDirectory('http://pkerp.s3-website-us-east-1.amazonaws.com/tiles/chr1_5kb')
-        .zoomCallback(zoomCallback);
 
-    d3.select('#mmv-area')
-        //.datum(data)
-        .call(mmvPlot)
-});
+higlass.HiGlassContainer('higlass-component', JSON.stringify(rectangularOneWindow));
+
+</script>
+
 ```
 
 ## Tile Generation
@@ -66,3 +82,4 @@ repository and run the following commands:
 npm install
 gulp serve
 ```
+

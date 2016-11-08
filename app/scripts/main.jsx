@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {HiGlassApp} from './HiGlassApp.js';
-import $ from 'jquery';
 
 let simple1 = JSON.parse(`
         { "views":
