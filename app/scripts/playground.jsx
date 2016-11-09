@@ -20,29 +20,28 @@ let developmentDemo = JSON.parse(`
                 "tracks": [
                 {
                     "source": "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
-                    "type": "top-chromosome-axis",
-                    "height": 25
+                    "type": "top-chromosome-axis"
                 },
                 {
                     "source": "//52.23.165.123:9872/hg19/refgene-tiles-plus",
-                    "type": "top-gene-labels",
-                    "height": 25
+                    "type": "top-gene-labels"
                 },
                 {
                     "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",
-                    "type": "top-line",
-                    "height": 25
+                    "type": "top-line"
+                },
+                {
+                    "source": "//52.23.165.123:9872/hg19.1/wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.bigWig.bedGraph.genome.sorted.gz",
+                    "type": "left-bar"
                 },
 
                 {
                     "source": "//52.23.165.123:9872/hg19/hg19.UMB5144.all_bins.sorted.genome.gz",
-                    "type": "top-ratio-point",
-                    "height": 50
+                    "type": "top-ratio-point"
                 },
                 {
-                    "source": "//52.45.229.11:9872/hg19/UMB5144__B1000_l03.BICseq.out",
-                    "type": "top-cnv-interval",
-                    "height": 50
+                    "source": "//52.23.165.123:9872/hg19.1/Rao2014-GM12878-MboI-allreps-filtered.1kb.cool.reduced.genome.gz",
+                    "type": "heatmap"
                 }
                 ],
                 "zoomLock" : 0,

@@ -29,8 +29,11 @@ export class MultiTrackContainer extends React.Component {
 
         this.uid = slugid.nice();
         this.awsDomain = '//52.23.165.123:9872';
-        this.initialTrackHeight = 30;
-        this.initialTrackWidth = 300;
+        this.initialHorizontalTrackHeight = 30;
+        this.initialHorizontalTrackWidth = 300;
+
+        this.initialVerticalTrackHeight = this.initialHorizontalTrackWidth;
+        this.initialVerticalTrackWidth = this.initialVerticalTrackHeight;
 
         this.initLayouts();
         this.setupTrackDescriptions();
@@ -39,10 +42,11 @@ export class MultiTrackContainer extends React.Component {
         let currentTop = 0;
         this.twoD = false;               // are there any 2D tracks? this affects how the genomic
                                          // coordinates are displayed in the search box
-        this.heightSpecified = true;     // do any of the tracks request a particular height?
+        //this.heightSpecified = true;     // do any of the tracks request a particular height?
         for (let i = 0; i < tracks.length; i++) {
-            let trackHeight = this.initialTrackHeight;
-            let trackWidth = this.initialTrackWidth;
+            let trackHeight = this.defaultDims[this.trackDescriptions[tracks[i].type].position].height;
+            let trackWidth = this.defaultDims[this.trackDescriptions[tracks[i].type].position].width;
+
             let trackId = slugid.nice();
 
             if (this.trackDescriptions[tracks[i].type].position == 'left' ||
@@ -146,9 +150,12 @@ export class MultiTrackContainer extends React.Component {
         //let offsetWidth = Math.floor(this.element.parentNode.offsetWidth / 2);
 
 
-        this.width = Math.floor(this.element.getBoundingClientRect().width)
+        let boundingBox = this.element.getBoundingClientRect()
+        this.width = Math.floor(boundingBox.width)
                      - parseInt(cs.getPropertyValue('padding-left'), 10)
                      - parseInt(cs.getPropertyValue('padding-right'), 10);
+
+        console.log('bb.width:', boundingBox.width, 'bb.height:', boundingBox.height);
 
         if (!this.heightSpecified)
             this.height = this.width
@@ -755,6 +762,14 @@ export class MultiTrackContainer extends React.Component {
     }
 
     setupTrackDescriptions() {
+        this.defaultDims = {
+            'top': {'width': 300, 'height': 25 },
+            'left': {'width': 25, 'height': 300},
+            'center': {'width': 300, 'height': 300},
+            'bottom': {'width': 300, 'height': 25},
+            'right': {'width': 25, 'height': 300}
+        }
+
         this.trackDescriptions = { 
             'top-bar': 
                 {
@@ -945,6 +960,44 @@ export class MultiTrackContainer extends React.Component {
         this.zoomDispatch.zoom(this.zoom.translate(), this.zoom.scale());
     }
 
+    tracksInPosition(position) {
+        /**
+         * Return elements for all the tracks that are supposed to be in a certain position.
+         *
+         * @param position The position of the track (e.g.: 'top', 'left', 'center', 'right', 'top')
+         * @return A list of div elements representing the tracks
+         */
+        let topTracks = this.state.tracksList.filter((d) => { 
+            return this.trackDescriptions[d.type].position == position; 
+        })
+        
+
+        return(
+                <div>
+        { 
+            topTracks.map(function(track, i) 
+                {
+                    //console.log('position:', position, 'track:', track);
+                    //console.log('track.top:', track.top, 'track.width:', track.width, 'track.height:', track.height);
+                    return (
+                            <div 
+                            className={'track ' + this.trackDimension(track)}
+                            style={{left: track.left, 
+                                top: track.top, 
+                                width: track.width ? track.width : this.initialTrackWidth,
+                                height: track.height ? track.height : this.initialTrackHeight,
+                                position: 'absolute'}}
+                                key={track.uid}
+                                />
+                           );
+
+                }.bind(this)) 
+        }
+        </div>
+            );
+
+    }
+
     render() {
         let searchDivStyle = {};
         let divStyle = { position: 'relative',
@@ -963,7 +1016,6 @@ export class MultiTrackContainer extends React.Component {
                          width: '100%'
         }
 
-        let trackList = this.state.tracksList;
 
         /*
                 <div style={addTrackDivStyle}>
@@ -992,39 +1044,30 @@ export class MultiTrackContainer extends React.Component {
             </div>
             <div style={divStyle} ref={(c) => this.bigDiv = c} >
                 <canvas ref={(c) => this.canvas = c} style={canvasStyle}/>
-                { trackList.map(function(track, i) 
-                        {
-                            //console.log('track.top:', track.top, 'track.width:', track.width, 'track.height:', track.height);
-                            return (
-                                <div 
-                                                 className={'track ' + this.trackDimension(track)}
-                                                 style={{left: track.left, 
-                                                         top: track.top, 
-                                                         width: track.width ? track.width : this.initialTrackWidth,
-                                                         height: track.height ? track.height : this.initialTrackHeight,
-                                                         position: 'absolute'}}
-                                                        key={track.uid}
-                                                 />
-                                
-                                                 /*
-                                <DraggableDiv 
-                                                 width={track.width} 
-                                                 height={track.height} 
-                                                 top={track.top} 
-                                                 left={track.left} 
-                                                 sizeChanged={this.trackSizeChanged.bind(this)} 
-                                                 trackClosed={this.trackClosed.bind(this)}
-                                                 trackRotated={this.trackRotated.bind(this)}
-                                                 uid={track.uid}
-                                                 opacity={this.trackOpacity(track)}
-                                    >
-                                    
-                                    </DraggableDiv>
-                                    */
-                                    );
+                "hi"
+                <table>
+                    <tbody>
+                    <tr>
+                        <td></td>
+                        <td>
+                            { this.tracksInPosition('top') }
+                        </td>
+                        <td></td>
+                    </tr>
 
-                        }.bind(this)) 
-                }
+                    <tr>
+                        <td>{ this.tracksInPosition('left') }</td>
+                        <td>{ this.tracksInPosition('center') }</td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td>{ this.tracksInPosition('bottom') }</td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
                 </div>
         );
