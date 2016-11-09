@@ -105,31 +105,3 @@ self.addEventListener('message', function (e) {
     self.postMessage(returnObj, [returnObj.pixData.buffer]);
 }, false);
 
-/*
-module.exports = function (passedData, done) {
-    let inputTileData = new Float32Array(passedData.tile.data, 0, passedData.tile.dataLength);
-
-    let tileData = workerLoadTileData(inputTileData, passedData.tile.type);
-    let pixOutput = workerSetPix(256 * 256, tileData, 
-            passedData.minVisibleValue, 
-            passedData.maxVisibleValue,
-            colorScale = passedData.colorScale);
-
-    let returnObj = {
-        shownTileId: passedData.shownTileId,
-        tile: {
-            tilePos: passedData.tile.tilePos,
-            maxZoom: passedData.tile.maxZoom,
-            xOrigDomain: passedData.tile.xOrigDomain,
-            yOrigDomain: passedData.tile.yOrigDomain,
-            xOrigRange: passedData.tile.xOrigRange,
-            yOrigRange: passedData.tile.yOrigRange,
-            xRange: passedData.tile.xRange,
-            yRange: passedData.tile.yRange,
-            mirrored: passedData.tile.mirrored
-        }, pixData: pixOutput
-    };
-
-    done(returnObj, [returnObj.pixData.buffer]);
-};
-*/
