@@ -67588,7 +67588,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 342 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
@@ -67609,9 +67609,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.workQueue = [];
 	        this.freeWorkers = [];
 	        this.busyWorkers = [];
+	        var MyWorker = __webpack_require__(338);
 
 	        for (var i = 0; i < numWorkers; i++) {
-	            this.freeWorkers.push(new Worker(workerSrc));
+
+	            this.freeWorkers.push(new MyWorker(workerSrc));
 	        }
 	    }
 

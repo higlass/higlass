@@ -3,9 +3,11 @@ export class WorkerPool {
         this.workQueue = [];
         this.freeWorkers = [];
         this.busyWorkers = [];
+        let MyWorker = require("worker?inline!./worker.js");
 
         for (let i = 0; i < numWorkers; i++) {
-            this.freeWorkers.push(new Worker(workerSrc));
+            
+            this.freeWorkers.push(new MyWorker(workerSrc));
         }
     }
 
