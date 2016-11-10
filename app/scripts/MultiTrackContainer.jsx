@@ -145,7 +145,7 @@ export class MultiTrackContainer extends React.Component {
         let cs = window.getComputedStyle(this.element, null);
 
         this.prevWidth = this.width;
-        this.prevHeight = this.height;
+        this.prevHeight = this.plotHeight;
 
         //let offsetWidth = Math.floor(this.element.parentNode.offsetWidth / 2);
 
@@ -159,7 +159,7 @@ export class MultiTrackContainer extends React.Component {
         console.log('this.props.pullHeight', this.props.pullHeight());
         let ph = this.props.pullHeight();
 
-        this.height = ph;
+        this.plotHeight = ph;
         /*
         if (!this.heightSpecified)
             this.height = this.width
@@ -168,10 +168,10 @@ export class MultiTrackContainer extends React.Component {
         */
        //this.height = boundingBox.height;
 
-        this.setState({'height': this.height });
+        this.setState({'height': this.plotHeight });
 
         this.xOrigScale.range([0, this.width]);
-        this.yOrigScale.range([0, this.height]);
+        this.yOrigScale.range([0, this.plotHeight]);
 
         // the scale domains shouldn't change when zooming
         
@@ -203,7 +203,7 @@ export class MultiTrackContainer extends React.Component {
 
         if (typeof this.prevHeight != 'undefined') {
             let currentDomainHeight = this.yOrigScale.domain()[1] - this.yOrigScale.domain()[0]; 
-            let nextDomainHeight = currentDomainHeight * (this.height / this.prevHeight);
+            let nextDomainHeight = currentDomainHeight * (this.plotHeight / this.prevHeight);
 
             this.yOrigScale.domain([this.yOrigScale.domain()[0], 
                                this.yOrigScale.domain()[0] + nextDomainHeight]);
@@ -211,7 +211,7 @@ export class MultiTrackContainer extends React.Component {
         }
 
 
-        this.renderer.resize(this.width, this.height);
+        this.renderer.resize(this.width, this.plotHeight);
 
         if (typeof this.topChromosomeAxis != 'undefined') {
             this.topChromosomeAxis.xScale(this.xOrigScale.copy());
@@ -252,7 +252,7 @@ export class MultiTrackContainer extends React.Component {
 
             if (this.trackDescriptions[this.state.tracks[uid].type].position == 'left' ||
                 this.trackDescriptions[this.state.tracks[uid].type].position == 'center') 
-                    this.state.tracks[uid].height = this.height;
+                    this.state.tracks[uid].height = this.plotHeight;
 
             if ('resizeDispatch' in this.state.tracks[uid]) {
                 this.state.tracks[uid].resizeDispatch.resize();
@@ -292,7 +292,7 @@ export class MultiTrackContainer extends React.Component {
         }
 
         let currentRightLeft = this.width - this.rightMargin;
-        let currentBottomTop = this.height - this.bottomMargin;
+        let currentBottomTop = this.plotHeight - this.bottomMargin;
 
         for (let i = 0; i < this.state.tracksList.length; i++) {
             let trackId = this.state.tracksList[i].uid;
@@ -326,14 +326,14 @@ export class MultiTrackContainer extends React.Component {
             if (this.trackDescriptions[track.type].position == 'left') {
                 track.top = this.topMargin;
                 track.left = currentLeft;
-                track.height = this.height - this.topMargin - this.bottomMargin;
+                track.height = this.plotHeight - this.topMargin - this.bottomMargin;
                 currentLeft += track.width;
             }
 
             if (this.trackDescriptions[track.type].position == 'right') {
                 track.top = this.topMargin;
                 track.left = currentRightLeft;
-                track.height = this.height - this.topMargin - this.bottomMargin;
+                track.height = this.plotHeight - this.topMargin - this.bottomMargin;
                 currentRightLeft += track.width;
             }
 
@@ -348,7 +348,7 @@ export class MultiTrackContainer extends React.Component {
                 track.left = this.leftMargin;
                 track.top = this.topMargin;
                 track.width = this.width  - this.leftMargin - this.rightMargin;
-                track.height = this.height - this.topMargin - this.bottomMargin;
+                track.height = this.plotHeight - this.topMargin - this.bottomMargin;
             }
         }
 
@@ -389,18 +389,17 @@ export class MultiTrackContainer extends React.Component {
     }
 
     setHeight() {
-        this.height = this.state.height;
+        this.plotHeight = this.state.height;
 
-        if (typeof this.height == 'undefined') {
-            this.height = 0;
+        if (typeof this.plotHeight == 'undefined') {
+            this.plotHeight = 0;
 
             for (let i = 0; i < this.props.viewConfig.tracks.length; i++)  {
                 if (this.trackDescriptions[this.props.viewConfig.tracks[i].type].position == 'top' ||
                     this.trackDescriptions[this.props.viewConfig.tracks[i].type].position == 'center') {
-                        this.height += this.props.viewConfig.tracks[i].height;
+                        this.plotHeight += this.props.viewConfig.tracks[i].height;
                 }
             }
-
         }
 
     }
@@ -444,13 +443,13 @@ export class MultiTrackContainer extends React.Component {
 
         /*
         this.renderer = PIXI.autoDetectRenderer(this.width,
-                                                this.height,
+                                                this.plotHeight,
                                                 { view: this.canvas,
                                                   antialias: true, 
                                                   transparent: true } )
         */
         this.renderer = new PIXI.CanvasRenderer(this.width,
-                                                this.height,
+                                                this.plotHeight,
                                                 { view: this.canvas,
                                                   antialias: true, 
                                                   transparent: true } )
@@ -459,7 +458,7 @@ export class MultiTrackContainer extends React.Component {
         this.updateDimensions();
 
         this.xScale.range([this.leftMargin, this.width]);
-        this.yScale.range([this.topMargin, this.height]);
+        this.yScale.range([this.topMargin, this.plotHeight]);
 
         this.arrangeTracks();
 
@@ -478,7 +477,7 @@ export class MultiTrackContainer extends React.Component {
         this.leftChromosomeAxis
             .yScale(this.yOrigScale.copy())
             .width(this.width)
-            .height(this.height)
+            .height(this.plotHeight)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch)
 
@@ -486,7 +485,7 @@ export class MultiTrackContainer extends React.Component {
             .xScale(this.xOrigScale.copy())
             .yScale(this.yOrigScale.copy())
             .width(this.width)
-            .height(this.height)
+            .height(this.plotHeight)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch)
 
@@ -502,7 +501,7 @@ export class MultiTrackContainer extends React.Component {
         this.horizontalTiledArea
             .tileType('div')
             .width(this.width)
-            .height(this.height)
+            .height(this.plotHeight)
             .xScale(this.xOrigScale.copy())
             .domain(this.xScale.domain())
             .zoomDispatch(this.zoomDispatch)
@@ -510,7 +509,7 @@ export class MultiTrackContainer extends React.Component {
 
         this.verticalTiledArea
             .tileType('div')
-            .width(this.height)   // since this is a vertical tiled area, the width is actually the height
+            .width(this.plotHeight)   // since this is a vertical tiled area, the width is actually the height
                                         // of the viewable area
             .domain(this.yScale.domain())
             .yScale(this.yOrigScale.copy())
@@ -521,7 +520,7 @@ export class MultiTrackContainer extends React.Component {
             .tileType('div')
             .oneDimensional(false)
             .width(this.width)
-            .height(this.height)
+            .height(this.plotHeight)
             .xScale(this.xOrigScale.copy())
             .yScale(this.yOrigScale.copy())
             .domain(this.xScale.domain())
@@ -531,7 +530,7 @@ export class MultiTrackContainer extends React.Component {
         this.wigglePixiTrack
             .xScale(this.xOrigScale.copy())
             .width(this.width)
-            .height(this.height)
+            .height(this.plotHeight)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
@@ -539,7 +538,7 @@ export class MultiTrackContainer extends React.Component {
         this.wigglePixiLine
             .xScale(this.xOrigScale.copy())
             .width(this.width)
-            .height(this.height)
+            .height(this.plotHeight)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
@@ -547,7 +546,7 @@ export class MultiTrackContainer extends React.Component {
         this.wigglePixiPoint
             .xScale(this.xOrigScale.copy())
             .width(this.width)
-            .height(this.height)
+            .height(this.plotHeight)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
@@ -555,7 +554,7 @@ export class MultiTrackContainer extends React.Component {
         this.topRatioPoint
             .xScale(this.xOrigScale.copy())
             .width(this.width)
-            .height(this.height)
+            .height(this.plotHeight)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
@@ -563,7 +562,7 @@ export class MultiTrackContainer extends React.Component {
         this.topCNVInterval
             .xScale(this.xOrigScale.copy())
             .width(this.width)
-            .height(this.height)
+            .height(this.plotHeight)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
@@ -571,7 +570,7 @@ export class MultiTrackContainer extends React.Component {
         this.wigglePixiHeatmap
             .xScale(this.xOrigScale.copy())
             .width(this.width)
-            .height(this.height)
+            .height(this.plotHeight)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
@@ -579,7 +578,7 @@ export class MultiTrackContainer extends React.Component {
         this.leftWigglePixiTrack
             .yScale(this.yOrigScale.copy())
             .width(this.width)
-            .height(this.height)
+            .height(this.plotHeight)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch);
@@ -588,7 +587,7 @@ export class MultiTrackContainer extends React.Component {
             .xScale(this.xOrigScale.copy())
             .yScale(this.yOrigScale.copy())
             .width(this.width)
-            .height(this.height)
+            .height(this.plotHeight)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
@@ -597,7 +596,7 @@ export class MultiTrackContainer extends React.Component {
             .xScale(this.xScale.copy())
             .yScale(this.yScale.copy())
             .width(this.width)
-            .height(this.height)
+            .height(this.plotHeight)
             .pixiStage(this.stage)
             .resizeDispatch(this.resizeDispatch)
             .zoomDispatch(this.zoomDispatch); 
@@ -1014,7 +1013,7 @@ export class MultiTrackContainer extends React.Component {
         let canvasStyle = { top: 0,
                             left: 0,
                             width: '100%',
-                            height: this.height }
+                            height: this.plotHeight }
         let addTrackDivStyle = { position: 'relative'
         };
 

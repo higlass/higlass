@@ -13,7 +13,7 @@ export class MultiViewContainer extends React.Component {
     constructor(props) {
         super(props);
 
-        this.height;
+        this.heights = {};
 
         this.viewConfig = this.props.viewConfig;
 
@@ -64,7 +64,9 @@ export class MultiViewContainer extends React.Component {
       //console.log('layout:', layout, 'oldItem:', oldItem, 'newItem:', newItem, 'placeholder:', placeholder, 'e:', e, 'element:', element);
       // element is the resize handle
     let boundingBox = element.parentNode.getBoundingClientRect()
-    this.height = boundingBox.height;
+    this.heights[newItem.i] = boundingBox.height;
+
+    //console.log('resizing:', layout.i, 'newItem:', newItem.i, 'this.heights:', this.heights);
   }
 
   generateViewLayout(viewConfig) {
@@ -100,6 +102,9 @@ export class MultiViewContainer extends React.Component {
         layout = viewConfig.layout;
 
     layout.i = slugid.nice();
+    console.log('generating...', layout.i);
+
+    this.heights[layout.i] = layout.height;
 
     return layout;
   }
@@ -234,10 +239,12 @@ export class MultiViewContainer extends React.Component {
                 */
                 console.log('layout:', JSON.stringify(layout));
                 console.log('i:', i)
+                let itemUid = "p" + view.uid;
+                this.heights[itemUid] = layout.height;
 
                 return (<div 
                             data-grid={layout}
-                            key={"p" + view.uid}
+                            key={itemUid}
                         >
                             <div 
                                 className="multitrack-header"
@@ -255,7 +262,7 @@ export class MultiViewContainer extends React.Component {
                                      viewConfig={view}
                                      viewConfigText={this.props.viewConfig.text}
                                      pullHeight={function() { 
-                                         return this.height;
+                                         return this.heights[itemUid];
                                      }.bind(this) }
                                      />
                         </div>)
