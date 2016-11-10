@@ -47,8 +47,7 @@ export function GenericTiledArea() {
             let loadingTiles = {};
             let shownTiles = new Set();
 
-            console.log('d:', d)
-            let tileDirectory = d.source;
+            //let tileDirectory = d.source;
 
             let totalWidth = null;
             let totalHeight = null;
@@ -180,7 +179,8 @@ export function GenericTiledArea() {
                     if (!isTileLoaded(tile) && !isTileLoading(tile)) {
                         // if the tile isn't loaded, load it
                         let tileSubPath = tile.join('.');    //tile = [1,1] e.g. 1.1 or tile=[3,4,16] -> 3.4.16
-                        let tilePath = tileDirectory + "/" + tileSubPath;
+                        let tilePath = d.api_source + '/render/?d=' + d.tileset_uuid + "." + tileSubPath;
+
                         loadingTiles[tileId(tile)] = true;
                         d3.json(tilePath, function(error, data) {
                             if (error != null) {
@@ -190,7 +190,7 @@ export function GenericTiledArea() {
                                 return;     // tile probably wasn't found
                             }
 
-                            let tile_value = data._source.tile_value;
+                            let tile_value = data[d.tileset_uuid];
                             delete loadingTiles[tileId(tile)];
 
                             let tileWidth = (totalWidth) / Math.pow(2, tile[0]);
@@ -371,9 +371,9 @@ export function GenericTiledArea() {
                 draw();
             }
 
-            d3.json(tileDirectory + '/tileset_info', function(error, tile_info) {
+            d3.json(d.api_source + '/tileset_info/?d=' + d.tileset_uuid , function(error, tile_info) {
                 // set up the data-dependent sections of the chart
-                tile_info = tile_info._source.tile_value;
+                tile_info = tile_info[d.tileset_uuid];
 
                 minX = tile_info.min_pos[0];
                 maxX = tile_info.max_pos[0] + 0.001;

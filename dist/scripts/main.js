@@ -64544,7 +64544,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var loadedTiles = {};
 	            var loadingTiles = {};
 	            var shownTiles = new Set();
-	            var tileDirectory = d.source;
+
+	            //let tileDirectory = d.source;
 
 	            var totalWidth = null;
 	            var totalHeight = null;
@@ -64674,7 +64675,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    if (!isTileLoaded(tile) && !isTileLoading(tile)) {
 	                        // if the tile isn't loaded, load it
 	                        var tileSubPath = tile.join('.'); //tile = [1,1] e.g. 1.1 or tile=[3,4,16] -> 3.4.16
-	                        var tilePath = tileDirectory + "/" + tileSubPath;
+	                        var tilePath = d.api_source + '/render/?d=' + d.tileset_uuid + "." + tileSubPath;
+
 	                        loadingTiles[tileId(tile)] = true;
 	                        d3.json(tilePath, function (error, data) {
 	                            if (error != null) {
@@ -64684,7 +64686,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                                return; // tile probably wasn't found
 	                            }
 
-	                            var tile_value = data._source.tile_value;
+	                            var tile_value = data[d.tileset_uuid];
 	                            delete loadingTiles[tileId(tile)];
 
 	                            var tileWidth = totalWidth / Math.pow(2, tile[0]);
@@ -64857,9 +64859,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                draw();
 	            }
 
-	            d3.json(tileDirectory + '/tileset_info', function (error, tile_info) {
+	            d3.json(d.api_source + '/tileset_info/?d=' + d.tileset_uuid, function (error, tile_info) {
 	                // set up the data-dependent sections of the chart
-	                tile_info = tile_info._source.tile_value;
+	                tile_info = tile_info[d.tileset_uuid];
 
 	                minX = tile_info.min_pos[0];
 	                maxX = tile_info.max_pos[0] + 0.001;
