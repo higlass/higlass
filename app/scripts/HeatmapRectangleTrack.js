@@ -19,7 +19,9 @@ export function HeatmapRectangleTrack() {
                     .range([255,0]);
 
     let tileDataLoaded = function() {};
-    let worker = new Worker('scripts/worker.js');
+    let MyWorker = require("worker?inline!./worker.js");
+    let worker = new MyWorker();
+
     worker.postMessage = worker.webkitPostMessage || worker.postMessage;
 
         worker.addEventListener('message', function(e) {
