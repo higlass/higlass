@@ -46,6 +46,8 @@ export function GenericTiledArea() {
             let loadedTiles = {};
             let loadingTiles = {};
             let shownTiles = new Set();
+
+            console.log('d:', d)
             let tileDirectory = d.source;
 
             let totalWidth = null;
