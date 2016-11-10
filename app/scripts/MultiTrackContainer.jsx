@@ -156,11 +156,17 @@ export class MultiTrackContainer extends React.Component {
                      - parseInt(cs.getPropertyValue('padding-right'), 10);
 
         console.log('bb.width:', boundingBox.width, 'bb.height:', boundingBox.height);
+        console.log('this.props.pullHeight', this.props.pullHeight());
+        let ph = this.props.pullHeight();
 
+        this.height = ph;
+        /*
         if (!this.heightSpecified)
             this.height = this.width
         else
             this.setHeight();
+        */
+       //this.height = boundingBox.height;
 
         this.setState({'height': this.height });
 

@@ -60,7 +60,11 @@ export class MultiViewContainer extends React.Component {
 
   onResize(layout, oldItem, newItem, placeholder, e, element) {
       //console.log('layout:', layout, 'oldItem:', oldItem, 'newItem:', newItem, 'placeholder:', placeholder, 'e:', e, 'element:', element);
-
+      // element is the resize handle
+    let boundingBox = element.parentNode.getBoundingClientRect()
+    layout[0].height = boundingBox.height;
+    console.log('layout:', layout, 'layout.height:', layout.height);
+    console.log('oldItem:', oldItem, 'newItem:', newItem);
   }
 
   generateViewLayout(viewConfig) {
@@ -88,8 +92,9 @@ export class MultiViewContainer extends React.Component {
     };
 
     layout.h = heightGrid;
+    layout.height = layout.h * this.props.rowHeight;
     layout.minH = heightGrid;
-    layout.maxH = heightGrid;
+    //layout.maxH = heightGrid;
 
     if (layout in viewConfig)
         layout = viewConfig.layout;
@@ -220,8 +225,8 @@ export class MultiViewContainer extends React.Component {
           // and set `measureBeforeMount={true}`.
           useCSSTransforms={this.state.mounted}
         >
-            { this.props.children.map(function(c,i) {
-                let layout = this.generateViewLayout(c.props.viewConfig);
+            { this.props.viewConfig.object.views.map(function(view, i) {
+                let layout = this.generateViewLayout(view);
                 /*
                 if ('layout' in c.props.viewConfig) {
                     layout = c.props.viewConfig.layout;
@@ -232,20 +237,29 @@ export class MultiViewContainer extends React.Component {
 
                 return (<div 
                             data-grid={layout}
-                            key={"p" + c.props.viewConfig.uid}
+                            key={"p" + view.uid}
                         >
                             <div 
                                 className="multitrack-header"
                                 style={{"width": this.width, "height": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} 
                             >
                                 <img 
-                                    onClick={() => { this.handleCloseView(c.props.viewConfig.uid)}}
+                                    onClick={() => { this.handleCloseView(view.uid)}}
                                     src="images/cross.svg" 
                                     style={imgStyle}
                                     width="10px" 
                                 />
                             </div>
-                            {c}
+                             <MultiTrackContainer
+                                     key={slugid.nice()}
+                                     viewConfig={view}
+                                     viewConfigText={this.props.viewConfig.text}
+                                     pullHeight={function() { 
+                                         console.log('layout:', layout);
+                                         let bb = ReactDOM.findDOMNode(this).getBoundingClientRect();
+                                         return bb.height;
+                                     }.bind(this) }
+                                     />
                         </div>)
 
             }.bind(this))}
