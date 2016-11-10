@@ -3,6 +3,7 @@ import _ from 'lodash';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
 import {Responsive, WidthProvider} from 'react-grid-layout';
+import {SearchableTiledPlot} from './SearchableTiledPlot.jsx';
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
