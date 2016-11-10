@@ -8,6 +8,8 @@ export class SearchableTiledPlot extends React.Component {
     }
 
     render() {
-        <TiledPlot />
+        return (<TiledPlot 
+                tracks={{'top': [1,2,3], 'left': [4], 'center': [5]}}
+                />)
     }
 }
