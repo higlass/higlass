@@ -13,6 +13,8 @@ export class MultiViewContainer extends React.Component {
     constructor(props) {
         super(props);
 
+        this.height;
+
         this.viewConfig = this.props.viewConfig;
 
           this.state = {
@@ -62,9 +64,7 @@ export class MultiViewContainer extends React.Component {
       //console.log('layout:', layout, 'oldItem:', oldItem, 'newItem:', newItem, 'placeholder:', placeholder, 'e:', e, 'element:', element);
       // element is the resize handle
     let boundingBox = element.parentNode.getBoundingClientRect()
-    layout[0].height = boundingBox.height;
-    console.log('layout:', layout, 'layout.height:', layout.height);
-    console.log('oldItem:', oldItem, 'newItem:', newItem);
+    this.height = boundingBox.height;
   }
 
   generateViewLayout(viewConfig) {
@@ -255,9 +255,7 @@ export class MultiViewContainer extends React.Component {
                                      viewConfig={view}
                                      viewConfigText={this.props.viewConfig.text}
                                      pullHeight={function() { 
-                                         console.log('layout:', layout);
-                                         let bb = ReactDOM.findDOMNode(this).getBoundingClientRect();
-                                         return bb.height;
+                                         return this.height;
                                      }.bind(this) }
                                      />
                         </div>)
