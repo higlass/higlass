@@ -9,7 +9,22 @@ export class SearchableTiledPlot extends React.Component {
 
     render() {
         return (<TiledPlot 
-                tracks={{'top': [1,2,3], 'left': [4,5,6], 'center': [5]}}
+                tracks={{
+                          'top': [{'height': 10, 'value': 1},
+                                 {'height': 20, 'value': 2},
+                                 {'height': 30, 'value': 3}],
+                         'left': [{'width': 10, 'value': 4},
+                                  {'width': 20, 'value': 5},
+                                  {'width': 30, 'value': 6}], 
+                         'right': [{'width': 10, 'value': 7},
+                                  {'width': 20, 'value': 8},
+                                  {'width': 30, 'value': 9}], 
+                          'bottom': [{'height': 10, 'value': 1},
+                                 {'height': 20, 'value': 2},
+                                 {'height': 30, 'value': 3}],
+
+                         'center': {'height': 40, 'width': 40, 'value': 10}
+                        }}
                 />)
     }
 }
