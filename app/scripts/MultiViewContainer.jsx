@@ -63,9 +63,6 @@ export class MultiViewContainer extends React.Component {
   onResize(layout, oldItem, newItem, placeholder, e, element) {
       //console.log('layout:', layout, 'oldItem:', oldItem, 'newItem:', newItem, 'placeholder:', placeholder, 'e:', e, 'element:', element);
       // element is the resize handle
-    let boundingBox = element.parentNode.getBoundingClientRect()
-    this.heights[newItem.i] = boundingBox.height;
-
     //console.log('resizing:', layout.i, 'newItem:', newItem.i, 'this.heights:', this.heights);
   }
 
@@ -259,11 +256,7 @@ export class MultiViewContainer extends React.Component {
                             </div>
                              <SearchableTiledPlot
                                      key={slugid.nice()}
-                                     viewConfig={view}
-                                     viewConfigText={this.props.viewConfig.text}
-                                     pullHeight={function() { 
-                                         return this.heights[itemUid];
-                                     }.bind(this) }
+                                     height={this.heights[itemUid]}
                                      />
                         </div>)
 

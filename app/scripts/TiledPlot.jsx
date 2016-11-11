@@ -1,9 +1,11 @@
 import "../styles/TiledPlot.css";
 import slugid from 'slugid';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 import {VerticalTiledPlot} from './VerticalTiledPlot.jsx';
 import {HorizontalTiledPlot} from './HorizontalTiledPlot.jsx';
+import {ResizeSensor,ElementQueries} from 'css-element-queries';
 
 const Item = SortableElement((props) => {
     return (
@@ -38,52 +40,101 @@ const SortableList = SortableContainer(({className, items, itemClass, sortingInd
 export class TiledPlot extends React.Component {
     constructor(props) {
         super(props);
+
+        // these values should be changed in componentDidMount
+        this.state = {
+            height: 10,
+            width: 10
+        }
+    }
+
+    componentDidMount() {
+        this.element = ReactDOM.findDOMNode(this);
+        ElementQueries.listen();
+        new ResizeSensor(this.element, function() {
+            console.log('resized:', this.element.clientWidth, this.element.clientHeight);
+
+            this.setState({
+                height: this.element.clientHeight,
+                width: this.element.clientWidth
+            });
+        }.bind(this));
     }
 
     render() {
+        // left, top, right, and bottom have fixed heights / widths
+        // the center will vary to accomodate their dimensions
+        let topHeight = this.props.tracks['top']
+            .map((x) => { return x.height; })
+            .reduce((a,b) => { return a + b; }, 0);
+        let bottomHeight = this.props.tracks['bottom']
+            .map((x) => { return x.height; })
+            .reduce((a,b) => { return a + b; }, 0);
+        let leftWidth = this.props.tracks['left']
+            .map((x) => { return x.width; })
+            .reduce((a,b) => { return a + b; }, 0);
+        let rightWidth = this.props.tracks['right']
+            .map((x) => { return x.width; })
+            .reduce((a,b) => { return a + b; }, 0);
+
+        let centerHeight = this.state.height - topHeight - bottomHeight;
+        let centerWidth = this.state.width - leftWidth - rightWidth;
+
+        console.log('centerWidth:', centerWidth, 'centerHeight', centerHeight);
+
         return(
-            <table>
-                <tbody>          
-                    <tr>
-                        <td />
+            <div style={{width: "100%", height: "100%"}}>
+                <table>
+                    <tbody>          
+                        <tr>
+                            <td />
+                                <td>
+                                    <HorizontalTiledPlot
+                                        tracks={this.props.tracks['top']}
+                                        width={centerWidth}
+                                    />
+                                </td>
+                            <td />
+                        </tr>
+                        <tr>
                             <td>
-                                <HorizontalTiledPlot
-                                    width={300}
-                                    tracks={this.props.tracks['top']}
+                                <VerticalTiledPlot
+                                    height={centerHeight}
+                                    tracks={this.props.tracks['left']}
+                                />
+
+                            </td>
+                            <td>
+                                {"Middle Tracks"}
+                            </td>
+                            <td>
+                                <VerticalTiledPlot
+                                    height={centerHeight}
+                                    tracks={this.props.tracks['right']}
                                 />
                             </td>
-                        <td />
-                    </tr>
-                    <tr>
-                        <td>
-                            <VerticalTiledPlot
-                                height={300}
-                                tracks={this.props.tracks['left']}
-                            />
-
-                        </td>
-                        <td>
-                            {"Middle Tracks"}
-                        </td>
-                        <td>
-                            <VerticalTiledPlot
-                                height={300}
-                                tracks={this.props.tracks['right']}
-                            />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td />
-                        <td>
-                            <HorizontalTiledPlot
-                                width={300}
-                                tracks={this.props.tracks['bottom']}
-                            />
-                        </td>
-                        <td />
-                    </tr>
-                </tbody>
-            </table>
+                        </tr>
+                        <tr>
+                            <td />
+                            <td>
+                                <HorizontalTiledPlot
+                                    tracks={this.props.tracks['bottom']}
+                                    width={centerWidth}
+                                />
+                            </td>
+                            <td />
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             );
     }
+}
+
+TiledPlot.propTypes = {
+    tracks: React.PropTypes.object,
+    "tracks.top": React.PropTypes.array,
+    "tracks.bottom": React.PropTypes.array,
+    "tracks.left": React.PropTypes.array,
+    "tracks.right": React.PropTypes.array
 }

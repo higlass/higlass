@@ -83,7 +83,7 @@ ListWrapper.propTypes = {
     className: React.PropTypes.string,
     itemClass: React.PropTypes.string,
     width: React.PropTypes.number,
-    height: React.PropTypes.number,
+
     onSortEnd: React.PropTypes.func,
     component: React.PropTypes.func
 }
