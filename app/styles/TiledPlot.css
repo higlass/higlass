@@ -5,15 +5,6 @@
     white-space: nowrap;
 }
 
-.horizontalItem {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    width: 200px;
-    border-right: 1px solid #EFEFEF;
-    border-bottom: 0;
-}
 
 // Base styles
 .list {
@@ -56,4 +47,14 @@
     &.horizontalItem {
         cursor: col-resize;
     }
+}
+
+.horizontalItem {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    border-right: 1px solid #EFEFEF;
+    border-bottom: 0;
 }
