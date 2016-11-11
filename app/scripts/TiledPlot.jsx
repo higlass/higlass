@@ -53,9 +53,12 @@ export class TiledPlot extends React.Component {
         ElementQueries.listen();
         new ResizeSensor(this.element, function() {
             console.log('resized:', this.element.clientWidth, this.element.clientHeight);
+            let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
+
+                console.log('heightOffset:', heightOffset);
 
             this.setState({
-                height: this.element.clientHeight,
+                height: this.element.clientHeight - heightOffset,
                 width: this.element.clientWidth
             });
         }.bind(this));

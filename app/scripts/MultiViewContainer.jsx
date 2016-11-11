@@ -242,10 +242,11 @@ export class MultiViewContainer extends React.Component {
                 return (<div 
                             data-grid={layout}
                             key={itemUid}
+                            style={{display: "flex", "flexDirection": "column"}}
                         >
                             <div 
                                 className="multitrack-header"
-                                style={{"width": this.width, "height": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} 
+                                style={{"width": this.width, "minHeight": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} 
                             >
                                 <img 
                                     onClick={() => { this.handleCloseView(view.uid)}}
