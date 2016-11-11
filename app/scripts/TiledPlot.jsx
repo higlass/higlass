@@ -1,16 +1,35 @@
+import "../styles/TiledPlot.css";
+import slugid from 'slugid';
 import React from 'react';
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 
-const SortableItem = SortableElement(({value}) => <li>{value}</li>);
-
-const SortableList = SortableContainer(({items}) => {
+const Item = SortableElement((props) => {
     return (
-        <ul>
-            {items.map((value, index) =>
-                <SortableItem key={`item-${index}`} index={index} value={value} />
-            )}
-        </ul>
-    );
+        <div className={props.className} style={{
+            height: props.height
+        }}>
+			{props.useDragHandle && <Handle/>}
+            Item {props.value}
+        </div>
+    )
+});
+
+const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, sortableHandlers}) => {
+	return (
+		<div className={className} {...sortableHandlers}>
+			{items.map(({value, height}, index) =>
+				<Item
+					key={slugid.nice()}
+					className={itemClass}
+					sortingIndex={sortingIndex}
+					index={index}
+					value={value}
+					height={height}
+					useDragHandle={useDragHandle}
+				/>
+			)}
+		</div>
+	);
 });
 
 
@@ -26,15 +45,18 @@ export class TiledPlot extends React.Component {
                     <tr>
                         <td />
                             <td>
-                                <SortableList 
-                                    items={this.props.tracks['top']} 
-                                />
                             </td>
                         <td />
                     </tr>
                     <tr>
                         <td>
-                            {"Left Tracks"}
+                            <SortableList 
+                                axis={'x'}
+                                helperClass={"stylizedHelper"}
+                                className={"list stylizedList horizontalList"} 
+                                itemClass={"stylizedItem horizontalItem"}
+                                items={this.props.tracks['left']} 
+                            />
                         </td>
                         <td>
                             {"Middle Tracks"}
