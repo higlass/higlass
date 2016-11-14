@@ -1,19 +1,84 @@
 import React from 'react';
 import slugid from 'slugid';
 
-import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
+import {SortableContainer, SortableElement, SortableHandle, arrayMove} from 'react-sortable-hoc';
 
-const Item = SortableElement((props) => {
-    return (
-        <div className={props.className} style={{
-            height: props.height,
-            width: props.width
-        }}>
-			{props.useDragHandle && <Handle/>}
-            {props.value}
-        </div>
-    )
-});
+class VerticalTrack extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            controlsVisible: false
+        }
+    }
+
+    handleMouseEnter() {
+        this.setState({
+            controlsVisible: true
+        });
+    }
+
+    handleMouseLeave() {
+        this.setState({
+            controlsVisible: false
+        });
+    }
+
+    render() {
+        let closeImgStyle = { right: 5,
+                         top: 5,
+                         position: 'absolute',
+                         opacity: .5}
+        let moveImgStyle = { right: 5,
+                         top: 18,
+                         position: 'absolute',
+                         opacity: .5}
+
+        let Handle = SortableHandle(() => 
+                <img 
+                    onClick={() => { this.handleCloseView(view.uid)}}
+                    src="images/enlarge.svg" 
+                    style={moveImgStyle}
+                    width="8px" 
+                />
+                )
+        let controls = null;
+
+        if (this.state.controlsVisible) {
+            controls = (<div><img 
+                        onClick={() => { this.handleCloseView(view.uid)}}
+                        src="images/cross.svg" 
+                        style={closeImgStyle}
+                        width="8px" 
+                    />
+                    <Handle />
+                    </div>)
+        }
+
+        return (
+            <div className={this.props.className} 
+                style={{
+                    height: this.props.height,
+                    width: this.props.width,
+                    position: "relative" }}
+                onMouseEnter={this.handleMouseEnter.bind(this)}
+                onMouseLeave={this.handleMouseLeave.bind(this)}
+            >
+                {this.props.value}
+                {controls}
+            </div>
+        )
+
+    }
+}
+
+const Item = SortableElement((props) => { 
+    return (<VerticalTrack 
+                                                    height={props.height}
+                                                    width={props.width}
+                                                    value={props.value}
+                                                    className={props.className}
+                                                />)});
 
 const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, sortableHandlers,height, width}) => {
 	return (
@@ -117,6 +182,7 @@ export class VerticalTiledPlot extends React.Component {
                     items={this.props.tracks} 
                     height={this.props.height}
                     width={thisWidth}
+                    useDragHandle={true}
                 />
         )
 

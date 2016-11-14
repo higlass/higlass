@@ -80,16 +80,35 @@ export class TiledPlot extends React.Component {
             .map((x) => { return x.width; })
             .reduce((a,b) => { return a + b; }, 0);
 
-        let centerHeight = this.state.height - topHeight - bottomHeight;
-        let centerWidth = this.state.width - leftWidth - rightWidth;
+        let centerHeight = this.state.height - topHeight - bottomHeight - 40;
+        let centerWidth = this.state.width - leftWidth - rightWidth - 30;
 
         console.log('centerWidth:', centerWidth, 'centerHeight', centerHeight);
+        let imgStyle = { 
+            width: 10,
+            opacity: 0.4
+        };
 
         return(
             <div style={{width: "100%", height: "100%"}}>
                 <table>
                     <tbody>          
                         <tr>
+                            <td />
+                            <td />
+                            <td style={{'textAlign': 'center'}}>
+                                <img 
+                                    onClick={() => { this.handleCloseView(view.uid)}}
+                                    src="images/plus.svg" 
+                                    style={imgStyle}
+                                />
+                            
+                            </td>
+                            <td />
+                            <td />
+                        </tr>
+                        <tr>
+                            <td />
                             <td />
                                 <td>
                                     <HorizontalTiledPlot
@@ -98,8 +117,16 @@ export class TiledPlot extends React.Component {
                                     />
                                 </td>
                             <td />
+                            <td />
                         </tr>
                         <tr>
+                            <td>
+                                <img 
+                                    onClick={() => { this.handleCloseView(view.uid)}}
+                                    src="images/plus.svg" 
+                                    style={imgStyle}
+                                />
+                            </td>
                             <td>
                                 <VerticalTiledPlot
                                     height={centerHeight}
@@ -107,8 +134,13 @@ export class TiledPlot extends React.Component {
                                 />
 
                             </td>
-                            <td>
-                                {"Middle Tracks"}
+                            <td style={{"textAlign": "center"}}>
+                                <img 
+                                    onClick={() => { this.handleCloseView(view.uid)}}
+                                    src="images/plus.svg" 
+                                    style={imgStyle}
+                                />
+                        
                             </td>
                             <td>
                                 <VerticalTiledPlot
@@ -116,8 +148,16 @@ export class TiledPlot extends React.Component {
                                     tracks={this.props.tracks['right']}
                                 />
                             </td>
+                            <td>
+                                <img 
+                                    onClick={() => { this.handleCloseView(view.uid)}}
+                                    src="images/plus.svg" 
+                                    style={imgStyle}
+                                />
+                            </td>
                         </tr>
                         <tr>
+                            <td />
                             <td />
                             <td>
                                 <HorizontalTiledPlot
@@ -125,6 +165,20 @@ export class TiledPlot extends React.Component {
                                     width={centerWidth}
                                 />
                             </td>
+                            <td />
+                            <td />
+                        </tr>
+                        <tr>
+                            <td />
+                            <td />
+                            <td style={{'textAlign': 'center'}}>
+                                <img 
+                                    onClick={() => { this.handleCloseView(view.uid)}}
+                                    src="images/plus.svg" 
+                                    style={imgStyle}
+                                />
+                            </td>
+                            <td />
                             <td />
                         </tr>
                     </tbody>
