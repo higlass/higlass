@@ -80,7 +80,8 @@ const Item = SortableElement((props) => {
                                                     className={props.className}
                                                 />)});
 
-const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, sortableHandlers,height, width}) => {
+const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, sortableHandlers,height, 
+                                         width, handleCloseTrack}) => {
 	return (
 		<div className={className} 
             style={{height: height,
@@ -96,6 +97,7 @@ const SortableList = SortableContainer(({className, items, itemClass, sortingInd
 					height={height}
                     width={item.width}
 					useDragHandle={useDragHandle}
+                    handleCloseTrack={handleCloseTrack}
 				/>
 			)}
 		</div>
@@ -183,6 +185,7 @@ export class VerticalTiledPlot extends React.Component {
                     height={this.props.height}
                     width={thisWidth}
                     useDragHandle={true}
+                    closeTrack={this.props.handleCloseTrack}
                 />
         )
 

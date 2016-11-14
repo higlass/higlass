@@ -76,7 +76,7 @@ class HorizontalTrack extends React.Component {
     }
 }
 
-const Item = SortableElement((props) => { 
+const HorizontalItem = SortableElement((props) => { 
     return (<HorizontalTrack 
                                                     height={props.height}
                                                     width={props.width}
@@ -84,25 +84,28 @@ const Item = SortableElement((props) => {
                                                     className={props.className}
                                                 />)});
 
-const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, sortableHandlers,height, width}) => {
+const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, sortableHandlers,height, width, handleCloseTrack,itemReactClass}) => {
             console.log('horizontal useDragHandle:', useDragHandle);
+    let itemElements = items.map((item, index) =>
+            React.createElement(itemReactClass,
+                {key:   slugid.nice(),
+				className: itemClass,
+					sortingIndex: sortingIndex,
+					index: index,
+					value: item.value,
+					height: item.height,
+                    width: item.width,
+					useDragHandle: useDragHandle,
+                    handleCloseTrack: handleCloseTrack
+                })
+			)
+
 	return (
 		<div className={className} 
             style={{height: height,
                     width: width}}
             {...sortableHandlers}>
-			{items.map((item, index) =>
-				<Item
-					key={slugid.nice()}
-					className={itemClass}
-					sortingIndex={sortingIndex}
-					index={index}
-					value={item.value}
-					height={item.height}
-                    width={width}
-					useDragHandle={useDragHandle}
-				/>
-			)}
+			{itemElements}
 		</div>
 	);
 });
@@ -181,6 +184,14 @@ export class HorizontalTiledPlot extends React.Component {
                          position: 'absolute',
                          opacity: .5}
 
+        let newItems = this.props.tracks.map((d) => {
+            let uid = d.uid;
+            if (!uid)
+                uid = slugid.nice();
+
+            return {uid: uid, width: thisWidth, height: d.height };
+        });
+
         return (
                 <div style={{position: "relative"}}>
                     <ListWrapper
@@ -188,10 +199,12 @@ export class HorizontalTiledPlot extends React.Component {
                         helperClass={"stylizedHelper"}
                         className={"list stylizedList"} 
                         itemClass={"stylizedItem"}
-                        items={this.props.tracks} 
+                        items={newItems} 
                         height={thisHeight}
                         width={this.props.width}
                         useDragHandle={true}
+                        closeTrack={this.props.handleCloseTrack}
+                        itemReactClass={HorizontalItem}
                     />
                 </div>
         )
