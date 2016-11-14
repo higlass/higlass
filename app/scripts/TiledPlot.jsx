@@ -54,24 +54,26 @@ class VerticalTrack extends MoveableTrack {
         let controls = null;
 
         if (this.state.controlsVisible) {
-            controls = (<div><img 
-                        onClick={() => { this.handleCloseView(view.uid)}}
-                        src="images/cross.svg" 
-                        style={closeImgStyle}
-                        width="8px" 
-                    />
-                    <Handle />
+            controls = (<div>
+                            <img 
+                                onClick={() => { this.handleCloseView(view.uid)}}
+                                src="images/cross.svg" 
+                                style={closeImgStyle}
+                                width="8px" 
+                            />
+                            <Handle />
                     </div>)
         }
 
         return (
-            <div className={this.props.className} 
+            <div 
+                className={this.props.className} 
+                onMouseEnter={this.handleMouseEnter.bind(this)}
+                onMouseLeave={this.handleMouseLeave.bind(this)}
                 style={{
                     height: this.props.height,
                     width: this.props.width,
                     position: "relative" }}
-                onMouseEnter={this.handleMouseEnter.bind(this)}
-                onMouseLeave={this.handleMouseLeave.bind(this)}
             >
                 {this.props.value}
                 {controls}
@@ -84,11 +86,11 @@ class VerticalTrack extends MoveableTrack {
 
 const VerticalItem = SortableElement((props) => { 
     return (<VerticalTrack 
-                                                    height={props.height}
-                                                    width={props.width}
-                                                    value={props.value}
-                                                    className={props.className}
-                                                />)});
+                className={props.className}
+                height={props.height}
+                value={props.value}
+                width={props.width}
+            />)});
 
 class HorizontalTrack extends MoveableTrack {
     constructor(props) {
@@ -120,13 +122,14 @@ class HorizontalTrack extends MoveableTrack {
         let controls = null;
 
         if (this.state.controlsVisible) {
-            controls = (<div><img 
-                        onClick={() => { this.handleCloseView(view.uid)}}
-                        src="images/cross.svg" 
-                        style={closeImgStyle}
-                        width="8px" 
-                    />
-                    <Handle />
+            controls = (<div>
+                            <img 
+                                onClick={() => { this.handleCloseView(view.uid)}}
+                                src="images/cross.svg" 
+                                style={closeImgStyle}
+                                width="8px" 
+                            />
+                        <Handle />
                     </div>)
         }
 
@@ -134,13 +137,14 @@ class HorizontalTrack extends MoveableTrack {
         console.log('className:', this.props.className);
 
         return (
-            <div className={this.props.className} 
+            <div 
+                className={this.props.className} 
+                onMouseEnter={this.handleMouseEnter.bind(this)}
+                onMouseLeave={this.handleMouseLeave.bind(this)}
                 style={{
                     height: this.props.height,
                     width: this.props.width,
                     position: "relative" }}
-                onMouseEnter={this.handleMouseEnter.bind(this)}
-                onMouseLeave={this.handleMouseLeave.bind(this)}
             >
                 {this.props.value}
                 {controls}
@@ -152,11 +156,11 @@ class HorizontalTrack extends MoveableTrack {
 
 const HorizontalItem = SortableElement((props) => { 
     return (<HorizontalTrack 
-                                                    height={props.height}
-                                                    width={props.width}
-                                                    value={props.value}
-                                                    className={props.className}
-                                                />)});
+                className={props.className}
+                height={props.height}
+                value={props.value}
+                width={props.width}
+            />)});
 
 const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, sortableHandlers,height, width, handleCloseTrack,itemReactClass}) => {
             console.log('horizontal useDragHandle:', useDragHandle);
@@ -175,10 +179,12 @@ const SortableList = SortableContainer(({className, items, itemClass, sortingInd
 			)
 
 	return (
-		<div className={className} 
+		<div 
+            className={className} 
             style={{height: height,
                     width: width}}
-            {...sortableHandlers}>
+            {...sortableHandlers}
+        >
 			{itemElements}
 		</div>
 	);
