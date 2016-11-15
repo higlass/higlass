@@ -26,28 +26,12 @@ class MoveableTrack extends React.Component {
         });
     }
 
-}
-
-class VerticalTrack extends MoveableTrack {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
-        let closeImgStyle = { right: 5,
-                         top: 5,
-                         position: 'absolute',
-                         opacity: .5}
-        let moveImgStyle = { right: 5,
-                         top: 18,
-                         position: 'absolute',
-                         opacity: .5}
-
         let Handle = SortableHandle(() => 
                 <img 
                     onClick={() => { this.handleCloseView(view.uid)}}
                     src="images/enlarge.svg" 
-                    style={moveImgStyle}
+                    style={this.getMoveImgStyle()}
                     width="8px" 
                 />
                 )
@@ -56,9 +40,9 @@ class VerticalTrack extends MoveableTrack {
         if (this.state.controlsVisible) {
             controls = (<div>
                             <img 
-                                onClick={() => { this.handleCloseView(view.uid)}}
+                                onClick={() => { this.props.handleCloseTrack(this.props.uid); }}
                                 src="images/cross.svg" 
-                                style={closeImgStyle}
+                                style={this.getCloseImgStyle()}
                                 width="8px" 
                             />
                             <Handle />
@@ -75,7 +59,6 @@ class VerticalTrack extends MoveableTrack {
                     width: this.props.width,
                     position: "relative" }}
             >
-                {this.props.value}
                 {controls}
             </div>
         )
@@ -83,12 +66,38 @@ class VerticalTrack extends MoveableTrack {
     }
 }
 
+class VerticalTrack extends MoveableTrack {
+    constructor(props) {
+        super(props);
+    }
+
+    getCloseImgStyle() {
+        let closeImgStyle = { right: 5,
+                         top: 5,
+                         position: 'absolute',
+                         opacity: .5}
+
+        return closeImgStyle;
+    }
+
+    getMoveImgStyle() {
+        let moveImgStyle = { right: 5,
+                         top: 18,
+                         position: 'absolute',
+                         opacity: .5}
+
+        return moveImgStyle;
+    }
+
+}
+
 
 const VerticalItem = SortableElement((props) => { 
     return (<VerticalTrack 
                 className={props.className}
+                handleCloseTrack={props.handleCloseTrack}
                 height={props.height}
-                value={props.value}
+                uid={props.uid}
                 width={props.width}
             />)});
 
@@ -101,76 +110,42 @@ class HorizontalTrack extends MoveableTrack {
         }
     }
 
-    render() {
+    getCloseImgStyle() {
         let closeImgStyle = { right: 5,
                          top: 5,
                          position: 'absolute',
                          opacity: .5}
+
+        return closeImgStyle;
+    }
+
+    getMoveImgStyle() {
         let moveImgStyle = { right: 18,
                          top: 5,
                          position: 'absolute',
                          opacity: .5}
 
-        let Handle = SortableHandle(() => 
-                <img 
-                    onClick={() => { this.handleCloseView(view.uid)}}
-                    src="images/enlarge.svg" 
-                    style={moveImgStyle}
-                    width="8px" 
-                />
-                )
-        let controls = null;
-
-        if (this.state.controlsVisible) {
-            controls = (<div>
-                            <img 
-                                onClick={() => { this.handleCloseView(view.uid)}}
-                                src="images/cross.svg" 
-                                style={closeImgStyle}
-                                width="8px" 
-                            />
-                        <Handle />
-                    </div>)
-        }
-
-        console.log('controls:', controls);
-        console.log('className:', this.props.className);
-
-        return (
-            <div 
-                className={this.props.className} 
-                onMouseEnter={this.handleMouseEnter.bind(this)}
-                onMouseLeave={this.handleMouseLeave.bind(this)}
-                style={{
-                    height: this.props.height,
-                    width: this.props.width,
-                    position: "relative" }}
-            >
-                {this.props.value}
-                {controls}
-            </div>
-        )
-
+        return moveImgStyle;
     }
 }
 
 const HorizontalItem = SortableElement((props) => { 
     return (<HorizontalTrack 
                 className={props.className}
+                handleCloseTrack={props.handleCloseTrack}
                 height={props.height}
-                value={props.value}
+                uid={props.uid}
                 width={props.width}
             />)});
 
 const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, sortableHandlers,height, width, handleCloseTrack,itemReactClass}) => {
-            console.log('horizontal useDragHandle:', useDragHandle);
     let itemElements = items.map((item, index) =>
             React.createElement(itemReactClass,
                 {key:   slugid.nice(),
 				className: itemClass,
 					sortingIndex: sortingIndex,
 					index: index,
-					value: item.value,
+					uid: item.uid,
 					height: item.height,
                     width: item.width,
 					useDragHandle: useDragHandle,
@@ -283,7 +258,7 @@ export class HorizontalTiledPlot extends React.Component {
                         height={thisHeight}
                         width={this.props.width}
                         useDragHandle={true}
-                        closeTrack={this.props.handleCloseTrack}
+                        handleCloseTrack={this.props.handleCloseTrack}
                         itemReactClass={HorizontalItem}
                     />
                 </div>
@@ -318,11 +293,11 @@ export class VerticalTiledPlot extends React.Component {
                     helperClass={"stylizedHelper"}
                     className={"list stylizedList horizontalList"} 
                     itemClass={"stylizedItem horizontalItem"}
-                    items={this.props.tracks} 
+                    items={newItems} 
                     height={this.props.height}
                     width={thisWidth}
                     useDragHandle={true}
-                    closeTrack={this.props.handleCloseTrack}
+                    handleCloseTrack={this.props.handleCloseTrack}
                     itemReactClass={VerticalItem}
                 />
         )
@@ -349,16 +324,17 @@ export class TiledPlot extends React.Component {
         this.element = ReactDOM.findDOMNode(this);
         ElementQueries.listen();
         new ResizeSensor(this.element, function() {
-            console.log('resized:', this.element.clientWidth, this.element.clientHeight);
             let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
-
-                console.log('heightOffset:', heightOffset);
 
             this.setState({
                 height: this.element.clientHeight - heightOffset,
                 width: this.element.clientWidth
             });
         }.bind(this));
+    }
+
+    handleCloseTrack(uid) {
+        console.log('handling close track:', uid);
     }
 
     render() {
@@ -380,7 +356,6 @@ export class TiledPlot extends React.Component {
         let centerHeight = this.state.height - topHeight - bottomHeight - 40;
         let centerWidth = this.state.width - leftWidth - rightWidth - 30;
 
-        console.log('centerWidth:', centerWidth, 'centerHeight', centerHeight);
         let imgStyle = { 
             width: 10,
             opacity: 0.4
@@ -411,6 +386,7 @@ export class TiledPlot extends React.Component {
                                     <HorizontalTiledPlot
                                         tracks={this.props.tracks['top']}
                                         width={centerWidth}
+                                        handleCloseTrack={this.handleCloseTrack}
                                     />
                                 </td>
                             <td />
@@ -428,6 +404,7 @@ export class TiledPlot extends React.Component {
                                 <VerticalTiledPlot
                                     height={centerHeight}
                                     tracks={this.props.tracks['left']}
+                                        handleCloseTrack={this.handleCloseTrack}
                                 />
 
                             </td>
@@ -443,6 +420,7 @@ export class TiledPlot extends React.Component {
                                 <VerticalTiledPlot
                                     height={centerHeight}
                                     tracks={this.props.tracks['right']}
+                                    handleCloseTrack={this.handleCloseTrack}
                                 />
                             </td>
                             <td>
@@ -458,6 +436,7 @@ export class TiledPlot extends React.Component {
                             <td />
                             <td>
                                 <HorizontalTiledPlot
+                                    handleCloseTrack={this.handleCloseTrack}
                                     tracks={this.props.tracks['bottom']}
                                     width={centerWidth}
                                 />
