@@ -1,5 +1,5 @@
 {
-  "name": "hi_z",
+  "name": "higlass",
   "version": "0.2.0",
   "description": "Massive matrix viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
@@ -76,6 +76,7 @@
     "pixi.js": "^3.0.11",
     "react-autocomplete": "^1.3.1",
     "react-dimensions": "^1.3.0",
+    "transform-loader": "^0.2.3",
     "yeoman-generator": "^0.22.5"
   }
 }
