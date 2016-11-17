@@ -71,20 +71,20 @@ export class TiledPlot extends React.Component {
             uid: slugid.nice()
         }
 
-        if (position == 'left' || position == 'right' || position == 'center') {
-            newTrack.width = this.minVerticalWidth;
-            newTrack.height = this.minVerticalWidth;
-        }
-        
-
-        if (position == 'top' || position == 'bottom' || position == 'center') {
-            newTrack.height = this.minHorizontalHeight;
-            newTrack.width = this.minVerticalWidth;
-        }
-
+        newTrack.width = this.minVerticalWidth;
+        newTrack.height = this.minHorizontalHeight;
         newTrack.value = 'new';
+
         let tracks = this.state.tracks;
-        tracks[position].push(newTrack);
+        if (position == 'left' || position == 'top') {
+            // if we're adding a track on the left or the top, we want the
+            // new track to appear at the begginning of the track list
+            tracks[position].unshift(newTrack); 
+
+        } else {
+            // otherwise, we want it at the end of the track list
+            tracks[position].push(newTrack);
+        }
 
         this.setState({
             tracks: tracks
