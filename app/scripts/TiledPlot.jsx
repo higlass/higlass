@@ -49,7 +49,6 @@ class MoveableTrack extends React.Component {
                     </div>)
         }
 
-        console.log('this.props.item.value:', this.props.item.value);
         return (
             <div 
                 className={this.props.className} 
@@ -204,7 +203,6 @@ class ListWrapper extends React.Component {
     };
 
 	render() {
-        console.log('listwrapper items:', this.props.items);
 
 		const Component = this.props.component;
 		const {items, isSorting} = this.state;
@@ -381,7 +379,6 @@ export class TiledPlot extends React.Component {
     }
 
     handleCloseTrack(uid) {
-        console.log('handling close track:', uid);
         let tracks = this.state.tracks;
 
         for (let trackType in tracks) {
@@ -411,7 +408,6 @@ export class TiledPlot extends React.Component {
 
         for (let trackType in tracks) {
             let theseTracks = tracks[trackType];
-            console.log('theseTracks:', theseTracks);
             if (!theseTracks.length)
                 continue;
 
@@ -451,8 +447,6 @@ export class TiledPlot extends React.Component {
             width: 10,
             opacity: 0.4
         };
-
-        console.log("this.state.tracks['top']", this.state.tracks["top"]);
 
         return(
             <div style={{width: "100%", height: "100%"}}>
