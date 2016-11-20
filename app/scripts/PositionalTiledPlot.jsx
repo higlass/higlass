@@ -58,6 +58,7 @@ class MoveableTrack extends React.Component {
             >
                 {controls}
                 {this.props.item.value}
+                {this.props.width + "px x " + this.props.height + "px"}
             </div>
         )
 
