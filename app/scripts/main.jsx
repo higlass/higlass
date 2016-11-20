@@ -133,7 +133,9 @@ let rectangularOneWindow = JSON.parse(`
 
                 ],
                 "zoomLock" : 0,
-                "searchBox": true
+                "searchBox": {
+                    "autocompleteSource": "//52.23.165.123:9872/hg19/autocomplete"
+                }
             }
             ],
             "editable": true
@@ -186,7 +188,9 @@ let triangularOneWindow = JSON.parse(`
                 }
                 ],
                 "zoomLock" : 0,
-                "searchBox" : true
+                "searchBox": {
+                    "autocompleteSource": "//52.23.165.123:9872/hg19/autocomplete"
+                }
             }
             ],
             "editable": true
@@ -256,7 +260,9 @@ let oneDOneWindow = JSON.parse(`
                 }
                 ],
                 "zoomLock" : 0,
-                "searchBox" : true
+                "searchBox": {
+                    "autocompleteSource": "//52.23.165.123:9872/hg19/autocomplete"
+                }
             }
             ], 
             "editable": true
