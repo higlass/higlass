@@ -16,18 +16,18 @@ export class TiledPlot extends React.Component {
         this.minVerticalWidth = 20;
 
         let tracks = {
-                          'top': [{'height': 20, 'value': ''},
-                                 {'height': 20, 'value': ''},
-                                 {'height': 30, 'value': ''}],
-                         'left': [{'width': 20, 'value': ''},
-                                  {'width': 20, 'value': ''},
-                                  {'width': 30, 'value': ''}], 
-                         'right': [{'width': 20, 'value': ''},
-                                  {'width': 20, 'value': ''},
-                                  {'width': 30, 'value': ''}], 
-                          'bottom': [{'height': 20, 'value': ''},
-                                 {'height': 20, 'value': ''},
-                                 {'height': 30, 'value': ''}],
+                          'top': [{'height': 20, 'value': '1'},
+                                 {'height': 20, 'value': '2'},
+                                 {'height': 30, 'value': '3'}],
+                         'left': [{'width': 20, 'value': '4'},
+                                  {'width': 20, 'value': '5'},
+                                  {'width': 30, 'value': '6'}], 
+                         'right': [{'width': 20, 'value': '7'},
+                                  {'width': 20, 'value': '8'},
+                                  {'width': 30, 'value': '9'}], 
+                          'bottom': [{'height': 20, 'value': '10'},
+                                 {'height': 20, 'value': '11'},
+                                 {'height': 30, 'value': '12'}],
 
                          'center': [{'height': 40, 'width': 40, 'value': 20}]
                         }
