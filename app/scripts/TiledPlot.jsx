@@ -1,6 +1,8 @@
 import "../styles/TiledPlot.css";
 import slugid from 'slugid';
 import React from 'react';
+import {zoom} from 'd3-zoom';
+import {select,event} from 'd3-selection';
 import ReactDOM from 'react-dom';
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {VerticalTiledPlot, HorizontalTiledPlot} from './PositionalTiledPlot.jsx';
@@ -51,6 +53,17 @@ export class TiledPlot extends React.Component {
 
             tracks: tracks
         }
+
+
+        // catch any zooming behavior within all of the tracks in this plot
+        //this.zoomTransform = zoomIdentity();
+        this.zoomBehavior = zoom()
+            .filter(() => {
+                if (event.path[0].classList.contains("move-handle"))
+                    return false;
+                return true;
+            })
+            .on('zoom', this.zoomed.bind(this))
     }
 
     componentDidMount() {
@@ -64,6 +77,12 @@ export class TiledPlot extends React.Component {
                 width: this.element.clientWidth
             });
         }.bind(this));
+
+        select(this.divTiledPlot).call(this.zoomBehavior);
+    }
+
+    zoomed() {
+        console.log('zoomed... transform', event.transform);
     }
 
     handleAddTrack(position) {
@@ -163,7 +182,10 @@ export class TiledPlot extends React.Component {
         };
 
         return(
-            <div style={{width: "100%", height: "100%"}}>
+            <div 
+                ref={(c) => this.divTiledPlot = c}
+                style={{width: "100%", height: "100%"}}
+            >
                 <table>
                     <tbody>          
                         <tr>
@@ -185,10 +207,10 @@ export class TiledPlot extends React.Component {
                             <td />
                                 <td>
                                     <HorizontalTiledPlot
-                                        tracks={this.state.tracks['top']}
-                                        width={centerWidth}
                                         handleCloseTrack={this.handleCloseTrack.bind(this)}
                                         handleSortEnd={this.handleSortEnd.bind(this)}
+                                        tracks={this.state.tracks['top']}
+                                        width={centerWidth}
                                     />
                                 </td>
                             <td />
@@ -204,10 +226,10 @@ export class TiledPlot extends React.Component {
                             </td>
                             <td>
                                 <VerticalTiledPlot
-                                    height={centerHeight}
-                                    tracks={this.state.tracks['left']}
                                     handleCloseTrack={this.handleCloseTrack.bind(this)}
                                     handleSortEnd={this.handleSortEnd.bind(this)}
+                                    height={centerHeight}
+                                    tracks={this.state.tracks['left']}
                                 />
 
                             </td>
@@ -221,10 +243,10 @@ export class TiledPlot extends React.Component {
                             </td>
                             <td>
                                 <VerticalTiledPlot
-                                    height={centerHeight}
-                                    tracks={this.state.tracks['right']}
                                     handleCloseTrack={this.handleCloseTrack.bind(this)}
                                     handleSortEnd={this.handleSortEnd.bind(this)}
+                                    height={centerHeight}
+                                    tracks={this.state.tracks['right']}
                                 />
                             </td>
                             <td>

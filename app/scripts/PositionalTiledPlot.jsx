@@ -1,5 +1,6 @@
 import slugid from 'slugid';
 import React from 'react';
+import {select,event} from 'd3-selection';
 import {SortableContainer, SortableElement, SortableHandle, arrayMove} from 'react-sortable-hoc';
 
 class MoveableTrack extends React.Component {
@@ -9,6 +10,9 @@ class MoveableTrack extends React.Component {
         this.state = {
             controlsVisible: false
         }
+    }
+
+    componentDidMount() {
     }
 
     handleMouseEnter() {
@@ -26,7 +30,8 @@ class MoveableTrack extends React.Component {
     render() {
         let Handle = SortableHandle(() => 
                 <img 
-                    onClick={() => { this.handleCloseView(view.uid)}}
+                    className="move-handle"
+                    onClick={() => {}}
                     src="images/enlarge.svg" 
                     style={this.getMoveImgStyle()}
                     width="10px" 
@@ -181,7 +186,8 @@ class ListWrapper extends React.Component {
         })
     }
 
-	onSortStart() {
+	onSortStart({node, index, collection}, e) {
+        e.stopImmediatePropagation();
 		let {onSortStart} = this.props;
 		this.setState({isSorting: true});
 
@@ -262,17 +268,17 @@ export class HorizontalTiledPlot extends React.Component {
         return (
                 <div style={{position: "relative"}}>
                     <ListWrapper
-                        component={SortableList}
-                        helperClass={"stylizedHelper"}
                         className={"list stylizedList"} 
-                        itemClass={"stylizedItem"}
-                        items={newItems} 
-                        height={thisHeight}
-                        width={this.props.width}
-                        useDragHandle={true}
+                        component={SortableList}
                         handleCloseTrack={this.props.handleCloseTrack}
-                        onSortEnd={this.props.handleSortEnd}
+                        helperClass={"stylizedHelper"}
+                        height={thisHeight}
+                        itemClass={"stylizedItem"}
                         itemReactClass={HorizontalItem}
+                        items={newItems} 
+                        onSortEnd={this.props.handleSortEnd}
+                        useDragHandle={true}
+                        width={this.props.width}
                     />
                 </div>
         )
@@ -321,3 +327,15 @@ export class VerticalTiledPlot extends React.Component {
 HorizontalTiledPlot.propTypes = {
     tracks: React.PropTypes.array
 }
+
+export class CenterTiledPlot extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() { 
+
+        return(<div class="center-plot"></div>)
+    }
+}
+

@@ -1,6 +1,6 @@
 import '../styles/HiGlassApp.css';
 import React from 'react';
-import d3 from 'd3';
+//import d3 from 'd3';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 import {MultiViewContainer} from './MultiViewContainer.jsx';
@@ -49,12 +49,13 @@ export class HiGlassApp extends React.Component {
         console.log('updating linked views:', viewConfig);
         for (let i = 0; i < viewConfig.views.length; i++) {
             if (typeof viewConfig.views[i].zoomLock ==  'undefined')
-                viewConfig.views[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
+                //viewConfig.views[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
+                a = 2;  //dummy statement, don't know what the JS equivalent of 'pass' is
             else {
                 let zoomLock = viewConfig.views[i].zoomLock;
                 if (typeof viewConfig.views[zoomLock].zoomDispatch == 'undefined') {
                     console.log('WARNING: view requests zoom lock to another view with an undefined zoomDispatch:', zoomLock);
-                    viewConfig.views[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
+                    //viewConfig.views[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
                 } else {
                     viewConfig.views[i].zoomDispatch = viewConfig.views[zoomLock].zoomDispatch;
                 }

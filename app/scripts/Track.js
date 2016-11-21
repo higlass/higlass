@@ -55,6 +55,13 @@ export class Track {
         }
     }
 
+    resize(width, height) {
+        this.width = width;
+        this.height = height;
+
+        // maybe redo the scales
+    }
+
     drawTiles(tiles) {
         /**
          * Draw this track.

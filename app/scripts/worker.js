@@ -1,5 +1,5 @@
 import {heatedObjectMap} from './colormaps.js';
-import d3 from 'd3';
+import {scaleLinear} from 'd3-scale';
 
 function countTransform(count) {
     return Math.sqrt(Math.sqrt(count + 1));
@@ -46,7 +46,7 @@ function workerLoadTileData(tile_value, tile_type) {
 }
 
 function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale = null) {
-    let valueScale = d3.scale.linear().range([255, 0])
+    let valueScale = scaleLinear().range([255, 0])
         .domain([countTransform(0), countTransform(maxVisibleValue)])
 
     let pixData = new Uint8ClampedArray(size * 4);
