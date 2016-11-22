@@ -1,6 +1,7 @@
 import slugid from 'slugid';
 import React from 'react';
 import {Resizable,ResizableBox} from 'react-resizable';
+import {DraggableDiv} from './DraggableDiv.js';
 import {select,event} from 'd3-selection';
 import {SortableContainer, SortableElement, SortableHandle, arrayMove} from 'react-sortable-hoc';
 
@@ -73,19 +74,13 @@ class MoveableTrack extends React.Component {
                     width: this.props.width,
                     position: "relative" }}
             >
-                <Resizable
-                        className="resizable-track"
-                        height={this.props.height}
-                        key={"rs-" + this.props.uid}
-                        onResize={(event, {element, size}) => { 
-                                    this.props.handleResizeTrack(this.props.uid, size.width, size.height); 
-                                 }}
-                        width={this.props.width} 
-                >
-                    <span>
-
-                    </span>
-                </Resizable>
+            <DraggableDiv 
+                key={this.props.uid}
+                uid={this.props.uid}
+                width={this.props.width}
+                height={this.props.height}
+                sizeChanged={(stuff) => { return this.props.handleResizeTrack(this.props.uid, stuff.width, stuff.height); }}
+            />
                 {controls}
             </div>
         )
@@ -345,7 +340,6 @@ export class VerticalTiledPlot extends React.Component {
 
             return {uid: uid, height: this.props.height, width: d.width, value: d.value };
         });
-        console.log('this.props.handleResizeTrack', this.props.handleResizeTrack);
 
         return (
                 <ListWrapper
