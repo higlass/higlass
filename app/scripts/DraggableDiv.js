@@ -1,8 +1,7 @@
 import "../styles/DraggableDiv.css"
 
 import React from 'react';
-import PIXI from 'pixi.js';
-import d3 from 'd3';
+import {mouse} from 'd3';
 
 export class DraggableDiv extends React.Component {
     constructor(props) {
@@ -61,7 +60,7 @@ export class DraggableDiv extends React.Component {
     }
 
     dragBottomFunc() {
-        let ms = d3.mouse(this.domBody);
+        let ms = mouse(this.domBody);
 
         let newTop = this.dragStartTop + ms[1] - this.dragStartMousePos[1];
         let newLeft = this.dragStartLeft + ms[0] - this.dragStartMousePos[0];
@@ -75,7 +74,7 @@ export class DraggableDiv extends React.Component {
     }
 
     dragBottomLeftFunc() {
-        let ms = d3.mouse(this.domBody);
+        let ms = mouse(this.domBody);
 
         let newHeight = this.dragStartHeight + (ms[1] - this.dragStartMousePos[1]);
         newHeight = newHeight > this.minHeight ? newHeight : this.minHeight;
@@ -97,7 +96,7 @@ export class DraggableDiv extends React.Component {
     }
 
     dragBottomRightFunc() {
-        let ms = d3.mouse(this.domBody);
+        let ms = mouse(this.domBody);
 
         let newWidth = this.dragStartWidth + (ms[0] - this.dragStartMousePos[0]);
         newWidth = newWidth > this.minWidth ? newWidth : this.minWidth;
@@ -117,7 +116,7 @@ export class DraggableDiv extends React.Component {
 
 
     dragTopRightFunc() {
-        let ms = d3.mouse(this.domBody);
+        let ms = mouse(this.domBody);
         console.log('ms:', ms);
 
         let newHeight = this.dragStartHeight - (ms[1] - this.dragStartMousePos[1]);
@@ -142,7 +141,7 @@ export class DraggableDiv extends React.Component {
     }
 
     dragTopLeftFunc() {
-        let ms = d3.mouse(this.domBody);
+        let ms = mouse(this.domBody);
 
         let newWidth = this.dragStartWidth - (ms[0] - this.dragStartMousePos[0]);
         newWidth = newWidth > this.minWidth ? newWidth : this.minWidth;
@@ -169,7 +168,7 @@ export class DraggableDiv extends React.Component {
     }
 
     dragStart() {
-        this.dragStartMousePos = d3.mouse(this.domBody);
+        this.dragStartMousePos = mouse(this.domBody);
 
         this.dragStartWidth = this.state.width;
         this.dragStartHeight = this.state.height;
@@ -219,13 +218,13 @@ export class DraggableDiv extends React.Component {
                             cursor: 'nwse-resize'};
 
             let swStyle = { position: 'absolute',
-                            left: 0,
+                            left: 2,
                             bottom: 0,
                             width: 5,
                             height: 5,
                             cursor: 'nesw-resize'};
             let seStyle = { position: 'absolute',
-                            right: 0,
+                            right: 2,
                             bottom: 0,
                             width: 5,
                             height: 5,

@@ -19,7 +19,7 @@
 
 .sw-handle {
     border-left: black solid;
-    border-bottom: black solid;
+    border-bottom: black solid 2px;
     opacity: 1;
 }
 
