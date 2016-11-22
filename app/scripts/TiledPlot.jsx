@@ -33,17 +33,24 @@ export class TiledPlot extends React.Component {
                         }
 
         let topTracks = {
-                          'top': [{'height': 40, 'value': 1}],
                             /*
+                          'top': [{'height': 40, 'value': 1}],
                           'top': [{'height': 20, 'value': 1},
                                  {'height': 20, 'value': 2},
                                  {'height': 30, 'value': 3}],
                                  */
-                          'left': [], 'right': [], 
-                          'bottom': [{'height': 40, 'value': 1}], 
+                           'top': [],
+                          'left': [
+                          {"width": 30, 'value': 1}
+                          ], 
+                              'right': [
+                              {'width': 30, 'value': 1} 
+                              ], 
+                          /*'bottom': [{'height': 40, 'value': 1}], */
+                              'bottom': [],
                           'center': []}
 
-        //tracks = topTracks;
+        tracks = topTracks;
 
         for (let key in tracks) {
             for (let i = 0; i < tracks[key].length; i++) {
@@ -119,13 +126,15 @@ export class TiledPlot extends React.Component {
     }
 
     handleResizeTrack(uid, width, height) {
-        console.log("resizing...", uid, width, height);
+        //console.log("resizing...", uid, width, height);
         let tracks = this.state.tracks;
 
         for (let trackType in tracks) {
             let theseTracks = tracks[trackType];
 
             let filteredTracks = theseTracks.filter((d) => { return d.uid == uid; });
+
+            console.log('width:', width, 'height:', height);
             if (filteredTracks.length > 0) {
                 filteredTracks[0].width = width;
                 filteredTracks[0].height = height;
@@ -201,24 +210,27 @@ export class TiledPlot extends React.Component {
             .reduce((a,b) => { return a + b; }, 0);
 
         let centerHeight = this.state.height - topHeight - bottomHeight - 40;
-        let centerWidth = this.state.width - leftWidth - rightWidth - 30;
+        let centerWidth = this.state.width - leftWidth - rightWidth - 20;
 
         let imgStyle = { 
             width: 10,
             opacity: 0.4
         };
 
+        console.log('leftWidth:', leftWidth, 'centerWidth:', centerWidth, 'rightWidth', rightWidth, 'total:', leftWidth + centerWidth + rightWidth);
+
         return(
             <div 
                 ref={(c) => this.divTiledPlot = c}
                 style={{width: "100%", height: "100%"}}
             >
-                <table>
+
+                <table style={{"tableLayout": "fixed", "minWidth": this.state.width, maxWidth: this.state.width, width: this.state.width}} >
                     <tbody>          
                         <tr>
-                            <td />
-                            <td />
-                            <td style={{'textAlign': 'center'}}>
+                            <td style={{"width": 10}}/>
+                            <td style={{"width": leftWidth}}/>
+                            <td style={{'textAlign': 'center', width: centerWidth}}>
                                 <img 
                                     onClick={() => { this.handleAddTrack('top')}}
                                     src="images/plus.svg" 
@@ -226,8 +238,8 @@ export class TiledPlot extends React.Component {
                                 />
                             
                             </td>
-                            <td />
-                            <td />
+                            <td style={{"width": rightWidth}}/>
+                            <td style={{"width": 10}}/>
                         </tr>
                         <tr>
                             <td />

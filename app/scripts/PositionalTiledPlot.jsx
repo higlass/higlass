@@ -62,8 +62,6 @@ class MoveableTrack extends React.Component {
                     </div>)
         }
 
-        console.log('ri resizing:', this.props.width, this.props.height);
-
         return (
             <div 
                 className={this.props.className} 
@@ -127,6 +125,7 @@ class VerticalTrack extends MoveableTrack {
 
 
 const VerticalItem = SortableElement((props) => { 
+
     return (<VerticalTrack 
                 className={props.className}
                 handleCloseTrack={props.handleCloseTrack}

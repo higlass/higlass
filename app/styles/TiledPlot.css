@@ -1,3 +1,7 @@
+td {
+    outline: 1px solid black;
+}
+
 .horizontalList {
     display: flex;
     width: 600px;
@@ -11,15 +15,12 @@
     height: 600px;
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
-    border: 1px solid #999;
 }
 
 .stylizedList {
     position: relative;
     z-index: 0;
     background-color: #F3F3F3;
-    border: 1px solid #EFEFEF;
-    border-radius: 3px;
     outline: none;
 }
 
@@ -28,8 +29,6 @@
     align-items: center;
     width: 100%;
     background-color: #FFF;
-    border-bottom: 1px solid #EFEFEF;
-    box-sizing: border-box;
     user-select: none;
 
     color: #333;
@@ -51,8 +50,6 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    border-right: 1px solid #EFEFEF;
-    border-bottom: 0;
 }
 
 .resizable-track {
