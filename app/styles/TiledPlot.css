@@ -54,3 +54,8 @@
     border-right: 1px solid #EFEFEF;
     border-bottom: 0;
 }
+
+.resizable-track {
+    width: 100%;
+    height: 100%;
+}

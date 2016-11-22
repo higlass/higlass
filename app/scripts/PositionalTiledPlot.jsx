@@ -1,5 +1,6 @@
 import slugid from 'slugid';
 import React from 'react';
+import {Resizable,ResizableBox} from 'react-resizable';
 import {select,event} from 'd3-selection';
 import {SortableContainer, SortableElement, SortableHandle, arrayMove} from 'react-sortable-hoc';
 
@@ -8,11 +9,20 @@ class MoveableTrack extends React.Component {
         super(props);
 
         this.state = {
-            controlsVisible: false
+            controlsVisible: true
         }
     }
 
     componentDidMount() {
+
+    }
+
+    shouldComponentUpdate() {
+        return ! this.resizing;
+    }
+
+    componentWillUnmount() {
+        console.log('unmounting:', this.props.uid);
     }
 
     handleMouseEnter() {
@@ -23,14 +33,14 @@ class MoveableTrack extends React.Component {
 
     handleMouseLeave() {
         this.setState({
-            controlsVisible: false
+            controlsVisible: true
         });
     }
 
     render() {
         let Handle = SortableHandle(() => 
                 <img 
-                    className="move-handle"
+                    className="no-zoom"
                     onClick={() => {}}
                     src="images/enlarge.svg" 
                     style={this.getMoveImgStyle()}
@@ -51,6 +61,8 @@ class MoveableTrack extends React.Component {
                     </div>)
         }
 
+        console.log('ri resizing:', this.props.width, this.props.height);
+
         return (
             <div 
                 className={this.props.className} 
@@ -61,12 +73,36 @@ class MoveableTrack extends React.Component {
                     width: this.props.width,
                     position: "relative" }}
             >
+                <Resizable
+                        className="resizable-track"
+                        height={this.props.height}
+                        key={"rs-" + this.props.uid}
+                        onResize={(event, {element, size}) => { 
+                                    this.props.handleResizeTrack(this.props.uid, size.width, size.height); 
+                                 }}
+                        width={this.props.width} 
+                >
+                    <span>
+
+                    </span>
+                </Resizable>
                 {controls}
-                {this.props.item.value}
             </div>
         )
 
     }
+}
+
+MoveableTrack.propTypes = {
+    className: React.PropTypes.string,
+    uid: React.PropTypes.string,
+    item: React.PropTypes.object,
+    height: React.PropTypes.number,
+    width: React.PropTypes.number
+    /*
+    handleCloseTrack: React.PropTypes.function,
+    handleResizeTrack: React.PropTypes.function
+    */
 }
 
 class VerticalTrack extends MoveableTrack {
@@ -99,6 +135,7 @@ const VerticalItem = SortableElement((props) => {
     return (<VerticalTrack 
                 className={props.className}
                 handleCloseTrack={props.handleCloseTrack}
+                handleResizeTrack={props.handleResizeTrack}
                 height={props.height}
                 uid={props.uid}
                 width={props.width}
@@ -109,13 +146,10 @@ class HorizontalTrack extends MoveableTrack {
     constructor(props) {
         super(props);
 
-        this.state = {
-            controlsVisible: false
-        }
     }
 
     getCloseImgStyle() {
-        let closeImgStyle = { right: 5,
+        let closeImgStyle = { right: 15,
                          top: 5,
                          position: 'absolute',
                          opacity: .5}
@@ -124,7 +158,7 @@ class HorizontalTrack extends MoveableTrack {
     }
 
     getMoveImgStyle() {
-        let moveImgStyle = { right: 18,
+        let moveImgStyle = { right: 28,
                          top: 5,
                          position: 'absolute',
                          opacity: .5}
@@ -137,17 +171,20 @@ const HorizontalItem = SortableElement((props) => {
     return (<HorizontalTrack 
                 className={props.className}
                 handleCloseTrack={props.handleCloseTrack}
+                handleResizeTrack={props.handleResizeTrack}
                 height={props.height}
                 uid={props.uid}
                 width={props.width}
                 item={props.item}
             />)});
 
-const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, sortableHandlers,height, width, handleCloseTrack,itemReactClass}) => {
-    let itemElements = items.map((item, index) =>
-            React.createElement(itemReactClass,
-                {key:   slugid.nice(),
-				className: itemClass,
+const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, 
+                                         sortableHandlers,height, width, handleCloseTrack,itemReactClass,
+                                         handleResizeTrack}) => {
+    let itemElements = items.map((item, index) => {
+            return React.createElement(itemReactClass,
+                {   key: "sci-" + item.uid,
+				    className: itemClass,
 					sortingIndex: sortingIndex,
 					index: index,
 					uid: item.uid,
@@ -155,10 +192,10 @@ const SortableList = SortableContainer(({className, items, itemClass, sortingInd
                     width: item.width,
                     item: item,
 					useDragHandle: useDragHandle,
-                    handleCloseTrack: handleCloseTrack
+                    handleCloseTrack: handleCloseTrack,
+                    handleResizeTrack: handleResizeTrack
                 })
-			)
-
+            })
 	return (
 		<div 
             className={className} 
@@ -245,6 +282,10 @@ export class HorizontalTiledPlot extends React.Component {
 
     }
 
+    componentWillUnmount() {
+        console.log('unmounting horizontal');
+    }
+
 
     render() {
         let thisHeight = this.props.tracks
@@ -270,6 +311,7 @@ export class HorizontalTiledPlot extends React.Component {
                         className={"list stylizedList"} 
                         component={SortableList}
                         handleCloseTrack={this.props.handleCloseTrack}
+                        handleResizeTrack={this.props.handleResizeTrack}
                         helperClass={"stylizedHelper"}
                         height={thisHeight}
                         itemClass={"stylizedItem"}
@@ -303,6 +345,7 @@ export class VerticalTiledPlot extends React.Component {
 
             return {uid: uid, height: this.props.height, width: d.width, value: d.value };
         });
+        console.log('this.props.handleResizeTrack', this.props.handleResizeTrack);
 
         return (
                 <ListWrapper
@@ -316,6 +359,7 @@ export class VerticalTiledPlot extends React.Component {
                     width={thisWidth}
                     useDragHandle={true}
                     handleCloseTrack={this.props.handleCloseTrack}
+                    handleResizeTrack={this.props.handleResizeTrack}
                     itemReactClass={VerticalItem}
                 />
         )
