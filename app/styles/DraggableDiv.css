@@ -1,25 +1,25 @@
 
 .ne-handle {
-    border-right: black solid;
-    border-top: black solid;
+    border-right: black solid 1px;
+    border-top: black solid 1px;
     opacity: 1;
 }
 
 .nw-handle {
-    border-left: black solid;
-    border-top: black solid;
+    border-left: black solid 1px;
+    border-top: black solid 1px;
     opacity: 1;
 }
 
 .se-handle {
-    border-right: black solid;
-    border-bottom: black solid;
+    border-right: black solid 1px;
+    border-bottom: black solid 1px;
     opacity: 1;
 }
 
 .sw-handle {
-    border-left: black solid;
-    border-bottom: black solid 2px;
+    border-left: black solid 1px;
+    border-bottom: black solid 1px;
     opacity: 1;
 }
 

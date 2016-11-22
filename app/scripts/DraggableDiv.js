@@ -204,31 +204,35 @@ export class DraggableDiv extends React.Component {
                              width: this.state.width,
                              height: this.state.height,
                              'backgroundColor': '#ffffff',
+                             "boxSizing": "border-box",
                              opacity: this.props.opacity };
 
             let neStyle = { position: 'absolute',
-                            right: 0,
-                            width: 5,
-                            height: 5,
+                            right: 1,
+                            top: 1,
+                            width: 6,
+                            height: 6,
                             cursor: 'nesw-resize'};
             let nwStyle = { position: 'absolute',
-                            left: 0,
-                            width: 5,
-                            height: 5,
+                            left: 1,
+                            top: 1,
+                            width: 6,
+                            height: 6,
                             cursor: 'nwse-resize'};
 
             let swStyle = { position: 'absolute',
-                            left: 2,
-                            bottom: 0,
-                            width: 5,
-                            height: 5,
+                            left: 1,
+                            bottom: 1,
+                            width: 6,
+                            height: 6,
                             cursor: 'nesw-resize'};
             let seStyle = { position: 'absolute',
-                            right: 2,
-                            bottom: 0,
-                            width: 5,
-                            height: 5,
+                            right: 1,
+                            bottom: 1,
+                            width: 6,
+                            height: 6,
                             cursor: 'nwse-resize'};
+            /*
             let bottomStyle = { position: 'absolute',
                               left: (this.state.width / 2 - this.bottomHandleWidth / 2),
                               bottom: -4,
@@ -242,8 +246,16 @@ export class DraggableDiv extends React.Component {
                                height: 5,
                                top: 2,
                                opacity: 0.5 }
+            */
 
             let iStyle = { display: 'inline', 'marginRight': 3 };
+            /*
+                        <div style={bottomStyle} ref={(c) => this.bottomHandle = c} 
+                            className = 'bottom-handle' />
+
+                        <div style={closeStyle} className = 'close-handle' >
+                        </div>
+                        */
 
             return (
                     <div style={divStyle} ref={(c) => this.divContainer = c} className={this.props.className}>
@@ -256,11 +268,6 @@ export class DraggableDiv extends React.Component {
                         <div style={seStyle} ref={(c) => this.seHandle = c} 
                             className = 'se-handle' />
 
-                        <div style={bottomStyle} ref={(c) => this.bottomHandle = c} 
-                            className = 'bottom-handle' />
-
-                        <div style={closeStyle} className = 'close-handle' >
-                        </div>
                     </div>
                    );
                             /*
