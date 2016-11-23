@@ -71,12 +71,15 @@ class MoveableTrack extends React.Component {
                 style={{
                     height: this.props.height,
                     width: this.props.width,
-                    position: "relative" }}
+                    position: "relative",
+                    background: 'transparent'
+                }}
             >
             <DraggableDiv 
                 height={this.props.height}
                 key={this.props.uid}
                 sizeChanged={(stuff) => { return this.props.handleResizeTrack(this.props.uid, stuff.width, stuff.height); }}
+                style={{background: 'transparent'}}
                 uid={this.props.uid}
                 width={this.props.width}
             />
@@ -191,7 +194,9 @@ const SortableList = SortableContainer(({className, items, itemClass, sortingInd
         <div 
             className={className} 
             style={{height: height,
-                    width: width}}
+                    width: width,
+                    background: 'transparent'
+            }}
             {...sortableHandlers}
         >
 			{itemElements}
@@ -222,7 +227,6 @@ class ListWrapper extends React.Component {
 			onSortStart(this.refs.component);
 		}
 
-        console.log('sortstart...', node, collection, index);
         this.sortingIndex = index;
 
         this.sortStartTop = e.offsetTop;
@@ -230,14 +234,7 @@ class ListWrapper extends React.Component {
 	};
 
     onSortMove(event) {
-        /*
-        console.log('this.props.referenceAncestor:', this.props.referenceAncestor);
-        console.log('sortmove...', 
-                     event.pageX - this.props.referenceAncestor.offsetLeft,
-                     event.pageY - this.props.referenceAncestor.offsetTop);
-        */
-        //console.log('item:', this.state.items[this.sortingIndex], this.props);
-        //console.log('event:', event, event.srcElement.offsetTop, event.srcElement.parentNode.offsetLeft);
+
     }
 
     onSortEnd({oldIndex, newIndex}) {
@@ -251,7 +248,6 @@ class ListWrapper extends React.Component {
 		}
 
 
-        //console.log('sort end, component:', this.refs.component);
         this.sortingIndex = null;
     };
 
@@ -373,19 +369,20 @@ export class VerticalTiledPlot extends React.Component {
 
         return (
                 <ListWrapper
-                    component={SortableList}
                     axis={'x'}
-                    helperClass={"stylizedHelper"}
                     className={"list stylizedList horizontalList"} 
-                    itemClass={"stylizedItem horizontalItem"}
-                    items={newItems} 
-                    height={this.props.height}
-                    width={thisWidth}
-                    useDragHandle={true}
+                    component={SortableList}
                     handleCloseTrack={this.props.handleCloseTrack}
                     handleResizeTrack={this.props.handleResizeTrack}
+                    height={this.props.height}
+                    helperClass={"stylizedHelper"}
+                    itemClass={"stylizedItem horizontalItem"}
                     itemReactClass={VerticalItem}
+                    items={newItems} 
                     referenceAncestor={this.props.referenceAncestor}
+                    onSortEnd={this.props.handleSortEnd}
+                    useDragHandle={true}
+                    width={thisWidth}
                 />
         )
 

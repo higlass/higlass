@@ -26,7 +26,6 @@ export class HiGlassApp extends React.Component {
     }
     //this.handleNewConfig(this.props.viewConfigString);
 
-    console.log('this.state:', this.state);
     this.updateLinkedViews(this.state.viewConfig.object);
 
     }
@@ -46,7 +45,6 @@ export class HiGlassApp extends React.Component {
     }
 
     updateLinkedViews(viewConfig) {
-        console.log('updating linked views:', viewConfig);
         for (let i = 0; i < viewConfig.views.length; i++) {
             if (typeof viewConfig.views[i].zoomLock ==  'undefined')
                 //viewConfig.views[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
@@ -54,7 +52,7 @@ export class HiGlassApp extends React.Component {
             else {
                 let zoomLock = viewConfig.views[i].zoomLock;
                 if (typeof viewConfig.views[zoomLock].zoomDispatch == 'undefined') {
-                    console.log('WARNING: view requests zoom lock to another view with an undefined zoomDispatch:', zoomLock);
+                    //console.log('WARNING: view requests zoom lock to another view with an undefined zoomDispatch:', zoomLock);
                     //viewConfig.views[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
                 } else {
                     viewConfig.views[i].zoomDispatch = viewConfig.views[zoomLock].zoomDispatch;
@@ -81,7 +79,6 @@ export class HiGlassApp extends React.Component {
     };
         
     handleOpen() {
-        console.log('handling open...');
         this.setState({
             'inputOpen': !this.state.inputOpen
         });

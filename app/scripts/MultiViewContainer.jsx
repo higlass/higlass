@@ -44,8 +44,6 @@ export class MultiViewContainer extends React.Component {
                 width: this.element.clientWidth
             });
 
-            console.log('newWidth:', this.state.width);
-            console.log('newHeight:', this.state.height);
         }.bind(this));
     }
 
@@ -82,9 +80,7 @@ export class MultiViewContainer extends React.Component {
   };
 
   onResize(layout, oldItem, newItem, placeholder, e, element) {
-      //console.log('layout:', layout, 'oldItem:', oldItem, 'newItem:', newItem, 'placeholder:', placeholder, 'e:', e, 'element:', element);
-      // element is the resize handle
-    //console.log('resizing:', layout.i, 'newItem:', newItem.i, 'this.heights:', this.heights);
+      
   }
 
   generateViewLayout(viewConfig) {
@@ -120,7 +116,6 @@ export class MultiViewContainer extends React.Component {
         layout = viewConfig.layout;
 
     layout.i = slugid.nice();
-    console.log('generating...', layout.i);
 
     this.heights[layout.i] = layout.height;
 
@@ -135,7 +130,6 @@ export class MultiViewContainer extends React.Component {
        * @param {uid} This view's identifier
        */
     
-      console.log('closing a view:', uid);
       let viewConfigObject = JSON.parse(this.props.viewConfig.text);
 
       // check if this is the only view
@@ -148,18 +142,15 @@ export class MultiViewContainer extends React.Component {
 
       let viewsToClose = viewConfigObject.views.filter((d) => { return d.uid == uid; });
 
-      console.log('views to close:', viewsToClose);
       // send an event to the app telling it that we're closing some views so 
       // that it can clean up after them
 
       let filteredViews = viewConfigObject.views.filter((d) => { 
-          console.log('d:', d);
           return d.uid != uid;
       });
 
       this.removeZoomDispatch(filteredViews);
 
-      console.log('filteredViews:', filteredViews);
       viewConfigObject.views = filteredViews;
       let newViewConfigText = JSON.stringify(viewConfigObject);
 
@@ -189,8 +180,6 @@ export class MultiViewContainer extends React.Component {
        * User clicked on the "Add View" button. We'll duplicate the last
        * view.
        */
-      console.log('addView clicked');
-      console.log('this.viewConfig:', this.props.viewConfig);
 
       let freshViewConfig = JSON.parse(this.props.viewConfig.text);
       let views = freshViewConfig.views;
@@ -223,7 +212,6 @@ export class MultiViewContainer extends React.Component {
       freshViewConfig.views.push(newView); 
       let newViewConfigText = JSON.stringify(freshViewConfig);
 
-      console.log('lastView:', lastView);
       //console.log('newViewConfig:', newViewConfigText);
 
       this.props.onNewConfig(newViewConfigText);
@@ -267,9 +255,6 @@ export class MultiViewContainer extends React.Component {
                     layout = c.props.viewConfig.layout;
                 }
                 */
-                console.log('layout:', JSON.stringify(layout));
-                console.log('i:', i)
-                console.log('view:', view);
                 let itemUid = "p" + view.uid;
                 this.heights[itemUid] = layout.height;
 

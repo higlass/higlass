@@ -144,7 +144,6 @@ export class TiledPlot extends React.Component {
     }
 
     handleResizeTrack(uid, width, height) {
-        //console.log("resizing...", uid, width, height);
         let tracks = this.state.tracks;
 
         for (let trackType in tracks) {
@@ -152,7 +151,6 @@ export class TiledPlot extends React.Component {
 
             let filteredTracks = theseTracks.filter((d) => { return d.uid == uid; });
 
-            console.log('width:', width, 'height:', height);
             if (filteredTracks.length > 0) {
                 filteredTracks[0].width = width;
                 filteredTracks[0].height = height;
@@ -208,6 +206,10 @@ export class TiledPlot extends React.Component {
                 tracks[trackType] = newTracks;
             }
         }
+
+        this.setState({
+            tracks: tracks
+        });
 
     }
 
@@ -305,10 +307,7 @@ export class TiledPlot extends React.Component {
         let tracksAndLocations = this.createTracksAndLocations();
 
         let trackElements = tracksAndLocations.map(({track, location}) => {
-            console.log('track:', track, 'location', location);
-
             let trackPosition = this.calculateTrackPosition(track, location);
-            console.log('trackPosition:', trackPosition);
 
             return (<div 
                         key={track.uid}
@@ -355,8 +354,6 @@ export class TiledPlot extends React.Component {
             opacity: 0.4
         };
 
-        console.log('leftWidth:', this.leftWidth, 'centerWidth:', this.centerWidth, 'rightWidth', this.rightWidth, 'total:', this.leftWidth + this.centerWidth + this.rightWidth);
-        console.log('topHeight:', this.topHeight, 'centerHeight:', this.centerHeight, 'bottomHeight', this.bottomHeight, 'total:', this.topHeight + this.centerHeight + this.bottomHeight);
         let topTracks = (<div style={{left: this.leftWidth + this.plusWidth, top: this.plusHeight, 
                                       width: this.centerWidth, height: this.topHeight,
                                       outline: "1px solid black", 

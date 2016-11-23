@@ -15,10 +15,6 @@ export class SearchableTiledPlot extends React.Component {
     }
 
     render() {
-        console.log('searchabletiledplot width:', this.props.width);
-        console.log('searchabletiledplot height:', this.props.height);
-
-
         return (<TiledPlot />)
     }
 }

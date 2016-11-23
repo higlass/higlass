@@ -203,7 +203,7 @@ export class DraggableDiv extends React.Component {
                              left: this.state.left,
                              width: this.state.width,
                              height: this.state.height,
-                             'backgroundColor': '#ffffff',
+                             'backgroundColor': 'transparent',
                              "boxSizing": "border-box",
                              opacity: this.props.opacity };
 
