@@ -50,7 +50,7 @@ export class TiledPlot extends React.Component {
                               'bottom': [],
                           'center': []}
 
-        tracks = topTracks;
+        //tracks = topTracks;
 
         for (let key in tracks) {
             for (let i = 0; i < tracks[key].length; i++) {
@@ -84,7 +84,8 @@ export class TiledPlot extends React.Component {
         this.element = ReactDOM.findDOMNode(this);
         ElementQueries.listen();
         new ResizeSensor(this.element, function() {
-            let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
+            //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
+            let heightOffset = 0;
 
             this.setState({
                 height: this.element.clientHeight - heightOffset,
@@ -209,7 +210,11 @@ export class TiledPlot extends React.Component {
             .map((x) => { return x.width; })
             .reduce((a,b) => { return a + b; }, 0);
 
-        let centerHeight = this.state.height - topHeight - bottomHeight - 40;
+        // the icons for adding tracks
+        let plusWidth = 10;
+        let plusHeight = 10;
+
+        let centerHeight = this.state.height - topHeight - bottomHeight - 20;
         let centerWidth = this.state.width - leftWidth - rightWidth - 20;
 
         let imgStyle = { 
@@ -218,117 +223,66 @@ export class TiledPlot extends React.Component {
         };
 
         console.log('leftWidth:', leftWidth, 'centerWidth:', centerWidth, 'rightWidth', rightWidth, 'total:', leftWidth + centerWidth + rightWidth);
+        console.log('topHeight:', topHeight, 'centerHeight:', centerHeight, 'bottomHeight', bottomHeight, 'total:', topHeight + centerHeight + bottomHeight);
+        let topTracks = (<div style={{left: leftWidth + plusWidth, top: plusHeight, 
+                                      width: centerWidth, height: topHeight,
+                                      outline: "1px solid black", 
+                                      position: "absolute",}}>
+                            <HorizontalTiledPlot
+                                handleCloseTrack={this.handleCloseTrack.bind(this)}
+                                handleResizeTrack={this.handleResizeTrack.bind(this)}
+                                handleSortEnd={this.handleSortEnd.bind(this)}
+                                tracks={this.state.tracks['top']}
+                                width={centerWidth}
+                            />
+                         </div>)
+        let leftTracks = (<div style={{left: plusWidth, top: topHeight + plusHeight, 
+                                      width: leftWidth, height: centerHeight,
+                                      outline: "1px solid black", 
+                                      position: "absolute",}}>
+                            <VerticalTiledPlot
+                                handleCloseTrack={this.handleCloseTrack.bind(this)}
+                                handleResizeTrack={this.handleResizeTrack.bind(this)}
+                                handleSortEnd={this.handleSortEnd.bind(this)}
+                                tracks={this.state.tracks['left']}
+                                height={centerHeight}
+                            />
+                         </div>)
+        let rightTracks = (<div style={{right: plusWidth, top: topHeight + plusHeight, 
+                                      width: rightWidth, height: centerHeight,
+                                      outline: "1px solid black", 
+                                      position: "absolute",}}>
+                            <VerticalTiledPlot
+                                handleCloseTrack={this.handleCloseTrack.bind(this)}
+                                handleResizeTrack={this.handleResizeTrack.bind(this)}
+                                handleSortEnd={this.handleSortEnd.bind(this)}
+                                tracks={this.state.tracks['right']}
+                                height={centerHeight}
+                            />
+                         </div>)
+        let bottomTracks = (<div style={{left: leftWidth + plusWidth, bottom: plusHeight,
+                                      width: centerWidth, height: bottomHeight,
+                                      outline: "1px solid black", 
+                                      position: "absolute",}}>
+                            <HorizontalTiledPlot
+                                handleCloseTrack={this.handleCloseTrack.bind(this)}
+                                handleResizeTrack={this.handleResizeTrack.bind(this)}
+                                handleSortEnd={this.handleSortEnd.bind(this)}
+                                tracks={this.state.tracks['bottom']}
+                                width={centerWidth}
+                            />
+                         </div>)
+
 
         return(
             <div 
                 ref={(c) => this.divTiledPlot = c}
-                style={{width: "100%", height: "100%"}}
+                style={{width: "100%", height: "100%", position: "relative"}}
             >
-
-                <table style={{"tableLayout": "fixed", "minWidth": this.state.width, maxWidth: this.state.width, width: this.state.width}} >
-                    <tbody>          
-                        <tr>
-                            <td style={{"width": 10}}/>
-                            <td style={{"width": leftWidth}}/>
-                            <td style={{'textAlign': 'center', width: centerWidth}}>
-                                <img 
-                                    onClick={() => { this.handleAddTrack('top')}}
-                                    src="images/plus.svg" 
-                                    style={imgStyle}
-                                />
-                            
-                            </td>
-                            <td style={{"width": rightWidth}}/>
-                            <td style={{"width": 10}}/>
-                        </tr>
-                        <tr>
-                            <td />
-                            <td />
-                                <td>
-                                    <HorizontalTiledPlot
-                                        handleCloseTrack={this.handleCloseTrack.bind(this)}
-                                        handleResizeTrack={this.handleResizeTrack.bind(this)}
-                                        handleSortEnd={this.handleSortEnd.bind(this)}
-                                        tracks={this.state.tracks['top']}
-                                        width={centerWidth}
-                                    />
-                                </td>
-                            <td />
-                            <td />
-                        </tr>
-                        <tr>
-                            <td>
-                                <img 
-                                    onClick={() => { this.handleAddTrack('left')}}
-                                    src="images/plus.svg" 
-                                    style={imgStyle}
-                                />
-                            </td>
-                            <td>
-                                <VerticalTiledPlot
-                                    handleCloseTrack={this.handleCloseTrack.bind(this)}
-                                    handleResizeTrack={this.handleResizeTrack.bind(this)}
-                                    handleSortEnd={this.handleSortEnd.bind(this)}
-                                    height={centerHeight}
-                                    tracks={this.state.tracks['left']}
-                                />
-
-                            </td>
-                            <td style={{"textAlign": "center"}}>
-                                <img 
-                                    onClick={() => { this.handleAddTrack('center')}}
-                                    src="images/plus.svg" 
-                                    style={imgStyle}
-                                />
-                        
-                            </td>
-                            <td>
-                                <VerticalTiledPlot
-                                    handleCloseTrack={this.handleCloseTrack.bind(this)}
-                                    handleResizeTrack={this.handleResizeTrack.bind(this)}
-                                    handleSortEnd={this.handleSortEnd.bind(this)}
-                                    height={centerHeight}
-                                    tracks={this.state.tracks['right']}
-                                />
-                            </td>
-                            <td>
-                                <img 
-                                    onClick={() => { this.handleAddTrack('right')}}
-                                    src="images/plus.svg" 
-                                    style={imgStyle}
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td />
-                            <td />
-                            <td>
-                                <HorizontalTiledPlot
-                                    handleCloseTrack={this.handleCloseTrack.bind(this)}
-                                    handleResizeTrack={this.handleResizeTrack.bind(this)}
-                                    handleSortEnd={this.handleSortEnd.bind(this)}
-                                    tracks={this.state.tracks['bottom']}
-                                    width={centerWidth}
-                                />
-                            </td>
-                            <td />
-                            <td />
-                        </tr>
-                        <tr>
-                            <td />
-                            <td />
-                            <td style={{'textAlign': 'center'}}>
-                                <img 
-                                    onClick={() => { this.handleAddTrack('bottom')}}
-                                    src="images/plus.svg" 
-                                    style={imgStyle}
-                                />
-                            </td>
-                            <td />
-                            <td />
-                        </tr>
-                    </tbody>
-                </table>
+                {topTracks}
+                {leftTracks}
+                {rightTracks}
+                {bottomTracks}
             </div>
             );
     }
