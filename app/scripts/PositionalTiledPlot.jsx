@@ -92,8 +92,6 @@ MoveableTrack.propTypes = {
     item: React.PropTypes.object,
     height: React.PropTypes.number,
     width: React.PropTypes.number,
-    handleCloseTrack: React.PropTypes.function,
-    handleResizeTrack: React.PropTypes.function
 }
 
 class VerticalTrack extends MoveableTrack {
@@ -224,10 +222,21 @@ class ListWrapper extends React.Component {
 		}
 
         console.log('sortstart...', node, collection, index);
+        this.sortingIndex = index;
+
+        this.sortStartTop = e.offsetTop;
+        this.sortStartLeft = e.offsetLeft;
 	};
 
     onSortMove(event) {
-        console.log('sortmove...', event);
+        /*
+        console.log('this.props.referenceAncestor:', this.props.referenceAncestor);
+        console.log('sortmove...', 
+                     event.pageX - this.props.referenceAncestor.offsetLeft,
+                     event.pageY - this.props.referenceAncestor.offsetTop);
+        */
+        //console.log('item:', this.state.items[this.sortingIndex], this.props);
+        //console.log('event:', event, event.srcElement.offsetTop, event.srcElement.parentNode.offsetLeft);
     }
 
     onSortEnd({oldIndex, newIndex}) {
@@ -239,6 +248,10 @@ class ListWrapper extends React.Component {
 		if (onSortEnd) {
 			onSortEnd(this.state.items);
 		}
+
+
+        //console.log('sort end, component:', this.refs.component);
+        this.sortingIndex = null;
     };
 
 	render() {
@@ -325,6 +338,7 @@ export class HorizontalTiledPlot extends React.Component {
                         onSortEnd={this.props.handleSortEnd}
                         useDragHandle={true}
                         width={this.props.width}
+                        referenceAncestor={this.props.referenceAncestor}
                     />
                 </div>
         )
@@ -335,9 +349,6 @@ export class HorizontalTiledPlot extends React.Component {
 HorizontalTiledPlot.propTypes = {
     width: React.PropTypes.number,
     height: React.PropTypes.number,
-    handleCloseTrack: React.PropTypes.function,
-    handleResizeTrack: React.PropTypes.function,
-    handleSortEnd: ReactPropTypes.function
 }
 
 export class VerticalTiledPlot extends React.Component {
@@ -373,6 +384,7 @@ export class VerticalTiledPlot extends React.Component {
                     handleCloseTrack={this.props.handleCloseTrack}
                     handleResizeTrack={this.props.handleResizeTrack}
                     itemReactClass={VerticalItem}
+                    referenceAncestor={this.props.referenceAncestor}
                 />
         )
 

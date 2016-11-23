@@ -50,7 +50,7 @@ export class TiledPlot extends React.Component {
                               'bottom': [],
                           'center': []}
 
-        tracks = topTracks;
+        //tracks = topTracks;
 
         for (let key in tracks) {
             for (let i = 0; i < tracks[key].length; i++) {
@@ -66,7 +66,6 @@ export class TiledPlot extends React.Component {
             tracks: tracks
         }
 
-
         // catch any zooming behavior within all of the tracks in this plot
         //this.zoomTransform = zoomIdentity();
         this.zoomBehavior = zoom()
@@ -78,6 +77,21 @@ export class TiledPlot extends React.Component {
                 return true;
             })
             .on('zoom', this.zoomed.bind(this))
+
+
+        // these dimensions are computed in the render() function and depend
+        // on the sizes of the tracks in each section
+        this.topHeight = 0;
+        this.bottomHeight = 0;
+
+        this.leftWidth = 0;
+        this.rightWidth = 0;
+
+        this.centerHeight = 0;
+        this.centerWidth = 0;
+
+        this.plusWidth = 10;
+        this.plusHeight = 10;
     }
 
     componentDidMount() {
@@ -197,35 +211,35 @@ export class TiledPlot extends React.Component {
     render() {
         // left, top, right, and bottom have fixed heights / widths
         // the center will vary to accomodate their dimensions
-        let topHeight = this.state.tracks['top']
+        this.topHeight = this.state.tracks['top']
             .map((x) => { return x.height; })
             .reduce((a,b) => { return a + b; }, 0);
-        let bottomHeight = this.state.tracks['bottom']
+        this.bottomHeight = this.state.tracks['bottom']
             .map((x) => { return x.height; })
             .reduce((a,b) => { return a + b; }, 0);
-        let leftWidth = this.state.tracks['left']
+        this.leftWidth = this.state.tracks['left']
             .map((x) => { return x.width; })
             .reduce((a,b) => { return a + b; }, 0);
-        let rightWidth = this.state.tracks['right']
+        this.rightWidth = this.state.tracks['right']
             .map((x) => { return x.width; })
             .reduce((a,b) => { return a + b; }, 0);
 
         // the icons for adding tracks
-        let plusWidth = 10;
-        let plusHeight = 10;
+        this.plusWidth = 10;
+        this.plusHeight = 10;
 
-        let centerHeight = this.state.height - topHeight - bottomHeight - 20;
-        let centerWidth = this.state.width - leftWidth - rightWidth - 20;
+        this.centerHeight = this.state.height - this.topHeight - this.bottomHeight - 20;
+        this.centerWidth = this.state.width - this.leftWidth - this.rightWidth - 20;
 
         let imgStyle = { 
             width: 10,
             opacity: 0.4
         };
 
-        console.log('leftWidth:', leftWidth, 'centerWidth:', centerWidth, 'rightWidth', rightWidth, 'total:', leftWidth + centerWidth + rightWidth);
-        console.log('topHeight:', topHeight, 'centerHeight:', centerHeight, 'bottomHeight', bottomHeight, 'total:', topHeight + centerHeight + bottomHeight);
-        let topTracks = (<div style={{left: leftWidth + plusWidth, top: plusHeight, 
-                                      width: centerWidth, height: topHeight,
+        console.log('leftWidth:', this.leftWidth, 'centerWidth:', this.centerWidth, 'rightWidth', this.rightWidth, 'total:', this.leftWidth + this.centerWidth + this.rightWidth);
+        console.log('topHeight:', this.topHeight, 'centerHeight:', this.centerHeight, 'bottomHeight', this.bottomHeight, 'total:', this.topHeight + this.centerHeight + this.bottomHeight);
+        let topTracks = (<div style={{left: this.leftWidth + this.plusWidth, top: this.plusHeight, 
+                                      width: this.centerWidth, height: this.topHeight,
                                       outline: "1px solid black", 
                                       position: "absolute",}}>
                             <HorizontalTiledPlot
@@ -233,11 +247,12 @@ export class TiledPlot extends React.Component {
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['top']}
-                                width={centerWidth}
+                                width={this.centerWidth}
+                                referenceAncestor={this.divTiledPlot}
                             />
                          </div>)
-        let leftTracks = (<div style={{left: plusWidth, top: topHeight + plusHeight, 
-                                      width: leftWidth, height: centerHeight,
+        let leftTracks = (<div style={{left: this.plusWidth, top: this.topHeight + this.plusHeight, 
+                                      width: this.leftWidth, height: this.centerHeight,
                                       outline: "1px solid black", 
                                       position: "absolute",}}>
                             <VerticalTiledPlot
@@ -245,11 +260,12 @@ export class TiledPlot extends React.Component {
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['left']}
-                                height={centerHeight}
+                                height={this.centerHeight}
+                                referenceAncestor={this.divTiledPlot}
                             />
                          </div>)
-        let rightTracks = (<div style={{right: plusWidth, top: topHeight + plusHeight, 
-                                      width: rightWidth, height: centerHeight,
+        let rightTracks = (<div style={{right: this.plusWidth, top: this.topHeight + this.plusHeight, 
+                                      width: this.rightWidth, height: this.centerHeight,
                                       outline: "1px solid black", 
                                       position: "absolute",}}>
                             <VerticalTiledPlot
@@ -257,11 +273,12 @@ export class TiledPlot extends React.Component {
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['right']}
-                                height={centerHeight}
+                                height={this.centerHeight}
+                                referenceAncestor={this.divTiledPlot}
                             />
                          </div>)
-        let bottomTracks = (<div style={{left: leftWidth + plusWidth, bottom: plusHeight,
-                                      width: centerWidth, height: bottomHeight,
+        let bottomTracks = (<div style={{left: this.leftWidth + this.plusWidth, bottom: this.plusHeight,
+                                      width: this.centerWidth, height: this.bottomHeight,
                                       outline: "1px solid black", 
                                       position: "absolute",}}>
                             <HorizontalTiledPlot
@@ -269,7 +286,8 @@ export class TiledPlot extends React.Component {
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['bottom']}
-                                width={centerWidth}
+                                width={this.centerWidth}
+                                referenceAncestor={this.divTiledPlot}
                             />
                          </div>)
 
