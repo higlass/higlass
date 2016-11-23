@@ -6,6 +6,7 @@ import {Responsive, WidthProvider} from 'react-grid-layout';
 import {SearchableTiledPlot} from './SearchableTiledPlot.jsx';
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
+import {ResizeSensor,ElementQueries} from 'css-element-queries';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -14,29 +15,48 @@ export class MultiViewContainer extends React.Component {
         super(props);
 
         this.heights = {};
+        this.uid = slugid.nice();
 
         this.viewConfig = this.props.viewConfig;
 
           this.state = {
             currentBreakpoint: 'lg',
-            mounted: false
+            mounted: false,
+            width: 0,
+            height: 0
           }
     }
 
 
   componentDidMount() {
+    this.element = ReactDOM.findDOMNode(this);
+
+    // keep track of the width and height of this element, because it
+    // needs to be reflected in the size of our drawing surface
     this.setState({mounted: true});
-  }
+        ElementQueries.listen();
+        new ResizeSensor(this.element, function() {
+            //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
+            let heightOffset = 0;
+
+            this.setState({
+                height: this.element.clientHeight,
+                width: this.element.clientWidth
+            });
+
+            console.log('newWidth:', this.state.width);
+            console.log('newHeight:', this.state.height);
+        }.bind(this));
+    }
 
     componentWillReceiveProps(newProps) {
         //console.log('newProps:', newProps);
     }
 
+    /*
     shouldComponentUpdate(nextProps, nextState) {
-        /*
         console.log('oldProps.text:', this.props.viewConfig.text);
         console.log('newProps.text:', nextProps.viewConfig.text);
-        */
         if (nextProps.viewConfig.text == this.props.viewConfig.text) {
             //console.log('not updating...');
             return false;
@@ -44,6 +64,7 @@ export class MultiViewContainer extends React.Component {
 
         return true;
     }
+    */
 
 
   onBreakpointChange(breakpoint) {
@@ -213,7 +234,19 @@ export class MultiViewContainer extends React.Component {
                     top: 2,
                      position: 'absolute' }
     return (
-      <div>
+      <div 
+        key={this.uid}
+        style={{position: "relative"}}
+      >
+        <div
+            className="drawing-surface"
+            style={{position: "absolute", 
+                    width: this.state.width, 
+                    height: this.state.height,
+                    background: 'yellow',
+                    opacity: 0.5
+            }}
+        />
         <ResponsiveReactGridLayout
           {...this.props}
           draggableHandle={'.multitrack-header'}
@@ -236,6 +269,7 @@ export class MultiViewContainer extends React.Component {
                 */
                 console.log('layout:', JSON.stringify(layout));
                 console.log('i:', i)
+                console.log('view:', view);
                 let itemUid = "p" + view.uid;
                 this.heights[itemUid] = layout.height;
 
@@ -256,7 +290,7 @@ export class MultiViewContainer extends React.Component {
                                 />
                             </div>
                              <SearchableTiledPlot
-                                     key={slugid.nice()}
+                                     key={view.uid}
                                      height={this.heights[itemUid]}
                                      />
                         </div>)
@@ -276,6 +310,8 @@ export class MultiViewContainer extends React.Component {
                     />
             </div>
         </div>
+
+
       </div>
     );
   }

@@ -14,6 +14,7 @@ export class TiledPlot extends React.Component {
 
         this.minHorizontalHeight = 20;
         this.minVerticalWidth = 20;
+        this.uid = slugid.nice();
 
         let tracks = {
                           'top': [{'height': 20, 'value': '1'},
@@ -51,6 +52,8 @@ export class TiledPlot extends React.Component {
                           'center': []}
 
         //tracks = topTracks;
+
+        this.trackRenderers = {}
 
         for (let key in tracks) {
             for (let i = 0; i < tracks[key].length; i++) {
@@ -208,6 +211,122 @@ export class TiledPlot extends React.Component {
 
     }
 
+    createTracksAndLocations() {
+        let tracksAndLocations = [];
+        let tracks = this.state.tracks;
+
+       for (let trackType in tracks) {
+            for (let i = 0; i < tracks[trackType].length; i++) 
+                tracksAndLocations.push({'track': tracks[trackType][i], 'location': trackType})
+       }
+
+       return tracksAndLocations;
+    }
+
+    calculateTrackPosition(track, location) {
+        /**
+         * Calculate where a track is absoluately positioned within the drawing area
+         *
+         * @param track: The track object (with members, e.g. track.uid, track.width, track.height)
+         * @param location: Where it's being plotted (e.g. 'top', 'bottom')
+         * @return: The position of the track and it's height and width
+         *          (e.g. {left: 10, top: 20, width: 30, height: 40}
+         */
+        let top = this.plusHeight, left=this.plusWidth;
+        
+        if (location == 'top') {
+            left += this.leftWidth;
+            top += 0;
+
+            for (let i = 0; i < this.state.tracks['top'].length; i++) {
+                if (this.state.tracks['top'][i].uid == track.uid)
+                    break;
+                else
+                    top += this.state.tracks['top'][i].height;
+            }
+
+            return {left: left, top: top, width: this.centerWidth, height: track.height};
+        }
+
+        else if (location == 'bottom') {
+            left += this.leftWidth;
+            top += this.topHeight + this.centerHeight;
+
+            for (let i = 0; i < this.state.tracks['bottom'].length; i++) {
+                if (this.state.tracks['bottom'][i].uid == track.uid)
+                    break;
+                else
+                    top += this.state.tracks['bottom'][i].height;
+            }
+
+            return {left: left, top: top, width: this.centerWidth, height: track.height};
+        }
+
+        else if (location == 'left') {
+            top += this.topHeight;
+
+            for (let i = 0; i < this.state.tracks['left'].length; i++) {
+                if (this.state.tracks['left'][i].uid == track.uid)
+                    break;
+                else
+                    left += this.state.tracks['left'][i].width;
+            }
+
+            return {left: left, top: top, width: track.width, height: this.centerHeight};
+        }
+
+        else if (location == 'right') {
+            left += this.leftWidth + this.centerWidth;
+            top += this.topHeight;
+
+            for (let i = 0; i < this.state.tracks['right'].length; i++) {
+                if (this.state.tracks['right'][i].uid == track.uid)
+                    break;
+                else
+                    left += this.state.tracks['right'][i].width;
+            }
+
+            return {left: left, top: top, width: track.width, height: this.centerHeight};
+        } else if (location == 'center') {
+            left += this.leftWidth;
+            top += this.topHeight;
+
+            return {left: left, top: top, width: this.centerWidth, height: this.centerHeight};
+        }
+
+    }
+
+    createTrackPositionTexts() {
+        /**
+         * Create little text fields that show the position and width of
+         * each track, just to show that we can calculate that and pass
+         * it to the rendering context.
+         */
+        let tracksAndLocations = this.createTracksAndLocations();
+
+        let trackElements = tracksAndLocations.map(({track, location}) => {
+            console.log('track:', track, 'location', location);
+
+            let trackPosition = this.calculateTrackPosition(track, location);
+            console.log('trackPosition:', trackPosition);
+
+            return (<div 
+                        key={track.uid}
+                        style={{
+                            left: trackPosition.left,
+                            top: trackPosition.top,
+                            width: trackPosition.width,
+                            height: trackPosition.height,
+                            position: 'absolute'
+                        }}
+                    >
+                    {track.uid.slice(0,2)}
+                </div>)
+        });
+
+        return (trackElements)
+    }
+
     render() {
         // left, top, right, and bottom have fixed heights / widths
         // the center will vary to accomodate their dimensions
@@ -291,16 +410,30 @@ export class TiledPlot extends React.Component {
                             />
                          </div>)
 
+        let trackPositionTexts = this.createTrackPositionTexts();
 
         return(
             <div 
                 ref={(c) => this.divTiledPlot = c}
                 style={{width: "100%", height: "100%", position: "relative"}}
             >
+
+                <div 
+                    style={{position: "absolute",
+                             width: this.state.width,
+                             height: this.state.height,
+                             background: "green",
+                             opacity: 0.5
+                            }}
+                />
+                {trackPositionTexts}
+
                 {topTracks}
                 {leftTracks}
                 {rightTracks}
                 {bottomTracks}
+                    
+                
             </div>
             );
     }

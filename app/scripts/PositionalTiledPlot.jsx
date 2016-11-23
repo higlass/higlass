@@ -53,6 +53,7 @@ class MoveableTrack extends React.Component {
         if (this.state.controlsVisible) {
             controls = (<div>
                             <img 
+                                className="no-zoom"
                                 onClick={() => { this.props.handleCloseTrack(this.props.uid); }}
                                 src="images/cross.svg" 
                                 style={this.getCloseImgStyle()}

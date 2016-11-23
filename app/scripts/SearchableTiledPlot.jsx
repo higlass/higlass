@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import slugid from 'slugid';
 
 import {TiledPlot} from './TiledPlot.jsx';
 
@@ -9,6 +10,8 @@ export class SearchableTiledPlot extends React.Component {
 
         this.width = 50;
         this.height = 50;
+
+        this.uid = slugid.nice();
     }
 
     render() {
