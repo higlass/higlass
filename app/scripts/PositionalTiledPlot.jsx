@@ -2,7 +2,7 @@ import slugid from 'slugid';
 import React from 'react';
 import {Resizable,ResizableBox} from 'react-resizable';
 import {DraggableDiv} from './DraggableDiv.js';
-import {select,event} from 'd3-selection';
+import {select,event,mouse} from 'd3-selection';
 import {SortableContainer, SortableElement, SortableHandle, arrayMove} from 'react-sortable-hoc';
 
 class MoveableTrack extends React.Component {
@@ -73,11 +73,11 @@ class MoveableTrack extends React.Component {
                     position: "relative" }}
             >
             <DraggableDiv 
+                height={this.props.height}
                 key={this.props.uid}
+                sizeChanged={(stuff) => { return this.props.handleResizeTrack(this.props.uid, stuff.width, stuff.height); }}
                 uid={this.props.uid}
                 width={this.props.width}
-                height={this.props.height}
-                sizeChanged={(stuff) => { return this.props.handleResizeTrack(this.props.uid, stuff.width, stuff.height); }}
             />
                 {controls}
             </div>
@@ -91,11 +91,9 @@ MoveableTrack.propTypes = {
     uid: React.PropTypes.string,
     item: React.PropTypes.object,
     height: React.PropTypes.number,
-    width: React.PropTypes.number
-    /*
+    width: React.PropTypes.number,
     handleCloseTrack: React.PropTypes.function,
     handleResizeTrack: React.PropTypes.function
-    */
 }
 
 class VerticalTrack extends MoveableTrack {
@@ -131,9 +129,9 @@ const VerticalItem = SortableElement((props) => {
                 handleCloseTrack={props.handleCloseTrack}
                 handleResizeTrack={props.handleResizeTrack}
                 height={props.height}
+                item={props.item}
                 uid={props.uid}
                 width={props.width}
-                item={props.item}
             />)});
 
 class HorizontalTrack extends MoveableTrack {
@@ -167,9 +165,9 @@ const HorizontalItem = SortableElement((props) => {
                 handleCloseTrack={props.handleCloseTrack}
                 handleResizeTrack={props.handleResizeTrack}
                 height={props.height}
+                item={props.item}
                 uid={props.uid}
                 width={props.width}
-                item={props.item}
             />)});
 
 const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, 
@@ -191,7 +189,7 @@ const SortableList = SortableContainer(({className, items, itemClass, sortingInd
                 })
             })
 	return (
-		<div 
+        <div 
             className={className} 
             style={{height: height,
                     width: width}}
@@ -224,7 +222,13 @@ class ListWrapper extends React.Component {
 		if (onSortStart) {
 			onSortStart(this.refs.component);
 		}
+
+        console.log('sortstart...', node, collection, index);
 	};
+
+    onSortMove(event) {
+        console.log('sortmove...', event);
+    }
 
     onSortEnd({oldIndex, newIndex}) {
 		let {onSortEnd} = this.props;
@@ -245,10 +249,15 @@ class ListWrapper extends React.Component {
 			isSorting, items,
 			onSortEnd: this.onSortEnd.bind(this),
 			onSortStart: this.onSortStart.bind(this),
+            onSortMove: this.onSortMove.bind(this),
 			ref: "component"
 		}
 
-		return <Component {...this.props} {...props} />
+		return (
+                <Component 
+                    {...this.props} 
+                    {...props} 
+                />)
 	}
 }
 
@@ -258,6 +267,7 @@ ListWrapper.propTypes = {
     itemClass: React.PropTypes.string,
     width: React.PropTypes.number,
     height: React.PropTypes.number,
+    onSortStart: React.PropTypes.func,
     onSortEnd: React.PropTypes.func,
     component: React.PropTypes.func
 }
@@ -295,7 +305,8 @@ export class HorizontalTiledPlot extends React.Component {
             if (!uid)
                 uid = slugid.nice();
 
-            return {uid: uid, width: this.props.width, height: d.height, value: d.value };
+            return {uid: uid, width: this.props.width, 
+                    height: d.height, value: d.value };
         });
 
 
@@ -306,8 +317,8 @@ export class HorizontalTiledPlot extends React.Component {
                         component={SortableList}
                         handleCloseTrack={this.props.handleCloseTrack}
                         handleResizeTrack={this.props.handleResizeTrack}
-                        helperClass={"stylizedHelper"}
                         height={thisHeight}
+                        helperClass={"stylizedHelper"}
                         itemClass={"stylizedItem"}
                         itemReactClass={HorizontalItem}
                         items={newItems} 
@@ -319,6 +330,14 @@ export class HorizontalTiledPlot extends React.Component {
         )
 
     }
+}
+
+HorizontalTiledPlot.propTypes = {
+    width: React.PropTypes.number,
+    height: React.PropTypes.number,
+    handleCloseTrack: React.PropTypes.function,
+    handleResizeTrack: React.PropTypes.function,
+    handleSortEnd: ReactPropTypes.function
 }
 
 export class VerticalTiledPlot extends React.Component {

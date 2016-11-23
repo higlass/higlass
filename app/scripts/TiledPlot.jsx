@@ -41,16 +41,16 @@ export class TiledPlot extends React.Component {
                                  */
                            'top': [],
                           'left': [
-                          {"width": 30, 'value': 1}
+                          {"width": 80, 'value': 1}
                           ], 
                               'right': [
-                              {'width': 30, 'value': 1} 
+                              {'width': 80, 'value': 1} 
                               ], 
                           /*'bottom': [{'height': 40, 'value': 1}], */
                               'bottom': [],
                           'center': []}
 
-        //tracks = topTracks;
+        tracks = topTracks;
 
         for (let key in tracks) {
             for (let i = 0; i < tracks[key].length; i++) {
