@@ -51,8 +51,14 @@ export class TiledPlot extends React.Component {
                               'bottom': [],
                           'center': []}
 
+        let simpleTracks = {
+            'top': [{}],
+            'center': [
+                { 'server': 'http://52.45.229.11/',
+                  'uuid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
+                  'type': 'heatmap' }]}
 
-        //tracks = topTracks;
+        tracks = simpleTracks;
 
         this.trackRenderers = {}
 
@@ -130,8 +136,25 @@ export class TiledPlot extends React.Component {
          */
         let horizontalLocations = ['top', 'bottom'];
 
+        // first make sure all track types are specified
+        // this will make the code later on simpler
+        if (!('center' in tracksDict))
+            tracksDict['center'] = [];
+        if (!('left' in tracksDict))
+            tracksDict['left'] = [];
+        if (!('right' in tracksDict))
+            tracksDict['right'] = [];
+        if (!('top' in tracksDict))
+            tracksDict['top'] = [];
+        if (!('bottom' in tracksDict))
+            tracksDict['bottom'] = [];
+
         for (let j = 0; j < horizontalLocations.length; j++) {
             let tracks = tracksDict[horizontalLocations[j]];
+
+            //e.g. no 'top' tracks
+            if (!tracks)
+                continue;
 
             for (let i = 0; i < tracks.length; i++) {
                 if (!('height' in tracks[i])) {
@@ -145,6 +168,10 @@ export class TiledPlot extends React.Component {
 
         for (let j = 0; j < verticalLocations.length; j++) {
             let tracks = tracksDict[verticalLocations[j]];
+
+            //e.g. no 'left' tracks
+            if (!tracks)
+                continue;
 
             for (let i = 0; i < tracks.length; i++) {
                 if (!('width' in tracks[i]))
@@ -346,6 +373,7 @@ export class TiledPlot extends React.Component {
 
         let trackElements = tracksAndLocations.map(({track, location}) => {
             let trackPosition = this.calculateTrackPosition(track, location);
+            console.log('trackPosition:', trackPosition, 'track:', track);
 
             return (<div 
                         key={track.uid}

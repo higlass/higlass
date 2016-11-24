@@ -217,6 +217,7 @@ export class MultiViewContainer extends React.Component {
       this.props.onNewConfig(newViewConfigText);
   }
 
+
   render() {
     let imgStyle = { right: 5,
                     top: 2,
@@ -226,6 +227,18 @@ export class MultiViewContainer extends React.Component {
         key={this.uid}
         style={{position: "relative"}}
       >
+        <canvas ref={(c) => this.canvasElement = c } 
+            style={{
+                position: "absolute",
+                width: this.state.width,
+                height: this.state.height
+            }}/>
+        <svg ref={(c) => this.svgElement = c } 
+            style={{
+                position: "absolute",
+                width: this.state.width,
+                height: this.state.height
+            }}/>
         <div
             className="drawing-surface"
             style={{position: "absolute", 
@@ -277,6 +290,8 @@ export class MultiViewContainer extends React.Component {
                              <SearchableTiledPlot
                                      key={view.uid}
                                      height={this.heights[itemUid]}
+                                     svgElement={this.svgElement}
+                                     canvasElement={this.canvasElement}
                                      />
                         </div>)
 
