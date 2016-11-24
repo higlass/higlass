@@ -17,7 +17,7 @@ export class TiledPlot extends React.Component {
         this.uid = slugid.nice();
 
         let tracks = {
-                          'top': [{'height': 20, 'value': '1'},
+                          'top': [{'value': '1'},
                                  {'height': 20, 'value': '2'},
                                  {'height': 30, 'value': '3'}],
                          'left': [{'width': 20, 'value': '4'},
@@ -51,6 +51,7 @@ export class TiledPlot extends React.Component {
                               'bottom': [],
                           'center': []}
 
+
         //tracks = topTracks;
 
         this.trackRenderers = {}
@@ -61,6 +62,8 @@ export class TiledPlot extends React.Component {
             }
         }
 
+        this.fillInMinWidths(tracks)
+
         // these values should be changed in componentDidMount
         this.state = {
             height: 10,
@@ -68,6 +71,7 @@ export class TiledPlot extends React.Component {
 
             tracks: tracks
         }
+
 
         // catch any zooming behavior within all of the tracks in this plot
         //this.zoomTransform = zoomIdentity();
@@ -115,6 +119,40 @@ export class TiledPlot extends React.Component {
 
     zoomed() {
         console.log('zoomed... transform', event.transform);
+    }
+
+    fillInMinWidths(tracksDict) {
+        /**
+         * If tracks don't have specified dimensions, add in the known
+         * minimums
+         * 
+         * Operates on the tracks stored for this TiledPlot.
+         */
+        let horizontalLocations = ['top', 'bottom'];
+
+        for (let j = 0; j < horizontalLocations.length; j++) {
+            let tracks = tracksDict[horizontalLocations[j]];
+
+            for (let i = 0; i < tracks.length; i++) {
+                if (!('height' in tracks[i])) {
+                    tracks[i].height = this.minHorizontalHeight;
+                    console.log('adding height');
+                }
+            }
+        }
+
+        let verticalLocations = ['left', 'right'];
+
+        for (let j = 0; j < verticalLocations.length; j++) {
+            let tracks = tracksDict[verticalLocations[j]];
+
+            for (let i = 0; i < tracks.length; i++) {
+                if (!('width' in tracks[i]))
+                    tracks[i].width = this.minVerticalWidth;
+            }
+        }
+
+        return tracksDict;
     }
 
     handleAddTrack(position) {
