@@ -1,11 +1,11 @@
 import "../styles/TiledPlot.css";
+
 import slugid from 'slugid';
 import React from 'react';
-import {zoom} from 'd3-zoom';
-import {select,event} from 'd3-selection';
 import ReactDOM from 'react-dom';
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {VerticalTiledPlot, HorizontalTiledPlot} from './PositionalTiledPlot.jsx';
+import {TrackRenderer} from './TrackRenderer.jsx';
 
 
 export class TiledPlot extends React.Component {
@@ -78,20 +78,6 @@ export class TiledPlot extends React.Component {
             tracks: tracks
         }
 
-
-        // catch any zooming behavior within all of the tracks in this plot
-        //this.zoomTransform = zoomIdentity();
-        this.zoomBehavior = zoom()
-            .filter(() => {
-                if (event.path[0].classList.contains("no-zoom"))
-                    return false;
-                if (event.path[0].classList.contains('react-resizable-handle'))
-                    return false;
-                return true;
-            })
-            .on('zoom', this.zoomed.bind(this))
-
-
         // these dimensions are computed in the render() function and depend
         // on the sizes of the tracks in each section
         this.topHeight = 0;
@@ -120,12 +106,8 @@ export class TiledPlot extends React.Component {
             });
         }.bind(this));
 
-        select(this.divTiledPlot).call(this.zoomBehavior);
     }
 
-    zoomed() {
-        console.log('zoomed... transform', event.transform);
-    }
 
     fillInMinWidths(tracksDict) {
         /**
@@ -221,6 +203,8 @@ export class TiledPlot extends React.Component {
                 filteredTracks[0].height = height;
             }
 
+            console.log('track resized');
+
         }
 
         this.setState({
@@ -312,7 +296,8 @@ export class TiledPlot extends React.Component {
                     top += this.state.tracks['top'][i].height;
             }
 
-            return {left: left, top: top, width: this.centerWidth, height: track.height};
+            return {left: left, top: top, width: this.centerWidth, 
+                    height: track.height, track: track};
         }
 
         else if (location == 'bottom') {
@@ -326,7 +311,8 @@ export class TiledPlot extends React.Component {
                     top += this.state.tracks['bottom'][i].height;
             }
 
-            return {left: left, top: top, width: this.centerWidth, height: track.height};
+            return {left: left, top: top, width: this.centerWidth, 
+                height: track.height, track: track};
         }
 
         else if (location == 'left') {
@@ -339,7 +325,8 @@ export class TiledPlot extends React.Component {
                     left += this.state.tracks['left'][i].width;
             }
 
-            return {left: left, top: top, width: track.width, height: this.centerHeight};
+            return {left: left, top: top, width: track.width, 
+                height: this.centerHeight, track: track};
         }
 
         else if (location == 'right') {
@@ -353,15 +340,32 @@ export class TiledPlot extends React.Component {
                     left += this.state.tracks['right'][i].width;
             }
 
-            return {left: left, top: top, width: track.width, height: this.centerHeight};
+            return {left: left, top: top, width: track.width, 
+                height: this.centerHeight, track: track};
         } else if (location == 'center') {
             left += this.leftWidth;
             top += this.topHeight;
 
-            return {left: left, top: top, width: this.centerWidth, height: this.centerHeight};
+            return {left: left, top: top, width: this.centerWidth, 
+                height: this.centerHeight, track: track};
         }
 
     }
+
+    positionedTracks() {
+        /**
+         * Return the current set of tracks along with their positions
+         * and dimensions
+         */
+        let tracksAndLocations = this.createTracksAndLocations()
+            .map(({track, location}) => this.calculateTrackPosition(track,location));
+
+
+        console.log('tracksAndLocations:', tracksAndLocations);
+
+        return tracksAndLocations;
+    }
+
 
     createTrackPositionTexts() {
         /**
@@ -369,11 +373,12 @@ export class TiledPlot extends React.Component {
          * each track, just to show that we can calculate that and pass
          * it to the rendering context.
          */
+        let positionedTracks = this.positionedTracks();
         let tracksAndLocations = this.createTracksAndLocations();
 
-        let trackElements = tracksAndLocations.map(({track, location}) => {
-            let trackPosition = this.calculateTrackPosition(track, location);
-            console.log('trackPosition:', trackPosition, 'track:', track);
+
+        let trackElements = positionedTracks.map((trackPosition) => {
+            let track = trackPosition.track;
 
             return (<div 
                         key={track.uid}
@@ -474,28 +479,37 @@ export class TiledPlot extends React.Component {
                          </div>)
 
         let trackPositionTexts = this.createTrackPositionTexts();
+        let positionedTracks = this.positionedTracks();
 
+        // track renderer needs to enclose all the other divs so that it 
+        // can catch the zoom events
         return(
             <div 
                 ref={(c) => this.divTiledPlot = c}
                 style={{width: "100%", height: "100%", position: "relative"}}
             >
+                <TrackRenderer
+                    width={this.state.width}
+                    height={this.state.height}
+                    positionedTracks={positionedTracks}
+                >
 
-                <div 
-                    style={{position: "absolute",
-                             width: this.state.width,
-                             height: this.state.height,
-                             background: "green",
-                             opacity: 0.5
-                            }}
-                />
-                {trackPositionTexts}
+                    <div 
+                        style={{position: "absolute",
+                                 width: this.state.width,
+                                 height: this.state.height,
+                                 background: "green",
+                                 opacity: 0.5
+                                }}
+                    />
+                    {trackPositionTexts}
 
-                {topTracks}
-                {leftTracks}
-                {rightTracks}
-                {bottomTracks}
-                    
+                    {topTracks}
+                    {leftTracks}
+                    {rightTracks}
+                    {bottomTracks}
+
+                </TrackRenderer>
                 
             </div>
             );
