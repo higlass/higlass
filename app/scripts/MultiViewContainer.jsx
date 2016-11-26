@@ -66,13 +66,12 @@ export class MultiViewContainer extends React.Component {
             });
          }.bind(this));
             
+        this.handleDragStart();
+        this.handleDragStop();
         
         this.animate();
     }
 
-    componentWillReceiveProps(newProps) {
-
-    }
 
     /*
     shouldComponentUpdate(nextProps, nextState) {
@@ -104,14 +103,30 @@ export class MultiViewContainer extends React.Component {
       let stateLayouts = this.state.layouts;
       stateLayouts[layout.i] = layout;
 
+      this.handleDragStart();
+      this.handleDragStop();
+
       // maintain a list of the layouts, mainly so tt
       this.setState({
           'layouts': stateLayouts
       });
   };
 
-    handleDrag(layout, oldItem, newItem, placeholder, e, element) {
-        console.log('dragged:'); 
+    handleDragStart(layout, oldItem, newItem, placeholder, e, element) {
+        console.log('dragStart')
+        this.setState({
+            dragging: true
+        })
+    }
+
+    handleDragStop() {
+        console.log('dragStop')
+        // wait for the CSS transitions to end before 
+        // turning off the dragging state
+        setTimeout(() => {
+            this.setState({
+                dragging: false
+            })}, 300);
     }
 
   onNewLayout() {
@@ -295,8 +310,8 @@ export class MultiViewContainer extends React.Component {
           onLayoutChange={this.handleLayoutChange.bind(this)}
           useCSSTransforms={false}
           onResize={this.onResize.bind(this)}
-          onDrag={this.handleDrag.bind(this)}
-          onDragStop={()=>{console.log('dragstop');}}
+          onDragStart={this.handleDragStart.bind(this)}
+          onDragStop={this.handleDragStop.bind(this)}
 
           // WidthProvider option
           // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
@@ -314,10 +329,9 @@ export class MultiViewContainer extends React.Component {
                 this.heights[itemUid] = layout.height;
 
                 return (<div 
-                            className="no-transition"
                             data-grid={layout}
                             key={itemUid}
-                            style={{display: "flex", "flexDirection": "column", "transition": "none"}}
+                            style={{display: "flex", "flexDirection": "column"}}
                         >
                             <div 
                                 className="multitrack-header"
@@ -338,7 +352,7 @@ export class MultiViewContainer extends React.Component {
                                      svgElement={this.svgElement}
                                      canvasElement={this.canvasElement}
                                      pixiStage={this.pixiStage}
-                                     layout={this.state.layouts[itemUid]}
+                                     dragging={this.state.dragging}
                                 />
                             </SearchableTiledPlot>
                         </div>)

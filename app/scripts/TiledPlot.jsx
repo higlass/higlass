@@ -12,11 +12,13 @@ export class TiledPlot extends React.Component {
     constructor(props) {
         super(props);
 
+        this.closing = false;
         this.minHorizontalHeight = 20;
         this.minVerticalWidth = 20;
         this.uid = slugid.nice();
         this.yPositionOffset = 0;    // the offset from the Canvas and SVG elements
                                      // that the tracks will be drawn on
+        this.dragging = false;
 
         let tracks = {
                           'top': [{'value': '1'},
@@ -74,8 +76,12 @@ export class TiledPlot extends React.Component {
 
         // these values should be changed in componentDidMount
         this.state = {
+            mounted: false,
             height: 10,
             width: 10,
+
+            yPositionOffset: 0,
+            xPositionOffset: 0,
 
             tracks: tracks
         }
@@ -103,10 +109,8 @@ export class TiledPlot extends React.Component {
             let parentTop = this.element.parentNode.getBoundingClientRect().top;
             let hereTop = this.element.getBoundingClientRect().top;
 
-            let heightOffset = hereTop - parentTop + 20;
-            //let heightOffset = 0;
-            //console.log('heightOffset:', heightOffset);
-            //let heightOffset = 20;
+            //let heightOffset = hereTop - parentTop;
+            let heightOffset = 0;
             console.log('heightOffset:', heightOffset);
 
             console.log('clientHeight:', this.element.clientHeight);
@@ -117,6 +121,43 @@ export class TiledPlot extends React.Component {
             });
         }.bind(this));
 
+        this.setState({
+            mounted: true
+        });
+
+    }
+
+    componentWillUnmount() {
+        console.log('component will unmount');
+        this.closing = true;
+        this.setState({
+            mounted: false
+        });
+    }
+
+    componentWillReceiveProps(newProps) {
+        this.canvasDom = ReactDOM.findDOMNode(newProps.canvasElement);
+        this.dragging = newProps.dragging;
+        
+        this.timedUpdatePositionAndDimentions(newProps);
+    }
+
+    timedUpdatePositionAndDimentions(props) {
+        if (this.closing)
+            return;
+
+        if (this.dragging) {
+            if (!this.state.mounted)
+                return;
+
+            //console.log('updating position...', this.state.mounted);
+            this.setState({
+                yPositionOffset: this.element.getBoundingClientRect().top - this.canvasDom.getBoundingClientRect().top,
+                xPositionOffset: this.element.getBoundingClientRect().left - this.canvasDom.getBoundingClientRect().left,
+            });
+
+            requestAnimationFrame(this.timedUpdatePositionAndDimentions.bind(this));
+        }
     }
 
     componentWillUpdate() {
@@ -124,14 +165,6 @@ export class TiledPlot extends React.Component {
          * Need to determine the offset of this element relative to the canvas on which stuff
          * will be drawn
          */
-        if (this.props.canvasElement) {
-            let element = ReactDOM.findDOMNode(this.props.canvasElement);
-
-            //console.log('this.element:', this.element, this.element.offsetTop);
-            this.yPositionOffset = this.element.getBoundingClientRect().top - element.getBoundingClientRect().top;
-            this.xPositionOffset = this.element.getBoundingClientRect().left - element.getBoundingClientRect().left;
-
-        }
     }
 
 
@@ -447,7 +480,6 @@ export class TiledPlot extends React.Component {
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['top']}
                                 width={this.centerWidth}
-                                referenceAncestor={this.divTiledPlot}
                             />
                          </div>)
         let leftTracks = (<div style={{left: this.plusWidth, top: this.topHeight + this.plusHeight, 
@@ -460,7 +492,6 @@ export class TiledPlot extends React.Component {
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['left']}
                                 height={this.centerHeight}
-                                referenceAncestor={this.divTiledPlot}
                             />
                          </div>)
         let rightTracks = (<div style={{right: this.plusWidth, top: this.topHeight + this.plusHeight, 
@@ -473,7 +504,6 @@ export class TiledPlot extends React.Component {
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['right']}
                                 height={this.centerHeight}
-                                referenceAncestor={this.divTiledPlot}
                             />
                          </div>)
         let bottomTracks = (<div style={{left: this.leftWidth + this.plusWidth, bottom: this.plusHeight,
@@ -486,15 +516,14 @@ export class TiledPlot extends React.Component {
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['bottom']}
                                 width={this.centerWidth}
-                                referenceAncestor={this.divTiledPlot}
                             />
                          </div>)
 
         let trackPositionTexts = this.createTrackPositionTexts();
 
         let positionedTracks = this.positionedTracks().map(x => { 
-            x.top += this.yPositionOffset;
-            x.left += this.xPositionOffset;
+            x.top += this.state.yPositionOffset;
+            x.left += this.state.xPositionOffset;
             return x});
 
         // track renderer needs to enclose all the other divs so that it 
@@ -502,7 +531,7 @@ export class TiledPlot extends React.Component {
         return(
             <div 
                 ref={(c) => this.divTiledPlot = c}
-                style={{width: "100%", height: "100%", position: "relative"}}
+                style={{flex: 1}}
             >
                 <TrackRenderer
                     width={this.state.width}

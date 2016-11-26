@@ -8,15 +8,12 @@ export class SearchableTiledPlot extends React.Component {
     constructor(props) {
         super(props);
 
-        this.width = 50;
-        this.height = 50;
-
         this.uid = slugid.nice();
     }
 
     render() {
         return (
-                <div style={{width: "100%", height: "100%"}}>
+                <div style={{flex: 1, display: "flex", flexDirection: "column"}} >
                     { this.props.children }
                 </div>
                )
