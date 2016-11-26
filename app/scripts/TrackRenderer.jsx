@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import {zoom} from 'd3-zoom';
 import {select,event} from 'd3-selection';
@@ -14,6 +15,13 @@ export class TrackRenderer extends React.Component {
     constructor(props) {
         super(props);
 
+        this.dragging = false; //is this element being dragged?
+        this.element = null;
+        this.closing = false;
+
+        this.yPositionOffset = 0;
+        this.xPositionOffset = 0;
+
         // catch any zooming behavior within all of the tracks in this plot
         //this.zoomTransform = zoomIdentity();
         this.zoomBehavior = zoom()
@@ -26,18 +34,36 @@ export class TrackRenderer extends React.Component {
             })
             .on('zoom', this.zoomed.bind(this))
 
-        // maintain a list of trackObjects which correspond to the input
+        // maintain a list of trackDefObjects which correspond to the input
         // tracks
-        this.trackObjects = {}
-
+        // Each object will contain a trackDef 
+        // {'top': 100, 'left': 50,... 'track': {'source': 'http:...', 'type': 'heatmap'}}
+        // And a trackObject which will be responsible for rendering it
+        this.trackDefObjects = {}
     }
 
     componentDidMount() {
+        this.element = ReactDOM.findDOMNode(this);
+
         // need to be mounted to make sure that all the renderers are
         // created before starting to draw tracks
         this.syncTrackObjects(this.props.positionedTracks);
 
         select(this.divTrackArea).call(this.zoomBehavior);
+    }
+
+    timedUpdatePositionAndDimensions(props) {
+        if (this.closing)
+            return;
+
+        if (this.dragging) {
+            //console.log('updating position...', this.state.mounted);
+            this.yPositionOffset = this.element.getBoundingClientRect().top - this.canvasDom.getBoundingClientRect().top;
+            this.xPositionOffset = this.element.getBoundingClientRect().left - this.canvasDom.getBoundingClientRect().left;
+
+            this.updateTrackPositions();
+            requestAnimationFrame(this.timedUpdatePositionAndDimensions.bind(this));
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -46,6 +72,11 @@ export class TrackRenderer extends React.Component {
          * redraw them.
          */
 
+        this.canvasDom = ReactDOM.findDOMNode(nextProps.canvasElement);
+
+        this.dragging = nextProps.dragging;
+        this.timedUpdatePositionAndDimensions(nextProps);
+
         this.syncTrackObjects(nextProps.positionedTracks);
     }
 
@@ -53,7 +84,7 @@ export class TrackRenderer extends React.Component {
         /**
          * This view has been removed so we need to get rid of all the tracks it contains
          */
-        this.removeTracks(Object.keys(this.trackObjects));
+        this.removeTracks(Object.keys(this.trackDefObjects));
     }
 
     syncTrackObjects(trackDefinitions) {
@@ -79,7 +110,7 @@ export class TrackRenderer extends React.Component {
         for (let i = 0; i < trackDefinitions.length; i++)
             receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i];
 
-        let knownTracks = new Set(Object.keys(this.trackObjects));
+        let knownTracks = new Set(Object.keys(this.trackDefObjects));
         let receivedTracks = new Set(Object.keys(receivedTracksDict));
         
         // track definitions we don't have objects for
@@ -105,9 +136,9 @@ export class TrackRenderer extends React.Component {
 
         // add new tracks and update them (setting dimensions and positions)
         this.addNewTracks([...enterTrackDefs].map(x => receivedTracksDict[x]));
-        this.updateExistingTracks([...enterTrackDefs].map(x => receivedTracksDict[x]));
+        this.updateExistingTrackDefs([...enterTrackDefs].map(x => receivedTracksDict[x]));
 
-        this.updateExistingTracks([...updateTrackDefs].map(x => receivedTracksDict[x]));
+        this.updateExistingTrackDefs([...updateTrackDefs].map(x => receivedTracksDict[x]));
         this.removeTracks([...exitTracks]);
     }
 
@@ -126,26 +157,34 @@ export class TrackRenderer extends React.Component {
         for (let i = 0; i < newTrackDefinitions.length; i++) {
             let newTrackDef = newTrackDefinitions[i];
 
-            this.trackObjects[newTrackDef.track.uid] = this.createTrackObject(newTrackDef.track);
+            this.trackDefObjects[newTrackDef.track.uid] = {trackDef: newTrackDef, trackObject: this.createTrackObject(newTrackDef.track)};
         }
     }
 
-    updateExistingTracks(existingTrackDefinitions) {
-        for (let i = 0; i < existingTrackDefinitions.length; i++) {
-            let trackDef = existingTrackDefinitions[i];
+    updateExistingTrackDefs(newTrackDefs) {
+        for (let i = 0; i < newTrackDefs.length; i++) {
+            this.trackDefObjects[newTrackDefs[i].track.uid].trackDef = newTrackDefs[i];
+        }
 
-            let trackObject = this.trackObjects[trackDef.track.uid];
+        this.updateTrackPositions();
+    }
 
-            trackObject.setPosition([trackDef.left, trackDef.top]);
+    updateTrackPositions() {
+        for (let uid in this.trackDefObjects) {
+            let trackDef = this.trackDefObjects[uid].trackDef;
+            let trackObject = this.trackDefObjects[uid].trackObject;
+
+            trackObject.setPosition([this.xPositionOffset + trackDef.left, this.yPositionOffset + trackDef.top]);
             trackObject.setDimensions([trackDef.width, trackDef.height]);
         }
     }
 
+
     removeTracks(trackUids) {
         for (let i = 0; i < trackUids.length; i++) {
             console.log('removing...', trackUids[i]);
-            this.trackObjects[trackUids[i]].remove();
-            delete this.trackObjects[trackUids[i]];
+            this.trackDefObjects[trackUids[i]].trackObject.remove();
+            delete this.trackDefObjects[trackUids[i]];
         }
     }
 

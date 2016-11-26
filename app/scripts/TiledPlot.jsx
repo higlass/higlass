@@ -18,8 +18,6 @@ export class TiledPlot extends React.Component {
         this.uid = slugid.nice();
         this.yPositionOffset = 0;    // the offset from the Canvas and SVG elements
                                      // that the tracks will be drawn on
-        this.dragging = false;
-
         let tracks = {
                           'top': [{'value': '1'},
                                  {'height': 20, 'value': '2'},
@@ -111,10 +109,6 @@ export class TiledPlot extends React.Component {
 
             //let heightOffset = hereTop - parentTop;
             let heightOffset = 0;
-            console.log('heightOffset:', heightOffset);
-
-            console.log('clientHeight:', this.element.clientHeight);
-            console.log('clientWidth:', this.element.clientWidth);
             this.setState({
                 height: this.element.clientHeight - heightOffset,
                 width: this.element.clientWidth
@@ -136,29 +130,9 @@ export class TiledPlot extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
-        this.canvasDom = ReactDOM.findDOMNode(newProps.canvasElement);
-        this.dragging = newProps.dragging;
-        
-        this.timedUpdatePositionAndDimentions(newProps);
+
     }
 
-    timedUpdatePositionAndDimentions(props) {
-        if (this.closing)
-            return;
-
-        if (this.dragging) {
-            if (!this.state.mounted)
-                return;
-
-            //console.log('updating position...', this.state.mounted);
-            this.setState({
-                yPositionOffset: this.element.getBoundingClientRect().top - this.canvasDom.getBoundingClientRect().top,
-                xPositionOffset: this.element.getBoundingClientRect().left - this.canvasDom.getBoundingClientRect().left,
-            });
-
-            requestAnimationFrame(this.timedUpdatePositionAndDimentions.bind(this));
-        }
-    }
 
     componentWillUpdate() {
         /**
@@ -521,10 +495,7 @@ export class TiledPlot extends React.Component {
 
         let trackPositionTexts = this.createTrackPositionTexts();
 
-        let positionedTracks = this.positionedTracks().map(x => { 
-            x.top += this.state.yPositionOffset;
-            x.left += this.state.xPositionOffset;
-            return x});
+        let positionedTracks = this.positionedTracks();
 
         // track renderer needs to enclose all the other divs so that it 
         // can catch the zoom events
@@ -534,6 +505,8 @@ export class TiledPlot extends React.Component {
                 style={{flex: 1}}
             >
                 <TrackRenderer
+                    canvasElement={this.props.canvasElement}
+                    dragging={this.props.dragging}
                     width={this.state.width}
                     height={this.state.height}
                     positionedTracks={positionedTracks}
