@@ -110,6 +110,10 @@ export class MultiViewContainer extends React.Component {
       });
   };
 
+    handleDrag(layout, oldItem, newItem, placeholder, e, element) {
+        console.log('dragged:'); 
+    }
+
   onNewLayout() {
 
   };
@@ -289,7 +293,10 @@ export class MultiViewContainer extends React.Component {
           measureBeforeMount={false}
           onBreakpointChange={this.onBreakpointChange.bind(this)}
           onLayoutChange={this.handleLayoutChange.bind(this)}
+          useCSSTransforms={false}
           onResize={this.onResize.bind(this)}
+          onDrag={this.handleDrag.bind(this)}
+          onDragStop={()=>{console.log('dragstop');}}
 
           // WidthProvider option
           // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
@@ -307,9 +314,10 @@ export class MultiViewContainer extends React.Component {
                 this.heights[itemUid] = layout.height;
 
                 return (<div 
+                            className="no-transition"
                             data-grid={layout}
                             key={itemUid}
-                            style={{display: "flex", "flexDirection": "column"}}
+                            style={{display: "flex", "flexDirection": "column", "transition": "none"}}
                         >
                             <div 
                                 className="multitrack-header"
