@@ -49,6 +49,13 @@ export class TrackRenderer extends React.Component {
         this.syncTrackObjects(nextProps.positionedTracks);
     }
 
+    componentWillUnmount() {
+        /**
+         * This view has been removed so we need to get rid of all the tracks it contains
+         */
+        this.removeTracks(Object.keys(this.trackObjects));
+    }
+
     syncTrackObjects(trackDefinitions) {
         /** 
          * Make sure we have a track object for every passed track definition.
@@ -101,7 +108,7 @@ export class TrackRenderer extends React.Component {
         this.updateExistingTracks([...enterTrackDefs].map(x => receivedTracksDict[x]));
 
         this.updateExistingTracks([...updateTrackDefs].map(x => receivedTracksDict[x]));
-        this.removeTracks([...exitTracks].map(x => this.trackObjects[x]));
+        this.removeTracks([...exitTracks]);
     }
 
     addNewTracks(newTrackDefinitions) {
@@ -134,8 +141,12 @@ export class TrackRenderer extends React.Component {
         }
     }
 
-    removeTracks(existingTracks) {
-
+    removeTracks(trackUids) {
+        for (let i = 0; i < trackUids.length; i++) {
+            console.log('removing...', trackUids[i]);
+            this.trackObjects[trackUids[i]].remove();
+            delete this.trackObjects[trackUids[i]];
+        }
     }
 
     zoomed() {

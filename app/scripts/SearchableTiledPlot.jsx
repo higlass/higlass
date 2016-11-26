@@ -15,11 +15,13 @@ export class SearchableTiledPlot extends React.Component {
     }
 
     render() {
-        return (<TiledPlot 
+        return (
+                <TiledPlot 
                     svgElement={this.props.svgElement}
                     canvasElement={this.props.canvasElement}
                     pixiStage={this.props.pixiStage}
-                />)
+                />
+               )
     }
 }
 

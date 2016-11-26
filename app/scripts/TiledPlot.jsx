@@ -91,8 +91,8 @@ export class TiledPlot extends React.Component {
         this.centerHeight = 0;
         this.centerWidth = 0;
 
-        this.plusWidth = 10;
-        this.plusHeight = 10;
+        this.plusWidth = 54;
+        this.plusHeight = 54;
     }
 
     componentDidMount() {
@@ -111,10 +111,20 @@ export class TiledPlot extends React.Component {
 
     }
 
-    componentWillUpdate() {
+    componentDidUpdate() {
         if (this.props.canvasElement) {
             let element = ReactDOM.findDOMNode(this.props.canvasElement);
-            this.yPositionOffset = this.element.offsetTop - element.offsetTop;
+
+            //console.log('this.element:', this.element, this.element.offsetTop);
+            this.yPositionOffset = this.element.getBoundingClientRect().top - element.getBoundingClientRect().top;
+            this.xPositionOffset = this.element.getBoundingClientRect().left - element.getBoundingClientRect().left;
+
+            console.log(element.getBoundingClientRect());
+            console.log(this.element.getBoundingClientRect());
+            console.log('window.scrollY', window.scrollY);
+            console.log('this.element', this.element);
+
+            console.log('yPositionOffset:', this.yPositionOffset);
         }
     }
 
@@ -418,17 +428,8 @@ export class TiledPlot extends React.Component {
             .map((x) => { return x.width; })
             .reduce((a,b) => { return a + b; }, 0);
 
-        // the icons for adding tracks
-        this.plusWidth = 10;
-        this.plusHeight = 10;
-
-        this.centerHeight = this.state.height - this.topHeight - this.bottomHeight - 20;
-        this.centerWidth = this.state.width - this.leftWidth - this.rightWidth - 20;
-
-        let imgStyle = { 
-            width: 10,
-            opacity: 0.4
-        };
+        this.centerHeight = this.state.height - this.topHeight - this.bottomHeight - 2*this.plusHeight;
+        this.centerWidth = this.state.width - this.leftWidth - this.rightWidth - 2*this.plusWidth;
 
         let topTracks = (<div style={{left: this.leftWidth + this.plusWidth, top: this.plusHeight, 
                                       width: this.centerWidth, height: this.topHeight,
@@ -485,10 +486,9 @@ export class TiledPlot extends React.Component {
 
         let trackPositionTexts = this.createTrackPositionTexts();
 
-        console.log('yPositionOffset:', this.yPositionOffset);
         let positionedTracks = this.positionedTracks().map(x => { 
-            x.top += this.yPositionOffset + this.plusHeight ; 
-            x.left += this.plusWidth;
+            x.top += this.yPositionOffset;
+            x.left += this.xPositionOffset;
             return x});
 
         // track renderer needs to enclose all the other divs so that it 

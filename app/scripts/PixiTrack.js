@@ -83,7 +83,7 @@ export class PixiTrack extends Track {
 
     }
 
-    destructor() {
+    remove() {
         /**
          * We're going to destroy this object, so we need to detach its
          * graphics from the scene
@@ -136,8 +136,12 @@ export class PixiTrack extends Track {
     }
 
     draw() {
+        /**
+         * Draw all the data associated with this track
+         */
         let graphics = this.pMain;
 
+        graphics.clear();
         graphics.lineStyle(0, 0x0000FF, 1);
         graphics.beginFill(0xFF700B, 1);
 
