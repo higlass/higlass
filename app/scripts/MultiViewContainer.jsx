@@ -8,6 +8,7 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import PIXI from 'pixi.js';
+import {TiledPlot} from './TiledPlot.jsx';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -25,7 +26,8 @@ export class MultiViewContainer extends React.Component {
             currentBreakpoint: 'lg',
             mounted: false,
             width: 0,
-            height: 0
+            height: 0,
+            layouts: {}
           }
 
           this.pixiStage = new PIXI.Container();
@@ -97,7 +99,15 @@ export class MultiViewContainer extends React.Component {
   };
 
   handleLayoutChange(layout, layouts) {
-    //this.props.onLayoutChange(layout, layouts);
+      console.log('layout changed', layout);
+
+      let stateLayouts = this.state.layouts;
+      stateLayouts[layout.i] = layout;
+
+      // maintain a list of the layouts, mainly so tt
+      this.setState({
+          'layouts': stateLayouts
+      });
   };
 
   onNewLayout() {
@@ -278,7 +288,7 @@ export class MultiViewContainer extends React.Component {
           draggableHandle={'.multitrack-header'}
           measureBeforeMount={false}
           onBreakpointChange={this.onBreakpointChange.bind(this)}
-          onLayoutChange={this.handleLayoutChange}
+          onLayoutChange={this.handleLayoutChange.bind(this)}
           onResize={this.onResize.bind(this)}
 
           // WidthProvider option
@@ -314,11 +324,15 @@ export class MultiViewContainer extends React.Component {
                             </div>
                              <SearchableTiledPlot
                                      key={view.uid}
+                            >
+                                <TiledPlot
                                      height={this.heights[itemUid]}
                                      svgElement={this.svgElement}
                                      canvasElement={this.canvasElement}
                                      pixiStage={this.pixiStage}
-                                     />
+                                     layout={this.state.layouts[itemUid]}
+                                />
+                            </SearchableTiledPlot>
                         </div>)
 
             }.bind(this))}

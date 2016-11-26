@@ -103,6 +103,8 @@ export class TiledPlot extends React.Component {
             //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
             let heightOffset = 0;
 
+            console.log('clientHeight:', this.element.clientHeight);
+            console.log('clientWidth:', this.element.clientWidth);
             this.setState({
                 height: this.element.clientHeight - heightOffset,
                 width: this.element.clientWidth
@@ -111,7 +113,11 @@ export class TiledPlot extends React.Component {
 
     }
 
-    componentDidUpdate() {
+    componentWillUpdate() {
+        /**
+         * Need to determine the offset of this element relative to the canvas on which stuff
+         * will be drawn
+         */
         if (this.props.canvasElement) {
             let element = ReactDOM.findDOMNode(this.props.canvasElement);
 
@@ -119,12 +125,8 @@ export class TiledPlot extends React.Component {
             this.yPositionOffset = this.element.getBoundingClientRect().top - element.getBoundingClientRect().top;
             this.xPositionOffset = this.element.getBoundingClientRect().left - element.getBoundingClientRect().left;
 
-            console.log(element.getBoundingClientRect());
-            console.log(this.element.getBoundingClientRect());
-            console.log('window.scrollY', window.scrollY);
-            console.log('this.element', this.element);
+            console.log('didUpdate:', this.xPositionOffset, this.yPositionOffset) 
 
-            console.log('yPositionOffset:', this.yPositionOffset);
         }
     }
 
