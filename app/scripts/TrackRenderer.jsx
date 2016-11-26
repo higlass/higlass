@@ -167,9 +167,11 @@ export class TrackRenderer extends React.Component {
         return(
             <div 
                 ref={(c) => this.divTrackArea = c}
-                style={{width: this.props.width, 
-                        height: this.props.height,
-                        position: "absolute"}}
+                className={"track-renderer"}
+                style={{
+                    width: this.props.width, 
+                    height: this.props.height,
+                    position: "absolute"}}
             >
                 {this.props.children}
             </div>

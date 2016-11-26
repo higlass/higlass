@@ -100,8 +100,14 @@ export class TiledPlot extends React.Component {
 
         ElementQueries.listen();
         new ResizeSensor(this.element, function() {
-            //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
-            let heightOffset = 0;
+            let parentTop = this.element.parentNode.getBoundingClientRect().top;
+            let hereTop = this.element.getBoundingClientRect().top;
+
+            let heightOffset = hereTop - parentTop + 20;
+            //let heightOffset = 0;
+            //console.log('heightOffset:', heightOffset);
+            //let heightOffset = 20;
+            console.log('heightOffset:', heightOffset);
 
             console.log('clientHeight:', this.element.clientHeight);
             console.log('clientWidth:', this.element.clientWidth);
@@ -124,8 +130,6 @@ export class TiledPlot extends React.Component {
             //console.log('this.element:', this.element, this.element.offsetTop);
             this.yPositionOffset = this.element.getBoundingClientRect().top - element.getBoundingClientRect().top;
             this.xPositionOffset = this.element.getBoundingClientRect().left - element.getBoundingClientRect().left;
-
-            console.log('didUpdate:', this.xPositionOffset, this.yPositionOffset) 
 
         }
     }
