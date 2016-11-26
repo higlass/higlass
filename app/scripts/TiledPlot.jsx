@@ -15,6 +15,8 @@ export class TiledPlot extends React.Component {
         this.minHorizontalHeight = 20;
         this.minVerticalWidth = 20;
         this.uid = slugid.nice();
+        this.yPositionOffset = 0;    // the offset from the Canvas and SVG elements
+                                     // that the tracks will be drawn on
 
         let tracks = {
                           'top': [{'value': '1'},
@@ -95,6 +97,7 @@ export class TiledPlot extends React.Component {
 
     componentDidMount() {
         this.element = ReactDOM.findDOMNode(this);
+
         ElementQueries.listen();
         new ResizeSensor(this.element, function() {
             //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
@@ -106,6 +109,13 @@ export class TiledPlot extends React.Component {
             });
         }.bind(this));
 
+    }
+
+    componentWillUpdate() {
+        if (this.props.canvasElement) {
+            let element = ReactDOM.findDOMNode(this.props.canvasElement);
+            this.yPositionOffset = this.element.offsetTop - element.offsetTop;
+        }
     }
 
 
@@ -474,7 +484,12 @@ export class TiledPlot extends React.Component {
                          </div>)
 
         let trackPositionTexts = this.createTrackPositionTexts();
-        let positionedTracks = this.positionedTracks();
+
+        console.log('yPositionOffset:', this.yPositionOffset);
+        let positionedTracks = this.positionedTracks().map(x => { 
+            x.top += this.yPositionOffset + this.plusHeight ; 
+            x.left += this.plusWidth;
+            return x});
 
         // track renderer needs to enclose all the other divs so that it 
         // can catch the zoom events

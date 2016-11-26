@@ -17,6 +17,7 @@ export class MultiViewContainer extends React.Component {
 
         this.heights = {};
         this.uid = slugid.nice();
+        this.yPositionOffset = 0;
 
         this.viewConfig = this.props.viewConfig;
 
@@ -29,6 +30,7 @@ export class MultiViewContainer extends React.Component {
 
           this.pixiStage = new PIXI.Container();
           this.pixiStage.interactive = true;
+          this.element = null;
     }
 
 

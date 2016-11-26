@@ -90,9 +90,11 @@ export class TrackRenderer extends React.Component {
                                    .filter(x => knownTracks.has(x)));
 
         
+        /*
         console.log('enterTrackDefs:', enterTrackDefs);
         console.log('exitTracks:', exitTracks);
         console.log('updateTrackDefs:', updateTrackDefs);
+        */
 
         // add new tracks and update them (setting dimensions and positions)
         this.addNewTracks([...enterTrackDefs].map(x => receivedTracksDict[x]));

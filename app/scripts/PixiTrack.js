@@ -15,7 +15,6 @@ export class PixiTrack extends Track {
         this.scene = scene;
         this.pMain = new PIXI.Graphics();
 
-        console.log("ADDING CHILD");
         this.scene.addChild(this.pMain);
 
         // the graphics that have already been drawn for this track
