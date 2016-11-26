@@ -7,6 +7,7 @@ import {SearchableTiledPlot} from './SearchableTiledPlot.jsx';
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
+import PIXI from 'pixi.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -25,26 +26,45 @@ export class MultiViewContainer extends React.Component {
             width: 0,
             height: 0
           }
+
+          this.pixiStage = new PIXI.Container();
+          this.pixiStage.interactive = true;
     }
 
 
-  componentDidMount() {
-    this.element = ReactDOM.findDOMNode(this);
+    componentDidMount() {
+        this.element = ReactDOM.findDOMNode(this);
 
-    // keep track of the width and height of this element, because it
-    // needs to be reflected in the size of our drawing surface
-    this.setState({mounted: true});
+        this.pixiRenderer = PIXI.autoDetectRenderer(this.state.width,
+                                        this.state.height,
+                                        { view: this.canvasElement,
+                                          antialias: true, 
+                                          transparent: true } )
+
+        PIXI.RESOLUTION=2;
+
+
+        // keep track of the width and height of this element, because it
+        // needs to be reflected in the size of our drawing surface
+        this.setState({mounted: true});
         ElementQueries.listen();
         new ResizeSensor(this.element, function() {
             //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
             let heightOffset = 0;
 
+
+            console.log('resize sensor:', this.element.clientWidth, this.element.clientHeight);
+                this.pixiRenderer.resize(this.element.clientWidth,
+                                         this.element.clientHeight);
+
             this.setState({
                 height: this.element.clientHeight,
                 width: this.element.clientWidth
             });
-
-        }.bind(this));
+         }.bind(this));
+            
+        
+        this.animate();
     }
 
     componentWillReceiveProps(newProps) {
@@ -64,6 +84,10 @@ export class MultiViewContainer extends React.Component {
     }
     */
 
+    animate() {
+        this.renderer.render(this.stage);
+        this.frame = requestAnimationFrame(this.animate);
+    }
 
   onBreakpointChange(breakpoint) {
     this.setState({
@@ -292,6 +316,7 @@ export class MultiViewContainer extends React.Component {
                                      height={this.heights[itemUid]}
                                      svgElement={this.svgElement}
                                      canvasElement={this.canvasElement}
+                                     pixiStage={this.pixiStage}
                                      />
                         </div>)
 

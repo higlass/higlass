@@ -1,27 +1,31 @@
 import {Track} from './Track.js';
-import {LRUCache} from './lru.js';
+//import {LRUCache} from './lru.js';
 
 export class PixiTrack extends Track {
-    constructor(stage, xScale, yScale, dims) {
+    constructor(scene) {
         /**
-         * @param stage: A PIXI.js stage to draw everything to.
+         * @param scene: A PIXI.js scene to draw everything to.
          * @param xScale: A scale for placing points (can be null if this is vertical track)
          * @param yScale: A scale for placing graphics (can be null if this is a horizontal track)
          */
-        super(xScale, yScale, dims);
+        super();
 
         // the PIXI drawing areas
         // pMain will have transforms applied to it as users scroll to and fro
-        this.stage = stage;
+        this.scene = scene;
         this.pMain = new PIXI.Graphics();
-        this.stage.addChild(this.pMain);
+
+        console.log("ADDING CHILD");
+        this.scene.addChild(this.pMain);
 
         // the graphics that have already been drawn for this track
         this.tileGraphics = {};  
 
         // a cache to store loaded tile data
+        /*
         this.MAX_CACHE_SIZE = 100;
         this.lruCache = new LRUCache(this.MAX_CACHE_SIZE); // cache the tile data for recently used tiles
+        */
     }
 
     synchronizeTilesAndGraphics(tiles) {
@@ -63,6 +67,14 @@ export class PixiTrack extends Track {
             }
         }
 
+    }
+
+    destructor() {
+        /**
+         * We're going to destroy this object, so we need to detach its
+         * graphics from the scene
+         */
+        this.scene.removeChild(this.pMain);
     }
 
     drawTiles(tiles) {

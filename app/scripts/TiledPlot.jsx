@@ -52,10 +52,10 @@ export class TiledPlot extends React.Component {
                           'center': []}
 
         let simpleTracks = {
-            'top': [{}],
+            'top': [{'uid': slugid.nice()}],
             'center': [
                 { 'server': 'http://52.45.229.11/',
-                  'uuid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
+                  'uid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
                   'type': 'heatmap' }]}
 
         tracks = simpleTracks;
@@ -141,7 +141,6 @@ export class TiledPlot extends React.Component {
             for (let i = 0; i < tracks.length; i++) {
                 if (!('height' in tracks[i])) {
                     tracks[i].height = this.minHorizontalHeight;
-                    console.log('adding height');
                 }
             }
         }
@@ -202,8 +201,6 @@ export class TiledPlot extends React.Component {
                 filteredTracks[0].width = width;
                 filteredTracks[0].height = height;
             }
-
-            console.log('track resized');
 
         }
 
@@ -361,8 +358,6 @@ export class TiledPlot extends React.Component {
             .map(({track, location}) => this.calculateTrackPosition(track,location));
 
 
-        console.log('tracksAndLocations:', tracksAndLocations);
-
         return tracksAndLocations;
     }
 
@@ -492,6 +487,7 @@ export class TiledPlot extends React.Component {
                     width={this.state.width}
                     height={this.state.height}
                     positionedTracks={positionedTracks}
+                    pixiStage={this.props.pixiStage}
                 >
 
                     <div 

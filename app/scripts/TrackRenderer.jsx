@@ -3,6 +3,9 @@ import React from 'react';
 import {zoom} from 'd3-zoom';
 import {select,event} from 'd3-selection';
 
+import {UnknownPixiTrack} from './UnknownPixiTrack.js';
+import {HeatmapPixiTrack} from './HeatmapPixiTrack.js';
+
 export class TrackRenderer extends React.Component {
     /**
      * Maintain a list of tracks, and re-render them whenever either
@@ -27,10 +30,13 @@ export class TrackRenderer extends React.Component {
         // tracks
         this.trackObjects = {}
 
-        this.syncTrackObjects(props.positionedTracks);
     }
 
     componentDidMount() {
+        // need to be mounted to make sure that all the renderers are
+        // created before starting to draw tracks
+        this.syncTrackObjects(this.props.positionedTracks);
+
         select(this.divTrackArea).call(this.zoomBehavior);
     }
 
@@ -39,6 +45,7 @@ export class TrackRenderer extends React.Component {
          * The size of some tracks probably changed, so let's just
          * redraw them.
          */
+
         this.syncTrackObjects(nextProps.positionedTracks);
     }
 
@@ -93,7 +100,22 @@ export class TrackRenderer extends React.Component {
     }
 
     addNewTracks(newTrackDefinitions) {
-        
+        /**
+         * We need to create new track objects for the given track
+         * definitions.
+         */
+        if (!this.props.pixiStage)
+            return;  // we need a pixi stage to start rendering
+                     // the parent component where it lives probably
+                     // hasn't been mounted yet
+
+        //console.log('newTrackDefinitions', newTrackDefinitions);
+
+        for (let i = 0; i < newTrackDefinitions.length; i++) {
+            let newTrackDef = newTrackDefinitions[i];
+
+            this.trackObjects[newTrackDef.track.uid] = this.createTrackObject(newTrackDef.track);
+        }
     }
 
     updateExistingTracks(existingTrackDefinitions) {
@@ -106,6 +128,16 @@ export class TrackRenderer extends React.Component {
 
     zoomed() {
         console.log('zoomed... transform', event.transform);
+    }
+
+    createTrackObject(track) {
+        switch (track.type) {
+            case 'heatmap':
+                return new HeatmapPixiTrack(this.props.pixiStage)
+            default:
+                return new UnknownPixiTrack(this.props.pixiStage)
+        }
+
     }
 
     render() {

@@ -18,6 +18,7 @@ export class SearchableTiledPlot extends React.Component {
         return (<TiledPlot 
                     svgElement={this.props.svgElement}
                     canvasElement={this.props.canvasElement}
+                    pixiStage={this.props.pixiStage}
                 />)
     }
 }
