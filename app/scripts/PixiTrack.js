@@ -21,11 +21,26 @@ export class PixiTrack extends Track {
         // the graphics that have already been drawn for this track
         this.tileGraphics = {};  
 
+        this.position = [0,0];
+        this.dimensions = [0,0];
+
         // a cache to store loaded tile data
         /*
         this.MAX_CACHE_SIZE = 100;
         this.lruCache = new LRUCache(this.MAX_CACHE_SIZE); // cache the tile data for recently used tiles
         */
+    }
+
+    setPosition(newPosition) {
+        this.position = newPosition;
+
+        this.draw();
+    }
+
+    setDimensions(newDimensions) {
+        this.dimensions = newDimensions;
+
+        this.draw();
     }
 
     synchronizeTilesAndGraphics(tiles) {
@@ -119,5 +134,17 @@ export class PixiTrack extends Track {
        }
 
        return loadedTileData;
+    }
+
+    draw() {
+        let graphics = this.pMain;
+
+        graphics.lineStyle(0, 0x0000FF, 1);
+        graphics.beginFill(0xFF700B, 1);
+
+        console.log('drawing a rectangle to...', this.position[0], this.position[1],
+                    'width:', this.dimensions[0], this.dimensions[1]);
+        this.pMain.drawRect(this.position[0], this.position[1], 
+                            this.dimensions[0], this.dimensions[1]);
     }
 }

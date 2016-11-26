@@ -94,7 +94,10 @@ export class TrackRenderer extends React.Component {
         console.log('exitTracks:', exitTracks);
         console.log('updateTrackDefs:', updateTrackDefs);
 
+        // add new tracks and update them (setting dimensions and positions)
         this.addNewTracks([...enterTrackDefs].map(x => receivedTracksDict[x]));
+        this.updateExistingTracks([...enterTrackDefs].map(x => receivedTracksDict[x]));
+
         this.updateExistingTracks([...updateTrackDefs].map(x => receivedTracksDict[x]));
         this.removeTracks([...exitTracks].map(x => this.trackObjects[x]));
     }
@@ -119,7 +122,14 @@ export class TrackRenderer extends React.Component {
     }
 
     updateExistingTracks(existingTrackDefinitions) {
+        for (let i = 0; i < existingTrackDefinitions.length; i++) {
+            let trackDef = existingTrackDefinitions[i];
 
+            let trackObject = this.trackObjects[trackDef.track.uid];
+
+            trackObject.setPosition([trackDef.left, trackDef.top]);
+            trackObject.setDimensions([trackDef.width, trackDef.height]);
+        }
     }
 
     removeTracks(existingTracks) {

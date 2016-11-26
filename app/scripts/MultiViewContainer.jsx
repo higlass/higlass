@@ -53,7 +53,6 @@ export class MultiViewContainer extends React.Component {
             let heightOffset = 0;
 
 
-            console.log('resize sensor:', this.element.clientWidth, this.element.clientHeight);
                 this.pixiRenderer.resize(this.element.clientWidth,
                                          this.element.clientHeight);
 
@@ -68,7 +67,7 @@ export class MultiViewContainer extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
-        //console.log('newProps:', newProps);
+
     }
 
     /*
@@ -85,8 +84,8 @@ export class MultiViewContainer extends React.Component {
     */
 
     animate() {
-        this.renderer.render(this.stage);
-        this.frame = requestAnimationFrame(this.animate);
+        this.pixiRenderer.render(this.pixiStage);
+        this.frame = requestAnimationFrame(this.animate.bind(this));
     }
 
   onBreakpointChange(breakpoint) {
