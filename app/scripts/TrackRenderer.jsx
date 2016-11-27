@@ -6,6 +6,7 @@ import {select,event} from 'd3-selection';
 
 import {UnknownPixiTrack} from './UnknownPixiTrack.js';
 import {HeatmapPixiTrack} from './HeatmapPixiTrack.js';
+import {TopAxisTrack} from './TopAxisTrack.js';
 
 export class TrackRenderer extends React.Component {
     /**
@@ -198,6 +199,8 @@ export class TrackRenderer extends React.Component {
 
     createTrackObject(track) {
         switch (track.type) {
+            case 'top-axis':
+                return new TopAxisTrack(this.props.pixiStage);
             case 'heatmap':
                 return new HeatmapPixiTrack(this.props.pixiStage)
             default:

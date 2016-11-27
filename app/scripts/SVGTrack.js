@@ -4,6 +4,7 @@ import {scaleLinear} from 'd3-scale';
 
 export class SVGTrack extends Track {
     constructor(svgElement) {
+        super();
         /**
          * Create a new SVG track. It will contain a g element
          * that maintains all of its element.
