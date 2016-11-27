@@ -11,6 +11,10 @@ export class TrackRenderer extends React.Component {
     /**
      * Maintain a list of tracks, and re-render them whenever either
      * their size changes or the zoom level changes
+     *
+     * Zooming changes the domain of the scales.
+     *
+     * Resizing changes the range. Both trigger a rerender.
      */
     constructor(props) {
         super(props);

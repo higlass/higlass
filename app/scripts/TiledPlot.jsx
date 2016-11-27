@@ -507,6 +507,7 @@ export class TiledPlot extends React.Component {
             >
                 <TrackRenderer
                     canvasElement={this.props.canvasElement}
+                    svgElement={this.props.svgElement}
                     dragging={this.props.dragging}
                     width={this.state.width}
                     height={this.state.height}
