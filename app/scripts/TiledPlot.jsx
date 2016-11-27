@@ -55,6 +55,7 @@ export class TiledPlot extends React.Component {
 
         let simpleTracks = {
             'top': [{'uid': slugid.nice()}],
+            'left': [{'uid': slugid.nice()}],
             'center': [
                 { 'server': 'http://52.45.229.11/',
                   'uid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
