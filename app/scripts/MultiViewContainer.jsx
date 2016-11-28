@@ -27,7 +27,9 @@ export class MultiViewContainer extends React.Component {
             mounted: false,
             width: 0,
             height: 0,
-            layouts: {}
+            layouts: {},
+            svgElement: null,
+            canvasElement: null
           }
 
           this.pixiStage = new PIXI.Container();
@@ -50,7 +52,10 @@ export class MultiViewContainer extends React.Component {
 
         // keep track of the width and height of this element, because it
         // needs to be reflected in the size of our drawing surface
-        this.setState({mounted: true});
+        this.setState({mounted: true,
+            svgElement: this.svgElement,
+            canvasElement: this.canvasElement
+        });
         ElementQueries.listen();
         new ResizeSensor(this.element, function() {
             //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
@@ -98,8 +103,6 @@ export class MultiViewContainer extends React.Component {
   };
 
   handleLayoutChange(layout, layouts) {
-      console.log('layout changed', layout);
-
       let stateLayouts = this.state.layouts;
       stateLayouts[layout.i] = layout;
 
@@ -113,20 +116,18 @@ export class MultiViewContainer extends React.Component {
   };
 
     handleDragStart(layout, oldItem, newItem, placeholder, e, element) {
-        console.log('dragStart')
         this.setState({
             dragging: true
         })
     }
 
     handleDragStop() {
-        console.log('dragStop')
         // wait for the CSS transitions to end before 
         // turning off the dragging state
         setTimeout(() => {
             this.setState({
                 dragging: false
-            })}, 300);
+            })}, 1000);
     }
 
   onNewLayout() {
@@ -348,9 +349,10 @@ export class MultiViewContainer extends React.Component {
                                      key={view.uid}
                             >
                                 <TiledPlot
+                                    parentMounted={this.state.mounted} 
                                      height={this.heights[itemUid]}
-                                     svgElement={this.svgElement}
-                                     canvasElement={this.canvasElement}
+                                     svgElement={this.state.svgElement}
+                                     canvasElement={this.state.canvasElement}
                                      pixiStage={this.pixiStage}
                                      dragging={this.state.dragging}
                                 />

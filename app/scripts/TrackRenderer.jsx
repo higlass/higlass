@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {zoom} from 'd3-zoom';
+import {zoom, zoomIdentity} from 'd3-zoom';
 import {select,event} from 'd3-selection';
+import {scaleLinear} from 'd3-scale';
+
+import d3 from 'd3';
 
 import {UnknownPixiTrack} from './UnknownPixiTrack.js';
 import {HeatmapPixiTrack} from './HeatmapPixiTrack.js';
@@ -39,6 +42,18 @@ export class TrackRenderer extends React.Component {
             })
             .on('zoom', this.zoomed.bind(this))
 
+        // the center measurements, because those corresponds to the widths
+        // and heights of the actual tracks
+        this.initialWidth = this.props.centerWidth;
+        this.initialHeight = this.props.centerHeight;
+
+        this.xScale = scaleLinear()
+                        .domain(this.props.initialXDomain)
+                        .range([0, this.initialWidth]);
+        this.yScale = scaleLinear()
+                        .domain(this.props.initialYDomain)
+                        .range([0, this.initialHeight]);
+
         // maintain a list of trackDefObjects which correspond to the input
         // tracks
         // Each object will contain a trackDef 
@@ -49,12 +64,16 @@ export class TrackRenderer extends React.Component {
 
     componentDidMount() {
         this.element = ReactDOM.findDOMNode(this);
+        select(this.divTrackArea).call(this.zoomBehavior);
 
         // need to be mounted to make sure that all the renderers are
         // created before starting to draw tracks
+        if (!this.props.svgElement || !this.props.canvasElement)
+            return;
+
+        this.svgElement = this.props.svgElement;
         this.syncTrackObjects(this.props.positionedTracks);
 
-        select(this.divTrackArea).call(this.zoomBehavior);
     }
 
     timedUpdatePositionAndDimensions(props) {
@@ -77,10 +96,17 @@ export class TrackRenderer extends React.Component {
          * redraw them.
          */
 
+        // don't initiate this component if it has nothing to draw on
+        console.log('nextProps.svgElement', nextProps.svgElement);
+        if (!nextProps.svgElement || !nextProps.canvasElement)
+            return;
+
         this.canvasDom = ReactDOM.findDOMNode(nextProps.canvasElement);
 
         this.dragging = nextProps.dragging;
         this.timedUpdatePositionAndDimensions(nextProps);
+
+        this.svgElement = nextProps.svgElement;
 
         this.syncTrackObjects(nextProps.positionedTracks);
     }
@@ -181,6 +207,11 @@ export class TrackRenderer extends React.Component {
 
             trackObject.setPosition([this.xPositionOffset + trackDef.left, this.yPositionOffset + trackDef.top]);
             trackObject.setDimensions([trackDef.width, trackDef.height]);
+
+            let widthDifference = trackDef.width - this.initialWidth;
+            let heightDifference = trackDef.height - this.initialHeight;
+
+            trackObject.draw();
         }
     }
 
@@ -194,13 +225,45 @@ export class TrackRenderer extends React.Component {
     }
 
     zoomed() {
-        console.log('zoomed... transform', event.transform);
+        let zoomedXScale = event.transform.rescaleX(this.xScale); 
+        let zoomedYScale = event.transform.rescaleY(this.yScale); 
+
+        // when the window is resized, we want to maintain the center point
+        // of each track, but make them less wide
+        let xCenter = (zoomedXScale.domain()[1] + zoomedXScale.domain()[0])/ 2;
+        let yCenter = (zoomedYScale.domain()[1] + zoomedYScale.domain()[0])/ 2;
+
+        let widthRatio = this.props.centerWidth / this.initialWidth;
+        let heightRatio = this.props.centerHeight / this.initialHeight;
+
+        let widthDomain = zoomedXScale.domain()[1] - zoomedXScale.domain()[0];
+        let heightDomain = zoomedYScale.domain()[1] - zoomedYScale.domain()[0];
+
+        let newWidthDomain = widthRatio * widthDomain;
+        let newHeightDomain = heightRatio * heightDomain;
+
+        zoomedXScale.domain([xCenter - newWidthDomain / 2, xCenter + newWidthDomain / 2]);
+        zoomedYScale.domain([yCenter - newHeightDomain / 2, yCenter - newHeightDomain / 2]);
+
+        zoomedXScale.range([0, this.props.centerWidth]);
+        zoomedYScale.range([0, this.props.centerHeight]);
+
+        console.log('newWidthDomain:', newWidthDomain);
+
+        for (let uid in this.trackDefObjects) {
+            let track = this.trackDefObjects[uid].trackObject;
+
+            track.xScale(zoomedXScale);
+            track.yScale(zoomedYScale);
+
+            track.draw();
+        }
     }
 
     createTrackObject(track) {
         switch (track.type) {
             case 'top-axis':
-                return new TopAxisTrack(this.props.pixiStage);
+                return new TopAxisTrack(this.svgElement);
             case 'heatmap':
                 return new HeatmapPixiTrack(this.props.pixiStage)
             default:

@@ -1,26 +1,28 @@
 import "../styles/DraggableDiv.css"
+import {drag} from 'd3-drag';
+import {select} from 'd3-selection';
 
 import React from 'react';
-import {mouse} from 'd3';
+import {mouse,event} from 'd3-selection';
 
 export class DraggableDiv extends React.Component {
     constructor(props) {
         super(props);
 
-        this.dragTopRight = d3.behavior.drag()
-                              .on('dragstart', this.dragStart.bind(this))
+        this.dragTopRight = drag()
+                              .on('start', this.dragStart.bind(this))
                               .on('drag', this.dragTopRightFunc.bind(this));
-        this.dragTopLeft = d3.behavior.drag()
-                              .on('dragstart', this.dragStart.bind(this))
+        this.dragTopLeft = drag()
+                              .on('start', this.dragStart.bind(this))
                               .on('drag', this.dragTopLeftFunc.bind(this));
-        this.dragBottomRight = d3.behavior.drag()
-                              .on('dragstart', this.dragStart.bind(this))
+        this.dragBottomRight = drag()
+                              .on('start', this.dragStart.bind(this))
                               .on('drag', this.dragBottomRightFunc.bind(this));
-        this.dragBottomLeft = d3.behavior.drag()
-                              .on('dragstart', this.dragStart.bind(this))
+        this.dragBottomLeft = drag()
+                              .on('start', this.dragStart.bind(this))
                               .on('drag', this.dragBottomLeftFunc.bind(this));
-        this.dragBottom = d3.behavior.drag()
-                              .on('dragstart', this.dragStart.bind(this))
+        this.dragBottom = drag()
+                              .on('start', this.dragStart.bind(this))
                               .on('drag', this.dragBottomFunc.bind(this));
 
         this.minWidth = 10;
@@ -35,7 +37,7 @@ export class DraggableDiv extends React.Component {
             left: props.left
         }
 
-        this.domBody = d3.select('body').node()
+        this.domBody = select('body').node()
     }
 
     componentWillReceiveProps(newProps) {
@@ -50,13 +52,13 @@ export class DraggableDiv extends React.Component {
     }
 
     componentDidMount() {
-        d3.select(this.neHandle).call(this.dragTopRight);
-        d3.select(this.nwHandle).call(this.dragTopLeft);
-        d3.select(this.swHandle).call(this.dragBottomLeft);
-        d3.select(this.seHandle).call(this.dragBottomRight);
-        d3.select(this.bottomHandle).call(this.dragBottom);
-        d3.select(this.closeHandle).on('click', this.closeClicked.bind(this));
-        d3.select(this.rotateHandle).on('click', this.rotateClicked.bind(this));
+        select(this.neHandle).call(this.dragTopRight);
+        select(this.nwHandle).call(this.dragTopLeft);
+        select(this.swHandle).call(this.dragBottomLeft);
+        select(this.seHandle).call(this.dragBottomRight);
+        select(this.bottomHandle).call(this.dragBottom);
+        select(this.closeHandle).on('click', this.closeClicked.bind(this));
+        select(this.rotateHandle).on('click', this.rotateClicked.bind(this));
     }
 
     dragBottomFunc() {
@@ -91,7 +93,7 @@ export class DraggableDiv extends React.Component {
             'height': newHeight};
         this.setState(newState);
 
-        d3.event.sourceEvent.stopPropagation();
+        event.sourceEvent.stopPropagation();
         this.sizeChanged()
     }
 
@@ -110,7 +112,7 @@ export class DraggableDiv extends React.Component {
             'height': newHeight };
         this.setState(newState);
 
-        d3.event.sourceEvent.stopPropagation();
+        event.sourceEvent.stopPropagation();
         this.sizeChanged();
     }
 
@@ -136,7 +138,7 @@ export class DraggableDiv extends React.Component {
         this.setState(newState);
         console.log('newHeight:', newHeight);
 
-        d3.event.sourceEvent.stopPropagation();
+        event.sourceEvent.stopPropagation();
         this.sizeChanged();
     }
 
@@ -162,7 +164,7 @@ export class DraggableDiv extends React.Component {
 
         this.setState(newState);
 
-        d3.event.sourceEvent.stopPropagation();
+        event.sourceEvent.stopPropagation();
 
         this.sizeChanged();
     }
@@ -176,7 +178,7 @@ export class DraggableDiv extends React.Component {
         this.dragStartTop = this.state.top;
         this.dragStartLeft = this.state.left;
 
-        d3.event.sourceEvent.stopPropagation();
+        event.sourceEvent.stopPropagation();
 
     }
 

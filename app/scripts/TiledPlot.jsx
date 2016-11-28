@@ -76,6 +76,7 @@ export class TiledPlot extends React.Component {
         // these values should be changed in componentDidMount
         this.state = {
             mounted: false,
+            sizeMeasured: false,
             height: 10,
             width: 10,
 
@@ -108,9 +109,12 @@ export class TiledPlot extends React.Component {
             let parentTop = this.element.parentNode.getBoundingClientRect().top;
             let hereTop = this.element.getBoundingClientRect().top;
 
+            console.log('resized:', this.element.clientWidth);
+
             //let heightOffset = hereTop - parentTop;
             let heightOffset = 0;
             this.setState({
+                sizeMeasured: true,
                 height: this.element.clientHeight - heightOffset,
                 width: this.element.clientWidth
             });
@@ -498,19 +502,21 @@ export class TiledPlot extends React.Component {
 
         let positionedTracks = this.positionedTracks();
 
-        // track renderer needs to enclose all the other divs so that it 
-        // can catch the zoom events
-        return(
-            <div 
-                ref={(c) => this.divTiledPlot = c}
-                style={{flex: 1}}
-            >
+        let trackRenderer = null;
+        console.log('parentMounted:', this.props.parentMounted);
+        if (this.state.sizeMeasured) {
+
+            trackRenderer = (
                 <TrackRenderer
+                    initialXDomain={[100,300]}
+                    initialYDomain={[100,300]}
                     canvasElement={this.props.canvasElement}
                     svgElement={this.props.svgElement}
                     dragging={this.props.dragging}
                     width={this.state.width}
                     height={this.state.height}
+                    centerWidth={this.centerWidth}
+                    centerHeight={this.centerHeight}
                     positionedTracks={positionedTracks}
                     pixiStage={this.props.pixiStage}
                 >
@@ -523,7 +529,7 @@ export class TiledPlot extends React.Component {
                                  opacity: 0.5
                                 }}
                     />
-                    {trackPositionTexts}
+                    {/*trackPositionTexts*/}
 
                     {topTracks}
                     {leftTracks}
@@ -531,7 +537,17 @@ export class TiledPlot extends React.Component {
                     {bottomTracks}
 
                 </TrackRenderer>
-                
+            )
+        }
+
+        // track renderer needs to enclose all the other divs so that it 
+        // can catch the zoom events
+        return(
+            <div 
+                ref={(c) => this.divTiledPlot = c}
+                style={{flex: 1}}
+            >
+                {trackRenderer}     
             </div>
             );
     }

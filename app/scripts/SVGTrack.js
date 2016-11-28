@@ -1,5 +1,5 @@
 import {Track} from './Track.js';
-import {select, selectAll} from 'd3-select';
+import {select, selectAll} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
 
 export class SVGTrack extends Track {
@@ -9,33 +9,25 @@ export class SVGTrack extends Track {
          * Create a new SVG track. It will contain a g element
          * that maintains all of its element.
          */
-        this.gMain = d3.select(svgElement)
+        this.gMain = select(svgElement)
                        .append('g');
 
-        this.xScale = scaleLinear();
-        this.yScale = scaleLinear();
     }
 
-    xScale(_) {
-        /**
-         * Either get or set the xScale
-         */
-        if (!arguments.length) 
-            return this.xScale;
+    setPosition(newPosition) {
+        this.position = newPosition;
 
-        return this;
+        this.gMain.attr('transform', `translate(${this.position[0]},${this.position[1]})`);
     }
 
-    yScale(_) {
-        /**
-         * Either get or set the yScale
-         */
-        if (!arguments.length)
-            return this.yScale;
+    setDimensions(newDimensions) {
+        this.dimensions = newDimensions;
 
-        this.yScale = _;
+        console.log('set dimensions:', newDimensions);
 
-        return this;
+        this._xScale.range([0, this.dimensions[0]]);
+        this._yScale.range([0, this.dimensions[1]]);
+
     }
 
     remove() {
