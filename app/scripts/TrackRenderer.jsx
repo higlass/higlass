@@ -8,7 +8,7 @@ import {scaleLinear} from 'd3-scale';
 import d3 from 'd3';
 
 import {UnknownPixiTrack} from './UnknownPixiTrack.js';
-import {HeatmapPixiTrack} from './HeatmapPixiTrack.js';
+import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack.js';
 import {TopAxisTrack} from './TopAxisTrack.js';
 import {LeftAxisTrack} from './LeftAxisTrack.js';
 
@@ -349,7 +349,7 @@ export class TrackRenderer extends React.Component {
             case 'top-axis':
                 return new TopAxisTrack(this.svgElement);
             case 'heatmap':
-                return new HeatmapPixiTrack(this.props.pixiStage)
+                return new HeatmapTiledPixiTrack(this.props.pixiStage, track.source)
             default:
                 return new UnknownPixiTrack(this.props.pixiStage)
         }
