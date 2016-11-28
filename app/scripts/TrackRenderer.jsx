@@ -50,12 +50,18 @@ export class TrackRenderer extends React.Component {
         this.initialWidth = this.props.width;
         this.initialHeight = this.props.height;
 
-        this.initialCenterWidth = this.props.centerWidth;
-        this.initialCenterHeight = this.props.centerHeight;
-
         this.initialCenterX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
         this.initialCenterY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
 
+        this.drawableToDomainX = scaleLinear()
+            .domain([this.props.marginLeft + this.props.leftWidth,
+                    this.props.marginLeft + this.props.leftWidth + this.props.centerHeight])
+            .range([this.props.initialXDomain[0], this.props.initialXDomain[1]]);
+
+        this.drawableToDomainY = scaleLinear()
+            .domain([this.props.marginTop + this.props.topHeight,
+                    this.props.marginTop + this.props.topHeight + this.props.centerHeight])
+            .range([this.props.initialYDomain[0], this.props.initialYDomain[1]]);
 
         this.setUpScales();
 
@@ -72,6 +78,8 @@ export class TrackRenderer extends React.Component {
         let currentCenterX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
         let currentCenterY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
         // resizing moves the middle of center area
+        //
+
 
         // we need to maintain two scales:
         // 1. the scale that is shown
@@ -79,24 +87,18 @@ export class TrackRenderer extends React.Component {
         //
         // These need to be separated because the zoom behavior acts on a larger region
         // than the visible scale shows
-        let drawableToDomainX = scaleLinear()
-            .domain([this.props.marginLeft + this.props.leftWidth,
-                    this.props.marginLeft + this.props.leftWidth + this.initialCenterWidth])
-            .range([this.props.initialXDomain[0], this.props.initialXDomain[1]]);
-        let drawableToDomainY = scaleLinear()
-            .domain([this.props.marginTop + this.props.topHeight,
-                    this.props.marginTop + this.props.topHeight + this.initialCenterHeight])
-            .range([this.props.initialYDomain[0], this.props.initialYDomain[1]]);
 
 
         // if the window is resized, we don't want to change the scale, but we do want to move the center point
         // this needs to be tempered by the zoom factor so that we keep the visible center point in the center
-        let centerDomainXOffset = (drawableToDomainX(currentCenterX) - drawableToDomainX(this.initialCenterX)) / this.zoomTransform.k;
-        let centerDomainYOffset = (drawableToDomainX(currentCenterY) - drawableToDomainY(this.initialCenterY)) / this.zoomTransform.k;
+        let centerDomainXOffset = (this.drawableToDomainX(currentCenterX) - this.drawableToDomainX(this.initialCenterX)) / this.zoomTransform.k;
+        let centerDomainYOffset = (this.drawableToDomainX(currentCenterY) - this.drawableToDomainY(this.initialCenterY)) / this.zoomTransform.k;
+
 
         // the domain of the visible (not drawable area)
-        let visibleXDomain = [drawableToDomainX(0) - centerDomainXOffset, drawableToDomainX(this.initialWidth) - centerDomainXOffset]
-        let visibleYDomain = [drawableToDomainY(0) - centerDomainYOffset, drawableToDomainY(this.initialHeight) - centerDomainYOffset]
+        let visibleXDomain = [this.drawableToDomainX(0) - centerDomainXOffset, this.drawableToDomainX(this.initialWidth) - centerDomainXOffset]
+        let visibleYDomain = [this.drawableToDomainY(0) - centerDomainYOffset, this.drawableToDomainY(this.initialHeight) - centerDomainYOffset]
+
         // [drawableToDomain(0), drawableToDomain(1)]: the domain of the visible area
         // if the screen has been resized, then the domain width should remain the same
 
@@ -287,10 +289,9 @@ export class TrackRenderer extends React.Component {
     }
 
     applyZoomTransform() {
-        console.log('this.xScale.domain():', this.xScale.domain());
+        console.log('this.xScale.domain():', this.xScale.domain(), this.xScale.domain()[1] - this.xScale.domain()[0]);
         let zoomedXScale = this.zoomTransform.rescaleX(this.xScale); 
         let zoomedYScale = this.zoomTransform.rescaleY(this.yScale); 
-
 
         // when the window is resized, we want to maintain the center point
         // of each track, but make them less wide
@@ -314,6 +315,11 @@ export class TrackRenderer extends React.Component {
         zoomedYScale.range([0, this.props.centerHeight]);
         */
         
+        /*
+        console.log('this.props.centerWidth:', this.props.centerWidth);
+        console.log('zoomedXScale.domain():', zoomedXScale.domain(), zoomedXScale.domain()[1] - zoomedXScale.domain()[0]);
+        console.log('leftArea', this.props.marginLeft + this.props.leftWidth + this.props.centerWidth);
+        */
 
         let newXScale = scaleLinear()
             .domain([this.props.marginLeft + this.props.leftWidth,
