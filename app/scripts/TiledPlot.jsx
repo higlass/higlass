@@ -54,12 +54,17 @@ export class TiledPlot extends React.Component {
                           'center': []}
 
         let simpleTracks = {
-            'top': [{'uid': slugid.nice(), type:'top-axis'}],
-            'left': [{'uid': slugid.nice()}],
+            'top': [
+                {'uid': slugid.nice(), type:'top-axis'}
+            ],
+            'left': [
+                {'uid': slugid.nice(), type:'left-axis', width: 50}
+            ],
             'center': [
                 { 'server': 'http://52.45.229.11/',
                   'uid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
-                  'type': 'heatmap' }]}
+                  'type': 'heatmap' }
+            ]};
 
         tracks = simpleTracks;
 
@@ -517,6 +522,10 @@ export class TiledPlot extends React.Component {
                     height={this.state.height}
                     centerWidth={this.centerWidth}
                     centerHeight={this.centerHeight}
+                    marginTop={this.plusHeight}
+                    marginLeft={this.plusWidth}
+                    topHeight={this.topHeight}
+                    leftWidth={this.leftWidth}
                     positionedTracks={positionedTracks}
                     pixiStage={this.props.pixiStage}
                 >

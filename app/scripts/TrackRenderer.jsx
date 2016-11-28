@@ -10,6 +10,7 @@ import d3 from 'd3';
 import {UnknownPixiTrack} from './UnknownPixiTrack.js';
 import {HeatmapPixiTrack} from './HeatmapPixiTrack.js';
 import {TopAxisTrack} from './TopAxisTrack.js';
+import {LeftAxisTrack} from './LeftAxisTrack.js';
 
 export class TrackRenderer extends React.Component {
     /**
@@ -30,6 +31,8 @@ export class TrackRenderer extends React.Component {
         this.yPositionOffset = 0;
         this.xPositionOffset = 0;
 
+        this.zoomTransform = zoomIdentity;
+
         // catch any zooming behavior within all of the tracks in this plot
         //this.zoomTransform = zoomIdentity();
         this.zoomBehavior = zoom()
@@ -44,15 +47,18 @@ export class TrackRenderer extends React.Component {
 
         // the center measurements, because those corresponds to the widths
         // and heights of the actual tracks
-        this.initialWidth = this.props.centerWidth;
-        this.initialHeight = this.props.centerHeight;
+        this.initialWidth = this.props.width;
+        this.initialHeight = this.props.height;
 
-        this.xScale = scaleLinear()
-                        .domain(this.props.initialXDomain)
-                        .range([0, this.initialWidth]);
-        this.yScale = scaleLinear()
-                        .domain(this.props.initialYDomain)
-                        .range([0, this.initialHeight]);
+        this.initialCenterWidth = this.props.centerWidth;
+        this.initialCenterHeight = this.props.centerHeight;
+
+        this.initialCenterX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
+        this.initialCenterY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
+
+
+        this.setUpScales();
+
 
         // maintain a list of trackDefObjects which correspond to the input
         // tracks
@@ -60,6 +66,48 @@ export class TrackRenderer extends React.Component {
         // {'top': 100, 'left': 50,... 'track': {'source': 'http:...', 'type': 'heatmap'}}
         // And a trackObject which will be responsible for rendering it
         this.trackDefObjects = {}
+    }
+
+    setUpScales() {
+        let currentCenterX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
+        let currentCenterY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
+        // resizing moves the middle of center area
+
+        // we need to maintain two scales:
+        // 1. the scale that is shown
+        // 2. the scale that the zooming behavior acts on
+        //
+        // These need to be separated because the zoom behavior acts on a larger region
+        // than the visible scale shows
+        let drawableToDomainX = scaleLinear()
+            .domain([this.props.marginLeft + this.props.leftWidth,
+                    this.props.marginLeft + this.props.leftWidth + this.initialCenterWidth])
+            .range([this.props.initialXDomain[0], this.props.initialXDomain[1]]);
+        let drawableToDomainY = scaleLinear()
+            .domain([this.props.marginTop + this.props.topHeight,
+                    this.props.marginTop + this.props.topHeight + this.initialCenterHeight])
+            .range([this.props.initialYDomain[0], this.props.initialYDomain[1]]);
+
+
+        // if the window is resized, we don't want to change the scale, but we do want to move the center point
+        // this needs to be tempered by the zoom factor so that we keep the visible center point in the center
+        let centerDomainXOffset = (drawableToDomainX(currentCenterX) - drawableToDomainX(this.initialCenterX)) / this.zoomTransform.k;
+        let centerDomainYOffset = (drawableToDomainX(currentCenterY) - drawableToDomainY(this.initialCenterY)) / this.zoomTransform.k;
+
+        // the domain of the visible (not drawable area)
+        let visibleXDomain = [drawableToDomainX(0) - centerDomainXOffset, drawableToDomainX(this.initialWidth) - centerDomainXOffset]
+        let visibleYDomain = [drawableToDomainY(0) - centerDomainYOffset, drawableToDomainY(this.initialHeight) - centerDomainYOffset]
+        // [drawableToDomain(0), drawableToDomain(1)]: the domain of the visible area
+        // if the screen has been resized, then the domain width should remain the same
+
+
+        this.xScale = scaleLinear()
+                        .domain(visibleXDomain)
+                        .range([0, this.initialWidth]);
+        this.yScale = scaleLinear()
+                        .domain(visibleYDomain)
+                        .range([0, this.initialHeight]);
+
     }
 
     componentDidMount() {
@@ -97,10 +145,10 @@ export class TrackRenderer extends React.Component {
          */
 
         // don't initiate this component if it has nothing to draw on
-        console.log('nextProps.svgElement', nextProps.svgElement);
         if (!nextProps.svgElement || !nextProps.canvasElement)
             return;
 
+        this.setUpScales();
         this.canvasDom = ReactDOM.findDOMNode(nextProps.canvasElement);
 
         this.dragging = nextProps.dragging;
@@ -198,6 +246,7 @@ export class TrackRenderer extends React.Component {
         }
 
         this.updateTrackPositions();
+        this.applyZoomTransform();
     }
 
     updateTrackPositions() {
@@ -224,12 +273,28 @@ export class TrackRenderer extends React.Component {
         }
     }
 
+
     zoomed() {
-        let zoomedXScale = event.transform.rescaleX(this.xScale); 
-        let zoomedYScale = event.transform.rescaleY(this.yScale); 
+        /**
+         * Respond to a zoom event.
+         *
+         * We need to update our local record of the zoom transform and apply it
+         * to all the tracks.
+         */
+        this.zoomTransform = event.transform;
+
+        this.applyZoomTransform();
+    }
+
+    applyZoomTransform() {
+        console.log('this.xScale.domain():', this.xScale.domain());
+        let zoomedXScale = this.zoomTransform.rescaleX(this.xScale); 
+        let zoomedYScale = this.zoomTransform.rescaleY(this.yScale); 
+
 
         // when the window is resized, we want to maintain the center point
         // of each track, but make them less wide
+        /*
         let xCenter = (zoomedXScale.domain()[1] + zoomedXScale.domain()[0])/ 2;
         let yCenter = (zoomedYScale.domain()[1] + zoomedYScale.domain()[0])/ 2;
 
@@ -247,14 +312,25 @@ export class TrackRenderer extends React.Component {
 
         zoomedXScale.range([0, this.props.centerWidth]);
         zoomedYScale.range([0, this.props.centerHeight]);
+        */
+        
 
-        console.log('newWidthDomain:', newWidthDomain);
+        let newXScale = scaleLinear()
+            .domain([this.props.marginLeft + this.props.leftWidth,
+                    this.props.marginLeft + this.props.leftWidth + this.props.centerWidth].map(zoomedXScale.invert))
+            .range([0, this.props.centerWidth]);
+
+        let newYScale = scaleLinear()
+            .domain([this.props.marginTop + this.props.topHeight,
+                    this.props.marginTop + this.props.topHeight + this.props.centerHeight].map(zoomedYScale.invert))
+            .range([0, this.props.centerHeight]);
+
 
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
 
-            track.xScale(zoomedXScale);
-            track.yScale(zoomedYScale);
+            track.xScale(newXScale);
+            track.yScale(newYScale);
 
             track.draw();
         }
@@ -262,6 +338,8 @@ export class TrackRenderer extends React.Component {
 
     createTrackObject(track) {
         switch (track.type) {
+            case 'left-axis':
+                return new LeftAxisTrack(this.svgElement);
             case 'top-axis':
                 return new TopAxisTrack(this.svgElement);
             case 'heatmap':

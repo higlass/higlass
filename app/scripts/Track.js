@@ -9,6 +9,13 @@ export class Track {
         this.dimensions = [1,1];
     }
 
+    setDimensions(newDimensions) {
+        this.dimensions = newDimensions;
+
+        this._xScale.range([0, this.dimensions[0]]);
+        this._yScale.range([0, this.dimensions[1]]);
+    }
+
     xScale(_) {
         /**
          * Either get or set the xScale

@@ -20,15 +20,6 @@ export class SVGTrack extends Track {
         this.gMain.attr('transform', `translate(${this.position[0]},${this.position[1]})`);
     }
 
-    setDimensions(newDimensions) {
-        this.dimensions = newDimensions;
-
-        console.log('set dimensions:', newDimensions);
-
-        this._xScale.range([0, this.dimensions[0]]);
-        this._yScale.range([0, this.dimensions[1]]);
-
-    }
 
     remove() {
         this.gMain.remove()
