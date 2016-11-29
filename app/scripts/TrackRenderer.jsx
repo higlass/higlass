@@ -293,34 +293,6 @@ export class TrackRenderer extends React.Component {
         let zoomedXScale = this.zoomTransform.rescaleX(this.xScale); 
         let zoomedYScale = this.zoomTransform.rescaleY(this.yScale); 
 
-        // when the window is resized, we want to maintain the center point
-        // of each track, but make them less wide
-        /*
-        let xCenter = (zoomedXScale.domain()[1] + zoomedXScale.domain()[0])/ 2;
-        let yCenter = (zoomedYScale.domain()[1] + zoomedYScale.domain()[0])/ 2;
-
-        let widthRatio = this.props.centerWidth / this.initialWidth;
-        let heightRatio = this.props.centerHeight / this.initialHeight;
-
-        let widthDomain = zoomedXScale.domain()[1] - zoomedXScale.domain()[0];
-        let heightDomain = zoomedYScale.domain()[1] - zoomedYScale.domain()[0];
-
-        let newWidthDomain = widthRatio * widthDomain;
-        let newHeightDomain = heightRatio * heightDomain;
-
-        zoomedXScale.domain([xCenter - newWidthDomain / 2, xCenter + newWidthDomain / 2]);
-        zoomedYScale.domain([yCenter - newHeightDomain / 2, yCenter - newHeightDomain / 2]);
-
-        zoomedXScale.range([0, this.props.centerWidth]);
-        zoomedYScale.range([0, this.props.centerHeight]);
-        */
-        
-        /*
-        console.log('this.props.centerWidth:', this.props.centerWidth);
-        console.log('zoomedXScale.domain():', zoomedXScale.domain(), zoomedXScale.domain()[1] - zoomedXScale.domain()[0]);
-        console.log('leftArea', this.props.marginLeft + this.props.leftWidth + this.props.centerWidth);
-        */
-
         let newXScale = scaleLinear()
             .domain([this.props.marginLeft + this.props.leftWidth,
                     this.props.marginLeft + this.props.leftWidth + this.props.centerWidth].map(zoomedXScale.invert))
@@ -335,8 +307,7 @@ export class TrackRenderer extends React.Component {
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
 
-            track.xScale(newXScale);
-            track.yScale(newYScale);
+            track.zoomed(newXScale, newYScale);
 
             track.draw();
         }

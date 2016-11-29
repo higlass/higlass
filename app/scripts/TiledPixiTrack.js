@@ -17,7 +17,27 @@ export class TiledPixiTrack extends PixiTrack {
         console.log("server:", server, "tilesetUid", tilesetUid);
         console.log('tileProxy.uid', tileProxy.uid);
 
-        let trackInfo = tileProxy.trackInfo(server, tilesetUid);
+        let tilesetInfo = null;
+
+        tileProxy.trackInfo(server, tilesetUid, tilesetInfo => {
+            console.log('returned:', tilesetInfo, 'this:', this);
+            this.tilesetInfo = tilesetInfo[tilesetUid];
+            
+            this.refreshTiles();
+        });
+    }
+
+    refreshTiles() {
+        if (!this.tilesetInfo)
+            return;
+
+    }
+
+    zoomed(newXScale, newYScale) {
+        this.xScale(newXScale);
+        this.yScale(newYScale);
+
+        this.refreshTiles();
     }
 
 }

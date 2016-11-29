@@ -39,4 +39,9 @@ export class Track {
 
         return this;
     }
+
+    zoomed(newXScale, newYScale) {
+        this.xScale(newXScale);
+        this.yScale(newYScale);
+    }
 }

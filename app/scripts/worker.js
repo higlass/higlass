@@ -1,8 +1,22 @@
 import {heatedObjectMap} from './colormaps.js';
 import {scaleLinear} from 'd3-scale';
+import {json} from 'd3-request';
 
 function countTransform(count) {
     return Math.sqrt(Math.sqrt(count + 1));
+}
+
+export function workerGetTilesetInfo(url, done) {
+    json(url, (error, data) => {
+        if (error) {
+            console.log('error:', error);
+            // don't do anything
+            // no tileset info just means we can't do anything with this file... 
+        } else {
+            console.log('got data', data);
+            done(data)
+        }
+    });
 }
 
 function workerLoadTileData(tile_value, tile_type) {

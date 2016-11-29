@@ -515,8 +515,8 @@ export class TiledPlot extends React.Component {
 
             trackRenderer = (
                 <TrackRenderer
-                    initialXDomain={[100,300]}
-                    initialYDomain={[100,300]}
+                    initialXDomain={[0,3000000000]}
+                    initialYDomain={[0,3000000000]}
                     canvasElement={this.props.canvasElement}
                     svgElement={this.props.svgElement}
                     dragging={this.props.dragging}
@@ -537,7 +537,7 @@ export class TiledPlot extends React.Component {
                                  width: this.state.width,
                                  height: this.state.height,
                                  background: "green",
-                                 opacity: 0.5
+                                 opacity: 0.2
                                 }}
                     />
                     {/*trackPositionTexts*/}

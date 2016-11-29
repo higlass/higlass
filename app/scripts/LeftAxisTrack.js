@@ -6,13 +6,17 @@ export class LeftAxisTrack extends SVGTrack {
         super(svgElement);
 
         this.axis = axisLeft(this._yScale);
-        this.gAxis = this.gMain.append('g')
+        this.gAxis = this.gMain.append('g');
+
+        this.axis.ticks(6);
     }
 
     setDimensions(newDimensions) {
         super.setDimensions(newDimensions);
 
-        this.gAxis.attr('transform', `translate(${newDimensions[0]/2 + 8},0)`);
+        // match the spacing of the TopAxisTrack ticks
+        this.axis.ticks(Math.ceil(this.dimensions[1] / 150));
+        this.gAxis.attr('transform', `translate(${newDimensions[0]},0)`);
     }
 
 
