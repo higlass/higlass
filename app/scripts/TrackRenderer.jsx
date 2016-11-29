@@ -9,6 +9,7 @@ import d3 from 'd3';
 
 import {UnknownPixiTrack} from './UnknownPixiTrack.js';
 import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack.js';
+import {TopLineTiledPixiTrack} from './TopLineTiledPixiTrack.js';
 import {TopAxisTrack} from './TopAxisTrack.js';
 import {LeftAxisTrack} from './LeftAxisTrack.js';
 
@@ -289,7 +290,6 @@ export class TrackRenderer extends React.Component {
     }
 
     applyZoomTransform() {
-        console.log('this.xScale.domain():', this.xScale.domain(), this.xScale.domain()[1] - this.xScale.domain()[0]);
         let zoomedXScale = this.zoomTransform.rescaleX(this.xScale); 
         let zoomedYScale = this.zoomTransform.rescaleY(this.yScale); 
 
@@ -348,10 +348,12 @@ export class TrackRenderer extends React.Component {
                 return new LeftAxisTrack(this.svgElement);
             case 'top-axis':
                 return new TopAxisTrack(this.svgElement);
+            case 'top-line':
+                return new TopLineTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'heatmap':
-                return new HeatmapTiledPixiTrack(this.props.pixiStage, track.source)
+                return new HeatmapTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             default:
-                return new UnknownPixiTrack(this.props.pixiStage)
+                return new UnknownPixiTrack(this.props.pixiStage);
         }
 
     }
