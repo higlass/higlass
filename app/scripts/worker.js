@@ -20,18 +20,57 @@ export function workerGetTilesetInfo(url, done) {
     });
 }
 
+function _base64ToArrayBuffer(base64) {
+    var binary_string =  window.atob(base64);
+    var len = binary_string.length;
+    var bytes = new Uint8Array( len );
+    for (var i = 0; i < len; i++)        {
+        bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
+
 export function workerFetchTiles(tilesetServer, tileIds, done) {
-    let renderParams = tileIds.map(x => "d=" + tileIds.join('&'));
-    console.log('renderParams:', renderParams);
+    let MAX_FETCH_TILES=10;
+    let fetchPromises = [];
 
-    let outUrl = urljoin(tilesetServer, 'tilesets/x/render/?' + renderParams);
+    // if we request too many tiles, then the URL can get too long and fail
+    // so we'll break up the requests into smaller subsets
+    for (let i = 0; i < tileIds.length; i += MAX_FETCH_TILES) {
+        let theseTileIds = tileIds.slice(i, i+Math.min(tileIds.length - i, MAX_FETCH_TILES))
 
-    json(outUrl, (error, data) => {
-        if (error) { 
-            console.log('error:', error);
-        } else {
-            done(data);
+        let renderParams = theseTileIds.map(x => "d=" + x).join('&');
+        let outUrl = urljoin(tilesetServer, 'tilesets/x/render/?' + renderParams);
+        console.log('outUrl');
+
+        let p = new Promise(function(resolve, reject) {
+            json(outUrl, (error, data) => {
+                if (error) { 
+                    resolve({});
+                } else {
+                    // check if we have array data to convert from base64 to float32
+                    for (let key in data) {
+                        if ('dense' in data[key]) {
+                            let newDense = _base64ToArrayBuffer(data[key].dense);
+                            data[key]['dense'] = new Float32Array(newDense);
+                        }
+                    }
+
+                    resolve(data);
+                }
+            });
+        });
+
+        fetchPromises.push(p);
+    }
+
+    Promise.all(fetchPromises).then(function(datas) {
+        // merge back all the tile requests
+        for (let i = 1; i < datas.length; i++) {
+            for (let uid in datas[i]) datas[0][uid] = datas[i][uid]
         }
+
+        done(datas[0]);
     });
 }
 
