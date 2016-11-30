@@ -23,8 +23,14 @@ class TileProxy  {
          * @param server: A string with the server's url (e.g. "http://127.0.0.1")
          * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
          */
+        console.log('tilesetIds:', tilesetIds);
+        // see if any of the tilesetIds are already in the cache
+        // if they are, no need to fetch them
 
-        workerFetchTiles(tilesetServer, tilesetIds, done);
+        workerFetchTiles(tilesetServer, tilesetIds, (results) => {
+            // do some caching here    
+            done(results);
+        });
     }
 
     calculateZoomLevel(scale, minX, maxX) {

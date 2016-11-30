@@ -114,7 +114,7 @@ function workerLoadTileData(tile_value, tile_type) {
 
 }
 
-function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale = null) {
+export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale = null) {
     let valueScale = scaleLinear().range([255, 0])
         .domain([countTransform(0), countTransform(maxVisibleValue)])
 

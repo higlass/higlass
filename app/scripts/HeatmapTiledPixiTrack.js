@@ -1,5 +1,6 @@
 import {Tiled2DPixiTrack} from './Tiled2DPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
+import {workerSetPix} from './worker.js';
 //import {LRUCache} from './lru.js';
 
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
@@ -18,7 +19,10 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
     }
 
-    draw() {
+    drawTile(tileData, graphics) {
+        console.log('heatmap drawing...', tileData);
+        let pixData = workerSetPix(tileData.dense.length, tileData.dense, tileData.min_value, tileData.max_value);
 
+        console.log('pixData:', pixData);
     }
 }

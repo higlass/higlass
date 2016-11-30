@@ -75,6 +75,49 @@ export class TrackRenderer extends React.Component {
         this.trackDefObjects = {}
     }
 
+    componentDidMount() {
+        this.element = ReactDOM.findDOMNode(this);
+        select(this.divTrackArea).call(this.zoomBehavior);
+
+        // need to be mounted to make sure that all the renderers are
+        // created before starting to draw tracks
+        if (!this.props.svgElement || !this.props.canvasElement)
+            return;
+
+        this.svgElement = this.props.svgElement;
+        this.syncTrackObjects(this.props.positionedTracks);
+
+    }
+
+    componentWillReceiveProps(nextProps) {
+        /**
+         * The size of some tracks probably changed, so let's just
+         * redraw them.
+         */
+
+        // don't initiate this component if it has nothing to draw on
+        if (!nextProps.svgElement || !nextProps.canvasElement)
+            return;
+
+        this.setUpScales();
+        this.canvasDom = ReactDOM.findDOMNode(nextProps.canvasElement);
+
+        this.dragging = nextProps.dragging;
+        this.timedUpdatePositionAndDimensions(nextProps);
+
+        this.svgElement = nextProps.svgElement;
+
+        this.syncTrackObjects(nextProps.positionedTracks);
+    }
+
+    componentWillUnmount() {
+        /**
+         * This view has been removed so we need to get rid of all the tracks it contains
+         */
+        this.removeTracks(Object.keys(this.trackDefObjects));
+    }
+
+
     setUpScales() {
         let currentCenterX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
         let currentCenterY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
@@ -113,20 +156,6 @@ export class TrackRenderer extends React.Component {
 
     }
 
-    componentDidMount() {
-        this.element = ReactDOM.findDOMNode(this);
-        select(this.divTrackArea).call(this.zoomBehavior);
-
-        // need to be mounted to make sure that all the renderers are
-        // created before starting to draw tracks
-        if (!this.props.svgElement || !this.props.canvasElement)
-            return;
-
-        this.svgElement = this.props.svgElement;
-        this.syncTrackObjects(this.props.positionedTracks);
-
-    }
-
     timedUpdatePositionAndDimensions(props) {
         if (this.closing)
             return;
@@ -141,33 +170,6 @@ export class TrackRenderer extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        /**
-         * The size of some tracks probably changed, so let's just
-         * redraw them.
-         */
-
-        // don't initiate this component if it has nothing to draw on
-        if (!nextProps.svgElement || !nextProps.canvasElement)
-            return;
-
-        this.setUpScales();
-        this.canvasDom = ReactDOM.findDOMNode(nextProps.canvasElement);
-
-        this.dragging = nextProps.dragging;
-        this.timedUpdatePositionAndDimensions(nextProps);
-
-        this.svgElement = nextProps.svgElement;
-
-        this.syncTrackObjects(nextProps.positionedTracks);
-    }
-
-    componentWillUnmount() {
-        /**
-         * This view has been removed so we need to get rid of all the tracks it contains
-         */
-        this.removeTracks(Object.keys(this.trackDefObjects));
-    }
 
     syncTrackObjects(trackDefinitions) {
         /** 
@@ -332,8 +334,8 @@ export class TrackRenderer extends React.Component {
     render() {
         return(
             <div 
-                ref={(c) => this.divTrackArea = c}
                 className={"track-renderer"}
+                ref={(c) => this.divTrackArea = c}
                 style={{
                     width: this.props.width, 
                     height: this.props.height,
@@ -344,4 +346,22 @@ export class TrackRenderer extends React.Component {
         );
         
     }
+}
+
+TrackRenderer.propTypes = {
+    width: React.PropTypes.number,
+    height: React.PropTypes.number,
+    centerWidth: React.PropTypes.number,
+    centerHeight: React.PropTypes.number,
+    marginLeft: React.PropTypes.number,
+    marginTop: React.PropTypes.number,
+    leftWidth: React.PropTypes.leftWidth,
+    topHeight: React.PropTypes.topHeight,
+    pixiStage: React.PropTypes.object,
+    canvasElement: React.PropTypes.object,
+    svgElement: React.PropTypes.object,
+    children: React.PropTypes.array,
+    initialXDomain: React.PropTypes.array,
+    initialYDomain: React.PropTypes.array,
+    positionedTracks: React.PropTypes.array
 }
