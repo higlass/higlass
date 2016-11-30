@@ -5,17 +5,22 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
     constructor(scene, server, uid) {
         super(scene, server, uid);
 
-        this.visibleTiles = [];
+        this.visibleTiles = new Set();
+        this.fetching = new Set();
+    }
+
+    tileToId(tile) {
+        return this.tilesetUid + '.' + tile.join('.');
     }
 
     refreshTiles() {
+        // if we don't know anything about this dataset, no point
+        // in trying to get tiles
         if (!this.tilesetInfo)
             return;
 
         super.refreshTiles();
         
-        //console.log('this.tilesetInfo', this.tilesetInfo);
-
         this.zoomLevel = tileProxy.calculateZoomLevel(this._xScale,
                                                       this.tilesetInfo.min_pos[0],
                                                       this.tilesetInfo.max_pos[0]);
@@ -74,16 +79,38 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
             }
         }
 
+        let visible = this.visibleTiles;
+        let coming = new Set(tiles.map(this.tileToId.bind(this)));
+        let fetching = this.fetching;
+
         // calculate which tiles are obsolete and remove them
-        let visible = new Set(this.visibleTiles.map(x => x.join('.')));
-        let coming = new Set(tiles.map(x => x.join('.')));
-
-        console.log('visible:', visible);
-        console.log('coming:', coming);
+        let toRemove = [...visible].filter(x => !coming.has(x));
+        this.removeTiles(toRemove);
          
-
         // calculate which tiles are missing and fetch and add them
+        let toLoad = [...coming].filter(x => !visible.has(x) && !fetching.has(x));
+
+        // everything in toLoad will be sent for fetching so we need to not request it again
+        for (let i = 0; i < toLoad.length; i++)
+            fetching.add(toLoad[i]);
+
+
+        if (toLoad.length > 0)
+            tileProxy.fetchTiles(this.tilesetServer, toLoad, this.receivedTiles);
     }
 
-    
+    removeTiles(toRemoveIds) {
+        /** 
+         * Remove obsolete tiles
+         */
+
+    }
+
+    receivedTiles(loadedTiles) {
+        /**
+         * We've gotten a bunch of tiles from the server in
+         * response to a request from fetchTiles.
+         */
+        console.log('received:', loadedTiles);
+    }
 }

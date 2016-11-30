@@ -16,9 +16,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     refreshTiles() {
         super.refreshTiles();
 
-        console.log('this.xTiles', this.xTiles);
-        console.log('this.yTiles', this.yTiles);
-        
     }
 
     draw() {

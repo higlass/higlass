@@ -1,6 +1,7 @@
 import {heatedObjectMap} from './colormaps.js';
 import {scaleLinear} from 'd3-scale';
 import {json} from 'd3-request';
+import urljoin from 'url-join';
 
 function countTransform(count) {
     return Math.sqrt(Math.sqrt(count + 1));
@@ -15,6 +16,21 @@ export function workerGetTilesetInfo(url, done) {
         } else {
             console.log('got data', data);
             done(data)
+        }
+    });
+}
+
+export function workerFetchTiles(tilesetServer, tileIds, done) {
+    let renderParams = tileIds.map(x => "d=" + tileIds.join('&'));
+    console.log('renderParams:', renderParams);
+
+    let outUrl = urljoin(tilesetServer, 'tilesets/x/render/?' + renderParams);
+
+    json(outUrl, (error, data) => {
+        if (error) { 
+            console.log('error:', error);
+        } else {
+            done(data);
         }
     });
 }

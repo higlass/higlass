@@ -3,6 +3,7 @@ import slugid from 'slugid';
 import urljoin from 'url-join';
 import {Pool} from 'threads';
 import {workerGetTilesetInfo} from './worker.js';
+import {workerFetchTiles} from './worker.js';
 
 class TileProxy  {
     constructor() {
@@ -13,18 +14,17 @@ class TileProxy  {
         //maintain a cache of recently loaded tiles
     }
 
-    fetchTiles(server, uid, tiles, done) {
+    fetchTiles(tilesetServer, tilesetIds, done) {
         /** 
          * Retrieve a set of tiles from the server
          * 
          * Plenty of room for optimization and caching here.
          *
          * @param server: A string with the server's url (e.g. "http://127.0.0.1")
-         * @param uid: The uid of the dataset
-         * @param tiles: A list of tile positions (e.g. [[1,0,0],[1,0,1]])
-         * @param done: A callback for when the tiles have been fetched
+         * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
          */
 
+        workerFetchTiles(tilesetServer, tilesetIds, done);
     }
 
     calculateZoomLevel(scale, minX, maxX) {
