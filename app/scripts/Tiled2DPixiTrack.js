@@ -198,4 +198,22 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
 
         this.synchronizeTilesAndGraphics();
     }
+
+
+    zoomed(newXScale, newYScale) {
+        super.zoomed(newXScale, newYScale);
+
+        let scaleX = (newXScale(1) - newXScale(0))/ (this._refXScale(1) - this._refXScale(0));
+        let scaleY = (newYScale(1) - newYScale(0))/ (this._refYScale(1) - this._refYScale(0));
+
+        let translateX = (newXScale(0) + this.position[0]) - this._refXScale(0) * scaleX;
+        let translateY = (newYScale(0) + this.position[1]) - this._refYScale(1) * scaleY;
+
+        this.pMain.position.x = translateX;
+        this.pMain.position.y = translateY;
+
+        this.pMain.scale.x = scaleX;
+        this.pMain.scale.y = scaleY;
+    }
+
 }
