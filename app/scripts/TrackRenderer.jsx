@@ -9,6 +9,7 @@ import d3 from 'd3';
 
 import {UnknownPixiTrack} from './UnknownPixiTrack.js';
 import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack.js';
+import {Id2DTiledPixiTrack} from './Id2DTiledPixiTrack.js';
 import {TopLineTiledPixiTrack} from './TopLineTiledPixiTrack.js';
 import {TopAxisTrack} from './TopAxisTrack.js';
 import {LeftAxisTrack} from './LeftAxisTrack.js';
@@ -62,14 +63,10 @@ export class TrackRenderer extends React.Component {
         let midXDomain = (this.props.initialXDomain[0] + this.props.initialXDomain[0]) / 2;
         let yDomainWidth = (this.props.initialXDomain[1] - this.props.initialXDomain[0]) * (this.props.centerHeight / this.props.centerWidth);
 
-        console.log('yDomainWidth:', yDomainWidth);
-
         this.drawableToDomainY = scaleLinear()
             .domain([this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2 - this.props.centerWidth / 2,
                     this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2 + this.props.centerWidth / 2])
             .range([this.props.initialXDomain[0], this.props.initialXDomain[1]]);
-
-        console.log('drawableToDomainY.domain():', this.drawableToDomainY.domain());
 
         this.setUpScales();
 
@@ -143,7 +140,7 @@ export class TrackRenderer extends React.Component {
         // if the window is resized, we don't want to change the scale, but we do want to move the center point
         // this needs to be tempered by the zoom factor so that we keep the visible center point in the center
         let centerDomainXOffset = (this.drawableToDomainX(currentCenterX) - this.drawableToDomainX(this.initialCenterX)) / this.zoomTransform.k;
-        let centerDomainYOffset = (this.drawableToDomainY(currentCenterY) - this.drawableToDomainY(this.initialCenterY)) / this.zoomTransform.k;
+        let centerDomainYOffset = (this.yPositionOffset + this.drawableToDomainY(currentCenterY) - this.drawableToDomainY(this.initialCenterY)) / this.zoomTransform.k;
 
 
         // the domain of the visible (not drawable area)
@@ -153,16 +150,13 @@ export class TrackRenderer extends React.Component {
         // [drawableToDomain(0), drawableToDomain(1)]: the domain of the visible area
         // if the screen has been resized, then the domain width should remain the same
 
-
+        //this.xScale should always span the region that the zoom behavior is being called on
         this.xScale = scaleLinear()
                         .domain(visibleXDomain)
                         .range([0, this.initialWidth]);
         this.yScale = scaleLinear()
                         .domain(visibleYDomain)
                         .range([0, this.initialHeight]);
-
-        console.log('visibleXDomain:', visibleXDomain);
-        console.log('this.xScale(0)', this.xScale(0), this.props.marginLeft + this.props.leftWidth);
 
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
@@ -177,7 +171,6 @@ export class TrackRenderer extends React.Component {
             return;
 
         if (this.dragging) {
-            //console.log('updating position...', this.state.mounted);
             this.yPositionOffset = this.element.getBoundingClientRect().top - this.canvasDom.getBoundingClientRect().top;
             this.xPositionOffset = this.element.getBoundingClientRect().left - this.canvasDom.getBoundingClientRect().left;
 
@@ -228,12 +221,6 @@ export class TrackRenderer extends React.Component {
                                    .filter(x => knownTracks.has(x)));
 
         
-        /*
-        console.log('enterTrackDefs:', enterTrackDefs);
-        console.log('exitTracks:', exitTracks);
-        console.log('updateTrackDefs:', updateTrackDefs);
-        */
-
         // add new tracks and update them (setting dimensions and positions)
         this.addNewTracks([...enterTrackDefs].map(x => receivedTracksDict[x]));
         this.updateExistingTrackDefs([...enterTrackDefs].map(x => receivedTracksDict[x]));
@@ -251,8 +238,6 @@ export class TrackRenderer extends React.Component {
             return;  // we need a pixi stage to start rendering
                      // the parent component where it lives probably
                      // hasn't been mounted yet
-
-        //console.log('newTrackDefinitions', newTrackDefinitions);
 
         for (let i = 0; i < newTrackDefinitions.length; i++) {
             let newTrackDef = newTrackDefinitions[i];
@@ -275,7 +260,6 @@ export class TrackRenderer extends React.Component {
             let trackDef = this.trackDefObjects[uid].trackDef;
             let trackObject = this.trackDefObjects[uid].trackObject;
 
-            console.log('this.xPositionOffset:', this.xPositionOffset, 'trackDef.left', trackDef.left);
             trackObject.setPosition([this.xPositionOffset + trackDef.left, this.yPositionOffset + trackDef.top]);
             trackObject.setDimensions([trackDef.width, trackDef.height]);
 
@@ -289,7 +273,6 @@ export class TrackRenderer extends React.Component {
 
     removeTracks(trackUids) {
         for (let i = 0; i < trackUids.length; i++) {
-            console.log('removing...', trackUids[i]);
             this.trackDefObjects[trackUids[i]].trackObject.remove();
             delete this.trackDefObjects[trackUids[i]];
         }
@@ -342,6 +325,8 @@ export class TrackRenderer extends React.Component {
                 return new TopLineTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'heatmap':
                 return new HeatmapTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
+            case '2d-tiles':
+                return new Id2DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             default:
                 return new UnknownPixiTrack(this.props.pixiStage);
         }

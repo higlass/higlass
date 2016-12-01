@@ -121,15 +121,16 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         // calculate which tiles are obsolete and remove them
         // fetchedTileID are remote ids
         let toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
+
         this.removeTiles(toRemove);
-
-        // everything in toLoad will be sent for fetching so we need to not request it again
-        for (let i = 0; i < toFetch.length; i++)
-            this.fetching.add(toFetch[i].tileId);
-
+        this.fetchNewTiles(toFetch);
 
         if (toFetch.length > 0)
-            tileProxy.fetchTiles(this.tilesetServer, [...(new Set(toFetch.map(x => x.remoteId)))], this.receivedTiles.bind(this));
+            this.fetchNewTiles(toFetch);
+    }
+
+    fetchNewTiles(toFetch) {
+        tileProxy.fetchTiles(this.tilesetServer, [...(new Set(toFetch.map(x => x.remoteId)))], this.receivedTiles.bind(this));
     }
 
     removeTiles(toRemoveIds) {
@@ -141,6 +142,32 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         toRemoveIds.forEach(x => {
             delete this.fetchedTiles[x];
         })
+
+        this.synchronizeTilesAndGraphics();
+    }
+
+    getTilePosAndDimensions(zoomLevel, tilePos) {
+        /**
+         * Get the tile's position in its coordinate system.
+         */
+        let xTilePos = tilePos[0], yTilePos = tilePos[1];
+
+        let totalWidth = this.tilesetInfo.max_width;
+        let totalHeight = this.tilesetInfo.max_width;
+
+        let minX = 0;
+        let minY = 0;
+
+        let tileWidth = totalWidth / Math.pow(2, zoomLevel);
+        let tileHeight = totalHeight / Math.pow(2, zoomLevel);
+
+        let tileX = minX + xTilePos * tileWidth;
+        let tileY = minY + yTilePos * tileHeight;
+
+        return { tileX: tileX,
+                 tileY: tileY,
+                 tileWidth: tileWidth,
+                 tileHeight: tileHeight};
     }
 
     receivedTiles(loadedTiles) {
@@ -156,6 +183,8 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
                 this.visibleTiles[i].tileData = loadedTiles[this.visibleTiles[i].remoteId];
                 this.fetchedTiles[tileId] = this.visibleTiles[i];
             }
+
+            console.log('this.fetchedTiles:', this.fetchedTiles);
         }
 
         for (let remoteId in loadedTiles) {

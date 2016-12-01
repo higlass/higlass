@@ -53,7 +53,7 @@ export function workerFetchTiles(tilesetServer, tileIds, done) {
                         let keyParts = key.split('.');
 
                         data[key].tileId = key;
-                        data[key].zoomLevel = keyParts[1];
+                        data[key].zoomLevel = +keyParts[1];
                         data[key].tilePos = keyParts.slice(2, keyParts.length).map(x => +x);
 
                         if ('dense' in data[key]) {

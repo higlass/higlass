@@ -30,7 +30,6 @@ export class Track {
         if (!arguments.length) 
             return this._refXScale;
 
-        console.log('refXScale changed');
         this._refXScale = _;
 
         return this;

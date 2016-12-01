@@ -173,8 +173,10 @@ export class TiledPixiTrack extends PixiTrack {
         this.pMain.position.y = this.position[1];
         */
 
+        /*
         this.pMain.drawRect(0,0,
                             this.dimensions[0], this.dimensions[1]);
+                            */
     }
 
     drawTile(tileData, graphics) {

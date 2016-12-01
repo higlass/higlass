@@ -38,22 +38,10 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     }
 
     setSpriteProperties(sprite, zoomLevel, tilePos, mirrored) {
-        let xTilePos = tilePos[0], yTilePos = tilePos[1];
+        let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(zoomLevel, tilePos);
 
-        let totalWidth = this.tilesetInfo.max_width;
-        let totalHeight = this.tilesetInfo.max_width;
-
-        let minX = 0;
-        let minY = 0;
-
-        let tileWidth = totalWidth / Math.pow(2, zoomLevel);
-        let tileHeight = totalHeight / Math.pow(2, zoomLevel);
-
-        let tileX = minX + xTilePos * tileWidth;
-        let tileY = minY + yTilePos * tileHeight;
-
-        let tileEndX = minX + (xTilePos+1) * tileWidth;
-        let tileEndY = minY + (yTilePos+1) * tileHeight;
+        let tileEndX = tileX * tileWidth;
+        let tileEndY = tileY * tileHeight;
 
         let spriteWidth = this._refXScale(tileEndX) - this._refXScale(tileX) ;
         let spriteHeight = this._refYScale(tileEndY) - this._refYScale(tileY)
@@ -78,9 +66,11 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 sprite.y = this._refYScale(tileY);
             }
 
+        /*
         console.log('sprite.x:', sprite.x);
         console.log('sprite.y:', sprite.y);
         console.log('sprite.scale:', sprite.scale);
+        */
     }
 
     minVisibleValue() {
@@ -95,41 +85,20 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
          return max;
     }
 
-    zoomed(newXScale, newYScale, scale, translate) {
+    zoomed(newXScale, newYScale) {
         super.zoomed(newXScale, newYScale);
 
         let scaleX = (newXScale(1) - newXScale(0))/ (this._refXScale(1) - this._refXScale(0));
         let scaleY = (newYScale(1) - newYScale(0))/ (this._refYScale(1) - this._refYScale(0));
 
-        let translateX = newXScale(0) - this._refXScale(0)
-        let translateY = newYScale(0) - this._refYScale(0)
+        let translateX = (newXScale(0) + this.position[0]) - this._refXScale(0) * scaleX;
+        let translateY = (newYScale(0) + this.position[1]) - this._refYScale(1) * scaleY;
 
-        console.log('refXScale.domain()[0]', this._refXScale.domain()[0]);
-        console.log('newXScale.domain()[0]', newXScale.domain()[0]);
-
-        /*
-        this.pMain.x = -translateX;
-        this.pMain.y = -translateY;
-        */
-        console.log('translate:', translate);
-        console.log('sdfssdsdd:', [translateX, translateY]);
-        this.pMain.position.x = translate[0];
-        this.pMain.position.y = translate[1];
-
-        console.log('this.pMain.position.x', this.pMain.position.x);
-        console.log('this.pMain.position.y', this.pMain.position.y);
-        console.log('this._refXScale(0)', this._refXScale(0));
-        console.log('this._refYScale(0)', this._refYScale(0));
-        console.log('this.position:', this.position);
+        this.pMain.position.x = translateX;
+        this.pMain.position.y = translateY;
 
         this.pMain.scale.x = scaleX;
         this.pMain.scale.y = scaleY;
-
-        /*
-        this.pMain.beginFill(0xFF700B, 1);
-        this.pMain.drawRect(0,0,
-                            this.dimensions[0], this.dimensions[1]);
-        */
     }
 
     draw() {
