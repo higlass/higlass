@@ -58,6 +58,25 @@ export class TiledPixiTrack extends PixiTrack {
         this.draw();
     }
 
+
+    updateGraphicsForExistingTile(fetchedTile, tileGraphics) {
+        /**
+         * We're redrawing the graphics for a tile that already 
+         * has graphics assigned.
+         *
+         * Scalable tracks don't need to do this, because they
+         * simply scale and translate the existing graphics.
+         *
+         * @param fetchedTile: A tile that has already been retrieved (e.g. 
+         *                      {   tileData: {dense: [1,1,1]},
+         *                          tileId: sdfsds.0.0.0 }
+         * @param tileGraphics: The graphics that this tile has been drawn
+         *                      to
+         */
+        this.drawTile(fetchedTile,
+                      tileGraphics);
+    }
+
     synchronizeTilesAndGraphics() {
         /**
          * Make sure that we have a one to one mapping between tiles
@@ -77,8 +96,9 @@ export class TiledPixiTrack extends PixiTrack {
             // this can be overriden by ScalablePixiTracks which don't need to
             // redraw already drawn tracks (just apply a transform
             if (fetchedTileIDs[i] in this.tileGraphics)
-                this.drawTile(this.fetchedTiles[fetchedTileIDs[i]], 
+                this.updateGraphicsForExistingTile(this.fetchedTiles[fetchedTileIDs[i]], 
                               this.tileGraphics[fetchedTileIDs[i]]);
+            
             else {
                 // no graphics for this tile, create it
                 let newGraphics = new PIXI.Graphics();
@@ -130,6 +150,7 @@ export class TiledPixiTrack extends PixiTrack {
             this.drawTile(tiles[i]);
         }
     }
+
 
     loadTileData(tile, dataLoader) {
         /**

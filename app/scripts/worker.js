@@ -3,8 +3,14 @@ import {scaleLinear} from 'd3-scale';
 import {json} from 'd3-request';
 import urljoin from 'url-join';
 
+/*
 function countTransform(count) {
     return Math.sqrt(Math.sqrt(count + 1));
+}
+*/
+
+function countTransform(count) {
+    return Math.log(count+1);
 }
 
 export function workerGetTilesetInfo(url, done) {
@@ -135,8 +141,6 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
             let ct = countTransform(d);
 
             let rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
-
-            rgbIdx = 120;
             let rgb = colorScale[rgbIdx];
 
             pixData[i * 4] = rgb[0];

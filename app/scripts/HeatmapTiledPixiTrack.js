@@ -40,8 +40,10 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     setSpriteProperties(sprite, zoomLevel, tilePos, mirrored) {
         let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(zoomLevel, tilePos);
 
-        let tileEndX = tileX * tileWidth;
-        let tileEndY = tileY * tileHeight;
+        console.log('tileY:', tileY);
+
+        let tileEndX = tileX + tileWidth;
+        let tileEndY = tileY + tileHeight;
 
         let spriteWidth = this._refXScale(tileEndX) - this._refXScale(tileX) ;
         let spriteHeight = this._refYScale(tileEndY) - this._refYScale(tileY)
@@ -66,11 +68,9 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 sprite.y = this._refYScale(tileY);
             }
 
-        /*
         console.log('sprite.x:', sprite.x);
         console.log('sprite.y:', sprite.y);
         console.log('sprite.scale:', sprite.scale);
-        */
     }
 
     minVisibleValue() {
@@ -97,10 +97,15 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.draw();
     }
 
+    draw() {
+
+    }
+
     drawTile(tile, graphics) {
         console.log('drawTile...');
         let tileData = tile.tileData;
         let pixData = workerSetPix(tileData.dense.length, tileData.dense, this.minVisibleValue(), this.maxVisibleValue());
+        let fPixData = pixData.filter(x => x != 0);
         let canvas = this.tileDataToCanvas(pixData,  this.minVisibleValue(), this.maxVisibleValue());
 
         let sprite = null;

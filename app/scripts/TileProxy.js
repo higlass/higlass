@@ -81,7 +81,6 @@ class TileProxy  {
         rows = range(Math.max(0,Math.floor((scale.domain()[0] - minX) / tileWidth)),
                         Math.min(Math.pow(2, zoomLevel), Math.ceil(((scale.domain()[1] - minX) - epsilon) / tileWidth)));
 
-        console.log('scale:', scale.domain(), 'rows:', rows);
         return rows
     }
 

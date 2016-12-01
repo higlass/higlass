@@ -11,38 +11,51 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
         let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(tile.tileData.zoomLevel, 
                                                                                  tile.tileData.tilePos);
 
-        let t = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/'), 
+        let t = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored, 
                               {fontFamily : 'Arial', fontSize: 32, fill : 0xff1010, align : 'center'});
 
 
         let tSX = 1 / ((this._xScale(1) - this._xScale(0)) / (this._refXScale(1) - this._refXScale(0)));
         let tSY = 1 / ((this._yScale(1) - this._yScale(0)) / (this._refYScale(1) - this._refYScale(0)));
 
-        console.log('tSX:', tSX);
-        console.log('tSY:', tSY);
-            
         t.scale.x = tSX;
         t.scale.y = tSY;
+
+        console.log('tSX:', tSX);
 
         graphics.removeChildren();
 
         let textGraphics = new PIXI.Graphics();
-        textGraphics.position.x = this._refXScale(tileX) + 5;
-        textGraphics.position.y = this._refYScale(tileY) + 5;
+
 
         textGraphics.addChild(t);
+
+        let rectGraphics = new PIXI.Graphics();
         
         graphics.clear();
-        graphics.lineStyle(0, 0x0000FF, 1);
+        graphics.lineStyle(2 * tSX, 0x0000FF, 1);
         graphics.beginFill(0xFF700B, 1);
         graphics.alpha = 0.5;
 
         graphics.addChild(textGraphics);
 
 
-        graphics.drawRect(this._refXScale(tileX), this._refYScale(tileY),
-                          this._refXScale(tileX + tileWidth) - this._refXScale(tileX),
-                          this._refYScale(tileY + tileWidth) - this._refYScale(tileY))
+        if (tile.mirrored) {
+            textGraphics.position.x = this._refXScale(tileY) + 5;
+            textGraphics.position.y = this._refYScale(tileX) + 5;
+
+            graphics.drawRect(this._refXScale(tileY), this._refYScale(tileX),
+                              this._refXScale(tileY + tileWidth) - this._refXScale(tileY),
+                              this._refYScale(tileX + tileWidth) - this._refYScale(tileX))
+        } else {
+            textGraphics.position.x = this._refXScale(tileX) + 5;
+            textGraphics.position.y = this._refYScale(tileY) + 5;
+
+            graphics.drawRect(this._refXScale(tileX), this._refYScale(tileY),
+                              this._refXScale(tileX + tileWidth) - this._refXScale(tileX),
+                              this._refYScale(tileY + tileWidth) - this._refYScale(tileY))
+
+        }
     }
 
     fetchNewTiles(toFetch) {

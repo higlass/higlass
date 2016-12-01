@@ -118,10 +118,15 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         // tiles that are fetched
         let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
 
+
+        console.log('visibleTiles:', this.visibleTiles);
         // fetch the tiles that should be visible but haven't been fetched
         // and aren't in the process of being fetched
         let toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.tileId) && !fetchedTileIDs.has(x.tileId))
         //console.log('toFetch:', toFetch);
+        
+        for (let i = 0; i < toFetch.length; i++)
+            this.fetching.add(toFetch[i].tileId);
 
         // calculate which tiles are obsolete and remove them
         // fetchedTileID are remote ids
@@ -130,12 +135,12 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         this.removeTiles(toRemove);
         this.fetchNewTiles(toFetch);
 
-        if (toFetch.length > 0)
-            this.fetchNewTiles(toFetch);
+        this.fetchNewTiles(toFetch);
     }
 
     fetchNewTiles(toFetch) {
-        tileProxy.fetchTiles(this.tilesetServer, [...(new Set(toFetch.map(x => x.remoteId)))], this.receivedTiles.bind(this));
+        if (toFetch.length > 0)
+            tileProxy.fetchTiles(this.tilesetServer, [...(new Set(toFetch.map(x => x.remoteId)))], this.receivedTiles.bind(this));
     }
 
     removeTiles(toRemoveIds) {
@@ -144,11 +149,25 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
          *
          * @param toRemoveIds: An array of tile ids to remove from the list of fetched tiles.
          */
+
+        // if there's nothing to remove, don't bother doing anything
+        if (!toRemoveIds.length)
+            return;
+
         toRemoveIds.forEach(x => {
+            console.log('removing...', x);
             delete this.fetchedTiles[x];
         })
 
         this.synchronizeTilesAndGraphics();
+    }
+
+    updateGraphicsForExistingTile(fetchedTile, tileGraphics) {
+        /**
+         * No need to do anything since we just scale the existing graphics
+         * in the `zoomed` function
+         */
+        return;
     }
 
     getTilePosAndDimensions(zoomLevel, tilePos) {
@@ -180,7 +199,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
          * We've gotten a bunch of tiles from the server in
          * response to a request from fetchTiles.
          */
-        //console.log('received:', loadedTiles);
+        console.log('received:', loadedTiles);
         for (let i = 0; i < this.visibleTiles.length; i++) {
             let tileId = this.visibleTiles[i].tileId;
 
@@ -188,10 +207,9 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
                 this.visibleTiles[i].tileData = loadedTiles[this.visibleTiles[i].remoteId];
                 this.fetchedTiles[tileId] = this.visibleTiles[i];
             }
-
-            console.log('this.fetchedTiles:', this.fetchedTiles);
         }
 
+        console.log('loadedTiles:', loadedTiles);
         for (let remoteId in loadedTiles) {
             //this.fetchedTiles[remoteId] = loadedTiles[remoteId];
 
