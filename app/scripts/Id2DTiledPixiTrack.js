@@ -12,12 +12,17 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
                                                                                  tile.tileData.tilePos);
 
         let t = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/'), 
-                              {fontFamily : 'Arial', fontSize: 24, fill : 0xff1010, align : 'center'});
+                              {fontFamily : 'Arial', fontSize: 32, fill : 0xff1010, align : 'center'});
 
-        t.scale.x = (this._xScale(1) - this._xScale(0)) / (this._refXScale(1) - this._refXScale(0));
-        t.scale.y = (this._yScale(1) - this._yScale(0)) / (this._refYScale(1) - this._refYScale(0));
 
-        console.log('t.scale.x:', t.scale.x);
+        let tSX = 1 / ((this._xScale(1) - this._xScale(0)) / (this._refXScale(1) - this._refXScale(0)));
+        let tSY = 1 / ((this._yScale(1) - this._yScale(0)) / (this._refYScale(1) - this._refYScale(0)));
+
+        console.log('tSX:', tSX);
+        console.log('tSY:', tSY);
+            
+        t.scale.x = tSX;
+        t.scale.y = tSY;
 
         graphics.removeChildren();
 
@@ -32,17 +37,12 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
         graphics.beginFill(0xFF700B, 1);
         graphics.alpha = 0.5;
 
-        console.log('textGraphics.position.x', textGraphics.position.x, textGraphics.position.y);
-
         graphics.addChild(textGraphics);
 
 
         graphics.drawRect(this._refXScale(tileX), this._refYScale(tileY),
                           this._refXScale(tileX + tileWidth) - this._refXScale(tileX),
                           this._refYScale(tileY + tileWidth) - this._refYScale(tileY))
-
-
-        console.log('tilePos:', tile.tileData.tilePos, 'tileX:', tileX, 'tileY:', tileY);
     }
 
     fetchNewTiles(toFetch) {

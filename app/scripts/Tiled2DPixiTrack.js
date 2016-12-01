@@ -42,19 +42,24 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
 
         super.refreshTiles();
         
-        this.zoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+        let xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
                                                       this.tilesetInfo.min_pos[0],
                                                       this.tilesetInfo.max_pos[0]);
+        let yZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+                                                      this.tilesetInfo.min_pos[1],
+                                                      this.tilesetInfo.max_pos[1]);
 
-        this.xTiles =  tileProxy.calculateTiles(this._xScale, 
+        this.zoomLevel = Math.max(xZoomLevel, yZoomLevel);
+
+        this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale, 
                                                this.tilesetInfo.min_pos[0],
                                                this.tilesetInfo.max_pos[0],
                                                this.tilesetInfo.max_zoom,
                                                this.tilesetInfo.max_width);
 
-        this.yTiles =  tileProxy.calculateTiles(this._yScale, 
-                                               this.tilesetInfo.min_pos[0],
-                                               this.tilesetInfo.max_pos[0],
+        this.yTiles =  tileProxy.calculateTiles(this.zoomLevel, this._yScale, 
+                                               this.tilesetInfo.min_pos[1],
+                                               this.tilesetInfo.max_pos[1],
                                                this.tilesetInfo.max_zoom,
                                                this.tilesetInfo.max_width);
 

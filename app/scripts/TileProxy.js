@@ -45,7 +45,7 @@ class TileProxy  {
         return zoomLevel
     }
 
-    calculateTiles(scale, minX, maxX, maxZoom, maxWidth) {
+    calculateTiles(zoomLevel, scale, minX, maxX, maxZoom, maxWidth) {
         /**
          * Calculate the tiles that should be visible get a data domain 
          * and a tileset info
@@ -53,13 +53,15 @@ class TileProxy  {
          * All the parameters except the first should be present in the
          * tileset_info returned by the server.
          *
+         * @param zoomLevel: The zoom level at which to find the tiles (can be calculated using
+         *                   this.calcaulteZoomLevel, but needs to synchronized across both x
+         *                   and y scales so should be calculated externally)
          * @param scale: A d3 scale mapping data domain to visible values
          * @param minX: The minimum possible value in the dataset
          * @param maxX: The maximum possible value in the dataset
          * @param maxZoom: The maximum zoom value in this dataset
          * @param maxWidth: The width of the largest (roughlty equal to 2 ** maxZoom * tileSize * tileResolution)
          */
-        let zoomLevel = this.calculateZoomLevel(scale, minX, maxX);
 
         if (zoomLevel > maxZoom)
             zoomLevel = maxZoom;
@@ -79,6 +81,7 @@ class TileProxy  {
         rows = range(Math.max(0,Math.floor((scale.domain()[0] - minX) / tileWidth)),
                         Math.min(Math.pow(2, zoomLevel), Math.ceil(((scale.domain()[1] - minX) - epsilon) / tileWidth)));
 
+        console.log('scale:', scale.domain(), 'rows:', rows);
         return rows
     }
 
