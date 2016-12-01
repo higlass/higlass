@@ -40,7 +40,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     setSpriteProperties(sprite, zoomLevel, tilePos, mirrored) {
         let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(zoomLevel, tilePos);
 
-        console.log('tileY:', tileY);
+        console.log('setting sprite:', zoomLevel, tilePos);
 
         let tileEndX = tileX + tileWidth;
         let tileEndY = tileY + tileHeight;
