@@ -83,7 +83,6 @@ class TileProxy  {
     }
 
     trackInfo(server, tilesetUid, done) {
-        console.log('server:', server);
         let outUrl = urljoin(server, 'tilesets/x/tileset_info/?d=' + tilesetUid);
 
         workerGetTilesetInfo(outUrl, done);

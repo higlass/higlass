@@ -10,11 +10,11 @@ function countTransform(count) {
 export function workerGetTilesetInfo(url, done) {
     json(url, (error, data) => {
         if (error) {
-            console.log('error:', error);
+            //console.log('error:', error);
             // don't do anything
             // no tileset info just means we can't do anything with this file... 
         } else {
-            console.log('got data', data);
+            //console.log('got data', data);
             done(data)
         }
     });
@@ -41,7 +41,6 @@ export function workerFetchTiles(tilesetServer, tileIds, done) {
 
         let renderParams = theseTileIds.map(x => "d=" + x).join('&');
         let outUrl = urljoin(tilesetServer, 'tilesets/x/render/?' + renderParams);
-        console.log('outUrl');
 
         let p = new Promise(function(resolve, reject) {
             json(outUrl, (error, data) => {
@@ -50,6 +49,13 @@ export function workerFetchTiles(tilesetServer, tileIds, done) {
                 } else {
                     // check if we have array data to convert from base64 to float32
                     for (let key in data) {
+                        // let's hope the payload doesn't contain a tileId field
+                        let keyParts = key.split('.');
+
+                        data[key].tileId = key;
+                        data[key].zoomLevel = keyParts[1];
+                        data[key].tilePos = keyParts.slice(2, keyParts.length).map(x => +x);
+
                         if ('dense' in data[key]) {
                             let newDense = _base64ToArrayBuffer(data[key].dense);
                             data[key]['dense'] = new Float32Array(newDense);
@@ -129,6 +135,8 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
             let ct = countTransform(d);
 
             let rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
+
+            rgbIdx = 120;
             let rgb = colorScale[rgbIdx];
 
             pixData[i * 4] = rgb[0];

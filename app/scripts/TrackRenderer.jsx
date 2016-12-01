@@ -56,13 +56,20 @@ export class TrackRenderer extends React.Component {
 
         this.drawableToDomainX = scaleLinear()
             .domain([this.props.marginLeft + this.props.leftWidth,
-                    this.props.marginLeft + this.props.leftWidth + this.props.centerHeight])
+                    this.props.marginLeft + this.props.leftWidth + this.props.centerWidth])
             .range([this.props.initialXDomain[0], this.props.initialXDomain[1]]);
 
+        let midXDomain = (this.props.initialXDomain[0] + this.props.initialXDomain[0]) / 2;
+        let yDomainWidth = (this.props.initialXDomain[1] - this.props.initialXDomain[0]) * (this.props.centerHeight / this.props.centerWidth);
+
+        console.log('yDomainWidth:', yDomainWidth);
+
         this.drawableToDomainY = scaleLinear()
-            .domain([this.props.marginTop + this.props.topHeight,
-                    this.props.marginTop + this.props.topHeight + this.props.centerHeight])
-            .range([this.props.initialYDomain[0], this.props.initialYDomain[1]]);
+            .domain([this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2 - this.props.centerWidth / 2,
+                    this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2 + this.props.centerWidth / 2])
+            .range([this.props.initialXDomain[0], this.props.initialXDomain[1]]);
+
+        console.log('drawableToDomainY.domain():', this.drawableToDomainY.domain());
 
         this.setUpScales();
 
@@ -136,7 +143,7 @@ export class TrackRenderer extends React.Component {
         // if the window is resized, we don't want to change the scale, but we do want to move the center point
         // this needs to be tempered by the zoom factor so that we keep the visible center point in the center
         let centerDomainXOffset = (this.drawableToDomainX(currentCenterX) - this.drawableToDomainX(this.initialCenterX)) / this.zoomTransform.k;
-        let centerDomainYOffset = (this.drawableToDomainX(currentCenterY) - this.drawableToDomainY(this.initialCenterY)) / this.zoomTransform.k;
+        let centerDomainYOffset = (this.drawableToDomainY(currentCenterY) - this.drawableToDomainY(this.initialCenterY)) / this.zoomTransform.k;
 
 
         // the domain of the visible (not drawable area)
@@ -154,6 +161,15 @@ export class TrackRenderer extends React.Component {
                         .domain(visibleYDomain)
                         .range([0, this.initialHeight]);
 
+        console.log('visibleXDomain:', visibleXDomain);
+        console.log('this.xScale(0)', this.xScale(0), this.props.marginLeft + this.props.leftWidth);
+
+        for (let uid in this.trackDefObjects) {
+            let track = this.trackDefObjects[uid].trackObject;
+
+            track.refXScale(this.xScale);
+            track.refYScale(this.yScale);
+        }
     }
 
     timedUpdatePositionAndDimensions(props) {
@@ -259,6 +275,7 @@ export class TrackRenderer extends React.Component {
             let trackDef = this.trackDefObjects[uid].trackDef;
             let trackObject = this.trackDefObjects[uid].trackObject;
 
+            console.log('this.xPositionOffset:', this.xPositionOffset, 'trackDef.left', trackDef.left);
             trackObject.setPosition([this.xPositionOffset + trackDef.left, this.yPositionOffset + trackDef.top]);
             trackObject.setDimensions([trackDef.width, trackDef.height]);
 
@@ -309,8 +326,8 @@ export class TrackRenderer extends React.Component {
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
 
-            track.zoomed(newXScale, newYScale);
-
+            track.zoomed(newXScale, newYScale, this.zoomTransform.k,
+                    [this.zoomTransform.x, this.zoomTransform.y]);
             track.draw();
         }
     }
@@ -355,8 +372,8 @@ TrackRenderer.propTypes = {
     centerHeight: React.PropTypes.number,
     marginLeft: React.PropTypes.number,
     marginTop: React.PropTypes.number,
-    leftWidth: React.PropTypes.leftWidth,
-    topHeight: React.PropTypes.topHeight,
+    leftWidth: React.PropTypes.number,
+    topHeight: React.PropTypes.number,
     pixiStage: React.PropTypes.object,
     canvasElement: React.PropTypes.object,
     svgElement: React.PropTypes.object,

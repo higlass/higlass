@@ -14,9 +14,6 @@ export class TiledPixiTrack extends PixiTrack {
          */
         super(scene);
 
-        console.log("server:", server, "tilesetUid", tilesetUid);
-        console.log('tileProxy.uid', tileProxy.uid);
-
         let tilesetInfo = null;
 
         this.tilesetUid = tilesetUid;
@@ -25,10 +22,13 @@ export class TiledPixiTrack extends PixiTrack {
         // the graphics that have already been drawn for this track
         this.tileGraphics = {};  
 
+        this.maxZoom = 0;
+
         tileProxy.trackInfo(server, tilesetUid, tilesetInfo => {
-            console.log('returned:', tilesetInfo, 'this:', this);
+            console.log('tilesetInfo', tilesetInfo);
             this.tilesetInfo = tilesetInfo[tilesetUid];
             
+            this.maxZoom = this.tilesetInfo['max-zoom'];
             this.refreshTiles();
         });
     }
@@ -120,7 +120,7 @@ export class TiledPixiTrack extends PixiTrack {
         this.synchronizeTilesAndGraphics(tiles);
 
         // need to set the valueScale that goes from 0 to the track Height
-        console.log('tiles:', tiles);
+        //console.log('tiles:', tiles);
 
         // need to remove graphics for tiles that are gone
         // and add graphics for tiles that are newly appeared
@@ -157,17 +157,23 @@ export class TiledPixiTrack extends PixiTrack {
         /**
          * Draw all the data associated with this track
          */
+        /*
         let graphics = this.pMain;
 
         graphics.clear();
         graphics.lineStyle(0, 0x0000FF, 1);
         graphics.beginFill(0xFF700B, 1);
+        */
 
         /*
         console.log('drawing a rectangle to...', this.position[0], this.position[1],
                     'width:', this.dimensions[0], this.dimensions[1]);
+
+        this.pMain.position.x = this.position[0];
+        this.pMain.position.y = this.position[1];
         */
-        this.pMain.drawRect(this.position[0], this.position[1], 
+
+        this.pMain.drawRect(0,0,
                             this.dimensions[0], this.dimensions[1]);
     }
 

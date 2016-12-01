@@ -32,7 +32,7 @@ export class TiledPlot extends React.Component {
                                  {'height': 20, 'value': '11'},
                                  {'height': 30, 'value': '12'}],
 
-                         'center': [{'height': 40, 'width': 40, 'value': 20}]
+                         'center': [{'height': 60, 'width': 40, 'value': 20}]
                         }
 
         let topTracks = {
@@ -62,13 +62,14 @@ export class TiledPlot extends React.Component {
                   server: 'http://52.45.229.11'}
             ],
             'left': [
-                {'uid': slugid.nice(), type:'left-axis', width: 50}
+                {'uid': slugid.nice(), type:'left-axis', width: 200}
             ],
             'center': [
                 { 'server': 'http://52.45.229.11/',
                   'uid': slugid.nice(),
                   'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
-                  'type': 'heatmap' }
+                  'type': 'heatmap',
+                    'height': 200}
             ]};
 
         tracks = simpleTracks;

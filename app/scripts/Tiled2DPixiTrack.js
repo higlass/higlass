@@ -15,8 +15,23 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         this.fetchedTiles = {};
     }
 
-    tileToId(tile) {
+    tileToLocalId(tile) {
+        /*
+         * The local tile identifier
+         */
+        return this.tilesetUid + '.' + tile.join('.') + '.' + tile.mirrored;
+    }
+
+    tileToRemoteId(tile) {
+        /**
+         * The tile identifier used on the server
+         */
         return this.tilesetUid + '.' + tile.join('.');
+    }
+
+    localToRemoteId(remoteId) {
+        let idParts = remoteId.split('.');
+        return idParts.slice(0, idParts.length-1).join('.');
     }
 
     refreshTiles() {
@@ -85,28 +100,36 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
             }
         }
 
-        // tiles that should be visible
-        this.visibleTiles = new Set(tiles.map(this.tileToId.bind(this)));
+        this.visibleTiles = tiles.map(x => {
+            return {
+                tileId: this.tileToLocalId(x),
+                remoteId: this.tileToRemoteId(x),
+                mirrored: x.mirrored
+            }
+        });
+
+        this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
 
         // tiles that are fetched
         let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
 
         // fetch the tiles that should be visible but haven't been fetched
         // and aren't in the process of being fetched
-        let toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x) && !fetchedTileIDs.has(x));
+        let toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.tileId) && !fetchedTileIDs.has(x.tileId))
+        //console.log('toFetch:', toFetch);
 
         // calculate which tiles are obsolete and remove them
-        let toRemove = [...fetchedTileIDs].filter(x => !this.visibleTiles.has(x));
+        // fetchedTileID are remote ids
+        let toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
         this.removeTiles(toRemove);
-         
 
         // everything in toLoad will be sent for fetching so we need to not request it again
         for (let i = 0; i < toFetch.length; i++)
-            this.fetching.add(toFetch[i]);
+            this.fetching.add(toFetch[i].tileId);
 
 
         if (toFetch.length > 0)
-            tileProxy.fetchTiles(this.tilesetServer, toFetch, this.receivedTiles.bind(this));
+            tileProxy.fetchTiles(this.tilesetServer, [...(new Set(toFetch.map(x => x.remoteId)))], this.receivedTiles.bind(this));
     }
 
     removeTiles(toRemoveIds) {
@@ -125,14 +148,22 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
          * We've gotten a bunch of tiles from the server in
          * response to a request from fetchTiles.
          */
-        console.log('received:', loadedTiles);
+        //console.log('received:', loadedTiles);
+        for (let i = 0; i < this.visibleTiles.length; i++) {
+            let tileId = this.visibleTiles[i].tileId;
 
-        for (let uid in loadedTiles) {
-            this.fetchedTiles[uid] = loadedTiles[uid];
+            if (this.visibleTiles[i].remoteId in loadedTiles) {
+                this.visibleTiles[i].tileData = loadedTiles[this.visibleTiles[i].remoteId];
+                this.fetchedTiles[tileId] = this.visibleTiles[i];
+            }
+        }
 
-            if (this.fetching.has(uid)) {
+        for (let remoteId in loadedTiles) {
+            //this.fetchedTiles[remoteId] = loadedTiles[remoteId];
+
+            if (this.fetching.has(remoteId)) {
                 // if we've received this tile, we're not fetching it anymore
-                this.fetching.delete(uid);
+                this.fetching.delete(remoteId);
             }
         }
 
