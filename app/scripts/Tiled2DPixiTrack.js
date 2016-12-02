@@ -34,7 +34,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         return idParts.slice(0, idParts.length-1).join('.');
     }
 
-    refreshTiles() {
+    calculateVisibleTiles() {
         // if we don't know anything about this dataset, no point
         // in trying to get tiles
         if (!this.tilesetInfo)
@@ -116,18 +116,22 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
 
         this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
 
+    }
+
+    refreshTiles() {
+        this.calculateVisibleTiles();
+
         // tiles that are fetched
         let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
-
 
         //console.log('visibleTiles:', tiles.map(x => x.join('/')).join(" "));
         // fetch the tiles that should be visible but haven't been fetched
         // and aren't in the process of being fetched
-        let toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.tileId) && !fetchedTileIDs.has(x.tileId))
+        let toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId))
         //console.log('toFetch:', toFetch);
         
         for (let i = 0; i < toFetch.length; i++)
-            this.fetching.add(toFetch[i].tileId);
+            this.fetching.add(toFetch[i].remoteId);
 
         // calculate which tiles are obsolete and remove them
         // fetchedTileID are remote ids
@@ -209,9 +213,12 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
                 this.visibleTiles[i].tileData = loadedTiles[this.visibleTiles[i].remoteId];
                 this.fetchedTiles[tileId] = this.visibleTiles[i];
             }
+        }
 
-            if (this.fetching.has(tileId))
-                this.fetching.delete(tileId);
+        for (let key in loadedTiles) {
+            if (this.fetching.has(key))
+                this.fetching.delete(key);
+
         }
 
         this.synchronizeTilesAndGraphics();
