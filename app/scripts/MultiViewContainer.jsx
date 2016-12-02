@@ -7,7 +7,6 @@ import {SearchableTiledPlot} from './SearchableTiledPlot.jsx';
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
-import PIXI from 'pixi.js';
 import {TiledPlot} from './TiledPlot.jsx';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -47,7 +46,7 @@ export class MultiViewContainer extends React.Component {
                                           antialias: true, 
                                           transparent: true } )
 
-        PIXI.RESOLUTION=2;
+        //PIXI.RESOLUTION=2;
 
 
         // keep track of the width and height of this element, because it
