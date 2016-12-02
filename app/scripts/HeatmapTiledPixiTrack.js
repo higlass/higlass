@@ -14,11 +14,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     }
 
 
-    refreshTiles() {
-        super.refreshTiles();
-
-    }
-
     tileDataToCanvas(pixData, minVisibleValue, maxVisibleValue) {
         let canvas = document.createElement('canvas');
 
@@ -77,13 +72,11 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
     minVisibleValue() {
          let min = Math.min.apply(null, Object.keys(this.fetchedTiles).map(x => this.fetchedTiles[x].tileData.minNonZero));
-         console.log('min', min);
          return min;
     }
 
     maxVisibleValue() {
          let max = Math.max.apply(null, Object.keys(this.fetchedTiles).map(x => this.fetchedTiles[x].tileData.maxNonZero));
-         console.log('max:', max);
          return max;
     }
 
@@ -104,7 +97,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     }
 
     drawTile(tile, graphics) {
-        console.log('drawTile...');
+        //console.log('drawTile...');
         let tileData = tile.tileData;
         let pixData = workerSetPix(tileData.dense.length, tileData.dense, this.minVisibleValue(), 
                                    this.maxVisibleValue());
@@ -113,7 +106,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         let sprite = null;
 
-        if (tileData.tilePos[0] == this.maxZoom)
+        if (tileData.zoomLevel == this.maxZoom)
             sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
         else
             sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));

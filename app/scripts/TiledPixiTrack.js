@@ -28,7 +28,7 @@ export class TiledPixiTrack extends PixiTrack {
             console.log('tilesetInfo', tilesetInfo);
             this.tilesetInfo = tilesetInfo[tilesetUid];
             
-            this.maxZoom = this.tilesetInfo['max-zoom'];
+            this.maxZoom = +this.tilesetInfo['max_zoom'];
             this.refreshTiles();
         });
     }
@@ -58,6 +58,28 @@ export class TiledPixiTrack extends PixiTrack {
         this.draw();
     }
 
+    areAllVisibleTilesLoaded() {
+        /**
+         * Check to see if all the visible tiles are loaded.
+         * 
+         * If they are, remove all other tiles.
+         */
+        // tiles that are visible
+
+        // tiles that are fetched
+        let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
+        this.visibleTileIds = this.visibleTiles.map(x => x.tileId);
+
+        //console.log('this.visibleTileIds:', this.visibleTileIds);
+
+        for (let i = 0; i < this.visibleTileIds.length; i++) {
+            if (!fetchedTileIDs.has(this.visibleTileIds[i] ))
+                return false;
+        }
+
+        return true;
+    }
+
 
     updateGraphicsForExistingTile(fetchedTile, tileGraphics) {
         /**
@@ -77,48 +99,69 @@ export class TiledPixiTrack extends PixiTrack {
                       tileGraphics);
     }
 
-    synchronizeTilesAndGraphics() {
+    addMissingGraphics() {
         /**
-         * Make sure that we have a one to one mapping between tiles
-         * and graphics objects
-         *
-         * @param {tiles} An array of tiles with data in raw form 
-         *                (needs to be loaded eventually)
+         * Add graphics for tiles that have no graphics
          */
-
-        // keep track of which tiles are visible at the moment
-        let shownTiles = {};
         let fetchedTileIDs = Object.keys(this.fetchedTiles);
 
-        // make sure all the tiles have graphics
         for (let i = 0; i < fetchedTileIDs.length; i++) {
-            // the tile already has a graphics object of its own, redraw it
-            // this can be overriden by ScalablePixiTracks which don't need to
-            // redraw already drawn tracks (just apply a transform
-            if (fetchedTileIDs[i] in this.tileGraphics)
-                this.updateGraphicsForExistingTile(this.fetchedTiles[fetchedTileIDs[i]], 
-                              this.tileGraphics[fetchedTileIDs[i]]);
-            
-            else {
-                // no graphics for this tile, create it
+            if (!(fetchedTileIDs[i] in this.tileGraphics)) {
+                console.log('adding...', fetchedTileIDs[i]);
                 let newGraphics = new PIXI.Graphics();
                 this.drawTile(this.fetchedTiles[fetchedTileIDs[i]], newGraphics);
                 this.pMain.addChild(newGraphics);
                 this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
             }
-
-            shownTiles[fetchedTileIDs[i]] = true;
         }
+    }
 
-        // make sure all of the graphics correspond to tiles
-        // otherwise we remove them
+    removeOldGraphics() {
+        /**
+         * Remove graphics for tiles that are no longer
+         * present
+         */
+
+        // only remove graphics if all visible graphics are loaded
+        if (!this.areAllVisibleTilesLoaded())
+            return;
+
+        let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
+
         for (let tileIdStr in this.tileGraphics) {
-            if (!(tileIdStr in shownTiles)) {
+
+            if (!fetchedTileIDs.has(tileIdStr)) {
+                console.log('deleting...', tileIdStr);
                 this.pMain.removeChild(this.tileGraphics[tileIdStr]);
                 delete this.tileGraphics[tileIdStr];
             }
         }
+    }
 
+    updateExistingGraphics() {
+        /**
+         * Change the graphics for existing tiles
+         */
+        let fetchedTileIDs = Object.keys(this.fetchedTiles);
+
+        for (let i = 0; i < fetchedTileIDs.length; i++) {
+            this.updateGraphicsForExistingTile(this.fetchedTiles[fetchedTileIDs[i]], 
+                          this.tileGraphics[fetchedTileIDs[i]]);
+        
+        }
+    }
+
+    synchronizeTilesAndGraphics() {
+        /**
+         * Make sure that we have a one to one mapping between tiles
+         * and graphics objects
+         *
+         */
+
+        // keep track of which tiles are visible at the moment
+        this.addMissingGraphics();
+        this.updateExistingGraphics();
+        this.removeOldGraphics();
     }
 
     remove() {

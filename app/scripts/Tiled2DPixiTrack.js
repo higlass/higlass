@@ -50,6 +50,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
                                                       this.tilesetInfo.max_pos[1]);
 
         this.zoomLevel = Math.max(xZoomLevel, yZoomLevel);
+        this.zoomLevel = Math.min(this.zoomLevel, this.maxZoom);
 
         this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale, 
                                                this.tilesetInfo.min_pos[0],
@@ -156,12 +157,12 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
             return;
 
         toRemoveIds.forEach(x => {
-            console.log('removing...', x);
             delete this.fetchedTiles[x];
         })
 
-        this.synchronizeTilesAndGraphics();
+        //this.synchronizeTilesAndGraphics();
     }
+
 
     updateGraphicsForExistingTile(fetchedTile, tileGraphics) {
         /**

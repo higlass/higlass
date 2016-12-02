@@ -87,8 +87,6 @@ export function workerFetchTiles(tilesetServer, tileIds, done) {
                                 if (x > maxNonZero)
                                     maxNonZero = x;
                             }
-                            console.log('minNonZero:', minNonZero);
-                            console.log('maxNonZero:', maxNonZero);
 
                             data[key]['minNonZero'] = minNonZero;
                             data[key]['maxNonZero'] = maxNonZero;
@@ -155,7 +153,7 @@ function workerLoadTileData(tile_value, tile_type) {
 
 export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale = null, passedCountTransform) {
     let epsilon = 0.000001;
-    console.log('minVisibleValue:', minVisibleValue);
+    //console.log('minVisibleValue:', minVisibleValue);
 
     let countTransform = x => {
         return Math.log(x);
