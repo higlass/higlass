@@ -2,16 +2,20 @@ import {heatedObjectMap} from './colormaps.js';
 import {scaleLinear} from 'd3-scale';
 import {json} from 'd3-request';
 import urljoin from 'url-join';
+import {format} from 'd3-format';
+import {scaleQuantile} from 'd3-scale';
+import {range} from 'd3-array';
 
 /*
 function countTransform(count) {
     return Math.sqrt(Math.sqrt(count + 1));
 }
-*/
 
 function countTransform(count) {
-    return Math.log(count+1);
+    return Math.log(count+0.0001);
 }
+*/
+let epsilon = 0.0000001;
 
 export function workerGetTilesetInfo(url, done) {
     json(url, (error, data) => {
@@ -64,7 +68,30 @@ export function workerFetchTiles(tilesetServer, tileIds, done) {
 
                         if ('dense' in data[key]) {
                             let newDense = _base64ToArrayBuffer(data[key].dense);
-                            data[key]['dense'] = new Float32Array(newDense);
+
+                            let a = new Float32Array(newDense);
+                            let minNonZero = Number.MAX_SAFE_INTEGER;
+                            let maxNonZero = Number.MIN_SAFE_INTEGER;
+
+                            data[key]['dense'] = a;
+
+                            // find the minimum and maximum non-zero values
+                            for (let i = 0; i < a.length; i++) {
+                                let x = a[i];
+
+                                if (x < epsilon && x > -epsilon)
+                                    continue;
+
+                                if (x < minNonZero)
+                                    minNonZero = x;
+                                if (x > maxNonZero)
+                                    maxNonZero = x;
+                            }
+                            console.log('minNonZero:', minNonZero);
+                            console.log('maxNonZero:', maxNonZero);
+
+                            data[key]['minNonZero'] = minNonZero;
+                            data[key]['maxNonZero'] = maxNonZero;
                         }
                     }
 
@@ -126,21 +153,42 @@ function workerLoadTileData(tile_value, tile_type) {
 
 }
 
-export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale = null) {
-    let valueScale = scaleLinear().range([255, 0])
-        .domain([countTransform(0), countTransform(maxVisibleValue)])
+export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale = null, passedCountTransform) {
+    let epsilon = 0.000001;
+    console.log('minVisibleValue:', minVisibleValue);
+
+    let countTransform = x => {
+        return Math.log(x);
+    }
+
+    //let qScale = scaleQuantile().domain(data).range(range(255));
+    let valueScale = scaleLinear().range([254, 0])
+        .domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
 
     let pixData = new Uint8ClampedArray(size * 4);
 
     if (colorScale == null)
         colorScale = heatedObjectMap;
 
+    /*
+    let ctValues = data.map(x => countTransform(x));
+    let vsValues = ctValues.map(ct => Math.floor(valueScale(ct)));
+
+    //console.log('vsValues:', vsValues);
+    let f = format(".3f")
+    console.log('ctValues:', ctValues.map(x => f(x)).join(" "));
+    */
+
     try {
         for (let i = 0; i < data.length; i++) {
             let d = data[i];
-            let ct = countTransform(d);
+            let rgbIdx = 255;
 
-            let rgbIdx = Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
+            if (d > epsilon) {
+                let ct = countTransform(d);
+                rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(ct))))
+            }
+            //let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
             let rgb = colorScale[rgbIdx];
 
             pixData[i * 4] = rgb[0];

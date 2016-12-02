@@ -119,7 +119,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
 
 
-        console.log('visibleTiles:', tiles.map(x => x.join('/')).join(" "));
+        //console.log('visibleTiles:', tiles.map(x => x.join('/')).join(" "));
         // fetch the tiles that should be visible but haven't been fetched
         // and aren't in the process of being fetched
         let toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.tileId) && !fetchedTileIDs.has(x.tileId))
@@ -133,8 +133,6 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         let toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
 
         this.removeTiles(toRemove);
-        this.fetchNewTiles(toFetch);
-
         this.fetchNewTiles(toFetch);
     }
 

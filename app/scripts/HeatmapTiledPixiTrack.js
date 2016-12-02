@@ -68,20 +68,22 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 sprite.y = this._refYScale(tileY);
             }
 
+        /*
         console.log('sprite.x:', sprite.x);
         console.log('sprite.y:', sprite.y);
         console.log('sprite.scale:', sprite.scale);
+        */
     }
 
     minVisibleValue() {
-         let min = Math.min.apply(null, Object.keys(this.fetchedTiles).map(x => this.fetchedTiles[x].tileData.min_value));
-         //console.log('min', min);
+         let min = Math.min.apply(null, Object.keys(this.fetchedTiles).map(x => this.fetchedTiles[x].tileData.minNonZero));
+         console.log('min', min);
          return min;
     }
 
     maxVisibleValue() {
-         let max = Math.max.apply(null, Object.keys(this.fetchedTiles).map(x => this.fetchedTiles[x].tileData.max_value));
-         //console.log('max:', max);
+         let max = Math.max.apply(null, Object.keys(this.fetchedTiles).map(x => this.fetchedTiles[x].tileData.maxNonZero));
+         console.log('max:', max);
          return max;
     }
 
@@ -104,7 +106,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     drawTile(tile, graphics) {
         console.log('drawTile...');
         let tileData = tile.tileData;
-        let pixData = workerSetPix(tileData.dense.length, tileData.dense, this.minVisibleValue(), this.maxVisibleValue());
+        let pixData = workerSetPix(tileData.dense.length, tileData.dense, this.minVisibleValue(), 
+                                   this.maxVisibleValue());
         let fPixData = pixData.filter(x => x != 0);
         let canvas = this.tileDataToCanvas(pixData,  this.minVisibleValue(), this.maxVisibleValue());
 
