@@ -62,15 +62,20 @@ export class TiledPlot extends React.Component {
                   server: 'http://52.45.229.11'}
             ],
             'left': [
-                {'uid': slugid.nice(), type:'left-axis', width: 200}
+                {'uid': slugid.nice(), type:'left-axis', width: 100}
             ],
             'center': [
+            {   
+                uid: slugid.nice(),
+                type: 'combined',
+                height: 200,
+                contents: 
+
                 { 'server': 'http://52.45.229.11/',
                   'uid': slugid.nice(),
                   'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
-                  'type': 'heatmap',
-                  //'type': '2d-tiles',
-                    'height': 200}
+                  'type': 'heatmap'}
+                }
             ]};
 
         tracks = simpleTracks;
