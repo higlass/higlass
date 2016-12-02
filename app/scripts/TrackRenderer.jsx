@@ -310,8 +310,7 @@ export class TrackRenderer extends React.Component {
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
 
-            track.zoomed(newXScale, newYScale, this.zoomTransform.k,
-                    [this.zoomTransform.x, this.zoomTransform.y]);
+            track.zoomed(newXScale, newYScale);
             track.draw();
         }
     }
@@ -329,7 +328,7 @@ export class TrackRenderer extends React.Component {
             case '2d-tiles':
                 return new Id2DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'combined':
-                return new CombinedTrack(this.contents.map(this.createTrackObject));
+                return new CombinedTrack(track.contents.map(this.createTrackObject.bind(this)));
             default:
                 return new UnknownPixiTrack(this.props.pixiStage);
         }

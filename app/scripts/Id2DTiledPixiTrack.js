@@ -7,6 +7,14 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
 
     }
 
+    areAllVisibleTilesLoaded() {
+        
+        // we don't need to wait for any tiles to load before 
+        // drawing
+        //
+        return true;
+    }
+
     drawTile(tile, graphics) {
         let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(tile.tileData.zoomLevel, 
                                                                                  tile.tileData.tilePos);
