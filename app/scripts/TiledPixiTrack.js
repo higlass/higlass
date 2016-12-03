@@ -151,7 +151,7 @@ export class TiledPixiTrack extends PixiTrack {
             if (!(fetchedTileIDs[i] in this.tileGraphics)) {
                 console.log('adding...', fetchedTileIDs[i]);
                 let newGraphics = new PIXI.Graphics();
-                this.drawTile(this.fetchedTiles[fetchedTileIDs[i]], newGraphics);
+                this.createTile(this.fetchedTiles[fetchedTileIDs[i]], newGraphics);
                 this.pMain.addChild(newGraphics);
                 this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
             }
@@ -213,29 +213,6 @@ export class TiledPixiTrack extends PixiTrack {
          */
         this.scene.removeChild(this.pMain);
     }
-
-    drawTiles(tiles) {
-        /**
-         * Draw a set of tiles to the canvas
-         * @param tiles: An array of tiles returned by a TiledArea object.
-         *               Values need to be extracted.
-         */
-
-        // make sure we have graphics for the tiles
-        this.synchronizeTilesAndGraphics(tiles);
-
-        // need to set the valueScale that goes from 0 to the track Height
-        //console.log('tiles:', tiles);
-
-        // need to remove graphics for tiles that are gone
-        // and add graphics for tiles that are newly appeared
-        
-        for (let i = 0; i < tiles.length; i++) {
-            //draw each tile
-            this.drawTile(tiles[i]);
-        }
-    }
-
 
     loadTileData(tile, dataLoader) {
         /**

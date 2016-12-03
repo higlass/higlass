@@ -165,6 +165,8 @@ export class TrackRenderer extends React.Component {
             track.refXScale(this.xScale);
             track.refYScale(this.yScale);
         }
+
+        this.applyZoomTransform();
     }
 
     timedUpdatePositionAndDimensions(props) {
