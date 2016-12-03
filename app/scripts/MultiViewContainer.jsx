@@ -44,7 +44,9 @@ export class MultiViewContainer extends React.Component {
                                         this.state.height,
                                         { view: this.canvasElement,
                                           antialias: true, 
-                                          transparent: true } )
+                                          transparent: true,
+                                          resolution: 2
+                                        } )
 
         //PIXI.RESOLUTION=2;
 

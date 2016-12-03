@@ -20,7 +20,7 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
                                                                                  tile.tileData.tilePos);
 
         let t = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored, 
-                              {fontFamily : 'Arial', fontSize: 32, fill : 0xff1010, align : 'center'});
+                              {fontFamily : 'Arial', fontSize: 24, fill : 0xff1010, align : 'center'});
 
 
         /*
@@ -36,7 +36,7 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
         t.scale.x = tSX;
         t.scale.y = tSY;
 
-        console.log('tSX:', tSX);
+        //console.log('tSX:', tSX);
 
         graphics.removeChildren();
 

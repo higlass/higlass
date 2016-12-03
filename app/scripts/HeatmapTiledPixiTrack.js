@@ -52,7 +52,10 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 sprite.x = this._refXScale(tileY);
                 sprite.y = this._refYScale(tileX);
 
-                sprite.pivot = [this._refXScale()[1] / 2, this._refYScale()[1] / 2];
+                //sprite.pivot = [this._refXScale()[1] / 2, this._refYScale()[1] / 2];
+            
+                // I think PIXIv3 used a different method to set the pivot value
+                // because the code above no longer works as of v4
                 sprite.rotation = -Math.PI / 2;
                 sprite.scale.x *= -1;
 
