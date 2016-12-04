@@ -158,11 +158,9 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         this.pMain.scale.y = scaleY;
     }
 
-    updateGraphicsForExistingTile(fetchedTile, tileGraphics) {
-        /**
-         * No need to do anything since we just scale the existing graphics
-         * in the `zoomed` function
-         */
+    updateTile(tile) {
+        // no need to redraw this tile, usually
+        
         return;
     }
 }

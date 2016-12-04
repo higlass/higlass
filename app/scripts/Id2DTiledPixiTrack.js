@@ -16,11 +16,12 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
         return true;
     }
 
-    createTile(tile, graphics) {
+    initTile(tile) {
         /**
          * Create whatever is needed to draw this tile.
          */
          
+        let graphics = tile.graphics;
         tile.textGraphics = new PIXI.Graphics();
         //tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored, 
 

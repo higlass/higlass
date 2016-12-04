@@ -122,30 +122,21 @@ export class TiledPixiTrack extends PixiTrack {
         return true;
     }
 
-    createTile(tile, graphics) {
+    initTile(tile) {
         // create the tile
         // should be overwritten by child classes
         console.log("ERROR: unimplemented createTile:", this);
     }
 
-
-    updateGraphicsForExistingTile(fetchedTile, tileGraphics) {
-        /**
-         * We're redrawing the graphics for a tile that already 
-         * has graphics assigned.
-         *
-         * Scalable tracks don't need to do this, because they
-         * simply scale and translate the existing graphics.
-         *
-         * @param fetchedTile: A tile that has already been retrieved (e.g. 
-         *                      {   tileData: {dense: [1,1,1]},
-         *                          tileId: sdfsds.0.0.0 }
-         * @param tileGraphics: The graphics that this tile has been drawn
-         *                      to
-         */
-        this.drawTile(fetchedTile,
-                      tileGraphics);
+    updateTile(tile) {
+        console.log("ERROR: unimplemented updateTile:", this);
     }
+
+    destroyTile(tile) {
+        // remove all data structures needed to draw this tile
+        console.log("ERROR: unimplemented destroyTile:", this);
+    }
+
 
     addMissingGraphics() {
         /**
@@ -157,8 +148,11 @@ export class TiledPixiTrack extends PixiTrack {
             if (!(fetchedTileIDs[i] in this.tileGraphics)) {
                 console.log('adding...', fetchedTileIDs[i]);
                 let newGraphics = new PIXI.Graphics();
-                this.createTile(this.fetchedTiles[fetchedTileIDs[i]], newGraphics);
                 this.pMain.addChild(newGraphics);
+
+                this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;
+                this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
+
                 this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
             }
         }
@@ -180,6 +174,7 @@ export class TiledPixiTrack extends PixiTrack {
 
             if (!fetchedTileIDs.has(tileIdStr)) {
                 console.log('deleting...', tileIdStr);
+                this.destroyTile(this.fetchedTiles[fetchedTileIDs]);
                 this.pMain.removeChild(this.tileGraphics[tileIdStr]);
                 delete this.tileGraphics[tileIdStr];
             }
@@ -193,9 +188,8 @@ export class TiledPixiTrack extends PixiTrack {
         let fetchedTileIDs = Object.keys(this.fetchedTiles);
 
         for (let i = 0; i < fetchedTileIDs.length; i++) {
-            this.updateGraphicsForExistingTile(this.fetchedTiles[fetchedTileIDs[i]], 
-                          this.tileGraphics[fetchedTileIDs[i]]);
         
+            this.updateTile(this.fetchedTiles[fetchedTileIDs[i]]);
         }
     }
 
