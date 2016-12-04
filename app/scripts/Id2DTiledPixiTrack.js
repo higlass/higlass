@@ -25,6 +25,7 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
         tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored, 
                               {fontFamily : 'Arial', fontSize: 24, fill : 0xff1010, align : 'center'});
 
+        tile.text.y = 100;
         tile.textGraphics.addChild(tile.text);
         graphics.addChild(tile.textGraphics);
 
@@ -50,16 +51,19 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
         let tSX = 1 / ((this._xScale(1) - this._xScale(0)) / (this._refXScale(1) - this._refXScale(0)));
         let tSY = 1 / ((this._yScale(1) - this._yScale(0)) / (this._refYScale(1) - this._refYScale(0)));
 
-        graphics.lineStyle(2 * tSX, 0x0000FF, 2);
-        graphics.beginFill(0xFF700B, 0.4);
-        graphics.alpha = 0.5;
 
         tile.text.scale.x = tSX;
         tile.text.scale.y = tSY;
 
-        console.log('tSX:', tSX, 'tSY:',tSY);
+        //console.log('tSX:', tSX, 'tSY:',tSY);
 
         graphics.clear();
+
+        //console.log('4 * tSX:', 4 * tSX);
+
+        graphics.lineStyle(4 * tSX, 0x0000FF, 1);
+        graphics.beginFill(0xFF700B, 0.4);
+        graphics.alpha = 0.5;
 
         // line needs to be scaled down so that it doesn't become huge
 

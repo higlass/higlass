@@ -122,6 +122,12 @@ export class TiledPixiTrack extends PixiTrack {
         return true;
     }
 
+    createTile(tile, graphics) {
+        // create the tile
+        // should be overwritten by child classes
+        console.log("ERROR: unimplemented createTile:", this);
+    }
+
 
     updateGraphicsForExistingTile(fetchedTile, tileGraphics) {
         /**
