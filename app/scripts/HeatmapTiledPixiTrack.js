@@ -99,8 +99,9 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
     }
 
-    drawTile(tile, graphics) {
+    initTile(tile) {
         //console.log('drawTile...');
+        let graphics = tile.graphics;
         let tileData = tile.tileData;
         let pixData = workerSetPix(tileData.dense.length, tileData.dense, this.minVisibleValue(), 
                                    this.maxVisibleValue());
