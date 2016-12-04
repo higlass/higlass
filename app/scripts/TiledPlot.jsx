@@ -55,13 +55,11 @@ export class TiledPlot extends React.Component {
 
         let simpleTracks = {
             'top': [
-                {'uid': slugid.nice(), type:'top-axis'}
-                /*
+                {'uid': slugid.nice(), type:'top-axis'},
                 {'uid': slugid.nice(), 
-                    type:'top-line',
+                    type:'horizontal-1d-tiles',
                   tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
                   server: 'http://52.45.229.11'}
-                  */
             ],
             'left': [
                 {'uid': slugid.nice(), type:'left-axis', width: 100}
@@ -73,6 +71,7 @@ export class TiledPlot extends React.Component {
                     height: 200,
                     contents: 
                     [
+                    /*
                         { 'server': 'http://52.45.229.11/',
                           'uid': slugid.nice(),
                           'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
@@ -84,6 +83,7 @@ export class TiledPlot extends React.Component {
                           'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
                           'type': '2d-tiles'
                         }
+                        */
                     ]
                 }
             ]};

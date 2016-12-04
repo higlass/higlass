@@ -13,6 +13,14 @@ export class TiledPixiTrack extends PixiTrack {
          * @param tilesetUid: The data set to get the tiles from the server
          */
         super(scene);
+        // the tiles which should be visible (although they're not necessarily fetched)
+        this.visibleTiles = new Set();
+        
+        // the tiles we already have requests out for
+        this.fetching = new Set();
+
+        // tiles we have fetched and ready to be rendered
+        this.fetchedTiles = {};
 
         let tilesetInfo = null;
 
@@ -31,6 +39,36 @@ export class TiledPixiTrack extends PixiTrack {
             this.maxZoom = +this.tilesetInfo['max_zoom'];
             this.refreshTiles();
         });
+    }
+
+    calculateZoomLevel() {
+        let xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+                                                      this.tilesetInfo.min_pos[0],
+                                                      this.tilesetInfo.max_pos[0]);
+        let yZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+                                                      this.tilesetInfo.min_pos[1],
+                                                      this.tilesetInfo.max_pos[1]);
+
+        this.zoomLevel = Math.max(xZoomLevel, yZoomLevel);
+        this.zoomLevel = Math.min(this.zoomLevel, this.maxZoom);
+    }
+
+    setVisibleTiles(tilePositions) {
+        /**
+         * Set which tiles are visible right now.
+         *
+         * @param tiles: A set of tiles which will be considered the currently visible
+         * tile positions.
+         */
+        this.visibleTiles = tilePositions.map(x => {
+            return {
+                tileId: this.tileToLocalId(x),
+                remoteId: this.tileToRemoteId(x),
+                mirrored: x.mirrored
+            }
+        });
+
+        this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
     }
     
     refreshTiles() {

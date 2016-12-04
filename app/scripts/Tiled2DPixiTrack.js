@@ -4,15 +4,6 @@ import {tileProxy} from './TileProxy.js';
 export class Tiled2DPixiTrack extends TiledPixiTrack {
     constructor(scene, server, uid) {
         super(scene, server, uid);
-
-        // the tiles which should be visible (although they're not necessarily fetched)
-        this.visibleTiles = new Set();
-        
-        // the tiles we already have requests out for
-        this.fetching = new Set();
-
-        // tiles we have fetched and ready to be rendered
-        this.fetchedTiles = {};
     }
 
     tileToLocalId(tile) {
@@ -40,15 +31,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         if (!this.tilesetInfo)
             return;
 
-        let xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
-                                                      this.tilesetInfo.min_pos[0],
-                                                      this.tilesetInfo.max_pos[0]);
-        let yZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
-                                                      this.tilesetInfo.min_pos[1],
-                                                      this.tilesetInfo.max_pos[1]);
-
-        this.zoomLevel = Math.max(xZoomLevel, yZoomLevel);
-        this.zoomLevel = Math.min(this.zoomLevel, this.maxZoom);
+        this.calculateZoomLevel();
 
         this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale, 
                                                this.tilesetInfo.min_pos[0],
@@ -104,16 +87,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
             }
         }
 
-        this.visibleTiles = tiles.map(x => {
-            return {
-                tileId: this.tileToLocalId(x),
-                remoteId: this.tileToRemoteId(x),
-                mirrored: x.mirrored
-            }
-        });
-
-        this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
-
+        this.setVisibleTiles(tiles);
     }
 
 
