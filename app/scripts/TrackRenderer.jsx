@@ -166,6 +166,9 @@ export class TrackRenderer extends React.Component {
 
             track.refXScale(this.xScale);
             track.refYScale(this.yScale);
+
+            // e.g. when the track is resized... we want to redraw it
+            track.draw();
         }
 
         this.applyZoomTransform();

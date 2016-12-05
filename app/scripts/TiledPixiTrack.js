@@ -320,6 +320,9 @@ export class TiledPixiTrack extends PixiTrack {
         this.pMain.drawRect(0,0,
                             this.dimensions[0], this.dimensions[1]);
                             */
+        for (let uid in this.fetchedTiles)
+            this.drawTile(this.fetchedTiles[uid]);
+
     }
 
     drawTile(tileData, graphics) {
