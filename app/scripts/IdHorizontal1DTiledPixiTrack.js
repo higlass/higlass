@@ -24,15 +24,8 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
         tile.textGraphics = new PIXI.Graphics();
         //tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored, 
 
-        if (tile.mirrored) {
-            // mirrored tiles have their x and y coordinates reversed
-            tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + [tile.tileData.tilePos[1], tile.tileData.tilePos[0]].join('/'), 
-                                  {fontFamily : 'Arial', fontSize: 48, fill : 0xff1010, align : 'center'});
-        } else {
-            tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/'), 
-                                  {fontFamily : 'Arial', fontSize: 48, fill : 0xff1010, align : 'center'});
-
-        }
+        tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/'), 
+                              {fontFamily : 'Arial', fontSize: 32, fill : 0xff1010, align : 'center'});
 
         //tile.text.y = 100;
         tile.textGraphics.addChild(tile.text);
@@ -72,29 +65,17 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
 
         // line needs to be scaled down so that it doesn't become huge
 
-
+        let tileScaledHeight = this.dimensions[1];
         // fun tile positioning when it's mirrored, except this is just a rectangle
         // that doesn't need to be rotated so it's easy
-        if (tile.mirrored) {
-            let tileScaledWidth = this._refXScale(tileY + tileWidth) - this._refXScale(tileY);
-            let tileScaledHeight = this._refYScale(tileX + tileWidth) - this._refYScale(tileX);
-    
-            // add tileScaledHeight / 2 and tileScaledWidth / 2 to center the text on the tile
-            tile.textGraphics.position.x = this._refXScale(tileY) + tileScaledWidth / 2;
-            tile.textGraphics.position.y = this._refYScale(tileX) + tileScaledHeight / 2;
-
-            graphics.drawRect(this._refXScale(tileY), this._refYScale(tileX), tileScaledWidth, tileScaledHeight);
-        } else {
             let tileScaledWidth = this._refXScale(tileX + tileWidth) - this._refXScale(tileX);
-            let tileScaledHeight = this._refYScale(tileY + tileWidth) - this._refYScale(tileY);
 
-            // add tileScaledHeight / 2 and tileScaledWidth / 2 to center the text on the tile
-            tile.textGraphics.position.x = this._refXScale(tileX) + tileScaledWidth / 2;
-            tile.textGraphics.position.y = this._refYScale(tileY) + tileScaledHeight / 2;;
+        // add tileScaledHeight / 2 and tileScaledWidth / 2 to center the text on the tile
+        tile.textGraphics.position.x = this._refXScale(tileX) + tileScaledWidth / 2;
+        tile.textGraphics.position.y = tileScaledHeight / 2;;
 
-            graphics.drawRect(this._refXScale(tileX), this._refYScale(tileY), tileScaledWidth, tileScaledHeight);
-
-        }
+        // position the graphics
+        graphics.drawRect(this._refXScale(tileX), 0, tileScaledWidth, tileScaledHeight);
     }
 
     fetchNewTiles(toFetch) {

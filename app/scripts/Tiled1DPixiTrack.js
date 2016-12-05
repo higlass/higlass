@@ -86,15 +86,16 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
     }
 
 
-    /*
     zoomed(newXScale, newYScale) {
         super.zoomed(newXScale, newYScale);
 
+        // we only scale along 1 dimension
+
         let scaleX = (newXScale(1) - newXScale(0))/ (this._refXScale(1) - this._refXScale(0));
-        let scaleY = (newYScale(1) - newYScale(0))/ (this._refYScale(1) - this._refYScale(0));
+        let scaleY = 1;
 
         let translateX = (newXScale(0) + this.position[0]) - this._refXScale(0) * scaleX;
-        let translateY = (newYScale(0) + this.position[1]) - this._refYScale(1) * scaleY;
+        let translateY = this.position[1];
 
         this.pMain.position.x = translateX;
         this.pMain.position.y = translateY;
@@ -102,7 +103,6 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
         this.pMain.scale.x = scaleX;
         this.pMain.scale.y = scaleY;
     }
-    */
 
     updateTile(tile) {
         // no need to redraw this tile, usually
