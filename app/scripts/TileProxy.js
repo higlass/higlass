@@ -106,6 +106,45 @@ class TileProxy  {
             .send(outUrl);
         */
     }
+
+    tileDataToPixData(tile, minVisibleValue, maxVisibleValue, finished) {
+        /**
+         * Render 2D tile data. Convert the raw values to an array of 
+         * color values
+         *
+         * @param finished: A callback to let the caller know that the worker thread
+         *                  has converted tileData to pixData
+         */
+
+            let tileData = tile.tileData;
+            var scriptPath = document.location.href;
+            console.log('scriptPath', scriptPath);
+            
+            // clone the tileData so that the original array doesn't get neutered
+            // when being passed to the worker script
+            let newTileData = new Float32Array(tileData.dense.length);
+            newTileData.set(tileData.dense);
+
+            console.log('running...', tile.tileId);
+            let job = this
+            this.threadPool.run(function(input, done) {
+                        let tileData = input.tileData;
+                        importScripts(input.scriptPath + '/scripts/worker.js');
+                        let pixData = worker.workerSetPix(tileData.length, tileData, 
+                                                          input.minVisibleValue,
+                                                          input.maxVisibleValue);
+                        done.transfer({'pixData': pixData}, [pixData.buffer]);
+
+                     })
+               .on('done', function(job, message) {
+                   console.log('done...', job);
+                   finished(message.pixData);
+               })
+               .on('error', function(job, error) {
+                    console.log('error', error);
+               })
+            .send({scriptPath: scriptPath, tileData: newTileData, minVisibleValue: minVisibleValue, maxVisibleValue: maxVisibleValue}, [newTileData.buffer]);
+    }
 }
 
 export let tileProxy = new TileProxy();

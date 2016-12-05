@@ -17,6 +17,58 @@ function countTransform(count) {
 */
 let epsilon = 0.0000001;
 
+export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale = null, passedCountTransform) {
+    let epsilon = 0.000001;
+    //console.log('minVisibleValue:', minVisibleValue);
+
+    let countTransform = x => {
+        return Math.log(x);
+    }
+
+    //let qScale = scaleQuantile().domain(data).range(range(255));
+    let valueScale = scaleLinear().range([254, 0])
+        .domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
+
+    let pixData = new Uint8ClampedArray(size * 4);
+
+    if (colorScale == null)
+        colorScale = heatedObjectMap;
+
+    /*
+    let ctValues = data.map(x => countTransform(x));
+    let vsValues = ctValues.map(ct => Math.floor(valueScale(ct)));
+
+    //console.log('vsValues:', vsValues);
+    let f = format(".3f")
+    console.log('ctValues:', ctValues.map(x => f(x)).join(" "));
+    */
+
+    try {
+        for (let i = 0; i < data.length; i++) {
+            let d = data[i];
+            let rgbIdx = 255;
+
+            if (d > epsilon) {
+                let ct = countTransform(d);
+                rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(ct))))
+            }
+            //let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
+            let rgb = colorScale[rgbIdx];
+
+            pixData[i * 4] = rgb[0];
+            pixData[i * 4 + 1] = rgb[1];
+            pixData[i * 4 + 2] = rgb[2];
+            pixData[i * 4 + 3] = rgb[3];
+        }
+        ;
+    } catch (err) {
+        console.log('ERROR:', err);
+        return pixData;
+    }
+
+    return pixData;
+}
+
 export function workerGetTilesetInfo(url, done) {
     json(url, (error, data) => {
         if (error) {
@@ -151,58 +203,7 @@ function workerLoadTileData(tile_value, tile_type) {
 
 }
 
-export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale = null, passedCountTransform) {
-    let epsilon = 0.000001;
-    //console.log('minVisibleValue:', minVisibleValue);
-
-    let countTransform = x => {
-        return Math.log(x);
-    }
-
-    //let qScale = scaleQuantile().domain(data).range(range(255));
-    let valueScale = scaleLinear().range([254, 0])
-        .domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
-
-    let pixData = new Uint8ClampedArray(size * 4);
-
-    if (colorScale == null)
-        colorScale = heatedObjectMap;
-
-    /*
-    let ctValues = data.map(x => countTransform(x));
-    let vsValues = ctValues.map(ct => Math.floor(valueScale(ct)));
-
-    //console.log('vsValues:', vsValues);
-    let f = format(".3f")
-    console.log('ctValues:', ctValues.map(x => f(x)).join(" "));
-    */
-
-    try {
-        for (let i = 0; i < data.length; i++) {
-            let d = data[i];
-            let rgbIdx = 255;
-
-            if (d > epsilon) {
-                let ct = countTransform(d);
-                rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(ct))))
-            }
-            //let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
-            let rgb = colorScale[rgbIdx];
-
-            pixData[i * 4] = rgb[0];
-            pixData[i * 4 + 1] = rgb[1];
-            pixData[i * 4 + 2] = rgb[2];
-            pixData[i * 4 + 3] = rgb[3];
-        }
-        ;
-    } catch (err) {
-        console.log('ERROR:', err);
-        return pixData;
-    }
-
-    return pixData;
-}
-
+/*
 self.addEventListener('message', function (e) {
     //should only be called when workerSetPix needs to be called
     let passedData = e.data;
@@ -231,6 +232,7 @@ self.addEventListener('message', function (e) {
     };
     self.postMessage(returnObj, [returnObj.pixData.buffer]);
 }, false);
+*/
 
 /*
 module.exports = function (passedData, done) {

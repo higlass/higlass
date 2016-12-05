@@ -1,7 +1,7 @@
 import {Tiled2DPixiTrack} from './Tiled2DPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 import {workerSetPix} from './worker.js';
-//import {LRUCache} from './lru.js';
+import {Pool} from 'threads';
 
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     constructor(scene, server, uid) {
@@ -99,26 +99,38 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
     }
 
+
     initTile(tile) {
-        //console.log('drawTile...');
-        let graphics = tile.graphics;
-        let tileData = tile.tileData;
-        let pixData = workerSetPix(tileData.dense.length, tileData.dense, this.minVisibleValue(), 
-                                   this.maxVisibleValue());
-        let fPixData = pixData.filter(x => x != 0);
-        let canvas = this.tileDataToCanvas(pixData,  this.minVisibleValue(), this.maxVisibleValue());
+        /**
+         * Convert the raw tile data to a rendered array of values which can be represented as a sprite.
+         *
+         * @param tile: The data structure containing all the tile information. Relevant to
+         *              this function are tile.tileData = {'dense': [...], ...}
+         *              and tile.graphics
+         */
+        console.log('initTile:', tile);
+        tileProxy.tileDataToPixData(tile, this.minVisibleValue(), 
+                                                  this.maxVisibleValue(), 
+                                                  function(pixData) {
+            // the tileData has been converted to pixData by the worker script and needs to be loaded 
+            // as a sprite
+            //console.log('tile:', tile);
+            let graphics = tile.graphics;
+            let canvas = this.tileDataToCanvas(pixData,  this.minVisibleValue(), this.maxVisibleValue());
 
-        let sprite = null;
+            let sprite = null;
 
-        if (tileData.zoomLevel == this.maxZoom)
-            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
-        else
-            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+            if (tile.tileData.zoomLevel == this.maxZoom)
+                sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+            else
+                sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
 
-        this.setSpriteProperties(sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
+            this.setSpriteProperties(sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
 
-        graphics.removeChildren();
-        graphics.addChild(sprite);
+            graphics.removeChildren();
+            graphics.addChild(sprite);
+        }.bind(this));
+
         //console.log('pixData:', pixData);
     }
 }
