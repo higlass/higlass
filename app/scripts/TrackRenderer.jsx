@@ -11,6 +11,7 @@ import {UnknownPixiTrack} from './UnknownPixiTrack.js';
 import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack.js';
 import {Id2DTiledPixiTrack} from './Id2DTiledPixiTrack.js';
 import {IdHorizontal1DTiledPixiTrack} from './IdHorizontal1DTiledPixiTrack.js';
+import {IdVertical1DTiledPixiTrack} from './IdVertical1DTiledPixiTrack.js';
 import {TopLineTiledPixiTrack} from './TopLineTiledPixiTrack.js';
 import {TopAxisTrack} from './TopAxisTrack.js';
 import {LeftAxisTrack} from './LeftAxisTrack.js';
@@ -330,6 +331,8 @@ export class TrackRenderer extends React.Component {
                 return new HeatmapTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'horizontal-1d-tiles':
                 return new IdHorizontal1DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
+            case 'vertical-1d-tiles':
+                return new IdVertical1DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case '2d-tiles':
                 return new Id2DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'combined':

@@ -72,36 +72,24 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
          * Get the tile's position in its coordinate system.
          */
         let xTilePos = tilePos[0];
+        let yTilePos = tilePos[0];
 
         let totalWidth = this.tilesetInfo.max_width;
+        let totalHeight = this.tilesetInfo.max_width;
 
         let minX = 0;
+        let minY = 0;
 
         let tileWidth = totalWidth / Math.pow(2, zoomLevel);
+        let tileHeight = totalHeight / Math.pow(2, zoomLevel);
 
         let tileX = minX + xTilePos * tileWidth;
+        let tileY = minY + yTilePos * tileHeight;
 
         return { tileX: tileX,
-                 tileWidth: tileWidth}
-    }
-
-
-    zoomed(newXScale, newYScale) {
-        super.zoomed(newXScale, newYScale);
-
-        // we only scale along 1 dimension
-
-        let scaleX = (newXScale(1) - newXScale(0))/ (this._refXScale(1) - this._refXScale(0));
-        let scaleY = 1;
-
-        let translateX = (newXScale(0) + this.position[0]) - this._refXScale(0) * scaleX;
-        let translateY = this.position[1];
-
-        this.pMain.position.x = translateX;
-        this.pMain.position.y = translateY;
-
-        this.pMain.scale.x = scaleX;
-        this.pMain.scale.y = scaleY;
+                tileY: tileY,
+                 tileWidth: tileWidth,
+                tileHeight: tileHeight}
     }
 
     updateTile(tile) {
@@ -109,5 +97,28 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
         // unless the data scale changes or something like that
         
         return;
+    }
+
+    fetchNewTiles(toFetch) {
+        // no real fetching involved... we just need to display the data
+        toFetch.map(x => {
+            let key = x.remoteId;
+            let keyParts = key.split('.');
+
+            let data = {
+                zoomLevel: keyParts[1],
+                tilePos: keyParts.slice(2, keyParts.length).map(x => +x)
+            }
+
+            this.fetchedTiles[x.tileId] = x;
+            this.fetchedTiles[x.tileId].tileData = data;
+
+            // since we're not actually fetching remote data, we can easily 
+            // remove these tiles from the fetching list
+            if (this.fetching.has(x.remoteId))
+                this.fetching.delete(x.remoteId);
+        });
+
+        this.synchronizeTilesAndGraphics();
     }
 }

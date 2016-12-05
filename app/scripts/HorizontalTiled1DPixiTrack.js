@@ -30,27 +30,20 @@ export class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
         return this._xScale;
     }
 
-    fetchNewTiles(toFetch) {
-        // no real fetching involved... we just need to display the data
-        toFetch.map(x => {
-            let key = x.remoteId;
-            let keyParts = key.split('.');
+    zoomed(newXScale, newYScale) {
+        super.zoomed(newXScale, newYScale);
 
-            let data = {
-                zoomLevel: keyParts[1],
-                tilePos: keyParts.slice(2, keyParts.length).map(x => +x)
-            }
+        // we only scale along 1 dimension
+        let scaleX = (newXScale(1) - newXScale(0))/ (this._refXScale(1) - this._refXScale(0));
+        let scaleY = 1;
 
-            this.fetchedTiles[x.tileId] = x;
-            this.fetchedTiles[x.tileId].tileData = data;
+        let translateX = (newXScale(0) + this.position[0]) - this._refXScale(0) * scaleX;
+        let translateY = this.position[1];
 
-            // since we're not actually fetching remote data, we can easily 
-            // remove these tiles from the fetching list
-            if (this.fetching.has(x.remoteId))
-                this.fetching.delete(x.remoteId);
-        });
+        this.pMain.position.x = translateX;
+        this.pMain.position.y = translateY;
 
-        this.synchronizeTilesAndGraphics();
+        this.pMain.scale.x = scaleX;
+        this.pMain.scale.y = scaleY;
     }
-
 }
