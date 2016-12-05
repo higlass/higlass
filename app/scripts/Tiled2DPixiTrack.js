@@ -10,6 +10,8 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         /*
          * The local tile identifier
          */
+
+        // tile contains [zoomLevel, xPos, yPos]
         return this.tilesetUid + '.' + tile.join('.') + '.' + tile.mirrored;
     }
 
@@ -17,6 +19,8 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         /**
          * The tile identifier used on the server
          */
+
+        // tile contains [zoomLevel, xPos, yPos]
         return this.tilesetUid + '.' + tile.join('.');
     }
 
@@ -25,13 +29,27 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         return idParts.slice(0, idParts.length-1).join('.');
     }
 
+    calculateZoomLevel() {
+        let xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+                                                      this.tilesetInfo.min_pos[0],
+                                                      this.tilesetInfo.max_pos[0]);
+        let yZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+                                                      this.tilesetInfo.min_pos[1],
+                                                      this.tilesetInfo.max_pos[1]);
+
+        let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
+        zoomLevel = Math.min(zoomLevel, this.maxZoom);
+
+        return zoomLevel
+    }
+
     calculateVisibleTiles() {
         // if we don't know anything about this dataset, no point
         // in trying to get tiles
         if (!this.tilesetInfo)
             return;
 
-        this.calculateZoomLevel();
+        this.zoomLevel = this.calculateZoomLevel();
 
         this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale, 
                                                this.tilesetInfo.min_pos[0],

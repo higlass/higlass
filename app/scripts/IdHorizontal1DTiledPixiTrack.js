@@ -5,7 +5,6 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     constructor(scene, server, uid) {
         super(scene, server, uid);
 
-        this.text
     }
 
     areAllVisibleTilesLoaded() {
@@ -58,10 +57,10 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
         // the text needs to be scaled down so that it doesn't become huge
         // when we zoom in 
         let tSX = 1 / ((this._xScale(1) - this._xScale(0)) / (this._refXScale(1) - this._refXScale(0)));
-        let tSY = 1 / ((this._yScale(1) - this._yScale(0)) / (this._refYScale(1) - this._refYScale(0)));
+        //let tSY = 1 / ((this._yScale(1) - this._yScale(0)) / (this._refYScale(1) - this._refYScale(0)));
 
         tile.text.scale.x = tSX;
-        tile.text.scale.y = tSY;
+        //tile.text.scale.y = tSY;
 
         //console.log('tSX:', tSX, 'tSY:',tSY);
 

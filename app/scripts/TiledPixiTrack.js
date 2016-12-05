@@ -41,17 +41,6 @@ export class TiledPixiTrack extends PixiTrack {
         });
     }
 
-    calculateZoomLevel() {
-        let xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
-                                                      this.tilesetInfo.min_pos[0],
-                                                      this.tilesetInfo.max_pos[0]);
-        let yZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
-                                                      this.tilesetInfo.min_pos[1],
-                                                      this.tilesetInfo.max_pos[1]);
-
-        this.zoomLevel = Math.max(xZoomLevel, yZoomLevel);
-        this.zoomLevel = Math.min(this.zoomLevel, this.maxZoom);
-    }
 
     setVisibleTiles(tilePositions) {
         /**

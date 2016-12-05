@@ -11,14 +11,18 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
         /*
          * The local tile identifier
          */
-        return this.tilesetUid + '.' + tile;
+
+        // tile contains [zoomLevel, xPos]
+        return this.tilesetUid + '.' + tile.join('.');
     }
 
     tileToRemoteId(tile) {
         /**
          * The tile identifier used on the server
          */
-        return this.tilesetUid + '.' + tile;
+
+        // tile contains [zoomLevel, xPos]
+        return this.tilesetUid + '.' + tile.join('.');
     }
 
     localToRemoteId(remoteId) {
@@ -47,7 +51,7 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
             return;
 
         // calculate the zoom level given the scales and the data bounds
-        this.calculateZoomLevel(); 
+        this.zoomLevel = this.calculateZoomLevel(); 
 
         // x doesn't necessary mean 'x' axis, it just refers to the relevant axis
         // (x if horizontal, y if vertical)
@@ -57,7 +61,7 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
                                                this.tilesetInfo.max_zoom,
                                                this.tilesetInfo.max_width);
 
-        let tiles = xTiles;
+        let tiles = xTiles.map(x => [this.zoomLevel, x]);
 
         this.setVisibleTiles(tiles);
     }
