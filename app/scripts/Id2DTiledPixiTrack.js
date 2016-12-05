@@ -51,7 +51,11 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
 
     }
 
-    drawTile(tile, graphics) {
+    drawTile(tile) {
+        if (!tile.graphics)
+            return;
+
+        let graphics = tile.graphics;
         let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(tile.tileData.zoomLevel, 
                                                                                  tile.tileData.tilePos);
 

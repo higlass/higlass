@@ -115,13 +115,13 @@ export class TiledPixiTrack extends PixiTrack {
     }
 
     setPosition(newPosition) {
-        this.position = newPosition;
+        super.setPosition(newPosition);
 
         this.draw();
     }
 
     setDimensions(newDimensions) {
-        this.dimensions = newDimensions;
+        super.setDimensions(newDimensions);
 
         this.draw();
     }
@@ -231,14 +231,6 @@ export class TiledPixiTrack extends PixiTrack {
         this.addMissingGraphics();
         this.updateExistingGraphics();
         this.removeOldGraphics();
-    }
-
-    remove() {
-        /**
-         * We're going to destroy this object, so we need to detach its
-         * graphics from the scene
-         */
-        this.scene.removeChild(this.pMain);
     }
 
     loadTileData(tile, dataLoader) {

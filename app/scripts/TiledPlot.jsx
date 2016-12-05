@@ -76,7 +76,6 @@ export class TiledPlot extends React.Component {
                     height: 200,
                     contents: 
                     [
-                    /*
                         { 'server': 'http://52.45.229.11/',
                           'uid': slugid.nice(),
                           'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
@@ -88,7 +87,6 @@ export class TiledPlot extends React.Component {
                           'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
                           'type': '2d-tiles'
                         }
-                        */
                     ]
                 }
             ]};
@@ -479,9 +477,12 @@ export class TiledPlot extends React.Component {
         this.centerHeight = this.state.height - this.topHeight - this.bottomHeight - 2*this.plusHeight;
         this.centerWidth = this.state.width - this.leftWidth - this.rightWidth - 2*this.plusWidth;
 
+        //let trackOutline = "1px solid black";
+        let trackOutline = "none";
+
         let topTracks = (<div style={{left: this.leftWidth + this.plusWidth, top: this.plusHeight, 
                                       width: this.centerWidth, height: this.topHeight,
-                                      outline: "1px solid black", 
+                                      outline: trackOutline,
                                       position: "absolute",}}>
                             <HorizontalTiledPlot
                                 handleCloseTrack={this.handleCloseTrack.bind(this)}
@@ -493,7 +494,7 @@ export class TiledPlot extends React.Component {
                          </div>)
         let leftTracks = (<div style={{left: this.plusWidth, top: this.topHeight + this.plusHeight, 
                                       width: this.leftWidth, height: this.centerHeight,
-                                      outline: "1px solid black", 
+                                      outline: trackOutline,
                                       position: "absolute",}}>
                             <VerticalTiledPlot
                                 handleCloseTrack={this.handleCloseTrack.bind(this)}
@@ -505,7 +506,7 @@ export class TiledPlot extends React.Component {
                          </div>)
         let rightTracks = (<div style={{right: this.plusWidth, top: this.topHeight + this.plusHeight, 
                                       width: this.rightWidth, height: this.centerHeight,
-                                      outline: "1px solid black", 
+                                      outline: trackOutline,
                                       position: "absolute",}}>
                             <VerticalTiledPlot
                                 handleCloseTrack={this.handleCloseTrack.bind(this)}
@@ -517,7 +518,7 @@ export class TiledPlot extends React.Component {
                          </div>)
         let bottomTracks = (<div style={{left: this.leftWidth + this.plusWidth, bottom: this.plusHeight,
                                       width: this.centerWidth, height: this.bottomHeight,
-                                      outline: "1px solid black", 
+                                      outline: trackOutline,
                                       position: "absolute",}}>
                             <HorizontalTiledPlot
                                 handleCloseTrack={this.handleCloseTrack.bind(this)}
