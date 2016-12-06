@@ -49,7 +49,10 @@ export class PixiTrack extends Track {
     }
 
     remove() {
-        console.log('removing...');
+        /**
+         * We're going to destroy this object, so we need to detach its
+         * graphics from the scene
+         */
         this.scene.removeChild(this.pBase);
     }
 
