@@ -75,4 +75,9 @@ export class Track {
         this.xScale(newXScale);
         this.yScale(newYScale);
     }
+
+    refScalesChanged(refXScale, refYScale) {
+        this._refXScale = refXScale;
+        this._refYScale = refYScale;
+    }
 }

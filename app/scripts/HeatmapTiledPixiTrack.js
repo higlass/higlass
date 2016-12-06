@@ -124,12 +124,27 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             else
                 sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
 
-            this.setSpriteProperties(sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
+            tile.sprite = sprite;
+            this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
 
             graphics.removeChildren();
-            graphics.addChild(sprite);
+            graphics.addChild(tile.sprite);
         }.bind(this));
 
         //console.log('pixData:', pixData);
+    }
+
+    refScalesChanged(refXScale, refYScale) {
+        super.refScalesChanged(refXScale, refYScale);
+
+        console.log('this.fetchedTiles:', this.fetchedTiles);
+        for (let uid in this.fetchedTiles) {
+            let tile = this.fetchedTiles[uid];
+
+            if (tile.sprite) {
+                console.log('tile:', tile);
+                this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
+            }
+        }
     }
 }

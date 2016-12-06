@@ -471,8 +471,6 @@ export class TiledPlot extends React.Component {
     }
 
     render() {
-        console.log('this.state.width:', this.state.width);
-
         // left, top, right, and bottom have fixed heights / widths
         // the center will vary to accomodate their dimensions
         this.topHeight = this.state.tracks['top']
@@ -541,7 +539,7 @@ export class TiledPlot extends React.Component {
 
         let rightPlus = (
                             <img
-                                onClick={() => { this.handleAddTrack('left')}}
+                                onClick={() => { this.handleAddTrack('right')}}
                                 src="images/plus.svg"
                                 style={Object.assign({}, imgStyle, {
                                         'left': this.horizontalMargin + this.leftWidth + this.centerWidth + this.rightWidth + (this.horizontalMargin - plusWidth) / 2,

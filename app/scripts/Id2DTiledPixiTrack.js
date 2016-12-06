@@ -55,6 +55,7 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
         if (!tile.graphics)
             return;
 
+        //console.log('Id2DTiled drawTile...');
         let graphics = tile.graphics;
         let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(tile.tileData.zoomLevel, 
                                                                                  tile.tileData.tilePos);
@@ -123,11 +124,5 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
         });
 
         this.synchronizeTilesAndGraphics();
-    }
-
-    updateGraphicsForExistingTile(fetchedTile, tileGraphics) {
-        console.log('fetchedTile:', fetchedTile);
-
-        this.drawTile(fetchedTile, tileGraphics);
     }
 }

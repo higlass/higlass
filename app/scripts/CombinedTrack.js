@@ -45,15 +45,22 @@ export class CombinedTrack {
         }
     }
 
-    xScale(xSCale)  {
+    xScale(xScale)  {
         for (let i = 0; i < this.childTracks.length; i++) {
             this.childTracks[i].xScale(xScale);
         }
     }
 
-    yScale(xSCale)  {
+    yScale(xScale)  {
         for (let i = 0; i < this.childTracks.length; i++) {
             this.childTracks[i].yScale(yScale);
         }
+    }
+
+    refScalesChanged(refXScale, refYScale) {
+        for (let i = 0; i < this.childTracks.length; i++) {
+            this.childTracks[i].refScalesChanged(refXScale, refYScale);
+        }
+        
     }
 }
