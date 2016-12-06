@@ -2,7 +2,6 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-    watch: true,
   context: __dirname + '/app',
   entry: {
       playground: ['./scripts/playground.jsx'],
