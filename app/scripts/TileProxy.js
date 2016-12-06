@@ -4,6 +4,7 @@ import urljoin from 'url-join';
 import {Pool} from 'threads';
 import {workerGetTilesetInfo} from './worker.js';
 import {workerFetchTiles} from './worker.js';
+import {workerSetPix} from './worker.js';
 
 class TileProxy  {
     constructor() {
@@ -23,7 +24,6 @@ class TileProxy  {
          * @param server: A string with the server's url (e.g. "http://127.0.0.1")
          * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
          */
-        console.log('tilesetIds:', tilesetIds);
         // see if any of the tilesetIds are already in the cache
         // if they are, no need to fetch them
 
@@ -126,7 +126,13 @@ class TileProxy  {
             newTileData.set(tileData.dense);
 
             console.log('running...', tile.tileId);
-            let job = this
+            // comment this and uncomment the code afterwards to enable threading
+            let pixData = workerSetPix(newTileData.length, newTileData, 
+                                              minVisibleValue,
+                                              maxVisibleValue);
+            finished(pixData);
+
+                /*
             this.threadPool.run(function(input, done) {
                         let tileData = input.tileData;
                         importScripts(input.scriptPath + '/scripts/worker.js');
@@ -144,6 +150,7 @@ class TileProxy  {
                     console.log('error', error);
                })
             .send({scriptPath: scriptPath, tileData: newTileData, minVisibleValue: minVisibleValue, maxVisibleValue: maxVisibleValue}, [newTileData.buffer]);
+            */
     }
 }
 

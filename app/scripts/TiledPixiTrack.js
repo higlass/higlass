@@ -138,8 +138,8 @@ export class TiledPixiTrack extends PixiTrack {
         let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
         this.visibleTileIds = this.visibleTiles.map(x => x.tileId);
 
-        console.log('this.visibleTileIds:', this.visibleTileIds);
-        console.log('this.fetchedTiles:', this.fetchedTiles);
+        //console.log('this.visibleTileIds:', this.visibleTileIds);
+        //console.log('this.fetchedTiles:', this.fetchedTiles);
 
         for (let i = 0; i < this.visibleTileIds.length; i++) {
             if (!fetchedTileIDs.has(this.visibleTileIds[i] ))
@@ -200,7 +200,7 @@ export class TiledPixiTrack extends PixiTrack {
         for (let tileIdStr in this.tileGraphics) {
 
             if (!fetchedTileIDs.has(tileIdStr)) {
-                console.log('deleting...', tileIdStr);
+                //console.log('deleting...', tileIdStr);
                 this.destroyTile(this.fetchedTiles[fetchedTileIDs]);
                 this.pMain.removeChild(this.tileGraphics[tileIdStr]);
                 delete this.tileGraphics[tileIdStr];
@@ -268,7 +268,7 @@ export class TiledPixiTrack extends PixiTrack {
          * We've gotten a bunch of tiles from the server in
          * response to a request from fetchTiles.
          */
-        console.log('received:', loadedTiles);
+        //console.log('received:', loadedTiles);
         for (let i = 0; i < this.visibleTiles.length; i++) {
             let tileId = this.visibleTiles[i].tileId;
 

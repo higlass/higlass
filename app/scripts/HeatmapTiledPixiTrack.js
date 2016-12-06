@@ -108,7 +108,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
          *              this function are tile.tileData = {'dense': [...], ...}
          *              and tile.graphics
          */
-        console.log('initTile:', tile);
+        console.log('initTile:', tile.tileId);
         tileProxy.tileDataToPixData(tile, this.minVisibleValue(), 
                                                   this.maxVisibleValue(), 
                                                   function(pixData) {
