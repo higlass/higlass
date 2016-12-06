@@ -42,6 +42,19 @@ export class TiledPixiTrack extends PixiTrack {
     }
 
 
+    visibleAndFetchedIds() {
+        /**
+         * Return the set of ids of all tiles which are both visible and fetched.
+         */
+
+        console.log('visibleTileIds:', this.visibleTileIds);
+        let ret = Object.keys(this.fetchedTiles).filter(x => this.visibleTileIds.has(x));
+        console.log('o:', Object.keys(this.fetchedTiles))
+        console.log('x:', this.visibleTileIds)
+        console.log('ret:', ret);
+        return ret;
+    }
+
     setVisibleTiles(tilePositions) {
         /**
          * Set which tiles are visible right now.
@@ -139,13 +152,13 @@ export class TiledPixiTrack extends PixiTrack {
 
         // tiles that are fetched
         let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
-        this.visibleTileIds = this.visibleTiles.map(x => x.tileId);
 
         //console.log('this.visibleTileIds:', this.visibleTileIds);
         //console.log('this.fetchedTiles:', this.fetchedTiles);
+        let visibleTileIdsList = [...this.visibleTileIds];
 
-        for (let i = 0; i < this.visibleTileIds.length; i++) {
-            if (!fetchedTileIDs.has(this.visibleTileIds[i] ))
+        for (let i = 0; i < visibleTileIdsList.length; i++) {
+            if (!fetchedTileIDs.has(visibleTileIdsList[i] ))
                 return false;
         }
 
@@ -294,6 +307,11 @@ export class TiledPixiTrack extends PixiTrack {
         }
 
         this.synchronizeTilesAndGraphics();
+
+        /* 
+         * Mainly called to remove old unnecessary tiles
+         */
+        this.refreshTiles();
     }
 
 
