@@ -10,6 +10,7 @@ module.exports = {
   },
   output: {
     path: __dirname + '/build',
+    publicPath: '/scripts/',
     filename: '[name].js',
     libraryTarget: 'umd',
     library: '[name]'

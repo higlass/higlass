@@ -52,6 +52,7 @@ export class TrackRenderer extends React.Component {
 
         // the center measurements, because those corresponds to the widths
         // and heights of the actual tracks
+        console.log('this.props.width:', this.props.width);
         this.initialWidth = this.props.width;
         this.initialHeight = this.props.height;
 

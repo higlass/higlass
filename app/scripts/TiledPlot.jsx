@@ -18,6 +18,7 @@ export class TiledPlot extends React.Component {
         this.uid = slugid.nice();
         this.yPositionOffset = 0;    // the offset from the Canvas and SVG elements
                                      // that the tracks will be drawn on
+
         let tracks = {
                           'top': [{'value': '1'},
                                  {'height': 20, 'value': '2'},
@@ -146,11 +147,16 @@ export class TiledPlot extends React.Component {
 
             //let heightOffset = hereTop - parentTop;
             let heightOffset = 0;
-            this.setState({
-                sizeMeasured: true,
-                height: this.element.clientHeight - heightOffset,
-                width: this.element.clientWidth
-            });
+            let height = this.element.clientHeight - heightOffset;
+            let width = this.element.clientWidth;
+                if (width > 0 && height > 0) {
+
+                    this.setState({
+                        sizeMeasured: true,
+                        width: width,
+                        height: height
+                    });
+                }
         }.bind(this));
 
         this.setState({
@@ -464,6 +470,8 @@ export class TiledPlot extends React.Component {
     }
 
     render() {
+        console.log('this.state.width:', this.state.width);
+
         // left, top, right, and bottom have fixed heights / widths
         // the center will vary to accomodate their dimensions
         this.topHeight = this.state.tracks['top']
