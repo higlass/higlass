@@ -64,5 +64,6 @@ repository and run the following commands:
 
 ```
 npm install
-gulp serve
+npm install -g webpack-dev-server
+webpack-dev-server --content-base app --display-exclude --profile | grep -v "\\[\\d*\\]"
 ```

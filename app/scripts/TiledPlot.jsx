@@ -12,12 +12,15 @@ export class TiledPlot extends React.Component {
     constructor(props) {
         super(props);
 
+        console.log('YO YO');
+
         this.closing = false;
         this.minHorizontalHeight = 20;
         this.minVerticalWidth = 20;
         this.uid = slugid.nice();
         this.yPositionOffset = 0;    // the offset from the Canvas and SVG elements
                                      // that the tracks will be drawn on
+
 
         let tracks = {
                           'top': [{'value': '1'},
