@@ -134,8 +134,8 @@ export class TiledPlot extends React.Component {
         this.centerHeight = 0;
         this.centerWidth = 0;
 
-        this.plusWidth = 54;
-        this.plusHeight = 54;
+        this.horizontalMargin = 54;
+        this.verticalMargin = 54;
     }
 
     componentDidMount() {
@@ -358,7 +358,7 @@ export class TiledPlot extends React.Component {
          * @return: The position of the track and it's height and width
          *          (e.g. {left: 10, top: 20, width: 30, height: 40}
          */
-        let top = this.plusHeight, left=this.plusWidth;
+        let top = this.verticalMargin, left=this.horizontalMargin;
         
         if (location == 'top') {
             left += this.leftWidth;
@@ -488,13 +488,70 @@ export class TiledPlot extends React.Component {
             .map((x) => { return x.width; })
             .reduce((a,b) => { return a + b; }, 0);
 
-        this.centerHeight = this.state.height - this.topHeight - this.bottomHeight - 2*this.plusHeight;
-        this.centerWidth = this.state.width - this.leftWidth - this.rightWidth - 2*this.plusWidth;
+        this.centerHeight = this.state.height - this.topHeight - this.bottomHeight - 2*this.verticalMargin;
+        this.centerWidth = this.state.width - this.leftWidth - this.rightWidth - 2*this.horizontalMargin;
 
         //let trackOutline = "1px solid black";
         let trackOutline = "none";
 
-        let topTracks = (<div style={{left: this.leftWidth + this.plusWidth, top: this.plusHeight, 
+        let plusWidth = 10;
+        let plusHeight = 10;
+
+        let imgStyle = {
+            width: plusWidth,
+            height: plusHeight,
+            opacity: 0.4,
+            display: "block",
+            position: "absolute"
+
+        };
+
+        let topPlus = (
+                            <img
+                                onClick={() => { this.handleAddTrack('top')}}
+                                src="images/plus.svg"
+                                style={Object.assign({}, imgStyle, {
+                                        'left': this.horizontalMargin + this.leftWidth +  (this.centerWidth - plusWidth) / 2,
+                                        'top': (this.verticalMargin + plusHeight)/2
+                                    })}
+                            />
+                )
+ 
+        let bottomPlus = (
+                            <img
+                                onClick={() => { this.handleAddTrack('bottom')}}
+                                src="images/plus.svg"
+                                style={Object.assign({}, imgStyle, {
+                                        'left': this.horizontalMargin + this.leftWidth +  (this.centerWidth - plusWidth) / 2,
+                                        'top': (this.verticalMargin + this.topHeight + this.centerHeight + this.bottomHeight + (this.verticalMargin - plusHeight)/2)
+                                    })}
+                            />
+                )               
+
+        let leftPlus = (
+                            <img
+                                onClick={() => { this.handleAddTrack('left')}}
+                                src="images/plus.svg"
+                                style={Object.assign({}, imgStyle, {
+                                        'left': (this.horizontalMargin - plusWidth) / 2,
+                                        'top': this.verticalMargin + this.topHeight + (this.centerHeight - plusHeight)/2
+                                    })}
+                            />
+                )
+
+        let rightPlus = (
+                            <img
+                                onClick={() => { this.handleAddTrack('left')}}
+                                src="images/plus.svg"
+                                style={Object.assign({}, imgStyle, {
+                                        'left': this.horizontalMargin + this.leftWidth + this.centerWidth + this.rightWidth + (this.horizontalMargin - plusWidth) / 2,
+                                        'top': this.verticalMargin + this.topHeight + (this.centerHeight - plusHeight)/2
+                                    })}
+                            />
+                )
+
+
+        let topTracks = (<div style={{left: this.leftWidth + this.horizontalMargin, top: this.verticalMargin, 
                                       width: this.centerWidth, height: this.topHeight,
                                       outline: trackOutline,
                                       position: "absolute",}}>
@@ -506,7 +563,7 @@ export class TiledPlot extends React.Component {
                                 width={this.centerWidth}
                             />
                          </div>)
-        let leftTracks = (<div style={{left: this.plusWidth, top: this.topHeight + this.plusHeight, 
+        let leftTracks = (<div style={{left: this.horizontalMargin, top: this.topHeight + this.verticalMargin, 
                                       width: this.leftWidth, height: this.centerHeight,
                                       outline: trackOutline,
                                       position: "absolute",}}>
@@ -518,7 +575,7 @@ export class TiledPlot extends React.Component {
                                 height={this.centerHeight}
                             />
                          </div>)
-        let rightTracks = (<div style={{right: this.plusWidth, top: this.topHeight + this.plusHeight, 
+        let rightTracks = (<div style={{right: this.horizontalMargin, top: this.topHeight + this.verticalMargin, 
                                       width: this.rightWidth, height: this.centerHeight,
                                       outline: trackOutline,
                                       position: "absolute",}}>
@@ -530,7 +587,7 @@ export class TiledPlot extends React.Component {
                                 height={this.centerHeight}
                             />
                          </div>)
-        let bottomTracks = (<div style={{left: this.leftWidth + this.plusWidth, bottom: this.plusHeight,
+        let bottomTracks = (<div style={{left: this.leftWidth + this.horizontalMargin, bottom: this.verticalMargin,
                                       width: this.centerWidth, height: this.bottomHeight,
                                       outline: trackOutline,
                                       position: "absolute",}}>
@@ -561,8 +618,8 @@ export class TiledPlot extends React.Component {
                     height={this.state.height}
                     centerWidth={this.centerWidth}
                     centerHeight={this.centerHeight}
-                    marginTop={this.plusHeight}
-                    marginLeft={this.plusWidth}
+                    marginTop={this.verticalMargin}
+                    marginLeft={this.horizontalMargin}
                     topHeight={this.topHeight}
                     leftWidth={this.leftWidth}
                     positionedTracks={positionedTracks}
@@ -578,6 +635,11 @@ export class TiledPlot extends React.Component {
                                 }}
                     />
                     {/*trackPositionTexts*/}
+
+                    {topPlus}
+                    {leftPlus}
+                    {rightPlus}
+                    {bottomPlus}
 
                     {topTracks}
                     {leftTracks}
