@@ -118,14 +118,14 @@ class TileProxy  {
 
             let tileData = tile.tileData;
             var scriptPath = document.location.href;
-            console.log('scriptPath', scriptPath);
+            //console.log('scriptPath', scriptPath);
             
             // clone the tileData so that the original array doesn't get neutered
             // when being passed to the worker script
             let newTileData = new Float32Array(tileData.dense.length);
             newTileData.set(tileData.dense);
 
-            console.log('running...', tile.tileId);
+            //console.log('running...', tile.tileId);
             // comment this and uncomment the code afterwards to enable threading
             let pixData = workerSetPix(newTileData.length, newTileData, 
                                               minVisibleValue,

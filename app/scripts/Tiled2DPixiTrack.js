@@ -50,6 +50,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
             return;
 
         this.zoomLevel = this.calculateZoomLevel();
+        //this.zoomLevel = 0;
 
         this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale, 
                                                this.tilesetInfo.min_pos[0],

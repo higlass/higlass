@@ -98,6 +98,9 @@ export class TiledPixiTrack extends PixiTrack {
         if (!toRemoveIds.length)
             return;
 
+        if (!this.areAllVisibleTilesLoaded())
+            return;
+
         toRemoveIds.forEach(x => {
             delete this.fetchedTiles[x];
         })
@@ -161,7 +164,6 @@ export class TiledPixiTrack extends PixiTrack {
 
     destroyTile(tile) {
         // remove all data structures needed to draw this tile
-        console.log("ERROR: unimplemented destroyTile:", this);
     }
 
 
@@ -201,7 +203,7 @@ export class TiledPixiTrack extends PixiTrack {
 
             if (!fetchedTileIDs.has(tileIdStr)) {
                 //console.log('deleting...', tileIdStr);
-                this.destroyTile(this.fetchedTiles[fetchedTileIDs]);
+                this.destroyTile(this.fetchedTiles[tileIdStr]);
                 this.pMain.removeChild(this.tileGraphics[tileIdStr]);
                 delete this.tileGraphics[tileIdStr];
             }
@@ -268,13 +270,20 @@ export class TiledPixiTrack extends PixiTrack {
          * We've gotten a bunch of tiles from the server in
          * response to a request from fetchTiles.
          */
-        //console.log('received:', loadedTiles);
+        console.log('received:', loadedTiles);
         for (let i = 0; i < this.visibleTiles.length; i++) {
             let tileId = this.visibleTiles[i].tileId;
 
+
             if (this.visibleTiles[i].remoteId in loadedTiles) {
-                this.visibleTiles[i].tileData = loadedTiles[this.visibleTiles[i].remoteId];
-                this.fetchedTiles[tileId] = this.visibleTiles[i];
+                console.log('this.visibleTiles[i]:', this.visibleTiles[i]);
+
+                if (!(tileId in this.fetchedTiles)) {
+                    // this tile may have graphics associated with it
+                    this.fetchedTiles[tileId] = this.visibleTiles[i];
+                }
+
+                this.fetchedTiles[tileId].tileData = loadedTiles[this.visibleTiles[i].remoteId];
             }
         }
 

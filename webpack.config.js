@@ -9,6 +9,7 @@ module.exports = {
       main: ['./scripts/main.jsx'],
       worker: ['./scripts/worker.js']
   },
+  devtool: "cheap-source-map",
   output: {
     path: __dirname + '/build',
     publicPath: '/scripts/',

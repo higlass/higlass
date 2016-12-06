@@ -35,36 +35,34 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     setSpriteProperties(sprite, zoomLevel, tilePos, mirrored) {
         let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(zoomLevel, tilePos);
 
-        console.log('setting sprite:', zoomLevel, tilePos);
-
         let tileEndX = tileX + tileWidth;
         let tileEndY = tileY + tileHeight;
 
         let spriteWidth = this._refXScale(tileEndX) - this._refXScale(tileX) ;
         let spriteHeight = this._refYScale(tileEndY) - this._refYScale(tileY)
 
-            sprite.width = this._refXScale(tileEndX) - this._refXScale(tileX)
-            sprite.height = this._refYScale(tileEndY) - this._refYScale(tileY)
+        sprite.width = this._refXScale(tileEndX) - this._refXScale(tileX)
+        sprite.height = this._refYScale(tileEndY) - this._refYScale(tileY)
 
-            if (mirrored) {
-                // this is a mirrored tile that represents the other half of a 
-                // triangular matrix
-                sprite.x = this._refXScale(tileY);
-                sprite.y = this._refYScale(tileX);
+        if (mirrored) {
+            // this is a mirrored tile that represents the other half of a 
+            // triangular matrix
+            sprite.x = this._refXScale(tileY);
+            sprite.y = this._refYScale(tileX);
 
-                //sprite.pivot = [this._refXScale()[1] / 2, this._refYScale()[1] / 2];
-            
-                // I think PIXIv3 used a different method to set the pivot value
-                // because the code above no longer works as of v4
-                sprite.rotation = -Math.PI / 2;
-                sprite.scale.x *= -1;
+            //sprite.pivot = [this._refXScale()[1] / 2, this._refYScale()[1] / 2];
+        
+            // I think PIXIv3 used a different method to set the pivot value
+            // because the code above no longer works as of v4
+            sprite.rotation = -Math.PI / 2;
+            sprite.scale.x = Math.abs(sprite.scale.x) * -1;
 
-                sprite.width = spriteHeight;
-                sprite.height = spriteWidth;
-            } else {
-                sprite.x = this._refXScale(tileX);
-                sprite.y = this._refYScale(tileY);
-            }
+            sprite.width = spriteHeight;
+            sprite.height = spriteWidth;
+        } else {
+            sprite.x = this._refXScale(tileX);
+            sprite.y = this._refYScale(tileY);
+        }
 
         /*
         console.log('sprite.x:', sprite.x);
@@ -98,7 +96,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     draw() {
 
     }
-
 
     initTile(tile) {
         /**
@@ -137,13 +134,13 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     refScalesChanged(refXScale, refYScale) {
         super.refScalesChanged(refXScale, refYScale);
 
-        console.log('this.fetchedTiles:', this.fetchedTiles);
         for (let uid in this.fetchedTiles) {
             let tile = this.fetchedTiles[uid];
 
             if (tile.sprite) {
-                console.log('tile:', tile);
                 this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
+            } else {
+                console.log('skipping...', tile.tileId);
             }
         }
     }
