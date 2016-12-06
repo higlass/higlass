@@ -12,8 +12,6 @@ export class TiledPlot extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log('YO YO');
-
         this.closing = false;
         this.minHorizontalHeight = 20;
         this.minVerticalWidth = 20;
