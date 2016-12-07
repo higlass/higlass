@@ -61,6 +61,7 @@ export class TiledPlot extends React.Component {
             ,
                 {'uid': slugid.nice(), 
                     type:'horizontal-line',
+                    height: 100,
                   tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
                   server: 'http://52.45.229.11'}
             ],
@@ -629,7 +630,7 @@ export class TiledPlot extends React.Component {
                                  width: this.state.width,
                                  height: this.state.height,
                                  background: "green",
-                                 opacity: 0.2
+                                 opacity: 0.05
                                 }}
                     />
                     {/*trackPositionTexts*/}

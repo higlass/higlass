@@ -22,20 +22,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
          */
          
         let graphics = tile.graphics;
-        tile.textGraphics = new PIXI.Graphics();
-        //tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored, 
-
-        tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/'), 
-                              {fontFamily : 'Arial', fontSize: 32, fill : 0xff1010, align : 'center'});
-
-        //tile.text.y = 100;
-        tile.textGraphics.addChild(tile.text);
-
-        tile.text.anchor.x = 0.5;
-        tile.text.anchor.y = 0.5;
-        
-    
-        graphics.addChild(tile.textGraphics);
 
         this.drawTile(tile);
     }
@@ -47,40 +33,56 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     drawTile(tile) {
         super.drawTile(tile);
 
-        console.log('tile:', tile);
         if (!tile.graphics)
             return;
 
         let graphics = tile.graphics;
 
         let {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel, tile.tileData.tilePos);
-        let tileData = tile.tileData;
+        let tileValues = tile.tileData.dense;
+
+        let valueScale = scaleLinear()
+            .domain([0, this.maxVisibleValue()])
+            .range([0, this.dimensions[1]]);
+
 
         graphics.clear();
 
         // this scale should go from an index in the data array to
         // a position in the genome coordinates
-        let tileXScale = scaleLinear().domain([0, tileData.length])
+        let tileXScale = scaleLinear().domain([0, tileValues.length])
         .range([tileX,tileX + tileWidth]);
+
+        console.log('valueScale.domain()', valueScale.domain());
 
 
         graphics.lineStyle(1, 0x0000FF, 1);
        // graphics.beginFill(0xFF700B, 1);
         let j = 0;
 
-        for (let i = 0; i < tileData.length; i++) {
+        for (let i = 0; i < tileValues.length; i++) {
 
 
-            let xPos = zoomedXScale(tileXScale(i));
-            let height = yScale(tileData[i])
-            let width = zoomedXScale(tileXScale(i+1)) - zoomedXScale(tileXScale(i));
+            let xPos = this._xScale(tileXScale(i));
 
            if(j == 0){
-                graphics.moveTo(xPos, d.height - d.height*height);
+                graphics.moveTo(this._xScale(tileXScale(i)), valueScale(tileValues[i]));
                 j++;
             }
-            graphics.lineTo(zoomedXScale(tileXScale(i+1)), d.height - d.height*yScale(tileData[i+1]));
+            graphics.lineTo(this._xScale(tileXScale(i)), valueScale(tileValues[i+1]));
         }
+    }
+
+    zoomed(newXScale, newYScale) {
+        this.xScale(newXScale);
+        this.yScale(newYScale);
+
+        this.pMain.position.y = this.position[1];
+        this.pMain.position.x = this.position[0];
+
+        this.refreshTiles();
+
+        this.draw();
     }
 
 }

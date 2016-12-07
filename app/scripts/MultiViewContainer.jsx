@@ -301,7 +301,7 @@ export class MultiViewContainer extends React.Component {
                     width: this.state.width, 
                     height: this.state.height,
                     background: 'yellow',
-                    opacity: 0.2
+                    opacity: 0.05
             }}
         />
         <ResponsiveReactGridLayout

@@ -47,11 +47,7 @@ export class TiledPixiTrack extends PixiTrack {
          * Return the set of ids of all tiles which are both visible and fetched.
          */
 
-        console.log('visibleTileIds:', this.visibleTileIds);
         let ret = Object.keys(this.fetchedTiles).filter(x => this.visibleTileIds.has(x));
-        console.log('o:', Object.keys(this.fetchedTiles))
-        console.log('x:', this.visibleTileIds)
-        console.log('ret:', ret);
         return ret;
     }
 
@@ -348,5 +344,15 @@ export class TiledPixiTrack extends PixiTrack {
          * Draw a tile on some graphics
          */
 
+    }
+
+    minVisibleValue() {
+         let min = Math.min.apply(null, this.visibleAndFetchedIds().map(x => this.fetchedTiles[x].tileData.minNonZero));
+         return min;
+    }
+
+    maxVisibleValue() {
+         let max = Math.max.apply(null, this.visibleAndFetchedIds().map(x => this.fetchedTiles[x].tileData.maxNonZero));
+         return max;
     }
 }

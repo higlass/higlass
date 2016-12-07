@@ -71,15 +71,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         */
     }
 
-    minVisibleValue() {
-         let min = Math.min.apply(null, this.visibleAndFetchedIds().map(x => this.fetchedTiles[x].tileData.minNonZero));
-         return min;
-    }
-
-    maxVisibleValue() {
-         let max = Math.max.apply(null, this.visibleAndFetchedIds().map(x => this.fetchedTiles[x].tileData.maxNonZero));
-         return max;
-    }
 
     refXScale(_) {
         super.refXScale(_);
