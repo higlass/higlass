@@ -56,8 +56,12 @@ export class TrackRenderer extends React.Component {
         this.initialWidth = this.props.width;
         this.initialHeight = this.props.height;
 
-        this.initialCenterX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
-        this.initialCenterY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
+        this.prevCenterX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
+        this.prevCenterY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
+
+        // The offset of the center from the original. Used to keep the scales centered on resize events
+        this.cumCenterXOffset = 0;
+        this.cumCenterYOffset = 0;
 
         this.drawableToDomainX = scaleLinear()
             .domain([this.props.marginLeft + this.props.leftWidth,
@@ -129,9 +133,6 @@ export class TrackRenderer extends React.Component {
     setUpScales() {
         let currentCenterX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
         let currentCenterY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
-        // resizing moves the middle of center area
-        //
-
 
         // we need to maintain two scales:
         // 1. the scale that is shown
@@ -143,16 +144,23 @@ export class TrackRenderer extends React.Component {
 
         // if the window is resized, we don't want to change the scale, but we do want to move the center point
         // this needs to be tempered by the zoom factor so that we keep the visible center point in the center
-        let centerDomainXOffset = (this.drawableToDomainX(currentCenterX) - this.drawableToDomainX(this.initialCenterX)) / this.zoomTransform.k;
-        let centerDomainYOffset = (this.yPositionOffset + this.drawableToDomainY(currentCenterY) - this.drawableToDomainY(this.initialCenterY)) / this.zoomTransform.k;
+        let centerDomainXOffset = (this.drawableToDomainX(currentCenterX) - this.drawableToDomainX(this.prevCenterX)) / this.zoomTransform.k;
+        let centerDomainYOffset = (this.drawableToDomainY(currentCenterY) - this.drawableToDomainY(this.prevCenterY)) / this.zoomTransform.k;
 
+        this.cumCenterYOffset += centerDomainYOffset;
+        this.cumCenterXOffset += centerDomainXOffset;
+
+        this.prevCenterY = currentCenterY;
+        this.prevCenterX = currentCenterX;
 
         // the domain of the visible (not drawable area)
-        let visibleXDomain = [this.drawableToDomainX(0) - centerDomainXOffset, this.drawableToDomainX(this.initialWidth) - centerDomainXOffset]
-        let visibleYDomain = [this.drawableToDomainY(0) - centerDomainYOffset, this.drawableToDomainY(this.initialHeight) - centerDomainYOffset]
+        let visibleXDomain = [this.drawableToDomainX(0) - this.cumCenterXOffset, this.drawableToDomainX(this.initialWidth) - this.cumCenterXOffset]
+        let visibleYDomain = [this.drawableToDomainY(0) - this.cumCenterYOffset, this.drawableToDomainY(this.initialHeight) - this.cumCenterYOffset]
 
         // [drawableToDomain(0), drawableToDomain(1)]: the domain of the visible area
         // if the screen has been resized, then the domain width should remain the same
+        //
+        //console.log('visibleYDomain', visibleYDomain);
 
         //this.xScale should always span the region that the zoom behavior is being called on
         this.xScale = scaleLinear()
