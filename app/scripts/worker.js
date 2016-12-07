@@ -106,6 +106,7 @@ export function workerFetchTiles(tilesetServer, tileIds, done) {
 
         let p = new Promise(function(resolve, reject) {
             json(outUrl, (error, data) => {
+                console.log('returned');
                 if (error) { 
                     resolve({});
                 } else {

@@ -25,10 +25,6 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
         return this.tilesetUid + '.' + tile.join('.');
     }
 
-    localToRemoteId(remoteId) {
-        let idParts = remoteId.split('.');
-        return idParts.slice(0, idParts.length-1).join('.');
-    }
 
     relevantScale() {
         /**
@@ -42,6 +38,23 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
          */
         return null;
 
+    }
+
+    setVisibleTiles(tilePositions) {
+        /**
+         * Set which tiles are visible right now.
+         *
+         * @param tiles: A set of tiles which will be considered the currently visible
+         * tile positions.
+         */
+        this.visibleTiles = tilePositions.map(x => {
+            return {
+                tileId: this.tileToLocalId(x),
+                remoteId: this.tileToRemoteId(x),
+            }
+        });
+
+        this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
     }
 
     calculateVisibleTiles() {
@@ -99,26 +112,4 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
         return;
     }
 
-    fetchNewTiles(toFetch) {
-        // no real fetching involved... we just need to display the data
-        toFetch.map(x => {
-            let key = x.remoteId;
-            let keyParts = key.split('.');
-
-            let data = {
-                zoomLevel: keyParts[1],
-                tilePos: keyParts.slice(2, keyParts.length).map(x => +x)
-            }
-
-            this.fetchedTiles[x.tileId] = x;
-            this.fetchedTiles[x.tileId].tileData = data;
-
-            // since we're not actually fetching remote data, we can easily 
-            // remove these tiles from the fetching list
-            if (this.fetching.has(x.remoteId))
-                this.fetching.delete(x.remoteId);
-        });
-
-        this.synchronizeTilesAndGraphics();
-    }
 }
