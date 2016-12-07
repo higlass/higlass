@@ -8,14 +8,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     }
 
-    areAllVisibleTilesLoaded() {
-        
-        // we don't need to wait for any tiles to load before 
-        // drawing
-        //
-        return true;
-    }
-
     initTile(tile) {
         /**
          * Create whatever is needed to draw this tile.
@@ -23,6 +15,8 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
          
         let graphics = tile.graphics;
 
+        console.log('drawing...', tile.tileId);
+        console.log('this.pMain.position', this.pMain.position);
         this.drawTile(tile);
     }
 
@@ -47,14 +41,14 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
 
         graphics.clear();
+        if (valueScale.domain()[1] < 0) {
+            console.log('ERR', valueScale.domain()[1]);
+        }
 
         // this scale should go from an index in the data array to
         // a position in the genome coordinates
         let tileXScale = scaleLinear().domain([0, tileValues.length])
         .range([tileX,tileX + tileWidth]);
-
-        console.log('valueScale.domain()', valueScale.domain());
-
 
         graphics.lineStyle(1, 0x0000FF, 1);
        // graphics.beginFill(0xFF700B, 1);
@@ -73,16 +67,22 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         }
     }
 
-    zoomed(newXScale, newYScale) {
-        this.xScale(newXScale);
-        this.yScale(newYScale);
+    setPosition(newPosition) {
+        super.setPosition(newPosition);
 
         this.pMain.position.y = this.position[1];
         this.pMain.position.x = this.position[0];
+    }
 
+    zoomed(newXScale, newYScale) {
         this.refreshTiles();
 
+        this.xScale(newXScale);
+        this.yScale(newYScale);
+
+
         this.draw();
+
     }
 
 }

@@ -61,17 +61,16 @@ export class PixiTrack extends Track {
         /**
          * Draw all the data associated with this track
          */
+
+        /*
         let graphics = this.pMain;
 
         graphics.clear();
         graphics.lineStyle(0, 0x0000FF, 1);
         graphics.beginFill(0xFF700B, 1);
 
-        /*
-        console.log('drawing a rectangle to...', this.position[0], this.position[1],
-                    'width:', this.dimensions[0], this.dimensions[1]);
-        */
         this.pMain.drawRect(this.position[0], this.position[1], 
                             this.dimensions[0], this.dimensions[1]);
+        */
     }
 }

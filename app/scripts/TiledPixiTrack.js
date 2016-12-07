@@ -190,6 +190,7 @@ export class TiledPixiTrack extends PixiTrack {
                 this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;
                 this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
 
+                console.log('adding graphics...', fetchedTileIDs[i]);
                 this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
             }
         }
@@ -210,7 +211,7 @@ export class TiledPixiTrack extends PixiTrack {
         for (let tileIdStr in this.tileGraphics) {
 
             if (!fetchedTileIDs.has(tileIdStr)) {
-                //console.log('deleting...', tileIdStr);
+                console.log('deleting...', tileIdStr);
                 this.destroyTile(this.fetchedTiles[tileIdStr]);
                 this.pMain.removeChild(this.tileGraphics[tileIdStr]);
                 delete this.tileGraphics[tileIdStr];
@@ -268,7 +269,7 @@ export class TiledPixiTrack extends PixiTrack {
     fetchNewTiles(toFetch) {
         if (toFetch.length > 0) {
             let toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
-            console.log('fetching:', toFetchList.join(' '));
+            //console.log('fetching:', toFetchList.join(' '));
             tileProxy.fetchTiles(this.tilesetServer, toFetchList, this.receivedTiles.bind(this));
         }
     }
@@ -278,13 +279,13 @@ export class TiledPixiTrack extends PixiTrack {
          * We've gotten a bunch of tiles from the server in
          * response to a request from fetchTiles.
          */
-        console.log('received:', loadedTiles);
+        //console.log('received:', loadedTiles);
         for (let i = 0; i < this.visibleTiles.length; i++) {
             let tileId = this.visibleTiles[i].tileId;
 
 
             if (this.visibleTiles[i].remoteId in loadedTiles) {
-                console.log('this.visibleTiles[i]:', this.visibleTiles[i]);
+                //console.log('this.visibleTiles[i]:', this.visibleTiles[i]);
 
                 if (!(tileId in this.fetchedTiles)) {
                     // this tile may have graphics associated with it
@@ -311,29 +312,6 @@ export class TiledPixiTrack extends PixiTrack {
 
 
     draw() {
-        /**
-         * Draw all the data associated with this track
-         */
-        /*
-        let graphics = this.pMain;
-
-        graphics.clear();
-        graphics.lineStyle(0, 0x0000FF, 1);
-        graphics.beginFill(0xFF700B, 1);
-        */
-
-        /*
-        console.log('drawing a rectangle to...', this.position[0], this.position[1],
-                    'width:', this.dimensions[0], this.dimensions[1]);
-
-        this.pMain.position.x = this.position[0];
-        this.pMain.position.y = this.position[1];
-        */
-
-        /*
-        this.pMain.drawRect(0,0,
-                            this.dimensions[0], this.dimensions[1]);
-                            */
         for (let uid in this.fetchedTiles)
             this.drawTile(this.fetchedTiles[uid]);
 
@@ -352,7 +330,15 @@ export class TiledPixiTrack extends PixiTrack {
     }
 
     maxVisibleValue() {
-         let max = Math.max.apply(null, this.visibleAndFetchedIds().map(x => this.fetchedTiles[x].tileData.maxNonZero));
+         let visibleAndFetchedIds = this.visibleAndFetchedIds();
+
+         if (visibleAndFetchedIds.length == 0) {
+             visibleAndFetchedIds = Object.keys(this.fetchedTiles);
+             console.log('here');
+         }
+
+         let max = Math.max.apply(null, visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero));
+         console.log('visibleAndFetchedIds', visibleAndFetchedIds, 'max:', max);
          return max;
     }
 }
