@@ -81,13 +81,13 @@ export class MultiViewContainer extends React.Component {
                     [
                         { 'server': 'http://52.45.229.11/',
                           'uid': slugid.nice(),
-                          'tilesetUid': 'ab893f0f-2608-41f7-81ac-ef27614596b8',
+                          'tilesetUid': '00bec9f2-504e-4daf-a674-6aca204247ce',
                           'type': 'heatmap'
                         }
                         ,
                         { 'server': 'http://52.45.229.11/',
                           'uid': slugid.nice(),
-                          'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
+                          'tilesetUid': '00bec9f2-504e-4daf-a674-6aca204247ce',
                           'type': '2d-tiles'
                         }
                     ]
@@ -536,18 +536,22 @@ export class MultiViewContainer extends React.Component {
         key={this.uid}
         style={{position: "relative"}}
       >
-        <canvas ref={(c) => this.canvasElement = c } 
+        <canvas 
+            ref={(c) => this.canvasElement = c} 
             style={{
                 position: "absolute",
                 width: this.state.width,
                 height: this.state.height
-            }}/>
-        <svg ref={(c) => this.svgElement = c } 
+            }}
+        />
+        <svg 
+            ref={(c) => this.svgElement = c} 
             style={{
                 position: "absolute",
                 width: this.state.width,
                 height: this.state.height
-            }}/>
+            }}
+        />
         <div
             className="drawing-surface"
             style={{position: "absolute", 
@@ -562,16 +566,15 @@ export class MultiViewContainer extends React.Component {
           draggableHandle={'.multitrack-header'}
           measureBeforeMount={false}
           onBreakpointChange={this.onBreakpointChange.bind(this)}
-          onLayoutChange={this.handleLayoutChange.bind(this)}
-          useCSSTransforms={false}
-          onResize={this.onResize.bind(this)}
           onDragStart={this.handleDragStart.bind(this)}
           onDragStop={this.handleDragStop.bind(this)}
+          onLayoutChange={this.handleLayoutChange.bind(this)}
+          onResize={this.onResize.bind(this)}
+          rowHeight={30}
 
           // for some reason, this becomes 40 within the react-grid component
           // (try resizing the component to see how much the height changes)
           // Programming by coincidence FTW :-/
-          rowHeight={30}
           // WidthProvider option
           // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
           // and set `measureBeforeMount={true}`.
