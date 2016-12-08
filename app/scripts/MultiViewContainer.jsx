@@ -19,25 +19,19 @@ export class MultiViewContainer extends React.Component {
         this.uid = slugid.nice();
         this.yPositionOffset = 0;
 
+        this.horizontalMargin = 54;
+        this.verticalMargin = 54;
+
         this.viewConfig = this.props.viewConfig;
 
-          this.state = {
-            currentBreakpoint: 'lg',
-            mounted: false,
-            width: 0,
-            height: 0,
-            layouts: {},
-            svgElement: null,
-            canvasElement: null
-          }
 
           this.pixiStage = new PIXI.Container();
           this.pixiStage.interactive = true;
           this.element = null;
 
-          this.views = [{
+          let views = [{
               uid: slugid.nice(),
-              'tracks': [{
+              'tracks': {
             'top': [
                 {'uid': slugid.nice(), type:'top-axis'}
             ,
@@ -99,9 +93,21 @@ export class MultiViewContainer extends React.Component {
                 }
             ]}
 
-                ]
           }]
 
+          // generate a grid layout for each view
+          views.map(v => v.layout = this.generateViewLayout(v));
+
+          this.state = {
+            currentBreakpoint: 'lg',
+            mounted: false,
+            width: 0,
+            height: 0,
+            layouts: {},
+            svgElement: null,
+            canvasElement: null,
+            views: views
+          }
     }
 
 
@@ -219,8 +225,8 @@ export class MultiViewContainer extends React.Component {
       let defaultVerticalWidth = 0;
       let defaultCenterHeight = 100;
       let defaultCenterWidth = 100;
-      let currHeight = 0;
-      let currWidth = 0;    //currWidth will generally be ignored because it will just be set to 
+      let currHeight = this.horizontalMargin * 2;
+      let currWidth = this.verticalMargin * 2;    //currWidth will generally be ignored because it will just be set to 
                             //the width of the enclosing container
 
       if (view.tracks.top) {
@@ -262,7 +268,7 @@ export class MultiViewContainer extends React.Component {
       if (view.center) {
             currHeight += view.center.height ? view.center.height : defaultCenterHeight;
             currWidth += view.center.width ? view.center.width : defaultCenterWidth;
-      } else if ((tracks.top || tracks.bottom) && (tracks.left || tracks.right)) {
+      } else if ((view.tracks.top || view.tracks.bottom) && (view.tracks.left || view.tracks.right)) {
             currHeight += defaultCenterWidth;
             currWidth += defaultCenterWidth;
       }
@@ -272,41 +278,35 @@ export class MultiViewContainer extends React.Component {
       return [currWidth, currHeight];
   }
 
-  generateViewLayout(viewConfig) {
-    let minTrackHeight = 30;
-    let totalHeight = 0
+  generateViewLayout(view) {
+    let layout = null;
 
-        console.log('viewConfig:', viewConfig);
+    if ('layout' in view)
+        layout = view.layout
+    else {
+        let minTrackHeight = 30;
 
-    for (let i = 0; i < viewConfig.tracks.length; i++) {
-        let track = viewConfig.tracks[i];
+        let dims = this.calculateViewDimensions(view);
 
-        if (!track.height)
-            totalHeight += minTrackHeight;
-        else
-            totalHeight += track.height;
+        let totalWidth = dims[0];
+        let totalHeight = dims[1];
+
+        if (view.searchBox)
+            totalHeight += 30;
+        
+        let heightGrid = Math.ceil(totalHeight / this.props.rowHeight);
+
+        layout = {
+            x: 0,
+            y: 0,
+            w: 6,
+        };
+
+        layout.h = heightGrid;
+        layout.height = layout.h * this.props.rowHeight;
+        layout.minH = heightGrid;
+        layout.i = slugid.nice();
     }
-
-    if (viewConfig.searchBox)
-        totalHeight += 30;
-    
-    let heightGrid = Math.ceil(totalHeight / this.props.rowHeight);
-
-    let layout = {
-        x: 0,
-        y: 0,
-        w: 6,
-    };
-
-    layout.h = heightGrid;
-    layout.height = layout.h * this.props.rowHeight;
-    layout.minH = heightGrid;
-    //layout.maxH = heightGrid;
-
-    if (layout in viewConfig)
-        layout = viewConfig.layout;
-
-    layout.i = slugid.nice();
 
     this.heights[layout.i] = layout.height;
 
@@ -321,31 +321,33 @@ export class MultiViewContainer extends React.Component {
        * @param {uid} This view's identifier
        */
     
-      let viewConfigObject = JSON.parse(this.props.viewConfig.text);
-
       // check if this is the only view
       // if it is, don't close it (display an error message)
-      if (viewConfigObject.views.length == 1) {
+      if (this.state.views.length == 1) {
             console.log("Can't close the only view");
             return;
       }
 
 
-      let viewsToClose = viewConfigObject.views.filter((d) => { return d.uid == uid; });
+      let viewsToClose = this.state.views.filter((d) => { return d.uid == uid; });
 
       // send an event to the app telling it that we're closing some views so 
       // that it can clean up after them
 
-      let filteredViews = viewConfigObject.views.filter((d) => { 
+      let filteredViews = this.state.views.filter((d) => { 
           return d.uid != uid;
       });
 
       this.removeZoomDispatch(filteredViews);
 
-      viewConfigObject.views = filteredViews;
+      this.setState({
+          'views': filteredViews
+      });
+      /*
       let newViewConfigText = JSON.stringify(viewConfigObject);
 
       this.props.onNewConfig(newViewConfigText);
+      */
   }
 
   removeZoomDispatch(views) {
@@ -372,7 +374,7 @@ export class MultiViewContainer extends React.Component {
        * view.
        */
 
-      let views = this.views;
+      let views = this.state.views;
       let lastView = views[views.length-1];
 
       let maxY = 0;
@@ -399,12 +401,19 @@ export class MultiViewContainer extends React.Component {
       // give it its own unique id
       newView.uid = slugid.nice();
 
+      this.setState({
+          'views': this.state.views.concat(newView)
+      });
+
+      /*
+      this.state
       freshViewConfig.views.push(newView); 
       let newViewConfigText = JSON.stringify(freshViewConfig);
 
       //console.log('newViewConfig:', newViewConfigText);
 
       this.props.onNewConfig(newViewConfigText);
+      */
   }
 
 
@@ -454,8 +463,9 @@ export class MultiViewContainer extends React.Component {
           // and set `measureBeforeMount={true}`.
           useCSSTransforms={this.state.mounted}
         >
-            { this.views.map(function(view, i) {
-                let layout = this.generateViewLayout(view);
+            { this.state.views.map(function(view, i) {
+                let layout = view.layout;
+
                 /*
                 if ('layout' in c.props.viewConfig) {
                     layout = c.props.viewConfig.layout;
@@ -490,6 +500,9 @@ export class MultiViewContainer extends React.Component {
                                      canvasElement={this.state.canvasElement}
                                      pixiStage={this.pixiStage}
                                      dragging={this.state.dragging}
+                                     tracks={view.tracks}
+                                     verticalMargin={this.verticalMargin}
+                                     horizontalMargin={this.horizontalMargin}
                                 />
                             </SearchableTiledPlot>
                         </div>)

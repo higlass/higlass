@@ -55,69 +55,7 @@ export class TiledPlot extends React.Component {
                               'bottom': [],
                           'center': []}
 
-        let simpleTracks = {
-            'top': [
-                {'uid': slugid.nice(), type:'top-axis'}
-            ,
-                {'uid': slugid.nice(), 
-                    type:'horizontal-line',
-                    height: 30,
-                  tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
-                  server: 'http://52.45.229.11'}
-            ,
-                {'uid': slugid.nice(),
-                 type: 'combined',
-                 height: 30,
-                 contents:
-                     [
-                    {'uid': slugid.nice(), 
-                        type:'horizontal-line',
-                        height: 30,
-                      tilesetUid: '540072c1-da4f-4f11-9dca-ca9c262f0a95',
-                      server: 'http://52.45.229.11'}
-                ,
-                    {'uid': slugid.nice(), 
-                        type:'horizontal-1d-tiles',
-                        height: 30,
-                      tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
-                      server: 'http://52.45.229.11'}
-
-                     ]
-                }
-            ],
-            'left': [
-                {'uid': slugid.nice(), type:'left-axis', width: 50}
-            /*
-                ,
-                {'uid': slugid.nice(), 
-                    type:'vertical-1d-tiles',
-                  tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
-                  server: 'http://52.45.229.11'}
-                  */
-            ],
-            'center': [
-                {   
-                    uid: slugid.nice(),
-                    type: 'combined',
-                    height: 200,
-                    contents: 
-                    [
-                        { 'server': 'http://52.45.229.11/',
-                          'uid': slugid.nice(),
-                          'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
-                          'type': 'heatmap'
-                        }
-                        ,
-                        { 'server': 'http://52.45.229.11/',
-                          'uid': slugid.nice(),
-                          'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
-                          'type': '2d-tiles'
-                        }
-                    ]
-                }
-            ]};
-
-        tracks = simpleTracks;
+        tracks = this.props.tracks;
 
         this.trackRenderers = {}
 
@@ -152,9 +90,6 @@ export class TiledPlot extends React.Component {
 
         this.centerHeight = 0;
         this.centerWidth = 0;
-
-        this.horizontalMargin = 54;
-        this.verticalMargin = 54;
     }
 
     componentDidMount() {
@@ -377,7 +312,7 @@ export class TiledPlot extends React.Component {
          * @return: The position of the track and it's height and width
          *          (e.g. {left: 10, top: 20, width: 30, height: 40}
          */
-        let top = this.verticalMargin, left=this.horizontalMargin;
+        let top = this.props.verticalMargin, left=this.props.horizontalMargin;
         
         if (location == 'top') {
             left += this.leftWidth;
@@ -505,8 +440,8 @@ export class TiledPlot extends React.Component {
             .map((x) => { return x.width; })
             .reduce((a,b) => { return a + b; }, 0);
 
-        this.centerHeight = this.state.height - this.topHeight - this.bottomHeight - 2*this.verticalMargin;
-        this.centerWidth = this.state.width - this.leftWidth - this.rightWidth - 2*this.horizontalMargin;
+        this.centerHeight = this.state.height - this.topHeight - this.bottomHeight - 2*this.props.verticalMargin;
+        this.centerWidth = this.state.width - this.leftWidth - this.rightWidth - 2*this.props.horizontalMargin;
 
         //let trackOutline = "1px solid black";
         let trackOutline = "none";
@@ -528,8 +463,8 @@ export class TiledPlot extends React.Component {
                                 onClick={() => { this.handleAddTrack('top')}}
                                 src="images/plus.svg"
                                 style={Object.assign({}, imgStyle, {
-                                        'left': this.horizontalMargin + this.leftWidth +  (this.centerWidth - plusWidth) / 2,
-                                        'top': (this.verticalMargin + plusHeight)/2
+                                        'left': this.props.horizontalMargin + this.leftWidth +  (this.centerWidth - plusWidth) / 2,
+                                        'top': (this.props.verticalMargin + plusHeight)/2
                                     })}
                             />
                 )
@@ -539,8 +474,8 @@ export class TiledPlot extends React.Component {
                                 onClick={() => { this.handleAddTrack('bottom')}}
                                 src="images/plus.svg"
                                 style={Object.assign({}, imgStyle, {
-                                        'left': this.horizontalMargin + this.leftWidth +  (this.centerWidth - plusWidth) / 2,
-                                        'top': (this.verticalMargin + this.topHeight + this.centerHeight + this.bottomHeight + (this.verticalMargin - plusHeight)/2)
+                                        'left': this.props.horizontalMargin + this.leftWidth +  (this.centerWidth - plusWidth) / 2,
+                                        'top': (this.props.verticalMargin + this.topHeight + this.centerHeight + this.bottomHeight + (this.props.verticalMargin - plusHeight)/2)
                                     })}
                             />
                 )               
@@ -550,8 +485,8 @@ export class TiledPlot extends React.Component {
                                 onClick={() => { this.handleAddTrack('left')}}
                                 src="images/plus.svg"
                                 style={Object.assign({}, imgStyle, {
-                                        'left': (this.horizontalMargin - plusWidth) / 2,
-                                        'top': this.verticalMargin + this.topHeight + (this.centerHeight - plusHeight)/2
+                                        'left': (this.props.horizontalMargin - plusWidth) / 2,
+                                        'top': this.props.verticalMargin + this.topHeight + (this.centerHeight - plusHeight)/2
                                     })}
                             />
                 )
@@ -561,14 +496,14 @@ export class TiledPlot extends React.Component {
                                 onClick={() => { this.handleAddTrack('right')}}
                                 src="images/plus.svg"
                                 style={Object.assign({}, imgStyle, {
-                                        'left': this.horizontalMargin + this.leftWidth + this.centerWidth + this.rightWidth + (this.horizontalMargin - plusWidth) / 2,
-                                        'top': this.verticalMargin + this.topHeight + (this.centerHeight - plusHeight)/2
+                                        'left': this.props.horizontalMargin + this.leftWidth + this.centerWidth + this.rightWidth + (this.props.horizontalMargin - plusWidth) / 2,
+                                        'top': this.props.verticalMargin + this.topHeight + (this.centerHeight - plusHeight)/2
                                     })}
                             />
                 )
 
 
-        let topTracks = (<div style={{left: this.leftWidth + this.horizontalMargin, top: this.verticalMargin, 
+        let topTracks = (<div style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin, 
                                       width: this.centerWidth, height: this.topHeight,
                                       outline: trackOutline,
                                       position: "absolute",}}>
@@ -580,7 +515,7 @@ export class TiledPlot extends React.Component {
                                 width={this.centerWidth}
                             />
                          </div>)
-        let leftTracks = (<div style={{left: this.horizontalMargin, top: this.topHeight + this.verticalMargin, 
+        let leftTracks = (<div style={{left: this.props.horizontalMargin, top: this.topHeight + this.props.verticalMargin, 
                                       width: this.leftWidth, height: this.centerHeight,
                                       outline: trackOutline,
                                       position: "absolute",}}>
@@ -592,7 +527,7 @@ export class TiledPlot extends React.Component {
                                 height={this.centerHeight}
                             />
                          </div>)
-        let rightTracks = (<div style={{right: this.horizontalMargin, top: this.topHeight + this.verticalMargin, 
+        let rightTracks = (<div style={{right: this.props.horizontalMargin, top: this.topHeight + this.props.verticalMargin, 
                                       width: this.rightWidth, height: this.centerHeight,
                                       outline: trackOutline,
                                       position: "absolute",}}>
@@ -604,7 +539,7 @@ export class TiledPlot extends React.Component {
                                 height={this.centerHeight}
                             />
                          </div>)
-        let bottomTracks = (<div style={{left: this.leftWidth + this.horizontalMargin, bottom: this.verticalMargin,
+        let bottomTracks = (<div style={{left: this.leftWidth + this.props.horizontalMargin, bottom: this.props.verticalMargin,
                                       width: this.centerWidth, height: this.bottomHeight,
                                       outline: trackOutline,
                                       position: "absolute",}}>
@@ -635,8 +570,8 @@ export class TiledPlot extends React.Component {
                     height={this.state.height}
                     centerWidth={this.centerWidth}
                     centerHeight={this.centerHeight}
-                    marginTop={this.verticalMargin}
-                    marginLeft={this.horizontalMargin}
+                    marginTop={this.props.verticalMargin}
+                    marginLeft={this.props.horizontalMargin}
                     topHeight={this.topHeight}
                     leftWidth={this.leftWidth}
                     positionedTracks={positionedTracks}
