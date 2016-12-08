@@ -135,20 +135,26 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
     }
 
 
-    zoomed(newXScale, newYScale) {
+    zoomed(newXScale, newYScale, k, tx, ty) {
         super.zoomed(newXScale, newYScale);
 
+        /*
         let scaleX = (newXScale(1) - newXScale(0))/ (this._refXScale(1) - this._refXScale(0));
         let scaleY = (newYScale(1) - newYScale(0))/ (this._refYScale(1) - this._refYScale(0));
 
         let translateX = (newXScale(0) + this.position[0]) - this._refXScale(0) * scaleX;
         let translateY = (newYScale(0) + this.position[1]) - this._refYScale(1) * scaleY;
 
-        this.pMain.position.x = translateX;
-        this.pMain.position.y = translateY;
+        console.log('translateX:', translateX, 'diff:', translateX - tx, 'diff/k', (translateX - tx) / k);
+        console.log('translateY:', translateY, 'diff:', translateY - ty, 'diff/k', (translateY - ty) / k);
+        console.log('scaleX:', scaleX, 'k:', k);
+        console.log('scalyY:', scaleY, 'k:', k);
+        */
+        this.pMain.position.x = tx; //translateX;
+        this.pMain.position.y = ty; //translateY;
 
-        this.pMain.scale.x = scaleX;
-        this.pMain.scale.y = scaleY;
+        this.pMain.scale.x = k; //scaleX;
+        this.pMain.scale.y = k; //scaleY;
     }
 
     updateTile(tile) {

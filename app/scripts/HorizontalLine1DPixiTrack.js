@@ -15,8 +15,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
          
         let graphics = tile.graphics;
 
-        console.log('drawing...', tile.tileId);
-        console.log('this.pMain.position', this.pMain.position);
         this.drawTile(tile);
     }
 

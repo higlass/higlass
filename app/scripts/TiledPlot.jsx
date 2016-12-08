@@ -61,9 +61,29 @@ export class TiledPlot extends React.Component {
             ,
                 {'uid': slugid.nice(), 
                     type:'horizontal-line',
-                    height: 100,
+                    height: 30,
                   tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
                   server: 'http://52.45.229.11'}
+            ,
+                {'uid': slugid.nice(),
+                 type: 'combined',
+                 height: 30,
+                 contents:
+                     [
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-line',
+                        height: 30,
+                      tilesetUid: '540072c1-da4f-4f11-9dca-ca9c262f0a95',
+                      server: 'http://52.45.229.11'}
+                ,
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-1d-tiles',
+                        height: 30,
+                      tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
+                      server: 'http://52.45.229.11'}
+
+                     ]
+                }
             ],
             'left': [
                 {'uid': slugid.nice(), type:'left-axis', width: 50}
@@ -82,7 +102,6 @@ export class TiledPlot extends React.Component {
                     height: 200,
                     contents: 
                     [
-                    /*
                         { 'server': 'http://52.45.229.11/',
                           'uid': slugid.nice(),
                           'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
@@ -94,7 +113,6 @@ export class TiledPlot extends React.Component {
                           'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
                           'type': '2d-tiles'
                         }
-                        */
                     ]
                 }
             ]};

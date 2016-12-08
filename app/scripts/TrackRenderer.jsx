@@ -326,10 +326,14 @@ export class TrackRenderer extends React.Component {
             .range([0, this.props.centerHeight]);
 
 
+        //console.log('translate:', this.zoomTransform.x);
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
 
-            track.zoomed(newXScale, newYScale);
+            //console.log('zt:', this.zoomTransform);
+            track.zoomed(newXScale, newYScale, this.zoomTransform.k, 
+                        this.zoomTransform.x + this.xPositionOffset, 
+                        this.zoomTransform.y + this.yPositionOffset);
             track.draw();
         }
     }
