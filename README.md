@@ -57,6 +57,15 @@ High resolution:
 
 <a href="http://hms-dbmi.github.io/higlass/"><img src="https://raw.githubusercontent.com/hms-dbmi/4DN_matrix-viewer/develop/doc/img/higlass_screenshot2.png" width=600></img></a>
 
+## Creating multires cooler files:
+
+
+```
+git clone https://github.com/pkerpedjiev/cooler.git
+cd cooler
+python scripts/recursive_agg_onefile.py ~/Downloads/Rao2014-GM12878-MboI-allreps-filtered.100kb.cool
+```
+
 ## Development
 
 To work on the source code or to see a live example, simple clone the

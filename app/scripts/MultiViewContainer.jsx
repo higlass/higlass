@@ -18,6 +18,7 @@ export class MultiViewContainer extends React.Component {
         this.heights = {};
         this.uid = slugid.nice();
         this.yPositionOffset = 0;
+        this.rowHeight = 40;
 
         this.horizontalMargin = 54;
         this.verticalMargin = 54;
@@ -80,7 +81,7 @@ export class MultiViewContainer extends React.Component {
                     [
                         { 'server': 'http://52.45.229.11/',
                           'uid': slugid.nice(),
-                          'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
+                          'tilesetUid': 'ab893f0f-2608-41f7-81ac-ef27614596b8',
                           'type': 'heatmap'
                         }
                         ,
@@ -94,9 +95,6 @@ export class MultiViewContainer extends React.Component {
             ]}
 
           }]
-
-          // generate a grid layout for each view
-          views.map(v => v.layout = this.generateViewLayout(v));
 
           this.state = {
             currentBreakpoint: 'lg',
@@ -113,6 +111,7 @@ export class MultiViewContainer extends React.Component {
 
     componentDidMount() {
         this.element = ReactDOM.findDOMNode(this);
+        this.state.views.map(v => v.layout = this.generateViewLayout(v));
 
         this.pixiRenderer = PIXI.autoDetectRenderer(this.state.width,
                                         this.state.height,
@@ -265,9 +264,13 @@ export class MultiViewContainer extends React.Component {
           }
       }
 
+      let centerHeight = 0;
+      let centerWidth = 0;
       if (view.center) {
-            currHeight += view.center.height ? view.center.height : defaultCenterHeight;
-            currWidth += view.center.width ? view.center.width : defaultCenterWidth;
+        centerHeight = view.center.height ? view.center.height : defaultCenterHeight;
+        currHeight += centerHeight;
+        centerWidth = view.center.width ? view.center.width : defaultCenterWidth;
+        currWidth += centerWidth;
       } else if ((view.tracks.top || view.tracks.bottom) && (view.tracks.left || view.tracks.right)) {
             currHeight += defaultCenterWidth;
             currWidth += defaultCenterWidth;
@@ -275,26 +278,57 @@ export class MultiViewContainer extends React.Component {
 
       console.log('currWidth:', currWidth, 'currHeight:', currHeight);
 
-      return [currWidth, currHeight];
+      let topHeight = 0;
+      let bottomHeight = 0;
+      let leftWidth = 0;
+      let rightWidth = 0;
+
+      if ('top' in view.tracks)
+        topHeight = view.tracks['top']
+            .map((x) => { return x.height ? x.height : defaultHorizontalHeight; })
+            .reduce((a,b) => { return a + b; }, 0);
+      if ('bottom' in view.tracks)
+        bottomHeight = view.tracks['bottom']
+            .map((x) => { return x.height ? x.height : defaultHorizontalHeight; })
+            .reduce((a,b) => { return a + b; }, 0);
+      if ('left' in view.tracks)
+        leftWidth = view.tracks['left']
+            .map((x) => { return x.width ? x.width : defaultVerticalWidth; })
+            .reduce((a,b) => { return a + b; }, 0);
+    if ('right' in view.tracks)
+        rightWidth = view.tracks['right']
+            .map((x) => { return x.width ? x.width : defaultVerticalWidth ; })
+            .reduce((a,b) => { return a + b; }, 0);
+
+      return {'totalWidth': currWidth,
+              'totalHeight': currHeight,
+              'topHeight': topHeight,
+              'bottomHeight': bottomHeight,
+              'leftWidth': leftWidth,
+              'rightWidth': rightWidth,
+              'centerWidth': centerWidth,
+              'centerHeight': centerHeight};
   }
 
   generateViewLayout(view) {
     let layout = null;
+    console.log('generating layout');
 
     if ('layout' in view)
         layout = view.layout
     else {
         let minTrackHeight = 30;
+        let elementWidth = this.element.clientWidth;
 
-        let dims = this.calculateViewDimensions(view);
-
-        let totalWidth = dims[0];
-        let totalHeight = dims[1];
+        let {totalWidth, totalHeight, 
+            topHeight, bottomHeight,
+            leftWidth, rightWidth,
+            centerWidth, centerHeight} = this.calculateViewDimensions(view);
 
         if (view.searchBox)
             totalHeight += 30;
         
-        let heightGrid = Math.ceil(totalHeight / this.props.rowHeight);
+        let heightGrid = Math.ceil(totalHeight / this.rowHeight);
 
         layout = {
             x: 0,
@@ -302,8 +336,24 @@ export class MultiViewContainer extends React.Component {
             w: 6,
         };
 
-        layout.h = heightGrid;
-        layout.height = layout.h * this.props.rowHeight;
+        console.log('elementWidth:', elementWidth);
+        console.log('adj:', totalHeight - centerHeight);
+
+        if ('center' in view.tracks || 'left' in view.tracks || 'right' in view.tracks) {
+            let desiredHeight = ((elementWidth - leftWidth - rightWidth - 2 * this.horizontalMargin) );
+            console.log('topHeight:', topHeight, 'bottomHeight:', bottomHeight);
+            desiredHeight +=  topHeight + bottomHeight + 2*this.verticalMargin + 20;
+
+            console.log('elementWidth:', elementWidth);
+            console.log('desiredHeight:', desiredHeight);
+            // stretch the view out 
+            layout.h = Math.floor(desiredHeight / this.rowHeight); 
+        }
+        else
+            layout.h = heightGrid;
+
+        console.log('x layout.h', layout.h);
+        console.log('x layout.height', layout.height);
         layout.minH = heightGrid;
         layout.i = slugid.nice();
     }
@@ -418,6 +468,66 @@ export class MultiViewContainer extends React.Component {
 
 
   render() {
+      console.log('rendering MultiViewContainer');
+
+    let tiledAreaStyle = {
+        display: 'flex',
+        flexDirection: 'column'
+    }
+    let tiledAreas = (<div 
+                            ref={(c) => {this.tiledAreaDiv = c; }}
+                            style={tiledAreaStyle}
+                      />);
+
+    // The component needs to be mounted in order for the initial view to have the right
+    // width
+    if (this.state.mounted) {
+        tiledAreas = this.state.views.map(function(view, i) {
+                let layout = view.layout;
+
+                let itemUid = "p" + view.uid;
+                this.heights[itemUid] = layout.height;
+                console.log('layout.height', layout.height);
+                console.log('layout.h:', layout.h, layout.h * this.rowHeight);
+                console.log('layout:', layout);
+
+                return (<div 
+                            data-grid={layout}
+                            key={itemUid}
+                            ref={(c) => {this.tiledAreaDiv = c; }}
+                            style={tiledAreaStyle}
+                        >
+                            <div 
+                                className="multitrack-header"
+                                style={{"width": this.width, "minHeight": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} 
+                            >
+                                <img 
+                                    onClick={() => { this.handleCloseView(view.uid)}}
+                                    src="images/cross.svg" 
+                                    style={imgStyle}
+                                    width="10px" 
+                                />
+                            </div>
+                             <SearchableTiledPlot
+                                     key={view.uid}
+                            >
+                                <TiledPlot
+                                    parentMounted={this.state.mounted} 
+                                     height={this.heights[itemUid]}
+                                     svgElement={this.state.svgElement}
+                                     canvasElement={this.state.canvasElement}
+                                     pixiStage={this.pixiStage}
+                                     dragging={this.state.dragging}
+                                     tracks={view.tracks}
+                                     verticalMargin={this.verticalMargin}
+                                     horizontalMargin={this.horizontalMargin}
+                                />
+                            </SearchableTiledPlot>
+                        </div>)
+
+            }.bind(this))
+    }
+
     let imgStyle = { right: 5,
                     top: 2,
                      position: 'absolute' }
@@ -458,56 +568,16 @@ export class MultiViewContainer extends React.Component {
           onDragStart={this.handleDragStart.bind(this)}
           onDragStop={this.handleDragStop.bind(this)}
 
+          // for some reason, this becomes 40 within the react-grid component
+          // (try resizing the component to see how much the height changes)
+          // Programming by coincidence FTW :-/
+          rowHeight={30}
           // WidthProvider option
           // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
           // and set `measureBeforeMount={true}`.
           useCSSTransforms={this.state.mounted}
         >
-            { this.state.views.map(function(view, i) {
-                let layout = view.layout;
-
-                /*
-                if ('layout' in c.props.viewConfig) {
-                    layout = c.props.viewConfig.layout;
-                }
-                */
-                let itemUid = "p" + view.uid;
-                this.heights[itemUid] = layout.height;
-
-                return (<div 
-                            data-grid={layout}
-                            key={itemUid}
-                            style={{display: "flex", "flexDirection": "column"}}
-                        >
-                            <div 
-                                className="multitrack-header"
-                                style={{"width": this.width, "minHeight": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} 
-                            >
-                                <img 
-                                    onClick={() => { this.handleCloseView(view.uid)}}
-                                    src="images/cross.svg" 
-                                    style={imgStyle}
-                                    width="10px" 
-                                />
-                            </div>
-                             <SearchableTiledPlot
-                                     key={view.uid}
-                            >
-                                <TiledPlot
-                                    parentMounted={this.state.mounted} 
-                                     height={this.heights[itemUid]}
-                                     svgElement={this.state.svgElement}
-                                     canvasElement={this.state.canvasElement}
-                                     pixiStage={this.pixiStage}
-                                     dragging={this.state.dragging}
-                                     tracks={view.tracks}
-                                     verticalMargin={this.verticalMargin}
-                                     horizontalMargin={this.horizontalMargin}
-                                />
-                            </SearchableTiledPlot>
-                        </div>)
-
-            }.bind(this))}
+        { tiledAreas }
         </ResponsiveReactGridLayout>
         <div>
             <div 
@@ -532,11 +602,9 @@ export class MultiViewContainer extends React.Component {
 
 MultiViewContainer.defaultProps = {
     className: "layout",
-    rowHeight: 30,
     cols: {lg: 6, md: 6, sm: 6, xs: 6, xxs: 6}
   }
 MultiViewContainer.propTypes = {
-    rowHeight:  React.PropTypes.number,
     children: React.PropTypes.array,
     viewConfig: React.PropTypes.object,
     onNewConfig: React.PropTypes.func

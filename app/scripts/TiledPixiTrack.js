@@ -190,7 +190,7 @@ export class TiledPixiTrack extends PixiTrack {
                 this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;
                 this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
 
-                console.log('adding graphics...', fetchedTileIDs[i]);
+                //console.log('adding graphics...', fetchedTileIDs[i]);
                 this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
             }
         }
@@ -212,7 +212,7 @@ export class TiledPixiTrack extends PixiTrack {
         for (let tileIdStr in this.tileGraphics) {
 
             if (!fetchedTileIDs.has(tileIdStr)) {
-                console.log('deleting...', tileIdStr);
+                //console.log('deleting...', tileIdStr);
                 this.destroyTile(this.fetchedTiles[tileIdStr]);
                 this.pMain.removeChild(this.tileGraphics[tileIdStr]);
                 delete this.tileGraphics[tileIdStr];

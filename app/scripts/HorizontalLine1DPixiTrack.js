@@ -45,7 +45,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         // this scale should go from an index in the data array to
         // a position in the genome coordinates
-        let tileXScale = scaleLinear().domain([0, tileValues.length])
+        let tileXScale = scaleLinear().domain([0, this.tilesetInfo.tile_size])
         .range([tileX,tileX + tileWidth]);
 
         graphics.lineStyle(1, 0x0000FF, 1);
