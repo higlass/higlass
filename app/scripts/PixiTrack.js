@@ -62,7 +62,6 @@ export class PixiTrack extends Track {
          * Draw all the data associated with this track
          */
 
-        /*
         let graphics = this.pMain;
 
         graphics.clear();
@@ -71,6 +70,5 @@ export class PixiTrack extends Track {
 
         this.pMain.drawRect(this.position[0], this.position[1], 
                             this.dimensions[0], this.dimensions[1]);
-        */
     }
 }

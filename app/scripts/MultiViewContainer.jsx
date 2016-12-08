@@ -34,6 +34,74 @@ export class MultiViewContainer extends React.Component {
           this.pixiStage = new PIXI.Container();
           this.pixiStage.interactive = true;
           this.element = null;
+
+          this.views = [{
+              uid: slugid.nice(),
+              'tracks': [{
+            'top': [
+                {'uid': slugid.nice(), type:'top-axis'}
+            ,
+                {'uid': slugid.nice(), 
+                    type:'horizontal-line',
+                    height: 30,
+                  tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
+                  server: 'http://52.45.229.11'}
+            ,
+                {'uid': slugid.nice(),
+                 type: 'combined',
+                 height: 30,
+                 contents:
+                     [
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-line',
+                        height: 30,
+                      tilesetUid: '540072c1-da4f-4f11-9dca-ca9c262f0a95',
+                      server: 'http://52.45.229.11'}
+                ,
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-1d-tiles',
+                        height: 30,
+                      tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
+                      server: 'http://52.45.229.11'}
+
+                     ]
+                }
+            ],
+            'left': [
+                {'uid': slugid.nice(), type:'left-axis', width: 50}
+            /*
+                ,
+                {'uid': slugid.nice(), 
+                    type:'vertical-1d-tiles',
+                  tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
+                  server: 'http://52.45.229.11'}
+                  */
+            ],
+            'center': [
+                {   
+                    uid: slugid.nice(),
+                    type: 'combined',
+                    height: 200,
+                    contents: 
+                    [
+                        { 'server': 'http://52.45.229.11/',
+                          'uid': slugid.nice(),
+                          'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
+                          'type': 'heatmap'
+                        }
+                        ,
+                        { 'server': 'http://52.45.229.11/',
+                          'uid': slugid.nice(),
+                          'tilesetUid': '4ec6d59e-f7dc-43aa-b12b-ce6b015290a6',
+                          'type': '2d-tiles'
+                        }
+                    ]
+                }
+            ]}
+
+                ]
+          }]
+
     }
 
 
@@ -139,9 +207,76 @@ export class MultiViewContainer extends React.Component {
       
   }
 
+  calculateViewDimensions(view) {
+      /**
+       * Get the dimensions for this view, counting just the tracks
+       * that are present in it
+       *
+       * @param view: A view containing a list of tracks as a member.
+       * @return: A width and a height pair (e.g. [width, height])
+       */
+      let defaultHorizontalHeight = 20;
+      let defaultVerticalWidth = 0;
+      let defaultCenterHeight = 100;
+      let defaultCenterWidth = 100;
+      let currHeight = 0;
+      let currWidth = 0;    //currWidth will generally be ignored because it will just be set to 
+                            //the width of the enclosing container
+
+      if (view.tracks.top) {
+          // tally up the height of the top tracks
+
+          for (let i = 0; i < view.tracks.top.length; i++) {
+              let track = view.tracks.top[i];
+              currHeight += track.height ? track.height : defaultHorizontalHeight;
+          }
+      }
+
+      if (view.tracks.bottom) {
+          // tally up the height of the top tracks
+
+          for (let i = 0; i < view.tracks.bottom.length; i++) {
+              let track = view.tracks.bottom[i];
+              currHeight += track.height ? track.height : defaultHorizontalHeight;
+          }
+      }
+
+      if (view.tracks.left) {
+          // tally up the height of the top tracks
+
+          for (let i = 0; i < view.tracks.left.length; i++) {
+              let track = view.tracks.left[i];
+              currWidth += track.width ? track.width : defaultVerticalWidth;
+          }
+      }
+
+      if (view.tracks.right) {
+          // tally up the height of the top tracks
+
+          for (let i = 0; i < view.tracks.right.length; i++) {
+              let track = view.tracks.right[i];
+              currWidth += track.width ? track.width : defaultVerticalWidth;
+          }
+      }
+
+      if (view.center) {
+            currHeight += view.center.height ? view.center.height : defaultCenterHeight;
+            currWidth += view.center.width ? view.center.width : defaultCenterWidth;
+      } else if ((tracks.top || tracks.bottom) && (tracks.left || tracks.right)) {
+            currHeight += defaultCenterWidth;
+            currWidth += defaultCenterWidth;
+      }
+
+      console.log('currWidth:', currWidth, 'currHeight:', currHeight);
+
+      return [currWidth, currHeight];
+  }
+
   generateViewLayout(viewConfig) {
     let minTrackHeight = 30;
     let totalHeight = 0
+
+        console.log('viewConfig:', viewConfig);
 
     for (let i = 0; i < viewConfig.tracks.length; i++) {
         let track = viewConfig.tracks[i];
@@ -237,8 +372,7 @@ export class MultiViewContainer extends React.Component {
        * view.
        */
 
-      let freshViewConfig = JSON.parse(this.props.viewConfig.text);
-      let views = freshViewConfig.views;
+      let views = this.views;
       let lastView = views[views.length-1];
 
       let maxY = 0;
@@ -320,7 +454,7 @@ export class MultiViewContainer extends React.Component {
           // and set `measureBeforeMount={true}`.
           useCSSTransforms={this.state.mounted}
         >
-            { this.props.viewConfig.object.views.map(function(view, i) {
+            { this.views.map(function(view, i) {
                 let layout = this.generateViewLayout(view);
                 /*
                 if ('layout' in c.props.viewConfig) {
