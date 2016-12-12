@@ -52,12 +52,14 @@ export class MultiViewContainer extends React.Component {
                         height: 30,
                       tilesetUid: '540072c1-da4f-4f11-9dca-ca9c262f0a95',
                       server: 'http://52.45.229.11'}
+                 /*
                 ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
                         height: 30,
                       tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
                       server: 'http://52.45.229.11'}
+                      */
 
                      ]
                 }
@@ -84,12 +86,14 @@ export class MultiViewContainer extends React.Component {
                           'tilesetUid': '00bec9f2-504e-4daf-a674-6aca204247ce',
                           'type': 'heatmap'
                         }
+                    /*
                         ,
                         { 'server': 'http://52.45.229.11/',
                           'uid': slugid.nice(),
                           'tilesetUid': '00bec9f2-504e-4daf-a674-6aca204247ce',
                           'type': '2d-tiles'
                         }
+                        */
                     ]
                 }
             ]}
