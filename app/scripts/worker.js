@@ -102,7 +102,7 @@ export function workerFetchTiles(tilesetServer, tileIds, done) {
         let theseTileIds = tileIds.slice(i, i+Math.min(tileIds.length - i, MAX_FETCH_TILES))
 
         let renderParams = theseTileIds.map(x => "d=" + x).join('&');
-        let outUrl = urljoin(tilesetServer, 'tilesets/x/render/?' + renderParams);
+        let outUrl = urljoin(tilesetServer, 'tiles/?' + renderParams);
 
         let p = new Promise(function(resolve, reject) {
             json(outUrl, (error, data) => {

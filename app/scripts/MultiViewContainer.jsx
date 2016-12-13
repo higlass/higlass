@@ -39,7 +39,7 @@ export class MultiViewContainer extends React.Component {
                 {'uid': slugid.nice(), 
                     type:'horizontal-line',
                     height: 30,
-                  tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
+                  tilesetUid: 'bb',
                   server: 'http://52.45.229.11'}
             ,
                 {'uid': slugid.nice(),
@@ -50,7 +50,7 @@ export class MultiViewContainer extends React.Component {
                     {'uid': slugid.nice(), 
                         type:'horizontal-line',
                         height: 30,
-                      tilesetUid: '540072c1-da4f-4f11-9dca-ca9c262f0a95',
+                      tilesetUid: 'bb',
                       server: 'http://52.45.229.11'}
                  /*
                 ,
@@ -83,7 +83,7 @@ export class MultiViewContainer extends React.Component {
                     [
                         { 'server': 'http://52.45.229.11/',
                           'uid': slugid.nice(),
-                          'tilesetUid': '00bec9f2-504e-4daf-a674-6aca204247ce',
+                          'tilesetUid': 'aa',
                           'type': 'heatmap'
                         }
                     /*
