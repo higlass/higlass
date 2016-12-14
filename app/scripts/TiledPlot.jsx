@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {VerticalTiledPlot, HorizontalTiledPlot} from './PositionalTiledPlot.jsx';
 import {TrackRenderer} from './TrackRenderer.jsx';
+import {AddTrackModal} from './AddTrackModal.jsx';
 
 
 export class TiledPlot extends React.Component {
@@ -77,7 +78,9 @@ export class TiledPlot extends React.Component {
             yPositionOffset: 0,
             xPositionOffset: 0,
 
-            tracks: tracks
+            tracks: tracks,
+            addTrackVisible: false,
+            addTrackPosition: null
         }
 
         // these dimensions are computed in the render() function and depend
@@ -197,10 +200,35 @@ export class TiledPlot extends React.Component {
         return tracksDict;
     }
 
+    handleTrackAdded(trackInfo) {
+        /**
+         * A track was added from the AddTrackModal dialog.
+         *
+         * @param trackInfo: A JSON object that can be used as a track
+         *                   definition
+         */
+
+    }
+
+    handleNoTrackAdded() {
+        /*
+         * User hit cancel on the AddTrack dialog so we need to
+         * just close it and do nothin
+         */
+        this.setState({
+            addTrackVisible: false
+        });
+    }
+
     handleAddTrack(position) {
         let newTrack = {
             uid: slugid.nice()
         }
+
+        this.setState({
+            addTrackPosition: position,
+            addTrackVisible: true
+        });
 
         newTrack.width = this.minVerticalWidth;
         newTrack.height = this.minHorizontalHeight;
@@ -612,6 +640,12 @@ export class TiledPlot extends React.Component {
                 style={{flex: 1}}
             >
                 {trackRenderer}     
+                <AddTrackModal 
+                    onCancel={this.handleNoTrackAdded.bind(this)}
+                    onTrackChosen={this.handleTrackAdded.bind(this)}
+                    position={this.state.addTrackPosition}
+                    show={this.state.addTrackVisible}
+                />
             </div>
             );
     }
