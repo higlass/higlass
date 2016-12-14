@@ -26,6 +26,7 @@ class TileProxy  {
          */
         // see if any of the tilesetIds are already in the cache
         // if they are, no need to fetch them
+        
 
         workerFetchTiles(tilesetServer, tilesetIds, (results) => {
             // do some caching here    

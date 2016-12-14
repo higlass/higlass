@@ -80,7 +80,7 @@ export class TiledPlot extends React.Component {
 
             tracks: tracks,
             addTrackVisible: false,
-            addTrackPosition: null
+            addTrackPosition: "top"
         }
 
         // these dimensions are computed in the render() function and depend
@@ -121,6 +121,10 @@ export class TiledPlot extends React.Component {
 
         this.setState({
             mounted: true
+            /*
+            addTrackPosition: 'top',
+            addTrackVisible: true
+            */
         });
 
     }
@@ -200,13 +204,38 @@ export class TiledPlot extends React.Component {
         return tracksDict;
     }
 
-    handleTrackAdded(trackInfo) {
+    handleTrackAdded(newTilesetUid, position) {
         /**
          * A track was added from the AddTrackModal dialog.
          *
          * @param trackInfo: A JSON object that can be used as a track
          *                   definition
          */
+        let newTrack = {'uid': slugid.nice(), 
+                    type:'horizontal-line',
+                    height: 30,
+                    tilesetUid: newTilesetUid,
+                    server: 'http://52.45.229.11'
+        }
+
+        newTrack.width = this.minVerticalWidth;
+        newTrack.height = this.minHorizontalHeight;
+
+        let tracks = this.state.tracks;
+        if (position == 'left' || position == 'top') {
+            // if we're adding a track on the left or the top, we want the
+            // new track to appear at the begginning of the track list
+            tracks[position].unshift(newTrack); 
+
+        } else {
+            // otherwise, we want it at the end of the track list
+            tracks[position].push(newTrack);
+        }
+
+        this.setState({
+            tracks: tracks,
+            addTrackVisible: false
+        });
 
     }
 
@@ -221,33 +250,12 @@ export class TiledPlot extends React.Component {
     }
 
     handleAddTrack(position) {
-        let newTrack = {
-            uid: slugid.nice()
-        }
 
         this.setState({
             addTrackPosition: position,
             addTrackVisible: true
         });
 
-        newTrack.width = this.minVerticalWidth;
-        newTrack.height = this.minHorizontalHeight;
-        newTrack.value = 'new';
-
-        let tracks = this.state.tracks;
-        if (position == 'left' || position == 'top') {
-            // if we're adding a track on the left or the top, we want the
-            // new track to appear at the begginning of the track list
-            tracks[position].unshift(newTrack); 
-
-        } else {
-            // otherwise, we want it at the end of the track list
-            tracks[position].push(newTrack);
-        }
-
-        this.setState({
-            tracks: tracks
-        });
 
     }
 

@@ -316,7 +316,6 @@ export class MultiViewContainer extends React.Component {
 
   generateViewLayout(view) {
     let layout = null;
-    console.log('generating layout');
 
     if ('layout' in view)
         layout = view.layout
@@ -340,24 +339,17 @@ export class MultiViewContainer extends React.Component {
             w: 6,
         };
 
-        console.log('elementWidth:', elementWidth);
-        console.log('adj:', totalHeight - centerHeight);
 
         if ('center' in view.tracks || 'left' in view.tracks || 'right' in view.tracks) {
             let desiredHeight = ((elementWidth - leftWidth - rightWidth - 2 * this.horizontalMargin) );
-            console.log('topHeight:', topHeight, 'bottomHeight:', bottomHeight);
             desiredHeight +=  topHeight + bottomHeight + 2*this.verticalMargin + 20;
 
-            console.log('elementWidth:', elementWidth);
-            console.log('desiredHeight:', desiredHeight);
             // stretch the view out 
-            layout.h = Math.floor(desiredHeight / this.rowHeight); 
+            layout.h = Math.ceil(desiredHeight / this.rowHeight); 
         }
         else
             layout.h = heightGrid;
 
-        console.log('x layout.h', layout.h);
-        console.log('x layout.height', layout.height);
         layout.minH = heightGrid;
         layout.i = slugid.nice();
     }
@@ -464,15 +456,12 @@ export class MultiViewContainer extends React.Component {
       freshViewConfig.views.push(newView); 
       let newViewConfigText = JSON.stringify(freshViewConfig);
 
-      //console.log('newViewConfig:', newViewConfigText);
-
       this.props.onNewConfig(newViewConfigText);
       */
   }
 
 
   render() {
-      console.log('rendering MultiViewContainer');
 
     let tiledAreaStyle = {
         display: 'flex',
@@ -491,9 +480,6 @@ export class MultiViewContainer extends React.Component {
 
                 let itemUid = "p" + view.uid;
                 this.heights[itemUid] = layout.height;
-                console.log('layout.height', layout.height);
-                console.log('layout.h:', layout.h, layout.h * this.rowHeight);
-                console.log('layout:', layout);
 
                 return (<div 
                             data-grid={layout}
