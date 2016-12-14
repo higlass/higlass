@@ -1,7 +1,10 @@
-import {json} from 'd3-request';
+import '../styles/AddTrackModal.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-bootstrap';
+import {Panel,Checkbox, Collapse} from 'react-bootstrap';
+import CollapsePanel from './CollapsePanel.jsx';
+import {TilesetFinder} from './TilesetFinder.jsx';
 
 export class AddTrackModal extends React.Component {
     constructor(props) {
@@ -10,18 +13,30 @@ export class AddTrackModal extends React.Component {
         console.log('props', props);
         this.state = {
             options: {},
-            filter: ''
+            advancedVisible: false
         }
     }
 
-    handleSearchChange() {
-        let domElement = ReactDOM.findDOMNode(this.searchBox);
-
-        this.setState({filter: domElement.value});
-        //console.log('search changed', domElement.value);
-    }
 
     componentDidMount() {
+
+    }
+
+    normalizeCheckboxChanged(e) {
+        let domElement = ReactDOM.findDOMNode(this.normalizeCheckbox);
+
+        this.setState({
+            normalizeChecked: e.target.checked
+        });
+    }
+
+    toggleAdvancedVisible() {
+        this.setState({
+            advancedVisible: !this.state.advancedVisible
+        });
+    }
+
+    render() {
         let filetype = '';
 
         if (this.props.position == 'top' ||
@@ -33,62 +48,32 @@ export class AddTrackModal extends React.Component {
             filetype = 'cooler'
 
 
-        json('http://52.45.229.11/tilesets/?t=' + filetype, function(error, data) {
-            if (error) {
-                console.log('ERROR:', error);
-            } else {
-                console.log('data:', data);
-                this.setState({options: data});
-            }
-        }.bind(this));
-    }
-
-    handleOptionDoubleClick(x, y) {
-        /**
-         * Double clicked on an element. Should be selected
-         * and this window will be closed.
-         */
-        this.props.onTrackChosen(x.target.value, this.props.position);
-    }
-
-    handleSelect(x) {
-        console.log('select:', x);
-    }
-
-    render() {
-
-        let options = null;
-
-        if ('results' in this.state.options) {
-            options = this.state.options.results
-                .filter(x => x.name.toLowerCase().includes(this.state.filter))
-                .map(x=> {
-                console.log('x.uid:', x.uuid);
-                return <option 
-                        onDoubleClick={this.handleOptionDoubleClick.bind(this)}
-                        onSelect={this.handleSelect.bind(this)}
-                        key={x.uuid}
-                        value={x.uuid}>
-                            {x.name}
-                        </option>
-            });
-        }
 
         let form = (
                     <form>
-                        <FormGroup controlId={'formControlsTest'}>
-                          <ControlLabel>{"Search Term"}</ControlLabel>
-                          <FormControl 
-                            placeholder="Search Term"
-                            ref={(c) => { this.searchBox = c; }}
-                            onChange={this.handleSearchChange.bind(this)}
-                          />
-                        </FormGroup>
-                        <FormGroup controlId="formControlsSelectMultiple">
-                          <ControlLabel>Matching tilesets</ControlLabel>
-                          <FormControl componentClass="select" multiple>
-                            {options}
-                          </FormControl>
+                        <FormGroup>
+                            <TilesetFinder
+                                trackTypeFilter={filetype}
+                                onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
+                            />
+                            <CollapsePanel
+                                collapsed={this.state.advancedVisible} 
+                                toggleCollapse={this.toggleAdvancedVisible.bind(this)}
+                            >
+                                <Checkbox
+                                    ref={c => this.normalizeCheckbox = c } 
+                                    onChange={ this.normalizeCheckboxChanged.bind(this) }
+                                >
+                                Normalize By
+                                </Checkbox>
+
+                                <Collapse in={this.state.normalizeChecked}>
+                                    <Panel>
+                                        {this.props.children}
+                                    </Panel>
+                                </Collapse>
+
+                            </CollapsePanel>
                         </FormGroup>
                     </form>
                 )
@@ -98,6 +83,7 @@ export class AddTrackModal extends React.Component {
                 show={this.props.show}
                 >
                     <Modal.Header closeButton>
+                    <Modal.Title>Add Track</Modal.Title> 
                     </Modal.Header>
                     <Modal.Body>
                         { form }
