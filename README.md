@@ -73,6 +73,5 @@ repository and run the following commands:
 
 ```
 npm install
-npm install -g webpack-dev-server
-webpack-dev-server --content-base app --display-exclude --profile | grep -v "\\[\\d*\\]"
+npm start
 ```

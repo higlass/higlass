@@ -15,12 +15,14 @@
     "node": ">=0.12.0"
   },
   "devDependencies": {
+    "babel": "~6.5.2",
     "babel-core": "~6.5.2",
     "babel-loader": "~6.2.3",
     "babel-plugin-transform-object-rest-spread": "^6.20.2",
-    "babel-preset-es2015": "~6.5.0",
+    "babel-preset-es2016": "^6.16.0",
     "babel-preset-react": "^6.11.1",
     "browser-sync": "~2.11.1",
+    "brfs": "1.4.3",
     "css-loader": "^0.23.1",
     "del": "~2.2.0",
     "es6-promise": "~3.1.2",
@@ -91,5 +93,8 @@
     "transform-loader": "^0.2.3",
     "url-join": "^1.1.0",
     "webpack-dev-server": "^1.16.2"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --content-base app --display-exclude --profile | grep -v '\\[\\d*\\]'"
   }
 }
