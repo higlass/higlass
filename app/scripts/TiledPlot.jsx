@@ -122,7 +122,7 @@ export class TiledPlot extends React.Component {
         this.setState({
             mounted: true,
             addTrackPosition: 'top',
-            addTrackVisible: true
+            addTrackVisible: false
         });
 
     }

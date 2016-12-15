@@ -344,6 +344,10 @@ export class MultiViewContainer extends React.Component {
             let desiredHeight = ((elementWidth - leftWidth - rightWidth - 2 * this.horizontalMargin) );
             desiredHeight +=  topHeight + bottomHeight + 2*this.verticalMargin + 20;
 
+            // how much height is left in the browser?
+            console.log('window.innerWidth:', window.innerHeight);
+
+
             // stretch the view out 
             layout.h = Math.ceil(desiredHeight / this.rowHeight); 
         }
