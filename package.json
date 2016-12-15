@@ -95,6 +95,6 @@
     "webpack-dev-server": "^1.16.2"
   },
   "scripts": {
-    "start": "webpack-dev-server --content-base app --display-exclude --profile | grep -v '\\[\\d*\\]'"
+    "start": "webpack-dev-server --content-base app --display-exclude --profile --inline | grep -v '\\[\\d*\\]'"
   }
 }
