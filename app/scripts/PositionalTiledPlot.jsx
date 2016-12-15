@@ -5,7 +5,7 @@ import {DraggableDiv} from './DraggableDiv.js';
 import {select,event,mouse} from 'd3-selection';
 import {SortableContainer, SortableElement, SortableHandle, arrayMove} from 'react-sortable-hoc';
 
-class MoveableTrack extends React.Component {
+class TrackArea extends React.Component {
     constructor(props) {
         super(props);
 
@@ -36,6 +36,58 @@ class MoveableTrack extends React.Component {
         this.setState({
             controlsVisible: true
         });
+    }
+}
+
+export class FixedTrack extends TrackArea {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        let controls = null;
+
+        if (this.state.controlsVisible) {
+            controls = (<div>
+                            <img 
+                                className="no-zoom"
+                                onClick={() => { this.props.handleCloseTrack(this.props.uid); }}
+                                src="images/cross.svg" 
+                                style={this.getCloseImgStyle()}
+                                width="10px" 
+                            />
+                    </div>)
+        }
+
+        return (
+            <div 
+                className={this.props.className} 
+                onMouseEnter={this.handleMouseEnter.bind(this)}
+                onMouseLeave={this.handleMouseLeave.bind(this)}
+                style={{
+                    height: this.props.height,
+                    width: this.props.width,
+                    position: "relative",
+                    background: 'transparent'
+                }}
+            >
+            <div 
+                key={this.props.uid}
+                style={{
+                    height: this.props.height,
+                    width: this.props.width
+                }}
+            />
+                {controls}
+            </div>
+        )
+
+    }
+}
+
+class MoveableTrack extends TrackArea {
+    constructor(props) {
+        super(props);
     }
 
     render() {
@@ -96,6 +148,18 @@ MoveableTrack.propTypes = {
     item: React.PropTypes.object,
     height: React.PropTypes.number,
     width: React.PropTypes.number,
+}
+
+export class CenterTrack extends FixedTrack {
+    // should be the same as a vertical track
+    getCloseImgStyle() {
+        let closeImgStyle = { right: 15,
+                         top: 5,
+                         position: 'absolute',
+                         opacity: .5}
+
+        return closeImgStyle;
+    }
 }
 
 class VerticalTrack extends MoveableTrack {

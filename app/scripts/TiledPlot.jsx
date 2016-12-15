@@ -4,7 +4,7 @@ import slugid from 'slugid';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
-import {VerticalTiledPlot, HorizontalTiledPlot} from './PositionalTiledPlot.jsx';
+import {CenterTrack, VerticalTiledPlot, HorizontalTiledPlot} from './PositionalTiledPlot.jsx';
 import {TrackRenderer} from './TrackRenderer.jsx';
 import {AddTrackModal} from './AddTrackModal.jsx';
 
@@ -225,6 +225,9 @@ export class TiledPlot extends React.Component {
             // new track to appear at the begginning of the track list
             tracks[position].unshift(newTrack); 
 
+        } else if (position == 'center') {
+            // we're going to have to either overlay the existing track with a new one
+            // or add another one on top
         } else {
             // otherwise, we want it at the end of the track list
             tracks[position].push(newTrack);
@@ -482,8 +485,8 @@ export class TiledPlot extends React.Component {
         //let trackOutline = "1px solid black";
         let trackOutline = "none";
 
-        let plusWidth = 10;
-        let plusHeight = 10;
+        let plusWidth = 18;
+        let plusHeight = 18;
 
         let imgStyle = {
             width: plusWidth,
@@ -538,6 +541,18 @@ export class TiledPlot extends React.Component {
                             />
                 )
 
+        let centerPlus = (
+                            <img
+                                onClick={() => { this.handleAddTrack('center')}}
+                                src="images/plus.svg"
+                                style={Object.assign({}, imgStyle, {
+                                        'left': this.props.horizontalMargin + this.leftWidth + this.centerWidth - 10 -  plusWidth,
+                                        'top': this.props.verticalMargin + this.topHeight + + plusHeight + 10,
+                                        'backgroundColor': 'white'
+                                    })}
+                            />
+                )
+
 
         let topTracks = (<div style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin, 
                                       width: this.centerWidth, height: this.topHeight,
@@ -587,7 +602,17 @@ export class TiledPlot extends React.Component {
                                 width={this.centerWidth}
                             />
                          </div>)
-
+        let centerTrack = ( <div style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
+                                      width: this.centerWidth, height: this.bottomHeight,
+                                      outline: trackOutline,
+                                        position: "absolute",}}>
+                               <CenterTrack
+                                width={this.centerWidth}
+                                height={this.centerHeight}
+                                tracks={this.state.tracks['center']}
+                                handleCloseTrack={this.handleCloseTrack.bind(this)}
+                                />
+                            </div> )
         let trackPositionTexts = this.createTrackPositionTexts();
 
         let positionedTracks = this.positionedTracks();
@@ -628,11 +653,13 @@ export class TiledPlot extends React.Component {
                     {leftPlus}
                     {rightPlus}
                     {bottomPlus}
+                    {centerPlus}
 
                     {topTracks}
                     {leftTracks}
                     {rightTracks}
                     {bottomTracks}
+                    {centerTrack}
 
                 </TrackRenderer>
             )

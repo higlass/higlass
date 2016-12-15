@@ -346,7 +346,16 @@ export class MultiViewContainer extends React.Component {
 
             // how much height is left in the browser?
             console.log('window.innerWidth:', window.innerHeight);
+            console.log('desiredHeight:', desiredHeight);
 
+            // limit the height of the container to the window height
+            // the number 160 is relatively arbitrary and should be
+            // replaced with a concrete measure of the element below and
+            // above the canvas area
+            let availableHeight = window.innerHeight - 160;
+
+            if (desiredHeight > availableHeight )
+                desiredHeight = availableHeight;
 
             // stretch the view out 
             layout.h = Math.ceil(desiredHeight / this.rowHeight); 
