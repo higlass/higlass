@@ -2,7 +2,7 @@ import '../styles/AddTrackModal.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-bootstrap';
-import {Panel,Checkbox, Collapse} from 'react-bootstrap';
+import {Form, Panel,Checkbox, Collapse} from 'react-bootstrap';
 import CollapsePanel from './CollapsePanel.jsx';
 import {TilesetFinder} from './TilesetFinder.jsx';
 
@@ -50,8 +50,7 @@ export class AddTrackModal extends React.Component {
 
 
         let form = (
-                    <form>
-                        <FormGroup>
+                <div>
                             <TilesetFinder
                                 trackTypeFilter={filetype}
                                 onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
@@ -69,13 +68,15 @@ export class AddTrackModal extends React.Component {
 
                                 <Collapse in={this.state.normalizeChecked}>
                                     <Panel>
-                                        {this.props.children}
+                                        <TilesetFinder
+                                            trackTypeFilter={filetype}
+                                            onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
+                                        />
                                     </Panel>
                                 </Collapse>
 
                             </CollapsePanel>
-                        </FormGroup>
-                    </form>
+                    </div>
                 )
 
         return(<Modal 

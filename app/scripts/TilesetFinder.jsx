@@ -3,13 +3,14 @@ import {json} from 'd3-request';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
+import {Form, Row,Col, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
 
 export class TilesetFinder extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            selectedUuid: [''],
             options: {},
             filter: ''
         }
@@ -21,7 +22,22 @@ export class TilesetFinder extends React.Component {
                 console.log('ERROR:', error);
             } else {
                 console.log('data:', data);
-                this.setState({options: data});
+                let selectedUuid = this.state.selectedUuid;
+
+
+
+                if ('results' in data && data.results.length) {
+                    let returnedUuidSet = new Set(data.results.map(x => x.uuid));
+
+                    if (!returnedUuidSet.has(selectedUuid)) {
+                        // if there's no dataset selected, select the first one
+                        selectedUuid = [data.results[0].uuid];
+                    }
+                }
+                this.setState({
+                    options: data,
+                    selectedUuid: selectedUuid
+                });
             }
         }.bind(this));
     }
@@ -31,11 +47,15 @@ export class TilesetFinder extends React.Component {
          * Double clicked on an element. Should be selected
          * and this window will be closed.
          */
-        this.props.onTrackChosen(x.target.value);
+        this.props.onTrackChosen(x.target.value, this.props.position);
     }
 
     handleSelect(x) {
+        console.log('setting selectedUuid:', x.target.value);
 
+        this.setState({
+            selectedUuid: x.target.value
+        });
     }
 
     handleSearchChange() {
@@ -52,35 +72,43 @@ export class TilesetFinder extends React.Component {
             options = this.state.options.results
                 .filter(x => x.name.toLowerCase().includes(this.state.filter))
                 .map(x=> {
-                return <option 
-                        onDoubleClick={this.handleOptionDoubleClick.bind(this)}
-                        onSelect={this.handleSelect.bind(this)}
-                        key={x.uuid}
-                        value={x.uuid}>
-                            {x.name}
-                        </option>
+                    if (x.uuid == this.state.selectedUuid) 
+                        return <option 
+                                onDoubleClick={this.handleOptionDoubleClick.bind(this)}
+                                key={x.uuid}
+                                value={x.uuid}>
+                                    {x.name}
+                                </option>
             });
         }
 
-        console.log('options:', options);
-
         let form = (
-                    <div>
-                        <FormGroup controlId={'formControlsTest'}>
-                          <ControlLabel>{"Search Term"}</ControlLabel>
+                <Form horizontal
+                >
+                    <FormGroup
+                    
+                    >
+                          <Col sm={3}>
+                          <ControlLabel>{"Select tileset"}</ControlLabel>
+                          </Col>
+                          <Col smOffset={5} sm={4}>
                           <FormControl 
                             placeholder="Search Term"
                             ref={(c) => { this.searchBox = c; }}
                             onChange={this.handleSearchChange.bind(this)}
                           />
-                        </FormGroup>
-                        <FormGroup controlId="formControlsSelectMultiple">
-                          <ControlLabel>Matching tilesets</ControlLabel>
-                          <FormControl componentClass="select" multiple>
+                          <div style={{height: 10}} />
+                          </Col>
+                          <Col sm={12}>
+                          <FormControl componentClass="select" multiple
+                          value={this.state.selectedUuid}
+                            onChange={this.handleSelect.bind(this)}
+                          >
                             {options}
                           </FormControl>
-                        </FormGroup>
-                    </div>
+                            </Col>
+                          </FormGroup>
+                        </Form>
                 )
 
         return(
