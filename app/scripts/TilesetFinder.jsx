@@ -34,6 +34,9 @@ export class TilesetFinder extends React.Component {
                         selectedUuid = [data.results[0].uuid];
                     }
                 }
+
+                this.props.selectedTilesetChanged(selectedUuid);
+
                 this.setState({
                     options: data,
                     selectedUuid: selectedUuid
@@ -52,6 +55,8 @@ export class TilesetFinder extends React.Component {
 
     handleSelect(x) {
         console.log('setting selectedUuid:', x.target.value);
+
+        this.props.selectedTilesetChanged(x.target.value);
 
         this.setState({
             selectedUuid: x.target.value
@@ -83,7 +88,8 @@ export class TilesetFinder extends React.Component {
         }
 
         let form = (
-                <Form horizontal
+                <Form 
+                    horizontal
                 >
                     <FormGroup
                     

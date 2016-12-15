@@ -13,10 +13,11 @@ export class AddTrackModal extends React.Component {
         console.log('props', props);
         this.state = {
             options: {},
-            advancedVisible: false
+            advancedVisible: false,
+            mainTilesetUuid: null,
+            normalizeTilesetUuid: null
         }
     }
-
 
     componentDidMount() {
 
@@ -30,10 +31,31 @@ export class AddTrackModal extends React.Component {
         });
     }
 
+    handleSubmit() {
+        if (this.state.normalizeChecked)
+            this.props.onTrackChosen(this.state.mainTilesetUuid, this.props.position, 
+                    {'normalizeTilesetUuid': this.state.normalizeTilesetUuid});
+        else
+            this.props.onTrackChosen(this.state.mainTilesetUuid, this.props.position, {});
+    }
+
     toggleAdvancedVisible() {
         this.setState({
             advancedVisible: !this.state.advancedVisible
         });
+    }
+
+    mainTilesetChanged(uuid) {
+        this.setState({
+            mainTilesetUuid: uuid
+        });
+    }
+
+    normalizeTilesetChanged(uuid) {
+        this.setState({
+            normalizeTilesetUuid: uuid
+        });
+
     }
 
     render() {
@@ -54,6 +76,7 @@ export class AddTrackModal extends React.Component {
                             <TilesetFinder
                                 trackTypeFilter={filetype}
                                 onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
+                                selectedTilesetChanged={this.mainTilesetChanged.bind(this)}
                             />
                             <CollapsePanel
                                 collapsed={this.state.advancedVisible} 
@@ -71,6 +94,7 @@ export class AddTrackModal extends React.Component {
                                         <TilesetFinder
                                             trackTypeFilter={filetype}
                                             onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
+                                            selectedTilesetChanged={this.normalizeTilesetChanged.bind(this)}
                                         />
                                     </Panel>
                                 </Collapse>
@@ -91,7 +115,7 @@ export class AddTrackModal extends React.Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={this.props.onCancel}>Cancel</Button>
-                        <Button onClick={this.props.onTrackChosen}>Submit</Button>
+                        <Button onClick={this.handleSubmit.bind(this)}>Submit</Button>
                     </Modal.Footer>
                </Modal>)
     }
