@@ -20,8 +20,8 @@ export class MultiViewContainer extends React.Component {
         this.yPositionOffset = 0;
         this.rowHeight = 40;
 
-        this.horizontalMargin = 54;
-        this.verticalMargin = 54;
+        this.horizontalMargin = 34;
+        this.verticalMargin = 34;
 
         this.viewConfig = this.props.viewConfig;
 
@@ -65,7 +65,7 @@ export class MultiViewContainer extends React.Component {
                 }
             ],
             'left': [
-                {'uid': slugid.nice(), type:'left-axis', width: 50}
+                {'uid': slugid.nice(), type:'left-axis', width: 100}
             /*
                 ,
                 {'uid': slugid.nice(), 

@@ -282,6 +282,7 @@ export class TiledPlot extends React.Component {
 
     handleCloseTrack(uid) {
         let tracks = this.state.tracks;
+        console.log('closing track...', uid);
 
         for (let trackType in tracks) {
             let theseTracks = tracks[trackType];
@@ -503,7 +504,7 @@ export class TiledPlot extends React.Component {
                                 src="images/plus.svg"
                                 style={Object.assign({}, imgStyle, {
                                         'left': this.props.horizontalMargin + this.leftWidth +  (this.centerWidth - plusWidth) / 2,
-                                        'top': (this.props.verticalMargin + plusHeight)/2
+                                        'top': (this.props.verticalMargin - plusHeight)/2
                                     })}
                             />
                 )
@@ -605,14 +606,21 @@ export class TiledPlot extends React.Component {
         let centerTrack = ( <div style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
                                       width: this.centerWidth, height: this.bottomHeight,
                                       outline: trackOutline,
+                                        position: "absolute",}} />)
+
+        if (this.state.tracks['center'].length) {
+            centerTrack = ( <div style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
+                                      width: this.centerWidth, height: this.bottomHeight,
+                                      outline: trackOutline,
                                         position: "absolute",}}>
                                <CenterTrack
                                 width={this.centerWidth}
                                 height={this.centerHeight}
-                                tracks={this.state.tracks['center']}
+                                uid={this.state.tracks['center'][0].uid}
                                 handleCloseTrack={this.handleCloseTrack.bind(this)}
                                 />
                             </div> )
+        }
         let trackPositionTexts = this.createTrackPositionTexts();
 
         let positionedTracks = this.positionedTracks();

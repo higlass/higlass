@@ -293,6 +293,7 @@ export class TrackRenderer extends React.Component {
 
     removeTracks(trackUids) {
         for (let i = 0; i < trackUids.length; i++) {
+            console.log(this.trackDefObjects[trackUids[i]].trackObject);
             this.trackDefObjects[trackUids[i]].trackObject.remove();
             delete this.trackDefObjects[trackUids[i]];
         }

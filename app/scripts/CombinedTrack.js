@@ -63,4 +63,10 @@ export class CombinedTrack {
         }
         
     }
+
+    remove() {
+        for (let i = 0; i < this.childTracks.length; i++) {
+            this.childTracks[i].remove();
+        }
+    }
 }
