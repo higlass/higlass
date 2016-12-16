@@ -1,4 +1,3 @@
-import '../styles/PositionalTiledPlot.css';
 import slugid from 'slugid';
 import React from 'react';
 import {Resizable,ResizableBox} from 'react-resizable';
