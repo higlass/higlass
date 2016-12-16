@@ -4,7 +4,6 @@ import {Resizable,ResizableBox} from 'react-resizable';
 import {DraggableDiv} from './DraggableDiv.js';
 import {select,event,mouse} from 'd3-selection';
 import {SortableContainer, SortableElement, SortableHandle, arrayMove} from 'react-sortable-hoc';
-import { Menu } from 'react-data-menu';
 
 
 class TrackArea extends React.Component {
@@ -71,38 +70,6 @@ function callback(item) {
 export class FixedTrack extends TrackArea {
     constructor(props) {
         super(props);
-
-        this.state = {
-            position: {
-                x: 100,
-                y: 100
-            },
-            items: [{
-                type: 'label',
-                title: 'Menu Popup 1'
-            }, '-', {
-                title: 'Menu item 1-1',
-                callback: callback,
-                items: [{ // sub-menu
-                    title: 'Menu Popup 2'
-                }, '-', {
-                    title: 'Menu item 2-1',
-                    callback: callback,
-                    items: [{ // sub-sub-menu
-                        title: 'Menu Popup 3'
-                    }, '-', {
-                        title: 'Menu item 3-1'
-                    }]
-                }]
-            }, {
-                title: 'Menu item 1-2'
-            }, '-', {
-                 type: 'link',
-                 title: 'Give me the stars!',
-                 url: 'https://github.com/dkozar/react-data-menu/stargazers',
-                 target: '_blank'
-            }]
-        };
     }
 
     render() {
@@ -111,7 +78,6 @@ export class FixedTrack extends TrackArea {
         if (this.state.controlsVisible) {
             controls = this.getControls();
         }
-        console.log('LinkRenderer', LinkRenderer);
 
         return (
             <div 
@@ -133,7 +99,6 @@ export class FixedTrack extends TrackArea {
                 }}
             />
                 {controls}
-                 <Menu items={this.state.items} position={this.state.position} />
             </div>
         )
 
