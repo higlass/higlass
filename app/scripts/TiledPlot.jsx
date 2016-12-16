@@ -122,7 +122,8 @@ export class TiledPlot extends React.Component {
         this.setState({
             mounted: true,
             addTrackPosition: 'top',
-            addTrackVisible: false
+            addTrackVisible: false,
+            configuringTrack: null
         });
 
     }
@@ -280,6 +281,27 @@ export class TiledPlot extends React.Component {
         });
     }
 
+    getTrackByUid(uid) {
+        /**
+         * Return the track object for the track corresponding to this uid
+         *
+         * Null or undefined if none.
+         */
+        let tracks = this.state.tracks;
+
+        for (let trackType in tracks) {
+            let theseTracks = tracks[trackType];
+
+            let filteredTracks = theseTracks.filter((d) => { return d.uid == uid; });
+
+            if (filteredTracks.length)
+                return filteredTracks[0];
+        }
+
+        return null;
+    }
+
+
     handleCloseTrack(uid) {
         let tracks = this.state.tracks;
         console.log('closing track...', uid);
@@ -293,6 +315,12 @@ export class TiledPlot extends React.Component {
 
         this.setState({
             tracks: tracks
+        });
+    }
+
+    handleConfigTrack(uid, mouseEvent) {
+        this.setState({
+            configuringTrack: uid 
         });
     }
 
@@ -561,6 +589,7 @@ export class TiledPlot extends React.Component {
                                       position: "absolute",}}>
                             <HorizontalTiledPlot
                                 handleCloseTrack={this.handleCloseTrack.bind(this)}
+                                handleConfigTrack={this.handleConfigTrack.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['top']}
@@ -573,6 +602,7 @@ export class TiledPlot extends React.Component {
                                       position: "absolute",}}>
                             <VerticalTiledPlot
                                 handleCloseTrack={this.handleCloseTrack.bind(this)}
+                                handleConfigTrack={this.handleConfigTrack.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['left']}
@@ -585,6 +615,7 @@ export class TiledPlot extends React.Component {
                                       position: "absolute",}}>
                             <VerticalTiledPlot
                                 handleCloseTrack={this.handleCloseTrack.bind(this)}
+                                handleConfigTrack={this.handleConfigTrack.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['right']}
@@ -597,6 +628,7 @@ export class TiledPlot extends React.Component {
                                       position: "absolute",}}>
                             <HorizontalTiledPlot
                                 handleCloseTrack={this.handleCloseTrack.bind(this)}
+                                handleConfigTrack={this.handleConfigTrack.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['bottom']}
@@ -614,10 +646,11 @@ export class TiledPlot extends React.Component {
                                       outline: trackOutline,
                                         position: "absolute",}}>
                                <CenterTrack
-                                width={this.centerWidth}
+                                handleCloseTrack={this.handleCloseTrack.bind(this)}
+                                handleConfigTrack={this.handleConfigTrack.bind(this)}
                                 height={this.centerHeight}
                                 uid={this.state.tracks['center'][0].uid}
-                                handleCloseTrack={this.handleCloseTrack.bind(this)}
+                                width={this.centerWidth}
                                 />
                             </div> )
         }
@@ -673,6 +706,14 @@ export class TiledPlot extends React.Component {
             )
         }
 
+        let trackConfigure = null;
+
+        if (this.props.configuringTrack) {
+            trackConfigure = (<SeriesList
+                                trackList={this.getTrackByUid(this.props.configuringTrack)}
+                              />)
+        }
+
         // track renderer needs to enclose all the other divs so that it 
         // can catch the zoom events
         return(
@@ -687,6 +728,7 @@ export class TiledPlot extends React.Component {
                     position={this.state.addTrackPosition}
                     show={this.state.addTrackVisible}
                 />
+                {trackConfigure}
             </div>
             );
     }

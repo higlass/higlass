@@ -1,9 +1,11 @@
+import '../styles/PositionalTiledPlot.css';
 import slugid from 'slugid';
 import React from 'react';
 import {Resizable,ResizableBox} from 'react-resizable';
 import {DraggableDiv} from './DraggableDiv.js';
 import {select,event,mouse} from 'd3-selection';
 import {SortableContainer, SortableElement, SortableHandle, arrayMove} from 'react-sortable-hoc';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
 
 class TrackArea extends React.Component {
@@ -51,7 +53,9 @@ class TrackArea extends React.Component {
 
                         <img 
                             className="no-zoom"
-                            onClick={() => {}}
+                            onClick={(e) => { this.props.handleConfigTrack(this.props.uid, e)
+                                console.log('e:', e);
+                                ; }}
                             src="images/cog.svg" 
                             style={this.getSettingsImgStyle()}
                             width="10px" 
@@ -72,6 +76,11 @@ export class FixedTrack extends TrackArea {
         super(props);
     }
 
+    handleClick(e, data) {
+          console.log(data);
+    }
+
+
     render() {
         let controls = null;
 
@@ -91,6 +100,7 @@ export class FixedTrack extends TrackArea {
                     background: 'transparent'
                 }}
             >
+
             <div 
                 key={this.props.uid}
                 style={{
@@ -224,6 +234,7 @@ const VerticalItem = SortableElement((props) => {
     return (<VerticalTrack 
                 className={props.className}
                 handleCloseTrack={props.handleCloseTrack}
+                handleConfigTrack={props.handleConfigTrack}
                 handleResizeTrack={props.handleResizeTrack}
                 height={props.height}
                 item={props.item}
@@ -269,6 +280,7 @@ const HorizontalItem = SortableElement((props) => {
     return (<HorizontalTrack 
                 className={props.className}
                 handleCloseTrack={props.handleCloseTrack}
+                handleConfigTrack={props.handleConfigTrack}
                 handleResizeTrack={props.handleResizeTrack}
                 height={props.height}
                 item={props.item}
@@ -277,7 +289,7 @@ const HorizontalItem = SortableElement((props) => {
             />)});
 
 const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, 
-                                         sortableHandlers,height, width, handleCloseTrack,itemReactClass,
+                                         sortableHandlers,height, width, handleCloseTrack,handleConfigTrack,itemReactClass,
                                          handleResizeTrack}) => {
     let itemElements = items.map((item, index) => {
             return React.createElement(itemReactClass,
@@ -291,6 +303,7 @@ const SortableList = SortableContainer(({className, items, itemClass, sortingInd
                     item: item,
 					useDragHandle: useDragHandle,
                     handleCloseTrack: handleCloseTrack,
+                    handleConfigTrack, handleConfigTrack,
                     handleResizeTrack: handleResizeTrack
                 })
             })
@@ -430,6 +443,7 @@ export class HorizontalTiledPlot extends React.Component {
                         className={"list stylizedList"} 
                         component={SortableList}
                         handleCloseTrack={this.props.handleCloseTrack}
+                        handleConfigTrack={this.props.handleConfigTrack}
                         handleResizeTrack={this.props.handleResizeTrack}
                         height={thisHeight}
                         helperClass={"stylizedHelper"}
@@ -477,6 +491,7 @@ export class VerticalTiledPlot extends React.Component {
                     className={"list stylizedList horizontalList"} 
                     component={SortableList}
                     handleCloseTrack={this.props.handleCloseTrack}
+                    handleConfigTrack={this.props.handleConfigTrack}
                     handleResizeTrack={this.props.handleResizeTrack}
                     height={this.props.height}
                     helperClass={"stylizedHelper"}

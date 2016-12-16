@@ -33,7 +33,7 @@ export class TiledPixiTrack extends PixiTrack {
         this.maxZoom = 0;
 
         tileProxy.trackInfo(server, tilesetUid, tilesetInfo => {
-            console.log('tilesetInfo', tilesetInfo);
+            //console.log('tilesetInfo', tilesetInfo);
             this.tilesetInfo = tilesetInfo[tilesetUid];
             
             this.maxZoom = +this.tilesetInfo['max_zoom'];
@@ -280,13 +280,12 @@ export class TiledPixiTrack extends PixiTrack {
          * We've gotten a bunch of tiles from the server in
          * response to a request from fetchTiles.
          */
-        console.log('received:', loadedTiles);
+        //console.log('received:', loadedTiles);
         for (let i = 0; i < this.visibleTiles.length; i++) {
             let tileId = this.visibleTiles[i].tileId;
 
 
             if (this.visibleTiles[i].remoteId in loadedTiles) {
-                //console.log('this.visibleTiles[i]:', this.visibleTiles[i]);
 
                 if (!(tileId in this.fetchedTiles)) {
                     // this tile may have graphics associated with it
