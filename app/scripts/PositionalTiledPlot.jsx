@@ -37,6 +37,28 @@ class TrackArea extends React.Component {
             controlsVisible: true
         });
     }
+
+    getControls() {
+        let controls = (<div>
+                        <img 
+                            className="no-zoom"
+                            onClick={() => { this.props.handleCloseTrack(this.props.uid); }}
+                            src="images/cross.svg" 
+                            style={this.getCloseImgStyle()}
+                            width="10px" 
+                        />
+
+                        <img 
+                            className="no-zoom"
+                            onClick={() => {}}
+                            src="images/cog.svg" 
+                            style={this.getSettingsImgStyle()}
+                            width="10px" 
+                        />
+                </div>)
+
+        return controls;
+    }
 }
 
 export class FixedTrack extends TrackArea {
@@ -48,15 +70,7 @@ export class FixedTrack extends TrackArea {
         let controls = null;
 
         if (this.state.controlsVisible) {
-            controls = (<div>
-                            <img 
-                                className="no-zoom"
-                                onClick={() => { this.props.handleCloseTrack(this.props.uid); }}
-                                src="images/cross.svg" 
-                                style={this.getCloseImgStyle()}
-                                width="10px" 
-                            />
-                    </div>)
+            controls = this.getControls();
         }
 
         return (
@@ -103,16 +117,10 @@ class MoveableTrack extends TrackArea {
         let controls = null;
 
         if (this.state.controlsVisible) {
-            controls = (<div>
-                            <img 
-                                className="no-zoom"
-                                onClick={() => { this.props.handleCloseTrack(this.props.uid); }}
-                                src="images/cross.svg" 
-                                style={this.getCloseImgStyle()}
-                                width="10px" 
-                            />
-                            <Handle />
-                    </div>)
+            controls = ( <div>
+                        { this.getControls() }
+                    <Handle />
+                </div>)
         }
 
         return (
@@ -160,6 +168,14 @@ export class CenterTrack extends FixedTrack {
 
         return closeImgStyle;
     }
+    getSettingsImgStyle() {
+        let closeImgStyle = { right: 41,
+                         top: 5,
+                         position: 'absolute',
+                         opacity: .5}
+
+        return closeImgStyle;
+    }
 }
 
 class VerticalTrack extends MoveableTrack {
@@ -183,6 +199,15 @@ class VerticalTrack extends MoveableTrack {
                          opacity: .5}
 
         return moveImgStyle;
+    }
+
+    getSettingsImgStyle() {
+        let closeImgStyle = { right: 5,
+                         top: 31,
+                         position: 'absolute',
+                         opacity: .5}
+
+        return closeImgStyle;
     }
 
 }
@@ -217,6 +242,15 @@ class HorizontalTrack extends MoveableTrack {
 
     getMoveImgStyle() {
         let moveImgStyle = { right: 28,
+                         top: 5,
+                         position: 'absolute',
+                         opacity: .5}
+
+        return moveImgStyle;
+    }
+
+    getSettingsImgStyle() {
+        let moveImgStyle = { right: 41,
                          top: 5,
                          position: 'absolute',
                          opacity: .5}
