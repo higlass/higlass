@@ -1,5 +1,6 @@
 import slugid from 'slugid';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {Resizable,ResizableBox} from 'react-resizable';
 import {DraggableDiv} from './DraggableDiv.js';
 import {select,event,mouse} from 'd3-selection';
@@ -51,9 +52,13 @@ class TrackArea extends React.Component {
                         />
 
                         <img 
+                            ref={(c) => { this.imgConfig = c; }}
                             className="no-zoom"
-                            onClick={(e) => { this.props.handleConfigTrack(this.props.uid, e)
-                                console.log('e:', e);
+                            onClick={(e) => { 
+                                let imgDom = ReactDOM.findDOMNode(this.imgConfig);
+                                let bbox = imgDom.getBoundingClientRect();
+                                console.log('bbox', bbox.left, 'clientLeft:', imgDom.clientLeft, 'imgDom:', console.dir(imgDom));
+                                this.props.handleConfigTrack(this.props.uid, {'left': imgDom.clientLeft, 'top': imgDom.offsetTop});
                                 ; }}
                             src="images/cog.svg" 
                             style={this.getSettingsImgStyle()}

@@ -7,6 +7,7 @@ import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {CenterTrack, VerticalTiledPlot, HorizontalTiledPlot} from './PositionalTiledPlot.jsx';
 import {TrackRenderer} from './TrackRenderer.jsx';
 import {AddTrackModal} from './AddTrackModal.jsx';
+import {TrackConfigWindow} from './TrackConfigWindow.jsx';
 
 
 export class TiledPlot extends React.Component {
@@ -281,6 +282,24 @@ export class TiledPlot extends React.Component {
         });
     }
 
+    getTrackOrientationByUid(uid) {
+        /**
+         * Get a track's orientation by it's UID.
+         */
+        let tracks = this.state.tracks;
+
+        for (let trackType in tracks) {
+            let theseTracks = tracks[trackType];
+
+            let filteredTracks = theseTracks.filter((d) => { return d.uid == uid; });
+
+            if (filteredTracks.length)
+                return trackType;
+        }
+
+        return null;
+    }
+
     getTrackByUid(uid) {
         /**
          * Return the track object for the track corresponding to this uid
@@ -318,9 +337,17 @@ export class TiledPlot extends React.Component {
         });
     }
 
-    handleConfigTrack(uid, mouseEvent) {
+    handleConfigTrack(uid, clickPosition) {
+        let orientation = this.getTrackOrientationByUid(uid);
+
+        console.log('orientation:', orientation);
+        console
+        
+        console.log('left:', clickPosition.left);
         this.setState({
-            configuringTrack: uid 
+            configuringTrack: uid,
+            configuringLocation: {'left': this.props.horizontalMargin + this.leftWidth + clickPosition.left, 
+                                  'top': this.props.verticalMargin + this.topHeight + clickPosition.top}
         });
     }
 
@@ -708,9 +735,11 @@ export class TiledPlot extends React.Component {
 
         let trackConfigure = null;
 
-        if (this.props.configuringTrack) {
-            trackConfigure = (<SeriesList
-                                trackList={this.getTrackByUid(this.props.configuringTrack)}
+        console.log('conf', this.state.configuringTrack);
+        if (this.state.configuringTrack) {
+            trackConfigure = (<TrackConfigWindow
+                                track={this.getTrackByUid(this.state.configuringTrack)}
+                                position={ this.state.configuringLocation }
                               />)
         }
 
