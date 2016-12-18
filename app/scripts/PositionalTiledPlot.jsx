@@ -5,7 +5,7 @@ import {Resizable,ResizableBox} from 'react-resizable';
 import {DraggableDiv} from './DraggableDiv.js';
 import {select,event,mouse} from 'd3-selection';
 import {SortableContainer, SortableElement, SortableHandle, arrayMove} from 'react-sortable-hoc';
-import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import {contextMenu} from './d3-context-menu.js';
 
 
 class TrackArea extends React.Component {
@@ -58,7 +58,29 @@ class TrackArea extends React.Component {
                                 let imgDom = ReactDOM.findDOMNode(this.imgConfig);
                                 let bbox = imgDom.getBoundingClientRect();
                                 console.log('bbox', bbox.left, 'clientLeft:', imgDom.clientLeft, 'imgDom:', console.dir(imgDom));
-                                this.props.handleConfigTrack(this.props.uid, {'left': imgDom.clientLeft, 'top': imgDom.offsetTop});
+
+                                        let nodeMenu = [
+                                {
+                                    title: 'Heidi ho',
+                                    action: function(elm, d, i) {
+                                        console.log('clicked');
+                                    },
+                                    disabled: false, // optional, defaults to false,
+                                children: [
+                                    {
+                                        title: 'A',
+                                        action: function(elm, d, i) {
+                                            console.log('a');
+                                        }
+                                    }]
+
+                                }];
+
+                                let cm = contextMenu(nodeMenu, {'pos': 
+                                                     [bbox.left, bbox.top]});
+                                //this.props.handleConfigTrack(this.props.uid, {'left': bbox.left, 'top': imgDom.offsetTop});
+                                                     //
+                                cm.apply(this, [nodeMenu,0,true,()=>{}]); 
                                 ; }}
                             src="images/cog.svg" 
                             style={this.getSettingsImgStyle()}

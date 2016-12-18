@@ -346,7 +346,7 @@ export class TiledPlot extends React.Component {
         console.log('left:', clickPosition.left);
         this.setState({
             configuringTrack: uid,
-            configuringLocation: {'left': this.props.horizontalMargin + this.leftWidth + clickPosition.left, 
+            configuringLocation: {'left': clickPosition.left, 
                                   'top': this.props.verticalMargin + this.topHeight + clickPosition.top}
         });
     }

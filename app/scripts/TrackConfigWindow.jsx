@@ -11,9 +11,10 @@ export class TrackConfigWindow extends React.Component {
     }
 
     render() {
+        console.log('showing left:', this.props.position.left);
         return(<div
                     style={{ 
-                            position: 'absolute',
+                            position: 'fixed',
                             left: this.props.position.left,
                              top: this.props.position.top,
                             border: "1px solid black"
