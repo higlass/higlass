@@ -83,7 +83,7 @@ export class TrackConfigWindow extends ContextMenuContainer {
                 };
             } else {
                 position = {
-                    'left': this.state.left + bbox.width,
+                    'left': this.state.left + bbox.width + 7,
                     'top': this.state.top
                 }
             }
