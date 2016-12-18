@@ -56,10 +56,14 @@ export class TrackConfigWindow extends ContextMenuContainer {
                         onMouseEnter={e => this.handleSeriesMouseEnter(e, x.uid)}
                         onMouseLeave={e => this.handleMouseLeave(e)}
                     >
-                        <span
+                        <span className='context-menu-span'
                             style={{ whiteSpace: 'nowrap' }}
                         >
                             {x.uid}
+                            <img src="images/play.svg"
+                                 className = "play-icon"
+                            />
+
                         </span>
                     </div>
                 )
