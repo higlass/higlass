@@ -1,3 +1,4 @@
+import '../styles/MultiViewContainer.css';
 import React from 'react';
 import _ from 'lodash';
 import slugid from 'slugid';
@@ -507,7 +508,7 @@ export class MultiViewContainer extends React.Component {
                                 <img 
                                     onClick={() => { this.handleCloseView(view.uid)}}
                                     src="images/cross.svg" 
-                                    style={imgStyle}
+                                    className={'multiview-close-img'}
                                     width="10px" 
                                 />
                             </div>
@@ -531,9 +532,6 @@ export class MultiViewContainer extends React.Component {
             }.bind(this))
     }
 
-    let imgStyle = { right: 5,
-                    top: 2,
-                     position: 'absolute' }
     return (
       <div 
         key={this.uid}
@@ -593,8 +591,7 @@ export class MultiViewContainer extends React.Component {
                     <img 
                         onClick={this.handleAddView.bind(this)}
                         src="images/plus.svg" 
-                        style={imgStyle}
-                        width="20px" 
+                        className={'multiview-add-img'}
                     />
             </div>
         </div>

@@ -1,0 +1,13 @@
+.multiview-close-img {
+    right: 5px;
+    top: 2px;
+    position: absolute;
+    width: 10px;
+}
+
+.multiview-add-img {
+    right: 5px;
+    top: 2px;
+    position: absolute;
+    width: 20px;
+}
