@@ -1,3 +1,4 @@
+import '../styles/SVGTrack.css';
 import {axisTop} from 'd3-axis';
 import {SVGTrack} from './SVGTrack.js';
 

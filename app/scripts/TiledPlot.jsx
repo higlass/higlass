@@ -8,6 +8,7 @@ import {CenterTrack, VerticalTiledPlot, HorizontalTiledPlot} from './PositionalT
 import {TrackRenderer} from './TrackRenderer.jsx';
 import {AddTrackModal} from './AddTrackModal.jsx';
 import {TrackConfigWindow} from './TrackConfigWindow.jsx';
+import {PopupMenu} from './PopupMenu.jsx';
 
 
 export class TiledPlot extends React.Component {
@@ -124,7 +125,10 @@ export class TiledPlot extends React.Component {
             mounted: true,
             addTrackPosition: 'top',
             addTrackVisible: false,
-            configuringTrack: null
+            configuringTrack: this.state.tracks['top'][0].uid,
+            configuringLocation: { 'left': window.innerWidth - 40,
+                                   'top': 100}
+
         });
 
     }
@@ -337,6 +341,13 @@ export class TiledPlot extends React.Component {
         });
     }
 
+    handleConfigMenuClosed(evt) {
+        console.log('config menu closed');
+        this.setState({
+            configuringTrack: null,
+        });
+    }
+
     handleConfigTrack(uid, clickPosition) {
         let orientation = this.getTrackOrientationByUid(uid);
 
@@ -347,7 +358,7 @@ export class TiledPlot extends React.Component {
         this.setState({
             configuringTrack: uid,
             configuringLocation: {'left': clickPosition.left, 
-                                  'top': this.props.verticalMargin + this.topHeight + clickPosition.top}
+                                  'top': clickPosition.top}
         });
     }
 
@@ -735,12 +746,17 @@ export class TiledPlot extends React.Component {
 
         let trackConfigure = null;
 
-        console.log('conf', this.state.configuringTrack);
         if (this.state.configuringTrack) {
-            trackConfigure = (<TrackConfigWindow
-                                track={this.getTrackByUid(this.state.configuringTrack)}
-                                position={ this.state.configuringLocation }
-                              />)
+            trackConfigure = (
+                             <PopupMenu
+                                onMenuClosed={this.handleConfigMenuClosed.bind(this)}
+                             >
+                                  <TrackConfigWindow
+                                    track={this.getTrackByUid(this.state.configuringTrack)}
+                                    position={ this.state.configuringLocation }
+                                  />
+                              </PopupMenu>
+                              )
         }
 
         // track renderer needs to enclose all the other divs so that it 

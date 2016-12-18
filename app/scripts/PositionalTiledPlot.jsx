@@ -59,6 +59,7 @@ class TrackArea extends React.Component {
                                 let bbox = imgDom.getBoundingClientRect();
                                 console.log('bbox', bbox.left, 'clientLeft:', imgDom.clientLeft, 'imgDom:', console.dir(imgDom));
 
+                                /*
                                         let nodeMenu = [
                                 {
                                     title: 'Heidi ho',
@@ -78,9 +79,10 @@ class TrackArea extends React.Component {
 
                                 let cm = contextMenu(nodeMenu, {'pos': 
                                                      [bbox.left, bbox.top]});
-                                //this.props.handleConfigTrack(this.props.uid, {'left': bbox.left, 'top': imgDom.offsetTop});
-                                                     //
                                 cm.apply(this, [nodeMenu,0,true,()=>{}]); 
+                                */
+
+                                this.props.handleConfigTrack(this.props.uid, {'left': bbox.left, 'top': bbox.top});
                                 ; }}
                             src="images/cog.svg" 
                             style={this.getSettingsImgStyle()}
