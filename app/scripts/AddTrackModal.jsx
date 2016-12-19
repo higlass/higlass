@@ -45,15 +45,15 @@ export class AddTrackModal extends React.Component {
         });
     }
 
-    mainTilesetChanged(uuid) {
+    mainTilesetChanged(mainTileset) {
         this.setState({
-            mainTilesetUuid: uuid
+            mainTileset: mainTileset
         });
     }
 
-    normalizeTilesetChanged(uuid) {
+    normalizeTilesetChanged(normalizeTileset) {
         this.setState({
-            normalizeTilesetUuid: uuid
+            normalizeTileset: normalizeTileset
         });
 
     }

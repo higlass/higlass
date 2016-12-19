@@ -123,7 +123,7 @@ export class TiledPlot extends React.Component {
         this.setState({
             mounted: true,
             addTrackPosition: 'top',
-            addTrackVisible: false,
+            addTrackVisible: true,
 
             /*
             configuringTrack: this.state.tracks['top'][0].uid,
@@ -209,19 +209,13 @@ export class TiledPlot extends React.Component {
         return tracksDict;
     }
 
-    handleTrackAdded(newTilesetUid, position) {
+    handleTrackAdded(newTrack, position) {
         /**
          * A track was added from the AddTrackModal dialog.
          *
          * @param trackInfo: A JSON object that can be used as a track
          *                   definition
          */
-        let newTrack = {'uid': slugid.nice(), 
-                    type:'horizontal-line',
-                    height: 30,
-                    tilesetUid: newTilesetUid,
-                    server: 'http://52.45.229.11'
-        }
 
         newTrack.width = this.minVerticalWidth;
         newTrack.height = this.minHorizontalHeight;

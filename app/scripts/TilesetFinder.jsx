@@ -1,7 +1,9 @@
 import {json} from 'd3-request';
+import {dictValues,dictKeys} from './utils.js';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import slugid from 'slugid';
 
 import {Form, Row,Col, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
 
@@ -9,40 +11,105 @@ export class TilesetFinder extends React.Component {
     constructor(props) {
         super(props);
 
+
+        this.otherTracks = [
+        {
+            'category': '1d-axis',
+            'uuid': slugid.nice(),
+            'name': 'Axis'
+        }
+        ];
+
+
         this.state = {
             selectedUuid: [''],
             options: {},
             filter: ''
         }
+
+        this.server = "52.45.229.11"
+    }
+
+    serverUidKey(server, uid) {
+        /**
+         * Create a key for a server and uid
+         */
+        return server + '/' + uid;
+
+    }
+
+    addResultsToTrackList(sourceServer, newEntries) {
+        /**
+         * New results have been received from a server so we 
+         * need to update the list of available tracks
+         *
+         * @param sourceServer (string): The server where we got the list of available tilesets
+         * @param newEntries (string): The list of tileset entries retrieved
+         */
+        let options = this.state.options;
+
+        // add each entry to the list of current options
+        // because they're indexed by server/uid combo, existing entries can be overridden
+        for (let i = 0; i < newEntries.length; i++) {
+
+            // the category describes what type of data this is... this is in turn describes
+            // what types of visualization can be used for it
+            if (!('category' in newEntries[i])) {
+                if (newEntries[i].file_type == 'hitile')
+                    newEntries[i].category = '1d-dense';
+                else if (newEntries[i].file_type == 'cooler')
+                    newEntries[i].category = '2d-dense';
+            }
+            newEntries[i].serverUidKey = this.serverUidKey(sourceServer, newEntries[i].uuid);
+            options[this.serverUidKey(sourceServer, newEntries[i].uuid)] = newEntries[i];
+        }
+
+        console.log('newOptions:', options);
+
+        // if we already had one selected, keep it selected
+        // otherwise, select the first one
+        let optionsUuidSet = new Set(dictKeys(options))
+        let selectedUuid = this.state.selectedUuid;
+
+        if (!optionsUuidSet.has(selectedUuid)) {
+            // if there's no dataset selected, select the first one
+            selectedUuid = [newEntries[0].serverUidKey];
+        }
+
+        console.log('options:', options);
+
+        this.props.selectedTilesetChanged(selectedUuid);
+        this.setState({
+            options: options,
+            selectedUuid: selectedUuid
+        });
+
     }
 
     componentDidMount() {
-        json('http://52.45.229.11/tilesets/?t=' + this.props.trackTypeFilter, function(error, data) {
+        json('http://' + this.server + '/tilesets/?t=' + this.props.trackTypeFilter, function(error, data) {
             if (error) {
                 console.log('ERROR:', error);
             } else {
                 console.log('data:', data);
-                let selectedUuid = this.state.selectedUuid;
 
+                this.addResultsToTrackList(this.server, data.results);
 
-
-                if ('results' in data && data.results.length) {
-                    let returnedUuidSet = new Set(data.results.map(x => x.uuid));
-
-                    if (!returnedUuidSet.has(selectedUuid)) {
-                        // if there's no dataset selected, select the first one
-                        selectedUuid = [data.results[0].uuid];
-                    }
-                }
-
-                this.props.selectedTilesetChanged(selectedUuid);
-
-                this.setState({
-                    options: data,
-                    selectedUuid: selectedUuid
-                });
             }
         }.bind(this));
+
+        this.addResultsToTrackList('', this.otherTracks);
+    }
+
+    trackSelected(itemUid) {
+        /**
+         * A track has been selected and we need to notify the upstream handler.
+         */
+        let selectedOption = this.state.options[itemUid];
+
+        console.log('selectedOptions:', selectedOption);
+
+        //this.props.onTrackChosen(x.target.value, this.props.position);
     }
 
     handleOptionDoubleClick(x, y) {
@@ -50,16 +117,22 @@ export class TilesetFinder extends React.Component {
          * Double clicked on an element. Should be selected
          * and this window will be closed.
          */
-        this.props.onTrackChosen(x.target.value, this.props.position);
     }
 
     handleSelect(x) {
         console.log('setting selectedUuid:', x.target.value);
 
         this.props.selectedTilesetChanged(x.target.value);
+        let selectedSeries = this.state.options[x.target.value];
+
+        let newTrack = {'uid': slugid.nice(), 
+                    category: selectedSeries.category,
+                    tilesetUid: selectedSeries.uuid,
+                    server: this.server
+        }
 
         this.setState({
-            selectedUuid: x.target.value
+            selectedUuid: [x.target.value]
         });
     }
 
@@ -71,21 +144,23 @@ export class TilesetFinder extends React.Component {
     }
 
     render() {
-        let options = null;
-
-        if ('results' in this.state.options) {
-            options = this.state.options.results
-                .filter(x => x.name.toLowerCase().includes(this.state.filter))
-                .map(x=> {
-                    if (x.uuid == this.state.selectedUuid) 
-                        return <option 
-                                onDoubleClick={this.handleOptionDoubleClick.bind(this)}
-                                key={x.uuid}
-                                value={x.uuid}>
-                                    {x.name}
-                                </option>
-            });
+        let optionsList = [];
+        for (let key in this.state.options) {
+            optionsList.push(this.state.options[key]);
         }
+
+        let options = optionsList
+            .filter(x => x.name.toLowerCase().includes(this.state.filter))
+            .map(x=> {
+                    return <option 
+                            onDoubleClick={this.handleOptionDoubleClick.bind(this)}
+                            key={x.serverUidKey}
+                            value={x.serverUidKey}>
+                                {x.name}
+                            </option>
+        });
+
+        //console.log('options:', options, 'selectedUuid:', this.state.selectedUuid);
 
         let form = (
                 <Form 
