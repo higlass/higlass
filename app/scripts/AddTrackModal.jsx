@@ -2,18 +2,18 @@ import '../styles/AddTrackModal.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-bootstrap';
-import {Form, Panel,Checkbox, Collapse} from 'react-bootstrap';
-import CollapsePanel from './CollapsePanel.jsx';
+import {Form, Panel,Collapse} from 'react-bootstrap';
 import {TilesetFinder} from './TilesetFinder.jsx';
+import {SeriesOptions} from './SeriesOptions.jsx';
 
 export class AddTrackModal extends React.Component {
     constructor(props) {
         super(props);
 
+        options: {};
+
         console.log('props', props);
         this.state = {
-            options: {},
-            advancedVisible: false,
             mainTilesetUuid: null,
             normalizeTilesetUuid: null
         }
@@ -23,13 +23,6 @@ export class AddTrackModal extends React.Component {
 
     }
 
-    normalizeCheckboxChanged(e) {
-        let domElement = ReactDOM.findDOMNode(this.normalizeCheckbox);
-
-        this.setState({
-            normalizeChecked: e.target.checked
-        });
-    }
 
     handleSubmit() {
         if (this.state.normalizeChecked)
@@ -39,23 +32,14 @@ export class AddTrackModal extends React.Component {
             this.props.onTrackChosen(this.state.mainTilesetUuid, this.props.position, {});
     }
 
-    toggleAdvancedVisible() {
-        this.setState({
-            advancedVisible: !this.state.advancedVisible
-        });
-    }
-
     mainTilesetChanged(mainTileset) {
         this.setState({
             mainTileset: mainTileset
         });
     }
 
-    normalizeTilesetChanged(normalizeTileset) {
-        this.setState({
-            normalizeTileset: normalizeTileset
-        });
-
+    handleOptionsChanged(newOptions) {
+        this.options = newOptions;
     }
 
     render() {
@@ -69,7 +53,17 @@ export class AddTrackModal extends React.Component {
         else
             filetype = 'cooler'
 
+        // only get options if there's a dataset selected
+        let seriesOptions = null;
+        if (this.state.mainTileset) {
 
+            seriesOptions = (
+                            <SeriesOptions
+                                trackCategory={this.state.mainTileset.category}
+                                onOptionsChanged={this.handleOptionsChanged.bind(this)}
+                            />
+                    );
+        }
 
         let form = (
                 <div>
@@ -78,28 +72,7 @@ export class AddTrackModal extends React.Component {
                                 onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
                                 selectedTilesetChanged={this.mainTilesetChanged.bind(this)}
                             />
-                            <CollapsePanel
-                                collapsed={this.state.advancedVisible} 
-                                toggleCollapse={this.toggleAdvancedVisible.bind(this)}
-                            >
-                                <Checkbox
-                                    ref={c => this.normalizeCheckbox = c } 
-                                    onChange={ this.normalizeCheckboxChanged.bind(this) }
-                                >
-                                Normalize By
-                                </Checkbox>
-
-                                <Collapse in={this.state.normalizeChecked}>
-                                    <Panel>
-                                        <TilesetFinder
-                                            trackTypeFilter={filetype}
-                                            onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
-                                            selectedTilesetChanged={this.normalizeTilesetChanged.bind(this)}
-                                        />
-                                    </Panel>
-                                </Collapse>
-
-                            </CollapsePanel>
+                            {seriesOptions}
                     </div>
                 )
 

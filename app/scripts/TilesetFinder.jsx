@@ -46,6 +46,10 @@ export class TilesetFinder extends React.Component {
          * @param sourceServer (string): The server where we got the list of available tilesets
          * @param newEntries (string): The list of tileset entries retrieved
          */
+
+        if (!newEntries.length)
+            return;  // no entries to be added means we can go home early
+
         let options = this.state.options;
 
         // add each entry to the list of current options
@@ -65,20 +69,26 @@ export class TilesetFinder extends React.Component {
         }
 
         console.log('newOptions:', options);
+        console.log('newEntries:', newEntries);
+
+        if (!newEntries.length) {
+            console.log('no new entries');
+            console.log('selectedUuid:', this.state.selectedUuid);
+        }
 
         // if we already had one selected, keep it selected
         // otherwise, select the first one
         let optionsUuidSet = new Set(dictKeys(options))
         let selectedUuid = this.state.selectedUuid;
 
-        if (!optionsUuidSet.has(selectedUuid)) {
+        if (!optionsUuidSet.has(selectedUuid[0])) {
             // if there's no dataset selected, select the first one
             selectedUuid = [newEntries[0].serverUidKey];
         }
 
         console.log('options:', options);
 
-        this.props.selectedTilesetChanged(selectedUuid);
+        this.props.selectedTilesetChanged(options[selectedUuid]);
         this.setState({
             options: options,
             selectedUuid: selectedUuid
