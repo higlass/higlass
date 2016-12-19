@@ -53,7 +53,6 @@ export class TrackRenderer extends React.Component {
 
         // the center measurements, because those corresponds to the widths
         // and heights of the actual tracks
-        console.log('this.props.width:', this.props.width);
         this.initialWidth = this.props.width;
         this.initialHeight = this.props.height;
 
@@ -161,7 +160,6 @@ export class TrackRenderer extends React.Component {
         // [drawableToDomain(0), drawableToDomain(1)]: the domain of the visible area
         // if the screen has been resized, then the domain width should remain the same
         //
-        //console.log('visibleYDomain', visibleYDomain);
 
         //this.xScale should always span the region that the zoom behavior is being called on
         this.xScale = scaleLinear()
@@ -178,7 +176,6 @@ export class TrackRenderer extends React.Component {
             track.refYScale(this.yScale);
 
             // e.g. when the track is resized... we want to redraw it
-            //console.log('track:', track);
             track.refScalesChanged(this.xScale, this.yScale);
             track.draw();
         }
@@ -293,7 +290,6 @@ export class TrackRenderer extends React.Component {
 
     removeTracks(trackUids) {
         for (let i = 0; i < trackUids.length; i++) {
-            console.log(this.trackDefObjects[trackUids[i]].trackObject);
             this.trackDefObjects[trackUids[i]].trackObject.remove();
             delete this.trackDefObjects[trackUids[i]];
         }
@@ -327,11 +323,9 @@ export class TrackRenderer extends React.Component {
             .range([0, this.props.centerHeight]);
 
 
-        //console.log('translate:', this.zoomTransform.x);
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
 
-            //console.log('zt:', this.zoomTransform);
             track.zoomed(newXScale, newYScale, this.zoomTransform.k, 
                         this.zoomTransform.x + this.xPositionOffset, 
                         this.zoomTransform.y + this.yPositionOffset);

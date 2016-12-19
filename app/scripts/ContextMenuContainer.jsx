@@ -29,8 +29,6 @@ export class ContextMenuContainer extends React.Component {
          */
         super(props);
 
-        console.log('constructing:', this.props.position.left);
-
         this.state = {
             orientation: this.props.orientation ? this.props.orientation : 'right',
             left: this.props.position.left,
@@ -43,7 +41,6 @@ export class ContextMenuContainer extends React.Component {
         this.divDom = ReactDOM.findDOMNode(this.div);
         let bbox = this.divDom.getBoundingClientRect();
 
-        console.log('bbox:', bbox);
         if (this.state.orientation == 'left') {
             this.setState({
                 left: this.props.position.left - bbox.width,
@@ -51,7 +48,6 @@ export class ContextMenuContainer extends React.Component {
             });
         }  else {
             if ((bbox.left + bbox.width) > window.innerWidth) {
-                console.log('setting state:', this.props.position.left - bbox.width);
                 this.setState({
                     left: this.props.position.left - bbox.width,
                     top: this.props.position.top,

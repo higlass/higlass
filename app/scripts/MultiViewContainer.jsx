@@ -281,8 +281,6 @@ export class MultiViewContainer extends React.Component {
             currWidth += defaultCenterWidth;
       }
 
-      console.log('currWidth:', currWidth, 'currHeight:', currHeight);
-
       let topHeight = 0;
       let bottomHeight = 0;
       let leftWidth = 0;
@@ -346,8 +344,6 @@ export class MultiViewContainer extends React.Component {
             desiredHeight +=  topHeight + bottomHeight + 2*this.verticalMargin + 20;
 
             // how much height is left in the browser?
-            console.log('window.innerWidth:', window.innerHeight);
-            console.log('desiredHeight:', desiredHeight);
 
             // limit the height of the container to the window height
             // the number 160 is relatively arbitrary and should be

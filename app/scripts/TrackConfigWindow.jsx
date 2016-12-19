@@ -32,7 +32,6 @@ export class TrackConfigWindow extends ContextMenuContainer {
     }
 
     handleMouseLeave(evt) {
-        console.log('mouseLeave:', evt.currentTarget);
         return;
     }
 
@@ -47,7 +46,6 @@ export class TrackConfigWindow extends ContextMenuContainer {
         let series = this.props.track.contents ? this.props.track.contents : [this.props.track];
 
         return series.map(x => {
-                console.log('uid', x.uid);
                 return (
                     <div 
                         ref={c => this.seriesRefs[x.uid] = c}
@@ -98,8 +96,6 @@ export class TrackConfigWindow extends ContextMenuContainer {
     }
 
     render() {
-        console.log('x showing left:', this.state.left);
-
         return(
                 <div className={'context-menu'}
                         ref={c => this.div = c}

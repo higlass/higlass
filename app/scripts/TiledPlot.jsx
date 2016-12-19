@@ -109,7 +109,6 @@ export class TiledPlot extends React.Component {
             let heightOffset = 0;
             let height = this.element.clientHeight - heightOffset;
             let width = this.element.clientWidth;
-            console.log('measured width:', width, height);
 
                 if (width > 0 && height > 0) {
 
@@ -125,16 +124,18 @@ export class TiledPlot extends React.Component {
             mounted: true,
             addTrackPosition: 'top',
             addTrackVisible: false,
+
+            /*
             configuringTrack: this.state.tracks['top'][0].uid,
             configuringLocation: { 'left': window.innerWidth - 40,
                                    'top': 100}
+                                   */
 
         });
 
     }
 
     componentWillUnmount() {
-        console.log('component will unmount');
         this.closing = true;
         this.setState({
             mounted: false
@@ -327,7 +328,6 @@ export class TiledPlot extends React.Component {
 
     handleCloseTrack(uid) {
         let tracks = this.state.tracks;
-        console.log('closing track...', uid);
 
         for (let trackType in tracks) {
             let theseTracks = tracks[trackType];
@@ -342,7 +342,6 @@ export class TiledPlot extends React.Component {
     }
 
     handleConfigMenuClosed(evt) {
-        console.log('config menu closed');
         this.setState({
             configuringTrack: null,
         });
@@ -351,10 +350,6 @@ export class TiledPlot extends React.Component {
     handleConfigTrack(uid, clickPosition) {
         let orientation = this.getTrackOrientationByUid(uid);
 
-        console.log('orientation:', orientation);
-        console
-        
-        console.log('left:', clickPosition.left);
         this.setState({
             configuringTrack: uid,
             configuringLocation: {'left': clickPosition.left, 
