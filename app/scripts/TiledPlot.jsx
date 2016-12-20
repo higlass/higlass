@@ -122,10 +122,10 @@ export class TiledPlot extends React.Component {
 
         this.setState({
             mounted: true,
+            /*
             addTrackPosition: 'top',
             addTrackVisible: true,
 
-            /*
             configuringTrack: this.state.tracks['top'][0].uid,
             configuringLocation: { 'left': window.innerWidth - 40,
                                    'top': 100}

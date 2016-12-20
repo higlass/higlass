@@ -1,7 +1,5 @@
 import {Tiled2DPixiTrack} from './Tiled2DPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
-import {workerSetPix} from './worker.js';
-import {Pool} from 'threads';
 
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     constructor(scene, server, uid) {

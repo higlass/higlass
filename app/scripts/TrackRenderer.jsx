@@ -12,11 +12,11 @@ import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack.js';
 import {Id2DTiledPixiTrack} from './Id2DTiledPixiTrack.js';
 import {IdHorizontal1DTiledPixiTrack} from './IdHorizontal1DTiledPixiTrack.js';
 import {IdVertical1DTiledPixiTrack} from './IdVertical1DTiledPixiTrack.js';
-import {TopLineTiledPixiTrack} from './TopLineTiledPixiTrack.js';
 import {TopAxisTrack} from './TopAxisTrack.js';
 import {LeftAxisTrack} from './LeftAxisTrack.js';
 import {CombinedTrack} from './CombinedTrack.js';
 import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
+import {CNVIntervalTrack} from './CNVIntervalTrack.js';
 
 export class TrackRenderer extends React.Component {
     /**
@@ -339,8 +339,6 @@ export class TrackRenderer extends React.Component {
                 return new LeftAxisTrack(this.svgElement);
             case 'top-axis':
                 return new TopAxisTrack(this.svgElement);
-            case 'top-line':
-                return new TopLineTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'heatmap':
                 return new HeatmapTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'horizontal-line':
@@ -351,6 +349,8 @@ export class TrackRenderer extends React.Component {
                 return new IdVertical1DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case '2d-tiles':
                 return new Id2DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
+            case 'cnv-interval':
+                return new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'combined':
                 return new CombinedTrack(track.contents.map(this.createTrackObject.bind(this)));
             default:
