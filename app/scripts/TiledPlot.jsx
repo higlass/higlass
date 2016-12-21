@@ -690,8 +690,8 @@ export class TiledPlot extends React.Component {
 
             trackRenderer = (
                 <TrackRenderer
-                    initialXDomain={[0,3000000000]}
-                    initialYDomain={[0,3000000000]}
+                    initialXDomain={this.props.initialXDomain}
+                    initialYDomain={this.props.initialYDomain}
                     canvasElement={this.props.canvasElement}
                     svgElement={this.props.svgElement}
                     dragging={this.props.dragging}

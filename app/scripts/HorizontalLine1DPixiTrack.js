@@ -12,9 +12,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         /**
          * Create whatever is needed to draw this tile.
          */
-         
-        let graphics = tile.graphics;
-
         this.drawTile(tile);
     }
 

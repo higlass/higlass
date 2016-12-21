@@ -33,6 +33,8 @@ export class MultiViewContainer extends React.Component {
 
           let views = [{
               uid: slugid.nice(),
+              initialXDomain: [0,1000000],
+              initialYDomain: [0,1000000],
               'tracks': {
             'top': [
                 {'uid': slugid.nice(), type:'top-axis'}
@@ -83,12 +85,12 @@ export class MultiViewContainer extends React.Component {
                     height: 200,
                     contents: 
                     [
+                    /*
                         { 'server': 'http://52.45.229.11/',
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': 'heatmap'
                         }
-                    /*
                         ,
                         { 'server': 'http://52.45.229.11/',
                           'uid': slugid.nice(),
@@ -520,6 +522,8 @@ export class MultiViewContainer extends React.Component {
                                      pixiStage={this.pixiStage}
                                      dragging={this.state.dragging}
                                      tracks={view.tracks}
+                                     initialXDomain={view.initialXDomain}
+                                     initialYDomain={view.initialYDomain}
                                      verticalMargin={this.verticalMargin}
                                      horizontalMargin={this.horizontalMargin}
                                 />

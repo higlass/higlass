@@ -7,6 +7,17 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
 
     }
 
+    initTile(tile) {
+        /**
+         * We don't need to do anything but draw the tile.
+         *
+         * Child classes that rely on transforming tiles when zooming
+         * and panning can override this function to draw all the elements
+         * that will later be transformed.
+         */
+        this.drawTile(tile);
+    }
+
     tileToLocalId(tile) {
         /*
          * The local tile identifier

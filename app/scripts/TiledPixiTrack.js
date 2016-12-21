@@ -164,11 +164,11 @@ export class TiledPixiTrack extends PixiTrack {
     initTile(tile) {
         // create the tile
         // should be overwritten by child classes
-        console.log("ERROR: unimplemented createTile:", this);
+        //console.log("ERROR: unimplemented createTile:", this);
     }
 
     updateTile(tile) {
-        console.log("ERROR: unimplemented updateTile:", this);
+        //console.log("ERROR: unimplemented updateTile:", this);
     }
 
     destroyTile(tile) {
