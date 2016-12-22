@@ -11,6 +11,8 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
 
         //console.log('CNVInterval:', this);
         this.seen = new Set();
+
+        this.rows = [];
     }
 
     uid(item) {
@@ -21,7 +23,7 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
 
     }
 
-    segmentsToRows(segments, tileStart, tileEnd) {
+    segmentsToRows(segments) {
         /**
          * Partition a list of segments into an array of
          * rows containing the segments.
@@ -32,13 +34,9 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
          */
         // sort by the length of each segment
         segments.sort((a,b) => { return (b.to - b.from) - (a.to - a.from); })
-        let it = new IntervalTree((tileStart + tileEnd) / 2);
 
         let rows = [[]];
         let rowIts = [new IntervalTree()];
-        //console.log('tileStart:', tileStart, 'tileEnd:', tileEnd);
-
-        //console.log('tileStart:', tileStart);
 
         // fill out each row with segments
         for (let i = 0; i < segments.length; i++) {
@@ -50,11 +48,7 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
                 let occluded = it.intersects([segments[i].from, segments[i].to]);
 
                 if (!occluded) {
-                    /*
-                    if (tileStart == 0) {
-                        console.log('arow:', j, 'adding', segments[i].from, segments[i].to);
-                    }
-                    */
+
                     // no intersections on this row, place this segment here
                     it.add([segments[i].from, segments[i].to]);
                     rows[j].push(segments[i]);
@@ -65,35 +59,21 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
 
             if (!placed) {
                 let newTree = new IntervalTree();
-                /*
-                if (tileStart == 0) {
-                    console.log('new row:', rows.length, 'adding', segments[i].from, segments[i].to);
-                }
-                */
+
                 newTree.add([segments[i].from, segments[i].to]);
                 rows.push([segments[i]]);
                 rowIts.push(newTree);
             }
         }
 
-        /*
-        if (tileStart == 0) {
-             console.log('rows:', rows);
-            console.log('len(rows)', rows.length);
-        }
-        */
-
         return rows;
     }
 
-    redraw(tile) {
-        tile.graphics.clear();
+    drawAll(allTileData) {
+        this.pMain.clear();
         let seen = new Set();
 
-        //console.log('td:', tile.tileData.discrete.filter(x => {  return +x[1] < 12000000 && +x[2] > 12000000; }));
-        console.log(tile.tileId, tile.tileData.discrete);
-
-        let segments = tile.tileData.discrete
+        let segments = allTileData
             .map((x) => {
                 if (seen.has(this.uid(x)))
                     return null;
@@ -107,18 +87,17 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
             .filter(x => x); //filter out null values
 
 
-        let {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel, tile.tileData.tilePos);
-        let rows = this.segmentsToRows(segments, tileX, tileX + tileWidth);
-        tile.rows = rows;
+        let rows = this.segmentsToRows(segments);
+        this.rows = rows;
 
         let valueScale = scaleBand().range([0, this.dimensions[1]]).padding(0.1)
         .domain(range(0, this.maxRows()));  // draw one away from the center
         //.domain(range(0, 10));  // draw one away from the center
 
-        let graphics = tile.graphics;
+        let graphics = this.pMain;
 
         graphics.lineStyle(1, 0x0000FF, 0);
-        graphics.beginFill(0xFF700B, 0.5);
+        graphics.beginFill(0xFF700B, 0.8);
 
         for (let i = 0; i < rows.length; i++) {
             for (let j = 0; j < rows[i].length; j++) {
@@ -133,50 +112,30 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
                 let width = x2 - x1;
                 let height = y2 - y1;
 
-                /*
-                if (tileX == 0 || tileX == 1048576) {
-                    if (!isNaN(height)) {
-                        if (y1 == 5) {
-                            console.log('drawing:', i, interval);
-                            console.log('x1:', x1, 'y1', y1, 'height:', height);
-                        }
-                    } else {
-                        //console.log('skipping:', i, interval);
-                    }
-                }
-                */
-
-
-                /*
-                if (rows[i][j].from < 12000000 && rows[i][j].to > 12000000)
-                    console.log('drawing:', i, j, rows[i][j]);
-                */
                 graphics.drawRect(x1, y1, width, height);
             }
         }
     }
 
+    allTilesLoaded() {
+        let visibleAndFetchedIds = this.visibleAndFetchedIds();
+
+        let tileDatas = visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.discrete);
+        let allTileData = [].concat.apply([], tileDatas);
+
+        console.log('allTileData:', allTileData);
+        this.drawAll(allTileData);
+    }
 
     initTile(tile) {
-        this.redraw(tile);
     }
 
     maxRows() {
-        let visibleAndFetchedIds = this.visibleAndFetchedIds();
-
-        let max = Math.max.apply(null,
-            visibleAndFetchedIds.map(x => {
-                //console.log('ft:', this.fetchedTiles[x]);
-                if ('rows' in this.fetchedTiles[x])
-                    return this.fetchedTiles[x].rows.length;
-                return 0;
-            }));
-
-        return max;
+        return this.rows.length;
     }
 
     updateTile(tile) {
-        this.redraw(tile);
+        //this.redraw(tile);
     }
 
     destroyTile(tile) {
@@ -189,8 +148,6 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
     }
 
     drawTile(tile) {
-        //let {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel, tile.tileData.tilePos);
 
-        //console.log('tileX:', tileX, 'tile:', tile);
     }
 }

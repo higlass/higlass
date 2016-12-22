@@ -49,12 +49,15 @@ export class MultiViewContainer extends React.Component {
                         height: 30,
                         tilesetUid: 'cc',
                         server: 'http://localhost:8000' 
-                    },
+                    }
+                    /*
+                    ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
                         height: 30,
                       tilesetUid: 'cc',
                       server: 'http://localhost:8000'}
+                      */
 
                      ]
                 }

@@ -168,6 +168,14 @@ export class TiledPixiTrack extends PixiTrack {
         return true;
     }
 
+    allTilesLoaded() {
+        /**
+         * Function is called when all tiles that should be visible have
+         * been received.
+         */
+        console.log('all tiles loaded');
+    }
+
     initTile(tile) {
         // create the tile
         // should be overwritten by child classes
@@ -199,31 +207,6 @@ export class TiledPixiTrack extends PixiTrack {
 
                 //console.log('adding graphics...', fetchedTileIDs[i]);
                 this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
-            }
-        }
-    }
-
-    removeOldGraphics() {
-        /**
-         * Remove graphics for tiles that are no longer
-         * present
-         */
-
-        // only remove graphics if all visible graphics are loaded
-        //console.log('trying to remove graphics...', this.visibleTileIds, this.fetchedTiles);
-        if (!this.areAllVisibleTilesLoaded())
-            return;
-
-        let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
-
-        for (let tileIdStr in this.tileGraphics) {
-
-            if (!fetchedTileIDs.has(tileIdStr)) {
-                console.log('deleting...', tileIdStr);
-                console.log('fetchedTiles:', this.fetchedTiles);
-                this.destroyTile(this.fetchedTiles[tileIdStr]);
-                this.pMain.removeChild(this.tileGraphics[tileIdStr]);
-                delete this.tileGraphics[tileIdStr];
             }
         }
     }
@@ -311,6 +294,10 @@ export class TiledPixiTrack extends PixiTrack {
         }
 
         this.synchronizeTilesAndGraphics();
+
+        if (this.areAllVisibleTilesLoaded()) {
+            this.allTilesLoaded();
+        }
 
         /* 
          * Mainly called to remove old unnecessary tiles
