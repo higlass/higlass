@@ -40,9 +40,7 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         let rowIts = [new IntervalTree()];
         //console.log('tileStart:', tileStart, 'tileEnd:', tileEnd);
 
-        if (tileStart == 8388608) {
-            console.log('ho');
-        }
+        //console.log('tileStart:', tileStart);
 
         // fill out each row with segments
         for (let i = 0; i < segments.length; i++) {
@@ -54,9 +52,11 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
                 let occluded = it.intersects([segments[i].from, segments[i].to]);
 
                 if (!occluded) {
-                    if (tileStart == 8388608) {
-                        console.log('row:', j, 'adding', segments[i].from, segments[i].to);
+                    /*
+                    if (tileStart == 0) {
+                        console.log('arow:', j, 'adding', segments[i].from, segments[i].to);
                     }
+                    */
                     // no intersections on this row, place this segment here
                     it.add([segments[i].from, segments[i].to]);
                     rows[j].push(segments[i]);
@@ -67,18 +67,23 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
 
             if (!placed) {
                 let newTree = new IntervalTree();
-                if (tileStart == 8388608) {
+                /*
+                if (tileStart == 0) {
                     console.log('new row:', rows.length, 'adding', segments[i].from, segments[i].to);
                 }
+                */
                 newTree.add([segments[i].from, segments[i].to]);
                 rows.push([segments[i]]);
                 rowIts.push(newTree);
             }
         }
 
-        if (tileStart == 8388608) {
-        }
+        /*
+        if (tileStart == 0) {
+             console.log('rows:', rows);
             console.log('len(rows)', rows.length);
+        }
+        */
 
         return rows;
     }
@@ -108,16 +113,13 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         tile.rows = rows;
 
         let valueScale = scaleBand().rangeRound([0, this.dimensions[1]]).padding(0.1)
-        //.domain(range(0, this.maxRows()));  // draw one away from the center
-        .domain(range(0, 10));  // draw one away from the center
+        .domain(range(0, this.maxRows()));  // draw one away from the center
+        //.domain(range(0, 10));  // draw one away from the center
 
         let graphics = tile.graphics;
 
         graphics.lineStyle(1, 0x0000FF, 0);
         graphics.beginFill(0xFF700B, 0.5);
-                if (tileX == 8388608) {
-                    console.log('rows:', rows);
-                }
 
         for (let i = 0; i < rows.length; i++) {
             for (let j = 0; j < rows[i].length; j++) {
@@ -132,13 +134,18 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
                 let width = x2 - x1;
                 let height = y2 - y1;
 
-                if (tileX == 8388608) {
-                    if (!isNaN(width)) {
-                        console.log('drawing:', i, interval);
+                /*
+                if (tileX == 0 || tileX == 1048576) {
+                    if (!isNaN(height)) {
+                        if (y1 == 5) {
+                            console.log('drawing:', i, interval);
+                            console.log('x1:', x1, 'y1', y1, 'height:', height);
+                        }
                     } else {
-                        console.log('skipping:', i, interval);
+                        //console.log('skipping:', i, interval);
                     }
                 }
+                */
 
 
                 /*

@@ -42,6 +42,7 @@ export default  function IntervalTree() {
 
   function addNode(node, side, interval) {
     var child = new Node(interval[0], interval[1]);
+    child.max = interval[1];
     child.parentNode = node;
     node[side] = child;
     if (node.max < interval[1]) {
@@ -79,6 +80,7 @@ export default  function IntervalTree() {
   IntervalTree.prototype.add = function (interval) {
     if (!this.root) {
       this.root = new Node(interval[0], interval[1]);
+      this.root.max = interval[1];
       return;
     }
     addHelper(this.root, interval);

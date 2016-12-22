@@ -33,8 +33,8 @@ export class MultiViewContainer extends React.Component {
 
           let views = [{
               uid: slugid.nice(),
-              initialXDomain: [8000000,16000000],
-              initialYDomain: [8000000,16000000],
+              initialXDomain: [-1000000,3000000],
+              initialYDomain: [-1000000,3000000],
               'tracks': {
             'top': [
                 {'uid': slugid.nice(), type:'top-axis'}
