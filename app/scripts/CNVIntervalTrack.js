@@ -55,13 +55,16 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         return rows;
     }
 
+    redraw(tile) {
+        tile.graphics.clear();
+        let seen = new Set();
 
-    initTile(tile) {
         let segments = tile.tileData.discrete
             .map((x) => {
-                if (this.seen.has(this.uid(x)))
+                if (seen.has(this.uid(x)))
                     return null;
-                this.seen.add(this.uid(x));
+                seen.add(this.uid(x));
+                console.log('length:', +x[2] - +x[1])
                 return  {'from': +x[1],
                          'to': +x[2],
                          'type': x[4],
@@ -71,11 +74,10 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
 
 
         let rows = this.segmentsToRows(segments);
+        tile.rows = rows;
 
         let valueScale = scaleBand().rangeRound([0, this.dimensions[1]]).padding(0.1)
-        .domain(range(0, rows.length+1));  // draw one away from the center
-
-        console.log('domain:', valueScale.domain());
+        .domain(range(0, this.maxRows()));  // draw one away from the center
 
         let graphics = tile.graphics;
 
@@ -84,18 +86,16 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
 
         for (let i = 0; i < rows.length; i++) {
             for (let j = 0; j < rows[i].length; j++) {
-                let x1 = this._xScale(rows[i][j].from);
-                let x2 = this._xScale(rows[i][j].to);
+                let x1 = this._refXScale(rows[i][j].from);
+                let x2 = this._refXScale(rows[i][j].to);
 
-                let y1 = valueScale(i+1)
+                let y1 = valueScale(i)
                 let y2 = y1 + valueScale.bandwidth();
 
                 let width = x2 - x1;
                 let height = y2 - y1;
-                console.log('y1:', y1)
-                console.log('y2:', y2);
 
-                console.log('x1', x1, 'x2:', x2, 'width:', width, 'height:', height);
+                //console.log('x1', x1, 'x2:', x2, 'width:', width, 'height:', height);
 
 
                 graphics.drawRect(x1, y1, width, height);
@@ -103,8 +103,30 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         }
     }
 
+
+    initTile(tile) {
+        this.redraw(tile);
+    }
+
+    maxRows() {
+        let visibleAndFetchedIds = this.visibleAndFetchedIds();
+
+        let max = Math.max.apply(null,
+            visibleAndFetchedIds.map(x => {
+                //console.log('ft:', this.fetchedTiles[x]);
+                if ('rows' in this.fetchedTiles[x])
+                    return this.fetchedTiles[x].rows.length;
+                return 0;
+            }));
+
+        return max;
+    }
+
+    updateTile(tile) {
+        this.redraw(tile);
+    }
+
     destroyTile(tile) {
-        console.log('destroyTile:', tile);
         tile.tileData.discrete.map((x) => {
             let uid = x[x.length-2];
 

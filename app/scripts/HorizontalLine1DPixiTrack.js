@@ -30,14 +30,24 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         let {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel, tile.tileData.tilePos);
         let tileValues = tile.tileData.dense;
 
+        if (tileValues.length == 0)
+            return;
+
+        let maxVisibleValue = this.maxVisibleValue();
+
+        if (maxVisibleValue < 0)
+            return;
+
         let valueScale = scaleLinear()
-            .domain([0, this.maxVisibleValue()])
+            .domain([0, maxVisibleValue])
             .range([0, this.dimensions[1]]);
 
 
         graphics.clear();
+
         if (valueScale.domain()[1] < 0) {
             console.log('ERR', valueScale.domain()[1]);
+            return;
         }
 
         // this scale should go from an index in the data array to
