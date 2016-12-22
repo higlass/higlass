@@ -1,6 +1,9 @@
 import {scaleBand} from 'd3-scale';
 import {range} from 'd3-array';
 import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
+//import IntervalTree from 'interval-tree2';
+//import * as jsAlgorithms from 'javascript-algorithms';
+import IntervalTree from './interval-tree.js';
 
 export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
     constructor(scene, server, uid) {
@@ -14,7 +17,11 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         return item[item.length-2];
     }
 
-    segmentsToRows(segments) {
+    segmentOverlap(segment1, segment2) {
+
+    }
+
+    segmentsToRows(segments, tileStart, tileEnd) {
         /**
          * Partition a list of segments into an array of
          * rows containing the segments.
@@ -23,34 +30,55 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
          * @return: An array of arrays of segments, representing 
          *          non-overlapping rows of segments
          */
-        let rows = [];
+        let tileMid = (tileStart + tileEnd) / 2;
 
-        //segments should be returned sorted from the server
-        segments.sort((a,b) => { return a.from - b.from; })
+        // sort by the length of each segment
+        segments.sort((a,b) => { return (b.to - b.from) - (a.to - a.from); })
+        let it = new IntervalTree((tileStart + tileEnd) / 2);
+
+        let rows = [[]];
+        let rowIts = [new IntervalTree()];
+        //console.log('tileStart:', tileStart, 'tileEnd:', tileEnd);
+
+        if (tileStart == 8388608) {
+            console.log('ho');
+        }
 
         // fill out each row with segments
         for (let i = 0; i < segments.length; i++) {
             let placed = false;
-            let currSegment = segments[i];
 
-            // go through each row and each if we can place the current
-            // segment in that row
             for (let j = 0; j < rows.length; j++) {
-                // can we place this segment in this row?
-                let rowSegment = rows[j][rows[j].length-1];
+                let it = rowIts[j]; // an interval tree
 
-                if ((currSegment.from < rowSegment.from && rowSegment.from < currSegment.to ) ||
-                    (currSegment.from < rowSegment.to && rowSegment.to < currSegment.to))
-                    continue; //overlap
+                let occluded = it.intersects([segments[i].from, segments[i].to]);
 
-                
-                rows[j].push(currSegment);
-                placed = true;
+                if (!occluded) {
+                    if (tileStart == 8388608) {
+                        console.log('row:', j, 'adding', segments[i].from, segments[i].to);
+                    }
+                    // no intersections on this row, place this segment here
+                    it.add([segments[i].from, segments[i].to]);
+                    rows[j].push(segments[i]);
+                    placed = true;
+                    break;
+                }
             }
 
-            if (!placed) 
-                rows.push([currSegment])
+            if (!placed) {
+                let newTree = new IntervalTree();
+                if (tileStart == 8388608) {
+                    console.log('new row:', rows.length, 'adding', segments[i].from, segments[i].to);
+                }
+                newTree.add([segments[i].from, segments[i].to]);
+                rows.push([segments[i]]);
+                rowIts.push(newTree);
+            }
         }
+
+        if (tileStart == 8388608) {
+        }
+            console.log('len(rows)', rows.length);
 
         return rows;
     }
@@ -59,12 +87,14 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         tile.graphics.clear();
         let seen = new Set();
 
+        //console.log('td:', tile.tileData.discrete.filter(x => {  return +x[1] < 12000000 && +x[2] > 12000000; }));
+
         let segments = tile.tileData.discrete
             .map((x) => {
                 if (seen.has(this.uid(x)))
                     return null;
                 seen.add(this.uid(x));
-                console.log('length:', +x[2] - +x[1])
+                //console.log('length:', +x[2] - +x[1], 'id', tile.tileId)
                 return  {'from': +x[1],
                          'to': +x[2],
                          'type': x[4],
@@ -73,21 +103,28 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
             .filter(x => x); //filter out null values
 
 
-        let rows = this.segmentsToRows(segments);
+        let {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel, tile.tileData.tilePos);
+        let rows = this.segmentsToRows(segments, tileX, tileX + tileWidth);
         tile.rows = rows;
 
         let valueScale = scaleBand().rangeRound([0, this.dimensions[1]]).padding(0.1)
-        .domain(range(0, this.maxRows()));  // draw one away from the center
+        //.domain(range(0, this.maxRows()));  // draw one away from the center
+        .domain(range(0, 10));  // draw one away from the center
 
         let graphics = tile.graphics;
 
-        graphics.lineStyle(1, 0x0000FF, 1);
-        graphics.beginFill(0xFF700B, 1);
+        graphics.lineStyle(1, 0x0000FF, 0);
+        graphics.beginFill(0xFF700B, 0.5);
+                if (tileX == 8388608) {
+                    console.log('rows:', rows);
+                }
 
         for (let i = 0; i < rows.length; i++) {
             for (let j = 0; j < rows[i].length; j++) {
-                let x1 = this._refXScale(rows[i][j].from);
-                let x2 = this._refXScale(rows[i][j].to);
+                let interval = rows[i][j];
+
+                let x1 = this._refXScale(interval.from);
+                let x2 = this._refXScale(interval.to);
 
                 let y1 = valueScale(i)
                 let y2 = y1 + valueScale.bandwidth();
@@ -95,9 +132,19 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
                 let width = x2 - x1;
                 let height = y2 - y1;
 
-                //console.log('x1', x1, 'x2:', x2, 'width:', width, 'height:', height);
+                if (tileX == 8388608) {
+                    if (!isNaN(width)) {
+                        console.log('drawing:', i, interval);
+                    } else {
+                        console.log('skipping:', i, interval);
+                    }
+                }
 
 
+                /*
+                if (rows[i][j].from < 12000000 && rows[i][j].to > 12000000)
+                    console.log('drawing:', i, j, rows[i][j]);
+                */
                 graphics.drawRect(x1, y1, width, height);
             }
         }
