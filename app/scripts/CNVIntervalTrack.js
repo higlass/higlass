@@ -30,8 +30,6 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
          * @return: An array of arrays of segments, representing 
          *          non-overlapping rows of segments
          */
-        let tileMid = (tileStart + tileEnd) / 2;
-
         // sort by the length of each segment
         segments.sort((a,b) => { return (b.to - b.from) - (a.to - a.from); })
         let it = new IntervalTree((tileStart + tileEnd) / 2);
@@ -93,6 +91,7 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         let seen = new Set();
 
         //console.log('td:', tile.tileData.discrete.filter(x => {  return +x[1] < 12000000 && +x[2] > 12000000; }));
+        console.log(tile.tileId, tile.tileData.discrete);
 
         let segments = tile.tileData.discrete
             .map((x) => {
@@ -112,7 +111,7 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         let rows = this.segmentsToRows(segments, tileX, tileX + tileWidth);
         tile.rows = rows;
 
-        let valueScale = scaleBand().rangeRound([0, this.dimensions[1]]).padding(0.1)
+        let valueScale = scaleBand().range([0, this.dimensions[1]]).padding(0.1)
         .domain(range(0, this.maxRows()));  // draw one away from the center
         //.domain(range(0, 10));  // draw one away from the center
 
