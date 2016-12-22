@@ -111,7 +111,15 @@ export class TiledPixiTrack extends PixiTrack {
             return;
 
         toRemoveIds.forEach(x => {
-            delete this.fetchedTiles[x];
+            let tileIdStr = x;
+            this.destroyTile(this.fetchedTiles[tileIdStr]);
+
+            if (tileIdStr in this.tileGraphics) {
+                this.pMain.removeChild(this.tileGraphics[tileIdStr]);
+                delete this.tileGraphics[tileIdStr]
+            }
+
+            delete this.fetchedTiles[tileIdStr];
         })
 
         this.synchronizeTilesAndGraphics();
@@ -212,7 +220,8 @@ export class TiledPixiTrack extends PixiTrack {
         for (let tileIdStr in this.tileGraphics) {
 
             if (!fetchedTileIDs.has(tileIdStr)) {
-                //console.log('deleting...', tileIdStr);
+                console.log('deleting...', tileIdStr);
+                console.log('fetchedTiles:', this.fetchedTiles);
                 this.destroyTile(this.fetchedTiles[tileIdStr]);
                 this.pMain.removeChild(this.tileGraphics[tileIdStr]);
                 delete this.tileGraphics[tileIdStr];
@@ -242,7 +251,7 @@ export class TiledPixiTrack extends PixiTrack {
         // keep track of which tiles are visible at the moment
         this.addMissingGraphics();
         this.updateExistingGraphics();
-        this.removeOldGraphics();
+        //this.removeOldGraphics();
     }
 
     loadTileData(tile, dataLoader) {
