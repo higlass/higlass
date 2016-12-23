@@ -123,7 +123,6 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         let tileDatas = visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.discrete);
         let allTileData = [].concat.apply([], tileDatas);
 
-        console.log('allTileData:', allTileData);
         this.drawAll(allTileData);
     }
 

@@ -4,6 +4,7 @@ import {dictValues,dictKeys} from './utils.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
+import {tracksInfo,localTracks} from './config.js'
 
 import {Form, Row,Col, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
 
@@ -11,21 +12,17 @@ export class TilesetFinder extends React.Component {
     constructor(props) {
         super(props);
 
-
-        this.otherTracks = [
-        {
-            'category': '1d-axis',
-            'uuid': slugid.nice(),
-            'name': 'Axis'
-        }
-        ];
-
+        //this.localTracks = tracksInfo.filter
 
         this.state = {
             selectedUuid: [''],
             options: {},
             filter: ''
         }
+
+        // local tracks are ones that don't have a filetype associated with them
+        this.localTracks = tracksInfo
+            .filter(x => !x.filetype)
 
         this.server = "52.45.229.11"
     }
@@ -108,7 +105,10 @@ export class TilesetFinder extends React.Component {
             }
         }.bind(this));
 
-        this.addResultsToTrackList('', this.otherTracks);
+        this.addResultsToTrackList('', this.localTracks.map(x => { 
+            x.uid = slugid.nice();
+            return x; 
+        }));
     }
 
     trackSelected(itemUid) {
