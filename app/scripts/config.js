@@ -55,3 +55,4 @@ export const tracksInfo = [
         orientation: 'any'
     }
 ]
+

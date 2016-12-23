@@ -44,14 +44,16 @@ export class AddTrackModal extends React.Component {
 
     render() {
         let filetype = '';
+        let trackOrientation = null;
 
         if (this.props.position == 'top' ||
-            this.props.position == 'left' ||
-            this.props.position == 'right' ||
             this.props.position == 'bottom')
-            filetype = 'hitile'
+            trackOrientation = '1d-horizontal'
+        else if ( this.props.position == 'left' ||
+            this.props.position == 'right')
+            trackOrientation = '1d-vertical'
         else
-            filetype = 'cooler'
+            trackOrientation = 'cooler'
 
         // only get options if there's a dataset selected
         let seriesOptions = null;
@@ -68,11 +70,10 @@ export class AddTrackModal extends React.Component {
         let form = (
                 <div>
                             <TilesetFinder
-                                trackTypeFilter={filetype}
+                                trackOrientation={trackOrientation}
                                 onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
                                 selectedTilesetChanged={this.mainTilesetChanged.bind(this)}
                             />
-                            {seriesOptions}
                     </div>
                 )
 

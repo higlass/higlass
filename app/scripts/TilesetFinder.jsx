@@ -23,8 +23,11 @@ export class TilesetFinder extends React.Component {
         // local tracks are ones that don't have a filetype associated with them
         this.localTracks = tracksInfo
             .filter(x => !x.filetype)
+            .filter(x => x.orientation == this.props.trackOrientation)
+        
+        console.log('localTracks:', this.localTracks);
 
-        this.server = "52.45.229.11"
+        this.servers = ["52.45.229.11", 'localhost:8000']
     }
 
     serverUidKey(server, uid) {
@@ -55,12 +58,14 @@ export class TilesetFinder extends React.Component {
 
             // the category describes what type of data this is... this is in turn describes
             // what types of visualization can be used for it
+            /*
             if (!('category' in newEntries[i])) {
                 if (newEntries[i].file_type == 'hitile')
                     newEntries[i].category = '1d-dense';
                 else if (newEntries[i].file_type == 'cooler')
                     newEntries[i].category = '2d-dense';
             }
+            */
             newEntries[i].serverUidKey = this.serverUidKey(sourceServer, newEntries[i].uuid);
             options[this.serverUidKey(sourceServer, newEntries[i].uuid)] = newEntries[i];
         }
@@ -94,19 +99,34 @@ export class TilesetFinder extends React.Component {
     }
 
     componentDidMount() {
-        json('http://' + this.server + '/tilesets/?t=' + this.props.trackTypeFilter, function(error, data) {
-            if (error) {
-                console.log('ERROR:', error);
-            } else {
-                console.log('data:', data);
+        // we want to query for a list of tracks that are compatible with this
+        // track orientation
+        let filetypes = new Set(tracksInfo
+                                .filter(x => x.filetype)
+                                .filter(x => x.orientation == this.props.trackOrientation)
+                                .map(x => x.filetype))
 
-                this.addResultsToTrackList(this.server, data.results);
+        console.log('filetypes:', filetypes);
 
-            }
-        }.bind(this));
+        this.servers.forEach( sourceServer => {
+            filetypes.forEach(x => {
+                console.log('x:', x);
+                json('http://' + sourceServer + '/tilesets/?t=' + x, 
+                     function(error, data) {
+                        if (error) {
+                            console.log('ERROR:', error);
+                        } else {
+                            console.log('data:', data);
+
+                            this.addResultsToTrackList(sourceServer, data.results);
+
+                        }
+                    }.bind(this));
+            });
+        });
 
         this.addResultsToTrackList('', this.localTracks.map(x => { 
-            x.uid = slugid.nice();
+            x.uuid = slugid.nice();
             return x; 
         }));
     }

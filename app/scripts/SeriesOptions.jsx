@@ -38,6 +38,7 @@ export class SeriesOptions extends React.Component {
 
 
     render() {
+        console.log('trackType:', this.props.trackType);
         let filetype = categoryToFiletype[this.props.trackType];
 
         return (
@@ -56,6 +57,7 @@ export class SeriesOptions extends React.Component {
                         <Panel>
                             <TilesetFinder
                                 trackTypeFilter={filetype}
+                                trackOrientation={orientation}
                                 onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
                                 selectedTilesetChanged={this.handleNormalizeTilesetChanged.bind(this)}
                             />
