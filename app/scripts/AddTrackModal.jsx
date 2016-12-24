@@ -1,6 +1,7 @@
 import '../styles/AddTrackModal.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import slugid from 'slugid';
 import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-bootstrap';
 import {Form, Panel,Collapse} from 'react-bootstrap';
 import {TilesetFinder} from './TilesetFinder.jsx';
@@ -26,7 +27,8 @@ export class AddTrackModal extends React.Component {
 
 
     handleSubmit() {
-        console.log('this.state.mainTileset:', this.state.mainTileset);
+        this.props.onTrackChosen(this.state.mainTileset, this.props.position);
+
         /*
         if (this.state.normalizeChecked)
             this.props.onTrackChosen(this.state.mainTilesetUuid, this.props.position, 
@@ -88,6 +90,7 @@ export class AddTrackModal extends React.Component {
                                 orientation={orientation}
                                 onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
                                 selectedTilesetChanged={this.mainTilesetChanged.bind(this)}
+                                onDoubleClick={value => this.props.onTrackChosen(value, this.props.position)}
                             />
                     </div>
                 )

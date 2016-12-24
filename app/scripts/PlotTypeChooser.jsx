@@ -19,8 +19,6 @@ export class PlotTypeChooser extends React.Component {
         });
 
         this.datatypeToTrackType['none'] = [];
-        console.log('datatypeToTrackType', this.datatypeToTrackType);
-
 
         this.availableTrackTypes = this.datatypeToTrackType[this.props.datatype];
 
@@ -46,7 +44,6 @@ export class PlotTypeChooser extends React.Component {
 
     render() {
         let availableTrackTypesList = "No plot types available for track";
-        console.log('thisss', this.state.selectedPlotType);
         if (this.availableTrackTypes) {
             availableTrackTypesList = this.availableTrackTypes.map(x => {
                 return (<li
@@ -56,7 +53,6 @@ export class PlotTypeChooser extends React.Component {
                         </li>);
             });
         }
-        console.log('availableTrackTypesList:', availableTrackTypesList);
 
         return (<div>
                     { availableTrackTypesList }

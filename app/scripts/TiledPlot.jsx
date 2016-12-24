@@ -216,6 +216,7 @@ export class TiledPlot extends React.Component {
          * @param trackInfo: A JSON object that can be used as a track
          *                   definition
          */
+        console.log('newTrack:', newTrack);
 
         newTrack.width = this.minVerticalWidth;
         newTrack.height = this.minHorizontalHeight;

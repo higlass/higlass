@@ -48,7 +48,7 @@ export class MultiViewContainer extends React.Component {
                         type: 'cnv-interval',
                         height: 30,
                         tilesetUid: 'cc',
-                        server: 'http://localhost:8000' 
+                        server: 'localhost:8000' 
                     }
                     /*
                     ,
@@ -56,7 +56,7 @@ export class MultiViewContainer extends React.Component {
                         type:'horizontal-1d-tiles',
                         height: 30,
                       tilesetUid: 'cc',
-                      server: 'http://localhost:8000'}
+                      server: 'localhost:8000'}
                       */
 
                      ]
@@ -69,7 +69,7 @@ export class MultiViewContainer extends React.Component {
                 {'uid': slugid.nice(), 
                     type:'vertical-1d-tiles',
                   tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
-                  server: 'http://52.45.229.11'}
+                  server: '52.45.229.11'}
                   */
             ],
             'center': [
@@ -80,13 +80,13 @@ export class MultiViewContainer extends React.Component {
                     contents: 
                     [
                     /*
-                        { 'server': 'http://52.45.229.11/',
+                        { 'server': '52.45.229.11/',
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': 'heatmap'
                         }
                         ,
-                        { 'server': 'http://52.45.229.11/',
+                        { 'server': '52.45.229.11',
                           'uid': slugid.nice(),
                           'tilesetUid': '00bec9f2-504e-4daf-a674-6aca204247ce',
                           'type': '2d-tiles'

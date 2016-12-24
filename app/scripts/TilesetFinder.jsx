@@ -14,18 +14,21 @@ export class TilesetFinder extends React.Component {
 
         //this.localTracks = tracksInfo.filter
 
-        this.state = {
-            selectedUuid: [''],
-            options: {},
-            filter: ''
-        }
-
         // local tracks are ones that don't have a filetype associated with them
         this.localTracks = tracksInfo
             .filter(x => !x.filetype)
             .filter(x => x.orientation == this.props.orientation)
-        
-        console.log('localTracks:', this.localTracks);
+
+        this.localTracks.forEach(x => x.uuid = slugid.nice())
+
+        let newOptions = this.prepareNewEntries('', this.localTracks, {});
+        let availableTilesetKeys = Object.keys(newOptions);
+
+        this.state = {
+            selectedUuid: [availableTilesetKeys[0]],
+            options: newOptions,
+            filter: ''
+        }
 
         this.servers = ['localhost:8000']
         this.requestTilesetLists();
@@ -38,66 +41,30 @@ export class TilesetFinder extends React.Component {
         return server + '/' + uid;
 
     }
-
-    addResultsToTrackList(sourceServer, newEntries) {
+    
+    prepareNewEntries(sourceServer, newEntries, existingOptions) {
         /**
-         * New results have been received from a server so we 
-         * need to update the list of available tracks
-         *
-         * @param sourceServer (string): The server where we got the list of available tilesets
-         * @param newEntries (string): The list of tileset entries retrieved
+         * Add meta data to new tileset entries before adding
+         * them to the list of available options.
          */
+        let newOptions = existingOptions;
 
-        if (!newEntries.length)
-            return;  // no entries to be added means we can go home early
-
-        let options = this.state.options;
-
-        // add each entry to the list of current options
-        // because they're indexed by server/uid combo, existing entries can be overridden
-        for (let i = 0; i < newEntries.length; i++) {
-
-            // the category describes what type of data this is... this is in turn describes
-            // what types of visualization can be used for it
-            /*
-            if (!('category' in newEntries[i])) {
-                if (newEntries[i].file_type == 'hitile')
-                    newEntries[i].category = '1d-dense';
-                else if (newEntries[i].file_type == 'cooler')
-                    newEntries[i].category = '2d-dense';
+        let entries = newEntries.map(ne => {
+            return {
+                server: sourceServer,
+                tilesetUid: ne.uuid,
+                serverUidKey: this.serverUidKey(sourceServer, ne.uuid),
+                datatype: ne.datatype,
+                name: ne.name,
+                uid: slugid.nice()
             }
-            */
-            newEntries[i].serverUidKey = this.serverUidKey(sourceServer, newEntries[i].uuid);
-            newEntries[i].server = sourceServer;
-            options[this.serverUidKey(sourceServer, newEntries[i].uuid)] = newEntries[i];
-        }
-
-        console.log('newOptions:', options);
-        console.log('newEntries:', newEntries);
-
-        if (!newEntries.length) {
-            console.log('no new entries');
-            console.log('selectedUuid:', this.state.selectedUuid);
-        }
-
-        // if we already had one selected, keep it selected
-        // otherwise, select the first one
-        let optionsUuidSet = new Set(dictKeys(options))
-        let selectedUuid = this.state.selectedUuid;
-
-        if (!optionsUuidSet.has(selectedUuid[0])) {
-            // if there's no dataset selected, select the first one
-            selectedUuid = [newEntries[0].serverUidKey];
-        }
-
-        console.log('options:', options);
-
-        this.props.selectedTilesetChanged(options[selectedUuid]);
-        this.setState({
-            options: options,
-            selectedUuid: selectedUuid
         });
 
+        entries.forEach(ne => {
+            newOptions[ne.serverUidKey] = ne;
+        });
+
+        return newOptions;
     }
 
     componentDidMount() {
@@ -105,16 +72,11 @@ export class TilesetFinder extends React.Component {
         // track orientation
 
         
-
-
+        this.requestTilesetLists();
+        this.props.selectedTilesetChanged(this.state.options[this.state.selectedUuid]);
     }
 
     requestTilesetLists() {
-        this.addResultsToTrackList('', this.localTracks.map(x => { 
-            x.uuid = slugid.nice();
-            return x; 
-        }));
-
         let datatypes = new Set(tracksInfo
                                 .filter(x => x.datatype)
                                 .filter(x => x.orientation == this.props.orientation)
@@ -123,30 +85,21 @@ export class TilesetFinder extends React.Component {
         console.log(datatypesQuery);
 
         this.servers.forEach( sourceServer => {
-            json('http://' + sourceServer + '/tilesets/?' + datatypesQuery, 
+            json('//' + sourceServer + '/tilesets/?' + datatypesQuery, 
                  function(error, data) {
                     if (error) {
                         console.log('ERROR:', error);
                     } else {
                         console.log('data:', data);
 
-                        this.addResultsToTrackList(sourceServer, data.results);
-
+                        let newOptions = this.prepareNewEntries(sourceServer, data.results, this.state.options);
+                        this.setState({
+                            options: newOptions
+                        });
                     }
                 }.bind(this));
         });
 
-    }
-
-    trackSelected(itemUid) {
-        /**
-         * A track has been selected and we need to notify the upstream handler.
-         */
-        let selectedOption = this.state.options[itemUid];
-
-        console.log('selectedOptions:', selectedOption);
-
-        //this.props.onTrackChosen(x.target.value, this.props.position);
     }
 
     handleOptionDoubleClick(x, y) {
@@ -154,19 +107,11 @@ export class TilesetFinder extends React.Component {
          * Double clicked on an element. Should be selected
          * and this window will be closed.
          */
+        this.props.onDoubleClick(this.state.options[x.target.value]);
     }
 
     handleSelect(x) {
-        console.log('setting selectedUuid:', x.target.value, this.state.options[x.target.value]);
-
         this.props.selectedTilesetChanged(this.state.options[x.target.value]);
-        let selectedSeries = this.state.options[x.target.value];
-
-        let newTrack = {'uid': slugid.nice(), 
-                    category: selectedSeries.category,
-                    tilesetUid: selectedSeries.uuid,
-                    server: this.server
-        }
 
         this.setState({
             selectedUuid: [x.target.value]
@@ -177,7 +122,6 @@ export class TilesetFinder extends React.Component {
         let domElement = ReactDOM.findDOMNode(this.searchBox);
 
         this.setState({filter: domElement.value});
-        //console.log('search changed', domElement.value);
     }
 
     render() {
@@ -197,8 +141,6 @@ export class TilesetFinder extends React.Component {
                                 {x.name}
                             </option>
         });
-
-        //console.log('options:', options, 'selectedUuid:', this.state.selectedUuid);
 
         let form = (
                 <Form 
