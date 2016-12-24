@@ -12,10 +12,19 @@ export class PlotTypeChooser extends React.Component {
         tracksInfo
         .filter(x => x.orientation == this.props.orientation)
         .forEach(ti => {
-            if (!(ti.datatype in this.datatypeToTrackType))
-                this.datatypeToTrackType[ti.datatype] = [];
+            let datatypes = ti.datatype;
 
-            this.datatypeToTrackType[ti.datatype].push(ti)
+            if (!Array.isArray(ti.datatype))
+                datatypes = [datatypes];
+
+            datatypes.forEach(datatype => {
+                console.log('ti.datatype:', datatype);
+                if (!(datatype in this.datatypeToTrackType))
+                    this.datatypeToTrackType[datatype] = [];
+            
+
+                this.datatypeToTrackType[datatype].push(ti)
+            });
         });
 
         this.datatypeToTrackType['none'] = [];

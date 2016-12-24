@@ -16,7 +16,7 @@ export class TilesetFinder extends React.Component {
 
         // local tracks are ones that don't have a filetype associated with them
         this.localTracks = tracksInfo
-            .filter(x => !x.filetype)
+            .filter(x => x.local)
             .filter(x => x.orientation == this.props.orientation)
 
         this.localTracks.forEach(x => x.uuid = slugid.nice())
