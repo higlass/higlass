@@ -39,13 +39,23 @@ export class MultiViewContainer extends React.Component {
             'top': [
                 {'uid': slugid.nice(), type:'top-axis'}
             ,
+
+                    /*
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-1d-tiles',
+                        height: 30,
+                        width: 20,
+                      tilesetUid: 'bb',
+                      server: 'localhost:8000'},
+                      */
+
                 {'uid': slugid.nice(),
                  type: 'combined',
-                 height: 60,
+                 height: 59,
                  contents:
                      [
                     {'uid': slugid.nice(),
-                        type: 'cnv-interval',
+                        type: 'stacked-interval',
                         height: 30,
                         tilesetUid: 'cc',
                         server: 'localhost:8000' 

@@ -258,8 +258,13 @@ export class TrackRenderer extends React.Component {
 
         for (let i = 0; i < newTrackDefinitions.length; i++) {
             let newTrackDef = newTrackDefinitions[i];
+            let newTrackObj = this.createTrackObject(newTrackDef.track)
 
-            this.trackDefObjects[newTrackDef.track.uid] = {trackDef: newTrackDef, trackObject: this.createTrackObject(newTrackDef.track)};
+            newTrackObj.refXScale(this.xScale);
+            newTrackObj.refYScale(this.yScale);
+
+            this.trackDefObjects[newTrackDef.track.uid] = {trackDef: newTrackDef, 
+                trackObject: newTrackObj};
         }
     }
 
@@ -349,7 +354,7 @@ export class TrackRenderer extends React.Component {
                 return new IdVertical1DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case '2d-tiles':
                 return new Id2DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
-            case 'cnv-interval':
+            case 'stacked-interval':
                 return new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'combined':
                 return new CombinedTrack(track.contents.map(this.createTrackObject.bind(this)));

@@ -53,7 +53,7 @@ export const tracksInfo = [
         name: '2D Tile Outlines'
     },
     {
-        type: 'horizontal-cnv-interval',
+        type: 'stacked-interval',
         datatype: ['stacked-interval'],
         local: false,
         orientation: '1d-horizontal'

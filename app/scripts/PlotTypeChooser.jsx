@@ -1,6 +1,7 @@
 import "../styles/PlotTypeChooser.css";
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {select} from 'd3-selection';
 import {tracksInfo} from './config.js';
 
 export class PlotTypeChooser extends React.Component {
@@ -41,22 +42,41 @@ export class PlotTypeChooser extends React.Component {
 
         if (this.availableTrackTypes && this.availableTrackTypes.length > 0) {
             if (!this.availableTrackTypes.includes(this.state.selectedPlotType)) {
-                this.state.selectedPlotType = this.availableTrackTypes[0];
-                this.handlePlotTypeSelected();
+                this.handlePlotTypeSelected(this.availableTrackTypes[0]);
             }
         }
     }
 
-    handlePlotTypeSelected() {
-        this.props.onPlotTypeSelected(this.state.selectedPlotType.type);
+    handleClickOnItem(key, e) {
+        let parent = select(e.currentTarget.parentNode);
+        let elem = select(e.currentTarget);
+
+        parent.selectAll('li')
+        .classed('plot-type-selected', false)
+        
+        elem.classed('plot-type-selected', true);
+        
+        this.props.onPlotTypeSelected(key); 
+    }
+
+    handlePlotTypeSelected(key) {
+        this.setState({
+            selectedPlotType: key
+        });
+
+        this.props.onPlotTypeSelected(key.type);
     }
 
     render() {
         let availableTrackTypesList = "No plot types available for track";
         if (this.availableTrackTypes) {
-            availableTrackTypesList = this.availableTrackTypes.map(x => {
+
+            availableTrackTypesList = this.availableTrackTypes
+                .sort((a,b) => { return a.type < b.type})
+                .map(x => {
                 return (<li
                             className={ this.state.selectedPlotType.type == x.type ? 'plot-type-selected' : ''}
+                            onClick={this.handleClickOnItem.bind(this, x.type)}
                             key={x.type}>
                                 {x.type}
                         </li>);
