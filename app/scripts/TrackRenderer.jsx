@@ -16,6 +16,7 @@ import {TopAxisTrack} from './TopAxisTrack.js';
 import {LeftAxisTrack} from './LeftAxisTrack.js';
 import {CombinedTrack} from './CombinedTrack.js';
 import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
+import {VerticalLine1DPixiTrack} from './VerticalLine1DPixiTrack.js';
 import {CNVIntervalTrack} from './CNVIntervalTrack.js';
 
 export class TrackRenderer extends React.Component {
@@ -348,6 +349,8 @@ export class TrackRenderer extends React.Component {
                 return new HeatmapTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'horizontal-line':
                 return new HorizontalLine1DPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
+            case 'vertical-line':
+                return new VerticalLine1DPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'horizontal-1d-tiles':
                 return new IdHorizontal1DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'vertical-1d-tiles':
