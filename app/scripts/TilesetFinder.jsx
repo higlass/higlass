@@ -23,11 +23,12 @@ export class TilesetFinder extends React.Component {
         // local tracks are ones that don't have a filetype associated with them
         this.localTracks = tracksInfo
             .filter(x => !x.filetype)
-            .filter(x => x.orientation == this.props.trackOrientation)
+            .filter(x => x.orientation == this.props.orientation)
         
         console.log('localTracks:', this.localTracks);
 
-        this.servers = ["52.45.229.11", 'localhost:8000']
+        this.servers = ['localhost:8000']
+        this.requestTilesetLists();
     }
 
     serverUidKey(server, uid) {
@@ -67,6 +68,7 @@ export class TilesetFinder extends React.Component {
             }
             */
             newEntries[i].serverUidKey = this.serverUidKey(sourceServer, newEntries[i].uuid);
+            newEntries[i].server = sourceServer;
             options[this.serverUidKey(sourceServer, newEntries[i].uuid)] = newEntries[i];
         }
 
@@ -101,34 +103,39 @@ export class TilesetFinder extends React.Component {
     componentDidMount() {
         // we want to query for a list of tracks that are compatible with this
         // track orientation
-        let filetypes = new Set(tracksInfo
-                                .filter(x => x.filetype)
-                                .filter(x => x.orientation == this.props.trackOrientation)
-                                .map(x => x.filetype))
 
-        console.log('filetypes:', filetypes);
+        
 
-        this.servers.forEach( sourceServer => {
-            filetypes.forEach(x => {
-                console.log('x:', x);
-                json('http://' + sourceServer + '/tilesets/?t=' + x, 
-                     function(error, data) {
-                        if (error) {
-                            console.log('ERROR:', error);
-                        } else {
-                            console.log('data:', data);
 
-                            this.addResultsToTrackList(sourceServer, data.results);
+    }
 
-                        }
-                    }.bind(this));
-            });
-        });
-
+    requestTilesetLists() {
         this.addResultsToTrackList('', this.localTracks.map(x => { 
             x.uuid = slugid.nice();
             return x; 
         }));
+
+        let datatypes = new Set(tracksInfo
+                                .filter(x => x.datatype)
+                                .filter(x => x.orientation == this.props.orientation)
+                                .map(x => x.datatype))
+        let datatypesQuery = [...datatypes].map(x => "dt=" + x).join('&')
+        console.log(datatypesQuery);
+
+        this.servers.forEach( sourceServer => {
+            json('http://' + sourceServer + '/tilesets/?' + datatypesQuery, 
+                 function(error, data) {
+                    if (error) {
+                        console.log('ERROR:', error);
+                    } else {
+                        console.log('data:', data);
+
+                        this.addResultsToTrackList(sourceServer, data.results);
+
+                    }
+                }.bind(this));
+        });
+
     }
 
     trackSelected(itemUid) {
@@ -150,9 +157,9 @@ export class TilesetFinder extends React.Component {
     }
 
     handleSelect(x) {
-        console.log('setting selectedUuid:', x.target.value);
+        console.log('setting selectedUuid:', x.target.value, this.state.options[x.target.value]);
 
-        this.props.selectedTilesetChanged(x.target.value);
+        this.props.selectedTilesetChanged(this.state.options[x.target.value]);
         let selectedSeries = this.state.options[x.target.value];
 
         let newTrack = {'uid': slugid.nice(), 
@@ -179,6 +186,7 @@ export class TilesetFinder extends React.Component {
             optionsList.push(this.state.options[key]);
         }
 
+        // the list of tilesets / tracks available
         let options = optionsList
             .filter(x => x.name.toLowerCase().includes(this.state.filter))
             .map(x=> {

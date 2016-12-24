@@ -5,6 +5,7 @@ import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-b
 import {Form, Panel,Collapse} from 'react-bootstrap';
 import {TilesetFinder} from './TilesetFinder.jsx';
 import {SeriesOptions} from './SeriesOptions.jsx';
+import {PlotTypeChooser} from './PlotTypeChooser.jsx';
 
 export class AddTrackModal extends React.Component {
     constructor(props) {
@@ -14,7 +15,7 @@ export class AddTrackModal extends React.Component {
 
         console.log('props', props);
         this.state = {
-            mainTilesetUuid: null,
+            mainTileset: {datatype: 'none'},
             normalizeTilesetUuid: null
         }
     }
@@ -25,14 +26,19 @@ export class AddTrackModal extends React.Component {
 
 
     handleSubmit() {
+        console.log('this.state.mainTileset:', this.state.mainTileset);
+        /*
         if (this.state.normalizeChecked)
             this.props.onTrackChosen(this.state.mainTilesetUuid, this.props.position, 
                     {'normalizeTilesetUuid': this.state.normalizeTilesetUuid});
         else
             this.props.onTrackChosen(this.state.mainTilesetUuid, this.props.position, {});
+        */
     }
 
     mainTilesetChanged(mainTileset) {
+        console.log('mainTileset:', mainTileset);
+
         this.setState({
             mainTileset: mainTileset
         });
@@ -42,18 +48,27 @@ export class AddTrackModal extends React.Component {
         this.options = newOptions;
     }
 
+    handlePlotTypeSelected(newPlotType) {
+        let mainTileset = this.state.mainTileset;
+        mainTileset.type = newPlotType;
+
+        this.setState({
+            mainTileset: mainTileset
+        });
+    }
+
     render() {
         let filetype = '';
-        let trackOrientation = null;
+        let orientation = null;
 
         if (this.props.position == 'top' ||
             this.props.position == 'bottom')
-            trackOrientation = '1d-horizontal'
+            orientation = '1d-horizontal'
         else if ( this.props.position == 'left' ||
             this.props.position == 'right')
-            trackOrientation = '1d-vertical'
+            orientation = '1d-vertical'
         else
-            trackOrientation = 'cooler'
+            orientation = '2d'
 
         // only get options if there's a dataset selected
         let seriesOptions = null;
@@ -70,7 +85,7 @@ export class AddTrackModal extends React.Component {
         let form = (
                 <div>
                             <TilesetFinder
-                                trackOrientation={trackOrientation}
+                                orientation={orientation}
                                 onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
                                 selectedTilesetChanged={this.mainTilesetChanged.bind(this)}
                             />
@@ -86,6 +101,11 @@ export class AddTrackModal extends React.Component {
                     </Modal.Header>
                     <Modal.Body>
                         { form }
+                        <PlotTypeChooser 
+                            onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
+                            datatype={this.state.mainTileset.datatype}
+                            orientation={orientation}
+                        />
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={this.props.onCancel}>Cancel</Button>
