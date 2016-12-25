@@ -262,8 +262,10 @@ export class TrackRenderer extends React.Component {
             let newTrackDef = newTrackDefinitions[i];
             let newTrackObj = this.createTrackObject(newTrackDef.track)
 
-            newTrackObj.refXScale(this.xScale);
-            newTrackObj.refYScale(this.yScale);
+            //newTrackObj.refXScale(this.xScale);
+            //newTrackObj.refYScale(this.yScale);
+
+            newTrackObj.refScalesChanged(this.xScale, this.yScale);
 
             this.trackDefObjects[newTrackDef.track.uid] = {trackDef: newTrackDef, 
                 trackObject: newTrackObj};

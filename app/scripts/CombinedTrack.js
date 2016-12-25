@@ -1,6 +1,12 @@
 export class CombinedTrack {
     constructor(childTracks) {
         this.childTracks = childTracks;
+
+        for (let i = 0; i < this.childTracks.length; i++) {
+            if (!this.childTracks[i]) {
+                console.log('ERROR: empty child track in CombinedTrack:', this);
+            }
+        }
     }
 
     setPosition(newPosition) {
@@ -59,6 +65,7 @@ export class CombinedTrack {
     }
 
     refScalesChanged(refXScale, refYScale) {
+        console.log('childTracks:', this.childTracks);
         for (let i = 0; i < this.childTracks.length; i++) {
             this.childTracks[i].refScalesChanged(refXScale, refYScale);
         }

@@ -61,13 +61,13 @@ export class MultiViewContainer extends React.Component {
                       tilesetUid: 'bb',
                       server: 'localhost:8000'}
                       ,
+                    /*
                     {'uid': slugid.nice(),
                         type: 'top-stacked-interval',
                         height: 30,
                         tilesetUid: 'cc',
                         server: 'localhost:8000' 
                     }
-                    /*
                     ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
@@ -87,6 +87,7 @@ export class MultiViewContainer extends React.Component {
                  width: 60,
                  contents:
                      [
+                         /*
                     {'uid': slugid.nice(),
                         type: 'left-stacked-interval',
                         height: 30,
@@ -94,6 +95,7 @@ export class MultiViewContainer extends React.Component {
                         server: 'localhost:8000' 
                     }
                     ,
+                    */
                     {'uid': slugid.nice(), 
                         type:'vertical-line',
                         height: 30,
