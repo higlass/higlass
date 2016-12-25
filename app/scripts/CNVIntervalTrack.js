@@ -1,8 +1,6 @@
 import {scaleBand} from 'd3-scale';
 import {range} from 'd3-array';
 import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
-//import IntervalTree from 'interval-tree2';
-//import * as jsAlgorithms from 'javascript-algorithms';
 import IntervalTree from './interval-tree.js';
 
 export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {

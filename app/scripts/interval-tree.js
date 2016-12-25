@@ -1,4 +1,4 @@
-Node = function (start, end, left, right) {
+let IntervalTreeNode = function (start, end, left, right) {
     /**
      * Node interval.
      * @member {Array}
@@ -11,17 +11,17 @@ Node = function (start, end, left, right) {
     this.max = -Infinity;
     /**
      * Parent node.
-     * @member {Node}
+     * @member {IntervalTreeNode}
      */
     this.parentNode = null;
     /**
      * Left child node.
-     * @member {Node}
+     * @member {IntervalTreeNode}
      */
     this.left = left;
     /**
      * Right child node.
-     * @member {Node}
+     * @member {IntervalTreeNode}
      */
     this.right = right;
   };
@@ -35,13 +35,13 @@ Node = function (start, end, left, right) {
 export default  function IntervalTree() {
     /**
      * Root node of the tree.
-     * @member {Node}
+     * @member {IntervalTreeNode}
      */
     this.root = null;
   };
 
   function addNode(node, side, interval) {
-    var child = new Node(interval[0], interval[1]);
+    var child = new IntervalTreeNode(interval[0], interval[1]);
     child.max = interval[1];
     child.parentNode = node;
     node[side] = child;
@@ -79,7 +79,7 @@ export default  function IntervalTree() {
    */
   IntervalTree.prototype.add = function (interval) {
     if (!this.root) {
-      this.root = new Node(interval[0], interval[1]);
+      this.root = new IntervalTreeNode(interval[0], interval[1]);
       this.root.max = interval[1];
       return;
     }
@@ -178,8 +178,8 @@ export default  function IntervalTree() {
    *
    * @public
    * @method
-   * @param {Node} node Root node of subtree.
-   * @return {Node} Node with the largest endpoint.
+   * @param {IntervalTreeNode} node Root node of subtree.
+   * @return {IntervalTreeNode} IntervalTreeNode with the largest endpoint.
    */
   IntervalTree.prototype.findMax = function (node) {
     var stack = [node];
