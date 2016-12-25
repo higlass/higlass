@@ -13,7 +13,6 @@ export class VerticalLine1DPixiTrack extends HorizontalLine1DPixiTrack {
 
         this.scene.addChild(this.moveToOrigin);
         
-
         this.moveToOrigin.rotation = Math.PI / 2;
     }
 

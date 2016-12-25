@@ -39,13 +39,6 @@ export class MultiViewContainer extends React.Component {
             'top': [
                 {'uid': slugid.nice(), type:'top-axis'}
             ,
-                    {'uid': slugid.nice(), 
-                        type:'horizontal-line',
-                        height: 30,
-                        width: 20,
-                      tilesetUid: 'bb',
-                      server: 'localhost:8000'}
-                      ,
 
                     /*
                     {'uid': slugid.nice(), 
@@ -58,16 +51,23 @@ export class MultiViewContainer extends React.Component {
 
                 {'uid': slugid.nice(),
                  type: 'combined',
-                 height: 59,
+                 height: 100,
                  contents:
                      [
-                    /*
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-line',
+                        height: 30,
+                        width: 20,
+                      tilesetUid: 'bb',
+                      server: 'localhost:8000'}
+                      ,
                     {'uid': slugid.nice(),
-                        type: 'stacked-interval',
+                        type: 'top-stacked-interval',
                         height: 30,
                         tilesetUid: 'cc',
                         server: 'localhost:8000' 
                     }
+                    /*
                     ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
@@ -80,15 +80,30 @@ export class MultiViewContainer extends React.Component {
                 }
             ],
             'left': [
-                {'uid': slugid.nice(), type:'left-axis', width: 100}
+                {'uid': slugid.nice(), type:'left-axis', width: 10}
                 ,
+                {'uid': slugid.nice(),
+                 type: 'combined',
+                 width: 60,
+                 contents:
+                     [
+                    {'uid': slugid.nice(),
+                        type: 'left-stacked-interval',
+                        height: 30,
+                        tilesetUid: 'cc',
+                        server: 'localhost:8000' 
+                    }
+                    ,
                     {'uid': slugid.nice(), 
                         type:'vertical-line',
                         height: 30,
                         width: 20,
                       tilesetUid: 'bb',
                       server: 'localhost:8000'}
-            /*
+                     ]
+                }
+                /*
+                      ,
                 ,
                 {'uid': slugid.nice(), 
                     type:'vertical-1d-tiles',

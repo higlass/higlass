@@ -20,9 +20,10 @@ export class CombinedTrack {
     }
 
 
-    zoomed(newXScale, newYScale, k, x, y) {
+    zoomed(newXScale, newYScale, k, x, y, xPositionOffset, yPositionOffset) {
         for (let i = 0; i < this.childTracks.length; i++) {
-            this.childTracks[i].zoomed(newXScale, newYScale, k, x, y);
+            this.childTracks[i].zoomed(newXScale, newYScale, k, x, y, 
+                                       xPositionOffset, yPositionOffset);
         }
         
     }

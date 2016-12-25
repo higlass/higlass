@@ -4,7 +4,6 @@ import {tileProxy} from './TileProxy.js';
 export class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     constructor(scene, server, uid) {
         super(scene, server, uid);
-
     }
 
     calculateZoomLevel() {
@@ -30,22 +29,4 @@ export class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
         return this._xScale;
     }
 
-    zoomed(newXScale, newYScale, k, tx, ty) {
-        super.zoomed(newXScale, newYScale);
-
-        // we only scale along 1 dimension
-        /*
-        let scaleX = (newXScale(1) - newXScale(0))/ (this._refXScale(1) - this._refXScale(0));
-        let scaleY = 1;
-
-        let translateX = (newXScale(0) + this.position[0]) - this._refXScale(0) * scaleX;
-        let translateY = this.position[1];
-        */
-
-        this.pMain.position.x = tx;
-        this.pMain.position.y = this.position[1];
-
-        this.pMain.scale.x = k;
-        this.pMain.scale.y = 1;
-    }
 }

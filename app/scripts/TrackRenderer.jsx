@@ -18,6 +18,7 @@ import {CombinedTrack} from './CombinedTrack.js';
 import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
 import {VerticalLine1DPixiTrack} from './VerticalLine1DPixiTrack.js';
 import {CNVIntervalTrack} from './CNVIntervalTrack.js';
+import {LeftTrackModifier} from './LeftTrackModifier.js';
 
 export class TrackRenderer extends React.Component {
     /**
@@ -173,8 +174,8 @@ export class TrackRenderer extends React.Component {
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
 
-            track.refXScale(this.xScale);
-            track.refYScale(this.yScale);
+            //track.refXScale(this.xScale);
+            //track.refYScale(this.yScale);
 
             // e.g. when the track is resized... we want to redraw it
             track.refScalesChanged(this.xScale, this.yScale);
@@ -332,9 +333,14 @@ export class TrackRenderer extends React.Component {
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
 
+            //console.log('xPositionOffset:', this.xPositionOffset);
+            //console.log('yPositionOffset:', this.yPositionOffset);
+
             track.zoomed(newXScale, newYScale, this.zoomTransform.k, 
                         this.zoomTransform.x + this.xPositionOffset, 
-                        this.zoomTransform.y + this.yPositionOffset);
+                        this.zoomTransform.y + this.yPositionOffset,
+                        this.props.marginLeft + this.props.leftWidth, 
+                        this.props.marginTop + this.props.topHeight);
             track.draw();
         }
     }
@@ -350,15 +356,17 @@ export class TrackRenderer extends React.Component {
             case 'horizontal-line':
                 return new HorizontalLine1DPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'vertical-line':
-                return new VerticalLine1DPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
+                return new LeftTrackModifier(new HorizontalLine1DPixiTrack(this.props.pixiStage, track.server, track.tilesetUid));
             case 'horizontal-1d-tiles':
                 return new IdHorizontal1DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'vertical-1d-tiles':
                 return new IdVertical1DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case '2d-tiles':
                 return new Id2DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
-            case 'stacked-interval':
+            case 'top-stacked-interval':
                 return new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid);
+            case 'left-stacked-interval':
+                return new LeftTrackModifier(new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid));
             case 'combined':
                 return new CombinedTrack(track.contents.map(this.createTrackObject.bind(this)));
             default:

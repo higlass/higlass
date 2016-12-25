@@ -124,13 +124,17 @@ export class TiledPixiTrack extends PixiTrack {
         this.synchronizeTilesAndGraphics();
     }
 
-
-
-    zoomed(newXScale, newYScale) {
+    zoomed(newXScale, newYScale, k=1, tx=0, ty=0) {
         this.xScale(newXScale);
         this.yScale(newYScale);
 
         this.refreshTiles();
+
+        this.pMobile.position.x = tx;
+        this.pMobile.position.y = this.position[1];
+
+        this.pMobile.scale.x = k;
+        this.pMobile.scale.y = 1;
     }
 
     setPosition(newPosition) {

@@ -11,6 +11,7 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
 
         //console.log('CNVInterval:', this);
         this.seen = new Set();
+        this.pMain = this.pMobile;
 
         this.rows = [];
     }

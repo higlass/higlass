@@ -53,10 +53,16 @@ export const tracksInfo = [
         name: '2D Tile Outlines'
     },
     {
-        type: 'stacked-interval',
+        type: 'top-stacked-interval',
         datatype: ['stacked-interval'],
         local: false,
         orientation: '1d-horizontal'
+    },
+    {
+        type: 'left-stacked-interval',
+        datatype: ['stacked-interval'],
+        local: false,
+        orientation: '1d-vertical'
     },
     {
         type: 'combined',
