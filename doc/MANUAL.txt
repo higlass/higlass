@@ -96,4 +96,7 @@ may want to calculate what the maximum number of intervals that will be drawn
 on top of each other at any point will be. Then for each interval, we will want
 to calculate its y position.
 
+##### Debugging notes
 
+* LeftTrackModifier switches out `pBase` so removing it requirest removing its
+  pBase from the stage, rather than the original track's

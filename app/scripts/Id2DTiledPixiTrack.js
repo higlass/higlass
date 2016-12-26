@@ -98,6 +98,9 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
             tile.textGraphics.position.x = this._refXScale(tileX) + tileScaledWidth / 2;
             tile.textGraphics.position.y = this._refYScale(tileY) + tileScaledHeight / 2;;
 
+            let x = this._refXScale(tileX);
+            let y = this._refYScale(tileY);
+
             graphics.drawRect(this._refXScale(tileX), this._refYScale(tileY), tileScaledWidth, tileScaledHeight);
 
         }

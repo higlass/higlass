@@ -218,6 +218,8 @@ export class TrackRenderer extends React.Component {
          * @param trackDefinitions: The definition of the track
          * @return: Nothing
          */
+        console.log('this.trackDefObjects:', this.trackDefObjects);
+
         let receivedTracksDict = {};
         for (let i = 0; i < trackDefinitions.length; i++)
             receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i];
@@ -275,6 +277,15 @@ export class TrackRenderer extends React.Component {
     updateExistingTrackDefs(newTrackDefs) {
         for (let i = 0; i < newTrackDefs.length; i++) {
             this.trackDefObjects[newTrackDefs[i].track.uid].trackDef = newTrackDefs[i];
+
+            // if it's a CombinedTrack, we have to see if its contents have changed
+            // e.g. somebody may have added a new Series
+            if (newTrackDefs[i].track.type == 'combined') {
+                this.trackDefObjects[newTrackDefs[i].track.uid]
+                .trackObject
+                .updateContents(newTrackDefs[i].track.contents, this.createTrackObject.bind(this))
+                .refScalesChanged(this.xScale, this.yScale);
+            }
         }
 
         this.updateTrackPositions();
@@ -370,7 +381,7 @@ export class TrackRenderer extends React.Component {
             case 'left-stacked-interval':
                 return new LeftTrackModifier(new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid));
             case 'combined':
-                return new CombinedTrack(track.contents.map(this.createTrackObject.bind(this)));
+                return new CombinedTrack(track.contents, this.createTrackObject.bind(this));
             default:
                 console.log('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(this.props.pixiStage);

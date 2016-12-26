@@ -1,12 +1,51 @@
 export class CombinedTrack {
-    constructor(childTracks) {
-        this.childTracks = childTracks;
+    constructor(trackDefs, trackCreator) {
+        console.log('trackDefs:', trackDefs);
+        this.childTracks = trackDefs.map(trackCreator);
+        this.createdTracks = {};
+
+        this.childTracks.forEach((ct,i) => {
+            this.createdTracks[trackDefs[i].uid] = ct; 
+        });
 
         for (let i = 0; i < this.childTracks.length; i++) {
             if (!this.childTracks[i]) {
                 console.log('ERROR: empty child track in CombinedTrack:', this);
             }
         }
+    }
+
+    updateContents(newContents, trackCreator) {
+        let newTracks = [];
+        let currentTracks = new Set();
+
+        console.log('updating contents');
+
+        // go through the new track list and create tracks which we don't
+        // already have
+        newContents.forEach(nc => {
+            currentTracks.add(nc.uid);
+
+            if (nc.uid in this.createdTracks)
+                newTracks.push(this.createdTracks[nc.uid]);
+            else {
+                let newTrack = trackCreator(nc);
+                newTracks.push(newTrack);
+                this.createdTracks[nc.uid] = newTrack;
+            }
+        });
+
+        this.childTracks = newTracks;
+
+        // remove the ones that were previously, but no longer, present
+        let knownTracks = new Set(Object.keys(this.createdTracks));
+        let exitTracks = new Set([...knownTracks].filter(x => !currentTracks.has(x)));
+        [...exitTracks].forEach(trackUid => { 
+            this.createdTracks[trackUid].remove();
+            delete this.createdTracks[trackUid];
+        });
+
+        return this;
     }
 
     setPosition(newPosition) {

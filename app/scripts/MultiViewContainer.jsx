@@ -49,6 +49,7 @@ export class MultiViewContainer extends React.Component {
                       server: 'localhost:8000'},
                       */
 
+                    /*
                 {'uid': slugid.nice(),
                  type: 'combined',
                  height: 100,
@@ -67,26 +68,27 @@ export class MultiViewContainer extends React.Component {
                         tilesetUid: 'cc',
                         server: 'localhost:8000' 
                     }
-                    /*
                     ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
                         height: 30,
                       tilesetUid: 'cc',
                       server: 'localhost:8000'}
-                      */
 
                      ]
                 }
+                      */
             ],
             'left': [
-                {'uid': slugid.nice(), type:'left-axis', width: 10}
+                {'uid': slugid.nice(), type:'left-axis', width: 80}
+                /*
                 ,
                 {'uid': slugid.nice(),
                  type: 'combined',
                  width: 60,
                  contents:
                      [
+                         /*
                     {'uid': slugid.nice(),
                         type: 'left-stacked-interval',
                         height: 30,
@@ -102,7 +104,6 @@ export class MultiViewContainer extends React.Component {
                       server: 'localhost:8000'}
                      ]
                 }
-                /*
                       ,
                 ,
                 {'uid': slugid.nice(), 

@@ -44,11 +44,31 @@ class TrackArea extends React.Component {
     getControls() {
         let controls = (<div>
                         <img 
+                            ref={(c) => { this.imgClose = c; }}
                             className="no-zoom"
-                            onClick={() => { this.props.handleCloseTrack(this.props.uid); }}
                             src="images/cross.svg" 
                             style={this.getCloseImgStyle()}
                             width="10px" 
+                            onClick={() => { 
+                                let imgDom = ReactDOM.findDOMNode(this.imgClose);
+                                let bbox = imgDom.getBoundingClientRect();
+                                this.props.handleCloseSeries(this.props.uid, bbox);
+                            }}
+                        />
+
+                        <img 
+                            ref={(c) => { this.imgAdd = c; }}
+                            className="no-zoom"
+                            src="images/plus.svg" 
+                            style={this.getAddImgStyle()}
+                            width="10px" 
+                            onClick={() => { 
+                                // display a menu at the position of the button
+                                let imgDom = ReactDOM.findDOMNode(this.imgAdd);
+                                let bbox = imgDom.getBoundingClientRect();
+                                this.props.handleAddSeries(this.props.uid, bbox);
+                                
+                            }}
                         />
 
                         <img 
@@ -57,32 +77,7 @@ class TrackArea extends React.Component {
                             onClick={(e) => { 
                                 let imgDom = ReactDOM.findDOMNode(this.imgConfig);
                                 let bbox = imgDom.getBoundingClientRect();
-                                console.log('bbox', bbox.left, 'clientLeft:', imgDom.clientLeft, 'imgDom:', console.dir(imgDom));
-
-                                /*
-                                        let nodeMenu = [
-                                {
-                                    title: 'Heidi ho',
-                                    action: function(elm, d, i) {
-                                        console.log('clicked');
-                                    },
-                                    disabled: false, // optional, defaults to false,
-                                children: [
-                                    {
-                                        title: 'A',
-                                        action: function(elm, d, i) {
-                                            console.log('a');
-                                        }
-                                    }]
-
-                                }];
-
-                                let cm = contextMenu(nodeMenu, {'pos': 
-                                                     [bbox.left, bbox.top]});
-                                cm.apply(this, [nodeMenu,0,true,()=>{}]); 
-                                */
-
-                                this.props.handleConfigTrack(this.props.uid, {'left': bbox.left, 'top': bbox.top});
+                                this.props.handleConfigTrack(this.props.uid, bbox);
                                 ; }}
                             src="images/cog.svg" 
                             style={this.getSettingsImgStyle()}
@@ -220,6 +215,13 @@ export class CenterTrack extends FixedTrack {
 
         return closeImgStyle;
     }
+
+    getAddImgStyle() {
+        return  { right: 28,
+                    top: 5,
+                    position: 'absolute',
+                    opacity: .5}
+    }
 }
 
 class VerticalTrack extends MoveableTrack {
@@ -227,6 +229,7 @@ class VerticalTrack extends MoveableTrack {
         super(props);
     }
 
+    // each image should be 13 pixels below the next one
     getCloseImgStyle() {
         let closeImgStyle = { right: 5,
                          top: 5,
@@ -238,11 +241,18 @@ class VerticalTrack extends MoveableTrack {
 
     getMoveImgStyle() {
         let moveImgStyle = { right: 5,
-                         top: 18,
+                         top: 44,
                          position: 'absolute',
                          opacity: .5}
 
         return moveImgStyle;
+    }
+
+    getAddImgStyle() {
+        return { right: 5,
+                    top: 18,
+                    position: 'absolute',
+                    opacity: .5}
     }
 
     getSettingsImgStyle() {
@@ -286,12 +296,19 @@ class HorizontalTrack extends MoveableTrack {
     }
 
     getMoveImgStyle() {
-        let moveImgStyle = { right: 28,
+        let moveImgStyle = { right: 54,
                          top: 5,
                          position: 'absolute',
                          opacity: .5}
 
         return moveImgStyle;
+    }
+
+    getAddImgStyle() {
+        return { right: 28,
+                    top: 5,
+                    position: 'absolute',
+                    opacity: .5}
     }
 
     getSettingsImgStyle() {

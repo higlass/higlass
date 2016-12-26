@@ -16,6 +16,13 @@ export class LeftTrackModifier {
         this.moveToOrigin.rotation = Math.PI / 2;
     }
 
+    remove() {
+        this.originalTrack.remove();
+
+        this.pBase.clear();
+        this.scene.removeChild(this.pBase);
+    }
+
     setDimensions(newDimensions) {
         let reversedDimensions = [newDimensions[1], newDimensions[0]];
 
