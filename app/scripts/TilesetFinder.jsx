@@ -23,9 +23,10 @@ export class TilesetFinder extends React.Component {
 
         let newOptions = this.prepareNewEntries('', this.localTracks, {});
         let availableTilesetKeys = Object.keys(newOptions);
+        let selectedUuid = availableTilesetKeys.length ? [availableTilesetKeys[0]] : null;
 
         this.state = {
-            selectedUuid: [availableTilesetKeys[0]],
+            selectedUuid: selectedUuid,
             options: newOptions,
             filter: ''
         }
@@ -73,7 +74,11 @@ export class TilesetFinder extends React.Component {
 
         
         this.requestTilesetLists();
-        this.props.selectedTilesetChanged(this.state.options[this.state.selectedUuid]);
+
+        let selectedTileset = this.state.options[this.state.selectedUuid];
+
+        if (selectedTileset)
+            this.props.selectedTilesetChanged(selectedTileset);
     }
 
     requestTilesetLists() {
@@ -93,7 +98,18 @@ export class TilesetFinder extends React.Component {
                         console.log('data:', data);
 
                         let newOptions = this.prepareNewEntries(sourceServer, data.results, this.state.options);
+                        let availableTilesetKeys = Object.keys(newOptions);
+                        let selectedUuid = this.state.selectedUuid;
+
+                        // if there isn't a selected tileset, select the first received one
+                        if (!selectedUuid) {
+                            selectedUuid = availableTilesetKeys.length ? [availableTilesetKeys[0]]: null;
+                            let selectedTileset = this.state.options[selectedUuid];
+                            this.props.selectedTilesetChanged(selectedTileset);
+                        }
+
                         this.setState({
+                            selectedUuid: selectedUuid,
                             options: newOptions
                         });
                     }
@@ -162,7 +178,7 @@ export class TilesetFinder extends React.Component {
                           </Col>
                           <Col sm={12}>
                           <FormControl componentClass="select" multiple
-                          value={this.state.selectedUuid}
+                          value={this.state.selectedUuid ? this.state.selectedUuid : ['x']}
                             onChange={this.handleSelect.bind(this)}
                           >
                             {options}

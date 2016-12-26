@@ -232,6 +232,34 @@ export class TiledPlot extends React.Component {
         } else if (position == 'center') {
             // we're going to have to either overlay the existing track with a new one
             // or add another one on top
+            if (tracks['center'].length == 0) {
+                // no existing tracks
+                let newCombined = {
+                    uid: slugid.nice(),
+                    type: 'combined',
+                    contents: [
+                        newTrack ]
+                }
+                tracks['center'] = [newCombined];
+            } else {
+                // center track exists
+                if (tracks['center'][0].type == 'combined') {
+                    // if it's a combined track, we just need to add this track to the
+                    // contents
+                    tracks['center'][0].contents.push(newTrack);
+                } else {
+                    // if it's not, we have to create a new combined track
+                    let newCombined = {
+                        uid: slugid.nice(),
+                        type: 'combined',
+                        contents: [ 
+                            tracks['center'][0],
+                            newTrack ]
+                    }
+
+                    tracks['center'] = [newCombined];
+                }
+            }
         } else {
             // otherwise, we want it at the end of the track list
             tracks[position].push(newTrack);
@@ -255,6 +283,7 @@ export class TiledPlot extends React.Component {
     }
 
     handleAddTrack(position) {
+        console.log('handle AddTrack', position);
 
         this.setState({
             addTrackPosition: position,
@@ -607,6 +636,7 @@ export class TiledPlot extends React.Component {
                                 style={Object.assign({}, imgStyle, {
                                         'left': this.props.horizontalMargin + this.leftWidth + this.centerWidth - 10 -  plusWidth,
                                         'top': this.props.verticalMargin + this.topHeight + + plusHeight + 10,
+                                        'className': 'center-plus',
                                         'backgroundColor': 'white'
                                     })}
                             />
@@ -724,13 +754,14 @@ export class TiledPlot extends React.Component {
                     {leftPlus}
                     {rightPlus}
                     {bottomPlus}
-                    {centerPlus}
 
                     {topTracks}
                     {leftTracks}
                     {rightTracks}
                     {bottomTracks}
                     {centerTrack}
+
+                    {centerPlus}
 
                 </TrackRenderer>
             )
