@@ -92,7 +92,7 @@ function _base64ToArrayBuffer(base64) {
     return bytes.buffer;
 }
 
-export function workerFetchTiles(tilesetServer, tileIds, done) {
+export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
     let MAX_FETCH_TILES=10;
     let fetchPromises = [];
 
@@ -102,7 +102,7 @@ export function workerFetchTiles(tilesetServer, tileIds, done) {
         let theseTileIds = tileIds.slice(i, i+Math.min(tileIds.length - i, MAX_FETCH_TILES))
 
         let renderParams = theseTileIds.map(x => "d=" + x).join('&');
-        let outUrl = "//" + tilesetServer + '/tiles/?' + renderParams;
+        let outUrl = "//" + tilesetServer + '/tiles/?' + renderParams + '&s=' + sessionId;
 
         let p = new Promise(function(resolve, reject) {
             json(outUrl, (error, data) => {

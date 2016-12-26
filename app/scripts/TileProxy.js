@@ -8,7 +8,7 @@ import {workerSetPix} from './worker.js';
 
 class TileProxy  {
     constructor() {
-        this.uid = slugid.nice();
+        this.sessionId = slugid.nice();
 
         this.threadPool = new Pool();
 
@@ -28,7 +28,7 @@ class TileProxy  {
         // if they are, no need to fetch them
         
 
-        workerFetchTiles(tilesetServer, tilesetIds, (results) => {
+        workerFetchTiles(tilesetServer, tilesetIds, this.sessionId, (results) => {
             // do some caching here    
             done(results);
         });
@@ -86,7 +86,7 @@ class TileProxy  {
     }
 
     trackInfo(server, tilesetUid, done) {
-        let outUrl = "//" + server + '/tileset_info/?d=' + tilesetUid;
+        let outUrl = "//" + server + '/tileset_info/?d=' + tilesetUid + '&s=' + this.sessionId;
 
         workerGetTilesetInfo(outUrl, done);
         /*
