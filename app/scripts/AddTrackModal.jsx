@@ -14,7 +14,6 @@ export class AddTrackModal extends React.Component {
 
         options: {};
 
-        console.log('props', props);
         this.state = {
             mainTileset: {datatype: 'none'},
             normalizeTilesetUuid: null

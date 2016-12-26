@@ -52,7 +52,8 @@ class TrackArea extends React.Component {
                             onClick={() => { 
                                 let imgDom = ReactDOM.findDOMNode(this.imgClose);
                                 let bbox = imgDom.getBoundingClientRect();
-                                this.props.handleCloseSeries(this.props.uid, bbox);
+                                console.log('close bbox:', bbox);
+                                this.props.onCloseTrackMenuOpened(this.props.uid, bbox);
                             }}
                         />
 
@@ -63,11 +64,7 @@ class TrackArea extends React.Component {
                             style={this.getAddImgStyle()}
                             width="10px" 
                             onClick={() => { 
-                                // display a menu at the position of the button
-                                let imgDom = ReactDOM.findDOMNode(this.imgAdd);
-                                let bbox = imgDom.getBoundingClientRect();
-                                this.props.handleAddSeries(this.props.uid, bbox);
-                                
+                                this.props.onAddSeries(this.props.uid);
                             }}
                         />
 
@@ -77,7 +74,7 @@ class TrackArea extends React.Component {
                             onClick={(e) => { 
                                 let imgDom = ReactDOM.findDOMNode(this.imgConfig);
                                 let bbox = imgDom.getBoundingClientRect();
-                                this.props.handleConfigTrack(this.props.uid, bbox);
+                                this.props.onConfigTrackMenuOpened(this.props.uid, bbox);
                                 ; }}
                             src="images/cog.svg" 
                             style={this.getSettingsImgStyle()}

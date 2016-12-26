@@ -218,8 +218,6 @@ export class TrackRenderer extends React.Component {
          * @param trackDefinitions: The definition of the track
          * @return: Nothing
          */
-        console.log('this.trackDefObjects:', this.trackDefObjects);
-
         let receivedTracksDict = {};
         for (let i = 0; i < trackDefinitions.length; i++)
             receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i];
@@ -345,9 +343,6 @@ export class TrackRenderer extends React.Component {
 
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
-
-            //console.log('xPositionOffset:', this.xPositionOffset);
-            //console.log('yPositionOffset:', this.yPositionOffset);
 
             track.zoomed(newXScale, newYScale, this.zoomTransform.k, 
                         this.zoomTransform.x + this.xPositionOffset, 

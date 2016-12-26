@@ -7,7 +7,8 @@ import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {CenterTrack, VerticalTiledPlot, HorizontalTiledPlot} from './PositionalTiledPlot.jsx';
 import {TrackRenderer} from './TrackRenderer.jsx';
 import {AddTrackModal} from './AddTrackModal.jsx';
-import {TrackConfigWindow} from './TrackConfigWindow.jsx';
+import {ConfigTrackMenu} from './ConfigTrackMenu.jsx';
+import {CloseTrackMenu} from './CloseTrackMenu.jsx';
 import {PopupMenu} from './PopupMenu.jsx';
 
 
@@ -127,11 +128,9 @@ export class TiledPlot extends React.Component {
             addTrackVisible: true,
             */
 
-            /*
-            configuringTrack: this.state.tracks['top'][0].uid,
-            configuringLocation: { 'left': window.innerWidth - 40,
+            configTrackMenuId: this.state.tracks['center'][0].uid,
+            configTrackMenuLocation: { 'left': window.innerWidth - 40,
                                    'top': 100}
-                                   */
 
         });
 
@@ -282,6 +281,10 @@ export class TiledPlot extends React.Component {
         });
     }
 
+    handleAddSeries(trackUid) {
+        console.log('Add series button clicked');
+    }
+
     handleAddTrack(position) {
         console.log('handle AddTrack', position);
 
@@ -367,19 +370,32 @@ export class TiledPlot extends React.Component {
         });
     }
 
-    handleConfigMenuClosed(evt) {
+    handleCloseTrackMenuOpened(uid, clickPosition) {
         this.setState({
-            configuringTrack: null,
+            closeTrackMenuId: uid,
+            closeTrackMenuLocation: clickPosition
         });
     }
 
-    handleConfigTrack(uid, clickPosition) {
+    
+    handleCloseTrackMenuClosed(evt) {
+        this.setState({
+            closeTrackMenuId: null
+        });
+    }
+
+    handleConfigTrackMenuOpened(uid, clickPosition) {
         let orientation = this.getTrackOrientationByUid(uid);
 
         this.setState({
-            configuringTrack: uid,
-            configuringLocation: {'left': clickPosition.left, 
-                                  'top': clickPosition.top}
+            configTrackMenuId: uid,
+            configTrackMenuLocation: clickPosition
+        });
+    }
+
+    handleConfigTrackMenuClosed(evt) {
+        this.setState({
+            configTrackMenuId: null,
         });
     }
 
@@ -648,8 +664,8 @@ export class TiledPlot extends React.Component {
                                       outline: trackOutline,
                                       position: "absolute",}}>
                             <HorizontalTiledPlot
-                                handleCloseTrack={this.handleCloseTrack.bind(this)}
-                                handleConfigTrack={this.handleConfigTrack.bind(this)}
+                                handleCloseTrack={this.handleCloseTrackMenuOpened.bind(this)}
+                                handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['top']}
@@ -661,8 +677,8 @@ export class TiledPlot extends React.Component {
                                       outline: trackOutline,
                                       position: "absolute",}}>
                             <VerticalTiledPlot
-                                handleCloseTrack={this.handleCloseTrack.bind(this)}
-                                handleConfigTrack={this.handleConfigTrack.bind(this)}
+                                handleCloseTrack={this.handleCloseTrackMenuOpened.bind(this)}
+                                handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['left']}
@@ -674,8 +690,8 @@ export class TiledPlot extends React.Component {
                                       outline: trackOutline,
                                       position: "absolute",}}>
                             <VerticalTiledPlot
-                                handleCloseTrack={this.handleCloseTrack.bind(this)}
-                                handleConfigTrack={this.handleConfigTrack.bind(this)}
+                                handleCloseTrack={this.handleCloseTrackMenuOpened.bind(this)}
+                                handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['right']}
@@ -687,8 +703,8 @@ export class TiledPlot extends React.Component {
                                       outline: trackOutline,
                                       position: "absolute",}}>
                             <HorizontalTiledPlot
-                                handleCloseTrack={this.handleCloseTrack.bind(this)}
-                                handleConfigTrack={this.handleConfigTrack.bind(this)}
+                                handleCloseTrack={this.handleCloseTrackMenuOpened.bind(this)}
+                                handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['bottom']}
@@ -706,8 +722,10 @@ export class TiledPlot extends React.Component {
                                       outline: trackOutline,
                                         position: "absolute",}}>
                                <CenterTrack
-                                handleCloseTrack={this.handleCloseTrack.bind(this)}
-                                handleConfigTrack={this.handleConfigTrack.bind(this)}
+                                onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
+                                onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+                                onAddSeries={this.handleAddSeries.bind(this)}
+
                                 height={this.centerHeight}
                                 uid={this.state.tracks['center'][0].uid}
                                 width={this.centerWidth}
@@ -767,16 +785,31 @@ export class TiledPlot extends React.Component {
             )
         }
 
-        let trackConfigure = null;
+        let configTrackMenu = null;
+        let closeTrackMenu = null;
+        let addTrackMeny = null;
 
-        if (this.state.configuringTrack) {
-            trackConfigure = (
+        if (this.state.configTrackMenuId) {
+            configTrackMenu = (
                              <PopupMenu
-                                onMenuClosed={this.handleConfigMenuClosed.bind(this)}
+                                onMenuClosed={this.handleConfigTrackMenuClosed.bind(this)}
                              >
-                                  <TrackConfigWindow
-                                    track={this.getTrackByUid(this.state.configuringTrack)}
-                                    position={ this.state.configuringLocation }
+                                  <ConfigTrackMenu
+                                    track={this.getTrackByUid(this.state.configTrackMenuId)}
+                                    position={ this.state.configTrackMenuLocation }
+                                  />
+                              </PopupMenu>
+                              )
+        }
+
+        if (this.state.closeTrackMenuId) {
+            closeTrackMenu = (
+                             <PopupMenu
+                                onMenuClosed={this.handleCloseTrackMenuClosed.bind(this)}
+                             >
+                                  <CloseTrackMenu
+                                    track={this.getTrackByUid(this.state.closeTrackMenuId)}
+                                    position={ this.state.closeTrackMenuLocation }
                                   />
                               </PopupMenu>
                               )
@@ -796,7 +829,8 @@ export class TiledPlot extends React.Component {
                     position={this.state.addTrackPosition}
                     show={this.state.addTrackVisible}
                 />
-                {trackConfigure}
+                {configTrackMenu}
+                {closeTrackMenu}
             </div>
             );
     }

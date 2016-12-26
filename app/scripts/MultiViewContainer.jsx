@@ -119,19 +119,17 @@ export class MultiViewContainer extends React.Component {
                     height: 200,
                     contents: 
                     [
-                        { 'server': '52.45.229.11/',
+                        { 'server': 'localhost:8000',
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': 'heatmap'
                         }
-                        /*
                         ,
-                        { 'server': '52.45.229.11',
+                        { 'server': 'localhost:8000',
                           'uid': slugid.nice(),
-                          'tilesetUid': '00bec9f2-504e-4daf-a674-6aca204247ce',
+                          'tilesetUid': 'aa',
                           'type': '2d-tiles'
                         }
-                        */
                     ]
                 }
             ]}

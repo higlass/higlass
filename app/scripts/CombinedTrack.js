@@ -1,6 +1,5 @@
 export class CombinedTrack {
     constructor(trackDefs, trackCreator) {
-        console.log('trackDefs:', trackDefs);
         this.childTracks = trackDefs.map(trackCreator);
         this.createdTracks = {};
 
@@ -18,8 +17,6 @@ export class CombinedTrack {
     updateContents(newContents, trackCreator) {
         let newTracks = [];
         let currentTracks = new Set();
-
-        console.log('updating contents');
 
         // go through the new track list and create tracks which we don't
         // already have

@@ -1,3 +1,4 @@
+import '../styles/ContextMenuContainer.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -29,6 +30,8 @@ export class ContextMenuContainer extends React.Component {
          */
         super(props);
 
+        this.adjusted = false;
+
         this.state = {
             orientation: this.props.orientation ? this.props.orientation : 'right',
             left: this.props.position.left,
@@ -37,7 +40,21 @@ export class ContextMenuContainer extends React.Component {
         }
     }
 
-    componentDidMount() {
+    componentWillReceiveProps(newProps) {
+        console.log('newLeft:', newProps.position.left, 'newTop:', newProps.position.top);
+        this.adjusted = false;
+
+        this.setState({
+            left: newProps.position.left,
+            top: newProps.position.top
+        });
+    }
+
+    updateOrientation() {
+        if (this.adjusted)
+            return;
+
+        this.adjusted = true;
         this.divDom = ReactDOM.findDOMNode(this.div);
         let bbox = this.divDom.getBoundingClientRect();
 
@@ -56,4 +73,13 @@ export class ContextMenuContainer extends React.Component {
             }
         }
     }
+
+    componentDidUpdate() {
+        this.updateOrientation();
+    }
+
+    componentDidMount() {
+        this.updateOrientation();
+    }
+
 }
