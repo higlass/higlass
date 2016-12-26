@@ -177,7 +177,6 @@ export class TiledPixiTrack extends PixiTrack {
          * Function is called when all tiles that should be visible have
          * been received.
          */
-        console.log('all tiles loaded');
     }
 
     initTile(tile) {

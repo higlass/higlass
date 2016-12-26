@@ -65,7 +65,6 @@ export class CombinedTrack {
     }
 
     refScalesChanged(refXScale, refYScale) {
-        console.log('childTracks:', this.childTracks);
         for (let i = 0; i < this.childTracks.length; i++) {
             this.childTracks[i].refScalesChanged(refXScale, refYScale);
         }

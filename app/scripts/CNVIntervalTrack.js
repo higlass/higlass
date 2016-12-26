@@ -89,11 +89,23 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         let rows = this.segmentsToRows(segments);
         this.rows = rows;
 
+        this.draw();
+
+    }
+
+    draw() {
+        let rows = this.rows;
+
+        if (!rows)
+            return;
+
         let valueScale = scaleBand().range([0, this.dimensions[1]]).padding(0.1)
         .domain(range(0, this.maxRows()));  // draw one away from the center
         //.domain(range(0, 10));  // draw one away from the center
 
         let graphics = this.pMain;
+
+        graphics.clear();
 
         graphics.lineStyle(1, 0x0000FF, 0);
         graphics.beginFill(0xFF700B, 0.8);
@@ -114,6 +126,7 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
                 graphics.drawRect(x1, y1, width, height);
             }
         }
+
     }
 
     allTilesLoaded() {
@@ -125,7 +138,10 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
         this.drawAll(allTileData);
     }
 
+
+
     initTile(tile) {
+
     }
 
     maxRows() {
