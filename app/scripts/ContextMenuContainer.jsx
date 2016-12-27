@@ -12,6 +12,7 @@ export class ContextMenuItem extends React.Component {
                 <div 
                     className={"context-menu-item"}
                     onMouseEnter={(e) => this.props.onMouseEnter ? this.props.onMouseEnter(e) : null }
+                    onClick={e => this.props.onClick(e)}
                 >
                     <span
                         style={{ whiteSpace: 'nowrap' }}
@@ -41,7 +42,6 @@ export class ContextMenuContainer extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
-        console.log('newLeft:', newProps.position.left, 'newTop:', newProps.position.top);
         this.adjusted = false;
 
         this.setState({
@@ -80,6 +80,25 @@ export class ContextMenuContainer extends React.Component {
 
     componentDidMount() {
         this.updateOrientation();
+    }
+
+    handleSeriesMouseEnter(evt, uid) {
+        let domNode = evt.currentTarget;
+
+        this.setState({
+            submenuShown: uid,
+            submenuSourceBbox: domNode.getBoundingClientRect()
+        });
+    }
+
+    handleMouseLeave(evt) {
+        return;
+    }
+
+    handleOtherMouseEnter(evt) {
+        this.setState({
+            submenuShown: null
+        });
     }
 
 }

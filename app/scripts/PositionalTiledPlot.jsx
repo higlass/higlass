@@ -268,7 +268,8 @@ const VerticalItem = SortableElement((props) => {
 
     return (<VerticalTrack 
                 className={props.className}
-                handleCloseTrack={props.handleCloseTrack}
+                onCloseTrack={props.onCloseTrack}
+                onCloseTrackMenuOpened={props.onCloseTrackMenuOpened}
                 handleConfigTrack={props.handleConfigTrack}
                 handleResizeTrack={props.handleResizeTrack}
                 height={props.height}
@@ -321,7 +322,8 @@ class HorizontalTrack extends MoveableTrack {
 const HorizontalItem = SortableElement((props) => { 
     return (<HorizontalTrack 
                 className={props.className}
-                handleCloseTrack={props.handleCloseTrack}
+                onCloseTrack={props.onCloseTrack}
+                onCloseTrackMenuOpened={props.onCloseTrackMenuOpened}
                 handleConfigTrack={props.handleConfigTrack}
                 handleResizeTrack={props.handleResizeTrack}
                 height={props.height}
@@ -331,7 +333,7 @@ const HorizontalItem = SortableElement((props) => {
             />)});
 
 const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, 
-                                         sortableHandlers,height, width, handleCloseTrack,handleConfigTrack,itemReactClass,
+                                         sortableHandlers,height, width, onCloseTrack,onCloseTrackMenuOpened,handleConfigTrack,itemReactClass,
                                          handleResizeTrack}) => {
     let itemElements = items.map((item, index) => {
             return React.createElement(itemReactClass,
@@ -344,7 +346,8 @@ const SortableList = SortableContainer(({className, items, itemClass, sortingInd
                     width: item.width,
                     item: item,
 					useDragHandle: useDragHandle,
-                    handleCloseTrack: handleCloseTrack,
+                    onCloseTrack: onCloseTrack,
+                    onCloseTrackMenuOpened: onCloseTrackMenuOpened,
                     handleConfigTrack, handleConfigTrack,
                     handleResizeTrack: handleResizeTrack
                 })
@@ -480,11 +483,13 @@ export class HorizontalTiledPlot extends React.Component {
 
 
         return (
+
                 <div style={{position: "relative"}}>
                     <ListWrapper
                         className={"list stylizedList"} 
                         component={SortableList}
-                        handleCloseTrack={this.props.handleCloseTrack}
+                        onCloseTrack={this.props.onCloseTrack}
+                        onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
                         handleConfigTrack={this.props.handleConfigTrack}
                         handleResizeTrack={this.props.handleResizeTrack}
                         height={thisHeight}
@@ -532,7 +537,8 @@ export class VerticalTiledPlot extends React.Component {
                     axis={'x'}
                     className={"list stylizedList horizontalList"} 
                     component={SortableList}
-                    handleCloseTrack={this.props.handleCloseTrack}
+                    onCloseTrack={this.props.onCloseTrack}
+                    onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
                     handleConfigTrack={this.props.handleConfigTrack}
                     handleResizeTrack={this.props.handleResizeTrack}
                     height={this.props.height}

@@ -6,7 +6,7 @@ export class TiledPixiTrack extends PixiTrack {
     /**
      * A track that must pull remote tiles
      */
-    constructor(scene, server, tilesetUid) {
+    constructor(scene, server, tilesetUid, handleTilesetInfoReceived) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
@@ -37,6 +37,9 @@ export class TiledPixiTrack extends PixiTrack {
             
             this.maxZoom = +this.tilesetInfo['max_zoom'];
             this.refreshTiles();
+
+            if (handleTilesetInfoReceived)
+                handleTilesetInfoReceived(tilesetInfo);
         });
     }
 

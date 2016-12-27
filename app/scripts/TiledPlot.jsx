@@ -126,11 +126,11 @@ export class TiledPlot extends React.Component {
             /*
             addTrackPosition: 'top',
             addTrackVisible: true,
-            */
 
             configTrackMenuId: this.state.tracks['center'][0].uid,
             configTrackMenuLocation: { 'left': window.innerWidth - 40,
                                    'top': 100}
+            */
 
         });
 
@@ -208,6 +208,16 @@ export class TiledPlot extends React.Component {
         }
 
         return tracksDict;
+    }
+
+    handleTilesetInfoReceived(trackUid, tilesetInfo) {
+        /**
+         * We've received information about a tileset from the server. Register it
+         * with the track definition.
+         * @param trackUid (string): The identifier for the track
+         * @param tilesetInfo (object): Information about the track (hopefully including
+         *                              its name.
+         */
     }
 
     handleTrackAdded(newTrack, position) {
@@ -349,6 +359,18 @@ export class TiledPlot extends React.Component {
 
             if (filteredTracks.length)
                 return filteredTracks[0];
+
+            // check to see if this track is part of a combined track
+            let combinedTracks = theseTracks.filter((d) => { return d.type == 'combined'; });
+
+            if (combinedTracks.length) {
+                combinedTracks.forEach(ct => {
+                    let filteredTracks = ct.contents.filter(d => d.uid == uid);
+
+                    if (filteredTracks.length)
+                        return filteredTracks[0];
+                });
+            }
         }
 
         return null;
@@ -356,13 +378,31 @@ export class TiledPlot extends React.Component {
 
 
     handleCloseTrack(uid) {
+        console.log('closing track...', uid);
+        if (uid == this.state.closeTrackMenuId) {
+            // we're closing an entire track as opposed to just a series within a track
+            this.setState({
+                closeTrackMenuId: null
+            });
+        }
+
         let tracks = this.state.tracks;
 
         for (let trackType in tracks) {
             let theseTracks = tracks[trackType];
-
             let newTracks = theseTracks.filter((d) => { return d.uid != uid; });
-            tracks[trackType] = newTracks;
+
+            if (newTracks.length == theseTracks.length) {
+                // no whole tracks need to removed, see if any of the combined tracks
+                // contain series which need to go
+                let combinedTracks = newTracks.filter(x => x.type == 'combined')
+
+                combinedTracks.forEach(ct => {
+                    ct.contents = ct.contents.filter(x => x.uid != uid);
+                });
+            } else {
+                tracks[trackType] = newTracks;
+            }
         }
 
         this.setState({
@@ -664,7 +704,8 @@ export class TiledPlot extends React.Component {
                                       outline: trackOutline,
                                       position: "absolute",}}>
                             <HorizontalTiledPlot
-                                handleCloseTrack={this.handleCloseTrackMenuOpened.bind(this)}
+                                onCloseTrack={this.handleCloseTrack.bind(this)}
+                                onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
                                 handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
@@ -677,7 +718,8 @@ export class TiledPlot extends React.Component {
                                       outline: trackOutline,
                                       position: "absolute",}}>
                             <VerticalTiledPlot
-                                handleCloseTrack={this.handleCloseTrackMenuOpened.bind(this)}
+                                onCloseTrack={this.handleCloseTrack.bind(this)}
+                                onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
                                 handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
@@ -690,7 +732,8 @@ export class TiledPlot extends React.Component {
                                       outline: trackOutline,
                                       position: "absolute",}}>
                             <VerticalTiledPlot
-                                handleCloseTrack={this.handleCloseTrackMenuOpened.bind(this)}
+                                onCloseTrack={this.handleCloseTrack.bind(this)}
+                                onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
                                 handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
@@ -703,7 +746,8 @@ export class TiledPlot extends React.Component {
                                       outline: trackOutline,
                                       position: "absolute",}}>
                             <HorizontalTiledPlot
-                                handleCloseTrack={this.handleCloseTrackMenuOpened.bind(this)}
+                                onCloseTrack={this.handleCloseTrack.bind(this)}
+                                onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
                                 handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
@@ -743,6 +787,7 @@ export class TiledPlot extends React.Component {
                 <TrackRenderer
                     initialXDomain={this.props.initialXDomain}
                     initialYDomain={this.props.initialYDomain}
+                    onTilesetInfoReceived={this.handleTilesetInfoReceived}
                     canvasElement={this.props.canvasElement}
                     svgElement={this.props.svgElement}
                     dragging={this.props.dragging}
@@ -810,6 +855,7 @@ export class TiledPlot extends React.Component {
                                   <CloseTrackMenu
                                     track={this.getTrackByUid(this.state.closeTrackMenuId)}
                                     position={ this.state.closeTrackMenuLocation }
+                                    onCloseTrack={ this.handleCloseTrack.bind(this) }
                                   />
                               </PopupMenu>
                               )

@@ -354,15 +354,25 @@ export class TrackRenderer extends React.Component {
     }
 
     createTrackObject(track) {
+        let handleTilesetInfoReceived = x => {
+            this.props.onTilesetInfoReceived(track.uid, x);
+        }
+
         switch (track.type) {
             case 'left-axis':
                 return new LeftAxisTrack(this.svgElement);
             case 'top-axis':
                 return new TopAxisTrack(this.svgElement);
             case 'heatmap':
-                return new HeatmapTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
+                return new HeatmapTiledPixiTrack(this.props.pixiStage, 
+                                                 track.server, 
+                                                 track.tilesetUid,
+                                                 handleTilesetInfoReceived);
             case 'horizontal-line':
-                return new HorizontalLine1DPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
+                return new HorizontalLine1DPixiTrack(this.props.pixiStage, 
+                                                     track.server, 
+                                                     track.tilesetUid,
+                                                        handleTilesetInfoReceived);
             case 'vertical-line':
                 return new LeftTrackModifier(new HorizontalLine1DPixiTrack(this.props.pixiStage, track.server, track.tilesetUid));
             case 'horizontal-1d-tiles':
