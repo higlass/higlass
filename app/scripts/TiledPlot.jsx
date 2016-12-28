@@ -767,64 +767,6 @@ export class TiledPlot extends React.Component {
 
         };
 
-        let topPlus = (
-                            <img
-                                onClick={() => { this.handleAddTrack('top')}}
-                                src="images/plus.svg"
-                                style={Object.assign({}, imgStyle, {
-                                        'left': this.props.horizontalMargin + this.leftWidth +  (this.centerWidth - plusWidth) / 2,
-                                        'top': (this.props.verticalMargin - plusHeight)/2
-                                    })}
-                            />
-                )
- 
-        let bottomPlus = (
-                            <img
-                                onClick={() => { this.handleAddTrack('bottom')}}
-                                src="images/plus.svg"
-                                style={Object.assign({}, imgStyle, {
-                                        'left': this.props.horizontalMargin + this.leftWidth +  (this.centerWidth - plusWidth) / 2,
-                                        'top': (this.props.verticalMargin + this.topHeight + this.centerHeight + this.bottomHeight + (this.props.verticalMargin - plusHeight)/2)
-                                    })}
-                            />
-                )               
-
-        let leftPlus = (
-                            <img
-                                onClick={() => { this.handleAddTrack('left')}}
-                                src="images/plus.svg"
-                                style={Object.assign({}, imgStyle, {
-                                        'left': (this.props.horizontalMargin - plusWidth) / 2,
-                                        'top': this.props.verticalMargin + this.topHeight + (this.centerHeight - plusHeight)/2
-                                    })}
-                            />
-                )
-
-        let rightPlus = (
-                            <img
-                                onClick={() => { this.handleAddTrack('right')}}
-                                src="images/plus.svg"
-                                style={Object.assign({}, imgStyle, {
-                                        'left': this.props.horizontalMargin + this.leftWidth + this.centerWidth + this.rightWidth + (this.props.horizontalMargin - plusWidth) / 2,
-                                        'top': this.props.verticalMargin + this.topHeight + (this.centerHeight - plusHeight)/2
-                                    })}
-                            />
-                )
-
-        let centerPlus = (
-                            <img
-                                onClick={() => { this.handleAddTrack('center')}}
-                                src="images/plus.svg"
-                                style={Object.assign({}, imgStyle, {
-                                        'left': this.props.horizontalMargin + this.leftWidth + this.centerWidth - 10 -  plusWidth,
-                                        'top': this.props.verticalMargin + this.topHeight + + plusHeight + 10,
-                                        'className': 'center-plus',
-                                        'backgroundColor': 'white'
-                                    })}
-                            />
-                )
-
-
         let topTracks = (<div style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin, 
                                       width: this.centerWidth, height: this.topHeight,
                                       outline: trackOutline,
@@ -944,18 +886,11 @@ export class TiledPlot extends React.Component {
                     />
                     {/*trackPositionTexts*/}
 
-                    {topPlus}
-                    {leftPlus}
-                    {rightPlus}
-                    {bottomPlus}
-
                     {topTracks}
                     {leftTracks}
                     {rightTracks}
                     {bottomTracks}
                     {centerTrack}
-
-                    {centerPlus}
 
                 </TrackRenderer>
             )

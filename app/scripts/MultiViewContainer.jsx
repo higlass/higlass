@@ -21,8 +21,8 @@ export class MultiViewContainer extends React.Component {
         this.yPositionOffset = 0;
         this.rowHeight = 40;
 
-        this.horizontalMargin = 34;
-        this.verticalMargin = 34;
+        this.horizontalMargin = 5;
+        this.verticalMargin = 5;
 
         this.viewConfig = this.props.viewConfig;
 
