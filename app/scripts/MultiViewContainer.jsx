@@ -154,7 +154,8 @@ export class MultiViewContainer extends React.Component {
             layouts: {},
             svgElement: null,
             canvasElement: null,
-            views: views
+            views: views,
+            addTrackPositionMenuPosition: null
           }
     }
 
@@ -225,6 +226,31 @@ export class MultiViewContainer extends React.Component {
       currentBreakpoint: breakpoint
     });
   };
+
+  handleAddTrackPositionMenuOpened() {
+      /**
+       * The user has clicked on the 'plus' sign at the top of a TiledPlot
+       * so we need to open the Track Position Chooser dialog
+       */
+    let bbox = this.plusImg.getBoundingClientRect();
+
+    console.log('add track position button clicked1', bbox);
+    this.setState({
+        addTrackPositionMenuPosition: bbox
+    });
+  }
+
+  handleTrackPositionChosen(position) {
+      /**
+       * The user has chosen a position for the new track. The actual
+       * track selection will be handled by TiledPlot
+       *
+       * We just need to close the menu here.
+       */
+    this.setState({
+        addTrackPositionMenuPosition: null
+    });
+  }
 
   handleLayoutChange(layout, layouts) {
       let stateLayouts = this.state.layouts;
@@ -547,8 +573,9 @@ export class MultiViewContainer extends React.Component {
                                 style={{"width": this.width, "minHeight": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} 
                             >
                                 <img 
-                                    onClick={() => { console.log('add track clicked'); } }
+                                    onClick={ this.handleAddTrackPositionMenuOpened.bind(this) }
                                     src="images/plus.svg" 
+                                    ref={c => this.plusImg = c}
                                     className={'multiview-add-track-img'}
                                     width="10px" 
                                 />
@@ -575,6 +602,8 @@ export class MultiViewContainer extends React.Component {
                                      initialYDomain={view.initialYDomain}
                                      verticalMargin={this.verticalMargin}
                                      horizontalMargin={this.horizontalMargin}
+                                     addTrackPositionMenuPosition={this.state.addTrackPositionMenuPosition}
+                                     onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
                                 />
                             </SearchableTiledPlot>
                         </div>)

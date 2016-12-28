@@ -32,6 +32,7 @@ export class ContextMenuContainer extends React.Component {
         super(props);
 
         this.adjusted = false;
+        console.log('cmc props:', props);
 
         this.state = {
             orientation: this.props.orientation ? this.props.orientation : 'right',
@@ -82,6 +83,7 @@ export class ContextMenuContainer extends React.Component {
         this.updateOrientation();
     }
 
+    /*
     handleSeriesMouseEnter(evt, uid) {
         let domNode = evt.currentTarget;
 
@@ -100,5 +102,21 @@ export class ContextMenuContainer extends React.Component {
             submenuShown: null
         });
     }
+    */
 
+    render() {
+        return(
+            <div className={'context-menu'}
+                    ref={c => this.div = c}
+                    style={{ 
+                            position: 'fixed',
+                            left: this.state.left,
+                             top: this.state.top,
+                            border: "1px solid black"
+                          }}
+                >
+                {this.props.children}
+            </div>
+        )
+    }
 }

@@ -11,6 +11,8 @@ import {AddTrackModal} from './AddTrackModal.jsx';
 import {ConfigTrackMenu} from './ConfigTrackMenu.jsx';
 import {CloseTrackMenu} from './CloseTrackMenu.jsx';
 import {PopupMenu} from './PopupMenu.jsx';
+import {AddTrackPositionMenu} from './AddTrackPositionMenu.jsx';
+import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 
 
 export class TiledPlot extends React.Component {
@@ -271,6 +273,7 @@ export class TiledPlot extends React.Component {
         return tracksDict;
     }
 
+
     handleTilesetInfoReceived(trackUid, tilesetInfo) {
         /**
          * We've received information about a tileset from the server. Register it
@@ -310,8 +313,8 @@ export class TiledPlot extends React.Component {
         } else {
             let newHost = { type: 'combined',
                             uid: slugid.nice(),
-                            height: this.minVerticalWidth,
-                            width: this.minHorizontalHeight,
+                            height: hostTrack.height,
+                            width: hostTrack.width,
                             contents: [hostTrack, newTrack] }
 
             let positionTracks = tracks[position];
@@ -328,6 +331,12 @@ export class TiledPlot extends React.Component {
         });
     }
 
+    handleTrackPositionChosen(position) {
+        
+        // have our parent close the menu
+        // parent needs to do it because the button is located in the parent's scope
+        this.props.onTrackChosen(position);
+    }
 
     handleTrackAdded(newTrack, position, host=null) {
         /**
@@ -338,14 +347,14 @@ export class TiledPlot extends React.Component {
          * @param position: The position the track is being added to
          * @param host: If this track is being added to another track
          */
-        newTrack.width = this.minVerticalWidth;
-        newTrack.height = this.minHorizontalHeight;
-
         if (host) {
             // we're adding a series rather than a whole new track
             this.handleSeriesAdded(newTrack, position, host);
             return;
         }
+
+        newTrack.width = this.minVerticalWidth;
+        newTrack.height = this.minHorizontalHeight;
 
         let tracks = this.state.tracks;
         if (position == 'left' || position == 'top') {
@@ -953,7 +962,7 @@ export class TiledPlot extends React.Component {
 
         let configTrackMenu = null;
         let closeTrackMenu = null;
-        let addTrackMeny = null;
+        let addTrackPositionMenu = null;
 
         if (this.state.configTrackMenuId) {
             configTrackMenu = (
@@ -970,16 +979,37 @@ export class TiledPlot extends React.Component {
 
         if (this.state.closeTrackMenuId) {
             closeTrackMenu = (
-                             <PopupMenu
-                                onMenuClosed={this.handleCloseTrackMenuClosed.bind(this)}
-                             >
+                 <PopupMenu
+                    onMenuClosed={this.handleCloseTrackMenuClosed.bind(this)}
+                 >
+                    <ContextMenuContainer
+                        position={this.state.closeTrackMenuLocation}
+                    >
                                   <CloseTrackMenu
                                     track={this.getTrackByUid(this.state.closeTrackMenuId)}
-                                    position={ this.state.closeTrackMenuLocation }
                                     onCloseTrack={ this.handleCloseTrack.bind(this) }
                                   />
-                              </PopupMenu>
+                    </ContextMenuContainer>
+                </PopupMenu>
                               )
+        }
+
+        if (this.props.addTrackPositionMenuPosition) {
+            addTrackPositionMenu = (
+                <PopupMenu
+                    onMenuClosed={this.props.onTrackPositionChosen}
+                >
+                    <ContextMenuContainer
+                        position={this.props.addTrackPositionMenuPosition}
+                        orientation={'left'}
+                    >
+                        <AddTrackPositionMenu
+                            onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
+                        />
+                    </ContextMenuContainer>
+                </PopupMenu>
+            )
+
         }
 
         // track renderer needs to enclose all the other divs so that it 
@@ -1000,6 +1030,7 @@ export class TiledPlot extends React.Component {
 
                 {configTrackMenu}
                 {closeTrackMenu}
+                {addTrackPositionMenu}
             </div>
             );
     }
