@@ -26,7 +26,7 @@ class TrackArea extends React.Component {
     }
 
     componentWillUnmount() {
-        console.log('unmounting:', this.props.uid);
+
     }
 
     handleMouseEnter() {
@@ -52,7 +52,6 @@ class TrackArea extends React.Component {
                             onClick={() => { 
                                 let imgDom = ReactDOM.findDOMNode(this.imgClose);
                                 let bbox = imgDom.getBoundingClientRect();
-                                console.log('close bbox:', bbox);
                                 this.props.onCloseTrackMenuOpened(this.props.uid, bbox);
                             }}
                         />
@@ -86,10 +85,6 @@ class TrackArea extends React.Component {
     }
 }
 
-
-function callback(item) {
-        console.log('item clicked', item);
-}
 
 export class FixedTrack extends TrackArea {
     constructor(props) {

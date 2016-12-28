@@ -26,7 +26,6 @@ export class MultiViewContainer extends React.Component {
 
         this.viewConfig = this.props.viewConfig;
 
-
           this.pixiStage = new PIXI.Container();
           this.pixiStage.interactive = true;
           this.element = null;
@@ -44,15 +43,13 @@ export class MultiViewContainer extends React.Component {
 
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
-                        height: 100,
-                        width: 20,
+                        height: 20,
                       tilesetUid: 'bb',
                       server: 'localhost:8000'}
                       ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-line',
-                        height: 100,
-                        width: 20,
+                        height: 20,
                       tilesetUid: 'bb',
                       server: 'localhost:8000'}
                     /*
@@ -120,7 +117,6 @@ export class MultiViewContainer extends React.Component {
                   */
             ],
             'center': [
-                /*
                 {   
                     uid: slugid.nice(),
                     type: 'combined',
@@ -141,8 +137,11 @@ export class MultiViewContainer extends React.Component {
                         }
                     ]
                 }
-                */
             ]}
+            /*
+            ,
+            layout: {x: 0, y: 0, w: 3, h: 10}
+            */
 
           }]
 
@@ -162,7 +161,13 @@ export class MultiViewContainer extends React.Component {
 
     componentDidMount() {
         this.element = ReactDOM.findDOMNode(this);
-        this.state.views.map(v => v.layout = this.generateViewLayout(v));
+        this.state.views.map(v => {
+            if (!v.layout)
+                v.layout = this.generateViewLayout(v)
+            else {
+                v.layout.i = v.uid;
+            }
+        });
 
         this.pixiRenderer = PIXI.autoDetectRenderer(this.state.width,
                                         this.state.height,
@@ -253,15 +258,23 @@ export class MultiViewContainer extends React.Component {
   }
 
   handleLayoutChange(layout, layouts) {
-      let stateLayouts = this.state.layouts;
-      stateLayouts[layout.i] = layout;
-
+      /**
+       * Notify the children that the layout has changed so that they
+       * know to redraw themselves
+       */
       this.handleDragStart();
       this.handleDragStop();
+      console.log('layout:', layout);
+      //console.log('layouts:', layouts);
 
-      // maintain a list of the layouts, mainly so tt
-      this.setState({
-          'layouts': stateLayouts
+      layout.forEach(l => {
+        let correspondingView = this.state.views.filter(x => x.uid == l.i);
+        console.log('correspondingView:', correspondingView);
+        console.log('views:', this.state.views);
+
+        if (correspondingView.length) {
+            correspondingView[0].layout = l;
+        }
       });
   };
 
@@ -527,6 +540,7 @@ export class MultiViewContainer extends React.Component {
 
       // give it its own unique id
       newView.uid = slugid.nice();
+      newView.layout.i = newView.uid;
 
       this.setState({
           'views': this.state.views.concat(newView)
@@ -558,8 +572,9 @@ export class MultiViewContainer extends React.Component {
     if (this.state.mounted) {
         tiledAreas = this.state.views.map(function(view, i) {
                 let layout = view.layout;
+                //console.log('layout:', layout);
 
-                let itemUid = "p" + view.uid;
+                let itemUid = view.uid;
                 this.heights[itemUid] = layout.height;
 
                 return (<div 

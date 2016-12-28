@@ -32,7 +32,6 @@ export class ContextMenuContainer extends React.Component {
         super(props);
 
         this.adjusted = false;
-        console.log('cmc props:', props);
 
         this.state = {
             orientation: this.props.orientation ? this.props.orientation : 'right',
@@ -58,8 +57,6 @@ export class ContextMenuContainer extends React.Component {
         this.adjusted = true;
         this.divDom = ReactDOM.findDOMNode(this.div);
         let bbox = this.divDom.getBoundingClientRect();
-
-        console.log('cmc bbox:', bbox);
 
         if (this.state.orientation == 'left') {
             this.setState({
