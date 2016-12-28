@@ -13,15 +13,13 @@ export class AddTrackPositionMenu extends React.Component {
 
     render() {
         return(
-            <div
-                ref={c => this.div = c}
-            >
+            <div>
                 <table>
                     <tbody>
                         <tr>
-                            <td>1</td><td>2</td><td>3</td>
+                            <td>1</td><td style={{width: "20px"}}>2</td><td>3</td>
                         </tr>
-                        <tr>
+                        <tr style={{height: "100px"}}>
                             <td>4</td><td>5</td><td>6</td>
                         </tr>
                         <tr>
