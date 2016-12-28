@@ -138,10 +138,8 @@ export class MultiViewContainer extends React.Component {
                     ]
                 }
             ]}
-            /*
             ,
             layout: {x: 0, y: 0, w: 3, h: 10}
-            */
 
           }]
 
@@ -232,7 +230,7 @@ export class MultiViewContainer extends React.Component {
     });
   };
 
-  handleAddTrackPositionMenuOpened() {
+  handleAddTrackPositionMenuOpened(uid) {
       /**
        * The user has clicked on the 'plus' sign at the top of a TiledPlot
        * so we need to open the Track Position Chooser dialog
@@ -241,6 +239,7 @@ export class MultiViewContainer extends React.Component {
 
     console.log('add track position button clicked1', bbox);
     this.setState({
+        addTrackPositionMenuUid: uid,
         addTrackPositionMenuPosition: bbox
     });
   }
@@ -253,6 +252,7 @@ export class MultiViewContainer extends React.Component {
        * We just need to close the menu here.
        */
     this.setState({
+        addTrackPositionMenuUid: null,
         addTrackPositionMenuPosition: null
     });
   }
@@ -577,6 +577,13 @@ export class MultiViewContainer extends React.Component {
                 let itemUid = view.uid;
                 this.heights[itemUid] = layout.height;
 
+                // only show the add track menu for the tiled plot it was selected
+                // for
+                let addTrackPositionMenuPosition = 
+                    view.uid == this.state.addTrackPositionMenuUid ? 
+                        this.state.addTrackPositionMenuPosition :
+                            null;
+
                 return (<div 
                             data-grid={layout}
                             key={itemUid}
@@ -588,7 +595,7 @@ export class MultiViewContainer extends React.Component {
                                 style={{"width": this.width, "minHeight": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} 
                             >
                                 <img 
-                                    onClick={ this.handleAddTrackPositionMenuOpened.bind(this) }
+                                    onClick={ e => this.handleAddTrackPositionMenuOpened(view.uid) }
                                     src="images/plus.svg" 
                                     ref={c => this.plusImg = c}
                                     className={'multiview-add-track-img'}
@@ -617,7 +624,7 @@ export class MultiViewContainer extends React.Component {
                                      initialYDomain={view.initialYDomain}
                                      verticalMargin={this.verticalMargin}
                                      horizontalMargin={this.horizontalMargin}
-                                     addTrackPositionMenuPosition={this.state.addTrackPositionMenuPosition}
+                                     addTrackPositionMenuPosition={addTrackPositionMenuPosition}
                                      onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
                                 />
                             </SearchableTiledPlot>
