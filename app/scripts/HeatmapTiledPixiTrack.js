@@ -2,13 +2,13 @@ import {Tiled2DPixiTrack} from './Tiled2DPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
-    constructor(scene, server, uid) {
+    constructor(scene, server, uid, handleTilesetInfoReceived) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
          * @param uid: The data set to get the tiles from the server
          */
-        super(scene, server, uid);
+        super(scene, server, uid, handleTilesetInfoReceived);
     }
 
 

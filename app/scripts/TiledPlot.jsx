@@ -3,6 +3,7 @@ import "../styles/TiledPlot.css";
 import slugid from 'slugid';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {tracksInfo} from './config.js';
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {CenterTrack, VerticalTiledPlot, HorizontalTiledPlot} from './PositionalTiledPlot.jsx';
 import {TrackRenderer} from './TrackRenderer.jsx';
@@ -59,7 +60,12 @@ export class TiledPlot extends React.Component {
                               'bottom': [],
                           'center': []}
 
+
         tracks = this.props.tracks;
+
+        // Add names to all the tracks
+        let looseTracks = this.positionedTracksToAllTracks(this.props.tracks);
+        looseTracks = this.addNamesToTracks(looseTracks);
 
         this.trackRenderers = {}
 
@@ -155,6 +161,61 @@ export class TiledPlot extends React.Component {
          */
     }
 
+    addNamesToTracks(allTracks) {
+        /**
+         * Add track names to the ones that have known names in config.js
+         */
+        let typeToName = {}
+        tracksInfo.forEach(x => {
+            if (x.name)
+                typeToName[x.type] = x.name;
+        });
+
+        allTracks.forEach(t => {
+            if (t.type in typeToName)
+                t.name = typeToName[t.type];
+        });
+
+        return allTracks;
+    }
+
+    positionedTracksToAllTracks(positionedTracks) {
+        /** 
+         * Convert the position indexed list of tracks:
+         *
+         * { 'top': [{line}, {bar}],
+         *   'center': [{combined, contents: {heatmap, 2d-tiles}]
+         *   ...
+         *  }
+         *
+         *  To a flat list of tracks:
+         *  { line, position: 'top'
+         *   bar, position: 'top'
+         *   ...
+         *   }
+         */
+        let tracks = positionedTracks;
+        let allTracks = [];
+
+        for (let trackType in tracks) {
+            let theseTracks = tracks[trackType]
+            
+            theseTracks.forEach(x => {
+                if (x.type == 'combined') {
+                    // we don't really deal with nested combined tracks here,
+                    // but those shouldn't really be used anyway
+                    x.contents.forEach(y => {
+                        allTracks.push(y);
+                    });
+                } else {
+                    allTracks.push(x);
+                }
+            });
+        }
+
+        return allTracks;
+    }
+
 
     fillInMinWidths(tracksDict) {
         /**
@@ -218,6 +279,17 @@ export class TiledPlot extends React.Component {
          * @param tilesetInfo (object): Information about the track (hopefully including
          *                              its name.
          */
+        console.log('tracks:', this.state.tracks['center']);
+        console.log('trackUid:', trackUid);
+        console.log('tilesetInfo:', tilesetInfo);
+        let track = this.getTrackByUid(trackUid);
+        track.name = tilesetInfo.name;
+
+        console.log('HTIR track', track);
+
+        this.setState({
+            tracks: this.state.tracks
+        });
     }
 
     handleTrackAdded(newTrack, position) {
@@ -364,12 +436,13 @@ export class TiledPlot extends React.Component {
             let combinedTracks = theseTracks.filter((d) => { return d.type == 'combined'; });
 
             if (combinedTracks.length) {
-                combinedTracks.forEach(ct => {
+                for (let i = 0; i < combinedTracks.length; i++) {
+                    let ct = combinedTracks[i];
                     let filteredTracks = ct.contents.filter(d => d.uid == uid);
 
                     if (filteredTracks.length)
                         return filteredTracks[0];
-                });
+                }
             }
         }
 
@@ -787,7 +860,7 @@ export class TiledPlot extends React.Component {
                 <TrackRenderer
                     initialXDomain={this.props.initialXDomain}
                     initialYDomain={this.props.initialYDomain}
-                    onTilesetInfoReceived={this.handleTilesetInfoReceived}
+                    onTilesetInfoReceived={this.handleTilesetInfoReceived.bind(this)}
                     canvasElement={this.props.canvasElement}
                     svgElement={this.props.svgElement}
                     dragging={this.props.dragging}

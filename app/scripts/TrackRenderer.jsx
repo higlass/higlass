@@ -355,6 +355,7 @@ export class TrackRenderer extends React.Component {
 
     createTrackObject(track) {
         let handleTilesetInfoReceived = x => {
+            console.log('track.uid:', track.uid, 'track:', track);
             this.props.onTilesetInfoReceived(track.uid, x);
         }
 

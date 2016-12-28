@@ -39,7 +39,7 @@ export class TiledPixiTrack extends PixiTrack {
             this.refreshTiles();
 
             if (handleTilesetInfoReceived)
-                handleTilesetInfoReceived(tilesetInfo);
+                handleTilesetInfoReceived(tilesetInfo[tilesetUid]);
         });
     }
 

@@ -43,7 +43,7 @@ export class CloseTrackMenu extends ContextMenuContainer {
                         <span className='context-menu-span'
                             style={{ whiteSpace: 'nowrap' }}
                         >
-                            {"Remove... " +  x.uid}
+                            {"Remove... " +  (x.name && x.name.length) ? x.name : x.uid}
                         </span>
                     </div>
                 )

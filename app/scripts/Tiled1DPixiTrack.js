@@ -2,8 +2,8 @@ import {TiledPixiTrack} from './TiledPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 
 export class Tiled1DPixiTrack extends TiledPixiTrack {
-    constructor(scene, server, uid) {
-        super(scene, server, uid);
+    constructor(scene, server, uid, handleTilesetInfoReceived) {
+        super(scene, server, uid, handleTilesetInfoReceived);
 
     }
 
