@@ -107,15 +107,22 @@ export class ContextMenuContainer extends React.Component {
     */
 
     render() {
+        let stylePosition = {'left': this.state.left}
+
+        if (!this.state.left)
+            stylePosition = {'right': this.state.right}
+
+        let otherStyle = { position: 'fixed',
+            top: this.state.top,
+            border: '1px solid black'
+        };
+
+        let wholeStyle = Object.assign(stylePosition, otherStyle);
+
         return(
             <div className={'context-menu'}
                     ref={c => this.div = c}
-                    style={{ 
-                            position: 'fixed',
-                            left: this.state.left,
-                             top: this.state.top,
-                            border: "1px solid black"
-                          }}
+                    style={ wholeStyle }
                 >
                 {this.props.children}
             </div>

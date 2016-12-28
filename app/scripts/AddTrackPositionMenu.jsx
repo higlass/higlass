@@ -1,3 +1,5 @@
+import '../styles/AddTrackPositionMenu.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -14,16 +16,35 @@ export class AddTrackPositionMenu extends React.Component {
     render() {
         return(
             <div>
-                <table>
+            <div className="add-track-position-span">Add Track...</div>
+                <table className="add-track-position-table">
                     <tbody>
                         <tr>
-                            <td>1</td><td style={{width: "20px"}}>2</td><td>3</td>
+                            <td className='add-track-position-other'></td>
+                            <td 
+                                className="add-track-position-top-center"
+                                onClick={e => this.props.onTrackPositionChosen('top') }
+                            >{"top"}</td>
+                            <td className='add-track-position-other'></td>
                         </tr>
-                        <tr style={{height: "100px"}}>
-                            <td>4</td><td>5</td><td>6</td>
+                        <tr style={{height: "80px"}}>
+                            <td 
+                                onClick={e => this.props.onTrackPositionChosen('left')}
+                                className="add-track-position-middle-left"
+                            >{"left"}</td>
+                            <td className="add-track-position-middle-middle"
+                                onClick={e => this.props.onTrackPositionChosen('center')}
+                            >{"center"}</td>
+                            <td className="add-track-position-middle-right"
+                                onClick={e => this.props.onTrackPositionChosen('right')}
+                            >{"right"}</td>
                         </tr>
                         <tr>
-                            <td>7</td><td>8</td><td>9</td>
+                            <td className='add-track-position-other'></td>
+                            <td className="add-track-position-bottom-middle"
+                                onClick={e => this.props.onTrackPositionChosen('bottom')}
+                            >{"bottom"}</td>
+                            <td className='add-track-position-other'></td>
                         </tr>
                     </tbody>
                 </table>

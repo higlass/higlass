@@ -332,10 +332,11 @@ export class TiledPlot extends React.Component {
     }
 
     handleTrackPositionChosen(position) {
-        
+        this.handleAddTrack(position);
+
         // have our parent close the menu
         // parent needs to do it because the button is located in the parent's scope
-        this.props.onTrackChosen(position);
+        this.props.onTrackPositionChosen(position);
     }
 
     handleTrackAdded(newTrack, position, host=null) {
