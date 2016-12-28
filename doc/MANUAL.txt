@@ -9,6 +9,11 @@
 The `CNVIntervalTrack` extends the `HorizontalTiled1DPixiTrack` because it will
 be displayed horizontally and is 1D.
 
+If the track will rely on translations and zooms to move and rescale the content,
+it needs to set `pMain = this.pMobile` in its constructor and draw using the
+reference scales (`this._refXScale` and `this._refYScale`).
+
+
 #### Implement the `initTile` function
 
 This function is called when the tile is initially created.

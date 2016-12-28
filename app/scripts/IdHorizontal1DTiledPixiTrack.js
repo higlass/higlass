@@ -63,13 +63,10 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
         tile.text.scale.x = tSX;
         //tile.text.scale.y = tSY;
 
-        console.log('tSX:', tSX, 'tSY:',tSY);
+        //console.log('tSX:', tSX, 'tSY:',tSY);
 
         graphics.clear();
 
-        graphics.lineStyle(4 * tSX, 0x0000FF, 1);
-        graphics.beginFill(0xFF700B, 0.4);
-        graphics.alpha = 0.5;
 
         // line needs to be scaled down so that it doesn't become huge
 
@@ -84,8 +81,21 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
 
         let rectX = this._refXScale(tileX)
         let rectY = 0;
+
         //console.log('rectX:', rectX, 'rectY:', rectY);
         // position the graphics
+        //graphics.drawRect(rectX, 0, tileScaledWidth, tileScaledHeight);
+        graphics.lineStyle(4 * tSX, 0x0000FF, 1);
+        graphics.beginFill(0xFF700B, 0.4);
+        graphics.alpha = 0.5;
+
+        graphics.moveTo(rectX, 0);
+        graphics.lineTo(rectX, tileScaledHeight);
+
+        graphics.moveTo(rectX + tileScaledWidth, 0);
+        graphics.lineTo(rectX + tileScaledWidth, tileScaledHeight);
+
+        graphics.lineStyle(0, 0x0000FF, 1);
         graphics.drawRect(rectX, 0, tileScaledWidth, tileScaledHeight);
     }
 
