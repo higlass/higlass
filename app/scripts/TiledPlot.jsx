@@ -312,12 +312,14 @@ export class TiledPlot extends React.Component {
                             uid: slugid.nice(),
                             height: this.minVerticalWidth,
                             width: this.minHorizontalHeight,
-                            contents: [newTrack] }
-            let newPositionTracks = tracks[position]
-                .filter(x => x.uid != hostTrack.uid);
+                            contents: [hostTrack, newTrack] }
 
-            newPositionTracks.push(newHost);
-            tracks[position] = newPositionTracks;
+            let positionTracks = tracks[position];
+
+            for (let i = 0; i < positionTracks.length; i++) {
+                if (positionTracks[i].uid == hostTrack.uid)
+                    positionTracks[i] = newHost;
+            }
         }
 
         this.setState({
