@@ -5,6 +5,7 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived) {
         super(scene, server, uid, handleTilesetInfoReceived);
 
+        this.pMain = this.pMobile;
     }
 
     areAllVisibleTilesLoaded() {
@@ -62,7 +63,7 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
         tile.text.scale.x = tSX;
         //tile.text.scale.y = tSY;
 
-        //console.log('tSX:', tSX, 'tSY:',tSY);
+        console.log('tSX:', tSX, 'tSY:',tSY);
 
         graphics.clear();
 
@@ -81,8 +82,11 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
         tile.textGraphics.position.x = this._refXScale(tileX) + tileScaledWidth / 2;
         tile.textGraphics.position.y = tileScaledHeight / 2;;
 
+        let rectX = this._refXScale(tileX)
+        let rectY = 0;
+        //console.log('rectX:', rectX, 'rectY:', rectY);
         // position the graphics
-        graphics.drawRect(this._refXScale(tileX), 0, tileScaledWidth, tileScaledHeight);
+        graphics.drawRect(rectX, 0, tileScaledWidth, tileScaledHeight);
     }
 
     fetchNewTiles(toFetch) {

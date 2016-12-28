@@ -4,8 +4,8 @@ import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
 import IntervalTree from './interval-tree.js';
 
 export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
-    constructor(scene, server, uid) {
-        super(scene, server, uid);
+    constructor(scene, server, uid, handleTilesetInfoReceived) {
+        super(scene, server, uid, handleTilesetInfoReceived);
 
         //console.log('CNVInterval:', this);
         this.seen = new Set();
