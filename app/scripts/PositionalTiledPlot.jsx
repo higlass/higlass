@@ -145,7 +145,7 @@ class MoveableTrack extends TrackArea {
                 <img 
                     className="no-zoom"
                     onClick={() => {}}
-                    src="images/enlarge.svg" 
+                    src="images/move.svg" 
                     style={this.getMoveImgStyle()}
                     width="10px" 
                 />
@@ -270,6 +270,7 @@ const VerticalItem = SortableElement((props) => {
                 className={props.className}
                 onCloseTrack={props.onCloseTrack}
                 onCloseTrackMenuOpened={props.onCloseTrackMenuOpened}
+                onAddSeries={props.onAddSeries}
                 handleConfigTrack={props.handleConfigTrack}
                 handleResizeTrack={props.handleResizeTrack}
                 height={props.height}
@@ -324,6 +325,7 @@ const HorizontalItem = SortableElement((props) => {
                 className={props.className}
                 onCloseTrack={props.onCloseTrack}
                 onCloseTrackMenuOpened={props.onCloseTrackMenuOpened}
+                onAddSeries={props.onAddSeries}
                 handleConfigTrack={props.handleConfigTrack}
                 handleResizeTrack={props.handleResizeTrack}
                 height={props.height}
@@ -333,7 +335,7 @@ const HorizontalItem = SortableElement((props) => {
             />)});
 
 const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, 
-                                         sortableHandlers,height, width, onCloseTrack,onCloseTrackMenuOpened,handleConfigTrack,itemReactClass,
+                                         sortableHandlers,height, width, onCloseTrack,onCloseTrackMenuOpened,onAddSeries,handleConfigTrack,itemReactClass,
                                          handleResizeTrack}) => {
     let itemElements = items.map((item, index) => {
             return React.createElement(itemReactClass,
@@ -348,6 +350,7 @@ const SortableList = SortableContainer(({className, items, itemClass, sortingInd
 					useDragHandle: useDragHandle,
                     onCloseTrack: onCloseTrack,
                     onCloseTrackMenuOpened: onCloseTrackMenuOpened,
+                    onAddSeries: onAddSeries,
                     handleConfigTrack, handleConfigTrack,
                     handleResizeTrack: handleResizeTrack
                 })
@@ -490,6 +493,7 @@ export class HorizontalTiledPlot extends React.Component {
                         component={SortableList}
                         onCloseTrack={this.props.onCloseTrack}
                         onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
+                        onAddSeries={this.props.onAddSeries}
                         handleConfigTrack={this.props.handleConfigTrack}
                         handleResizeTrack={this.props.handleResizeTrack}
                         height={thisHeight}
@@ -539,6 +543,7 @@ export class VerticalTiledPlot extends React.Component {
                     component={SortableList}
                     onCloseTrack={this.props.onCloseTrack}
                     onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
+                    onAddSeries={this.props.onAddSeries}
                     handleConfigTrack={this.props.handleConfigTrack}
                     handleResizeTrack={this.props.handleResizeTrack}
                     height={this.props.height}

@@ -37,19 +37,19 @@ export class MultiViewContainer extends React.Component {
               initialYDomain: [-1000000,30000000],
               'tracks': {
             'top': [
+                  /*
                 {'uid': slugid.nice(), type:'top-axis'}
             ,
+        */
 
-                    /*
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
                         height: 30,
                         width: 20,
                       tilesetUid: 'bb',
-                      server: 'localhost:8000'},
-                      */
-
+                      server: 'localhost:8000'}
                     /*
+                      ,
                 {'uid': slugid.nice(),
                  type: 'combined',
                  height: 100,
@@ -537,6 +537,13 @@ export class MultiViewContainer extends React.Component {
                                 style={{"width": this.width, "minHeight": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} 
                             >
                                 <img 
+                                    onClick={() => { console.log('add track clicked'); } }
+                                    src="images/plus.svg" 
+                                    className={'multiview-add-track-img'}
+                                    width="10px" 
+                                />
+
+                                <img 
                                     onClick={() => { this.handleCloseView(view.uid)}}
                                     src="images/cross.svg" 
                                     className={'multiview-close-img'}
@@ -592,7 +599,7 @@ export class MultiViewContainer extends React.Component {
                     width: this.state.width, 
                     height: this.state.height,
                     background: 'yellow',
-                    opacity: 0.05
+                    opacity: 0.02
             }}
         />
         <ResponsiveReactGridLayout

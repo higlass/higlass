@@ -26,7 +26,9 @@ export class AddTrackModal extends React.Component {
 
 
     handleSubmit() {
-        this.props.onTrackChosen(this.state.mainTileset, this.props.position);
+        this.props.onTrackChosen(this.state.mainTileset, 
+                                 this.props.position,
+                                 this.props.host);
 
         /*
         if (this.state.normalizeChecked)

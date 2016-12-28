@@ -5,6 +5,13 @@
     width: 10px;
 }
 
+.multiview-add-track-img {
+    right: 19px;
+    top: 2px;
+    position: absolute;
+    width: 10px;
+}
+
 .multiview-add-img {
     right: 5px;
     top: 2px;
