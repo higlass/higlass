@@ -69,15 +69,26 @@ export class PlotTypeChooser extends React.Component {
 
     render() {
         let availableTrackTypesList = "No plot types available for track";
+        let trackTypeToInfo = {};
+
+        tracksInfo.forEach(ti => {
+            trackTypeToInfo[ti.type] = ti;
+        });
+
         if (this.availableTrackTypes) {
 
             availableTrackTypesList = this.availableTrackTypes
                 .sort((a,b) => { return a.type < b.type})
                 .map(x => {
+                let thumbnailLocation = "images/thumbnails/" + trackTypeToInfo[x.type].thumbnail;
                 return (<li
+                            style= {{listStyle: 'none', paddingLeft: 5, paddingBottom: 2}}
                             className={ this.state.selectedPlotType.type == x.type ? 'plot-type-selected' : ''}
                             onClick={this.handleClickOnItem.bind(this, x.type)}
                             key={x.type}>
+
+                                <img src={thumbnailLocation} width={15} className='context-menu-thumbnail'/>
+
                                 {x.type}
                         </li>);
             });

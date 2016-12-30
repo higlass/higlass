@@ -2,8 +2,8 @@ import {Tiled1DPixiTrack} from './Tiled1DPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 
 export class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
-    constructor(scene, server, uid) {
-        super(scene, server, uid);
+    constructor(scene, server, uid, handleTilesetInfoReceived) {
+        super(scene, server, uid, handleTilesetInfoReceived);
     }
 
     calculateZoomLevel() {

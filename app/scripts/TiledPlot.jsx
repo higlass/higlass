@@ -90,7 +90,7 @@ export class TiledPlot extends React.Component {
             xPositionOffset: 0,
 
             tracks: tracks,
-            addTrackVisible: false,
+            addTrackVisible: true,
             addTrackPosition: "top"
         }
 
@@ -284,6 +284,8 @@ export class TiledPlot extends React.Component {
          */
         let track = this.getTrackByUid(trackUid);
         track.name = tilesetInfo.name;
+
+        console.log('setting name:', tilesetInfo.name);
 
         this.setState({
             tracks: this.state.tracks
@@ -881,7 +883,7 @@ export class TiledPlot extends React.Component {
                                  width: this.state.width,
                                  height: this.state.height,
                                  background: "green",
-                                 opacity: 0.02
+                                 opacity: 0
                                 }}
                     />
                     {/*trackPositionTexts*/}

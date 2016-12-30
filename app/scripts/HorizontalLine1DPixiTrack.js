@@ -4,6 +4,8 @@ import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
 
 export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived) {
+        console.log('HTIR:', handleTilesetInfoReceived);
+
         super(scene, server, uid, handleTilesetInfoReceived);
 
     }

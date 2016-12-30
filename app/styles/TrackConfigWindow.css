@@ -7,7 +7,7 @@
 }
 
 .context-menu-item {
-    padding: 2px
+    padding: 2px;
 }
 
 .context-menu-item:hover {
@@ -30,4 +30,11 @@ img.play-icon {
 
 .context-menu-span {
     margin-right: 20px;
+    vertical-align: middle;
+    display: inline-block;
+    line-height: normal;
+}
+
+.context-menu-thumbnail {
+    margin-right: 10px
 }

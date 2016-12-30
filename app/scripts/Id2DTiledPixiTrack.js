@@ -73,7 +73,7 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
         graphics.clear();
 
         graphics.lineStyle(4 * tSX, 0x0000FF, 1);
-        graphics.beginFill(0xFF700B, 0.0);
+        graphics.beginFill(0xFF700B, 0.4);
         graphics.alpha = 0.5;
 
         // line needs to be scaled down so that it doesn't become huge

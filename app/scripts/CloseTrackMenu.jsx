@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 
 import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
 import {SeriesListMenu} from './SeriesListMenu.jsx';
+import {tracksInfo} from './config.js';
 
 export class CloseTrackMenu extends React.Component {
     constructor(props) {
@@ -28,9 +29,18 @@ export class CloseTrackMenu extends React.Component {
         if (!this.props.track)
             return null;
 
+
+        let trackTypeToInfo = {};
+
+        tracksInfo.forEach(ti => {
+            trackTypeToInfo[ti.type] = ti;
+        });
+
         let series = this.props.track.contents ? this.props.track.contents : [this.props.track];
 
         return series.map(x => {
+            let thumbnailLocation = "images/thumbnails/" + trackTypeToInfo[x.type].thumbnail;
+
                 return (
                     <div 
                         ref={c => this.seriesRefs[x.uid] = c}
@@ -38,10 +48,11 @@ export class CloseTrackMenu extends React.Component {
                         key={x.uid}
                         onClick={e => this.props.onCloseTrack(x.uid)}
                     >
+                    <img src={thumbnailLocation} width={15} className='context-menu-thumbnail'/>
                         <span className='context-menu-span'
                             style={{ whiteSpace: 'nowrap' }}
                         >
-                            {"Remove... " +  (x.name && x.name.length) ? x.name : x.uid}
+                            {(x.name && x.name.length) ? x.name : x.uid}
                         </span>
                     </div>
                 )

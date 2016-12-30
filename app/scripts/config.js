@@ -4,39 +4,46 @@ export const tracksInfo = [
         datatype: ['axis'],
         local: true,
         orientation: '1d-vertical',
-        name: 'Left Axis'
+        name: 'Left Axis',
+        thumbnail: 'vertical-axis-thumbnail.png'
     },
     {
         type: 'top-axis',
         datatype: ['axis'],
         local: true,
         orientation: '1d-horizontal',
-        name: 'Top Axis'
+        name: 'Top Axis',
+        thumbnail: 'horizontal-axis-thumbnail.png'
     },
     {
         type: 'heatmap',
         datatype: ['matrix'],
         local: false,
-        orientation: '2d'
+        orientation: '2d',
+        thumbnail: 'heatmap-thumbnail.png'
     },
     {
         type: 'horizontal-line',
         datatype: ['vector'],
         local: false,
-        orientation: '1d-horizontal'
+        orientation: '1d-horizontal',
+        thumbnail: 'horizontal-line-thumbnail.png'
     },
     {
         type: 'vertical-line',
         datatype: ['vector'],
         local: false,
-        orientation: '1d-vertical'
+        orientation: '1d-vertical',
+        thumbnail: 'vertical-line-thumbnail.png'
     },
     {
         type: 'horizontal-1d-tiles',
         datatype: ['vector', 'stacked-interval'],
         local: false,
         orientation: '1d-horizontal',
-        name: 'Horizontal 1D Tile Outlines'
+        name: 'Horizontal 1D Tile Outlines',
+        thumbnail: 'horizontal-1d-tiles-thumbnail.png'
+
     },
     {
         type: 'vertical-1d-tiles',
@@ -50,19 +57,22 @@ export const tracksInfo = [
         datatype: ['matrix'],
         local: false,
         orientation: '2d',
-        name: '2D Tile Outlines'
+        name: '2D Tile Outlines',
+        thumbnail: '2d-tiles-thumbnail.png'
     },
     {
         type: 'top-stacked-interval',
         datatype: ['stacked-interval'],
         local: false,
-        orientation: '1d-horizontal'
+        orientation: '1d-horizontal',
+        thumbnail: 'horizontal-stacked-interval.png'
     },
     {
         type: 'left-stacked-interval',
         datatype: ['stacked-interval'],
         local: false,
-        orientation: '1d-vertical'
+        orientation: '1d-vertical',
+        thumbnail: 'vertical-stacked-interval.png'
     },
     {
         type: 'combined',
