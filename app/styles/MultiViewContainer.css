@@ -12,6 +12,13 @@
     width: 10px;
 }
 
+.multiview-config-img {
+    right: 33px;
+    top: 2px;
+    position: absolute;
+    width: 10px;
+}
+
 .multiview-add-img {
     right: 5px;
     top: 2px;

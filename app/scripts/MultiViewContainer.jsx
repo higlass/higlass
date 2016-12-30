@@ -10,6 +10,10 @@ import "react-resizable/css/styles.css";
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {TiledPlot} from './TiledPlot.jsx';
 
+import {PopupMenu} from './PopupMenu.jsx';
+import {ConfigViewMenu} from './ConfigViewMenu.jsx';
+import {ContextMenuContainer} from './ContextMenuContainer.jsx';
+
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 export class MultiViewContainer extends React.Component {
@@ -20,6 +24,9 @@ export class MultiViewContainer extends React.Component {
         this.uid = slugid.nice();
         this.yPositionOffset = 0;
         this.rowHeight = 40;
+
+        this.plusImg = {};
+        this.configImg = {};
 
         this.horizontalMargin = 5;
         this.verticalMargin = 5;
@@ -230,12 +237,26 @@ export class MultiViewContainer extends React.Component {
     });
   };
 
+  handleConfigMenuOpened(uid) {
+      /**
+       * The user clicked on the `cog` of the menu so we need to open
+       * it.
+       */
+    let bbox = this.configImg[uid].getBoundingClientRect();
+
+    console.log('config menu position button clicked1', bbox);
+    this.setState({
+        configMenuUid: uid,
+        configMenuPosition: bbox
+    });
+  }
+
   handleAddTrackPositionMenuOpened(uid) {
       /**
        * The user has clicked on the 'plus' sign at the top of a TiledPlot
        * so we need to open the Track Position Chooser dialog
        */
-    let bbox = this.plusImg.getBoundingClientRect();
+    let bbox = this.plusImg[uid].getBoundingClientRect();
 
     console.log('add track position button clicked1', bbox);
     this.setState({
@@ -567,6 +588,23 @@ export class MultiViewContainer extends React.Component {
                             style={tiledAreaStyle}
                       />);
 
+    let configMenu = null;
+
+    if (this.state.configMenuUid) {
+        configMenu = (<PopupMenu
+                        onMenuClosed={e => this.setState({configMenuUid: null})}
+                      >
+                            <ContextMenuContainer
+                                position={this.state.configMenuPosition}
+                                orientation={'left'}
+                            >
+                                <ConfigViewMenu
+                                    
+                                />
+                            </ContextMenuContainer>
+                        </PopupMenu>);
+    }
+
     // The component needs to be mounted in order for the initial view to have the right
     // width
     if (this.state.mounted) {
@@ -595,9 +633,17 @@ export class MultiViewContainer extends React.Component {
                                 style={{"width": this.width, "minHeight": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} 
                             >
                                 <img 
+                                    onClick={ e => this.handleConfigMenuOpened(view.uid) }
+                                    src="images/cog.svg" 
+                                    ref={c => this.configImg[view.uid] = c}
+                                    className={'multiview-config-img'}
+                                    width="10px" 
+                                />
+
+                                <img 
                                     onClick={ e => this.handleAddTrackPositionMenuOpened(view.uid) }
                                     src="images/plus.svg" 
-                                    ref={c => this.plusImg = c}
+                                    ref={c => this.plusImg[view.uid] = c}
                                     className={'multiview-add-track-img'}
                                     width="10px" 
                                 />
@@ -697,7 +743,7 @@ export class MultiViewContainer extends React.Component {
             </div>
         </div>
 
-
+        {configMenu}
       </div>
     );
   }
