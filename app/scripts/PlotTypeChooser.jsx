@@ -82,14 +82,15 @@ export class PlotTypeChooser extends React.Component {
                 .map(x => {
                 let thumbnailLocation = "images/thumbnails/" + trackTypeToInfo[x.type].thumbnail;
                 return (<li
-                            style= {{listStyle: 'none', paddingLeft: 5, paddingBottom: 2}}
+                            style= {{listStyle: 'none', paddingLeft: 5, paddingBottom: 0}}
                             className={ this.state.selectedPlotType.type == x.type ? 'plot-type-selected' : ''}
                             onClick={this.handleClickOnItem.bind(this, x.type)}
                             key={x.type}>
 
-                                <img src={thumbnailLocation} width={15} className='context-menu-thumbnail'/>
+                                <img src={thumbnailLocation} width={15} className='context-menu-thumbnail' style={{marginTop: -2}}/>
 
-                                {x.type}
+                                <span>
+                                {x.type}</span>
                         </li>);
             });
         }

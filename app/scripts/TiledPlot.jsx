@@ -90,7 +90,7 @@ export class TiledPlot extends React.Component {
             xPositionOffset: 0,
 
             tracks: tracks,
-            addTrackVisible: true,
+            addTrackVisible: false,
             addTrackPosition: "top"
         }
 
@@ -782,6 +782,7 @@ export class TiledPlot extends React.Component {
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['top']}
                                 width={this.centerWidth}
+                                resizeHandles={new Set(['bottom'])}
                             />
                          </div>)
         let leftTracks = (<div style={{left: this.props.horizontalMargin, top: this.topHeight + this.props.verticalMargin, 
@@ -797,6 +798,7 @@ export class TiledPlot extends React.Component {
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['left']}
                                 height={this.centerHeight}
+                                resizeHandles={new Set(['right'])}
                             />
                          </div>)
         let rightTracks = (<div style={{right: this.props.horizontalMargin, top: this.topHeight + this.props.verticalMargin, 
@@ -812,6 +814,7 @@ export class TiledPlot extends React.Component {
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['right']}
                                 height={this.centerHeight}
+                                resizeHandles={new Set(['left'])}
                             />
                          </div>)
         let bottomTracks = (<div style={{left: this.leftWidth + this.props.horizontalMargin, bottom: this.props.verticalMargin,
@@ -827,6 +830,7 @@ export class TiledPlot extends React.Component {
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.state.tracks['bottom']}
                                 width={this.centerWidth}
+                                resizeHandles={new Set(['top'])}
                             />
                          </div>)
         let centerTrack = ( <div style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
