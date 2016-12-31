@@ -20,10 +20,10 @@ export class MultiViewContainer extends React.Component {
     constructor(props) {
         super(props);
 
-        this.heights = {};
         this.uid = slugid.nice();
         this.yPositionOffset = 0;
         this.rowHeight = 40;
+        this.tiledPlots = {};
 
         this.plusImg = {};
         this.configImg = {};
@@ -148,7 +148,122 @@ export class MultiViewContainer extends React.Component {
             ,
             layout: {x: 0, y: 0, w: 3, h: 10}
 
-          }]
+          }
+          ,
+            {
+              uid: slugid.nice(),
+              initialXDomain: [-1000000,30000000],
+              initialYDomain: [-1000000,30000000],
+              'tracks': {
+            'top': [
+                  /*
+                {'uid': slugid.nice(), type:'top-axis'}
+            ,
+        */
+
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-1d-tiles',
+                        height: 20,
+                      tilesetUid: 'bb',
+                      server: 'localhost:8000'}
+                      ,
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-line',
+                        height: 20,
+                      tilesetUid: 'bb',
+                      server: 'localhost:8000'}
+                    /*
+                      ,
+                {'uid': slugid.nice(),
+                 type: 'combined',
+                 height: 100,
+                 contents:
+                     [
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-line',
+                        height: 30,
+                        width: 20,
+                      tilesetUid: 'bb',
+                      server: 'localhost:8000'}
+                      ,
+                    {'uid': slugid.nice(),
+                        type: 'top-stacked-interval',
+                        height: 30,
+                        tilesetUid: 'cc',
+                        server: 'localhost:8000' 
+                    }
+                    ,
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-1d-tiles',
+                        height: 30,
+                      tilesetUid: 'cc',
+                      server: 'localhost:8000'}
+
+                     ]
+                }
+                      */
+            ],
+            'left': [
+                {'uid': slugid.nice(), type:'left-axis', width: 80}
+                /*
+                ,
+                {'uid': slugid.nice(),
+                 type: 'combined',
+                 width: 60,
+                 contents:
+                     [
+                         /*
+                    {'uid': slugid.nice(),
+                        type: 'left-stacked-interval',
+                        height: 30,
+                        tilesetUid: 'cc',
+                        server: 'localhost:8000' 
+                    }
+                    ,
+                    {'uid': slugid.nice(), 
+                        type:'vertical-line',
+                        height: 30,
+                        width: 20,
+                      tilesetUid: 'bb',
+                      server: 'localhost:8000'}
+                     ]
+                }
+                      ,
+                ,
+                {'uid': slugid.nice(), 
+                    type:'vertical-1d-tiles',
+                  tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
+                  server: '52.45.229.11'}
+                  */
+            ],
+            'center': [
+                {   
+                    uid: slugid.nice(),
+                    type: 'combined',
+                    height: 200,
+                    contents: 
+                    [
+
+                        { 'server': 'localhost:8000',
+                          'uid': slugid.nice(),
+                          'tilesetUid': 'aa',
+                          'type': 'heatmap'
+                        }
+                        ,
+                        { 'server': 'localhost:8000',
+                          'uid': slugid.nice(),
+                          'tilesetUid': 'aa',
+                          'type': '2d-tiles'
+                        }
+                    ]
+                }
+            ]}
+            ,
+            layout: {x: 3, y: 0, w: 3, h: 10}
+
+          }
+          
+          ]
 
           this.state = {
             currentBreakpoint: 'lg',
@@ -236,6 +351,66 @@ export class MultiViewContainer extends React.Component {
       currentBreakpoint: breakpoint
     });
   };
+  
+  handleOverlayMouseEnter(uid) {
+    console.log('tiledplot mouseenter:', uid);
+    this.setState({
+        mouseOverOverlayUid: uid
+    })
+  }
+
+  handleOverlayMouseLeave(uid) {
+    console.log('tiledplot mouseLeave:', uid);
+    this.setState({
+        mouseOverOverlayUid: null
+    })
+  }
+
+  handleLockZoom(uid) {
+      /**
+       * We want to lock the zoom of this view to the zoom of another view.
+       * 
+       * First we pick which other view we want to lock to.
+       *
+       * The we calculate the current zoom offset and center offset. The differences
+       * between the center of the two views will always remain the same, as will the
+       * different between the zoom levels.
+       */
+
+        // create a view chooser and remove the config view menu
+        this.setState({
+            chooseViewHandler: uid2 => this.handleZoomLockChosen(uid, uid2),
+            mouseOverOverlayUid: uid,
+            configMenuUid: null
+        });
+  }
+
+  handleYankZoom(uid) {
+        /**
+         * We want to match the zoom level of another view.
+         *
+         * That means synchronizing the center point and zoom level
+         * of the first view to the second view.
+         */
+
+        this.setState({
+            chooseViewHandler: uid2 => this.handleZoomYanked(uid, uid2),
+            mouseOverOverlayUid: uid,
+            configMenuUid: null
+        });
+  }
+
+  handleZoomYanked(uid1, uid2) {
+        /**
+         * Uid1 yanked the zoom of uid2, now  make sure that they're synchronized.
+         */
+        console.log('zoomYanked:', uid1, uid2);
+
+        this.setState({
+            chooseViewHandler: null
+        });
+  }
+      
 
   handleConfigMenuOpened(uid) {
       /**
@@ -285,13 +460,12 @@ export class MultiViewContainer extends React.Component {
        */
       this.handleDragStart();
       this.handleDragStop();
-      console.log('layout:', layout);
       //console.log('layouts:', layouts);
 
       layout.forEach(l => {
         let correspondingView = this.state.views.filter(x => x.uid == l.i);
-        console.log('correspondingView:', correspondingView);
-        console.log('views:', this.state.views);
+        //console.log('correspondingView:', correspondingView);
+        //console.log('views:', this.state.views);
 
         if (correspondingView.length) {
             correspondingView[0].layout = l;
@@ -469,8 +643,6 @@ export class MultiViewContainer extends React.Component {
         layout.i = slugid.nice();
     }
 
-    this.heights[layout.i] = layout.height;
-
     return layout;
   }
 
@@ -599,7 +771,8 @@ export class MultiViewContainer extends React.Component {
                                 orientation={'left'}
                             >
                                 <ConfigViewMenu
-                                    
+                                    onLockZoom={e => this.handleLockZoom(this.state.configMenuUid)}
+                                    onYankZoom={e => this.handleYankZoom(this.state.configMenuUid)}
                                 />
                             </ContextMenuContainer>
                         </PopupMenu>);
@@ -610,10 +783,8 @@ export class MultiViewContainer extends React.Component {
     if (this.state.mounted) {
         tiledAreas = this.state.views.map(function(view, i) {
                 let layout = view.layout;
-                //console.log('layout:', layout);
 
                 let itemUid = view.uid;
-                this.heights[itemUid] = layout.height;
 
                 // only show the add track menu for the tiled plot it was selected
                 // for
@@ -622,11 +793,52 @@ export class MultiViewContainer extends React.Component {
                         this.state.addTrackPositionMenuPosition :
                             null;
 
+                let overlay = null
+                if (this.state.chooseViewHandler) {
+                    let background='transparent';
+
+                    if (this.state.mouseOverOverlayUid == view.uid)
+                        background = 'green';
+                    overlay = (<div 
+                               className='tiled-plot-overlay'
+                               style={{
+                                   position: 'absolute',
+                                   width: '100%',
+                                   height: '100%',
+                                   background: background,
+                                   opacity: 0.3
+                               }}
+                                onClick={e => this.state.chooseViewHandler(view.uid)}
+                                onMouseEnter={e => this.handleOverlayMouseEnter(view.uid)}
+                                onMouseLeave={e => this.handleOverlayMouseLeave(view.uid)}
+                               ></div>)
+                }
+
+                let tiledPlot = (
+                                <TiledPlot
+                                    parentMounted={this.state.mounted} 
+                                     svgElement={this.state.svgElement}
+                                     canvasElement={this.state.canvasElement}
+                                     pixiStage={this.pixiStage}
+                                     dragging={this.state.dragging}
+                                     tracks={view.tracks}
+                                     initialXDomain={view.initialXDomain}
+                                     initialYDomain={view.initialYDomain}
+                                     verticalMargin={this.verticalMargin}
+                                     horizontalMargin={this.horizontalMargin}
+                                     addTrackPositionMenuPosition={addTrackPositionMenuPosition}
+                                     onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
+                                     ref={c => this.tiledPlots[view.uid] = c}
+                                >
+
+                                </TiledPlot>)
+
                 return (<div 
                             data-grid={layout}
                             key={itemUid}
                             ref={(c) => {this.tiledAreaDiv = c; }}
                             style={tiledAreaStyle}
+
                         >
                             <div 
                                 className="multitrack-header"
@@ -658,22 +870,9 @@ export class MultiViewContainer extends React.Component {
                              <SearchableTiledPlot
                                      key={view.uid}
                             >
-                                <TiledPlot
-                                    parentMounted={this.state.mounted} 
-                                     height={this.heights[itemUid]}
-                                     svgElement={this.state.svgElement}
-                                     canvasElement={this.state.canvasElement}
-                                     pixiStage={this.pixiStage}
-                                     dragging={this.state.dragging}
-                                     tracks={view.tracks}
-                                     initialXDomain={view.initialXDomain}
-                                     initialYDomain={view.initialYDomain}
-                                     verticalMargin={this.verticalMargin}
-                                     horizontalMargin={this.horizontalMargin}
-                                     addTrackPositionMenuPosition={addTrackPositionMenuPosition}
-                                     onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
-                                />
+                                {tiledPlot}
                             </SearchableTiledPlot>
+                            {overlay}
                         </div>)
 
             }.bind(this))

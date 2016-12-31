@@ -24,20 +24,20 @@ export class ConfigViewMenu extends React.Component {
     render() {
         return (
                 <div>
-                    <ContextMenuItem text={'Take Zoom'} 
-                        onClick={e => this.props.onCloseTrack(this.props.track.uid)}
+                    <ContextMenuItem text={'Yank Zoom'} 
+                        onClick={e => this.props.onYankZoom(e)}
                     />
                     <ContextMenuItem text={'Lock Zoom'} 
-                        onClick={e => this.props.onCloseTrack(this.props.track.uid)}
+                        onClick={e => this.props.onLockZoom(e)}
                     />
 
                     <hr />
 
-                    <ContextMenuItem text={'Take Tracks'} 
-                        onClick={e => this.props.onCloseTrack(this.props.track.uid)}
+                    <ContextMenuItem text={'Yank Tracks'} 
+                        onClick={e => this.props.onYankTracks(this.props.track.uid)}
                     />
                     <ContextMenuItem text={'Lock Tracks'} 
-                        onClick={e => this.props.onCloseTrack(this.props.track.uid)}
+                        onClick={e => this.props.onLockTracks(this.props.track.uid)}
                     />
                 </div>
                 )
