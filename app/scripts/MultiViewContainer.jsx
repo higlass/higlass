@@ -146,14 +146,14 @@ export class MultiViewContainer extends React.Component {
                 }
             ]}
             ,
-            layout: {x: 0, y: 0, w: 3, h: 10}
+            layout: {x: 0, y: 0, w: 2, h: 8}
 
           }
           ,
             {
               uid: slugid.nice(),
-              initialXDomain: [-1000000,30000000],
-              initialYDomain: [-1000000,30000000],
+              initialXDomain: [20000000,300000000],
+              initialYDomain: [20000000,300000000],
               'tracks': {
             'top': [
                   /*
@@ -274,7 +274,11 @@ export class MultiViewContainer extends React.Component {
             svgElement: null,
             canvasElement: null,
             views: views,
-            addTrackPositionMenuPosition: null
+            addTrackPositionMenuPosition: null,
+
+            chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
+            mouseOverOverlayUid: views[0].uid,
+            configMenuUid: null
           }
     }
 
