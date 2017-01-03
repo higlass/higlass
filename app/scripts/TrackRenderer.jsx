@@ -91,7 +91,8 @@ export class TrackRenderer extends React.Component {
 
     componentDidMount() {
         this.element = ReactDOM.findDOMNode(this);
-        select(this.divTrackArea).call(this.zoomBehavior);
+        this.divTrackAreaSelection = select(this.divTrackArea);
+        this.divTrackAreaSelection.call(this.zoomBehavior);
 
         // need to be mounted to make sure that all the renderers are
         // created before starting to draw tracks
@@ -348,14 +349,14 @@ export class TrackRenderer extends React.Component {
         let thisMiddleX = this.xScale.invert(this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2);
         let thisMiddleY = this.yScale.invert(this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2);
         */
-        console.log('this.zoomTransform:', this.zoomTransform);
+        //console.log('this.zoomTransform:', this.zoomTransform);
         let newTransform = zoomIdentity.translate(translateX, translateY).scale(k);
 
         this.zoomTransform = newTransform;
+        this.zoomBehavior.transform(this.divTrackAreaSelection, newTransform);
         this.applyZoomTransform();
 
-
-        console.log('refK', refK, 'sourceK', sourceK, 'k:', k);
+        //console.log('refK', refK, 'sourceK', sourceK, 'k:', k);
         //console.log('thisMiddle:', thisMiddleX);
     }
 
