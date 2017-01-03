@@ -330,6 +330,7 @@ export class TrackRenderer extends React.Component {
          */
 
 
+        console.log('centerX:', centerX, "sourceK", sourceK);
         let refK = this.xScale.invert(1) - this.xScale.invert(0);
 
         let k = refK / sourceK;

@@ -285,7 +285,7 @@ export class MultiViewContainer extends React.Component {
             addTrackPositionMenuPosition: null,
 
             //chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
-            chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
+            // chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
             mouseOverOverlayUid: views[0].uid,
             configMenuUid: null
           }
@@ -406,7 +406,7 @@ export class MultiViewContainer extends React.Component {
       this.xScales[uid] = xScale;
       this.yScales[uid] = yScale;
 
-      console.log('handling scales changes..', uid);
+      //console.log('handling scales changes..', uid);
 
       if (this.zoomLocks[uid]) {
           // this view is locked to another
@@ -421,17 +421,20 @@ export class MultiViewContainer extends React.Component {
 
               let newK = k * zoomLock.zoomRatio;
 
+              console.log('setting centers of target', zoomLock.target, newK, newCenterX, newCenterY);
+              console.log('origK:', k);
               // set a new center, but don't notify of a change to prevent
               // circular notifications
-              this.setCenters[zoomLock.target](newCenterX, newCenterY, k, false);
+              this.setCenters[zoomLock.target](newCenterX, newCenterY, newK, false);
           } else {
               let newCenterX = centerX - zoomLock.centerDiff[0];
               let newCenterY = centerY - zoomLock.centerDiff[1];
 
               let newK = k / zoomLock.zoomRatio;
+              console.log('setting centers of source', zoomLock.source, newK, newCenterX, newCenterY);
               // set a new center, but don't notify of a change to prevent
               // circular notifications
-              this.setCenters[zoomLock.source](newCenterX, newCenterY, k, false);
+              this.setCenters[zoomLock.source](newCenterX, newCenterY, newK, false);
           }
       }
   }
@@ -473,6 +476,7 @@ export class MultiViewContainer extends React.Component {
       let k2 = xScale2.invert(1) - xScale2.invert(0);
 
       // the zoomLock defines how to get from source to target
+      // source + centerDiff = target
       // e.g. center at ...
       let zoomLock = {source: uid2, target: uid1,
                       centerDiff: [centerX1 - centerX2, centerY1 - centerY2],
@@ -481,7 +485,7 @@ export class MultiViewContainer extends React.Component {
                       centerDiff: [0,0],
                       zoomRatio: 1}
       */
-      console.log('zoomLock:', zoomLock);
+      console.log('zoomLock:', zoomLock, "kSource:", k2, "kTarget:", k1);
 
       this.zoomLocks[uid1] = zoomLock;
       this.zoomLocks[uid2] = zoomLock;
