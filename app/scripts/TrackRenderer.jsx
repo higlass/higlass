@@ -41,6 +41,10 @@ export class TrackRenderer extends React.Component {
 
         this.zoomTransform = zoomIdentity;
 
+        // create a zoom behavior that we'll just use to transform selections
+        // without having it fire an "onZoom" event
+        this.emptyZoomBehavior = zoom()
+
         // catch any zooming behavior within all of the tracks in this plot
         //this.zoomTransform = zoomIdentity();
         this.zoomBehavior = zoom()
@@ -343,7 +347,7 @@ export class TrackRenderer extends React.Component {
         let newTransform = zoomIdentity.translate(translateX, translateY).scale(k);
 
         this.zoomTransform = newTransform;
-        this.zoomBehavior.transform(this.divTrackAreaSelection, newTransform);
+        this.emptyZoomBehavior.transform(this.divTrackAreaSelection, newTransform);
         this.applyZoomTransform(notify);
 
         //console.log('refK', refK, 'sourceK', sourceK, 'k:', k);
@@ -388,6 +392,7 @@ export class TrackRenderer extends React.Component {
             track.draw();
         }
 
+        console.log('notify:', notify)
         if (notify)
             this.props.onScalesChanged(newXScale, newYScale);
     }

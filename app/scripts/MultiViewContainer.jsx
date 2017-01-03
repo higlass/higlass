@@ -406,14 +406,32 @@ export class MultiViewContainer extends React.Component {
       this.xScales[uid] = xScale;
       this.yScales[uid] = yScale;
 
+      console.log('handling scales changes..', uid);
+
       if (this.zoomLocks[uid]) {
           // this view is locked to another
           let zoomLock = this.zoomLocks[uid];
 
-          if (uid == zoomLock.source) {
+          let [centerX, k] = scaleCenterAndK(this.xScales[uid]);
+          let [centerY, _] = scaleCenterAndK(this.yScales[uid]);
 
+          if (uid == zoomLock.source) {
+              let newCenterX = centerX + zoomLock.centerDiff[0];
+              let newCenterY = centerY + zoomLock.centerDiff[1];
+
+              let newK = k * zoomLock.zoomRatio;
+
+              // set a new center, but don't notify of a change to prevent
+              // circular notifications
+              this.setCenters[zoomLock.target](newCenterX, newCenterY, k, false);
           } else {
-                
+              let newCenterX = centerX - zoomLock.centerDiff[0];
+              let newCenterY = centerY - zoomLock.centerDiff[1];
+
+              let newK = k / zoomLock.zoomRatio;
+              // set a new center, but don't notify of a change to prevent
+              // circular notifications
+              this.setCenters[zoomLock.source](newCenterX, newCenterY, k, false);
           }
       }
   }
@@ -439,7 +457,6 @@ export class MultiViewContainer extends React.Component {
          * @param uid1: The view that the lock was called from
          * @param uid2: The view that the lock was called on (the view that was selected)
          */
-
       let xScale1 = this.xScales[uid1];
       let xScale2 = this.xScales[uid2];
 
@@ -460,6 +477,10 @@ export class MultiViewContainer extends React.Component {
       let zoomLock = {source: uid2, target: uid1,
                       centerDiff: [centerX1 - centerX2, centerY1 - centerY2],
                       zoomRatio: k1 / k2}
+          /*
+                      centerDiff: [0,0],
+                      zoomRatio: 1}
+      */
       console.log('zoomLock:', zoomLock);
 
       this.zoomLocks[uid1] = zoomLock;
@@ -486,7 +507,7 @@ export class MultiViewContainer extends React.Component {
 
 
         // set target center
-        this.setCenters[uid1](sourceCenterX,sourceCenterY, sourceK);
+        this.setCenters[uid1](sourceCenterX,sourceCenterY, sourceK, false);
         
 
         this.setState({
@@ -927,8 +948,14 @@ export class MultiViewContainer extends React.Component {
                         >
                             <div 
                                 className="multitrack-header"
-                                style={{"width": this.width, "minHeight": 16, "position": "relative", "border": "solid 1px", "marginBottom": 4, "opacity": 0.6}} 
+                                style={{"width": this.width, "minHeight": 16, "position": "relative", 
+                                    "border": "solid 1px", "marginBottom": 4, "opacity": 0.6,
+                                    verticalAlign: "middle",
+                                    lineHeight: "16px",
+                                maxHeight: 16}} 
                             >
+                                <span style={{font: "11pt sans-serif"}}>{"Id: " + view.uid.slice(0,2)}
+                                </span>
                                 <img 
                                     onClick={ e => this.handleConfigMenuOpened(view.uid) }
                                     src="images/cog.svg" 
