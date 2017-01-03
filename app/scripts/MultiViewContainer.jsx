@@ -25,6 +25,12 @@ export class MultiViewContainer extends React.Component {
         this.rowHeight = 40;
         this.tiledPlots = {};
 
+        // keep track of the xScales of each Track Renderer
+        this.xScales = {};
+        this.yScales = {};
+
+        this.setCenters = {};
+
         this.plusImg = {};
         this.configImg = {};
 
@@ -156,10 +162,8 @@ export class MultiViewContainer extends React.Component {
               initialYDomain: [20000000,300000000],
               'tracks': {
             'top': [
-                  /*
                 {'uid': slugid.nice(), type:'top-axis'}
             ,
-        */
 
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
@@ -409,6 +413,23 @@ export class MultiViewContainer extends React.Component {
          * Uid1 yanked the zoom of uid2, now  make sure that they're synchronized.
          */
         console.log('zoomYanked:', uid1, uid2);
+
+        // where we're taking the zoom from
+        let sourceXScale = this.xScales[uid2];
+        let sourceYScale = this.yScales[uid2];
+
+        // where we're setting the zoom
+        let targetXScale = this.xScales[uid1];
+        let targetYScale = this.yScales[uid1];
+
+        let sourceCenterX = sourceXScale.invert(
+            (sourceXScale.range()[0] + sourceXScale.range()[1]) / 2)
+        let sourceCenterY = sourceYScale.invert(
+            (sourceYScale.range()[0] + sourceYScale.range()[1]) / 2)
+
+        // set target center
+        this.setCenters[uid1](sourceCenterX, sourceCenterY, 1);
+        
 
         this.setState({
             chooseViewHandler: null
@@ -833,6 +854,11 @@ export class MultiViewContainer extends React.Component {
                                      addTrackPositionMenuPosition={addTrackPositionMenuPosition}
                                      onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
                                      ref={c => this.tiledPlots[view.uid] = c}
+                                     onScalesChanged={(x,y) => {
+                                        this.xScales[view.uid] = x;
+                                        this.yScales[view.uid] = y;
+                                     }}
+                                     setCentersFunction={c => this.setCenters[view.uid] = c}
                                 >
 
                                 </TiledPlot>)

@@ -880,6 +880,8 @@ export class TiledPlot extends React.Component {
                     leftWidth={this.leftWidth}
                     positionedTracks={positionedTracks}
                     pixiStage={this.props.pixiStage}
+                    onScalesChanged={this.props.onScalesChanged}
+                    setCentersFunction={this.props.setCentersFunction}
                 >
 
                     <div 

@@ -101,6 +101,8 @@ export class TrackRenderer extends React.Component {
         this.svgElement = this.props.svgElement;
         this.syncTrackObjects(this.props.positionedTracks);
 
+        this.props.setCentersFunction(this.setCenter.bind(this));
+
     }
 
     componentWillReceiveProps(nextProps) {
@@ -313,6 +315,13 @@ export class TrackRenderer extends React.Component {
         }
     }
 
+    setCenter(centerX, centerY, k) {
+        /* 
+         * Set the center of this view to a paticular X and Y coordinate
+         */
+        console.log('calling setCenter', centerX, centerY, k);
+
+    }
 
     zoomed() {
         /**
@@ -351,6 +360,8 @@ export class TrackRenderer extends React.Component {
                         this.props.marginTop + this.props.topHeight);
             track.draw();
         }
+
+        this.props.onScalesChanged(newXScale, newYScale);
     }
 
     createTrackObject(track) {
