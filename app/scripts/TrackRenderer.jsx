@@ -315,12 +315,48 @@ export class TrackRenderer extends React.Component {
         }
     }
 
-    setCenter(centerX, centerY, k) {
+    setCenter(sourceXScale, sourceYScale) {
         /* 
          * Set the center of this view to a paticular X and Y coordinate
          */
-        console.log('calling setCenter', centerX, centerY, k);
 
+        let centerX = sourceXScale.invert((sourceXScale.range()[0] + 
+                    sourceXScale.range()[1]) / 2)
+        let centerY = sourceYScale.invert((sourceYScale.range()[0] + 
+                    sourceYScale.range()[1]) / 2)
+
+        console.log('centerX:', centerX, 'centerY:', centerY);
+        console.log('xRange:', sourceXScale.range())
+        console.log('yRange:', sourceYScale.range())
+
+        let refK = this.xScale.invert(1) - this.xScale.invert(0);
+        let sourceK = sourceXScale.invert(1) - sourceXScale.invert(0);
+
+        let k = refK / sourceK;
+
+        let middleViewX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
+        let middleViewY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
+
+        // After applying the zoom transform, the xScale of the target centerX
+        // should be equal to the middle of the viewport
+        // this.xScale(centerX) * k + translate[0] = middleViewX
+        let translateX = middleViewX - this.xScale(centerX) * k;
+        let translateY = middleViewY - this.yScale(centerY) * k;
+
+        // the ref scale spans the width of the viewport
+        /*
+        let thisMiddleX = this.xScale.invert(this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2);
+        let thisMiddleY = this.yScale.invert(this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2);
+        */
+        console.log('this.zoomTransform:', this.zoomTransform);
+        let newTransform = zoomIdentity.translate(translateX, translateY).scale(k);
+
+        this.zoomTransform = newTransform;
+        this.applyZoomTransform();
+
+
+        console.log('refK', refK, 'sourceK', sourceK, 'k:', k);
+        //console.log('thisMiddle:', thisMiddleX);
     }
 
     zoomed() {

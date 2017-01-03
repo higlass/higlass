@@ -422,13 +422,15 @@ export class MultiViewContainer extends React.Component {
         let targetXScale = this.xScales[uid1];
         let targetYScale = this.yScales[uid1];
 
-        let sourceCenterX = sourceXScale.invert(
-            (sourceXScale.range()[0] + sourceXScale.range()[1]) / 2)
-        let sourceCenterY = sourceYScale.invert(
-            (sourceYScale.range()[0] + sourceYScale.range()[1]) / 2)
+        let targetCenterX = targetXScale.invert(
+            (targetXScale.range()[0] + targetXScale.range()[1]) / 2)
+        let targetCenterY = targetYScale.invert(
+            (targetYScale.range()[0] + targetYScale.range()[1]) / 2)
+
+        console.log('target centerX', targetCenterX, 'target centerY', targetCenterY);
 
         // set target center
-        this.setCenters[uid1](sourceCenterX, sourceCenterY, 1);
+        this.setCenters[uid1](sourceXScale, sourceYScale);
         
 
         this.setState({
