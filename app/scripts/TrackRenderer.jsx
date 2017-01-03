@@ -330,7 +330,6 @@ export class TrackRenderer extends React.Component {
          */
 
 
-        console.log('centerX:', centerX, "sourceK", sourceK);
         let refK = this.xScale.invert(1) - this.xScale.invert(0);
 
         let k = refK / sourceK;
@@ -351,8 +350,6 @@ export class TrackRenderer extends React.Component {
         this.emptyZoomBehavior.transform(this.divTrackAreaSelection, newTransform);
         this.applyZoomTransform(notify);
 
-        //console.log('refK', refK, 'sourceK', sourceK, 'k:', k);
-        //console.log('thisMiddle:', thisMiddleX);
     }
 
     zoomed() {
@@ -393,14 +390,12 @@ export class TrackRenderer extends React.Component {
             track.draw();
         }
 
-        console.log('notify:', notify)
         if (notify)
             this.props.onScalesChanged(newXScale, newYScale);
     }
 
     createTrackObject(track) {
         let handleTilesetInfoReceived = x => {
-            console.log('track.uid:', track.uid, 'track:', track);
             this.props.onTilesetInfoReceived(track.uid, x);
         }
 

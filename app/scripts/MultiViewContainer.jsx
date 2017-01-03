@@ -13,9 +13,53 @@ import {TiledPlot} from './TiledPlot.jsx';
 import {PopupMenu} from './PopupMenu.jsx';
 import {ConfigViewMenu} from './ConfigViewMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
-import {scaleCenterAndK} from './utils.js';
+import {scalesCenterAndK, dictItems, dictFromTuples, dictValues} from './utils.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
+
+class ZoomLockGroup {
+    /**
+     * A zoom lock group is a set of views who's zoom is locked at a fixed
+     * offset from some standard.
+     *
+     * When one view is zoomed, all other views in the group need to be zoomed
+     * as well.
+     */
+    constructor() {
+        this.uid = slugid.nice();
+
+        this.views = {};
+    }
+
+    addView(uid, [centerX, centerY, k]) {
+        /**
+         * Add a view to the group. 
+         * 
+         * @param uid: The identifier for a view.
+         * @param centerX: This view's current centerX position
+         * @param centerY: This view's current centerY position
+         * @param k: This view's current zoom level
+         */
+
+        this.views[uid] = {centerX: centerX, centerY: centerY, k: k};
+
+    }
+
+    removeView(uid) {
+        /**
+         * Remove a view from the zoom group.
+         */
+
+        delete this.views[uid];
+    }
+
+    memberUids() {
+        /**
+         * Return the uids of the views which are members of this zoom group
+         */
+        return Object.keys(this.views);
+    }
+}
 
 export class MultiViewContainer extends React.Component {
     constructor(props) {
@@ -32,6 +76,7 @@ export class MultiViewContainer extends React.Component {
 
         // zoom locks between views
         this.zoomLocks = {};
+        this.lockGroups = {};
 
         this.setCenters = {};
 
@@ -285,7 +330,7 @@ export class MultiViewContainer extends React.Component {
             addTrackPositionMenuPosition: null,
 
             //chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
-            // chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
+            chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
             mouseOverOverlayUid: views[0].uid,
             configMenuUid: null
           }
@@ -387,6 +432,17 @@ export class MultiViewContainer extends React.Component {
        * between the center of the two views will always remain the same, as will the
        * different between the zoom levels.
        */
+      if (this.zoomLocks[uid]) {
+          // this view already has a zoom lock, we we need to turn it off
+          this.zoomLocks[uid] = null;
+
+          this.setState({
+            mouseOverOverlayUid: uid,
+            configMenuUid: null
+          });
+
+          return;
+      }
 
         // create a view chooser and remove the config view menu
         this.setState({
@@ -406,14 +462,21 @@ export class MultiViewContainer extends React.Component {
       this.xScales[uid] = xScale;
       this.yScales[uid] = yScale;
 
-      //console.log('handling scales changes..', uid);
-
       if (this.zoomLocks[uid]) {
           // this view is locked to another
-          let zoomLock = this.zoomLocks[uid];
+          let lockGroup = this.zoomLocks[uid];
+          let lockGroupValues = dictValues(lockGroup);
 
-          let [centerX, k] = scaleCenterAndK(this.xScales[uid]);
-          let [centerY, _] = scaleCenterAndK(this.yScales[uid]);
+          let [centerX, centerY, k] = scalesCenterAndK(this.xScales[uid], this.yScales[uid]);
+
+
+          for (let i = 0; i < lockGroupValues.length; i++) {
+             let dx = lockGroupValues[i][1][0] - lockGroup[uid][1][0];
+             let dy = lockGroupValues[i][1][1] - lockGroup[uid][1][1];
+             let rk = lockGroupValues[i][1][1] / lockGroup[uid][1][1];
+
+             console.log('dx', dx, 'dy:', dy, 'rk', rk);
+          }
 
           if (uid == zoomLock.source) {
               let newCenterX = centerX + zoomLock.centerDiff[0];
@@ -421,8 +484,6 @@ export class MultiViewContainer extends React.Component {
 
               let newK = k * zoomLock.zoomRatio;
 
-              console.log('setting centers of target', zoomLock.target, newK, newCenterX, newCenterY);
-              console.log('origK:', k);
               // set a new center, but don't notify of a change to prevent
               // circular notifications
               this.setCenters[zoomLock.target](newCenterX, newCenterY, newK, false);
@@ -431,7 +492,6 @@ export class MultiViewContainer extends React.Component {
               let newCenterY = centerY - zoomLock.centerDiff[1];
 
               let newK = k / zoomLock.zoomRatio;
-              console.log('setting centers of source', zoomLock.source, newK, newCenterX, newCenterY);
               // set a new center, but don't notify of a change to prevent
               // circular notifications
               this.setCenters[zoomLock.source](newCenterX, newCenterY, newK, false);
@@ -460,6 +520,47 @@ export class MultiViewContainer extends React.Component {
          * @param uid1: The view that the lock was called from
          * @param uid2: The view that the lock was called on (the view that was selected)
          */
+
+      if (uid1 == uid2)
+          return;    // locking a view to itself is silly
+
+      let group1Members = [];
+      let group2Members = [];
+
+      if (!this.zoomLocks[uid1]) {
+          // view1 isn't already in a group
+          group1Members = [uid1, scalesCenterAndK(this.xScales[uid1], this.yScales[uid1])];
+      } else {
+          // view1 is already in a group
+          group1Members = dictItems(this.zoomLocks[uid1]).map(x => 
+            // x is [uid, [centerX, centerY, k]]
+            [x[0], this.scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])] 
+          )
+      }
+
+      if (!this.zoomLocks[uid2]) {
+          // view1 isn't already in a group
+          group2Members = [uid2, scalesCenterAndK(this.xScales[uid2], this.yScales[uid2])];
+      } else {
+          // view2 is already in a group
+          group2Members = dictItems(this.zoomLocks[uid2]).map(x => 
+            // x is [uid, [centerX, centerY, k]]
+            [x[0], this.scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])] 
+          )
+      }
+
+      let allMembers = group1Members.concat(group2Members);
+      let groupDict = dictFromTuples(allMembers);
+
+      allMembers.forEach(m => { this.zoomLocks[m[0]] = groupDict });
+        
+      console.log('this.zoomLocks:', this.zoomLocks);
+
+      /*
+      console.log('group1Members:', group1Members);
+      console.log('group2Members:', group2Members);
+          
+
       let xScale1 = this.xScales[uid1];
       let xScale2 = this.xScales[uid2];
 
@@ -481,14 +582,11 @@ export class MultiViewContainer extends React.Component {
       let zoomLock = {source: uid2, target: uid1,
                       centerDiff: [centerX1 - centerX2, centerY1 - centerY2],
                       zoomRatio: k1 / k2}
-          /*
-                      centerDiff: [0,0],
-                      zoomRatio: 1}
-      */
       console.log('zoomLock:', zoomLock, "kSource:", k2, "kTarget:", k1);
 
       this.zoomLocks[uid1] = zoomLock;
       this.zoomLocks[uid2] = zoomLock;
+      */
 
         this.setState({
             chooseViewHandler: null
@@ -506,8 +604,7 @@ export class MultiViewContainer extends React.Component {
         let sourceYScale = this.yScales[uid2];
 
 
-        let [sourceCenterX, sourceK] = scaleCenterAndK(sourceXScale);
-        let [sourceCenterY, k] = scaleCenterAndK(sourceYScale);
+        let [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(sourceXScale, sourceYScale);
 
 
         // set target center
@@ -879,6 +976,7 @@ export class MultiViewContainer extends React.Component {
                                 orientation={'left'}
                             >
                                 <ConfigViewMenu
+                                    zoomLock={this.zoomLocks[this.state.configMenuUid]}
                                     onLockZoom={e => this.handleLockZoom(this.state.configMenuUid)}
                                     onYankZoom={e => this.handleYankZoom(this.state.configMenuUid)}
                                 />
