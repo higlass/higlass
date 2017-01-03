@@ -13,6 +13,7 @@ import {TiledPlot} from './TiledPlot.jsx';
 import {PopupMenu} from './PopupMenu.jsx';
 import {ConfigViewMenu} from './ConfigViewMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
+import {scaleCenterAndK} from './utils.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -28,6 +29,9 @@ export class MultiViewContainer extends React.Component {
         // keep track of the xScales of each Track Renderer
         this.xScales = {};
         this.yScales = {};
+
+        // zoom locks between views
+        this.zoomLocks = {};
 
         this.setCenters = {};
 
@@ -280,7 +284,8 @@ export class MultiViewContainer extends React.Component {
             views: views,
             addTrackPositionMenuPosition: null,
 
-            chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
+            //chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
+            chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
             mouseOverOverlayUid: views[0].uid,
             configMenuUid: null
           }
@@ -361,14 +366,12 @@ export class MultiViewContainer extends React.Component {
   };
   
   handleOverlayMouseEnter(uid) {
-    console.log('tiledplot mouseenter:', uid);
     this.setState({
         mouseOverOverlayUid: uid
     })
   }
 
   handleOverlayMouseLeave(uid) {
-    console.log('tiledplot mouseLeave:', uid);
     this.setState({
         mouseOverOverlayUid: null
     })
@@ -393,6 +396,28 @@ export class MultiViewContainer extends React.Component {
         });
   }
 
+  handleScalesChanged(uid, xScale, yScale) {
+      /*
+       * The scales of some view have changed (presumably in response to zooming).
+       *
+       * Mark the new scales and update any locked views.
+       */
+
+      this.xScales[uid] = xScale;
+      this.yScales[uid] = yScale;
+
+      if (this.zoomLocks[uid]) {
+          // this view is locked to another
+          let zoomLock = this.zoomLocks[uid];
+
+          if (uid == zoomLock.source) {
+
+          } else {
+                
+          }
+      }
+  }
+
   handleYankZoom(uid) {
         /**
          * We want to match the zoom level of another view.
@@ -408,6 +433,43 @@ export class MultiViewContainer extends React.Component {
         });
   }
 
+  handleZoomLockChosen(uid1, uid2) {
+        /* Views uid1 and uid2 need to be locked so that they always maintain the current
+         * zoom and translation difference.
+         * @param uid1: The view that the lock was called from
+         * @param uid2: The view that the lock was called on (the view that was selected)
+         */
+
+      let xScale1 = this.xScales[uid1];
+      let xScale2 = this.xScales[uid2];
+
+      let yScale1 = this.yScales[uid1];
+      let yScale2 = this.yScales[uid2];
+
+      let centerX1 = xScale1.invert((xScale1.range()[0] + xScale1.range()[1]) / 2);
+      let centerY1 = yScale1.invert((yScale1.range()[0] + yScale1.range()[1]) / 2);
+
+      let centerX2 = xScale2.invert((xScale2.range()[0] + xScale2.range()[1]) / 2);
+      let centerY2 = yScale2.invert((yScale2.range()[0] + yScale2.range()[1]) / 2);
+
+      let k1 = xScale1.invert(1) - xScale1.invert(0);
+      let k2 = xScale2.invert(1) - xScale2.invert(0);
+
+      // the zoomLock defines how to get from source to target
+      // e.g. center at ...
+      let zoomLock = {source: uid2, target: uid1,
+                      centerDiff: [centerX1 - centerX2, centerY1 - centerY2],
+                      zoomRatio: k1 / k2}
+      console.log('zoomLock:', zoomLock);
+
+      this.zoomLocks[uid1] = zoomLock;
+      this.zoomLocks[uid2] = zoomLock;
+
+        this.setState({
+            chooseViewHandler: null
+        });
+  }
+
   handleZoomYanked(uid1, uid2) {
         /**
          * Uid1 yanked the zoom of uid2, now  make sure that they're synchronized.
@@ -418,19 +480,13 @@ export class MultiViewContainer extends React.Component {
         let sourceXScale = this.xScales[uid2];
         let sourceYScale = this.yScales[uid2];
 
-        // where we're setting the zoom
-        let targetXScale = this.xScales[uid1];
-        let targetYScale = this.yScales[uid1];
 
-        let targetCenterX = targetXScale.invert(
-            (targetXScale.range()[0] + targetXScale.range()[1]) / 2)
-        let targetCenterY = targetYScale.invert(
-            (targetYScale.range()[0] + targetYScale.range()[1]) / 2)
+        let [sourceCenterX, sourceK] = scaleCenterAndK(sourceXScale);
+        let [sourceCenterY, k] = scaleCenterAndK(sourceYScale);
 
-        console.log('target centerX', targetCenterX, 'target centerY', targetCenterY);
 
         // set target center
-        this.setCenters[uid1](sourceXScale, sourceYScale);
+        this.setCenters[uid1](sourceCenterX,sourceCenterY, sourceK);
         
 
         this.setState({
@@ -856,10 +912,7 @@ export class MultiViewContainer extends React.Component {
                                      addTrackPositionMenuPosition={addTrackPositionMenuPosition}
                                      onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
                                      ref={c => this.tiledPlots[view.uid] = c}
-                                     onScalesChanged={(x,y) => {
-                                        this.xScales[view.uid] = x;
-                                        this.yScales[view.uid] = y;
-                                     }}
+                                     onScalesChanged={(x,y) => this.handleScalesChanged(view.uid, x, y)}
                                      setCentersFunction={c => this.setCenters[view.uid] = c}
                                 >
 

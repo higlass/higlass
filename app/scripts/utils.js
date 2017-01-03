@@ -26,5 +26,17 @@ export function dictKeys(dictionary) {
     }
 
     return keys;
+}
 
+export function scaleCenterAndK(vScale) {
+    /**
+     * Calculate the center of the scale as well as its scale
+     * factor 
+     * @param scale: A d3 scale.
+     * @return: [domainCenter, k]
+     */
+    let center = vScale.invert((vScale.range()[0] + vScale.range()[1]) / 2);
+    let k = vScale.invert(1) - vScale.invert(0);
+    
+    return [center, k];
 }

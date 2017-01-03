@@ -316,22 +316,17 @@ export class TrackRenderer extends React.Component {
         }
     }
 
-    setCenter(sourceXScale, sourceYScale) {
+    setCenter(centerX, centerY, sourceK, notify=true) {
         /* 
          * Set the center of this view to a paticular X and Y coordinate
+         *
+         * @param notify: Notify listeners that the scales have changed. This
+         *      can be turned off to prevent circular updates when scales are
+         *      locked.
          */
 
-        let centerX = sourceXScale.invert((sourceXScale.range()[0] + 
-                    sourceXScale.range()[1]) / 2)
-        let centerY = sourceYScale.invert((sourceYScale.range()[0] + 
-                    sourceYScale.range()[1]) / 2)
-
-        console.log('centerX:', centerX, 'centerY:', centerY);
-        console.log('xRange:', sourceXScale.range())
-        console.log('yRange:', sourceYScale.range())
 
         let refK = this.xScale.invert(1) - this.xScale.invert(0);
-        let sourceK = sourceXScale.invert(1) - sourceXScale.invert(0);
 
         let k = refK / sourceK;
 
@@ -345,16 +340,11 @@ export class TrackRenderer extends React.Component {
         let translateY = middleViewY - this.yScale(centerY) * k;
 
         // the ref scale spans the width of the viewport
-        /*
-        let thisMiddleX = this.xScale.invert(this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2);
-        let thisMiddleY = this.yScale.invert(this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2);
-        */
-        //console.log('this.zoomTransform:', this.zoomTransform);
         let newTransform = zoomIdentity.translate(translateX, translateY).scale(k);
 
         this.zoomTransform = newTransform;
         this.zoomBehavior.transform(this.divTrackAreaSelection, newTransform);
-        this.applyZoomTransform();
+        this.applyZoomTransform(notify);
 
         //console.log('refK', refK, 'sourceK', sourceK, 'k:', k);
         //console.log('thisMiddle:', thisMiddleX);
@@ -372,7 +362,7 @@ export class TrackRenderer extends React.Component {
         this.applyZoomTransform();
     }
 
-    applyZoomTransform() {
+    applyZoomTransform(notify=true) {
         let zoomedXScale = this.zoomTransform.rescaleX(this.xScale); 
         let zoomedYScale = this.zoomTransform.rescaleY(this.yScale); 
 
@@ -398,7 +388,8 @@ export class TrackRenderer extends React.Component {
             track.draw();
         }
 
-        this.props.onScalesChanged(newXScale, newYScale);
+        if (notify)
+            this.props.onScalesChanged(newXScale, newYScale);
     }
 
     createTrackObject(track) {
