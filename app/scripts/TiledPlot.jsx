@@ -20,8 +20,6 @@ export class TiledPlot extends React.Component {
         super(props);
 
         this.closing = false;
-        this.minHorizontalHeight = 20;
-        this.minVerticalWidth = 20;
         this.uid = slugid.nice();
         this.yPositionOffset = 0;    // the offset from the Canvas and SVG elements
                                      // that the tracks will be drawn on
@@ -39,8 +37,6 @@ export class TiledPlot extends React.Component {
                 tracks[key][i].uid = slugid.nice();
             }
         }
-
-        this.fillInMinWidths(tracks)
 
         // these values should be changed in componentDidMount
         this.state = {
@@ -184,60 +180,6 @@ export class TiledPlot extends React.Component {
         return allTracks;
     }
 
-
-    fillInMinWidths(tracksDict) {
-        /**
-         * If tracks don't have specified dimensions, add in the known
-         * minimums
-         * 
-         * Operates on the tracks stored for this TiledPlot.
-         */
-        let horizontalLocations = ['top', 'bottom'];
-
-        // first make sure all track types are specified
-        // this will make the code later on simpler
-        if (!('center' in tracksDict))
-            tracksDict['center'] = [];
-        if (!('left' in tracksDict))
-            tracksDict['left'] = [];
-        if (!('right' in tracksDict))
-            tracksDict['right'] = [];
-        if (!('top' in tracksDict))
-            tracksDict['top'] = [];
-        if (!('bottom' in tracksDict))
-            tracksDict['bottom'] = [];
-
-        for (let j = 0; j < horizontalLocations.length; j++) {
-            let tracks = tracksDict[horizontalLocations[j]];
-
-            //e.g. no 'top' tracks
-            if (!tracks)
-                continue;
-
-            for (let i = 0; i < tracks.length; i++) {
-                if (!('height' in tracks[i])) {
-                    tracks[i].height = this.minHorizontalHeight;
-                }
-            }
-        }
-
-        let verticalLocations = ['left', 'right'];
-
-        for (let j = 0; j < verticalLocations.length; j++) {
-            let tracks = tracksDict[verticalLocations[j]];
-
-            //e.g. no 'left' tracks
-            if (!tracks)
-                continue;
-
-            for (let i = 0; i < tracks.length; i++) {
-                if (!('width' in tracks[i]))
-                    tracks[i].width = this.minVerticalWidth;
-            }
-        }
-
-        return tracksDict;
-    }
 
 
     handleTilesetInfoReceived(trackUid, tilesetInfo) {
@@ -455,7 +397,7 @@ export class TiledPlot extends React.Component {
          *
          * Null or undefined if none.
          */
-        let tracks = this.state.tracks;
+        let tracks = this.props.tracks;
 
         for (let trackType in tracks) {
             let theseTracks = tracks[trackType];
@@ -485,34 +427,10 @@ export class TiledPlot extends React.Component {
 
     handleCloseTrack(uid) {
         console.log('closing track...', uid);
-        if (uid == this.state.closeTrackMenuId) {
-            // we're closing an entire track as opposed to just a series within a track
-            this.setState({
-                closeTrackMenuId: null
-            });
-        }
-
-        let tracks = this.state.tracks;
-
-        for (let trackType in tracks) {
-            let theseTracks = tracks[trackType];
-            let newTracks = theseTracks.filter((d) => { return d.uid != uid; });
-
-            if (newTracks.length == theseTracks.length) {
-                // no whole tracks need to removed, see if any of the combined tracks
-                // contain series which need to go
-                let combinedTracks = newTracks.filter(x => x.type == 'combined')
-
-                combinedTracks.forEach(ct => {
-                    ct.contents = ct.contents.filter(x => x.uid != uid);
-                });
-            } else {
-                tracks[trackType] = newTracks;
-            }
-        }
+        this.props.onCloseTrack(uid);
 
         this.setState({
-            tracks: tracks
+            closeTrackMenuId: null
         });
     }
 

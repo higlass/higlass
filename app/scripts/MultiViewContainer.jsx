@@ -17,53 +17,12 @@ import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from 
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-class ZoomLockGroup {
-    /**
-     * A zoom lock group is a set of views who's zoom is locked at a fixed
-     * offset from some standard.
-     *
-     * When one view is zoomed, all other views in the group need to be zoomed
-     * as well.
-     */
-    constructor() {
-        this.uid = slugid.nice();
-
-        this.views = {};
-    }
-
-    addView(uid, [centerX, centerY, k]) {
-        /**
-         * Add a view to the group. 
-         * 
-         * @param uid: The identifier for a view.
-         * @param centerX: This view's current centerX position
-         * @param centerY: This view's current centerY position
-         * @param k: This view's current zoom level
-         */
-
-        this.views[uid] = {centerX: centerX, centerY: centerY, k: k};
-
-    }
-
-    removeView(uid) {
-        /**
-         * Remove a view from the zoom group.
-         */
-
-        delete this.views[uid];
-    }
-
-    memberUids() {
-        /**
-         * Return the uids of the views which are members of this zoom group
-         */
-        return Object.keys(this.views);
-    }
-}
-
 export class MultiViewContainer extends React.Component {
     constructor(props) {
         super(props);
+
+        this.minHorizontalHeight = 20;
+        this.minVerticalWidth = 20;
 
         this.uid = slugid.nice();
         this.yPositionOffset = 0;
@@ -320,6 +279,7 @@ export class MultiViewContainer extends React.Component {
 
         let viewsByUid = {};
         views.forEach(v => {
+            this.fillInMinWidths(v.tracks);
             viewsByUid[v.uid] = v;     
         });
 
@@ -337,7 +297,7 @@ export class MultiViewContainer extends React.Component {
             //chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
             //chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
             //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
-            chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
+            //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
             mouseOverOverlayUid: views[0].uid,
             configMenuUid: null
           }
@@ -764,6 +724,61 @@ export class MultiViewContainer extends React.Component {
       
   }
 
+    fillInMinWidths(tracksDict) {
+        /**
+         * If tracks don't have specified dimensions, add in the known
+         * minimums
+         * 
+         * Operates on the tracks stored for this TiledPlot.
+         */
+        let horizontalLocations = ['top', 'bottom'];
+
+        // first make sure all track types are specified
+        // this will make the code later on simpler
+        if (!('center' in tracksDict))
+            tracksDict['center'] = [];
+        if (!('left' in tracksDict))
+            tracksDict['left'] = [];
+        if (!('right' in tracksDict))
+            tracksDict['right'] = [];
+        if (!('top' in tracksDict))
+            tracksDict['top'] = [];
+        if (!('bottom' in tracksDict))
+            tracksDict['bottom'] = [];
+
+        for (let j = 0; j < horizontalLocations.length; j++) {
+            let tracks = tracksDict[horizontalLocations[j]];
+
+            //e.g. no 'top' tracks
+            if (!tracks)
+                continue;
+
+            for (let i = 0; i < tracks.length; i++) {
+                if (!('height' in tracks[i])) {
+                    tracks[i].height = this.minHorizontalHeight;
+                }
+            }
+        }
+
+        let verticalLocations = ['left', 'right'];
+
+        for (let j = 0; j < verticalLocations.length; j++) {
+            let tracks = tracksDict[verticalLocations[j]];
+
+            //e.g. no 'left' tracks
+            if (!tracks)
+                continue;
+
+            for (let i = 0; i < tracks.length; i++) {
+                if (!('width' in tracks[i]))
+                    tracks[i].width = this.minVerticalWidth;
+            }
+        }
+
+        return tracksDict;
+    }
+
+
   calculateViewDimensions(view) {
       /**
        * Get the dimensions for this view, counting just the tracks
@@ -969,6 +984,32 @@ export class MultiViewContainer extends React.Component {
       return views;
   }
 
+    handleCloseTrack(viewId, uid) {
+        let tracks = this.state.views[viewId].tracks;
+
+        for (let trackType in tracks) {
+            let theseTracks = tracks[trackType];
+            let newTracks = theseTracks.filter((d) => { return d.uid != uid; });
+
+            if (newTracks.length == theseTracks.length) {
+                // no whole tracks need to removed, see if any of the combined tracks
+                // contain series which need to go
+                let combinedTracks = newTracks.filter(x => x.type == 'combined')
+
+                combinedTracks.forEach(ct => {
+                    ct.contents = ct.contents.filter(x => x.uid != uid);
+                });
+            } else {
+                tracks[trackType] = newTracks;
+            }
+        }
+
+        this.setState({
+            views: this.state.views
+        });
+    }
+
+
   handleAddView() {
       /**
        * User clicked on the "Add View" button. We'll duplicate the last
@@ -1103,6 +1144,8 @@ export class MultiViewContainer extends React.Component {
                                      onScalesChanged={(x,y) => this.handleScalesChanged(view.uid, x, y)}
                                      setCentersFunction={c => this.setCenters[view.uid] = c}
                                      chooseTrackHandler={this.state.chooseTrackHandler ? trackId => this.state.chooseTrackHandler(view.uid, trackId) : null}
+                                     onTrackAdded={(newTrack, position, host) => this.handleTrackAdded(view.uid, newTrack, position, host)}
+                                     onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
                                 >
 
                                 </TiledPlot>)
