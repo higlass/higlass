@@ -91,7 +91,8 @@ export class TiledPlot extends React.Component {
 
             tracks: tracks,
             addTrackVisible: false,
-            addTrackPosition: "top"
+            addTrackPosition: "top",
+            mouseOverOverlayUid: null
         }
 
         // these dimensions are computed in the render() function and depend
@@ -181,7 +182,7 @@ export class TiledPlot extends React.Component {
         return allTracks;
     }
 
-    positionedTracksToAllTracks(positionedTracks) {
+    positionedTracksToAllTracks(positionedTracks, includeCombinedContents = true) {
         /** 
          * Convert the position indexed list of tracks:
          *
@@ -206,9 +207,11 @@ export class TiledPlot extends React.Component {
                 if (x.type == 'combined') {
                     // we don't really deal with nested combined tracks here,
                     // but those shouldn't really be used anyway
-                    x.contents.forEach(y => {
-                        allTracks.push(Object.assign(y, {position: trackType}));
-                    });
+                    if (includeCombinedContents) {
+                        x.contents.forEach(y => {
+                            allTracks.push(Object.assign(y, {position: trackType}));
+                        });
+                    }
                 } 
                 
                 allTracks.push(Object.assign(x, {position: trackType}));
@@ -291,6 +294,18 @@ export class TiledPlot extends React.Component {
             tracks: this.state.tracks
         });
     }
+
+  handleOverlayMouseEnter(uid) {
+    this.setState({
+        mouseOverOverlayUid: uid
+    })
+  }
+
+  handleOverlayMouseLeave(uid) {
+    this.setState({
+        mouseOverOverlayUid: null
+    })
+  }
 
     handleSeriesAdded(newTrack, position, hostTrack) {
         /**
@@ -858,6 +873,7 @@ export class TiledPlot extends React.Component {
         let trackPositionTexts = this.createTrackPositionTexts();
 
         let positionedTracks = this.positionedTracks();
+        console.log('positionedTracks', positionedTracks);
 
         let trackRenderer = null;
         if (this.state.sizeMeasured) {
@@ -956,6 +972,47 @@ export class TiledPlot extends React.Component {
 
         }
 
+        let overlays = null;
+        if (this.props.chooseTrackHandler) {
+            // We want to choose a track and call a function. To choose the track, we display
+            // an overlay on top of each track
+            overlays = positionedTracks.map(pTrack => {
+                let background='transparent';
+                let border="none";
+
+                if (this.state.mouseOverOverlayUid == pTrack.track.uid) {
+                    background = 'yellow';
+                    border = "1px solid black";
+                }
+
+                return ( <div 
+                               className={'tiled-plot-track-overlay'}
+                               key={pTrack.track.uid}
+                               
+                               // we want to remove the mouseOverOverlayUid so that next time we try
+                               // to choose an overlay track, the previously selected one isn't 
+                               // automatically highlighted
+                                onClick={e => {
+                                    this.setState({ mouseOverOverlayUid: null });
+                                    this.props.chooseTrackHandler(pTrack.track.uid);
+                                }}
+                                onMouseEnter={e => this.handleOverlayMouseEnter(pTrack.track.uid)}
+                                onMouseLeave={e => this.handleOverlayMouseLeave(pTrack.track.uid)}
+                               style={{
+                                   position: 'absolute',
+                                   left: pTrack.left,
+                                   top: pTrack.top,
+                                   width: pTrack.width,
+                                   height: pTrack.height,
+                                   background: background,
+                                   opacity: 0.4,
+                                   border: border
+                               }}
+                         /> )
+            });
+
+        }
+
         // track renderer needs to enclose all the other divs so that it 
         // can catch the zoom events
         return(
@@ -964,6 +1021,7 @@ export class TiledPlot extends React.Component {
                 style={{flex: 1}}
             >
                 {trackRenderer}     
+                {overlays}
                 <AddTrackModal 
                     onCancel={this.handleNoTrackAdded.bind(this)}
                     onTrackChosen={this.handleTrackAdded.bind(this)}

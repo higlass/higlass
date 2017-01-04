@@ -33,8 +33,15 @@ export class ConfigViewMenu extends React.Component {
                     <ContextMenuItem text={'Yank Zoom'} 
                         onClick={e => this.props.onYankZoom(e)}
                     />
+                    <ContextMenuItem text={'Sync Center'} 
+                        onClick={e => this.props.onSyncCenter(e)}
+                    />
                     <ContextMenuItem text={lockZoomText} 
                         onClick={e => this.props.onLockZoom(e)}
+                    />
+
+                    <ContextMenuItem text={'Project Viewport'}
+                        onClick={e => this.props.onProjectViewport(e)}
                     />
 
                     <hr />

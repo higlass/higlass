@@ -330,7 +330,9 @@ export class MultiViewContainer extends React.Component {
             addTrackPositionMenuPosition: null,
 
             //chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
-            chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
+            //chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
+            //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
+            chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
             mouseOverOverlayUid: views[0].uid,
             configMenuUid: null
           }
@@ -444,7 +446,6 @@ export class MultiViewContainer extends React.Component {
        *
        * Mark the new scales and update any locked views.
        */
-
       this.xScales[uid] = xScale;
       this.yScales[uid] = yScale;
 
@@ -494,6 +495,32 @@ export class MultiViewContainer extends React.Component {
           }
           */
       }
+  }
+
+  handleProjectViewport(uid) {
+    /**
+     * We want to show the extent of this viewport on another view.
+     */
+
+
+        this.setState({
+            chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(uid, viewUid, trackUid),
+            configMenuUid: null
+        });
+  }
+
+  handleSyncCenter(uid) {
+        /**
+         * We want the center of this view to match the center of another
+         * view.
+         *
+         */
+
+        this.setState({
+            chooseViewHandler: uid2 => this.handleCenterSynced(uid, uid2),
+            mouseOverOverlayUid: uid,
+            configMenuUid: null
+        });
   }
 
   handleYankZoom(uid) {
@@ -586,6 +613,45 @@ export class MultiViewContainer extends React.Component {
 
       allMembers.forEach(m => { this.zoomLocks[m[0]] = groupDict });
         
+        this.setState({
+            chooseViewHandler: null
+        });
+  }
+
+  handleViewportProjected(fromView, toView, toTrack) {
+    /**
+     * We want to project the viewport of fromView onto toTrack of toView.
+     *
+     * @param fromView: The uid of the view that we want to project
+     * @param toView: The uid of the view that we want to project to
+     * @param toTrack: The track we want to project to
+     */
+      console.log('handleViewportProjected:', fromView, toView, toTrack);
+      this.setState({
+            chooseTrackHandler: null
+      });
+  }
+
+  handleCenterSynced(uid1, uid2) {
+        /**
+         * Uid1 is copying the center of uid2
+         */
+        // where we're taking the zoom from
+        let sourceXScale = this.xScales[uid2];
+        let sourceYScale = this.yScales[uid2];
+
+        let targetXScale = this.xScales[uid1];
+        let targetYScale = this.yScales[uid1];
+
+
+        let [targetCenterX, targetCenterY, targetK] = scalesCenterAndK(targetXScale, targetYScale);
+        let [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(sourceXScale, sourceYScale);
+
+
+        // set target center
+        this.setCenters[uid1](sourceCenterX,sourceCenterY, targetK, false);
+        
+
         this.setState({
             chooseViewHandler: null
         });
@@ -971,6 +1037,8 @@ export class MultiViewContainer extends React.Component {
                                     zoomLock={this.zoomLocks[this.state.configMenuUid]}
                                     onLockZoom={e => this.handleLockZoom(this.state.configMenuUid)}
                                     onYankZoom={e => this.handleYankZoom(this.state.configMenuUid)}
+                                    onSyncCenter={e => this.handleSyncCenter(this.state.configMenuUid)}
+                                    onProjectViewport={e => this.handleProjectViewport(this.state.configMenuUid)}
                                 />
                             </ContextMenuContainer>
                         </PopupMenu>);
@@ -1029,6 +1097,7 @@ export class MultiViewContainer extends React.Component {
                                      ref={c => this.tiledPlots[view.uid] = c}
                                      onScalesChanged={(x,y) => this.handleScalesChanged(view.uid, x, y)}
                                      setCentersFunction={c => this.setCenters[view.uid] = c}
+                                     chooseTrackHandler={this.state.chooseTrackHandler ? trackId => this.state.chooseTrackHandler(view.uid, trackId) : null}
                                 >
 
                                 </TiledPlot>)
