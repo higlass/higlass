@@ -385,20 +385,6 @@ export class MultiViewContainer extends React.Component {
         this.animate();
     }
 
-
-    /*
-    shouldComponentUpdate(nextProps, nextState) {
-        console.log('oldProps.text:', this.props.viewConfig.text);
-        console.log('newProps.text:', nextProps.viewConfig.text);
-        if (nextProps.viewConfig.text == this.props.viewConfig.text) {
-            //console.log('not updating...');
-            return false;
-        }
-
-        return true;
-    }
-    */
-
     animate() {
         this.pixiRenderer.render(this.pixiStage);
         this.frame = requestAnimationFrame(this.animate.bind(this));
@@ -467,8 +453,6 @@ export class MultiViewContainer extends React.Component {
           let lockGroup = this.zoomLocks[uid];
           let lockGroupItems = dictItems(lockGroup);
 
-          console.log('lockGroup:', lockGroup);
-
           let [centerX, centerY, k] = scalesCenterAndK(this.xScales[uid], this.yScales[uid]);
 
 
@@ -479,8 +463,6 @@ export class MultiViewContainer extends React.Component {
              let dx = value[0] - lockGroup[uid][0];
              let dy = value[1] - lockGroup[uid][1];
              let rk = value[2] / lockGroup[uid][2];
-
-             console.log('dx', dx, 'dy:', dy, 'rk', rk);
 
               let newCenterX = centerX + dx;
               let newCenterY = centerY + dy;
@@ -572,44 +554,8 @@ export class MultiViewContainer extends React.Component {
       let allMembers = group1Members.concat(group2Members);
       let groupDict = dictFromTuples(allMembers);
 
-      console.log('groupDict:', groupDict);
-
       allMembers.forEach(m => { this.zoomLocks[m[0]] = groupDict });
         
-      console.log('this.zoomLocks:', this.zoomLocks);
-
-      /*
-      console.log('group1Members:', group1Members);
-      console.log('group2Members:', group2Members);
-          
-
-      let xScale1 = this.xScales[uid1];
-      let xScale2 = this.xScales[uid2];
-
-      let yScale1 = this.yScales[uid1];
-      let yScale2 = this.yScales[uid2];
-
-      let centerX1 = xScale1.invert((xScale1.range()[0] + xScale1.range()[1]) / 2);
-      let centerY1 = yScale1.invert((yScale1.range()[0] + yScale1.range()[1]) / 2);
-
-      let centerX2 = xScale2.invert((xScale2.range()[0] + xScale2.range()[1]) / 2);
-      let centerY2 = yScale2.invert((yScale2.range()[0] + yScale2.range()[1]) / 2);
-
-      let k1 = xScale1.invert(1) - xScale1.invert(0);
-      let k2 = xScale2.invert(1) - xScale2.invert(0);
-
-      // the zoomLock defines how to get from source to target
-      // source + centerDiff = target
-      // e.g. center at ...
-      let zoomLock = {source: uid2, target: uid1,
-                      centerDiff: [centerX1 - centerX2, centerY1 - centerY2],
-                      zoomRatio: k1 / k2}
-      console.log('zoomLock:', zoomLock, "kSource:", k2, "kTarget:", k1);
-
-      this.zoomLocks[uid1] = zoomLock;
-      this.zoomLocks[uid2] = zoomLock;
-      */
-
         this.setState({
             chooseViewHandler: null
         });
@@ -619,7 +565,6 @@ export class MultiViewContainer extends React.Component {
         /**
          * Uid1 yanked the zoom of uid2, now  make sure that they're synchronized.
          */
-        console.log('zoomYanked:', uid1, uid2);
 
         // where we're taking the zoom from
         let sourceXScale = this.xScales[uid2];
@@ -646,7 +591,6 @@ export class MultiViewContainer extends React.Component {
        */
     let bbox = this.configImg[uid].getBoundingClientRect();
 
-    console.log('config menu position button clicked1', bbox);
     this.setState({
         configMenuUid: uid,
         configMenuPosition: bbox
@@ -660,7 +604,6 @@ export class MultiViewContainer extends React.Component {
        */
     let bbox = this.plusImg[uid].getBoundingClientRect();
 
-    console.log('add track position button clicked1', bbox);
     this.setState({
         addTrackPositionMenuUid: uid,
         addTrackPositionMenuPosition: bbox
@@ -687,12 +630,9 @@ export class MultiViewContainer extends React.Component {
        */
       this.handleDragStart();
       this.handleDragStop();
-      //console.log('layouts:', layouts);
 
       layout.forEach(l => {
         let correspondingView = this.state.views.filter(x => x.uid == l.i);
-        //console.log('correspondingView:', correspondingView);
-        //console.log('views:', this.state.views);
 
         if (correspondingView.length) {
             correspondingView[0].layout = l;
