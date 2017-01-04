@@ -60,8 +60,8 @@ export class MultiViewContainer extends React.Component {
 
           let views = [{
               uid: slugid.nice(),
-              initialXDomain: [-1000000,30000000],
-              initialYDomain: [-1000000,30000000],
+              initialXDomain: [11000000,130000000],
+              initialYDomain: [11000000,130000000],
               'tracks': {
             'top': [
                   /*
@@ -456,7 +456,6 @@ export class MultiViewContainer extends React.Component {
 
       if (this.scalesChangedListeners.hasOwnProperty(uid)) {
         dictValues(this.scalesChangedListeners[uid]).forEach(x => {
-            console.log('x:', x);
             x(xScale, yScale);
             
         });

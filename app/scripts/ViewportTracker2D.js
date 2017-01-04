@@ -19,7 +19,7 @@ export class ViewportTracker2D extends PixiTrack {
     viewportChanged(viewportXScale, viewportYScale) {
         console.log('viewportChanged:');
 
-        let viewportXDomain = viewportYScale.domain();
+        let viewportXDomain = viewportXScale.domain();
         let viewportYDomain = viewportYScale.domain();
 
         this.viewportXDomain = viewportXDomain;
@@ -60,5 +60,12 @@ export class ViewportTracker2D extends PixiTrack {
 
         this.draw();
 
+    }
+
+    setPosition(newPosition) {
+        super.setPosition(newPosition);
+
+        this.pMain.position.y = this.position[1];
+        this.pMain.position.x = this.position[0];
     }
 }
