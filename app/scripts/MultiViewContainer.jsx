@@ -14,7 +14,7 @@ import {PopupMenu} from './PopupMenu.jsx';
 import {ConfigViewMenu} from './ConfigViewMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
-import {getTrackPositionByUid} from './utils.js';
+import {getTrackPositionByUid, getTrackByUid} from './utils.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -33,6 +33,12 @@ export class MultiViewContainer extends React.Component {
         // keep track of the xScales of each Track Renderer
         this.xScales = {};
         this.yScales = {};
+
+        // event listeners for when the scales of a view change
+        // bypasses the React event framework because this needs 
+        // to be fast
+        // indexed by view uid and then listener uid
+        this.scalesChangedListeners = {};
 
         // zoom locks between views
         this.zoomLocks = {};
@@ -304,7 +310,6 @@ export class MultiViewContainer extends React.Component {
           }
     }
 
-
     componentDidMount() {
         this.element = ReactDOM.findDOMNode(this);
         dictValues(this.state.views).map(v => {
@@ -406,6 +411,40 @@ export class MultiViewContainer extends React.Component {
         });
   }
 
+  addScalesChangedListener(viewUid, listenerUid, eventHandler) {
+      /**
+       * Add an event listener that will be called every time the scale
+       * of the view with uid viewUid is changed.
+       *
+       * @param viewUid: The uid of the view being observed
+       * @param listenerUid: The uid of the listener 
+       * @param eventHandler: The handler to be called when the scales change
+       *    Event handler is called with parameters (xScale, yScale)
+       */
+
+        if (!this.scalesChangedListeners.hasOwnProperty(viewUid)) {
+            this.scalesChangedListeners[viewUid] = {}
+        }
+
+        this.scalesChangedListeners[viewUid][listenerUid] = eventHandler;
+  }
+
+  removeScalesChangedListener(viewUid, listenerUid) {
+      /**
+       * Remove a scale change event listener
+       *
+       * @param viewUid: The view that it's listening on.
+       * @param listenerUid: The uid of the listener itself.
+       */
+        if (this.scalesChangedListeners.hasOwnProperty(viewUid)) {
+            let listeners = this.setCenters[viewUid];
+            
+            if (listeners.hasOwnProperty(listenerUid))
+                delete listeners[listenerUid];
+        }
+
+  }
+
   handleScalesChanged(uid, xScale, yScale) {
       /*
        * The scales of some view have changed (presumably in response to zooming).
@@ -414,6 +453,14 @@ export class MultiViewContainer extends React.Component {
        */
       this.xScales[uid] = xScale;
       this.yScales[uid] = yScale;
+
+      if (this.scalesChangedListeners.hasOwnProperty(uid)) {
+        dictValues(this.scalesChangedListeners[uid]).forEach(x => {
+            console.log('x:', x);
+            x(xScale, yScale);
+            
+        });
+      }
 
       if (this.zoomLocks[uid]) {
           // this view is locked to another
@@ -593,13 +640,18 @@ export class MultiViewContainer extends React.Component {
      * @param toTrack: The track we want to project to
      */
       console.log('handleViewportProjected:', fromView, toView, toTrack);
+      let hostTrack = getTrackByUid(this.state.views[toView].tracks, toTrack);
       let position = getTrackPositionByUid(this.state.views[toView].tracks, toTrack);
       console.log('hvp position:', position);
 
       let newTrack = {
           uid: slugid.nice(),
           type: 'viewport-projection-' + position,
+          registerViewportChanged: (trackId, listener) => this.addScalesChangedListener(fromView, trackId, listener),
+          removeViewportChanged: trackId => this.removeScalesChangedListener(fromView, trackId)
       }
+
+      this.handleSeriesAdded(toView, newTrack, position, hostTrack);
 
       this.setState({
             chooseTrackHandler: null

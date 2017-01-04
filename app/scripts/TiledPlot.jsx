@@ -15,6 +15,7 @@ import {AddTrackPositionMenu} from './AddTrackPositionMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 
 import {getTrackPositionByUid, positionedTracksToAllTracks} from './utils.js';
+import {getTrackByUid} from './utils.js';
 
 export class TiledPlot extends React.Component {
     constructor(props) {
@@ -150,7 +151,7 @@ export class TiledPlot extends React.Component {
          * @param tilesetInfo (object): Information about the track (hopefully including
          *                              its name.
          */
-        let track = this.getTrackByUid(trackUid);
+        let track = getTrackByUid(this.props.tracks, trackUid);
         track.name = tilesetInfo.name;
 
         /*
@@ -195,7 +196,7 @@ export class TiledPlot extends React.Component {
     handleAddSeries(trackUid) {
         console.log('add series:', trackUid);
         let trackPosition = getTrackPositionByUid(this.props.tracks, trackUid);
-        let track = this.getTrackByUid(trackUid);
+        let track = getTrackByUid(this.props.tracks, trackUid);
         console.log('position:', trackPosition);
 
         this.setState({
@@ -235,39 +236,6 @@ export class TiledPlot extends React.Component {
         });
     }
 
-
-    getTrackByUid(uid) {
-        /**
-         * Return the track object for the track corresponding to this uid
-         *
-         * Null or undefined if none.
-         */
-        let tracks = this.props.tracks;
-
-        for (let trackType in tracks) {
-            let theseTracks = tracks[trackType];
-
-            let filteredTracks = theseTracks.filter((d) => { return d.uid == uid; });
-
-            if (filteredTracks.length)
-                return filteredTracks[0];
-
-            // check to see if this track is part of a combined track
-            let combinedTracks = theseTracks.filter((d) => { return d.type == 'combined'; });
-
-            if (combinedTracks.length) {
-                for (let i = 0; i < combinedTracks.length; i++) {
-                    let ct = combinedTracks[i];
-                    let filteredTracks = ct.contents.filter(d => d.uid == uid);
-
-                    if (filteredTracks.length)
-                        return filteredTracks[0];
-                }
-            }
-        }
-
-        return null;
-    }
 
 
     handleCloseTrack(uid) {
@@ -663,7 +631,7 @@ export class TiledPlot extends React.Component {
                                 onMenuClosed={this.handleConfigTrackMenuClosed.bind(this)}
                              >
                                   <ConfigTrackMenu
-                                    track={this.getTrackByUid(this.state.configTrackMenuId)}
+                                    track={getTrackByUid(this.props.tracks, this.state.configTrackMenuId)}
                                     position={ this.state.configTrackMenuLocation }
                                   />
                               </PopupMenu>
@@ -679,7 +647,7 @@ export class TiledPlot extends React.Component {
                         position={this.state.closeTrackMenuLocation}
                     >
                                   <CloseTrackMenu
-                                    track={this.getTrackByUid(this.state.closeTrackMenuId)}
+                                    track={getTrackByUid(this.props.tracks, this.state.closeTrackMenuId)}
                                     onCloseTrack={ this.handleCloseTrack.bind(this) }
                                   />
                     </ContextMenuContainer>

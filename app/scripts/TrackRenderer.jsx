@@ -19,6 +19,7 @@ import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
 import {VerticalLine1DPixiTrack} from './VerticalLine1DPixiTrack.js';
 import {CNVIntervalTrack} from './CNVIntervalTrack.js';
 import {LeftTrackModifier} from './LeftTrackModifier.js';
+import {ViewportTracker2D} from './ViewportTracker2D.js';
 
 export class TrackRenderer extends React.Component {
     /**
@@ -426,6 +427,8 @@ export class TrackRenderer extends React.Component {
                 return new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'left-stacked-interval':
                 return new LeftTrackModifier(new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid));
+            case 'viewport-projection-center':
+                return new ViewportTracker2D(this.props.pixiStage, track.registerViewportChanged, track.removeViewportChanged); 
             case 'combined':
                 return new CombinedTrack(track.contents, this.createTrackObject.bind(this));
             default:

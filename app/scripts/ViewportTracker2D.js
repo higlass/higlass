@@ -1,11 +1,14 @@
 import {PixiTrack} from './PixiTrack.js';
+import slugid from 'slugid';
 
 export class ViewportTracker2D extends PixiTrack {
-    constructor(scene, server, uid, registerViewportChanged, removeViewportChanged) {
-        super(scene, server, uid);
+    constructor(scene, registerViewportChanged, removeViewportChanged) {
+        super(scene);
+
+        let uid = slugid.nice()
 
         this.removeViewportChanged = removeViewportChanged;
-        registerViewportChanged(uid, this.viewportChanged);
+        registerViewportChanged(uid, this.viewportChanged.bind(this));
 
         // the viewport will call this.viewportChanged immediately upon
         // hearing registerViewportChanged
@@ -13,7 +16,12 @@ export class ViewportTracker2D extends PixiTrack {
         this.viewportYDomain = null;
     }
 
-    viewportChanged(viewportXDomain, viewportYDomain) {
+    viewportChanged(viewportXScale, viewportYScale) {
+        console.log('viewportChanged:');
+
+        let viewportXDomain = viewportYScale.domain();
+        let viewportYDomain = viewportYScale.domain();
+
         this.viewportXDomain = viewportXDomain;
         this.viewportYDomain = viewportYDomain;
 
@@ -28,17 +36,29 @@ export class ViewportTracker2D extends PixiTrack {
     draw() {
         let graphics = this.pMain;
 
+        if (!this.viewportXDomain || !this.viewportYDomain)
+            return;
+
+
         graphics.clear();
-        graphics.lineStyle(0, 0x0000FF, 1);
+        graphics.lineStyle(1, 0x0000FF, 1);
         graphics.beginFill(0xFF700B, 1);
 
-        let x = this.xScale(this.viewportXDomain[0]);
-        let y = this.yScale(this.viewportYDomain[0]);
-        let width = this.xScale(this.viewportXDomain[1]) - this.xScale(this.viewportXDomain[0]);
-        let height = this.yScale(this.viewportYDomain[1]) - this.yScale(this.viewportYDomain[0]);
+        let x = this._xScale(this.viewportXDomain[0]);
+        let y = this._yScale(this.viewportYDomain[0]);
+        let width = this._xScale(this.viewportXDomain[1]) - this._xScale(this.viewportXDomain[0]);
+        let height = this._yScale(this.viewportYDomain[1]) - this._yScale(this.viewportYDomain[0]);
 
         console.log('drawing viewport:', x, y, width, height);
 
         this.pMain.drawRect(x, y, width, height);
+    }
+
+    zoomed(newXScale, newYScale) {
+        this.xScale(newXScale);
+        this.yScale(newYScale);
+
+        this.draw();
+
     }
 }
