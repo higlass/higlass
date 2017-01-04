@@ -427,6 +427,9 @@ export class MultiViewContainer extends React.Component {
         }
 
         this.scalesChangedListeners[viewUid][listenerUid] = eventHandler;
+
+        // call the handler for the first time
+        eventHandler(this.xScales[viewUid], this.yScales[viewUid]);
   }
 
   removeScalesChangedListener(viewUid, listenerUid) {
@@ -1179,7 +1182,7 @@ export class MultiViewContainer extends React.Component {
        * view.
        */
 
-      let views = this.state.views;
+      let views = dictValues(this.state.views);
       let lastView = views[views.length-1];
 
       let maxY = 0;
@@ -1196,8 +1199,9 @@ export class MultiViewContainer extends React.Component {
       }
 
       this.removeZoomDispatch(views);
+      let jsonString = JSON.stringify(lastView);
 
-      let newView = JSON.parse(JSON.stringify(lastView));   //ghetto copy
+      let newView = JSON.parse(jsonString);   //ghetto copy
 
       // place this new view below all the others
       newView.layout.x = 0;
@@ -1207,8 +1211,10 @@ export class MultiViewContainer extends React.Component {
       newView.uid = slugid.nice();
       newView.layout.i = newView.uid;
 
+      this.state.views[newView.uid] = newView;
+
       this.setState({
-          'views': this.state.views.concat(newView)
+          views: this.state.views
       });
 
       /*

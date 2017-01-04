@@ -1,19 +1,26 @@
-import {PixiTrack} from './PixiTrack.js';
+import {SVGTrack} from './SVGTrack.js';
 import slugid from 'slugid';
+import {brush} from 'd3-brush';
 
-export class ViewportTracker2D extends PixiTrack {
-    constructor(scene, registerViewportChanged, removeViewportChanged) {
-        super(scene);
+export class ViewportTracker2D extends SVGTrack {
+    constructor(svgElement, registerViewportChanged, removeViewportChanged) {
+        super(svgElement);
 
         let uid = slugid.nice()
+        this.uid = uid;
 
         this.removeViewportChanged = removeViewportChanged;
+        this.viewportXDomain = null;
+        this.viewportYDomain = null;
+
+        this.brush = brush();
+        this.gMain.call(this.brush);
+
         registerViewportChanged(uid, this.viewportChanged.bind(this));
 
         // the viewport will call this.viewportChanged immediately upon
         // hearing registerViewportChanged
-        this.viewportXDomain = null;
-        this.viewportYDomain = null;
+        console.log('constructor...', this.uid);
     }
 
     viewportChanged(viewportXScale, viewportYScale) {
@@ -25,33 +32,31 @@ export class ViewportTracker2D extends PixiTrack {
         this.viewportXDomain = viewportXDomain;
         this.viewportYDomain = viewportYDomain;
 
+        console.log('vpc:', this.uid);
         this.draw();
     }
 
-    close() {
+    remove() {
         // remove the event handler that updates this viewport tracker
         this.removeViewportChanged(uid); 
+
+        super.remove();
     }
 
     draw() {
-        let graphics = this.pMain;
-
         if (!this.viewportXDomain || !this.viewportYDomain)
             return;
 
+        let x0 = this._xScale(this.viewportXDomain[0]);
+        let y0 = this._yScale(this.viewportYDomain[0]);
 
-        graphics.clear();
-        graphics.lineStyle(1, 0x0000FF, 1);
-        graphics.beginFill(0xFF700B, 1);
+        let x1 = this._xScale(this.viewportXDomain[1]);
+        let y1 = this._yScale(this.viewportYDomain[1]);
+         
+        let dest = [[x0,y0],[x1,y1]];
+        console.log('moving:', dest);
 
-        let x = this._xScale(this.viewportXDomain[0]);
-        let y = this._yScale(this.viewportYDomain[0]);
-        let width = this._xScale(this.viewportXDomain[1]) - this._xScale(this.viewportXDomain[0]);
-        let height = this._yScale(this.viewportYDomain[1]) - this._yScale(this.viewportYDomain[0]);
-
-        console.log('drawing viewport:', x, y, width, height);
-
-        this.pMain.drawRect(x, y, width, height);
+        this.gMain.call(this.brush.move, dest)
     }
 
     zoomed(newXScale, newYScale) {
@@ -65,7 +70,12 @@ export class ViewportTracker2D extends PixiTrack {
     setPosition(newPosition) {
         super.setPosition(newPosition);
 
+        /*
         this.pMain.position.y = this.position[1];
         this.pMain.position.x = this.position[0];
+
+        console.log('sp:', this.uid);
+        */
+        this.draw();
     }
 }
