@@ -318,6 +318,11 @@ export class MultiViewContainer extends React.Component {
           
           ]
 
+        let viewsByUid = {};
+        views.forEach(v => {
+            viewsByUid[v.uid] = v;     
+        });
+
           this.state = {
             currentBreakpoint: 'lg',
             mounted: false,
@@ -326,7 +331,7 @@ export class MultiViewContainer extends React.Component {
             layouts: {},
             svgElement: null,
             canvasElement: null,
-            views: views,
+            views: viewsByUid,
             addTrackPositionMenuPosition: null,
 
             //chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
@@ -341,7 +346,7 @@ export class MultiViewContainer extends React.Component {
 
     componentDidMount() {
         this.element = ReactDOM.findDOMNode(this);
-        this.state.views.map(v => {
+        dictValues(this.state.views).map(v => {
             if (!v.layout)
                 v.layout = this.generateViewLayout(v)
             else {
@@ -728,10 +733,10 @@ export class MultiViewContainer extends React.Component {
       this.handleDragStop();
 
       layout.forEach(l => {
-        let correspondingView = this.state.views.filter(x => x.uid == l.i);
+        let correspondingView = this.state.views[l.i];
 
-        if (correspondingView.length) {
-            correspondingView[0].layout = l;
+        if (correspondingView) {
+            correspondingView.layout = l;
         }
       });
   };
@@ -1047,7 +1052,7 @@ export class MultiViewContainer extends React.Component {
     // The component needs to be mounted in order for the initial view to have the right
     // width
     if (this.state.mounted) {
-        tiledAreas = this.state.views.map(function(view, i) {
+        tiledAreas = dictValues(this.state.views).map(function(view, i) {
                 let layout = view.layout;
 
                 let itemUid = view.uid;

@@ -5,7 +5,6 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
     constructor(scene, server, uid) {
         super(scene, server, uid);
 
-        this.text
     }
 
     areAllVisibleTilesLoaded() {

@@ -26,44 +26,7 @@ export class TiledPlot extends React.Component {
         this.yPositionOffset = 0;    // the offset from the Canvas and SVG elements
                                      // that the tracks will be drawn on
 
-
-        let tracks = {
-                          'top': [{'value': '1'},
-                                 {'height': 20, 'value': '2'},
-                                 {'height': 30, 'value': '3'}],
-                         'left': [{'width': 20, 'value': '4'},
-                                  {'width': 20, 'value': '5'},
-                                  {'width': 30, 'value': '6'}], 
-                         'right': [{'width': 20, 'value': '7'},
-                                  {'width': 20, 'value': '8'},
-                                  {'width': 30, 'value': '9'}], 
-                          'bottom': [{'height': 20, 'value': '10'},
-                                 {'height': 20, 'value': '11'},
-                                 {'height': 30, 'value': '12'}],
-
-                         'center': [{'height': 60, 'width': 40, 'value': 20}]
-                        }
-
-        let topTracks = {
-                            /*
-                          'top': [{'height': 40, 'value': 1}],
-                          'top': [{'height': 20, 'value': 1},
-                                 {'height': 20, 'value': 2},
-                                 {'height': 30, 'value': 3}],
-                                 */
-                           'top': [],
-                          'left': [
-                          {"width": 80, 'value': 1}
-                          ], 
-                              'right': [
-                              {'width': 80, 'value': 1} 
-                              ], 
-                          /*'bottom': [{'height': 40, 'value': 1}], */
-                              'bottom': [],
-                          'center': []}
-
-
-        tracks = this.props.tracks;
+        let tracks = this.props.tracks;
 
         // Add names to all the tracks
         let looseTracks = this.positionedTracksToAllTracks(this.props.tracks);
