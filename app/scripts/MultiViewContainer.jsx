@@ -465,19 +465,33 @@ export class MultiViewContainer extends React.Component {
       if (this.zoomLocks[uid]) {
           // this view is locked to another
           let lockGroup = this.zoomLocks[uid];
-          let lockGroupValues = dictValues(lockGroup);
+          let lockGroupItems = dictItems(lockGroup);
+
+          console.log('lockGroup:', lockGroup);
 
           let [centerX, centerY, k] = scalesCenterAndK(this.xScales[uid], this.yScales[uid]);
 
 
-          for (let i = 0; i < lockGroupValues.length; i++) {
-             let dx = lockGroupValues[i][1][0] - lockGroup[uid][1][0];
-             let dy = lockGroupValues[i][1][1] - lockGroup[uid][1][1];
-             let rk = lockGroupValues[i][1][1] / lockGroup[uid][1][1];
+          for (let i = 0; i < lockGroupItems.length; i++) {
+             let key = lockGroupItems[i][0];
+             let value = lockGroupItems[i][1];
+
+             let dx = value[0] - lockGroup[uid][0];
+             let dy = value[1] - lockGroup[uid][1];
+             let rk = value[2] / lockGroup[uid][2];
 
              console.log('dx', dx, 'dy:', dy, 'rk', rk);
+
+              let newCenterX = centerX + dx;
+              let newCenterY = centerY + dy;
+              let newK = k * rk;
+
+              this.setCenters[key](newCenterX, newCenterY, newK, false);
           }
 
+
+
+          /*
           if (uid == zoomLock.source) {
               let newCenterX = centerX + zoomLock.centerDiff[0];
               let newCenterY = centerY + zoomLock.centerDiff[1];
@@ -496,6 +510,7 @@ export class MultiViewContainer extends React.Component {
               // circular notifications
               this.setCenters[zoomLock.source](newCenterX, newCenterY, newK, false);
           }
+          */
       }
   }
 
@@ -521,36 +536,43 @@ export class MultiViewContainer extends React.Component {
          * @param uid2: The view that the lock was called on (the view that was selected)
          */
 
-      if (uid1 == uid2)
+      if (uid1 == uid2) {
+            this.setState({
+                chooseViewHandler: null
+            });
+
           return;    // locking a view to itself is silly
+      }
 
       let group1Members = [];
       let group2Members = [];
 
       if (!this.zoomLocks[uid1]) {
           // view1 isn't already in a group
-          group1Members = [uid1, scalesCenterAndK(this.xScales[uid1], this.yScales[uid1])];
+          group1Members = [[uid1, scalesCenterAndK(this.xScales[uid1], this.yScales[uid1])]];
       } else {
           // view1 is already in a group
           group1Members = dictItems(this.zoomLocks[uid1]).map(x => 
             // x is [uid, [centerX, centerY, k]]
-            [x[0], this.scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])] 
+            [x[0], scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])] 
           )
       }
 
       if (!this.zoomLocks[uid2]) {
           // view1 isn't already in a group
-          group2Members = [uid2, scalesCenterAndK(this.xScales[uid2], this.yScales[uid2])];
+          group2Members = [[uid2, scalesCenterAndK(this.xScales[uid2], this.yScales[uid2])]];
       } else {
           // view2 is already in a group
           group2Members = dictItems(this.zoomLocks[uid2]).map(x => 
             // x is [uid, [centerX, centerY, k]]
-            [x[0], this.scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])] 
+            [x[0], scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])] 
           )
       }
 
       let allMembers = group1Members.concat(group2Members);
       let groupDict = dictFromTuples(allMembers);
+
+      console.log('groupDict:', groupDict);
 
       allMembers.forEach(m => { this.zoomLocks[m[0]] = groupDict });
         
