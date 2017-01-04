@@ -14,6 +14,7 @@ import {PopupMenu} from './PopupMenu.jsx';
 import {ConfigViewMenu} from './ConfigViewMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
+import {getTrackPositionByUid} from './utils.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -297,7 +298,7 @@ export class MultiViewContainer extends React.Component {
             //chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
             //chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
             //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
-            //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
+            chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
             mouseOverOverlayUid: views[0].uid,
             configMenuUid: null
           }
@@ -592,6 +593,14 @@ export class MultiViewContainer extends React.Component {
      * @param toTrack: The track we want to project to
      */
       console.log('handleViewportProjected:', fromView, toView, toTrack);
+      let position = getTrackPositionByUid(this.state.views[toView].tracks, toTrack);
+      console.log('hvp position:', position);
+
+      let newTrack = {
+          uid: slugid.nice(),
+          type: 'viewport-projection-' + position,
+      }
+
       this.setState({
             chooseTrackHandler: null
       });
@@ -983,6 +992,109 @@ export class MultiViewContainer extends React.Component {
 
       return views;
   }
+
+    handleSeriesAdded(viewId, newTrack, position, hostTrack) {
+        /**
+         * We're adding a new dataset to an existing track
+         *
+         * @param newTrack: The new track to be added.
+         * @param position: Where the new series should be placed. 
+         *  (This could also be inferred from the hostTrack, but since
+         *  we already have it, we might as well use it)
+         * @param hostTrack: The track that will host the new series.
+         */
+
+        // is the host track a combined track?
+        // if so, easy, just append the new track to its contents
+        // if not, remove the current track from the track list
+        // create a new combined track, add the current and the new
+        // tracks and then update the whole track list
+        let tracks = this.state.views[viewId].tracks;
+
+        if (hostTrack.type == 'combined') {
+            hostTrack.contents.push(newTrack);
+        } else {
+            let newHost = { type: 'combined',
+                            uid: slugid.nice(),
+                            height: hostTrack.height,
+                            width: hostTrack.width,
+                            contents: [hostTrack, newTrack] }
+
+            let positionTracks = tracks[position];
+
+            for (let i = 0; i < positionTracks.length; i++) {
+                if (positionTracks[i].uid == hostTrack.uid)
+                    positionTracks[i] = newHost;
+            }
+        }
+
+        this.setState({
+            views: this.state.views
+        });
+    }
+
+    handleTrackAdded(viewId, newTrack, position, host=null) {
+        /**
+         * A track was added from the AddTrackModal dialog.
+         *
+         * @param trackInfo: A JSON object that can be used as a track
+         *                   definition
+         * @param position: The position the track is being added to
+         * @param host: If this track is being added to another track
+         */
+
+        console.log('trackAdded', newTrack, host);
+        if (host) {
+            // we're adding a series rather than a whole new track
+            this.handleSeriesAdded(viewId, newTrack, position, host);
+            return;
+        }
+
+        newTrack.width = this.minVerticalWidth;
+        newTrack.height = this.minHorizontalHeight;
+
+        let tracks = this.state.views[viewId].tracks;
+        if (position == 'left' || position == 'top') {
+            // if we're adding a track on the left or the top, we want the
+            // new track to appear at the begginning of the track list
+            tracks[position].unshift(newTrack); 
+
+        } else if (position == 'center') {
+            // we're going to have to either overlay the existing track with a new one
+            // or add another one on top
+            if (tracks['center'].length == 0) {
+                // no existing tracks
+                let newCombined = {
+                    uid: slugid.nice(),
+                    type: 'combined',
+                    contents: [
+                        newTrack ]
+                }
+                tracks['center'] = [newCombined];
+            } else {
+                // center track exists
+                if (tracks['center'][0].type == 'combined') {
+                    // if it's a combined track, we just need to add this track to the
+                    // contents
+                    tracks['center'][0].contents.push(newTrack);
+                } else {
+                    // if it's not, we have to create a new combined track
+                    let newCombined = {
+                        uid: slugid.nice(),
+                        type: 'combined',
+                        contents: [ 
+                            tracks['center'][0],
+                            newTrack ]
+                    }
+
+                    tracks['center'] = [newCombined];
+                }
+            }
+        } else {
+            // otherwise, we want it at the end of the track list
+            tracks[position].push(newTrack);
+        }
+    }
 
     handleCloseTrack(viewId, uid) {
         let tracks = this.state.views[viewId].tracks;

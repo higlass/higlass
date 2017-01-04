@@ -14,6 +14,7 @@ import {PopupMenu} from './PopupMenu.jsx';
 import {AddTrackPositionMenu} from './AddTrackPositionMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 
+import {getTrackPositionByUid, positionedTracksToAllTracks} from './utils.js';
 
 export class TiledPlot extends React.Component {
     constructor(props) {
@@ -27,7 +28,7 @@ export class TiledPlot extends React.Component {
         let tracks = this.props.tracks;
 
         // Add names to all the tracks
-        let looseTracks = this.positionedTracksToAllTracks(this.props.tracks);
+        let looseTracks = positionedTracksToAllTracks(this.props.tracks);
         looseTracks = this.addNamesToTracks(looseTracks);
 
         this.trackRenderers = {}
@@ -141,47 +142,6 @@ export class TiledPlot extends React.Component {
         return allTracks;
     }
 
-    positionedTracksToAllTracks(positionedTracks, includeCombinedContents = true) {
-        /** 
-         * Convert the position indexed list of tracks:
-         *
-         * { 'top': [{line}, {bar}],
-         *   'center': [{combined, contents: {heatmap, 2d-tiles}]
-         *   ...
-         *  }
-         *
-         *  To a flat list of tracks:
-         *  { line, position: 'top'
-         *   bar, position: 'top'
-         *   ...
-         *   }
-         */
-        let tracks = positionedTracks;
-        let allTracks = [];
-
-        for (let trackType in tracks) {
-            let theseTracks = tracks[trackType]
-            
-            theseTracks.forEach(x => {
-                if (x.type == 'combined') {
-                    // we don't really deal with nested combined tracks here,
-                    // but those shouldn't really be used anyway
-                    if (includeCombinedContents) {
-                        x.contents.forEach(y => {
-                            allTracks.push(Object.assign(y, {position: trackType}));
-                        });
-                    }
-                } 
-                
-                allTracks.push(Object.assign(x, {position: trackType}));
-            });
-        }
-
-        return allTracks;
-    }
-
-
-
     handleTilesetInfoReceived(trackUid, tilesetInfo) {
         /**
          * We've received information about a tileset from the server. Register it
@@ -193,11 +153,11 @@ export class TiledPlot extends React.Component {
         let track = this.getTrackByUid(trackUid);
         track.name = tilesetInfo.name;
 
-        console.log('setting name:', tilesetInfo.name);
-
+        /*
         this.setState({
             tracks: this.state.tracks
         });
+        */
     }
 
   handleOverlayMouseEnter(uid) {
@@ -212,46 +172,6 @@ export class TiledPlot extends React.Component {
     })
   }
 
-    handleSeriesAdded(newTrack, position, hostTrack) {
-        /**
-         * We're adding a new dataset to an existing track
-         *
-         * @param newTrack: The new track to be added.
-         * @param position: Where the new series should be placed. 
-         *  (This could also be inferred from the hostTrack, but since
-         *  we already have it, we might as well use it)
-         * @param hostTrack: The track that will host the new series.
-         */
-
-        // is the host track a combined track?
-        // if so, easy, just append the new track to its contents
-        // if not, remove the current track from the track list
-        // create a new combined track, add the current and the new
-        // tracks and then update the whole track list
-        let tracks = this.state.tracks;
-
-        if (hostTrack.type == 'combined') {
-            hostTrack.contents.push(newTrack);
-        } else {
-            let newHost = { type: 'combined',
-                            uid: slugid.nice(),
-                            height: hostTrack.height,
-                            width: hostTrack.width,
-                            contents: [hostTrack, newTrack] }
-
-            let positionTracks = tracks[position];
-
-            for (let i = 0; i < positionTracks.length; i++) {
-                if (positionTracks[i].uid == hostTrack.uid)
-                    positionTracks[i] = newHost;
-            }
-        }
-
-        this.setState({
-            tracks: tracks,
-            addTrackVisible: false
-        });
-    }
 
     handleTrackPositionChosen(position) {
         this.handleAddTrack(position);
@@ -261,72 +181,6 @@ export class TiledPlot extends React.Component {
         this.props.onTrackPositionChosen(position);
     }
 
-    handleTrackAdded(newTrack, position, host=null) {
-        /**
-         * A track was added from the AddTrackModal dialog.
-         *
-         * @param trackInfo: A JSON object that can be used as a track
-         *                   definition
-         * @param position: The position the track is being added to
-         * @param host: If this track is being added to another track
-         */
-        if (host) {
-            // we're adding a series rather than a whole new track
-            this.handleSeriesAdded(newTrack, position, host);
-            return;
-        }
-
-        newTrack.width = this.minVerticalWidth;
-        newTrack.height = this.minHorizontalHeight;
-
-        let tracks = this.state.tracks;
-        if (position == 'left' || position == 'top') {
-            // if we're adding a track on the left or the top, we want the
-            // new track to appear at the begginning of the track list
-            tracks[position].unshift(newTrack); 
-
-        } else if (position == 'center') {
-            // we're going to have to either overlay the existing track with a new one
-            // or add another one on top
-            if (tracks['center'].length == 0) {
-                // no existing tracks
-                let newCombined = {
-                    uid: slugid.nice(),
-                    type: 'combined',
-                    contents: [
-                        newTrack ]
-                }
-                tracks['center'] = [newCombined];
-            } else {
-                // center track exists
-                if (tracks['center'][0].type == 'combined') {
-                    // if it's a combined track, we just need to add this track to the
-                    // contents
-                    tracks['center'][0].contents.push(newTrack);
-                } else {
-                    // if it's not, we have to create a new combined track
-                    let newCombined = {
-                        uid: slugid.nice(),
-                        type: 'combined',
-                        contents: [ 
-                            tracks['center'][0],
-                            newTrack ]
-                    }
-
-                    tracks['center'] = [newCombined];
-                }
-            }
-        } else {
-            // otherwise, we want it at the end of the track list
-            tracks[position].push(newTrack);
-        }
-
-        this.setState({
-            tracks: tracks,
-            addTrackVisible: false
-        });
-
-    }
 
     handleNoTrackAdded() {
         /*
@@ -340,7 +194,7 @@ export class TiledPlot extends React.Component {
 
     handleAddSeries(trackUid) {
         console.log('add series:', trackUid);
-        let trackPosition = this.getTrackPositionByUid(trackUid);
+        let trackPosition = getTrackPositionByUid(this.props.tracks, trackUid);
         let track = this.getTrackByUid(trackUid);
         console.log('position:', trackPosition);
 
@@ -381,15 +235,6 @@ export class TiledPlot extends React.Component {
         });
     }
 
-    getTrackPositionByUid(uid) {
-        /**
-         * Get a track's orientation by it's UID.
-         */
-        let tracks = this.positionedTracksToAllTracks(this.state.tracks);
-        let thisTrack = tracks.filter(x => x.uid == uid);
-
-        return thisTrack[0].position;
-    }
 
     getTrackByUid(uid) {
         /**
@@ -434,6 +279,14 @@ export class TiledPlot extends React.Component {
         });
     }
 
+    handleTrackAdded(newTrack, position, host=null) {
+        this.props.onTrackAdded(newTrack, position, host);
+
+        this.setState({
+            addTrackVisible: false
+        });
+    }
+
     handleCloseTrackMenuOpened(uid, clickPosition) {
         this.setState({
             closeTrackMenuId: uid,
@@ -449,7 +302,7 @@ export class TiledPlot extends React.Component {
     }
 
     handleConfigTrackMenuOpened(uid, clickPosition) {
-        let orientation = this.getTrackPositionByUid(uid);
+        //let orientation = getTrackPositionByUid(uid);
 
         this.setState({
             configTrackMenuId: uid,
@@ -634,16 +487,16 @@ export class TiledPlot extends React.Component {
     render() {
         // left, top, right, and bottom have fixed heights / widths
         // the center will vary to accomodate their dimensions
-        this.topHeight = this.state.tracks['top']
+        this.topHeight = this.props.tracks['top']
             .map((x) => { return x.height; })
             .reduce((a,b) => { return a + b; }, 0);
-        this.bottomHeight = this.state.tracks['bottom']
+        this.bottomHeight = this.props.tracks['bottom']
             .map((x) => { return x.height; })
             .reduce((a,b) => { return a + b; }, 0);
-        this.leftWidth = this.state.tracks['left']
+        this.leftWidth = this.props.tracks['left']
             .map((x) => { return x.width; })
             .reduce((a,b) => { return a + b; }, 0);
-        this.rightWidth = this.state.tracks['right']
+        this.rightWidth = this.props.tracks['right']
             .map((x) => { return x.width; })
             .reduce((a,b) => { return a + b; }, 0);
 
@@ -676,7 +529,7 @@ export class TiledPlot extends React.Component {
                                 handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
-                                tracks={this.state.tracks['top']}
+                                tracks={this.props.tracks['top']}
                                 width={this.centerWidth}
                                 resizeHandles={new Set(['bottom'])}
                             />
@@ -692,7 +545,7 @@ export class TiledPlot extends React.Component {
                                 handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
-                                tracks={this.state.tracks['left']}
+                                tracks={this.props.tracks['left']}
                                 height={this.centerHeight}
                                 resizeHandles={new Set(['right'])}
                             />
@@ -708,7 +561,7 @@ export class TiledPlot extends React.Component {
                                 handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
-                                tracks={this.state.tracks['right']}
+                                tracks={this.props.tracks['right']}
                                 height={this.centerHeight}
                                 resizeHandles={new Set(['left'])}
                             />
@@ -724,7 +577,7 @@ export class TiledPlot extends React.Component {
                                 handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
-                                tracks={this.state.tracks['bottom']}
+                                tracks={this.props.tracks['bottom']}
                                 width={this.centerWidth}
                                 resizeHandles={new Set(['top'])}
                             />
@@ -734,7 +587,7 @@ export class TiledPlot extends React.Component {
                                       outline: trackOutline,
                                         position: "absolute",}} />)
 
-        if (this.state.tracks['center'].length) {
+        if (this.props.tracks['center'].length) {
             centerTrack = ( <div style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
                                       width: this.centerWidth, height: this.bottomHeight,
                                       outline: trackOutline,
@@ -746,7 +599,7 @@ export class TiledPlot extends React.Component {
                                 onAddSeries={this.handleAddSeries.bind(this)}
 
                                 height={this.centerHeight}
-                                uid={this.state.tracks['center'][0].uid}
+                                uid={this.props.tracks['center'][0].uid}
                                 width={this.centerWidth}
                                 />
                             </div> )
@@ -754,7 +607,6 @@ export class TiledPlot extends React.Component {
         let trackPositionTexts = this.createTrackPositionTexts();
 
         let positionedTracks = this.positionedTracks();
-        console.log('positionedTracks', positionedTracks);
 
         let trackRenderer = null;
         if (this.state.sizeMeasured) {
