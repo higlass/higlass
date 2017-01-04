@@ -13,7 +13,7 @@ import {TiledPlot} from './TiledPlot.jsx';
 import {PopupMenu} from './PopupMenu.jsx';
 import {ConfigViewMenu} from './ConfigViewMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
-import {scalesCenterAndK, dictItems, dictFromTuples, dictValues} from './utils.js';
+import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -420,7 +420,7 @@ export class MultiViewContainer extends React.Component {
        */
       if (this.zoomLocks[uid]) {
           // this view already has a zoom lock, we we need to turn it off
-          this.zoomLocks[uid] = null;
+          this.handleUnlockZoom(uid);
 
           this.setState({
             mouseOverOverlayUid: uid,
@@ -511,6 +511,34 @@ export class MultiViewContainer extends React.Component {
         });
   }
 
+  handleUnlockZoom(uid) {
+      /**
+       * We want to unlock uid from the zoom group that it's in.
+       *
+       * @param uid: The uid of a view.
+       */
+
+    // if this function is being called, lockGroup has to exist
+    let lockGroup = this.zoomLocks[uid];
+
+    let lockGroupKeys = dictKeys(lockGroup);
+
+    if (lockGroupKeys.length == 2) {
+        // there's only two items in this lock group so we need to 
+        // remove them both (no point in having one view locked to itself)
+        delete this.zoomLocks[lockGroupKeys[0]];
+        delete this.zoomLocks[lockGroupKeys[1]];
+
+        return;
+    } else {
+        // delete this view from the zoomLockGroup
+        delete this.zoomLocks[uid][uid];
+
+        // remove the handler
+        delete this.zoomLocks[uid];
+    }
+  }
+
   handleZoomLockChosen(uid1, uid2) {
         /* Views uid1 and uid2 need to be locked so that they always maintain the current
          * zoom and translation difference.
@@ -553,6 +581,8 @@ export class MultiViewContainer extends React.Component {
 
       let allMembers = group1Members.concat(group2Members);
       let groupDict = dictFromTuples(allMembers);
+
+      console.log('groupDict:', groupDict);
 
       allMembers.forEach(m => { this.zoomLocks[m[0]] = groupDict });
         

@@ -22,12 +22,18 @@ export class ConfigViewMenu extends React.Component {
 
 
     render() {
+        let lockZoomText = "Lock Zoom";
+
+        if (this.props.zoomLock) {
+            lockZoomText = "Unlock Zoom";
+        }
+
         return (
                 <div>
                     <ContextMenuItem text={'Yank Zoom'} 
                         onClick={e => this.props.onYankZoom(e)}
                     />
-                    <ContextMenuItem text={'Lock Zoom'} 
+                    <ContextMenuItem text={lockZoomText} 
                         onClick={e => this.props.onLockZoom(e)}
                     />
 
