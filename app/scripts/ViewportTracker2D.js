@@ -47,7 +47,6 @@ export class ViewportTracker2D extends SVGTrack {
 
         // the viewport will call this.viewportChanged immediately upon
         // hearing registerViewportChanged
-        console.log('constructor...', this.uid);
     }
 
     brushed() {
@@ -66,15 +65,12 @@ export class ViewportTracker2D extends SVGTrack {
     }
 
     viewportChanged(viewportXScale, viewportYScale) {
-        console.log('viewportChanged:');
-
         let viewportXDomain = viewportXScale.domain();
         let viewportYDomain = viewportYScale.domain();
 
         this.viewportXDomain = viewportXDomain;
         this.viewportYDomain = viewportYDomain;
 
-        console.log('vpc:', this.uid);
         this.draw();
     }
 
