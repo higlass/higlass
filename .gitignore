@@ -1,3 +1,4 @@
+build/
 npm-debug.log
 **/*.un~
 *.swo
