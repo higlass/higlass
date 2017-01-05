@@ -98,6 +98,7 @@
     "webpack-dev-server": "^1.16.2"
   },
   "scripts": {
-    "start": "webpack-dev-server --content-base app --display-exclude --profile --inline | grep -v '\\[\\d*\\]'"
+    "start": "webpack-dev-server --content-base app --display-exclude --profile --inline | grep -v '\\[\\d*\\]'",
+    "compile": "rm -rf dist/*; mkdir -p dist/scripts; mkdir -p dist/styles; cp -r app/images dist/; NODE_ENV=production webpack -p; cp build/playground.js dist/scripts; cp app/index.html dist/; cp app/styles/page.css dist/styles/"
   }
 }

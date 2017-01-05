@@ -75,3 +75,15 @@ repository and run the following commands:
 npm install
 npm start
 ```
+
+## Build
+
+To create a production-ready version run:
+
+```
+npm run compile
+```
+
+A working directory tree will be placed in the `dist` folder.
+
+
