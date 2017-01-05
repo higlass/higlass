@@ -344,6 +344,10 @@ function brush(dim) {
       s0 = selection[1][1];
     }
 
+      let selectionWidth = selection[1][0] - selection[0][0];
+      let selectionHeight = selection[1][1] - selection[0][1];
+      let selectionAspect = selectionWidth / selectionHeight;
+
     w1 = w0;
     n1 = n0;
     e1 = e0;
@@ -406,40 +410,41 @@ function brush(dim) {
         }
         case MODE_HANDLE: {
             console.log('signX:', signX, 'signY:', signY);
+
           let adx = dx; //Math.abs(dx)
           let ady = dy; //Math.abs(dy)
 
-          let rdx = adx, rdy = ady;
+          let r = selectionAspect;
 
           if (signX > 0 && signY > 0) {
               // lower right corner
-              if (adx < (ady * width / height)) {
-                ady = adx * height / width;   
+              if (adx < (ady * r)) {
+                ady = adx / r;
               } else {
-                adx = ady * width / height * 1;
+                adx = ady * r;
               }
           } if (signX < 0 && signY > 0) {
               // lower left corner
-              if (-adx < (ady * width / height)) {
-                ady = -adx * height / width;   
+              if (-adx < (ady * r)) {
+                ady = -adx / r;
               } else {
-                adx = -ady * width / height * 1;
+                adx = -ady * r;
               }
           } 
           else if (signX < 0 && signY < 0) {
               // upper left corner
-              if (adx > (ady * width / height)) {
-                ady = adx * height / width;   
+              if (adx > (ady * r)) {
+                ady = adx / r;
               } else {
-                adx = ady * width / height * 1;
+                adx = ady * r;
               }
           }
           else if (signX > 0 && signY < 0) {
               // upper left corner
-              if (-adx > (ady * width / height)) {
-                ady = -adx * height / width;   
+              if (-adx > (ady * r)) {
+                ady = -adx / r;
               } else {
-                adx = -ady * width / height * 1;
+                adx = -ady * r;
               }
           }
 
@@ -449,15 +454,19 @@ function brush(dim) {
           dx = adx;
           dy = ady;
 
-          console.log('width:', width, 'height:', height);
-          console.log('dx:', dx, 'adx:', adx);
-          console.log('dy:', dy, 'ady:', ady);
+          //console.log('width:', width, 'height:', height);
+          console.log('h/w', height / width);
+          console.log('dx:', dx, 'dy:', dy);
 
-          if (signX < 0) dx = Math.max(W - w0, Math.min(E - w0, dx)), w1 = w0 + dx, e1 = e0;
-          else if (signX > 0) dx = Math.max(W - e0, Math.min(E - e0, dx)), w1 = w0, e1 = e0 + dx;
-          if (signY < 0) dy = Math.max(N - n0, Math.min(S - n0, dy)), n1 = n0 + dy, s1 = s0;
-          else if (signY > 0) dy = Math.max(N - s0, Math.min(S - s0, dy)), n1 = n0, s1 = s0 + dy;
+          if (signX < 0) dx = Math.max(W - w0, Math.min(E - w0, dx));
+          else if (signX > 0) dx = Math.max(W - e0, Math.min(E - e0, dx));
+          if (signY < 0) dy = Math.max(N - n0, Math.min(S - n0, dy));
+          else if (signY > 0) dy = Math.max(N - s0, Math.min(S - s0, dy));
 
+          if (signX < 0) w1 = w0 + dx, e1 = e0;
+          else if (signX > 0) w1 = w0, e1 = e0 + dx;
+          if (signY < 0) n1 = n0 + dy, s1 = s0;
+          else if (signY > 0) n1 = n0, s1 = s0 + dy;
 
           break;
         }
