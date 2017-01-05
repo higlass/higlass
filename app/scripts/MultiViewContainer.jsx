@@ -17,7 +17,7 @@ import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
 import {getTrackPositionByUid, getTrackByUid} from './utils.js';
 import {positionedTracksToAllTracks} from './utils.js';
-import {tracksInfo} from './config.js';
+import {remoteServer, tracksInfo} from './config.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -55,6 +55,8 @@ export class MultiViewContainer extends React.Component {
         this.horizontalMargin = 5;
         this.verticalMargin = 5;
 
+        let localServer = "localhost:8000";
+
         this.viewConfig = this.props.viewConfig;
 
           this.pixiStage = new PIXI.Container();
@@ -76,13 +78,13 @@ export class MultiViewContainer extends React.Component {
                         type:'horizontal-1d-tiles',
                         height: 20,
                       tilesetUid: 'bb',
-                      server: 'localhost:8000'}
+                      server: remoteServer}
                       ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-line',
                         height: 20,
                       tilesetUid: 'bb',
-                      server: 'localhost:8000'}
+                      server: remoteServer}
                     /*
                       ,
                 {'uid': slugid.nice(),
@@ -95,20 +97,20 @@ export class MultiViewContainer extends React.Component {
                         height: 30,
                         width: 20,
                       tilesetUid: 'bb',
-                      server: 'localhost:8000'}
+                      server: remoteServer}
                       ,
                     {'uid': slugid.nice(),
                         type: 'top-stacked-interval',
                         height: 30,
                         tilesetUid: 'cc',
-                        server: 'localhost:8000' 
+                        server:  remoteServer
                     }
                     ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
                         height: 30,
                       tilesetUid: 'cc',
-                      server: 'localhost:8000'}
+                      server: remoteServer}
 
                      ]
                 }
@@ -128,7 +130,7 @@ export class MultiViewContainer extends React.Component {
                         type: 'left-stacked-interval',
                         height: 30,
                         tilesetUid: 'cc',
-                        server: 'localhost:8000' 
+                        server:  remoteServer
                     }
                     ,
                     {'uid': slugid.nice(), 
@@ -136,7 +138,7 @@ export class MultiViewContainer extends React.Component {
                         height: 30,
                         width: 20,
                       tilesetUid: 'bb',
-                      server: 'localhost:8000'}
+                      server: remoteServer}
                      ]
                 }
                       ,
@@ -155,13 +157,13 @@ export class MultiViewContainer extends React.Component {
                     contents: 
                     [
 
-                        { 'server': 'localhost:8000',
+                        { 'server': remoteServer,
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': 'heatmap'
                         }
                         ,
-                        { 'server': 'localhost:8000',
+                        { 'server': remoteServer,
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': '2d-tiles'
@@ -187,13 +189,13 @@ export class MultiViewContainer extends React.Component {
                         type:'horizontal-1d-tiles',
                         height: 20,
                       tilesetUid: 'bb',
-                      server: 'localhost:8000'}
+                      server: remoteServer}
                       ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-line',
                         height: 20,
                       tilesetUid: 'bb',
-                      server: 'localhost:8000'}
+                      server: remoteServer}
                     /*
                       ,
                 {'uid': slugid.nice(),
@@ -206,20 +208,20 @@ export class MultiViewContainer extends React.Component {
                         height: 30,
                         width: 20,
                       tilesetUid: 'bb',
-                      server: 'localhost:8000'}
+                      server: remoteServer}
                       ,
                     {'uid': slugid.nice(),
                         type: 'top-stacked-interval',
                         height: 30,
                         tilesetUid: 'cc',
-                        server: 'localhost:8000' 
+                        server:  remoteServer
                     }
                     ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
                         height: 30,
                       tilesetUid: 'cc',
-                      server: 'localhost:8000'}
+                      server: remoteServer}
 
                      ]
                 }
@@ -239,7 +241,7 @@ export class MultiViewContainer extends React.Component {
                         type: 'left-stacked-interval',
                         height: 30,
                         tilesetUid: 'cc',
-                        server: 'localhost:8000' 
+                        server:  remoteServer
                     }
                     ,
                     {'uid': slugid.nice(), 
@@ -247,7 +249,7 @@ export class MultiViewContainer extends React.Component {
                         height: 30,
                         width: 20,
                       tilesetUid: 'bb',
-                      server: 'localhost:8000'}
+                      server: remoteServer}
                      ]
                 }
                       ,
@@ -266,13 +268,13 @@ export class MultiViewContainer extends React.Component {
                     contents: 
                     [
 
-                        { 'server': 'localhost:8000',
+                        { 'server': remoteServer,
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': 'heatmap'
                         }
                         ,
-                        { 'server': 'localhost:8000',
+                        { 'server': remoteServer,
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': '2d-tiles'
@@ -312,7 +314,7 @@ export class MultiViewContainer extends React.Component {
             //chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
             //chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
             //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
-            chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
+            //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
             mouseOverOverlayUid: views[0].uid,
             configMenuUid: null
           }

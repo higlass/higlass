@@ -1,3 +1,5 @@
+export const remoteServer = "52.45.229.11";
+
 export const tracksInfo = [
     {
         type: 'left-axis',
