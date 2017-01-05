@@ -173,8 +173,8 @@ function brush(dim) {
           select(this)
               .attr("x", extent[0][0])
               .attr("y", extent[0][1])
-              .attr("width", extent[1][0] - extent[0][0])
-              .attr("height", extent[1][1] - extent[0][1]);
+              .attr("width", Math.min(Number.MAX_VALUE, extent[1][0] - extent[0][0]))
+              .attr("height", Math.min(Number.MAX_VALUE, extent[1][1] - extent[0][1]));
         });
 
     group.selectAll(".selection")
@@ -332,6 +332,7 @@ function brush(dim) {
         point = point0,
         emit = emitter(that, arguments).beforestart();
 
+        console.log('W:', W, 'E', E, 'N', N, 'S', S);
     if (type === "overlay") {
       state.selection = selection = [
         [w0 = dim === Y ? W : point0[0], n0 = dim === X ? N : point0[1]],
@@ -402,12 +403,15 @@ function brush(dim) {
       let height = selection[1][1] - selection[0][1];
       
 
+        console.log('W:', W, 'E', E, 'N', N, 'S', S);
 
       switch (mode) {
         case MODE_SPACE:
         case MODE_DRAG: {
+          console.log('pdx:', dx, 'pdy:', dy);
           if (signX) dx = Math.max(W - w0, Math.min(E - e0, dx)), w1 = w0 + dx, e1 = e0 + dx;
           if (signY) dy = Math.max(N - n0, Math.min(S - s0, dy)), n1 = n0 + dy, s1 = s0 + dy;
+          console.log('dx:', dx, 'dy:', dy);
           break;
         }
         case MODE_HANDLE: {

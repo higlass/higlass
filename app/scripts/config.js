@@ -75,6 +75,14 @@ export const tracksInfo = [
         thumbnail: 'vertical-stacked-interval.png'
     },
     {
+        type: 'viewport-projection-center',
+        datatype: ['2d-projection'],
+        local: true,
+        orientation: '2d',
+        name: 'Viewport Projection',
+        thumbnail: 'viewport-projection-center.png'
+    },
+    {
         type: 'combined',
         datatype: 'any',
         local: true,

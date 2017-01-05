@@ -1,6 +1,7 @@
 import '../styles/MultiViewContainer.css';
 import React from 'react';
 import _ from 'lodash';
+import {scaleLinear} from 'd3-scale';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
 import {Responsive, WidthProvider} from 'react-grid-layout';
@@ -15,6 +16,8 @@ import {ConfigViewMenu} from './ConfigViewMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
 import {getTrackPositionByUid, getTrackByUid} from './utils.js';
+import {positionedTracksToAllTracks} from './utils.js';
+import {tracksInfo} from './config.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -288,6 +291,11 @@ export class MultiViewContainer extends React.Component {
         views.forEach(v => {
             this.fillInMinWidths(v.tracks);
             viewsByUid[v.uid] = v;     
+
+            // Add names to all the tracks
+            let looseTracks = positionedTracksToAllTracks(v.tracks);
+            looseTracks = this.addNamesToTracks(looseTracks);
+
         });
 
           this.state = {
@@ -448,7 +456,7 @@ export class MultiViewContainer extends React.Component {
 
   }
 
-  handleScalesChanged(uid, xScale, yScale) {
+  handleScalesChanged(uid, xScale, yScale, notify=true) {
       /*
        * The scales of some view have changed (presumably in response to zooming).
        *
@@ -457,11 +465,13 @@ export class MultiViewContainer extends React.Component {
       this.xScales[uid] = xScale;
       this.yScales[uid] = yScale;
 
-      if (this.scalesChangedListeners.hasOwnProperty(uid)) {
-        dictValues(this.scalesChangedListeners[uid]).forEach(x => {
-            x(xScale, yScale);
-            
-        });
+      if (notify) {
+          if (this.scalesChangedListeners.hasOwnProperty(uid)) {
+            dictValues(this.scalesChangedListeners[uid]).forEach(x => {
+                x(xScale, yScale);
+                
+            });
+          }
       }
 
       if (this.zoomLocks[uid]) {
@@ -650,10 +660,18 @@ export class MultiViewContainer extends React.Component {
           uid: slugid.nice(),
           type: 'viewport-projection-' + position,
           registerViewportChanged: (trackId, listener) => this.addScalesChangedListener(fromView, trackId, listener),
-          removeViewportChanged: trackId => this.removeScalesChangedListener(fromView, trackId)
+          removeViewportChanged: trackId => this.removeScalesChangedListener(fromView, trackId),
+          setDomainsCallback: (xDomain, yDomain) => {
+            let tXScale = scaleLinear().domain(xDomain).range(this.xScales[fromView].range());
+            let tYScale = scaleLinear().domain(yDomain).range(this.yScales[fromView].range());
+
+            let [tx, ty, k] = scalesCenterAndK(tXScale, tYScale);
+            this.setCenters[fromView](tx, ty, k, false);
+            this.handleScalesChanged(fromView, tXScale, tYScale, false);
+          }
       }
 
-      this.handleSeriesAdded(toView, newTrack, position, hostTrack);
+      this.handleTrackAdded(toView, newTrack, position, hostTrack);
 
       this.setState({
             chooseTrackHandler: null
@@ -1096,6 +1114,8 @@ export class MultiViewContainer extends React.Component {
          * @param position: The position the track is being added to
          * @param host: If this track is being added to another track
          */
+        this.addNameToTrack(newTrack);
+        console.log('newTrack:', newTrack);
 
         console.log('trackAdded', newTrack, host);
         if (host) {
@@ -1106,6 +1126,7 @@ export class MultiViewContainer extends React.Component {
 
         newTrack.width = this.minVerticalWidth;
         newTrack.height = this.minHorizontalHeight;
+
 
         let tracks = this.state.views[viewId].tracks;
         if (position == 'left' || position == 'top') {
@@ -1225,6 +1246,38 @@ export class MultiViewContainer extends React.Component {
       this.props.onNewConfig(newViewConfigText);
       */
   }
+
+  addNameToTrack(track) {
+      /**
+       * Add a name to this track based on its track type.
+       *
+       * Name is added in-place.
+       *
+       * The list of track information can be found in config.js:tracksInfo
+       */
+        let typeToName = {}
+        tracksInfo.forEach(x => {
+            if (x.name)
+                typeToName[x.type] = x.name;
+        });
+
+        if (track.type in typeToName)
+            track.name = typeToName[track.type];
+
+        return track;
+  }
+
+    addNamesToTracks(allTracks) {
+        /**
+         * Add track names to the ones that have known names in config.js
+         */
+
+        allTracks.forEach(t => {
+            this.addNameToTrack(t)
+        });
+
+        return allTracks;
+    }
 
 
   render() {

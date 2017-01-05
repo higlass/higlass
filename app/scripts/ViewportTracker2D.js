@@ -1,19 +1,26 @@
 import {SVGTrack} from './SVGTrack.js';
 import slugid from 'slugid';
 import brush from './lite-d3-brush.js';
+import {event} from 'd3-selection';
 
 export class ViewportTracker2D extends SVGTrack {
-    constructor(svgElement, registerViewportChanged, removeViewportChanged) {
+    constructor(svgElement, registerViewportChanged, removeViewportChanged, setDomainsCallback) {
         super(svgElement);
 
         let uid = slugid.nice()
         this.uid = uid;
 
         this.removeViewportChanged = removeViewportChanged;
+        this.setDomainsCallback = setDomainsCallback;
+
         this.viewportXDomain = null;
         this.viewportYDomain = null;
 
-        this.brush = brush();
+        this.brush = brush()
+            .extent([[-Number.MAX_VALUE, -Number.MAX_VALUE],
+                     [Number.MAX_VALUE, Number.MAX_VALUE]])
+            .on('start brush', this.brushed.bind(this));
+
         this.gBrush = this.gMain
             .append('g')
             .attr('id', 'brush-' + this.uid)
@@ -43,6 +50,21 @@ export class ViewportTracker2D extends SVGTrack {
         console.log('constructor...', this.uid);
     }
 
+    brushed() {
+        let s = event.selection;
+
+        if (!this._xScale || !this._yScale)
+            return;
+
+        let xDomain = [this._xScale.invert(s[0][0]), 
+                       this._xScale.invert(s[1][0])];
+
+        let yDomain = [this._yScale.invert(s[0][1]),
+                       this._yScale.invert(s[1][1])];
+
+        this.setDomainsCallback(xDomain, yDomain);
+    }
+
     viewportChanged(viewportXScale, viewportYScale) {
         console.log('viewportChanged:');
 
@@ -58,7 +80,7 @@ export class ViewportTracker2D extends SVGTrack {
 
     remove() {
         // remove the event handler that updates this viewport tracker
-        this.removeViewportChanged(uid); 
+        this.removeViewportChanged(this.uid); 
 
         super.remove();
     }
@@ -74,7 +96,6 @@ export class ViewportTracker2D extends SVGTrack {
         let y1 = this._yScale(this.viewportYDomain[1]);
          
         let dest = [[x0,y0],[x1,y1]];
-        console.log('moving:', dest);
 
         this.gBrush.call(this.brush.move, dest)
     }

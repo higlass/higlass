@@ -29,9 +29,6 @@ export class TiledPlot extends React.Component {
         let tracks = this.props.tracks;
 
         // Add names to all the tracks
-        let looseTracks = positionedTracksToAllTracks(this.props.tracks);
-        looseTracks = this.addNamesToTracks(looseTracks);
-
         this.trackRenderers = {}
 
         for (let key in tracks) {
@@ -125,23 +122,6 @@ export class TiledPlot extends React.Component {
          */
     }
 
-    addNamesToTracks(allTracks) {
-        /**
-         * Add track names to the ones that have known names in config.js
-         */
-        let typeToName = {}
-        tracksInfo.forEach(x => {
-            if (x.name)
-                typeToName[x.type] = x.name;
-        });
-
-        allTracks.forEach(t => {
-            if (t.type in typeToName)
-                t.name = typeToName[t.type];
-        });
-
-        return allTracks;
-    }
 
     handleTilesetInfoReceived(trackUid, tilesetInfo) {
         /**

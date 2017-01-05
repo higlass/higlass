@@ -428,7 +428,8 @@ export class TrackRenderer extends React.Component {
             case 'left-stacked-interval':
                 return new LeftTrackModifier(new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid));
             case 'viewport-projection-center':
-                return new ViewportTracker2D(this.svgElement, track.registerViewportChanged, track.removeViewportChanged); 
+                return new ViewportTracker2D(this.svgElement, track.registerViewportChanged, 
+                        track.removeViewportChanged, track.setDomainsCallback); 
             case 'combined':
                 return new CombinedTrack(track.contents, this.createTrackObject.bind(this));
             default:
