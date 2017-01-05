@@ -391,6 +391,11 @@ function brush(dim) {
 
       dx = point[0] - point0[0];
       dy = point[1] - point0[1];
+      
+      let width = selection[1][0] - selection[0][0];
+      let height = selection[1][1] - selection[0][1];
+      
+
 
       switch (mode) {
         case MODE_SPACE:
@@ -400,10 +405,60 @@ function brush(dim) {
           break;
         }
         case MODE_HANDLE: {
+            console.log('signX:', signX, 'signY:', signY);
+          let adx = dx; //Math.abs(dx)
+          let ady = dy; //Math.abs(dy)
+
+          let rdx = adx, rdy = ady;
+
+          if (signX > 0 && signY > 0) {
+              // lower right corner
+              if (adx < (ady * width / height)) {
+                ady = adx * height / width;   
+              } else {
+                adx = ady * width / height * 1;
+              }
+          } if (signX < 0 && signY > 0) {
+              // lower left corner
+              if (-adx < (ady * width / height)) {
+                ady = -adx * height / width;   
+              } else {
+                adx = -ady * width / height * 1;
+              }
+          } 
+          else if (signX < 0 && signY < 0) {
+              // upper left corner
+              if (adx > (ady * width / height)) {
+                ady = adx * height / width;   
+              } else {
+                adx = ady * width / height * 1;
+              }
+          }
+          else if (signX > 0 && signY < 0) {
+              // upper left corner
+              if (-adx > (ady * width / height)) {
+                ady = -adx * height / width;   
+              } else {
+                adx = -ady * width / height * 1;
+              }
+          }
+
+          //if (dx < 0) adx *= -1;
+          //if (dy < 0) ady *= -1;
+
+          dx = adx;
+          dy = ady;
+
+          console.log('width:', width, 'height:', height);
+          console.log('dx:', dx, 'adx:', adx);
+          console.log('dy:', dy, 'ady:', ady);
+
           if (signX < 0) dx = Math.max(W - w0, Math.min(E - w0, dx)), w1 = w0 + dx, e1 = e0;
           else if (signX > 0) dx = Math.max(W - e0, Math.min(E - e0, dx)), w1 = w0, e1 = e0 + dx;
           if (signY < 0) dy = Math.max(N - n0, Math.min(S - n0, dy)), n1 = n0 + dy, s1 = s0;
           else if (signY > 0) dy = Math.max(N - s0, Math.min(S - s0, dy)), n1 = n0, s1 = s0 + dy;
+
+
           break;
         }
         case MODE_CENTER: {
