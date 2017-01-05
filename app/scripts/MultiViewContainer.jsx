@@ -660,17 +660,7 @@ export class MultiViewContainer extends React.Component {
 
       let newTrack = {
           uid: slugid.nice(),
-          type: 'viewport-projection-' + position,
-          registerViewportChanged: (trackId, listener) => this.addScalesChangedListener(fromView, trackId, listener),
-          removeViewportChanged: trackId => this.removeScalesChangedListener(fromView, trackId),
-          setDomainsCallback: (xDomain, yDomain) => {
-            let tXScale = scaleLinear().domain(xDomain).range(this.xScales[fromView].range());
-            let tYScale = scaleLinear().domain(yDomain).range(this.yScales[fromView].range());
-
-            let [tx, ty, k] = scalesCenterAndK(tXScale, tYScale);
-            this.setCenters[fromView](tx, ty, k, false);
-            this.handleScalesChanged(fromView, tXScale, tYScale, false);
-          }
+          type: 'viewport-projection-' + position
       }
 
       this.handleTrackAdded(toView, newTrack, position, hostTrack);
@@ -1167,6 +1157,31 @@ export class MultiViewContainer extends React.Component {
     }
 
 
+  addCallbacks(track) {
+      /**
+       * Add callbacks for functions that need them
+       *
+       * Done in place.
+       *
+       * @param track: A view with tracks.
+       */
+      if (track.type == 'viewport-projection-2d') {
+          let fromView = track.fromViewUid;
+
+          track.registerViewportChanged = (trackId, listener) => this.addScalesChangedListener(fromView, trackId, listener),
+          track.removeViewportChanged = trackId => this.removeScalesChangedListener(fromView, trackId),
+          track.setDomainsCallback =  (xDomain, yDomain) => {
+            let tXScale = scaleLinear().domain(xDomain).range(this.xScales[fromView].range());
+            let tYScale = scaleLinear().domain(yDomain).range(this.yScales[fromView].range());
+
+            let [tx, ty, k] = scalesCenterAndK(tXScale, tYScale);
+            this.setCenters[fromView](tx, ty, k, false);
+            this.handleScalesChanged(fromView, tXScale, tYScale, false);
+          }
+      }
+
+      return;
+  }
 
   handleAddView() {
       /**
