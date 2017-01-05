@@ -80,4 +80,16 @@ export class Track {
         this._refXScale = refXScale;
         this._refYScale = refYScale;
     }
+
+    draw() {
+
+    }
+
+    setPosition(newPosition) {
+        this.position = newPosition;
+    }
+
+    remove() {
+
+    }
 }

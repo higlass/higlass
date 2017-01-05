@@ -172,7 +172,7 @@ export class MultiViewContainer extends React.Component {
                 }
             ]}
             ,
-            layout: {x: 0, y: 0, w: 2, h: 8}
+            layout: {x: 0, y: 0, w: 3, h: 10}
 
           }
           ,
@@ -1022,49 +1022,17 @@ export class MultiViewContainer extends React.Component {
     
       // check if this is the only view
       // if it is, don't close it (display an error message)
-      if (this.state.views.length == 1) {
+      if (dictValues(this.state.views).length == 1) {
             console.log("Can't close the only view");
             return;
       }
 
+      delete this.state.views[uid];
 
-      let viewsToClose = this.state.views.filter((d) => { return d.uid == uid; });
-
-      // send an event to the app telling it that we're closing some views so 
-      // that it can clean up after them
-
-      let filteredViews = this.state.views.filter((d) => { 
-          return d.uid != uid;
-      });
-
-      this.removeZoomDispatch(filteredViews);
-
+      // might want to notify the views that they're beig closed
       this.setState({
-          'views': filteredViews
+          'views': this.state.views
       });
-      /*
-      let newViewConfigText = JSON.stringify(viewConfigObject);
-
-      this.props.onNewConfig(newViewConfigText);
-      */
-  }
-
-  removeZoomDispatch(views) {
-      /**
-       * Remove all zoom dispatches from views so that
-       * we don't have issues when recreating them.
-       *
-       * @param {views} An array of views
-       * @return views The same set of views, with any zoomDispatch members excised
-       */
-      for (let i = 0; i < views.length; i++) {
-          let view = views[i];
-
-        if ('zoomDispatch' in view)
-            delete view.zoomDispatch;
-      }
-
-      return views;
   }
 
     handleSeriesAdded(viewId, newTrack, position, hostTrack) {
@@ -1199,6 +1167,7 @@ export class MultiViewContainer extends React.Component {
     }
 
 
+
   handleAddView() {
       /**
        * User clicked on the "Add View" button. We'll duplicate the last
@@ -1221,7 +1190,6 @@ export class MultiViewContainer extends React.Component {
           }
       }
 
-      this.removeZoomDispatch(views);
       let jsonString = JSON.stringify(lastView);
 
       let newView = JSON.parse(jsonString);   //ghetto copy

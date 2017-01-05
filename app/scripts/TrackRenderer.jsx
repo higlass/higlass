@@ -20,6 +20,7 @@ import {VerticalLine1DPixiTrack} from './VerticalLine1DPixiTrack.js';
 import {CNVIntervalTrack} from './CNVIntervalTrack.js';
 import {LeftTrackModifier} from './LeftTrackModifier.js';
 import {ViewportTracker2D} from './ViewportTracker2D.js';
+import {Track} from './Track.js';
 
 export class TrackRenderer extends React.Component {
     /**
@@ -428,8 +429,12 @@ export class TrackRenderer extends React.Component {
             case 'left-stacked-interval':
                 return new LeftTrackModifier(new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid));
             case 'viewport-projection-center':
-                return new ViewportTracker2D(this.svgElement, track.registerViewportChanged, 
-                        track.removeViewportChanged, track.setDomainsCallback); 
+                // TODO: Fix this so that these functions are defined somewhere else
+                if (track.registerViewportChanged && track.removeViewportChanged && track.setDomainsCallback)
+                    return new ViewportTracker2D(this.svgElement, track.registerViewportChanged, 
+                            track.removeViewportChanged, track.setDomainsCallback); 
+                else
+                    return new Track();
             case 'combined':
                 return new CombinedTrack(track.contents, this.createTrackObject.bind(this));
             default:
