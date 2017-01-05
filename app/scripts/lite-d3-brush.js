@@ -346,6 +346,8 @@ function brush(dim) {
 
       let selectionWidth = selection[1][0] - selection[0][0];
       let selectionHeight = selection[1][1] - selection[0][1];
+      let selectionStart = [[selection[0][0], selection[0][1]],
+                            [selection[1][0], selection[1][1]]];
       let selectionAspect = selectionWidth / selectionHeight;
 
     w1 = w0;
@@ -409,55 +411,6 @@ function brush(dim) {
           break;
         }
         case MODE_HANDLE: {
-            console.log('signX:', signX, 'signY:', signY);
-
-          let adx = dx; //Math.abs(dx)
-          let ady = dy; //Math.abs(dy)
-
-          let r = selectionAspect;
-
-          if (signX > 0 && signY > 0) {
-              // lower right corner
-              if (adx < (ady * r)) {
-                ady = adx / r;
-              } else {
-                adx = ady * r;
-              }
-          } if (signX < 0 && signY > 0) {
-              // lower left corner
-              if (-adx < (ady * r)) {
-                ady = -adx / r;
-              } else {
-                adx = -ady * r;
-              }
-          } 
-          else if (signX < 0 && signY < 0) {
-              // upper left corner
-              if (adx > (ady * r)) {
-                ady = adx / r;
-              } else {
-                adx = ady * r;
-              }
-          }
-          else if (signX > 0 && signY < 0) {
-              // upper left corner
-              if (-adx > (ady * r)) {
-                ady = -adx / r;
-              } else {
-                adx = -ady * r;
-              }
-          }
-
-          //if (dx < 0) adx *= -1;
-          //if (dy < 0) ady *= -1;
-
-          dx = adx;
-          dy = ady;
-
-          //console.log('width:', width, 'height:', height);
-          console.log('h/w', height / width);
-          console.log('dx:', dx, 'dy:', dy);
-
           if (signX < 0) dx = Math.max(W - w0, Math.min(E - w0, dx));
           else if (signX > 0) dx = Math.max(W - e0, Math.min(E - e0, dx));
           if (signY < 0) dy = Math.max(N - n0, Math.min(S - n0, dy));
@@ -499,7 +452,25 @@ function brush(dim) {
           || selection[0][1] !== n1
           || selection[1][0] !== e1
           || selection[1][1] !== s1) {
-        state.selection = [[w1, n1], [e1, s1]];
+
+        if (mode == MODE_HANDLE) { 
+            let width = Math.abs(e1 - w1);
+            let height = Math.abs(n1 - s1);
+
+            if (width < height * selectionAspect) 
+                height = width / selectionAspect;
+            else
+                width = height * selectionAspect;
+
+            if (signX < 0) w1 = e1 - width;
+            else if (signX > 0) e1 = w1 + width;
+            if (signY < 0) n1 = s1 - height;
+            else if (signY > 0) s1 = n1 + height;
+
+            state.selection = [[w1, n1], [e1, s1]];
+        } else {
+            state.selection = [[w1, n1], [e1, s1]];
+        }
         redraw.call(that);
         emit.brush();
       }
