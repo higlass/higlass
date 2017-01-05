@@ -14,7 +14,27 @@ export class ViewportTracker2D extends SVGTrack {
         this.viewportYDomain = null;
 
         this.brush = brush();
-        this.gMain.call(this.brush);
+        this.gBrush = this.gMain
+            .append('g')
+            .attr('id', 'brush-' + this.uid)
+            .call(this.brush);
+
+        // turn off the ability to select new regions for this brush
+        this.gBrush.selectAll('.overlay')
+            .style('pointer-events', 'none');
+
+        // turn off the ability to modify the aspect ratio of the brush
+        this.gBrush.selectAll('.handle--n')
+            .style('pointer-events', 'none')
+
+        this.gBrush.selectAll('.handle--s')
+            .style('pointer-events', 'none')
+
+        this.gBrush.selectAll('.handle--w')
+            .style('pointer-events', 'none')
+
+        this.gBrush.selectAll('.handle--e')
+            .style('pointer-events', 'none')
 
         registerViewportChanged(uid, this.viewportChanged.bind(this));
 
@@ -56,7 +76,7 @@ export class ViewportTracker2D extends SVGTrack {
         let dest = [[x0,y0],[x1,y1]];
         console.log('moving:', dest);
 
-        this.gMain.call(this.brush.move, dest)
+        this.gBrush.call(this.brush.move, dest)
     }
 
     zoomed(newXScale, newYScale) {

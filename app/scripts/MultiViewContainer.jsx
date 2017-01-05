@@ -1383,14 +1383,6 @@ export class MultiViewContainer extends React.Component {
                 height: this.state.height
             }}
         />
-        <svg 
-            ref={(c) => this.svgElement = c} 
-            style={{
-                position: "absolute",
-                width: this.state.width,
-                height: this.state.height
-            }}
-        />
         <div
             className="drawing-surface"
             style={{position: "absolute", 
@@ -1435,6 +1427,17 @@ export class MultiViewContainer extends React.Component {
         </div>
 
         {configMenu}
+        <svg 
+            ref={(c) => this.svgElement = c} 
+            style={{
+                position: "absolute",
+                width: this.state.width,
+                height: this.state.height,
+                left: 0,
+                top: 0,
+                pointerEvents: 'none'
+            }}
+        />
       </div>
     );
   }

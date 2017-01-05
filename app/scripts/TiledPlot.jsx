@@ -550,13 +550,17 @@ export class TiledPlot extends React.Component {
                                 resizeHandles={new Set(['top'])}
                             />
                          </div>)
-        let centerTrack = ( <div style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
+        let centerTrack = ( <div 
+                                    id={'center-track-container'}
+                                    style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
                                       width: this.centerWidth, height: this.bottomHeight,
                                       outline: trackOutline,
                                         position: "absolute",}} />)
 
         if (this.props.tracks['center'].length) {
-            centerTrack = ( <div style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
+            centerTrack = ( <div 
+                                    id={'center-track-container'}
+                                    style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
                                       width: this.centerWidth, height: this.bottomHeight,
                                       outline: trackOutline,
                                         position: "absolute",}}>
