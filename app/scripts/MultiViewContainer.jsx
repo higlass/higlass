@@ -304,7 +304,7 @@ export class MultiViewContainer extends React.Component {
             let looseTracks = positionedTracksToAllTracks(v.tracks);
             looseTracks = this.addNamesToTracks(looseTracks);
 
-            looseTracks.forEach(t => this.addCallbacks(t));
+            looseTracks.forEach(t => this.addCallbacks(v.uid, t));
 
         });
 
@@ -471,6 +471,8 @@ export class MultiViewContainer extends React.Component {
        * The scales of some view have changed (presumably in response to zooming).
        *
        * Mark the new scales and update any locked views.
+       *
+       * @param uid: The view of whom the scales have changed.
        */
       this.xScales[uid] = xScale;
       this.yScales[uid] = yScale;
@@ -495,6 +497,11 @@ export class MultiViewContainer extends React.Component {
           for (let i = 0; i < lockGroupItems.length; i++) {
              let key = lockGroupItems[i][0];
              let value = lockGroupItems[i][1];
+
+
+              if (key == uid)  // no need to notify oneself that the scales have changed
+                  continue
+             console.log('key:', key, 'uid:', uid);
 
              let dx = value[0] - lockGroup[uid][0];
              let dy = value[1] - lockGroup[uid][1];
@@ -601,21 +608,7 @@ export class MultiViewContainer extends React.Component {
     }
   }
 
-  handleZoomLockChosen(uid1, uid2) {
-        /* Views uid1 and uid2 need to be locked so that they always maintain the current
-         * zoom and translation difference.
-         * @param uid1: The view that the lock was called from
-         * @param uid2: The view that the lock was called on (the view that was selected)
-         */
-
-      if (uid1 == uid2) {
-            this.setState({
-                chooseViewHandler: null
-            });
-
-          return;    // locking a view to itself is silly
-      }
-
+  addZoomLock(uid1, uid2) {
       let group1Members = [];
       let group2Members = [];
 
@@ -647,6 +640,26 @@ export class MultiViewContainer extends React.Component {
       console.log('groupDict:', groupDict);
 
       allMembers.forEach(m => { this.zoomLocks[m[0]] = groupDict });
+
+  }
+
+  handleZoomLockChosen(uid1, uid2) {
+        /* Views uid1 and uid2 need to be locked so that they always maintain the current
+         * zoom and translation difference.
+         * @param uid1: The view that the lock was called from
+         * @param uid2: The view that the lock was called on (the view that was selected)
+         */
+
+      if (uid1 == uid2) {
+            this.setState({
+                chooseViewHandler: null
+            });
+
+          return;    // locking a view to itself is silly
+      }
+
+      this.addZoomLock(uid1, uid2);
+
         
         this.setState({
             chooseViewHandler: null
@@ -672,7 +685,7 @@ export class MultiViewContainer extends React.Component {
           fromViewUid: fromView
       }
 
-      this.addCallbacks(newTrack);
+      this.addCallbacks(toView, newTrack);
       this.handleTrackAdded(toView, newTrack, position, hostTrack);
 
       this.setState({
@@ -1167,7 +1180,7 @@ export class MultiViewContainer extends React.Component {
     }
 
 
-  addCallbacks(track) {
+  addCallbacks(viewUid, track) {
       /**
        * Add callbacks for functions that need them
        *
@@ -1186,7 +1199,9 @@ export class MultiViewContainer extends React.Component {
 
             let [tx, ty, k] = scalesCenterAndK(tXScale, tYScale);
             this.setCenters[fromView](tx, ty, k, false);
-            this.handleScalesChanged(fromView, tXScale, tYScale, false);
+
+            this.handleScalesChanged(fromView, tXScale, tYScale, true);
+
           }
       }
 
@@ -1227,7 +1242,7 @@ export class MultiViewContainer extends React.Component {
       newView.uid = slugid.nice();
       newView.layout.i = newView.uid;
 
-      positionedTracksToAllTracks(newView.tracks).forEach(t => this.addCallbacks(t));
+      positionedTracksToAllTracks(newView.tracks).forEach(t => this.addCallbacks(newView.id, t));
 
       this.state.views[newView.uid] = newView;
 

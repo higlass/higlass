@@ -5,7 +5,8 @@ import {event} from 'd3-selection';
 
 export class ViewportTracker2D extends SVGTrack {
     constructor(svgElement, registerViewportChanged, removeViewportChanged, setDomainsCallback) {
-        super(svgElement);
+        // create a clipped SVG Path
+        super(svgElement, true);
 
         let uid = slugid.nice()
         this.uid = uid;
@@ -43,6 +44,8 @@ export class ViewportTracker2D extends SVGTrack {
         this.gBrush.selectAll('.handle--e')
             .style('pointer-events', 'none')
 
+        this.noBrushEvent = true;
+
         registerViewportChanged(uid, this.viewportChanged.bind(this));
 
         // the viewport will call this.viewportChanged immediately upon
@@ -64,14 +67,13 @@ export class ViewportTracker2D extends SVGTrack {
         this.setDomainsCallback(xDomain, yDomain);
     }
 
-    viewportChanged(viewportXScale, viewportYScale) {
+    viewportChanged(viewportXScale, viewportYScale, update=true) {
         let viewportXDomain = viewportXScale.domain();
         let viewportYDomain = viewportYScale.domain();
 
         this.viewportXDomain = viewportXDomain;
         this.viewportYDomain = viewportYDomain;
 
-        this.draw();
     }
 
     remove() {
