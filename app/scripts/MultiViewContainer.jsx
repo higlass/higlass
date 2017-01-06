@@ -511,9 +511,39 @@ export class MultiViewContainer extends React.Component {
               let newCenterY = centerY + dy;
               let newK = k * rk;
 
-              this.setCenters[key](newCenterX, newCenterY, newK, false);
+              let [newXScale, newYScale] = this.setCenters[key](newCenterX, newCenterY, newK, false);
+
+              // notify the listeners of all locked views that the scales of
+              // this view have changed
+              if (this.scalesChangedListeners.hasOwnProperty(key)) {
+                dictValues(this.scalesChangedListeners[key]).forEach(x => {
+                    x(newXScale, newYScale);
+                });
+              }
           }
 
+
+
+          /*
+          if (uid == zoomLock.source) {
+              let newCenterX = centerX + zoomLock.centerDiff[0];
+              let newCenterY = centerY + zoomLock.centerDiff[1];
+
+              let newK = k * zoomLock.zoomRatio;
+
+              // set a new center, but don't notify of a change to prevent
+              // circular notifications
+              this.setCenters[zoomLock.target](newCenterX, newCenterY, newK, false);
+          } else {
+              let newCenterX = centerX - zoomLock.centerDiff[0];
+              let newCenterY = centerY - zoomLock.centerDiff[1];
+
+              let newK = k / zoomLock.zoomRatio;
+              // set a new center, but don't notify of a change to prevent
+              // circular notifications
+              this.setCenters[zoomLock.source](newCenterX, newCenterY, newK, false);
+          }
+          */
       }
   }
 

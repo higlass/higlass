@@ -350,8 +350,7 @@ export class TrackRenderer extends React.Component {
 
         this.zoomTransform = newTransform;
         this.emptyZoomBehavior.transform(this.divTrackAreaSelection, newTransform);
-        this.applyZoomTransform(notify);
-
+        return this.applyZoomTransform(notify);
     }
 
     zoomed() {
@@ -394,6 +393,8 @@ export class TrackRenderer extends React.Component {
 
         if (notify)
             this.props.onScalesChanged(newXScale, newYScale);
+
+        return [newXScale, newYScale];
     }
 
     createTrackObject(track) {

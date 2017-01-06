@@ -72,6 +72,8 @@ export class ViewportTracker2D extends SVGTrack {
     }
 
     viewportChanged(viewportXScale, viewportYScale, update=true) {
+        console.log('viewport changed', slugid.nice());
+
         let viewportXDomain = viewportXScale.domain();
         let viewportYDomain = viewportYScale.domain();
 
