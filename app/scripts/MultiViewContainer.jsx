@@ -1208,7 +1208,20 @@ export class MultiViewContainer extends React.Component {
             let [tx, ty, k] = scalesCenterAndK(tXScale, tYScale);
             this.setCenters[fromView](tx, ty, k, false);
 
+            let locked = false
+
+            if (viewUid in this.zoomLocks) 
+                locked = fromView in this.zoomLocks[viewUid];
+
+            console.log('locked', locked);
+            
+            if (locked)
+                this.handleUnlockZoom(viewUid);
+
             this.handleScalesChanged(fromView, tXScale, tYScale, true);
+
+            if (locked)
+                this.addZoomLock(viewUid, fromView);
 
           }
       }
