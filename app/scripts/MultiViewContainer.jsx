@@ -624,7 +624,6 @@ export class MultiViewContainer extends React.Component {
 
       if (!this.zoomLocks[uid1]) {
           // view1 isn't already in a group
-          console.log('this.xScales[uid1]', this.xScales[uid1].domain(), this.xScales[uid2].domain());
           group1Members = [[uid1, scalesCenterAndK(this.xScales[uid1], this.yScales[uid1])]];
       } else {
           // view1 is already in a group
@@ -683,10 +682,8 @@ export class MultiViewContainer extends React.Component {
      * @param toView: The uid of the view that we want to project to
      * @param toTrack: The track we want to project to
      */
-      console.log('handleViewportProjected:', fromView, toView, toTrack);
       let hostTrack = getTrackByUid(this.state.views[toView].tracks, toTrack);
       let position = getTrackPositionByUid(this.state.views[toView].tracks, toTrack);
-      console.log('hvp position:', position);
 
       let newTrack = {
           uid: slugid.nice(),
@@ -1107,9 +1104,7 @@ export class MultiViewContainer extends React.Component {
          * @param host: If this track is being added to another track
          */
         this.addNameToTrack(newTrack);
-        console.log('newTrack:', newTrack);
 
-        console.log('trackAdded', newTrack, host);
         if (host) {
             // we're adding a series rather than a whole new track
             this.handleSeriesAdded(viewId, newTrack, position, host);
