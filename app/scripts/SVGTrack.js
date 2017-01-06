@@ -31,8 +31,10 @@ export class SVGTrack extends Track {
     setDimensions(newDimensions) {
         this.dimensions = newDimensions;
 
-        this.clipRect.attr('width', this.dimensions[0]);
-        this.clipRect.attr('height', this.dimensions[1]);
+        this.clipRect.attr('width', newDimensions[0]);
+        this.clipRect.attr('height', newDimensions[1]);
+        this._xScale.range([0, this.dimensions[0]]);
+        this._yScale.range([0, this.dimensions[1]]);
     }
 
     remove() {

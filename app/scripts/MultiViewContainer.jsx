@@ -318,7 +318,7 @@ export class MultiViewContainer extends React.Component {
             addTrackPositionMenuPosition: null,
 
             //chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
-            chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
+            //chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
             //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
             //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
             mouseOverOverlayUid: views[0].uid,
