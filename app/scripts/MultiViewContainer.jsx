@@ -64,7 +64,7 @@ export class MultiViewContainer extends React.Component {
           this.element = null;
 
           let views = [{
-              uid: slugid.nice(),
+              uid: "aa",
               initialXDomain: [11000000,130000000],
               initialYDomain: [11000000,130000000],
               'tracks': {
@@ -279,6 +279,12 @@ export class MultiViewContainer extends React.Component {
                           'tilesetUid': 'aa',
                           'type': '2d-tiles'
                         }
+                        ,
+                        {
+                            'type': 'viewport-projection-center',
+                            uid: slugid.nice(),
+                            'fromViewUid': 'aa'
+                        }
                     ]
                 }
             ]}
@@ -297,6 +303,8 @@ export class MultiViewContainer extends React.Component {
             // Add names to all the tracks
             let looseTracks = positionedTracksToAllTracks(v.tracks);
             looseTracks = this.addNamesToTracks(looseTracks);
+
+            looseTracks.forEach(t => this.addCallbacks(t));
 
         });
 
@@ -660,9 +668,11 @@ export class MultiViewContainer extends React.Component {
 
       let newTrack = {
           uid: slugid.nice(),
-          type: 'viewport-projection-' + position
+          type: 'viewport-projection-' + position,
+          fromViewUid: fromView
       }
 
+      this.addCallbacks(newTrack);
       this.handleTrackAdded(toView, newTrack, position, hostTrack);
 
       this.setState({
@@ -1165,7 +1175,7 @@ export class MultiViewContainer extends React.Component {
        *
        * @param track: A view with tracks.
        */
-      if (track.type == 'viewport-projection-2d') {
+      if (track.type == 'viewport-projection-center') {
           let fromView = track.fromViewUid;
 
           track.registerViewportChanged = (trackId, listener) => this.addScalesChangedListener(fromView, trackId, listener),
@@ -1216,6 +1226,8 @@ export class MultiViewContainer extends React.Component {
       // give it its own unique id
       newView.uid = slugid.nice();
       newView.layout.i = newView.uid;
+
+      positionedTracksToAllTracks(newView.tracks).forEach(t => this.addCallbacks(t));
 
       this.state.views[newView.uid] = newView;
 
