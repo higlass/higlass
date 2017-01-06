@@ -56,7 +56,6 @@ export class ViewportTracker2D extends SVGTrack {
          * Should only be called  on active brushing, not in response to the
          * draw event
          */
-        console.log('brushed', slugid.nice());
         let s = event.selection;
 
         if (!this._xScale || !this._yScale)
@@ -72,8 +71,6 @@ export class ViewportTracker2D extends SVGTrack {
     }
 
     viewportChanged(viewportXScale, viewportYScale, update=true) {
-        console.log('viewport changed', slugid.nice());
-
         let viewportXDomain = viewportXScale.domain();
         let viewportYDomain = viewportYScale.domain();
 
@@ -102,6 +99,8 @@ export class ViewportTracker2D extends SVGTrack {
          
         let dest = [[x0,y0],[x1,y1]];
 
+        // user hasn't actively brushed so we don't want to emit a
+        // 'brushed' event
         this.brush.on('brush', null);
         this.gBrush.call(this.brush.move, dest)
         this.brush.on('brush', this.brushed.bind(this));

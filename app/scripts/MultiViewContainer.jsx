@@ -69,10 +69,8 @@ export class MultiViewContainer extends React.Component {
               initialYDomain: [11000000,130000000],
               'tracks': {
             'top': [
-                  /*
                 {'uid': slugid.nice(), type:'top-axis'}
             ,
-        */
 
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
@@ -177,7 +175,7 @@ export class MultiViewContainer extends React.Component {
           }
           ,
             {
-              uid: slugid.nice(),
+              uid: 'bb',
               initialXDomain: [20000000,300000000],
               initialYDomain: [20000000,300000000],
               'tracks': {
@@ -320,7 +318,7 @@ export class MultiViewContainer extends React.Component {
             addTrackPositionMenuPosition: null,
 
             //chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
-            //chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
+            chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
             //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
             //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
             mouseOverOverlayUid: views[0].uid,
@@ -501,17 +499,21 @@ export class MultiViewContainer extends React.Component {
 
               if (key == uid)  // no need to notify oneself that the scales have changed
                   continue
-             console.log('key:', key, 'uid:', uid);
 
              let dx = value[0] - lockGroup[uid][0];
              let dy = value[1] - lockGroup[uid][1];
-             let rk = value[2] / lockGroup[uid][2];
+             let rk = value[2] - lockGroup[uid][2];
 
               let newCenterX = centerX + dx;
               let newCenterY = centerY + dy;
-              let newK = k * rk;
+              let newK = k + rk;
 
               let [newXScale, newYScale] = this.setCenters[key](newCenterX, newCenterY, newK, false);
+
+              // because the setCenters call above has a 'false' notify, the new scales won't
+              // be propagated from there, so we have to store them here
+              this.xScales[key] = newXScale;
+              this.yScales[key] = newYScale;
 
               // notify the listeners of all locked views that the scales of
               // this view have changed
@@ -622,6 +624,7 @@ export class MultiViewContainer extends React.Component {
 
       if (!this.zoomLocks[uid1]) {
           // view1 isn't already in a group
+          console.log('this.xScales[uid1]', this.xScales[uid1].domain(), this.xScales[uid2].domain());
           group1Members = [[uid1, scalesCenterAndK(this.xScales[uid1], this.yScales[uid1])]];
       } else {
           // view1 is already in a group
@@ -644,8 +647,6 @@ export class MultiViewContainer extends React.Component {
 
       let allMembers = group1Members.concat(group2Members);
       let groupDict = dictFromTuples(allMembers);
-
-      console.log('groupDict:', groupDict);
 
       allMembers.forEach(m => { this.zoomLocks[m[0]] = groupDict });
 
@@ -1213,8 +1214,6 @@ export class MultiViewContainer extends React.Component {
             if (viewUid in this.zoomLocks) 
                 locked = fromView in this.zoomLocks[viewUid];
 
-            console.log('locked', locked);
-            
             if (locked)
                 this.handleUnlockZoom(viewUid);
 
@@ -1263,7 +1262,7 @@ export class MultiViewContainer extends React.Component {
       newView.uid = slugid.nice();
       newView.layout.i = newView.uid;
 
-      positionedTracksToAllTracks(newView.tracks).forEach(t => this.addCallbacks(newView.id, t));
+      positionedTracksToAllTracks(newView.tracks).forEach(t => this.addCallbacks(newView.uid, t));
 
       this.state.views[newView.uid] = newView;
 
