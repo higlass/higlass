@@ -514,28 +514,6 @@ export class MultiViewContainer extends React.Component {
               this.setCenters[key](newCenterX, newCenterY, newK, false);
           }
 
-
-
-          /*
-          if (uid == zoomLock.source) {
-              let newCenterX = centerX + zoomLock.centerDiff[0];
-              let newCenterY = centerY + zoomLock.centerDiff[1];
-
-              let newK = k * zoomLock.zoomRatio;
-
-              // set a new center, but don't notify of a change to prevent
-              // circular notifications
-              this.setCenters[zoomLock.target](newCenterX, newCenterY, newK, false);
-          } else {
-              let newCenterX = centerX - zoomLock.centerDiff[0];
-              let newCenterY = centerY - zoomLock.centerDiff[1];
-
-              let newK = k / zoomLock.zoomRatio;
-              // set a new center, but don't notify of a change to prevent
-              // circular notifications
-              this.setCenters[zoomLock.source](newCenterX, newCenterY, newK, false);
-          }
-          */
       }
   }
 

@@ -20,7 +20,8 @@ export class ViewportTracker2D extends SVGTrack {
         this.brush = brush()
             .extent([[-Number.MAX_VALUE, -Number.MAX_VALUE],
                      [Number.MAX_VALUE, Number.MAX_VALUE]])
-            .on('start brush', this.brushed.bind(this));
+            //.on('start', x => { console.log('started:', slugid.nice()); })
+            .on('brush', this.brushed.bind(this));
 
         this.gBrush = this.gMain
             .append('g')
@@ -44,8 +45,6 @@ export class ViewportTracker2D extends SVGTrack {
         this.gBrush.selectAll('.handle--e')
             .style('pointer-events', 'none')
 
-        this.noBrushEvent = true;
-
         registerViewportChanged(uid, this.viewportChanged.bind(this));
 
         // the viewport will call this.viewportChanged immediately upon
@@ -53,6 +52,11 @@ export class ViewportTracker2D extends SVGTrack {
     }
 
     brushed() {
+        /**
+         * Should only be called  on active brushing, not in response to the
+         * draw event
+         */
+        console.log('brushed', slugid.nice());
         let s = event.selection;
 
         if (!this._xScale || !this._yScale)
@@ -74,6 +78,7 @@ export class ViewportTracker2D extends SVGTrack {
         this.viewportXDomain = viewportXDomain;
         this.viewportYDomain = viewportYDomain;
 
+        this.draw();
     }
 
     remove() {
@@ -95,7 +100,9 @@ export class ViewportTracker2D extends SVGTrack {
          
         let dest = [[x0,y0],[x1,y1]];
 
+        this.brush.on('brush', null);
         this.gBrush.call(this.brush.move, dest)
+        this.brush.on('brush', this.brushed.bind(this));
     }
 
     zoomed(newXScale, newYScale) {
