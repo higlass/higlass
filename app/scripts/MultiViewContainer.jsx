@@ -57,6 +57,10 @@ export class MultiViewContainer extends React.Component {
 
         let localServer = "localhost:8000";
 
+        let usedServer = localServer;
+        //let usedServer = remoteServer; 
+
+
         this.viewConfig = this.props.viewConfig;
 
           this.pixiStage = new PIXI.Container();
@@ -76,13 +80,13 @@ export class MultiViewContainer extends React.Component {
                         type:'horizontal-1d-tiles',
                         height: 20,
                       tilesetUid: 'bb',
-                      server: remoteServer}
+                      server: usedServer }
                       ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-line',
                         height: 20,
                       tilesetUid: 'bb',
-                      server: remoteServer}
+                      server: usedServer }
                     /*
                       ,
                 {'uid': slugid.nice(),
@@ -95,20 +99,20 @@ export class MultiViewContainer extends React.Component {
                         height: 30,
                         width: 20,
                       tilesetUid: 'bb',
-                      server: remoteServer}
+                      server: usedServer }
                       ,
                     {'uid': slugid.nice(),
                         type: 'top-stacked-interval',
                         height: 30,
                         tilesetUid: 'cc',
-                        server:  remoteServer
+                        server:  usedServer 
                     }
                     ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
                         height: 30,
                       tilesetUid: 'cc',
-                      server: remoteServer}
+                      server: usedServer }
 
                      ]
                 }
@@ -128,7 +132,7 @@ export class MultiViewContainer extends React.Component {
                         type: 'left-stacked-interval',
                         height: 30,
                         tilesetUid: 'cc',
-                        server:  remoteServer
+                        server:  usedServer 
                     }
                     ,
                     {'uid': slugid.nice(), 
@@ -136,7 +140,7 @@ export class MultiViewContainer extends React.Component {
                         height: 30,
                         width: 20,
                       tilesetUid: 'bb',
-                      server: remoteServer}
+                      server: usedServer }
                      ]
                 }
                       ,
@@ -155,13 +159,13 @@ export class MultiViewContainer extends React.Component {
                     contents: 
                     [
 
-                        { 'server': remoteServer,
+                        { 'server': usedServer ,
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': 'heatmap'
                         }
                         ,
-                        { 'server': remoteServer,
+                        { 'server': usedServer ,
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': '2d-tiles'
@@ -187,13 +191,13 @@ export class MultiViewContainer extends React.Component {
                         type:'horizontal-1d-tiles',
                         height: 20,
                       tilesetUid: 'bb',
-                      server: remoteServer}
+                      server: usedServer }
                       ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-line',
                         height: 20,
                       tilesetUid: 'bb',
-                      server: remoteServer}
+                      server: usedServer }
                     /*
                       ,
                 {'uid': slugid.nice(),
@@ -206,20 +210,20 @@ export class MultiViewContainer extends React.Component {
                         height: 30,
                         width: 20,
                       tilesetUid: 'bb',
-                      server: remoteServer}
+                      server: usedServer }
                       ,
                     {'uid': slugid.nice(),
                         type: 'top-stacked-interval',
                         height: 30,
                         tilesetUid: 'cc',
-                        server:  remoteServer
+                        server:  usedServer 
                     }
                     ,
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
                         height: 30,
                       tilesetUid: 'cc',
-                      server: remoteServer}
+                      server: usedServer }
 
                      ]
                 }
@@ -239,7 +243,7 @@ export class MultiViewContainer extends React.Component {
                         type: 'left-stacked-interval',
                         height: 30,
                         tilesetUid: 'cc',
-                        server:  remoteServer
+                        server:  usedServer 
                     }
                     ,
                     {'uid': slugid.nice(), 
@@ -247,7 +251,7 @@ export class MultiViewContainer extends React.Component {
                         height: 30,
                         width: 20,
                       tilesetUid: 'bb',
-                      server: remoteServer}
+                      server: usedServer }
                      ]
                 }
                       ,
@@ -266,13 +270,13 @@ export class MultiViewContainer extends React.Component {
                     contents: 
                     [
 
-                        { 'server': remoteServer,
+                        { 'server': usedServer ,
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': 'heatmap'
                         }
                         ,
-                        { 'server': remoteServer,
+                        { 'server': usedServer ,
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': '2d-tiles'
