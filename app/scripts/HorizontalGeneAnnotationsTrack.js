@@ -55,17 +55,28 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
             ft.tileData.forEach(geneInfo => {
 
-                graphics.lineStyle(1, 0x0000FF, 1);
 
                 let txStart = +geneInfo[1];
                 let txEnd = +geneInfo[2];
 
                 let txMiddle = (txStart + txEnd) / 2;
+                let yMiddle = this.dimensions[1] / 2;
+
+                if (geneInfo[5] == '+') {
+                    // genes on the + strand drawn above and in blue
+                    yMiddle -= 6;
+                    graphics.lineStyle(1, 0x0000FF, 1);
+                } else {
+                    // genes on the - strand drawn below and in red
+                    yMiddle += 6;
+                    graphics.lineStyle(1, 0xFF0000, 1);
+                }
+
                 let height = valueScale(Math.log(+geneInfo[4]));
                 let width= height;
 
                 let rectX = this._xScale(txMiddle) - width / 2;
-                let rectY = this.dimensions[1] / 2 - height / 2;
+                let rectY = yMiddle - height / 2;
 
                 //console.log('rectX', rectX, 'rectY', rectY, 'width:', width, 'height:', height);
 
