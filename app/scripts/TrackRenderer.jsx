@@ -21,6 +21,7 @@ import {CNVIntervalTrack} from './CNVIntervalTrack.js';
 import {LeftTrackModifier} from './LeftTrackModifier.js';
 import {ViewportTracker2D} from './ViewportTracker2D.js';
 import {Track} from './Track.js';
+import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack.js';
 
 export class TrackRenderer extends React.Component {
     /**
@@ -436,6 +437,8 @@ export class TrackRenderer extends React.Component {
                             track.removeViewportChanged, track.setDomainsCallback); 
                 else
                     return new Track();
+            case 'horizontal-gene-annotations':
+                return new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid)
             case 'combined':
                 return new CombinedTrack(track.contents, this.createTrackObject.bind(this));
             default:

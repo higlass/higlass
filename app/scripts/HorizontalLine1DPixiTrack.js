@@ -61,8 +61,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         let j = 0;
 
         for (let i = 0; i < tileValues.length; i++) {
-
-
             let xPos = this._xScale(tileXScale(i));
             //console.log('xPos:', xPos);
 

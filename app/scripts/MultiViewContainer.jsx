@@ -60,7 +60,6 @@ export class MultiViewContainer extends React.Component {
         let usedServer = localServer;
         //let usedServer = remoteServer; 
 
-
         this.viewConfig = this.props.viewConfig;
 
           this.pixiStage = new PIXI.Container();
@@ -75,6 +74,15 @@ export class MultiViewContainer extends React.Component {
             'top': [
                 {'uid': slugid.nice(), type:'top-axis'}
             ,
+
+                    {
+                        'uid': slugid.nice(), 
+                        type:'horizontal-gene-annotations',
+                        height: 40,
+                      tilesetUid: 'dd',
+                      server: usedServer 
+                    }
+                      ,
 
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
@@ -296,6 +304,8 @@ export class MultiViewContainer extends React.Component {
           }
           
           ]
+
+        views = [views[0]];
 
         let viewsByUid = {};
         views.forEach(v => {

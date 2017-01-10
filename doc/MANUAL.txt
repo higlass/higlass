@@ -105,3 +105,50 @@ to calculate its y position.
 
 * LeftTrackModifier switches out `pBase` so removing it requirest removing its
   pBase from the stage, rather than the original track's
+
+
+
+### Creating a new track 2
+
+1.  Create a new section in `views` in `app/scripts/MultiViewContainer`:
+
+
+                    {
+                        'uid': slugid.nice(), 
+                        type:'horizontal-gene-annotations',
+                        height: 40,
+                      tilesetUid: 'dd',
+                      server: usedServer 
+                    }
+
+2. Open `app/scripts/config.js` and add an entry for the new track type:
+
+    * If you don't have a thumbnail for this track (which you should!), make it null
+
+    {
+        type: 'horizontal-gene-annotations',
+        datatype: ['gene-annotations'],
+        local: false,
+        orientation: '1d-horizontal',
+        name: 'Gene Annotations',
+        thumbnail: null
+    },
+
+3. Copy the closest existing track in app/scripts/*Track.js and rename it to what you want it called
+
+    cp app/scripts/HorizontalLine1DPixiTrack.js app/scripts/HorizontalGeneAnnotationsTrack.js
+
+4. Open the new track and change its class name:
+
+    export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
+
+5. Open `app/scripts/TrackRenderer.js` and import the new track:
+
+    import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack.js';
+
+Add instantiate the new track.
+
+    case 'horizontal-gene-annotations':
+        return new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid)
+
+6. Go back to the track and fill in the appropriate methods

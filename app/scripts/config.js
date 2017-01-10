@@ -84,6 +84,16 @@ export const tracksInfo = [
         name: 'Viewport Projection',
         thumbnail: 'viewport-projection-center.png'
     },
+
+    {
+        type: 'horizontal-gene-annotations',
+        datatype: ['gene-annotations'],
+        local: false,
+        orientation: '1d-horizontal',
+        name: 'Gene Annotations',
+        thumbnail: null
+    },
+
     {
         type: 'combined',
         datatype: 'any',
