@@ -34,6 +34,21 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         let graphics = this.pMain;
         graphics.clear();
 
+        let maxValue = 0;
+
+        for (let fetchedTileId in this.fetchedTiles) {
+            let ft = this.fetchedTiles[fetchedTileId];
+
+            ft.tileData.forEach(geneInfo => {
+                if (+geneInfo[4] > maxValue)
+                    maxValue = geneInfo[4];
+            });
+        }
+
+        console.log('maxValue:', maxValue);
+        let valueScale = scaleLinear()
+            .domain([0, Math.log(maxValue+1)])
+            .range([0,10]);
 
         for (let fetchedTileId in this.fetchedTiles) {
             let ft = this.fetchedTiles[fetchedTileId];
@@ -46,8 +61,8 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 let txEnd = +geneInfo[2];
 
                 let txMiddle = (txStart + txEnd) / 2;
-                let width = 10;
-                let height = 10;
+                let height = valueScale(Math.log(+geneInfo[4]));
+                let width= height;
 
                 let rectX = this._xScale(txMiddle) - width / 2;
                 let rectY = this.dimensions[1] / 2 - height / 2;
