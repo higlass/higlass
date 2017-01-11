@@ -40,6 +40,10 @@ export class CloseTrackMenu extends React.Component {
 
         return series.map(x => {
             let thumbnailLocation = "images/thumbnails/" + trackTypeToInfo[x.type].thumbnail;
+            let blankLocation = "images/thumbnails/blank.png";
+            let imgTag = trackTypeToInfo[x.type].thumbnail ? 
+                    <img src={thumbnailLocation} width={15} className='context-menu-thumbnail'/> :
+                    <img src={blankLocation} width={15} className='context-menu-thumbnail'/> 
 
                 return (
                     <div 
@@ -48,7 +52,7 @@ export class CloseTrackMenu extends React.Component {
                         key={x.uid}
                         onClick={e => this.props.onCloseTrack(x.uid)}
                     >
-                    <img src={thumbnailLocation} width={15} className='context-menu-thumbnail'/>
+                    {imgTag}
                         <span className='context-menu-span'
                             style={{ whiteSpace: 'nowrap' }}
                         >
