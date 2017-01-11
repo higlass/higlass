@@ -117,6 +117,7 @@ export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
                         data[key].tileId = key;
                         data[key].zoomLevel = +keyParts[1];
                         data[key].tilePos = keyParts.slice(2, keyParts.length).map(x => +x);
+                        data[key].tilesetUid = keyParts[0];
 
                         if ('dense' in data[key]) {
                             let newDense = _base64ToArrayBuffer(data[key].dense);

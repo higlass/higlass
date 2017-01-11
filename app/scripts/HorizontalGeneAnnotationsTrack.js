@@ -43,9 +43,9 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     draw() {
         let graphics = this.pMain;
+        let allVisibleTilesLoaded = this.areAllVisibleTilesLoaded();
 
-        if (this.areAllVisibleTilesLoaded())
-            graphics.clear();
+        graphics.clear();
 
         let maxValue = 0;
         let allTexts = [];
@@ -63,15 +63,19 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         let valueScale = scaleLinear()
             .domain([0, Math.log(maxValue+1)])
             .range([0,10]);
+        let addedIds = [];
 
-        //for (let fetchedTileId in this.fetchedTiles) {
-        let visibleAndFetchedIds = this.visibleAndFetchedIds();
+        //console.log('this.fetchedTiles:', this.fetchedTiles);
+        for (let fetchedTileId in this.fetchedTiles) {
+        //let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
-        console.log('this.fetchedTiles:', this.fetchedTiles);
-        console.log('this.visibleTiles:', this.visibleTiles);
-        for (let i = 0; i < visibleAndFetchedIds.length; i++) {
-            let fetchedTileId = visibleAndFetchedIds[i];
+        //for (let i = 0; i < visibleAndFetchedIds.length; i++) {
+            //let fetchedTileId = visibleAndFetchedIds[i];
             let ft = this.fetchedTiles[fetchedTileId];
+            let parentInFetched = this.parentInFetched(ft);
+
+            if (!parentInFetched)
+                addedIds.push(ft.tileData.tileId);
 
             ft.tileData.forEach(geneInfo => {
                 // the returned positions are chromosome-based and they need to
@@ -84,6 +88,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
                 let yMiddle = this.dimensions[1] / 2;
                 let textYMiddle = this.dimensions[1] / 2;
+                let geneName = geneInfo[3];
 
                 if (geneInfo[5] == '+') {
                     // genes on the + strand drawn above and in blue
@@ -110,18 +115,27 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                     return;
 
                 }
-                let text = ft.texts[geneInfo[3]];
+                let text = ft.texts[geneName];
 
                 text.position.x = this._xScale(txMiddle);
                 text.position.y = textYMiddle;
 
 
-                text.alpha = 1;
-                allTexts.push({importance: +geneInfo[4], text: text, caption: geneInfo[3]});
+                if (!parentInFetched) {
+                    text.alpha = 1;
+
+                    allTexts.push({importance: +geneInfo[4], text: text, caption: geneName});
+                } else {
+                    text.alpha = 0;
+                }
             });
         }
 
-        //console.log('captions:', allTexts.map(x => x.caption));
+        ///console.log('addedIds', addedIds);
+        if (allTexts.length > 0) {
+            //console.log('addedIds:', addedIds);
+            //console.log('captions:', allTexts.map(x => x.caption));
+        }
         this.hideOverlaps(allTexts);
     }
 

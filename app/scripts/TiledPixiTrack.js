@@ -54,6 +54,8 @@ export class TiledPixiTrack extends PixiTrack {
         return ret;
     }
 
+
+
     setVisibleTiles(tilePositions) {
         /**
          * Set which tiles are visible right now.
@@ -98,6 +100,31 @@ export class TiledPixiTrack extends PixiTrack {
         this.fetchNewTiles(toFetch);
     }
 
+    parentInFetched(tile) {
+        let uid = tile.tileData.tilesetUid;
+        let zl = tile.tileData.zoomLevel;
+        let pos = tile.tileData.tilePos;
+
+        while (zl > 0) {
+            zl -= 1;
+            pos = pos.map(x => Math.floor(x / 2));
+
+            let parentId = uid + '.' + zl + '.' + pos.join('.');
+            if (parentId in this.fetchedTiles)
+                return true
+
+        }
+
+        return false;
+    }
+
+    parentTileId(tile) {
+        let parentZoomLevel = tile.tileData.zoomLevel - 1;
+        let parentPos = tile.tileData.tilePos.map(x => Math.floor(x / 2));
+        let parentUid = tile.tileData.tilesetUid;
+
+        return parentUid + '.' + parentZoomLevel + '.' + parentPos.join('.')
+    }
 
     removeTiles(toRemoveIds) {
         /** 
@@ -126,6 +153,7 @@ export class TiledPixiTrack extends PixiTrack {
         })
 
         this.synchronizeTilesAndGraphics();
+        this.draw();
     }
 
     zoomed(newXScale, newYScale, k=1, tx=0, ty=0) {
