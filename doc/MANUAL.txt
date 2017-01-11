@@ -152,3 +152,8 @@ Add instantiate the new track.
         return new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid)
 
 6. Go back to the track and fill in the appropriate methods
+
+7. Add the new datatype to the horizontal-1d-tiles track if you want to be able to view its tiles.
+
+        type: 'horizontal-1d-tiles',
+        datatype: ['vector', 'stacked-interval', 'gene-annotation'],

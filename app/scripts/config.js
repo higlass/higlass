@@ -1,4 +1,6 @@
-export const remoteServer = "52.45.229.11";
+let localServer = "localhost:8000";
+let remoteServer = "52.45.229.11";
+export const usedServer = localServer;
 
 export const tracksInfo = [
     {
@@ -40,7 +42,7 @@ export const tracksInfo = [
     },
     {
         type: 'horizontal-1d-tiles',
-        datatype: ['vector', 'stacked-interval'],
+        datatype: ['vector', 'stacked-interval', 'gene-annotation'],
         local: false,
         orientation: '1d-horizontal',
         name: 'Horizontal 1D Tile Outlines',
@@ -87,7 +89,7 @@ export const tracksInfo = [
 
     {
         type: 'horizontal-gene-annotations',
-        datatype: ['gene-annotations'],
+        datatype: ['gene-annotation'],
         local: false,
         orientation: '1d-horizontal',
         name: 'Gene Annotations',

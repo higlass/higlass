@@ -17,7 +17,7 @@ import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
 import {getTrackPositionByUid, getTrackByUid} from './utils.js';
 import {positionedTracksToAllTracks} from './utils.js';
-import {remoteServer, tracksInfo} from './config.js';
+import {usedServer, tracksInfo} from './config.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -57,7 +57,7 @@ export class MultiViewContainer extends React.Component {
 
         let localServer = "localhost:8000";
 
-        let usedServer = localServer;
+        //let usedServer = localServer;
         //let usedServer = remoteServer; 
 
         this.viewConfig = this.props.viewConfig;
@@ -84,6 +84,7 @@ export class MultiViewContainer extends React.Component {
                     }
                       ,
 
+                    /*
                     {'uid': slugid.nice(), 
                         type:'horizontal-1d-tiles',
                         height: 20,
@@ -95,7 +96,6 @@ export class MultiViewContainer extends React.Component {
                         height: 20,
                       tilesetUid: 'bb',
                       server: usedServer }
-                    /*
                       ,
                 {'uid': slugid.nice(),
                  type: 'combined',
@@ -160,6 +160,7 @@ export class MultiViewContainer extends React.Component {
                   */
             ],
             'center': [
+                /*
                 {   
                     uid: slugid.nice(),
                     type: 'combined',
@@ -180,6 +181,7 @@ export class MultiViewContainer extends React.Component {
                         }
                     ]
                 }
+                */
             ]}
             ,
             layout: {x: 0, y: 0, w: 3, h: 10}

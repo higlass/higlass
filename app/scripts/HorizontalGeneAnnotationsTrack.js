@@ -56,8 +56,11 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             ft.tileData.forEach(geneInfo => {
 
 
-                let txStart = +geneInfo[1];
-                let txEnd = +geneInfo[2];
+                // the returned positions are chromosome-based and they need to
+                // be converted to genome-based
+                let chrOffset = +geneInfo[geneInfo.length-1];
+                let txStart = +geneInfo[1] + chrOffset;
+                let txEnd = +geneInfo[2] + chrOffset;
 
                 let txMiddle = (txStart + txEnd) / 2;
                 let yMiddle = this.dimensions[1] / 2;

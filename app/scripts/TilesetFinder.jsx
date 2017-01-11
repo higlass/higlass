@@ -5,7 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 import {tracksInfo,localTracks} from './config.js'
-import {remoteServer} from './config.js'
+import {usedServer} from './config.js'
 
 import {Form, Row,Col, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
 
@@ -32,7 +32,7 @@ export class TilesetFinder extends React.Component {
             filter: ''
         }
 
-        this.servers = [remoteServer]
+        this.servers = [usedServer]
         this.requestTilesetLists();
     }
 
