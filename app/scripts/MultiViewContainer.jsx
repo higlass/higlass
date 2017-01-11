@@ -68,7 +68,7 @@ export class MultiViewContainer extends React.Component {
 
           let views = [{
               uid: "aa",
-              initialXDomain: [0,3000000000],
+              initialXDomain: [1372000000,1374000000],
               initialYDomain: [0,3000000000],
               'tracks': {
             'top': [

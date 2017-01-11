@@ -41,6 +41,33 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     }
 
+    drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle) {
+        exonStarts = exonStarts.split(',').map(x => +x + chrOffset)
+        exonEnds = exonEnds.split(',').map(x => +x + chrOffset)
+
+        let xStartPos = this._xScale(txStart);
+        let xEndPos = this._xScale(txEnd);
+
+        let lineHeight = 1.5;
+        let exonHeight = 5;
+        let yPos = yMiddle - lineHeight / 2;
+        //let yPos = (d.height - lineHeight) / 2 + 5 ; //-(d.height - yScale(tileData[i]));
+        let width = xEndPos - xStartPos;
+
+        let yExonPos = yMiddle - exonHeight / 2;
+
+        graphics.drawRect(xStartPos, yPos, width, lineHeight);
+
+        for (let j = 0; j < exonStarts.length; j++) {
+            let exonStart = exonStarts[j];
+            let exonEnd = exonEnds[j];
+
+            graphics.drawRect(this._xScale(exonStart), yExonPos, 
+                    this._xScale(exonEnd) - this._xScale(exonStart), exonHeight);
+        }
+        
+    }
+
     draw() {
         let graphics = this.pMain;
         let allVisibleTilesLoaded = this.areAllVisibleTilesLoaded();
@@ -83,6 +110,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 let chrOffset = +geneInfo[geneInfo.length-1];
                 let txStart = +geneInfo[1] + chrOffset;
                 let txEnd = +geneInfo[2] + chrOffset;
+                let exonStarts = geneInfo[12], exonEnds = geneInfo[13];
 
                 let txMiddle = (txStart + txEnd) / 2;
 
@@ -108,7 +136,15 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 let rectX = this._xScale(txMiddle) - width / 2;
                 let rectY = yMiddle - height / 2;
 
-                graphics.drawRect(rectX, rectY, width, height);
+                let xStartPos = this._xScale(txStart);
+                let xEndPos = this._xScale(txEnd);
+
+
+                if (xEndPos - xStartPos > 10)  {
+                    this.drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle);
+                } else {
+                    graphics.drawRect(rectX, rectY, width, height);
+                }
 
                 if (!ft.texts) {
                     // tile probably hasn't been initialized yet
