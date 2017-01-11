@@ -43,7 +43,9 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     draw() {
         let graphics = this.pMain;
-        graphics.clear();
+
+        if (this.areAllVisibleTilesLoaded())
+            graphics.clear();
 
         let maxValue = 0;
         let allTexts = [];
@@ -62,7 +64,13 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             .domain([0, Math.log(maxValue+1)])
             .range([0,10]);
 
-        for (let fetchedTileId in this.fetchedTiles) {
+        //for (let fetchedTileId in this.fetchedTiles) {
+        let visibleAndFetchedIds = this.visibleAndFetchedIds();
+
+        console.log('this.fetchedTiles:', this.fetchedTiles);
+        console.log('this.visibleTiles:', this.visibleTiles);
+        for (let i = 0; i < visibleAndFetchedIds.length; i++) {
+            let fetchedTileId = visibleAndFetchedIds[i];
             let ft = this.fetchedTiles[fetchedTileId];
 
             ft.tileData.forEach(geneInfo => {
@@ -109,10 +117,11 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
 
                 text.alpha = 1;
-                allTexts.push({importance: +geneInfo[4], text: text});
+                allTexts.push({importance: +geneInfo[4], text: text, caption: geneInfo[3]});
             });
         }
 
+        //console.log('captions:', allTexts.map(x => x.caption));
         this.hideOverlaps(allTexts);
     }
 
@@ -130,8 +139,10 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
         let result = boxIntersect(allBoxes, function(i, j) {
             if (allTexts[i].importance > allTexts[j].importance) {
+                //console.log('hiding:', allTexts[j].caption)
                 allTexts[j].text.alpha = 0; 
             } else {
+                //console.log('hiding:', allTexts[i].caption)
                 allTexts[i].text.alpha = 0; 
             }
         });

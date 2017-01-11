@@ -68,13 +68,29 @@ export class MultiViewContainer extends React.Component {
 
           let views = [{
               uid: "aa",
-              initialXDomain: [11000000,130000000],
-              initialYDomain: [11000000,130000000],
+              initialXDomain: [0,3000000000],
+              initialYDomain: [0,3000000000],
               'tracks': {
             'top': [
                 {'uid': slugid.nice(), type:'top-axis'}
             ,
 
+                    {
+                        'uid': slugid.nice(), 
+                        type:'horizontal-gene-annotations',
+                        height: 60,
+                      tilesetUid: 'dd',
+                      server: usedServer 
+                    }
+                      ,
+                    {
+                        'uid': slugid.nice(), 
+                        type:'horizontal-gene-annotations',
+                        height: 60,
+                      tilesetUid: 'dd',
+                      server: usedServer 
+                    }
+                      ,
                     {
                         'uid': slugid.nice(), 
                         type:'horizontal-gene-annotations',

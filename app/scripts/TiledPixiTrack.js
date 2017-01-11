@@ -15,6 +15,7 @@ export class TiledPixiTrack extends PixiTrack {
         super(scene);
         // the tiles which should be visible (although they're not necessarily fetched)
         this.visibleTiles = new Set();
+        this.visibleTileIds = new Set();
         
         // the tiles we already have requests out for
         this.fetching = new Set();
@@ -163,7 +164,6 @@ export class TiledPixiTrack extends PixiTrack {
         // tiles that are fetched
         let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
 
-        //console.log('this.visibleTileIds:', this.visibleTileIds);
         //console.log('this.fetchedTiles:', this.fetchedTiles);
         let visibleTileIdsList = [...this.visibleTileIds];
 
