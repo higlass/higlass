@@ -78,7 +78,7 @@ export class MultiViewContainer extends React.Component {
                     {
                         'uid': slugid.nice(), 
                         type:'horizontal-gene-annotations',
-                        height: 40,
+                        height: 60,
                       tilesetUid: 'dd',
                       server: usedServer 
                     }
@@ -184,7 +184,7 @@ export class MultiViewContainer extends React.Component {
                 */
             ]}
             ,
-            layout: {x: 0, y: 0, w: 3, h: 10}
+            layout: {x: 0, y: 0, w: 6, h: 10}
 
           }
           ,
