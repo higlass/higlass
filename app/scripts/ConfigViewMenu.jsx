@@ -30,6 +30,10 @@ export class ConfigViewMenu extends React.Component {
 
         return (
                 <div>
+                    <ContextMenuItem text={'Toggle position search box'} 
+                        onClick={e => this.props.onTogglePositionSearchBox(e)}
+                    />
+                    <hr />
                     <ContextMenuItem text={'Yank Zoom'} 
                         onClick={e => this.props.onYankZoom(e)}
                     />

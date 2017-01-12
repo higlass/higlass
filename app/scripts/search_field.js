@@ -28,6 +28,7 @@ export class SearchField {
         if (chr == null)
             chr = prevChr
 
+                console.log('this.chromInfo:', this.chromInfo);
         if (chr == null) {
             retPos = pos;
         } else if (chr in this.chromInfo.chrPositions) {

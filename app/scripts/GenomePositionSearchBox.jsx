@@ -10,6 +10,7 @@ import Autocomplete from 'react-autocomplete';
 import {FormGroup,FormControl,InputGroup,Glyphicon,Button} from 'react-bootstrap';
 import {ChromosomeInfo} from './ChromosomeInfo.js';
 import {SearchField} from './search_field.js';
+import {scalesCenterAndK} from './utils.js';
 
 export class GenomePositionSearchBox extends React.Component {
     constructor(props) {
@@ -158,18 +159,25 @@ export class GenomePositionSearchBox extends React.Component {
                     continue;
                 }
 
+                // elongate the span of the gene so that it doesn't take up the entire
+                // view
+                let extension = Math.floor((genePosition.txEnd - genePosition.txStart) / 4);
+                console.log('extension:', extension);
+                //extension = 0;
+
                 if (dashParts.length == 1) {
                     // no range, just a position
-                    dashParts[j] = genePosition.chr + ":" + genePosition.txStart + '-' + genePosition.txEnd;
+                    dashParts[j] = genePosition.chr + ":" + (genePosition.txStart - extension) + 
+                        '-' + (genePosition.txEnd + extension);
                 } else {
                     if (j == 0) {
                         // first part of a range
 
-                        dashParts[j] = genePosition.chr + ":" + genePosition.txStart;
+                        dashParts[j] = genePosition.chr + ":" + (genePosition.txStart - extension);
                     } else {
                         // last part of a range
 
-                        dashParts[j] = genePosition.chr + ":" + genePosition.txEnd;
+                        dashParts[j] = genePosition.chr + ":" + (genePosition.txEnd + extension);
                     }
                 } 
 
@@ -195,7 +203,7 @@ export class GenomePositionSearchBox extends React.Component {
 
             if (retPos == null || isNaN(retPos)) {
                 // not a chromsome position, let's see if it's a gene name
-               let url = this.props.autocompleteSource + "/ac_" + value_parts[i].toLowerCase(); 
+               let url = this.props.autocompleteSource + "ac=" + value_parts[i].toLowerCase(); 
                q = q.defer(json, url);
                   
             }
@@ -207,8 +215,8 @@ export class GenomePositionSearchBox extends React.Component {
 
                 // extract the position of the top match from the list of files
                 for (let i = 0; i < files.length; i++) {
-                    genePositions[files[i]._source.suggestions[0].geneName.toLowerCase()] =
-                        files[i]._source.suggestions[0];
+                    genePositions[files[i][0].geneName.toLowerCase()] =
+                        files[i][0];
                 }
 
                 this.replaceGenesWithLoadedPositions(genePositions);
@@ -232,7 +240,15 @@ export class GenomePositionSearchBox extends React.Component {
                     return;
                 }
 
-                this.props.zoomToGenomePositionHandler(range1, range2);
+                if (!range2) 
+                    range2 = range1;
+
+                let newXScale = this.xScale.copy().domain(range1);
+                let newYScale = this.yScale.copy().domain(range2);
+
+                let [centerX, centerY, k] = scalesCenterAndK(newXScale, newYScale);
+                console.log('centerX:', centerX, 'centerY:', centerY, 'k:', k);
+                this.props.setCenters(centerX, centerY, k);
             }
         }.bind(this));
     }
@@ -278,12 +294,11 @@ export class GenomePositionSearchBox extends React.Component {
         if (!this.props.autocompleteSource)
             return;
 
-        console.log('parts:', parts);
         if (this.changedPart != null) {
             // if something has changed in the input text
             this.setState({loading: true});
             // send out a request for the autcomplete suggestions
-            let url = this.props.autocompleteSource + "/ac_" + parts[this.changedPart].toLowerCase();
+            let url = this.props.autocompleteSource + "ac=" + parts[this.changedPart].toLowerCase();
             json(url, (error, data) => {
                 if (error) {
                     this.setState({loading: false, genes: []});
@@ -291,7 +306,7 @@ export class GenomePositionSearchBox extends React.Component {
                 }
 
                 // we've received a list of autocomplete suggestions
-                this.setState({loading: false, genes: data._source.suggestions }); 
+                this.setState({loading: false, genes: data }); 
             });
         }
     }

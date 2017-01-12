@@ -71,6 +71,7 @@ export class MultiViewContainer extends React.Component {
               uid: "aa",
               initialXDomain: [1372000000,1374000000],
               initialYDomain: [0,3000000000],
+              autocompleteSource: "//" + usedServer + '/suggest/?d=dd&',
               chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.txt",
               'tracks': {
             'top': [
@@ -454,6 +455,7 @@ export class MultiViewContainer extends React.Component {
        * @param eventHandler: The handler to be called when the scales change
        *    Event handler is called with parameters (xScale, yScale)
        */
+        console.log('adding listener:', listenerUid);
 
         if (!this.scalesChangedListeners.hasOwnProperty(viewUid)) {
             this.scalesChangedListeners[viewUid] = {}
@@ -472,8 +474,9 @@ export class MultiViewContainer extends React.Component {
        * @param viewUid: The view that it's listening on.
        * @param listenerUid: The uid of the listener itself.
        */
+        console.log('removing listener', listenerUid);
         if (this.scalesChangedListeners.hasOwnProperty(viewUid)) {
-            let listeners = this.setCenters[viewUid];
+            let listeners = this.scalesChangedListeners[viewUid];
             
             if (listeners.hasOwnProperty(listenerUid))
                 delete listeners[listenerUid];
@@ -616,7 +619,6 @@ export class MultiViewContainer extends React.Component {
 
     // if this function is being called, lockGroup has to exist
     let lockGroup = this.zoomLocks[uid];
-
     let lockGroupKeys = dictKeys(lockGroup);
 
     if (lockGroupKeys.length == 2) {
@@ -1351,6 +1353,9 @@ export class MultiViewContainer extends React.Component {
                                     onYankZoom={e => this.handleYankZoom(this.state.configMenuUid)}
                                     onSyncCenter={e => this.handleSyncCenter(this.state.configMenuUid)}
                                     onProjectViewport={e => this.handleProjectViewport(this.state.configMenuUid)}
+                                    onTogglePositionSearchBox={e => this.setState({
+                                        configMenuUid: null,  // close the config menu
+                                        genomePositionSearchBoxVisible: !this.state.genomePositionSearchBoxVisible })}
                                 />
                             </ContextMenuContainer>
                         </PopupMenu>);
@@ -1417,11 +1422,15 @@ export class MultiViewContainer extends React.Component {
                                 </TiledPlot>)
 
                 let genomePositionSearchBoxUid = slugid.nice();
+                console.log('gpsbui', genomePositionSearchBoxUid);
+
                 let genomePositionSearchBox = this.state.genomePositionSearchBoxVisible ?
                     (<GenomePositionSearchBox 
-                        uid={genomePositionSearchBoxUid}
-                        registerViewportChangedListener = {listener => this.addScalesChangedListener(view.uid, genomePositionSearchBoxUid, listener)}
-                        removeViewportChangedListener = {() => this.removeScalesChangedListener(view.uid, genomePositionSearchBoxUid)}
+                        key={view.uid}
+                        autocompleteSource={view.autocompleteSource}
+                        registerViewportChangedListener = {listener => this.addScalesChangedListener(view.uid, view.uid, listener)}
+                        removeViewportChangedListener = {() => this.removeScalesChangedListener(view.uid, view.uid)}
+                        setCenters = {(centerX, centerY, k) => this.setCenters[view.uid](centerX, centerY, k)}
                         chromInfoPath={view.chromInfoPath}
                      />) : null;
 
