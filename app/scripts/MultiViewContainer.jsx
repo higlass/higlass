@@ -1423,7 +1423,6 @@ export class MultiViewContainer extends React.Component {
 
                 let genomePositionSearchBoxUid = slugid.nice();
 
-                                /*
                 let genomePositionSearchBox = this.state.genomePositionSearchBoxVisible ?
                     (<GenomePositionSearchBox 
                         key={view.uid}
@@ -1433,8 +1432,7 @@ export class MultiViewContainer extends React.Component {
                         setCenters = {(centerX, centerY, k) => this.setCenters[view.uid](centerX, centerY, k)}
                         chromInfoPath={view.chromInfoPath}
                      />) : null;
-                genomePositionSearchBox = null;
-                */
+                //genomePositionSearchBox = null;
 
                 return (<div 
                             data-grid={layout}
@@ -1476,6 +1474,7 @@ export class MultiViewContainer extends React.Component {
                                     width="10px" 
                                 />
                             </div>
+                                {genomePositionSearchBox}
                                 {tiledPlot}
                             {overlay}
                         </div>)

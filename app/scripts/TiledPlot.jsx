@@ -65,28 +65,32 @@ export class TiledPlot extends React.Component {
         this.centerWidth = 0;
     }
 
+    measureSize() {
+        let parentTop = this.element.parentNode.getBoundingClientRect().top;
+        let hereTop = this.element.getBoundingClientRect().top;
+
+        //let heightOffset = hereTop - parentTop;
+        let heightOffset = 0;
+        let height = this.element.clientHeight - heightOffset;
+        let width = this.element.clientWidth;
+
+            if (width > 0 && height > 0) {
+
+                this.setState({
+                    sizeMeasured: true,
+                    width: width,
+                    height: height
+                });
+            }
+    }
+
     componentDidMount() {
         this.element = ReactDOM.findDOMNode(this);
 
         ElementQueries.listen();
-        new ResizeSensor(this.element, function() {
-            let parentTop = this.element.parentNode.getBoundingClientRect().top;
-            let hereTop = this.element.getBoundingClientRect().top;
+        new ResizeSensor(this.element, this.measureSize.bind(this));
 
-            //let heightOffset = hereTop - parentTop;
-            let heightOffset = 0;
-            let height = this.element.clientHeight - heightOffset;
-            let width = this.element.clientWidth;
-
-                if (width > 0 && height > 0) {
-
-                    this.setState({
-                        sizeMeasured: true,
-                        width: width,
-                        height: height
-                    });
-                }
-        }.bind(this));
+        this.measureSize();
 
         this.setState({
             mounted: true,
