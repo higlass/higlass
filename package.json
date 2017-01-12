@@ -85,7 +85,7 @@
     "eventemitter3": "^2.0.2",
     "path": "^0.12.7",
     "pixi.js": "^4.2.3",
-    "react-autocomplete": "^1.3.1",
+    "react-autocomplete": "tiemevanveen/react-autocomplete#fix-176",
     "react-contextmenu": "^2.0.0-beta.2",
     "react-data-menu": "^1.0.12",
     "react-dimensions": "^1.3.0",

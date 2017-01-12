@@ -43,7 +43,8 @@ export class PopupMenu extends React.Component {
 
   handleDocumentClick(evt) {
       if (!this.popup.contains(evt.target)) {
-          this.props.onMenuClosed(evt)
+          if (this.props.onMenuClosed)
+            this.props.onMenuClosed(evt)
       }
   }
 

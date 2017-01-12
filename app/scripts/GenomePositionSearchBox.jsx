@@ -6,11 +6,12 @@ import {scaleLinear} from 'd3-scale';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
-import Autocomplete from 'react-autocomplete';
+import Autocomplete from './Autocomplete.js';
 import {FormGroup,FormControl,InputGroup,Glyphicon,Button} from 'react-bootstrap';
 import {ChromosomeInfo} from './ChromosomeInfo.js';
 import {SearchField} from './search_field.js';
 import {scalesCenterAndK} from './utils.js';
+import {PopupMenu} from './PopupMenu.jsx';
 
 export class GenomePositionSearchBox extends React.Component {
     constructor(props) {
@@ -20,6 +21,7 @@ export class GenomePositionSearchBox extends React.Component {
         this.chromInfo = null;
         this.chromInfoBisector = bisector((d) => { return d.pos }).left;
         this.searchField = null; 
+        this.autocompleteMenu = null;
 
         this.xScale = null, this.yScale = null;
         //this.props.zoomDispatch.on('zoom.' + this.uid, this.zoomed.bind(this))
@@ -45,10 +47,14 @@ export class GenomePositionSearchBox extends React.Component {
 
         this.props.registerViewportChangedListener(this.scalesChanged.bind(this));
 
+        this.menuPosition = {left:0, top:0};
+
         this.state = {
             value: "chr4:190,998,876-191,000,255",
             loading: false,
-            genes: []
+            menuPosition: [0,0],
+            genes: [],
+            menuOpened: false
         };
 
         this.styles = {
@@ -344,12 +350,42 @@ export class GenomePositionSearchBox extends React.Component {
         this.setState({value: parts.join(' '), genes: []});
     }
 
+    handleMenuVisibilityChange(isOpen) {
+        let box = this.autocompleteMenu.refs.input.getBoundingClientRect();
+
+        //console.log('box:', box);
+        this.menuPosition = {left: box.left, top: box.top + box.height};
+
+        this.setState({
+            menuOpened: isOpen
+        });
+    }
+
+    handleRenderMenu(items, value, style) {
+
+        return( <PopupMenu 
+                    children={items}
+                >
+                <div style={{
+                            position: 'absolute',
+                            'left': this.menuPosition.left,
+                            'top': this.menuPosition.top,
+                            border: '1px solid black'
+                }} children={items}/>
+                
+                </PopupMenu>)
+        //return (<PopupMenu ></PopupMenu>)
+
+    }
+
     render() {
         return(
                 <FormGroup bsSize='small'>
                 <InputGroup>
-                    <div style={{"zIndex": 999, "position": "relative"}}>
+                    <div 
+                        style={{"zIndex": 999, "position": "relative"}}>
                     <Autocomplete
+                        ref={c => this.autocompleteMenu = c}
                         value={this.state.value}
                         items={this.state.genes}
                         onChange = {this.onAutocompleteChange.bind(this)}
@@ -358,6 +394,12 @@ export class GenomePositionSearchBox extends React.Component {
                         getItemValue={(item) => item.geneName}
                         inputProps={{"className": "form-control"}}
                         wrapperStyle={{width: "100%"}}
+                        onMenuVisibilityChange={this.handleMenuVisibilityChange.bind(this)}
+                        menuStyle={{position:'absolute',
+                            'left': this.menuPosition.left,
+                            'top': this.menuPosition.top,
+                            border: '1px solid black'
+                        }}
                         renderItem={(item, isHighlighted) => (
                             <div
                               style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
@@ -365,6 +407,7 @@ export class GenomePositionSearchBox extends React.Component {
                               id={item.refseqid}
                             >{item.geneName}</div>
                           )}
+                        renderMenu={this.handleRenderMenu.bind(this)}
                     />
                     </div>
 

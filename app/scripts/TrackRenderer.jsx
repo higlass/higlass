@@ -153,7 +153,6 @@ export class TrackRenderer extends React.Component {
         // These need to be separated because the zoom behavior acts on a larger region
         // than the visible scale shows
 
-
         // if the window is resized, we don't want to change the scale, but we do want to move the center point
         // this needs to be tempered by the zoom factor so that we keep the visible center point in the center
         let centerDomainXOffset = (this.drawableToDomainX(currentCenterX) - this.drawableToDomainX(this.prevCenterX)) / this.zoomTransform.k;
