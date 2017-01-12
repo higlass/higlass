@@ -1463,9 +1463,7 @@ export class MultiViewContainer extends React.Component {
                                 />
                             </div>
                             {genomePositionSearchBox}
-                             <SearchableTiledPlot >
                                 {tiledPlot}
-                            </SearchableTiledPlot>
                             {overlay}
                         </div>)
 
