@@ -3,7 +3,6 @@ import {tsvParseRows} from 'd3-dsv';
 
 export function ChromosomeInfo(filepath, success) {
     text(filepath, (text) => {
-        console.log('text:', text);
         let data = tsvParseRows(text);
         let cumValues = [];
         let chrPositions = {};

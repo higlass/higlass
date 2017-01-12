@@ -1415,10 +1415,13 @@ export class MultiViewContainer extends React.Component {
                                 >
 
                                 </TiledPlot>)
+
+                let genomePositionSearchBoxUid = slugid.nice();
                 let genomePositionSearchBox = this.state.genomePositionSearchBoxVisible ?
                     (<GenomePositionSearchBox 
-                        xScale = {this.props.xScale}
-                        yScale = {this.props.yScale}
+                        uid={genomePositionSearchBoxUid}
+                        registerViewportChangedListener = {listener => this.addScalesChangedListener(view.uid, genomePositionSearchBoxUid, listener)}
+                        removeViewportChangedListener = {() => this.removeScalesChangedListener(view.uid, genomePositionSearchBoxUid)}
                         chromInfoPath={view.chromInfoPath}
                      />) : null;
 

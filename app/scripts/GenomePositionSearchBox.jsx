@@ -1,5 +1,5 @@
 import {bisector} from 'd3-array';
-import format from 'd3-format';
+import {format} from 'd3-format';
 import {json} from 'd3-request';
 import {queue} from 'd3-queue';
 import {scaleLinear} from 'd3-scale';
@@ -19,6 +19,8 @@ export class GenomePositionSearchBox extends React.Component {
         this.chromInfo = null;
         this.chromInfoBisector = bisector((d) => { return d.pos }).left;
         this.searchField = null; 
+
+        this.xScale = null, this.yScale = null;
         //this.props.zoomDispatch.on('zoom.' + this.uid, this.zoomed.bind(this))
 
         /*
@@ -39,6 +41,8 @@ export class GenomePositionSearchBox extends React.Component {
 
             this.setPositionText();
         });
+
+        this.props.registerViewportChangedListener(this.scalesChanged.bind(this));
 
         this.state = {
             value: "chr4:190,998,876-191,000,255",
@@ -77,6 +81,12 @@ export class GenomePositionSearchBox extends React.Component {
                 absPosition - this.chromInfo.cumPositions[insertPoint].pos];
     }
 
+    scalesChanged(xScale, yScale) {
+        this.xScale = xScale, this.yScale = yScale;
+
+        this.setPositionText();
+    }
+
     zoomed(translate, scale) {
         this.xOrigScale.domain(this.props.xDomain);
         this.yOrigScale.domain(this.props.yDomain);
@@ -100,28 +110,28 @@ export class GenomePositionSearchBox extends React.Component {
         if (this.chromInfo == null)
             return;                 // chromosome info hasn't been loaded yet
 
-        if (!this.props.xScale || !this.pros.yScale)
+        if (!this.xScale || !this.yScale)
             return;
 
-        let x1 = this.absoluteToChr(this.props.xScale.domain()[0]);
-        let x2 = this.absoluteToChr(this.props.xScale.domain()[1]);
+        let x1 = this.absoluteToChr(this.xScale.domain()[0]);
+        let x2 = this.absoluteToChr(this.xScale.domain()[1]);
 
-        let y1 = this.absoluteToChr(this.props.xScale.domain()[0]);
-        let y2 = this.absoluteToChr(this.props.xScale.domain()[1]);
+        let y1 = this.absoluteToChr(this.yScale.domain()[0]);
+        let y2 = this.absoluteToChr(this.yScale.domain()[1]);
 
         let positionString = null;
-        let format = format(",d")
+        let stringFormat = format(",d")
 
         if (x1[0] != x2[0])
-            positionString = x1[0] + ':' + format(Math.floor(x1[1])) + '-' + x2[0] + ':' + format(Math.ceil(x2[1]));
+            positionString = x1[0] + ':' + stringFormat(Math.floor(x1[1])) + '-' + x2[0] + ':' + stringFormat(Math.ceil(x2[1]));
         else
-            positionString = x1[0] + ':' + format(Math.floor(x1[1])) + '-' + format(Math.ceil(x2[1]));
+            positionString = x1[0] + ':' + stringFormat(Math.floor(x1[1])) + '-' + stringFormat(Math.ceil(x2[1]));
 
         if (this.props.twoD) {
             if (y1[0] != y2[0])
-                positionString += " and " +  y1[0] + ':' + format(Math.floor(y1[1])) + '-' + y2[0] + ':' + format(Math.ceil(y2[1]));
+                positionString += " and " +  y1[0] + ':' + stringFormat(Math.floor(y1[1])) + '-' + y2[0] + ':' + stringFormat(Math.ceil(y2[1]));
             else
-                positionString += " and " +  y1[0] + ':' + format(Math.floor(y1[1])) + '-' + format(Math.ceil(y2[1]));
+                positionString += " and " +  y1[0] + ':' + stringFormat(Math.floor(y1[1])) + '-' + stringFormat(Math.ceil(y2[1]));
         }
 
         this.prevParts = positionString.split(/[ -]/);
@@ -286,6 +296,10 @@ export class GenomePositionSearchBox extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        this.props.removeViewportChangedListener();
+    }
+
     geneSelected(value, objct) {
 
         let parts = this.state.value.split(' ');
@@ -351,6 +365,7 @@ export class GenomePositionSearchBox extends React.Component {
                 </FormGroup>
             );
     }
+
 }
                 /*
                 */
