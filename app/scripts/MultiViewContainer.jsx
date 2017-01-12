@@ -18,6 +18,7 @@ import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from 
 import {getTrackPositionByUid, getTrackByUid} from './utils.js';
 import {positionedTracksToAllTracks} from './utils.js';
 import {usedServer, tracksInfo} from './config.js';
+import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -70,27 +71,12 @@ export class MultiViewContainer extends React.Component {
               uid: "aa",
               initialXDomain: [1372000000,1374000000],
               initialYDomain: [0,3000000000],
+              chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.txt",
               'tracks': {
             'top': [
                 {'uid': slugid.nice(), type:'top-axis'}
             ,
 
-                    {
-                        'uid': slugid.nice(), 
-                        type:'horizontal-gene-annotations',
-                        height: 60,
-                      tilesetUid: 'dd',
-                      server: usedServer 
-                    }
-                      ,
-                    {
-                        'uid': slugid.nice(), 
-                        type:'horizontal-gene-annotations',
-                        height: 60,
-                      tilesetUid: 'dd',
-                      server: usedServer 
-                    }
-                      ,
                     {
                         'uid': slugid.nice(), 
                         type:'horizontal-gene-annotations',
@@ -176,7 +162,6 @@ export class MultiViewContainer extends React.Component {
                   */
             ],
             'center': [
-                /*
                 {   
                     uid: slugid.nice(),
                     type: 'combined',
@@ -197,7 +182,6 @@ export class MultiViewContainer extends React.Component {
                         }
                     ]
                 }
-                */
             ]}
             ,
             layout: {x: 0, y: 0, w: 6, h: 10}
@@ -354,6 +338,7 @@ export class MultiViewContainer extends React.Component {
             //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
             //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
             mouseOverOverlayUid: views[0].uid,
+            genomePositionSearchBoxVisible: true,
             configMenuUid: null
           }
     }
@@ -1430,6 +1415,12 @@ export class MultiViewContainer extends React.Component {
                                 >
 
                                 </TiledPlot>)
+                let genomePositionSearchBox = this.state.genomePositionSearchBoxVisible ?
+                    (<GenomePositionSearchBox 
+                        xScale = {this.props.xScale}
+                        yScale = {this.props.yScale}
+                        chromInfoPath={view.chromInfoPath}
+                     />) : null;
 
                 return (<div 
                             data-grid={layout}
@@ -1471,9 +1462,8 @@ export class MultiViewContainer extends React.Component {
                                     width="10px" 
                                 />
                             </div>
-                             <SearchableTiledPlot
-                                     key={view.uid}
-                            >
+                            {genomePositionSearchBox}
+                             <SearchableTiledPlot >
                                 {tiledPlot}
                             </SearchableTiledPlot>
                             {overlay}

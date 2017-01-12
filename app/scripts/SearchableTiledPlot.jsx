@@ -11,12 +11,17 @@ export class SearchableTiledPlot extends React.Component {
 
         this.uid = slugid.nice();
         this.div = null;
+
+        this.state = {
+            genomePositionSearchBoxVisible: true
+        }
     }
 
     componentDidMount() {
     }
 
     render() {
+
         return (
                 <div 
                 ref={c => this.div = c}
