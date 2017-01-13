@@ -168,8 +168,6 @@ export class GenomePositionSearchBox extends React.Component {
                 // elongate the span of the gene so that it doesn't take up the entire
                 // view
                 let extension = Math.floor((genePosition.txEnd - genePosition.txStart) / 4);
-                console.log('extension:', extension);
-                //extension = 0;
 
                 if (dashParts.length == 1) {
                     // no range, just a position
@@ -253,7 +251,7 @@ export class GenomePositionSearchBox extends React.Component {
                 let newYScale = this.yScale.copy().domain(range2);
 
                 let [centerX, centerY, k] = scalesCenterAndK(newXScale, newYScale);
-                console.log('centerX:', centerX, 'centerY:', centerY, 'k:', k);
+                //console.log('centerX:', centerX, 'centerY:', centerY, 'k:', k);
                 this.props.setCenters(centerX, centerY, k);
             }
         }.bind(this));

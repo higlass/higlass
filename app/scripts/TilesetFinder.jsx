@@ -88,7 +88,6 @@ export class TilesetFinder extends React.Component {
                                 .filter(x => x.orientation == this.props.orientation)
                                 .map(x => x.datatype))
         let datatypesQuery = [...datatypes].map(x => "dt=" + x).join('&')
-        console.log(datatypesQuery);
 
         this.servers.forEach( sourceServer => {
             json('//' + sourceServer + '/tilesets/?' + datatypesQuery, 
@@ -96,7 +95,6 @@ export class TilesetFinder extends React.Component {
                     if (error) {
                         console.log('ERROR:', error);
                     } else {
-                        console.log('data:', data);
 
                         let newOptions = this.prepareNewEntries(sourceServer, data.results, this.state.options);
                         let availableTilesetKeys = Object.keys(newOptions);

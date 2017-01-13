@@ -223,7 +223,6 @@ export class TiledPlot extends React.Component {
 
 
     handleCloseTrack(uid) {
-        console.log('closing track...', uid);
         this.props.onCloseTrack(uid);
 
         this.setState({

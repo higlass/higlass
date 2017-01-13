@@ -40,8 +40,7 @@ export class AddTrackModal extends React.Component {
     }
 
     mainTilesetChanged(mainTileset) {
-        console.log('mainTileset:', mainTileset);
-
+        mainTileset.type = this.selectedPlotType;
         this.setState({
             mainTileset: mainTileset
         });
@@ -54,6 +53,10 @@ export class AddTrackModal extends React.Component {
     handlePlotTypeSelected(newPlotType) {
         let mainTileset = this.state.mainTileset;
         mainTileset.type = newPlotType;
+
+        this.selectedPlotType = newPlotType;
+
+        console.log('hpts:', newPlotType);
 
         this.setState({
             mainTileset: mainTileset

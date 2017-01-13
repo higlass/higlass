@@ -72,6 +72,7 @@ export class MultiViewContainer extends React.Component {
               initialXDomain: [1372000000,1374000000],
               initialYDomain: [0,3000000000],
               autocompleteSource: "//" + usedServer + '/suggest/?d=dd&',
+              genomePositionSearchBoxVisible: true,
               chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.txt",
               'tracks': {
             'top': [
@@ -183,12 +184,14 @@ export class MultiViewContainer extends React.Component {
                           'tilesetUid': 'aa',
                           'type': 'heatmap'
                         }
+                    /*
                         ,
                         { 'server': usedServer ,
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': '2d-tiles'
                         }
+                        */
                     ]
                 }
             ]}
@@ -347,7 +350,6 @@ export class MultiViewContainer extends React.Component {
             //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
             //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
             mouseOverOverlayUid: views[0].uid,
-            genomePositionSearchBoxVisible: true,
             configMenuUid: null
           }
     }
@@ -463,8 +465,6 @@ export class MultiViewContainer extends React.Component {
        * @param eventHandler: The handler to be called when the scales change
        *    Event handler is called with parameters (xScale, yScale)
        */
-        console.log('adding listener:', listenerUid);
-
         if (!this.scalesChangedListeners.hasOwnProperty(viewUid)) {
             this.scalesChangedListeners[viewUid] = {}
         }
@@ -1333,6 +1333,20 @@ export class MultiViewContainer extends React.Component {
         return allTracks;
     }
 
+    handleTogglePositionSearchBox(viewUid) {
+        /*
+         * Show or hide the genome position search box for a given view
+         */
+
+        let view = this.state.views[viewUid];
+        view.genomePositionSearchBoxVisible = !view.genomePositionSearchBoxVisible;
+
+        this.setState({
+            views: this.state.views,
+            configMenuUid: null
+        });
+
+    }
 
   render() {
 
@@ -1361,9 +1375,7 @@ export class MultiViewContainer extends React.Component {
                                     onYankZoom={e => this.handleYankZoom(this.state.configMenuUid)}
                                     onSyncCenter={e => this.handleSyncCenter(this.state.configMenuUid)}
                                     onProjectViewport={e => this.handleProjectViewport(this.state.configMenuUid)}
-                                    onTogglePositionSearchBox={e => this.setState({
-                                        configMenuUid: null,  // close the config menu
-                                        genomePositionSearchBoxVisible: !this.state.genomePositionSearchBoxVisible })}
+                                    onTogglePositionSearchBox={e => this.handleTogglePositionSearchBox(this.state.configMenuUid)}
                                 />
                             </ContextMenuContainer>
                         </PopupMenu>);
@@ -1431,7 +1443,7 @@ export class MultiViewContainer extends React.Component {
 
                 let genomePositionSearchBoxUid = slugid.nice();
 
-                let genomePositionSearchBox = this.state.genomePositionSearchBoxVisible ?
+                let genomePositionSearchBox = view.genomePositionSearchBoxVisible ?
                     (<GenomePositionSearchBox 
                         key={view.uid}
                         autocompleteSource={view.autocompleteSource}

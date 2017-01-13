@@ -75,6 +75,8 @@ export class PlotTypeChooser extends React.Component {
             trackTypeToInfo[ti.type] = ti;
         });
 
+        console.log('selectedPlotType', this.state.selectedPlotType);
+
         if (this.availableTrackTypes) {
 
             availableTrackTypesList = this.availableTrackTypes
