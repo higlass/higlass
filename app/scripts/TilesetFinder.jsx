@@ -122,7 +122,12 @@ export class TilesetFinder extends React.Component {
          * Double clicked on an element. Should be selected
          * and this window will be closed.
          */
-        this.props.onDoubleClick(this.state.options[x.target.value]);
+
+        // this should give the dataset the PlotType that's selected in the parent
+        //this.props.selectedTilesetChanged(this.state.options[x.target.value]);
+
+        let value = this.state.options[x.target.value];
+        this.props.onDoubleClick(value);
     }
 
     handleSelect(x) {

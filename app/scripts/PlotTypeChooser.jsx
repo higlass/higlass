@@ -19,7 +19,6 @@ export class PlotTypeChooser extends React.Component {
                 datatypes = [datatypes];
 
             datatypes.forEach(datatype => {
-                console.log('ti.datatype:', datatype);
                 if (!(datatype in this.datatypeToTrackType))
                     this.datatypeToTrackType[datatype] = [];
             
@@ -75,10 +74,7 @@ export class PlotTypeChooser extends React.Component {
             trackTypeToInfo[ti.type] = ti;
         });
 
-        console.log('selectedPlotType', this.state.selectedPlotType);
-
         if (this.availableTrackTypes) {
-
             availableTrackTypesList = this.availableTrackTypes
                 .sort((a,b) => { return a.type < b.type})
                 .map(x => {

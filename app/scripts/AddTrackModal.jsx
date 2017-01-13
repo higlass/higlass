@@ -46,6 +46,12 @@ export class AddTrackModal extends React.Component {
         });
     }
 
+    handleTilesetPickerDoubleClick(tileset) {
+        this.mainTilesetChanged(tileset);
+        
+        this.props.onTrackChosen(this.state.mainTileset, this.props.position);
+    }
+
     handleOptionsChanged(newOptions) {
         this.options = newOptions;
     }
@@ -55,8 +61,6 @@ export class AddTrackModal extends React.Component {
         mainTileset.type = newPlotType;
 
         this.selectedPlotType = newPlotType;
-
-        console.log('hpts:', newPlotType);
 
         this.setState({
             mainTileset: mainTileset
@@ -94,7 +98,7 @@ export class AddTrackModal extends React.Component {
                                 orientation={orientation}
                                 onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
                                 selectedTilesetChanged={this.mainTilesetChanged.bind(this)}
-                                onDoubleClick={value => this.props.onTrackChosen(value, this.props.position)}
+                                onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
                             />
                     </div>
                 )
