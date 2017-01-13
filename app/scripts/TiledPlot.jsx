@@ -13,6 +13,7 @@ import {CloseTrackMenu} from './CloseTrackMenu.jsx';
 import {PopupMenu} from './PopupMenu.jsx';
 import {AddTrackPositionMenu} from './AddTrackPositionMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
+import {HeatmapOptions} from './HeatmapOptions.jsx';
 
 import {getTrackPositionByUid, positionedTracksToAllTracks} from './utils.js';
 import {getTrackByUid} from './utils.js';
@@ -50,7 +51,8 @@ export class TiledPlot extends React.Component {
             tracks: tracks,
             addTrackVisible: false,
             addTrackPosition: "top",
-            mouseOverOverlayUid: null
+            mouseOverOverlayUid: null,
+            trackOptionsUid: null
         }
 
         // these dimensions are computed in the render() function and depend
@@ -264,6 +266,15 @@ export class TiledPlot extends React.Component {
     handleConfigTrackMenuClosed(evt) {
         this.setState({
             configTrackMenuId: null,
+        });
+    }
+
+    handleConfigureTrack(uid) {
+        console.log('configuring track:', uid);
+
+        this.setState({
+            configTrackMenuId: null,
+            trackOptionsUid: uid
         });
     }
 
@@ -620,6 +631,8 @@ export class TiledPlot extends React.Component {
                                   <ConfigTrackMenu
                                     track={getTrackByUid(this.props.tracks, this.state.configTrackMenuId)}
                                     position={ this.state.configTrackMenuLocation }
+                                    onTrackOptionsChanged={this.props.onTrackOptionsChanged}
+                                    onConfigureTrack={this.handleConfigureTrack.bind(this)}
                                   />
                               </PopupMenu>
                               )
@@ -701,6 +714,17 @@ export class TiledPlot extends React.Component {
 
         }
 
+        let trackOptionsElement = null;
+
+        if (this.state.trackOptionsUid) {
+            trackOptionsElement = (<HeatmapOptions
+                    track={getTrackByUid(this.props.tracks, this.state.trackOptionsUid)}
+                    onCancel={ () => this.setState({
+                        trackOptionsUid: null
+                    })}
+                    />)
+        }
+
         // track renderer needs to enclose all the other divs so that it 
         // can catch the zoom events
         return(
@@ -721,6 +745,7 @@ export class TiledPlot extends React.Component {
                 {configTrackMenu}
                 {closeTrackMenu}
                 {addTrackPositionMenu}
+                {trackOptionsElement}
             </div>
             );
     }

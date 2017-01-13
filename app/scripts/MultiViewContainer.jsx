@@ -184,7 +184,9 @@ export class MultiViewContainer extends React.Component {
                     contents: 
                     [
 
-                        { 'server': usedServer ,
+                        { 
+                            'uid': 'hm1',
+                           'server': usedServer ,
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': 'heatmap'
@@ -1353,6 +1355,12 @@ export class MultiViewContainer extends React.Component {
 
     }
 
+    handleTrackOptionsChanged(viewUid, trackUid) {
+        //some track's options changed...
+        // redraw the track  and store the changes in the config file
+        console.log('track options changed:', viewUid, trackUid);
+    }
+
   render() {
 
     let tiledAreaStyle = {
@@ -1440,6 +1448,7 @@ export class MultiViewContainer extends React.Component {
                                      onScalesChanged={(x,y) => this.handleScalesChanged(view.uid, x, y)}
                                      setCentersFunction={c => this.setCenters[view.uid] = c}
                                      chooseTrackHandler={this.state.chooseTrackHandler ? trackId => this.state.chooseTrackHandler(view.uid, trackId) : null}
+                                     onTrackOptionsChanged={trackId => this.handleTrackOptionsChanged(view.uid, trackId) }
                                      onTrackAdded={(newTrack, position, host) => this.handleTrackAdded(view.uid, newTrack, position, host)}
                                      onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
                                 >

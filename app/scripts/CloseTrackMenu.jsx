@@ -25,6 +25,8 @@ export class CloseTrackMenu extends React.Component {
 
 
     getSeriesItems() {
+        // this code is duplicated in ConfigTrackMenu, needs to be consolidated
+        //
         // check if this is a combined track (has contents)
         if (!this.props.track)
             return null;

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {ContextMenuContainer} from './ContextMenuContainer.jsx';
+import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
 
 export class SeriesListMenu extends ContextMenuContainer {
     constructor(props) {
@@ -24,6 +24,9 @@ export class SeriesListMenu extends ContextMenuContainer {
                                 border: "1px solid black"
                               }}
                 >
+                    <ContextMenuItem text={'Configure Series'} 
+                        onClick={this.props.onConfigureTrack}
+                    />
                     <div 
                         className={"context-menu-item"}
                     >
