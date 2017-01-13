@@ -45,6 +45,11 @@ export class ConfigTrackMenu extends ContextMenuContainer {
     }
 
     getSeriesItems() {
+        // this code is duplicated in CloseTrackMenu, needs to be consolidated
+        //
+        if (!this.props.track)
+            return null;
+
         let trackTypeToInfo = {};
 
         tracksInfo.forEach(ti => {

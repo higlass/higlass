@@ -178,7 +178,7 @@ export class MultiViewContainer extends React.Component {
             ],
             'center': [
                 {   
-                    uid: slugid.nice(),
+                    uid: 'c1',
                     type: 'combined',
                     height: 200,
                     contents: 

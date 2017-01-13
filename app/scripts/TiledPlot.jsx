@@ -34,7 +34,7 @@ export class TiledPlot extends React.Component {
 
         for (let key in tracks) {
             for (let i = 0; i < tracks[key].length; i++) {
-                tracks[key][i].uid = slugid.nice();
+                tracks[key][i].uid = tracks[key][i].uid ? tracks[key][i].uid : slugid.nice();
             }
         }
 
@@ -400,7 +400,6 @@ export class TiledPlot extends React.Component {
             return {left: left, top: top, width: this.centerWidth, 
                 height: this.centerHeight, track: track};
         }
-
     }
 
     positionedTracks() {
@@ -717,12 +716,18 @@ export class TiledPlot extends React.Component {
         let trackOptionsElement = null;
 
         if (this.state.trackOptionsUid) {
+            console.log('trackOptionsUid:', this.state.trackOptionsUid);
             trackOptionsElement = (<HeatmapOptions
                     track={getTrackByUid(this.props.tracks, this.state.trackOptionsUid)}
                     onCancel={ () => this.setState({
                         trackOptionsUid: null
                     })}
-                    />)
+                    onSubmit={ (newTrackConfig) => {
+                        this.props.onTrackOptionsChanged(newTrackConfig);
+                        this.setState({
+                            trackOptionsUid: null });
+                    }}
+                />)
         }
 
         // track renderer needs to enclose all the other divs so that it 
