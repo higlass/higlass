@@ -14,6 +14,10 @@ export class LeftTrackModifier {
         this.pBase.addChild(this.moveToOrigin);
 
         this.moveToOrigin.rotation = Math.PI / 2;
+
+        // If the original track has text labels, we need to flip
+        // them horizontally, otherwise they'll be mirrored.
+        originalTrack.flipText = true;
     }
 
     remove() {
@@ -36,6 +40,7 @@ export class LeftTrackModifier {
         this.originalTrack.pBase.position.y = -this.originalTrack.position[1];
 
         this.moveToOrigin.scale.y = -1;
+        this.moveToOrigin.scale.x = 1;
         this.moveToOrigin.position.x = this.originalTrack.position[0];
         this.moveToOrigin.position.y = this.originalTrack.position[1];
     }

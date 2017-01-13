@@ -37,7 +37,7 @@ export class ConfigViewMenu extends React.Component {
                     <ContextMenuItem text={'Yank Zoom'} 
                         onClick={e => this.props.onYankZoom(e)}
                     />
-                    <ContextMenuItem text={'Sync Center'} 
+                    <ContextMenuItem text={'Yank Center'} 
                         onClick={e => this.props.onSyncCenter(e)}
                     />
                     <ContextMenuItem text={lockZoomText} 
@@ -51,10 +51,10 @@ export class ConfigViewMenu extends React.Component {
                     <hr />
 
                     <ContextMenuItem text={'Yank Tracks'} 
-                        onClick={e => this.props.onYankTracks(this.props.track.uid)}
+                        onClick={e => e}
                     />
                     <ContextMenuItem text={'Lock Tracks'} 
-                        onClick={e => this.props.onLockTracks(this.props.track.uid)}
+                        onClick={e => e}
                     />
                 </div>
                 )

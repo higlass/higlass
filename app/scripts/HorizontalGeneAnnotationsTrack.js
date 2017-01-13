@@ -19,6 +19,8 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 fill = 'red';
             }
             let text = new PIXI.Text(geneInfo[3],  {fontSize:"10px", fontFamily:"Arial", fill:fill});
+            if (this.flipText)
+                text.scale.x = -1;
 
             text.anchor.x = 0.5;
             text.anchor.y = 1;

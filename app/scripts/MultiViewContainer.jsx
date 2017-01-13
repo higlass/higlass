@@ -130,7 +130,15 @@ export class MultiViewContainer extends React.Component {
                       */
             ],
             'left': [
-                {'uid': slugid.nice(), type:'left-axis', width: 80}
+                {'uid': slugid.nice(), type:'left-axis', width: 80},
+                    {
+                        'uid': slugid.nice(), 
+                        type:'vertical-gene-annotations',
+                        width: 60,
+                      tilesetUid: 'dd',
+                      server: usedServer 
+                    }
+                      ,
                 /*
                 ,
                 {'uid': slugid.nice(),

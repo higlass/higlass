@@ -96,6 +96,14 @@ export const tracksInfo = [
         name: 'Gene Annotations',
         thumbnail: null
     },
+    {
+        type: 'vertical-gene-annotations',
+        datatype: ['gene-annotation'],
+        local: false,
+        orientation: '1d-vertical',
+        name: 'Gene Annotations',
+        thumbnail: null
+    },
 
     {
         type: 'combined',

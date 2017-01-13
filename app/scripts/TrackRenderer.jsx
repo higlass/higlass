@@ -438,6 +438,8 @@ export class TrackRenderer extends React.Component {
                     return new Track();
             case 'horizontal-gene-annotations':
                 return new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid)
+            case 'vertical-gene-annotations':
+                return new LeftTrackModifier(new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid))
             case 'combined':
                 return new CombinedTrack(track.contents, this.createTrackObject.bind(this));
             default:
