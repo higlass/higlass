@@ -38,7 +38,8 @@ export class PopupMenu extends React.Component {
   }
 
   handleDocumentResize() {
-    this.props.onMenuClosed(null)
+    if (this.props.onMenuClosed)
+        this.props.onMenuClosed(null)
   }
 
   handleDocumentClick(evt) {
