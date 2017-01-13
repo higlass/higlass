@@ -206,13 +206,11 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     }
 
     zoomed(newXScale, newYScale) {
-        this.refreshTiles();
-
         this.xScale(newXScale);
         this.yScale(newYScale);
+        
+        this.refreshTiles();
 
         this.draw();
-
     }
-
 }

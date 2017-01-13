@@ -25,7 +25,6 @@ export class PopupMenu extends React.Component {
 
 
   componentWillUnmount() {
-    console.log('removing event handler');
     document.removeEventListener('click', this.boundHandleDocumentClick, true);
     window.removeEventListener('resize', this.boundHandleDocumentResize, true);
     ReactDOM.unmountComponentAtNode(this.popup);
@@ -38,7 +37,8 @@ export class PopupMenu extends React.Component {
   }
 
   handleDocumentResize() {
-    this.props.onMenuClosed(null)
+    if (this.props.onMenuClosed)
+        this.props.onMenuClosed(null)
   }
 
   handleDocumentClick(evt) {

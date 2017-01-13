@@ -85,8 +85,6 @@ export class TrackRenderer extends React.Component {
                     this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2 + this.props.centerWidth / 2])
             .range([this.props.initialXDomain[0], this.props.initialXDomain[1]]);
 
-        console.log('constructor', this.props.width);
-
         this.setUpScales();
 
 
@@ -147,8 +145,6 @@ export class TrackRenderer extends React.Component {
     setUpScales() {
         let currentCenterX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
         let currentCenterY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
-
-        console.log('this.props.width:', this.props.width);
 
         // we need to maintain two scales:
         // 1. the scale that is shown

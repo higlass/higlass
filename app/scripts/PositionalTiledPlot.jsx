@@ -193,7 +193,7 @@ MoveableTrack.propTypes = {
 export class CenterTrack extends FixedTrack {
     // should be the same as a vertical track
     getCloseImgStyle() {
-        let closeImgStyle = { right: 15,
+        let closeImgStyle = { right: 5,
                          top: 5,
                          position: 'absolute',
                          opacity: .5}
@@ -201,7 +201,7 @@ export class CenterTrack extends FixedTrack {
         return closeImgStyle;
     }
     getSettingsImgStyle() {
-        let closeImgStyle = { right: 41,
+        let closeImgStyle = { right: 31,
                          top: 5,
                          position: 'absolute',
                          opacity: .5}
@@ -210,7 +210,7 @@ export class CenterTrack extends FixedTrack {
     }
 
     getAddImgStyle() {
-        return  { right: 28,
+        return  { right: 18,
                     top: 5,
                     position: 'absolute',
                     opacity: .5}
@@ -283,7 +283,7 @@ class HorizontalTrack extends MoveableTrack {
     }
 
     getCloseImgStyle() {
-        let closeImgStyle = { right: 15,
+        let closeImgStyle = { right: 5,
                          top: 5,
                          position: 'absolute',
                          opacity: .5}
@@ -292,7 +292,7 @@ class HorizontalTrack extends MoveableTrack {
     }
 
     getMoveImgStyle() {
-        let moveImgStyle = { right: 54,
+        let moveImgStyle = { right: 44,
                          top: 5,
                          position: 'absolute',
                          opacity: .5}
@@ -301,14 +301,14 @@ class HorizontalTrack extends MoveableTrack {
     }
 
     getAddImgStyle() {
-        return { right: 28,
+        return { right: 18,
                     top: 5,
                     position: 'absolute',
                     opacity: .5}
     }
 
     getSettingsImgStyle() {
-        let moveImgStyle = { right: 41,
+        let moveImgStyle = { right: 31,
                          top: 5,
                          position: 'absolute',
                          opacity: .5}
