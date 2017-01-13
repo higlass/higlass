@@ -76,8 +76,10 @@ export class MultiViewContainer extends React.Component {
               chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.txt",
               'tracks': {
             'top': [
+                /*
                 {'uid': slugid.nice(), type:'top-axis'}
             ,
+            */
 
                     {
                         'uid': slugid.nice(), 
@@ -131,7 +133,10 @@ export class MultiViewContainer extends React.Component {
                       */
             ],
             'left': [
-                {'uid': slugid.nice(), type:'left-axis', width: 80},
+                /*
+                {'uid': slugid.nice(), type:'left-axis', width: 80}
+                ,
+                */
                     {
                         'uid': slugid.nice(), 
                         type:'vertical-gene-annotations',
