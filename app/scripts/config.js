@@ -25,7 +25,11 @@ export const tracksInfo = [
         datatype: ['matrix'],
         local: false,
         orientation: '2d',
-        thumbnail: 'heatmap-thumbnail.png'
+        thumbnail: 'heatmap-thumbnail.png',
+        defaultOptions: {
+            colorRange: ['white', 'darkbrown'],
+            maxZoom: null
+        }
     },
     {
         type: 'horizontal-line',
@@ -114,3 +118,10 @@ export const tracksInfo = [
     }
 ]
 
+let temp = {};
+
+tracksInfo.forEach(t => {
+    temp[t.type] = t;
+})
+
+export const tracksInfoByType = temp;
