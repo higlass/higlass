@@ -1,3 +1,5 @@
+import {ZOOM_DEBOUNCE} from './config.js';
+import debounce from './debounce.js';
 import {PixiTrack} from './PixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 //import {LRUCache} from './lru.js';
@@ -16,7 +18,7 @@ export class TiledPixiTrack extends PixiTrack {
         // the tiles which should be visible (although they're not necessarily fetched)
         this.visibleTiles = new Set();
         this.visibleTileIds = new Set();
-        
+
         // the tiles we already have requests out for
         this.fetching = new Set();
 
@@ -29,19 +31,23 @@ export class TiledPixiTrack extends PixiTrack {
         this.tilesetServer = server;
 
         // the graphics that have already been drawn for this track
-        this.tileGraphics = {};  
+        this.tileGraphics = {};
 
         this.maxZoom = 0;
 
         tileProxy.trackInfo(server, tilesetUid, tilesetInfo => {
             this.tilesetInfo = tilesetInfo[tilesetUid];
-            
+
             this.maxZoom = +this.tilesetInfo['max_zoom'];
             this.refreshTiles();
 
             if (handleTilesetInfoReceived)
                 handleTilesetInfoReceived(tilesetInfo[tilesetUid]);
         });
+
+        this.refreshTilesDebounced = debounce(
+            this.refreshTiles.bind(this), ZOOM_DEBOUNCE
+        );
     }
 
 
@@ -73,7 +79,7 @@ export class TiledPixiTrack extends PixiTrack {
 
         this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
     }
-    
+
     refreshTiles() {
         if (!this.tilesetInfo)
             return;
@@ -88,7 +94,7 @@ export class TiledPixiTrack extends PixiTrack {
         // and aren't in the process of being fetched
         let toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId))
         //console.log('toFetch:', toFetch);
-        
+
         for (let i = 0; i < toFetch.length; i++)
             this.fetching.add(toFetch[i].remoteId);
 
@@ -127,7 +133,7 @@ export class TiledPixiTrack extends PixiTrack {
     }
 
     removeTiles(toRemoveIds) {
-        /** 
+        /**
          * Remove obsolete tiles
          *
          * @param toRemoveIds: An array of tile ids to remove from the list of fetched tiles.
@@ -160,7 +166,7 @@ export class TiledPixiTrack extends PixiTrack {
         this.xScale(newXScale);
         this.yScale(newYScale);
 
-        this.refreshTiles();
+        this.refreshTilesDebounced();
 
         this.pMobile.position.x = tx;
         this.pMobile.position.y = this.position[1];
@@ -184,7 +190,7 @@ export class TiledPixiTrack extends PixiTrack {
     areAllVisibleTilesLoaded() {
         /**
          * Check to see if all the visible tiles are loaded.
-         * 
+         *
          * If they are, remove all other tiles.
          */
         // tiles that are visible
@@ -252,7 +258,7 @@ export class TiledPixiTrack extends PixiTrack {
         let fetchedTileIDs = Object.keys(this.fetchedTiles);
 
         for (let i = 0; i < fetchedTileIDs.length; i++) {
-        
+
             this.updateTile(this.fetchedTiles[fetchedTileIDs[i]]);
         }
     }
@@ -275,7 +281,7 @@ export class TiledPixiTrack extends PixiTrack {
          * Extract drawable data from a tile loaded by a generic tile loader
          *
          * @param tile: A tile returned by a TiledArea.
-         * @param dataLoader: A function for extracting drawable data from a tile. This 
+         * @param dataLoader: A function for extracting drawable data from a tile. This
          *                    usually means differentiating the between dense and sparse
          *                    tiles and putting the data into an array.
          */
@@ -333,7 +339,7 @@ export class TiledPixiTrack extends PixiTrack {
             this.allTilesLoaded();
         }
 
-        /* 
+        /*
          * Mainly called to remove old unnecessary tiles
          */
         this.refreshTiles();
