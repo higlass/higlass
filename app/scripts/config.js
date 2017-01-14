@@ -83,7 +83,7 @@ export const tracksInfo = [
         type: 'viewport-projection-center',
         datatype: ['2d-projection'],
         local: true,
-        hidden: true,  
+        hidden: true,
         orientation: '2d',
         name: 'Viewport Projection',
         thumbnail: 'viewport-projection-center.png'
@@ -114,3 +114,4 @@ export const tracksInfo = [
     }
 ]
 
+export const TILE_FETCH_DEBOUNCE = 100;
