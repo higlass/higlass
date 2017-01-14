@@ -411,12 +411,13 @@ export class TrackRenderer extends React.Component {
                 return new HeatmapTiledPixiTrack(this.props.pixiStage, 
                                                  track.server, 
                                                  track.tilesetUid,
-                                                 handleTilesetInfoReceived);
+                                                 handleTilesetInfoReceived,
+                                                 track.options);
             case 'horizontal-line':
                 return new HorizontalLine1DPixiTrack(this.props.pixiStage, 
                                                      track.server, 
                                                      track.tilesetUid,
-                                                        handleTilesetInfoReceived);
+                                                     handleTilesetInfoReceived);
             case 'vertical-line':
                 return new LeftTrackModifier(new HorizontalLine1DPixiTrack(this.props.pixiStage, track.server, track.tilesetUid));
             case 'horizontal-1d-tiles':

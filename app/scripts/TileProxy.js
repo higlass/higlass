@@ -108,15 +108,17 @@ class TileProxy  {
         */
     }
 
-    tileDataToPixData(tile, minVisibleValue, maxVisibleValue, finished) {
+    tileDataToPixData(tile, minVisibleValue, maxVisibleValue, colorScale, finished) {
         /**
          * Render 2D tile data. Convert the raw values to an array of 
          * color values
          *
          * @param finished: A callback to let the caller know that the worker thread
          *                  has converted tileData to pixData
+         * @param minVisibleValue: The minimum visible value (used for setting the color scale)
+         * @param maxVisibleValue: The maximum visible value
+         * @param colorScale: a 255 x 4 rgba array used as a color scale
          */
-
             let tileData = tile.tileData;
             var scriptPath = document.location.href;
             //console.log('scriptPath', scriptPath);
@@ -130,7 +132,8 @@ class TileProxy  {
             // comment this and uncomment the code afterwards to enable threading
             let pixData = workerSetPix(newTileData.length, newTileData, 
                                               minVisibleValue,
-                                              maxVisibleValue);
+                                              maxVisibleValue,
+                                              colorScale);
             finished(pixData);
 
                 /*

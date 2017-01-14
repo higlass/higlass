@@ -89,54 +89,8 @@ export class MultiViewContainer extends React.Component {
                       server: usedServer 
                     }
                       ,
-
-                    /*
-                    {'uid': slugid.nice(), 
-                        type:'horizontal-1d-tiles',
-                        height: 20,
-                      tilesetUid: 'bb',
-                      server: usedServer }
-                      ,
-                    {'uid': slugid.nice(), 
-                        type:'horizontal-line',
-                        height: 20,
-                      tilesetUid: 'bb',
-                      server: usedServer }
-                      ,
-                {'uid': slugid.nice(),
-                 type: 'combined',
-                 height: 100,
-                 contents:
-                     [
-                    {'uid': slugid.nice(), 
-                        type:'horizontal-line',
-                        height: 30,
-                        width: 20,
-                      tilesetUid: 'bb',
-                      server: usedServer }
-                      ,
-                    {'uid': slugid.nice(),
-                        type: 'top-stacked-interval',
-                        height: 30,
-                        tilesetUid: 'cc',
-                        server:  usedServer 
-                    }
-                    ,
-                    {'uid': slugid.nice(), 
-                        type:'horizontal-1d-tiles',
-                        height: 30,
-                      tilesetUid: 'cc',
-                      server: usedServer }
-
-                     ]
-                }
-                      */
             ],
             'left': [
-                /*
-                {'uid': slugid.nice(), type:'left-axis', width: 80}
-                ,
-                */
                     {
                         'uid': slugid.nice(), 
                         type:'vertical-gene-annotations',
@@ -144,37 +98,6 @@ export class MultiViewContainer extends React.Component {
                       tilesetUid: 'dd',
                       server: usedServer 
                     }
-                      ,
-                /*
-                ,
-                {'uid': slugid.nice(),
-                 type: 'combined',
-                 width: 60,
-                 contents:
-                     [
-                         /*
-                    {'uid': slugid.nice(),
-                        type: 'left-stacked-interval',
-                        height: 30,
-                        tilesetUid: 'cc',
-                        server:  usedServer 
-                    }
-                    ,
-                    {'uid': slugid.nice(), 
-                        type:'vertical-line',
-                        height: 30,
-                        width: 20,
-                      tilesetUid: 'bb',
-                      server: usedServer }
-                     ]
-                }
-                      ,
-                ,
-                {'uid': slugid.nice(), 
-                    type:'vertical-1d-tiles',
-                  tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
-                  server: '52.45.229.11'}
-                  */
             ],
             'center': [
                 {   
@@ -187,18 +110,12 @@ export class MultiViewContainer extends React.Component {
                         { 
                             'uid': 'hm1',
                            'server': usedServer ,
-                          'uid': slugid.nice(),
                           'tilesetUid': 'aa',
-                          'type': 'heatmap'
+                          'type': 'heatmap',
+                          'options': {
+                            'colorRange': ['white', 'black']
+                          }
                         }
-                    /*
-                        ,
-                        { 'server': usedServer ,
-                          'uid': slugid.nice(),
-                          'tilesetUid': 'aa',
-                          'type': '2d-tiles'
-                        }
-                        */
                     ]
                 }
             ]}
@@ -409,6 +326,16 @@ export class MultiViewContainer extends React.Component {
         this.animate();
     }
 
+    handleWindowFocused() {
+        /* 
+         * The window housing this view gained focus. That means the bounding boxes
+         * may have changed so we need to redraw everything.
+         *
+         */
+    
+
+    }
+
     animate() {
         this.pixiRenderer.render(this.pixiStage);
         this.frame = requestAnimationFrame(this.animate.bind(this));
@@ -489,14 +416,12 @@ export class MultiViewContainer extends React.Component {
        * @param viewUid: The view that it's listening on.
        * @param listenerUid: The uid of the listener itself.
        */
-        console.log('removing listener', listenerUid);
         if (this.scalesChangedListeners.hasOwnProperty(viewUid)) {
             let listeners = this.scalesChangedListeners[viewUid];
             
             if (listeners.hasOwnProperty(listenerUid))
                 delete listeners[listenerUid];
         }
-
   }
 
   handleScalesChanged(uid, xScale, yScale, notify=true) {

@@ -1,3 +1,7 @@
+import {scaleLinear} from 'd3-scale';
+import {range} from 'd3-array';
+import {rgb} from 'd3-color';
+
 export function dictValues(dictionary) {
     /**
      * Return an array of values that are present in this dictionary
@@ -156,4 +160,25 @@ export function getTrackByUid(tracks, uid) {
 
         return null;
     }
+
+export function colorDomainToRgbaArray(colorRange) {
+    /**
+     * Convert a color domain to a 255 element array of [r,g,b,a]
+     * values (all from 0 to 255). The last color (255) will always be
+     * transparent
+     */
+    let d3Scale = scaleLinear().domain([0,255])
+        .range(colorRange)
+
+    let rgbaArray = range(254,-1,-1).map(d3Scale)
+    .map(x => {
+        let r = rgb(x);
+        return [r.r, r.g, r.b, 255];
+    })
+
+    // add a transparent color at the end for missing values
+    rgbaArray.push([255,255,255,0]);
+
+    return rgbaArray;
+}
 

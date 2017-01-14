@@ -1,4 +1,3 @@
-import {heatedObjectMap} from './colormaps.js';
 import {scaleLinear} from 'd3-scale';
 import {json} from 'd3-request';
 import urljoin from 'url-join';
@@ -17,7 +16,7 @@ function countTransform(count) {
 */
 let epsilon = 0.0000001;
 
-export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale = null, passedCountTransform) {
+export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale, passedCountTransform) {
     let epsilon = 0.000001;
     //console.log('minVisibleValue:', minVisibleValue);
 
@@ -30,9 +29,6 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
         .domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
 
     let pixData = new Uint8ClampedArray(size * 4);
-
-    if (colorScale == null)
-        colorScale = heatedObjectMap;
 
     /*
     let ctValues = data.map(x => countTransform(x));
@@ -49,6 +45,7 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
             let rgbIdx = 255;
 
             if (d > epsilon) {
+                // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
                 let ct = countTransform(d);
                 rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(ct))))
             }

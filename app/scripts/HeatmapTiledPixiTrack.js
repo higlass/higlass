@@ -1,18 +1,33 @@
 import {Tiled2DPixiTrack} from './Tiled2DPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
+import {heatedObjectMap} from './colormaps.js';
+import {colorDomainToRgbaArray} from './utils.js';
 
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived) {
+    constructor(scene, server, uid, handleTilesetInfoReceived, options) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
          * @param uid: The data set to get the tiles from the server
          */
         super(scene, server, uid, handleTilesetInfoReceived);
+
+        // [[255,255,255,0], [237,218,10,4] ...
+        // a 256 element array mapping the values 0-255 to rgba values
+        // not a d3 color scale for speed
+        //this.colorScale = heatedObjectMap; 
+        this.colorScale = heatedObjectMap; 
+
+        if (options) {
+            if (options.colorRange) {
+                this.colorScale = colorDomainToRgbaArray(options.colorRange);
+
+            }
+        }
     }
 
 
-    tileDataToCanvas(pixData, minVisibleValue, maxVisibleValue) {
+    tileDataToCanvas(pixData) {
         let canvas = document.createElement('canvas');
 
         canvas.width = 256;
@@ -94,14 +109,17 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
          *              this function are tile.tileData = {'dense': [...], ...}
          *              and tile.graphics
          */
-        tileProxy.tileDataToPixData(tile, this.minVisibleValue(), 
-                                                  this.maxVisibleValue(), 
+        tileProxy.tileDataToPixData(tile, 
+                                    
+                                    this.minVisibleValue(), 
+                                    this.maxVisibleValue(), 
+                                                  this.colorScale,
                                                   function(pixData) {
             // the tileData has been converted to pixData by the worker script and needs to be loaded 
             // as a sprite
             //console.log('tile:', tile);
             let graphics = tile.graphics;
-            let canvas = this.tileDataToCanvas(pixData,  this.minVisibleValue(), this.maxVisibleValue());
+            let canvas = this.tileDataToCanvas(pixData);
 
             let sprite = null;
 

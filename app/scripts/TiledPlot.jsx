@@ -23,7 +23,6 @@ export class TiledPlot extends React.Component {
         super(props);
 
         this.closing = false;
-        this.uid = slugid.nice();
         this.yPositionOffset = 0;    // the offset from the Canvas and SVG elements
                                      // that the tracks will be drawn on
 
@@ -35,6 +34,7 @@ export class TiledPlot extends React.Component {
         for (let key in tracks) {
             for (let i = 0; i < tracks[key].length; i++) {
                 tracks[key][i].uid = tracks[key][i].uid ? tracks[key][i].uid : slugid.nice();
+                console.log('tracks[key][i].uid', tracks[key][i].uid);
             }
         }
 

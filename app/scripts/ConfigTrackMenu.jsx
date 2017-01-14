@@ -13,7 +13,6 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         super(props);
 
         
-
         this.seriesRefs = {};
         
     }
@@ -26,7 +25,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         let domNode = evt.currentTarget;
         let boundingRect = domNode.getBoundingClientRect();
         //console.log('seriesMouseEnter:', domNode);
-        console.log('boundingRect:', boundingRect);
+        //console.log('boundingRect:', boundingRect);
 
         this.setState({
             submenuShown: series,
@@ -60,6 +59,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         let series = this.props.track.contents ? this.props.track.contents : [this.props.track];
 
         return series.map(x => {
+            console.log('series x:', x);
             let thumbnailLocation = "images/thumbnails/" + trackTypeToInfo[x.type].thumbnail;
             let blankLocation = "images/thumbnails/blank.png";
             let imgTag = trackTypeToInfo[x.type].thumbnail ? 
@@ -107,7 +107,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                 }
             }
 
-            console.log('position:', position);
+            //console.log('position:', position);
 
             return (<SeriesListMenu
                         series={this.state.submenuShown}
