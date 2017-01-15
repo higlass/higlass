@@ -71,7 +71,7 @@ export function workerGetTilesetInfo(url, done) {
         if (error) {
             //console.log('error:', error);
             // don't do anything
-            // no tileset info just means we can't do anything with this file... 
+            // no tileset info just means we can't do anything with this file...
         } else {
             //console.log('got data', data);
             done(data)
@@ -103,7 +103,7 @@ export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
 
         let p = new Promise(function(resolve, reject) {
             json(outUrl, (error, data) => {
-                if (error) { 
+                if (error) {
                     resolve({});
                 } else {
                     // check if we have array data to convert from base64 to float32
@@ -161,6 +161,119 @@ export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
     });
 }
 
+export function workerFetchMultiRequestTiles(req) {
+    const MAX_FETCH_TILES = 10;
+
+    const sessionId = req.sessionId;
+    const requests = req.requests;
+    let fetchPromises = [];
+
+    const requestsByServer = {};
+
+
+    // We're converting the array of IDs into an object in order to filter out duplicated requests.
+    // In case different instances request the same data it won't be loaded twice.
+    for (let request of requests) {
+        if (!requestsByServer[request.server]) {
+            requestsByServer[request.server] = {};
+        }
+        for (let id of request.ids) {
+            requestsByServer[request.server][id] = true;
+        }
+    }
+
+    const servers = Object.keys(requestsByServer);
+
+    for (let server of servers) {
+        const ids = Object.keys(requestsByServer[server]);
+
+        // if we request too many tiles, then the URL can get too long and fail
+        // so we'll break up the requests into smaller subsets
+        for (let i = 0; i < ids.length; i += MAX_FETCH_TILES) {
+            let theseTileIds = ids.slice(i, i + Math.min(ids.length - i, MAX_FETCH_TILES));
+
+            let renderParams = theseTileIds.map(x => "d=" + x).join('&');
+            let outUrl = "//" + server + '/tiles/?' + renderParams + '&s=' + sessionId;
+
+            let p = new Promise(function(resolve, reject) {
+                json(outUrl, (error, data) => {
+                    if (error) {
+                        resolve({});
+                    } else {
+                        // check if we have array data to convert from base64 to float32
+                        for (let key in data) {
+                            // let's hope the payload doesn't contain a tileId field
+                            let keyParts = key.split('.');
+
+                            data[key].server = server;
+                            data[key].tileId = key;
+                            data[key].zoomLevel = +keyParts[1];
+                            data[key].tilePos = keyParts.slice(2, keyParts.length).map(x => +x);
+                            data[key].tilesetUid = keyParts[0];
+
+                            if ('dense' in data[key]) {
+                                let newDense = _base64ToArrayBuffer(data[key].dense);
+
+                                let a = new Float32Array(newDense);
+                                let minNonZero = Number.MAX_SAFE_INTEGER;
+                                let maxNonZero = Number.MIN_SAFE_INTEGER;
+
+                                data[key]['dense'] = a;
+
+                                // find the minimum and maximum non-zero values
+                                for (let i = 0; i < a.length; i++) {
+                                    let x = a[i];
+
+                                    if (x < epsilon && x > -epsilon)
+                                        continue;
+
+                                    if (x < minNonZero)
+                                        minNonZero = x;
+                                    if (x > maxNonZero)
+                                        maxNonZero = x;
+                                }
+
+                                data[key]['minNonZero'] = minNonZero;
+                                data[key]['maxNonZero'] = maxNonZero;
+                            }
+                        }
+
+                        resolve(data);
+                    }
+                });
+            });
+
+            fetchPromises.push(p);
+        }
+    }
+
+    Promise.all(fetchPromises).then(function(datas) {
+        const tiles = {};
+
+        // merge back all the tile requests
+        for (let data of datas) {
+            const tileIds = Object.keys(data);
+
+            for (let tileId of tileIds) {
+                tiles[`${data[tileId].server}/${tileId}`] = data[tileId];
+            }
+        }
+
+        // trigger the callback for every request
+        for (let request of requests) {
+            let reqDate = {};
+            let server = request.server;
+
+            // pull together the data per request
+            for (let id of request.ids) {
+                reqDate[id] = tiles[`${server}/${id}`];
+            }
+
+            request.done(reqDate);
+        }
+    });
+}
+
 function workerLoadTileData(tile_value, tile_type) {
     let resolution = 256;
 
@@ -208,7 +321,7 @@ self.addEventListener('message', function (e) {
     let inputTileData = new Float32Array(passedData.tile.data, 0, passedData.tile.dataLength);
 
     let tileData = workerLoadTileData(inputTileData, passedData.tile.type)
-    let pixOutput = workerSetPix(256 * 256, tileData, passedData.minVisibleValue, 
+    let pixOutput = workerSetPix(256 * 256, tileData, passedData.minVisibleValue,
             passedData.maxVisibleValue,
             passedData.tile.colorScale );
     //console.log('passedData:', passedData);
@@ -237,8 +350,8 @@ module.exports = function (passedData, done) {
     let inputTileData = new Float32Array(passedData.tile.data, 0, passedData.tile.dataLength);
 
     let tileData = workerLoadTileData(inputTileData, passedData.tile.type);
-    let pixOutput = workerSetPix(256 * 256, tileData, 
-            passedData.minVisibleValue, 
+    let pixOutput = workerSetPix(256 * 256, tileData,
+            passedData.minVisibleValue,
             passedData.maxVisibleValue,
             colorScale = passedData.colorScale);
 

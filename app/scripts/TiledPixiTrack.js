@@ -2,6 +2,7 @@ import {ZOOM_DEBOUNCE} from './config.js';
 import debounce from './debounce.js';
 import {PixiTrack} from './PixiTrack.js';
 import {tileProxy} from './TileProxy.js';
+import slugid from 'slugid';
 //import {LRUCache} from './lru.js';
 
 export class TiledPixiTrack extends PixiTrack {
@@ -44,6 +45,8 @@ export class TiledPixiTrack extends PixiTrack {
             if (handleTilesetInfoReceived)
                 handleTilesetInfoReceived(tilesetInfo[tilesetUid]);
         });
+
+        this.uuid = slugid.nice();
 
         this.refreshTilesDebounced = debounce(
             this.refreshTiles.bind(this), ZOOM_DEBOUNCE
@@ -302,7 +305,14 @@ export class TiledPixiTrack extends PixiTrack {
         if (toFetch.length > 0) {
             let toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
             //console.log('fetching:', toFetchList.join(' '));
-            tileProxy.fetchTiles(this.tilesetServer, toFetchList, this.receivedTiles.bind(this));
+            // tileProxy.fetchTiles(this.tilesetServer, toFetchList, this.receivedTiles.bind(this));
+
+            tileProxy.fetchTilesDebounced({
+                id: this.uuid,
+                server: this.tilesetServer,
+                done: this.receivedTiles.bind(this),
+                ids: toFetchList
+            });
         }
     }
 

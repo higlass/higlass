@@ -1,9 +1,10 @@
+import {TILE_FETCH_DEBOUNCE} from './config.js';
 import {range} from 'd3-array';
 import slugid from 'slugid';
 import urljoin from 'url-join';
 import {Pool} from 'threads';
 import {workerGetTilesetInfo} from './worker.js';
-import {workerFetchTiles} from './worker.js';
+import {workerFetchTiles, workerFetchMultiRequestTiles} from './worker.js';
 import {workerSetPix} from './worker.js';
 
 class TileProxy  {
@@ -12,13 +13,65 @@ class TileProxy  {
 
         this.threadPool = new Pool();
 
-        //maintain a cache of recently loaded tiles
+        this.workerFetchTilesDebounced = this.debounce(workerFetchMultiRequestTiles, TILE_FETCH_DEBOUNCE);
     }
 
-    fetchTiles(tilesetServer, tilesetIds, done) {
-        /** 
+    debounce (func, wait) {
+        let timeout;
+        let bundledRequest = [];
+        let requestMapper = {};
+
+        const bundleRequests = (request) => {
+            const requestId = requestMapper[request.id];
+
+            if (requestId && bundledRequest[requestId]) {
+                bundledRequest[requestId].ids = bundledRequest[requestId].ids.concat(request.ids);
+            } else {
+                requestMapper[request.id] = bundledRequest.length;
+                bundledRequest.push(request);
+            }
+        };
+
+        const reset = () => {
+            timeout = null;
+            bundledRequest = [];
+            requestMapper = {};
+        };
+
+        const debounced = (request) => {
+            bundleRequests(request);
+
+            const later = () => {
+                func({
+                    sessionId: this.sessionId,
+                    requests: bundledRequest
+                });
+                reset();
+            };
+
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+
+        debounced.cancel = () => {
+            clearTimeout(timeout);
+            reset();
+        };
+
+        debounced.immediate = () => {
+            func({
+                sessionId: this.sessionId,
+                requests: bundledRequest
+            });
+        };
+
+        return debounced;
+    }
+
+    fetchTilesDebounced(request) {
+        /**
          * Retrieve a set of tiles from the server
-         * 
+         *
          * Plenty of room for optimization and caching here.
          *
          * @param server: A string with the server's url (e.g. "http://127.0.0.1")
@@ -26,10 +79,26 @@ class TileProxy  {
          */
         // see if any of the tilesetIds are already in the cache
         // if they are, no need to fetch them
-        
+
+
+        this.workerFetchTilesDebounced(request);
+    }
+
+    fetchTiles(tilesetServer, tilesetIds, done) {
+        /**
+         * Retrieve a set of tiles from the server
+         *
+         * Plenty of room for optimization and caching here.
+         *
+         * @param server: A string with the server's url (e.g. "http://127.0.0.1")
+         * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
+         */
+        // see if any of the tilesetIds are already in the cache
+        // if they are, no need to fetch them
+
 
         workerFetchTiles(tilesetServer, tilesetIds, this.sessionId, (results) => {
-            // do some caching here    
+            // do some caching here
             done(results);
         });
     }
@@ -48,7 +117,7 @@ class TileProxy  {
 
     calculateTiles(zoomLevel, scale, minX, maxX, maxZoom, maxWidth) {
         /**
-         * Calculate the tiles that should be visible get a data domain 
+         * Calculate the tiles that should be visible get a data domain
          * and a tileset info
          *
          * All the parameters except the first should be present in the
@@ -110,7 +179,7 @@ class TileProxy  {
 
     tileDataToPixData(tile, minVisibleValue, maxVisibleValue, colorScale, finished) {
         /**
-         * Render 2D tile data. Convert the raw values to an array of 
+         * Render 2D tile data. Convert the raw values to an array of
          * color values
          *
          * @param finished: A callback to let the caller know that the worker thread
@@ -122,7 +191,7 @@ class TileProxy  {
             let tileData = tile.tileData;
             var scriptPath = document.location.href;
             //console.log('scriptPath', scriptPath);
-            
+
             // clone the tileData so that the original array doesn't get neutered
             // when being passed to the worker script
             let newTileData = new Float32Array(tileData.dense.length);
@@ -130,7 +199,7 @@ class TileProxy  {
 
             //console.log('running...', tile.tileId);
             // comment this and uncomment the code afterwards to enable threading
-            let pixData = workerSetPix(newTileData.length, newTileData, 
+            let pixData = workerSetPix(newTileData.length, newTileData,
                                               minVisibleValue,
                                               maxVisibleValue,
                                               colorScale);
@@ -140,7 +209,7 @@ class TileProxy  {
             this.threadPool.run(function(input, done) {
                         let tileData = input.tileData;
                         importScripts(input.scriptPath + '/scripts/worker.js');
-                        let pixData = worker.workerSetPix(tileData.length, tileData, 
+                        let pixData = worker.workerSetPix(tileData.length, tileData,
                                                           input.minVisibleValue,
                                                           input.maxVisibleValue);
                         done.transfer({'pixData': pixData}, [pixData.buffer]);
