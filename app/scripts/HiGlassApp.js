@@ -6,85 +6,192 @@ import slugid from 'slugid';
 import {MultiViewContainer} from './MultiViewContainer.jsx';
 import {HiGlassInput} from './HiGlassInput.jsx';
 import {Button, Panel, FormGroup, ControlLabel, FormControl, SafeAnchor} from 'react-bootstrap';
+import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
 
 export class HiGlassApp extends React.Component {
     constructor(props) {
         super(props);
 
-    this.defaultViewString = JSON.stringify(JSON.parse(this.props.viewConfigString), null, 2);
-    let viewConfigObject = JSON.parse(this.props.viewConfigString);
-    this.addUids(viewConfigObject)
+          this.views = {
+              'editable': true,
+              'views': [{
+              uid: "aa",
+              initialXDomain: [1372000000,1374000000],
+              initialYDomain: [0,3000000000],
+              autocompleteSource: "//" + usedServer + '/suggest/?d=dd&',
+              genomePositionSearchBoxVisible: true,
+              chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.txt",
+              'tracks': {
+            'top': [
+                /*
+                {'uid': slugid.nice(), type:'top-axis'}
+            ,
+            */
 
-    this.state = {
-        //viewConfig : []
+                    {
+                        'uid': slugid.nice(), 
+                        type:'horizontal-gene-annotations',
+                        height: 60,
+                      tilesetUid: 'dd',
+                      server: usedServer 
+                    }
+                      ,
+            ],
+            'left': [
+                    {
+                        'uid': slugid.nice(), 
+                        type:'vertical-gene-annotations',
+                        width: 60,
+                      tilesetUid: 'dd',
+                      server: usedServer 
+                    }
+            ],
+            'center': [
+                {   
+                    uid: 'c1',
+                    type: 'combined',
+                    height: 200,
+                    contents: 
+                    [
 
-        viewConfig : { 
-            object: viewConfigObject,
-            text: JSON.stringify(viewConfigObject)
-        },
-        inputOpen: false
-    }
-    //this.handleNewConfig(this.props.viewConfigString);
-
-    this.updateLinkedViews(this.state.viewConfig.object);
-
-    }
-
-    addUids(viewConfigObject) {
-        /**
-         * Add a uid to each view in the viewConfig. Useful for identifying views
-         * that get closed in other portions of the application.
-         *
-         */
-        for (let i = 0; i < viewConfigObject.views.length; i++) {
-            if ('uid' in viewConfigObject.views[i])
-                continue
-
-            viewConfigObject.views[i].uid = slugid.nice();
-        }
-    }
-
-    updateLinkedViews(viewConfig) {
-        for (let i = 0; i < viewConfig.views.length; i++) {
-            if (typeof viewConfig.views[i].zoomLock ==  'undefined')
-                //viewConfig.views[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
-                a = 2;  //dummy statement, don't know what the JS equivalent of 'pass' is
-            else {
-                let zoomLock = viewConfig.views[i].zoomLock;
-                if (typeof viewConfig.views[zoomLock].zoomDispatch == 'undefined') {
-                    //console.log('WARNING: view requests zoom lock to another view with an undefined zoomDispatch:', zoomLock);
-                    //viewConfig.views[i].zoomDispatch = d3.dispatch('zoom', 'zoomend')
-                } else {
-                    viewConfig.views[i].zoomDispatch = viewConfig.views[zoomLock].zoomDispatch;
+                        { 
+                            'uid': 'hm1',
+                           'server': usedServer ,
+                          'tilesetUid': 'aa',
+                          'type': 'heatmap',
+                          'options': {
+                            'colorRange': ['white', 'black']
+                          }
+                        }
+                    ]
                 }
-            }
-        }
+            ]}
+            ,
+            layout: {x: 0, y: 0, w: 6, h: 10}
 
-    }
+          }
+          ,
+            {
+              uid: 'bb',
+              initialXDomain: [20000000,300000000],
+              initialYDomain: [20000000,300000000],
+              'tracks': {
+            'top': [
+                {'uid': slugid.nice(), type:'top-axis'}
+            ,
 
-    handleNewConfig(configText) {
-        let viewConfigObject = JSON.parse(configText);
-        this.addUids(viewConfigObject);
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-1d-tiles',
+                        height: 20,
+                      tilesetUid: 'bb',
+                      server: usedServer }
+                      ,
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-line',
+                        height: 20,
+                      tilesetUid: 'bb',
+                      server: usedServer }
+                    /*
+                      ,
+                {'uid': slugid.nice(),
+                 type: 'combined',
+                 height: 100,
+                 contents:
+                     [
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-line',
+                        height: 30,
+                        width: 20,
+                      tilesetUid: 'bb',
+                      server: usedServer }
+                      ,
+                    {'uid': slugid.nice(),
+                        type: 'top-stacked-interval',
+                        height: 30,
+                        tilesetUid: 'cc',
+                        server:  usedServer 
+                    }
+                    ,
+                    {'uid': slugid.nice(), 
+                        type:'horizontal-1d-tiles',
+                        height: 30,
+                      tilesetUid: 'cc',
+                      server: usedServer }
 
-        this.updateLinkedViews(viewConfigObject);
+                     ]
+                }
+                      */
+            ],
+            'left': [
+                {'uid': slugid.nice(), type:'left-axis', width: 80}
+                /*
+                ,
+                {'uid': slugid.nice(),
+                 type: 'combined',
+                 width: 60,
+                 contents:
+                     [
+                         /*
+                    {'uid': slugid.nice(),
+                        type: 'left-stacked-interval',
+                        height: 30,
+                        tilesetUid: 'cc',
+                        server:  usedServer 
+                    }
+                    ,
+                    {'uid': slugid.nice(), 
+                        type:'vertical-line',
+                        height: 30,
+                        width: 20,
+                      tilesetUid: 'bb',
+                      server: usedServer }
+                     ]
+                }
+                      ,
+                ,
+                {'uid': slugid.nice(), 
+                    type:'vertical-1d-tiles',
+                  tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
+                  server: '52.45.229.11'}
+                  */
+            ],
+            'center': [
+                {   
+                    uid: slugid.nice(),
+                    type: 'combined',
+                    height: 200,
+                    contents: 
+                    [
 
-        this.setState(
-         {
-             viewConfig : { 
-                 object: viewConfigObject,
-                 text: JSON.stringify(viewConfigObject)
-             }
-         });
+                        { 'server': usedServer ,
+                          'uid': slugid.nice(),
+                          'tilesetUid': 'aa',
+                          'type': 'heatmap'
+                        }
+                        ,
+                        { 'server': usedServer ,
+                          'uid': slugid.nice(),
+                          'tilesetUid': 'aa',
+                          'type': '2d-tiles'
+                        }
+                        ,
+                        {
+                            'type': 'viewport-projection-center',
+                            uid: slugid.nice(),
+                            'fromViewUid': 'aa'
+                        }
+                    ]
+                }
+            ]}
+            ,
+            layout: {x: 3, y: 0, w: 3, h: 10}
 
-    };
-        
-    handleOpen() {
-        this.setState({
-            'inputOpen': !this.state.inputOpen
-        });
-    }
+          }
+          
+          ]
+          }
 
-    handleViewEdit(newViewConfig) {
+        this.views.views = [this.views.views[0]];
 
     }
 
@@ -112,19 +219,10 @@ export class HiGlassApp extends React.Component {
                     ref='displayPanel'
                 >
                     <MultiViewContainer 
-                        onNewConfig={this.handleNewConfig.bind(this)}
-                        viewConfig={this.state.viewConfig} 
+                        viewConfig={this.views} 
                     />
 
                 </Panel>
-                { (() => { if (this.state.viewConfig.object.editable) {
-                return (<HiGlassInput 
-                        currentConfig={this.defaultViewString} 
-                        handleOpen={this.handleOpen.bind(this)}
-                        inputOpen={this.state.inputOpen}
-                        onNewConfig={this.handleNewConfig.bind(this)} 
-                        />)
-                                                      }})() }
                 </div>
         );
     }

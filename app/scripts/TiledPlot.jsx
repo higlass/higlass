@@ -34,7 +34,6 @@ export class TiledPlot extends React.Component {
         for (let key in tracks) {
             for (let i = 0; i < tracks[key].length; i++) {
                 tracks[key][i].uid = tracks[key][i].uid ? tracks[key][i].uid : slugid.nice();
-                console.log('tracks[key][i].uid', tracks[key][i].uid);
             }
         }
 
@@ -181,10 +180,8 @@ export class TiledPlot extends React.Component {
     }
 
     handleAddSeries(trackUid) {
-        console.log('add series:', trackUid);
         let trackPosition = getTrackPositionByUid(this.props.tracks, trackUid);
         let track = getTrackByUid(this.props.tracks, trackUid);
-        console.log('position:', trackPosition);
 
         this.setState({
             addTrackPosition: trackPosition,
@@ -194,8 +191,6 @@ export class TiledPlot extends React.Component {
     }
 
     handleAddTrack(position) {
-        console.log('handle AddTrack', position);
-
         this.setState({
             addTrackPosition: position,
             addTrackVisible: true,
@@ -271,8 +266,6 @@ export class TiledPlot extends React.Component {
     }
 
     handleConfigureTrack(uid) {
-        console.log('configuring track:', uid);
-
         this.setState({
             configTrackMenuId: null,
             trackOptionsUid: uid
@@ -573,7 +566,6 @@ export class TiledPlot extends React.Component {
         let trackPositionTexts = this.createTrackPositionTexts();
 
         let positionedTracks = this.positionedTracks();
-        console.log('positionedTracks:', positionedTracksToAllTracks);
 
         let trackRenderer = null;
         if (this.state.sizeMeasured) {
@@ -718,7 +710,6 @@ export class TiledPlot extends React.Component {
         let trackOptionsElement = null;
 
         if (this.state.trackOptionsUid) {
-            console.log('trackOptionsUid:', this.state.trackOptionsUid);
             trackOptionsElement = (<HeatmapOptions
                     track={getTrackByUid(this.props.tracks, this.state.trackOptionsUid)}
                     onCancel={ () => this.setState({

@@ -2,6 +2,7 @@ import '../styles/TrackOptions.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { CompactPicker } from 'react-color';
+import {MultiViewContainer} from './MultiViewContainer.jsx';
 
 import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-bootstrap';
 
