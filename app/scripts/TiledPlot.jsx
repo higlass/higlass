@@ -573,6 +573,7 @@ export class TiledPlot extends React.Component {
         let trackPositionTexts = this.createTrackPositionTexts();
 
         let positionedTracks = this.positionedTracks();
+        console.log('positionedTracks:', positionedTracksToAllTracks);
 
         let trackRenderer = null;
         if (this.state.sizeMeasured) {
