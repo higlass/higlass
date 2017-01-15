@@ -28,6 +28,7 @@ export class MultiViewContainer extends React.Component {
 
         this.minHorizontalHeight = 20;
         this.minVerticalWidth = 20;
+        this.editable = false;
 
         this.uid = slugid.nice();
         this.yPositionOffset = 0;
@@ -1403,14 +1404,9 @@ export class MultiViewContainer extends React.Component {
                         chromInfoPath={view.chromInfoPath}
                      />) : null;
                 //genomePositionSearchBox = null;
-
-                return (<div 
-                            data-grid={layout}
-                            key={itemUid}
-                            ref={(c) => {this.tiledAreaDiv = c; }}
-                            style={tiledAreaStyle}
-
-                        >
+                
+                let multiTrackHeader = this.editable ? 
+                    (
                             <div 
                                 className="multitrack-header"
                                 style={{"width": this.width, "minHeight": 16, "position": "relative", 
@@ -1444,13 +1440,36 @@ export class MultiViewContainer extends React.Component {
                                     width="10px" 
                                 />
                             </div>
+                    ) : null; // this.editable ?
+
+                return (<div 
+                            data-grid={layout}
+                            key={itemUid}
+                            ref={(c) => {this.tiledAreaDiv = c; }}
+                            style={tiledAreaStyle}
+
+                        >
+                                {multiTrackHeader}
                                 {genomePositionSearchBox}
                                 {tiledPlot}
                             {overlay}
                         </div>)
 
-            }.bind(this))
+            }.bind(this))   //end tiledAreas = 
     }
+
+    let viewAddButton = this.editable ? (
+            <div 
+                className="view-menu"
+                style={{"width": 32, "height": 26, "position": "relative", "marginBottom": 4, "marginRight": 12,  "opacity": 0.6, "float": "right"}} 
+            >
+                    <img 
+                        onClick={this.handleAddView.bind(this)}
+                        src="images/plus.svg" 
+                        className={'multiview-add-img'}
+                    />
+            </div>
+    ) : null;  //this.editable ?
 
     return (
       <div 
@@ -1496,16 +1515,7 @@ export class MultiViewContainer extends React.Component {
         { tiledAreas }
         </ResponsiveReactGridLayout>
         <div>
-            <div 
-                className="view-menu"
-                style={{"width": 32, "height": 26, "position": "relative", "marginBottom": 4, "marginRight": 12,  "opacity": 0.6, "float": "right"}} 
-            >
-                    <img 
-                        onClick={this.handleAddView.bind(this)}
-                        src="images/plus.svg" 
-                        className={'multiview-add-img'}
-                    />
-            </div>
+            {viewAddButton}
         </div>
 
         {configMenu}
