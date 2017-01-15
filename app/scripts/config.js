@@ -87,7 +87,7 @@ export const tracksInfo = [
         type: 'viewport-projection-center',
         datatype: ['2d-projection'],
         local: true,
-        hidden: true,  
+        hidden: true,
         orientation: '2d',
         name: 'Viewport Projection',
         thumbnail: 'viewport-projection-center.png'
@@ -117,6 +117,9 @@ export const tracksInfo = [
         orientation: 'any'
     }
 ]
+
+// Number of milliseconds zoom-related actions (e.g., tile loading) are debounced
+export const ZOOM_DEBOUNCE = 100;
 
 let temp = {};
 
