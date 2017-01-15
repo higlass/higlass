@@ -14,6 +14,7 @@ export class HiGlassApp extends React.Component {
 
           this.views = {
               'editable': true,
+              zoomFixed: false,
               'views': [{
               uid: "aa",
               initialXDomain: [1372000000,1374000000],

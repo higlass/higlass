@@ -1211,6 +1211,7 @@ export class MultiViewContainer extends React.Component {
                                      onTrackOptionsChanged={trackId => this.handleTrackOptionsChanged(view.uid, trackId) }
                                      onTrackAdded={(newTrack, position, host) => this.handleTrackAdded(view.uid, newTrack, position, host)}
                                      onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
+                                     zoomable={!this.props.viewConfig.zoomFixed}
                                 >
 
                                 </TiledPlot>)
@@ -1319,6 +1320,8 @@ export class MultiViewContainer extends React.Component {
         <ResponsiveReactGridLayout
           {...this.props}
           draggableHandle={'.multitrack-header'}
+          isDraggable={this.props.viewConfig.editable}
+          isResizable={this.props.viewConfig.editable}
           measureBeforeMount={false}
           onBreakpointChange={this.onBreakpointChange.bind(this)}
           onDragStart={this.handleDragStart.bind(this)}

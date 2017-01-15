@@ -28,6 +28,9 @@ export class TiledPlot extends React.Component {
 
         let tracks = this.props.tracks;
 
+        this.xScale = null;
+        this.yScale = null;
+
         // Add names to all the tracks
         this.trackRenderers = {}
 
@@ -128,6 +131,12 @@ export class TiledPlot extends React.Component {
          */
     }
 
+    handleScalesChanged(x,y) {
+        this.xScale = x;
+        this.yScale = y;
+
+        this.props.onScalesChanged(x,y);
+    }
 
     handleTilesetInfoReceived(trackUid, tilesetInfo) {
         /**
@@ -407,8 +416,7 @@ export class TiledPlot extends React.Component {
 
         return tracksAndLocations;
     }
-
-
+ 
     createTrackPositionTexts() {
         /**
          * Create little text fields that show the position and width of
@@ -588,8 +596,9 @@ export class TiledPlot extends React.Component {
                     leftWidth={this.leftWidth}
                     positionedTracks={positionedTracks}
                     pixiStage={this.props.pixiStage}
-                    onScalesChanged={this.props.onScalesChanged}
+                    onScalesChanged={this.handleScalesChanged.bind(this)}
                     setCentersFunction={this.props.setCentersFunction}
+                    zoomable={this.props.zoomable}
                 >
 
                     <div 
@@ -712,6 +721,8 @@ export class TiledPlot extends React.Component {
         if (this.state.trackOptionsUid) {
             trackOptionsElement = (<HeatmapOptions
                     track={getTrackByUid(this.props.tracks, this.state.trackOptionsUid)}
+                    xScale={this.xScale}
+                    yScale={this.yScale}
                     onCancel={ () => this.setState({
                         trackOptionsUid: null
                     })}

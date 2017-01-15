@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { CompactPicker } from 'react-color';
 import {MultiViewContainer} from './MultiViewContainer.jsx';
+import slugid from 'slugid';
 
 import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-bootstrap';
 
@@ -43,6 +44,23 @@ export class HeatmapOptions extends React.Component {
         let rightAlign = {'textAlign': 'right'}
         let centerAlign = {'textAlign': 'center'}
 
+        let centerTrack = Object.assign(this.props.track, {height: 100});
+
+        console.log('centerTrack:', centerTrack);
+
+        let mvConfig = {
+            'editable': false,
+            zoomFixed: true,
+            'views': [{
+
+            'uid': slugid.nice(),
+            'initialXDomain': this.props.xScale ? this.props.xScale.domain() : [0,1],
+            'initialYDomain': this.props.yScale ? this.props.yScale.domain() : [0,1],
+            'tracks': {'center': [centerTrack] }
+        }]};
+
+        console.log('mvConfig:', mvConfig)
+
         return(<Modal 
                 onHide={this.props.handleCancel}
                 show={true}
@@ -64,6 +82,15 @@ export class HeatmapOptions extends React.Component {
                                                                      this.state.toColor)
                                         }
                                     /></td>
+                                 <td rowSpan="2" className='td-track-options'>
+                                 <div style={{width:150}}>
+                                    Preview:
+                                    <MultiViewContainer 
+                                        viewConfig={mvConfig}
+                                    />
+                                </div>
+                                 
+                                 </td>
                                 </tr>
                                 <tr>
                                     <td className='td-track-options' style={centerAlign}>

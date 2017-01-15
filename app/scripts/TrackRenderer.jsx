@@ -60,6 +60,10 @@ export class TrackRenderer extends React.Component {
             })
             .on('zoom', this.zoomed.bind(this))
 
+            console.log('zoomable', this.props.zoomable);
+        if (!this.props.zoomable)
+            this.zoomBehavior.scaleExtent([1,1]);
+
         // the center measurements, because those corresponds to the widths
         // and heights of the actual tracks
         this.initialWidth = this.props.width;
