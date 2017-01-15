@@ -52,7 +52,7 @@ export class TiledPlot extends React.Component {
             addTrackVisible: false,
             addTrackPosition: "top",
             mouseOverOverlayUid: null,
-            trackOptionsUid: null
+            trackOptionsUid: 'hm1'
         }
 
         // these dimensions are computed in the render() function and depend
@@ -722,6 +722,7 @@ export class TiledPlot extends React.Component {
                     onCancel={ () => this.setState({
                         trackOptionsUid: null
                     })}
+                    onTrackOptionsChanged = {this.props.onTrackOptionsChanged}
                     onSubmit={ (newTrackConfig) => {
                         this.props.onTrackOptionsChanged(newTrackConfig);
                         this.setState({

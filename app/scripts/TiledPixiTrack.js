@@ -1,3 +1,5 @@
+import {ZOOM_DEBOUNCE} from './config.js';
+import debounce from './debounce.js';
 import {PixiTrack} from './PixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 import slugid from 'slugid';
@@ -45,6 +47,10 @@ export class TiledPixiTrack extends PixiTrack {
         });
 
         this.uuid = slugid.nice();
+
+        this.refreshTilesDebounced = debounce(
+            this.refreshTiles.bind(this), ZOOM_DEBOUNCE
+        );
     }
 
 
@@ -163,7 +169,7 @@ export class TiledPixiTrack extends PixiTrack {
         this.xScale(newXScale);
         this.yScale(newYScale);
 
-        this.refreshTiles();
+        this.refreshTilesDebounced();
 
         this.pMobile.position.x = tx;
         this.pMobile.position.y = this.position[1];

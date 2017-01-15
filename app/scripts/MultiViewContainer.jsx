@@ -17,7 +17,7 @@ import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
 import {getTrackPositionByUid, getTrackByUid} from './utils.js';
 import {positionedTracksToAllTracks} from './utils.js';
-import {usedServer, tracksInfo} from './config.js';
+import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -256,6 +256,10 @@ export class MultiViewContainer extends React.Component {
 
             looseTracks.forEach(t => this.addCallbacks(v.uid, t));
 
+            // add default options (as specified in config.js
+            // (e.g. line color, heatmap color scales, etc...)
+            looseTracks.forEach(t => this.addDefaultOptions(t));
+            looseTracks.forEach(t => console.log('t:', t, 't.options:', t.options));
         });
 
           this.state = {
@@ -334,6 +338,13 @@ export class MultiViewContainer extends React.Component {
          */
     
 
+    }
+
+    addDefaultOptions(track) {
+        if (track.options)
+            return;
+
+        track.options = tracksInfoByType[track.type].defaultOptions;
     }
 
     animate() {
