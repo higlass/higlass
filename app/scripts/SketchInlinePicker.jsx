@@ -1,5 +1,6 @@
 'use strict'
 
+import {rgb} from 'd3-color';
 import React from 'react'
 import reactCSS from 'reactcss'
 import { SketchPicker } from 'react-color'
@@ -8,15 +9,17 @@ class SketchInlinePicker extends React.Component {
     constructor(props) {
       super(props);
 
-      console.log('startprops:', props);
+      let startColor = rgb(props.color);
+      
+      console.log('startColor:', startColor);
 
       this.state = {
         displayColorPicker: false,
         color: {
-          r: '241',
-          g: '112',
-          b: '19',
-          a: '1',
+          r: startColor.r,
+          g: startColor.g,
+          b: startColor.b,
+          a: startColor.opacity
         },
       };
     }
@@ -31,7 +34,7 @@ class SketchInlinePicker extends React.Component {
 
   handleChange(color) {
       let rgb = color.rgb;
-      let colorString = `rgb(${rgb.r},${rgb.g},${rgb.b},${rgb.a})`;
+      let colorString = `rgba(${rgb.r},${rgb.g},${rgb.b},${rgb.a})`;
 
     this.props.onChange(colorString);
     this.setState({ color: color.rgb })

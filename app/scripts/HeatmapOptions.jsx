@@ -14,27 +14,24 @@ export class HeatmapOptions extends React.Component {
         // props should include the definition of the heatmap data series
         
         this.state = {
-            fromColor : props.track.options.colorRange[0],
-            toColor : props.track.options.colorRange[1],
             colors: props.track.options.colorRange
         }
 
     }
 
-    handleColorsChanged(fromColor, toColor) {
+    handleColorsChanged(newColors) {
+        console.log('newColors:', newColors);
         this.props.onTrackOptionsChanged(Object.assign(this.props.track.options,
-                                                       {colorRange: [fromColor, 
-                                                           toColor]}));
+                                                       {colorRange: newColors}));
         this.setState({
-            fromColor: fromColor,
-            toColor: toColor
+            colors: newColors
         });
     }
 
     handleSubmit() {
         let options = this.props.track.options;
 
-        options.colorRange = [this.state.fromColor, this.state.toColor];
+        options.colorRange = this.state.colors;
 
         this.props.onSubmit(this.props.track.options);
     }
@@ -68,8 +65,7 @@ export class HeatmapOptions extends React.Component {
         let centerTrack = Object.assign(this.props.track, 
                                         {height: 100,
                                             options: {
-                                         colorRange: [this.state.fromColor, 
-                                                      this.state.toColor]
+                                         colorRange: this.state.colors
                                         }} );
 
         let mvConfig = {
@@ -85,7 +81,7 @@ export class HeatmapOptions extends React.Component {
 
         let colorFields = this.state.colors.map((x,i) => {
             // only let colors be removed if there's more than two present
-            let closeButton = (this.state.colors.length > 2) ? 
+            let closeButton = (this.state.colors.length > 2 && i == this.state.colors.length-1) ? 
                 ( <div
                             style={{
                                 background: 'white',
@@ -126,11 +122,10 @@ export class HeatmapOptions extends React.Component {
                         {closeButton}
                         <SketchInlinePicker 
                             key={i}
+                            color={this.state.colors[i]}
                             onChange={c => {
                                     this.state.colors[i] = c;
-                                    this.setState({
-                                        colors: this.state.colors
-                                    });
+                                    this.handleColorsChanged(this.state.colors);
                                 }
                             }
                         />
@@ -182,7 +177,7 @@ export class HeatmapOptions extends React.Component {
                             </tr>
                             </tbody>
                         </table>
-                         <div style={{width:250}}>
+                         <div style={{width:200}}>
                             <MultiViewContainer 
                                 viewConfig={mvConfig}
                             />

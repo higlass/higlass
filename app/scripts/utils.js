@@ -167,7 +167,11 @@ export function colorDomainToRgbaArray(colorRange) {
      * values (all from 0 to 255). The last color (255) will always be
      * transparent
      */
-    let d3Scale = scaleLinear().domain([0,255])
+
+    // we should always have at least two values in the color range
+    let domain = colorRange.map((x,i) =>  i * (255 / (colorRange.length - 1)) );
+
+    let d3Scale = scaleLinear().domain(domain)
         .range(colorRange)
 
     let rgbaArray = range(254,-1,-1).map(d3Scale)
