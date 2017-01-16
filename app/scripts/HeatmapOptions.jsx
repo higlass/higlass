@@ -13,16 +13,19 @@ export class HeatmapOptions extends React.Component {
         super(props);
         // props should include the definition of the heatmap data series
         
+        
         this.state = {
-            colors: props.track.options.colorRange
+            colors: props.track.options.colorRange.slice()
         }
 
     }
 
     handleColorsChanged(newColors) {
         console.log('newColors:', newColors);
+        /*
         this.props.onTrackOptionsChanged(Object.assign(this.props.track.options,
                                                        {colorRange: newColors}));
+        */
         this.setState({
             colors: newColors
         });
@@ -62,7 +65,10 @@ export class HeatmapOptions extends React.Component {
 
         let colorRow = {height: 10}
 
-        let centerTrack = Object.assign(this.props.track, 
+        let track = JSON.parse(JSON.stringify(this.props.track));
+
+
+        let centerTrack = Object.assign(track, 
                                         {height: 100,
                                             options: {
                                          colorRange: this.state.colors
@@ -76,7 +82,7 @@ export class HeatmapOptions extends React.Component {
             'uid': 'hmo-' + this.props.track.uid,
             'initialXDomain': this.props.xScale ? this.props.xScale.domain() : [0,1],
             'initialYDomain': this.props.yScale ? this.props.yScale.domain() : [0,1],
-            'tracks': {'center': [centerTrack] }
+            'tracks': {'center': [track] }
         }]};
 
         let colorFields = this.state.colors.map((x,i) => {
@@ -166,22 +172,46 @@ export class HeatmapOptions extends React.Component {
                     <Modal.Title>{'Heatmap Options'}</Modal.Title> 
                     </Modal.Header>
                     <Modal.Body>
-                        <div style={{marginBottom: 5}}>
-                            Heatmap colors:
-                        </div>
-                        <table>
-                            <tbody>
-                            <tr>
-                                {colorFields}
-                                {addButton}
-                            </tr>
-                            </tbody>
-                        </table>
-                         <div style={{width:200}}>
-                            <MultiViewContainer 
-                                viewConfig={mvConfig}
-                            />
-                        </div>
+                            <table className='table-track-options'>
+                            <thead></thead>
+                              <tbody>
+                                  <tr>
+                                    <td className='td-track-options'>
+                                        {'Heatmap colors'}
+                                    </td>
+                                    </tr>
+                                    <tr>
+                                    <td className='td-track-options'>
+                                        <table>
+                                            <tbody>
+                                            <tr>
+                                                {colorFields}
+                                                {addButton}
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+
+                                  </tr>
+                                  <tr>
+                                    <td className='td-track-options'>
+                                        {'Preview'}
+                                    </td>
+                                    </tr>
+                                  <tr>
+                                 <td rowSpan="2" className='td-track-options'>
+                                 <div style={{width:200 }}>
+                                      <MultiViewContainer
+                                          viewConfig={mvConfig}
+                                      />
+                                  </div>
+
+                                   </td>
+                                  </tr>
+                                  <tr>
+                                  </tr>
+                              </tbody>
+                          </table>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={this.props.onCancel}>Cancel</Button>

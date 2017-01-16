@@ -732,11 +732,14 @@ export class TiledPlot extends React.Component {
                     track={getTrackByUid(this.props.tracks, this.state.trackOptionsUid)}
                     xScale={this.xScale}
                     yScale={this.yScale}
-                    onCancel={ () => this.setState({
+                    onCancel={ () => {
+                        console.log('cancel clicked:');
+                        this.setState({
                         trackOptionsUid: null
-                    })}
+                    })}}
                     onTrackOptionsChanged={(newOptions) => newOptions}
                     onSubmit={ (newOptions) => {
+                        console.log('submitted...');
                         this.handleTrackOptionsChanged(this.state.trackOptionsUid, newOptions);
                         this.setState({
                             trackOptionsUid: null });

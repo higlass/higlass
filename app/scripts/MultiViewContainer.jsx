@@ -1401,6 +1401,7 @@ export class MultiViewContainer extends React.Component {
           draggableHandle={'.multitrack-header'}
           isDraggable={this.props.viewConfig.editable}
           isResizable={this.props.viewConfig.editable}
+          margin={this.props.viewConfig.editable ? [10,10] : [0,0]}
           measureBeforeMount={false}
           onBreakpointChange={this.onBreakpointChange.bind(this)}
           onDragStart={this.handleDragStart.bind(this)}
