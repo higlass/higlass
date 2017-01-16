@@ -18,6 +18,7 @@ import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from 
 import {getTrackPositionByUid, getTrackByUid} from './utils.js';
 import {positionedTracksToAllTracks} from './utils.js';
 import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
+import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT} from './config.js';
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
@@ -56,6 +57,8 @@ export class MultiViewContainer extends React.Component {
         this.horizontalMargin = 5;
         this.verticalMargin = 5;
 
+        this.boundRefreshView = this.refreshView.bind(this);
+
         let localServer = "localhost:8000";
 
         //let usedServer = localServer;
@@ -90,6 +93,12 @@ export class MultiViewContainer extends React.Component {
     }
 
     componentDidMount() {
+        // the addEventListener is necessary because TrackRenderer determines where to paint
+        // all the elements based on their bounding boxes. If the window isn't
+        // in focus, everything is drawn at the top and overlaps. When it gains
+        // focus we need to redraw everything in its proper place
+        window.addEventListener("focus", this.boundRefreshView);
+
         this.element = ReactDOM.findDOMNode(this);
         dictValues(this.state.views).map(v => {
             if (!v.layout)
@@ -580,7 +589,33 @@ export class MultiViewContainer extends React.Component {
       });
   };
 
+  clearDragTimeout() {
+      /**
+       * Maybe somebody started dragging again before the previous drag
+       * timeout fired. In that case, we need to clear this timeout so
+       * that it doesn't override a previously set one.
+       */
+    if (this.dragTimeout) {
+        clearTimeout(this.dragTimeout);
+        this.dragTimeout = null;
+    }
+  }
+
+  refreshView() {
+    this.clearDragTimeout();
+    this.setState({
+        dragging: true
+    })
+
+    this.clearDragTimeout();
+    this.dragTimeout = setTimeout(() => {
+        this.setState({
+            dragging: false
+        })}, SHORT_DRAG_TIMEOUT);
+  }
+
     handleDragStart(layout, oldItem, newItem, placeholder, e, element) {
+        this.clearDragTimeout();
         this.setState({
             dragging: true
         })
@@ -589,10 +624,11 @@ export class MultiViewContainer extends React.Component {
     handleDragStop() {
         // wait for the CSS transitions to end before 
         // turning off the dragging state
-        setTimeout(() => {
+        this.clearDragTimeout();
+        this.dragTimeout = setTimeout(() => {
             this.setState({
                 dragging: false
-            })}, 1000);
+            })}, LONG_DRAG_TIMEOUT);
     }
 
   onNewLayout() {
@@ -1092,6 +1128,8 @@ export class MultiViewContainer extends React.Component {
         let view = this.state.views[viewUid];
         view.genomePositionSearchBoxVisible = !view.genomePositionSearchBoxVisible;
 
+        this.refreshView();
+
         this.setState({
             views: this.state.views,
             configMenuUid: null
@@ -1134,6 +1172,10 @@ export class MultiViewContainer extends React.Component {
 
         return viewsByUid;
 
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('focus', this.boundRefreshView);
     }
 
     componentWillReceiveProps(newProps) {

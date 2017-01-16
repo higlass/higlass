@@ -68,6 +68,8 @@ export class TiledPlot extends React.Component {
 
         this.centerHeight = 0;
         this.centerWidth = 0;
+
+        this.dragTimeout = null;
     }
 
     measureSize() {

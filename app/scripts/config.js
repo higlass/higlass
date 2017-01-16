@@ -129,3 +129,8 @@ tracksInfo.forEach(t => {
 })
 
 export const tracksInfoByType = temp;
+
+// the length of time to keep refreshing the view after
+// a drag event
+export const SHORT_DRAG_TIMEOUT = 110;
+export const LONG_DRAG_TIMEOUT = 1000;
