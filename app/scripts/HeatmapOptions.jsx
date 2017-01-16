@@ -39,6 +39,25 @@ export class HeatmapOptions extends React.Component {
         this.props.onSubmit(this.props.track.options);
     }
 
+    handleAddColor() {
+        /** 
+         * Add a color to the end
+         */
+        this.setState({
+            colors: this.state.colors.concat(this.state.colors[this.state.colors.length-1])
+        });
+
+    }
+    handleRemoveColor(i) {
+        /**
+         * Remove one of the colors from the color map
+         */
+
+        this.setState({
+            colors: this.state.colors.slice(0, i).concat(this.state.colors.slice(i+1))
+        });
+    }
+
     render() {
         let leftAlign = {'textAlign': 'left'}
         let rightAlign = {'textAlign': 'right'}
@@ -65,7 +84,38 @@ export class HeatmapOptions extends React.Component {
         }]};
 
         let colorFields = this.state.colors.map((x,i) => {
-            console.log('i:', i);
+            // only let colors be removed if there's more than two present
+            let closeButton = (this.state.colors.length > 2) ? 
+                ( <div
+                            style={{
+                                background: 'white',
+                                    position: "absolute",
+                                    top: 0,
+                                    right: 0,
+                                    opacity: 1,
+                                    width: 14,
+                                    height: 14,
+                                    borderRadius: 2
+
+                            }}
+                        >
+                            <img 
+                                onClick={() => this.handleRemoveColor(i)}
+                                style={{
+                                    position: "absolute",
+                                    top: 2,
+                                    right: 2,
+                                    opacity: 0.5,
+                                    width: 10,
+                                    height: 10 
+                                }}
+                                src="images/cross.svg" 
+                                width="10px" 
+                            />
+                            </div>
+                        ) 
+                    : null; //closebutton
+
             return(<td
                         key={"l" + i}
                         style={{ border: "0px solid", 
@@ -73,17 +123,7 @@ export class HeatmapOptions extends React.Component {
                                  outline: "none",
                         }}
                    >
-                            <img 
-                                onClick={() => { this.handleCloseView(view.uid)}}
-                                style={{
-                                    position: "absolute",
-                                    top: 0,
-                                    right: 0,
-                                    opacity: 0.5
-                                }}
-                                src="images/cross.svg" 
-                                width="10px" 
-                            />
+                        {closeButton}
                         <SketchInlinePicker 
                             key={i}
                             onChange={c => {
@@ -96,6 +136,32 @@ export class HeatmapOptions extends React.Component {
                         />
                     </td>);
         });
+
+        let addButton = this.state.colors.length < 4 ?
+            (<td
+                    style={{ border: "0px solid", 
+                             position: "relative",
+                             outline: "none",
+                    }}
+             >
+                <div
+                    style={{
+                             height: 24,
+                             marginLeft: 5
+                    }}
+                
+                >
+                            <img 
+                                onClick={this.handleAddColor.bind(this)}
+                                style={{
+                                    opacity: 0.5,
+                                }}
+                                src="images/plus.svg" 
+                                width="10px" 
+                            />
+                </div>
+             </td>) 
+            : null; //addButton
 
         return(<Modal 
                 onHide={this.props.handleCancel}
@@ -112,6 +178,7 @@ export class HeatmapOptions extends React.Component {
                             <tbody>
                             <tr>
                                 {colorFields}
+                                {addButton}
                             </tr>
                             </tbody>
                         </table>
