@@ -8,6 +8,7 @@
 
 .context-menu-item {
     padding: 2px;
+    white-space: nowrap;
 }
 
 .context-menu-item:hover {

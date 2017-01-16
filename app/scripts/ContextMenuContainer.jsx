@@ -59,14 +59,20 @@ export class ContextMenuContainer extends React.Component {
         let bbox = this.divDom.getBoundingClientRect();
 
         if (this.state.orientation == 'left') {
+            let leftPosition = this.props.position.left - bbox.width;
+            leftPosition = leftPosition < 0 ? 0 : leftPosition;
+
             this.setState({
-                left: this.props.position.left - bbox.width,
+                left: leftPosition,
                 top: this.props.position.top
             });
         }  else {
             if ((bbox.left + bbox.width) > window.innerWidth) {
+                let leftPosition = this.props.position.left - bbox.width;
+                leftPosition = leftPosition < 0 ? 0 : leftPosition;
+
                 this.setState({
-                    left: this.props.position.left - bbox.width,
+                    left: leftPosition,
                     top: this.props.position.top,
                     orientation: 'left'
                 });
