@@ -114,4 +114,8 @@ export class LeftTrackModifier {
     refScalesChanged(refXScale, refYScale) {
         this.originalTrack.refScalesChanged(refYScale, refXScale);
     }
+
+    rerender(options) {
+        this.originalTrack.rerender(); 
+    }
 }

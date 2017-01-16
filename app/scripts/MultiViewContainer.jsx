@@ -67,24 +67,7 @@ export class MultiViewContainer extends React.Component {
           this.pixiStage.interactive = true;
           this.element = null;
 
-
-        let views = this.props.viewConfig.views;
-        let viewsByUid = {};
-        views.forEach(v => {
-            this.fillInMinWidths(v.tracks);
-            viewsByUid[v.uid] = v;     
-
-            // Add names to all the tracks
-            let looseTracks = positionedTracksToAllTracks(v.tracks);
-            looseTracks = this.addNamesToTracks(looseTracks);
-
-            looseTracks.forEach(t => this.addCallbacks(v.uid, t));
-
-            // add default options (as specified in config.js
-            // (e.g. line color, heatmap color scales, etc...)
-            looseTracks.forEach(t => this.addDefaultOptions(t));
-            looseTracks.forEach(t => console.log('t:', t, 't.options:', t.options));
-        });
+          let viewsByUid = this.processViewConfig(this.props.viewConfig);
 
           this.state = {
             currentBreakpoint: 'lg',
@@ -101,7 +84,7 @@ export class MultiViewContainer extends React.Component {
             //chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
             //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
             //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
-            mouseOverOverlayUid: views[0].uid,
+            mouseOverOverlayUid: null,
             configMenuUid: null
           }
     }
@@ -1094,7 +1077,8 @@ export class MultiViewContainer extends React.Component {
          */
 
         allTracks.forEach(t => {
-            this.addNameToTrack(t)
+            if (!t.name)
+                this.addNameToTrack(t)
         });
 
         return allTracks;
@@ -1115,10 +1099,49 @@ export class MultiViewContainer extends React.Component {
 
     }
 
-    handleTrackOptionsChanged(viewUid, trackUid) {
+    handleTrackOptionsChanged(viewUid, trackUid, newOptions) {
         //some track's options changed...
         // redraw the track  and store the changes in the config file
-        console.log('track options changed:', viewUid, trackUid);
+        let view = this.state.views[viewUid];
+        let track = getTrackByUid(view.tracks, trackUid);
+
+        track.options = Object.assign(track.options, newOptions);
+        this.setState({
+            views: this.state.views
+        });
+    }
+
+    processViewConfig(viewConfig) {
+        let views = this.props.viewConfig.views;
+        let viewsByUid = {};
+        views.forEach(v => {
+            this.fillInMinWidths(v.tracks);
+            viewsByUid[v.uid] = v;     
+
+            // Add names to all the tracks
+            let looseTracks = positionedTracksToAllTracks(v.tracks);
+
+            // give tracks their default names (e.g. 'type': 'top-axis'
+            // will get a name of 'Top Axis'
+            looseTracks = this.addNamesToTracks(looseTracks);
+
+            looseTracks.forEach(t => this.addCallbacks(v.uid, t));
+
+            // add default options (as specified in config.js
+            // (e.g. line color, heatmap color scales, etc...)
+            looseTracks.forEach(t => this.addDefaultOptions(t));
+        });
+
+        return viewsByUid;
+
+    }
+
+    componentWillReceiveProps(newProps) {
+        let viewsByUid = this.processViewConfig(newProps);
+
+        this.setState({
+            views: viewsByUid
+        });
     }
 
   render() {
@@ -1192,6 +1215,7 @@ export class MultiViewContainer extends React.Component {
 
                 let tiledPlot = (
                                 <TiledPlot
+                                    key={'tp' + view.uid}
                                     parentMounted={this.state.mounted} 
                                      svgElement={this.state.svgElement}
                                      canvasElement={this.state.canvasElement}
@@ -1208,10 +1232,11 @@ export class MultiViewContainer extends React.Component {
                                      onScalesChanged={(x,y) => this.handleScalesChanged(view.uid, x, y)}
                                      setCentersFunction={c => this.setCenters[view.uid] = c}
                                      chooseTrackHandler={this.state.chooseTrackHandler ? trackId => this.state.chooseTrackHandler(view.uid, trackId) : null}
-                                     onTrackOptionsChanged={trackId => this.handleTrackOptionsChanged(view.uid, trackId) }
+                                     onTrackOptionsChanged={(trackId, options) => this.handleTrackOptionsChanged(view.uid, trackId, options) }
                                      onTrackAdded={(newTrack, position, host) => this.handleTrackAdded(view.uid, newTrack, position, host)}
                                      onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
                                      zoomable={!this.props.viewConfig.zoomFixed}
+                                     editable={this.props.viewConfig.editable}
                                 >
 
                                 </TiledPlot>)
@@ -1220,7 +1245,7 @@ export class MultiViewContainer extends React.Component {
 
                 let genomePositionSearchBox = view.genomePositionSearchBoxVisible ?
                     (<GenomePositionSearchBox 
-                        key={view.uid}
+                        key={'gpsb' + view.uid}
                         autocompleteSource={view.autocompleteSource}
                         registerViewportChangedListener = {listener => this.addScalesChangedListener(view.uid, view.uid, listener)}
                         removeViewportChangedListener = {() => this.removeScalesChangedListener(view.uid, view.uid)}

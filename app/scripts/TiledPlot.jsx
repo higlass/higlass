@@ -54,8 +54,8 @@ export class TiledPlot extends React.Component {
             addTrackVisible: false,
             addTrackPosition: "top",
             mouseOverOverlayUid: null,
-            //trackOptionsUid: 'hm1'
-            trackOptionsUid: null
+            trackOptionsUid: 'hm1'
+            //trackOptionsUid: null
         }
 
         // these dimensions are computed in the render() function and depend
@@ -129,6 +129,14 @@ export class TiledPlot extends React.Component {
          * Need to determine the offset of this element relative to the canvas on which stuff
          * will be drawn
          */
+    }
+
+    handleTrackOptionsChanged(trackUid, newOptions) {
+        /**
+         * The drawing options for a track have changed.
+         */
+        console.log('trackUid:', trackUid, newOptions);
+        this.props.onTrackOptionsChanged(trackUid, newOptions);
     }
 
     handleScalesChanged(x,y) {
@@ -633,7 +641,6 @@ export class TiledPlot extends React.Component {
                                   <ConfigTrackMenu
                                     track={getTrackByUid(this.props.tracks, this.state.configTrackMenuId)}
                                     position={ this.state.configTrackMenuLocation }
-                                    onTrackOptionsChanged={this.props.onTrackOptionsChanged}
                                     onConfigureTrack={this.handleConfigureTrack.bind(this)}
                                   />
                               </PopupMenu>
@@ -718,7 +725,7 @@ export class TiledPlot extends React.Component {
 
         let trackOptionsElement = null;
 
-        if (this.state.trackOptionsUid) {
+        if (this.props.editable && this.state.trackOptionsUid) {
             trackOptionsElement = (<HeatmapOptions
                     track={getTrackByUid(this.props.tracks, this.state.trackOptionsUid)}
                     xScale={this.xScale}
@@ -726,9 +733,9 @@ export class TiledPlot extends React.Component {
                     onCancel={ () => this.setState({
                         trackOptionsUid: null
                     })}
-                    onTrackOptionsChanged = {this.props.onTrackOptionsChanged}
-                    onSubmit={ (newTrackConfig) => {
-                        this.props.onTrackOptionsChanged(newTrackConfig);
+                    onTrackOptionsChanged={(newOptions) => newOptions}
+                    onSubmit={ (newOptions) => {
+                        this.handleTrackOptionsChanged(this.state.trackOptionsUid, newOptions);
                         this.setState({
                             trackOptionsUid: null });
                     }}

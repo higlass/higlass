@@ -112,4 +112,8 @@ export class CombinedTrack {
             this.childTracks[i].remove();
         }
     }
+
+    rerender(options) {
+        //console.log('COMBINED TRACK rerender...');
+    }
 }

@@ -461,7 +461,7 @@ export class HorizontalTiledPlot extends React.Component {
     }
 
     componentWillUnmount() {
-        console.log('unmounting horizontal');
+
     }
 
 

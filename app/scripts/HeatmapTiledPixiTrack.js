@@ -18,14 +18,20 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         //this.colorScale = heatedObjectMap; 
         this.colorScale = heatedObjectMap; 
 
-        if (options) {
-            if (options.colorRange) {
-                this.colorScale = colorDomainToRgbaArray(options.colorRange);
-
-            }
+        if (options && options.colorRange) {
+            this.colorScale = colorDomainToRgbaArray(options.colorRange);
         }
     }
 
+    rerender(options) {
+        if (options && options.colorRange) {
+            this.colorScale = colorDomainToRgbaArray(options.colorRange);
+        }
+
+        for (let tile of this.visibleAndFetchedTiles()) {
+            this.initTile(tile);
+        }
+    }
 
     tileDataToCanvas(pixData) {
         let canvas = document.createElement('canvas');

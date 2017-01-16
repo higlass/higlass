@@ -59,7 +59,6 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         let series = this.props.track.contents ? this.props.track.contents : [this.props.track];
 
         return series.map(x => {
-            console.log('series x:', x);
             let thumbnailLocation = "images/thumbnails/" + trackTypeToInfo[x.type].thumbnail;
             let blankLocation = "images/thumbnails/blank.png";
             let imgTag = trackTypeToInfo[x.type].thumbnail ? 

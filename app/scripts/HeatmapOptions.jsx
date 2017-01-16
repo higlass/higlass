@@ -11,20 +11,18 @@ export class HeatmapOptions extends React.Component {
     constructor(props) {
         super(props);
         // props should include the definition of the heatmap data series
-
-        console.log('props', props);
-
+        
         this.state = {
             fromColor : props.track.options.colorRange[0],
             toColor : props.track.options.colorRange[1]
         }
 
-        console.log('this.state:', this.state);
     }
 
     handleColorsChanged(fromColor, toColor) {
         this.props.onTrackOptionsChanged(Object.assign(this.props.track.options,
-                                                       {colorRange: [fromColor, toColor]}));
+                                                       {colorRange: [fromColor, 
+                                                           toColor]}));
         this.setState({
             fromColor: fromColor,
             toColor, toColor
@@ -34,7 +32,7 @@ export class HeatmapOptions extends React.Component {
     handleSubmit() {
         let options = this.props.track.options;
 
-        options.colorRange = [this.state.fromRange, this.state.colorRange1];
+        options.colorRange = [this.state.fromColor, this.state.toColor];
 
         this.props.onSubmit(this.props.track.options);
     }
@@ -44,22 +42,23 @@ export class HeatmapOptions extends React.Component {
         let rightAlign = {'textAlign': 'right'}
         let centerAlign = {'textAlign': 'center'}
 
-        let centerTrack = Object.assign(this.props.track, {height: 100});
-
-        console.log('centerTrack:', centerTrack);
+        let centerTrack = Object.assign(this.props.track, 
+                                        {height: 100,
+                                            options: {
+                                         colorRange: [this.state.fromColor, 
+                                                      this.state.toColor]
+                                        }} );
 
         let mvConfig = {
             'editable': false,
             zoomFixed: true,
             'views': [{
 
-            'uid': slugid.nice(),
+            'uid': 'hmo-' + this.props.track.uid,
             'initialXDomain': this.props.xScale ? this.props.xScale.domain() : [0,1],
             'initialYDomain': this.props.yScale ? this.props.yScale.domain() : [0,1],
             'tracks': {'center': [centerTrack] }
         }]};
-
-        console.log('mvConfig:', mvConfig)
 
         return(<Modal 
                 onHide={this.props.handleCancel}
@@ -78,12 +77,12 @@ export class HeatmapOptions extends React.Component {
                                     <CompactPicker 
                                         color={this.state.fromColor}
                                         onChangeComplete = {(color) =>
-                                            this.handleColorsChanged(color,
+                                            this.handleColorsChanged(color.hex,
                                                                      this.state.toColor)
                                         }
                                     /></td>
                                  <td rowSpan="2" className='td-track-options'>
-                                 <div style={{width:150}}>
+                                 <div style={{width:250}}>
                                     Preview:
                                     <MultiViewContainer 
                                         viewConfig={mvConfig}
@@ -99,7 +98,7 @@ export class HeatmapOptions extends React.Component {
                                         color={this.state.toColor}
                                         onChangeComplete={(color) =>
                                         this.handleColorsChanged(this.state.fromColor,
-                                        color)
+                                                                 color.hex)
                                         }
                                     />
                                     </td>

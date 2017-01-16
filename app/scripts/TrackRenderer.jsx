@@ -60,7 +60,6 @@ export class TrackRenderer extends React.Component {
             })
             .on('zoom', this.zoomed.bind(this))
 
-            console.log('zoomable', this.props.zoomable);
         if (!this.props.zoomable)
             this.zoomBehavior.scaleExtent([1,1]);
 
@@ -69,6 +68,9 @@ export class TrackRenderer extends React.Component {
         this.initialWidth = this.props.width;
         this.initialHeight = this.props.height;
 
+        this.initialXDomain = [0,1];
+        this.initialYDomain = [0,1];
+
         this.prevCenterX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
         this.prevCenterY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
 
@@ -76,19 +78,9 @@ export class TrackRenderer extends React.Component {
         this.cumCenterXOffset = 0;
         this.cumCenterYOffset = 0;
 
-        this.drawableToDomainX = scaleLinear()
-            .domain([this.props.marginLeft + this.props.leftWidth,
-                    this.props.marginLeft + this.props.leftWidth + this.props.centerWidth])
-            .range([this.props.initialXDomain[0], this.props.initialXDomain[1]]);
 
-        let midXDomain = (this.props.initialXDomain[0] + this.props.initialXDomain[0]) / 2;
-        let yDomainWidth = (this.props.initialXDomain[1] - this.props.initialXDomain[0]) * (this.props.centerHeight / this.props.centerWidth);
-
-        this.drawableToDomainY = scaleLinear()
-            .domain([this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2 - this.props.centerWidth / 2,
-                    this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2 + this.props.centerWidth / 2])
-            .range([this.props.initialXDomain[0], this.props.initialXDomain[1]]);
-
+        this.setUpInitialScales(this.props.initialXDomain,
+                                this.props.initialYDomain);
         this.setUpScales();
 
 
@@ -117,6 +109,36 @@ export class TrackRenderer extends React.Component {
 
     }
 
+    setUpInitialScales(initialXDomain, initialYDomain) {
+        if (initialXDomain == this.initialXDomain &&
+            initialYDomain == this.initialYDomain)
+        /*
+        if (initialXDomain[0] == this.initialXDomain[0] &&
+            initialXDomain[1] == this.initialXDomain[1] &&
+            initialYDomain[1] == this.initialYDomain[1] &&
+            initialYDomain[0] == this.initialYDomain[0])
+            */
+            return;
+
+        // only update the initial domain 
+        this.initialXDomain = initialXDomain;
+        this.initialYDomain = initialYDomain;
+
+        this.drawableToDomainX = scaleLinear()
+            .domain([this.props.marginLeft + this.props.leftWidth,
+                    this.props.marginLeft + this.props.leftWidth + this.props.centerWidth])
+            .range([initialXDomain[0], initialXDomain[1]]);
+
+        let midXDomain = (initialXDomain[0] + initialXDomain[0]) / 2;
+        let yDomainWidth = (initialXDomain[1] - initialXDomain[0]) * (this.props.centerHeight / this.props.centerWidth);
+
+        this.drawableToDomainY = scaleLinear()
+            .domain([this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2 - this.props.centerWidth / 2,
+                    this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2 + this.props.centerWidth / 2])
+            .range([initialXDomain[0], initialXDomain[1]]);
+
+    }
+
     componentWillReceiveProps(nextProps) {
         /**
          * The size of some tracks probably changed, so let's just
@@ -136,6 +158,27 @@ export class TrackRenderer extends React.Component {
         this.svgElement = nextProps.svgElement;
 
         this.syncTrackObjects(nextProps.positionedTracks);
+
+        this.setUpInitialScales(nextProps.initialXDomain,
+                                nextProps.initialYDomain);
+
+        for (let track of nextProps.positionedTracks) {
+            // tracks all the way down
+            let options = track.track.options;
+            let trackObject = this.trackDefObjects[track.track.uid].trackObject;
+            trackObject.rerender(options);
+
+            if (track.track.hasOwnProperty('contents')) {
+                let ctDefs = {};
+                for (let ct of track.track.contents) {
+                    ctDefs[ct.uid] = ct;
+                }
+
+                for (let uid in trackObject.createdTracks) {
+                    trackObject.createdTracks[uid].rerender(ctDefs[uid].options);
+                }
+            }
+        }
     }
 
     componentWillUnmount() {
@@ -144,7 +187,6 @@ export class TrackRenderer extends React.Component {
          */
         this.removeTracks(Object.keys(this.trackDefObjects));
     }
-
 
     setUpScales() {
         let currentCenterX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;

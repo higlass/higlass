@@ -92,4 +92,8 @@ export class Track {
     remove() {
 
     }
+
+    rerender() {
+
+    }
 }

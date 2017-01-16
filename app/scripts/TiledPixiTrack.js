@@ -63,7 +63,11 @@ export class TiledPixiTrack extends PixiTrack {
         return ret;
     }
 
+    visibleAndFetchedTiles() {
+        let ids = this.visibleAndFetchedIds();
 
+        return ids.map(x => this.fetchedTiles[x]);
+    }
 
     setVisibleTiles(tilePositions) {
         /**
