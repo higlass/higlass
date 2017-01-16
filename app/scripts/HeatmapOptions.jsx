@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { CompactPicker } from 'react-color';
 import {MultiViewContainer} from './MultiViewContainer.jsx';
+import SketchInlinePicker from './SketchInlinePicker.jsx';
 import slugid from 'slugid';
 
 import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-bootstrap';
@@ -14,7 +15,8 @@ export class HeatmapOptions extends React.Component {
         
         this.state = {
             fromColor : props.track.options.colorRange[0],
-            toColor : props.track.options.colorRange[1]
+            toColor : props.track.options.colorRange[1],
+            colors: props.track.options.colorRange
         }
 
     }
@@ -25,7 +27,7 @@ export class HeatmapOptions extends React.Component {
                                                            toColor]}));
         this.setState({
             fromColor: fromColor,
-            toColor, toColor
+            toColor: toColor
         });
     }
 
@@ -41,6 +43,8 @@ export class HeatmapOptions extends React.Component {
         let leftAlign = {'textAlign': 'left'}
         let rightAlign = {'textAlign': 'right'}
         let centerAlign = {'textAlign': 'center'}
+
+        let colorRow = {height: 10}
 
         let centerTrack = Object.assign(this.props.track, 
                                         {height: 100,
@@ -60,6 +64,39 @@ export class HeatmapOptions extends React.Component {
             'tracks': {'center': [centerTrack] }
         }]};
 
+        let colorFields = this.state.colors.map((x,i) => {
+            console.log('i:', i);
+            return(<td
+                        key={"l" + i}
+                        style={{ border: "0px solid", 
+                                 position: "relative",
+                                 outline: "none",
+                        }}
+                   >
+                            <img 
+                                onClick={() => { this.handleCloseView(view.uid)}}
+                                style={{
+                                    position: "absolute",
+                                    top: 0,
+                                    right: 0,
+                                    opacity: 0.5
+                                }}
+                                src="images/cross.svg" 
+                                width="10px" 
+                            />
+                        <SketchInlinePicker 
+                            key={i}
+                            onChange={c => {
+                                    this.state.colors[i] = c;
+                                    this.setState({
+                                        colors: this.state.colors
+                                    });
+                                }
+                            }
+                        />
+                    </td>);
+        });
+
         return(<Modal 
                 onHide={this.props.handleCancel}
                 show={true}
@@ -68,43 +105,21 @@ export class HeatmapOptions extends React.Component {
                     <Modal.Title>{'Heatmap Options'}</Modal.Title> 
                     </Modal.Header>
                     <Modal.Body>
-                        <table className='table-track-options'>
-                            <thead></thead>
+                        <div style={{marginBottom: 5}}>
+                            Heatmap colors:
+                        </div>
+                        <table>
                             <tbody>
-                                <tr>
-                                    <td className='td-track-options' style={centerAlign}>
-                                    {'From color'}<br/>
-                                    <CompactPicker 
-                                        color={this.state.fromColor}
-                                        onChangeComplete = {(color) =>
-                                            this.handleColorsChanged(color.hex,
-                                                                     this.state.toColor)
-                                        }
-                                    /></td>
-                                 <td rowSpan="2" className='td-track-options'>
-                                 <div style={{width:250}}>
-                                    Preview:
-                                    <MultiViewContainer 
-                                        viewConfig={mvConfig}
-                                    />
-                                </div>
-                                 
-                                 </td>
-                                </tr>
-                                <tr>
-                                    <td className='td-track-options' style={centerAlign}>
-                                    {'To color'}<br/>
-                                    <CompactPicker 
-                                        color={this.state.toColor}
-                                        onChangeComplete={(color) =>
-                                        this.handleColorsChanged(this.state.fromColor,
-                                                                 color.hex)
-                                        }
-                                    />
-                                    </td>
-                                </tr>
+                            <tr>
+                                {colorFields}
+                            </tr>
                             </tbody>
                         </table>
+                         <div style={{width:250}}>
+                            <MultiViewContainer 
+                                viewConfig={mvConfig}
+                            />
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={this.props.onCancel}>Cancel</Button>

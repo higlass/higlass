@@ -7,5 +7,14 @@ table.table-track-options {
 td.td-track-options {
     border: 1px solid #ddd;
     outline: none;
-    padding: 10px;
+    padding: 3px;
+    position: relative;
+}
+
+.cell-label {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    margin-left: 5px;
+    color: #777; 
 }
