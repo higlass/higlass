@@ -59,8 +59,10 @@ export class TrackRenderer extends React.Component {
             })
             .on('zoom', this.zoomed.bind(this))
 
+                /*
         if (!this.props.zoomable)
             this.zoomBehavior.scaleExtent([1,1]);
+            */
 
         // the center measurements, because those corresponds to the widths
         // and heights of the actual tracks
@@ -406,7 +408,11 @@ export class TrackRenderer extends React.Component {
          * We need to update our local record of the zoom transform and apply it
          * to all the tracks.
          */
-        this.zoomTransform = event.transform;
+
+        if (!this.props.zoomable)
+            this.zoomTransform = zoomIdentity;
+        else
+            this.zoomTransform = event.transform;
 
         this.applyZoomTransform();
     }

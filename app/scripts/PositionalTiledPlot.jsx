@@ -99,7 +99,7 @@ export class FixedTrack extends TrackArea {
     render() {
         let controls = null;
 
-        if (this.state.controlsVisible) {
+        if (this.props.editable && this.state.controlsVisible) {
             controls = this.getControls();
         }
 
@@ -147,7 +147,7 @@ class MoveableTrack extends TrackArea {
                 )
         let controls = null;
 
-        if (this.state.controlsVisible) {
+        if (this.props.editable && this.state.controlsVisible) {
             controls = ( <div>
                         { this.getControls() }
                     <Handle />
@@ -267,7 +267,9 @@ const VerticalItem = SortableElement((props) => {
                 onCloseTrack={props.onCloseTrack}
                 onCloseTrackMenuOpened={props.onCloseTrackMenuOpened}
                 onAddSeries={props.onAddSeries}
+                editable={props.editable}
                 handleConfigTrack={props.handleConfigTrack}
+                editable={props.editable}
                 handleResizeTrack={props.handleResizeTrack}
                 resizeHandles={props.resizeHandles}
                 height={props.height}
@@ -324,6 +326,7 @@ const HorizontalItem = SortableElement((props) => {
                 onCloseTrackMenuOpened={props.onCloseTrackMenuOpened}
                 onAddSeries={props.onAddSeries}
                 handleConfigTrack={props.handleConfigTrack}
+                editable={props.editable}
                 handleResizeTrack={props.handleResizeTrack}
                 resizeHandles={props.resizeHandles}
                 height={props.height}
@@ -333,7 +336,7 @@ const HorizontalItem = SortableElement((props) => {
             />)});
 
 const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, 
-                                         sortableHandlers,height, width, onCloseTrack,onCloseTrackMenuOpened,onAddSeries,handleConfigTrack,itemReactClass,
+                                         sortableHandlers,height, width, onCloseTrack,onCloseTrackMenuOpened,onAddSeries,handleConfigTrack,editable,itemReactClass,
                                          handleResizeTrack, resizeHandles}) => {
     let itemElements = items.map((item, index) => {
             return React.createElement(itemReactClass,
@@ -349,7 +352,8 @@ const SortableList = SortableContainer(({className, items, itemClass, sortingInd
                     onCloseTrack: onCloseTrack,
                     onCloseTrackMenuOpened: onCloseTrackMenuOpened,
                     onAddSeries: onAddSeries,
-                    handleConfigTrack, handleConfigTrack,
+                    handleConfigTrack: handleConfigTrack,
+                    editable: editable,
                     handleResizeTrack: handleResizeTrack,
                     resizeHandles: resizeHandles
                 })
@@ -494,6 +498,7 @@ export class HorizontalTiledPlot extends React.Component {
                         onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
                         onAddSeries={this.props.onAddSeries}
                         handleConfigTrack={this.props.handleConfigTrack}
+                        editable={this.props.editable}
                         handleResizeTrack={this.props.handleResizeTrack}
                         resizeHandles={this.props.resizeHandles}
                         height={thisHeight}
@@ -545,6 +550,7 @@ export class VerticalTiledPlot extends React.Component {
                     onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
                     onAddSeries={this.props.onAddSeries}
                     handleConfigTrack={this.props.handleConfigTrack}
+                    editable={this.props.editable}
                     handleResizeTrack={this.props.handleResizeTrack}
                     resizeHandles={this.props.resizeHandles}
                     height={this.props.height}

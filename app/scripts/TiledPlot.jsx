@@ -504,6 +504,7 @@ export class TiledPlot extends React.Component {
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.props.tracks['top']}
                                 width={this.centerWidth}
+                                editable={this.props.editable}
                                 resizeHandles={new Set(['bottom'])}
                             />
                          </div>)
@@ -520,6 +521,7 @@ export class TiledPlot extends React.Component {
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.props.tracks['left']}
                                 height={this.centerHeight}
+                                editable={this.props.editable}
                                 resizeHandles={new Set(['right'])}
                             />
                          </div>)
@@ -536,6 +538,7 @@ export class TiledPlot extends React.Component {
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.props.tracks['right']}
                                 height={this.centerHeight}
+                                editable={this.props.editable}
                                 resizeHandles={new Set(['left'])}
                             />
                          </div>)
@@ -552,6 +555,7 @@ export class TiledPlot extends React.Component {
                                 handleSortEnd={this.handleSortEnd.bind(this)}
                                 tracks={this.props.tracks['bottom']}
                                 width={this.centerWidth}
+                                editable={this.props.editable}
                                 resizeHandles={new Set(['top'])}
                             />
                          </div>)
@@ -578,6 +582,7 @@ export class TiledPlot extends React.Component {
                                 height={this.centerHeight}
                                 uid={this.props.tracks['center'][0].uid}
                                 width={this.centerWidth}
+                                editable={this.props.editable}
                                 />
                             </div> )
         }
