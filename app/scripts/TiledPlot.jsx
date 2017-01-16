@@ -20,6 +20,7 @@ import {getTrackByUid} from './utils.js';
 
 export class TiledPlot extends React.Component {
     constructor(props) {
+        console.log('constructing tp');
         super(props);
 
         this.closing = false;

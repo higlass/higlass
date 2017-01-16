@@ -30,6 +30,8 @@ export class MultiViewContainer extends React.Component {
         this.minHorizontalHeight = 20;
         this.minVerticalWidth = 20;
 
+        this.tempCanvas = document.createElement('canvas');
+
         this.uid = slugid.nice();
         this.yPositionOffset = 0;
         this.rowHeight = 40;
@@ -38,6 +40,7 @@ export class MultiViewContainer extends React.Component {
         // keep track of the xScales of each Track Renderer
         this.xScales = {};
         this.yScales = {};
+        this.topDiv = null;
 
         // event listeners for when the scales of a view change
         // bypasses the React event framework because this needs 
@@ -129,10 +132,6 @@ export class MultiViewContainer extends React.Component {
         new ResizeSensor(this.element, function() {
             //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
             let heightOffset = 0;
-
-
-                this.pixiRenderer.resize(this.element.clientWidth,
-                                         this.element.clientHeight);
 
             this.setState({
                 height: this.element.clientHeight,
@@ -1186,6 +1185,19 @@ export class MultiViewContainer extends React.Component {
         });
     }
 
+  componentWillUpdate(nextProps, nextState) {
+        this.tempCanvas.width = nextState.width;
+        this.tempCanvas.height = nextState.height;
+
+        this.pixiRenderer.resize(this.state.width, this.state.height);
+        this.pixiRenderer.view.style.width = this.state.width + 'px';
+        this.pixiRenderer.view.style.height = this.state.height + 'px';
+
+        this.pixiRenderer.render(this.pixiStage);
+
+  }
+
+
   render() {
 
     let tiledAreaStyle = {
@@ -1364,22 +1376,22 @@ export class MultiViewContainer extends React.Component {
 
     return (
       <div 
+        ref={(c) => this.topDiv = c}
         key={this.uid}
         style={{position: "relative"}}
       >
+        
         <canvas 
-            ref={(c) => this.canvasElement = c} 
+            key={this.uid}
+            ref={(c) => {
+                this.canvasElement = c}} 
             style={{
-                position: "absolute",
-                width: this.state.width,
-                height: this.state.height
+                position: "absolute"
             }}
         />
         <div
             className="drawing-surface"
             style={{position: "absolute", 
-                    width: this.state.width, 
-                    height: this.state.height,
                     background: 'yellow',
                     opacity: 0.00
             }}
@@ -1425,6 +1437,10 @@ export class MultiViewContainer extends React.Component {
         />
       </div>
     );
+  }
+
+  componentDidUpdate() {
+
   }
 }
 

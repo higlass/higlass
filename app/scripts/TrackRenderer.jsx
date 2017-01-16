@@ -34,7 +34,6 @@ export class TrackRenderer extends React.Component {
      */
     constructor(props) {
         super(props);
-
         this.dragging = false; //is this element being dragged?
         this.element = null;
         this.closing = false;
@@ -249,6 +248,7 @@ export class TrackRenderer extends React.Component {
             this.xPositionOffset = this.element.getBoundingClientRect().left - this.canvasDom.getBoundingClientRect().left;
 
             this.updateTrackPositions();
+            this.applyZoomTransform();
             requestAnimationFrame(this.timedUpdatePositionAndDimensions.bind(this));
         }
     }
