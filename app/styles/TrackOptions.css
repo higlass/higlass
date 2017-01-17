@@ -32,5 +32,6 @@ td.td-track-options {
     overflow-x: auto;
     width: auto;
     min-width: 300px;   
+    margin: auto;
 }
 
