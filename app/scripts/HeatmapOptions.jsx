@@ -21,7 +21,6 @@ export class HeatmapOptions extends React.Component {
     }
 
     handleColorsChanged(newColors) {
-        console.log('newColors:', newColors);
         /*
         this.props.onTrackOptionsChanged(Object.assign(this.props.track.options,
                                                        {colorRange: newColors}));
@@ -82,7 +81,7 @@ export class HeatmapOptions extends React.Component {
             'uid': 'hmo-' + this.props.track.uid,
             'initialXDomain': this.props.xScale ? this.props.xScale.domain() : [0,1],
             'initialYDomain': this.props.yScale ? this.props.yScale.domain() : [0,1],
-            'tracks': {'center': [track] }
+            'tracks': {'center': [centerTrack] }
         }]};
 
         let colorFields = this.state.colors.map((x,i) => {

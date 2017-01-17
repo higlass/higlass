@@ -20,7 +20,6 @@ import {getTrackByUid} from './utils.js';
 
 export class TiledPlot extends React.Component {
     constructor(props) {
-        console.log('constructing tp');
         super(props);
 
         this.closing = false;
@@ -32,14 +31,10 @@ export class TiledPlot extends React.Component {
         this.xScale = null;
         this.yScale = null;
 
+        this.addUidsToTracks(tracks);
+
         // Add names to all the tracks
         this.trackRenderers = {}
-
-        for (let key in tracks) {
-            for (let i = 0; i < tracks[key].length; i++) {
-                tracks[key][i].uid = tracks[key][i].uid ? tracks[key][i].uid : slugid.nice();
-            }
-        }
 
         // these values should be changed in componentDidMount
         this.state = {
@@ -71,6 +66,15 @@ export class TiledPlot extends React.Component {
         this.centerWidth = 0;
 
         this.dragTimeout = null;
+    }
+
+    addUidsToTracks(tracks) {
+        for (let key in tracks) {
+            for (let i = 0; i < tracks[key].length; i++) {
+                tracks[key][i].uid = tracks[key][i].uid ? tracks[key][i].uid : slugid.nice();
+            }
+        }
+
     }
 
     measureSize() {
@@ -123,7 +127,11 @@ export class TiledPlot extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
+        this.addUidsToTracks(newProps.tracks);
 
+        this.setState({
+            tracks: newProps.tracks
+        });
     }
 
 
@@ -738,13 +746,11 @@ export class TiledPlot extends React.Component {
                     xScale={this.xScale}
                     yScale={this.yScale}
                     onCancel={ () => {
-                        console.log('cancel clicked:');
                         this.setState({
                         trackOptionsUid: null
                     })}}
                     onTrackOptionsChanged={(newOptions) => newOptions}
                     onSubmit={ (newOptions) => {
-                        console.log('submitted...');
                         this.handleTrackOptionsChanged(this.state.trackOptionsUid, newOptions);
                         this.setState({
                             trackOptionsUid: null });

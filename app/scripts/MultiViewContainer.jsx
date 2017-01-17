@@ -1149,7 +1149,7 @@ export class MultiViewContainer extends React.Component {
     }
 
     processViewConfig(viewConfig) {
-        let views = this.props.viewConfig.views;
+        let views = viewConfig.views;
         let viewsByUid = {};
         views.forEach(v => {
             this.fillInMinWidths(v.tracks);
@@ -1178,7 +1178,7 @@ export class MultiViewContainer extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
-        let viewsByUid = this.processViewConfig(newProps);
+        let viewsByUid = this.processViewConfig(newProps.viewConfig);
 
         this.setState({
             views: viewsByUid

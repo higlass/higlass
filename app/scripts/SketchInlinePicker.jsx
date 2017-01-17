@@ -11,8 +11,6 @@ class SketchInlinePicker extends React.Component {
 
       let startColor = rgb(props.color);
       
-      console.log('startColor:', startColor);
-
       this.state = {
         displayColorPicker: false,
         color: {
