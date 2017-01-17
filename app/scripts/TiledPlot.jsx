@@ -50,8 +50,8 @@ export class TiledPlot extends React.Component {
             addTrackVisible: false,
             addTrackPosition: "top",
             mouseOverOverlayUid: null,
-            trackOptionsUid: 'hm1'
-            //trackOptionsUid: null
+           // trackOptionsUid: 'hm1'
+            trackOptionsUid: null
         }
 
         // these dimensions are computed in the render() function and depend

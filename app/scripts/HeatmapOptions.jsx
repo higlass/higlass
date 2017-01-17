@@ -166,6 +166,7 @@ export class HeatmapOptions extends React.Component {
         return(<Modal 
                 onHide={this.props.handleCancel}
                 show={true}
+                className={'hg-modal'}
                 >
                     <Modal.Header closeButton>
                     <Modal.Title>{'Heatmap Options'}</Modal.Title> 
@@ -176,7 +177,7 @@ export class HeatmapOptions extends React.Component {
                               <tbody>
                                   <tr>
                                     <td className='td-track-options'>
-                                        {'Heatmap colors'}
+                                        {'Colors'}
                                     </td>
                                     </tr>
                                     <tr>
