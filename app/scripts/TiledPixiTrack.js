@@ -39,6 +39,8 @@ export class TiledPixiTrack extends PixiTrack {
         tileProxy.trackInfo(server, tilesetUid, tilesetInfo => {
             this.tilesetInfo = tilesetInfo[tilesetUid];
 
+            console.log('tilesetInfo:', tilesetInfo);
+
             this.maxZoom = +this.tilesetInfo['max_zoom'];
             this.refreshTiles();
 

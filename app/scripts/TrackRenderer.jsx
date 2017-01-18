@@ -22,6 +22,7 @@ import {LeftTrackModifier} from './LeftTrackModifier.js';
 import {ViewportTracker2D} from './ViewportTracker2D.js';
 import {Track} from './Track.js';
 import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack.js';
+import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack.js';
 
 export class TrackRenderer extends React.Component {
     /**
@@ -493,6 +494,9 @@ export class TrackRenderer extends React.Component {
                 return new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid)
             case 'vertical-gene-annotations':
                 return new LeftTrackModifier(new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid))
+            case 'arrowhead-domains':
+                    console.log('creating arrowhead domains');
+                return new ArrowheadDomainsTrack(this.props.pixiStage, track.server, track.tilesetUid);
             case 'combined':
                 return new CombinedTrack(track.contents, this.createTrackObject.bind(this));
             default:

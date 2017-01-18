@@ -1,7 +1,7 @@
 let localServer = "localhost:8000";
 let remoteServer = "52.45.229.11";
-//export const usedServer = localServer;
-export const usedServer = remoteServer;
+export const usedServer = localServer;
+//export const usedServer = remoteServer;
 
 export const tracksInfo = [
     {
@@ -107,6 +107,14 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         name: 'Gene Annotations',
+        thumbnail: null
+    },
+    {
+        type: 'arrowhead-domains',
+        datatype: ['arrowhead-domains'],
+        local: false,
+        orientation: '2d',
+        name: 'Arrowhead Domains',
         thumbnail: null
     },
 

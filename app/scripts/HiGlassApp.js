@@ -64,6 +64,14 @@ export class HiGlassApp extends React.Component {
                             'colorRange': ['white', 'black']
                           }
                         }
+                    ,
+                    {
+                        'uid': slugid.nice(), 
+                        type:'arrowhead-domains',
+                        height: 60,
+                      tilesetUid: 'f',
+                      server: usedServer 
+                    }
                     ]
                 }
             ]}

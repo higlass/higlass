@@ -159,6 +159,12 @@ export class MultiViewContainer extends React.Component {
         if (track.options)
             return;
 
+        if (!tracksInfoByType.hasOwnProperty(track.type)) {
+            console.log("ERROR: track type not found:", track.type, " (check app/scripts/config.js for a list of defined track types)");
+            console.log('tracksInfoByType:', tracksInfoByType)
+            return;
+        }
+
         track.options = tracksInfoByType[track.type].defaultOptions;
     }
 
