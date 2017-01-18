@@ -43,7 +43,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         return zoomLevel
     }
 
-    calculateVisibleTiles() {
+    calculateVisibleTiles(mirrorTiles=true) {
         // if we don't know anything about this dataset, no point
         // in trying to get tiles
         if (!this.tilesetInfo)
@@ -69,7 +69,6 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         let zoomLevel = this.zoomLevel;
 
         // if we're mirroring tiles, then we only need tiles along the diagonal
-        let mirrorTiles = true;
         let tiles = [];
 
         // calculate the ids of the tiles that should be visible
