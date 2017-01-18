@@ -17,7 +17,7 @@ export class HiGlassApp extends React.Component {
               zoomFixed: false,
               'views': [{
               uid: "aa",
-              initialXDomain: [0,3000000000],
+              initialXDomain: [1776000000, 1778000000],
               initialYDomain: [0,3000000000],
               autocompleteSource: "//" + usedServer + '/suggest/?d=dd&',
               genomePositionSearchBoxVisible: true,
