@@ -39,8 +39,6 @@ export class TiledPixiTrack extends PixiTrack {
         tileProxy.trackInfo(server, tilesetUid, tilesetInfo => {
             this.tilesetInfo = tilesetInfo[tilesetUid];
 
-            console.log('tilesetInfo:', tilesetInfo);
-
             this.maxZoom = +this.tilesetInfo['max_zoom'];
             this.refreshTiles();
 
@@ -98,11 +96,9 @@ export class TiledPixiTrack extends PixiTrack {
         // tiles that are fetched
         let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
 
-        //console.log('visibleTiles:', tiles.map(x => x.join('/')).join(" "));
         // fetch the tiles that should be visible but haven't been fetched
         // and aren't in the process of being fetched
         let toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId))
-        //console.log('toFetch:', toFetch);
 
         for (let i = 0; i < toFetch.length; i++)
             this.fetching.add(toFetch[i].remoteId);
@@ -210,6 +206,9 @@ export class TiledPixiTrack extends PixiTrack {
         //console.log('this.fetchedTiles:', this.fetchedTiles);
         let visibleTileIdsList = [...this.visibleTileIds];
 
+        //console.log('fetchedTileIDs:', fetchedTileIDs);
+        //console.log('visibleTileIdsList:', visibleTileIdsList);
+
         for (let i = 0; i < visibleTileIdsList.length; i++) {
             if (!fetchedTileIDs.has(visibleTileIdsList[i] ))
                 return false;
@@ -249,6 +248,7 @@ export class TiledPixiTrack extends PixiTrack {
         for (let i = 0; i < fetchedTileIDs.length; i++) {
             if (!(fetchedTileIDs[i] in this.tileGraphics)) {
                 let newGraphics = new PIXI.Graphics();
+                //console.log('adding:', fetchedTileIDs[i]);
                 this.pMain.addChild(newGraphics);
 
                 this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;

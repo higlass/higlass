@@ -5,14 +5,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
     constructor(scene, server, uid) {
         super(scene, server, uid);
 
-    }
-
-    areAllVisibleTilesLoaded() {
-        
-        // we don't need to wait for any tiles to load before 
-        // drawing
-        //
-        return true;
+        this.drawnRects = new Set();
     }
 
     tileToLocalId(tile) {
@@ -21,7 +14,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
          */
 
         // tile contains [zoomLevel, xPos, yPos]
-        return this.tilesetUid + '.' + tile.join('.') + '.' + tile.mirrored;
+        return this.tilesetUid + '.' + tile.join('.');
     }
 
     tileToRemoteId(tile) {
@@ -50,6 +43,23 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
         zoomLevel = Math.min(zoomLevel, this.maxZoom);
 
         return zoomLevel
+    }
+
+    setVisibleTiles(tilePositions) {
+        /**
+         * Set which tiles are visible right now.
+         *
+         * @param tiles: A set of tiles which will be considered the currently visible
+         * tile positions.
+         */
+        this.visibleTiles = tilePositions.map(x => {
+            return {
+                tileId: this.tileToLocalId(x),
+                remoteId: this.tileToRemoteId(x)
+            }
+        });
+
+        this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
     }
 
     calculateVisibleTiles(mirrorTiles=true) {
@@ -84,7 +94,6 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
         for (let i = 0; i < rows.length; i++) {
             for (let j = 0; j < cols.length; j++) {
                     let newTile = [zoomLevel, rows[i], cols[j]];
-                    newTile.mirrored = false;
 
                     tiles.push(newTile)
                 
@@ -101,13 +110,17 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
          * Create whatever is needed to draw this tile.
          */
          
-        let graphics = tile.graphics;
-
-        this.drawTile(tile, graphics);
+        //this.drawTile(tile);
     }
 
     destroyTile(tile, graphics) {
 
+    }
+
+    draw() {
+        this.drawnRects.clear();
+
+        super.draw();
     }
 
     drawTile(tile) {
@@ -132,8 +145,14 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
             let startY = this._yScale(+line[4] + line[12]);
             let endY = this._yScale(+line[5] + line[12]);
 
+            let uid = line[13];
+
+            if (this.drawnRects.has(uid))
+                continue; //we've already drawn this rectangle in another tile
+
             //console.log(startX, endX, startY, endY);
             
+            this.drawnRects.add(uid);
             graphics.drawRect(startX, startY, endY - startY, endX - startX);
         }
 

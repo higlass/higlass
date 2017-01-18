@@ -1,7 +1,7 @@
 let localServer = "localhost:8000";
 let remoteServer = "52.45.229.11";
-export const usedServer = localServer;
-//export const usedServer = remoteServer;
+//export const usedServer = localServer;
+export const usedServer = remoteServer;
 
 export const tracksInfo = [
     {
