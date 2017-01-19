@@ -29,11 +29,21 @@ export class SeriesListMenu extends ContextMenuContainer {
                     />
                     <div 
                         className={"context-menu-item"}
+                        onClick={this.props.onCloseTrack}
                     >
                         <span
                             style={{ whiteSpace: 'nowrap' }}
                         >
                             {"Remove Series"}
+                        </span>
+                    </div>
+                    <div 
+                        className={"context-menu-item"}
+                    >
+                        <span
+                            style={{ whiteSpace: 'nowrap' }}
+                        >
+                            {"Replace Series"}
                         </span>
                     </div>
                     <div 

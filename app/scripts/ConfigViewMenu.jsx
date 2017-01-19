@@ -28,6 +28,19 @@ export class ConfigViewMenu extends React.Component {
             lockZoomText = "Unlock Zoom";
         }
 
+        let yankTracks = null;
+        /*
+        let yankTracks = 
+                    (<hr />
+
+                    <ContextMenuItem text={'Yank Tracks'} 
+                        onClick={e => e}
+                    />
+                    <ContextMenuItem text={'Lock Tracks'} 
+                        onClick={e => e}
+                    />)
+        */
+
         return (
                 <div>
                     <ContextMenuItem text={'Toggle position search box'} 
@@ -48,14 +61,6 @@ export class ConfigViewMenu extends React.Component {
                         onClick={e => this.props.onProjectViewport(e)}
                     />
 
-                    <hr />
-
-                    <ContextMenuItem text={'Yank Tracks'} 
-                        onClick={e => e}
-                    />
-                    <ContextMenuItem text={'Lock Tracks'} 
-                        onClick={e => e}
-                    />
                 </div>
                 )
     }

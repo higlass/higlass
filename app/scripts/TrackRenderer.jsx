@@ -496,7 +496,9 @@ export class TrackRenderer extends React.Component {
                 return new LeftTrackModifier(new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid))
             case 'arrowhead-domains':
                     console.log('creating arrowhead domains');
-                return new ArrowheadDomainsTrack(this.props.pixiStage, track.server, track.tilesetUid);
+                return new ArrowheadDomainsTrack(this.props.pixiStage, track.server, 
+                                                 track.tilesetUid,
+                                                handleTilesetInfoReceived);
             case 'combined':
                 return new CombinedTrack(track.contents, this.createTrackObject.bind(this));
             default:

@@ -251,7 +251,8 @@ export class TiledPlot extends React.Component {
         this.props.onCloseTrack(uid);
 
         this.setState({
-            closeTrackMenuId: null
+            closeTrackMenuId: null,
+            configTrackMenuId: null
         });
     }
 
@@ -507,6 +508,7 @@ export class TiledPlot extends React.Component {
                                 onAddSeries={this.handleAddSeries.bind(this)}
                                 onCloseTrack={this.handleCloseTrack.bind(this)}
                                 onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+                                onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
@@ -524,6 +526,7 @@ export class TiledPlot extends React.Component {
                                 onAddSeries={this.handleAddSeries.bind(this)}
                                 onCloseTrack={this.handleCloseTrack.bind(this)}
                                 onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+                                onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
@@ -541,6 +544,7 @@ export class TiledPlot extends React.Component {
                                 onAddSeries={this.handleAddSeries.bind(this)}
                                 onCloseTrack={this.handleCloseTrack.bind(this)}
                                 onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+                                onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
@@ -558,6 +562,7 @@ export class TiledPlot extends React.Component {
                                 onAddSeries={this.handleAddSeries.bind(this)}
                                 onCloseTrack={this.handleCloseTrack.bind(this)}
                                 onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+                                onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
                                 handleResizeTrack={this.handleResizeTrack.bind(this)}
                                 handleSortEnd={this.handleSortEnd.bind(this)}
@@ -585,6 +590,7 @@ export class TiledPlot extends React.Component {
                                 onAddSeries={this.handleAddSeries.bind(this)}
                                 onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
                                 onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+                                onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
                                 onAddSeries={this.handleAddSeries.bind(this)}
 
                                 height={this.centerHeight}
@@ -657,6 +663,7 @@ export class TiledPlot extends React.Component {
                                     track={getTrackByUid(this.props.tracks, this.state.configTrackMenuId)}
                                     position={ this.state.configTrackMenuLocation }
                                     onConfigureTrack={this.handleConfigureTrack.bind(this)}
+                                    onCloseTrack={this.handleCloseTrack.bind(this)}
                                   />
                               </PopupMenu>
                               )

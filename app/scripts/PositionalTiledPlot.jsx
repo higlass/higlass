@@ -266,6 +266,7 @@ const VerticalItem = SortableElement((props) => {
                 className={props.className}
                 onCloseTrack={props.onCloseTrack}
                 onCloseTrackMenuOpened={props.onCloseTrackMenuOpened}
+                onConfigTrackMenuOpened={props.onConfigTrackMenuOpened}
                 onAddSeries={props.onAddSeries}
                 editable={props.editable}
                 handleConfigTrack={props.handleConfigTrack}
@@ -324,6 +325,7 @@ const HorizontalItem = SortableElement((props) => {
                 className={props.className}
                 onCloseTrack={props.onCloseTrack}
                 onCloseTrackMenuOpened={props.onCloseTrackMenuOpened}
+                onConfigTrackMenuOpened={props.onConfigTrackMenuOpened}
                 onAddSeries={props.onAddSeries}
                 handleConfigTrack={props.handleConfigTrack}
                 editable={props.editable}
@@ -336,7 +338,7 @@ const HorizontalItem = SortableElement((props) => {
             />)});
 
 const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, 
-                                         sortableHandlers,height, width, onCloseTrack,onCloseTrackMenuOpened,onAddSeries,handleConfigTrack,editable,itemReactClass,
+                                         sortableHandlers,height, width, onCloseTrack,onCloseTrackMenuOpened,onConfigTrackMenuOpened,onAddSeries,handleConfigTrack,editable,itemReactClass,
                                          handleResizeTrack, resizeHandles}) => {
     let itemElements = items.map((item, index) => {
             return React.createElement(itemReactClass,
@@ -351,6 +353,7 @@ const SortableList = SortableContainer(({className, items, itemClass, sortingInd
 					useDragHandle: useDragHandle,
                     onCloseTrack: onCloseTrack,
                     onCloseTrackMenuOpened: onCloseTrackMenuOpened,
+                    onConfigTrackMenuOpened: onConfigTrackMenuOpened,
                     onAddSeries: onAddSeries,
                     handleConfigTrack: handleConfigTrack,
                     editable: editable,
@@ -496,6 +499,7 @@ export class HorizontalTiledPlot extends React.Component {
                         component={SortableList}
                         onCloseTrack={this.props.onCloseTrack}
                         onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
+                        onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
                         onAddSeries={this.props.onAddSeries}
                         handleConfigTrack={this.props.handleConfigTrack}
                         editable={this.props.editable}
@@ -548,6 +552,7 @@ export class VerticalTiledPlot extends React.Component {
                     component={SortableList}
                     onCloseTrack={this.props.onCloseTrack}
                     onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
+                    onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
                     onAddSeries={this.props.onAddSeries}
                     handleConfigTrack={this.props.handleConfigTrack}
                     editable={this.props.editable}
