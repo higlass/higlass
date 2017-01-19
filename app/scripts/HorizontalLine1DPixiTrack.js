@@ -41,7 +41,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         let valueScale = scaleLinear()
             .domain([0, maxVisibleValue])
-            .range([0, this.dimensions[1]]);
+            .range([this.dimensions[1], 0]);
 
 
         graphics.clear();
