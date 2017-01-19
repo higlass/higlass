@@ -61,6 +61,12 @@ export class ConfigViewMenu extends React.Component {
                         onClick={e => this.props.onProjectViewport(e)}
                     />
 
+                    <hr />
+
+                    <ContextMenuItem text={'Export Views as JSON'}
+                        onClick={e => this.props.onExportViewAsJSON()}
+                    />
+
                 </div>
                 )
     }

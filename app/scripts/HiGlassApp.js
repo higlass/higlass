@@ -58,7 +58,7 @@ export class HiGlassApp extends React.Component {
                         { 
                             'uid': 'hm1',
                            'server': usedServer ,
-                          'tilesetUid': 'aa',
+                          'tilesetUid': 'ma',
                           'type': 'heatmap'
                         },
                         {

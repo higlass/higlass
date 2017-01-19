@@ -1045,6 +1045,17 @@ export class MultiViewContainer extends React.Component {
       return;
   }
 
+  handleExportViewAsJSON() {
+    let wholeJSON = dictValues(this.state.views);
+    let data = JSON.stringify(wholeJSON,null,2);
+
+    var a = document.createElement("a");
+    var file = new Blob([data], {type: 'text/json'});
+    a.href = URL.createObjectURL(file);
+    a.download = name;
+    a.click();
+  }
+
   handleAddView() {
       /**
        * User clicked on the "Add View" button. We'll duplicate the last
@@ -1236,6 +1247,7 @@ export class MultiViewContainer extends React.Component {
                                     onSyncCenter={e => this.handleSyncCenter(this.state.configMenuUid)}
                                     onProjectViewport={e => this.handleProjectViewport(this.state.configMenuUid)}
                                     onTogglePositionSearchBox={e => this.handleTogglePositionSearchBox(this.state.configMenuUid)}
+                                    onExportViewAsJSON={e => this.handleExportViewAsJSON() }
                                 />
                             </ContextMenuContainer>
                         </PopupMenu>);
