@@ -138,20 +138,20 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
         graphics.alpha = 0.5;
 
         // line needs to be scaled down so that it doesn't become huge
-        for (let line of tile.tileData) {
-            let startX = this._xScale(+line[1] + line[12]);
-            let endX = this._xScale(+line[2] + line[12]);
+        for (let td of tile.tileData) {
+            let line = td.fields;
 
-            let startY = this._yScale(+line[4] + line[12]);
-            let endY = this._yScale(+line[5] + line[12]);
+            let startX = this._xScale(td.xStart);
+            let endX = this._xScale(td.xEnd);
 
-            let uid = line[13];
+            let startY = this._yScale(td.yStart);
+            let endY = this._yScale(td.yEnd);
+
+            let uid = td.uid;
 
             if (this.drawnRects.has(uid))
                 continue; //we've already drawn this rectangle in another tile
 
-            //console.log(startX, endX, startY, endY);
-            
             this.drawnRects.add(uid);
             graphics.drawRect(startX, startY, endY - startY, endX - startX);
         }

@@ -13,7 +13,8 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         //create texts
         tile.texts = {};
 
-        tile.tileData.forEach(geneInfo => {
+        tile.tileData.forEach(td => {
+            let geneInfo = td.fields;
             let fill = 'blue';
             if (geneInfo[5] == '-') {
                 fill = 'red';
@@ -82,7 +83,8 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         for (let fetchedTileId in this.fetchedTiles) {
             let ft = this.fetchedTiles[fetchedTileId];
 
-            ft.tileData.forEach(geneInfo => {
+            ft.tileData.forEach(td => {
+                let geneInfo = td.fields;
                 if (+geneInfo[4] > maxValue)
                     maxValue = geneInfo[4];
             });
@@ -106,10 +108,12 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             if (!parentInFetched)
                 addedIds.push(ft.tileData.tileId);
 
-            ft.tileData.forEach(geneInfo => {
+            ft.tileData.forEach(td => {
+                let geneInfo = td.fields;
                 // the returned positions are chromosome-based and they need to
                 // be converted to genome-based
-                let chrOffset = +geneInfo[geneInfo.length-1];
+                let chrOffset = +td.chrOffset;
+
                 let txStart = +geneInfo[1] + chrOffset;
                 let txEnd = +geneInfo[2] + chrOffset;
                 let exonStarts = geneInfo[12], exonEnds = geneInfo[13];

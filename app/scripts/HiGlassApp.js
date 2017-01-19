@@ -17,7 +17,7 @@ export class HiGlassApp extends React.Component {
               zoomFixed: false,
               'views': [{
               uid: "aa",
-              initialXDomain: [1372000000,1374000000],
+              initialXDomain: [1200000000,1210000000],
               initialYDomain: [0,3000000000],
               autocompleteSource: "//" + usedServer + '/suggest/?d=dd&',
               genomePositionSearchBoxVisible: true,
@@ -63,7 +63,23 @@ export class HiGlassApp extends React.Component {
                           'options': {
                             'colorRange': ['white', 'black']
                           }
-                        }
+                        },
+                        {
+                              'uid': slugid.nice(),
+                              type:'arrowhead-domains',
+                              height: 60,
+                            tilesetUid: 'f',
+                            server: usedServer
+                          }
+                    ,
+
+                        {
+                              'uid': slugid.nice(),
+                              type:'arrowhead-domains',
+                              height: 60,
+                            tilesetUid: 'i',
+                            server: usedServer
+                          }
                     ]
                 }
             ]}
