@@ -110,10 +110,15 @@ export class ConfigTrackMenu extends ContextMenuContainer {
 
             return (<SeriesListMenu
                         series={this.state.submenuShown}
+                        hostTrack={this.props.track}
                         position={position}
                         orientation={this.state.orientation}
                         onConfigureTrack={ () => this.props.onConfigureTrack(this.state.submenuShown.uid) }
                         onCloseTrack={ () => this.props.onCloseTrack(this.state.submenuShown.uid) }
+                        onAddSeries={ this.props.onAddSeries }
+                        trackOrientation={ this.props.orientation }
+
+
                     />);
         } else {
             return (<div />);
@@ -134,11 +139,20 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                     {this.getSeriesItems()}
                     <hr />
                     <ContextMenuItem 
-                        text={'Add Data'} 
+                        text={'Add Series'} 
                         onMouseEnter={(e) => this.handleOtherMouseEnter(e) }
+                        onClick={ () => this.props.onAddSeries(this.props.track.uid) }
                         />
-                    <ContextMenuItem text={'Close Track'} />
-                    <ContextMenuItem text={'Replace Track'} />
+                    <ContextMenuItem 
+                        onClick={ () => this.props.onCloseTrack(this.props.track.uid) }
+                        text={'Close Track'} 
+                    />
+                    <ContextMenuItem text={'Replace Track'} 
+                        onClick={ () => {
+                            this.props.onCloseTrack(this.props.track.uid);
+                            this.props.onAddTrack(this.props.orientation);
+                        }}
+                    />
                     <ContextMenuItem text={'Settings'} />
 
                     {this.getSubmenu()}

@@ -39,7 +39,11 @@ export class SeriesListMenu extends ContextMenuContainer {
                     </div>
                     <div 
                         className={"context-menu-item"}
-                    >
+                        onClick={() => {
+                                this.props.onCloseTrack(this.props.series.uid)
+                                this.props.onAddSeries(this.props.hostTrack.uid)
+                        }}
+                     >
                         <span
                             style={{ whiteSpace: 'nowrap' }}
                         >
