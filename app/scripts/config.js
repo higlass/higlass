@@ -18,7 +18,8 @@ export const tracksInfo = [
         local: true,
         orientation: '1d-horizontal',
         name: 'Top Axis',
-        thumbnail: 'horizontal-axis-thumbnail.png'
+        thumbnail: 'horizontal-axis-thumbnail.png',
+        defaultOptions: {}
     },
     {
         type: 'heatmap',
@@ -27,7 +28,7 @@ export const tracksInfo = [
         orientation: '2d',
         thumbnail: 'heatmap-thumbnail.png',
         defaultOptions: {
-            colorRange: ['white', 'darkbrown'],
+            colorRange: ['#FFFFFF','#F8E71C', '#F5A623', '#D0021B' ],
             maxZoom: null
         }
     },
@@ -36,7 +37,10 @@ export const tracksInfo = [
         datatype: ['vector'],
         local: false,
         orientation: '1d-horizontal',
-        thumbnail: 'horizontal-line-thumbnail.png'
+        thumbnail: 'horizontal-line-thumbnail.png',
+        defaultOptions: {
+
+        }
     },
     {
         type: 'vertical-line',

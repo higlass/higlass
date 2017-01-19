@@ -34,7 +34,7 @@ export class SeriesListMenu extends ContextMenuContainer {
                         <span
                             style={{ whiteSpace: 'nowrap' }}
                         >
-                            {"Remove Series"}
+                            {"Close Series"}
                         </span>
                     </div>
                     <div 

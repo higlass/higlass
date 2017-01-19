@@ -165,7 +165,10 @@ export class MultiViewContainer extends React.Component {
             return;
         }
 
-        track.options = tracksInfoByType[track.type].defaultOptions;
+        if (!track.options) {
+            track.options = tracksInfoByType[track.type].defaultOptions;
+            console.log('added options for track:', track);
+        }
     }
 
     animate() {

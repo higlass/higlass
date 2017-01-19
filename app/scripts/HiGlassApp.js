@@ -59,10 +59,7 @@ export class HiGlassApp extends React.Component {
                             'uid': 'hm1',
                            'server': usedServer ,
                           'tilesetUid': 'aa',
-                          'type': 'heatmap',
-                          'options': {
-                            'colorRange': ['white', 'black']
-                          }
+                          'type': 'heatmap'
                         },
                         {
                               'uid': slugid.nice(),
