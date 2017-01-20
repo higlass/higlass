@@ -15,13 +15,14 @@ export class HiGlassApp extends React.Component {
           this.views = {
               'editable': true,
               zoomFixed: false,
+              exportViewUrl: "//" + usedServer + "/viewconfs/",
               'views': [{
               uid: "aa",
               initialXDomain: [1200000000,1210000000],
               initialYDomain: [0,3000000000],
               autocompleteSource: "//" + usedServer + '/suggest/?d=dd&',
               genomePositionSearchBoxVisible: true,
-              chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.txt",
+              chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
               'tracks': {
             'top': [
                 /*

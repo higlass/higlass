@@ -2,6 +2,7 @@ import '../styles/MultiViewContainer.css';
 import React from 'react';
 import _ from 'lodash';
 import {scaleLinear} from 'd3-scale';
+import {request,post} from 'd3-request';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
 import {Responsive, WidthProvider} from 'react-grid-layout';
@@ -20,6 +21,7 @@ import {positionedTracksToAllTracks} from './utils.js';
 import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
 import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT} from './config.js';
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
+import {ExportLinkModal} from './ExportLinkModal.jsx';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -91,7 +93,9 @@ export class MultiViewContainer extends React.Component {
             //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
             //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
             mouseOverOverlayUid: null,
-            configMenuUid: null
+            configMenuUid: null,
+            exportLinkModalOpen: false,
+            exportLinkLocation: null
           }
     }
 
@@ -143,6 +147,7 @@ export class MultiViewContainer extends React.Component {
         this.handleDragStop();
         
         this.animate();
+        //this.handleExportViewsAsLink();
     }
 
     handleWindowFocused() {
@@ -1056,6 +1061,39 @@ export class MultiViewContainer extends React.Component {
     a.click();
   }
 
+  handleExportViewsAsLink() {
+    let wholeJSON = dictValues(this.state.views);
+    let newJson = JSON.parse(JSON.stringify(this.props.viewConfig));
+    newJson.views = this.state.views;
+
+    let data = JSON.stringify(newJson);
+
+    console.log('data:', data)
+
+    this.setState({
+        exportLinkModalOpen: true,
+        exportLinkLocation: null
+    });
+
+    request(this.props.viewConfig.exportViewUrl)
+        .header("X-Requested-With", "XMLHttpRequest")
+        .header("Content-Type", "application/json")
+        .post(data, (error, response) => {
+            if (response) {
+                let content = JSON.parse(response.response);
+                console.log('content:', content)
+                this.setState({
+                    exportLinkLocation: this.props.viewConfig.exportViewUrl + "?d=" + content.uid
+                });
+            } else {
+                console.log('error:', error);
+            }
+        })
+    
+    console.log('export views as link')
+
+  }
+
   handleAddView() {
       /**
        * User clicked on the "Add View" button. We'll duplicate the last
@@ -1248,6 +1286,7 @@ export class MultiViewContainer extends React.Component {
                                     onProjectViewport={e => this.handleProjectViewport(this.state.configMenuUid)}
                                     onTogglePositionSearchBox={e => this.handleTogglePositionSearchBox(this.state.configMenuUid)}
                                     onExportViewAsJSON={e => this.handleExportViewAsJSON() }
+                                    onExportViewAsLink={e => this.handleExportViewsAsLink() }
                                 />
                             </ContextMenuContainer>
                         </PopupMenu>);
@@ -1396,6 +1435,17 @@ export class MultiViewContainer extends React.Component {
             </div>
     ) : null;  //this.editable ?
 
+    let exportLinkModal = this.state.exportLinkModalOpen ?
+        (<ExportLinkModal 
+            linkLocation={this.state.exportLinkLocation}
+            onDone={() => this.setState({exportLinkModalOpen: false})}
+            width={this.state.width}
+            height={this.state.height}
+         />) 
+        : null;
+
+    console.log('exportLinkModal:', exportLinkModal);
+
     return (
       <div 
         ref={(c) => this.topDiv = c}
@@ -1413,18 +1463,23 @@ export class MultiViewContainer extends React.Component {
         />
         <div
             className="drawing-surface"
-            style={{position: "absolute", 
+            ref={(c) => this.divDrawingSurface=c}
+            style={{
+                    position: "absolute", 
                     background: 'yellow',
-                    opacity: 0.00
+                    opacity: 0.00,
             }}
-        />
+        >
+        </div>
+
+
         <ResponsiveReactGridLayout
           {...this.props}
           draggableHandle={'.multitrack-header'}
           isDraggable={this.props.viewConfig.editable}
           isResizable={this.props.viewConfig.editable}
           margin={this.props.viewConfig.editable ? [10,10] : [0,0]}
-          measureBeforeMount={false}
+          measureBeforeMoun={false}
           onBreakpointChange={this.onBreakpointChange.bind(this)}
           onDragStart={this.handleDragStart.bind(this)}
           onDragStop={this.handleDragStop.bind(this)}
@@ -1458,6 +1513,7 @@ export class MultiViewContainer extends React.Component {
                 pointerEvents: 'none'
             }}
         />
+        {exportLinkModal}
       </div>
     );
   }
