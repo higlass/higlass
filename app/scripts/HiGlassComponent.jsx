@@ -25,7 +25,7 @@ import {ExportLinkModal} from './ExportLinkModal.jsx';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-export class MultiViewContainer extends React.Component {
+export class HiGlassComponent extends React.Component {
     constructor(props) {
         super(props);
 
@@ -1165,6 +1165,19 @@ export class MultiViewContainer extends React.Component {
         return track;
   }
 
+    addUidsToTracks(allTracks) {
+        /**
+         * Add track names to the ones that have known names in config.js
+         */
+
+        allTracks.forEach(t => {
+            if (!t.uid)
+                t.uid = slugid.nice();
+        });
+
+        return allTracks;
+    }
+
     addNamesToTracks(allTracks) {
         /**
          * Add track names to the ones that have known names in config.js
@@ -1219,6 +1232,7 @@ export class MultiViewContainer extends React.Component {
 
             // give tracks their default names (e.g. 'type': 'top-axis'
             // will get a name of 'Top Axis'
+            looseTracks = this.addUidsToTracks(looseTracks);
             looseTracks = this.addNamesToTracks(looseTracks);
 
             looseTracks.forEach(t => this.addCallbacks(v.uid, t));
@@ -1524,11 +1538,11 @@ export class MultiViewContainer extends React.Component {
 }
 
 
-MultiViewContainer.defaultProps = {
+HiGlassComponent.defaultProps = {
     className: "layout",
     cols: {lg: 6, md: 6, sm: 6, xs: 6, xxs: 6}
   }
-MultiViewContainer.propTypes = {
+HiGlassComponent.propTypes = {
     children: React.PropTypes.array,
     viewConfig: React.PropTypes.object,
     onNewConfig: React.PropTypes.func

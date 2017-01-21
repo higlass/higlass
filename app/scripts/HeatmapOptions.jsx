@@ -2,7 +2,7 @@ import '../styles/TrackOptions.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { CompactPicker } from 'react-color';
-import {MultiViewContainer} from './MultiViewContainer.jsx';
+import {HiGlassComponent} from './HiGlassComponent.jsx';
 import SketchInlinePicker from './SketchInlinePicker.jsx';
 import slugid from 'slugid';
 

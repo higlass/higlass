@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {HiGlassApp} from './HiGlassApp.js';
+import {HiGlassDemo} from './HiGlassDemo.jsx';
 
 try {
 ReactDOM.render(
-    <HiGlassApp />
+    <HiGlassDemo />
     , document.getElementById('development-demo')
     );
 } catch (e) {
