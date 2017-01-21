@@ -166,13 +166,11 @@ export class HiGlassComponent extends React.Component {
 
         if (!tracksInfoByType.hasOwnProperty(track.type)) {
             console.log("ERROR: track type not found:", track.type, " (check app/scripts/config.js for a list of defined track types)");
-            console.log('tracksInfoByType:', tracksInfoByType)
             return;
         }
 
         if (!track.options) {
             track.options = tracksInfoByType[track.type].defaultOptions;
-            console.log('added options for track:', track);
         }
     }
 
@@ -1068,8 +1066,6 @@ export class HiGlassComponent extends React.Component {
 
     let data = JSON.stringify(newJson);
 
-    console.log('data:', data)
-
     this.setState({
         exportLinkModalOpen: true,
         exportLinkLocation: null
@@ -1081,7 +1077,6 @@ export class HiGlassComponent extends React.Component {
         .post(data, (error, response) => {
             if (response) {
                 let content = JSON.parse(response.response);
-                console.log('content:', content)
                 this.setState({
                     exportLinkLocation: this.props.viewConfig.exportViewUrl + "?d=" + content.uid
                 });
@@ -1089,9 +1084,6 @@ export class HiGlassComponent extends React.Component {
                 console.log('error:', error);
             }
         })
-    
-    console.log('export views as link')
-
   }
 
   handleAddView() {
@@ -1457,8 +1449,6 @@ export class HiGlassComponent extends React.Component {
             height={this.state.height}
          />) 
         : null;
-
-    console.log('exportLinkModal:', exportLinkModal);
 
     return (
       <div 

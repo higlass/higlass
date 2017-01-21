@@ -14,3 +14,26 @@ p {
     font-family: "Roboto";
     font-weight: 700;
 }
+
+.modal-container {
+  position: relative;
+}
+.modal-container .modal, .modal-container .modal-backdrop {
+  position: absolute;
+}
+
+.glyphicon-refresh-animate {
+   -webkit-animation-name: rotateThis;
+   -webkit-animation-duration: 2s;
+   -webkit-animation-iteration-count: infinite;
+   -webkit-animation-timing-function: linear;
+}
+
+@-webkit-keyframes "rotateThis" {
+ from { 
+        -webkit-transform: rotate( 0deg );  
+    }
+ to  { 
+        -webkit-transform: rotate( 360deg ); 
+    }
+}
