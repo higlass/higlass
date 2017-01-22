@@ -1048,9 +1048,21 @@ export class HiGlassComponent extends React.Component {
       return;
   }
 
+  getViewsAsString() {
+    console.log('views:', this.state.views);
+    let newJson = JSON.parse(JSON.stringify(this.props.viewConfig));
+    newJson.views = dictItems(this.state.views).map(k => {
+        k[1].uid = k[0];
+        return k[1];
+    });
+
+
+    let data = JSON.stringify(newJson);
+    return data;
+  }
+
   handleExportViewAsJSON() {
-    let wholeJSON = dictValues(this.state.views);
-    let data = JSON.stringify(wholeJSON,null,2);
+    let data = this.getViewsAsString();
 
     var a = document.createElement("a");
     var file = new Blob([data], {type: 'text/json'});
@@ -1060,11 +1072,7 @@ export class HiGlassComponent extends React.Component {
   }
 
   handleExportViewsAsLink() {
-    let wholeJSON = dictValues(this.state.views);
-    let newJson = JSON.parse(JSON.stringify(this.props.viewConfig));
-    newJson.views = this.state.views;
-
-    let data = JSON.stringify(newJson);
+    let data = this.getViewsAsString();
 
     this.setState({
         exportLinkModalOpen: true,
@@ -1215,6 +1223,7 @@ export class HiGlassComponent extends React.Component {
     processViewConfig(viewConfig) {
         let views = viewConfig.views;
         let viewsByUid = {};
+
         views.forEach(v => {
             this.fillInMinWidths(v.tracks);
             viewsByUid[v.uid] = v;     
