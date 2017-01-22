@@ -12,8 +12,8 @@ export class HeatmapOptions extends React.Component {
     constructor(props) {
         super(props);
         // props should include the definition of the heatmap data series
-        
-        
+
+
         this.state = {
             colors: props.track.options.colorRange.slice()
         }
@@ -39,7 +39,7 @@ export class HeatmapOptions extends React.Component {
     }
 
     handleAddColor() {
-        /** 
+        /**
          * Add a color to the end
          */
         this.setState({
@@ -67,7 +67,7 @@ export class HeatmapOptions extends React.Component {
         let track = JSON.parse(JSON.stringify(this.props.track));
 
 
-        let centerTrack = Object.assign(track, 
+        let centerTrack = Object.assign(track,
                                         {height: 100,
                                             options: {
                                          colorRange: this.state.colors
@@ -86,7 +86,7 @@ export class HeatmapOptions extends React.Component {
 
         let colorFields = this.state.colors.map((x,i) => {
             // only let colors be removed if there's more than two present
-            let closeButton = (this.state.colors.length > 2 && i == this.state.colors.length-1) ? 
+            let closeButton = (this.state.colors.length > 2 && i == this.state.colors.length-1) ?
                 ( <div
                             style={{
                                 background: 'white',
@@ -100,7 +100,7 @@ export class HeatmapOptions extends React.Component {
 
                             }}
                         >
-                            <img 
+                            <svg
                                 onClick={() => this.handleRemoveColor(i)}
                                 style={{
                                     position: "absolute",
@@ -108,24 +108,24 @@ export class HeatmapOptions extends React.Component {
                                     right: 2,
                                     opacity: 0.5,
                                     width: 10,
-                                    height: 10 
+                                    height: 10
                                 }}
-                                src="images/cross.svg" 
-                                width="10px" 
-                            />
+                                height="10px">
+                                <use href="#cross"></use>
+                            </svg>
                             </div>
-                        ) 
+                        )
                     : null; //closebutton
 
             return(<td
                         key={"l" + i}
-                        style={{ border: "0px solid", 
+                        style={{ border: "0px solid",
                                  position: "relative",
                                  outline: "none",
                         }}
                    >
                         {closeButton}
-                        <SketchInlinePicker 
+                        <SketchInlinePicker
                             key={i}
                             color={this.state.colors[i]}
                             onChange={c => {
@@ -139,7 +139,7 @@ export class HeatmapOptions extends React.Component {
 
         let addButton = this.state.colors.length < 4 ?
             (<td
-                    style={{ border: "0px solid", 
+                    style={{ border: "0px solid",
                              position: "relative",
                              outline: "none",
                     }}
@@ -149,27 +149,28 @@ export class HeatmapOptions extends React.Component {
                              height: 24,
                              marginLeft: 5
                     }}
-                
+
                 >
-                            <img 
+                            <svg
                                 onClick={this.handleAddColor.bind(this)}
                                 style={{
                                     opacity: 0.5,
                                 }}
-                                src="images/plus.svg" 
-                                width="10px" 
-                            />
+                                width="10px"
+                                height="10px">
+                                <use href="#plus"></use>
+                            </svg>
                 </div>
-             </td>) 
+             </td>)
             : null; //addButton
 
-        return(<Modal 
+        return(<Modal
                 onHide={this.props.handleCancel}
                 show={true}
                 className={'hg-modal'}
                 >
                     <Modal.Header closeButton>
-                    <Modal.Title>{'Heatmap Options'}</Modal.Title> 
+                    <Modal.Title>{'Heatmap Options'}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                             <table className='table-track-options'>

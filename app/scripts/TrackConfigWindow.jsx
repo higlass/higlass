@@ -12,10 +12,10 @@ export class TrackConfigWindow extends ContextMenuContainer {
          */
         super(props);
 
-        
+
 
         this.seriesRefs = {};
-        
+
     }
 
     componentDidMount() {
@@ -47,7 +47,7 @@ export class TrackConfigWindow extends ContextMenuContainer {
 
         return series.map(x => {
                 return (
-                    <div 
+                    <div
                         ref={c => this.seriesRefs[x.uid] = c}
                         className={"context-menu-item"}
                         key={x.uid}
@@ -58,9 +58,12 @@ export class TrackConfigWindow extends ContextMenuContainer {
                             style={{ whiteSpace: 'nowrap' }}
                         >
                             {x.uid}
-                            <img src="images/play.svg"
-                                 className = "play-icon"
-                            />
+                            <svg
+                                className = "play-icon"
+                                width="10px"
+                                height="10px">
+                                <use href="#play"></use>
+                            </svg>
 
                         </span>
                     </div>
@@ -99,7 +102,7 @@ export class TrackConfigWindow extends ContextMenuContainer {
         return(
                 <div className={'context-menu'}
                         ref={c => this.div = c}
-                        style={{ 
+                        style={{
                                 position: 'fixed',
                                 left: this.state.left,
                                  top: this.state.top,
@@ -108,8 +111,8 @@ export class TrackConfigWindow extends ContextMenuContainer {
                 >
                     {this.getSeriesItems()}
                     <hr />
-                    <ContextMenuItem 
-                        text={'Add Data'} 
+                    <ContextMenuItem
+                        text={'Add Data'}
                         onMouseEnter={(e) => this.handleOtherMouseEnter(e) }
                         />
                     <ContextMenuItem text={'Close Track'} />

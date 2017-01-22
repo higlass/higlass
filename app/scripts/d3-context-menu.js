@@ -89,7 +89,7 @@ export function contextMenu(menu, opts) {
         var list = selectAll('.d3-context-menu-' + uid)
             .on('contextmenu', function(d) {
                 console.log('context-menu close');
-                select('.d3-context-menu-' + uid).style('display', 'none'); 
+                select('.d3-context-menu-' + uid).style('display', 'none');
                 orientation = 'right';
 
                 d3.event.preventDefault();
@@ -168,7 +168,7 @@ export function contextMenu(menu, opts) {
                     } else {
                         // need to open a different child menu
                         console.log('open different child menu close');
-                        
+
                         // close the already open one
                         select('.d3-context-menu-' + openChildMenuUid)
                         .style('display', 'none');
@@ -176,7 +176,7 @@ export function contextMenu(menu, opts) {
                         openChildMenuUid = null;
 
                     }
-                }             
+                }
 
                 // there should be no menu open right now
                 if (typeof d.children != 'undefined') {
@@ -189,7 +189,7 @@ export function contextMenu(menu, opts) {
                                     boundingRect.top - 2 + window.pageYOffset],
                         'orientation': 'left'});
                     } else {
-                        childrenContextMenu = contextMenu(d.children, 
+                        childrenContextMenu = contextMenu(d.children,
                                       {
                                           'pos': [ boundingRect.left + boundingRect.width + window.pageXOffset,
                                                 boundingRect.top - 2 + window.pageYOffset],
@@ -206,7 +206,7 @@ export function contextMenu(menu, opts) {
 
                 select(this)
                     .classed('d3-context-menu-selected', true)
-            
+
             })
             .on('mouseleave', function(d, i) {
 
@@ -217,13 +217,13 @@ export function contextMenu(menu, opts) {
             });
 
             list.selectAll('.d3-context-menu-recursive')
-            .append('img')
-            .attr('src', 'images/play.svg')
-            .attr('width', '14px')
-            .attr('height', '14px')
-            .style('position', 'absolute')
-            .style('right', '5px')
-            ;
+                .append('svg')
+                .attr('width', '14px')
+                .attr('height', '14px')
+                .style('position', 'absolute')
+                .style('right', '5px')
+                    .append('use')
+                    .attr('href', '#play');
 
         // the openCallback allows an action to fire before the menu is displayed
         // an example usage would be closing a tooltip
@@ -269,7 +269,7 @@ export function contextMenu(menu, opts) {
                     .style('top', initialPos[1] + 'px')
                 }
             }
-            
+
         }
 
         // display context menu
