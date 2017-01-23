@@ -1395,8 +1395,6 @@ export class HiGlassComponent extends React.Component {
                      />) : null;
                 //genomePositionSearchBox = null;
 
-                console.log('crossImg:', crossImg);
-
                 let multiTrackHeader = this.props.viewConfig.editable ?
                     (
                             <div
