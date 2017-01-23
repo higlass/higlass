@@ -24,11 +24,7 @@ import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT} from './config.js';
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
 import {ExportLinkModal} from './ExportLinkModal.jsx';
 import {createSymbolIcon} from './symbol.js';
-
-import crossImg from 'file!../images/cross.svg';
-import cogImg from 'file!../images/cog.svg';
-import copyImg from 'file!../images/content_copy.svg';
-import plusImg from 'file!../images/plus.svg';
+import {all as icons} from './icons.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -157,6 +153,11 @@ export class HiGlassComponent extends React.Component {
         //this.handleExportViewsAsLink();
 
         const baseSvg = select(this.element).append('svg').style('display', 'none');
+
+        // Add SVG Icons
+        icons.forEach(
+            icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox)
+        );
     }
 
     handleWindowFocused() {
@@ -1105,13 +1106,14 @@ export class HiGlassComponent extends React.Component {
         })
   }
 
-  handleAddView(sourceView) {
+  handleAddView() {
       /**
-       * We're going to duplicate the sourceView
+       * User clicked on the "Add View" button. We'll duplicate the last
+       * view.
        */
 
       let views = dictValues(this.state.views);
-      let lastView = sourceView;
+      let lastView = views[views.length-1];
 
       let maxY = 0;
 
@@ -1408,41 +1410,32 @@ export class HiGlassComponent extends React.Component {
                                 <span style={{font: "11pt sans-serif"}}>{"Id: " + view.uid.slice(0,2)}
                                 </span>
 
-                                <img
-                                    onClick={() => this.handleAddView(view) }
-                                    ref={c => this.configImg[view.uid] = c}
-                                    className={'multiview-copy-img'}
-                                    width="10px"
-                                    height="10px"
-                                    src={copyImg}
-                                />
-
-                                <img
+                                <svg
                                     onClick={ e => this.handleConfigMenuOpened(view.uid) }
                                     ref={c => this.configImg[view.uid] = c}
                                     className={'multiview-config-img'}
                                     width="10px"
-                                    height="10px"
-                                    src={cogImg}
-                                />
+                                    height="10px">
+                                    <use href="#cog"></use>
+                                </svg>
 
-                                <img
+                                <svg
                                     onClick={ e => this.handleAddTrackPositionMenuOpened(view.uid) }
                                     ref={c => this.plusImg[view.uid] = c}
                                     className={'multiview-add-track-img'}
                                     width="10px"
-                                    height="10px"
-                                    src={plusImg}
-                                />
+                                    height="10px">
+                                    <use href="#plus"></use>
+                                </svg>
 
-                                <img
-                                    src={crossImg}
+                                <svg
                                     onClick={() => { this.handleCloseView(view.uid)}}
                                     ref={c => this.configImg[view.uid] = c}
                                     className={'multiview-close-img'}
                                     width="10px"
-                                    height="10px"
-                                />
+                                    height="10px">
+                                    <use href="#cross"></use>
+                                </svg>
                             </div>
                     ) : null; // this.editable ?
 
@@ -1466,13 +1459,13 @@ export class HiGlassComponent extends React.Component {
         <div
             className="view-menu"
             style={{"width": 32, "height": 26, "position": "relative", "marginBottom": 4, "marginRight": 12,  "opacity": 0.6, "float": "right"}}>
-            <img
+            <svg
                 onClick={this.handleAddView.bind(this)}
                 className={'multiview-add-img'}
                 width="10px"
-                src={plusImg}
-                height="10px"
-            />
+                height="10px">
+                <use href="#plus"></use>
+            </svg>
         </div>
     ) : null;  //this.editable ?
 

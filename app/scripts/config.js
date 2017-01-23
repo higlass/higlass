@@ -3,21 +3,6 @@ let remoteServer = "52.45.229.11";
 export const usedServer = localServer;
 //export const usedServer = remoteServer;
 
-import imgBlankThumbnailOrig from 'file!../images/thumbnails/blank.png';
-
-//import imgVertical1DTilesThumbnail from 'file!../images/thumbnails/vertical-1d-tiles-thumbnail.png';
-
-import imgViewportProjectionCenter from 'file!../images/thumbnails/viewport-projection-center.png';
-import imgVerticalStackedInterval from 'file!../images/thumbnails/vertical-stacked-interval.png';
-import imgHorizontalStackedInterval from 'file!../images/thumbnails/horizontal-stacked-interval.png';
-import img2dTilesThumbnail from 'file!../images/thumbnails/2d-tiles-thumbnail.png';
-import imgHorizontal1DTilesThumbnail from 'file!../images/thumbnails/horizontal-1d-tiles-thumbnail.png';
-import imgVerticalLineThumbnail from 'file!../images/thumbnails/vertical-line-thumbnail.png';
-import imgHorizontalLineThumbnail from 'file!../images/thumbnails/horizontal-line-thumbnail.png';
-import imgHeatmapThumbnail from 'file!../images/thumbnails/heatmap-thumbnail.png';
-import imgVerticalAxisThumbnail from 'file!../images/thumbnails/vertical-axis-thumbnail.png';
-import imgHorizontalAxisThumbnail from 'file!../images/thumbnails/horizontal-axis-thumbnail.png';
-
 export const tracksInfo = [
     {
         type: 'left-axis',
@@ -25,7 +10,7 @@ export const tracksInfo = [
         local: true,
         orientation: '1d-vertical',
         name: 'Left Axis',
-        thumbnail:imgVerticalAxisThumbnail
+        thumbnail: 'vertical-axis-thumbnail.png'
     },
     {
         type: 'top-axis',
@@ -33,7 +18,7 @@ export const tracksInfo = [
         local: true,
         orientation: '1d-horizontal',
         name: 'Top Axis',
-        thumbnail: imgHorizontalAxisThumbnail,
+        thumbnail: 'horizontal-axis-thumbnail.png',
         defaultOptions: {}
     },
     {
@@ -41,7 +26,7 @@ export const tracksInfo = [
         datatype: ['matrix'],
         local: false,
         orientation: '2d',
-        thumbnail:imgHeatmapThumbnail,
+        thumbnail: 'heatmap-thumbnail.png',
         defaultOptions: {
             colorRange: ['#FFFFFF','#F8E71C', '#F5A623', '#D0021B' ],
             maxZoom: null
@@ -52,7 +37,7 @@ export const tracksInfo = [
         datatype: ['vector'],
         local: false,
         orientation: '1d-horizontal',
-        thumbnail: imgHorizontalLineThumbnail,
+        thumbnail: 'horizontal-line-thumbnail.png',
         defaultOptions: {
 
         }
@@ -62,7 +47,7 @@ export const tracksInfo = [
         datatype: ['vector'],
         local: false,
         orientation: '1d-vertical',
-        thumbnail: imgVerticalLineThumbnail
+        thumbnail: 'vertical-line-thumbnail.png'
     },
     {
         type: 'horizontal-1d-tiles',
@@ -70,7 +55,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         name: 'Horizontal 1D Tile Outlines',
-        thumbnail: imgHorizontal1DTilesThumbnail
+        thumbnail: 'horizontal-1d-tiles-thumbnail.png'
 
     },
     {
@@ -86,21 +71,21 @@ export const tracksInfo = [
         local: false,
         orientation: '2d',
         name: '2D Tile Outlines',
-        thumbnail: img2dTilesThumbnail
+        thumbnail: '2d-tiles-thumbnail.png'
     },
     {
         type: 'top-stacked-interval',
         datatype: ['stacked-interval'],
         local: false,
         orientation: '1d-horizontal',
-        thumbnail: imgHorizontalStackedInterval
+        thumbnail: 'horizontal-stacked-interval.png'
     },
     {
         type: 'left-stacked-interval',
         datatype: ['stacked-interval'],
         local: false,
         orientation: '1d-vertical',
-        thumbnail: imgVerticalStackedInterval
+        thumbnail: 'vertical-stacked-interval.png'
     },
     {
         type: 'viewport-projection-center',
@@ -109,7 +94,7 @@ export const tracksInfo = [
         hidden: true,
         orientation: '2d',
         name: 'Viewport Projection',
-        thumbnail: imgViewportProjectionCenter
+        thumbnail: 'viewport-projection-center.png'
     },
 
     {
@@ -148,7 +133,6 @@ export const tracksInfo = [
 export const TILE_FETCH_DEBOUNCE = 100;
 // Number of milliseconds zoom-related actions (e.g., tile loading) are debounced
 export const ZOOM_DEBOUNCE = 100;
-export const imgBlankThumbnail = imgBlankThumbnailOrig;
 
 let temp = {};
 

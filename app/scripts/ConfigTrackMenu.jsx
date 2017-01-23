@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
 import {SeriesListMenu} from './SeriesListMenu.jsx';
 import {tracksInfo} from './config.js';
-import {imgBlankThumbnail} from './config.js';
 
 export class ConfigTrackMenu extends ContextMenuContainer {
     constructor(props) {
@@ -60,9 +59,8 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         let series = this.props.track.contents ? this.props.track.contents : [this.props.track];
 
         return series.map(x => {
-            let thumbnailLocation = trackTypeToInfo[x.type].thumbnail;
-            let blankLocation = imgBlankThumbnail;
-
+            let thumbnailLocation = "images/thumbnails/" + trackTypeToInfo[x.type].thumbnail;
+            let blankLocation = "images/thumbnails/blank.png";
             let imgTag = trackTypeToInfo[x.type].thumbnail ?
                     <img src={thumbnailLocation} width={15} className='context-menu-thumbnail'/> :
                     <img src={blankLocation} width={15} className='context-menu-thumbnail'/>
