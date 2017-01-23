@@ -202,7 +202,7 @@ export class HeatmapOptions extends React.Component {
                                   <tr>
                                  <td rowSpan="2" className='td-track-options'>
                                  <div style={{width:200 }}>
-                                      <MultiViewContainer
+                                      <HiGlassComponent
                                           viewConfig={mvConfig}
                                       />
                                   </div>
