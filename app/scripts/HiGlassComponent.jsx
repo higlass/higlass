@@ -55,8 +55,6 @@ export class HiGlassComponent extends React.Component {
 
         // zoom locks between views
         this.zoomLocks = {};
-        this.lockGroups = {};
-
         this.setCenters = {};
 
         this.plusImg = {};
@@ -298,6 +296,7 @@ export class HiGlassComponent extends React.Component {
           let lockGroup = this.zoomLocks[uid];
           let lockGroupItems = dictItems(lockGroup);
 
+
           let [centerX, centerY, k] = scalesCenterAndK(this.xScales[uid], this.yScales[uid]);
 
 
@@ -316,6 +315,9 @@ export class HiGlassComponent extends React.Component {
               let newCenterX = centerX + dx;
               let newCenterY = centerY + dy;
               let newK = k + rk;
+
+                if (!this.setCenters[key])
+                    continue;
 
               let [newXScale, newYScale] = this.setCenters[key](newCenterX, newCenterY, newK, false);
 
@@ -839,7 +841,6 @@ export class HiGlassComponent extends React.Component {
             w: 6,
         };
 
-
         if ('center' in view.tracks || 'left' in view.tracks || 'right' in view.tracks) {
             let desiredHeight = ((elementWidth - leftWidth - rightWidth - 2 * this.horizontalMargin) );
             desiredHeight +=  topHeight + bottomHeight + 2*this.verticalMargin + 20;
@@ -1061,6 +1062,48 @@ export class HiGlassComponent extends React.Component {
       return;
   }
 
+  deserializeZoomLocks(viewConfig) {
+    this.zoomLocks = {};
+
+    for (let viewUid of dictKeys(viewConfig.zoomLocks.locksByViewUid)) {
+        this.zoomLocks[viewUid] = viewConfig.zoomLocks
+            .zoomLocksDict[viewConfig.zoomLocks.locksByViewUid[viewUid]];
+    }
+
+    console.log('this.zoomLocks:', this.zoomLocks);
+  }
+
+  serializeZoomLocks(zoomLocks) {
+      let zoomLocksDict = {};
+      let locksByViewUid = {};
+
+    for (let viewUid of dictKeys(zoomLocks)) {
+        if (zoomLocks[viewUid].hasOwnProperty('uid') 
+                && zoomLocksDict.hasOwnProperty(zoomLocks[viewUid].uid)) {
+            // we've already encountered this zoom lock so no need to do anything
+        } else {
+            // otherwise, assign this zoomLock its own uid
+            let zoomLockUid = slugid.nice();
+            zoomLocks[viewUid].uid = zoomLockUid;
+
+            // make a note that we've seen this zoomLock
+            zoomLocksDict[zoomLockUid] =  zoomLocks[viewUid];
+        }
+
+        // note that this view has a reference to this lock
+        locksByViewUid[viewUid] = zoomLocks[viewUid].uid;
+    }
+
+    // remove the uids we just added
+    for (let viewUid of dictKeys(zoomLocks)) {
+        if (zoomLocks[viewUid].hasOwnProperty('uid') )
+            delete zoomLocks[viewUid].uid;
+
+    }
+
+    return {'locksByViewUid': locksByViewUid, 'zoomLocksDict': zoomLocksDict}
+  }
+
   getViewsAsString() {
     console.log('views:', this.state.views);
     let newJson = JSON.parse(JSON.stringify(this.props.viewConfig));
@@ -1069,8 +1112,9 @@ export class HiGlassComponent extends React.Component {
         return k[1];
     });
 
+    newJson.zoomLocks = this.serializeZoomLocks(this.zoomLocks);
 
-    let data = JSON.stringify(newJson);
+    let data = JSON.stringify(newJson, null, 2);
     return data;
   }
 
@@ -1243,6 +1287,7 @@ export class HiGlassComponent extends React.Component {
 
             // Add names to all the tracks
             let looseTracks = positionedTracksToAllTracks(v.tracks);
+            this.deserializeZoomLocks(viewConfig);
 
             // give tracks their default names (e.g. 'type': 'top-axis'
             // will get a name of 'Top Axis'
