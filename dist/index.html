@@ -29,7 +29,8 @@
         console.log('hey');
             var remoteServer = "52.45.229.11";
             var localServer = "localhost:8000";
-          var usedServer = remoteServer;
+          //var usedServer = localServer;
+            var usedServer = remoteServer;
 
           var viewConfig = {
               'editable': true,
@@ -41,7 +42,7 @@
               initialYDomain: [0,3000000000],
               autocompleteSource: "//" + usedServer + '/suggest/?d=dd&',
               genomePositionSearchBoxVisible: true,
-              chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+              chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
               'tracks': {
             'top': [
                 /*
@@ -82,9 +83,6 @@
                     ]
                 }
             ]}
-            ,
-            layout: {x: 0, y: 0, w: 6, h: 10}
-
             } ]
           }
 
