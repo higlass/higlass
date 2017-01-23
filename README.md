@@ -11,7 +11,7 @@ A live example can be found [here](http://hms-dbmi.github.io/higlass/).
 ## Development
 
 ```
-webpack-dev-server --content-base app --display-exclude --profile --inline | grep -v "\\[\\d*\\]"
+npm start
 ```
 
 ## Build

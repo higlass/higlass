@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="styles/page.css">
 </head>
 <body > 
+    Stuff up here may do something
+    <div style="height: 50px" />
     <div style="margin: auto; width: 100%;">
     <br>
     <!-- <div id="triangular-1"></div> -->
@@ -21,7 +23,74 @@
 
     </div>
 </body>
-<script src='scripts/playground.js'></script>
+<script src='scripts/hglib.js'>
+</script>
+<script>
+        console.log('hey');
+            var remoteServer = "52.45.229.11";
+            var localServer = "localhost:8000";
+          var usedServer = remoteServer;
+
+          var viewConfig = {
+              'editable': true,
+              zoomFixed: false,
+              exportViewUrl: "//" + usedServer + "/viewconfs/",
+              'views': [{
+              uid: "aa",
+              initialXDomain: [1200000000,1210000000],
+              initialYDomain: [0,3000000000],
+              autocompleteSource: "//" + usedServer + '/suggest/?d=dd&',
+              genomePositionSearchBoxVisible: true,
+              chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+              'tracks': {
+            'top': [
+                /*
+                {'uid': type:'top-axis'}
+            ,
+            */
+
+                    {
+                        type:'horizontal-gene-annotations',
+                        height: 60,
+                      tilesetUid: 'dd',
+                      server: usedServer 
+                    }
+                      ,
+            ],
+            'left': [
+                    {
+                        type:'vertical-gene-annotations',
+                        width: 60,
+                      tilesetUid: 'dd',
+                      server: usedServer 
+                    }
+            ],
+            'center': [
+                {   
+                    uid: 'c1',
+                    type: 'combined',
+                    height: 200,
+                    contents: 
+                    [
+
+                        { 
+                            'uid': 'hm1',
+                           'server': usedServer ,
+                          'tilesetUid': 'aa',
+                          'type': 'heatmap'
+                        }
+                    ]
+                }
+            ]}
+            ,
+            layout: {x: 0, y: 0, w: 6, h: 10}
+
+            } ]
+          }
+
+    hglib.HgComponent(document.getElementById('development-demo'), viewConfig);
+
+</script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

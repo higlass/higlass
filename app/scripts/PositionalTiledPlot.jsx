@@ -43,42 +43,46 @@ class TrackArea extends React.Component {
 
     getControls() {
         let controls = (<div>
-                        <img 
-                            ref={(c) => { this.imgClose = c; }}
-                            className="no-zoom"
-                            src="images/cross.svg" 
-                            style={this.getCloseImgStyle()}
-                            width="10px" 
-                            onClick={() => { 
+                        <svg
+                            onClick={() => {
                                 let imgDom = ReactDOM.findDOMNode(this.imgClose);
                                 let bbox = imgDom.getBoundingClientRect();
                                 this.props.onCloseTrackMenuOpened(this.props.uid, bbox);
                             }}
-                        />
+                            ref={(c) => { this.imgClose = c; }}
+                            onClick={ e => this.handleConfigMenuOpened(view.uid) }
+                            className="no-zoom"
+                            style={this.getCloseImgStyle()}
+                            width="10px"
+                            height="10px">
+                            <use href="#cross"></use>
+                        </svg>
 
-                        <img 
+                        <svg
                             ref={(c) => { this.imgAdd = c; }}
                             className="no-zoom"
-                            src="images/plus.svg" 
                             style={this.getAddImgStyle()}
-                            width="10px" 
-                            onClick={() => { 
+                            onClick={() => {
                                 this.props.onAddSeries(this.props.uid);
                             }}
-                        />
+                            width="10px"
+                            height="10px">
+                            <use href="#plus"></use>
+                        </svg>
 
-                        <img 
+                        <svg
                             ref={(c) => { this.imgConfig = c; }}
                             className="no-zoom"
-                            onClick={(e) => { 
+                            onClick={(e) => {
                                 let imgDom = ReactDOM.findDOMNode(this.imgConfig);
                                 let bbox = imgDom.getBoundingClientRect();
                                 this.props.onConfigTrackMenuOpened(this.props.uid, bbox);
                                 ; }}
-                            src="images/cog.svg" 
                             style={this.getSettingsImgStyle()}
-                            width="10px" 
-                        />
+                            width="10px"
+                            height="10px">
+                            <use href="#cog"></use>
+                        </svg>
                 </div>)
 
         return controls;
@@ -104,8 +108,8 @@ export class FixedTrack extends TrackArea {
         }
 
         return (
-            <div 
-                className={this.props.className} 
+            <div
+                className={this.props.className}
                 onMouseEnter={this.handleMouseEnter.bind(this)}
                 onMouseLeave={this.handleMouseLeave.bind(this)}
                 style={{
@@ -116,7 +120,7 @@ export class FixedTrack extends TrackArea {
                 }}
             >
 
-            <div 
+            <div
                 key={this.props.uid}
                 style={{
                     height: this.props.height,
@@ -136,15 +140,16 @@ class MoveableTrack extends TrackArea {
     }
 
     render() {
-        let Handle = SortableHandle(() => 
-                <img 
-                    className="no-zoom"
-                    onClick={() => {}}
-                    src="images/move.svg" 
-                    style={this.getMoveImgStyle()}
-                    width="10px" 
-                />
-                )
+        let Handle = SortableHandle(() =>
+            <svg
+                className="no-zoom"
+                onClick={() => {}}
+                style={this.getMoveImgStyle()}
+                width="10px"
+                height="10px">
+                <use href="#move"></use>
+            </svg>
+        )
         let controls = null;
 
         if (this.props.editable && this.state.controlsVisible) {
@@ -155,8 +160,8 @@ class MoveableTrack extends TrackArea {
         }
 
         return (
-            <div 
-                className={this.props.className} 
+            <div
+                className={this.props.className}
                 onMouseEnter={this.handleMouseEnter.bind(this)}
                 onMouseLeave={this.handleMouseLeave.bind(this)}
                 style={{
@@ -166,7 +171,7 @@ class MoveableTrack extends TrackArea {
                     background: 'transparent'
                 }}
             >
-            <DraggableDiv 
+            <DraggableDiv
                 height={this.props.height}
                 key={this.props.uid}
                 sizeChanged={(stuff) => { return this.props.handleResizeTrack(this.props.uid, stuff.width, stuff.height); }}
@@ -260,9 +265,9 @@ class VerticalTrack extends MoveableTrack {
 }
 
 
-const VerticalItem = SortableElement((props) => { 
+const VerticalItem = SortableElement((props) => {
 
-    return (<VerticalTrack 
+    return (<VerticalTrack
                 className={props.className}
                 onCloseTrack={props.onCloseTrack}
                 onCloseTrackMenuOpened={props.onCloseTrackMenuOpened}
@@ -320,8 +325,8 @@ class HorizontalTrack extends MoveableTrack {
     }
 }
 
-const HorizontalItem = SortableElement((props) => { 
-    return (<HorizontalTrack 
+const HorizontalItem = SortableElement((props) => {
+    return (<HorizontalTrack
                 className={props.className}
                 onCloseTrack={props.onCloseTrack}
                 onCloseTrackMenuOpened={props.onCloseTrackMenuOpened}
@@ -337,7 +342,7 @@ const HorizontalItem = SortableElement((props) => {
                 width={props.width}
             />)});
 
-const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle, 
+const SortableList = SortableContainer(({className, items, itemClass, sortingIndex, useDragHandle,
                                          sortableHandlers,height, width, onCloseTrack,onCloseTrackMenuOpened,onConfigTrackMenuOpened,onAddSeries,handleConfigTrack,editable,itemReactClass,
                                          handleResizeTrack, resizeHandles}) => {
     let itemElements = items.map((item, index) => {
@@ -362,8 +367,8 @@ const SortableList = SortableContainer(({className, items, itemClass, sortingInd
                 })
             })
 	return (
-        <div 
-            className={className} 
+        <div
+            className={className}
             style={{height: height,
                     width: width,
                     background: 'transparent'
@@ -435,9 +440,9 @@ class ListWrapper extends React.Component {
 		}
 
 		return (
-                <Component 
-                    {...this.props} 
-                    {...props} 
+                <Component
+                    {...this.props}
+                    {...props}
                 />)
 	}
 }
@@ -486,7 +491,7 @@ export class HorizontalTiledPlot extends React.Component {
             if (!uid)
                 uid = slugid.nice();
 
-            return {uid: uid, width: this.props.width, 
+            return {uid: uid, width: this.props.width,
                     height: d.height, value: d.value };
         });
 
@@ -495,7 +500,7 @@ export class HorizontalTiledPlot extends React.Component {
 
                 <div style={{position: "relative"}}>
                     <ListWrapper
-                        className={"list stylizedList"} 
+                        className={"list stylizedList"}
                         component={SortableList}
                         onCloseTrack={this.props.onCloseTrack}
                         onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
@@ -509,7 +514,7 @@ export class HorizontalTiledPlot extends React.Component {
                         helperClass={"stylizedHelper"}
                         itemClass={"stylizedItem"}
                         itemReactClass={HorizontalItem}
-                        items={newItems} 
+                        items={newItems}
                         onSortEnd={this.props.handleSortEnd}
                         useDragHandle={true}
                         width={this.props.width}
@@ -548,7 +553,7 @@ export class VerticalTiledPlot extends React.Component {
         return (
                 <ListWrapper
                     axis={'x'}
-                    className={"list stylizedList horizontalList"} 
+                    className={"list stylizedList horizontalList"}
                     component={SortableList}
                     onCloseTrack={this.props.onCloseTrack}
                     onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
@@ -562,7 +567,7 @@ export class VerticalTiledPlot extends React.Component {
                     helperClass={"stylizedHelper"}
                     itemClass={"stylizedItem horizontalItem"}
                     itemReactClass={VerticalItem}
-                    items={newItems} 
+                    items={newItems}
                     referenceAncestor={this.props.referenceAncestor}
                     onSortEnd={this.props.handleSortEnd}
                     useDragHandle={true}
@@ -582,7 +587,7 @@ export class CenterTiledPlot extends React.Component {
         super(props);
     }
 
-    render() { 
+    render() {
 
         return(<div class="center-plot"></div>)
     }

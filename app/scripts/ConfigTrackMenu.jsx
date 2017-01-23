@@ -12,9 +12,9 @@ export class ConfigTrackMenu extends ContextMenuContainer {
          */
         super(props);
 
-        
+
         this.seriesRefs = {};
-        
+
     }
 
     componentDidMount() {
@@ -61,12 +61,12 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         return series.map(x => {
             let thumbnailLocation = "images/thumbnails/" + trackTypeToInfo[x.type].thumbnail;
             let blankLocation = "images/thumbnails/blank.png";
-            let imgTag = trackTypeToInfo[x.type].thumbnail ? 
+            let imgTag = trackTypeToInfo[x.type].thumbnail ?
                     <img src={thumbnailLocation} width={15} className='context-menu-thumbnail'/> :
-                    <img src={blankLocation} width={15} className='context-menu-thumbnail'/> 
+                    <img src={blankLocation} width={15} className='context-menu-thumbnail'/>
 
                 return (
-                    <div 
+                    <div
                         ref={c => this.seriesRefs[x.uid] = c}
                         className={"context-menu-item"}
                         key={x.uid}
@@ -78,9 +78,13 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                             style={{ whiteSpace: 'nowrap' }}
                         >
                             {(x.name && x.name.length) ? x.name : x.uid}
-                            <img src="images/play.svg"
-                                 className = "play-icon"
-                            />
+
+                            <svg
+                                className = "play-icon"
+                                width="10px"
+                                height="10px">
+                                <use href="#play"></use>
+                            </svg>
 
                         </span>
                     </div>
@@ -129,7 +133,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         return(
                 <div className={'context-menu'}
                         ref={c => this.div = c}
-                        style={{ 
+                        style={{
                                 position: 'fixed',
                                 left: this.state.left,
                                  top: this.state.top,
@@ -138,16 +142,16 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                 >
                     {this.getSeriesItems()}
                     <hr />
-                    <ContextMenuItem 
-                        text={'Add Series'} 
+                    <ContextMenuItem
+                        text={'Add Series'}
                         onMouseEnter={(e) => this.handleOtherMouseEnter(e) }
                         onClick={ () => this.props.onAddSeries(this.props.track.uid) }
                         />
-                    <ContextMenuItem 
+                    <ContextMenuItem
                         onClick={ () => this.props.onCloseTrack(this.props.track.uid) }
-                        text={'Close Track'} 
+                        text={'Close Track'}
                     />
-                    <ContextMenuItem text={'Replace Track'} 
+                    <ContextMenuItem text={'Replace Track'}
                         onClick={ () => {
                             this.props.onCloseTrack(this.props.track.uid);
                             this.props.onAddTrack(this.props.orientation);

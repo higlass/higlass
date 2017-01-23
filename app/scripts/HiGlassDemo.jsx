@@ -3,25 +3,26 @@ import React from 'react';
 //import d3 from 'd3';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
-import {MultiViewContainer} from './MultiViewContainer.jsx';
+import {HiGlassComponent} from './HiGlassComponent.jsx';
 import {HiGlassInput} from './HiGlassInput.jsx';
 import {Button, Panel, FormGroup, ControlLabel, FormControl, SafeAnchor} from 'react-bootstrap';
 import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
 
-export class HiGlassApp extends React.Component {
+export class HiGlassDemo extends React.Component {
     constructor(props) {
         super(props);
 
           this.views = {
               'editable': true,
               zoomFixed: false,
+              exportViewUrl: "//" + usedServer + "/viewconfs/",
               'views': [{
               uid: "aa",
               initialXDomain: [1200000000,1210000000],
               initialYDomain: [0,3000000000],
               autocompleteSource: "//" + usedServer + '/suggest/?d=dd&',
               genomePositionSearchBoxVisible: true,
-              chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.txt",
+              chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
               'tracks': {
             'top': [
                 /*
@@ -232,7 +233,7 @@ export class HiGlassApp extends React.Component {
                     className="higlass-display"
                     ref='displayPanel'
                 >
-                    <MultiViewContainer 
+                    <HiGlassComponent 
                         viewConfig={this.views} 
                     />
 

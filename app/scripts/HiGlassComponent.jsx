@@ -1,7 +1,9 @@
 import '../styles/MultiViewContainer.css';
 import React from 'react';
 import _ from 'lodash';
+import {select} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
+import {request,post} from 'd3-request';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
 import {Responsive, WidthProvider} from 'react-grid-layout';
@@ -20,10 +22,13 @@ import {positionedTracksToAllTracks} from './utils.js';
 import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
 import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT} from './config.js';
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
+import {ExportLinkModal} from './ExportLinkModal.jsx';
+import {createSymbolIcon} from './symbol.js';
+import {all as icons} from './icons.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-export class MultiViewContainer extends React.Component {
+export class HiGlassComponent extends React.Component {
     constructor(props) {
         super(props);
 
@@ -43,7 +48,7 @@ export class MultiViewContainer extends React.Component {
         this.topDiv = null;
 
         // event listeners for when the scales of a view change
-        // bypasses the React event framework because this needs 
+        // bypasses the React event framework because this needs
         // to be fast
         // indexed by view uid and then listener uid
         this.scalesChangedListeners = {};
@@ -65,7 +70,7 @@ export class MultiViewContainer extends React.Component {
         let localServer = "localhost:8000";
 
         //let usedServer = localServer;
-        //let usedServer = remoteServer; 
+        //let usedServer = remoteServer;
 
         this.viewConfig = this.props.viewConfig;
 
@@ -91,7 +96,9 @@ export class MultiViewContainer extends React.Component {
             //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
             //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
             mouseOverOverlayUid: null,
-            configMenuUid: null
+            configMenuUid: null,
+            exportLinkModalOpen: false,
+            exportLinkLocation: null
           }
     }
 
@@ -114,7 +121,7 @@ export class MultiViewContainer extends React.Component {
         this.pixiRenderer = PIXI.autoDetectRenderer(this.state.width,
                                         this.state.height,
                                         { view: this.canvasElement,
-                                          antialias: true, 
+                                          antialias: true,
                                           transparent: true,
                                           resolution: 2
                                         } )
@@ -138,20 +145,28 @@ export class MultiViewContainer extends React.Component {
                 width: this.element.clientWidth
             });
          }.bind(this));
-            
+
         this.handleDragStart();
         this.handleDragStop();
-        
+
         this.animate();
+        //this.handleExportViewsAsLink();
+
+        const baseSvg = select(this.element).append('svg').style('display', 'none');
+
+        // Add SVG Icons
+        icons.forEach(
+            icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox)
+        );
     }
 
     handleWindowFocused() {
-        /* 
+        /*
          * The window housing this view gained focus. That means the bounding boxes
          * may have changed so we need to redraw everything.
          *
          */
-    
+
 
     }
 
@@ -161,13 +176,11 @@ export class MultiViewContainer extends React.Component {
 
         if (!tracksInfoByType.hasOwnProperty(track.type)) {
             console.log("ERROR: track type not found:", track.type, " (check app/scripts/config.js for a list of defined track types)");
-            console.log('tracksInfoByType:', tracksInfoByType)
             return;
         }
 
         if (!track.options) {
             track.options = tracksInfoByType[track.type].defaultOptions;
-            console.log('added options for track:', track);
         }
     }
 
@@ -181,7 +194,7 @@ export class MultiViewContainer extends React.Component {
       currentBreakpoint: breakpoint
     });
   };
-  
+
   handleOverlayMouseEnter(uid) {
     this.setState({
         mouseOverOverlayUid: uid
@@ -197,7 +210,7 @@ export class MultiViewContainer extends React.Component {
   handleLockZoom(uid) {
       /**
        * We want to lock the zoom of this view to the zoom of another view.
-       * 
+       *
        * First we pick which other view we want to lock to.
        *
        * The we calculate the current zoom offset and center offset. The differences
@@ -230,7 +243,7 @@ export class MultiViewContainer extends React.Component {
        * of the view with uid viewUid is changed.
        *
        * @param viewUid: The uid of the view being observed
-       * @param listenerUid: The uid of the listener 
+       * @param listenerUid: The uid of the listener
        * @param eventHandler: The handler to be called when the scales change
        *    Event handler is called with parameters (xScale, yScale)
        */
@@ -253,7 +266,7 @@ export class MultiViewContainer extends React.Component {
        */
         if (this.scalesChangedListeners.hasOwnProperty(viewUid)) {
             let listeners = this.scalesChangedListeners[viewUid];
-            
+
             if (listeners.hasOwnProperty(listenerUid))
                 delete listeners[listenerUid];
         }
@@ -274,7 +287,7 @@ export class MultiViewContainer extends React.Component {
           if (this.scalesChangedListeners.hasOwnProperty(uid)) {
             dictValues(this.scalesChangedListeners[uid]).forEach(x => {
                 x(xScale, yScale);
-                
+
             });
           }
       }
@@ -397,7 +410,7 @@ export class MultiViewContainer extends React.Component {
     let lockGroupKeys = dictKeys(lockGroup);
 
     if (lockGroupKeys.length == 2) {
-        // there's only two items in this lock group so we need to 
+        // there's only two items in this lock group so we need to
         // remove them both (no point in having one view locked to itself)
         delete this.zoomLocks[lockGroupKeys[0]];
         delete this.zoomLocks[lockGroupKeys[1]];
@@ -421,9 +434,9 @@ export class MultiViewContainer extends React.Component {
           group1Members = [[uid1, scalesCenterAndK(this.xScales[uid1], this.yScales[uid1])]];
       } else {
           // view1 is already in a group
-          group1Members = dictItems(this.zoomLocks[uid1]).map(x => 
+          group1Members = dictItems(this.zoomLocks[uid1]).map(x =>
             // x is [uid, [centerX, centerY, k]]
-            [x[0], scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])] 
+            [x[0], scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])]
           )
       }
 
@@ -432,9 +445,9 @@ export class MultiViewContainer extends React.Component {
           group2Members = [[uid2, scalesCenterAndK(this.xScales[uid2], this.yScales[uid2])]];
       } else {
           // view2 is already in a group
-          group2Members = dictItems(this.zoomLocks[uid2]).map(x => 
+          group2Members = dictItems(this.zoomLocks[uid2]).map(x =>
             // x is [uid, [centerX, centerY, k]]
-            [x[0], scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])] 
+            [x[0], scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])]
           )
       }
 
@@ -462,7 +475,7 @@ export class MultiViewContainer extends React.Component {
 
       this.addZoomLock(uid1, uid2);
 
-        
+
         this.setState({
             chooseViewHandler: null
         });
@@ -511,7 +524,7 @@ export class MultiViewContainer extends React.Component {
 
         // set target center
         this.setCenters[uid1](sourceCenterX,sourceCenterY, targetK, false);
-        
+
 
         this.setState({
             chooseViewHandler: null
@@ -533,13 +546,13 @@ export class MultiViewContainer extends React.Component {
 
         // set target center
         this.setCenters[uid1](sourceCenterX,sourceCenterY, sourceK, false);
-        
+
 
         this.setState({
             chooseViewHandler: null
         });
   }
-      
+
 
   handleConfigMenuOpened(uid) {
       /**
@@ -630,7 +643,7 @@ export class MultiViewContainer extends React.Component {
     }
 
     handleDragStop() {
-        // wait for the CSS transitions to end before 
+        // wait for the CSS transitions to end before
         // turning off the dragging state
         this.clearDragTimeout();
         this.dragTimeout = setTimeout(() => {
@@ -644,14 +657,14 @@ export class MultiViewContainer extends React.Component {
   };
 
   onResize(layout, oldItem, newItem, placeholder, e, element) {
-      
+
   }
 
     fillInMinWidths(tracksDict) {
         /**
          * If tracks don't have specified dimensions, add in the known
          * minimums
-         * 
+         *
          * Operates on the tracks stored for this TiledPlot.
          */
         let horizontalLocations = ['top', 'bottom'];
@@ -715,7 +728,7 @@ export class MultiViewContainer extends React.Component {
       let defaultCenterHeight = 100;
       let defaultCenterWidth = 100;
       let currHeight = this.horizontalMargin * 2;
-      let currWidth = this.verticalMargin * 2;    //currWidth will generally be ignored because it will just be set to 
+      let currWidth = this.verticalMargin * 2;    //currWidth will generally be ignored because it will just be set to
                             //the width of the enclosing container
 
       if (view.tracks.top) {
@@ -807,14 +820,14 @@ export class MultiViewContainer extends React.Component {
         let minTrackHeight = 30;
         let elementWidth = this.element.clientWidth;
 
-        let {totalWidth, totalHeight, 
+        let {totalWidth, totalHeight,
             topHeight, bottomHeight,
             leftWidth, rightWidth,
             centerWidth, centerHeight} = this.calculateViewDimensions(view);
 
         if (view.searchBox)
             totalHeight += 30;
-        
+
         let heightGrid = Math.ceil(totalHeight / this.rowHeight);
 
         layout = {
@@ -839,8 +852,8 @@ export class MultiViewContainer extends React.Component {
             if (desiredHeight > availableHeight )
                 desiredHeight = availableHeight;
 
-            // stretch the view out 
-            layout.h = Math.ceil(desiredHeight / this.rowHeight); 
+            // stretch the view out
+            layout.h = Math.ceil(desiredHeight / this.rowHeight);
         }
         else
             layout.h = heightGrid;
@@ -859,7 +872,7 @@ export class MultiViewContainer extends React.Component {
        *
        * @param {uid} This view's identifier
        */
-    
+
       // check if this is the only view
       // if it is, don't close it (display an error message)
       if (dictValues(this.state.views).length == 1) {
@@ -880,7 +893,7 @@ export class MultiViewContainer extends React.Component {
          * We're adding a new dataset to an existing track
          *
          * @param newTrack: The new track to be added.
-         * @param position: Where the new series should be placed. 
+         * @param position: Where the new series should be placed.
          *  (This could also be inferred from the hostTrack, but since
          *  we already have it, we might as well use it)
          * @param hostTrack: The track that will host the new series.
@@ -941,7 +954,7 @@ export class MultiViewContainer extends React.Component {
         if (position == 'left' || position == 'top') {
             // if we're adding a track on the left or the top, we want the
             // new track to appear at the begginning of the track list
-            tracks[position].unshift(newTrack); 
+            tracks[position].unshift(newTrack);
 
         } else if (position == 'center') {
             // we're going to have to either overlay the existing track with a new one
@@ -966,7 +979,7 @@ export class MultiViewContainer extends React.Component {
                     let newCombined = {
                         uid: slugid.nice(),
                         type: 'combined',
-                        contents: [ 
+                        contents: [
                             tracks['center'][0],
                             newTrack ]
                     }
@@ -1028,7 +1041,7 @@ export class MultiViewContainer extends React.Component {
 
             let locked = false
 
-            if (viewUid in this.zoomLocks) 
+            if (viewUid in this.zoomLocks)
                 locked = fromView in this.zoomLocks[viewUid];
 
             if (locked)
@@ -1045,15 +1058,50 @@ export class MultiViewContainer extends React.Component {
       return;
   }
 
+  getViewsAsString() {
+    console.log('views:', this.state.views);
+    let newJson = JSON.parse(JSON.stringify(this.props.viewConfig));
+    newJson.views = dictItems(this.state.views).map(k => {
+        k[1].uid = k[0];
+        return k[1];
+    });
+
+
+    let data = JSON.stringify(newJson);
+    return data;
+  }
+
   handleExportViewAsJSON() {
-    let wholeJSON = dictValues(this.state.views);
-    let data = JSON.stringify(wholeJSON,null,2);
+    let data = this.getViewsAsString();
 
     var a = document.createElement("a");
     var file = new Blob([data], {type: 'text/json'});
     a.href = URL.createObjectURL(file);
     a.download = name;
     a.click();
+  }
+
+  handleExportViewsAsLink() {
+    let data = this.getViewsAsString();
+
+    this.setState({
+        exportLinkModalOpen: true,
+        exportLinkLocation: null
+    });
+
+    request(this.props.viewConfig.exportViewUrl)
+        .header("X-Requested-With", "XMLHttpRequest")
+        .header("Content-Type", "application/json")
+        .post(data, (error, response) => {
+            if (response) {
+                let content = JSON.parse(response.response);
+                this.setState({
+                    exportLinkLocation: this.props.viewConfig.exportViewUrl + "?d=" + content.uid
+                });
+            } else {
+                console.log('error:', error);
+            }
+        })
   }
 
   handleAddView() {
@@ -1100,7 +1148,7 @@ export class MultiViewContainer extends React.Component {
 
       /*
       this.state
-      freshViewConfig.views.push(newView); 
+      freshViewConfig.views.push(newView);
       let newViewConfigText = JSON.stringify(freshViewConfig);
 
       this.props.onNewConfig(newViewConfigText);
@@ -1126,6 +1174,19 @@ export class MultiViewContainer extends React.Component {
 
         return track;
   }
+
+    addUidsToTracks(allTracks) {
+        /**
+         * Add track names to the ones that have known names in config.js
+         */
+
+        allTracks.forEach(t => {
+            if (!t.uid)
+                t.uid = slugid.nice();
+        });
+
+        return allTracks;
+    }
 
     addNamesToTracks(allTracks) {
         /**
@@ -1172,15 +1233,17 @@ export class MultiViewContainer extends React.Component {
     processViewConfig(viewConfig) {
         let views = viewConfig.views;
         let viewsByUid = {};
+
         views.forEach(v => {
             this.fillInMinWidths(v.tracks);
-            viewsByUid[v.uid] = v;     
+            viewsByUid[v.uid] = v;
 
             // Add names to all the tracks
             let looseTracks = positionedTracksToAllTracks(v.tracks);
 
             // give tracks their default names (e.g. 'type': 'top-axis'
             // will get a name of 'Top Axis'
+            looseTracks = this.addUidsToTracks(looseTracks);
             looseTracks = this.addNamesToTracks(looseTracks);
 
             looseTracks.forEach(t => this.addCallbacks(v.uid, t));
@@ -1225,7 +1288,7 @@ export class MultiViewContainer extends React.Component {
         display: 'flex',
         flexDirection: 'column'
     }
-    let tiledAreas = (<div 
+    let tiledAreas = (<div
                             ref={(c) => {this.tiledAreaDiv = c; }}
                             style={tiledAreaStyle}
                       />);
@@ -1248,6 +1311,7 @@ export class MultiViewContainer extends React.Component {
                                     onProjectViewport={e => this.handleProjectViewport(this.state.configMenuUid)}
                                     onTogglePositionSearchBox={e => this.handleTogglePositionSearchBox(this.state.configMenuUid)}
                                     onExportViewAsJSON={e => this.handleExportViewAsJSON() }
+                                    onExportViewAsLink={e => this.handleExportViewsAsLink() }
                                 />
                             </ContextMenuContainer>
                         </PopupMenu>);
@@ -1263,8 +1327,8 @@ export class MultiViewContainer extends React.Component {
 
                 // only show the add track menu for the tiled plot it was selected
                 // for
-                let addTrackPositionMenuPosition = 
-                    view.uid == this.state.addTrackPositionMenuUid ? 
+                let addTrackPositionMenuPosition =
+                    view.uid == this.state.addTrackPositionMenuUid ?
                         this.state.addTrackPositionMenuPosition :
                             null;
 
@@ -1274,7 +1338,7 @@ export class MultiViewContainer extends React.Component {
 
                     if (this.state.mouseOverOverlayUid == view.uid)
                         background = 'green';
-                    overlay = (<div 
+                    overlay = (<div
                                className='tiled-plot-overlay'
                                style={{
                                    position: 'absolute',
@@ -1292,7 +1356,7 @@ export class MultiViewContainer extends React.Component {
                 let tiledPlot = (
                                 <TiledPlot
                                     key={'tp' + view.uid}
-                                    parentMounted={this.state.mounted} 
+                                    parentMounted={this.state.mounted}
                                      svgElement={this.state.svgElement}
                                      canvasElement={this.state.canvasElement}
                                      pixiStage={this.pixiStage}
@@ -1320,7 +1384,7 @@ export class MultiViewContainer extends React.Component {
                 let genomePositionSearchBoxUid = slugid.nice();
 
                 let genomePositionSearchBox = view.genomePositionSearchBoxVisible ?
-                    (<GenomePositionSearchBox 
+                    (<GenomePositionSearchBox
                         key={'gpsb' + view.uid}
                         autocompleteSource={view.autocompleteSource}
                         registerViewportChangedListener = {listener => this.addScalesChangedListener(view.uid, view.uid, listener)}
@@ -1329,45 +1393,50 @@ export class MultiViewContainer extends React.Component {
                         chromInfoPath={view.chromInfoPath}
                      />) : null;
                 //genomePositionSearchBox = null;
-                
-                let multiTrackHeader = this.props.viewConfig.editable ? 
+
+                let multiTrackHeader = this.props.viewConfig.editable ?
                     (
-                            <div 
+                            <div
                                 className="multitrack-header"
-                                style={{"width": this.width, "minHeight": 16, "position": "relative", 
+                                style={{"width": this.width, "minHeight": 16, "position": "relative",
                                     "border": "solid 1px", "marginBottom": 4, "opacity": 0.6,
                                     verticalAlign: "middle",
                                     lineHeight: "16px",
-                                maxHeight: 16}} 
+                                maxHeight: 16}}
                             >
                                 <span style={{font: "11pt sans-serif"}}>{"Id: " + view.uid.slice(0,2)}
                                 </span>
-                                <img 
+
+                                <svg
                                     onClick={ e => this.handleConfigMenuOpened(view.uid) }
-                                    src="images/cog.svg" 
                                     ref={c => this.configImg[view.uid] = c}
                                     className={'multiview-config-img'}
-                                    width="10px" 
-                                />
+                                    width="10px"
+                                    height="10px">
+                                    <use href="#cog"></use>
+                                </svg>
 
-                                <img 
+                                <svg
                                     onClick={ e => this.handleAddTrackPositionMenuOpened(view.uid) }
-                                    src="images/plus.svg" 
                                     ref={c => this.plusImg[view.uid] = c}
                                     className={'multiview-add-track-img'}
-                                    width="10px" 
-                                />
+                                    width="10px"
+                                    height="10px">
+                                    <use href="#plus"></use>
+                                </svg>
 
-                                <img 
+                                <svg
                                     onClick={() => { this.handleCloseView(view.uid)}}
-                                    src="images/cross.svg" 
+                                    ref={c => this.configImg[view.uid] = c}
                                     className={'multiview-close-img'}
-                                    width="10px" 
-                                />
+                                    width="10px"
+                                    height="10px">
+                                    <use href="#cross"></use>
+                                </svg>
                             </div>
                     ) : null; // this.editable ?
 
-                return (<div 
+                return (<div
                             data-grid={layout}
                             key={itemUid}
                             ref={(c) => {this.tiledAreaDiv = c; }}
@@ -1380,51 +1449,66 @@ export class MultiViewContainer extends React.Component {
                             {overlay}
                         </div>)
 
-            }.bind(this))   //end tiledAreas = 
+            }.bind(this))   //end tiledAreas =
     }
 
     let viewAddButton = this.props.viewConfig.editable ? (
-            <div 
-                className="view-menu"
-                style={{"width": 32, "height": 26, "position": "relative", "marginBottom": 4, "marginRight": 12,  "opacity": 0.6, "float": "right"}} 
-            >
-                    <img 
-                        onClick={this.handleAddView.bind(this)}
-                        src="images/plus.svg" 
-                        className={'multiview-add-img'}
-                    />
-            </div>
+        <div
+            className="view-menu"
+            style={{"width": 32, "height": 26, "position": "relative", "marginBottom": 4, "marginRight": 12,  "opacity": 0.6, "float": "right"}}>
+            <svg
+                onClick={this.handleAddView.bind(this)}
+                className={'multiview-add-img'}
+                width="10px"
+                height="10px">
+                <use href="#plus"></use>
+            </svg>
+        </div>
     ) : null;  //this.editable ?
 
+    let exportLinkModal = this.state.exportLinkModalOpen ?
+        (<ExportLinkModal
+            linkLocation={this.state.exportLinkLocation}
+            onDone={() => this.setState({exportLinkModalOpen: false})}
+            width={this.state.width}
+            height={this.state.height}
+         />)
+        : null;
+
     return (
-      <div 
+      <div
         ref={(c) => this.topDiv = c}
         key={this.uid}
         style={{position: "relative"}}
       >
-        
-        <canvas 
+
+        <canvas
             key={this.uid}
             ref={(c) => {
-                this.canvasElement = c}} 
+                this.canvasElement = c}}
             style={{
                 position: "absolute"
             }}
         />
         <div
             className="drawing-surface"
-            style={{position: "absolute", 
+            ref={(c) => this.divDrawingSurface=c}
+            style={{
+                    position: "absolute",
                     background: 'yellow',
-                    opacity: 0.00
+                    opacity: 0.00,
             }}
-        />
+        >
+        </div>
+
+
         <ResponsiveReactGridLayout
           {...this.props}
           draggableHandle={'.multitrack-header'}
           isDraggable={this.props.viewConfig.editable}
           isResizable={this.props.viewConfig.editable}
           margin={this.props.viewConfig.editable ? [10,10] : [0,0]}
-          measureBeforeMount={false}
+          measureBeforeMoun={false}
           onBreakpointChange={this.onBreakpointChange.bind(this)}
           onDragStart={this.handleDragStart.bind(this)}
           onDragStop={this.handleDragStop.bind(this)}
@@ -1447,8 +1531,8 @@ export class MultiViewContainer extends React.Component {
         </div>
 
         {configMenu}
-        <svg 
-            ref={(c) => this.svgElement = c} 
+        <svg
+            ref={(c) => this.svgElement = c}
             style={{
                 position: "absolute",
                 width: this.state.width,
@@ -1458,6 +1542,7 @@ export class MultiViewContainer extends React.Component {
                 pointerEvents: 'none'
             }}
         />
+        {exportLinkModal}
       </div>
     );
   }
@@ -1468,11 +1553,11 @@ export class MultiViewContainer extends React.Component {
 }
 
 
-MultiViewContainer.defaultProps = {
+HiGlassComponent.defaultProps = {
     className: "layout",
     cols: {lg: 6, md: 6, sm: 6, xs: 6, xxs: 6}
   }
-MultiViewContainer.propTypes = {
+HiGlassComponent.propTypes = {
     children: React.PropTypes.array,
     viewConfig: React.PropTypes.object,
     onNewConfig: React.PropTypes.func

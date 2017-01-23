@@ -6,7 +6,7 @@ module.exports = {
   context: __dirname + '/app',
   entry: {
       playground: ['./scripts/playground.jsx'],
-      main: ['./scripts/main.jsx'],
+      hglib: ['./scripts/hglib.jsx'],
       worker: ['./scripts/worker.js']
   },
   devtool: "cheap-source-map",
@@ -39,8 +39,11 @@ module.exports = {
         }
     ],
     externals: {
-
-               },
+        /*
+        'react': 'React',
+        'react-dom': 'ReactDOM'
+        */
+    },
     resolve: {
       extensions: ['.js', '.jsx']
     }
