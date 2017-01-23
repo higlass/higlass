@@ -25,3 +25,10 @@
     position: absolute;
     width: 20px;
 }
+
+.multiview-copy-img {
+    right: 47px;
+    top: 2px;
+    position: absolute;
+    width: 10px;
+}

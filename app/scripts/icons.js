@@ -1,3 +1,7 @@
+export const COPY_CONTENT = {
+
+};
+
 export const COG = {
   id: 'cog',
   paths: [
