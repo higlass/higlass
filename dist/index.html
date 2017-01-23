@@ -32,60 +32,188 @@
           //var usedServer = localServer;
             var usedServer = remoteServer;
 
-          var viewConfig = {
-              'editable': true,
-              zoomFixed: false,
-              trackSourceServers: [remoteServer],
-              exportViewUrl: "//" + usedServer + "/viewconfs/",
-              'views': [{
-              uid: "aa",
-              initialXDomain: [1200000000,1210000000],
-              initialYDomain: [0,3000000000],
-              autocompleteSource: "//" + usedServer + '/suggest/?d=dd&',
-              genomePositionSearchBoxVisible: true,
-              chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-              'tracks': {
-            'top': [
-                /*
-                {'uid': type:'top-axis'}
-            ,
-            */
-
-                    {
-                        type:'horizontal-gene-annotations',
-                        height: 60,
-                      tilesetUid: 'dd',
-                      server: usedServer 
-                    }
-                      ,
-            ],
-            'left': [
-                    {
-                        type:'vertical-gene-annotations',
-                        width: 60,
-                      tilesetUid: 'dd',
-                      server: usedServer 
-                    }
-            ],
-            'center': [
-                {   
-                    uid: 'c1',
-                    type: 'combined',
-                    height: 200,
-                    contents: 
-                    [
-
-                        { 
-                            'uid': 'hm1',
-                           'server': usedServer ,
-                          'tilesetUid': 'aa',
-                          'type': 'heatmap'
-                        }
-                    ]
-                }
-            ]}
-            } ]
+            var viewConfig = {
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "52.45.229.11"
+  ],
+  "exportViewUrl": "//52.45.229.11/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        1200000000,
+        1210000000
+      ],
+      "initialYDomain": [
+        0,
+        3000000000
+      ],
+      "autocompleteSource": "//52.45.229.11/suggest/?d=dd&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "type": "horizontal-gene-annotations",
+            "height": 60,
+            "tilesetUid": "dd",
+            "server": "52.45.229.11",
+            "position": "top",
+            "uid": "D00ffLKHSGqwp4r64sSU7A",
+            "name": "Gene Annotations"
           }
+        ],
+        "left": [
+          {
+            "type": "vertical-gene-annotations",
+            "width": 60,
+            "tilesetUid": "dd",
+            "server": "52.45.229.11",
+            "position": "left",
+            "uid": "SVYNEiMITAe_K60zCH_7vQ",
+            "name": "Gene Annotations"
+          }
+        ],
+        "center": [
+          {
+            "uid": "c1",
+            "type": "combined",
+            "height": 200,
+            "contents": [
+              {
+                "uid": "hm1",
+                "server": "52.45.229.11",
+                "tilesetUid": "aa",
+                "type": "heatmap",
+                "position": "center",
+                "options": {
+                  "colorRange": [
+                    "#FFFFFF",
+                    "#F8E71C",
+                    "#F5A623",
+                    "#D0021B"
+                  ],
+                  "maxZoom": null
+                },
+                "name": "Dixon2015-H1_TB-HindIII-allreps-filtered.10kb.multires.cool"
+              }
+            ],
+            "position": "center"
+          }
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 6,
+        "h": 10,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      }
+    },
+    {
+      "uid": "bs_nGS80R-GZvOOabyCRyw",
+      "initialXDomain": [
+        1200000000,
+        1210000000
+      ],
+      "initialYDomain": [
+        0,
+        3000000000
+      ],
+      "autocompleteSource": "//52.45.229.11/suggest/?d=dd&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "type": "horizontal-gene-annotations",
+            "height": 60,
+            "tilesetUid": "dd",
+            "server": "52.45.229.11",
+            "position": "top",
+            "uid": "D00ffLKHSGqwp4r64sSU7A",
+            "name": "Gene Annotations"
+          }
+        ],
+        "left": [
+          {
+            "type": "vertical-gene-annotations",
+            "width": 60,
+            "tilesetUid": "dd",
+            "server": "52.45.229.11",
+            "position": "left",
+            "uid": "SVYNEiMITAe_K60zCH_7vQ",
+            "name": "Gene Annotations"
+          }
+        ],
+        "center": [
+          {
+            "uid": "c1",
+            "type": "combined",
+            "height": 200,
+            "contents": [
+              {
+                "uid": "hm1",
+                "server": "52.45.229.11",
+                "tilesetUid": "aa",
+                "type": "heatmap",
+                "position": "center",
+                "options": {
+                  "colorRange": [
+                    "#FFFFFF",
+                    "#F8E71C",
+                    "#F5A623",
+                    "#D0021B"
+                  ],
+                  "maxZoom": null
+                },
+                "name": "Dixon2015-H1_TB-HindIII-allreps-filtered.10kb.multires.cool"
+              }
+            ],
+            "position": "center"
+          }
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 6,
+        "h": 10,
+        "x": 0,
+        "y": 10,
+        "i": "bs_nGS80R-GZvOOabyCRyw",
+        "moved": false,
+        "static": false
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {
+      "aa": "IztLO5l2RgqZ0o7O3Yuzfg",
+      "bs_nGS80R-GZvOOabyCRyw": "IztLO5l2RgqZ0o7O3Yuzfg"
+    },
+    "zoomLocksDict": {
+      "IztLO5l2RgqZ0o7O3Yuzfg": {
+        "aa": [
+          1205000000,
+          1205000000,
+          16863.406408071518
+        ],
+        "bs_nGS80R-GZvOOabyCRyw": [
+          1205000000,
+          1205000000,
+          16863.406408071518
+        ]
+      }
+    }
+  }
+};
 
     hglib.HgComponent(document.getElementById('development-demo'), viewConfig);
 
