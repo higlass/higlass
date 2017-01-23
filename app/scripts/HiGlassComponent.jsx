@@ -61,6 +61,7 @@ export class HiGlassComponent extends React.Component {
 
         this.plusImg = {};
         this.configImg = {};
+        this.copyImg = {};
 
         this.horizontalMargin = 5;
         this.verticalMargin = 5;
@@ -1106,14 +1107,14 @@ export class HiGlassComponent extends React.Component {
         })
   }
 
-  handleAddView() {
+  handleAddView(view) {
       /**
        * User clicked on the "Add View" button. We'll duplicate the last
        * view.
        */
 
       let views = dictValues(this.state.views);
-      let lastView = views[views.length-1];
+      let lastView = view;
 
       let maxY = 0;
 
@@ -1409,6 +1410,15 @@ export class HiGlassComponent extends React.Component {
                             >
                                 <span style={{font: "11pt sans-serif"}}>{"Id: " + view.uid.slice(0,2)}
                                 </span>
+
+                                <svg
+                                    onClick={ e => this.handleAddView(view) }
+                                    ref={c => this.copyImg[view.uid] = c}
+                                    className={'multiview-copy-img'}
+                                    width="10px"
+                                    height="10px">
+                                    <use href="#copy"></use>
+                                </svg>
 
                                 <svg
                                     onClick={ e => this.handleConfigMenuOpened(view.uid) }
