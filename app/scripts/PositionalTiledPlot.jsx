@@ -50,7 +50,6 @@ class TrackArea extends React.Component {
                                 this.props.onCloseTrackMenuOpened(this.props.uid, bbox);
                             }}
                             ref={(c) => { this.imgClose = c; }}
-                            onClick={ e => this.handleConfigMenuOpened(view.uid) }
                             className="no-zoom"
                             style={this.getCloseImgStyle()}
                             width="10px"

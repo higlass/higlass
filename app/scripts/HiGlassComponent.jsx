@@ -784,6 +784,8 @@ export class HiGlassComponent extends React.Component {
       let leftWidth = 0;
       let rightWidth = 0;
 
+      console.log('centerWidth:', centerWidth);
+
       if ('top' in view.tracks)
         topHeight = view.tracks['top']
             .map((x) => { return x.height ? x.height : defaultHorizontalHeight; })
