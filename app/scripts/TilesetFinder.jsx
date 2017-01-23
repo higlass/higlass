@@ -5,7 +5,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 import {tracksInfo,localTracks} from './config.js'
-import {usedServer} from './config.js'
 
 import {Form, Row,Col, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
 
@@ -32,7 +31,6 @@ export class TilesetFinder extends React.Component {
             filter: ''
         }
 
-        this.servers = [usedServer]
         this.requestTilesetLists();
     }
 
@@ -89,7 +87,7 @@ export class TilesetFinder extends React.Component {
                                 .map(x => x.datatype))
         let datatypesQuery = [...datatypes].map(x => "dt=" + x).join('&')
 
-        this.servers.forEach( sourceServer => {
+        this.props.trackSourceServers.forEach( sourceServer => {
             json('//' + sourceServer + '/tilesets/?' + datatypesQuery, 
                  function(error, data) {
                     if (error) {

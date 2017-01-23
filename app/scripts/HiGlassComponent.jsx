@@ -1379,6 +1379,7 @@ export class HiGlassComponent extends React.Component {
                                      onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
                                      zoomable={!this.props.viewConfig.zoomFixed}
                                      editable={this.props.viewConfig.editable}
+                                     trackSourceServers={this.props.viewConfig.trackSourceServers}
                                 >
 
                                 </TiledPlot>)
