@@ -24,7 +24,6 @@ import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT} from './config.js';
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
 import {ExportLinkModal} from './ExportLinkModal.jsx';
 import {createSymbolIcon} from './symbol.js';
-import {all as icons} from './icons.js';
 
 import crossImg from 'file!../images/cross.svg';
 import cogImg from 'file!../images/cog.svg';
@@ -158,11 +157,6 @@ export class HiGlassComponent extends React.Component {
         //this.handleExportViewsAsLink();
 
         const baseSvg = select(this.element).append('svg').style('display', 'none');
-
-        // Add SVG Icons
-        icons.forEach(
-            icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox)
-        );
     }
 
     handleWindowFocused() {
