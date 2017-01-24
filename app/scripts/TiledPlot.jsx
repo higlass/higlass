@@ -165,9 +165,14 @@ export class TiledPlot extends React.Component {
          *                              its name.
          */
         let track = getTrackByUid(this.props.tracks, trackUid);
-        track.name = tilesetInfo.name;
+
+        if (!track.options)
+            track.options = {}
+
+        track.options.name = tilesetInfo.name;
 
         /*
+        console.log('track:', track);
         this.setState({
             tracks: this.state.tracks
         });
