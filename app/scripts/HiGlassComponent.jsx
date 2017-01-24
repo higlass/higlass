@@ -35,8 +35,6 @@ export class HiGlassComponent extends React.Component {
         this.minHorizontalHeight = 20;
         this.minVerticalWidth = 20;
 
-        this.tempCanvas = document.createElement('canvas');
-
         this.uid = slugid.nice();
         this.yPositionOffset = 0;
         this.rowHeight = 40;
@@ -122,7 +120,8 @@ export class HiGlassComponent extends React.Component {
                                         { view: this.canvasElement,
                                           antialias: true,
                                           transparent: true,
-                                          resolution: 2
+                                          resolution: 2,
+                                          autoResize: true
                                         } )
 
         //PIXI.RESOLUTION=2;
@@ -134,16 +133,6 @@ export class HiGlassComponent extends React.Component {
             svgElement: this.svgElement,
             canvasElement: this.canvasElement
         });
-        ElementQueries.listen();
-        new ResizeSensor(this.element, function() {
-            //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
-            let heightOffset = 0;
-
-            this.setState({
-                height: this.element.clientHeight,
-                width: this.element.clientWidth
-            });
-         }.bind(this));
 
         this.handleDragStart();
         this.handleDragStop();
@@ -421,10 +410,13 @@ export class HiGlassComponent extends React.Component {
         return;
     } else {
         // delete this view from the zoomLockGroup
-        delete this.zoomLocks[uid][uid];
+        if (this.zoomLocks[uid])
+            if (this.zoomLocks[uid][uid])
+                delete this.zoomLocks[uid][uid];
 
         // remove the handler
-        delete this.zoomLocks[uid];
+        if (this.zoomLocks[uid])
+            delete this.zoomLocks[uid];
     }
   }
 
@@ -627,18 +619,21 @@ export class HiGlassComponent extends React.Component {
 
   refreshView() {
     this.clearDragTimeout();
+    console.log('refreshing view');
     this.setState({
         dragging: true
     })
 
     this.clearDragTimeout();
     this.dragTimeout = setTimeout(() => {
+        console.log('drag timeout ended')
         this.setState({
             dragging: false
         })}, SHORT_DRAG_TIMEOUT);
   }
 
     handleDragStart(layout, oldItem, newItem, placeholder, e, element) {
+        console.log('changing dragging state');
         this.clearDragTimeout();
         this.setState({
             dragging: true
@@ -649,6 +644,7 @@ export class HiGlassComponent extends React.Component {
         // wait for the CSS transitions to end before
         // turning off the dragging state
         this.clearDragTimeout();
+        console.log('drag stopped')
         this.dragTimeout = setTimeout(() => {
             this.setState({
                 dragging: false
@@ -1112,7 +1108,11 @@ export class HiGlassComponent extends React.Component {
     console.log('views:', this.state.views);
     let newJson = JSON.parse(JSON.stringify(this.props.viewConfig));
     newJson.views = dictItems(this.state.views).map(k => {
+        // k[1] is the actual view, k[0] is its uid
+        // it is so, because that is what dictItems returns
         k[1].uid = k[0];
+        k[1].initialXDomain = this.xScales[k[1].uid].domain();
+        k[1].initialYDomain = this.yScales[k[1].uid].domain();
         return k[1];
     });
 
@@ -1134,6 +1134,9 @@ export class HiGlassComponent extends React.Component {
 
   handleExportViewsAsLink() {
     let data = this.getViewsAsString();
+
+    this.width = this.element.clientWidth;
+    this.height = this.element.clientHeight;
 
     this.setState({
         exportLinkModalOpen: true,
@@ -1322,12 +1325,15 @@ export class HiGlassComponent extends React.Component {
     }
 
   componentWillUpdate(nextProps, nextState) {
-        this.tempCanvas.width = nextState.width;
-        this.tempCanvas.height = nextState.height;
+        let width = this.element.clientWidth;
+        let height = this.element.clientHeight;
 
-        this.pixiRenderer.resize(this.state.width, this.state.height);
-        this.pixiRenderer.view.style.width = this.state.width + 'px';
-        this.pixiRenderer.view.style.height = this.state.height + 'px';
+
+        /*
+        this.pixiRenderer.resize(width, height);
+        this.pixiRenderer.view.style.width = width + 'px';
+        this.pixiRenderer.view.style.height = height + 'px';
+        */
 
         this.pixiRenderer.render(this.pixiStage);
 
@@ -1346,6 +1352,8 @@ export class HiGlassComponent extends React.Component {
                       />);
 
     let configMenu = null;
+
+    console.log('hgc rendering...');
 
     if (this.state.configMenuUid) {
         configMenu = (<PopupMenu
@@ -1514,26 +1522,12 @@ export class HiGlassComponent extends React.Component {
             }.bind(this))   //end tiledAreas =
     }
 
-    let viewAddButton = this.props.viewConfig.editable ? (
-        <div
-            className="view-menu"
-            style={{"width": 32, "height": 26, "position": "relative", "marginBottom": 4, "marginRight": 12,  "opacity": 0.6, "float": "right"}}>
-            <svg
-                onClick={this.handleAddView.bind(this)}
-                className={'multiview-add-img'}
-                width="10px"
-                height="10px">
-                <use href="#plus"></use>
-            </svg>
-        </div>
-    ) : null;  //this.editable ?
-
     let exportLinkModal = this.state.exportLinkModalOpen ?
         (<ExportLinkModal
             linkLocation={this.state.exportLinkLocation}
             onDone={() => this.setState({exportLinkModalOpen: false})}
-            width={this.state.width}
-            height={this.state.height}
+            width={this.width}
+            height={this.height}
          />)
         : null;
 
@@ -1549,7 +1543,9 @@ export class HiGlassComponent extends React.Component {
             ref={(c) => {
                 this.canvasElement = c}}
             style={{
-                position: "absolute"
+                position: "absolute",
+                width: "100%",
+                height: "100%"
             }}
         />
         <div
@@ -1588,17 +1584,14 @@ export class HiGlassComponent extends React.Component {
         >
         { tiledAreas }
         </ResponsiveReactGridLayout>
-        <div>
-            {viewAddButton}
-        </div>
 
         {configMenu}
         <svg
             ref={(c) => this.svgElement = c}
             style={{
                 position: "absolute",
-                width: this.state.width,
-                height: this.state.height,
+                width: "100%",
+                height: "100%",
                 left: 0,
                 top: 0,
                 pointerEvents: 'none'
