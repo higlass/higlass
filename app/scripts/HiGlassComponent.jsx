@@ -884,6 +884,10 @@ export class HiGlassComponent extends React.Component {
             return;
       }
 
+      // if this view was zoom locked to another, we need to unlock it
+      this.handleUnlockZoom(uid);
+
+
       delete this.state.views[uid];
 
       // might want to notify the views that they're beig closed

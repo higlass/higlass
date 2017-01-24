@@ -100,6 +100,7 @@ export class TiledPixiTrack extends PixiTrack {
         // fetch the tiles that should be visible but haven't been fetched
         // and aren't in the process of being fetched
         let toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId))
+            console.log('toFetch:', toFetch, this.fetching);
 
         for (let i = 0; i < toFetch.length; i++)
             this.fetching.add(toFetch[i].remoteId);
@@ -171,6 +172,9 @@ export class TiledPixiTrack extends PixiTrack {
     zoomed(newXScale, newYScale, k=1, tx=0, ty=0) {
         this.xScale(newXScale);
         this.yScale(newYScale);
+
+        console.log('newXScale', newXScale.domain(),
+                    'newYScale', newYScale.domain());
 
         this.refreshTilesDebounced();
 

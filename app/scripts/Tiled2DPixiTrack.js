@@ -136,6 +136,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
 
     zoomed(newXScale, newYScale, k, tx, ty) {
         super.zoomed(newXScale, newYScale);
+
         /*
         let scaleX = (newXScale(1) - newXScale(0))/ (this._refXScale(1) - this._refXScale(0));
         let scaleY = (newYScale(1) - newYScale(0))/ (this._refYScale(1) - this._refYScale(0));
