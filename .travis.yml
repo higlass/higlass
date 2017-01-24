@@ -10,7 +10,6 @@ branches:
   - "/^v.*$/"
 
 before_script:
-  - npm install --quiet -g gulp
   - npm install
 
 before_deploy:
@@ -20,5 +19,6 @@ deploy:
   - provider: releases
     file: "dist.zip"
     skip_cleanup: true
+    api_key: "GITHUB OAUTH TOKEN"
     on:
       tags: true

@@ -83,7 +83,7 @@ export class PixiTrack extends Track {
         }
 
         this.labelText.text = this.options.name;
-        this.labelText.opacity = 1;
+        this.labelText.visible = true;
 
         if (this.flipText)
             this.labelText.scale.x = -1;
@@ -119,6 +119,8 @@ export class PixiTrack extends Track {
             // we set the anchor to 0.5 so that we can flip the text if the track
             // is rotated but that means we have to adjust its position
             this.labelText.x -= this.labelText.width / 2;
+        } else {
+            this.labelText.visible = false;
         }
 
         /*
