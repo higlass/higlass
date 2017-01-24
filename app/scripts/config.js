@@ -1,3 +1,5 @@
+import {HeatmapOptions} from './HeatmapOptions.jsx';
+
 let localServer = "localhost:8000";
 let remoteServer = "52.45.229.11";
 //export const usedServer = localServer;
@@ -14,7 +16,10 @@ export const optionsInfo = {
         }
     },
     colorRange: {
-        name: "Color Range"
+        name: "Color Range",
+        componentPickers: {
+            'heatmap': HeatmapOptions
+        }
     }
 }
 

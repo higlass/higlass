@@ -74,25 +74,37 @@ export class SeriesListMenu extends ContextMenuContainer {
                    menuItems[optionType] = {'name': optionsInfo[optionType].name}
                    console.log('oi:', optionsInfo[optionType].inlineOptions);
 
-                   for (let inlineOptionValue in optionsInfo[optionType].inlineOptions) {
-                       console.log('inlineOptionValue', inlineOptionValue);
+                   if (optionsInfo[optionType].inlineOptions) {
+                       // we can simply select this option from the menu
+                       for (let inlineOptionValue in optionsInfo[optionType].inlineOptions) {
+                           console.log('inlineOptionValue', inlineOptionValue);
 
-                       let inlineOption = optionsInfo[optionType].inlineOptions[inlineOptionValue];
-                       console.log('inlineOption:', inlineOption);
+                           let inlineOption = optionsInfo[optionType].inlineOptions[inlineOptionValue];
+                           console.log('inlineOption:', inlineOption);
 
-                       if (!menuItems[optionType].children)
-                           menuItems[optionType].children = {};
+                           if (!menuItems[optionType].children)
+                               menuItems[optionType].children = {};
 
-                       menuItems[optionType].children[inlineOptionValue] = {
-                           name: inlineOption.name,
-                           handler: () => { 
-                               console.log('handling');
-                               track.options[optionType] = inlineOptionValue;
-                               this.props.onTrackOptionsChanged(track.uid, track.options);
-                               this.props.closeMenu();
-                           },
-                           value: inlineOptionValue
+                           menuItems[optionType].children[inlineOptionValue] = {
+                               name: inlineOption.name,
+                               handler: () => { 
+                                   console.log('handling');
+                                   track.options[optionType] = inlineOptionValue;
+                                   this.props.onTrackOptionsChanged(track.uid, track.options);
+                                   this.props.closeMenu();
+                               },
+                               value: inlineOptionValue
+                           }
                        }
+                   } else if (optionsInfo[optionType].componentPickers && 
+                              optionsInfo[optionType].componentPickers[track.type]) {
+                       // there's an option picker registered
+                       console.log('setting handler');
+                        menuItems[optionType].handler = () => {
+                            console.log('pick color value', track.type);
+                            this.props.onConfigureTrack(track, optionsInfo[optionType].componentPickers[track.type]);
+                            this.props.closeMenu();
+                        }
                    }
                 }
             }

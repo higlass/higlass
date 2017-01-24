@@ -103,7 +103,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                         onAddSeries={this.props.onAddSeries}
                         track={selectedTrack}
                         onCloseTrack={() => this.props.onCloseTrack(this.state.submenuShown.uid)}
-                        onConfigureTrack={() => this.props.onConfigureTrack(this.state.submenuShown.uid)}
+                        onConfigureTrack={this.props.onConfigureTrack}
                         orientation={this.state.orientation}
                         position={position}
                         series={this.state.submenuShown}

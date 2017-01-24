@@ -50,8 +50,7 @@ export class TiledPlot extends React.Component {
             addTrackVisible: false,
             addTrackPosition: "top",
             mouseOverOverlayUid: null,
-           // trackOptionsUid: 'hm1'
-            trackOptionsUid: null
+            trackOptions: null
         }
 
         // these dimensions are computed in the render() function and depend
@@ -298,10 +297,12 @@ export class TiledPlot extends React.Component {
         });
     }
 
-    handleConfigureTrack(uid) {
+    handleConfigureTrack(track, configComponent) {
+        console.log('configComponent:', configComponent);
+
         this.setState({
             configTrackMenuId: null,
-            trackOptionsUid: uid
+            trackOptions: {'track': track, 'configComponent': configComponent}
         });
     }
 
@@ -759,8 +760,33 @@ export class TiledPlot extends React.Component {
 
         let trackOptionsElement = null;
 
-        if (this.props.editable && this.state.trackOptionsUid) {
-            trackOptionsElement = (<HeatmapOptions
+        if (this.props.editable && this.state.trackOptions) {
+            let configComponent = this.state.trackOptions.configComponent;
+            let track = this.state.trackOptions.track;
+            
+            trackOptionsElement = React.createElement(configComponent,
+                    {track: track,
+                        xScale: this.xScale,
+                        yScale: this.yScale,
+                        onCancel:  () => 
+                            this.setState({
+                                trackOptions: null
+                                }),
+                        onTrackOptionsChanged: (newOptions) => newOptions,
+                        onSubmit: (newOptions) => {
+                                this.handleTrackOptionsChanged(this.state.trackOptions.track.uid, 
+                                        newOptions);
+                                this.setState({
+                                    trackOptions: null });
+
+                            }
+                    });
+
+            /*
+            trackOptionsElement = (
+
+                    
+                    <HeatmapOptions
                     track={getTrackByUid(this.props.tracks, this.state.trackOptionsUid)}
                     xScale={this.xScale}
                     yScale={this.yScale}
@@ -775,6 +801,7 @@ export class TiledPlot extends React.Component {
                             trackOptionsUid: null });
                     }}
                 />)
+                */
         }
 
         // track renderer needs to enclose all the other divs so that it 
