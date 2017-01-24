@@ -1,0 +1,24 @@
+language: node_js
+
+node_js:
+  - "6"
+
+branches:
+  only:
+  - master
+  - develop
+  - "/^v.*$/"
+
+before_script:
+  - npm install --quiet -g gulp
+  - npm install
+
+before_deploy:
+  - npm run compile
+
+deploy:
+  - provider: releases
+    file: "dist.zip"
+    skip_cleanup: true
+    on:
+      tags: true
