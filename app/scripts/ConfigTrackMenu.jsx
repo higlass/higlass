@@ -14,6 +14,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
 
 
         this.seriesRefs = {};
+        console.log('ctm props:', props);
 
     }
 
@@ -21,27 +22,6 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         super.componentDidMount();
     }
 
-    handleSeriesMouseEnter(evt, series) {
-        let domNode = evt.currentTarget;
-        let boundingRect = domNode.getBoundingClientRect();
-        //console.log('seriesMouseEnter:', domNode);
-        //console.log('boundingRect:', boundingRect);
-
-        this.setState({
-            submenuShown: series,
-            submenuSourceBbox: boundingRect
-        });
-    }
-
-    handleMouseLeave(evt) {
-        return;
-    }
-
-    handleOtherMouseEnter(evt) {
-        this.setState({
-            submenuShown: null
-        });
-    }
 
     getSeriesItems() {
         // this code is duplicated in CloseTrackMenu, needs to be consolidated
@@ -66,11 +46,11 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                     <img src={blankLocation} width={15} className='context-menu-thumbnail'/>
 
                 return (
-                    <div
+                    <ContextMenuItem
                         ref={c => this.seriesRefs[x.uid] = c}
                         className={"context-menu-item"}
                         key={x.uid}
-                        onMouseEnter={e => this.handleSeriesMouseEnter(e, x)}
+                        onMouseEnter={e => this.handleItemMouseEnter(e, x)}
                         onMouseLeave={e => this.handleMouseLeave(e)}
                     >
                         {imgTag}
@@ -87,7 +67,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                             </svg>
 
                         </span>
-                    </div>
+                    </ContextMenuItem>
                 )
 
         });
@@ -95,6 +75,9 @@ export class ConfigTrackMenu extends ContextMenuContainer {
 
     getSubmenu() {
         if (this.state.submenuShown) {
+            // the bounding box of the element which initiated the subMenu
+            // necessary so that we can position the submenu next to the initiating
+            // element
             let bbox = this.state.submenuSourceBbox;
             let position = null;
 
@@ -110,19 +93,23 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                 }
             }
 
-            //console.log('position:', position);
+            console.log('uid', this.state.submenuShown.uid, 'track:', this.props.track);
+            let selectedTrack = this.props.track.contents ? 
+                this.props.track.contents.filter(t => t.uid == this.state.submenuShown.uid)[0]
+                : this.props.track;
 
             return (<SeriesListMenu
-                        series={this.state.submenuShown}
                         hostTrack={this.props.track}
-                        position={position}
+                        onAddSeries={this.props.onAddSeries}
+                        track={selectedTrack}
+                        onCloseTrack={() => this.props.onCloseTrack(this.state.submenuShown.uid)}
+                        onConfigureTrack={this.props.onConfigureTrack}
                         orientation={this.state.orientation}
-                        onConfigureTrack={ () => this.props.onConfigureTrack(this.state.submenuShown.uid) }
-                        onCloseTrack={ () => this.props.onCloseTrack(this.state.submenuShown.uid) }
-                        onAddSeries={ this.props.onAddSeries }
-                        trackOrientation={ this.props.orientation }
-
-
+                        position={position}
+                        series={this.state.submenuShown}
+                        trackOrientation={this.props.trackOrientation}
+                        closeMenu={this.props.closeMenu}
+                        onTrackOptionsChanged={this.props.onTrackOptionsChanged}
                     />);
         } else {
             return (<div />);
@@ -143,21 +130,26 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                     {this.getSeriesItems()}
                     <hr />
                     <ContextMenuItem
-                        text={'Add Series'}
                         onMouseEnter={(e) => this.handleOtherMouseEnter(e) }
                         onClick={ () => this.props.onAddSeries(this.props.track.uid) }
-                        />
+                        contextMenu={this}
+                        >
+                        {'Add Series'}
+                    </ContextMenuItem>
                     <ContextMenuItem
                         onClick={ () => this.props.onCloseTrack(this.props.track.uid) }
                         text={'Close Track'}
-                    />
-                    <ContextMenuItem text={'Replace Track'}
+                    >
+                        {'Close Track'}
+                    </ContextMenuItem>
+                    <ContextMenuItem 
                         onClick={ () => {
                             this.props.onCloseTrack(this.props.track.uid);
                             this.props.onAddTrack(this.props.orientation);
                         }}
-                    />
-                    <ContextMenuItem text={'Settings'} />
+                    >
+                    {'Replace Track'}
+                    </ContextMenuItem>
 
                     {this.getSubmenu()}
                 </div>

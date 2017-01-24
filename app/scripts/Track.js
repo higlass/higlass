@@ -14,6 +14,7 @@ export class Track {
 
         this.position = [0,0];
         this.dimensions = [1,1];
+        this.options = {};
     }
 
     setDimensions(newDimensions) {

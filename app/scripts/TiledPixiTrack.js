@@ -9,13 +9,15 @@ export class TiledPixiTrack extends PixiTrack {
     /**
      * A track that must pull remote tiles
      */
-    constructor(scene, server, tilesetUid, handleTilesetInfoReceived) {
+    constructor(scene, server, tilesetUid, handleTilesetInfoReceived, options) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
          * @param tilesetUid: The data set to get the tiles from the server
          */
-        super(scene);
+        super(scene, options);
+        console.log('options:', options);
+
         // the tiles which should be visible (although they're not necessarily fetched)
         this.visibleTiles = new Set();
         this.visibleTileIds = new Set();
@@ -45,6 +47,11 @@ export class TiledPixiTrack extends PixiTrack {
 
             if (handleTilesetInfoReceived)
                 handleTilesetInfoReceived(tilesetInfo[tilesetUid]);
+
+            this.options.name = tilesetInfo[tilesetUid].name ? 
+                tilesetInfo[tilesetUid].name : this.options.name;
+
+            this.draw();
         });
 
         this.uuid = slugid.nice();
@@ -364,9 +371,10 @@ export class TiledPixiTrack extends PixiTrack {
 
 
     draw() {
+        super.draw();
+
         for (let uid in this.fetchedTiles)
             this.drawTile(this.fetchedTiles[uid]);
-
     }
 
     drawTile(tileData, graphics) {

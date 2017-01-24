@@ -43,33 +43,47 @@ export class ConfigViewMenu extends React.Component {
 
         return (
                 <div>
-                    <ContextMenuItem text={'Toggle position search box'} 
+                    <ContextMenuItem
                         onClick={e => this.props.onTogglePositionSearchBox(e)}
-                    />
+                    >
+                        {'Toggle position search box'}
+                    </ContextMenuItem>
                     <hr />
-                    <ContextMenuItem text={'Yank Zoom'} 
+                    <ContextMenuItem
                         onClick={e => this.props.onYankZoom(e)}
-                    />
-                    <ContextMenuItem text={'Yank Center'} 
+                    >
+                    {'Yank Zoom'}
+                    </ContextMenuItem>
+                    <ContextMenuItem
                         onClick={e => this.props.onSyncCenter(e)}
-                    />
-                    <ContextMenuItem text={lockZoomText} 
+                    > 
+                    {'Yank Center'} 
+                    </ContextMenuItem>
+                    <ContextMenuItem 
                         onClick={e => this.props.onLockZoom(e)}
-                    />
+                    >
+                        {lockZoomText}
+                    </ContextMenuItem>
 
-                    <ContextMenuItem text={'Project Viewport'}
+                    <ContextMenuItem
                         onClick={e => this.props.onProjectViewport(e)}
-                    />
+                    >
+                    {'Project Viewport'}
+                    </ContextMenuItem>
 
                     <hr />
 
-                    <ContextMenuItem text={'Export Views as JSON'}
+                    <ContextMenuItem 
                         onClick={e => this.props.onExportViewAsJSON()}
-                    />
+                    >
+                    {'Export Views as JSON'}
+                    </ContextMenuItem>
 
-                    <ContextMenuItem text={'Export Views as Link'}
+                    <ContextMenuItem 
                         onClick={e => this.props.onExportViewAsLink()}
-                    />
+                    >
+                    {'Export Views as Link'}
+                    </ContextMenuItem>
 
                 </div>
                 )

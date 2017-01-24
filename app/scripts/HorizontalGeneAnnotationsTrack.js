@@ -4,8 +4,8 @@ import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
 import boxIntersect from 'box-intersect';
 
 export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived) {
-        super(scene, server, uid, handleTilesetInfoReceived);
+    constructor(scene, server, uid, handleTilesetInfoReceived, options) {
+        super(scene, server, uid, handleTilesetInfoReceived, options);
 
     }
 
@@ -72,6 +72,8 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     }
 
     draw() {
+        super.draw();
+
         let graphics = this.pMain;
         let allVisibleTilesLoaded = this.areAllVisibleTilesLoaded();
 

@@ -116,6 +116,6 @@ export class LeftTrackModifier {
     }
 
     rerender(options) {
-        this.originalTrack.rerender(); 
+        this.originalTrack.rerender(options); 
     }
 }

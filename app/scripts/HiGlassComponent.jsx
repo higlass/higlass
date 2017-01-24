@@ -1112,11 +1112,12 @@ export class HiGlassComponent extends React.Component {
   deserializeZoomLocks(viewConfig) {
     this.zoomLocks = {};
 
-    for (let viewUid of dictKeys(viewConfig.zoomLocks.locksByViewUid)) {
-        this.zoomLocks[viewUid] = viewConfig.zoomLocks
-            .zoomLocksDict[viewConfig.zoomLocks.locksByViewUid[viewUid]];
+    if (viewConfig.zoomLocks) {
+        for (let viewUid of dictKeys(viewConfig.zoomLocks.locksByViewUid)) {
+            this.zoomLocks[viewUid] = viewConfig.zoomLocks
+                .zoomLocksDict[viewConfig.zoomLocks.locksByViewUid[viewUid]];
+        }
     }
-
   }
 
   serializeZoomLocks(zoomLocks) {

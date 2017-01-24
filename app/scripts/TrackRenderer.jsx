@@ -477,19 +477,26 @@ export class TrackRenderer extends React.Component {
                 return new HorizontalLine1DPixiTrack(this.props.pixiStage, 
                                                      track.server, 
                                                      track.tilesetUid,
-                                                     handleTilesetInfoReceived);
+                                                     handleTilesetInfoReceived,
+                                                     track.options);
             case 'vertical-line':
-                return new LeftTrackModifier(new HorizontalLine1DPixiTrack(this.props.pixiStage, track.server, track.tilesetUid));
+                return new LeftTrackModifier(new HorizontalLine1DPixiTrack(this.props.pixiStage, 
+                            track.server, track.tilesetUid, handleTilesetInfoReceived, track.options));
             case 'horizontal-1d-tiles':
-                return new IdHorizontal1DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
+                return new IdHorizontal1DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid, 
+                        handleTilesetInfoReceived, track.options);
             case 'vertical-1d-tiles':
-                return new IdVertical1DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
+                return new IdVertical1DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid,
+                        handleTilesetInfoReceived, track.options);
             case '2d-tiles':
-                return new Id2DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid);
+                return new Id2DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid,
+                        handleTilesetInfoReceived, track.options);
             case 'top-stacked-interval':
-                return new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid);
+                return new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid,
+                        handleTilesetInfoReceived, track.options);
             case 'left-stacked-interval':
-                return new LeftTrackModifier(new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid));
+                return new LeftTrackModifier(new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid,
+                            handleTilesetInfoReceived, track.options));
             case 'viewport-projection-center':
                 // TODO: Fix this so that these functions are defined somewhere else
                 if (track.registerViewportChanged && track.removeViewportChanged && track.setDomainsCallback)
@@ -498,19 +505,23 @@ export class TrackRenderer extends React.Component {
                 else
                     return new Track();
             case 'horizontal-gene-annotations':
-                return new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid)
+                return new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid, 
+                        handleTilesetInfoReceived, track.options)
             case 'vertical-gene-annotations':
-                return new LeftTrackModifier(new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid))
+                return new LeftTrackModifier(new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid,
+                            handleTilesetInfoReceived, track.options))
             case 'arrowhead-domains':
                     console.log('creating arrowhead domains');
                 return new ArrowheadDomainsTrack(this.props.pixiStage, track.server, 
                                                  track.tilesetUid,
-                                                handleTilesetInfoReceived);
+                                                handleTilesetInfoReceived,
+                                                track.options);
             case 'combined':
-                return new CombinedTrack(track.contents, this.createTrackObject.bind(this));
+                return new CombinedTrack(track.contents, this.createTrackObject.bind(this), handleTilesetInfoReceived,
+                        track.options);
             default:
                 console.log('WARNING: unknown track type:', track.type);
-                return new UnknownPixiTrack(this.props.pixiStage);
+                return new UnknownPixiTrack(this.props.pixiStage, {name: 'Unknown Track Type'});
         }
 
     }
