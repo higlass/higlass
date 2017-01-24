@@ -32,16 +32,14 @@ export class NestedContextMenu extends ContextMenuContainer {
             }
 
             
-            let track = this.state.submenuShown;
+            let menuItem = this.state.submenuShown;
 
-            console.log('track:', track);
-
-            for (let optionType in track.options) {
-                if (optionsInfo.hasOwnProperty(optionType)) {
-                   console.log('oi:', optionsInfo);
-                }
-            }
-
+            console.log('nested menu:', menuItem);
+            return (<NestedContextMenu
+                        position={position}
+                        menuItems={menuItem.children}
+                        orientation={this.props.orientation}
+                    />)
         } else {
             return (<div />);
         }
@@ -58,8 +56,20 @@ export class NestedContextMenu extends ContextMenuContainer {
             console.log('menuItem:', menuItem);
             menuItems.push(<ContextMenuItem
                         key={menuItemKey}
+                        onClick={menuItem.handler ? menuItem.handler : () => null}
+                        onMouseEnter={menuItem.children ? e => this.handleItemMouseEnter(e, menuItem)
+                                        : e => null }
+                        onMouseLeave={this.handleMouseLeave}
                     >
                         {menuItem.name}   
+                        { menuItem.children ?
+                            <svg
+                                className = "play-icon"
+                                width="10px"
+                                height="10px">
+                                <use href="#play"></use>
+                            </svg>
+                            : null }
                     </ContextMenuItem>)
         }
 
@@ -74,7 +84,7 @@ export class NestedContextMenu extends ContextMenuContainer {
                 >
 
                     {menuItems}
-
+                    {this.getSubmenu()}
                 </div>)
     }
 }

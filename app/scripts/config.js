@@ -12,6 +12,9 @@ export const optionsInfo = {
             'bottomLeft': {name: "Bottom left"},
             'bottomRight': {name: "Bottom right"}
         }
+    },
+    colorRange: {
+        name: "Color Range"
     }
 }
 

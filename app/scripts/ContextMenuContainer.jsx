@@ -15,7 +15,7 @@ export class ContextMenuItem extends React.Component {
                     onMouseLeave={(e) => this.props.onMouseLeave ? this.props.onMouseLeave(e) : null }
                     onClick={e => this.props.onClick(e)}
                 >
-                    <span
+                    <span className='context-menu-span'
                         style={{ whiteSpace: 'nowrap' }}
                     >
                         {this.props.children}

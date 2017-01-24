@@ -96,7 +96,7 @@ export class SeriesListMenu extends ContextMenuContainer {
             return (<NestedContextMenu
                         position={position}
                         menuItems={menuItems}
-                        orientation={'left'}
+                        orientation={this.props.orientation}
                     />)
 
         } else {
@@ -124,6 +124,12 @@ export class SeriesListMenu extends ContextMenuContainer {
                         onMouseLeave={e => this.handleMouseLeave(e)}
                     >
                         {'Configure Series'}
+                        <svg
+                            className = "play-icon"
+                            width="10px"
+                            height="10px">
+                            <use href="#play"></use>
+                        </svg>
                     </ContextMenuItem>
                     <div 
                         className={"context-menu-item"}
