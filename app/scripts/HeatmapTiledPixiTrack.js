@@ -10,7 +10,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
          * @param server: The server to pull tiles from.
          * @param uid: The data set to get the tiles from the server
          */
-        super(scene, server, uid, handleTilesetInfoReceived);
+        console.log('heatmap options:', options);
+        super(scene, server, uid, handleTilesetInfoReceived, options);
 
         // [[255,255,255,0], [237,218,10,4] ...
         // a 256 element array mapping the values 0-255 to rgba values
@@ -104,7 +105,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     }
 
     draw() {
-
+        super.draw();
     }
 
     initTile(tile) {

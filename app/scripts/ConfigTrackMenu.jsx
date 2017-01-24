@@ -14,6 +14,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
 
 
         this.seriesRefs = {};
+        console.log('ctm props:', props);
 
     }
 
@@ -106,7 +107,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                         orientation={this.state.orientation}
                         position={position}
                         series={this.state.submenuShown}
-                        trackOrientation={this.props.orientation}
+                        trackOrientation={this.props.trackOrientation}
                         closeMenu={this.props.closeMenu}
                         onTrackOptionsChanged={this.props.onTrackOptionsChanged}
                     />);

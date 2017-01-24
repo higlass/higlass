@@ -674,7 +674,7 @@ export class TiledPlot extends React.Component {
                                     onAddSeries={this.handleAddSeries.bind(this)}
                                     onAddTrack={this.handleAddTrack.bind(this)}
                                     closeMenu={this.handleConfigTrackMenuClosed.bind(this)}
-                                    orientation={getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
+                                    trackOrientation={getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
                                     onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
                                   />
                               </PopupMenu>

@@ -46,7 +46,8 @@ export const tracksInfo = [
         defaultOptions: {
             colorRange: ['#FFFFFF','#F8E71C', '#F5A623', '#D0021B' ],
             maxZoom: null
-        }
+        },
+        availableOptions: [ 'labelPosition' ]
     },
     {
         type: 'horizontal-line',

@@ -101,11 +101,15 @@ export class PixiTrack extends Track {
             this.labelText.y = this.position[1] + this.dimensions[1];
             this.labelText.anchor.x = 0.5;
             this.labelText.anchor.y = 1;
+
+            this.labelText.x += this.labelText.width / 2;
         } else if (this.options.labelPosition == 'topRight') {
             this.labelText.x = this.position[0] + this.dimensions[0];;
             this.labelText.y = this.position[1];
             this.labelText.anchor.x = 0.5;
             this.labelText.anchor.y = 0;
+
+            this.labelText.x -= this.labelText.width / 2;
         } else if (this.options.labelPosition == 'bottomRight') {
             this.labelText.x = this.position[0] + this.dimensions[0];
             this.labelText.y = this.position[1] + this.dimensions[1];
@@ -117,16 +121,20 @@ export class PixiTrack extends Track {
             this.labelText.x -= this.labelText.width / 2;
         }
 
+        /*
         graphics.clear();
         graphics.lineStyle(0, 0x0000FF, 1);
         graphics.beginFill(0xFF700B, 0.6);
 
+        console.log('lt:', this.labelText.position.x, this.labelText.position.y);
+
         graphics.drawRect(this.position[0], this.position[1], 
                         this.dimensions[0], this.dimensions[1]);
+        */
     }
 
     rerender(options) {
-        console.log('rerendering...')
+        console.log('rerendering...', options)
         this.options = options;
         this.draw();
     }
@@ -140,6 +148,7 @@ export class PixiTrack extends Track {
         this.drawLabel();
 
         //console.log('this.options:', this.options);
+        /*
 
         let graphics = this.pMain;
 
@@ -149,5 +158,6 @@ export class PixiTrack extends Track {
 
         this.pMain.drawRect(this.position[0], this.position[1], 
                             this.dimensions[0], this.dimensions[1]);
+        */
     }
 }

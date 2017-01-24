@@ -71,7 +71,7 @@ export class SeriesListMenu extends ContextMenuContainer {
 
             for (let optionType in track.options) {
                 if (optionsInfo.hasOwnProperty(optionType)) {
-                   menuItems[optionType] = {children: {}, 'name': optionsInfo[optionType].name}
+                   menuItems[optionType] = {'name': optionsInfo[optionType].name}
                    console.log('oi:', optionsInfo[optionType].inlineOptions);
 
                    for (let inlineOptionValue in optionsInfo[optionType].inlineOptions) {
@@ -79,6 +79,9 @@ export class SeriesListMenu extends ContextMenuContainer {
 
                        let inlineOption = optionsInfo[optionType].inlineOptions[inlineOptionValue];
                        console.log('inlineOption:', inlineOption);
+
+                       if (!menuItems[optionType].children)
+                           menuItems[optionType].children = {};
 
                        menuItems[optionType].children[inlineOptionValue] = {
                            name: inlineOption.name,

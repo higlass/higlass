@@ -58,8 +58,10 @@ export class NestedContextMenu extends ContextMenuContainer {
                         key={menuItemKey}
                         onClick={menuItem.handler ? menuItem.handler : () => null}
                         onMouseEnter={menuItem.children ? e => this.handleItemMouseEnter(e, menuItem)
-                                        : e => null }
+                                        : this.handleOtherMouseEnter.bind(this)}
                         onMouseLeave={this.handleMouseLeave}
+
+
                     >
                         {menuItem.name}   
                         { menuItem.children ?
