@@ -628,6 +628,8 @@ export class TiledPlot extends React.Component {
                     onScalesChanged={this.handleScalesChanged.bind(this)}
                     setCentersFunction={this.props.setCentersFunction}
                     zoomable={this.props.zoomable}
+                    registerDraggingChangedListener={this.props.registerDraggingChangedListener}
+                    removeDraggingChangedListener={this.props.removeDraggingChangedListener}
                 >
 
                     <div 

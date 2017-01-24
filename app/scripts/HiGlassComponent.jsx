@@ -50,6 +50,7 @@ export class HiGlassComponent extends React.Component {
         // to be fast
         // indexed by view uid and then listener uid
         this.scalesChangedListeners = {};
+        this.draggingChangedListeners = {};
 
         // zoom locks between views
         this.zoomLocks = {};
@@ -223,6 +224,48 @@ export class HiGlassComponent extends React.Component {
             mouseOverOverlayUid: uid,
             configMenuUid: null
         });
+  }
+
+  notifyDragChangedListeners(dragging) {
+      // iterate over viewId
+      dictValues(this.draggingChangedListeners).forEach(l => {
+          // iterate over listenerId
+          dictValues(l).forEach(listener => listener(dragging));
+      });
+  }
+
+  addDraggingChangedListener(viewUid, listenerUid, eventHandler) {
+      /**
+       * Add a listener that will be called every time the view is updated.
+       *
+       * @param viewUid: The uid of the view being observed
+       * @param listenerUid: The uid of the listener
+       * @param eventHandler: The handler to be called when the scales change
+       *    Event handler is called with parameters (xScale, yScale)
+       */
+        if (!this.draggingChangedListeners.hasOwnProperty(viewUid)) {
+            this.draggingChangedListeners[viewUid] = {}
+        }
+
+        this.draggingChangedListeners[viewUid][listenerUid] = eventHandler;
+
+        eventHandler(true);
+        eventHandler(false);
+  }
+
+  removeDraggingChangedListener(viewUid, listenerUid) {
+      /**
+       * Remove a scale change event listener
+       *
+       * @param viewUid: The view that it's listening on.
+       * @param listenerUid: The uid of the listener itself.
+       */
+        if (this.draggingChangedListeners.hasOwnProperty(viewUid)) {
+            let listeners = this.draggingChangedListeners[viewUid];
+
+            if (listeners.hasOwnProperty(listenerUid))
+                delete listeners[listenerUid];
+        }
   }
 
   addScalesChangedListener(viewUid, listenerUid, eventHandler) {
@@ -619,36 +662,28 @@ export class HiGlassComponent extends React.Component {
 
   refreshView() {
     this.clearDragTimeout();
-    console.log('refreshing view');
-    this.setState({
-        dragging: true
-    })
+
+    this.notifyDragChangedListeners(true);
 
     this.clearDragTimeout();
     this.dragTimeout = setTimeout(() => {
-        console.log('drag timeout ended')
-        this.setState({
-            dragging: false
-        })}, SHORT_DRAG_TIMEOUT);
+            this.notifyDragChangedListeners(false);
+        }, SHORT_DRAG_TIMEOUT);
   }
 
     handleDragStart(layout, oldItem, newItem, placeholder, e, element) {
-        console.log('changing dragging state');
         this.clearDragTimeout();
-        this.setState({
-            dragging: true
-        })
+        this.notifyDragChangedListeners(true);
     }
 
     handleDragStop() {
         // wait for the CSS transitions to end before
         // turning off the dragging state
+        //
         this.clearDragTimeout();
-        console.log('drag stopped')
         this.dragTimeout = setTimeout(() => {
-            this.setState({
-                dragging: false
-            })}, LONG_DRAG_TIMEOUT);
+            this.notifyDragChangedListeners(false);
+        }, LONG_DRAG_TIMEOUT);
     }
 
   onNewLayout() {
@@ -782,8 +817,6 @@ export class HiGlassComponent extends React.Component {
       let bottomHeight = 0;
       let leftWidth = 0;
       let rightWidth = 0;
-
-      console.log('centerWidth:', centerWidth);
 
       if ('top' in view.tracks)
         topHeight = view.tracks['top']
@@ -1070,7 +1103,6 @@ export class HiGlassComponent extends React.Component {
             .zoomLocksDict[viewConfig.zoomLocks.locksByViewUid[viewUid]];
     }
 
-    console.log('this.zoomLocks:', this.zoomLocks);
   }
 
   serializeZoomLocks(zoomLocks) {
@@ -1420,7 +1452,7 @@ export class HiGlassComponent extends React.Component {
                                      svgElement={this.state.svgElement}
                                      canvasElement={this.state.canvasElement}
                                      pixiStage={this.pixiStage}
-                                     dragging={this.state.dragging}
+                                     //dragging={this.state.dragging}
                                      tracks={view.tracks}
                                      initialXDomain={view.initialXDomain}
                                      initialYDomain={view.initialYDomain}
@@ -1438,6 +1470,8 @@ export class HiGlassComponent extends React.Component {
                                      zoomable={!this.props.viewConfig.zoomFixed}
                                      editable={this.props.viewConfig.editable}
                                      trackSourceServers={this.props.viewConfig.trackSourceServers}
+                                     registerDraggingChangedListener={listener => this.addDraggingChangedListener(view.uid, view.uid, listener)}
+                                     removeDraggingChangedListener={listener => this.removeDraggingChangedListener(view.uid, view.uid, listener)}
                                 >
 
                                 </TiledPlot>)

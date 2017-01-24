@@ -99,6 +99,8 @@ export class TrackRenderer extends React.Component {
         this.divTrackAreaSelection = select(this.divTrackArea);
         this.divTrackAreaSelection.call(this.zoomBehavior);
 
+        this.canvasDom = ReactDOM.findDOMNode(this.props.canvasElement);
+
         // need to be mounted to make sure that all the renderers are
         // created before starting to draw tracks
         if (!this.props.svgElement || !this.props.canvasElement)
@@ -108,7 +110,13 @@ export class TrackRenderer extends React.Component {
         this.syncTrackObjects(this.props.positionedTracks);
 
         this.props.setCentersFunction(this.setCenter.bind(this));
+        this.props.registerDraggingChangedListener(this.draggingChanged.bind(this));
+    }
 
+    draggingChanged(draggingStatus) {
+        this.dragging = draggingStatus;
+
+        this.timedUpdatePositionAndDimensions();
     }
 
     setUpInitialScales(initialXDomain, initialYDomain) {
@@ -154,8 +162,6 @@ export class TrackRenderer extends React.Component {
         this.setUpScales();
         this.canvasDom = ReactDOM.findDOMNode(nextProps.canvasElement);
 
-        this.dragging = nextProps.dragging;
-        this.timedUpdatePositionAndDimensions(nextProps);
 
         this.svgElement = nextProps.svgElement;
 
@@ -188,6 +194,7 @@ export class TrackRenderer extends React.Component {
          * This view has been removed so we need to get rid of all the tracks it contains
          */
         this.removeTracks(Object.keys(this.trackDefObjects));
+        this.props.removeDraggingChangedListener(this.draggingChanged);
     }
 
     setUpScales() {
@@ -242,7 +249,7 @@ export class TrackRenderer extends React.Component {
         this.applyZoomTransform();
     }
 
-    timedUpdatePositionAndDimensions(props) {
+    timedUpdatePositionAndDimensions() {
         if (this.closing)
             return;
 
