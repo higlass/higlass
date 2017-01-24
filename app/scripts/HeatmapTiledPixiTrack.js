@@ -25,6 +25,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     }
 
     rerender(options) {
+        super.rerender(options);
+
         if (options && options.colorRange) {
             this.colorScale = colorDomainToRgbaArray(options.colorRange);
         }

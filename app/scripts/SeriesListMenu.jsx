@@ -1,10 +1,11 @@
 import React from 'react';
+
 import ReactDOM from 'react-dom';
 
 import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
 import {NestedContextMenu} from './NestedContextMenu.jsx';
 
-import {optionsInfo} from './config.js';
+import {optionsInfo,tracksInfoByType} from './config.js';
 
 export class ConfigureSeriesMenu extends ContextMenuContainer {
     constructor(props) {
@@ -69,7 +70,10 @@ export class SeriesListMenu extends ContextMenuContainer {
             let menuItems = {};
             let options = track.options;
 
-            for (let optionType in track.options) {
+            if (!tracksInfoByType[track.type].availableOptions)
+                return null;
+
+            for (let optionType of tracksInfoByType[track.type].availableOptions) {
                 if (optionsInfo.hasOwnProperty(optionType)) {
                    menuItems[optionType] = {'name': optionsInfo[optionType].name}
                    console.log('oi:', optionsInfo[optionType].inlineOptions);
@@ -88,7 +92,7 @@ export class SeriesListMenu extends ContextMenuContainer {
                            menuItems[optionType].children[inlineOptionValue] = {
                                name: inlineOption.name,
                                handler: () => { 
-                                   console.log('handling');
+                                   console.log('handling', track);
                                    track.options[optionType] = inlineOptionValue;
                                    this.props.onTrackOptionsChanged(track.uid, track.options);
                                    this.props.closeMenu();

@@ -12,7 +12,8 @@ export const optionsInfo = {
             'topLeft': { name: "Top left" },
             'topRight': { name: 'Top right' },
             'bottomLeft': {name: "Bottom left"},
-            'bottomRight': {name: "Bottom right"}
+            'bottomRight': {name: "Bottom right"},
+            'hidden': {name: "Hidden"}
         }
     },
     colorRange: {
@@ -52,7 +53,7 @@ export const tracksInfo = [
             colorRange: ['#FFFFFF','#F8E71C', '#F5A623', '#D0021B' ],
             maxZoom: null
         },
-        availableOptions: [ 'labelPosition' ]
+        availableOptions: [ 'labelPosition', 'colorRange' ]
     },
     {
         type: 'horizontal-line',
