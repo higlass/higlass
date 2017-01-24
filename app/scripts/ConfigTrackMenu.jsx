@@ -107,6 +107,8 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                         position={position}
                         series={this.state.submenuShown}
                         trackOrientation={this.props.orientation}
+                        closeMenu={this.props.closeMenu}
+                        onTrackOptionsChanged={this.props.onTrackOptionsChanged}
                     />);
         } else {
             return (<div />);

@@ -83,7 +83,10 @@ export class SeriesListMenu extends ContextMenuContainer {
                        menuItems[optionType].children[inlineOptionValue] = {
                            name: inlineOption.name,
                            handler: () => { 
+                               console.log('handling');
                                track.options[optionType] = inlineOptionValue;
+                               this.props.onTrackOptionsChanged(track.uid, track.options);
+                               this.props.closeMenu();
                            },
                            value: inlineOptionValue
                        }
@@ -97,6 +100,7 @@ export class SeriesListMenu extends ContextMenuContainer {
                         position={position}
                         menuItems={menuItems}
                         orientation={this.props.orientation}
+                        closeMenu={this.props.closeMenu}
                     />)
 
         } else {
@@ -131,38 +135,41 @@ export class SeriesListMenu extends ContextMenuContainer {
                             <use href="#play"></use>
                         </svg>
                     </ContextMenuItem>
-                    <div 
+                    <ContextMenuItem
                         className={"context-menu-item"}
                         onClick={this.props.onCloseTrack}
+                        onMouseEnter={(e) => this.handleOtherMouseEnter(e) }
                     >
                         <span
                             style={{ whiteSpace: 'nowrap' }}
                         >
                             {"Close Series"}
                         </span>
-                    </div>
-                    <div 
+                    </ContextMenuItem>
+                    <ContextMenuItem
                         className={"context-menu-item"}
                         onClick={() => {
                                 this.props.onCloseTrack(this.props.series.uid)
                                 this.props.onAddSeries(this.props.hostTrack.uid)
-                        }}
+                       }}
+                        onMouseEnter={(e) => this.handleOtherMouseEnter(e) }
                      >
                         <span
                             style={{ whiteSpace: 'nowrap' }}
                         >
                             {"Replace Series"}
                         </span>
-                    </div>
-                    <div 
+                    </ContextMenuItem>
+                    <ContextMenuItem
                         className={"context-menu-item"}
+                        onMouseEnter={(e) => this.handleOtherMouseEnter(e) }
                     >
                         <span
                             style={{ whiteSpace: 'nowrap' }}
                         >
                             {"Move up"}
                         </span>
-                    </div>
+                    </ContextMenuItem>
 
                     {this.getSubmenu()}
                 </div>

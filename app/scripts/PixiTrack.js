@@ -75,9 +75,11 @@ export class PixiTrack extends Track {
     drawLabel() {
         let graphics = this.pLabel;
 
-        if (!this.options.labelPosition) {
+
+        if (!this.options || !this.options.labelPosition) {
             // don't display the track label
             this.labelText.opacity = 0;
+            return;
         }
 
         this.labelText.text = this.options.name;
@@ -121,6 +123,12 @@ export class PixiTrack extends Track {
 
         graphics.drawRect(this.position[0], this.position[1], 
                         this.dimensions[0], this.dimensions[1]);
+    }
+
+    rerender(options) {
+        console.log('rerendering...')
+        this.options = options;
+        this.draw();
     }
 
     draw() {
