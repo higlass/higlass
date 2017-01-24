@@ -783,6 +783,7 @@ export class TiledPlot extends React.Component {
                     position={this.state.addTrackPosition}
                     host={this.state.addTrackHost}
                     show={this.state.addTrackVisible}
+                    trackSourceServers={this.props.trackSourceServers}
                 />
 
                 {configTrackMenu}

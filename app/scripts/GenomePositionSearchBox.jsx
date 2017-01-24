@@ -251,6 +251,8 @@ export class GenomePositionSearchBox extends React.Component {
                 let newYScale = this.yScale.copy().domain(range2);
 
                 let [centerX, centerY, k] = scalesCenterAndK(newXScale, newYScale);
+                console.log('centerX:', centerX, 'centerY:', centerY);
+
                 //console.log('centerX:', centerX, 'centerY:', centerY, 'k:', k);
                 this.props.setCenters(centerX, centerY, k);
             }

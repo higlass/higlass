@@ -57,6 +57,11 @@ export const PLUS = {
   viewBox: '0 0 512 512'
 };
 
+export const CONTENT_COPY = {
+  id: "copy",
+  paths: ["M607.5 672v-448.5h-351v448.5h351zM607.5 160.5c34.5 0 64.5 28.5 64.5 63v448.5c0 34.5-30 64.5-64.5 64.5h-351c-34.5 0-64.5-30-64.5-64.5v-448.5c0-34.5 30-63 64.5-63h351zM511.5 31.5v64.5h-384v448.5h-63v-448.5c0-34.5 28.5-64.5 63-64.5h384z"],
+  viewBox: '0 0 712 712'
+}
 
 export const all = [
   COG,
@@ -65,5 +70,6 @@ export const all = [
   MINUS,
   MOVE,
   PLAY,
-  PLUS
+  PLUS,
+  CONTENT_COPY
 ];

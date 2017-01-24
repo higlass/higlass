@@ -99,6 +99,7 @@ export class AddTrackModal extends React.Component {
                                 onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
                                 selectedTilesetChanged={this.mainTilesetChanged.bind(this)}
                                 onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
+                                trackSourceServers={this.props.trackSourceServers}
                             />
                     </div>
                 )
