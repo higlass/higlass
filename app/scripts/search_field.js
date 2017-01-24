@@ -28,6 +28,7 @@ export class SearchField {
         if (chr == null)
             chr = prevChr
 
+                //console.log('this.chromInfo:', this.chromInfo);
         if (chr == null) {
             retPos = pos;
         } else if (chr in this.chromInfo.chrPositions) {
@@ -79,8 +80,6 @@ export class SearchField {
             parts[0] = parts[0].slice(3, parts[0].length)
         }
 
-        console.log('parts:', parts)
-
         if (parts.length > 1) {
             let [chr1, chrPos1, genomePos1] = this.parsePosition(parts[0]);
             let [chr2, chrPos2, genomePos2]  = this.parsePosition(parts[1], chr1);
@@ -100,7 +99,6 @@ export class SearchField {
     }
 
     searchPosition(text) {
-        console.log('text:', text);
         var range1 = null, range2 = null;
         var parts = text.split(' and ');
 

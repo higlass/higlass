@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HiGlass</title>
+<style type="text/css">
+    .canvasjs-chart-credit {
+    display:none;
+}
+</style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/page.css">
+</head>
+<body > 
+    Stuff up here may do something
+    <div style="height: 50px" />
+    <div style="margin: auto; width: 100%;">
+    <br>
+    <!-- <div id="triangular-1"></div> -->
+    <div id="development-demo"></div>
+<br>
+
+
+</div>
+</body>
+<script src='scripts/hglib.js'>
+</script>
+<script>
+        console.log('hey');
+        let remoteServer = "52.45.229.11";
+          usedServer = remoteServer;
+          var viewConfig = {
+              'editable': true,
+              zoomFixed: false,
+              exportViewUrl: "//" + usedServer + "/viewconfs/",
+              'views': [{
+              uid: "aa",
+              initialXDomain: [1200000000,1210000000],
+              initialYDomain: [0,3000000000],
+              autocompleteSource: "//" + usedServer + '/suggest/?d=dd&',
+              genomePositionSearchBoxVisible: true,
+              chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
+              'tracks': {
+            'top': [
+                /*
+                {'uid': type:'top-axis'}
+            ,
+            */
+
+                    {
+                        type:'horizontal-gene-annotations',
+                        height: 60,
+                      tilesetUid: 'dd',
+                      server: usedServer 
+                    }
+                      ,
+            ],
+            'left': [
+                    {
+                        type:'vertical-gene-annotations',
+                        width: 60,
+                      tilesetUid: 'dd',
+                      server: usedServer 
+                    }
+            ],
+            'center': [
+                {   
+                    uid: 'c1',
+                    type: 'combined',
+                    height: 200,
+                    contents: 
+                    [
+
+                        { 
+                            'uid': 'hm1',
+                           'server': usedServer ,
+                          'tilesetUid': 'aa',
+                          'type': 'heatmap'
+                        }
+                    ]
+                }
+            ]}
+            ,
+            layout: {x: 0, y: 0, w: 6, h: 10}
+
+            } ]
+          }
+
+    hglib.HgComponent(document.getElementById('development-demo'), viewConfig);
+
+</script>
+<script>
+
+</script>
+</html>

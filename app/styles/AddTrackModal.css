@@ -1,0 +1,13 @@
+.collapse-toggle-icon:before {
+    /* symbol for "opening" panels */
+    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+    content: "\e159";    /* glyphicon glyphicon-expand, taken from bootstrap.css */
+    float: left;        /* adjust as needed */
+    padding-right: 3px;
+}
+
+.collapse-toggle-icon.collapsed:before {
+    /* symbol for "collapsed" panels */
+    content: "\e158";    /* glyphicon glyphicon-collapse-down, taken from bootstrap.css */
+}
+

@@ -1,8 +1,9 @@
-import d3 from 'd3';
+import {text} from 'd3-request';
+import {tsvParseRows} from 'd3-dsv';
 
 export function ChromosomeInfo(filepath, success) {
-    d3.text(filepath, (text) => {
-        let data = d3.tsv.parseRows(text);
+    text(filepath, (text) => {
+        let data = tsvParseRows(text);
         let cumValues = [];
         let chrPositions = {};
         let totalLength = 0;
