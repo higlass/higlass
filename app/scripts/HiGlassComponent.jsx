@@ -134,6 +134,20 @@ export class HiGlassComponent extends React.Component {
             svgElement: this.svgElement,
             canvasElement: this.canvasElement
         });
+        ElementQueries.listen();
+        new ResizeSensor(this.element, function() {
+            //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
+            let heightOffset = 0;
+            let width = this.element.clientWidth;
+            let height = this.element.clientHeight;
+
+             this.pixiRenderer.resize(width, height);
+
+            this.pixiRenderer.view.style.width = width + "px";
+            this.pixiRenderer.view.style.height = height + "px";
+
+            this.pixiRenderer.render(this.pixiStage);
+         }.bind(this));
 
         this.handleDragStart();
         this.handleDragStop();
