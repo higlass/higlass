@@ -3,6 +3,32 @@ import ReactDOM from 'react-dom';
 
 import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
 
+export class ConfigureSeriesMenu extends ContextMenuContainer {
+    constructor(props) {
+        /**
+         * A window that is opened when a user clicks on the track configuration icon.
+         */
+        super(props);
+    }
+
+    render() {
+        return(
+                <div className={'context-menu'}
+                        ref={c => this.div = c}
+                        onMouseLeave={this.props.handleMouseLeave}
+                        style={{ 
+                                position: 'fixed',
+                                left: this.state.left,
+                                 top: this.state.top,
+                                border: "1px solid black"
+                              }}
+                >
+
+                </div>
+              )
+    }
+}
+
 export class SeriesListMenu extends ContextMenuContainer {
     constructor(props) {
         /**
@@ -24,9 +50,11 @@ export class SeriesListMenu extends ContextMenuContainer {
                                 border: "1px solid black"
                               }}
                 >
-                    <ContextMenuItem text={'Configure Series'} 
+                    <ContextMenuItem
                         onClick={this.props.onConfigureTrack}
-                    />
+                    >
+                        {'Configure Series'}
+                    </ContextMenuItem>
                     <div 
                         className={"context-menu-item"}
                         onClick={this.props.onCloseTrack}

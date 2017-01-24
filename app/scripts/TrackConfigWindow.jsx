@@ -11,47 +11,23 @@ export class TrackConfigWindow extends ContextMenuContainer {
          * A window that is opened when a user clicks on the track configuration icon.
          */
         super(props);
-
-
-
-        this.seriesRefs = {};
-
     }
 
     componentDidMount() {
         super.componentDidMount();
     }
 
-    handleSeriesMouseEnter(evt, uid) {
-        let domNode = evt.currentTarget;
-
-        this.setState({
-            submenuShown: uid,
-            submenuSourceBbox: domNode.getBoundingClientRect()
-        });
-    }
-
-    handleMouseLeave(evt) {
-        return;
-    }
-
-    handleOtherMouseEnter(evt) {
-        this.setState({
-            submenuShown: null
-        });
-    }
-
     getSeriesItems() {
         // check if this is a combined track (has contents)
         let series = this.props.track.contents ? this.props.track.contents : [this.props.track];
+        //
+        ////
 
         return series.map(x => {
                 return (
-                    <div
-                        ref={c => this.seriesRefs[x.uid] = c}
-                        className={"context-menu-item"}
+                    <ContextMenuItem
                         key={x.uid}
-                        onMouseEnter={e => this.handleSeriesMouseEnter(e, x.uid)}
+                        onMouseEnter={e => this.handleItemMouseEnter(e, x.uid)}
                         onMouseLeave={e => this.handleMouseLeave(e)}
                     >
                         <span className='context-menu-span'
@@ -66,7 +42,7 @@ export class TrackConfigWindow extends ContextMenuContainer {
                             </svg>
 
                         </span>
-                    </div>
+                    </ContextMenuItem>
                 )
 
         });
@@ -99,6 +75,7 @@ export class TrackConfigWindow extends ContextMenuContainer {
     }
 
     render() {
+        //
         return(
                 <div className={'context-menu'}
                         ref={c => this.div = c}
