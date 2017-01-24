@@ -131,7 +131,7 @@ export class PixiTrack extends Track {
         // this rectangle is cleared by functions that override this draw method
         this.drawLabel();
 
-        console.log('this.options:', this.options);
+        //console.log('this.options:', this.options);
 
         let graphics = this.pMain;
 

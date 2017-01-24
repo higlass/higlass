@@ -92,11 +92,15 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                 }
             }
 
-            //console.log('position:', position);
+            console.log('uid', this.state.submenuShown.uid, 'track:', this.props.track);
+            let selectedTrack = this.props.track.contents ? 
+                this.props.track.contents.filter(t => t.uid == this.state.submenuShown.uid)[0]
+                : this.props.track;
 
             return (<SeriesListMenu
                         hostTrack={this.props.track}
                         onAddSeries={this.props.onAddSeries}
+                        track={selectedTrack}
                         onCloseTrack={() => this.props.onCloseTrack(this.state.submenuShown.uid)}
                         onConfigureTrack={() => this.props.onConfigureTrack(this.state.submenuShown.uid)}
                         orientation={this.state.orientation}

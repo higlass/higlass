@@ -3,6 +3,19 @@ let remoteServer = "52.45.229.11";
 //export const usedServer = localServer;
 export const usedServer = remoteServer;
 
+export const optionsInfo = { 
+    labelPosition: {
+        name: "Label Position",
+        inlineOptions: {
+            'topLeft': { name: "Top left" },
+            'topRight': { name: 'Top right' },
+            'bottomLeft': {name: "Bottom left"},
+            'bottomRight': {name: "Bottom right"}
+        }
+    }
+}
+
+
 export const tracksInfo = [
     {
         type: 'left-axis',
@@ -103,7 +116,8 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         name: 'Gene Annotations',
-        thumbnail: null
+        thumbnail: null,
+        availableOptions: [ 'labelPosition' ]
     },
     {
         type: 'vertical-gene-annotations',
@@ -111,7 +125,8 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         name: 'Gene Annotations',
-        thumbnail: null
+        thumbnail: null,
+        availableOptions: [ 'labelPosition' ]
     },
     {
         type: 'arrowhead-domains',
