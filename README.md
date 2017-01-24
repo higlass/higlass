@@ -27,3 +27,8 @@ cd doc
 make
 ```
 
+## Update version
+
+```
+npm version patch
+```
