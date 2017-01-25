@@ -10,6 +10,7 @@ branches:
   - "/^v.*$/"
 
 before_script:
+  - npm install --quiet -g gulp
   - npm install
 
 before_deploy:
@@ -17,8 +18,9 @@ before_deploy:
 
 deploy:
   - provider: releases
+    api_key:
+      secure: "AwxjKcpbqMEWy9mqqgBJyLCmVWythq9V6zS9D1RbMnL868K2ByzJLMwIeqooeaHPxYevpz4ja6ToeJhXGCdv6zpp2axA998j6qvaLQgH/uNVmSo2ciPUOKAN2k9ghi2LHWBEMEgROkstccmGcVnpzEBBcVSl7p74RoheJ4dsJuap8nw6PGY0v7nlER5id4N09hvDKJw7pvv892h0XQD9v7y6A+LURekMjIjenlxWvdu/+frHhb5aj85f0HCV/tG1CWciwk0nUtAaubTj01pUIerP9q9ejIr6bWk/qfsh8hwJLfLnsDkUlhGYSfi1vMovZGOnVm5fups4nAdbf8JVCTEETQ21FfvPDvcpNLQOMLCA0P4OQuC0oacnV/DYxGe1ygGDp73RK7vJDSTjbGEjwS1YWF8C/iZhUGigju9CEnweLWXs19R7tKbOI5AB4JKGP/KY6LVU2Ca8I4ZC1RFvfvpTZomNVWXPAEJ6zuIwGMuMJYO+EhtSHbKq7qGbnbaGQpEseOpENJsIQQUPpQIJGh0NYqXQTvmNKy1LcmdWIMPmJKSZNNXiGvEXOD4wbcmd7YjfAKwwFtYQkrnamVC/j0V1b4fanTcvJIyCYuJNRENf73wGTcgnPQKZGt1uQK40hvPLCM1bTDdfUURhW5egtrXGEskpukBK2LAMDQoDPJs="
     file: "dist.zip"
     skip_cleanup: true
-    api_key: "GITHUB OAUTH TOKEN"
     on:
       tags: true
