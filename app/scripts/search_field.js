@@ -63,8 +63,6 @@ export class SearchField {
         let lastChr = this.chromInfo.cumPositions[this.chromInfo.cumPositions.length-1].chr;
         let lastLength = this.chromInfo.chromLengths[lastChr];
 
-        console.log('lastLength:', lastLength);
-
         if (insertPoint > 0)
             insertPoint -= 1;
 
@@ -73,11 +71,9 @@ export class SearchField {
 
         if (chrPosition < 0) {
             // before the start of the genome
-            offset = -chrPosition - 1;
+            offset = chrPosition - 1;
             chrPosition = 1;
         }
-        console.log('insertPoint:', insertPoint);
-        console.log('chrPosition:', chrPosition, 'lastLength', lastLength);
 
         if (insertPoint == this.chromInfo.cumPositions.length - 1 && 
             chrPosition > lastLength) {
@@ -114,7 +110,6 @@ export class SearchField {
         if (chr == null)
             chr = prevChr
 
-                //console.log('this.chromInfo:', this.chromInfo);
         if (chr == null) {
             retPos = pos;
         } else if (chr in this.chromInfo.chrPositions) {
@@ -184,8 +179,53 @@ export class SearchField {
         return range;
     }
 
+    parseOffset(offsetText) {
+        /**
+         * Convert offset text to a 2D array of offsets
+         *
+         * @param offsetText(string): 14,17:20,22
+         *
+         * @return offsetArray: [[14,17],[20,22]]
+         */
+
+        let parts = offsetText.split(':');
+        console.log('parseOffset parts:', parts);
+
+        if (parts.length == 0)
+            return [[0,0],[0,0]];
+
+        if (parts.length == 1) {
+            let sparts = parts[0].split(',');
+            return [[+sparts[0], +sparts[1]],[0,0]]
+        } else {
+            let sparts0 = parts[0].split(',');
+            let sparts1 = parts[1].split(',');
+            return [[+sparts0[0], +sparts0[1]],
+                    [+sparts1[0], +sparts1[1]]]
+
+        }
+
+        return [[0,0],[0,0]] 
+    }
+
     searchPosition(text) {
         var range1 = null, range2 = null;
+
+        //extract offset
+        let offsetRe = /\[offset\ (.+?)\]/.exec(text);
+
+        // the offset is the distance before the first chromosome
+        // or the distance after the last chromosome of the given
+        let offset = [[0,0],[0,0]];
+        if (offsetRe) {
+            text = text.replace(offsetRe[0], '');
+
+            console.log('text:', text);
+            //
+            offset = this.parseOffset(offsetRe[1]);
+        }
+        console.log('offset:', offset);
+
         var parts = text.split(' and ');
 
         if (parts.length > 1) {
@@ -203,6 +243,19 @@ export class SearchField {
         if (range1 != null && range2 != null) {
             [range1, range2] = this.matchRangesToLarger(range1, range2);
         }
+
+        if (range1) {
+            range1[0] += offset[0][0];
+            range1[1] += offset[0][1];
+        }
+
+        if (range2) {
+            range2[0] += offset[1][0];
+            range2[1] += offset[1][1];
+
+        }
+
+        console.log('range1:', range1);
 
         return [range1, range2];
     }

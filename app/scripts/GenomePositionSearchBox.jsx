@@ -189,6 +189,9 @@ export class GenomePositionSearchBox extends React.Component {
 
                 // extract the position of the top match from the list of files
                 for (let i = 0; i < files.length; i++) {
+                    if (!files[i][0])
+                        continue;
+
                     genePositions[files[i][0].geneName.toLowerCase()] =
                         files[i][0];
                 }
