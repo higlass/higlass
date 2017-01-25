@@ -77,16 +77,6 @@ export class GenomePositionSearchBox extends React.Component {
                 }
     }
 
-    absoluteToChr(absPosition) {
-        let insertPoint = this.chromInfoBisector(this.chromInfo.cumPositions, absPosition);
-
-
-        if (insertPoint > 0)
-            insertPoint -= 1;
-
-        return [this.chromInfo.cumPositions[insertPoint].chr,
-                absPosition - this.chromInfo.cumPositions[insertPoint].pos];
-    }
 
     scalesChanged(xScale, yScale) {
         this.xScale = xScale, this.yScale = yScale;
@@ -114,36 +104,16 @@ export class GenomePositionSearchBox extends React.Component {
     }
 
     setPositionText() {
-        if (this.chromInfo == null)
-            return;                 // chromosome info hasn't been loaded yet
-
-        if (!this.xScale || !this.yScale)
+        if (!this.searchField)
             return;
 
-        let x1 = this.absoluteToChr(this.xScale.domain()[0]);
-        let x2 = this.absoluteToChr(this.xScale.domain()[1]);
-
-        let y1 = this.absoluteToChr(this.yScale.domain()[0]);
-        let y2 = this.absoluteToChr(this.yScale.domain()[1]);
-
-        let positionString = null;
-        let stringFormat = format(",d")
-
-        if (x1[0] != x2[0])
-            positionString = x1[0] + ':' + stringFormat(Math.floor(x1[1])) + '-' + x2[0] + ':' + stringFormat(Math.ceil(x2[1]));
-        else
-            positionString = x1[0] + ':' + stringFormat(Math.floor(x1[1])) + '-' + stringFormat(Math.ceil(x2[1]));
-
-        if (this.props.twoD) {
-            if (y1[0] != y2[0])
-                positionString += " and " +  y1[0] + ':' + stringFormat(Math.floor(y1[1])) + '-' + y2[0] + ':' + stringFormat(Math.ceil(y2[1]));
-            else
-                positionString += " and " +  y1[0] + ':' + stringFormat(Math.floor(y1[1])) + '-' + stringFormat(Math.ceil(y2[1]));
-        }
-
-        this.prevParts = positionString.split(/[ -]/);
+        let positionString = this.searchField.scalesToPositionText(this.xScale, 
+                                                                   this.yScale, 
+                                                                   this.props.twoD);
 
         //ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
+        // used for autocomplete
+        this.prevParts = positionString.split(/[ -]/);
         this.setState({"value": positionString});
     }
 

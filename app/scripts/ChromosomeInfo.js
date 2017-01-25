@@ -5,6 +5,7 @@ export function ChromosomeInfo(filepath, success) {
     text(filepath, (text) => {
         let data = tsvParseRows(text);
         let cumValues = [];
+        let chromLengths = {};
         let chrPositions = {};
         let totalLength = 0;
 
@@ -15,11 +16,13 @@ export function ChromosomeInfo(filepath, success) {
 
             cumValues.push(newValue);
             chrPositions[newValue.chr] = newValue;
+            chromLengths[data[i][0]] = data[i][1];
         }
 
         let chromInfo = {'cumPositions': cumValues,
                          'chrPositions': chrPositions,
-                          'totalLength': totalLength }
+                          'totalLength': totalLength,
+                          chromLengths: chromLengths }
 
         success(chromInfo);
     });

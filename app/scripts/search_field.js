@@ -1,7 +1,93 @@
+import {bisector} from 'd3-array';
+import {format} from 'd3-format';
+
 export class SearchField {
 
     constructor(chromInfo) {
         this.chromInfo = chromInfo;
+        this.chromInfoBisector = bisector((d) => { return d.pos }).left;
+    }
+
+    scalesToPositionText(xScale, yScale, twoD=false) {
+        if (this.chromInfo == null)
+            return "";                 // chromosome info hasn't been loaded yet
+
+        if (!xScale || !yScale)
+            return "";
+
+        let x1 = this.absoluteToChr(xScale.domain()[0]);
+        let x2 = this.absoluteToChr(xScale.domain()[1]);
+
+        let y1 = this.absoluteToChr(yScale.domain()[0]);
+        let y2 = this.absoluteToChr(yScale.domain()[1]);
+
+        let positionString = null;
+        let stringFormat = format(",d")
+
+        if (x1[0] != x2[0]) {
+            // different chromosomes
+
+            positionString = x1[0] + ':' + stringFormat(Math.floor(x1[1])) + '-' + x2[0] + ':' + stringFormat(Math.ceil(x2[1]));
+        } else {
+            // same chromosome
+
+            positionString = x1[0] + ':' + stringFormat(Math.floor(x1[1])) + '-' + stringFormat(Math.ceil(x2[1]));
+        }
+
+        if (twoD) {
+            if (y1[0] != y2[0]) {
+                // different chromosomes
+                positionString += " and " +  y1[0] + ':' + stringFormat(Math.floor(y1[1])) + '-' + y2[0] + ':' + stringFormat(Math.ceil(y2[1]));
+            } else {
+                // same chromosome
+                positionString += " and " +  y1[0] + ':' + stringFormat(Math.floor(y1[1])) + '-' + stringFormat(Math.ceil(y2[1]));
+            }
+        }
+
+
+        if (x1[2] < 0 || x2 > [2] || (twoD && (y1[2] < 0 || y2[2] > 0))) {
+            // did any of the coordinates exceed the genome boundaries
+            positionString += " [offset " + x1[2] + "," + x2[2];
+            if (twoD) {
+               positionString += ":" + y1[2] + "," + y2[2] 
+            } 
+
+            positionString += "]";
+        }
+
+        return positionString;
+    }
+
+    absoluteToChr(absPosition) {
+        let insertPoint = this.chromInfoBisector(this.chromInfo.cumPositions, absPosition);
+        let lastChr = this.chromInfo.cumPositions[this.chromInfo.cumPositions.length-1].chr;
+        let lastLength = this.chromInfo.chromLengths[lastChr];
+
+        console.log('lastLength:', lastLength);
+
+        if (insertPoint > 0)
+            insertPoint -= 1;
+
+        let chrPosition = Math.floor(absPosition - this.chromInfo.cumPositions[insertPoint].pos);
+        let offset = 0;
+
+        if (chrPosition < 0) {
+            // before the start of the genome
+            offset = -chrPosition - 1;
+            chrPosition = 1;
+        }
+        console.log('insertPoint:', insertPoint);
+        console.log('chrPosition:', chrPosition, 'lastLength', lastLength);
+
+        if (insertPoint == this.chromInfo.cumPositions.length - 1 && 
+            chrPosition > lastLength) {
+            // beyond the last chromosome
+            offset = chrPosition - lastLength;
+            chrPosition = lastLength;
+        }
+
+        return [this.chromInfo.cumPositions[insertPoint].chr,
+                chrPosition, offset]
     }
 
     parsePosition(positionText, prevChr = null) {

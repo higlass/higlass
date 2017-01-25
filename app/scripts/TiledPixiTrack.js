@@ -48,6 +48,9 @@ export class TiledPixiTrack extends PixiTrack {
             if (handleTilesetInfoReceived)
                 handleTilesetInfoReceived(tilesetInfo[tilesetUid]);
 
+            if (!this.options) 
+                this.options = {};
+
             this.options.name = tilesetInfo[tilesetUid].name ? 
                 tilesetInfo[tilesetUid].name : this.options.name;
 
