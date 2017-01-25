@@ -1503,6 +1503,7 @@ export class HiGlassComponent extends React.Component {
                         removeViewportChangedListener = {() => this.removeScalesChangedListener(view.uid, view.uid)}
                         setCenters = {(centerX, centerY, k) => this.setCenters[view.uid](centerX, centerY, k)}
                         chromInfoPath={view.chromInfoPath}
+                        twoD={true}
                      />) : null;
                 //genomePositionSearchBox = null;
 
