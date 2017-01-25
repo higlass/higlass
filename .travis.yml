@@ -1,26 +1,21 @@
 language: node_js
-
 node_js:
-  - "6"
-
+- '6'
 branches:
   only:
   - master
   - develop
-  - "/^v.*$/"
-
+  - /^v.*$/
 before_script:
-  - npm install --quiet -g gulp
-  - npm install
-
+- npm install --quiet -g gulp
+- npm install
 before_deploy:
-  - npm run compile
-
+- npm run compile
 deploy:
-  - provider: releases
-    api_key:
-      secure: "AwxjKcpbqMEWy9mqqgBJyLCmVWythq9V6zS9D1RbMnL868K2ByzJLMwIeqooeaHPxYevpz4ja6ToeJhXGCdv6zpp2axA998j6qvaLQgH/uNVmSo2ciPUOKAN2k9ghi2LHWBEMEgROkstccmGcVnpzEBBcVSl7p74RoheJ4dsJuap8nw6PGY0v7nlER5id4N09hvDKJw7pvv892h0XQD9v7y6A+LURekMjIjenlxWvdu/+frHhb5aj85f0HCV/tG1CWciwk0nUtAaubTj01pUIerP9q9ejIr6bWk/qfsh8hwJLfLnsDkUlhGYSfi1vMovZGOnVm5fups4nAdbf8JVCTEETQ21FfvPDvcpNLQOMLCA0P4OQuC0oacnV/DYxGe1ygGDp73RK7vJDSTjbGEjwS1YWF8C/iZhUGigju9CEnweLWXs19R7tKbOI5AB4JKGP/KY6LVU2Ca8I4ZC1RFvfvpTZomNVWXPAEJ6zuIwGMuMJYO+EhtSHbKq7qGbnbaGQpEseOpENJsIQQUPpQIJGh0NYqXQTvmNKy1LcmdWIMPmJKSZNNXiGvEXOD4wbcmd7YjfAKwwFtYQkrnamVC/j0V1b4fanTcvJIyCYuJNRENf73wGTcgnPQKZGt1uQK40hvPLCM1bTDdfUURhW5egtrXGEskpukBK2LAMDQoDPJs="
-    file: "dist.zip"
-    skip_cleanup: true
-    on:
-      tags: true
+- provider: releases
+  api_key:
+    secure: CvSRQRmD0Rt/+TnPZ1aL8VDE0rBqMrSUv/d0svN43wKdcykg5aDEjrJN7AG9mjD9mJKL58ptRVJqUVPdC6Mkg18bbvphO3Mug0/Sxjn6/0H0x/Dmp4AMz2mtLzKkZsrlpxrQQjdGI2NZMzQ5ZfAoSA39ovfGzMP+wikVbrS2+qjFLlyg9iY89iHD1IgaZxZLnYZuV5HBTchWN7TkL9TncclU34vuWj/BF9yYl/SHxbGPtD7ZG1xmhOK1rART7lqFLEYgke0pjE6DkLrqLhS5gjSlwhx/fKbn6cWgOL6K8A5Jy66JWP66p5y4BoxHPXKK9k+DLATW7qe9d2L1/K8wvtALBtxVIjibQRRJreHjdhGfn3XCIWOGpvsYZ8a84vnTQcbmJJk9II0Bcajn5EAp3mqVH7MHgpc0XPA7azo7C04x2divZHeppO7U4bxFjx8IUGvyaRoS6ymYIQLeapX9OII6zZanmI64qAHkAcKH5IDvCjscDl3jrLMj/q0+bSSkHGarB5STN8PYeGirMVlqIDbExmbvs9STLZeKnq/kn6fPV5GJMNEm3KkyjyILeNQwD3WJfP4QPAMAtiAE0MGZ03PsxW8K73yHz8uaVkSONRDqIk0eFJUdZ49DwIomK42hkZf7QwNtHKm15UZlGCQVXMRdJXCEHdT5+PJzzzvY3yQ=
+  file: dist.zip
+  skip_cleanup: true
+  on:
+    tags: true
