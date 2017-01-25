@@ -30,5 +30,5 @@ make
 ## Update version
 
 ```
-npm version patch
+npm version patch; git push --tags
 ```
