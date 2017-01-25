@@ -138,7 +138,7 @@ export class PixiTrack extends Track {
     }
 
     rerender(options) {
-        console.log('rerendering...', options)
+        //console.log('rerendering...', options)
         this.options = options;
         this.draw();
     }

@@ -1155,12 +1155,14 @@ export class HiGlassComponent extends React.Component {
     console.log('views:', this.state.views);
     let newJson = JSON.parse(JSON.stringify(this.props.viewConfig));
     newJson.views = dictItems(this.state.views).map(k => {
-        // k[1] is the actual view, k[0] is its uid
-        // it is so, because that is what dictItems returns
-        k[1].uid = k[0];
-        k[1].initialXDomain = this.xScales[k[1].uid].domain();
-        k[1].initialYDomain = this.yScales[k[1].uid].domain();
-        return k[1];
+        let newView = JSON.parse(JSON.stringify(k[1]));
+        let uid = k[0];
+
+        newView.uid = uid;
+        newView.initialXDomain = this.xScales[uid].domain();
+        newView.initialYDomain = this.yScales[uid].domain();
+
+        return newView;
     });
 
     newJson.zoomLocks = this.serializeZoomLocks(this.zoomLocks);
@@ -1501,6 +1503,7 @@ export class HiGlassComponent extends React.Component {
                         removeViewportChangedListener = {() => this.removeScalesChangedListener(view.uid, view.uid)}
                         setCenters = {(centerX, centerY, k) => this.setCenters[view.uid](centerX, centerY, k)}
                         chromInfoPath={view.chromInfoPath}
+                        twoD={true}
                      />) : null;
                 //genomePositionSearchBox = null;
 

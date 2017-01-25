@@ -71,9 +71,11 @@ export class CloseTrackMenu extends React.Component {
                 <div>
                     {this.getSeriesItems()}
                     <hr />
-                    <ContextMenuItem text={'Close Track'} 
+                    <ContextMenuItem
                         onClick={e => this.props.onCloseTrack(this.props.track.uid)}
-                    />
+                    >
+                    {'Close track'}
+                    </ContextMenuItem>
                 </div>
                 )
     }

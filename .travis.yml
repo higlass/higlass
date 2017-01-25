@@ -5,17 +5,16 @@ branches:
   only:
   - master
   - develop
-  - /^v.*$/
+  - "/^v.*$/"
 before_script:
 - npm install --quiet -g gulp
 - npm install
 before_deploy:
 - npm run compile
 deploy:
-- provider: releases
+  provider: releases
   api_key:
-    secure: CvSRQRmD0Rt/+TnPZ1aL8VDE0rBqMrSUv/d0svN43wKdcykg5aDEjrJN7AG9mjD9mJKL58ptRVJqUVPdC6Mkg18bbvphO3Mug0/Sxjn6/0H0x/Dmp4AMz2mtLzKkZsrlpxrQQjdGI2NZMzQ5ZfAoSA39ovfGzMP+wikVbrS2+qjFLlyg9iY89iHD1IgaZxZLnYZuV5HBTchWN7TkL9TncclU34vuWj/BF9yYl/SHxbGPtD7ZG1xmhOK1rART7lqFLEYgke0pjE6DkLrqLhS5gjSlwhx/fKbn6cWgOL6K8A5Jy66JWP66p5y4BoxHPXKK9k+DLATW7qe9d2L1/K8wvtALBtxVIjibQRRJreHjdhGfn3XCIWOGpvsYZ8a84vnTQcbmJJk9II0Bcajn5EAp3mqVH7MHgpc0XPA7azo7C04x2divZHeppO7U4bxFjx8IUGvyaRoS6ymYIQLeapX9OII6zZanmI64qAHkAcKH5IDvCjscDl3jrLMj/q0+bSSkHGarB5STN8PYeGirMVlqIDbExmbvs9STLZeKnq/kn6fPV5GJMNEm3KkyjyILeNQwD3WJfP4QPAMAtiAE0MGZ03PsxW8K73yHz8uaVkSONRDqIk0eFJUdZ49DwIomK42hkZf7QwNtHKm15UZlGCQVXMRdJXCEHdT5+PJzzzvY3yQ=
+    secure: Pr3uxqR7ihrbpIOecTNaI4lJ1eqwNqpzqtWptVOffyZfmJ3EEfJu2swRgpr7Zi2AP6R5IhVdZJ9ZkRFqV0ei8S+OzFSNhYMoqr1ISvP7VxVKxUaDhWeqEE1umRJ6rENQko8mxqC9e8zW8Mx7U/IAnHXfHFlicYwrt5y/xGBOjhaF9W9sPBPG41QTaLswP1Cp5Tyti2rlZ1K6cWFX01gQugVJsdK5/b27wjoq/LKez6xRu2fa0i+FRGhKiYDh/OCduSh4AIEw9jFssjxC87eHP4CyIBYlUhRSqgcT3DMsuw7uxiVBUwrqB2B9GgcWspmN5LWNpHNE1Y/1e2xgPruxu/bhyXd3ZDNdD4iLt/eGVLbLVOjzK8xuhL7X0H9zd4DtheSfOBj6PRw7qUbLiSHt/qUVo9SosWhzOz/2Q0l2+7d8n/oJx5dzNKzQeVrxp5pM9aMph467BxBJQ6h8/KjXf3FO84DmHUyRR4yW4x+LlKlYWpmtQoOf8tjt1Jd0wj7fZyvq0UVcTSBFdQiAsaU75ItBOFXZaUgqYJqKKtT8+DKzbGd8Jw78qzmWuiPkvMh+FxAzVBQq9D1Jr8jFlUz3iBc+BC8N+DV+1tFKlgaBq/SxJ6jcXwhqOBHva6F2RctbG77M94hYYxcmtazO2QwADj2elvxsje7B2XR8O+WPuNs=
   file: dist.zip
-  skip_cleanup: true
   on:
-    tags: true
+      tags: true
