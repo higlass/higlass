@@ -37,10 +37,10 @@ export class SearchField {
         if (twoD) {
             if (y1[0] != y2[0]) {
                 // different chromosomes
-                positionString += " and " +  y1[0] + ':' + stringFormat(Math.floor(y1[1])) + '-' + y2[0] + ':' + stringFormat(Math.ceil(y2[1]));
+                positionString += " & " +  y1[0] + ':' + stringFormat(Math.floor(y1[1])) + '-' + y2[0] + ':' + stringFormat(Math.ceil(y2[1]));
             } else {
                 // same chromosome
-                positionString += " and " +  y1[0] + ':' + stringFormat(Math.floor(y1[1])) + '-' + stringFormat(Math.ceil(y2[1]));
+                positionString += " & " +  y1[0] + ':' + stringFormat(Math.floor(y1[1])) + '-' + stringFormat(Math.ceil(y2[1]));
             }
         }
 
@@ -226,7 +226,7 @@ export class SearchField {
         }
         console.log('offset:', offset);
 
-        var parts = text.split(' and ');
+        var parts = text.split(' & ');
 
         if (parts.length > 1) {
             // we need to move both axes
