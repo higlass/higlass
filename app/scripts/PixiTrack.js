@@ -96,14 +96,16 @@ export class PixiTrack extends Track {
             this.labelText.anchor.y = 0;
 
             this.labelText.x += this.labelText.width / 2;
-        } else if (this.options.labelPosition == 'bottomLeft') {
+        } else if ((this.options.labelPosition == 'bottomLeft' && !this.flipText ) ||
+                   (this.options.labelPosition == 'topRight' && this.flipText)) {
             this.labelText.x = this.position[0];
             this.labelText.y = this.position[1] + this.dimensions[1];
             this.labelText.anchor.x = 0.5;
             this.labelText.anchor.y = 1;
 
             this.labelText.x += this.labelText.width / 2;
-        } else if (this.options.labelPosition == 'topRight') {
+        } else if ((this.options.labelPosition == 'topRight' && !this.flipText) ||
+                   (this.options.labelPosition == 'bottomLeft' && this.flipText)) {
             this.labelText.x = this.position[0] + this.dimensions[0];;
             this.labelText.y = this.position[1];
             this.labelText.anchor.x = 0.5;
