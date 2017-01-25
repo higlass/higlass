@@ -45,7 +45,7 @@ export class SearchField {
         }
 
 
-        if (x1[2] < 0 || x2 > [2] || (twoD && (y1[2] < 0 || y2[2] > 0))) {
+        if (x1[2] < 0 || x2[2] > 0 || (twoD && (y1[2] < 0 || y2[2] > 0))) {
             // did any of the coordinates exceed the genome boundaries
             positionString += " [offset " + x1[2] + "," + x2[2];
             if (twoD) {
