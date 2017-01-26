@@ -1,4 +1,15 @@
 import {HeatmapOptions} from './HeatmapOptions.jsx';
+import {svgHorizontalLineIcon} from './icons.js';
+import {svgVerticalLineIcon} from './icons.js';
+import {svg2DTilesIcon} from './icons.js';
+import {svg2DHeatmapIcon} from './icons.js';
+import {svg1DAxisIcon} from './icons.js';
+import {svgVertical1DAxisIcon} from './icons.js';
+import {svgGeneAnnotationsIcon} from './icons.js';
+import {svgVerticalGeneAnnotationsIcon} from './icons.js';
+import {svg1DTilesIcon} from './icons.js';
+import {svgVertical1DTilesIcon} from './icons.js';
+import {svgArrowheadDomainsIcon} from './icons.js';
 
 let localServer = "localhost:8000";
 let remoteServer = "52.45.229.11";
@@ -24,6 +35,9 @@ export const optionsInfo = {
     }
 }
 
+//
+console.log('svgHorizontalLineIcon:', svgHorizontalLineIcon);
+
 
 export const tracksInfo = [
     {
@@ -32,7 +46,7 @@ export const tracksInfo = [
         local: true,
         orientation: '1d-vertical',
         name: 'Left Axis',
-        thumbnail: 'vertical-axis-thumbnail.png'
+        thumbnail: svgVertical1DAxisIcon
     },
     {
         type: 'top-axis',
@@ -40,7 +54,7 @@ export const tracksInfo = [
         local: true,
         orientation: '1d-horizontal',
         name: 'Top Axis',
-        thumbnail: 'horizontal-axis-thumbnail.png',
+        thumbnail: svg1DAxisIcon,
         defaultOptions: {}
     },
     {
@@ -48,7 +62,7 @@ export const tracksInfo = [
         datatype: ['matrix'],
         local: false,
         orientation: '2d',
-        thumbnail: 'heatmap-thumbnail.png',
+        thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
             colorRange: ['#FFFFFF','#F8E71C', '#F5A623', '#D0021B' ],
             maxZoom: null
@@ -60,7 +74,7 @@ export const tracksInfo = [
         datatype: ['vector'],
         local: false,
         orientation: '1d-horizontal',
-        thumbnail: 'horizontal-line-thumbnail.png',
+        thumbnail: svgHorizontalLineIcon,
         defaultOptions: {
 
         }
@@ -70,7 +84,7 @@ export const tracksInfo = [
         datatype: ['vector'],
         local: false,
         orientation: '1d-vertical',
-        thumbnail: 'vertical-line-thumbnail.png'
+        thumbnail: svgVerticalLineIcon
     },
     {
         type: 'horizontal-1d-tiles',
@@ -78,7 +92,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         name: 'Horizontal 1D Tile Outlines',
-        thumbnail: 'horizontal-1d-tiles-thumbnail.png'
+        thumbnail: svg1DTilesIcon
 
     },
     {
@@ -86,7 +100,8 @@ export const tracksInfo = [
         datatype: ['1d-tiles'],
         local: false,
         orientation: '1d-vertical',
-        name: 'Vertical 1D Tile Outlines'
+        name: 'Vertical 1D Tile Outlines',
+        thumbnail: svgVertical1DTilesIcon
     },
     {
         type: '2d-tiles',
@@ -94,7 +109,7 @@ export const tracksInfo = [
         local: false,
         orientation: '2d',
         name: '2D Tile Outlines',
-        thumbnail: '2d-tiles-thumbnail.png'
+        thumbnail: svg2DTilesIcon
     },
     {
         type: 'top-stacked-interval',
@@ -126,7 +141,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         name: 'Gene Annotations',
-        thumbnail: null,
+        thumbnail: svgGeneAnnotationsIcon,
         availableOptions: [ 'labelPosition' ]
     },
     {
@@ -135,7 +150,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         name: 'Gene Annotations',
-        thumbnail: null,
+        thumbnail: svgVerticalGeneAnnotationsIcon,
         availableOptions: [ 'labelPosition' ]
     },
     {
@@ -144,7 +159,7 @@ export const tracksInfo = [
         local: false,
         orientation: '2d',
         name: 'Arrowhead Domains',
-        thumbnail: null
+        thumbnail: svgArrowheadDomainsIcon
     },
 
     {

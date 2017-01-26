@@ -16,7 +16,6 @@ export class TiledPixiTrack extends PixiTrack {
          * @param tilesetUid: The data set to get the tiles from the server
          */
         super(scene, options);
-        console.log('options:', options);
 
         // the tiles which should be visible (although they're not necessarily fetched)
         this.visibleTiles = new Set();
@@ -117,6 +116,7 @@ export class TiledPixiTrack extends PixiTrack {
         // calculate which tiles are obsolete and remove them
         // fetchedTileID are remote ids
         let toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
+
 
         this.removeTiles(toRemove);
         this.fetchNewTiles(toFetch);
@@ -263,6 +263,7 @@ export class TiledPixiTrack extends PixiTrack {
                 this.pMain.addChild(newGraphics);
 
                 this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;
+                //console.log('fetchedTiles:', this.fetchedTiles[fetchedTileIDs[i]]);
                 this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
 
                 //console.log('adding graphics...', fetchedTileIDs[i]);
@@ -342,21 +343,26 @@ export class TiledPixiTrack extends PixiTrack {
         for (let i = 0; i < this.visibleTiles.length; i++) {
             let tileId = this.visibleTiles[i].tileId;
 
+            if (!loadedTiles[this.visibleTiles[i].remoteId])
+                continue;
+
 
             if (this.visibleTiles[i].remoteId in loadedTiles) {
-
                 if (!(tileId in this.fetchedTiles)) {
                     // this tile may have graphics associated with it
                     this.fetchedTiles[tileId] = this.visibleTiles[i];
                 }
+
+
 
                 this.fetchedTiles[tileId].tileData = loadedTiles[this.visibleTiles[i].remoteId];
             }
         }
 
         for (let key in loadedTiles) {
-            if (this.fetching.has(key))
-                this.fetching.delete(key);
+            if (loadedTiles[key])
+                if (this.fetching.has(key))
+                    this.fetching.delete(key);
 
         }
 

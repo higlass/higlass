@@ -130,12 +130,12 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                     // genes on the + strand drawn above and in blue
                     yMiddle -= 6;
                     textYMiddle -= 10;
-                    graphics.lineStyle(1, 0x0000FF, 1);
+                    graphics.lineStyle(1, 0x0000FF, 0.3);
                 } else {
                     // genes on the - strand drawn below and in red
                     yMiddle += 6;
                     textYMiddle += 23;
-                    graphics.lineStyle(1, 0xFF0000, 1);
+                    graphics.lineStyle(1, 0xFF0000, 0.3);
                 }
 
                 let height = valueScale(Math.log(+geneInfo[4]));

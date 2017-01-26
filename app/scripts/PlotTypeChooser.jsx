@@ -78,11 +78,14 @@ export class PlotTypeChooser extends React.Component {
             availableTrackTypesList = this.availableTrackTypes
                 .sort((a,b) => { return a.type < b.type})
                 .map(x => {
-                let thumbnailLocation = "images/thumbnails/" + trackTypeToInfo[x.type].thumbnail;
+                let thumbnail = trackTypeToInfo[x.type].thumbnail;
                 let blankLocation = "images/thumbnails/blank.png";
                 let imgTag = trackTypeToInfo[x.type].thumbnail ? 
-                        <img src={thumbnailLocation} width={15} className='context-menu-thumbnail'/> :
-                        <img src={blankLocation} width={15} className='context-menu-thumbnail'/> 
+                        <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} dangerouslySetInnerHTML={{__html: thumbnail.outerHTML}} /> :
+                        <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} >
+                            <svg width={30} height={20} />
+                        </div>
+                console.log('imgTag:', imgTag);
                 return (<li
                             style= {{listStyle: 'none', paddingLeft: 5, paddingBottom: 0}}
                             className={ this.state.selectedPlotType.type == x.type ? 'plot-type-selected' : ''}
@@ -91,7 +94,9 @@ export class PlotTypeChooser extends React.Component {
 
                             {imgTag}
 
-                                <span>
+                                <span
+                                    style={{verticalAlign: "middle"}}
+                                >
                                 {x.type}</span>
                         </li>);
             });

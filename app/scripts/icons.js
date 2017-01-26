@@ -1,3 +1,5 @@
+import {select} from 'd3-selection';
+
 export const COG = {
   id: 'cog',
   paths: [
@@ -63,6 +65,12 @@ export const CONTENT_COPY = {
   viewBox: '0 0 712 712'
 }
 
+export const TRACK_LINE = {
+  id: "trackLine",
+  paths: ["M60 20 L50 52 L40 26 L34 46 L24 30 L14 50 L4 12"],
+  viewBox: '0 0 60 60'
+}
+
 export const all = [
   COG,
   CROSS,
@@ -73,3 +81,190 @@ export const all = [
   PLUS,
   CONTENT_COPY
 ];
+
+let parser = new DOMParser();
+
+let horizontalLineStr = `
+<svg width="20px" height="20px" viewBox="0 0 135 85" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>line</title>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <polyline id="Path" stroke="#4990E2" stroke-width="8" points="2 45.5625 20.7460938 6.3359375 36.828125 86.6484375 59.8945312 17.5742188 79.0390625 70.703125 99.9335938 27 112.769531 81.1601562 132.078125 3"></polyline>
+    </g>
+</svg>
+`
+
+export const svgHorizontalLineIcon = parser.parseFromString(horizontalLineStr, 'text/xml').documentElement;
+export const svgVerticalLineIcon = select(parser.parseFromString(horizontalLineStr, 'text/xml').documentElement)
+                                                .style('transform', 'rotate(90deg)')
+                                                .node();
+
+let tiles2DIconStr = `
+<svg width="20px" height="20px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41 (35326) - http://www.bohemiancoding.com/sketch -->
+    <title>2d-tiles-icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="tiles2DIconStr-path-1" x="0" y="0" width="30" height="30"></rect>
+        <mask id="tiles2DIconStr-mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="30" height="30" fill="white">
+            <use xlink:href="#tiles2DIconStr-path-1"></use>
+        </mask>
+        <rect id="tiles2DIconStr-path-3" x="0" y="30" width="30" height="30"></rect>
+        <mask id="tiles2DIconStr-mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="30" height="30" fill="white">
+            <use xlink:href="#tiles2DIconStr-path-3"></use>
+        </mask>
+        <rect id="tiles2DIconStr-path-5" x="30" y="0" width="30" height="30"></rect>
+        <mask id="tiles2DIconStr-mask-6" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="30" height="30" fill="white">
+            <use xlink:href="#tiles2DIconStr-path-5"></use>
+        </mask>
+        <rect id="tiles2DIconStr-path-7" x="30" y="30" width="30" height="30"></rect>
+        <mask id="tiles2DIconStr-mask-8" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="30" height="30" fill="white">
+            <use xlink:href="#tiles2DIconStr-path-7"></use>
+        </mask>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <use id="Rectangle" stroke="#979797" mask="url(#tiles2DIconStr-mask-2)" stroke-width="6" fill="#EEE0E0" xlink:href="#tiles2DIconStr-path-1"></use>
+        <use id="Rectangle" stroke="#979797" mask="url(#tiles2DIconStr-mask-4)" stroke-width="6" fill="#EEE0E0" xlink:href="#tiles2DIconStr-path-3"></use>
+        <use id="Rectangle" stroke="#979797" mask="url(#tiles2DIconStr-mask-6)" stroke-width="6" fill="#EEE0E0" xlink:href="#tiles2DIconStr-path-5"></use>
+        <use id="Rectangle" stroke="#979797" mask="url(#tiles2DIconStr-mask-8)" stroke-width="6" fill="#EEE0E0" xlink:href="#tiles2DIconStr-path-7"></use>
+    </g>
+</svg>
+`
+
+export const svg2DTilesIcon = parser.parseFromString(tiles2DIconStr, 'text/xml').documentElement;
+
+let heatmap2DStr = `
+<svg width="20px" height="20px" viewBox="0 0 90 90" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41 (35326) - http://www.bohemiancoding.com/sketch -->
+    <title>2d-heatmap</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="heatmap2DStr-path-1" x="0" y="0" width="30" height="30"></rect>
+        <rect id="heatmap2DStr-path-2" x="30" y="0" width="30" height="30"></rect>
+        <rect id="heatmap2DStr-path-3" x="60" y="0" width="30" height="30"></rect>
+        <rect id="heatmap2DStr-path-4" x="0" y="30" width="30" height="30"></rect>
+        <rect id="heatmap2DStr-path-5" x="30" y="30" width="30" height="30"></rect>
+        <rect id="heatmap2DStr-path-6" x="60" y="30" width="30" height="30"></rect>
+        <rect id="heatmap2DStr-path-7" x="0" y="60" width="30" height="30"></rect>
+        <rect id="heatmap2DStr-path-8" x="30" y="60" width="30" height="30"></rect>
+        <rect id="heatmap2DStr-path-9" x="60" y="60" width="30" height="30"></rect>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <use id="Rectangle" fill="#858372" xlink:href="#heatmap2DStr-path-1"></use>
+        <use id="Rectangle" fill="#BBBAA4" xlink:href="#heatmap2DStr-path-2"></use>
+        <use id="Rectangle" fill="#ECECD5" xlink:href="#heatmap2DStr-path-3"></use>
+        <use id="Rectangle" fill="#BCBD9E" xlink:href="#heatmap2DStr-path-4"></use>
+        <use id="Rectangle" fill="#817C7C" xlink:href="#heatmap2DStr-path-5"></use>
+        <use id="Rectangle" fill="#BBBAA4" xlink:href="#heatmap2DStr-path-6"></use>
+        <use id="Rectangle" fill="#ECECD5" xlink:href="#heatmap2DStr-path-7"></use>
+        <use id="Rectangle" fill="#BBBAA4" xlink:href="#heatmap2DStr-path-8"></use>
+        <use id="Rectangle" fill="#7B7777" xlink:href="#heatmap2DStr-path-9"></use>
+    </g>
+</svg>
+`
+
+export const svg2DHeatmapIcon = parser.parseFromString(heatmap2DStr, 'text/xml').documentElement;
+
+let axis1D = `
+<svg width="20px" height="20px" viewBox="0 0 77 33" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41 (35326) - http://www.bohemiancoding.com/sketch -->
+    <title>axis-1d</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <polyline id="Path" stroke="#979797" stroke-width="8" transform="translate(38.258485, 27.557860) scale(1, -1) translate(-38.258485, -27.557860) " points="4 27.05786 36.7512307 27.05786 72.5169695 27.05786"></polyline>
+        <path d="M38,24.484375 L38,3" id="Path-2" stroke="#979797" stroke-width="4"></path>
+    </g>
+</svg>
+`
+
+export const svg1DAxisIcon = parser.parseFromString(axis1D, 'text/xml').documentElement;
+export const svgVertical1DAxisIcon = select(parser.parseFromString(axis1D, 'text/xml').documentElement)
+                                                .style('transform', 'rotate(90deg)')
+                                                .node();
+
+let geneAnnotations = `
+<svg width="20px" height="20px" viewBox="0 0 171 116" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41 (35326) - http://www.bohemiancoding.com/sketch -->
+    <title>gene-annotations</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="geneAnnotations-path-1" x="34" y="0" width="24" height="116"></rect>
+        <mask id="geneAnnotations-mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="24" height="116" fill="white">
+            <use xlink:href="#geneAnnotations-path-1"></use>
+        </mask>
+        <rect id="geneAnnotations-path-3" x="80" y="0" width="56" height="116"></rect>
+        <mask id="geneAnnotations-mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="56" height="116" fill="white">
+            <use xlink:href="#geneAnnotations-path-3"></use>
+        </mask>
+        <rect id="geneAnnotations-path-5" x="147" y="40" width="24" height="35"></rect>
+        <mask id="geneAnnotations-mask-6" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="24" height="35" fill="white">
+            <use xlink:href="#geneAnnotations-path-5"></use>
+        </mask>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M12.71875,58 L147.10172,58" id="Path" stroke="#979797" stroke-width="8"></path>
+        <use id="Rectangle" stroke="#979797" mask="url(#geneAnnotations-mask-2)" stroke-width="4" fill="#DDDD66" xlink:href="#geneAnnotations-path-1"></use>
+        <use id="Rectangle" stroke="#979797" mask="url(#geneAnnotations-mask-4)" stroke-width="4" fill="#DDDD66" xlink:href="#geneAnnotations-path-3"></use>
+        <use id="Rectangle" stroke="#979797" mask="url(#geneAnnotations-mask-6)" stroke-width="4" fill="#DDDD66" xlink:href="#geneAnnotations-path-5"></use>
+        <polygon id="Triangle" stroke="#979797" fill="#D8D8D8" points="25 57.5 1 75 1 40"></polygon>
+    </g>
+</svg>
+`
+
+export const svgGeneAnnotationsIcon = parser.parseFromString(geneAnnotations, 'text/xml').documentElement;
+export const svgVerticalGeneAnnotationsIcon = select(parser.parseFromString(geneAnnotations, 'text/xml').documentElement)
+                                                .style('transform', 'rotate(90deg)')
+                                                .node();
+
+let tiles1DIconStr = `
+<svg width="20px" height="20px" viewBox="0 0 180 90" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>1d-tiles-icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="tiles1DIconStr-path-1" x="0" y="0" width="90" height="90"></rect>
+        <mask id="tiles1DIconStr-mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="90" height="90" fill="white">
+            <use xlink:href="#tiles1DIconStr-path-1"></use>
+        </mask>
+        <rect id="tiles1DIconStr-path-3" x="90" y="0" width="90" height="90"></rect>
+        <mask id="tiles1DIconStr-mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="90" height="90" fill="white">
+            <use xlink:href="#tiles1DIconStr-path-3"></use>
+        </mask>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <use id="Rectangle" stroke="#979797" mask="url(#tiles1DIconStr-mask-2)" stroke-width="12" fill="#E6D5D5" xlink:href="#tiles1DIconStr-path-1"></use>
+        <use id="Rectangle" stroke="#979797" mask="url(#tiles1DIconStr-mask-4)" stroke-width="12" fill="#E6D5D5" xlink:href="#tiles1DIconStr-path-3"></use>
+    </g>
+</svg>
+`
+
+export const svg1DTilesIcon = parser.parseFromString(tiles1DIconStr, 'text/xml').documentElement;
+export const svgVertical1DTilesIcon = select(parser.parseFromString(tiles1DIconStr, 'text/xml').documentElement)
+                                                .style('transform', 'rotate(90deg)')
+                                                .node();
+
+let arrowHeadDomainsStr = `
+<svg width="20px" height="20px" viewBox="0 0 111 111" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>arrowhead-domains</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="arrowHeadDomainsStr-path-1" x="0" y="0" width="90" height="90"></rect>
+        <mask id="arrowHeadDomainsStr-mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="90" height="90" fill="white">
+            <use xlink:href="#arrowHeadDomainsStr-path-1"></use>
+        </mask>
+        <rect id="arrowHeadDomainsStr-path-3" x="52" y="52" width="59" height="59"></rect>
+        <mask id="arrowHeadDomainsStr-mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="59" height="59" fill="white">
+            <use xlink:href="#arrowHeadDomainsStr-path-3"></use>
+        </mask>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" fill-opacity="0">
+        <use id="Rectangle" stroke="#979797" mask="url(#arrowHeadDomainsStr-mask-2)" stroke-width="22" fill="#D8D8D8" xlink:href="#arrowHeadDomainsStr-path-1"></use>
+        <use id="Rectangle" stroke="#979797" mask="url(#arrowHeadDomainsStr-mask-4)" stroke-width="22" fill="#D8D8D8" xlink:href="#arrowHeadDomainsStr-path-3"></use>
+    </g>
+</svg>
+`
+
+export const svgArrowheadDomainsIcon = parser.parseFromString(arrowHeadDomainsStr, 'text/xml').documentElement;
+
+console.log('s:', select(svgArrowheadDomainsIcon).attr('transform', 'rotate(90)'));

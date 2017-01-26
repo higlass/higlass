@@ -1158,6 +1158,8 @@ export class HiGlassComponent extends React.Component {
         let newView = JSON.parse(JSON.stringify(k[1]));
         let uid = k[0];
 
+        console.log('newView:', newView);
+
         newView.uid = uid;
         newView.initialXDomain = this.xScales[uid].domain();
         newView.initialYDomain = this.yScales[uid].domain();
@@ -1328,6 +1330,7 @@ export class HiGlassComponent extends React.Component {
         let track = getTrackByUid(view.tracks, trackUid);
 
         track.options = Object.assign(track.options, newOptions);
+        console.log('track.options:', track.options)
         this.setState({
             views: this.state.views
         });

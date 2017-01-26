@@ -34,7 +34,6 @@ export class NestedContextMenu extends ContextMenuContainer {
             
             let menuItem = this.state.submenuShown;
 
-            console.log('nested menu:', menuItem);
             return (<NestedContextMenu
                         position={position}
                         menuItems={menuItem.children}
@@ -47,13 +46,11 @@ export class NestedContextMenu extends ContextMenuContainer {
 
     render() {
         let menuItems = [];
-        console.log('menuItems:', menuItems);
 
         // iterate over the list 
         for (let menuItemKey in this.props.menuItems) {
             let menuItem = this.props.menuItems[menuItemKey];
 
-            console.log('menuItem:', menuItem);
             menuItems.push(<ContextMenuItem
                         key={menuItemKey}
                         onClick={menuItem.handler ? menuItem.handler : () => null}
