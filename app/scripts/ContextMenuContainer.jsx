@@ -59,25 +59,61 @@ export class ContextMenuContainer extends React.Component {
         this.divDom = ReactDOM.findDOMNode(this.div);
         let bbox = this.divDom.getBoundingClientRect();
 
+        console.log('this.state.orientation:', this.state.orientation);
+
+        let parentBbox = this.props.parentBbox ?  this.props.parentBbox :
+            {'top': this.props.position.top,
+             'left': this.props.position.left,
+             'width': 0, 'height': 0};
+
+        let orientation = this.state.orientation;
+
         if (this.state.orientation == 'left') {
-            let leftPosition = this.props.position.left - bbox.width;
-            leftPosition = leftPosition < 0 ? 0 : leftPosition;
+            let leftPosition = parentBbox.left - bbox.width;
+            if (leftPosition < 0)  {
+                if (parentBbox.left + parentBbox.width + bbox.width > window.innerWidth) {
+                    leftPosition = 0;  // goes off the side either way
+                } else {
+                    // switch to the right
+                    leftPosition = parentBbox.left + parentBbox.width;
+                    orientation = 'right';
+                    console.log('x lp', leftPosition, parentBbox.left, parentBbox.width);
+                }
+            } 
+
+            // we're fine keeping it left oriented
 
             this.setState({
                 left: leftPosition,
-                top: this.props.position.top
+                top: this.props.position.top,
+                orientation: orientation
             });
         }  else {
-            if ((bbox.left + bbox.width) > window.innerWidth) {
-                let leftPosition = this.props.position.left - bbox.width;
+            let leftPosition = parentBbox.left + parentBbox.width;
+
+            if ((parentBbox.left + parentBbox.width + bbox.width) > window.innerWidth) {
+                if (parentBbox.left - bbox.width < 0) {
+                    // goes off both sides
+                    leftPosition = 0;
+                    orientation = 'right';
+                } else {
+                    console.log('yyy');
+                    leftPosition = parentBbox.left - bbox.width;
+                    orientation = 'left';
+
+                }
+                /*
+                console.log('here:', this.props.position);
                 leftPosition = leftPosition < 0 ? 0 : leftPosition;
 
-                this.setState({
-                    left: leftPosition,
-                    top: this.props.position.top,
-                    orientation: 'left'
-                });
+                console.log('leftPosition:', leftPosition);
+                */
             }
+            this.setState({
+                left: leftPosition,
+                top: this.props.position.top,
+                orientation: orientation
+            });
         }
     }
 
@@ -134,6 +170,8 @@ export class ContextMenuContainer extends React.Component {
 
     render() {
         let stylePosition = {'left': this.state.left}
+
+        console.log('this.state.left:', this.state.left)
 
         if (!this.state.left)
             stylePosition = {'right': this.state.right}

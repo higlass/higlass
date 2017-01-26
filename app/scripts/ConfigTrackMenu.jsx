@@ -108,6 +108,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                         onConfigureTrack={this.props.onConfigureTrack}
                         orientation={this.state.orientation}
                         position={position}
+                        parentBbox={bbox}
                         series={this.state.submenuShown}
                         trackOrientation={this.props.trackOrientation}
                         closeMenu={this.props.closeMenu}
