@@ -43,7 +43,6 @@ export class SeriesListMenu extends ContextMenuContainer {
     }
 
     getSubmenu() {
-        console.log('getSubmenu');
         if (this.state.submenuShown) {
             // the bounding box of the element which initiated the subMenu
             // necessary so that we can position the submenu next to the initiating
@@ -81,10 +80,8 @@ export class SeriesListMenu extends ContextMenuContainer {
                    if (optionsInfo[optionType].inlineOptions) {
                        // we can simply select this option from the menu
                        for (let inlineOptionValue in optionsInfo[optionType].inlineOptions) {
-                           console.log('inlineOptionValue', inlineOptionValue);
 
                            let inlineOption = optionsInfo[optionType].inlineOptions[inlineOptionValue];
-                           console.log('inlineOption:', inlineOption);
 
                            if (!menuItems[optionType].children)
                                menuItems[optionType].children = {};
@@ -92,7 +89,6 @@ export class SeriesListMenu extends ContextMenuContainer {
                            menuItems[optionType].children[inlineOptionValue] = {
                                name: inlineOption.name,
                                handler: () => { 
-                                   console.log('handling', track);
                                    track.options[optionType] = inlineOptionValue;
                                    this.props.onTrackOptionsChanged(track.uid, track.options);
                                    this.props.closeMenu();
@@ -118,7 +114,8 @@ export class SeriesListMenu extends ContextMenuContainer {
             return (<NestedContextMenu
                         position={position}
                         menuItems={menuItems}
-                        orientation={this.props.orientation}
+                        orientation={this.state.orientation}
+                        parentBbox={bbox}
                         closeMenu={this.props.closeMenu}
                     />)
 

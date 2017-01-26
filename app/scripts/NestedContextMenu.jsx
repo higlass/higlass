@@ -37,7 +37,8 @@ export class NestedContextMenu extends ContextMenuContainer {
             return (<NestedContextMenu
                         position={position}
                         menuItems={menuItem.children}
-                        orientation={this.props.orientation}
+                        orientation={this.state.orientation}
+                        parentBbox={bbox}
                     />)
         } else {
             return (<div />);
