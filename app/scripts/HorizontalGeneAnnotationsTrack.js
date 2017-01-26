@@ -13,6 +13,11 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         //create texts
         tile.texts = {};
 
+        let MAX_TILE_ENTRIES = 20;
+
+        tile.tileData.sort((a,b) => b.importance - a.importance);
+        tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
+
         tile.tileData.forEach(td => {
             let geneInfo = td.fields;
             let fill = 'blue';
