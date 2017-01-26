@@ -75,16 +75,15 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         thumbnail: svgHorizontalLineIcon,
-        defaultOptions: {
-
-        }
+        availableOptions: [ 'labelPosition' ]
     },
     {
         type: 'vertical-line',
         datatype: ['vector'],
         local: false,
         orientation: '1d-vertical',
-        thumbnail: svgVerticalLineIcon
+        thumbnail: svgVerticalLineIcon,
+        availableOptions: [ 'labelPosition' ]
     },
     {
         type: 'horizontal-1d-tiles',
@@ -92,7 +91,8 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         name: 'Horizontal 1D Tile Outlines',
-        thumbnail: svg1DTilesIcon
+        thumbnail: svg1DTilesIcon,
+        availableOptions: [ 'labelPosition' ]
 
     },
     {
@@ -101,7 +101,8 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         name: 'Vertical 1D Tile Outlines',
-        thumbnail: svgVertical1DTilesIcon
+        thumbnail: svgVertical1DTilesIcon,
+        availableOptions: [ 'labelPosition' ]
     },
     {
         type: '2d-tiles',
@@ -109,21 +110,24 @@ export const tracksInfo = [
         local: false,
         orientation: '2d',
         name: '2D Tile Outlines',
-        thumbnail: svg2DTilesIcon
+        thumbnail: svg2DTilesIcon,
+        availableOptions: [ 'labelPosition' ]
     },
     {
         type: 'top-stacked-interval',
         datatype: ['stacked-interval'],
         local: false,
         orientation: '1d-horizontal',
-        thumbnail: 'horizontal-stacked-interval.png'
+        thumbnail: 'horizontal-stacked-interval.png',
+        availableOptions: [ 'labelPosition' ]
     },
     {
         type: 'left-stacked-interval',
         datatype: ['stacked-interval'],
         local: false,
         orientation: '1d-vertical',
-        thumbnail: 'vertical-stacked-interval.png'
+        thumbnail: 'vertical-stacked-interval.png',
+        availableOptions: [ 'labelPosition' ]
     },
     {
         type: 'viewport-projection-center',
@@ -159,7 +163,8 @@ export const tracksInfo = [
         local: false,
         orientation: '2d',
         name: 'Arrowhead Domains',
-        thumbnail: svgArrowheadDomainsIcon
+        thumbnail: svgArrowheadDomainsIcon,
+        availableOptions: [ 'labelPosition' ]
     },
 
     {

@@ -22,7 +22,7 @@ export class ExportLinkModal extends React.Component {
     render() {
         let linkLocation = this.props.linkLocation ?
             (<input 
-                style={{width: "100%"}}
+                style={{width: 500}}
                 value={this.props.linkLocation}
                 readOnly={true}
              />) :
