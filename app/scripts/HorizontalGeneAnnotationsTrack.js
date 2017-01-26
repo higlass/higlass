@@ -162,7 +162,6 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 if (!ft.texts) {
                     // tile probably hasn't been initialized yet
                     return;
-
                 }
                 let text = ft.texts[geneName];
 

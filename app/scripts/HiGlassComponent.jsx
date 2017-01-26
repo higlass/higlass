@@ -79,11 +79,13 @@ export class HiGlassComponent extends React.Component {
           let viewsByUid = this.processViewConfig(this.props.viewConfig);
 
           this.state = {
+            bounded: this.props.options.bounded,
             currentBreakpoint: 'lg',
             mounted: false,
             width: 0,
             height: 0,
             layouts: {},
+            rowHeight: 30,
             svgElement: null,
             canvasElement: null,
             views: viewsByUid,
@@ -105,9 +107,9 @@ export class HiGlassComponent extends React.Component {
         // all the elements based on their bounding boxes. If the window isn't
         // in focus, everything is drawn at the top and overlaps. When it gains
         // focus we need to redraw everything in its proper place
+        this.element = ReactDOM.findDOMNode(this);
         window.addEventListener("focus", this.boundRefreshView);
 
-        this.element = ReactDOM.findDOMNode(this);
         dictValues(this.state.views).map(v => {
             if (!v.layout)
                 v.layout = this.generateViewLayout(v)
@@ -650,16 +652,56 @@ export class HiGlassComponent extends React.Component {
        * Notify the children that the layout has changed so that they
        * know to redraw themselves
        */
+      if (!this.element)
+          return;
+
+      let width = this.element.parentNode.clientWidth;
+      let height = this.element.parentNode.clientHeight;
+
+      let maxHeight = 0;
+      for (let part of layout) {
+            maxHeight = Math.max(maxHeight, part.y + part.h);
+      }
+
       this.handleDragStart();
       this.handleDragStop();
 
-      layout.forEach(l => {
-        let correspondingView = this.state.views[l.i];
+      let MARGIN_HEIGHT = 10;
 
-        if (correspondingView) {
-            correspondingView.layout = l;
+      let marginHeight = MARGIN_HEIGHT * maxHeight - 1;
+      let availableHeight = height - marginHeight;
+
+      let currentRowHeight = this.state.rowHeight;
+      let prospectiveRowHeight = availableHeight / maxHeight;
+
+      let chosenRowHeight = prospectiveRowHeight;
+
+      for (let l of layout) {
+        let view = this.state.views[l.i];
+
+        if (view) {
+            view.layout = l;
         }
-      });
+
+        let {totalWidth, totalHeight,
+            topHeight, bottomHeight,
+            leftWidth, rightWidth,
+            centerWidth, centerHeight,
+            minNecessaryHeight} = this.calculateViewDimensions(view);
+
+            if (minNecessaryHeight > l.h * (prospectiveRowHeight + MARGIN_HEIGHT)) {
+                // we don't have space for one of the containers, so let them exceed the bounds
+                // of the box
+                chosenRowHeight = currentRowHeight;
+                break;
+            }
+      };
+
+      if (this.props.options.bounded) {
+          this.setState({
+            rowHeight: chosenRowHeight
+          });
+      }
   };
 
   clearDragTimeout() {
@@ -778,6 +820,10 @@ export class HiGlassComponent extends React.Component {
       let currHeight = this.horizontalMargin * 2;
       let currWidth = this.verticalMargin * 2;    //currWidth will generally be ignored because it will just be set to
                             //the width of the enclosing container
+      let minNecessaryHeight = view.genomePositionSearchBoxVisible ? 30 : 0;
+      minNecessaryHeight += 10; // the header
+
+      let MIN_VERTICAL_HEIGHT = 20;
 
       if (view.tracks.top) {
           // tally up the height of the top tracks
@@ -785,6 +831,8 @@ export class HiGlassComponent extends React.Component {
           for (let i = 0; i < view.tracks.top.length; i++) {
               let track = view.tracks.top[i];
               currHeight += track.height ? track.height : defaultHorizontalHeight;
+              minNecessaryHeight += track.height ? track.height : defaultHorizontalHeight;
+
           }
       }
 
@@ -794,8 +842,14 @@ export class HiGlassComponent extends React.Component {
           for (let i = 0; i < view.tracks.bottom.length; i++) {
               let track = view.tracks.bottom[i];
               currHeight += track.height ? track.height : defaultHorizontalHeight;
+              minNecessaryHeight += track.height ? track.height : defaultHorizontalHeight;
           }
       }
+
+      if ((view.tracks.left && view.tracks.left.length > 0) ||
+          (view.tracks.right && view.tracks.right.length > 0) ||
+            (view.tracks.center && view.tracks.center.length > 0))
+          minNecessaryHeight += MIN_VERTICAL_HEIGHT;
 
       if (view.tracks.left) {
           // tally up the height of the top tracks
@@ -856,15 +910,16 @@ export class HiGlassComponent extends React.Component {
               'leftWidth': leftWidth,
               'rightWidth': rightWidth,
               'centerWidth': centerWidth,
-              'centerHeight': centerHeight};
+              'centerHeight': centerHeight,
+              'minNecessaryHeight': minNecessaryHeight};
   }
 
   generateViewLayout(view) {
     let layout = null;
 
-    if ('layout' in view)
+    if ('layout' in view) {
         layout = view.layout
-    else {
+    } else {
         let minTrackHeight = 30;
         let elementWidth = this.element.clientWidth;
 
@@ -882,8 +937,13 @@ export class HiGlassComponent extends React.Component {
             x: 0,
             y: 0,
             w: 6,
+            h: 12 
         };
 
+        // the height should be adjusted when the layout changes
+
+
+        /*
         if ('center' in view.tracks || 'left' in view.tracks || 'right' in view.tracks) {
             let desiredHeight = ((elementWidth - leftWidth - rightWidth - 2 * this.horizontalMargin) );
             desiredHeight +=  topHeight + bottomHeight + 2*this.verticalMargin + 20;
@@ -899,6 +959,8 @@ export class HiGlassComponent extends React.Component {
             if (desiredHeight > availableHeight )
                 desiredHeight = availableHeight;
 
+            console.log('desiredHeight:', desiredHeight);
+
             // stretch the view out
             layout.h = Math.ceil(desiredHeight / this.rowHeight);
         }
@@ -907,6 +969,7 @@ export class HiGlassComponent extends React.Component {
 
         layout.minH = heightGrid;
         layout.i = slugid.nice();
+        */
     }
 
     return layout;
@@ -1152,13 +1215,10 @@ export class HiGlassComponent extends React.Component {
   }
 
   getViewsAsString() {
-    console.log('views:', this.state.views);
     let newJson = JSON.parse(JSON.stringify(this.props.viewConfig));
     newJson.views = dictItems(this.state.views).map(k => {
         let newView = JSON.parse(JSON.stringify(k[1]));
         let uid = k[0];
-
-        console.log('newView:', newView);
 
         newView.uid = uid;
         newView.initialXDomain = this.xScales[uid].domain();
@@ -1331,7 +1391,6 @@ export class HiGlassComponent extends React.Component {
         let track = getTrackByUid(view.tracks, trackUid);
 
         track.options = Object.assign(track.options, newOptions);
-        console.log('track.options:', track.options)
         this.setState({
             views: this.state.views
         });
@@ -1405,8 +1464,6 @@ export class HiGlassComponent extends React.Component {
                       />);
 
     let configMenu = null;
-
-    console.log('hgc rendering...');
 
     if (this.state.configMenuUid) {
         configMenu = (<PopupMenu
@@ -1628,7 +1685,7 @@ export class HiGlassComponent extends React.Component {
           onDragStop={this.handleDragStop.bind(this)}
           onLayoutChange={this.handleLayoutChange.bind(this)}
           onResize={this.onResize.bind(this)}
-          rowHeight={30}
+          rowHeight={this.state.rowHeight}
 
           // for some reason, this becomes 40 within the react-grid component
           // (try resizing the component to see how much the height changes)
