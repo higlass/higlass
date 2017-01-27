@@ -22,7 +22,7 @@ export class ConfigViewMenu extends React.Component {
 
 
     render() {
-        let lockZoomText = "Lock Zoom";
+        let lockZoomText = "Lock zoom with";
 
         if (this.props.zoomLock) {
             lockZoomText = "Unlock Zoom";
@@ -52,12 +52,12 @@ export class ConfigViewMenu extends React.Component {
                     <ContextMenuItem
                         onClick={e => this.props.onYankZoom(e)}
                     >
-                    {'Yank Zoom'}
+                    {'Take zoom from'}
                     </ContextMenuItem>
                     <ContextMenuItem
                         onClick={e => this.props.onSyncCenter(e)}
                     > 
-                    {'Yank Center'} 
+                    {'Take center from'} 
                     </ContextMenuItem>
                     <ContextMenuItem 
                         onClick={e => this.props.onLockZoom(e)}
@@ -68,7 +68,7 @@ export class ConfigViewMenu extends React.Component {
                     <ContextMenuItem
                         onClick={e => this.props.onProjectViewport(e)}
                     >
-                    {'Project Viewport'}
+                    {'Show this viewport on'}
                     </ContextMenuItem>
 
                     <hr />
@@ -76,13 +76,13 @@ export class ConfigViewMenu extends React.Component {
                     <ContextMenuItem 
                         onClick={e => this.props.onExportViewAsJSON()}
                     >
-                    {'Export Views as JSON'}
+                    {'Export views as JSON'}
                     </ContextMenuItem>
 
                     <ContextMenuItem 
                         onClick={e => this.props.onExportViewAsLink()}
                     >
-                    {'Export Views as Link'}
+                    {'Export views as Link'}
                     </ContextMenuItem>
 
                 </div>
