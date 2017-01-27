@@ -1,7 +1,89 @@
+import {bisector} from 'd3-array';
+import {format} from 'd3-format';
+
 export class SearchField {
 
     constructor(chromInfo) {
         this.chromInfo = chromInfo;
+        this.chromInfoBisector = bisector((d) => { return d.pos }).left;
+    }
+
+    scalesToPositionText(xScale, yScale, twoD=false) {
+        if (this.chromInfo == null)
+            return "";                 // chromosome info hasn't been loaded yet
+
+        if (!xScale || !yScale)
+            return "";
+
+        let x1 = this.absoluteToChr(xScale.domain()[0]);
+        let x2 = this.absoluteToChr(xScale.domain()[1]);
+
+        let y1 = this.absoluteToChr(yScale.domain()[0]);
+        let y2 = this.absoluteToChr(yScale.domain()[1]);
+
+        let positionString = null;
+        let stringFormat = format(",d")
+
+        if (x1[0] != x2[0]) {
+            // different chromosomes
+
+            positionString = x1[0] + ':' + stringFormat(Math.floor(x1[1])) + '-' + x2[0] + ':' + stringFormat(Math.ceil(x2[1]));
+        } else {
+            // same chromosome
+
+            positionString = x1[0] + ':' + stringFormat(Math.floor(x1[1])) + '-' + stringFormat(Math.ceil(x2[1]));
+        }
+
+        if (twoD) {
+            if (y1[0] != y2[0]) {
+                // different chromosomes
+                positionString += " & " +  y1[0] + ':' + stringFormat(Math.floor(y1[1])) + '-' + y2[0] + ':' + stringFormat(Math.ceil(y2[1]));
+            } else {
+                // same chromosome
+                positionString += " & " +  y1[0] + ':' + stringFormat(Math.floor(y1[1])) + '-' + stringFormat(Math.ceil(y2[1]));
+            }
+        }
+
+
+        if (x1[2] < 0 || x2[2] > 0 || (twoD && (y1[2] < 0 || y2[2] > 0))) {
+            // did any of the coordinates exceed the genome boundaries
+            positionString += " [offset " + x1[2] + "," + x2[2];
+            if (twoD) {
+               positionString += ":" + y1[2] + "," + y2[2] 
+            } 
+
+            positionString += "]";
+        }
+
+        return positionString;
+    }
+
+    absoluteToChr(absPosition) {
+        let insertPoint = this.chromInfoBisector(this.chromInfo.cumPositions, absPosition);
+        let lastChr = this.chromInfo.cumPositions[this.chromInfo.cumPositions.length-1].chr;
+        let lastLength = this.chromInfo.chromLengths[lastChr];
+
+        if (insertPoint > 0)
+            insertPoint -= 1;
+
+        let chrPosition = Math.floor(absPosition - this.chromInfo.cumPositions[insertPoint].pos);
+        let offset = 0;
+
+        if (chrPosition < 0) {
+            // before the start of the genome
+            offset = chrPosition - 1;
+            chrPosition = 1;
+        }
+
+        if (insertPoint == this.chromInfo.cumPositions.length - 1 && 
+            chrPosition > lastLength) {
+            // beyond the last chromosome
+            offset = chrPosition - lastLength;
+            chrPosition = lastLength;
+        }
+
+        return [this.chromInfo.cumPositions[insertPoint].chr,
+                chrPosition, offset]
     }
 
     parsePosition(positionText, prevChr = null) {
@@ -79,8 +161,6 @@ export class SearchField {
             parts[0] = parts[0].slice(3, parts[0].length)
         }
 
-        console.log('parts:', parts)
-
         if (parts.length > 1) {
             let [chr1, chrPos1, genomePos1] = this.parsePosition(parts[0]);
             let [chr2, chrPos2, genomePos2]  = this.parsePosition(parts[1], chr1);
@@ -99,10 +179,54 @@ export class SearchField {
         return range;
     }
 
+    parseOffset(offsetText) {
+        /**
+         * Convert offset text to a 2D array of offsets
+         *
+         * @param offsetText(string): 14,17:20,22
+         *
+         * @return offsetArray: [[14,17],[20,22]]
+         */
+
+        let parts = offsetText.split(':');
+        console.log('parseOffset parts:', parts);
+
+        if (parts.length == 0)
+            return [[0,0],[0,0]];
+
+        if (parts.length == 1) {
+            let sparts = parts[0].split(',');
+            return [[+sparts[0], +sparts[1]],[0,0]]
+        } else {
+            let sparts0 = parts[0].split(',');
+            let sparts1 = parts[1].split(',');
+            return [[+sparts0[0], +sparts0[1]],
+                    [+sparts1[0], +sparts1[1]]]
+
+        }
+
+        return [[0,0],[0,0]] 
+    }
+
     searchPosition(text) {
-        console.log('text:', text);
         var range1 = null, range2 = null;
-        var parts = text.split(' and ');
+
+        //extract offset
+        let offsetRe = /\[offset\ (.+?)\]/.exec(text);
+
+        // the offset is the distance before the first chromosome
+        // or the distance after the last chromosome of the given
+        let offset = [[0,0],[0,0]];
+        if (offsetRe) {
+            text = text.replace(offsetRe[0], '');
+
+            console.log('text:', text);
+            //
+            offset = this.parseOffset(offsetRe[1]);
+        }
+        console.log('offset:', offset);
+
+        var parts = text.split(' & ');
 
         if (parts.length > 1) {
             // we need to move both axes
@@ -119,6 +243,19 @@ export class SearchField {
         if (range1 != null && range2 != null) {
             [range1, range2] = this.matchRangesToLarger(range1, range2);
         }
+
+        if (range1) {
+            range1[0] += offset[0][0];
+            range1[1] += offset[0][1];
+        }
+
+        if (range2) {
+            range2[0] += offset[1][0];
+            range2[1] += offset[1][1];
+
+        }
+
+        console.log('range1:', range1);
 
         return [range1, range2];
     }

@@ -1,9 +1,11 @@
-import d3 from 'd3';
+import {text} from 'd3-request';
+import {tsvParseRows} from 'd3-dsv';
 
 export function ChromosomeInfo(filepath, success) {
-    d3.text(filepath, (text) => {
-        let data = d3.tsv.parseRows(text);
+    text(filepath, (text) => {
+        let data = tsvParseRows(text);
         let cumValues = [];
+        let chromLengths = {};
         let chrPositions = {};
         let totalLength = 0;
 
@@ -14,11 +16,13 @@ export function ChromosomeInfo(filepath, success) {
 
             cumValues.push(newValue);
             chrPositions[newValue.chr] = newValue;
+            chromLengths[data[i][0]] = data[i][1];
         }
 
         let chromInfo = {'cumPositions': cumValues,
                          'chrPositions': chrPositions,
-                          'totalLength': totalLength }
+                          'totalLength': totalLength,
+                          chromLengths: chromLengths }
 
         success(chromInfo);
     });

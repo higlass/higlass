@@ -10,11 +10,25 @@ A live example can be found [here](http://hms-dbmi.github.io/higlass/).
 
 ## Development
 
-To work on the source code or to see a live example, simple clone the
-repository and run the following commands:
-
 ```
-npm install
-gulp serve
+npm start
 ```
 
+## Build
+
+```
+npm run compile
+```
+
+## Documentation
+
+```
+cd doc
+make
+```
+
+## Update version
+
+```
+npm version patch; git push --tags
+```

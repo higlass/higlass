@@ -16,9 +16,9 @@ const reload = browserSync.reload;
 
 gulp.task('styles', () => {
   return gulp.src('app/styles/*.css')
-    .pipe($.sourcemaps.init())
+    //.pipe($.sourcemaps.init())
     .pipe($.autoprefixer({browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']}))
-    .pipe($.sourcemaps.write())
+    //.pipe($.sourcemaps.write())
     .pipe(gulp.dest('.tmp/styles'))
     .pipe(reload({stream: true}));
 });
@@ -26,10 +26,10 @@ gulp.task('styles', () => {
 gulp.task('scripts', () => {
   return gulp.src(['app/scripts/**/*.js', 'app/scripts/**/*.jsx'])
     .pipe($.plumber())
-    .pipe($.sourcemaps.init())
+    //.pipe($.sourcemaps.init())
     .pipe($.babel())
     .pipe(webpack( require('./webpack.config.js') ))
-    .pipe($.sourcemaps.write('.'))
+    //.pipe($.sourcemaps.write('.'))
     .pipe(gulp.dest('.tmp/scripts'))
     .pipe(reload({stream: true}));
 });
