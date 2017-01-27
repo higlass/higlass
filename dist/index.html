@@ -17,7 +17,9 @@
     <div style="margin: auto; width: 100%;">
     <br>
     <!-- <div id="triangular-1"></div> -->
-    <div id="development-demo"></div>
+    <div id="development-demo" style="
+        position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px 
+        "></div>
 <br>
 
 
@@ -36,21 +38,21 @@
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "52.45.229.11"
+    "52.45.229.11/api/v1"
   ],
-  "exportViewUrl": "//52.45.229.11/viewconfs/",
+  "exportViewUrl": "//52.45.229.11/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
       "initialXDomain": [
-        1200000000,
-        1210000000
+        0,
+        3100000000
       ],
       "initialYDomain": [
         1202566793.8931298,
         1207433206.1068702
       ],
-      "autocompleteSource": "//52.45.229.11/suggest/?d=dd&",
+      "autocompleteSource": "//higlass.site/api/v1/suggest/?d=dd&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
@@ -59,13 +61,16 @@
             "type": "horizontal-gene-annotations",
             "height": 60,
             "tilesetUid": "dd",
-            "server": "52.45.229.11",
+            "server": "higlass.site/api/v1",
             "position": "top",
             "uid": "D00ffLKHSGqwp4r64sSU7A",
             "name": "Gene Annotations",
-            "options": {
-                "labelPosition": "bottomRight"
-            }
+          },
+          {
+            "type": "top-axis",
+            "height": 60,
+            "position": "top",
+            "name": "Top Axis",
           }
         ],
         "left": [
@@ -73,7 +78,7 @@
             "type": "vertical-gene-annotations",
             "width": 60,
             "tilesetUid": "dd",
-            "server": "52.45.229.11",
+            "server": "higlass.site/api/v1",
             "position": "left",
             "uid": "SVYNEiMITAe_K60zCH_7vQ",
             "name": "Gene Annotations",
@@ -90,12 +95,11 @@
             "contents": [
               {
                 "uid": "hm1",
-                "server": "52.45.229.11",
+                "server": "higlass.site/api/v1",
                 "tilesetUid": "aa",
                 "type": "heatmap",
                 "position": "center",
                 "options": {
-                  "labelPosition": "bottomRight",
                   "colorRange": [
                     "#FFFFFF",
                     "#F8E71C",
@@ -112,15 +116,6 @@
         ],
         "right": [],
         "bottom": []
-      },
-      "layout": {
-        "w": 6,
-        "h": 10,
-        "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
       }
     }
   ],
@@ -130,7 +125,9 @@
   }
 };
 
-    hglib.HgComponent(document.getElementById('development-demo'), viewConfig);
+    hglib.HgComponent(document.getElementById('development-demo'), 
+            viewConfig,
+            {bounded: true});
 
 </script>
 <script>

@@ -137,11 +137,14 @@ export class HiGlassComponent extends React.Component {
             canvasElement: this.canvasElement
         });
         ElementQueries.listen();
-        new ResizeSensor(this.element, function() {
+        new ResizeSensor(this.element.parentNode, function() {
             //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
             let heightOffset = 0;
-            let width = this.element.clientWidth;
-            let height = this.element.clientHeight;
+
+            let width = this.element.parentNode.clientWidth;
+            let height = this.element.parentNode.clientHeight;
+
+            console.log('resized:', width, height);
 
              this.pixiRenderer.resize(width, height);
 
