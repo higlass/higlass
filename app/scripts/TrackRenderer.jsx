@@ -48,6 +48,12 @@ export class TrackRenderer extends React.Component {
         // without having it fire an "onZoom" event
         this.emptyZoomBehavior = zoom()
 
+        // a lot of the updates in TrackRenderer happen in response to 
+        // componentWillReceiveProps so we need to perform them with the
+        // newest set of props. When cWRP is called, this.props still contains
+        // the old props, so we need to store them in a new variable
+        this.currentProps = props;
+
         // catch any zooming behavior within all of the tracks in this plot
         //this.zoomTransform = zoomIdentity();
         this.zoomBehavior = zoom()
@@ -67,23 +73,23 @@ export class TrackRenderer extends React.Component {
 
         // the center measurements, because those corresponds to the widths
         // and heights of the actual tracks
-        this.initialWidth = this.props.width;
-        this.initialHeight = this.props.height;
+        this.initialWidth = this.currentProps.width;
+        this.initialHeight = this.currentProps.height;
 
         this.initialXDomain = [0,1];
         this.initialYDomain = [0,1];
 
-        this.prevCenterX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
-        this.prevCenterY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
+        this.prevCenterX = this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth / 2;
+        this.prevCenterY = this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2;
 
         // The offset of the center from the original. Used to keep the scales centered on resize events
         this.cumCenterXOffset = 0;
         this.cumCenterYOffset = 0;
 
 
-        this.setUpInitialScales(this.props.initialXDomain,
-                                this.props.initialYDomain);
-        this.setUpScales();
+        this.setUpInitialScales(this.currentProps.initialXDomain,
+                                this.currentProps.initialYDomain);
+        this.setUpScales(this.currentProps);
 
 
         // maintain a list of trackDefObjects which correspond to the input
@@ -99,18 +105,18 @@ export class TrackRenderer extends React.Component {
         this.divTrackAreaSelection = select(this.divTrackArea);
         this.divTrackAreaSelection.call(this.zoomBehavior);
 
-        this.canvasDom = ReactDOM.findDOMNode(this.props.canvasElement);
+        this.canvasDom = ReactDOM.findDOMNode(this.currentProps.canvasElement);
 
         // need to be mounted to make sure that all the renderers are
         // created before starting to draw tracks
-        if (!this.props.svgElement || !this.props.canvasElement)
+        if (!this.currentProps.svgElement || !this.currentProps.canvasElement)
             return;
 
-        this.svgElement = this.props.svgElement;
-        this.syncTrackObjects(this.props.positionedTracks);
+        this.svgElement = this.currentProps.svgElement;
+        this.syncTrackObjects(this.currentProps.positionedTracks);
 
-        this.props.setCentersFunction(this.setCenter.bind(this));
-        this.props.registerDraggingChangedListener(this.draggingChanged.bind(this));
+        this.currentProps.setCentersFunction(this.setCenter.bind(this));
+        this.currentProps.registerDraggingChangedListener(this.draggingChanged.bind(this));
     }
 
     draggingChanged(draggingStatus) {
@@ -135,16 +141,16 @@ export class TrackRenderer extends React.Component {
         this.initialYDomain = initialYDomain;
 
         this.drawableToDomainX = scaleLinear()
-            .domain([this.props.marginLeft + this.props.leftWidth,
-                    this.props.marginLeft + this.props.leftWidth + this.props.centerWidth])
+            .domain([this.currentProps.marginLeft + this.currentProps.leftWidth,
+                    this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth])
             .range([initialXDomain[0], initialXDomain[1]]);
 
         let midXDomain = (initialXDomain[0] + initialXDomain[0]) / 2;
-        let yDomainWidth = (initialXDomain[1] - initialXDomain[0]) * (this.props.centerHeight / this.props.centerWidth);
+        let yDomainWidth = (initialXDomain[1] - initialXDomain[0]) * (this.currentProps.centerHeight / this.currentProps.centerWidth);
 
         this.drawableToDomainY = scaleLinear()
-            .domain([this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2 - this.props.centerWidth / 2,
-                    this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2 + this.props.centerWidth / 2])
+            .domain([this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 - this.currentProps.centerWidth / 2,
+                    this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2])
             .range([initialXDomain[0], initialXDomain[1]]);
 
     }
@@ -159,6 +165,10 @@ export class TrackRenderer extends React.Component {
         if (!nextProps.svgElement || !nextProps.canvasElement)
             return;
 
+        this.currentProps = nextProps;
+        this.setUpInitialScales(nextProps.initialXDomain,
+                                nextProps.initialYDomain);
+
         this.setUpScales();
         this.canvasDom = ReactDOM.findDOMNode(nextProps.canvasElement);
 
@@ -167,8 +177,6 @@ export class TrackRenderer extends React.Component {
 
         this.syncTrackObjects(nextProps.positionedTracks);
 
-        this.setUpInitialScales(nextProps.initialXDomain,
-                                nextProps.initialYDomain);
 
         for (let track of nextProps.positionedTracks) {
             // tracks all the way down
@@ -194,12 +202,12 @@ export class TrackRenderer extends React.Component {
          * This view has been removed so we need to get rid of all the tracks it contains
          */
         this.removeTracks(Object.keys(this.trackDefObjects));
-        this.props.removeDraggingChangedListener(this.draggingChanged);
+        this.currentProps.removeDraggingChangedListener(this.draggingChanged);
     }
 
     setUpScales() {
-        let currentCenterX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
-        let currentCenterY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
+        let currentCenterX = this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth / 2;
+        let currentCenterY = this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2;
 
         // we need to maintain two scales:
         // 1. the scale that is shown
@@ -246,7 +254,7 @@ export class TrackRenderer extends React.Component {
             track.draw();
         }
 
-        this.applyZoomTransform();
+        this.applyZoomTransform(this.currentProps);
     }
 
     timedUpdatePositionAndDimensions() {
@@ -258,7 +266,7 @@ export class TrackRenderer extends React.Component {
             this.xPositionOffset = this.element.getBoundingClientRect().left - this.canvasDom.getBoundingClientRect().left;
 
             this.updateTrackPositions();
-            this.applyZoomTransform();
+            this.applyZoomTransform(this.currentProps);
             requestAnimationFrame(this.timedUpdatePositionAndDimensions.bind(this));
         }
     }
@@ -318,7 +326,7 @@ export class TrackRenderer extends React.Component {
          * We need to create new track objects for the given track
          * definitions.
          */
-        if (!this.props.pixiStage)
+        if (!this.currentProps.pixiStage)
             return;  // we need a pixi stage to start rendering
                      // the parent component where it lives probably
                      // hasn't been mounted yet
@@ -392,8 +400,8 @@ export class TrackRenderer extends React.Component {
 
         let k = refK / sourceK;
 
-        let middleViewX = this.props.marginLeft + this.props.leftWidth + this.props.centerWidth / 2;
-        let middleViewY = this.props.marginTop + this.props.topHeight + this.props.centerHeight / 2;
+        let middleViewX = this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth / 2;
+        let middleViewY = this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2;
 
         // After applying the zoom transform, the xScale of the target centerX
         // should be equal to the middle of the viewport
@@ -417,7 +425,7 @@ export class TrackRenderer extends React.Component {
          * to all the tracks.
          */
 
-        if (!this.props.zoomable)
+        if (!this.currentProps.zoomable)
             this.zoomTransform = zoomIdentity;
         else
             this.zoomTransform = event.transform;
@@ -430,15 +438,14 @@ export class TrackRenderer extends React.Component {
         let zoomedYScale = this.zoomTransform.rescaleY(this.yScale); 
 
         let newXScale = scaleLinear()
-            .domain([this.props.marginLeft + this.props.leftWidth,
-                    this.props.marginLeft + this.props.leftWidth + this.props.centerWidth].map(zoomedXScale.invert))
-            .range([0, this.props.centerWidth]);
+            .domain([this.currentProps.marginLeft + this.currentProps.leftWidth,
+                    this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth].map(zoomedXScale.invert))
+            .range([0, this.currentProps.centerWidth]);
 
         let newYScale = scaleLinear()
-            .domain([this.props.marginTop + this.props.topHeight,
-                    this.props.marginTop + this.props.topHeight + this.props.centerHeight].map(zoomedYScale.invert))
-            .range([0, this.props.centerHeight]);
-
+            .domain([this.currentProps.marginTop + this.currentProps.topHeight,
+                    this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight].map(zoomedYScale.invert))
+            .range([0, this.currentProps.centerHeight]);
 
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
@@ -446,20 +453,20 @@ export class TrackRenderer extends React.Component {
             track.zoomed(newXScale, newYScale, this.zoomTransform.k, 
                         this.zoomTransform.x + this.xPositionOffset, 
                         this.zoomTransform.y + this.yPositionOffset,
-                        this.props.marginLeft + this.props.leftWidth, 
-                        this.props.marginTop + this.props.topHeight);
+                        this.currentProps.marginLeft + this.currentProps.leftWidth, 
+                        this.currentProps.marginTop + this.currentProps.topHeight);
             track.draw();
         }
 
         if (notify)
-            this.props.onScalesChanged(newXScale, newYScale);
+            this.currentProps.onScalesChanged(newXScale, newYScale);
 
         return [newXScale, newYScale];
     }
 
     createTrackObject(track) {
         let handleTilesetInfoReceived = x => {
-            this.props.onTilesetInfoReceived(track.uid, x);
+            this.currentProps.onTilesetInfoReceived(track.uid, x);
         }
 
         switch (track.type) {
@@ -468,34 +475,34 @@ export class TrackRenderer extends React.Component {
             case 'top-axis':
                 return new TopAxisTrack(this.svgElement);
             case 'heatmap':
-                return new HeatmapTiledPixiTrack(this.props.pixiStage, 
+                return new HeatmapTiledPixiTrack(this.currentProps.pixiStage, 
                                                  track.server, 
                                                  track.tilesetUid,
                                                  handleTilesetInfoReceived,
                                                  track.options);
             case 'horizontal-line':
-                return new HorizontalLine1DPixiTrack(this.props.pixiStage, 
+                return new HorizontalLine1DPixiTrack(this.currentProps.pixiStage, 
                                                      track.server, 
                                                      track.tilesetUid,
                                                      handleTilesetInfoReceived,
                                                      track.options);
             case 'vertical-line':
-                return new LeftTrackModifier(new HorizontalLine1DPixiTrack(this.props.pixiStage, 
+                return new LeftTrackModifier(new HorizontalLine1DPixiTrack(this.currentProps.pixiStage, 
                             track.server, track.tilesetUid, handleTilesetInfoReceived, track.options));
             case 'horizontal-1d-tiles':
-                return new IdHorizontal1DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid, 
+                return new IdHorizontal1DTiledPixiTrack(this.currentProps.pixiStage, track.server, track.tilesetUid, 
                         handleTilesetInfoReceived, track.options);
             case 'vertical-1d-tiles':
-                return new IdVertical1DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid,
+                return new IdVertical1DTiledPixiTrack(this.currentProps.pixiStage, track.server, track.tilesetUid,
                         handleTilesetInfoReceived, track.options);
             case '2d-tiles':
-                return new Id2DTiledPixiTrack(this.props.pixiStage, track.server, track.tilesetUid,
+                return new Id2DTiledPixiTrack(this.currentProps.pixiStage, track.server, track.tilesetUid,
                         handleTilesetInfoReceived, track.options);
             case 'top-stacked-interval':
-                return new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid,
+                return new CNVIntervalTrack(this.currentProps.pixiStage, track.server, track.tilesetUid,
                         handleTilesetInfoReceived, track.options);
             case 'left-stacked-interval':
-                return new LeftTrackModifier(new CNVIntervalTrack(this.props.pixiStage, track.server, track.tilesetUid,
+                return new LeftTrackModifier(new CNVIntervalTrack(this.currentProps.pixiStage, track.server, track.tilesetUid,
                             handleTilesetInfoReceived, track.options));
             case 'viewport-projection-center':
                 // TODO: Fix this so that these functions are defined somewhere else
@@ -505,14 +512,13 @@ export class TrackRenderer extends React.Component {
                 else
                     return new Track();
             case 'horizontal-gene-annotations':
-                return new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid, 
+                return new HorizontalGeneAnnotationsTrack(this.currentProps.pixiStage, track.server, track.tilesetUid, 
                         handleTilesetInfoReceived, track.options)
             case 'vertical-gene-annotations':
-                return new LeftTrackModifier(new HorizontalGeneAnnotationsTrack(this.props.pixiStage, track.server, track.tilesetUid,
+                return new LeftTrackModifier(new HorizontalGeneAnnotationsTrack(this.currentProps.pixiStage, track.server, track.tilesetUid,
                             handleTilesetInfoReceived, track.options))
             case 'arrowhead-domains':
-                    console.log('creating arrowhead domains');
-                return new ArrowheadDomainsTrack(this.props.pixiStage, track.server, 
+                return new ArrowheadDomainsTrack(this.currentProps.pixiStage, track.server, 
                                                  track.tilesetUid,
                                                 handleTilesetInfoReceived,
                                                 track.options);
@@ -521,7 +527,7 @@ export class TrackRenderer extends React.Component {
                         track.options);
             default:
                 console.log('WARNING: unknown track type:', track.type);
-                return new UnknownPixiTrack(this.props.pixiStage, {name: 'Unknown Track Type'});
+                return new UnknownPixiTrack(this.currentProps.pixiStage, {name: 'Unknown Track Type'});
         }
 
     }
@@ -532,11 +538,11 @@ export class TrackRenderer extends React.Component {
                 className={"track-renderer"}
                 ref={(c) => this.divTrackArea = c}
                 style={{
-                    width: this.props.width, 
-                    height: this.props.height,
+                    width: this.currentProps.width, 
+                    height: this.currentProps.height,
                     position: "absolute"}}
             >
-                {this.props.children}
+                {this.currentProps.children}
             </div>
         );
         

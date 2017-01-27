@@ -144,8 +144,6 @@ export class HiGlassComponent extends React.Component {
             let width = this.element.parentNode.clientWidth;
             let height = this.element.parentNode.clientHeight;
 
-            console.log('resized:', width, height);
-
              this.pixiRenderer.resize(width, height);
 
             this.pixiRenderer.view.style.width = width + "px";
@@ -282,8 +280,14 @@ export class HiGlassComponent extends React.Component {
         if (this.draggingChangedListeners.hasOwnProperty(viewUid)) {
             let listeners = this.draggingChangedListeners[viewUid];
 
-            if (listeners.hasOwnProperty(listenerUid))
+
+
+            if (listeners.hasOwnProperty(listenerUid)) {
+                // make sure the listener doesn't think we're still
+                // dragging
+                listeners[listenerUid](false);
                 delete listeners[listenerUid];
+            }
         }
   }
 
@@ -719,7 +723,7 @@ export class HiGlassComponent extends React.Component {
     }
   }
 
-  refreshView() {
+  refreshView(timeout=SHORT_DRAG_TIMEOUT) {
     this.clearDragTimeout();
 
     this.notifyDragChangedListeners(true);
@@ -727,7 +731,7 @@ export class HiGlassComponent extends React.Component {
     this.clearDragTimeout();
     this.dragTimeout = setTimeout(() => {
             this.notifyDragChangedListeners(false);
-        }, SHORT_DRAG_TIMEOUT);
+        }, timeout);
   }
 
     handleDragStart(layout, oldItem, newItem, placeholder, e, element) {
@@ -961,8 +965,6 @@ export class HiGlassComponent extends React.Component {
 
             if (desiredHeight > availableHeight )
                 desiredHeight = availableHeight;
-
-            console.log('desiredHeight:', desiredHeight);
 
             // stretch the view out
             layout.h = Math.ceil(desiredHeight / this.rowHeight);
@@ -1529,6 +1531,7 @@ export class HiGlassComponent extends React.Component {
                 let tiledPlot = (
                                 <TiledPlot
                                     key={'tp' + view.uid}
+                                    uid={view.uid}
                                     parentMounted={this.state.mounted}
                                      svgElement={this.state.svgElement}
                                      canvasElement={this.state.canvasElement}
@@ -1551,7 +1554,10 @@ export class HiGlassComponent extends React.Component {
                                      zoomable={!this.props.viewConfig.zoomFixed}
                                      editable={this.props.viewConfig.editable}
                                      trackSourceServers={this.props.viewConfig.trackSourceServers}
-                                     registerDraggingChangedListener={listener => this.addDraggingChangedListener(view.uid, view.uid, listener)}
+                                     registerDraggingChangedListener={listener => {
+                                         this.addDraggingChangedListener(view.uid, view.uid, listener)
+                                     }
+                                     }
                                      removeDraggingChangedListener={listener => this.removeDraggingChangedListener(view.uid, view.uid, listener)}
                                 >
 
@@ -1719,7 +1725,7 @@ export class HiGlassComponent extends React.Component {
   }
 
   componentDidUpdate() {
-
+    this.refreshView(LONG_DRAG_TIMEOUT);
   }
 }
 

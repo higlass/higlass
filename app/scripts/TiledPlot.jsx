@@ -636,6 +636,7 @@ export class TiledPlot extends React.Component {
                     zoomable={this.props.zoomable}
                     registerDraggingChangedListener={this.props.registerDraggingChangedListener}
                     removeDraggingChangedListener={this.props.removeDraggingChangedListener}
+                    uid={this.props.uid}
                 >
 
                     <div 
