@@ -3,13 +3,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HiGlassComponent } from './HiGlassComponent.jsx';
 
-function launch(parent, 
-        config, 
-        options) {
+function launch(parent, config, options) {
 
-    if (!options) options = {};
+  if (!options) options = {};
 
-  ReactDOM.render((<HiGlassComponent 
+  ReactDOM.render((<HiGlassComponent
               viewConfig={config}
               options={options}
               />), parent);
@@ -19,7 +17,7 @@ export function HgComponent(parent, config, options) {
     /**
      * Available options:
      *
-     *  bounded: [true/false] 
+     *  bounded: [true/false]
      *      Fit the container to the bounds of the parent
      */
   if (typeof config === 'string') {
@@ -32,4 +30,8 @@ export function HgComponent(parent, config, options) {
   } else {
    launch(parent, config, options);
   }
+}
+
+export default {
+  HgComponent
 }
