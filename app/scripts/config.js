@@ -35,10 +35,6 @@ export const optionsInfo = {
     }
 }
 
-//
-console.log('svgHorizontalLineIcon:', svgHorizontalLineIcon);
-
-
 export const tracksInfo = [
     {
         type: 'left-axis',
