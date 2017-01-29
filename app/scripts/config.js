@@ -20,17 +20,28 @@ export const optionsInfo = {
     labelPosition: {
         name: "Label Position",
         inlineOptions: {
-            'topLeft': { name: "Top left" },
-            'topRight': { name: 'Top right' },
-            'bottomLeft': {name: "Bottom left"},
-            'bottomRight': {name: "Bottom right"},
-            'hidden': {name: "Hidden"}
+            'tl': { name: "Top left", value: 'topLeft' },
+            'tr': { name: 'Top right', value: 'topRight' },
+            'bl': {name: "Bottom left", value: 'bottomLeft' },
+            'br': {name: "Bottom right", value: 'bottomRight' },
+            'hidden': {name: "Hidden", value: 'hidden'}
         }
     },
+
+    // colormaps are mostly taken from here:
+    // http://matplotlib.org/api/pyplot_summary.html?highlight=colormaps#matplotlib.pyplot.colormaps
     colorRange: {
         name: "Color Range",
-        componentPickers: {
-            'heatmap': HeatmapOptions
+        inlineOptions: {
+            'afmhot': { name: 'afmhot', value: ['#FFFFFF','#F8E71C', '#F5A623', '#D0021B'] },
+            'hot': { name: "Hot", value: ['white', 'yellow', 'red', 'black'] },
+            'gray': { name: "Greys", value: ['white', 'black'] },
+            'custom': { 
+                name: "Custom...",
+                componentPickers: {
+                    'heatmap': HeatmapOptions
+                }
+            }
         }
     }
 }
