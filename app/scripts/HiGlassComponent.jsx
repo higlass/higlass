@@ -1706,7 +1706,7 @@ export class HiGlassComponent extends React.Component {
                     (
                             <div
                                 className="multitrack-header"
-                                style={{"width": this.width, "minHeight": 16, "position": "relative",
+                                style={{"minHeight": 16, "position": "relative",
                                     "border": "solid 1px", "marginBottom": 4, "opacity": 0.6,
                                     verticalAlign: "middle",
                                     lineHeight: "16px",
@@ -1813,7 +1813,7 @@ export class HiGlassComponent extends React.Component {
           isDraggable={this.props.viewConfig.editable}
           isResizable={this.props.viewConfig.editable}
           margin={this.props.viewConfig.editable ? [10,10] : [0,0]}
-          measureBeforeMoun={false}
+          measureBeforeMount={false}
           onBreakpointChange={this.onBreakpointChange.bind(this)}
           onDragStart={this.handleDragStart.bind(this)}
           onDragStop={this.handleDragStop.bind(this)}
