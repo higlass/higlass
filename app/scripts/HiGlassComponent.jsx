@@ -28,6 +28,9 @@ import {all as icons} from './icons.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
+const NUM_GRID_COLUMNS = 6;
+const DEFAULT_NEW_VIEW_HEIGHT = 12;
+
 export class HiGlassComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -79,7 +82,7 @@ export class HiGlassComponent extends React.Component {
           let viewsByUid = this.processViewConfig(this.props.viewConfig);
 
           this.state = {
-            bounded: this.props.options.bounded,
+              bounded: this.props.options ? this.props.options.bounded : false,
             currentBreakpoint: 'lg',
             mounted: false,
             width: 0,
@@ -708,7 +711,7 @@ export class HiGlassComponent extends React.Component {
             }
       };
 
-      if (this.props.options.bounded) {
+      if (this.props.options ? this.props.options.bounded : false) {
           this.setState({
             rowHeight: chosenRowHeight
           });
@@ -947,8 +950,8 @@ export class HiGlassComponent extends React.Component {
         layout = {
             x: 0,
             y: 0,
-            w: 6,
-            h: 12 
+            w: NUM_GRID_COLUMNS,
+            h: DEFAULT_NEW_VIEW_HEIGHT
         };
 
         // the height should be adjusted when the layout changes
@@ -1279,6 +1282,43 @@ export class HiGlassComponent extends React.Component {
         })
   }
 
+  viewPositionAvailable(pX, pY, w, h) {
+      /**
+       * Check if we can place a view at this position
+       */
+      let pEndX = pX + w;
+      let pEndY = pY + h;
+
+      if (pX + w > NUM_GRID_COLUMNS) {
+          // this view will go over the right edge of our grid
+        return false;
+      }
+
+      let sortedViews = dictValues(this.state.views);
+
+      // check if this position
+      for (let j = 0; j < sortedViews.length; j++) {
+          let svX = sortedViews[j].layout.x;
+          let svY = sortedViews[j].layout.y;
+
+          let svEndX = svX + sortedViews[j].layout.w;
+          let svEndY = svY + sortedViews[j].layout.h;
+
+          let intersects = false;
+
+          if (pX < svEndX && pEndX > svX) {
+            // x range intersects
+            if (pY < svEndY && pEndY > svY) {
+                //y range intersects
+                return false;
+            }
+          }
+
+      }
+
+      return true;
+  }
+
   handleAddView(view) {
       /**
        * User clicked on the "Add View" button. We'll duplicate the last
@@ -1288,8 +1328,36 @@ export class HiGlassComponent extends React.Component {
       let views = dictValues(this.state.views);
       let lastView = view;
 
-      let maxY = 0;
+      let potentialPositions = [];
 
+      for (let i = 0; i < views.length; i++) {
+
+          let pX = views[i].layout.x + views[i].layout.w
+          let pY = views[i].layout.y;
+
+          // can we place the new view to the right of this view?
+          if (this.viewPositionAvailable(pX, pY, view.layout.w, view.layout.h))
+                potentialPositions.push([pX, pY]);
+
+          pX = views[i].layout.x;
+          pY = views[i].layout.y + views[i].layout.h
+          // can we place the new view below this view
+          if (this.viewPositionAvailable(pX, pY, view.layout.w, view.layout.h))
+                potentialPositions.push([pX, pY]);
+      }
+
+
+      potentialPositions.sort((a,b) => {
+        let n = a[1] - b[1];
+
+        if (n == 0) {
+            return a[0] - b[0];
+        }
+
+        return n; 
+      });
+
+      /*
       for (let i = 0; i < views.length; i++) {
           let view = views[i];
 
@@ -1300,14 +1368,15 @@ export class HiGlassComponent extends React.Component {
                     maxY += Math.max(maxY, view.layout.y + 1);
           }
       }
+      */
 
       let jsonString = JSON.stringify(lastView);
 
       let newView = JSON.parse(jsonString);   //ghetto copy
 
       // place this new view below all the others
-      newView.layout.x = 0;
-      newView.layout.y = maxY;
+      newView.layout.x = potentialPositions[0][0];
+      newView.layout.y = potentialPositions[0][1];
 
       // give it its own unique id
       newView.uid = slugid.nice();
@@ -1415,11 +1484,9 @@ export class HiGlassComponent extends React.Component {
          * @param track (object): A track definition
          * @param viewUidsPresent (Set): The view uids which are available
          */
-        console.log('track.type', track.type, 'viewUidsPresent:', viewUidsPresent);
 
         if (track.type == 'viewport-projection-center') {
             if (!viewUidsPresent.has(track.fromViewUid)) {
-                console.log('filtering out:', track.uid);
                 return false;
             }
         }
@@ -1459,8 +1526,6 @@ export class HiGlassComponent extends React.Component {
     processViewConfig(viewConfig) {
         let views = viewConfig.views;
         let viewsByUid = {};
-
-        //console.log('viewUids:', viewUids);
 
         views.forEach(v => {
             this.fillInMinWidths(v.tracks);
@@ -1794,6 +1859,7 @@ HiGlassComponent.defaultProps = {
     className: "layout",
     cols: {lg: 6, md: 6, sm: 6, xs: 6, xxs: 6}
   }
+
 HiGlassComponent.propTypes = {
     children: React.PropTypes.array,
     viewConfig: React.PropTypes.object,
