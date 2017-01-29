@@ -128,7 +128,7 @@ export class HiGlassComponent extends React.Component {
                                         } )
 
         //PIXI.RESOLUTION=2;
-
+        this.fitPixiToParentContainer();
 
         // keep track of the width and height of this element, because it
         // needs to be reflected in the size of our drawing surface
@@ -141,15 +141,7 @@ export class HiGlassComponent extends React.Component {
             //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
             let heightOffset = 0;
 
-            let width = this.element.parentNode.clientWidth;
-            let height = this.element.parentNode.clientHeight;
-
-             this.pixiRenderer.resize(width, height);
-
-            this.pixiRenderer.view.style.width = width + "px";
-            this.pixiRenderer.view.style.height = height + "px";
-
-            this.pixiRenderer.render(this.pixiStage);
+            this.fitPixiToParentContainer();
          }.bind(this));
 
         this.handleDragStart();
@@ -174,6 +166,18 @@ export class HiGlassComponent extends React.Component {
          */
 
 
+    }
+
+    fitPixiToParentContainer() {
+        let width = this.element.parentNode.clientWidth;
+        let height = this.element.parentNode.clientHeight;
+
+         this.pixiRenderer.resize(width, height);
+
+        this.pixiRenderer.view.style.width = width + "px";
+        this.pixiRenderer.view.style.height = height + "px";
+
+        this.pixiRenderer.render(this.pixiStage);
     }
 
     addDefaultOptions(track) {
