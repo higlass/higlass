@@ -36,6 +36,8 @@ export class TiledPlot extends React.Component {
         // Add names to all the tracks
         this.trackRenderers = {}
 
+        this.trackToReplace = null;
+
         // these values should be changed in componentDidMount
         this.state = {
             mounted: false,
@@ -205,6 +207,8 @@ export class TiledPlot extends React.Component {
          * User hit cancel on the AddTrack dialog so we need to
          * just close it and do nothin
          */
+        this.trackToReplace = null;
+
         this.setState({
             addTrackVisible: false
         });
@@ -219,6 +223,16 @@ export class TiledPlot extends React.Component {
             addTrackVisible: true,
             addTrackHost: track
         });
+    }
+
+    handleReplaceTrack(uid, orientation) {
+        /**
+         * @param uid (string): The uid of the track to replace
+         * @param orientation (string): The place where to put the new track
+         */
+
+        this.trackToReplace = uid;
+        this.handleAddTrack(orientation);
     }
 
     handleAddTrack(position) {
@@ -261,6 +275,11 @@ export class TiledPlot extends React.Component {
     }
 
     handleTrackAdded(newTrack, position, host=null) {
+        if (this.trackToReplace) {
+            this.handleCloseTrack(this.trackToReplace)
+            this.trackToReplace = null;
+        }
+        
         this.props.onTrackAdded(newTrack, position, host);
 
         this.setState({
@@ -676,6 +695,7 @@ export class TiledPlot extends React.Component {
                                     onAddSeries={this.handleAddSeries.bind(this)}
                                     onAddTrack={this.handleAddTrack.bind(this)}
                                     closeMenu={this.handleConfigTrackMenuClosed.bind(this)}
+                                    onReplaceTrack={this.handleReplaceTrack.bind(this)}
                                     trackOrientation={getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
                                     onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
                                   />
