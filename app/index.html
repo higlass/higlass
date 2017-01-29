@@ -30,15 +30,15 @@
 <script>
         console.log('hey');
             var remoteServer = "52.45.229.11";
-            var localServer = "localhost:8000";
-          //var usedServer = localServer;
-            var usedServer = remoteServer;
+            var localServer = "localhost:8000/api/v1";
+          var usedServer = localServer;
+            //var usedServer = remoteServer;
 
             var viewConfig = {
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "52.45.229.11/api/v1"
+    usedServer
   ],
   "exportViewUrl": "//52.45.229.11/api/v1/viewconfs/",
   "views": [
@@ -61,7 +61,7 @@
             "type": "horizontal-gene-annotations",
             "height": 60,
             "tilesetUid": "dd",
-            "server": "higlass.site/api/v1",
+            "server": usedServer,
             "position": "top",
             "uid": "D00ffLKHSGqwp4r64sSU7A",
             "name": "Gene Annotations",
@@ -78,7 +78,7 @@
             "type": "vertical-gene-annotations",
             "width": 60,
             "tilesetUid": "dd",
-            "server": "higlass.site/api/v1",
+            "server": usedServer,
             "position": "left",
             "uid": "SVYNEiMITAe_K60zCH_7vQ",
             "name": "Gene Annotations",
@@ -95,7 +95,7 @@
             "contents": [
               {
                 "uid": "hm1",
-                "server": "higlass.site/api/v1",
+                "server": usedServer,
                 "tilesetUid": "aa",
                 "type": "heatmap",
                 "position": "center",
