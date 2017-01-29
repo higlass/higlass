@@ -125,6 +125,125 @@
   }
 };
 
+    viewConfig = JSON.parse(`{  
+   "zoomFixed":false,
+   "views":[  
+      {  
+         "layout":{  
+            "minH":6,
+            "i":"PBSUNFCZToq-rwCs0LJhfQ",
+            "h":6,
+            "moved":false,
+            "static":false,
+            "w":2,
+            "y":0,
+            "x":0
+         },
+         "uid":"PBSUNFCZToq-rwCs0LJhfQ",
+         "initialYDomain":[  
+            1639613009.4601796,
+            1747302661.1296208
+         ],
+         "autocompleteSource":"//higlass.site/api/v1/suggest/?d=dd&",
+         "initialXDomain":[  
+            1601702538.4608428,
+            1777620222.86606
+         ],
+         "tracks":{  
+            "bottom":[  
+
+            ],
+            "top":[  
+               {  
+                  "uid":"D00ffLKHSGqwp4r64sSU7A",
+                  "tilesetUid":"dd",
+                  "server":"higlass.site/api/v1",
+                  "position":"top",
+                  "height":60,
+                  "type":"horizontal-gene-annotations",
+                  "options":{  
+                     "name":"Gene Annotations",
+                     "labelPosition":"hidden"
+                  },
+                  "name":"Gene Annotations"
+               }
+            ],
+            "right":[  
+
+            ],
+            "center":[  
+               {  
+                  "position":"center",
+                  "type":"combined",
+                  "uid":"c1",
+                  "contents":[  
+                     {  
+                        "uid":"hm1",
+                        "tilesetUid":"aa",
+                        "server":"higlass.site/api/v1",
+                        "position":"center",
+                        "type":"heatmap",
+                        "options":{  
+                           "maxZoom":null,
+                           "name":"Dixon2015-H1_TB-HindIII-allreps-filtered.10kb.multires.cool",
+                           "colorRange":[  
+                              "#FFFFFF",
+                              "#F8E71C",
+                              "rgba(245,166,35,1)",
+                              "rgba(0,0,0,1)"
+                           ],
+                           "labelPosition":"hidden"
+                        },
+                        "name":"Dixon2015-H1_TB-HindIII-allreps-filtered.10kb.multires.cool"
+                     },
+                     {  
+                        "fromViewUid":"aa",
+                        "position":"center",
+                        "type":"viewport-projection-center",
+                        "uid":"DDoc4AXbQ-CBysjAh6U_Uw",
+                        "name":"Viewport Projection"
+                     }
+                  ],
+                  "height":200
+               }
+            ],
+            "left":[  
+               {  
+                  "uid":"SVYNEiMITAe_K60zCH_7vQ",
+                  "tilesetUid":"dd",
+                  "server":"higlass.site/api/v1",
+                  "width":60,
+                  "position":"left",
+                  "type":"vertical-gene-annotations",
+                  "options":{  
+                     "name":"Gene Annotations",
+                     "labelPosition":"hidden"
+                  },
+                  "name":"Gene Annotations"
+               }
+            ]
+         },
+         "chromInfoPath":"//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+         "genomePositionSearchBoxVisible":true
+      }
+   ],
+   "editable":true,
+   "exportViewUrl":"//52.45.229.11/api/v1/viewconfs/",
+   "zoomLocks":{  
+      "locksByViewUid":{  
+
+      },
+      "zoomLocksDict":{  
+
+      }
+   },
+   "trackSourceServers":[  
+      "52.45.229.11/api/v1"
+   ]
+}
+`)
+
+
     hglib.HgComponent(document.getElementById('development-demo'), 
             viewConfig,
             {bounded: true});

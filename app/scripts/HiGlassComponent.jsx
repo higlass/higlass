@@ -1405,9 +1405,34 @@ export class HiGlassComponent extends React.Component {
         });
     }
 
+    isTrackValid(track, viewUidsPresent) {
+        /**
+         * Determine whether a track is valid and can be displayed.
+         *
+         * Tracks can be invalid due to inconsistent input such as
+         * referral to views that don't exist
+         *
+         * @param track (object): A track definition
+         * @param viewUidsPresent (Set): The view uids which are available
+         */
+        console.log('track.type', track.type, 'viewUidsPresent:', viewUidsPresent);
+
+        if (track.type == 'viewport-projection-center') {
+            if (!viewUidsPresent.has(track.fromViewUid)) {
+                console.log('filtering out:', track.uid);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     processViewConfig(viewConfig) {
         let views = viewConfig.views;
         let viewsByUid = {};
+
+        let viewUidsSet = new Set(views.map(v => v.uid));
+        //console.log('viewUids:', viewUids);
 
         views.forEach(v => {
             this.fillInMinWidths(v.tracks);
@@ -1427,6 +1452,23 @@ export class HiGlassComponent extends React.Component {
             // add default options (as specified in config.js
             // (e.g. line color, heatmap color scales, etc...)
             looseTracks.forEach(t => this.addDefaultOptions(t));
+
+            for (let trackOrientation of ['left', 'top', 'center', 'right', 'bottom']) {
+                if (v.tracks.hasOwnProperty(trackOrientation)) {
+
+                    // filter out invalid tracks
+                    v.tracks[trackOrientation] = v.tracks[trackOrientation]
+                    .filter(t => this.isTrackValid(t, viewUidsSet));
+
+                    // filter out invalid tracks in combined tracks
+                    v.tracks[trackOrientation].forEach(t => {
+                        if (t.type == 'combined') {
+                            t.contents = t.contents
+                            .filter(c => this.isTrackValid(c, viewUidsSet));
+                        }
+                    });
+                }
+            }
         });
 
         return viewsByUid;
