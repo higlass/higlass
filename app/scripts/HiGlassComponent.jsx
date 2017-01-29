@@ -1001,13 +1001,13 @@ export class HiGlassComponent extends React.Component {
 
       // if this view was zoom locked to another, we need to unlock it
       this.handleUnlockZoom(uid);
-
-
       delete this.state.views[uid];
+
+      let viewsByUid = this.removeInvalidTracks(this.state.views);
 
       // might want to notify the views that they're beig closed
       this.setState({
-          'views': this.state.views
+          'views': viewsByUid
       });
   }
 
@@ -1427,11 +1427,39 @@ export class HiGlassComponent extends React.Component {
         return true;
     }
 
+    removeInvalidTracks(viewsByUid) {
+        /**
+         * Remove tracks which can no longer be shown (possibly because the views they
+         * refer to no longer exist
+         */
+        let viewUidsSet = new Set(dictKeys(viewsByUid));
+
+        for (let v of dictValues(viewsByUid)) {
+            for (let trackOrientation of ['left', 'top', 'center', 'right', 'bottom']) {
+                if (v.tracks.hasOwnProperty(trackOrientation)) {
+
+                    // filter out invalid tracks
+                    v.tracks[trackOrientation] = v.tracks[trackOrientation]
+                    .filter(t => this.isTrackValid(t, viewUidsSet));
+
+                    // filter out invalid tracks in combined tracks
+                    v.tracks[trackOrientation].forEach(t => {
+                        if (t.type == 'combined') {
+                            t.contents = t.contents
+                            .filter(c => this.isTrackValid(c, viewUidsSet));
+                        }
+                    });
+                }
+            }
+        }
+
+        return viewsByUid;
+    }
+
     processViewConfig(viewConfig) {
         let views = viewConfig.views;
         let viewsByUid = {};
 
-        let viewUidsSet = new Set(views.map(v => v.uid));
         //console.log('viewUids:', viewUids);
 
         views.forEach(v => {
@@ -1453,23 +1481,9 @@ export class HiGlassComponent extends React.Component {
             // (e.g. line color, heatmap color scales, etc...)
             looseTracks.forEach(t => this.addDefaultOptions(t));
 
-            for (let trackOrientation of ['left', 'top', 'center', 'right', 'bottom']) {
-                if (v.tracks.hasOwnProperty(trackOrientation)) {
-
-                    // filter out invalid tracks
-                    v.tracks[trackOrientation] = v.tracks[trackOrientation]
-                    .filter(t => this.isTrackValid(t, viewUidsSet));
-
-                    // filter out invalid tracks in combined tracks
-                    v.tracks[trackOrientation].forEach(t => {
-                        if (t.type == 'combined') {
-                            t.contents = t.contents
-                            .filter(c => this.isTrackValid(c, viewUidsSet));
-                        }
-                    });
-                }
-            }
         });
+
+        viewsByUid = this.removeInvalidTracks(viewsByUid);
 
         return viewsByUid;
 
