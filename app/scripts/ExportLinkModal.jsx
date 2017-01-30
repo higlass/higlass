@@ -49,7 +49,7 @@ export class ExportLinkModal extends React.Component {
                 >
 
                     <Modal 
-                    onHide={this.props.handleCancel}
+                    onHide={this.props.onDone}
                     container={this}
                     className={'hg-modal'}
                     show={true}
