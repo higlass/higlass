@@ -38,6 +38,15 @@ export class TiledPlot extends React.Component {
 
         this.trackToReplace = null;
 
+        console.log('this.props.tracks.center[0]:', this.props.tracks.center[0]);
+
+        /*
+        let trackOptions = this.props.editable ? 
+                {'track': this.props.tracks.center[0].contents[0],
+                'configComponent': HeatmapOptions}
+                : null;
+        */
+
         // these values should be changed in componentDidMount
         this.state = {
             mounted: false,
@@ -52,7 +61,8 @@ export class TiledPlot extends React.Component {
             addTrackVisible: false,
             addTrackPosition: "top",
             mouseOverOverlayUid: null,
-            trackOptions: null
+            //trackOptions: null
+            //trackOptions: trackOptions
         }
 
         // these dimensions are computed in the render() function and depend
@@ -86,6 +96,8 @@ export class TiledPlot extends React.Component {
         let heightOffset = 0;
         let height = this.element.clientHeight - heightOffset;
         let width = this.element.clientWidth;
+
+        console.log('heightOffset:', heightOffset, 'this.element.clientHeight', this.element.clientHeight);
 
             if (width > 0 && height > 0) {
 
@@ -781,18 +793,21 @@ export class TiledPlot extends React.Component {
 
         let trackOptionsElement = null;
 
-        if (this.props.editable && this.state.trackOptions) {
+        if (this.xScale && this.yScale && this.props.editable && this.state.trackOptions) {
             let configComponent = this.state.trackOptions.configComponent;
             let track = this.state.trackOptions.track;
             
+            console.log('this.xScale:', this.xScale);
             trackOptionsElement = React.createElement(configComponent,
                     {track: track,
                         xScale: this.xScale,
                         yScale: this.yScale,
-                        onCancel:  () => 
+                        onCancel:  () =>  {
+                            console.log('cancel clicked');
                             this.setState({
                                 trackOptions: null
-                                }),
+                                }
+                        )},
                         onTrackOptionsChanged: (newOptions) => newOptions,
                         onSubmit: (newOptions) => {
                                 this.handleTrackOptionsChanged(this.state.trackOptions.track.uid, 
@@ -802,27 +817,6 @@ export class TiledPlot extends React.Component {
 
                             }
                     });
-
-            /*
-            trackOptionsElement = (
-
-                    
-                    <HeatmapOptions
-                    track={getTrackByUid(this.props.tracks, this.state.trackOptionsUid)}
-                    xScale={this.xScale}
-                    yScale={this.yScale}
-                    onCancel={ () => {
-                        this.setState({
-                        trackOptionsUid: null
-                    })}}
-                    onTrackOptionsChanged={(newOptions) => newOptions}
-                    onSubmit={ (newOptions) => {
-                        this.handleTrackOptionsChanged(this.state.trackOptionsUid, newOptions);
-                        this.setState({
-                            trackOptionsUid: null });
-                    }}
-                />)
-                */
         }
 
         // track renderer needs to enclose all the other divs so that it 

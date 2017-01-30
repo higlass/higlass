@@ -65,7 +65,6 @@ export class SeriesListMenu extends ContextMenuContainer {
             
             let track = this.state.submenuShown;
 
-            console.log('track:', track);
             let menuItems = {};
             let options = track.options;
 
@@ -75,7 +74,6 @@ export class SeriesListMenu extends ContextMenuContainer {
             for (let optionType of tracksInfoByType[track.type].availableOptions) {
                 if (optionsInfo.hasOwnProperty(optionType)) {
                    menuItems[optionType] = {'name': optionsInfo[optionType].name}
-                   console.log('oi:', optionsInfo[optionType].inlineOptions);
 
                    if (optionsInfo[optionType].inlineOptions) {
                        // we can simply select this option from the menu
@@ -102,9 +100,9 @@ export class SeriesListMenu extends ContextMenuContainer {
                                inlineOption.componentPickers[track.type]) {
 
                                optionSelectorSettings.handler = () => { 
-                                   track.options[optionType] = inlineOption.value;
-                                   this.props.onTrackOptionsChanged(track.uid, track.options);
-                                   this.props.closeMenu();
+                                    console.log('pick color value', track.type);
+                                    this.props.onConfigureTrack(track, inlineOption.componentPickers[track.type]);
+                                    this.props.closeMenu();
                                };
                             } else {
                                 // the menu option defines a potential value for this option
@@ -130,8 +128,6 @@ export class SeriesListMenu extends ContextMenuContainer {
                    }
                 }
             }
-
-            console.log('menuItems:', menuItems);
 
             return (<NestedContextMenu
                         position={position}

@@ -33,9 +33,21 @@ export const optionsInfo = {
     colorRange: {
         name: "Color Range",
         inlineOptions: {
-            'afmhot': { name: 'afmhot', value: ['#FFFFFF','#F8E71C', '#F5A623', '#D0021B'] },
-            'hot': { name: "Hot", value: ['white', 'yellow', 'red', 'black'] },
-            'gray': { name: "Greys", value: ['white', 'black'] },
+            'default': { name: 'default', value: [  
+                                          "#FFFFFF",
+                                          "#F8E71C",
+                                          "rgba(245,166,35,1)",
+                                          "rgba(0,0,0,1)"
+                                       ]},
+            'afmhot': { name: 'afmhot', value: ['rgba(0, 0, 0, 1.0)', 'rgba(128, 0, 0, 1.0)', 'rgba(256, 129, 1, 1.0)', 'rgba(256, 256, 129, 1.0)', 'rgba(256, 256, 256, 1.0)'] },
+            'hot': { name: "hot", value: ['rgba(10, 0, 0, 1.0)', 'rgba(179, 0, 0, 1.0)', 'rgba(256, 91, 0, 1.0)', 'rgba(256, 256, 6, 1.0)', 'rgba(256, 256, 256, 1.0)'] },
+            'jet': { name: "jet", value: ['rgba(0, 0, 128, 1.0)', 'rgba(0, 129, 256, 1.0)', 'rgba(125, 256, 122, 1.0)', 'rgba(256, 148, 0, 1.0)', 'rgba(128, 0, 0, 1.0)'] },
+            
+            'bwr': { name: 'bwr', value: ['rgba(0, 0, 256, 1.0)', 'rgba(128, 128, 256, 1.0)', 'rgba(256, 254, 254, 1.0)', 'rgba(256, 126, 126, 1.0)', 'rgba(256, 0, 0, 1.0)'] },
+            'cubehelix': { name: 'cubehelix', value: ['rgba(0, 0, 0, 1.0)', 'rgba(21, 83, 76, 1.0)', 'rgba(162, 121, 74, 1.0)', 'rgba(199, 180, 238, 1.0)', 'rgba(256, 256, 256, 1.0)'] },
+            'rainbow': { name: 'rainbow', value: ['rgba(128, 0, 256, 1.0)', 'rgba(0, 181, 236, 1.0)', 'rgba(129, 255, 180, 1.0)', 'rgba(256, 179, 96, 1.0)', 'rgba(256, 0, 0, 1.0)'] },
+
+            'gray': { name: "greys", value: ['rgba(255,255,255,1)', 'rgba(0,0,0,1)'] },
             'custom': { 
                 name: "Custom...",
                 componentPickers: {
@@ -71,7 +83,12 @@ export const tracksInfo = [
         orientation: '2d',
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
-            colorRange: ['#FFFFFF','#F8E71C', '#F5A623', '#D0021B' ],
+            colorRange: [  
+                              "#FFFFFF",
+                              "#F8E71C",
+                              "rgba(245,166,35,1)",
+                              "rgba(0,0,0,1)"
+                           ],
             maxZoom: null
         },
         availableOptions: [ 'labelPosition', 'colorRange' ]

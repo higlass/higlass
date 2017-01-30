@@ -87,6 +87,7 @@ export class TrackRenderer extends React.Component {
         this.cumCenterYOffset = 0;
 
 
+        console.log('constructor initialYDomain', this.currentProps.initialYDomain);
         this.setUpInitialScales(this.currentProps.initialXDomain,
                                 this.currentProps.initialYDomain);
         this.setUpScales(this.currentProps);
@@ -166,6 +167,7 @@ export class TrackRenderer extends React.Component {
             return;
 
         this.currentProps = nextProps;
+        console.log('initialYDomain', this.currentProps.initialYDomain);
         this.setUpInitialScales(nextProps.initialXDomain,
                                 nextProps.initialYDomain);
 

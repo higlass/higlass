@@ -680,7 +680,7 @@ export class HiGlassComponent extends React.Component {
       this.handleDragStart();
       this.handleDragStop();
 
-      let MARGIN_HEIGHT = 10;
+      let MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
 
       let marginHeight = MARGIN_HEIGHT * maxHeight - 1;
       let availableHeight = height - marginHeight;
@@ -710,6 +710,8 @@ export class HiGlassComponent extends React.Component {
                 break;
             }
       };
+
+      console.log('chosenRowHeight:', chosenRowHeight, 'height', height);
 
       if (this.props.options ? this.props.options.bounded : false) {
           this.setState({
