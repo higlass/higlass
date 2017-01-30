@@ -3,6 +3,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HiGlassComponent } from './HiGlassComponent.jsx';
 
+export {defaultViewConfig} from './viewconfs.js';
+export {localViewConfig} from './viewconfs.js';
+export {testViewConfig} from './viewconfs.js';
+
+
+
 function launch(parent, 
         config, 
         options) {
