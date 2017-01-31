@@ -202,10 +202,10 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         let result = boxIntersect(allBoxes, function(i, j) {
             if (allTexts[i].importance > allTexts[j].importance) {
                 //console.log('hiding:', allTexts[j].caption)
-                allTexts[j].text.alpha = 0; 
+                allTexts[j].text.visible = 0; 
             } else {
                 //console.log('hiding:', allTexts[i].caption)
-                allTexts[i].text.alpha = 0; 
+                allTexts[i].text.visible = 0; 
             }
         });
     }

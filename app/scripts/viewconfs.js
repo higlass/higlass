@@ -15,7 +15,7 @@ export const testViewConfig = {
       "uid": "aa",
       "initialXDomain": [
         0,
-        3100000000
+300000000
       ],
       "autocompleteSource": "//higlass.io/api/v1/suggest/?d=dd&",
       "genomePositionSearchBoxVisible": true,
@@ -74,6 +74,12 @@ export const testViewConfig = {
                   "maxZoom": null
                 },
                 "name": "Dixon2015-H1_TB-HindIII-allreps-filtered.10kb.multires.cool"
+              },
+              {
+                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+                "type": "2d-chromosome-positions",
+                "position": "center",
+                "name": "Chromosome Positions (hg19)"
               }
             ],
             "position": "center"

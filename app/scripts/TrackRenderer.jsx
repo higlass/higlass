@@ -23,6 +23,7 @@ import {ViewportTracker2D} from './ViewportTracker2D.js';
 import {Track} from './Track.js';
 import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack.js';
 import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack.js';
+import {Chromosome2DPositions} from './Chromosome2DPositions.js'
 
 export class TrackRenderer extends React.Component {
     /**
@@ -527,6 +528,8 @@ export class TrackRenderer extends React.Component {
             case 'combined':
                 return new CombinedTrack(track.contents, this.createTrackObject.bind(this), handleTilesetInfoReceived,
                         track.options);
+            case '2d-chromosome-positions':
+                return new Chromosome2DPositions(this.currentProps.pixiStage, track.chromInfoPath );
             default:
                 console.log('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(this.currentProps.pixiStage, {name: 'Unknown Track Type'});

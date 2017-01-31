@@ -115,9 +115,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         name: 'Horizontal 1D Tile Outlines',
-        thumbnail: svg1DTilesIcon,
-        availableOptions: [ 'labelPosition' ]
-
+        thumbnail: svg1DTilesIcon
     },
     {
         type: 'vertical-1d-tiles',
@@ -125,8 +123,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         name: 'Vertical 1D Tile Outlines',
-        thumbnail: svgVertical1DTilesIcon,
-        availableOptions: [ 'labelPosition' ]
+        thumbnail: svgVertical1DTilesIcon
     },
     {
         type: '2d-tiles',
@@ -134,8 +131,7 @@ export const tracksInfo = [
         local: false,
         orientation: '2d',
         name: '2D Tile Outlines',
-        thumbnail: svg2DTilesIcon,
-        availableOptions: [ 'labelPosition' ]
+        thumbnail: svg2DTilesIcon
     },
     {
         type: 'top-stacked-interval',
@@ -196,6 +192,14 @@ export const tracksInfo = [
         datatype: 'any',
         local: true,
         orientation: 'any'
+    },
+    {
+        type: '2d-chromosome-positions',
+        datatype: ['chromosome-positions'],
+        local: false,
+        orientation: '2d',
+        name: 'Chromosome Positions',
+        thumbnail: null
     }
 ]
 
