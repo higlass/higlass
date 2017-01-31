@@ -8,34 +8,48 @@ export {localViewConfig} from './viewconfs.js';
 export {testViewConfig} from './viewconfs.js';
 
 
-
-function launch(parent,
-        config,
-        options) {
-
-    if (!options) options = {};
-
-  ReactDOM.render((<HiGlassComponent
-              viewConfig={config}
-              options={options}
-              />), parent);
+function launch (element, config, options, callback) {
+  /**
+   * The instance's public API will be passed into the callback
+   *
+   * @method
+   * @author  Fritz Lekschas
+   * @date    2017-01-31
+   * @param   {Object} higlass - HiGlass instance
+   * @return  {Object} The instance's public API
+   */
+  callback((function (higlass) {
+      return higlass.api();
+    } (
+      ReactDOM.render(
+        (<HiGlassComponent
+            options={options || {}}
+            viewConfig={config}
+         />),
+        element
+      )
+    )
+  ));
 }
 
-export function HgComponent(parent, config, options) {
-    /**
-     * Available options:
-     *
-     *  bounded: [true/false]
-     *      Fit the container to the bounds of the parent
-     */
+
+export function create (element, config, options, callback) {
+  /**
+   * Available options:
+   *
+   *  bounded: [true/false]
+   *      Fit the container to the bounds of the element
+   */
   if (typeof config === 'string') {
     // Load external config
     json(config, (error, data) => {
       if (error) throw error;
 
-     launch(parent, data, options);
+     launch(element, data, options, callback);
     });
   } else {
-   launch(parent, config, options);
+   launch(element, config, options, callback);
   }
 }
+
+export default create;
