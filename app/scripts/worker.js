@@ -59,7 +59,7 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
         }
         ;
     } catch (err) {
-        console.log('ERROR:', err);
+        console.error('ERROR:', err);
         return pixData;
     }
 

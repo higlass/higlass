@@ -3,8 +3,8 @@ import {tileProxy} from './TileProxy.js';
 import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
 
 export class VerticalLine1DPixiTrack extends HorizontalLine1DPixiTrack {
-    constructor(scene, server, uid) {
-        super(scene, server, uid);
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
+        super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
         this.scene.removeChild(this.pBase);
 
@@ -12,7 +12,7 @@ export class VerticalLine1DPixiTrack extends HorizontalLine1DPixiTrack {
         this.moveToOrigin.addChild(this.pBase);
 
         this.scene.addChild(this.moveToOrigin);
-        
+
         this.moveToOrigin.rotation = Math.PI / 2;
     }
 
@@ -46,7 +46,7 @@ export class VerticalLine1DPixiTrack extends HorizontalLine1DPixiTrack {
         /**
          * Either get or set the reference xScale
          */
-        if (!arguments.length) 
+        if (!arguments.length)
             return this._refXScale;
 
         this._refYScale = _;
@@ -58,7 +58,7 @@ export class VerticalLine1DPixiTrack extends HorizontalLine1DPixiTrack {
         /**
          * Either get or set the reference yScale
          */
-        if (!arguments.length) 
+        if (!arguments.length)
             return this._refYScale;
 
         this._refXScale = _;
@@ -70,7 +70,7 @@ export class VerticalLine1DPixiTrack extends HorizontalLine1DPixiTrack {
         /**
          * Either get or set the xScale
          */
-        if (!arguments.length) 
+        if (!arguments.length)
             return this._xScale;
 
         this._yScale = _;

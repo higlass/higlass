@@ -9,13 +9,13 @@ export {testViewConfig} from './viewconfs.js';
 
 
 
-function launch(parent, 
-        config, 
+function launch(parent,
+        config,
         options) {
 
     if (!options) options = {};
 
-  ReactDOM.render((<HiGlassComponent 
+  ReactDOM.render((<HiGlassComponent
               viewConfig={config}
               options={options}
               />), parent);
@@ -25,7 +25,7 @@ export function HgComponent(parent, config, options) {
     /**
      * Available options:
      *
-     *  bounded: [true/false] 
+     *  bounded: [true/false]
      *      Fit the container to the bounds of the parent
      */
   if (typeof config === 'string') {

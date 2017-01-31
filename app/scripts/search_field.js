@@ -49,8 +49,8 @@ export class SearchField {
             // did any of the coordinates exceed the genome boundaries
             positionString += " [offset " + x1[2] + "," + x2[2];
             if (twoD) {
-               positionString += ":" + y1[2] + "," + y2[2] 
-            } 
+               positionString += ":" + y1[2] + "," + y2[2]
+            }
 
             positionString += "]";
         }
@@ -75,7 +75,7 @@ export class SearchField {
             chrPosition = 1;
         }
 
-        if (insertPoint == this.chromInfo.cumPositions.length - 1 && 
+        if (insertPoint == this.chromInfo.cumPositions.length - 1 &&
             chrPosition > lastLength) {
             // beyond the last chromosome
             offset = chrPosition - lastLength;
@@ -115,8 +115,7 @@ export class SearchField {
         } else if (chr in this.chromInfo.chrPositions) {
             retPos = this.chromInfo.chrPositions[chr].pos + pos;
         } else {
-            console.log("Search error: No chromInfo specified or chromosome (" + 
-                    chr + ") not in chromInfo");
+            // console.log("Search error: No chromInfo specified or chromosome (" + chr + ") not in chromInfo");
             retPos = null;
         }
 
@@ -150,7 +149,7 @@ export class SearchField {
             return null;
 
         // shitty ass regex to deal with negative positions (which aren't even valid genomic coordinates)
-        var parts = term.split(/([0-9,a-z:A-Z-]+?[0-9]+)-([0-9,a-z:A-Z-]+)/);   //split on a 
+        var parts = term.split(/([0-9,a-z:A-Z-]+?[0-9]+)-([0-9,a-z:A-Z-]+)/);   //split on a
         parts = parts.filter((d) => { return d.length > 0 });
 
         var pos1 = null, pos2 = null;
@@ -189,7 +188,7 @@ export class SearchField {
          */
 
         let parts = offsetText.split(':');
-        console.log('parseOffset parts:', parts);
+        // console.log('parseOffset parts:', parts);
 
         if (parts.length == 0)
             return [[0,0],[0,0]];
@@ -205,7 +204,7 @@ export class SearchField {
 
         }
 
-        return [[0,0],[0,0]] 
+        return [[0,0],[0,0]]
     }
 
     searchPosition(text) {
@@ -220,11 +219,11 @@ export class SearchField {
         if (offsetRe) {
             text = text.replace(offsetRe[0], '');
 
-            console.log('text:', text);
+            // console.log('text:', text);
             //
             offset = this.parseOffset(offsetRe[1]);
         }
-        console.log('offset:', offset);
+        // console.log('offset:', offset);
 
         var parts = text.split(' & ');
 
@@ -255,7 +254,7 @@ export class SearchField {
 
         }
 
-        console.log('range1:', range1);
+        // console.log('range1:', range1);
 
         return [range1, range2];
     }

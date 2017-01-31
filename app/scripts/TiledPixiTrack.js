@@ -9,7 +9,7 @@ export class TiledPixiTrack extends PixiTrack {
     /**
      * A track that must pull remote tiles
      */
-    constructor(scene, server, tilesetUid, handleTilesetInfoReceived, options) {
+    constructor(scene, server, tilesetUid, handleTilesetInfoReceived, options, animate) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
@@ -37,8 +37,10 @@ export class TiledPixiTrack extends PixiTrack {
 
         this.maxZoom = 0;
 
+        this.animate = animate;
+
         tileProxy.trackInfo(server, tilesetUid, tilesetInfo => {
-            console.log('tilesetInfo:', tilesetInfo);
+            // console.log('tilesetInfo:', tilesetInfo);
             this.tilesetInfo = tilesetInfo[tilesetUid];
 
             this.maxZoom = +this.tilesetInfo['max_zoom'];
@@ -47,10 +49,10 @@ export class TiledPixiTrack extends PixiTrack {
             if (handleTilesetInfoReceived)
                 handleTilesetInfoReceived(tilesetInfo[tilesetUid]);
 
-            if (!this.options) 
+            if (!this.options)
                 this.options = {};
 
-            this.options.name = tilesetInfo[tilesetUid].name ? 
+            this.options.name = tilesetInfo[tilesetUid].name ?
                 tilesetInfo[tilesetUid].name : this.options.name;
 
             this.draw();
@@ -376,6 +378,9 @@ export class TiledPixiTrack extends PixiTrack {
          * Mainly called to remove old unnecessary tiles
          */
         this.refreshTiles();
+
+        // Let HiGlass know we need to re-render
+        this.animate();
     }
 
 
