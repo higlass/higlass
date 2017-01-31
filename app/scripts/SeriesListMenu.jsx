@@ -65,7 +65,6 @@ export class SeriesListMenu extends ContextMenuContainer {
 
             let track = this.state.submenuShown;
 
-            // console.log('track:', track);
             let menuItems = {};
             let options = track.options;
 
@@ -75,27 +74,48 @@ export class SeriesListMenu extends ContextMenuContainer {
             for (let optionType of tracksInfoByType[track.type].availableOptions) {
                 if (optionsInfo.hasOwnProperty(optionType)) {
                    menuItems[optionType] = {'name': optionsInfo[optionType].name}
-                   // console.log('oi:', optionsInfo[optionType].inlineOptions);
 
                    if (optionsInfo[optionType].inlineOptions) {
                        // we can simply select this option from the menu
-                       for (let inlineOptionValue in optionsInfo[optionType].inlineOptions) {
+                       for (let inlineOptionKey in optionsInfo[optionType].inlineOptions) {
 
-                           let inlineOption = optionsInfo[optionType].inlineOptions[inlineOptionValue];
+                           let inlineOption = optionsInfo[optionType].inlineOptions[inlineOptionKey];
 
+                           // check if there's already available options (e.g.
+                           // "Top right") for this option type (e.g. "Label
+                           // position")
                            if (!menuItems[optionType].children)
                                menuItems[optionType].children = {};
 
-                           menuItems[optionType].children[inlineOptionValue] = {
-                               name: inlineOption.name,
-                               handler: () => {
-                                   track.options[optionType] = inlineOptionValue;
-                                   this.props.onTrackOptionsChanged(track.uid, track.options);
-                                   this.props.closeMenu();
-                               },
-                               value: inlineOptionValue
-                           }
-                       }
+                           let optionSelectorSettings = {
+                                name: inlineOption.name,
+                                value: inlineOption.value
+                                // missing handler to be filled in below
+                            };
+
+
+                           // is there a custom component available for picking this
+                           // option type value (e.g. 'custom' color scale)
+                           if (inlineOption.componentPickers &&
+                               inlineOption.componentPickers[track.type]) {
+
+                               optionSelectorSettings.handler = () => {
+                                    // console.log('pick color value', track.type);
+                                    this.props.onConfigureTrack(track, inlineOption.componentPickers[track.type]);
+                                    this.props.closeMenu();
+                               };
+                            } else {
+                                // the menu option defines a potential value for this option
+                                // type (e.g. "top right")
+                                optionSelectorSettings.handler = () => {
+                                       track.options[optionType] = inlineOption.value;
+                                       this.props.onTrackOptionsChanged(track.uid, track.options);
+                                       this.props.closeMenu();
+                                   }
+                            }
+
+                           menuItems[optionType].children[inlineOptionKey] = optionSelectorSettings;
+                        }
                    } else if (optionsInfo[optionType].componentPickers &&
                               optionsInfo[optionType].componentPickers[track.type]) {
                        // there's an option picker registered
@@ -108,8 +128,6 @@ export class SeriesListMenu extends ContextMenuContainer {
                    }
                 }
             }
-
-            // console.log('menuItems:', menuItems);
 
             return (<NestedContextMenu
                         position={position}

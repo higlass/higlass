@@ -3,9 +3,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HiGlassComponent } from './HiGlassComponent.jsx';
 
-function launch(parent, config, options) {
+export {defaultViewConfig} from './viewconfs.js';
+export {localViewConfig} from './viewconfs.js';
+export {testViewConfig} from './viewconfs.js';
 
-  if (!options) options = {};
+
+
+function launch(parent,
+        config,
+        options) {
+
+    if (!options) options = {};
 
   ReactDOM.render((<HiGlassComponent
               viewConfig={config}
@@ -30,8 +38,4 @@ export function HgComponent(parent, config, options) {
   } else {
    launch(parent, config, options);
   }
-}
-
-export default {
-  HgComponent
 }

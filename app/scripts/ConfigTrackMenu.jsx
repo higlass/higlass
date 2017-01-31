@@ -147,8 +147,8 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                     </ContextMenuItem>
                     <ContextMenuItem
                         onClick={ () => {
-                            this.props.onCloseTrack(this.props.track.uid);
-                            this.props.onAddTrack(this.props.orientation);
+                            this.props.onReplaceTrack(this.props.track.uid,
+                                                      this.props.trackOrientation);
                         }}
                     >
                     {'Replace Track'}

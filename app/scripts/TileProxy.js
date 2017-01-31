@@ -155,7 +155,7 @@ class TileProxy  {
     }
 
     trackInfo(server, tilesetUid, done) {
-        let outUrl = "//" + server + '/tileset_info/?d=' + tilesetUid + '&s=' + this.sessionId;
+        let outUrl = server + '/tileset_info/?d=' + tilesetUid + '&s=' + this.sessionId;
 
         workerGetTilesetInfo(outUrl, done);
         /*

@@ -28,6 +28,9 @@ import {all as icons} from './icons.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
+const NUM_GRID_COLUMNS = 6;
+const DEFAULT_NEW_VIEW_HEIGHT = 12;
+
 export class HiGlassComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -79,7 +82,7 @@ export class HiGlassComponent extends React.Component {
           let viewsByUid = this.processViewConfig(this.props.viewConfig);
 
           this.state = {
-            bounded: this.props.options.bounded,
+              bounded: this.props.options ? this.props.options.bounded : false,
             currentBreakpoint: 'lg',
             mounted: false,
             width: 0,
@@ -683,7 +686,7 @@ export class HiGlassComponent extends React.Component {
       this.handleDragStart();
       this.handleDragStop();
 
-      let MARGIN_HEIGHT = 10;
+      let MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
 
       let marginHeight = MARGIN_HEIGHT * maxHeight - 1;
       let availableHeight = height - marginHeight;
@@ -714,7 +717,9 @@ export class HiGlassComponent extends React.Component {
             }
       };
 
-      if (this.props.options.bounded) {
+      console.log('chosenRowHeight:', chosenRowHeight, 'height', height);
+
+      if (this.props.options ? this.props.options.bounded : false) {
           this.setState({
             rowHeight: chosenRowHeight
           });
@@ -953,8 +958,8 @@ export class HiGlassComponent extends React.Component {
         layout = {
             x: 0,
             y: 0,
-            w: 6,
-            h: 12
+            w: NUM_GRID_COLUMNS,
+            h: DEFAULT_NEW_VIEW_HEIGHT
         };
 
         // the height should be adjusted when the layout changes
@@ -1007,13 +1012,13 @@ export class HiGlassComponent extends React.Component {
 
       // if this view was zoom locked to another, we need to unlock it
       this.handleUnlockZoom(uid);
-
-
       delete this.state.views[uid];
+
+      let viewsByUid = this.removeInvalidTracks(this.state.views);
 
       // might want to notify the views that they're beig closed
       this.setState({
-          'views': this.state.views
+          'views': viewsByUid
       });
   }
 
@@ -1285,6 +1290,43 @@ export class HiGlassComponent extends React.Component {
         })
   }
 
+  viewPositionAvailable(pX, pY, w, h) {
+      /**
+       * Check if we can place a view at this position
+       */
+      let pEndX = pX + w;
+      let pEndY = pY + h;
+
+      if (pX + w > NUM_GRID_COLUMNS) {
+          // this view will go over the right edge of our grid
+        return false;
+      }
+
+      let sortedViews = dictValues(this.state.views);
+
+      // check if this position
+      for (let j = 0; j < sortedViews.length; j++) {
+          let svX = sortedViews[j].layout.x;
+          let svY = sortedViews[j].layout.y;
+
+          let svEndX = svX + sortedViews[j].layout.w;
+          let svEndY = svY + sortedViews[j].layout.h;
+
+          let intersects = false;
+
+          if (pX < svEndX && pEndX > svX) {
+            // x range intersects
+            if (pY < svEndY && pEndY > svY) {
+                //y range intersects
+                return false;
+            }
+          }
+
+      }
+
+      return true;
+  }
+
   handleAddView(view) {
       /**
        * User clicked on the "Add View" button. We'll duplicate the last
@@ -1294,8 +1336,36 @@ export class HiGlassComponent extends React.Component {
       let views = dictValues(this.state.views);
       let lastView = view;
 
-      let maxY = 0;
+      let potentialPositions = [];
 
+      for (let i = 0; i < views.length; i++) {
+
+          let pX = views[i].layout.x + views[i].layout.w
+          let pY = views[i].layout.y;
+
+          // can we place the new view to the right of this view?
+          if (this.viewPositionAvailable(pX, pY, view.layout.w, view.layout.h))
+                potentialPositions.push([pX, pY]);
+
+          pX = views[i].layout.x;
+          pY = views[i].layout.y + views[i].layout.h
+          // can we place the new view below this view
+          if (this.viewPositionAvailable(pX, pY, view.layout.w, view.layout.h))
+                potentialPositions.push([pX, pY]);
+      }
+
+
+      potentialPositions.sort((a,b) => {
+        let n = a[1] - b[1];
+
+        if (n == 0) {
+            return a[0] - b[0];
+        }
+
+        return n;
+      });
+
+      /*
       for (let i = 0; i < views.length; i++) {
           let view = views[i];
 
@@ -1306,14 +1376,15 @@ export class HiGlassComponent extends React.Component {
                     maxY += Math.max(maxY, view.layout.y + 1);
           }
       }
+      */
 
       let jsonString = JSON.stringify(lastView);
 
       let newView = JSON.parse(jsonString);   //ghetto copy
 
       // place this new view below all the others
-      newView.layout.x = 0;
-      newView.layout.y = maxY;
+      newView.layout.x = potentialPositions[0][0];
+      newView.layout.y = potentialPositions[0][1];
 
       // give it its own unique id
       newView.uid = slugid.nice();
@@ -1411,6 +1482,55 @@ export class HiGlassComponent extends React.Component {
         });
     }
 
+    isTrackValid(track, viewUidsPresent) {
+        /**
+         * Determine whether a track is valid and can be displayed.
+         *
+         * Tracks can be invalid due to inconsistent input such as
+         * referral to views that don't exist
+         *
+         * @param track (object): A track definition
+         * @param viewUidsPresent (Set): The view uids which are available
+         */
+
+        if (track.type == 'viewport-projection-center') {
+            if (!viewUidsPresent.has(track.fromViewUid)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    removeInvalidTracks(viewsByUid) {
+        /**
+         * Remove tracks which can no longer be shown (possibly because the views they
+         * refer to no longer exist
+         */
+        let viewUidsSet = new Set(dictKeys(viewsByUid));
+
+        for (let v of dictValues(viewsByUid)) {
+            for (let trackOrientation of ['left', 'top', 'center', 'right', 'bottom']) {
+                if (v.tracks.hasOwnProperty(trackOrientation)) {
+
+                    // filter out invalid tracks
+                    v.tracks[trackOrientation] = v.tracks[trackOrientation]
+                    .filter(t => this.isTrackValid(t, viewUidsSet));
+
+                    // filter out invalid tracks in combined tracks
+                    v.tracks[trackOrientation].forEach(t => {
+                        if (t.type == 'combined') {
+                            t.contents = t.contents
+                            .filter(c => this.isTrackValid(c, viewUidsSet));
+                        }
+                    });
+                }
+            }
+        }
+
+        return viewsByUid;
+    }
+
     processViewConfig(viewConfig) {
         let views = viewConfig.views;
         let viewsByUid = {};
@@ -1433,7 +1553,10 @@ export class HiGlassComponent extends React.Component {
             // add default options (as specified in config.js
             // (e.g. line color, heatmap color scales, etc...)
             looseTracks.forEach(t => this.addDefaultOptions(t));
+
         });
+
+        viewsByUid = this.removeInvalidTracks(viewsByUid);
 
         return viewsByUid;
 
@@ -1592,7 +1715,7 @@ export class HiGlassComponent extends React.Component {
                     (
                             <div
                                 className="multitrack-header"
-                                style={{"width": this.width, "minHeight": 16, "position": "relative",
+                                style={{"minHeight": 16, "position": "relative",
                                     "border": "solid 1px", "marginBottom": 4, "opacity": 0.6,
                                     verticalAlign: "middle",
                                     lineHeight: "16px",
@@ -1699,7 +1822,7 @@ export class HiGlassComponent extends React.Component {
           isDraggable={this.props.viewConfig.editable}
           isResizable={this.props.viewConfig.editable}
           margin={this.props.viewConfig.editable ? [10,10] : [0,0]}
-          measureBeforeMoun={false}
+          measureBeforeMount={false}
           onBreakpointChange={this.onBreakpointChange.bind(this)}
           onDragStart={this.handleDragStart.bind(this)}
           onDragStop={this.handleDragStop.bind(this)}
@@ -1745,6 +1868,7 @@ HiGlassComponent.defaultProps = {
     className: "layout",
     cols: {lg: 6, md: 6, sm: 6, xs: 6, xxs: 6}
   }
+
 HiGlassComponent.propTypes = {
     children: React.PropTypes.array,
     viewConfig: React.PropTypes.object,

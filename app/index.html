@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="styles/page.css">
 </head>
 <body >
-    Stuff up here may do something
     <div style="height: 50px" />
     <div style="margin: auto; width: 100%;">
     <br>
@@ -28,104 +27,9 @@
 <script src='scripts/hglib.js'>
 </script>
 <script>
-            var remoteServer = "52.45.229.11";
-            var localServer = "localhost:8000";
-          //var usedServer = localServer;
-            var usedServer = remoteServer;
-
-            var viewConfig = {
-  "editable": true,
-  "zoomFixed": false,
-  "trackSourceServers": [
-    "52.45.229.11/api/v1"
-  ],
-  "exportViewUrl": "//52.45.229.11/api/v1/viewconfs/",
-  "views": [
-    {
-      "uid": "aa",
-      "initialXDomain": [
-        0,
-        3100000000
-      ],
-      "initialYDomain": [
-        1202566793.8931298,
-        1207433206.1068702
-      ],
-      "autocompleteSource": "//higlass.site/api/v1/suggest/?d=dd&",
-      "genomePositionSearchBoxVisible": true,
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-      "tracks": {
-        "top": [
-          {
-            "type": "horizontal-gene-annotations",
-            "height": 60,
-            "tilesetUid": "dd",
-            "server": "higlass.site/api/v1",
-            "position": "top",
-            "uid": "D00ffLKHSGqwp4r64sSU7A",
-            "name": "Gene Annotations",
-          },
-          {
-            "type": "top-axis",
-            "height": 60,
-            "position": "top",
-            "name": "Top Axis",
-          }
-        ],
-        "left": [
-          {
-            "type": "vertical-gene-annotations",
-            "width": 60,
-            "tilesetUid": "dd",
-            "server": "higlass.site/api/v1",
-            "position": "left",
-            "uid": "SVYNEiMITAe_K60zCH_7vQ",
-            "name": "Gene Annotations",
-            "options": {
-                "labelPosition": "bottomRight"
-            }
-          }
-        ],
-        "center": [
-          {
-            "uid": "c1",
-            "type": "combined",
-            "height": 200,
-            "contents": [
-              {
-                "uid": "hm1",
-                "server": "higlass.site/api/v1",
-                "tilesetUid": "aa",
-                "type": "heatmap",
-                "position": "center",
-                "options": {
-                  "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "#F5A623",
-                    "#D0021B"
-                  ],
-                  "maxZoom": null
-                },
-                "name": "Dixon2015-H1_TB-HindIII-allreps-filtered.10kb.multires.cool"
-              }
-            ],
-            "position": "center"
-          }
-        ],
-        "right": [],
-        "bottom": []
-      }
-    }
-  ],
-  "zoomLocks": {
-    "locksByViewUid": {},
-    "zoomLocksDict": {}
-  }
-};
 
     hglib.HgComponent(document.getElementById('development-demo'),
-            viewConfig,
+            hglib.testViewConfig,
             {bounded: true});
 
 </script>

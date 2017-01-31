@@ -105,7 +105,7 @@ export class AddTrackModal extends React.Component {
                 )
 
         return(<Modal 
-                onHide={this.props.handleNoTrackAdded}
+                onHide={this.props.onCancel}
                 show={this.props.show}
                 >
                     <Modal.Header closeButton>
