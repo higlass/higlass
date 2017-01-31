@@ -68,11 +68,13 @@ export class HeatmapOptions extends React.Component {
 
 
         let centerTrack = Object.assign(track,
-                                        {height: 100,
+                                        {
                                             options: {
                                          colorRange: this.state.colors
                                         }} );
 
+        console.log('props.xScale', this.props.xScale ? this.props.xScale.domain() : null);
+        console.log('props.yScale', this.props.yScale ? this.props.yScale.domain() : null);
         let mvConfig = {
             'editable': false,
             zoomFixed: true,
@@ -204,9 +206,9 @@ export class HeatmapOptions extends React.Component {
                                  <div style={{width:200 }}>
                                       <HiGlassComponent
                                           viewConfig={mvConfig}
+                                          options={{bounded: false}}
                                       />
                                   </div>
-
                                    </td>
                                   </tr>
                                   <tr>

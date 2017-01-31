@@ -267,4 +267,3 @@ let arrowHeadDomainsStr = `
 
 export const svgArrowheadDomainsIcon = parser.parseFromString(arrowHeadDomainsStr, 'text/xml').documentElement;
 
-console.log('s:', select(svgArrowheadDomainsIcon).attr('transform', 'rotate(90)'));
