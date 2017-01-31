@@ -38,7 +38,7 @@ export class TiledPlot extends React.Component {
 
         this.trackToReplace = null;
 
-        console.log('this.props.tracks.center[0]:', this.props.tracks.center[0]);
+        // console.log('this.props.tracks.center[0]:', this.props.tracks.center[0]);
 
         /*
         let trackOptions = this.props.editable ?
@@ -97,7 +97,7 @@ export class TiledPlot extends React.Component {
         let height = this.element.clientHeight - heightOffset;
         let width = this.element.clientWidth;
 
-        console.log('heightOffset:', heightOffset, 'this.element.clientHeight', this.element.clientHeight);
+        // console.log('heightOffset:', heightOffset, 'this.element.clientHeight', this.element.clientHeight);
 
             if (width > 0 && height > 0) {
 

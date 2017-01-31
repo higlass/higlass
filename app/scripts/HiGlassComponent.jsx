@@ -717,7 +717,7 @@ export class HiGlassComponent extends React.Component {
             }
       };
 
-      console.log('chosenRowHeight:', chosenRowHeight, 'height', height);
+      // console.log('chosenRowHeight:', chosenRowHeight, 'height', height);
 
       if (this.props.options ? this.props.options.bounded : false) {
           this.setState({
