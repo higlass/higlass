@@ -6,7 +6,7 @@ import boxIntersect from 'box-intersect';
 import {scaleLinear} from 'd3-scale';
 
 let TICK_WIDTH = 150;
-let TICK_HEIGHT = 4;
+let TICK_HEIGHT = 6;
 let TICK_TEXT_SEPARATION = 2;
 
 export class HorizontalChromosomeLabels extends PixiTrack {
@@ -16,16 +16,11 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         this.searchField = null;
         this.chromInfo = null;
 
-        console.log('chromInfoPath:', chromInfoPath);
-
         this.gTicks = {};
         this.tickTexts = {};
 
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;  
-            console.log('chromInfo:', this.chromInfo);
-
-            console.log('chromInfo:', this.chromInfo);
             //
 
             this.searchField = new SearchField(this.chromInfo); 
@@ -52,8 +47,6 @@ export class HorizontalChromosomeLabels extends PixiTrack {
                 //give each string a random hash so that some get hidden 
                 // when there's overlaps
                 text.hashValue = Math.random();
-
-                console.log('text:', text);
 
                 this.pMain.addChild(text);
                 this.pMain.addChild(this.gTicks[textStr]);
@@ -86,6 +79,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
 
         // calculate a certain number of ticks
         let ticks = xScale.ticks(numTicks);
+        let tickFormat = xScale.tickFormat(numTicks)
         let tickTexts = this.tickTexts[cumPos.chr];
 
 
@@ -105,8 +99,12 @@ export class HorizontalChromosomeLabels extends PixiTrack {
 
             // draw the tick labels
             tickTexts[i].x = this._xScale(cumPos.pos + ticks[i]);
-            tickTexts[i].text = ticks[i];
             tickTexts[i].y = this.dimensions[1] - (TICK_HEIGHT + TICK_TEXT_SEPARATION);
+
+            if (ticks[i] == 0)
+                tickTexts[i].text = cumPos.chr + ":1"
+            else
+                tickTexts[i].text = cumPos.chr + ":" + tickFormat(ticks[i]);
 
             graphics.lineStyle(1, 0x000000, 1);
 
@@ -124,10 +122,21 @@ export class HorizontalChromosomeLabels extends PixiTrack {
 
             i += 1;
         }
+
+        let ticksDrawn = ticks.length;
+
         /*
+        if (ticks.length == 1) {
+            // if we just have one tick visible, then we'll display the chromosomes 
+            // individually
+            tickTexts[0].visible = false;
+
+        }
+
         console.log('xScale.domain()', xScale.domain());
         console.log('cumPos.chr', cumPos.chr, 'ticks:', xScale.ticks(numTicks));
         */
+        return ticks.length;
     }
 
     draw() {
@@ -163,26 +172,34 @@ export class HorizontalChromosomeLabels extends PixiTrack {
 
             text.anchor.y = 1;
             text.x = viewportMidX;
-            text.y = this.dimensions[1] - 2 * TICK_TEXT_SEPARATION - TICK_HEIGHT;
+            text.y = this.dimensions[1] - TICK_TEXT_SEPARATION - TICK_HEIGHT;
             text.updateTransform();
 
             let bbox = text.getBounds();
-            console.log('bbox:', bbox);
-            text.y -= bbox.height; 
+            //text.y -= bbox.height; 
 
             // make sure the chrosome label fits in the x range
+            /* Not necessary because chromosome labels only get drawn 
             if (viewportMidX + bbox.width / 2  > this.dimensions[0]) {
                 text.x -= (viewportMidX + bbox.width / 2) - this.dimensions[0];
             } else if (viewportMidX - bbox.width / 2 < 0) {
                 //
                 text.x -= (viewportMidX - bbox.width / 2);
             } 
+            */
 
 
-            text.visible = true;
+            let numTicksDrawn = this.drawTicks(xCumPos);
+
+
+            // only show chromsome labels if there's no ticks drawn
+            if (numTicksDrawn > 0)
+                text.visible = false;
+            else
+                text.visible = true
+            
 
             allTexts.push({importance: this.texts[i].hashValue, text: this.texts[i], caption: null});
-            this.drawTicks(xCumPos);
         }
 
         /*

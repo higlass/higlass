@@ -30,13 +30,16 @@ export const testViewConfig = {
             "position": "top",
             "uid": "D00ffLKHSGqwp4r64sSU7A",
             "name": "Gene Annotations",
-          },
+          }
+        /*
+        ,
           {
             "type": "top-axis",
             "height": 60,
             "position": "top",
             "name": "Top Axis",
           }
+          */
             ,
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
