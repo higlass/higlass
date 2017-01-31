@@ -2,15 +2,15 @@ import {tileProxy} from './TileProxy.js';
 import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
 
 export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived) {
-        super(scene, server, uid, handleTilesetInfoReceived);
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
+        super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
         this.pMain = this.pMobile;
     }
 
     areAllVisibleTilesLoaded() {
-        
-        // we don't need to wait for any tiles to load before 
+
+        // we don't need to wait for any tiles to load before
         // drawing
         //
         return true;
@@ -20,12 +20,12 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
         /**
          * Create whatever is needed to draw this tile.
          */
-         
+
         let graphics = tile.graphics;
         tile.textGraphics = new PIXI.Graphics();
-        //tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored, 
+        //tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored,
 
-        tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/'), 
+        tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/'),
                               {fontFamily : 'Arial', fontSize: 32, fill : 0xff1010, align : 'center'});
 
         //tile.text.y = 100;
@@ -33,8 +33,8 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
 
         tile.text.anchor.x = 0.5;
         tile.text.anchor.y = 0.5;
-        
-    
+
+
         graphics.addChild(tile.textGraphics);
 
         this.drawTile(tile);
@@ -52,11 +52,11 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
 
         let graphics = tile.graphics;
 
-        let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(tile.tileData.zoomLevel, 
+        let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
                                                                                  tile.tileData.tilePos);
 
         // the text needs to be scaled down so that it doesn't become huge
-        // when we zoom in 
+        // when we zoom in
         let tSX = 1 / ((this._xScale(1) - this._xScale(0)) / (this._refXScale(1) - this._refXScale(0)));
         //let tSY = 1 / ((this._yScale(1) - this._yScale(0)) / (this._refYScale(1) - this._refYScale(0)));
 
@@ -113,7 +113,7 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
             this.fetchedTiles[x.tileId] = x;
             this.fetchedTiles[x.tileId].tileData = data;
 
-            // since we're not actually fetching remote data, we can easily 
+            // since we're not actually fetching remote data, we can easily
             // remove these tiles from the fetching list
             if (this.fetching.has(x.remoteId))
                 this.fetching.delete(x.remoteId);

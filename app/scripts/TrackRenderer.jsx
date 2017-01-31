@@ -48,7 +48,7 @@ export class TrackRenderer extends React.Component {
         // without having it fire an "onZoom" event
         this.emptyZoomBehavior = zoom()
 
-        // a lot of the updates in TrackRenderer happen in response to 
+        // a lot of the updates in TrackRenderer happen in response to
         // componentWillReceiveProps so we need to perform them with the
         // newest set of props. When cWRP is called, this.props still contains
         // the old props, so we need to store them in a new variable
@@ -94,7 +94,7 @@ export class TrackRenderer extends React.Component {
 
         // maintain a list of trackDefObjects which correspond to the input
         // tracks
-        // Each object will contain a trackDef 
+        // Each object will contain a trackDef
         // {'top': 100, 'left': 50,... 'track': {'source': 'http:...', 'type': 'heatmap'}}
         // And a trackObject which will be responsible for rendering it
         this.trackDefObjects = {}
@@ -136,7 +136,7 @@ export class TrackRenderer extends React.Component {
             */
             return;
 
-        // only update the initial domain 
+        // only update the initial domain
         this.initialXDomain = initialXDomain;
         this.initialYDomain = initialYDomain;
 
@@ -267,23 +267,24 @@ export class TrackRenderer extends React.Component {
 
             this.updateTrackPositions();
             this.applyZoomTransform(this.currentProps);
+
             requestAnimationFrame(this.timedUpdatePositionAndDimensions.bind(this));
         }
     }
 
 
     syncTrackObjects(trackDefinitions) {
-        /** 
+        /**
          * Make sure we have a track object for every passed track definition.
          *
-         * If we get a track definition for which we have no Track object, we 
+         * If we get a track definition for which we have no Track object, we
          * create a new one.
          *
          * If we have a track object for which we have no definition, we remove
          * the object.
          *
          * All the others we ignore.
-         * 
+         *
          * Track definitions should be of the following form:
          *
          * { height:  100, width: 50, top: 30, left: 40, track: {...}}
@@ -297,12 +298,12 @@ export class TrackRenderer extends React.Component {
 
         let knownTracks = new Set(Object.keys(this.trackDefObjects));
         let receivedTracks = new Set(Object.keys(receivedTracksDict));
-        
+
         // track definitions we don't have objects for
         let enterTrackDefs = new Set([...receivedTracks]
                                 .filter(x => !knownTracks.has(x)));
 
-        // track objects for which there is no definition 
+        // track objects for which there is no definition
         // (i.e. they no longer need to exist)
         let exitTracks = new Set([...knownTracks]
                                 .filter(x => !receivedTracks.has(x)));
@@ -312,7 +313,7 @@ export class TrackRenderer extends React.Component {
         let updateTrackDefs = new Set([...receivedTracks]
                                    .filter(x => knownTracks.has(x)));
 
-        
+
         // add new tracks and update them (setting dimensions and positions)
         this.addNewTracks([...enterTrackDefs].map(x => receivedTracksDict[x]));
         this.updateExistingTrackDefs([...enterTrackDefs].map(x => receivedTracksDict[x]));
@@ -340,7 +341,7 @@ export class TrackRenderer extends React.Component {
 
             newTrackObj.refScalesChanged(this.xScale, this.yScale);
 
-            this.trackDefObjects[newTrackDef.track.uid] = {trackDef: newTrackDef, 
+            this.trackDefObjects[newTrackDef.track.uid] = {trackDef: newTrackDef,
                 trackObject: newTrackObj};
         }
     }
@@ -387,7 +388,7 @@ export class TrackRenderer extends React.Component {
     }
 
     setCenter(centerX, centerY, sourceK, notify=true) {
-        /* 
+        /*
          * Set the center of this view to a paticular X and Y coordinate
          *
          * @param notify: Notify listeners that the scales have changed. This
@@ -434,8 +435,8 @@ export class TrackRenderer extends React.Component {
     }
 
     applyZoomTransform(notify=true) {
-        let zoomedXScale = this.zoomTransform.rescaleX(this.xScale); 
-        let zoomedYScale = this.zoomTransform.rescaleY(this.yScale); 
+        let zoomedXScale = this.zoomTransform.rescaleX(this.xScale);
+        let zoomedYScale = this.zoomTransform.rescaleY(this.yScale);
 
         let newXScale = scaleLinear()
             .domain([this.currentProps.marginLeft + this.currentProps.leftWidth,
@@ -450,10 +451,10 @@ export class TrackRenderer extends React.Component {
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
 
-            track.zoomed(newXScale, newYScale, this.zoomTransform.k, 
-                        this.zoomTransform.x + this.xPositionOffset, 
+            track.zoomed(newXScale, newYScale, this.zoomTransform.k,
+                        this.zoomTransform.x + this.xPositionOffset,
                         this.zoomTransform.y + this.yPositionOffset,
-                        this.currentProps.marginLeft + this.currentProps.leftWidth, 
+                        this.currentProps.marginLeft + this.currentProps.leftWidth,
                         this.currentProps.marginTop + this.currentProps.topHeight);
             track.draw();
         }
@@ -475,77 +476,144 @@ export class TrackRenderer extends React.Component {
             case 'top-axis':
                 return new TopAxisTrack(this.svgElement);
             case 'heatmap':
-                return new HeatmapTiledPixiTrack(this.currentProps.pixiStage, 
-                                                 track.server, 
+                return new HeatmapTiledPixiTrack(this.currentProps.pixiStage,
+                                                 track.server,
                                                  track.tilesetUid,
                                                  handleTilesetInfoReceived,
-                                                 track.options);
+                                                 track.options,
+                                                 this.currentProps.onNewTilesLoaded);
             case 'horizontal-line':
-                return new HorizontalLine1DPixiTrack(this.currentProps.pixiStage, 
-                                                     track.server, 
+                return new HorizontalLine1DPixiTrack(this.currentProps.pixiStage,
+                                                     track.server,
                                                      track.tilesetUid,
                                                      handleTilesetInfoReceived,
-                                                     track.options);
+                                                     track.options,
+                                                     this.currentProps.onNewTilesLoaded);
             case 'vertical-line':
-                return new LeftTrackModifier(new HorizontalLine1DPixiTrack(this.currentProps.pixiStage, 
-                            track.server, track.tilesetUid, handleTilesetInfoReceived, track.options));
+                return new LeftTrackModifier(
+                    new HorizontalLine1DPixiTrack(
+                        this.currentProps.pixiStage,
+                        track.server,
+                        track.tilesetUid,
+                        handleTilesetInfoReceived,
+                        track.options,
+                        this.currentProps.onNewTilesLoaded
+                    )
+                );
             case 'horizontal-1d-tiles':
-                return new IdHorizontal1DTiledPixiTrack(this.currentProps.pixiStage, track.server, track.tilesetUid, 
-                        handleTilesetInfoReceived, track.options);
+                return new IdHorizontal1DTiledPixiTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    this.currentProps.onNewTilesLoaded);
             case 'vertical-1d-tiles':
-                return new IdVertical1DTiledPixiTrack(this.currentProps.pixiStage, track.server, track.tilesetUid,
-                        handleTilesetInfoReceived, track.options);
+                return new IdVertical1DTiledPixiTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    this.currentProps.onNewTilesLoaded);
             case '2d-tiles':
-                return new Id2DTiledPixiTrack(this.currentProps.pixiStage, track.server, track.tilesetUid,
-                        handleTilesetInfoReceived, track.options);
+                return new Id2DTiledPixiTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    this.currentProps.onNewTilesLoaded);
             case 'top-stacked-interval':
-                return new CNVIntervalTrack(this.currentProps.pixiStage, track.server, track.tilesetUid,
-                        handleTilesetInfoReceived, track.options);
+                return new CNVIntervalTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    this.currentProps.onNewTilesLoaded);
             case 'left-stacked-interval':
-                return new LeftTrackModifier(new CNVIntervalTrack(this.currentProps.pixiStage, track.server, track.tilesetUid,
-                            handleTilesetInfoReceived, track.options));
+                return new LeftTrackModifier(
+                    new CNVIntervalTrack(
+                        this.currentProps.pixiStage,
+                        track.server,
+                        track.tilesetUid,
+                        handleTilesetInfoReceived,
+                        track.options,
+                        this.currentProps.onNewTilesLoaded
+                    )
+                );
             case 'viewport-projection-center':
                 // TODO: Fix this so that these functions are defined somewhere else
                 if (track.registerViewportChanged && track.removeViewportChanged && track.setDomainsCallback)
-                    return new ViewportTracker2D(this.svgElement, track.registerViewportChanged, 
-                            track.removeViewportChanged, track.setDomainsCallback); 
+                    return new ViewportTracker2D(
+                        this.svgElement,
+                        track.registerViewportChanged,
+                        track.removeViewportChanged,
+                        track.setDomainsCallback
+                    );
                 else
                     return new Track();
             case 'horizontal-gene-annotations':
-                return new HorizontalGeneAnnotationsTrack(this.currentProps.pixiStage, track.server, track.tilesetUid, 
-                        handleTilesetInfoReceived, track.options)
+                return new HorizontalGeneAnnotationsTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    this.currentProps.onNewTilesLoaded
+                )
             case 'vertical-gene-annotations':
-                return new LeftTrackModifier(new HorizontalGeneAnnotationsTrack(this.currentProps.pixiStage, track.server, track.tilesetUid,
-                            handleTilesetInfoReceived, track.options))
+                return new LeftTrackModifier(
+                    new HorizontalGeneAnnotationsTrack(
+                        this.currentProps.pixiStage,
+                        track.server,
+                        track.tilesetUid,
+                        handleTilesetInfoReceived,
+                        track.options,
+                        this.currentProps.onNewTilesLoaded
+                    )
+                )
             case 'arrowhead-domains':
-                return new ArrowheadDomainsTrack(this.currentProps.pixiStage, track.server, 
-                                                 track.tilesetUid,
-                                                handleTilesetInfoReceived,
-                                                track.options);
+                return new ArrowheadDomainsTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    this.currentProps.onNewTilesLoaded
+                );
             case 'combined':
-                return new CombinedTrack(track.contents, this.createTrackObject.bind(this), handleTilesetInfoReceived,
-                        track.options);
+                return new CombinedTrack(
+                    track.contents,
+                    this.createTrackObject.bind(this),
+                    handleTilesetInfoReceived,
+                    track.options
+                );
             default:
                 console.log('WARNING: unknown track type:', track.type);
-                return new UnknownPixiTrack(this.currentProps.pixiStage, {name: 'Unknown Track Type'});
+                return new UnknownPixiTrack(
+                    this.currentProps.pixiStage,
+                    {name: 'Unknown Track Type'}
+                );
         }
 
     }
 
     render() {
         return(
-            <div 
+            <div
                 className={"track-renderer"}
                 ref={(c) => this.divTrackArea = c}
                 style={{
-                    width: this.currentProps.width, 
+                    width: this.currentProps.width,
                     height: this.currentProps.height,
                     position: "absolute"}}
             >
                 {this.currentProps.children}
             </div>
         );
-        
+
     }
 }
 

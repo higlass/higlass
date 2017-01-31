@@ -158,6 +158,10 @@ export class HiGlassComponent extends React.Component {
         );
     }
 
+    componentDidUpdate() {
+      this.animate();
+    }
+
     handleWindowFocused() {
         /*
          * The window housing this view gained focus. That means the bounding boxes
@@ -195,8 +199,8 @@ export class HiGlassComponent extends React.Component {
     }
 
     animate() {
-        this.pixiRenderer.render(this.pixiStage);
-        this.frame = requestAnimationFrame(this.animate.bind(this));
+        requestAnimationFrame(() => this.pixiRenderer.render(this.pixiStage));
+        // this.animate.bind(this));
     }
 
   onBreakpointChange(breakpoint) {
@@ -417,6 +421,8 @@ export class HiGlassComponent extends React.Component {
           }
           */
       }
+
+      this.animate();
   }
 
   handleProjectViewport(uid) {
@@ -948,7 +954,7 @@ export class HiGlassComponent extends React.Component {
             x: 0,
             y: 0,
             w: 6,
-            h: 12 
+            h: 12
         };
 
         // the height should be adjusted when the layout changes
@@ -1197,7 +1203,7 @@ export class HiGlassComponent extends React.Component {
       let locksByViewUid = {};
 
     for (let viewUid of dictKeys(zoomLocks)) {
-        if (zoomLocks[viewUid].hasOwnProperty('uid') 
+        if (zoomLocks[viewUid].hasOwnProperty('uid')
                 && zoomLocksDict.hasOwnProperty(zoomLocks[viewUid].uid)) {
             // we've already encountered this zoom lock so no need to do anything
         } else {
@@ -1550,6 +1556,7 @@ export class HiGlassComponent extends React.Component {
                                      onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
                                      ref={c => this.tiledPlots[view.uid] = c}
                                      onScalesChanged={(x,y) => this.handleScalesChanged(view.uid, x, y)}
+                                     onNewTilesLoaded={this.animate.bind(this)}
                                      setCentersFunction={c => this.setCenters[view.uid] = c}
                                      chooseTrackHandler={this.state.chooseTrackHandler ? trackId => this.state.chooseTrackHandler(view.uid, trackId) : null}
                                      onTrackOptionsChanged={(trackId, options) => this.handleTrackOptionsChanged(view.uid, trackId, options) }

@@ -4,8 +4,8 @@ import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
 import boxIntersect from 'box-intersect';
 
 export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived, options) {
-        super(scene, server, uid, handleTilesetInfoReceived, options);
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
+        super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
     }
 
@@ -70,10 +70,10 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             let exonStart = exonStarts[j];
             let exonEnd = exonEnds[j];
 
-            graphics.drawRect(this._xScale(exonStart), yExonPos, 
+            graphics.drawRect(this._xScale(exonStart), yExonPos,
                     this._xScale(exonEnd) - this._xScale(exonStart), exonHeight);
         }
-        
+
     }
 
     draw() {
@@ -188,7 +188,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     }
 
     hideOverlaps(allTexts) {
-        let allBoxes = [];   // store the bounding boxes of the text objects so we can 
+        let allBoxes = [];   // store the bounding boxes of the text objects so we can
                              // calculate overlaps
         allBoxes = allTexts.map(val => {
             let text = val.text;
@@ -202,10 +202,10 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         let result = boxIntersect(allBoxes, function(i, j) {
             if (allTexts[i].importance > allTexts[j].importance) {
                 //console.log('hiding:', allTexts[j].caption)
-                allTexts[j].text.alpha = 0; 
+                allTexts[j].text.alpha = 0;
             } else {
                 //console.log('hiding:', allTexts[i].caption)
-                allTexts[i].text.alpha = 0; 
+                allTexts[i].text.alpha = 0;
             }
         });
     }
@@ -220,7 +220,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     zoomed(newXScale, newYScale) {
         this.xScale(newXScale);
         this.yScale(newYScale);
-        
+
         this.refreshTiles();
 
         this.draw();

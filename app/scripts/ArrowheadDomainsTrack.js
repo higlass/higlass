@@ -2,8 +2,8 @@ import {TiledPixiTrack} from './TiledPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 
 export class ArrowheadDomainsTrack extends TiledPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived) {
-        super(scene, server, uid, handleTilesetInfoReceived);
+    constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
+        super(scene, server, uid, handleTilesetInfoReceived, option, animate);
 
         this.drawnRects = new Set();
     }
@@ -71,13 +71,13 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
         this.zoomLevel = this.calculateZoomLevel();
         //this.zoomLevel = 0;
 
-        this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale, 
+        this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale,
                                                this.tilesetInfo.min_pos[0],
                                                this.tilesetInfo.max_pos[0],
                                                this.tilesetInfo.max_zoom,
                                                this.tilesetInfo.max_width);
 
-        this.yTiles =  tileProxy.calculateTiles(this.zoomLevel, this._yScale, 
+        this.yTiles =  tileProxy.calculateTiles(this.zoomLevel, this._yScale,
                                                this.tilesetInfo.min_pos[1],
                                                this.tilesetInfo.max_pos[1],
                                                this.tilesetInfo.max_zoom,
@@ -96,7 +96,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
                     let newTile = [zoomLevel, rows[i], cols[j]];
 
                     tiles.push(newTile)
-                
+
             }
         }
 
@@ -109,7 +109,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
         /**
          * Create whatever is needed to draw this tile.
          */
-         
+
         //this.drawTile(tile);
     }
 
@@ -130,7 +130,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
         //console.log('tile:', tile);
         //console.log('Id2DTiled drawTile...');
         let graphics = tile.graphics;
-                                                                                 
+
         graphics.clear();
 
         graphics.lineStyle(1, 0x0000FF, 1);

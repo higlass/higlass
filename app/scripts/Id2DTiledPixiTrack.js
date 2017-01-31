@@ -2,14 +2,14 @@ import {Tiled2DPixiTrack} from './Tiled2DPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 
 export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
-    constructor(scene, server, uid) {
-        super(scene, server, uid);
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
+        super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
     }
 
     areAllVisibleTilesLoaded() {
-        
-        // we don't need to wait for any tiles to load before 
+
+        // we don't need to wait for any tiles to load before
         // drawing
         //
         return true;
@@ -19,17 +19,17 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
         /**
          * Create whatever is needed to draw this tile.
          */
-         
+
         let graphics = tile.graphics;
         tile.textGraphics = new PIXI.Graphics();
-        //tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored, 
+        //tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/') + '/' + tile.mirrored,
 
         if (tile.mirrored) {
             // mirrored tiles have their x and y coordinates reversed
-            tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + [tile.tileData.tilePos[1], tile.tileData.tilePos[0]].join('/'), 
+            tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + [tile.tileData.tilePos[1], tile.tileData.tilePos[0]].join('/'),
                                   {fontFamily : 'Arial', fontSize: 48, fill : 0xff1010, align : 'center'});
         } else {
-            tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/'), 
+            tile.text = new PIXI.Text(tile.tileData.zoomLevel + "/" + tile.tileData.tilePos.join('/'),
                                   {fontFamily : 'Arial', fontSize: 48, fill : 0xff1010, align : 'center'});
 
         }
@@ -39,8 +39,8 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
 
         tile.text.anchor.x = 0.5;
         tile.text.anchor.y = 0.5;
-        
-    
+
+
         graphics.addChild(tile.textGraphics);
 
         this.drawTile(tile, graphics);
@@ -56,11 +56,11 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
 
         //console.log('Id2DTiled drawTile...');
         let graphics = tile.graphics;
-        let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(tile.tileData.zoomLevel, 
+        let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
                                                                                  tile.tileData.tilePos);
 
         // the text needs to be scaled down so that it doesn't become huge
-        // when we zoom in 
+        // when we zoom in
         let tSX = 1 / ((this._xScale(1) - this._xScale(0)) / (this._refXScale(1) - this._refXScale(0)));
         let tSY = 1 / ((this._yScale(1) - this._yScale(0)) / (this._refYScale(1) - this._refYScale(0)));
 
@@ -83,7 +83,7 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
         if (tile.mirrored) {
             let tileScaledWidth = this._refXScale(tileY + tileWidth) - this._refXScale(tileY);
             let tileScaledHeight = this._refYScale(tileX + tileWidth) - this._refYScale(tileX);
-    
+
             // add tileScaledHeight / 2 and tileScaledWidth / 2 to center the text on the tile
             tile.textGraphics.position.x = this._refXScale(tileY) + tileScaledWidth / 2;
             tile.textGraphics.position.y = this._refYScale(tileX) + tileScaledHeight / 2;
@@ -119,7 +119,7 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
             this.fetchedTiles[x.tileId] = x;
             this.fetchedTiles[x.tileId].tileData = data;
 
-            // since we're not actually fetching remote data, we can easily 
+            // since we're not actually fetching remote data, we can easily
             // remove these tiles from the fetching list
             if (this.fetching.has(x.remoteId))
                 this.fetching.delete(x.remoteId);
