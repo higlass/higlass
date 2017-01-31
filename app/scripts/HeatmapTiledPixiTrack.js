@@ -10,7 +10,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
          * @param server: The server to pull tiles from.
          * @param uid: The data set to get the tiles from the server
          */
-        console.log('### HeatmapTiledPixiTrack', animate);
         super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
         // [[255,255,255,0], [237,218,10,4] ...
@@ -156,7 +155,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             if (tile.sprite) {
                 this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
             } else {
-                console.log('skipping...', tile.tileId);
+                // console.log('skipping...', tile.tileId);
             }
         }
     }

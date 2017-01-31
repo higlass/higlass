@@ -16,11 +16,11 @@ export class ViewportTracker2D extends PixiTrack {
 
         // the viewport will call this.viewportChanged immediately upon
         // hearing registerViewportChanged
-        console.log('constructor...', this.uid);
+        // console.log('constructor...', this.uid);
     }
 
     viewportChanged(viewportXScale, viewportYScale) {
-        console.log('viewportChanged:');
+        // console.log('viewportChanged:');
 
         let viewportXDomain = viewportXScale.domain();
         let viewportYDomain = viewportYScale.domain();
@@ -28,13 +28,13 @@ export class ViewportTracker2D extends PixiTrack {
         this.viewportXDomain = viewportXDomain;
         this.viewportYDomain = viewportYDomain;
 
-        console.log('vpc:', this.uid);
+        // console.log('vpc:', this.uid);
         this.draw();
     }
 
     close() {
         // remove the event handler that updates this viewport tracker
-        this.removeViewportChanged(uid); 
+        this.removeViewportChanged(uid);
     }
 
     draw() {
@@ -72,7 +72,7 @@ export class ViewportTracker2D extends PixiTrack {
         this.pMain.position.y = this.position[1];
         this.pMain.position.x = this.position[0];
 
-        console.log('sp:', this.uid);
+        // console.log('sp:', this.uid);
         this.draw();
     }
 }

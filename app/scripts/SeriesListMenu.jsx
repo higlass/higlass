@@ -20,7 +20,7 @@ export class ConfigureSeriesMenu extends ContextMenuContainer {
                 <div className={'context-menu'}
                         ref={c => this.div = c}
                         onMouseLeave={this.props.handleMouseLeave}
-                        style={{ 
+                        style={{
                                 position: 'fixed',
                                 left: this.state.left,
                                  top: this.state.top,
@@ -62,10 +62,10 @@ export class SeriesListMenu extends ContextMenuContainer {
                 }
             }
 
-            
+
             let track = this.state.submenuShown;
 
-            console.log('track:', track);
+            // console.log('track:', track);
             let menuItems = {};
             let options = track.options;
 
@@ -75,7 +75,7 @@ export class SeriesListMenu extends ContextMenuContainer {
             for (let optionType of tracksInfoByType[track.type].availableOptions) {
                 if (optionsInfo.hasOwnProperty(optionType)) {
                    menuItems[optionType] = {'name': optionsInfo[optionType].name}
-                   console.log('oi:', optionsInfo[optionType].inlineOptions);
+                   // console.log('oi:', optionsInfo[optionType].inlineOptions);
 
                    if (optionsInfo[optionType].inlineOptions) {
                        // we can simply select this option from the menu
@@ -88,7 +88,7 @@ export class SeriesListMenu extends ContextMenuContainer {
 
                            menuItems[optionType].children[inlineOptionValue] = {
                                name: inlineOption.name,
-                               handler: () => { 
+                               handler: () => {
                                    track.options[optionType] = inlineOptionValue;
                                    this.props.onTrackOptionsChanged(track.uid, track.options);
                                    this.props.closeMenu();
@@ -96,12 +96,12 @@ export class SeriesListMenu extends ContextMenuContainer {
                                value: inlineOptionValue
                            }
                        }
-                   } else if (optionsInfo[optionType].componentPickers && 
+                   } else if (optionsInfo[optionType].componentPickers &&
                               optionsInfo[optionType].componentPickers[track.type]) {
                        // there's an option picker registered
-                       console.log('setting handler');
+                       // console.log('setting handler');
                         menuItems[optionType].handler = () => {
-                            console.log('pick color value', track.type);
+                            // console.log('pick color value', track.type);
                             this.props.onConfigureTrack(track, optionsInfo[optionType].componentPickers[track.type]);
                             this.props.closeMenu();
                         }
@@ -109,7 +109,7 @@ export class SeriesListMenu extends ContextMenuContainer {
                 }
             }
 
-            console.log('menuItems:', menuItems);
+            // console.log('menuItems:', menuItems);
 
             return (<NestedContextMenu
                         position={position}
@@ -131,7 +131,7 @@ export class SeriesListMenu extends ContextMenuContainer {
                 <div className={'context-menu'}
                         ref={c => this.div = c}
                         onMouseLeave={this.props.handleMouseLeave}
-                        style={{ 
+                        style={{
                                 position: 'fixed',
                                 left: this.state.left,
                                  top: this.state.top,

@@ -95,7 +95,7 @@ export class FixedTrack extends TrackArea {
     }
 
     handleClick(e, data) {
-          console.log(data);
+          // console.log(data);
     }
 
 

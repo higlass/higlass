@@ -6,8 +6,8 @@ import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx'
 export class NestedContextMenu extends ContextMenuContainer {
     constructor(props) {
         super(props);
-        
-        console.log('props:', props);
+
+        // console.log('props:', props);
 
     }
 
@@ -31,7 +31,7 @@ export class NestedContextMenu extends ContextMenuContainer {
                 }
             }
 
-            
+
             let menuItem = this.state.submenuShown;
 
             return (<NestedContextMenu
@@ -48,7 +48,7 @@ export class NestedContextMenu extends ContextMenuContainer {
     render() {
         let menuItems = [];
 
-        // iterate over the list 
+        // iterate over the list
         for (let menuItemKey in this.props.menuItems) {
             let menuItem = this.props.menuItems[menuItemKey];
 
@@ -61,7 +61,7 @@ export class NestedContextMenu extends ContextMenuContainer {
 
 
                     >
-                        {menuItem.name}   
+                        {menuItem.name}
                         { menuItem.children ?
                             <svg
                                 className = "play-icon"
@@ -75,7 +75,7 @@ export class NestedContextMenu extends ContextMenuContainer {
 
         return( <div className={'context-menu'}
                         ref={c => this.div = c}
-                        style={{ 
+                        style={{
                                 position: 'fixed',
                                 left: this.state.left,
                                  top: this.state.top,

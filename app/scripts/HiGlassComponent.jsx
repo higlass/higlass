@@ -189,7 +189,7 @@ export class HiGlassComponent extends React.Component {
             return;
 
         if (!tracksInfoByType.hasOwnProperty(track.type)) {
-            console.log("ERROR: track type not found:", track.type, " (check app/scripts/config.js for a list of defined track types)");
+            console.error("ERROR: track type not found:", track.type, " (check app/scripts/config.js for a list of defined track types)");
             return;
         }
 
@@ -1001,7 +1001,7 @@ export class HiGlassComponent extends React.Component {
       // check if this is the only view
       // if it is, don't close it (display an error message)
       if (dictValues(this.state.views).length == 1) {
-            console.log("Can't close the only view");
+            // console.log("Can't close the only view");
             return;
       }
 
@@ -1280,7 +1280,7 @@ export class HiGlassComponent extends React.Component {
                     exportLinkLocation: "http://" + window.location.hostname + "/" + "?config=" + content.uid
                 });
             } else {
-                console.log('error:', error);
+                console.error('error:', error);
             }
         })
   }

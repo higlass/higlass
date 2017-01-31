@@ -591,7 +591,7 @@ export class TrackRenderer extends React.Component {
                     track.options
                 );
             default:
-                console.log('WARNING: unknown track type:', track.type);
+                // console.log('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(
                     this.currentProps.pixiStage,
                     {name: 'Unknown Track Type'}

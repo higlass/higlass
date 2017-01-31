@@ -47,7 +47,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         graphics.clear();
 
         if (valueScale.domain()[1] < 0) {
-            console.log('ERR', valueScale.domain()[1]);
+            console.error('ERR', valueScale.domain()[1]);
             return;
         }
 

@@ -11,7 +11,7 @@ export class SeriesOptions extends React.Component {
 
         // data category to plot type
 
-                               
+
 
         this.state = {
             advancedVisible: true
@@ -38,16 +38,16 @@ export class SeriesOptions extends React.Component {
 
 
     render() {
-        console.log('trackType:', this.props.trackType);
+        // console.log('trackType:', this.props.trackType);
         let filetype = categoryToFiletype[this.props.trackType];
 
         return (
                 <CollapsePanel
-                    collapsed={this.state.advancedVisible} 
+                    collapsed={this.state.advancedVisible}
                     toggleCollapse={this.toggleAdvancedVisible.bind(this)}
                 >
                     <Checkbox
-                        ref={c => this.normalizeCheckbox = c } 
+                        ref={c => this.normalizeCheckbox = c }
                         onChange={ this.handleNormalizeCheckboxChanged.bind(this) }
                     >
                     Normalize By

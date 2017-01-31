@@ -8,5 +8,5 @@ ReactDOM.render(
     , document.getElementById('development-demo')
     );
 } catch (e) {
-    console.log('error:', e);
+    console.error('error:', e);
 }

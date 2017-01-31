@@ -9,7 +9,7 @@ export class ContextMenuItem extends React.Component {
 
     render() {
         return (
-                <div 
+                <div
                     className={"context-menu-item"}
                     onMouseEnter={(e) => this.props.onMouseEnter ? this.props.onMouseEnter(e) : null }
                     onMouseLeave={(e) => this.props.onMouseLeave ? this.props.onMouseLeave(e) : null }
@@ -59,7 +59,7 @@ export class ContextMenuContainer extends React.Component {
         this.divDom = ReactDOM.findDOMNode(this.div);
         let bbox = this.divDom.getBoundingClientRect();
 
-        console.log('this.state.orientation:', this.state.orientation);
+        // console.log('this.state.orientation:', this.state.orientation);
 
         let parentBbox = this.props.parentBbox ?  this.props.parentBbox :
             {'top': this.props.position.top,
@@ -79,7 +79,7 @@ export class ContextMenuContainer extends React.Component {
                     orientation = 'right';
                     console.log('x lp', leftPosition, parentBbox.left, parentBbox.width);
                 }
-            } 
+            }
 
             // we're fine keeping it left oriented
 
@@ -171,7 +171,7 @@ export class ContextMenuContainer extends React.Component {
     render() {
         let stylePosition = {'left': this.state.left}
 
-        console.log('this.state.left:', this.state.left)
+        // console.log('this.state.left:', this.state.left)
 
         if (!this.state.left)
             stylePosition = {'right': this.state.right}

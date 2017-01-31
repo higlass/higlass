@@ -16,11 +16,11 @@ import {PopupMenu} from './PopupMenu.jsx';
 export class GenomePositionSearchBox extends React.Component {
     constructor(props) {
         super(props);
-        
+
         this.uid = slugid.nice();
         this.chromInfo = null;
         this.chromInfoBisector = bisector((d) => { return d.pos }).left;
-        this.searchField = null; 
+        this.searchField = null;
         this.autocompleteMenu = null;
 
         this.xScale = null, this.yScale = null;
@@ -39,7 +39,7 @@ export class GenomePositionSearchBox extends React.Component {
         this.prevParts = [];
 
         ChromosomeInfo(this.props.chromInfoPath, (newChromInfo) => {
-            this.chromInfo = newChromInfo;  
+            this.chromInfo = newChromInfo;
             this.searchField = new SearchField(this.chromInfo);
 
             this.setPositionText();
@@ -107,8 +107,8 @@ export class GenomePositionSearchBox extends React.Component {
         if (!this.searchField)
             return;
 
-        let positionString = this.searchField.scalesToPositionText(this.xScale, 
-                                                                   this.yScale, 
+        let positionString = this.searchField.scalesToPositionText(this.xScale,
+                                                                   this.yScale,
                                                                    this.props.twoD);
 
         //ReactDOM.findDOMNode( this.refs.searchFieldText).value = positionString;
@@ -131,7 +131,7 @@ export class GenomePositionSearchBox extends React.Component {
                 let genePosition = genePositions[dashParts[j].toLowerCase()];
 
                 if (!genePosition) {
-                    //console.log("Error: gene position undefined...", dashParts[j].toLowerCase()); 
+                    //console.log("Error: gene position undefined...", dashParts[j].toLowerCase());
                     continue;
                 }
 
@@ -141,7 +141,7 @@ export class GenomePositionSearchBox extends React.Component {
 
                 if (dashParts.length == 1) {
                     // no range, just a position
-                    dashParts[j] = genePosition.chr + ":" + (genePosition.txStart - extension) + 
+                    dashParts[j] = genePosition.chr + ":" + (genePosition.txStart - extension) +
                         '-' + (genePosition.txEnd + extension);
                 } else {
                     if (j == 0) {
@@ -153,7 +153,7 @@ export class GenomePositionSearchBox extends React.Component {
 
                         dashParts[j] = genePosition.chr + ":" + (genePosition.txEnd + extension);
                     }
-                } 
+                }
 
                 spaceParts[i] = dashParts.join('-');
             }
@@ -177,9 +177,9 @@ export class GenomePositionSearchBox extends React.Component {
 
             if (retPos == null || isNaN(retPos)) {
                 // not a chromsome position, let's see if it's a gene name
-               let url = this.props.autocompleteSource + "ac=" + value_parts[i].toLowerCase(); 
+               let url = this.props.autocompleteSource + "ac=" + value_parts[i].toLowerCase();
                q = q.defer(json, url);
-                  
+
             }
         }
 
@@ -217,14 +217,14 @@ export class GenomePositionSearchBox extends React.Component {
                     return;
                 }
 
-                if (!range2) 
+                if (!range2)
                     range2 = range1;
 
                 let newXScale = this.xScale.copy().domain(range1);
                 let newYScale = this.yScale.copy().domain(range2);
 
                 let [centerX, centerY, k] = scalesCenterAndK(newXScale, newYScale);
-                console.log('centerX:', centerX, 'centerY:', centerY);
+                // console.log('centerX:', centerX, 'centerY:', centerY);
 
                 //console.log('centerX:', centerX, 'centerY:', centerY, 'k:', k);
                 this.props.setCenters(centerX, centerY, k);
@@ -285,7 +285,7 @@ export class GenomePositionSearchBox extends React.Component {
                 }
 
                 // we've received a list of autocomplete suggestions
-                this.setState({loading: false, genes: data }); 
+                this.setState({loading: false, genes: data });
             });
         }
     }
@@ -303,9 +303,9 @@ export class GenomePositionSearchBox extends React.Component {
         for (let i = 0; i < parts.length; i++) {
             let dash_parts = parts[i].split('-');
             if (partCount > dash_parts.length-1) {
-               partCount -= dash_parts.length; 
+               partCount -= dash_parts.length;
             } else {
-                dash_parts[partCount] = objct.geneName;                
+                dash_parts[partCount] = objct.geneName;
                 parts[i] = dash_parts.join('-')
                 break;
             }
@@ -336,7 +336,7 @@ export class GenomePositionSearchBox extends React.Component {
 
     handleRenderMenu(items, value, style) {
 
-        return( <PopupMenu 
+        return( <PopupMenu
                     children={items}
                 >
                 <div style={{
@@ -352,7 +352,7 @@ export class GenomePositionSearchBox extends React.Component {
                               overflow: 'auto',
                               maxHeight: '50%' // TODO: don't cheat, let it flow to the bottom
                 }} children={items}/>
-                
+
                 </PopupMenu>)
         //return (<PopupMenu ></PopupMenu>)
 
@@ -362,7 +362,7 @@ export class GenomePositionSearchBox extends React.Component {
         return(
                 <FormGroup bsSize='small'>
                 <InputGroup>
-                    <div 
+                    <div
                         style={{"zIndex": 999, "position": "relative"}}>
                     <Autocomplete
                         ref={c => this.autocompleteMenu = c}
