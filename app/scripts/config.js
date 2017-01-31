@@ -192,13 +192,36 @@ export const tracksInfo = [
         datatype: 'any',
         local: true,
         orientation: 'any'
-    },
+    }
+    ,
     {
-        type: '2d-chromosome-positions',
-        datatype: ['chromosome-positions'],
-        local: false,
+        type: '2d-chromosome-grid',
+        datatype: ['chromosome-2d-grid'],
+        local: true,
         orientation: '2d',
-        name: 'Chromosome Positions',
+        name: 'Chromosome Grid (hg19)',
+        chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        thumbnail: null
+    }
+    ,
+    {
+        type: '2d-chromosome-labels',
+        datatype: ['chromosome-2d-labels'],
+        local: true,
+        orientation: '2d',
+        name: 'Chromosome Labels (hg19)',
+        chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        thumbnail: null
+    }
+    ,
+    {
+        type: 'horizontal-chromosome-labels',
+        datatype: ['chromosome-1d-labels'],
+        local: true,
+        orientation: '2d',
+        minHeight: 40,
+        name: 'Chromosome Labels (hg19)',
+        chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null
     }
 ]

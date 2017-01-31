@@ -4,13 +4,14 @@ import {ChromosomeInfo} from './ChromosomeInfo.js';
 import {SearchField} from './search_field.js';
 import boxIntersect from 'box-intersect';
 
-export class Chromosome2DPositions extends PixiTrack {
+export class Chromosome2DLabels extends PixiTrack {
     constructor(scene, chromInfoPath) {
         super(scene);
 
         this.searchField = null;
         this.chromInfo = null;
 
+        console.log('chromInfoPath:', chromInfoPath);
 
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;  
@@ -23,9 +24,6 @@ export class Chromosome2DPositions extends PixiTrack {
             this.draw();
 
             this.texts = [];
-            this.lineGraphics = new PIXI.Graphics();
-
-            this.pMain.addChild(this.lineGraphics);
             
             for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
                 let thisTexts = [];
@@ -55,42 +53,6 @@ export class Chromosome2DPositions extends PixiTrack {
 
     }
 
-    strHash(s) {
-      var hash = 0, i, chr, len;
-      if (s.length === 0) return hash;
-      for (i = 0, len = s.length; i < len; i++) {
-        chr   = s.charCodeAt(i);
-        hash  = ((hash << 5) - hash) + chr;
-        hash |= 0; // Convert to 32bit integer
-      }
-      return hash;
-    };
-
-    drawLines() {
-        let graphics = this.lineGraphics;
-        graphics.clear();
-        graphics.lineStyle(1, 'red', 0.3);
-
-        graphics.moveTo(this._xScale(0), 0);
-        graphics.lineTo(this._xScale(0), this.dimensions[1]);
-
-        graphics.moveTo(0, this._yScale(0));
-        graphics.lineTo(this.dimensions[0],  this._yScale(0));
-
-        for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
-            let chrPos = this.chromInfo.cumPositions[i];
-            let chrEnd = chrPos.pos + +this.chromInfo.chromLengths[chrPos.chr];
-
-
-
-            graphics.moveTo(0, this._yScale(chrEnd));
-            graphics.lineTo(this.dimensions[0], this._yScale(chrEnd));
-
-            graphics.moveTo(this._xScale(chrEnd), 0);
-            graphics.lineTo(this._xScale(chrEnd), this.dimensions[1]);
-        }
-    }
-
     draw() {
         let leftChrom = null;
         let rightChrom = null;
@@ -104,8 +66,6 @@ export class Chromosome2DPositions extends PixiTrack {
 
         if (!this.searchField)
             return;
-
-        this.drawLines();
 
         let x1 = this.searchField.absoluteToChr(this._xScale.domain()[0]);
         let x2 = this.searchField.absoluteToChr(this._xScale.domain()[1]);

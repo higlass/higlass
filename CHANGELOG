@@ -1,0 +1,9 @@
+v0.4.15
+
+- Minimum height for tracks can be specified in track type definition in
+config.js
+- New chromosome 2D grid (for hg19)
+- New chromosome 1D axis (for hg19)
+- New chromosome horizontal axis (for hg19)
+
+

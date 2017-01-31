@@ -3,6 +3,9 @@ import {tileProxy} from './TileProxy.js';
 import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
 import boxIntersect from 'box-intersect';
 
+let GENE_RECT_WIDTH = 1;
+let GENE_RECT_HEIGHT = 6;
+
 export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options) {
         super(scene, server, uid, handleTilesetInfoReceived, options);
@@ -13,7 +16,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         //create texts
         tile.texts = {};
 
-        let MAX_TILE_ENTRIES = 20;
+        let MAX_TILE_ENTRIES = 40;
 
         tile.tileData.sort((a,b) => b.importance - a.importance);
         tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
@@ -57,7 +60,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         let xEndPos = this._xScale(txEnd);
 
         let lineHeight = 1.5;
-        let exonHeight = 5;
+        let exonHeight = GENE_RECT_HEIGHT;
         let yPos = yMiddle - lineHeight / 2;
         //let yPos = (d.height - lineHeight) / 2 + 5 ; //-(d.height - yScale(tileData[i]));
         let width = xEndPos - xStartPos;
@@ -73,7 +76,6 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             graphics.drawRect(this._xScale(exonStart), yExonPos, 
                     this._xScale(exonEnd) - this._xScale(exonStart), exonHeight);
         }
-        
     }
 
     draw() {
@@ -136,32 +138,37 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                     yMiddle -= 6;
                     textYMiddle -= 10;
                     graphics.lineStyle(1, 0x0000FF, 0.3);
+                    graphics.beginFill(0x0000FF, 0.3);
                 } else {
                     // genes on the - strand drawn below and in red
                     yMiddle += 6;
                     textYMiddle += 23;
                     graphics.lineStyle(1, 0xFF0000, 0.3);
+                    graphics.beginFill(0xFF0000, 0.3);
                 }
 
                 let height = valueScale(Math.log(+geneInfo[4]));
                 let width= height;
 
                 let rectX = this._xScale(txMiddle) - width / 2;
-                let rectY = yMiddle - height / 2;
+                let rectY = yMiddle - GENE_RECT_HEIGHT / 2;
 
                 let xStartPos = this._xScale(txStart);
                 let xEndPos = this._xScale(txEnd);
 
 
-                if (xEndPos - xStartPos > 10)  {
+                if (xEndPos - xStartPos > 2)  {
                     this.drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle);
                 } else {
-                    graphics.drawRect(rectX, rectY, width, height);
+                    //graphics.drawRect(rectX, rectY, width, height);
+                    //console.log('rectY', rectY);
+                    graphics.drawRect(rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT);
                 }
 
                 if (!ft.texts) {
                     // tile probably hasn't been initialized yet
                     return;
+
                 }
                 let text = ft.texts[geneName];
 
@@ -202,10 +209,10 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         let result = boxIntersect(allBoxes, function(i, j) {
             if (allTexts[i].importance > allTexts[j].importance) {
                 //console.log('hiding:', allTexts[j].caption)
-                allTexts[j].text.visible = 0; 
+                allTexts[j].text.alpha = 0; 
             } else {
                 //console.log('hiding:', allTexts[i].caption)
-                allTexts[i].text.visible = 0; 
+                allTexts[i].text.alpha = 0; 
             }
         });
     }
