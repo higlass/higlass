@@ -1867,14 +1867,11 @@ export class HiGlassComponent extends React.Component {
     const self = this;
 
     const _api = {
-      refresh(delay) {
-        self.refreshView(delay);
-        self.animate();
+      refresh() {
+        if (self.props.options.bounded) {
+          self.fitPixiToParentContainer();
+        }
 
-        return _api;
-      },
-
-      render() {
         self.render();
         self.animate();
 
