@@ -41,7 +41,7 @@ export class TilesetFinder extends React.Component {
         return server + '/' + uid;
 
     }
-    
+
     prepareNewEntries(sourceServer, newEntries, existingOptions) {
         /**
          * Add meta data to new tileset entries before adding
@@ -71,7 +71,7 @@ export class TilesetFinder extends React.Component {
         // we want to query for a list of tracks that are compatible with this
         // track orientation
 
-        
+
         this.requestTilesetLists();
 
         let selectedTileset = this.state.options[this.state.selectedUuid];
@@ -88,10 +88,10 @@ export class TilesetFinder extends React.Component {
         let datatypesQuery = [...datatypes].map(x => "dt=" + x).join('&')
 
         this.props.trackSourceServers.forEach( sourceServer => {
-            json('//' + sourceServer + '/tilesets/?' + datatypesQuery, 
+            json('//' + sourceServer + '/tilesets/?' + datatypesQuery,
                  function(error, data) {
                     if (error) {
-                        console.log('ERROR:', error);
+                        console.error('ERROR:', error);
                     } else {
 
                         let newOptions = this.prepareNewEntries(sourceServer, data.results, this.state.options);
@@ -152,7 +152,7 @@ export class TilesetFinder extends React.Component {
         let options = optionsList
             .filter(x => x.name.toLowerCase().includes(this.state.filter))
             .map(x=> {
-                    return <option 
+                    return <option
                             onDoubleClick={this.handleOptionDoubleClick.bind(this)}
                             key={x.serverUidKey}
                             value={x.serverUidKey}>
@@ -161,17 +161,17 @@ export class TilesetFinder extends React.Component {
         });
 
         let form = (
-                <Form 
+                <Form
                     horizontal
                 >
                     <FormGroup
-                    
+
                     >
                           <Col sm={3}>
                           <ControlLabel>{"Select tileset"}</ControlLabel>
                           </Col>
                           <Col smOffset={5} sm={4}>
-                          <FormControl 
+                          <FormControl
                             placeholder="Search Term"
                             ref={(c) => { this.searchBox = c; }}
                             onChange={this.handleSearchChange.bind(this)}

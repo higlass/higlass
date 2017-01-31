@@ -4,8 +4,8 @@ import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
 import IntervalTree from './interval-tree.js';
 
 export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived) {
-        super(scene, server, uid, handleTilesetInfoReceived);
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
+        super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
         //console.log('CNVInterval:', this);
         this.seen = new Set();
@@ -28,7 +28,7 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
          * rows containing the segments.
          *
          * @param segments: An array of segments (e.g. [{from: 10, to: 20}, {from: 18, to: 30}])
-         * @return: An array of arrays of segments, representing 
+         * @return: An array of arrays of segments, representing
          *          non-overlapping rows of segments
          */
         // sort by the length of each segment

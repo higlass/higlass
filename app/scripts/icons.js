@@ -266,4 +266,3 @@ let arrowHeadDomainsStr = `
 `
 
 export const svgArrowheadDomainsIcon = parser.parseFromString(arrowHeadDomainsStr, 'text/xml').documentElement;
-

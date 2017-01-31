@@ -9,7 +9,7 @@ export class AddTrackPositionMenu extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log('props:', props);
+        // console.log('props:', props);
 
     }
 
@@ -21,14 +21,14 @@ export class AddTrackPositionMenu extends React.Component {
                     <tbody>
                         <tr>
                             <td className='add-track-position-other'></td>
-                            <td 
+                            <td
                                 className="add-track-position-top-center"
                                 onClick={e => this.props.onTrackPositionChosen('top') }
                             >{"top"}</td>
                             <td className='add-track-position-other'></td>
                         </tr>
                         <tr style={{height: "80px"}}>
-                            <td 
+                            <td
                                 onClick={e => this.props.onTrackPositionChosen('left')}
                                 className="add-track-position-middle-left"
                             >{"left"}</td>

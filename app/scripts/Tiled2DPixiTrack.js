@@ -2,8 +2,8 @@ import {TiledPixiTrack} from './TiledPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 
 export class Tiled2DPixiTrack extends TiledPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived,options) {
-        super(scene, server, uid, handleTilesetInfoReceived,options);
+    constructor(scene, server, uid, handleTilesetInfoReceived,options, animate) {
+        super(scene, server, uid, handleTilesetInfoReceived,options, animate);
     }
 
     tileToLocalId(tile) {
@@ -52,13 +52,13 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         this.zoomLevel = this.calculateZoomLevel();
         //this.zoomLevel = 0;
 
-        this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale, 
+        this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale,
                                                this.tilesetInfo.min_pos[0],
                                                this.tilesetInfo.max_pos[0],
                                                this.tilesetInfo.max_zoom,
                                                this.tilesetInfo.max_width);
 
-        this.yTiles =  tileProxy.calculateTiles(this.zoomLevel, this._yScale, 
+        this.yTiles =  tileProxy.calculateTiles(this.zoomLevel, this._yScale,
                                                this.tilesetInfo.min_pos[1],
                                                this.tilesetInfo.max_pos[1],
                                                this.tilesetInfo.max_zoom,
@@ -80,12 +80,12 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
                         // a mirrored tile
                         let newTile = [zoomLevel, cols[j], rows[i]];
                         newTile.mirrored = true;
-                        tiles.push(newTile); 
+                        tiles.push(newTile);
                     } else {
                         // otherwise, load an original tile
                         let newTile = [zoomLevel, rows[i], cols[j]];
                         newTile.mirrored = false;
-                        tiles.push(newTile); 
+                        tiles.push(newTile);
 
                     }
 
@@ -161,7 +161,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
 
     updateTile(tile) {
         // no need to redraw this tile, usually
-        
+
         return;
     }
 }

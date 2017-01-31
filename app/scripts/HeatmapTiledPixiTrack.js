@@ -4,20 +4,19 @@ import {heatedObjectMap} from './colormaps.js';
 import {colorDomainToRgbaArray} from './utils.js';
 
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived, options) {
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
          * @param uid: The data set to get the tiles from the server
          */
-        console.log('heatmap options:', options);
-        super(scene, server, uid, handleTilesetInfoReceived, options);
+        super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
         // [[255,255,255,0], [237,218,10,4] ...
         // a 256 element array mapping the values 0-255 to rgba values
         // not a d3 color scale for speed
-        //this.colorScale = heatedObjectMap; 
-        this.colorScale = heatedObjectMap; 
+        //this.colorScale = heatedObjectMap;
+        this.colorScale = heatedObjectMap;
 
         if (options && options.colorRange) {
             this.colorScale = colorDomainToRgbaArray(options.colorRange);
@@ -67,13 +66,13 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         sprite.height = this._refYScale(tileEndY) - this._refYScale(tileY)
 
         if (mirrored) {
-            // this is a mirrored tile that represents the other half of a 
+            // this is a mirrored tile that represents the other half of a
             // triangular matrix
             sprite.x = this._refXScale(tileY);
             sprite.y = this._refYScale(tileX);
 
             //sprite.pivot = [this._refXScale()[1] / 2, this._refYScale()[1] / 2];
-        
+
             // I think PIXIv3 used a different method to set the pivot value
             // because the code above no longer works as of v4
             sprite.rotation = -Math.PI / 2;
@@ -118,13 +117,13 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
          *              this function are tile.tileData = {'dense': [...], ...}
          *              and tile.graphics
          */
-        tileProxy.tileDataToPixData(tile, 
-                                    
-                                    this.minVisibleValue(), 
-                                    this.maxVisibleValue(), 
+        tileProxy.tileDataToPixData(tile,
+
+                                    this.minVisibleValue(),
+                                    this.maxVisibleValue(),
                                                   this.colorScale,
                                                   function(pixData) {
-            // the tileData has been converted to pixData by the worker script and needs to be loaded 
+            // the tileData has been converted to pixData by the worker script and needs to be loaded
             // as a sprite
             //console.log('tile:', tile);
             let graphics = tile.graphics;
@@ -156,7 +155,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             if (tile.sprite) {
                 this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
             } else {
-                console.log('skipping...', tile.tileId);
+                // console.log('skipping...', tile.tileId);
             }
         }
     }

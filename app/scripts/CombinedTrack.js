@@ -4,12 +4,12 @@ export class CombinedTrack {
         this.createdTracks = {};
 
         this.childTracks.forEach((ct,i) => {
-            this.createdTracks[trackDefs[i].uid] = ct; 
+            this.createdTracks[trackDefs[i].uid] = ct;
         });
 
         for (let i = 0; i < this.childTracks.length; i++) {
             if (!this.childTracks[i]) {
-                console.log('ERROR: empty child track in CombinedTrack:', this);
+                console.error('Empty child track in CombinedTrack:', this);
             }
         }
     }
@@ -37,7 +37,7 @@ export class CombinedTrack {
         // remove the ones that were previously, but no longer, present
         let knownTracks = new Set(Object.keys(this.createdTracks));
         let exitTracks = new Set([...knownTracks].filter(x => !currentTracks.has(x)));
-        [...exitTracks].forEach(trackUid => { 
+        [...exitTracks].forEach(trackUid => {
             this.createdTracks[trackUid].remove();
             delete this.createdTracks[trackUid];
         });
@@ -64,10 +64,10 @@ export class CombinedTrack {
 
     zoomed(newXScale, newYScale, k, x, y, xPositionOffset, yPositionOffset) {
         for (let i = 0; i < this.childTracks.length; i++) {
-            this.childTracks[i].zoomed(newXScale, newYScale, k, x, y, 
+            this.childTracks[i].zoomed(newXScale, newYScale, k, x, y,
                                        xPositionOffset, yPositionOffset);
         }
-        
+
     }
 
     refXScale(xScale)  {
@@ -104,7 +104,7 @@ export class CombinedTrack {
         for (let i = 0; i < this.childTracks.length; i++) {
             this.childTracks[i].refScalesChanged(refXScale, refYScale);
         }
-        
+
     }
 
     remove() {

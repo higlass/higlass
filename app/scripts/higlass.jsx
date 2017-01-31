@@ -9,6 +9,6 @@ export function HiGlassContainer(elementId, viewConfigStr) {
                 , document.getElementById(elementId)
             );
     } catch (e) {
-        console.log('error:', e);
+        console.error('error:', e);
     }
 }

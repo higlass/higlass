@@ -20,7 +20,7 @@ export class HiGlassInput extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
-        console.log('HGI newProps:', newProps);
+        // console.log('HGI newProps:', newProps);
     }
 
     render() {
@@ -34,10 +34,10 @@ export class HiGlassInput extends React.Component {
                 <form onSubmit={this.handleSubmit.bind(this)}>
                    <FormGroup controlId="formControlsTextarea">
                          <ControlLabel>Track configuration</ControlLabel>
-                               <FormControl 
-                                 componentClass="textarea" rows={8} 
-                                 defaultValue={this.props.currentConfig} 
-                                 ref='textConfigInput' 
+                               <FormControl
+                                 componentClass="textarea" rows={8}
+                                 defaultValue={this.props.currentConfig}
+                                 ref='textConfigInput'
                                 />
 
                                    </FormGroup>

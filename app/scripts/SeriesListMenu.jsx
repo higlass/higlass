@@ -20,7 +20,7 @@ export class ConfigureSeriesMenu extends ContextMenuContainer {
                 <div className={'context-menu'}
                         ref={c => this.div = c}
                         onMouseLeave={this.props.handleMouseLeave}
-                        style={{ 
+                        style={{
                                 position: 'fixed',
                                 left: this.state.left,
                                  top: this.state.top,
@@ -62,7 +62,7 @@ export class SeriesListMenu extends ContextMenuContainer {
                 }
             }
 
-            
+
             let track = this.state.submenuShown;
 
             let menuItems = {};
@@ -96,18 +96,18 @@ export class SeriesListMenu extends ContextMenuContainer {
 
                            // is there a custom component available for picking this
                            // option type value (e.g. 'custom' color scale)
-                           if (inlineOption.componentPickers && 
+                           if (inlineOption.componentPickers &&
                                inlineOption.componentPickers[track.type]) {
 
-                               optionSelectorSettings.handler = () => { 
-                                    console.log('pick color value', track.type);
+                               optionSelectorSettings.handler = () => {
+                                    // console.log('pick color value', track.type);
                                     this.props.onConfigureTrack(track, inlineOption.componentPickers[track.type]);
                                     this.props.closeMenu();
                                };
                             } else {
                                 // the menu option defines a potential value for this option
                                 // type (e.g. "top right")
-                                optionSelectorSettings.handler = () => { 
+                                optionSelectorSettings.handler = () => {
                                        track.options[optionType] = inlineOption.value;
                                        this.props.onTrackOptionsChanged(track.uid, track.options);
                                        this.props.closeMenu();
@@ -116,12 +116,12 @@ export class SeriesListMenu extends ContextMenuContainer {
 
                            menuItems[optionType].children[inlineOptionKey] = optionSelectorSettings;
                         }
-                   } else if (optionsInfo[optionType].componentPickers && 
+                   } else if (optionsInfo[optionType].componentPickers &&
                               optionsInfo[optionType].componentPickers[track.type]) {
                        // there's an option picker registered
-                       console.log('setting handler');
+                       // console.log('setting handler');
                         menuItems[optionType].handler = () => {
-                            console.log('pick color value', track.type);
+                            // console.log('pick color value', track.type);
                             this.props.onConfigureTrack(track, optionsInfo[optionType].componentPickers[track.type]);
                             this.props.closeMenu();
                         }
@@ -149,7 +149,7 @@ export class SeriesListMenu extends ContextMenuContainer {
                 <div className={'context-menu'}
                         ref={c => this.div = c}
                         onMouseLeave={this.props.handleMouseLeave}
-                        style={{ 
+                        style={{
                                 position: 'fixed',
                                 left: this.state.left,
                                  top: this.state.top,

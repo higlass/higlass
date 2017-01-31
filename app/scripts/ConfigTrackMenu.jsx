@@ -14,7 +14,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
 
 
         this.seriesRefs = {};
-        console.log('ctm props:', props);
+        // console.log('ctm props:', props);
 
     }
 
@@ -41,7 +41,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         return series.map(x => {
             let thumbnail = trackTypeToInfo[x.type].thumbnail;
             let blankLocation = "images/thumbnails/blank.png";
-                let imgTag = trackTypeToInfo[x.type].thumbnail ? 
+                let imgTag = trackTypeToInfo[x.type].thumbnail ?
                         <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} dangerouslySetInnerHTML={{__html: thumbnail.outerHTML}} /> :
                         <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} >
                             <svg width={30} height={20} />
@@ -95,8 +95,8 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                 }
             }
 
-            console.log('uid', this.state.submenuShown.uid, 'track:', this.props.track);
-            let selectedTrack = this.props.track.contents ? 
+            // console.log('uid', this.state.submenuShown.uid, 'track:', this.props.track);
+            let selectedTrack = this.props.track.contents ?
                 this.props.track.contents.filter(t => t.uid == this.state.submenuShown.uid)[0]
                 : this.props.track;
 
@@ -145,7 +145,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                     >
                         {'Close Track'}
                     </ContextMenuItem>
-                    <ContextMenuItem 
+                    <ContextMenuItem
                         onClick={ () => {
                             this.props.onReplaceTrack(this.props.track.uid,
                                                       this.props.trackOrientation);

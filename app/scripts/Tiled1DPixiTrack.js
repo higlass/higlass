@@ -2,8 +2,8 @@ import {TiledPixiTrack} from './TiledPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 
 export class Tiled1DPixiTrack extends TiledPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived, options) {
-        super(scene, server, uid, handleTilesetInfoReceived, options);
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
+        super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
     }
 
@@ -75,11 +75,11 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
             return;
 
         // calculate the zoom level given the scales and the data bounds
-        this.zoomLevel = this.calculateZoomLevel(); 
+        this.zoomLevel = this.calculateZoomLevel();
 
         // x doesn't necessary mean 'x' axis, it just refers to the relevant axis
         // (x if horizontal, y if vertical)
-        let xTiles =  tileProxy.calculateTiles(this.zoomLevel, this.relevantScale(), 
+        let xTiles =  tileProxy.calculateTiles(this.zoomLevel, this.relevantScale(),
                                                this.tilesetInfo.min_pos[0],
                                                this.tilesetInfo.max_pos[0],
                                                this.tilesetInfo.max_zoom,
@@ -119,7 +119,7 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
     updateTile(tile) {
         // no need to redraw this tile, usually
         // unless the data scale changes or something like that
-        
+
         return;
     }
 

@@ -9,7 +9,7 @@ export class ContextMenuItem extends React.Component {
 
     render() {
         return (
-                <div 
+                <div
                     className={"context-menu-item"}
                     onMouseEnter={(e) => this.props.onMouseEnter ? this.props.onMouseEnter(e) : null }
                     onMouseLeave={(e) => this.props.onMouseLeave ? this.props.onMouseLeave(e) : null }
@@ -76,7 +76,7 @@ export class ContextMenuContainer extends React.Component {
                     leftPosition = parentBbox.left + parentBbox.width;
                     orientation = 'right';
                 }
-            } 
+            }
 
             // we're fine keeping it left oriented
 
