@@ -5,7 +5,7 @@ import {SearchField} from './search_field.js';
 import boxIntersect from 'box-intersect';
 import {scaleLinear} from 'd3-scale';
 
-let TICK_WIDTH = 150;
+let TICK_WIDTH = 200;
 let TICK_HEIGHT = 6;
 let TICK_TEXT_SEPARATION = 2;
 
