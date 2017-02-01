@@ -23,6 +23,9 @@ import {ViewportTracker2D} from './ViewportTracker2D.js';
 import {Track} from './Track.js';
 import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack.js';
 import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack.js';
+import {Chromosome2DLabels} from './Chromosome2DLabels.js';
+import {Chromosome2DGrid} from './Chromosome2DGrid.js';
+import {HorizontalChromosomeLabels} from './HorizontalChromosomeLabels.js';
 
 export class TrackRenderer extends React.Component {
     /**
@@ -592,6 +595,14 @@ export class TrackRenderer extends React.Component {
                     handleTilesetInfoReceived,
                     track.options
                 );
+            case '2d-chromosome-labels':
+                return new Chromosome2DLabels(this.currentProps.pixiStage, track.chromInfoPath );
+            case '2d-chromosome-grid':
+                return new Chromosome2DGrid(this.currentProps.pixiStage, track.chromInfoPath );
+            case 'horizontal-chromosome-labels':
+                return new HorizontalChromosomeLabels(this.currentProps.pixiStage, track.chromInfoPath);
+            case 'vertical-chromosome-labels':
+                return new LeftTrackModifier(new HorizontalChromosomeLabels(this.currentProps.pixiStage, track.chromInfoPath));
             default:
                 // console.log('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(

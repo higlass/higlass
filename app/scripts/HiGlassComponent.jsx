@@ -802,8 +802,13 @@ export class HiGlassComponent extends React.Component {
                 continue;
 
             for (let i = 0; i < tracks.length; i++) {
-                if (!('height' in tracks[i])) {
-                    tracks[i].height = this.minHorizontalHeight;
+                let trackInfo = tracksInfoByType[tracks[i].type];
+
+                if (!('height' in tracks[i]) || (trackInfo && tracks[i].height < trackInfo.minHeight)) {
+                    if (trackInfo && trackInfo.minHeight)
+                        tracks[i].height = trackInfo.minHeight;
+                    else
+                        tracks[i].height = this.minHorizontalHeight;
                 }
             }
         }
@@ -818,8 +823,15 @@ export class HiGlassComponent extends React.Component {
                 continue;
 
             for (let i = 0; i < tracks.length; i++) {
-                if (!('width' in tracks[i]))
-                    tracks[i].width = this.minVerticalWidth;
+                let trackInfo = tracksInfoByType[tracks[i].type];
+
+                if (!('width' in tracks[i]) || (trackInfo && tracks[i].width < trackInfo.minWidth)) {
+                    //
+                    if (trackInfo && trackInfo.minWidth)
+                        tracks[i].width = trackInfo.minWidth;
+                    else
+                        tracks[i].width = this.minVerticalWidth;
+                }
             }
         }
 

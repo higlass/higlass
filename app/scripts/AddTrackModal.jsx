@@ -26,6 +26,8 @@ export class AddTrackModal extends React.Component {
 
 
     handleSubmit() {
+        console.log('mainTileset:', this.state.mainTileset);
+
         this.props.onTrackChosen(this.state.mainTileset, 
                                  this.props.position,
                                  this.props.host);

@@ -15,7 +15,7 @@ export const testViewConfig = {
       "uid": "aa",
       "initialXDomain": [
         0,
-        3100000000
+300000000
       ],
       "autocompleteSource": "//higlass.io/api/v1/suggest/?d=dd&",
       "genomePositionSearchBoxVisible": true,
@@ -30,12 +30,22 @@ export const testViewConfig = {
             "position": "top",
             "uid": "D00ffLKHSGqwp4r64sSU7A",
             "name": "Gene Annotations",
-          },
+          }
+        /*
+        ,
           {
             "type": "top-axis",
             "height": 60,
             "position": "top",
             "name": "Top Axis",
+          }
+          */
+            ,
+          {
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "type": "horizontal-chromosome-labels",
+            "position": "top",
+            "name": "Chromosome Labels (hg19)"
           }
         ],
         "left": [
@@ -50,6 +60,13 @@ export const testViewConfig = {
             "options": {
                 "labelPosition": "bottomRight"
             }
+          }
+            ,
+          {
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "type": "vertical-chromosome-labels",
+            "position": "top",
+            "name": "Chromosome Labels (hg19)"
           }
         ],
         "center": [
@@ -74,6 +91,20 @@ export const testViewConfig = {
                   "maxZoom": null
                 },
                 "name": "Dixon2015-H1_TB-HindIII-allreps-filtered.10kb.multires.cool"
+              }
+            ,
+              {
+                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+                "type": "2d-chromosome-labels",
+                "position": "center",
+                "name": "Chromosome Labels (hg19)"
+              }
+            ,
+              {
+                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+                "type": "2d-chromosome-grid",
+                "position": "center",
+                "name": "Chromosome Grid (hg19)"
               }
             ],
             "position": "center"

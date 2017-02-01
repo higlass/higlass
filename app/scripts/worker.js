@@ -50,6 +50,9 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
                 rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(ct))))
             }
             //let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
+            if (rgbIdx < 0 || rgbIdx > 255) {
+                console.log('rgbIdx:', rgbIdx);
+            }
             let rgb = colorScale[rgbIdx];
 
             pixData[i * 4] = rgb[0];
