@@ -13,24 +13,27 @@
 </head>
 <body >
     <div style="height: 50px" />
-    <div style="margin: auto; width: 100%;">
-    <br>
-    <!-- <div id="triangular-1"></div> -->
-    <div id="development-demo" style="
-        position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px
-        "></div>
-<br>
-
-
+        <div style="margin: auto; width: 100%;">
+        <div
+            id="development-demo"
+            style="position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px">
+        </div>
     </div>
 </body>
 <script src='scripts/hglib.js'>
 </script>
 <script>
 
-    hglib.HgComponent(document.getElementById('development-demo'),
-            hglib.testViewConfig,
-            {bounded: true});
+    window.higlassApi;
+
+    hglib.createHgComponent(
+        document.getElementById('development-demo'),
+        hglib.testViewConfig,
+        { bounded: true },
+        function (api) {
+            window.higlassApi = api;
+        }
+    );
 
 </script>
 <script>
