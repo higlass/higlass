@@ -33,7 +33,7 @@ function launch (element, config, options, callback) {
 }
 
 
-export function create (element, config, options, callback) {
+export function createHgComponent (element, config, options, callback) {
   /**
    * Available options:
    *
@@ -52,4 +52,4 @@ export function create (element, config, options, callback) {
   }
 }
 
-export default create;
+export default createHgComponent;
