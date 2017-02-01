@@ -1873,6 +1873,26 @@ export class HiGlassComponent extends React.Component {
   componentDidUpdate() {
     this.refreshView(LONG_DRAG_TIMEOUT);
   }
+
+  // Public API
+  api() {
+    const self = this;
+
+    const _api = {
+      refresh() {
+        if (self.props.options.bounded) {
+          self.fitPixiToParentContainer();
+        }
+
+        self.render();
+        self.animate();
+
+        return _api;
+      }
+    };
+
+    return _api;
+  }
 }
 
 
