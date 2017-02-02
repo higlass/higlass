@@ -196,7 +196,7 @@ export function workerFetchMultiRequestTiles(req) {
             let theseTileIds = ids.slice(i, i + Math.min(ids.length - i, MAX_FETCH_TILES));
 
             let renderParams = theseTileIds.map(x => "d=" + x).join('&');
-            let outUrl = "//" + server + '/tiles/?' + renderParams + '&s=' + sessionId;
+            let outUrl = server + '/tiles/?' + renderParams + '&s=' + sessionId;
 
             let p = new Promise(function(resolve, reject) {
                 json(outUrl, (error, data) => {
