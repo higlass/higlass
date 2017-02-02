@@ -16,5 +16,5 @@ bower_components/
 node_modules/
 jsons/
 .DS_Store
-dist/scripts/*.worker.js
 *.zip
+dist/*
