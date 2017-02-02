@@ -17,4 +17,3 @@ node_modules/
 jsons/
 .DS_Store
 *.zip
-dist/**
