@@ -32,7 +32,6 @@ function launch (element, config, options, callback) {
   ));
 }
 
-
 export function createHgComponent (element, config, options, callback) {
   /**
    * Available options:
