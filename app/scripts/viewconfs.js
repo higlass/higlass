@@ -309,7 +309,7 @@ export const defaultViewConfig = {
         0,
         3100000000
       ],
-      "autocompleteSource": "/api/v1/suggest/?d=dd&",
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
