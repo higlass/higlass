@@ -7,17 +7,17 @@ export const testViewConfig = {
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    usedServer
+      remoteServer
   ],
-  "exportViewUrl": "//higlass.io/api/v1/viewconfs/",
+  "exportViewUrl": remoteServer + "/viewconfs/",
   "views": [
     {
       "uid": "aa",
       "initialXDomain": [
-        0,
-300000000
+          249250618,
+          249250624
       ],
-      "autocompleteSource": "//higlass.io/api/v1/suggest/?d=dd&",
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
@@ -25,21 +25,12 @@ export const testViewConfig = {
           {
             "type": "horizontal-gene-annotations",
             "height": 60,
-            "tilesetUid": "dd",
-            "server": usedServer,
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "server": remoteServer,
             "position": "top",
-            "uid": "D00ffLKHSGqwp4r64sSU7A",
+            "uid": "OHJakQICQD6gTD7skx4EWA",
             "name": "Gene Annotations",
           }
-        /*
-        ,
-          {
-            "type": "top-axis",
-            "height": 60,
-            "position": "top",
-            "name": "Top Axis",
-          }
-          */
             ,
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
@@ -52,10 +43,9 @@ export const testViewConfig = {
           {
             "type": "vertical-gene-annotations",
             "width": 60,
-            "tilesetUid": "dd",
-            "server": usedServer,
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "server": remoteServer,
             "position": "left",
-            "uid": "SVYNEiMITAe_K60zCH_7vQ",
             "name": "Gene Annotations",
             "options": {
                 "labelPosition": "bottomRight"
@@ -76,9 +66,8 @@ export const testViewConfig = {
             "height": 200,
             "contents": [
               {
-                "uid": "hm1",
-                "server": usedServer,
-                "tilesetUid": "aa",
+                "server": remoteServer,
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
                 "type": "heatmap",
                 "position": "center",
                 "options": {
@@ -89,23 +78,14 @@ export const testViewConfig = {
                     "#D0021B"
                   ],
                   "maxZoom": null
-                },
-                "name": "Dixon2015-H1_TB-HindIII-allreps-filtered.10kb.multires.cool"
-              }
-            ,
+                }
+              },
               {
-                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-                "type": "2d-chromosome-labels",
-                "position": "center",
-                "name": "Chromosome Labels (hg19)"
+                  'type': '2d-chromosome-grid',
+                  'position': 'center',
+                  'chromInfoPath': "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
               }
-            ,
-              {
-                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-                "type": "2d-chromosome-grid",
-                "position": "center",
-                "name": "Chromosome Grid (hg19)"
-              }
+
             ],
             "position": "center"
           }

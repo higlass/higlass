@@ -69,7 +69,7 @@ export class Chromosome2DGrid extends PixiTrack {
 
         for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
             let chrPos = this.chromInfo.cumPositions[i];
-            let chrEnd = chrPos.pos + +this.chromInfo.chromLengths[chrPos.chr];
+            let chrEnd = chrPos.pos + +this.chromInfo.chromLengths[chrPos.chr] + 1;
 
 
 
