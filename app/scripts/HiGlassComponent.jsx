@@ -1294,7 +1294,7 @@ export class HiGlassComponent extends React.Component {
                 let content = JSON.parse(response.response);
                 this.setState({
                     //exportLinkLocation: this.props.viewConfig.exportViewUrl + "?d=" + content.uid
-                    exportLinkLocation: "http://" + window.location.hostname + "/" + "?config=" + content.uid
+                    exportLinkLocation: "http://" + window.location.hostname + "/app/" + "?config=" + content.uid
                 });
             } else {
                 console.error('error:', error);

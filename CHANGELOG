@@ -1,3 +1,8 @@
+v0.4.21
+
+- Chromosome grid positions start at position 1
+- Export link includes 'app'
+
 v0.4.20
 
 - Changed tile API location to use included server value rather than
