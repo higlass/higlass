@@ -1092,9 +1092,10 @@ export class HiGlassComponent extends React.Component {
             return;
         }
 
-        newTrack.width = this.minVerticalWidth;
-        newTrack.height = this.minHorizontalHeight;
-
+        newTrack.width = tracksInfoByType[newTrack.type].minWidth ? tracksInfoByType[newTrack.type].minWidth 
+            : this.minVerticalWidth;
+        newTrack.height = tracksInfoByType[newTrack.type].minHeight ? tracksInfoByType[newTrack.type].minHeight
+            : this.minHorizontalHeight;
 
         let tracks = this.state.views[viewId].tracks;
         if (position == 'left' || position == 'top') {
