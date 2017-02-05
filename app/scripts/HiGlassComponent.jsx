@@ -26,6 +26,8 @@ import {ExportLinkModal} from './ExportLinkModal.jsx';
 import {createSymbolIcon} from './symbol.js';
 import {all as icons} from './icons.js';
 
+import '../styles/HiGlassComponent.css';
+
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const NUM_GRID_COLUMNS = 6;
@@ -1725,21 +1727,15 @@ export class HiGlassComponent extends React.Component {
 
                 let multiTrackHeader = this.props.viewConfig.editable ?
                     (
-                            <div
-                                className="multitrack-header"
-                                style={{"minHeight": 16, "position": "relative",
-                                    "border": "solid 1px", "marginBottom": 4, "opacity": 0.6,
-                                    verticalAlign: "middle",
-                                    lineHeight: "16px",
-                                maxHeight: 16}}
-                            >
-                                <span style={{font: "11pt sans-serif"}}>{"Id: " + view.uid.slice(0,2)}
+                            <div className="multitrack-header">
+                                <span className="multitrack-header-id">
+                                { view.uid.slice(0,2) }
                                 </span>
 
                                 <svg
                                     onClick={ e => this.handleAddView(view) }
                                     ref={c => this.copyImg[view.uid] = c}
-                                    className={'multiview-copy-img'}
+                                    className={'multitrack-header-icon multiview-copy-img'}
                                     width="10px"
                                     height="10px">
                                     <use href="#copy"></use>
@@ -1748,7 +1744,7 @@ export class HiGlassComponent extends React.Component {
                                 <svg
                                     onClick={ e => this.handleConfigMenuOpened(view.uid) }
                                     ref={c => this.configImg[view.uid] = c}
-                                    className={'multiview-config-img'}
+                                    className={'multitrack-header-icon multiview-config-img'}
                                     width="10px"
                                     height="10px">
                                     <use href="#cog"></use>
@@ -1757,7 +1753,7 @@ export class HiGlassComponent extends React.Component {
                                 <svg
                                     onClick={ e => this.handleAddTrackPositionMenuOpened(view.uid) }
                                     ref={c => this.plusImg[view.uid] = c}
-                                    className={'multiview-add-track-img'}
+                                    className={'multitrack-header-icon multiview-add-track-img'}
                                     width="10px"
                                     height="10px">
                                     <use href="#plus"></use>
@@ -1766,7 +1762,7 @@ export class HiGlassComponent extends React.Component {
                                 <svg
                                     onClick={() => { this.handleCloseView(view.uid)}}
                                     ref={c => this.configImg[view.uid] = c}
-                                    className={'multiview-close-img'}
+                                    className={'multitrack-header-icon multiview-close-img'}
                                     width="10px"
                                     height="10px">
                                     <use href="#cross"></use>
