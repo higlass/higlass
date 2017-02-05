@@ -219,7 +219,7 @@ export const tracksInfo = [
         datatype: ['chromosome-1d-labels'],
         local: true,
         orientation: '1d-horizontal',
-        minHeight: 40,
+        minHeight: 30,
         name: 'Chromosome Labels (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null
@@ -230,8 +230,8 @@ export const tracksInfo = [
         datatype: ['chromosome-1d-labels'],
         local: true,
         orientation: '1d-vertical',
-        minWidth: 40,
-        minHeight: 40,
+        minWidth: 30,
+        minHeight: 30,
         name: 'Chromosome Labels (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null

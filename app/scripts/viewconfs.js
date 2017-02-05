@@ -14,10 +14,10 @@ export const testViewConfig = {
     {
       "uid": "aa",
       "initialXDomain": [
-          249250618,
-          249250624
+            0,
+            3000000000
       ],
-      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "autocompleteSource": remoteServer + "/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
@@ -39,6 +39,7 @@ export const testViewConfig = {
             "name": "Chromosome Labels (hg19)"
           }
         ],
+
         "left": [
           {
             "type": "vertical-gene-annotations",
@@ -65,6 +66,7 @@ export const testViewConfig = {
             "type": "combined",
             "height": 200,
             "contents": [
+                /*
               {
                 "server": remoteServer,
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
@@ -79,7 +81,9 @@ export const testViewConfig = {
                   ],
                   "maxZoom": null
                 }
-              },
+              }
+              ,
+              */
               {
                   'type': '2d-chromosome-grid',
                   'position': 'center',
