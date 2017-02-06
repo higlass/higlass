@@ -13,8 +13,6 @@ import "react-resizable/css/styles.css";
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {TiledPlot} from './TiledPlot.jsx';
 
-import {PopupMenu} from './PopupMenu.jsx';
-import {ConfigViewMenu} from './ConfigViewMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
 import {getTrackPositionByUid, getTrackByUid} from './utils.js';
@@ -25,6 +23,7 @@ import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
 import {ExportLinkModal} from './ExportLinkModal.jsx';
 import {createSymbolIcon} from './symbol.js';
 import {all as icons} from './icons.js';
+import {ViewHeader} from './ViewHeader.jsx';
 
 import '../styles/HiGlassComponent.css';
 
@@ -63,7 +62,6 @@ export class HiGlassComponent extends React.Component {
 
         this.plusImg = {};
         this.configImg = {};
-        this.copyImg = {};
 
         this.horizontalMargin = 5;
         this.verticalMargin = 5;
@@ -630,33 +628,7 @@ export class HiGlassComponent extends React.Component {
   }
 
 
-  handleConfigMenuOpened(uid) {
-      /**
-       * The user clicked on the `cog` of the menu so we need to open
-       * it.
-       */
-    let bbox = this.configImg[uid].getBoundingClientRect();
-
-    this.setState({
-        configMenuUid: uid,
-        configMenuPosition: bbox
-    });
-  }
-
-  handleAddTrackPositionMenuOpened(uid) {
-      /**
-       * The user has clicked on the 'plus' sign at the top of a TiledPlot
-       * so we need to open the Track Position Chooser dialog
-       */
-    let bbox = this.plusImg[uid].getBoundingClientRect();
-
-    this.setState({
-        addTrackPositionMenuUid: uid,
-        addTrackPositionMenuPosition: bbox
-    });
-  }
-
-  handleTrackPositionChosen(position) {
+  handleTrackPositionChosen(viewUid, position) {
       /**
        * The user has chosen a position for the new track. The actual
        * track selection will be handled by TiledPlot
@@ -664,8 +636,8 @@ export class HiGlassComponent extends React.Component {
        * We just need to close the menu here.
        */
     this.setState({
-        addTrackPositionMenuUid: null,
-        addTrackPositionMenuPosition: null
+        addTrackPosition: position,
+        addTrackPositionView: viewUid
     });
   }
 
@@ -738,6 +710,12 @@ export class HiGlassComponent extends React.Component {
         clearTimeout(this.dragTimeout);
         this.dragTimeout = null;
     }
+  }
+
+  forceRefreshView() {
+    // force everything to rerender
+    
+    this.setState(this.state);
   }
 
   refreshView(timeout=SHORT_DRAG_TIMEOUT) {
@@ -1076,6 +1054,15 @@ export class HiGlassComponent extends React.Component {
         });
     }
 
+    handleNoTrackAdded() {
+        if (this.state.addTrackPosition) {
+            // we've already added the track, remove the add track dialog
+            this.setState({
+                addTrackPosition: null
+            });
+        }
+    }
+
     handleTrackAdded(viewId, newTrack, position, host=null) {
         /**
          * A track was added from the AddTrackModal dialog.
@@ -1094,6 +1081,13 @@ export class HiGlassComponent extends React.Component {
         }
 
         this.addNameToTrack(newTrack);
+
+        if (this.state.addTrackPosition) {
+            // we've already added the track, remove the add track dialog
+            this.setState({
+                addTrackPosition: null
+            });
+        }
 
         if (host) {
             // we're adding a series rather than a whole new track
@@ -1147,6 +1141,7 @@ export class HiGlassComponent extends React.Component {
             // otherwise, we want it at the end of the track list
             tracks[position].push(newTrack);
         }
+
     }
 
     handleCloseTrack(viewId, uid) {
@@ -1623,7 +1618,6 @@ export class HiGlassComponent extends React.Component {
 
 
   render() {
-
     let tiledAreaStyle = {
         display: 'flex',
         flexDirection: 'column'
@@ -1635,27 +1629,6 @@ export class HiGlassComponent extends React.Component {
 
     let configMenu = null;
 
-    if (this.state.configMenuUid) {
-        configMenu = (<PopupMenu
-                        onMenuClosed={e => this.setState({configMenuUid: null})}
-                      >
-                            <ContextMenuContainer
-                                position={this.state.configMenuPosition}
-                                orientation={'left'}
-                            >
-                                <ConfigViewMenu
-                                    zoomLock={this.zoomLocks[this.state.configMenuUid]}
-                                    onLockZoom={e => this.handleLockZoom(this.state.configMenuUid)}
-                                    onYankZoom={e => this.handleYankZoom(this.state.configMenuUid)}
-                                    onSyncCenter={e => this.handleSyncCenter(this.state.configMenuUid)}
-                                    onProjectViewport={e => this.handleProjectViewport(this.state.configMenuUid)}
-                                    onTogglePositionSearchBox={e => this.handleTogglePositionSearchBox(this.state.configMenuUid)}
-                                    onExportViewAsJSON={e => this.handleExportViewAsJSON() }
-                                    onExportViewAsLink={e => this.handleExportViewsAsLink() }
-                                />
-                            </ContextMenuContainer>
-                        </PopupMenu>);
-    }
 
     // The component needs to be mounted in order for the initial view to have the right
     // width
@@ -1701,6 +1674,9 @@ export class HiGlassComponent extends React.Component {
                                      svgElement={this.state.svgElement}
                                      canvasElement={this.state.canvasElement}
                                      pixiStage={this.pixiStage}
+                                     addTrackPosition={
+                                        this.state.addTrackPositionView == view.uid ? this.state.addTrackPosition : null
+                                     }
                                      //dragging={this.state.dragging}
                                      tracks={view.tracks}
                                      initialXDomain={view.initialXDomain}
@@ -1716,6 +1692,7 @@ export class HiGlassComponent extends React.Component {
                                      chooseTrackHandler={this.state.chooseTrackHandler ? trackId => this.state.chooseTrackHandler(view.uid, trackId) : null}
                                      onTrackOptionsChanged={(trackId, options) => this.handleTrackOptionsChanged(view.uid, trackId, options) }
                                      onTrackAdded={(newTrack, position, host) => this.handleTrackAdded(view.uid, newTrack, position, host)}
+                                     onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
                                      onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
                                      zoomable={!this.props.viewConfig.zoomFixed}
                                      editable={this.props.viewConfig.editable}
@@ -1745,47 +1722,20 @@ export class HiGlassComponent extends React.Component {
 
                 let multiTrackHeader = this.props.viewConfig.editable ?
                     (
-                            <div className="multitrack-header">
-                                <span className="multitrack-header-id">
-                                { view.uid.slice(0,2) }
-                                </span>
+                         <ViewHeader 
+                            onAddView={e=>this.handleAddView(view)}
+                            onCloseView={e=>this.handleCloseView(view)}
+                            onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
+                            onLockZoom={this.handleLockZoom.bind(this)}
+                            onYankZoom={this.handleYankZoom.bind(this)}
+                            onSyncCenter={this.handleSyncCenter.bind(this)}
+                            onProjectViewport={this.handleProjectViewport.bind(this)}
+                            onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
+                            onExportViewsAsLink={this.handleExportViewsAsLink.bind(this)}
+                            onTrackPositionChosen={position => this.handleTrackPositionChosen(view.uid, position)}
+                            viewUid={view.uid}
 
-                                <svg
-                                    onClick={ e => this.handleAddView(view) }
-                                    ref={c => this.copyImg[view.uid] = c}
-                                    className={'multitrack-header-icon multiview-copy-img'}
-                                    width="10px"
-                                    height="10px">
-                                    <use href="#copy"></use>
-                                </svg>
-
-                                <svg
-                                    onClick={ e => this.handleConfigMenuOpened(view.uid) }
-                                    ref={c => this.configImg[view.uid] = c}
-                                    className={'multitrack-header-icon multiview-config-img'}
-                                    width="10px"
-                                    height="10px">
-                                    <use href="#cog"></use>
-                                </svg>
-
-                                <svg
-                                    onClick={ e => this.handleAddTrackPositionMenuOpened(view.uid) }
-                                    ref={c => this.plusImg[view.uid] = c}
-                                    className={'multitrack-header-icon multiview-add-track-img'}
-                                    width="10px"
-                                    height="10px">
-                                    <use href="#plus"></use>
-                                </svg>
-
-                                <svg
-                                    onClick={() => { this.handleCloseView(view.uid)}}
-                                    ref={c => this.configImg[view.uid] = c}
-                                    className={'multitrack-header-icon multiview-close-img'}
-                                    width="10px"
-                                    height="10px">
-                                    <use href="#cross"></use>
-                                </svg>
-                            </div>
+                         />
                     ) : null; // this.editable ?
 
                 return (<div

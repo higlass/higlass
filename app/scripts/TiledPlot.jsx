@@ -11,7 +11,6 @@ import {AddTrackModal} from './AddTrackModal.jsx';
 import {ConfigTrackMenu} from './ConfigTrackMenu.jsx';
 import {CloseTrackMenu} from './CloseTrackMenu.jsx';
 import {PopupMenu} from './PopupMenu.jsx';
-import {AddTrackPositionMenu} from './AddTrackPositionMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {HeatmapOptions} from './HeatmapOptions.jsx';
 
@@ -58,8 +57,7 @@ export class TiledPlot extends React.Component {
             xPositionOffset: 0,
 
             tracks: tracks,
-            addTrackVisible: false,
-            addTrackPosition: "top",
+            addTrackPosition: null,
             mouseOverOverlayUid: null,
             //trackOptions: null
             //trackOptions: trackOptions
@@ -119,15 +117,6 @@ export class TiledPlot extends React.Component {
 
         this.setState({
             mounted: true,
-            /*
-            addTrackPosition: 'top',
-            addTrackVisible: true,
-
-            configTrackMenuId: this.state.tracks['center'][0].uid,
-            configTrackMenuLocation: { 'left': window.innerWidth - 40,
-                                   'top': 100}
-            */
-
         });
 
     }
@@ -222,8 +211,10 @@ export class TiledPlot extends React.Component {
          */
         this.trackToReplace = null;
 
+        this.props.onNoTrackAdded();
+
         this.setState({
-            addTrackVisible: false
+            addTrackPosition: null
         });
     }
 
@@ -233,7 +224,6 @@ export class TiledPlot extends React.Component {
 
         this.setState({
             addTrackPosition: trackPosition,
-            addTrackVisible: true,
             addTrackHost: track
         });
     }
@@ -251,7 +241,6 @@ export class TiledPlot extends React.Component {
     handleAddTrack(position) {
         this.setState({
             addTrackPosition: position,
-            addTrackVisible: true,
             addTrackHost: null
         });
     }
@@ -296,7 +285,7 @@ export class TiledPlot extends React.Component {
         this.props.onTrackAdded(newTrack, position, host);
 
         this.setState({
-            addTrackVisible: false
+            addTrackPosition: null
         });
     }
 
@@ -734,23 +723,6 @@ export class TiledPlot extends React.Component {
                               )
         }
 
-        if (this.props.addTrackPositionMenuPosition) {
-            addTrackPositionMenu = (
-                <PopupMenu
-                    onMenuClosed={this.props.onTrackPositionChosen}
-                >
-                    <ContextMenuContainer
-                        position={this.props.addTrackPositionMenuPosition}
-                        orientation={'left'}
-                    >
-                        <AddTrackPositionMenu
-                            onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
-                        />
-                    </ContextMenuContainer>
-                </PopupMenu>
-            )
-
-        }
 
         let overlays = null;
         if (this.props.chooseTrackHandler) {
@@ -808,7 +780,7 @@ export class TiledPlot extends React.Component {
                         onCancel:  () =>  {
                             // console.log('cancel clicked');
                             this.setState({
-                                trackOptions: null
+                                    trackOptions: null
                                 }
                         )},
                         onTrackOptionsChanged: (newOptions) => newOptions,
@@ -822,6 +794,21 @@ export class TiledPlot extends React.Component {
                     });
         }
 
+        let addTrackModal = null;
+        if (this.state.addTrackPosition || this.props.addTrackPosition) {
+            let position = this.state.addTrackPosition ? 
+                this.state.addTrackPosition : this.props.addTrackPosition;
+            addTrackModal = 
+                (<AddTrackModal
+                    onCancel={this.handleNoTrackAdded.bind(this)}
+                    onTrackChosen={this.handleTrackAdded.bind(this)}
+                    position={ position }
+                    host={this.state.addTrackHost}
+                    show={true}
+                    trackSourceServers={this.props.trackSourceServers}
+                />)
+        }
+
         // track renderer needs to enclose all the other divs so that it
         // can catch the zoom events
         return(
@@ -831,14 +818,7 @@ export class TiledPlot extends React.Component {
             >
                 {trackRenderer}
                 {overlays}
-                <AddTrackModal
-                    onCancel={this.handleNoTrackAdded.bind(this)}
-                    onTrackChosen={this.handleTrackAdded.bind(this)}
-                    position={this.state.addTrackPosition}
-                    host={this.state.addTrackHost}
-                    show={this.state.addTrackVisible}
-                    trackSourceServers={this.props.trackSourceServers}
-                />
+                {addTrackModal}
 
                 {configTrackMenu}
                 {closeTrackMenu}
