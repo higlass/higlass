@@ -378,11 +378,11 @@ export class HiGlassComponent extends React.Component {
 
              let dx = value[0] - lockGroup[uid][0];
              let dy = value[1] - lockGroup[uid][1];
-             let rk = value[2] - lockGroup[uid][2];
+             let rk = value[2] / lockGroup[uid][2];
 
               let newCenterX = centerX + dx;
               let newCenterY = centerY + dy;
-              let newK = k + rk;
+              let newK = k * rk;
 
                 if (!this.setCenters[key])
                     continue;
