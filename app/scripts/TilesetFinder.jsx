@@ -58,8 +58,7 @@ export class TilesetFinder extends React.Component {
                 name: ne.name,
                 uid: slugid.nice()
             });
-            console.log('ne:', ne);
-            console.log('ane:', ane);
+
             return ane;
         });
 

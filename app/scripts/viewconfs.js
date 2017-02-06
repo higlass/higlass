@@ -13,6 +13,7 @@ export const testViewConfig = {
   "views": [
     {
       "uid": "aa",
+      "layout": {"x": 0, "y": 0, "w": 3, "h": 8},
       "initialXDomain": [
             0,
             3000000000
@@ -66,7 +67,6 @@ export const testViewConfig = {
             "type": "combined",
             "height": 200,
             "contents": [
-                /*
               {
                 "server": remoteServer,
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
@@ -83,7 +83,6 @@ export const testViewConfig = {
                 }
               }
               ,
-              */
               {
                   'type': '2d-chromosome-grid',
                   'position': 'center',

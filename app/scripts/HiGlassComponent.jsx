@@ -199,7 +199,10 @@ export class HiGlassComponent extends React.Component {
         }
 
         if (!track.options) {
-            track.options = tracksInfoByType[track.type].defaultOptions;
+            if (tracksInfoByType[track.type].defaultOptions)
+                track.options = JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions));
+            else
+                track.options = tracksInfoByType[track.type].defaultOptions;
         }
     }
 
@@ -1490,6 +1493,8 @@ export class HiGlassComponent extends React.Component {
         // redraw the track  and store the changes in the config file
         let view = this.state.views[viewUid];
         let track = getTrackByUid(view.tracks, trackUid);
+
+        console.log('viewUid:', viewUid, trackUid);
 
         track.options = Object.assign(track.options, newOptions);
         this.setState({

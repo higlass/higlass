@@ -50,6 +50,8 @@ export class AddTrackModal extends React.Component {
 
     handleTilesetPickerDoubleClick(tileset) {
         this.mainTilesetChanged(tileset);
+
+        console.log('this.state.mainTileset:', this.state.mainTileset);
         
         this.props.onTrackChosen(this.state.mainTileset, this.props.position);
     }

@@ -11,14 +11,8 @@ export class Chromosome2DGrid extends PixiTrack {
         this.searchField = null;
         this.chromInfo = null;
 
-        console.log('chromInfoPath:', chromInfoPath);
-
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;  
-            console.log('chromInfo:', this.chromInfo);
-
-            console.log('chromInfo:', this.chromInfo);
-            //
 
             this.searchField = new SearchField(this.chromInfo); 
             this.draw();
