@@ -1,0 +1,1 @@
+[{"count": "29", "exonEnds": "68382983,68385365", "txStart": "68380580", "cdsEnd": "68382916", "geneName": "PJA1", "genomeTxStart": "1461176270", "chr": "chrX", "pos": [1461176270.0], "strand": "-", "cdsStart": "68381149", "refseqid": "NM_001032396", "exonCount": "2", "genomeTxEnd": "1461181055", "txEnd": "68385365", "exonStarts": "68380580,68385214"}]

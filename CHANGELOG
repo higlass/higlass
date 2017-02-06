@@ -1,0 +1,42 @@
+v0.4.22
+
+-
+
+v0.4.21
+
+- Chromosome grid positions start at position 1
+- Export link includes 'app'
+
+v0.4.20
+
+- Changed tile API location to use included server value rather than
+prepending '//'
+
+v0.4.19
+
+- Removed dist directory from .gitignore
+
+v0.4.18
+
+- Use production react in the build
+- Added dist to .gitignore
+
+v0.4.17
+
+- Updated default view config
+- Wider ticks
+
+v0.4.16
+
+- Fritz's public API
+
+v0.4.15
+
+- Fritz's lazy animation
+- Fritz's public API
+- Minimum height for tracks can be specified in track type definition in
+config.js
+- New chromosome 2D grid (for hg19)
+- New chromosome 1D axis (for hg19)
+- New chromosome horizontal axis (for hg19)
+

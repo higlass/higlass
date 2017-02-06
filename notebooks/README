@@ -1,0 +1,9 @@
+ASSEMBLY=hg19
+
+mkdir -p ~/data/ucsc-data/${ASSEMBLY}
+
+wget -O ~/data/ucsc-data/${ASSEMBLY}/chromInfo.txt.gz  http://hgdownload.cse.ucsc.edu/goldenpath/${ASSEMBLY}/database/chromInfo.txt.gz
+wget -O ~/data/ucsc-data/${ASSEMBLY}/refGene.txt.gz  http://hgdownload.cse.ucsc.edu/goldenpath/${ASSEMBLY}/database/refGene.txt.gz
+
+workon stuff
+~/Downloads/spark-1.6.1/bin/spark-submit create_gene_counts.py ${ASSEMBLY}

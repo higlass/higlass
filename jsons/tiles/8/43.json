@@ -1,0 +1,1 @@
+[{"count": "278", "exonEnds": "38180519,38182339,38184512", "txStart": "38179968", "cdsEnd": "38182643", "geneName": "MYD88", "genomeTxStart": "530629962", "chr": "chr3", "pos": [530629962.0], "strand": "+", "cdsStart": "38180152", "refseqid": "NM_001172566", "exonCount": "3", "genomeTxEnd": "530634506", "txEnd": "38184512", "exonStarts": "38179968,38182247,38182622"}]

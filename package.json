@@ -1,0 +1,105 @@
+{
+  "name": "higlass",
+  "version": "0.4.23",
+  "description": "Massive matrix viewer",
+  "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
+  "main": "dist/scripts/hi_z.js",
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pkerpedjiev/generator-webpack-es6"
+  },
+  "engines": {
+    "node": ">=0.12.0"
+  },
+  "devDependencies": {
+    "babel": "~6.5.2",
+    "babel-core": "~6.5.2",
+    "babel-loader": "~6.2.3",
+    "babel-plugin-transform-object-rest-spread": "^6.20.2",
+    "babel-preset-es2016": "^6.16.0",
+    "babel-preset-react": "^6.11.1",
+    "browser-sync": "~2.11.1",
+    "brfs": "1.4.3",
+    "css-loader": "^0.23.1",
+    "del": "~2.2.0",
+    "es6-promise": "~3.1.2",
+    "fs": "0.0.2",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "~3.1.0",
+    "gulp-babel": "~6.1.2",
+    "gulp-cache": "^0.4.2",
+    "gulp-cssnano": "^2.1.1",
+    "gulp-debug": "^2.1.2",
+    "gulp-htmlmin": "^1.3.0",
+    "gulp-if": "^2.0.0",
+    "gulp-imagemin": "^2.4.0",
+    "gulp-jasmine": "^2.3.0",
+    "gulp-load-plugins": "~1.2.0",
+    "gulp-plumber": "~1.1.0",
+    "gulp-size": "^2.0.0",
+    "gulp-sourcemaps": "~1.6.0",
+    "gulp-stats": "0.0.3",
+    "gulp-uglify": "^1.5.3",
+    "gulp-useref": "^3.0.7",
+    "gulp-webpack": "~1.5.0",
+    "jasmine": "^2.4.1",
+    "jquery": "^3.1.0",
+    "main-bower-files": "~2.11.1",
+    "mversion": "^1.10.1",
+    "react": "^15.2.1",
+    "react-bootstrap": "^0.30.0",
+    "react-dom": "^15.2.1",
+    "slugid": "^1.1.0",
+    "style-loader": "^0.13.1",
+    "webpack": "~1.12.14",
+    "webpack-stream": "~3.1.0",
+    "wiredep": "~3.0.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "node": true,
+      "browser": true
+    },
+    "rules": {
+      "quotes": [
+        2,
+        "single"
+      ]
+    }
+  },
+  "dependencies": {
+    "babel-preset-es2015": "^6.18.0",
+    "box-intersect": "^1.0.1",
+    "css-element-queries": "github:marcj/css-element-queries",
+    "d3": "^4.4.0",
+    "d3-axis": "^1.0.4",
+    "d3-drag": "^1.0.2",
+    "d3-request": "^1.0.3",
+    "d3-scale": "^1.0.4",
+    "d3-selection": "^1.0.3",
+    "d3-zoom": "^1.1.1",
+    "eventemitter3": "^2.0.2",
+    "path": "^0.12.7",
+    "pixi.js": "^4.2.3",
+    "react-autocomplete": "tiemevanveen/react-autocomplete#fix-176",
+    "react-color": "^2.11.1",
+    "react-contextmenu": "^2.0.0-beta.2",
+    "react-data-menu": "^1.0.12",
+    "react-dimensions": "^1.3.0",
+    "react-grid-layout": "^0.13.9",
+    "react-resizable": "^1.4.5",
+    "react-sortable-hoc": "^0.1.1",
+    "threads": "^0.7.2",
+    "transform-loader": "^0.2.3",
+    "url-join": "^1.1.0",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --content-base app --display-exclude --profile --inline | grep -v '\\[\\d*\\]'",
+    "compile": "rm -rf dist/*; mkdir -p dist/scripts; mkdir -p dist/styles; cp -r app/images dist/; NODE_ENV=production webpack -p; cp build/playground.js dist/scripts; cp build/hglib.js dist/scripts; cp app/index.html dist/; cp app/hglib.html dist/; cp app/styles/page.css dist/styles/; zip -r dist.zip dist"
+  }
+}

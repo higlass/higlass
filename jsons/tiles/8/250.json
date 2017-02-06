@@ -1,0 +1,1 @@
+[{"count": "2", "exonEnds": "19208143,19212970,19257925", "txStart": "19207988", "cdsEnd": "19257925", "geneName": "CHODL-AS1", "genomeTxStart": "3066755505", "chr": "chr21", "pos": [3066755505.0], "strand": "-", "cdsStart": "19257925", "refseqid": "NR_024354", "exonCount": "3", "genomeTxEnd": "3066805442", "txEnd": "19257925", "exonStarts": "19207988,19212811,19257778"}]

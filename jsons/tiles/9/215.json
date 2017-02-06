@@ -1,0 +1,1 @@
+[{"count": "4", "exonEnds": "88424360,88425031", "txStart": "88423419", "cdsEnd": "88424256", "geneName": "C7orf62", "genomeTxStart": "1322080446", "chr": "chr7", "pos": [1322080446.0], "strand": "-", "cdsStart": "88423494", "refseqid": "NM_152706", "exonCount": "2", "genomeTxEnd": "1322082058", "txEnd": "88425031", "exonStarts": "88423419,88424953"}]
