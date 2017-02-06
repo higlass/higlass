@@ -173,6 +173,7 @@ export const tracksInfo = [
         type: 'vertical-gene-annotations',
         datatype: ['gene-annotation'],
         local: false,
+        minWidth: 60,
         orientation: '1d-vertical',
         name: 'Gene Annotations',
         thumbnail: svgVerticalGeneAnnotationsIcon,
