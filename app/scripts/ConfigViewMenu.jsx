@@ -1,4 +1,3 @@
-import '../styles/TrackConfigWindow.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -11,8 +10,8 @@ export class ConfigViewMenu extends React.Component {
          */
         super(props);
 
-        
-        
+
+
     }
 
     componentDidMount() {
@@ -30,13 +29,13 @@ export class ConfigViewMenu extends React.Component {
 
         let yankTracks = null;
         /*
-        let yankTracks = 
+        let yankTracks =
                     (<hr />
 
-                    <ContextMenuItem text={'Yank Tracks'} 
+                    <ContextMenuItem text={'Yank Tracks'}
                         onClick={e => e}
                     />
-                    <ContextMenuItem text={'Lock Tracks'} 
+                    <ContextMenuItem text={'Lock Tracks'}
                         onClick={e => e}
                     />)
         */
@@ -56,10 +55,10 @@ export class ConfigViewMenu extends React.Component {
                     </ContextMenuItem>
                     <ContextMenuItem
                         onClick={e => this.props.onSyncCenter(e)}
-                    > 
-                    {'Take center from'} 
+                    >
+                    {'Take center from'}
                     </ContextMenuItem>
-                    <ContextMenuItem 
+                    <ContextMenuItem
                         onClick={e => this.props.onLockZoom(e)}
                     >
                         {lockZoomText}
@@ -73,13 +72,13 @@ export class ConfigViewMenu extends React.Component {
 
                     <hr />
 
-                    <ContextMenuItem 
+                    <ContextMenuItem
                         onClick={e => this.props.onExportViewAsJSON()}
                     >
                     {'Export views as JSON'}
                     </ContextMenuItem>
 
-                    <ContextMenuItem 
+                    <ContextMenuItem
                         onClick={e => this.props.onExportViewAsLink()}
                     >
                     {'Export views as Link'}

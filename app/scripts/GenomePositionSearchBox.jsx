@@ -13,6 +13,8 @@ import {SearchField} from './search_field.js';
 import {scalesCenterAndK} from './utils.js';
 import {PopupMenu} from './PopupMenu.jsx';
 
+import '../styles/GenomePositionSearchBox.css';
+
 export class GenomePositionSearchBox extends React.Component {
     constructor(props) {
         super(props);
@@ -360,47 +362,48 @@ export class GenomePositionSearchBox extends React.Component {
 
     render() {
         return(
-                <FormGroup bsSize='small'>
+            <FormGroup
+                bsSize="small"
+                className="genome-position-search"
+            >
                 <InputGroup>
-                    <div
-                        style={{"zIndex": 999, "position": "relative"}}>
-                    <Autocomplete
-                        ref={c => this.autocompleteMenu = c}
-                        value={this.state.value}
-                        items={this.state.genes}
-                        onChange = {this.onAutocompleteChange.bind(this)}
-                        onSelect={(value, objct) => this.geneSelected(value, objct) }
-                        onKeyDown={ this.searchFieldKeyPress.bind(this) }
-                        getItemValue={(item) => item.geneName}
-                        inputProps={{"className": "form-control"}}
-                        wrapperStyle={{width: "100%"}}
-                        onMenuVisibilityChange={this.handleMenuVisibilityChange.bind(this)}
-                        menuStyle={{position:'absolute',
-                            'left': this.menuPosition.left,
-                            'top': this.menuPosition.top,
-                            border: '1px solid black'
-                        }}
-                        renderItem={(item, isHighlighted) => (
-                            <div
-                              style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
-                              key={item.refseqid}
-                              id={item.refseqid}
-                            >{item.geneName}</div>
-                          )}
-                        renderMenu={this.handleRenderMenu.bind(this)}
-                    />
+                    <div style={{"zIndex": 999, "position": "relative"}}>
+                        <Autocomplete
+                            ref={c => this.autocompleteMenu = c}
+                            value={this.state.value}
+                            items={this.state.genes}
+                            onChange = {this.onAutocompleteChange.bind(this)}
+                            onSelect={(value, objct) => this.geneSelected(value, objct) }
+                            onKeyDown={ this.searchFieldKeyPress.bind(this) }
+                            getItemValue={(item) => item.geneName}
+                            inputProps={{"className": "search-bar"}}
+                            wrapperStyle={{width: "100%"}}
+                            onMenuVisibilityChange={this.handleMenuVisibilityChange.bind(this)}
+                            menuStyle={{position:'absolute',
+                                'left': this.menuPosition.left,
+                                'top': this.menuPosition.top,
+                                border: '1px solid black'
+                            }}
+                            renderItem={(item, isHighlighted) => (
+                                <div
+                                  style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
+                                  key={item.refseqid}
+                                  id={item.refseqid}
+                                >{item.geneName}</div>
+                              )}
+                            renderMenu={this.handleRenderMenu.bind(this)}
+                        />
                     </div>
 
-                <InputGroup.Button>
-
-                    <div style={{"zIndex": 1000, "position": "relative"}}>
-                        <Button bsSize="small" onClick={this.buttonClick.bind(this)}>
-                        <Glyphicon glyph="search"></Glyphicon>
-                        </Button>
-                    </div>
-                </InputGroup.Button>
+                    <InputGroup.Button>
+                        <div style={{"zIndex": 1000, "position": "relative"}}>
+                            <Button bsSize="small" onClick={this.buttonClick.bind(this)}>
+                                <Glyphicon glyph="search"></Glyphicon>
+                            </Button>
+                        </div>
+                    </InputGroup.Button>
                 </InputGroup>
-                </FormGroup>
+            </FormGroup>
             );
     }
 

@@ -169,8 +169,7 @@ export class ContextMenuContainer extends React.Component {
             stylePosition = {'right': this.state.right}
 
         let otherStyle = { position: 'fixed',
-            top: this.state.top,
-            border: '1px solid black'
+            top: this.state.top
         };
 
         let wholeStyle = Object.assign(stylePosition, otherStyle);
