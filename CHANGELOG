@@ -1,4 +1,8 @@
-v0.4.24
+v0.4.26
+
+- Fixed close button
+
+v0.4.25
 
 - Fractional zoom lock
 - Faster config menu loading

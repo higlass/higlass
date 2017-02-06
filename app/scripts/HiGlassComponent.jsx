@@ -1723,7 +1723,7 @@ export class HiGlassComponent extends React.Component {
                     (
                          <ViewHeader 
                             onAddView={e=>this.handleAddView(view)}
-                            onCloseView={e=>this.handleCloseView(view)}
+                            onCloseView={e=>this.handleCloseView(view.uid)}
                             onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
                             onLockZoom={this.handleLockZoom.bind(this)}
                             onYankZoom={this.handleYankZoom.bind(this)}
