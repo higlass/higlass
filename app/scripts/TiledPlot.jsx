@@ -214,7 +214,8 @@ export class TiledPlot extends React.Component {
         this.props.onNoTrackAdded();
 
         this.setState({
-            addTrackPosition: null
+            addTrackPosition: null,
+            addTrackHost: null
         });
     }
 
@@ -285,7 +286,8 @@ export class TiledPlot extends React.Component {
         this.props.onTrackAdded(newTrack, position, host);
 
         this.setState({
-            addTrackPosition: null
+            addTrackPosition: null,
+            addTrackHost: null
         });
     }
 
