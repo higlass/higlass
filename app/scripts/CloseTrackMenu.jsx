@@ -1,4 +1,3 @@
-import '../styles/TrackConfigWindow.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -13,10 +12,10 @@ export class CloseTrackMenu extends React.Component {
          */
         super(props);
 
-        
+
 
         this.seriesRefs = {};
-        
+
     }
 
     componentDidMount() {
@@ -43,14 +42,14 @@ export class CloseTrackMenu extends React.Component {
         return series.map(x => {
             let thumbnail = trackTypeToInfo[x.type].thumbnail;
             let blankLocation = "images/thumbnails/blank.png";
-                let imgTag = trackTypeToInfo[x.type].thumbnail ? 
+                let imgTag = trackTypeToInfo[x.type].thumbnail ?
                         <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} dangerouslySetInnerHTML={{__html: thumbnail.outerHTML}} /> :
                         <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} >
                             <svg width={30} height={20} />
                         </div>
 
                 return (
-                    <div 
+                    <div
                         ref={c => this.seriesRefs[x.uid] = c}
                         className={"context-menu-item"}
                         key={x.uid}

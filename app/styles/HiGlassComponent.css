@@ -1,0 +1,35 @@
+.multitrack-header {
+  position: relative;
+  max-height: 20px;
+  min-height: 20px;
+  margin-bottom: 3px;
+  color: #666;
+  font-size: 12px;
+  line-height: 20px;
+  vertical-align: middle;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.multitrack-header-id {
+  padding-left: 3px;
+}
+
+.multitrack-header-id::before {
+  content: 'ID:';
+  font-weight: bold;
+  padding-right: 5px;
+}
+
+.multitrack-header-icon {
+  top: 4px;
+}
+
+.multitrack-header-icon:hover {
+  color: #000;
+}
+
+.multitrack-header-icon:active,
+.multitrack-header-icon:focus {
+  color: #4677f8;
+}
