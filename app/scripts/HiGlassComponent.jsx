@@ -190,20 +190,17 @@ export class HiGlassComponent extends React.Component {
     }
 
     addDefaultOptions(track) {
-        if (track.options)
-            return;
-
         if (!tracksInfoByType.hasOwnProperty(track.type)) {
             console.error("ERROR: track type not found:", track.type, " (check app/scripts/config.js for a list of defined track types)");
             return;
         }
 
-        if (!track.options) {
-            if (tracksInfoByType[track.type].defaultOptions)
-                track.options = JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions));
-            else
-                track.options = tracksInfoByType[track.type].defaultOptions;
-        }
+        let trackOptions = track.options ? track.options : {};
+
+        if (tracksInfoByType[track.type].defaultOptions)
+            track.options = Object.assign(trackOptions, JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions)));
+        else
+            track.options = trackOptions;
     }
 
     animate() {
@@ -1089,6 +1086,13 @@ export class HiGlassComponent extends React.Component {
          * @param host: If this track is being added to another track
          */
         this.addDefaultOptions(newTrack);
+
+        if (newTrack.contents) {
+            // add default options to combined tracks
+            for (let ct of newTrack.contents)
+                this.addDefaultOptions(ct);
+        }
+
         this.addNameToTrack(newTrack);
 
         if (host) {
@@ -1572,7 +1576,15 @@ export class HiGlassComponent extends React.Component {
 
             // add default options (as specified in config.js
             // (e.g. line color, heatmap color scales, etc...)
-            looseTracks.forEach(t => this.addDefaultOptions(t));
+            looseTracks.forEach(t => { 
+                this.addDefaultOptions(t)
+
+                if (t.contents) {
+                    // add default options to combined tracks
+                    for (let ct of t.contents)
+                        this.addDefaultOptions(ct);
+                }
+            });
 
         });
 

@@ -38,9 +38,18 @@ export class PixiTrack extends Track {
         this.pBase.addChild(this.pMobile);
 
         this.options = Object.assign(this.options, options);
-        this.labelText = new PIXI.Text(this.options.name, {fontSize: "12px", fontFamily: "Arial", fill: "black"});
+
+
+        let labelTextText = this.options.name ? this.options.name : 
+            (this.tilesetInfo ? this.tilesetInfo.name : '');
+
+        this.labelText = new PIXI.Text(labelTextText, {fontSize: "12px", fontFamily: "Arial", fill: "black"});
 
         this.pLabel.addChild(this.labelText);
+    }
+
+    setLabelText() {
+        // will be drawn in draw() anyway
     }
 
     setPosition(newPosition) {
@@ -75,14 +84,16 @@ export class PixiTrack extends Track {
     drawLabel() {
         let graphics = this.pLabel;
 
-
         if (!this.options || !this.options.labelPosition) {
             // don't display the track label
             this.labelText.opacity = 0;
             return;
         }
 
-        this.labelText.text = this.options.name;
+        let labelTextText = this.options.name ? this.options.name : 
+            (this.tilesetInfo ? this.tilesetInfo.name : '');
+
+        this.labelText.text = labelTextText;
         this.labelText.visible = true;
 
         if (this.flipText)

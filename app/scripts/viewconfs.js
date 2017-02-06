@@ -48,10 +48,7 @@ export const testViewConfig = {
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "server": remoteServer,
             "position": "left",
-            "name": "Gene Annotations",
-            "options": {
-                "labelPosition": "bottomRight"
-            }
+            "name": "Gene Annotations"
           }
             ,
           {

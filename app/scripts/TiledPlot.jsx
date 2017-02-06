@@ -183,6 +183,7 @@ export class TiledPlot extends React.Component {
             track.options = {}
 
         track.options.name = tilesetInfo.name;
+        track.name = tilesetInfo.name;
 
         /*
         console.log('track:', track);

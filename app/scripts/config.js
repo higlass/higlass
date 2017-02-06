@@ -83,6 +83,7 @@ export const tracksInfo = [
         orientation: '2d',
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
+            labelPosition: 'topLeft',
             colorRange: [  
                               "#FFFFFF",
                               "#F8E71C",
