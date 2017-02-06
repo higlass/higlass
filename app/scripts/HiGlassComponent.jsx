@@ -1498,8 +1498,6 @@ export class HiGlassComponent extends React.Component {
         let view = this.state.views[viewUid];
         let track = getTrackByUid(view.tracks, trackUid);
 
-        console.log('viewUid:', viewUid, trackUid);
-
         track.options = Object.assign(track.options, newOptions);
         this.setState({
             views: this.state.views
