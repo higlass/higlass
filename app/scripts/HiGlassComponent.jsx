@@ -1670,7 +1670,6 @@ export class HiGlassComponent extends React.Component {
                                 <TiledPlot
                                     key={'tp' + view.uid}
                                     uid={view.uid}
-                                    parentMounted={this.state.mounted}
                                      svgElement={this.state.svgElement}
                                      canvasElement={this.state.canvasElement}
                                      pixiStage={this.pixiStage}

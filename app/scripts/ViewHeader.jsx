@@ -56,8 +56,6 @@ export class ViewHeader extends React.Component {
            *
            * We just need to close the menu here.
            */
-          console.log('position:', position);
-
         this.props.onTrackPositionChosen(position);
 
         this.setState({

@@ -495,6 +495,39 @@ export class TiledPlot extends React.Component {
         return (trackElements)
     }
 
+    updatablePropsToString(props) {
+        return JSON.stringify({
+            tracks: props.tracks,
+            uid: props.uid,
+            addTrackPosition: props.addTrackPosition,
+            editable: props.editable,
+            horizontalMargin: props.horizontalMargin,
+            verticalTiledPlot: props.verticalMargin,
+            initialXDomain: props.initialXDomain,
+            initialYDomain: props.initialYDomain,
+            trackSourceServers: props.trackSourceServers,
+            zoomable: props.zoomable
+        });
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        //console.log('this.props:', this.props);
+
+        let thisPropsStr = this.updatablePropsToString(this.props);
+        let nextPropsStr = this.updatablePropsToString(nextProps);
+
+        //console.log('thisPropsStr:', thisPropsStr);
+
+        let thisStateStr = JSON.stringify(this.state);
+        let nextStateStr = JSON.stringify(nextState);
+
+        let toUpdate = !((thisPropsStr == nextPropsStr) && (thisStateStr == nextStateStr))
+        //console.log('toUpdate:', toUpdate);
+        toUpdate = toUpdate || (this.props.chooseTrackHandler != nextProps.chooseTrackHandler);
+
+        return toUpdate;
+    }
+
     render() {
         // left, top, right, and bottom have fixed heights / widths
         // the center will vary to accomodate their dimensions
@@ -529,7 +562,8 @@ export class TiledPlot extends React.Component {
 
         };
 
-        let topTracks = (<div style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin,
+        let topTracks = (<div key="topTracksDiv"
+                                style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin,
                                       width: this.centerWidth, height: this.topHeight,
                                       outline: trackOutline,
                                       position: "absolute",}}>
@@ -547,7 +581,8 @@ export class TiledPlot extends React.Component {
                                 resizeHandles={new Set(['bottom'])}
                             />
                          </div>)
-        let leftTracks = (<div style={{left: this.props.horizontalMargin, top: this.topHeight + this.props.verticalMargin,
+        let leftTracks = (<div key="leftTracksPlot"
+                            style={{left: this.props.horizontalMargin, top: this.topHeight + this.props.verticalMargin,
                                       width: this.leftWidth, height: this.centerHeight,
                                       outline: trackOutline,
                                       position: "absolute",}}>
@@ -685,7 +720,6 @@ export class TiledPlot extends React.Component {
 
         let configTrackMenu = null;
         let closeTrackMenu = null;
-        let addTrackPositionMenu = null;
         //
         if (this.state.configTrackMenuId) {
             configTrackMenu = (
@@ -824,7 +858,6 @@ export class TiledPlot extends React.Component {
 
                 {configTrackMenu}
                 {closeTrackMenu}
-                {addTrackPositionMenu}
                 {trackOptionsElement}
             </div>
             );

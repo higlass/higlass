@@ -2,6 +2,8 @@ v0.4.24
 
 - Fractional zoom lock
 - Faster config menu loading
+- Faster track addition by limiting the udpates of TiledPlot (using
+shouldComponentUpdate)
 
 v0.4.21
 
