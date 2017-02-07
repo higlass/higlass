@@ -1,4 +1,5 @@
 import {Track} from './Track.js';
+import {format, formatPrefix, precisionRound, precisionPrefix} from 'd3-format';
 //import {LRUCache} from './lru.js';
 
 export class PixiTrack extends Track {
@@ -93,7 +94,27 @@ export class PixiTrack extends Track {
         let labelTextText = this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
 
+        if (this.tilesetInfo && this.tilesetInfo.max_width && this.tilesetInfo.bins_per_dimension) {
+            let maxWidth = this.tilesetInfo.max_width;
+            let binsPerDimension = this.tilesetInfo.bins_per_dimension;
+            let maxZoom = this.tilesetInfo.max_zoom;
+
+            let resolution = maxWidth / (2 ** this.calculateZoomLevel() * binsPerDimension)
+
+            let maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+            let minResolution = maxWidth / binsPerDimension;
+
+            let pp = precisionPrefix(maxResolutionSize, resolution);
+            let f = formatPrefix('.' + pp, resolution);
+            let formattedResolution = f(resolution);
+
+            //console.log('maxResolutionSize:', maxResolutionSize);
+
+            labelTextText += '\n[Current data resolution: ' + formattedResolution + ']';
+        }
+
         this.labelText.text = labelTextText;
+
         this.labelText.visible = true;
 
         if (this.flipText)

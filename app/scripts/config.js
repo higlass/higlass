@@ -70,22 +70,22 @@ export const optionsInfo = {
                 let inlineOptions = [];
 
                 for (let i = 0; i <= track.maxZoom; i++) {
+                    let maxWidth = track.maxWidth;
+                    let binsPerDimension = track.binsPerDimension;
+                    let maxZoom = track.maxZoom;
+
                     let resolution = track.maxWidth / (2 ** i * track.binsPerDimension)
 
-                    let maxResolutionSize = track.maxWidth / (2 ** track.maxZoom * track.binsPerDimension);
-                    let precision = Math.floor(Math.log(resolution / maxResolutionSize) / Math.log(10));
-                    /*
-                    let fp = formatPrefix("." + precision, resolution);
-                    let formattedName = fp(resolution);
-                    */
+                    let maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+                    let minResolution = maxWidth / binsPerDimension;
 
-                    let formattedName = formatter(resolution);
-                    if (precision > 0)
-                        formattedName = "~" + formattedName;
+                    let pp = precisionPrefix(maxResolutionSize, resolution);
+                    let f = formatPrefix('.' + pp, resolution);
+                    let formattedResolution = f(resolution);
 
                     //let formattedName =  ;
                     inlineOptions.push({
-                        'name': formattedName,
+                        'name': formattedResolution,
                         value: i.toString()
                     });
 
