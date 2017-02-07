@@ -72,8 +72,33 @@ export class SeriesListMenu extends ContextMenuContainer {
                 return null;
 
             for (let optionType of tracksInfoByType[track.type].availableOptions) {
+                console.log('optionType:', optionType);
                 if (optionsInfo.hasOwnProperty(optionType)) {
                    menuItems[optionType] = {'name': optionsInfo[optionType].name}
+                   console.log('optionsInfo:', optionsInfo);
+
+                   // can we dynamically generate some options?
+                   // should be used if the options depend on tileset info or other current state
+                   if (optionsInfo[optionType].generateOptions) {
+                       let generatedOptions = optionsInfo[optionType].generateOptions(track);
+
+                       if (!menuItems[optionType].children)
+                           menuItems[optionType].children = {};
+
+                       for (let generatedOption of generatedOptions) {
+                           let optionSelectorSettings = {
+                                name: generatedOption.name,
+                                value: generatedOption.value,
+                                handler: () => {
+                                   track.options[optionType] = generatedOption.value;
+                                   this.props.onTrackOptionsChanged(track.uid, track.options);
+                                   this.props.closeMenu();
+                               }
+                           }
+
+                           menuItems[optionType].children[generatedOption.value] = optionSelectorSettings;
+                       }
+                   }
 
                    if (optionsInfo[optionType].inlineOptions) {
                        // we can simply select this option from the menu
@@ -130,11 +155,11 @@ export class SeriesListMenu extends ContextMenuContainer {
             }
 
             return (<NestedContextMenu
-                        position={position}
+                        closeMenu={this.props.closeMenu}
                         menuItems={menuItems}
                         orientation={this.state.orientation}
                         parentBbox={bbox}
-                        closeMenu={this.props.closeMenu}
+                        position={position}
                     />)
 
         } else {
@@ -147,8 +172,8 @@ export class SeriesListMenu extends ContextMenuContainer {
 
         return(
                 <div className={'context-menu'}
-                        ref={c => this.div = c}
                         onMouseLeave={this.props.handleMouseLeave}
+                        ref={c => this.div = c}
                         style={{
                                 position: 'fixed',
                                 left: this.state.left,
@@ -163,16 +188,19 @@ export class SeriesListMenu extends ContextMenuContainer {
                     >
                         {'Configure Series'}
                         <svg
-                            className = "play-icon"
-                            width="10px"
-                            height="10px">
-                            <use href="#play"></use>
+                            className={"play-icon"}
+                            height={"10px"}
+                            width={"10px"}
+                        >
+                            <use 
+                                href={"#play"}
+                            />
                         </svg>
                     </ContextMenuItem>
                     <ContextMenuItem
                         className={"context-menu-item"}
                         onClick={this.props.onCloseTrack}
-                        onMouseEnter={(e) => this.handleOtherMouseEnter(e) }
+                        onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
                     >
                         <span
                             style={{ whiteSpace: 'nowrap' }}
@@ -186,8 +214,8 @@ export class SeriesListMenu extends ContextMenuContainer {
                                 this.props.onCloseTrack(this.props.series.uid)
                                 this.props.onAddSeries(this.props.hostTrack.uid)
                        }}
-                        onMouseEnter={(e) => this.handleOtherMouseEnter(e) }
-                     >
+                        onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+                    >
                         <span
                             style={{ whiteSpace: 'nowrap' }}
                         >
@@ -196,7 +224,7 @@ export class SeriesListMenu extends ContextMenuContainer {
                     </ContextMenuItem>
                     <ContextMenuItem
                         className={"context-menu-item"}
-                        onMouseEnter={(e) => this.handleOtherMouseEnter(e) }
+                        onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
                     >
                         <span
                             style={{ whiteSpace: 'nowrap' }}

@@ -1,3 +1,9 @@
+v0.4.27
+
+- Changed config.js Chromosome Labels to Chromosome Axis
+- Fixed default option setting so that it doesn't override provided options
+- Adding zoom limit option to heatmap
+
 v0.4.26
 
 - Fixed close button

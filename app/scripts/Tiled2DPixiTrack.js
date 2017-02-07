@@ -50,6 +50,14 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
             return;
 
         this.zoomLevel = this.calculateZoomLevel();
+
+        if (this.options && this.options.maxZoom) {
+            if (this.options.maxZoom >= 0)
+                this.zoomLevel = Math.min(this.options.maxZoom, this.zoomLevel);
+            else
+                console.error("Invalid maxZoom on track:", this);
+        }
+
         //this.zoomLevel = 0;
 
         this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale,

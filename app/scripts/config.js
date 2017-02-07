@@ -11,6 +11,8 @@ import {svg1DTilesIcon} from './icons.js';
 import {svgVertical1DTilesIcon} from './icons.js';
 import {svgArrowheadDomainsIcon} from './icons.js';
 
+import {format, formatPrefix, precisionRound, precisionPrefix} from 'd3-format';
+
 let localServer = "localhost:8000";
 let remoteServer = "52.45.229.11";
 //export const usedServer = localServer;
@@ -31,7 +33,7 @@ export const optionsInfo = {
     // colormaps are mostly taken from here:
     // http://matplotlib.org/api/pyplot_summary.html?highlight=colormaps#matplotlib.pyplot.colormaps
     colorRange: {
-        name: "Color Range",
+        name: "Color map",
         inlineOptions: {
             'default': { name: 'default', value: [  
                                           "#FFFFFF",
@@ -54,6 +56,45 @@ export const optionsInfo = {
                     'heatmap': HeatmapOptions
                 }
             }
+        }
+    },
+
+    maxZoom: {
+        name: "Zoom limit",
+        inlineOptions: {
+            'none': { name: "None", value: null },
+        },
+        generateOptions: track => {
+            if (track.maxZoom) {
+                let formatter = format('.0s');
+                let inlineOptions = [];
+
+                for (let i = 0; i <= track.maxZoom; i++) {
+                    let resolution = track.maxWidth / (2 ** i * track.binsPerDimension)
+
+                    let maxResolutionSize = track.maxWidth / (2 ** track.maxZoom * track.binsPerDimension);
+                    let precision = Math.floor(Math.log(resolution / maxResolutionSize) / Math.log(10));
+                    /*
+                    let fp = formatPrefix("." + precision, resolution);
+                    let formattedName = fp(resolution);
+                    */
+
+                    let formattedName = formatter(resolution);
+                    if (precision > 0)
+                        formattedName = "~" + formattedName;
+
+                    //let formattedName =  ;
+                    inlineOptions.push({
+                        'name': formattedName,
+                        value: i.toString()
+                    });
+
+                    //
+                }
+
+                return inlineOptions;
+            } else 
+                return [];
         }
     }
 }
@@ -92,7 +133,7 @@ export const tracksInfo = [
                            ],
             maxZoom: null
         },
-        availableOptions: [ 'labelPosition', 'colorRange' ]
+        availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom' ]
     },
     {
         type: 'horizontal-line',
@@ -212,7 +253,7 @@ export const tracksInfo = [
         datatype: ['chromosome-2d-labels'],
         local: true,
         orientation: '2d',
-        name: 'Chromosome Labels (hg19)',
+        name: 'Chromosome Axis (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null
     }
@@ -223,7 +264,7 @@ export const tracksInfo = [
         local: true,
         orientation: '1d-horizontal',
         minHeight: 30,
-        name: 'Chromosome Labels (hg19)',
+        name: 'Chromosome Axis (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null
     }
@@ -235,7 +276,7 @@ export const tracksInfo = [
         orientation: '1d-vertical',
         minWidth: 30,
         minHeight: 30,
-        name: 'Chromosome Labels (hg19)',
+        name: 'Chromosome Axis (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null
     }

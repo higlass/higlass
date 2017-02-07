@@ -44,6 +44,15 @@ export class TiledPixiTrack extends PixiTrack {
             this.tilesetInfo = tilesetInfo[tilesetUid];
 
             this.maxZoom = +this.tilesetInfo['max_zoom'];
+            console.log('maxZoom:', this.maxZoom);
+
+            if (this.options && this.options.maxZoom) {
+                if (this.options.maxZoom >= 0)
+                    this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
+                else
+                    console.error("Invalid maxZoom on track:", this);
+            }
+
             this.refreshTiles();
 
             if (handleTilesetInfoReceived)
@@ -63,6 +72,23 @@ export class TiledPixiTrack extends PixiTrack {
         this.refreshTilesDebounced = debounce(
             this.refreshTiles.bind(this), ZOOM_DEBOUNCE
         );
+    }
+
+    rerender(options) {
+        super.rerender(options);
+
+        if (!this.tilesetInfo)
+            return;
+
+        this.maxZoom = +this.tilesetInfo['max_zoom'];
+        console.log('maxZoom:', this.maxZoom);
+
+        if (this.options && this.options.maxZoom) {
+            if (this.options.maxZoom >= 0)
+                this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
+            else
+                console.error("Invalid maxZoom on track:", this);
+        }
     }
 
 

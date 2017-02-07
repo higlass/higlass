@@ -195,9 +195,13 @@ export class HiGlassComponent extends React.Component {
 
         let trackOptions = track.options ? track.options : {};
 
-        if (tracksInfoByType[track.type].defaultOptions)
-            track.options = Object.assign(trackOptions, JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions)));
-        else
+        if (tracksInfoByType[track.type].defaultOptions) {
+            for (let optionName in tracksInfoByType[track.type].defaultOptions) {
+                track.options[optionName] = track.options[optionName] ? 
+                    track.options[optionName] : JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions[optionName]));
+
+            }
+        } else
             track.options = trackOptions;
     }
 
@@ -1557,6 +1561,14 @@ export class HiGlassComponent extends React.Component {
         views.forEach(v => {
             this.fillInMinWidths(v.tracks);
             viewsByUid[v.uid] = v;
+
+            console.log('v:', v);
+
+            // if there's no y domain specified just use the x domain instead
+            // effectively centers the view on the diagonal
+            if (!v.initialYDomain) {
+                v.initialYDomain = [v.initialXDomain[0],v.initialXDomain[1]];
+            }
 
             // Add names to all the tracks
             let looseTracks = positionedTracksToAllTracks(v.tracks);
