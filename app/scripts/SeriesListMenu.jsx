@@ -72,10 +72,8 @@ export class SeriesListMenu extends ContextMenuContainer {
                 return null;
 
             for (let optionType of tracksInfoByType[track.type].availableOptions) {
-                console.log('optionType:', optionType);
                 if (optionsInfo.hasOwnProperty(optionType)) {
                    menuItems[optionType] = {'name': optionsInfo[optionType].name}
-                   console.log('optionsInfo:', optionsInfo);
 
                    // can we dynamically generate some options?
                    // should be used if the options depend on tileset info or other current state
@@ -125,7 +123,6 @@ export class SeriesListMenu extends ContextMenuContainer {
                                inlineOption.componentPickers[track.type]) {
 
                                optionSelectorSettings.handler = () => {
-                                    // console.log('pick color value', track.type);
                                     this.props.onConfigureTrack(track, inlineOption.componentPickers[track.type]);
                                     this.props.closeMenu();
                                };
@@ -144,9 +141,7 @@ export class SeriesListMenu extends ContextMenuContainer {
                    } else if (optionsInfo[optionType].componentPickers &&
                               optionsInfo[optionType].componentPickers[track.type]) {
                        // there's an option picker registered
-                       // console.log('setting handler');
                         menuItems[optionType].handler = () => {
-                            // console.log('pick color value', track.type);
                             this.props.onConfigureTrack(track, optionsInfo[optionType].componentPickers[track.type]);
                             this.props.closeMenu();
                         }

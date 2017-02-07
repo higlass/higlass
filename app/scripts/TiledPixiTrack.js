@@ -44,7 +44,6 @@ export class TiledPixiTrack extends PixiTrack {
             this.tilesetInfo = tilesetInfo[tilesetUid];
 
             this.maxZoom = +this.tilesetInfo['max_zoom'];
-            console.log('maxZoom:', this.maxZoom);
 
             if (this.options && this.options.maxZoom) {
                 if (this.options.maxZoom >= 0)
@@ -81,7 +80,6 @@ export class TiledPixiTrack extends PixiTrack {
             return;
 
         this.maxZoom = +this.tilesetInfo['max_zoom'];
-        console.log('maxZoom:', this.maxZoom);
 
         if (this.options && this.options.maxZoom) {
             if (this.options.maxZoom >= 0)

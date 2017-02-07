@@ -1497,8 +1497,6 @@ export class HiGlassComponent extends React.Component {
         let view = this.state.views[viewUid];
         let track = getTrackByUid(view.tracks, trackUid);
 
-        console.log('viewUid:', viewUid, trackUid);
-
         track.options = Object.assign(track.options, newOptions);
         this.setState({
             views: this.state.views
@@ -1561,8 +1559,6 @@ export class HiGlassComponent extends React.Component {
         views.forEach(v => {
             this.fillInMinWidths(v.tracks);
             viewsByUid[v.uid] = v;
-
-            console.log('v:', v);
 
             // if there's no y domain specified just use the x domain instead
             // effectively centers the view on the diagonal

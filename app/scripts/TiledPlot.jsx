@@ -61,6 +61,7 @@ export class TiledPlot extends React.Component {
             mouseOverOverlayUid: null,
             //trackOptions: null
             //trackOptions: trackOptions
+            forceUpdate: 0   // a random value that will be assigned by crucial functions to force an update
         }
 
         // these dimensions are computed in the render() function and depend
@@ -94,8 +95,6 @@ export class TiledPlot extends React.Component {
         let heightOffset = 0;
         let height = this.element.clientHeight - heightOffset;
         let width = this.element.clientWidth;
-
-        // console.log('heightOffset:', heightOffset, 'this.element.clientHeight', this.element.clientHeight);
 
             if (width > 0 && height > 0) {
 
@@ -176,8 +175,6 @@ export class TiledPlot extends React.Component {
         track.maxWidth = tilesetInfo.max_width;
         track.binsPerDimension = tilesetInfo.bins_per_dimension;
         track.maxZoom = tilesetInfo.max_zoom;
-
-        console.log('tilesestInfo', tilesetInfo)
 
         /*
         console.log('track:', track);
@@ -267,7 +264,8 @@ export class TiledPlot extends React.Component {
         }
 
         this.setState({
-            tracks: tracks
+            tracks: tracks,
+            forceUpdate: Math.random()
         });
     }
 
@@ -526,8 +524,19 @@ export class TiledPlot extends React.Component {
         let thisStateStr = JSON.stringify(this.state);
         let nextStateStr = JSON.stringify(nextState);
 
-        let toUpdate = !((thisPropsStr == nextPropsStr) && (thisStateStr == nextStateStr))
-        //console.log('toUpdate:', toUpdate);
+        let toUpdate = false;
+
+        if (thisPropsStr != nextPropsStr)
+            toUpdate = true;
+
+        if (toUpdate || thisStateStr != nextStateStr)
+            toUpdate = true;
+
+        /*
+        console.log('thisStateStr:', thisStateStr);
+        console.log('nextStateStr:', nextStateStr);
+        */
+
         toUpdate = toUpdate || (this.props.chooseTrackHandler != nextProps.chooseTrackHandler);
 
         return toUpdate;
