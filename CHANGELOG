@@ -5,6 +5,7 @@ v0.4.27
 - Adding zoom limit option to heatmap
 - Add current resolution to the track label
 - Fixed regression caused by "Fast redraw by tiling commit"
+- Hitting enter in the genome position search box initiates a search
 
 v0.4.26
 
