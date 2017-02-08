@@ -137,12 +137,14 @@ export class ViewHeader extends React.Component {
                     </ContextMenuContainer>
                 </PopupMenu>);
         }
-
-		return(
-                    <div className="multitrack-header">
+        /*
                         <span className="multitrack-header-id">
                         { this.props.viewUid.slice(0,2) }
                         </span>
+                        */
+
+		return(
+                    <div className="multitrack-header">
 
                         <svg
                             onClick={this.props.onAddView}

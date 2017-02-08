@@ -4,12 +4,12 @@ var localServer = "/api/v1";
 var usedServer = remoteServer;
 
 export const testViewConfig = 
-    {
+{
   "zoomFixed": false,
   "views": [
     {
       "layout": {
-        "w": 6,
+        "w": 3,
         "h": 12,
         "x": 0,
         "y": 0,
@@ -19,17 +19,31 @@ export const testViewConfig =
       },
       "uid": "aa",
       "initialYDomain": [
-          0,10000000
+        31860141.134457074,
+        48692513.298671976
       ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "initialXDomain": [
-          110000000,130000000
+        22200702.33065603,
+        54045730.749440975
       ],
       "tracks": {
         "bottom": [],
         "top": [
           {
-              'type': 'top-axis',
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
+            "type": "horizontal-line",
+            "options": {
+              "axisPositionHorizontal": "left",
+              "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile"
+            },
+            "height": 20,
+            "position": "top",
+            "uid": "Bcy2QmIMTTuDdCQ2fk6QUQ",
+            "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile",
+            "maxWidth": 4294967296,
+            "maxZoom": 22
           }
         ],
         "right": [],
@@ -68,23 +82,138 @@ export const testViewConfig =
         ],
         "left": [
           {
-            "name": "Gene Annotations (hg19)",
-            "maxWidth": 4294967296,
-            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uuid": "fhng_PTMRNekrUXp738MMQ",
+            "filetype": "hitile",
+            "datatype": "vector",
+            "private": false,
+            "name": "wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.hitile",
+            "coordSystem": "hg19",
+            "coordSystem2": "",
             "server": "http://higlass.io/api/v1",
-            "width": 60,
-            "maxZoom": 22,
-            "position": "left",
-            "type": "vertical-gene-annotations",
+            "tilesetUid": "fhng_PTMRNekrUXp738MMQ",
+            "serverUidKey": "http://higlass.io/api/v1/fhng_PTMRNekrUXp738MMQ",
+            "uid": "VvfVw1zWSsKwBfnhmt4bHQ",
+            "type": "vertical-line",
             "options": {
-              "name": "Gene Annotations (hg19)",
-              "labelPosition": "bottomRight"
+              "name": "wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.hitile",
+              "axisPositionVertical": "top"
             },
-            "uid": "Cr6OOBjFTGGtuqpRC7uTgQ"
+            "width": 20,
+            "height": 20,
+            "maxWidth": 4294967296,
+            "maxZoom": 22,
+            "position": "left"
           },
           {
-              'type': 'left-axis',
-              'width': 100
+            "uid": "IYBlYL3sSeue_6x5ioPp9A",
+            "width": 30,
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "position": "left",
+            "type": "vertical-chromosome-labels",
+            "options": {},
+            "name": "Chromosome Labels (hg19)"
+          }
+        ]
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "genomePositionSearchBoxVisible": true
+    },
+    {
+      "layout": {
+        "w": 3,
+        "h": 12,
+        "x": 3,
+        "y": 0,
+        "i": "YrCE0SDAQfC4qehWjEQIhQ",
+        "moved": false,
+        "static": false
+      },
+      "uid": "YrCE0SDAQfC4qehWjEQIhQ",
+      "initialYDomain": [
+        19034445.66657435,
+        93116775.68833795
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "initialXDomain": [
+        167696214.19671458,
+        307851973.6973484
+      ],
+      "tracks": {
+        "bottom": [],
+        "top": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
+            "type": "horizontal-line",
+            "options": {
+              "axisPositionHorizontal": "left",
+              "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile"
+            },
+            "height": 20,
+            "position": "top",
+            "uid": "Bcy2QmIMTTuDdCQ2fk6QUQ",
+            "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile",
+            "maxWidth": 4294967296,
+            "maxZoom": 22
+          }
+        ],
+        "right": [],
+        "center": [
+          {
+            "uid": "c1",
+            "height": 200,
+            "position": "center",
+            "type": "combined",
+            "options": {},
+            "contents": [
+              {
+                "uid": "eyeWh7MrSNCoSEI9b_7XXQ",
+                "maxWidth": 4194304000,
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "binsPerDimension": 256,
+                "server": "http://higlass.io/api/v1",
+                "maxZoom": 14,
+                "position": "center",
+                "type": "heatmap",
+                "options": {
+                  "maxZoom": null,
+                  "labelPosition": "topLeft",
+                  "colorRange": [
+                    "#FFFFFF",
+                    "#F8E71C",
+                    "#F5A623",
+                    "#D0021B"
+                  ],
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+                },
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+              }
+            ]
+          }
+        ],
+        "left": [
+          {
+            "uuid": "fhng_PTMRNekrUXp738MMQ",
+            "filetype": "hitile",
+            "datatype": "vector",
+            "private": false,
+            "name": "wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.hitile",
+            "coordSystem": "hg19",
+            "coordSystem2": "",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "fhng_PTMRNekrUXp738MMQ",
+            "serverUidKey": "http://higlass.io/api/v1/fhng_PTMRNekrUXp738MMQ",
+            "uid": "VvfVw1zWSsKwBfnhmt4bHQ",
+            "type": "vertical-line",
+            "options": {
+              "name": "wgEncodeSydhTfbsGm12878Pol2s2IggmusSig.hitile",
+              "axisPositionVertical": "top"
+            },
+            "width": 20,
+            "height": 20,
+            "maxWidth": 4294967296,
+            "maxZoom": 22,
+            "position": "left"
           },
           {
             "uid": "IYBlYL3sSeue_6x5ioPp9A",

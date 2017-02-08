@@ -1,6 +1,11 @@
 v0.4.29
 
 - Moved default heatmap information to lower right hand corner
+- Fixed a bug which distorted the view when initialized with an initial X
+scale and Y scale
+- Added white to red, white to green and white to blue scales
+- Added axes for the 1D tracks
+- Took the ID out of the view header
 
 v0.4.28
 

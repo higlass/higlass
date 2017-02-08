@@ -148,9 +148,6 @@ export class TrackRenderer extends React.Component {
             initialYDomain[0] == this.initialYDomain[0])
             */
             return;
-        
-
-        console.log("initialYDomain:", initialYDomain);
 
         // only update the initial domain
         this.initialXDomain = initialXDomain;
@@ -168,9 +165,6 @@ export class TrackRenderer extends React.Component {
             .domain([this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 - this.currentProps.centerWidth / 2,
                     this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2])
             .range([initialYDomain[0], initialYDomain[1]]);
-
-        console.log('drawableToDomainY.range()', this.drawableToDomainY.range());
-
     }
 
     componentWillReceiveProps(nextProps) {
@@ -248,8 +242,6 @@ export class TrackRenderer extends React.Component {
         // the domain of the visible (not drawable area)
         let visibleXDomain = [this.drawableToDomainX(0) - this.cumCenterXOffset, this.drawableToDomainX(this.initialWidth) - this.cumCenterXOffset]
         let visibleYDomain = [this.drawableToDomainY(0) - this.cumCenterYOffset, this.drawableToDomainY(this.initialHeight) - this.cumCenterYOffset]
-
-        console.log('visibleYDomain:', visibleYDomain);
 
         // [drawableToDomain(0), drawableToDomain(1)]: the domain of the visible area
         // if the screen has been resized, then the domain width should remain the same

@@ -19,6 +19,22 @@ let remoteServer = "52.45.229.11";
 export const usedServer = remoteServer;
 
 export const optionsInfo = { 
+    axisPositionHorizontal: {
+        name: "Axis Position",
+        inlineOptions: {
+            'left': { name: 'Left', value: 'left' },
+            'right': { name: 'Right', value: 'right' },
+            'hidden': { name: 'Hidden', value: null }
+        }
+    },
+    axisPositionVertical: {
+        name: "Axis Position",
+        inlineOptions: {
+            'left': { name: 'Top', value: 'top' },
+            'right': { name: 'Bottom', value: 'bottom' },
+            'hidden': { name: 'Hidden', value: null }
+        }
+    },
     labelPosition: {
         name: "Label Position",
         inlineOptions: {
@@ -50,6 +66,9 @@ export const optionsInfo = {
             'rainbow': { name: 'rainbow', value: ['rgba(128, 0, 256, 1.0)', 'rgba(0, 181, 236, 1.0)', 'rgba(129, 255, 180, 1.0)', 'rgba(256, 179, 96, 1.0)', 'rgba(256, 0, 0, 1.0)'] },
 
             'gray': { name: "greys", value: ['rgba(255,255,255,1)', 'rgba(0,0,0,1)'] },
+            'red': { name: "White to red", value: ['rgba(255,255,255,1)', 'rgba(255,0,0,1)'] },
+            'green': { name: "White to green", value: ['rgba(255,255,255,1)', 'rgba(0,255,0,1)'] },
+            'blue': { name: "White to blue", value: ['rgba(255,255,255,1)', 'rgba(0,0,255,1)'] },
             'custom': { 
                 name: "Custom...",
                 componentPickers: {
@@ -141,15 +160,22 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         thumbnail: svgHorizontalLineIcon,
-        availableOptions: [ 'labelPosition' ]
+        availableOptions: [ 'labelPosition', 'axisPositionHorizontal' ],
+        defaultOptions: {
+            axisPositionHorizontal: 'right'
+        }
     },
+    //
     {
         type: 'vertical-line',
         datatype: ['vector'],
         local: false,
         orientation: '1d-vertical',
         thumbnail: svgVerticalLineIcon,
-        availableOptions: [ 'labelPosition' ]
+        availableOptions: [ 'labelPosition', 'axisPositionVertical' ],
+        defaultOptions: {
+            axisPositionVertical: 'top'
+        }
     },
     {
         type: 'horizontal-1d-tiles',
