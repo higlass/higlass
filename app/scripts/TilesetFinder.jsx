@@ -184,6 +184,7 @@ export class TilesetFinder extends React.Component {
                           <FormControl componentClass="select" multiple
                           value={this.state.selectedUuid ? this.state.selectedUuid : ['x']}
                             onChange={this.handleSelect.bind(this)}
+                            style={{height: 300}}
                           >
                             {options}
                           </FormControl>

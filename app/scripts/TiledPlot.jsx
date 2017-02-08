@@ -362,7 +362,8 @@ export class TiledPlot extends React.Component {
         }
 
         this.setState({
-            tracks: tracks
+            tracks: tracks,
+            forceUpdate: Math.random()
         });
 
     }

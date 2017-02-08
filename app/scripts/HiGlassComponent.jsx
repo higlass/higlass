@@ -196,10 +196,14 @@ export class HiGlassComponent extends React.Component {
         let trackOptions = track.options ? track.options : {};
 
         if (tracksInfoByType[track.type].defaultOptions) {
-            for (let optionName in tracksInfoByType[track.type].defaultOptions) {
-                track.options[optionName] = track.options[optionName] ? 
-                    track.options[optionName] : JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions[optionName]));
+            if (!track.options)
+                track.options = JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions));
+            else {
+                for (let optionName in tracksInfoByType[track.type].defaultOptions) {
+                    track.options[optionName] = track.options[optionName] ? 
+                        track.options[optionName] : JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions[optionName]));
 
+                }
             }
         } else
             track.options = trackOptions;
