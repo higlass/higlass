@@ -92,7 +92,7 @@ export class TrackRenderer extends React.Component {
 
         this.setUpInitialScales(this.currentProps.initialXDomain,
                                 this.currentProps.initialYDomain);
-        this.setUpScales(this.currentProps);
+        this.setUpScales();
 
 
         // maintain a list of trackDefObjects which correspond to the input
@@ -129,6 +129,16 @@ export class TrackRenderer extends React.Component {
     }
 
     setUpInitialScales(initialXDomain, initialYDomain) {
+        // make sure the two scales are equally wide:
+        let xWidth = initialXDomain[1] - initialXDomain[0];
+        let yCenter = (initialYDomain[0] + initialYDomain[1]) / 2;
+        //initialYDomain = [yCenter - xWidth / 2, yCenter + xWidth / 2];
+
+        // stretch out the y-scale so that views aren't distorted (i.e. maintain
+        // a 1 to 1 ratio)
+        initialYDomain[0] = yCenter - xWidth / 2, 
+        initialYDomain[1] = yCenter + xWidth / 2;
+
         if (initialXDomain == this.initialXDomain &&
             initialYDomain == this.initialYDomain)
         /*
@@ -138,6 +148,9 @@ export class TrackRenderer extends React.Component {
             initialYDomain[0] == this.initialYDomain[0])
             */
             return;
+        
+
+        console.log("initialYDomain:", initialYDomain);
 
         // only update the initial domain
         this.initialXDomain = initialXDomain;
@@ -155,6 +168,8 @@ export class TrackRenderer extends React.Component {
             .domain([this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 - this.currentProps.centerWidth / 2,
                     this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2])
             .range([initialYDomain[0], initialYDomain[1]]);
+
+        console.log('drawableToDomainY.range()', this.drawableToDomainY.range());
 
     }
 
@@ -234,6 +249,8 @@ export class TrackRenderer extends React.Component {
         let visibleXDomain = [this.drawableToDomainX(0) - this.cumCenterXOffset, this.drawableToDomainX(this.initialWidth) - this.cumCenterXOffset]
         let visibleYDomain = [this.drawableToDomainY(0) - this.cumCenterYOffset, this.drawableToDomainY(this.initialHeight) - this.cumCenterYOffset]
 
+        console.log('visibleYDomain:', visibleYDomain);
+
         // [drawableToDomain(0), drawableToDomain(1)]: the domain of the visible area
         // if the screen has been resized, then the domain width should remain the same
 
@@ -244,6 +261,7 @@ export class TrackRenderer extends React.Component {
         this.yScale = scaleLinear()
                         .domain(visibleYDomain)
                         .range([0, this.initialHeight]);
+
 
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
