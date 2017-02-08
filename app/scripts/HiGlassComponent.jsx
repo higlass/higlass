@@ -161,10 +161,6 @@ export class HiGlassComponent extends React.Component {
         );
     }
 
-    componentDidUpdate() {
-      this.animate();
-    }
-
     handleWindowFocused() {
         /*
          * The window housing this view gained focus. That means the bounding boxes
@@ -230,6 +226,24 @@ export class HiGlassComponent extends React.Component {
     this.setState({
         mouseOverOverlayUid: null
     })
+  }
+
+  handleLockLocation(uid) {
+      /**
+       * We want to lock the zoom of this view to the zoom of another view.
+       *
+       * First we pick which other view we want to lock to.
+       *
+       * The we calculate the current zoom offset and center offset. The differences
+       * between the center of the two views will always remain the same, as will the
+       * different between the zoom levels.
+       */
+        // create a view chooser and remove the config view menu
+        this.setState({
+            chooseViewHandler: uid2 => this.handleLocationLockChosen(uid, uid2),
+            mouseOverOverlayUid: uid,
+            configMenuUid: null
+        });
   }
 
   handleLockZoom(uid) {
@@ -448,33 +462,20 @@ export class HiGlassComponent extends React.Component {
         });
   }
 
-  handleSyncCenter(uid) {
+  handleYankFunction(uid, yankFunction) {
         /**
-         * We want the center of this view to match the center of another
-         * view.
+         * We want to yank some attributes from another view.
          *
+         * This will create a view selection overlay and then call the selected
+         * provided function.
          */
 
         this.setState({
-            chooseViewHandler: uid2 => this.handleCenterSynced(uid, uid2),
+            chooseViewHandler: uid2 => yankFunction(uid, uid2),
             mouseOverOverlayUid: uid,
             configMenuUid: null
         });
-  }
 
-  handleYankZoom(uid) {
-        /**
-         * We want to match the zoom level of another view.
-         *
-         * That means synchronizing the center point and zoom level
-         * of the first view to the second view.
-         */
-
-        this.setState({
-            chooseViewHandler: uid2 => this.handleZoomYanked(uid, uid2),
-            mouseOverOverlayUid: uid,
-            configMenuUid: null
-        });
   }
 
   handleUnlockZoom(uid) {
@@ -540,6 +541,29 @@ export class HiGlassComponent extends React.Component {
 
   }
 
+  handleLocationLockChosen(uid1, uid2) {
+        /* Views uid1 and uid2 need to be locked so that they always maintain the current
+         * zoom and translation difference.
+         * @param uid1: The view that the lock was called from
+         * @param uid2: The view that the lock was called on (the view that was selected)
+         */
+
+      if (uid1 == uid2) {
+            this.setState({
+                chooseViewHandler: null
+            });
+
+          return;    // locking a view to itself is silly
+      }
+
+      this.addLocationLock(uid1, uid2);
+
+
+        this.setState({
+            chooseViewHandler: null
+        });
+  }
+
   handleZoomLockChosen(uid1, uid2) {
         /* Views uid1 and uid2 need to be locked so that they always maintain the current
          * zoom and translation difference.
@@ -588,7 +612,7 @@ export class HiGlassComponent extends React.Component {
       });
   }
 
-  handleCenterSynced(uid1, uid2) {
+  handleLocationYanked(uid1, uid2) {
         /**
          * Uid1 is copying the center of uid2
          */
@@ -605,7 +629,7 @@ export class HiGlassComponent extends React.Component {
 
 
         // set target center
-        this.setCenters[uid1](sourceCenterX,sourceCenterY, targetK, false);
+        this.setCenters[uid1](sourceCenterX,sourceCenterY, targetK, true);
 
 
         this.setState({
@@ -622,12 +646,15 @@ export class HiGlassComponent extends React.Component {
         let sourceXScale = this.xScales[uid2];
         let sourceYScale = this.yScales[uid2];
 
+        let targetXScale = this.xScales[uid1];
+        let targetYScale = this.yScales[uid1];
 
+        let [targetCenterX, targetCenterY, targetK] = scalesCenterAndK(targetXScale, targetYScale);
         let [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(sourceXScale, sourceYScale);
 
 
         // set target center
-        this.setCenters[uid1](sourceCenterX,sourceCenterY, sourceK, false);
+        this.setCenters[uid1](targetCenterX, targetCenterY, sourceK, true);
 
 
         this.setState({
@@ -1601,6 +1628,10 @@ export class HiGlassComponent extends React.Component {
 
     }
 
+    componentDidUpdate() {
+      this.animate();
+    }
+
     componentWillUnmount() {
         window.removeEventListener('focus', this.boundRefreshView);
     }
@@ -1736,10 +1767,19 @@ export class HiGlassComponent extends React.Component {
                          <ViewHeader 
                             onAddView={e=>this.handleAddView(view)}
                             onCloseView={e=>this.handleCloseView(view.uid)}
-                            onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
+                            onLockLocation={this.handleLockLocation.bind(this)}
                             onLockZoom={this.handleLockZoom.bind(this)}
-                            onYankZoom={this.handleYankZoom.bind(this)}
-                            onSyncCenter={this.handleSyncCenter.bind(this)}
+                            onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
+
+                            onYankLocation={uid => this.handleYankFunction(uid, this.handleLocationYanked.bind(this)) }
+                            onYankZoom={uid => this.handleYankFunction(uid, this.handleZoomYanked.bind(this)) }
+                            onYankZoomAndLocation={uid => this.handleYankFunction(uid, (a,b) => {
+                                console.log('here');
+                                    this.handleZoomYanked(a,b);
+                                    this.handleLocationYanked(a,b); 
+                                }) 
+                            }
+
                             onProjectViewport={this.handleProjectViewport.bind(this)}
                             onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
                             onExportViewsAsLink={this.handleExportViewsAsLink.bind(this)}
@@ -1767,17 +1807,17 @@ export class HiGlassComponent extends React.Component {
 
     let exportLinkModal = this.state.exportLinkModalOpen ?
         (<ExportLinkModal
+            height={this.height}
             linkLocation={this.state.exportLinkLocation}
             onDone={() => this.setState({exportLinkModalOpen: false})}
             width={this.width}
-            height={this.height}
          />)
         : null;
 
     return (
       <div
-        ref={(c) => this.topDiv = c}
         key={this.uid}
+        ref={(c) => this.topDiv = c}
         style={{position: "relative"}}
       >
 
@@ -1799,8 +1839,7 @@ export class HiGlassComponent extends React.Component {
                     background: 'yellow',
                     opacity: 0.00,
             }}
-        >
-        </div>
+        />
 
 
         <ResponsiveReactGridLayout

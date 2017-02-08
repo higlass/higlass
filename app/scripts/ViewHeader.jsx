@@ -112,9 +112,14 @@ export class ViewHeader extends React.Component {
                                     this.setState({configMenuUid: null}); //hide the menu
                                     this.props.onYankZoom(this.state.configMenuUid);
                                 }}
-                            onSyncCenter={e => {
+                            onYankLocation={e => {
                                 this.setState({configMenuUid: null}); //hide the menu
-                                this.props.onSyncCenter(this.state.configMenuUid);
+                                this.props.onYankLocation(this.state.configMenuUid);
+                            }}
+
+                            onYankZoomAndLocation={e => {
+                                this.setState({configMenuUid: null}); //hide the menu
+                                this.props.onYankZoomAndLocation(this.state.configMenuUid);
                             }}
 
                             onProjectViewport={e => {

@@ -39,20 +39,31 @@ export class ConfigViewMenu extends React.Component {
                     {'Take zoom from'}
                     </ContextMenuItem>
                     <ContextMenuItem
-                        onClick={e => this.props.onSyncCenter(e)}
+                        onClick={e => this.props.onYankLocation(e)}
                     >
-                    {'Take center from'}
+                    {'Take location from'}
                     </ContextMenuItem>
+
                     <ContextMenuItem
-                        onClick={e => this.props.onLockZoom(e)}
+                        onClick={e => this.props.onYankZoomAndLocation(e)}
                     >
-                        {"Lock zoom with"}
+                    {'Take zoom and location from'}
+                    </ContextMenuItem>
+
+                    <ContextMenuItem
+                        onClick={e => {
+                                this.props.onLockLocation(e);
+                                this.props.onLockZoom(e)
+                            }
+                        }
+                    >
+                        {"Lock zoom and location with"}
                     </ContextMenuItem>
 
                     <ContextMenuItem
                         onClick={e => this.props.onUnLockZoom(e)}
                     >
-                        {"Unlock zoom"}
+                        {"Unlock zoom and location"}
                     </ContextMenuItem>
 
                     <ContextMenuItem
@@ -78,4 +89,13 @@ export class ConfigViewMenu extends React.Component {
                 </div>
                 )
     }
+}
+
+ConfigViewMenu.propTypes = {
+    onLockLocation: React.PropTypes.func,
+    onLockZoom: React.PropTypes.func,
+    onYankZoom: React.PropTypes.func,
+    onYankLocation: React.PropTypes.func,
+    onYankZoomAndLocation: React.PropTypes.func,
+    onTogglePositionSearchBox: React.PropTypes.func,
 }
