@@ -26,8 +26,6 @@ export class AddTrackModal extends React.Component {
 
 
     handleSubmit() {
-        console.log('mainTileset:', this.state.mainTileset);
-
         this.props.onTrackChosen(this.state.mainTileset, 
                                  this.props.position,
                                  this.props.host);
@@ -51,8 +49,6 @@ export class AddTrackModal extends React.Component {
     handleTilesetPickerDoubleClick(tileset) {
         this.mainTilesetChanged(tileset);
 
-        console.log('this.state.mainTileset:', this.state.mainTileset);
-        
         this.props.onTrackChosen(this.state.mainTileset, this.props.position);
     }
 

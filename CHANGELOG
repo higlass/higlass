@@ -1,6 +1,22 @@
-v0.4.22
+v0.4.27
 
--
+- Changed config.js Chromosome Labels to Chromosome Axis
+- Fixed default option setting so that it doesn't override provided options
+- Adding zoom limit option to heatmap
+- Add current resolution to the track label
+- Fixed regression caused by "Fast redraw by tiling commit"
+- Hitting enter in the genome position search box initiates a search
+
+v0.4.26
+
+- Fixed close button
+
+v0.4.25
+
+- Fractional zoom lock
+- Faster config menu loading
+- Faster track addition by limiting the udpates of TiledPlot (using
+shouldComponentUpdate)
 
 v0.4.21
 

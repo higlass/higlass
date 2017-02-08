@@ -13,16 +13,17 @@ export const testViewConfig = {
   "views": [
     {
       "uid": "aa",
-      "layout": {"x": 0, "y": 0, "w": 3, "h": 8},
+      "layout": {"x": 0, "y": 0, "w": 6, "h": 8},
       "initialXDomain": [
             0,
-            3000000000
+            3200000000
       ],
       "autocompleteSource": remoteServer + "/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
+            /*
           {
             "type": "horizontal-gene-annotations",
             "height": 60,
@@ -33,6 +34,7 @@ export const testViewConfig = {
             "name": "Gene Annotations",
           }
             ,
+            */
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
@@ -42,6 +44,7 @@ export const testViewConfig = {
         ],
 
         "left": [
+            /*
           {
             "type": "vertical-gene-annotations",
             "width": 60,
@@ -51,6 +54,7 @@ export const testViewConfig = {
             "name": "Gene Annotations"
           }
             ,
+            */
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "vertical-chromosome-labels",
