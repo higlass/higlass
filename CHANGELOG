@@ -1,3 +1,7 @@
+v0.4.29
+
+- Moved default heatmap information to lower right hand corner
+
 v0.4.28
 
 - Fixed critical regression where track replacement wasn't working because
