@@ -174,6 +174,24 @@ export const tracksInfo = [
         availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom' ]
     },
     {
+        type: 'vertical-heatmap',
+        datatype: ['matrix'],
+        local: false,
+        orientation: '1d-vertical',
+        thumbnail: svg2DHeatmapIcon,
+        defaultOptions: {
+            labelPosition: 'bottomRight',
+            colorRange: [  
+                              "#FFFFFF",
+                              "#F8E71C",
+                              "rgba(245,166,35,1)",
+                              "rgba(0,0,0,1)"
+                           ],
+            maxZoom: null
+        },
+        availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom' ]
+    },
+    {
         type: 'horizontal-line',
         datatype: ['vector'],
         local: false,

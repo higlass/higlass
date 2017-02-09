@@ -19,14 +19,15 @@ export const testViewConfig =
       },
       "uid": "YrCE0SDAQfC4qehWjEQIhQ",
       "initialYDomain": [
-          0,100000000
+          100000000,200000000
       ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "initialXDomain": [
-          0, 100000000
+          100000000,200000000
       ],
       "tracks": {
-        "bottom": [],
+        "bottom": [
+        ],
         "top": [
             {'type': 'top-axis'},
               {
@@ -34,7 +35,7 @@ export const testViewConfig =
                 "server": "http://higlass.io/api/v1",
                 "position": "center",
                 "type": "horizontal-heatmap",
-                'height': 300,
+                'height': 120,
                 "options": {
                   "maxZoom": null,
                   "labelPosition": "bottomRight",
@@ -47,7 +48,8 @@ export const testViewConfig =
                 }
               }
         ],
-        "right": [],
+        "right": [
+        ],
         "center": [
               {
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
@@ -56,6 +58,7 @@ export const testViewConfig =
                 "type": "heatmap",
                 'height': 300,
                 "options": {
+                  "flipped": true,
                   "maxZoom": null,
                   "labelPosition": "bottomRight",
                   "colorRange": [
@@ -68,7 +71,24 @@ export const testViewConfig =
               }
         ],
         "left": [
-        {'type': 'left-axis'}
+        {'type': 'left-axis'},
+              {
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "server": "http://higlass.io/api/v1",
+                "position": "center",
+                "type": "vertical-heatmap",
+                'width': 200,
+                "options": {
+                  "maxZoom": null,
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "#FFFFFF",
+                    "#F8E71C",
+                    "#F5A623",
+                    "#D0021B"
+                  ],
+                }
+              }
         ]
       },
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",

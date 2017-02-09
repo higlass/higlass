@@ -57,14 +57,27 @@ export class HorizontalHeatmapTrack extends Tiled2DPixiTrack {
 
 
         //this.zoomLevel = 0;
+        let expandedXScale = this._xScale.copy();
 
-        this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale,
+        let xDomainWidth = this._xScale.domain()[1] - this._xScale.domain()[0];
+        let xRangeWidth = this._xScale.range()[1] - this._xScale.range()[0];
+
+        // we need to expand the domain of the X-scale because we are showing diagonal tiles.
+        // to make sure the view is covered up the entire height, we need to expand by viewHeight * sqrt(2)
+        // on each side
+        expandedXScale.domain([this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
+                               this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))]);
+
+        console.log('xDomainWidth:', xDomainWidth);
+        console.log('xRangeWidth:', xRangeWidth);
+
+        this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
                                                this.tilesetInfo.min_pos[0],
                                                this.tilesetInfo.max_pos[0],
                                                this.tilesetInfo.max_zoom,
                                                this.tilesetInfo.max_width);
 
-        this.yTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale,
+        this.yTiles =  tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
                                                this.tilesetInfo.min_pos[0],
                                                this.tilesetInfo.max_pos[0],
                                                this.tilesetInfo.max_zoom,
@@ -171,6 +184,7 @@ export class HorizontalHeatmapTrack extends Tiled2DPixiTrack {
             // as a sprite
             //console.log('tile:', tile);
             let graphics = tile.graphics;
+
             //let zeroedGraphics = tile.graphics();
 
             let canvas = this.tileDataToCanvas(pixData);
@@ -196,6 +210,7 @@ export class HorizontalHeatmapTrack extends Tiled2DPixiTrack {
 
             graphics.removeChildren();
             graphics.addChild(tile.sprite);
+
         }.bind(this));
 
         //console.log('pixData:', pixData);
@@ -234,8 +249,13 @@ export class HorizontalHeatmapTrack extends Tiled2DPixiTrack {
         this.pMain.position.x = tx;
         this.pMain.position.y = this.position[1] + this.dimensions[1]; //translateY;
 
+
         this.pMain.scale.x = k; //scaleX;
         this.pMain.scale.y = k; //scaleY;
 
+        if (this.options.flipped) {
+            this.pMain.scale.y = -k;
+            this.pMain.position.y = this.position[1];
+        }
     }
 }

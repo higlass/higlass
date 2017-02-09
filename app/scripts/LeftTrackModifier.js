@@ -105,10 +105,16 @@ export class LeftTrackModifier {
 
         let offset = this.originalTrack._xScale(0) - k * this.originalTrack._refXScale(0);
         this.originalTrack.pMobile.position.x = offset + this.originalTrack.position[0];
-        this.originalTrack.pMobile.position.y = this.originalTrack.position[1];
+        this.originalTrack.pMobile.position.y = this.originalTrack.position[1] + this.originalTrack.dimensions[1];
 
         this.originalTrack.pMobile.scale.x = k;
-        this.originalTrack.pMobile.scale.y = 1;
+        this.originalTrack.pMobile.scale.y = k;
+        
+        if (this.originalTrack.options.flipped) {
+            this.originalTrack.pMobile.scale.y = -k;
+            this.originalTrack.pMobile.position.y = this.originalTrack.position[1];
+        }
+    
     }
 
     refScalesChanged(refXScale, refYScale) {

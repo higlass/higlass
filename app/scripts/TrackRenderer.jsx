@@ -618,6 +618,13 @@ export class TrackRenderer extends React.Component {
                                                  handleTilesetInfoReceived,
                                                  track.options,
                                                  this.currentProps.onNewTilesLoaded);
+            case 'vertical-heatmap':
+                return new LeftTrackModifier(new HorizontalHeatmapTrack(this.currentProps.pixiStage,
+                                                 track.server,
+                                                 track.tilesetUid,
+                                                 handleTilesetInfoReceived,
+                                                 track.options,
+                                                 this.currentProps.onNewTilesLoaded));
             default:
                  console.log('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(

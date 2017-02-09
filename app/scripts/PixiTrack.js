@@ -24,19 +24,19 @@ export class PixiTrack extends Track {
 
         // for drawing the track label (often its name)
         this.pLabel = new PIXI.Graphics();
+        this.pMobile = new PIXI.Graphics();
 
         this.scene.addChild(this.pBase);
 
         this.pBase.addChild(this.pMain);
         this.pBase.addChild(this.pMask);
+        this.pBase.addChild(this.pMobile);
         this.pBase.addChild(this.pLabel);
 
         this.pBase.mask = this.pMask;
 
         // pMobile will be a graphics object that is moved around
         // tracks that wish to use it will replace this.pMain with it
-        this.pMobile = new PIXI.Graphics();
-        this.pBase.addChild(this.pMobile);
 
         this.options = Object.assign(this.options, options);
 
