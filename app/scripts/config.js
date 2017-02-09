@@ -125,7 +125,8 @@ export const tracksInfo = [
         local: true,
         orientation: '1d-vertical',
         name: 'Left Axis',
-        thumbnail: svgVertical1DAxisIcon
+        thumbnail: svgVertical1DAxisIcon,
+        minWidth: 100
     },
     {
         type: 'top-axis',
@@ -141,6 +142,24 @@ export const tracksInfo = [
         datatype: ['matrix'],
         local: false,
         orientation: '2d',
+        thumbnail: svg2DHeatmapIcon,
+        defaultOptions: {
+            labelPosition: 'bottomRight',
+            colorRange: [  
+                              "#FFFFFF",
+                              "#F8E71C",
+                              "rgba(245,166,35,1)",
+                              "rgba(0,0,0,1)"
+                           ],
+            maxZoom: null
+        },
+        availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom' ]
+    },
+    {
+        type: 'horizontal-heatmap',
+        datatype: ['matrix'],
+        local: false,
+        orientation: '1d-horizontal',
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
             labelPosition: 'bottomRight',

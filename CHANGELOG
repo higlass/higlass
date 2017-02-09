@@ -1,3 +1,9 @@
+v0.4.30
+
+- Added a minimum width to left-axis so that it doesn't only show the last two
+digits by default
+- 
+
 v0.4.29
 
 - Moved default heatmap information to lower right hand corner
