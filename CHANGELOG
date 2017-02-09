@@ -2,7 +2,7 @@ v0.4.30
 
 - Added a minimum width to left-axis so that it doesn't only show the last two
 digits by default
-- 
+* Added horizontal and vertical heatmaps
 
 v0.4.29
 
@@ -79,3 +79,5 @@ config.js
 - New chromosome 1D axis (for hg19)
 - New chromosome horizontal axis (for hg19)
 
+* larger change
+- minor change
