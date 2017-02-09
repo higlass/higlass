@@ -68,9 +68,6 @@ export class HorizontalHeatmapTrack extends Tiled2DPixiTrack {
         expandedXScale.domain([this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
                                this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))]);
 
-        console.log('xDomainWidth:', xDomainWidth);
-        console.log('xRangeWidth:', xRangeWidth);
-
         this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
                                                this.tilesetInfo.min_pos[0],
                                                this.tilesetInfo.max_pos[0],

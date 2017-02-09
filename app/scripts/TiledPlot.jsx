@@ -213,6 +213,8 @@ export class TiledPlot extends React.Component {
          */
         this.trackToReplace = null;
 
+        console.log('No track added');
+
         this.props.onNoTrackAdded();
 
         this.setState({
@@ -846,19 +848,16 @@ export class TiledPlot extends React.Component {
         }
 
         let addTrackModal = null;
-        if (this.state.addTrackPosition || this.props.addTrackPosition) {
-            let position = this.state.addTrackPosition ? 
-                this.state.addTrackPosition : this.props.addTrackPosition;
+        console.log('state.addTrackPosition:', this.state.addTrackPosition, 'props', this.props.addTrackPosition);
+
+        /*
+        //if (this.state.addTrackPosition || this.props.addTrackPosition) {
             addTrackModal = 
-                (<AddTrackModal
-                    onCancel={this.handleNoTrackAdded.bind(this)}
-                    onTrackChosen={this.handleTrackAdded.bind(this)}
-                    position={ position }
-                    host={this.state.addTrackHost}
-                    show={true}
-                    trackSourceServers={this.props.trackSourceServers}
-                />)
-        }
+                ()
+        //}
+        */
+        let position = this.state.addTrackPosition ? 
+            this.state.addTrackPosition : this.props.addTrackPosition;
 
         // track renderer needs to enclose all the other divs so that it
         // can catch the zoom events
@@ -869,7 +868,15 @@ export class TiledPlot extends React.Component {
             >
                 {trackRenderer}
                 {overlays}
-                {addTrackModal}
+
+                <AddTrackModal
+                    onCancel={this.handleNoTrackAdded.bind(this)}
+                    onTrackChosen={this.handleTrackAdded.bind(this)}
+                    position={ position }
+                    host={this.state.addTrackHost}
+                    show={this.state.addTrackPosition || this.props.addTrackPosition}
+                    trackSourceServers={this.props.trackSourceServers}
+                />
 
                 {configTrackMenu}
                 {closeTrackMenu}

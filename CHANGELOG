@@ -3,6 +3,7 @@ v0.4.30
 - Added a minimum width to left-axis so that it doesn't only show the last two
 digits by default
 * Added horizontal and vertical heatmaps
+- Styling changes for the Configure track controls
 
 v0.4.29
 
