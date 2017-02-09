@@ -67,7 +67,7 @@ export const testViewConfig =
                 "type": "heatmap",
                 "options": {
                   "maxZoom": null,
-                  "labelPosition": "topLeft",
+                  "labelPosition": "bottomRight",
                   "colorRange": [
                     "#FFFFFF",
                     "#F8E71C",
@@ -132,8 +132,7 @@ export const testViewConfig =
       },
       "uid": "YrCE0SDAQfC4qehWjEQIhQ",
       "initialYDomain": [
-        19034445.66657435,
-        93116775.68833795
+          100000000,300000000
       ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "initialXDomain": [
@@ -180,7 +179,7 @@ export const testViewConfig =
                 "type": "heatmap",
                 "options": {
                   "maxZoom": null,
-                  "labelPosition": "topLeft",
+                  "labelPosition": "bottomRight",
                   "colorRange": [
                     "#FFFFFF",
                     "#F8E71C",
