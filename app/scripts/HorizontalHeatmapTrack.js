@@ -250,7 +250,7 @@ export class HorizontalHeatmapTrack extends Tiled2DPixiTrack {
         this.pMain.scale.x = k; //scaleX;
         this.pMain.scale.y = k; //scaleY;
 
-        if (this.options.flipped) {
+        if (this.options.oneDHeatmapFlipped) {
             this.pMain.scale.y = -k;
             this.pMain.position.y = this.position[1];
         }

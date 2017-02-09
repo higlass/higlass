@@ -4,6 +4,9 @@ v0.4.30
 digits by default
 * Added horizontal and vertical heatmaps
 - Styling changes for the Configure track controls
+- Fixed the bug with AddTrackMenu cancel button turning black by properly
+increasing the number of visible tilesets in TilesetFinder
+- Added options to allow flipping horizontal and vertical charts
 
 v0.4.29
 

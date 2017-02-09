@@ -19,6 +19,13 @@ let remoteServer = "52.45.229.11";
 export const usedServer = remoteServer;
 
 export const optionsInfo = { 
+    oneDHeatmapFlipped: {
+        name: 'Flip Heatmap',
+        inlineOptions: {
+            'yes': { name: 'Yes', value: 'yes' },
+            'no': { name: 'No', value: null }
+        }
+    },
     axisPositionHorizontal: {
         name: "Axis Position",
         inlineOptions: {
@@ -159,6 +166,7 @@ export const tracksInfo = [
         type: 'horizontal-heatmap',
         datatype: ['matrix'],
         local: false,
+        minHeight: 50,
         orientation: '1d-horizontal',
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
@@ -171,12 +179,13 @@ export const tracksInfo = [
                            ],
             maxZoom: null
         },
-        availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom' ]
+        availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped' ]
     },
     {
         type: 'vertical-heatmap',
         datatype: ['matrix'],
         local: false,
+        minWidth: 50,
         orientation: '1d-vertical',
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
@@ -189,7 +198,7 @@ export const tracksInfo = [
                            ],
             maxZoom: null
         },
-        availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom' ]
+        availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped' ]
     },
     {
         type: 'horizontal-line',

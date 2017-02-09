@@ -110,7 +110,7 @@ export class LeftTrackModifier {
         this.originalTrack.pMobile.scale.x = k;
         this.originalTrack.pMobile.scale.y = k;
         
-        if (this.originalTrack.options.flipped) {
+        if (this.originalTrack.options.oneDHeatmapFlipped) {
             this.originalTrack.pMobile.scale.y = -k;
             this.originalTrack.pMobile.position.y = this.originalTrack.position[1];
         }
