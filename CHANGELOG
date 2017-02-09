@@ -6,6 +6,7 @@ scale and Y scale
 - Added white to red, white to green and white to blue scales
 - Added axes for the 1D tracks
 - Took the ID out of the view header
+- Added a white border behind the track controls
 
 v0.4.28
 
