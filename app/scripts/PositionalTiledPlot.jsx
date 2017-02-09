@@ -76,6 +76,9 @@ class TrackArea extends React.Component {
                                 "right": "3px",
                                 'top': '3px',
                                 'pointer-events': 'none',
+                                'border-radius': 3,
+                                'padding-left': 3,
+                                'padding-right': 3
                             }}
                         >
 
@@ -331,7 +334,8 @@ class VerticalTrack extends MoveableTrack {
                                 'top': '3px',
                                 'pointer-events': 'none',
                                 'padding-left': 5,
-                                'padding-right': 5
+                                'padding-right': 5,
+                                'border-radius': 3
                             }}
                         >
                         <svg
