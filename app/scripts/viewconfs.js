@@ -30,6 +30,7 @@ export const testViewConfig =
       "tracks": {
         "bottom": [],
         "top": [
+            {'type': 'top-axis'},
           {
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
@@ -81,6 +82,7 @@ export const testViewConfig =
           }
         ],
         "left": [
+            {'type': 'left-axis', 'width': 100},
           {
             "uuid": "fhng_PTMRNekrUXp738MMQ",
             "filetype": "hitile",
@@ -141,6 +143,7 @@ export const testViewConfig =
       "tracks": {
         "bottom": [],
         "top": [
+            {'type': 'top-axis'},
           {
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
@@ -192,6 +195,7 @@ export const testViewConfig =
           }
         ],
         "left": [
+            {'type': 'left-axis', 'width': 100},
           {
             "uuid": "fhng_PTMRNekrUXp738MMQ",
             "filetype": "hitile",

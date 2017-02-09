@@ -58,6 +58,10 @@ export class HiGlassComponent extends React.Component {
 
         // zoom locks between views
         this.zoomLocks = {};
+
+        // location locks between views
+        this.locationLocks = {};
+
         this.setCenters = {};
 
         this.plusImg = {};
@@ -246,36 +250,6 @@ export class HiGlassComponent extends React.Component {
         });
   }
 
-  handleLockZoom(uid) {
-      /**
-       * We want to lock the zoom of this view to the zoom of another view.
-       *
-       * First we pick which other view we want to lock to.
-       *
-       * The we calculate the current zoom offset and center offset. The differences
-       * between the center of the two views will always remain the same, as will the
-       * different between the zoom levels.
-       */
-      if (this.zoomLocks[uid]) {
-          // this view already has a zoom lock, we we need to turn it off
-          this.handleUnlockZoom(uid);
-
-          this.setState({
-            mouseOverOverlayUid: uid,
-            configMenuUid: null
-          });
-
-          return;
-      }
-
-        // create a view chooser and remove the config view menu
-        this.setState({
-            chooseViewHandler: uid2 => this.handleZoomLockChosen(uid, uid2),
-            mouseOverOverlayUid: uid,
-            configMenuUid: null
-        });
-  }
-
   notifyDragChangedListeners(dragging) {
       // iterate over viewId
       dictValues(this.draggingChangedListeners).forEach(l => {
@@ -392,22 +366,28 @@ export class HiGlassComponent extends React.Component {
              let key = lockGroupItems[i][0];
              let value = lockGroupItems[i][1];
 
-
               if (key == uid)  // no need to notify oneself that the scales have changed
                   continue
+
+              let [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key], 
+                                                                    this.yScales[key]);
 
              let dx = value[0] - lockGroup[uid][0];
              let dy = value[1] - lockGroup[uid][1];
              let rk = value[2] / lockGroup[uid][2];
 
-              let newCenterX = centerX + dx;
-              let newCenterY = centerY + dy;
+              //let newCenterX = centerX + dx;
+              //let newCenterY = centerY + dy;
               let newK = k * rk;
 
                 if (!this.setCenters[key])
                     continue;
 
-              let [newXScale, newYScale] = this.setCenters[key](newCenterX, newCenterY, newK, false);
+              // the key here is the target of zoom lock, so we want to keep its
+              // x center and y center unchanged
+              let [newXScale, newYScale] = this.setCenters[key](keyCenterX, 
+                                                                keyCenterY, 
+                                                                newK, false);
 
               // because the setCenters call above has a 'false' notify, the new scales won't
               // be propagated from there, so we have to store them here
@@ -422,29 +402,54 @@ export class HiGlassComponent extends React.Component {
                 });
               }
           }
+      }
+
+      if (this.locationLocks[uid]) {
+          // this view is locked to another
+          let lockGroup = this.locationLocks[uid];
+          let lockGroupItems = dictItems(lockGroup);
 
 
+          let [centerX, centerY, k] = scalesCenterAndK(this.xScales[uid], this.yScales[uid]);
 
-          /*
-          if (uid == zoomLock.source) {
-              let newCenterX = centerX + zoomLock.centerDiff[0];
-              let newCenterY = centerY + zoomLock.centerDiff[1];
 
-              let newK = k * zoomLock.zoomRatio;
+          for (let i = 0; i < lockGroupItems.length; i++) {
+             let key = lockGroupItems[i][0];
+             let value = lockGroupItems[i][1];
 
-              // set a new center, but don't notify of a change to prevent
-              // circular notifications
-              this.setCenters[zoomLock.target](newCenterX, newCenterY, newK, false);
-          } else {
-              let newCenterX = centerX - zoomLock.centerDiff[0];
-              let newCenterY = centerY - zoomLock.centerDiff[1];
+              let [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key], 
+                                                                    this.yScales[key]);
 
-              let newK = k / zoomLock.zoomRatio;
-              // set a new center, but don't notify of a change to prevent
-              // circular notifications
-              this.setCenters[zoomLock.source](newCenterX, newCenterY, newK, false);
+              if (key == uid)  // no need to notify oneself that the scales have changed
+                  continue
+
+             let dx = value[0] - lockGroup[uid][0];
+             let dy = value[1] - lockGroup[uid][1];
+
+
+              let newCenterX = centerX + dx;
+              let newCenterY = centerY + dy;
+
+                if (!this.setCenters[key])
+                    continue;
+
+              let [newXScale, newYScale] = this.setCenters[key](newCenterX, 
+                                                                newCenterY, 
+                                                                keyK, false);
+
+              // because the setCenters call above has a 'false' notify, the new scales won't
+              // be propagated from there, so we have to store them here
+              this.xScales[key] = newXScale;
+              this.yScales[key] = newYScale;
+
+              // notify the listeners of all locked views that the scales of
+              // this view have changed
+              if (this.scalesChangedListeners.hasOwnProperty(key)) {
+                dictValues(this.scalesChangedListeners[key]).forEach(x => {
+                    x(newXScale, newYScale);
+                });
+              }
           }
-          */
       }
 
       this.animate();
@@ -478,7 +483,7 @@ export class HiGlassComponent extends React.Component {
 
   }
 
-  handleUnlockZoom(uid) {
+  handleUnlock(uid, lockGroups) {
       /**
        * We want to unlock uid from the zoom group that it's in.
        *
@@ -486,49 +491,49 @@ export class HiGlassComponent extends React.Component {
        */
 
     // if this function is being called, lockGroup has to exist
-    let lockGroup = this.zoomLocks[uid];
+    let lockGroup = lockGroups[uid];
     let lockGroupKeys = dictKeys(lockGroup);
 
     if (lockGroupKeys.length == 2) {
         // there's only two items in this lock group so we need to
         // remove them both (no point in having one view locked to itself)
-        delete this.zoomLocks[lockGroupKeys[0]];
-        delete this.zoomLocks[lockGroupKeys[1]];
+        delete lockGroups[lockGroupKeys[0]];
+        delete lockGroups[lockGroupKeys[1]];
 
         return;
     } else {
         // delete this view from the zoomLockGroup
-        if (this.zoomLocks[uid])
-            if (this.zoomLocks[uid][uid])
-                delete this.zoomLocks[uid][uid];
+        if (lockGroups[uid])
+            if (lockGroups[uid][uid])
+                delete lockGroups[uid][uid];
 
         // remove the handler
-        if (this.zoomLocks[uid])
-            delete this.zoomLocks[uid];
+        if (lockGroups[uid])
+            delete lockGroups[uid];
     }
   }
 
-  addZoomLock(uid1, uid2) {
+  addLock(uid1, uid2, lockGroups) {
       let group1Members = [];
       let group2Members = [];
 
-      if (!this.zoomLocks[uid1]) {
+      if (!lockGroups[uid1]) {
           // view1 isn't already in a group
           group1Members = [[uid1, scalesCenterAndK(this.xScales[uid1], this.yScales[uid1])]];
       } else {
           // view1 is already in a group
-          group1Members = dictItems(this.zoomLocks[uid1]).map(x =>
+          group1Members = dictItems(lockGroups[uid1]).map(x =>
             // x is [uid, [centerX, centerY, k]]
             [x[0], scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])]
           )
       }
 
-      if (!this.zoomLocks[uid2]) {
+      if (!lockGroups[uid2]) {
           // view1 isn't already in a group
           group2Members = [[uid2, scalesCenterAndK(this.xScales[uid2], this.yScales[uid2])]];
       } else {
           // view2 is already in a group
-          group2Members = dictItems(this.zoomLocks[uid2]).map(x =>
+          group2Members = dictItems(lockGroups[uid2]).map(x =>
             // x is [uid, [centerX, centerY, k]]
             [x[0], scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])]
           )
@@ -537,7 +542,7 @@ export class HiGlassComponent extends React.Component {
       let allMembers = group1Members.concat(group2Members);
       let groupDict = dictFromTuples(allMembers);
 
-      allMembers.forEach(m => { this.zoomLocks[m[0]] = groupDict });
+      allMembers.forEach(m => { lockGroups[m[0]] = groupDict });
 
   }
 
@@ -547,6 +552,9 @@ export class HiGlassComponent extends React.Component {
          * @param uid1: The view that the lock was called from
          * @param uid2: The view that the lock was called on (the view that was selected)
          */
+     console.log('location lock chosen');
+        console.log('sck1', scalesCenterAndK(this.xScales[uid1], this.yScales[uid1]))
+        console.log('sck2', scalesCenterAndK(this.xScales[uid2], this.yScales[uid2]))
 
       if (uid1 == uid2) {
             this.setState({
@@ -556,7 +564,7 @@ export class HiGlassComponent extends React.Component {
           return;    // locking a view to itself is silly
       }
 
-      this.addLocationLock(uid1, uid2);
+      this.addLock(uid1, uid2, this.locationLocks);
 
 
         this.setState({
@@ -570,6 +578,7 @@ export class HiGlassComponent extends React.Component {
          * @param uid1: The view that the lock was called from
          * @param uid2: The view that the lock was called on (the view that was selected)
          */
+        console.log('zoom lock chosen');
 
       if (uid1 == uid2) {
             this.setState({
@@ -579,7 +588,7 @@ export class HiGlassComponent extends React.Component {
           return;    // locking a view to itself is silly
       }
 
-      this.addZoomLock(uid1, uid2);
+      this.addLock(uid1, uid2, this.zoomLocks);
 
 
         this.setState({
@@ -641,6 +650,7 @@ export class HiGlassComponent extends React.Component {
         /**
          * Uid1 yanked the zoom of uid2, now  make sure that they're synchronized.
          */
+        console.log('zoom yanked');
 
         // where we're taking the zoom from
         let sourceXScale = this.xScales[uid2];
@@ -1038,7 +1048,7 @@ export class HiGlassComponent extends React.Component {
       }
 
       // if this view was zoom locked to another, we need to unlock it
-      this.handleUnlockZoom(uid);
+      this.handleUnlock(uid, this.zoomLocks);
       delete this.state.views[uid];
 
       let viewsByUid = this.removeInvalidTracks(this.state.views);
@@ -1231,17 +1241,28 @@ export class HiGlassComponent extends React.Component {
                 locked = fromView in this.zoomLocks[viewUid];
 
             if (locked)
-                this.handleUnlockZoom(viewUid);
+                this.handleUnlock(viewUid, this.zoomLocks);
 
             this.handleScalesChanged(fromView, tXScale, tYScale, true);
 
             if (locked)
-                this.addZoomLock(viewUid, fromView);
+                this.addLock(viewUid, fromView, this.zoomLocks);
 
           }
       }
 
       return;
+  }
+
+  deserializeLocationLocks(viewConfig) {
+    this.locationLocks = {};
+
+    if (viewConfig.locationLocks) {
+        for (let viewUid of dictKeys(viewConfig.locationLocks.locksByViewUid)) {
+            this.locationLocks[viewUid] = viewConfig.locationLocks
+                .locationLocksDict[viewConfig.locationLocks.locksByViewUid[viewUid]];
+        }
+    }
   }
 
   deserializeZoomLocks(viewConfig) {
@@ -1255,35 +1276,35 @@ export class HiGlassComponent extends React.Component {
     }
   }
 
-  serializeZoomLocks(zoomLocks) {
-      let zoomLocksDict = {};
+  serializeLocks(locks) {
+      let locksDict = {};
       let locksByViewUid = {};
 
-    for (let viewUid of dictKeys(zoomLocks)) {
-        if (zoomLocks[viewUid].hasOwnProperty('uid')
-                && zoomLocksDict.hasOwnProperty(zoomLocks[viewUid].uid)) {
-            // we've already encountered this zoom lock so no need to do anything
+    for (let viewUid of dictKeys(locks)) {
+        if (locks[viewUid].hasOwnProperty('uid')
+                && locksDict.hasOwnProperty(locks[viewUid].uid)) {
+            // we've already encountered this location lock so no need to do anything
         } else {
-            // otherwise, assign this zoomLock its own uid
-            let zoomLockUid = slugid.nice();
-            zoomLocks[viewUid].uid = zoomLockUid;
+            // otherwise, assign this locationLock its own uid
+            let lockUid = slugid.nice();
+            locks[viewUid].uid = lockUid;
 
-            // make a note that we've seen this zoomLock
-            zoomLocksDict[zoomLockUid] =  zoomLocks[viewUid];
+            // make a note that we've seen this lock
+            locksDict[lockUid] =  locks[viewUid];
         }
 
         // note that this view has a reference to this lock
-        locksByViewUid[viewUid] = zoomLocks[viewUid].uid;
+        locksByViewUid[viewUid] = locks[viewUid].uid;
     }
 
     // remove the uids we just added
-    for (let viewUid of dictKeys(zoomLocks)) {
-        if (zoomLocks[viewUid].hasOwnProperty('uid') )
-            delete zoomLocks[viewUid].uid;
+    for (let viewUid of dictKeys(locks)) {
+        if (locks[viewUid].hasOwnProperty('uid') )
+            delete locks[viewUid].uid;
 
     }
 
-    return {'locksByViewUid': locksByViewUid, 'zoomLocksDict': zoomLocksDict}
+    return {'locksByViewUid': locksByViewUid, 'locksDict': locksDict}
   }
 
   getViewsAsString() {
@@ -1299,7 +1320,8 @@ export class HiGlassComponent extends React.Component {
         return newView;
     });
 
-    newJson.zoomLocks = this.serializeZoomLocks(this.zoomLocks);
+    newJson.zoomLocks = this.serializeLocks(this.zoomLocks);
+    newJson.locationLocks = this.serializeLocks(this.locationLocks);
 
     let data = JSON.stringify(newJson, null, 2);
     return data;
@@ -1599,7 +1621,9 @@ export class HiGlassComponent extends React.Component {
 
             // Add names to all the tracks
             let looseTracks = positionedTracksToAllTracks(v.tracks);
+
             this.deserializeZoomLocks(viewConfig);
+            this.deserializeLocationLocks(viewConfig);
 
             // give tracks their default names (e.g. 'type': 'top-axis'
             // will get a name of 'Top Axis'
@@ -1767,8 +1791,35 @@ export class HiGlassComponent extends React.Component {
                          <ViewHeader 
                             onAddView={e=>this.handleAddView(view)}
                             onCloseView={e=>this.handleCloseView(view.uid)}
-                            onLockLocation={this.handleLockLocation.bind(this)}
-                            onLockZoom={this.handleLockZoom.bind(this)}
+
+                            onLockZoom={uid => 
+                                this.handleYankFunction(uid, this.handleZoomLockChosen.bind(this))}
+                            onLockLocation={uid => 
+                                this.handleYankFunction(uid, this.handleLocationLockChosen.bind(this))}
+                            onLockZoomAndLocation={uid => this.handleYankFunction(uid, (a,b) => {
+                                this.handleZoomLockChosen(a,b);
+                                this.handleLocationLockChosen(a,b);
+                            })}
+
+                            onUnlockZoom={uid => { this.handleUnlock(uid, this.zoomLocks) }}
+                            onUnlockLocation={uid => { this.handleUnlock(uid, this.locationLocks) }}
+                            onUnlockZoomAndLocation={uid => {
+                                this.handleUnlock(uid, this.zoomLocks);
+                                this.handleUnlock(uid, this.locationLocks);
+                            }}
+
+                            onTakeAndLockZoomAndLocation={uid => {
+                                    this.handleYankFunction(uid, (a,b) => {
+
+                                        this.handleZoomYanked(a,b);
+                                        this.handleLocationYanked(a,b); 
+                                        this.handleZoomLockChosen(a,b);
+                                        this.handleLocationLockChosen(a,b);
+                                    });
+                                }
+                            }
+
+                                                
                             onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
 
                             onYankLocation={uid => this.handleYankFunction(uid, this.handleLocationYanked.bind(this)) }

@@ -18,8 +18,6 @@ export class ConfigViewMenu extends React.Component {
         //super.componentDidMount();
     }
 
-
-
     render() {
         let lockZoomText = "Lock zoom with";
 
@@ -50,21 +48,54 @@ export class ConfigViewMenu extends React.Component {
                     {'Take zoom and location from'}
                     </ContextMenuItem>
 
+                    <hr />
+
                     <ContextMenuItem
-                        onClick={e => {
-                                this.props.onLockLocation(e);
-                                this.props.onLockZoom(e)
-                            }
-                        }
+                        onClick={this.props.onLockZoom}
                     >
-                        {"Lock zoom and location with"}
+                        {"Lock zoom with"}
                     </ContextMenuItem>
 
                     <ContextMenuItem
-                        onClick={e => this.props.onUnLockZoom(e)}
+                        onClick={this.props.onLockLocation}
+                    >
+                        {"Lock location with"}
+                    </ContextMenuItem>
+
+                    <ContextMenuItem
+                        onClick={this.props.onLockZoomAndLocation}
+                    >
+                        {"Lock zoom and location with"}
+                    </ContextMenuItem>
+                    <hr />
+
+                    <ContextMenuItem
+                        onClick={this.props.onTakeAndLockZoomAndLocation}
+                    >
+                        {"Take and lock zoom and location with"}
+                    </ContextMenuItem>
+
+                    <hr />
+
+                    <ContextMenuItem
+                        onClick={e => this.props.onUnlockZoom(e)}
+                    >
+                        {"Unlock zoom"}
+                    </ContextMenuItem>
+
+                    <ContextMenuItem
+                        onClick={e => this.props.onUnlockLocation(e)}
+                    >
+                        {"Unlock location"}
+                    </ContextMenuItem>
+
+                    <ContextMenuItem
+                        onClick={e => this.props.onUnlockZoomAndLocation(e)}
                     >
                         {"Unlock zoom and location"}
                     </ContextMenuItem>
+
+                    <hr />
 
                     <ContextMenuItem
                         onClick={e => this.props.onProjectViewport(e)}

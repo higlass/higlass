@@ -107,6 +107,34 @@ export class ViewHeader extends React.Component {
                                 this.setState({configMenuUid: null});    // hide the menu
                                 this.props.onLockZoom(this.state.configMenuUid);
                             }}
+                            onLockLocation={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onLockLocation(this.state.configMenuUid);
+                            }}
+                            onLockZoomAndLocation={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onLockZoomAndLocation(this.state.configMenuUid);
+                            }}
+
+                            onTakeAndLockZoomAndLocation={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onTakeAndLockZoomAndLocation(this.state.configMenuUid);
+                            }}
+
+                            onUnlockZoom={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onUnlockZoom(this.state.configMenuUid);
+                            }}
+                            onUnlockLocation={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onUnlockLocation(this.state.configMenuUid);
+                            }}
+                            onUnlockZoomAndLocation={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onUnlockZoomAndLocation(this.state.configMenuUid);
+                            }}
+
+
                             onYankZoom={e => 
                                 {
                                     this.setState({configMenuUid: null}); //hide the menu
