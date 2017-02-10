@@ -37,8 +37,6 @@ export class TiledPlot extends React.Component {
 
         this.trackToReplace = null;
 
-        // console.log('this.props.tracks.center[0]:', this.props.tracks.center[0]);
-
         /*
         let trackOptions = this.props.editable ?
                 {'track': this.props.tracks.center[0].contents[0],
@@ -212,8 +210,6 @@ export class TiledPlot extends React.Component {
          * just close it and do nothin
          */
         this.trackToReplace = null;
-
-        console.log('No track added');
 
         this.props.onNoTrackAdded();
 
@@ -522,8 +518,6 @@ export class TiledPlot extends React.Component {
         let thisPropsStr = this.updatablePropsToString(this.props);
         let nextPropsStr = this.updatablePropsToString(nextProps);
 
-        //console.log('thisPropsStr:', thisPropsStr);
-
         let thisStateStr = JSON.stringify(this.state);
         let nextStateStr = JSON.stringify(nextState);
 
@@ -534,11 +528,6 @@ export class TiledPlot extends React.Component {
 
         if (toUpdate || thisStateStr != nextStateStr)
             toUpdate = true;
-
-        /*
-        console.log('thisStateStr:', thisStateStr);
-        console.log('nextStateStr:', nextStateStr);
-        */
 
         toUpdate = toUpdate || (this.props.chooseTrackHandler != nextProps.chooseTrackHandler);
 
@@ -824,14 +813,11 @@ export class TiledPlot extends React.Component {
             let configComponent = this.state.trackOptions.configComponent;
             let track = this.state.trackOptions.track;
 
-            // console.log('this.xScale:', this.xScale);
-
             trackOptionsElement = React.createElement(configComponent,
                     {track: track,
                         xScale: this.xScale,
                         yScale: this.yScale,
                         onCancel:  () =>  {
-                            // console.log('cancel clicked');
                             this.setState({
                                     trackOptions: null
                                 }
@@ -848,16 +834,19 @@ export class TiledPlot extends React.Component {
         }
 
         let addTrackModal = null;
-        console.log('state.addTrackPosition:', this.state.addTrackPosition, 'props', this.props.addTrackPosition);
-
-        /*
-        //if (this.state.addTrackPosition || this.props.addTrackPosition) {
-            addTrackModal = 
-                ()
-        //}
-        */
         let position = this.state.addTrackPosition ? 
             this.state.addTrackPosition : this.props.addTrackPosition;
+        if (this.state.addTrackPosition || this.props.addTrackPosition) {
+            addTrackModal = 
+                (<AddTrackModal
+                    onCancel={this.handleNoTrackAdded.bind(this)}
+                    onTrackChosen={this.handleTrackAdded.bind(this)}
+                    position={ position }
+                    host={this.state.addTrackHost}
+                    show={this.state.addTrackPosition || this.props.addTrackPosition}
+                    trackSourceServers={this.props.trackSourceServers}
+                />)
+        }
 
         // track renderer needs to enclose all the other divs so that it
         // can catch the zoom events
@@ -869,15 +858,8 @@ export class TiledPlot extends React.Component {
                 {trackRenderer}
                 {overlays}
 
-                <AddTrackModal
-                    onCancel={this.handleNoTrackAdded.bind(this)}
-                    onTrackChosen={this.handleTrackAdded.bind(this)}
-                    position={ position }
-                    host={this.state.addTrackHost}
-                    show={this.state.addTrackPosition || this.props.addTrackPosition}
-                    trackSourceServers={this.props.trackSourceServers}
-                />
 
+                {addTrackModal}
                 {configTrackMenu}
                 {closeTrackMenu}
                 {trackOptionsElement}

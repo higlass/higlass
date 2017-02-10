@@ -18,8 +18,6 @@ export class AddTrackModal extends React.Component {
             mainTileset: {datatype: 'none'},
             normalizeTilesetUuid: null
         }
-
-        console.log('addtrackmodal');
     }
 
     componentDidMount() {
@@ -44,7 +42,6 @@ export class AddTrackModal extends React.Component {
     mainTilesetChanged(mainTileset) {
         mainTileset.type = this.selectedPlotType;
 
-        console.log('tileset changed');
         this.setState({
             mainTileset: mainTileset
         });
@@ -86,7 +83,6 @@ export class AddTrackModal extends React.Component {
 
         // only get options if there's a dataset selected
         let seriesOptions = null;
-        console.log('rendering...', this.props.show);
 
         if (this.state.mainTileset) {
 
