@@ -7,6 +7,8 @@ digits by default
 - Fixed the bug with AddTrackMenu cancel button turning black by properly
 increasing the number of visible tilesets in TilesetFinder
 - Added options to allow flipping horizontal and vertical charts
+- Fixed NaN prefix bug
+- Fixed invalid negative value attributes for <rect> bug
 
 v0.4.29
 
