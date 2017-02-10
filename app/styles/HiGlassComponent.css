@@ -7,8 +7,17 @@
   font-size: 12px;
   line-height: 20px;
   vertical-align: middle;
-  border: 1px solid #ccc;
+  border: 0;
   border-radius: 3px;
+  background: #e5e5e5;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.multitrack-header:active,
+.multitrack-header:focus,
+.multitrack-header:hover {
+  color: #000;
+  background: #bbb;
 }
 
 .multitrack-header-id {
