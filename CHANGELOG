@@ -1,3 +1,8 @@
+v0.4.31 
+
+- Fixed regression and compatibility change with new zoom and location locking
+- Fixed regression in the selection dragging
+
 v0.4.30
 
 - Added a minimum width to left-axis so that it doesn't only show the last two

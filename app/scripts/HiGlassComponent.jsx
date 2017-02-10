@@ -348,7 +348,6 @@ export class HiGlassComponent extends React.Component {
           if (this.scalesChangedListeners.hasOwnProperty(uid)) {
             dictValues(this.scalesChangedListeners[uid]).forEach(x => {
                 x(xScale, yScale);
-
             });
           }
       }
@@ -365,6 +364,9 @@ export class HiGlassComponent extends React.Component {
           for (let i = 0; i < lockGroupItems.length; i++) {
              let key = lockGroupItems[i][0];
              let value = lockGroupItems[i][1];
+
+             if (!this.xScales[key] || !this.yScales[key])
+                 continue;
 
               if (key == uid)  // no need to notify oneself that the scales have changed
                   continue
@@ -416,6 +418,9 @@ export class HiGlassComponent extends React.Component {
           for (let i = 0; i < lockGroupItems.length; i++) {
              let key = lockGroupItems[i][0];
              let value = lockGroupItems[i][1];
+
+             if (!this.xScales[key] || !this.yScales[key])
+                 continue;
 
               let [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key], 
                                                                     this.yScales[key]);
@@ -1235,18 +1240,28 @@ export class HiGlassComponent extends React.Component {
             let [tx, ty, k] = scalesCenterAndK(tXScale, tYScale);
             this.setCenters[fromView](tx, ty, k, false);
 
-            let locked = false
+            let zoomLocked = false;
+            let locationLocked = false;
 
+            // if we drag the brush and this view is locked to others, we don't
+            // want the movement we induce in them to come back and modify this
+            // view and set up a feedback loop
             if (viewUid in this.zoomLocks)
-                locked = fromView in this.zoomLocks[viewUid];
-
-            if (locked)
+                zoomLocked = fromView in this.zoomLocks[viewUid];
+            if (zoomLocked)
                 this.handleUnlock(viewUid, this.zoomLocks);
+
+            if (viewUid in this.locationLocks)
+                locationLocked = fromView in this.locationLocks[viewUid];
+            if (locationLocked)
+                this.handleUnlock(viewUid, this.locationLocks);
 
             this.handleScalesChanged(fromView, tXScale, tYScale, true);
 
-            if (locked)
+            if (zoomLocked)
                 this.addLock(viewUid, fromView, this.zoomLocks);
+            if (locationLocked)
+                this.addLock(viewUid, fromView, this.locationLocks);
 
           }
       }
@@ -1260,7 +1275,7 @@ export class HiGlassComponent extends React.Component {
     if (viewConfig.locationLocks) {
         for (let viewUid of dictKeys(viewConfig.locationLocks.locksByViewUid)) {
             this.locationLocks[viewUid] = viewConfig.locationLocks
-                .locationLocksDict[viewConfig.locationLocks.locksByViewUid[viewUid]];
+                .locksDict[viewConfig.locationLocks.locksByViewUid[viewUid]];
         }
     }
   }
@@ -1268,10 +1283,11 @@ export class HiGlassComponent extends React.Component {
   deserializeZoomLocks(viewConfig) {
     this.zoomLocks = {};
 
+    //
     if (viewConfig.zoomLocks) {
         for (let viewUid of dictKeys(viewConfig.zoomLocks.locksByViewUid)) {
             this.zoomLocks[viewUid] = viewConfig.zoomLocks
-                .zoomLocksDict[viewConfig.zoomLocks.locksByViewUid[viewUid]];
+                .locksDict[viewConfig.zoomLocks.locksByViewUid[viewUid]];
         }
     }
   }

@@ -19,43 +19,85 @@ export const testViewConfig =
       },
       "uid": "YrCE0SDAQfC4qehWjEQIhQ",
       "initialYDomain": [
-          100000000,200000000
+        1420699891.9190712,
+        1559741702.7432761
       ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "initialXDomain": [
-          100000000,200000000
+        1358947274.6036685,
+        1665471266.6479378
       ],
       "tracks": {
-        "bottom": [
-        ],
-        "top": [
-              {
-                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                "server": "http://higlass.io/api/v1",
-                "position": "center",
-                "type": "horizontal-heatmap",
-                'height': 120,
-                "options": {
-                  "maxZoom": null,
-                  "labelPosition": "bottomRight",
-                  "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "#F5A623",
-                    "#D0021B"
-                  ],
-                }
-              }
-        ],
-        "right": [
-        ],
+        "bottom": [],
+        "top": [],
+        "right": [],
         "center": [
+          {
+            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+            "server": "http://higlass.io/api/v1",
+            "position": "center",
+            "type": "heatmap",
+            "height": 300,
+            "options": {
+              "flipped": true,
+              "maxZoom": null,
+              "labelPosition": "bottomRight",
+              "colorRange": [
+                "#FFFFFF",
+                "#F8E71C",
+                "#F5A623",
+                "#D0021B"
+              ],
+              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+            },
+            "uid": "chowqH5RR7iRTBK-F0S81A",
+            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+            "maxWidth": 4194304000,
+            "binsPerDimension": 256,
+            "maxZoom": 14
+          }
+        ],
+        "left": []
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "genomePositionSearchBoxVisible": true
+    },
+    {
+      "layout": {
+        "w": 6,
+        "h": 12,
+        "x": 0,
+        "y": 12,
+        "i": "bcTs4G36QWqM3KwuBuoW4g",
+        "moved": false,
+        "static": false
+      },
+      "uid": "bcTs4G36QWqM3KwuBuoW4g",
+      "initialYDomain": [
+        1339285544.933454,
+        1911088777.7000628
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "initialXDomain": [
+        913783135.0021869,
+        2174349352.6922097
+      ],
+      "tracks": {
+        "bottom": [],
+        "top": [],
+        "right": [],
+        "center": [
+          {
+            "type": "combined",
+            "uid": "QOaVD-I7TAajQVN8_-otZA",
+            "height": 300,
+            "contents": [
               {
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
                 "server": "http://higlass.io/api/v1",
                 "position": "center",
                 "type": "heatmap",
-                'height': 300,
+                "height": 300,
                 "options": {
                   "flipped": true,
                   "maxZoom": null,
@@ -66,28 +108,27 @@ export const testViewConfig =
                     "#F5A623",
                     "#D0021B"
                   ],
-                }
-              }
-        ],
-        "left": [
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+                },
+                "uid": "chowqH5RR7iRTBK-F0S81A",
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                "maxWidth": 4194304000,
+                "binsPerDimension": 256,
+                "maxZoom": 14
+              },
               {
-                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                "server": "http://higlass.io/api/v1",
-                "position": "center",
-                "type": "vertical-heatmap",
-                'width': 200,
-                "options": {
-                  "maxZoom": null,
-                  "labelPosition": "bottomRight",
-                  "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "#F5A623",
-                    "#D0021B"
-                  ],
-                }
+                "uid": "e8HHoHzBRbSmpilULc47ZQ",
+                "type": "viewport-projection-center",
+                "fromViewUid": "YrCE0SDAQfC4qehWjEQIhQ",
+                "options": {},
+                "name": "Viewport Projection",
+                "position": "center"
               }
-        ]
+            ],
+            "position": "center"
+          }
+        ],
+        "left": []
       },
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "genomePositionSearchBoxVisible": true
@@ -96,12 +137,48 @@ export const testViewConfig =
   "editable": true,
   "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
   "zoomLocks": {
-    "locksByViewUid": {},
-    "zoomLocksDict": {}
+    "locksByViewUid": {
+      "bcTs4G36QWqM3KwuBuoW4g": "K8vG3KWqSXCsJ32f1wqNwQ",
+      "YrCE0SDAQfC4qehWjEQIhQ": "K8vG3KWqSXCsJ32f1wqNwQ"
+    },
+    "locksDict": {
+      "K8vG3KWqSXCsJ32f1wqNwQ": {
+        "bcTs4G36QWqM3KwuBuoW4g": [
+          902692953.5592829,
+          1029120537.3913019,
+          1856504.0024889708
+        ],
+        "YrCE0SDAQfC4qehWjEQIhQ": [
+          870835980.3378874,
+          894154173.4057167,
+          451434.4507279396
+        ]
+      }
+    }
   },
   "trackSourceServers": [
     "http://higlass.io/api/v1"
-  ]
+  ],
+  "locationLocks": {
+    "locksByViewUid": {
+      "bcTs4G36QWqM3KwuBuoW4g": "VqmHqXwPRC6_zfd-DosUMw",
+      "YrCE0SDAQfC4qehWjEQIhQ": "VqmHqXwPRC6_zfd-DosUMw"
+    },
+    "locksDict": {
+      "VqmHqXwPRC6_zfd-DosUMw": {
+        "bcTs4G36QWqM3KwuBuoW4g": [
+          650208409.2798027,
+          811909569.3483436,
+          1856504.0024785213
+        ],
+        "YrCE0SDAQfC4qehWjEQIhQ": [
+          618351436.0584072,
+          676943205.3627586,
+          451434.4507253766
+        ]
+      }
+    }
+  }
 }
 
 export const testViewConfig1 = {
