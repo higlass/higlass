@@ -11,12 +11,37 @@ import {svg1DTilesIcon} from './icons.js';
 import {svgVertical1DTilesIcon} from './icons.js';
 import {svgArrowheadDomainsIcon} from './icons.js';
 
+import {format, formatPrefix, precisionRound, precisionPrefix} from 'd3-format';
+
 let localServer = "localhost:8000";
 let remoteServer = "52.45.229.11";
 //export const usedServer = localServer;
 export const usedServer = remoteServer;
 
 export const optionsInfo = { 
+    oneDHeatmapFlipped: {
+        name: 'Flip Heatmap',
+        inlineOptions: {
+            'yes': { name: 'Yes', value: 'yes' },
+            'no': { name: 'No', value: null }
+        }
+    },
+    axisPositionHorizontal: {
+        name: "Axis Position",
+        inlineOptions: {
+            'left': { name: 'Left', value: 'left' },
+            'right': { name: 'Right', value: 'right' },
+            'hidden': { name: 'Hidden', value: null }
+        }
+    },
+    axisPositionVertical: {
+        name: "Axis Position",
+        inlineOptions: {
+            'left': { name: 'Top', value: 'top' },
+            'right': { name: 'Bottom', value: 'bottom' },
+            'hidden': { name: 'Hidden', value: null }
+        }
+    },
     labelPosition: {
         name: "Label Position",
         inlineOptions: {
@@ -31,7 +56,7 @@ export const optionsInfo = {
     // colormaps are mostly taken from here:
     // http://matplotlib.org/api/pyplot_summary.html?highlight=colormaps#matplotlib.pyplot.colormaps
     colorRange: {
-        name: "Color Range",
+        name: "Color map",
         inlineOptions: {
             'default': { name: 'default', value: [  
                                           "#FFFFFF",
@@ -48,12 +73,54 @@ export const optionsInfo = {
             'rainbow': { name: 'rainbow', value: ['rgba(128, 0, 256, 1.0)', 'rgba(0, 181, 236, 1.0)', 'rgba(129, 255, 180, 1.0)', 'rgba(256, 179, 96, 1.0)', 'rgba(256, 0, 0, 1.0)'] },
 
             'gray': { name: "greys", value: ['rgba(255,255,255,1)', 'rgba(0,0,0,1)'] },
+            'red': { name: "White to red", value: ['rgba(255,255,255,1)', 'rgba(255,0,0,1)'] },
+            'green': { name: "White to green", value: ['rgba(255,255,255,1)', 'rgba(0,255,0,1)'] },
+            'blue': { name: "White to blue", value: ['rgba(255,255,255,1)', 'rgba(0,0,255,1)'] },
             'custom': { 
                 name: "Custom...",
                 componentPickers: {
                     'heatmap': HeatmapOptions
                 }
             }
+        }
+    },
+
+    maxZoom: {
+        name: "Zoom limit",
+        inlineOptions: {
+            'none': { name: "None", value: null },
+        },
+        generateOptions: track => {
+            if (track.maxZoom) {
+                let formatter = format('.0s');
+                let inlineOptions = [];
+
+                for (let i = 0; i <= track.maxZoom; i++) {
+                    let maxWidth = track.maxWidth;
+                    let binsPerDimension = track.binsPerDimension;
+                    let maxZoom = track.maxZoom;
+
+                    let resolution = track.maxWidth / (2 ** i * track.binsPerDimension)
+
+                    let maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+                    let minResolution = maxWidth / binsPerDimension;
+
+                    let pp = precisionPrefix(maxResolutionSize, resolution);
+                    let f = formatPrefix('.' + pp, resolution);
+                    let formattedResolution = f(resolution);
+
+                    //let formattedName =  ;
+                    inlineOptions.push({
+                        'name': formattedResolution,
+                        value: i.toString()
+                    });
+
+                    //
+                }
+
+                return inlineOptions;
+            } else 
+                return [];
         }
     }
 }
@@ -65,7 +132,8 @@ export const tracksInfo = [
         local: true,
         orientation: '1d-vertical',
         name: 'Left Axis',
-        thumbnail: svgVertical1DAxisIcon
+        thumbnail: svgVertical1DAxisIcon,
+        minWidth: 100
     },
     {
         type: 'top-axis',
@@ -83,6 +151,7 @@ export const tracksInfo = [
         orientation: '2d',
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
+            labelPosition: 'bottomRight',
             colorRange: [  
                               "#FFFFFF",
                               "#F8E71C",
@@ -91,7 +160,45 @@ export const tracksInfo = [
                            ],
             maxZoom: null
         },
-        availableOptions: [ 'labelPosition', 'colorRange' ]
+        availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom' ]
+    },
+    {
+        type: 'horizontal-heatmap',
+        datatype: ['matrix'],
+        local: false,
+        minHeight: 50,
+        orientation: '1d-horizontal',
+        thumbnail: svg2DHeatmapIcon,
+        defaultOptions: {
+            labelPosition: 'bottomRight',
+            colorRange: [  
+                              "#FFFFFF",
+                              "#F8E71C",
+                              "rgba(245,166,35,1)",
+                              "rgba(0,0,0,1)"
+                           ],
+            maxZoom: null
+        },
+        availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped' ]
+    },
+    {
+        type: 'vertical-heatmap',
+        datatype: ['matrix'],
+        local: false,
+        minWidth: 50,
+        orientation: '1d-vertical',
+        thumbnail: svg2DHeatmapIcon,
+        defaultOptions: {
+            labelPosition: 'bottomRight',
+            colorRange: [  
+                              "#FFFFFF",
+                              "#F8E71C",
+                              "rgba(245,166,35,1)",
+                              "rgba(0,0,0,1)"
+                           ],
+            maxZoom: null
+        },
+        availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped' ]
     },
     {
         type: 'horizontal-line',
@@ -99,15 +206,22 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         thumbnail: svgHorizontalLineIcon,
-        availableOptions: [ 'labelPosition' ]
+        availableOptions: [ 'labelPosition', 'axisPositionHorizontal' ],
+        defaultOptions: {
+            axisPositionHorizontal: 'right'
+        }
     },
+    //
     {
         type: 'vertical-line',
         datatype: ['vector'],
         local: false,
         orientation: '1d-vertical',
         thumbnail: svgVerticalLineIcon,
-        availableOptions: [ 'labelPosition' ]
+        availableOptions: [ 'labelPosition', 'axisPositionVertical' ],
+        defaultOptions: {
+            axisPositionVertical: 'top'
+        }
     },
     {
         type: 'horizontal-1d-tiles',
@@ -163,6 +277,7 @@ export const tracksInfo = [
         type: 'horizontal-gene-annotations',
         datatype: ['gene-annotation'],
         local: false,
+        minHeight: 60,
         orientation: '1d-horizontal',
         name: 'Gene Annotations',
         thumbnail: svgGeneAnnotationsIcon,
@@ -172,6 +287,7 @@ export const tracksInfo = [
         type: 'vertical-gene-annotations',
         datatype: ['gene-annotation'],
         local: false,
+        minWidth: 60,
         orientation: '1d-vertical',
         name: 'Gene Annotations',
         thumbnail: svgVerticalGeneAnnotationsIcon,
@@ -209,7 +325,7 @@ export const tracksInfo = [
         datatype: ['chromosome-2d-labels'],
         local: true,
         orientation: '2d',
-        name: 'Chromosome Labels (hg19)',
+        name: 'Chromosome Axis (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null
     }
@@ -219,8 +335,8 @@ export const tracksInfo = [
         datatype: ['chromosome-1d-labels'],
         local: true,
         orientation: '1d-horizontal',
-        minHeight: 40,
-        name: 'Chromosome Labels (hg19)',
+        minHeight: 30,
+        name: 'Chromosome Axis (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null
     }
@@ -230,9 +346,9 @@ export const tracksInfo = [
         datatype: ['chromosome-1d-labels'],
         local: true,
         orientation: '1d-vertical',
-        minWidth: 40,
-        minHeight: 40,
-        name: 'Chromosome Labels (hg19)',
+        minWidth: 30,
+        minHeight: 30,
+        name: 'Chromosome Axis (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null
     }

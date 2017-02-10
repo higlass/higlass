@@ -1,4 +1,5 @@
 import {scaleLinear} from 'd3-scale';
+import {ticks} from 'd3-array';
 import {tileProxy} from './TileProxy.js';
 import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
 
@@ -7,6 +8,11 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         super(scene, server, uid, handleTilesetInfoReceived, option, animate);
 
+        this.pAxis = new PIXI.Graphics();
+
+        this.pMain.addChild(this.pAxis);
+
+        this.axisTexts = [];
     }
 
     initTile(tile) {
@@ -18,6 +24,107 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     destroyTile(tile) {
 
+    }
+
+    drawAxis(valueScale) {
+        let TICK_HEIGHT = 40;
+        let TICK_MARGIN = 0;
+        let TICK_LENGTH = 5;
+        let TICK_LABEL_MARGIN = 4;
+        let MARGIN_TOP = 3;
+        let MARGIN_BOTTOM = 3;
+
+        let tickCount = Math.max(this.dimensions[1] / TICK_HEIGHT, 1);
+
+        let graphics = this.pAxis;
+
+        graphics.clear();
+        graphics.lineStyle(1, 0x000000, 1);
+
+
+        if (this.options.axisPositionHorizontal == 'left' ||
+            this.options.axisPositionHorizontal == 'right' ||
+            this.options.axisPositionVertical == 'top' ||
+            this.options.axisPositionVertical == 'bottom') {
+
+            let i = 0; 
+
+            // create scale ticks but not all the way to the top
+            let tickValues = ticks(valueScale.invert(MARGIN_BOTTOM), 
+                              valueScale.invert(this.dimensions[1] - MARGIN_TOP), 
+                              tickCount);
+
+            if (tickValues.length < 1)  {
+                tickValues = ticks(valueScale.invert(MARGIN_BOTTOM),
+                              valueScale.invert(this.dimensions[1] - MARGIN_TOP), 
+                              tickCount + 1);
+
+                if (tickValues.length > 1) {
+                    // sometimes the ticks function will return 0 and then 2
+                    // if it didn't return enough previously, we probably only want a single
+                    // tick
+                    tickValues = [tickValues[0]];
+                }
+            }
+
+            //
+            while (i < tickValues.length) {
+                let tick = tickValues[i];
+
+                while (this.axisTexts.length <= i) {
+                    let newText = new PIXI.Text(tick, {fontSize:"10px", fontFamily:"Arial", fill: "black"});
+                    this.axisTexts.push(newText);
+
+                    this.pAxis.addChild(newText);
+                }
+
+                while (this.axisTexts.length > i+1) {
+                    let lastText = this.axisTexts.pop();
+                    this.pAxis.removeChild(lastText);
+                }
+
+                this.axisTexts[i].text = tick;
+                this.axisTexts[i].anchor.y = 0.5;
+                this.axisTexts[i].anchor.x = 0.5;
+                this.axisTexts[i].x = TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2;
+                this.axisTexts[i].y = valueScale(tick);
+
+                if (this.options.axisPositionHorizontal == 'right' || 
+                    this.options.axisPositionVertical == 'bottom') {
+                    this.axisTexts[i].x = this.dimensions[0] - 
+                        (TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN) - this.axisTexts[i].width / 2;
+
+                    graphics.moveTo(this.dimensions[0],0);
+                    graphics.lineTo(this.dimensions[0], this.dimensions[1]);
+
+                    graphics.moveTo(this.dimensions[0], 0);
+                    graphics.lineTo(this.dimensions[0] - (TICK_MARGIN + TICK_LENGTH), 0);
+
+                    graphics.moveTo(this.dimensions[0] - TICK_MARGIN, valueScale(tick));
+                    graphics.lineTo(this.dimensions[0] - (TICK_MARGIN + TICK_LENGTH), valueScale(tick));
+                } else {
+                    graphics.moveTo(0,0);
+                    graphics.lineTo(0, this.dimensions[1]);
+
+                    graphics.moveTo(0, 0);
+                    graphics.lineTo(TICK_MARGIN + TICK_LENGTH, 0);
+
+                    graphics.moveTo(TICK_MARGIN, valueScale(tick));
+                    graphics.lineTo(TICK_MARGIN + TICK_LENGTH, valueScale(tick));
+                }
+
+                if (this.flipText) {
+                    this.axisTexts[i].scale.x = -1;
+                }
+
+                i++;
+            }
+        } else {
+            while (this.axisTexts.length) {
+                let axisText = this.axisTexts.pop();
+                graphics.removeChild(axisText);
+            }
+        }
     }
 
     drawTile(tile) {
@@ -46,8 +153,9 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         graphics.clear();
 
+        this.drawAxis(valueScale);
+
         if (valueScale.domain()[1] < 0) {
-            console.error('ERR', valueScale.domain()[1]);
             return;
         }
 
@@ -62,7 +170,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         for (let i = 0; i < tileValues.length; i++) {
             let xPos = this._xScale(tileXScale(i));
-            //console.log('xPos:', xPos);
 
            if(j == 0){
                 graphics.moveTo(this._xScale(tileXScale(i)), valueScale(tileValues[i]));

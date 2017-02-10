@@ -26,6 +26,7 @@ import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack.js';
 import {Chromosome2DLabels} from './Chromosome2DLabels.js';
 import {Chromosome2DGrid} from './Chromosome2DGrid.js';
 import {HorizontalChromosomeLabels} from './HorizontalChromosomeLabels.js';
+import {HorizontalHeatmapTrack} from './HorizontalHeatmapTrack.js';
 
 export class TrackRenderer extends React.Component {
     /**
@@ -90,10 +91,9 @@ export class TrackRenderer extends React.Component {
         this.cumCenterYOffset = 0;
 
 
-        // console.log('constructor initialYDomain', this.currentProps.initialYDomain);
         this.setUpInitialScales(this.currentProps.initialXDomain,
                                 this.currentProps.initialYDomain);
-        this.setUpScales(this.currentProps);
+        this.setUpScales();
 
 
         // maintain a list of trackDefObjects which correspond to the input
@@ -130,6 +130,16 @@ export class TrackRenderer extends React.Component {
     }
 
     setUpInitialScales(initialXDomain, initialYDomain) {
+        // make sure the two scales are equally wide:
+        let xWidth = initialXDomain[1] - initialXDomain[0];
+        let yCenter = (initialYDomain[0] + initialYDomain[1]) / 2;
+        //initialYDomain = [yCenter - xWidth / 2, yCenter + xWidth / 2];
+
+        // stretch out the y-scale so that views aren't distorted (i.e. maintain
+        // a 1 to 1 ratio)
+        initialYDomain[0] = yCenter - xWidth / 2, 
+        initialYDomain[1] = yCenter + xWidth / 2;
+
         if (initialXDomain == this.initialXDomain &&
             initialYDomain == this.initialYDomain)
         /*
@@ -155,8 +165,7 @@ export class TrackRenderer extends React.Component {
         this.drawableToDomainY = scaleLinear()
             .domain([this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 - this.currentProps.centerWidth / 2,
                     this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2])
-            .range([initialXDomain[0], initialXDomain[1]]);
-
+            .range([initialYDomain[0], initialYDomain[1]]);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -170,7 +179,6 @@ export class TrackRenderer extends React.Component {
             return;
 
         this.currentProps = nextProps;
-        // console.log('initialYDomain', this.currentProps.initialYDomain);
         this.setUpInitialScales(nextProps.initialXDomain,
                                 nextProps.initialYDomain);
 
@@ -238,7 +246,6 @@ export class TrackRenderer extends React.Component {
 
         // [drawableToDomain(0), drawableToDomain(1)]: the domain of the visible area
         // if the screen has been resized, then the domain width should remain the same
-        //
 
         //this.xScale should always span the region that the zoom behavior is being called on
         this.xScale = scaleLinear()
@@ -247,6 +254,7 @@ export class TrackRenderer extends React.Component {
         this.yScale = scaleLinear()
                         .domain(visibleYDomain)
                         .range([0, this.initialHeight]);
+
 
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
@@ -603,8 +611,22 @@ export class TrackRenderer extends React.Component {
                 return new HorizontalChromosomeLabels(this.currentProps.pixiStage, track.chromInfoPath);
             case 'vertical-chromosome-labels':
                 return new LeftTrackModifier(new HorizontalChromosomeLabels(this.currentProps.pixiStage, track.chromInfoPath));
+            case 'horizontal-heatmap':
+                return new HorizontalHeatmapTrack(this.currentProps.pixiStage,
+                                                 track.server,
+                                                 track.tilesetUid,
+                                                 handleTilesetInfoReceived,
+                                                 track.options,
+                                                 this.currentProps.onNewTilesLoaded);
+            case 'vertical-heatmap':
+                return new LeftTrackModifier(new HorizontalHeatmapTrack(this.currentProps.pixiStage,
+                                                 track.server,
+                                                 track.tilesetUid,
+                                                 handleTilesetInfoReceived,
+                                                 track.options,
+                                                 this.currentProps.onNewTilesLoaded));
             default:
-                // console.log('WARNING: unknown track type:', track.type);
+                 console.log('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(
                     this.currentProps.pixiStage,
                     {name: 'Unknown Track Type'}

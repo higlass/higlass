@@ -3,6 +3,7 @@ import {format} from 'd3-format';
 import {json} from 'd3-request';
 import {queue} from 'd3-queue';
 import {scaleLinear} from 'd3-scale';
+import {select,event} from 'd3-selection';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
@@ -116,6 +117,19 @@ export class GenomePositionSearchBox extends React.Component {
         // used for autocomplete
         this.prevParts = positionString.split(/[ -]/);
         this.setState({"value": positionString});
+    }
+
+    componentDidMount() {
+        // we want to catch keypresses so we can get that enter
+        let inputSelection = select(this.autocompleteMenu.refs.input)
+            .on('keypress', this.autocompleteKeyPress.bind(this));
+    }
+
+    autocompleteKeyPress() {
+        let ENTER_KEY_CODE = 13;
+
+        if (event.keyCode == ENTER_KEY_CODE)
+            this.buttonClick();
     }
 
     replaceGenesWithLoadedPositions(genePositions) {

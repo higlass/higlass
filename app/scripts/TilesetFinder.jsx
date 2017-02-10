@@ -58,8 +58,7 @@ export class TilesetFinder extends React.Component {
                 name: ne.name,
                 uid: slugid.nice()
             });
-            console.log('ne:', ne);
-            console.log('ane:', ane);
+
             return ane;
         });
 
@@ -183,8 +182,9 @@ export class TilesetFinder extends React.Component {
                           </Col>
                           <Col sm={12}>
                           <FormControl componentClass="select" multiple
-                          value={this.state.selectedUuid ? this.state.selectedUuid : ['x']}
+                            value={this.state.selectedUuid ? this.state.selectedUuid : ['x']}
                             onChange={this.handleSelect.bind(this)}
+                            size={15}
                           >
                             {options}
                           </FormControl>

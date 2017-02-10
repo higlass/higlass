@@ -41,17 +41,59 @@ class TrackArea extends React.Component {
         });
     }
 
+    handleMouseMove() {
+        this.setState({
+            controlsVisible: true
+        });
+
+    }
+
     getControls() {
-        let controls = (<div>
-                        <svg
-                            onClick={() => {
-                                let imgDom = ReactDOM.findDOMNode(this.imgClose);
-                                let bbox = imgDom.getBoundingClientRect();
-                                this.props.onCloseTrackMenuOpened(this.props.uid, bbox);
+        let Handle = null;
+
+        if (this.moveable) {
+            Handle = SortableHandle(() =>
+                <svg
+                    className="no-zoom"
+                    onClick={() => {}}
+                    style={this.getMoveImgStyle()}
+                    width="10px"
+                    height="10px">
+                    <use href="#move"></use>
+                </svg>
+            )
+        } else {
+            Handle = SortableHandle(() =>
+                <div />
+            )
+
+        }
+
+        let controls = (<div
+                            style={{
+                                'position': 'absolute',
+                                'background-color': "rgba(255,255,255,0.7)",
+                                "right": "3px",
+                                'top': '3px',
+                                'pointer-events': 'none',
+                                'padding-left': '5px',
+                                'padding-right': '5px',
+                                'border-radius': '5px',
+                                'border': '1px solid #dddddd'
                             }}
-                            ref={(c) => { this.imgClose = c; }}
+                        >
+
+                        <Handle />
+
+                        <svg
+                            ref={(c) => { this.imgConfig = c; }}
                             className="no-zoom"
-                            style={this.getCloseImgStyle()}
+                            onClick={(e) => {
+                                let imgDom = ReactDOM.findDOMNode(this.imgConfig);
+                                let bbox = imgDom.getBoundingClientRect();
+                                this.props.onConfigTrackMenuOpened(this.props.uid, bbox);
+                                ; }}
+                            style={this.getSettingsImgStyle()}
                             width="10px"
                             height="10px">
                             <use xlinkHref="#cross"></use>
@@ -70,18 +112,19 @@ class TrackArea extends React.Component {
                         </svg>
 
                         <svg
-                            ref={(c) => { this.imgConfig = c; }}
-                            className="no-zoom"
-                            onClick={(e) => {
-                                let imgDom = ReactDOM.findDOMNode(this.imgConfig);
+                            onClick={() => {
+                                let imgDom = ReactDOM.findDOMNode(this.imgClose);
                                 let bbox = imgDom.getBoundingClientRect();
-                                this.props.onConfigTrackMenuOpened(this.props.uid, bbox);
-                                ; }}
-                            style={this.getSettingsImgStyle()}
+                                this.props.onCloseTrackMenuOpened(this.props.uid, bbox);
+                            }}
+                            ref={(c) => { this.imgClose = c; }}
+                            className="no-zoom"
+                            style={this.getCloseImgStyle()}
                             width="10px"
                             height="10px">
                             <use xlinkHref="#cog"></use>
                         </svg>
+
                 </div>)
 
         return controls;
@@ -136,25 +179,16 @@ export class FixedTrack extends TrackArea {
 class MoveableTrack extends TrackArea {
     constructor(props) {
         super(props);
+
+        this.moveable = true;
     }
 
     render() {
-        let Handle = SortableHandle(() =>
-            <svg
-                className="no-zoom"
-                onClick={() => {}}
-                style={this.getMoveImgStyle()}
-                width="10px"
-                height="10px">
-                <use xlinkHref="#move"></use>
-            </svg>
-        )
         let controls = null;
 
         if (this.props.editable && this.state.controlsVisible) {
             controls = ( <div>
                         { this.getControls() }
-                    <Handle />
                 </div>)
         }
 
@@ -197,27 +231,33 @@ MoveableTrack.propTypes = {
 export class CenterTrack extends FixedTrack {
     // should be the same as a vertical track
     getCloseImgStyle() {
-        let closeImgStyle = { right: 5,
-                         top: 5,
-                         position: 'absolute',
-                         opacity: .5}
-
-        return closeImgStyle;
+        return {
+                         position: 'relative',
+                             pointerEvents: 'all',
+                         opacity: .7}
     }
-    getSettingsImgStyle() {
-        let closeImgStyle = { right: 31,
-                         top: 5,
-                         position: 'absolute',
-                         opacity: .5}
 
-        return closeImgStyle;
+    getMoveImgStyle() {
+        return { position: 'relative',
+                             marginRight: '5px',
+                             pointerEvents: 'all',
+                         opacity: .7}
     }
 
     getAddImgStyle() {
-        return  { right: 18,
-                    top: 5,
-                    position: 'absolute',
-                    opacity: .5}
+        return { position: 'relative',
+                             marginRight: '5px',
+                             pointerEvents: 'all',
+                         opacity: .7}
+    }
+
+    getSettingsImgStyle() {
+        return { position: 'relative',
+                             marginRight: '5px',
+                             pointerEvents: 'all',
+                            opacity: .7}
+
+        return moveImgStyle;
     }
 }
 
@@ -228,37 +268,126 @@ class VerticalTrack extends MoveableTrack {
 
     // each image should be 13 pixels below the next one
     getCloseImgStyle() {
-        let closeImgStyle = { right: 5,
-                         top: 5,
-                         position: 'absolute',
-                         opacity: .5}
+        return {
+                         marginTop: '5px',
+                         position: 'relative',
+                             pointerEvents: 'all',
+                             display: 'block',
+                         opacity: .7}
 
         return closeImgStyle;
     }
 
     getMoveImgStyle() {
-        let moveImgStyle = { right: 5,
-                         top: 44,
-                         position: 'absolute',
-                         opacity: .5}
+        return { position: 'relative',
+                             marginTop: '5px',
+                             display: 'block',
+                             pointerEvents: 'all',
+                            opacity: .7}
 
         return moveImgStyle;
     }
 
     getAddImgStyle() {
-        return { right: 5,
-                    top: 18,
-                    position: 'absolute',
-                    opacity: .5}
+        return { position: 'relative',
+                             marginTop: '5px',
+                             pointerEvents: 'all',
+                             display: 'block',
+                            opacity: .7}
     }
 
     getSettingsImgStyle() {
-        let closeImgStyle = { right: 5,
-                         top: 31,
-                         position: 'absolute',
-                         opacity: .5}
+        return { position: 'relative',
+                             marginTop: '5px',
+                             pointerEvents: 'all',
+                             display: 'block',
+                            opacity: .7}
 
         return closeImgStyle;
+    }
+
+    getControls() {
+        let Handle = null;
+
+        if (this.moveable) {
+            Handle = SortableHandle(() =>
+                <svg
+                    className="no-zoom"
+                    onClick={() => {}}
+                    style={this.getMoveImgStyle()}
+                    width="10px"
+                    height="10px">
+                    <use href="#move"></use>
+                </svg>
+            )
+        } else {
+            Handle = SortableHandle(() =>
+                <div />
+            )
+
+        }
+
+        let controls = (<div
+                            style={{
+                                'position': 'absolute',
+                                'background-color': "rgba(255,255,255,0.7)",
+                                "left": "3px",
+                                'top': '3px',
+                                'pointer-events': 'none',
+                                'padding-left': 5,
+                                'padding-right': 5,
+                                'padding-bottom': 5,
+                                'border-radius': '5px',
+                                'border': '1px solid #dddddd'
+                            }}
+                        >
+                        <svg
+                            onClick={() => {
+                                let imgDom = ReactDOM.findDOMNode(this.imgClose);
+                                let bbox = imgDom.getBoundingClientRect();
+                                this.props.onCloseTrackMenuOpened(this.props.uid, bbox);
+                            }}
+                            ref={(c) => { this.imgClose = c; }}
+                            className="no-zoom"
+                            style={this.getCloseImgStyle()}
+                            width="10px"
+                            height="10px">
+                            <use href="#cross"></use>
+                        </svg>
+
+                        <svg
+                            ref={(c) => { this.imgAdd = c; }}
+                            className="no-zoom"
+                            style={this.getAddImgStyle()}
+                            onClick={() => {
+                                this.props.onAddSeries(this.props.uid);
+                            }}
+                            width="10px"
+                            height="10px">
+                            <use href="#plus"></use>
+                        </svg>
+
+                        <svg
+                            ref={(c) => { this.imgConfig = c; }}
+                            className="no-zoom"
+                            onClick={(e) => {
+                                let imgDom = ReactDOM.findDOMNode(this.imgConfig);
+                                let bbox = imgDom.getBoundingClientRect();
+                                this.props.onConfigTrackMenuOpened(this.props.uid, bbox);
+                                ; }}
+                            style={this.getSettingsImgStyle()}
+                            width="10px"
+                            height="10px">
+                            <use href="#cog"></use>
+                        </svg>
+
+                        <Handle />
+
+
+
+                </div>)
+
+        return controls;
     }
 
 }
@@ -290,35 +419,31 @@ class HorizontalTrack extends MoveableTrack {
     }
 
     getCloseImgStyle() {
-        let closeImgStyle = { right: 5,
-                         top: 5,
-                         position: 'absolute',
-                         opacity: .5}
-
-        return closeImgStyle;
+        return {
+                         position: 'relative',
+                             pointerEvents: 'all',
+                         opacity: .7}
     }
 
     getMoveImgStyle() {
-        let moveImgStyle = { right: 44,
-                         top: 5,
-                         position: 'absolute',
-                         opacity: .5}
-
-        return moveImgStyle;
+        return { position: 'relative',
+                             marginRight: '5px',
+                             pointerEvents: 'all',
+                         opacity: .7}
     }
 
     getAddImgStyle() {
-        return { right: 18,
-                    top: 5,
-                    position: 'absolute',
-                    opacity: .5}
+        return { position: 'relative',
+                             marginRight: '5px',
+                             pointerEvents: 'all',
+                         opacity: .7}
     }
 
     getSettingsImgStyle() {
-        let moveImgStyle = { right: 31,
-                         top: 5,
-                         position: 'absolute',
-                         opacity: .5}
+        return { position: 'relative',
+                             marginRight: '5px',
+                             pointerEvents: 'all',
+                         opacity: .7}
 
         return moveImgStyle;
     }

@@ -40,6 +40,13 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
         zoomLevel = Math.min(zoomLevel, this.maxZoom);
 
+        if (this.options && this.options.maxZoom) {
+            if (this.options.maxZoom >= 0)
+                zoomLevel = Math.min(this.options.maxZoom, zoomLevel);
+            else
+                console.error("Invalid maxZoom on track:", this);
+        }
+
         return zoomLevel
     }
 
@@ -50,6 +57,8 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
             return;
 
         this.zoomLevel = this.calculateZoomLevel();
+
+
         //this.zoomLevel = 0;
 
         this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale,
@@ -67,6 +76,8 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         let rows = this.xTiles;
         let cols = this.yTiles;
         let zoomLevel = this.zoomLevel;
+
+        console.log('heatmap rows:', rows, 'cols:', cols);
 
         // if we're mirroring tiles, then we only need tiles along the diagonal
         let tiles = [];

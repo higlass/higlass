@@ -37,7 +37,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
                     this.tickTexts[textStr] = [];
 
                 let text = new PIXI.Text(textStr, 
-                            {fontSize: "14px", fontFamily: "Arial", fill: "black"}
+                            {fontSize: "12px", fontFamily: "Helvetica", fill: "#777777"}
                             );
 
                 text.anchor.x = 0.5;
@@ -85,7 +85,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
 
         while (tickTexts.length <= ticks.length) {
             let newText = new PIXI.Text('', 
-                        {fontSize: "12px", fontFamily: "Helvetica Neue", fill: "black"});
+                            {fontSize: "12px", fontFamily: "Helvetica Neue", fill: "#777777"});
             tickTexts.push(newText);
             this.gTicks[cumPos.chr].addChild(newText);
         }
@@ -109,7 +109,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
             else
                 tickTexts[i].text = cumPos.chr + ":" + tickFormat(ticks[i]);
 
-            graphics.lineStyle(1, 0x000000, 1);
+            graphics.lineStyle(1, 0x777777, 1);
 
             // draw the tick lines
             graphics.moveTo(this._xScale(cumPos.pos + ticks[i]), this.dimensions[1]);

@@ -1,4 +1,5 @@
 import {Track} from './Track.js';
+import {format, formatPrefix, precisionRound, precisionPrefix} from 'd3-format';
 //import {LRUCache} from './lru.js';
 
 export class PixiTrack extends Track {
@@ -23,24 +24,33 @@ export class PixiTrack extends Track {
 
         // for drawing the track label (often its name)
         this.pLabel = new PIXI.Graphics();
+        this.pMobile = new PIXI.Graphics();
 
         this.scene.addChild(this.pBase);
 
         this.pBase.addChild(this.pMain);
         this.pBase.addChild(this.pMask);
+        this.pBase.addChild(this.pMobile);
         this.pBase.addChild(this.pLabel);
 
         this.pBase.mask = this.pMask;
 
         // pMobile will be a graphics object that is moved around
         // tracks that wish to use it will replace this.pMain with it
-        this.pMobile = new PIXI.Graphics();
-        this.pBase.addChild(this.pMobile);
 
         this.options = Object.assign(this.options, options);
-        this.labelText = new PIXI.Text(this.options.name, {fontSize: "12px", fontFamily: "Arial", fill: "black"});
+
+
+        let labelTextText = this.options.name ? this.options.name : 
+            (this.tilesetInfo ? this.tilesetInfo.name : '');
+
+        this.labelText = new PIXI.Text(labelTextText, {fontSize: "12px", fontFamily: "Arial", fill: "black"});
 
         this.pLabel.addChild(this.labelText);
+    }
+
+    setLabelText() {
+        // will be drawn in draw() anyway
     }
 
     setPosition(newPosition) {
@@ -75,14 +85,46 @@ export class PixiTrack extends Track {
     drawLabel() {
         let graphics = this.pLabel;
 
-
         if (!this.options || !this.options.labelPosition) {
             // don't display the track label
             this.labelText.opacity = 0;
             return;
         }
 
-        this.labelText.text = this.options.name;
+        // we can't draw a label if there's no space
+        if (this.dimensions[0] < 0)
+            return;
+
+        let labelTextText = this.options.name ? this.options.name : 
+            (this.tilesetInfo ? this.tilesetInfo.name : '');
+
+        if (this.tilesetInfo && this.tilesetInfo.max_width && this.tilesetInfo.bins_per_dimension) {
+            let maxWidth = this.tilesetInfo.max_width;
+            let binsPerDimension = this.tilesetInfo.bins_per_dimension;
+            let maxZoom = this.tilesetInfo.max_zoom;
+
+            let resolution = maxWidth / (2 ** this.calculateZoomLevel() * binsPerDimension)
+
+            // we can't display a NaN resolution
+            if (!isNaN(resolution)) {
+
+                let maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+                let minResolution = maxWidth / binsPerDimension;
+
+                let pp = precisionPrefix(maxResolutionSize, resolution);
+                let f = formatPrefix('.' + pp, resolution);
+                let formattedResolution = f(resolution);
+
+                //console.log('maxResolutionSize:', maxResolutionSize);
+
+                labelTextText += '\n[Current data resolution: ' + formattedResolution + ']';
+            } else {
+                console.log('NaN resolution, screen is probably too small. Dimensions:', this.dimensions);
+            }
+        }
+
+        this.labelText.text = labelTextText;
+
         this.labelText.visible = true;
 
         if (this.flipText)
