@@ -68,6 +68,8 @@ export class HorizontalHeatmapTrack extends Tiled2DPixiTrack {
         expandedXScale.domain([this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
                                this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))]);
 
+        console.log('regular x domain:', this._xScale.domain(), expandedXScale.domain());
+
         this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
                                                this.tilesetInfo.min_pos[0],
                                                this.tilesetInfo.max_pos[0],
@@ -84,12 +86,28 @@ export class HorizontalHeatmapTrack extends Tiled2DPixiTrack {
         let cols = this.yTiles;
         let zoomLevel = this.zoomLevel;
 
+        console.log('horizontal heatmap rows:', rows, 'cols:', cols);
+
+        let maxWidth = this.tilesetInfo.max_width;
+        let tileWidth = maxWidth /  Math.pow(2, zoomLevel);
+
         // if we're mirroring tiles, then we only need tiles along the diagonal
         let tiles = [];
 
         // calculate the ids of the tiles that should be visible
         for (let i = 0; i < rows.length; i++) {
-            for (let j = 0; j < cols.length; j++) {
+            for (let j = i; j < cols.length; j++) {
+                    // the length between the bottom of the track and the bottom corner of the tile
+                    // draw it out to understand better!
+                    let tileBottomPosition = ((j - i) - 2) * (this._xScale(tileWidth) - this._xScale(0)) * Math.sqrt(2) / 2;
+
+                    if (tileBottomPosition > this.dimensions[1]) {
+                        // this tile won't be visible so we don't need to fetch it
+                        continue;
+                    }
+
+                    //console.log('tileBottomPosition:', tileBottomPosition);
+
                     let newTile = [zoomLevel, rows[i], cols[j]];
                     newTile.mirrored = false;
 

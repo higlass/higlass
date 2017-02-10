@@ -77,6 +77,8 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         let cols = this.yTiles;
         let zoomLevel = this.zoomLevel;
 
+        console.log('heatmap rows:', rows, 'cols:', cols);
+
         // if we're mirroring tiles, then we only need tiles along the diagonal
         let tiles = [];
 

@@ -15,6 +15,7 @@ function countTransform(count) {
 }
 */
 let epsilon = 0.0000001;
+const MAX_FETCH_TILES = 20;
 
 export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale, passedCountTransform) {
     let epsilon = 0.000001;
@@ -99,7 +100,6 @@ function _base64ToArrayBuffer(base64) {
 }
 
 export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
-    let MAX_FETCH_TILES=10;
     let fetchPromises = [];
 
     // if we request too many tiles, then the URL can get too long and fail
@@ -171,7 +171,6 @@ export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
 }
 
 export function workerFetchMultiRequestTiles(req) {
-    const MAX_FETCH_TILES = 10;
 
     const sessionId = req.sessionId;
     const requests = req.requests;
