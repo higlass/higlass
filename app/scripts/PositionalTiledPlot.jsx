@@ -54,7 +54,7 @@ class TrackArea extends React.Component {
                             style={this.getCloseImgStyle()}
                             width="10px"
                             height="10px">
-                            <use href="#cross"></use>
+                            <use xlinkHref="#cross"></use>
                         </svg>
 
                         <svg
@@ -66,7 +66,7 @@ class TrackArea extends React.Component {
                             }}
                             width="10px"
                             height="10px">
-                            <use href="#plus"></use>
+                            <use xlinkHref="#plus"></use>
                         </svg>
 
                         <svg
@@ -80,7 +80,7 @@ class TrackArea extends React.Component {
                             style={this.getSettingsImgStyle()}
                             width="10px"
                             height="10px">
-                            <use href="#cog"></use>
+                            <use xlinkHref="#cog"></use>
                         </svg>
                 </div>)
 
@@ -146,7 +146,7 @@ class MoveableTrack extends TrackArea {
                 style={this.getMoveImgStyle()}
                 width="10px"
                 height="10px">
-                <use href="#move"></use>
+                <use xlinkHref="#move"></use>
             </svg>
         )
         let controls = null;

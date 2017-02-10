@@ -1738,7 +1738,7 @@ export class HiGlassComponent extends React.Component {
                                     className={'multitrack-header-icon multiview-copy-img'}
                                     width="10px"
                                     height="10px">
-                                    <use href="#copy"></use>
+                                    <use xlinkHref="#copy"></use>
                                 </svg>
 
                                 <svg
@@ -1747,7 +1747,7 @@ export class HiGlassComponent extends React.Component {
                                     className={'multitrack-header-icon multiview-config-img'}
                                     width="10px"
                                     height="10px">
-                                    <use href="#cog"></use>
+                                    <use xlinkHref="#cog"></use>
                                 </svg>
 
                                 <svg
@@ -1756,7 +1756,7 @@ export class HiGlassComponent extends React.Component {
                                     className={'multitrack-header-icon multiview-add-track-img'}
                                     width="10px"
                                     height="10px">
-                                    <use href="#plus"></use>
+                                    <use xlinkHref="#plus"></use>
                                 </svg>
 
                                 <svg
@@ -1765,7 +1765,7 @@ export class HiGlassComponent extends React.Component {
                                     className={'multitrack-header-icon multiview-close-img'}
                                     width="10px"
                                     height="10px">
-                                    <use href="#cross"></use>
+                                    <use xlinkHref="#cross"></use>
                                 </svg>
                             </div>
                     ) : null; // this.editable ?
