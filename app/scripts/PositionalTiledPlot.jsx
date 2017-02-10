@@ -72,13 +72,14 @@ class TrackArea extends React.Component {
         let controls = (<div
                             style={{
                                 'position': 'absolute',
-                                'background-color': "rgba(255,255,255,0.9)",
+                                'background-color': "rgba(255,255,255,0.7)",
                                 "right": "3px",
                                 'top': '3px',
                                 'pointer-events': 'none',
-                                'border-radius': 3,
-                                'padding-left': 3,
-                                'padding-right': 3
+                                'padding-left': '5px',
+                                'padding-right': '5px',
+                                'border-radius': '5px',
+                                'border': '1px solid #dddddd'
                             }}
                         >
 
@@ -335,7 +336,9 @@ class VerticalTrack extends MoveableTrack {
                                 'pointer-events': 'none',
                                 'padding-left': 5,
                                 'padding-right': 5,
-                                'border-radius': 3
+                                'padding-bottom': 5,
+                                'border-radius': '5px',
+                                'border': '1px solid #dddddd'
                             }}
                         >
                         <svg

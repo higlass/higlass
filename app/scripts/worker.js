@@ -28,6 +28,7 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
     let valueScale = scaleLinear().range([254, 0])
         .domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
 
+    //console.log('valueScale.domain()', valueScale.domain());
     let pixData = new Uint8ClampedArray(size * 4);
 
     /*
@@ -39,10 +40,14 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
     console.log('ctValues:', ctValues.map(x => f(x)).join(" "));
     */
 
+    let rgbIdx = 0;
+    let e = 0;
     try {
         for (let i = 0; i < data.length; i++) {
             let d = data[i];
-            let rgbIdx = 255;
+            e = d; //for debugging
+
+            rgbIdx = 255;
 
             if (d > epsilon) {
                 // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
@@ -62,6 +67,7 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
         }
         ;
     } catch (err) {
+        console.log('rgbIdx:', rgbIdx, "d:", e, "ct:", ct(d));
         console.error('ERROR:', err);
         return pixData;
     }

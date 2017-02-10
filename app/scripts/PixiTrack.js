@@ -24,19 +24,19 @@ export class PixiTrack extends Track {
 
         // for drawing the track label (often its name)
         this.pLabel = new PIXI.Graphics();
+        this.pMobile = new PIXI.Graphics();
 
         this.scene.addChild(this.pBase);
 
         this.pBase.addChild(this.pMain);
         this.pBase.addChild(this.pMask);
+        this.pBase.addChild(this.pMobile);
         this.pBase.addChild(this.pLabel);
 
         this.pBase.mask = this.pMask;
 
         // pMobile will be a graphics object that is moved around
         // tracks that wish to use it will replace this.pMain with it
-        this.pMobile = new PIXI.Graphics();
-        this.pBase.addChild(this.pMobile);
 
         this.options = Object.assign(this.options, options);
 
@@ -91,6 +91,10 @@ export class PixiTrack extends Track {
             return;
         }
 
+        // we can't draw a label if there's no space
+        if (this.dimensions[0] < 0)
+            return;
+
         let labelTextText = this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
 
@@ -101,16 +105,22 @@ export class PixiTrack extends Track {
 
             let resolution = maxWidth / (2 ** this.calculateZoomLevel() * binsPerDimension)
 
-            let maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
-            let minResolution = maxWidth / binsPerDimension;
+            // we can't display a NaN resolution
+            if (!isNaN(resolution)) {
 
-            let pp = precisionPrefix(maxResolutionSize, resolution);
-            let f = formatPrefix('.' + pp, resolution);
-            let formattedResolution = f(resolution);
+                let maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+                let minResolution = maxWidth / binsPerDimension;
 
-            //console.log('maxResolutionSize:', maxResolutionSize);
+                let pp = precisionPrefix(maxResolutionSize, resolution);
+                let f = formatPrefix('.' + pp, resolution);
+                let formattedResolution = f(resolution);
 
-            labelTextText += '\n[Current data resolution: ' + formattedResolution + ']';
+                //console.log('maxResolutionSize:', maxResolutionSize);
+
+                labelTextText += '\n[Current data resolution: ' + formattedResolution + ']';
+            } else {
+                console.log('NaN resolution, screen is probably too small. Dimensions:', this.dimensions);
+            }
         }
 
         this.labelText.text = labelTextText;

@@ -41,6 +41,7 @@ export class AddTrackModal extends React.Component {
 
     mainTilesetChanged(mainTileset) {
         mainTileset.type = this.selectedPlotType;
+
         this.setState({
             mainTileset: mainTileset
         });
@@ -82,6 +83,7 @@ export class AddTrackModal extends React.Component {
 
         // only get options if there's a dataset selected
         let seriesOptions = null;
+
         if (this.state.mainTileset) {
 
             seriesOptions = (
@@ -104,6 +106,7 @@ export class AddTrackModal extends React.Component {
                     </div>
                 )
 
+        //console.log('this.props.onCancel', this.props.onCancel);
         return(<Modal 
                 onHide={this.props.onCancel}
                 show={this.props.show}

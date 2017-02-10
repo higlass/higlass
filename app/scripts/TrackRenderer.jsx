@@ -26,6 +26,7 @@ import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack.js';
 import {Chromosome2DLabels} from './Chromosome2DLabels.js';
 import {Chromosome2DGrid} from './Chromosome2DGrid.js';
 import {HorizontalChromosomeLabels} from './HorizontalChromosomeLabels.js';
+import {HorizontalHeatmapTrack} from './HorizontalHeatmapTrack.js';
 
 export class TrackRenderer extends React.Component {
     /**
@@ -610,8 +611,22 @@ export class TrackRenderer extends React.Component {
                 return new HorizontalChromosomeLabels(this.currentProps.pixiStage, track.chromInfoPath);
             case 'vertical-chromosome-labels':
                 return new LeftTrackModifier(new HorizontalChromosomeLabels(this.currentProps.pixiStage, track.chromInfoPath));
+            case 'horizontal-heatmap':
+                return new HorizontalHeatmapTrack(this.currentProps.pixiStage,
+                                                 track.server,
+                                                 track.tilesetUid,
+                                                 handleTilesetInfoReceived,
+                                                 track.options,
+                                                 this.currentProps.onNewTilesLoaded);
+            case 'vertical-heatmap':
+                return new LeftTrackModifier(new HorizontalHeatmapTrack(this.currentProps.pixiStage,
+                                                 track.server,
+                                                 track.tilesetUid,
+                                                 handleTilesetInfoReceived,
+                                                 track.options,
+                                                 this.currentProps.onNewTilesLoaded));
             default:
-                // console.log('WARNING: unknown track type:', track.type);
+                 console.log('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(
                     this.currentProps.pixiStage,
                     {name: 'Unknown Track Type'}
