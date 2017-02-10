@@ -91,6 +91,10 @@ export class PixiTrack extends Track {
             return;
         }
 
+        // we can't draw a label if there's no space
+        if (this.dimensions[0] < 0)
+            return;
+
         let labelTextText = this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
 
@@ -101,16 +105,22 @@ export class PixiTrack extends Track {
 
             let resolution = maxWidth / (2 ** this.calculateZoomLevel() * binsPerDimension)
 
-            let maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
-            let minResolution = maxWidth / binsPerDimension;
+            // we can't display a NaN resolution
+            if (!isNaN(resolution)) {
 
-            let pp = precisionPrefix(maxResolutionSize, resolution);
-            let f = formatPrefix('.' + pp, resolution);
-            let formattedResolution = f(resolution);
+                let maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+                let minResolution = maxWidth / binsPerDimension;
 
-            //console.log('maxResolutionSize:', maxResolutionSize);
+                let pp = precisionPrefix(maxResolutionSize, resolution);
+                let f = formatPrefix('.' + pp, resolution);
+                let formattedResolution = f(resolution);
 
-            labelTextText += '\n[Current data resolution: ' + formattedResolution + ']';
+                //console.log('maxResolutionSize:', maxResolutionSize);
+
+                labelTextText += '\n[Current data resolution: ' + formattedResolution + ']';
+            } else {
+                console.log('NaN resolution, screen is probably too small. Dimensions:', this.dimensions);
+            }
         }
 
         this.labelText.text = labelTextText;

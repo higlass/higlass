@@ -29,7 +29,6 @@ export const testViewConfig =
         "bottom": [
         ],
         "top": [
-            {'type': 'top-axis'},
               {
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
                 "server": "http://higlass.io/api/v1",
@@ -71,7 +70,6 @@ export const testViewConfig =
               }
         ],
         "left": [
-        {'type': 'left-axis'},
               {
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
                 "server": "http://higlass.io/api/v1",
