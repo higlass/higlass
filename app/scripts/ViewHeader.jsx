@@ -8,7 +8,7 @@ import {AddTrackPositionMenu} from './AddTrackPositionMenu.jsx';
 import {all as icons} from './icons.js';
 
 export class ViewHeader extends React.Component {
-	
+
     constructor(props) {
         super(props);
 
@@ -135,7 +135,7 @@ export class ViewHeader extends React.Component {
                             }}
 
 
-                            onYankZoom={e => 
+                            onYankZoom={e =>
                                 {
                                     this.setState({configMenuUid: null}); //hide the menu
                                     this.props.onYankZoom(this.state.configMenuUid);
@@ -160,11 +160,11 @@ export class ViewHeader extends React.Component {
                             }}
                             onExportViewAsJSON={e => {
                                 this.setState({configMenuUid: null}); //hide the menu
-                                this.props.onExportViewsAsJSON() 
+                                this.props.onExportViewsAsJSON()
                             }}
                             onExportViewAsLink={e => {
                                 this.setState({configMenuUid: null}); //hide the menu
-                                this.props.onExportViewsAsLink() 
+                                this.props.onExportViewsAsLink()
                             }}
                         />
                     </ContextMenuContainer>
@@ -184,7 +184,7 @@ export class ViewHeader extends React.Component {
                             className={'multitrack-header-icon multiview-copy-img'}
                             width="10px"
                             height="10px">
-                            <use href="#copy"></use>
+                            <use xlinkHref="#copy"></use>
                         </svg>
 
                         <svg
@@ -193,7 +193,7 @@ export class ViewHeader extends React.Component {
                             className={'multitrack-header-icon multiview-config-img'}
                             width="10px"
                             height="10px">
-                            <use href="#cog"></use>
+                            <use xlinkHref="#cog"></use>
                         </svg>
 
                         <svg
@@ -202,7 +202,7 @@ export class ViewHeader extends React.Component {
                             className={'multitrack-header-icon multiview-add-track-img'}
                             width="10px"
                             height="10px">
-                            <use href="#plus"></use>
+                            <use xlinkHref="#plus"></use>
                         </svg>
 
                         <svg
@@ -210,7 +210,7 @@ export class ViewHeader extends React.Component {
                             className={'multitrack-header-icon multiview-close-img'}
                             width="10px"
                             height="10px">
-                            <use href="#cross"></use>
+                            <use xlinkHref="#cross"></use>
                         </svg>
 
                         {configMenu}
