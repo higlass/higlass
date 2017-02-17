@@ -557,10 +557,6 @@ export class HiGlassComponent extends React.Component {
          * @param uid1: The view that the lock was called from
          * @param uid2: The view that the lock was called on (the view that was selected)
          */
-     console.log('location lock chosen');
-        console.log('sck1', scalesCenterAndK(this.xScales[uid1], this.yScales[uid1]))
-        console.log('sck2', scalesCenterAndK(this.xScales[uid2], this.yScales[uid2]))
-
       if (uid1 == uid2) {
             this.setState({
                 chooseViewHandler: null
@@ -583,7 +579,6 @@ export class HiGlassComponent extends React.Component {
          * @param uid1: The view that the lock was called from
          * @param uid2: The view that the lock was called on (the view that was selected)
          */
-        console.log('zoom lock chosen');
 
       if (uid1 == uid2) {
             this.setState({
@@ -655,7 +650,6 @@ export class HiGlassComponent extends React.Component {
         /**
          * Uid1 yanked the zoom of uid2, now  make sure that they're synchronized.
          */
-        console.log('zoom yanked');
 
         // where we're taking the zoom from
         let sourceXScale = this.xScales[uid2];
@@ -740,8 +734,6 @@ export class HiGlassComponent extends React.Component {
                 break;
             }
       };
-
-      // console.log('chosenRowHeight:', chosenRowHeight, 'height', height);
 
       if (this.props.options ? this.props.options.bounded : false) {
           this.setState({
@@ -1841,7 +1833,6 @@ export class HiGlassComponent extends React.Component {
                             onYankLocation={uid => this.handleYankFunction(uid, this.handleLocationYanked.bind(this)) }
                             onYankZoom={uid => this.handleYankFunction(uid, this.handleZoomYanked.bind(this)) }
                             onYankZoomAndLocation={uid => this.handleYankFunction(uid, (a,b) => {
-                                console.log('here');
                                     this.handleZoomYanked(a,b);
                                     this.handleLocationYanked(a,b); 
                                 }) 

@@ -73,8 +73,6 @@ export class HeatmapOptions extends React.Component {
                                          colorRange: this.state.colors
                                         }} );
 
-        console.log('props.xScale', this.props.xScale ? this.props.xScale.domain() : null);
-        console.log('props.yScale', this.props.yScale ? this.props.yScale.domain() : null);
         let mvConfig = {
             'editable': false,
             zoomFixed: true,

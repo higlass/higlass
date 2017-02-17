@@ -11,13 +11,8 @@ export class Chromosome2DLabels extends PixiTrack {
         this.searchField = null;
         this.chromInfo = null;
 
-        console.log('chromInfoPath:', chromInfoPath);
-
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;  
-            console.log('chromInfo:', this.chromInfo);
-
-            console.log('chromInfo:', this.chromInfo);
             //
 
             this.searchField = new SearchField(this.chromInfo); 
@@ -73,10 +68,6 @@ export class Chromosome2DLabels extends PixiTrack {
         let y1 = this.searchField.absoluteToChr(this._yScale.domain()[0]);
         let y2 = this.searchField.absoluteToChr(this._yScale.domain()[1]);
 
-        /*
-        console.log('x1:', x1);
-        console.log('x2:', x2);
-        */
         for (let i = 0; i < this.texts.length; i++) {
             for (let j = 0; j < this.texts.length; j++) {
                 this.texts[i][j].visible = false;
@@ -85,9 +76,6 @@ export class Chromosome2DLabels extends PixiTrack {
 
         for (let i = x1[3]; i <= x2[3]; i++) {
             for (let j = y1[3]; j <= y2[3]; j++) {
-                //console.log('i:', i, 'j:', j);
-                //console.log('this.texts:', this.texts);
-                //let chromInfoX = this.chromInfo[i];
                 let xCumPos = this.chromInfo.cumPositions[i];
                 let yCumPos = this.chromInfo.cumPositions[j];
 
@@ -104,7 +92,6 @@ export class Chromosome2DLabels extends PixiTrack {
                 text.updateTransform();
 
                 let bbox = text.getBounds();
-                //console.log('bbox:', bbox);
 
                 // make sure the chrosome label fits in the x range
                 if (viewportMidX + bbox.width / 2  > this.dimensions[0]) {
@@ -121,26 +108,11 @@ export class Chromosome2DLabels extends PixiTrack {
                     text.y -= (viewportMidY - bbox.height / 2);
                 } 
 
-                /*
-                console.log('viewportMidX', viewportMidX, 'text.x', text.x);
-                console.log('text.y', text.y);
-                console.log('this.dimensions:', this.dimensions);
-                */
-
                 text.visible = true;
 
                 allTexts.push({importance: this.texts[i][j].hashValue, text: this.texts[i][j], caption: null});
             }
         }
-
-        /*
-        console.log('x1:', x1);
-        console.log('x2:', x2);
-
-        console.log('y1:', y1);
-        console.log('y2:', y2);
-        */
-
 
         // define the edge chromosome which are visible
         this.hideOverlaps(allTexts);
@@ -160,10 +132,8 @@ export class Chromosome2DLabels extends PixiTrack {
 
         let result = boxIntersect(allBoxes, function(i, j) {
             if (allTexts[i].importance > allTexts[j].importance) {
-                //console.log('hiding:', allTexts[j].caption)
                 allTexts[j].text.visible = 0; 
             } else {
-                //console.log('hiding:', allTexts[i].caption)
                 allTexts[i].text.visible = 0; 
             }
         });

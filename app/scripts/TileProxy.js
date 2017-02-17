@@ -158,23 +158,6 @@ class TileProxy  {
         let outUrl = server + '/tileset_info/?d=' + tilesetUid + '&s=' + this.sessionId;
 
         workerGetTilesetInfo(outUrl, done);
-        /*
-        console.log('about to run...');
-        let jobA = this.threadPool.run(function(input, done) {
-                workerGetTilesetInfo(input);
-                done(input);
-            }, {
-                workerGetTilesetInfo: 'worker'
-            })
-
-           .on('done', function(job, message) {
-                console.log('done', message);
-           })
-           .on('error', function(job, error) {
-                console.log('error', error);
-           })
-            .send(outUrl);
-        */
     }
 
     tileDataToPixData(tile, minVisibleValue, maxVisibleValue, colorScale, finished) {
@@ -190,14 +173,12 @@ class TileProxy  {
          */
             let tileData = tile.tileData;
             var scriptPath = document.location.href;
-            //console.log('scriptPath', scriptPath);
 
             // clone the tileData so that the original array doesn't get neutered
             // when being passed to the worker script
             let newTileData = new Float32Array(tileData.dense.length);
             newTileData.set(tileData.dense);
 
-            //console.log('running...', tile.tileId);
             // comment this and uncomment the code afterwards to enable threading
             let pixData = workerSetPix(newTileData.length, newTileData,
                                               minVisibleValue,
@@ -216,11 +197,11 @@ class TileProxy  {
 
                      })
                .on('done', function(job, message) {
-                   console.log('done...', job);
+                   //console.log('done...', job);
                    finished(message.pixData);
                })
                .on('error', function(job, error) {
-                    console.log('error', error);
+                    //console.log('error', error);
                })
             .send({scriptPath: scriptPath, tileData: newTileData, minVisibleValue: minVisibleValue, maxVisibleValue: maxVisibleValue}, [newTileData.buffer]);
             */
