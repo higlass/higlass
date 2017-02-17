@@ -65,7 +65,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                                 className = "play-icon"
                                 width="10px"
                                 height="10px">
-                                <use href="#play"></use>
+                                <use xlinkHref="#play"></use>
                             </svg>
 
                         </span>

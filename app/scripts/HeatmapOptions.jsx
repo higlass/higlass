@@ -111,7 +111,7 @@ export class HeatmapOptions extends React.Component {
                                     height: 10
                                 }}
                                 height="10px">
-                                <use href="#cross"></use>
+                                <use xlinkHref="#cross"></use>
                             </svg>
                             </div>
                         )
@@ -158,7 +158,7 @@ export class HeatmapOptions extends React.Component {
                                 }}
                                 width="10px"
                                 height="10px">
-                                <use href="#plus"></use>
+                                <use xlinkHref="#plus"></use>
                             </svg>
                 </div>
              </td>)
