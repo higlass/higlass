@@ -15,6 +15,7 @@ function countTransform(count) {
 }
 */
 let epsilon = 0.0000001;
+const MAX_FETCH_TILES = 20;
 
 export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale, passedCountTransform) {
     let epsilon = 0.000001;
@@ -28,6 +29,7 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
     let valueScale = scaleLinear().range([254, 0])
         .domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
 
+    //console.log('valueScale.domain()', valueScale.domain());
     let pixData = new Uint8ClampedArray(size * 4);
 
     /*
@@ -39,10 +41,14 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
     console.log('ctValues:', ctValues.map(x => f(x)).join(" "));
     */
 
+    let rgbIdx = 0;
+    let e = 0;
     try {
         for (let i = 0; i < data.length; i++) {
             let d = data[i];
-            let rgbIdx = 255;
+            e = d; //for debugging
+
+            rgbIdx = 255;
 
             if (d > epsilon) {
                 // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
@@ -62,6 +68,7 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
         }
         ;
     } catch (err) {
+        console.log('rgbIdx:', rgbIdx, "d:", e, "ct:", ct(d));
         console.error('ERROR:', err);
         return pixData;
     }
@@ -93,7 +100,6 @@ function _base64ToArrayBuffer(base64) {
 }
 
 export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
-    let MAX_FETCH_TILES=10;
     let fetchPromises = [];
 
     // if we request too many tiles, then the URL can get too long and fail
@@ -165,7 +171,6 @@ export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
 }
 
 export function workerFetchMultiRequestTiles(req) {
-    const MAX_FETCH_TILES = 10;
 
     const sessionId = req.sessionId;
     const requests = req.requests;

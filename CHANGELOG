@@ -1,6 +1,66 @@
-v0.4.22
+v0.4.33
 
--
+- New header colors
+
+v0.4.32
+
+- Reduced the number of tiles requested by the horizontal heatmap track
+- Removed console log statements
+
+v0.4.31 
+
+- Fixed regression and compatibility change with new zoom and location locking
+- Fixed regression in the selection dragging
+
+v0.4.30
+
+- Added a minimum width to left-axis so that it doesn't only show the last two
+digits by default
+* Added horizontal and vertical heatmaps
+- Styling changes for the Configure track controls
+- Fixed the bug with AddTrackMenu cancel button turning black by properly
+increasing the number of visible tilesets in TilesetFinder
+- Added options to allow flipping horizontal and vertical charts
+- Fixed NaN prefix bug
+- Fixed invalid negative value attributes for <rect> bug
+
+v0.4.29
+
+- Moved default heatmap information to lower right hand corner
+- Fixed a bug which distorted the view when initialized with an initial X
+scale and Y scale
+- Added white to red, white to green and white to blue scales
+- Added axes for the 1D tracks
+- Took the ID out of the view header
+- Added a white border behind the track controls
+
+v0.4.28
+
+- Fixed critical regression where track replacement wasn't working because
+newly created tracks didn't have their options set
+- Fixed a regression where track movement wasn't working because TiledPlot
+wasn't being updated
+- Increase the size of the tileset selector
+
+v0.4.27
+
+- Changed config.js Chromosome Labels to Chromosome Axis
+- Fixed default option setting so that it doesn't override provided options
+- Adding zoom limit option to heatmap
+- Add current resolution to the track label
+- Fixed regression caused by "Fast redraw by tiling commit"
+- Hitting enter in the genome position search box initiates a search
+
+v0.4.26
+
+- Fixed close button
+
+v0.4.25
+
+- Fractional zoom lock
+- Faster config menu loading
+- Faster track addition by limiting the udpates of TiledPlot (using
+shouldComponentUpdate)
 
 v0.4.21
 
@@ -40,3 +100,5 @@ config.js
 - New chromosome 1D axis (for hg19)
 - New chromosome horizontal axis (for hg19)
 
+* larger change
+- minor change

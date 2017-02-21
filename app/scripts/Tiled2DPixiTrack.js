@@ -40,6 +40,13 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
         zoomLevel = Math.min(zoomLevel, this.maxZoom);
 
+        if (this.options && this.options.maxZoom) {
+            if (this.options.maxZoom >= 0)
+                zoomLevel = Math.min(this.options.maxZoom, zoomLevel);
+            else
+                console.error("Invalid maxZoom on track:", this);
+        }
+
         return zoomLevel
     }
 
@@ -50,6 +57,8 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
             return;
 
         this.zoomLevel = this.calculateZoomLevel();
+
+
         //this.zoomLevel = 0;
 
         this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale,
@@ -137,21 +146,6 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
     zoomed(newXScale, newYScale, k, tx, ty) {
         super.zoomed(newXScale, newYScale);
 
-        //console.log('zoomed:', newXScale.domain(), k, tx)
-        //console.log('zoomed:', newYScale.domain(), k, ty)
-
-        /*
-        let scaleX = (newXScale(1) - newXScale(0))/ (this._refXScale(1) - this._refXScale(0));
-        let scaleY = (newYScale(1) - newYScale(0))/ (this._refYScale(1) - this._refYScale(0));
-
-        let translateX = (newXScale(0) + this.position[0]) - this._refXScale(0) * scaleX;
-        let translateY = (newYScale(0) + this.position[1]) - this._refYScale(1) * scaleY;
-
-        console.log('translateX:', translateX, 'diff:', translateX - tx, 'diff/k', (translateX - tx) / k);
-        console.log('translateY:', translateY, 'diff:', translateY - ty, 'diff/k', (translateY - ty) / k);
-        console.log('scaleX:', scaleX, 'k:', k);
-        console.log('scalyY:', scaleY, 'k:', k);
-        */
         this.pMain.position.x = tx; //translateX;
         this.pMain.position.y = ty; //translateY;
 

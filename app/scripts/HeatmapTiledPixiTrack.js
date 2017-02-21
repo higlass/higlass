@@ -85,11 +85,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             sprite.y = this._refYScale(tileY);
         }
 
-        /*
-        console.log('sprite.x:', sprite.x);
-        console.log('sprite.y:', sprite.y);
-        console.log('sprite.scale:', sprite.scale);
-        */
     }
 
 
@@ -125,7 +120,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                                                   function(pixData) {
             // the tileData has been converted to pixData by the worker script and needs to be loaded
             // as a sprite
-            //console.log('tile:', tile);
             let graphics = tile.graphics;
             let canvas = this.tileDataToCanvas(pixData);
 
@@ -143,7 +137,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             graphics.addChild(tile.sprite);
         }.bind(this));
 
-        //console.log('pixData:', pixData);
     }
 
     refScalesChanged(refXScale, refYScale) {

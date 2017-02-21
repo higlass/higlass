@@ -73,8 +73,6 @@ export class HeatmapOptions extends React.Component {
                                          colorRange: this.state.colors
                                         }} );
 
-        console.log('props.xScale', this.props.xScale ? this.props.xScale.domain() : null);
-        console.log('props.yScale', this.props.yScale ? this.props.yScale.domain() : null);
         let mvConfig = {
             'editable': false,
             zoomFixed: true,
@@ -113,7 +111,7 @@ export class HeatmapOptions extends React.Component {
                                     height: 10
                                 }}
                                 height="10px">
-                                <use href="#cross"></use>
+                                <use xlinkHref="#cross"></use>
                             </svg>
                             </div>
                         )
@@ -160,7 +158,7 @@ export class HeatmapOptions extends React.Component {
                                 }}
                                 width="10px"
                                 height="10px">
-                                <use href="#plus"></use>
+                                <use xlinkHref="#plus"></use>
                             </svg>
                 </div>
              </td>)

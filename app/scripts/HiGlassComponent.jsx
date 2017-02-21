@@ -13,8 +13,6 @@ import "react-resizable/css/styles.css";
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {TiledPlot} from './TiledPlot.jsx';
 
-import {PopupMenu} from './PopupMenu.jsx';
-import {ConfigViewMenu} from './ConfigViewMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
 import {getTrackPositionByUid, getTrackByUid} from './utils.js';
@@ -25,6 +23,7 @@ import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
 import {ExportLinkModal} from './ExportLinkModal.jsx';
 import {createSymbolIcon} from './symbol.js';
 import {all as icons} from './icons.js';
+import {ViewHeader} from './ViewHeader.jsx';
 
 import '../styles/HiGlassComponent.css';
 
@@ -59,11 +58,14 @@ export class HiGlassComponent extends React.Component {
 
         // zoom locks between views
         this.zoomLocks = {};
+
+        // location locks between views
+        this.locationLocks = {};
+
         this.setCenters = {};
 
         this.plusImg = {};
         this.configImg = {};
-        this.copyImg = {};
 
         this.horizontalMargin = 5;
         this.verticalMargin = 5;
@@ -163,10 +165,6 @@ export class HiGlassComponent extends React.Component {
         );
     }
 
-    componentDidUpdate() {
-      this.animate();
-    }
-
     handleWindowFocused() {
         /*
          * The window housing this view gained focus. That means the bounding boxes
@@ -197,9 +195,17 @@ export class HiGlassComponent extends React.Component {
 
         let trackOptions = track.options ? track.options : {};
 
-        if (tracksInfoByType[track.type].defaultOptions)
-            track.options = Object.assign(trackOptions, JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions)));
-        else
+        if (tracksInfoByType[track.type].defaultOptions) {
+            if (!track.options)
+                track.options = JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions));
+            else {
+                for (let optionName in tracksInfoByType[track.type].defaultOptions) {
+                    track.options[optionName] = track.options[optionName] ?
+                        track.options[optionName] : JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions[optionName]));
+
+                }
+            }
+        } else
             track.options = trackOptions;
     }
 
@@ -226,7 +232,7 @@ export class HiGlassComponent extends React.Component {
     })
   }
 
-  handleLockZoom(uid) {
+  handleLockLocation(uid) {
       /**
        * We want to lock the zoom of this view to the zoom of another view.
        *
@@ -236,21 +242,9 @@ export class HiGlassComponent extends React.Component {
        * between the center of the two views will always remain the same, as will the
        * different between the zoom levels.
        */
-      if (this.zoomLocks[uid]) {
-          // this view already has a zoom lock, we we need to turn it off
-          this.handleUnlockZoom(uid);
-
-          this.setState({
-            mouseOverOverlayUid: uid,
-            configMenuUid: null
-          });
-
-          return;
-      }
-
         // create a view chooser and remove the config view menu
         this.setState({
-            chooseViewHandler: uid2 => this.handleZoomLockChosen(uid, uid2),
+            chooseViewHandler: uid2 => this.handleLocationLockChosen(uid, uid2),
             mouseOverOverlayUid: uid,
             configMenuUid: null
         });
@@ -354,7 +348,6 @@ export class HiGlassComponent extends React.Component {
           if (this.scalesChangedListeners.hasOwnProperty(uid)) {
             dictValues(this.scalesChangedListeners[uid]).forEach(x => {
                 x(xScale, yScale);
-
             });
           }
       }
@@ -372,22 +365,31 @@ export class HiGlassComponent extends React.Component {
              let key = lockGroupItems[i][0];
              let value = lockGroupItems[i][1];
 
+             if (!this.xScales[key] || !this.yScales[key])
+                 continue;
 
               if (key == uid)  // no need to notify oneself that the scales have changed
                   continue
 
+              let [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key],
+                                                                    this.yScales[key]);
+
              let dx = value[0] - lockGroup[uid][0];
              let dy = value[1] - lockGroup[uid][1];
-             let rk = value[2] - lockGroup[uid][2];
+             let rk = value[2] / lockGroup[uid][2];
 
-              let newCenterX = centerX + dx;
-              let newCenterY = centerY + dy;
-              let newK = k + rk;
+              //let newCenterX = centerX + dx;
+              //let newCenterY = centerY + dy;
+              let newK = k * rk;
 
                 if (!this.setCenters[key])
                     continue;
 
-              let [newXScale, newYScale] = this.setCenters[key](newCenterX, newCenterY, newK, false);
+              // the key here is the target of zoom lock, so we want to keep its
+              // x center and y center unchanged
+              let [newXScale, newYScale] = this.setCenters[key](keyCenterX,
+                                                                keyCenterY,
+                                                                newK, false);
 
               // because the setCenters call above has a 'false' notify, the new scales won't
               // be propagated from there, so we have to store them here
@@ -402,29 +404,57 @@ export class HiGlassComponent extends React.Component {
                 });
               }
           }
+      }
+
+      if (this.locationLocks[uid]) {
+          // this view is locked to another
+          let lockGroup = this.locationLocks[uid];
+          let lockGroupItems = dictItems(lockGroup);
 
 
+          let [centerX, centerY, k] = scalesCenterAndK(this.xScales[uid], this.yScales[uid]);
 
-          /*
-          if (uid == zoomLock.source) {
-              let newCenterX = centerX + zoomLock.centerDiff[0];
-              let newCenterY = centerY + zoomLock.centerDiff[1];
 
-              let newK = k * zoomLock.zoomRatio;
+          for (let i = 0; i < lockGroupItems.length; i++) {
+             let key = lockGroupItems[i][0];
+             let value = lockGroupItems[i][1];
 
-              // set a new center, but don't notify of a change to prevent
-              // circular notifications
-              this.setCenters[zoomLock.target](newCenterX, newCenterY, newK, false);
-          } else {
-              let newCenterX = centerX - zoomLock.centerDiff[0];
-              let newCenterY = centerY - zoomLock.centerDiff[1];
+             if (!this.xScales[key] || !this.yScales[key])
+                 continue;
 
-              let newK = k / zoomLock.zoomRatio;
-              // set a new center, but don't notify of a change to prevent
-              // circular notifications
-              this.setCenters[zoomLock.source](newCenterX, newCenterY, newK, false);
+              let [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key],
+                                                                    this.yScales[key]);
+
+              if (key == uid)  // no need to notify oneself that the scales have changed
+                  continue
+
+             let dx = value[0] - lockGroup[uid][0];
+             let dy = value[1] - lockGroup[uid][1];
+
+
+              let newCenterX = centerX + dx;
+              let newCenterY = centerY + dy;
+
+                if (!this.setCenters[key])
+                    continue;
+
+              let [newXScale, newYScale] = this.setCenters[key](newCenterX,
+                                                                newCenterY,
+                                                                keyK, false);
+
+              // because the setCenters call above has a 'false' notify, the new scales won't
+              // be propagated from there, so we have to store them here
+              this.xScales[key] = newXScale;
+              this.yScales[key] = newYScale;
+
+              // notify the listeners of all locked views that the scales of
+              // this view have changed
+              if (this.scalesChangedListeners.hasOwnProperty(key)) {
+                dictValues(this.scalesChangedListeners[key]).forEach(x => {
+                    x(newXScale, newYScale);
+                });
+              }
           }
-          */
       }
 
       this.animate();
@@ -442,36 +472,23 @@ export class HiGlassComponent extends React.Component {
         });
   }
 
-  handleSyncCenter(uid) {
+  handleYankFunction(uid, yankFunction) {
         /**
-         * We want the center of this view to match the center of another
-         * view.
+         * We want to yank some attributes from another view.
          *
+         * This will create a view selection overlay and then call the selected
+         * provided function.
          */
 
         this.setState({
-            chooseViewHandler: uid2 => this.handleCenterSynced(uid, uid2),
+            chooseViewHandler: uid2 => yankFunction(uid, uid2),
             mouseOverOverlayUid: uid,
             configMenuUid: null
         });
+
   }
 
-  handleYankZoom(uid) {
-        /**
-         * We want to match the zoom level of another view.
-         *
-         * That means synchronizing the center point and zoom level
-         * of the first view to the second view.
-         */
-
-        this.setState({
-            chooseViewHandler: uid2 => this.handleZoomYanked(uid, uid2),
-            mouseOverOverlayUid: uid,
-            configMenuUid: null
-        });
-  }
-
-  handleUnlockZoom(uid) {
+  handleUnlock(uid, lockGroups) {
       /**
        * We want to unlock uid from the zoom group that it's in.
        *
@@ -479,49 +496,49 @@ export class HiGlassComponent extends React.Component {
        */
 
     // if this function is being called, lockGroup has to exist
-    let lockGroup = this.zoomLocks[uid];
+    let lockGroup = lockGroups[uid];
     let lockGroupKeys = dictKeys(lockGroup);
 
     if (lockGroupKeys.length == 2) {
         // there's only two items in this lock group so we need to
         // remove them both (no point in having one view locked to itself)
-        delete this.zoomLocks[lockGroupKeys[0]];
-        delete this.zoomLocks[lockGroupKeys[1]];
+        delete lockGroups[lockGroupKeys[0]];
+        delete lockGroups[lockGroupKeys[1]];
 
         return;
     } else {
         // delete this view from the zoomLockGroup
-        if (this.zoomLocks[uid])
-            if (this.zoomLocks[uid][uid])
-                delete this.zoomLocks[uid][uid];
+        if (lockGroups[uid])
+            if (lockGroups[uid][uid])
+                delete lockGroups[uid][uid];
 
         // remove the handler
-        if (this.zoomLocks[uid])
-            delete this.zoomLocks[uid];
+        if (lockGroups[uid])
+            delete lockGroups[uid];
     }
   }
 
-  addZoomLock(uid1, uid2) {
+  addLock(uid1, uid2, lockGroups) {
       let group1Members = [];
       let group2Members = [];
 
-      if (!this.zoomLocks[uid1]) {
+      if (!lockGroups[uid1]) {
           // view1 isn't already in a group
           group1Members = [[uid1, scalesCenterAndK(this.xScales[uid1], this.yScales[uid1])]];
       } else {
           // view1 is already in a group
-          group1Members = dictItems(this.zoomLocks[uid1]).map(x =>
+          group1Members = dictItems(lockGroups[uid1]).map(x =>
             // x is [uid, [centerX, centerY, k]]
             [x[0], scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])]
           )
       }
 
-      if (!this.zoomLocks[uid2]) {
+      if (!lockGroups[uid2]) {
           // view1 isn't already in a group
           group2Members = [[uid2, scalesCenterAndK(this.xScales[uid2], this.yScales[uid2])]];
       } else {
           // view2 is already in a group
-          group2Members = dictItems(this.zoomLocks[uid2]).map(x =>
+          group2Members = dictItems(lockGroups[uid2]).map(x =>
             // x is [uid, [centerX, centerY, k]]
             [x[0], scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])]
           )
@@ -530,8 +547,30 @@ export class HiGlassComponent extends React.Component {
       let allMembers = group1Members.concat(group2Members);
       let groupDict = dictFromTuples(allMembers);
 
-      allMembers.forEach(m => { this.zoomLocks[m[0]] = groupDict });
+      allMembers.forEach(m => { lockGroups[m[0]] = groupDict });
 
+  }
+
+  handleLocationLockChosen(uid1, uid2) {
+        /* Views uid1 and uid2 need to be locked so that they always maintain the current
+         * zoom and translation difference.
+         * @param uid1: The view that the lock was called from
+         * @param uid2: The view that the lock was called on (the view that was selected)
+         */
+      if (uid1 == uid2) {
+            this.setState({
+                chooseViewHandler: null
+            });
+
+          return;    // locking a view to itself is silly
+      }
+
+      this.addLock(uid1, uid2, this.locationLocks);
+
+
+        this.setState({
+            chooseViewHandler: null
+        });
   }
 
   handleZoomLockChosen(uid1, uid2) {
@@ -549,7 +588,7 @@ export class HiGlassComponent extends React.Component {
           return;    // locking a view to itself is silly
       }
 
-      this.addZoomLock(uid1, uid2);
+      this.addLock(uid1, uid2, this.zoomLocks);
 
 
         this.setState({
@@ -582,7 +621,7 @@ export class HiGlassComponent extends React.Component {
       });
   }
 
-  handleCenterSynced(uid1, uid2) {
+  handleLocationYanked(uid1, uid2) {
         /**
          * Uid1 is copying the center of uid2
          */
@@ -599,7 +638,7 @@ export class HiGlassComponent extends React.Component {
 
 
         // set target center
-        this.setCenters[uid1](sourceCenterX,sourceCenterY, targetK, false);
+        this.setCenters[uid1](sourceCenterX,sourceCenterY, targetK, true);
 
 
         this.setState({
@@ -616,12 +655,15 @@ export class HiGlassComponent extends React.Component {
         let sourceXScale = this.xScales[uid2];
         let sourceYScale = this.yScales[uid2];
 
+        let targetXScale = this.xScales[uid1];
+        let targetYScale = this.yScales[uid1];
 
+        let [targetCenterX, targetCenterY, targetK] = scalesCenterAndK(targetXScale, targetYScale);
         let [sourceCenterX, sourceCenterY, sourceK] = scalesCenterAndK(sourceXScale, sourceYScale);
 
 
         // set target center
-        this.setCenters[uid1](sourceCenterX,sourceCenterY, sourceK, false);
+        this.setCenters[uid1](targetCenterX, targetCenterY, sourceK, true);
 
 
         this.setState({
@@ -630,33 +672,7 @@ export class HiGlassComponent extends React.Component {
   }
 
 
-  handleConfigMenuOpened(uid) {
-      /**
-       * The user clicked on the `cog` of the menu so we need to open
-       * it.
-       */
-    let bbox = this.configImg[uid].getBoundingClientRect();
-
-    this.setState({
-        configMenuUid: uid,
-        configMenuPosition: bbox
-    });
-  }
-
-  handleAddTrackPositionMenuOpened(uid) {
-      /**
-       * The user has clicked on the 'plus' sign at the top of a TiledPlot
-       * so we need to open the Track Position Chooser dialog
-       */
-    let bbox = this.plusImg[uid].getBoundingClientRect();
-
-    this.setState({
-        addTrackPositionMenuUid: uid,
-        addTrackPositionMenuPosition: bbox
-    });
-  }
-
-  handleTrackPositionChosen(position) {
+  handleTrackPositionChosen(viewUid, position) {
       /**
        * The user has chosen a position for the new track. The actual
        * track selection will be handled by TiledPlot
@@ -664,8 +680,8 @@ export class HiGlassComponent extends React.Component {
        * We just need to close the menu here.
        */
     this.setState({
-        addTrackPositionMenuUid: null,
-        addTrackPositionMenuPosition: null
+        addTrackPosition: position,
+        addTrackPositionView: viewUid
     });
   }
 
@@ -719,8 +735,6 @@ export class HiGlassComponent extends React.Component {
             }
       };
 
-      // console.log('chosenRowHeight:', chosenRowHeight, 'height', height);
-
       if (this.props.options ? this.props.options.bounded : false) {
           this.setState({
             rowHeight: chosenRowHeight
@@ -738,6 +752,12 @@ export class HiGlassComponent extends React.Component {
         clearTimeout(this.dragTimeout);
         this.dragTimeout = null;
     }
+  }
+
+  forceRefreshView() {
+    // force everything to rerender
+
+    this.setState(this.state);
   }
 
   refreshView(timeout=SHORT_DRAG_TIMEOUT) {
@@ -1025,7 +1045,7 @@ export class HiGlassComponent extends React.Component {
       }
 
       // if this view was zoom locked to another, we need to unlock it
-      this.handleUnlockZoom(uid);
+      this.handleUnlock(uid, this.zoomLocks);
       delete this.state.views[uid];
 
       let viewsByUid = this.removeInvalidTracks(this.state.views);
@@ -1076,6 +1096,15 @@ export class HiGlassComponent extends React.Component {
         });
     }
 
+    handleNoTrackAdded() {
+        if (this.state.addTrackPosition) {
+            // we've already added the track, remove the add track dialog
+            this.setState({
+                addTrackPosition: null
+            });
+        }
+    }
+
     handleTrackAdded(viewId, newTrack, position, host=null) {
         /**
          * A track was added from the AddTrackModal dialog.
@@ -1095,13 +1124,20 @@ export class HiGlassComponent extends React.Component {
 
         this.addNameToTrack(newTrack);
 
+        if (this.state.addTrackPosition) {
+            // we've already added the track, remove the add track dialog
+            this.setState({
+                addTrackPosition: null
+            });
+        }
+
         if (host) {
             // we're adding a series rather than a whole new track
             this.handleSeriesAdded(viewId, newTrack, position, host);
             return;
         }
 
-        newTrack.width = tracksInfoByType[newTrack.type].minWidth ? tracksInfoByType[newTrack.type].minWidth 
+        newTrack.width = tracksInfoByType[newTrack.type].minWidth ? tracksInfoByType[newTrack.type].minWidth
             : this.minVerticalWidth;
         newTrack.height = tracksInfoByType[newTrack.type].minHeight ? tracksInfoByType[newTrack.type].minHeight
             : this.minHorizontalHeight;
@@ -1147,6 +1183,7 @@ export class HiGlassComponent extends React.Component {
             // otherwise, we want it at the end of the track list
             tracks[position].push(newTrack);
         }
+
     }
 
     handleCloseTrack(viewId, uid) {
@@ -1195,18 +1232,28 @@ export class HiGlassComponent extends React.Component {
             let [tx, ty, k] = scalesCenterAndK(tXScale, tYScale);
             this.setCenters[fromView](tx, ty, k, false);
 
-            let locked = false
+            let zoomLocked = false;
+            let locationLocked = false;
 
+            // if we drag the brush and this view is locked to others, we don't
+            // want the movement we induce in them to come back and modify this
+            // view and set up a feedback loop
             if (viewUid in this.zoomLocks)
-                locked = fromView in this.zoomLocks[viewUid];
+                zoomLocked = fromView in this.zoomLocks[viewUid];
+            if (zoomLocked)
+                this.handleUnlock(viewUid, this.zoomLocks);
 
-            if (locked)
-                this.handleUnlockZoom(viewUid);
+            if (viewUid in this.locationLocks)
+                locationLocked = fromView in this.locationLocks[viewUid];
+            if (locationLocked)
+                this.handleUnlock(viewUid, this.locationLocks);
 
             this.handleScalesChanged(fromView, tXScale, tYScale, true);
 
-            if (locked)
-                this.addZoomLock(viewUid, fromView);
+            if (zoomLocked)
+                this.addLock(viewUid, fromView, this.zoomLocks);
+            if (locationLocked)
+                this.addLock(viewUid, fromView, this.locationLocks);
 
           }
       }
@@ -1214,46 +1261,58 @@ export class HiGlassComponent extends React.Component {
       return;
   }
 
-  deserializeZoomLocks(viewConfig) {
-    this.zoomLocks = {};
+  deserializeLocationLocks(viewConfig) {
+    this.locationLocks = {};
 
-    if (viewConfig.zoomLocks) {
-        for (let viewUid of dictKeys(viewConfig.zoomLocks.locksByViewUid)) {
-            this.zoomLocks[viewUid] = viewConfig.zoomLocks
-                .zoomLocksDict[viewConfig.zoomLocks.locksByViewUid[viewUid]];
+    if (viewConfig.locationLocks) {
+        for (let viewUid of dictKeys(viewConfig.locationLocks.locksByViewUid)) {
+            this.locationLocks[viewUid] = viewConfig.locationLocks
+                .locksDict[viewConfig.locationLocks.locksByViewUid[viewUid]];
         }
     }
   }
 
-  serializeZoomLocks(zoomLocks) {
-      let zoomLocksDict = {};
+  deserializeZoomLocks(viewConfig) {
+    this.zoomLocks = {};
+
+    //
+    if (viewConfig.zoomLocks) {
+        for (let viewUid of dictKeys(viewConfig.zoomLocks.locksByViewUid)) {
+            this.zoomLocks[viewUid] = viewConfig.zoomLocks
+                .locksDict[viewConfig.zoomLocks.locksByViewUid[viewUid]];
+        }
+    }
+  }
+
+  serializeLocks(locks) {
+      let locksDict = {};
       let locksByViewUid = {};
 
-    for (let viewUid of dictKeys(zoomLocks)) {
-        if (zoomLocks[viewUid].hasOwnProperty('uid')
-                && zoomLocksDict.hasOwnProperty(zoomLocks[viewUid].uid)) {
-            // we've already encountered this zoom lock so no need to do anything
+    for (let viewUid of dictKeys(locks)) {
+        if (locks[viewUid].hasOwnProperty('uid')
+                && locksDict.hasOwnProperty(locks[viewUid].uid)) {
+            // we've already encountered this location lock so no need to do anything
         } else {
-            // otherwise, assign this zoomLock its own uid
-            let zoomLockUid = slugid.nice();
-            zoomLocks[viewUid].uid = zoomLockUid;
+            // otherwise, assign this locationLock its own uid
+            let lockUid = slugid.nice();
+            locks[viewUid].uid = lockUid;
 
-            // make a note that we've seen this zoomLock
-            zoomLocksDict[zoomLockUid] =  zoomLocks[viewUid];
+            // make a note that we've seen this lock
+            locksDict[lockUid] =  locks[viewUid];
         }
 
         // note that this view has a reference to this lock
-        locksByViewUid[viewUid] = zoomLocks[viewUid].uid;
+        locksByViewUid[viewUid] = locks[viewUid].uid;
     }
 
     // remove the uids we just added
-    for (let viewUid of dictKeys(zoomLocks)) {
-        if (zoomLocks[viewUid].hasOwnProperty('uid') )
-            delete zoomLocks[viewUid].uid;
+    for (let viewUid of dictKeys(locks)) {
+        if (locks[viewUid].hasOwnProperty('uid') )
+            delete locks[viewUid].uid;
 
     }
 
-    return {'locksByViewUid': locksByViewUid, 'zoomLocksDict': zoomLocksDict}
+    return {'locksByViewUid': locksByViewUid, 'locksDict': locksDict}
   }
 
   getViewsAsString() {
@@ -1269,7 +1328,8 @@ export class HiGlassComponent extends React.Component {
         return newView;
     });
 
-    newJson.zoomLocks = this.serializeZoomLocks(this.zoomLocks);
+    newJson.zoomLocks = this.serializeLocks(this.zoomLocks);
+    newJson.locationLocks = this.serializeLocks(this.locationLocks);
 
     let data = JSON.stringify(newJson, null, 2);
     return data;
@@ -1561,9 +1621,17 @@ export class HiGlassComponent extends React.Component {
             this.fillInMinWidths(v.tracks);
             viewsByUid[v.uid] = v;
 
+            // if there's no y domain specified just use the x domain instead
+            // effectively centers the view on the diagonal
+            if (!v.initialYDomain) {
+                v.initialYDomain = [v.initialXDomain[0],v.initialXDomain[1]];
+            }
+
             // Add names to all the tracks
             let looseTracks = positionedTracksToAllTracks(v.tracks);
+
             this.deserializeZoomLocks(viewConfig);
+            this.deserializeLocationLocks(viewConfig);
 
             // give tracks their default names (e.g. 'type': 'top-axis'
             // will get a name of 'Top Axis'
@@ -1574,7 +1642,7 @@ export class HiGlassComponent extends React.Component {
 
             // add default options (as specified in config.js
             // (e.g. line color, heatmap color scales, etc...)
-            looseTracks.forEach(t => { 
+            looseTracks.forEach(t => {
                 this.addDefaultOptions(t)
 
                 if (t.contents) {
@@ -1590,6 +1658,10 @@ export class HiGlassComponent extends React.Component {
 
         return viewsByUid;
 
+    }
+
+    componentDidUpdate() {
+      this.animate();
     }
 
     componentWillUnmount() {
@@ -1621,7 +1693,6 @@ export class HiGlassComponent extends React.Component {
 
 
   render() {
-
     let tiledAreaStyle = {
         display: 'flex',
         flexDirection: 'column'
@@ -1633,27 +1704,6 @@ export class HiGlassComponent extends React.Component {
 
     let configMenu = null;
 
-    if (this.state.configMenuUid) {
-        configMenu = (<PopupMenu
-                        onMenuClosed={e => this.setState({configMenuUid: null})}
-                      >
-                            <ContextMenuContainer
-                                position={this.state.configMenuPosition}
-                                orientation={'left'}
-                            >
-                                <ConfigViewMenu
-                                    zoomLock={this.zoomLocks[this.state.configMenuUid]}
-                                    onLockZoom={e => this.handleLockZoom(this.state.configMenuUid)}
-                                    onYankZoom={e => this.handleYankZoom(this.state.configMenuUid)}
-                                    onSyncCenter={e => this.handleSyncCenter(this.state.configMenuUid)}
-                                    onProjectViewport={e => this.handleProjectViewport(this.state.configMenuUid)}
-                                    onTogglePositionSearchBox={e => this.handleTogglePositionSearchBox(this.state.configMenuUid)}
-                                    onExportViewAsJSON={e => this.handleExportViewAsJSON() }
-                                    onExportViewAsLink={e => this.handleExportViewsAsLink() }
-                                />
-                            </ContextMenuContainer>
-                        </PopupMenu>);
-    }
 
     // The component needs to be mounted in order for the initial view to have the right
     // width
@@ -1695,10 +1745,12 @@ export class HiGlassComponent extends React.Component {
                                 <TiledPlot
                                     key={'tp' + view.uid}
                                     uid={view.uid}
-                                    parentMounted={this.state.mounted}
                                      svgElement={this.state.svgElement}
                                      canvasElement={this.state.canvasElement}
                                      pixiStage={this.pixiStage}
+                                     addTrackPosition={
+                                        this.state.addTrackPositionView == view.uid ? this.state.addTrackPosition : null
+                                     }
                                      //dragging={this.state.dragging}
                                      tracks={view.tracks}
                                      initialXDomain={view.initialXDomain}
@@ -1714,6 +1766,7 @@ export class HiGlassComponent extends React.Component {
                                      chooseTrackHandler={this.state.chooseTrackHandler ? trackId => this.state.chooseTrackHandler(view.uid, trackId) : null}
                                      onTrackOptionsChanged={(trackId, options) => this.handleTrackOptionsChanged(view.uid, trackId, options) }
                                      onTrackAdded={(newTrack, position, host) => this.handleTrackAdded(view.uid, newTrack, position, host)}
+                                     onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
                                      onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
                                      zoomable={!this.props.viewConfig.zoomFixed}
                                      editable={this.props.viewConfig.editable}
@@ -1743,47 +1796,55 @@ export class HiGlassComponent extends React.Component {
 
                 let multiTrackHeader = this.props.viewConfig.editable ?
                     (
-                            <div className="multitrack-header">
-                                <span className="multitrack-header-id">
-                                { view.uid.slice(0,2) }
-                                </span>
+                         <ViewHeader
+                            onAddView={e=>this.handleAddView(view)}
+                            onCloseView={e=>this.handleCloseView(view.uid)}
 
-                                <svg
-                                    onClick={ e => this.handleAddView(view) }
-                                    ref={c => this.copyImg[view.uid] = c}
-                                    className={'multitrack-header-icon multiview-copy-img'}
-                                    width="10px"
-                                    height="10px">
-                                    <use href="#copy"></use>
-                                </svg>
+                            onLockZoom={uid =>
+                                this.handleYankFunction(uid, this.handleZoomLockChosen.bind(this))}
+                            onLockLocation={uid =>
+                                this.handleYankFunction(uid, this.handleLocationLockChosen.bind(this))}
+                            onLockZoomAndLocation={uid => this.handleYankFunction(uid, (a,b) => {
+                                this.handleZoomLockChosen(a,b);
+                                this.handleLocationLockChosen(a,b);
+                            })}
 
-                                <svg
-                                    onClick={ e => this.handleConfigMenuOpened(view.uid) }
-                                    ref={c => this.configImg[view.uid] = c}
-                                    className={'multitrack-header-icon multiview-config-img'}
-                                    width="10px"
-                                    height="10px">
-                                    <use href="#cog"></use>
-                                </svg>
+                            onUnlockZoom={uid => { this.handleUnlock(uid, this.zoomLocks) }}
+                            onUnlockLocation={uid => { this.handleUnlock(uid, this.locationLocks) }}
+                            onUnlockZoomAndLocation={uid => {
+                                this.handleUnlock(uid, this.zoomLocks);
+                                this.handleUnlock(uid, this.locationLocks);
+                            }}
 
-                                <svg
-                                    onClick={ e => this.handleAddTrackPositionMenuOpened(view.uid) }
-                                    ref={c => this.plusImg[view.uid] = c}
-                                    className={'multitrack-header-icon multiview-add-track-img'}
-                                    width="10px"
-                                    height="10px">
-                                    <use href="#plus"></use>
-                                </svg>
+                            onTakeAndLockZoomAndLocation={uid => {
+                                    this.handleYankFunction(uid, (a,b) => {
 
-                                <svg
-                                    onClick={() => { this.handleCloseView(view.uid)}}
-                                    ref={c => this.configImg[view.uid] = c}
-                                    className={'multitrack-header-icon multiview-close-img'}
-                                    width="10px"
-                                    height="10px">
-                                    <use href="#cross"></use>
-                                </svg>
-                            </div>
+                                        this.handleZoomYanked(a,b);
+                                        this.handleLocationYanked(a,b);
+                                        this.handleZoomLockChosen(a,b);
+                                        this.handleLocationLockChosen(a,b);
+                                    });
+                                }
+                            }
+
+
+                            onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
+
+                            onYankLocation={uid => this.handleYankFunction(uid, this.handleLocationYanked.bind(this)) }
+                            onYankZoom={uid => this.handleYankFunction(uid, this.handleZoomYanked.bind(this)) }
+                            onYankZoomAndLocation={uid => this.handleYankFunction(uid, (a,b) => {
+                                    this.handleZoomYanked(a,b);
+                                    this.handleLocationYanked(a,b);
+                                })
+                            }
+
+                            onProjectViewport={this.handleProjectViewport.bind(this)}
+                            onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
+                            onExportViewsAsLink={this.handleExportViewsAsLink.bind(this)}
+                            onTrackPositionChosen={position => this.handleTrackPositionChosen(view.uid, position)}
+                            viewUid={view.uid}
+
+                         />
                     ) : null; // this.editable ?
 
                 return (<div
@@ -1804,17 +1865,17 @@ export class HiGlassComponent extends React.Component {
 
     let exportLinkModal = this.state.exportLinkModalOpen ?
         (<ExportLinkModal
+            height={this.height}
             linkLocation={this.state.exportLinkLocation}
             onDone={() => this.setState({exportLinkModalOpen: false})}
             width={this.width}
-            height={this.height}
          />)
         : null;
 
     return (
       <div
-        ref={(c) => this.topDiv = c}
         key={this.uid}
+        ref={(c) => this.topDiv = c}
         style={{position: "relative"}}
       >
 
@@ -1836,8 +1897,7 @@ export class HiGlassComponent extends React.Component {
                     background: 'yellow',
                     opacity: 0.00,
             }}
-        >
-        </div>
+        />
 
 
         <ResponsiveReactGridLayout

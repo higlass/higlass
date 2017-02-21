@@ -26,8 +26,6 @@ export class AddTrackModal extends React.Component {
 
 
     handleSubmit() {
-        console.log('mainTileset:', this.state.mainTileset);
-
         this.props.onTrackChosen(this.state.mainTileset, 
                                  this.props.position,
                                  this.props.host);
@@ -43,6 +41,7 @@ export class AddTrackModal extends React.Component {
 
     mainTilesetChanged(mainTileset) {
         mainTileset.type = this.selectedPlotType;
+
         this.setState({
             mainTileset: mainTileset
         });
@@ -51,8 +50,6 @@ export class AddTrackModal extends React.Component {
     handleTilesetPickerDoubleClick(tileset) {
         this.mainTilesetChanged(tileset);
 
-        console.log('this.state.mainTileset:', this.state.mainTileset);
-        
         this.props.onTrackChosen(this.state.mainTileset, this.props.position);
     }
 
@@ -86,6 +83,7 @@ export class AddTrackModal extends React.Component {
 
         // only get options if there's a dataset selected
         let seriesOptions = null;
+
         if (this.state.mainTileset) {
 
             seriesOptions = (
@@ -108,6 +106,7 @@ export class AddTrackModal extends React.Component {
                     </div>
                 )
 
+        //console.log('this.props.onCancel', this.props.onCancel);
         return(<Modal 
                 onHide={this.props.onCancel}
                 show={this.props.show}
