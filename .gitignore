@@ -1,5 +1,7 @@
 build/
 npm-debug.log
+dist/**
+dist
 **/*.un~
 *.swo
 **/*.swp
