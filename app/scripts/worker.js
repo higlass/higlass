@@ -19,7 +19,6 @@ const MAX_FETCH_TILES = 20;
 
 export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale, passedCountTransform) {
     let epsilon = 0.000001;
-    //console.log('minVisibleValue:', minVisibleValue);
 
     let countTransform = x => {
         return Math.log(x);
@@ -29,17 +28,7 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
     let valueScale = scaleLinear().range([254, 0])
         .domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
 
-    //console.log('valueScale.domain()', valueScale.domain());
     let pixData = new Uint8ClampedArray(size * 4);
-
-    /*
-    let ctValues = data.map(x => countTransform(x));
-    let vsValues = ctValues.map(ct => Math.floor(valueScale(ct)));
-
-    //console.log('vsValues:', vsValues);
-    let f = format(".3f")
-    console.log('ctValues:', ctValues.map(x => f(x)).join(" "));
-    */
 
     let rgbIdx = 0;
     let e = 0;
@@ -89,14 +78,50 @@ export function workerGetTilesetInfo(url, done) {
     });
 }
 
+    function float32(in_uint16) {
+        //console.log('in_uint16:', in_uint16);
+
+        let t1;
+        let t2;
+        let t3;
+
+        t1 = in_uint16 & 0x7fff;                       // Non-sign bits
+        t2 = in_uint16 & 0x8000;                       // Sign bit
+        t3 = in_uint16 & 0x7c00;                       // Exponent
+        
+        t1 <<= 13;                              // Align mantissa on MSB
+        t2 <<= 16;                              // Shift sign bit into position
+
+        t1 += 0x38000000;                       // Adjust bias
+
+        t1 = (t3 == 0 ? 0 : t1);                // Denormals-as-zero
+
+        t1 |= t2;                               // Re-insert sign bit
+
+        return t1;
+    };
+
 function _base64ToArrayBuffer(base64) {
     var binary_string =  window.atob(base64);
     var len = binary_string.length;
+
     var bytes = new Uint8Array( len );
+
     for (var i = 0; i < len; i++)        {
         bytes[i] = binary_string.charCodeAt(i);
     }
+
     return bytes.buffer;
+}
+
+function _uint16ArrayToFloat32Array(uint16array) {
+    var bytes = new Float32Array( uint16array.length );
+
+    for (let i = 0; i < uint16array.length; i++) {
+        bytes[i] = float32(uint16array[i]);
+    }
+
+    return bytes;
 }
 
 export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
@@ -126,7 +151,9 @@ export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
                         data[key].tilesetUid = keyParts[0];
 
                         if ('dense' in data[key]) {
-                            let newDense = _base64ToArrayBuffer(data[key].dense);
+                            //let uint16Array = new Uint16Array(
+                            let newShortDense = _base64ToArrayBuffer(data[key].dense);
+                            let newDense = _float16ArrayToFloat32Array(newShortDense);
 
                             let a = new Float32Array(newDense);
                             let minNonZero = Number.MAX_SAFE_INTEGER;
@@ -220,9 +247,15 @@ export function workerFetchMultiRequestTiles(req) {
                             data[key].tilesetUid = keyParts[0];
 
                             if ('dense' in data[key]) {
-                                let newDense = _base64ToArrayBuffer(data[key].dense);
+                                let arrayBuffer = _base64ToArrayBuffer(data[key].dense);
 
-                                let a = new Float32Array(newDense);
+                                /* comment out until next empty line for 32 bit arrays */
+                                let uint16Array = new Uint16Array(arrayBuffer);
+                                let newDense = _uint16ArrayToFloat32Array(uint16Array);
+                                let a = newDense;
+
+                                //let a = new Float32Array(arrayBuffer);
+                                
                                 let minNonZero = Number.MAX_SAFE_INTEGER;
                                 let maxNonZero = Number.MIN_SAFE_INTEGER;
 
@@ -332,8 +365,6 @@ self.addEventListener('message', function (e) {
     let pixOutput = workerSetPix(256 * 256, tileData, passedData.minVisibleValue,
             passedData.maxVisibleValue,
             passedData.tile.colorScale );
-    //console.log('passedData:', passedData);
-    //console.log('colorScale:', passedData.tile.colorScale);
 
     let returnObj = {
         shownTileId: passedData.shownTileId,

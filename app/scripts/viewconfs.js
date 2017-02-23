@@ -5,137 +5,62 @@ var usedServer = remoteServer;
 
 export const testViewConfig = 
 {
+  "editable": true,
   "zoomFixed": false,
+  "trackSourceServers": [
+      remoteServer
+  ],
+  "exportViewUrl": "/api/v1/viewconfs/",
   "views": [
     {
-      "layout": {
-        "w": 6,
-        "h": 12,
-        "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
-      },
       "uid": "aa",
-      "initialYDomain": [
-        696689759.7416406,
-        702538548.6940163
-      ],
-      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "initialXDomain": [
-        1035841916.8849535,
-        1049848725.3793163
+        0,
+        3100000000
       ],
+      "autocompleteSource": "//higlass.io/api/v1/suggest/?d=dd&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
-        "bottom": [],
         "top": [
+        ],
+        "left": [
+        ],
+        "center": [
           {
-            "uid": "A1WsNo4ASmmt_NGr6nOlaQ",
-            "height": 30,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "position": "top",
-            "type": "horizontal-chromosome-labels",
-            "options": {},
-            "name": "Chromosome Labels (hg19)"
-          },
-          {
-            "width": 1560,
+            "uid": "c1",
             "type": "combined",
-            "uid": "ekSaD_uyRcWX4MaVjW8umA",
+            "height": 200,
             "contents": [
               {
-                "uuid": "THlpTJEpScel6HNAkOa-Yw",
-                "maxWidth": 4194304000,
-                "width": 20,
-                "datatype": "matrix",
-                "binsPerDimension": 256,
-                "filetype": "cooler",
-                "coordSystem": "hg19",
-                "private": false,
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "THlpTJEpScel6HNAkOa-Yw",
-                "maxZoom": 14,
-                "serverUidKey": "http://higlass.io/api/v1/THlpTJEpScel6HNAkOa-Yw",
-                "uid": "aS2lWAXVTtWzMF4vz2Jv8Q",
-                "position": "top",
-                "height": 50,
-                "type": "horizontal-heatmap",
+                "uid": "hm1",
+                "server": "http://127.0.0.1:8000/api/v1",
+                "tilesetUid": "aa",
+                "type": "heatmap",
+                "position": "center",
                 "options": {
-                  "maxZoom": null,
                   "colorRange": [
                     "#FFFFFF",
                     "#F8E71C",
-                    "rgba(245,166,35,1)",
-                    "rgba(0,0,0,1)"
+                    "#F5A623",
+                    "#D0021B"
                   ],
-                  "labelPosition": "bottomRight",
-                  "name": "Dixon et al. (2015) H1_hESC HindIII (allreps) 1kb"
+                  "maxZoom": null
                 },
-                "coordSystem2": "",
-                "name": "Dixon et al. (2015) H1_hESC HindIII (allreps) 1kb"
-              },
-              {
-                "uuid": "b6qFe7fOSnaX-YkP2kzN1w",
-                "maxWidth": 4294967296,
-                "datatype": "vector",
-                "filetype": "hitile",
-                "coordSystem": "hg19",
-                "private": false,
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
-                "maxZoom": 22,
-                "serverUidKey": "http://higlass.io/api/v1/b6qFe7fOSnaX-YkP2kzN1w",
-                "uid": "FwskpPhoQKWzPGFhMpD2LQ",
-                "type": "horizontal-line",
-                "options": {
-                  "axisPositionHorizontal": "right",
-                  "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile"
-                },
-                "coordSystem2": "",
-                "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile",
-                "position": "top"
+                "name": "Dixon2015-H1_TB-HindIII-allreps-filtered.10kb.multires.cool"
               }
             ],
-            "height": 191,
-            "position": "top",
-            "options": {}
-          },
-          {
-            "uid": "OHJakQICQD6gTD7skx4EWA",
-            "maxWidth": 4294967296,
-            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "server": "http://higlass.io/api/v1",
-            "maxZoom": 22,
-            "position": "top",
-            "height": 60,
-            "type": "horizontal-gene-annotations",
-            "options": {
-              "name": "Gene Annotations (hg19)"
-            },
-            "name": "Gene Annotations (hg19)"
+            "position": "center"
           }
         ],
         "right": [],
-        "center": [],
-        "left": []
-      },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-      "genomePositionSearchBoxVisible": true
+        "bottom": []
+      }
     }
   ],
-  "editable": true,
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
   "zoomLocks": {
     "locksByViewUid": {},
-    "locksDict": {}
-  },
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
-  "locationLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
+    "zoomLocksDict": {}
   }
 }
 
