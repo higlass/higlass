@@ -24,6 +24,8 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
         return Math.log(x);
     }
 
+    console.log('minVisibleValue', minVisibleValue, 'maxVisibleValue', maxVisibleValue);
+
     //let qScale = scaleQuantile().domain(data).range(range(255));
     let valueScale = scaleLinear().range([254, 0])
         .domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
@@ -115,13 +117,15 @@ function _base64ToArrayBuffer(base64) {
 }
 
 function _uint16ArrayToFloat32Array(uint16array) {
-    var bytes = new Float32Array( uint16array.length );
+    var bytes = new Uint32Array( uint16array.length );
 
     for (let i = 0; i < uint16array.length; i++) {
         bytes[i] = float32(uint16array[i]);
     }
 
-    return bytes;
+    var newBytes = new Float32Array(bytes.buffer);
+
+    return newBytes;
 }
 
 export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
@@ -176,6 +180,7 @@ export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
 
                             data[key]['minNonZero'] = minNonZero;
                             data[key]['maxNonZero'] = maxNonZero;
+
                         }
                     }
 
@@ -248,13 +253,24 @@ export function workerFetchMultiRequestTiles(req) {
 
                             if ('dense' in data[key]) {
                                 let arrayBuffer = _base64ToArrayBuffer(data[key].dense);
+                                let a;
 
-                                /* comment out until next empty line for 32 bit arrays */
-                                let uint16Array = new Uint16Array(arrayBuffer);
-                                let newDense = _uint16ArrayToFloat32Array(uint16Array);
-                                let a = newDense;
+                                console.log('dtype:', data[key].dtype, arrayBuffer.byteLength)
 
-                                //let a = new Float32Array(arrayBuffer);
+                                if (data[key].dtype == 'float16') {
+                                    // data is encoded as float16s
+                                    /* comment out until next empty line for 32 bit arrays */
+                                    let uint16Array = new Uint16Array(arrayBuffer);
+                                    let newDense = _uint16ArrayToFloat32Array(uint16Array);
+                                    a = newDense;
+
+                                    console.log('float16:', newDense);
+                                } else {
+                                    // data is encoded as float32s
+                                    a = new Float32Array(arrayBuffer);
+
+                                    console.log('float32:', a)
+                                }
                                 
                                 let minNonZero = Number.MAX_SAFE_INTEGER;
                                 let maxNonZero = Number.MIN_SAFE_INTEGER;
@@ -276,6 +292,8 @@ export function workerFetchMultiRequestTiles(req) {
 
                                 data[key]['minNonZero'] = minNonZero;
                                 data[key]['maxNonZero'] = maxNonZero;
+
+                                console.log('minNonZero:', minNonZero, 'maxNonZero:', maxNonZero);
                             }
                         }
 

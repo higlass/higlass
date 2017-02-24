@@ -23,6 +23,15 @@ export const testViewConfig =
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
+            {
+                "server": "http://127.0.0.1:8000/api/v1",
+                "tilesetUid": "bb",
+                "type": "horizontal-line",
+                "options": {
+                    "axisPositionHorizontal": "left"
+                }
+              }
+
         ],
         "left": [
         ],
