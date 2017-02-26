@@ -8,33 +8,37 @@ export const testViewConfig =
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-      remoteServer
+    "http://127.0.0.1:8000/api/v1"
   ],
   "exportViewUrl": "/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
       "initialXDomain": [
-        0,
-        3100000000
+        237061105.78003678,
+        273365002.38505375
       ],
       "autocompleteSource": "//higlass.io/api/v1/suggest/?d=dd&",
-      "genomePositionSearchBoxVisible": true,
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "genomePositionSearchBoxVisible": false,
       "tracks": {
         "top": [
-            {
-                "server": "http://127.0.0.1:8000/api/v1",
-                "tilesetUid": "bb",
-                "type": "horizontal-line",
-                "options": {
-                    "axisPositionHorizontal": "left"
-                }
-              }
-
+          {
+            "server": "http://127.0.0.1:8000/api/v1",
+            "tilesetUid": "bb",
+            "type": "horizontal-line",
+            "options": {
+              "axisPositionHorizontal": "left",
+              "name": "wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.hitile"
+            },
+            "height": 20,
+            "position": "top",
+            "uid": "ZZdrUBIjToi5sJgk7ishPA",
+            "name": "wgEncodeCaltechRnaSeqHuvecR1x75dTh1014IlnaPlusSignalRep2.hitile",
+            "maxWidth": 4294967296,
+            "maxZoom": 22
+          }
         ],
-        "left": [
-        ],
+        "left": [],
         "center": [
           {
             "uid": "c1",
@@ -54,22 +58,65 @@ export const testViewConfig =
                     "#F5A623",
                     "#D0021B"
                   ],
-                  "maxZoom": null
+                  "maxZoom": null,
+                  "labelPosition": "bottomRight",
+                  "name": "dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool"
                 },
-                "name": "Dixon2015-H1_TB-HindIII-allreps-filtered.10kb.multires.cool"
+                "name": "dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool",
+                "maxWidth": 4096000000,
+                "binsPerDimension": 256,
+                "maxZoom": 4
+              },
+              {
+                "uuid": "aa",
+                "filetype": "cooler",
+                "datatype": "matrix",
+                "private": false,
+                "name": "dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool",
+                "coordSystem": "hg19",
+                "coordSystem2": "",
+                "server": "http://127.0.0.1:8000/api/v1",
+                "tilesetUid": "aa",
+                "serverUidKey": "http://127.0.0.1:8000/api/v1/aa",
+                "uid": "byOWlwyeTi6ncvwD8RM_hQ",
+                "type": "2d-tiles",
+                "options": {
+                  "name": "dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool"
+                },
+                "maxWidth": 4096000000,
+                "binsPerDimension": 256,
+                "maxZoom": 4
               }
             ],
-            "position": "center"
+            "position": "center",
+            "options": {}
           }
         ],
         "right": [],
         "bottom": []
+      },
+      "initialYDomain": [
+        236407397.02457654,
+        265029240.4230712
+      ],
+      "layout": {
+        "w": 6,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
       }
     }
   ],
   "zoomLocks": {
     "locksByViewUid": {},
-    "zoomLocksDict": {}
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
   }
 }
 

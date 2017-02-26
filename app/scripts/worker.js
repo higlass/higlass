@@ -24,8 +24,6 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
         return Math.log(x);
     }
 
-    console.log('minVisibleValue', minVisibleValue, 'maxVisibleValue', maxVisibleValue);
-
     //let qScale = scaleQuantile().domain(data).range(range(255));
     let valueScale = scaleLinear().range([254, 0])
         .domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
@@ -81,8 +79,6 @@ export function workerGetTilesetInfo(url, done) {
 }
 
     function float32(in_uint16) {
-        //console.log('in_uint16:', in_uint16);
-
         let t1;
         let t2;
         let t3;
@@ -255,7 +251,6 @@ export function workerFetchMultiRequestTiles(req) {
                                 let arrayBuffer = _base64ToArrayBuffer(data[key].dense);
                                 let a;
 
-                                console.log('dtype:', data[key].dtype, arrayBuffer.byteLength)
 
                                 if (data[key].dtype == 'float16') {
                                     // data is encoded as float16s
@@ -264,12 +259,9 @@ export function workerFetchMultiRequestTiles(req) {
                                     let newDense = _uint16ArrayToFloat32Array(uint16Array);
                                     a = newDense;
 
-                                    console.log('float16:', newDense);
                                 } else {
                                     // data is encoded as float32s
                                     a = new Float32Array(arrayBuffer);
-
-                                    console.log('float32:', a)
                                 }
                                 
                                 let minNonZero = Number.MAX_SAFE_INTEGER;
@@ -292,8 +284,6 @@ export function workerFetchMultiRequestTiles(req) {
 
                                 data[key]['minNonZero'] = minNonZero;
                                 data[key]['maxNonZero'] = maxNonZero;
-
-                                console.log('minNonZero:', minNonZero, 'maxNonZero:', maxNonZero);
                             }
                         }
 
