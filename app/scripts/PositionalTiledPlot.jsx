@@ -96,7 +96,7 @@ class TrackArea extends React.Component {
                             style={this.getSettingsImgStyle()}
                             width="10px"
                             height="10px">
-                            <use xlinkHref="#cross"></use>
+                            <use xlinkHref="#cog"></use>
                         </svg>
 
                         <svg
@@ -122,7 +122,7 @@ class TrackArea extends React.Component {
                             style={this.getCloseImgStyle()}
                             width="10px"
                             height="10px">
-                            <use xlinkHref="#cog"></use>
+                            <use xlinkHref="#cross"></use>
                         </svg>
 
                 </div>)
