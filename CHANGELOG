@@ -1,3 +1,7 @@
+v0.4.40
+
+- Remove default colormap from viewconfig
+
 v0.4.39
 
 - Switch cog and close buttons

@@ -63,12 +63,6 @@ export const testViewConfig =
                 "type": "horizontal-heatmap",
                 "options": {
                   "maxZoom": null,
-                  "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "rgba(245,166,35,1)",
-                    "rgba(0,0,0,1)"
-                  ],
                   "labelPosition": "bottomRight",
                   "name": "Dixon et al. (2015) H1_hESC HindIII (allreps) 1kb"
                 },
@@ -483,12 +477,6 @@ export const defaultViewConfig = {
                 "type": "heatmap",
                 "position": "center",
                 "options": {
-                  "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "#F5A623",
-                    "#D0021B"
-                  ],
                   "maxZoom": null
                 }
               }
