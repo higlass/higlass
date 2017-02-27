@@ -483,12 +483,6 @@ export const defaultViewConfig = {
                 "type": "heatmap",
                 "position": "center",
                 "options": {
-                  "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "#F5A623",
-                    "#D0021B"
-                  ],
                   "maxZoom": null
                 }
               }
