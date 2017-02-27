@@ -62,9 +62,9 @@ export class TrackRenderer extends React.Component {
         //this.zoomTransform = zoomIdentity();
         this.zoomBehavior = zoom()
             .filter(() => {
-                if (event.path[0].classList.contains("no-zoom"))
+                if (event.target.classList.contains("no-zoom"))
                     return false;
-                if (event.path[0].classList.contains('react-resizable-handle'))
+                if (event.target.classList.contains('react-resizable-handle'))
                     return false;
                 return true;
             })

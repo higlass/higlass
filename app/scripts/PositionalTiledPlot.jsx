@@ -50,7 +50,7 @@ class TrackArea extends React.Component {
 
     getControls() {
         let Handle = null;
-        
+
         if (this.moveable) {
             Handle = SortableHandle(() =>
                 <svg
@@ -96,7 +96,7 @@ class TrackArea extends React.Component {
                             style={this.getSettingsImgStyle()}
                             width="10px"
                             height="10px">
-                            <use href="#cog"></use>
+                            <use xlinkHref="#cross"></use>
                         </svg>
 
                         <svg
@@ -108,7 +108,7 @@ class TrackArea extends React.Component {
                             }}
                             width="10px"
                             height="10px">
-                            <use href="#plus"></use>
+                            <use xlinkHref="#plus"></use>
                         </svg>
 
                         <svg
@@ -122,7 +122,7 @@ class TrackArea extends React.Component {
                             style={this.getCloseImgStyle()}
                             width="10px"
                             height="10px">
-                            <use href="#cross"></use>
+                            <use xlinkHref="#cog"></use>
                         </svg>
 
                 </div>)
@@ -231,7 +231,7 @@ MoveableTrack.propTypes = {
 export class CenterTrack extends FixedTrack {
     // should be the same as a vertical track
     getCloseImgStyle() {
-        return { 
+        return {
                          position: 'relative',
                              pointerEvents: 'all',
                          opacity: .7}
@@ -268,7 +268,7 @@ class VerticalTrack extends MoveableTrack {
 
     // each image should be 13 pixels below the next one
     getCloseImgStyle() {
-        return { 
+        return {
                          marginTop: '5px',
                          position: 'relative',
                              pointerEvents: 'all',
@@ -308,7 +308,7 @@ class VerticalTrack extends MoveableTrack {
 
     getControls() {
         let Handle = null;
-        
+
         if (this.moveable) {
             Handle = SortableHandle(() =>
                 <svg
@@ -419,7 +419,7 @@ class HorizontalTrack extends MoveableTrack {
     }
 
     getCloseImgStyle() {
-        return { 
+        return {
                          position: 'relative',
                              pointerEvents: 'all',
                          opacity: .7}

@@ -200,7 +200,7 @@ export class HiGlassComponent extends React.Component {
                 track.options = JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions));
             else {
                 for (let optionName in tracksInfoByType[track.type].defaultOptions) {
-                    track.options[optionName] = track.options[optionName] ? 
+                    track.options[optionName] = track.options[optionName] ?
                         track.options[optionName] : JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions[optionName]));
 
                 }
@@ -371,7 +371,7 @@ export class HiGlassComponent extends React.Component {
               if (key == uid)  // no need to notify oneself that the scales have changed
                   continue
 
-              let [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key], 
+              let [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key],
                                                                     this.yScales[key]);
 
              let dx = value[0] - lockGroup[uid][0];
@@ -387,8 +387,8 @@ export class HiGlassComponent extends React.Component {
 
               // the key here is the target of zoom lock, so we want to keep its
               // x center and y center unchanged
-              let [newXScale, newYScale] = this.setCenters[key](keyCenterX, 
-                                                                keyCenterY, 
+              let [newXScale, newYScale] = this.setCenters[key](keyCenterX,
+                                                                keyCenterY,
                                                                 newK, false);
 
               // because the setCenters call above has a 'false' notify, the new scales won't
@@ -422,7 +422,7 @@ export class HiGlassComponent extends React.Component {
              if (!this.xScales[key] || !this.yScales[key])
                  continue;
 
-              let [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key], 
+              let [keyCenterX, keyCenterY, keyK] = scalesCenterAndK(this.xScales[key],
                                                                     this.yScales[key]);
 
               if (key == uid)  // no need to notify oneself that the scales have changed
@@ -438,8 +438,8 @@ export class HiGlassComponent extends React.Component {
                 if (!this.setCenters[key])
                     continue;
 
-              let [newXScale, newYScale] = this.setCenters[key](newCenterX, 
-                                                                newCenterY, 
+              let [newXScale, newYScale] = this.setCenters[key](newCenterX,
+                                                                newCenterY,
                                                                 keyK, false);
 
               // because the setCenters call above has a 'false' notify, the new scales won't
@@ -557,10 +557,6 @@ export class HiGlassComponent extends React.Component {
          * @param uid1: The view that the lock was called from
          * @param uid2: The view that the lock was called on (the view that was selected)
          */
-     console.log('location lock chosen');
-        console.log('sck1', scalesCenterAndK(this.xScales[uid1], this.yScales[uid1]))
-        console.log('sck2', scalesCenterAndK(this.xScales[uid2], this.yScales[uid2]))
-
       if (uid1 == uid2) {
             this.setState({
                 chooseViewHandler: null
@@ -583,7 +579,6 @@ export class HiGlassComponent extends React.Component {
          * @param uid1: The view that the lock was called from
          * @param uid2: The view that the lock was called on (the view that was selected)
          */
-        console.log('zoom lock chosen');
 
       if (uid1 == uid2) {
             this.setState({
@@ -655,7 +650,6 @@ export class HiGlassComponent extends React.Component {
         /**
          * Uid1 yanked the zoom of uid2, now  make sure that they're synchronized.
          */
-        console.log('zoom yanked');
 
         // where we're taking the zoom from
         let sourceXScale = this.xScales[uid2];
@@ -741,8 +735,6 @@ export class HiGlassComponent extends React.Component {
             }
       };
 
-      // console.log('chosenRowHeight:', chosenRowHeight, 'height', height);
-
       if (this.props.options ? this.props.options.bounded : false) {
           this.setState({
             rowHeight: chosenRowHeight
@@ -764,7 +756,7 @@ export class HiGlassComponent extends React.Component {
 
   forceRefreshView() {
     // force everything to rerender
-    
+
     this.setState(this.state);
   }
 
@@ -1145,7 +1137,7 @@ export class HiGlassComponent extends React.Component {
             return;
         }
 
-        newTrack.width = tracksInfoByType[newTrack.type].minWidth ? tracksInfoByType[newTrack.type].minWidth 
+        newTrack.width = tracksInfoByType[newTrack.type].minWidth ? tracksInfoByType[newTrack.type].minWidth
             : this.minVerticalWidth;
         newTrack.height = tracksInfoByType[newTrack.type].minHeight ? tracksInfoByType[newTrack.type].minHeight
             : this.minHorizontalHeight;
@@ -1650,7 +1642,7 @@ export class HiGlassComponent extends React.Component {
 
             // add default options (as specified in config.js
             // (e.g. line color, heatmap color scales, etc...)
-            looseTracks.forEach(t => { 
+            looseTracks.forEach(t => {
                 this.addDefaultOptions(t)
 
                 if (t.contents) {
@@ -1804,13 +1796,13 @@ export class HiGlassComponent extends React.Component {
 
                 let multiTrackHeader = this.props.viewConfig.editable ?
                     (
-                         <ViewHeader 
+                         <ViewHeader
                             onAddView={e=>this.handleAddView(view)}
                             onCloseView={e=>this.handleCloseView(view.uid)}
 
-                            onLockZoom={uid => 
+                            onLockZoom={uid =>
                                 this.handleYankFunction(uid, this.handleZoomLockChosen.bind(this))}
-                            onLockLocation={uid => 
+                            onLockLocation={uid =>
                                 this.handleYankFunction(uid, this.handleLocationLockChosen.bind(this))}
                             onLockZoomAndLocation={uid => this.handleYankFunction(uid, (a,b) => {
                                 this.handleZoomLockChosen(a,b);
@@ -1828,23 +1820,22 @@ export class HiGlassComponent extends React.Component {
                                     this.handleYankFunction(uid, (a,b) => {
 
                                         this.handleZoomYanked(a,b);
-                                        this.handleLocationYanked(a,b); 
+                                        this.handleLocationYanked(a,b);
                                         this.handleZoomLockChosen(a,b);
                                         this.handleLocationLockChosen(a,b);
                                     });
                                 }
                             }
 
-                                                
+
                             onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
 
                             onYankLocation={uid => this.handleYankFunction(uid, this.handleLocationYanked.bind(this)) }
                             onYankZoom={uid => this.handleYankFunction(uid, this.handleZoomYanked.bind(this)) }
                             onYankZoomAndLocation={uid => this.handleYankFunction(uid, (a,b) => {
-                                console.log('here');
                                     this.handleZoomYanked(a,b);
-                                    this.handleLocationYanked(a,b); 
-                                }) 
+                                    this.handleLocationYanked(a,b);
+                                })
                             }
 
                             onProjectViewport={this.handleProjectViewport.bind(this)}

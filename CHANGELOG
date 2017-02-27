@@ -1,6 +1,11 @@
+v0.4.33
+
+- New header colors
+
 v0.4.32
 
 - Reduced the number of tiles requested by the horizontal heatmap track
+- Removed console log statements
 
 v0.4.31 
 

@@ -187,8 +187,8 @@ export class SeriesListMenu extends ContextMenuContainer {
                             height={"10px"}
                             width={"10px"}
                         >
-                            <use 
-                                href={"#play"}
+                            <use
+                                xlinkHref={"#play"}
                             />
                         </svg>
                     </ContextMenuItem>

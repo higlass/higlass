@@ -32,14 +32,6 @@ export class VerticalLine1DPixiTrack extends HorizontalLine1DPixiTrack {
         this.moveToOrigin.position.x = this.position[0];
         this.moveToOrigin.position.y = this.position[1];
 
-        /*
-        console.log('position[0]:', this.position[0], this.position[1]);
-        this.pMain.position.x = this.position[0];
-        this.pMain.position.y = this.position[1];
-
-        this.setMask(this.position, this.dimensions);
-        this.draw();
-        */
     }
 
     refXScale(_) {

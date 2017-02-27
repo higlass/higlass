@@ -63,8 +63,7 @@ export class GenomePositionSearchBox extends React.Component {
         this.styles = {
                   item: {
                     padding: '2px 6px',
-                    cursor: 'default',
-                    "zIndex": 1000
+                    cursor: 'default'
                   },
 
                   highlightedItem: {
@@ -380,43 +379,35 @@ export class GenomePositionSearchBox extends React.Component {
                 bsSize="small"
                 className="genome-position-search"
             >
-                <InputGroup>
-                    <div style={{"zIndex": 999, "position": "relative"}}>
-                        <Autocomplete
-                            ref={c => this.autocompleteMenu = c}
-                            value={this.state.value}
-                            items={this.state.genes}
-                            onChange = {this.onAutocompleteChange.bind(this)}
-                            onSelect={(value, objct) => this.geneSelected(value, objct) }
-                            onKeyDown={ this.searchFieldKeyPress.bind(this) }
-                            getItemValue={(item) => item.geneName}
-                            inputProps={{"className": "search-bar"}}
-                            wrapperStyle={{width: "100%"}}
-                            onMenuVisibilityChange={this.handleMenuVisibilityChange.bind(this)}
-                            menuStyle={{position:'absolute',
-                                'left': this.menuPosition.left,
-                                'top': this.menuPosition.top,
-                                border: '1px solid black'
-                            }}
-                            renderItem={(item, isHighlighted) => (
-                                <div
-                                  style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
-                                  key={item.refseqid}
-                                  id={item.refseqid}
-                                >{item.geneName}</div>
-                              )}
-                            renderMenu={this.handleRenderMenu.bind(this)}
-                        />
-                    </div>
+                <Autocomplete
+                    ref={c => this.autocompleteMenu = c}
+                    value={this.state.value}
+                    items={this.state.genes}
+                    onChange = {this.onAutocompleteChange.bind(this)}
+                    onSelect={(value, objct) => this.geneSelected(value, objct) }
+                    onKeyDown={ this.searchFieldKeyPress.bind(this) }
+                    getItemValue={(item) => item.geneName}
+                    inputProps={{"className": "search-bar"}}
+                    wrapperStyle={{width: "100%"}}
+                    onMenuVisibilityChange={this.handleMenuVisibilityChange.bind(this)}
+                    menuStyle={{position:'absolute',
+                        'left': this.menuPosition.left,
+                        'top': this.menuPosition.top,
+                        border: '1px solid black'
+                    }}
+                    renderItem={(item, isHighlighted) => (
+                        <div
+                          style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
+                          key={item.refseqid}
+                          id={item.refseqid}
+                        >{item.geneName}</div>
+                      )}
+                    renderMenu={this.handleRenderMenu.bind(this)}
+                />
 
-                    <InputGroup.Button>
-                        <div style={{"zIndex": 1000, "position": "relative"}}>
-                            <Button bsSize="small" onClick={this.buttonClick.bind(this)}>
-                                <Glyphicon glyph="search"></Glyphicon>
-                            </Button>
-                        </div>
-                    </InputGroup.Button>
-                </InputGroup>
+                <Button bsSize="small" onClick={this.buttonClick.bind(this)}>
+                    <Glyphicon glyph="search"></Glyphicon>
+                </Button>
             </FormGroup>
             );
     }

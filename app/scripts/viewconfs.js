@@ -10,7 +10,7 @@ export const testViewConfig =
     {
       "layout": {
         "w": 6,
-        "h": 3,
+        "h": 12,
         "x": 0,
         "y": 0,
         "i": "aa",
@@ -19,50 +19,20 @@ export const testViewConfig =
       },
       "uid": "aa",
       "initialYDomain": [
-        0, 100000000
+        696689759.7416406,
+        702538548.6940163
       ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "initialXDomain": [
-        0, 100000000
+        1035841916.8849535,
+        1049848725.3793163
       ],
       "tracks": {
         "bottom": [],
         "top": [
           {
-            "uuid": "Hyc3TZevQVm3FcTAZShLQg",
-            "maxWidth": 4194304000,
-            "width": 1216,
-            "datatype": "matrix",
-            "binsPerDimension": 256,
-            "filetype": "cooler",
-            "coordSystem": "hg19",
-            "private": false,
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "Hyc3TZevQVm3FcTAZShLQg",
-            "maxZoom": 14,
-            "serverUidKey": "http://higlass.io/api/v1/Hyc3TZevQVm3FcTAZShLQg",
-            "uid": "YbUe-NGzSUi83tEMHCW3bA",
-            "height": 57,
-            "type": "horizontal-heatmap",
-            "options": {
-              "maxZoom": null,
-              "colorRange": [
-                "#FFFFFF",
-                "#F8E71C",
-                "rgba(245,166,35,1)",
-                "rgba(0,0,0,1)"
-              ],
-              "labelPosition": "bottomRight",
-              "name": "Aiden et al. (2009) GM06900 HINDIII 1kb"
-            },
-            "coordSystem2": "",
-            "name": "Aiden et al. (2009) GM06900 HINDIII 1kb",
-            "position": "top"
-          },
-          {
-            "uid": "M4xM1WSwTrOeOhgh-9iIQw",
-            "height": 44,
-            "width": 1216,
+            "uid": "A1WsNo4ASmmt_NGr6nOlaQ",
+            "height": 30,
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "position": "top",
             "type": "horizontal-chromosome-labels",
@@ -70,14 +40,75 @@ export const testViewConfig =
             "name": "Chromosome Labels (hg19)"
           },
           {
+            "width": 1560,
+            "type": "combined",
+            "uid": "ekSaD_uyRcWX4MaVjW8umA",
+            "contents": [
+              {
+                "uuid": "THlpTJEpScel6HNAkOa-Yw",
+                "maxWidth": 4194304000,
+                "width": 20,
+                "datatype": "matrix",
+                "binsPerDimension": 256,
+                "filetype": "cooler",
+                "coordSystem": "hg19",
+                "private": false,
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "THlpTJEpScel6HNAkOa-Yw",
+                "maxZoom": 14,
+                "serverUidKey": "http://higlass.io/api/v1/THlpTJEpScel6HNAkOa-Yw",
+                "uid": "aS2lWAXVTtWzMF4vz2Jv8Q",
+                "position": "top",
+                "height": 50,
+                "type": "horizontal-heatmap",
+                "options": {
+                  "maxZoom": null,
+                  "colorRange": [
+                    "#FFFFFF",
+                    "#F8E71C",
+                    "rgba(245,166,35,1)",
+                    "rgba(0,0,0,1)"
+                  ],
+                  "labelPosition": "bottomRight",
+                  "name": "Dixon et al. (2015) H1_hESC HindIII (allreps) 1kb"
+                },
+                "coordSystem2": "",
+                "name": "Dixon et al. (2015) H1_hESC HindIII (allreps) 1kb"
+              },
+              {
+                "uuid": "b6qFe7fOSnaX-YkP2kzN1w",
+                "maxWidth": 4294967296,
+                "datatype": "vector",
+                "filetype": "hitile",
+                "coordSystem": "hg19",
+                "private": false,
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
+                "maxZoom": 22,
+                "serverUidKey": "http://higlass.io/api/v1/b6qFe7fOSnaX-YkP2kzN1w",
+                "uid": "FwskpPhoQKWzPGFhMpD2LQ",
+                "type": "horizontal-line",
+                "options": {
+                  "axisPositionHorizontal": "right",
+                  "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile"
+                },
+                "coordSystem2": "",
+                "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile",
+                "position": "top"
+              }
+            ],
+            "height": 191,
+            "position": "top",
+            "options": {}
+          },
+          {
             "uid": "OHJakQICQD6gTD7skx4EWA",
             "maxWidth": 4294967296,
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "server": "http://higlass.io/api/v1",
-            "width": 1216,
             "maxZoom": 22,
             "position": "top",
-            "height": 89,
+            "height": 60,
             "type": "horizontal-gene-annotations",
             "options": {
               "name": "Gene Annotations (hg19)"
@@ -86,38 +117,7 @@ export const testViewConfig =
           }
         ],
         "right": [],
-        "center": [
-            {
-                "uuid": "GGKJ59R-RsKtwgIgFohOhA",
-                "filetype": "cooler",
-                "datatype": "matrix",
-                "private": false,
-                "name": "Dixon et al. (2015) H1_MS HindIII (allreps) 1kb",
-                "coordSystem": "hg19",
-                "coordSystem2": "",
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "GGKJ59R-RsKtwgIgFohOhA",
-                "serverUidKey": "http://higlass.io/api/v1/GGKJ59R-RsKtwgIgFohOhA",
-                "uid": "Hqt7lBgGSIqN_b6T_HbEdw",
-                "type": "heatmap",
-                "options": {
-                  "labelPosition": "bottomRight",
-                  "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "rgba(245,166,35,1)",
-                    "rgba(0,0,0,1)"
-                  ],
-                  "maxZoom": null,
-                  "name": "Dixon et al. (2015) H1_MS HindIII (allreps) 1kb"
-                },
-                "width": 20,
-                "height": 20,
-                "maxWidth": 4194304000,
-                "binsPerDimension": 256,
-                "maxZoom": 14
-              }
-        ],
+        "center": [],
         "left": []
       },
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
