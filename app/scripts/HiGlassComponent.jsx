@@ -1346,7 +1346,7 @@ export class HiGlassComponent extends React.Component {
   }
 
   handleExportViewsAsLink() {
-    let data = this.getViewsAsString();
+    let wrapper = '{"viewconfig":'+this.getViewsAsString()+'}';
 
     this.width = this.element.clientWidth;
     this.height = this.element.clientHeight;
@@ -1359,7 +1359,7 @@ export class HiGlassComponent extends React.Component {
     request(this.props.viewConfig.exportViewUrl)
         .header("X-Requested-With", "XMLHttpRequest")
         .header("Content-Type", "application/json")
-        .post(data, (error, response) => {
+        .post(wrapper, (error, response) => {
             if (response) {
                 let content = JSON.parse(response.response);
                 this.setState({
