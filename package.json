@@ -1,6 +1,6 @@
 {
   "name": "higlass",
-  "version": "0.4.33",
+  "version": "0.4.39",
   "description": "Massive matrix viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/scripts/hi_z.js",
@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "babel": "~6.5.2",
-    "babel-core": "~6.5.2",
+    "babel-core": "~6.10.4",
     "babel-loader": "~6.2.3",
     "babel-plugin-transform-object-rest-spread": "^6.20.2",
     "babel-preset-es2016": "^6.16.0",
@@ -57,7 +57,8 @@
     "style-loader": "^0.13.1",
     "webpack": "~1.12.14",
     "webpack-stream": "~3.1.0",
-    "wiredep": "~3.0.0"
+    "wiredep": "~3.0.0",
+    "webpack-dev-server": "^1.16.2"
   },
   "eslintConfig": {
     "env": {
@@ -96,8 +97,7 @@
     "react-sortable-hoc": "^0.1.1",
     "threads": "^0.7.2",
     "transform-loader": "^0.2.3",
-    "url-join": "^1.1.0",
-    "webpack-dev-server": "^1.16.2"
+    "url-join": "^1.1.0"
   },
   "scripts": {
     "start": "webpack-dev-server --content-base app --display-exclude --profile --inline | grep -v '\\[\\d*\\]'",
