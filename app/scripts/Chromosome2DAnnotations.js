@@ -1,3 +1,4 @@
+import {color} from 'd3-color';
 import {PixiTrack} from './PixiTrack.js';
 import {ChromosomeInfo} from './ChromosomeInfo.js';
 
@@ -22,16 +23,18 @@ export class Chromosome2DAnnotations extends PixiTrack {
 
         this.drawnRects.clear();
         
-        let minRectWidth = 5;
-        let minRectHeight = 5;
+        let minRectWidth = 10;
+        let minRectHeight = 10;
 
         super.draw();
         let graphics = this.pMain;
         graphics.clear();
 
         for (let region of this.options.regions) {
-            graphics.lineStyle(1, 0x0000FF, 0.3);
-            graphics.beginFill(0x0000FF, 0.3);
+            let c = color(region[region.length-1]);
+            let hex = PIXI.utils.rgb2hex([c.r, c.g, c.b]);
+            graphics.lineStyle(1, hex, 0.6);
+            graphics.beginFill(hex, 0.6);
 
             //console.log('region:', region);
             let startX = this._xScale(this.chromInfo.chrPositions[region[0]].pos + +region[1]);
