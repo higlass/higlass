@@ -1,3 +1,7 @@
+v0.5.0
+
+- Default to 12 columns
+
 v0.4.40
 
 - Remove default colormap from viewconfig
