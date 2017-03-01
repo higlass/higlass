@@ -204,12 +204,7 @@ export class TrackRenderer extends React.Component {
                     ctDefs[ct.uid] = ct;
                 }
 
-                console.log('trackObject.createdTracks', trackObject.createdTracks);
-                console.log('ctDefs:', ctDefs);
-
                 for (let uid in trackObject.createdTracks) {
-                    console.log('uid:', uid)
-                    console.log('ctDefs[uid]', ctDefs[uid]);
                     trackObject.createdTracks[uid].rerender(ctDefs[uid].options);
                 }
             }

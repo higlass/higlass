@@ -8,12 +8,9 @@ export class Chromosome2DAnnotations extends PixiTrack {
 
         this.drawnRects = new Set();
 
-        console.log('chromInfoPath:', chromInfoPath);
-
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;  
 
-            console.log('chromInfo:', this.chromInfo);
         });
     }
 
@@ -23,8 +20,8 @@ export class Chromosome2DAnnotations extends PixiTrack {
 
         this.drawnRects.clear();
         
-        let minRectWidth = 10;
-        let minRectHeight = 10;
+        let minRectWidth = this.options.minRectWidth ? this.options.minRectWidth : 10;
+        let minRectHeight = this.options.minRectWidth ? this.options.minRectHeight : 10;
 
         super.draw();
         let graphics = this.pMain;
@@ -32,7 +29,7 @@ export class Chromosome2DAnnotations extends PixiTrack {
 
         for (let region of this.options.regions) {
             let c = color(region[region.length-1]);
-            let hex = PIXI.utils.rgb2hex([c.r, c.g, c.b]);
+            let hex = PIXI.utils.rgb2hex([c.r / 255., c.g / 255., c.b / 255.]);
             graphics.lineStyle(1, hex, 0.6);
             graphics.beginFill(hex, 0.6);
 
