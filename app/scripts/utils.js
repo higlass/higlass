@@ -1,6 +1,6 @@
 import {scaleLinear} from 'd3-scale';
 import {range} from 'd3-array';
-import {rgb} from 'd3-color';
+import {rgb, color} from 'd3-color';
 
 export function dictValues(dictionary) {
     /**
@@ -186,3 +186,13 @@ export function colorDomainToRgbaArray(colorRange) {
     return rgbaArray;
 }
 
+export function colorToHex(colorValue) {
+    /**
+     * Convert a regular color value (e.g. 'red', '#FF0000', 'rgb(255,0,0)') to a 
+     * hex value which is legible by PIXI
+     */
+    let c = color(colorValue);
+    let hex = PIXI.utils.rgb2hex([c.r / 255., c.g / 255., c.b / 255.]);
+
+    return hex
+}

@@ -30,7 +30,7 @@
   "views": [
     {
       "layout": {
-        "w": 6,
+        "w": 12,
         "h": 12,
         "x": 0,
         "y": 0,
@@ -74,7 +74,7 @@
                 "filetype": "cooler",
                 "coordSystem": "hg19",
                 "private": false,
-                "server": "/api/v1",
+                "server": "http://higlass.io/api/v1",
                 "tilesetUid": "THlpTJEpScel6HNAkOa-Yw",
                 "maxZoom": 14,
                 "serverUidKey": "http://higlass.io/api/v1/THlpTJEpScel6HNAkOa-Yw",
@@ -132,7 +132,9 @@
             "height": 60,
             "type": "horizontal-gene-annotations",
             "options": {
-              "name": "Gene Annotations (hg19)"
+              "name": "Gene Annotations (hg19)",
+              "minusStrandColor": "green",
+              "plusStrandColor": "purple"
             },
             "name": "Gene Annotations (hg19)"
           }

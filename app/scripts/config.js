@@ -19,6 +19,26 @@ let remoteServer = "52.45.229.11";
 export const usedServer = remoteServer;
 
 export const optionsInfo = { 
+    minusStrandColor:  {
+        name: "- Strand Color",
+        inlineOptions: {
+            'red': { name: "Red", value: "red"},
+            'blue': { name: "Blue", value: "blue"},
+            'green': { name: "Green", value: "green"},
+            'grey': { name: "Grey", value: "grey"},
+            'black': { name: "Black", value: "black"}
+        }
+    },
+    plusStrandColor:  {
+        name: "+ Strand Color",
+        inlineOptions: {
+            'red': { name: "Red", value: "red"},
+            'blue': { name: "Blue", value: "blue"},
+            'green': { name: "Green", value: "green"},
+            'grey': { name: "Grey", value: "grey"},
+            'black': { name: "Black", value: "black"}
+        }
+    },
     oneDHeatmapFlipped: {
         name: 'Flip Heatmap',
         inlineOptions: {
@@ -281,7 +301,7 @@ export const tracksInfo = [
         orientation: '1d-horizontal',
         name: 'Gene Annotations',
         thumbnail: svgGeneAnnotationsIcon,
-        availableOptions: [ 'labelPosition' ]
+        availableOptions: [ 'labelPosition', 'plusStrandColor', 'minusStrandColor' ]
     },
     {
         type: 'vertical-gene-annotations',
