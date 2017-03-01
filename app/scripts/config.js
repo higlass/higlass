@@ -351,6 +351,15 @@ export const tracksInfo = [
     }
     ,
     {
+        type: '2d-chromosome-annotations',
+        local: true,
+        orientation: '2d',
+        name: '2D Chromosome Annotations',
+        thumbnail: null,
+        selectable: false
+    }
+    ,
+    {
         type: 'horizontal-chromosome-labels',
         datatype: ['chromosome-1d-labels'],
         local: true,
