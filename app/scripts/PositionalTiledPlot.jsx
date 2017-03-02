@@ -211,7 +211,7 @@ class MoveableTrack extends TrackArea {
                 style={{background: 'transparent'}}
                 uid={this.props.uid}
                 width={this.props.width}
-                resizeHandles={this.props.resizeHandles}
+                resizeHandles={this.props.editable ? this.props.resizeHandles : new Set()}
             />
                 {controls}
             </div>

@@ -3,6 +3,11 @@ v0.5.1
 - Configurable gene annotation colors
 - Added chromosome annotations tracks for programmatically addeable
 annotations
+- Fixed the 'Cannot read property 0 of undefined' bug when tileset info is
+inaccessible
+- Remove track resize handles when the component isn't editable
+- Fix bug associated with setting a new initial[X/Y]Domain where the
+cumulativeCenterOffset wasn't being reset
 
 v0.5.0
 
