@@ -155,6 +155,9 @@ export class TrackRenderer extends React.Component {
         this.initialXDomain = initialXDomain;
         this.initialYDomain = initialYDomain;
 
+        this.cumCenterYOffset = 0;
+        this.cumCenterXOffset = 0;
+
         this.drawableToDomainX = scaleLinear()
             .domain([this.currentProps.marginLeft + this.currentProps.leftWidth,
                     this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth])
