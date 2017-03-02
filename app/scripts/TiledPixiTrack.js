@@ -39,6 +39,11 @@ export class TiledPixiTrack extends PixiTrack {
 
         this.animate = animate;
 
+        // store the server and tileset uid so they can be used in draw()
+        // if the tileset info is not found
+        this.server = server;
+        this.tilesetUid = tilesetUid;
+
         tileProxy.trackInfo(server, tilesetUid, tilesetInfo => {
             // console.log('tilesetInfo:', tilesetInfo);
             this.tilesetInfo = tilesetInfo[tilesetUid];
@@ -71,6 +76,11 @@ export class TiledPixiTrack extends PixiTrack {
         this.refreshTilesDebounced = debounce(
             this.refreshTiles.bind(this), ZOOM_DEBOUNCE
         );
+
+        this.trackNotFoundText = new PIXI.Text('',
+                {fontSize: "12px", fontFamily: "Arial", fill: "black"});
+
+        this.pLabel.addChild(this.trackNotFoundText);
     }
 
     rerender(options) {
@@ -409,6 +419,17 @@ export class TiledPixiTrack extends PixiTrack {
 
 
     draw() {
+        if (!this.tilesetInfo) {
+            this.trackNotFoundText.text = "Tileset info not found. Server: [" + 
+                this.server + 
+                "] tilesetUid: [" + this.tilesetUid + "]";
+            this.trackNotFoundText.x = this.position[0];
+            this.trackNotFoundText.y = this.position[1];
+            this.trackNotFoundText.visible = true;
+        } else {
+            this.trackNotFoundText.visible = false;
+        }
+
         super.draw();
 
         for (let uid in this.fetchedTiles)

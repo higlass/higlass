@@ -1,6 +1,7 @@
 import {scaleLinear} from 'd3-scale';
 import {tileProxy} from './TileProxy.js';
 import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
+import {colorToHex} from './utils.js';
 import boxIntersect from 'box-intersect';
 
 let GENE_RECT_WIDTH = 1;
@@ -9,6 +10,8 @@ let GENE_RECT_HEIGHT = 6;
 export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
         super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+        this.textFontSize = '10px';
+        this.textFontFamily = 'Arial';
 
     }
 
@@ -23,11 +26,14 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
         tile.tileData.forEach(td => {
             let geneInfo = td.fields;
-            let fill = 'blue';
+            let fill = this.options.plusStrandColor ? this.options.plusStrandColor : 'blue';
+
             if (geneInfo[5] == '-') {
-                fill = 'red';
+                fill = this.options.minusStrandColor ? this.options.minusStrandColor : 'red';
             }
-            let text = new PIXI.Text(geneInfo[3],  {fontSize:"10px", fontFamily:"Arial", fill:fill});
+            let text = new PIXI.Text(geneInfo[3],  {fontSize: this.textFontSize, 
+                                                    fontFamily: this.textFontFamily,
+                                                    fill: colorToHex(fill)});
             if (this.flipText)
                 text.scale.x = -1;
 
@@ -132,19 +138,23 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 let yMiddle = this.dimensions[1] / 2;
                 let textYMiddle = this.dimensions[1] / 2;
                 let geneName = geneInfo[3];
+                let fill = null;
+
 
                 if (geneInfo[5] == '+') {
-                    // genes on the + strand drawn above and in blue
+                    // genes on the + strand drawn above and in a user-specified color or the default blue
+                    fill = colorToHex(this.options.plusStrandColor ? this.options.plusStrandColor : 'blue');
                     yMiddle -= 6;
                     textYMiddle -= 10;
-                    graphics.lineStyle(1, 0x0000FF, 0.3);
-                    graphics.beginFill(0x0000FF, 0.3);
+                    graphics.lineStyle(1, fill, 0.3);
+                    graphics.beginFill(fill, 0.3);
                 } else {
-                    // genes on the - strand drawn below and in red
+                    // genes on the - strand drawn below and in a user-specified color or the default red
+                    fill = colorToHex(this.options.minusStrandColor ? this.options.minusStrandColor : 'red');
                     yMiddle += 6;
                     textYMiddle += 23;
-                    graphics.lineStyle(1, 0xFF0000, 0.3);
-                    graphics.beginFill(0xFF0000, 0.3);
+                    graphics.lineStyle(1, fill, 0.3);
+                    graphics.beginFill(fill, 0.3);
                 }
 
                 let height = valueScale(Math.log(+geneInfo[4]));
@@ -174,6 +184,9 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
                 text.position.x = this._xScale(txMiddle);
                 text.position.y = textYMiddle;
+                text.style = {fontSize: this.textFontSize,
+                              fontFamily: this.textFontFamily,
+                              fill: fill};
 
 
                 if (!parentInFetched) {

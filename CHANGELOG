@@ -1,3 +1,23 @@
+v0.5.1
+
+- Configurable gene annotation colors
+- Added chromosome annotations tracks for programmatically addeable
+annotations
+
+v0.5.0
+
+- Default to 12 columns
+- Display a warning if tileset info isn't found
+- Use 16bit floats for heatmap data
+
+v0.4.40
+
+- Remove default colormap from viewconfig
+
+v0.4.39
+
+- Switch cog and close buttons
+
 v0.4.33
 
 - New header colors
