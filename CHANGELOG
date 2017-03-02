@@ -8,6 +8,7 @@ inaccessible
 - Remove track resize handles when the component isn't editable
 - Fix bug associated with setting a new initial[X/Y]Domain where the
 cumulativeCenterOffset wasn't being reset
+- Bug fix where if a view doesn't have a uid we should assign it one
 
 v0.5.0
 
