@@ -3,6 +3,9 @@ v0.5.1
 - Configurable gene annotation colors
 - Added chromosome annotations tracks for programmatically addeable
 annotations
+- Fixed the 'Cannot read property 0 of undefined' bug when tileset info is
+inaccessible
+- Remove track resize handles when the component isn't editable
 
 v0.5.0
 
