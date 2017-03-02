@@ -121,20 +121,6 @@
         }
     );
 
-    var newTVC = JSON.parse(JSON.stringify(testViewConfig));
-    setTimeout(function() 
-            {
-                console.log('reloading');
-    hglib.createHgComponent(
-        document.getElementById('development-demo'),
-        newTVC,
-        { bounded: true },
-        function (api) {
-            window.higlassApi = api;
-        }
-    );
-
-            }, 1000);
 
 </script>
 <script>

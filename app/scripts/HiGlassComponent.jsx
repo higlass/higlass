@@ -1619,6 +1619,11 @@ export class HiGlassComponent extends React.Component {
 
         views.forEach(v => {
             this.fillInMinWidths(v.tracks);
+
+            // if a view doesn't have a uid, assign it one
+            if (!v.uid)
+                v.uid = slugid.nice()
+
             viewsByUid[v.uid] = v;
 
             // if there's no y domain specified just use the x domain instead
