@@ -1,6 +1,6 @@
 {
   "name": "higlass",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Massive matrix viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/scripts/hi_z.js",
