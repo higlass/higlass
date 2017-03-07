@@ -29,7 +29,7 @@ import '../styles/HiGlassComponent.css';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-const NUM_GRID_COLUMNS = 6;
+const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
 
 export class HiGlassComponent extends React.Component {
@@ -1619,6 +1619,11 @@ export class HiGlassComponent extends React.Component {
 
         views.forEach(v => {
             this.fillInMinWidths(v.tracks);
+
+            // if a view doesn't have a uid, assign it one
+            if (!v.uid)
+                v.uid = slugid.nice()
+
             viewsByUid[v.uid] = v;
 
             // if there's no y domain specified just use the x domain instead
@@ -1970,7 +1975,11 @@ export class HiGlassComponent extends React.Component {
 
 HiGlassComponent.defaultProps = {
     className: "layout",
-    cols: {lg: 6, md: 6, sm: 6, xs: 6, xxs: 6}
+    cols: {lg: NUM_GRID_COLUMNS, 
+           md: NUM_GRID_COLUMNS, 
+           sm: NUM_GRID_COLUMNS, 
+           xs: NUM_GRID_COLUMNS, 
+           xxs: NUM_GRID_COLUMNS}
   }
 
 HiGlassComponent.propTypes = {

@@ -25,6 +25,7 @@ import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack.j
 import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack.js';
 import {Chromosome2DLabels} from './Chromosome2DLabels.js';
 import {Chromosome2DGrid} from './Chromosome2DGrid.js';
+import {Chromosome2DAnnotations} from './Chromosome2DAnnotations.js';
 import {HorizontalChromosomeLabels} from './HorizontalChromosomeLabels.js';
 import {HorizontalHeatmapTrack} from './HorizontalHeatmapTrack.js';
 
@@ -153,6 +154,9 @@ export class TrackRenderer extends React.Component {
         // only update the initial domain
         this.initialXDomain = initialXDomain;
         this.initialYDomain = initialYDomain;
+
+        this.cumCenterYOffset = 0;
+        this.cumCenterXOffset = 0;
 
         this.drawableToDomainX = scaleLinear()
             .domain([this.currentProps.marginLeft + this.currentProps.leftWidth,
@@ -625,6 +629,8 @@ export class TrackRenderer extends React.Component {
                                                  handleTilesetInfoReceived,
                                                  track.options,
                                                  this.currentProps.onNewTilesLoaded));
+            case '2d-chromosome-annotations':
+                return new Chromosome2DAnnotations(this.currentProps.pixiStage, track.chromInfoPath, track.options);
             default:
                  console.log('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(

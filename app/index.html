@@ -24,16 +24,103 @@
 </script>
 <script>
 
+ var testViewConfig = 
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "/api/v1",
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        0,
+        3100000000
+      ],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+        ],
+        "left": [
+        ],
+        "center": [
+          {
+            "uid": "c1",
+            "type": "combined",
+            "height": 200,
+            "contents": [
+              {
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "type": "heatmap",
+                "position": "center",
+                "options": {
+                  "colorRange": [
+                    "#FFFFFF",
+                    "#F8E71C",
+                    "#F5A623",
+                    "#D0021B"
+                  ],
+                  "maxZoom": null,
+                  "labelPosition": "bottomRight",
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+                },
+                "uid": "UrRAOJCPT7KkYwSMCjEYvw",
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                "maxWidth": 4194304000,
+                "binsPerDimension": 256,
+                "maxZoom": 14
+              }
+            ],
+            "position": "center",
+            "options": {}
+          }
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "initialYDomain": [
+        714933837.4291116,
+        2385066162.5708885
+      ],
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}
+ ;
+    
     window.higlassApi;
 
     hglib.createHgComponent(
         document.getElementById('development-demo'),
-        hglib.testViewConfig,
+        testViewConfig,
         { bounded: true },
         function (api) {
             window.higlassApi = api;
         }
     );
+
 
 </script>
 <script>
