@@ -294,8 +294,8 @@ export function workerFetchMultiRequestTiles(req) {
                                     // then do use it as the min value
                                     console.log("here:", key, a);
 
-                                    data[key]['minNonZero'] = null;
-                                    data[key]['maxNonZero'] = null;
+                                    data[key]['minNonZero'] = 0;
+                                    data[key]['maxNonZero'] = 1;
                                 }
                                 */
                             }
