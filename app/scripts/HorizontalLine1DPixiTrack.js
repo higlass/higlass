@@ -176,6 +176,12 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
                 j++;
             }
 
+            if (tileXScale(i) > this.tilesetInfo.max_pos[0])
+                // this data is in the last tile and extends beyond the length
+                // of the coordinate system
+                break;
+
+
             //console.log('drawing:', this._xScale(tileXScale(i)), valueScale(tileValues[i+1]));
             graphics.lineTo(this._xScale(tileXScale(i)), valueScale(tileValues[i+1]));
         }

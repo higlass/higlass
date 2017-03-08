@@ -26,83 +26,88 @@
 
  var testViewConfig = 
 {
-  "editable": true,
   "zoomFixed": false,
-  "trackSourceServers": [
-    "/api/v1",
-    "http://higlass.io/api/v1"
-  ],
-  "exportViewUrl": "/api/v1/viewconfs/",
   "views": [
     {
-      "uid": "aa",
-      "initialXDomain": [
-        0,
-        3100000000
-      ],
-      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "genomePositionSearchBoxVisible": true,
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
+        "bottom": [],
         "top": [
-        ],
-        "left": [
-        ],
-        "center": [
           {
-            "uid": "c1",
-            "type": "combined",
-            "height": 200,
-            "contents": [
-              {
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                "type": "heatmap",
-                "position": "center",
-                "options": {
-                  "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "#F5A623",
-                    "#D0021B"
-                  ],
-                  "maxZoom": null,
-                  "labelPosition": "bottomRight",
-                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
-                },
-                "uid": "UrRAOJCPT7KkYwSMCjEYvw",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "maxWidth": 4194304000,
-                "binsPerDimension": 256,
-                "maxZoom": 14
-              }
+            "uuid": "E82ru2nsQsOHs-3GbNUaIg",
+            "filetype": "hitile",
+            "datatype": "vector",
+            "private": false,
+            "name": "test_chr14.hitile",
+            "coordSystem": "",
+            "coordSystem2": "",
+            "server": "http://localhost:8888/api/v1",
+            "tilesetUid": "E82ru2nsQsOHs-3GbNUaIg",
+            "serverUidKey": "http://localhost:8888/api/v1/E82ru2nsQsOHs-3GbNUaIg",
+            "uid": "PCJJ22LyRUSbVO8whMkBNw",
+            "type": "horizontal-line",
+            "options": {
+              "axisPositionHorizontal": "right",
+              "name": "test_chr14.hitile"
+            },
+            "width": 20,
+            "height": 20,
+            "maxWidth": 134217728,
+            "maxZoom": 17
+          },
+          {
+            "type": "top-axis",
+            "datatype": [
+              "axis"
             ],
-            "position": "center",
-            "options": {}
+            "local": true,
+            "orientation": "1d-horizontal",
+            "name": "Top Axis",
+            "thumbnail": {},
+            "defaultOptions": {},
+            "uuid": "IAkS9RF4RAa05hb_gWigig",
+            "server": "",
+            "tilesetUid": "IAkS9RF4RAa05hb_gWigig",
+            "serverUidKey": "/IAkS9RF4RAa05hb_gWigig",
+            "uid": "MSsR3e2kSyCppEmU9cYE_Q",
+            "options": {},
+            "width": 20,
+            "height": 20
           }
         ],
         "right": [],
-        "bottom": []
+        "center": [],
+        "left": []
       },
-      "initialYDomain": [
-        714933837.4291116,
-        2385066162.5708885
-      ],
       "layout": {
         "w": 12,
         "h": 12,
         "x": 0,
         "y": 0,
-        "i": "aa",
+        "i": "ObkPkmrST6q4XeDAr_kLSQ",
         "moved": false,
         "static": false
-      }
+      },
+    "initialXDomain": [
+        108647781.16629377,
+        108825069.26244502
+      ],
+      "initialYDomain": [
+        740622831.0731949,
+        740716705.887286
+      ],
+      "uid": "ObkPkmrST6q4XeDAr_kLSQ"
     }
   ],
+  "editable": true,
+  "exportViewUrl": "http://localhost:8888/api/v1/viewconfs/",
   "zoomLocks": {
     "locksByViewUid": {},
     "locksDict": {}
   },
+  "trackSourceServers": [
+    "http://localhost:8888/api/v1",
+    "http://higlass.io/api/v1"
+  ],
   "locationLocks": {
     "locksByViewUid": {},
     "locksDict": {}

@@ -177,6 +177,7 @@ export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
                             data[key]['minNonZero'] = minNonZero;
                             data[key]['maxNonZero'] = maxNonZero;
 
+
                         }
                     }
 
@@ -284,6 +285,15 @@ export function workerFetchMultiRequestTiles(req) {
 
                                 data[key]['minNonZero'] = minNonZero;
                                 data[key]['maxNonZero'] = maxNonZero;
+
+                                if (data[key]['minNonZero'] == Number.MAX_SAFE_INTEGER &&
+                                    data[key]['maxNonZero'] == Number.MIN_SAFE_INTEGER) {
+                                    // if there's no values except 0, 
+                                    // then do use it as the min value
+
+                                    data[key]['minNonZero'] = 0;
+                                    data[key]['maxNonZero'] = 1;
+                                }
                             }
                         }
 
