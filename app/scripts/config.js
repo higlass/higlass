@@ -228,6 +228,7 @@ export const tracksInfo = [
         thumbnail: svgHorizontalLineIcon,
         availableOptions: [ 'labelPosition', 'axisPositionHorizontal' ],
         defaultOptions: {
+            labelPosition: 'topLeft',
             axisPositionHorizontal: 'right'
         }
     },
@@ -240,6 +241,7 @@ export const tracksInfo = [
         thumbnail: svgVerticalLineIcon,
         availableOptions: [ 'labelPosition', 'axisPositionVertical' ],
         defaultOptions: {
+            labelPosition: 'bottomLeft',
             axisPositionVertical: 'top'
         }
     },
