@@ -83,7 +83,7 @@ export class HiGlassComponent extends React.Component {
           this.pixiStage.interactive = true;
           this.element = null;
 
-          let viewsByUid = this.processViewConfig(this.props.viewConfig);
+          let viewsByUid = this.processViewConfig(JSON.parse(JSON.stringify(this.props.viewConfig)));
 
           this.state = {
               bounded: this.props.options ? this.props.options.bounded : false,

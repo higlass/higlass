@@ -1,6 +1,10 @@
 v0.5.4
 
 - Fixed bug related to the selection of the plot type
+- Update existing tracks before adding new ones in syncTrackObjects
+- Removed the "Move up" menu item
+- Deep copy incoming viewconfs so that changing them outside of the component
+leads to an update
 
 v0.5.3
 

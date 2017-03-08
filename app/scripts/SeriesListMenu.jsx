@@ -217,16 +217,6 @@ export class SeriesListMenu extends ContextMenuContainer {
                             {"Replace Series"}
                         </span>
                     </ContextMenuItem>
-                    <ContextMenuItem
-                        className={"context-menu-item"}
-                        onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
-                    >
-                        <span
-                            style={{ whiteSpace: 'nowrap' }}
-                        >
-                            {"Move up"}
-                        </span>
-                    </ContextMenuItem>
 
                     {this.getSubmenu()}
                 </div>
