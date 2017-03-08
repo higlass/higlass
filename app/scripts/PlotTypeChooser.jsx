@@ -32,7 +32,7 @@ export class PlotTypeChooser extends React.Component {
         this.availableTrackTypes = this.datatypeToTrackType[this.props.datatype];
 
         this.state = {
-            selectedPlotType: 'none'
+            selectedPlotType: this.availableTrackTypes[0]
         }
     }
 
@@ -44,18 +44,6 @@ export class PlotTypeChooser extends React.Component {
                 this.handlePlotTypeSelected(this.availableTrackTypes[0]);
             }
         }
-    }
-
-    handleClickOnItem(key, e) {
-        let parent = select(e.currentTarget.parentNode);
-        let elem = select(e.currentTarget);
-
-        parent.selectAll('li')
-        .classed('plot-type-selected', false)
-        
-        elem.classed('plot-type-selected', true);
-        
-        this.props.onPlotTypeSelected(key); 
     }
 
     handlePlotTypeSelected(key) {
@@ -79,23 +67,29 @@ export class PlotTypeChooser extends React.Component {
                 .sort((a,b) => { return a.type < b.type})
                 .map(x => {
                 let thumbnail = trackTypeToInfo[x.type].thumbnail;
+                let plotTypeClass = this.state.selectedPlotType.type == x.type ? 'plot-type-selected' : 'unselected'
                 let imgTag = trackTypeToInfo[x.type].thumbnail ? 
-                        <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} dangerouslySetInnerHTML={{__html: thumbnail.outerHTML}} /> :
+                        <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} 
+                            dangerouslySetInnerHTML={{__html: thumbnail.outerHTML}} /> :
                         <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} >
                             <svg width={30} height={20} />
                         </div>
                 return (<li
                             style= {{listStyle: 'none', paddingLeft: 5, paddingBottom: 0}}
-                            className={ this.state.selectedPlotType.type == x.type ? 'plot-type-selected' : ''}
-                            onClick={this.handleClickOnItem.bind(this, x.type)}
-                            key={x.type}>
+                            className={ plotTypeClass }
+                            onClick={ 
+                                (e) => {
+                                    this.setState({selectedPlotType: x});
+                                    this.props.onPlotTypeSelected(x.type);
+                                }
+                            }
+                            >
 
                             {imgTag}
-
-                                <span
-                                    style={{verticalAlign: "middle"}}
-                                >
-                                {x.type}</span>
+                            <span
+                                style={{verticalAlign: "middle"}}
+                            >
+                            {x.type}</span>
                         </li>);
             });
         }

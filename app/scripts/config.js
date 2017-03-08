@@ -246,22 +246,6 @@ export const tracksInfo = [
         }
     },
     {
-        type: 'horizontal-1d-tiles',
-        datatype: ['vector', 'stacked-interval', 'gene-annotation'],
-        local: false,
-        orientation: '1d-horizontal',
-        name: 'Horizontal 1D Tile Outlines',
-        thumbnail: svg1DTilesIcon
-    },
-    {
-        type: 'vertical-1d-tiles',
-        datatype: ['1d-tiles'],
-        local: false,
-        orientation: '1d-vertical',
-        name: 'Vertical 1D Tile Outlines',
-        thumbnail: svgVertical1DTilesIcon
-    },
-    {
         type: '2d-tiles',
         datatype: ['matrix'],
         local: false,
@@ -382,6 +366,23 @@ export const tracksInfo = [
         name: 'Chromosome Axis (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null
+    }
+    ,
+    {
+        type: 'vertical-1d-tiles',
+        datatype: ['1d-tiles'],
+        local: false,
+        orientation: '1d-vertical',
+        name: 'Vertical 1D Tile Outlines',
+        thumbnail: svgVertical1DTilesIcon
+    },
+    {
+        type: 'horizontal-1d-tiles',
+        datatype: ['vector', 'stacked-interval', 'gene-annotation'],
+        local: false,
+        orientation: '1d-horizontal',
+        name: 'Horizontal 1D Tile Outlines',
+        thumbnail: svg1DTilesIcon
     }
 ]
 
