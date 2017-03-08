@@ -451,6 +451,10 @@ export class TiledPixiTrack extends PixiTrack {
 
     minVisibleValue() {
          let min = Math.min.apply(null, this.visibleAndFetchedIds().map(x => this.fetchedTiles[x].tileData.minNonZero));
+
+         if (min == Number.MAX_SAFE_INTEGER)
+             min = 0;
+
          return min;
     }
 
@@ -462,6 +466,9 @@ export class TiledPixiTrack extends PixiTrack {
          }
 
          let max = Math.max.apply(null, visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero));
+
+         if (max == Number.MIN_SAFE_INTEGER)
+             max = 1;
          return max;
     }
 }

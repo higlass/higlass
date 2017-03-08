@@ -1,3 +1,10 @@
+v0.5.2
+
+- Don't draw data that extends beyond the end of the assembly
+- Fixed bug where data was being hidden in empty (all 0) tiles
+	- Changed minVisibleValue and maxVisibleValue in TiledPixiTrack
+- Label the horizontal and vertical line tracks by default
+
 v0.5.1
 
 - Configurable gene annotation colors

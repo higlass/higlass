@@ -54,10 +54,11 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
             pixData[i * 4 + 1] = rgb[1];
             pixData[i * 4 + 2] = rgb[2];
             pixData[i * 4 + 3] = rgb[3];
-        }
-        ;
+        };
     } catch (err) {
-        console.log('rgbIdx:', rgbIdx, "d:", e, "ct:", ct(d));
+        console.log('valueScale.domain():', valueScale.domain());
+        console.log('minVisibleValue:', minVisibleValue, 'maxVisibleValue:', maxVisibleValue);
+        console.log('rgbIdx:', rgbIdx, "d:", e, "ct:", countTransform(e));
         console.error('ERROR:', err);
         return pixData;
     }
@@ -177,6 +178,7 @@ export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
                             data[key]['minNonZero'] = minNonZero;
                             data[key]['maxNonZero'] = maxNonZero;
 
+
                         }
                     }
 
@@ -284,6 +286,18 @@ export function workerFetchMultiRequestTiles(req) {
 
                                 data[key]['minNonZero'] = minNonZero;
                                 data[key]['maxNonZero'] = maxNonZero;
+
+                                /*
+                                if (data[key]['minNonZero'] == Number.MAX_SAFE_INTEGER &&
+                                    data[key]['maxNonZero'] == Number.MIN_SAFE_INTEGER) {
+                                    // if there's no values except 0, 
+                                    // then do use it as the min value
+                                    console.log("here:", key, a);
+
+                                    data[key]['minNonZero'] = 0;
+                                    data[key]['maxNonZero'] = 1;
+                                }
+                                */
                             }
                         }
 
