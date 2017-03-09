@@ -1957,6 +1957,18 @@ export class HiGlassComponent extends React.Component {
     const self = this;
 
     const _api = {
+      off(event, viewId, listenerId) {
+        switch (event) {
+          case 'location':
+            self.offLocationChange(viewId, listenerId);
+            break;
+
+          default:
+            // nothing
+            break;
+        }
+      },
+
       on(event, viewId, callback, callbackId) {
         switch (event) {
           case 'location':
@@ -1982,6 +1994,10 @@ export class HiGlassComponent extends React.Component {
     };
 
     return _api;
+  }
+
+  offLocationChange(viewId, listenerId) {
+    this.removeScalesChangedListener(viewId, listenerId);
   }
 
   onLocationChange(viewId, callback, callbackId) {
