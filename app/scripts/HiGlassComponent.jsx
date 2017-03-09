@@ -605,18 +605,21 @@ export class HiGlassComponent extends React.Component {
      * @param toView: The uid of the view that we want to project to
      * @param toTrack: The track we want to project to
      */
-      let hostTrack = getTrackByUid(this.state.views[toView].tracks, toTrack);
-      let position = getTrackPositionByUid(this.state.views[toView].tracks, toTrack);
+      if ( fromView == toView) {
+        alert("A view can not show its own viewport.");
+      } else {
+        let hostTrack = getTrackByUid(this.state.views[toView].tracks, toTrack);
+        let position = getTrackPositionByUid(this.state.views[toView].tracks, toTrack);
 
-      let newTrack = {
+        let newTrack = {
           uid: slugid.nice(),
           type: 'viewport-projection-' + position,
           fromViewUid: fromView
+        }
+
+        this.addCallbacks(toView, newTrack);
+        this.handleTrackAdded(toView, newTrack, position, hostTrack);
       }
-
-      this.addCallbacks(toView, newTrack);
-      this.handleTrackAdded(toView, newTrack, position, hostTrack);
-
       this.setState({
             chooseTrackHandler: null
       });
