@@ -5,6 +5,7 @@ v0.5.4
 - Removed the "Move up" menu item
 - Deep copy incoming viewconfs so that changing them outside of the component
 leads to an update
+- Viewconf downloads work on Firefox
 
 v0.5.3
 
