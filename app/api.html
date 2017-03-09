@@ -24,7 +24,7 @@
 </script>
 <script>
 
- var testViewConfig = 
+ var testViewConfig =
 {
   "editable": true,
   "zoomFixed": false,
@@ -155,18 +155,35 @@
   }
 }
  ;
-    
-    window.higlassApi;
 
-    hglib.createHgComponent(
-        document.getElementById('development-demo'),
-        testViewConfig,
-        { bounded: true },
-        function (api) {
-            window.higlassApi = api;
-        }
-    );
+  let higlassApi;
 
+  hglib.createHgComponent(
+      document.getElementById('development-demo'),
+      testViewConfig,
+      { bounded: true },
+      function (api) { higlassApi = api; }
+  );
+
+  higlassApi.on('location', 'aa', function (yeahCool) {
+    console.log('Yuuhuu we are over here', yeahCool);
+  }, function (id) {
+    console.log('First Listener ID', id);
+  });
+
+  var secondId;
+
+  higlassApi.on('location', 'aa', function (yeahCool) {
+    console.log('Dont forget about us sweetie', yeahCool);
+  }, function (id) {
+    secondId = id;
+    console.log('Second Listener ID', id);
+  });
+
+  setTimeout(function() {
+    higlassApi.off('location', 'aa', secondId);
+    console.log('Second event listener is offline');
+  }, 5000);
 
 </script>
 <script>

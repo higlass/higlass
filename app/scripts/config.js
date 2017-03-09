@@ -18,7 +18,7 @@ let remoteServer = "52.45.229.11";
 //export const usedServer = localServer;
 export const usedServer = remoteServer;
 
-export const optionsInfo = { 
+export const optionsInfo = {
     minusStrandColor:  {
         name: "- Strand Color",
         inlineOptions: {
@@ -78,7 +78,7 @@ export const optionsInfo = {
     colorRange: {
         name: "Color map",
         inlineOptions: {
-            'default': { name: 'default', value: [  
+            'default': { name: 'default', value: [
                                           "#FFFFFF",
                                           "#F8E71C",
                                           "rgba(245,166,35,1)",
@@ -87,7 +87,7 @@ export const optionsInfo = {
             'afmhot': { name: 'afmhot', value: ['rgba(0, 0, 0, 1.0)', 'rgba(128, 0, 0, 1.0)', 'rgba(256, 129, 1, 1.0)', 'rgba(256, 256, 129, 1.0)', 'rgba(256, 256, 256, 1.0)'] },
             'hot': { name: "hot", value: ['rgba(10, 0, 0, 1.0)', 'rgba(179, 0, 0, 1.0)', 'rgba(256, 91, 0, 1.0)', 'rgba(256, 256, 6, 1.0)', 'rgba(256, 256, 256, 1.0)'] },
             'jet': { name: "jet", value: ['rgba(0, 0, 128, 1.0)', 'rgba(0, 129, 256, 1.0)', 'rgba(125, 256, 122, 1.0)', 'rgba(256, 148, 0, 1.0)', 'rgba(128, 0, 0, 1.0)'] },
-            
+
             'bwr': { name: 'bwr', value: ['rgba(0, 0, 256, 1.0)', 'rgba(128, 128, 256, 1.0)', 'rgba(256, 254, 254, 1.0)', 'rgba(256, 126, 126, 1.0)', 'rgba(256, 0, 0, 1.0)'] },
             'cubehelix': { name: 'cubehelix', value: ['rgba(0, 0, 0, 1.0)', 'rgba(21, 83, 76, 1.0)', 'rgba(162, 121, 74, 1.0)', 'rgba(199, 180, 238, 1.0)', 'rgba(256, 256, 256, 1.0)'] },
             'rainbow': { name: 'rainbow', value: ['rgba(128, 0, 256, 1.0)', 'rgba(0, 181, 236, 1.0)', 'rgba(129, 255, 180, 1.0)', 'rgba(256, 179, 96, 1.0)', 'rgba(256, 0, 0, 1.0)'] },
@@ -96,7 +96,7 @@ export const optionsInfo = {
             'red': { name: "White to red", value: ['rgba(255,255,255,1)', 'rgba(255,0,0,1)'] },
             'green': { name: "White to green", value: ['rgba(255,255,255,1)', 'rgba(0,255,0,1)'] },
             'blue': { name: "White to blue", value: ['rgba(255,255,255,1)', 'rgba(0,0,255,1)'] },
-            'custom': { 
+            'custom': {
                 name: "Custom...",
                 componentPickers: {
                     'heatmap': HeatmapOptions
@@ -139,7 +139,7 @@ export const optionsInfo = {
                 }
 
                 return inlineOptions;
-            } else 
+            } else
                 return [];
         }
     }
@@ -172,7 +172,7 @@ export const tracksInfo = [
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
             labelPosition: 'bottomRight',
-            colorRange: [  
+            colorRange: [
                               "#FFFFFF",
                               "#F8E71C",
                               "rgba(245,166,35,1)",
@@ -191,7 +191,7 @@ export const tracksInfo = [
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
             labelPosition: 'bottomRight',
-            colorRange: [  
+            colorRange: [
                               "#FFFFFF",
                               "#F8E71C",
                               "rgba(245,166,35,1)",
@@ -210,7 +210,7 @@ export const tracksInfo = [
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
             labelPosition: 'bottomRight',
-            colorRange: [  
+            colorRange: [
                               "#FFFFFF",
                               "#F8E71C",
                               "rgba(245,166,35,1)",
@@ -402,3 +402,5 @@ export const tracksInfoByType = temp;
 // a drag event
 export const SHORT_DRAG_TIMEOUT = 110;
 export const LONG_DRAG_TIMEOUT = 1000;
+
+export const LOCATION_LISTENER_PREFIX = 'locationListenerPrefix';

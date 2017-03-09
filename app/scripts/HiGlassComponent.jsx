@@ -15,15 +15,16 @@ import {TiledPlot} from './TiledPlot.jsx';
 
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
-import {getTrackPositionByUid, getTrackByUid} from './utils.js';
+import {absoluteToChr, getTrackPositionByUid, getTrackByUid, scalesToGenomeLocations} from './utils.js';
 import {positionedTracksToAllTracks} from './utils.js';
 import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
-import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT} from './config.js';
+import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT, LOCATION_LISTENER_PREFIX} from './config.js';
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
 import {ExportLinkModal} from './ExportLinkModal.jsx';
 import {createSymbolIcon} from './symbol.js';
 import {all as icons} from './icons.js';
 import {ViewHeader} from './ViewHeader.jsx';
+import {ChromosomeInfo} from './ChromosomeInfo.js';
 
 import '../styles/HiGlassComponent.css';
 
@@ -1956,6 +1957,30 @@ export class HiGlassComponent extends React.Component {
     const self = this;
 
     const _api = {
+      off(event, viewId, listenerId) {
+        switch (event) {
+          case 'location':
+            self.offLocationChange(viewId, listenerId);
+            break;
+
+          default:
+            // nothing
+            break;
+        }
+      },
+
+      on(event, viewId, callback, callbackId) {
+        switch (event) {
+          case 'location':
+            self.onLocationChange(viewId, callback, callbackId);
+            break;
+
+          default:
+            // nothing
+            break;
+        }
+      },
+
       refresh() {
         if (self.props.options.bounded) {
           self.fitPixiToParentContainer();
@@ -1970,15 +1995,70 @@ export class HiGlassComponent extends React.Component {
 
     return _api;
   }
+
+  offLocationChange(viewId, listenerId) {
+    this.removeScalesChangedListener(viewId, listenerId);
+  }
+
+  onLocationChange(viewId, callback, callbackId) {
+    if (
+      typeof viewId === 'undefined' ||
+      Object.keys(this.state.views).indexOf(viewId) === -1
+    ) {
+      console.error(
+        '🦄 listen to me: you forgot to give me a propper view ID. '+
+        'I can\'t do nothing without that. 💩'
+      );
+      return;
+    }
+
+    const view = this.state.views[viewId];
+
+    // Set chromInfo if not available
+    if (!this.chromInfo) {
+      this.setChromInfo(
+        view.chromInfoPath,
+        () => { this.onLocationChange(viewId, callback, callbackId); }
+      );
+      return;
+    }
+
+    // Convert scales into genomic locations
+    const middleLayerListener = (xScale, yScale) => {
+      callback(scalesToGenomeLocations(xScale, yScale, this.chromInfo));
+    };
+
+    const newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
+      .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
+      .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
+      .reduce((max, value) => Math.max(max, value), 0) + 1;
+
+    const scaleListener = this.addScalesChangedListener(
+      view.uid,
+      `${LOCATION_LISTENER_PREFIX}.${newListenerId}`,
+      middleLayerListener
+    );
+
+    if (callbackId) {
+      callbackId(`${LOCATION_LISTENER_PREFIX}.${newListenerId}`);
+    }
+  }
+
+  setChromInfo(chromInfoPath, callback) {
+    ChromosomeInfo(chromInfoPath, (chromInfo) => {
+      this.chromInfo = chromInfo;
+      callback();
+    });
+  }
 }
 
 
 HiGlassComponent.defaultProps = {
     className: "layout",
-    cols: {lg: NUM_GRID_COLUMNS, 
-           md: NUM_GRID_COLUMNS, 
-           sm: NUM_GRID_COLUMNS, 
-           xs: NUM_GRID_COLUMNS, 
+    cols: {lg: NUM_GRID_COLUMNS,
+           md: NUM_GRID_COLUMNS,
+           sm: NUM_GRID_COLUMNS,
+           xs: NUM_GRID_COLUMNS,
            xxs: NUM_GRID_COLUMNS}
   }
 

@@ -4,6 +4,7 @@ import {ChromosomeInfo} from './ChromosomeInfo.js';
 import {SearchField} from './search_field.js';
 import boxIntersect from 'box-intersect';
 import {scaleLinear} from 'd3-scale';
+import {absoluteToChr} from './utils.js';
 
 let TICK_WIDTH = 200;
 let TICK_HEIGHT = 6;
@@ -20,10 +21,10 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         this.tickTexts = {};
 
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
-            this.chromInfo = newChromInfo;  
+            this.chromInfo = newChromInfo;
             //
 
-            this.searchField = new SearchField(this.chromInfo); 
+            this.searchField = new SearchField(this.chromInfo);
             this.draw();
 
             this.texts = [];
@@ -36,7 +37,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
                 if (!this.tickTexts[textStr])
                     this.tickTexts[textStr] = [];
 
-                let text = new PIXI.Text(textStr, 
+                let text = new PIXI.Text(textStr,
                             {fontSize: "12px", fontFamily: "Helvetica", fill: "#777777"}
                             );
 
@@ -44,7 +45,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
                 text.anchor.y = 0.5;
                 text.visible = false;
 
-                //give each string a random hash so that some get hidden 
+                //give each string a random hash so that some get hidden
                 // when there's overlaps
                 text.hashValue = Math.random();
 
@@ -84,13 +85,13 @@ export class HorizontalChromosomeLabels extends PixiTrack {
 
 
         while (tickTexts.length <= ticks.length) {
-            let newText = new PIXI.Text('', 
+            let newText = new PIXI.Text('',
                             {fontSize: "12px", fontFamily: "Helvetica Neue", fill: "#777777"});
             tickTexts.push(newText);
             this.gTicks[cumPos.chr].addChild(newText);
         }
 
-        let i = 0; 
+        let i = 0;
         while (i < ticks.length) {
             tickTexts[i].visible = true;
 
@@ -130,7 +131,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
 
         /*
         if (ticks.length == 1) {
-            // if we just have one tick visible, then we'll display the chromosomes 
+            // if we just have one tick visible, then we'll display the chromosomes
             // individually
             tickTexts[0].visible = false;
 
@@ -156,8 +157,8 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         if (!this.searchField)
             return;
 
-        let x1 = this.searchField.absoluteToChr(this._xScale.domain()[0]);
-        let x2 = this.searchField.absoluteToChr(this._xScale.domain()[1]);
+        let x1 = absoluteToChr(this._xScale.domain()[0], this.chromInfo);
+        let x2 = absoluteToChr(this._xScale.domain()[1], this.chromInfo);
 
         for (let i = 0; i < this.texts.length; i++) {
             this.texts[i].visible = false;
@@ -182,16 +183,16 @@ export class HorizontalChromosomeLabels extends PixiTrack {
                 text.scale.x = -1;
 
             let bbox = text.getBounds();
-            //text.y -= bbox.height; 
+            //text.y -= bbox.height;
 
             // make sure the chrosome label fits in the x range
-            /* Not necessary because chromosome labels only get drawn 
+            /* Not necessary because chromosome labels only get drawn
             if (viewportMidX + bbox.width / 2  > this.dimensions[0]) {
                 text.x -= (viewportMidX + bbox.width / 2) - this.dimensions[0];
             } else if (viewportMidX - bbox.width / 2 < 0) {
                 //
                 text.x -= (viewportMidX - bbox.width / 2);
-            } 
+            }
             */
 
 
@@ -203,7 +204,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
                 text.visible = false;
             else
                 text.visible = true
-            
+
 
             allTexts.push({importance: this.texts[i].hashValue, text: this.texts[i], caption: null});
         }
@@ -222,7 +223,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
     }
 
     hideOverlaps(allTexts) {
-        let allBoxes = [];   // store the bounding boxes of the text objects so we can 
+        let allBoxes = [];   // store the bounding boxes of the text objects so we can
                              // calculate overlaps
         allBoxes = allTexts.map(val => {
             let text = val.text;
@@ -236,10 +237,10 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         let result = boxIntersect(allBoxes, function(i, j) {
             if (allTexts[i].importance > allTexts[j].importance) {
                 //console.log('hiding:', allTexts[j].caption)
-                allTexts[j].text.visible = 0; 
+                allTexts[j].text.visible = 0;
             } else {
                 //console.log('hiding:', allTexts[i].caption)
-                allTexts[i].text.visible = 0; 
+                allTexts[i].text.visible = 0;
             }
         });
     }
@@ -254,7 +255,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
     zoomed(newXScale, newYScale) {
         this.xScale(newXScale);
         this.yScale(newYScale);
-        
+
         this.draw();
     }
 
