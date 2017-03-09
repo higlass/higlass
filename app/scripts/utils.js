@@ -1,6 +1,7 @@
 import {scaleLinear} from 'd3-scale';
-import {range} from 'd3-array';
+import {bisector, range} from 'd3-array';
 import {rgb, color} from 'd3-color';
+import {format} from 'd3-format';
 
 export function dictValues(dictionary) {
     /**
@@ -66,7 +67,7 @@ export function dictFromTuples(tuples) {
 export function scalesCenterAndK(xScale, yScale) {
     /**
      * Calculate the center of the scale as well as its scale
-     * factor 
+     * factor
      *
      * Assumes the two scales have the same k
      *
@@ -77,12 +78,12 @@ export function scalesCenterAndK(xScale, yScale) {
     let xCenter = xScale.invert((xScale.range()[0] + xScale.range()[1]) / 2);
     let yCenter = yScale.invert((yScale.range()[0] + yScale.range()[1]) / 2);
     let k = xScale.invert(1) - xScale.invert(0);
-    
+
     return [xCenter, yCenter, k];
 }
 
 export function positionedTracksToAllTracks(positionedTracks, includeCombinedContents = true) {
-        /** 
+        /**
          * Convert the position indexed list of tracks:
          *
          * { 'top': [{line}, {bar}],
@@ -101,7 +102,7 @@ export function positionedTracksToAllTracks(positionedTracks, includeCombinedCon
 
         for (let trackType in tracks) {
             let theseTracks = tracks[trackType]
-            
+
             theseTracks.forEach(x => {
                 if (x.type == 'combined') {
                     // we don't really deal with nested combined tracks here,
@@ -111,8 +112,8 @@ export function positionedTracksToAllTracks(positionedTracks, includeCombinedCon
                             allTracks.push(Object.assign(y, {position: trackType}));
                         });
                     }
-                } 
-                
+                }
+
                 allTracks.push(Object.assign(x, {position: trackType}));
             });
         }
@@ -188,7 +189,7 @@ export function colorDomainToRgbaArray(colorRange) {
 
 export function colorToHex(colorValue) {
     /**
-     * Convert a regular color value (e.g. 'red', '#FF0000', 'rgb(255,0,0)') to a 
+     * Convert a regular color value (e.g. 'red', '#FF0000', 'rgb(255,0,0)') to a
      * hex value which is legible by PIXI
      */
     let c = color(colorValue);
@@ -196,3 +197,59 @@ export function colorToHex(colorValue) {
 
     return hex
 }
+
+const chromInfoBisector = bisector((d) => { return d.pos }).left;
+
+export function absoluteToChr(absPosition, chromInfo) {
+    let insertPoint = chromInfoBisector(chromInfo.cumPositions, absPosition);
+    const lastChr = chromInfo.cumPositions[chromInfo.cumPositions.length-1].chr;
+    const lastLength = chromInfo.chromLengths[lastChr];
+
+    if (insertPoint > 0) { insertPoint -= 1; }
+
+    let chrPosition = Math.floor(
+        absPosition - chromInfo.cumPositions[insertPoint].pos
+    );
+    let offset = 0;
+
+    if (chrPosition < 0) {
+        // before the start of the genome
+        offset = chrPosition - 1;
+        chrPosition = 1;
+    }
+
+    if (
+        insertPoint == chromInfo.cumPositions.length - 1 &&
+        chrPosition > lastLength
+    ) {
+        // beyond the last chromosome
+        offset = chrPosition - lastLength;
+        chrPosition = lastLength;
+    }
+
+    return [
+        chromInfo.cumPositions[insertPoint].chr,
+        chrPosition,
+        offset,
+        insertPoint
+    ]
+}
+
+export function scalesToGenomeLocations(xScale, yScale, chromInfo) {
+    if (chromInfo === null) { return; }
+
+    if (!xScale || !yScale) { return; }
+
+    let x1 = absoluteToChr(xScale.domain()[0], chromInfo);
+    let x2 = absoluteToChr(xScale.domain()[1], chromInfo);
+
+    let y1 = absoluteToChr(yScale.domain()[0], chromInfo);
+    let y2 = absoluteToChr(yScale.domain()[1], chromInfo);
+
+    return [
+        x1[0], Math.round(x1[1]),
+        x2[0], Math.round(x2[1]),
+        y1[0], Math.round(y1[1]),
+        y2[0], Math.round(y2[1])
+    ];
+  }
