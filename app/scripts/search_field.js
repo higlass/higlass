@@ -1,5 +1,6 @@
 import {bisector} from 'd3-array';
 import {format} from 'd3-format';
+import {absoluteToChr} from './utils.js';
 
 export class SearchField {
 
@@ -15,11 +16,11 @@ export class SearchField {
         if (!xScale || !yScale)
             return "";
 
-        let x1 = this.absoluteToChr(xScale.domain()[0]);
-        let x2 = this.absoluteToChr(xScale.domain()[1]);
+        let x1 = absoluteToChr(xScale.domain()[0], this.chromInfo);
+        let x2 = absoluteToChr(xScale.domain()[1], this.chromInfo);
 
-        let y1 = this.absoluteToChr(yScale.domain()[0]);
-        let y2 = this.absoluteToChr(yScale.domain()[1]);
+        let y1 = absoluteToChr(yScale.domain()[0], this.chromInfo);
+        let y2 = absoluteToChr(yScale.domain()[1], this.chromInfo);
 
         let positionString = null;
         let stringFormat = format(",d")
@@ -56,34 +57,6 @@ export class SearchField {
         }
 
         return positionString;
-    }
-
-    absoluteToChr(absPosition) {
-        let insertPoint = this.chromInfoBisector(this.chromInfo.cumPositions, absPosition);
-        let lastChr = this.chromInfo.cumPositions[this.chromInfo.cumPositions.length-1].chr;
-        let lastLength = this.chromInfo.chromLengths[lastChr];
-
-        if (insertPoint > 0)
-            insertPoint -= 1;
-
-        let chrPosition = Math.floor(absPosition - this.chromInfo.cumPositions[insertPoint].pos);
-        let offset = 0;
-
-        if (chrPosition < 0) {
-            // before the start of the genome
-            offset = chrPosition - 1;
-            chrPosition = 1;
-        }
-
-        if (insertPoint == this.chromInfo.cumPositions.length - 1 &&
-            chrPosition > lastLength) {
-            // beyond the last chromosome
-            offset = chrPosition - lastLength;
-            chrPosition = lastLength;
-        }
-
-        return [this.chromInfo.cumPositions[insertPoint].chr,
-                chrPosition, offset, insertPoint]
     }
 
     parsePosition(positionText, prevChr = null) {
