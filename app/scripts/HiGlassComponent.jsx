@@ -1715,6 +1715,8 @@ export class HiGlassComponent extends React.Component {
     // width
     if (this.state.mounted) {
         tiledAreas = dictValues(this.state.views).map(function(view, i) {
+                const zoomFixed = typeof view.zoomFixed !== 'undefined' ? view.zoomFixed : this.props.zoomFixed;
+
                 let layout = view.layout;
 
                 let itemUid = view.uid;
@@ -1774,7 +1776,7 @@ export class HiGlassComponent extends React.Component {
                                      onTrackAdded={(newTrack, position, host) => this.handleTrackAdded(view.uid, newTrack, position, host)}
                                      onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
                                      onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
-                                     zoomable={!this.props.viewConfig.zoomFixed}
+                                     zoomable={!zoomFixed}
                                      editable={this.props.viewConfig.editable}
                                      trackSourceServers={this.props.viewConfig.trackSourceServers}
                                      registerDraggingChangedListener={listener => {
