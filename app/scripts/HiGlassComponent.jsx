@@ -18,7 +18,7 @@ import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from 
 import {absoluteToChr, getTrackPositionByUid, getTrackByUid, scalesToGenomeLocations} from './utils.js';
 import {positionedTracksToAllTracks} from './utils.js';
 import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
-import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT} from './config.js';
+import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT, LOCATION_LISTENER_PREFIX} from './config.js';
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
 import {ExportLinkModal} from './ExportLinkModal.jsx';
 import {createSymbolIcon} from './symbol.js';
@@ -1957,10 +1957,10 @@ export class HiGlassComponent extends React.Component {
     const self = this;
 
     const _api = {
-      on(event, viewId, callback) {
+      on(event, viewId, callback, callbackId) {
         switch (event) {
           case 'location':
-            self.onLocationChange(viewId, callback);
+            self.onLocationChange(viewId, callback, callbackId);
             break;
 
           default:
@@ -1984,7 +1984,7 @@ export class HiGlassComponent extends React.Component {
     return _api;
   }
 
-  onLocationChange(viewId, callback) {
+  onLocationChange(viewId, callback, callbackId) {
     if (
       typeof viewId === 'undefined' ||
       Object.keys(this.state.views).indexOf(viewId) === -1
@@ -2002,7 +2002,7 @@ export class HiGlassComponent extends React.Component {
     if (!this.chromInfo) {
       this.setChromInfo(
         view.chromInfoPath,
-        () => { this.onLocationChange(viewId, callback); }
+        () => { this.onLocationChange(viewId, callback, callbackId); }
       );
       return;
     }
@@ -2012,11 +2012,20 @@ export class HiGlassComponent extends React.Component {
       callback(scalesToGenomeLocations(xScale, yScale, this.chromInfo));
     };
 
+    const newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
+      .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
+      .map(listenerId => Math.parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
+      .reduce((max, value) => Math.max(max, value), 0) + 1;
+
     const scaleListener = this.addScalesChangedListener(
-      view.uid, view.uid, middleLayerListener
+      view.uid,
+      `${LOCATION_LISTENER_PREFIX}.${newListenerId}`,
+      middleLayerListener
     );
 
-    return false;
+    if (callbackId) {
+      callbackId(`${LOCATION_LISTENER_PREFIX}.${newListenerId}`);
+    }
   }
 
   setChromInfo(chromInfoPath, callback) {
