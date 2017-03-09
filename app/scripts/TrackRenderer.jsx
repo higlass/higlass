@@ -568,7 +568,8 @@ export class TrackRenderer extends React.Component {
                         this.svgElement,
                         track.registerViewportChanged,
                         track.removeViewportChanged,
-                        track.setDomainsCallback
+                        track.setDomainsCallback,
+                        track.options
                     );
                 else
                     return new Track();

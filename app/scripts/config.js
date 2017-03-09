@@ -39,6 +39,28 @@ export const optionsInfo = {
             'black': { name: "Black", value: "black"}
         }
     },
+    projectionStrokeColor:  {
+        name: "Stroke color",
+        inlineOptions: {
+            'red': { name: "Red", value: "red"},
+            'yellow': {name: "Yellow", value: "yellow"},
+            'blue': { name: "Blue", value: "blue"},
+            'green': { name: "Green", value: "green"},
+            'grey': { name: "Grey", value: "grey"},
+            'black': { name: "Black", value: "black"}
+        }
+    },
+    projectionFillColor:  {
+        name: "Fill color",
+        inlineOptions: {
+            'red': { name: "Red", value: "red"},
+            'yellow': {name: "Yellow", value: "yellow"},
+            'blue': { name: "Blue", value: "blue"},
+            'green': { name: "Green", value: "green"},
+            'grey': { name: "Grey", value: "grey"},
+            'black': { name: "Black", value: "black"}
+        }
+    },
     oneDHeatmapFlipped: {
         name: 'Flip Heatmap',
         inlineOptions: {
@@ -276,9 +298,13 @@ export const tracksInfo = [
         hidden: true,
         orientation: '2d',
         name: 'Viewport Projection',
-        thumbnail: 'viewport-projection-center.png'
+        thumbnail: 'viewport-projection-center.png',
+        availableOptions: ['projectionFillColor', 'projectionStrokeColor'],
+        defaultOptions: {
+            projectionFillColor: "#777",
+            projectionStrokeColor: "#777"
+        }
     },
-
     {
         type: 'horizontal-gene-annotations',
         datatype: ['gene-annotation'],

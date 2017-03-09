@@ -4,12 +4,13 @@ import brush from './lite-d3-brush.js';
 import {event} from 'd3-selection';
 
 export class ViewportTracker2D extends SVGTrack {
-    constructor(svgElement, registerViewportChanged, removeViewportChanged, setDomainsCallback) {
+    constructor(svgElement, registerViewportChanged, removeViewportChanged, setDomainsCallback, options) {
         // create a clipped SVG Path
         super(svgElement, true);
 
         let uid = slugid.nice()
         this.uid = uid;
+        this.options = options;
 
         this.removeViewportChanged = removeViewportChanged;
         this.setDomainsCallback = setDomainsCallback;
@@ -85,6 +86,13 @@ export class ViewportTracker2D extends SVGTrack {
         this.removeViewportChanged(this.uid); 
 
         super.remove();
+    }
+
+    rerender() {
+        // set the fill and stroke colors
+        this.gBrush.selectAll('.selection')
+        .attr('fill', this.options.projectionFillColor)
+        .attr('stroke', this.options.projectionStrokeColor);
     }
 
     draw() {
