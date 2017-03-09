@@ -302,7 +302,9 @@ export const tracksInfo = [
         availableOptions: ['projectionFillColor', 'projectionStrokeColor'],
         defaultOptions: {
             projectionFillColor: "#777",
-            projectionStrokeColor: "#777"
+            projectionStrokeColor: "#777",
+            projectionFillOpacity: 0.3,
+            projectionStrokeOpacity: 0.3
         }
     },
     {

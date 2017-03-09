@@ -92,7 +92,9 @@ export class ViewportTracker2D extends SVGTrack {
         // set the fill and stroke colors
         this.gBrush.selectAll('.selection')
         .attr('fill', this.options.projectionFillColor)
-        .attr('stroke', this.options.projectionStrokeColor);
+        .attr('stroke', this.options.projectionStrokeColor)
+        .attr('fill-opacity', this.options.projectionFillOpacity)
+        .attr('stroke-opacity', this.options.projectionStrokeOpacity);
     }
 
     draw() {
