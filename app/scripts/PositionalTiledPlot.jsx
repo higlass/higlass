@@ -59,7 +59,7 @@ class TrackArea extends React.Component {
                     style={this.getMoveImgStyle()}
                     width="10px"
                     height="10px">
-                    <use href="#move"></use>
+                    <use xlinkHref="#move"></use>
                 </svg>
             )
         } else {
@@ -317,7 +317,7 @@ class VerticalTrack extends MoveableTrack {
                     style={this.getMoveImgStyle()}
                     width="10px"
                     height="10px">
-                    <use href="#move"></use>
+                    <use xlinkHref="#move"></use>
                 </svg>
             )
         } else {
@@ -352,7 +352,7 @@ class VerticalTrack extends MoveableTrack {
                             style={this.getCloseImgStyle()}
                             width="10px"
                             height="10px">
-                            <use href="#cross"></use>
+                            <use xlinkHref="#cross"></use>
                         </svg>
 
                         <svg
@@ -364,7 +364,7 @@ class VerticalTrack extends MoveableTrack {
                             }}
                             width="10px"
                             height="10px">
-                            <use href="#plus"></use>
+                            <use xlinkHref="#plus"></use>
                         </svg>
 
                         <svg
@@ -378,7 +378,7 @@ class VerticalTrack extends MoveableTrack {
                             style={this.getSettingsImgStyle()}
                             width="10px"
                             height="10px">
-                            <use href="#cog"></use>
+                            <use xlinkHref="#cog"></use>
                         </svg>
 
                         <Handle />
