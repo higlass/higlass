@@ -274,8 +274,7 @@ export class DraggableDiv extends React.Component {
 
 
     render() {
-            let divStyle = { position: 'absolute',
-                             top: this.state.top,
+            let divStyle = { top: this.state.top,
                              left: this.state.left,
                              width: this.state.width,
                              height: this.state.height,
