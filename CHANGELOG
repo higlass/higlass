@@ -1,3 +1,9 @@
+v0.5.5
+
+- Add per-view `zoomFixed` settings
+- Added configurable viewport projection colors (projectionFillColor,
+projectionStrokeColor)
+
 v0.5.4
 
 - Fixed bug related to the selection of the plot type
@@ -6,6 +12,7 @@ v0.5.4
 - Deep copy incoming viewconfs so that changing them outside of the component
 leads to an update
 - Added onLocationChanged event listener
+
 
 v0.5.3
 
@@ -53,7 +60,7 @@ v0.4.32
 - Reduced the number of tiles requested by the horizontal heatmap track
 - Removed console log statements
 
-v0.4.31 
+v0.4.31
 
 - Fixed regression and compatibility change with new zoom and location locking
 - Fixed regression in the selection dragging
