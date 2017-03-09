@@ -2014,7 +2014,7 @@ export class HiGlassComponent extends React.Component {
 
     const newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
       .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
-      .map(listenerId => Math.parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
+      .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
       .reduce((max, value) => Math.max(max, value), 0) + 1;
 
     const scaleListener = this.addScalesChangedListener(
