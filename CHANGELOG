@@ -5,6 +5,7 @@ v0.5.4
 - Removed the "Move up" menu item
 - Deep copy incoming viewconfs so that changing them outside of the component
 leads to an update
+- Add per-view `zoomFixed` settings
 
 v0.5.3
 
@@ -52,7 +53,7 @@ v0.4.32
 - Reduced the number of tiles requested by the horizontal heatmap track
 - Removed console log statements
 
-v0.4.31 
+v0.4.31
 
 - Fixed regression and compatibility change with new zoom and location locking
 - Fixed regression in the selection dragging
