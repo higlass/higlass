@@ -9,7 +9,7 @@ export class Chromosome2DAnnotations extends PixiTrack {
         this.drawnRects = new Set();
 
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
-            this.chromInfo = newChromInfo;  
+            this.chromInfo = newChromInfo;
 
         });
     }
@@ -19,7 +19,7 @@ export class Chromosome2DAnnotations extends PixiTrack {
             return;
 
         this.drawnRects.clear();
-        
+
         let minRectWidth = this.options.minRectWidth ? this.options.minRectWidth : 10;
         let minRectHeight = this.options.minRectWidth ? this.options.minRectHeight : 10;
 
@@ -27,11 +27,24 @@ export class Chromosome2DAnnotations extends PixiTrack {
         let graphics = this.pMain;
         graphics.clear();
 
+        // Regions have to follow the following form:
+        // chrom1, start1, end1, chrom2, start2, end2, color-fill, color-line
+        // If `color-line` is not given, `color-fill` is used
         for (let region of this.options.regions) {
-            let c = color(region[region.length-1]);
-            let hex = PIXI.utils.rgb2hex([c.r / 255., c.g / 255., c.b / 255.]);
-            graphics.lineStyle(1, hex, 0.6);
-            graphics.beginFill(hex, 0.6);
+            const colorFill = color(region[6]);
+            let colorLine = color(region[7]);
+
+            if (!colorLine) { colorLine = colorFill; }
+
+            const colorFillHex = PIXI.utils.rgb2hex(
+                [colorFill.r / 255., colorFill.g / 255., colorFill.b / 255.]
+            );
+            const colorLineHex = PIXI.utils.rgb2hex(
+                [colorLine.r / 255., colorLine.g / 255., colorLine.b / 255.]
+            );
+
+            graphics.lineStyle(1, colorLineHex, colorLine.opacity);
+            graphics.beginFill(colorFillHex, colorFill.opacity);
 
             //console.log('region:', region);
             let startX = this._xScale(this.chromInfo.chrPositions[region[0]].pos + +region[1]);
@@ -48,7 +61,7 @@ export class Chromosome2DAnnotations extends PixiTrack {
                 // where it would be drawn
                 startX = (startX + endX) / 2 - minRectWidth / 2;
                 width = minRectWidth;
-            }                 
+            }
 
             if (height < minRectHeight) {
                 startY = (startY + endY) / 2 - minRectHeight / 2;
