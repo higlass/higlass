@@ -7,6 +7,7 @@ projectionStrokeColor)
 directory specified in the .gitignore
 - Enhance 2D annotations by supporting RGBA, fill and stroke-dependent coloring,
 and locus-wise min width / height definitions
+- Remove builds. Use NPM
 
 v0.5.4
 
