@@ -28,7 +28,7 @@ export class Chromosome2DAnnotations extends PixiTrack {
         graphics.clear();
 
         // Regions have to follow the following form:
-        // chrom1, start1, end1, chrom2, start2, end2, color-fill, color-line
+        // chrom1, start1, end1, chrom2, start2, end2, color-fill, color-line, min-width, min-height
         // If `color-line` is not given, `color-fill` is used
         for (let region of this.options.regions) {
             const colorFill = color(region[6]);
@@ -56,16 +56,19 @@ export class Chromosome2DAnnotations extends PixiTrack {
             let width = endX - startX;
             let height = endY - startY;
 
-            if (width < minRectWidth) {
+            const _minRectWidth = typeof region[8] !== 'undefined' ? region[8] : minRectWidth;
+            const _minRectHeight = typeof region[9] !== 'undefined' ? region[9] : minRectWidth;
+
+            if (width < _minRectWidth) {
                 // this region is too small to draw so center it on the location
                 // where it would be drawn
-                startX = (startX + endX) / 2 - minRectWidth / 2;
-                width = minRectWidth;
+                startX = (startX + endX) / 2 - _minRectWidth / 2;
+                width = _minRectWidth;
             }
 
-            if (height < minRectHeight) {
-                startY = (startY + endY) / 2 - minRectHeight / 2;
-                height = minRectHeight;
+            if (height < _minRectHeight) {
+                startY = (startY + endY) / 2 - _minRectHeight / 2;
+                height = _minRectHeight;
             }
 
             graphics.drawRect(startX, startY, width, height);
