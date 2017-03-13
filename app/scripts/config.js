@@ -19,6 +19,13 @@ let remoteServer = "52.45.229.11";
 export const usedServer = remoteServer;
 
 export const optionsInfo = {
+    valueScaling: {
+        name: "Value Scaling",
+        inlineOptions: {
+            'linear': { name: "Linear", value: 'linear' },
+            'log': {name: "Log", value: 'log' }
+        }
+    },
     minusStrandColor:  {
         name: "- Strand Color",
         inlineOptions: {
@@ -33,6 +40,17 @@ export const optionsInfo = {
         name: "+ Strand Color",
         inlineOptions: {
             'red': { name: "Red", value: "red"},
+            'blue': { name: "Blue", value: "blue"},
+            'green': { name: "Green", value: "green"},
+            'grey': { name: "Grey", value: "grey"},
+            'black': { name: "Black", value: "black"}
+        }
+    },
+    lineStrokeColor:  {
+        name: "Stroke color",
+        inlineOptions: {
+            'red': { name: "Red", value: "red"},
+            'yellow': {name: "Yellow", value: "yellow"},
             'blue': { name: "Blue", value: "blue"},
             'green': { name: "Green", value: "green"},
             'grey': { name: "Grey", value: "grey"},
@@ -248,10 +266,12 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         thumbnail: svgHorizontalLineIcon,
-        availableOptions: [ 'labelPosition', 'axisPositionHorizontal' ],
+        availableOptions: [ 'labelPosition', 'axisPositionHorizontal', 'lineStrokeColor', 'valueScaling' ],
         defaultOptions: {
             labelPosition: 'topLeft',
-            axisPositionHorizontal: 'right'
+            axisPositionHorizontal: 'right',
+            lineStrokeColor: 'blue',
+            valueScaling: 'linear'
         }
     },
     //
@@ -261,10 +281,12 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         thumbnail: svgVerticalLineIcon,
-        availableOptions: [ 'labelPosition', 'axisPositionVertical' ],
+        availableOptions: [ 'labelPosition', 'axisPositionHorizontal', 'lineStrokeColor', 'valueScaling' ],
         defaultOptions: {
             labelPosition: 'bottomLeft',
-            axisPositionVertical: 'top'
+            axisPositionVertical: 'top',
+            lineStrokeColor: 'blue',
+            valueScaling: 'linear'
         }
     },
     {
