@@ -156,17 +156,16 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         
 
         if (this.options.valueScaling == 'log') {
-            let medianValue = this.medianVisibleValue;
-            /*
-            console.log('minVisibleValue:', minVisibleValue, 
-                        'median', this.medianVisibleValue(), 
-                        'maxVisibleValue:', maxVisibleValue);
-                        */
+            let offsetValue = this.medianVisibleValue;
+
+            if (!this.medianVisibleValue)
+                offsetValue = this.minVisibleValue();
+
             valueScale = scaleLog()
                 .base(Math.E)
-                .domain([medianValue, maxVisibleValue])
+                .domain([offsetValue, maxVisibleValue])
                 .range([this.dimensions[1], 0]);
-            pseudocount = this.medianVisibleValue;
+            pseudocount = offsetValue;
         } else {
             // linear scale
             valueScale = scaleLinear()

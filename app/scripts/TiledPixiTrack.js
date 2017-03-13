@@ -462,7 +462,7 @@ export class TiledPixiTrack extends PixiTrack {
              visibleAndFetchedIds = Object.keys(this.fetchedTiles);
          }
 
-         let values = [].concat.apply([], visibleAndFetchedIds.filter(x => this.fetchedTiles[x].tileData.dense).map(x => Array.from(this.fetchedTiles[x].tileData.dense)))
+         let values = [].concat.apply([], visibleAndFetchedIds.filter(x => this.fetchedTiles[x].tileData.dense).map(x => Array.from(this.fetchedTiles[x].tileData.dense))).filter(x => x > 0);
 
          this.medianVisibleValue = median(values);
 

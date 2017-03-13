@@ -26,6 +26,16 @@ export const optionsInfo = {
             'log': {name: "Log", value: 'log' }
         }
     },
+    gridStrokeWidth: {
+        name: "Stroke Width",
+        inlineOptions: {
+            '1': { name: "1", value: 1},
+            '2': { name: "2", value: 2},
+            '3': { name: "3", value: 3},
+            '5': { name: "5", value: 5},
+            '8': { name: "8", value: 8}
+        }
+    },
     minusStrandColor:  {
         name: "- Strand Color",
         inlineOptions: {
@@ -47,6 +57,17 @@ export const optionsInfo = {
         }
     },
     lineStrokeColor:  {
+        name: "Stroke color",
+        inlineOptions: {
+            'red': { name: "Red", value: "red"},
+            'yellow': {name: "Yellow", value: "yellow"},
+            'blue': { name: "Blue", value: "blue"},
+            'green': { name: "Green", value: "green"},
+            'grey': { name: "Grey", value: "grey"},
+            'black': { name: "Black", value: "black"}
+        }
+    },
+    gridStrokeColor:  {
         name: "Stroke color",
         inlineOptions: {
             'red': { name: "Red", value: "red"},
@@ -373,7 +394,12 @@ export const tracksInfo = [
         orientation: '2d',
         name: 'Chromosome Grid (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-        thumbnail: null
+        thumbnail: null,
+        availableOptions: ['gridStrokeWidth', 'gridStrokeColor'],
+        defaultOptions: {
+            gridStrokeWidth: 1,
+            gridStrokeColor: 'grey'
+        }
     }
     ,
     {

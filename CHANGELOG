@@ -1,3 +1,10 @@
+v0.5.6
+
+- Add log scaling to line tracks
+- Add colors to line tracks
+- Add width option to 2D grid
+- Add color option to 2D grid
+
 v0.5.5
 
 - Add per-view `zoomFixed` settings
