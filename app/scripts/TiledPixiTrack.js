@@ -2,6 +2,7 @@ import {ZOOM_DEBOUNCE} from './config.js';
 import debounce from './debounce.js';
 import {PixiTrack} from './PixiTrack.js';
 import {tileProxy} from './TileProxy.js';
+import {median} from 'd3-array';
 import slugid from 'slugid';
 //import {LRUCache} from './lru.js';
 
@@ -36,6 +37,7 @@ export class TiledPixiTrack extends PixiTrack {
         this.tileGraphics = {};
 
         this.maxZoom = 0;
+        this.medianVisibleValue = null;
 
         this.animate = animate;
 
@@ -408,16 +410,16 @@ export class TiledPixiTrack extends PixiTrack {
 
         }
 
-        this.synchronizeTilesAndGraphics();
 
-        if (this.areAllVisibleTilesLoaded()) {
-            this.allTilesLoaded();
-        }
+        this.synchronizeTilesAndGraphics();
 
         /*
          * Mainly called to remove old unnecessary tiles
          */
         this.refreshTiles();
+
+        if (this.options.valueScaling)
+            this.calculateMedianVisibleValue();
 
         // Let HiGlass know we need to re-render
         this.animate();
@@ -449,8 +451,41 @@ export class TiledPixiTrack extends PixiTrack {
 
     }
 
+    calculateMedianVisibleValue() {
+        if (this.areAllVisibleTilesLoaded()) {
+            this.allTilesLoaded();
+        }
+
+         let visibleAndFetchedIds = this.visibleAndFetchedIds();
+
+         if (visibleAndFetchedIds.length == 0) {
+             visibleAndFetchedIds = Object.keys(this.fetchedTiles);
+         }
+
+         let values = [].concat.apply([], visibleAndFetchedIds.filter(x => this.fetchedTiles[x].tileData.dense).map(x => Array.from(this.fetchedTiles[x].tileData.dense))).filter(x => x > 0);
+
+         this.medianVisibleValue = median(values);
+
+    }
+
+    allVisibleValues() {
+         return [].concat.apply([], this.visibleAndFetchedIds().map(x => Array.from(this.fetchedTiles[x].tileData.dense)));
+    }
+
     minVisibleValue() {
-         let min = Math.min.apply(null, this.visibleAndFetchedIds().map(x => this.fetchedTiles[x].tileData.minNonZero));
+         let visibleAndFetchedIds = this.visibleAndFetchedIds();
+
+         if (visibleAndFetchedIds.length == 0) {
+             visibleAndFetchedIds = Object.keys(this.fetchedTiles);
+         }
+
+         let min = Math.min.apply(null, visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.minNonZero));
+
+         /*
+         if (!isFinite(min)) {
+            console.log('td:', this.visibleAndFetchedIds().map(x => this.fetchedTiles[x].tileData));
+         }
+         */
 
          if (min == Number.MAX_SAFE_INTEGER)
              min = 0;

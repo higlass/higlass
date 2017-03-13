@@ -18,4 +18,4 @@ jsons/
 .DS_Store
 *.zip
 .idea/
-dist/
+dist

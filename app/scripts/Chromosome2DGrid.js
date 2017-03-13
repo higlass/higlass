@@ -3,6 +3,7 @@ import {tileProxy} from './TileProxy.js';
 import {ChromosomeInfo} from './ChromosomeInfo.js';
 import {SearchField} from './search_field.js';
 import boxIntersect from 'box-intersect';
+import {colorToHex} from './utils.js';
 
 export class Chromosome2DGrid extends PixiTrack {
     constructor(scene, chromInfoPath) {
@@ -52,8 +53,11 @@ export class Chromosome2DGrid extends PixiTrack {
 
     drawLines() {
         let graphics = this.lineGraphics;
+        let strokeColor = colorToHex(this.options.gridStrokeColor ? this.options.gridStrokeColor : 'blue');
+
         graphics.clear();
-        graphics.lineStyle(1, 'red', 0.3);
+        graphics.lineStyle(this.options.gridStrokeWidth, 
+                strokeColor, 1.);
 
         graphics.moveTo(this._xScale(0), 0);
         graphics.lineTo(this._xScale(0), this.dimensions[1]);

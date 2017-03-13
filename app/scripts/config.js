@@ -19,6 +19,23 @@ let remoteServer = "52.45.229.11";
 export const usedServer = remoteServer;
 
 export const optionsInfo = {
+    valueScaling: {
+        name: "Value Scaling",
+        inlineOptions: {
+            'linear': { name: "Linear", value: 'linear' },
+            'log': {name: "Log", value: 'log' }
+        }
+    },
+    gridStrokeWidth: {
+        name: "Stroke Width",
+        inlineOptions: {
+            '1': { name: "1", value: 1},
+            '2': { name: "2", value: 2},
+            '3': { name: "3", value: 3},
+            '5': { name: "5", value: 5},
+            '8': { name: "8", value: 8}
+        }
+    },
     minusStrandColor:  {
         name: "- Strand Color",
         inlineOptions: {
@@ -33,6 +50,28 @@ export const optionsInfo = {
         name: "+ Strand Color",
         inlineOptions: {
             'red': { name: "Red", value: "red"},
+            'blue': { name: "Blue", value: "blue"},
+            'green': { name: "Green", value: "green"},
+            'grey': { name: "Grey", value: "grey"},
+            'black': { name: "Black", value: "black"}
+        }
+    },
+    lineStrokeColor:  {
+        name: "Stroke color",
+        inlineOptions: {
+            'red': { name: "Red", value: "red"},
+            'yellow': {name: "Yellow", value: "yellow"},
+            'blue': { name: "Blue", value: "blue"},
+            'green': { name: "Green", value: "green"},
+            'grey': { name: "Grey", value: "grey"},
+            'black': { name: "Black", value: "black"}
+        }
+    },
+    gridStrokeColor:  {
+        name: "Stroke color",
+        inlineOptions: {
+            'red': { name: "Red", value: "red"},
+            'yellow': {name: "Yellow", value: "yellow"},
             'blue': { name: "Blue", value: "blue"},
             'green': { name: "Green", value: "green"},
             'grey': { name: "Grey", value: "grey"},
@@ -248,10 +287,12 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         thumbnail: svgHorizontalLineIcon,
-        availableOptions: [ 'labelPosition', 'axisPositionHorizontal' ],
+        availableOptions: [ 'labelPosition', 'axisPositionHorizontal', 'lineStrokeColor', 'valueScaling' ],
         defaultOptions: {
             labelPosition: 'topLeft',
-            axisPositionHorizontal: 'right'
+            axisPositionHorizontal: 'right',
+            lineStrokeColor: 'blue',
+            valueScaling: 'linear'
         }
     },
     //
@@ -261,10 +302,12 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         thumbnail: svgVerticalLineIcon,
-        availableOptions: [ 'labelPosition', 'axisPositionVertical' ],
+        availableOptions: [ 'labelPosition', 'axisPositionHorizontal', 'lineStrokeColor', 'valueScaling' ],
         defaultOptions: {
             labelPosition: 'bottomLeft',
-            axisPositionVertical: 'top'
+            axisPositionVertical: 'top',
+            lineStrokeColor: 'blue',
+            valueScaling: 'linear'
         }
     },
     {
@@ -351,7 +394,12 @@ export const tracksInfo = [
         orientation: '2d',
         name: 'Chromosome Grid (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-        thumbnail: null
+        thumbnail: null,
+        availableOptions: ['gridStrokeWidth', 'gridStrokeColor'],
+        defaultOptions: {
+            gridStrokeWidth: 1,
+            gridStrokeColor: 'grey'
+        }
     }
     ,
     {
