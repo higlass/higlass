@@ -58,6 +58,7 @@ export class TrackRenderer extends React.Component {
         // newest set of props. When cWRP is called, this.props still contains
         // the old props, so we need to store them in a new variable
         this.currentProps = props;
+        this.prevPropsStr = '';
 
         // catch any zooming behavior within all of the tracks in this plot
         //this.zoomTransform = zoomIdentity();
@@ -172,6 +173,21 @@ export class TrackRenderer extends React.Component {
             .range([initialYDomain[0], initialYDomain[1]]);
     }
 
+    updatablePropsToString(props) {
+        return JSON.stringify({
+            positionedTracks: props.positionedTracks,
+            initialXDomain: props.initialXDomain,
+            initialYDomain: props.initialYDomain,
+            width: props.width,
+            height: props.height,
+            marginLeft: props.marginLeft,
+            marginRight: props.marginRight,
+            leftWidth: props.leftWidth,
+            topHeight: props.topHeight,
+            dragging: props.dragging
+        });
+    }
+
     componentWillReceiveProps(nextProps) {
         /**
          * The size of some tracks probably changed, so let's just
@@ -182,7 +198,14 @@ export class TrackRenderer extends React.Component {
         if (!nextProps.svgElement || !nextProps.canvasElement)
             return;
 
+        let nextPropsStr = this.updatablePropsToString(nextProps); 
         this.currentProps = nextProps;
+
+        if (this.prevPropsStr === nextPropsStr)
+            return;
+
+        this.prevPropsStr = nextPropsStr;
+
         this.setUpInitialScales(nextProps.initialXDomain,
                                 nextProps.initialYDomain);
 
@@ -193,7 +216,6 @@ export class TrackRenderer extends React.Component {
         this.svgElement = nextProps.svgElement;
 
         this.syncTrackObjects(nextProps.positionedTracks);
-
 
         for (let track of nextProps.positionedTracks) {
             // tracks all the way down

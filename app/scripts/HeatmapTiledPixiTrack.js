@@ -101,6 +101,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     }
 
     draw() {
+        //console.trace('drawing', this);
         super.draw();
     }
 
