@@ -104,7 +104,6 @@ export class HiGlassComponent extends React.Component {
             //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
             //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
             mouseOverOverlayUid: null,
-            configMenuUid: null,
             exportLinkModalOpen: false,
             exportLinkLocation: null
           }
@@ -247,7 +246,6 @@ export class HiGlassComponent extends React.Component {
         this.setState({
             chooseViewHandler: uid2 => this.handleLocationLockChosen(uid, uid2),
             mouseOverOverlayUid: uid,
-            configMenuUid: null
         });
   }
 
@@ -469,7 +467,6 @@ export class HiGlassComponent extends React.Component {
 
         this.setState({
             chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(uid, viewUid, trackUid),
-            configMenuUid: null
         });
   }
 
@@ -484,7 +481,6 @@ export class HiGlassComponent extends React.Component {
         this.setState({
             chooseViewHandler: uid2 => yankFunction(uid, uid2),
             mouseOverOverlayUid: uid,
-            configMenuUid: null
         });
 
   }
@@ -758,6 +754,7 @@ export class HiGlassComponent extends React.Component {
   forceRefreshView() {
     // force everything to rerender
 
+      console.log('force refresh');
     this.setState(this.state);
   }
 
@@ -1676,6 +1673,7 @@ export class HiGlassComponent extends React.Component {
 
     componentWillReceiveProps(newProps) {
         let viewsByUid = this.processViewConfig(newProps.viewConfig);
+        console.log('will receiveProps');
 
         this.setState({
             views: viewsByUid
@@ -1694,7 +1692,6 @@ export class HiGlassComponent extends React.Component {
         */
 
         this.pixiRenderer.render(this.pixiStage);
-
   }
 
 
@@ -1707,9 +1704,6 @@ export class HiGlassComponent extends React.Component {
                             ref={(c) => {this.tiledAreaDiv = c; }}
                             style={tiledAreaStyle}
                       />);
-
-    let configMenu = null;
-
 
     // The component needs to be mounted in order for the initial view to have the right
     // width
@@ -1745,6 +1739,7 @@ export class HiGlassComponent extends React.Component {
                                }}
                                 onClick={e => this.state.chooseViewHandler(view.uid)}
                                 onMouseEnter={e => this.handleOverlayMouseEnter(view.uid)}
+                                onMouseMove={e => this.handleOverlayMouseEnter(view.uid)}
                                 onMouseLeave={e => this.handleOverlayMouseLeave(view.uid)}
                                ></div>)
                 }
@@ -1933,7 +1928,6 @@ export class HiGlassComponent extends React.Component {
         { tiledAreas }
         </ResponsiveReactGridLayout>
 
-        {configMenu}
         <svg
             ref={(c) => this.svgElement = c}
             style={{
@@ -1951,7 +1945,7 @@ export class HiGlassComponent extends React.Component {
   }
 
   componentDidUpdate() {
-    this.refreshView(LONG_DRAG_TIMEOUT);
+    //this.refreshView(LONG_DRAG_TIMEOUT);
   }
 
   // Public API

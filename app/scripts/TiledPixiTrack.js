@@ -238,13 +238,13 @@ export class TiledPixiTrack extends PixiTrack {
     setPosition(newPosition) {
         super.setPosition(newPosition);
 
-        this.draw();
+        //this.draw();
     }
 
     setDimensions(newDimensions) {
         super.setDimensions(newDimensions);
 
-        this.draw();
+        //this.draw();
     }
 
     areAllVisibleTilesLoaded() {
@@ -299,6 +299,7 @@ export class TiledPixiTrack extends PixiTrack {
          * Add graphics for tiles that have no graphics
          */
         let fetchedTileIDs = Object.keys(this.fetchedTiles);
+        let added = false;
 
         for (let i = 0; i < fetchedTileIDs.length; i++) {
             if (!(fetchedTileIDs[i] in this.tileGraphics)) {
@@ -312,8 +313,12 @@ export class TiledPixiTrack extends PixiTrack {
 
                 //console.log('adding graphics...', fetchedTileIDs[i]);
                 this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
+                added = true;
             }
         }
+
+        if (added)
+            this.draw();
     }
 
     updateExistingGraphics() {
