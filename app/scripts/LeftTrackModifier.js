@@ -114,6 +114,8 @@ export class LeftTrackModifier {
             this.originalTrack.pMobile.scale.y = -k;
             this.originalTrack.pMobile.position.y = this.originalTrack.position[1];
         }
+
+        this.originalTrack.draw();
     
     }
 

@@ -58,6 +58,7 @@ export class TrackRenderer extends React.Component {
         // newest set of props. When cWRP is called, this.props still contains
         // the old props, so we need to store them in a new variable
         this.currentProps = props;
+        this.prevPropsStr = '';
 
         // catch any zooming behavior within all of the tracks in this plot
         //this.zoomTransform = zoomIdentity();
@@ -122,6 +123,8 @@ export class TrackRenderer extends React.Component {
 
         this.currentProps.setCentersFunction(this.setCenter.bind(this));
         this.currentProps.registerDraggingChangedListener(this.draggingChanged.bind(this));
+
+        this.draggingChanged(true);
     }
 
     draggingChanged(draggingStatus) {
@@ -172,6 +175,21 @@ export class TrackRenderer extends React.Component {
             .range([initialYDomain[0], initialYDomain[1]]);
     }
 
+    updatablePropsToString(props) {
+        return JSON.stringify({
+            positionedTracks: props.positionedTracks,
+            initialXDomain: props.initialXDomain,
+            initialYDomain: props.initialYDomain,
+            width: props.width,
+            height: props.height,
+            marginLeft: props.marginLeft,
+            marginRight: props.marginRight,
+            leftWidth: props.leftWidth,
+            topHeight: props.topHeight,
+            dragging: props.dragging
+        });
+    }
+
     componentWillReceiveProps(nextProps) {
         /**
          * The size of some tracks probably changed, so let's just
@@ -182,7 +200,15 @@ export class TrackRenderer extends React.Component {
         if (!nextProps.svgElement || !nextProps.canvasElement)
             return;
 
+        let nextPropsStr = this.updatablePropsToString(nextProps); 
         this.currentProps = nextProps;
+
+        if (this.prevPropsStr === nextPropsStr)
+            return;
+
+        //console.log('TR rerendering', this.currentProps.width, this.currentProps.height);
+        this.prevPropsStr = nextPropsStr;
+
         this.setUpInitialScales(nextProps.initialXDomain,
                                 nextProps.initialYDomain);
 
@@ -194,11 +220,11 @@ export class TrackRenderer extends React.Component {
 
         this.syncTrackObjects(nextProps.positionedTracks);
 
-
         for (let track of nextProps.positionedTracks) {
             // tracks all the way down
             let options = track.track.options;
             let trackObject = this.trackDefObjects[track.track.uid].trackObject;
+            //console.log('rerendering...');
             trackObject.rerender(options);
 
             if (track.track.hasOwnProperty('contents')) {
@@ -268,7 +294,7 @@ export class TrackRenderer extends React.Component {
 
             // e.g. when the track is resized... we want to redraw it
             track.refScalesChanged(this.xScale, this.yScale);
-            track.draw();
+            //track.draw();
         }
 
         this.applyZoomTransform(this.currentProps);
@@ -379,7 +405,7 @@ export class TrackRenderer extends React.Component {
         }
 
         this.updateTrackPositions();
-        this.applyZoomTransform();
+        //this.applyZoomTransform();
     }
 
     updateTrackPositions() {
@@ -392,8 +418,6 @@ export class TrackRenderer extends React.Component {
 
             let widthDifference = trackDef.width - this.initialWidth;
             let heightDifference = trackDef.height - this.initialHeight;
-
-            trackObject.draw();
         }
     }
 
@@ -474,7 +498,6 @@ export class TrackRenderer extends React.Component {
                         this.zoomTransform.y + this.yPositionOffset,
                         this.currentProps.marginLeft + this.currentProps.leftWidth,
                         this.currentProps.marginTop + this.currentProps.topHeight);
-            track.draw();
         }
 
         if (notify)
