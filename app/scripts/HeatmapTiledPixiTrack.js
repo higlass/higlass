@@ -21,10 +21,19 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         if (options && options.colorRange) {
             this.colorScale = colorDomainToRgbaArray(options.colorRange);
         }
+
+        this.prevOptions = '';
     }
 
     rerender(options) {
         super.rerender(options);
+
+        let strOptions = JSON.stringify(options);
+
+        if (strOptions === this.prevOptions)
+            return;
+        else
+            this.prevOptions = strOptions;
 
         if (options && options.colorRange) {
             this.colorScale = colorDomainToRgbaArray(options.colorRange);

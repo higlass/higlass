@@ -123,6 +123,8 @@ export class TrackRenderer extends React.Component {
 
         this.currentProps.setCentersFunction(this.setCenter.bind(this));
         this.currentProps.registerDraggingChangedListener(this.draggingChanged.bind(this));
+
+        this.draggingChanged(true);
     }
 
     draggingChanged(draggingStatus) {
@@ -204,6 +206,7 @@ export class TrackRenderer extends React.Component {
         if (this.prevPropsStr === nextPropsStr)
             return;
 
+        //console.log('TR rerendering', this.currentProps.width, this.currentProps.height);
         this.prevPropsStr = nextPropsStr;
 
         this.setUpInitialScales(nextProps.initialXDomain,
@@ -221,6 +224,7 @@ export class TrackRenderer extends React.Component {
             // tracks all the way down
             let options = track.track.options;
             let trackObject = this.trackDefObjects[track.track.uid].trackObject;
+            //console.log('rerendering...');
             trackObject.rerender(options);
 
             if (track.track.hasOwnProperty('contents')) {
@@ -290,7 +294,7 @@ export class TrackRenderer extends React.Component {
 
             // e.g. when the track is resized... we want to redraw it
             track.refScalesChanged(this.xScale, this.yScale);
-            track.draw();
+            //track.draw();
         }
 
         this.applyZoomTransform(this.currentProps);
@@ -401,7 +405,7 @@ export class TrackRenderer extends React.Component {
         }
 
         this.updateTrackPositions();
-        this.applyZoomTransform();
+        //this.applyZoomTransform();
     }
 
     updateTrackPositions() {
@@ -414,8 +418,6 @@ export class TrackRenderer extends React.Component {
 
             let widthDifference = trackDef.width - this.initialWidth;
             let heightDifference = trackDef.height - this.initialHeight;
-
-            trackObject.draw();
         }
     }
 

@@ -64,12 +64,13 @@ export class ViewHeader extends React.Component {
         });
       }
 
+      /*
       shouldComponentUpdate(nextProps, nextState) {
 
       }
+      */
 
 	render() {
-        console.log('VH rendering');
         let configMenu = null;
         let addTrackPositionMenu = null;
 

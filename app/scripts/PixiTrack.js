@@ -35,6 +35,8 @@ export class PixiTrack extends Track {
 
         this.pBase.mask = this.pMask;
 
+        this.prevOptions = '';
+
         // pMobile will be a graphics object that is moved around
         // tracks that wish to use it will replace this.pMain with it
 

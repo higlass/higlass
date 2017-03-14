@@ -535,7 +535,6 @@ export class TiledPlot extends React.Component {
     }
 
     render() {
-        console.log('rendering');
         // left, top, right, and bottom have fixed heights / widths
         // the center will vary to accomodate their dimensions
         this.topHeight = this.props.tracks['top']

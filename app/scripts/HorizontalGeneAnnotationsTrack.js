@@ -87,6 +87,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     draw() {
         super.draw();
+        //console.trace('drawing', this, this._xScale.domain(), this._xScale.range());
 
         let graphics = this.pMain;
         let allVisibleTilesLoaded = this.areAllVisibleTilesLoaded();

@@ -754,6 +754,7 @@ export class HiGlassComponent extends React.Component {
   forceRefreshView() {
     // force everything to rerender
 
+      console.log('force refresh');
     this.setState(this.state);
   }
 
@@ -1672,6 +1673,7 @@ export class HiGlassComponent extends React.Component {
 
     componentWillReceiveProps(newProps) {
         let viewsByUid = this.processViewConfig(newProps.viewConfig);
+        console.log('will receiveProps');
 
         this.setState({
             views: viewsByUid
@@ -1690,12 +1692,10 @@ export class HiGlassComponent extends React.Component {
         */
 
         this.pixiRenderer.render(this.pixiStage);
-
   }
 
 
   render() {
-      console.log('HGC rendering...');
     let tiledAreaStyle = {
         display: 'flex',
         flexDirection: 'column'
@@ -1945,7 +1945,7 @@ export class HiGlassComponent extends React.Component {
   }
 
   componentDidUpdate() {
-    this.refreshView(LONG_DRAG_TIMEOUT);
+    //this.refreshView(LONG_DRAG_TIMEOUT);
   }
 
   // Public API
