@@ -20,7 +20,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         //create texts
         tile.texts = {};
 
-        let MAX_TILE_ENTRIES = 30;
+        let MAX_TILE_ENTRIES = 50;
 
         tile.tileData.sort((a,b) => b.importance - a.importance);
         tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
