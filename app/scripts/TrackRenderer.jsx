@@ -496,7 +496,6 @@ export class TrackRenderer extends React.Component {
                         this.zoomTransform.y + this.yPositionOffset,
                         this.currentProps.marginLeft + this.currentProps.leftWidth,
                         this.currentProps.marginTop + this.currentProps.topHeight);
-            track.draw();
         }
 
         if (notify)

@@ -16,10 +16,11 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     }
 
     initTile(tile) {
+        //console.log('initTile...', tile.tileId);
         //create texts
         tile.texts = {};
 
-        let MAX_TILE_ENTRIES = 40;
+        let MAX_TILE_ENTRIES = 30;
 
         tile.tileData.sort((a,b) => b.importance - a.importance);
         tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
@@ -44,9 +45,9 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
             tile.graphics.addChild(text);
         });
+        tile.initialized = true;
 
-
-        this.draw();
+        //this.draw();
     }
 
     destroyTile(tile) {
@@ -95,6 +96,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         let maxValue = 0;
         let allTexts = [];
 
+        /*
         for (let fetchedTileId in this.fetchedTiles) {
             let ft = this.fetchedTiles[fetchedTileId];
 
@@ -104,11 +106,14 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                     maxValue = geneInfo[4];
             });
         }
+        */
 
         //console.log('maxValue:', maxValue);
+        /*
         let valueScale = scaleLinear()
             .domain([0, Math.log(maxValue+1)])
             .range([0,10]);
+        */
         let addedIds = [];
 
         //console.log('this.fetchedTiles:', this.fetchedTiles);
@@ -119,6 +124,11 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             //let fetchedTileId = visibleAndFetchedIds[i];
             let ft = this.fetchedTiles[fetchedTileId];
             let parentInFetched = this.parentInFetched(ft);
+
+            if (!ft.initialized)
+                continue;
+
+            //console.log('drawTile:', ft.tileId, ft.tileData.length);
 
             if (!parentInFetched)
                 addedIds.push(ft.tileData.tileId);
@@ -157,10 +167,10 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                     graphics.beginFill(fill, 0.3);
                 }
 
-                let height = valueScale(Math.log(+geneInfo[4]));
-                let width= height;
+                //let height = valueScale(Math.log(+geneInfo[4]));
+                //let width= height;
 
-                let rectX = this._xScale(txMiddle) - width / 2;
+                let rectX = this._xScale(txMiddle) - GENE_RECT_WIDTH / 2;
                 let rectY = yMiddle - GENE_RECT_HEIGHT / 2;
 
                 let xStartPos = this._xScale(txStart);
@@ -204,6 +214,8 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             //console.log('addedIds:', addedIds);
             //console.log('captions:', allTexts.map(x => x.caption));
         }
+
+        //console.trace('draw', allTexts.length);
         this.hideOverlaps(allTexts);
     }
 
