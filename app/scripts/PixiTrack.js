@@ -1,5 +1,6 @@
 import {Track} from './Track.js';
 import {format, formatPrefix, precisionRound, precisionPrefix} from 'd3-format';
+import {colorToHex} from './utils.js';
 //import {LRUCache} from './lru.js';
 
 export class PixiTrack extends Track {
@@ -19,6 +20,7 @@ export class PixiTrack extends Track {
 
         this.pBase = new PIXI.Graphics();
 
+        this.pMasked = new PIXI.Graphics;
         this.pMask = new PIXI.Graphics();
         this.pMain = new PIXI.Graphics();
 
@@ -28,12 +30,14 @@ export class PixiTrack extends Track {
 
         this.scene.addChild(this.pBase);
 
-        this.pBase.addChild(this.pMain);
-        this.pBase.addChild(this.pMask);
-        this.pBase.addChild(this.pMobile);
-        this.pBase.addChild(this.pLabel);
+        this.pBase.addChild(this.pMasked);
 
-        this.pBase.mask = this.pMask;
+        this.pMasked.addChild(this.pMain);
+        this.pMasked.addChild(this.pMask);
+        this.pMasked.addChild(this.pMobile);
+        this.pMasked.addChild(this.pLabel);
+
+        this.pMasked.mask = this.pMask;
 
         this.prevOptions = '';
 
@@ -46,7 +50,11 @@ export class PixiTrack extends Track {
         let labelTextText = this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
 
-        this.labelText = new PIXI.Text(labelTextText, {fontSize: "12px", fontFamily: "Arial", fill: "black"});
+        this.labelTextFontSize = '12px';
+        this.labelTextFontFamily = 'Arial';
+        this.labelText = new PIXI.Text(labelTextText, {fontSize: this.labelTextFontSize, 
+                                                       fontFamily: this.labelTextFontFamily, 
+                                                       fill: "black"});
 
         this.pLabel.addChild(this.labelText);
     }
@@ -93,6 +101,8 @@ export class PixiTrack extends Track {
             return;
         }
 
+        let stroke = colorToHex(this.options.labelColor ? this.options.labelColor : 'black');
+
         // we can't draw a label if there's no space
         if (this.dimensions[0] < 0)
             return;
@@ -117,8 +127,6 @@ export class PixiTrack extends Track {
                 let f = formatPrefix('.' + pp, resolution);
                 let formattedResolution = f(resolution);
 
-                //console.log('maxResolutionSize:', maxResolutionSize);
-
                 labelTextText += '\n[Current data resolution: ' + formattedResolution + ']';
             } else {
                 console.log('NaN resolution, screen is probably too small. Dimensions:', this.dimensions);
@@ -126,6 +134,9 @@ export class PixiTrack extends Track {
         }
 
         this.labelText.text = labelTextText;
+        this.labelText.style = {fontSize: this.labelTextFontSize,
+                              fontFamily: this.labelTextFontFamily,
+                              fill: stroke};
 
         this.labelText.visible = true;
 
@@ -165,9 +176,56 @@ export class PixiTrack extends Track {
             // we set the anchor to 0.5 so that we can flip the text if the track
             // is rotated but that means we have to adjust its position
             this.labelText.x -= this.labelText.width / 2;
+        } else if ((this.options.labelPosition == 'outerLeft' && !this.flipText) ||
+                   (this.options.labelPosition == 'outerTop' && this.flipText)) {
+            this.labelText.x = this.position[0];
+            this.labelText.y = this.position[1] + this.dimensions[1] / 2;
+
+            this.labelText.anchor.x = 0.5;
+            this.labelText.anchor.y = 0.5;
+
+            this.labelText.x -= this.labelText.width / 2 + 3;
+        } else if ((this.options.labelPosition == 'outerTop' && !this.flipText) ||
+                   (this.options.labelPosition == 'outerLeft' && this.flipText) ) {
+            this.labelText.x = this.position[0] + this.dimensions[0] / 2;
+            this.labelText.y = this.position[1];
+
+            this.labelText.anchor.x = 0.5;
+            this.labelText.anchor.y = 0.5;
+
+            this.labelText.y -= this.labelText.height / 2 + 3;
+        } else if ((this.options.labelPosition == 'outerBottom' && !this.flipText) ||
+                   (this.options.labelPosition == 'outerRight' && this.flipText)) {
+            this.labelText.x = this.position[0] + this.dimensions[0] / 2;
+            this.labelText.y = this.position[1] + this.dimensions[1];
+
+            this.labelText.anchor.x = 0.5;
+            this.labelText.anchor.y = 0.5;
+
+            this.labelText.y += this.labelText.height / 2 + 3;
+        } else if ((this.options.labelPosition == 'outerRight' && !this.flipText) ||
+                   (this.options.labelPosition == 'outerBottom' && this.flipText)){
+            this.labelText.x = this.position[0] + this.dimensions[0];
+            this.labelText.y = this.position[1] + this.dimensions[1] / 2;
+
+            this.labelText.anchor.x = 0.5;
+            this.labelText.anchor.y = 0.5;
+
+            this.labelText.x += this.labelText.width / 2 + 3;
+
         } else {
             this.labelText.visible = false;
         }
+
+        if (this.options.labelPosition == 'outerLeft' ||
+            this.options.labelPosition == 'outerRight' || 
+            this.options.labelPosition == 'outerTop' ||
+            this.options.labelPosition == 'outerBottom') {
+                this.pLabel.setParent(this.pBase);
+            } else {
+                this.pLabel.setParent(this.pMasked);
+
+            }
 
         /*
         graphics.clear();

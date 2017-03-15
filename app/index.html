@@ -60,6 +60,7 @@
             "uid": "BEEMEjU7QCa2krDO9C0yOQ",
             "type": "horizontal-gene-annotations",
             "options": {
+                "labelPosition": "outerTop",
               "name": "Gene Annotations (hg19)"
             },
             "width": 20,
@@ -79,7 +80,8 @@
             "serverUidKey": "http://higlass.io/api/v1/F2vbUeqhS86XkxuO1j2rPA",
             "type": "horizontal-line",
             "options": {
-              "labelPosition": "topLeft",
+              "labelColor": "red",
+              "labelPosition": "outerLeft",
               "axisPositionHorizontal": "right",
               "lineStrokeColor": "blue",
               "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
@@ -177,8 +179,56 @@
             "options": {}
           }
         ],
-        "right": [],
-        "bottom": []
+        "right": [
+          {
+            "type": "vertical-gene-annotations",
+            "width": 60,
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "server": "http://higlass.io/api/v1",
+            "name": "Gene Annotations (hg19)",
+            "options": {
+              "labelPosition": "outerBottom",
+              "name": "Gene Annotations (hg19)"
+            },
+            "maxWidth": 4294967296,
+            "maxZoom": 22
+          },
+          {
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "type": "vertical-chromosome-labels",
+            "name": "Chromosome Labels (hg19)",
+            "width": 30,
+            "options": {
+                "labelPosition": "outerBottom",
+                "name": "Chromosome labels"
+            }
+          }
+        ],
+        "bottom": [
+         {
+            "filetype": "hitile",
+            "datatype": "vector",
+            "private": false,
+            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+            "coordSystem": "hg19",
+            "coordSystem2": "",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "serverUidKey": "http://higlass.io/api/v1/F2vbUeqhS86XkxuO1j2rPA",
+            "type": "horizontal-line",
+            "options": {
+              "labelPosition": "outerLeft",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log"
+            },
+            "width": 20,
+            "height": 50,
+            "maxWidth": 4294967296,
+            "maxZoom": 22
+          },
+        ]
       },
       "layout": {
         "w": 12,
