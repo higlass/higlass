@@ -19,6 +19,7 @@ export class PixiTrack extends Track {
 
         this.pBase = new PIXI.Graphics();
 
+        this.pMasked = new PIXI.Graphics;
         this.pMask = new PIXI.Graphics();
         this.pMain = new PIXI.Graphics();
 
@@ -28,12 +29,14 @@ export class PixiTrack extends Track {
 
         this.scene.addChild(this.pBase);
 
-        this.pBase.addChild(this.pMain);
-        this.pBase.addChild(this.pMask);
-        this.pBase.addChild(this.pMobile);
-        this.pBase.addChild(this.pLabel);
+        this.pBase.addChild(this.pMasked);
 
-        this.pBase.mask = this.pMask;
+        this.pMasked.addChild(this.pMain);
+        this.pMasked.addChild(this.pMask);
+        this.pMasked.addChild(this.pMobile);
+        this.pMasked.addChild(this.pLabel);
+
+        this.pMasked.mask = this.pMask;
 
         this.prevOptions = '';
 
@@ -165,9 +168,36 @@ export class PixiTrack extends Track {
             // we set the anchor to 0.5 so that we can flip the text if the track
             // is rotated but that means we have to adjust its position
             this.labelText.x -= this.labelText.width / 2;
+        } else if (this.options.labelPosition == 'outerLeft') {
+            console.log('here', this.position[0], this.labelText.width);
+            this.labelText.x = this.position[0];
+            this.labelText.y = this.position[1] + this.dimensions[1] / 2;
+
+            this.labelText.anchor.x = 0.5;
+            this.labelText.anchor.y = 0.5;
+
+            this.labelText.x -= this.labelText.width / 2 + 3;
+            console.log('this.labelText', this.labelText.x, this.labelText.y);
+        } else if (this.options.labelPosition == 'outerRight') {
+            this.labelText.x = this.position[0] + this.dimensions[0];
+            this.labelText.y = this.position[1] + this.dimensions[1] / 2;
+
+            this.labelText.anchor.x = 0.5;
+            this.labelText.anchor.y = 0.5;
+
+            this.labelText.x += this.labelText.width / 2 + 3;
+
         } else {
             this.labelText.visible = false;
         }
+
+        if (this.options.labelPosition == 'outerLeft' ||
+            this.options.labelPosition == 'outerRight') {
+                this.pLabel.setParent(this.pBase);
+            } else {
+                this.pLabel.setParent(this.pMasked);
+
+            }
 
         /*
         graphics.clear();

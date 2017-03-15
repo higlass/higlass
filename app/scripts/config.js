@@ -18,6 +18,17 @@ let remoteServer = "52.45.229.11";
 //export const usedServer = localServer;
 export const usedServer = remoteServer;
 
+let availableColors = {
+    'red': { name: "Red", value: "red"},
+    'orange': { name: "Orange", value: "orange"},
+    'brown': { name: "Brown", value: "brown"},
+    'blue': { name: "Blue", value: "blue"},
+    'cyan': { name: "Cyan", value: "cyan"},
+    'green': { name: "Green", value: "green"},
+    'grey': { name: "Grey", value: "grey"},
+    'black': { name: "Black", value: "black"}
+}
+
 export const optionsInfo = {
     valueScaling: {
         name: "Value Scaling",
@@ -38,67 +49,27 @@ export const optionsInfo = {
     },
     minusStrandColor:  {
         name: "- Strand Color",
-        inlineOptions: {
-            'red': { name: "Red", value: "red"},
-            'blue': { name: "Blue", value: "blue"},
-            'green': { name: "Green", value: "green"},
-            'grey': { name: "Grey", value: "grey"},
-            'black': { name: "Black", value: "black"}
-        }
+        inlineOptions: availableColors
     },
     plusStrandColor:  {
         name: "+ Strand Color",
-        inlineOptions: {
-            'red': { name: "Red", value: "red"},
-            'blue': { name: "Blue", value: "blue"},
-            'green': { name: "Green", value: "green"},
-            'grey': { name: "Grey", value: "grey"},
-            'black': { name: "Black", value: "black"}
-        }
+        inlineOptions: availableColors
     },
     lineStrokeColor:  {
         name: "Stroke color",
-        inlineOptions: {
-            'red': { name: "Red", value: "red"},
-            'yellow': {name: "Yellow", value: "yellow"},
-            'blue': { name: "Blue", value: "blue"},
-            'green': { name: "Green", value: "green"},
-            'grey': { name: "Grey", value: "grey"},
-            'black': { name: "Black", value: "black"}
-        }
+        inlineOptions: availableColors
     },
     gridStrokeColor:  {
         name: "Stroke color",
-        inlineOptions: {
-            'red': { name: "Red", value: "red"},
-            'yellow': {name: "Yellow", value: "yellow"},
-            'blue': { name: "Blue", value: "blue"},
-            'green': { name: "Green", value: "green"},
-            'grey': { name: "Grey", value: "grey"},
-            'black': { name: "Black", value: "black"}
-        }
+        inlineOptions: availableColors
     },
     projectionStrokeColor:  {
         name: "Stroke color",
-        inlineOptions: {
-            'red': { name: "Red", value: "red"},
-            'yellow': {name: "Yellow", value: "yellow"},
-            'blue': { name: "Blue", value: "blue"},
-            'green': { name: "Green", value: "green"},
-            'grey': { name: "Grey", value: "grey"},
-            'black': { name: "Black", value: "black"}
-        }
+        inlineOptions: availableColors
     },
     projectionFillColor:  {
         name: "Fill color",
-        inlineOptions: {
-            'red': { name: "Red", value: "red"},
-            'yellow': {name: "Yellow", value: "yellow"},
-            'blue': { name: "Blue", value: "blue"},
-            'green': { name: "Green", value: "green"},
-            'grey': { name: "Grey", value: "grey"},
-            'black': { name: "Black", value: "black"}
-        }
+        inlineOptions: availableColors
     },
     oneDHeatmapFlipped: {
         name: 'Flip Heatmap',
@@ -126,6 +97,8 @@ export const optionsInfo = {
     labelPosition: {
         name: "Label Position",
         inlineOptions: {
+            'ol': { name: "Outer left", value: "outerLeft"},
+            'or': { name: "Outer right", value: 'outerRight' },
             'tl': { name: "Top left", value: 'topLeft' },
             'tr': { name: 'Top right', value: 'topRight' },
             'bl': {name: "Bottom left", value: 'bottomLeft' },
@@ -358,7 +331,10 @@ export const tracksInfo = [
         orientation: '1d-horizontal',
         name: 'Gene Annotations',
         thumbnail: svgGeneAnnotationsIcon,
-        availableOptions: [ 'labelPosition', 'plusStrandColor', 'minusStrandColor' ]
+        availableOptions: [ 'labelPosition', 'plusStrandColor', 'minusStrandColor' ],
+        defaultOptions: {
+            labelPosition: 'hidden'
+        }
     },
     {
         type: 'vertical-gene-annotations',

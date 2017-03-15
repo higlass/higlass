@@ -131,8 +131,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     drawTile(tile) {
         super.drawTile(tile);
 
-        console.log('drawTile');
-
         if (!tile.graphics)
             return;
 
