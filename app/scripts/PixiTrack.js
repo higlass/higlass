@@ -169,7 +169,6 @@ export class PixiTrack extends Track {
             // is rotated but that means we have to adjust its position
             this.labelText.x -= this.labelText.width / 2;
         } else if (this.options.labelPosition == 'outerLeft') {
-            console.log('here', this.position[0], this.labelText.width);
             this.labelText.x = this.position[0];
             this.labelText.y = this.position[1] + this.dimensions[1] / 2;
 
@@ -177,7 +176,6 @@ export class PixiTrack extends Track {
             this.labelText.anchor.y = 0.5;
 
             this.labelText.x -= this.labelText.width / 2 + 3;
-            console.log('this.labelText', this.labelText.x, this.labelText.y);
         } else if (this.options.labelPosition == 'outerRight') {
             this.labelText.x = this.position[0] + this.dimensions[0];
             this.labelText.y = this.position[1] + this.dimensions[1] / 2;
