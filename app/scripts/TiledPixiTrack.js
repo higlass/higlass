@@ -317,8 +317,10 @@ export class TiledPixiTrack extends PixiTrack {
             }
         }
 
+        /*
         if (added)
             this.draw();
+        */
     }
 
     updateExistingGraphics() {
@@ -425,6 +427,9 @@ export class TiledPixiTrack extends PixiTrack {
 
         if (this.options.valueScaling)
             this.calculateMedianVisibleValue();
+
+        // we need to draw when we receive new data
+        this.draw();
 
         // Let HiGlass know we need to re-render
         this.animate();
