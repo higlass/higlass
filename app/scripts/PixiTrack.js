@@ -1,5 +1,6 @@
 import {Track} from './Track.js';
 import {format, formatPrefix, precisionRound, precisionPrefix} from 'd3-format';
+import {colorToHex} from './utils.js';
 //import {LRUCache} from './lru.js';
 
 export class PixiTrack extends Track {
@@ -49,7 +50,11 @@ export class PixiTrack extends Track {
         let labelTextText = this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
 
-        this.labelText = new PIXI.Text(labelTextText, {fontSize: "12px", fontFamily: "Arial", fill: "black"});
+        this.labelTextFontSize = '12px';
+        this.labelTextFontFamily = 'Arial';
+        this.labelText = new PIXI.Text(labelTextText, {fontSize: this.labelTextFontSize, 
+                                                       fontFamily: this.labelTextFontFamily, 
+                                                       fill: "black"});
 
         this.pLabel.addChild(this.labelText);
     }
@@ -96,6 +101,8 @@ export class PixiTrack extends Track {
             return;
         }
 
+        let stroke = colorToHex(this.options.labelColor ? this.options.labelColor : 'black');
+
         // we can't draw a label if there's no space
         if (this.dimensions[0] < 0)
             return;
@@ -120,8 +127,6 @@ export class PixiTrack extends Track {
                 let f = formatPrefix('.' + pp, resolution);
                 let formattedResolution = f(resolution);
 
-                //console.log('maxResolutionSize:', maxResolutionSize);
-
                 labelTextText += '\n[Current data resolution: ' + formattedResolution + ']';
             } else {
                 console.log('NaN resolution, screen is probably too small. Dimensions:', this.dimensions);
@@ -129,6 +134,9 @@ export class PixiTrack extends Track {
         }
 
         this.labelText.text = labelTextText;
+        this.labelText.style = {fontSize: this.labelTextFontSize,
+                              fontFamily: this.labelTextFontFamily,
+                              fill: stroke};
 
         this.labelText.visible = true;
 
