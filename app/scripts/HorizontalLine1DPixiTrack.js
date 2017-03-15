@@ -145,8 +145,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         let minVisibleValue = this.minVisibleValue();
         let maxVisibleValue = this.maxVisibleValue();
 
-        //console.log('minVisibleValue:', minVisibleValue, 'maxVisibleValue', maxVisibleValue);
-
         if (maxVisibleValue < 0)
             return;
 
