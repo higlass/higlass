@@ -168,7 +168,8 @@ export class PixiTrack extends Track {
             // we set the anchor to 0.5 so that we can flip the text if the track
             // is rotated but that means we have to adjust its position
             this.labelText.x -= this.labelText.width / 2;
-        } else if (this.options.labelPosition == 'outerLeft') {
+        } else if ((this.options.labelPosition == 'outerLeft' && !this.flipText) ||
+                   (this.options.labelPosition == 'outerTop' && this.flipText)) {
             this.labelText.x = this.position[0];
             this.labelText.y = this.position[1] + this.dimensions[1] / 2;
 
@@ -176,7 +177,26 @@ export class PixiTrack extends Track {
             this.labelText.anchor.y = 0.5;
 
             this.labelText.x -= this.labelText.width / 2 + 3;
-        } else if (this.options.labelPosition == 'outerRight') {
+        } else if ((this.options.labelPosition == 'outerTop' && !this.flipText) ||
+                   (this.options.labelPosition == 'outerLeft' && this.flipText) ) {
+            this.labelText.x = this.position[0] + this.dimensions[0] / 2;
+            this.labelText.y = this.position[1];
+
+            this.labelText.anchor.x = 0.5;
+            this.labelText.anchor.y = 0.5;
+
+            this.labelText.y -= this.labelText.height / 2 + 3;
+        } else if ((this.options.labelPosition == 'outerBottom' && !this.flipText) ||
+                   (this.options.labelPosition == 'outerRight' && this.flipText)) {
+            this.labelText.x = this.position[0] + this.dimensions[0] / 2;
+            this.labelText.y = this.position[1] + this.dimensions[1];
+
+            this.labelText.anchor.x = 0.5;
+            this.labelText.anchor.y = 0.5;
+
+            this.labelText.y += this.labelText.height / 2 + 3;
+        } else if ((this.options.labelPosition == 'outerRight' && !this.flipText) ||
+                   (this.options.labelPosition == 'outerBottom' && this.flipText)){
             this.labelText.x = this.position[0] + this.dimensions[0];
             this.labelText.y = this.position[1] + this.dimensions[1] / 2;
 
@@ -190,7 +210,9 @@ export class PixiTrack extends Track {
         }
 
         if (this.options.labelPosition == 'outerLeft' ||
-            this.options.labelPosition == 'outerRight') {
+            this.options.labelPosition == 'outerRight' || 
+            this.options.labelPosition == 'outerTop' ||
+            this.options.labelPosition == 'outerBottom') {
                 this.pLabel.setParent(this.pBase);
             } else {
                 this.pLabel.setParent(this.pMasked);
