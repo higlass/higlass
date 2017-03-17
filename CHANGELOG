@@ -1,8 +1,14 @@
+v0.5.10
+
+- Viewconf downloads work on Firefox
+- Alert when trying to project a viewport on the same view
+- Resize handle positions fixed in Firefox
+- Track config button icons fixed in Firefox
+
 v0.5.9
 
 - Labels outside of the bounds of a track
 - Label colors
-- Viewconf downloads work on Firefox
 
 v0.5.8
 
