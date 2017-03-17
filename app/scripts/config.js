@@ -18,26 +18,58 @@ let remoteServer = "52.45.229.11";
 //export const usedServer = localServer;
 export const usedServer = remoteServer;
 
-export const optionsInfo = { 
+let availableColors = {
+    'red': { name: "Red", value: "red"},
+    'orange': { name: "Orange", value: "orange"},
+    'brown': { name: "Brown", value: "brown"},
+    'blue': { name: "Blue", value: "blue"},
+    'cyan': { name: "Cyan", value: "cyan"},
+    'green': { name: "Green", value: "green"},
+    'grey': { name: "Grey", value: "grey"},
+    'black': { name: "Black", value: "black"}
+}
+
+export const optionsInfo = {
+    valueScaling: {
+        name: "Value Scaling",
+        inlineOptions: {
+            'linear': { name: "Linear", value: 'linear' },
+            'log': {name: "Log", value: 'log' }
+        }
+    },
+    gridStrokeWidth: {
+        name: "Stroke Width",
+        inlineOptions: {
+            '1': { name: "1", value: 1},
+            '2': { name: "2", value: 2},
+            '3': { name: "3", value: 3},
+            '5': { name: "5", value: 5},
+            '8': { name: "8", value: 8}
+        }
+    },
     minusStrandColor:  {
         name: "- Strand Color",
-        inlineOptions: {
-            'red': { name: "Red", value: "red"},
-            'blue': { name: "Blue", value: "blue"},
-            'green': { name: "Green", value: "green"},
-            'grey': { name: "Grey", value: "grey"},
-            'black': { name: "Black", value: "black"}
-        }
+        inlineOptions: availableColors
     },
     plusStrandColor:  {
         name: "+ Strand Color",
-        inlineOptions: {
-            'red': { name: "Red", value: "red"},
-            'blue': { name: "Blue", value: "blue"},
-            'green': { name: "Green", value: "green"},
-            'grey': { name: "Grey", value: "grey"},
-            'black': { name: "Black", value: "black"}
-        }
+        inlineOptions: availableColors
+    },
+    lineStrokeColor:  {
+        name: "Stroke color",
+        inlineOptions: availableColors
+    },
+    gridStrokeColor:  {
+        name: "Stroke color",
+        inlineOptions: availableColors
+    },
+    projectionStrokeColor:  {
+        name: "Stroke color",
+        inlineOptions: availableColors
+    },
+    projectionFillColor:  {
+        name: "Fill color",
+        inlineOptions: availableColors
     },
     oneDHeatmapFlipped: {
         name: 'Flip Heatmap',
@@ -62,9 +94,17 @@ export const optionsInfo = {
             'hidden': { name: 'Hidden', value: null }
         }
     },
+    labelColor: {
+        name: "Label Color",
+        inlineOptions: availableColors
+    },
     labelPosition: {
         name: "Label Position",
         inlineOptions: {
+            'ol': { name: "Outer left", value: "outerLeft"},
+            'or': { name: "Outer right", value: 'outerRight' },
+            'ot': { name: "Outer top", value: "outerTop" },
+            'ob': { name: "Outer bottom", value: "outerBottom" },
             'tl': { name: "Top left", value: 'topLeft' },
             'tr': { name: 'Top right', value: 'topRight' },
             'bl': {name: "Bottom left", value: 'bottomLeft' },
@@ -78,7 +118,7 @@ export const optionsInfo = {
     colorRange: {
         name: "Color map",
         inlineOptions: {
-            'default': { name: 'default', value: [  
+            'default': { name: 'default', value: [
                                           "#FFFFFF",
                                           "#F8E71C",
                                           "rgba(245,166,35,1)",
@@ -87,7 +127,7 @@ export const optionsInfo = {
             'afmhot': { name: 'afmhot', value: ['rgba(0, 0, 0, 1.0)', 'rgba(128, 0, 0, 1.0)', 'rgba(256, 129, 1, 1.0)', 'rgba(256, 256, 129, 1.0)', 'rgba(256, 256, 256, 1.0)'] },
             'hot': { name: "hot", value: ['rgba(10, 0, 0, 1.0)', 'rgba(179, 0, 0, 1.0)', 'rgba(256, 91, 0, 1.0)', 'rgba(256, 256, 6, 1.0)', 'rgba(256, 256, 256, 1.0)'] },
             'jet': { name: "jet", value: ['rgba(0, 0, 128, 1.0)', 'rgba(0, 129, 256, 1.0)', 'rgba(125, 256, 122, 1.0)', 'rgba(256, 148, 0, 1.0)', 'rgba(128, 0, 0, 1.0)'] },
-            
+
             'bwr': { name: 'bwr', value: ['rgba(0, 0, 256, 1.0)', 'rgba(128, 128, 256, 1.0)', 'rgba(256, 254, 254, 1.0)', 'rgba(256, 126, 126, 1.0)', 'rgba(256, 0, 0, 1.0)'] },
             'cubehelix': { name: 'cubehelix', value: ['rgba(0, 0, 0, 1.0)', 'rgba(21, 83, 76, 1.0)', 'rgba(162, 121, 74, 1.0)', 'rgba(199, 180, 238, 1.0)', 'rgba(256, 256, 256, 1.0)'] },
             'rainbow': { name: 'rainbow', value: ['rgba(128, 0, 256, 1.0)', 'rgba(0, 181, 236, 1.0)', 'rgba(129, 255, 180, 1.0)', 'rgba(256, 179, 96, 1.0)', 'rgba(256, 0, 0, 1.0)'] },
@@ -96,7 +136,7 @@ export const optionsInfo = {
             'red': { name: "White to red", value: ['rgba(255,255,255,1)', 'rgba(255,0,0,1)'] },
             'green': { name: "White to green", value: ['rgba(255,255,255,1)', 'rgba(0,255,0,1)'] },
             'blue': { name: "White to blue", value: ['rgba(255,255,255,1)', 'rgba(0,0,255,1)'] },
-            'custom': { 
+            'custom': {
                 name: "Custom...",
                 componentPickers: {
                     'heatmap': HeatmapOptions
@@ -139,7 +179,7 @@ export const optionsInfo = {
                 }
 
                 return inlineOptions;
-            } else 
+            } else
                 return [];
         }
     }
@@ -172,7 +212,7 @@ export const tracksInfo = [
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
             labelPosition: 'bottomRight',
-            colorRange: [  
+            colorRange: [
                               "#FFFFFF",
                               "#F8E71C",
                               "rgba(245,166,35,1)",
@@ -180,7 +220,7 @@ export const tracksInfo = [
                            ],
             maxZoom: null
         },
-        availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom' ]
+        availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom' ]
     },
     {
         type: 'horizontal-heatmap',
@@ -191,7 +231,8 @@ export const tracksInfo = [
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
             labelPosition: 'bottomRight',
-            colorRange: [  
+            labelColor: 'black',
+            colorRange: [
                               "#FFFFFF",
                               "#F8E71C",
                               "rgba(245,166,35,1)",
@@ -199,7 +240,7 @@ export const tracksInfo = [
                            ],
             maxZoom: null
         },
-        availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped' ]
+        availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped' ]
     },
     {
         type: 'vertical-heatmap',
@@ -210,7 +251,8 @@ export const tracksInfo = [
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
             labelPosition: 'bottomRight',
-            colorRange: [  
+            labelColor: 'black',
+            colorRange: [
                               "#FFFFFF",
                               "#F8E71C",
                               "rgba(245,166,35,1)",
@@ -218,7 +260,7 @@ export const tracksInfo = [
                            ],
             maxZoom: null
         },
-        availableOptions: [ 'labelPosition', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped' ]
+        availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped' ]
     },
     {
         type: 'horizontal-line',
@@ -226,10 +268,13 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         thumbnail: svgHorizontalLineIcon,
-        availableOptions: [ 'labelPosition', 'axisPositionHorizontal' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'axisPositionHorizontal', 'lineStrokeColor', 'valueScaling' ],
         defaultOptions: {
+            labelColor: 'black',
             labelPosition: 'topLeft',
-            axisPositionHorizontal: 'right'
+            axisPositionHorizontal: 'right',
+            lineStrokeColor: 'blue',
+            valueScaling: 'linear'
         }
     },
     //
@@ -239,10 +284,13 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         thumbnail: svgVerticalLineIcon,
-        availableOptions: [ 'labelPosition', 'axisPositionVertical' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'axisPositionHorizontal', 'lineStrokeColor', 'valueScaling' ],
         defaultOptions: {
+            labelColor: 'black',
             labelPosition: 'bottomLeft',
-            axisPositionVertical: 'top'
+            axisPositionVertical: 'top',
+            lineStrokeColor: 'blue',
+            valueScaling: 'linear'
         }
     },
     {
@@ -259,7 +307,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         thumbnail: 'horizontal-stacked-interval.png',
-        availableOptions: [ 'labelPosition' ]
+        availableOptions: [ 'labelPosition', 'labelColor' ]
     },
     {
         type: 'left-stacked-interval',
@@ -267,7 +315,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         thumbnail: 'vertical-stacked-interval.png',
-        availableOptions: [ 'labelPosition' ]
+        availableOptions: [ 'labelPosition', 'labelColor', ]
     },
     {
         type: 'viewport-projection-center',
@@ -276,9 +324,15 @@ export const tracksInfo = [
         hidden: true,
         orientation: '2d',
         name: 'Viewport Projection',
-        thumbnail: 'viewport-projection-center.png'
+        thumbnail: 'viewport-projection-center.png',
+        availableOptions: ['projectionFillColor', 'projectionStrokeColor'],
+        defaultOptions: {
+            projectionFillColor: "#777",
+            projectionStrokeColor: "#777",
+            projectionFillOpacity: 0.3,
+            projectionStrokeOpacity: 0.3
+        }
     },
-
     {
         type: 'horizontal-gene-annotations',
         datatype: ['gene-annotation'],
@@ -287,7 +341,13 @@ export const tracksInfo = [
         orientation: '1d-horizontal',
         name: 'Gene Annotations',
         thumbnail: svgGeneAnnotationsIcon,
-        availableOptions: [ 'labelPosition', 'plusStrandColor', 'minusStrandColor' ]
+        availableOptions: [ 'labelPosition', 'labelColor', 'plusStrandColor', 'minusStrandColor' ],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'hidden',
+            plusStrandColor: 'blue',
+            minusStrandColor: 'red'
+        }
     },
     {
         type: 'vertical-gene-annotations',
@@ -297,7 +357,13 @@ export const tracksInfo = [
         orientation: '1d-vertical',
         name: 'Gene Annotations',
         thumbnail: svgVerticalGeneAnnotationsIcon,
-        availableOptions: [ 'labelPosition' ]
+        availableOptions: [ 'labelPosition', 'labelColor', 'plusStrandColor', 'minusStrandColor' ],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'hidden',
+            plusStrandColor: 'blue',
+            minusStrandColor: 'red'
+        }
     },
     {
         type: 'arrowhead-domains',
@@ -306,7 +372,11 @@ export const tracksInfo = [
         orientation: '2d',
         name: 'Arrowhead Domains',
         thumbnail: svgArrowheadDomainsIcon,
-        availableOptions: [ 'labelPosition' ]
+        availableOptions: [ 'labelPosition', 'labelColor' ],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'hidden',
+        }
     },
 
     {
@@ -323,7 +393,12 @@ export const tracksInfo = [
         orientation: '2d',
         name: 'Chromosome Grid (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-        thumbnail: null
+        thumbnail: null,
+        availableOptions: ['gridStrokeWidth', 'gridStrokeColor'],
+        defaultOptions: {
+            gridStrokeWidth: 1,
+            gridStrokeColor: 'grey'
+        }
     }
     ,
     {
@@ -402,3 +477,5 @@ export const tracksInfoByType = temp;
 // a drag event
 export const SHORT_DRAG_TIMEOUT = 110;
 export const LONG_DRAG_TIMEOUT = 1000;
+
+export const LOCATION_LISTENER_PREFIX = 'locationListenerPrefix';

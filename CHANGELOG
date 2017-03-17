@@ -1,3 +1,35 @@
+v0.5.9
+
+- Labels outside of the bounds of a track
+- Label colors
+- Viewconf downloads work on Firefox
+
+v0.5.8
+
+- A host of performance improvements
+
+v0.5.7
+
+- Empty accidental release
+
+v0.5.6
+
+- Add log scaling to line tracks
+- Add colors to line tracks
+- Add width option to 2D grid
+- Add color option to 2D grid
+
+v0.5.5
+
+- Add per-view `zoomFixed` settings
+- Added configurable viewport projection colors (projectionFillColor,
+projectionStrokeColor)
+- Added an empty .npmignore to prevent it from excluding the dist/
+directory specified in the .gitignore
+- Enhance 2D annotations by supporting RGBA, fill and stroke-dependent coloring,
+and locus-wise min width / height definitions
+- Remove builds. Use NPM
+
 v0.5.4
 
 - Fixed bug related to the selection of the plot type
@@ -5,7 +37,7 @@ v0.5.4
 - Removed the "Move up" menu item
 - Deep copy incoming viewconfs so that changing them outside of the component
 leads to an update
-- Viewconf downloads work on Firefox
+- Added onLocationChanged event listener
 
 v0.5.3
 
@@ -53,7 +85,7 @@ v0.4.32
 - Reduced the number of tiles requested by the horizontal heatmap track
 - Removed console log statements
 
-v0.4.31 
+v0.4.31
 
 - Fixed regression and compatibility change with new zoom and location locking
 - Fixed regression in the selection dragging

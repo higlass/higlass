@@ -3,6 +3,7 @@ import {tileProxy} from './TileProxy.js';
 import {ChromosomeInfo} from './ChromosomeInfo.js';
 import {SearchField} from './search_field.js';
 import boxIntersect from 'box-intersect';
+import {absoluteToChr} from './utils.js';
 
 export class Chromosome2DLabels extends PixiTrack {
     constructor(scene, chromInfoPath) {
@@ -12,20 +13,20 @@ export class Chromosome2DLabels extends PixiTrack {
         this.chromInfo = null;
 
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
-            this.chromInfo = newChromInfo;  
+            this.chromInfo = newChromInfo;
             //
 
-            this.searchField = new SearchField(this.chromInfo); 
+            this.searchField = new SearchField(this.chromInfo);
             this.draw();
 
             this.texts = [];
-            
+
             for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
                 let thisTexts = [];
 
                 for (let j = 0; j < this.chromInfo.cumPositions.length; j++) {
                     let textStr = this.chromInfo.cumPositions[i].chr + "/" + this.chromInfo.cumPositions[j].chr;
-                    let text = new PIXI.Text(textStr, 
+                    let text = new PIXI.Text(textStr,
                                 {fontSize: "14px", fontFamily: "Arial", fill: "red"}
                                 );
 
@@ -33,7 +34,7 @@ export class Chromosome2DLabels extends PixiTrack {
                     text.anchor.y = 0.5;
                     text.visible = false;
 
-                    //give each string a random hash so that some get hidden 
+                    //give each string a random hash so that some get hidden
                     // when there's overlaps
                     text.hashValue = Math.random();
 
@@ -62,11 +63,11 @@ export class Chromosome2DLabels extends PixiTrack {
         if (!this.searchField)
             return;
 
-        let x1 = this.searchField.absoluteToChr(this._xScale.domain()[0]);
-        let x2 = this.searchField.absoluteToChr(this._xScale.domain()[1]);
+        let x1 = absoluteToChr(this._xScale.domain()[0], this.chromInfo);
+        let x2 = absoluteToChr(this._xScale.domain()[1], this.chromInfo);
 
-        let y1 = this.searchField.absoluteToChr(this._yScale.domain()[0]);
-        let y2 = this.searchField.absoluteToChr(this._yScale.domain()[1]);
+        let y1 = absoluteToChr(this._yScale.domain()[0], this.chromInfo);
+        let y2 = absoluteToChr(this._yScale.domain()[1], this.chromInfo);
 
         for (let i = 0; i < this.texts.length; i++) {
             for (let j = 0; j < this.texts.length; j++) {
@@ -99,14 +100,14 @@ export class Chromosome2DLabels extends PixiTrack {
                 } else if (viewportMidX - bbox.width / 2 < 0) {
                     //
                     text.x -= (viewportMidX - bbox.width / 2);
-                } 
+                }
 
                 // make sure the chro
                 if (viewportMidY + bbox.height / 2 > this.dimensions[1]) {
                     text.y -= (viewportMidY + bbox.height / 2) - this.dimensions[1];
                 } else if (viewportMidY - bbox.height / 2 < 0) {
                     text.y -= (viewportMidY - bbox.height / 2);
-                } 
+                }
 
                 text.visible = true;
 
@@ -119,7 +120,7 @@ export class Chromosome2DLabels extends PixiTrack {
     }
 
     hideOverlaps(allTexts) {
-        let allBoxes = [];   // store the bounding boxes of the text objects so we can 
+        let allBoxes = [];   // store the bounding boxes of the text objects so we can
                              // calculate overlaps
         allBoxes = allTexts.map(val => {
             let text = val.text;
@@ -132,9 +133,9 @@ export class Chromosome2DLabels extends PixiTrack {
 
         let result = boxIntersect(allBoxes, function(i, j) {
             if (allTexts[i].importance > allTexts[j].importance) {
-                allTexts[j].text.visible = 0; 
+                allTexts[j].text.visible = 0;
             } else {
-                allTexts[i].text.visible = 0; 
+                allTexts[i].text.visible = 0;
             }
         });
     }
@@ -149,7 +150,7 @@ export class Chromosome2DLabels extends PixiTrack {
     zoomed(newXScale, newYScale) {
         this.xScale(newXScale);
         this.yScale(newYScale);
-        
+
         this.draw();
     }
 

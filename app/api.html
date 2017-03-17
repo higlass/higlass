@@ -24,7 +24,7 @@
 </script>
 <script>
 
- var testViewConfig = 
+ var testViewConfig =
 {
   "editable": true,
   "zoomFixed": false,
@@ -35,60 +35,26 @@
   "views": [
     {
       "uid": "aa",
-            "initialXDomain": [
-                0,3000000000
-                                          ],
-            "initialYDomain": [
-                0,3000000000
-                                          ],
+      "initialXDomain": [
+        0,
+        3100000000
+      ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
-                  {
-            "uuid": "OHJakQICQD6gTD7skx4EWA",
-            "filetype": "beddb",
-            "datatype": "gene-annotation",
-            "private": false,
-            "name": "Gene Annotations (hg19)",
-            "coordSystem": "hg19",
-            "coordSystem2": "",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "serverUidKey": "http://higlass.io/api/v1/OHJakQICQD6gTD7skx4EWA",
-            "uid": "BEEMEjU7QCa2krDO9C0yOQ",
+          {
             "type": "horizontal-gene-annotations",
+            "height": 60,
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "server": "http://higlass.io/api/v1",
+            "position": "top",
+            "uid": "OHJakQICQD6gTD7skx4EWA",
+            "name": "Gene Annotations (hg19)",
             "options": {
-                "labelPosition": "outerTop",
               "name": "Gene Annotations (hg19)"
             },
-            "width": 20,
-            "height": 60,
-            "maxWidth": 4294967296,
-            "maxZoom": 22
-          },
-         {
-            "filetype": "hitile",
-            "datatype": "vector",
-            "private": false,
-            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-            "coordSystem": "hg19",
-            "coordSystem2": "",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
-            "serverUidKey": "http://higlass.io/api/v1/F2vbUeqhS86XkxuO1j2rPA",
-            "type": "horizontal-line",
-            "options": {
-              "labelColor": "red",
-              "labelPosition": "outerLeft",
-              "axisPositionHorizontal": "right",
-              "lineStrokeColor": "blue",
-              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-              "valueScaling": "log"
-            },
-            "width": 20,
-            "height": 20,
             "maxWidth": 4294967296,
             "maxZoom": 22
           },
@@ -155,83 +121,21 @@
                 "maxWidth": 4194304000,
                 "binsPerDimension": 256,
                 "maxZoom": 14
-              },
-              {
-                "type": "2d-chromosome-grid",
-                "datatype": [
-                  "chromosome-2d-grid"
-                ],
-                "local": true,
-                "orientation": "2d",
-                "name": "Chromosome Grid (hg19)",
-                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-                "thumbnail": null,
-                "uuid": "TIlwFtqxTX-ndtM7Y9k1bw",
-                "server": "",
-                "tilesetUid": "TIlwFtqxTX-ndtM7Y9k1bw",
-                "serverUidKey": "/TIlwFtqxTX-ndtM7Y9k1bw",
-                "uid": "LUVqXXu2QYiO8XURIwyUyA",
-                "options": {}
               }
-
             ],
             "position": "center",
             "options": {}
           }
         ],
-        "right": [
-          {
-            "type": "vertical-gene-annotations",
-            "width": 60,
-            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "server": "http://higlass.io/api/v1",
-            "name": "Gene Annotations (hg19)",
-            "options": {
-              "labelPosition": "outerBottom",
-              "name": "Gene Annotations (hg19)"
-            },
-            "maxWidth": 4294967296,
-            "maxZoom": 22
-          },
-          {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "type": "vertical-chromosome-labels",
-            "name": "Chromosome Labels (hg19)",
-            "width": 30,
-            "options": {
-                "labelPosition": "outerBottom",
-                "name": "Chromosome labels"
-            }
-          }
-        ],
-        "bottom": [
-         {
-            "filetype": "hitile",
-            "datatype": "vector",
-            "private": false,
-            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-            "coordSystem": "hg19",
-            "coordSystem2": "",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
-            "serverUidKey": "http://higlass.io/api/v1/F2vbUeqhS86XkxuO1j2rPA",
-            "type": "horizontal-line",
-            "options": {
-              "labelPosition": "outerLeft",
-              "axisPositionHorizontal": "right",
-              "lineStrokeColor": "blue",
-              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-              "valueScaling": "log"
-            },
-            "width": 20,
-            "height": 50,
-            "maxWidth": 4294967296,
-            "maxZoom": 22
-          },
-        ]
+        "right": [],
+        "bottom": []
       },
+      "initialYDomain": [
+        756976744.1860464,
+        2343023255.8139534
+      ],
       "layout": {
-        "w": 12,
+        "w": 6,
         "h": 12,
         "x": 0,
         "y": 0,
@@ -251,18 +155,35 @@
   }
 }
  ;
-    
-    window.higlassApi;
 
-    hglib.createHgComponent(
-        document.getElementById('development-demo'),
-        testViewConfig,
-        { bounded: true },
-        function (api) {
-            window.higlassApi = api;
-        }
-    );
+  let higlassApi;
 
+  hglib.createHgComponent(
+      document.getElementById('development-demo'),
+      testViewConfig,
+      { bounded: true },
+      function (api) { higlassApi = api; }
+  );
+
+  higlassApi.on('location', 'aa', function (yeahCool) {
+    console.log('Yuuhuu we are over here', yeahCool);
+  }, function (id) {
+    console.log('First Listener ID', id);
+  });
+
+  var secondId;
+
+  higlassApi.on('location', 'aa', function (yeahCool) {
+    console.log('Dont forget about us sweetie', yeahCool);
+  }, function (id) {
+    secondId = id;
+    console.log('Second Listener ID', id);
+  });
+
+  setTimeout(function() {
+    higlassApi.off('location', 'aa', secondId);
+    console.log('Second event listener is offline');
+  }, 5000);
 
 </script>
 <script>

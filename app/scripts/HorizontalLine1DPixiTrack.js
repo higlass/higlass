@@ -1,7 +1,8 @@
-import {scaleLinear} from 'd3-scale';
+import {scaleLinear, scaleLog, scaleQuantile} from 'd3-scale';
 import {ticks} from 'd3-array';
 import {tileProxy} from './TileProxy.js';
 import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
+import {colorToHex} from './utils.js';
 
 export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
@@ -141,14 +142,34 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         if (tileValues.length == 0)
             return;
 
+        let minVisibleValue = this.minVisibleValue();
         let maxVisibleValue = this.maxVisibleValue();
 
         if (maxVisibleValue < 0)
             return;
 
-        let valueScale = scaleLinear()
-            .domain([0, maxVisibleValue])
-            .range([this.dimensions[1], 0]);
+        let valueScale = null;
+        let pseudocount = 0;    // if we use a log scale, then we'll set a pseudocount
+                                // equal to the smallest non-zero value
+        
+
+        if (this.options.valueScaling == 'log') {
+            let offsetValue = this.medianVisibleValue;
+
+            if (!this.medianVisibleValue)
+                offsetValue = this.minVisibleValue();
+
+            valueScale = scaleLog()
+                .base(Math.E)
+                .domain([offsetValue, maxVisibleValue])
+                .range([this.dimensions[1], 0]);
+            pseudocount = offsetValue;
+        } else {
+            // linear scale
+            valueScale = scaleLinear()
+                .domain([0, maxVisibleValue])
+                .range([this.dimensions[1], 0]);
+        }
 
 
         graphics.clear();
@@ -156,15 +177,17 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         this.drawAxis(valueScale);
 
         if (valueScale.domain()[1] < 0) {
+            console.log('returning...')
             return;
         }
 
+        let stroke = colorToHex(this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue');
         // this scale should go from an index in the data array to
         // a position in the genome coordinates
         let tileXScale = scaleLinear().domain([0, this.tilesetInfo.tile_size])
         .range([tileX,tileX + tileWidth]);
 
-        graphics.lineStyle(1, 0x0000FF, 1);
+        graphics.lineStyle(1, stroke, 1);
        // graphics.beginFill(0xFF700B, 1);
         let j = 0;
 
@@ -172,7 +195,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             let xPos = this._xScale(tileXScale(i));
 
            if(j == 0){
-                graphics.moveTo(this._xScale(tileXScale(i)), valueScale(tileValues[i]));
+                graphics.moveTo(this._xScale(tileXScale(i)), valueScale(tileValues[i] + pseudocount));
                 j++;
             }
 
@@ -183,7 +206,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
 
             //console.log('drawing:', this._xScale(tileXScale(i)), valueScale(tileValues[i+1]));
-            graphics.lineTo(this._xScale(tileXScale(i)), valueScale(tileValues[i+1]));
+            graphics.lineTo(this._xScale(tileXScale(i)), valueScale(tileValues[i+1] + pseudocount));
         }
     }
 
