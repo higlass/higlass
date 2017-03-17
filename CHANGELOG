@@ -1,3 +1,7 @@
+export-data
+
+- Default to interpolation-less rendering
+
 v0.5.10
 
 - Viewconf downloads work on Firefox
