@@ -1340,7 +1340,9 @@ export class HiGlassComponent extends React.Component {
     var file = new Blob([data], {type: 'text/json'});
     a.href = URL.createObjectURL(file);
     a.download = name;
+    document.body.appendChild(a); // Necessary for downloads on Firefox.
     a.click();
+    document.body.removeChild(a);
   }
 
   handleExportViewsAsLink() {

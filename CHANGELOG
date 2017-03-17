@@ -2,6 +2,7 @@ v0.5.9
 
 - Labels outside of the bounds of a track
 - Label colors
+- Viewconf downloads work on Firefox
 
 v0.5.8
 
@@ -37,7 +38,6 @@ v0.5.4
 - Deep copy incoming viewconfs so that changing them outside of the component
 leads to an update
 - Added onLocationChanged event listener
-
 
 v0.5.3
 
