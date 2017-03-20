@@ -470,6 +470,16 @@ export class HiGlassComponent extends React.Component {
         });
   }
 
+  handleZoomToData(viewUid) {
+    /**
+     * Adjust the zoom level so that all of the data is visible
+     *
+     * @param viewUid: The view uid for which to adjust the zoom level
+     */
+
+  }
+
+
   handleYankFunction(uid, yankFunction) {
         /**
          * We want to yank some attributes from another view.
@@ -1807,6 +1817,9 @@ export class HiGlassComponent extends React.Component {
                          <ViewHeader
                             onAddView={e=>this.handleAddView(view)}
                             onCloseView={e=>this.handleCloseView(view.uid)}
+
+
+                            onZoomToData={uid => this.handleZoomToData(uid)}
 
                             onLockZoom={uid =>
                                 this.handleYankFunction(uid, this.handleZoomLockChosen.bind(this))}

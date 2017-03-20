@@ -31,6 +31,14 @@ export class ConfigViewMenu extends React.Component {
                         {'Toggle position search box'}
                     </ContextMenuItem>
                     <hr />
+
+                    <ContextMenuItem
+                        onClick={e => this.props.onZoomToData(e)}
+                    >
+                    {'Zoom to data extent'}
+                    </ContextMenuItem>
+
+                    <hr />
                     <ContextMenuItem
                         onClick={e => this.props.onYankZoom(e)}
                     >

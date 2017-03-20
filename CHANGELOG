@@ -4,6 +4,12 @@ v0.5.10
 - Alert when trying to project a viewport on the same view
 - Resize handle positions fixed in Firefox
 - Track config button icons fixed in Firefox
+- Only redraw in timedUpdate if track positions have changed
+- Fixed top and left axis not appearing bug
+- Fixed chromosome horizontal labels not appearing
+- Show minValue pixels by scaling from minValue to maxValue + minValue and
+adding minValue to each pixel
+
 
 v0.5.9
 

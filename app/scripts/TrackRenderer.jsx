@@ -308,8 +308,10 @@ export class TrackRenderer extends React.Component {
             this.yPositionOffset = this.element.getBoundingClientRect().top - this.canvasDom.getBoundingClientRect().top;
             this.xPositionOffset = this.element.getBoundingClientRect().left - this.canvasDom.getBoundingClientRect().left;
 
-            this.updateTrackPositions();
-            this.applyZoomTransform(this.currentProps);
+            let updated = this.updateTrackPositions();
+
+            if (updated)  //only redraw if positions changed
+                this.applyZoomTransform(this.currentProps);
 
             requestAnimationFrame(this.timedUpdatePositionAndDimensions.bind(this));
         }
@@ -409,16 +411,38 @@ export class TrackRenderer extends React.Component {
     }
 
     updateTrackPositions() {
+        let updated = false;
+
         for (let uid in this.trackDefObjects) {
             let trackDef = this.trackDefObjects[uid].trackDef;
             let trackObject = this.trackDefObjects[uid].trackObject;
 
-            trackObject.setPosition([this.xPositionOffset + trackDef.left, this.yPositionOffset + trackDef.top]);
-            trackObject.setDimensions([trackDef.width, trackDef.height]);
+            let prevPosition = trackObject.position;
+            let prevDimensions = trackObject.dimensions;
+
+            let newPosition = [this.xPositionOffset + trackDef.left, this.yPositionOffset + trackDef.top];
+            let newDimensions = [trackDef.width, trackDef.height];
+
+            // check if any of the track's positions have changed 
+            // before trying to update them
+
+            if (!prevPosition || newPosition[0] != prevPosition[0] || newPosition[1] != prevPosition[1]) {
+                trackObject.setPosition(newPosition);
+                updated = true;
+            }
+
+            if (!prevDimensions || newDimensions[0] != prevDimensions[0] || newDimensions[1] != prevDimensions[1]) {
+                trackObject.setDimensions(newDimensions);
+                updated = true;
+            }
 
             let widthDifference = trackDef.width - this.initialWidth;
             let heightDifference = trackDef.height - this.initialHeight;
         }
+
+        // report on whether any track positions or dimensions have changed
+        // so that downstream code can decide whether to redraw
+        return updated;
     }
 
 

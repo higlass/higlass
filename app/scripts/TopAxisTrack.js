@@ -27,4 +27,10 @@ export class TopAxisTrack extends SVGTrack {
 
         return this;
     }
+
+    zoomed(newXScale, newYScale) {
+        super.zoomed(newXScale, newYScale);
+
+        this.draw();
+    }
 }

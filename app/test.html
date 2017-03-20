@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HiGlass</title>
+<style type="text/css">
+    .canvasjs-chart-credit {
+    display:none;
+}
+</style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/page.css">
+</head>
+<body >
+    <div style="height: 50px" />
+        <div style="margin: auto; width: 100%;">
+        <div
+            id="development-demo"
+            style="position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px">
+        </div>
+    </div>
+</body>
+<script src='scripts/hglib.js'>
+</script>
+<script>
+
+ var testViewConfig = 
+{
+  "zoomFixed": false,
+  "views": [
+    {
+      "tracks": {
+        "bottom": [],
+        "top": [
+          {
+            "type": "top-axis",
+            "datatype": [
+              "axis"
+            ],
+            "local": true,
+            "orientation": "1d-horizontal",
+            "name": "Top Axis",
+            "thumbnail": {},
+            "defaultOptions": {},
+            "uuid": "LrtH4xmQSf6piyENDcnfUg",
+            "server": "",
+            "tilesetUid": "LrtH4xmQSf6piyENDcnfUg",
+            "serverUidKey": "/LrtH4xmQSf6piyENDcnfUg",
+            "uid": "bc_v0vDLTYWoIHXmecMSKg",
+            "options": {},
+            "width": 20,
+            "height": 20
+          },
+          {
+            "type": "horizontal-chromosome-labels",
+            "datatype": [
+              "chromosome-1d-labels"
+            ],
+            "local": true,
+            "orientation": "1d-horizontal",
+            "minHeight": 30,
+            "name": "Chromosome Axis (hg19)",
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "thumbnail": null,
+            "uuid": "CkrwCfx9ScajuukXDHH7_Q",
+            "server": "",
+            "tilesetUid": "CkrwCfx9ScajuukXDHH7_Q",
+            "serverUidKey": "/CkrwCfx9ScajuukXDHH7_Q",
+            "uid": "PkIw-gN4TVGEbUg5SILsLw",
+            "options": {},
+            "width": 20,
+            "height": 30,
+            "position": "top"
+          }
+        ],
+        "right": [],
+        "center": [
+          {
+            "uid": "CV5AuBixSzK0ykQR9lWm3g",
+            "type": "combined",
+            "contents": [
+              {
+                "uuid": "M6ln3BX4TnCCDeYxl-kjeA",
+                "filetype": "cooler",
+                "datatype": "matrix",
+                "private": false,
+                "name": "dec2_20_pluslig_1pGene_grch38_UBR4_D_1nt.pairwise.sorted.multires.cool",
+                "coordSystem": "",
+                "coordSystem2": "",
+                "server": "http://127.0.0.1:8989/api/v1",
+                "tilesetUid": "M6ln3BX4TnCCDeYxl-kjeA",
+                "serverUidKey": "http://127.0.0.1:8989/api/v1/M6ln3BX4TnCCDeYxl-kjeA",
+                "uid": "O2Spml0MSoaddqyBEAYnfg",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "rgba(0, 0, 0, 1.0)",
+                    "rgba(128, 0, 0, 1.0)",
+                    "rgba(256, 129, 1, 1.0)",
+                    "rgba(256, 256, 129, 1.0)",
+                    "rgba(256, 256, 256, 1.0)"
+                  ],
+                  "maxZoom": null,
+                  "name": "dec2_20_pluslig_1pGene_grch38_UBR4_D_1nt.pairwise.sorted.multires.cool"
+                },
+                "width": 20,
+                "height": 20,
+                "maxWidth": 16384,
+                "binsPerDimension": 256,
+                "maxZoom": 6,
+                "position": "center"
+              }
+            ],
+            "position": "center"
+          }
+        ],
+        "left": [
+          {
+            "type": "vertical-chromosome-labels",
+            "datatype": [
+              "chromosome-1d-labels"
+            ],
+            "local": true,
+            "orientation": "1d-vertical",
+            "minWidth": 30,
+            "minHeight": 30,
+            "name": "Chromosome Axis (hg19)",
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "thumbnail": null,
+            "uuid": "aEWzhLz_S8GzvyfR073y9w",
+            "server": "",
+            "tilesetUid": "aEWzhLz_S8GzvyfR073y9w",
+            "serverUidKey": "/aEWzhLz_S8GzvyfR073y9w",
+            "uid": "JhSNxaSjS7eIYmc6FjwFfQ",
+            "options": {},
+            "width": 30,
+            "height": 30,
+            "position": "left"
+          }
+        ]
+      },
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "XgjXAgiAT2aOAQirNIXWsQ",
+        "moved": false,
+        "static": false
+      },
+      "initialXDomain": [
+        -4462.218708383309,
+        26005.313999076297
+      ],
+      "initialYDomain": [
+        604.0402453100387,
+        18109.36925649563
+      ],
+      "uid": "XgjXAgiAT2aOAQirNIXWsQ"
+    }
+  ],
+  "editable": true,
+  "exportViewUrl": "http://127.0.0.1:8989/api/v1/viewconfs/",
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "trackSourceServers": [
+    "http://127.0.0.1:8989/api/v1"
+  ],
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}
+ ;
+    
+    window.higlassApi;
+
+    hglib.createHgComponent(
+        document.getElementById('development-demo'),
+        testViewConfig,
+        { bounded: true },
+        function (api) {
+            window.higlassApi = api;
+        }
+    );
+
+
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-77756807-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+</html>

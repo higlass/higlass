@@ -28,12 +28,16 @@ export class LeftTrackModifier {
     }
 
     setDimensions(newDimensions) {
+        this.dimensions = newDimensions;
+
         let reversedDimensions = [newDimensions[1], newDimensions[0]];
 
         this.originalTrack.setDimensions(reversedDimensions);
     }
 
     setPosition(newPosition) {
+        this.position = newPosition;
+
         this.originalTrack.setPosition(newPosition);
 
         this.originalTrack.pBase.position.x = -this.originalTrack.position[0];

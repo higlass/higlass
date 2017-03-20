@@ -26,7 +26,7 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
 
     //let qScale = scaleQuantile().domain(data).range(range(255));
     let valueScale = scaleLinear().range([254, 0])
-        .domain([countTransform(minVisibleValue), countTransform(maxVisibleValue)])
+        .domain([countTransform(minVisibleValue), countTransform(maxVisibleValue + minVisibleValue)])
 
     let pixData = new Uint8ClampedArray(size * 4);
 
@@ -41,7 +41,7 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
 
             if (d > epsilon) {
                 // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
-                let ct = countTransform(d);
+                let ct = countTransform(d + minVisibleValue);
                 rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(ct))))
             }
             //let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))

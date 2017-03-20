@@ -109,6 +109,10 @@ export class ViewHeader extends React.Component {
                         orientation={'left'}
                     >
                         <ConfigViewMenu
+                            onZoomToData={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onZoomToData(this.state.configMenuUid);
+                            }}
                             onLockZoom={e => {
                                 this.setState({configMenuUid: null});    // hide the menu
                                 this.props.onLockZoom(this.state.configMenuUid);

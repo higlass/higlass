@@ -25,7 +25,6 @@ export class HorizontalChromosomeLabels extends PixiTrack {
             //
 
             this.searchField = new SearchField(this.chromInfo);
-            this.draw();
 
             this.texts = [];
 
@@ -54,6 +53,8 @@ export class HorizontalChromosomeLabels extends PixiTrack {
 
                 this.texts.push(text);
             }
+
+            this.draw();
         });
 
     }

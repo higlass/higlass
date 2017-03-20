@@ -50,12 +50,16 @@ export class CombinedTrack {
          * Setting the position of this track simply means setting the positions
          * of its children.
          */
+        this.position = newPosition;
+
         for (let i = 0; i < this.childTracks.length; i++) {
             this.childTracks[i].setPosition(newPosition);
         }
     }
 
     setDimensions(newDimensions) {
+        this.dimensions = newDimensions;
+
         for (let i = 0; i < this.childTracks.length; i++) {
             this.childTracks[i].setDimensions(newDimensions);
         }
