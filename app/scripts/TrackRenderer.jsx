@@ -134,24 +134,34 @@ export class TrackRenderer extends React.Component {
     }
 
     setUpInitialScales(initialXDomain, initialYDomain) {
-        // make sure the two scales are equally wide:
-        let xWidth = initialXDomain[1] - initialXDomain[0];
-        let yCenter = (initialYDomain[0] + initialYDomain[1]) / 2;
-        //initialYDomain = [yCenter - xWidth / 2, yCenter + xWidth / 2];
+        // Test which side is longer
+        const portait = this.currentProps.centerHeight > this.currentProps.centerWidth;
 
-        // stretch out the y-scale so that views aren't distorted (i.e. maintain
-        // a 1 to 1 ratio)
-        initialYDomain[0] = yCenter - xWidth / 2, 
-        initialYDomain[1] = yCenter + xWidth / 2;
+        // Fritz: Not sure if the code below is actually needed. It worked for me without it.
+        // if (portait) {
+        //     // make sure the two scales are equally wide:
+        //     const xWidth = initialXDomain[1] - initialXDomain[0];
+        //     const yCenter = (initialYDomain[0] + initialYDomain[1]) / 2;
+        //     //initialYDomain = [yCenter - xWidth / 2, yCenter + xWidth / 2];
+
+        //     // stretch out the y-scale so that views aren't distorted (i.e. maintain
+        //     // a 1 to 1 ratio)
+        //     initialYDomain[0] = yCenter - xWidth / 2,
+        //     initialYDomain[1] = yCenter + xWidth / 2;
+        // } else {
+        //     const yWidth = initialYDomain[1] - initialYDomain[0];
+        //     const xCenter = (initialXDomain[0] + initialXDomain[1]) / 2;
+
+        //     initialXDomain[0] = xCenter - yWidth / 2,
+        //     initialXDomain[1] = xCenter + yWidth / 2;
+        // }
 
         if (initialXDomain == this.initialXDomain &&
             initialYDomain == this.initialYDomain)
-        /*
-        if (initialXDomain[0] == this.initialXDomain[0] &&
-            initialXDomain[1] == this.initialXDomain[1] &&
-            initialYDomain[1] == this.initialYDomain[1] &&
-            initialYDomain[0] == this.initialYDomain[0])
-            */
+        // if (initialXDomain[0] == this.initialXDomain[0] &&
+        //     initialXDomain[1] == this.initialXDomain[1] &&
+        //     initialYDomain[1] == this.initialYDomain[1] &&
+        //     initialYDomain[0] == this.initialYDomain[0])
             return;
 
         // only update the initial domain
@@ -161,17 +171,24 @@ export class TrackRenderer extends React.Component {
         this.cumCenterYOffset = 0;
         this.cumCenterXOffset = 0;
 
+        // Determine domain size depending on the view's dimensions (portrait or landscape)
+        const drawableDomainXStart = portait ? 0 : this.currentProps.centerWidth / 2 - this.currentProps.centerHeight / 2;
+        const drawableDomainXEnd = portait ? this.currentProps.centerWidth : this.currentProps.centerWidth / 2 + this.currentProps.centerHeight / 2;
+        const drawableDomainYStart = !portait ? 0 : this.currentProps.centerHeight / 2 - this.currentProps.centerWidth / 2;
+        const drawableDomainYEnd = !portait ? this.currentProps.centerHeight : this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2;
+
         this.drawableToDomainX = scaleLinear()
-            .domain([this.currentProps.marginLeft + this.currentProps.leftWidth,
-                    this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth])
+            .domain([
+                this.currentProps.marginLeft + this.currentProps.leftWidth + drawableDomainXStart,
+                this.currentProps.marginLeft + this.currentProps.leftWidth + drawableDomainXEnd
+            ])
             .range([initialXDomain[0], initialXDomain[1]]);
 
-        let midXDomain = (initialXDomain[0] + initialXDomain[0]) / 2;
-        let yDomainWidth = (initialXDomain[1] - initialXDomain[0]) * (this.currentProps.centerHeight / this.currentProps.centerWidth);
-
         this.drawableToDomainY = scaleLinear()
-            .domain([this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 - this.currentProps.centerWidth / 2,
-                    this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2])
+            .domain([
+                this.currentProps.marginTop + this.currentProps.topHeight + drawableDomainYStart,
+                this.currentProps.marginTop + this.currentProps.topHeight + drawableDomainYEnd
+            ])
             .range([initialYDomain[0], initialYDomain[1]]);
     }
 
