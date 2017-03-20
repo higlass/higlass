@@ -478,6 +478,7 @@ export class HiGlassComponent extends React.Component {
      *
      * @param viewUid: The view uid for which to adjust the zoom level
      */
+      console.log('zoom to data', viewUid, this.tiledPlots[viewUid]);
 
   }
 

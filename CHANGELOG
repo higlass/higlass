@@ -9,6 +9,7 @@ v0.5.10
 - Fixed chromosome horizontal labels not appearing
 - Show minValue pixels by scaling from minValue to maxValue + minValue and
 adding minValue to each pixel
+- Fix viewport projection error when new viewconfig is passed
 
 
 v0.5.9
