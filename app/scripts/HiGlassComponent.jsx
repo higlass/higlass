@@ -479,6 +479,7 @@ export class HiGlassComponent extends React.Component {
      * @param viewUid: The view uid for which to adjust the zoom level
      */
       console.log('zoom to data', viewUid, this.tiledPlots[viewUid]);
+      this.tiledPlots[viewUid].handleZoomToData();
 
   }
 
@@ -1387,6 +1388,20 @@ export class HiGlassComponent extends React.Component {
         })
   }
 
+    handleDataDomainChanged(viewUid, newXDomain, newYDomain) {
+        /*
+         * The initial[XY]Domain of a view has changed. Update its definition
+         * and rerender.
+         */
+        console.log('data domain changed', newXDomain, newYDomain)
+
+        this.state.views[viewUid].initialXDomain = newXDomain;
+        this.state.views[viewUid].initialYDomain = newYDomain;
+
+        this.setState({views: this.state.views});
+
+    }
+
   viewPositionAvailable(pX, pY, w, h) {
       /**
        * Check if we can place a view at this position
@@ -1773,6 +1788,7 @@ export class HiGlassComponent extends React.Component {
                                      tracks={view.tracks}
                                      initialXDomain={view.initialXDomain}
                                      initialYDomain={view.initialYDomain}
+                                     onDataDomainChanged={(xDomain, yDomain) => this.handleDataDomainChanged(view.uid, xDomain, yDomain)}
                                      verticalMargin={this.verticalMargin}
                                      horizontalMargin={this.horizontalMargin}
                                      addTrackPositionMenuPosition={addTrackPositionMenuPosition}
