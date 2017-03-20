@@ -503,14 +503,16 @@ export class TiledPlot extends React.Component {
          * in the track type definition in config.js
          */
         let track = getTrackByUid(this.props.tracks, trackUid);
+        let trackObject = null;
 
         if (hostTrackUid != trackUid) {
             // the track whose data we're trying to export is part of a combined track
-            
-            console.log('child track:', this.trackRenderer.trackDefObjects[hostTrackUid].trackObject.createdTracks[track.uid]);
+            trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject.createdTracks[track.uid];
         } else {
-            console.log('track:', this.trackRenderer.trackDefObjects[track.uid].trackObject);
+            trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject.createdTracks[track.uid];
         }
+
+        trackObject.exportData();
     }
 
     updatablePropsToString(props) {

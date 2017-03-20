@@ -63,7 +63,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     }
     
     exportData() {
-
+    
     }
 
     setSpriteProperties(sprite, zoomLevel, tilePos, mirrored) {
