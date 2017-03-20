@@ -92,7 +92,6 @@ export class HiGlassComponent extends React.Component {
             mounted: false,
             width: 0,
             height: 0,
-            layouts: {},
             rowHeight: 30,
             svgElement: null,
             canvasElement: null,
@@ -312,6 +311,9 @@ export class HiGlassComponent extends React.Component {
         }
 
         this.scalesChangedListeners[viewUid][listenerUid] = eventHandler;
+
+        if (!this.xScales[viewUid] || !this.yScales[viewUid])
+            return;
 
         // call the handler for the first time
         eventHandler(this.xScales[viewUid], this.yScales[viewUid]);
@@ -767,7 +769,6 @@ export class HiGlassComponent extends React.Component {
   forceRefreshView() {
     // force everything to rerender
 
-      console.log('force refresh');
     this.setState(this.state);
   }
 
@@ -1675,7 +1676,6 @@ export class HiGlassComponent extends React.Component {
         viewsByUid = this.removeInvalidTracks(viewsByUid);
 
         return viewsByUid;
-
     }
 
     componentDidUpdate() {
@@ -1688,7 +1688,6 @@ export class HiGlassComponent extends React.Component {
 
     componentWillReceiveProps(newProps) {
         let viewsByUid = this.processViewConfig(newProps.viewConfig);
-        console.log('will receiveProps');
 
         this.setState({
             views: viewsByUid
