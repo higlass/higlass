@@ -497,6 +497,24 @@ export class TiledPlot extends React.Component {
         return (trackElements)
     }
 
+    handleExportTrackData(hostTrackUid, trackUid) {
+        /*
+         * Export the data present in a track. Whether a track can export data is defined
+         * in the track type definition in config.js
+         */
+        let track = getTrackByUid(this.props.tracks, trackUid);
+        let trackObject = null;
+
+        if (hostTrackUid != trackUid) {
+            // the track whose data we're trying to export is part of a combined track
+            trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject.createdTracks[track.uid];
+        } else {
+            trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject.createdTracks[track.uid];
+        }
+
+        trackObject.exportData();
+    }
+
     updatablePropsToString(props) {
         return JSON.stringify({
             tracks: props.tracks,
@@ -702,6 +720,7 @@ export class TiledPlot extends React.Component {
                     registerDraggingChangedListener={this.props.registerDraggingChangedListener}
                     removeDraggingChangedListener={this.props.removeDraggingChangedListener}
                     uid={this.props.uid}
+                    ref={c => this.trackRenderer = c}
                 >
 
                     <div
@@ -743,6 +762,7 @@ export class TiledPlot extends React.Component {
                                     onReplaceTrack={this.handleReplaceTrack.bind(this)}
                                     trackOrientation={getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
                                     onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
+                                    onExportData={this.handleExportTrackData.bind(this)}
                                   />
                               </PopupMenu>
                               )
