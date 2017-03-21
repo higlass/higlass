@@ -1,1 +1,0 @@
-[{"count": "2", "exonEnds": "90050007,90053354,90067265", "txStart": "90048160", "cdsEnd": "90067265", "geneName": "LINC00928", "genomeTxStart": "2552604439", "chr": "chr15", "pos": [2552604439.0], "strand": "-", "cdsStart": "90067265", "refseqid": "NR_027074", "exonCount": "3", "genomeTxEnd": "2552623544", "txEnd": "90067265", "exonStarts": "90048160,90053303,90066811"}]
