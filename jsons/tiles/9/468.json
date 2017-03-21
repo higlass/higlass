@@ -1,1 +1,0 @@
-[{"count": "68", "exonEnds": "48712807,48713357,48729735", "txStart": "48711955", "cdsEnd": "48729665", "geneName": "UBE2V1", "genomeTxStart": "2863426837", "chr": "chr20", "pos": [2863426837.0], "strand": "-", "cdsStart": "48712783", "refseqid": "NM_001282580", "exonCount": "3", "genomeTxEnd": "2863444617", "txEnd": "48729735", "exonStarts": "48711955,48713208,48729643"}]

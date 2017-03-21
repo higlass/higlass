@@ -1,1 +1,0 @@
-[{"count": "7", "exonEnds": "71205907,71223403,71228533", "txStart": "71203491", "cdsEnd": "71228445", "geneName": "FAM104A", "genomeTxStart": "2726645915", "chr": "chr17", "pos": [2726645915.0], "strand": "-", "cdsStart": "71205667", "refseqid": "NM_032837", "exonCount": "3", "genomeTxEnd": "2726670957", "txEnd": "71228533", "exonStarts": "71203491,71223303,71228224"}]

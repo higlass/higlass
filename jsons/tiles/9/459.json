@@ -1,1 +1,0 @@
-[{"count": "3", "exonEnds": "73122864,73130871,73139658", "txStart": "73121430", "cdsEnd": "73139518", "geneName": "SMIM21", "genomeTxStart": "2809759064", "chr": "chr18", "pos": [2809759064.0], "strand": "-", "cdsStart": "73122818", "refseqid": "NM_001037331", "exonCount": "3", "genomeTxEnd": "2809777292", "txEnd": "73139658", "exonStarts": "73121430,73130740,73139389"}]

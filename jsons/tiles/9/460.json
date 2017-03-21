@@ -1,1 +1,0 @@
-[{"count": "16", "exonEnds": "1610282,1610952,1630054,1638425", "txStart": "1609797", "cdsEnd": "1638360", "geneName": "SIRPG", "genomeTxStart": "2816324679", "chr": "chr20", "pos": [2816324679.0], "strand": "-", "cdsStart": "1610869", "refseqid": "NM_080816", "exonCount": "4", "genomeTxEnd": "2816353307", "txEnd": "1638425", "exonStarts": "1609797,1610867,1629697,1638287"}]
