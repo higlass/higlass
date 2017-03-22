@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HiGlass</title>
+<style type="text/css">
+    .canvasjs-chart-credit {
+    display:none;
+}
+</style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/page.css">
+</head>
+<body >
+    <div style="height: 50px" />
+        <div style="margin: auto; width: 100%;">
+        <div
+            id="development-demo"
+            style="position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px">
+        </div>
+    </div>
+</body>
+<script src='scripts/hglib.js'>
+</script>
+<script>
+
+ var testViewConfig = 
+{  
+   "editable":false,
+   "trackSourceServers":[  
+      "/api/v1"
+   ],
+   "exportViewUrl":"//higlass.io/api/v1/viewconfs/",
+   "views":[  
+      {  
+         "uid":"a",
+         "zoomFixed":true,
+         "initialXDomain":[  
+            2320227906,
+            2410999937
+         ],
+         "initialYDomain":[  
+            2320227906,
+            2410999937
+         ],
+         "autocompleteSource":"//higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+         "genomePositionSearchBoxVisible":true,
+         "chromInfoPath":"//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+         "tracks":{  
+            "top":[  
+                { "type": "top-axis"},
+               {  
+                  "uid":"b",
+                  "type":"horizontal-gene-annotations",
+                  "height":60,
+                  "tilesetUid":"OHJakQICQD6gTD7skx4EWA",
+                  "server":"//higlass.io/api/v1",
+                  "name":"Gene Annotations",
+                  "options":{  
+                     "name":"Gene Annotations (mm9)",
+                     "minusStrandColor":"#999",
+                     "plusStrandColor":"#999"
+                  }
+               },
+               {  
+                  "uid":"c",
+                  "chromInfoPath":"//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+                  "type":"horizontal-chromosome-labels",
+                  "name":"Chromosome Labels (mm9)",
+                  "height":30
+               }
+            ],
+            "left":[  
+               {  
+                  "uid":"d",
+                  "chromInfoPath":"//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+                  "type":"vertical-chromosome-labels",
+                  "name":"Chromosome Labels (mm9)",
+                  "width":30
+               }
+            ],
+            "center":[  
+               {  
+                  "uid":"e",
+                  "type":"combined",
+                  "height":200,
+                  "contents":[  
+                     {  
+                        "uid":"f",
+                        "server":"//localhost:8000/api/v1",
+                        "tilesetUid":"rao-CH12LX-1kbmr",
+                        "type":"heatmap",
+                        "options":{  
+                           "colorRange":[  
+                              "#fff",
+                              "#bbb",
+                              "#777",
+                              "#222"
+                           ],
+                           "maxZoom":null,
+                           "name":"Rao et al. (2014) CH12LX 5kb"
+                        }
+                     }
+                  ],
+                  "position":"center"
+               },
+               {  
+                  "uid":"a.2d",
+                  "type":"2d-chromosome-annotations",
+                  "chromInfoPath":"//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+                  "options":{  
+                     "minRectWidth":3,
+                     "minRectHeight":3,
+                     "regions":[  
+                        [  
+                           "chr17",
+                           100000000,
+                           100000000,
+                           "chr17",
+                           150000000,
+                           150000000,
+                           "rgba(255, 85, 0, 0.8)",
+                           "rgba(255, 85, 0, 0.8)"
+                        ]
+                     ]
+                  }
+               }
+            ],
+            "right":[  
+
+            ],
+            "bottom":[  
+
+            ]
+         },
+         "layout":{  
+            "w":12,
+            "h":12,
+            "x":0,
+            "y":0,
+            "i":"a",
+            "moved":false,
+            "static":false
+         }
+      }
+   ],
+   "zoomLocks":{  
+      "locksByViewUid":{  
+
+      },
+      "zoomLocksDict":{  
+
+      }
+   }
+}
+ ;
+    
+    window.higlassApi;
+
+    hglib.createHgComponent(
+        document.getElementById('development-demo'),
+        testViewConfig,
+        { bounded: true },
+        function (api) {
+            window.higlassApi = api;
+        }
+    );
+
+
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-77756807-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+</html>

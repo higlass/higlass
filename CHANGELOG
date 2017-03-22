@@ -2,6 +2,11 @@ export-data
 
 - Default to interpolation-less rendering
 
+zoom-to-data
+
+- Fix Chromosome2DAnnotations not being drawn by calling draw after the
+ChromosomeInfo is loaded
+
 v0.5.10
 
 - Viewconf downloads work on Firefox
