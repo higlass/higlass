@@ -2,13 +2,13 @@ export-data
 
 - Default to interpolation-less rendering
 
-zoom-to-data
-
-- Fix Chromosome2DAnnotations not being drawn by calling draw after the
-ChromosomeInfo is loaded
 
 v0.5.10
 
+- Fix Chromosome2DAnnotations not being drawn by calling draw after the
+ChromosomeInfo is loaded
+- Zoom to the currently visible data
+- Use the minimum position to load data that is not located at the origin
 - Viewconf downloads work on Firefox
 - Alert when trying to project a viewport on the same view
 - Resize handle positions fixed in Firefox
