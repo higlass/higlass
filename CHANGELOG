@@ -2,6 +2,9 @@ export-data
 
 - Default to interpolation-less rendering
 
+v0.5.11
+
+- Added the fall colormap and made it the default
 
 v0.5.10
 

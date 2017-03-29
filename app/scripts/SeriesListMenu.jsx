@@ -166,8 +166,6 @@ export class SeriesListMenu extends ContextMenuContainer {
     render() {
         let exportDataMenuItem = null;
 
-        console.log('this.props.hostTrack:', this.props.hostTrack);
-
         if (tracksInfoByType[this.props.hostTrack.type]) {
             exportDataMenuItem = (<ContextMenuItem
                 className={"context-menu-item"}
