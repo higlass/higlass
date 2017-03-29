@@ -138,23 +138,23 @@ export class TrackRenderer extends React.Component {
         const portait = this.currentProps.centerHeight > this.currentProps.centerWidth;
 
         // Fritz: Not sure if the code below is actually needed. It worked for me without it.
-        // if (portait) {
-        //     // make sure the two scales are equally wide:
-        //     const xWidth = initialXDomain[1] - initialXDomain[0];
-        //     const yCenter = (initialYDomain[0] + initialYDomain[1]) / 2;
-        //     //initialYDomain = [yCenter - xWidth / 2, yCenter + xWidth / 2];
+         if (portait) {
+             // make sure the two scales are equally wide:
+             const xWidth = initialXDomain[1] - initialXDomain[0];
+             const yCenter = (initialYDomain[0] + initialYDomain[1]) / 2;
+             //initialYDomain = [yCenter - xWidth / 2, yCenter + xWidth / 2];
 
-        //     // stretch out the y-scale so that views aren't distorted (i.e. maintain
-        //     // a 1 to 1 ratio)
-        //     initialYDomain[0] = yCenter - xWidth / 2,
-        //     initialYDomain[1] = yCenter + xWidth / 2;
-        // } else {
-        //     const yWidth = initialYDomain[1] - initialYDomain[0];
-        //     const xCenter = (initialXDomain[0] + initialXDomain[1]) / 2;
+             // stretch out the y-scale so that views aren't distorted (i.e. maintain
+             // a 1 to 1 ratio)
+             initialYDomain[0] = yCenter - xWidth / 2,
+             initialYDomain[1] = yCenter + xWidth / 2;
+         } else {
+             const yWidth = initialYDomain[1] - initialYDomain[0];
+             const xCenter = (initialXDomain[0] + initialXDomain[1]) / 2;
 
-        //     initialXDomain[0] = xCenter - yWidth / 2,
-        //     initialXDomain[1] = xCenter + yWidth / 2;
-        // }
+             initialXDomain[0] = xCenter - yWidth / 2,
+             initialXDomain[1] = xCenter + yWidth / 2;
+         }
 
         if (initialXDomain == this.initialXDomain &&
             initialYDomain == this.initialYDomain)

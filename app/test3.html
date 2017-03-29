@@ -29,103 +29,138 @@
   "zoomFixed": false,
   "views": [
     {
-      "tracks": {
-        "bottom": [],
-        "top": [
-          {
-            "uuid": "CfXY-ctcQy6K1zIkU-G3Yw",
-            "filetype": "hitile",
-            "datatype": "vector",
-            "private": false,
-            "name": "sdfsdfs",
-            "coordSystem": "",
-            "coordSystem2": "",
-            "server": "http://127.0.0.1:8000/api/v1",
-            "tilesetUid": "x6x",
-            "serverUidKey": "http://127.0.0.1:8989/api/v1/CfXY-ctcQy6K1zIkU-G3Yw",
-            "uid": "aYs2X4C5TZaKHKhfnnUb2Q",
-            "type": "horizontal-line",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "topLeft",
-              "axisPositionHorizontal": "right",
-              "lineStrokeColor": "blue",
-              "valueScaling": "linear",
-              "name": "sdfsdfs"
-            },
-            "width": 20,
-            "height": 20,
-            "maxWidth": 4294967296,
-            "maxZoom": 22
-          }
-        ],
-        "right": [],
-        "center": [
-          {
-            "uid": "EOQTNeeuTLyuV1qw_u5vZw",
-            "type": "combined",
-            "contents": [
-              {
-                "uuid": "BG3XdX07R92Han1oEclDYw",
-                "filetype": "cooler",
-                "datatype": "matrix",
-                "private": false,
-                "name": "TAM_chr14.1kb.multires.cool",
-                "coordSystem": "",
-                "coordSystem2": "",
-                "server": "http://127.0.0.1:8989/api/v1",
-                "tilesetUid": "BG3XdX07R92Han1oEclDYw",
-                "serverUidKey": "http://127.0.0.1:8989/api/v1/BG3XdX07R92Han1oEclDYw",
-                "uid": "FWe04j0yRHC9NfWU-ihaaQ",
-                "type": "heatmap",
-                "options": {
-                  "labelPosition": "bottomRight",
-                  "maxZoom": null,
-                  "name": "TAM_chr14.1kb.multires.cool"
-                },
-                "width": 20,
-                "height": 20,
-                "maxWidth": 4194304000,
-                "binsPerDimension": 256,
-                "maxZoom": 14
-              }
-            ]
-          }
-        ],
-        "left": []
-      },
       "layout": {
         "w": 12,
         "h": 12,
         "x": 0,
         "y": 0,
-        "i": "bJTVIQwpTECrYvsDk_cGpQ",
+        "i": "aa",
         "moved": false,
         "static": false
       },
-      "initialXDomain": [
-        1821397613.1949754,
-        2113378075.4655635
+      "uid": "aa",
+      "initialYDomain": [
+        -3688737784.101167,
+        7211073783.05112
       ],
-      "uid": "bJTVIQwpTECrYvsDk_cGpQ"
+      "autocompleteSource": "http://52.201.240.83/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "initialXDomain": [
+        -19466933748.515503,
+        24068353169.869934
+      ],
+      "tracks": {
+        "bottom": [],
+        "top": [
+          {
+            "uid": "OHJakQICQD6gTD7skx4EWA",
+            "maxWidth": 4294967296,
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "server": "http://52.201.240.83/api/v1",
+            "maxZoom": 22,
+            "position": "top",
+            "height": 60,
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "plusStrandColor": "blue",
+              "name": "Gene Annotations (hg19)",
+              "labelPosition": "hidden",
+              "minusStrandColor": "red"
+            },
+            "name": "Gene Annotations (hg19)"
+          },
+          {
+            "uid": "X4e_1DKiQHmyghDa6lLMVA",
+            "height": 30,
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "position": "top",
+            "type": "horizontal-chromosome-labels",
+            "options": {},
+            "name": "Chromosome Labels (hg19)"
+          }
+        ],
+        "right": [],
+        "center": [
+          {
+            "uid": "c1",
+            "height": 200,
+            "position": "center",
+            "type": "combined",
+            "options": {},
+            "contents": [
+              {
+                "uid": "GjuZed1ySGW1IzZZqFB9BA",
+                "maxWidth": 4194304000,
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "binsPerDimension": 256,
+                "server": "http://52.201.240.83/api/v1",
+                "maxZoom": 14,
+                "position": "center",
+                "type": "heatmap",
+                "options": {
+                  "maxZoom": null,
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "labelPosition": "bottomRight"
+                },
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+              }
+            ]
+          }
+        ],
+        "left": [
+          {
+            "name": "Gene Annotations (hg19)",
+            "maxWidth": 4294967296,
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "server": "http://52.201.240.83/api/v1",
+            "width": 60,
+            "maxZoom": 22,
+            "position": "left",
+            "type": "vertical-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "plusStrandColor": "blue",
+              "name": "Gene Annotations (hg19)",
+              "labelPosition": "bottomRight",
+              "minusStrandColor": "red"
+            },
+            "uid": "dqBTMH78Rn6DeSyDBoAEXw"
+          },
+          {
+            "uid": "RHdQK4IRQ7yJeDmKWb7Pcg",
+            "width": 30,
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "position": "left",
+            "type": "vertical-chromosome-labels",
+            "options": {},
+            "name": "Chromosome Labels (hg19)"
+          }
+        ]
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "genomePositionSearchBoxVisible": true
     }
   ],
   "editable": true,
-  "exportViewUrl": "http://127.0.0.1:8000/api/v1/viewconfs/",
+  "exportViewUrl": "http://52.201.240.83/api/v1/viewconfs/",
   "zoomLocks": {
     "locksByViewUid": {},
     "locksDict": {}
   },
   "trackSourceServers": [
-    "http://127.0.0.1:8989/api/v1",
-    "http://127.0.0.1:8000/api/v1"
+    "http://52.201.240.83/api/v1"
   ],
   "locationLocks": {
     "locksByViewUid": {},
     "locksDict": {}
   }
 }
-
 
  ;
     
