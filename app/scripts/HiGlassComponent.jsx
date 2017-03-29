@@ -1362,7 +1362,7 @@ export class HiGlassComponent extends React.Component {
   }
 
   handleExportViewsAsLink() {
-    let wrapper = '{"viewconfig":'+this.getViewsAsString()+'}';
+    let wrapper = '{"viewconf":'+this.getViewsAsString()+'}';
 
     this.width = this.element.clientWidth;
     this.height = this.element.clientHeight;
