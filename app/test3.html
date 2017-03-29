@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HiGlass</title>
+<style type="text/css">
+    .canvasjs-chart-credit {
+    display:none;
+}
+</style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/page.css">
+</head>
+<body >
+    <div style="height: 50px" />
+        <div style="margin: auto; width: 100%;">
+        <div
+            id="development-demo"
+            style="position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px">
+        </div>
+    </div>
+</body>
+<script src='scripts/hglib.js'>
+</script>
+<script>
+
+ var testViewConfig = 
+{
+  "zoomFixed": false,
+  "views": [
+    {
+      "tracks": {
+        "bottom": [],
+        "top": [
+          {
+            "uuid": "CfXY-ctcQy6K1zIkU-G3Yw",
+            "filetype": "hitile",
+            "datatype": "vector",
+            "private": false,
+            "name": "sdfsdfs",
+            "coordSystem": "",
+            "coordSystem2": "",
+            "server": "http://127.0.0.1:8000/api/v1",
+            "tilesetUid": "x6x",
+            "serverUidKey": "http://127.0.0.1:8989/api/v1/CfXY-ctcQy6K1zIkU-G3Yw",
+            "uid": "aYs2X4C5TZaKHKhfnnUb2Q",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "valueScaling": "linear",
+              "name": "sdfsdfs"
+            },
+            "width": 20,
+            "height": 20,
+            "maxWidth": 4294967296,
+            "maxZoom": 22
+          }
+        ],
+        "right": [],
+        "center": [
+          {
+            "uid": "EOQTNeeuTLyuV1qw_u5vZw",
+            "type": "combined",
+            "contents": [
+              {
+                "uuid": "BG3XdX07R92Han1oEclDYw",
+                "filetype": "cooler",
+                "datatype": "matrix",
+                "private": false,
+                "name": "TAM_chr14.1kb.multires.cool",
+                "coordSystem": "",
+                "coordSystem2": "",
+                "server": "http://127.0.0.1:8989/api/v1",
+                "tilesetUid": "BG3XdX07R92Han1oEclDYw",
+                "serverUidKey": "http://127.0.0.1:8989/api/v1/BG3XdX07R92Han1oEclDYw",
+                "uid": "FWe04j0yRHC9NfWU-ihaaQ",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "#FFFFFF",
+                    "#F8E71C",
+                    "rgba(245,166,35,1)",
+                    "rgba(0,0,0,1)"
+                  ],
+                  "maxZoom": null,
+                  "name": "TAM_chr14.1kb.multires.cool"
+                },
+                "width": 20,
+                "height": 20,
+                "maxWidth": 4194304000,
+                "binsPerDimension": 256,
+                "maxZoom": 14
+              }
+            ]
+          }
+        ],
+        "left": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "bJTVIQwpTECrYvsDk_cGpQ",
+        "moved": false,
+        "static": false
+      },
+      "initialXDomain": [
+        1821397613.1949754,
+        2113378075.4655635
+      ],
+      "uid": "bJTVIQwpTECrYvsDk_cGpQ"
+    }
+  ],
+  "editable": true,
+  "exportViewUrl": "http://127.0.0.1:8989/api/v1/viewconfs/",
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "trackSourceServers": [
+    "http://127.0.0.1:8989/api/v1",
+    "http://127.0.0.1:8000/api/v1"
+  ],
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}
+
+
+ ;
+    
+    window.higlassApi;
+
+    hglib.createHgComponent(
+        document.getElementById('development-demo'),
+        testViewConfig,
+        { bounded: true },
+        function (api) {
+            window.higlassApi = api;
+        }
+    );
+
+
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-77756807-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+</html>

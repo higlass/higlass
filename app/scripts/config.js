@@ -220,8 +220,8 @@ export const tracksInfo = [
                            ],
             maxZoom: null
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom' ],
-        exportable: true
+        availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom' ]
+        //exportable: true
     },
     {
         type: 'horizontal-heatmap',

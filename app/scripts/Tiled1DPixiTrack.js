@@ -101,8 +101,8 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
         let totalWidth = this.tilesetInfo.max_width;
         let totalHeight = this.tilesetInfo.max_width;
 
-        let minX = 0;
-        let minY = 0;
+        let minX = this.tilesetInfo.min_pos[0];
+        let minY = this.tilesetInfo.min_pos[1];
 
         let tileWidth = totalWidth / Math.pow(2, zoomLevel);
         let tileHeight = totalHeight / Math.pow(2, zoomLevel);
