@@ -135,10 +135,13 @@ export class TrackRenderer extends React.Component {
 
     setUpInitialScales(initialXDomain, initialYDomain) {
         // Test which side is longer
-        const portait = this.currentProps.centerHeight > this.currentProps.centerWidth;
+        const portrait = this.currentProps.centerHeight > this.currentProps.centerWidth;
+        console.log('portrait', portrait)
+
+            console.log('this.currentProps.centerWidth:', this.currentProps.centerWidth);
 
         // Fritz: Not sure if the code below is actually needed. It worked for me without it.
-         if (portait) {
+         if (portrait) {
              // make sure the two scales are equally wide:
              const xWidth = initialXDomain[1] - initialXDomain[0];
              const yCenter = (initialYDomain[0] + initialYDomain[1]) / 2;
@@ -172,10 +175,10 @@ export class TrackRenderer extends React.Component {
         this.cumCenterXOffset = 0;
 
         // Determine domain size depending on the view's dimensions (portrait or landscape)
-        const drawableDomainXStart = portait ? 0 : this.currentProps.centerWidth / 2 - this.currentProps.centerHeight / 2;
-        const drawableDomainXEnd = portait ? this.currentProps.centerWidth : this.currentProps.centerWidth / 2 + this.currentProps.centerHeight / 2;
-        const drawableDomainYStart = !portait ? 0 : this.currentProps.centerHeight / 2 - this.currentProps.centerWidth / 2;
-        const drawableDomainYEnd = !portait ? this.currentProps.centerHeight : this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2;
+        const drawableDomainXStart = portrait ? 0 : this.currentProps.centerWidth / 2 - this.currentProps.centerHeight / 2;
+        const drawableDomainXEnd = portrait ? this.currentProps.centerWidth : this.currentProps.centerWidth / 2 + this.currentProps.centerHeight / 2;
+        const drawableDomainYStart = !portrait ? 0 : this.currentProps.centerHeight / 2 - this.currentProps.centerWidth / 2;
+        const drawableDomainYEnd = !portrait ? this.currentProps.centerHeight : this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2;
 
         this.drawableToDomainX = scaleLinear()
             .domain([
@@ -190,6 +193,8 @@ export class TrackRenderer extends React.Component {
                 this.currentProps.marginTop + this.currentProps.topHeight + drawableDomainYEnd
             ])
             .range([initialYDomain[0], initialYDomain[1]]);
+
+        console.log('drawableToDomainX:', this.drawableToDomainX.range());
     }
 
     updatablePropsToString(props) {

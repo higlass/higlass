@@ -26,133 +26,305 @@
 
  var testViewConfig = 
 {  
-   "editable":false,
-   "trackSourceServers":[  
-      "/api/v1"
-   ],
-   "exportViewUrl":"//higlass.io/api/v1/viewconfs/",
+   "zoomFixed":false,
    "views":[  
       {  
-         "uid":"a",
-         "zoomFixed":true,
-         "initialXDomain":[  
-            2320227906,
-            2410999937
-         ],
+         "layout":{  
+            "i":"KrP5zcaVSxqCj6mEI8WA2A",
+            "h":7,
+            "moved":false,
+            "static":false,
+            "w":6,
+            "y":6,
+            "x":6
+         },
+         "uid":"KrP5zcaVSxqCj6mEI8WA2A",
          "initialYDomain":[  
-            2320227906,
-            2410999937
+            1968380394.6384423,
+            1978627497.2376173
          ],
-         "autocompleteSource":"//higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-         "genomePositionSearchBoxVisible":true,
-         "chromInfoPath":"//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+         "autocompleteSource":"http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+         "initialXDomain":[  
+            1954434303.9209125,
+            1973551428.1375554
+         ],
          "tracks":{  
+            "bottom":[  
+
+            ],
             "top":[  
-                { "type": "top-axis"},
                {  
-                  "uid":"b",
-                  "type":"horizontal-gene-annotations",
-                  "height":60,
-                  "tilesetUid":"OHJakQICQD6gTD7skx4EWA",
-                  "server":"//higlass.io/api/v1",
-                  "name":"Gene Annotations",
-                  "options":{  
-                     "name":"Gene Annotations (mm9)",
-                     "minusStrandColor":"#999",
-                     "plusStrandColor":"#999"
-                  }
-               },
-               {  
-                  "uid":"c",
-                  "chromInfoPath":"//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
-                  "type":"horizontal-chromosome-labels",
-                  "name":"Chromosome Labels (mm9)",
-                  "height":30
-               }
-            ],
-            "left":[  
-               {  
-                  "uid":"d",
-                  "chromInfoPath":"//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
-                  "type":"vertical-chromosome-labels",
-                  "name":"Chromosome Labels (mm9)",
-                  "width":30
-               }
-            ],
-            "center":[  
-               {  
-                  "uid":"e",
-                  "type":"combined",
-                  "height":200,
-                  "contents":[  
-                     {  
-                        "uid":"f",
-                        "server":"//localhost:8000/api/v1",
-                        "tilesetUid":"rao-CH12LX-1kbmr",
-                        "type":"heatmap",
-                        "options":{  
-                           "colorRange":[  
-                              "#fff",
-                              "#bbb",
-                              "#777",
-                              "#222"
-                           ],
-                           "maxZoom":null,
-                           "name":"Rao et al. (2014) CH12LX 5kb"
-                        }
-                     }
+                  "orientation":"1d-horizontal",
+                  "name":"Chromosome Axis (mm19)",
+                  "datatype":[  
+                     "chromosome-1d-labels"
                   ],
-                  "position":"center"
+                  "local":true,
+                  "minHeight":30,
+                  "tilesetUid":"W1N2NIDPRZSckKMlHAKzwA",
+                  "thumbnail":null,
+                  "server":"",
+                  "width":472,
+                  "chromInfoPath":"//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+                  "serverUidKey":"/W1N2NIDPRZSckKMlHAKzwA",
+                  "uid":"AWcBqpmASpmA01tpfgwWOg",
+                  "position":"top",
+                  "height":20,
+                  "type":"horizontal-chromosome-labels",
+                  "options":{  
+
+                  },
+                  "uuid":"W1N2NIDPRZSckKMlHAKzwA"
                },
                {  
-                  "uid":"a.2d",
-                  "type":"2d-chromosome-annotations",
-                  "chromInfoPath":"//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+                  "uuid":"GUm5aBiLRCyz2PsBea7Yzg",
+                  "maxWidth":4294967296,
+                  "datatype":"gene-annotation",
+                  "name":"Gene Annotations (mm9)",
+                  "filetype":"beddb",
+                  "coordSystem":"mm9",
+                  "tilesetUid":"GUm5aBiLRCyz2PsBea7Yzg",
+                  "private":false,
+                  "server":"http://higlass.io/api/v1",
+                  "width":692,
+                  "serverUidKey":"http://higlass.io/api/v1/GUm5aBiLRCyz2PsBea7Yzg",
+                  "maxZoom":22,
+                  "position":"top",
+                  "height":45,
+                  "type":"horizontal-gene-annotations",
                   "options":{  
-                     "minRectWidth":3,
-                     "minRectHeight":3,
-                     "regions":[  
-                        [  
-                           "chr17",
-                           100000000,
-                           100000000,
-                           "chr17",
-                           150000000,
-                           150000000,
-                           "rgba(255, 85, 0, 0.8)",
-                           "rgba(255, 85, 0, 0.8)"
-                        ]
-                     ]
-                  }
+                     "labelColor":"black",
+                     "plusStrandColor":"brown",
+                     "minusStrandColor":"green",
+                     "labelPosition":"hidden",
+                     "name":"Gene Annotations (mm9)"
+                  },
+                  "coordSystem2":"",
+                  "uid":"CNJmjwCWS--luAsiVZPO1A"
+               },
+               {  
+                  "uuid":"YtyvhRBuQoChw4hq7xxnlA",
+                  "maxWidth":134217728,
+                  "datatype":"vector",
+                  "name":"Schwarzer et al (2017) NIPBL H3K27ac (chr14)",
+                  "filetype":"hitile",
+                  "coordSystem":"mm9",
+                  "tilesetUid":"YtyvhRBuQoChw4hq7xxnlA",
+                  "private":false,
+                  "server":"http://higlass.io/api/v1",
+                  "width":472,
+                  "serverUidKey":"http://higlass.io/api/v1/YtyvhRBuQoChw4hq7xxnlA",
+                  "maxZoom":17,
+                  "position":"top",
+                  "height":36,
+                  "type":"horizontal-line",
+                  "options":{  
+                     "name":"Schwarzer et al (2017) NIPBL H3K27ac (chr14)",
+                     "valueScaling":"linear",
+                     "lineStrokeColor":"blue",
+                     "labelPosition":"topLeft",
+                     "labelColor":"black",
+                     "axisPositionHorizontal":"right"
+                  },
+                  "coordSystem2":"mm9",
+                  "uid":"OXr0hmySTCS1aQGZOhG-sg"
+               },
+               {  
+                  "uuid":"LeW3Ri4aQSevDwVgEzGu0A",
+                  "maxWidth":134217728,
+                  "datatype":"vector",
+                  "name":"Schwarzer et al (2017) NIPBL H3K4me3 (chr14)",
+                  "filetype":"hitile",
+                  "coordSystem":"mm9",
+                  "tilesetUid":"LeW3Ri4aQSevDwVgEzGu0A",
+                  "private":false,
+                  "server":"http://higlass.io/api/v1",
+                  "width":472,
+                  "serverUidKey":"http://higlass.io/api/v1/LeW3Ri4aQSevDwVgEzGu0A",
+                  "maxZoom":17,
+                  "position":"top",
+                  "height":27,
+                  "type":"horizontal-line",
+                  "options":{  
+                     "name":"Schwarzer et al (2017) NIPBL H3K4me3 (chr14)",
+                     "valueScaling":"linear",
+                     "lineStrokeColor":"blue",
+                     "labelPosition":"topLeft",
+                     "labelColor":"black",
+                     "axisPositionHorizontal":"right"
+                  },
+                  "coordSystem2":"mm9",
+                  "uid":"RbiifZcBSwyojs8DOrlB3g"
+               },
+               {  
+                  "uuid":"LP-NPfCTQbeOJGJ8q_ar9Q",
+                  "maxWidth":134217728,
+                  "datatype":"vector",
+                  "name":"Schwarzer et al (2017) NIPBL RNAseq (+ strand, chr14)",
+                  "filetype":"hitile",
+                  "coordSystem":"mm9",
+                  "tilesetUid":"LP-NPfCTQbeOJGJ8q_ar9Q",
+                  "private":false,
+                  "server":"http://higlass.io/api/v1",
+                  "width":472,
+                  "serverUidKey":"http://higlass.io/api/v1/LP-NPfCTQbeOJGJ8q_ar9Q",
+                  "maxZoom":17,
+                  "position":"top",
+                  "height":29,
+                  "type":"horizontal-line",
+                  "options":{  
+                     "name":"Schwarzer et al (2017) NIPBL RNAseq (+ strand, chr14)",
+                     "valueScaling":"log",
+                     "lineStrokeColor":"blue",
+                     "labelPosition":"topLeft",
+                     "labelColor":"black",
+                     "axisPositionHorizontal":"right"
+                  },
+                  "coordSystem2":"mm9",
+                  "uid":"VUPirIvOR86Js_Uza85RFQ"
+               },
+               {  
+                  "uuid":"TIXmwwQqQ9aigroc6myY7Q",
+                  "maxWidth":134217728,
+                  "datatype":"vector",
+                  "name":"Schwarzer et al (2017) NIPBL RNAseq (- strand, chr14)",
+                  "filetype":"hitile",
+                  "coordSystem":"mm9",
+                  "tilesetUid":"TIXmwwQqQ9aigroc6myY7Q",
+                  "private":false,
+                  "server":"http://higlass.io/api/v1",
+                  "width":472,
+                  "serverUidKey":"http://higlass.io/api/v1/TIXmwwQqQ9aigroc6myY7Q",
+                  "maxZoom":17,
+                  "position":"top",
+                  "height":31,
+                  "type":"horizontal-line",
+                  "options":{  
+                     "name":"Schwarzer et al (2017) NIPBL RNAseq (- strand, chr14)",
+                     "valueScaling":"log",
+                     "lineStrokeColor":"blue",
+                     "labelPosition":"topLeft",
+                     "labelColor":"black",
+                     "axisPositionHorizontal":"right"
+                  },
+                  "coordSystem2":"mm9",
+                  "uid":"eI4BaMozRu6oZ6cjMWMaMQ"
                }
             ],
             "right":[  
 
             ],
-            "bottom":[  
+            "center":[  
+               {  
+                  "position":"center",
+                  "type":"combined",
+                  "uid":"fE84rvqYRWeSoiaSm-AoRg",
+                  "contents":[  
+                     {  
+                        "uuid":"J2IoKaXJSG-5bH1pITTtTg",
+                        "maxWidth":4194304000,
+                        "datatype":"matrix",
+                        "binsPerDimension":256,
+                        "filetype":"cooler",
+                        "coordSystem":"mm9",
+                        "tilesetUid":"J2IoKaXJSG-5bH1pITTtTg",
+                        "private":false,
+                        "server":"http://higlass.io/api/v1",
+                        "width":20,
+                        "name":"Schwarzer et al (2017) NIPBL (chr14)",
+                        "serverUidKey":"http://higlass.io/api/v1/J2IoKaXJSG-5bH1pITTtTg",
+                        "maxZoom":14,
+                        "position":"center",
+                        "height":20,
+                        "type":"heatmap",
+                        "options":{  
+                           "maxZoom":null,
+                           "labelPosition":"bottomRight",
+                           "colorRange":[  
+                              "white",
+                              "rgba(245,166,35,1.0)",
+                              "rgba(208,2,27,1.0)",
+                              "black"
+                           ],
+                           "name":"Schwarzer et al (2017) NIPBL (chr14)"
+                        },
+                        "coordSystem2":"mm9",
+                        "uid":"C-qiOuzdQhmkDB_5nvugpA"
+                     }
+                  ],
+                  "options":{  
 
+                  }
+               }
+            ],
+            "left":[  
+               {  
+                  "uuid":"YtyvhRBuQoChw4hq7xxnlA",
+                  "maxWidth":134217728,
+                  "datatype":"vector",
+                  "name":"Schwarzer et al (2017) NIPBL H3K27ac (chr14)",
+                  "filetype":"hitile",
+                  "coordSystem":"mm9",
+                  "tilesetUid":"YtyvhRBuQoChw4hq7xxnlA",
+                  "private":false,
+                  "server":"http://higlass.io/api/v1",
+                  "width":31,
+                  "serverUidKey":"http://higlass.io/api/v1/YtyvhRBuQoChw4hq7xxnlA",
+                  "maxZoom":17,
+                  "position":"left",
+                  "height":350,
+                  "type":"vertical-line",
+                  "options":{  
+                     "name":"Schwarzer et al (2017) NIPBL H3K27ac (chr14)",
+                     "valueScaling":"linear",
+                     "lineStrokeColor":"blue",
+                     "labelPosition":"bottomLeft",
+                     "axisPositionVertical":"top",
+                     "labelColor":"black"
+                  },
+                  "coordSystem2":"mm9",
+                  "uid":"LLf91rc9T3aYRXWkDrqwEQ"
+               },
+               {  
+                  "uuid":"LeW3Ri4aQSevDwVgEzGu0A",
+                  "maxWidth":134217728,
+                  "datatype":"vector",
+                  "name":"Schwarzer et al (2017) NIPBL H3K4me3 (chr14)",
+                  "filetype":"hitile",
+                  "coordSystem":"mm9",
+                  "tilesetUid":"LeW3Ri4aQSevDwVgEzGu0A",
+                  "private":false,
+                  "server":"http://higlass.io/api/v1",
+                  "width":31,
+                  "serverUidKey":"http://higlass.io/api/v1/LeW3Ri4aQSevDwVgEzGu0A",
+                  "maxZoom":17,
+                  "position":"left",
+                  "height":350,
+                  "type":"vertical-line",
+                  "options":{  
+                     "name":"Schwarzer et al (2017) NIPBL H3K4me3 (chr14)",
+                     "valueScaling":"linear",
+                     "lineStrokeColor":"blue",
+                     "labelPosition":"bottomLeft",
+                     "axisPositionVertical":"top",
+                     "labelColor":"black"
+                  },
+                  "coordSystem2":"mm9",
+                  "uid":"LP7bzdrzTzyngJ7zig_TgA"
+               }
             ]
          },
-         "layout":{  
-            "w":12,
-            "h":12,
-            "x":0,
-            "y":0,
-            "i":"a",
-            "moved":false,
-            "static":false
-         }
+         "chromInfoPath":"//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+         "genomePositionSearchBoxVisible":false
       }
    ],
-   "zoomLocks":{  
-      "locksByViewUid":{  
-
-      },
-      "zoomLocksDict":{  
-
-      }
-   }
+   "editable":true,
+   "exportViewUrl":"http://higlass.io/api/v1/viewconfs",
+   "trackSourceServers":[  
+      "http://higlass.io/api/v1"
+   ]
 }
+
  ;
     
     window.higlassApi;
