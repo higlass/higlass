@@ -7,7 +7,7 @@ Hi-C and other genomic data from different experimental conditions and can be us
 identify salient outcomes of experimental perturbations, generate new hypotheses, and share
 the results with the community.
 
-A live instance can be found at [http://higlass.io](http://higlass.io).
+A live instance can be found at [http://higlass.io](http://higlass.io). A [Docker container](https://github.com/hms-dbmi/higlass-docker) is available.
 
 For documentation about how to use and install HiGlass, please see the [wiki](https://github.com/hms-dbmi/higlass/wiki).
 
