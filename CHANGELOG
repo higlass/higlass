@@ -2,6 +2,12 @@ export-data
 
 - Default to interpolation-less rendering
 
+v0.5.15
+
+- Added mm9 chromosome labels
+- Draw chromosome labels on reload
+- Take name from track options
+
 v0.5.14
 
 - Revert the initialXDomain changes Fritz introduced because they were causing

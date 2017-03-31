@@ -45,6 +45,7 @@ export class Chromosome2DLabels extends PixiTrack {
 
                 this.texts.push(thisTexts);
             }
+            this.draw();
         });
 
     }

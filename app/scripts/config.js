@@ -401,7 +401,7 @@ export const tracksInfo = [
     ,
     {
         type: '2d-chromosome-labels',
-        datatype: ['chromosome-2d-labels'],
+        datatype: ['chromosome-2d-labels-mm9'],
         local: true,
         orientation: '2d',
         name: 'Chromosome Axis (mm9)',
@@ -431,7 +431,7 @@ export const tracksInfo = [
     ,
     {
         type: 'horizontal-chromosome-labels',
-        datatype: ['chromosome-1d-labels'],
+        datatype: ['chromosome-1d-labels-mm9'],
         local: true,
         orientation: '1d-horizontal',
         minHeight: 30,
