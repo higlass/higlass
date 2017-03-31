@@ -149,6 +149,7 @@ export class HiGlassComponent extends React.Component {
             let heightOffset = 0;
 
             this.fitPixiToParentContainer();
+            this.refreshView(LONG_DRAG_TIMEOUT);
          }.bind(this));
 
         this.handleDragStart();
@@ -479,7 +480,6 @@ export class HiGlassComponent extends React.Component {
      *
      * @param viewUid: The view uid for which to adjust the zoom level
      */
-      console.log('zoom to data', viewUid, this.tiledPlots[viewUid]);
       this.tiledPlots[viewUid].handleZoomToData();
 
   }
@@ -755,6 +755,8 @@ export class HiGlassComponent extends React.Component {
             rowHeight: chosenRowHeight
           });
       }
+
+      this.refreshView(LONG_DRAG_TIMEOUT);
   };
 
   clearDragTimeout() {
@@ -789,6 +791,7 @@ export class HiGlassComponent extends React.Component {
     handleDragStart(layout, oldItem, newItem, placeholder, e, element) {
         this.clearDragTimeout();
         this.notifyDragChangedListeners(true);
+
     }
 
     handleDragStop() {
@@ -799,6 +802,7 @@ export class HiGlassComponent extends React.Component {
         this.dragTimeout = setTimeout(() => {
             this.notifyDragChangedListeners(false);
         }, LONG_DRAG_TIMEOUT);
+
     }
 
   onNewLayout() {
@@ -806,6 +810,7 @@ export class HiGlassComponent extends React.Component {
   };
 
   onResize(layout, oldItem, newItem, placeholder, e, element) {
+
 
   }
 
@@ -1337,7 +1342,6 @@ export class HiGlassComponent extends React.Component {
         let uid = k[0];
 
         for (let track of positionedTracksToAllTracks(newView.tracks)) {
-            console.log('track:', track);
             if ('serverUidKey' in track)
                 delete track['serverUidKey'];
             if ('uuid' in track)
@@ -1413,8 +1417,6 @@ export class HiGlassComponent extends React.Component {
          * The initial[XY]Domain of a view has changed. Update its definition
          * and rerender.
          */
-        console.log('data domain changed', newXDomain, newYDomain)
-
         this.state.views[viewUid].initialXDomain = newXDomain;
         this.state.views[viewUid].initialYDomain = newYDomain;
 
