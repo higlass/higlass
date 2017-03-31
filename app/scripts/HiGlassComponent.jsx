@@ -71,7 +71,8 @@ export class HiGlassComponent extends React.Component {
         this.horizontalMargin = 5;
         this.verticalMargin = 5;
 
-        this.boundRefreshView = this.refreshView.bind(this);
+        this.boundRefreshView = (() => { this.refreshView(LONG_DRAG_TIMEOUT) }).bind(this);
+        //
 
         let localServer = "localhost:8000";
 
@@ -1334,6 +1335,25 @@ export class HiGlassComponent extends React.Component {
     newJson.views = dictItems(this.state.views).map(k => {
         let newView = JSON.parse(JSON.stringify(k[1]));
         let uid = k[0];
+
+        for (let track of positionedTracksToAllTracks(newView.tracks)) {
+            console.log('track:', track);
+            if ('serverUidKey' in track)
+                delete track['serverUidKey'];
+            if ('uuid' in track)
+                delete track['uuid'];
+            if ('private' in track)
+                delete track['private'];
+            if ('maxZoom' in track)
+                delete track['maxZoom'];
+            if ('coordSystem' in track)
+                delete track['coordSystem'];
+            if ('coordSystem2' in track)
+                delete track['coordSystem2'];
+            if ('datatype' in track)
+                delete track['datatype'];
+        }
+        //
 
         newView.uid = uid;
         newView.initialXDomain = this.xScales[uid].domain();

@@ -26,6 +26,7 @@ export class SVGTrack extends Track {
         this.position = newPosition;
 
         this.gMain.attr('transform', `translate(${this.position[0]},${this.position[1]})`);
+        this.draw();
     }
 
     setDimensions(newDimensions) {
@@ -41,6 +42,8 @@ export class SVGTrack extends Track {
             this.clipRect.attr('width', 0);
             this.clipRect.attr('height', 0);
         }
+
+        this.draw();
     }
 
     remove() {

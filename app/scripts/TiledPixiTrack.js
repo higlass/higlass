@@ -32,6 +32,7 @@ export class TiledPixiTrack extends PixiTrack {
 
         this.tilesetUid = tilesetUid;
         this.tilesetServer = server;
+        this.tilesetInfoLoading = true;
 
         // the graphics that have already been drawn for this track
         this.tileGraphics = {};
@@ -49,10 +50,12 @@ export class TiledPixiTrack extends PixiTrack {
         tileProxy.trackInfo(server, tilesetUid, tilesetInfo => {
             // console.log('tilesetInfo:', tilesetInfo);
             this.tilesetInfo = tilesetInfo[tilesetUid];
+            this.tilesetInfoLoading = false;
 
             if ('error' in this.tilesetInfo) {
                 // no tileset info for this track
                 this.tilesetInfo = null;
+                this.draw();
                 return;
             }
 
@@ -438,11 +441,17 @@ export class TiledPixiTrack extends PixiTrack {
 
     draw() {
         if (!this.tilesetInfo) {
-            this.trackNotFoundText.text = "Tileset info not found. Server: [" + 
-                this.server + 
-                "] tilesetUid: [" + this.tilesetUid + "]";
+            if (this.tilesetInfoLoading) {
+                this.trackNotFoundText.text = 'Loading...';
+            } else {
+                this.trackNotFoundText.text = "Tileset info not found. Server: [" + 
+                    this.server + 
+                    "] tilesetUid: [" + this.tilesetUid + "]";
+            }
+
             this.trackNotFoundText.x = this.position[0];
             this.trackNotFoundText.y = this.position[1];
+
             this.trackNotFoundText.visible = true;
         } else {
             this.trackNotFoundText.visible = false;

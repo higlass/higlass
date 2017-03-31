@@ -21,7 +21,6 @@ export class ViewportTracker2D extends SVGTrack {
         this.brush = brush()
             .extent([[-Number.MAX_VALUE, -Number.MAX_VALUE],
                      [Number.MAX_VALUE, Number.MAX_VALUE]])
-            //.on('start', x => { console.log('started:', slugid.nice()); })
             .on('brush', this.brushed.bind(this));
 
         this.gBrush = this.gMain
@@ -50,6 +49,7 @@ export class ViewportTracker2D extends SVGTrack {
 
         // the viewport will call this.viewportChanged immediately upon
         // hearing registerViewportChanged
+        this.draw();
     }
 
     brushed() {
@@ -98,6 +98,9 @@ export class ViewportTracker2D extends SVGTrack {
     }
 
     draw() {
+        if (!this._xScale || !this.yScale)
+            return;
+
         if (!this.viewportXDomain || !this.viewportYDomain)
             return;
 
@@ -127,12 +130,6 @@ export class ViewportTracker2D extends SVGTrack {
     setPosition(newPosition) {
         super.setPosition(newPosition);
 
-        /*
-        this.pMain.position.y = this.position[1];
-        this.pMain.position.x = this.position[0];
-
-        console.log('sp:', this.uid);
-        */
         this.draw();
     }
 }

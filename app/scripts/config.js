@@ -400,6 +400,16 @@ export const tracksInfo = [
     }
     ,
     {
+        type: '2d-chromosome-labels',
+        datatype: ['chromosome-2d-labels'],
+        local: true,
+        orientation: '2d',
+        name: 'Chromosome Axis (mm9)',
+        chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        thumbnail: null
+    }
+    ,
+    {
         type: '2d-chromosome-annotations',
         local: true,
         orientation: '2d',
@@ -416,6 +426,17 @@ export const tracksInfo = [
         minHeight: 30,
         name: 'Chromosome Axis (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        thumbnail: null
+    }
+    ,
+    {
+        type: 'horizontal-chromosome-labels',
+        datatype: ['chromosome-1d-labels'],
+        local: true,
+        orientation: '1d-horizontal',
+        minHeight: 30,
+        name: 'Chromosome Axis (mm9)',
+        chromInfoPath: "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
         thumbnail: null
     }
     ,
@@ -464,6 +485,6 @@ export const tracksInfoByType = temp;
 // the length of time to keep refreshing the view after
 // a drag event
 export const SHORT_DRAG_TIMEOUT = 110;
-export const LONG_DRAG_TIMEOUT = 1000;
+export const LONG_DRAG_TIMEOUT = 2000;
 
 export const LOCATION_LISTENER_PREFIX = 'locationListenerPrefix';
