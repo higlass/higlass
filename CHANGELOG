@@ -2,6 +2,15 @@ export-data
 
 - Default to interpolation-less rendering
 
+v0.5.14
+
+- Revert the initialXDomain changes Fritz introduced because they were causing
+issues with faithful reproduction of viewconfs
+- Change 'tilesetInfo not loaded message' to 'loading...' until we either get
+an error or the tileset is loaded
+- Omit certain fields from JSON export (HiGlassComponenent.getViewsAsString)
+
+
 v0.5.12
 
 - Fixed export viewconfig link bug

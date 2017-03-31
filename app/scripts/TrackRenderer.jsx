@@ -92,7 +92,6 @@ export class TrackRenderer extends React.Component {
         this.cumCenterXOffset = 0;
         this.cumCenterYOffset = 0;
 
-
         this.setUpInitialScales(this.currentProps.initialXDomain,
                                 this.currentProps.initialYDomain);
         this.setUpScales();
@@ -389,6 +388,12 @@ export class TrackRenderer extends React.Component {
 
             this.trackDefObjects[newTrackDef.track.uid] = {trackDef: newTrackDef,
                 trackObject: newTrackObj};
+
+            let zoomedXScale = this.zoomTransform.rescaleX(this.xScale);
+            let zoomedYScale = this.zoomTransform.rescaleY(this.yScale);
+
+            newTrackObj.setDimensions([newTrackDef.width, newTrackDef.height]);
+            newTrackObj.zoomed(zoomedXScale, zoomedYScale);
         }
     }
 
