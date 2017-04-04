@@ -107,6 +107,10 @@ export class HiGlassComponent extends React.Component {
             exportLinkModalOpen: false,
             exportLinkLocation: null
           }
+
+          setTimeout(() => {
+              this.exportSVG();
+          }, 2000);
     }
 
     componentDidMount() {
@@ -334,6 +338,26 @@ export class HiGlassComponent extends React.Component {
             if (listeners.hasOwnProperty(listenerUid))
                 delete listeners[listenerUid];
         }
+  }
+
+  exportSVG() {
+    console.log('exporting SVG', this.pixiStage);
+    console.log('tiledPlots:', this.tiledPlots);
+    let outputSVG = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n';
+
+    for (let tiledPlot of dictValues(this.tiledPlots)) {
+        for (let trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
+            console.log('trackDefObject:', trackDefObject);
+
+            if (trackDefObject.trackObject.exportSVG) {
+                outputSVG += trackDefObject.trackObject.exportSVG();
+            }
+        }
+        console.log('tiledPlot', tiledPlot.trackRenderer.trackDefObjects);
+    }
+    outputSVG += '</svg>\n'
+
+    console.log('outputSVG:', outputSVG);
   }
 
   handleScalesChanged(uid, xScale, yScale, notify=true) {

@@ -148,6 +148,10 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 */
 
             tile.sprite = sprite;
+
+            // store the pixData so that we can export it
+            tile.pixData = pixData;
+
             this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
 
             graphics.removeChildren();
@@ -167,6 +171,13 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             } else {
                 // console.log('skipping...', tile.tileId);
             }
+        }
+    }
+
+    exportSVG() {
+        console.log('exporting...');
+        for (let tile of this.visibleAndFetchedTiles()) {
+            console.log('sprite:', tile.pixData);
         }
     }
 }

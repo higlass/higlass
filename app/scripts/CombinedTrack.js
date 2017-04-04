@@ -129,6 +129,18 @@ export class CombinedTrack {
         }
     }
 
+    exportSVG() {
+        let svg = '';
+
+        for (let childTrack of this.childTracks) {
+            if (childTrack.exportSVG) {
+                svg += childTrack.exportSVG();
+            }
+        }
+
+        return svg;
+    }
+
     rerender(options) {
         //console.log('COMBINED TRACK rerender...');
     }
