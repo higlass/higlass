@@ -2,6 +2,10 @@ export-data
 
 - Default to interpolation-less rendering
 
+##HEAD
+
+- Automatically draw the 2D grid after the data is loaded
+
 v0.5.16
 
 - Fixed resizing bug

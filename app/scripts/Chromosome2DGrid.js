@@ -47,6 +47,8 @@ export class Chromosome2DGrid extends PixiTrack {
 
                 this.texts.push(thisTexts);
             }
+
+            this.draw();
         });
 
     }
