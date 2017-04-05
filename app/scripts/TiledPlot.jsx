@@ -497,6 +497,90 @@ export class TiledPlot extends React.Component {
         return (trackElements)
     }
 
+    handleExportTrackData(hostTrackUid, trackUid) {
+        /*
+         * Export the data present in a track. Whether a track can export data is defined
+         * in the track type definition in config.js
+         */
+        let track = getTrackByUid(this.props.tracks, trackUid);
+        let trackObject = null;
+
+        if (hostTrackUid != trackUid) {
+            // the track whose data we're trying to export is part of a combined track
+            trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject.createdTracks[track.uid];
+        } else {
+            trackObject = this.trackRenderer.trackDefObjects[hostTrackUid].trackObject.createdTracks[track.uid];
+        }
+
+        trackObject.exportData();
+    }
+
+    handleZoomToData() {
+        /**
+         * Try to zoom in or out so that the bounds of the view correspond to the
+         * extent of the data.
+         */
+        console.log('zooming to data in TiledPlot');
+        let minPos = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER]
+        let maxPos = [Number.MIN_SAFE_INTEGER, Number.MIN_SAFE_INTEGER]
+
+        // go through every track definition
+        for (let uid in this.trackRenderer.trackDefObjects) {
+            let tdo = this.trackRenderer.trackDefObjects[uid];
+
+            // and every instantiated track object (e.g. HeatmapTiledPixiTrack)
+            // noting that trackObjects may have more createdTracks because of
+            // things like CombinedTracks
+            for (let uid1 in tdo.trackObject.createdTracks) {
+                let trackObject = tdo.trackObject.createdTracks[uid1];
+
+                // we need to have a tilesetInfo (for now)
+                // some other track types may not defined the extent of their
+                // data in the tilesetInfo (e.g. Chromosome2DAnnotations)
+                if (trackObject.tilesetInfo) {
+
+                    if (trackObject.tilesetInfo.min_pos) {
+                        for (let j = 0; j < trackObject.tilesetInfo.min_pos.length; j++) {
+                            if (trackObject.tilesetInfo.min_pos[j] < minPos[j])
+                                minPos[j] = trackObject.tilesetInfo.min_pos[j];
+
+                            if (trackObject.tilesetInfo.max_pos[j] > maxPos[j])
+                                maxPos[j] = trackObject.tilesetInfo.max_pos[j];
+
+                        }
+                    }
+                }
+            }
+        }
+
+        console.log('minPos:', minPos);
+        console.log('maxPos:', maxPos);
+
+        // set the initial domain
+        let newXDomain = [this.trackRenderer.currentProps.marginLeft + this.trackRenderer.currentProps.leftWidth, this.trackRenderer.currentProps.marginLeft + this.trackRenderer.currentProps.leftWidth + this.trackRenderer.currentProps.centerWidth].map(this.trackRenderer.zoomTransform.rescaleX(this.trackRenderer.xScale).invert);
+        let newYDomain = [this.trackRenderer.currentProps.marginTop + this.trackRenderer.currentProps.topHeight, this.trackRenderer.currentProps.marginTop + this.trackRenderer.currentProps.topHeight + this.trackRenderer.currentProps.centerHeight].map(this.trackRenderer.zoomTransform.rescaleY(this.trackRenderer.yScale).invert);
+
+        // reset the zoom transform
+        this.trackRenderer.zoomTransform.k = 1;
+
+        this.trackRenderer.zoomTransform.x = 0;
+        this.trackRenderer.zoomTransform.y = 0;
+        this.trackRenderer.applyZoomTransform();
+
+
+        console.log('newXDomain', newXDomain);
+
+        if (minPos[0] < Number.MAX_SAFE_INTEGER && maxPos[0] > Number.MIN_SAFE_INTEGER)
+            newXDomain = [minPos[0], maxPos[0]];
+
+        if (minPos[1] < Number.MAX_SAFE_INTEGER && maxPos[1] > Number.MIN_SAFE_INTEGER)
+            newYDomain = [minPos[1], maxPos[1]];
+
+
+        this.props.onDataDomainChanged(newXDomain, newYDomain);
+
+    }
+
     updatablePropsToString(props) {
         return JSON.stringify({
             tracks: props.tracks,
@@ -702,6 +786,7 @@ export class TiledPlot extends React.Component {
                     registerDraggingChangedListener={this.props.registerDraggingChangedListener}
                     removeDraggingChangedListener={this.props.removeDraggingChangedListener}
                     uid={this.props.uid}
+                    ref={c => this.trackRenderer = c}
                 >
 
                     <div
@@ -743,6 +828,7 @@ export class TiledPlot extends React.Component {
                                     onReplaceTrack={this.handleReplaceTrack.bind(this)}
                                     trackOrientation={getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
                                     onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
+                                    onExportData={this.handleExportTrackData.bind(this)}
                                   />
                               </PopupMenu>
                               )
@@ -873,5 +959,8 @@ TiledPlot.propTypes = {
     "tracks.top": React.PropTypes.array,
     "tracks.bottom": React.PropTypes.array,
     "tracks.left": React.PropTypes.array,
-    "tracks.right": React.PropTypes.array
+    "tracks.right": React.PropTypes.array,
+    initialXDomain: React.PropTypes.array,
+    initialYDomain: React.PropTypes.array,
+    onDataDomainChanged: React.PropTypes.func
 }

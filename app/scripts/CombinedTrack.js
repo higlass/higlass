@@ -27,7 +27,12 @@ export class CombinedTrack {
                 newTracks.push(this.createdTracks[nc.uid]);
             else {
                 let newTrack = trackCreator(nc);
+                newTrack.setPosition(this.position);
+                newTrack.setDimensions(this.dimensions);
                 newTracks.push(newTrack);
+
+                newTrack.zoomed(this._xScale, this._yScale);
+
                 this.createdTracks[nc.uid] = newTrack;
             }
         });
@@ -67,6 +72,9 @@ export class CombinedTrack {
 
 
     zoomed(newXScale, newYScale, k, x, y, xPositionOffset, yPositionOffset) {
+        this._xScale = newXScale;
+        this._yScale = newYScale;
+
         for (let i = 0; i < this.childTracks.length; i++) {
             this.childTracks[i].zoomed(newXScale, newYScale, k, x, y,
                                        xPositionOffset, yPositionOffset);
@@ -93,12 +101,16 @@ export class CombinedTrack {
     }
 
     xScale(xScale)  {
+        this._xScale = xScale;
+
         for (let i = 0; i < this.childTracks.length; i++) {
             this.childTracks[i].xScale(xScale);
         }
     }
 
     yScale(xScale)  {
+        this._yScale = yScale;
+
         for (let i = 0; i < this.childTracks.length; i++) {
             this.childTracks[i].yScale(yScale);
         }

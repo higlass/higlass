@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HiGlass</title>
+<style type="text/css">
+    .canvasjs-chart-credit {
+    display:none;
+}
+</style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/page.css">
+</head>
+<body >
+    <div style="height: 50px" />
+        <div style="margin: auto; width: 100%;">
+        <div
+            id="development-demo"
+            style="position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px">
+        </div>
+    </div>
+</body>
+<script src='scripts/hglib.js'>
+</script>
+<script>
+
+ var testViewConfig = 
+{
+  "zoomFixed": false,
+  "views": [
+    {
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      },
+      "uid": "aa",
+      "initialYDomain": [
+        -3688737784.101167,
+        7211073783.05112
+      ],
+      "autocompleteSource": "http://52.201.240.83/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "initialXDomain": [
+        -19466933748.515503,
+        24068353169.869934
+      ],
+      "tracks": {
+        "bottom": [],
+        "top": [
+          {
+            "uid": "OHJakQICQD6gTD7skx4EWA",
+            "maxWidth": 4294967296,
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "server": "http://52.201.240.83/api/v1",
+            "maxZoom": 22,
+            "position": "top",
+            "height": 60,
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "plusStrandColor": "blue",
+              "name": "Gene Annotations (hg19)",
+              "labelPosition": "hidden",
+              "minusStrandColor": "red"
+            },
+            "name": "Gene Annotations (hg19)"
+          },
+          {
+            "uid": "X4e_1DKiQHmyghDa6lLMVA",
+            "height": 30,
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "position": "top",
+            "type": "horizontal-chromosome-labels",
+            "options": {},
+            "name": "Chromosome Labels (hg19)"
+          }
+        ],
+        "right": [],
+        "center": [
+          {
+            "uid": "c1",
+            "height": 200,
+            "position": "center",
+            "type": "combined",
+            "options": {},
+            "contents": [
+              {
+                "uid": "GjuZed1ySGW1IzZZqFB9BA",
+                "maxWidth": 4194304000,
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "binsPerDimension": 256,
+                "server": "http://52.201.240.83/api/v1",
+                "maxZoom": 14,
+                "position": "center",
+                "type": "heatmap",
+                "options": {
+                  "maxZoom": null,
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "labelPosition": "bottomRight"
+                },
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+              }
+            ]
+          }
+        ],
+        "left": [
+          {
+            "name": "Gene Annotations (hg19)",
+            "maxWidth": 4294967296,
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "server": "http://52.201.240.83/api/v1",
+            "width": 60,
+            "maxZoom": 22,
+            "position": "left",
+            "type": "vertical-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "plusStrandColor": "blue",
+              "name": "Gene Annotations (hg19)",
+              "labelPosition": "bottomRight",
+              "minusStrandColor": "red"
+            },
+            "uid": "dqBTMH78Rn6DeSyDBoAEXw"
+          },
+          {
+            "uid": "RHdQK4IRQ7yJeDmKWb7Pcg",
+            "width": 30,
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "position": "left",
+            "type": "vertical-chromosome-labels",
+            "options": {},
+            "name": "Chromosome Labels (hg19)"
+          }
+        ]
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "genomePositionSearchBoxVisible": true
+    }
+  ],
+  "editable": true,
+  "exportViewUrl": "http://52.201.240.83/api/v1/viewconfs/",
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "trackSourceServers": [
+    "http://52.201.240.83/api/v1"
+  ],
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}
+
+ ;
+    
+    window.higlassApi;
+
+    hglib.createHgComponent(
+        document.getElementById('development-demo'),
+        testViewConfig,
+        { bounded: true },
+        function (api) {
+            window.higlassApi = api;
+        }
+    );
+
+
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-77756807-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+</html>

@@ -205,7 +205,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
                 break;
 
 
-            //console.log('drawing:', this._xScale(tileXScale(i)), valueScale(tileValues[i+1]));
             graphics.lineTo(this._xScale(tileXScale(i)), valueScale(tileValues[i+1] + pseudocount));
         }
     }

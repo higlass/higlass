@@ -61,6 +61,10 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         return canvas;
     }
+    
+    exportData() {
+    
+    }
 
     setSpriteProperties(sprite, zoomLevel, tilePos, mirrored) {
         let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(zoomLevel, tilePos);
@@ -135,10 +139,13 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
             let sprite = null;
 
+            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+            /*
             if (tile.tileData.zoomLevel == this.maxZoom)
                 sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
             else
                 sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+                */
 
             tile.sprite = sprite;
             this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);

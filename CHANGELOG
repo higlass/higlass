@@ -1,5 +1,44 @@
+export-data
+
+- Default to interpolation-less rendering
+
+##HEAD
+
+- Automatically draw the 2D grid after the data is loaded
+
+v0.5.16
+
+- Fixed resizing bug
+
+v0.5.15
+
+- Added mm9 chromosome labels
+- Draw chromosome labels on reload
+- Take name from track options
+
+v0.5.14
+
+- Revert the initialXDomain changes Fritz introduced because they were causing
+issues with faithful reproduction of viewconfs
+- Change 'tilesetInfo not loaded message' to 'loading...' until we either get
+an error or the tileset is loaded
+- Omit certain fields from JSON export (HiGlassComponenent.getViewsAsString)
+
+
+v0.5.12
+
+- Fixed export viewconfig link bug
+
+v0.5.11
+
+- Added the fall colormap and made it the default
+
 v0.5.10
 
+- Fix Chromosome2DAnnotations not being drawn by calling draw after the
+ChromosomeInfo is loaded
+- Zoom to the currently visible data
+- Use the minimum position to load data that is not located at the origin
 - Viewconf downloads work on Firefox
 - Alert when trying to project a viewport on the same view
 - Resize handle positions fixed in Firefox
@@ -9,6 +48,7 @@ v0.5.10
 - Fixed chromosome horizontal labels not appearing
 - Show minValue pixels by scaling from minValue to maxValue + minValue and
 adding minValue to each pixel
+- Fix viewport projection error when new viewconfig is passed
 
 
 v0.5.9

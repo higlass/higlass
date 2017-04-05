@@ -71,7 +71,8 @@ export class HiGlassComponent extends React.Component {
         this.horizontalMargin = 5;
         this.verticalMargin = 5;
 
-        this.boundRefreshView = this.refreshView.bind(this);
+        this.boundRefreshView = (() => { this.refreshView(LONG_DRAG_TIMEOUT) }).bind(this);
+        //
 
         let localServer = "localhost:8000";
 
@@ -148,6 +149,7 @@ export class HiGlassComponent extends React.Component {
             let heightOffset = 0;
 
             this.fitPixiToParentContainer();
+            this.refreshView(LONG_DRAG_TIMEOUT);
          }.bind(this));
 
         this.handleDragStart();
@@ -478,6 +480,7 @@ export class HiGlassComponent extends React.Component {
      *
      * @param viewUid: The view uid for which to adjust the zoom level
      */
+      this.tiledPlots[viewUid].handleZoomToData();
 
   }
 
@@ -752,6 +755,8 @@ export class HiGlassComponent extends React.Component {
             rowHeight: chosenRowHeight
           });
       }
+
+      this.refreshView(LONG_DRAG_TIMEOUT);
   };
 
   clearDragTimeout() {
@@ -786,6 +791,7 @@ export class HiGlassComponent extends React.Component {
     handleDragStart(layout, oldItem, newItem, placeholder, e, element) {
         this.clearDragTimeout();
         this.notifyDragChangedListeners(true);
+
     }
 
     handleDragStop() {
@@ -796,6 +802,7 @@ export class HiGlassComponent extends React.Component {
         this.dragTimeout = setTimeout(() => {
             this.notifyDragChangedListeners(false);
         }, LONG_DRAG_TIMEOUT);
+
     }
 
   onNewLayout() {
@@ -803,6 +810,7 @@ export class HiGlassComponent extends React.Component {
   };
 
   onResize(layout, oldItem, newItem, placeholder, e, element) {
+
 
   }
 
@@ -1333,6 +1341,24 @@ export class HiGlassComponent extends React.Component {
         let newView = JSON.parse(JSON.stringify(k[1]));
         let uid = k[0];
 
+        for (let track of positionedTracksToAllTracks(newView.tracks)) {
+            if ('serverUidKey' in track)
+                delete track['serverUidKey'];
+            if ('uuid' in track)
+                delete track['uuid'];
+            if ('private' in track)
+                delete track['private'];
+            if ('maxZoom' in track)
+                delete track['maxZoom'];
+            if ('coordSystem' in track)
+                delete track['coordSystem'];
+            if ('coordSystem2' in track)
+                delete track['coordSystem2'];
+            if ('datatype' in track)
+                delete track['datatype'];
+        }
+        //
+
         newView.uid = uid;
         newView.initialXDomain = this.xScales[uid].domain();
         newView.initialYDomain = this.yScales[uid].domain();
@@ -1360,7 +1386,7 @@ export class HiGlassComponent extends React.Component {
   }
 
   handleExportViewsAsLink() {
-    let wrapper = '{"viewconfig":'+this.getViewsAsString()+'}';
+    let wrapper = '{"viewconf":'+this.getViewsAsString()+'}';
 
     this.width = this.element.clientWidth;
     this.height = this.element.clientHeight;
@@ -1385,6 +1411,18 @@ export class HiGlassComponent extends React.Component {
             }
         })
   }
+
+    handleDataDomainChanged(viewUid, newXDomain, newYDomain) {
+        /*
+         * The initial[XY]Domain of a view has changed. Update its definition
+         * and rerender.
+         */
+        this.state.views[viewUid].initialXDomain = newXDomain;
+        this.state.views[viewUid].initialYDomain = newYDomain;
+
+        this.setState({views: this.state.views});
+
+    }
 
   viewPositionAvailable(pX, pY, w, h) {
       /**
@@ -1772,6 +1810,7 @@ export class HiGlassComponent extends React.Component {
                                      tracks={view.tracks}
                                      initialXDomain={view.initialXDomain}
                                      initialYDomain={view.initialYDomain}
+                                     onDataDomainChanged={(xDomain, yDomain) => this.handleDataDomainChanged(view.uid, xDomain, yDomain)}
                                      verticalMargin={this.verticalMargin}
                                      horizontalMargin={this.horizontalMargin}
                                      addTrackPositionMenuPosition={addTrackPositionMenuPosition}

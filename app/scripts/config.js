@@ -118,13 +118,8 @@ export const optionsInfo = {
     colorRange: {
         name: "Color map",
         inlineOptions: {
-            'default': { name: 'default', value: [
-                                          "#FFFFFF",
-                                          "#F8E71C",
-                                          "rgba(245,166,35,1)",
-                                          "rgba(0,0,0,1)"
-                                       ]},
             'afmhot': { name: 'afmhot', value: ['rgba(0, 0, 0, 1.0)', 'rgba(128, 0, 0, 1.0)', 'rgba(256, 129, 1, 1.0)', 'rgba(256, 256, 129, 1.0)', 'rgba(256, 256, 256, 1.0)'] },
+            'fall': { name: 'fall', value: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'] },
             'hot': { name: "hot", value: ['rgba(10, 0, 0, 1.0)', 'rgba(179, 0, 0, 1.0)', 'rgba(256, 91, 0, 1.0)', 'rgba(256, 256, 6, 1.0)', 'rgba(256, 256, 256, 1.0)'] },
             'jet': { name: "jet", value: ['rgba(0, 0, 128, 1.0)', 'rgba(0, 129, 256, 1.0)', 'rgba(125, 256, 122, 1.0)', 'rgba(256, 148, 0, 1.0)', 'rgba(128, 0, 0, 1.0)'] },
 
@@ -136,6 +131,12 @@ export const optionsInfo = {
             'red': { name: "White to red", value: ['rgba(255,255,255,1)', 'rgba(255,0,0,1)'] },
             'green': { name: "White to green", value: ['rgba(255,255,255,1)', 'rgba(0,255,0,1)'] },
             'blue': { name: "White to blue", value: ['rgba(255,255,255,1)', 'rgba(0,0,255,1)'] },
+            'custard': { name: 'custard', value: [
+                                          "#FFFFFF",
+                                          "#F8E71C",
+                                          "rgba(245,166,35,1)",
+                                          "rgba(0,0,0,1)"
+                                       ]},
             'custom': {
                 name: "Custom...",
                 componentPickers: {
@@ -212,15 +213,11 @@ export const tracksInfo = [
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
             labelPosition: 'bottomRight',
-            colorRange: [
-                              "#FFFFFF",
-                              "#F8E71C",
-                              "rgba(245,166,35,1)",
-                              "rgba(0,0,0,1)"
-                           ],
+            colorRange: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], //corresponding to the fall colormap
             maxZoom: null
         },
         availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom' ]
+        //exportable: true
     },
     {
         type: 'horizontal-heatmap',
@@ -232,12 +229,8 @@ export const tracksInfo = [
         defaultOptions: {
             labelPosition: 'bottomRight',
             labelColor: 'black',
-            colorRange: [
-                              "#FFFFFF",
-                              "#F8E71C",
-                              "rgba(245,166,35,1)",
-                              "rgba(0,0,0,1)"
-                           ],
+            colorRange: 
+                ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], //corresponding to the fall colormap
             maxZoom: null
         },
         availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped' ]
@@ -252,12 +245,7 @@ export const tracksInfo = [
         defaultOptions: {
             labelPosition: 'bottomRight',
             labelColor: 'black',
-            colorRange: [
-                              "#FFFFFF",
-                              "#F8E71C",
-                              "rgba(245,166,35,1)",
-                              "rgba(0,0,0,1)"
-                           ],
+            colorRange: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], //corresponding to the fall colormap
             maxZoom: null
         },
         availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped' ]
@@ -412,6 +400,16 @@ export const tracksInfo = [
     }
     ,
     {
+        type: '2d-chromosome-labels',
+        datatype: ['chromosome-2d-labels-mm9'],
+        local: true,
+        orientation: '2d',
+        name: 'Chromosome Axis (mm9)',
+        chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        thumbnail: null
+    }
+    ,
+    {
         type: '2d-chromosome-annotations',
         local: true,
         orientation: '2d',
@@ -428,6 +426,17 @@ export const tracksInfo = [
         minHeight: 30,
         name: 'Chromosome Axis (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        thumbnail: null
+    }
+    ,
+    {
+        type: 'horizontal-chromosome-labels',
+        datatype: ['chromosome-1d-labels-mm9'],
+        local: true,
+        orientation: '1d-horizontal',
+        minHeight: 30,
+        name: 'Chromosome Axis (mm9)',
+        chromInfoPath: "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
         thumbnail: null
     }
     ,
@@ -476,6 +485,6 @@ export const tracksInfoByType = temp;
 // the length of time to keep refreshing the view after
 // a drag event
 export const SHORT_DRAG_TIMEOUT = 110;
-export const LONG_DRAG_TIMEOUT = 1000;
+export const LONG_DRAG_TIMEOUT = 2000;
 
 export const LOCATION_LISTENER_PREFIX = 'locationListenerPrefix';

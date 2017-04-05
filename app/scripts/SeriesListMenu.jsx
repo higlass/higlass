@@ -164,6 +164,21 @@ export class SeriesListMenu extends ContextMenuContainer {
 
 
     render() {
+        let exportDataMenuItem = null;
+
+        if (tracksInfoByType[this.props.hostTrack.type]) {
+            exportDataMenuItem = (<ContextMenuItem
+                className={"context-menu-item"}
+                onClick={x => this.props.onExportData(this.props.hostTrack.uid, this.props.track.uid)}
+                onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+            >
+                <span
+                    style={{ whiteSpace: 'nowrap' }}
+                >
+                    {"Export Data"}
+                </span>
+            </ContextMenuItem>)
+        }
 
         return(
                 <div className={'context-menu'}
@@ -192,6 +207,7 @@ export class SeriesListMenu extends ContextMenuContainer {
                             />
                         </svg>
                     </ContextMenuItem>
+                    { exportDataMenuItem }
                     <ContextMenuItem
                         className={"context-menu-item"}
                         onClick={this.props.onCloseTrack}

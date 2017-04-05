@@ -109,7 +109,9 @@ class TileProxy  {
          */
         let rangeWidth = scale.range()[1] - scale.range()[0];
         let zoomScale = Math.max((maxX - minX) / (scale.domain()[1] - scale.domain()[0]), 1);
-        let addedZoom = Math.max(0, Math.ceil(Math.log(rangeWidth / 512) / Math.LN2));
+
+        // fun fact: the number 384 is halfway between 256 and 512
+        let addedZoom = Math.max(0, Math.ceil(Math.log(rangeWidth / 384) / Math.LN2));
         let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + addedZoom;
 
         return zoomLevel
