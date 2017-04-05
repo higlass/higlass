@@ -10,7 +10,7 @@ export class Chromosome2DAnnotations extends PixiTrack {
 
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;
-
+            this.draw();
         });
     }
 
