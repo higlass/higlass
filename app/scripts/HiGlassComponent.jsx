@@ -15,6 +15,7 @@ import {TiledPlot} from './TiledPlot.jsx';
 
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
+import {download} from './utils.js';
 import {absoluteToChr, getTrackPositionByUid, getTrackByUid, scalesToGenomeLocations} from './utils.js';
 import {positionedTracksToAllTracks} from './utils.js';
 import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
@@ -341,23 +342,24 @@ export class HiGlassComponent extends React.Component {
   }
 
   exportSVG() {
-    console.log('exporting SVG', this.pixiStage);
-    console.log('tiledPlots:', this.tiledPlots);
+    //console.log('exporting SVG', this.pixiStage);
+    //console.log('tiledPlots:', this.tiledPlots);
     let outputSVG = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n';
 
     for (let tiledPlot of dictValues(this.tiledPlots)) {
         for (let trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
-            console.log('trackDefObject:', trackDefObject);
+            //console.log('trackDefObject:', trackDefObject);
 
             if (trackDefObject.trackObject.exportSVG) {
                 outputSVG += trackDefObject.trackObject.exportSVG();
             }
         }
-        console.log('tiledPlot', tiledPlot.trackRenderer.trackDefObjects);
+        //console.log('tiledPlot', tiledPlot.trackRenderer.trackDefObjects);
     }
     outputSVG += '</svg>\n'
 
-    console.log('outputSVG:', outputSVG);
+    //console.log('outputSVG:', outputSVG);
+    download('export.svg', outputSVG);
   }
 
   handleScalesChanged(uid, xScale, yScale, notify=true) {

@@ -177,10 +177,26 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         console.log('exporting...');
         let svg = '<g>'
         for (let tile of this.visibleAndFetchedTiles()) {
-            console.log('sprite:', tile.canvas.toDataURL());
+            //console.log('sprite:', tile.canvas.toDataURL());
+            let rotation = tile.sprite.rotation * 180 / Math.PI;
+
+            let xFactor = tile.sprite.width / 256;
+            let yFactor = tile.sprite.height / 256;
+            //console.log('xFactor:', xFactor);
+            //console.log('yFactor:', yFactor);
+
+            console.log('rotation:', rotation);
+            console.log('width:', tile.sprite.width, tile.sprite.height);
+            console.log('sprite.x:', tile.sprite.x, 'sprite.y', tile.sprite.y);
+
+            svg += `<g
+                    transform="translate(${tile.sprite.x}, ${tile.sprite.y})rotate(${rotation})scale(${tile.sprite.scale.x},${tile.sprite.scale.y})"
+                >`;
             svg += '<image xlink:href="' + tile.canvas.toDataURL() + '"/>';
+            svg += "</g>";
         }
 
-        svg += '</g>'
+        svg += '</g>';
+        return svg;
     }
 }

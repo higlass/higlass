@@ -3,6 +3,21 @@ import {bisector, range} from 'd3-array';
 import {rgb, color} from 'd3-color';
 import {format} from 'd3-format';
 
+export function download(filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+
+    if (document.createEvent) {
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, true);
+        pom.dispatchEvent(event);
+    }
+    else {
+        pom.click();
+    }
+}
+
 export function dictValues(dictionary) {
     /**
      * Return an array of values that are present in this dictionary
