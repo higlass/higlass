@@ -73,8 +73,9 @@ export class TiledPixiTrack extends PixiTrack {
             if (!this.options)
                 this.options = {};
 
-            this.options.name = tilesetInfo[tilesetUid].name ?
-                tilesetInfo[tilesetUid].name : this.options.name;
+            if (!this.options.name && tilesetInfo[tilesetUid].name) {
+                this.options.name = tilesetInfo[tilesetUid].name;
+            }
 
             this.draw();
         });
@@ -438,8 +439,8 @@ export class TiledPixiTrack extends PixiTrack {
 
     draw() {
         if (!this.tilesetInfo) {
-            this.trackNotFoundText.text = "Tileset info not found. Server: [" + 
-                this.server + 
+            this.trackNotFoundText.text = "Tileset info not found. Server: [" +
+                this.server +
                 "] tilesetUid: [" + this.tilesetUid + "]";
             this.trackNotFoundText.x = this.position[0];
             this.trackNotFoundText.y = this.position[1];
