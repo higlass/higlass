@@ -50,9 +50,9 @@ export class PixiTrack extends Track {
         let labelTextText = this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
 
-        this.labelTextFontSize = '12px';
+        this.labelTextFontSize = 12;
         this.labelTextFontFamily = 'Arial';
-        this.labelText = new PIXI.Text(labelTextText, {fontSize: this.labelTextFontSize, 
+        this.labelText = new PIXI.Text(labelTextText, {fontSize: this.labelTextFontSize + 'px', 
                                                        fontFamily: this.labelTextFontFamily, 
                                                        fill: "black"});
 
@@ -134,7 +134,7 @@ export class PixiTrack extends Track {
         }
 
         this.labelText.text = labelTextText;
-        this.labelText.style = {fontSize: this.labelTextFontSize,
+        this.labelText.style = {fontSize: this.labelTextFontSize + 'px',
                               fontFamily: this.labelTextFontFamily,
                               fill: stroke};
 
@@ -270,59 +270,66 @@ export class PixiTrack extends Track {
     exportSVG() {
         let g = document.createElement('g');
 
-        let text = document.createElement('text');
 
-        text.setAttribute('font-family', this.labelTextFontFamily);
-        text.setAttribute('font-size', this.labelTextFontSize);
+        console.log('labelText:', this.labelText.text, this.labelText.anchor.y);
 
         let lineParts = this.labelText.text.split("\n");
         let ddy = 0;
 
         // SVG text alignment is wonky, just adjust the dy values of the tspans
         // instead
+        
+        let textHeight = 12; 
+        let labelTextHeight = textHeight + ((this.labelTextFontSize+2) * (lineParts.length -1));
+
         if (this.labelText.anchor.y == 0.5) {
-            ddy = -0.6 * lineParts.length;
+            ddy =  labelTextHeight / 2;
         } else if (this.labelText.anchor.y == 1) {
-            ddy = -1.2 * lineParts.length;
+            ddy = -labelTextHeight;
         }
 
+
         for (let i = 0; i < lineParts.length; i++) {
+            let text = document.createElement('text');
+
+            text.setAttribute('font-family', this.labelTextFontFamily);
+            text.setAttribute('font-size', this.labelTextFontSize + 'px');
+
             // break up newlines into separate tspan elements because SVG text
             // doesn't support line breaks:
             // http://stackoverflow.com/a/16701952/899470
 
-            let tspan = document.createElement('tspan');
-            tspan.innerText = lineParts[i];
+            text.innerText = lineParts[i];
+            text.setAttribute('dy', ddy + (i * (this.labelTextFontSize + 2)));
             
+            /*
             // fuck SVG
             if (i == 0) 
-                tspan.setAttribute('dy', ddy + "em");
+                tspan.setAttribute('dy', ddy + "px");
             else
-                tspan.setAttribute('dy', (i * 1.2) + "em");
+                tspan.setAttribute('dy', (i * this.labelTextFontSize + 2) + "px");
 
             tspan.setAttribute('x', 0)
+                */
+            if (this.labelText.anchor.x == 0.5) {
+                text.setAttribute('text-anchor', 'middle');
+            } else if (this.labelText.anchor.x == 1) {
+                text.setAttribute('text-anchor', 'end');
+            }
 
-                /*
-            */
-
-            text.appendChild(tspan);
+            //text.appendChild(tspan);
+            g.appendChild(text);
         }
 
         //text.setAttribute('x', this.labelText.x);
         //text.setAttribute('y', this.labelText.y);
 
-        if (this.labelText.anchor.x == 0.5) {
-            text.setAttribute('text-anchor', 'middle');
-        } else if (this.labelText.anchor.x == 1) {
-            text.setAttribute('text-anchor', 'end');
-        }
 
 
         g.setAttribute('transform', `translate(${this.labelText.x},${this.labelText.y})scale(${this.labelText.scale.x},1)`);
 
         //if (this.labelTe
 
-        g.appendChild(text);
         return g;
     }
 }

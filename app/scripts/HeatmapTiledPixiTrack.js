@@ -227,7 +227,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             base.appendChild(superG);
         }
 
-
         return base;
     }
 }

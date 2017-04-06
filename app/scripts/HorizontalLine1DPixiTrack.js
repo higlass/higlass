@@ -234,7 +234,10 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     }
 
     exportSVG() {
+        let base = document.createElement('g');
         let output = document.createElement('g')
+
+        base.appendChild(output);
         output.setAttribute('transform',
                             `translate(${this.position[0]},${this.position[1]})`);
 
@@ -251,6 +254,12 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             g.setAttribute('d', d);
             output.appendChild(g);
         }
-        return output;
+
+        if (super.exportSVG) {
+            let superG = super.exportSVG();
+            base.appendChild(superG);
+        }
+
+        return base;
     }
 }
