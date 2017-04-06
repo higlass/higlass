@@ -345,21 +345,22 @@ export class HiGlassComponent extends React.Component {
     //console.log('exporting SVG', this.pixiStage);
     //console.log('tiledPlots:', this.tiledPlots);
     let outputSVG = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n';
+    let svg = document.createElement('svg');
 
     for (let tiledPlot of dictValues(this.tiledPlots)) {
         for (let trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
             //console.log('trackDefObject:', trackDefObject);
 
             if (trackDefObject.trackObject.exportSVG) {
-                outputSVG += trackDefObject.trackObject.exportSVG();
+                svg.appendChild(trackDefObject.trackObject.exportSVG());
             }
         }
         //console.log('tiledPlot', tiledPlot.trackRenderer.trackDefObjects);
     }
-    outputSVG += '</svg>\n'
+    let x = new XMLSerializer();
 
     //console.log('outputSVG:', outputSVG);
-    download('export.svg', outputSVG);
+    download('export.svg', x.serializeToString(svg));
   }
 
   handleScalesChanged(uid, xScale, yScale, notify=true) {
@@ -1402,6 +1403,8 @@ export class HiGlassComponent extends React.Component {
   handleExportViewAsJSON() {
     let data = this.getViewsAsString();
 
+    download('viewconf.json', data);
+    /*
     var a = document.createElement("a");
     var file = new Blob([data], {type: 'text/json'});
     a.href = URL.createObjectURL(file);
@@ -1409,6 +1412,7 @@ export class HiGlassComponent extends React.Component {
     document.body.appendChild(a); // Necessary for downloads on Firefox.
     a.click();
     document.body.removeChild(a);
+    */
   }
 
   handleExportViewsAsLink() {

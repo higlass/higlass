@@ -20,6 +20,9 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         /**
          * Create whatever is needed to draw this tile.
          */
+        tile.lineXValues = new Array(tile.tileData.dense.length);
+        tile.lineYValues = new Array(tile.tileData.dense.length);
+
         this.drawTile(tile);
     }
 
@@ -51,26 +54,26 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             let i = 0; 
 
             // create scale ticks but not all the way to the top
-            let tickValues = ticks(valueScale.invert(MARGIN_BOTTOM), 
+            this.tickValues = ticks(valueScale.invert(MARGIN_BOTTOM), 
                               valueScale.invert(this.dimensions[1] - MARGIN_TOP), 
                               tickCount);
 
-            if (tickValues.length < 1)  {
-                tickValues = ticks(valueScale.invert(MARGIN_BOTTOM),
+            if (this.tickValues.length < 1)  {
+                this.tickValues = ticks(valueScale.invert(MARGIN_BOTTOM),
                               valueScale.invert(this.dimensions[1] - MARGIN_TOP), 
                               tickCount + 1);
 
-                if (tickValues.length > 1) {
+                if (this.tickValues.length > 1) {
                     // sometimes the ticks function will return 0 and then 2
                     // if it didn't return enough previously, we probably only want a single
                     // tick
-                    tickValues = [tickValues[0]];
+                    this.tickValues = [tickValues[0]];
                 }
             }
 
             //
-            while (i < tickValues.length) {
-                let tick = tickValues[i];
+            while (i < this.tickValues.length) {
+                let tick = this.tickValues[i];
 
                 while (this.axisTexts.length <= i) {
                     let newText = new PIXI.Text(tick, {fontSize:"10px", fontFamily:"Arial", fill: "black"});
@@ -193,10 +196,14 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         for (let i = 0; i < tileValues.length; i++) {
             let xPos = this._xScale(tileXScale(i));
+            let yPos = valueScale(tileValues[i] + pseudocount)
+                
+            tile.lineXValues[i] = xPos;
+            tile.lineYValues[i] = yPos;
 
-           if(j == 0){
-                graphics.moveTo(this._xScale(tileXScale(i)), valueScale(tileValues[i] + pseudocount));
-                j++;
+           if(i == 0){
+                graphics.moveTo(xPos, yPos);
+                continue;
             }
 
             if (tileXScale(i) > this.tilesetInfo.max_pos[0])
@@ -205,7 +212,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
                 break;
 
 
-            graphics.lineTo(this._xScale(tileXScale(i)), valueScale(tileValues[i+1] + pseudocount));
+            graphics.lineTo(xPos, yPos);
         }
     }
 
@@ -226,4 +233,24 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     }
 
+    exportSVG() {
+        let output = document.createElement('g')
+        output.setAttribute('transform',
+                            `translate(${this.position[0]},${this.position[1]})`);
+
+        let stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
+
+        for (let tile of this.visibleAndFetchedTiles()) {
+            let g = document.createElement('g');
+            g.setAttribute('fill', 'transparent');
+            g.setAttribute('stroke', stroke);
+            let d = `M${tile.lineXValues[0]} ${tile.lineYValues[0]}`;
+            for (let i = 0; i < tile.lineXValues.length; i++) {
+                d += `L${tile.lineXValues[i]} ${tile.lineYValues[i]}`;
+            }
+            g.setAttribute('d', d);
+            output.appendChild(g);
+        }
+        return output;
+    }
 }

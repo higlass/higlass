@@ -174,29 +174,27 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     }
 
     exportSVG() {
-        console.log('exporting...');
-        let svg = '<g>'
+        let output = document.createElement('g');
+        output.setAttribute('transform',
+                            `translate(${this.pMain.position.x},${this.pMain.position.y})
+                             scale(${this.pMain.scale.x},${this.pMain.scale.y}`)
         for (let tile of this.visibleAndFetchedTiles()) {
             //console.log('sprite:', tile.canvas.toDataURL());
             let rotation = tile.sprite.rotation * 180 / Math.PI;
+            let g = document.createElement('g');
+            g.setAttribute('transform', 
+                            `translate(${tile.sprite.x}, ${tile.sprite.y})
+                               rotate(${rotation})
+                               scale(${tile.sprite.scale.x},${tile.sprite.scale.y})`);
 
-            let xFactor = tile.sprite.width / 256;
-            let yFactor = tile.sprite.height / 256;
-            //console.log('xFactor:', xFactor);
-            //console.log('yFactor:', yFactor);
 
-            console.log('rotation:', rotation);
-            console.log('width:', tile.sprite.width, tile.sprite.height);
-            console.log('sprite.x:', tile.sprite.x, 'sprite.y', tile.sprite.y);
+            let image = document.createElement('image');
+            image.setAttribute('xlink:href', tile.canvas.toDataURL);
 
-            svg += `<g
-                    transform="translate(${tile.sprite.x}, ${tile.sprite.y})rotate(${rotation})scale(${tile.sprite.scale.x},${tile.sprite.scale.y})"
-                >`;
-            svg += '<image xlink:href="' + tile.canvas.toDataURL() + '"/>';
-            svg += "</g>";
+            g.appendChild(image);
+            output.appendChild(g);
         }
 
-        svg += '</g>';
-        return svg;
+        return output;
     }
 }

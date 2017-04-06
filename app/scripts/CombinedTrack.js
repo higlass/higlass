@@ -130,11 +130,11 @@ export class CombinedTrack {
     }
 
     exportSVG() {
-        let svg = '';
+        let svg = document.createElement('g');
 
         for (let childTrack of this.childTracks) {
             if (childTrack.exportSVG) {
-                svg += childTrack.exportSVG();
+                svg.appendChild(childTrack.exportSVG());
             }
         }
 
