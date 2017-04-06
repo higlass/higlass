@@ -173,11 +173,33 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         }
     }
 
+    /*
+    exportSVG() {
+        let svg = `<g transform="translate(${this.pMain.position.x},${this.pMain.position.y})
+                                 scale(${this.pMain.scale.x},${this.pMain.scale.y})">`
+        for (let tile of this.visibleAndFetchedTiles()) {
+            //console.log('sprite:', tile.canvas.toDataURL());
+            let rotation = tile.sprite.rotation * 180 / Math.PI;
+
+            svg += `<g
+                    transform="translate(${tile.sprite.x}, ${tile.sprite.y})
+                               rotate(${rotation})
+                               scale(${tile.sprite.scale.x},${tile.sprite.scale.y})"
+                >`;
+            svg += '<image xlink:href="' + tile.canvas.toDataURL() + '"/>';
+            svg += "</g>";
+        }
+
+        svg += '</g>';
+        return svg;
+    }
+    */
+
     exportSVG() {
         let output = document.createElement('g');
         output.setAttribute('transform',
                             `translate(${this.pMain.position.x},${this.pMain.position.y})
-                             scale(${this.pMain.scale.x},${this.pMain.scale.y}`)
+                             scale(${this.pMain.scale.x},${this.pMain.scale.y})`)
         for (let tile of this.visibleAndFetchedTiles()) {
             //console.log('sprite:', tile.canvas.toDataURL());
             let rotation = tile.sprite.rotation * 180 / Math.PI;
@@ -189,7 +211,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
 
             let image = document.createElement('image');
-            image.setAttribute('xlink:href', tile.canvas.toDataURL);
+            image.setAttribute('xlink:href', tile.canvas.toDataURL());
 
             g.appendChild(image);
             output.appendChild(g);

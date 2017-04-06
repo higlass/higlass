@@ -346,6 +346,8 @@ export class HiGlassComponent extends React.Component {
     //console.log('tiledPlots:', this.tiledPlots);
     let outputSVG = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n';
     let svg = document.createElement('svg');
+    svg.setAttribute('xmlns:xlink',"http://www.w3.org/1999/xlink"); 
+    svg.setAttribute('xmlns', "http://www.w3.org/2000/svg"); 
 
     for (let tiledPlot of dictValues(this.tiledPlots)) {
         for (let trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {

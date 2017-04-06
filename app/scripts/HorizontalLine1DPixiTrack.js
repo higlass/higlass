@@ -67,7 +67,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
                     // sometimes the ticks function will return 0 and then 2
                     // if it didn't return enough previously, we probably only want a single
                     // tick
-                    this.tickValues = [tickValues[0]];
+                    this.tickValues = [this.tickValues[0]];
                 }
             }
 
@@ -241,7 +241,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         let stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
 
         for (let tile of this.visibleAndFetchedTiles()) {
-            let g = document.createElement('g');
+            let g = document.createElement('path');
             g.setAttribute('fill', 'transparent');
             g.setAttribute('stroke', stroke);
             let d = `M${tile.lineXValues[0]} ${tile.lineYValues[0]}`;
