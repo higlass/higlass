@@ -524,4 +524,5 @@ export class TiledPixiTrack extends PixiTrack {
              max = 1;
          return max;
     }
+
 }

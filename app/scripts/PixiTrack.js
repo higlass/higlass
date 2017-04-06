@@ -266,4 +266,63 @@ export class PixiTrack extends Track {
                             this.dimensions[0], this.dimensions[1]);
         */
     }
+
+    exportSVG() {
+        let g = document.createElement('g');
+
+        let text = document.createElement('text');
+
+        text.setAttribute('font-family', this.labelTextFontFamily);
+        text.setAttribute('font-size', this.labelTextFontSize);
+
+        let lineParts = this.labelText.text.split("\n");
+        let ddy = 0;
+
+        // SVG text alignment is wonky, just adjust the dy values of the tspans
+        // instead
+        if (this.labelText.anchor.y == 0.5) {
+            ddy = -0.6 * lineParts.length;
+        } else if (this.labelText.anchor.y == 1) {
+            ddy = -1.2 * lineParts.length;
+        }
+
+        for (let i = 0; i < lineParts.length; i++) {
+            // break up newlines into separate tspan elements because SVG text
+            // doesn't support line breaks:
+            // http://stackoverflow.com/a/16701952/899470
+
+            let tspan = document.createElement('tspan');
+            tspan.innerText = lineParts[i];
+            
+            // fuck SVG
+            if (i == 0) 
+                tspan.setAttribute('dy', ddy + "em");
+            else
+                tspan.setAttribute('dy', (i * 1.2) + "em");
+
+            tspan.setAttribute('x', 0)
+
+                /*
+            */
+
+            text.appendChild(tspan);
+        }
+
+        //text.setAttribute('x', this.labelText.x);
+        //text.setAttribute('y', this.labelText.y);
+
+        if (this.labelText.anchor.x == 0.5) {
+            text.setAttribute('text-anchor', 'middle');
+        } else if (this.labelText.anchor.x == 1) {
+            text.setAttribute('text-anchor', 'end');
+        }
+
+
+        g.setAttribute('transform', `translate(${this.labelText.x},${this.labelText.y})scale(${this.labelText.scale.x},1)`);
+
+        //if (this.labelTe
+
+        g.appendChild(text);
+        return g;
+    }
 }

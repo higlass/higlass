@@ -196,7 +196,11 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     */
 
     exportSVG() {
+        let base = document.createElement('g');
         let output = document.createElement('g');
+        base.appendChild(output);
+
+
         output.setAttribute('transform',
                             `translate(${this.pMain.position.x},${this.pMain.position.y})
                              scale(${this.pMain.scale.x},${this.pMain.scale.y})`)
@@ -217,6 +221,13 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             output.appendChild(g);
         }
 
-        return output;
+        // if the parent tracks implement some SVG export functions, call them
+        if (super.exportSVG) {
+            let superG = super.exportSVG();
+            base.appendChild(superG);
+        }
+
+
+        return base;
     }
 }
