@@ -62,6 +62,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle) {
         exonStarts = exonStarts.split(',').map(x => +x + chrOffset)
         exonEnds = exonEnds.split(',').map(x => +x + chrOffset)
+        let rects = [];
 
         let xStartPos = this._xScale(txStart);
         let xEndPos = this._xScale(txEnd);
@@ -80,9 +81,14 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             let exonStart = exonStarts[j];
             let exonEnd = exonEnds[j];
 
+            rects.push([this._xScale(exonStart), yExonPos,
+                    this._xScale(exonEnd) - this._xScale(exonStart), exonHeight]);
+
             graphics.drawRect(this._xScale(exonStart), yExonPos,
                     this._xScale(exonEnd) - this._xScale(exonStart), exonHeight);
         }
+
+        return rects;
     }
 
     draw() {
@@ -96,6 +102,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
         let maxValue = 0;
         let allTexts = [];
+        this.allRects = [];
 
         /*
         for (let fetchedTileId in this.fetchedTiles) {
@@ -123,18 +130,18 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
         //for (let i = 0; i < visibleAndFetchedIds.length; i++) {
             //let fetchedTileId = visibleAndFetchedIds[i];
-            let ft = this.fetchedTiles[fetchedTileId];
-            let parentInFetched = this.parentInFetched(ft);
+            let tile = this.fetchedTiles[fetchedTileId];
+            let parentInFetched = this.parentInFetched(tile);
 
-            if (!ft.initialized)
+            if (!tile.initialized)
                 continue;
 
-            //console.log('drawTile:', ft.tileId, ft.tileData.length);
+            //console.log('drawTile:', tile.tileId, tile.tileData.length);
 
             if (!parentInFetched)
-                addedIds.push(ft.tileData.tileId);
+                addedIds.push(tile.tileData.tileId);
 
-            ft.tileData.forEach(td => {
+            tile.tileData.forEach(td => {
                 let geneInfo = td.fields;
                 // the returned positions are chromosome-based and they need to
                 // be converted to genome-based
@@ -177,21 +184,21 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 let xStartPos = this._xScale(txStart);
                 let xEndPos = this._xScale(txEnd);
 
-
                 if (xEndPos - xStartPos > 2)  {
-                    this.drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle);
+                    this.allRects = this.allRects.concat(this.drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle));
                 } else {
                     //graphics.drawRect(rectX, rectY, width, height);
                     //console.log('rectY', rectY);
+                    this.allRects.push(rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT);
                     graphics.drawRect(rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT);
                 }
 
-                if (!ft.texts) {
+                if (!tile.texts) {
                     // tile probably hasn't been initialized yet
                     return;
 
                 }
-                let text = ft.texts[geneName];
+                let text = tile.texts[geneName];
 
                 text.position.x = this._xScale(txMiddle);
                 text.position.y = textYMiddle;
@@ -221,9 +228,9 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     }
 
     hideOverlaps(allTexts) {
-        let allBoxes = [];   // store the bounding boxes of the text objects so we can
-                             // calculate overlaps
-        allBoxes = allTexts.map(val => {
+        // store the bounding boxes of the text objects so we can
+        // calculate overlaps
+        let allBoxes = allTexts.map(val => {
             let text = val.text;
             text.updateTransform();
             let b = text.getBounds();
@@ -257,5 +264,19 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         this.refreshTiles();
 
         this.draw();
+    }
+
+    exportSVG() {
+        let output = document.createElement('g');
+        let base = document.createElement('g');
+
+        base.appendChild(output);
+
+        if (super.exportSVG) {
+            let superG = super.exportSVG();
+            base.appendChild(superG);
+        }
+
+        return base;
     }
 }
