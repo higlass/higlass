@@ -101,7 +101,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         graphics.clear();
 
         let maxValue = 0;
-        let allTexts = [];
+        this.allTexts = [];
         this.allRects = [];
 
         /*
@@ -185,11 +185,14 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 let xEndPos = this._xScale(txEnd);
 
                 if (xEndPos - xStartPos > 2)  {
-                    this.allRects = this.allRects.concat(this.drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle));
+                    this.allRects = this.allRects.concat(
+                            this.drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
+                            .map(x => x.concat([geneInfo[5]]))
+                            );
                 } else {
                     //graphics.drawRect(rectX, rectY, width, height);
                     //console.log('rectY', rectY);
-                    this.allRects.push(rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT);
+                    this.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
                     graphics.drawRect(rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT);
                 }
 
@@ -208,23 +211,23 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
 
                 if (!parentInFetched) {
-                    text.alpha = 1;
+                    text.visible = true;
 
-                    allTexts.push({importance: +geneInfo[4], text: text, caption: geneName});
+                    this.allTexts.push({importance: +geneInfo[4], text: text, caption: geneName, strand: geneInfo[5]});
                 } else {
-                    text.alpha = 0;
+                    text.visible = false;
                 }
             });
         }
 
         ///console.log('addedIds', addedIds);
-        if (allTexts.length > 0) {
+        if (this.allTexts.length > 0) {
             //console.log('addedIds:', addedIds);
             //console.log('captions:', allTexts.map(x => x.caption));
         }
 
         //console.trace('draw', allTexts.length);
-        this.hideOverlaps(allTexts);
+        this.hideOverlaps(this.allTexts);
     }
 
     hideOverlaps(allTexts) {
@@ -242,10 +245,10 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         let result = boxIntersect(allBoxes, function(i, j) {
             if (allTexts[i].importance > allTexts[j].importance) {
                 //console.log('hiding:', allTexts[j].caption)
-                allTexts[j].text.alpha = 0;
+                allTexts[j].text.visible = false;
             } else {
                 //console.log('hiding:', allTexts[i].caption)
-                allTexts[i].text.alpha = 0;
+                allTexts[i].text.visible = false;
             }
         });
     }
@@ -270,11 +273,58 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         let output = document.createElement('g');
         let base = document.createElement('g');
 
+        output.setAttribute('transform',
+                            `translate(${this.position[0]},${this.position[1]})`);
+
         base.appendChild(output);
 
         if (super.exportSVG) {
             let superG = super.exportSVG();
             base.appendChild(superG);
+        }
+
+        for (let rect of this.allRects) {
+            console.log('rect:', rect);
+            let r = document.createElement('rect');
+            r.setAttribute('x', rect[0]);
+            r.setAttribute('y', rect[1]);
+            r.setAttribute('width', rect[2]);
+            r.setAttribute('height', rect[3]);
+
+            if (rect[4] == '+') {
+                r.setAttribute('fill', this.options.plusStrandColor);
+            } else {
+                r.setAttribute('fill', this.options.minusStrandColor);
+            }
+
+            output.appendChild(r);
+        }
+
+        for (let text of this.allTexts) {
+            if (!text.text.visible)
+                continue;
+
+            let g = document.createElement('g');
+            let t = document.createElement('text');
+            t.setAttribute('text-anchor', 'middle');
+            t.setAttribute('font-family', this.textFontFamily);
+            t.setAttribute('font-size', this.textFontSize);
+            g.setAttribute('transform', `scale(${text.text.scale.x},1)`);
+            
+
+            if (text.strand == '+') {
+                //t.setAttribute('stroke', this.options.plusStrandColor);
+                t.setAttribute('fill', this.options.plusStrandColor);
+            } else {
+                //t.setAttribute('stroke', this.options.minusStrandColor);
+                t.setAttribute('fill', this.options.minusStrandColor);
+            }
+
+            t.innerHTML = text.text.text;
+
+            g.appendChild(t);
+            g.setAttribute('transform', `translate(${text.text.x},${text.text.y})scale(${text.text.scale.x},1)`);
+            output.appendChild(g);
         }
 
         return base;
