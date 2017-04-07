@@ -4,6 +4,13 @@ import {tileProxy} from './TileProxy.js';
 import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
 import {colorToHex} from './utils.js';
 
+const TICK_HEIGHT = 40;
+const TICK_MARGIN = 0;
+const TICK_LENGTH = 5;
+const TICK_LABEL_MARGIN = 4;
+const MARGIN_TOP = 3;
+const MARGIN_BOTTOM = 3;
+
 export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
 
@@ -14,6 +21,8 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         this.pMain.addChild(this.pAxis);
 
         this.axisTexts = [];
+        this.axisTextFontFamily = "Arial";
+        this.axisTextFontSize = 10;
     }
 
     initTile(tile) {
@@ -31,12 +40,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     }
 
     drawAxis(valueScale) {
-        let TICK_HEIGHT = 40;
-        let TICK_MARGIN = 0;
-        let TICK_LENGTH = 5;
-        let TICK_LABEL_MARGIN = 4;
-        let MARGIN_TOP = 3;
-        let MARGIN_BOTTOM = 3;
 
         let tickCount = Math.max(this.dimensions[1] / TICK_HEIGHT, 1);
 
@@ -76,7 +79,10 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
                 let tick = this.tickValues[i];
 
                 while (this.axisTexts.length <= i) {
-                    let newText = new PIXI.Text(tick, {fontSize:"10px", fontFamily:"Arial", fill: "black"});
+                    let newText = new PIXI.Text(tick, 
+                            {fontSize: this.axisTextFontSize + "px", 
+                             fontFamily: this.axisTextFontFamily, 
+                             fill: "black"});
                     this.axisTexts.push(newText);
 
                     this.pAxis.addChild(newText);
@@ -232,6 +238,71 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         this.draw();
 
     }
+    exportAxisSVG() {
+        let gAxis = document.createElement('g');
+
+        if (this.options.axisPositionHorizontal == 'left' ||
+            this.options.axisPositionHorizontal == 'right' ||
+            this.options.axisPositionVertical == 'top' ||
+            this.options.axisPositionVertical == 'bottom') {
+
+            let axisLine = document.createElement('path');
+            gAxis.appendChild(axisLine);
+            axisLine.setAttribute('stroke', 'black');
+
+            let topTick = document.createElement('path');
+            gAxis.appendChild(topTick);
+            topTick.setAttribute('stroke', 'black');
+
+            for (let text of this.axisTexts) {
+                let g = document.createElement('g');
+                let t = document.createElement('text');
+
+                g.appendChild(t);
+                t.innerHTML = text.text;
+                t.setAttribute('text-anchor', 'middle');
+                t.setAttribute('font-family', this.axisTextFontFamily);
+                t.setAttribute('font-size', this.axisTextFontSize);
+                t.setAttribute('dy', this.axisTextFontSize / 2 - 2);
+
+                g.setAttribute('transform',
+                `translate(${text.position.x},${text.position.y})
+                 scale(${text.scale.x},${text.scale.y})`)
+
+
+                let tick = document.createElement('path')
+                tick.setAttribute('stroke', 'black');
+
+                if (this.options.axisPositionHorizontal == 'right' ||
+                    this.options.axisPositionVertical == 'bottom') {
+                    // draw the vertical axis line
+                    axisLine.setAttribute('d',
+                            `M${this.dimensions[0]},0 L${this.dimensions[0]},${this.dimensions[1]}`)
+                    topTick.setAttribute('d',
+                            `M${this.dimensions[0] - TICK_MARGIN},0 L${this.dimensions[0] - TICK_MARGIN - TICK_LENGTH},0`)
+
+                    // draw the ticks
+                    tick.setAttribute('d', 
+                            `M${this.dimensions[0] - TICK_MARGIN - TICK_LENGTH},${text.position.y} 
+                             L${this.dimensions[0] - TICK_MARGIN},${text.position.y}`);
+                } else {
+                    // the vertical axis line will be on the left
+                    axisLine.setAttribute('d',
+                            `M0,0 L0,${this.dimensions[1]}`)
+                    topTick.setAttribute('d',
+                            `M${TICK_MARGIN},0 L${TICK_MARGIN + TICK_LENGTH},0`)
+
+                    tick.setAttribute('d', 
+                            `M${TICK_MARGIN},${text.position.y} L${TICK_MARGIN + TICK_LENGTH},${text.position.y}`);
+                }
+
+                gAxis.append(tick);
+                gAxis.appendChild(g);
+            }
+        }
+
+        return gAxis;
+    }
 
     exportSVG() {
         let base = document.createElement('g');
@@ -254,6 +325,10 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             g.setAttribute('d', d);
             output.appendChild(g);
         }
+
+        // add the axis to the export
+        let gAxis = this.exportAxisSVG();
+        output.appendChild(gAxis);
 
         if (super.exportSVG) {
             let superG = super.exportSVG();

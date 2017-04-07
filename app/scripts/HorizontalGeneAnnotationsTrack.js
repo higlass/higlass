@@ -116,7 +116,6 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         }
         */
 
-        //console.log('maxValue:', maxValue);
         /*
         let valueScale = scaleLinear()
             .domain([0, Math.log(maxValue+1)])
@@ -124,7 +123,6 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         */
         let addedIds = [];
 
-        //console.log('this.fetchedTiles:', this.fetchedTiles);
         for (let fetchedTileId in this.fetchedTiles) {
         //let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
@@ -135,8 +133,6 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
             if (!tile.initialized)
                 continue;
-
-            //console.log('drawTile:', tile.tileId, tile.tileData.length);
 
             if (!parentInFetched)
                 addedIds.push(tile.tileData.tileId);
@@ -284,7 +280,6 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         }
 
         for (let rect of this.allRects) {
-            console.log('rect:', rect);
             let r = document.createElement('rect');
             r.setAttribute('x', rect[0]);
             r.setAttribute('y', rect[1]);
