@@ -301,6 +301,7 @@ export class PixiTrack extends Track {
 
             text.innerText = lineParts[i];
             text.setAttribute('dy', ddy + (i * (this.labelTextFontSize + 2)));
+            text.setAttribute('fill', this.options.labelColor);
             
             /*
             // fuck SVG
