@@ -140,7 +140,7 @@ export class TrackRenderer extends React.Component {
 
         // stretch out the y-scale so that views aren't distorted (i.e. maintain
         // a 1 to 1 ratio)
-        initialYDomain[0] = yCenter - xWidth / 2, 
+        initialYDomain[0] = yCenter - xWidth / 2,
         initialYDomain[1] = yCenter + xWidth / 2;
 
         if (initialXDomain == this.initialXDomain &&
@@ -199,7 +199,7 @@ export class TrackRenderer extends React.Component {
         if (!nextProps.svgElement || !nextProps.canvasElement)
             return;
 
-        let nextPropsStr = this.updatablePropsToString(nextProps); 
+        let nextPropsStr = this.updatablePropsToString(nextProps);
         this.currentProps = nextProps;
 
         if (this.prevPropsStr === nextPropsStr)
@@ -428,7 +428,7 @@ export class TrackRenderer extends React.Component {
             let newPosition = [this.xPositionOffset + trackDef.left, this.yPositionOffset + trackDef.top];
             let newDimensions = [trackDef.width, trackDef.height];
 
-            // check if any of the track's positions have changed 
+            // check if any of the track's positions have changed
             // before trying to update them
 
             if (!prevPosition || newPosition[0] != prevPosition[0] || newPosition[1] != prevPosition[1]) {
