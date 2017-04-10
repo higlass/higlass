@@ -510,27 +510,40 @@ export class TrackRenderer extends React.Component {
         let zoomedYScale = this.zoomTransform.rescaleY(this.yScale);
 
         let newXScale = scaleLinear()
-            .domain([this.currentProps.marginLeft + this.currentProps.leftWidth,
-                    this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth].map(zoomedXScale.invert))
+            .domain(
+                [
+                    this.currentProps.marginLeft + this.currentProps.leftWidth,
+                    this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth
+                ].map(zoomedXScale.invert)
+            )
             .range([0, this.currentProps.centerWidth]);
 
         let newYScale = scaleLinear()
-            .domain([this.currentProps.marginTop + this.currentProps.topHeight,
-                    this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight].map(zoomedYScale.invert))
+            .domain(
+                [
+                    this.currentProps.marginTop + this.currentProps.topHeight,
+                    this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight
+                ].map(zoomedYScale.invert)
+            )
             .range([0, this.currentProps.centerHeight]);
 
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
 
-            track.zoomed(newXScale.copy(), newYScale.copy(), this.zoomTransform.k,
-                        this.zoomTransform.x + this.xPositionOffset,
-                        this.zoomTransform.y + this.yPositionOffset,
-                        this.currentProps.marginLeft + this.currentProps.leftWidth,
-                        this.currentProps.marginTop + this.currentProps.topHeight);
+            track.zoomed(
+                newXScale.copy(),
+                newYScale.copy(),
+                this.zoomTransform.k,
+                this.zoomTransform.x + this.xPositionOffset,
+                this.zoomTransform.y + this.yPositionOffset,
+                this.currentProps.marginLeft + this.currentProps.leftWidth,
+                this.currentProps.marginTop + this.currentProps.topHeight
+            );
         }
 
-        if (notify)
+        if (notify) {
             this.currentProps.onScalesChanged(newXScale, newYScale);
+        }
 
         return [newXScale, newYScale];
     }
