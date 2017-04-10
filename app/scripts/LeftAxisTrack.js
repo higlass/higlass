@@ -7,8 +7,6 @@ export class LeftAxisTrack extends SVGTrack {
 
         this.axis = axisLeft(this._yScale);
         this.gAxis = this.gMain.append('g');
-
-        this.axis.ticks(6);
     }
 
     setDimensions(newDimensions) {
@@ -25,5 +23,11 @@ export class LeftAxisTrack extends SVGTrack {
         this.gAxis.call(this.axis);
 
         return this;
+    }
+
+    zoomed(newXScale, newYScale) {
+        super.zoomed(newXScale, newYScale);
+
+        this.draw();
     }
 }

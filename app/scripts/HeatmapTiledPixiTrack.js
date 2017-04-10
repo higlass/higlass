@@ -1,6 +1,7 @@
 import {Tiled2DPixiTrack} from './Tiled2DPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 import {heatedObjectMap} from './colormaps.js';
+import slugid from 'slugid';
 import {colorDomainToRgbaArray} from './utils.js';
 
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
@@ -198,12 +199,33 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     exportSVG() {
         let base = document.createElement('g');
         let output = document.createElement('g');
-        base.appendChild(output);
+        let clipped = document.createElement('g');
+
+        base.appendChild(clipped);
+        clipped.appendChild(output);
+
+        // define the clipping area as a polygon defined by the track's
+        // dimensions on the canvas
+        let clipPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+        clipPolygon.setAttribute('points', `${this.position[0]},${this.position[1]} ` +
+                `${this.position[0] + this.dimensions[0]},${this.position[1]} ` +
+                `${this.position[0] + this.dimensions[0]},${this.position[1] + this.dimensions[1]} ` +
+                `${this.position[0]},${this.position[1] + this.dimensions[1]} `);
 
 
+        // the clipping area needs to be a clipPath element
+        let clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+        clipPath.appendChild(clipPolygon);
+        let clipPathId = slugid.nice();
+        clipPath.setAttribute('id', clipPathId);
+        base.appendChild(clipPath);
+
+
+        clipped.setAttribute('style', `clip-path:url(#${clipPathId});`);
         output.setAttribute('transform',
                             `translate(${this.pMain.position.x},${this.pMain.position.y})
                              scale(${this.pMain.scale.x},${this.pMain.scale.y})`)
+
         for (let tile of this.visibleAndFetchedTiles()) {
             //console.log('sprite:', tile.canvas.toDataURL());
             let rotation = tile.sprite.rotation * 180 / Math.PI;
@@ -215,7 +237,9 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
 
             let image = document.createElement('image');
-            image.setAttribute('xlink:href', tile.canvas.toDataURL());
+            image.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', tile.canvas.toDataURL());
+            image.setAttribute('width', 256);
+            image.setAttribute('height', 256);
 
             g.appendChild(image);
             output.appendChild(g);
