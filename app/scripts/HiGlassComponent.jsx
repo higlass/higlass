@@ -108,10 +108,6 @@ export class HiGlassComponent extends React.Component {
             exportLinkModalOpen: false,
             exportLinkLocation: null
           }
-
-          setTimeout(() => {
-              this.exportSVG();
-          }, 2000);
     }
 
     componentDidMount() {
@@ -341,7 +337,7 @@ export class HiGlassComponent extends React.Component {
         }
   }
 
-  exportSVG() {
+  handleExportSVG() {
     let outputSVG = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n';
     let svg = document.createElement('svg');
     svg.setAttribute('xmlns:xlink',"http://www.w3.org/1999/xlink"); 
@@ -1927,6 +1923,7 @@ export class HiGlassComponent extends React.Component {
                             }
 
                             onProjectViewport={this.handleProjectViewport.bind(this)}
+                            onExportSVG={this.handleExportSVG.bind(this)}
                             onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
                             onExportViewsAsLink={this.handleExportViewsAsLink.bind(this)}
                             onTrackPositionChosen={position => this.handleTrackPositionChosen(view.uid, position)}

@@ -168,6 +168,10 @@ export class ViewHeader extends React.Component {
                                 this.setState({configMenuUid: null}); //hide the menu
                                 this.props.onTogglePositionSearchBox(this.state.configMenuUid)
                             }}
+                            onExportSVG={e => {
+                                this.setState({configMenuUid: null});
+                                this.props.onExportSVG();
+                            }}
                             onExportViewAsJSON={e => {
                                 this.setState({configMenuUid: null}); //hide the menu
                                 this.props.onExportViewsAsJSON()
