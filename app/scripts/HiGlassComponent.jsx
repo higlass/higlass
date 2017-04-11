@@ -1374,12 +1374,20 @@ export class HiGlassComponent extends React.Component {
   }
 
   handleExportViewAsJSON() {
-    let data = this.getViewsAsString();
+    const data = this.getViewsAsString();
+    const a = document.createElement("a");
+    const file = new Blob([data], {type: 'text/json'});
+    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+      /[xy]/g,
+      (c) => {
+        const r = Math.random()*16|0;
+        const v = c == 'x' ? r : r&0x3|0x8;
+        return v.toString(16);
+      }
+    );
 
-    var a = document.createElement("a");
-    var file = new Blob([data], {type: 'text/json'});
     a.href = URL.createObjectURL(file);
-    a.download = name;
+    a.download = `higlass-config.${uuid}.json`;  // Filename
     document.body.appendChild(a); // Necessary for downloads on Firefox.
     a.click();
     document.body.removeChild(a);

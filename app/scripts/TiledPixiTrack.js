@@ -443,8 +443,8 @@ export class TiledPixiTrack extends PixiTrack {
             if (this.tilesetInfoLoading) {
                 this.trackNotFoundText.text = 'Loading...';
             } else {
-                this.trackNotFoundText.text = "Tileset info not found. Server: [" + 
-                    this.server + 
+                this.trackNotFoundText.text = "Tileset info not found. Server: [" +
+                    this.server +
                     "] tilesetUid: [" + this.tilesetUid + "]";
             }
 
