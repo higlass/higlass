@@ -5,6 +5,7 @@ import {zoom, zoomIdentity} from 'd3-zoom';
 import {select,event} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
 
+// Fritz: This import is broken
 import d3 from 'd3';
 
 import {UnknownPixiTrack} from './UnknownPixiTrack.js';
@@ -458,7 +459,7 @@ export class TrackRenderer extends React.Component {
         }
     }
 
-    setCenter(centerX, centerY, sourceK, notify=true) {
+    setCenter(centerX, centerY, sourceK, notify, animate=false) {
         /*
          * Set the center of this view to a paticular X and Y coordinate
          *
@@ -482,11 +483,32 @@ export class TrackRenderer extends React.Component {
         let translateY = middleViewY - this.yScale(centerY) * k;
 
         // the ref scale spans the width of the viewport
-        let newTransform = zoomIdentity.translate(translateX, translateY).scale(k);
 
-        this.zoomTransform = newTransform;
-        this.emptyZoomBehavior.transform(this.divTrackAreaSelection, newTransform);
-        return this.applyZoomTransform(notify);
+        let last;
+
+        const setZoom = () => {
+            let newTransform = zoomIdentity.translate(translateX, translateY).scale(k);
+
+            this.zoomTransform = newTransform;
+            this.emptyZoomBehavior.transform(this.divTrackAreaSelection, newTransform);
+
+            last = this.applyZoomTransform(notify);
+        }
+
+        if (animate) {
+            select(this.currentProps.canvasElement)
+                .transition()
+                .duration(5000)
+                .call(
+                    this.zoomBehavior.transform,
+                    zoomIdentity.translate(translateX, translateY).scale(k)
+                )
+                .on('end', setZoom);
+        } else {
+            setZoom();
+        }
+
+        return last;
     }
 
     zoomed() {
