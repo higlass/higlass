@@ -29,6 +29,7 @@ import {Chromosome2DGrid} from './Chromosome2DGrid.js';
 import {Chromosome2DAnnotations} from './Chromosome2DAnnotations.js';
 import {HorizontalChromosomeLabels} from './HorizontalChromosomeLabels.js';
 import {HorizontalHeatmapTrack} from './HorizontalHeatmapTrack.js';
+import {ZOOM_TRANSITION_DURATION} from './config.js'
 
 export class TrackRenderer extends React.Component {
     /**
@@ -459,7 +460,7 @@ export class TrackRenderer extends React.Component {
         }
     }
 
-    setCenter(centerX, centerY, sourceK, notify, animate=false) {
+    setCenter(centerX, centerY, sourceK, notify, animate=false, animateTime=ZOOM_TRANSITION_DURATION) {
         /*
          * Set the center of this view to a paticular X and Y coordinate
          *
@@ -496,9 +497,9 @@ export class TrackRenderer extends React.Component {
         }
 
         if (animate) {
-            select(this.currentProps.canvasElement)
+            this.divTrackAreaSelection
                 .transition()
-                .duration(5000)
+                .duration(animateTime)
                 .call(
                     this.zoomBehavior.transform,
                     zoomIdentity.translate(translateX, translateY).scale(k)
