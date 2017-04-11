@@ -1,6 +1,7 @@
 import {Track} from './Track.js';
 import {format, formatPrefix, precisionRound, precisionPrefix} from 'd3-format';
 import {colorToHex} from './utils.js';
+import slugid from 'slugid';
 //import {LRUCache} from './lru.js';
 
 export class PixiTrack extends Track {
@@ -240,7 +241,6 @@ export class PixiTrack extends Track {
     }
 
     rerender(options) {
-        //console.log('rerendering...', options)
         this.options = options;
         this.draw();
     }
@@ -268,10 +268,36 @@ export class PixiTrack extends Track {
     }
 
     exportSVG() {
-        let g = document.createElement('g');
+        let gBase = document.createElement('g');
+        let gClipped = document.createElement('g');
+        let gTrack = document.createElement('g');
+        let gLabels = document.createElement('g');
+
+        // define the clipping area as a polygon defined by the track's
+        // dimensions on the canvas
+        let clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+        let clipPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
 
 
-        console.log('labelText:', this.labelText.text, this.labelText.anchor.y);
+        gBase.appendChild(clipPath);
+        gBase.appendChild(gClipped);
+
+        clipPath.appendChild(clipPolygon);
+
+        gClipped.appendChild(gTrack);
+        gClipped.appendChild(gLabels);   // labels should always appear on top of the track
+
+
+        clipPolygon.setAttribute('points', `${this.position[0]},${this.position[1]} ` +
+                `${this.position[0] + this.dimensions[0]},${this.position[1]} ` +
+                `${this.position[0] + this.dimensions[0]},${this.position[1] + this.dimensions[1]} ` +
+                `${this.position[0]},${this.position[1] + this.dimensions[1]} `);
+
+        // the clipping area needs to be a clipPath element
+        let clipPathId = slugid.nice();
+        clipPath.setAttribute('id', clipPathId);
+
+        gClipped.setAttribute('style', `clip-path:url(#${clipPathId});`);
 
         let lineParts = this.labelText.text.split("\n");
         let ddy = 0;
@@ -319,7 +345,7 @@ export class PixiTrack extends Track {
             }
 
             //text.appendChild(tspan);
-            g.appendChild(text);
+            gLabels.appendChild(text);
         }
 
         //text.setAttribute('x', this.labelText.x);
@@ -327,10 +353,11 @@ export class PixiTrack extends Track {
 
 
 
-        g.setAttribute('transform', `translate(${this.labelText.x},${this.labelText.y})scale(${this.labelText.scale.x},1)`);
+        gLabels.setAttribute('transform', `translate(${this.labelText.x},${this.labelText.y})scale(${this.labelText.scale.x},1)`);
+        gBase.appendChild(gLabels);
 
-        //if (this.labelTe
-
-        return g;
+        // return the whole SVG and where the specific track should draw its
+        // contents
+        return [gBase, gTrack];
     }
 }

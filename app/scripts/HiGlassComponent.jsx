@@ -342,8 +342,6 @@ export class HiGlassComponent extends React.Component {
   }
 
   exportSVG() {
-    //console.log('exporting SVG', this.pixiStage);
-    //console.log('tiledPlots:', this.tiledPlots);
     let outputSVG = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n';
     let svg = document.createElement('svg');
     svg.setAttribute('xmlns:xlink',"http://www.w3.org/1999/xlink"); 
@@ -351,17 +349,16 @@ export class HiGlassComponent extends React.Component {
 
     for (let tiledPlot of dictValues(this.tiledPlots)) {
         for (let trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
-            //console.log('trackDefObject:', trackDefObject);
 
             if (trackDefObject.trackObject.exportSVG) {
-                svg.appendChild(trackDefObject.trackObject.exportSVG());
+                let trackSVG = trackDefObject.trackObject.exportSVG()[0];
+
+                svg.appendChild(trackSVG);
             }
         }
-        //console.log('tiledPlot', tiledPlot.trackRenderer.trackDefObjects);
     }
     let x = new XMLSerializer();
 
-    //console.log('outputSVG:', outputSVG);
     download('export.svg', x.serializeToString(svg));
   }
 

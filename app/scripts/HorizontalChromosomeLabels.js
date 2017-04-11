@@ -269,10 +269,16 @@ export class HorizontalChromosomeLabels extends PixiTrack {
     }
 
     exportSVG() {
-       let base = document.createElement('g');
-       let output = document.createElement('g');
+        let track=null,base=null;
 
-        base.appendChild(output);
+        if (super.exportSVG) {
+            [base, track] = super.exportSVG();
+        } else {
+            base = document.createElement('g');
+            track = base;
+        }
+        let output = document.createElement('g');
+
         output.setAttribute('transform',
                             `translate(${this.position[0]},${this.position[1]})`);
 
@@ -295,6 +301,6 @@ export class HorizontalChromosomeLabels extends PixiTrack {
             output.appendChild(g);
         }
 
-        return base;
+        return [base, track];
     }
 }

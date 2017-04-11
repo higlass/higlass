@@ -132,7 +132,6 @@ export class LeftTrackModifier {
     }
 
     exportSVG() {
-        console.log('ltm SVG');
         let output = document.createElement('g');
         output.setAttribute('transform',
                             `translate(${this.moveToOrigin.position.x},${this.moveToOrigin.position.y})
@@ -144,10 +143,10 @@ export class LeftTrackModifier {
             g.setAttribute('transform',
                     `translate(${this.originalTrack.pBase.position.x}, ${this.originalTrack.pBase.position.y})`);
 
-            g.appendChild(this.originalTrack.exportSVG());
+            g.appendChild(this.originalTrack.exportSVG()[0]);
             output.appendChild(g);
         }
 
-        return output;
+        return [output, output];
     }
 }

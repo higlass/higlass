@@ -197,31 +197,18 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     */
 
     exportSVG() {
-        let base = document.createElement('g');
+        let track=null, base=null;
+
+        if (super.exportSVG) {
+            [base, track] = super.exportSVG();
+        } else {
+            base = document.createElement('g');
+            track = base;
+        }
+
         let output = document.createElement('g');
-        let clipped = document.createElement('g');
+        track.appendChild(output);
 
-        base.appendChild(clipped);
-        clipped.appendChild(output);
-
-        // define the clipping area as a polygon defined by the track's
-        // dimensions on the canvas
-        let clipPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-        clipPolygon.setAttribute('points', `${this.position[0]},${this.position[1]} ` +
-                `${this.position[0] + this.dimensions[0]},${this.position[1]} ` +
-                `${this.position[0] + this.dimensions[0]},${this.position[1] + this.dimensions[1]} ` +
-                `${this.position[0]},${this.position[1] + this.dimensions[1]} `);
-
-
-        // the clipping area needs to be a clipPath element
-        let clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
-        clipPath.appendChild(clipPolygon);
-        let clipPathId = slugid.nice();
-        clipPath.setAttribute('id', clipPathId);
-        base.appendChild(clipPath);
-
-
-        clipped.setAttribute('style', `clip-path:url(#${clipPathId});`);
         output.setAttribute('transform',
                             `translate(${this.pMain.position.x},${this.pMain.position.y})
                              scale(${this.pMain.scale.x},${this.pMain.scale.y})`)
@@ -245,12 +232,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             output.appendChild(g);
         }
 
-        // if the parent tracks implement some SVG export functions, call them
-        if (super.exportSVG) {
-            let superG = super.exportSVG();
-            base.appendChild(superG);
-        }
-
-        return base;
+        return [base, base];
     }
 }

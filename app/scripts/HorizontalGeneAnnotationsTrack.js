@@ -266,18 +266,19 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     }
 
     exportSVG() {
-        let output = document.createElement('g');
-        let base = document.createElement('g');
+        let track=null,base=null;
 
+        if (super.exportSVG) {
+            [base, track] = super.exportSVG();
+        } else {
+            base = document.createElement('g');
+            track = base;
+        }
+        let output = document.createElement('g');
         output.setAttribute('transform',
                             `translate(${this.position[0]},${this.position[1]})`);
 
-        base.appendChild(output);
-
-        if (super.exportSVG) {
-            let superG = super.exportSVG();
-            base.appendChild(superG);
-        }
+        track.appendChild(output);
 
         for (let rect of this.allRects) {
             let r = document.createElement('rect');
@@ -322,6 +323,6 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             output.appendChild(g);
         }
 
-        return base;
+        return [base, base];
     }
 }
