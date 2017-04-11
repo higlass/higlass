@@ -182,6 +182,7 @@ export class SearchField {
 
     searchPosition(text) {
         var range1 = null, range2 = null;
+        console.log('searchPosition:', text);
 
         //extract offset
         let offsetRe = /\[offset\ (.+?)\]/.exec(text);

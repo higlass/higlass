@@ -1963,7 +1963,7 @@ export class HiGlassComponent extends React.Component {
         ref={(c) => this.topDiv = c}
         style={{position: "relative"}}
       >
-
+        //
         <canvas
             key={this.uid}
             ref={(c) => {

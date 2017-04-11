@@ -22,7 +22,7 @@ module.exports = {
       { 
         test: /\.jsx?$/,
         //exclude: /node_modules/,
-        include: [path.resolve(__dirname, 'app/scripts')],
+        include: [path.resolve(__dirname, 'app/scripts'), path.resolve(__dirname, 'test')],
         loader: 'babel-loader',
         query: {
           presets: ['es2015', 'react']
@@ -32,20 +32,26 @@ module.exports = {
         loader: 'style!css'
       }
     ],
+    preLoaders: [
+        { test: /\.json$/, loader: 'json'},
+    ],
     postLoaders: [
         {
             include: path.resolve(__dirname, 'node_modules/pixi.js'),
             loader: 'transform?brfs'
         }
     ],
+    noParse: [
+        /node_modules\/sinon\//,
+    ],
     externals: {
-        /*
-        'react': 'React',
-        'react-dom': 'ReactDOM'
-        */
+        'react/addons': true
     },
     resolve: {
-      extensions: ['.js', '.jsx']
+        extensions: ['.js', '.jsx'],
+        alias: {
+            'sinon': 'sinon/pkg/sinon'
+        }
     }
   },
   plugins: [
@@ -53,7 +59,10 @@ module.exports = {
           'process.env': {
             'NODE_ENV': JSON.stringify('production')
           }
-    })
+    }),
+    new webpack.IgnorePlugin(/react\/addons/),
+    new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
+    new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/)
   ]
 };
 
