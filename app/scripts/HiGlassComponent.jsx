@@ -1862,7 +1862,7 @@ export class HiGlassComponent extends React.Component {
                         autocompleteSource={view.autocompleteSource}
                         registerViewportChangedListener = {listener => this.addScalesChangedListener(view.uid, view.uid, listener)}
                         removeViewportChangedListener = {() => this.removeScalesChangedListener(view.uid, view.uid)}
-                        setCenters = {(centerX, centerY, k, animate) => this.setCenters[view.uid](centerX, centerY, k, false, animate)}
+                        setCenters = {(centerX, centerY, k, animate, animateTime) => this.setCenters[view.uid](centerX, centerY, k, false, animate, animateTime)}
                         chromInfoPath={view.chromInfoPath}
                         twoD={true}
                      />) : null;
@@ -2027,14 +2027,32 @@ export class HiGlassComponent extends React.Component {
     const self = this;
 
     const _api = {
-      goTo (viewUid, chrom1, start1, end1, chrom2, start2, end2, animate=false) {
+      goTo (
+        viewUid,
+        chrom1,
+        start1,
+        end1,
+        chrom2,
+        start2,
+        end2,
+        animate=false,
+        animateTime=3000
+      ) {
         // Set chromInfo if not available
         if (!self.chromInfo) {
           self.setChromInfo(
             self.state.views[viewUid].chromInfoPath,
             () => {
               self.api().goTo(
-                viewUid, chrom1, start1, end1, chrom2, start2, end2, animate
+                viewUid,
+                chrom1,
+                start1,
+                end1,
+                chrom2,
+                start2,
+                end2,
+                animate,
+                animateTime
               );
             }
           );
@@ -2055,7 +2073,7 @@ export class HiGlassComponent extends React.Component {
         );
 
         self.setCenters[viewUid](
-          centerX, centerY, k, false, animate
+          centerX, centerY, k, false, animate, animateTime
         );
       },
 
