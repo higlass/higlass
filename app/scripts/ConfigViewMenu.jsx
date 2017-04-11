@@ -114,6 +114,12 @@ export class ConfigViewMenu extends React.Component {
                     <hr />
 
                     <ContextMenuItem
+                        onClick={e => this.props.onExportSVG()}
+                    >
+                    {'Export views as SVG'}
+                    </ContextMenuItem>
+
+                    <ContextMenuItem
                         onClick={e => this.props.onExportViewAsJSON()}
                     >
                     {'Export views as JSON'}

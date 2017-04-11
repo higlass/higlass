@@ -1,6 +1,7 @@
 import {Track} from './Track.js';
 import {format, formatPrefix, precisionRound, precisionPrefix} from 'd3-format';
 import {colorToHex} from './utils.js';
+import slugid from 'slugid';
 //import {LRUCache} from './lru.js';
 
 export class PixiTrack extends Track {
@@ -50,9 +51,9 @@ export class PixiTrack extends Track {
         let labelTextText = this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
 
-        this.labelTextFontSize = '12px';
+        this.labelTextFontSize = 12;
         this.labelTextFontFamily = 'Arial';
-        this.labelText = new PIXI.Text(labelTextText, {fontSize: this.labelTextFontSize, 
+        this.labelText = new PIXI.Text(labelTextText, {fontSize: this.labelTextFontSize + 'px', 
                                                        fontFamily: this.labelTextFontFamily, 
                                                        fill: "black"});
 
@@ -134,7 +135,7 @@ export class PixiTrack extends Track {
         }
 
         this.labelText.text = labelTextText;
-        this.labelText.style = {fontSize: this.labelTextFontSize,
+        this.labelText.style = {fontSize: this.labelTextFontSize + 'px',
                               fontFamily: this.labelTextFontFamily,
                               fill: stroke};
 
@@ -240,7 +241,6 @@ export class PixiTrack extends Track {
     }
 
     rerender(options) {
-        //console.log('rerendering...', options)
         this.options = options;
         this.draw();
     }
@@ -265,5 +265,99 @@ export class PixiTrack extends Track {
         this.pMain.drawRect(this.position[0], this.position[1], 
                             this.dimensions[0], this.dimensions[1]);
         */
+    }
+
+    exportSVG() {
+        let gBase = document.createElement('g');
+        let gClipped = document.createElement('g');
+        let gTrack = document.createElement('g');
+        let gLabels = document.createElement('g');
+
+        // define the clipping area as a polygon defined by the track's
+        // dimensions on the canvas
+        let clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+        let clipPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+
+
+        gBase.appendChild(clipPath);
+        gBase.appendChild(gClipped);
+
+        clipPath.appendChild(clipPolygon);
+
+        gClipped.appendChild(gTrack);
+        gClipped.appendChild(gLabels);   // labels should always appear on top of the track
+
+
+        clipPolygon.setAttribute('points', `${this.position[0]},${this.position[1]} ` +
+                `${this.position[0] + this.dimensions[0]},${this.position[1]} ` +
+                `${this.position[0] + this.dimensions[0]},${this.position[1] + this.dimensions[1]} ` +
+                `${this.position[0]},${this.position[1] + this.dimensions[1]} `);
+
+        // the clipping area needs to be a clipPath element
+        let clipPathId = slugid.nice();
+        clipPath.setAttribute('id', clipPathId);
+
+        gClipped.setAttribute('style', `clip-path:url(#${clipPathId});`);
+
+        let lineParts = this.labelText.text.split("\n");
+        let ddy = 0;
+
+        // SVG text alignment is wonky, just adjust the dy values of the tspans
+        // instead
+        
+        let textHeight = 12; 
+        let labelTextHeight = textHeight + ((this.labelTextFontSize+2) * (lineParts.length -1));
+
+        if (this.labelText.anchor.y == 0.5) {
+            ddy =  labelTextHeight / 2;
+        } else if (this.labelText.anchor.y == 1) {
+            ddy = -labelTextHeight;
+        }
+
+
+        for (let i = 0; i < lineParts.length; i++) {
+            let text = document.createElement('text');
+
+            text.setAttribute('font-family', this.labelTextFontFamily);
+            text.setAttribute('font-size', this.labelTextFontSize + 'px');
+
+            // break up newlines into separate tspan elements because SVG text
+            // doesn't support line breaks:
+            // http://stackoverflow.com/a/16701952/899470
+
+            text.innerText = lineParts[i];
+            text.setAttribute('dy', ddy + (i * (this.labelTextFontSize + 2)));
+            text.setAttribute('fill', this.options.labelColor);
+            
+            /*
+            // fuck SVG
+            if (i == 0) 
+                tspan.setAttribute('dy', ddy + "px");
+            else
+                tspan.setAttribute('dy', (i * this.labelTextFontSize + 2) + "px");
+
+            tspan.setAttribute('x', 0)
+                */
+            if (this.labelText.anchor.x == 0.5) {
+                text.setAttribute('text-anchor', 'middle');
+            } else if (this.labelText.anchor.x == 1) {
+                text.setAttribute('text-anchor', 'end');
+            }
+
+            //text.appendChild(tspan);
+            gLabels.appendChild(text);
+        }
+
+        //text.setAttribute('x', this.labelText.x);
+        //text.setAttribute('y', this.labelText.y);
+
+
+
+        gLabels.setAttribute('transform', `translate(${this.labelText.x},${this.labelText.y})scale(${this.labelText.scale.x},1)`);
+        gBase.appendChild(gLabels);
+
+        // return the whole SVG and where the specific track should draw its
+        // contents
+        return [gBase, gTrack];
     }
 }

@@ -129,6 +129,21 @@ export class CombinedTrack {
         }
     }
 
+    exportSVG() {
+        let svg = document.createElement('g');
+
+        for (let childTrack of this.childTracks) {
+            if (childTrack.exportSVG) {
+                // exportSVG returns a tuple containing the base element
+                // and the element onto which to draw extra features
+                // in our case, we only need the complete svg
+                svg.appendChild(childTrack.exportSVG()[0]);
+            }
+        }
+
+        return [svg, svg];
+    }
+
     rerender(options) {
         //console.log('COMBINED TRACK rerender...');
     }

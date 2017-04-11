@@ -1,6 +1,7 @@
 import {Tiled2DPixiTrack} from './Tiled2DPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 import {heatedObjectMap} from './colormaps.js';
+import slugid from 'slugid';
 import {colorDomainToRgbaArray} from './utils.js';
 
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
@@ -148,6 +149,9 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 */
 
             tile.sprite = sprite;
+
+            // store the pixData so that we can export it
+            tile.canvas = canvas;
             this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
 
             graphics.removeChildren();
@@ -168,5 +172,66 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 // console.log('skipping...', tile.tileId);
             }
         }
+    }
+
+    /*
+    exportSVG() {
+        let svg = `<g transform="translate(${this.pMain.position.x},${this.pMain.position.y})
+                                 scale(${this.pMain.scale.x},${this.pMain.scale.y})">`
+        for (let tile of this.visibleAndFetchedTiles()) {
+            //console.log('sprite:', tile.canvas.toDataURL());
+            let rotation = tile.sprite.rotation * 180 / Math.PI;
+
+            svg += `<g
+                    transform="translate(${tile.sprite.x}, ${tile.sprite.y})
+                               rotate(${rotation})
+                               scale(${tile.sprite.scale.x},${tile.sprite.scale.y})"
+                >`;
+            svg += '<image xlink:href="' + tile.canvas.toDataURL() + '"/>';
+            svg += "</g>";
+        }
+
+        svg += '</g>';
+        return svg;
+    }
+    */
+
+    exportSVG() {
+        let track=null, base=null;
+
+        if (super.exportSVG) {
+            [base, track] = super.exportSVG();
+        } else {
+            base = document.createElement('g');
+            track = base;
+        }
+
+        let output = document.createElement('g');
+        track.appendChild(output);
+
+        output.setAttribute('transform',
+                            `translate(${this.pMain.position.x},${this.pMain.position.y})
+                             scale(${this.pMain.scale.x},${this.pMain.scale.y})`)
+
+        for (let tile of this.visibleAndFetchedTiles()) {
+            //console.log('sprite:', tile.canvas.toDataURL());
+            let rotation = tile.sprite.rotation * 180 / Math.PI;
+            let g = document.createElement('g');
+            g.setAttribute('transform', 
+                            `translate(${tile.sprite.x}, ${tile.sprite.y})
+                               rotate(${rotation})
+                               scale(${tile.sprite.scale.x},${tile.sprite.scale.y})`);
+
+
+            let image = document.createElement('image');
+            image.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', tile.canvas.toDataURL());
+            image.setAttribute('width', 256);
+            image.setAttribute('height', 256);
+
+            g.appendChild(image);
+            output.appendChild(g);
+        }
+
+        return [base, base];
     }
 }

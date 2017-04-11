@@ -15,6 +15,7 @@ import {TiledPlot} from './TiledPlot.jsx';
 
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
+import {download} from './utils.js';
 import {absoluteToChr, getTrackPositionByUid, getTrackByUid, scalesToGenomeLocations} from './utils.js';
 import {positionedTracksToAllTracks} from './utils.js';
 import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
@@ -334,6 +335,27 @@ export class HiGlassComponent extends React.Component {
             if (listeners.hasOwnProperty(listenerUid))
                 delete listeners[listenerUid];
         }
+  }
+
+  handleExportSVG() {
+    let outputSVG = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n';
+    let svg = document.createElement('svg');
+    svg.setAttribute('xmlns:xlink',"http://www.w3.org/1999/xlink"); 
+    svg.setAttribute('xmlns', "http://www.w3.org/2000/svg"); 
+
+    for (let tiledPlot of dictValues(this.tiledPlots)) {
+        for (let trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
+
+            if (trackDefObject.trackObject.exportSVG) {
+                let trackSVG = trackDefObject.trackObject.exportSVG()[0];
+
+                svg.appendChild(trackSVG);
+            }
+        }
+    }
+    let x = new XMLSerializer();
+
+    download('export.svg', x.serializeToString(svg));
   }
 
   handleScalesChanged(uid, xScale, yScale, notify=true) {
@@ -1376,6 +1398,8 @@ export class HiGlassComponent extends React.Component {
   handleExportViewAsJSON() {
     let data = this.getViewsAsString();
 
+    download('viewconf.json', data);
+    /*
     var a = document.createElement("a");
     var file = new Blob([data], {type: 'text/json'});
     a.href = URL.createObjectURL(file);
@@ -1383,6 +1407,7 @@ export class HiGlassComponent extends React.Component {
     document.body.appendChild(a); // Necessary for downloads on Firefox.
     a.click();
     document.body.removeChild(a);
+    */
   }
 
   handleExportViewsAsLink() {
@@ -1898,6 +1923,7 @@ export class HiGlassComponent extends React.Component {
                             }
 
                             onProjectViewport={this.handleProjectViewport.bind(this)}
+                            onExportSVG={this.handleExportSVG.bind(this)}
                             onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
                             onExportViewsAsLink={this.handleExportViewsAsLink.bind(this)}
                             onTrackPositionChosen={position => this.handleTrackPositionChosen(view.uid, position)}

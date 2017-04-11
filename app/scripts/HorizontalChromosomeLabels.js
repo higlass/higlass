@@ -20,6 +20,10 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         this.gTicks = {};
         this.tickTexts = {};
 
+        this.textFontSize = '12px';
+        this.textFontFamily = 'Arial';
+        this.textFontColor = '#777777';
+
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;
             //
@@ -37,7 +41,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
                     this.tickTexts[textStr] = [];
 
                 let text = new PIXI.Text(textStr,
-                            {fontSize: "12px", fontFamily: "Helvetica", fill: "#777777"}
+                            {fontSize: this.textFontSize, fontFamily: this.textFontFamily, fill: this.textFontColor}
                             );
 
                 text.anchor.x = 0.5;
@@ -150,7 +154,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         let topChrom = null;
         let bottomChrom = null;
 
-        let allTexts = [];
+        this.allTexts = [];
 
         if (!this.texts)
             return;
@@ -207,7 +211,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
                 text.visible = true
 
 
-            allTexts.push({importance: this.texts[i].hashValue, text: this.texts[i], caption: null});
+            this.allTexts.push({importance: this.texts[i].hashValue, text: this.texts[i], caption: null});
         }
 
         /*
@@ -220,7 +224,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
 
 
         // define the edge chromosome which are visible
-        this.hideOverlaps(allTexts);
+        this.hideOverlaps(this.allTexts);
     }
 
     hideOverlaps(allTexts) {
@@ -262,5 +266,41 @@ export class HorizontalChromosomeLabels extends PixiTrack {
 
     refreshTiles() {
         // dummy function that is called by LeftTrackModifier
+    }
+
+    exportSVG() {
+        let track=null,base=null;
+
+        if (super.exportSVG) {
+            [base, track] = super.exportSVG();
+        } else {
+            base = document.createElement('g');
+            track = base;
+        }
+        let output = document.createElement('g');
+
+        output.setAttribute('transform',
+                            `translate(${this.position[0]},${this.position[1]})`);
+
+        for (let text of this.allTexts) {
+            if (!text.text.visible)
+                continue;
+
+            let g = document.createElement('g');
+            let t = document.createElement('text');
+            t.setAttribute('text-anchor', 'middle');
+            t.setAttribute('font-family', this.textFontFamily);
+            t.setAttribute('font-size', this.textFontSize);
+            g.setAttribute('transform', `scale(${text.text.scale.x},1)`);
+            
+            t.setAttribute('fill', this.textFontColor);
+            t.innerHTML = text.text.text;
+
+            g.appendChild(t);
+            g.setAttribute('transform', `translate(${text.text.x},${text.text.y})scale(${text.text.scale.x},1)`);
+            output.appendChild(g);
+        }
+
+        return [base, track];
     }
 }

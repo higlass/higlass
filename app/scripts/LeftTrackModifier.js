@@ -130,4 +130,23 @@ export class LeftTrackModifier {
     rerender(options) {
         this.originalTrack.rerender(options); 
     }
+
+    exportSVG() {
+        let output = document.createElement('g');
+        output.setAttribute('transform',
+                            `translate(${this.moveToOrigin.position.x},${this.moveToOrigin.position.y})
+                             rotate(90)
+                             scale(${this.moveToOrigin.scale.x},${this.moveToOrigin.scale.y})`);
+
+        if (this.originalTrack.exportSVG) {
+            let g = document.createElement('g');
+            g.setAttribute('transform',
+                    `translate(${this.originalTrack.pBase.position.x}, ${this.originalTrack.pBase.position.y})`);
+
+            g.appendChild(this.originalTrack.exportSVG()[0]);
+            output.appendChild(g);
+        }
+
+        return [output, output];
+    }
 }

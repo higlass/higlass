@@ -62,6 +62,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle) {
         exonStarts = exonStarts.split(',').map(x => +x + chrOffset)
         exonEnds = exonEnds.split(',').map(x => +x + chrOffset)
+        let rects = [];
 
         let xStartPos = this._xScale(txStart);
         let xEndPos = this._xScale(txEnd);
@@ -80,9 +81,14 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             let exonStart = exonStarts[j];
             let exonEnd = exonEnds[j];
 
+            rects.push([this._xScale(exonStart), yExonPos,
+                    this._xScale(exonEnd) - this._xScale(exonStart), exonHeight]);
+
             graphics.drawRect(this._xScale(exonStart), yExonPos,
                     this._xScale(exonEnd) - this._xScale(exonStart), exonHeight);
         }
+
+        return rects;
     }
 
     draw() {
@@ -95,7 +101,8 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         graphics.clear();
 
         let maxValue = 0;
-        let allTexts = [];
+        this.allTexts = [];
+        this.allRects = [];
 
         /*
         for (let fetchedTileId in this.fetchedTiles) {
@@ -109,7 +116,6 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         }
         */
 
-        //console.log('maxValue:', maxValue);
         /*
         let valueScale = scaleLinear()
             .domain([0, Math.log(maxValue+1)])
@@ -117,24 +123,21 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         */
         let addedIds = [];
 
-        //console.log('this.fetchedTiles:', this.fetchedTiles);
         for (let fetchedTileId in this.fetchedTiles) {
         //let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
         //for (let i = 0; i < visibleAndFetchedIds.length; i++) {
             //let fetchedTileId = visibleAndFetchedIds[i];
-            let ft = this.fetchedTiles[fetchedTileId];
-            let parentInFetched = this.parentInFetched(ft);
+            let tile = this.fetchedTiles[fetchedTileId];
+            let parentInFetched = this.parentInFetched(tile);
 
-            if (!ft.initialized)
+            if (!tile.initialized)
                 continue;
 
-            //console.log('drawTile:', ft.tileId, ft.tileData.length);
-
             if (!parentInFetched)
-                addedIds.push(ft.tileData.tileId);
+                addedIds.push(tile.tileData.tileId);
 
-            ft.tileData.forEach(td => {
+            tile.tileData.forEach(td => {
                 let geneInfo = td.fields;
                 // the returned positions are chromosome-based and they need to
                 // be converted to genome-based
@@ -177,21 +180,24 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 let xStartPos = this._xScale(txStart);
                 let xEndPos = this._xScale(txEnd);
 
-
                 if (xEndPos - xStartPos > 2)  {
-                    this.drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle);
+                    this.allRects = this.allRects.concat(
+                            this.drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
+                            .map(x => x.concat([geneInfo[5]]))
+                            );
                 } else {
                     //graphics.drawRect(rectX, rectY, width, height);
                     //console.log('rectY', rectY);
+                    this.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
                     graphics.drawRect(rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT);
                 }
 
-                if (!ft.texts) {
+                if (!tile.texts) {
                     // tile probably hasn't been initialized yet
                     return;
 
                 }
-                let text = ft.texts[geneName];
+                let text = tile.texts[geneName];
 
                 text.position.x = this._xScale(txMiddle);
                 text.position.y = textYMiddle;
@@ -201,29 +207,29 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
 
                 if (!parentInFetched) {
-                    text.alpha = 1;
+                    text.visible = true;
 
-                    allTexts.push({importance: +geneInfo[4], text: text, caption: geneName});
+                    this.allTexts.push({importance: +geneInfo[4], text: text, caption: geneName, strand: geneInfo[5]});
                 } else {
-                    text.alpha = 0;
+                    text.visible = false;
                 }
             });
         }
 
         ///console.log('addedIds', addedIds);
-        if (allTexts.length > 0) {
+        if (this.allTexts.length > 0) {
             //console.log('addedIds:', addedIds);
             //console.log('captions:', allTexts.map(x => x.caption));
         }
 
         //console.trace('draw', allTexts.length);
-        this.hideOverlaps(allTexts);
+        this.hideOverlaps(this.allTexts);
     }
 
     hideOverlaps(allTexts) {
-        let allBoxes = [];   // store the bounding boxes of the text objects so we can
-                             // calculate overlaps
-        allBoxes = allTexts.map(val => {
+        // store the bounding boxes of the text objects so we can
+        // calculate overlaps
+        let allBoxes = allTexts.map(val => {
             let text = val.text;
             text.updateTransform();
             let b = text.getBounds();
@@ -235,10 +241,10 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         let result = boxIntersect(allBoxes, function(i, j) {
             if (allTexts[i].importance > allTexts[j].importance) {
                 //console.log('hiding:', allTexts[j].caption)
-                allTexts[j].text.alpha = 0;
+                allTexts[j].text.visible = false;
             } else {
                 //console.log('hiding:', allTexts[i].caption)
-                allTexts[i].text.alpha = 0;
+                allTexts[i].text.visible = false;
             }
         });
     }
@@ -257,5 +263,66 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         this.refreshTiles();
 
         this.draw();
+    }
+
+    exportSVG() {
+        let track=null,base=null;
+
+        if (super.exportSVG) {
+            [base, track] = super.exportSVG();
+        } else {
+            base = document.createElement('g');
+            track = base;
+        }
+        let output = document.createElement('g');
+        output.setAttribute('transform',
+                            `translate(${this.position[0]},${this.position[1]})`);
+
+        track.appendChild(output);
+
+        for (let rect of this.allRects) {
+            let r = document.createElement('rect');
+            r.setAttribute('x', rect[0]);
+            r.setAttribute('y', rect[1]);
+            r.setAttribute('width', rect[2]);
+            r.setAttribute('height', rect[3]);
+
+            if (rect[4] == '+') {
+                r.setAttribute('fill', this.options.plusStrandColor);
+            } else {
+                r.setAttribute('fill', this.options.minusStrandColor);
+            }
+
+            output.appendChild(r);
+        }
+
+        for (let text of this.allTexts) {
+            if (!text.text.visible)
+                continue;
+
+            let g = document.createElement('g');
+            let t = document.createElement('text');
+            t.setAttribute('text-anchor', 'middle');
+            t.setAttribute('font-family', this.textFontFamily);
+            t.setAttribute('font-size', this.textFontSize);
+            g.setAttribute('transform', `scale(${text.text.scale.x},1)`);
+            
+
+            if (text.strand == '+') {
+                //t.setAttribute('stroke', this.options.plusStrandColor);
+                t.setAttribute('fill', this.options.plusStrandColor);
+            } else {
+                //t.setAttribute('stroke', this.options.minusStrandColor);
+                t.setAttribute('fill', this.options.minusStrandColor);
+            }
+
+            t.innerHTML = text.text.text;
+
+            g.appendChild(t);
+            g.setAttribute('transform', `translate(${text.text.x},${text.text.y})scale(${text.text.scale.x},1)`);
+            output.appendChild(g);
+        }
+
+        return [base, base];
     }
 }
