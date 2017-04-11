@@ -14,8 +14,18 @@ import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {TiledPlot} from './TiledPlot.jsx';
 
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
-import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
-import {absoluteToChr, getTrackPositionByUid, getTrackByUid, scalesToGenomeLocations} from './utils.js';
+import {
+  absoluteToChr,
+  dictFromTuples,
+  dictItems,
+  dictKeys,
+  dictValues,
+  getTrackByUid,
+  getTrackPositionByUid,
+  relToAbsChromPos,
+  scalesCenterAndK,
+  scalesToGenomeLocations
+} from './utils.js';
 import {positionedTracksToAllTracks} from './utils.js';
 import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
 import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT, LOCATION_LISTENER_PREFIX} from './config.js';
@@ -1852,7 +1862,7 @@ export class HiGlassComponent extends React.Component {
                         autocompleteSource={view.autocompleteSource}
                         registerViewportChangedListener = {listener => this.addScalesChangedListener(view.uid, view.uid, listener)}
                         removeViewportChangedListener = {() => this.removeScalesChangedListener(view.uid, view.uid)}
-                        setCenters = {(centerX, centerY, k) => this.setCenters[view.uid](centerX, centerY, k)}
+                        setCenters = {(centerX, centerY, k, animate) => this.setCenters[view.uid](centerX, centerY, k, false, animate)}
                         chromInfoPath={view.chromInfoPath}
                         twoD={true}
                      />) : null;
@@ -2017,6 +2027,38 @@ export class HiGlassComponent extends React.Component {
     const self = this;
 
     const _api = {
+      goTo (viewUid, chrom1, start1, end1, chrom2, start2, end2, animate=false) {
+        // Set chromInfo if not available
+        if (!self.chromInfo) {
+          self.setChromInfo(
+            self.state.views[viewUid].chromInfoPath,
+            () => {
+              self.api().goTo(
+                viewUid, chrom1, start1, end1, chrom2, start2, end2, animate
+              );
+            }
+          );
+          return;
+        }
+
+        const [start1Abs, end1Abs] = relToAbsChromPos(
+          chrom1, start1, end1, self.chromInfo
+        );
+
+        const [start2Abs, end2Abs] = relToAbsChromPos(
+          chrom2, start2, end2, self.chromInfo
+        );
+
+        let [centerX, centerY, k] = scalesCenterAndK(
+          self.xScales[viewUid].copy().domain([start1Abs, end1Abs]),
+          self.yScales[viewUid].copy().domain([start2Abs, end2Abs])
+        );
+
+        self.setCenters[viewUid](
+          centerX, centerY, k, false, animate
+        );
+      },
+
       off(event, viewId, listenerId) {
         switch (event) {
           case 'location':

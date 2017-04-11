@@ -253,3 +253,11 @@ export function scalesToGenomeLocations(xScale, yScale, chromInfo) {
         y2[0], Math.round(y2[1])
     ];
   }
+
+
+export function relToAbsChromPos (chrom, x, y, chromInfo) {
+    return [
+        chromInfo.chrPositions[chrom].pos + x,
+        chromInfo.chrPositions[chrom].pos + y
+    ]
+}

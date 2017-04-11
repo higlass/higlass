@@ -86,6 +86,7 @@ export class GenomePositionSearchBox extends React.Component {
         this.setPositionText();
     }
 
+    // Fritz: Is this used?
     zoomed(translate, scale) {
         this.xOrigScale.domain(this.props.xDomain);
         this.yOrigScale.domain(this.props.yDomain);
@@ -239,21 +240,14 @@ export class GenomePositionSearchBox extends React.Component {
                 let newYScale = this.yScale.copy().domain(range2);
 
                 let [centerX, centerY, k] = scalesCenterAndK(newXScale, newYScale);
-                // console.log('centerX:', centerX, 'centerY:', centerY);
 
-                //console.log('centerX:', centerX, 'centerY:', centerY, 'k:', k);
-                this.props.setCenters(centerX, centerY, k);
+                this.props.setCenters(centerX, centerY, k, true);
             }
         }.bind(this));
     }
 
-    searchFieldKeyPress(target) {
-        // if the user hits enter, act as if they clicked the button
-        /*
-        if (target.charCode == 13) {
-            this.buttonClick();
-        }
-        */
+    searchFieldSubmit () {
+        this.buttonClick();
     }
 
     pathJoin(parts, sep){
@@ -385,7 +379,7 @@ export class GenomePositionSearchBox extends React.Component {
                     items={this.state.genes}
                     onChange = {this.onAutocompleteChange.bind(this)}
                     onSelect={(value, objct) => this.geneSelected(value, objct) }
-                    onKeyDown={ this.searchFieldKeyPress.bind(this) }
+                    onSubmit={ this.searchFieldSubmit.bind(this) }
                     getItemValue={(item) => item.geneName}
                     inputProps={{"className": "search-bar"}}
                     wrapperStyle={{width: "100%"}}

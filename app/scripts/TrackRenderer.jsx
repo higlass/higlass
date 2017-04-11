@@ -5,6 +5,7 @@ import {zoom, zoomIdentity} from 'd3-zoom';
 import {select,event} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
 
+// Fritz: This import is broken
 import d3 from 'd3';
 
 import {UnknownPixiTrack} from './UnknownPixiTrack.js';
@@ -140,7 +141,7 @@ export class TrackRenderer extends React.Component {
 
         // stretch out the y-scale so that views aren't distorted (i.e. maintain
         // a 1 to 1 ratio)
-        initialYDomain[0] = yCenter - xWidth / 2, 
+        initialYDomain[0] = yCenter - xWidth / 2,
         initialYDomain[1] = yCenter + xWidth / 2;
 
         if (initialXDomain == this.initialXDomain &&
@@ -199,7 +200,7 @@ export class TrackRenderer extends React.Component {
         if (!nextProps.svgElement || !nextProps.canvasElement)
             return;
 
-        let nextPropsStr = this.updatablePropsToString(nextProps); 
+        let nextPropsStr = this.updatablePropsToString(nextProps);
         this.currentProps = nextProps;
 
         if (this.prevPropsStr === nextPropsStr)
@@ -428,7 +429,7 @@ export class TrackRenderer extends React.Component {
             let newPosition = [this.xPositionOffset + trackDef.left, this.yPositionOffset + trackDef.top];
             let newDimensions = [trackDef.width, trackDef.height];
 
-            // check if any of the track's positions have changed 
+            // check if any of the track's positions have changed
             // before trying to update them
 
             if (!prevPosition || newPosition[0] != prevPosition[0] || newPosition[1] != prevPosition[1]) {
@@ -458,7 +459,7 @@ export class TrackRenderer extends React.Component {
         }
     }
 
-    setCenter(centerX, centerY, sourceK, notify=true) {
+    setCenter(centerX, centerY, sourceK, notify, animate=false) {
         /*
          * Set the center of this view to a paticular X and Y coordinate
          *
@@ -482,11 +483,32 @@ export class TrackRenderer extends React.Component {
         let translateY = middleViewY - this.yScale(centerY) * k;
 
         // the ref scale spans the width of the viewport
-        let newTransform = zoomIdentity.translate(translateX, translateY).scale(k);
 
-        this.zoomTransform = newTransform;
-        this.emptyZoomBehavior.transform(this.divTrackAreaSelection, newTransform);
-        return this.applyZoomTransform(notify);
+        let last;
+
+        const setZoom = () => {
+            let newTransform = zoomIdentity.translate(translateX, translateY).scale(k);
+
+            this.zoomTransform = newTransform;
+            this.emptyZoomBehavior.transform(this.divTrackAreaSelection, newTransform);
+
+            last = this.applyZoomTransform(notify);
+        }
+
+        if (animate) {
+            select(this.currentProps.canvasElement)
+                .transition()
+                .duration(5000)
+                .call(
+                    this.zoomBehavior.transform,
+                    zoomIdentity.translate(translateX, translateY).scale(k)
+                )
+                .on('end', setZoom);
+        } else {
+            setZoom();
+        }
+
+        return last;
     }
 
     zoomed() {
@@ -510,27 +532,40 @@ export class TrackRenderer extends React.Component {
         let zoomedYScale = this.zoomTransform.rescaleY(this.yScale);
 
         let newXScale = scaleLinear()
-            .domain([this.currentProps.marginLeft + this.currentProps.leftWidth,
-                    this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth].map(zoomedXScale.invert))
+            .domain(
+                [
+                    this.currentProps.marginLeft + this.currentProps.leftWidth,
+                    this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth
+                ].map(zoomedXScale.invert)
+            )
             .range([0, this.currentProps.centerWidth]);
 
         let newYScale = scaleLinear()
-            .domain([this.currentProps.marginTop + this.currentProps.topHeight,
-                    this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight].map(zoomedYScale.invert))
+            .domain(
+                [
+                    this.currentProps.marginTop + this.currentProps.topHeight,
+                    this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight
+                ].map(zoomedYScale.invert)
+            )
             .range([0, this.currentProps.centerHeight]);
 
         for (let uid in this.trackDefObjects) {
             let track = this.trackDefObjects[uid].trackObject;
 
-            track.zoomed(newXScale.copy(), newYScale.copy(), this.zoomTransform.k,
-                        this.zoomTransform.x + this.xPositionOffset,
-                        this.zoomTransform.y + this.yPositionOffset,
-                        this.currentProps.marginLeft + this.currentProps.leftWidth,
-                        this.currentProps.marginTop + this.currentProps.topHeight);
+            track.zoomed(
+                newXScale.copy(),
+                newYScale.copy(),
+                this.zoomTransform.k,
+                this.zoomTransform.x + this.xPositionOffset,
+                this.zoomTransform.y + this.yPositionOffset,
+                this.currentProps.marginLeft + this.currentProps.leftWidth,
+                this.currentProps.marginTop + this.currentProps.topHeight
+            );
         }
 
-        if (notify)
+        if (notify) {
             this.currentProps.onScalesChanged(newXScale, newYScale);
+        }
 
         return [newXScale, newYScale];
     }
