@@ -1,5 +1,7 @@
 import { mount } from 'enzyme';
 import { expect } from 'chai';
+import React from 'react';
+import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
 
 let testViewConfig = 
 {
@@ -243,7 +245,9 @@ let testViewConfig =
 }
 
 describe("<HiGlassComponent />", () => {
-    it ('exports SVG', () => {
+    const hgc = mount(<HiGlassComponent viewConfig={testViewConfig} />);
 
+    it ('exports SVG', () => {
+        console.log('hgc:', hgc.instance().tiledPlot);
     })
 });

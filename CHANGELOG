@@ -5,6 +5,8 @@ export-data
 ##HEAD
 
 - Automatically draw the 2D grid after the data is loaded
+- Add animated zoom transitions
+- Add public BEDPE-like API to navigate to a given location
 
 v0.5.16
 

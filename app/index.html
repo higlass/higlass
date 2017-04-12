@@ -24,7 +24,7 @@
 </script>
 <script>
 
- var testViewConfig = 
+ var testViewConfig =
 {
   "editable": true,
   "zoomFixed": false,
@@ -265,7 +265,7 @@
   }
 }
  ;
-    
+
     window.higlassApi;
 
     hglib.createHgComponent(
@@ -273,9 +273,37 @@
         testViewConfig,
         { bounded: true },
         function (api) {
-            window.higlassApi = api;
+            window.hgApi = api;
         }
     );
+
+    // setTimeout(function () {
+    //   // Go to PTEN
+    //   window.hgApi.goTo(
+    //     testViewConfig.views[0].uid,
+    //     'chr10',
+    //     89596071,
+    //     89758810,
+    //     'chr10',
+    //     89596071,
+    //     89758810,
+    //     true,
+    //     10000
+    //   );
+    // }, 3000);
+
+    // setTimeout(function () {
+    //   // Go to Chr1 without animation
+    //   window.hgApi.goTo(
+    //     testViewConfig.views[0].uid,
+    //     'chr1',
+    //     0,
+    //     89758810,
+    //     'chr1',
+    //     0,
+    //     89758810
+    //   );
+    // }, 11000);
 
 
 </script>

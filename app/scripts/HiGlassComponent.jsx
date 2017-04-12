@@ -14,9 +14,19 @@ import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {TiledPlot} from './TiledPlot.jsx';
 
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
-import {scalesCenterAndK, dictItems, dictFromTuples, dictValues, dictKeys} from './utils.js';
-import {download} from './utils.js';
-import {absoluteToChr, getTrackPositionByUid, getTrackByUid, scalesToGenomeLocations} from './utils.js';
+import {
+  absoluteToChr,
+  dictFromTuples,
+  dictItems,
+  dictKeys,
+  dictValues,
+  download,
+  getTrackByUid,
+  getTrackPositionByUid,
+  relToAbsChromPos,
+  scalesCenterAndK,
+  scalesToGenomeLocations
+} from './utils.js';
 import {positionedTracksToAllTracks} from './utils.js';
 import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
 import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT, LOCATION_LISTENER_PREFIX} from './config.js';
@@ -356,6 +366,7 @@ export class HiGlassComponent extends React.Component {
     let x = new XMLSerializer();
 
     download('export.svg', x.serializeToString(svg));
+    return svg;
   }
 
   handleScalesChanged(uid, xScale, yScale, notify=true) {
@@ -1396,14 +1407,24 @@ export class HiGlassComponent extends React.Component {
   }
 
   handleExportViewAsJSON() {
-    let data = this.getViewsAsString();
+    const data = this.getViewsAsString();
+    const a = document.createElement("a");
+    const file = new Blob([data], {type: 'text/json'});
+    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+      /[xy]/g,
+      (c) => {
+        const r = Math.random()*16|0;
+        const v = c == 'x' ? r : r&0x3|0x8;
+        return v.toString(16);
+      }
+    );
 
     download('viewconf.json', data);
     /*
     var a = document.createElement("a");
     var file = new Blob([data], {type: 'text/json'});
     a.href = URL.createObjectURL(file);
-    a.download = name;
+    a.download = `higlass-config.${uuid}.json`;  // Filename
     document.body.appendChild(a); // Necessary for downloads on Firefox.
     a.click();
     document.body.removeChild(a);
@@ -1773,6 +1794,7 @@ export class HiGlassComponent extends React.Component {
 
 
   render() {
+
     let tiledAreaStyle = {
         display: 'flex',
         flexDirection: 'column'
@@ -1784,6 +1806,7 @@ export class HiGlassComponent extends React.Component {
 
     // The component needs to be mounted in order for the initial view to have the right
     // width
+      console.log('rendering...', this.state.mounted);
     if (this.state.mounted) {
         tiledAreas = dictValues(this.state.views).map(function(view, i) {
                 const zoomFixed = typeof view.zoomFixed !== 'undefined' ? view.zoomFixed : this.props.zoomFixed;
@@ -1869,7 +1892,7 @@ export class HiGlassComponent extends React.Component {
                         autocompleteSource={view.autocompleteSource}
                         registerViewportChangedListener = {listener => this.addScalesChangedListener(view.uid, view.uid, listener)}
                         removeViewportChangedListener = {() => this.removeScalesChangedListener(view.uid, view.uid)}
-                        setCenters = {(centerX, centerY, k) => this.setCenters[view.uid](centerX, centerY, k)}
+                        setCenters = {(centerX, centerY, k, animate, animateTime) => this.setCenters[view.uid](centerX, centerY, k, false, animate, animateTime)}
                         chromInfoPath={view.chromInfoPath}
                         twoD={true}
                      />) : null;
@@ -2035,6 +2058,56 @@ export class HiGlassComponent extends React.Component {
     const self = this;
 
     const _api = {
+      goTo (
+        viewUid,
+        chrom1,
+        start1,
+        end1,
+        chrom2,
+        start2,
+        end2,
+        animate=false,
+        animateTime=3000
+      ) {
+        // Set chromInfo if not available
+        if (!self.chromInfo) {
+          self.setChromInfo(
+            self.state.views[viewUid].chromInfoPath,
+            () => {
+              self.api().goTo(
+                viewUid,
+                chrom1,
+                start1,
+                end1,
+                chrom2,
+                start2,
+                end2,
+                animate,
+                animateTime
+              );
+            }
+          );
+          return;
+        }
+
+        const [start1Abs, end1Abs] = relToAbsChromPos(
+          chrom1, start1, end1, self.chromInfo
+        );
+
+        const [start2Abs, end2Abs] = relToAbsChromPos(
+          chrom2, start2, end2, self.chromInfo
+        );
+
+        let [centerX, centerY, k] = scalesCenterAndK(
+          self.xScales[viewUid].copy().domain([start1Abs, end1Abs]),
+          self.yScales[viewUid].copy().domain([start2Abs, end2Abs])
+        );
+
+        self.setCenters[viewUid](
+          centerX, centerY, k, false, animate, animateTime
+        );
+      },
+
       off(event, viewId, listenerId) {
         switch (event) {
           case 'location':

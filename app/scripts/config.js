@@ -229,7 +229,7 @@ export const tracksInfo = [
         defaultOptions: {
             labelPosition: 'bottomRight',
             labelColor: 'black',
-            colorRange: 
+            colorRange:
                 ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], //corresponding to the fall colormap
             maxZoom: null
         },
@@ -488,3 +488,5 @@ export const SHORT_DRAG_TIMEOUT = 110;
 export const LONG_DRAG_TIMEOUT = 2000;
 
 export const LOCATION_LISTENER_PREFIX = 'locationListenerPrefix';
+
+export const ZOOM_TRANSITION_DURATION = 3000;

@@ -2,7 +2,7 @@ import {TILE_FETCH_DEBOUNCE} from './config.js';
 import {range} from 'd3-array';
 import slugid from 'slugid';
 import urljoin from 'url-join';
-import {Pool} from 'threads';
+//import {Pool} from 'threads';
 import {workerGetTilesetInfo} from './worker.js';
 import {workerFetchTiles, workerFetchMultiRequestTiles} from './worker.js';
 import {workerSetPix} from './worker.js';
@@ -11,7 +11,7 @@ class TileProxy  {
     constructor() {
         this.sessionId = slugid.nice();
 
-        this.threadPool = new Pool();
+        //this.threadPool = new Pool();
 
         this.workerFetchTilesDebounced = this.debounce(workerFetchMultiRequestTiles, TILE_FETCH_DEBOUNCE);
     }

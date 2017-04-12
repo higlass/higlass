@@ -1,5 +1,6 @@
 var path = require('path');
 var webpackConfig = require('./webpack.config.js');
+require('babel-polyfill');
 
 module.exports = function(config) {
   config.set({
@@ -7,6 +8,7 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
 
     files: [
+      'node_modules/babel-polyfill/dist/polyfill.js',
       'test/**/*.+(js|jsx)'
     ],
 
