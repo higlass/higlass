@@ -244,10 +244,42 @@ let testViewConfig =
   }
 }
 
-describe("<HiGlassComponent />", () => {
-    const hgc = mount(<HiGlassComponent viewConfig={testViewConfig} />);
+const pageLoadTime = 1500;
 
-    it ('exports SVG', () => {
-        console.log('hgc:', hgc.instance().tiledPlot);
+function testAsync(done) {
+    // Wait two seconds, then set the flag to true
+    setTimeout(function () {
+        //flag = true;
+
+        // Invoke the special done callback
+        done();
+    }, pageLoadTime);
+}
+
+describe("<HiGlassComponent />", () => {
+    const div = document.createElement('div');
+    document.body.appendChild(div);
+
+    div.setAttribute('style', 'height:400px; width:400px');
+    console.log('bodyHeight:', document.body.clientHeight);
+    console.log('divHeight:', div.clientHeight);
+
+    const hgc = mount(<HiGlassComponent viewConfig={testViewConfig} options={{bounded: true}}/>, 
+            {attachTo: div});
+
+
+    // wait a bit of time for the data to be loaded from the server
+    beforeEach((done) => {
+        testAsync(done);
+    });
+
+    describe("page has loaded", () => {
+        it ('exports SVG', () => {
+            let svg = hgc.instance().createSVG();
+            let svgText = new XMLSerializer().serializeToString(svg);
+
+            expect(svgText.indexOf('Chromosome2DGrid')).to.be.above(0);
+            hgc.instance().handleExportSVG();
+        })
     })
 });

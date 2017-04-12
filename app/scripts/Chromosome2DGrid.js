@@ -16,7 +16,6 @@ export class Chromosome2DGrid extends PixiTrack {
             this.chromInfo = newChromInfo;  
 
             this.searchField = new SearchField(this.chromInfo); 
-            this.draw();
 
             this.texts = [];
             this.lineGraphics = new PIXI.Graphics();
@@ -113,4 +112,66 @@ export class Chromosome2DGrid extends PixiTrack {
         this.draw();
     }
 
+    exportSVG() {
+        let track=null,base=null;
+        console.log('this.uid:', this.uid);
+
+        if (super.exportSVG) {
+            [base, track] = super.exportSVG();
+        } else {
+            base = document.createElement('g');
+            track = base;
+        }
+        let output = document.createElement('g');
+        track.appendChild(output);
+
+        base.setAttribute('id', 'Chromosome2DGrid');
+
+        output.setAttribute('transform',
+                            `translate(${this.position[0]},${this.position[1]})`);
+
+        console.log('this.chromInfo:', this.chromInfo);
+        if (!this.chromInfo)
+            // we haven't received the chromosome info yet
+            return [base,track];
+
+        let strokeColor = this.options.gridStrokeColor ? this.options.gridStrokeColor : 'blue';
+        let strokeWidth = this.options.gridStrokeWidth;
+
+        for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
+            let chrPos = this.chromInfo.cumPositions[i];
+            let chrEnd = chrPos.pos + +this.chromInfo.chromLengths[chrPos.chr] + 1;
+
+            let line = document.createElement('line');
+
+            // draw horizontal lines (all start at x=0)
+            line.setAttribute('x1', 0);
+            line.setAttribute('x2', this.dimensions[0]);
+
+            line.setAttribute('y1', this._yScale(chrEnd));
+            line.setAttribute('y2', this._yScale(chrEnd));
+
+            line.setAttribute('stroke', strokeColor);
+            line.setAttribute('stroke-width', strokeWidth);
+
+            output.appendChild(line);
+
+            // draw vertical lines (all start at y=0)
+            line = document.createElement('line');
+
+            // draw horizontal lines (all start at x=0)
+            line.setAttribute('x1', this._xScale(chrEnd));
+            line.setAttribute('x2', this._xScale(chrEnd));
+
+            line.setAttribute('y1', 0)
+            line.setAttribute('y1', this.dimensions[1]);
+
+            line.setAttribute('stroke', strokeColor);
+            line.setAttribute('stroke-width', strokeWidth);
+
+            output.appendChild(line);
+        }
+
+        return [base,track];
+    }
 }

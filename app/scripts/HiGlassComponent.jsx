@@ -166,6 +166,8 @@ export class HiGlassComponent extends React.Component {
         this.handleDragStart();
         this.handleDragStop();
 
+        console.log('this.element.clientHeight:', this.element.clientHeight);
+
         this.animate();
         //this.handleExportViewsAsLink();
 
@@ -347,13 +349,16 @@ export class HiGlassComponent extends React.Component {
         }
   }
 
-  handleExportSVG() {
+  createSVG() {
     let outputSVG = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n';
     let svg = document.createElement('svg');
     svg.setAttribute('xmlns:xlink',"http://www.w3.org/1999/xlink"); 
     svg.setAttribute('xmlns', "http://www.w3.org/2000/svg"); 
 
     for (let tiledPlot of dictValues(this.tiledPlots)) {
+        console.log('tiledPlot:', tiledPlot);
+        console.log('trackRenderer:', tiledPlot.trackRenderer);
+
         for (let trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
 
             if (trackDefObject.trackObject.exportSVG) {
@@ -363,9 +368,14 @@ export class HiGlassComponent extends React.Component {
             }
         }
     }
-    let x = new XMLSerializer();
+    return svg;
+  }
 
-    download('export.svg', x.serializeToString(svg));
+  handleExportSVG() {
+    let svg = this.createSVG();
+
+    let svgText = new XMLSerializer().serializeToString(svg);
+    download('export.svg', svgText);
     return svg;
   }
 
@@ -1806,7 +1816,6 @@ export class HiGlassComponent extends React.Component {
 
     // The component needs to be mounted in order for the initial view to have the right
     // width
-      console.log('rendering...', this.state.mounted);
     if (this.state.mounted) {
         tiledAreas = dictValues(this.state.views).map(function(view, i) {
                 const zoomFixed = typeof view.zoomFixed !== 'undefined' ? view.zoomFixed : this.props.zoomFixed;
@@ -1986,7 +1995,6 @@ export class HiGlassComponent extends React.Component {
         ref={(c) => this.topDiv = c}
         style={{position: "relative"}}
       >
-        //
         <canvas
             key={this.uid}
             ref={(c) => {

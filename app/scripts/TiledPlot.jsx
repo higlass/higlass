@@ -174,12 +174,6 @@ export class TiledPlot extends React.Component {
         track.binsPerDimension = tilesetInfo.bins_per_dimension;
         track.maxZoom = tilesetInfo.max_zoom;
 
-        /*
-        console.log('track:', track);
-        this.setState({
-            tracks: this.state.tracks
-        });
-        */
     }
 
   handleOverlayMouseEnter(uid) {
@@ -520,7 +514,6 @@ export class TiledPlot extends React.Component {
          * Try to zoom in or out so that the bounds of the view correspond to the
          * extent of the data.
          */
-        console.log('zooming to data in TiledPlot');
         let minPos = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER]
         let maxPos = [Number.MIN_SAFE_INTEGER, Number.MIN_SAFE_INTEGER]
 
@@ -553,9 +546,6 @@ export class TiledPlot extends React.Component {
             }
         }
 
-        console.log('minPos:', minPos);
-        console.log('maxPos:', maxPos);
-
         // set the initial domain
         let newXDomain = [this.trackRenderer.currentProps.marginLeft + this.trackRenderer.currentProps.leftWidth, this.trackRenderer.currentProps.marginLeft + this.trackRenderer.currentProps.leftWidth + this.trackRenderer.currentProps.centerWidth].map(this.trackRenderer.zoomTransform.rescaleX(this.trackRenderer.xScale).invert);
         let newYDomain = [this.trackRenderer.currentProps.marginTop + this.trackRenderer.currentProps.topHeight, this.trackRenderer.currentProps.marginTop + this.trackRenderer.currentProps.topHeight + this.trackRenderer.currentProps.centerHeight].map(this.trackRenderer.zoomTransform.rescaleY(this.trackRenderer.yScale).invert);
@@ -567,8 +557,6 @@ export class TiledPlot extends React.Component {
         this.trackRenderer.zoomTransform.y = 0;
         this.trackRenderer.applyZoomTransform();
 
-
-        console.log('newXDomain', newXDomain);
 
         if (minPos[0] < Number.MAX_SAFE_INTEGER && maxPos[0] > Number.MIN_SAFE_INTEGER)
             newXDomain = [minPos[0], maxPos[0]];
