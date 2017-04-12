@@ -277,7 +277,10 @@ export class HorizontalChromosomeLabels extends PixiTrack {
             base = document.createElement('g');
             track = base;
         }
+        base.setAttribute('id', 'HorizontalChromosomeLabels');
+
         let output = document.createElement('g');
+        track.appendChild(output);
 
         output.setAttribute('transform',
                             `translate(${this.position[0]},${this.position[1]})`);
