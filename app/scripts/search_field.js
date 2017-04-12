@@ -182,7 +182,6 @@ export class SearchField {
 
     searchPosition(text) {
         var range1 = null, range2 = null;
-        console.log('searchPosition:', text);
 
         //extract offset
         let offsetRe = /\[offset\ (.+?)\]/.exec(text);
@@ -193,11 +192,9 @@ export class SearchField {
         if (offsetRe) {
             text = text.replace(offsetRe[0], '');
 
-            // console.log('text:', text);
             //
             offset = this.parseOffset(offsetRe[1]);
         }
-        // console.log('offset:', offset);
 
         var parts = text.split(' & ');
 
@@ -227,8 +224,6 @@ export class SearchField {
             range2[1] += offset[1][1];
 
         }
-
-        // console.log('range1:', range1);
 
         return [range1, range2];
     }

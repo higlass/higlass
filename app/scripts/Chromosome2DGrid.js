@@ -114,7 +114,6 @@ export class Chromosome2DGrid extends PixiTrack {
 
     exportSVG() {
         let track=null,base=null;
-        console.log('this.uid:', this.uid);
 
         if (super.exportSVG) {
             [base, track] = super.exportSVG();
@@ -130,7 +129,6 @@ export class Chromosome2DGrid extends PixiTrack {
         output.setAttribute('transform',
                             `translate(${this.position[0]},${this.position[1]})`);
 
-        console.log('this.chromInfo:', this.chromInfo);
         if (!this.chromInfo)
             // we haven't received the chromosome info yet
             return [base,track];

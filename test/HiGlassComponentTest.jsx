@@ -261,10 +261,11 @@ describe("<HiGlassComponent />", () => {
     document.body.appendChild(div);
 
     div.setAttribute('style', 'height:400px; width:400px');
-    console.log('bodyHeight:', document.body.clientHeight);
-    console.log('divHeight:', div.clientHeight);
 
-    const hgc = mount(<HiGlassComponent viewConfig={testViewConfig} options={{bounded: true}}/>, 
+    const hgc = mount(<HiGlassComponent 
+                        options={{bounded: true}}
+                        viewConfig={testViewConfig}
+                      />, 
             {attachTo: div});
 
 
@@ -279,7 +280,15 @@ describe("<HiGlassComponent />", () => {
             let svgText = new XMLSerializer().serializeToString(svg);
 
             expect(svgText.indexOf('Chromosome2DGrid')).to.be.above(0);
-            hgc.instance().handleExportSVG();
+            //hgc.instance().handleExportSVG();
         })
+
+        it ('does something else', () => {
+
+        });
+
+        if ('does one more thing', () => {
+
+        });
     })
 });

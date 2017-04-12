@@ -166,8 +166,6 @@ export class HiGlassComponent extends React.Component {
         this.handleDragStart();
         this.handleDragStop();
 
-        console.log('this.element.clientHeight:', this.element.clientHeight);
-
         this.animate();
         //this.handleExportViewsAsLink();
 
@@ -356,9 +354,6 @@ export class HiGlassComponent extends React.Component {
     svg.setAttribute('xmlns', "http://www.w3.org/2000/svg"); 
 
     for (let tiledPlot of dictValues(this.tiledPlots)) {
-        console.log('tiledPlot:', tiledPlot);
-        console.log('trackRenderer:', tiledPlot.trackRenderer);
-
         for (let trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
 
             if (trackDefObject.trackObject.exportSVG) {
