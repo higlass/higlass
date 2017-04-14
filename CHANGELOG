@@ -1,12 +1,19 @@
-export-data
+v0.6.2
 
-- Default to interpolation-less rendering
+- Scale tracks from minimum to maximum value, rather than starting at 0
 
-##HEAD
+v0.6.1
+
+- Fixed a minor issue with chromosome labels not being exported
+
+v0.6.0
 
 - Automatically draw the 2D grid after the data is loaded
 - Add animated zoom transitions
 - Add public BEDPE-like API to navigate to a given location
+- SVG export
+- Testing using Karma
+- (Might have been in a different release) Default to interpolation-less rendering
 
 v0.5.16
 

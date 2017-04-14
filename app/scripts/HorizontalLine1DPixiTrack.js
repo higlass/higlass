@@ -154,8 +154,10 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         let minVisibleValue = this.minVisibleValue();
         let maxVisibleValue = this.maxVisibleValue();
 
+        /*
         if (maxVisibleValue < 0)
             return;
+        */
 
         let valueScale = null;
         let pseudocount = 0;    // if we use a log scale, then we'll set a pseudocount
@@ -176,10 +178,9 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         } else {
             // linear scale
             valueScale = scaleLinear()
-                .domain([0, maxVisibleValue])
+                .domain([minVisibleValue, maxVisibleValue])
                 .range([this.dimensions[1], 0]);
         }
-
 
         graphics.clear();
 
