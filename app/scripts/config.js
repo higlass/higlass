@@ -353,12 +353,27 @@ export const tracksInfo = [
             minusStrandColor: 'red'
         }
     },
+
     {
         type: 'arrowhead-domains',
         datatype: ['arrowhead-domains'],
         local: false,
         orientation: '2d',
         name: 'Arrowhead Domains',
+        thumbnail: svgArrowheadDomainsIcon,
+        availableOptions: [ 'labelPosition', 'labelColor' ],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'hidden',
+        }
+    },
+
+    {
+        type: 'square-markers',
+        datatype: ['bedpe'],
+        local: false,
+        orientation: '2d',
+        name: 'Square Markers',
         thumbnail: svgArrowheadDomainsIcon,
         availableOptions: [ 'labelPosition', 'labelColor' ],
         defaultOptions: {

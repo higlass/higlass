@@ -24,158 +24,116 @@
 </script>
 <script>
 
- var testViewConfig = 
+ var testViewConfig =
 {
+  "editable": true,
   "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1",
+    "http://localhost:8989/api/v1"
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
   "views": [
     {
+      "uid": "aa",
+      "initialXDomain": [
+        -6905569.642779708,
+        3712485959.421805
+      ],
+      "initialYDomain": [
+        663842950.1339699,
+        3815199916.3268046
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
-        "bottom": [],
         "top": [
           {
-            "type": "top-axis",
-            "datatype": [
-              "axis"
-            ],
-            "local": true,
-            "orientation": "1d-horizontal",
-            "name": "Top Axis",
-            "thumbnail": {},
-            "defaultOptions": {},
-            "uuid": "LrtH4xmQSf6piyENDcnfUg",
-            "server": "",
-            "tilesetUid": "LrtH4xmQSf6piyENDcnfUg",
-            "serverUidKey": "/LrtH4xmQSf6piyENDcnfUg",
-            "uid": "bc_v0vDLTYWoIHXmecMSKg",
-            "options": {},
-            "width": 20,
-            "height": 20
-          },
-          {
             "type": "horizontal-chromosome-labels",
-            "datatype": [
-              "chromosome-1d-labels"
-            ],
             "local": true,
             "orientation": "1d-horizontal",
             "minHeight": 30,
-            "name": "Chromosome Axis (hg19)",
+            "name": "Chromosome Axis (mm9)",
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "thumbnail": null,
-            "uuid": "CkrwCfx9ScajuukXDHH7_Q",
             "server": "",
-            "tilesetUid": "CkrwCfx9ScajuukXDHH7_Q",
-            "serverUidKey": "/CkrwCfx9ScajuukXDHH7_Q",
-            "uid": "PkIw-gN4TVGEbUg5SILsLw",
+            "tilesetUid": "d9bDxsX3S6ORXmdfJMv9BQ",
+            "uid": "YWi0QwQWRQ2KCdw2kIhjRA",
             "options": {},
             "width": 20,
             "height": 30,
             "position": "top"
           }
         ],
-        "right": [],
+        "left": [
+          {
+            "type": "left-axis",
+            "local": true,
+            "orientation": "1d-vertical",
+            "name": "Left Axis",
+            "thumbnail": {},
+            "minWidth": 100,
+            "server": "",
+            "tilesetUid": "YyJgH9w7QrCCYrQLJEh7ew",
+            "uid": "dLHlC4kPRQ-Rh3rm13TB6w",
+            "options": {},
+            "width": 100,
+            "height": 20,
+            "position": "left"
+          }
+        ],
         "center": [
           {
-            "uid": "CV5AuBixSzK0ykQR9lWm3g",
+            "uid": "dVACzDwxR7aqydM7kT3KXg",
             "type": "combined",
             "contents": [
               {
-                "uuid": "M6ln3BX4TnCCDeYxl-kjeA",
-                "filetype": "cooler",
-                "datatype": "matrix",
-                "private": false,
-                "name": "dec2_20_pluslig_1pGene_grch38_UBR4_D_1nt.pairwise.sorted.multires.cool",
-                "coordSystem": "",
-                "coordSystem2": "",
-                "server": "http://127.0.0.1:8989/api/v1",
-                "tilesetUid": "M6ln3BX4TnCCDeYxl-kjeA",
-                "serverUidKey": "http://127.0.0.1:8989/api/v1/M6ln3BX4TnCCDeYxl-kjeA",
-                "uid": "O2Spml0MSoaddqyBEAYnfg",
-                "type": "heatmap",
+                "filetype": "bed2ddb",
+                "name": "isidro.bed2ddb",
+                "server": "http://localhost:8989/api/v1",
+                "tilesetUid": "IwiFFPuHT1aPI4TSYZKxyQ",
+                "uid": "CTv4AjwcQfOY_3BtLN81AQ",
+                "type": "square-markers",
                 "options": {
-                  "labelPosition": "bottomRight",
-                  "colorRange": [
-                    "rgba(0, 0, 0, 1.0)",
-                    "rgba(128, 0, 0, 1.0)",
-                    "rgba(256, 129, 1, 1.0)",
-                    "rgba(256, 256, 129, 1.0)",
-                    "rgba(256, 256, 256, 1.0)"
-                  ],
-                  "maxZoom": null,
-                  "name": "dec2_20_pluslig_1pGene_grch38_UBR4_D_1nt.pairwise.sorted.multires.cool"
+                  "labelColor": "black",
+                  "labelPosition": "hidden",
+                  "name": "isidro.bed2ddb"
                 },
                 "width": 20,
                 "height": 20,
-                "maxWidth": 16384,
-                "binsPerDimension": 256,
-                "maxZoom": 6,
+                "maxWidth": 4294967296,
                 "position": "center"
               }
             ],
             "position": "center"
           }
         ],
-        "left": [
-          {
-            "type": "vertical-chromosome-labels",
-            "datatype": [
-              "chromosome-1d-labels"
-            ],
-            "local": true,
-            "orientation": "1d-vertical",
-            "minWidth": 30,
-            "minHeight": 30,
-            "name": "Chromosome Axis (hg19)",
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "thumbnail": null,
-            "uuid": "aEWzhLz_S8GzvyfR073y9w",
-            "server": "",
-            "tilesetUid": "aEWzhLz_S8GzvyfR073y9w",
-            "serverUidKey": "/aEWzhLz_S8GzvyfR073y9w",
-            "uid": "JhSNxaSjS7eIYmc6FjwFfQ",
-            "options": {},
-            "width": 30,
-            "height": 30,
-            "position": "left"
-          }
-        ]
+        "right": [],
+        "bottom": []
       },
       "layout": {
         "w": 12,
         "h": 12,
         "x": 0,
         "y": 0,
-        "i": "XgjXAgiAT2aOAQirNIXWsQ",
+        "i": "aa",
         "moved": false,
         "static": false
-      },
-      "initialXDomain": [
-        -4462.218708383309,
-        26005.313999076297
-      ],
-      "initialYDomain": [
-        604.0402453100387,
-        18109.36925649563
-      ],
-      "uid": "XgjXAgiAT2aOAQirNIXWsQ"
+      }
     }
   ],
-  "editable": true,
-  "exportViewUrl": "http://127.0.0.1:8989/api/v1/viewconfs/",
   "zoomLocks": {
     "locksByViewUid": {},
     "locksDict": {}
   },
-  "trackSourceServers": [
-    "http://127.0.0.1:8989/api/v1"
-  ],
   "locationLocks": {
     "locksByViewUid": {},
     "locksDict": {}
   }
 }
  ;
-    
+
     window.higlassApi;
 
     hglib.createHgComponent(
@@ -183,9 +141,37 @@
         testViewConfig,
         { bounded: true },
         function (api) {
-            window.higlassApi = api;
+            window.hgApi = api;
         }
     );
+
+    // setTimeout(function () {
+    //   // Go to PTEN
+    //   window.hgApi.goTo(
+    //     testViewConfig.views[0].uid,
+    //     'chr10',
+    //     89596071,
+    //     89758810,
+    //     'chr10',
+    //     89596071,
+    //     89758810,
+    //     true,
+    //     10000
+    //   );
+    // }, 3000);
+
+    // setTimeout(function () {
+    //   // Go to Chr1 without animation
+    //   window.hgApi.goTo(
+    //     testViewConfig.views[0].uid,
+    //     'chr1',
+    //     0,
+    //     89758810,
+    //     'chr1',
+    //     0,
+    //     89758810
+    //   );
+    // }, 11000);
 
 
 </script>

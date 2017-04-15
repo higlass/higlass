@@ -24,6 +24,7 @@ import {ViewportTracker2D} from './ViewportTracker2D.js';
 import {Track} from './Track.js';
 import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack.js';
 import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack.js';
+import {SquareMarkersTrack} from './SquareMarkersTrack.js';
 import {Chromosome2DLabels} from './Chromosome2DLabels.js';
 import {Chromosome2DGrid} from './Chromosome2DGrid.js';
 import {Chromosome2DAnnotations} from './Chromosome2DAnnotations.js';
@@ -683,6 +684,15 @@ export class TrackRenderer extends React.Component {
                 )
             case 'arrowhead-domains':
                 return new ArrowheadDomainsTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    this.currentProps.onNewTilesLoaded
+                );
+            case 'square-markers':
+                return new SquareMarkersTrack(
                     this.currentProps.pixiStage,
                     track.server,
                     track.tilesetUid,
