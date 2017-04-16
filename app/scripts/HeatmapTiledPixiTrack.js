@@ -4,6 +4,11 @@ import {heatedObjectMap} from './colormaps.js';
 import slugid from 'slugid';
 import {colorDomainToRgbaArray} from './utils.js';
 
+const COLORBAR_MAX_HEIGHT = 200;
+const COLORBAR_WIDTH = 10;
+const COLORBAR_LABELS_WIDTH = 20;
+const COLORBAR_MARGIN = 5;
+
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
         /**
@@ -12,6 +17,10 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
          * @param uid: The data set to get the tiles from the server
          */
         super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+
+        this.pColorbar = new PIXI.Graphics();
+
+        this.pMasked.addChild(this.pColorbar);
 
         // [[255,255,255,0], [237,218,10,4] ...
         // a 256 element array mapping the values 0-255 to rgba values
@@ -117,6 +126,37 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     draw() {
         //console.trace('drawing', this);
         super.draw();
+        
+        this.pColorbar.clear(); 
+        // draw a colorbar
+        console.log('this.options', this.options);
+
+        if (!this.options.colorbar) {
+            return;
+        }
+
+        if (this.options.colorbar == 'left') {
+            // draw the background for the colorbar
+            let colorbarHeight = Math.min(this.dimensions[1] - 2 * COLORBAR_MARGIN, COLORBAR_MAX_HEIGHT);
+            console.log('colorbarHeight:', colorbarHeight);
+
+            let centerY = this.position[1] + this.dimensions[1] / 2;
+
+            let xPos = this.position[0] + COLORBAR_MARGIN;
+            let yPos = centerY - colorbarHeight / 2; 
+            let width = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH;
+            let height = colorbarHeight;
+
+            console.log('xPos:', xPos);
+            console.log('yPos:', yPos);
+
+            this.pColorbar.drawRect(xPos, yPos, width, height);
+
+            // draw a small rectangle for each color of the colorbar
+            //for (let i = 0; i < 
+        }
+
+        console.log('drawing');
     }
 
     initTile(tile) {
