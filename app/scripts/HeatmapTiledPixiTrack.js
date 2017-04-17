@@ -3,6 +3,8 @@ import {tileProxy} from './TileProxy.js';
 import {heatedObjectMap} from './colormaps.js';
 import slugid from 'slugid';
 import {colorDomainToRgbaArray} from './utils.js';
+import {colorToHex} from './utils.js';
+import {scaleLinear} from 'd3-scale';
 
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;
@@ -142,7 +144,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
             let centerY = this.position[1] + this.dimensions[1] / 2;
 
-            let xPos = this.position[0] + COLORBAR_MARGIN;
+            let xPos = this.position[0];
             let yPos = centerY - colorbarHeight / 2; 
             let width = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH;
             let height = colorbarHeight;
@@ -150,10 +152,26 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             console.log('xPos:', xPos);
             console.log('yPos:', yPos);
 
+            this.pColorbar.beginFill(colorToHex('white'))
             this.pColorbar.drawRect(xPos, yPos, width, height);
 
+            let posScale = scaleLinear()
+                .domain([0,255])
+                .range([yPos + COLORBAR_MARGIN,
+                                        yPos + height - COLORBAR_MARGIN]);
+
+            //console.log('this.colorScale:', this.colorScale);
+
+            let colorHeight = (height - 2 * COLORBAR_MARGIN) / 256.;
+
             // draw a small rectangle for each color of the colorbar
-            //for (let i = 0; i < 
+            for (let i = 0; i < 256; i++) {
+                this.pColorbar.beginFill(colorToHex(`rgb(${this.colorScale[i][0]},
+                                                      ${this.colorScale[i][1]},
+                                                      ${this.colorScale[i][2]})`));
+
+                this.pColorbar.drawRect(xPos, posScale(i), COLORBAR_WIDTH, colorHeight);
+            }
         }
 
         console.log('drawing');
