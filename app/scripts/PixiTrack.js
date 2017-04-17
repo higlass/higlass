@@ -198,6 +198,9 @@ export class PixiTrack extends Track {
         graphics.moveTo(0, 0);
         graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), 0);
 
+        graphics.moveTo(0, axisHeight);
+        graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), axisHeight);
+
         for (let i = 0; i < this.axisTexts.length; i++) {
             let tick = this.tickValues[i];
 
@@ -224,6 +227,9 @@ export class PixiTrack extends Track {
         // draw the top, potentially unlabelled, ticke
         graphics.moveTo(0, 0);
         graphics.lineTo((TICK_MARGIN + TICK_LENGTH), 0);
+
+        graphics.moveTo(0, axisHeight);
+        graphics.lineTo((TICK_MARGIN + TICK_LENGTH), axisHeight);
 
         for (let i = 0; i < this.axisTexts.length; i++) {
             let tick = this.tickValues[i];
