@@ -138,6 +138,9 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             return;
         }
 
+        if (!this.valueScale)
+            return;
+
         if (this.options.colorbar == 'left') {
             // draw the background for the colorbar
             let colorbarHeight = Math.min(this.dimensions[1] - 2 * COLORBAR_MARGIN, COLORBAR_MAX_HEIGHT);
@@ -166,6 +169,15 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
                 this.pColorbar.drawRect(xPos, posScale(i), COLORBAR_WIDTH, colorHeight);
             }
+
+            
+            // draw an axis on the right side of the colorbar
+            this.pAxis.position.x = xPos + COLORBAR_WIDTH;
+            this.pAxis.position.y = posScale(0);
+
+            let axisValueScale = this.valueScale.copy().range([colorbarHeight - 2 * COLORBAR_MARGIN, 0]);
+
+            super.drawAxisRight(axisValueScale, colorbarHeight - 2 * COLORBAR_MARGIN);
         }
     }
 

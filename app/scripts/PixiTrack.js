@@ -53,6 +53,10 @@ export class PixiTrack extends Track {
 
         this.prevOptions = '';
 
+        this.axisTexts = [];
+        this.axisTextFontFamily = "Arial";
+        this.axisTextFontSize = 10;
+
         // pMobile will be a graphics object that is moved around
         // tracks that wish to use it will replace this.pMain with it
 
@@ -106,15 +110,29 @@ export class PixiTrack extends Track {
         let tickCount = Math.max(axisHeight / TICK_HEIGHT, 1);
         let i = 0; 
 
+
         // create scale ticks but not all the way to the top
-        let tickValues = ticks(valueScale.invert(MARGIN_BOTTOM), 
+        let tickValues = valueScale.ticks(tickCount);
+
+        if (axisHeight > 100) {
+            console.log('valueScale.domain()', valueScale.domain());
+            console.log('valueScale.range()', valueScale.range());
+            console.log('tickValues[0]', tickValues[0], 'tickValues[-1]', tickValues[tickValues.length-1]);
+        }
+
+        /*
+            ticks(valueScale.invert(MARGIN_BOTTOM), 
                           valueScale.invert(this.dimensions[1] - MARGIN_TOP), 
                           tickCount);
+        */
 
         if (tickValues.length < 1)  {
+            tickValues = valueScale.ticks(tickCount + 1);
+            /*
             tickValues = ticks(valueScale.invert(MARGIN_BOTTOM),
                           valueScale.invert(axisHeight - MARGIN_TOP), 
                           tickCount + 1);
+            */
 
             if (tickValues.length > 1) {
                 // sometimes the ticks function will return 0 and then 2
@@ -195,6 +213,37 @@ export class PixiTrack extends Track {
             }
         }
     }
+
+    drawAxisRight(valueScale, axisHeight) {
+        // Draw a right-oriented axis (ticks pointint to the left)
+        this.startAxis(axisHeight);
+        this.createAxisTexts(valueScale, axisHeight);
+
+        let graphics = this.pAxis;
+
+        // draw the top, potentially unlabelled, ticke
+        graphics.moveTo(0, 0);
+        graphics.lineTo((TICK_MARGIN + TICK_LENGTH), 0);
+
+        for (let i = 0; i < this.axisTexts.length; i++) {
+            let tick = this.tickValues[i];
+
+            this.axisTexts[i].x = (TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
+            this.axisTexts[i].y = valueScale(tick);
+
+            if (axisHeight > 100) {
+                console.log('vs:', valueScale(tick));
+            }
+
+            graphics.moveTo(TICK_MARGIN, valueScale(tick));
+            graphics.lineTo(TICK_MARGIN + TICK_LENGTH, valueScale(tick));
+
+            if (this.flipText) {
+                this.axisTexts[i].scale.x = -1;
+            }
+        }
+    }
+
 
     exportVerticalAxis(axisHeight) {
         let gAxis = document.createElement('g');
@@ -306,32 +355,6 @@ export class PixiTrack extends Track {
         }
 
         return gAxis;
-    }
-
-    drawAxisRight(valueScale, axisHeight) {
-        // Draw a right-oriented axis (ticks pointint to the left)
-        this.startAxis(axisHeight);
-        this.createAxisTexts(valueScale, axisHeight);
-
-        let graphics = this.pAxis;
-
-        // draw the top, potentially unlabelled, ticke
-        graphics.moveTo(0, 0);
-        graphics.lineTo((TICK_MARGIN + TICK_LENGTH), 0);
-
-        for (let i = 0; i < this.axisTexts.length; i++) {
-            let tick = this.tickValues[i];
-
-            this.axisTexts[i].x = (TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
-            this.axisTexts[i].y = valueScale(tick);
-
-            graphics.moveTo(TICK_MARGIN, valueScale(tick));
-            graphics.lineTo(TICK_MARGIN + TICK_LENGTH, valueScale(tick));
-
-            if (this.flipText) {
-                this.axisTexts[i].scale.x = -1;
-            }
-        }
     }
 
     clearAxis() {

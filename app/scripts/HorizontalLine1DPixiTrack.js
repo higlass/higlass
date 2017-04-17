@@ -9,9 +9,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         super(scene, server, uid, handleTilesetInfoReceived, option, animate);
 
-        this.axisTexts = [];
-        this.axisTextFontFamily = "Arial";
-        this.axisTextFontSize = 10;
     }
 
     initTile(tile) {
