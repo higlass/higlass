@@ -72,6 +72,7 @@ export class PixiTrack extends Track {
                                                        fill: "black"});
 
         this.pLabel.addChild(this.labelText);
+        this.tickFormat = format('.2');
     }
 
     setLabelText() {
@@ -107,12 +108,17 @@ export class PixiTrack extends Track {
     }
 
     calculateAxisTickValues(valueScale, axisHeight) {
-        let tickCount = Math.max(axisHeight / TICK_HEIGHT, 1);
+        let tickCount = Math.max(Math.ceil(axisHeight / TICK_HEIGHT), 1);
         let i = 0; 
 
 
         // create scale ticks but not all the way to the top
         let tickValues = valueScale.ticks(tickCount);
+        //console.log('valueScale', valueScale, tickValues, valueScale.domain());
+
+        if (axisHeight < 100) {
+            console.log('short axis');
+        }
 
         if (axisHeight > 100) {
             console.log('valueScale.domain()', valueScale.domain());
@@ -179,12 +185,40 @@ export class PixiTrack extends Track {
                 this.pAxis.removeChild(lastText);
             }
 
-            this.axisTexts[i].text = tick;
-
+            this.axisTexts[i].text = this.tickFormat(tick);
             this.axisTexts[i].anchor.y = 0.5;
             this.axisTexts[i].anchor.x = 0.5;
             i++;
         }
+    }
+
+    hideOverlappingAxisLabels() {
+        for (let i = this.axisTexts.length-1; i > 0; i--)
+            this.axisTexts[i].visible = true;
+
+        for (let i = this.axisTexts.length-1; i > 0; i--) {
+            if (!this.axisTexts[i].visible)
+                continue;
+
+            console.log('at[i]', this.axisTexts[i].y);
+            let j = i-1;
+
+            while (j >= 0) {
+                // does this text overvap the previous one?
+                if ((this.axisTexts[i].y + this.axisTexts[i].height / 2) > (this.axisTexts[j].y - this.axisTexts[j].height / 2)) {
+                    console.log('hiding...');
+                    console.log('i:', i, 'this.axisTexts[i].y', this.axisTexts[i].y, this.axisTexts[i].height);
+                    console.log('j:', j, 'this.axisTexts[j].y', this.axisTexts[j].y, this.axisTexts[j].height);
+
+                    this.axisTexts[j].visible = false;
+                } else { 
+                    break;
+                }
+
+                j -= 1;
+            }
+        }
+
     }
 
     drawAxisLeft(valueScale, axisHeight) {
@@ -208,6 +242,7 @@ export class PixiTrack extends Track {
             this.axisTexts[i].x = - (TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
             this.axisTexts[i].y = valueScale(tick);
 
+
             graphics.moveTo(-TICK_MARGIN, valueScale(tick));
             graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), valueScale(tick));
 
@@ -215,6 +250,8 @@ export class PixiTrack extends Track {
                 this.axisTexts[i].scale.x = -1;
             }
         }
+
+        this.hideOverlappingAxisLabels();
     }
 
     drawAxisRight(valueScale, axisHeight) {
@@ -237,10 +274,6 @@ export class PixiTrack extends Track {
             this.axisTexts[i].x = (TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
             this.axisTexts[i].y = valueScale(tick);
 
-            if (axisHeight > 100) {
-                console.log('vs:', valueScale(tick));
-            }
-
             graphics.moveTo(TICK_MARGIN, valueScale(tick));
             graphics.lineTo(TICK_MARGIN + TICK_LENGTH, valueScale(tick));
 
@@ -248,6 +281,8 @@ export class PixiTrack extends Track {
                 this.axisTexts[i].scale.x = -1;
             }
         }
+
+        this.hideOverlappingAxisLabels();
     }
 
 

@@ -81,7 +81,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
                 offsetValue = this.minVisibleValue();
 
             this.valueScale = scaleLog()
-                .base(Math.E)
+                //.base(Math.E)
                 .domain([offsetValue, maxVisibleValue])
                 .range([this.dimensions[1], 0]);
             pseudocount = offsetValue;
