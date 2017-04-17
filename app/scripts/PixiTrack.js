@@ -1,8 +1,17 @@
 import {Track} from './Track.js';
+import {ticks} from 'd3-array';
 import {format, formatPrefix, precisionRound, precisionPrefix} from 'd3-format';
 import {colorToHex} from './utils.js';
 import slugid from 'slugid';
 //import {LRUCache} from './lru.js';
+//
+const TICK_HEIGHT = 40;
+const TICK_MARGIN = 0;
+const TICK_LENGTH = 5;
+const TICK_LABEL_MARGIN = 4;
+const MARGIN_TOP = 3;
+const MARGIN_BOTTOM = 3;
+
 
 export class PixiTrack extends Track {
     constructor(scene, options) {
@@ -28,6 +37,7 @@ export class PixiTrack extends Track {
         // for drawing the track label (often its name)
         this.pLabel = new PIXI.Graphics();
         this.pMobile = new PIXI.Graphics();
+        this.pAxis = new PIXI.Graphics();
 
         this.scene.addChild(this.pBase);
 
@@ -37,6 +47,7 @@ export class PixiTrack extends Track {
         this.pMasked.addChild(this.pMask);
         this.pMasked.addChild(this.pMobile);
         this.pMasked.addChild(this.pLabel);
+        this.pBase.addChild(this.pAxis);
 
         this.pMasked.mask = this.pMask;
 
@@ -47,11 +58,8 @@ export class PixiTrack extends Track {
 
         this.options = Object.assign(this.options, options);
 
-
         let labelTextText = this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
-
-        this.labelTextFontSize = 12;
         this.labelTextFontFamily = 'Arial';
         this.labelText = new PIXI.Text(labelTextText, {fontSize: this.labelTextFontSize + 'px', 
                                                        fontFamily: this.labelTextFontFamily, 
@@ -81,7 +89,6 @@ export class PixiTrack extends Track {
         this.pMask.beginFill();
         this.pMask.drawRect(position[0], position[1], dimensions[0], dimensions[1]);
         this.pMask.endFill();
-
     }
 
     remove() {
@@ -91,6 +98,136 @@ export class PixiTrack extends Track {
          */
         this.pBase.clear();
         this.scene.removeChild(this.pBase);
+    }
+
+    calculateAxisTickValues(valueScale, axisHeight) {
+        let tickCount = Math.max(axisHeight / TICK_HEIGHT, 1);
+        let i = 0; 
+
+        // create scale ticks but not all the way to the top
+        let tickValues = ticks(valueScale.invert(MARGIN_BOTTOM), 
+                          valueScale.invert(this.dimensions[1] - MARGIN_TOP), 
+                          tickCount);
+
+        if (tickValues.length < 1)  {
+            tickValues = ticks(valueScale.invert(MARGIN_BOTTOM),
+                          valueScale.invert(axisHeight - MARGIN_TOP), 
+                          tickCount + 1);
+
+            if (tickValues.length > 1) {
+                // sometimes the ticks function will return 0 and then 2
+                // if it didn't return enough previously, we probably only want a single
+                // tick
+                tickValues = [tickValues[0]];
+            }
+        }
+
+        return tickValues;
+    }
+
+    startAxis(axisHeight) {
+        let graphics = this.pAxis;
+
+        graphics.clear();
+        graphics.lineStyle(1, 0x000000, 1);
+
+        // draw the axis line
+        graphics.moveTo(0,0);
+        graphics.lineTo(0, axisHeight);
+
+    }
+
+    createAxisTexts(valueScale, axisHeight) {
+        this.tickValues = this.calculateAxisTickValues(valueScale, axisHeight);
+        let i = 0;
+
+        while (i < this.tickValues.length) {
+            let tick = this.tickValues[i];
+
+            while (this.axisTexts.length <= i) {
+                let newText = new PIXI.Text(tick, 
+                        {fontSize: this.axisTextFontSize + "px", 
+                         fontFamily: this.axisTextFontFamily, 
+                         fill: "black"});
+                this.axisTexts.push(newText);
+
+                this.pAxis.addChild(newText);
+            }
+
+            while (this.axisTexts.length > i+1) {
+                let lastText = this.axisTexts.pop();
+                this.pAxis.removeChild(lastText);
+            }
+
+            this.axisTexts[i].text = tick;
+
+            this.axisTexts[i].anchor.y = 0.5;
+            this.axisTexts[i].anchor.x = 0.5;
+            i++;
+        }
+    }
+
+    drawAxisLeft(valueScale, axisHeight) {
+        // Draw a left-oriented axis (ticks pointing to the right)
+        this.startAxis(axisHeight);
+        this.createAxisTexts(valueScale, axisHeight);
+
+        let graphics = this.pAxis;
+
+        // draw the top, potentially unlabelled, ticke
+        graphics.moveTo(0, 0);
+        graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), 0);
+
+        for (let i = 0; i < this.axisTexts.length; i++) {
+            let tick = this.tickValues[i];
+
+            // draw ticks to the left of the axis
+            this.axisTexts[i].x = - (TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
+            this.axisTexts[i].y = valueScale(tick);
+
+            console.log('this.axisTexts[i].x', this.axisTexts[i].x);
+            console.log('this.axisTexts[i].y', this.axisTexts[i].y);
+
+            graphics.moveTo(-TICK_MARGIN, valueScale(tick));
+            graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), valueScale(tick));
+
+            if (this.flipText) {
+                this.axisTexts[i].scale.x = -1;
+            }
+        }
+    }
+
+    drawAxisRight(valueScale, axisHeight) {
+        // Draw a right-oriented axis (ticks pointint to the left)
+        this.startAxis(axisHeight);
+        this.createAxisTexts(valueScale, axisHeight);
+
+        let graphics = this.pAxis;
+
+        // draw the top, potentially unlabelled, ticke
+        graphics.moveTo(0, 0);
+        graphics.lineTo((TICK_MARGIN + TICK_LENGTH), 0);
+
+        for (let i = 0; i < this.axisTexts.length; i++) {
+            let tick = this.tickValues[i];
+
+            this.axisTexts[i].x = (TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
+            this.axisTexts[i].y = valueScale(tick);
+
+            graphics.moveTo(TICK_MARGIN, valueScale(tick));
+            graphics.lineTo(TICK_MARGIN + TICK_LENGTH, valueScale(tick));
+
+            if (this.flipText) {
+                this.axisTexts[i].scale.x = -1;
+            }
+        }
+    }
+
+    clearAxis() {
+        while (this.axisTexts.length) {
+            let axisText = this.axisTexts.pop();
+            graphics.removeChild(axisText);
+        }
     }
 
     drawLabel() {

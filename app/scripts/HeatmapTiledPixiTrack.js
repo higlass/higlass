@@ -5,6 +5,7 @@ import slugid from 'slugid';
 import {colorDomainToRgbaArray} from './utils.js';
 import {colorToHex} from './utils.js';
 import {scaleLinear} from 'd3-scale';
+import {scaleLog} from 'd3-scale';
 
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;
@@ -21,6 +22,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
         this.pColorbar = new PIXI.Graphics();
+        this.scale = {};
 
         this.pMasked.addChild(this.pColorbar);
 
@@ -131,7 +133,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         
         this.pColorbar.clear(); 
         // draw a colorbar
-        console.log('this.options', this.options);
 
         if (!this.options.colorbar) {
             return;
@@ -140,17 +141,12 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         if (this.options.colorbar == 'left') {
             // draw the background for the colorbar
             let colorbarHeight = Math.min(this.dimensions[1] - 2 * COLORBAR_MARGIN, COLORBAR_MAX_HEIGHT);
-            console.log('colorbarHeight:', colorbarHeight);
-
             let centerY = this.position[1] + this.dimensions[1] / 2;
 
             let xPos = this.position[0];
             let yPos = centerY - colorbarHeight / 2; 
             let width = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH;
             let height = colorbarHeight;
-
-            console.log('xPos:', xPos);
-            console.log('yPos:', yPos);
 
             this.pColorbar.beginFill(colorToHex('white'))
             this.pColorbar.drawRect(xPos, yPos, width, height);
@@ -159,8 +155,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 .domain([0,255])
                 .range([yPos + COLORBAR_MARGIN,
                                         yPos + height - COLORBAR_MARGIN]);
-
-            //console.log('this.colorScale:', this.colorScale);
 
             let colorHeight = (height - 2 * COLORBAR_MARGIN) / 256.;
 
@@ -173,8 +167,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 this.pColorbar.drawRect(xPos, posScale(i), COLORBAR_WIDTH, colorHeight);
             }
         }
-
-        console.log('drawing');
     }
 
     initTile(tile) {
@@ -185,12 +177,17 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
          *              this function are tile.tileData = {'dense': [...], ...}
          *              and tile.graphics
          */
-        tileProxy.tileDataToPixData(tile,
+        this.scale.minValue = this.minVisibleValue();
+        this.scale.maxValue = this.maxVisibleValue();
 
-                                    this.minVisibleValue(),
-                                    this.maxVisibleValue(),
-                                                  this.colorScale,
-                                                  function(pixData) {
+        this.valueScale = scaleLog().range([254,0])
+            .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue])
+
+        tileProxy.tileDataToPixData(tile,
+                                    this.valueScale,
+                                    this.valueScale.domain()[0], //used as a pseudocount to prevent taking the log of 0
+                                    this.colorScale,
+                                    function(pixData) {
             // the tileData has been converted to pixData by the worker script and needs to be loaded
             // as a sprite
             let graphics = tile.graphics;

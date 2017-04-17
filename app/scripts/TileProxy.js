@@ -162,7 +162,7 @@ class TileProxy  {
         workerGetTilesetInfo(outUrl, done);
     }
 
-    tileDataToPixData(tile, minVisibleValue, maxVisibleValue, colorScale, finished) {
+    tileDataToPixData(tile, valueScale, pseudocount, colorScale, finished) {
         /**
          * Render 2D tile data. Convert the raw values to an array of
          * color values
@@ -183,8 +183,8 @@ class TileProxy  {
 
             // comment this and uncomment the code afterwards to enable threading
             let pixData = workerSetPix(newTileData.length, newTileData,
-                                              minVisibleValue,
-                                              maxVisibleValue,
+                                              valueScale,
+                                              pseudocount,
                                               colorScale);
             finished(pixData);
 

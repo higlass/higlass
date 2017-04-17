@@ -17,16 +17,18 @@ function countTransform(count) {
 let epsilon = 0.0000001;
 const MAX_FETCH_TILES = 20;
 
-export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, colorScale, passedCountTransform) {
+export function workerSetPix(size, data, valueScale, pseudocount, colorScale, passedCountTransform) {
+    /**
+     * The pseudocount is generally the minimum non-zero value and is 
+     * used so that our log scaling doesn't lead to NaN values.
+     **/
     let epsilon = 0.000001;
 
-    let countTransform = x => {
-        return Math.log(x);
-    }
-
     //let qScale = scaleQuantile().domain(data).range(range(255));
+    /*
     let valueScale = scaleLinear().range([254, 0])
         .domain([countTransform(minVisibleValue), countTransform(maxVisibleValue + minVisibleValue)])
+    */
 
     let pixData = new Uint8ClampedArray(size * 4);
 
@@ -41,8 +43,7 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
 
             if (d > epsilon) {
                 // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
-                let ct = countTransform(d + minVisibleValue);
-                rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(ct))))
+                rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(d + pseudocount))))
             }
             //let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
             if (rgbIdx < 0 || rgbIdx > 255) {
@@ -57,8 +58,8 @@ export function workerSetPix(size, data, minVisibleValue, maxVisibleValue, color
         };
     } catch (err) {
         console.log('valueScale.domain():', valueScale.domain());
-        console.log('minVisibleValue:', minVisibleValue, 'maxVisibleValue:', maxVisibleValue);
-        console.log('rgbIdx:', rgbIdx, "d:", e, "ct:", countTransform(e));
+        console.log('pseudocount:', pseudocount);
+        console.log('rgbIdx:', rgbIdx, "d:", e, "ct:", valueScale(e));
         console.error('ERROR:', err);
         return pixData;
     }

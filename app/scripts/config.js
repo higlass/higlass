@@ -94,6 +94,26 @@ export const optionsInfo = {
             'hidden': { name: 'Hidden', value: null }
         }
     },
+
+    scalePosition: {
+        name: "Scale Position",
+        inlineOptions: {
+            'topLeft': { name: 'Top Left', value: 'topLeft' },
+            'topRight': { name: 'Top Right', value: 'bottomRight' },
+            'bottomLeft': { name: 'Bottom Left', value: 'bottomLeft' },
+            'bottomRight': { name: 'Bottom Right', value: 'bottomRight' },
+            'hidden': { name: 'Hidden', value: null }
+        }
+    },
+
+    scaleOrientation: {
+        name: "Scale Orientation",
+        inlineOptions: {
+            'horizontal': { name: 'Horizontal', value: 'horizontal' },
+            'vertical': { name: 'Vertical', value: 'vertical' },
+        }
+    },
+
     labelColor: {
         name: "Label Color",
         inlineOptions: availableColors
@@ -216,7 +236,8 @@ export const tracksInfo = [
             colorRange: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], //corresponding to the fall colormap
             maxZoom: null
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom' ]
+        availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom', 
+        'scalePosition', 'scaleOrientation']
         //exportable: true
     },
     {

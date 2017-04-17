@@ -64,7 +64,7 @@ let testViewConfig =
             "height": 20,
             "maxWidth": 4294967296,
             "position": "top",
-            "uid": "HcvmtDwuR5i99XGz-rjVxA"
+            "uid": "line1"
           },
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
@@ -507,6 +507,20 @@ describe("<HiGlassComponent />", () => {
             expect(svgText.indexOf('Chromosome2DGrid')).to.be.above(0);
             expect(svgText.indexOf('HorizontalChromosomeLabels')).to.be.above(0);
             //hgc.instance().handleExportSVG();
+            
+            //
+            //console.log('svg', svg);
+            let line1 = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects['line1'].trackObject;
+            let axis = line1.exportAxisSVG();
+            let axisText = new XMLSerializer().serializeToString(axis);
+            console.log('axisText:', axisText);
+            //let axis = svg.getElementById('axis');
+            // make sure we have a tick mark for 200000
+            expect(axisText.indexOf('200000')).to.be.above(0);
+
+            // position of the axis
+            expect(axisText.indexOf('175')).to.be.above(0);
+            expect(axisText.indexOf('146')).to.be.above(0);
         })
 
         it ('does something else', () => {
