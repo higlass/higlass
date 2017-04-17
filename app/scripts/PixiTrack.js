@@ -61,6 +61,8 @@ export class PixiTrack extends Track {
         let labelTextText = this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
         this.labelTextFontFamily = 'Arial';
+        this.labelTextFontSize = 12;
+
         this.labelText = new PIXI.Text(labelTextText, {fontSize: this.labelTextFontSize + 'px', 
                                                        fontFamily: this.labelTextFontFamily, 
                                                        fill: "black"});
@@ -185,9 +187,6 @@ export class PixiTrack extends Track {
             this.axisTexts[i].x = - (TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
             this.axisTexts[i].y = valueScale(tick);
 
-            console.log('this.axisTexts[i].x', this.axisTexts[i].x);
-            console.log('this.axisTexts[i].y', this.axisTexts[i].y);
-
             graphics.moveTo(-TICK_MARGIN, valueScale(tick));
             graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), valueScale(tick));
 
@@ -195,6 +194,118 @@ export class PixiTrack extends Track {
                 this.axisTexts[i].scale.x = -1;
             }
         }
+    }
+
+    exportVerticalAxis(axisHeight) {
+        let gAxis = document.createElement('g');
+        gAxis.setAttribute('class', 'axis-vertical');
+        let stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
+
+        let line = document.createElement('path');
+
+        line.setAttribute('fill', 'transparent');
+        line.setAttribute('stroke', 'black');
+        line.setAttribute('id', 'axis-line');
+
+        line.setAttribute('d',
+                `M0,0 L0,${axisHeight}`);
+
+        gAxis.appendChild(line);
+
+        return gAxis;
+    }
+
+
+    createAxisSVGLine() {
+        // factor out the styling for axis lines
+        let stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
+
+        let line = document.createElement('path');
+        line.setAttribute('id', 'tick-mark');
+        line.setAttribute('fill', 'transparent');
+        line.setAttribute('stroke', stroke);
+
+        return line;
+    }
+
+    createAxisSVGText(text) {
+        // factor out the creation of axis texts
+        let t = document.createElement('text');
+        
+        t.innerHTML = text;
+        t.setAttribute('id', 'axis-text');
+        t.setAttribute('text-anchor', 'middle');
+        t.setAttribute('font-family', this.axisTextFontFamily);
+        t.setAttribute('font-size', this.axisTextFontSize);
+        t.setAttribute('dy', this.axisTextFontSize / 2 - 2);
+
+        return t;
+    }
+
+    exportAxisLeftSVG(valueScale, axisHeight) {
+        let gAxis = this.exportVerticalAxis(axisHeight);
+
+        let line = this.createAxisSVGLine();
+        gAxis.appendChild(line);
+
+        line.setAttribute('d',
+                `M0,0 L${-(TICK_MARGIN + TICK_LENGTH)},0`);
+
+        for (let i = 0; i < this.axisTexts.length; i++) {
+            let tick = this.tickValues[i];
+            let text = this.axisTexts[i];
+
+            let line = this.createAxisSVGLine();
+
+            gAxis.appendChild(line);
+
+            line.setAttribute('d',
+                    `M${-TICK_MARGIN},${valueScale(tick)} L${-(TICK_MARGIN + TICK_LENGTH)},${valueScale(tick)}`);
+
+            let g = document.createElement('g');
+            gAxis.appendChild(g);
+            let t = this.createAxisSVGText(text.text);
+            g.appendChild(t);
+
+            g.setAttribute('transform',
+            `translate(${text.position.x},${text.position.y})
+             scale(${text.scale.x},${text.scale.y})`)
+        }
+
+        return gAxis;
+    }
+
+    exportAxisRightSVG(valueScale, axisHeight) {
+        let gAxis = this.exportVerticalAxis(axisHeight);
+
+        let line = this.createAxisSVGLine();
+        gAxis.appendChild(line);
+
+        line.setAttribute('d',
+                `M0,0 L${TICK_MARGIN + TICK_LENGTH},0`);
+
+        for (let i = 0; i < this.axisTexts.length; i++) {
+            let tick = this.tickValues[i];
+            let text = this.axisTexts[i];
+
+            let line = this.createAxisSVGLine();
+
+            gAxis.appendChild(line);
+
+            line.setAttribute('d',
+                    `M${TICK_MARGIN},${valueScale(tick)} L${TICK_MARGIN + TICK_LENGTH},${valueScale(tick)}`);
+
+            let g = document.createElement('g');
+            gAxis.appendChild(g);
+            let t = this.createAxisSVGText(text.text);
+            g.appendChild(t);
+
+            g.setAttribute('transform',
+            `translate(${text.position.x},${text.position.y})
+             scale(${text.scale.x},${text.scale.y})`)
+        }
+
+        return gAxis;
     }
 
     drawAxisRight(valueScale, axisHeight) {
@@ -390,7 +501,6 @@ export class PixiTrack extends Track {
         // this rectangle is cleared by functions that override this draw method
         this.drawLabel();
 
-        //console.log('this.options:', this.options);
         /*
 
         let graphics = this.pMain;
@@ -404,25 +514,27 @@ export class PixiTrack extends Track {
         */
     }
 
+
     exportSVG() {
         let gBase = document.createElement('g');
+
         let gClipped = document.createElement('g');
+        gBase.appendChild(gClipped);
+
         let gTrack = document.createElement('g');
+        gClipped.appendChild(gTrack);
+
         let gLabels = document.createElement('g');
+        gClipped.appendChild(gLabels);   // labels should always appear on top of the track
 
         // define the clipping area as a polygon defined by the track's
         // dimensions on the canvas
         let clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
-        let clipPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-
-
         gBase.appendChild(clipPath);
-        gBase.appendChild(gClipped);
 
+        let clipPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
         clipPath.appendChild(clipPolygon);
 
-        gClipped.appendChild(gTrack);
-        gClipped.appendChild(gLabels);   // labels should always appear on top of the track
 
 
         clipPolygon.setAttribute('points', `${this.position[0]},${this.position[1]} ` +

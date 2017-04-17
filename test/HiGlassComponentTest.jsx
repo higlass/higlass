@@ -469,6 +469,100 @@ let testViewConfig =
   }
 }
 
+let testViewConfig2 = 
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        957648546.1441214,
+        2042351453.8558786
+      ],
+      "initialYDomain": [
+        -26548672.566371918,
+        3026548672.566372
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "filetype": "hitile",
+            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "red",
+              "labelPosition": "outerLeft",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log"
+            },
+            "width": 20,
+            "height": 20,
+            "maxWidth": 4294967296,
+            "position": "top",
+            "uid": "line1"
+          }
+        ],
+        "left": [
+          {
+            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "vertical-line",
+            "options": {
+              "labelColor": "red",
+              "labelPosition": "outerLeft",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log",
+              "axisPositionVertical": "top"
+            },
+            "width": 20,
+            "position": "left",
+            "uid": "SmDGhBndRfSy5r7wGsbtOQ",
+            "maxWidth": 4294967296
+          }
+        ],
+        "center": [
+        ],
+        "right": [
+        ],
+        "bottom": [
+        ]
+      },
+      "layout": {
+        "w": 6,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}
+
 const pageLoadTime = 1500;
 
 function testAsync(done) {
@@ -477,10 +571,12 @@ function testAsync(done) {
         //flag = true;
 
         // Invoke the special done callback
+        console.log('done:', done);
         done();
     }, pageLoadTime);
 }
 
+/*
 describe("<HiGlassComponent />", () => {
     const div = document.createElement('div');
     document.body.appendChild(div);
@@ -506,12 +602,13 @@ describe("<HiGlassComponent />", () => {
 
             expect(svgText.indexOf('Chromosome2DGrid')).to.be.above(0);
             expect(svgText.indexOf('HorizontalChromosomeLabels')).to.be.above(0);
-            //hgc.instance().handleExportSVG();
+            hgc.instance().handleExportSVG();
             
             //
             //console.log('svg', svg);
             let line1 = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects['line1'].trackObject;
-            let axis = line1.exportAxisSVG();
+
+            let axis = line1.exportAxisRightSVG(line1.valueScale, line1.dimensions[1]);
             let axisText = new XMLSerializer().serializeToString(axis);
             console.log('axisText:', axisText);
             //let axis = svg.getElementById('axis');
@@ -521,6 +618,55 @@ describe("<HiGlassComponent />", () => {
             // position of the axis
             expect(axisText.indexOf('175')).to.be.above(0);
             expect(axisText.indexOf('146')).to.be.above(0);
+        })
+
+        it ('does something else', () => {
+            //hgc.instance().handleExportSVG(); 
+        });
+
+        if ('does one more thing', () => {
+
+        });
+    })
+});
+*/
+
+describe("Simple HiGlassComponent", () => {
+    const div = document.createElement('div');
+    document.body.appendChild(div);
+
+    div.setAttribute('style', 'height:800px; width:800px');
+
+    let hgc = mount(<HiGlassComponent 
+                        options={{bounded: true}}
+                        viewConfig={testViewConfig2}
+                      />, 
+            {attachTo: div});
+
+
+    // wait a bit of time for the data to be loaded from the server
+    beforeAll((done) => {
+        testAsync(done);
+    });
+
+    describe("page has loaded", () => {
+        it ('exports SVG', () => {
+            let svg = hgc.instance().createSVG();
+            let svgText = new XMLSerializer().serializeToString(svg);
+
+            hgc.instance().handleExportSVG();
+            
+            //
+            //console.log('svg', svg);
+            let line1 = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects['line1'].trackObject;
+
+            let axis = line1.exportAxisRightSVG(line1.valueScale, line1.dimensions[1]);
+            let axisText = new XMLSerializer().serializeToString(axis);
+
+            console.log('axisText:', axisText);
+            //let axis = svg.getElementById('axis');
+            // make sure we have a tick mark for 200000
+            expect(axisText.indexOf('200000')).to.be.above(0);
         })
 
         it ('does something else', () => {

@@ -152,6 +152,8 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         this.draw();
 
     }
+
+    /*
     exportAxisSVG() {
         let gAxis = document.createElement('g');
         gAxis.setAttribute('id', 'axis');
@@ -218,6 +220,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         return gAxis;
     }
+    */
 
     exportSVG() {
         let track=null, base=null;
@@ -248,9 +251,26 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             output.appendChild(g);
         }
 
+        let gAxis = document.createElement('g');
+        gAxis.setAttribute('id', 'axis');
+
+        // append the axis to base so that it's not clipped
+        base.appendChild(gAxis);
+        gAxis.setAttribute('transform',
+            `translate(${this.pAxis.position.x}, ${this.pAxis.position.y})`);
+
         // add the axis to the export
-        let gAxis = this.exportAxisSVG();
-        output.appendChild(gAxis);
+        if (this.options.axisPositionHorizontal == 'left' 
+            || this.options.axisPositionVertical == 'top') {
+            // left axis are shown at the beginning of the plot
+            let gDrawnAxis = this.exportAxisLeftSVG(this.valueScale, this.dimensions[1]);
+            gAxis.appendChild(gDrawnAxis);
+        } else if (this.options.axisPositionHorizontal == 'right' 
+            || this.options.axisPositionVertical == 'bottom') {
+
+            let gDrawnAxis = this.exportAxisRightSVG(this.valueScale, this.dimensions[1]);
+            gAxis.appendChild(gDrawnAxis);
+        }
 
         return [base,track];
     }
