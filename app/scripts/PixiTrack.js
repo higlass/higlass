@@ -1,8 +1,11 @@
 import {Track} from './Track.js';
+import {ticks} from 'd3-array';
 import {format, formatPrefix, precisionRound, precisionPrefix} from 'd3-format';
 import {colorToHex} from './utils.js';
 import slugid from 'slugid';
 //import {LRUCache} from './lru.js';
+//
+
 
 export class PixiTrack extends Track {
     constructor(scene, options) {
@@ -28,6 +31,7 @@ export class PixiTrack extends Track {
         // for drawing the track label (often its name)
         this.pLabel = new PIXI.Graphics();
         this.pMobile = new PIXI.Graphics();
+        this.pAxis = new PIXI.Graphics();
 
         this.scene.addChild(this.pBase);
 
@@ -37,6 +41,7 @@ export class PixiTrack extends Track {
         this.pMasked.addChild(this.pMask);
         this.pMasked.addChild(this.pMobile);
         this.pMasked.addChild(this.pLabel);
+        this.pBase.addChild(this.pAxis);
 
         this.pMasked.mask = this.pMask;
 
@@ -47,12 +52,11 @@ export class PixiTrack extends Track {
 
         this.options = Object.assign(this.options, options);
 
-
         let labelTextText = this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
-
-        this.labelTextFontSize = 12;
         this.labelTextFontFamily = 'Arial';
+        this.labelTextFontSize = 12;
+
         this.labelText = new PIXI.Text(labelTextText, {fontSize: this.labelTextFontSize + 'px', 
                                                        fontFamily: this.labelTextFontFamily, 
                                                        fill: "black"});
@@ -81,7 +85,6 @@ export class PixiTrack extends Track {
         this.pMask.beginFill();
         this.pMask.drawRect(position[0], position[1], dimensions[0], dimensions[1]);
         this.pMask.endFill();
-
     }
 
     remove() {
@@ -92,6 +95,8 @@ export class PixiTrack extends Track {
         this.pBase.clear();
         this.scene.removeChild(this.pBase);
     }
+
+
 
     drawLabel() {
         let graphics = this.pLabel;
@@ -253,7 +258,6 @@ export class PixiTrack extends Track {
         // this rectangle is cleared by functions that override this draw method
         this.drawLabel();
 
-        //console.log('this.options:', this.options);
         /*
 
         let graphics = this.pMain;
@@ -267,25 +271,27 @@ export class PixiTrack extends Track {
         */
     }
 
+
     exportSVG() {
         let gBase = document.createElement('g');
+
         let gClipped = document.createElement('g');
+        gBase.appendChild(gClipped);
+
         let gTrack = document.createElement('g');
+        gClipped.appendChild(gTrack);
+
         let gLabels = document.createElement('g');
+        gClipped.appendChild(gLabels);   // labels should always appear on top of the track
 
         // define the clipping area as a polygon defined by the track's
         // dimensions on the canvas
         let clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
-        let clipPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-
-
         gBase.appendChild(clipPath);
-        gBase.appendChild(gClipped);
 
+        let clipPolygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
         clipPath.appendChild(clipPolygon);
 
-        gClipped.appendChild(gTrack);
-        gClipped.appendChild(gLabels);   // labels should always appear on top of the track
 
 
         clipPolygon.setAttribute('points', `${this.position[0]},${this.position[1]} ` +

@@ -3,26 +3,15 @@ import {ticks} from 'd3-array';
 import {tileProxy} from './TileProxy.js';
 import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
 import {colorToHex} from './utils.js';
-
-const TICK_HEIGHT = 40;
-const TICK_MARGIN = 0;
-const TICK_LENGTH = 5;
-const TICK_LABEL_MARGIN = 4;
-const MARGIN_TOP = 3;
-const MARGIN_BOTTOM = 3;
+import {AxisPixi} from './AxisPixi.js';
 
 export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
 
         super(scene, server, uid, handleTilesetInfoReceived, option, animate);
 
-        this.pAxis = new PIXI.Graphics();
-
-        this.pMain.addChild(this.pAxis);
-
-        this.axisTexts = [];
-        this.axisTextFontFamily = "Arial";
-        this.axisTextFontSize = 10;
+        this.axis = new AxisPixi(this);
+        this.pBase.addChild(this.axis.pAxis);
     }
 
     initTile(tile) {
@@ -40,100 +29,24 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     }
 
     drawAxis(valueScale) {
+        if ((!this.options.axisPositionVertical &&
+             !this.options.axisPositionHorizontal) ||
+            this.options.axisPositionVertical == 'hidden' ||
+            this.options.axisPositionHorizontal == 'hidden')
+            super.clearAxis();
 
-        let tickCount = Math.max(this.dimensions[1] / TICK_HEIGHT, 1);
+        if (this.options.axisPositionHorizontal == 'left' 
+            || this.options.axisPositionVertical == 'top') {
+            // left axis are shown at the beginning of the plot
 
-        let graphics = this.pAxis;
+            this.axis.pAxis.position.x = this.position[0];
+            this.axis.pAxis.position.y = this.position[1];
 
-        graphics.clear();
-        graphics.lineStyle(1, 0x000000, 1);
-
-
-        if (this.options.axisPositionHorizontal == 'left' ||
-            this.options.axisPositionHorizontal == 'right' ||
-            this.options.axisPositionVertical == 'top' ||
-            this.options.axisPositionVertical == 'bottom') {
-
-            let i = 0; 
-
-            // create scale ticks but not all the way to the top
-            this.tickValues = ticks(valueScale.invert(MARGIN_BOTTOM), 
-                              valueScale.invert(this.dimensions[1] - MARGIN_TOP), 
-                              tickCount);
-
-            if (this.tickValues.length < 1)  {
-                this.tickValues = ticks(valueScale.invert(MARGIN_BOTTOM),
-                              valueScale.invert(this.dimensions[1] - MARGIN_TOP), 
-                              tickCount + 1);
-
-                if (this.tickValues.length > 1) {
-                    // sometimes the ticks function will return 0 and then 2
-                    // if it didn't return enough previously, we probably only want a single
-                    // tick
-                    this.tickValues = [this.tickValues[0]];
-                }
-            }
-
-            //
-            while (i < this.tickValues.length) {
-                let tick = this.tickValues[i];
-
-                while (this.axisTexts.length <= i) {
-                    let newText = new PIXI.Text(tick, 
-                            {fontSize: this.axisTextFontSize + "px", 
-                             fontFamily: this.axisTextFontFamily, 
-                             fill: "black"});
-                    this.axisTexts.push(newText);
-
-                    this.pAxis.addChild(newText);
-                }
-
-                while (this.axisTexts.length > i+1) {
-                    let lastText = this.axisTexts.pop();
-                    this.pAxis.removeChild(lastText);
-                }
-
-                this.axisTexts[i].text = tick;
-                this.axisTexts[i].anchor.y = 0.5;
-                this.axisTexts[i].anchor.x = 0.5;
-                this.axisTexts[i].x = TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2;
-                this.axisTexts[i].y = valueScale(tick);
-
-                if (this.options.axisPositionHorizontal == 'right' || 
-                    this.options.axisPositionVertical == 'bottom') {
-                    this.axisTexts[i].x = this.dimensions[0] - 
-                        (TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN) - this.axisTexts[i].width / 2;
-
-                    graphics.moveTo(this.dimensions[0],0);
-                    graphics.lineTo(this.dimensions[0], this.dimensions[1]);
-
-                    graphics.moveTo(this.dimensions[0], 0);
-                    graphics.lineTo(this.dimensions[0] - (TICK_MARGIN + TICK_LENGTH), 0);
-
-                    graphics.moveTo(this.dimensions[0] - TICK_MARGIN, valueScale(tick));
-                    graphics.lineTo(this.dimensions[0] - (TICK_MARGIN + TICK_LENGTH), valueScale(tick));
-                } else {
-                    graphics.moveTo(0,0);
-                    graphics.lineTo(0, this.dimensions[1]);
-
-                    graphics.moveTo(0, 0);
-                    graphics.lineTo(TICK_MARGIN + TICK_LENGTH, 0);
-
-                    graphics.moveTo(TICK_MARGIN, valueScale(tick));
-                    graphics.lineTo(TICK_MARGIN + TICK_LENGTH, valueScale(tick));
-                }
-
-                if (this.flipText) {
-                    this.axisTexts[i].scale.x = -1;
-                }
-
-                i++;
-            }
+            this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
         } else {
-            while (this.axisTexts.length) {
-                let axisText = this.axisTexts.pop();
-                graphics.removeChild(axisText);
-            }
+            this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
+            this.axis.pAxis.position.y = this.position[1];
+            this.axis.drawAxisRight(valueScale, this.dimensions[1]);
         }
     }
 
@@ -159,9 +72,9 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             return;
         */
 
-        let valueScale = null;
         let pseudocount = 0;    // if we use a log scale, then we'll set a pseudocount
                                 // equal to the smallest non-zero value
+        this.valueScale = null;
         
 
         if (this.options.valueScaling == 'log') {
@@ -170,23 +83,23 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             if (!this.medianVisibleValue)
                 offsetValue = this.minVisibleValue();
 
-            valueScale = scaleLog()
-                .base(Math.E)
+            this.valueScale = scaleLog()
+                //.base(Math.E)
                 .domain([offsetValue, maxVisibleValue])
                 .range([this.dimensions[1], 0]);
             pseudocount = offsetValue;
         } else {
             // linear scale
-            valueScale = scaleLinear()
+            this.valueScale = scaleLinear()
                 .domain([minVisibleValue, maxVisibleValue])
                 .range([this.dimensions[1], 0]);
         }
 
         graphics.clear();
 
-        this.drawAxis(valueScale);
+        this.drawAxis(this.valueScale);
 
-        if (valueScale.domain()[1] < 0) {
+        if (this.valueScale.domain()[1] < 0) {
             console.log('returning...')
             return;
         }
@@ -203,7 +116,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         for (let i = 0; i < tileValues.length; i++) {
             let xPos = this._xScale(tileXScale(i));
-            let yPos = valueScale(tileValues[i] + pseudocount)
+            let yPos = this.valueScale(tileValues[i] + pseudocount)
                 
             tile.lineXValues[i] = xPos;
             tile.lineYValues[i] = yPos;
@@ -239,8 +152,11 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         this.draw();
 
     }
+
+    /*
     exportAxisSVG() {
         let gAxis = document.createElement('g');
+        gAxis.setAttribute('id', 'axis');
 
         if (this.options.axisPositionHorizontal == 'left' ||
             this.options.axisPositionHorizontal == 'right' ||
@@ -304,6 +220,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         return gAxis;
     }
+    */
 
     exportSVG() {
         let track=null, base=null;
@@ -334,9 +251,26 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             output.appendChild(g);
         }
 
+        let gAxis = document.createElement('g');
+        gAxis.setAttribute('id', 'axis');
+
+        // append the axis to base so that it's not clipped
+        base.appendChild(gAxis);
+        gAxis.setAttribute('transform',
+            `translate(${this.axis.pAxis.position.x}, ${this.axis.pAxis.position.y})`);
+
         // add the axis to the export
-        let gAxis = this.exportAxisSVG();
-        output.appendChild(gAxis);
+        if (this.options.axisPositionHorizontal == 'left' 
+            || this.options.axisPositionVertical == 'top') {
+            // left axis are shown at the beginning of the plot
+            let gDrawnAxis = this.axis.exportAxisLeftSVG(this.valueScale, this.dimensions[1]);
+            gAxis.appendChild(gDrawnAxis);
+        } else if (this.options.axisPositionHorizontal == 'right' 
+            || this.options.axisPositionVertical == 'bottom') {
+
+            let gDrawnAxis = this.axis.exportAxisRightSVG(this.valueScale, this.dimensions[1]);
+            gAxis.appendChild(gDrawnAxis);
+        }
 
         return [base,track];
     }

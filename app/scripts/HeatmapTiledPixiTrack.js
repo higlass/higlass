@@ -3,6 +3,15 @@ import {tileProxy} from './TileProxy.js';
 import {heatedObjectMap} from './colormaps.js';
 import slugid from 'slugid';
 import {colorDomainToRgbaArray} from './utils.js';
+import {colorToHex} from './utils.js';
+import {scaleLinear} from 'd3-scale';
+import {scaleLog} from 'd3-scale';
+import {AxisPixi} from './AxisPixi.js';
+
+const COLORBAR_MAX_HEIGHT = 200;
+const COLORBAR_WIDTH = 10;
+const COLORBAR_LABELS_WIDTH = 40;
+const COLORBAR_MARGIN = 5;
 
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
@@ -12,6 +21,19 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
          * @param uid: The data set to get the tiles from the server
          */
         super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+
+
+        // Graphics for drawing the colorbar
+        this.pColorbarArea = new PIXI.Graphics();
+        this.pMasked.addChild(this.pColorbarArea);
+
+        this.pColorbar = new PIXI.Graphics();
+        this.pColorbarArea.addChild(this.pColorbar);
+
+        this.axis = new AxisPixi();
+        this.pColorbarArea.addChild(this.axis.pAxis);
+
+        this.scale = {};
 
         // [[255,255,255,0], [237,218,10,4] ...
         // a 256 element array mapping the values 0-255 to rgba values
@@ -117,6 +139,215 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     draw() {
         //console.trace('drawing', this);
         super.draw();
+        
+        this.pColorbar.clear(); 
+        // draw a colorbar
+
+        if (!this.options.colorbarPosition || this.options.colorbarPosition == 'hidden') {
+            this.pColorbarArea.visible = false;
+            return;
+        } 
+
+        this.pColorbarArea.visible = true;
+
+        if (!this.valueScale)
+            return;
+
+        let colorbarAreaHeight = Math.min(this.dimensions[1], COLORBAR_MAX_HEIGHT);
+        let colorbarHeight = colorbarAreaHeight - 2 * COLORBAR_MARGIN;
+        let colorbarAreaWidth = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + 2 * COLORBAR_MARGIN;
+
+        if (this.options.colorbarPosition == 'topLeft') {
+            // draw the background for the colorbar
+            this.pColorbarArea.x = this.position[0];
+            this.pColorbarArea.y = this.position[1];
+
+            this.pColorbar.y = COLORBAR_MARGIN;
+            this.axis.pAxis.y = COLORBAR_MARGIN;
+
+            if (this.options.colorbarLabelsPosition == 'inside') {
+                this.axis.pAxis.x = COLORBAR_WIDTH;
+
+                this.pColorbar.x = 0;
+            } else if (this.options.colorbarLabelsPosition == 'outside') {
+                this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+
+                this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+            }
+        }
+
+        if (this.options.colorbarPosition == 'topRight') {
+            // draw the background for the colorbar
+            this.pColorbarArea.x = this.position[0] + this.dimensions[0] - colorbarAreaWidth;
+            this.pColorbarArea.y = this.position[1];
+
+            this.pColorbar.y = COLORBAR_MARGIN;
+            this.axis.pAxis.y = COLORBAR_MARGIN;
+
+            if (this.options.colorbarLabelsPosition == 'outside') {
+                this.axis.pAxis.x = COLORBAR_WIDTH;
+
+                this.pColorbar.x = 0;
+            } else if (this.options.colorbarLabelsPosition == 'inside') {
+                this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+
+                this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+            }
+        }
+
+        if (this.options.colorbarPosition == 'bottomRight') {
+            this.pColorbarArea.x = this.position[0] + this.dimensions[0] - colorbarAreaWidth;
+            this.pColorbarArea.y = this.position[1] + this.dimensions[1] - colorbarAreaHeight;
+
+            this.pColorbar.y = COLORBAR_MARGIN;
+            this.axis.pAxis.y = COLORBAR_MARGIN;
+
+            if (this.options.colorbarLabelsPosition == 'outside') {
+                this.axis.pAxis.x = COLORBAR_WIDTH;
+
+                this.pColorbar.x = 0;
+            } else if (this.options.colorbarLabelsPosition == 'inside') {
+                this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+
+                this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+            }
+        }
+
+        if (this.options.colorbarPosition == 'bottomLeft') {
+            this.pColorbarArea.x = this.position[0];
+            this.pColorbarArea.y = this.position[1] + this.dimensions[1] - colorbarAreaHeight;
+
+            this.pColorbar.y = COLORBAR_MARGIN;
+            this.axis.pAxis.y = COLORBAR_MARGIN;
+
+            if (this.options.colorbarLabelsPosition == 'inside') {
+                this.axis.pAxis.x = COLORBAR_WIDTH;
+
+                this.pColorbar.x = 0;
+            } else if (this.options.colorbarLabelsPosition == 'outside') {
+                this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+
+                this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+            }
+        }
+
+        this.pColorbarArea.beginFill(colorToHex('white'), 0.2);
+        this.pColorbarArea.drawRect(0, 0, colorbarAreaWidth, colorbarAreaHeight);
+
+        //let centerY = this.position[1] + this.dimensions[1] / 2;
+        let centerY = colorbarHeight / 2;
+
+        let posScale = scaleLinear()
+            .domain([0,255])
+            .range([0,colorbarHeight])
+
+        let colorHeight = (colorbarHeight) / 256.;
+
+        // draw a small rectangle for each color of the colorbar
+        for (let i = 0; i < 256; i++) {
+            this.pColorbar.beginFill(colorToHex(`rgb(${this.colorScale[i][0]},
+                                                  ${this.colorScale[i][1]},
+                                                  ${this.colorScale[i][2]})`));
+
+            //console.log('posScale(i)', posScale(i));
+            this.pColorbar.drawRect(0, posScale(i), COLORBAR_WIDTH, colorHeight);
+        }
+        
+        // draw an axis on the right side of the colorbar
+        this.pAxis.position.x = COLORBAR_WIDTH;
+        this.pAxis.position.y = posScale(0);
+
+        let axisValueScale = this.valueScale.copy().range([colorbarHeight, 0]);
+
+        if (this.options.colorbarPosition == 'topLeft'
+            || this.options.colorbarPosition == 'bottomLeft') {
+            if (this.options.colorbarLabelsPosition == 'inside') {
+                this.axis.drawAxisRight(axisValueScale, colorbarHeight - 2 * COLORBAR_MARGIN);
+            } else {
+                this.axis.drawAxisLeft(axisValueScale, colorbarHeight - 2 * COLORBAR_MARGIN);
+            }
+        } else if (this.options.colorbarPosition == 'topRight'
+                   || this.options.colorbarPosition == 'bottomRight') {
+            if (this.options.colorbarLabelsPosition == 'inside') {
+                this.axis.drawAxisLeft(axisValueScale, colorbarHeight);
+            } else {
+                this.axis.drawAxisRight(axisValueScale, colorbarHeight);
+            }
+        } 
+    }
+
+    exportColorBarSVG() {
+        let gColorbarArea = document.createElement('g');
+        gColorbarArea.setAttribute('transform',
+                `translate(${this.pColorbarArea.x}, ${this.pColorbarArea.y})`);
+
+
+        gColorbarArea.setAttribute('transform',
+                `translate(${this.pColorbarArea.x}, ${this.pColorbarArea.y})`);
+
+        let rectColorbarArea = document.createElement('rect');
+        gColorbarArea.appendChild(rectColorbarArea);
+
+        let gColorbar = document.createElement('g');
+        gColorbarArea.appendChild(gColorbar);
+
+        gColorbar.setAttribute('transform',
+                `translate(${this.pColorbar.x}, ${this.pColorbar.y})`);
+
+        let colorbarAreaHeight = Math.min(this.dimensions[1], COLORBAR_MAX_HEIGHT);
+        let colorbarHeight = colorbarAreaHeight - 2 * COLORBAR_MARGIN;
+        let colorbarAreaWidth = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + 2 * COLORBAR_MARGIN;
+
+        rectColorbarArea.setAttribute('x', 0);
+        rectColorbarArea.setAttribute('y', 0);
+        rectColorbarArea.setAttribute('width', colorbarAreaWidth);
+        rectColorbarArea.setAttribute('height', colorbarAreaHeight);
+        rectColorbarArea.setAttribute('style', 'fill: white; stroke-width: 0; opacity: 0.7');
+
+        let posScale = scaleLinear()
+            .domain([0,255])
+            .range([0,colorbarHeight])
+        let colorHeight = (colorbarHeight) / 256.;
+
+        for (let i = 0; i < 256; i++) {
+            let rectColor = document.createElement('rect');
+            gColorbar.appendChild(rectColor);
+
+            rectColor.setAttribute('x', 0);
+            rectColor.setAttribute('y', posScale(i));
+            rectColor.setAttribute('width', COLORBAR_WIDTH);
+            rectColor.setAttribute('height', colorHeight);
+
+            rectColor.setAttribute('style', `fill: rgb(${this.colorScale[i][0]}, ${this.colorScale[i][1]}, ${this.colorScale[i][2]})`);
+        }
+
+        let gAxisHolder = document.createElement('g');
+        gColorbarArea.appendChild(gAxisHolder);
+        gAxisHolder.setAttribute('transform',
+                `translate(${this.axis.pAxis.position.x},${this.axis.pAxis.position.y})`);
+
+        let gAxis = null;
+        let axisValueScale = this.valueScale.copy().range([colorbarHeight, 0]);
+
+        if (this.options.colorbarPosition == 'topLeft'
+            || this.options.colorbarPosition == 'bottomLeft') {
+            if (this.options.colorbarLabelsPosition == 'inside') {
+                gAxis = this.axis.exportAxisRightSVG(axisValueScale, colorbarHeight);
+            } else {
+                gAxis = this.axis.exportAxisLeftSVG(axisValueScale, colorbarHeight);
+            }
+        } else if (this.options.colorbarPosition == 'topRight'
+                   || this.options.colorbarPosition == 'bottomRight') {
+            if (this.options.colorbarLabelsPosition == 'inside') {
+                gAxis = this.axis.exportAxisLeftSVG(axisValueScale, colorbarHeight);
+            } else {
+                gAxis = this.axis.exportAxisRightSVG(axisValueScale, colorbarHeight);
+            }
+        } 
+
+        gAxisHolder.appendChild(gAxis);
+
+        return gColorbarArea;
     }
 
     initTile(tile) {
@@ -127,12 +358,17 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
          *              this function are tile.tileData = {'dense': [...], ...}
          *              and tile.graphics
          */
-        tileProxy.tileDataToPixData(tile,
+        this.scale.minValue = this.minVisibleValue();
+        this.scale.maxValue = this.maxVisibleValue();
 
-                                    this.minVisibleValue(),
-                                    this.maxVisibleValue(),
-                                                  this.colorScale,
-                                                  function(pixData) {
+        this.valueScale = scaleLog().range([254,0])
+            .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue])
+
+        tileProxy.tileDataToPixData(tile,
+                                    this.valueScale,
+                                    this.valueScale.domain()[0], //used as a pseudocount to prevent taking the log of 0
+                                    this.colorScale,
+                                    function(pixData) {
             // the tileData has been converted to pixData by the worker script and needs to be loaded
             // as a sprite
             let graphics = tile.graphics;
@@ -228,9 +464,13 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             image.setAttribute('width', 256);
             image.setAttribute('height', 256);
 
+
             g.appendChild(image);
             output.appendChild(g);
         }
+
+        let gColorbar = this.exportColorBarSVG();
+        track.appendChild(gColorbar);
 
         return [base, base];
     }

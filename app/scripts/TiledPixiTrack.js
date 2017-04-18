@@ -451,6 +451,11 @@ export class TiledPixiTrack extends PixiTrack {
             this.trackNotFoundText.x = this.position[0];
             this.trackNotFoundText.y = this.position[1];
 
+            /*
+            if (this.flipText)
+                this.trackNotFoundText.scale.x = -1;
+            */
+
             this.trackNotFoundText.visible = true;
         } else {
             this.trackNotFoundText.visible = false;
