@@ -231,7 +231,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             }
         }
 
-        this.pColorbarArea.beginFill(colorToHex('white'), 0.2);
+        this.pColorbarArea.clear();
+        this.pColorbarArea.beginFill(colorToHex('white'), 0.6);
         this.pColorbarArea.drawRect(0, 0, colorbarAreaWidth, colorbarAreaHeight);
 
         //let centerY = this.position[1] + this.dimensions[1] / 2;

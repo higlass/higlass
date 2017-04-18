@@ -710,8 +710,16 @@ describe("Simple HiGlassComponent", () => {
 
             //hgc.instance().handleExportSVG();
 
-            // Make sure we have an offset axis
+            // Make sure we have an axis that is offset from the origin
             expect(svgText.indexOf('id="axis" transform="translate(390, 68)"')).to.be.above(0);
+
+            // make sure that we have this color in the colorbar (this is part of the custard
+            // color map)
+            expect(svgText.indexOf('rgb(248, 220, 29)')).to.be.above(0);
+
+            // make sure that this color, which is part of the afmhot colormap is not exported
+            expect(svgText.indexOf('rgb(171, 43, 0)')).to.be.below(0);
+
             
             //console.log('svg', svg);
             let tdo = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects;
