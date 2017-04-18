@@ -305,7 +305,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         thumbnail: svgVerticalLineIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'axisPositionHorizontal', 'lineStrokeColor', 'valueScaling' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'axisPositionVertical', 'lineStrokeColor', 'valueScaling' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'bottomLeft',

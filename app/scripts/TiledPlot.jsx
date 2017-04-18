@@ -262,6 +262,14 @@ export class TiledPlot extends React.Component {
     }
 
 
+    handleLockScales(uid) {
+        this.setState({
+            closeTrackMenuId: null,
+            configTrackMenuId: null
+        });
+
+        this.props.onLockScales(uid);
+    }
 
     handleCloseTrack(uid) {
         this.props.onCloseTrack(uid);
@@ -810,6 +818,7 @@ export class TiledPlot extends React.Component {
                                     position={ this.state.configTrackMenuLocation }
                                     onConfigureTrack={this.handleConfigureTrack.bind(this)}
                                     onCloseTrack={this.handleCloseTrack.bind(this)}
+                                    onLockScales={this.handleLockScales.bind(this)}
                                     onAddSeries={this.handleAddSeries.bind(this)}
                                     onAddTrack={this.handleAddTrack.bind(this)}
                                     closeMenu={this.handleConfigTrackMenuClosed.bind(this)}

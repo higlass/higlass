@@ -103,6 +103,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
             return (<SeriesListMenu
                         hostTrack={this.props.track}
                         onAddSeries={this.props.onAddSeries}
+                        onLockScales={this.props.onLockScales}
                         track={selectedTrack}
                         onCloseTrack={() => this.props.onCloseTrack(this.state.submenuShown.uid)}
                         onConfigureTrack={this.props.onConfigureTrack}
@@ -153,6 +154,15 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                         }}
                     >
                     {'Replace Track'}
+                    </ContextMenuItem>
+
+                    <hr />
+                    <ContextMenuItem
+                        onMouseEnter={(e) => this.handleOtherMouseEnter(e) }
+                        onClick={ () => this.props.onLockScales(this.props.track.uid) }
+                        contextMenu={this}
+                        >
+                        {'Lock Scales With'}
                     </ContextMenuItem>
 
                     {this.getSubmenu()}

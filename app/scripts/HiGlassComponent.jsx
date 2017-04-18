@@ -1269,6 +1269,20 @@ export class HiGlassComponent extends React.Component {
         });
     }
 
+    handleLockScales(fromViewUid, fromTrackUid) {
+        this.setState({
+            chooseTrackHandler: (toViewUid, toTrackUid) => this.handleScalesLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid)
+        });
+    }
+
+    handleScalesLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid) {
+        console.log('fromViewUid:', fromViewUid, 'fromTrackUid:', fromTrackUid);
+        console.log('toViewUid:', toViewUid, 'toTrackUid:', toTrackUid);
+
+        this.setState({
+            chooseTrackHandler: null
+        });
+    }
 
   addCallbacks(viewUid, track) {
       /**
@@ -1875,6 +1889,7 @@ export class HiGlassComponent extends React.Component {
                                      onTrackOptionsChanged={(trackId, options) => this.handleTrackOptionsChanged(view.uid, trackId, options) }
                                      onTrackAdded={(newTrack, position, host) => this.handleTrackAdded(view.uid, newTrack, position, host)}
                                      onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
+                                     onLockScales={uid => this.handleLockScales(view.uid, uid)}
                                      onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
                                      zoomable={!zoomFixed}
                                      editable={this.props.viewConfig.editable}

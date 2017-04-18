@@ -333,9 +333,12 @@ export class AxisPixi  {
     }
 
     clearAxis() {
+        let graphics = this.pAxis;
         while (this.axisTexts.length) {
             let axisText = this.axisTexts.pop();
             graphics.removeChild(axisText);
         }
+
+        graphics.clear();
     }
 }
