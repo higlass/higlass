@@ -117,13 +117,15 @@ export class PixiTrack extends Track {
         //console.log('valueScale', valueScale, tickValues, valueScale.domain());
 
         if (axisHeight < 100) {
-            console.log('short axis');
+            //console.log('short axis');
         }
 
         if (axisHeight > 100) {
+            /*
             console.log('valueScale.domain()', valueScale.domain());
             console.log('valueScale.range()', valueScale.range());
             console.log('tickValues[0]', tickValues[0], 'tickValues[-1]', tickValues[tickValues.length-1]);
+            */
         }
 
         /*
@@ -193,25 +195,33 @@ export class PixiTrack extends Track {
     }
 
     hideOverlappingAxisLabels() {
-        for (let i = this.axisTexts.length-1; i > 0; i--)
+        // show all tick marks initially
+        for (let i = this.axisTexts.length-1; i >= 0; i--)
             this.axisTexts[i].visible = true;
 
-        for (let i = this.axisTexts.length-1; i > 0; i--) {
+        for (let i = this.axisTexts.length-1; i >= 0; i--) {
+            // if this tick mark is invisible, it's not going to 
+            // overlap with any others
             if (!this.axisTexts[i].visible)
                 continue;
 
-            console.log('at[i]', this.axisTexts[i].y);
+            //console.log('at[i]', this.axisTexts[i].y);
             let j = i-1;
 
             while (j >= 0) {
-                // does this text overvap the previous one?
+                // go through and hide all overlapping tick marks
                 if ((this.axisTexts[i].y + this.axisTexts[i].height / 2) > (this.axisTexts[j].y - this.axisTexts[j].height / 2)) {
+                    /*
                     console.log('hiding...');
                     console.log('i:', i, 'this.axisTexts[i].y', this.axisTexts[i].y, this.axisTexts[i].height);
                     console.log('j:', j, 'this.axisTexts[j].y', this.axisTexts[j].y, this.axisTexts[j].height);
+                    */
 
                     this.axisTexts[j].visible = false;
                 } else { 
+                    // because the tick marks are ordered from top to bottom, if this
+                    // one doesn't overlap, then the ones below it won't either, so 
+                    // we can stop looking
                     break;
                 }
 
