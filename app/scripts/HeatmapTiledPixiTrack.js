@@ -196,7 +196,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         }
 
         if (this.options.colorbarPosition == 'bottomRight') {
-            // draw the background for the colorbar
             this.pColorbarArea.x = this.position[0] + this.dimensions[0] - colorbarAreaWidth;
             this.pColorbarArea.y = this.position[1] + this.dimensions[1] - colorbarAreaHeight;
 
@@ -215,7 +214,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         }
 
         if (this.options.colorbarPosition == 'bottomLeft') {
-            // draw the background for the colorbar
             this.pColorbarArea.x = this.position[0];
             this.pColorbarArea.y = this.position[1] + this.dimensions[1] - colorbarAreaHeight;
 
@@ -239,9 +237,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         //let centerY = this.position[1] + this.dimensions[1] / 2;
         let centerY = colorbarHeight / 2;
 
-        let xPos = 0;
-        let yPos = centerY - colorbarHeight / 2; 
-
         let posScale = scaleLinear()
             .domain([0,255])
             .range([0,colorbarHeight])
@@ -255,32 +250,104 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                                                   ${this.colorScale[i][2]})`));
 
             //console.log('posScale(i)', posScale(i));
-            this.pColorbar.drawRect(xPos, posScale(i), COLORBAR_WIDTH, colorHeight);
+            this.pColorbar.drawRect(0, posScale(i), COLORBAR_WIDTH, colorHeight);
         }
         
         // draw an axis on the right side of the colorbar
-        this.pAxis.position.x = xPos + COLORBAR_WIDTH;
+        this.pAxis.position.x = COLORBAR_WIDTH;
         this.pAxis.position.y = posScale(0);
 
         let axisValueScale = this.valueScale.copy().range([colorbarHeight, 0]);
 
-        if (this.options.colorbarOrientation == 'vertical') {
-            if (this.options.colorbarPosition == 'topLeft'
-                || this.options.colorbarPosition == 'bottomLeft') {
-                if (this.options.colorbarLabelsPosition == 'inside') {
-                    this.axis.drawAxisRight(axisValueScale, colorbarHeight - 2 * COLORBAR_MARGIN);
-                } else {
-                    this.axis.drawAxisLeft(axisValueScale, colorbarHeight - 2 * COLORBAR_MARGIN);
-                }
-            } else if (this.options.colorbarPosition == 'topRight'
-                       || this.options.colorbarPosition == 'bottomRight') {
-                if (this.options.colorbarLabelsPosition == 'inside') {
-                    this.axis.drawAxisLeft(axisValueScale, colorbarHeight);
-                } else {
-                    this.axis.drawAxisRight(axisValueScale, colorbarHeight);
-                }
-            } 
+        if (this.options.colorbarPosition == 'topLeft'
+            || this.options.colorbarPosition == 'bottomLeft') {
+            if (this.options.colorbarLabelsPosition == 'inside') {
+                this.axis.drawAxisRight(axisValueScale, colorbarHeight - 2 * COLORBAR_MARGIN);
+            } else {
+                this.axis.drawAxisLeft(axisValueScale, colorbarHeight - 2 * COLORBAR_MARGIN);
+            }
+        } else if (this.options.colorbarPosition == 'topRight'
+                   || this.options.colorbarPosition == 'bottomRight') {
+            if (this.options.colorbarLabelsPosition == 'inside') {
+                this.axis.drawAxisLeft(axisValueScale, colorbarHeight);
+            } else {
+                this.axis.drawAxisRight(axisValueScale, colorbarHeight);
+            }
+        } 
+    }
+
+    exportColorBarSVG() {
+        let gColorbarArea = document.createElement('g');
+        gColorbarArea.setAttribute('transform',
+                `translate(${this.pColorbarArea.x}, ${this.pColorbarArea.y})`);
+
+
+        gColorbarArea.setAttribute('transform',
+                `translate(${this.pColorbarArea.x}, ${this.pColorbarArea.y})`);
+
+        let rectColorbarArea = document.createElement('rect');
+        gColorbarArea.appendChild(rectColorbarArea);
+
+        let gColorbar = document.createElement('g');
+        gColorbarArea.appendChild(gColorbar);
+
+        gColorbar.setAttribute('transform',
+                `translate(${this.pColorbar.x}, ${this.pColorbar.y})`);
+
+        let colorbarAreaHeight = Math.min(this.dimensions[1], COLORBAR_MAX_HEIGHT);
+        let colorbarHeight = colorbarAreaHeight - 2 * COLORBAR_MARGIN;
+        let colorbarAreaWidth = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + 2 * COLORBAR_MARGIN;
+
+        rectColorbarArea.setAttribute('x', 0);
+        rectColorbarArea.setAttribute('y', 0);
+        rectColorbarArea.setAttribute('width', colorbarAreaWidth);
+        rectColorbarArea.setAttribute('height', colorbarAreaHeight);
+        rectColorbarArea.setAttribute('style', 'fill: white; stroke-width: 0; opacity: 0.7');
+
+        let posScale = scaleLinear()
+            .domain([0,255])
+            .range([0,colorbarHeight])
+        let colorHeight = (colorbarHeight) / 256.;
+
+        for (let i = 0; i < 256; i++) {
+            let rectColor = document.createElement('rect');
+            gColorbar.appendChild(rectColor);
+
+            rectColor.setAttribute('x', 0);
+            rectColor.setAttribute('y', posScale(i));
+            rectColor.setAttribute('width', COLORBAR_WIDTH);
+            rectColor.setAttribute('height', colorHeight);
+
+            rectColor.setAttribute('style', `fill: rgb(${this.colorScale[i][0]}, ${this.colorScale[i][1]}, ${this.colorScale[i][2]})`);
         }
+
+        let gAxisHolder = document.createElement('g');
+        gColorbarArea.appendChild(gAxisHolder);
+        gAxisHolder.setAttribute('transform',
+                `translate(${this.axis.pAxis.position.x},${this.axis.pAxis.position.y})`);
+
+        let gAxis = null;
+        let axisValueScale = this.valueScale.copy().range([colorbarHeight, 0]);
+
+        if (this.options.colorbarPosition == 'topLeft'
+            || this.options.colorbarPosition == 'bottomLeft') {
+            if (this.options.colorbarLabelsPosition == 'inside') {
+                gAxis = this.axis.exportAxisRightSVG(axisValueScale, colorbarHeight);
+            } else {
+                gAxis = this.axis.exportAxisLeftSVG(axisValueScale, colorbarHeight);
+            }
+        } else if (this.options.colorbarPosition == 'topRight'
+                   || this.options.colorbarPosition == 'bottomRight') {
+            if (this.options.colorbarLabelsPosition == 'inside') {
+                gAxis = this.axis.exportAxisLeftSVG(axisValueScale, colorbarHeight);
+            } else {
+                gAxis = this.axis.exportAxisRightSVG(axisValueScale, colorbarHeight);
+            }
+        } 
+
+        gAxisHolder.appendChild(gAxis);
+
+        return gColorbarArea;
     }
 
     initTile(tile) {
@@ -397,9 +464,13 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             image.setAttribute('width', 256);
             image.setAttribute('height', 256);
 
+
             g.appendChild(image);
             output.appendChild(g);
         }
+
+        let gColorbar = this.exportColorBarSVG();
+        track.appendChild(gColorbar);
 
         return [base, base];
     }

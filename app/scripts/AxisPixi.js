@@ -211,7 +211,11 @@ export class AxisPixi  {
     exportVerticalAxis(axisHeight) {
         let gAxis = document.createElement('g');
         gAxis.setAttribute('class', 'axis-vertical');
-        let stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
+
+        let stroke = 'black';
+
+        if (this.track)
+            stroke = this.track.options.lineStrokeColor ? this.track.options.lineStrokeColor : 'blue';
 
         let line = document.createElement('path');
 
@@ -230,7 +234,10 @@ export class AxisPixi  {
 
     createAxisSVGLine() {
         // factor out the styling for axis lines
-        let stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
+        let stroke = 'black';
+        
+        if (this.track)
+            stroke = this.track.options.lineStrokeColor ? this.track.options.lineStrokeColor : 'blue';
 
         let line = document.createElement('path');
         line.setAttribute('id', 'tick-mark');
@@ -276,8 +283,10 @@ export class AxisPixi  {
 
             let g = document.createElement('g');
             gAxis.appendChild(g);
-            let t = this.createAxisSVGText(text.text);
-            g.appendChild(t);
+            if (text.visible) {
+                let t = this.createAxisSVGText(text.text);
+                g.appendChild(t);
+            }
 
             g.setAttribute('transform',
             `translate(${text.position.x},${text.position.y})
@@ -309,8 +318,11 @@ export class AxisPixi  {
 
             let g = document.createElement('g');
             gAxis.appendChild(g);
-            let t = this.createAxisSVGText(text.text);
-            g.appendChild(t);
+
+            if (text.visible) {
+                let t = this.createAxisSVGText(text.text);
+                g.appendChild(t);
+            }
 
             g.setAttribute('transform',
             `translate(${text.position.x},${text.position.y})

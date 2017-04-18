@@ -106,6 +106,7 @@ export const optionsInfo = {
         }
     },
 
+    /*
     colorbarOrientation: {
         name: "Colorbar Orientation",
         inlineOptions: {
@@ -113,6 +114,7 @@ export const optionsInfo = {
             'vertical': { name: 'Vertical', value: 'vertical' },
         }
     },
+    */
 
     colorbarLabelsPosition: {
         name: "Colorbar Labels Position",
@@ -247,7 +249,7 @@ export const tracksInfo = [
             colorbarPosition: 'topRight'
         },
         availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom', 
-        'colorbarPosition', 'colorbarLabelsPosition', 'colorbarOrientation']
+        'colorbarPosition', 'colorbarLabelsPosition']//, 'colorbarOrientation']
         //exportable: true
     },
     {

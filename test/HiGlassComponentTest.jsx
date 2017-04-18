@@ -697,26 +697,31 @@ describe("Simple HiGlassComponent", () => {
 
 
     // wait a bit of time for the data to be loaded from the server
-    beforeAll((done) => {
-        testAsync(done);
-    });
 
-    describe("page has loaded", () => {
+    describe("Single view", () => {
+        beforeAll((done) => {
+            testAsync(done);
+        });
+
         it ('exports SVG', () => {
             let svg = hgc.instance().createSVG();
             let svgText = new XMLSerializer().serializeToString(svg);
+            console.log('svg:', svg);
 
             //hgc.instance().handleExportSVG();
+
+            // Make sure we have an offset axis
+            expect(svgText.indexOf('id="axis" transform="translate(390, 68)"')).to.be.above(0);
             
-            //
             //console.log('svg', svg);
             let tdo = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects;
             console.log('tdo:', tdo);
 
             let line1 = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects['line1'].trackObject;
 
-            let axis = line1.exportAxisRightSVG(line1.valueScale, line1.dimensions[1]);
+            let axis = line1.axis.exportAxisRightSVG(line1.valueScale, line1.dimensions[1]);
             let axisText = new XMLSerializer().serializeToString(axis);
+            console.log('axis:', axis);
 
             //console.log('axisText:', axisText);
             //let axis = svg.getElementById('axis');
@@ -728,11 +733,11 @@ describe("Simple HiGlassComponent", () => {
             let heatmap = hgc.instance().tiledPlots['aa'].trackRenderer
                 .trackDefObjects['c1'].trackObject.createdTracks['heatmap1'];
             console.log('heatmap:', heatmap);
+            expect(heatmap.pColorbarArea.x).to.be.below(heatmap.dimensions[0] / 2);
+
+            // make sure the labels are drawn on the outside
+            expect(heatmap.axis.pAxis.getBounds().x).to.be.below(heatmap.pColorbar.getBounds().x);
             //hgc.instance().handleExportSVG(); 
-        });
-
-        if ('does one more thing', () => {
-
         });
     })
 });

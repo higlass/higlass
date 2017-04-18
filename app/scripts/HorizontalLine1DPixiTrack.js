@@ -257,18 +257,18 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         // append the axis to base so that it's not clipped
         base.appendChild(gAxis);
         gAxis.setAttribute('transform',
-            `translate(${this.pAxis.position.x}, ${this.pAxis.position.y})`);
+            `translate(${this.axis.pAxis.position.x}, ${this.axis.pAxis.position.y})`);
 
         // add the axis to the export
         if (this.options.axisPositionHorizontal == 'left' 
             || this.options.axisPositionVertical == 'top') {
             // left axis are shown at the beginning of the plot
-            let gDrawnAxis = this.exportAxisLeftSVG(this.valueScale, this.dimensions[1]);
+            let gDrawnAxis = this.axis.exportAxisLeftSVG(this.valueScale, this.dimensions[1]);
             gAxis.appendChild(gDrawnAxis);
         } else if (this.options.axisPositionHorizontal == 'right' 
             || this.options.axisPositionVertical == 'bottom') {
 
-            let gDrawnAxis = this.exportAxisRightSVG(this.valueScale, this.dimensions[1]);
+            let gDrawnAxis = this.axis.exportAxisRightSVG(this.valueScale, this.dimensions[1]);
             gAxis.appendChild(gDrawnAxis);
         }
 
