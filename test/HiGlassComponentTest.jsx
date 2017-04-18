@@ -536,6 +536,58 @@ let testViewConfig2 =
           }
         ],
         "center": [
+          {
+            "uid": "c1",
+            "type": "combined",
+            "height": 200,
+            "contents": [
+              {
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "type": "heatmap",
+                "position": "center",
+                "options": {
+                  "colorRange": [
+                    "#FFFFFF",
+                    "#F8E71C",
+                    "#F5A623",
+                    "#D0021B"
+                  ],
+                  "colorbarPosition": "topLeft",
+                  "colorbarOrientation": "vertical",
+                  "colorbarLabelsPosition": "outside",
+                  "maxZoom": null,
+                  "labelPosition": "bottomRight",
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+                },
+                "uid": "heatmap1",
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                "maxWidth": 4194304000,
+                "binsPerDimension": 256,
+                "maxZoom": 14
+              },
+              {
+                "type": "2d-chromosome-grid",
+                "datatype": [
+                  "chromosome-2d-grid"
+                ],
+                "local": true,
+                "orientation": "2d",
+                "name": "Chromosome Grid (hg19)",
+                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+                "thumbnail": null,
+                "uuid": "TIlwFtqxTX-ndtM7Y9k1bw",
+                "server": "",
+                "tilesetUid": "TIlwFtqxTX-ndtM7Y9k1bw",
+                "serverUidKey": "/TIlwFtqxTX-ndtM7Y9k1bw",
+                "uid": "LUVqXXu2QYiO8XURIwyUyA",
+                "options": {}
+              }
+
+            ],
+            "position": "center",
+            "options": {}
+          }
         ],
         "right": [
         ],
@@ -654,22 +706,28 @@ describe("Simple HiGlassComponent", () => {
             let svg = hgc.instance().createSVG();
             let svgText = new XMLSerializer().serializeToString(svg);
 
-            hgc.instance().handleExportSVG();
+            //hgc.instance().handleExportSVG();
             
             //
             //console.log('svg', svg);
+            let tdo = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects;
+            console.log('tdo:', tdo);
+
             let line1 = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects['line1'].trackObject;
 
             let axis = line1.exportAxisRightSVG(line1.valueScale, line1.dimensions[1]);
             let axisText = new XMLSerializer().serializeToString(axis);
 
-            console.log('axisText:', axisText);
+            //console.log('axisText:', axisText);
             //let axis = svg.getElementById('axis');
             // make sure we have a tick mark for 200000
-            expect(axisText.indexOf('200000')).to.be.above(0);
+            expect(axisText.indexOf('3e+6')).to.be.above(0);
         })
 
-        it ('does something else', () => {
+        it ('has a colorbar', () => {
+            let heatmap = hgc.instance().tiledPlots['aa'].trackRenderer
+                .trackDefObjects['c1'].trackObject.createdTracks['heatmap1'];
+            console.log('heatmap:', heatmap);
             //hgc.instance().handleExportSVG(); 
         });
 

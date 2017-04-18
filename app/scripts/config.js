@@ -95,22 +95,30 @@ export const optionsInfo = {
         }
     },
 
-    scalePosition: {
-        name: "Scale Position",
+    colorbarPosition: {
+        name: "Colorbar Position",
         inlineOptions: {
             'topLeft': { name: 'Top Left', value: 'topLeft' },
-            'topRight': { name: 'Top Right', value: 'bottomRight' },
+            'topRight': { name: 'Top Right', value: 'topRight' },
             'bottomLeft': { name: 'Bottom Left', value: 'bottomLeft' },
             'bottomRight': { name: 'Bottom Right', value: 'bottomRight' },
             'hidden': { name: 'Hidden', value: null }
         }
     },
 
-    scaleOrientation: {
-        name: "Scale Orientation",
+    colorbarOrientation: {
+        name: "Colorbar Orientation",
         inlineOptions: {
             'horizontal': { name: 'Horizontal', value: 'horizontal' },
             'vertical': { name: 'Vertical', value: 'vertical' },
+        }
+    },
+
+    colorbarLabelsPosition: {
+        name: "Colorbar Labels Position",
+        inlineOptions: {
+            'inside': { name: 'Inside', value: 'inside'},
+            'outside': { name: 'Outside', value: 'outside'}
         }
     },
 
@@ -234,10 +242,11 @@ export const tracksInfo = [
         defaultOptions: {
             labelPosition: 'bottomRight',
             colorRange: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], //corresponding to the fall colormap
-            maxZoom: null
+            maxZoom: null,
+            colorbarLabelsPosition: 'inside'
         },
         availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom', 
-        'scalePosition', 'scaleOrientation']
+        'colorbarPosition', 'colorbarLabelsPosition', 'colorbarOrientation']
         //exportable: true
     },
     {

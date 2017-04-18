@@ -3,12 +3,15 @@ import {ticks} from 'd3-array';
 import {tileProxy} from './TileProxy.js';
 import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
 import {colorToHex} from './utils.js';
+import {AxisPixi} from './AxisPixi.js';
 
 export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
 
         super(scene, server, uid, handleTilesetInfoReceived, option, animate);
 
+        this.axis = new AxisPixi(this);
+        this.pBase.addChild(this.axis.pAxis);
     }
 
     initTile(tile) {
@@ -36,14 +39,14 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             || this.options.axisPositionVertical == 'top') {
             // left axis are shown at the beginning of the plot
 
-            this.pAxis.position.x = this.position[0];
-            this.pAxis.position.y = this.position[1];
+            this.axis.pAxis.position.x = this.position[0];
+            this.axis.pAxis.position.y = this.position[1];
 
-            super.drawAxisLeft(valueScale, this.dimensions[1]);
+            this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
         } else {
-            this.pAxis.position.x = this.position[0] + this.dimensions[0];
-            this.pAxis.position.y = this.position[1];
-            super.drawAxisRight(valueScale, this.dimensions[1]);
+            this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
+            this.axis.pAxis.position.y = this.position[1];
+            this.axis.drawAxisRight(valueScale, this.dimensions[1]);
         }
     }
 
