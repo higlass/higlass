@@ -243,7 +243,8 @@ export const tracksInfo = [
             labelPosition: 'bottomRight',
             colorRange: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], //corresponding to the fall colormap
             maxZoom: null,
-            colorbarLabelsPosition: 'inside'
+            colorbarLabelsPosition: 'inside',
+            colorbarPosition: 'topRight'
         },
         availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom', 
         'colorbarPosition', 'colorbarLabelsPosition', 'colorbarOrientation']

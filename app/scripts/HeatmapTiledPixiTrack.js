@@ -196,17 +196,44 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         }
 
         if (this.options.colorbarPosition == 'bottomRight') {
-            this.pColorbarArea.x = this.position[0] + this.dimensions[0] - COLORBAR_WIDTH;
-            this.pColorbarArea.y = this.position[1] + this.dimensions[1] - colorbarHeight;
+            // draw the background for the colorbar
+            this.pColorbarArea.x = this.position[0] + this.dimensions[0] - colorbarAreaWidth;
+            this.pColorbarArea.y = this.position[1] + this.dimensions[1] - colorbarAreaHeight;
+
+            this.pColorbar.y = COLORBAR_MARGIN;
+            this.axis.pAxis.y = COLORBAR_MARGIN;
+
+            if (this.options.colorbarLabelsPosition == 'outside') {
+                this.axis.pAxis.x = COLORBAR_WIDTH;
+
+                this.pColorbar.x = 0;
+            } else if (this.options.colorbarLabelsPosition == 'inside') {
+                this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+
+                this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+            }
         }
 
         if (this.options.colorbarPosition == 'bottomLeft') {
             // draw the background for the colorbar
             this.pColorbarArea.x = this.position[0];
-            this.pColorbarArea.y = this.position[1] - colorbarHeight;
+            this.pColorbarArea.y = this.position[1] + this.dimensions[1] - colorbarAreaHeight;
+
+            this.pColorbar.y = COLORBAR_MARGIN;
+            this.axis.pAxis.y = COLORBAR_MARGIN;
+
+            if (this.options.colorbarLabelsPosition == 'inside') {
+                this.axis.pAxis.x = COLORBAR_WIDTH;
+
+                this.pColorbar.x = 0;
+            } else if (this.options.colorbarLabelsPosition == 'outside') {
+                this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+
+                this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+            }
         }
 
-        this.pColorbarArea.beginFill(colorToHex('white'), 1);
+        this.pColorbarArea.beginFill(colorToHex('white'), 0.2);
         this.pColorbarArea.drawRect(0, 0, colorbarAreaWidth, colorbarAreaHeight);
 
         //let centerY = this.position[1] + this.dimensions[1] / 2;
@@ -236,8 +263,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.pAxis.position.y = posScale(0);
 
         let axisValueScale = this.valueScale.copy().range([colorbarHeight, 0]);
-
-        console.log('hello');
 
         if (this.options.colorbarOrientation == 'vertical') {
             if (this.options.colorbarPosition == 'topLeft'
