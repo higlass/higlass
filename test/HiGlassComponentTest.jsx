@@ -20,12 +20,12 @@ let testViewConfig2 =
     {
       "uid": "aa",
       "initialXDomain": [
-        957648546.1441214,
-        2042351453.8558786
+        1796142508.3343146,
+        1802874737.269993
       ],
       "initialYDomain": [
-        -26548672.566371918,
-        3026548672.566372
+        1795888772.6557815,
+        1806579890.9341388
       ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
@@ -40,7 +40,7 @@ let testViewConfig2 =
             "type": "horizontal-line",
             "options": {
               "labelColor": "red",
-              "labelPosition": "outerLeft",
+              "labelPosition": "hidden",
               "axisPositionHorizontal": "right",
               "lineStrokeColor": "blue",
               "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
@@ -53,27 +53,7 @@ let testViewConfig2 =
             "uid": "line1"
           }
         ],
-        "left": [
-          {
-            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
-            "type": "vertical-line",
-            "options": {
-              "labelColor": "red",
-              "labelPosition": "outerLeft",
-              "axisPositionHorizontal": "right",
-              "lineStrokeColor": "blue",
-              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-              "valueScaling": "log",
-              "axisPositionVertical": "hidden"
-            },
-            "width": 20,
-            "position": "left",
-            "uid": "SmDGhBndRfSy5r7wGsbtOQ",
-            "maxWidth": 4294967296
-          }
-        ],
+        "left": [],
         "center": [
           {
             "uid": "c1",
@@ -87,10 +67,10 @@ let testViewConfig2 =
                 "position": "center",
                 "options": {
                   "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "#F5A623",
-                    "#D0021B"
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
                   ],
                   "colorbarPosition": "topLeft",
                   "colorbarOrientation": "vertical",
@@ -102,36 +82,31 @@ let testViewConfig2 =
                 "uid": "heatmap1",
                 "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
                 "maxWidth": 4194304000,
-                "binsPerDimension": 256,
-                "maxZoom": 14
+                "binsPerDimension": 256
               },
               {
                 "type": "2d-chromosome-grid",
-                "datatype": [
-                  "chromosome-2d-grid"
-                ],
                 "local": true,
                 "orientation": "2d",
                 "name": "Chromosome Grid (hg19)",
                 "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
                 "thumbnail": null,
-                "uuid": "TIlwFtqxTX-ndtM7Y9k1bw",
                 "server": "",
                 "tilesetUid": "TIlwFtqxTX-ndtM7Y9k1bw",
-                "serverUidKey": "/TIlwFtqxTX-ndtM7Y9k1bw",
                 "uid": "LUVqXXu2QYiO8XURIwyUyA",
-                "options": {}
+                "options": {
+                  "gridStrokeWidth": 1,
+                  "gridStrokeColor": "grey"
+                },
+                "position": "center"
               }
-
             ],
             "position": "center",
             "options": {}
           }
         ],
-        "right": [
-        ],
-        "bottom": [
-        ]
+        "right": [],
+        "bottom": []
       },
       "layout": {
         "w": 6,
@@ -142,18 +117,135 @@ let testViewConfig2 =
         "moved": false,
         "static": false
       }
+    },
+    {
+      "uid": "view2",
+      "initialXDomain": [
+        1796142508.3343008,
+        1802874737.270007
+      ],
+      "initialYDomain": [
+        1795888772.6557593,
+        1806579890.9341605
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "filetype": "hitile",
+            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "red",
+              "labelPosition": "hidden",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log"
+            },
+            "width": 20,
+            "height": 20,
+            "maxWidth": 4294967296,
+            "position": "top",
+            "uid": "line1"
+          }
+        ],
+        "left": [],
+        "center": [
+          {
+            "uid": "eah7klO8R2eq0vnjreHM9g",
+            "type": "combined",
+            "contents": [
+              {
+                "filetype": "cooler",
+                "name": "Dixon et al. (2015) H1_TB HindIII (allreps) 1kb",
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "clU7yGb-S7eY4yNbdDlj9w",
+                "uid": "heatmap2",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarLabelsPosition": "outside",
+                  "colorbarPosition": "topLeft",
+                  "name": "Dixon et al. (2015) H1_TB HindIII (allreps) 1kb"
+                },
+                "width": 20,
+                "height": 20,
+                "maxWidth": 4194304000,
+                "binsPerDimension": 256,
+                "position": "center"
+              }
+            ],
+            "position": "center",
+            "options": {}
+          }
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 6,
+        "h": 12,
+        "x": 6,
+        "y": 0,
+        "i": "view2",
+        "moved": false,
+        "static": false
+      }
     }
   ],
   "zoomLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
+    "locksByViewUid": {
+      "view2": "JAFSZPdmSWe72WgTnVDtbA",
+      "aa": "JAFSZPdmSWe72WgTnVDtbA"
+    },
+    "locksDict": {
+      "JAFSZPdmSWe72WgTnVDtbA": {
+        "view2": [
+          1812727561.5083356,
+          1873757116.378131,
+          475954.14177536964
+        ],
+        "aa": [
+          1812727561.5083356,
+          1873757116.378131,
+          475954.14177536964
+        ]
+      }
+    }
   },
   "locationLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
+    "locksByViewUid": {
+      "view2": "fRq4SRH8TSyVveKqebWsxw",
+      "aa": "fRq4SRH8TSyVveKqebWsxw"
+    },
+    "locksDict": {
+      "fRq4SRH8TSyVveKqebWsxw": {
+        "view2": [
+          1812727561.5083356,
+          1873757116.378131,
+          475954.14177536964
+        ],
+        "aa": [
+          1812727561.5083356,
+          1873757116.378131,
+          475954.14177536964
+        ]
+      }
+    }
   }
 }
-
 const pageLoadTime = 1500;
 
 function testAsync(done) {
@@ -254,7 +346,7 @@ describe("Simple HiGlassComponent", () => {
 
             // make sure that we have this color in the colorbar (this is part of the custard
             // color map)
-            expect(svgText.indexOf('rgb(248, 220, 29)')).to.be.above(0);
+            expect(svgText.indexOf('rgb(231, 104, 32)')).to.be.above(0);
 
             // make sure that this color, which is part of the afmhot colormap is not exported
             expect(svgText.indexOf('rgb(171, 43, 0)')).to.be.below(0);
@@ -273,7 +365,7 @@ describe("Simple HiGlassComponent", () => {
             //console.log('axisText:', axisText);
             //let axis = svg.getElementById('axis');
             // make sure we have a tick mark for 200000
-            expect(axisText.indexOf('3e+6')).to.be.above(0);
+            expect(axisText.indexOf('5e+4')).to.be.above(0);
         })
 
         it ('has a colorbar', () => {
@@ -301,6 +393,10 @@ describe("Simple HiGlassComponent", () => {
             // make sure the input field is equal to the document's active element
             // e.g. that it has focus
             expect(inputField).to.be.eql(document.activeElement);
+        });
+
+        it ("supports adding a value scale lock betwen two views", () => {
+            hgc.instance().handleScalesLocked('aa', 'heatmap1', 'view2', 'heatmap2');
         });
     })
 });

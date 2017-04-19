@@ -255,6 +255,12 @@ export class HiGlassComponent extends React.Component {
         });
   }
 
+  updateLockedValueScales(viewUid, trackUid) {
+    let lockGroup = this.valueScaleLocks[this.combineViewAndTrackUid(viewUid, trackUid)];
+
+    console.log('lockGroup');
+  }
+
   handleNewTilesLoaded(viewUid, trackUid) {
       console.log("new tiles loaded", viewUid, trackUid);
       //
@@ -585,23 +591,23 @@ export class HiGlassComponent extends React.Component {
 
       if (!lockGroups[uid1]) {
           // view1 isn't already in a group
-          group1Members = [[uid1, scalesCenterAndK(this.xScales[uid1], this.yScales[uid1])]];
+          group1Members = [[uid1, lockData(uid1)]];
       } else {
           // view1 is already in a group
           group1Members = dictItems(lockGroups[uid1]).map(x =>
             // x is [uid, [centerX, centerY, k]]
-            [x[0], scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])]
+            [x[0], lockData(x[0])]
           )
       }
 
       if (!lockGroups[uid2]) {
           // view1 isn't already in a group
-          group2Members = [[uid2, scalesCenterAndK(this.xScales[uid2], this.yScales[uid2])]];
+          group2Members = [[uid2, lockData(uid2)]];
       } else {
           // view2 is already in a group
           group2Members = dictItems(lockGroups[uid2]).map(x =>
             // x is [uid, [centerX, centerY, k]]
-            [x[0], scalesCenterAndK(this.xScales[x[0]], this.yScales[x[0]])]
+            [x[0], lockData(x[0])]
           )
       }
 
@@ -1306,7 +1312,7 @@ export class HiGlassComponent extends React.Component {
         let fromUid = this.combineViewAndTrackUid(fromViewUid, fromTrackUid);
         let toUid = this.combineViewAndTrackUid(toViewUid, toTrackUid);
 
-        this.addLock(combineViewAndTrackUid(fromUid, toUid, this.valueScaleLocks));
+        this.addLock(fromUid, toUid, this.valueScaleLocks, () => {});
 
         this.setState({
             chooseTrackHandler: null
