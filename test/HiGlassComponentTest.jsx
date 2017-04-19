@@ -1,6 +1,8 @@
 import { mount } from 'enzyme';
 import { expect } from 'chai';
 import React from 'react';
+import ReactDOM from 'react-dom';
+import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
 import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
 
 let testViewConfig2 = 
@@ -283,7 +285,19 @@ describe("Simple HiGlassComponent", () => {
         });
 
         it ("has the focus in the searchbar when adding a new track", () => {
+            const atm = mount(<AddTrackModal
+                                host={null}
+                                onCancel={null}
+                                onTrackChosen={null}
+                                position={null}
+                                show={true}
+                                trackSourceServers={[]}
+                              />);
+            const inputField = ReactDOM.findDOMNode(atm.instance().tilesetFinder.searchBox);
 
+            // make sure the input field is equal to the document's active element
+            // e.g. that it has focus
+            expect(inputField).to.be.eql(document.activeElement);
         });
     })
 });
