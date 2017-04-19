@@ -281,5 +281,9 @@ describe("Simple HiGlassComponent", () => {
             expect(heatmap.axis.pAxis.getBounds().x).to.be.below(heatmap.pColorbar.getBounds().x);
             //hgc.instance().handleExportSVG(); 
         });
+
+        it ("has the focus in the searchbar when adding a new track", () => {
+
+        });
     })
 });
