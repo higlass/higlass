@@ -69,11 +69,14 @@ export class HiGlassComponent extends React.Component {
         this.draggingChangedListeners = {};
         this.valueScalesChangedListeners = {};
 
-        // zoom locks between views
+        // locks that keep the location and zoom synchronized
+        // between views
         this.zoomLocks = {};
-
-        // location locks between views
         this.locationLocks = {};
+
+        // locks that keep the value scales synchronized between
+        // *tracks* (which can be in different views)
+        this.valueScaleLocks = {};
 
         this.setCenters = {};
 
@@ -250,6 +253,12 @@ export class HiGlassComponent extends React.Component {
             chooseViewHandler: uid2 => this.handleLocationLockChosen(uid, uid2),
             mouseOverOverlayUid: uid,
         });
+  }
+
+  handleNewTilesLoaded(viewUid, trackUid) {
+      console.log("new tiles loaded", viewUid, trackUid);
+      //
+      this.animate();
   }
 
   notifyDragChangedListeners(dragging) {
@@ -559,7 +568,18 @@ export class HiGlassComponent extends React.Component {
     }
   }
 
-  addLock(uid1, uid2, lockGroups) {
+  viewScalesLockData(uid) {
+    return scalesCenterAndK(this.xScales[uid], this.yScales[uid])
+  }
+
+  addLock(uid1, uid2, lockGroups, lockData) {
+      /*
+       * :param uid1 (string): The uid of the first element to be locked (e.g. viewUid)
+       * :param uid2 (string): The uid of the second element to be locked (e.g. viewUid)
+       * :param lockGroups (dict): The set of locks where to store this lock (e.g. this.locationLocks)
+       * :parma lockData (function): A function that takes two uids and calculates some extra data
+       *    to store with this lock data (e.g. scalesCenterAndK(this.xScales[uid1], this.yScales[uid1]))
+       */
       let group1Members = [];
       let group2Members = [];
 
@@ -606,7 +626,7 @@ export class HiGlassComponent extends React.Component {
           return;    // locking a view to itself is silly
       }
 
-      this.addLock(uid1, uid2, this.locationLocks);
+      this.addLock(uid1, uid2, this.locationLocks, this.viewScalesLockData);
 
 
         this.setState({
@@ -629,7 +649,7 @@ export class HiGlassComponent extends React.Component {
           return;    // locking a view to itself is silly
       }
 
-      this.addLock(uid1, uid2, this.zoomLocks);
+      this.addLock(uid1, uid2, this.zoomLocks, this.viewScalesLockData);
 
 
         this.setState({
@@ -1266,9 +1286,27 @@ export class HiGlassComponent extends React.Component {
         });
     }
 
+    addScaleLock(fromViewUid, fromTrackUid, toViewUid, toTrackUid) {
+        let group1Members = [];
+        let group2Members = [];
+
+        let lockGroups = this.scaleLocks;
+
+
+    }
+
+    combineViewAndTrackUid(viewUid, trackUid) {
+        return viewUid + '.' + trackUid
+    }
+
     handleScalesLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid) {
         console.log('fromViewUid:', fromViewUid, 'fromTrackUid:', fromTrackUid);
         console.log('toViewUid:', toViewUid, 'toTrackUid:', toTrackUid);
+
+        let fromUid = this.combineViewAndTrackUid(fromViewUid, fromTrackUid);
+        let toUid = this.combineViewAndTrackUid(toViewUid, toTrackUid);
+
+        this.addLock(combineViewAndTrackUid(fromUid, toUid, this.valueScaleLocks));
 
         this.setState({
             chooseTrackHandler: null
@@ -1314,9 +1352,9 @@ export class HiGlassComponent extends React.Component {
             this.handleScalesChanged(fromView, tXScale, tYScale, true);
 
             if (zoomLocked)
-                this.addLock(viewUid, fromView, this.zoomLocks);
+                this.addLock(viewUid, fromView, this.zoomLocks, this.viewScalesLockData);
             if (locationLocked)
-                this.addLock(viewUid, fromView, this.locationLocks);
+                this.addLock(viewUid, fromView, this.locationLocks, this.viewScalesLockData);
 
           }
       }
@@ -1882,7 +1920,7 @@ export class HiGlassComponent extends React.Component {
                                      onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
                                      onDataDomainChanged={(xDomain, yDomain) => this.handleDataDomainChanged(view.uid, xDomain, yDomain)}
                                      onLockScales={uid => this.handleLockScales(view.uid, uid)}
-                                     onNewTilesLoaded={this.animate.bind(this)}
+                                     onNewTilesLoaded={(trackUid) => this.handleNewTilesLoaded(view.uid, trackUid)}
                                      onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
                                      onScalesChanged={(x,y) => this.handleScalesChanged(view.uid, x, y)}
                                      onTrackAdded={(newTrack, position, host) => this.handleTrackAdded(view.uid, newTrack, position, host)}

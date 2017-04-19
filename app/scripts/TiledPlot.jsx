@@ -744,6 +744,7 @@ export class TiledPlot extends React.Component {
                                 onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
                                 uid={this.props.tracks['center'][0].uid}
                                 width={this.centerWidth}
+                                editable={this.props.editable}
                                />
                             </div> )
         }

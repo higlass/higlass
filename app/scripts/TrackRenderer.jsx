@@ -129,11 +129,64 @@ export class TrackRenderer extends React.Component {
         this.draggingChanged(true);
     }
 
-    draggingChanged(draggingStatus) {
-        this.dragging = draggingStatus;
+    componentWillReceiveProps(nextProps) {
+        /**
+         * The size of some tracks probably changed, so let's just
+         * redraw them.
+         */
 
-        this.timedUpdatePositionAndDimensions();
+        // don't initiate this component if it has nothing to draw on
+        if (!nextProps.svgElement || !nextProps.canvasElement)
+            return;
+
+        let nextPropsStr = this.updatablePropsToString(nextProps);
+        this.currentProps = nextProps;
+
+        if (this.prevPropsStr === nextPropsStr)
+            return;
+
+        //console.log('TR rerendering', this.currentProps.width, this.currentProps.height);
+        this.prevPropsStr = nextPropsStr;
+
+        this.setUpInitialScales(nextProps.initialXDomain,
+                                nextProps.initialYDomain);
+
+        this.setUpScales();
+        this.canvasDom = ReactDOM.findDOMNode(nextProps.canvasElement);
+
+
+        this.svgElement = nextProps.svgElement;
+
+        this.syncTrackObjects(nextProps.positionedTracks);
+
+        for (let track of nextProps.positionedTracks) {
+            // tracks all the way down
+            let options = track.track.options;
+            let trackObject = this.trackDefObjects[track.track.uid].trackObject;
+            //console.log('rerendering...');
+            trackObject.rerender(options);
+
+            if (track.track.hasOwnProperty('contents')) {
+                let ctDefs = {};
+                for (let ct of track.track.contents) {
+                    ctDefs[ct.uid] = ct;
+                }
+
+                for (let uid in trackObject.createdTracks) {
+                    trackObject.createdTracks[uid].rerender(ctDefs[uid].options);
+                }
+            }
+        }
     }
+
+    componentWillUnmount() {
+        /**
+         * This view has been removed so we need to get rid of all the tracks it contains
+         */
+        this.removeTracks(Object.keys(this.trackDefObjects));
+        this.currentProps.removeDraggingChangedListener(this.draggingChanged);
+    }
+
 
     setUpInitialScales(initialXDomain, initialYDomain) {
         // make sure the two scales are equally wide:
@@ -192,62 +245,12 @@ export class TrackRenderer extends React.Component {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
-        /**
-         * The size of some tracks probably changed, so let's just
-         * redraw them.
-         */
-
-        // don't initiate this component if it has nothing to draw on
-        if (!nextProps.svgElement || !nextProps.canvasElement)
-            return;
-
-        let nextPropsStr = this.updatablePropsToString(nextProps);
-        this.currentProps = nextProps;
-
-        if (this.prevPropsStr === nextPropsStr)
-            return;
-
-        //console.log('TR rerendering', this.currentProps.width, this.currentProps.height);
-        this.prevPropsStr = nextPropsStr;
-
-        this.setUpInitialScales(nextProps.initialXDomain,
-                                nextProps.initialYDomain);
-
-        this.setUpScales();
-        this.canvasDom = ReactDOM.findDOMNode(nextProps.canvasElement);
 
 
-        this.svgElement = nextProps.svgElement;
+    draggingChanged(draggingStatus) {
+        this.dragging = draggingStatus;
 
-        this.syncTrackObjects(nextProps.positionedTracks);
-
-        for (let track of nextProps.positionedTracks) {
-            // tracks all the way down
-            let options = track.track.options;
-            let trackObject = this.trackDefObjects[track.track.uid].trackObject;
-            //console.log('rerendering...');
-            trackObject.rerender(options);
-
-            if (track.track.hasOwnProperty('contents')) {
-                let ctDefs = {};
-                for (let ct of track.track.contents) {
-                    ctDefs[ct.uid] = ct;
-                }
-
-                for (let uid in trackObject.createdTracks) {
-                    trackObject.createdTracks[uid].rerender(ctDefs[uid].options);
-                }
-            }
-        }
-    }
-
-    componentWillUnmount() {
-        /**
-         * This view has been removed so we need to get rid of all the tracks it contains
-         */
-        this.removeTracks(Object.keys(this.trackDefObjects));
-        this.currentProps.removeDraggingChangedListener(this.draggingChanged);
+        this.timedUpdatePositionAndDimensions();
     }
 
     setUpScales() {
@@ -588,14 +591,14 @@ export class TrackRenderer extends React.Component {
                                                  track.tilesetUid,
                                                  handleTilesetInfoReceived,
                                                  track.options,
-                                                 this.currentProps.onNewTilesLoaded);
+                                                 () => this.currentProps.onNewTilesLoaded(track.uid));
             case 'horizontal-line':
                 return new HorizontalLine1DPixiTrack(this.currentProps.pixiStage,
                                                      track.server,
                                                      track.tilesetUid,
                                                      handleTilesetInfoReceived,
                                                      track.options,
-                                                     this.currentProps.onNewTilesLoaded);
+                                                     () => this.currentProps.onNewTilesLoaded(track.uid));
             case 'vertical-line':
                 return new LeftTrackModifier(
                     new HorizontalLine1DPixiTrack(
@@ -604,41 +607,45 @@ export class TrackRenderer extends React.Component {
                         track.tilesetUid,
                         handleTilesetInfoReceived,
                         track.options,
-                        this.currentProps.onNewTilesLoaded
+                        () => this.currentProps.onNewTilesLoaded(track.uid)
                     )
                 );
             case 'horizontal-1d-tiles':
                 return new IdHorizontal1DTiledPixiTrack(
-                    this.currentProps.pixiStage,
-                    track.server,
-                    track.tilesetUid,
-                    handleTilesetInfoReceived,
-                    track.options,
-                    this.currentProps.onNewTilesLoaded);
+                        this.currentProps.pixiStage,
+                        track.server,
+                        track.tilesetUid,
+                        handleTilesetInfoReceived,
+                        track.options,
+                        () => this.currentProps.onNewTilesLoaded(track.uid)
+                    );
             case 'vertical-1d-tiles':
                 return new IdVertical1DTiledPixiTrack(
-                    this.currentProps.pixiStage,
-                    track.server,
-                    track.tilesetUid,
-                    handleTilesetInfoReceived,
-                    track.options,
-                    this.currentProps.onNewTilesLoaded);
+                        this.currentProps.pixiStage,
+                        track.server,
+                        track.tilesetUid,
+                        handleTilesetInfoReceived,
+                        track.options,
+                        () => this.currentProps.onNewTilesLoaded(track.uid)
+                    );
             case '2d-tiles':
                 return new Id2DTiledPixiTrack(
-                    this.currentProps.pixiStage,
-                    track.server,
-                    track.tilesetUid,
-                    handleTilesetInfoReceived,
-                    track.options,
-                    this.currentProps.onNewTilesLoaded);
+                        this.currentProps.pixiStage,
+                        track.server,
+                        track.tilesetUid,
+                        handleTilesetInfoReceived,
+                        track.options,
+                        () => this.currentProps.onNewTilesLoaded(track.uid)
+                    );
             case 'top-stacked-interval':
                 return new CNVIntervalTrack(
-                    this.currentProps.pixiStage,
-                    track.server,
-                    track.tilesetUid,
-                    handleTilesetInfoReceived,
-                    track.options,
-                    this.currentProps.onNewTilesLoaded);
+                        this.currentProps.pixiStage,
+                        track.server,
+                        track.tilesetUid,
+                        handleTilesetInfoReceived,
+                        track.options,
+                        () => this.currentProps.onNewTilesLoaded(track.uid)
+                    );
             case 'left-stacked-interval':
                 return new LeftTrackModifier(
                     new CNVIntervalTrack(
@@ -647,7 +654,7 @@ export class TrackRenderer extends React.Component {
                         track.tilesetUid,
                         handleTilesetInfoReceived,
                         track.options,
-                        this.currentProps.onNewTilesLoaded
+                        () => this.currentProps.onNewTilesLoaded(track.uid)
                     )
                 );
             case 'viewport-projection-center':
@@ -669,7 +676,7 @@ export class TrackRenderer extends React.Component {
                     track.tilesetUid,
                     handleTilesetInfoReceived,
                     track.options,
-                    this.currentProps.onNewTilesLoaded
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
                 )
             case 'vertical-gene-annotations':
                 return new LeftTrackModifier(
@@ -679,7 +686,7 @@ export class TrackRenderer extends React.Component {
                         track.tilesetUid,
                         handleTilesetInfoReceived,
                         track.options,
-                        this.currentProps.onNewTilesLoaded
+                        () => this.currentProps.onNewTilesLoaded(track.uid)
                     )
                 )
             case 'arrowhead-domains':
@@ -689,7 +696,7 @@ export class TrackRenderer extends React.Component {
                     track.tilesetUid,
                     handleTilesetInfoReceived,
                     track.options,
-                    this.currentProps.onNewTilesLoaded
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
                 );
             case 'square-markers':
                 return new SquareMarkersTrack(
@@ -698,7 +705,7 @@ export class TrackRenderer extends React.Component {
                     track.tilesetUid,
                     handleTilesetInfoReceived,
                     track.options,
-                    this.currentProps.onNewTilesLoaded
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
                 );
             case 'combined':
                 return new CombinedTrack(
@@ -717,18 +724,20 @@ export class TrackRenderer extends React.Component {
                 return new LeftTrackModifier(new HorizontalChromosomeLabels(this.currentProps.pixiStage, track.chromInfoPath));
             case 'horizontal-heatmap':
                 return new HorizontalHeatmapTrack(this.currentProps.pixiStage,
-                                                 track.server,
-                                                 track.tilesetUid,
-                                                 handleTilesetInfoReceived,
-                                                 track.options,
-                                                 this.currentProps.onNewTilesLoaded);
+                                                     track.server,
+                                                     track.tilesetUid,
+                                                     handleTilesetInfoReceived,
+                                                     track.options,
+                                                     () => this.currentProps.onNewTilesLoaded(track.uid)
+                                                 );
             case 'vertical-heatmap':
                 return new LeftTrackModifier(new HorizontalHeatmapTrack(this.currentProps.pixiStage,
                                                  track.server,
                                                  track.tilesetUid,
                                                  handleTilesetInfoReceived,
                                                  track.options,
-                                                 this.currentProps.onNewTilesLoaded));
+                                                 () => this.currentProps.onNewTilesLoaded(track.uid)
+                                                ));
             case '2d-chromosome-annotations':
                 return new Chromosome2DAnnotations(this.currentProps.pixiStage, track.chromInfoPath, track.options);
             default:
@@ -759,19 +768,20 @@ export class TrackRenderer extends React.Component {
 }
 
 TrackRenderer.propTypes = {
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
-    centerWidth: React.PropTypes.number,
-    centerHeight: React.PropTypes.number,
-    marginLeft: React.PropTypes.number,
-    marginTop: React.PropTypes.number,
-    leftWidth: React.PropTypes.number,
-    topHeight: React.PropTypes.number,
-    pixiStage: React.PropTypes.object,
     canvasElement: React.PropTypes.object,
-    svgElement: React.PropTypes.object,
+    centerHeight: React.PropTypes.number,
+    centerWidth: React.PropTypes.number,
     children: React.PropTypes.array,
+    height: React.PropTypes.number,
     initialXDomain: React.PropTypes.array,
     initialYDomain: React.PropTypes.array,
-    positionedTracks: React.PropTypes.array
+    leftWidth: React.PropTypes.number,
+    marginLeft: React.PropTypes.number,
+    marginTop: React.PropTypes.number,
+    onScalesChanged: React.PropTypes.func,
+    pixiStage: React.PropTypes.object,
+    positionedTracks: React.PropTypes.array,
+    svgElement: React.PropTypes.object,
+    topHeight: React.PropTypes.number,
+    width: React.PropTypes.number
 }

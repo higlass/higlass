@@ -1,4 +1,7 @@
-import { mount } from 'enzyme';
+import { 
+    mount, 
+    render
+} from 'enzyme';
 import { expect } from 'chai';
 import React from 'react';
 import ReactDOM from 'react-dom';
