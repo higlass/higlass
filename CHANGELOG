@@ -1,3 +1,9 @@
+v0.6.3
+
+- Added colorbar for Heatmaps
+- Draw scales on the outside of the linear tracks
+- Added the SquareMarkerTrack
+
 v0.6.2
 
 - Scale tracks from minimum to maximum value, rather than starting at 0
