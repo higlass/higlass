@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import {zoom, zoomIdentity} from 'd3-zoom';
 import {select,event} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
+import {dictItems} from './utils.js';
 
 // Fritz: This import is broken
 import d3 from 'd3';
@@ -305,6 +306,39 @@ export class TrackRenderer extends React.Component {
         this.applyZoomTransform(this.currentProps);
     }
 
+    getTrackObject(trackId) {
+        /* 
+         * Fetch the trackObject for a track with a given ID
+         *
+         */
+        let trackDefItems = dictItems(this.trackDefObjects);
+
+        for (let i = 0; i < trackDefItems.length; i++) {
+            let uid = trackDefItems[i][0];
+            let trackObject = trackDefItems[i][1].trackObject;
+
+            if (uid == trackId) {
+                return trackDef.trackObject
+            }
+
+            // maybe this track is in a combined track
+            if (trackObject.createdTracks) {
+                let createdTrackItems = dictItems(trackObject.createdTracks);
+
+                for (let i = 0; i < createdTrackItems.length; i++) {
+                    let createdTrackUid = createdTrackItems[i][0];
+                    let createdTrackObject = createdTrackItems[i][1];
+
+                    if (createdTrackUid == trackId) {
+                        return createdTrackObject;
+                    }
+                }
+            }
+        }
+
+        console.error('trackId not found:', trackId);
+    }
+
     timedUpdatePositionAndDimensions() {
         if (this.closing)
             return;
@@ -472,8 +506,6 @@ export class TrackRenderer extends React.Component {
          *      can be turned off to prevent circular updates when scales are
          *      locked.
          */
-
-
         let refK = this.xScale.invert(1) - this.xScale.invert(0);
 
         let k = refK / sourceK;

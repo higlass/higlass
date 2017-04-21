@@ -263,6 +263,37 @@ export class HiGlassComponent extends React.Component {
 
   handleNewTilesLoaded(viewUid, trackUid) {
       console.log("new tiles loaded", viewUid, trackUid);
+      let uid = this.combineViewAndTrackUid(viewUid, trackUid);
+
+      if (this.valueScaleLocks[uid]) {
+          let lockGroupValues = dictValues(this.valueScaleLocks[uid]);
+          console.log('view:', viewUid, 'track:', trackUid, 'lockGroupValues:', lockGroupValues);
+
+          ///let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
+          let lockedTracks = lockGroupValues.map(x => 
+                  this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track))
+
+          let minValues = lockedTracks.map(x => x.scale.minValue);
+          let maxValues = lockedTracks.map(x => x.scale.maxValue);
+
+          let allMin = Math.min(...minValues);
+          let allMax = Math.max(...maxValues);
+
+
+          console.log('allMin:', allMin, 'minValues:', minValues);
+          console.log('allMax:', allMax, 'maxValues:', maxValues);
+
+          for (let lockedTrack of lockedTracks) {
+              console.log('rerendering...', lockedTrack);
+
+            lockedTrack.scale.minValue = allMin;
+            lockedTrack.scale.maxValue = allMax;
+
+            lockedTrack.valueScale.domain([allMin, allMax]);
+            lockedTrack.rerender(lockedTrack.options);
+          }
+      }
+
       //
       this.animate();
   }
@@ -1288,17 +1319,9 @@ export class HiGlassComponent extends React.Component {
 
     handleLockScales(fromViewUid, fromTrackUid) {
         this.setState({
-            chooseTrackHandler: (toViewUid, toTrackUid) => this.handleScalesLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid)
+            chooseTrackHandler: (toViewUid, toTrackUid) => 
+                this.handleScalesLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid)
         });
-    }
-
-    addScaleLock(fromViewUid, fromTrackUid, toViewUid, toTrackUid) {
-        let group1Members = [];
-        let group2Members = [];
-
-        let lockGroups = this.scaleLocks;
-
-
     }
 
     combineViewAndTrackUid(viewUid, trackUid) {
@@ -1312,8 +1335,16 @@ export class HiGlassComponent extends React.Component {
         let fromUid = this.combineViewAndTrackUid(fromViewUid, fromTrackUid);
         let toUid = this.combineViewAndTrackUid(toViewUid, toTrackUid);
 
-        this.addLock(fromUid, toUid, this.valueScaleLocks, () => {});
+        this.addLock(fromUid, toUid, this.valueScaleLocks, (uid) => { 
+            let combinedToViewAndTrackUid = {};
 
+            combinedToViewAndTrackUid[this.combineViewAndTrackUid(fromViewUid, fromTrackUid)] = 
+                    {view: fromViewUid, track: fromTrackUid}
+            combinedToViewAndTrackUid[this.combineViewAndTrackUid(toViewUid, toTrackUid)] = 
+                    {view: toViewUid, track: toTrackUid}
+
+            return combinedToViewAndTrackUid[uid];
+        });
         this.setState({
             chooseTrackHandler: null
         });

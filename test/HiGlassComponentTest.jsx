@@ -3,6 +3,7 @@ import {
     render
 } from 'enzyme';
 import { expect } from 'chai';
+import {scaleLinear} from 'd3-scale';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
@@ -397,6 +398,12 @@ describe("Simple HiGlassComponent", () => {
 
         it ("supports adding a value scale lock betwen two views", () => {
             hgc.instance().handleScalesLocked('aa', 'heatmap1', 'view2', 'heatmap2');
+
+            let xScale = scaleLinear().domain([1794851291.3067665, 1804163247.282992]).range([0,372]);
+            let yScale = scaleLinear().domain([1787687524.889573, 1815648424.9579697]).range([0,1117]);
+
+            // zoom out a little bit
+            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 28874.21283197403);
         });
     })
 });
