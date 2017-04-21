@@ -147,4 +147,38 @@ export class CombinedTrack {
     rerender(options) {
         //console.log('COMBINED TRACK rerender...');
     }
+
+    minValue() {
+        if (arguments.length == 0) {
+            let minValues = this.childTracks
+                .filter(x => x.minValue)     // filter for tracks which have the minValue function
+                .map(x => x.minValue())      // get the minValue for each track
+                .filter(x => x);            // filter out undefineds
+
+            return Math.min(...minValues);
+        } else {
+            for (let childTrack of this.childTracks) {
+                if (childTrack.minValue) {
+                    childTrack.minValue(_);
+                }
+            }
+        }
+    }
+
+    maxValue(_) {
+        if (arguments.length == 0) {
+            let maxValues = this.childTracks
+                .filter(x => x.maxValue)     // filter for tracks which have the minValue function
+                .map(x => x.maxValue())      // get the minValue for each track
+                .filter(x => x);            // filter out undefineds
+
+            return Math.max(...maxValues);
+        } else {
+            for (let childTrack of this.childTracks) {
+                if (childTrack.maxValue) {
+                    childTrack.maxValue(_);
+                }
+            }
+        }
+    }
 }

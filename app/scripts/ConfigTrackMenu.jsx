@@ -42,31 +42,43 @@ export class ConfigTrackMenu extends ContextMenuContainer {
             let thumbnail = trackTypeToInfo[x.type].thumbnail;
             let blankLocation = "images/thumbnails/blank.png";
                 let imgTag = trackTypeToInfo[x.type].thumbnail ?
-                        <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} dangerouslySetInnerHTML={{__html: thumbnail.outerHTML}} /> :
-                        <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} >
-                            <svg width={30} height={20} />
+                        <div 
+                            dangerouslySetInnerHTML={{__html: thumbnail.outerHTML}} 
+                            style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} 
+                        /> :
+                        <div 
+                            style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} 
+                        >
+                            <svg 
+                                height={20} 
+                                width={30} 
+                            />
                         </div>
 
                 return (
                     <ContextMenuItem
-                        ref={c => this.seriesRefs[x.uid] = c}
                         className={"context-menu-item"}
                         key={x.uid}
                         onMouseEnter={e => this.handleItemMouseEnter(e, x)}
                         onMouseLeave={e => this.handleMouseLeave(e)}
+                        ref={c => this.seriesRefs[x.uid] = c}
                     >
                         {imgTag}
-                        <span className='context-menu-span'
+                        <span 
+                            className={'context-menu-span'}
                             style={{ whiteSpace: 'nowrap' }}
                         >
                             {(x.name && x.name.length) ? x.name : x.uid}
 
-                            <svg
-                                className = "play-icon"
-                                width="10px"
-                                height="10px">
-                                <use xlinkHref="#play"></use>
-                            </svg>
+                        <svg
+                            className={"play-icon"}
+                            height={"10px"}
+                            width={"10px"}
+                        >
+                            <use 
+                                xlinkHref={"#play"} 
+                            />
+                        </svg>
 
                         </span>
                     </ContextMenuItem>
@@ -101,20 +113,20 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                 : this.props.track;
 
             return (<SeriesListMenu
+                        closeMenu={this.props.closeMenu}
                         hostTrack={this.props.track}
                         onAddSeries={this.props.onAddSeries}
-                        onLockScales={this.props.onLockScales}
-                        track={selectedTrack}
                         onCloseTrack={() => this.props.onCloseTrack(this.state.submenuShown.uid)}
                         onConfigureTrack={this.props.onConfigureTrack}
-                        orientation={this.state.orientation}
-                        position={position}
-                        parentBbox={bbox}
-                        series={this.state.submenuShown}
-                        trackOrientation={this.props.trackOrientation}
-                        closeMenu={this.props.closeMenu}
-                        onTrackOptionsChanged={this.props.onTrackOptionsChanged}
                         onExportData={this.props.onExportData}
+                        onLockScales={this.props.onLockScales}
+                        onTrackOptionsChanged={this.props.onTrackOptionsChanged}
+                        orientation={this.state.orientation}
+                        parentBbox={bbox}
+                        position={position}
+                        series={this.state.submenuShown}
+                        track={selectedTrack}
+                        trackOrientation={this.props.trackOrientation}
                     />);
         } else {
             return (<div />);
@@ -135,20 +147,20 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                     {this.getSeriesItems()}
                     <hr />
                     <ContextMenuItem
-                        onMouseEnter={(e) => this.handleOtherMouseEnter(e) }
-                        onClick={ () => this.props.onAddSeries(this.props.track.uid) }
                         contextMenu={this}
-                        >
+                        onClick={() => this.props.onAddSeries(this.props.track.uid)}
+                        onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+                    >
                         {'Add Series'}
                     </ContextMenuItem>
                     <ContextMenuItem
-                        onClick={ () => this.props.onCloseTrack(this.props.track.uid) }
+                        onClick={() => this.props.onCloseTrack(this.props.track.uid)}
                         text={'Close Track'}
                     >
                         {'Close Track'}
                     </ContextMenuItem>
                     <ContextMenuItem
-                        onClick={ () => {
+                        onClick={() => {
                             this.props.onReplaceTrack(this.props.track.uid,
                                                       this.props.trackOrientation);
                         }}
@@ -158,11 +170,18 @@ export class ConfigTrackMenu extends ContextMenuContainer {
 
                     <hr />
                     <ContextMenuItem
-                        onMouseEnter={(e) => this.handleOtherMouseEnter(e) }
-                        onClick={ () => this.props.onLockScales(this.props.track.uid) }
                         contextMenu={this}
-                        >
-                        {'Lock Scales With'}
+                        onClick={() => this.props.onLockValueScale(this.props.track.uid)}
+                        onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+                    >
+                        {'Lock Value Scale With'}
+                    </ContextMenuItem>
+                    <ContextMenuItem
+                        contextMenu={this}
+                        onClick={() => this.props.onUnlockValueScale(this.props.track.uid)}
+                        onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+                    >
+                        {'Unlock Value Scale'}
                     </ContextMenuItem>
 
                     {this.getSubmenu()}

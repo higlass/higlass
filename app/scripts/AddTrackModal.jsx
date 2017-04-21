@@ -109,6 +109,7 @@ export class AddTrackModal extends React.Component {
                     </div>
                 )
 
+        console.log('onCancel:', this.props.onCancel);
         //console.log('this.props.onCancel', this.props.onCancel);
         return(<Modal 
                 onHide={this.props.onCancel}

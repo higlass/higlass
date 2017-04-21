@@ -273,8 +273,8 @@ export class HiGlassComponent extends React.Component {
           let lockedTracks = lockGroupValues.map(x => 
                   this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track))
 
-          let minValues = lockedTracks.map(x => x.scale.minValue);
-          let maxValues = lockedTracks.map(x => x.scale.maxValue);
+          let minValues = lockedTracks.map(x => x.minValue());
+          let maxValues = lockedTracks.map(x => x.maxValue());
 
           let allMin = Math.min(...minValues);
           let allMax = Math.max(...maxValues);
@@ -286,8 +286,15 @@ export class HiGlassComponent extends React.Component {
           for (let lockedTrack of lockedTracks) {
               console.log('rerendering...', lockedTrack);
 
-            lockedTrack.scale.minValue = allMin;
-            lockedTrack.scale.maxValue = allMax;
+            // set the newly calculated minimum and maximum values
+            // using d3 style setters
+            lockedTrack.minValue(allMin);
+            lockedTrack.maxValue(allMax);
+
+            if (!lockedTrack.valueScale)
+                // this track probably hasn't loaded the tiles to 
+                // create a valueScale
+                return;
 
             lockedTrack.valueScale.domain([allMin, allMax]);
             lockedTrack.rerender(lockedTrack.options);
@@ -1317,18 +1324,22 @@ export class HiGlassComponent extends React.Component {
         });
     }
 
-    handleLockScales(fromViewUid, fromTrackUid) {
+    handleLockValueScale(fromViewUid, fromTrackUid) {
         this.setState({
             chooseTrackHandler: (toViewUid, toTrackUid) => 
-                this.handleScalesLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid)
+                this.handleValueScaleLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid)
         });
+    }
+
+    handleUnlockValueScale(viewUid, trackUid) {
+        this.handleUnlock(this.combineViewAndTrackUid(viewUid, trackUid), this.valueScaleLocks);
     }
 
     combineViewAndTrackUid(viewUid, trackUid) {
         return viewUid + '.' + trackUid
     }
 
-    handleScalesLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid) {
+    handleValueScaleLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid) {
         console.log('fromViewUid:', fromViewUid, 'fromTrackUid:', fromTrackUid);
         console.log('toViewUid:', toViewUid, 'toTrackUid:', toTrackUid);
 
@@ -1956,13 +1967,15 @@ export class HiGlassComponent extends React.Component {
                                      key={'tp' + view.uid}
                                      onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
                                      onDataDomainChanged={(xDomain, yDomain) => this.handleDataDomainChanged(view.uid, xDomain, yDomain)}
-                                     onLockScales={uid => this.handleLockScales(view.uid, uid)}
+                                     onLockValueScale={uid => this.handleLockValueScale(view.uid, uid)}
+
                                      onNewTilesLoaded={(trackUid) => this.handleNewTilesLoaded(view.uid, trackUid)}
                                      onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
                                      onScalesChanged={(x,y) => this.handleScalesChanged(view.uid, x, y)}
                                      onTrackAdded={(newTrack, position, host) => this.handleTrackAdded(view.uid, newTrack, position, host)}
                                      onTrackOptionsChanged={(trackId, options) => this.handleTrackOptionsChanged(view.uid, trackId, options)}
                                      onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
+                                     onUnlockValueScale={uid => this.handleUnlockValueScale(view.uid, uid)}
                                      pixiStage={this.pixiStage}
                                      ref={c => this.tiledPlots[view.uid] = c}
                                      registerDraggingChangedListener={listener => {

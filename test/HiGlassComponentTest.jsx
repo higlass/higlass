@@ -158,7 +158,7 @@ let testViewConfig2 =
         "left": [],
         "center": [
           {
-            "uid": "eah7klO8R2eq0vnjreHM9g",
+            "uid": "c2",
             "type": "combined",
             "contents": [
               {
@@ -247,7 +247,7 @@ let testViewConfig2 =
     }
   }
 }
-const pageLoadTime = 1500;
+const pageLoadTime = 800;
 
 function testAsync(done) {
     // Wait two seconds, then set the flag to true
@@ -259,61 +259,6 @@ function testAsync(done) {
         done();
     }, pageLoadTime);
 }
-
-/*
-describe("<HiGlassComponent />", () => {
-    const div = document.createElement('div');
-    document.body.appendChild(div);
-
-    div.setAttribute('style', 'height:800px; width:800px');
-
-    const hgc = mount(<HiGlassComponent 
-                        options={{bounded: true}}
-                        viewConfig={testViewConfig}
-                      />, 
-            {attachTo: div});
-
-
-    // wait a bit of time for the data to be loaded from the server
-    beforeAll((done) => {
-        testAsync(done);
-    });
-
-    describe("page has loaded", () => {
-        it ('exports SVG', () => {
-            let svg = hgc.instance().createSVG();
-            let svgText = new XMLSerializer().serializeToString(svg);
-
-            expect(svgText.indexOf('Chromosome2DGrid')).to.be.above(0);
-            expect(svgText.indexOf('HorizontalChromosomeLabels')).to.be.above(0);
-            hgc.instance().handleExportSVG();
-            
-            //
-            //console.log('svg', svg);
-            let line1 = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects['line1'].trackObject;
-
-            let axis = line1.exportAxisRightSVG(line1.valueScale, line1.dimensions[1]);
-            let axisText = new XMLSerializer().serializeToString(axis);
-            console.log('axisText:', axisText);
-            //let axis = svg.getElementById('axis');
-            // make sure we have a tick mark for 200000
-            expect(axisText.indexOf('200000')).to.be.above(0);
-
-            // position of the axis
-            expect(axisText.indexOf('175')).to.be.above(0);
-            expect(axisText.indexOf('146')).to.be.above(0);
-        })
-
-        it ('does something else', () => {
-            //hgc.instance().handleExportSVG(); 
-        });
-
-        if ('does one more thing', () => {
-
-        });
-    })
-});
-*/
 
 describe("Simple HiGlassComponent", () => {
     const div = document.createElement('div');
@@ -383,7 +328,7 @@ describe("Simple HiGlassComponent", () => {
         it ("has the focus in the searchbar when adding a new track", () => {
             const atm = mount(<AddTrackModal
                                 host={null}
-                                onCancel={null}
+                                onCancel={() => null}
                                 onTrackChosen={null}
                                 position={null}
                                 show={true}
@@ -396,14 +341,73 @@ describe("Simple HiGlassComponent", () => {
             expect(inputField).to.be.eql(document.activeElement);
         });
 
-        it ("supports adding a value scale lock betwen two views", () => {
-            hgc.instance().handleScalesLocked('aa', 'heatmap1', 'view2', 'heatmap2');
-
-            let xScale = scaleLinear().domain([1794851291.3067665, 1804163247.282992]).range([0,372]);
-            let yScale = scaleLinear().domain([1787687524.889573, 1815648424.9579697]).range([0,1117]);
+        it ("locks the scales and recenters the page", (done) => {
+            hgc.instance().handleValueScaleLocked('aa', 'heatmap1', 'view2', 'heatmap2');
+            let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
+            let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('heatmap2');
 
             // zoom out a little bit
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 28874.21283197403);
+            
+            setTimeout(() => done(), 400);
         });
+
+
+        it ('ensures that the new track domains are equal and unlocks the scales', (done) => {
+            console.log('done');
+            let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
+            let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('heatmap2');
+
+            let domain1 = track1.valueScale.domain();
+            let domain2 = track2.valueScale.domain();
+
+            console.log('domain1:', domain1);
+            console.log('domain2:', domain2);
+            expect(domain1[1]).to.eql(domain2[1]);
+
+            hgc.instance().handleUnlockValueScale('aa', 'heatmap1');
+
+            //unlock the scales and zoom out
+            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
+            setTimeout(() => done(), 400);
+        });
+
+        it ('ensure that new domains are unequal and locks the combined tracks', (done) => {
+            let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
+            let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('heatmap2');
+
+            let domain1 = track1.valueScale.domain();
+            let domain2 = track2.valueScale.domain();
+
+            console.log('domain1:', domain1);
+            console.log('domain2:', domain2);
+            expect(domain1[1]).to.not.eql(domain2[1]);
+
+            hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'c2');
+
+            //unlock the scales and zoom out
+            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 28874.21283197403);
+            setTimeout(() => done(), 400);
+        });
+
+        it ('ensures that the new track domains are equal', (done) => {
+            console.log('done');
+            let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
+            let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('heatmap2');
+
+            let domain1 = track1.valueScale.domain();
+            let domain2 = track2.valueScale.domain();
+
+            console.log('domain1:', domain1);
+            console.log('domain2:', domain2);
+            expect(domain1[1]).to.eql(domain2[1]);
+
+            hgc.instance().handleUnlockValueScale('aa', 'heatmap1');
+
+            //unlock the scales and zoom out
+            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
+            setTimeout(() => done(), 400);
+        });
+
     })
 });

@@ -351,6 +351,20 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         return gColorbarArea;
     }
 
+    minValue(_) {
+        if (_)
+            this.scale.minValue = _;
+        else
+            return this.scale.minValue;
+    }
+
+    maxValue(_) {
+        if (_)
+            this.scale.maxValue = _;
+        else
+            return this.scale.maxValue;
+    }
+
     initTile(tile) {
         /**
          * Convert the raw tile data to a rendered array of values which can be represented as a sprite.

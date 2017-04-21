@@ -278,13 +278,22 @@ export class TiledPlot extends React.Component {
     }
 
 
-    handleLockScales(uid) {
+    handleLockValueScale(uid) {
         this.setState({
             closeTrackMenuId: null,
             configTrackMenuId: null
         });
 
-        this.props.onLockScales(uid);
+        this.props.onLockValueScale(uid);
+    }
+
+    handleUnlockValueScale(uid) {
+        this.setState({
+            closeTrackMenuId: null,
+            configTrackMenuId: null
+        });
+
+        this.props.onUnlockValueScale(uid);
     }
 
     handleCloseTrack(uid) {
@@ -818,7 +827,8 @@ export class TiledPlot extends React.Component {
                                     onCloseTrack={this.handleCloseTrack.bind(this)}
                                     onConfigureTrack={this.handleConfigureTrack.bind(this)}
                                     onExportData={this.handleExportTrackData.bind(this)}
-                                    onLockScales={this.handleLockScales.bind(this)}
+                                    onLockValueScale={this.handleLockValueScale.bind(this)}
+                                    onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
                                     onReplaceTrack={this.handleReplaceTrack.bind(this)}
                                     onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
                                     position={this.state.configTrackMenuLocation}
@@ -960,13 +970,14 @@ TiledPlot.propTypes = {
     initialYDomain: React.PropTypes.array,
     onCloseTrack: React.PropTypes.func,
     onDataDomainChanged: React.PropTypes.func,
-    onLockScales: React.PropTypes.func,
+    onLockValueScale: React.PropTypes.func,
     onNoTrackAdded: React.PropTypes.func,
     onNewTilesLoaded: React.PropTypes.func,
     onScalesChanged: React.PropTypes.func,
     onTrackAdded: React.PropTypes.func,
     onTrackOptionsChanged: React.PropTypes.func,
     onTrackPositionChosen: React.PropTypes.func,
+    onUnlockValueScale: React.PropTypes.func,
     registerDraggingChangedListener: React.PropTypes.func,
     removeDraggingChangedListener: React.PropTypes.func,
     setCentersFunction: React.PropTypes.func,
