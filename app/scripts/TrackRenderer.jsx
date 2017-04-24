@@ -349,8 +349,11 @@ export class TrackRenderer extends React.Component {
 
             let updated = this.updateTrackPositions();
 
-            if (updated)  //only redraw if positions changed
+            if (updated)  {
+                //only redraw if positions changed
+                console.log('CHANGED');
                 this.applyZoomTransform(this.currentProps);
+        }
 
             requestAnimationFrame(this.timedUpdatePositionAndDimensions.bind(this));
         }
@@ -435,6 +438,10 @@ export class TrackRenderer extends React.Component {
             newTrackObj.setDimensions([newTrackDef.width, newTrackDef.height]);
             newTrackObj.zoomed(zoomedXScale, zoomedYScale);
         }
+
+        // this could be replaced with a call that only applies the zoom
+        // transform to the newly added tracks
+        this.applyZoomTransform(false);
     }
 
     updateExistingTrackDefs(newTrackDefs) {
@@ -467,6 +474,8 @@ export class TrackRenderer extends React.Component {
 
             let newPosition = [this.xPositionOffset + trackDef.left, this.yPositionOffset + trackDef.top];
             let newDimensions = [trackDef.width, trackDef.height];
+
+            //console.log('updating track position:', uid, newPosition, newDimensions);
 
             // check if any of the track's positions have changed
             // before trying to update them

@@ -221,7 +221,11 @@ export class HiGlassComponent extends React.Component {
     }
 
     animate() {
-        requestAnimationFrame(() => this.pixiRenderer.render(this.pixiStage));
+        requestAnimationFrame(() => {
+            console.log('animating...');
+            this.pixiRenderer.render(this.pixiStage);
+            //this.animate();
+        });
         // this.animate.bind(this));
     }
 
@@ -262,17 +266,13 @@ export class HiGlassComponent extends React.Component {
 
   updateLockedValueScales(viewUid, trackUid) {
     let lockGroup = this.valueScaleLocks[this.combineViewAndTrackUid(viewUid, trackUid)];
-
-    console.log('lockGroup');
   }
 
-  handleNewTilesLoaded(viewUid, trackUid) {
-      console.log("new tiles loaded", viewUid, trackUid);
+  syncValueScales(viewUid, trackUid) {
       let uid = this.combineViewAndTrackUid(viewUid, trackUid);
 
       if (this.valueScaleLocks[uid]) {
           let lockGroupValues = dictValues(this.valueScaleLocks[uid]);
-          console.log('view:', viewUid, 'track:', trackUid, 'lockGroupValues:', lockGroupValues);
 
           ///let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
           let lockedTracks = lockGroupValues.map(x => 
@@ -287,12 +287,7 @@ export class HiGlassComponent extends React.Component {
           let allMax = Math.max(...maxValues);
 
 
-          console.log('allMin:', allMin, 'minValues:', minValues);
-          console.log('allMax:', allMax, 'maxValues:', maxValues);
-          console.log('lockedTracks:', lockedTracks);
-
           for (let lockedTrack of lockedTracks) {
-              console.log('rerendering...', lockedTrack);
 
             // set the newly calculated minimum and maximum values
             // using d3 style setters
@@ -310,6 +305,10 @@ export class HiGlassComponent extends React.Component {
             lockedTrack.rerender(lockedTrack.options);
           }
       }
+  }
+
+  handleNewTilesLoaded(viewUid, trackUid) {
+      this.syncValueScales(viewUid, trackUid);
 
       //
       this.animate();
@@ -680,7 +679,7 @@ export class HiGlassComponent extends React.Component {
           return;    // locking a view to itself is silly
       }
 
-      this.addLock(uid1, uid2, this.locationLocks, this.viewScalesLockData);
+      this.addLock(uid1, uid2, this.locationLocks, this.viewScalesLockData.bind(this));
 
 
         this.setState({
@@ -703,7 +702,7 @@ export class HiGlassComponent extends React.Component {
           return;    // locking a view to itself is silly
       }
 
-      this.addLock(uid1, uid2, this.zoomLocks, this.viewScalesLockData);
+      this.addLock(uid1, uid2, this.zoomLocks, this.viewScalesLockData.bind(this));
 
 
         this.setState({
@@ -1163,7 +1162,6 @@ export class HiGlassComponent extends React.Component {
       // check if this is the only view
       // if it is, don't close it (display an error message)
       if (dictValues(this.state.views).length == 1) {
-            // console.log("Can't close the only view");
             return;
       }
 
@@ -1307,6 +1305,8 @@ export class HiGlassComponent extends React.Component {
             tracks[position].push(newTrack);
         }
 
+        //this.boundRefreshView();
+        //this.tiledPlots[viewId].trackRenderer.applyZoomTransform(false);
     }
 
     handleCloseTrack(viewId, uid) {
@@ -1370,7 +1370,6 @@ export class HiGlassComponent extends React.Component {
                                         .getTrackObject(trackUid)
                                         .createdTracks        )
             for (let childTrackUid of childTrackUids) {
-                console.log('unlocking:', childTrackUid);
                 this.handleUnlock(this.combineViewAndTrackUid(viewUid, childTrackUid), this.valueScaleLocks);
             }
 
@@ -1381,11 +1380,6 @@ export class HiGlassComponent extends React.Component {
 
 
     handleValueScaleLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid) {
-        console.log('fromViewUid:', fromViewUid, 'fromTrackUid:', fromTrackUid);
-        console.log('toViewUid:', toViewUid, 'toTrackUid:', toTrackUid);
-
-        console.log('trackDefObjects', this.tiledPlots[fromViewUid].trackRenderer.trackDefObjects);
-
         if (this.tiledPlots[fromViewUid].trackRenderer.getTrackObject(fromTrackUid).createdTracks) {
             // if the from view is a combined track, recurse and add links between its child tracks
             let childTrackUids = dictKeys(this.tiledPlots[fromViewUid]
@@ -1418,6 +1412,9 @@ export class HiGlassComponent extends React.Component {
         this.addLock(fromUid, toUid, this.valueScaleLocks, (uid) => { 
             return this.combinedUidToViewTrack[uid];
         });
+
+        this.syncValueScales(fromViewUid, fromTrackUid);
+
         this.setState({
             chooseTrackHandler: null
         });
