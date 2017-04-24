@@ -61,6 +61,11 @@ export class HiGlassComponent extends React.Component {
         this.yScales = {};
         this.topDiv = null;
 
+        // a reference of view / track combinations
+        // to be used with combined to viewAndTrackUid
+        this.viewTrackUidsToCombinedUid = {};
+        this.combinedUidToViewTrack = {};
+
         // event listeners for when the scales of a view change
         // bypasses the React event framework because this needs
         // to be fast
@@ -273,8 +278,10 @@ export class HiGlassComponent extends React.Component {
           let lockedTracks = lockGroupValues.map(x => 
                   this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track))
 
-          let minValues = lockedTracks.map(x => x.minValue());
-          let maxValues = lockedTracks.map(x => x.maxValue());
+          let minValues = lockedTracks.filter(x => x.minValue && x.maxValue)  //exclude tracks that don't set min and max values
+                                      .map(x => x.minValue());
+          let maxValues = lockedTracks.filter(x => x.minValue && x.maxValue) //exclude tracks that don't set min and max values
+              .map(x => x.maxValue());
 
           let allMin = Math.min(...minValues);
           let allMax = Math.max(...maxValues);
@@ -282,19 +289,22 @@ export class HiGlassComponent extends React.Component {
 
           console.log('allMin:', allMin, 'minValues:', minValues);
           console.log('allMax:', allMax, 'maxValues:', maxValues);
+          console.log('lockedTracks:', lockedTracks);
 
           for (let lockedTrack of lockedTracks) {
               console.log('rerendering...', lockedTrack);
 
             // set the newly calculated minimum and maximum values
             // using d3 style setters
-            lockedTrack.minValue(allMin);
-            lockedTrack.maxValue(allMax);
+            if (lockedTrack.minValue)
+                lockedTrack.minValue(allMin);
+            if (lockedTrack.maxValue)
+                lockedTrack.maxValue(allMax);
 
             if (!lockedTrack.valueScale)
                 // this track probably hasn't loaded the tiles to 
                 // create a valueScale
-                return;
+                continue;
 
             lockedTrack.valueScale.domain([allMin, allMax]);
             lockedTrack.rerender(lockedTrack.options);
@@ -1331,30 +1341,82 @@ export class HiGlassComponent extends React.Component {
         });
     }
 
-    handleUnlockValueScale(viewUid, trackUid) {
-        this.handleUnlock(this.combineViewAndTrackUid(viewUid, trackUid), this.valueScaleLocks);
+    combineViewAndTrackUid(viewUid, trackUid) {
+        // see if we've already created a uid for this view / track combo
+        let uid = viewUid + '.' + trackUid;
+
+        this.combinedUidToViewTrack[uid] = {'view': viewUid, 'track': trackUid}
+
+        if (this.viewTrackUidsToCombinedUid[viewUid]) {
+            if (this.viewTrackUidsToCombinedUid[trackUid])
+                return this.viewTrackUidsToCombinedUid[viewUid][trackUid];
+
+            this.viewTrackUidsToCombinedUid[viewUid][trackUid] = uid;
+        } else {
+            this.viewTrackUidsToCombinedUid[viewUid] = {};
+            this.viewTrackUidsToCombinedUid[viewUid][trackUid] = uid;
+        }
+
+
+        return uid;
     }
 
-    combineViewAndTrackUid(viewUid, trackUid) {
-        return viewUid + '.' + trackUid
+    handleUnlockValueScale(viewUid, trackUid) {
+        // if it's combined track, unlock each individual component
+        if (this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid).createdTracks) {
+            // if the from view is a combined track, recurse and add links between its child tracks
+            let childTrackUids = dictKeys(this.tiledPlots[viewUid]
+                                        .trackRenderer
+                                        .getTrackObject(trackUid)
+                                        .createdTracks        )
+            for (let childTrackUid of childTrackUids) {
+                console.log('unlocking:', childTrackUid);
+                this.handleUnlock(this.combineViewAndTrackUid(viewUid, childTrackUid), this.valueScaleLocks);
+            }
+
+        } else {
+            this.handleUnlock(this.combineViewAndTrackUid(viewUid, trackUid), this.valueScaleLocks);
+        }
     }
+
 
     handleValueScaleLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid) {
         console.log('fromViewUid:', fromViewUid, 'fromTrackUid:', fromTrackUid);
         console.log('toViewUid:', toViewUid, 'toTrackUid:', toTrackUid);
 
+        console.log('trackDefObjects', this.tiledPlots[fromViewUid].trackRenderer.trackDefObjects);
+
+        if (this.tiledPlots[fromViewUid].trackRenderer.getTrackObject(fromTrackUid).createdTracks) {
+            // if the from view is a combined track, recurse and add links between its child tracks
+            let childTrackUids = dictKeys(this.tiledPlots[fromViewUid]
+                                        .trackRenderer
+                                        .getTrackObject(fromTrackUid)
+                                        .createdTracks        )
+            for (let childTrackUid of childTrackUids) {
+                this.handleValueScaleLocked(fromViewUid, childTrackUid, toViewUid, toTrackUid);
+            }
+
+            return;
+        }
+
+        if (this.tiledPlots[toViewUid].trackRenderer.getTrackObject(toTrackUid).createdTracks) {
+            // if the from view is a combined track, recurse and add links between its child tracks
+            let childTrackUids = dictKeys(this.tiledPlots[toViewUid]
+                                        .trackRenderer
+                                        .getTrackObject(toTrackUid)
+                                        .createdTracks        )
+            for (let childTrackUid of childTrackUids) {
+                this.handleValueScaleLocked(fromViewUid, fromTrackUid, toViewUid, childTrackUid);
+            }
+
+            return;
+        }
+
         let fromUid = this.combineViewAndTrackUid(fromViewUid, fromTrackUid);
         let toUid = this.combineViewAndTrackUid(toViewUid, toTrackUid);
 
         this.addLock(fromUid, toUid, this.valueScaleLocks, (uid) => { 
-            let combinedToViewAndTrackUid = {};
-
-            combinedToViewAndTrackUid[this.combineViewAndTrackUid(fromViewUid, fromTrackUid)] = 
-                    {view: fromViewUid, track: fromTrackUid}
-            combinedToViewAndTrackUid[this.combineViewAndTrackUid(toViewUid, toTrackUid)] = 
-                    {view: toViewUid, track: toTrackUid}
-
-            return combinedToViewAndTrackUid[uid];
+            return this.combinedUidToViewTrack[uid];
         });
         this.setState({
             chooseTrackHandler: null

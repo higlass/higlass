@@ -318,7 +318,7 @@ export class TrackRenderer extends React.Component {
             let trackObject = trackDefItems[i][1].trackObject;
 
             if (uid == trackId) {
-                return trackDef.trackObject
+                return trackObject
             }
 
             // maybe this track is in a combined track

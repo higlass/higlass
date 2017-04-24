@@ -385,12 +385,12 @@ describe("Simple HiGlassComponent", () => {
 
             hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'c2');
 
-            //unlock the scales and zoom out
+            // lock the scales of two combined views
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 28874.21283197403);
             setTimeout(() => done(), 400);
         });
 
-        it ('ensures that the new track domains are equal', (done) => {
+        it ('ensures that the new track domains are equal and unlock the combined tracks', (done) => {
             console.log('done');
             let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
             let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('heatmap2');
@@ -402,11 +402,34 @@ describe("Simple HiGlassComponent", () => {
             console.log('domain2:', domain2);
             expect(domain1[1]).to.eql(domain2[1]);
 
+            hgc.instance().handleUnlockValueScale('aa', 'c1');
+
+            //unlock the scales and zoom out
+            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
+            setTimeout(() => done(), 400);
+        });
+
+        it ('ensures that the new track domains are not equal', (done) => {
+            console.log('done');
+            let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
+            let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('heatmap2');
+
+            let domain1 = track1.valueScale.domain();
+            let domain2 = track2.valueScale.domain();
+
+            console.log('domain1:', domain1);
+            console.log('domain2:', domain2);
+            expect(domain1[1]).to.not.eql(domain2[1]);
+
+            /*
             hgc.instance().handleUnlockValueScale('aa', 'heatmap1');
 
             //unlock the scales and zoom out
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
             setTimeout(() => done(), 400);
+            */
+
+            done();
         });
 
     })
