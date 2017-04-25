@@ -12,6 +12,8 @@ export class AddTrackModal extends React.Component {
     constructor(props) {
         super(props);
 
+        this.tilesetFinder = null;
+
         options: {};
 
         this.state = {
@@ -88,8 +90,8 @@ export class AddTrackModal extends React.Component {
 
             seriesOptions = (
                             <SeriesOptions
-                                trackCategory={this.state.mainTileset.category}
                                 onOptionsChanged={this.handleOptionsChanged.bind(this)}
+                                trackCategory={this.state.mainTileset.category}
                             />
                     );
         }
@@ -97,40 +99,44 @@ export class AddTrackModal extends React.Component {
         let form = (
                 <div>
                             <TilesetFinder
-                                orientation={orientation}
-                                onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
-                                selectedTilesetChanged={this.mainTilesetChanged.bind(this)}
                                 onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
+                                onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
+                                orientation={orientation}
+                                ref={(c) => this.tilesetFinder = c}
+                                selectedTilesetChanged={this.mainTilesetChanged.bind(this)}
                                 trackSourceServers={this.props.trackSourceServers}
                             />
                     </div>
                 )
 
-        //console.log('this.props.onCancel', this.props.onCancel);
         return(<Modal 
                 onHide={this.props.onCancel}
                 show={this.props.show}
-                >
+               >
                     <Modal.Header closeButton>
-                    <Modal.Title>Add Track</Modal.Title> 
+                    <Modal.Title>{'Add Track'}</Modal.Title> 
                     </Modal.Header>
                     <Modal.Body>
                         { form }
                         <PlotTypeChooser 
-                            onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
                             datatype={this.state.mainTileset.datatype}
+                            onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
                             orientation={orientation}
                         />
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button onClick={this.props.onCancel}>Cancel</Button>
-                        <Button onClick={this.handleSubmit.bind(this)}>Submit</Button>
+                        <Button onClick={this.props.onCancel}>{'Cancel'}</Button>
+                        <Button onClick={this.handleSubmit.bind(this)}>{'Submit'}</Button>
                     </Modal.Footer>
                </Modal>)
     }
 }
 
 AddTrackModal.propTypes = {
+    host: React.PropTypes.object,
     show: React.PropTypes.bool,
-    onTrackChosen: React.PropTypes.func
+    onCancel: React.PropTypes.func,
+    onTrackChosen: React.PropTypes.func,
+    position: React.PropTypes.string,
+    trackSourceServers: React.PropTypes.array
 }

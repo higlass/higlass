@@ -29,11 +29,21 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     }
 
     drawAxis(valueScale) {
-        if ((!this.options.axisPositionVertical &&
-             !this.options.axisPositionHorizontal) ||
-            this.options.axisPositionVertical == 'hidden' ||
-            this.options.axisPositionHorizontal == 'hidden')
-            super.clearAxis();
+        // either no axis position is specified
+        if (!this.options.axisPositionVertical && !this.options.axisPositionHorizontal) {
+            this.axis.clearAxis();
+            return;
+        }
+
+        if (this.options.axisPositionVertical && this.options.axisPositionVertical == 'hidden') {
+            this.axis.clearAxis();
+            return;
+        }
+
+        if (this.options.axisPositionHorizontal && this.options.axisPositionHorizontal == 'hidden') {
+            this.axis.clearAxis();
+            return;
+        }
 
         if (this.options.axisPositionHorizontal == 'left' 
             || this.options.axisPositionVertical == 'top') {

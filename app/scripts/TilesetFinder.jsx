@@ -177,6 +177,7 @@ export class TilesetFinder extends React.Component {
                             placeholder="Search Term"
                             ref={(c) => { this.searchBox = c; }}
                             onChange={this.handleSearchChange.bind(this)}
+                            autoFocus={true}
                           />
                           <div style={{height: 10}} />
                           </Col>

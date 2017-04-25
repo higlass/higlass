@@ -1,8 +1,8 @@
 /*
 @import url(https://fonts.googleapis.com/css?family=Fira+Sans:400,300,300italic,400italic,500,500italic,700,700italic);
 @import url(https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700,700italic);
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,700');
 */
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700');
 
 html h2 {
     font-family: 'Fira Sans', sans-serif;
@@ -10,18 +10,6 @@ html h2 {
 
 p {
     font-size: 12pt;
-}
-
-.modal-title {
-    font-family: "Roboto";
-    font-weight: 700;
-}
-
-.modal-container {
-  position: relative;
-}
-.modal-container .modal, .modal-container .modal-backdrop {
-  position: absolute;
 }
 
 .glyphicon-refresh-animate {

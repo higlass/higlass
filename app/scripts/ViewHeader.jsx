@@ -87,8 +87,8 @@ export class ViewHeader extends React.Component {
                     }
                 >
                     <ContextMenuContainer
-                        position={this.state.addTrackPositionMenuPosition}
                         orientation={'left'}
+                        position={this.state.addTrackPositionMenuPosition}
                     >
                         <AddTrackPositionMenu
                             onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
@@ -105,69 +105,10 @@ export class ViewHeader extends React.Component {
                 onMenuClosed={e => this.setState({configMenuUid: null})}
               >
                     <ContextMenuContainer
-                        position={this.state.configMenuPosition}
                         orientation={'left'}
+                        position={this.state.configMenuPosition}
                     >
                         <ConfigViewMenu
-                            onZoomToData={e => {
-                                this.setState({configMenuUid: null});    // hide the menu
-                                this.props.onZoomToData(this.state.configMenuUid);
-                            }}
-                            onLockZoom={e => {
-                                this.setState({configMenuUid: null});    // hide the menu
-                                this.props.onLockZoom(this.state.configMenuUid);
-                            }}
-                            onLockLocation={e => {
-                                this.setState({configMenuUid: null});    // hide the menu
-                                this.props.onLockLocation(this.state.configMenuUid);
-                            }}
-                            onLockZoomAndLocation={e => {
-                                this.setState({configMenuUid: null});    // hide the menu
-                                this.props.onLockZoomAndLocation(this.state.configMenuUid);
-                            }}
-
-                            onTakeAndLockZoomAndLocation={e => {
-                                this.setState({configMenuUid: null});    // hide the menu
-                                this.props.onTakeAndLockZoomAndLocation(this.state.configMenuUid);
-                            }}
-
-                            onUnlockZoom={e => {
-                                this.setState({configMenuUid: null});    // hide the menu
-                                this.props.onUnlockZoom(this.state.configMenuUid);
-                            }}
-                            onUnlockLocation={e => {
-                                this.setState({configMenuUid: null});    // hide the menu
-                                this.props.onUnlockLocation(this.state.configMenuUid);
-                            }}
-                            onUnlockZoomAndLocation={e => {
-                                this.setState({configMenuUid: null});    // hide the menu
-                                this.props.onUnlockZoomAndLocation(this.state.configMenuUid);
-                            }}
-
-
-                            onYankZoom={e =>
-                                {
-                                    this.setState({configMenuUid: null}); //hide the menu
-                                    this.props.onYankZoom(this.state.configMenuUid);
-                                }}
-                            onYankLocation={e => {
-                                this.setState({configMenuUid: null}); //hide the menu
-                                this.props.onYankLocation(this.state.configMenuUid);
-                            }}
-
-                            onYankZoomAndLocation={e => {
-                                this.setState({configMenuUid: null}); //hide the menu
-                                this.props.onYankZoomAndLocation(this.state.configMenuUid);
-                            }}
-
-                            onProjectViewport={e => {
-                                this.setState({configMenuUid: null}); //hide the menu
-                                this.props.onProjectViewport(this.state.configMenuUid)
-                            }}
-                            onTogglePositionSearchBox={e => {
-                                this.setState({configMenuUid: null}); //hide the menu
-                                this.props.onTogglePositionSearchBox(this.state.configMenuUid)
-                            }}
                             onExportSVG={e => {
                                 this.setState({configMenuUid: null});
                                 this.props.onExportSVG();
@@ -180,6 +121,65 @@ export class ViewHeader extends React.Component {
                                 this.setState({configMenuUid: null}); //hide the menu
                                 this.props.onExportViewsAsLink()
                             }}
+                            onLockLocation={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onLockLocation(this.state.configMenuUid);
+                            }}
+                            onLockZoom={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onLockZoom(this.state.configMenuUid);
+                            }}
+                            onLockZoomAndLocation={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onLockZoomAndLocation(this.state.configMenuUid);
+                            }}
+
+                            onProjectViewport={e => {
+                                this.setState({configMenuUid: null}); //hide the menu
+                                this.props.onProjectViewport(this.state.configMenuUid)
+                            }}
+
+                            onTakeAndLockZoomAndLocation={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onTakeAndLockZoomAndLocation(this.state.configMenuUid);
+                            }}
+                            onTogglePositionSearchBox={e => {
+                                this.setState({configMenuUid: null}); //hide the menu
+                                this.props.onTogglePositionSearchBox(this.state.configMenuUid)
+                            }}
+
+                            onUnlockLocation={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onUnlockLocation(this.state.configMenuUid);
+                            }}
+                            onUnlockZoom={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onUnlockZoom(this.state.configMenuUid);
+                            }}
+                            onUnlockZoomAndLocation={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onUnlockZoomAndLocation(this.state.configMenuUid);
+                            }}
+
+
+                            onYankLocation={e => {
+                                this.setState({configMenuUid: null}); //hide the menu
+                                this.props.onYankLocation(this.state.configMenuUid);
+                            }}
+                            onYankZoom={e =>
+                                {
+                                    this.setState({configMenuUid: null}); //hide the menu
+                                    this.props.onYankZoom(this.state.configMenuUid);
+                                }}
+                            onYankZoomAndLocation={e => {
+                                this.setState({configMenuUid: null}); //hide the menu
+                                this.props.onYankZoomAndLocation(this.state.configMenuUid);
+                            }}
+                            onZoomToData={e => {
+                                this.setState({configMenuUid: null});    // hide the menu
+                                this.props.onZoomToData(this.state.configMenuUid);
+                            }}
+
                         />
                     </ContextMenuContainer>
                 </PopupMenu>);
@@ -194,37 +194,41 @@ export class ViewHeader extends React.Component {
                     <div className="multitrack-header">
 
                         <svg
-                            onClick={this.props.onAddView}
                             className={'multitrack-header-icon multiview-copy-img'}
+                            height="10px"
+                            onClick={this.props.onAddView}
                             width="10px"
-                            height="10px">
-                            <use xlinkHref="#copy"></use>
+                        >
+                            <use xlinkHref="#copy" />
                         </svg>
 
                         <svg
-                            onClick={ e => this.handleConfigMenuOpened(this.props.viewUid) }
-                            ref={c => this.configImg = c}
                             className={'multitrack-header-icon multiview-config-img'}
+                            height="10px"
+                            onClick={e => this.handleConfigMenuOpened(this.props.viewUid)}
+                            ref={c => this.configImg = c}
                             width="10px"
-                            height="10px">
-                            <use xlinkHref="#cog"></use>
+                        >
+                            <use xlinkHref="#cog" />
                         </svg>
 
                         <svg
-                            onClick={ e => this.handleAddTrackPositionMenuOpened(this.props.viewUid) }
-                            ref={c => this.plusImg = c}
                             className={'multitrack-header-icon multiview-add-track-img'}
+                            height="10px"
+                            onClick={e => this.handleAddTrackPositionMenuOpened(this.props.viewUid)}
+                            ref={c => this.plusImg = c}
                             width="10px"
-                            height="10px">
-                            <use xlinkHref="#plus"></use>
+                        >
+                            <use xlinkHref="#plus" />
                         </svg>
 
                         <svg
-                            onClick={this.props.onCloseView}
                             className={'multitrack-header-icon multiview-close-img'}
+                            height="10px"
+                            onClick={this.props.onCloseView}
                             width="10px"
-                            height="10px">
-                            <use xlinkHref="#cross"></use>
+                        >
+                            <use xlinkHref="#cross" />
                         </svg>
 
                         {configMenu}
@@ -233,4 +237,27 @@ export class ViewHeader extends React.Component {
 
 			)
 	}
+}
+
+ViewHeader.propTypes = {
+    onAddView: React.PropTypes.func,
+    onCloseView: React.PropTypes.func,
+    onExportSVG: React.PropTypes.func,
+    onExportViewsAsJSON: React.PropTypes.func,
+    onExportViewsAsLink: React.PropTypes.func,
+    onLockLocation: React.PropTypes.func, 
+    onLockZoom: React.PropTypes.func, 
+    onLockZoomAndLocation: React.PropTypes.func, 
+    onProjectViewport: React.PropTypes.func, 
+    onTakeAndLockZoomAndLocation: React.PropTypes.func, 
+    onTogglePositionSearchBox: React.PropTypes.func, 
+    onTrackPositionChosen: React.PropTypes.func,
+    onUnlockLocation: React.PropTypes.func, 
+    onUnlockZoom: React.PropTypes.func, 
+    onUnlockZoomAndLocation: React.PropTypes.func, 
+    onYankLocation: React.PropTypes.func, 
+    onYankZoom: React.PropTypes.func, 
+    onYankZoomAndLocation: React.PropTypes.func, 
+    onZoomToData: React.PropTypes.func,
+    viewUid: React.PropTypes.string
 }

@@ -63,7 +63,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         }
 
         for (let tile of this.visibleAndFetchedTiles()) {
-            this.initTile(tile);
+            this.renderTile(tile);
         }
     }
 
@@ -351,6 +351,20 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         return gColorbarArea;
     }
 
+    minValue(_) {
+        if (_)
+            this.scale.minValue = _;
+        else
+            return this.scale.minValue;
+    }
+
+    maxValue(_) {
+        if (_)
+            this.scale.maxValue = _;
+        else
+            return this.scale.maxValue;
+    }
+
     initTile(tile) {
         /**
          * Convert the raw tile data to a rendered array of values which can be represented as a sprite.
@@ -365,6 +379,10 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.valueScale = scaleLog().range([254,0])
             .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue])
 
+        this.renderTile(tile);
+    }
+
+    renderTile(tile) {
         tileProxy.tileDataToPixData(tile,
                                     this.valueScale,
                                     this.valueScale.domain()[0], //used as a pseudocount to prevent taking the log of 0
