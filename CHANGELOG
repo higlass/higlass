@@ -1,3 +1,11 @@
+v0.6.4
+
+- Added value scale locking
+- Fixed bug where newly added heatmaps didn't render (syncTrackObjects needs
+to call applyZoomTransform)
+- Fixed bug where new chromosome axis didn't appear after being added
+	- Had to call animate after the chromosome info was received
+
 v0.6.3
 
 - Added colorbar for Heatmaps
