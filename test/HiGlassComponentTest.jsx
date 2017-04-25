@@ -2,6 +2,9 @@ import {
     mount, 
     render
 } from 'enzyme';
+import {
+  scalesCenterAndK
+} from '../app/scripts/utils.js';
 import { expect } from 'chai';
 import {scaleLinear} from 'd3-scale';
 import React from 'react';
@@ -29,7 +32,7 @@ let heatmapTrack =
                   "maxZoom": null,
                   "colorbarLabelsPosition": "outside",
                   "colorbarPosition": "topLeft",
-                  "name": "Dixon et al. (2015) H1_TB HindIII (allreps) 1kb"
+                  "name": "New tileset"
                 },
                 "width": 20,
                 "height": 20,
@@ -308,7 +311,6 @@ describe("Simple HiGlassComponent", () => {
             testAsync(done);
         });
 
-        /*
         it ('exports SVG', () => {
             let svg = hgc.instance().createSVG();
             let svgText = new XMLSerializer().serializeToString(svg);
@@ -463,12 +465,14 @@ describe("Simple HiGlassComponent", () => {
 
             done();
         });
-        */
+
         it ('Replaces and displays a new track', (done) => {
             hgc.instance().handleCloseTrack('view2', 'heatmap2');
             hgc.instance().handleTrackAdded('view2', heatmapTrack, 'center');
 
             hgc.instance().tiledPlots['view2'].render();
+            hgc.instance().tiledPlots['view2'].trackRenderer.setCenter(
+                    1799508622.8021536, 1801234331.7949603, 17952.610495328903);
 
             hgc.instance().tiledPlots['view2']
                 .trackRenderer.syncTrackObjects(
@@ -486,6 +490,9 @@ describe("Simple HiGlassComponent", () => {
             // make sure that the newly added track is rendered
             expect(track.pMain.position.x).to.be.above(404);
             expect(track.pMain.position.x).to.be.below(406);
+
+            console.log('center', scalesCenterAndK(hgc.instance().xScales['view2'],
+                                                   hgc.instance().yScales['view2']));
 
             setTimeout(() => done(), 400);
         });
