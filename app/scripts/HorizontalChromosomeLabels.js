@@ -11,7 +11,7 @@ let TICK_HEIGHT = 6;
 let TICK_TEXT_SEPARATION = 2;
 
 export class HorizontalChromosomeLabels extends PixiTrack {
-    constructor(scene, chromInfoPath) {
+    constructor(scene, chromInfoPath, animate) {
         super(scene);
 
         this.searchField = null;
@@ -23,6 +23,8 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         this.textFontSize = '12px';
         this.textFontFamily = 'Arial';
         this.textFontColor = '#777777';
+
+        this.animate = animate;
 
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;
@@ -59,6 +61,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
             }
 
             this.draw();
+            this.animate();
         });
 
     }
@@ -142,8 +145,6 @@ export class HorizontalChromosomeLabels extends PixiTrack {
 
         }
 
-        console.log('xScale.domain()', xScale.domain());
-        console.log('cumPos.chr', cumPos.chr, 'ticks:', xScale.ticks(numTicks));
         */
         return ticks.length;
     }

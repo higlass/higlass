@@ -351,7 +351,6 @@ export class TrackRenderer extends React.Component {
 
             if (updated)  {
                 //only redraw if positions changed
-                console.log('CHANGED');
                 this.applyZoomTransform(this.currentProps);
         }
 
@@ -760,9 +759,15 @@ export class TrackRenderer extends React.Component {
             case '2d-chromosome-grid':
                 return new Chromosome2DGrid(this.currentProps.pixiStage, track.chromInfoPath );
             case 'horizontal-chromosome-labels':
-                return new HorizontalChromosomeLabels(this.currentProps.pixiStage, track.chromInfoPath);
+                return new HorizontalChromosomeLabels(
+                        this.currentProps.pixiStage, 
+                        track.chromInfoPath,
+                        () => this.currentProps.onNewTilesLoaded(track.uid));
             case 'vertical-chromosome-labels':
-                return new LeftTrackModifier(new HorizontalChromosomeLabels(this.currentProps.pixiStage, track.chromInfoPath));
+                return new LeftTrackModifier(new HorizontalChromosomeLabels(
+                            this.currentProps.pixiStage, 
+                            track.chromInfoPath,
+                            () => this.currentProps.onNewTilesLoaded(track.uid)));
             case 'horizontal-heatmap':
                 return new HorizontalHeatmapTrack(this.currentProps.pixiStage,
                                                      track.server,

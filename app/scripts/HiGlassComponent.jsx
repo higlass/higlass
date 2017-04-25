@@ -222,11 +222,8 @@ export class HiGlassComponent extends React.Component {
 
     animate() {
         requestAnimationFrame(() => {
-            console.log('animating...');
             this.pixiRenderer.render(this.pixiStage);
-            //this.animate();
         });
-        // this.animate.bind(this));
     }
 
   onBreakpointChange(breakpoint) {

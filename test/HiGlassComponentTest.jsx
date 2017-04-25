@@ -12,6 +12,16 @@ import ReactDOM from 'react-dom';
 import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
 import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
 
+let chromInfoTrack = 
+          {
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "type": "horizontal-chromosome-labels",
+            "position": "top",
+            "name": "Chromosome Labels (hg19)",
+            "height": 30,
+            "uid": "I1QUF22JQJuJ38j9PS4iqw",
+            "options": {}
+          };
 
 let heatmapTrack = 
               {
@@ -328,17 +338,13 @@ describe("Simple HiGlassComponent", () => {
             expect(svgText.indexOf('rgb(171, 43, 0)')).to.be.below(0);
 
             
-            //console.log('svg', svg);
             let tdo = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects;
-            console.log('tdo:', tdo);
 
             let line1 = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects['line1'].trackObject;
 
             let axis = line1.axis.exportAxisRightSVG(line1.valueScale, line1.dimensions[1]);
             let axisText = new XMLSerializer().serializeToString(axis);
-            console.log('axis:', axis);
 
-            //console.log('axisText:', axisText);
             //let axis = svg.getElementById('axis');
             // make sure we have a tick mark for 200000
             expect(axisText.indexOf('5e+4')).to.be.above(0);
@@ -347,7 +353,6 @@ describe("Simple HiGlassComponent", () => {
         it ('has a colorbar', () => {
             let heatmap = hgc.instance().tiledPlots['aa'].trackRenderer
                 .trackDefObjects['c1'].trackObject.createdTracks['heatmap1'];
-            console.log('heatmap:', heatmap);
             expect(heatmap.pColorbarArea.x).to.be.below(heatmap.dimensions[0] / 2);
 
             // make sure the labels are drawn on the outside
@@ -384,15 +389,12 @@ describe("Simple HiGlassComponent", () => {
 
 
         it ('ensures that the new track domains are equal and unlocks the scales', (done) => {
-            console.log('done');
             let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
             let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('heatmap2');
 
             let domain1 = track1.valueScale.domain();
             let domain2 = track2.valueScale.domain();
 
-            console.log('domain1:', domain1);
-            console.log('domain2:', domain2);
             expect(domain1[1]).to.eql(domain2[1]);
 
             hgc.instance().handleUnlockValueScale('aa', 'heatmap1');
@@ -409,8 +411,6 @@ describe("Simple HiGlassComponent", () => {
             let domain1 = track1.valueScale.domain();
             let domain2 = track2.valueScale.domain();
 
-            console.log('domain1:', domain1);
-            console.log('domain2:', domain2);
             expect(domain1[1]).to.not.eql(domain2[1]);
 
             hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'c2');
@@ -421,15 +421,12 @@ describe("Simple HiGlassComponent", () => {
         });
 
         it ('ensures that the new track domains are equal and unlock the combined tracks', (done) => {
-            console.log('done');
             let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
             let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('heatmap2');
 
             let domain1 = track1.valueScale.domain();
             let domain2 = track2.valueScale.domain();
 
-            console.log('domain1:', domain1);
-            console.log('domain2:', domain2);
             expect(domain1[1]).to.eql(domain2[1]);
 
             hgc.instance().handleUnlockValueScale('aa', 'c1');
@@ -440,15 +437,12 @@ describe("Simple HiGlassComponent", () => {
         });
 
         it ('ensures that the new track domains are not equal', (done) => {
-            console.log('done');
             let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
             let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('heatmap2');
 
             let domain1 = track1.valueScale.domain();
             let domain2 = track2.valueScale.domain();
 
-            console.log('domain1:', domain1);
-            console.log('domain2:', domain2);
             expect(domain1[1]).to.not.eql(domain2[1]);
 
             //hgc.instance().handleUnlockValueScale('aa', 'heatmap1');
@@ -491,9 +485,6 @@ describe("Simple HiGlassComponent", () => {
             expect(track.pMain.position.x).to.be.above(404);
             expect(track.pMain.position.x).to.be.below(406);
 
-            console.log('center', scalesCenterAndK(hgc.instance().xScales['view2'],
-                                                   hgc.instance().yScales['view2']));
-
             setTimeout(() => done(), 400);
         });
 
@@ -507,6 +498,20 @@ describe("Simple HiGlassComponent", () => {
             let domain2 = track2.valueScale.domain();
             
             done();
+        });
+
+        it ("Adds a chromInfo track", (done) => {
+            // this test was here to visually make sure that the HorizontalChromosomeAxis
+            // was rendered after being drawn
+            hgc.instance().handleTrackAdded('view2', chromInfoTrack, 'top');
+
+            hgc.instance().tiledPlots['view2'].render();
+            hgc.instance().tiledPlots['view2']
+                .trackRenderer.syncTrackObjects(
+                        hgc.instance().tiledPlots['view2'].positionedTracks());
+
+            // make sure that the chromInfo is displayed
+            setTimeout(() => done(), 400);
         });
     })
 });
