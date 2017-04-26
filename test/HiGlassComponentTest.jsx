@@ -302,7 +302,7 @@ function testAsync(done) {
 }
 
 function getTrackObject(hgc, viewUid, trackUid) {
-    return hgc.instance().tiledPlots[viewUid].trackRenderer.trackDefObjects[trackUid].trackObject;
+    return hgc.instance().tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
 }
 
 describe("Simple HiGlassComponent", () => {
@@ -323,6 +323,36 @@ describe("Simple HiGlassComponent", () => {
     describe("Single view", () => {
         beforeAll((done) => {
             testAsync(done);
+        });
+
+        it ('changes the colorbar color when the heatmap colormap is changed', () => {
+            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
+            let newOptions = {
+                  "colorRange": [
+                    "white",
+                    "black"
+                  ],
+                };
+
+            hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', newOptions);
+
+            let svg = getTrackObject(hgc, 'aa', 'heatmap1').exportSVG()[0];
+            //console.log('svg:', svg);
+            //hgc.instance().handleExportSVG();
+            
+            // how do we test for what's drawn in Pixi?'
+            
+            let oldOptions = {
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ]
+            }
+
+            hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', oldOptions);
+
         });
 
         it ('switches between log and linear scales', () => {

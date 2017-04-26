@@ -65,6 +65,9 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         for (let tile of this.visibleAndFetchedTiles()) {
             this.renderTile(tile);
         }
+
+        // hopefully draw isn't rerendering all the tiles
+        this.drawColorbar();
     }
 
     tileDataToCanvas(pixData) {
@@ -140,6 +143,10 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         //console.trace('drawing', this);
         super.draw();
         
+        this.drawColorbar();
+    }
+
+    drawColorbar() {
         this.pColorbar.clear(); 
         // draw a colorbar
 
