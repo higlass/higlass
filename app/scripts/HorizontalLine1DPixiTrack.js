@@ -31,6 +31,9 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     }
 
     rerender(options, force) {
+        this.options = options;
+
+        //console.log('rerendering');
         for (let tile of this.visibleAndFetchedTiles()) {
             this.renderTile(tile);
         }
@@ -96,8 +99,8 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         let pseudocount = 0;    // if we use a log scale, then we'll set a pseudocount
                                 // equal to the smallest non-zero value
         this.valueScale = null;
-        
 
+        //console.log('valueScaling:', this.options.valueScaling);
         if (this.options.valueScaling == 'log') {
             let offsetValue = this.medianVisibleValue;
 
@@ -106,7 +109,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
             this.valueScale = scaleLog()
                 //.base(Math.E)
-                .domain([this.minValue(), this.maxValue()])
+                .domain([offsetValue, this.maxValue()])
                 .range([this.dimensions[1], 0]);
             pseudocount = offsetValue;
         } else {

@@ -1,3 +1,8 @@
+v0.6.5
+
+- Bug fix: tracks rendered with locked scale, rather than just the colorbar
+- Bug fix: locked line scales
+
 v0.6.4
 
 - Added value scale locking

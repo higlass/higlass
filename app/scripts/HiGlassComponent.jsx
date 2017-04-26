@@ -1812,6 +1812,7 @@ export class HiGlassComponent extends React.Component {
         let track = getTrackByUid(view.tracks, trackUid);
 
         track.options = Object.assign(track.options, newOptions);
+
         this.setState({
             views: this.state.views
         });

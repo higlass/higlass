@@ -152,7 +152,7 @@ let testViewConfig2 =
         "bottom": []
       },
       "layout": {
-        "w": 6,
+        "w": 5,
         "h": 12,
         "x": 0,
         "y": 0,
@@ -301,6 +301,10 @@ function testAsync(done) {
     }, pageLoadTime);
 }
 
+function getTrackObject(hgc, viewUid, trackUid) {
+    return hgc.instance().tiledPlots[viewUid].trackRenderer.trackDefObjects[trackUid].trackObject;
+}
+
 describe("Simple HiGlassComponent", () => {
     const div = document.createElement('div');
     document.body.appendChild(div);
@@ -319,6 +323,26 @@ describe("Simple HiGlassComponent", () => {
     describe("Single view", () => {
         beforeAll((done) => {
             testAsync(done);
+        });
+
+        it ('switches between log and linear scales', () => {
+            let newOptions = {
+              "labelColor": "red",
+              "labelPosition": "hidden",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "linear"
+            };
+
+            expect(getTrackObject(hgc, 'aa', 'line1').options.valueScaling).to.eql('log');
+            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
+            expect(getTrackObject(hgc, 'aa', 'line1').options.valueScaling).to.eql('linear');
+
+            newOptions.valueScaling = 'log';
+            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
+
+            //hgc.update();
         });
 
         it ('exports SVG', () => {

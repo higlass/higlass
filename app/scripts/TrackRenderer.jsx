@@ -146,6 +146,9 @@ export class TrackRenderer extends React.Component {
         if (this.prevPropsStr === nextPropsStr)
             return;
 
+
+        //console.log('updating props:', nextProps);
+
         //console.log('TR rerendering', this.currentProps.width, this.currentProps.height);
         this.prevPropsStr = nextPropsStr;
 

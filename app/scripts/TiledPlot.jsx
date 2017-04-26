@@ -73,6 +73,7 @@ export class TiledPlot extends React.Component {
         this.centerWidth = 0;
 
         this.dragTimeout = null;
+        this.previousPropsStr = '';
     }
 
 
@@ -99,7 +100,7 @@ export class TiledPlot extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         //console.log('this.props:', this.props);
 
-        let thisPropsStr = this.updatablePropsToString(this.props);
+        let thisPropsStr = this.previousPropsStr;
         let nextPropsStr = this.updatablePropsToString(nextProps);
 
         let thisStateStr = JSON.stringify(this.state);
@@ -113,7 +114,13 @@ export class TiledPlot extends React.Component {
         if (toUpdate || thisStateStr != nextStateStr)
             toUpdate = true;
 
+        //console.log('thisPropsStr', thisPropsStr);
+        //console.log('nextPropsStr', nextPropsStr);
+
         toUpdate = toUpdate || (this.props.chooseTrackHandler != nextProps.chooseTrackHandler);
+
+        if (toUpdate)
+            this.previousPropsStr = nextPropsStr;
 
         return toUpdate;
     }
