@@ -15,7 +15,8 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
          * and panning can override this function to draw all the elements
          * that will later be transformed.
          */
-        this.drawTile(tile);
+        //this.drawTile(tile);
+        super.initTile(tile);
     }
 
     tileToLocalId(tile) {

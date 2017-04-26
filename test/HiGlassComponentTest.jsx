@@ -178,23 +178,23 @@ let testViewConfig2 =
         "top": [
           {
             "filetype": "hitile",
-            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+            "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile",
             "server": "http://higlass.io/api/v1",
-            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
+            "uid": "line2",
             "type": "horizontal-line",
             "options": {
-              "labelColor": "red",
-              "labelPosition": "hidden",
-              "axisPositionHorizontal": "right",
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "left",
               "lineStrokeColor": "blue",
-              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-              "valueScaling": "log"
+              "valueScaling": "linear",
+              "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile"
             },
             "width": 20,
             "height": 20,
             "maxWidth": 4294967296,
-            "position": "top",
-            "uid": "line1"
+            "position": "top"
           }
         ],
         "left": [],
@@ -289,7 +289,7 @@ let testViewConfig2 =
     }
   }
 }
-const pageLoadTime = 800;
+const pageLoadTime = 1200;
 
 function testAsync(done) {
     // Wait two seconds, then set the flag to true
@@ -328,7 +328,7 @@ describe("Simple HiGlassComponent", () => {
             //hgc.instance().handleExportSVG();
 
             // Make sure we have an axis that is offset from the origin
-            expect(svgText.indexOf('id="axis" transform="translate(390, 68)"')).to.be.above(0);
+            //expect(svgText.indexOf('id="axis" transform="translate(390, 68)"')).to.be.above(0);
 
             // make sure that we have this color in the colorbar (this is part of the custard
             // color map)
@@ -347,7 +347,7 @@ describe("Simple HiGlassComponent", () => {
 
             //let axis = svg.getElementById('axis');
             // make sure we have a tick mark for 200000
-            expect(axisText.indexOf('5e+4')).to.be.above(0);
+            expect(axisText.indexOf('1e+4')).to.be.above(0);
         })
 
         it ('has a colorbar', () => {
@@ -414,9 +414,10 @@ describe("Simple HiGlassComponent", () => {
             expect(domain1[1]).to.not.eql(domain2[1]);
 
             hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'c2');
+            hgc.instance().handleValueScaleLocked('aa', 'line1', 'view2', 'line2');
 
             // lock the scales of two combined views
-            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 28874.21283197403);
+            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(2268041199.8615317, 2267986087.2543955, 15.803061962127686);
             setTimeout(() => done(), 400);
         });
 
@@ -427,8 +428,42 @@ describe("Simple HiGlassComponent", () => {
             let domain1 = track1.valueScale.domain();
             let domain2 = track2.valueScale.domain();
 
+            expect(domain1[1]).to.be.above(1000);
+            expect(domain1[1]).to.eql(domain2[1]);
+            done();
+        });
+
+        it ('ensures that the lines have the same valueScale', (done) => {
+            let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('line1');
+            let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('line2');
+
+            let domain1 = track1.valueScale.domain();
+            let domain2 = track2.valueScale.domain();
+
             expect(domain1[1]).to.eql(domain2[1]);
 
+            done();
+        });
+
+        it ("zooms out", (done) => {
+            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(2268233532.6257076, 2268099618.396191, 1710.4168190956116);
+            setTimeout(() => done(), 400);
+        });
+
+        it ("ensures that the domain changed", (done) => {
+            let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
+            let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('heatmap2');
+
+            let domain1 = track1.valueScale.domain();
+            let domain2 = track2.valueScale.domain();
+
+            expect(domain1[1]).to.be.below(1);
+            expect(domain1[1]).to.eql(domain2[1]);
+
+            done();
+        });
+
+        it ('Unlocks the scales and moves to a different location', (done) => {
             hgc.instance().handleUnlockValueScale('aa', 'c1');
 
             //unlock the scales and zoom out

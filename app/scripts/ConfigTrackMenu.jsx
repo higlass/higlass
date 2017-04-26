@@ -148,6 +148,22 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                     <hr />
                     <ContextMenuItem
                         contextMenu={this}
+                        onClick={() => this.props.onLockValueScale(this.props.track.uid)}
+                        onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+                    >
+                        {'Lock Value Scale With'}
+                    </ContextMenuItem>
+                    <ContextMenuItem
+                        contextMenu={this}
+                        onClick={() => this.props.onUnlockValueScale(this.props.track.uid)}
+                        onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+                    >
+                        {'Unlock Value Scale'}
+                    </ContextMenuItem>
+
+                    <hr />
+                    <ContextMenuItem
+                        contextMenu={this}
                         onClick={() => this.props.onAddSeries(this.props.track.uid)}
                         onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
                     >
@@ -166,22 +182,6 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                         }}
                     >
                     {'Replace Track'}
-                    </ContextMenuItem>
-
-                    <hr />
-                    <ContextMenuItem
-                        contextMenu={this}
-                        onClick={() => this.props.onLockValueScale(this.props.track.uid)}
-                        onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
-                    >
-                        {'Lock Value Scale With'}
-                    </ContextMenuItem>
-                    <ContextMenuItem
-                        contextMenu={this}
-                        onClick={() => this.props.onUnlockValueScale(this.props.track.uid)}
-                        onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
-                    >
-                        {'Unlock Value Scale'}
                     </ContextMenuItem>
 
                     {this.getSubmenu()}

@@ -18,6 +18,8 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         /**
          * Create whatever is needed to draw this tile.
          */
+        super.initTile(tile);
+
         tile.lineXValues = new Array(tile.tileData.dense.length);
         tile.lineYValues = new Array(tile.tileData.dense.length);
 
@@ -26,6 +28,12 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     destroyTile(tile) {
 
+    }
+
+    rerender(options, force) {
+        for (let tile of this.visibleAndFetchedTiles()) {
+            this.renderTile(tile);
+        }
     }
 
     drawAxis(valueScale) {
@@ -60,6 +68,12 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         }
     }
 
+    renderTile(tile) {
+        // this function is just so that we follow the same pattern as 
+        // HeatmapTiledPixiTrack.js
+        this.drawTile(tile);
+    }
+
     drawTile(tile) {
         super.drawTile(tile);
 
@@ -73,9 +87,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         if (tileValues.length == 0)
             return;
-
-        let minVisibleValue = this.minVisibleValue();
-        let maxVisibleValue = this.maxVisibleValue();
 
         /*
         if (maxVisibleValue < 0)
@@ -95,13 +106,13 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
             this.valueScale = scaleLog()
                 //.base(Math.E)
-                .domain([offsetValue, maxVisibleValue])
+                .domain([this.minValue(), this.maxValue()])
                 .range([this.dimensions[1], 0]);
             pseudocount = offsetValue;
         } else {
             // linear scale
             this.valueScale = scaleLinear()
-                .domain([minVisibleValue, maxVisibleValue])
+                .domain([this.minValue(), this.maxValue()])
                 .range([this.dimensions[1], 0]);
         }
 
@@ -110,7 +121,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         this.drawAxis(this.valueScale);
 
         if (this.valueScale.domain()[1] < 0) {
-            console.log('returning...')
             return;
         }
 

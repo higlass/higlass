@@ -275,14 +275,13 @@ export class HiGlassComponent extends React.Component {
           let lockedTracks = lockGroupValues.map(x => 
                   this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track))
 
-          let minValues = lockedTracks.filter(x => x.minValue && x.maxValue)  //exclude tracks that don't set min and max values
-                                      .map(x => x.minValue());
-          let maxValues = lockedTracks.filter(x => x.minValue && x.maxValue) //exclude tracks that don't set min and max values
-              .map(x => x.maxValue());
+          let minValues = lockedTracks.filter(x => x.minRawValue && x.maxRawValue)  //exclude tracks that don't set min and max values
+                                      .map(x => x.minRawValue());
+          let maxValues = lockedTracks.filter(x => x.minRawValue && x.maxRawValue) //exclude tracks that don't set min and max values
+              .map(x => x.maxRawValue());
 
           let allMin = Math.min(...minValues);
           let allMax = Math.max(...maxValues);
-
 
           for (let lockedTrack of lockedTracks) {
 
@@ -299,16 +298,18 @@ export class HiGlassComponent extends React.Component {
                 continue;
 
             lockedTrack.valueScale.domain([allMin, allMax]);
-            lockedTrack.rerender(lockedTrack.options);
+
+            // the second parameter forces a rerender even though
+            // the options haven't changed
+            lockedTrack.rerender(lockedTrack.options, true);
           }
       }
   }
 
   handleNewTilesLoaded(viewUid, trackUid) {
       this.syncValueScales(viewUid, trackUid);
-
-      //
       this.animate();
+      //
   }
 
   notifyDragChangedListeners(dragging) {

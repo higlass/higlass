@@ -24,6 +24,7 @@ export class TiledPixiTrack extends PixiTrack {
 
         // the tiles we already have requests out for
         this.fetching = new Set();
+        this.scale = {};
 
         // tiles we have fetched and ready to be rendered
         this.fetchedTiles = {};
@@ -281,10 +282,42 @@ export class TiledPixiTrack extends PixiTrack {
          */
     }
 
+    minValue(_) {
+        if (_)
+            this.scale.minValue = _;
+        else
+            return this.scale.minValue;
+    }
+
+    maxValue(_) {
+        if (_)
+            this.scale.maxValue = _;
+        else
+            return this.scale.maxValue;
+    }
+
+    minRawValue() {
+        // this is the minimum value from all the tiles that
+        // hasn't been externally modified by locked scales
+        return this.scale.minRawValue;
+    }
+
+    maxRawValue() {
+        // this is the maximum value from all the tiles that
+        // hasn't been externally modified by locked scales
+        return this.scale.maxRawValue;
+    }
+
+
     initTile(tile) {
         // create the tile
         // should be overwritten by child classes
         //console.log("ERROR: unimplemented createTile:", this);
+        this.scale.minRawValue = this.minVisibleValue();
+        this.scale.maxRawValue = this.maxVisibleValue();
+
+        this.scale.minValue = this.scale.minRawValue;
+        this.scale.maxValue = this.scale.maxRawValue;
     }
 
     updateTile(tile) {

@@ -33,8 +33,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.axis = new AxisPixi();
         this.pColorbarArea.addChild(this.axis.pAxis);
 
-        this.scale = {};
-
         // [[255,255,255,0], [237,218,10,4] ...
         // a 256 element array mapping the values 0-255 to rgba values
         // not a d3 color scale for speed
@@ -48,12 +46,14 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.prevOptions = '';
     }
 
-    rerender(options) {
-        super.rerender(options);
+    rerender(options, force) {
+        // if force is set, then we force a rerender even if the options
+        // haven't changed
+        super.rerender(options, force);
 
         let strOptions = JSON.stringify(options);
 
-        if (strOptions === this.prevOptions)
+        if (!force && strOptions === this.prevOptions)
             return;
         else
             this.prevOptions = strOptions;
@@ -351,20 +351,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         return gColorbarArea;
     }
 
-    minValue(_) {
-        if (_)
-            this.scale.minValue = _;
-        else
-            return this.scale.minValue;
-    }
-
-    maxValue(_) {
-        if (_)
-            this.scale.maxValue = _;
-        else
-            return this.scale.maxValue;
-    }
-
     initTile(tile) {
         /**
          * Convert the raw tile data to a rendered array of values which can be represented as a sprite.
@@ -373,8 +359,14 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
          *              this function are tile.tileData = {'dense': [...], ...}
          *              and tile.graphics
          */
-        this.scale.minValue = this.minVisibleValue();
-        this.scale.maxValue = this.maxVisibleValue();
+        super.initTile(tile);
+        /*
+        this.scale.minRawValue = this.minVisibleValue();
+        this.scale.maxRawValue = this.maxVisibleValue();
+
+        this.scale.minValue = this.scale.minRawValue;
+        this.scale.maxValue = this.scale.maxRawValue;
+        */
 
         this.valueScale = scaleLog().range([254,0])
             .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue])

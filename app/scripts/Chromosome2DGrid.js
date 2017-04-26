@@ -11,7 +11,6 @@ export class Chromosome2DGrid extends PixiTrack {
 
         this.searchField = null;
         this.chromInfo = null;
-        console.log('2d grid animate:', animate);
         this.animate = animate;
 
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
