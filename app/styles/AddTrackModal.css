@@ -28,7 +28,7 @@
     display: table; //This is important 
     overflow-y: auto;    
     overflow-x: auto;
-    width: auto;
+    width: 600px;
     min-width: 300px;   
     margin: auto;
 }

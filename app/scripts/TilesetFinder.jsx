@@ -18,6 +18,7 @@ export class TilesetFinder extends React.Component {
         this.localTracks = tracksInfo
             .filter(x => x.local && !x.hidden)
             .filter(x => x.orientation == this.props.orientation)
+            .filter(x => !x.hidden)
 
         this.localTracks.forEach(x => x.uuid = slugid.nice())
 

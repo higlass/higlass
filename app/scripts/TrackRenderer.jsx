@@ -755,9 +755,14 @@ export class TrackRenderer extends React.Component {
                     track.options
                 );
             case '2d-chromosome-labels':
-                return new Chromosome2DLabels(this.currentProps.pixiStage, track.chromInfoPath );
+                return new Chromosome2DLabels(
+                        this.currentProps.pixiStage, 
+                        track.chromInfoPath,
+                        () => this.currentProps.onNewTilesLoaded(track.uid));
             case '2d-chromosome-grid':
-                return new Chromosome2DGrid(this.currentProps.pixiStage, track.chromInfoPath );
+                return new Chromosome2DGrid(this.currentProps.pixiStage, 
+                        track.chromInfoPath,
+                        () => this.currentProps.onNewTilesLoaded(track.uid));
             case 'horizontal-chromosome-labels':
                 return new HorizontalChromosomeLabels(
                         this.currentProps.pixiStage, 

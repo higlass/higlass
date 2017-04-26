@@ -6,11 +6,12 @@ import boxIntersect from 'box-intersect';
 import {absoluteToChr} from './utils.js';
 
 export class Chromosome2DLabels extends PixiTrack {
-    constructor(scene, chromInfoPath) {
+    constructor(scene, chromInfoPath, animate) {
         super(scene);
 
         this.searchField = null;
         this.chromInfo = null;
+        this.animate = animate;
 
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;
@@ -46,6 +47,7 @@ export class Chromosome2DLabels extends PixiTrack {
                 this.texts.push(thisTexts);
             }
             this.draw();
+            this.animate();
         });
 
     }

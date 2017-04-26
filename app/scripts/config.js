@@ -442,7 +442,7 @@ export const tracksInfo = [
         datatype: ['chromosome-2d-labels'],
         local: true,
         orientation: '2d',
-        name: 'Chromosome Axis (hg19)',
+        name: 'Pairwise Chromosome Labels (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null
     }
@@ -452,7 +452,7 @@ export const tracksInfo = [
         datatype: ['chromosome-2d-labels-mm9'],
         local: true,
         orientation: '2d',
-        name: 'Chromosome Axis (mm9)',
+        name: 'Pairwise Chromosome Labels (mm9)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null
     }
@@ -463,7 +463,7 @@ export const tracksInfo = [
         orientation: '2d',
         name: '2D Chromosome Annotations',
         thumbnail: null,
-        selectable: false
+        hidden: true
     }
     ,
     {

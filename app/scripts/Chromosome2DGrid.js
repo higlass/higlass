@@ -6,11 +6,13 @@ import boxIntersect from 'box-intersect';
 import {colorToHex} from './utils.js';
 
 export class Chromosome2DGrid extends PixiTrack {
-    constructor(scene, chromInfoPath) {
+    constructor(scene, chromInfoPath, animate) {
         super(scene);
 
         this.searchField = null;
         this.chromInfo = null;
+        console.log('2d grid animate:', animate);
+        this.animate = animate;
 
         ChromosomeInfo(chromInfoPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;  
@@ -48,6 +50,7 @@ export class Chromosome2DGrid extends PixiTrack {
             }
 
             this.draw();
+            this.animate();
         });
 
     }
