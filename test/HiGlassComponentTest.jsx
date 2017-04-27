@@ -36,20 +36,19 @@ function getTrackObject(hgc, viewUid, trackUid) {
 }
 
 describe("Simple HiGlassComponent", () => {
-    const div = document.createElement('div');
-    document.body.appendChild(div);
-
-    div.setAttribute('style', 'height:800px; width:800px');
-
-
 
     // wait a bit of time for the data to be loaded from the server
     describe("Value interval track tests", () => {
+        let div = global.document.createElement('div');
+        global.document.body.appendChild(div);
+
+        div.setAttribute('style', 'height:800px; width:800px');
+        div.setAttribute('id', 'simple-hg-component');
+
         beforeAll((done) => {
             // wait for the page to load
             testAsync(done);
         });
-        /*
 
         let hgc = mount(<HiGlassComponent 
                         options={{bounded: true}}
@@ -57,12 +56,24 @@ describe("Simple HiGlassComponent", () => {
                       />, 
             {attachTo: div});
 
-        hgc.unmount();
-        */
+        console.log('start value');
+        it ("does stuff", () => {
 
+        });
+
+        hgc.unmount();
+        hgc.detach();
+        global.document.body.removeChild(div);
     });
 
     describe("Single view", () => {
+        console.log('single');
+        let div = global.document.createElement('div');
+        global.document.body.appendChild(div);
+
+        div.setAttribute('style', 'height:800px; width:800px');
+        div.setAttribute('id', 'single-view');
+        console.log('twoViewConfig:', twoViewConfig);
         let hgc = mount(<HiGlassComponent 
                         options={{bounded: true}}
                         viewConfig={twoViewConfig}
@@ -102,6 +113,8 @@ describe("Simple HiGlassComponent", () => {
             hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', oldOptions);
 
         });
+
+        return;
 
         it ('switches between log and linear scales', () => {
             let newOptions = {

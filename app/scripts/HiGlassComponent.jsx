@@ -6,7 +6,8 @@ import {scaleLinear} from 'd3-scale';
 import {request,post} from 'd3-request';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
-import {Responsive, WidthProvider} from 'react-grid-layout';
+import {WidthProvider} from 'react-grid-layout';
+import ReactGridLayout from 'react-grid-layout';
 import {SearchableTiledPlot} from './SearchableTiledPlot.jsx';
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -39,7 +40,7 @@ import {ChromosomeInfo} from './ChromosomeInfo.js';
 
 import '../styles/HiGlassComponent.css';
 
-const ResponsiveReactGridLayout = WidthProvider(Responsive);
+let WidthReactGridLayout = WidthProvider(ReactGridLayout);
 
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
@@ -50,6 +51,7 @@ export class HiGlassComponent extends React.Component {
 
         this.minHorizontalHeight = 20;
         this.minVerticalWidth = 20;
+        this.resizeSensor = null;
 
         this.uid = slugid.nice();
         this.yPositionOffset = 0;
@@ -164,9 +166,11 @@ export class HiGlassComponent extends React.Component {
             canvasElement: this.canvasElement
         });
         ElementQueries.listen();
-        new ResizeSensor(this.element.parentNode, function() {
+        console.log('this.element.parentNode:', this.element.parentNode);
+        this.resizeSensor = new ResizeSensor(this.element.parentNode, function() {
             //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
             let heightOffset = 0;
+            console.log('sensor...');
 
             this.fitPixiToParentContainer();
             this.refreshView(LONG_DRAG_TIMEOUT);
@@ -187,6 +191,11 @@ export class HiGlassComponent extends React.Component {
     }
 
     fitPixiToParentContainer() {
+        if (!this.element.parentNode) {
+            console.warn('No parentNode:', this.element);
+            return;
+        }
+
         let width = this.element.parentNode.clientWidth;
         let height = this.element.parentNode.clientHeight;
 
@@ -819,6 +828,7 @@ export class HiGlassComponent extends React.Component {
       this.handleDragStart();
       this.handleDragStop();
 
+
       let MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
 
       let marginHeight = MARGIN_HEIGHT * maxHeight - 1;
@@ -830,6 +840,7 @@ export class HiGlassComponent extends React.Component {
       let chosenRowHeight = prospectiveRowHeight;
 
       for (let l of layout) {
+          console.log('layout:', l.i, l.w);
         let view = this.state.views[l.i];
 
         if (view) {
@@ -909,8 +920,8 @@ export class HiGlassComponent extends React.Component {
 
   };
 
-  onResize(layout, oldItem, newItem, placeholder, e, element) {
-
+  handleResize(layout, oldItem, newItem, placeholder, e, element) {
+    console.log('resize:', layout);
 
   }
 
@@ -1959,6 +1970,7 @@ export class HiGlassComponent extends React.Component {
 
     componentWillUnmount() {
         window.removeEventListener('focus', this.boundRefreshView);
+        this.resizeSensor.detach();
     }
 
 
@@ -2118,6 +2130,7 @@ export class HiGlassComponent extends React.Component {
                          />
                     ) : null; // this.editable ?
 
+                console.log('view.uid', view.uid, 'layout:', layout.w);
                 return (<div
                             data-grid={layout}
                             key={itemUid}
@@ -2142,6 +2155,31 @@ export class HiGlassComponent extends React.Component {
             width={this.width}
          />)
         : null;
+
+    let gridLayout = 
+        (<WidthReactGridLayout
+          draggableHandle={'.multitrack-header'}
+          isDraggable={this.props.viewConfig.editable}
+          isResizable={this.props.viewConfig.editable}
+          margin={this.props.viewConfig.editable ? [10,10] : [0,0]}
+          measureBeforeMount={false}
+          onBreakpointChange={this.onBreakpointChange.bind(this)}
+          onDragStart={this.handleDragStart.bind(this)}
+          onDragStop={this.handleDragStop.bind(this)}
+          onLayoutChange={this.handleLayoutChange.bind(this)}
+          onResize={this.handleResize.bind(this)}
+          rowHeight={this.state.rowHeight}
+          cols={12}
+          // for some reason, this becomes 40 within the react-grid component
+          // (try resizing the component to see how much the height changes)
+          // Programming by coincidence FTW :-/
+          // WidthProvider option
+          // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
+          // and set `measureBeforeMount={true}`.
+          useCSSTransforms={this.state.mounted}
+        >
+        { tiledAreas }
+        </WidthReactGridLayout>)
 
     return (
       <div
@@ -2169,31 +2207,7 @@ export class HiGlassComponent extends React.Component {
             }}
         />
 
-
-        <ResponsiveReactGridLayout
-          {...this.props}
-          draggableHandle={'.multitrack-header'}
-          isDraggable={this.props.viewConfig.editable}
-          isResizable={this.props.viewConfig.editable}
-          margin={this.props.viewConfig.editable ? [10,10] : [0,0]}
-          measureBeforeMount={false}
-          onBreakpointChange={this.onBreakpointChange.bind(this)}
-          onDragStart={this.handleDragStart.bind(this)}
-          onDragStop={this.handleDragStop.bind(this)}
-          onLayoutChange={this.handleLayoutChange.bind(this)}
-          onResize={this.onResize.bind(this)}
-          rowHeight={this.state.rowHeight}
-
-          // for some reason, this becomes 40 within the react-grid component
-          // (try resizing the component to see how much the height changes)
-          // Programming by coincidence FTW :-/
-          // WidthProvider option
-          // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
-          // and set `measureBeforeMount={true}`.
-          useCSSTransforms={this.state.mounted}
-        >
-        { tiledAreas }
-        </ResponsiveReactGridLayout>
+    {gridLayout}
 
         <svg
             ref={(c) => this.svgElement = c}

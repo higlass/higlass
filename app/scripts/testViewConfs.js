@@ -420,7 +420,7 @@ export const valueIntervalTrackViewConf =
         "bottom": []
       },
       "layout": {
-        "w": 12,
+        "w": 8,
         "h": 12,
         "x": 0,
         "y": 0,
