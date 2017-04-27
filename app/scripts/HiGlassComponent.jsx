@@ -1310,6 +1310,8 @@ export class HiGlassComponent extends React.Component {
     handleCloseTrack(viewId, uid) {
         let tracks = this.state.views[viewId].tracks;
 
+        this.handleUnlockValueScale(viewId, uid);
+
         for (let trackType in tracks) {
             let theseTracks = tracks[trackType];
             let newTracks = theseTracks.filter((d) => { return d.uid != uid; });

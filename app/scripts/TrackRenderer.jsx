@@ -32,6 +32,7 @@ import {Chromosome2DAnnotations} from './Chromosome2DAnnotations.js';
 import {HorizontalChromosomeLabels} from './HorizontalChromosomeLabels.js';
 import {HorizontalHeatmapTrack} from './HorizontalHeatmapTrack.js';
 import {ZOOM_TRANSITION_DURATION} from './config.js'
+import {ValueIntervalTrack} from './ValueIntervalTrack.js';
 
 export class TrackRenderer extends React.Component {
     /**
@@ -794,6 +795,14 @@ export class TrackRenderer extends React.Component {
                                                 ));
             case '2d-chromosome-annotations':
                 return new Chromosome2DAnnotations(this.currentProps.pixiStage, track.chromInfoPath, track.options);
+            case '1d-value-interval':
+                return new ValueIntervalTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid))
             default:
                  console.log('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(

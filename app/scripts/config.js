@@ -322,6 +322,14 @@ export const tracksInfo = [
         name: '2D Tile Outlines',
         thumbnail: svg2DTilesIcon
     },
+    { 
+        type: '1d-value-interval',
+        datatype: ['bed-value'],
+        local: false,
+        orientation: ['1d-horizontal'],
+        name: '1D Rectangles',
+        availableOptions: [ 'labelPosition', 'labelColor' ]
+    },
     {
         type: 'top-stacked-interval',
         datatype: ['stacked-interval'],
