@@ -13,10 +13,10 @@
 </head>
 <body >
     <div style="height: 50px" />
-        <div style="margin: auto; width: 100%;">
+        <div style="margin: auto; width: 100%; margin-left: 30px; margin-right: 30px">
         <div
             id="development-demo"
-            style="position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px">
+            style="width: 800px;"
         </div>
     </div>
 </body>
@@ -37,12 +37,12 @@
     {
       "uid": "view2",
       "initialXDomain": [
-        -1630963752.1376019,
-        4301783518.466812
+        -823008654.1187966,
+        3404907428.052806
       ],
       "initialYDomain": [
-        -1407266698.0686898,
-        5656780495.533462
+        -280183139.1651869,
+        3291413839.9978275
       ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": false,
@@ -50,7 +50,24 @@
       "tracks": {
         "top": [
           {
-            "filetype": "beddb",
+            "name": "9ae0744a-9bc1-4cd7-b7cf-c6569ed9e4aa.consensus.20170119.somatic.cna.annotated.txt.multires",
+            "server": "http://127.0.0.1:8989/api/v1",
+            "tilesetUid": "CNV_9ae0744a-9bc1-4cd7-b7cf-c6569ed9e4aa",
+            "uid": "IOWAAjXqS1WihA-MYslyHg",
+            "type": "horizontal-1d-value-interval",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "axisPositionHorizontal": "left",
+              "lineStrokeColor": "blue",
+              "valueScaling": "linear",
+              "name": "9ae0744a-9bc1-4cd7-b7cf-c6569ed9e4aa.consensus.20170119.somatic.cna.annotated.txt.multires"
+            },
+            "width": 568,
+            "height": 79,
+            "position": "top"
+          },
+          {
             "name": "Gene Annotations (hg19)",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
@@ -65,13 +82,45 @@
             },
             "width": 20,
             "height": 60,
-            "maxWidth": 4294967296,
+            "position": "top"
+          },
+          {
+            "type": "horizontal-chromosome-labels",
+            "local": true,
+            "orientation": "1d-horizontal",
+            "minHeight": 30,
+            "name": "Chromosome Axis (mm9)",
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "thumbnail": null,
+            "server": "",
+            "tilesetUid": "bdM4fbUGQVuAv09iWcOefQ",
+            "uid": "K8ctyFcBQGCXnHBSeCQpaQ",
+            "options": {},
+            "width": 20,
+            "height": 30,
             "position": "top"
           }
         ],
         "left": [
           {
-            "filetype": "beddb",
+            "name": "9ae0744a-9bc1-4cd7-b7cf-c6569ed9e4aa.consensus.20170119.somatic.cna.annotated.txt.multires",
+            "server": "http://127.0.0.1:8989/api/v1",
+            "tilesetUid": "CNV_9ae0744a-9bc1-4cd7-b7cf-c6569ed9e4aa",
+            "uid": "WkObbcD1R9ejwXgTBZaQqg",
+            "type": "vertical-1d-value-interval",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "axisPositionVertical": "top",
+              "lineStrokeColor": "blue",
+              "valueScaling": "linear",
+              "name": "9ae0744a-9bc1-4cd7-b7cf-c6569ed9e4aa.consensus.20170119.somatic.cna.annotated.txt.multires"
+            },
+            "width": 60,
+            "height": 508,
+            "position": "left"
+          },
+          {
             "name": "Gene Annotations (hg19)",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
@@ -86,21 +135,36 @@
             },
             "width": 60,
             "height": 20,
-            "maxWidth": 4294967296,
+            "position": "left"
+          },
+          {
+            "type": "vertical-chromosome-labels",
+            "local": true,
+            "orientation": "1d-vertical",
+            "minWidth": 30,
+            "minHeight": 30,
+            "name": "Chromosome Axis (hg19)",
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "thumbnail": null,
+            "server": "",
+            "tilesetUid": "HZ8jVQNAQFCd4DCcWPrR8A",
+            "uid": "Boe4m22pQwS2D7QqVpaV6w",
+            "options": {},
+            "width": 30,
+            "height": 30,
             "position": "left"
           }
         ],
         "center": [
           {
-            "uid": "ZDQ72_nqQiqaC3ZR2pcB4Q",
+            "uid": "PQ4MeoPgSkKrP1brMFtgWw",
             "type": "combined",
             "contents": [
               {
-                "filetype": "bed2ddb",
                 "name": "9ae0744a-9bc1-4cd7-b7cf-c6569ed9e4aa.pcawg_consensus_1.6.161022.somatic.sv.bedpe.multires.db",
                 "server": "http://127.0.0.1:8989/api/v1",
-                "tilesetUid": "Vohl6uJnRfCjKrMh7HCoUA",
-                "uid": "JYciTCMsSPyHZ87vveCuIQ",
+                "tilesetUid": "SV_9ae0744a-9bc1-4cd7-b7cf-c6569ed9e4aa",
+                "uid": "eDpg83kqS4SwP3iDCxgEdQ",
                 "type": "square-markers",
                 "options": {
                   "labelColor": "black",
@@ -109,7 +173,6 @@
                 },
                 "width": 20,
                 "height": 20,
-                "maxWidth": 4294967296,
                 "position": "center"
               }
             ],
@@ -120,8 +183,8 @@
         "bottom": []
       },
       "layout": {
-        "w": 12,
-        "h": 12,
+        "w": 11,
+        "h": 17,
         "x": 0,
         "y": 0,
         "i": "view2",
@@ -136,11 +199,11 @@
   },
   "locationLocks": {
     "locksByViewUid": {
-      "view2": "bdXawyXyQQaLKfPZ4ApNgg",
-      "aa": "bdXawyXyQQaLKfPZ4ApNgg"
+      "view2": "D8fl8AoPQKC9I5khmPIJ9Q",
+      "aa": "D8fl8AoPQKC9I5khmPIJ9Q"
     },
     "locksDict": {
-      "bdXawyXyQQaLKfPZ4ApNgg": {
+      "D8fl8AoPQKC9I5khmPIJ9Q": {
         "view2": [
           1812727561.5083356,
           1873757116.378131,
@@ -154,46 +217,18 @@
       }
     }
   }
-};
+}
 
     window.higlassApi;
 
     hglib.createHgComponent(
         document.getElementById('development-demo'),
         testViewConfig,
-        { bounded: true },
+        { bounded: false },
         function (api) {
             window.hgApi = api;
         }
     );
-
-    // setTimeout(function () {
-    //   // Go to PTEN
-    //   window.hgApi.goTo(
-    //     testViewConfig.views[0].uid,
-    //     'chr10',
-    //     89596071,
-    //     89758810,
-    //     'chr10',
-    //     89596071,
-    //     89758810,
-    //     true,
-    //     10000
-    //   );
-    // }, 3000);
-
-    // setTimeout(function () {
-    //   // Go to Chr1 without animation
-    //   window.hgApi.goTo(
-    //     testViewConfig.views[0].uid,
-    //     'chr1',
-    //     0,
-    //     89758810,
-    //     'chr1',
-    //     0,
-    //     89758810
-    //   );
-    // }, 11000);
 
 
 </script>

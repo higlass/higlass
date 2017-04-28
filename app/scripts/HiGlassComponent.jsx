@@ -166,11 +166,9 @@ export class HiGlassComponent extends React.Component {
             canvasElement: this.canvasElement
         });
         ElementQueries.listen();
-        console.log('this.element.parentNode:', this.element.parentNode);
         this.resizeSensor = new ResizeSensor(this.element.parentNode, function() {
             //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
             let heightOffset = 0;
-            console.log('sensor...');
 
             this.fitPixiToParentContainer();
             this.refreshView(LONG_DRAG_TIMEOUT);
@@ -840,7 +838,6 @@ export class HiGlassComponent extends React.Component {
       let chosenRowHeight = prospectiveRowHeight;
 
       for (let l of layout) {
-          console.log('layout:', l.i, l.w);
         let view = this.state.views[l.i];
 
         if (view) {
@@ -921,7 +918,6 @@ export class HiGlassComponent extends React.Component {
   };
 
   handleResize(layout, oldItem, newItem, placeholder, e, element) {
-    console.log('resize:', layout);
 
   }
 
@@ -1555,6 +1551,10 @@ export class HiGlassComponent extends React.Component {
                 delete track['coordSystem2'];
             if ('datatype' in track)
                 delete track['datatype'];
+            if ('maxWidth' in track)
+                delete track['maxWidth'];
+            if ('filetype' in track)
+                delete track['filetype'];
         }
         //
 
@@ -2130,7 +2130,6 @@ export class HiGlassComponent extends React.Component {
                          />
                     ) : null; // this.editable ?
 
-                console.log('view.uid', view.uid, 'layout:', layout.w);
                 return (<div
                             data-grid={layout}
                             key={itemUid}
@@ -2374,16 +2373,6 @@ export class HiGlassComponent extends React.Component {
     });
   }
 }
-
-
-HiGlassComponent.defaultProps = {
-    className: "layout",
-    cols: {lg: NUM_GRID_COLUMNS,
-           md: NUM_GRID_COLUMNS,
-           sm: NUM_GRID_COLUMNS,
-           xs: NUM_GRID_COLUMNS,
-           xxs: NUM_GRID_COLUMNS}
-  }
 
 HiGlassComponent.propTypes = {
     children: React.PropTypes.array,

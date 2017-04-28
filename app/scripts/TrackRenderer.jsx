@@ -795,7 +795,7 @@ export class TrackRenderer extends React.Component {
                                                 ));
             case '2d-chromosome-annotations':
                 return new Chromosome2DAnnotations(this.currentProps.pixiStage, track.chromInfoPath, track.options);
-            case '1d-value-interval':
+            case 'horizontal-1d-value-interval':
                 return new ValueIntervalTrack(
                     this.currentProps.pixiStage,
                     track.server,
@@ -803,6 +803,14 @@ export class TrackRenderer extends React.Component {
                     handleTilesetInfoReceived,
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid))
+            case 'vertical-1d-value-interval':
+                return new LeftTrackModifier(new ValueIntervalTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)));
             default:
                  console.log('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(

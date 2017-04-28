@@ -155,6 +155,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
                 break;
 
 
+            //console.log('xPos:', xPos, 'yPos:', yPos);
             graphics.lineTo(xPos, yPos);
         }
     }
@@ -175,75 +176,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         this.draw();
 
     }
-
-    /*
-    exportAxisSVG() {
-        let gAxis = document.createElement('g');
-        gAxis.setAttribute('id', 'axis');
-
-        if (this.options.axisPositionHorizontal == 'left' ||
-            this.options.axisPositionHorizontal == 'right' ||
-            this.options.axisPositionVertical == 'top' ||
-            this.options.axisPositionVertical == 'bottom') {
-
-            let axisLine = document.createElement('path');
-            gAxis.appendChild(axisLine);
-            axisLine.setAttribute('stroke', 'black');
-
-            let topTick = document.createElement('path');
-            gAxis.appendChild(topTick);
-            topTick.setAttribute('stroke', 'black');
-
-            for (let text of this.axisTexts) {
-                let g = document.createElement('g');
-                let t = document.createElement('text');
-
-                g.appendChild(t);
-                t.innerHTML = text.text;
-                t.setAttribute('text-anchor', 'middle');
-                t.setAttribute('font-family', this.axisTextFontFamily);
-                t.setAttribute('font-size', this.axisTextFontSize);
-                t.setAttribute('dy', this.axisTextFontSize / 2 - 2);
-
-                g.setAttribute('transform',
-                `translate(${text.position.x},${text.position.y})
-                 scale(${text.scale.x},${text.scale.y})`)
-
-
-                let tick = document.createElement('path')
-                tick.setAttribute('stroke', 'black');
-
-                if (this.options.axisPositionHorizontal == 'right' ||
-                    this.options.axisPositionVertical == 'bottom') {
-                    // draw the vertical axis line
-                    axisLine.setAttribute('d',
-                            `M${this.dimensions[0]},0 L${this.dimensions[0]},${this.dimensions[1]}`)
-                    topTick.setAttribute('d',
-                            `M${this.dimensions[0] - TICK_MARGIN},0 L${this.dimensions[0] - TICK_MARGIN - TICK_LENGTH},0`)
-
-                    // draw the ticks
-                    tick.setAttribute('d', 
-                            `M${this.dimensions[0] - TICK_MARGIN - TICK_LENGTH},${text.position.y} 
-                             L${this.dimensions[0] - TICK_MARGIN},${text.position.y}`);
-                } else {
-                    // the vertical axis line will be on the left
-                    axisLine.setAttribute('d',
-                            `M0,0 L0,${this.dimensions[1]}`)
-                    topTick.setAttribute('d',
-                            `M${TICK_MARGIN},0 L${TICK_MARGIN + TICK_LENGTH},0`)
-
-                    tick.setAttribute('d', 
-                            `M${TICK_MARGIN},${text.position.y} L${TICK_MARGIN + TICK_LENGTH},${text.position.y}`);
-                }
-
-                gAxis.append(tick);
-                gAxis.appendChild(g);
-            }
-        }
-
-        return gAxis;
-    }
-    */
 
     exportSVG() {
         let track=null, base=null;

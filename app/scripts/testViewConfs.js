@@ -32,7 +32,6 @@ export const heatmapTrack = {
                 },
                 "width": 20,
                 "height": 20,
-                "maxWidth": 4194304000,
                 "binsPerDimension": 256,
                 "position": "center"
               };
@@ -77,7 +76,6 @@ export const twoViewConfig =
             },
             "width": 20,
             "height": 20,
-            "maxWidth": 4294967296,
             "position": "top",
             "uid": "line1"
           }
@@ -110,7 +108,6 @@ export const twoViewConfig =
                 },
                 "uid": "heatmap1",
                 "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "maxWidth": 4194304000,
                 "binsPerDimension": 256
               },
               {
@@ -179,7 +176,6 @@ export const twoViewConfig =
             },
             "width": 20,
             "height": 20,
-            "maxWidth": 4294967296,
             "position": "top"
           }
         ],
@@ -211,7 +207,6 @@ export const twoViewConfig =
                 },
                 "width": 20,
                 "height": 20,
-                "maxWidth": 4194304000,
                 "binsPerDimension": 256,
                 "position": "center"
               }
@@ -306,13 +301,12 @@ export const valueIntervalTrackViewConf =
             "server": "http://127.0.0.1:8989/api/v1",
             "tilesetUid": "WRfF4fKBR1S8gS5RSd-7YQ",
             "uid": "Pq_LNH6SRISVqrUl4n53Dg",
-            "type": "1d-value-interval",
+            "type": "horizontal-1d-value-interval",
             "options": {
               "name": "9ae0744a-9bc1-4cd7-b7cf-c6569ed9e4aa.consensus.20170119.somatic.cna.annotated.txt.multires"
             },
             "width": 902,
             "height": 36,
-            "maxWidth": 4294967296,
             "position": "top"
           },
           {
@@ -331,7 +325,6 @@ export const valueIntervalTrackViewConf =
             },
             "width": 20,
             "height": 60,
-            "maxWidth": 4294967296,
             "position": "top"
           },
           {
@@ -368,7 +361,6 @@ export const valueIntervalTrackViewConf =
             },
             "width": 60,
             "height": 20,
-            "maxWidth": 4294967296,
             "position": "left"
           },
           {
@@ -408,7 +400,6 @@ export const valueIntervalTrackViewConf =
                 },
                 "width": 20,
                 "height": 20,
-                "maxWidth": 4294967296,
                 "position": "center"
               }
             ],

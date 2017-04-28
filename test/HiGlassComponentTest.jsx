@@ -36,10 +36,11 @@ function getTrackObject(hgc, viewUid, trackUid) {
 }
 
 describe("Simple HiGlassComponent", () => {
+    let hgc = null, div = null;
 
     // wait a bit of time for the data to be loaded from the server
     describe("Value interval track tests", () => {
-        let div = global.document.createElement('div');
+        div = global.document.createElement('div');
         global.document.body.appendChild(div);
 
         div.setAttribute('style', 'height:800px; width:800px');
@@ -56,32 +57,49 @@ describe("Simple HiGlassComponent", () => {
                       />, 
             {attachTo: div});
 
-        console.log('start value');
-        it ("does stuff", () => {
+        it ("doesn't export maxWidth or filetype", () => {
+            let viewString = hgc.instance().getViewsAsString();
 
+            expect(viewString.indexOf('1d-value-interval')).to.be.above(0);
+            expect(viewString.indexOf('maxWidth')).to.be.below(0);
+            expect(viewString.indexOf('filetype')).to.be.below(0);
         });
 
-        hgc.unmount();
-        hgc.detach();
-        global.document.body.removeChild(div);
+
     });
 
+    return;
+
     describe("Single view", () => {
-        console.log('single');
-        let div = global.document.createElement('div');
-        global.document.body.appendChild(div);
 
-        div.setAttribute('style', 'height:800px; width:800px');
-        div.setAttribute('id', 'single-view');
-        console.log('twoViewConfig:', twoViewConfig);
-        let hgc = mount(<HiGlassComponent 
-                        options={{bounded: true}}
-                        viewConfig={twoViewConfig}
-                      />, 
-            {attachTo: div});
-
+        /*
         beforeAll((done) => {
             testAsync(done);
+        });
+        */
+
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'height:800px; width:800px');
+            div.setAttribute('id', 'single-view');
+            hgc = mount(<HiGlassComponent 
+                            options={{bounded: true}}
+                            viewConfig={twoViewConfig}
+                          />, 
+                {attachTo: div});
+
+            setTimeout(done, pageLoadTime);
         });
 
         it ('changes the colorbar color when the heatmap colormap is changed', () => {
@@ -113,8 +131,6 @@ describe("Simple HiGlassComponent", () => {
             hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', oldOptions);
 
         });
-
-        return;
 
         it ('switches between log and linear scales', () => {
             let newOptions = {
