@@ -12,6 +12,9 @@ import ReactDOM from 'react-dom';
 import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
 import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
 
+
+const tileLoadTime = 800;
+
 let chromInfoTrack = 
           {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
@@ -50,6 +53,93 @@ let heatmapTrack =
                 "binsPerDimension": 256,
                 "position": "center"
               };
+
+let horizontalDiagonalTrackViewConf =
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1",
+    "http://localhost:8989/api/v1"
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        782035593.0218927,
+        3161702482.099383
+      ],
+      "initialYDomain": [
+        1142928773.5006099,
+        2963035748.0921783
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "filetype": "cooler",
+            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+            "uid": "Wxikc1JhSUuPiF_Umz0v5A",
+            "type": "horizontal-heatmap",
+            "options": {
+              "labelPosition": "bottomRight",
+              "labelColor": "black",
+              "colorRange": [
+                "white",
+                "rgba(245,166,35,1.0)",
+                "rgba(208,2,27,1.0)",
+                "black"
+              ],
+              "maxZoom": null,
+              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+            },
+            "width": 20,
+            "height": 50,
+            "maxWidth": 4194304000,
+            "binsPerDimension": 256,
+            "position": "top"
+          },
+          {
+            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "type": "horizontal-chromosome-labels",
+            "position": "top",
+            "name": "Chromosome Labels (hg19)",
+            "height": 57,
+            "uid": "I1QUF22JQJuJ38j9PS4iqw",
+            "options": {},
+            "width": 1161
+          }
+        ],
+        "left": [],
+        "center": [],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}
 
 let testViewConfig2 = 
 {
@@ -438,7 +528,7 @@ describe("Simple HiGlassComponent", () => {
             // zoom out a little bit
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 28874.21283197403);
             
-            setTimeout(() => done(), 400);
+            setTimeout(() => done(), tileLoadTime);
         });
 
 
@@ -455,7 +545,7 @@ describe("Simple HiGlassComponent", () => {
 
             //unlock the scales and zoom out
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
-            setTimeout(() => done(), 400);
+            setTimeout(() => done(), tileLoadTime);
         });
 
         it ('ensure that new domains are unequal and locks the combined tracks', (done) => {
@@ -472,7 +562,7 @@ describe("Simple HiGlassComponent", () => {
 
             // lock the scales of two combined views
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(2268041199.8615317, 2267986087.2543955, 15.803061962127686);
-            setTimeout(() => done(), 400);
+            setTimeout(() => done(), tileLoadTime);
         });
 
         it ('ensures that the new track domains are equal and unlock the combined tracks', (done) => {
@@ -501,7 +591,7 @@ describe("Simple HiGlassComponent", () => {
 
         it ("zooms out", (done) => {
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(2268233532.6257076, 2268099618.396191, 1710.4168190956116);
-            setTimeout(() => done(), 400);
+            setTimeout(() => done(), tileLoadTime);
         });
 
         it ("ensures that the domain changed", (done) => {
@@ -522,7 +612,7 @@ describe("Simple HiGlassComponent", () => {
 
             //unlock the scales and zoom out
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
-            setTimeout(() => done(), 400);
+            setTimeout(() => done(), tileLoadTime);
         });
 
         it ('ensures that the new track domains are not equal', (done) => {
@@ -538,7 +628,7 @@ describe("Simple HiGlassComponent", () => {
 
             //unlock the scales and zoom out
             //hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
-            //setTimeout(() => done(), 400);
+            //setTimeout(() => done(), tileLoadTime);
 
             done();
         });
@@ -574,7 +664,7 @@ describe("Simple HiGlassComponent", () => {
             expect(track.pMain.position.x).to.be.above(404);
             expect(track.pMain.position.x).to.be.below(406);
 
-            setTimeout(() => done(), 400);
+            setTimeout(() => done(), tileLoadTime);
         });
 
         it ('Locks the scales again (after waiting for the previous tiles to load)', (done) => {
@@ -600,7 +690,7 @@ describe("Simple HiGlassComponent", () => {
                         hgc.instance().tiledPlots['view2'].positionedTracks());
 
             // make sure that the chromInfo is displayed
-            setTimeout(() => done(), 400);
+            setTimeout(() => done(), tileLoadTime);
         });
     })
 });
