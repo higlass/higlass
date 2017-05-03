@@ -28,7 +28,7 @@ export const horizontalDiagonalTrackViewConf =
             "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-            "uid": "Wxikc1JhSUuPiF_Umz0v5A",
+            "uid": "hh1",
             "type": "horizontal-heatmap",
             "options": {
               "labelPosition": "bottomRight",
@@ -40,10 +40,11 @@ export const horizontalDiagonalTrackViewConf =
                 "black"
               ],
               "maxZoom": null,
-              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+              "colorbarPosition": 'topLeft'
             },
             "width": 20,
-            "height": 50,
+            "height": 100,
             "maxWidth": 4194304000,
             "binsPerDimension": 256,
             "position": "top"

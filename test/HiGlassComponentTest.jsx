@@ -16,7 +16,8 @@ import {
     chromInfoTrack,
     heatmapTrack,
     twoViewConfig,
-    valueIntervalTrackViewConf
+    valueIntervalTrackViewConf,
+    horizontalDiagonalTrackViewConf
 } from '../app/scripts/testViewConfs.js';
 
 const pageLoadTime = 1200;
@@ -39,7 +40,7 @@ describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null;
 
     // wait a bit of time for the data to be loaded from the server
-    describe("Value interval track tests", () => {
+    describe("Top diagonal tracks", () => {
         div = global.document.createElement('div');
         global.document.body.appendChild(div);
 
@@ -49,6 +50,56 @@ describe("Simple HiGlassComponent", () => {
         beforeAll((done) => {
             // wait for the page to load
             testAsync(done);
+        });
+
+        let hgc = mount(<HiGlassComponent 
+                        options={{bounded: true}}
+                        viewConfig={horizontalDiagonalTrackViewConf}
+                      />, 
+            {attachTo: div});
+
+        it ("Top diagonal track should have tile graphics loaded", () => {
+            let to = getTrackObject(hgc, 'aa', 'hh1');
+
+            // this function could cause an error so running it is a test in and of itself
+            to.synchronizeTilesAndGraphics();
+        });
+
+        it ("should have a horizontal heatmap scale", () => {
+            let horizontalHeatmap = getTrackObject(hgc, 'aa', 'hh1');
+
+            let svg = horizontalHeatmap.exportSVG();
+            let svgText = new XMLSerializer().serializeToString(svg[0]);
+
+        });
+    });
+
+    return;
+
+    // wait a bit of time for the data to be loaded from the server
+    describe("Value interval track tests", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'height:800px; width:800px');
+            div.setAttribute('id', 'single-view');
+            hgc = mount(<HiGlassComponent 
+                            options={{bounded: true}}
+                            viewConfig={twoViewConfig}
+                          />, 
+                {attachTo: div});
+
+            setTimeout(done, pageLoadTime);
         });
 
         let hgc = mount(<HiGlassComponent 
@@ -68,7 +119,6 @@ describe("Simple HiGlassComponent", () => {
 
     });
 
-    return;
 
     describe("Single view", () => {
 

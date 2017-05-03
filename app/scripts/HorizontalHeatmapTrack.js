@@ -1,10 +1,11 @@
 import {Tiled2DPixiTrack} from './Tiled2DPixiTrack.js';
+import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 import {heatedObjectMap} from './colormaps.js';
 import {colorDomainToRgbaArray} from './utils.js';
 import {TiledPixiTrack} from './TiledPixiTrack.js';
 
-export class HorizontalHeatmapTrack extends Tiled2DPixiTrack {
+export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
@@ -177,7 +178,7 @@ export class HorizontalHeatmapTrack extends Tiled2DPixiTrack {
         super.draw();
     }
 
-    initTile(tile) {
+    renderTile(tile) {
         /**
          * Convert the raw tile data to a rendered array of values which can be represented as a sprite.
          *
@@ -186,9 +187,8 @@ export class HorizontalHeatmapTrack extends Tiled2DPixiTrack {
          *              and tile.graphics
          */
         tileProxy.tileDataToPixData(tile,
-
-                                    this.minVisibleValue(),
-                                    this.maxVisibleValue(),
+                                        this.valueScale,
+                                        this.valueScale.domain()[0], //used as a pseudocount to prevent taking the log of 0
                                                   this.colorScale,
                                                   function(pixData) {
             // the tileData has been converted to pixData by the worker script and needs to be loaded
@@ -208,6 +208,8 @@ export class HorizontalHeatmapTrack extends Tiled2DPixiTrack {
                 sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
 
             tile.sprite = sprite;
+            tile.canvas = canvas;
+
             this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
 
             graphics.pivot.x = this._refXScale(0);

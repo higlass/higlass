@@ -266,7 +266,8 @@ export const tracksInfo = [
                 ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], //corresponding to the fall colormap
             maxZoom: null
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped' ]
+        availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped',
+                            'colorbarPosition', 'colorbarLabelsPosition']
     },
     {
         type: 'vertical-heatmap',
@@ -279,9 +280,12 @@ export const tracksInfo = [
             labelPosition: 'bottomRight',
             labelColor: 'black',
             colorRange: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], //corresponding to the fall colormap
-            maxZoom: null
+            maxZoom: null,
+            colorbarLabelsPosition: 'inside',
+            colorbarPosition: 'topRight'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped' ]
+        availableOptions: [ 'labelPosition', 'labelColor', 'colorRange', 'maxZoom', 
+                            'oneDHeatmapFlipped', 'colorbarPosition', 'colorbarLabelsPosition' ]
     },
     {
         type: 'horizontal-line',
