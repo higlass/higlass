@@ -1,5 +1,8 @@
 import {TiledPixiTrack} from './TiledPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
+import {
+    colorToHex
+} from './utils.js';
 
 export class SquareMarkersTrack extends TiledPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
@@ -133,8 +136,10 @@ export class SquareMarkersTrack extends TiledPixiTrack {
 
         graphics.clear();
 
+        let fill = colorToHex('green');
+
         graphics.lineStyle(1, 0x0000FF, 1);
-        graphics.beginFill(0xFF700B, 0.4);
+        graphics.beginFill(fill, 0.8);
         graphics.alpha = 0.5;
 
         // line needs to be scaled down so that it doesn't become huge

@@ -3,7 +3,8 @@ import {
     render
 } from 'enzyme';
 import {
-  scalesCenterAndK
+  scalesCenterAndK,
+  dictValues
 } from '../app/scripts/utils.js';
 import { expect } from 'chai';
 import {scaleLinear} from 'd3-scale';
@@ -11,374 +12,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
 import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
+import {
+    chromInfoTrack,
+    heatmapTrack,
+    twoViewConfig,
+    valueIntervalTrackViewConf
+} from '../app/scripts/testViewConfs.js';
 
-
-const tileLoadTime = 800;
-
-let chromInfoTrack = 
-          {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "type": "horizontal-chromosome-labels",
-            "position": "top",
-            "name": "Chromosome Labels (hg19)",
-            "height": 30,
-            "uid": "I1QUF22JQJuJ38j9PS4iqw",
-            "options": {}
-          };
-
-let heatmapTrack = 
-              {
-                "filetype": "cooler",
-                "name": "Dixon et al. (2015) H1_TB HindIII (allreps) 1kb",
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "B2LevKBtRNiCMX372rRPLQ",
-                "uid": "heatmap3",
-                "type": "heatmap",
-                "options": {
-                  "labelPosition": "bottomRight",
-                  "colorRange": [
-                    "white",
-                    "rgba(245,166,35,1.0)",
-                    "rgba(208,2,27,1.0)",
-                    "black"
-                  ],
-                  "maxZoom": null,
-                  "colorbarLabelsPosition": "outside",
-                  "colorbarPosition": "topLeft",
-                  "name": "New tileset"
-                },
-                "width": 20,
-                "height": 20,
-                "maxWidth": 4194304000,
-                "binsPerDimension": 256,
-                "position": "center"
-              };
-
-let horizontalDiagonalTrackViewConf =
-{
-  "editable": true,
-  "zoomFixed": false,
-  "trackSourceServers": [
-    "http://higlass.io/api/v1",
-    "http://localhost:8989/api/v1"
-  ],
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
-  "views": [
-    {
-      "uid": "aa",
-      "initialXDomain": [
-        782035593.0218927,
-        3161702482.099383
-      ],
-      "initialYDomain": [
-        1142928773.5006099,
-        2963035748.0921783
-      ],
-      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "genomePositionSearchBoxVisible": true,
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-      "tracks": {
-        "top": [
-          {
-            "filetype": "cooler",
-            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-            "uid": "Wxikc1JhSUuPiF_Umz0v5A",
-            "type": "horizontal-heatmap",
-            "options": {
-              "labelPosition": "bottomRight",
-              "labelColor": "black",
-              "colorRange": [
-                "white",
-                "rgba(245,166,35,1.0)",
-                "rgba(208,2,27,1.0)",
-                "black"
-              ],
-              "maxZoom": null,
-              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
-            },
-            "width": 20,
-            "height": 50,
-            "maxWidth": 4194304000,
-            "binsPerDimension": 256,
-            "position": "top"
-          },
-          {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "type": "horizontal-chromosome-labels",
-            "position": "top",
-            "name": "Chromosome Labels (hg19)",
-            "height": 57,
-            "uid": "I1QUF22JQJuJ38j9PS4iqw",
-            "options": {},
-            "width": 1161
-          }
-        ],
-        "left": [],
-        "center": [],
-        "right": [],
-        "bottom": []
-      },
-      "layout": {
-        "w": 12,
-        "h": 12,
-        "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
-      }
-    }
-  ],
-  "zoomLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
-  },
-  "locationLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
-  }
-}
-
-let testViewConfig2 = 
-{
-  "editable": true,
-  "zoomFixed": false,
-  "trackSourceServers": [
-    "http://higlass.io/api/v1"
-  ],
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
-  "views": [
-    {
-      "uid": "aa",
-      "initialXDomain": [
-        1796142508.3343146,
-        1802874737.269993
-      ],
-      "initialYDomain": [
-        1795888772.6557815,
-        1806579890.9341388
-      ],
-      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "genomePositionSearchBoxVisible": true,
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-      "tracks": {
-        "top": [
-          {
-            "filetype": "hitile",
-            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
-            "type": "horizontal-line",
-            "options": {
-              "labelColor": "red",
-              "labelPosition": "hidden",
-              "axisPositionHorizontal": "right",
-              "lineStrokeColor": "blue",
-              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-              "valueScaling": "log"
-            },
-            "width": 20,
-            "height": 20,
-            "maxWidth": 4294967296,
-            "position": "top",
-            "uid": "line1"
-          }
-        ],
-        "left": [],
-        "center": [
-          {
-            "uid": "c1",
-            "type": "combined",
-            "height": 200,
-            "contents": [
-              {
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                "type": "heatmap",
-                "position": "center",
-                "options": {
-                  "colorRange": [
-                    "white",
-                    "rgba(245,166,35,1.0)",
-                    "rgba(208,2,27,1.0)",
-                    "black"
-                  ],
-                  "colorbarPosition": "topLeft",
-                  "colorbarOrientation": "vertical",
-                  "colorbarLabelsPosition": "outside",
-                  "maxZoom": null,
-                  "labelPosition": "bottomRight",
-                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
-                },
-                "uid": "heatmap1",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "maxWidth": 4194304000,
-                "binsPerDimension": 256
-              },
-              {
-                "type": "2d-chromosome-grid",
-                "local": true,
-                "orientation": "2d",
-                "name": "Chromosome Grid (hg19)",
-                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-                "thumbnail": null,
-                "server": "",
-                "tilesetUid": "TIlwFtqxTX-ndtM7Y9k1bw",
-                "uid": "LUVqXXu2QYiO8XURIwyUyA",
-                "options": {
-                  "gridStrokeWidth": 1,
-                  "gridStrokeColor": "grey"
-                },
-                "position": "center"
-              }
-            ],
-            "position": "center",
-            "options": {}
-          }
-        ],
-        "right": [],
-        "bottom": []
-      },
-      "layout": {
-        "w": 5,
-        "h": 12,
-        "x": 0,
-        "y": 0,
-        "i": "aa",
-        "moved": false,
-        "static": false
-      }
-    },
-    {
-      "uid": "view2",
-      "initialXDomain": [
-        1796142508.3343008,
-        1802874737.270007
-      ],
-      "initialYDomain": [
-        1795888772.6557593,
-        1806579890.9341605
-      ],
-      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "genomePositionSearchBoxVisible": true,
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-      "tracks": {
-        "top": [
-          {
-            "filetype": "hitile",
-            "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
-            "uid": "line2",
-            "type": "horizontal-line",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "topLeft",
-              "axisPositionHorizontal": "left",
-              "lineStrokeColor": "blue",
-              "valueScaling": "linear",
-              "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile"
-            },
-            "width": 20,
-            "height": 20,
-            "maxWidth": 4294967296,
-            "position": "top"
-          }
-        ],
-        "left": [],
-        "center": [
-          {
-            "uid": "c2",
-            "type": "combined",
-            "contents": [
-              {
-                "filetype": "cooler",
-                "name": "Dixon et al. (2015) H1_TB HindIII (allreps) 1kb",
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "clU7yGb-S7eY4yNbdDlj9w",
-                "uid": "heatmap2",
-                "type": "heatmap",
-                "options": {
-                  "labelPosition": "bottomRight",
-                  "colorRange": [
-                    "white",
-                    "rgba(245,166,35,1.0)",
-                    "rgba(208,2,27,1.0)",
-                    "black"
-                  ],
-                  "maxZoom": null,
-                  "colorbarLabelsPosition": "outside",
-                  "colorbarPosition": "topLeft",
-                  "name": "Dixon et al. (2015) H1_TB HindIII (allreps) 1kb"
-                },
-                "width": 20,
-                "height": 20,
-                "maxWidth": 4194304000,
-                "binsPerDimension": 256,
-                "position": "center"
-              }
-            ],
-            "position": "center",
-            "options": {}
-          }
-        ],
-        "right": [],
-        "bottom": []
-      },
-      "layout": {
-        "w": 6,
-        "h": 12,
-        "x": 6,
-        "y": 0,
-        "i": "view2",
-        "moved": false,
-        "static": false
-      }
-    }
-  ],
-  "zoomLocks": {
-    "locksByViewUid": {
-      "view2": "JAFSZPdmSWe72WgTnVDtbA",
-      "aa": "JAFSZPdmSWe72WgTnVDtbA"
-    },
-    "locksDict": {
-      "JAFSZPdmSWe72WgTnVDtbA": {
-        "view2": [
-          1812727561.5083356,
-          1873757116.378131,
-          475954.14177536964
-        ],
-        "aa": [
-          1812727561.5083356,
-          1873757116.378131,
-          475954.14177536964
-        ]
-      }
-    }
-  },
-  "locationLocks": {
-    "locksByViewUid": {
-      "view2": "fRq4SRH8TSyVveKqebWsxw",
-      "aa": "fRq4SRH8TSyVveKqebWsxw"
-    },
-    "locksDict": {
-      "fRq4SRH8TSyVveKqebWsxw": {
-        "view2": [
-          1812727561.5083356,
-          1873757116.378131,
-          475954.14177536964
-        ],
-        "aa": [
-          1812727561.5083356,
-          1873757116.378131,
-          475954.14177536964
-        ]
-      }
-    }
-  }
-}
 const pageLoadTime = 1200;
 
 function testAsync(done) {
@@ -396,23 +36,70 @@ function getTrackObject(hgc, viewUid, trackUid) {
 }
 
 describe("Simple HiGlassComponent", () => {
-    const div = document.createElement('div');
-    document.body.appendChild(div);
+    let hgc = null, div = null;
 
-    div.setAttribute('style', 'height:800px; width:800px');
+    // wait a bit of time for the data to be loaded from the server
+    describe("Value interval track tests", () => {
+        div = global.document.createElement('div');
+        global.document.body.appendChild(div);
 
-    let hgc = mount(<HiGlassComponent 
+        div.setAttribute('style', 'height:800px; width:800px');
+        div.setAttribute('id', 'simple-hg-component');
+
+        beforeAll((done) => {
+            // wait for the page to load
+            testAsync(done);
+        });
+
+        let hgc = mount(<HiGlassComponent 
                         options={{bounded: true}}
-                        viewConfig={testViewConfig2}
+                        viewConfig={valueIntervalTrackViewConf}
                       />, 
             {attachTo: div});
 
+        it ("doesn't export maxWidth or filetype", () => {
+            let viewString = hgc.instance().getViewsAsString();
 
-    // wait a bit of time for the data to be loaded from the server
+            expect(viewString.indexOf('1d-value-interval')).to.be.above(0);
+            expect(viewString.indexOf('maxWidth')).to.be.below(0);
+            expect(viewString.indexOf('filetype')).to.be.below(0);
+        });
+
+
+    });
+
+    return;
 
     describe("Single view", () => {
+
+        /*
         beforeAll((done) => {
             testAsync(done);
+        });
+        */
+
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'height:800px; width:800px');
+            div.setAttribute('id', 'single-view');
+            hgc = mount(<HiGlassComponent 
+                            options={{bounded: true}}
+                            viewConfig={twoViewConfig}
+                          />, 
+                {attachTo: div});
+
+            setTimeout(done, pageLoadTime);
         });
 
         it ('changes the colorbar color when the heatmap colormap is changed', () => {
@@ -639,8 +326,16 @@ describe("Simple HiGlassComponent", () => {
             done();
         });
 
+        it ("locks the value scales ", (done) => {
+            // lock the value scales to ensure that removing the track doesn't 
+            // lead to an error
+            hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'heatmap2');
+
+            done();
+        });
+
         it ('Replaces and displays a new track', (done) => {
-            hgc.instance().handleCloseTrack('view2', 'heatmap2');
+            hgc.instance().handleCloseTrack('view2', 'c2');
             hgc.instance().handleTrackAdded('view2', heatmapTrack, 'center');
 
             hgc.instance().tiledPlots['view2'].render();
@@ -652,6 +347,13 @@ describe("Simple HiGlassComponent", () => {
                         hgc.instance().tiledPlots['view2'].positionedTracks());
 
             //setTimeout(() => done(), 200);
+            done();
+        });
+
+        it ("Checks to make sure that the tracks are no longer locked", (done) => {
+            let uid = hgc.instance().combineViewAndTrackUid('aa', 'heatmap1');
+            let lockGroupValues = dictValues(hgc.instance().valueScaleLocks[uid]);
+
             done();
         });
 
@@ -691,6 +393,10 @@ describe("Simple HiGlassComponent", () => {
 
             // make sure that the chromInfo is displayed
             setTimeout(() => done(), tileLoadTime);
+        });
+
+        it ("replaces a track", (done) => {
+            done();
         });
     })
 });
