@@ -115,23 +115,12 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         this.setVisibleTiles(tiles);
     }
 
-    rerender(options) {
-        super.rerender(options);
-
-        if (options && options.colorRange) {
-            this.colorScale = colorDomainToRgbaArray(options.colorRange);
-        }
-
-        for (let tile of this.visibleAndFetchedTiles()) {
-            this.initTile(tile);
-        }
-    }
-
     tileDataToCanvas(pixData) {
         let canvas = document.createElement('canvas');
 
         canvas.width = 256;
         canvas.height = 256;
+        //
 
         let ctx = canvas.getContext('2d');
 
@@ -159,23 +148,6 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
 
         sprite.x = this._refXScale(tileX);
         sprite.y = this._refYScale(tileY);
-    }
-
-
-    refXScale(_) {
-        super.refXScale(_);
-
-        this.draw();
-    }
-
-    refYScale(_) {
-        super.refYScale(_);
-
-        this.draw();
-    }
-
-    draw() {
-        super.draw();
     }
 
     renderTile(tile) {
@@ -229,39 +201,11 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         //console.log('pixData:', pixData);
     }
 
-    refScalesChanged(refXScale, refYScale) {
-        super.refScalesChanged(refXScale, refYScale);
-
-        for (let uid in this.fetchedTiles) {
-            let tile = this.fetchedTiles[uid];
-
-            if (tile.sprite) {
-                this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
-            } else {
-                // console.log('skipping...', tile.tileId);
-            }
-        }
-    }
-
-    refXScale(_) {
-        super.refXScale(_);
-
-        this.draw();
-    }
-
-    refYScale(_) {
-        super.refYScale(_);
-
-        this.draw();
-    }
-
     zoomed(newXScale, newYScale, k, tx, ty) {
         super.zoomed(newXScale, newYScale, k, tx, ty);
 
-
         this.pMain.position.x = tx;
         this.pMain.position.y = this.position[1] + this.dimensions[1]; //translateY;
-
 
         this.pMain.scale.x = k; //scaleX;
         this.pMain.scale.y = k; //scaleY;

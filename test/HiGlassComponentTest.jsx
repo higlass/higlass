@@ -79,6 +79,8 @@ describe("Simple HiGlassComponent", () => {
         });
     });
 
+    return;
+
     // wait a bit of time for the data to be loaded from the server
     describe("Value interval track tests", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
