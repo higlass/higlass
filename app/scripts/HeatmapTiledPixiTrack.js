@@ -172,14 +172,15 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             this.pColorbar.y = COLORBAR_MARGIN;
             this.axis.pAxis.y = COLORBAR_MARGIN;
 
-            if (this.options.colorbarLabelsPosition == 'inside') {
-                this.axis.pAxis.x = COLORBAR_WIDTH;
-
-                this.pColorbar.x = 0;
-            } else if (this.options.colorbarLabelsPosition == 'outside') {
+            if (this.options.colorbarLabelsPosition == 'outside') {
                 this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
 
                 this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+            } else {
+                // default to 'inside' orientation
+                this.axis.pAxis.x = COLORBAR_WIDTH;
+
+                this.pColorbar.x = 0;
             }
         }
 
@@ -195,7 +196,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 this.axis.pAxis.x = COLORBAR_WIDTH;
 
                 this.pColorbar.x = 0;
-            } else if (this.options.colorbarLabelsPosition == 'inside') {
+            } else {
+                // default to 'inside'
                 this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
 
                 this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
@@ -213,7 +215,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 this.axis.pAxis.x = COLORBAR_WIDTH;
 
                 this.pColorbar.x = 0;
-            } else if (this.options.colorbarLabelsPosition == 'inside') {
+            } else {
+                // default to "inside"
                 this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
 
                 this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
@@ -227,15 +230,16 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             this.pColorbar.y = COLORBAR_MARGIN;
             this.axis.pAxis.y = COLORBAR_MARGIN;
 
-            if (this.options.colorbarLabelsPosition == 'inside') {
-                this.axis.pAxis.x = COLORBAR_WIDTH;
-
-                this.pColorbar.x = 0;
-            } else if (this.options.colorbarLabelsPosition == 'outside') {
+            if (this.options.colorbarLabelsPosition == 'outside') {
                 this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
 
                 this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
-            }
+            } else {
+                // default to "inside"
+                this.axis.pAxis.x = COLORBAR_WIDTH;
+
+                this.pColorbar.x = 0;
+            } 
         }
 
         this.pColorbarArea.clear();
@@ -271,17 +275,17 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         if (this.options.colorbarPosition == 'topLeft'
             || this.options.colorbarPosition == 'bottomLeft') {
-            if (this.options.colorbarLabelsPosition == 'inside') {
-                this.axis.drawAxisRight(axisValueScale, colorbarHeight - 2 * COLORBAR_MARGIN);
-            } else {
+            if (this.options.colorbarLabelsPosition == 'outside') {
                 this.axis.drawAxisLeft(axisValueScale, colorbarHeight - 2 * COLORBAR_MARGIN);
+            } else {
+                this.axis.drawAxisRight(axisValueScale, colorbarHeight - 2 * COLORBAR_MARGIN);
             }
         } else if (this.options.colorbarPosition == 'topRight'
                    || this.options.colorbarPosition == 'bottomRight') {
-            if (this.options.colorbarLabelsPosition == 'inside') {
-                this.axis.drawAxisLeft(axisValueScale, colorbarHeight);
-            } else {
+            if (this.options.colorbarLabelsPosition == 'outside') {
                 this.axis.drawAxisRight(axisValueScale, colorbarHeight);
+            } else {
+                this.axis.drawAxisLeft(axisValueScale, colorbarHeight);
             }
         } 
     }
@@ -327,6 +331,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             rectColor.setAttribute('y', posScale(i));
             rectColor.setAttribute('width', COLORBAR_WIDTH);
             rectColor.setAttribute('height', colorHeight);
+            rectColor.setAttribute('class', 'color-rect');
 
             rectColor.setAttribute('style', `fill: rgb(${this.colorScale[i][0]}, ${this.colorScale[i][1]}, ${this.colorScale[i][2]})`);
         }

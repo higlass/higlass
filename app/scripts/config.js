@@ -116,6 +116,8 @@ export const optionsInfo = {
     },
     */
 
+    // This will default to "inside" if it's not set when colorbarPosition
+    // is set
     colorbarLabelsPosition: {
         name: "Colorbar Labels Position",
         inlineOptions: {

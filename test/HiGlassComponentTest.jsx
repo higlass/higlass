@@ -68,8 +68,19 @@ describe("Simple HiGlassComponent", () => {
         it ("should have a horizontal heatmap scale", () => {
             let horizontalHeatmap = getTrackObject(hgc, 'aa', 'hh1');
 
-            let svg = horizontalHeatmap.exportSVG();
-            let svgText = new XMLSerializer().serializeToString(svg[0]);
+            let svg = horizontalHeatmap.exportColorBarSVG();
+            let rect = svg.getElementsByClassName('color-rect')[0];
+
+            console.log('color-rect', rect);
+
+            let text = svg.getElementsByTagName('text');
+
+            console.log('text:', text);
+
+
+            //let svgText = new XMLSerializer().serializeToString(svg);
+
+            //console.log('svgText:', svgText);
 
         });
     });
