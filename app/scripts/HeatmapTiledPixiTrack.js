@@ -269,8 +269,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.pAxis.position.x = COLORBAR_WIDTH;
         this.pAxis.position.y = posScale(0);
 
-        console.log('this.valueScale:', this.valueScale);
-
         let axisValueScale = this.valueScale.copy().range([colorbarHeight, 0]);
 
         if (this.options.colorbarPosition == 'topLeft'
