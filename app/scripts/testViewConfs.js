@@ -1,3 +1,31 @@
+export const horizontalHeatmapTrack = 
+          {
+            "filetype": "cooler",
+            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+            "uid": "hh1",
+            "type": "horizontal-heatmap",
+            "options": {
+              "labelPosition": "bottomRight",
+              "labelColor": "black",
+              "colorRange": [
+                "white",
+                "rgba(245,166,35,1.0)",
+                "rgba(208,2,27,1.0)",
+                "black"
+              ],
+              "maxZoom": null,
+              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+              "colorbarPosition": 'topLeft'
+            },
+            "width": 20,
+            "height": 200,
+            "maxWidth": 4194304000,
+            "binsPerDimension": 256,
+            "position": "top"
+          }
+
 export const horizontalDiagonalTrackViewConf =
 {
   "editable": true,
@@ -24,32 +52,6 @@ export const horizontalDiagonalTrackViewConf =
       "tracks": {
         "top": [
           {
-            "filetype": "cooler",
-            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-            "uid": "hh1",
-            "type": "horizontal-heatmap",
-            "options": {
-              "labelPosition": "bottomRight",
-              "labelColor": "black",
-              "colorRange": [
-                "white",
-                "rgba(245,166,35,1.0)",
-                "rgba(208,2,27,1.0)",
-                "black"
-              ],
-              "maxZoom": null,
-              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-              "colorbarPosition": 'topLeft'
-            },
-            "width": 20,
-            "height": 100,
-            "maxWidth": 4194304000,
-            "binsPerDimension": 256,
-            "position": "top"
-          },
-          {
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
             "type": "horizontal-chromosome-labels",
             "position": "top",
@@ -61,7 +63,33 @@ export const horizontalDiagonalTrackViewConf =
           }
         ],
         "left": [],
-        "center": [],
+        "center": [
+            /*
+{
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "type": "heatmap",
+                "position": "center",
+                "options": {
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "colorbarPosition": "topLeft",
+                  "colorbarOrientation": "vertical",
+                  "colorbarLabelsPosition": "outside",
+                  "maxZoom": null,
+                  "labelPosition": "bottomRight",
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+                },
+                "uid": "heatmap1",
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                "binsPerDimension": 256
+              }
+*/
+        ],
         "right": [],
         "bottom": []
       },

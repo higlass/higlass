@@ -229,6 +229,7 @@ export class HiGlassComponent extends React.Component {
 
     animate() {
         requestAnimationFrame(() => {
+            //console.log('rendering...');
             this.pixiRenderer.render(this.pixiStage);
         });
     }
@@ -442,6 +443,8 @@ export class HiGlassComponent extends React.Component {
        */
       this.xScales[uid] = xScale;
       this.yScales[uid] = yScale;
+
+      //console.log('center and k', scalesCenterAndK(this.xScales[uid], this.yScales[uid]));
 
       if (notify) {
           if (this.scalesChangedListeners.hasOwnProperty(uid)) {

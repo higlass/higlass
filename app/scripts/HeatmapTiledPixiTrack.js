@@ -274,9 +274,9 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         if (this.options.colorbarPosition == 'topLeft'
             || this.options.colorbarPosition == 'bottomLeft') {
             if (this.options.colorbarLabelsPosition == 'outside') {
-                this.axis.drawAxisLeft(axisValueScale, colorbarHeight - 2 * COLORBAR_MARGIN);
+                this.axis.drawAxisLeft(axisValueScale, colorbarHeight);
             } else {
-                this.axis.drawAxisRight(axisValueScale, colorbarHeight - 2 * COLORBAR_MARGIN);
+                this.axis.drawAxisRight(axisValueScale, colorbarHeight);
             }
         } else if (this.options.colorbarPosition == 'topRight'
                    || this.options.colorbarPosition == 'bottomRight') {
@@ -421,9 +421,11 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
     refScalesChanged(refXScale, refYScale) {
         super.refScalesChanged(refXScale, refYScale);
+        console.log('refScalesChanged');
 
         for (let uid in this.fetchedTiles) {
             let tile = this.fetchedTiles[uid];
+            console.log('tile:', tile.sprite);
 
             if (tile.sprite) {
                 this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);

@@ -168,6 +168,8 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
             //console.log('tile:', tile);
             let graphics = tile.graphics;
 
+            //console.log('rendering...', tile);
+
             //let zeroedGraphics = tile.graphics();
 
             let canvas = this.tileDataToCanvas(pixData);
@@ -196,13 +198,42 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
             graphics.removeChildren();
             graphics.addChild(tile.sprite);
 
+            //console.log('render position', this.pMain.position.x, this.pMain.position.y, this.pMain.scale.x, this.pMain.scale.y);
+
         }.bind(this));
 
         //console.log('pixData:', pixData);
     }
 
+    refScalesChanged(refXScale, refYScale) {
+        super.refScalesChanged(refXScale, refYScale);
+        console.log('refScalesChanged');
+
+        for (let uid in this.fetchedTiles) {
+            let tile = this.fetchedTiles[uid];
+
+            if (tile.sprite) {
+                this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
+
+                let graphics = tile.graphics;
+
+                graphics.pivot.x = this._refXScale(0);
+                graphics.pivot.y = this._refYScale(0);
+                graphics.scale.x = -1 / Math.sqrt(2);
+                graphics.rotation = -3 * Math.PI / 4;
+                graphics.scale.y = 1 / Math.sqrt(2);
+
+                graphics.position.x = this._refXScale(0);
+                graphics.position.y = 0;
+            } else {
+                // console.log('skipping...', tile.tileId);
+            }
+        }
+    }
+
     zoomed(newXScale, newYScale, k, tx, ty) {
         super.zoomed(newXScale, newYScale, k, tx, ty);
+        //console.log('zoomed this.pMain.position:', this.pMain.position.x, this.pMain.position.y, this.pMain.scale.x, this.pMain.scale.y);
 
         this.pMain.position.x = tx;
         this.pMain.position.y = this.position[1] + this.dimensions[1]; //translateY;

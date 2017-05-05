@@ -17,11 +17,12 @@ import {
     heatmapTrack,
     twoViewConfig,
     valueIntervalTrackViewConf,
-    horizontalDiagonalTrackViewConf
+    horizontalDiagonalTrackViewConf,
+    horizontalHeatmapTrack
 } from '../app/scripts/testViewConfs.js';
 
 const pageLoadTime = 1200;
-const tileLoadTime = 600;
+const tileLoadTime = 1000;
 
 function testAsync(done) {
     // Wait two seconds, then set the flag to true
@@ -59,11 +60,23 @@ describe("Simple HiGlassComponent", () => {
                       />, 
             {attachTo: div});
 
-        it ("Top diagonal track should have tile graphics loaded", () => {
-            let to = getTrackObject(hgc, 'aa', 'hh1');
+        it ("should add a heatmap", (done) => {
+            hgc.instance().handleTrackAdded('aa', horizontalHeatmapTrack, 'top');
 
-            // this function could cause an error so running it is a test in and of itself
-            to.synchronizeTilesAndGraphics();
+            hgc.instance().render();
+
+            hgc.instance().tiledPlots['aa'].measureSize();
+            hgc.instance().tiledPlots['aa'].render();
+            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(
+                    1971869037.560638, 2052982260.7963939, 3090476.4793213606);
+
+            hgc.instance().tiledPlots['aa']
+                .trackRenderer.syncTrackObjects(
+                        hgc.instance().tiledPlots['aa'].positionedTracks());
+
+
+            // this should show the graphics, but it initially doesn't
+            setTimeout(done, tileLoadTime);
         });
 
         it ("should have a horizontal heatmap scale", (done) => {
@@ -77,6 +90,7 @@ describe("Simple HiGlassComponent", () => {
             //console.log('svgText:', svgText);
             done();
         });
+
     });
 
     return;
