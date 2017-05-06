@@ -461,8 +461,12 @@ export class TrackRenderer extends React.Component {
             }
         }
 
-        this.updateTrackPositions();
+        let updated = this.updateTrackPositions();
         //this.applyZoomTransform();
+        if (updated)  {
+            //only redraw if positions changed
+            this.applyZoomTransform(this.currentProps);
+        }
     }
 
     updateTrackPositions() {

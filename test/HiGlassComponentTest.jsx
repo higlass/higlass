@@ -65,7 +65,7 @@ describe("Simple HiGlassComponent", () => {
 
             hgc.instance().render();
 
-            hgc.instance().tiledPlots['aa'].measureSize();
+            //hgc.instance().tiledPlots['aa'].measureSize();
             hgc.instance().tiledPlots['aa'].render();
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(
                     1971869037.560638, 2052982260.7963939, 3090476.4793213606);
