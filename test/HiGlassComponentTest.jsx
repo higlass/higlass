@@ -4,7 +4,8 @@ import {
 } from 'enzyme';
 import {
   scalesCenterAndK,
-  dictValues
+  dictValues,
+  totalTrackPixelHeight
 } from '../app/scripts/utils.js';
 import { expect } from 'chai';
 import {scaleLinear} from 'd3-scale';
@@ -18,11 +19,12 @@ import {
     twoViewConfig,
     valueIntervalTrackViewConf,
     horizontalDiagonalTrackViewConf,
-    horizontalHeatmapTrack
+    horizontalHeatmapTrack,
+    largeHorizontalHeatmapTrack
 } from '../app/scripts/testViewConfs.js';
 
 const pageLoadTime = 1200;
-const tileLoadTime = 1000;
+const tileLoadTime = 200;
 
 function testAsync(done) {
     // Wait two seconds, then set the flag to true
@@ -46,7 +48,7 @@ describe("Simple HiGlassComponent", () => {
         div = global.document.createElement('div');
         global.document.body.appendChild(div);
 
-        div.setAttribute('style', 'height:800px; width:800px');
+        div.setAttribute('style', 'width:800px;background-color: lightgreen');
         div.setAttribute('id', 'simple-hg-component');
 
         beforeAll((done) => {
@@ -55,12 +57,16 @@ describe("Simple HiGlassComponent", () => {
         });
 
         let hgc = mount(<HiGlassComponent 
-                        options={{bounded: true}}
+                        options={{bounded: false}}
                         viewConfig={horizontalDiagonalTrackViewConf}
                       />, 
             {attachTo: div});
 
         it ("should add a heatmap", (done) => {
+            // height defined in the testViewConf file, just the chromosome names
+            // track
+            expect(totalTrackPixelHeight(hgc.instance().state.views['aa'])).to.eql(57);
+
             hgc.instance().handleTrackAdded('aa', horizontalHeatmapTrack, 'top');
 
             hgc.instance().render();
@@ -89,6 +95,35 @@ describe("Simple HiGlassComponent", () => {
 
             //console.log('svgText:', svgText);
             done();
+        });
+
+        it ("should add a large horizontal heatmap", (done) => {
+            // handleTrackAdded automatically sets the height
+            expect(hgc.instance().state.views['aa'].layout.h).to.eql(6);
+            hgc.instance().handleTrackAdded('aa', largeHorizontalHeatmapTrack, 'top');
+            expect(totalTrackPixelHeight(hgc.instance().state.views['aa'])).not.to.eql(57);
+            expect(totalTrackPixelHeight(hgc.instance().state.views['aa'])).to.eql(157);
+
+
+            hgc.instance().tiledPlots['aa']
+                .trackRenderer.syncTrackObjects(
+                        hgc.instance().tiledPlots['aa'].positionedTracks());
+
+            hgc.instance().render();
+
+            //hgc.instance().tiledPlots['aa'].measureSize();
+            hgc.instance().tiledPlots['aa'].render();
+            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(
+                    1971869037.560638, 2052982260.7963939, 3090476.4793213606);
+
+
+            setTimeout(done, tileLoadTime);
+        });
+
+        it ("should make sure that the new layout has expanded to encompass the new track", () => {
+            hgc.instance().render();
+            expect(hgc.instance().state.views['aa'].layout.h).to.be.above(4);
+
         });
 
     });

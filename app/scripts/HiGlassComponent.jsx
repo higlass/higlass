@@ -26,7 +26,8 @@ import {
   getTrackPositionByUid,
   relToAbsChromPos,
   scalesCenterAndK,
-  scalesToGenomeLocations
+  scalesToGenomeLocations,
+  totalTrackPixelHeight
 } from './utils.js';
 import {positionedTracksToAllTracks} from './utils.js';
 import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
@@ -54,7 +55,6 @@ export class HiGlassComponent extends React.Component {
         this.resizeSensor = null;
 
         this.uid = slugid.nice();
-        this.yPositionOffset = 0;
         this.rowHeight = 40;
         this.tiledPlots = {};
 
@@ -92,6 +92,9 @@ export class HiGlassComponent extends React.Component {
 
         this.horizontalMargin = 5;
         this.verticalMargin = 5;
+
+        this.genomePositionSearchBox = null;
+        this.viewHeaders = {};
 
         this.boundRefreshView = (() => { this.refreshView(LONG_DRAG_TIMEOUT) }).bind(this);
         //
@@ -829,6 +832,8 @@ export class HiGlassComponent extends React.Component {
       this.handleDragStart();
       this.handleDragStop();
 
+      console.log('layout changed:', layout);
+
 
       let MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
 
@@ -836,7 +841,8 @@ export class HiGlassComponent extends React.Component {
       let availableHeight = height - marginHeight;
 
       let currentRowHeight = this.state.rowHeight;
-      let prospectiveRowHeight = availableHeight / maxHeight;
+      let prospectiveRowHeight = availableHeight / maxHeight;  //maxHeight is the number of
+                                                               //rows necessary to display this view
 
       let chosenRowHeight = prospectiveRowHeight;
 
@@ -957,9 +963,11 @@ export class HiGlassComponent extends React.Component {
                 let trackInfo = tracksInfoByType[tracks[i].type];
 
                 if (!('height' in tracks[i]) || (trackInfo && tracks[i].height < trackInfo.minHeight)) {
-                    if (trackInfo && trackInfo.minHeight)
+                    if (trackInfo && trackInfo.minHeight) {
+                        console.log('adding height:', tracks[i]);
                         tracks[i].height = trackInfo.minHeight;
-                    else
+                    } else
+                        console.log('x adding height:', tracks[i]);
                         tracks[i].height = this.minHorizontalHeight;
                 }
             }
@@ -1311,6 +1319,39 @@ export class HiGlassComponent extends React.Component {
         } else {
             // otherwise, we want it at the end of the track list
             tracks[position].push(newTrack);
+        }
+
+        // if the view is too short, expand the view so that it fits this track
+        let view = this.state.views[viewId];
+
+        let totalTrackHeight = totalTrackPixelHeight(view);
+        let layoutHeight = view.layout.h * this.state.rowHeight;
+
+        let gpsbHeight = 0;
+
+        if (this.genomePositionSearchBox) {
+            // have to take into account the position of the genome position search box
+            let gpsbHeight = ReactDOM.findDOMNode(this.genomePositionSearchBox).clientHeight;
+            console.log('gpsbHeight:', gpsbHeight);
+
+            totalTrackHeight += gpsbHeight;
+        }
+
+        if (this.viewHeaders[view.uid]) {
+            let viewHeaderHeight = ReactDOM.findDOMNode(this.viewHeaders[view.uid]).clientHeight;
+            console.log('viewHeaderHeight:', viewHeaderHeight);
+
+            totalTrackHeight += viewHeaderHeight;
+        }
+
+        console.log('totalTrackHeight:', totalTrackHeight);
+        console.log('layoutHeight:', view.layout.h * this.state.rowHeight);
+
+        // the tracks are larger than the height of the current view, so we need
+        // to extend it
+        if (totalTrackHeight > layoutHeight) {
+            view.layout.h = Math.ceil(totalTrackHeight  / this.state.rowHeight);
+            console.log('setting new height:', view.layout.h);
         }
 
         //this.boundRefreshView();
@@ -1984,6 +2025,7 @@ export class HiGlassComponent extends React.Component {
         flexDirection: 'column'
     }
     let tiledAreas = (<div
+                        
                             ref={(c) => {this.tiledAreaDiv = c; }}
                             style={tiledAreaStyle}
                       />);
@@ -2072,8 +2114,10 @@ export class HiGlassComponent extends React.Component {
 
                 let genomePositionSearchBoxUid = slugid.nice();
 
+                this.genomePositionSearchBox = null;
                 let genomePositionSearchBox = view.genomePositionSearchBoxVisible ?
                     (<GenomePositionSearchBox
+                        ref={c => { this.genomePositionSearchBox = c } }
                         autocompleteSource={view.autocompleteSource}
                         chromInfoPath={view.chromInfoPath}
                         key={'gpsb' + view.uid}
@@ -2128,14 +2172,16 @@ export class HiGlassComponent extends React.Component {
                                 })
                             }
                             onZoomToData={uid => this.handleZoomToData(uid)}
+                            ref={c => {this.viewHeaders[view.uid] = c}}
                             viewUid={view.uid}
 
                          />
                     ) : null; // this.editable ?
 
+                         console.log('dg layout:', layout);
+                            // data-grid={layout}
                 return (<div
-                            data-grid={layout}
-                            key={itemUid}
+                            key={view.uid}
                             ref={(c) => {this.tiledAreaDiv = c; }}
                             style={tiledAreaStyle}
 
@@ -2158,8 +2204,19 @@ export class HiGlassComponent extends React.Component {
          />)
         : null;
 
+    let layouts = this.state.mounted ? dictValues(this.state.views).map(x => x.layout) : [];
+    layouts = JSON.parse(JSON.stringify(layouts)); //make sure to copy the layouts
+    /*
+    for (let i = 0; i < layouts.length; i++)
+        layouts[i].blah = slugid.nice();
+    */
+
+    console.log('layouts:', layouts[0], 'rowHeight:', this.state.rowHeight);
+    console.log('tiledAreas:', tiledAreas);
+
     let gridLayout = 
         (<WidthReactGridLayout
+          cols={12}
           draggableHandle={'.multitrack-header'}
           isDraggable={this.props.viewConfig.editable}
           isResizable={this.props.viewConfig.editable}
@@ -2171,7 +2228,7 @@ export class HiGlassComponent extends React.Component {
           onLayoutChange={this.handleLayoutChange.bind(this)}
           onResize={this.handleResize.bind(this)}
           rowHeight={this.state.rowHeight}
-          cols={12}
+          layout={layouts}
           // for some reason, this becomes 40 within the react-grid component
           // (try resizing the component to see how much the height changes)
           // Programming by coincidence FTW :-/
@@ -2179,7 +2236,7 @@ export class HiGlassComponent extends React.Component {
           // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
           // and set `measureBeforeMount={true}`.
           useCSSTransforms={this.state.mounted}
-        >
+         >
         { tiledAreas }
         </WidthReactGridLayout>)
 

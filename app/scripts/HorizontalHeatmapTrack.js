@@ -103,8 +103,6 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
                         continue;
                     }
 
-                    //console.log('tileBottomPosition:', tileBottomPosition);
-
                     let newTile = [zoomLevel, rows[i], cols[j]];
                     newTile.mirrored = false;
 
@@ -165,12 +163,7 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
                                                   function(pixData) {
             // the tileData has been converted to pixData by the worker script and needs to be loaded
             // as a sprite
-            //console.log('tile:', tile);
             let graphics = tile.graphics;
-
-            //console.log('rendering...', tile);
-
-            //let zeroedGraphics = tile.graphics();
 
             let canvas = this.tileDataToCanvas(pixData);
 
@@ -198,16 +191,12 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
             graphics.removeChildren();
             graphics.addChild(tile.sprite);
 
-            //console.log('render position', this.pMain.position.x, this.pMain.position.y, this.pMain.scale.x, this.pMain.scale.y);
-
         }.bind(this));
 
-        //console.log('pixData:', pixData);
     }
 
     refScalesChanged(refXScale, refYScale) {
         super.refScalesChanged(refXScale, refYScale);
-        console.log('refScalesChanged');
 
         for (let uid in this.fetchedTiles) {
             let tile = this.fetchedTiles[uid];

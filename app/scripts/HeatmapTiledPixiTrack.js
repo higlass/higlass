@@ -290,6 +290,11 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
     exportColorBarSVG() {
         let gColorbarArea = document.createElement('g');
+
+        if (!this.valueScale)
+            // no value scale, no colorbar
+            return gColorbarArea;
+
         gColorbarArea.setAttribute('transform',
                 `translate(${this.pColorbarArea.x}, ${this.pColorbarArea.y})`);
 
@@ -421,11 +426,9 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
     refScalesChanged(refXScale, refYScale) {
         super.refScalesChanged(refXScale, refYScale);
-        console.log('refScalesChanged');
 
         for (let uid in this.fetchedTiles) {
             let tile = this.fetchedTiles[uid];
-            console.log('tile:', tile.sprite);
 
             if (tile.sprite) {
                 this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);

@@ -1,3 +1,26 @@
+export const largeHorizontalHeatmapTrack = 
+          {
+            "filetype": "cooler",
+            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+            "uid": "hhl1",
+            "type": "horizontal-heatmap",
+            "options": {
+              "labelPosition": "bottomRight",
+              "labelColor": "black",
+              "colorRange": ['rgba(255,255,255,1)', 'rgba(0,0,0,1)'],
+              "maxZoom": null,
+              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+              "colorbarPosition": 'topLeft'
+            },
+            "width": 20,
+            "height": 400,
+            "maxWidth": 4194304000,
+            "binsPerDimension": 256,
+            "position": "top"
+          }
+
 export const horizontalHeatmapTrack = 
           {
             "filetype": "cooler",
@@ -95,7 +118,7 @@ export const horizontalDiagonalTrackViewConf =
       },
       "layout": {
         "w": 12,
-        "h": 12,
+        "h": 4,
         "x": 0,
         "y": 0,
         "i": "aa",
