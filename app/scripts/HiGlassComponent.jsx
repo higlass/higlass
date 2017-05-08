@@ -232,7 +232,6 @@ export class HiGlassComponent extends React.Component {
 
     animate() {
         requestAnimationFrame(() => {
-            //console.log('rendering...');
             this.pixiRenderer.render(this.pixiStage);
         });
     }
@@ -446,8 +445,6 @@ export class HiGlassComponent extends React.Component {
        */
       this.xScales[uid] = xScale;
       this.yScales[uid] = yScale;
-
-      //console.log('center and k', scalesCenterAndK(this.xScales[uid], this.yScales[uid]));
 
       if (notify) {
           if (this.scalesChangedListeners.hasOwnProperty(uid)) {
@@ -832,9 +829,6 @@ export class HiGlassComponent extends React.Component {
       this.handleDragStart();
       this.handleDragStop();
 
-      console.log('layout changed:', layout);
-
-
       let MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
 
       let marginHeight = MARGIN_HEIGHT * maxHeight - 1;
@@ -964,10 +958,8 @@ export class HiGlassComponent extends React.Component {
 
                 if (!('height' in tracks[i]) || (trackInfo && tracks[i].height < trackInfo.minHeight)) {
                     if (trackInfo && trackInfo.minHeight) {
-                        console.log('adding height:', tracks[i]);
                         tracks[i].height = trackInfo.minHeight;
                     } else
-                        console.log('x adding height:', tracks[i]);
                         tracks[i].height = this.minHorizontalHeight;
                 }
             }
@@ -1065,12 +1057,17 @@ export class HiGlassComponent extends React.Component {
 
       let centerHeight = 0;
       let centerWidth = 0;
-      if (view.center) {
-        centerHeight = view.center.height ? view.center.height : defaultCenterHeight;
-        currHeight += centerHeight;
-        centerWidth = view.center.width ? view.center.width : defaultCenterWidth;
-        currWidth += centerWidth;
-      } else if ((view.tracks.top || view.tracks.bottom) && (view.tracks.left || view.tracks.right)) {
+      if (view.tracks.center && dictValues(view.tracks.center).length > 0) {
+        if (!view.tracks.center[0].contents || view.tracks.center[0].contents.length > 0) {
+            centerHeight = view.tracks.center.height ? view.tracks.center.height : defaultCenterHeight;
+            currHeight += centerHeight;
+            centerWidth = view.tracks.center.width ? view.tracks.center.width : defaultCenterWidth;
+            currWidth += centerWidth;
+        }
+      } else if (((view.tracks.top && dictValues(view.tracks.top).length > 1)  || 
+                  (view.tracks.bottom && dictValues(view.tracks.bottom).length > 1)) && 
+              ((view.tracks.left && dictValues(view.tracks.left).length) || 
+               (view.tracks.right && dictValues(view.tracks.right).length))) {
             currHeight += defaultCenterWidth;
             currWidth += defaultCenterWidth;
       }
@@ -1251,6 +1248,7 @@ export class HiGlassComponent extends React.Component {
          * @param position: The position the track is being added to
          * @param host: If this track is being added to another track
          */
+        console.log('track added');
         this.addDefaultOptions(newTrack);
 
         if (newTrack.contents) {
@@ -1321,45 +1319,65 @@ export class HiGlassComponent extends React.Component {
             tracks[position].push(newTrack);
         }
 
+        this.adjustLayoutToTrackSizes(viewId);
+    }
+
+    adjustLayoutToTrackSizes(viewId) {
+        /*
+         * Adjust the layout to match the size of the contained tracks. If tracks
+         * are added, the layout size needs to expand. If they're removed, it needs
+         * to contract.
+         *
+         * This function should be called from handleTrackAdded and handleCloseTrack.
+         *
+         * Parameters
+         * ----------
+         *
+         *  viewId : string
+         *      The id of the view whose tracks have changed
+         */
         // if the view is too short, expand the view so that it fits this track
         let view = this.state.views[viewId];
 
-        let totalTrackHeight = totalTrackPixelHeight(view);
+        let totalTrackHeight = 0;
         let layoutHeight = view.layout.h * this.state.rowHeight;
 
         let gpsbHeight = 0;
 
-        if (this.genomePositionSearchBox) {
+        if (view.genomePositionSearchBoxVisible) {
             // have to take into account the position of the genome position search box
-            let gpsbHeight = ReactDOM.findDOMNode(this.genomePositionSearchBox).clientHeight;
-            console.log('gpsbHeight:', gpsbHeight);
+            //let gpsbHeight = ReactDOM.findDOMNode(this.genomePositionSearchBox).clientHeight;
+            let gpsbHeight = 30;
 
             totalTrackHeight += gpsbHeight;
         }
 
         if (this.viewHeaders[view.uid]) {
             let viewHeaderHeight = ReactDOM.findDOMNode(this.viewHeaders[view.uid]).clientHeight;
-            console.log('viewHeaderHeight:', viewHeaderHeight);
 
             totalTrackHeight += viewHeaderHeight;
         }
 
-        console.log('totalTrackHeight:', totalTrackHeight);
-        console.log('layoutHeight:', view.layout.h * this.state.rowHeight);
-
         // the tracks are larger than the height of the current view, so we need
         // to extend it
-        if (totalTrackHeight > layoutHeight) {
-            view.layout.h = Math.ceil(totalTrackHeight  / this.state.rowHeight);
-            console.log('setting new height:', view.layout.h);
+        let { totalHeight } = this.calculateViewDimensions(view);
+        totalTrackHeight += totalHeight;
+
+        let MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
+        if (!this.props.options.bounded) {
+            view.layout.h = Math.ceil((totalTrackHeight + MARGIN_HEIGHT)  / (this.state.rowHeight + MARGIN_HEIGHT));
         }
+
+        console.log('view.layout.h:', view.layout.h, "totalTrackHeight:", totalTrackHeight);
 
         //this.boundRefreshView();
         //this.tiledPlots[viewId].trackRenderer.applyZoomTransform(false);
+
     }
 
     handleCloseTrack(viewId, uid) {
         let tracks = this.state.views[viewId].tracks;
+        console.log('close track:', viewId, uid);
 
         this.handleUnlockValueScale(viewId, uid);
 
@@ -1379,6 +1397,8 @@ export class HiGlassComponent extends React.Component {
                 tracks[trackType] = newTracks;
             }
         }
+
+        this.adjustLayoutToTrackSizes(viewId);
 
         this.setState({
             views: this.state.views
@@ -2178,7 +2198,6 @@ export class HiGlassComponent extends React.Component {
                          />
                     ) : null; // this.editable ?
 
-                         console.log('dg layout:', layout);
                             // data-grid={layout}
                 return (<div
                             key={view.uid}
@@ -2211,9 +2230,6 @@ export class HiGlassComponent extends React.Component {
         layouts[i].blah = slugid.nice();
     */
 
-    console.log('layouts:', layouts[0], 'rowHeight:', this.state.rowHeight);
-    console.log('tiledAreas:', tiledAreas);
-
     let gridLayout = 
         (<WidthReactGridLayout
           cols={12}
@@ -2227,6 +2243,7 @@ export class HiGlassComponent extends React.Component {
           onDragStop={this.handleDragStop.bind(this)}
           onLayoutChange={this.handleLayoutChange.bind(this)}
           onResize={this.handleResize.bind(this)}
+          ref={(c) => { this.gridLayout = c }}
           rowHeight={this.state.rowHeight}
           layout={layouts}
           // for some reason, this becomes 40 within the react-grid component

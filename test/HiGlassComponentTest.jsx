@@ -1,16 +1,23 @@
+import {
+    LONG_DRAG_TIMEOUT
+} from '../app/scripts/config.js';
+
 import { 
     mount, 
     render
 } from 'enzyme';
+
 import {
   scalesCenterAndK,
   dictValues,
   totalTrackPixelHeight
 } from '../app/scripts/utils.js';
+
 import { expect } from 'chai';
 import {scaleLinear} from 'd3-scale';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import slugid from 'slugid';
 import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
 import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
 import {
@@ -24,7 +31,7 @@ import {
 } from '../app/scripts/testViewConfs.js';
 
 const pageLoadTime = 1200;
-const tileLoadTime = 200;
+const tileLoadTime = 600;
 
 function testAsync(done) {
     // Wait two seconds, then set the flag to true
@@ -69,17 +76,7 @@ describe("Simple HiGlassComponent", () => {
 
             hgc.instance().handleTrackAdded('aa', horizontalHeatmapTrack, 'top');
 
-            hgc.instance().render();
-
-            //hgc.instance().tiledPlots['aa'].measureSize();
-            hgc.instance().tiledPlots['aa'].render();
-            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(
-                    1971869037.560638, 2052982260.7963939, 3090476.4793213606);
-
-            hgc.instance().tiledPlots['aa']
-                .trackRenderer.syncTrackObjects(
-                        hgc.instance().tiledPlots['aa'].positionedTracks());
-
+            hgc.setState(hgc.instance().state);
 
             // this should show the graphics, but it initially doesn't
             setTimeout(done, tileLoadTime);
@@ -93,39 +90,88 @@ describe("Simple HiGlassComponent", () => {
 
             //let svgText = new XMLSerializer().serializeToString(svg);
 
-            //console.log('svgText:', svgText);
             done();
         });
 
         it ("should add a large horizontal heatmap", (done) => {
             // handleTrackAdded automatically sets the height
-            expect(hgc.instance().state.views['aa'].layout.h).to.eql(6);
+            expect(hgc.instance().state.views['aa'].layout.h).to.eql(5);
             hgc.instance().handleTrackAdded('aa', largeHorizontalHeatmapTrack, 'top');
-            expect(totalTrackPixelHeight(hgc.instance().state.views['aa'])).not.to.eql(57);
-            expect(totalTrackPixelHeight(hgc.instance().state.views['aa'])).to.eql(157);
 
-
-            hgc.instance().tiledPlots['aa']
-                .trackRenderer.syncTrackObjects(
-                        hgc.instance().tiledPlots['aa'].positionedTracks());
-
-            hgc.instance().render();
-
-            //hgc.instance().tiledPlots['aa'].measureSize();
-            hgc.instance().tiledPlots['aa'].render();
-            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(
-                    1971869037.560638, 2052982260.7963939, 3090476.4793213606);
-
+            hgc.setState(hgc.instance().state);
 
             setTimeout(done, tileLoadTime);
         });
 
         it ("should make sure that the new layout has expanded to encompass the new track", () => {
-            hgc.instance().render();
-            expect(hgc.instance().state.views['aa'].layout.h).to.be.above(4);
+            //hgc.instance().render();
+            expect(hgc.instance().state.views['aa'].layout.h).to.be.above(5);
 
         });
 
+        it ("should add a few more horizontal tracks", (done) => {
+            let numNewTracks = 5;
+            for (let i = 0; i < numNewTracks; i++) {
+                let newTrackJson = JSON.parse(JSON.stringify(largeHorizontalHeatmapTrack));
+                newTrackJson.uid = slugid.nice();
+
+                hgc.instance().handleTrackAdded('aa', newTrackJson, 'top');
+            }
+
+            hgc.setState(hgc.instance().state);
+
+            setTimeout(done, tileLoadTime);
+        });
+
+
+        it ("updates the view and deletes some tracks", (done) => {
+            //hgc.update();
+            let trackRendererHeight = hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
+
+            expect(trackRendererHeight).to.be.below(420); //should actually be 417
+
+            let numToDelete = 3;
+            let toDeleteUids = [];
+            for (let i = 0; i < numToDelete; i++) {
+                let trackUid = hgc.instance().state.views['aa'].tracks.top[i].uid;
+                toDeleteUids.push(trackUid);
+            }
+
+            for (let uid of toDeleteUids) {
+                hgc.instance().handleCloseTrack('aa', uid);
+            }
+
+            hgc.setState(hgc.instance().state);
+
+            setTimeout(done, tileLoadTime)
+        });
+
+        it ("updates the view", () => {
+            //hgc.update();
+            let trackRendererHeight = hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
+
+            expect(trackRendererHeight).to.be.below(400); //because we deleted some tracks
+        });
+
+        it ("Adds a center heatmap track", (done) => {
+            hgc.instance().handleTrackAdded('aa', heatmapTrack, 'center');
+
+            hgc.setState(hgc.instance().state);
+            
+            setTimeout(done, tileLoadTime);
+        });
+
+        it ("Checks to make sure the newly added heatmap was large enough and deletes a track", (done) => {
+            let trackRendererHeight = hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
+
+            console.log('trh:', trackRendererHeight);
+            //expect(trackRendererHeight).to.be.eql(177); 
+
+            hgc.instance().handleCloseTrack('aa',  'hcl')
+            hgc.setState(hgc.instance().state);
+            
+            setTimeout(done, tileLoadTime);
+        });
     });
 
     return;
@@ -211,7 +257,6 @@ describe("Simple HiGlassComponent", () => {
             hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', newOptions);
 
             let svg = getTrackObject(hgc, 'aa', 'heatmap1').exportSVG()[0];
-            //console.log('svg:', svg);
             //hgc.instance().handleExportSVG();
             
             // how do we test for what's drawn in Pixi?'

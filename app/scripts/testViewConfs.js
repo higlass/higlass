@@ -80,7 +80,7 @@ export const horizontalDiagonalTrackViewConf =
             "position": "top",
             "name": "Chromosome Labels (hg19)",
             "height": 57,
-            "uid": "I1QUF22JQJuJ38j9PS4iqw",
+            "uid": "hcl",
             "options": {},
             "width": 1161
           }

@@ -826,6 +826,7 @@ export class TrackRenderer extends React.Component {
     }
 
     render() {
+        console.log('cp height:', this.currentProps.height);
         return(
             <div
                 className={"track-renderer"}

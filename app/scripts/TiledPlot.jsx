@@ -98,8 +98,6 @@ export class TiledPlot extends React.Component {
 
 
     shouldComponentUpdate(nextProps, nextState) {
-        //console.log('this.props:', this.props);
-
         let thisPropsStr = this.previousPropsStr;
         let nextPropsStr = this.updatablePropsToString(nextProps);
 
@@ -113,9 +111,6 @@ export class TiledPlot extends React.Component {
 
         if (toUpdate || thisStateStr != nextStateStr)
             toUpdate = true;
-
-        //console.log('thisPropsStr', thisPropsStr);
-        //console.log('nextPropsStr', nextPropsStr);
 
         toUpdate = toUpdate || (this.props.chooseTrackHandler != nextProps.chooseTrackHandler);
 
@@ -356,8 +351,6 @@ export class TiledPlot extends React.Component {
     }
 
     handleConfigureTrack(track, configComponent) {
-        // console.log('configComponent:', configComponent);
-
         this.setState({
             configTrackMenuId: null,
             trackOptions: {'track': track, 'configComponent': configComponent}
