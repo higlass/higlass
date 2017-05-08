@@ -32,6 +32,8 @@ import {
 
 const pageLoadTime = 1200;
 const tileLoadTime = 600;
+const shortLoadTime = 100; // for rapid changes, 
+                           // just to make sure the screen can display what's happened
 
 function testAsync(done) {
     // Wait two seconds, then set the flag to true
@@ -103,6 +105,7 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, tileLoadTime);
         });
 
+
         it ("should make sure that the new layout has expanded to encompass the new track", () => {
             //hgc.instance().render();
             expect(hgc.instance().state.views['aa'].layout.h).to.be.above(5);
@@ -114,6 +117,7 @@ describe("Simple HiGlassComponent", () => {
             for (let i = 0; i < numNewTracks; i++) {
                 let newTrackJson = JSON.parse(JSON.stringify(largeHorizontalHeatmapTrack));
                 newTrackJson.uid = slugid.nice();
+                hgc.setState(hgc.instance().state);
 
                 hgc.instance().handleTrackAdded('aa', newTrackJson, 'top');
             }
@@ -122,7 +126,6 @@ describe("Simple HiGlassComponent", () => {
 
             setTimeout(done, tileLoadTime);
         });
-
 
         it ("updates the view and deletes some tracks", (done) => {
             //hgc.update();
@@ -158,23 +161,55 @@ describe("Simple HiGlassComponent", () => {
 
             hgc.setState(hgc.instance().state);
             
-            setTimeout(done, tileLoadTime);
+            //setTimeout(done, tileLoadTime);
+            done();
         });
 
         it ("Checks to make sure the newly added heatmap was large enough and deletes a track", (done) => {
-            let trackRendererHeight = hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
+            let prevTrackRendererHeight = hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
+            let prevTotalHeight = hgc.instance().calculateViewDimensions(hgc.instance().state.views['aa']).totalHeight;
 
-            console.log('trh:', trackRendererHeight);
-            //expect(trackRendererHeight).to.be.eql(177); 
-
-            hgc.instance().handleCloseTrack('aa',  'hcl')
+            let newView = hgc.instance().handleCloseTrack('aa',  'hcl')['aa'];
             hgc.setState(hgc.instance().state);
+
+            //let nextTrackRendererHeight = hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
+            let nextTotalHeight = hgc.instance().calculateViewDimensions(newView).totalHeight;
+
+                //expect(nextTrackRendererHeight).to.be.equal(prevTrackRendererHeight - 57);
+            expect(nextTotalHeight).to.be.eql(prevTotalHeight - 57);
             
-            setTimeout(done, tileLoadTime);
+            setTimeout(done, shortLoadTime);
+            //done();
+        });
+
+        it ("Should resize the center track", (done) => {
+            let view = hgc.instance().state.views['aa'];
+            view.layout.h += 2;
+            //console.log('height:', hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap3').dimensions[1]);
+
+            hgc.setState(hgc.instance().state);
+            hgc.instance().tiledPlots['aa'].measureSize();
+
+            setTimeout(done, shortLoadTime);
+            //done();
+        });
+
+        it ("Should add a bottom track and have the new height", (done) => {
+            expect(hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap3').dimensions[1]).to.be.above(140);
+
+            let newTrack = JSON.parse(JSON.stringify(horizontalHeatmapTrack));
+            newTrack.uid = 'xyx1';
+
+            hgc.instance().handleTrackAdded('aa', newTrack, 'bottom');
+            hgc.setState(hgc.instance().state);
+            hgc.instance().tiledPlots['aa'].measureSize();
+
+            // adding a new track should not make the previous one smaller
+            expect(hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap3').dimensions[1]).to.be.above(140);
+
+            done();
         });
     });
-
-    return;
 
     // wait a bit of time for the data to be loaded from the server
     describe("Value interval track tests", () => {

@@ -1059,9 +1059,21 @@ export class HiGlassComponent extends React.Component {
       let centerWidth = 0;
       if (view.tracks.center && dictValues(view.tracks.center).length > 0) {
         if (!view.tracks.center[0].contents || view.tracks.center[0].contents.length > 0) {
-            centerHeight = view.tracks.center.height ? view.tracks.center.height : defaultCenterHeight;
+            let centerHeight = null;
+            let centerWidth = null;
+
+            if (view.tracks.center[0].contents) {
+                // combined track in the center
+                for (let track of view.tracks.center[0].contents) {
+                    centerHeight = Math.max(centerHeight, track.height ? track.height : defaultCenterHeight);
+                    centerWidth = Math.max(centerWidth, track.width ? track.width : defaultCenterWidth);
+                }
+            } else {
+                centerHeight = view.tracks.center[0].height ? view.tracks.center[0].height : defaultCenterHeight;
+                centerWidth = view.tracks.center[0].width ? view.tracks.center[0].width : defaultCenterWidth;
+            }
+
             currHeight += centerHeight;
-            centerWidth = view.tracks.center.width ? view.tracks.center.width : defaultCenterWidth;
             currWidth += centerWidth;
         }
       } else if (((view.tracks.top && dictValues(view.tracks.top).length > 1)  || 
@@ -1248,7 +1260,7 @@ export class HiGlassComponent extends React.Component {
          * @param position: The position the track is being added to
          * @param host: If this track is being added to another track
          */
-        console.log('track added');
+        this.storeTrackSizes(viewId);
         this.addDefaultOptions(newTrack);
 
         if (newTrack.contents) {
@@ -1322,6 +1334,34 @@ export class HiGlassComponent extends React.Component {
         this.adjustLayoutToTrackSizes(viewId);
     }
 
+    storeTrackSizes(viewId) {
+        /**
+         * Go through each track and store its size in the viewconf.
+         *
+         * This is so that sizes don't get lost when the view is unbounded
+         * and new tracks are added.
+         *
+         * Parameters
+         * ----------
+         *
+         *  viewId : string
+         *      The id of the view whose tracks we're measuring
+         *
+         * Returns
+         * -------
+         *
+         *  Nothing
+         */
+        let looseTracks = positionedTracksToAllTracks(this.state.views[viewId].tracks);
+
+        for (let track of looseTracks) {
+            let trackObj = this.tiledPlots[viewId].trackRenderer.getTrackObject(track.uid);
+
+            track.width = trackObj.dimensions[0];
+            track.height = trackObj.dimensions[1];
+        }
+    }
+
     adjustLayoutToTrackSizes(viewId) {
         /*
          * Adjust the layout to match the size of the contained tracks. If tracks
@@ -1367,17 +1407,10 @@ export class HiGlassComponent extends React.Component {
         if (!this.props.options.bounded) {
             view.layout.h = Math.ceil((totalTrackHeight + MARGIN_HEIGHT)  / (this.state.rowHeight + MARGIN_HEIGHT));
         }
-
-        console.log('view.layout.h:', view.layout.h, "totalTrackHeight:", totalTrackHeight);
-
-        //this.boundRefreshView();
-        //this.tiledPlots[viewId].trackRenderer.applyZoomTransform(false);
-
     }
 
     handleCloseTrack(viewId, uid) {
         let tracks = this.state.views[viewId].tracks;
-        console.log('close track:', viewId, uid);
 
         this.handleUnlockValueScale(viewId, uid);
 
@@ -1403,6 +1436,8 @@ export class HiGlassComponent extends React.Component {
         this.setState({
             views: this.state.views
         });
+
+        return this.state.views;
     }
 
     handleLockValueScale(fromViewUid, fromTrackUid) {

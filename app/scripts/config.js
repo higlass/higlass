@@ -241,8 +241,8 @@ export const tracksInfo = [
         type: 'heatmap',
         datatype: ['matrix'],
         local: false,
-        minHeight: 50,
-        minWidth: 50,
+        minHeight: 100,
+        minWidth: 100,
         orientation: '2d',
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
