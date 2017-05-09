@@ -109,6 +109,17 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, tileLoadTime);
         });
 
+        it ("should change the opacity of the label", (done) => {
+            hgc.instance().state.views['aa'].tracks.top[0].options.labelBackgroundOpacity = 0.5;
+
+            hgc.setState(hgc.instance().state);
+            let horizontalHeatmap = getTrackObject(hgc, 'aa', 'hh1');
+
+            expect(horizontalHeatmap.options.labelBackgroundOpacity).to.eql(0.5);
+
+            setTimeout(done, tileLoadTime);
+        });
+
         it ("should have a horizontal heatmap scale", (done) => {
             let horizontalHeatmap = getTrackObject(hgc, 'aa', 'hh1');
 

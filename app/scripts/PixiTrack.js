@@ -107,7 +107,15 @@ export class PixiTrack extends Track {
             return;
         }
 
+        graphics.clear();
+        
+        if (!this.options.labelBackgroundOpacity)
+            graphics.beginFill(0xFFFFFF, 0);
+        else
+            graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);
+
         let stroke = colorToHex(this.options.labelColor ? this.options.labelColor : 'black');
+        let labelBackgroundMargin = 2;
 
         // we can't draw a label if there's no space
         if (this.dimensions[0] < 0)
@@ -157,6 +165,11 @@ export class PixiTrack extends Track {
             this.labelText.anchor.y = 0;
 
             this.labelText.x += this.labelText.width / 2;
+
+            graphics.drawRect(this.position[0],
+                              this.position[1],
+                              this.labelText.width + labelBackgroundMargin, 
+                              this.labelText.height + labelBackgroundMargin)
         } else if ((this.options.labelPosition == 'bottomLeft' && !this.flipText ) ||
                    (this.options.labelPosition == 'topRight' && this.flipText)) {
             this.labelText.x = this.position[0];
@@ -165,6 +178,10 @@ export class PixiTrack extends Track {
             this.labelText.anchor.y = 1;
 
             this.labelText.x += this.labelText.width / 2;
+            graphics.drawRect(this.position[0],
+                              this.position[1] + this.dimensions[1] - this.labelText.height - labelBackgroundMargin,
+                              this.labelText.width + labelBackgroundMargin, 
+                              this.labelText.height + labelBackgroundMargin)
         } else if ((this.options.labelPosition == 'topRight' && !this.flipText) ||
                    (this.options.labelPosition == 'bottomLeft' && this.flipText)) {
             this.labelText.x = this.position[0] + this.dimensions[0];;
@@ -173,7 +190,13 @@ export class PixiTrack extends Track {
             this.labelText.anchor.y = 0;
 
             this.labelText.x -= this.labelText.width / 2;
+
+            graphics.drawRect(this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin,
+                              this.position[1],
+                              this.labelText.width + labelBackgroundMargin, 
+                              this.labelText.height + labelBackgroundMargin)
         } else if (this.options.labelPosition == 'bottomRight') {
+
             this.labelText.x = this.position[0] + this.dimensions[0];
             this.labelText.y = this.position[1] + this.dimensions[1];
             this.labelText.anchor.x = 0.5;
@@ -182,6 +205,11 @@ export class PixiTrack extends Track {
             // we set the anchor to 0.5 so that we can flip the text if the track
             // is rotated but that means we have to adjust its position
             this.labelText.x -= this.labelText.width / 2;
+
+            graphics.drawRect(this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin,
+                              this.position[1] + this.dimensions[1] - this.labelText.height - labelBackgroundMargin,
+                              this.labelText.width + labelBackgroundMargin, 
+                              this.labelText.height + labelBackgroundMargin)
         } else if ((this.options.labelPosition == 'outerLeft' && !this.flipText) ||
                    (this.options.labelPosition == 'outerTop' && this.flipText)) {
             this.labelText.x = this.position[0];
