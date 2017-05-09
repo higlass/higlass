@@ -1,3 +1,7 @@
+v0.6.8
+
+- Component sizes are adjsuted on component load
+
 v0.6.7
 
 - Unbounded functionality to increase the size of the layout if new tracks are
