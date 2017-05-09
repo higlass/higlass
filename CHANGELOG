@@ -2,6 +2,7 @@ v0.6.7
 
 - Unbounded functionality to increase the size of the layout if new tracks are
 added which increase its size
+- Fixed vertical colorbar label mirroring
 
 v0.6.6
 

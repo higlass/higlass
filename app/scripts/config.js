@@ -261,6 +261,7 @@ export const tracksInfo = [
         datatype: ['matrix'],
         local: false,
         minHeight: 40,
+        minWidth: 100,
         orientation: '1d-horizontal',
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
@@ -278,6 +279,7 @@ export const tracksInfo = [
         datatype: ['matrix'],
         local: false,
         minWidth: 50,
+        minHeight: 100,
         orientation: '1d-vertical',
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {

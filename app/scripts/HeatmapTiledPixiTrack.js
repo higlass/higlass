@@ -30,7 +30,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.pColorbar = new PIXI.Graphics();
         this.pColorbarArea.addChild(this.pColorbar);
 
-        this.axis = new AxisPixi();
+        this.axis = new AxisPixi(this);
         this.pColorbarArea.addChild(this.axis.pAxis);
 
         // [[255,255,255,0], [237,218,10,4] ...

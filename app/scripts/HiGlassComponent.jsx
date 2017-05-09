@@ -1037,23 +1037,34 @@ export class HiGlassComponent extends React.Component {
             (view.tracks.center && view.tracks.center.length > 0))
           minNecessaryHeight += MIN_VERTICAL_HEIGHT;
 
+      let leftHeight = 0;
       if (view.tracks.left) {
           // tally up the height of the top tracks
 
           for (let i = 0; i < view.tracks.left.length; i++) {
               let track = view.tracks.left[i];
+              let thisHeight = track.height ? track.height : defaultCenterHeight;
               currWidth += track.width ? track.width : defaultVerticalWidth;
+
+              leftHeight = Math.max(leftHeight, thisHeight);
           }
       }
+
+      let rightHeight = 0;
 
       if (view.tracks.right) {
           // tally up the height of the top tracks
 
           for (let i = 0; i < view.tracks.right.length; i++) {
               let track = view.tracks.right[i];
+              let thisHeight = track.height ? track.height : defaultCenterHeight;
               currWidth += track.width ? track.width : defaultVerticalWidth;
+
+              rightHeight = Math.max(rightHeight, thisHeight);
           }
       }
+
+      let sideHeight = Math.max(leftHeight, rightHeight);
 
       let centerHeight = 0;
       let centerWidth = 0;
@@ -1080,9 +1091,16 @@ export class HiGlassComponent extends React.Component {
                   (view.tracks.bottom && dictValues(view.tracks.bottom).length > 1)) && 
               ((view.tracks.left && dictValues(view.tracks.left).length) || 
                (view.tracks.right && dictValues(view.tracks.right).length))) {
-            currHeight += defaultCenterWidth;
-            currWidth += defaultCenterWidth;
+          centerWidth = defaultCenterWidth;
+          centerHeight = defaultCenterHeight;
       }
+
+      // make the total height the greater of the left height
+      // and the center height
+      if (sideHeight > centerHeight)
+          currHeight += sideHeight;
+      else
+          currHeight += centerHeight
 
       let topHeight = 0;
       let bottomHeight = 0;
@@ -1655,6 +1673,8 @@ export class HiGlassComponent extends React.Component {
                 delete track['maxWidth'];
             if ('filetype' in track)
                 delete track['filetype'];
+            if ('binsPerDimension' in track)
+                delete track['binsPerDimension'];
         }
         //
 

@@ -27,7 +27,8 @@ import {
     valueIntervalTrackViewConf,
     horizontalDiagonalTrackViewConf,
     horizontalHeatmapTrack,
-    largeHorizontalHeatmapTrack
+    largeHorizontalHeatmapTrack,
+    verticalHeatmapTrack
 } from '../app/scripts/testViewConfs.js';
 
 const pageLoadTime = 1200;
@@ -53,7 +54,7 @@ describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null;
 
     // wait a bit of time for the data to be loaded from the server
-    describe("Top diagonal tracks", () => {
+    describe("Track positioning", () => {
         div = global.document.createElement('div');
         global.document.body.appendChild(div);
 
@@ -70,6 +71,30 @@ describe("Simple HiGlassComponent", () => {
                         viewConfig={horizontalDiagonalTrackViewConf}
                       />, 
             {attachTo: div});
+
+        it ("should add and resize a vertical heatmp", (done) => {
+            hgc.instance().handleTrackAdded('aa', verticalHeatmapTrack, 'left');
+            hgc.instance().state.views['aa'].tracks.left[0].width=100;
+
+            hgc.setState(hgc.instance().state);
+            hgc.instance().tiledPlots['aa'].measureSize();
+
+            let track = getTrackObject(hgc, 'aa', 'vh1');
+
+            expect(track.originalTrack.axis.track.flipText).to.eql(true);
+
+            setTimeout(done, shortLoadTime);
+
+        });
+
+
+        it ("Should remove the vertical heatmap", (done) => {
+            hgc.instance().handleCloseTrack('aa', 'vh1');
+            hgc.setState(hgc.instance().state);
+            hgc.instance().tiledPlots['aa'].measureSize();
+
+            setTimeout(done, shortLoadTime);
+        });
 
         it ("should add a heatmap", (done) => {
             // height defined in the testViewConf file, just the chromosome names
@@ -177,8 +202,6 @@ describe("Simple HiGlassComponent", () => {
             //let nextTrackRendererHeight = hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
             let nextTotalHeight = hgc.instance().calculateViewDimensions(newView).totalHeight;
 
-            console.log('prevTotalHeight:', prevTotalHeight, 'nextTotalHeight:', nextTotalHeight);
-
                 //expect(nextTrackRendererHeight).to.be.equal(prevTrackRendererHeight - 57);
             expect(nextTotalHeight).to.be.below(prevTotalHeight);
             
@@ -189,7 +212,6 @@ describe("Simple HiGlassComponent", () => {
         it ("Should resize the center track", (done) => {
             let view = hgc.instance().state.views['aa'];
             view.layout.h += 2;
-            //console.log('height:', hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap3').dimensions[1]);
 
             hgc.setState(hgc.instance().state);
             hgc.instance().tiledPlots['aa'].measureSize();
@@ -217,7 +239,6 @@ describe("Simple HiGlassComponent", () => {
         it ("Should resize the center", (done) => {
             let view = hgc.instance().state.views['aa'];
             view.layout.h += 2;
-            //console.log('height:', hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap3').dimensions[1]);
 
             hgc.setState(hgc.instance().state);
             hgc.instance().tiledPlots['aa'].measureSize();
@@ -228,7 +249,6 @@ describe("Simple HiGlassComponent", () => {
 
         it ("Should delete the bottom track and not resize the center", (done) => {
             let prevSize = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap3').dimensions[1];
-            console.log('prevSize:', prevSize);
 
             hgc.instance().handleCloseTrack('aa', 'xyx1');
             hgc.setState(hgc.instance().state);
@@ -236,7 +256,6 @@ describe("Simple HiGlassComponent", () => {
 
             let nextSize = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap3').dimensions[1];
 
-            console.log('nextSize', nextSize);
             expect(nextSize).to.be.eql(prevSize);
 
             done();
@@ -263,7 +282,7 @@ describe("Simple HiGlassComponent", () => {
             hgc = mount(<HiGlassComponent 
                             options={{bounded: true}}
                             viewConfig={twoViewConfig}
-                          />, 
+                        />, 
                 {attachTo: div});
 
             setTimeout(done, pageLoadTime);
@@ -275,6 +294,7 @@ describe("Simple HiGlassComponent", () => {
             //expect(viewString.indexOf('1d-value-interval')).to.be.above(0);
             expect(viewString.indexOf('maxWidth')).to.be.below(0);
             expect(viewString.indexOf('filetype')).to.be.below(0);
+            expect(viewString.indexOf('binsPerDimension')).to.be.below(0);
         });
 
 
