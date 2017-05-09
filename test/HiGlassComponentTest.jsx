@@ -28,7 +28,8 @@ import {
     horizontalDiagonalTrackViewConf,
     horizontalHeatmapTrack,
     largeHorizontalHeatmapTrack,
-    verticalHeatmapTrack
+    verticalHeatmapTrack,
+    testViewConfX1
 } from '../app/scripts/testViewConfs.js';
 
 const pageLoadTime = 1200;
@@ -53,8 +54,46 @@ function getTrackObject(hgc, viewUid, trackUid) {
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null;
 
+    describe("Positioning a more complex layout", () => {
+        div = global.document.createElement('div');
+        global.document.body.appendChild(div);
+
+        div.setAttribute('style', 'width:800px;background-color: lightgreen');
+        div.setAttribute('id', 'simple-hg-component');
+
+        beforeAll((done) => {
+            // wait for the page to load
+            testAsync(done);
+        });
+
+        let hgc = mount(<HiGlassComponent 
+                        options={{bounded: false}}
+                        viewConfig={testViewConfX1}
+                      />, 
+            {attachTo: div});
+
+        it ("should load the initial config", (done) => {
+            // more than 9 because of the view header
+           expect(hgc.instance().state.views['aa'].layout.h).to.be.above(9);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+    });
+
+    return;
+
     // wait a bit of time for the data to be loaded from the server
     describe("Track positioning", () => {
+        if (hgc) {
+            hgc.unmount();
+            hgc.detach();
+        }
+
+        if (div) {
+            global.document.body.removeChild(div);
+        }
+
         div = global.document.createElement('div');
         global.document.body.appendChild(div);
 

@@ -45,6 +45,7 @@ let WidthReactGridLayout = WidthProvider(ReactGridLayout);
 
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
+const VIEW_HEADER_HEIGHT = 20;
 
 export class HiGlassComponent extends React.Component {
     constructor(props) {
@@ -132,6 +133,9 @@ export class HiGlassComponent extends React.Component {
             exportLinkModalOpen: false,
             exportLinkLocation: null
           }
+
+
+          dictValues(viewsByUid).map(view => this.adjustLayoutToTrackSizes(view));
     }
 
     componentDidMount() {
@@ -1349,7 +1353,7 @@ export class HiGlassComponent extends React.Component {
             tracks[position].push(newTrack);
         }
 
-        this.adjustLayoutToTrackSizes(viewId);
+        this.adjustLayoutToTrackSizes(this.state.views[viewId]);
     }
 
     storeTrackSizes(viewId) {
@@ -1380,7 +1384,7 @@ export class HiGlassComponent extends React.Component {
         }
     }
 
-    adjustLayoutToTrackSizes(viewId) {
+    adjustLayoutToTrackSizes(view) {
         /*
          * Adjust the layout to match the size of the contained tracks. If tracks
          * are added, the layout size needs to expand. If they're removed, it needs
@@ -1391,17 +1395,16 @@ export class HiGlassComponent extends React.Component {
          * Parameters
          * ----------
          *
-         *  viewId : string
-         *      The id of the view whose tracks have changed
+         *  view : {...}
+         *      The definition from the viewconf
          */
         // if the view is too short, expand the view so that it fits this track
-        let view = this.state.views[viewId];
-
         let totalTrackHeight = 0;
         let layoutHeight = view.layout.h * this.state.rowHeight;
 
         let gpsbHeight = 0;
 
+        console.log('gpsb:', view.genomePositionSearchBoxVisible);
         if (view.genomePositionSearchBoxVisible) {
             // have to take into account the position of the genome position search box
             //let gpsbHeight = ReactDOM.findDOMNode(this.genomePositionSearchBox).clientHeight;
@@ -1410,10 +1413,10 @@ export class HiGlassComponent extends React.Component {
             totalTrackHeight += gpsbHeight;
         }
 
-        if (this.viewHeaders[view.uid]) {
-            let viewHeaderHeight = ReactDOM.findDOMNode(this.viewHeaders[view.uid]).clientHeight;
-
-            totalTrackHeight += viewHeaderHeight;
+        // we are not checking for this.viewHeaders because this function may be 
+        // called before the component is mounted
+        if (this.props.viewConfig.editable) {
+            totalTrackHeight += VIEW_HEADER_HEIGHT;
         }
 
         // the tracks are larger than the height of the current view, so we need
@@ -1450,7 +1453,7 @@ export class HiGlassComponent extends React.Component {
         }
 
         this.storeTrackSizes(viewId);
-        this.adjustLayoutToTrackSizes(viewId);
+        this.adjustLayoutToTrackSizes(this.state.views[viewId]);
 
         this.setState({
             views: this.state.views
@@ -2043,6 +2046,7 @@ export class HiGlassComponent extends React.Component {
                         this.addDefaultOptions(ct);
                 }
             });
+
 
         });
 
