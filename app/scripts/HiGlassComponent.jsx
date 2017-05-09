@@ -1431,6 +1431,7 @@ export class HiGlassComponent extends React.Component {
             }
         }
 
+        this.storeTrackSizes(viewId);
         this.adjustLayoutToTrackSizes(viewId);
 
         this.setState({

@@ -1,3 +1,8 @@
+v0.6.7
+
+- Unbounded functionality to increase the size of the layout if new tracks are
+added which increase its size
+
 v0.6.6
 
 - Bug fix: closing a track which had a value scale lock with another track now

@@ -160,6 +160,7 @@ describe("Simple HiGlassComponent", () => {
             hgc.instance().handleTrackAdded('aa', heatmapTrack, 'center');
 
             hgc.setState(hgc.instance().state);
+            hgc.instance().tiledPlots['aa'].measureSize();
             
             //setTimeout(done, tileLoadTime);
             done();
@@ -171,12 +172,15 @@ describe("Simple HiGlassComponent", () => {
 
             let newView = hgc.instance().handleCloseTrack('aa',  'hcl')['aa'];
             hgc.setState(hgc.instance().state);
+            //hgc.instance().tiledPlots['aa'].measureSize();
 
             //let nextTrackRendererHeight = hgc.instance().tiledPlots['aa'].trackRenderer.currentProps.height;
             let nextTotalHeight = hgc.instance().calculateViewDimensions(newView).totalHeight;
 
+            console.log('prevTotalHeight:', prevTotalHeight, 'nextTotalHeight:', nextTotalHeight);
+
                 //expect(nextTrackRendererHeight).to.be.equal(prevTrackRendererHeight - 57);
-            expect(nextTotalHeight).to.be.eql(prevTotalHeight - 57);
+            expect(nextTotalHeight).to.be.below(prevTotalHeight);
             
             setTimeout(done, shortLoadTime);
             //done();
@@ -206,6 +210,34 @@ describe("Simple HiGlassComponent", () => {
 
             // adding a new track should not make the previous one smaller
             expect(hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap3').dimensions[1]).to.be.above(140);
+
+            done();
+        });
+
+        it ("Should resize the center", (done) => {
+            let view = hgc.instance().state.views['aa'];
+            view.layout.h += 2;
+            //console.log('height:', hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap3').dimensions[1]);
+
+            hgc.setState(hgc.instance().state);
+            hgc.instance().tiledPlots['aa'].measureSize();
+
+            setTimeout(done, shortLoadTime);
+
+        });
+
+        it ("Should delete the bottom track and not resize the center", (done) => {
+            let prevSize = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap3').dimensions[1];
+            console.log('prevSize:', prevSize);
+
+            hgc.instance().handleCloseTrack('aa', 'xyx1');
+            hgc.setState(hgc.instance().state);
+            hgc.instance().tiledPlots['aa'].measureSize();
+
+            let nextSize = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap3').dimensions[1];
+
+            console.log('nextSize', nextSize);
+            expect(nextSize).to.be.eql(prevSize);
 
             done();
         });

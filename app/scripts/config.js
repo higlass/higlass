@@ -260,7 +260,7 @@ export const tracksInfo = [
         type: 'horizontal-heatmap',
         datatype: ['matrix'],
         local: false,
-        minHeight: 50,
+        minHeight: 40,
         orientation: '1d-horizontal',
         thumbnail: svg2DHeatmapIcon,
         defaultOptions: {
