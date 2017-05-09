@@ -29,7 +29,8 @@ import {
     horizontalHeatmapTrack,
     largeHorizontalHeatmapTrack,
     verticalHeatmapTrack,
-    testViewConfX1
+    testViewConfX1,
+    testViewConfX2
 } from '../app/scripts/testViewConfs.js';
 
 const pageLoadTime = 1200;
@@ -55,6 +56,55 @@ describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null;
 
     describe("Positioning a more complex layout", () => {
+        if (hgc) {
+            hgc.unmount();
+            hgc.detach();
+        }
+
+        if (div) {
+            global.document.body.removeChild(div);
+        }
+
+        div = global.document.createElement('div');
+        global.document.body.appendChild(div);
+
+        div.setAttribute('style', 'width:800px;background-color: lightgreen');
+        div.setAttribute('id', 'simple-hg-component');
+
+        beforeAll((done) => {
+            // wait for the page to load
+            testAsync(done);
+        });
+
+        let hgc = mount(<HiGlassComponent 
+                        options={{bounded: false}}
+                        viewConfig={testViewConfX2}
+                      />, 
+            {attachTo: div});
+
+        it ("should load the initial config", (done) => {
+            // this was to test an example from the higlass-website demo page
+            // where the issue was that the genome position search box was being
+            // styled with a margin-bottom of 10px, fixed by setting the style of
+            // genome-position-search to specify margin-bottom app/styles/GenomePositionSearchBox.css
+           expect(hgc.instance().state.views['aa'].layout.h).to.be.eql(6);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+
+    });
+
+    describe("Positioning a more complex layout", () => {
+        if (hgc) {
+            hgc.unmount();
+            hgc.detach();
+        }
+
+        if (div) {
+            global.document.body.removeChild(div);
+        }
+
         div = global.document.createElement('div');
         global.document.body.appendChild(div);
 
@@ -81,7 +131,6 @@ describe("Simple HiGlassComponent", () => {
 
     });
 
-    return;
 
     // wait a bit of time for the data to be loaded from the server
     describe("Track positioning", () => {

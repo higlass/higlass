@@ -1404,7 +1404,6 @@ export class HiGlassComponent extends React.Component {
 
         let gpsbHeight = 0;
 
-        console.log('gpsb:', view.genomePositionSearchBoxVisible);
         if (view.genomePositionSearchBoxVisible) {
             // have to take into account the position of the genome position search box
             //let gpsbHeight = ReactDOM.findDOMNode(this.genomePositionSearchBox).clientHeight;

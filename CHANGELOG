@@ -1,6 +1,8 @@
 v0.6.8
 
 - Component sizes are adjsuted on component load
+- Genome position search box styling is set to not
+have a bottom margin
 
 v0.6.7
 

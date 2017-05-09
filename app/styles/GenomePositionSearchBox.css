@@ -1,5 +1,6 @@
 .genome-position-search {
   display: flex;
+  margin-bottom: 0px;
 }
 
 .genome-position-search .search-bar {
