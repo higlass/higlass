@@ -2,7 +2,6 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-    debug: true,
   context: __dirname + '/app',
   entry: {
       playground: ['./scripts/playground.jsx'],
@@ -23,36 +22,36 @@ module.exports = {
         test: /\.jsx?$/,
         //exclude: /node_modules/,
         include: [path.resolve(__dirname, 'app/scripts'), path.resolve(__dirname, 'test')],
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015', 'react']
-        }
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                ['es2015', { modules: false }],
+                'react'
+              ]
+            }
+          }
+        ]
       }, {
         test: /\.css$/,
-        loader: 'style!css'
+      use: [
+         {
+           loader: "style-loader"
+         },
+         {
+           loader: "css-loader",
+           options: {
+             modules: true
+           }
+         }
+      ]
       }
-    ],
-    preLoaders: [
-        { test: /\.json$/, loader: 'json'},
-    ],
-    postLoaders: [
-        {
-            include: path.resolve(__dirname, 'node_modules/pixi.js'),
-            loader: 'transform?brfs'
-        }
+
     ],
     noParse: [
         /node_modules\/sinon\//,
-    ],
-    externals: {
-        'react/addons': true
-    },
-    resolve: {
-        extensions: ['.js', '.jsx'],
-        alias: {
-            'sinon': 'sinon/pkg/sinon'
-        }
-    }
+    ]
   },
   plugins: [
     new webpack.DefinePlugin({

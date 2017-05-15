@@ -7,6 +7,11 @@
   "keywords": [
     "yeoman-generator"
   ],
+  "scripts": {
+    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --content-base app --profile --inline | grep -v '\\[\\d*\\]'",
+    "compile": "rm -rf dist/*; mkdir -p dist/scripts; mkdir -p dist/styles; cp -r app/images dist/; NODE_ENV=production ./node_modules/webpack/bin/webpack.js -p; cp build/playground.js dist/scripts; cp build/hglib.js dist/scripts; cp app/index.html dist/; cp app/hglib.html dist/; cp app/styles/page.css dist/styles/; zip -r dist.zip dist",
+    "tests": "./node_modules/karma/bin/karma start karma.conf.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/pkerpedjiev/generator-webpack-es6"
@@ -15,9 +20,9 @@
     "node": ">=0.12.0"
   },
   "devDependencies": {
-    "babel": "~6.5.2",
-    "babel-core": "~6.10.4",
-    "babel-loader": "~6.2.3",
+    "babel": "~6.23.0",
+    "babel-core": "~6.24.1",
+    "babel-loader": "7.0.0",
     "babel-plugin-transform-object-rest-spread": "^6.20.2",
     "babel-polyfill": "^6.23.0",
     "babel-preset-es2016": "^6.16.0",
@@ -48,7 +53,6 @@
     "gulp-stats": "0.0.3",
     "gulp-uglify": "^1.5.3",
     "gulp-useref": "^3.0.7",
-    "gulp-webpack": "~1.5.0",
     "jasmine": "^2.4.1",
     "jasmine-core": "^2.5.2",
     "jquery": "^3.1.0",
@@ -68,10 +72,9 @@
     "react-dom": "^15.5.4",
     "reactcss": "^1.2.2",
     "slugid": "^1.1.0",
-    "style-loader": "^0.13.1",
-    "webpack": "~1.12.14",
-    "webpack-dev-server": "^1.16.2",
-    "webpack-stream": "~3.1.0",
+    "style-loader": "^0.13.2",
+    "webpack": "~2.5.1",
+    "webpack-dev-server": "^2.4.5",
     "wiredep": "~3.0.0"
   },
   "eslintConfig": {
@@ -112,10 +115,5 @@
     "threads": "^0.7.2",
     "transform-loader": "^0.2.3",
     "url-join": "^1.1.0"
-  },
-  "scripts": {
-    "start": "webpack-dev-server --content-base app --display-exclude --profile --inline | grep -v '\\[\\d*\\]'",
-    "compile": "rm -rf dist/*; mkdir -p dist/scripts; mkdir -p dist/styles; cp -r app/images dist/; NODE_ENV=production webpack -p; cp build/playground.js dist/scripts; cp build/hglib.js dist/scripts; cp app/index.html dist/; cp app/hglib.html dist/; cp app/styles/page.css dist/styles/; zip -r dist.zip dist",
-    "tests": "./node_modules/karma/bin/karma start karma.conf.js"
   }
 }
