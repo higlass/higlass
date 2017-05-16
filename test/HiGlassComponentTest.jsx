@@ -74,7 +74,7 @@ describe("Simple HiGlassComponent", () => {
 
         beforeAll((done) => {
             // wait for the page to load
-            testAsync(done);
+            done();
         });
 
         let hgc = mount(<HiGlassComponent 
@@ -82,6 +82,7 @@ describe("Simple HiGlassComponent", () => {
                         viewConfig={testViewConfX2}
                       />, 
             {attachTo: div});
+        console.log('hgc.find:', hgc.find('button'));
 
         let atm = null;
 
@@ -97,7 +98,7 @@ describe("Simple HiGlassComponent", () => {
                                 position={null}
                                 show={true}
                                 trackSourceServers={["http://higlass.io/api/v1"]}
-                              />, {attachTo:div});
+                              />, {attachTo: div});
             const inputField = ReactDOM.findDOMNode(atm.instance().tilesetFinder.searchBox);
             console.log('atm.find', atm.find('select'));
 
@@ -109,10 +110,15 @@ describe("Simple HiGlassComponent", () => {
         });
 
         it ("should select a few elements", (done) => {
-            console.log('here:', atm.find('select'));
-            let multiSelect = new ReactWrapper(atm.instance().tilesetFinder.multiSelect);
+            //console.log('here:', atm.find('select'));
+            let multiSelect = new ReactWrapper(atm.instance().tilesetFinder.multiSelect, true);
 
-            multiSelect.simulate('change', {target: {value: ["http://higlass.io/api/v1/Hyc3TZevQVm3FcTAZShLQg", "http://higlass.io/api/v1/B2LevKBtRNiCMX372rRPLQ"]}});
+            let selectBox = multiSelect.find('select');
+
+            console.log('selectBox:', selectBox);
+
+            selectBox.simulate('change', {target: {value:
+            "http://higlass.io/api/v1/AddRuJRtSTqjI9NUwV49XA"}});
             done();
         });
 

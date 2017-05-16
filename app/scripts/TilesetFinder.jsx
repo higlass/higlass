@@ -133,6 +133,8 @@ export class TilesetFinder extends React.Component {
     }
 
     handleSelect(x) {
+        return;
+
         console.log('x:', x);
         console.log('selection:', select(ReactDOM.findDOMNode(this.multiSelect)));
         console.log('this.multiSelect:', this.multiSelect, ReactDOM.findDOMNode(this.multiSelect));
@@ -140,9 +142,12 @@ export class TilesetFinder extends React.Component {
         let selectedOptions = ReactDOM.findDOMNode(this.multiSelect).selectedOptions;
         let selectedValues = [];
 
+
         // I don't know knw selectedOptions.map doesn't work
         for (let i = 0; i < selectedOptions.length; i++)
             selectedValues.push(selectedOptions[i].value);
+
+        console.log('selectedValues:', selectedValues);
 
         //this.props.selectedTilesetChanged(this.state.options[x.target.value]);
 
@@ -198,7 +203,7 @@ export class TilesetFinder extends React.Component {
                           <Col sm={12}>
                           <FormControl componentClass="select" multiple
                             className={"tileset-list"}
-                            value={this.state.selectedUuid ? this.state.selectedUuid : ['x']}
+                            //value={this.state.selectedUuid ? this.state.selectedUuid : ['x']}
                             onChange={this.handleSelect.bind(this)}
                             ref={c => this.multiSelect = c}
                             size={15}
