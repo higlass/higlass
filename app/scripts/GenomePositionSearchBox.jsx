@@ -8,10 +8,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 import Autocomplete from './Autocomplete.js';
-import {FormGroup,FormControl,InputGroup,Glyphicon,Button} from 'react-bootstrap';
+import {FormGroup,FormControl,InputGroup,
+    Glyphicon,Button,
+    DropdownButton, MenuItem
+} from 'react-bootstrap';
 import {ChromosomeInfo} from './ChromosomeInfo.js';
 import {SearchField} from './search_field.js';
-import {scalesCenterAndK} from './utils.js';
+import {scalesCenterAndK, 
+    dictKeys} from './utils.js';
 import {PopupMenu} from './PopupMenu.jsx';
 
 import '../styles/GenomePositionSearchBox.css';
@@ -41,11 +45,14 @@ export class GenomePositionSearchBox extends React.Component {
 
         this.prevParts = [];
 
-        ChromosomeInfo(this.props.chromInfoPath, (newChromInfo) => {
+        ChromosomeInfo(this.props.chromInfoServer + "/chrom-sizes/?id=" + this.props.chromInfoId, (newChromInfo) => {
             this.chromInfo = newChromInfo;
             this.searchField = new SearchField(this.chromInfo);
 
             this.setPositionText();
+            this.setState({
+                selectedAssembly: this.props.chromInfoId
+            });
         });
 
         this.props.registerViewportChangedListener(this.scalesChanged.bind(this));
@@ -57,7 +64,11 @@ export class GenomePositionSearchBox extends React.Component {
             loading: false,
             menuPosition: [0,0],
             genes: [],
-            menuOpened: false
+            menuOpened: false,
+            autocompleteServer: this.props.autocompleteServer,
+            autocompleteId: this.props.autocompleteId,
+            availableAssemblies: [],
+            selectedAssembly: null
         };
 
         this.styles = {
@@ -77,8 +88,66 @@ export class GenomePositionSearchBox extends React.Component {
                     border: 'solid 1px #ccc'
                   }
                 }
+
+        this.availableAutocompletes = {};
+        this.availableChromSizes = {};
+
+        this.findAvailableAutocompleteSources();
+        this.findAvailableChromSizes();
     }
 
+    findAvailableAutocompleteSources() {
+        this.props.trackSourceServers.forEach( sourceServer => {
+            json(sourceServer + "/tilesets/?dt=gene-annotation", (error, data) => {
+                if (error) {
+                    console.error(error);
+                } else {
+                    console.log('data:', data.results.map(x => x.coordSystem));
+                    data.results.map(x => {
+                        if (!(x.coordSystem in this.availableAutocompletes)) {
+                            this.availableAutocompletes[x.coordSystem] = new Set();
+                        }
+
+                        this.availableAutocompletes[x.coordSystem].add(sourceServer);
+                        this.setAvailableAssemblies();
+                    });
+                }
+
+            });
+        });
+    }
+
+    findAvailableChromSizes() {
+        this.props.trackSourceServers.forEach( sourceServer => {
+            json(sourceServer + "/available-chrom-sizes/", (error, data) => {
+                if (error) {
+                    console.error(error);
+                } else {
+                    console.log('data:', data.results.map(x => x.uuid));
+                    data.results.map(x => {
+                        if (!(x.uuid in this.availableChromSizes)) {
+                            this.availableChromSizes[x.uuid] = new Set();
+                        }
+
+                        this.availableChromSizes[x.uuid].add(sourceServer);
+                        this.setAvailableAssemblies();
+                    });
+                }
+            });
+        });
+    }
+
+    setAvailableAssemblies() {
+        let autocompleteKeys = new Set(dictKeys(this.availableAutocompletes));
+        let chromsizeKeys = new Set(dictKeys(this.availableChromSizes));
+
+        let commonKeys = new Set([...autocompleteKeys].filter(x => chromsizeKeys.has(x)));
+        console.log('commonKeys:', commonKeys);
+
+        this.setState({
+            availableAssemblies: [...commonKeys]
+        });
+    }
 
     scalesChanged(xScale, yScale) {
         this.xScale = xScale, this.yScale = yScale;
@@ -367,36 +436,54 @@ export class GenomePositionSearchBox extends React.Component {
 
     }
 
+    handleAssemblySelect(evt) {
+        console.log("evt:", evt);
+    }
+
     render() {
+        let assemblyMenuItems = this.state.availableAssemblies.map(x => {
+            return (<MenuItem eventKey={x}>{x}</MenuItem>)
+        });
         return(
             <FormGroup
                 bsSize="small"
                 className="genome-position-search"
             >
+                
+                <DropdownButton 
+                    className='assembly-pick-button'
+                    bsSize="small"
+                    ref={c => this.assemblyPickButton = c}
+                    title={this.state.selectedAssembly} 
+                    onSelect={this.handleAssemblySelect}
+                >
+                    {assemblyMenuItems}
+                </DropdownButton>
+
                 <Autocomplete
-                    ref={c => this.autocompleteMenu = c}
-                    value={this.state.value}
-                    items={this.state.genes}
-                    onChange = {this.onAutocompleteChange.bind(this)}
-                    onSelect={(value, objct) => this.geneSelected(value, objct) }
-                    onSubmit={ this.searchFieldSubmit.bind(this) }
                     getItemValue={(item) => item.geneName}
                     inputProps={{"className": "search-bar"}}
-                    wrapperStyle={{width: "100%"}}
-                    onMenuVisibilityChange={this.handleMenuVisibilityChange.bind(this)}
+                    items={this.state.genes}
                     menuStyle={{position:'absolute',
                         'left': this.menuPosition.left,
                         'top': this.menuPosition.top,
                         border: '1px solid black'
                     }}
+                    onChange={this.onAutocompleteChange.bind(this)}
+                    onMenuVisibilityChange={this.handleMenuVisibilityChange.bind(this)}
+                    onSelect={(value, objct) => this.geneSelected(value, objct)}
+                    onSubmit={this.searchFieldSubmit.bind(this)}
+                    ref={c => this.autocompleteMenu = c}
                     renderItem={(item, isHighlighted) => (
                         <div
-                          style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
-                          key={item.refseqid}
                           id={item.refseqid}
+                          key={item.refseqid}
+                          style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
                         >{item.geneName}</div>
                       )}
                     renderMenu={this.handleRenderMenu.bind(this)}
+                    value={this.state.value}
+                    wrapperStyle={{width: "100%"}}
                 />
 
                 <Button bsSize="small" onClick={this.buttonClick.bind(this)}>

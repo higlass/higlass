@@ -58,6 +58,7 @@ export class HiGlassComponent extends React.Component {
         this.uid = slugid.nice();
         this.rowHeight = 40;
         this.tiledPlots = {};
+        this.genomePositionSearchBoxes = {};
 
         // keep track of the xScales of each Track Renderer
         this.xScales = {};
@@ -2194,16 +2195,20 @@ export class HiGlassComponent extends React.Component {
                 let genomePositionSearchBoxUid = slugid.nice();
 
                 this.genomePositionSearchBox = null;
-                let genomePositionSearchBox = view.genomePositionSearchBoxVisible ?
+                let genomePositionSearchBox = view.genomePositionSearchBox ?
                     (<GenomePositionSearchBox
-                        ref={c => { this.genomePositionSearchBox = c } }
-                        autocompleteSource={view.autocompleteSource}
-                        chromInfoPath={view.chromInfoPath}
+                        autocompleteServer={view.genomePositionSearchBox.autocompleteServer}
+                        autocompleteId={view.genomePositionSearchBox.autocompleteId}
+                        chromInfoServer={view.genomePositionSearchBox.chromInfoServer}
+                        chromInfoId={view.genomePositionSearchBox.chromInfoId}
                         key={'gpsb' + view.uid}
+                        ref={c => { this.genomePositionSearchBoxes[view.uid] = c }}
                         registerViewportChangedListener={listener => this.addScalesChangedListener(view.uid, view.uid, listener)}
                         removeViewportChangedListener={() => this.removeScalesChangedListener(view.uid, view.uid)}
                         setCenters={(centerX, centerY, k, animate, animateTime) => this.setCenters[view.uid](centerX, centerY, k, false, animate, animateTime)}
                         twoD={true}
+
+                        trackSourceServers={this.props.viewConfig.trackSourceServers}
                      />) : null;
                 //genomePositionSearchBox = null;
 

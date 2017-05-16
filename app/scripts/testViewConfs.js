@@ -1,3 +1,89 @@
+export const onlyGPSB = 
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://test.higlass.io/api/v1"
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        1796142508.3343146,
+        1802874737.269993
+      ],
+      "initialYDomain": [
+        1795888772.6557815,
+        1806579890.9341388
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://test.higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "http://test.higlass.io/api/v1",
+        "chromInfoId": "hg19"
+        
+      },
+      "tracks": {
+        "top": [ ],
+        "left": [ ],
+        "center": [ ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 5,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {
+      "view2": "JAFSZPdmSWe72WgTnVDtbA",
+      "aa": "JAFSZPdmSWe72WgTnVDtbA"
+    },
+    "locksDict": {
+      "JAFSZPdmSWe72WgTnVDtbA": {
+        "view2": [
+          1812727561.5083356,
+          1873757116.378131,
+          475954.14177536964
+        ],
+        "aa": [
+          1812727561.5083356,
+          1873757116.378131,
+          475954.14177536964
+        ]
+      }
+    }
+  },
+  "locationLocks": {
+    "locksByViewUid": {
+      "view2": "fRq4SRH8TSyVveKqebWsxw",
+      "aa": "fRq4SRH8TSyVveKqebWsxw"
+    },
+    "locksDict": {
+      "fRq4SRH8TSyVveKqebWsxw": {
+        "view2": [
+          1812727561.5083356,
+          1873757116.378131,
+          475954.14177536964
+        ],
+        "aa": [
+          1812727561.5083356,
+          1873757116.378131,
+          475954.14177536964
+        ]
+      }
+    }
+  }
+}
 export const testViewConfX2 = 
 {
   "zoomFixed": false,

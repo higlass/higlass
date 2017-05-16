@@ -21,6 +21,7 @@ import slugid from 'slugid';
 import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
 import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
 import {
+    onlyGPSB,
     chromInfoTrack,
     heatmapTrack,
     twoViewConfig,
@@ -55,6 +56,42 @@ function getTrackObject(hgc, viewUid, trackUid) {
 
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null;
+
+    describe("Genome position search box", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            hgc = mount(<HiGlassComponent 
+                            options={{bounded: false}}
+                            viewConfig={onlyGPSB}
+                          />, 
+                {attachTo: div});
+
+            setTimeout(done, tileLoadTime);
+        });
+
+        it ("Selects the mm9", (done) => {
+            setTimeout(done, shortLoadTime);
+
+            let dropdownButton = hgc.find('.assembly-pick-button');
+            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('mm9');
+        });
+    });
+
+    return;
 
     describe("Single view", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
