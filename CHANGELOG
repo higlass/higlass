@@ -1,3 +1,7 @@
+v0.6.9
+
+- Lower the default resolution of lines for performance reasons
+
 v0.6.8
 
 - Component sizes are adjsuted on component load

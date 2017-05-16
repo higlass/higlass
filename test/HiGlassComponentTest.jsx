@@ -24,6 +24,7 @@ import {
     chromInfoTrack,
     heatmapTrack,
     twoViewConfig,
+    oneViewConfig,
     valueIntervalTrackViewConf,
     horizontalDiagonalTrackViewConf,
     horizontalHeatmapTrack,
@@ -55,32 +56,202 @@ function getTrackObject(hgc, viewUid, trackUid) {
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null;
 
-    describe("Positioning a more complex layout", () => {
-        if (hgc) {
-            hgc.unmount();
-            hgc.detach();
-        }
+    describe("Single view", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
 
-        if (div) {
-            global.document.body.removeChild(div);
-        }
+            if (div) {
+                global.document.body.removeChild(div);
+            }
 
-        div = global.document.createElement('div');
-        global.document.body.appendChild(div);
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
 
-        div.setAttribute('style', 'width:800px;background-color: lightgreen');
-        div.setAttribute('id', 'simple-hg-component');
+            div.setAttribute('style', 'width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
 
-        beforeAll((done) => {
-            // wait for the page to load
-            testAsync(done);
+            hgc = mount(<HiGlassComponent 
+                            options={{bounded: false}}
+                            viewConfig={oneViewConfig}
+                          />, 
+                {attachTo: div});
+
+            setTimeout(done, pageLoadTime);
         });
 
-        let hgc = mount(<HiGlassComponent 
-                        options={{bounded: false}}
-                        viewConfig={testViewConfX2}
-                      />, 
-            {attachTo: div});
+        it ("should load the initial config", (done) => {
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Changes the axis to inner right", (done) => {
+            let newOptions = {
+                "axisPositionHorizontal": "right",
+            };
+
+            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
+
+            let track = getTrackObject(hgc, 'aa', 'line1');
+            let pAxis = track.axis.pAxis;
+
+            // we want the axis labels to be to the left of the end of the track
+            expect(pAxis.position.x).to.be.above(track.position[0]);
+            expect(pAxis.children[0].x).to.be.below(0);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Changes the axis to outside right", (done) => {
+            let newOptions = {
+                "axisPositionHorizontal": "outsideRight",
+            };
+
+            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
+
+            let track = getTrackObject(hgc, 'aa', 'line1');
+            let pAxis = track.axis.pAxis;
+
+            // we want the axis labels to be to the left of the end of the track
+            expect(pAxis.position.x).to.be.above(track.position[0]);
+            expect(pAxis.children[0].x).to.be.above(0);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Changes the axis to outside left", (done) => {
+            let newOptions = {
+                "axisPositionHorizontal": "outsideLeft",
+            };
+
+            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
+
+            let track = getTrackObject(hgc, 'aa', 'line1');
+            let pAxis = track.axis.pAxis;
+
+            // we want the axis labels to be to the left of the end of the track
+            expect(pAxis.position.x).to.be.eql(track.position[0]);
+            expect(pAxis.children[0].x).to.be.below(0);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Changes the axis to the left", (done) => {
+            let newOptions = {
+                "axisPositionHorizontal": "left",
+            };
+
+            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
+
+            let track = getTrackObject(hgc, 'aa', 'line1');
+            let pAxis = track.axis.pAxis;
+
+            // we want the axis labels to be to the left of the end of the track
+            expect(pAxis.position.x).to.be.eql(track.position[0]);
+            expect(pAxis.children[0].x).to.be.above(0);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Changes the axis to the top", (done) => {
+            let newOptions = {
+                "axisPositionHorizontal": null,
+                "axisPositionVertical": "top",
+            };
+
+            hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
+
+            let track = getTrackObject(hgc, 'aa', 'vline1').originalTrack;
+            let pAxis = track.axis.pAxis;
+
+            // we want the axis labels to be to the left of the end of the track
+            expect(pAxis.position.x).to.be.eql(track.position[0]);
+            expect(pAxis.children[0].x).to.be.above(0);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Changes the axis to the outside top", (done) => {
+            let newOptions = {
+                "axisPositionHorizontal": null,
+                "axisPositionVertical": "outsideTop",
+            };
+
+            hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
+
+            let track = getTrackObject(hgc, 'aa', 'vline1').originalTrack;
+            let pAxis = track.axis.pAxis;
+
+            // we want the axis labels to be to the left of the end of the track
+            expect(pAxis.position.x).to.be.eql(track.position[0]);
+            expect(pAxis.children[0].x).to.be.below(0);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Changes the axis to the outside bottom", (done) => {
+            let newOptions = {
+                "axisPositionHorizontal": null,
+                "axisPositionVertical": "outsideBottom",
+            };
+
+            hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
+
+            let track = getTrackObject(hgc, 'aa', 'vline1').originalTrack;
+            let pAxis = track.axis.pAxis;
+
+            // we want the axis labels to be to the left of the end of the track
+            expect(pAxis.position.x).to.be.above(track.position[0]);
+            expect(pAxis.children[0].x).to.be.above(0);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Changes the axis to the bottom", (done) => {
+            let newOptions = {
+                "axisPositionVertical": "bottom",
+            };
+
+            hgc.instance().handleTrackOptionsChanged('aa', 'vline1', newOptions);
+
+            let track = getTrackObject(hgc, 'aa', 'vline1').originalTrack;
+            let pAxis = track.axis.pAxis;
+
+            // we want the axis labels to be to the left of the end of the track
+            expect(pAxis.position.x).to.be.above(track.position[0]);
+            expect(pAxis.children[0].x).to.be.below(0);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+    });
+
+    describe("Track addition and removal", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            hgc = mount(<HiGlassComponent 
+                            options={{bounded: false}}
+                            viewConfig={testViewConfX2}
+                          />, 
+                {attachTo: div});
+
+            setTimeout(done, pageLoadTime);
+        });
 
         it ("should load the initial config", (done) => {
             // this was to test an example from the higlass-website demo page
@@ -96,31 +267,35 @@ describe("Simple HiGlassComponent", () => {
     });
 
     describe("Positioning a more complex layout", () => {
-        if (hgc) {
-            hgc.unmount();
-            hgc.detach();
-        }
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
 
-        if (div) {
-            global.document.body.removeChild(div);
-        }
+            if (div) {
+                global.document.body.removeChild(div);
+            }
 
-        div = global.document.createElement('div');
-        global.document.body.appendChild(div);
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
 
-        div.setAttribute('style', 'width:800px;background-color: lightgreen');
-        div.setAttribute('id', 'simple-hg-component');
+            div.setAttribute('style', 'width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
 
-        beforeAll((done) => {
-            // wait for the page to load
-            testAsync(done);
+            beforeAll((done) => {
+                // wait for the page to load
+                testAsync(done);
+            });
+
+            hgc = mount(<HiGlassComponent 
+                            options={{bounded: false}}
+                            viewConfig={testViewConfX1}
+                          />, 
+                {attachTo: div});
+
+            setTimeout(done, pageLoadTime);
         });
-
-        let hgc = mount(<HiGlassComponent 
-                        options={{bounded: false}}
-                        viewConfig={testViewConfX1}
-                      />, 
-            {attachTo: div});
 
         it ("should load the initial config", (done) => {
             // more than 9 because of the view header
@@ -134,31 +309,29 @@ describe("Simple HiGlassComponent", () => {
 
     // wait a bit of time for the data to be loaded from the server
     describe("Track positioning", () => {
-        if (hgc) {
-            hgc.unmount();
-            hgc.detach();
-        }
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
 
-        if (div) {
-            global.document.body.removeChild(div);
-        }
+            if (div) {
+                global.document.body.removeChild(div);
+            }
 
-        div = global.document.createElement('div');
-        global.document.body.appendChild(div);
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
 
-        div.setAttribute('style', 'width:800px;background-color: lightgreen');
-        div.setAttribute('id', 'simple-hg-component');
+            div.setAttribute('style', 'width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
 
-        beforeAll((done) => {
-            // wait for the page to load
-            testAsync(done);
+            hgc = mount(<HiGlassComponent 
+                            options={{bounded: false}}
+                            viewConfig={horizontalDiagonalTrackViewConf}
+                          />, 
+                {attachTo: div});
+            setTimeout(done, pageLoadTime);
         });
-
-        let hgc = mount(<HiGlassComponent 
-                        options={{bounded: false}}
-                        viewConfig={horizontalDiagonalTrackViewConf}
-                      />, 
-            {attachTo: div});
 
         it ("should add and resize a vertical heatmp", (done) => {
             hgc.instance().handleTrackAdded('aa', verticalHeatmapTrack, 'left');
@@ -399,7 +572,7 @@ describe("Simple HiGlassComponent", () => {
 
     });
 
-    describe("Single view", () => {
+    describe("Double view", () => {
 
         /*
         beforeAll((done) => {
@@ -504,9 +677,11 @@ describe("Simple HiGlassComponent", () => {
             let axis = line1.axis.exportAxisRightSVG(line1.valueScale, line1.dimensions[1]);
             let axisText = new XMLSerializer().serializeToString(axis);
 
+            //hgc.instance().handleExportSVG();
+
             //let axis = svg.getElementById('axis');
             // make sure we have a tick mark for 200000
-            expect(axisText.indexOf('1e+4')).to.be.above(0);
+            expect(axisText.indexOf('1e+5')).to.be.above(0);
         })
 
         it ('has a colorbar', () => {

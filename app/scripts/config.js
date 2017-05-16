@@ -82,15 +82,20 @@ export const optionsInfo = {
         name: "Axis Position",
         inlineOptions: {
             'left': { name: 'Left', value: 'left' },
+            'outsideLeft': { name: 'Outside left', value: 'outsideLeft' },
             'right': { name: 'Right', value: 'right' },
+            'outsideRight': { name: 'Outside right', value: 'outsideRight' },
             'hidden': { name: 'Hidden', value: null }
         }
     },
+
     axisPositionVertical: {
         name: "Axis Position",
         inlineOptions: {
-            'left': { name: 'Top', value: 'top' },
-            'right': { name: 'Bottom', value: 'bottom' },
+            'top': { name: 'Top', value: 'top' },
+            'outsideTop': { name: 'Outside top', value: 'outsideTop' },
+            'bottom': { name: 'Bottom', value: 'bottom' },
+            'outsideBottom': { name: 'Outside bottom', value: 'outsideBottom' },
             'hidden': { name: 'Hidden', value: null }
         }
     },
