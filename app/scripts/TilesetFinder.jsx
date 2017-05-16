@@ -1,4 +1,5 @@
 import {json} from 'd3-request';
+import {select} from 'd3-selection';
 import {dictValues,dictKeys} from './utils.js';
 
 import React from 'react';
@@ -132,10 +133,22 @@ export class TilesetFinder extends React.Component {
     }
 
     handleSelect(x) {
-        this.props.selectedTilesetChanged(this.state.options[x.target.value]);
+        console.log('x:', x);
+        console.log('selection:', select(ReactDOM.findDOMNode(this.multiSelect)));
+        console.log('this.multiSelect:', this.multiSelect, ReactDOM.findDOMNode(this.multiSelect));
+
+        let selectedOptions = ReactDOM.findDOMNode(this.multiSelect).selectedOptions;
+        let selectedValues = [];
+
+        // I don't know knw selectedOptions.map doesn't work
+        for (let i = 0; i < selectedOptions.length; i++)
+            selectedValues.push(selectedOptions[i].value);
+
+        //this.props.selectedTilesetChanged(this.state.options[x.target.value]);
+
 
         this.setState({
-            selectedUuid: [x.target.value]
+            selectedUuid: selectedValues
         });
     }
 
@@ -184,8 +197,10 @@ export class TilesetFinder extends React.Component {
                           </Col>
                           <Col sm={12}>
                           <FormControl componentClass="select" multiple
+                            className={"tileset-list"}
                             value={this.state.selectedUuid ? this.state.selectedUuid : ['x']}
                             onChange={this.handleSelect.bind(this)}
+                            ref={c => this.multiSelect = c}
                             size={15}
                           >
                             {options}
