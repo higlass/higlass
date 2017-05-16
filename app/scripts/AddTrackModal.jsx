@@ -13,6 +13,7 @@ export class AddTrackModal extends React.Component {
         super(props);
 
         this.tilesetFinder = null;
+        this.multiSelect = null;
 
         options: {};
 
