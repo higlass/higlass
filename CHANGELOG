@@ -1,6 +1,8 @@
 v0.6.9
 
 - Lower the default resolution of lines for performance reasons
+- Added outsideLeft, outsideRight, outsideTop and outsideBottom
+as available axis positions
 
 v0.6.8
 
