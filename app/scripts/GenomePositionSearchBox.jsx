@@ -82,8 +82,15 @@ export class GenomePositionSearchBox extends React.Component {
 
         this.fetchChromInfo(this.props.chromInfoId);
 
-        this.availableAutocompletes = {};
+        this.availableAutocompletes = {}
+        this.availableAutocompletes[this.props.chromInfoId] = new Set([
+            {
+                server: this.props.autocompleteServer, 
+                acId: this.props.autocompleteId
+            }]);
+
         this.availableChromSizes = {};
+        this.availableChromSizes[this.props.chromInfoId] = new Set([this.props.chromInfoServer]);
 
         this.findAvailableAutocompleteSources();
         this.findAvailableChromSizes();
@@ -95,11 +102,13 @@ export class GenomePositionSearchBox extends React.Component {
             this.searchField = new SearchField(this.chromInfo);
 
             this.setPositionText();
-            console.log('got chromosome info');
 
             this.setState({
                 selectedAssembly: chromInfoId
             });
+
+            this.props.onSelectedAssemblyChanged(chromInfoId, 
+                this.availableAutocompletes[chromInfoId].acId);
         });
     }
 
@@ -109,15 +118,21 @@ export class GenomePositionSearchBox extends React.Component {
                 if (error) {
                     console.error(error);
                 } else {
-                    console.log('data:', data.results.map(x => x.coordSystem));
                     data.results.map(x => {
                         if (!(x.coordSystem in this.availableAutocompletes)) {
                             this.availableAutocompletes[x.coordSystem] = new Set();
                         }
 
-                        this.availableAutocompletes[x.coordSystem].add(sourceServer);
+                        this.availableAutocompletes[x.coordSystem].add({server: sourceServer, acId: x.uuid});
                         this.setAvailableAssemblies();
+
                     });
+
+                    if (!this.state.autocompleteId) {
+                        this.setState({
+                            autocompleteId: this.availableAutocompletes[this.chromInfoId].acId
+                        });
+                    }
                 }
 
             });
@@ -130,7 +145,6 @@ export class GenomePositionSearchBox extends React.Component {
                 if (error) {
                     console.error(error);
                 } else {
-                    console.log('data:', data.results.map(x => x.uuid));
                     data.results.map(x => {
                         if (!(x.uuid in this.availableChromSizes)) {
                             this.availableChromSizes[x.uuid] = new Set();
@@ -149,7 +163,6 @@ export class GenomePositionSearchBox extends React.Component {
         let chromsizeKeys = new Set(dictKeys(this.availableChromSizes));
 
         let commonKeys = new Set([...autocompleteKeys].filter(x => chromsizeKeys.has(x)));
-        console.log('commonKeys:', commonKeys);
 
         this.setState({
             availableAssemblies: [...commonKeys]
@@ -335,14 +348,15 @@ export class GenomePositionSearchBox extends React.Component {
         this.prevParts = parts;
 
         // no autocomplete repository is provided, so we don't try to autcomplete anything
-        if (!this.props.autocompleteSource)
+        console.log('this.state.autocompleteId:', this.state.autocompleteId);
+        if (!(this.state.autocompleteServer && this.state.autocompleteId))
             return;
 
         if (this.changedPart != null) {
             // if something has changed in the input text
             this.setState({loading: true});
             // send out a request for the autcomplete suggestions
-            let url = this.props.autocompleteSource + "ac=" + parts[this.changedPart].toLowerCase();
+            let url = this.state.autocompleteServer + "/suggest/?d=" + this.state.autocompleteId +  "&ac=" + parts[this.changedPart].toLowerCase();
             json(url, (error, data) => {
                 if (error) {
                     this.setState({loading: false, genes: []});
@@ -487,5 +501,3 @@ export class GenomePositionSearchBox extends React.Component {
     }
 
 }
-                /*
-                */
