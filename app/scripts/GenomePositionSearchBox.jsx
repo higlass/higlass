@@ -45,15 +45,6 @@ export class GenomePositionSearchBox extends React.Component {
 
         this.prevParts = [];
 
-        ChromosomeInfo(this.props.chromInfoServer + "/chrom-sizes/?id=" + this.props.chromInfoId, (newChromInfo) => {
-            this.chromInfo = newChromInfo;
-            this.searchField = new SearchField(this.chromInfo);
-
-            this.setPositionText();
-            this.setState({
-                selectedAssembly: this.props.chromInfoId
-            });
-        });
 
         this.props.registerViewportChangedListener(this.scalesChanged.bind(this));
 
@@ -89,11 +80,27 @@ export class GenomePositionSearchBox extends React.Component {
                   }
                 }
 
+        this.fetchChromInfo(this.props.chromInfoId);
+
         this.availableAutocompletes = {};
         this.availableChromSizes = {};
 
         this.findAvailableAutocompleteSources();
         this.findAvailableChromSizes();
+    }
+
+    fetchChromInfo(chromInfoId) {
+        ChromosomeInfo(this.props.chromInfoServer + "/chrom-sizes/?id=" + chromInfoId, (newChromInfo) => {
+            this.chromInfo = newChromInfo;
+            this.searchField = new SearchField(this.chromInfo);
+
+            this.setPositionText();
+            console.log('got chromosome info');
+
+            this.setState({
+                selectedAssembly: chromInfoId
+            });
+        });
     }
 
     findAvailableAutocompleteSources() {
@@ -152,26 +159,6 @@ export class GenomePositionSearchBox extends React.Component {
     scalesChanged(xScale, yScale) {
         this.xScale = xScale, this.yScale = yScale;
 
-        this.setPositionText();
-    }
-
-    // Fritz: Is this used?
-    zoomed(translate, scale) {
-        this.xOrigScale.domain(this.props.xDomain);
-        this.yOrigScale.domain(this.props.yDomain);
-
-        this.xOrigScale.range(this.props.xRange);
-        this.yOrigScale.range(this.props.yRange);
-
-        this.zoomedXScale.range(this.xOrigScale.range());
-        this.zoomedXScale.domain(this.xOrigScale.range()
-                                  .map(function(x) { return (x - translate[0]) / scale })
-                                  .map(this.xOrigScale.invert))
-
-        this.zoomedYScale.range(this.yOrigScale.range());
-        this.zoomedYScale.domain(this.yOrigScale.range()
-                                  .map(function(y) { return (y - translate[1]) / scale })
-                                  .map(this.yOrigScale.invert))
         this.setPositionText();
     }
 
@@ -437,7 +424,13 @@ export class GenomePositionSearchBox extends React.Component {
     }
 
     handleAssemblySelect(evt) {
+        this.fetchChromInfo(evt);
+        /*
         console.log("evt:", evt);
+        this.setState({
+            selectedAssembly: evt
+        });
+        */
     }
 
     render() {
@@ -455,7 +448,7 @@ export class GenomePositionSearchBox extends React.Component {
                     bsSize="small"
                     ref={c => this.assemblyPickButton = c}
                     title={this.state.selectedAssembly} 
-                    onSelect={this.handleAssemblySelect}
+                    onSelect={this.handleAssemblySelect.bind(this)}
                 >
                     {assemblyMenuItems}
                 </DropdownButton>
