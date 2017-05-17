@@ -1,5 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 
 module.exports = {
   context: __dirname + '/app',
@@ -11,7 +13,7 @@ module.exports = {
   devtool: "cheap-source-map",
   output: {
     path: __dirname + '/build',
-    publicPath: '/scripts/',
+    publicPath: '/',
     filename: '[name].js',
     libraryTarget: 'umd',
     library: '[name]'
@@ -33,19 +35,14 @@ module.exports = {
             }
           }
         ]
-      }, {
-        test: /\.css$/,
-      use: [
-         {
-           loader: "style-loader"
-         },
-         {
-           loader: "css-loader",
-           options: {
-             modules: true
-           }
-         }
-      ]
+      }
+      , 
+      {
+          test: /\.css$/,
+          use: ExtractTextPlugin.extract({
+              fallback: "style-loader",
+              use: "css-loader"
+          })
       }
 
     ],
@@ -61,7 +58,8 @@ module.exports = {
     }),
     new webpack.IgnorePlugin(/react\/addons/),
     new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
-    new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/)
+    new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
+    new ExtractTextPlugin("styles.css")
   ]
 };
 
