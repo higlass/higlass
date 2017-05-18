@@ -1,11 +1,11 @@
 var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   context: __dirname + '/app',
   entry: {
-      playground: ['./scripts/playground.jsx'],
       hglib: ['./scripts/hglib.jsx'],
       worker: ['./scripts/worker.js']
   },
@@ -49,6 +49,11 @@ module.exports = {
         /node_modules\/sinon\//,
     ]
   },
+  externals: {
+      "pixi.js": 'PIXI',
+      react: 'React',
+      "react-dom": 'ReactDOM'
+  },
   plugins: [
     new webpack.DefinePlugin({
           'process.env': {
@@ -59,6 +64,10 @@ module.exports = {
     new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
     new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
     new ExtractTextPlugin("styles.css")
+    ,
+    new BundleAnalyzerPlugin({
+        analyzerMode: 'static'
+    })
   ]
 };
 

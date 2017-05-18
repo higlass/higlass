@@ -1,6 +1,5 @@
 import '../styles/MultiViewContainer.css';
 import React from 'react';
-import _ from 'lodash';
 import {select} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
 import {request,post} from 'd3-request';

@@ -6,9 +6,6 @@ import {select,event} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
 import {dictItems} from './utils.js';
 
-// Fritz: This import is broken
-import d3 from 'd3';
-
 import {UnknownPixiTrack} from './UnknownPixiTrack.js';
 import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack.js';
 import {Id2DTiledPixiTrack} from './Id2DTiledPixiTrack.js';
