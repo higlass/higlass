@@ -19,3 +19,4 @@ jsons/
 *.zip
 .idea/
 dist
+report.html
