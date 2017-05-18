@@ -103,7 +103,7 @@ describe("Simple HiGlassComponent", () => {
         });
 
         it ("Makes sure that the search box points to mm9", (done) => {
-            //expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('mm9');
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('mm9');
 
             done();
         });
@@ -119,18 +119,57 @@ describe("Simple HiGlassComponent", () => {
         });
 
         it ("Checks the selected genes", (done) => {
-            console.log('genes:', hgc.instance().genomePositionSearchBoxes['aa'].state.genes);
+            // don't use the human autocomplete id
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.autocompleteId).to.not.eql('OHJakQICQD6gTD7skx4EWA')
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('Gt(ROSA)26Sor');
 
             setTimeout(done, shortLoadTime);
         });
-
-        return;
 
         it ("Switch the selected genome to hg19", (done) => {
             hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('hg19');
             hgc.update();
 
-            setTimeout(done, shortLoadTime);
+            setTimeout(done, tileLoadTime);
+        });
+
+        it ("Ensures that the autocomplete has changed", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, '');
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.autocompleteId).to.eql('OHJakQICQD6gTD7skx4EWA')
+
+            setTimeout(done, tileLoadTime);
+        });
+
+        it ("Ensure that newly loaded genes are from hg19", (done) => {
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('TP53');
+
+            done();
+        });
+
+        it ("Switches back to mm9", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('mm9');
+            hgc.update();
+
+            setTimeout(done, tileLoadTime);
+        });
+
+        it ("Mock type something", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, '');
+
+            setTimeout(done, tileLoadTime);
+        });
+
+        it ("Make sure it has mouse genes", (done) => {
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('Gt(ROSA)26Sor');
+
+            done();
+        });
+
+        it ("Switches back to hg19", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('hg19');
+            hgc.update();
+
+            setTimeout(done, tileLoadTime);
         });
 
         it ("Makes the search box invisible", (done) => {
@@ -158,8 +197,6 @@ describe("Simple HiGlassComponent", () => {
         });
 
     });
-
-    return;
 
     describe("Starting with an existing genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {

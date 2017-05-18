@@ -83,11 +83,14 @@ export class GenomePositionSearchBox extends React.Component {
         this.fetchChromInfo(this.props.chromInfoId);
 
         this.availableAutocompletes = {}
-        this.availableAutocompletes[this.props.chromInfoId] = new Set([
-            {
-                server: this.props.autocompleteServer, 
-                acId: this.props.autocompleteId
-            }]);
+
+        if (this.props.autocompleteId) {
+            this.availableAutocompletes[this.props.chromInfoId] = new Set([
+                {
+                    server: this.props.autocompleteServer, 
+                    acId: this.props.autocompleteId
+                }]);
+        }
 
         this.availableChromSizes = {};
         this.availableChromSizes[this.props.chromInfoId] = new Set([this.props.chromInfoServer]);
@@ -107,8 +110,22 @@ export class GenomePositionSearchBox extends React.Component {
                 selectedAssembly: chromInfoId
             });
 
-            this.props.onSelectedAssemblyChanged(chromInfoId, 
-                this.availableAutocompletes[chromInfoId].acId);
+            console.log('fetched chromInfo', chromInfoId);
+
+            // we need to set a an autocompleteId that matches the chromInfo
+            // that was received, but if none has been retrieved yet...
+            if (this.availableAutocompletes[chromInfoId]) {
+                let newAcId = [...this.availableAutocompletes[chromInfoId]][0].acId
+                console.log('newAcId', newAcId);
+                this.props.onSelectedAssemblyChanged(chromInfoId, newAcId)
+
+                this.setState({
+                        autocompleteId: newAcId
+                });
+            } else {
+                this.props.onSelectedAssemblyChanged(chromInfoId, 
+                    this.state.autocompleteId)
+            }
         });
     }
 
@@ -123,18 +140,22 @@ export class GenomePositionSearchBox extends React.Component {
                             this.availableAutocompletes[x.coordSystem] = new Set();
                         }
 
+                        console.log('x.uuid:', x.uuid);
+
                         this.availableAutocompletes[x.coordSystem].add({server: sourceServer, acId: x.uuid});
                         this.setAvailableAssemblies();
 
                     });
 
                     if (!this.state.autocompleteId) {
+                        console.log('this.availableAutocompletes["mm9"]', this.availableAutocompletes['mm9']);
+                        console.log('chromInfoId:', this.props.chromInfoId);
+                        console.log('this.availableAutocompletes:', [...this.availableAutocompletes[this.props.chromInfoId]]);
                         this.setState({
-                            autocompleteId: this.availableAutocompletes[this.chromInfoId].acId
+                            autocompleteId: [...this.availableAutocompletes[this.props.chromInfoId]][0].acId
                         });
                     }
                 }
-
             });
         });
     }

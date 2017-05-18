@@ -1978,7 +1978,7 @@ export class HiGlassComponent extends React.Component {
         let newGpsb = existingGenomePositionSearchBox;
         let defaultGpsb = {
                 "autocompleteServer": "http://test.higlass.io/api/v1",
-                "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+                //"autocompleteId": "OHJakQICQD6gTD7skx4EWA",
                 "chromInfoServer": "http://test.higlass.io/api/v1",
                 "visible": false
         }
