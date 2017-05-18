@@ -112,7 +112,7 @@ describe("Simple HiGlassComponent", () => {
             //hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, "t");
             //new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'].autocompleteMenu, true).simulate('change', { value: 't'});
             //new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'], true).setState({value: 't'});
-            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 't');
+            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'T');
             hgc.update();
 
             setTimeout(done, tileLoadTime);
@@ -126,12 +126,21 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
 
+        it ("Clicks on the search button", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].buttonClick();
+
+            done(done);
+        });
+
         it ("Switch the selected genome to hg19", (done) => {
             hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('hg19');
             hgc.update();
 
             setTimeout(done, tileLoadTime);
         });
+
+        return;
+
 
         it ("Ensures that the autocomplete has changed", (done) => {
             hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, '');
@@ -197,6 +206,8 @@ describe("Simple HiGlassComponent", () => {
         });
 
     });
+
+    return;
 
     describe("Starting with an existing genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
