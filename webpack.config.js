@@ -52,7 +52,8 @@ module.exports = {
   externals: {
       "pixi.js": 'PIXI',
       react: 'React',
-      "react-dom": 'ReactDOM'
+      "react-dom": 'ReactDOM',
+      "react-bootstrap": "ReactBootstrap"
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -64,10 +65,12 @@ module.exports = {
     new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
     new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
     new ExtractTextPlugin("styles.css")
+    /*
     ,
     new BundleAnalyzerPlugin({
         analyzerMode: 'static'
     })
+    */
   ]
 };
 
