@@ -30,7 +30,14 @@ import {
   scalesToGenomeLocations,
   totalTrackPixelHeight
 } from './utils.js';
-import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
+
+import {
+    usedServer, 
+    tracksInfo, 
+    tracksInfoByType,
+    defaultServer
+} from './config.js';
+
 import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT, LOCATION_LISTENER_PREFIX} from './config.js';
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
 import {ExportLinkModal} from './ExportLinkModal.jsx';
@@ -1976,9 +1983,9 @@ export class HiGlassComponent extends React.Component {
          */
         let newGpsb = existingGenomePositionSearchBox;
         let defaultGpsb = {
-                "autocompleteServer": "http://test.higlass.io/api/v1",
+                "autocompleteServer": defaultServer,
                 //"autocompleteId": "OHJakQICQD6gTD7skx4EWA",
-                "chromInfoServer": "http://test.higlass.io/api/v1",
+                "chromInfoServer": defaultServer,
                 "visible": false
         }
 

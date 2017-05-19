@@ -3,7 +3,7 @@ export const noGPSB =
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://test.higlass.io/api/v1"
+    "http://higlass.io/api/v1"
   ],
   "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
   "views": [
@@ -22,7 +22,7 @@ export const noGPSB =
         "top": [ 
             {
             "name": "Gene Annotations (mm9)",
-            "server": "http://test.higlass.io/api/v1",
+            "server": "http://higlass.io/api/v1",
             "tilesetUid": "GUm5aBiLRCyz2PsBea7Yzg",
             "uid": "e8H0Eve5TRWlc6XymPQejg",
             "type": "horizontal-gene-annotations",
@@ -44,7 +44,7 @@ export const noGPSB =
             "height": 20,
             "width": 843,
             "position": "top",
-            "server": "http://test.higlass.io/api/v1",
+            "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "name": "GM12878-E116-H3K27ac.fc.signal",
@@ -62,7 +62,7 @@ export const noGPSB =
             "height": 20,
             "width": 843,
             "position": "top",
-            "server": "http://test.higlass.io/api/v1",
+            "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "valueScaling": "linear",
@@ -78,7 +78,7 @@ export const noGPSB =
             "height": 20,
             "width": 843,
             "position": "top",
-            "server": "http://test.higlass.io/api/v1",
+            "server": "http://higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "valueScaling": "linear",
@@ -112,7 +112,7 @@ export const onlyGPSB =
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://test.higlass.io/api/v1"
+    "http://higlass.io/api/v1"
   ],
   "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
   "views": [
@@ -128,9 +128,9 @@ export const onlyGPSB =
       ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBox": {
-        "autocompleteServer": "http://test.higlass.io/api/v1",
+        "autocompleteServer": "http://higlass.io/api/v1",
         "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
-        "chromInfoServer": "http://test.higlass.io/api/v1",
+        "chromInfoServer": "http://higlass.io/api/v1",
         "chromInfoId": "hg19",
         "visible": true
       },
