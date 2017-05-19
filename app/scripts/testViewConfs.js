@@ -20,6 +20,24 @@ export const noGPSB =
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "tracks": {
         "top": [ 
+            {
+            "name": "Gene Annotations (mm9)",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "GUm5aBiLRCyz2PsBea7Yzg",
+            "uid": "e8H0Eve5TRWlc6XymPQejg",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "name": "Gene Annotations (mm9)",
+              "coordSystem": "mm9"
+            },
+            "width": 20,
+            "height": 60,
+            "position": "top"
+          },
           {
             "uid": "line1",
             "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",

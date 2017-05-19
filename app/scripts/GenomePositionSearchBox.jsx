@@ -292,8 +292,10 @@ export class GenomePositionSearchBox extends React.Component {
                     if (!files[i][0])
                         continue;
 
-                    genePositions[files[i][0].geneName.toLowerCase()] =
-                        files[i][0];
+                    for (let j = 0; j < files[i].length; j++) {
+                        genePositions[files[i][j].geneName.toLowerCase()] =
+                            files[i][j];
+                    }
                 }
 
                 this.replaceGenesWithLoadedPositions(genePositions);

@@ -114,6 +114,28 @@ describe("Simple HiGlassComponent", () => {
             done();
         });
 
+        it ("Searches for the Clock gene", (done) => {
+            // this gene previously did nothing when searching for it
+            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'Clock');
+
+            setTimeout(done, tileLoadTime);
+        });
+
+        it ("Clicks the search positions", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].buttonClick();
+
+            setTimeout(done, tileLoadTime + ZOOM_TRANSITION_DURATION + 2*shortLoadTime);
+        });
+
+        it ("Expects the view to have changed location", (done) => {
+            let zoomTransform = hgc.instance().tiledPlots['aa'].trackRenderer.zoomTransform;
+
+            expect(zoomTransform.k - 47).to.be.below(1);
+            expect(zoomTransform.x - 2224932).to.be.below(1);
+
+            done();
+        });
+
         it ("Checks that autocomplete fetches some genes", (done) => {
             //hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, "t");
             //new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'].autocompleteMenu, true).simulate('change', { value: 't'});
@@ -217,7 +239,7 @@ describe("Simple HiGlassComponent", () => {
             hgc.instance().handleTogglePositionSearchBox('aa');
             hgc.update();
 
-            setTimeout(done, shortLoadTime);
+            setTimeout(done, tileLoadTime);
         });
 
         it ("Ensures that selected assembly is hg19", (done) => {

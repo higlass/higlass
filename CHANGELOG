@@ -1,3 +1,8 @@
+v0.7.0
+
+- Added an assembly selector to the GenomePositionSearchBox
+- Prefix track names with their assembly
+
 v0.6.9
 
 - Lower the default resolution of lines for performance reasons
