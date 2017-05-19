@@ -593,4 +593,4 @@ export const LONG_DRAG_TIMEOUT = 2000;
 
 export const LOCATION_LISTENER_PREFIX = 'locationListenerPrefix';
 
-export const ZOOM_TRANSITION_DURATION = 3000;
+export const ZOOM_TRANSITION_DURATION = 1000;

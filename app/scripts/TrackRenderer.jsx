@@ -549,14 +549,21 @@ export class TrackRenderer extends React.Component {
         }
 
         if (animate) {
-            this.divTrackAreaSelection
-                .transition()
-                .duration(animateTime)
-                .call(
+            let selection = this.divTrackAreaSelection;
+
+            if (!document.hidden) {
+                // only transition if the window is hidden
+                selection = selection
+                    .transition()
+                    .duration(animateTime)
+            }
+
+            selection.call(
                     this.zoomBehavior.transform,
                     zoomIdentity.translate(translateX, translateY).scale(k)
                 )
                 .on('end', setZoom);
+
         } else {
             setZoom();
         }

@@ -1,3 +1,142 @@
+export const noGPSB = 
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://test.higlass.io/api/v1"
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        1796142508.3343146,
+        1802874737.269993
+      ],
+      "initialYDomain": [
+        1795888772.6557815,
+        1806579890.9341388
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "tracks": {
+        "top": [ 
+          {
+            "uid": "line1",
+            "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
+            "height": 20,
+            "width": 843,
+            "position": "top",
+            "server": "http://test.higlass.io/api/v1",
+            "type": "horizontal-line",
+            "options": {
+              "name": "GM12878-E116-H3K27ac.fc.signal",
+              "valueScaling": "linear",
+              "lineStrokeColor": "green",
+              "labelPosition": "topLeft",
+              "labelColor": "black",
+              "axisPositionHorizontal": "right"
+            },
+            "name": "GM12878-E116-H3K27ac.fc.signal"
+          },
+          {
+            "uid": "line2",
+            "tilesetUid": "M-LTWpoGQ0iQvfJBtzXg4A",
+            "height": 20,
+            "width": 843,
+            "position": "top",
+            "server": "http://test.higlass.io/api/v1",
+            "type": "horizontal-line",
+            "options": {
+              "valueScaling": "linear",
+              "lineStrokeColor": "green",
+              "labelPosition": "topLeft",
+              "labelColor": "black",
+              "axisPositionHorizontal": "right"
+            }
+          },
+          {
+            "uid": "line3",
+            "tilesetUid": "JBs7pPAXQjOySJcct2jN4w",
+            "height": 20,
+            "width": 843,
+            "position": "top",
+            "server": "http://test.higlass.io/api/v1",
+            "type": "horizontal-line",
+            "options": {
+              "valueScaling": "linear",
+              "lineStrokeColor": "green",
+              "labelPosition": "topLeft",
+              "labelColor": "black",
+              "axisPositionHorizontal": "right"
+            }
+          }
+        ],
+        "left": [ ],
+        "center": [ ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 5,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      }
+    }
+  ]
+}
+
+export const onlyGPSB = 
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://test.higlass.io/api/v1"
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        1796142508.3343146,
+        1802874737.269993
+      ],
+      "initialYDomain": [
+        1795888772.6557815,
+        1806579890.9341388
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://test.higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "http://test.higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": true
+      },
+      "tracks": {
+        "top": [
+        ],
+        "left": [ ],
+        "center": [ ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 5,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      }
+    }
+  ]
+}
+
 export const testViewConfX2 = 
 {
   "zoomFixed": false,
@@ -982,7 +1121,6 @@ export const oneViewConfig =
         1806579890.9341388
       ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [

@@ -24,12 +24,12 @@ import {
   download,
   getTrackByUid,
   getTrackPositionByUid,
+  positionedTracksToAllTracks,
   relToAbsChromPos,
   scalesCenterAndK,
   scalesToGenomeLocations,
   totalTrackPixelHeight
 } from './utils.js';
-import {positionedTracksToAllTracks} from './utils.js';
 import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
 import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT, LOCATION_LISTENER_PREFIX} from './config.js';
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
@@ -58,6 +58,7 @@ export class HiGlassComponent extends React.Component {
         this.uid = slugid.nice();
         this.rowHeight = 40;
         this.tiledPlots = {};
+        this.genomePositionSearchBoxes = {};
 
         // keep track of the xScales of each Track Renderer
         this.xScales = {};
@@ -1923,6 +1924,94 @@ export class HiGlassComponent extends React.Component {
         return allTracks;
     }
 
+    handleSelectedAssemblyChanged(viewUid, newAssembly, newAutocompleteId) {
+        /*
+         * A new assembly was selected in the GenomePositionSearchBox. Update the corresponding
+         * view's entry
+         *
+         * Arguments
+         * ---------
+         *      
+         * viewUid: string
+         *      The uid of the view this genomepositionsearchbox belongs to
+         * newAssembly: string
+         *      The new assembly it should display coordinates for
+         *
+         * Returns
+         * -------
+         *
+         *  Nothing
+         */
+        console.log('viewUid:', viewUid)
+        let views = this.state.views;
+
+        views[viewUid].genomePositionSearchBox.chromInfoId = newAssembly;
+        views[viewUid].genomePositionSearchBox.autocompleteId = newAutocompleteId;
+    }
+
+    createGenomePostionSearchBoxEntry(existingGenomePositionSearchBox, suggestedAssembly) {
+        /*
+         * Create genomePositionSearchBox settings. If existing settings for this view exist,
+         * then use those. Otherwise use defaults.
+         *
+         * Arguments:
+         *     existingGenomePositionSearchBox: 
+         *          { 
+         *              autocompleteServer: string (e.g. higlass.io/api/v1),
+         *              autocompleteId: string (e.g. Xz1f)
+         *              chromInfoServer: string (e.g. higlass.io/api/v1)
+         *              chromInfoId: string (e.g. hg19)
+         *              visible: boolean (e.g. true)
+         *           }
+         *          If there's already information about which assembly and autocomplete
+         *          source to use, it should be in this format.
+         *
+         *      suggestedAssembly:
+         *          Guess which assembly should be displayed based on the tracks visible.
+         *          In all meaningful scenarios, all tracks should be of the same assembly
+         *          but in case they're not, suggest the most common one
+         *
+         * Return:
+         *      A valid genomePositionSearchBox object 
+         *
+         */
+        let newGpsb = existingGenomePositionSearchBox;
+        let defaultGpsb = {
+                "autocompleteServer": "http://test.higlass.io/api/v1",
+                //"autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+                "chromInfoServer": "http://test.higlass.io/api/v1",
+                "visible": false
+        }
+
+        console.log('newGpsb:', newGpsb);
+
+        if (!newGpsb) 
+            newGpsb = JSON.parse(JSON.stringify(defaultGpsb));
+
+        if (!newGpsb.autocompleteServer)
+            newGpsb.autocompleteServer = defaultGpsb.autocompleteServer;
+
+        /* 
+         * If we don't have an autocompleteId, we'll try to look it up in 
+         * the autocomplete server
+         */
+        /*
+        if (!newGpsb.autocompleteId)
+            newGpsb.autocompleteId = defaultGpsb.autocompleteId;
+        */
+
+        if (!newGpsb.chromInfoId)
+            newGpsb.chromInfoId = suggestedAssembly;
+
+        if (!newGpsb.chromInfoServer)
+            newGpsb.chromInfoServer = defaultGpsb.chromInfoServer;
+
+        if (!newGpsb.visible)
+            newGpsb.visible = false;
+
+        return newGpsb;
+    }
+
     handleTogglePositionSearchBox(viewUid) {
         /*
          * Show or hide the genome position search box for a given view
@@ -1930,6 +2019,30 @@ export class HiGlassComponent extends React.Component {
 
         let view = this.state.views[viewUid];
         view.genomePositionSearchBoxVisible = !view.genomePositionSearchBoxVisible;
+
+        let positionedTracks = positionedTracksToAllTracks(view.tracks);
+
+        // count the number of tracks that are part of some assembly
+        let assemblyCounts = {};
+        for (let track of positionedTracks) {
+            if (!track.coordSystem)
+                continue;
+
+            if (!assemblyCounts[track.coordSystem])
+                assemblyCounts[track.coordSystem] = 0
+
+            assemblyCounts[track.coordSystem] += 1;
+        }
+
+        let sortedAssemblyCounts = dictItems(assemblyCounts).sort((a,b) => b[1] - a[1])
+        let selectedAssembly = 'hg19'; // always the default if nothing is otherwise selected
+
+        if (sortedAssemblyCounts.length)
+            selectedAssembly = sortedAssemblyCounts[0][0];
+
+        view.genomePositionSearchBox = this.createGenomePostionSearchBoxEntry(view.genomePositionSearchBox, 
+            selectedAssembly);
+        view.genomePositionSearchBox.visible = !view.genomePositionSearchBox.visible;
 
         this.refreshView();
 
@@ -2194,17 +2307,23 @@ export class HiGlassComponent extends React.Component {
                 let genomePositionSearchBoxUid = slugid.nice();
 
                 this.genomePositionSearchBox = null;
-                let genomePositionSearchBox = view.genomePositionSearchBoxVisible ?
+                let genomePositionSearchBox = view.genomePositionSearchBox ? (
+                    view.genomePositionSearchBox.visible ? 
                     (<GenomePositionSearchBox
-                        ref={c => { this.genomePositionSearchBox = c } }
-                        autocompleteSource={view.autocompleteSource}
-                        chromInfoPath={view.chromInfoPath}
+                        autocompleteServer={view.genomePositionSearchBox.autocompleteServer}
+                        autocompleteId={view.genomePositionSearchBox.autocompleteId}
+                        chromInfoServer={view.genomePositionSearchBox.chromInfoServer}
+                        chromInfoId={view.genomePositionSearchBox.chromInfoId}
                         key={'gpsb' + view.uid}
+                        onSelectedAssemblyChanged={(x,y) => this.handleSelectedAssemblyChanged(view.uid, x, y)}
+                        ref={c => { this.genomePositionSearchBoxes[view.uid] = c }}
                         registerViewportChangedListener={listener => this.addScalesChangedListener(view.uid, view.uid, listener)}
                         removeViewportChangedListener={() => this.removeScalesChangedListener(view.uid, view.uid)}
                         setCenters={(centerX, centerY, k, animate, animateTime) => this.setCenters[view.uid](centerX, centerY, k, false, animate, animateTime)}
                         twoD={true}
-                     />) : null;
+
+                        trackSourceServers={this.props.viewConfig.trackSourceServers}
+                     />) : null) : null;
                 //genomePositionSearchBox = null;
 
                 let multiTrackHeader = this.props.viewConfig.editable ?
