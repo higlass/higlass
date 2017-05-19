@@ -110,13 +110,10 @@ export class GenomePositionSearchBox extends React.Component {
                 selectedAssembly: chromInfoId
             });
 
-            console.log('fetched chromInfo', chromInfoId);
-
             // we need to set a an autocompleteId that matches the chromInfo
             // that was received, but if none has been retrieved yet...
             if (this.availableAutocompletes[chromInfoId]) {
                 let newAcId = [...this.availableAutocompletes[chromInfoId]][0].acId
-                console.log('newAcId', newAcId);
                 this.props.onSelectedAssemblyChanged(chromInfoId, newAcId)
 
                 this.setState({
@@ -140,17 +137,14 @@ export class GenomePositionSearchBox extends React.Component {
                             this.availableAutocompletes[x.coordSystem] = new Set();
                         }
 
-                        console.log('x.uuid:', x.uuid);
-
                         this.availableAutocompletes[x.coordSystem].add({server: sourceServer, acId: x.uuid});
                         this.setAvailableAssemblies();
 
                     });
 
                     if (!this.state.autocompleteId) {
-                        console.log('this.availableAutocompletes["mm9"]', this.availableAutocompletes['mm9']);
-                        console.log('chromInfoId:', this.props.chromInfoId);
-                        console.log('this.availableAutocompletes:', [...this.availableAutocompletes[this.props.chromInfoId]]);
+                        // We don't have an autocomplete source yet, so set the one matching the current
+                        // assembly
                         this.setState({
                             autocompleteId: [...this.availableAutocompletes[this.props.chromInfoId]][0].acId
                         });
@@ -283,7 +277,7 @@ export class GenomePositionSearchBox extends React.Component {
 
             if (retPos == null || isNaN(retPos)) {
                 // not a chromsome position, let's see if it's a gene name
-               let url = this.props.autocompleteSource + "ac=" + value_parts[i].toLowerCase();
+               let url = this.state.autocompleteServer + "/suggest/?d=" + this.state.autocompleteId  + "&ac=" + value_parts[i].toLowerCase();
                q = q.defer(json, url);
 
             }
@@ -369,7 +363,6 @@ export class GenomePositionSearchBox extends React.Component {
         this.prevParts = parts;
 
         // no autocomplete repository is provided, so we don't try to autcomplete anything
-        console.log('this.state.autocompleteId:', this.state.autocompleteId);
         if (!(this.state.autocompleteServer && this.state.autocompleteId))
             return;
 

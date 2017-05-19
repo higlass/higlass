@@ -2,6 +2,8 @@ import {
     LONG_DRAG_TIMEOUT
 } from '../app/scripts/config.js';
 
+import {zoomTransform} from 'd3-zoom';
+
 import { 
     mount, 
     render,
@@ -36,6 +38,10 @@ import {
     testViewConfX1,
     testViewConfX2
 } from '../app/scripts/testViewConfs.js';
+
+import {
+    ZOOM_TRANSITION_DURATION
+} from '../app/scripts/config.js';
 
 const pageLoadTime = 1200;
 const tileLoadTime = 600;
@@ -99,7 +105,7 @@ describe("Simple HiGlassComponent", () => {
             assemblyPickButton = hgc.find('.assembly-pick-button');
             expect(assemblyPickButton.length).to.eql(1);
 
-            setTimeout(done, shortLoadTime);
+            setTimeout(done, tileLoadTime);
         });
 
         it ("Makes sure that the search box points to mm9", (done) => {
@@ -126,20 +132,35 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
 
-        it ("Clicks on the search button", (done) => {
-            hgc.instance().genomePositionSearchBoxes['aa'].buttonClick();
-
-            done(done);
-        });
 
         it ("Switch the selected genome to hg19", (done) => {
             hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('hg19');
             hgc.update();
 
-            setTimeout(done, tileLoadTime);
+            setTimeout(done, shortLoadTime);
         });
 
-        return;
+        it ("Sets the text to TP53", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'TP53');
+            hgc.update();
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Clicks on the search button", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].buttonClick();
+
+            setTimeout(done, tileLoadTime + ZOOM_TRANSITION_DURATION + 2*shortLoadTime);
+        });
+
+        it ("Expects the view to have changed location", (done) => {
+            let zoomTransform = hgc.instance().tiledPlots['aa'].trackRenderer.zoomTransform;
+
+            expect(zoomTransform.k - 234).to.be.below(1);
+            expect(zoomTransform.x + 7656469).to.be.below(1);
+
+            done();
+        });
 
 
         it ("Ensures that the autocomplete has changed", (done) => {
@@ -206,8 +227,6 @@ describe("Simple HiGlassComponent", () => {
         });
 
     });
-
-    return;
 
     describe("Starting with an existing genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
