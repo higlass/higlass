@@ -147,11 +147,10 @@ export class PixiTrack extends Track {
 
                 labelTextText += '\n[Current data resolution: ' + formattedResolution + ']';
             } else {
-                console.log('NaN resolution, screen is probably too small. Dimensions:', this.dimensions);
+                console.warn('NaN resolution, screen is probably too small. Dimensions:', this.dimensions);
             }
         }
 
-        console.log('labelTextText:', labelTextText);
         this.labelText.text = labelTextText;
         this.labelText.style = {fontSize: this.labelTextFontSize + 'px',
                               fontFamily: this.labelTextFontFamily,
@@ -279,7 +278,6 @@ export class PixiTrack extends Track {
     }
 
     rerender(options) {
-        console.log('options:', options);
         this.options = options;
         this.draw();
     }

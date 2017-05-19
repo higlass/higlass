@@ -22,6 +22,7 @@ import {VerticalLine1DPixiTrack} from './VerticalLine1DPixiTrack.js';
 import {CNVIntervalTrack} from './CNVIntervalTrack.js';
 import {LeftTrackModifier} from './LeftTrackModifier.js';
 import {ViewportTracker2D} from './ViewportTracker2D.js';
+import {ViewportTrackerTop} from './ViewportTrackerTop.js';
 import {Track} from './Track.js';
 import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack.js';
 import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack.js';
@@ -716,6 +717,18 @@ export class TrackRenderer extends React.Component {
                 // TODO: Fix this so that these functions are defined somewhere else
                 if (track.registerViewportChanged && track.removeViewportChanged && track.setDomainsCallback)
                     return new ViewportTracker2D(
+                        this.svgElement,
+                        track.registerViewportChanged,
+                        track.removeViewportChanged,
+                        track.setDomainsCallback,
+                        track.options
+                    );
+                else
+                    return new Track();
+            case 'viewport-projection-top':
+                // TODO: Fix this so that these functions are defined somewhere else
+                if (track.registerViewportChanged && track.removeViewportChanged && track.setDomainsCallback)
+                    return new ViewportTrackerTop(
                         this.svgElement,
                         track.registerViewportChanged,
                         track.removeViewportChanged,

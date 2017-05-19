@@ -100,7 +100,6 @@ describe("Simple HiGlassComponent", () => {
             // the viewconf contains a location lock, we need to ignore it
             //
             let track = getTrackObject(hgc, 'bb', 'line2');
-            console.log('labelText:', track.labelText.text);
             expect(track.labelText.text.indexOf('hg19')).to.eql(0);
 
             setTimeout(done, shortLoadTime);
@@ -116,7 +115,6 @@ describe("Simple HiGlassComponent", () => {
 
         it ('Should make sure that the track labels still contain the assembly' ,(done) => {
             let track = getTrackObject(hgc, 'bb', 'line2');
-            console.log('labelText2:', track.labelText.text);
             expect(track.labelText.text.indexOf('hg19')).to.eql(0);
             setTimeout(done, shortLoadTime);
         });
