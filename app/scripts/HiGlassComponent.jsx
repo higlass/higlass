@@ -1942,7 +1942,6 @@ export class HiGlassComponent extends React.Component {
          *
          *  Nothing
          */
-        console.log('viewUid:', viewUid)
         let views = this.state.views;
 
         views[viewUid].genomePositionSearchBox.chromInfoId = newAssembly;
@@ -1982,8 +1981,6 @@ export class HiGlassComponent extends React.Component {
                 "chromInfoServer": "http://test.higlass.io/api/v1",
                 "visible": false
         }
-
-        console.log('newGpsb:', newGpsb);
 
         if (!newGpsb) 
             newGpsb = JSON.parse(JSON.stringify(defaultGpsb));

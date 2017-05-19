@@ -121,7 +121,8 @@ export class PixiTrack extends Track {
         if (this.dimensions[0] < 0)
             return;
 
-        let labelTextText = this.options.name ? this.options.name : 
+        let labelTextText = this.options.coordSystem ? this.options.coordSystem + " | " : '';
+        labelTextText += this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
 
         if (this.tilesetInfo && this.tilesetInfo.max_width && this.tilesetInfo.bins_per_dimension) {
