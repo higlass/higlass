@@ -24,6 +24,7 @@ import slugid from 'slugid';
 import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
 import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
 import {
+    project1D,
     noGPSB,
     onlyGPSB,
     chromInfoTrack,
@@ -67,6 +68,69 @@ describe("Simple HiGlassComponent", () => {
 
     let hg19Text = '';
     let mm9Text = '';
+
+    describe("1D viewport projection", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            hgc = mount(<HiGlassComponent 
+                            options={{bounded: false}}
+                            viewConfig={project1D}
+                          />, 
+                {attachTo: div});
+
+            setTimeout(done, pageLoadTime);
+        });
+
+        it ('Should lock the location without throwing an error', (done) => {
+            hgc.instance().handleLocationLockChosen('aa', 'bb');
+            // the viewconf contains a location lock, we need to ignore it
+            //
+            let track = getTrackObject(hgc, 'bb', 'line2');
+            console.log('labelText:', track.labelText.text);
+            expect(track.labelText.text.indexOf('hg19')).to.eql(0);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ('Should project the viewport of view2 onto the gene annotations track', (done) => {
+            hgc.instance().handleViewportProjected('bb', 'aa', 'ga1');
+            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(2540607259.217122,2541534691.921077,195.2581009864807);
+            // move the viewport just a little bit
+            //
+            setTimeout(done, shortLoadTime);
+        })
+
+        it ('Should make sure that the track labels still contain the assembly' ,(done) => {
+            let track = getTrackObject(hgc, 'bb', 'line2');
+            console.log('labelText2:', track.labelText.text);
+            expect(track.labelText.text.indexOf('hg19')).to.eql(0);
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ('Should check to make sure that the tracks have the assembly in the label', (done) => {
+            let track = getTrackObject(hgc, 'bb', 'line2');
+
+
+            setTimeout(done, shortLoadTime);
+        });
+
+    });
+
+    return;
 
     describe("Starting with no genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {

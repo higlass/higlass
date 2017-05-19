@@ -121,7 +121,10 @@ export class PixiTrack extends Track {
         if (this.dimensions[0] < 0)
             return;
 
-        let labelTextText = this.options.coordSystem ? this.options.coordSystem + " | " : '';
+        let labelTextText = ''
+        if (this.tilesetInfo)
+            labelTextText += this.tilesetInfo.coordSystem ? this.tilesetInfo.coordSystem + " | " : '';
+
         labelTextText += this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
 
@@ -148,6 +151,7 @@ export class PixiTrack extends Track {
             }
         }
 
+        console.log('labelTextText:', labelTextText);
         this.labelText.text = labelTextText;
         this.labelText.style = {fontSize: this.labelTextFontSize + 'px',
                               fontFamily: this.labelTextFontFamily,
@@ -275,6 +279,7 @@ export class PixiTrack extends Track {
     }
 
     rerender(options) {
+        console.log('options:', options);
         this.options = options;
         this.draw();
     }

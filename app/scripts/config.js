@@ -395,6 +395,22 @@ export const tracksInfo = [
         availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity']
     },
     {
+        type: 'viewport-projection-top',
+        datatype: ['1d-projection'],
+        local: true,
+        hidden: true,
+        orientation: '2d',
+        name: 'Viewport Projection',
+        thumbnail: 'viewport-projection-center.png',
+        availableOptions: ['projectionFillColor', 'projectionStrokeColor'],
+        defaultOptions: {
+            projectionFillColor: "#777",
+            projectionStrokeColor: "#777",
+            projectionFillOpacity: 0.3,
+            projectionStrokeOpacity: 0.3
+        }
+    },
+    {
         type: 'viewport-projection-center',
         datatype: ['2d-projection'],
         local: true,

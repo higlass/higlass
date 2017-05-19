@@ -642,6 +642,10 @@ export class HiGlassComponent extends React.Component {
   }
 
   viewScalesLockData(uid) {
+    if (!this.xScales[uid] || !this.yScales[uid]) {
+          console.warn("View scale lock doesn't correspond to existing uid: ", uid);
+            return;
+    }
     return scalesCenterAndK(this.xScales[uid], this.yScales[uid])
   }
 
@@ -699,6 +703,7 @@ export class HiGlassComponent extends React.Component {
           return;    // locking a view to itself is silly
       }
 
+      console.log('uid1', uid1, 'uid2', uid2);
       this.addLock(uid1, uid2, this.locationLocks, this.viewScalesLockData.bind(this));
 
 
@@ -738,6 +743,8 @@ export class HiGlassComponent extends React.Component {
      * @param toView: The uid of the view that we want to project to
      * @param toTrack: The track we want to project to
      */
+      console.log('handle viewport projected', fromView, toView, toTrack);
+
       if ( fromView == toView) {
         alert("A view can not show its own viewport.");
       } else {
