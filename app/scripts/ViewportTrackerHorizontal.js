@@ -3,7 +3,7 @@ import slugid from 'slugid';
 import brush from './lite-d3-brush.js';
 import {event} from 'd3-selection';
 
-export class ViewportTrackerTop extends SVGTrack {
+export class ViewportTrackerHorizontal extends SVGTrack {
     constructor(svgElement, registerViewportChanged, removeViewportChanged, setDomainsCallback, options) {
         // create a clipped SVG Path
         super(svgElement, true);
@@ -17,6 +17,8 @@ export class ViewportTrackerTop extends SVGTrack {
 
         this.viewportXDomain = null;
         this.viewportYDomain = null;
+
+        console.log('creating viewport tracker');
 
         this.brush = brush()
             .extent([[-Number.MAX_VALUE, -Number.MAX_VALUE],
@@ -72,6 +74,7 @@ export class ViewportTrackerTop extends SVGTrack {
     }
 
     viewportChanged(viewportXScale, viewportYScale, update=true) {
+        console.log('viewport changed:', viewportXScale.domain());
         let viewportXDomain = viewportXScale.domain();
         let viewportYDomain = viewportYScale.domain();
 
@@ -105,12 +108,14 @@ export class ViewportTrackerTop extends SVGTrack {
             return;
 
         let x0 = this._xScale(this.viewportXDomain[0]);
-        let y0 = this._yScale(this.viewportYDomain[0]);
+        let y0 = 0; 
 
         let x1 = this._xScale(this.viewportXDomain[1]);
-        let y1 = this._yScale(this.viewportYDomain[1]);
+        let y1 = this.dimensions[1];
          
         let dest = [[x0,y0],[x1,y1]];
+
+        console.log('dest:', dest[0], dest[1]);
 
         // user hasn't actively brushed so we don't want to emit a
         // 'brushed' event

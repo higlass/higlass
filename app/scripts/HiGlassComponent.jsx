@@ -1570,7 +1570,7 @@ export class HiGlassComponent extends React.Component {
        *
        * @param track: A view with tracks.
        */
-      if (track.type == 'viewport-projection-center') {
+      if (track.type == 'viewport-projection-center' || track.type == 'viewport-projection-top') {
           let fromView = track.fromViewUid;
 
           track.registerViewportChanged = (trackId, listener) => this.addScalesChangedListener(fromView, trackId, listener),
