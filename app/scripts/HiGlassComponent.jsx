@@ -642,6 +642,10 @@ export class HiGlassComponent extends React.Component {
   }
 
   viewScalesLockData(uid) {
+    if (!this.xScales[uid] || !this.yScales[uid]) {
+          console.warn("View scale lock doesn't correspond to existing uid: ", uid);
+            return;
+    }
     return scalesCenterAndK(this.xScales[uid], this.yScales[uid])
   }
 
@@ -661,7 +665,11 @@ export class HiGlassComponent extends React.Component {
           group1Members = [[uid1, lockData(uid1)]];
       } else {
           // view1 is already in a group
-          group1Members = dictItems(lockGroups[uid1]).map(x =>
+          group1Members = dictItems(lockGroups[uid1])
+              .filter(x => lockData(x))     // make sure we can create the necessary data for this lock
+                                           // in the case of location locks, this implies that the
+                                           // views it's locking exist
+              .map(x =>
             // x is [uid, [centerX, centerY, k]]
             [x[0], lockData(x[0])]
           )
@@ -672,7 +680,11 @@ export class HiGlassComponent extends React.Component {
           group2Members = [[uid2, lockData(uid2)]];
       } else {
           // view2 is already in a group
-          group2Members = dictItems(lockGroups[uid2]).map(x =>
+          group2Members = dictItems(lockGroups[uid2])
+              .filter(x => lockData(x))     // make sure we can create the necessary data for this lock
+                                           // in the case of location locks, this implies that the
+                                           // views it's locking exist
+              .map(x =>
             // x is [uid, [centerX, centerY, k]]
             [x[0], lockData(x[0])]
           )
@@ -737,16 +749,32 @@ export class HiGlassComponent extends React.Component {
      * @param fromView: The uid of the view that we want to project
      * @param toView: The uid of the view that we want to project to
      * @param toTrack: The track we want to project to
+     *
+     * Returns
+     * -------
+     *
+     *  newTrackUid: string
+     *      The uid of the newly created viewport projection track
      */
+      let newTrackUid = null;
+
       if ( fromView == toView) {
         alert("A view can not show its own viewport.");
       } else {
         let hostTrack = getTrackByUid(this.state.views[toView].tracks, toTrack);
         let position = getTrackPositionByUid(this.state.views[toView].tracks, toTrack);
+        newTrackUid = slugid.nice();
+
+        let projectionTypes = {
+            'top': 'horizontal', 
+            'bottom': 'horizontal', 
+            'center': 'center',
+            'left': 'vertical',
+            'right': 'vertical'}
 
         let newTrack = {
-          uid: slugid.nice(),
-          type: 'viewport-projection-' + position,
+          uid: newTrackUid,
+          type: 'viewport-projection-' + projectionTypes[position],
           fromViewUid: fromView
         }
 
@@ -756,6 +784,8 @@ export class HiGlassComponent extends React.Component {
       this.setState({
             chooseTrackHandler: null
       });
+
+      return newTrackUid;
   }
 
   handleLocationYanked(uid1, uid2) {
@@ -1563,7 +1593,10 @@ export class HiGlassComponent extends React.Component {
        *
        * @param track: A view with tracks.
        */
-      if (track.type == 'viewport-projection-center') {
+      if (track.type == 'viewport-projection-center' 
+          || track.type == 'viewport-projection-horizontal'
+          || track.type == 'viewport-projection-vertical'
+      ) {
           let fromView = track.fromViewUid;
 
           track.registerViewportChanged = (trackId, listener) => this.addScalesChangedListener(fromView, trackId, listener),

@@ -121,7 +121,10 @@ export class PixiTrack extends Track {
         if (this.dimensions[0] < 0)
             return;
 
-        let labelTextText = this.options.coordSystem ? this.options.coordSystem + " | " : '';
+        let labelTextText = ''
+        if (this.tilesetInfo)
+            labelTextText += this.tilesetInfo.coordSystem ? this.tilesetInfo.coordSystem + " | " : '';
+
         labelTextText += this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
 
@@ -144,7 +147,7 @@ export class PixiTrack extends Track {
 
                 labelTextText += '\n[Current data resolution: ' + formattedResolution + ']';
             } else {
-                console.log('NaN resolution, screen is probably too small. Dimensions:', this.dimensions);
+                console.warn('NaN resolution, screen is probably too small. Dimensions:', this.dimensions);
             }
         }
 

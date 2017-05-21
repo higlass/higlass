@@ -78,7 +78,6 @@ export class TiledPixiTrack extends PixiTrack {
                 this.options = {};
 
             this.options.name = this.options.name ? this.options.name : tilesetInfo[tilesetUid].name;
-            this.options.coordSystem = this.options.coordSystem ? this.options.coordSystem : tilesetInfo[tilesetUid].coordSystem;
 
             this.draw();
         });
