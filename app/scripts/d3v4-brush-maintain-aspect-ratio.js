@@ -155,17 +155,16 @@ function brush(dim) {
       filter = defaultFilter,
       listeners = dispatch(brush, "start", "brush", "end"),
       handleSize = 6,
-      touchending,
-      uid='';
+      touchending
 
   function brush(group) {
     var overlay = group
         .property("__brush", initialize)
-      .selectAll(".overlay-" + uid)
+      .selectAll(".overlay")
       .data([type("overlay")]);
 
     overlay.enter().append("rect")
-        .attr("class", "overlay-" + uid)
+        .attr("class", "overlay")
         .attr("pointer-events", "all")
         .attr("cursor", cursors.overlay)
       .merge(overlay)
@@ -359,7 +358,7 @@ function brush(dim) {
     var group = select(that)
         .attr("pointer-events", "none");
 
-    var overlay = group.selectAll(".overlay-" + uid)
+    var overlay = group.selectAll(".overlay")
         .attr("cursor", cursors[type]);
 
     if (event.touches) {
@@ -582,10 +581,6 @@ function brush(dim) {
 
   brush.filter = function(_) {
     return arguments.length ? (filter = typeof _ === "function" ? _ : constant(!!_), brush) : filter;
-  };
-
-  brush.uid = function(_) {
-    return arguments.length ? (uid = typeof _ === "function" ? _ : constant(!!_), brush) : uid;
   };
 
   brush.handleSize = function(_) {

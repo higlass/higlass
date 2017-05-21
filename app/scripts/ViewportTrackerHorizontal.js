@@ -18,12 +18,11 @@ export class ViewportTrackerHorizontal extends SVGTrack {
         this.viewportXDomain = null;
         this.viewportYDomain = null;
 
-        console.log('creating viewport tracker');
-
         this.brush = brush()
             .extent([[-Number.MAX_VALUE, -Number.MAX_VALUE],
                      [Number.MAX_VALUE, Number.MAX_VALUE]])
-            .on('brush', this.brushed.bind(this));
+            .on('brush', this.brushed.bind(this))
+        ;
 
         this.gBrush = this.gMain
             .append('g')
@@ -67,16 +66,16 @@ export class ViewportTrackerHorizontal extends SVGTrack {
          */
         let s = event.selection;
 
-        console.log('s:', s[0], s[1]);
-
         if (!this._xScale || !this._yScale)
             return;
 
         let xDomain = [this._xScale.invert(s[0][0]), 
                        this._xScale.invert(s[1][0])];
 
-        let yDomain = [this._yScale.invert(s[0][1]),
-                       this._yScale.invert(s[1][1])];
+        let yDomain = this.viewportYDomain;
+
+        console.log('xDomain:', xDomain);
+        console.log('yDomain:', yDomain);
 
         this.setDomainsCallback(xDomain, yDomain);
     }

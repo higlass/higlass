@@ -22,7 +22,6 @@ export class ViewportTracker2D extends SVGTrack {
             .extent([[-Number.MAX_VALUE, -Number.MAX_VALUE],
                      [Number.MAX_VALUE, Number.MAX_VALUE]])
             .on('brush', this.brushed.bind(this))
-            .uid(this.uid);
 
         this.gBrush = this.gMain
             .append('g')

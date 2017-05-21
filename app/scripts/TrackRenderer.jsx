@@ -1,3 +1,5 @@
+import {ZOOM_TRANSITION_DURATION} from './config.js'
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -9,7 +11,6 @@ import {dictItems} from './utils.js';
 // Fritz: This import is broken
 import d3 from 'd3';
 
-import {UnknownPixiTrack} from './UnknownPixiTrack.js';
 import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack.js';
 import {Id2DTiledPixiTrack} from './Id2DTiledPixiTrack.js';
 import {IdHorizontal1DTiledPixiTrack} from './IdHorizontal1DTiledPixiTrack.js';
@@ -21,8 +22,6 @@ import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
 import {VerticalLine1DPixiTrack} from './VerticalLine1DPixiTrack.js';
 import {CNVIntervalTrack} from './CNVIntervalTrack.js';
 import {LeftTrackModifier} from './LeftTrackModifier.js';
-import {ViewportTracker2D} from './ViewportTracker2D.js';
-import {ViewportTrackerHorizontal} from './ViewportTrackerHorizontal.js';
 import {Track} from './Track.js';
 import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack.js';
 import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack.js';
@@ -32,8 +31,11 @@ import {Chromosome2DGrid} from './Chromosome2DGrid.js';
 import {Chromosome2DAnnotations} from './Chromosome2DAnnotations.js';
 import {HorizontalChromosomeLabels} from './HorizontalChromosomeLabels.js';
 import {HorizontalHeatmapTrack} from './HorizontalHeatmapTrack.js';
-import {ZOOM_TRANSITION_DURATION} from './config.js'
+import {UnknownPixiTrack} from './UnknownPixiTrack.js';
 import {ValueIntervalTrack} from './ValueIntervalTrack.js';
+import {ViewportTracker2D} from './ViewportTracker2D.js';
+import {ViewportTrackerHorizontal} from './ViewportTrackerHorizontal.js';
+import {ViewportTrackerVertical} from './ViewportTrackerVertical.js';
 
 export class TrackRenderer extends React.Component {
     /**
@@ -483,8 +485,6 @@ export class TrackRenderer extends React.Component {
             let newPosition = [this.xPositionOffset + trackDef.left, this.yPositionOffset + trackDef.top];
             let newDimensions = [trackDef.width, trackDef.height];
 
-            //console.log('updating track position:', uid, newPosition, newDimensions);
-
             // check if any of the track's positions have changed
             // before trying to update them
 
@@ -725,11 +725,22 @@ export class TrackRenderer extends React.Component {
                     );
                 else
                     return new Track();
-            case 'viewport-projection-top':
+            case 'viewport-projection-horizontal':
                 // TODO: Fix this so that these functions are defined somewhere else
-                console.log("projection-top:", track.registerViewportChanged);
                 if (track.registerViewportChanged && track.removeViewportChanged && track.setDomainsCallback)
                     return new ViewportTrackerHorizontal(
+                        this.svgElement,
+                        track.registerViewportChanged,
+                        track.removeViewportChanged,
+                        track.setDomainsCallback,
+                        track.options
+                    );
+                else
+                    return new Track();
+            case 'viewport-projection-vertical':
+                // TODO: Fix this so that these functions are defined somewhere else
+                if (track.registerViewportChanged && track.removeViewportChanged && track.setDomainsCallback)
+                    return new ViewportTrackerVertical(
                         this.svgElement,
                         track.registerViewportChanged,
                         track.removeViewportChanged,
@@ -837,7 +848,7 @@ export class TrackRenderer extends React.Component {
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid)));
             default:
-                 console.log('WARNING: unknown track type:', track.type);
+                 console.warn('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(
                     this.currentProps.pixiStage,
                     {name: 'Unknown Track Type'}

@@ -23,7 +23,26 @@ export const project1D =
         2541205445.042225
       ],
       "tracks": {
-        "left": [],
+        "left": [
+          {
+            "uid": "vline1",
+            "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
+            "height": 20,
+            "width": 20,
+            "position": "top",
+            "server": "http://higlass.io/api/v1",
+            "type": "vertical-line",
+            "options": {
+              "name": "GM12878-E116-H3K27ac.fc.signal",
+              "valueScaling": "linear",
+              "lineStrokeColor": "green",
+              "labelPosition": "topLeft",
+              "labelColor": "black",
+              "axisPositionHorizontal": "right"
+            },
+            "name": "GM12878-E116-H3K27ac.fc.signal"
+          }
+        ],
         "top": [
           {
             "uid": "d1YqhSqQRFynu4r34zKZhg",
@@ -117,7 +136,26 @@ export const project1D =
         2540697158.366323
       ],
       "tracks": {
-        "left": [],
+        "left": [
+          {
+            "uid": "vline2",
+            "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
+            "height": 20,
+            "width": 20,
+            "position": "top",
+            "server": "http://higlass.io/api/v1",
+            "type": "vertical-line",
+            "options": {
+              "name": "GM12878-E116-H3K27ac.fc.signal",
+              "valueScaling": "linear",
+              "lineStrokeColor": "green",
+              "labelPosition": "topLeft",
+              "labelColor": "black",
+              "axisPositionHorizontal": "right"
+            },
+            "name": "GM12878-E116-H3K27ac.fc.signal"
+          }
+        ],
         "top": [
           {
             "uid": "line1",

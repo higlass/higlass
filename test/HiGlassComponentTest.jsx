@@ -70,6 +70,9 @@ describe("Simple HiGlassComponent", () => {
     let mm9Text = '';
 
     describe("1D viewport projection", () => {
+        let vpUid = null;
+        let vp2DUid = null;
+
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
                 hgc.unmount();
@@ -86,9 +89,22 @@ describe("Simple HiGlassComponent", () => {
             div.setAttribute('style', 'width:800px;background-color: lightgreen');
             div.setAttribute('id', 'simple-hg-component');
 
+            let newViewConf = JSON.parse(JSON.stringify(project1D));
+
+            let center1 = JSON.parse(JSON.stringify(heatmapTrack))
+            center1.height = 200;
+            let center2 = JSON.parse(JSON.stringify(heatmapTrack))
+            center2.height = 200;
+
+            newViewConf.views[0].tracks.center = [center1]
+            newViewConf.views[1].tracks.center = [center2]
+
+            newViewConf.views[0].layout.h = 10;
+            newViewConf.views[1].layout.h = 10;
+
             hgc = mount(<HiGlassComponent 
                             options={{bounded: false}}
-                            viewConfig={project1D}
+                            viewConfig={newViewConf}
                           />, 
                 {attachTo: div});
 
@@ -102,11 +118,27 @@ describe("Simple HiGlassComponent", () => {
             let track = getTrackObject(hgc, 'bb', 'line2');
             expect(track.labelText.text.indexOf('hg19')).to.eql(0);
 
+            let overlayElements = document.getElementsByClassName('overlay');
+
+            expect(overlayElements.length).to.eql(0);
+
             setTimeout(done, shortLoadTime);
         });
 
+        it ('Should add a vertical viewport projection', (done) => {
+            vpUid = hgc.instance().handleViewportProjected('bb', 'aa', 'vline1');
+            //hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(2540607259.217122,2541534691.921077,195.2581009864807);
+            // move the viewport just a little bit
+            let overlayElements = document.getElementsByClassName('overlay');
+
+            // we should have created an overlay element
+            expect(overlayElements.length).to.eql(1);
+
+            setTimeout(done, shortLoadTime);
+        })
+
         it ('Should project the viewport of view2 onto the gene annotations track', (done) => {
-            hgc.instance().handleViewportProjected('bb', 'aa', 'ga1');
+            vpUid = hgc.instance().handleViewportProjected('bb', 'aa', 'ga1');
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(2540607259.217122,2541534691.921077,195.2581009864807);
             // move the viewport just a little bit
             //
@@ -119,16 +151,33 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
 
-        it ('Should check to make sure that the tracks have the assembly in the label', (done) => {
+        it ('Add a 2D vertical projection and move the lower track to different location', (done) => {
             let track = getTrackObject(hgc, 'bb', 'line2');
 
+            hgc.instance().tiledPlots['bb'].trackRenderer.setCenter(2540607259.217122, 2541534691.921077, 87.50166702270508);
+            vp2DUid = hgc.instance().handleViewportProjected('bb', 'aa', 'heatmap3');
 
             setTimeout(done, shortLoadTime);
         });
 
-    });
+        it ("Resize the 1D projection", (done) => {
 
-    return;
+            let viewportTracker = getTrackObject(hgc, 'aa', vpUid);
+            let viewport2DTracker = getTrackObject(hgc, 'aa', vp2DUid);
+
+            // the 2D viewport tracker domains shouldn't change
+            let preResizeYDomain = viewport2DTracker.viewportYDomain;
+            viewportTracker.setDomainsCallback([2540588996.465288, 2540640947.3589344],
+                                               [2541519510.3818445, 2541549873.460309]);
+
+            let postResizeYDomain = JSON.parse(JSON.stringify(viewport2DTracker.viewportYDomain));
+
+            expect(preResizeYDomain[1] - postResizeYDomain[1]).to.be.below(0.0001);
+            expect(preResizeYDomain[1] - postResizeYDomain[1]).to.be.below(0.0001);
+
+            setTimeout(done, shortLoadTime);
+        });
+    });
 
     describe("Starting with no genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {

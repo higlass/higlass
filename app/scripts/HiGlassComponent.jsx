@@ -711,7 +711,6 @@ export class HiGlassComponent extends React.Component {
           return;    // locking a view to itself is silly
       }
 
-      console.log('uid1', uid1, 'uid2', uid2);
       this.addLock(uid1, uid2, this.locationLocks, this.viewScalesLockData.bind(this));
 
 
@@ -750,18 +749,32 @@ export class HiGlassComponent extends React.Component {
      * @param fromView: The uid of the view that we want to project
      * @param toView: The uid of the view that we want to project to
      * @param toTrack: The track we want to project to
+     *
+     * Returns
+     * -------
+     *
+     *  newTrackUid: string
+     *      The uid of the newly created viewport projection track
      */
-      console.log('handle viewport projected', fromView, toView, toTrack);
+      let newTrackUid = null;
 
       if ( fromView == toView) {
         alert("A view can not show its own viewport.");
       } else {
         let hostTrack = getTrackByUid(this.state.views[toView].tracks, toTrack);
         let position = getTrackPositionByUid(this.state.views[toView].tracks, toTrack);
+        newTrackUid = slugid.nice();
+
+        let projectionTypes = {
+            'top': 'horizontal', 
+            'bottom': 'horizontal', 
+            'center': 'center',
+            'left': 'vertical',
+            'right': 'vertical'}
 
         let newTrack = {
-          uid: slugid.nice(),
-          type: 'viewport-projection-' + position,
+          uid: newTrackUid,
+          type: 'viewport-projection-' + projectionTypes[position],
           fromViewUid: fromView
         }
 
@@ -771,6 +784,8 @@ export class HiGlassComponent extends React.Component {
       this.setState({
             chooseTrackHandler: null
       });
+
+      return newTrackUid;
   }
 
   handleLocationYanked(uid1, uid2) {
@@ -1578,7 +1593,10 @@ export class HiGlassComponent extends React.Component {
        *
        * @param track: A view with tracks.
        */
-      if (track.type == 'viewport-projection-center' || track.type == 'viewport-projection-top') {
+      if (track.type == 'viewport-projection-center' 
+          || track.type == 'viewport-projection-horizontal'
+          || track.type == 'viewport-projection-vertical'
+      ) {
           let fromView = track.fromViewUid;
 
           track.registerViewportChanged = (trackId, listener) => this.addScalesChangedListener(fromView, trackId, listener),
