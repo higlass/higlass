@@ -665,7 +665,11 @@ export class HiGlassComponent extends React.Component {
           group1Members = [[uid1, lockData(uid1)]];
       } else {
           // view1 is already in a group
-          group1Members = dictItems(lockGroups[uid1]).map(x =>
+          group1Members = dictItems(lockGroups[uid1])
+              .filter(x => lockData(x))     // make sure we can create the necessary data for this lock
+                                           // in the case of location locks, this implies that the
+                                           // views it's locking exist
+              .map(x =>
             // x is [uid, [centerX, centerY, k]]
             [x[0], lockData(x[0])]
           )
@@ -676,7 +680,11 @@ export class HiGlassComponent extends React.Component {
           group2Members = [[uid2, lockData(uid2)]];
       } else {
           // view2 is already in a group
-          group2Members = dictItems(lockGroups[uid2]).map(x =>
+          group2Members = dictItems(lockGroups[uid2])
+              .filter(x => lockData(x))     // make sure we can create the necessary data for this lock
+                                           // in the case of location locks, this implies that the
+                                           // views it's locking exist
+              .map(x =>
             // x is [uid, [centerX, centerY, k]]
             [x[0], lockData(x[0])]
           )
