@@ -1,3 +1,8 @@
+v0.7.1
+
+- Added horizontal and vertical track viewport projections
+- Bug fix where assembly name gets removed from track label
+
 v0.7.0
 
 - Added an assembly selector to the GenomePositionSearchBox
