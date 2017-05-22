@@ -445,7 +445,7 @@ export const testViewConfX2 =
         "left": [],
         "top": [
           {
-            "uid": "d1YqhSqQRFynu4r34zKZhg",
+            "uid": "line1",
             "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
             "height": 20,
             "width": 843,
@@ -463,7 +463,7 @@ export const testViewConfX2 =
             "name": "GM12878-E116-H3K27ac.fc.signal"
           },
           {
-            "uid": "bkUDRNN-SfyvT4YxgUy3yA",
+            "uid": "line2",
             "tilesetUid": "e0DYtZBSTqiMLHoaimsSpg",
             "height": 20,
             "width": 843,

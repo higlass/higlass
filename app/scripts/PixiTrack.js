@@ -155,6 +155,7 @@ export class PixiTrack extends Track {
         this.labelText.style = {fontSize: this.labelTextFontSize + 'px',
                               fontFamily: this.labelTextFontFamily,
                               fill: stroke};
+        this.labelText.alpha = this.options.labelTextOpacity ? this.options.labelTextOpacity : 1;
 
         this.labelText.visible = true;
 

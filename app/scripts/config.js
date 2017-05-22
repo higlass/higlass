@@ -151,6 +151,17 @@ export const optionsInfo = {
             'hidden': {name: "Hidden", value: 'hidden'}
         }
     },
+    labelTextOpacity: {
+        name: "Label Text Opacity",
+        inlineOptions: {
+            '0': { name: "0%", value: 0 },
+            '0.2': { name: "20%", value: 0.2 },
+            '0.4': { name: "40%", value: 0.4 },
+            '0.6': { name: "60%", value: 0.6 },
+            '0.8': { name: "80%", value: 0.8 },
+            '1.0': { name: '100%', value: 1.0 },
+        }
+    },
     labelBackgroundOpacity: {
         name: "Label Background Opacity",
         inlineOptions: {
@@ -270,7 +281,7 @@ export const tracksInfo = [
             colorbarLabelsPosition: 'inside',
             colorbarPosition: 'topRight'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 
         'colorbarPosition', 'colorbarLabelsPosition']//, 'colorbarOrientation']
         //exportable: true
     },
@@ -289,7 +300,7 @@ export const tracksInfo = [
                 ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], //corresponding to the fall colormap
             maxZoom: null
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped',
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped',
                             'colorbarPosition', 'colorbarLabelsPosition']
     },
     {
@@ -308,7 +319,7 @@ export const tracksInfo = [
             colorbarLabelsPosition: 'inside',
             colorbarPosition: 'topRight'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 
                             'oneDHeatmapFlipped', 'colorbarPosition', 'colorbarLabelsPosition' ]
     },
     {
@@ -317,7 +328,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         thumbnail: svgHorizontalLineIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeColor', 'valueScaling' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeColor', 'valueScaling' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'topLeft',
@@ -333,7 +344,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         thumbnail: svgVerticalLineIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'axisPositionVertical', 'lineStrokeColor', 'valueScaling' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionVertical', 'lineStrokeColor', 'valueScaling' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'bottomLeft',
@@ -356,7 +367,7 @@ export const tracksInfo = [
         local: false,
         orientation: ['1d-horizontal'],
         name: '1D Rectangles',
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'axisPositionHorizontal' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'bottomLeft',
@@ -371,7 +382,7 @@ export const tracksInfo = [
         local: false,
         orientation: ['1d-vertical'],
         name: '1D Rectangles',
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'axisPositionVertical' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionVertical' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'bottomLeft',
@@ -386,7 +397,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         thumbnail: 'horizontal-stacked-interval.png',
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity' ]
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity' ]
     },
     {
         type: 'left-stacked-interval',
@@ -394,7 +405,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         thumbnail: 'vertical-stacked-interval.png',
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity']
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity']
     },
     {
         type: 'viewport-projection-vertical',
@@ -452,7 +463,7 @@ export const tracksInfo = [
         orientation: '1d-horizontal',
         name: 'Gene Annotations',
         thumbnail: svgGeneAnnotationsIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'plusStrandColor', 'minusStrandColor' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'plusStrandColor', 'minusStrandColor' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'hidden',
@@ -468,7 +479,7 @@ export const tracksInfo = [
         orientation: '1d-vertical',
         name: 'Gene Annotations',
         thumbnail: svgVerticalGeneAnnotationsIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'plusStrandColor', 'minusStrandColor' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'plusStrandColor', 'minusStrandColor' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'hidden',
@@ -484,7 +495,7 @@ export const tracksInfo = [
         orientation: '2d',
         name: 'Arrowhead Domains',
         thumbnail: svgArrowheadDomainsIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'hidden',

@@ -48,6 +48,8 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     rerender(options, force) {
         this.options = options;
 
+        super.draw();
+
         //console.log('rerendering');
         for (let tile of this.visibleAndFetchedTiles()) {
             this.renderTile(tile);

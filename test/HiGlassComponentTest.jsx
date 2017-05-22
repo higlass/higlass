@@ -69,6 +69,7 @@ describe("Simple HiGlassComponent", () => {
     let hg19Text = '';
     let mm9Text = '';
 
+    /*
     describe("1D viewport projection", () => {
         let vpUid = null;
         let vp2DUid = null;
@@ -145,8 +146,6 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         })
 
-        return;
-
         it ('Should make sure that the track labels still contain the assembly' ,(done) => {
             let track = getTrackObject(hgc, 'bb', 'line2');
             expect(track.labelText.text.indexOf('hg19')).to.eql(0);
@@ -180,7 +179,6 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
-    return;
 
     describe("Starting with no genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -600,6 +598,7 @@ describe("Simple HiGlassComponent", () => {
         });
 
     });
+    */
 
     describe("Track addition and removal", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -637,8 +636,25 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
 
+        it ("should change the opacity of the first text label to 20%", (done) => {
+            let newOptions = JSON.parse(JSON.stringify(testViewConfX2.views[0].tracks.top[0].options))
+            newOptions.labelTextOpacity = 0.2;
 
+            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
+            hgc.setState(hgc.instance().state);
+
+            expect(getTrackObject(hgc, 'aa', 'line1').labelText.alpha).to.be.below(.21);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("should do something else", (done) => {
+
+            setTimeout(done, shortLoadTime);
+        });
     });
+
+    return;
 
     describe("Positioning a more complex layout", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -668,7 +684,7 @@ describe("Simple HiGlassComponent", () => {
                           />, 
                 {attachTo: div});
 
-            setTimeout(done, pageLoadTime);
+            setTimeout(done, tileLoadTime);
         });
 
         it ("should load the initial config", (done) => {
