@@ -19,14 +19,16 @@ let remoteServer = "52.45.229.11";
 export const usedServer = remoteServer;
 
 let availableColors = {
-    'red': { name: "Red", value: "red"},
-    'orange': { name: "Orange", value: "orange"},
-    'brown': { name: "Brown", value: "brown"},
+    'black': { name: "Black", value: "black"},
     'blue': { name: "Blue", value: "blue"},
+    'brown': { name: "Brown", value: "brown"},
     'cyan': { name: "Cyan", value: "cyan"},
     'green': { name: "Green", value: "green"},
     'grey': { name: "Grey", value: "grey"},
-    'black': { name: "Black", value: "black"}
+    'orange': { name: "Orange", value: "orange"},
+    'purple': { name: "Purple", value: "purple"},
+    'turquoise': { name: "Turquoise", value: "turquoise"},
+    'red': { name: "Red", value: "red"}
 }
 
 export const optionsInfo = {

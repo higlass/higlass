@@ -145,6 +145,8 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         })
 
+        return;
+
         it ('Should make sure that the track labels still contain the assembly' ,(done) => {
             let track = getTrackObject(hgc, 'bb', 'line2');
             expect(track.labelText.text.indexOf('hg19')).to.eql(0);
@@ -178,6 +180,7 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
+    return;
 
     describe("Starting with no genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
