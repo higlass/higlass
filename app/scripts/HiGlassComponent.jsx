@@ -2184,6 +2184,10 @@ export class HiGlassComponent extends React.Component {
 
             looseTracks.forEach(t => this.addCallbacks(v.uid, t));
 
+            // make sure that the layout for this view refers to this view
+            if (v.layout)
+                v.layout.i = v.uid;
+
             // add default options (as specified in config.js
             // (e.g. line color, heatmap color scales, etc...)
             looseTracks.forEach(t => {

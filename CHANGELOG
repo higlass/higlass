@@ -1,6 +1,8 @@
 v0.7.3
 
 - Added stroke width as a property of line tracks
+- Fixed view layout bug caused by the "i" member of the layout not
+  matching the view's uid
 
 v0.7.2
 

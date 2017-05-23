@@ -24,6 +24,8 @@ import slugid from 'slugid';
 import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
 import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
 import {
+    fritzBug1,
+    fritzBug2,
     project1D,
     noGPSB,
     onlyGPSB,
@@ -69,7 +71,46 @@ describe("Simple HiGlassComponent", () => {
     let hg19Text = '';
     let mm9Text = '';
 
-    /*
+    describe("Track addition and removal", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'height:800px; width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            hgc = mount(<HiGlassComponent 
+                            options={{bounded: true}}
+                            viewConfig={fritzBug1}
+                          />, 
+                {attachTo: div});
+
+            setTimeout(done, pageLoadTime);
+        });
+
+        it ("should load the initial config", (done) => {
+            hgc.setProps({options: { bounded: true}, viewConfig: fritzBug2});
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Should ensure that the viewconfig's width equals the previously set one", (done) => {
+            expect(hgc.instance().state.views['a_'].layout.w).to.eql(12);
+            expect(hgc.instance().state.views['a_'].layout.h).to.eql(6);
+
+            setTimeout(done, shortLoadTime);
+        });
+    });
+
     describe("1D viewport projection", () => {
         let vpUid = null;
         let vp2DUid = null;
@@ -598,7 +639,6 @@ describe("Simple HiGlassComponent", () => {
         });
 
     });
-    */
 
     describe("Track addition and removal", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -666,8 +706,6 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
-
-    return;
 
     describe("Positioning a more complex layout", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
