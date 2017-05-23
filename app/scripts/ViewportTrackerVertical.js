@@ -18,8 +18,6 @@ export class ViewportTrackerVertical extends SVGTrack {
         this.viewportXDomain = null;
         this.viewportYDomain = null;
 
-        console.log('creating viewport tracker', this.uid);
-
         this.brush = brush()
             .extent([[-Number.MAX_VALUE, -Number.MAX_VALUE],
                      [Number.MAX_VALUE, Number.MAX_VALUE]])

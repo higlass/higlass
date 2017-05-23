@@ -1,8 +1,9 @@
-v0.7.3
+v0.7.3 - 2017-05-23
 
 - Added stroke width as a property of line tracks
 - Fixed view layout bug caused by the "i" member of the layout not
   matching the view's uid
+- Fixed resizing so that vertical changes get handled immediately
 
 v0.7.2
 

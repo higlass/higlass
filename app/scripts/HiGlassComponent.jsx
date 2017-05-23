@@ -185,6 +185,8 @@ export class HiGlassComponent extends React.Component {
             //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
             let heightOffset = 0;
 
+            this.updateRowHeight();
+
             this.fitPixiToParentContainer();
             this.refreshView(LONG_DRAG_TIMEOUT);
          }.bind(this));
@@ -852,20 +854,23 @@ export class HiGlassComponent extends React.Component {
     });
   }
 
-  handleLayoutChange(layout, layouts) {
+
+  updateRowHeight() {
       /**
-       * Notify the children that the layout has changed so that they
-       * know to redraw themselves
+       * Update the height of each row in the layout so that it takes up all
+       * of the available space in the div.
        */
-      if (!this.element)
+      if (!(this.props.options ? this.props.options.bounded : false)) {
+          // not bounded so we don't need to update the row height
           return;
+      }
 
       let width = this.element.parentNode.clientWidth;
       let height = this.element.parentNode.clientHeight;
 
       let maxHeight = 0;
-      for (let part of layout) {
-            maxHeight = Math.max(maxHeight, part.y + part.h);
+      for (let view of dictValues(this.state.views)) {
+            maxHeight = Math.max(maxHeight, view.layout.y + view.layout.h);
       }
 
       this.handleDragStart();
@@ -882,12 +887,7 @@ export class HiGlassComponent extends React.Component {
 
       let chosenRowHeight = prospectiveRowHeight;
 
-      for (let l of layout) {
-        let view = this.state.views[l.i];
-
-        if (view) {
-            view.layout = l;
-        }
+      for (let view of dictValues(this.state.views)) {
 
         let {totalWidth, totalHeight,
             topHeight, bottomHeight,
@@ -895,19 +895,45 @@ export class HiGlassComponent extends React.Component {
             centerWidth, centerHeight,
             minNecessaryHeight} = this.calculateViewDimensions(view);
 
-            if (minNecessaryHeight > l.h * (prospectiveRowHeight + MARGIN_HEIGHT)) {
+            if (minNecessaryHeight > view.layout.h * (prospectiveRowHeight + MARGIN_HEIGHT)) {
                 // we don't have space for one of the containers, so let them exceed the bounds
                 // of the box
                 chosenRowHeight = currentRowHeight;
                 break;
             }
+      }
+
+      this.setState({
+        rowHeight: chosenRowHeight
+      });
+  }
+
+  handleLayoutChange(layout, layouts) {
+      /**
+       * Notify the children that the layout has changed so that they
+       * know to redraw themselves
+       */
+
+      if (!this.element)
+          return;
+
+      for (let l of layout) {
+        let view = this.state.views[l.i];
+
+        if (view) {
+            view.layout = l;
+        }
+
       };
 
-      if (this.props.options ? this.props.options.bounded : false) {
-          this.setState({
-            rowHeight: chosenRowHeight
-          });
-      }
+      // some of the views have changed their height
+      /*
+      this.setState({
+          views: this.state.views
+      });
+      */
+
+      this.updateRowHeight();
 
       this.refreshView(LONG_DRAG_TIMEOUT);
   };
