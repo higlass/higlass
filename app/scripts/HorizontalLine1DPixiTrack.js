@@ -50,7 +50,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         super.draw();
 
-        //console.log('rerendering');
         for (let tile of this.visibleAndFetchedTiles()) {
             this.renderTile(tile);
         }
@@ -165,7 +164,9 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         let tileXScale = scaleLinear().domain([0, this.tilesetInfo.tile_size])
         .range([tileX,tileX + tileWidth]);
 
-        graphics.lineStyle(1, stroke, 1);
+        let strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
+        graphics.lineStyle(strokeWidth, stroke, 1);
+
        // graphics.beginFill(0xFF700B, 1);
         let j = 0;
 

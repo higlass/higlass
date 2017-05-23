@@ -648,6 +648,19 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
 
+        it ("should change the stroke width of the second line to 5", (done) => {
+            let newOptions = JSON.parse(JSON.stringify(testViewConfX2.views[0].tracks.top[1].options))
+            newOptions.lineStrokeWidth = 5;
+
+            hgc.instance().handleTrackOptionsChanged('aa', 'line2', newOptions);
+            hgc.setState(hgc.instance().state);
+
+            expect(getTrackObject(hgc, 'aa', 'line1').labelText.alpha).to.be.below(.21);
+
+            setTimeout(done, shortLoadTime);
+
+        });
+
         it ("should do something else", (done) => {
 
             setTimeout(done, shortLoadTime);

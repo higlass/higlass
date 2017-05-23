@@ -39,7 +39,7 @@ export const optionsInfo = {
             'log': {name: "Log", value: 'log' }
         }
     },
-    gridStrokeWidth: {
+    lineStrokeWidth: {
         name: "Stroke Width",
         inlineOptions: {
             '1': { name: "1", value: 1},
@@ -58,10 +58,6 @@ export const optionsInfo = {
         inlineOptions: availableColors
     },
     lineStrokeColor:  {
-        name: "Stroke color",
-        inlineOptions: availableColors
-    },
-    gridStrokeColor:  {
         name: "Stroke color",
         inlineOptions: availableColors
     },
@@ -328,12 +324,13 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         thumbnail: svgHorizontalLineIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeColor', 'valueScaling' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'topLeft',
             axisPositionHorizontal: 'right',
             lineStrokeColor: 'blue',
+            lineStrokeWidth: 1,
             valueScaling: 'linear'
         }
     },
@@ -344,11 +341,12 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         thumbnail: svgVerticalLineIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionVertical', 'lineStrokeColor', 'valueScaling' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionVertical', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'bottomLeft',
             axisPositionVertical: 'top',
+            lineStrokeWidth: 1,
             lineStrokeColor: 'blue',
             valueScaling: 'linear'
         }
@@ -531,10 +529,10 @@ export const tracksInfo = [
         name: 'Chromosome Grid (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null,
-        availableOptions: ['gridStrokeWidth', 'gridStrokeColor'],
+        availableOptions: ['lineStrokeWidth', 'lineStrokeColor'],
         defaultOptions: {
-            gridStrokeWidth: 1,
-            gridStrokeColor: 'grey'
+            lineStrokeWidth: 1,
+            lineStrokeColor: 'grey'
         }
     }
     ,
