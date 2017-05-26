@@ -50,10 +50,30 @@ module.exports = {
     ]
   },
   externals: {
-      "pixi.js": 'PIXI',
-      react: 'React',
-      "react-dom": 'ReactDOM',
-      "react-bootstrap": "ReactBootstrap"
+      "pixi.js": {
+        commonjs: "pixi.js",
+        commonjs2: "pixi.js",
+        amd: "pixi.js",
+        root: "PIXI"
+      },
+      "react" : {
+        commonjs: "react",
+        commonjs2: "react",
+        amd: "react",
+        root: "React"
+      },
+      "react-dom": {
+        commonjs: "react-dom",
+        commonjs2: "react-dom",
+        amd: "react-dom",
+        root: "ReactDOM"
+      },
+      "react-bootstrap": {
+        commonjs: "react-bootstrap",
+        commonjs2: "react-bootstrap",
+        amd: "react-bootstrap",
+        root: "ReactBootstrap"
+      }
   },
   plugins: [
     new webpack.DefinePlugin({
