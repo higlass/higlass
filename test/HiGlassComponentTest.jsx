@@ -66,9 +66,55 @@ function getTrackObject(hgc, viewUid, trackUid) {
 }
 
 describe("Simple HiGlassComponent", () => {
-    let hgc = null, div = null;
+    let hgc = null, div = null, atm=null;
 
-    /*
+    describe("AddTrackModal", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'height:400px; width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            hgc = mount(<HiGlassComponent 
+                            options={{bounded: true}}
+                            viewConfig={oneViewConfig}
+                          />, 
+                {attachTo: div});
+            atm = mount(<AddTrackModal
+                                host={null}
+                                onCancel={() => null}
+                                onTrackChosen={null}
+                                position={null}
+                                show={true}
+                                trackSourceServers={['http://higlass.io/api/v1']}
+                              />, {attachTo: div});
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("has the focus in the searchbar when adding a new track", (done) => {
+            const inputField = ReactDOM.findDOMNode(atm.instance().tilesetFinder.searchBox);
+
+            // make sure the input field is equal to the document's active element
+            // e.g. that it has focus
+            expect(inputField).to.be.eql(document.activeElement);
+
+            setTimeout(done, shortLoadTime);
+        });
+    });
+
+    return;
+
     describe("Multiple track addition", () => {
         if (hgc) {
             hgc.unmount();
@@ -355,7 +401,6 @@ describe("Simple HiGlassComponent", () => {
         });
 
     });
-    */
 
     describe("Starting with no genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -545,7 +590,6 @@ describe("Simple HiGlassComponent", () => {
 
     });
 
-    return;
 
     describe("Starting with an existing genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -1159,12 +1203,6 @@ describe("Simple HiGlassComponent", () => {
 
     describe("Double view", () => {
 
-        /*
-        beforeAll((done) => {
-            testAsync(done);
-        });
-        */
-
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
                 hgc.unmount();
@@ -1277,22 +1315,6 @@ describe("Simple HiGlassComponent", () => {
             // make sure the labels are drawn on the outside
             expect(heatmap.axis.pAxis.getBounds().x).to.be.below(heatmap.pColorbar.getBounds().x);
             //hgc.instance().handleExportSVG(); 
-        });
-
-        it ("has the focus in the searchbar when adding a new track", () => {
-            const atm = mount(<AddTrackModal
-                                host={null}
-                                onCancel={() => null}
-                                onTrackChosen={null}
-                                position={null}
-                                show={true}
-                                trackSourceServers={[]}
-                              />);
-            const inputField = ReactDOM.findDOMNode(atm.instance().tilesetFinder.searchBox);
-
-            // make sure the input field is equal to the document's active element
-            // e.g. that it has focus
-            expect(inputField).to.be.eql(document.activeElement);
         });
 
         it ("locks the scales and recenters the page", (done) => {
