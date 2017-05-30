@@ -155,7 +155,7 @@ function brush(dim) {
       filter = defaultFilter,
       listeners = dispatch(brush, "start", "brush", "end"),
       handleSize = 6,
-      touchending;
+      touchending
 
   function brush(group) {
     var overlay = group
@@ -397,10 +397,6 @@ function brush(dim) {
 
       dx = point[0] - point0[0];
       dy = point[1] - point0[1];
-      
-      let width = selection[1][0] - selection[0][0];
-      let height = selection[1][1] - selection[0][1];
-      
 
       switch (mode) {
         case MODE_SPACE:
@@ -410,16 +406,10 @@ function brush(dim) {
           break;
         }
         case MODE_HANDLE: {
-          if (signX < 0) dx = Math.max(W - w0, Math.min(E - w0, dx));
-          else if (signX > 0) dx = Math.max(W - e0, Math.min(E - e0, dx));
-          if (signY < 0) dy = Math.max(N - n0, Math.min(S - n0, dy));
-          else if (signY > 0) dy = Math.max(N - s0, Math.min(S - s0, dy));
-
-          if (signX < 0) w1 = w0 + dx, e1 = e0;
-          else if (signX > 0) w1 = w0, e1 = e0 + dx;
-          if (signY < 0) n1 = n0 + dy, s1 = s0;
-          else if (signY > 0) n1 = n0, s1 = s0 + dy;
-
+          if (signX < 0) dx = Math.max(W - w0, Math.min(E - w0, dx)), w1 = w0 + dx, e1 = e0;
+          else if (signX > 0) dx = Math.max(W - e0, Math.min(E - e0, dx)), w1 = w0, e1 = e0 + dx;
+          if (signY < 0) dy = Math.max(N - n0, Math.min(S - n0, dy)), n1 = n0 + dy, s1 = s0;
+          else if (signY > 0) dy = Math.max(N - s0, Math.min(S - s0, dy)), n1 = n0, s1 = s0 + dy;
           break;
         }
         case MODE_CENTER: {
@@ -451,25 +441,7 @@ function brush(dim) {
           || selection[0][1] !== n1
           || selection[1][0] !== e1
           || selection[1][1] !== s1) {
-
-        if (mode == MODE_HANDLE) { 
-            let width = Math.abs(e1 - w1);
-            let height = Math.abs(n1 - s1);
-
-            if (width < height * selectionAspect) 
-                height = width / selectionAspect;
-            else
-                width = height * selectionAspect;
-
-            if (signX < 0) w1 = e1 - width;
-            else if (signX > 0) e1 = w1 + width;
-            if (signY < 0) n1 = s1 - height;
-            else if (signY > 0) s1 = n1 + height;
-
-            state.selection = [[w1, n1], [e1, s1]];
-        } else {
-            state.selection = [[w1, n1], [e1, s1]];
-        }
+        state.selection = [[w1, n1], [e1, s1]];
         redraw.call(that);
         emit.brush();
       }

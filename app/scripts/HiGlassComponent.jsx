@@ -24,13 +24,20 @@ import {
   download,
   getTrackByUid,
   getTrackPositionByUid,
+  positionedTracksToAllTracks,
   relToAbsChromPos,
   scalesCenterAndK,
   scalesToGenomeLocations,
   totalTrackPixelHeight
 } from './utils.js';
-import {positionedTracksToAllTracks} from './utils.js';
-import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
+
+import {
+    usedServer, 
+    tracksInfo, 
+    tracksInfoByType,
+    defaultServer
+} from './config.js';
+
 import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT, LOCATION_LISTENER_PREFIX} from './config.js';
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
 import {ExportLinkModal} from './ExportLinkModal.jsx';
@@ -58,6 +65,7 @@ export class HiGlassComponent extends React.Component {
         this.uid = slugid.nice();
         this.rowHeight = 40;
         this.tiledPlots = {};
+        this.genomePositionSearchBoxes = {};
 
         // keep track of the xScales of each Track Renderer
         this.xScales = {};
@@ -176,6 +184,8 @@ export class HiGlassComponent extends React.Component {
         this.resizeSensor = new ResizeSensor(this.element.parentNode, function() {
             //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
             let heightOffset = 0;
+
+            this.updateRowHeight();
 
             this.fitPixiToParentContainer();
             this.refreshView(LONG_DRAG_TIMEOUT);
@@ -634,6 +644,10 @@ export class HiGlassComponent extends React.Component {
   }
 
   viewScalesLockData(uid) {
+    if (!this.xScales[uid] || !this.yScales[uid]) {
+          console.warn("View scale lock doesn't correspond to existing uid: ", uid);
+            return;
+    }
     return scalesCenterAndK(this.xScales[uid], this.yScales[uid])
   }
 
@@ -653,7 +667,11 @@ export class HiGlassComponent extends React.Component {
           group1Members = [[uid1, lockData(uid1)]];
       } else {
           // view1 is already in a group
-          group1Members = dictItems(lockGroups[uid1]).map(x =>
+          group1Members = dictItems(lockGroups[uid1])
+              .filter(x => lockData(x))     // make sure we can create the necessary data for this lock
+                                           // in the case of location locks, this implies that the
+                                           // views it's locking exist
+              .map(x =>
             // x is [uid, [centerX, centerY, k]]
             [x[0], lockData(x[0])]
           )
@@ -664,7 +682,11 @@ export class HiGlassComponent extends React.Component {
           group2Members = [[uid2, lockData(uid2)]];
       } else {
           // view2 is already in a group
-          group2Members = dictItems(lockGroups[uid2]).map(x =>
+          group2Members = dictItems(lockGroups[uid2])
+              .filter(x => lockData(x))     // make sure we can create the necessary data for this lock
+                                           // in the case of location locks, this implies that the
+                                           // views it's locking exist
+              .map(x =>
             // x is [uid, [centerX, centerY, k]]
             [x[0], lockData(x[0])]
           )
@@ -729,16 +751,32 @@ export class HiGlassComponent extends React.Component {
      * @param fromView: The uid of the view that we want to project
      * @param toView: The uid of the view that we want to project to
      * @param toTrack: The track we want to project to
+     *
+     * Returns
+     * -------
+     *
+     *  newTrackUid: string
+     *      The uid of the newly created viewport projection track
      */
+      let newTrackUid = null;
+
       if ( fromView == toView) {
         alert("A view can not show its own viewport.");
       } else {
         let hostTrack = getTrackByUid(this.state.views[toView].tracks, toTrack);
         let position = getTrackPositionByUid(this.state.views[toView].tracks, toTrack);
+        newTrackUid = slugid.nice();
+
+        let projectionTypes = {
+            'top': 'horizontal', 
+            'bottom': 'horizontal', 
+            'center': 'center',
+            'left': 'vertical',
+            'right': 'vertical'}
 
         let newTrack = {
-          uid: slugid.nice(),
-          type: 'viewport-projection-' + position,
+          uid: newTrackUid,
+          type: 'viewport-projection-' + projectionTypes[position],
           fromViewUid: fromView
         }
 
@@ -748,6 +786,8 @@ export class HiGlassComponent extends React.Component {
       this.setState({
             chooseTrackHandler: null
       });
+
+      return newTrackUid;
   }
 
   handleLocationYanked(uid1, uid2) {
@@ -814,20 +854,23 @@ export class HiGlassComponent extends React.Component {
     });
   }
 
-  handleLayoutChange(layout, layouts) {
+
+  updateRowHeight() {
       /**
-       * Notify the children that the layout has changed so that they
-       * know to redraw themselves
+       * Update the height of each row in the layout so that it takes up all
+       * of the available space in the div.
        */
-      if (!this.element)
+      if (!(this.props.options ? this.props.options.bounded : false)) {
+          // not bounded so we don't need to update the row height
           return;
+      }
 
       let width = this.element.parentNode.clientWidth;
       let height = this.element.parentNode.clientHeight;
 
       let maxHeight = 0;
-      for (let part of layout) {
-            maxHeight = Math.max(maxHeight, part.y + part.h);
+      for (let view of dictValues(this.state.views)) {
+            maxHeight = Math.max(maxHeight, view.layout.y + view.layout.h);
       }
 
       this.handleDragStart();
@@ -844,12 +887,7 @@ export class HiGlassComponent extends React.Component {
 
       let chosenRowHeight = prospectiveRowHeight;
 
-      for (let l of layout) {
-        let view = this.state.views[l.i];
-
-        if (view) {
-            view.layout = l;
-        }
+      for (let view of dictValues(this.state.views)) {
 
         let {totalWidth, totalHeight,
             topHeight, bottomHeight,
@@ -857,19 +895,45 @@ export class HiGlassComponent extends React.Component {
             centerWidth, centerHeight,
             minNecessaryHeight} = this.calculateViewDimensions(view);
 
-            if (minNecessaryHeight > l.h * (prospectiveRowHeight + MARGIN_HEIGHT)) {
+            if (minNecessaryHeight > view.layout.h * (prospectiveRowHeight + MARGIN_HEIGHT)) {
                 // we don't have space for one of the containers, so let them exceed the bounds
                 // of the box
                 chosenRowHeight = currentRowHeight;
                 break;
             }
+      }
+
+      this.setState({
+        rowHeight: chosenRowHeight
+      });
+  }
+
+  handleLayoutChange(layout, layouts) {
+      /**
+       * Notify the children that the layout has changed so that they
+       * know to redraw themselves
+       */
+
+      if (!this.element)
+          return;
+
+      for (let l of layout) {
+        let view = this.state.views[l.i];
+
+        if (view) {
+            view.layout = l;
+        }
+
       };
 
-      if (this.props.options ? this.props.options.bounded : false) {
-          this.setState({
-            rowHeight: chosenRowHeight
-          });
-      }
+      // some of the views have changed their height
+      /*
+      this.setState({
+          views: this.state.views
+      });
+      */
+
+      this.updateRowHeight();
 
       this.refreshView(LONG_DRAG_TIMEOUT);
   };
@@ -1555,7 +1619,10 @@ export class HiGlassComponent extends React.Component {
        *
        * @param track: A view with tracks.
        */
-      if (track.type == 'viewport-projection-center') {
+      if (track.type == 'viewport-projection-center' 
+          || track.type == 'viewport-projection-horizontal'
+          || track.type == 'viewport-projection-vertical'
+      ) {
           let fromView = track.fromViewUid;
 
           track.registerViewportChanged = (trackId, listener) => this.addScalesChangedListener(fromView, trackId, listener),
@@ -1923,6 +1990,91 @@ export class HiGlassComponent extends React.Component {
         return allTracks;
     }
 
+    handleSelectedAssemblyChanged(viewUid, newAssembly, newAutocompleteId) {
+        /*
+         * A new assembly was selected in the GenomePositionSearchBox. Update the corresponding
+         * view's entry
+         *
+         * Arguments
+         * ---------
+         *      
+         * viewUid: string
+         *      The uid of the view this genomepositionsearchbox belongs to
+         * newAssembly: string
+         *      The new assembly it should display coordinates for
+         *
+         * Returns
+         * -------
+         *
+         *  Nothing
+         */
+        let views = this.state.views;
+
+        views[viewUid].genomePositionSearchBox.chromInfoId = newAssembly;
+        views[viewUid].genomePositionSearchBox.autocompleteId = newAutocompleteId;
+    }
+
+    createGenomePostionSearchBoxEntry(existingGenomePositionSearchBox, suggestedAssembly) {
+        /*
+         * Create genomePositionSearchBox settings. If existing settings for this view exist,
+         * then use those. Otherwise use defaults.
+         *
+         * Arguments:
+         *     existingGenomePositionSearchBox: 
+         *          { 
+         *              autocompleteServer: string (e.g. higlass.io/api/v1),
+         *              autocompleteId: string (e.g. Xz1f)
+         *              chromInfoServer: string (e.g. higlass.io/api/v1)
+         *              chromInfoId: string (e.g. hg19)
+         *              visible: boolean (e.g. true)
+         *           }
+         *          If there's already information about which assembly and autocomplete
+         *          source to use, it should be in this format.
+         *
+         *      suggestedAssembly:
+         *          Guess which assembly should be displayed based on the tracks visible.
+         *          In all meaningful scenarios, all tracks should be of the same assembly
+         *          but in case they're not, suggest the most common one
+         *
+         * Return:
+         *      A valid genomePositionSearchBox object 
+         *
+         */
+        let newGpsb = existingGenomePositionSearchBox;
+        let defaultGpsb = {
+                "autocompleteServer": defaultServer,
+                //"autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+                "chromInfoServer": defaultServer,
+                "visible": false
+        }
+
+        if (!newGpsb) 
+            newGpsb = JSON.parse(JSON.stringify(defaultGpsb));
+
+        if (!newGpsb.autocompleteServer)
+            newGpsb.autocompleteServer = defaultGpsb.autocompleteServer;
+
+        /* 
+         * If we don't have an autocompleteId, we'll try to look it up in 
+         * the autocomplete server
+         */
+        /*
+        if (!newGpsb.autocompleteId)
+            newGpsb.autocompleteId = defaultGpsb.autocompleteId;
+        */
+
+        if (!newGpsb.chromInfoId)
+            newGpsb.chromInfoId = suggestedAssembly;
+
+        if (!newGpsb.chromInfoServer)
+            newGpsb.chromInfoServer = defaultGpsb.chromInfoServer;
+
+        if (!newGpsb.visible)
+            newGpsb.visible = false;
+
+        return newGpsb;
+    }
+
     handleTogglePositionSearchBox(viewUid) {
         /*
          * Show or hide the genome position search box for a given view
@@ -1930,6 +2082,30 @@ export class HiGlassComponent extends React.Component {
 
         let view = this.state.views[viewUid];
         view.genomePositionSearchBoxVisible = !view.genomePositionSearchBoxVisible;
+
+        let positionedTracks = positionedTracksToAllTracks(view.tracks);
+
+        // count the number of tracks that are part of some assembly
+        let assemblyCounts = {};
+        for (let track of positionedTracks) {
+            if (!track.coordSystem)
+                continue;
+
+            if (!assemblyCounts[track.coordSystem])
+                assemblyCounts[track.coordSystem] = 0
+
+            assemblyCounts[track.coordSystem] += 1;
+        }
+
+        let sortedAssemblyCounts = dictItems(assemblyCounts).sort((a,b) => b[1] - a[1])
+        let selectedAssembly = 'hg19'; // always the default if nothing is otherwise selected
+
+        if (sortedAssemblyCounts.length)
+            selectedAssembly = sortedAssemblyCounts[0][0];
+
+        view.genomePositionSearchBox = this.createGenomePostionSearchBoxEntry(view.genomePositionSearchBox, 
+            selectedAssembly);
+        view.genomePositionSearchBox.visible = !view.genomePositionSearchBox.visible;
 
         this.refreshView();
 
@@ -2033,6 +2209,10 @@ export class HiGlassComponent extends React.Component {
             looseTracks = this.addNamesToTracks(looseTracks);
 
             looseTracks.forEach(t => this.addCallbacks(v.uid, t));
+
+            // make sure that the layout for this view refers to this view
+            if (v.layout)
+                v.layout.i = v.uid;
 
             // add default options (as specified in config.js
             // (e.g. line color, heatmap color scales, etc...)
@@ -2194,17 +2374,23 @@ export class HiGlassComponent extends React.Component {
                 let genomePositionSearchBoxUid = slugid.nice();
 
                 this.genomePositionSearchBox = null;
-                let genomePositionSearchBox = view.genomePositionSearchBoxVisible ?
+                let genomePositionSearchBox = view.genomePositionSearchBox ? (
+                    view.genomePositionSearchBox.visible ? 
                     (<GenomePositionSearchBox
-                        ref={c => { this.genomePositionSearchBox = c } }
-                        autocompleteSource={view.autocompleteSource}
-                        chromInfoPath={view.chromInfoPath}
+                        autocompleteServer={view.genomePositionSearchBox.autocompleteServer}
+                        autocompleteId={view.genomePositionSearchBox.autocompleteId}
+                        chromInfoServer={view.genomePositionSearchBox.chromInfoServer}
+                        chromInfoId={view.genomePositionSearchBox.chromInfoId}
                         key={'gpsb' + view.uid}
+                        onSelectedAssemblyChanged={(x,y) => this.handleSelectedAssemblyChanged(view.uid, x, y)}
+                        ref={c => { this.genomePositionSearchBoxes[view.uid] = c }}
                         registerViewportChangedListener={listener => this.addScalesChangedListener(view.uid, view.uid, listener)}
                         removeViewportChangedListener={() => this.removeScalesChangedListener(view.uid, view.uid)}
                         setCenters={(centerX, centerY, k, animate, animateTime) => this.setCenters[view.uid](centerX, centerY, k, false, animate, animateTime)}
                         twoD={true}
-                     />) : null;
+
+                        trackSourceServers={this.props.viewConfig.trackSourceServers}
+                     />) : null) : null;
                 //genomePositionSearchBox = null;
 
                 let multiTrackHeader = this.props.viewConfig.editable ?

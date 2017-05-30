@@ -78,6 +78,8 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
         // calculate the zoom level given the scales and the data bounds
         this.zoomLevel = this.calculateZoomLevel();
 
+        //console.log('zoomLevel:', this.zoomLevel);
+
         // x doesn't necessary mean 'x' axis, it just refers to the relevant axis
         // (x if horizontal, y if vertical)
         let xTiles =  tileProxy.calculateTiles(this.zoomLevel, this.relevantScale(),

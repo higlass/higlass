@@ -44,7 +44,6 @@
         2541491788.413425,
         2541475056.730041
       ],
-      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "initialXDomain": [
         2540437604.62585,
         2540875417.007728
@@ -176,8 +175,13 @@
         "center": [],
         "left": []
       },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-      "genomePositionSearchBoxVisible": true
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://test.higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "http://test.higlass.io/api/v1",
+        "chromInfoId": "hg19"
+        
+      }
     }
   ],
   "editable": true,
@@ -187,7 +191,7 @@
     "locksDict": {}
   },
   "trackSourceServers": [
-    "http://higlass.io/api/v1"
+    "http://test.higlass.io/api/v1"
   ],
   "locationLocks": {
     "locksByViewUid": {

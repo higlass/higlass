@@ -1,3 +1,31 @@
+v0.7.3 - 2017-05-23
+
+- Added stroke width as a property of line tracks
+- Fixed view layout bug caused by the "i" member of the layout not
+  matching the view's uid
+- Fixed resizing so that vertical changes get handled immediately
+
+v0.7.2
+
+- Added purple and turquoise colors
+- Added an option to control the label opacity
+
+v0.7.1
+
+- Added horizontal and vertical track viewport projections
+- Bug fix where assembly name gets removed from track label
+
+v0.7.0
+
+- Added an assembly selector to the GenomePositionSearchBox
+- Prefix track names with their assembly
+
+v0.6.9
+
+- Lower the default resolution of lines for performance reasons
+- Added outsideLeft, outsideRight, outsideTop and outsideBottom
+as available axis positions
+
 v0.6.8
 
 - Component sizes are adjsuted on component load

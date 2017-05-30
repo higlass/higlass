@@ -121,7 +121,11 @@ export class PixiTrack extends Track {
         if (this.dimensions[0] < 0)
             return;
 
-        let labelTextText = this.options.name ? this.options.name : 
+        let labelTextText = ''
+        if (this.tilesetInfo)
+            labelTextText += this.tilesetInfo.coordSystem ? this.tilesetInfo.coordSystem + " | " : '';
+
+        labelTextText += this.options.name ? this.options.name : 
             (this.tilesetInfo ? this.tilesetInfo.name : '');
 
         if (this.tilesetInfo && this.tilesetInfo.max_width && this.tilesetInfo.bins_per_dimension) {
@@ -143,7 +147,7 @@ export class PixiTrack extends Track {
 
                 labelTextText += '\n[Current data resolution: ' + formattedResolution + ']';
             } else {
-                console.log('NaN resolution, screen is probably too small. Dimensions:', this.dimensions);
+                console.warn('NaN resolution, screen is probably too small. Dimensions:', this.dimensions);
             }
         }
 
@@ -151,6 +155,7 @@ export class PixiTrack extends Track {
         this.labelText.style = {fontSize: this.labelTextFontSize + 'px',
                               fontFamily: this.labelTextFontFamily,
                               fill: stroke};
+        this.labelText.alpha = this.options.labelTextOpacity ? this.options.labelTextOpacity : 1;
 
         this.labelText.visible = true;
 

@@ -7,11 +7,14 @@ export class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     }
 
     calculateZoomLevel() {
+        // offset by 2 because 1D tiles are more dense than 2D tiles
+        // 1024 points per tile vs 256 for 2D tiles
         let xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
                                                       this.tilesetInfo.min_pos[0],
-                                                      this.tilesetInfo.max_pos[0]);
+                                                      this.tilesetInfo.max_pos[0]) - 2;
 
         let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
+        zoomLevel = Math.max(zoomLevel, 0);
 
         return zoomLevel
     }

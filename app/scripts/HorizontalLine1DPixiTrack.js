@@ -30,10 +30,26 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     }
 
+    /*
+     * defined in HorizontalTiled1DPixiTrack
+    calculateZoomLevel() {
+        let xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+                                                      this.tilesetInfo.min_pos[0],
+                                                      this.tilesetInfo.max_pos[0]) - 3;
+
+        let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
+
+        //console.log('zoom level:', zoomLevel);
+
+        return zoomLevel
+    }
+    */
+
     rerender(options, force) {
         this.options = options;
 
-        //console.log('rerendering');
+        super.draw();
+
         for (let tile of this.visibleAndFetchedTiles()) {
             this.renderTile(tile);
         }
@@ -56,6 +72,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             return;
         }
 
+
         if (this.options.axisPositionHorizontal == 'left' 
             || this.options.axisPositionVertical == 'top') {
             // left axis are shown at the beginning of the plot
@@ -63,8 +80,22 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             this.axis.pAxis.position.x = this.position[0];
             this.axis.pAxis.position.y = this.position[1];
 
+            this.axis.drawAxisRight(valueScale, this.dimensions[1]);
+        } else if (this.options.axisPositionHorizontal == 'outsideLeft' 
+            || this.options.axisPositionVertical == 'outsideTop') {
+            // left axis are shown at the beginning of the plot
+
+            this.axis.pAxis.position.x = this.position[0];
+            this.axis.pAxis.position.y = this.position[1];
+
             this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
-        } else {
+        } else if (this.options.axisPositionHorizontal == 'right' 
+            || this.options.axisPositionVertical == 'bottom') {
+            this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
+            this.axis.pAxis.position.y = this.position[1];
+            this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
+        } else if (this.options.axisPositionHorizontal == 'outsideRight' 
+            || this.options.axisPositionVertical == 'outsideBottom') {
             this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
             this.axis.pAxis.position.y = this.position[1];
             this.axis.drawAxisRight(valueScale, this.dimensions[1]);
@@ -133,7 +164,9 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         let tileXScale = scaleLinear().domain([0, this.tilesetInfo.tile_size])
         .range([tileX,tileX + tileWidth]);
 
-        graphics.lineStyle(1, stroke, 1);
+        let strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
+        graphics.lineStyle(strokeWidth, stroke, 1);
+
        // graphics.beginFill(0xFF700B, 1);
         let j = 0;
 
