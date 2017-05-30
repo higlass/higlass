@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {PropTypes} from 'prop-types';
 import {PopupMenu} from './PopupMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {ConfigViewMenu} from './ConfigViewMenu.jsx';
@@ -240,24 +241,24 @@ export class ViewHeader extends React.Component {
 }
 
 ViewHeader.propTypes = {
-    onAddView: React.PropTypes.func,
-    onCloseView: React.PropTypes.func,
-    onExportSVG: React.PropTypes.func,
-    onExportViewsAsJSON: React.PropTypes.func,
-    onExportViewsAsLink: React.PropTypes.func,
-    onLockLocation: React.PropTypes.func, 
-    onLockZoom: React.PropTypes.func, 
-    onLockZoomAndLocation: React.PropTypes.func, 
-    onProjectViewport: React.PropTypes.func, 
-    onTakeAndLockZoomAndLocation: React.PropTypes.func, 
-    onTogglePositionSearchBox: React.PropTypes.func, 
-    onTrackPositionChosen: React.PropTypes.func,
-    onUnlockLocation: React.PropTypes.func, 
-    onUnlockZoom: React.PropTypes.func, 
-    onUnlockZoomAndLocation: React.PropTypes.func, 
-    onYankLocation: React.PropTypes.func, 
-    onYankZoom: React.PropTypes.func, 
-    onYankZoomAndLocation: React.PropTypes.func, 
-    onZoomToData: React.PropTypes.func,
-    viewUid: React.PropTypes.string
+    onAddView: PropTypes.func,
+    onCloseView: PropTypes.func,
+    onExportSVG: PropTypes.func,
+    onExportViewsAsJSON: PropTypes.func,
+    onExportViewsAsLink: PropTypes.func,
+    onLockLocation: PropTypes.func, 
+    onLockZoom: PropTypes.func, 
+    onLockZoomAndLocation: PropTypes.func, 
+    onProjectViewport: PropTypes.func, 
+    onTakeAndLockZoomAndLocation: PropTypes.func, 
+    onTogglePositionSearchBox: PropTypes.func, 
+    onTrackPositionChosen: PropTypes.func,
+    onUnlockLocation: PropTypes.func, 
+    onUnlockZoom: PropTypes.func, 
+    onUnlockZoomAndLocation: PropTypes.func, 
+    onYankLocation: PropTypes.func, 
+    onYankZoom: PropTypes.func, 
+    onYankZoomAndLocation: PropTypes.func, 
+    onZoomToData: PropTypes.func,
+    viewUid: PropTypes.string
 }

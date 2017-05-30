@@ -1,5 +1,6 @@
 import '../styles/HiGlassApp.css';
 import React from 'react';
+import PropTypes from 'prop-types';
 //import d3 from 'd3';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
@@ -244,5 +245,5 @@ export class HiGlassDemo extends React.Component {
 }
 
 HiGlassApp.propTypes = {
-    viewConfigString: React.PropTypes.string
+    viewConfigString: PropTypes.string
 }

@@ -3,6 +3,7 @@ import "../styles/TiledPlot.css";
 import slugid from 'slugid';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import {tracksInfo} from './config.js';
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {CenterTrack, VerticalTiledPlot, HorizontalTiledPlot} from './PositionalTiledPlot.jsx';
@@ -738,7 +739,6 @@ export class TiledPlot extends React.Component {
 
         if (this.props.tracks['center'].length) {
             centerTrack = ( <div
-                                editable={this.props.editable}
                                 id={'center-track-container'}
                                 style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
                                         width: this.centerWidth, height: this.bottomHeight,
@@ -960,36 +960,36 @@ export class TiledPlot extends React.Component {
 }
 
 TiledPlot.propTypes = {
-    addTrackPosition: React.PropTypes.string,
-    canvasElement: React.PropTypes.object,
-    chooseTrackHandler: React.PropTypes.func,
-    dragging: React.PropTypes.bool,
-    editable: React.PropTypes.bool,
-    horizontalMargin: React.PropTypes.number,
-    initialXDomain: React.PropTypes.array,
-    initialYDomain: React.PropTypes.array,
-    onCloseTrack: React.PropTypes.func,
-    onDataDomainChanged: React.PropTypes.func,
-    onLockValueScale: React.PropTypes.func,
-    onNoTrackAdded: React.PropTypes.func,
-    onNewTilesLoaded: React.PropTypes.func,
-    onScalesChanged: React.PropTypes.func,
-    onTrackAdded: React.PropTypes.func,
-    onTrackOptionsChanged: React.PropTypes.func,
-    onTrackPositionChosen: React.PropTypes.func,
-    onUnlockValueScale: React.PropTypes.func,
-    registerDraggingChangedListener: React.PropTypes.func,
-    removeDraggingChangedListener: React.PropTypes.func,
-    setCentersFunction: React.PropTypes.func,
-    pixiStage: React.PropTypes.object,
-    svgElement: React.PropTypes.object,
-    trackSourceServers: React.PropTypes.array,
-    tracks: React.PropTypes.object,
-    "tracks.top": React.PropTypes.array,
-    "tracks.bottom": React.PropTypes.array,
-    "tracks.left": React.PropTypes.array,
-    "tracks.right": React.PropTypes.array,
-    verticalMargin: React.PropTypes.number,
-    uid: React.PropTypes.string,
-    zoomable: React.PropTypes.zoomable
+    addTrackPosition: PropTypes.string,
+    canvasElement: PropTypes.object,
+    chooseTrackHandler: PropTypes.func,
+    dragging: PropTypes.bool,
+    editable: PropTypes.bool,
+    horizontalMargin: PropTypes.number,
+    initialXDomain: PropTypes.array,
+    initialYDomain: PropTypes.array,
+    onCloseTrack: PropTypes.func,
+    onDataDomainChanged: PropTypes.func,
+    onLockValueScale: PropTypes.func,
+    onNoTrackAdded: PropTypes.func,
+    onNewTilesLoaded: PropTypes.func,
+    onScalesChanged: PropTypes.func,
+    onTrackAdded: PropTypes.func,
+    onTrackOptionsChanged: PropTypes.func,
+    onTrackPositionChosen: PropTypes.func,
+    onUnlockValueScale: PropTypes.func,
+    registerDraggingChangedListener: PropTypes.func,
+    removeDraggingChangedListener: PropTypes.func,
+    setCentersFunction: PropTypes.func,
+    pixiStage: PropTypes.object,
+    svgElement: PropTypes.object,
+    trackSourceServers: PropTypes.array,
+    tracks: PropTypes.object,
+    "tracks.top": PropTypes.array,
+    "tracks.bottom": PropTypes.array,
+    "tracks.left": PropTypes.array,
+    "tracks.right": PropTypes.array,
+    verticalMargin: PropTypes.number,
+    uid: PropTypes.string,
+    zoomable: PropTypes.bool
 }

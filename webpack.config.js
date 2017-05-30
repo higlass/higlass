@@ -55,7 +55,8 @@ module.exports = {
         commonjs2: "pixi.js",
         amd: "pixi.js",
         root: "PIXI"
-      },
+      }
+      ,
       "react" : {
         commonjs: "react",
         commonjs2: "react",
@@ -76,11 +77,13 @@ module.exports = {
       }
   },
   plugins: [
+      /*
     new webpack.DefinePlugin({
           'process.env': {
             'NODE_ENV': JSON.stringify('production')
           }
     }),
+    */
     new webpack.IgnorePlugin(/react\/addons/),
     new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
     new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
