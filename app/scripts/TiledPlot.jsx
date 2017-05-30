@@ -35,8 +35,9 @@ export class TiledPlot extends React.Component {
 
         // Add names to all the tracks
         this.trackRenderers = {}
-
         this.trackToReplace = null;
+
+        this.addTrackModal = null;
 
         /*
         let trackOptions = this.props.editable ?
@@ -935,7 +936,8 @@ export class TiledPlot extends React.Component {
                     onCancel={this.handleNoTrackAdded.bind(this)}
                     onTrackChosen={this.handleTrackAdded.bind(this)}
                     position={position}
-                    show={this.state.addTrackPosition || this.props.addTrackPosition}
+                    ref={c => this.addTrackModal = c}
+                    show={this.state.addTrackPosition != null || this.props.addTrackPosition != null}
                     trackSourceServers={this.props.trackSourceServers}
                  />)
         }

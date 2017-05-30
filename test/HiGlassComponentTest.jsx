@@ -90,20 +90,17 @@ describe("Simple HiGlassComponent", () => {
                             viewConfig={oneViewConfig}
                           />, 
                 {attachTo: div});
-            atm = mount(<AddTrackModal
-                                host={null}
-                                onCancel={() => null}
-                                onTrackChosen={null}
-                                position={null}
-                                show={true}
-                                trackSourceServers={['http://higlass.io/api/v1']}
-                              />, {attachTo: div});
 
-            setTimeout(done, shortLoadTime);
+            setTimeout(done, pageLoadTime);
         });
 
         it ("has the focus in the searchbar when adding a new track", (done) => {
-            const inputField = ReactDOM.findDOMNode(atm.instance().tilesetFinder.searchBox);
+            let tiledPlot = hgc.instance().tiledPlots['aa'];
+            tiledPlot.handleAddTrack('top');
+
+            hgc.update();
+
+            const inputField = ReactDOM.findDOMNode(tiledPlot.addTrackModal.tilesetFinder.searchBox);
 
             // make sure the input field is equal to the document's active element
             // e.g. that it has focus

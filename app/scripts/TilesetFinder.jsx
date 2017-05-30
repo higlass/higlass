@@ -52,6 +52,7 @@ export class TilesetFinder extends React.Component {
         let newOptions = existingOptions;
 
         let entries = newEntries.map(ne => {
+            console.log('ne:', ne);
             let ane = Object.assign({}, ne, {
                 server: sourceServer,
                 tilesetUid: ne.uuid,
