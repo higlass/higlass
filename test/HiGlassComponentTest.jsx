@@ -68,6 +68,7 @@ function getTrackObject(hgc, viewUid, trackUid) {
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
+    /*
     describe("AddTrackModal", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
@@ -109,8 +110,6 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
-
-    return;
 
     describe("Multiple track addition", () => {
         if (hgc) {
@@ -398,6 +397,7 @@ describe("Simple HiGlassComponent", () => {
         });
 
     });
+    */
 
     describe("Starting with no genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -444,6 +444,12 @@ describe("Simple HiGlassComponent", () => {
 
             done();
         });
+
+        it ("Makes sure that hg19 is an available option", (done) => {
+
+        });
+
+        return;
 
         it ("Searches for the Clock gene", (done) => {
             // this gene previously did nothing when searching for it
@@ -586,6 +592,8 @@ describe("Simple HiGlassComponent", () => {
         });
 
     });
+
+    return;
 
 
     describe("Starting with an existing genome position search box", () => {
