@@ -1,3 +1,4 @@
+yarn.lock
 build/
 npm-debug.log
 **/*.un~
