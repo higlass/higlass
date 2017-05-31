@@ -1,6 +1,7 @@
 import '../styles/AddTrackModal.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import slugid from 'slugid';
 import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-bootstrap';
 import {Form, Panel,Collapse} from 'react-bootstrap';
@@ -13,6 +14,7 @@ export class AddTrackModal extends React.Component {
         super(props);
 
         this.tilesetFinder = null;
+        this.multiSelect = null;
 
         options: {};
 
@@ -133,10 +135,10 @@ export class AddTrackModal extends React.Component {
 }
 
 AddTrackModal.propTypes = {
-    host: React.PropTypes.object,
-    show: React.PropTypes.bool,
-    onCancel: React.PropTypes.func,
-    onTrackChosen: React.PropTypes.func,
-    position: React.PropTypes.string,
-    trackSourceServers: React.PropTypes.array
+    host: PropTypes.object,
+    show: PropTypes.bool,
+    onCancel: PropTypes.func,
+    onTrackChosen: PropTypes.func,
+    position: PropTypes.string,
+    trackSourceServers: PropTypes.array
 }

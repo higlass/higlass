@@ -1,6 +1,7 @@
 import slugid from 'slugid';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import {Resizable,ResizableBox} from 'react-resizable';
 import {DraggableDiv} from './DraggableDiv.js';
 import {select,event,mouse} from 'd3-selection';
@@ -72,13 +73,13 @@ class TrackArea extends React.Component {
         let controls = (<div
                             style={{
                                 'position': 'absolute',
-                                'background-color': "rgba(255,255,255,0.7)",
+                                'backgroundColor': "rgba(255,255,255,0.7)",
                                 "right": "3px",
                                 'top': '3px',
-                                'pointer-events': 'none',
-                                'padding-left': '5px',
-                                'padding-right': '5px',
-                                'border-radius': '5px',
+                                'pointerEvents': 'none',
+                                'paddingLeft': '5px',
+                                'paddingRight': '5px',
+                                'borderRadius': '5px',
                                 'border': '1px solid #dddddd'
                             }}
                         >
@@ -221,11 +222,11 @@ class MoveableTrack extends TrackArea {
 }
 
 MoveableTrack.propTypes = {
-    className: React.PropTypes.string,
-    uid: React.PropTypes.string,
-    item: React.PropTypes.object,
-    height: React.PropTypes.number,
-    width: React.PropTypes.number,
+    className: PropTypes.string,
+    uid: PropTypes.string,
+    item: PropTypes.object,
+    height: PropTypes.number,
+    width: PropTypes.number,
 }
 
 export class CenterTrack extends FixedTrack {
@@ -330,14 +331,14 @@ class VerticalTrack extends MoveableTrack {
         let controls = (<div
                             style={{
                                 'position': 'absolute',
-                                'background-color': "rgba(255,255,255,0.7)",
+                                'backgroundColor': "rgba(255,255,255,0.7)",
                                 "left": "3px",
                                 'top': '3px',
-                                'pointer-events': 'none',
-                                'padding-left': 5,
-                                'padding-right': 5,
-                                'padding-bottom': 5,
-                                'border-radius': '5px',
+                                'pointerEvents': 'none',
+                                'paddingLeft': 5,
+                                'paddingRight': 5,
+                                'paddingBottom': 5,
+                                'borderRadius': '5px',
                                 'border': '1px solid #dddddd'
                             }}
                         >
@@ -572,14 +573,14 @@ class ListWrapper extends React.Component {
 }
 
 ListWrapper.propTypes = {
-    items: React.PropTypes.array,
-    className: React.PropTypes.string,
-    itemClass: React.PropTypes.string,
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
-    onSortStart: React.PropTypes.func,
-    onSortEnd: React.PropTypes.func,
-    component: React.PropTypes.func
+    items: PropTypes.array,
+    className: PropTypes.string,
+    itemClass: PropTypes.string,
+    width: PropTypes.number,
+    height: PropTypes.number,
+    onSortStart: PropTypes.func,
+    onSortEnd: PropTypes.func,
+    component: PropTypes.func
 }
 
 ListWrapper.defaultProps = {
@@ -651,8 +652,8 @@ export class HorizontalTiledPlot extends React.Component {
 }
 
 HorizontalTiledPlot.propTypes = {
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
+    width: PropTypes.number,
+    height: PropTypes.number,
 }
 
 export class VerticalTiledPlot extends React.Component {
@@ -703,7 +704,7 @@ export class VerticalTiledPlot extends React.Component {
 }
 
 HorizontalTiledPlot.propTypes = {
-    tracks: React.PropTypes.array
+    tracks: PropTypes.array
 }
 
 export class CenterTiledPlot extends React.Component {

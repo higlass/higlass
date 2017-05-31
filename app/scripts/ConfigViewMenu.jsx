@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
 import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
 
@@ -137,10 +138,10 @@ export class ConfigViewMenu extends React.Component {
 }
 
 ConfigViewMenu.propTypes = {
-    onLockLocation: React.PropTypes.func,
-    onLockZoom: React.PropTypes.func,
-    onYankZoom: React.PropTypes.func,
-    onYankLocation: React.PropTypes.func,
-    onYankZoomAndLocation: React.PropTypes.func,
-    onTogglePositionSearchBox: React.PropTypes.func,
+    onLockLocation: PropTypes.func,
+    onLockZoom: PropTypes.func,
+    onYankZoom: PropTypes.func,
+    onYankLocation: PropTypes.func,
+    onYankZoomAndLocation: PropTypes.func,
+    onTogglePositionSearchBox: PropTypes.func,
 }

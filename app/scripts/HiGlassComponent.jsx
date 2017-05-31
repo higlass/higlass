@@ -1,6 +1,6 @@
 import '../styles/MultiViewContainer.css';
 import React from 'react';
-import _ from 'lodash';
+import PropTypes from 'prop-types';
 import {select} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
 import {request,post} from 'd3-request';
@@ -2697,9 +2697,9 @@ export class HiGlassComponent extends React.Component {
 }
 
 HiGlassComponent.propTypes = {
-    children: React.PropTypes.array,
-    viewConfig: React.PropTypes.object,
-    onNewConfig: React.PropTypes.func,
-    options: React.PropTypes.object,
-    zoomFixed: React.PropTypes.bool
+    children: PropTypes.array,
+    viewConfig: PropTypes.object,
+    onNewConfig: PropTypes.func,
+    options: PropTypes.object,
+    zoomFixed: PropTypes.bool
   }

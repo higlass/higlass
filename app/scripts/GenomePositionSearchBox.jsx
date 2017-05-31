@@ -465,7 +465,12 @@ export class GenomePositionSearchBox extends React.Component {
 
     render() {
         let assemblyMenuItems = this.state.availableAssemblies.map(x => {
-            return (<MenuItem eventKey={x}>{x}</MenuItem>)
+            return (<MenuItem 
+                        key={x}
+                        eventKey={x}
+                    >
+                        {x}
+                    </MenuItem>)
         });
         return(
             <FormGroup
@@ -474,11 +479,12 @@ export class GenomePositionSearchBox extends React.Component {
             >
                 
                 <DropdownButton 
-                    className='assembly-pick-button'
-                    bsSize="small"
-                    ref={c => this.assemblyPickButton = c}
-                    title={this.state.selectedAssembly} 
+                    bsSize={"small"}
+                    className={'assembly-pick-button'}
+                    id={this.uid}
                     onSelect={this.handleAssemblySelect.bind(this)}
+                    ref={c => this.assemblyPickButton = c}
+                    title={this.state.selectedAssembly ? this.state.selectedAssembly : "(none)"} 
                 >
                     {assemblyMenuItems}
                 </DropdownButton>

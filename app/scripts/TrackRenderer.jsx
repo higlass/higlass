@@ -2,14 +2,12 @@ import {ZOOM_TRANSITION_DURATION} from './config.js'
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
 import {zoom, zoomIdentity} from 'd3-zoom';
 import {select,event} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
 import {dictItems} from './utils.js';
-
-// Fritz: This import is broken
-import d3 from 'd3';
 
 import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack.js';
 import {Id2DTiledPixiTrack} from './Id2DTiledPixiTrack.js';
@@ -875,20 +873,20 @@ export class TrackRenderer extends React.Component {
 }
 
 TrackRenderer.propTypes = {
-    canvasElement: React.PropTypes.object,
-    centerHeight: React.PropTypes.number,
-    centerWidth: React.PropTypes.number,
-    children: React.PropTypes.array,
-    height: React.PropTypes.number,
-    initialXDomain: React.PropTypes.array,
-    initialYDomain: React.PropTypes.array,
-    leftWidth: React.PropTypes.number,
-    marginLeft: React.PropTypes.number,
-    marginTop: React.PropTypes.number,
-    onScalesChanged: React.PropTypes.func,
-    pixiStage: React.PropTypes.object,
-    positionedTracks: React.PropTypes.array,
-    svgElement: React.PropTypes.object,
-    topHeight: React.PropTypes.number,
-    width: React.PropTypes.number
+    canvasElement: PropTypes.object,
+    centerHeight: PropTypes.number,
+    centerWidth: PropTypes.number,
+    children: PropTypes.array,
+    height: PropTypes.number,
+    initialXDomain: PropTypes.array,
+    initialYDomain: PropTypes.array,
+    leftWidth: PropTypes.number,
+    marginLeft: PropTypes.number,
+    marginTop: PropTypes.number,
+    onScalesChanged: PropTypes.func,
+    pixiStage: PropTypes.object,
+    positionedTracks: PropTypes.array,
+    svgElement: PropTypes.object,
+    topHeight: PropTypes.number,
+    width: PropTypes.number
 }

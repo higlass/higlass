@@ -1,28 +1,29 @@
 const React = require('react')
 const { findDOMNode } = require('react-dom')
 const scrollIntoView = require('dom-scroll-into-view')
+const PropTypes = require('prop-types');
 
 let _debugStates = []
 
 let Autocomplete = React.createClass({
 
   propTypes: {
-    value: React.PropTypes.any,
-    onChange: React.PropTypes.func,
-    onSelect: React.PropTypes.func,
-    shouldItemRender: React.PropTypes.func,
-    sortItems: React.PropTypes.func,
-    getItemValue: React.PropTypes.func.isRequired,
-    renderItem: React.PropTypes.func.isRequired,
-    renderMenu: React.PropTypes.func,
-    menuStyle: React.PropTypes.object,
-    inputProps: React.PropTypes.object,
-    wrapperProps: React.PropTypes.object,
-    wrapperStyle: React.PropTypes.object,
-    autoHighlight: React.PropTypes.bool,
-    onMenuVisibilityChange: React.PropTypes.func,
-    open: React.PropTypes.bool,
-    debug: React.PropTypes.bool,
+    value: PropTypes.any,
+    onChange: PropTypes.func,
+    onSelect: PropTypes.func,
+    shouldItemRender: PropTypes.func,
+    sortItems: PropTypes.func,
+    getItemValue: PropTypes.func.isRequired,
+    renderItem: PropTypes.func.isRequired,
+    renderMenu: PropTypes.func,
+    menuStyle: PropTypes.object,
+    inputProps: PropTypes.object,
+    wrapperProps: PropTypes.object,
+    wrapperStyle: PropTypes.object,
+    autoHighlight: PropTypes.bool,
+    onMenuVisibilityChange: PropTypes.func,
+    open: PropTypes.bool,
+    debug: PropTypes.bool,
   },
 
   getDefaultProps () {

@@ -1,5 +1,6 @@
 /*jshint esnext: true */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Panel, Collapse, Row } from 'react-bootstrap';
 import {ControlLabel} from 'react-bootstrap';
 
@@ -29,9 +30,9 @@ export default class CollapsePanel extends React.Component {
 }
 
 CollapsePanel.propTypes = {
-    collapsed: React.PropTypes.bool.isRequired,
-    toggleCollapse: React.PropTypes.func.isRequired,
-    name: React.PropTypes.string
+    collapsed: PropTypes.bool.isRequired,
+    toggleCollapse: PropTypes.func.isRequired,
+    name: PropTypes.string
 }
 
 CollapsePanel.defaultProps = {

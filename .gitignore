@@ -3,6 +3,7 @@ build/
 npm-debug.log
 **/*.un~
 *.swo
+*.swn
 **/*.swp
 **/*#
 temp/**
@@ -20,3 +21,4 @@ jsons/
 *.zip
 .idea/
 dist
+report.html
