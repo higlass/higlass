@@ -4,7 +4,7 @@ export const fritzBug2 =
    "trackSourceServers":[  
       "/api/v1"
    ],
-   "exportViewUrl":"http://higlass.io/api/v1/viewconfs/",
+   "exportViewUrl":"http://test.higlass.io/api/v1/viewconfs/",
    "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19&type=json&cum=1",
    "views":[  
       {  
@@ -18,7 +18,7 @@ export const fritzBug2 =
             2829728720,
             2881033286
          ],
-         "autocompleteSource":"http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+         "autocompleteSource":"http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
          "genomePositionSearchBoxVisible":false,
          "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
          "tracks":{  
@@ -28,7 +28,7 @@ export const fritzBug2 =
                   "type":"horizontal-gene-annotations",
                   "height":60,
                   "tilesetUid":"OHJakQICQD6gTD7skx4EWA",
-                  "server":"http://higlass.io/api/v1",
+                  "server":"http://test.higlass.io/api/v1",
                   "name":"Gene Annotations",
                   "options":{  
                      "name":"Gene Annotations (hg19)",
@@ -1759,7 +1759,7 @@ export const fritzBug2 =
             2829728720,
             2881033286
          ],
-         "autocompleteSource":"http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+         "autocompleteSource":"http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
          "genomePositionSearchBoxVisible":true,
          "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
          "tracks":{  
@@ -1769,7 +1769,7 @@ export const fritzBug2 =
                   "type":"horizontal-gene-annotations",
                   "height":60,
                   "tilesetUid":"OHJakQICQD6gTD7skx4EWA",
-                  "server":"http://higlass.io/api/v1",
+                  "server":"http://test.higlass.io/api/v1",
                   "name":"Gene Annotations",
                   "options":{  
                      "name":"Gene Annotations (hg19)",
@@ -3517,7 +3517,7 @@ export const fritzBug1 =
    "trackSourceServers":[  
       "/api/v1"
    ],
-   "exportViewUrl":"http://higlass.io/api/v1/viewconfs/",
+   "exportViewUrl":"http://test.higlass.io/api/v1/viewconfs/",
    "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19&type=json&cum=1",
    "views":[  
       {  
@@ -3531,7 +3531,7 @@ export const fritzBug1 =
             2829728720,
             2881033286
          ],
-         "autocompleteSource":"http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+         "autocompleteSource":"http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
          "genomePositionSearchBoxVisible":false,
          "chromInfoPath":"https://hgs.vcg.rc.fas.harvard.edu/api/v1/chrom-sizes/?id=hg19",
          "tracks":{  
@@ -3541,7 +3541,7 @@ export const fritzBug1 =
                   "type":"horizontal-gene-annotations",
                   "height":60,
                   "tilesetUid":"OHJakQICQD6gTD7skx4EWA",
-                  "server":"http://higlass.io/api/v1",
+                  "server":"http://test.higlass.io/api/v1",
                   "name":"Gene Annotations",
                   "options":{  
                      "name":"Gene Annotations (hg19)",
@@ -5292,7 +5292,7 @@ export const project1D =
             "height": 20,
             "width": 20,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "vertical-line",
             "options": {
               "name": "GM12878-E116-H3K27ac.fc.signal",
@@ -5312,7 +5312,7 @@ export const project1D =
             "height": 20,
             "width": 770,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "name": "GM12878-E116-H3K27ac.fc.signal",
@@ -5330,7 +5330,7 @@ export const project1D =
             "height": 20,
             "width": 770,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "name": "GM12878-E116-H3K4me1.fc.signal",
@@ -5358,7 +5358,7 @@ export const project1D =
             "height": 60,
             "width": 770,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "options": {
               "labelColor": "black",
@@ -5405,7 +5405,7 @@ export const project1D =
             "height": 20,
             "width": 20,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "vertical-line",
             "options": {
               "name": "GM12878-E116-H3K27ac.fc.signal",
@@ -5425,7 +5425,7 @@ export const project1D =
             "height": 20,
             "width": 770,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "name": "GM12878-E116-H3K27ac.fc.signal",
@@ -5443,7 +5443,7 @@ export const project1D =
             "height": 20,
             "width": 770,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "name": "GM12878-E116-H3K4me1.fc.signal",
@@ -5471,7 +5471,7 @@ export const project1D =
             "height": 60,
             "width": 770,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "options": {
               "labelColor": "black",
@@ -5498,7 +5498,7 @@ export const project1D =
     "locksDict": {}
   },
   "trackSourceServers": [
-    "http://higlass.io/api/v1"
+    "http://test.higlass.io/api/v1"
   ],
   "locationLocks": {
     "locksByViewUid": {
@@ -5527,9 +5527,9 @@ export const noGPSB =
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://higlass.io/api/v1"
+    "http://test.higlass.io/api/v1"
   ],
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "exportViewUrl": "http://test.higlass.io/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
@@ -5541,12 +5541,11 @@ export const noGPSB =
         1795888772.6557815,
         1806579890.9341388
       ],
-      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "tracks": {
         "top": [ 
             {
             "name": "Gene Annotations (mm9)",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "tilesetUid": "GUm5aBiLRCyz2PsBea7Yzg",
             "uid": "e8H0Eve5TRWlc6XymPQejg",
             "type": "horizontal-gene-annotations",
@@ -5568,7 +5567,7 @@ export const noGPSB =
             "height": 20,
             "width": 843,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "name": "GM12878-E116-H3K27ac.fc.signal",
@@ -5586,7 +5585,7 @@ export const noGPSB =
             "height": 20,
             "width": 843,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "valueScaling": "linear",
@@ -5602,7 +5601,7 @@ export const noGPSB =
             "height": 20,
             "width": 843,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "valueScaling": "linear",
@@ -5636,9 +5635,9 @@ export const onlyGPSB =
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://higlass.io/api/v1"
+    "http://test.higlass.io/api/v1"
   ],
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "exportViewUrl": "http://test.higlass.io/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
@@ -5650,11 +5649,11 @@ export const onlyGPSB =
         1795888772.6557815,
         1806579890.9341388
       ],
-      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBox": {
-        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteServer": "http://test.higlass.io/api/v1",
         "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
-        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoServer": "http://test.higlass.io/api/v1",
         "chromInfoId": "hg19",
         "visible": true
       },
@@ -5712,7 +5711,7 @@ export const testViewConfX2 =
             "height": 20,
             "width": 843,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "name": "GM12878-E116-H3K27ac.fc.signal",
@@ -5730,7 +5729,7 @@ export const testViewConfX2 =
             "height": 20,
             "width": 843,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "name": "GM12878-E116-H3K4me1.fc.signal",
@@ -5758,7 +5757,7 @@ export const testViewConfX2 =
             "height": 60,
             "width": 843,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-gene-annotations",
             "options": {
               "labelColor": "black",
@@ -5775,7 +5774,7 @@ export const testViewConfX2 =
             "height": 20,
             "width": 843,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "name": "GM12878-E116-H3K4me3.fc.signal",
@@ -5793,7 +5792,7 @@ export const testViewConfX2 =
             "height": 20,
             "width": 843,
             "position": "top",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "type": "horizontal-line",
             "options": {
               "name": "GM12878-E116-H3K27me3.fc.signal",
@@ -5821,7 +5820,7 @@ export const testViewConfX2 =
     "locksDict": {}
   },
   "trackSourceServers": [
-    "http://higlass.io/api/v1"
+    "http://test.higlass.io/api/v1"
   ],
   "locationLocks": {
     "locksByViewUid": {
@@ -5875,7 +5874,7 @@ export const testViewConfX1 = {
           {
             "uid": "N5Ylzin9TLGToeJs3BKVLA",
             "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "width": 1007,
             "position": "top",
             "height": 132,
@@ -5897,7 +5896,7 @@ export const testViewConfX1 = {
           {
             "uid": "d1YqhSqQRFynu4r34zKZhg",
             "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "width": 20,
             "position": "top",
             "height": 20,
@@ -5915,7 +5914,7 @@ export const testViewConfX1 = {
           {
             "uid": "bkUDRNN-SfyvT4YxgUy3yA",
             "tilesetUid": "e0DYtZBSTqiMLHoaimsSpg",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "width": 20,
             "position": "top",
             "height": 20,
@@ -5942,7 +5941,7 @@ export const testViewConfX1 = {
           {
             "uid": "OHJakQICQD6gTD7skx4EWA",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "position": "top",
             "height": 60,
             "type": "horizontal-gene-annotations",
@@ -5958,7 +5957,7 @@ export const testViewConfX1 = {
           {
             "uid": "Fbd3ugOZR_qnmogyxBtAcQ",
             "tilesetUid": "cE0nGyd0Q_yVYSyBUe89Ww",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "width": 20,
             "position": "top",
             "height": 20,
@@ -5976,7 +5975,7 @@ export const testViewConfX1 = {
           {
             "uid": "aTpD5OitQmmB9ljbx_zjBw",
             "tilesetUid": "PdAaSdibTLK34hCw7ubqKA",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "width": 20,
             "position": "top",
             "height": 20,
@@ -6007,7 +6006,7 @@ export const testViewConfX1 = {
     "locksDict": {}
   },
   "trackSourceServers": [
-    "http://higlass.io/api/v1"
+    "http://test.higlass.io/api/v1"
   ],
   "locationLocks": {
     "locksByViewUid": {
@@ -6035,7 +6034,7 @@ export const largeHorizontalHeatmapTrack =
           {
             "filetype": "cooler",
             "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
             "uid": "hhl1",
             "type": "horizontal-heatmap",
@@ -6058,7 +6057,7 @@ export const horizontalHeatmapTrack =
           {
             "filetype": "cooler",
             "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
             "uid": "hh1",
             "type": "horizontal-heatmap",
@@ -6082,7 +6081,7 @@ export const horizontalHeatmapTrack =
 export const verticalHeatmapTrack = 
           {
             "name": "Rao et al. (2014) HUVEC MboI (allreps) 1kb",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "tilesetUid": "JO9CouMTS_WKLnlYBRcw8A",
             "uid": "vh1",
             "type": "vertical-heatmap",
@@ -6110,10 +6109,10 @@ export const horizontalDiagonalTrackViewConf =
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://higlass.io/api/v1",
+    "http://test.higlass.io/api/v1",
     "http://localhost:8989/api/v1"
   ],
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "exportViewUrl": "http://test.higlass.io/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
@@ -6125,7 +6124,7 @@ export const horizontalDiagonalTrackViewConf =
         1142928773.5006099,
         2963035748.0921783
       ],
-      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
@@ -6208,7 +6207,7 @@ export const chromInfoTrack =
 export const heatmapTrack = {
                 "filetype": "cooler",
                 "name": "Dixon et al. (2015) H1_TB HindIII (allreps) 1kb",
-                "server": "http://higlass.io/api/v1",
+                "server": "http://test.higlass.io/api/v1",
                 "tilesetUid": "B2LevKBtRNiCMX372rRPLQ",
                 "uid": "heatmap3",
                 "type": "heatmap",
@@ -6236,9 +6235,9 @@ export const twoViewConfig =
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://higlass.io/api/v1"
+    "http://test.higlass.io/api/v1"
   ],
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "exportViewUrl": "http://test.higlass.io/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
@@ -6250,7 +6249,7 @@ export const twoViewConfig =
         1795888772.6557815,
         1806579890.9341388
       ],
-      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
@@ -6258,7 +6257,7 @@ export const twoViewConfig =
           {
             "filetype": "hitile",
             "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
             "type": "horizontal-line",
             "options": {
@@ -6283,7 +6282,7 @@ export const twoViewConfig =
             "height": 200,
             "contents": [
               {
-                "server": "http://higlass.io/api/v1",
+                "server": "http://test.higlass.io/api/v1",
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
                 "type": "heatmap",
                 "position": "center",
@@ -6349,7 +6348,7 @@ export const twoViewConfig =
         1795888772.6557593,
         1806579890.9341605
       ],
-      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
@@ -6357,7 +6356,7 @@ export const twoViewConfig =
           {
             "filetype": "hitile",
             "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig.hitile",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
             "uid": "line2",
             "type": "horizontal-line",
@@ -6383,7 +6382,7 @@ export const twoViewConfig =
               {
                 "filetype": "cooler",
                 "name": "Dixon et al. (2015) H1_TB HindIII (allreps) 1kb",
-                "server": "http://higlass.io/api/v1",
+                "server": "http://test.higlass.io/api/v1",
                 "tilesetUid": "clU7yGb-S7eY4yNbdDlj9w",
                 "uid": "heatmap2",
                 "type": "heatmap",
@@ -6471,10 +6470,10 @@ export const valueIntervalTrackViewConf =
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://higlass.io/api/v1",
+    "http://test.higlass.io/api/v1",
     "http://127.0.0.1:8989/api/v1"
   ],
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "exportViewUrl": "http://test.higlass.io/api/v1/viewconfs/",
   "views": [
     {
       "uid": "view2",
@@ -6486,7 +6485,7 @@ export const valueIntervalTrackViewConf =
         -1074275219.9894483,
         5601783420.308463
       ],
-      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": false,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
@@ -6508,7 +6507,7 @@ export const valueIntervalTrackViewConf =
           {
             "filetype": "beddb",
             "name": "Gene Annotations (hg19)",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "uid": "ElEL52SpQiWEtxaa5X4NhA",
             "type": "horizontal-gene-annotations",
@@ -6544,7 +6543,7 @@ export const valueIntervalTrackViewConf =
           {
             "filetype": "beddb",
             "name": "Gene Annotations (hg19)",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
             "uid": "L5FM6--PTeaof462uQB0ww",
             "type": "vertical-gene-annotations",
@@ -6648,9 +6647,9 @@ export const oneViewConfig =
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://higlass.io/api/v1"
+    "http://test.higlass.io/api/v1"
   ],
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "exportViewUrl": "http://test.higlass.io/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
@@ -6662,14 +6661,14 @@ export const oneViewConfig =
         1795888772.6557815,
         1806579890.9341388
       ],
-      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
           {
             "filetype": "hitile",
             "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
             "type": "horizontal-line",
             "options": {
@@ -6690,7 +6689,7 @@ export const oneViewConfig =
           {
             "filetype": "hitile",
             "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-            "server": "http://higlass.io/api/v1",
+            "server": "http://test.higlass.io/api/v1",
             "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
             "type": "vertical-line",
             "options": {
@@ -6714,7 +6713,7 @@ export const oneViewConfig =
             "height": 200,
             "contents": [
               {
-                "server": "http://higlass.io/api/v1",
+                "server": "http://test.higlass.io/api/v1",
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
                 "type": "heatmap",
                 "position": "center",

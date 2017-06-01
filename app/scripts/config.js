@@ -638,4 +638,4 @@ export const LOCATION_LISTENER_PREFIX = 'locationListenerPrefix';
 
 export const ZOOM_TRANSITION_DURATION = 1000;
 
-export const defaultServer = "http://higlass.io/api/v1"
+export const defaultServer = "http://test.higlass.io/api/v1"

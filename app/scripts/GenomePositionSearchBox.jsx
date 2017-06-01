@@ -80,7 +80,6 @@ export class GenomePositionSearchBox extends React.Component {
                   }
                 }
 
-        this.fetchChromInfo(this.props.chromInfoId);
 
         this.availableAutocompletes = {}
 
@@ -93,14 +92,38 @@ export class GenomePositionSearchBox extends React.Component {
         }
 
         this.availableChromSizes = {};
-        this.availableChromSizes[this.props.chromInfoId] = new Set([this.props.chromInfoServer]);
+        //this.availableChromSizes[this.props.chromInfoId] = new Set([{server: this.props.chromInfoServer, uuid: this.props.chromInfoId} ]);
 
         this.findAvailableAutocompleteSources();
         this.findAvailableChromSizes();
+
+        //this.fetchChromInfo(this.props.chromInfoId);
     }
 
     fetchChromInfo(chromInfoId) {
-        ChromosomeInfo(this.props.chromInfoServer + "/chrom-sizes/?id=" + chromInfoId, (newChromInfo) => {
+        /** 
+         * The user has selected an assembly to use for the coordinate search box
+         *
+         * Parameters
+         * ----------
+         *  chromInfoId: string
+         *      The name of the chromosome info set to use
+         *
+         * Returns
+         * -------
+         *  null
+         *      Once the appropriate ChromInfo file is fetched, it is stored locally
+         */
+
+        if (!this.availableChromSizes[chromInfoId])
+            // we don't know of any available chromosome sizes so just ignore
+            // this function call (usually called from the constructor)
+            return;
+
+        // use the first available server that we have on record for this chromInfoId
+        let serverAndChromInfoToUse = [...this.availableChromSizes[chromInfoId]][0];
+
+        ChromosomeInfo(serverAndChromInfoToUse.server + "/chrom-sizes/?id=" + serverAndChromInfoToUse.uuid, (newChromInfo) => {
             this.chromInfo = newChromInfo;
             this.searchField = new SearchField(this.chromInfo);
 
@@ -162,12 +185,19 @@ export class GenomePositionSearchBox extends React.Component {
                 } else {
                     data.results.map(x => {
                         if (!(x.uuid in this.availableChromSizes)) {
-                            this.availableChromSizes[x.uuid] = new Set();
+                            this.availableChromSizes[x.coordSystem] = new Set();
                         }
 
-                        this.availableChromSizes[x.uuid].add(sourceServer);
+                        this.availableChromSizes[x.coordSystem].add({server: sourceServer, uuid: x.uuid});
                         this.setAvailableAssemblies();
+
                     });
+
+                    // we haven't set an assembly yet so set it now
+                    // props.chromInfoId will be set to the suggested assembly (e.g. "hg19")
+                    // this will be mapped to an available chromSize (with its own unique uuid)
+                    if (!this.searchField)
+                        this.fetchChromInfo(this.props.chromInfoId);
                 }
             });
         });
@@ -231,7 +261,6 @@ export class GenomePositionSearchBox extends React.Component {
                 let genePosition = genePositions[dashParts[j].toLowerCase()];
 
                 if (!genePosition) {
-                    //console.log("Error: gene position undefined...", dashParts[j].toLowerCase());
                     continue;
                 }
 
@@ -421,7 +450,6 @@ export class GenomePositionSearchBox extends React.Component {
     handleMenuVisibilityChange(isOpen) {
         let box = this.autocompleteMenu.refs.input.getBoundingClientRect();
 
-        //console.log('box:', box);
         this.menuPosition = {left: box.left, top: box.top + box.height};
 
         this.setState({
@@ -455,12 +483,10 @@ export class GenomePositionSearchBox extends React.Component {
 
     handleAssemblySelect(evt) {
         this.fetchChromInfo(evt);
-        /*
-        console.log("evt:", evt);
+
         this.setState({
             selectedAssembly: evt
         });
-        */
     }
 
     render() {

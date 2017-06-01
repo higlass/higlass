@@ -2063,8 +2063,9 @@ export class HiGlassComponent extends React.Component {
             newGpsb.autocompleteId = defaultGpsb.autocompleteId;
         */
 
-        if (!newGpsb.chromInfoId)
+        if (!newGpsb.chromInfoId) {
             newGpsb.chromInfoId = suggestedAssembly;
+        }
 
         if (!newGpsb.chromInfoServer)
             newGpsb.chromInfoServer = defaultGpsb.chromInfoServer;
@@ -2380,6 +2381,10 @@ export class HiGlassComponent extends React.Component {
                         autocompleteServer={view.genomePositionSearchBox.autocompleteServer}
                         autocompleteId={view.genomePositionSearchBox.autocompleteId}
                         chromInfoServer={view.genomePositionSearchBox.chromInfoServer}
+
+                        // the chromInfoId is either specified in the viewconfig or guessed based on
+                        // the visible tracks (see createGenomePositionSearchBoxEntry)
+
                         chromInfoId={view.genomePositionSearchBox.chromInfoId}
                         key={'gpsb' + view.uid}
                         onSelectedAssemblyChanged={(x,y) => this.handleSelectedAssemblyChanged(view.uid, x, y)}
