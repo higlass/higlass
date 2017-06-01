@@ -1,6 +1,10 @@
+v0.8.2 - 2017-06-01
+
+- Move hglib.css to dist/styles rather than dist/
+
 v0.8.1 - 2017-06-01
 
-- Changed package.json to create hglib.css rather than hglib.js
+- Changed package.json to create hglib.css rather than style.css
 
 v0.8.0 - 2017-06-01
 
