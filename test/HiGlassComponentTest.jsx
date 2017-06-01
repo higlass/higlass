@@ -69,6 +69,7 @@ describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
     /*
+
     describe("AddTrackModal", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
@@ -110,7 +111,7 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
-
+    
     describe("Multiple track addition", () => {
         if (hgc) {
             hgc.unmount();
@@ -179,6 +180,7 @@ describe("Simple HiGlassComponent", () => {
             done();
         });
     });
+
 
     let hg19Text = '';
     let mm9Text = '';
@@ -286,6 +288,7 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
+
 
     describe("1D viewport projection", () => {
         let vpUid = null;
@@ -397,7 +400,6 @@ describe("Simple HiGlassComponent", () => {
         });
 
     });
-    */
 
     describe("Starting with no genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -444,12 +446,6 @@ describe("Simple HiGlassComponent", () => {
 
             done();
         });
-
-        it ("Makes sure that hg19 is an available option", (done) => {
-
-        });
-
-        return;
 
         it ("Searches for the Clock gene", (done) => {
             // this gene previously did nothing when searching for it
@@ -593,9 +589,6 @@ describe("Simple HiGlassComponent", () => {
 
     });
 
-    return;
-
-
     describe("Starting with an existing genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
@@ -661,6 +654,7 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
+    */
 
     describe("Single view", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -833,6 +827,7 @@ describe("Simple HiGlassComponent", () => {
 
     });
 
+
     describe("Track addition and removal", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
@@ -900,6 +895,7 @@ describe("Simple HiGlassComponent", () => {
         });
     });
 
+    return;
     describe("Positioning a more complex layout", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {

@@ -94,8 +94,6 @@ export class GenomePositionSearchBox extends React.Component {
         this.availableChromSizes = {};
         //this.availableChromSizes[this.props.chromInfoId] = new Set([{server: this.props.chromInfoServer, uuid: this.props.chromInfoId} ]);
 
-        console.log('acs:', this.availableChromSizes);
-
         this.findAvailableAutocompleteSources();
         this.findAvailableChromSizes();
 
@@ -117,9 +115,6 @@ export class GenomePositionSearchBox extends React.Component {
          *      Once the appropriate ChromInfo file is fetched, it is stored locally
          */
 
-        console.log('chromInfoId:', chromInfoId);
-        console.log('chromInfoServer:', this.props.chromInfoServer);
-
         if (!this.availableChromSizes[chromInfoId])
             // we don't know of any available chromosome sizes so just ignore
             // this function call (usually called from the constructor)
@@ -127,7 +122,6 @@ export class GenomePositionSearchBox extends React.Component {
 
         // use the first available server that we have on record for this chromInfoId
         let serverAndChromInfoToUse = [...this.availableChromSizes[chromInfoId]][0];
-        console.log('sacitu', serverAndChromInfoToUse);
 
         ChromosomeInfo(serverAndChromInfoToUse.server + "/chrom-sizes/?id=" + serverAndChromInfoToUse.uuid, (newChromInfo) => {
             this.chromInfo = newChromInfo;
@@ -196,7 +190,14 @@ export class GenomePositionSearchBox extends React.Component {
 
                         this.availableChromSizes[x.coordSystem].add({server: sourceServer, uuid: x.uuid});
                         this.setAvailableAssemblies();
+
                     });
+
+                    // we haven't set an assembly yet so set it now
+                    // props.chromInfoId will be set to the suggested assembly (e.g. "hg19")
+                    // this will be mapped to an available chromSize (with its own unique uuid)
+                    if (!this.searchField)
+                        this.fetchChromInfo(this.props.chromInfoId);
                 }
             });
         });
@@ -260,7 +261,6 @@ export class GenomePositionSearchBox extends React.Component {
                 let genePosition = genePositions[dashParts[j].toLowerCase()];
 
                 if (!genePosition) {
-                    //console.log("Error: gene position undefined...", dashParts[j].toLowerCase());
                     continue;
                 }
 
@@ -450,7 +450,6 @@ export class GenomePositionSearchBox extends React.Component {
     handleMenuVisibilityChange(isOpen) {
         let box = this.autocompleteMenu.refs.input.getBoundingClientRect();
 
-        //console.log('box:', box);
         this.menuPosition = {left: box.left, top: box.top + box.height};
 
         this.setState({
@@ -484,7 +483,6 @@ export class GenomePositionSearchBox extends React.Component {
 
     handleAssemblySelect(evt) {
         this.fetchChromInfo(evt);
-        console.log("evt:", evt);
 
         this.setState({
             selectedAssembly: evt
