@@ -1,3 +1,7 @@
+v0.8.1 - 2017-06-01
+
+- Changed package.json to create hglib.css rather than hglib.js
+
 v0.8.0 - 2017-06-01
 
 - Switched to webpack 2
