@@ -1,3 +1,7 @@
+v0.8.3 - 2017-06-06
+
+- Fixed a regression where adding new tracks doesn't work
+
 v0.8.2 - 2017-06-01
 
 - Move hglib.css to dist/styles rather than dist/
