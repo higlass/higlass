@@ -107,9 +107,34 @@ describe("Simple HiGlassComponent", () => {
             // e.g. that it has focus
             expect(inputField).to.be.eql(document.activeElement);
 
+            const input = new ReactWrapper(tiledPlot.addTrackModal.tilesetFinder.searchBox, true).find('input');
+            console.log('input:', input);
+            input.node.value = 'ize';
+
+
+            tiledPlot.addTrackModal.tilesetFinder.handleSearchChange();
+
+            setTimeout(done, tileLoadTime);
+        });
+
+        it ("Selects one of the chromosome axes", (done) => {
+            //hgc.instance().handleTrackAdded('aa', chromInfoTrack, 'top');
+            const tiledPlot = hgc.instance().tiledPlots['aa'];
+            const tilesetFinder = tiledPlot.addTrackModal.tilesetFinder;
+
+            tilesetFinder.props.onDoubleClick(
+                tilesetFinder.state.options['http://test.higlass.io/api/v1/N12wVGG9SPiTkk03yUayUw'])
+            
             setTimeout(done, shortLoadTime);
         });
+
+        it ("Checks to make sure that the chromosome axis is added", (done) => {
+
+        });
     });
+
+    return;
+
     
     describe("Multiple track addition", () => {
         if (hgc) {
@@ -180,11 +205,9 @@ describe("Simple HiGlassComponent", () => {
         });
     });
 
-
     let hg19Text = '';
     let mm9Text = '';
 
-    /*
     describe("Track addition and removal", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
@@ -654,7 +677,6 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
-    */
 
     describe("Single view", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -895,7 +917,6 @@ describe("Simple HiGlassComponent", () => {
         });
     });
 
-    return;
     describe("Positioning a more complex layout", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {

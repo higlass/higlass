@@ -1,4 +1,4 @@
-import {PixiTrack} from './PixiTrack.js';
+import {TiledPixiTrack} from './TiledPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
 import {ChromosomeInfo} from './ChromosomeInfo.js';
 import {SearchField} from './search_field.js';
@@ -10,9 +10,9 @@ let TICK_WIDTH = 200;
 let TICK_HEIGHT = 6;
 let TICK_TEXT_SEPARATION = 2;
 
-export class HorizontalChromosomeLabels extends PixiTrack {
-    constructor(scene, chromInfoPath, animate) {
-        super(scene);
+export class HorizontalChromosomeLabels extends TiledPixiTrack {
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
+        super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
         this.searchField = null;
         this.chromInfo = null;
@@ -24,9 +24,12 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         this.textFontFamily = 'Arial';
         this.textFontColor = '#777777';
 
+        console.log('animate:', animate);
         this.animate = animate;
 
-        ChromosomeInfo(chromInfoPath, (newChromInfo) => {
+        let chromSizesPath = server + "/chrom-sizes/?id=" + uid;
+
+        ChromosomeInfo(chromSizesPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;
             //
 

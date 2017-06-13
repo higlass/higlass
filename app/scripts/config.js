@@ -523,10 +523,10 @@ export const tracksInfo = [
     ,
     {
         type: '2d-chromosome-grid',
-        datatype: ['chromosome-2d-grid'],
+        datatype: ['chromsizes'],
         local: true,
         orientation: '2d',
-        name: 'Chromosome Grid (hg19)',
+        name: 'Chromosome Grid',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null,
         availableOptions: ['lineStrokeWidth', 'lineStrokeColor'],
@@ -538,64 +538,28 @@ export const tracksInfo = [
     ,
     {
         type: '2d-chromosome-labels',
-        datatype: ['chromosome-2d-labels'],
+        datatype: ['chromsizes'],
         local: true,
         orientation: '2d',
-        name: 'Pairwise Chromosome Labels (hg19)',
-        chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-        thumbnail: null
-    }
-    ,
-    {
-        type: '2d-chromosome-labels',
-        datatype: ['chromosome-2d-labels-mm9'],
-        local: true,
-        orientation: '2d',
-        name: 'Pairwise Chromosome Labels (mm9)',
-        chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-        thumbnail: null
-    }
-    ,
-    {
-        type: '2d-chromosome-annotations',
-        local: true,
-        orientation: '2d',
-        name: '2D Chromosome Annotations',
-        thumbnail: null,
-        hidden: true
-    }
-    ,
-    {
-        type: 'horizontal-chromosome-labels',
-        datatype: ['chromosome-1d-labels'],
-        local: true,
-        orientation: '1d-horizontal',
-        minHeight: 30,
-        name: 'Chromosome Axis (hg19)',
-        chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        name: 'Pairwise Chromosome Labels',
         thumbnail: null
     }
     ,
     {
         type: 'horizontal-chromosome-labels',
-        datatype: ['chromosome-1d-labels-mm9'],
-        local: true,
+        datatype: ['chromsizes'],
         orientation: '1d-horizontal',
         minHeight: 30,
-        name: 'Chromosome Axis (mm9)',
-        chromInfoPath: "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+        name: 'Chromosome Axis',
         thumbnail: null
-    }
-    ,
+    },
     {
         type: 'vertical-chromosome-labels',
-        datatype: ['chromosome-1d-labels'],
-        local: true,
+        datatype: ['chromsizes'],
         orientation: '1d-vertical',
         minWidth: 30,
         minHeight: 30,
-        name: 'Chromosome Axis (hg19)',
-        chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        name: 'Chromosome Axis',
         thumbnail: null
     }
     ,

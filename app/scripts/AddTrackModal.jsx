@@ -52,9 +52,24 @@ export class AddTrackModal extends React.Component {
     }
 
     handleTilesetPickerDoubleClick(tileset) {
+        /**
+         * Arguments
+         * ---------
+         *  tileset: {object}
+         *      The object describing this track containing information
+         *      such as the track type and data source.
+         *
+         * Returns
+         * -------
+         *
+         *  { uid: "", width: }:
+         *      The trackConfig object describing this track. Essentially
+         *      the newTrack object passed in with some extra information
+         *      (such as the uid) added.
+         */
         this.mainTilesetChanged(tileset);
 
-        this.props.onTrackChosen(this.state.mainTileset, this.props.position);
+        return this.props.onTrackChosen(this.state.mainTileset, this.props.position);
     }
 
     handleOptionsChanged(newOptions) {

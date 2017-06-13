@@ -795,21 +795,36 @@ export class TrackRenderer extends React.Component {
             case '2d-chromosome-labels':
                 return new Chromosome2DLabels(
                         this.currentProps.pixiStage, 
-                        track.chromInfoPath,
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
                         () => this.currentProps.onNewTilesLoaded(track.uid));
             case '2d-chromosome-grid':
-                return new Chromosome2DGrid(this.currentProps.pixiStage, 
-                        track.chromInfoPath,
-                        () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new Chromosome2DGrid(
+                         this.currentProps.pixiStage, 
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
+                         () => this.currentProps.onNewTilesLoaded(track.uid));
             case 'horizontal-chromosome-labels':
+                console.log('track:', track);
+
                 return new HorizontalChromosomeLabels(
                         this.currentProps.pixiStage, 
-                        track.chromInfoPath,
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
                         () => this.currentProps.onNewTilesLoaded(track.uid));
             case 'vertical-chromosome-labels':
                 return new LeftTrackModifier(new HorizontalChromosomeLabels(
                             this.currentProps.pixiStage, 
-                            track.chromInfoPath,
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
                             () => this.currentProps.onNewTilesLoaded(track.uid)));
             case 'horizontal-heatmap':
                 return new HorizontalHeatmapTrack(this.currentProps.pixiStage,
