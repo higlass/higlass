@@ -1,6 +1,10 @@
-v0.8.3 - 2017-06-12
+v0.8.4 - 2017-06-12
 
 - Include a limit in the tilesets query so that all results are returned
+
+v0.8.3 - 2017-06-06
+
+- Fixed a regression where adding new tracks doesn't work
 
 v0.8.2 - 2017-06-01
 

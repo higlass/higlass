@@ -68,7 +68,6 @@ function getTrackObject(hgc, viewUid, trackUid) {
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
-    /*
 
     describe("AddTrackModal", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -185,6 +184,7 @@ describe("Simple HiGlassComponent", () => {
     let hg19Text = '';
     let mm9Text = '';
 
+    /*
     describe("Track addition and removal", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
