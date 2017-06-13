@@ -92,7 +92,7 @@ export class TilesetFinder extends React.Component {
         let datatypesQuery = [...datatypes].map(x => "dt=" + x).join('&')
 
         this.props.trackSourceServers.forEach( sourceServer => {
-            json(sourceServer + '/tilesets/?' + datatypesQuery,
+            json(sourceServer + '/tilesets/?limit=10000&' + datatypesQuery,
                  function(error, data) {
                     if (error) {
                         console.error('ERROR:', error);

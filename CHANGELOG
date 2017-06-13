@@ -1,3 +1,7 @@
+v0.8.3 - 2017-06-12
+
+- Include a limit in the tilesets query so that all results are returned
+
 v0.8.2 - 2017-06-01
 
 - Move hglib.css to dist/styles rather than dist/
