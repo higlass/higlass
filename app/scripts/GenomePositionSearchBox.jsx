@@ -151,7 +151,7 @@ export class GenomePositionSearchBox extends React.Component {
 
     findAvailableAutocompleteSources() {
         this.props.trackSourceServers.forEach( sourceServer => {
-            json(sourceServer + "/tilesets/?dt=gene-annotation", (error, data) => {
+            json(sourceServer + "/tilesets/?limit=100&dt=gene-annotation", (error, data) => {
                 if (error) {
                     console.error(error);
                 } else {
