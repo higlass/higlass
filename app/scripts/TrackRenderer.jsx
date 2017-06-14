@@ -23,6 +23,9 @@ import {LeftTrackModifier} from './LeftTrackModifier.js';
 import {Track} from './Track.js';
 import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack.js';
 import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack.js';
+
+import {Horizontal2DDomainsTrack} from './Horizontal2DDomainsTrack.js';
+
 import {SquareMarkersTrack} from './SquareMarkersTrack.js';
 import {Chromosome2DLabels} from './Chromosome2DLabels.js';
 import {Chromosome2DGrid} from './Chromosome2DGrid.js';
@@ -767,6 +770,24 @@ export class TrackRenderer extends React.Component {
                         () => this.currentProps.onNewTilesLoaded(track.uid)
                     )
                 )
+            case '2d-rectangle-domains':
+                return new ArrowheadDomainsTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+            case 'horizontal-2d-rectangle-domains':
+                return new Horizontal2DDomainsTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
             case 'arrowhead-domains':
                 return new ArrowheadDomainsTrack(
                     this.currentProps.pixiStage,

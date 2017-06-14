@@ -501,6 +501,48 @@ export const tracksInfo = [
     },
 
     {
+        type: 'vertical-2d-rectangle-domains',
+        datatype: ['2d-rectangle-domains'],
+        local: false,
+        orientation: '1d-vertical',
+        name: 'Vertical 2D Rectangle Domains',
+        thumbnail: svgArrowheadDomainsIcon,
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity' ],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'hidden',
+        }
+    },
+
+    {
+        type: 'horizontal-2d-rectangle-domains',
+        datatype: ['2d-rectangle-domains'],
+        local: false,
+        orientation: '1d-horizontal',
+        name: 'Horizontal 2D Rectangle Domains',
+        thumbnail: svgArrowheadDomainsIcon,
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity' ],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'hidden',
+        }
+    },
+
+    {
+        type: '2d-rectangle-domains',
+        datatype: ['2d-rectangle-domains'],
+        local: false,
+        orientation: '2d',
+        name: '2D Rectangle Domains',
+        thumbnail: svgArrowheadDomainsIcon,
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity' ],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'hidden',
+        }
+    },
+
+    {
         type: 'square-markers',
         datatype: ['bedpe'],
         local: false,

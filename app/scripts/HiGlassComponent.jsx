@@ -1740,6 +1740,8 @@ export class HiGlassComponent extends React.Component {
                 delete track['datatype'];
             if ('maxWidth' in track)
                 delete track['maxWidth'];
+            if ('datafile' in track)
+                delete track['datafile'];
             if ('filetype' in track)
                 delete track['filetype'];
             if ('binsPerDimension' in track)
