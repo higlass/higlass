@@ -524,7 +524,7 @@ export const tracksInfo = [
         availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity' ],
         defaultOptions: {
             labelColor: 'black',
-            labelPosition: 'hidden',
+            labelPosition: 'bottomLeft',
         }
     },
 

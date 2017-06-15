@@ -147,7 +147,7 @@ export class Horizontal2DDomainsTrack extends TiledPixiTrack {
         super.initTile(tile);
 
         //this.drawTile(tile);
-        this.renderTile(tile);
+        this.drawTile(tile);
     }
 
     destroyTile(tile, graphics) {
@@ -160,17 +160,16 @@ export class Horizontal2DDomainsTrack extends TiledPixiTrack {
         super.draw();
     }
 
-    renderTile(tile) {
+    drawTile(tile) {
         if (!tile.graphics)
             return;
 
-        console.log('### tile:', tile);
         //console.log('Id2DTiled drawTile...');
         let graphics = tile.graphics;
 
         graphics.clear();
 
-        graphics.lineStyle(0, 0x0000FF, 1);
+        graphics.lineStyle(1 / this.pMain.scale.x, 0x0000FF, 1);
         graphics.beginFill(0xFF700B, 0.4);
         graphics.alpha = 0.5;
 
@@ -189,8 +188,6 @@ export class Horizontal2DDomainsTrack extends TiledPixiTrack {
             if (this.drawnRects.has(uid))
                 continue; //we've already drawn this rectangle in another tile
 
-            console.log('startX', startX, 'endX', endX);
-            console.log('startY', startY, 'endY', endY);
             this.drawnRects.add(uid);
             graphics.drawRect(startX, startY, endX - startX, endY - startY);
 
@@ -249,5 +246,7 @@ export class Horizontal2DDomainsTrack extends TiledPixiTrack {
             this.pMain.scale.y = -k;
             this.pMain.position.y = this.position[1];
         }
+
+        this.draw();
     }
 }

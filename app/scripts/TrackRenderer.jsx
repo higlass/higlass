@@ -779,6 +779,15 @@ export class TrackRenderer extends React.Component {
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid)
                 );
+            case 'vertical-2d-rectangle-domains':
+                return new LeftTrackModifier(new Horizontal2DDomainsTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                ));
             case 'horizontal-2d-rectangle-domains':
                 return new Horizontal2DDomainsTrack(
                     this.currentProps.pixiStage,
@@ -850,6 +859,14 @@ export class TrackRenderer extends React.Component {
                                                 ));
             case '2d-chromosome-annotations':
                 return new Chromosome2DAnnotations(this.currentProps.pixiStage, track.chromInfoPath, track.options);
+            case 'horizontal-1d-value-interval':
+                return new ValueIntervalTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid))
             case 'horizontal-1d-value-interval':
                 return new ValueIntervalTrack(
                     this.currentProps.pixiStage,
