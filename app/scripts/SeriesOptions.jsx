@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import {Collapse,Panel,Checkbox} from 'react-bootstrap';
 import CollapsePanel from './CollapsePanel.jsx';
 import {TilesetFinder} from './TilesetFinder.jsx';
-import {categoryToFiletype} from './config.js';
 
 export class SeriesOptions extends React.Component {
     constructor(props) {
@@ -39,7 +38,6 @@ export class SeriesOptions extends React.Component {
 
     render() {
         // console.log('trackType:', this.props.trackType);
-        let filetype = categoryToFiletype[this.props.trackType];
 
         return (
                 <CollapsePanel
@@ -56,7 +54,6 @@ export class SeriesOptions extends React.Component {
                     <Collapse in={this.state.normalizeChecked}>
                         <Panel>
                             <TilesetFinder
-                                trackTypeFilter={filetype}
                                 trackOrientation={orientation}
                                 onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
                                 selectedTilesetChanged={this.handleNormalizeTilesetChanged.bind(this)}

@@ -6,7 +6,6 @@ import slugid from 'slugid';
 import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-bootstrap';
 import {Form, Panel,Collapse} from 'react-bootstrap';
 import {TilesetFinder} from './TilesetFinder.jsx';
-import {SeriesOptions} from './SeriesOptions.jsx';
 import {PlotTypeChooser} from './PlotTypeChooser.jsx';
 
 export class AddTrackModal extends React.Component {
@@ -84,19 +83,6 @@ export class AddTrackModal extends React.Component {
             orientation = '1d-vertical'
         else
             orientation = '2d'
-
-        // only get options if there's a dataset selected
-        let seriesOptions = null;
-
-        if (this.state.mainTileset) {
-
-            seriesOptions = (
-                            <SeriesOptions
-                                onOptionsChanged={this.handleOptionsChanged.bind(this)}
-                                trackCategory={this.state.mainTileset.category}
-                            />
-                    );
-        }
 
         let form = (
                 <div>
