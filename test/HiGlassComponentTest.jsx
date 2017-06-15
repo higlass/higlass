@@ -24,6 +24,7 @@ import slugid from 'slugid';
 import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
 import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
 import {
+    threeViews,
     fritzBug1,
     fritzBug2,
     project1D,
@@ -68,6 +69,89 @@ function getTrackObject(hgc, viewUid, trackUid) {
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
+    describe("Three views and linking", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'height:400px; width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            hgc = mount(<HiGlassComponent 
+                          options={{bounded: true}}
+                          viewConfig={threeViews}
+                        />, 
+                {attachTo: div});
+
+            setTimeout(done, pageLoadTime);
+        });
+
+        it ("Links two views and moves to the side", (done) => {
+            hgc.instance().handleLocationLockChosen('aa', 'bb');
+            hgc.instance().handleZoomLockChosen('aa', 'bb');
+
+            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(
+                    1799508622.8021536, 1801234331.7949603, 17952.610495328903);
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Checks to make sure that the two views have moved to the same place", done => {
+            let aaXScale = hgc.instance().xScales['aa'];
+            let aaYScale = hgc.instance().yScales['aa'];
+
+            let bbXScale = hgc.instance().xScales['bb'];
+            let bbYScale = hgc.instance().yScales['bb'];
+
+            let [aaCenterX, aaCenterY, aaK] = scalesCenterAndK(aaXScale, aaYScale);
+            let [bbCenterX, bbCenterY, bbK] = scalesCenterAndK(bbXScale, bbYScale);
+
+            console.log('aaCenterX:', aaCenterX, 'bbCenterX:', bbCenterX);
+            
+            expect(aaCenterX - bbCenterX).to.be.below(0.001);
+            expect(aaCenterY - bbCenterY).to.be.below(0.001);
+
+            done();
+        });
+
+        it ("Links the third view", done => {
+            hgc.instance().handleLocationLockChosen('bb', 'cc');
+            hgc.instance().handleZoomLockChosen('bb', 'cc');
+
+            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(
+                    1799509622.8021536, 1801244331.7949603, 17952.610495328903);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Makes sure that the third view moved", done => {
+            let aaXScale = hgc.instance().xScales['aa'];
+            let aaYScale = hgc.instance().yScales['aa'];
+
+            let ccXScale = hgc.instance().xScales['cc'];
+            let ccYScale = hgc.instance().yScales['cc'];
+
+            let [aaCenterX, aaCenterY, aaK] = scalesCenterAndK(aaXScale, aaYScale);
+            let [ccCenterX, ccCenterY, ccK] = scalesCenterAndK(ccXScale, ccYScale);
+
+            console.log('aaCenterX:', aaCenterX, 'ccCenterX:', ccCenterX);
+            
+            expect(aaCenterX - ccCenterX).to.be.below(0.001);
+            expect(aaCenterY - ccCenterY).to.be.below(0.001);
+
+
+        });
+    });
+    return;
+
 
     describe("AddTrackModal", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -87,9 +171,9 @@ describe("Simple HiGlassComponent", () => {
             div.setAttribute('id', 'simple-hg-component');
 
             hgc = mount(<HiGlassComponent 
-                            options={{bounded: true}}
-                            viewConfig={oneViewConfig}
-                          />, 
+                          options={{bounded: true}}
+                          viewConfig={oneViewConfig}
+                        />, 
                 {attachTo: div});
 
             setTimeout(done, pageLoadTime);
@@ -135,7 +219,7 @@ describe("Simple HiGlassComponent", () => {
         let hgc = mount(<HiGlassComponent 
                         options={{bounded: false}}
                         viewConfig={testViewConfX2}
-                      />, 
+                        />, 
             {attachTo: div});
 
         let atm = null;
@@ -146,13 +230,13 @@ describe("Simple HiGlassComponent", () => {
             // styled with a margin-bottom of 10px, fixed by setting the style of
             // genome-position-search to specify margin-bottom app/styles/GenomePositionSearchBox.css
             atm = mount(<AddTrackModal
-                                host={null}
-                                onCancel={() => null}
-                                onTrackChosen={null}
-                                position={null}
-                                show={true}
-                                trackSourceServers={["http://higlass.io/api/v1"]}
-                              />, {attachTo: div});
+                            host={null}
+                            onCancel={() => null}
+                            onTrackChosen={null}
+                            position={null}
+                            show={true}
+                            trackSourceServers={["http://higlass.io/api/v1"]}
+                        />, {attachTo: div});
             const inputField = ReactDOM.findDOMNode(atm.instance().tilesetFinder.searchBox);
 
             // make sure the input field is equal to the document's active element
@@ -184,7 +268,7 @@ describe("Simple HiGlassComponent", () => {
     let hg19Text = '';
     let mm9Text = '';
 
-    /*
+    
     describe("Track addition and removal", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
@@ -257,9 +341,9 @@ describe("Simple HiGlassComponent", () => {
             newViewConf.views[1].layout.h = 10;
 
             hgc = mount(<HiGlassComponent 
-                            options={{bounded: true}}
-                            viewConfig={newViewConf}
-                          />, 
+                          options={{bounded: true}}
+                          viewConfig={newViewConf}
+                        />, 
                 {attachTo: div});
 
             setTimeout(done, pageLoadTime);
@@ -324,9 +408,9 @@ describe("Simple HiGlassComponent", () => {
             newViewConf.views[1].layout.h = 10;
 
             hgc = mount(<HiGlassComponent 
-                            options={{bounded: false}}
-                            viewConfig={newViewConf}
-                          />, 
+                          options={{bounded: false}}
+                          viewConfig={newViewConf}
+                        />, 
                 {attachTo: div});
 
             setTimeout(done, pageLoadTime);
@@ -419,9 +503,9 @@ describe("Simple HiGlassComponent", () => {
             div.setAttribute('id', 'simple-hg-component');
 
             hgc = mount(<HiGlassComponent 
-                            options={{bounded: false}}
-                            viewConfig={noGPSB}
-                          />, 
+                          options={{bounded: false}}
+                          viewConfig={noGPSB}
+                        />, 
                 {attachTo: div});
 
             setTimeout(done, tileLoadTime);
@@ -607,9 +691,9 @@ describe("Simple HiGlassComponent", () => {
             div.setAttribute('id', 'simple-hg-component');
 
             hgc = mount(<HiGlassComponent 
-                            options={{bounded: false}}
-                            viewConfig={onlyGPSB}
-                          />, 
+                          options={{bounded: false}}
+                          viewConfig={onlyGPSB}
+                        />, 
                 {attachTo: div});
 
             setTimeout(done, tileLoadTime);
@@ -654,7 +738,7 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
-    */
+    
 
     describe("Single view", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -674,9 +758,9 @@ describe("Simple HiGlassComponent", () => {
             div.setAttribute('id', 'simple-hg-component');
 
             hgc = mount(<HiGlassComponent 
-                            options={{bounded: false}}
-                            viewConfig={oneViewConfig}
-                          />, 
+                          options={{bounded: false}}
+                          viewConfig={oneViewConfig}
+                        />, 
                 {attachTo: div});
 
             setTimeout(done, pageLoadTime);
@@ -846,9 +930,9 @@ describe("Simple HiGlassComponent", () => {
             div.setAttribute('id', 'simple-hg-component');
 
             hgc = mount(<HiGlassComponent 
-                            options={{bounded: false}}
-                            viewConfig={testViewConfX2}
-                          />, 
+                          options={{bounded: false}}
+                          viewConfig={testViewConfX2}
+                        />, 
                 {attachTo: div});
 
             setTimeout(done, pageLoadTime);
@@ -895,7 +979,6 @@ describe("Simple HiGlassComponent", () => {
         });
     });
 
-    return;
     describe("Positioning a more complex layout", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
@@ -919,9 +1002,9 @@ describe("Simple HiGlassComponent", () => {
             });
 
             hgc = mount(<HiGlassComponent 
-                            options={{bounded: false}}
-                            viewConfig={testViewConfX1}
-                          />, 
+                          options={{bounded: false}}
+                          viewConfig={testViewConfX1}
+                        />, 
                 {attachTo: div});
 
             setTimeout(done, tileLoadTime);
@@ -956,9 +1039,9 @@ describe("Simple HiGlassComponent", () => {
             div.setAttribute('id', 'simple-hg-component');
 
             hgc = mount(<HiGlassComponent 
-                            options={{bounded: false}}
-                            viewConfig={horizontalDiagonalTrackViewConf}
-                          />, 
+                          options={{bounded: false}}
+                          viewConfig={horizontalDiagonalTrackViewConf}
+                        />, 
                 {attachTo: div});
             setTimeout(done, pageLoadTime);
         });
@@ -1201,6 +1284,7 @@ describe("Simple HiGlassComponent", () => {
 
 
     });
+    
 
     describe("Double view", () => {
 
@@ -1220,9 +1304,9 @@ describe("Simple HiGlassComponent", () => {
             div.setAttribute('style', 'height:800px; width:800px');
             div.setAttribute('id', 'single-view');
             hgc = mount(<HiGlassComponent 
-                            options={{bounded: true}}
-                            viewConfig={twoViewConfig}
-                          />, 
+                          options={{bounded: true}}
+                          viewConfig={twoViewConfig}
+                        />, 
                 {attachTo: div});
 
             setTimeout(done, pageLoadTime);

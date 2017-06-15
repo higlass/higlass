@@ -1,3 +1,201 @@
+export const threeViews = 
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://test.higlass.io/api/v1",
+    "http://localhost:8989/api/v1"
+  ],
+  "exportViewUrl": "http://test.higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        44224199.75714093,
+        3139918182.757144
+      ],
+      "initialYDomain": [
+        437819577.5957135,
+        2534046646.0842867
+      ],
+      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [],
+        "left": [],
+        "center": [
+          {
+            "uid": "XTlN5MnEQXKaDbeQISTU2Q",
+            "type": "combined",
+            "contents": [
+              {
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                "server": "http://test.higlass.io/api/v1",
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "uid": "ZTDBLcN1SNyDty0iVx1PWA",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarLabelsPosition": "inside",
+                  "colorbarPosition": "topRight",
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+                },
+                "width": 100,
+                "height": 100,
+                "position": "center"
+              }
+            ],
+            "position": "center"
+          }
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 4,
+        "h": 7,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      }
+    },
+    {
+      "uid": "bb",
+      "initialXDomain": [
+        44224199.75714047,
+        3139918182.7571454
+      ],
+      "initialYDomain": [
+        437819577.5957127,
+        2534046646.084288
+      ],
+      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [],
+        "left": [],
+        "center": [
+          {
+            "uid": "YUrwxBy9QRiol-tgnJR8Zw",
+            "type": "combined",
+            "contents": [
+              {
+                "name": "Dixon et al. (2012) IMR90 HindIII (allreps) 1kb",
+                "server": "http://test.higlass.io/api/v1",
+                "tilesetUid": "AddRuJRtSTqjI9NUwV49XA",
+                "uid": "HDLU6ymrRlCgbe6cTwoRhw",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarLabelsPosition": "inside",
+                  "colorbarPosition": "topRight",
+                  "name": "Dixon et al. (2012) IMR90 HindIII (allreps) 1kb"
+                },
+                "width": 100,
+                "height": 100,
+                "position": "center"
+              }
+            ],
+            "position": "center"
+          }
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 4,
+        "h": 7,
+        "x": 4,
+        "y": 0,
+        "i": "MGOAVH4ASU6NiVdSKCSFMA",
+        "moved": false,
+        "static": false
+      }
+    },
+    {
+      "uid": "cc",
+      "initialXDomain": [
+        -70758719.61143267,
+        3024935263.388575
+      ],
+      "initialYDomain": [
+        92870819.4899962,
+        2189097887.978573
+      ],
+      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [],
+        "left": [],
+        "center": [
+          {
+            "uid": "KYcXdKX1QMKlOLI616NLwQ",
+            "type": "combined",
+            "contents": [
+              {
+                "name": "Selvaraj et al. (2013) GM12878 HindIII (allreps) 1kb",
+                "server": "http://test.higlass.io/api/v1",
+                "tilesetUid": "GSKqGQDlQqaHmWIqkgi_4w",
+                "uid": "bBTem1BHTpGULKrStysrPw",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarLabelsPosition": "inside",
+                  "colorbarPosition": "topRight",
+                  "name": "Selvaraj et al. (2013) GM12878 HindIII (allreps) 1kb"
+                },
+                "width": 100,
+                "height": 100,
+                "position": "center"
+              }
+            ],
+            "position": "center"
+          }
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 4,
+        "h": 7,
+        "x": 0,
+        "y": 7,
+        "i": "DHPiKLAyS-2zyxM3IknNAg",
+        "moved": false,
+        "static": false
+      }
+    }
+  ],
+  "zoomLocks": {},
+  "locationLocks": {}
+}
+
 export const fritzBug2 = 
 {  
    "editable":false,
