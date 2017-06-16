@@ -69,7 +69,7 @@ function getTrackObject(hgc, viewUid, trackUid) {
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
-    describe("Three views and linking", () => {
+        describe("Three views and linking", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
                 hgc.unmount();
@@ -114,8 +114,6 @@ describe("Simple HiGlassComponent", () => {
             let [aaCenterX, aaCenterY, aaK] = scalesCenterAndK(aaXScale, aaYScale);
             let [bbCenterX, bbCenterY, bbK] = scalesCenterAndK(bbXScale, bbYScale);
 
-            console.log('aaCenterX:', aaCenterX, 'bbCenterX:', bbCenterX);
-            
             expect(aaCenterX - bbCenterX).to.be.below(0.001);
             expect(aaCenterY - bbCenterY).to.be.below(0.001);
 
@@ -123,6 +121,9 @@ describe("Simple HiGlassComponent", () => {
         });
 
         it ("Links the third view", done => {
+            hgc.instance().handleLocationYanked('cc', 'aa');
+            hgc.instance().handleZoomYanked('cc', 'aa');
+
             hgc.instance().handleLocationLockChosen('bb', 'cc');
             hgc.instance().handleZoomLockChosen('bb', 'cc');
 
@@ -142,16 +143,13 @@ describe("Simple HiGlassComponent", () => {
             let [aaCenterX, aaCenterY, aaK] = scalesCenterAndK(aaXScale, aaYScale);
             let [ccCenterX, ccCenterY, ccK] = scalesCenterAndK(ccXScale, ccYScale);
 
-            console.log('aaCenterX:', aaCenterX, 'ccCenterX:', ccCenterX);
-            
             expect(aaCenterX - ccCenterX).to.be.below(0.001);
             expect(aaCenterY - ccCenterY).to.be.below(0.001);
 
 
+            setTimeout(done, shortLoadTime);
         });
     });
-    return;
-
 
     describe("AddTrackModal", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -247,7 +245,6 @@ describe("Simple HiGlassComponent", () => {
         });
 
         it ("should select a few elements", (done) => {
-            //console.log('here:', atm.find('select'));
             let multiSelect = new ReactWrapper(atm.instance().tilesetFinder.multiSelect, true);
 
             let selectBox = multiSelect.find('select');
@@ -372,8 +369,7 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
-
-
+    
     describe("1D viewport projection", () => {
         let vpUid = null;
         let vp2DUid = null;
