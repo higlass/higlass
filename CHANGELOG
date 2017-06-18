@@ -1,3 +1,8 @@
+v0.8.6 - 2017-06-18
+
+- Fixed a bug where the HG Component would automatically and indefinitely
+  increase in size
+
 v0.8.5 - 2017-06-16
 
 - Fixed view linking bug (regression)

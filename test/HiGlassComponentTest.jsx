@@ -24,6 +24,7 @@ import slugid from 'slugid';
 import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
 import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
 import {
+    paperFigure1,
     threeViews,
     fritzBug1,
     fritzBug2,
@@ -69,7 +70,7 @@ function getTrackObject(hgc, viewUid, trackUid) {
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
-        describe("Three views and linking", () => {
+    describe("Three views and linking", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
                 hgc.unmount();

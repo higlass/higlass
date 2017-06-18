@@ -888,7 +888,7 @@ export class HiGlassComponent extends React.Component {
       let prospectiveRowHeight = availableHeight / maxHeight;  //maxHeight is the number of
                                                                //rows necessary to display this view
 
-      let chosenRowHeight = prospectiveRowHeight;
+      let chosenRowHeight = Math.floor(prospectiveRowHeight);
 
       for (let view of dictValues(this.state.views)) {
 
