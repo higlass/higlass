@@ -18,6 +18,10 @@
     border-bottom: black solid;
 }
 
-.bottom-handle {
-    border: black solid 1px;
+.top-draggable-handle:hover {
+    opacity: 0.8;
+}
+
+.bottom-draggable-handle:hover {
+    opacity: 0.8;
 }

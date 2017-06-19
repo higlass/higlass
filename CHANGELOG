@@ -1,3 +1,9 @@
+v0.8.7 - 2017-06-18
+
+- Decreased the maximum colorbar height
+- Made the draggable div handles more transparent
+- Lowered the minimum height for chromosome axes
+
 v0.8.6 - 2017-06-18
 
 - Fixed a bug where the HG Component would automatically and indefinitely

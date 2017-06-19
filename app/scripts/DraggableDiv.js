@@ -315,6 +315,7 @@ export class DraggableDiv extends React.Component {
                             left: this.state.width / 2 - resizeWidth / 2,
                             bottom: 1,
                             width: resizeWidth,
+                            opacity: 0.2,
                             height: 4,
                             borderBottom: '1px solid black',
                             borderTop: '1px solid black',
@@ -323,6 +324,7 @@ export class DraggableDiv extends React.Component {
                             left: this.state.width / 2 - resizeWidth / 2,
                             top: 1,
                             width: resizeWidth,
+                            opacity: 0.2,
                             height: 4,
                             borderBottom: '1px solid black',
                             borderTop: '1px solid black',
@@ -330,6 +332,7 @@ export class DraggableDiv extends React.Component {
             let leftStyle = { position: 'absolute',
                             left: 1,
                             top: this.state.height / 2 - resizeHeight / 2,
+                            opacity: 0.2,
                             width: 4,
                             height: resizeHeight,
                             borderLeft: '1px solid black',
@@ -337,6 +340,7 @@ export class DraggableDiv extends React.Component {
                             cursor: 'col-resize'};
             let rightStyle = { position: 'absolute',
                             right: 1,
+                            opacity: 0.2,
                             top: this.state.height / 2 - resizeHeight / 2,
                             width: 4,
                             height: resizeHeight,
@@ -369,16 +373,16 @@ export class DraggableDiv extends React.Component {
                         */
             let resizeHandleDivs = {
                 'bottom': (
-                        <div key={'bottom'} style={bottomStyle} ref={c => this.bottomHandle = c} />
+                        <div key={'bottom'} className="bottom-draggable-handle" style={bottomStyle} ref={c => this.bottomHandle = c} />
                 ),
                 'top': (
-                        <div key={'top'} style={topStyle} ref={c => this.topHandle = c} />
+                        <div key={'top'} className="top-draggable-handle" style={topStyle} ref={c => this.topHandle = c} />
                 ),
                 'right': (
-                        <div key={'right'} style={rightStyle} ref={c => this.rightHandle = c} />
+                        <div key={'right'} className="right-draggable-handle" style={rightStyle} ref={c => this.rightHandle = c} />
                 ),
                 'left': (
-                        <div key={'left'} style={leftStyle} ref={c => this.leftHandle = c} />
+                        <div key={'left'} className="left-draggable-handle" style={leftStyle} ref={c => this.leftHandle = c} />
                 )
             }
             let resizeHandles = [...this.props.resizeHandles].map(x => resizeHandleDivs[x]);
