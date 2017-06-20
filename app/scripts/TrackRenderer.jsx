@@ -88,12 +88,10 @@ export class TrackRenderer extends React.Component {
                 return true;
             })
             .on('start', () => { 
-                console.log('zoomstart');
                 this.zooming = true
             })
             .on('zoom', this.zoomedBound)
             .on('end', () => {
-                console.log('zoomend');
                 this.zooming = false
             });
 
@@ -137,6 +135,9 @@ export class TrackRenderer extends React.Component {
             .style("height", this.currentProps.height + "px")
             .style("position", "absolute")
             .classed('div-zoom', true);
+
+        // add back the previous transform
+        this.zoomBehavior.transform(this.gZoom, this.zoomTransform);
         this.gZoom.call(this.zoomBehavior);
     }
 
@@ -622,11 +623,6 @@ export class TrackRenderer extends React.Component {
          * We need to update our local record of the zoom transform and apply it
          * to all the tracks.
          */
-        console.log('this.isScrolling:', this.isScrolling);
-
-        if (this.isScrolling)
-            return;
-
         if (!this.currentProps.zoomable)
             this.zoomTransform = zoomIdentity;
         else
