@@ -129,6 +129,9 @@ export class TrackRenderer extends React.Component {
     }
 
     addZoom() {
+        if (!this.divTrackAreaSelection)
+            return;
+
         this.gZoom = this.divTrackAreaSelection
             .append('div')
             .style("width", this.currentProps.width + "px")
@@ -142,7 +145,11 @@ export class TrackRenderer extends React.Component {
     }
 
     removeZoom() {
-        this.gZoom.remove();
+        if (this.gZoom) {
+            this.gZoom.remove();
+            this.gZoom = null;
+        }
+        
     }
 
     componentDidMount() {
@@ -940,6 +947,9 @@ export class TrackRenderer extends React.Component {
     }
 
     render() {
+        this.removeZoom();
+        this.addZoom();
+
         return(
             <div
                 className={"track-renderer"}

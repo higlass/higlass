@@ -1,3 +1,7 @@
+v0.8.9
+
+- Make sure that the zoomable div matches the size of the container
+
 v0.8.8 - 2017-06-20
 
 - Don't start zooming when scrolling into a HGC
