@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HiGlassComponent } from './HiGlassComponent.jsx';
 
+export {HiGlassComponent} from './HiGlassComponent.jsx';
 
 function launch (element, config, options, callback) {
   /**

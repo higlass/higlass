@@ -59,6 +59,19 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     }
 
+    calculateZoomLevel() {
+        // offset by 2 because 1D tiles are more dense than 2D tiles
+        // 1024 points per tile vs 256 for 2D tiles
+        let xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+                                                      this.tilesetInfo.min_pos[0],
+                                                      this.tilesetInfo.max_pos[0]);
+
+        let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
+        zoomLevel = Math.max(zoomLevel, 0);
+
+        return zoomLevel
+    }
+
     drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle) {
         exonStarts = exonStarts.split(',').map(x => +x + chrOffset)
         exonEnds = exonEnds.split(',').map(x => +x + chrOffset)

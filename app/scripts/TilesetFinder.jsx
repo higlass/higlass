@@ -92,7 +92,7 @@ export class TilesetFinder extends React.Component {
         let datatypesQuery = [...datatypes].map(x => "dt=" + x).join('&')
 
         this.props.trackSourceServers.forEach( sourceServer => {
-            json(sourceServer + '/tilesets/?' + datatypesQuery,
+            json(sourceServer + '/tilesets/?limit=10000&' + datatypesQuery,
                  function(error, data) {
                     if (error) {
                         console.error('ERROR:', error);
@@ -133,22 +133,24 @@ export class TilesetFinder extends React.Component {
     }
 
     handleSelect(x) {
-        console.log('x:', x);
-        console.log('selection:', select(ReactDOM.findDOMNode(this.multiSelect)));
-        console.log('this.multiSelect:', this.multiSelect, ReactDOM.findDOMNode(this.multiSelect));
+        /*
+        return;
 
         let selectedOptions = ReactDOM.findDOMNode(this.multiSelect).selectedOptions;
         let selectedValues = [];
 
-        // I don't know knw selectedOptions.map doesn't work
+
+        // I don't know why selectedOptions.map doesn't work
         for (let i = 0; i < selectedOptions.length; i++)
             selectedValues.push(selectedOptions[i].value);
+        */
 
-        //this.props.selectedTilesetChanged(this.state.options[x.target.value]);
+        this.props.selectedTilesetChanged(this.state.options[x.target.value]);
 
 
         this.setState({
-            selectedUuid: selectedValues
+            selectedUuid: [x.target.value]
+            //selectedUuid: selectedValues
         });
     }
 

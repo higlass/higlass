@@ -70,26 +70,29 @@ export class PlotTypeChooser extends React.Component {
                 let plotTypeClass = this.state.selectedPlotType.type == x.type ? 'plot-type-selected' : 'unselected'
                 let imgTag = trackTypeToInfo[x.type].thumbnail ? 
                         <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} 
-                            dangerouslySetInnerHTML={{__html: thumbnail.outerHTML}} /> :
+                            dangerouslySetInnerHTML={{__html: thumbnail.outerHTML}}
+                        /> :
                         <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} >
                             <svg width={30} height={20} />
                         </div>
                 return (<li
-                            style= {{listStyle: 'none', paddingLeft: 5, paddingBottom: 0}}
-                            className={ plotTypeClass }
+                            className={plotTypeClass}
+                            key={x.type}
                             onClick={ 
                                 (e) => {
                                     this.setState({selectedPlotType: x});
                                     this.props.onPlotTypeSelected(x.type);
                                 }
                             }
-                            >
+                            style={{listStyle: 'none', paddingLeft: 5, paddingBottom: 0}}
+                        >
 
                             {imgTag}
                             <span
                                 style={{verticalAlign: "middle"}}
                             >
-                            {x.type}</span>
+                                {x.type}
+                            </span>
                         </li>);
             });
         }

@@ -1,15 +1,14 @@
+import {ZOOM_TRANSITION_DURATION} from './config.js'
+
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
 import {zoom, zoomIdentity} from 'd3-zoom';
 import {select,event} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
 import {dictItems} from './utils.js';
 
-// Fritz: This import is broken
-import d3 from 'd3';
-
-import {UnknownPixiTrack} from './UnknownPixiTrack.js';
 import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack.js';
 import {Id2DTiledPixiTrack} from './Id2DTiledPixiTrack.js';
 import {IdHorizontal1DTiledPixiTrack} from './IdHorizontal1DTiledPixiTrack.js';
@@ -21,18 +20,25 @@ import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
 import {VerticalLine1DPixiTrack} from './VerticalLine1DPixiTrack.js';
 import {CNVIntervalTrack} from './CNVIntervalTrack.js';
 import {LeftTrackModifier} from './LeftTrackModifier.js';
-import {ViewportTracker2D} from './ViewportTracker2D.js';
 import {Track} from './Track.js';
 import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack.js';
 import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack.js';
+
+import {Horizontal2DDomainsTrack} from './Horizontal2DDomainsTrack.js';
+
 import {SquareMarkersTrack} from './SquareMarkersTrack.js';
 import {Chromosome2DLabels} from './Chromosome2DLabels.js';
 import {Chromosome2DGrid} from './Chromosome2DGrid.js';
 import {Chromosome2DAnnotations} from './Chromosome2DAnnotations.js';
 import {HorizontalChromosomeLabels} from './HorizontalChromosomeLabels.js';
 import {HorizontalHeatmapTrack} from './HorizontalHeatmapTrack.js';
-import {ZOOM_TRANSITION_DURATION} from './config.js'
+import {UnknownPixiTrack} from './UnknownPixiTrack.js';
 import {ValueIntervalTrack} from './ValueIntervalTrack.js';
+import {ViewportTracker2D} from './ViewportTracker2D.js';
+import {ViewportTrackerHorizontal} from './ViewportTrackerHorizontal.js';
+import {ViewportTrackerVertical} from './ViewportTrackerVertical.js';
+
+let SCROLL_TIMEOUT = 100;
 
 export class TrackRenderer extends React.Component {
     /**
@@ -52,7 +58,11 @@ export class TrackRenderer extends React.Component {
         this.yPositionOffset = 0;
         this.xPositionOffset = 0;
 
+        this.scrollTimeout = null;
+
         this.zoomTransform = zoomIdentity;
+        this.windowScrolledBound = this.windowScrolled.bind(this);
+        this.zoomedBound = this.zoomed.bind(this);
 
         // create a zoom behavior that we'll just use to transform selections
         // without having it fire an "onZoom" event
@@ -65,6 +75,8 @@ export class TrackRenderer extends React.Component {
         this.currentProps = props;
         this.prevPropsStr = '';
 
+        window.addEventListener("scroll", this.windowScrolledBound);
+
         // catch any zooming behavior within all of the tracks in this plot
         //this.zoomTransform = zoomIdentity();
         this.zoomBehavior = zoom()
@@ -75,7 +87,13 @@ export class TrackRenderer extends React.Component {
                     return false;
                 return true;
             })
-            .on('zoom', this.zoomed.bind(this))
+            .on('start', () => { 
+                this.zooming = true
+            })
+            .on('zoom', this.zoomedBound)
+            .on('end', () => {
+                this.zooming = false
+            });
 
                 /*
         if (!this.props.zoomable)
@@ -110,11 +128,37 @@ export class TrackRenderer extends React.Component {
         this.trackDefObjects = {}
     }
 
+    addZoom() {
+        if (!this.divTrackAreaSelection)
+            return;
+
+        this.gZoom = this.divTrackAreaSelection
+            .append('div')
+            .style("width", this.currentProps.width + "px")
+            .style("height", this.currentProps.height + "px")
+            .style("position", "absolute")
+            .classed('div-zoom', true);
+
+        // add back the previous transform
+        this.zoomBehavior.transform(this.gZoom, this.zoomTransform);
+        this.gZoom.call(this.zoomBehavior);
+    }
+
+    removeZoom() {
+        if (this.gZoom) {
+            this.gZoom.remove();
+            this.gZoom = null;
+        }
+        
+    }
+
     componentDidMount() {
         this.element = ReactDOM.findDOMNode(this);
         this.divTrackAreaSelection = select(this.divTrackArea);
-        this.divTrackAreaSelection.call(this.zoomBehavior);
-
+        //this.divTrackAreaSelection.call(this.zoomBehavior);
+        //
+        this.addZoom();
+    
         this.canvasDom = ReactDOM.findDOMNode(this.currentProps.canvasElement);
 
         // need to be mounted to make sure that all the renderers are
@@ -192,6 +236,16 @@ export class TrackRenderer extends React.Component {
         this.currentProps.removeDraggingChangedListener(this.draggingChanged);
     }
 
+    windowScrolled() {
+        this.removeZoom();
+
+        if (this.scrollTimeout)
+            clearTimeout(this.scrollTimeout);
+
+        this.scrollTimeout = setTimeout(() => {
+            this.addZoom();
+        }, SCROLL_TIMEOUT);
+    }
 
     setUpInitialScales(initialXDomain, initialYDomain) {
         // make sure the two scales are equally wide:
@@ -482,8 +536,6 @@ export class TrackRenderer extends React.Component {
             let newPosition = [this.xPositionOffset + trackDef.left, this.yPositionOffset + trackDef.top];
             let newDimensions = [trackDef.width, trackDef.height];
 
-            //console.log('updating track position:', uid, newPosition, newDimensions);
-
             // check if any of the track's positions have changed
             // before trying to update them
 
@@ -549,14 +601,21 @@ export class TrackRenderer extends React.Component {
         }
 
         if (animate) {
-            this.divTrackAreaSelection
-                .transition()
-                .duration(animateTime)
-                .call(
+            let selection = this.divTrackAreaSelection;
+
+            if (!document.hidden) {
+                // only transition if the window is hidden
+                selection = selection
+                    .transition()
+                    .duration(animateTime)
+            }
+
+            selection.call(
                     this.zoomBehavior.transform,
                     zoomIdentity.translate(translateX, translateY).scale(k)
                 )
                 .on('end', setZoom);
+
         } else {
             setZoom();
         }
@@ -571,7 +630,6 @@ export class TrackRenderer extends React.Component {
          * We need to update our local record of the zoom transform and apply it
          * to all the tracks.
          */
-
         if (!this.currentProps.zoomable)
             this.zoomTransform = zoomIdentity;
         else
@@ -717,6 +775,30 @@ export class TrackRenderer extends React.Component {
                     );
                 else
                     return new Track();
+            case 'viewport-projection-horizontal':
+                // TODO: Fix this so that these functions are defined somewhere else
+                if (track.registerViewportChanged && track.removeViewportChanged && track.setDomainsCallback)
+                    return new ViewportTrackerHorizontal(
+                        this.svgElement,
+                        track.registerViewportChanged,
+                        track.removeViewportChanged,
+                        track.setDomainsCallback,
+                        track.options
+                    );
+                else
+                    return new Track();
+            case 'viewport-projection-vertical':
+                // TODO: Fix this so that these functions are defined somewhere else
+                if (track.registerViewportChanged && track.removeViewportChanged && track.setDomainsCallback)
+                    return new ViewportTrackerVertical(
+                        this.svgElement,
+                        track.registerViewportChanged,
+                        track.removeViewportChanged,
+                        track.setDomainsCallback,
+                        track.options
+                    );
+                else
+                    return new Track();
             case 'horizontal-gene-annotations':
                 return new HorizontalGeneAnnotationsTrack(
                     this.currentProps.pixiStage,
@@ -737,6 +819,33 @@ export class TrackRenderer extends React.Component {
                         () => this.currentProps.onNewTilesLoaded(track.uid)
                     )
                 )
+            case '2d-rectangle-domains':
+                return new ArrowheadDomainsTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+            case 'vertical-2d-rectangle-domains':
+                return new LeftTrackModifier(new Horizontal2DDomainsTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                ));
+            case 'horizontal-2d-rectangle-domains':
+                return new Horizontal2DDomainsTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
             case 'arrowhead-domains':
                 return new ArrowheadDomainsTrack(
                     this.currentProps.pixiStage,
@@ -807,6 +916,14 @@ export class TrackRenderer extends React.Component {
                     handleTilesetInfoReceived,
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid))
+            case 'horizontal-1d-value-interval':
+                return new ValueIntervalTrack(
+                    this.currentProps.pixiStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid))
             case 'vertical-1d-value-interval':
                 return new LeftTrackModifier(new ValueIntervalTrack(
                     this.currentProps.pixiStage,
@@ -816,7 +933,7 @@ export class TrackRenderer extends React.Component {
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid)));
             default:
-                 console.log('WARNING: unknown track type:', track.type);
+                 console.warn('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(
                     this.currentProps.pixiStage,
                     {name: 'Unknown Track Type'}
@@ -825,7 +942,14 @@ export class TrackRenderer extends React.Component {
 
     }
 
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.windowScrolledBound);
+    }
+
     render() {
+        this.removeZoom();
+        this.addZoom();
+
         return(
             <div
                 className={"track-renderer"}
@@ -843,20 +967,20 @@ export class TrackRenderer extends React.Component {
 }
 
 TrackRenderer.propTypes = {
-    canvasElement: React.PropTypes.object,
-    centerHeight: React.PropTypes.number,
-    centerWidth: React.PropTypes.number,
-    children: React.PropTypes.array,
-    height: React.PropTypes.number,
-    initialXDomain: React.PropTypes.array,
-    initialYDomain: React.PropTypes.array,
-    leftWidth: React.PropTypes.number,
-    marginLeft: React.PropTypes.number,
-    marginTop: React.PropTypes.number,
-    onScalesChanged: React.PropTypes.func,
-    pixiStage: React.PropTypes.object,
-    positionedTracks: React.PropTypes.array,
-    svgElement: React.PropTypes.object,
-    topHeight: React.PropTypes.number,
-    width: React.PropTypes.number
+    canvasElement: PropTypes.object,
+    centerHeight: PropTypes.number,
+    centerWidth: PropTypes.number,
+    children: PropTypes.array,
+    height: PropTypes.number,
+    initialXDomain: PropTypes.array,
+    initialYDomain: PropTypes.array,
+    leftWidth: PropTypes.number,
+    marginLeft: PropTypes.number,
+    marginTop: PropTypes.number,
+    onScalesChanged: PropTypes.func,
+    pixiStage: PropTypes.object,
+    positionedTracks: PropTypes.array,
+    svgElement: PropTypes.object,
+    topHeight: PropTypes.number,
+    width: PropTypes.number
 }

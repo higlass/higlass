@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import slugid from 'slugid';
 
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
@@ -33,6 +34,6 @@ export class SearchableTiledPlot extends React.Component {
 }
 
 SearchableTiledPlot.propTypes = {
-    height: React.PropTypes.number,
-    width: React.PropTypes.number
+    height: PropTypes.number,
+    width: PropTypes.number
 }

@@ -19,14 +19,16 @@ let remoteServer = "52.45.229.11";
 export const usedServer = remoteServer;
 
 let availableColors = {
-    'red': { name: "Red", value: "red"},
-    'orange': { name: "Orange", value: "orange"},
-    'brown': { name: "Brown", value: "brown"},
+    'black': { name: "Black", value: "black"},
     'blue': { name: "Blue", value: "blue"},
+    'brown': { name: "Brown", value: "brown"},
     'cyan': { name: "Cyan", value: "cyan"},
     'green': { name: "Green", value: "green"},
     'grey': { name: "Grey", value: "grey"},
-    'black': { name: "Black", value: "black"}
+    'orange': { name: "Orange", value: "orange"},
+    'purple': { name: "Purple", value: "purple"},
+    'turquoise': { name: "Turquoise", value: "turquoise"},
+    'red': { name: "Red", value: "red"}
 }
 
 export const optionsInfo = {
@@ -37,7 +39,7 @@ export const optionsInfo = {
             'log': {name: "Log", value: 'log' }
         }
     },
-    gridStrokeWidth: {
+    lineStrokeWidth: {
         name: "Stroke Width",
         inlineOptions: {
             '1': { name: "1", value: 1},
@@ -56,10 +58,6 @@ export const optionsInfo = {
         inlineOptions: availableColors
     },
     lineStrokeColor:  {
-        name: "Stroke color",
-        inlineOptions: availableColors
-    },
-    gridStrokeColor:  {
         name: "Stroke color",
         inlineOptions: availableColors
     },
@@ -82,15 +80,20 @@ export const optionsInfo = {
         name: "Axis Position",
         inlineOptions: {
             'left': { name: 'Left', value: 'left' },
+            'outsideLeft': { name: 'Outside left', value: 'outsideLeft' },
             'right': { name: 'Right', value: 'right' },
+            'outsideRight': { name: 'Outside right', value: 'outsideRight' },
             'hidden': { name: 'Hidden', value: null }
         }
     },
+
     axisPositionVertical: {
         name: "Axis Position",
         inlineOptions: {
-            'left': { name: 'Top', value: 'top' },
-            'right': { name: 'Bottom', value: 'bottom' },
+            'top': { name: 'Top', value: 'top' },
+            'outsideTop': { name: 'Outside top', value: 'outsideTop' },
+            'bottom': { name: 'Bottom', value: 'bottom' },
+            'outsideBottom': { name: 'Outside bottom', value: 'outsideBottom' },
             'hidden': { name: 'Hidden', value: null }
         }
     },
@@ -142,6 +145,17 @@ export const optionsInfo = {
             'bl': {name: "Bottom left", value: 'bottomLeft' },
             'br': {name: "Bottom right", value: 'bottomRight' },
             'hidden': {name: "Hidden", value: 'hidden'}
+        }
+    },
+    labelTextOpacity: {
+        name: "Label Text Opacity",
+        inlineOptions: {
+            '0': { name: "0%", value: 0 },
+            '0.2': { name: "20%", value: 0.2 },
+            '0.4': { name: "40%", value: 0.4 },
+            '0.6': { name: "60%", value: 0.6 },
+            '0.8': { name: "80%", value: 0.8 },
+            '1.0': { name: '100%', value: 1.0 },
         }
     },
     labelBackgroundOpacity: {
@@ -263,7 +277,7 @@ export const tracksInfo = [
             colorbarLabelsPosition: 'inside',
             colorbarPosition: 'topRight'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 
         'colorbarPosition', 'colorbarLabelsPosition']//, 'colorbarOrientation']
         //exportable: true
     },
@@ -282,7 +296,7 @@ export const tracksInfo = [
                 ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], //corresponding to the fall colormap
             maxZoom: null
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped',
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped',
                             'colorbarPosition', 'colorbarLabelsPosition']
     },
     {
@@ -301,7 +315,7 @@ export const tracksInfo = [
             colorbarLabelsPosition: 'inside',
             colorbarPosition: 'topRight'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 
                             'oneDHeatmapFlipped', 'colorbarPosition', 'colorbarLabelsPosition' ]
     },
     {
@@ -310,12 +324,13 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         thumbnail: svgHorizontalLineIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeColor', 'valueScaling' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'topLeft',
             axisPositionHorizontal: 'right',
             lineStrokeColor: 'blue',
+            lineStrokeWidth: 1,
             valueScaling: 'linear'
         }
     },
@@ -326,11 +341,12 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         thumbnail: svgVerticalLineIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'axisPositionVertical', 'lineStrokeColor', 'valueScaling' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionVertical', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'bottomLeft',
             axisPositionVertical: 'top',
+            lineStrokeWidth: 1,
             lineStrokeColor: 'blue',
             valueScaling: 'linear'
         }
@@ -349,7 +365,7 @@ export const tracksInfo = [
         local: false,
         orientation: ['1d-horizontal'],
         name: '1D Rectangles',
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'axisPositionHorizontal' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'bottomLeft',
@@ -364,7 +380,7 @@ export const tracksInfo = [
         local: false,
         orientation: ['1d-vertical'],
         name: '1D Rectangles',
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'axisPositionVertical' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionVertical' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'bottomLeft',
@@ -379,7 +395,7 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-horizontal',
         thumbnail: 'horizontal-stacked-interval.png',
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity' ]
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity' ]
     },
     {
         type: 'left-stacked-interval',
@@ -387,7 +403,39 @@ export const tracksInfo = [
         local: false,
         orientation: '1d-vertical',
         thumbnail: 'vertical-stacked-interval.png',
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity']
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity']
+    },
+    {
+        type: 'viewport-projection-vertical',
+        datatype: ['1d-projection'],
+        local: true,
+        hidden: true,
+        orientation: '1d-vertical',
+        name: 'Viewport Projection',
+        thumbnail: 'viewport-projection-center.png',
+        availableOptions: ['projectionFillColor', 'projectionStrokeColor'],
+        defaultOptions: {
+            projectionFillColor: "#777",
+            projectionStrokeColor: "#777",
+            projectionFillOpacity: 0.3,
+            projectionStrokeOpacity: 0.3
+        }
+    },
+    {
+        type: 'viewport-projection-horizontal',
+        datatype: ['1d-projection'],
+        local: true,
+        hidden: true,
+        orientation: '1d-horizontal',
+        name: 'Viewport Projection',
+        thumbnail: 'viewport-projection-center.png',
+        availableOptions: ['projectionFillColor', 'projectionStrokeColor'],
+        defaultOptions: {
+            projectionFillColor: "#777",
+            projectionStrokeColor: "#777",
+            projectionFillOpacity: 0.3,
+            projectionStrokeOpacity: 0.3
+        }
     },
     {
         type: 'viewport-projection-center',
@@ -409,11 +457,11 @@ export const tracksInfo = [
         type: 'horizontal-gene-annotations',
         datatype: ['gene-annotation'],
         local: false,
-        minHeight: 60,
+        minHeight: 55,
         orientation: '1d-horizontal',
         name: 'Gene Annotations',
         thumbnail: svgGeneAnnotationsIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'plusStrandColor', 'minusStrandColor' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'plusStrandColor', 'minusStrandColor' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'hidden',
@@ -425,11 +473,11 @@ export const tracksInfo = [
         type: 'vertical-gene-annotations',
         datatype: ['gene-annotation'],
         local: false,
-        minWidth: 60,
+        minWidth: 55,
         orientation: '1d-vertical',
         name: 'Gene Annotations',
         thumbnail: svgVerticalGeneAnnotationsIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity', 'plusStrandColor', 'minusStrandColor' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'plusStrandColor', 'minusStrandColor' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'hidden',
@@ -445,7 +493,49 @@ export const tracksInfo = [
         orientation: '2d',
         name: 'Arrowhead Domains',
         thumbnail: svgArrowheadDomainsIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelBackgroundOpacity' ],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity' ],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'hidden',
+        }
+    },
+
+    {
+        type: 'vertical-2d-rectangle-domains',
+        datatype: ['2d-rectangle-domains'],
+        local: false,
+        orientation: '1d-vertical',
+        name: 'Vertical 2D Rectangle Domains',
+        thumbnail: svgArrowheadDomainsIcon,
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity' ],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'hidden',
+        }
+    },
+
+    {
+        type: 'horizontal-2d-rectangle-domains',
+        datatype: ['2d-rectangle-domains'],
+        local: false,
+        orientation: '1d-horizontal',
+        name: 'Horizontal 2D Rectangle Domains',
+        thumbnail: svgArrowheadDomainsIcon,
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity' ],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'bottomLeft',
+        }
+    },
+
+    {
+        type: '2d-rectangle-domains',
+        datatype: ['2d-rectangle-domains'],
+        local: false,
+        orientation: '2d',
+        name: '2D Rectangle Domains',
+        thumbnail: svgArrowheadDomainsIcon,
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity' ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'hidden',
@@ -481,10 +571,10 @@ export const tracksInfo = [
         name: 'Chromosome Grid (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null,
-        availableOptions: ['gridStrokeWidth', 'gridStrokeColor'],
+        availableOptions: ['lineStrokeWidth', 'lineStrokeColor'],
         defaultOptions: {
-            gridStrokeWidth: 1,
-            gridStrokeColor: 'grey'
+            lineStrokeWidth: 1,
+            lineStrokeColor: 'grey'
         }
     }
     ,
@@ -522,7 +612,7 @@ export const tracksInfo = [
         datatype: ['chromosome-1d-labels'],
         local: true,
         orientation: '1d-horizontal',
-        minHeight: 30,
+        minHeight: 20,
         name: 'Chromosome Axis (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null
@@ -533,7 +623,7 @@ export const tracksInfo = [
         datatype: ['chromosome-1d-labels-mm9'],
         local: true,
         orientation: '1d-horizontal',
-        minHeight: 30,
+        minHeight: 20,
         name: 'Chromosome Axis (mm9)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
         thumbnail: null
@@ -544,7 +634,7 @@ export const tracksInfo = [
         datatype: ['chromosome-1d-labels'],
         local: true,
         orientation: '1d-vertical',
-        minWidth: 30,
+        minWidth: 20,
         minHeight: 30,
         name: 'Chromosome Axis (hg19)',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
@@ -588,4 +678,6 @@ export const LONG_DRAG_TIMEOUT = 2000;
 
 export const LOCATION_LISTENER_PREFIX = 'locationListenerPrefix';
 
-export const ZOOM_TRANSITION_DURATION = 3000;
+export const ZOOM_TRANSITION_DURATION = 1000;
+
+export const defaultServer = "http://test.higlass.io/api/v1"
