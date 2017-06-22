@@ -133,23 +133,26 @@ export class TilesetFinder extends React.Component {
     }
 
     handleSelect(x) {
-        /*
-        return;
 
         let selectedOptions = ReactDOM.findDOMNode(this.multiSelect).selectedOptions;
         let selectedValues = [];
+        let selectedTilesets = [];
 
 
         // I don't know why selectedOptions.map doesn't work
-        for (let i = 0; i < selectedOptions.length; i++)
+        for (let i = 0; i < selectedOptions.length; i++) {
             selectedValues.push(selectedOptions[i].value);
-        */
+            selectedTilesets.push(this.state.options[selectedOptions[i].value]);
+        }
 
-        this.props.selectedTilesetChanged(this.state.options[x.target.value]);
+        console.log('selected:', selectedValues);
+        console.log('selectedTilesets:', selectedTilesets);
+        //
 
+        this.props.selectedTilesetChanged(selectedTilesets);
 
         this.setState({
-            selectedUuid: [x.target.value]
+            selectedUuid: selectedValues
             //selectedUuid: selectedValues
         });
     }

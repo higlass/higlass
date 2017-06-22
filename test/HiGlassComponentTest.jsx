@@ -69,6 +69,84 @@ function getTrackObject(hgc, viewUid, trackUid) {
 
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
+    
+    describe("Multiple track addition", () => {
+        if (hgc) {
+            hgc.unmount();
+            hgc.detach();
+        }
+
+        if (div) {
+            global.document.body.removeChild(div);
+        }
+
+        div = global.document.createElement('div');
+        global.document.body.appendChild(div);
+
+        div.setAttribute('style', 'width:800px;background-color: lightgreen');
+        div.setAttribute('id', 'simple-hg-component');
+
+        beforeAll((done) => {
+            // wait for the page to load
+            done();
+        });
+
+        let hgc = mount(<HiGlassComponent 
+                        options={{bounded: false}}
+                        viewConfig={testViewConfX2}
+                        />, 
+            {attachTo: div});
+
+        let atm = null;
+
+        it ("should open the AddTrackModal", (done) => {
+            // this was to test an example from the higlass-website demo page
+            // where the issue was that the genome position search box was being
+            // styled with a margin-bottom of 10px, fixed by setting the style of
+            // genome-position-search to specify margin-bottom app/styles/GenomePositionSearchBox.css
+            atm = mount(<AddTrackModal
+                            host={null}
+                            onCancel={() => null}
+                            onTrackChosen={null}
+                            position={null}
+                            show={true}
+                            trackSourceServers={["http://higlass.io/api/v1"]}
+                        />, {attachTo: div});
+            const inputField = ReactDOM.findDOMNode(atm.instance().tilesetFinder.searchBox);
+
+            // make sure the input field is equal to the document's active element
+            // e.g. that it has focus
+            expect(inputField).to.be.eql(document.activeElement);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("should select a few elements", (done) => {
+            let tilesetFinder = atm.instance().tilesetFinder;
+            let multiSelect = new ReactWrapper(atm.instance().tilesetFinder.multiSelect, true);
+
+            let selectBox = multiSelect.find('select');
+
+            console.log('simulating change', selectBox);
+            tilesetFinder.handleSelect();
+        
+            /*
+            selectBox.simulate('change', {target: {value:
+            "http://higlass.io/api/v1/AddRuJRtSTqjI9NUwV49XA"}});
+            */
+
+
+            done();
+        });
+
+        it ("should unmount the AddTrackModal", (done) => {
+            //atm.unmount();
+
+            done();
+        });
+    });
+
+    return;
 
     describe("Three views and linking", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -191,74 +269,6 @@ describe("Simple HiGlassComponent", () => {
             expect(inputField).to.be.eql(document.activeElement);
 
             setTimeout(done, shortLoadTime);
-        });
-    });
-    
-    describe("Multiple track addition", () => {
-        if (hgc) {
-            hgc.unmount();
-            hgc.detach();
-        }
-
-        if (div) {
-            global.document.body.removeChild(div);
-        }
-
-        div = global.document.createElement('div');
-        global.document.body.appendChild(div);
-
-        div.setAttribute('style', 'width:800px;background-color: lightgreen');
-        div.setAttribute('id', 'simple-hg-component');
-
-        beforeAll((done) => {
-            // wait for the page to load
-            done();
-        });
-
-        let hgc = mount(<HiGlassComponent 
-                        options={{bounded: false}}
-                        viewConfig={testViewConfX2}
-                        />, 
-            {attachTo: div});
-
-        let atm = null;
-
-        it ("should open the AddTrackModal", (done) => {
-            // this was to test an example from the higlass-website demo page
-            // where the issue was that the genome position search box was being
-            // styled with a margin-bottom of 10px, fixed by setting the style of
-            // genome-position-search to specify margin-bottom app/styles/GenomePositionSearchBox.css
-            atm = mount(<AddTrackModal
-                            host={null}
-                            onCancel={() => null}
-                            onTrackChosen={null}
-                            position={null}
-                            show={true}
-                            trackSourceServers={["http://higlass.io/api/v1"]}
-                        />, {attachTo: div});
-            const inputField = ReactDOM.findDOMNode(atm.instance().tilesetFinder.searchBox);
-
-            // make sure the input field is equal to the document's active element
-            // e.g. that it has focus
-            expect(inputField).to.be.eql(document.activeElement);
-
-            setTimeout(done, shortLoadTime);
-        });
-
-        it ("should select a few elements", (done) => {
-            let multiSelect = new ReactWrapper(atm.instance().tilesetFinder.multiSelect, true);
-
-            let selectBox = multiSelect.find('select');
-
-            selectBox.simulate('change', {target: {value:
-            "http://higlass.io/api/v1/AddRuJRtSTqjI9NUwV49XA"}});
-            done();
-        });
-
-        it ("should unmount the AddTrackModal", (done) => {
-            //atm.unmount();
-
-            done();
         });
     });
 

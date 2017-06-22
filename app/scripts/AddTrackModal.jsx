@@ -18,7 +18,7 @@ export class AddTrackModal extends React.Component {
         options: {};
 
         this.state = {
-            mainTileset: {datatype: 'none'},
+            selectedTilesets: [{datatype: 'none'}],
             normalizeTilesetUuid: null
         }
     }
@@ -29,31 +29,34 @@ export class AddTrackModal extends React.Component {
 
 
     handleSubmit() {
-        this.props.onTrackChosen(this.state.mainTileset, 
+        this.props.onTrackChosen(this.state.selectedTilesets, 
                                  this.props.position,
                                  this.props.host);
 
         /*
         if (this.state.normalizeChecked)
-            this.props.onTrackChosen(this.state.mainTilesetUuid, this.props.position, 
+            this.props.onTrackChosen(this.state.selectedTilesets, this.props.position, 
                     {'normalizeTilesetUuid': this.state.normalizeTilesetUuid});
         else
-            this.props.onTrackChosen(this.state.mainTilesetUuid, this.props.position, {});
+            this.props.onTrackChosen(this.state.selectedTilesets, this.props.position, {});
         */
     }
 
-    mainTilesetChanged(mainTileset) {
-        mainTileset.type = this.selectedPlotType;
+    selectedTilesetsChanged(selectedTilesets) {
+        for (let tileset of this.selectedTilesets)
+            tileset.type = this.selectedPlotType;
 
         this.setState({
-            mainTileset: mainTileset
+            selectedTilesets: selectedTilesets
         });
     }
 
     handleTilesetPickerDoubleClick(tileset) {
-        this.mainTilesetChanged(tileset);
+        this.selectedTilesetsChanged(tileset);
 
-        this.props.onTrackChosen(this.state.mainTileset, this.props.position);
+        // should iterate over the selected tilesets
+        for (let tileset of this.state.selectedTilesets)
+            this.props.onTrackChosen(tileset, this.props.position);
     }
 
     handleOptionsChanged(newOptions) {
@@ -61,13 +64,15 @@ export class AddTrackModal extends React.Component {
     }
 
     handlePlotTypeSelected(newPlotType) {
-        let mainTileset = this.state.mainTileset;
-        mainTileset.type = newPlotType;
+        let selectedTileset = this.state.selectedTilesets;
+
+        for (let tileset of this.selectedTilesets)
+            tileset.type = newPlotType;
 
         this.selectedPlotType = newPlotType;
 
         this.setState({
-            mainTileset: mainTileset
+            selectedTilesets: selectedTilesets
         });
     }
 
@@ -91,7 +96,7 @@ export class AddTrackModal extends React.Component {
                                 onTrackChosen={value => this.props.onTrackChosen(value, this.props.position)}
                                 orientation={orientation}
                                 ref={(c) => this.tilesetFinder = c}
-                                selectedTilesetChanged={this.mainTilesetChanged.bind(this)}
+                                selectedTilesetChanged={this.selectedTilesetsChanged.bind(this)}
                                 trackSourceServers={this.props.trackSourceServers}
                             />
                     </div>
