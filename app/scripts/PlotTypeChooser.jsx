@@ -29,15 +29,39 @@ export class PlotTypeChooser extends React.Component {
 
         this.datatypeToTrackType['none'] = [];
 
-        this.availableTrackTypes = this.datatypeToTrackType[this.props.datatype];
+        this.availableTrackTypes = this.getAvailableTrackTypes(this.props.datatypes);
 
         this.state = {
             selectedPlotType: this.availableTrackTypes[0]
         }
     }
 
+    getAvailableTrackTypes(datatypes) {
+        /**
+         * Retrieve the available track types given the datatypes passed in.
+         *
+         * Returns
+         * -------
+         * ['2d-chromosome-annotations',...]
+         *      A list of available track types.
+         */
+        let firstDatatype = datatypes[0];
+        let allSame = true;
+        for (let datatype of datatypes)
+            if (datatype != firstDatatype)
+                allSame = false;
+
+        if (allSame) {
+            // only display available track types if all of the selected datasets are
+            // the same
+            return this.datatypeToTrackType[datatypes[0]];
+        }
+
+        return [];
+    }
+
     componentWillReceiveProps(newProps) {
-        this.availableTrackTypes = this.datatypeToTrackType[newProps.datatype];
+        this.availableTrackTypes = this.getAvailableTrackTypes(newProps.datatypes);
 
         if (this.availableTrackTypes && this.availableTrackTypes.length > 0) {
             if (!this.availableTrackTypes.includes(this.state.selectedPlotType)) {

@@ -132,21 +132,17 @@ export class TilesetFinder extends React.Component {
         this.props.onDoubleClick(value);
     }
 
-    handleSelect(x) {
-
-        let selectedOptions = ReactDOM.findDOMNode(this.multiSelect).selectedOptions;
+    handleSelectedOptions(selectedOptions) {
         let selectedValues = [];
         let selectedTilesets = [];
 
 
         // I don't know why selectedOptions.map doesn't work
         for (let i = 0; i < selectedOptions.length; i++) {
-            selectedValues.push(selectedOptions[i].value);
-            selectedTilesets.push(this.state.options[selectedOptions[i].value]);
+            selectedValues.push(selectedOptions[i]);
+            selectedTilesets.push(this.state.options[selectedOptions[i]]);
         }
 
-        console.log('selected:', selectedValues);
-        console.log('selectedTilesets:', selectedTilesets);
         //
 
         this.props.selectedTilesetChanged(selectedTilesets);
@@ -155,6 +151,16 @@ export class TilesetFinder extends React.Component {
             selectedUuid: selectedValues
             //selectedUuid: selectedValues
         });
+    }
+
+    handleSelect(x) {
+        let selectedOptions = ReactDOM.findDOMNode(this.multiSelect).selectedOptions;
+        let selectedOptionsList = [];
+
+        for (let selectedOption of selectedOptions)
+            selectedOptionsList.push(selectedOption.value);  
+
+        this.handleSelectedOptions(selectedOptionsList);
     }
 
     handleSearchChange() {

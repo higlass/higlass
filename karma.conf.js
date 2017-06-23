@@ -13,7 +13,9 @@ module.exports = function(config) {
       'node_modules/react-dom/dist/react-dom.js',
       'node_modules/pixi.js/dist/pixi.js',
       'node_modules/react-bootstrap/dist/react-bootstrap.js',
-      'test/**/*.+(js|jsx)'
+      'test/**/*.+(js|jsx)',
+      'node_modules/bootstrap/dist/css/bootstrap.min.css',
+      'app/styles/*.css'
     ],
 
     preprocessors: {

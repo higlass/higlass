@@ -310,13 +310,13 @@ export class TiledPlot extends React.Component {
         });
     }
 
-    handleTrackAdded(newTrack, position, host=null) {
+    handleTracksAdded(newTracks, position, host=null) {
         if (this.trackToReplace) {
             this.handleCloseTrack(this.trackToReplace)
             this.trackToReplace = null;
         }
 
-        this.props.onTrackAdded(newTrack, position, host);
+        this.props.onTracksAdded(newTracks, position, host);
 
         this.setState({
             addTrackPosition: null,
@@ -934,7 +934,7 @@ export class TiledPlot extends React.Component {
                 (<AddTrackModal
                     host={this.state.addTrackHost}
                     onCancel={this.handleNoTrackAdded.bind(this)}
-                    onTrackChosen={this.handleTrackAdded.bind(this)}
+                    onTracksChosen={this.handleTracksAdded.bind(this)}
                     position={position}
                     ref={c => this.addTrackModal = c}
                     show={this.state.addTrackPosition != null || this.props.addTrackPosition != null}
@@ -977,7 +977,7 @@ TiledPlot.propTypes = {
     onNoTrackAdded: PropTypes.func,
     onNewTilesLoaded: PropTypes.func,
     onScalesChanged: PropTypes.func,
-    onTrackAdded: PropTypes.func,
+    onTracksAdded: PropTypes.func,
     onTrackOptionsChanged: PropTypes.func,
     onTrackPositionChosen: PropTypes.func,
     onUnlockValueScale: PropTypes.func,

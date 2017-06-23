@@ -436,6 +436,7 @@ export class TrackRenderer extends React.Component {
          * @param trackDefinitions: The definition of the track
          * @return: Nothing
          */
+        console.log('syncing track objects');
         let receivedTracksDict = {};
         for (let i = 0; i < trackDefinitions.length; i++)
             receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i];
