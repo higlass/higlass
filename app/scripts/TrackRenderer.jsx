@@ -133,7 +133,7 @@ export class TrackRenderer extends React.Component {
             return;
 
         this.gZoom = this.divTrackAreaSelection
-            .append('div')
+            .insert('div', ":first-child")
             .style("width", this.currentProps.width + "px")
             .style("height", this.currentProps.height + "px")
             .style("position", "absolute")

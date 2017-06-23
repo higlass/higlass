@@ -794,6 +794,8 @@ export class TiledPlot extends React.Component {
                     zoomable={this.props.zoomable}
                 >
 
+                {
+                    /*
                     <div
                         style={{position: "absolute",
                                  width: this.state.width,
@@ -802,6 +804,8 @@ export class TiledPlot extends React.Component {
                                  opacity: 0
                                 }}
                     />
+                    */
+                }
                     {/*trackPositionTexts*/}
 
                     {topTracks}
