@@ -78,10 +78,10 @@ export class TilesetFinder extends React.Component {
 
         this.requestTilesetLists();
 
-        let selectedTileset = this.state.options[this.state.selectedUuid];
+        let selectedTilesets = [this.state.options[this.state.selectedUuid]];
 
-        if (selectedTileset)
-            this.props.selectedTilesetChanged(selectedTileset);
+        if (selectedTilesets)
+            this.props.selectedTilesetChanged(selectedTilesets);
     }
 
     requestTilesetLists() {

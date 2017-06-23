@@ -43,7 +43,9 @@ export class AddTrackModal extends React.Component {
     }
 
     selectedTilesetsChanged(selectedTilesets) {
-        for (let tileset of this.selectedTilesets)
+        console.log('selectedTilesets:', selectedTilesets, this.state.selectedTilesets);
+
+        for (let tileset of this.state.selectedTilesets)
             tileset.type = this.selectedPlotType;
 
         this.setState({
@@ -112,7 +114,7 @@ export class AddTrackModal extends React.Component {
                     <Modal.Body>
                         { form }
                         <PlotTypeChooser 
-                            datatype={this.state.mainTileset.datatype}
+                            datatypes={this.state.selectedTilesets.map(x => x.datatype)}
                             onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
                             orientation={orientation}
                         />
