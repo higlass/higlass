@@ -7,6 +7,7 @@ import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-b
 import {Form, Panel,Collapse} from 'react-bootstrap';
 import {TilesetFinder} from './TilesetFinder.jsx';
 import {PlotTypeChooser} from './PlotTypeChooser.jsx';
+import {availableTrackTypes} from './config.js';
 
 export class AddTrackModal extends React.Component {
     constructor(props) {
@@ -36,10 +37,26 @@ export class AddTrackModal extends React.Component {
     }
 
     selectedTilesetsChanged(selectedTilesets) {
-        console.log('selectedTilesets:', selectedTilesets, this.state.selectedTilesets);
+        let allSame = true;
+        let firstDatatype = selectedTilesets[0].datatype;
+        for (let tileset of selectedTilesets) {
+            if (tileset.datatype != firstDatatype)
+                allSame = false;
+        }
 
-        for (let tileset of selectedTilesets)
-            tileset.type = this.selectedPlotType;
+        if (allSame) {
+            // only one datatype is present in the set of selected tilesets
+            for (let tileset of selectedTilesets) {
+                tileset.type = this.selectedPlotType;
+            }
+        } else {
+            // more than one dataype present, we assign the default track type
+            // to each tileset
+            for (let tileset of selectedTilesets) {
+                tileset.type = availableTrackTypes([tileset.datatype], 
+                    this.getOrientation(this.props.position))[0].type;
+            }
+        }
 
         this.setState({
             selectedTilesets: selectedTilesets
@@ -70,18 +87,38 @@ export class AddTrackModal extends React.Component {
         });
     }
 
-    render() {
-        let filetype = '';
+    getOrientation(position) {
+        /**
+         * Get the track available track orientations for the given
+         * track position. Generally "top" or "bottom" equal "1d-horizontal",
+         * "left" or "right" correspond to "1d-vertical" and "center" means "2d".
+         *
+         * Arguments
+         * ---------
+         *  position: string
+         *
+         * Returns
+         * -------
+         *
+         *  A string containing the track orientation.
+         */
         let orientation = null;
 
-        if (this.props.position == 'top' ||
-            this.props.position == 'bottom')
+        if (position == 'top' ||
+            position == 'bottom')
             orientation = '1d-horizontal'
-        else if ( this.props.position == 'left' ||
-            this.props.position == 'right')
+        else if ( position == 'left' ||
+            position == 'right')
             orientation = '1d-vertical'
         else
             orientation = '2d'
+
+        return orientation;
+    }
+
+    render() {
+        let filetype = '';
+        let orientation = this.getOrientation(this.props.position);
 
         let form = (
                 <div>

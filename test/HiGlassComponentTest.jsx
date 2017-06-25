@@ -118,21 +118,38 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
 
+        it ("should select two different plot types", (done) => {
+            let tilesetFinder = atm.tilesetFinder;
+
+            tilesetFinder.handleSelectedOptions(["http://test.higlass.io/api/v1/TO3D5uHjSt6pyDPEpc1hpA", "http://test.higlass.io/api/v1/Nn8aA4qbTnmaa-oGGbuE-A"]);
+        
+            hgc.update();
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("should add these plot types", (done) => {
+            atm.handleSubmit();
+
+            let tiledPlot = hgc.instance().tiledPlots['aa'];
+            tiledPlot.handleAddTrack('top');
+
+            hgc.update();
+
+            atm = tiledPlot.addTrackModal;
+
+            setTimeout(done, shortLoadTime);
+        });
+
         it ("should select a few different tracks and check for the plot type selection", (done) => {
             let tilesetFinder = atm.tilesetFinder;
-            let multiSelect = new ReactWrapper(atm.tilesetFinder.multiSelect, true);
 
-            let selectBox = multiSelect.find('select');
-
-            console.log("xxxx");
             tilesetFinder.handleSelectedOptions(["http://test.higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ",
                 "http://test.higlass.io/api/v1/GUm5aBiLRCyz2PsBea7Yzg"]);
-            console.log("yyyy");
         
             hgc.update();
 
             let ptc = atm.plotTypeChooser;
-            console.log('pt.availableTrackTypes', ptc.availableTrackTypes);
 
             expect(ptc.availableTrackTypes.length).to.eql(0);
 
@@ -142,7 +159,6 @@ describe("Simple HiGlassComponent", () => {
             hgc.update();
 
             ptc = atm.plotTypeChooser;
-            console.log('pt.availableTrackTypes', ptc.availableTrackTypes);
 
             // should just have the horizontal-heatmap track type
             expect(ptc.availableTrackTypes.length).to.eql(1);
@@ -150,19 +166,20 @@ describe("Simple HiGlassComponent", () => {
             done();
         });
 
+        return;
+
         it ("should add the selected tracks", (done) => {
             //atm.unmount();
             atm.handleSubmit();
             //hgc.update();
             let viewConf = JSON.parse(hgc.instance().getViewsAsString());
            
-            expect(viewConf.views[0].tracks['top'].length).to.eql(3);
+            expect(viewConf.views[0].tracks['top'].length).to.eql(5);
 
             done();
         });
-    });
 
-    return;
+    });
 
     describe("Three views and linking", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -174,6 +191,7 @@ describe("Simple HiGlassComponent", () => {
             if (div) {
                 global.document.body.removeChild(div);
             }
+
 
             div = global.document.createElement('div');
             global.document.body.appendChild(div);
@@ -819,6 +837,7 @@ describe("Simple HiGlassComponent", () => {
 
             let track = getTrackObject(hgc, 'aa', 'line1');
             let pAxis = track.axis.pAxis;
+
 
             // we want the axis labels to be to the left of the end of the track
             expect(pAxis.position.x).to.be.above(track.position[0]);

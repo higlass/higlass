@@ -1364,7 +1364,6 @@ export class HiGlassComponent extends React.Component {
          * @param position: The position the track is being added to
          * @param host: If this track is being added to another track
          */
-        console.log('storing track sizes...');
         this.addDefaultOptions(newTrack);
 
         if (newTrack.contents) {

@@ -136,12 +136,13 @@ export class TilesetFinder extends React.Component {
         let selectedValues = [];
         let selectedTilesets = [];
 
-
         // I don't know why selectedOptions.map doesn't work
         for (let i = 0; i < selectedOptions.length; i++) {
             selectedValues.push(selectedOptions[i]);
             selectedTilesets.push(this.state.options[selectedOptions[i]]);
         }
+
+
 
         //
 
