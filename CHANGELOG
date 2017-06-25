@@ -1,3 +1,8 @@
+v0.8.11 - 2017-06-25
+
+- Multiple tileset selection
+- Disabled zooming on scrolling fix
+
 v0.8.9
 
 - Make sure that the zoomable div matches the size of the container
