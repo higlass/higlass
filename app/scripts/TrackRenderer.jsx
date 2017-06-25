@@ -132,22 +132,21 @@ export class TrackRenderer extends React.Component {
         if (!this.divTrackAreaSelection)
             return;
 
-        this.gZoom = this.divTrackAreaSelection
-            .append('div')
-            .style("width", this.currentProps.width + "px")
-            .style("height", this.currentProps.height + "px")
-            .style("position", "absolute")
-            .classed('div-zoom', true);
-
         // add back the previous transform
-        this.zoomBehavior.transform(this.gZoom, this.zoomTransform);
-        this.gZoom.call(this.zoomBehavior);
+        this.divTrackAreaSelection.call(this.zoomBehavior);
+        this.zoomBehavior.transform(this.divTrackAreaSelection, this.zoomTransform);
     }
 
     removeZoom() {
+        /*
         if (this.gZoom) {
             this.gZoom.remove();
             this.gZoom = null;
+        }
+        */
+
+        if (this.divTrackAreaSelection) {
+            this.divTrackAreaSelection.on('.zoom', null);
         }
         
     }
