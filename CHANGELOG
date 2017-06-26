@@ -1,6 +1,8 @@
 v0.8.11
 
 - Fixed double click track addition bug
+- Mask view boundaries so that when the tracks are too large
+to fit inside, they don't overflow outside of their view
 
 v0.8.10 - 2017-06-25
 
