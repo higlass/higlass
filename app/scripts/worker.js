@@ -15,7 +15,7 @@ function countTransform(count) {
 }
 */
 let epsilon = 0.0000001;
-const MAX_FETCH_TILES = 20;
+const MAX_FETCH_TILES = 40;
 
 export function workerSetPix(size, data, valueScale, pseudocount, colorScale, passedCountTransform) {
     /**
