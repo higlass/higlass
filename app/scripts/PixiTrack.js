@@ -29,6 +29,7 @@ export class PixiTrack extends Track {
         this.pMain = new PIXI.Graphics();
 
         // for drawing the track label (often its name)
+        this.pBorder = new PIXI.Graphics();
         this.pLabel = new PIXI.Graphics();
         this.pMobile = new PIXI.Graphics();
         this.pAxis = new PIXI.Graphics();
@@ -40,6 +41,7 @@ export class PixiTrack extends Track {
         this.pMasked.addChild(this.pMain);
         this.pMasked.addChild(this.pMask);
         this.pMasked.addChild(this.pMobile);
+        this.pMasked.addChild(this.pBorder);
         this.pMasked.addChild(this.pLabel);
         this.pBase.addChild(this.pAxis);
 
@@ -96,7 +98,24 @@ export class PixiTrack extends Track {
         this.scene.removeChild(this.pBase);
     }
 
+    drawBorder() {
+        /**
+         * Draw a border around each track.
+         */
+        let graphics = this.pBorder;
 
+        graphics.clear();
+
+        if (!this.options || !this.options.trackBorderWidth) {
+            // don't display the track label
+            return;
+        }
+
+        let stroke = colorToHex(this.options.trackBorderColor ? this.options.trackBorderColor : 'white');
+        graphics.lineStyle(this.options.trackBorderWidth, stroke);
+
+        graphics.drawRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1]);
+    }
 
     drawLabel() {
         let graphics = this.pLabel;
@@ -289,6 +308,7 @@ export class PixiTrack extends Track {
          */
 
         // this rectangle is cleared by functions that override this draw method
+        this.drawBorder();
         this.drawLabel();
 
         /*

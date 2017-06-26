@@ -96,9 +96,6 @@ export class TiledPlot extends React.Component {
         });
     }
 
-
-
-
     shouldComponentUpdate(nextProps, nextState) {
         let thisPropsStr = this.previousPropsStr;
         let nextPropsStr = this.updatablePropsToString(nextProps);

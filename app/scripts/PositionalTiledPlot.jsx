@@ -152,7 +152,7 @@ export class FixedTrack extends TrackArea {
 
         return (
             <div
-                className={this.props.className}
+                className={this.props.className + " " + "track"}
                 onMouseEnter={this.handleMouseEnter.bind(this)}
                 onMouseLeave={this.handleMouseLeave.bind(this)}
                 style={{
