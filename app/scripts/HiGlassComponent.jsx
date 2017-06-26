@@ -1340,6 +1340,21 @@ export class HiGlassComponent extends React.Component {
         }
     }
 
+    handleTracksAdded(viewId, newTracks, position, host=null) {
+        /**
+         * Add multiple new tracks (likely from the AddTrackModal dialog)
+         *
+         * @param trackInfo: A JSON object that can be used as a track
+         *                   definition
+         * @param position: The position the track is being added to
+         * @param host: If this track is being added to another track
+         */
+        this.storeTrackSizes(viewId);
+
+        for (let newTrack of newTracks)
+            this.handleTrackAdded(viewId, newTrack, position, host=null);
+    }
+
     handleTrackAdded(viewId, newTrack, position, host=null) {
         /**
          * A track was added from the AddTrackModal dialog.
@@ -1349,7 +1364,6 @@ export class HiGlassComponent extends React.Component {
          * @param position: The position the track is being added to
          * @param host: If this track is being added to another track
          */
-        this.storeTrackSizes(viewId);
         this.addDefaultOptions(newTrack);
 
         if (newTrack.contents) {
@@ -2354,7 +2368,7 @@ export class HiGlassComponent extends React.Component {
                                      onNewTilesLoaded={(trackUid) => this.handleNewTilesLoaded(view.uid, trackUid)}
                                      onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
                                      onScalesChanged={(x,y) => this.handleScalesChanged(view.uid, x, y)}
-                                     onTrackAdded={(newTrack, position, host) => this.handleTrackAdded(view.uid, newTrack, position, host)}
+                                     onTracksAdded={(newTracks, position, host) => this.handleTracksAdded(view.uid, newTracks, position, host)}
                                      onTrackOptionsChanged={(trackId, options) => this.handleTrackOptionsChanged(view.uid, trackId, options)}
                                      onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
                                      onUnlockValueScale={uid => this.handleUnlockValueScale(view.uid, uid)}

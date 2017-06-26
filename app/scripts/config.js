@@ -679,5 +679,70 @@ export const LONG_DRAG_TIMEOUT = 2000;
 export const LOCATION_LISTENER_PREFIX = 'locationListenerPrefix';
 
 export const ZOOM_TRANSITION_DURATION = 1000;
-
 export const defaultServer = "http://test.higlass.io/api/v1"
+
+let localDatatypeToTrackType = {};
+
+export function datatypeToTrackType(orientation) {
+    let localDatatypeToTrackType = {};
+
+    tracksInfo
+    .filter(x => x.orientation == orientation)
+    .forEach(ti => {
+        let datatypes = ti.datatype;
+
+        if (!Array.isArray(ti.datatype))
+            datatypes = [datatypes];
+
+        datatypes.forEach(datatype => {
+            if (!(datatype in localDatatypeToTrackType))
+                localDatatypeToTrackType[datatype] = [];
+        
+
+            localDatatypeToTrackType[datatype].push(ti)
+        });
+    });
+
+    localDatatypeToTrackType['none'] = [];
+
+    return localDatatypeToTrackType;
+}
+
+export function availableTrackTypes(datatypes, orientation) {
+    /**
+     * Return a list of the available track types, given a set of data types
+     * and an orientation
+     *
+     * Arguments
+     * ---------
+     *
+     *  datatypes: list
+     *      E.g. ['heatmap', 'vector']
+     *
+     *  orientation: string
+     *      E.g. 'top'
+     *
+     * Return
+     * ------
+     *
+     *  A list of track-types:
+     *      E.g. ['top-line', 'top-rectangle']
+     */
+
+    let datatypesToTrackTypes = datatypeToTrackType(orientation);
+
+    let firstDatatype = datatypes[0];
+    let allSame = true;
+    for (let datatype of datatypes)
+        if (datatype != firstDatatype)
+            allSame = false;
+
+    if (allSame) {
+        // only display available track types if all of the selected datasets are
+        // the same
+        return datatypesToTrackTypes[datatypes[0]];
+    }
+
+    return [];
+}
+

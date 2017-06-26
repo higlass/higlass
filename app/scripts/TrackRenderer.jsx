@@ -38,6 +38,8 @@ import {ViewportTracker2D} from './ViewportTracker2D.js';
 import {ViewportTrackerHorizontal} from './ViewportTrackerHorizontal.js';
 import {ViewportTrackerVertical} from './ViewportTrackerVertical.js';
 
+let SCROLL_TIMEOUT = 100;
+
 export class TrackRenderer extends React.Component {
     /**
      * Maintain a list of tracks, and re-render them whenever either
@@ -56,7 +58,11 @@ export class TrackRenderer extends React.Component {
         this.yPositionOffset = 0;
         this.xPositionOffset = 0;
 
+        this.scrollTimeout = null;
+
         this.zoomTransform = zoomIdentity;
+        this.windowScrolledBound = this.windowScrolled.bind(this);
+        this.zoomedBound = this.zoomed.bind(this);
 
         // create a zoom behavior that we'll just use to transform selections
         // without having it fire an "onZoom" event
@@ -69,6 +75,8 @@ export class TrackRenderer extends React.Component {
         this.currentProps = props;
         this.prevPropsStr = '';
 
+        window.addEventListener("scroll", this.windowScrolledBound);
+
         // catch any zooming behavior within all of the tracks in this plot
         //this.zoomTransform = zoomIdentity();
         this.zoomBehavior = zoom()
@@ -79,7 +87,13 @@ export class TrackRenderer extends React.Component {
                     return false;
                 return true;
             })
-            .on('zoom', this.zoomed.bind(this))
+            .on('start', () => { 
+                this.zooming = true
+            })
+            .on('zoom', this.zoomedBound)
+            .on('end', () => {
+                this.zooming = false
+            });
 
                 /*
         if (!this.props.zoomable)
@@ -114,11 +128,36 @@ export class TrackRenderer extends React.Component {
         this.trackDefObjects = {}
     }
 
+    addZoom() {
+        if (!this.divTrackAreaSelection)
+            return;
+
+        // add back the previous transform
+        this.divTrackAreaSelection.call(this.zoomBehavior);
+        this.zoomBehavior.transform(this.divTrackAreaSelection, this.zoomTransform);
+    }
+
+    removeZoom() {
+        /*
+        if (this.gZoom) {
+            this.gZoom.remove();
+            this.gZoom = null;
+        }
+        */
+
+        if (this.divTrackAreaSelection) {
+            this.divTrackAreaSelection.on('.zoom', null);
+        }
+        
+    }
+
     componentDidMount() {
         this.element = ReactDOM.findDOMNode(this);
         this.divTrackAreaSelection = select(this.divTrackArea);
-        this.divTrackAreaSelection.call(this.zoomBehavior);
-
+        //this.divTrackAreaSelection.call(this.zoomBehavior);
+        //
+        this.addZoom();
+    
         this.canvasDom = ReactDOM.findDOMNode(this.currentProps.canvasElement);
 
         // need to be mounted to make sure that all the renderers are
@@ -196,6 +235,16 @@ export class TrackRenderer extends React.Component {
         this.currentProps.removeDraggingChangedListener(this.draggingChanged);
     }
 
+    windowScrolled() {
+        this.removeZoom();
+
+        if (this.scrollTimeout)
+            clearTimeout(this.scrollTimeout);
+
+        this.scrollTimeout = setTimeout(() => {
+            this.addZoom();
+        }, SCROLL_TIMEOUT);
+    }
 
     setUpInitialScales(initialXDomain, initialYDomain) {
         // make sure the two scales are equally wide:
@@ -580,7 +629,6 @@ export class TrackRenderer extends React.Component {
          * We need to update our local record of the zoom transform and apply it
          * to all the tracks.
          */
-
         if (!this.currentProps.zoomable)
             this.zoomTransform = zoomIdentity;
         else
@@ -893,7 +941,14 @@ export class TrackRenderer extends React.Component {
 
     }
 
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.windowScrolledBound);
+    }
+
     render() {
+        this.removeZoom();
+        this.addZoom();
+
         return(
             <div
                 className={"track-renderer"}

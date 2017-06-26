@@ -2,34 +2,18 @@ import "../styles/PlotTypeChooser.css";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {select} from 'd3-selection';
-import {tracksInfo} from './config.js';
+import {
+    tracksInfo,
+    datatypeToTrackType,
+    availableTrackTypes
+} from './config.js';
 
 export class PlotTypeChooser extends React.Component {
     constructor(props) {
         super(props);
 
-        this.datatypeToTrackType = {};
-
-        tracksInfo
-        .filter(x => x.orientation == this.props.orientation)
-        .forEach(ti => {
-            let datatypes = ti.datatype;
-
-            if (!Array.isArray(ti.datatype))
-                datatypes = [datatypes];
-
-            datatypes.forEach(datatype => {
-                if (!(datatype in this.datatypeToTrackType))
-                    this.datatypeToTrackType[datatype] = [];
-            
-
-                this.datatypeToTrackType[datatype].push(ti)
-            });
-        });
-
-        this.datatypeToTrackType['none'] = [];
-
-        this.availableTrackTypes = this.datatypeToTrackType[this.props.datatype];
+        this.datatypeToTrackType = datatypeToTrackType(this.props.orientation);
+        this.availableTrackTypes = availableTrackTypes(this.props.datatypes, this.props.orientation);
 
         this.state = {
             selectedPlotType: this.availableTrackTypes[0]
@@ -37,12 +21,19 @@ export class PlotTypeChooser extends React.Component {
     }
 
     componentWillReceiveProps(newProps) {
-        this.availableTrackTypes = this.datatypeToTrackType[newProps.datatype];
+        this.availableTrackTypes = availableTrackTypes(newProps.datatypes, this.props.orientation);
 
-        if (this.availableTrackTypes && this.availableTrackTypes.length > 0) {
+        if (!this.availableTrackTypes)
+            return;
+
+        if (this.availableTrackTypes.length > 0) {
             if (!this.availableTrackTypes.includes(this.state.selectedPlotType)) {
                 this.handlePlotTypeSelected(this.availableTrackTypes[0]);
             }
+        } else {
+            // no available track types
+            // this could be because the datatype is unknown
+            // or because there's multiple different datatypes
         }
     }
 
