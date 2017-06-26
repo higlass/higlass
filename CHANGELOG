@@ -1,4 +1,8 @@
-v0.8.11 - 2017-06-25
+v0.8.11
+
+- Fixed double click track addition bug
+
+v0.8.10 - 2017-06-25
 
 - Multiple tileset selection
 - Disabled zooming on scrolling fix

@@ -898,12 +898,19 @@ export class HiGlassComponent extends React.Component {
             centerWidth, centerHeight,
             minNecessaryHeight} = this.calculateViewDimensions(view);
 
+             // If the view is bounded, then we always fit everything inside the container
+             // 
+             // It used to be that if the viewconfig was too long, we just let it overflow,
+             // but I think it's better that it's always contained.
+             
+            /*
             if (minNecessaryHeight > view.layout.h * (prospectiveRowHeight + MARGIN_HEIGHT)) {
                 // we don't have space for one of the containers, so let them exceed the bounds
                 // of the box
                 chosenRowHeight = currentRowHeight;
                 break;
             }
+            */
       }
 
       this.setState({

@@ -64,7 +64,15 @@ export class AddTrackModal extends React.Component {
     }
 
     handleTilesetPickerDoubleClick(tileset) {
-        this.selectedTilesetsChanged(tileset);
+        /**
+         * The user double clicked a tileset in the tileset finder dialog.
+         * This means that only one is selected.
+         *
+         * Arguments
+         * ---------
+         *  tileset: { uuid: 'CXCX', filetype: 'cooler' ....}
+         */
+        this.selectedTilesetsChanged([tileset]);
 
         // should iterate over the selected tilesets
         this.props.onTracksChosen(this.state.selectedTilesets, this.props.position);

@@ -118,6 +118,25 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
 
+        it ("should select one plot type and double click", (done) => {
+            let tilesetFinder = atm.tilesetFinder;
+            tilesetFinder.handleSelectedOptions(["http://test.higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ"]);
+            hgc.update();
+
+            tilesetFinder.props.onDoubleClick(tilesetFinder.state.options["http://test.higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ"]);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("should reopen the AddTrackModal", (done) => {
+            // open up the add track dialog for the next tests
+            let tiledPlot = hgc.instance().tiledPlots['aa'];
+            tiledPlot.handleAddTrack('top');
+            hgc.update()
+            atm = tiledPlot.addTrackModal;
+            setTimeout(done, shortLoadTime);
+        });
+
         it ("should select two different plot types", (done) => {
             let tilesetFinder = atm.tilesetFinder;
 
@@ -166,15 +185,15 @@ describe("Simple HiGlassComponent", () => {
             done();
         });
 
-        return;
-
         it ("should add the selected tracks", (done) => {
             //atm.unmount();
             atm.handleSubmit();
             //hgc.update();
             let viewConf = JSON.parse(hgc.instance().getViewsAsString());
            
-            expect(viewConf.views[0].tracks['top'].length).to.eql(5);
+            expect(viewConf.views[0].tracks['top'].length).to.eql(6);
+            
+            hgc.update();
 
             done();
         });

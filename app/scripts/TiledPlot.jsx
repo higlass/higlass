@@ -952,6 +952,7 @@ export class TiledPlot extends React.Component {
             <div
                 ref={(c) => this.divTiledPlot = c}
                 style={{flex: 1}}
+                className={"tiled-plot"}
             >
                 {trackRenderer}
                 {overlays}
