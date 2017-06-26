@@ -1,4 +1,4 @@
-v0.8.11
+v0.8.11 - 2017-06-26
 
 - Fixed double click track addition bug
 - Mask view boundaries so that when the tracks are too large
