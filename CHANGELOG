@@ -1,3 +1,9 @@
+v0.8.13 - 2017-06-26
+
+- Option to draw borders around tracks
+- Option to change the stroke, fill colors and opacity of the
+horizontal-2d-rectangle-domains track
+
 v0.8.12 - 2017-06-26
 
 - Hide overflow track handles

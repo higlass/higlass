@@ -1,5 +1,6 @@
 import {TiledPixiTrack} from './TiledPixiTrack.js';
 import {tileProxy} from './TileProxy.js';
+import {colorToHex} from './utils.js';
 
 export class ArrowheadDomainsTrack extends TiledPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
@@ -133,9 +134,12 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
 
         graphics.clear();
 
-        graphics.lineStyle(1, 0x0000FF, 1);
-        graphics.beginFill(0xFF700B, 0.4);
-        graphics.alpha = 0.5;
+        let stroke = colorToHex(this.options.rectangleDomainStrokeColor ? this.options.rectangleDomainStrokeColor : 'black');
+        let fill = colorToHex(this.options.rectangleDomainFillColor ? this.options.rectangleDomainFillColor : 'grey');
+
+        graphics.lineStyle(1, stroke, 1);
+        graphics.beginFill(fill, 0.4);
+        graphics.alpha = this.options.rectangleDomainOpacity ? this.options.rectangleDomainOpacity : 0.5;
 
         // line needs to be scaled down so that it doesn't become huge
         for (let td of tile.tileData) {

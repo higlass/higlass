@@ -85,6 +85,25 @@ export const optionsInfo = {
         name: "Fill color",
         inlineOptions: availableColors
     },
+    rectangleDomainStrokeColor: {
+        name: "Stroke color",
+        inlineOptions: availableColors
+    },
+    rectangleDomainFillColor: {
+        name: "Fill color",
+        inlineOptions: availableColors
+    },
+    rectangleDomainOpacity: {
+        name: "Opacity",
+        inlineOptions: {
+            '0': { name: "0%", value: 0 },
+            '0.2': { name: "20%", value: 0.2 },
+            '0.4': { name: "40%", value: 0.4 },
+            '0.6': { name: "60%", value: 0.6 },
+            '0.8': { name: "80%", value: 0.8 },
+            '1.0': { name: '100%', value: 1.0 },
+        }
+    },
     oneDHeatmapFlipped: {
         name: 'Flip Heatmap',
         inlineOptions: {
@@ -563,12 +582,17 @@ export const tracksInfo = [
         name: 'Horizontal 2D Rectangle Domains',
         thumbnail: svgArrowheadDomainsIcon,
         availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 
-            'trackBorderWidth', 'trackBorderColor' ],
+            'trackBorderWidth', 'trackBorderColor',
+            'rectangleDomainFillColor', 'rectangleDomainStrokeColor', 'rectangleDomainOpacity'
+        ],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'bottomLeft',
             trackBorderWidth: 0,
-            trackBorderColor: 'black'
+            trackBorderColor: 'black',
+            rectangleDomainFillColor: 'grey',
+            rectangleDomainStrokeColor: 'black',
+            rectangleDomainOpacity: 0.6
         }
     },
 
@@ -580,12 +604,16 @@ export const tracksInfo = [
         name: '2D Rectangle Domains',
         thumbnail: svgArrowheadDomainsIcon,
         availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 
-            'trackBorderWidth', 'trackBorderColor' ],
+            'trackBorderWidth', 'trackBorderColor',
+            'rectangleDomainFillColor', 'rectangleDomainStrokeColor', 'rectangleDomainOpacity'],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'hidden',
             trackBorderWidth: 0,
-            trackBorderColor: 'black'
+            trackBorderColor: 'black',
+            rectangleDomainFillColor: 'grey',
+            rectangleDomainStrokeColor: 'black',
+            rectangleDomainOpacity: 0.6
         }
     },
 
