@@ -209,6 +209,8 @@ export function workerFetchMultiRequestTiles(req) {
 
     const requestsByServer = {};
 
+    console.log('req:', req);
+
 
     // We're converting the array of IDs into an object in order to filter out duplicated requests.
     // In case different instances request the same data it won't be loaded twice.

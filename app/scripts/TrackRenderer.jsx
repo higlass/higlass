@@ -251,6 +251,7 @@ export class TrackRenderer extends React.Component {
         this.removeTracks(Object.keys(this.trackDefObjects));
         this.currentProps.removeDraggingChangedListener(this.draggingChanged);
         this.currentProps.pixiStage.removeChild(this.pStage);
+        window.removeEventListener('scroll', this.windowScrolledBound);
     }
 
     windowScrolled() {
@@ -960,10 +961,6 @@ export class TrackRenderer extends React.Component {
                 );
         }
 
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('scroll', this.windowScrolledBound);
     }
 
     render() {

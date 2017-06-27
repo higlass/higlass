@@ -84,9 +84,8 @@ export class TiledPixiTrack extends PixiTrack {
 
         this.uuid = slugid.nice();
 
-        this.refreshTilesDebounced = debounce(
-            this.refreshTiles.bind(this), ZOOM_DEBOUNCE
-        );
+
+        this.refreshTilesDebounced = debounce( this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
 
         this.trackNotFoundText = new PIXI.Text('',
                 {fontSize: "12px", fontFamily: "Arial", fill: "black"});

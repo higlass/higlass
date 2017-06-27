@@ -285,16 +285,6 @@ export class PixiTrack extends Track {
 
             }
 
-        /*
-        graphics.clear();
-        graphics.lineStyle(0, 0x0000FF, 1);
-        graphics.beginFill(0xFF700B, 0.6);
-
-        console.log('lt:', this.labelText.position.x, this.labelText.position.y);
-
-        graphics.drawRect(this.position[0], this.position[1], 
-                        this.dimensions[0], this.dimensions[1]);
-        */
     }
 
     rerender(options) {

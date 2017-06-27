@@ -751,7 +751,7 @@ export const tracksInfoByType = temp;
 // the length of time to keep refreshing the view after
 // a drag event
 export const SHORT_DRAG_TIMEOUT = 110;
-export const LONG_DRAG_TIMEOUT = 2000;
+export const LONG_DRAG_TIMEOUT = 3000;
 
 export const LOCATION_LISTENER_PREFIX = 'locationListenerPrefix';
 

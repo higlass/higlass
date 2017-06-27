@@ -14,6 +14,8 @@ class TileProxy  {
         //this.threadPool = new Pool();
 
         this.workerFetchTilesDebounced = this.debounce(workerFetchMultiRequestTiles, TILE_FETCH_DEBOUNCE);
+        //this.workerFetchTilesDebounced = workerFetchMultiRequestTiles;
+        
     }
 
     debounce (func, wait) {
@@ -80,7 +82,6 @@ class TileProxy  {
         // see if any of the tilesetIds are already in the cache
         // if they are, no need to fetch them
 
-
         this.workerFetchTilesDebounced(request);
     }
 
@@ -95,7 +96,7 @@ class TileProxy  {
          */
         // see if any of the tilesetIds are already in the cache
         // if they are, no need to fetch them
-
+        //
 
         workerFetchTiles(tilesetServer, tilesetIds, this.sessionId, (results) => {
             // do some caching here

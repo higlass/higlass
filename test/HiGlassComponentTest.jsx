@@ -69,6 +69,47 @@ function getTrackObject(hgc, viewUid, trackUid) {
 
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
+
+    describe("Close view tests", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'height:800px; width:800px');
+            div.setAttribute('id', 'single-view');
+            hgc = mount(<HiGlassComponent 
+                            options={{bounded: true}}
+                            viewConfig={twoViewConfig}
+                        />, 
+                {attachTo: div});
+
+            setTimeout(done, pageLoadTime);
+        });
+
+        it ("Ensures that when a view is closed, the PIXI graphics are removed", (done) => {
+            hgc.instance().handleCloseView('view2');
+
+            // console.log('hgc.instance:', hgc.instance().pixiStage.children);
+
+            // since we removed one of the children, there should be only one left
+            expect(hgc.instance().pixiStage.children.length).to.eql(1);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+
+    });
+
+    return;
     
     describe("Multiple track addition", () => {
         let atm = null;
