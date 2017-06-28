@@ -1,4 +1,8 @@
-v0.8.16 -
+v0.8.17 - 2017-06-28
+
+- Performance improvements
+
+v0.8.16 - 2017-06-27
 
 - Fixed a regression where closing views didn't remove the associated PIXI
 Components

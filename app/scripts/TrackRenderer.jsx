@@ -379,7 +379,7 @@ export class TrackRenderer extends React.Component {
             //track.draw();
         }
 
-        this.applyZoomTransform(this.currentProps);
+        this.applyZoomTransform(false);
     }
 
     getTrackObject(trackId) {
@@ -412,7 +412,6 @@ export class TrackRenderer extends React.Component {
             }
         }
 
-        console.error('trackId not found:', trackId);
     }
 
     timedUpdatePositionAndDimensions() {
@@ -429,8 +428,8 @@ export class TrackRenderer extends React.Component {
 
             if (updated)  {
                 //only redraw if positions changed
-                this.applyZoomTransform(this.currentProps);
-        }
+                this.applyZoomTransform(true);
+            }
 
             requestAnimationFrame(this.timedUpdatePositionAndDimensions.bind(this));
         }
@@ -539,7 +538,7 @@ export class TrackRenderer extends React.Component {
         //this.applyZoomTransform();
         if (updated)  {
             //only redraw if positions changed
-            this.applyZoomTransform(this.currentProps);
+            this.applyZoomTransform(false);
         }
     }
 
@@ -655,7 +654,7 @@ export class TrackRenderer extends React.Component {
         else
             this.zoomTransform = event.transform;
 
-        this.applyZoomTransform();
+        this.applyZoomTransform(true);
     }
 
     applyZoomTransform(notify=true) {
@@ -964,8 +963,8 @@ export class TrackRenderer extends React.Component {
     }
 
     render() {
-        this.removeZoom();
-        this.addZoom();
+        //this.removeZoom();
+        //this.addZoom();
 
         return(
             <div
