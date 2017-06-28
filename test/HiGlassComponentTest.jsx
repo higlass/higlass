@@ -23,6 +23,7 @@ import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
 import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
+import {HeatmapOptions} from '../app/scripts/HeatmapOptions.jsx';
 import {
     paperFigure1,
     threeViews,
@@ -70,6 +71,43 @@ function getTrackObject(hgc, viewUid, trackUid) {
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
+    describe("Colormap tests", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'height:800px; width:800px');
+            div.setAttribute('id', 'single-view');
+            hgc = mount(<HiGlassComponent 
+                            options={{bounded: true}}
+                            viewConfig={twoViewConfig}
+                        />, 
+                {attachTo: div});
+
+            setTimeout(done, pageLoadTime);
+        });
+
+        it ("Ensures that the custom color map loads properly", (done) => {
+            console.log('twoViewConfig', twoViewConfig);
+            hgc.instance().tiledPlots['aa'].handleConfigureTrack(
+                twoViewConfig.views[0].tracks.center[0].contents[0],
+                HeatmapOptions);
+
+            setTimeout(done, shortLoadTime);
+        });
+    });
+
+    return;
+
     describe("Close view tests", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
@@ -108,8 +146,6 @@ describe("Simple HiGlassComponent", () => {
 
 
     });
-
-    return;
     
     describe("Multiple track addition", () => {
         let atm = null;

@@ -351,6 +351,8 @@ export class TiledPlot extends React.Component {
     }
 
     handleConfigureTrack(track, configComponent) {
+        console.log('track:', track);
+
         this.setState({
             configTrackMenuId: null,
             trackOptions: {'track': track, 'configComponent': configComponent}

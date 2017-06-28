@@ -1,4 +1,8 @@
-v0.8.16 -
+v0.8.28 - 2017-06-28
+
+- Removed an errant console log statement
+
+v0.8.16 - 2017-06-27
 
 - Fixed a regression where closing views didn't remove the associated PIXI
 Components

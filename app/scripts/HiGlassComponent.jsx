@@ -153,6 +153,7 @@ export class HiGlassComponent extends React.Component {
         // focus we need to redraw everything in its proper place
         this.element = ReactDOM.findDOMNode(this);
         window.addEventListener("focus", this.boundRefreshView);
+        console.log('mounted:');
 
         dictValues(this.state.views).map(v => {
             if (!v.layout)
@@ -1487,8 +1488,10 @@ export class HiGlassComponent extends React.Component {
          *      The definition from the viewconf
          */
         // if the view is too short, expand the view so that it fits this track
+        if (!view.layout)
+            return;
+
         let totalTrackHeight = 0;
-        let layoutHeight = view.layout.h * this.state.rowHeight;
 
         let gpsbHeight = 0;
 
@@ -1513,7 +1516,8 @@ export class HiGlassComponent extends React.Component {
 
         let MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
         if (!this.props.options.bounded) {
-            view.layout.h = Math.ceil((totalTrackHeight + MARGIN_HEIGHT)  / (this.state.rowHeight + MARGIN_HEIGHT));
+            view.layout.h = Math.ceil((totalTrackHeight + MARGIN_HEIGHT)  
+                            / (this.state.rowHeight + MARGIN_HEIGHT));
         }
     }
 
@@ -1801,15 +1805,15 @@ export class HiGlassComponent extends React.Component {
     );
 
     download('viewconf.json', data);
-    /*
-    var a = document.createElement("a");
-    var file = new Blob([data], {type: 'text/json'});
-    a.href = URL.createObjectURL(file);
-    a.download = `higlass-config.${uuid}.json`;  // Filename
-    document.body.appendChild(a); // Necessary for downloads on Firefox.
-    a.click();
-    document.body.removeChild(a);
-    */
+        /*
+        var a = document.createElement("a");
+        var file = new Blob([data], {type: 'text/json'});
+        a.href = URL.createObjectURL(file);
+        a.download = `higlass-config.${uuid}.json`;  // Filename
+        document.body.appendChild(a); // Necessary for downloads on Firefox.
+        a.click();
+        document.body.removeChild(a);
+        */
   }
 
   handleExportViewsAsLink() {
@@ -2499,8 +2503,11 @@ export class HiGlassComponent extends React.Component {
          />)
         : null;
 
+      console.log('this.state.views:', this.state.views);
     let layouts = this.state.mounted ? dictValues(this.state.views).map(x => x.layout) : [];
     layouts = JSON.parse(JSON.stringify(layouts)); //make sure to copy the layouts
+
+      console.log('layouts:', layouts);
     /*
     for (let i = 0; i < layouts.length; i++)
         layouts[i].blah = slugid.nice();
