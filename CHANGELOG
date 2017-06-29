@@ -1,3 +1,8 @@
+v0.8.18 - 2017-06-29
+
+- Fixed custom colormap picker
+- Fixed overlayed track addition on double click
+
 v0.8.17 - 2017-06-28
 
 - Performance improvements

@@ -104,14 +104,25 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, tileLoadTime);
         });
 
-        it ("Show the grid", (done) => {
+        it ("Add the grid", (done) => {
+            hgc.instance().handleTracksAdded('aa', [chromosomeGridTrack], 'center');
+
+            hgc.instance().setState(hgc.instance().state);
 
             setTimeout(done, shortLoadTime);
         });
 
-    });
+        it ("Should show a grid", (done) => {
+            let outputJSON = JSON.parse(hgc.instance().getViewsAsString());
 
-    return;
+            expect(outputJSON.views[0].tracks['center'][0]).to.have.property('contents');
+
+            // should have two tracks
+            expect(outputJSON.views[0].tracks['center'][0].contents.length).to.be.above(1);
+
+            setTimeout(done, shortLoadTime);
+        });
+    });
 
     describe("Colormap tests", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {

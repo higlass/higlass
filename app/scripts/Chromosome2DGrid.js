@@ -58,9 +58,10 @@ export class Chromosome2DGrid extends PixiTrack {
         let graphics = this.lineGraphics;
         let strokeColor = colorToHex(this.options.gridStrokeColor ? this.options.gridStrokeColor : 'blue');
 
+        let strokeWidth = this.options.gridStrokeWidth ? this.options.gridStrokeWidth : 1;
+
         graphics.clear();
-        graphics.lineStyle(this.options.gridStrokeWidth, 
-                strokeColor, 1.);
+        graphics.lineStyle( strokeWidth, strokeColor, 1.);
 
         graphics.moveTo(this._xScale(0), 0);
         graphics.lineTo(this._xScale(0), this.dimensions[1]);
@@ -71,8 +72,6 @@ export class Chromosome2DGrid extends PixiTrack {
         for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
             let chrPos = this.chromInfo.cumPositions[i];
             let chrEnd = chrPos.pos + +this.chromInfo.chromLengths[chrPos.chr] + 1;
-
-
 
             graphics.moveTo(0, this._yScale(chrEnd));
             graphics.lineTo(this.dimensions[0], this._yScale(chrEnd));
