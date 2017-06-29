@@ -75,7 +75,9 @@ export class AddTrackModal extends React.Component {
         this.selectedTilesetsChanged([tileset]);
 
         // should iterate over the selected tilesets
-        this.props.onTracksChosen(this.state.selectedTilesets, this.props.position);
+        this.props.onTracksChosen(this.state.selectedTilesets, 
+                                  this.props.position,
+                                  this.props.host);
     }
 
     handleOptionsChanged(newOptions) {

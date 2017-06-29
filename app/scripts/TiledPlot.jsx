@@ -307,7 +307,7 @@ export class TiledPlot extends React.Component {
         });
     }
 
-    handleTracksAdded(newTracks, position, host=null) {
+    handleTracksAdded(newTracks, position, host) {
         if (this.trackToReplace) {
             this.handleCloseTrack(this.trackToReplace)
             this.trackToReplace = null;

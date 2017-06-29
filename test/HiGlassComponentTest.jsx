@@ -36,11 +36,13 @@ import {
     heatmapTrack,
     twoViewConfig,
     oneViewConfig,
+    oneZoomedOutViewConf,
     valueIntervalTrackViewConf,
     horizontalDiagonalTrackViewConf,
     horizontalHeatmapTrack,
     largeHorizontalHeatmapTrack,
     verticalHeatmapTrack,
+    chromosomeGridTrack,
     testViewConfX1,
     testViewConfX2
 } from '../app/scripts/testViewConfs.js';
@@ -70,6 +72,46 @@ function getTrackObject(hgc, viewUid, trackUid) {
 
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
+
+    describe("Add overlay tracks", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            beforeAll((done) => {
+                // wait for the page to load
+                testAsync(done);
+            });
+
+            hgc = mount(<HiGlassComponent 
+                          options={{bounded: false}}
+                          viewConfig={oneZoomedOutViewConf}
+                        />, 
+                {attachTo: div});
+
+            setTimeout(done, tileLoadTime);
+        });
+
+        it ("Show the grid", (done) => {
+
+            setTimeout(done, shortLoadTime);
+        });
+
+    });
+
+    return;
 
     describe("Colormap tests", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -104,8 +146,6 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
-
-    return;
 
     describe("Close view tests", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -1114,46 +1154,6 @@ describe("Simple HiGlassComponent", () => {
 
             setTimeout(done, shortLoadTime);
         });
-    });
-
-    describe("Positioning a more complex layout", () => {
-        it ('Cleans up previously created instances and mounts a new component', (done) => {
-            if (hgc) {
-                hgc.unmount();
-                hgc.detach();
-            }
-
-            if (div) {
-                global.document.body.removeChild(div);
-            }
-
-            div = global.document.createElement('div');
-            global.document.body.appendChild(div);
-
-            div.setAttribute('style', 'width:800px;background-color: lightgreen');
-            div.setAttribute('id', 'simple-hg-component');
-
-            beforeAll((done) => {
-                // wait for the page to load
-                testAsync(done);
-            });
-
-            hgc = mount(<HiGlassComponent 
-                          options={{bounded: false}}
-                          viewConfig={testViewConfX1}
-                        />, 
-                {attachTo: div});
-
-            setTimeout(done, tileLoadTime);
-        });
-
-        it ("should load the initial config", (done) => {
-            // more than 9 because of the view header
-           expect(hgc.instance().state.views['aa'].layout.h).to.be.above(9);
-
-            setTimeout(done, shortLoadTime);
-        });
-
     });
 
 

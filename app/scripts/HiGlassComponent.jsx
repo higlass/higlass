@@ -1347,7 +1347,7 @@ export class HiGlassComponent extends React.Component {
         }
     }
 
-    handleTracksAdded(viewId, newTracks, position, host=null) {
+    handleTracksAdded(viewId, newTracks, position, host) {
         /**
          * Add multiple new tracks (likely from the AddTrackModal dialog)
          *
@@ -1356,10 +1356,11 @@ export class HiGlassComponent extends React.Component {
          * @param position: The position the track is being added to
          * @param host: If this track is being added to another track
          */
+        console.log('HGC host:', host);
         this.storeTrackSizes(viewId);
 
         for (let newTrack of newTracks)
-            this.handleTrackAdded(viewId, newTrack, position, host=null);
+            this.handleTrackAdded(viewId, newTrack, position, host);
     }
 
     handleTrackAdded(viewId, newTrack, position, host=null) {
