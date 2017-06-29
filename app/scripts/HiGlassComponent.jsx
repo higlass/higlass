@@ -153,7 +153,6 @@ export class HiGlassComponent extends React.Component {
         // focus we need to redraw everything in its proper place
         this.element = ReactDOM.findDOMNode(this);
         window.addEventListener("focus", this.boundRefreshView);
-        console.log('mounted:');
 
         dictValues(this.state.views).map(v => {
             if (!v.layout)
@@ -2503,12 +2502,12 @@ export class HiGlassComponent extends React.Component {
          />)
         : null;
 
-      console.log('this.state.views:', this.state.views);
-    let layouts = this.state.mounted ? dictValues(this.state.views).map(x => x.layout) : [];
+    let layouts = this.state.mounted ? dictValues(this.state.views)
+          .filter(x => x.layout).map(x => x.layout) : [];
     layouts = JSON.parse(JSON.stringify(layouts)); //make sure to copy the layouts
 
-      console.log('layouts:', layouts);
     /*
+      console.log('rowHeight:', this.rowHeight);
     for (let i = 0; i < layouts.length; i++)
         layouts[i].blah = slugid.nice();
     */

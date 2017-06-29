@@ -97,7 +97,6 @@ describe("Simple HiGlassComponent", () => {
         });
 
         it ("Ensures that the custom color map loads properly", (done) => {
-            console.log('twoViewConfig', twoViewConfig);
             hgc.instance().tiledPlots['aa'].handleConfigureTrack(
                 twoViewConfig.views[0].tracks.center[0].contents[0],
                 HeatmapOptions);
