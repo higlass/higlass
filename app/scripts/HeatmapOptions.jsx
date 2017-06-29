@@ -81,7 +81,8 @@ export class HeatmapOptions extends React.Component {
             'uid': 'hmo-' + this.props.track.uid,
             'initialXDomain': this.props.xScale ? this.props.xScale.domain() : [0,1],
             'initialYDomain': this.props.yScale ? this.props.yScale.domain() : [0,1],
-            'tracks': {'center': [centerTrack] }
+            'tracks': {'center': [centerTrack] },
+            'layout': {'x': 0, 'y': 0, 'h': 12, 'w': 12, 'i': 'hmo-' + this.props.track.id}
         }]};
 
         let colorFields = this.state.colors.map((x,i) => {
