@@ -154,7 +154,8 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         this.drawAxis(this.valueScale);
 
-        if (this.valueScale.domain()[1] < 0) {
+        if (this.options.valueScaling == 'log' && this.valueScale.domain()[1] < 0) {
+            console.warn("Negative values present when using a log scale", this.valueScale.domain());
             return;
         }
 
