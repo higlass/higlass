@@ -16,8 +16,10 @@ import {IdVertical1DTiledPixiTrack} from './IdVertical1DTiledPixiTrack.js';
 import {TopAxisTrack} from './TopAxisTrack.js';
 import {LeftAxisTrack} from './LeftAxisTrack.js';
 import {CombinedTrack} from './CombinedTrack.js';
+
 import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
-import {VerticalLine1DPixiTrack} from './VerticalLine1DPixiTrack.js';
+import {HorizontalPoint1DPixiTrack} from './HorizontalPoint1DPixiTrack.js';
+
 import {CNVIntervalTrack} from './CNVIntervalTrack.js';
 import {LeftTrackModifier} from './LeftTrackModifier.js';
 import {Track} from './Track.js';
@@ -735,6 +737,21 @@ export class TrackRenderer extends React.Component {
                         () => this.currentProps.onNewTilesLoaded(track.uid)
                     )
                 );
+            case 'horizontal-point':
+                return new HorizontalPoint1DPixiTrack(this.pStage,
+                                                     track.server,
+                                                     track.tilesetUid,
+                                                     handleTilesetInfoReceived,
+                                                     track.options,
+                                                     () => this.currentProps.onNewTilesLoaded(track.uid));
+            case 'vertical-point':
+                return new LeftTrackModifier(
+                    new HorizontalPoint1DPixiTrack(this.pStage,
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
+                         () => this.currentProps.onNewTilesLoaded(track.uid)));
             case 'horizontal-1d-tiles':
                 return new IdHorizontal1DTiledPixiTrack(
                         this.pStage,

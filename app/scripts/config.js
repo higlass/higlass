@@ -400,6 +400,42 @@ export const tracksInfo = [
         }
     },
     {
+        type: 'horizontal-point',
+        datatype: ['vector'],
+        local: false,
+        orientation: '1d-horizontal',
+        thumbnail: svgHorizontalLineIcon,
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling', "trackBorderWidth", "trackBorderColor"],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'topLeft',
+            axisPositionHorizontal: 'right',
+            lineStrokeColor: 'red',
+            lineStrokeWidth: 1,
+            valueScaling: 'linear',
+            trackBorderWidth: 0,
+            trackBorderColor: 'black'
+        }
+    },
+    {
+        type: 'vertical-point',
+        datatype: ['vector'],
+        local: false,
+        orientation: '1d-horizontal',
+        thumbnail: svgHorizontalLineIcon,
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling', "trackBorderWidth", "trackBorderColor"],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'topLeft',
+            axisPositionHorizontal: 'right',
+            lineStrokeColor: 'red',
+            lineStrokeWidth: 1,
+            valueScaling: 'linear',
+            trackBorderWidth: 0,
+            trackBorderColor: 'black'
+        }
+    },
+    {
         type: '2d-tiles',
         datatype: ['matrix'],
         local: false,
