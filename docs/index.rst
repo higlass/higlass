@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to higlass's documentation!
-===================================
+HiGlass: Big Genomic Data Viewer
+================================
 
 .. toctree::
    :maxdepth: 2
