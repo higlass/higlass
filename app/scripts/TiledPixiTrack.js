@@ -471,6 +471,9 @@ export class TiledPixiTrack extends PixiTrack {
 
 
     draw() {
+        if (this.delayDrawing)
+            return;
+
         if (!this.tilesetInfo) {
             if (this.tilesetInfoLoading) {
                 this.trackNotFoundText.text = 'Loading...';
@@ -497,6 +500,8 @@ export class TiledPixiTrack extends PixiTrack {
 
         for (let uid in this.fetchedTiles)
             this.drawTile(this.fetchedTiles[uid]);
+
+        //this.animate();
     }
 
     drawTile(tileData, graphics) {

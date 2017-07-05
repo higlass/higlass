@@ -22,6 +22,10 @@ export class PixiTrack extends Track {
         // pMain will have transforms applied to it as users scroll to and fro
         this.scene = scene;
 
+        // this option is used to temporarily prevent drawing so that 
+        // updates can be batched (e.g. zoomed and options changed)
+        this.delayDrawing = false;
+
         this.pBase = new PIXI.Graphics();
 
         this.pMasked = new PIXI.Graphics;

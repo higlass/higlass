@@ -39,8 +39,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
 
-        //console.log('zoom level:', zoomLevel);
-
         return zoomLevel
     }
     */

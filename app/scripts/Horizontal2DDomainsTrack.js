@@ -156,7 +156,9 @@ export class Horizontal2DDomainsTrack extends TiledPixiTrack {
     }
 
     draw() {
-        this.drawnRects.clear();
+        //console.log('delayDrawing:', this.delayDrawing, this.dimensions[1]);
+        if (!this.delayDrawing)
+            this.drawnRects.clear();
 
         super.draw();
     }

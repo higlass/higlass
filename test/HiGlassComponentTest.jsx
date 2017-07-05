@@ -36,6 +36,7 @@ import {
     heatmapTrack,
     twoViewConfig,
     oneViewConfig,
+    oneTrackConfig,
     oneZoomedOutViewConf,
     valueIntervalTrackViewConf,
     horizontalDiagonalTrackViewConf,
@@ -70,9 +71,124 @@ function getTrackObject(hgc, viewUid, trackUid) {
     return hgc.instance().tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
 }
 
+function getTiledPlot(hgc, viewUid) {
+    return hgc.instance().tiledPlots[viewUid];
+}
+
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
+    describe("Track Resizing", () => {
+        let atm = null;
+
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'width:600px;height:600px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            hgc = mount(<HiGlassComponent 
+                          options={{bounded: true}}
+                          viewConfig={oneTrackConfig}
+                        />, 
+                {attachTo: div});
+
+            setTimeout(done, pageLoadTime);
+        });
+
+        it ('Resizes one track ', (done) => {
+            let tp = getTiledPlot(hgc, 'aa');
+
+            tp.handleResizeTrack('line1', 289, 49);
+
+            //tp.setState(tp.state);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ('Ensures that the track object was resized', (done) => {
+            let track = getTrackObject(hgc, 'aa', 'line1');
+
+            expect(track.dimensions[1]).to.eql(49);
+
+            setTimeout(done, shortLoadTime);
+        });
+    });
+
+    describe("Window resizing", () => {
+        let vpUid = null;
+        let vp2DUid = null;
+
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'width:300px; height: 400px; background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            let newViewConf = JSON.parse(JSON.stringify(project1D));
+
+            let center1 = JSON.parse(JSON.stringify(heatmapTrack))
+            let center2 = JSON.parse(JSON.stringify(heatmapTrack))
+
+            newViewConf.views[0].tracks.center = [center1]
+            newViewConf.views[1].tracks.center = [center2]
+
+            newViewConf.views[0].layout.h = 10;
+            newViewConf.views[1].layout.h = 10;
+
+            hgc = mount(<HiGlassComponent 
+                          options={{bounded: true}}
+                          viewConfig={newViewConf}
+                        />, 
+                {attachTo: div});
+
+            setTimeout(done, pageLoadTime);
+        });
+
+        it ('Sends a resize event to fit the current view into the window', (done) => {
+            var resizeEvent = new Event('resize');
+
+            window.dispatchEvent(resizeEvent);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ('Resize the view', (done) => {
+            div.setAttribute('style', 'width: 600px; height: 600px; background-color: lightgreen');
+            var resizeEvent = new Event('resize');
+
+            window.dispatchEvent(resizeEvent);
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ('Expect the the chosen rowHeight to be less than 24', (done) => {
+            expect(hgc.instance().state.rowHeight).to.be.below(24);
+
+            setTimeout(done, shortLoadTime);
+        });
+    });
+    
     describe("Add overlay tracks", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
@@ -497,70 +613,6 @@ describe("Simple HiGlassComponent", () => {
         });
     });
 
-    describe("Window resizing", () => {
-        let vpUid = null;
-        let vp2DUid = null;
-
-        it ('Cleans up previously created instances and mounts a new component', (done) => {
-            if (hgc) {
-                hgc.unmount();
-                hgc.detach();
-            }
-
-            if (div) {
-                global.document.body.removeChild(div);
-            }
-
-            div = global.document.createElement('div');
-            global.document.body.appendChild(div);
-
-            div.setAttribute('style', 'width:300px; height: 400px; background-color: lightgreen');
-            div.setAttribute('id', 'simple-hg-component');
-
-            let newViewConf = JSON.parse(JSON.stringify(project1D));
-
-            let center1 = JSON.parse(JSON.stringify(heatmapTrack))
-            let center2 = JSON.parse(JSON.stringify(heatmapTrack))
-
-            newViewConf.views[0].tracks.center = [center1]
-            newViewConf.views[1].tracks.center = [center2]
-
-            newViewConf.views[0].layout.h = 10;
-            newViewConf.views[1].layout.h = 10;
-
-            hgc = mount(<HiGlassComponent 
-                          options={{bounded: true}}
-                          viewConfig={newViewConf}
-                        />, 
-                {attachTo: div});
-
-            setTimeout(done, pageLoadTime);
-        });
-
-        it ('Sends a resize event to fit the current view into the window', (done) => {
-            var resizeEvent = new Event('resize');
-
-            window.dispatchEvent(resizeEvent);
-
-            setTimeout(done, shortLoadTime);
-        });
-
-        it ('Resize the view', (done) => {
-            div.setAttribute('style', 'width: 600px; height: 600px; background-color: lightgreen');
-            var resizeEvent = new Event('resize');
-
-            window.dispatchEvent(resizeEvent);
-
-            setTimeout(done, shortLoadTime);
-        });
-
-        it ('Expect the the chosen rowHeight to be less than 24', (done) => {
-            expect(hgc.instance().state.rowHeight).to.be.below(24);
-
-            setTimeout(done, shortLoadTime);
-        });
-    });
-    
     describe("1D viewport projection", () => {
         let vpUid = null;
         let vp2DUid = null;

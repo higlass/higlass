@@ -1,3 +1,106 @@
+export const oneTrackConfig = 
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://test.higlass.io/api/v1",
+    "http://127.0.0.1:8989/api/v1"
+  ],
+  "exportViewUrl": "http://test.higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        1796142508.3343146,
+        1802874737.269993
+      ],
+      "initialYDomain": [
+        1795888772.6557815,
+        1806579890.9341388
+      ],
+      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "filetype": "hitile",
+            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "red",
+              "labelPosition": "hidden",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log"
+            },
+            "width": 20,
+            "height": 20,
+            "position": "top",
+            "uid": "line1"
+          }
+        ],
+        "left": [
+        ],
+        "center": [
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 5,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {
+      "view2": "JAFSZPdmSWe72WgTnVDtbA",
+      "aa": "JAFSZPdmSWe72WgTnVDtbA"
+    },
+    "locksDict": {
+      "JAFSZPdmSWe72WgTnVDtbA": {
+        "view2": [
+          1812727561.5083356,
+          1873757116.378131,
+          475954.14177536964
+        ],
+        "aa": [
+          1812727561.5083356,
+          1873757116.378131,
+          475954.14177536964
+        ]
+      }
+    }
+  },
+  "locationLocks": {
+    "locksByViewUid": {
+      "view2": "fRq4SRH8TSyVveKqebWsxw",
+      "aa": "fRq4SRH8TSyVveKqebWsxw"
+    },
+    "locksDict": {
+      "fRq4SRH8TSyVveKqebWsxw": {
+        "view2": [
+          1812727561.5083356,
+          1873757116.378131,
+          475954.14177536964
+        ],
+        "aa": [
+          1812727561.5083356,
+          1873757116.378131,
+          475954.14177536964
+        ]
+      }
+    }
+  }
+}
 export const chromosomeGridTrack = 
               {
                 "type": "2d-chromosome-grid",

@@ -201,6 +201,11 @@ export class TrackRenderer extends React.Component {
         if (this.prevPropsStr === nextPropsStr)
             return;
 
+        for (let uid in this.trackDefObjects) {
+            let track = this.trackDefObjects[uid].trackObject;
+
+            track.delayDrawing = true;
+        }
 
         this.prevPropsStr = nextPropsStr;
 
@@ -231,6 +236,14 @@ export class TrackRenderer extends React.Component {
                     trackObject.createdTracks[uid].rerender(ctDefs[uid].options);
                 }
             }
+        }
+        this.props.onNewTilesLoaded();
+
+        for (let uid in this.trackDefObjects) {
+            let track = this.trackDefObjects[uid].trackObject;
+
+            track.delayDrawing = false;
+            track.draw();
         }
     }
 
