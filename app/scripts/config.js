@@ -377,7 +377,8 @@ export const tracksInfo = [
             lineStrokeWidth: 1,
             valueScaling: 'linear',
             trackBorderWidth: 0,
-            trackBorderColor: 'black'
+            trackBorderColor: 'black',
+            labelTextOpacity: .4
         }
     },
     //
@@ -396,7 +397,8 @@ export const tracksInfo = [
             lineStrokeColor: 'blue',
             valueScaling: 'linear',
             trackBorderWidth: 0,
-            trackBorderColor: 'black'
+            trackBorderColor: 'black',
+            labelTextOpacity: .4
         }
     },
     {
@@ -404,7 +406,6 @@ export const tracksInfo = [
         datatype: ['vector'],
         local: false,
         orientation: '1d-horizontal',
-        thumbnail: svgHorizontalLineIcon,
         availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling', "trackBorderWidth", "trackBorderColor"],
         defaultOptions: {
             labelColor: 'black',
@@ -414,15 +415,15 @@ export const tracksInfo = [
             lineStrokeWidth: 1,
             valueScaling: 'linear',
             trackBorderWidth: 0,
-            trackBorderColor: 'black'
+            trackBorderColor: 'black',
+            labelTextOpacity: .4
         }
     },
     {
         type: 'vertical-point',
         datatype: ['vector'],
         local: false,
-        orientation: '1d-horizontal',
-        thumbnail: svgHorizontalLineIcon,
+        orientation: '1d-vertical',
         availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling', "trackBorderWidth", "trackBorderColor"],
         defaultOptions: {
             labelColor: 'black',
@@ -432,7 +433,8 @@ export const tracksInfo = [
             lineStrokeWidth: 1,
             valueScaling: 'linear',
             trackBorderWidth: 0,
-            trackBorderColor: 'black'
+            trackBorderColor: 'black',
+            labelTextOpacity: .4
         }
     },
     {
