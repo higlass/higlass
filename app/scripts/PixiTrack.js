@@ -177,7 +177,7 @@ export class PixiTrack extends Track {
         if (this.options && this.options.dataTransform) {
             let chosenTransform = null;
 
-            if (this.tilesetInfo.transforms) {
+            if (this.tilesetInfo && this.tilesetInfo.transforms) {
                 for (let transform of this.tilesetInfo.transforms) {
                     if (transform.value == this.options.dataTransform)
                         chosenTransform = transform;
@@ -186,6 +186,8 @@ export class PixiTrack extends Track {
 
             if (chosenTransform)
                 labelTextText += '\n[Transform: ' + chosenTransform.name + ']';
+            else if (this.options.dataTransform == 'None')
+                labelTextText += '\n[Transform: None ]';
             else
                 labelTextText += '\n[Transform: Default ]';
         }
