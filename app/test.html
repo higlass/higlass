@@ -38,89 +38,182 @@
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://test.higlass.io/api/v1",
-    "http://localhost:8989/api/v1"
+    "http://localhost:8001/api/v1"
   ],
   "exportViewUrl": "http://test.higlass.io/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
       "initialXDomain": [
-        -114341473.76813291,
-        256076985.6389077
+        998514404.1462178,
+        1481989292.7753305
       ],
       "initialYDomain": [
-        2822846602.3535323,
-        2846975973.828991
+        1044213986.1497133,
+        1462402119.7449677
       ],
       "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
-        "top": [
+        "top": [],
+        "left": [],
+        "center": [
           {
-            "type": "horizontal-chromosome-labels",
-            "local": true,
-            "orientation": "1d-horizontal",
-            "minHeight": 20,
-            "name": "Chromosome Axis (mm9)",
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "thumbnail": null,
-            "server": "",
-            "tilesetUid": "De5By5L6TMihxNjGU6XNdg",
-            "uid": "bmMfpmffTE2zKTwDtVbCRQ",
-            "options": {},
-            "width": 568,
-            "height": 20,
-            "position": "top"
-          },
-          {
-            "name": "cnvs_hw.hitile",
-            "server": "http://localhost:8989/api/v1",
-            "tilesetUid": "V-HsjTqER5C-Tro5BS_l-A",
-            "uid": "S325CzZSRnKEDAgISITqhw",
-            "type": "horizontal-point",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "topLeft",
-              "axisPositionHorizontal": "right",
-              "lineStrokeWidth": 1,
-              "valueScaling": "linear",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "name": "cnvs_hw.hitile"
-            },
-            "width": 568,
-            "height": 20,
-            "position": "top"
+            "uid": "E3x4FUroQcqjpHpsTsMGaQ",
+            "type": "combined",
+            "contents": [
+              {
+                "name": "dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool",
+                "server": "http://localhost:8001/api/v1",
+                "tilesetUid": "aa",
+                "uid": "dqp-YdWqSq-HjQlVqG8ZCw",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarLabelsPosition": "inside",
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "name": "dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool",
+                  "dataTransform": "weight"
+                },
+                "width": 100,
+                "height": 100,
+                "position": "center"
+              }
+            ],
+            "position": "center",
+            "options": {}
           }
         ],
-        "left": [],
-        "center": [],
         "right": [],
         "bottom": []
       },
       "layout": {
-        "w": 12,
-        "h": 3,
+        "w": 6,
+        "h": 7,
         "x": 0,
         "y": 0,
         "i": "aa",
         "moved": false,
         "static": false
       }
+    },
+    {
+      "uid": "VuYsWJm5RKyns7ffZAxwbw",
+      "initialXDomain": [
+        998514404.1462113,
+        1481989292.7753372
+      ],
+      "initialYDomain": [
+        1044213986.1497076,
+        1462402119.7449737
+      ],
+      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [],
+        "left": [],
+        "center": [
+          {
+            "uid": "E3x4FUroQcqjpHpsTsMGaQ",
+            "type": "combined",
+            "contents": [
+              {
+                "name": "dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool",
+                "server": "http://localhost:8001/api/v1",
+                "tilesetUid": "aa",
+                "uid": "dqp-YdWqSq-HjQlVqG8ZCw",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarLabelsPosition": "inside",
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "name": "dixon2012-h1hesc-hindiii-allreps-filtered.1000kb.multires.cool",
+                  "availableTransforms": "None"
+                },
+                "width": 100,
+                "height": 100,
+                "position": "center"
+              }
+            ],
+            "position": "center",
+            "options": {}
+          }
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 6,
+        "h": 7,
+        "x": 6,
+        "y": 0,
+        "i": "VuYsWJm5RKyns7ffZAxwbw",
+        "moved": false,
+        "static": false
+      }
     }
   ],
   "zoomLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
+    "locksByViewUid": {
+      "VuYsWJm5RKyns7ffZAxwbw": "DyJhWVOVTGWB2I-GbQZvzw",
+      "aa": "DyJhWVOVTGWB2I-GbQZvzw"
+    },
+    "locksDict": {
+      "DyJhWVOVTGWB2I-GbQZvzw": {
+        "VuYsWJm5RKyns7ffZAxwbw": [
+          1316125644.8514764,
+          1397997618.157517,
+          1764506.8928070068
+        ],
+        "aa": [
+          1316125644.8514764,
+          1397997618.157517,
+          1764506.8928070068
+        ]
+      }
+    }
   },
   "locationLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
+    "locksByViewUid": {
+      "VuYsWJm5RKyns7ffZAxwbw": "Tgcsj3egQsWc2AucXYZaiQ",
+      "aa": "Tgcsj3egQsWc2AucXYZaiQ"
+    },
+    "locksDict": {
+      "Tgcsj3egQsWc2AucXYZaiQ": {
+        "VuYsWJm5RKyns7ffZAxwbw": [
+          1316125644.8514764,
+          1397997618.157517,
+          1764506.8928070068
+        ],
+        "aa": [
+          1316125644.8514764,
+          1397997618.157517,
+          1764506.8928070068
+        ]
+      }
+    }
   }
 }
-
     window.higlassApi;
 
     hglib.createHgComponent(

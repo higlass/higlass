@@ -174,6 +174,22 @@ export class PixiTrack extends Track {
             }
         }
 
+        if (this.options && this.options.dataTransform) {
+            let chosenTransform = null;
+
+            if (this.tilesetInfo.transforms) {
+                for (let transform of this.tilesetInfo.transforms) {
+                    if (transform.value == this.options.dataTransform)
+                        chosenTransform = transform;
+                }
+            }
+
+            if (chosenTransform)
+                labelTextText += '\n[Transform: ' + chosenTransform.name + ']';
+            else
+                labelTextText += '\n[Transform: Default ]';
+        }
+
         this.labelText.text = labelTextText;
         this.labelText.style = {fontSize: this.labelTextFontSize + 'px',
                               fontFamily: this.labelTextFontFamily,

@@ -105,6 +105,8 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
 
                     let newTile = [zoomLevel, rows[i], cols[j]];
                     newTile.mirrored = false;
+                    newTile.transform = this.options.transform ? 
+                        this.options.transform : 'default';
 
                     tiles.push(newTile)
             }

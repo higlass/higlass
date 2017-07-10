@@ -188,6 +188,7 @@ export class TiledPlot extends React.Component {
         //track.options.name = tilesetInfo.name;
         track.name = tilesetInfo.name;
         track.maxWidth = tilesetInfo.max_width;
+        track.transforms = tilesetInfo.transforms;
         track.binsPerDimension = tilesetInfo.bins_per_dimension;
         track.maxZoom = tilesetInfo.max_zoom;
         track.coordSystem = tilesetInfo.coordSystem;

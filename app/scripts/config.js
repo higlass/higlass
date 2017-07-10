@@ -241,6 +241,34 @@ export const optionsInfo = {
         }
     },
 
+    dataTransform: {
+        name: "Transforms",
+        inlineOptions: {
+            'default': { name: "Default", value: "default" },
+            'None': { name: "None", value: "None" }
+        },
+        generateOptions: track => {
+            let inlineOptions = [];
+
+            console.log('track:', track);
+            console.log('track.tilesetInfo:', track.tilesetInfo);
+
+            if (track.transforms) {
+
+                for (let transform of track.transforms) {
+                    inlineOptions.push({
+                        name: transform.name,
+                        value: transform.value
+                    });
+                }
+
+            }
+
+            console.log('inlineOptions:', inlineOptions);
+            return inlineOptions;
+        }
+    },
+
     maxZoom: {
         name: "Zoom limit",
         inlineOptions: {
@@ -317,7 +345,7 @@ export const tracksInfo = [
             trackBorderWidth: 0,
             trackBorderColor: 'black'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'dataTransform',
         'colorbarPosition', 'colorbarLabelsPosition', "trackBorderWidth", "trackBorderColor"],
         //exportable: true
     },
@@ -338,7 +366,7 @@ export const tracksInfo = [
             trackBorderWidth: 0,
             trackBorderColor: 'black'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped',
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped',
                             'colorbarPosition', 'colorbarLabelsPosition', "trackBorderWidth", "trackBorderColor"],
     },
     {
@@ -359,8 +387,7 @@ export const tracksInfo = [
             trackBorderWidth: 0,
             trackBorderColor: 'black'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 
-                            'oneDHeatmapFlipped', 'colorbarPosition', 'colorbarLabelsPosition', "trackBorderWidth", "trackBorderColor"],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped', 'colorbarPosition', 'colorbarLabelsPosition', "trackBorderWidth", "trackBorderColor"],
     },
     {
         type: 'horizontal-line',

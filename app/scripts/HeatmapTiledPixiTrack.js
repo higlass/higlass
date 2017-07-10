@@ -58,6 +58,9 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         else
             this.prevOptions = strOptions;
 
+        // the normalization method may have changed
+        this.calculateVisibleTiles();
+
         if (options && options.colorRange) {
             this.colorScale = colorDomainToRgbaArray(options.colorRange);
         }
