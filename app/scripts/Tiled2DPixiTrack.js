@@ -79,7 +79,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
 
         // if we're mirroring tiles, then we only need tiles along the diagonal
         let tiles = [];
-        console.log('this.options:', this.options);
+        //console.log('this.options:', this.options);
 
         // calculate the ids of the tiles that should be visible
         for (let i = 0; i < rows.length; i++) {

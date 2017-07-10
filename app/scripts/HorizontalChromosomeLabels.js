@@ -215,15 +215,6 @@ export class HorizontalChromosomeLabels extends PixiTrack {
             this.allTexts.push({importance: this.texts[i].hashValue, text: this.texts[i], caption: null});
         }
 
-        /*
-        console.log('x1:', x1);
-        console.log('x2:', x2);
-
-        console.log('y1:', y1);
-        console.log('y2:', y2);
-        */
-
-
         // define the edge chromosome which are visible
         this.hideOverlaps(this.allTexts);
     }
