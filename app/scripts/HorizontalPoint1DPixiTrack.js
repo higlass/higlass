@@ -49,7 +49,7 @@ export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
 
             this.valueScale = scaleLog()
                 //.base(Math.E)
-                .domain([offsetValue, this.maxValue()])
+                .domain([offsetValue, this.maxValue() + offsetValue])
                 .range([this.dimensions[1], 0]);
             pseudocount = offsetValue;
         } else {

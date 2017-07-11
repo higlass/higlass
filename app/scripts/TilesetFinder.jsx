@@ -129,7 +129,6 @@ export class TilesetFinder extends React.Component {
         //this.props.selectedTilesetChanged(this.state.options[x.target.value]);
 
         let value = this.state.options[x.target.value];
-        console.log('value:', value);
         this.props.onDoubleClick(value);
     }
 

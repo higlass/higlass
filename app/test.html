@@ -38,26 +38,47 @@
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://test.higlass.io/api/v1",
-    "http://localhost:8989/api/v1"
+    "http://localhost:8000/api/v1"
   ],
   "exportViewUrl": "http://test.higlass.io/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
       "initialXDomain": [
-        -114341473.76813291,
-        256076985.6389077
+        739319.5372837624,
+        1266735.1504695385
       ],
       "initialYDomain": [
-        2822846602.3535323,
-        2846975973.828991
+        2786072765.0338573,
+        2786107121.3326035
       ],
       "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
+          {
+            "name": "cnvs_hw.hitile",
+            "server": "http://localhost:8000/api/v1",
+            "tilesetUid": "Wwrt6-g5SNKoecQmG0crhA",
+            "uid": "UKysgFcDTRGr74iq-LImbg",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "lineStrokeWidth": 1,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "name": "cnvs_hw.hitile"
+            },
+            "width": 20,
+            "height": 20,
+            "position": "top"
+          },
           {
             "type": "horizontal-chromosome-labels",
             "local": true,
@@ -70,26 +91,6 @@
             "tilesetUid": "De5By5L6TMihxNjGU6XNdg",
             "uid": "bmMfpmffTE2zKTwDtVbCRQ",
             "options": {},
-            "width": 568,
-            "height": 20,
-            "position": "top"
-          },
-          {
-            "name": "cnvs_hw.hitile",
-            "server": "http://localhost:8989/api/v1",
-            "tilesetUid": "V-HsjTqER5C-Tro5BS_l-A",
-            "uid": "S325CzZSRnKEDAgISITqhw",
-            "type": "horizontal-point",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "topLeft",
-              "axisPositionHorizontal": "right",
-              "lineStrokeWidth": 1,
-              "valueScaling": "linear",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "name": "cnvs_hw.hitile"
-            },
             "width": 568,
             "height": 20,
             "position": "top"
@@ -120,7 +121,6 @@
     "locksDict": {}
   }
 }
-
     window.higlassApi;
 
     hglib.createHgComponent(
