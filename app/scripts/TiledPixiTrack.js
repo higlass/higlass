@@ -564,6 +564,7 @@ export class TiledPixiTrack extends PixiTrack {
 
          if (max == Number.MIN_SAFE_INTEGER)
              max = 1;
+
          return max;
     }
 

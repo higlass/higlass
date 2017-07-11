@@ -167,6 +167,8 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         let strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
         graphics.lineStyle(strokeWidth, stroke, 1);
 
+        //console.log('valueScale.domain()', this.valueScale.domain());
+
 
        // graphics.beginFill(0xFF700B, 1);
         let j = 0;
