@@ -935,7 +935,8 @@ export class TrackRenderer extends React.Component {
                          track.tilesetUid,
                          handleTilesetInfoReceived,
                          track.options,
-                         () => this.currentProps.onNewTilesLoaded(track.uid)
+                         () => this.currentProps.onNewTilesLoaded(track.uid),
+                        track.chromInfoPath
                 );
             case 'horizontal-chromosome-labels':
                 // chromInfoPath is passed in for backwards compatibility

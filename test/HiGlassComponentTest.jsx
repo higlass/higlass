@@ -78,6 +78,7 @@ function getTiledPlot(hgc, viewUid) {
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
+    /*
     describe("Track Resizing", () => {
         let atm = null;
 
@@ -273,6 +274,7 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
+    */
 
     describe("Close view tests", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -312,6 +314,8 @@ describe("Simple HiGlassComponent", () => {
 
 
     });
+
+    return;
     
     describe("Multiple track addition", () => {
         let atm = null;
@@ -363,10 +367,10 @@ describe("Simple HiGlassComponent", () => {
 
         it ("should select one plot type and double click", (done) => {
             let tilesetFinder = atm.tilesetFinder;
-            tilesetFinder.handleSelectedOptions(["http://test.higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ"]);
+            tilesetFinder.handleSelectedOptions(["http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ"]);
             hgc.update();
 
-            tilesetFinder.props.onDoubleClick(tilesetFinder.state.options["http://test.higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ"]);
+            tilesetFinder.props.onDoubleClick(tilesetFinder.state.options["http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ"]);
 
             setTimeout(done, shortLoadTime);
         });
@@ -383,7 +387,7 @@ describe("Simple HiGlassComponent", () => {
         it ("should select two different plot types", (done) => {
             let tilesetFinder = atm.tilesetFinder;
 
-            tilesetFinder.handleSelectedOptions(["http://test.higlass.io/api/v1/TO3D5uHjSt6pyDPEpc1hpA", "http://test.higlass.io/api/v1/Nn8aA4qbTnmaa-oGGbuE-A"]);
+            tilesetFinder.handleSelectedOptions(["http://higlass.io/api/v1/TO3D5uHjSt6pyDPEpc1hpA", "http://higlass.io/api/v1/Nn8aA4qbTnmaa-oGGbuE-A"]);
         
             hgc.update();
 
@@ -406,8 +410,8 @@ describe("Simple HiGlassComponent", () => {
         it ("should select a few different tracks and check for the plot type selection", (done) => {
             let tilesetFinder = atm.tilesetFinder;
 
-            tilesetFinder.handleSelectedOptions(["http://test.higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ",
-                "http://test.higlass.io/api/v1/GUm5aBiLRCyz2PsBea7Yzg"]);
+            tilesetFinder.handleSelectedOptions(["http://higlass.io/api/v1/CQMd6V_cRw6iCI_-Unl3PQ",
+                "http://higlass.io/api/v1/GUm5aBiLRCyz2PsBea7Yzg"]);
         
             hgc.update();
 
@@ -415,8 +419,8 @@ describe("Simple HiGlassComponent", () => {
 
             expect(ptc.availableTrackTypes.length).to.eql(0);
 
-            tilesetFinder.handleSelectedOptions(["http://test.higlass.io/api/v1/NNlxhMSCSnCaukAtdoKNXw",
-                "http://test.higlass.io/api/v1/GGKJ59R-RsKtwgIgFohOhA"]);
+            tilesetFinder.handleSelectedOptions(["http://higlass.io/api/v1/NNlxhMSCSnCaukAtdoKNXw",
+                "http://higlass.io/api/v1/GGKJ59R-RsKtwgIgFohOhA"]);
         
             hgc.update();
 

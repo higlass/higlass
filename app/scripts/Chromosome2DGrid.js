@@ -6,14 +6,18 @@ import boxIntersect from 'box-intersect';
 import {colorToHex} from './utils.js';
 
 export class Chromosome2DGrid extends PixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, chromInfoPath) {
         super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
         this.searchField = null;
         this.chromInfo = null;
         this.animate = animate;
 
-        let chromSizesPath = server + "/chrom-sizes/?id=" + uid;
+        let chromSizesPath = chromInfoPath;
+
+        if (!chromSizesPath) {
+            chromSizesPath = server + "/chrom-sizes/?id=" + uid;
+        }
 
         ChromosomeInfo(chromSizesPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;  
