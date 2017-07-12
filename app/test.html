@@ -10,6 +10,11 @@
 </style>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles/page.css">
+    <link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js"></script>
 </head>
 <body >
     Here's some text
@@ -21,7 +26,7 @@
     </div>
     And some other text
 </body>
-<script src='scripts/hglib.js'>
+<script src='hglib.js'>
 </script>
 <script>
 
@@ -52,64 +57,6 @@
         "bottom": [],
         "top": [
           {
-            "uid": "N5Ylzin9TLGToeJs3BKVLA",
-            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-            "server": "http://higlass.io/api/v1",
-            "width": 1007,
-            "position": "top",
-            "height": 132,
-            "type": "horizontal-heatmap",
-            "options": {
-              "maxZoom": "13",
-              "labelColor": "black",
-              "labelPosition": "bottomRight",
-              "colorRange": [
-                "white",
-                "rgba(245,166,35,1.0)",
-                "rgba(208,2,27,1.0)",
-                "black"
-              ],
-              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
-            },
-            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
-          },
-          {
-            "uid": "d1YqhSqQRFynu4r34zKZhg",
-            "tilesetUid": "PjIJKXGbSNCalUZO21e_HQ",
-            "server": "http://higlass.io/api/v1",
-            "width": 20,
-            "position": "top",
-            "height": 20,
-            "type": "horizontal-line",
-            "options": {
-              "name": "GM12878-E116-H3K27ac.fc.signal",
-              "valueScaling": "linear",
-              "lineStrokeColor": "green",
-              "labelPosition": "topLeft",
-              "labelColor": "black",
-              "axisPositionHorizontal": "right"
-            },
-            "name": "GM12878-E116-H3K27ac.fc.signal"
-          },
-          {
-            "uid": "bkUDRNN-SfyvT4YxgUy3yA",
-            "tilesetUid": "e0DYtZBSTqiMLHoaimsSpg",
-            "server": "http://higlass.io/api/v1",
-            "width": 20,
-            "position": "top",
-            "height": 20,
-            "type": "horizontal-line",
-            "options": {
-              "name": "GM12878-E116-H3K4me1.fc.signal",
-              "valueScaling": "linear",
-              "lineStrokeColor": "grey",
-              "labelPosition": "topLeft",
-              "labelColor": "black",
-              "axisPositionHorizontal": "right"
-            },
-            "name": "GM12878-E116-H3K4me1.fc.signal"
-          },
-          {
             "uid": "X4e_1DKiQHmyghDa6lLMVA",
             "height": 30,
             "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
@@ -119,57 +66,20 @@
             "name": "Chromosome Labels (hg19)"
           },
           {
-            "uid": "OHJakQICQD6gTD7skx4EWA",
-            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "datafile": "http://higlass.io/api/v1/tilesets/media/uploads/chromSizes_bUhodH4.tsv",
+            "name": "Chromosome Sizes (hg19)",
             "server": "http://higlass.io/api/v1",
-            "position": "top",
-            "height": 60,
-            "type": "horizontal-gene-annotations",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
+            "uid": "aX2yT_vzSPiPATVQExr74g",
+            "type": "horizontal-chromosome-labels",
             "options": {
-              "labelColor": "black",
-              "plusStrandColor": "blue",
-              "name": "Gene Annotations (hg19)",
-              "labelPosition": "hidden",
-              "minusStrandColor": "red"
+              "name": "Chromosome Sizes (hg19)"
             },
-            "name": "Gene Annotations (hg19)"
-          },
-          {
-            "uid": "Fbd3ugOZR_qnmogyxBtAcQ",
-            "tilesetUid": "cE0nGyd0Q_yVYSyBUe89Ww",
-            "server": "http://higlass.io/api/v1",
             "width": 20,
-            "position": "top",
-            "height": 20,
-            "type": "horizontal-line",
-            "options": {
-              "name": "GM12878-E116-H3K4me3.fc.signal",
-              "valueScaling": "linear",
-              "lineStrokeColor": "green",
-              "labelPosition": "topLeft",
-              "labelColor": "black",
-              "axisPositionHorizontal": "right"
-            },
-            "name": "GM12878-E116-H3K4me3.fc.signal"
-          },
-          {
-            "uid": "aTpD5OitQmmB9ljbx_zjBw",
-            "tilesetUid": "PdAaSdibTLK34hCw7ubqKA",
-            "server": "http://higlass.io/api/v1",
-            "width": 20,
-            "position": "top",
-            "height": 20,
-            "type": "horizontal-line",
-            "options": {
-              "name": "GM12878-E116-H3K27me3.fc.signal",
-              "valueScaling": "linear",
-              "lineStrokeColor": "red",
-              "labelPosition": "topLeft",
-              "labelColor": "black",
-              "axisPositionHorizontal": "right"
-            },
-            "name": "GM12878-E116-H3K27me3.fc.signal"
+            "height": 30,
+            "position": "top"
           }
+
         ],
         "right": [],
         "center": [],
@@ -185,13 +95,13 @@
     }
   ],
   "editable": true,
-  "exportViewUrl": "/api/v1/viewconfs",
+  "exportViewUrl": "http://localhost:8000/api/v1/viewconfs",
   "zoomLocks": {
     "locksByViewUid": {},
     "locksDict": {}
   },
   "trackSourceServers": [
-    "http://test.higlass.io/api/v1"
+    "http://higlass.io/api/v1"
   ],
   "locationLocks": {
     "locksByViewUid": {

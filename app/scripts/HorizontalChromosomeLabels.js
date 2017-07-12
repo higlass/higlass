@@ -1,5 +1,4 @@
-import {TiledPixiTrack} from './TiledPixiTrack.js';
-import {tileProxy} from './TileProxy.js';
+import {PixiTrack} from './PixiTrack.js';
 import {ChromosomeInfo} from './ChromosomeInfo.js';
 import {SearchField} from './search_field.js';
 import boxIntersect from 'box-intersect';
@@ -10,8 +9,8 @@ let TICK_WIDTH = 200;
 let TICK_HEIGHT = 6;
 let TICK_TEXT_SEPARATION = 2;
 
-export class HorizontalChromosomeLabels extends TiledPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
+export class HorizontalChromosomeLabels extends PixiTrack {
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, chromInfoPath) {
         super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
         this.searchField = null;
@@ -26,8 +25,12 @@ export class HorizontalChromosomeLabels extends TiledPixiTrack {
 
         console.log('animate:', animate);
         this.animate = animate;
+        
+        let chromSizesPath = chromInfoPath;
 
-        let chromSizesPath = server + "/chrom-sizes/?id=" + uid;
+        if (!chromSizesPath) {
+            chromSizesPath = server + "/chrom-sizes/?id=" + uid;
+        }
 
         ChromosomeInfo(chromSizesPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;

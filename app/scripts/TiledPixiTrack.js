@@ -48,39 +48,41 @@ export class TiledPixiTrack extends PixiTrack {
         this.server = server;
         this.tilesetUid = tilesetUid;
 
-        tileProxy.trackInfo(server, tilesetUid, tilesetInfo => {
-            // console.log('tilesetInfo:', tilesetInfo);
-            this.tilesetInfo = tilesetInfo[tilesetUid];
-            this.tilesetInfoLoading = false;
+        if (server && tilesetUid) {
+            tileProxy.trackInfo(server, tilesetUid, tilesetInfo => {
+                // console.log('tilesetInfo:', tilesetInfo);
+                this.tilesetInfo = tilesetInfo[tilesetUid];
+                this.tilesetInfoLoading = false;
 
-            if ('error' in this.tilesetInfo) {
-                // no tileset info for this track
-                this.tilesetInfo = null;
+                if ('error' in this.tilesetInfo) {
+                    // no tileset info for this track
+                    this.tilesetInfo = null;
+                    this.draw();
+                    return;
+                }
+
+                this.maxZoom = +this.tilesetInfo['max_zoom'];
+
+                if (this.options && this.options.maxZoom) {
+                    if (this.options.maxZoom >= 0)
+                        this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
+                    else
+                        console.error("Invalid maxZoom on track:", this);
+                }
+
+                this.refreshTiles();
+
+                if (handleTilesetInfoReceived)
+                    handleTilesetInfoReceived(tilesetInfo[tilesetUid]);
+
+                if (!this.options)
+                    this.options = {};
+
+                this.options.name = this.options.name ? this.options.name : tilesetInfo[tilesetUid].name;
+
                 this.draw();
-                return;
-            }
-
-            this.maxZoom = +this.tilesetInfo['max_zoom'];
-
-            if (this.options && this.options.maxZoom) {
-                if (this.options.maxZoom >= 0)
-                    this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
-                else
-                    console.error("Invalid maxZoom on track:", this);
-            }
-
-            this.refreshTiles();
-
-            if (handleTilesetInfoReceived)
-                handleTilesetInfoReceived(tilesetInfo[tilesetUid]);
-
-            if (!this.options)
-                this.options = {};
-
-            this.options.name = this.options.name ? this.options.name : tilesetInfo[tilesetUid].name;
-
-            this.draw();
-        });
+            });
+        }
 
         this.uuid = slugid.nice();
 

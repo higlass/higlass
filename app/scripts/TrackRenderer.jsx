@@ -807,25 +807,32 @@ export class TrackRenderer extends React.Component {
                          track.tilesetUid,
                          handleTilesetInfoReceived,
                          track.options,
-                         () => this.currentProps.onNewTilesLoaded(track.uid));
+                         () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
             case 'horizontal-chromosome-labels':
-                console.log('track:', track);
-
+                // chromInfoPath is passed in for backwards compatibility
+                // it can be used to provide custom chromosome sizes
                 return new HorizontalChromosomeLabels(
                         this.currentProps.pixiStage, 
                          track.server,
                          track.tilesetUid,
                          handleTilesetInfoReceived,
                          track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid));
+                        () => this.currentProps.onNewTilesLoaded(track.uid),
+                         track.chromInfoPath
+                        );
             case 'vertical-chromosome-labels':
+                // chromInfoPath is passed in for backwards compatibility
+                // it can be used to provide custom chromosome sizes
                 return new LeftTrackModifier(new HorizontalChromosomeLabels(
                             this.currentProps.pixiStage, 
                          track.server,
                          track.tilesetUid,
                          handleTilesetInfoReceived,
                          track.options,
-                            () => this.currentProps.onNewTilesLoaded(track.uid)));
+                        () => this.currentProps.onNewTilesLoaded(track.uid)),
+                        track.chromInfoPath
+                );
             case 'horizontal-heatmap':
                 return new HorizontalHeatmapTrack(this.currentProps.pixiStage,
                                                      track.server,
