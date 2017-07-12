@@ -5825,7 +5825,8 @@ export const project1D =
           {
             "uid": "X4e_1DKiQHmyghDa6lLMVA",
             "height": 30,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
             "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {},
@@ -5938,7 +5939,8 @@ export const project1D =
           {
             "uid": "X4e_1DKiQHmyghDa6lLMVA",
             "height": 30,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
             "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {},
@@ -6224,7 +6226,8 @@ export const testViewConfX2 =
           {
             "uid": "X4e_1DKiQHmyghDa6lLMVA",
             "height": 30,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
             "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {},
@@ -6412,7 +6415,8 @@ export const testViewConfX1 = {
           {
             "uid": "X4e_1DKiQHmyghDa6lLMVA",
             "height": 30,
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
             "position": "top",
             "type": "horizontal-chromosome-labels",
             "options": {},
@@ -6610,7 +6614,8 @@ export const horizontalDiagonalTrackViewConf =
       "tracks": {
         "top": [
           {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
             "type": "horizontal-chromosome-labels",
             "position": "top",
             "name": "Chromosome Labels (hg19)",
@@ -6674,7 +6679,8 @@ export const horizontalDiagonalTrackViewConf =
 
 export const chromInfoTrack = 
           {
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
             "type": "horizontal-chromosome-labels",
             "position": "top",
             "name": "Chromosome Labels (hg19)",
@@ -6789,10 +6795,9 @@ export const twoViewConfig =
                 "local": true,
                 "orientation": "2d",
                 "name": "Chromosome Grid (hg19)",
-                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
                 "thumbnail": null,
-                "server": "",
-                "tilesetUid": "TIlwFtqxTX-ndtM7Y9k1bw",
+                "server": "http://test.higlass.io/api/v1",
+                "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
                 "uid": "LUVqXXu2QYiO8XURIwyUyA",
                 "options": {
                   "gridStrokeWidth": 1,
@@ -7045,7 +7050,8 @@ export const valueIntervalTrackViewConf =
             "minWidth": 30,
             "minHeight": 30,
             "name": "Chromosome Axis (hg19)",
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
             "thumbnail": null,
             "server": "",
             "tilesetUid": "HZ8jVQNAQFCd4DCcWPrR8A",
@@ -7220,10 +7226,9 @@ export const oneViewConfig =
                 "local": true,
                 "orientation": "2d",
                 "name": "Chromosome Grid (hg19)",
-                "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
                 "thumbnail": null,
-                "server": "",
-                "tilesetUid": "TIlwFtqxTX-ndtM7Y9k1bw",
+                "server": "http://test.higlass.io/api/v1",
+                "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
                 "uid": "LUVqXXu2QYiO8XURIwyUyA",
                 "options": {
                   "gridStrokeWidth": 1,

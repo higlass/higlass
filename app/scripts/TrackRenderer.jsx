@@ -922,23 +922,45 @@ export class TrackRenderer extends React.Component {
                 );
             case '2d-chromosome-labels':
                 return new Chromosome2DLabels(
-                        this.pStage,
-                        track.chromInfoPath,
+                        this.currentProps.pixiStage, 
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
                         () => this.currentProps.onNewTilesLoaded(track.uid));
             case '2d-chromosome-grid':
-                return new Chromosome2DGrid(this.pStage,
-                        track.chromInfoPath,
-                        () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new Chromosome2DGrid(
+                         this.currentProps.pixiStage, 
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
+                         () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
             case 'horizontal-chromosome-labels':
+                // chromInfoPath is passed in for backwards compatibility
+                // it can be used to provide custom chromosome sizes
                 return new HorizontalChromosomeLabels(
-                        this.pStage,
-                        track.chromInfoPath,
-                        () => this.currentProps.onNewTilesLoaded(track.uid));
+                        this.currentProps.pixiStage, 
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
+                        () => this.currentProps.onNewTilesLoaded(track.uid),
+                         track.chromInfoPath
+                        );
             case 'vertical-chromosome-labels':
+                // chromInfoPath is passed in for backwards compatibility
+                // it can be used to provide custom chromosome sizes
                 return new LeftTrackModifier(new HorizontalChromosomeLabels(
-                            this.pStage,
-                            track.chromInfoPath,
-                            () => this.currentProps.onNewTilesLoaded(track.uid)));
+                            this.currentProps.pixiStage, 
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
+                        () => this.currentProps.onNewTilesLoaded(track.uid)),
+                        track.chromInfoPath
+                );
             case 'horizontal-heatmap':
                 return new HorizontalHeatmapTrack(this.pStage,
                                                      track.server,

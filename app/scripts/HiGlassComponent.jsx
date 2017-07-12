@@ -1370,6 +1370,12 @@ export class HiGlassComponent extends React.Component {
          *                   definition
          * @param position: The position the track is being added to
          * @param host: If this track is being added to another track
+         *
+         * Returns
+         * -------
+         *
+         *  { uid: "", width: }:
+         *      The trackConfig object describing this track.
          */
         this.addDefaultOptions(newTrack);
 
@@ -1442,6 +1448,8 @@ export class HiGlassComponent extends React.Component {
         }
 
         this.adjustLayoutToTrackSizes(this.state.views[viewId]);
+
+        return newTrack;
     }
 
     storeTrackSizes(viewId) {
