@@ -34,6 +34,7 @@ export function workerSetPix(size, data, valueScale, pseudocount, colorScale, pa
 
     let rgbIdx = 0;
     let e = 0;
+
     try {
         for (let i = 0; i < data.length; i++) {
             let d = data[i];
@@ -282,10 +283,8 @@ export function workerFetchMultiRequestTiles(req) {
                                 for (let i = 0; i < a.length; i++) {
                                     let x = a[i];
 
-                                    /*
                                     if (x < epsilon && x > -epsilon)
                                         continue;
-                                    */
 
                                     if (x < minNonZero)
                                         minNonZero = x;

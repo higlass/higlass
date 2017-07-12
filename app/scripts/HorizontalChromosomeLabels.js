@@ -23,7 +23,6 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         this.textFontFamily = 'Arial';
         this.textFontColor = '#777777';
 
-        console.log('animate:', animate);
         this.animate = animate;
         
         let chromSizesPath = chromInfoPath;

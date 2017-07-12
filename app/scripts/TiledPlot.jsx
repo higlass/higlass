@@ -338,7 +338,7 @@ export class TiledPlot extends React.Component {
             addTrackHost: null
         });
 
-        return track;
+        return newTracks;
     }
 
     handleCloseTrackMenuOpened(uid, clickPosition) {
