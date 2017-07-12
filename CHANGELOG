@@ -1,3 +1,15 @@
+v0.8.21 - 2017-07-10
+
+- Fixed the default transformation for horizontal tracks
+
+v0.8.20 - 2017-07-10
+
+- Fix label display
+
+v0.8.19 - 2017-07-10
+
+- Added the ability to select different transformations
+
 v0.8.18 - 2017-06-29
 
 - Fixed custom colormap picker

@@ -12,7 +12,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
          */
 
         // tile contains [zoomLevel, xPos, yPos]
-        return this.tilesetUid + '.' + tile.join('.') + '.' + tile.mirrored;
+        return this.tilesetUid + '.' + tile.join('.') + '.' + tile.mirrored + '.' + tile.dataTransform;
     }
 
     tileToRemoteId(tile) {
@@ -21,7 +21,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
          */
 
         // tile contains [zoomLevel, xPos, yPos]
-        return this.tilesetUid + '.' + tile.join('.');
+        return this.tilesetUid + '.' + tile.join('.') + '.' + tile.dataTransform;
     }
 
     localToRemoteId(remoteId) {
@@ -79,6 +79,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
 
         // if we're mirroring tiles, then we only need tiles along the diagonal
         let tiles = [];
+        //console.log('this.options:', this.options);
 
         // calculate the ids of the tiles that should be visible
         for (let i = 0; i < rows.length; i++) {
@@ -89,11 +90,15 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
                         // a mirrored tile
                         let newTile = [zoomLevel, cols[j], rows[i]];
                         newTile.mirrored = true;
+                        newTile.dataTransform = this.options.dataTransform ? 
+                            this.options.dataTransform : 'default';
                         tiles.push(newTile);
                     } else {
                         // otherwise, load an original tile
                         let newTile = [zoomLevel, rows[i], cols[j]];
                         newTile.mirrored = false;
+                        newTile.dataTransform = this.options.dataTransform ? 
+                            this.options.dataTransform : 'default';
                         tiles.push(newTile);
 
                     }
@@ -102,12 +107,16 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
                         // on the diagonal, load original tiles
                         let newTile = [zoomLevel, rows[i], cols[j]];
                         newTile.mirrored = false;
+                        newTile.dataTransform = this.options.dataTransform ? 
+                            this.options.dataTransform : 'default';
                         tiles.push(newTile);
                     }
 
                 } else {
                     let newTile = [zoomLevel, rows[i], cols[j]];
                     newTile.mirrored = false;
+                    newTile.dataTransform = this.options.dataTransform ? 
+                        this.options.dataTransform : 'default';
 
                     tiles.push(newTile)
                 }

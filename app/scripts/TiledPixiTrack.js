@@ -541,12 +541,6 @@ export class TiledPixiTrack extends PixiTrack {
 
          let min = Math.min.apply(null, visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.minNonZero));
 
-         /*
-         if (!isFinite(min)) {
-            console.log('td:', this.visibleAndFetchedIds().map(x => this.fetchedTiles[x].tileData));
-         }
-         */
-
          if (min == Number.MAX_SAFE_INTEGER)
              min = 0;
 

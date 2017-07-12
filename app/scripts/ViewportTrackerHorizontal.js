@@ -74,8 +74,8 @@ export class ViewportTrackerHorizontal extends SVGTrack {
 
         let yDomain = this.viewportYDomain;
 
-        console.log('xDomain:', xDomain);
-        console.log('yDomain:', yDomain);
+        //console.log('xDomain:', xDomain);
+        //console.log('yDomain:', yDomain);
 
         this.setDomainsCallback(xDomain, yDomain);
     }

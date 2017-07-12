@@ -35,92 +35,90 @@
 
  var testViewConfig =
 {
-  "editable": true,
   "zoomFixed": false,
-  "trackSourceServers": [
-    "http://localhost:8000/api/v1"
-  ],
-  "exportViewUrl": "http://test.higlass.io/api/v1/viewconfs/",
   "views": [
     {
-      "uid": "aa",
-      "initialXDomain": [
-        739319.5372837624,
-        1266735.1504695385
-      ],
-      "initialYDomain": [
-        2786072765.0338573,
-        2786107121.3326035
-      ],
-      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "genomePositionSearchBoxVisible": true,
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-      "tracks": {
-        "top": [
-          {
-            "name": "cnvs_hw.hitile",
-            "server": "http://localhost:8000/api/v1",
-            "tilesetUid": "Wwrt6-g5SNKoecQmG0crhA",
-            "uid": "UKysgFcDTRGr74iq-LImbg",
-            "type": "horizontal-line",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "topLeft",
-              "axisPositionHorizontal": "right",
-              "lineStrokeColor": "blue",
-              "lineStrokeWidth": 1,
-              "valueScaling": "linear",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "labelTextOpacity": 0.4,
-              "name": "cnvs_hw.hitile"
-            },
-            "width": 20,
-            "height": 20,
-            "position": "top"
-          },
-          {
-            "type": "horizontal-chromosome-labels",
-            "local": true,
-            "orientation": "1d-horizontal",
-            "minHeight": 20,
-            "name": "Chromosome Axis (mm9)",
-            "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-            "thumbnail": null,
-            "server": "",
-            "tilesetUid": "De5By5L6TMihxNjGU6XNdg",
-            "uid": "bmMfpmffTE2zKTwDtVbCRQ",
-            "options": {},
-            "width": 568,
-            "height": 20,
-            "position": "top"
-          }
-        ],
-        "left": [],
-        "center": [],
-        "right": [],
-        "bottom": []
-      },
       "layout": {
         "w": 12,
-        "h": 3,
+        "h": 2,
         "x": 0,
         "y": 0,
         "i": "aa",
         "moved": false,
         "static": false
+      },
+      "uid": "aa",
+      "initialYDomain": [
+        2572994766.594207,
+        2574333647.8744626
+      ],
+      "initialXDomain": [
+        2332721644.1208487,
+        2465270890.8664355
+      ],
+      "tracks": {
+        "bottom": [],
+        "top": [
+          {
+            "datafile": "http://higlass.io/api/v1/tilesets/media/uploads/chromSizes_bUhodH4.tsv",
+            "name": "Chromosome Sizes (hg19)",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
+            "uid": "aX2yT_vzSPiPATVQExr74g",
+            "type": "horizontal-chromosome-labels",
+            "options": {
+              "name": "Chromosome Sizes (hg19)"
+            },
+            "width": 20,
+            "height": 30,
+            "position": "top"
+          }
+        ],
+        "right": [],
+        "center": [],
+        "left": []
+      },
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://test.higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "http://test.higlass.io/api/v1",
+        "chromInfoId": "hg19"
       }
     }
   ],
+  "editable": true,
+  "exportViewUrl": "/api/v1/viewconfs",
   "zoomLocks": {
     "locksByViewUid": {},
     "locksDict": {}
   },
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"
+  ],
   "locationLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
+    "locksByViewUid": {
+      "aa": "FnFwmdaDTP6Va3A3Wb0JPw",
+      "ewZvJwlDSei_dbpIAkGMlg": "FnFwmdaDTP6Va3A3Wb0JPw"
+    },
+    "locksDict": {
+      "FnFwmdaDTP6Va3A3Wb0JPw": {
+        "aa": [
+          1550000000,
+          1550000000,
+          3380588.876772046
+        ],
+        "ewZvJwlDSei_dbpIAkGMlg": [
+          1550000000.0000002,
+          1549999999.9999993,
+          3380588.876772046
+        ]
+      }
+    }
   }
 }
+
+
+
     window.higlassApi;
 
     hglib.createHgComponent(
