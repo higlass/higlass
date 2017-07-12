@@ -161,6 +161,7 @@ export class TrackRenderer extends React.Component {
         this.pMask = new PIXI.Graphics();
 
         this.pStage.addChild(this.pMask)
+
         this.currentProps.pixiStage.addChild(this.pStage);
 
         this.pStage.mask = this.pMask;
@@ -263,8 +264,10 @@ export class TrackRenderer extends React.Component {
         /**
          * This view has been removed so we need to get rid of all the tracks it contains
          */
+
         this.removeTracks(Object.keys(this.trackDefObjects));
         this.currentProps.removeDraggingChangedListener(this.draggingChanged);
+
         this.currentProps.pixiStage.removeChild(this.pStage);
         window.removeEventListener('scroll', this.windowScrolledBound);
     }
@@ -922,7 +925,7 @@ export class TrackRenderer extends React.Component {
                 );
             case '2d-chromosome-labels':
                 return new Chromosome2DLabels(
-                        this.currentProps.pixiStage, 
+                        this.pStage,
                          track.server,
                          track.tilesetUid,
                          handleTilesetInfoReceived,
@@ -930,7 +933,7 @@ export class TrackRenderer extends React.Component {
                         () => this.currentProps.onNewTilesLoaded(track.uid));
             case '2d-chromosome-grid':
                 return new Chromosome2DGrid(
-                         this.currentProps.pixiStage, 
+                         this.pStage,
                          track.server,
                          track.tilesetUid,
                          handleTilesetInfoReceived,
@@ -942,7 +945,7 @@ export class TrackRenderer extends React.Component {
                 // chromInfoPath is passed in for backwards compatibility
                 // it can be used to provide custom chromosome sizes
                 return new HorizontalChromosomeLabels(
-                        this.currentProps.pixiStage, 
+                        this.pStage,
                          track.server,
                          track.tilesetUid,
                          handleTilesetInfoReceived,
@@ -954,7 +957,7 @@ export class TrackRenderer extends React.Component {
                 // chromInfoPath is passed in for backwards compatibility
                 // it can be used to provide custom chromosome sizes
                 return new LeftTrackModifier(new HorizontalChromosomeLabels(
-                            this.currentProps.pixiStage, 
+                            this.pStage,
                          track.server,
                          track.tilesetUid,
                          handleTilesetInfoReceived,

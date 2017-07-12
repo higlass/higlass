@@ -274,7 +274,6 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
-    */
 
     describe("Close view tests", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -305,7 +304,9 @@ describe("Simple HiGlassComponent", () => {
             hgc.instance().handleCloseView('view2');
 
             // console.log('hgc.instance:', hgc.instance().pixiStage.children);
+            // hgc.setState(hgc.instance().state);
 
+            console.log('checking...', hgc.instance().pixiStage.children);
             // since we removed one of the children, there should be only one left
             expect(hgc.instance().pixiStage.children.length).to.eql(1);
 
@@ -315,8 +316,6 @@ describe("Simple HiGlassComponent", () => {
 
     });
 
-    return;
-    
     describe("Multiple track addition", () => {
         let atm = null;
 
@@ -530,6 +529,7 @@ describe("Simple HiGlassComponent", () => {
         });
     });
 
+
     describe("AddTrackModal", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
@@ -571,6 +571,7 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
+    */
 
 
     let hg19Text = '';
@@ -616,6 +617,9 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
+
+
+    return;
 
     describe("1D viewport projection", () => {
         let vpUid = null;
@@ -728,6 +732,7 @@ describe("Simple HiGlassComponent", () => {
 
     });
 
+    return;
     describe("Starting with no genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
