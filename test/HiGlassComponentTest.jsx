@@ -53,8 +53,8 @@ import {
 } from '../app/scripts/config.js';
 
 const pageLoadTime = 1200;
-const tileLoadTime = 600;
-const shortLoadTime = 100; // for rapid changes, 
+const tileLoadTime = 1800;
+const shortLoadTime = 200; // for rapid changes, 
                            // just to make sure the screen can display what's happened
 
 function testAsync(done) {
@@ -306,7 +306,7 @@ describe("Simple HiGlassComponent", () => {
             // console.log('hgc.instance:', hgc.instance().pixiStage.children);
             // hgc.setState(hgc.instance().state);
 
-            console.log('checking...', hgc.instance().pixiStage.children);
+            //console.log('checking...', hgc.instance().pixiStage.children);
             // since we removed one of the children, there should be only one left
             expect(hgc.instance().pixiStage.children.length).to.eql(1);
 
@@ -1645,6 +1645,10 @@ describe("Simple HiGlassComponent", () => {
 
             expect(domain1[1]).to.not.eql(domain2[1]);
 
+            done();
+        });
+
+        it ("Locks line and combined scales", (done) => {
             hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'c2');
             hgc.instance().handleValueScaleLocked('aa', 'line1', 'view2', 'line2');
 
@@ -1672,7 +1676,9 @@ describe("Simple HiGlassComponent", () => {
             let domain1 = track1.valueScale.domain();
             let domain2 = track2.valueScale.domain();
 
-            expect(domain1[1]).to.eql(domain2[1]);
+            // add the track1 medianVisibleValue to account for the offset that is
+            // added to log-scaled tracks
+            expect(domain1[1]).to.eql(domain2[1] + track1.medianVisibleValue);
 
             done();
         });
@@ -1680,6 +1686,7 @@ describe("Simple HiGlassComponent", () => {
         it ("zooms out", (done) => {
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(2268233532.6257076, 2268099618.396191, 1710.4168190956116);
             setTimeout(() => done(), tileLoadTime);
+
         });
 
         it ("ensures that the domain changed", (done) => {

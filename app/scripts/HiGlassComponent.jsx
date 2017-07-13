@@ -290,6 +290,20 @@ export class HiGlassComponent extends React.Component {
   }
 
   syncValueScales(viewUid, trackUid) {
+      /**
+       * Syncing the values of locked scales
+       *
+       * Arguments
+       * ---------
+       *  viewUid: string
+       *    The id of the view containing the track whose value scale initially changed
+       *  trackUid: string
+       *    The id of the track that whose value scale changed
+       *
+       * Returns
+       * -------
+       *    Nothing
+       */
       let uid = this.combineViewAndTrackUid(viewUid, trackUid);
 
       if (this.valueScaleLocks[uid]) {
@@ -308,7 +322,6 @@ export class HiGlassComponent extends React.Component {
           let allMax = Math.max(...maxValues);
 
           for (let lockedTrack of lockedTracks) {
-
             // set the newly calculated minimum and maximum values
             // using d3 style setters
             if (lockedTrack.minValue)
@@ -316,10 +329,11 @@ export class HiGlassComponent extends React.Component {
             if (lockedTrack.maxValue)
                 lockedTrack.maxValue(allMax);
 
-            if (!lockedTrack.valueScale)
+            if (!lockedTrack.valueScale) {
                 // this track probably hasn't loaded the tiles to 
                 // create a valueScale
                 continue;
+            }
 
             lockedTrack.valueScale.domain([allMin, allMax]);
 
