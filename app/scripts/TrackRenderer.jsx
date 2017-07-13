@@ -962,8 +962,8 @@ export class TrackRenderer extends React.Component {
                          track.tilesetUid,
                          handleTilesetInfoReceived,
                          track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid)),
-                        track.chromInfoPath
+                        () => this.currentProps.onNewTilesLoaded(track.uid),
+                        track.chromInfoPath)
                 );
             case 'horizontal-heatmap':
                 return new HorizontalHeatmapTrack(this.pStage,

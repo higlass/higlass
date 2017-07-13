@@ -571,8 +571,6 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
-    */
-
 
     let hg19Text = '';
     let mm9Text = '';
@@ -619,7 +617,6 @@ describe("Simple HiGlassComponent", () => {
     });
 
 
-    return;
 
     describe("1D viewport projection", () => {
         let vpUid = null;
@@ -732,7 +729,6 @@ describe("Simple HiGlassComponent", () => {
 
     });
 
-    return;
     describe("Starting with no genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
@@ -1494,6 +1490,7 @@ describe("Simple HiGlassComponent", () => {
 
     });
     
+    */
 
     describe("Double view", () => {
 
@@ -1611,6 +1608,7 @@ describe("Simple HiGlassComponent", () => {
             //hgc.instance().handleExportSVG(); 
         });
 
+
         it ("locks the scales and recenters the page", (done) => {
             hgc.instance().handleValueScaleLocked('aa', 'heatmap1', 'view2', 'heatmap2');
             let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
@@ -1621,7 +1619,6 @@ describe("Simple HiGlassComponent", () => {
             
             setTimeout(() => done(), tileLoadTime);
         });
-
 
         it ('ensures that the new track domains are equal and unlocks the scales', (done) => {
             let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');

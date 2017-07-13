@@ -12,7 +12,10 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
          */
 
         // tile contains [zoomLevel, xPos, yPos]
-        return this.tilesetUid + '.' + tile.join('.') + '.' + tile.mirrored + '.' + tile.dataTransform;
+        if (tile.dataTransform && tile.dataTransform != 'default')
+            return this.tilesetUid + '.' + tile.join('.') + '.' + tile.mirrored + '.' + tile.dataTransform;
+        else
+            return this.tilesetUid + '.' + tile.join('.') + '.' + tile.mirrored;
     }
 
     tileToRemoteId(tile) {
@@ -21,7 +24,11 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
          */
 
         // tile contains [zoomLevel, xPos, yPos]
-        return this.tilesetUid + '.' + tile.join('.') + '.' + tile.dataTransform;
+        if (tile.dataTransform && tile.dataTransform != 'default')
+            return this.tilesetUid + '.' + tile.join('.') + '.' + tile.dataTransform;
+        else
+            return this.tilesetUid + '.' + tile.join('.')
+
     }
 
     localToRemoteId(remoteId) {

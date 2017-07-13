@@ -73,11 +73,9 @@ export class AxisPixi  {
         }
 
         if (axisHeight > 100) {
-            /*
-            console.log('valueScale.domain()', valueScale.domain());
-            console.log('valueScale.range()', valueScale.range());
-            console.log('tickValues[0]', tickValues[0], 'tickValues[-1]', tickValues[tickValues.length-1]);
-            */
+            //console.log('valueScale.domain()', valueScale.domain());
+            //console.log('valueScale.range()', valueScale.range());
+            //console.log('tickValues[0]', tickValues[0], 'tickValues[-1]', tickValues[tickValues.length-1]);
         }
 
         /*

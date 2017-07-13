@@ -250,8 +250,8 @@ export const optionsInfo = {
         generateOptions: track => {
             let inlineOptions = [];
 
-            console.log('track:', track);
-            console.log('track.tilesetInfo:', track.tilesetInfo);
+            //console.log('track:', track);
+            //console.log('track.tilesetInfo:', track.tilesetInfo);
 
             if (track.transforms) {
 
@@ -264,7 +264,7 @@ export const optionsInfo = {
 
             }
 
-            console.log('inlineOptions:', inlineOptions);
+            //console.log('inlineOptions:', inlineOptions);
             return inlineOptions;
         }
     },
@@ -793,7 +793,7 @@ export const LONG_DRAG_TIMEOUT = 3000;
 export const LOCATION_LISTENER_PREFIX = 'locationListenerPrefix';
 
 export const ZOOM_TRANSITION_DURATION = 1000;
-export const defaultServer = "http://test.higlass.io/api/v1"
+export const defaultServer = "http://higlass.io/api/v1"
 
 let localDatatypeToTrackType = {};
 
