@@ -1,3 +1,8 @@
+v0.8.22 - 2017-07-13
+
+- Safari add track bug fix
+- Backwards compatibility on selectable chromosome axis tracks
+
 v0.8.21 - 2017-07-10
 
 - Fixed the default transformation for horizontal tracks
