@@ -708,7 +708,7 @@ export const tracksInfo = [
     {
         type: '2d-chromosome-grid',
         datatype: ['chromsizes'],
-        local: true,
+        local: false,
         orientation: '2d',
         name: 'Chromosome Grid',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
