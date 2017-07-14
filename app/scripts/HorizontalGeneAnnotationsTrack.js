@@ -186,6 +186,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
                 //let height = valueScale(Math.log(+geneInfo[4]));
                 //let width= height;
+                //
 
                 let rectX = this._xScale(txMiddle) - GENE_RECT_WIDTH / 2;
                 let rectY = yMiddle - GENE_RECT_HEIGHT / 2;
