@@ -78,7 +78,6 @@ function getTiledPlot(hgc, viewUid) {
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
-    /*
     describe("Track Resizing", () => {
         let atm = null;
 
@@ -125,6 +124,8 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
+
+    return;
 
     describe("Window resizing", () => {
         let vpUid = null;
@@ -1490,8 +1491,6 @@ describe("Simple HiGlassComponent", () => {
 
     });
     
-    */
-
     describe("Double view", () => {
 
         it ('Cleans up previously created instances and mounts a new component', (done) => {
