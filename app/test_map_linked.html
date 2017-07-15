@@ -39,7 +39,7 @@
   "views": [
     {
       "layout": {
-        "w": 12,
+        "w": 6,
         "h": 2,
         "x": 0,
         "y": 0,
@@ -49,18 +49,17 @@
       },
       "uid": "aa",
       "initialYDomain": [
-        2572994766.594207,
-        2574333647.8744626
+        -245908225.14753425,
+        4020033332.77599
       ],
       "initialXDomain": [
-        2332721644.1208487,
-        2465270890.8664355
+        -389138282.5391855,
+        3207378600.1409383
       ],
       "tracks": {
         "bottom": [],
         "top": [
           {
-            "datafile": "http://higlass.io/api/v1/tilesets/media/uploads/chromSizes_bUhodH4.tsv",
             "name": "Chromosome Sizes (hg19)",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
@@ -78,6 +77,96 @@
         "center": [
           {
             "type": "osm-tiles",
+            "position": "center",
+            "uid": "bQiqAmB0TLW4Xq0_BJwIBg",
+            "name": "OSM Tiles",
+            "options": {}
+          }
+        ],
+        "left": []
+      },
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19"
+      }
+    },
+    {
+      "layout": {
+        "w": 6,
+        "h": 2,
+        "x": 6,
+        "y": 0,
+        "i": "X4MMLUa2Q4GkBxmJ6V2kDw",
+        "moved": false,
+        "static": false
+      },
+      "uid": "X4MMLUa2Q4GkBxmJ6V2kDw",
+      "initialYDomain": [
+        -261803899.76060587,
+        4004137658.163824
+      ],
+      "initialXDomain": [
+        -16357073.803092845,
+        3580159808.8778214
+      ],
+      "tracks": {
+        "bottom": [],
+        "top": [
+          {
+            "name": "Chromosome Sizes (hg19)",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
+            "uid": "aX2yT_vzSPiPATVQExr74g",
+            "type": "horizontal-chromosome-labels",
+            "options": {
+              "name": "Chromosome Sizes (hg19)"
+            },
+            "width": 274,
+            "height": 30,
+            "position": "top"
+          }
+        ],
+        "right": [],
+        "center": [
+          {
+            "uid": "dmsgtBa9ScuU0oxgSvjNAw",
+            "type": "combined",
+            "contents": [
+              {
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "uid": "BxaQiQ4RQq-h22I-o2CPAg",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarLabelsPosition": "inside",
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+                },
+                "width": 100,
+                "height": 100,
+                "transforms": [
+                  {
+                    "name": "ICE",
+                    "value": "weight"
+                  }
+                ],
+                "position": "center"
+              }
+            ],
+            "position": "center"
           }
         ],
         "left": []
@@ -93,8 +182,24 @@
   "editable": true,
   "exportViewUrl": "/api/v1/viewconfs",
   "zoomLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
+    "locksByViewUid": {
+      "aa": "PktqATH_TeKOVpCiFdVADw",
+      "X4MMLUa2Q4GkBxmJ6V2kDw": "PktqATH_TeKOVpCiFdVADw"
+    },
+    "locksDict": {
+      "PktqATH_TeKOVpCiFdVADw": {
+        "aa": [
+          2376851660.3599014,
+          2651299983.385154,
+          852.7157816886902
+        ],
+        "X4MMLUa2Q4GkBxmJ6V2kDw": [
+          2565588134.535136,
+          2565572875.2756166,
+          852.7157816886902
+        ]
+      }
+    }
   },
   "trackSourceServers": [
     "http://higlass.io/api/v1",
@@ -102,11 +207,11 @@
   ],
   "locationLocks": {
     "locksByViewUid": {
-      "aa": "FnFwmdaDTP6Va3A3Wb0JPw",
-      "ewZvJwlDSei_dbpIAkGMlg": "FnFwmdaDTP6Va3A3Wb0JPw"
+      "aa": "WvMRGsn7Q9mCxJJhp23lLw",
+      "ewZvJwlDSei_dbpIAkGMlg": "WvMRGsn7Q9mCxJJhp23lLw"
     },
     "locksDict": {
-      "FnFwmdaDTP6Va3A3Wb0JPw": {
+      "WvMRGsn7Q9mCxJJhp23lLw": {
         "aa": [
           1550000000,
           1550000000,

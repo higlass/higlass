@@ -770,7 +770,16 @@ export const tracksInfo = [
         orientation: '1d-horizontal',
         name: 'Horizontal 1D Tile Outlines',
         thumbnail: svg1DTilesIcon
-    }
+    },
+    {
+        type: 'osm-tiles',
+        datatype: ['map-tiles'],
+        local: true,
+        orientation: '2d',
+        hidden: false,
+        name: 'OSM Tiles',
+        thumbnail: null
+    },
 ]
 
 export const TILE_FETCH_DEBOUNCE = 100;

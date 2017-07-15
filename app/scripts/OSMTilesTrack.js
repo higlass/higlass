@@ -41,10 +41,6 @@ export class OSMTilesTrack extends PixiTrack {
         this.uuid = slugid.nice();
         this.refreshTilesDebounced = debounce( this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
 
-        this.trackNotFoundText = new PIXI.Text('',
-                {fontSize: "12px", fontFamily: "Arial", fill: "black"});
-
-        this.pLabel.addChild(this.trackNotFoundText);
     }
 
     rerender(options) {
@@ -145,10 +141,7 @@ export class OSMTilesTrack extends PixiTrack {
          */
 
         // tile contains [zoomLevel, xPos, yPos]
-        if (tile.dataTransform && tile.dataTransform != 'default')
-            return this.tilesetUid + '.' + tile.join('.') + '.' + tile.mirrored + '.' + tile.dataTransform;
-        else
-            return this.tilesetUid + '.' + tile.join('.') + '.' + tile.mirrored;
+        return tile.join('.')
     }
 
     tileToRemoteId(tile) {
@@ -157,10 +150,7 @@ export class OSMTilesTrack extends PixiTrack {
          */
 
         // tile contains [zoomLevel, xPos, yPos]
-        if (tile.dataTransform && tile.dataTransform != 'default')
-            return this.tilesetUid + '.' + tile.join('.') + '.' + tile.dataTransform;
-        else
-            return this.tilesetUid + '.' + tile.join('.')
+        return tile.join('.')
 
     }
 
@@ -223,9 +213,6 @@ export class OSMTilesTrack extends PixiTrack {
         for (let i = 0; i < rows.length; i++) {
             for (let j = 0; j < cols.length; j++) {
                 let newTile = [zoomLevel, rows[i], cols[j]];
-                newTile.mirrored = false;
-                newTile.dataTransform = this.options.dataTransform ? 
-                    this.options.dataTransform : 'default';
 
                 tiles.push(newTile)
             }
@@ -234,6 +221,7 @@ export class OSMTilesTrack extends PixiTrack {
         this.setVisibleTiles(tiles);
     }
 
+    /*
     zoomed(newXScale, newYScale, k=1, tx=0, ty=0) {
         this.xScale(newXScale);
         this.yScale(newYScale);
@@ -245,6 +233,22 @@ export class OSMTilesTrack extends PixiTrack {
 
         this.pMobile.scale.x = k;
         this.pMobile.scale.y = 1;
+    }
+    */
+
+    zoomed(newXScale, newYScale, k, tx, ty) {
+        super.zoomed(newXScale, newYScale);
+
+        this.xScale(newXScale);
+        this.yScale(newYScale);
+
+        this.pMain.position.x = tx; //translateX;
+        this.pMain.position.y = ty; //translateY;
+
+        this.pMain.scale.x = k; //scaleX;
+        this.pMain.scale.y = k; //scaleY;
+
+        this.refreshTilesDebounced();
     }
 
     setPosition(newPosition) {
@@ -317,16 +321,67 @@ export class OSMTilesTrack extends PixiTrack {
         return this.scale.maxRawValue;
     }
 
+    getTilePosAndDimensions(zoomLevel, tilePos) {
+        /**
+         * Get the tile's position in its coordinate system.
+         */
+        let xTilePos = tilePos[0], yTilePos = tilePos[1];
+
+        let totalWidth = this.genomeWidth;
+        let totalHeight = this.genomeWidth;
+
+        let minX = 0;
+        let minY = 0;
+
+        let tileWidth = totalWidth / Math.pow(2, zoomLevel);
+        let tileHeight = totalHeight / Math.pow(2, zoomLevel);
+
+        let tileX = minX + xTilePos * tileWidth;
+        let tileY = minY + yTilePos * tileHeight;
+
+        return { tileX: tileX,
+                 tileY: tileY,
+                 tileWidth: tileWidth,
+                 tileHeight: tileHeight};
+    }
+
+    setSpriteProperties(sprite, zoomLevel, tilePos) {
+        let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(zoomLevel, tilePos);
+
+        sprite.x = this._refXScale(tileX);
+        sprite.y = this._refYScale(tileY);
+
+        let tileEndX = tileX + tileWidth;
+        let tileEndY = tileY + tileHeight;
+
+        let spriteWidth = this._refXScale(tileEndX) - this._refXScale(tileX) ;
+        let spriteHeight = this._refYScale(tileEndY) - this._refYScale(tileY)
+
+        sprite.width = this._refXScale(tileEndX) - this._refXScale(tileX)
+        sprite.height = this._refYScale(tileEndY) - this._refYScale(tileY)
+
+    }
 
     initTile(tile) {
         // create the tile
         // should be overwritten by child classes
         //console.log("ERROR: unimplemented createTile:", this);
-        this.scale.minRawValue = this.minVisibleValue();
-        this.scale.maxRawValue = this.maxVisibleValue();
+        let texture = new PIXI.Texture(new PIXI.BaseTexture(tile.tileData.img));
+        let sprite = new PIXI.Sprite(texture);
+        //console.log('tile.tileSrc:', tile);
+        //let sprite = new PIXI.Sprite.fromImage(tile.tileSrc);
 
-        this.scale.minValue = this.scale.minRawValue;
-        this.scale.maxValue = this.scale.maxRawValue;
+        let graphics = tile.graphics;
+
+        let pos = tile.tileId.split('.').map(x => +x);
+
+        tile.sprite = sprite
+
+        this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos);
+
+        graphics.removeChildren();
+        graphics.addChild(tile.sprite);
+
     }
 
     updateTile(tile) {
@@ -417,7 +472,8 @@ export class OSMTilesTrack extends PixiTrack {
     fetchNewTiles(toFetch) {
         if (toFetch.length > 0) {
             let toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
-            console.log('fetching:', toFetchList.join(' '));
+            //console.log('xs:', toFetch);
+            //console.log('fetching:', toFetchList.join(' '));
 
             //http://a.tile.openstreetmap.org/z/x/y.png
             //
@@ -431,6 +487,35 @@ export class OSMTilesTrack extends PixiTrack {
                 ids: toFetchList
             });
             */
+
+
+            for (let tileId of toFetchList) {
+                let parts = tileId.split('.');
+                let serverPrefixes = ['a','b','c'];
+                let serverPrefixIndex = Math.floor(Math.random() * serverPrefixes.length)
+
+
+                let src = "http://" + serverPrefixes[serverPrefixIndex] + ".tile.openstreetmap.org/" + parts[0] + "/" + parts[1] + "/" + parts[2] + ".png"
+                let img = new Image();
+                img.crossOrigin = "Anonymous";
+                img.src = src;
+
+                img.onload = () => {
+                    let loadedTiles = {}
+                    loadedTiles[tileId] = {tileId: tileId, 
+                        img: img, 
+                        zoomLevel: +parts[0],
+                        tilePos: [+parts[1], +parts[2]],
+                        tileSrc: src}
+
+                    this.receivedTiles(loadedTiles);
+                }
+
+
+            }
+            //for (let tileId 
+            //let img = new Image();
+            //img.src = "http://a.tile.openstreetmap.org/
         }
     }
 
@@ -486,28 +571,6 @@ export class OSMTilesTrack extends PixiTrack {
         if (this.delayDrawing)
             return;
 
-        if (!this.tilesetInfo) {
-            if (this.tilesetInfoLoading) {
-                this.trackNotFoundText.text = 'Loading...';
-            } else {
-                this.trackNotFoundText.text = "Tileset info not found. Server: [" +
-                    this.server +
-                    "] tilesetUid: [" + this.tilesetUid + "]";
-            }
-
-            this.trackNotFoundText.x = this.position[0];
-            this.trackNotFoundText.y = this.position[1];
-
-            /*
-            if (this.flipText)
-                this.trackNotFoundText.scale.x = -1;
-            */
-
-            this.trackNotFoundText.visible = true;
-        } else {
-            this.trackNotFoundText.visible = false;
-        }
-
         super.draw();
 
         for (let uid in this.fetchedTiles)
@@ -521,5 +584,19 @@ export class OSMTilesTrack extends PixiTrack {
          * Draw a tile on some graphics
          */
 
+    }
+
+    refScalesChanged(refXScale, refYScale) {
+        super.refScalesChanged(refXScale, refYScale);
+
+        for (let uid in this.fetchedTiles) {
+            let tile = this.fetchedTiles[uid];
+
+            if (tile.sprite) {
+                this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos);
+            } else {
+                // console.log('skipping...', tile.tileId);
+            }
+        }
     }
 }
