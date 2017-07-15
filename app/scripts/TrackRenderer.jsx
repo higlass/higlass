@@ -40,6 +40,8 @@ import {ViewportTracker2D} from './ViewportTracker2D.js';
 import {ViewportTrackerHorizontal} from './ViewportTrackerHorizontal.js';
 import {ViewportTrackerVertical} from './ViewportTrackerVertical.js';
 
+import {OSMTilesTrack} from './OSMTilesTrack.js';
+
 let SCROLL_TIMEOUT = 100;
 
 export class TrackRenderer extends React.Component {
@@ -723,6 +725,8 @@ export class TrackRenderer extends React.Component {
             this.currentProps.onTilesetInfoReceived(track.uid, x);
         }
 
+        console.log('track.type:', track.type);
+
         switch (track.type) {
             case 'left-axis':
                 return new LeftAxisTrack(this.svgElement);
@@ -1008,6 +1012,9 @@ export class TrackRenderer extends React.Component {
                     handleTilesetInfoReceived,
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid)));
+            case 'osm-tiles':
+                console.log("Here");
+                return new OSMTilesTrack(this.pStage, track.options);
             default:
                  console.warn('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(

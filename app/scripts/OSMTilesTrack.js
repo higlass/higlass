@@ -1,0 +1,525 @@
+import {ZOOM_DEBOUNCE} from './config.js';
+import debounce from './debounce.js';
+import {PixiTrack} from './PixiTrack.js';
+import {tileProxy} from './TileProxy.js';
+import {median} from 'd3-array';
+import slugid from 'slugid';
+//import {LRUCache} from './lru.js';
+
+export class OSMTilesTrack extends PixiTrack {
+    /**
+     * A track that must pull remote tiles
+     */
+    constructor(scene, options, animate) {
+        /**
+         * @param scene: A PIXI.js scene to draw everything to.
+         * @param server: The server to pull tiles from.
+         * @param tilesetUid: The data set to get the tiles from the server
+         */
+        super(scene, options);
+
+        // the tiles which should be visible (although they're not necessarily fetched)
+        this.visibleTiles = new Set();
+        this.visibleTileIds = new Set();
+
+        // the tiles we already have requests out for
+        this.fetching = new Set();
+
+        // tiles we have fetched and ready to be rendered
+        this.fetchedTiles = {};
+
+        // the graphics that have already been drawn for this track
+        this.tileGraphics = {};
+
+        this.genomeWidth = 3000000000;
+        this.minPos = [0,0];
+        this.maxPos = [this.genomeWidth, this.genomeWidth];
+        this.maxZoom = 14;
+        this.maxWidth = this.genomeWidth;
+        this.animate = animate;
+
+        this.uuid = slugid.nice();
+        this.refreshTilesDebounced = debounce( this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
+
+        this.trackNotFoundText = new PIXI.Text('',
+                {fontSize: "12px", fontFamily: "Arial", fill: "black"});
+
+        this.pLabel.addChild(this.trackNotFoundText);
+    }
+
+    rerender(options) {
+        super.rerender(options);
+
+        if (!this.tilesetInfo)
+            return;
+    }
+
+    visibleAndFetchedIds() {
+        /**
+         * Return the set of ids of all tiles which are both visible and fetched.
+         */
+
+        let ret = Object.keys(this.fetchedTiles).filter(x => this.visibleTileIds.has(x));
+        return ret;
+    }
+
+    visibleAndFetchedTiles() {
+        let ids = this.visibleAndFetchedIds();
+
+        return ids.map(x => this.fetchedTiles[x]);
+    }
+
+    setVisibleTiles(tilePositions) {
+        /**
+         * Set which tiles are visible right now.
+         *
+         * @param tiles: A set of tiles which will be considered the currently visible
+         * tile positions.
+         */
+        this.visibleTiles = tilePositions.map(x => {
+            return {
+                tileId: this.tileToLocalId(x),
+                remoteId: this.tileToRemoteId(x),
+                mirrored: x.mirrored
+            }
+        });
+
+        this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
+    }
+
+    refreshTiles() {
+        this.calculateVisibleTiles();
+
+        // tiles that are fetched
+        let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
+
+        // fetch the tiles that should be visible but haven't been fetched
+        // and aren't in the process of being fetched
+        let toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId))
+
+        for (let i = 0; i < toFetch.length; i++)
+            this.fetching.add(toFetch[i].remoteId);
+
+        // calculate which tiles are obsolete and remove them
+        // fetchedTileID are remote ids
+        let toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
+
+
+        this.removeTiles(toRemove);
+        this.fetchNewTiles(toFetch);
+    }
+
+    removeTiles(toRemoveIds) {
+        /**
+         * Remove obsolete tiles
+         *
+         * @param toRemoveIds: An array of tile ids to remove from the list of fetched tiles.
+         */
+
+        // if there's nothing to remove, don't bother doing anything
+        if (!toRemoveIds.length)
+            return;
+
+        if (!this.areAllVisibleTilesLoaded())
+            return;
+
+        toRemoveIds.forEach(x => {
+            let tileIdStr = x;
+            this.destroyTile(this.fetchedTiles[tileIdStr]);
+
+            if (tileIdStr in this.tileGraphics) {
+                this.pMain.removeChild(this.tileGraphics[tileIdStr]);
+                delete this.tileGraphics[tileIdStr]
+            }
+
+            delete this.fetchedTiles[tileIdStr];
+        })
+
+        this.synchronizeTilesAndGraphics();
+        this.draw();
+    }
+
+    tileToLocalId(tile) {
+        /*
+         * The local tile identifier
+         */
+
+        // tile contains [zoomLevel, xPos, yPos]
+        if (tile.dataTransform && tile.dataTransform != 'default')
+            return this.tilesetUid + '.' + tile.join('.') + '.' + tile.mirrored + '.' + tile.dataTransform;
+        else
+            return this.tilesetUid + '.' + tile.join('.') + '.' + tile.mirrored;
+    }
+
+    tileToRemoteId(tile) {
+        /**
+         * The tile identifier used on the server
+         */
+
+        // tile contains [zoomLevel, xPos, yPos]
+        if (tile.dataTransform && tile.dataTransform != 'default')
+            return this.tilesetUid + '.' + tile.join('.') + '.' + tile.dataTransform;
+        else
+            return this.tilesetUid + '.' + tile.join('.')
+
+    }
+
+    localToRemoteId(remoteId) {
+        let idParts = remoteId.split('.');
+        return idParts.slice(0, idParts.length-1).join('.');
+    }
+
+    calculateZoomLevel() {
+        let xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+                                                      this.minPos[0],
+                                                      this.maxPos[0]);
+        let yZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+                                                      this.minPos[1],
+                                                      this.maxPos[1]);
+
+        let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
+        zoomLevel = Math.min(zoomLevel, this.maxZoom);
+
+        if (this.options && this.options.maxZoom) {
+            if (this.options.maxZoom >= 0)
+                zoomLevel = Math.min(this.options.maxZoom, zoomLevel);
+            else
+                console.error("Invalid maxZoom on track:", this);
+        }
+
+        return zoomLevel
+    }
+
+    calculateVisibleTiles(mirrorTiles=true) {
+        // if we don't know anything about this dataset, no point
+        // in trying to get tiles
+
+        this.zoomLevel = this.calculateZoomLevel();
+
+
+        //this.zoomLevel = 0;
+
+        this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale,
+                                               this.minPos[0],
+                                               this.maxPos[0],
+                                               this.maxZoom,
+                                               this.maxWidth);
+
+        this.yTiles =  tileProxy.calculateTiles(this.zoomLevel, this._yScale,
+                                               this.minPos[1],
+                                               this.maxPos[1],
+                                               this.maxZoom,
+                                               this.maxWidth);
+
+        let rows = this.xTiles;
+        let cols = this.yTiles;
+        let zoomLevel = this.zoomLevel;
+
+        // if we're mirroring tiles, then we only need tiles along the diagonal
+        let tiles = [];
+        //console.log('this.options:', this.options);
+
+        // calculate the ids of the tiles that should be visible
+        for (let i = 0; i < rows.length; i++) {
+            for (let j = 0; j < cols.length; j++) {
+                let newTile = [zoomLevel, rows[i], cols[j]];
+                newTile.mirrored = false;
+                newTile.dataTransform = this.options.dataTransform ? 
+                    this.options.dataTransform : 'default';
+
+                tiles.push(newTile)
+            }
+        }
+
+        this.setVisibleTiles(tiles);
+    }
+
+    zoomed(newXScale, newYScale, k=1, tx=0, ty=0) {
+        this.xScale(newXScale);
+        this.yScale(newYScale);
+
+        this.refreshTilesDebounced();
+
+        this.pMobile.position.x = tx;
+        this.pMobile.position.y = this.position[1];
+
+        this.pMobile.scale.x = k;
+        this.pMobile.scale.y = 1;
+    }
+
+    setPosition(newPosition) {
+        super.setPosition(newPosition);
+
+        //this.draw();
+    }
+
+    setDimensions(newDimensions) {
+        super.setDimensions(newDimensions);
+
+        //this.draw();
+    }
+
+    areAllVisibleTilesLoaded() {
+        /**
+         * Check to see if all the visible tiles are loaded.
+         *
+         * If they are, remove all other tiles.
+         */
+        // tiles that are visible
+
+        // tiles that are fetched
+        let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
+
+        //console.log('this.fetchedTiles:', this.fetchedTiles);
+        let visibleTileIdsList = [...this.visibleTileIds];
+
+        //console.log('fetchedTileIDs:', fetchedTileIDs);
+        //console.log('visibleTileIdsList:', visibleTileIdsList);
+
+        for (let i = 0; i < visibleTileIdsList.length; i++) {
+            if (!fetchedTileIDs.has(visibleTileIdsList[i] ))
+                return false;
+        }
+
+        return true;
+    }
+
+    allTilesLoaded() {
+        /**
+         * Function is called when all tiles that should be visible have
+         * been received.
+         */
+    }
+
+    minValue(_) {
+        if (_)
+            this.scale.minValue = _;
+        else
+            return this.scale.minValue;
+    }
+
+    maxValue(_) {
+        if (_)
+            this.scale.maxValue = _;
+        else
+            return this.scale.maxValue;
+    }
+
+    minRawValue() {
+        // this is the minimum value from all the tiles that
+        // hasn't been externally modified by locked scales
+        return this.scale.minRawValue;
+    }
+
+    maxRawValue() {
+        // this is the maximum value from all the tiles that
+        // hasn't been externally modified by locked scales
+        return this.scale.maxRawValue;
+    }
+
+
+    initTile(tile) {
+        // create the tile
+        // should be overwritten by child classes
+        //console.log("ERROR: unimplemented createTile:", this);
+        this.scale.minRawValue = this.minVisibleValue();
+        this.scale.maxRawValue = this.maxVisibleValue();
+
+        this.scale.minValue = this.scale.minRawValue;
+        this.scale.maxValue = this.scale.maxRawValue;
+    }
+
+    updateTile(tile) {
+        //console.log("ERROR: unimplemented updateTile:", this);
+    }
+
+    destroyTile(tile) {
+        // remove all data structures needed to draw this tile
+    }
+
+
+    addMissingGraphics() {
+        /**
+         * Add graphics for tiles that have no graphics
+         */
+        let fetchedTileIDs = Object.keys(this.fetchedTiles);
+        let added = false;
+
+        for (let i = 0; i < fetchedTileIDs.length; i++) {
+            if (!(fetchedTileIDs[i] in this.tileGraphics)) {
+                let newGraphics = new PIXI.Graphics();
+                //console.log('adding:', fetchedTileIDs[i]);
+                this.pMain.addChild(newGraphics);
+
+                this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;
+                //console.log('fetchedTiles:', this.fetchedTiles[fetchedTileIDs[i]]);
+                this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
+
+                //console.log('adding graphics...', fetchedTileIDs[i]);
+                this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
+                added = true;
+            }
+        }
+
+        /*
+        if (added)
+            this.draw();
+        */
+    }
+
+    updateExistingGraphics() {
+        /**
+         * Change the graphics for existing tiles
+         */
+        let fetchedTileIDs = Object.keys(this.fetchedTiles);
+
+        for (let i = 0; i < fetchedTileIDs.length; i++) {
+
+            this.updateTile(this.fetchedTiles[fetchedTileIDs[i]]);
+        }
+    }
+
+    synchronizeTilesAndGraphics() {
+        /**
+         * Make sure that we have a one to one mapping between tiles
+         * and graphics objects
+         *
+         */
+
+        // keep track of which tiles are visible at the moment
+        this.addMissingGraphics();
+        this.updateExistingGraphics();
+        //this.removeOldGraphics();
+    }
+
+    loadTileData(tile, dataLoader) {
+        /**
+         * Extract drawable data from a tile loaded by a generic tile loader
+         *
+         * @param tile: A tile returned by a TiledArea.
+         * @param dataLoader: A function for extracting drawable data from a tile. This
+         *                    usually means differentiating the between dense and sparse
+         *                    tiles and putting the data into an array.
+         */
+
+       // see if the data is already cached
+       let loadedTileData = this.lruCache.get(tile.tileId);
+
+       // if not, load it and put it in the cache
+       if (!loadedTileData) {
+            loadedTileData = dataLoader(tile.data, tile.type);
+            this.lruCache.put(tile.tileId, loadedTileData);
+       }
+
+       return loadedTileData;
+    }
+
+    fetchNewTiles(toFetch) {
+        if (toFetch.length > 0) {
+            let toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
+            console.log('fetching:', toFetchList.join(' '));
+
+            //http://a.tile.openstreetmap.org/z/x/y.png
+            //
+            // tileProxy.fetchTiles(this.tilesetServer, toFetchList, this.receivedTiles.bind(this));
+
+            /*
+            tileProxy.fetchTilesDebounced({
+                id: this.uuid,
+                server: this.tilesetServer,
+                done: this.receivedTiles.bind(this),
+                ids: toFetchList
+            });
+            */
+        }
+    }
+
+    receivedTiles(loadedTiles) {
+        /**
+         * We've gotten a bunch of tiles from the server in
+         * response to a request from fetchTiles.
+         */
+        //console.log('received:', loadedTiles);
+        for (let i = 0; i < this.visibleTiles.length; i++) {
+            let tileId = this.visibleTiles[i].tileId;
+
+            if (!loadedTiles[this.visibleTiles[i].remoteId])
+                continue;
+
+
+            if (this.visibleTiles[i].remoteId in loadedTiles) {
+                if (!(tileId in this.fetchedTiles)) {
+                    // this tile may have graphics associated with it
+                    this.fetchedTiles[tileId] = this.visibleTiles[i];
+                }
+
+
+
+                this.fetchedTiles[tileId].tileData = loadedTiles[this.visibleTiles[i].remoteId];
+            }
+        }
+
+        for (let key in loadedTiles) {
+            if (loadedTiles[key])
+                if (this.fetching.has(key))
+                    this.fetching.delete(key);
+
+        }
+
+
+        this.synchronizeTilesAndGraphics();
+
+        /*
+         * Mainly called to remove old unnecessary tiles
+         */
+        this.refreshTiles();
+
+        // we need to draw when we receive new data
+        this.draw();
+
+        // Let HiGlass know we need to re-render
+        this.animate();
+    }
+
+
+    draw() {
+        if (this.delayDrawing)
+            return;
+
+        if (!this.tilesetInfo) {
+            if (this.tilesetInfoLoading) {
+                this.trackNotFoundText.text = 'Loading...';
+            } else {
+                this.trackNotFoundText.text = "Tileset info not found. Server: [" +
+                    this.server +
+                    "] tilesetUid: [" + this.tilesetUid + "]";
+            }
+
+            this.trackNotFoundText.x = this.position[0];
+            this.trackNotFoundText.y = this.position[1];
+
+            /*
+            if (this.flipText)
+                this.trackNotFoundText.scale.x = -1;
+            */
+
+            this.trackNotFoundText.visible = true;
+        } else {
+            this.trackNotFoundText.visible = false;
+        }
+
+        super.draw();
+
+        for (let uid in this.fetchedTiles)
+            this.drawTile(this.fetchedTiles[uid]);
+
+        //this.animate();
+    }
+
+    drawTile(tileData, graphics) {
+        /**
+         * Draw a tile on some graphics
+         */
+
+    }
+}
