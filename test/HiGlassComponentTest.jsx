@@ -78,6 +78,79 @@ function getTiledPlot(hgc, viewUid) {
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
+    describe("Starting with an existing genome position search box", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            hgc = mount(<HiGlassComponent 
+                          options={{bounded: false}}
+                          viewConfig={onlyGPSB}
+                        />, 
+                {attachTo: div});
+
+            setTimeout(done, tileLoadTime);
+            hgc.update();
+        });
+
+        it ("Makes the search box invisible", (done) => {
+            hgc.instance().handleTogglePositionSearchBox('aa');
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Makes the search box visible again", (done) => {
+            hgc.instance().handleTogglePositionSearchBox('aa');
+
+            setTimeout(done, shortLoadTime);
+        });
+
+        it ("Ensures that hg38 is in the list of available assemblies", (done) => {
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.availableAssemblies).to.include('hg38'); 
+            done();
+        });
+
+        it ("Selects mm9", (done) => {
+
+            let dropdownButton = hgc.find('.assembly-pick-button');
+            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('mm9');
+
+            setTimeout(done, tileLoadTime);
+        });
+
+        it ("Checks that mm9 was properly set and switches back to hg19", (done) => {
+            hgc.update();
+            let button = new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'].assemblyPickButton, true);
+            expect(button.props().title).to.be.eql('mm9');
+
+            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('hg19');
+
+            setTimeout(done, tileLoadTime);
+        });
+
+        it ("Checks that hg19 was properly", (done) => {
+            hgc.update();
+            let button = new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'].assemblyPickButton, true);
+            expect(button.props().title).to.be.eql('hg19');
+
+            setTimeout(done, shortLoadTime);
+        });
+    });
+
+    return;
+
     describe("Track Resizing", () => {
         let atm = null;
 
@@ -124,8 +197,6 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
     });
-
-    return;
 
     describe("Window resizing", () => {
         let vpUid = null;
@@ -917,73 +988,6 @@ describe("Simple HiGlassComponent", () => {
         });
 
     });
-
-    describe("Starting with an existing genome position search box", () => {
-        it ('Cleans up previously created instances and mounts a new component', (done) => {
-            if (hgc) {
-                hgc.unmount();
-                hgc.detach();
-            }
-
-            if (div) {
-                global.document.body.removeChild(div);
-            }
-
-            div = global.document.createElement('div');
-            global.document.body.appendChild(div);
-
-            div.setAttribute('style', 'width:800px;background-color: lightgreen');
-            div.setAttribute('id', 'simple-hg-component');
-
-            hgc = mount(<HiGlassComponent 
-                          options={{bounded: false}}
-                          viewConfig={onlyGPSB}
-                        />, 
-                {attachTo: div});
-
-            setTimeout(done, tileLoadTime);
-            hgc.update();
-        });
-
-        it ("Makes the search box invisible", (done) => {
-            hgc.instance().handleTogglePositionSearchBox('aa');
-
-            setTimeout(done, shortLoadTime);
-        });
-
-        it ("Makes the search box visible again", (done) => {
-            hgc.instance().handleTogglePositionSearchBox('aa');
-
-            setTimeout(done, shortLoadTime);
-        });
-
-        it ("Selects mm9", (done) => {
-
-            let dropdownButton = hgc.find('.assembly-pick-button');
-            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('mm9');
-
-            setTimeout(done, tileLoadTime);
-        });
-
-        it ("Checks that mm9 was properly set and switches back to hg19", (done) => {
-            hgc.update();
-            let button = new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'].assemblyPickButton, true);
-            expect(button.props().title).to.be.eql('mm9');
-
-            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('hg19');
-
-            setTimeout(done, tileLoadTime);
-        });
-
-        it ("Checks that hg19 was properly", (done) => {
-            hgc.update();
-            let button = new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'].assemblyPickButton, true);
-            expect(button.props().title).to.be.eql('hg19');
-
-            setTimeout(done, shortLoadTime);
-        });
-    });
-    
 
     describe("Single view", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
