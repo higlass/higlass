@@ -6,13 +6,13 @@ import boxIntersect from 'box-intersect';
 
 let GENE_RECT_WIDTH = 1;
 let GENE_RECT_HEIGHT = 6;
+let MAX_TEXTS = 20;
 
 export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
         super(scene, server, uid, handleTilesetInfoReceived, options, animate);
         this.textFontSize = '10px';
         this.textFontFamily = 'Arial';
-
     }
 
     initTile(tile) {
@@ -20,18 +20,24 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         //create texts
         tile.texts = {};
 
-        let MAX_TILE_ENTRIES = 60;
+        let MAX_TILE_ENTRIES = 100;
 
         tile.tileData.sort((a,b) => b.importance - a.importance);
         tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
 
-        tile.tileData.forEach(td => {
+        tile.tileData.forEach((td, i) => {
             let geneInfo = td.fields;
             let fill = this.options.plusStrandColor ? this.options.plusStrandColor : 'blue';
 
             if (geneInfo[5] == '-') {
                 fill = this.options.minusStrandColor ? this.options.minusStrandColor : 'red';
             }
+            tile.textWidths = {};
+
+            // don't draw texts for the latter entries in the tile
+            if (i >= MAX_TEXTS)
+                return;
+
             let text = new PIXI.Text(geneInfo[3],  {fontSize: this.textFontSize, 
                                                     fontFamily: this.textFontFamily,
                                                     fill: colorToHex(fill)});
@@ -45,6 +51,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
             tile.graphics.addChild(text);
         });
+
         tile.initialized = true;
 
         //this.draw();
@@ -115,6 +122,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
         let maxValue = 0;
         this.allTexts = [];
+        this.allBoxes = [];
         this.allRects = [];
 
         /*
@@ -138,6 +146,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
         for (let fetchedTileId in this.fetchedTiles) {
         //let visibleAndFetchedIds = this.visibleAndFetchedIds();
+        //console.log('fetchedTileId:', fetchedTileId);
 
         //for (let i = 0; i < visibleAndFetchedIds.length; i++) {
             //let fetchedTileId = visibleAndFetchedIds[i];
@@ -150,7 +159,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             if (!parentInFetched)
                 addedIds.push(tile.tileData.tileId);
 
-            tile.tileData.forEach(td => {
+            tile.tileData.forEach((td, i) => {
                 let geneInfo = td.fields;
                 // the returned positions are chromosome-based and they need to
                 // be converted to genome-based
@@ -195,14 +204,18 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 let xEndPos = this._xScale(txEnd);
 
                 if (xEndPos - xStartPos > 2)  {
+                    /*
                     this.allRects = this.allRects.concat(
                             this.drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
                             .map(x => x.concat([geneInfo[5]]))
                             );
+                    */
+                    this.drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
+
                 } else {
                     //graphics.drawRect(rectX, rectY, width, height);
                     //console.log('rectY', rectY);
-                    this.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
+                    //this.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
                     graphics.drawRect(rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT);
                 }
 
@@ -211,6 +224,11 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                     return;
 
                 }
+
+                // don't draw texts for the latter entries in the tile
+                if (i >= MAX_TEXTS)
+                    return;
+
                 let text = tile.texts[geneName];
 
                 text.position.x = this._xScale(txMiddle);
@@ -219,10 +237,18 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                               fontFamily: this.textFontFamily,
                               fill: fill};
 
+                if (!(geneInfo[3] in tile.textWidths)) {
+                    text.updateTransform();
+                    let textWidth = text.getBounds().width;
+
+                    tile.textWidths[geneInfo[3]] = textWidth;
+                }
+
 
                 if (!parentInFetched) {
                     text.visible = true;
 
+                    this.allBoxes.push([text.position.x, textYMiddle - 1, text.position.x + tile.textWidths[geneInfo[3]], textYMiddle+1]);
                     this.allTexts.push({importance: +geneInfo[4], text: text, caption: geneName, strand: geneInfo[5]});
                 } else {
                     text.visible = false;
@@ -237,12 +263,15 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         }
 
         //console.trace('draw', allTexts.length);
-        this.hideOverlaps(this.allTexts);
+        this.hideOverlaps(this.allBoxes, this.allTexts);
     }
 
-    hideOverlaps(allTexts) {
+    hideOverlaps(allBoxes, allTexts) {
         // store the bounding boxes of the text objects so we can
         // calculate overlaps
+        //console.log('allTexts.length', allTexts.length);
+
+        /*
         let allBoxes = allTexts.map(val => {
             let text = val.text;
             text.updateTransform();
@@ -251,6 +280,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
             return box;
         });
+        */
 
         let result = boxIntersect(allBoxes, function(i, j) {
             if (allTexts[i].importance > allTexts[j].importance) {
