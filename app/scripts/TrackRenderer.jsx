@@ -725,8 +725,6 @@ export class TrackRenderer extends React.Component {
             this.currentProps.onTilesetInfoReceived(track.uid, x);
         }
 
-        console.log('track.type:', track.type);
-
         switch (track.type) {
             case 'left-axis':
                 return new LeftAxisTrack(this.svgElement);
