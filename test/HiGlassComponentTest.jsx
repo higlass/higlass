@@ -117,6 +117,27 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, shortLoadTime);
         });
 
+        it ("Searches for strings with spaces at the beginning", (done) => {
+            let gpsb = hgc.instance().genomePositionSearchBoxes['aa'];
+
+            let [range1, range2] = gpsb.searchField.searchPosition("  chr1:1-1000 & chr1:2001-3000");
+            console.log('range1:', range1, "range2:", range2);
+
+            expect(range1[0]).to.eql(1);
+            expect(range1[1]).to.eql(1000);
+
+            expect(range2[0]).to.eql(2001);
+            expect(range2[1]).to.eql(3000);
+
+            [range1, range2] = gpsb.searchField.searchPosition("chr1:1-1000 & chr1:2001-3000");
+            console.log('range1:', range1, "range2:", range2);
+
+            expect(range1[0]).to.eql(1);
+            expect(range1[1]).to.eql(1000);
+
+            done();
+        });
+
         it ("Ensures that hg38 is in the list of available assemblies", (done) => {
             expect(hgc.instance().genomePositionSearchBoxes['aa'].state.availableAssemblies).to.include('hg38'); 
             done();
