@@ -124,8 +124,6 @@ export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
             // scaling between tiles
             let tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) / (this._xScale.domain()[1] - this._xScale.domain()[0]);
                     
-            let oldRange = tile.drawnAtScale.range();
-
             //let posOffset = newRange[0];
 
             let newRange = this._xScale.domain().map(tile.drawnAtScale);
