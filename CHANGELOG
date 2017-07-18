@@ -1,5 +1,6 @@
 v0.8.24
 
+- Major performance improvements for Gene annotations and horizontal points
 - Fixed bug in searching for genome positions with a space at one of the ends
 - Added the OSM tiles
 
