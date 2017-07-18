@@ -32,6 +32,14 @@ let availableColors = {
     'white': { name: "White", value: "white"}
 }
 
+let availableWidths = {
+    '1': { name: "1", value: 1},
+    '2': { name: "2", value: 2},
+    '3': { name: "3", value: 3},
+    '5': { name: "5", value: 5},
+    '8': { name: "8", value: 8}
+}
+
 export const optionsInfo = {
     valueScaling: {
         name: "Value Scaling",
@@ -42,24 +50,19 @@ export const optionsInfo = {
     },
     lineStrokeWidth: {
         name: "Stroke Width",
-        inlineOptions: {
-            '1': { name: "1", value: 1},
-            '2': { name: "2", value: 2},
-            '3': { name: "3", value: 3},
-            '5': { name: "5", value: 5},
-            '8': { name: "8", value: 8}
-        }
+        inlineOptions: availableWidths
     },
     trackBorderWidth: {
         name: "Track Border Width",
-        inlineOptions: {
-            '0': { name: "0", value: 0},
-            '1': { name: "1", value: 1},
-            '2': { name: "2", value: 2},
-            '3': { name: "3", value: 3},
-            '5': { name: "5", value: 5},
-            '8': { name: "8", value: 8}
-        }
+        inlineOptions: availableWidths
+    },
+    pointSize: {
+        name: "Point Size",
+        inlineOptions: availableWidths
+    },
+    pointColor: {
+        name: "Point Color",
+        inlineOptions: availableColors
     },
     trackBorderColor: {
         name: "Track Border Color",
@@ -433,13 +436,13 @@ export const tracksInfo = [
         datatype: ['vector'],
         local: false,
         orientation: '1d-horizontal',
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling', "trackBorderWidth", "trackBorderColor"],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'pointColor', 'pointSize', 'valueScaling', "trackBorderWidth", "trackBorderColor"],
         defaultOptions: {
             labelColor: 'black',
             labelPosition: 'topLeft',
             axisPositionHorizontal: 'right',
-            lineStrokeColor: 'red',
-            lineStrokeWidth: 1,
+            pointColor: 'red',
+            pointSize: 3,
             valueScaling: 'linear',
             trackBorderWidth: 0,
             trackBorderColor: 'black',
@@ -770,7 +773,16 @@ export const tracksInfo = [
         orientation: '1d-horizontal',
         name: 'Horizontal 1D Tile Outlines',
         thumbnail: svg1DTilesIcon
-    }
+    },
+    {
+        type: 'osm-tiles',
+        datatype: ['map-tiles'],
+        local: true,
+        orientation: '2d',
+        hidden: false,
+        name: 'OSM Tiles',
+        thumbnail: null
+    },
 ]
 
 export const TILE_FETCH_DEBOUNCE = 100;

@@ -182,6 +182,7 @@ export class SearchField {
 
     searchPosition(text) {
         var range1 = null, range2 = null;
+        text = text.trim();   // remove whitespace from the ends of the string
 
         //extract offset
         let offsetRe = /\[offset\ (.+?)\]/.exec(text);

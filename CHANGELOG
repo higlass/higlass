@@ -1,3 +1,8 @@
+v0.8.24
+
+- Fixed bug in searching for genome positions with a space at one of the ends
+- Added the OSM tiles
+
 v0.8.23
 
 - Don't show chromosome sizes as a separate track

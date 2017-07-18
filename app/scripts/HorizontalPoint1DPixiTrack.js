@@ -4,6 +4,7 @@ import {tileProxy} from './TileProxy.js';
 import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
 import {colorToHex} from './utils.js';
 import {AxisPixi} from './AxisPixi.js';
+import {dictValues} from './utils.js';
 
 export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
@@ -18,15 +19,23 @@ export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
          */
         super.initTile(tile);
 
+        //console.log('initializing tile');
 
-        this.drawTile(tile);
+        //this.drawTile(tile);
+        this.renderTile(tile);
     }
 
     drawTile(tile) {
+
+    }
+
+    renderTile(tile) {
         super.drawTile(tile);
 
         if (!tile.graphics)
             return;
+
+        //console.log('renderTile:');
 
         let graphics = tile.graphics;
 
@@ -74,13 +83,18 @@ export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
         let tileXScale = scaleLinear().domain([0, this.tilesetInfo.tile_size])
         .range([tileX,tileX + tileWidth]);
 
-        let strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
+        //let strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
+
+        let strokeWidth = 0;
         graphics.lineStyle(strokeWidth, stroke, 1);
 
-       // graphics.beginFill(0xFF700B, 1);
-        let j = 0;
+        let squareSide = this.options.pointSize ? this.options.pointSize : 3;
+        let pointColor = colorToHex(this.options.pointColor ? this.options.pointColor : 'red');
 
-        let squareSide = 2;
+        graphics.beginFill(pointColor, 1);
+
+        let j = 0;
+        tile.drawnAtScale = this._xScale.copy();
 
         for (let i = 0; i < tileValues.length; i++) {
             let xPos = this._xScale(tileXScale(i));
@@ -95,7 +109,32 @@ export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
                 break;
 
 
-            graphics.drawRect(xPos - squareSide / 2, yPos - squareSide / 2, squareSide, squareSide);
+            //console.log('drawRect');
+            //console.log('xPos:', xPos)
+
+            graphics.drawRect(xPos - (squareSide / 2) / this.pMain.scale.x, 
+                              yPos - (squareSide / 2) / this.pMain.scale.y, 
+                              squareSide / this.pMain.scale.x, 
+                              squareSide / this.pMain.scale.y);
         }
+    }
+
+    draw() {
+        for (let tile of dictValues(this.fetchedTiles)) {
+            // scaling between tiles
+            let tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) / (this._xScale.domain()[1] - this._xScale.domain()[0]);
+                    
+            //let posOffset = newRange[0];
+
+            let newRange = this._xScale.domain().map(tile.drawnAtScale);
+
+            let posOffset = newRange[0];
+            tile.graphics.scale.x = tileK;
+            tile.graphics.position.x = - posOffset * tileK;
+        }
+    }
+
+    zoomed(newXScale, newYScale, k, tx, ty) {
+        super.zoomed(newXScale, newYScale);
     }
 }
