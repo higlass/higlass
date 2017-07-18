@@ -783,6 +783,15 @@ export const tracksInfo = [
         name: 'OSM Tiles',
         thumbnail: null
     },
+    {
+        type: 'mapbox-tiles',
+        datatype: ['map-tiles'],
+        local: true,
+        orientation: '2d',
+        hidden: false,
+        name: 'Mapbox Tiles',
+        thumbnail: null
+    }
 ]
 
 export const TILE_FETCH_DEBOUNCE = 100;

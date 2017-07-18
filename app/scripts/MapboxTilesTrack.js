@@ -1,0 +1,33 @@
+import {ZOOM_DEBOUNCE} from './config.js';
+import debounce from './debounce.js';
+import {PixiTrack} from './PixiTrack.js';
+import {tileProxy} from './TileProxy.js';
+import {median} from 'd3-array';
+import slugid from 'slugid';
+import {OSMTilesTrack} from './OSMTilesTrack.js';
+//import {LRUCache} from './lru.js';
+
+export class MapboxTilesTrack extends OSMTilesTrack {
+    /**
+     * A track that must pull remote tiles
+     */
+    constructor(scene, options, animate) {
+        /**
+         * @param scene: A PIXI.js scene to draw everything to.
+         * @param server: The server to pull tiles from.
+         * @param tilesetUid: The data set to get the tiles from the server
+         */
+        super(scene, options, animate);
+    }
+
+    getTileUrl(tileZxy) {
+        /**
+         * Get the url used to fetch the tile data
+         */
+        let accessToken = "pk.eyJ1IjoicGtlcnBlZGppZXYiLCJhIjoiY2o1OW44dnN0MGFqZDMxcXFoYW04cmh4biJ9.WGEDSUhcn4W4x7IaA8DFRw";
+        let src = "http://api.tiles.mapbox.com/v4/mapbox.satellite/" + tileZxy[0] + "/" + tileZxy[1] + "/" + tileZxy[2] + ".png?access_token=" + accessToken;
+
+        return src;
+    }
+
+}
