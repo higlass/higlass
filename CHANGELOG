@@ -1,3 +1,8 @@
+v0.8.25
+
+- Hidden OSM tiles
+- Customizeable osm width
+
 v0.8.24
 
 - Major performance improvements for Gene annotations and horizontal points

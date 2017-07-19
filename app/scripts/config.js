@@ -779,9 +779,13 @@ export const tracksInfo = [
         datatype: ['map-tiles'],
         local: true,
         orientation: '2d',
-        hidden: false,
+        hidden: true,
         name: 'OSM Tiles',
-        thumbnail: null
+        thumbnail: null,
+        defaultOptions: {
+            minPos: 0,
+            maxPos: 3120000000
+        }
     },
 ]
 
