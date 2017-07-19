@@ -1011,7 +1011,6 @@ export class TrackRenderer extends React.Component {
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid)));
             case 'osm-tiles':
-                console.log("Here");
                 return new OSMTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
             default:
                  console.warn('WARNING: unknown track type:', track.type);
