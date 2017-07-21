@@ -798,7 +798,7 @@ export const tracksInfo = [
         datatype: ['map-tiles'],
         local: true,
         orientation: '2d',
-        hidden: false,
+        hidden: true,
         name: 'OSM Tiles',
         thumbnail: null,
         defaultOptions: {
@@ -811,7 +811,7 @@ export const tracksInfo = [
         datatype: ['map-tiles'],
         local: true,
         orientation: '2d',
-        hidden: false,
+        hidden: true,
         name: 'Mapbox Tiles',
         thumbnail: null,
         availableOptions: ['mapboxStyle'],
