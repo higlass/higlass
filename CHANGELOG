@@ -1,3 +1,7 @@
+v0.8.27
+
+- Fixed bug wher the "Loading" sign remained with 1D point tracks
+
 v0.8.26
 
 - Different mapbox style options
