@@ -41,6 +41,7 @@ import {ViewportTrackerHorizontal} from './ViewportTrackerHorizontal.js';
 import {ViewportTrackerVertical} from './ViewportTrackerVertical.js';
 
 import {OSMTilesTrack} from './OSMTilesTrack.js';
+import {MapboxTilesTrack} from './MapboxTilesTrack.js';
 
 let SCROLL_TIMEOUT = 100;
 
@@ -1012,6 +1013,9 @@ export class TrackRenderer extends React.Component {
                     () => this.currentProps.onNewTilesLoaded(track.uid)));
             case 'osm-tiles':
                 return new OSMTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
+            case 'mapbox-tiles':
+                console.log("Here");
+                return new MapboxTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
             default:
                  console.warn('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(
