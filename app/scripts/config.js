@@ -107,6 +107,25 @@ export const optionsInfo = {
             '1.0': { name: '100%', value: 1.0 },
         }
     },
+    mapboxStyle: {
+        name: "Map style",
+        inlineOptions: {
+            'streets': { name: 'streets', value: 'mapbox.streets'},
+            'light': { name: 'light', value: 'mapbox.light'},
+            'dark': { name: 'dark', value: 'mapbox.dark'},
+            'satellite': { name: 'satellite', value: 'mapbox.satellite'},
+            'streets-satellite': { name: 'streets-satellite', value: 'mapbox.streets-satellite'},
+            'wheatpaste': { name: 'wheatpaste', value: 'mapbox.wheatpaste'},
+            'streets-basic': { name: 'streets-basic', value: 'mapbox.streets-basic'},
+            'comic': { name: 'comic', value: 'mapbox.comic'},
+            'outdoors': { name: 'outdoors', value: 'mapbox.outdoors'},
+            'run-bike-hike': { name: 'run-bike-hike', value: 'mapbox.run-bike-hike'},
+            'pencil': { name: 'pencil', value: 'mapbox.pencil'},
+            'pirates': { name: 'pirates', value: 'mapbox.pirates'},
+            'emerald': { name: 'emerald', value: 'mapbox.emerald'},
+            'high-contrast': { name: 'high-contrast', value: 'mapbox.high-contrast'}
+        }
+    },
     oneDHeatmapFlipped: {
         name: 'Flip Heatmap',
         inlineOptions: {
@@ -779,10 +798,27 @@ export const tracksInfo = [
         datatype: ['map-tiles'],
         local: true,
         orientation: '2d',
-        hidden: false,
+        hidden: true,
         name: 'OSM Tiles',
-        thumbnail: null
+        thumbnail: null,
+        defaultOptions: {
+            minPos: 0,
+            maxPos: 3120000000
+        }
     },
+    {
+        type: 'mapbox-tiles',
+        datatype: ['map-tiles'],
+        local: true,
+        orientation: '2d',
+        hidden: true,
+        name: 'Mapbox Tiles',
+        thumbnail: null,
+        availableOptions: ['mapboxStyle'],
+        defaultOptions: {
+            mapboxStyle: 'mapbox.streets'
+        }
+    }
 ]
 
 export const TILE_FETCH_DEBOUNCE = 100;
