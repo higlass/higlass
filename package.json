@@ -16,6 +16,7 @@
     "type": "git",
     "url": "https://github.com/hms-dbmi/higlass"
   },
+  "license": "MIT",
   "engines": {
     "node": ">=0.12.0"
   },
