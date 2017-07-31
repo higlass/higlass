@@ -34,6 +34,7 @@ export function workerSetPix(size, data, valueScale, pseudocount, colorScale, pa
 
     let rgbIdx = 0;
     let e = 0;
+
     try {
         for (let i = 0; i < data.length; i++) {
             let d = data[i];
@@ -47,7 +48,7 @@ export function workerSetPix(size, data, valueScale, pseudocount, colorScale, pa
             }
             //let rgbIdx = qScale(d); //Math.max(0, Math.min(255, Math.floor(valueScale(ct))))
             if (rgbIdx < 0 || rgbIdx > 255) {
-                console.log('rgbIdx:', rgbIdx);
+                console.warn('out of bounds rgbIdx:', rgbIdx, " (should be 0 <= rgbIdx <= 255)");
             }
             let rgb = colorScale[rgbIdx];
 
@@ -57,9 +58,10 @@ export function workerSetPix(size, data, valueScale, pseudocount, colorScale, pa
             pixData[i * 4 + 3] = rgb[3];
         };
     } catch (err) {
-        console.log('valueScale.domain():', valueScale.domain());
-        console.log('pseudocount:', pseudocount);
-        console.log('rgbIdx:', rgbIdx, "d:", e, "ct:", valueScale(e));
+        console.warn("Odd datapoint")
+        console.warn('valueScale.domain():', valueScale.domain());
+        console.warn('pseudocount:', pseudocount);
+        console.warn('rgbIdx:', rgbIdx, "d:", e, "ct:", valueScale(e));
         console.error('ERROR:', err);
         return pixData;
     }
@@ -81,6 +83,12 @@ export function workerGetTilesetInfo(url, done) {
 }
 
     function float32(in_uint16) {
+        /**
+         * Yanked from https://gist.github.com/martinkallman/5049614
+         *
+         * Does not support infinities or NaN. All requests with such
+         * values should be encoded as float32
+         */
         let t1;
         let t2;
         let t3;
@@ -292,7 +300,6 @@ export function workerFetchMultiRequestTiles(req) {
                                     data[key]['maxNonZero'] == Number.MIN_SAFE_INTEGER) {
                                     // if there's no values except 0, 
                                     // then do use it as the min value
-                                    console.log("here:", key, a);
 
                                     data[key]['minNonZero'] = 0;
                                     data[key]['maxNonZero'] = 1;

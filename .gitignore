@@ -24,3 +24,4 @@ jsons/
 .idea/
 dist
 report.html
+docs/_build

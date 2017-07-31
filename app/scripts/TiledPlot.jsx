@@ -162,7 +162,7 @@ export class TiledPlot extends React.Component {
         /**
          * The drawing options for a track have changed.
          */
-        this.props.onTrackOptionsChanged(trackUid, newOptions);
+        return this.props.onTrackOptionsChanged(trackUid, newOptions);
     }
 
     handleScalesChanged(x,y) {
@@ -188,6 +188,7 @@ export class TiledPlot extends React.Component {
         //track.options.name = tilesetInfo.name;
         track.name = tilesetInfo.name;
         track.maxWidth = tilesetInfo.max_width;
+        track.transforms = tilesetInfo.transforms;
         track.binsPerDimension = tilesetInfo.bins_per_dimension;
         track.maxZoom = tilesetInfo.max_zoom;
         track.coordSystem = tilesetInfo.coordSystem;
@@ -308,6 +309,23 @@ export class TiledPlot extends React.Component {
     }
 
     handleTracksAdded(newTracks, position, host) {
+        /**
+         * Arguments
+         * ---------
+         *  newTracks: {object}
+         *      The description of the track, including its type
+         *      and data source.
+         *  position: string
+         *      Where to place this track
+         *
+         * Returns
+         * -------
+         *
+         *  { uid: "", width: }:
+         *      The trackConfig object describing this track. Essentially
+         *      the newTrack object passed in with some extra information
+         *      (such as the uid) added.
+         */
         if (this.trackToReplace) {
             this.handleCloseTrack(this.trackToReplace)
             this.trackToReplace = null;
@@ -319,6 +337,8 @@ export class TiledPlot extends React.Component {
             addTrackPosition: null,
             addTrackHost: null
         });
+
+        return newTracks;
     }
 
     handleCloseTrackMenuOpened(uid, clickPosition) {

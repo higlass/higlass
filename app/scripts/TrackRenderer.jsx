@@ -16,8 +16,10 @@ import {IdVertical1DTiledPixiTrack} from './IdVertical1DTiledPixiTrack.js';
 import {TopAxisTrack} from './TopAxisTrack.js';
 import {LeftAxisTrack} from './LeftAxisTrack.js';
 import {CombinedTrack} from './CombinedTrack.js';
+
 import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
-import {VerticalLine1DPixiTrack} from './VerticalLine1DPixiTrack.js';
+import {HorizontalPoint1DPixiTrack} from './HorizontalPoint1DPixiTrack.js';
+
 import {CNVIntervalTrack} from './CNVIntervalTrack.js';
 import {LeftTrackModifier} from './LeftTrackModifier.js';
 import {Track} from './Track.js';
@@ -37,6 +39,9 @@ import {ValueIntervalTrack} from './ValueIntervalTrack.js';
 import {ViewportTracker2D} from './ViewportTracker2D.js';
 import {ViewportTrackerHorizontal} from './ViewportTrackerHorizontal.js';
 import {ViewportTrackerVertical} from './ViewportTrackerVertical.js';
+
+import {OSMTilesTrack} from './OSMTilesTrack.js';
+import {MapboxTilesTrack} from './MapboxTilesTrack.js';
 
 let SCROLL_TIMEOUT = 100;
 
@@ -159,6 +164,7 @@ export class TrackRenderer extends React.Component {
         this.pMask = new PIXI.Graphics();
 
         this.pStage.addChild(this.pMask)
+
         this.currentProps.pixiStage.addChild(this.pStage);
 
         this.pStage.mask = this.pMask;
@@ -199,6 +205,11 @@ export class TrackRenderer extends React.Component {
         if (this.prevPropsStr === nextPropsStr)
             return;
 
+        for (let uid in this.trackDefObjects) {
+            let track = this.trackDefObjects[uid].trackObject;
+
+            track.delayDrawing = true;
+        }
 
         this.prevPropsStr = nextPropsStr;
 
@@ -230,6 +241,14 @@ export class TrackRenderer extends React.Component {
                 }
             }
         }
+        this.props.onNewTilesLoaded();
+
+        for (let uid in this.trackDefObjects) {
+            let track = this.trackDefObjects[uid].trackObject;
+
+            track.delayDrawing = false;
+            track.draw();
+        }
     }
 
     setMask() {
@@ -248,8 +267,10 @@ export class TrackRenderer extends React.Component {
         /**
          * This view has been removed so we need to get rid of all the tracks it contains
          */
+
         this.removeTracks(Object.keys(this.trackDefObjects));
         this.currentProps.removeDraggingChangedListener(this.draggingChanged);
+
         this.currentProps.pixiStage.removeChild(this.pStage);
         window.removeEventListener('scroll', this.windowScrolledBound);
     }
@@ -735,6 +756,21 @@ export class TrackRenderer extends React.Component {
                         () => this.currentProps.onNewTilesLoaded(track.uid)
                     )
                 );
+            case 'horizontal-point':
+                return new HorizontalPoint1DPixiTrack(this.pStage,
+                                                     track.server,
+                                                     track.tilesetUid,
+                                                     handleTilesetInfoReceived,
+                                                     track.options,
+                                                     () => this.currentProps.onNewTilesLoaded(track.uid));
+            case 'vertical-point':
+                return new LeftTrackModifier(
+                    new HorizontalPoint1DPixiTrack(this.pStage,
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
+                         () => this.currentProps.onNewTilesLoaded(track.uid)));
             case 'horizontal-1d-tiles':
                 return new IdHorizontal1DTiledPixiTrack(
                         this.pStage,
@@ -893,22 +929,45 @@ export class TrackRenderer extends React.Component {
             case '2d-chromosome-labels':
                 return new Chromosome2DLabels(
                         this.pStage,
-                        track.chromInfoPath,
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
                         () => this.currentProps.onNewTilesLoaded(track.uid));
             case '2d-chromosome-grid':
-                return new Chromosome2DGrid(this.pStage,
-                        track.chromInfoPath,
-                        () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new Chromosome2DGrid(
+                         this.pStage,
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
+                         () => this.currentProps.onNewTilesLoaded(track.uid),
+                        track.chromInfoPath
+                );
             case 'horizontal-chromosome-labels':
+                // chromInfoPath is passed in for backwards compatibility
+                // it can be used to provide custom chromosome sizes
                 return new HorizontalChromosomeLabels(
                         this.pStage,
-                        track.chromInfoPath,
-                        () => this.currentProps.onNewTilesLoaded(track.uid));
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
+                        () => this.currentProps.onNewTilesLoaded(track.uid),
+                         track.chromInfoPath
+                        );
             case 'vertical-chromosome-labels':
+                // chromInfoPath is passed in for backwards compatibility
+                // it can be used to provide custom chromosome sizes
                 return new LeftTrackModifier(new HorizontalChromosomeLabels(
                             this.pStage,
-                            track.chromInfoPath,
-                            () => this.currentProps.onNewTilesLoaded(track.uid)));
+                         track.server,
+                         track.tilesetUid,
+                         handleTilesetInfoReceived,
+                         track.options,
+                        () => this.currentProps.onNewTilesLoaded(track.uid),
+                        track.chromInfoPath)
+                );
             case 'horizontal-heatmap':
                 return new HorizontalHeatmapTrack(this.pStage,
                                                      track.server,
@@ -952,6 +1011,11 @@ export class TrackRenderer extends React.Component {
                     handleTilesetInfoReceived,
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid)));
+            case 'osm-tiles':
+                return new OSMTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
+            case 'mapbox-tiles':
+                console.log("Here");
+                return new MapboxTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
             default:
                  console.warn('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(

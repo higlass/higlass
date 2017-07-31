@@ -39,8 +39,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
 
-        //console.log('zoom level:', zoomLevel);
-
         return zoomLevel
     }
     */
@@ -138,10 +136,14 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             if (!this.medianVisibleValue)
                 offsetValue = this.minVisibleValue();
 
+            let PLOT_MARGIN = 6;
+            //console.log('offsetValue:', offsetValue);
+
             this.valueScale = scaleLog()
                 //.base(Math.E)
-                .domain([offsetValue, this.maxValue()])
-                .range([this.dimensions[1], 0]);
+                .domain([offsetValue, this.maxValue() + offsetValue])
+                //.domain([offsetValue, this.maxValue()])
+                .range([this.dimensions[1]-PLOT_MARGIN, PLOT_MARGIN]);
             pseudocount = offsetValue;
         } else {
             // linear scale
@@ -154,7 +156,8 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
         this.drawAxis(this.valueScale);
 
-        if (this.valueScale.domain()[1] < 0) {
+        if (this.options.valueScaling == 'log' && this.valueScale.domain()[1] < 0) {
+            console.warn("Negative values present when using a log scale", this.valueScale.domain());
             return;
         }
 
@@ -167,8 +170,12 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         let strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
         graphics.lineStyle(strokeWidth, stroke, 1);
 
+        //console.log('valueScale.domain()', this.valueScale.domain());
+
+
        // graphics.beginFill(0xFF700B, 1);
         let j = 0;
+        let logScaling = this.options.valueScaling == 'log';
 
         for (let i = 0; i < tileValues.length; i++) {
             let xPos = this._xScale(tileXScale(i));
@@ -188,8 +195,16 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
                 break;
 
 
-            //console.log('xPos:', xPos, 'yPos:', yPos);
-            graphics.lineTo(xPos, yPos);
+            if (yPos < 0) {
+                //console.log('offsetValue:', pseudocount, tileValues[i] + pseudocount, this.valueScale.domain());
+            }
+            //console.log('bw:', this.options.trackBorderWidth, 'xPos:', xPos, 'yPos:', yPos);
+            if (logScaling && tileValues[i] == 0)
+                // if we're using log scaling and there's a 0 value, we shouldn't draw it
+                // because it's invalid
+                graphics.moveTo(xPos, yPos);
+            else
+                graphics.lineTo(xPos, yPos);
         }
     }
 

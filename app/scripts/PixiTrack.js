@@ -22,6 +22,10 @@ export class PixiTrack extends Track {
         // pMain will have transforms applied to it as users scroll to and fro
         this.scene = scene;
 
+        // this option is used to temporarily prevent drawing so that 
+        // updates can be batched (e.g. zoomed and options changed)
+        this.delayDrawing = false;
+
         this.pBase = new PIXI.Graphics();
 
         this.pMasked = new PIXI.Graphics;
@@ -168,6 +172,24 @@ export class PixiTrack extends Track {
             } else {
                 console.warn('NaN resolution, screen is probably too small. Dimensions:', this.dimensions);
             }
+        }
+
+        if (this.options && this.options.dataTransform) {
+            let chosenTransform = null;
+
+            if (this.tilesetInfo && this.tilesetInfo.transforms) {
+                for (let transform of this.tilesetInfo.transforms) {
+                    if (transform.value == this.options.dataTransform)
+                        chosenTransform = transform;
+                }
+            }
+
+            if (chosenTransform)
+                labelTextText += '\n[Transform: ' + chosenTransform.name + ']';
+            else if (this.options.dataTransform == 'None')
+                labelTextText += '\n[Transform: None ]';
+            else
+                labelTextText += '\n[Transform: Default ]';
         }
 
         this.labelText.text = labelTextText;

@@ -32,6 +32,14 @@ let availableColors = {
     'white': { name: "White", value: "white"}
 }
 
+let availableWidths = {
+    '1': { name: "1", value: 1},
+    '2': { name: "2", value: 2},
+    '3': { name: "3", value: 3},
+    '5': { name: "5", value: 5},
+    '8': { name: "8", value: 8}
+}
+
 export const optionsInfo = {
     valueScaling: {
         name: "Value Scaling",
@@ -42,24 +50,19 @@ export const optionsInfo = {
     },
     lineStrokeWidth: {
         name: "Stroke Width",
-        inlineOptions: {
-            '1': { name: "1", value: 1},
-            '2': { name: "2", value: 2},
-            '3': { name: "3", value: 3},
-            '5': { name: "5", value: 5},
-            '8': { name: "8", value: 8}
-        }
+        inlineOptions: availableWidths
     },
     trackBorderWidth: {
         name: "Track Border Width",
-        inlineOptions: {
-            '0': { name: "0", value: 0},
-            '1': { name: "1", value: 1},
-            '2': { name: "2", value: 2},
-            '3': { name: "3", value: 3},
-            '5': { name: "5", value: 5},
-            '8': { name: "8", value: 8}
-        }
+        inlineOptions: availableWidths
+    },
+    pointSize: {
+        name: "Point Size",
+        inlineOptions: availableWidths
+    },
+    pointColor: {
+        name: "Point Color",
+        inlineOptions: availableColors
     },
     trackBorderColor: {
         name: "Track Border Color",
@@ -102,6 +105,25 @@ export const optionsInfo = {
             '0.6': { name: "60%", value: 0.6 },
             '0.8': { name: "80%", value: 0.8 },
             '1.0': { name: '100%', value: 1.0 },
+        }
+    },
+    mapboxStyle: {
+        name: "Map style",
+        inlineOptions: {
+            'streets': { name: 'streets', value: 'mapbox.streets'},
+            'light': { name: 'light', value: 'mapbox.light'},
+            'dark': { name: 'dark', value: 'mapbox.dark'},
+            'satellite': { name: 'satellite', value: 'mapbox.satellite'},
+            'streets-satellite': { name: 'streets-satellite', value: 'mapbox.streets-satellite'},
+            'wheatpaste': { name: 'wheatpaste', value: 'mapbox.wheatpaste'},
+            'streets-basic': { name: 'streets-basic', value: 'mapbox.streets-basic'},
+            'comic': { name: 'comic', value: 'mapbox.comic'},
+            'outdoors': { name: 'outdoors', value: 'mapbox.outdoors'},
+            'run-bike-hike': { name: 'run-bike-hike', value: 'mapbox.run-bike-hike'},
+            'pencil': { name: 'pencil', value: 'mapbox.pencil'},
+            'pirates': { name: 'pirates', value: 'mapbox.pirates'},
+            'emerald': { name: 'emerald', value: 'mapbox.emerald'},
+            'high-contrast': { name: 'high-contrast', value: 'mapbox.high-contrast'}
         }
     },
     oneDHeatmapFlipped: {
@@ -241,6 +263,34 @@ export const optionsInfo = {
         }
     },
 
+    dataTransform: {
+        name: "Transforms",
+        inlineOptions: {
+            'default': { name: "Default", value: "default" },
+            'None': { name: "None", value: "None" }
+        },
+        generateOptions: track => {
+            let inlineOptions = [];
+
+            //console.log('track:', track);
+            //console.log('track.tilesetInfo:', track.tilesetInfo);
+
+            if (track.transforms) {
+
+                for (let transform of track.transforms) {
+                    inlineOptions.push({
+                        name: transform.name,
+                        value: transform.value
+                    });
+                }
+
+            }
+
+            //console.log('inlineOptions:', inlineOptions);
+            return inlineOptions;
+        }
+    },
+
     maxZoom: {
         name: "Zoom limit",
         inlineOptions: {
@@ -317,7 +367,7 @@ export const tracksInfo = [
             trackBorderWidth: 0,
             trackBorderColor: 'black'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'dataTransform',
         'colorbarPosition', 'colorbarLabelsPosition', "trackBorderWidth", "trackBorderColor"],
         //exportable: true
     },
@@ -338,7 +388,7 @@ export const tracksInfo = [
             trackBorderWidth: 0,
             trackBorderColor: 'black'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'oneDHeatmapFlipped',
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped',
                             'colorbarPosition', 'colorbarLabelsPosition', "trackBorderWidth", "trackBorderColor"],
     },
     {
@@ -359,8 +409,7 @@ export const tracksInfo = [
             trackBorderWidth: 0,
             trackBorderColor: 'black'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 
-                            'oneDHeatmapFlipped', 'colorbarPosition', 'colorbarLabelsPosition', "trackBorderWidth", "trackBorderColor"],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped', 'colorbarPosition', 'colorbarLabelsPosition', "trackBorderWidth", "trackBorderColor"],
     },
     {
         type: 'horizontal-line',
@@ -377,7 +426,8 @@ export const tracksInfo = [
             lineStrokeWidth: 1,
             valueScaling: 'linear',
             trackBorderWidth: 0,
-            trackBorderColor: 'black'
+            trackBorderColor: 'black',
+            labelTextOpacity: .4
         }
     },
     //
@@ -396,7 +446,44 @@ export const tracksInfo = [
             lineStrokeColor: 'blue',
             valueScaling: 'linear',
             trackBorderWidth: 0,
-            trackBorderColor: 'black'
+            trackBorderColor: 'black',
+            labelTextOpacity: .4
+        }
+    },
+    {
+        type: 'horizontal-point',
+        datatype: ['vector'],
+        local: false,
+        orientation: '1d-horizontal',
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'pointColor', 'pointSize', 'valueScaling', "trackBorderWidth", "trackBorderColor"],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'topLeft',
+            axisPositionHorizontal: 'right',
+            pointColor: 'red',
+            pointSize: 3,
+            valueScaling: 'linear',
+            trackBorderWidth: 0,
+            trackBorderColor: 'black',
+            labelTextOpacity: .4
+        }
+    },
+    {
+        type: 'vertical-point',
+        datatype: ['vector'],
+        local: false,
+        orientation: '1d-vertical',
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling', "trackBorderWidth", "trackBorderColor"],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'topLeft',
+            axisPositionHorizontal: 'right',
+            lineStrokeColor: 'red',
+            lineStrokeWidth: 1,
+            valueScaling: 'linear',
+            trackBorderWidth: 0,
+            trackBorderColor: 'black',
+            labelTextOpacity: .4
         }
     },
     {
@@ -642,10 +729,10 @@ export const tracksInfo = [
     ,
     {
         type: '2d-chromosome-grid',
-        datatype: ['chromosome-2d-grid'],
-        local: true,
+        datatype: ['chromsizes'],
+        local: false,
         orientation: '2d',
-        name: 'Chromosome Grid (hg19)',
+        name: 'Chromosome Grid',
         chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
         thumbnail: null,
         availableOptions: ['lineStrokeWidth', 'lineStrokeColor'],
@@ -656,65 +743,37 @@ export const tracksInfo = [
     }
     ,
     {
-        type: '2d-chromosome-labels',
-        datatype: ['chromosome-2d-labels'],
-        local: true,
-        orientation: '2d',
-        name: 'Pairwise Chromosome Labels (hg19)',
-        chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-        thumbnail: null
-    }
-    ,
-    {
-        type: '2d-chromosome-labels',
-        datatype: ['chromosome-2d-labels-mm9'],
-        local: true,
-        orientation: '2d',
-        name: 'Pairwise Chromosome Labels (mm9)',
-        chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
-        thumbnail: null
-    }
-    ,
-    {
         type: '2d-chromosome-annotations',
         local: true,
         orientation: '2d',
         name: '2D Chromosome Annotations',
         thumbnail: null,
         hidden: true
-    }
-    ,
+    },
     {
-        type: 'horizontal-chromosome-labels',
-        datatype: ['chromosome-1d-labels'],
+        type: '2d-chromosome-labels',
+        datatype: ['chromsizes'],
         local: true,
-        orientation: '1d-horizontal',
-        minHeight: 20,
-        name: 'Chromosome Axis (hg19)',
-        chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        orientation: '2d',
+        name: 'Pairwise Chromosome Labels',
         thumbnail: null
     }
     ,
     {
         type: 'horizontal-chromosome-labels',
-        datatype: ['chromosome-1d-labels-mm9'],
-        local: true,
+        datatype: ['chromsizes'],
         orientation: '1d-horizontal',
-        minHeight: 20,
-        name: 'Chromosome Axis (mm9)',
-        chromInfoPath: "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+        minHeight: 30,
+        name: 'Chromosome Axis',
         thumbnail: null
-    }
-    ,
+    },
     {
         type: 'vertical-chromosome-labels',
-        datatype: ['chromosome-1d-labels'],
-        local: true,
+        datatype: ['chromsizes'],
         orientation: '1d-vertical',
         minWidth: 20,
         minHeight: 30,
-        name: 'Chromosome Axis (hg19)',
-        chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+        name: 'Chromosome Axis',
         thumbnail: null
     }
     ,
@@ -733,6 +792,32 @@ export const tracksInfo = [
         orientation: '1d-horizontal',
         name: 'Horizontal 1D Tile Outlines',
         thumbnail: svg1DTilesIcon
+    },
+    {
+        type: 'osm-tiles',
+        datatype: ['map-tiles'],
+        local: true,
+        orientation: '2d',
+        hidden: true,
+        name: 'OSM Tiles',
+        thumbnail: null,
+        defaultOptions: {
+            minPos: 0,
+            maxPos: 3120000000
+        }
+    },
+    {
+        type: 'mapbox-tiles',
+        datatype: ['map-tiles'],
+        local: true,
+        orientation: '2d',
+        hidden: true,
+        name: 'Mapbox Tiles',
+        thumbnail: null,
+        availableOptions: ['mapboxStyle'],
+        defaultOptions: {
+            mapboxStyle: 'mapbox.streets'
+        }
     }
 ]
 
@@ -756,7 +841,7 @@ export const LONG_DRAG_TIMEOUT = 3000;
 export const LOCATION_LISTENER_PREFIX = 'locationListenerPrefix';
 
 export const ZOOM_TRANSITION_DURATION = 1000;
-export const defaultServer = "http://test.higlass.io/api/v1"
+export const defaultServer = "http://higlass.io/api/v1"
 
 let localDatatypeToTrackType = {};
 

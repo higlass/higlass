@@ -1,7 +1,47 @@
-v0.8.19
+v0.8.28
 
 - Fixed dependencies (peer and normal)
 - Fixed other minor issues with `package.json`
+
+v0.8.27
+
+- Fixed bug wher the "Loading" sign remained with 1D point tracks
+
+v0.8.26
+
+- Different mapbox style options
+
+v0.8.25
+
+- Hidden OSM tiles
+- Customizeable osm width
+
+v0.8.24
+
+- Major performance improvements for Gene annotations and horizontal points
+- Fixed bug in searching for genome positions with a space at one of the ends
+- Added the OSM tiles
+
+v0.8.23
+
+- Don't show chromosome sizes as a separate track
+
+v0.8.22 - 2017-07-13
+
+- Safari add track bug fix
+- Backwards compatibility on selectable chromosome axis tracks
+
+v0.8.21 - 2017-07-10
+
+- Fixed the default transformation for horizontal tracks
+
+v0.8.20 - 2017-07-10
+
+- Fix label display
+
+v0.8.19 - 2017-07-10
+
+- Added the ability to select different transformations
 
 v0.8.18 - 2017-06-29
 

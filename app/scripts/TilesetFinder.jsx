@@ -128,8 +128,9 @@ export class TilesetFinder extends React.Component {
         // this should give the dataset the PlotType that's selected in the parent
         //this.props.selectedTilesetChanged(this.state.options[x.target.value]);
 
+        //console.log('x.target.value:', x.target.value);
+
         let value = this.state.options[x.target.value];
-        console.log('value:', value);
         this.props.onDoubleClick(value);
     }
 
@@ -159,8 +160,10 @@ export class TilesetFinder extends React.Component {
         let selectedOptions = ReactDOM.findDOMNode(this.multiSelect).selectedOptions;
         let selectedOptionsList = [];
 
-        for (let selectedOption of selectedOptions)
+        for (let i = 0; i < selectedOptions.length; i++) {
+            let selectedOption = selectedOptions[i];
             selectedOptionsList.push(selectedOption.value);  
+        }
 
         this.handleSelectedOptions(selectedOptionsList);
     }

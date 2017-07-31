@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HiGlass</title>
+<style type="text/css">
+    .canvasjs-chart-credit {
+    display:none;
+}
+</style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/page.css">
+    <link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js"></script>
+</head>
+<body >
+    <div style="height: 50px" />
+        <div style="margin: auto; width: 100%;">
+        <div
+            id="development-demo"
+            style="position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px">
+        </div>
+    </div>
+</body>
+<script src='hglib.js'>
+</script>
+<script>
+
+ var testViewConfig =
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://test.higlass.io/api/v1",
+    "http://localhost:8989/api/v1"
+  ],
+  "exportViewUrl": "http://localhost:8000/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        75917592.02534695,
+        2180738777.3474393
+      ],
+      "initialYDomain": [
+        855095621.1588421,
+        2106197840.2351482
+      ],
+      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBoxVisible": true,
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "name": "Gene Annotations (hg19)",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "YWJ2g9teQ8q2zcxOJ1VM9A",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "name": "Gene Annotations (hg19)"
+            },
+            "width": 20,
+            "height": 55,
+            "position": "top"
+          },
+          {
+            "name": "Gene Annotations (hg19)",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "EP-aj6KIRnGuhWbyvntfQQ",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "name": "Gene Annotations (hg19)"
+            },
+            "width": 964,
+            "height": 55,
+            "position": "top"
+          },
+          {
+            "name": "Gene Annotations (hg19)",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "ZXu5Ty_eQjWn73MSVBhfdQ",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "name": "Gene Annotations (hg19)"
+            },
+            "width": 964,
+            "height": 55,
+            "position": "top"
+          },
+          {
+            "name": "Gene Annotations (hg19)",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "HF-mhEZQTcW6mnzmVUbtRw",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "name": "Gene Annotations (hg19)"
+            },
+            "width": 964,
+            "height": 55,
+            "position": "top"
+          },
+          {
+            "name": "Gene Annotations (hg19)",
+            "server": "http://test.higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "O7aapD-pRAurTImNYOjVXQ",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "name": "Gene Annotations (hg19)"
+            },
+            "width": 964,
+            "height": 55,
+            "position": "top"
+          }
+        ],
+        "left": [],
+        "center": [],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 12,
+        "h": 11,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}
+ ;
+
+    window.higlassApi;
+
+    hglib.createHgComponent(
+        document.getElementById('development-demo'),
+        testViewConfig,
+        { bounded: true },
+        function (api) {
+            window.hgApi = api;
+        }
+    );
+
+    // setTimeout(function () {
+    //   // Go to PTEN
+    //   window.hgApi.goTo(
+    //     testViewConfig.views[0].uid,
+    //     'chr10',
+    //     89596071,
+    //     89758810,
+    //     'chr10',
+    //     89596071,
+    //     89758810,
+    //     true,
+    //     10000
+    //   );
+    // }, 3000);
+
+    // setTimeout(function () {
+    //   // Go to Chr1 without animation
+    //   window.hgApi.goTo(
+    //     testViewConfig.views[0].uid,
+    //     'chr1',
+    //     0,
+    //     89758810,
+    //     'chr1',
+    //     0,
+    //     89758810
+    //   );
+    // }, 11000);
+
+
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-77756807-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+</html>

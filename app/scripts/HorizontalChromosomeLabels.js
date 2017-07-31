@@ -1,5 +1,4 @@
 import {PixiTrack} from './PixiTrack.js';
-import {tileProxy} from './TileProxy.js';
 import {ChromosomeInfo} from './ChromosomeInfo.js';
 import {SearchField} from './search_field.js';
 import boxIntersect from 'box-intersect';
@@ -11,8 +10,8 @@ let TICK_HEIGHT = 6;
 let TICK_TEXT_SEPARATION = 2;
 
 export class HorizontalChromosomeLabels extends PixiTrack {
-    constructor(scene, chromInfoPath, animate) {
-        super(scene);
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, chromInfoPath) {
+        super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
         this.searchField = null;
         this.chromInfo = null;
@@ -25,8 +24,14 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         this.textFontColor = '#777777';
 
         this.animate = animate;
+        
+        let chromSizesPath = chromInfoPath;
 
-        ChromosomeInfo(chromInfoPath, (newChromInfo) => {
+        if (!chromSizesPath) {
+            chromSizesPath = server + "/chrom-sizes/?id=" + uid;
+        }
+
+        ChromosomeInfo(chromSizesPath, (newChromInfo) => {
             this.chromInfo = newChromInfo;
             //
 
@@ -214,15 +219,6 @@ export class HorizontalChromosomeLabels extends PixiTrack {
 
             this.allTexts.push({importance: this.texts[i].hashValue, text: this.texts[i], caption: null});
         }
-
-        /*
-        console.log('x1:', x1);
-        console.log('x2:', x2);
-
-        console.log('y1:', y1);
-        console.log('y2:', y2);
-        */
-
 
         // define the edge chromosome which are visible
         this.hideOverlaps(this.allTexts);

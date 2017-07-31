@@ -6,11 +6,11 @@ import {median} from 'd3-array';
 import slugid from 'slugid';
 //import {LRUCache} from './lru.js';
 
-export class TiledPixiTrack extends PixiTrack {
+export class OSMTilesTrack extends PixiTrack {
     /**
      * A track that must pull remote tiles
      */
-    constructor(scene, server, tilesetUid, handleTilesetInfoReceived, options, animate) {
+    constructor(scene, options, animate) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
@@ -24,73 +24,32 @@ export class TiledPixiTrack extends PixiTrack {
 
         // the tiles we already have requests out for
         this.fetching = new Set();
-        this.scale = {};
 
         // tiles we have fetched and ready to be rendered
         this.fetchedTiles = {};
 
-        let tilesetInfo = null;
-
-        this.tilesetUid = tilesetUid;
-        this.tilesetServer = server;
-        this.tilesetInfoLoading = true;
-
         // the graphics that have already been drawn for this track
         this.tileGraphics = {};
 
-        this.maxZoom = 0;
-        this.medianVisibleValue = null;
+        let minPos = 0;
+        let maxPos = 3120000000;
 
+
+        if (this.options && this.options.minPos)
+            minPos = +this.options.minPos;
+        if (this.options && this.options.maxPos)
+            maxPos = +this.options.maxPos;
+
+
+        this.minPos = [minPos, minPos];
+        this.maxPos = [maxPos, maxPos];
+        this.maxZoom = 19;
+        this.maxWidth = maxPos;
         this.animate = animate;
 
-        // store the server and tileset uid so they can be used in draw()
-        // if the tileset info is not found
-        this.server = server;
-        this.tilesetUid = tilesetUid;
-
-        tileProxy.trackInfo(server, tilesetUid, tilesetInfo => {
-            // console.log('tilesetInfo:', tilesetInfo);
-            this.tilesetInfo = tilesetInfo[tilesetUid];
-            this.tilesetInfoLoading = false;
-
-            if ('error' in this.tilesetInfo) {
-                // no tileset info for this track
-                this.tilesetInfo = null;
-                this.draw();
-                return;
-            }
-
-            this.maxZoom = +this.tilesetInfo['max_zoom'];
-
-            if (this.options && this.options.maxZoom) {
-                if (this.options.maxZoom >= 0)
-                    this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
-                else
-                    console.error("Invalid maxZoom on track:", this);
-            }
-
-            this.refreshTiles();
-
-            if (handleTilesetInfoReceived)
-                handleTilesetInfoReceived(tilesetInfo[tilesetUid]);
-
-            if (!this.options)
-                this.options = {};
-
-            this.options.name = this.options.name ? this.options.name : tilesetInfo[tilesetUid].name;
-
-            this.draw();
-        });
-
         this.uuid = slugid.nice();
-
-
         this.refreshTilesDebounced = debounce( this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
 
-        this.trackNotFoundText = new PIXI.Text('',
-                {fontSize: "12px", fontFamily: "Arial", fill: "black"});
-
-        this.pLabel.addChild(this.trackNotFoundText);
     }
 
     rerender(options) {
@@ -98,17 +57,7 @@ export class TiledPixiTrack extends PixiTrack {
 
         if (!this.tilesetInfo)
             return;
-
-        this.maxZoom = +this.tilesetInfo['max_zoom'];
-
-        if (this.options && this.options.maxZoom) {
-            if (this.options.maxZoom >= 0)
-                this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
-            else
-                console.error("Invalid maxZoom on track:", this);
-        }
     }
-
 
     visibleAndFetchedIds() {
         /**
@@ -143,10 +92,13 @@ export class TiledPixiTrack extends PixiTrack {
         this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
     }
 
-    refreshTiles() {
-        if (!this.tilesetInfo)
-            return;
+    removeAllTiles() {
+        let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
 
+        this.removeTiles([...fetchedTileIDs]);
+    }
+
+    refreshTiles() {
         this.calculateVisibleTiles();
 
         // tiles that are fetched
@@ -166,32 +118,6 @@ export class TiledPixiTrack extends PixiTrack {
 
         this.removeTiles(toRemove);
         this.fetchNewTiles(toFetch);
-    }
-
-    parentInFetched(tile) {
-        let uid = tile.tileData.tilesetUid;
-        let zl = tile.tileData.zoomLevel;
-        let pos = tile.tileData.tilePos;
-
-        while (zl > 0) {
-            zl -= 1;
-            pos = pos.map(x => Math.floor(x / 2));
-
-            let parentId = uid + '.' + zl + '.' + pos.join('.');
-            if (parentId in this.fetchedTiles)
-                return true
-
-        }
-
-        return false;
-    }
-
-    parentTileId(tile) {
-        let parentZoomLevel = tile.tileData.zoomLevel - 1;
-        let parentPos = tile.tileData.tilePos.map(x => Math.floor(x / 2));
-        let parentUid = tile.tileData.tilesetUid;
-
-        return parentUid + '.' + parentZoomLevel + '.' + parentPos.join('.')
     }
 
     removeTiles(toRemoveIds) {
@@ -224,6 +150,93 @@ export class TiledPixiTrack extends PixiTrack {
         this.draw();
     }
 
+    tileToLocalId(tile) {
+        /*
+         * The local tile identifier
+         */
+
+        // tile contains [zoomLevel, xPos, yPos]
+        return tile.join('.')
+    }
+
+    tileToRemoteId(tile) {
+        /**
+         * The tile identifier used on the server
+         */
+
+        // tile contains [zoomLevel, xPos, yPos]
+        return tile.join('.')
+
+    }
+
+    localToRemoteId(remoteId) {
+        let idParts = remoteId.split('.');
+        return idParts.slice(0, idParts.length-1).join('.');
+    }
+
+    calculateZoomLevel() {
+        let xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+                                                      this.minPos[0],
+                                                      this.maxPos[0]);
+        let yZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+                                                      this.minPos[1],
+                                                      this.maxPos[1]);
+
+        let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
+        zoomLevel = Math.min(zoomLevel, this.maxZoom);
+
+        if (this.options && this.options.maxZoom) {
+            if (this.options.maxZoom >= 0)
+                zoomLevel = Math.min(this.options.maxZoom, zoomLevel);
+            else
+                console.error("Invalid maxZoom on track:", this);
+        }
+
+        return zoomLevel
+    }
+
+    calculateVisibleTiles(mirrorTiles=true) {
+        // if we don't know anything about this dataset, no point
+        // in trying to get tiles
+
+        this.zoomLevel = this.calculateZoomLevel();
+
+
+        //this.zoomLevel = 0;
+
+        this.xTiles =  tileProxy.calculateTiles(this.zoomLevel, this._xScale,
+                                               this.minPos[0],
+                                               this.maxPos[0],
+                                               this.maxZoom,
+                                               this.maxWidth);
+
+        this.yTiles =  tileProxy.calculateTiles(this.zoomLevel, this._yScale,
+                                               this.minPos[1],
+                                               this.maxPos[1],
+                                               this.maxZoom,
+                                               this.maxWidth);
+
+        let rows = this.xTiles;
+        let cols = this.yTiles;
+        let zoomLevel = this.zoomLevel;
+
+        // if we're mirroring tiles, then we only need tiles along the diagonal
+        let tiles = [];
+        //console.log('this.options:', this.options);
+
+        // calculate the ids of the tiles that should be visible
+        for (let i = 0; i < rows.length; i++) {
+            for (let j = 0; j < cols.length; j++) {
+                let newTile = [zoomLevel, rows[i], cols[j]];
+
+                tiles.push(newTile)
+            }
+        }
+
+        this.setVisibleTiles(tiles);
+    }
+
+    /*
     zoomed(newXScale, newYScale, k=1, tx=0, ty=0) {
         this.xScale(newXScale);
         this.yScale(newYScale);
@@ -235,6 +248,22 @@ export class TiledPixiTrack extends PixiTrack {
 
         this.pMobile.scale.x = k;
         this.pMobile.scale.y = 1;
+    }
+    */
+
+    zoomed(newXScale, newYScale, k, tx, ty) {
+        super.zoomed(newXScale, newYScale);
+
+        this.xScale(newXScale);
+        this.yScale(newYScale);
+
+        this.pMain.position.x = tx; //translateX;
+        this.pMain.position.y = ty; //translateY;
+
+        this.pMain.scale.x = k; //scaleX;
+        this.pMain.scale.y = k; //scaleY;
+
+        this.refreshTilesDebounced();
     }
 
     setPosition(newPosition) {
@@ -307,16 +336,67 @@ export class TiledPixiTrack extends PixiTrack {
         return this.scale.maxRawValue;
     }
 
+    getTilePosAndDimensions(zoomLevel, tilePos) {
+        /**
+         * Get the tile's position in its coordinate system.
+         */
+        let xTilePos = tilePos[0], yTilePos = tilePos[1];
+
+        let totalWidth = this.maxPos[0] - this.minPos[0];
+        let totalHeight = this.maxPos[0] - this.minPos[0];
+
+        let minX = 0;
+        let minY = 0;
+
+        let tileWidth = totalWidth / Math.pow(2, zoomLevel);
+        let tileHeight = totalHeight / Math.pow(2, zoomLevel);
+
+        let tileX = minX + xTilePos * tileWidth;
+        let tileY = minY + yTilePos * tileHeight;
+
+        return { tileX: tileX,
+                 tileY: tileY,
+                 tileWidth: tileWidth,
+                 tileHeight: tileHeight};
+    }
+
+    setSpriteProperties(sprite, zoomLevel, tilePos) {
+        let {tileX, tileY, tileWidth, tileHeight} = this.getTilePosAndDimensions(zoomLevel, tilePos);
+
+        sprite.x = this._refXScale(tileX);
+        sprite.y = this._refYScale(tileY);
+
+        let tileEndX = tileX + tileWidth;
+        let tileEndY = tileY + tileHeight;
+
+        let spriteWidth = this._refXScale(tileEndX) - this._refXScale(tileX) ;
+        let spriteHeight = this._refYScale(tileEndY) - this._refYScale(tileY)
+
+        sprite.width = this._refXScale(tileEndX) - this._refXScale(tileX)
+        sprite.height = this._refYScale(tileEndY) - this._refYScale(tileY)
+
+    }
 
     initTile(tile) {
         // create the tile
         // should be overwritten by child classes
         //console.log("ERROR: unimplemented createTile:", this);
-        this.scale.minRawValue = this.minVisibleValue();
-        this.scale.maxRawValue = this.maxVisibleValue();
+        let texture = new PIXI.Texture(new PIXI.BaseTexture(tile.tileData.img));
+        let sprite = new PIXI.Sprite(texture);
+        //console.log('tile.tileSrc:', tile);
+        //let sprite = new PIXI.Sprite.fromImage(tile.tileSrc);
 
-        this.scale.minValue = this.scale.minRawValue;
-        this.scale.maxValue = this.scale.maxRawValue;
+        let graphics = tile.graphics;
+
+        let pos = tile.tileId.split('.').map(x => +x);
+
+        tile.sprite = sprite
+
+        this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos);
+
+        graphics.removeChildren();
+        graphics.addChild(tile.sprite);
+
     }
 
     updateTile(tile) {
@@ -404,18 +484,61 @@ export class TiledPixiTrack extends PixiTrack {
        return loadedTileData;
     }
 
+    getTileUrl(tileZxy) {
+        /**
+         * Get the url used to fetch the tile data
+         */
+        let serverPrefixes = ['a','b','c'];
+        let serverPrefixIndex = Math.floor(Math.random() * serverPrefixes.length)
+        let src = "http://" + serverPrefixes[serverPrefixIndex] + ".tile.openstreetmap.org/" + tileZxy[0] + "/" + tileZxy[1] + "/" + tileZxy[2] + ".png"
+
+        return src;
+    }
+
     fetchNewTiles(toFetch) {
         if (toFetch.length > 0) {
             let toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
+            //console.log('xs:', toFetch);
             //console.log('fetching:', toFetchList.join(' '));
+
+            //http://a.tile.openstreetmap.org/z/x/y.png
+            //
             // tileProxy.fetchTiles(this.tilesetServer, toFetchList, this.receivedTiles.bind(this));
 
+            /*
             tileProxy.fetchTilesDebounced({
                 id: this.uuid,
                 server: this.tilesetServer,
                 done: this.receivedTiles.bind(this),
                 ids: toFetchList
             });
+            */
+
+
+            for (let tileId of toFetchList) {
+                let parts = tileId.split('.');
+                let src = this.getTileUrl(parts);
+
+                let img = new Image();
+                img.crossOrigin = "Anonymous";
+                img.src = src;
+
+                img.onload = () => {
+                    let loadedTiles = {}
+                    loadedTiles[tileId] = {tileId: tileId, 
+                        img: img, 
+                        zoomLevel: +parts[0],
+                        tilePos: [+parts[1], +parts[2]],
+                        tileSrc: src}
+
+                    this.receivedTiles(loadedTiles);
+                }
+
+
+            }
+            //for (let tileId 
+            //let img = new Image();
+            //img.src = "http://a.tile.openstreetmap.org/
         }
     }
 
@@ -459,9 +582,6 @@ export class TiledPixiTrack extends PixiTrack {
          */
         this.refreshTiles();
 
-        if (this.options.valueScaling)
-            this.calculateMedianVisibleValue();
-
         // we need to draw when we receive new data
         this.draw();
 
@@ -473,28 +593,6 @@ export class TiledPixiTrack extends PixiTrack {
     draw() {
         if (this.delayDrawing)
             return;
-
-        if (!this.tilesetInfo) {
-            if (this.tilesetInfoLoading) {
-                this.trackNotFoundText.text = 'Loading...';
-            } else {
-                this.trackNotFoundText.text = "Tileset info not found. Server: [" +
-                    this.server +
-                    "] tilesetUid: [" + this.tilesetUid + "]";
-            }
-
-            this.trackNotFoundText.x = this.position[0];
-            this.trackNotFoundText.y = this.position[1];
-
-            /*
-            if (this.flipText)
-                this.trackNotFoundText.scale.x = -1;
-            */
-
-            this.trackNotFoundText.visible = true;
-        } else {
-            this.trackNotFoundText.visible = false;
-        }
 
         super.draw();
 
@@ -511,55 +609,17 @@ export class TiledPixiTrack extends PixiTrack {
 
     }
 
-    calculateMedianVisibleValue() {
-        if (this.areAllVisibleTilesLoaded()) {
-            this.allTilesLoaded();
+    refScalesChanged(refXScale, refYScale) {
+        super.refScalesChanged(refXScale, refYScale);
+
+        for (let uid in this.fetchedTiles) {
+            let tile = this.fetchedTiles[uid];
+
+            if (tile.sprite) {
+                this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos);
+            } else {
+                // console.log('skipping...', tile.tileId);
+            }
         }
-
-         let visibleAndFetchedIds = this.visibleAndFetchedIds();
-
-         if (visibleAndFetchedIds.length == 0) {
-             visibleAndFetchedIds = Object.keys(this.fetchedTiles);
-         }
-
-         let values = [].concat.apply([], visibleAndFetchedIds.filter(x => this.fetchedTiles[x].tileData.dense).map(x => Array.from(this.fetchedTiles[x].tileData.dense))).filter(x => x > 0);
-
-         this.medianVisibleValue = median(values);
-
     }
-
-    allVisibleValues() {
-         return [].concat.apply([], this.visibleAndFetchedIds().map(x => Array.from(this.fetchedTiles[x].tileData.dense)));
-    }
-
-    minVisibleValue() {
-         let visibleAndFetchedIds = this.visibleAndFetchedIds();
-
-         if (visibleAndFetchedIds.length == 0) {
-             visibleAndFetchedIds = Object.keys(this.fetchedTiles);
-         }
-
-         let min = Math.min.apply(null, visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.minNonZero));
-
-         if (min == Number.MAX_SAFE_INTEGER)
-             min = 0;
-
-         return min;
-    }
-
-    maxVisibleValue() {
-         let visibleAndFetchedIds = this.visibleAndFetchedIds();
-
-         if (visibleAndFetchedIds.length == 0) {
-             visibleAndFetchedIds = Object.keys(this.fetchedTiles);
-         }
-
-         let max = Math.max.apply(null, visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero));
-
-         if (max == Number.MIN_SAFE_INTEGER)
-             max = 1;
-
-         return max;
-    }
-
 }

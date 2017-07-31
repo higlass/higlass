@@ -74,8 +74,8 @@ export class ViewportTrackerVertical extends SVGTrack {
         let yDomain = [this._yScale.invert(s[0][1]),
                        this._yScale.invert(s[1][1])];
 
-        console.log('xDomain:', xDomain);
-        console.log('yDomain:', yDomain);
+       //console.log('xDomain:', xDomain);
+       //console.log('yDomain:', yDomain);
 
         this.setDomainsCallback(xDomain, yDomain);
     }
