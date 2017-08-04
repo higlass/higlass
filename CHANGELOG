@@ -1,3 +1,8 @@
+v0.8.28
+
+- Fixed dependencies (peer and normal)
+- Fixed other minor issues with `package.json`
+
 v0.8.27
 
 - Fixed bug wher the "Loading" sign remained with 1D point tracks
