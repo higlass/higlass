@@ -16,7 +16,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
 
     initTile(tile) {
-        //console.log('initTile...', tile.tileId);
         //create texts
         tile.texts = {};
 
@@ -33,18 +32,13 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
         tile.tileData.forEach((td, i) => {
             let geneInfo = td.fields;
-            console.log('td:', td);
-            let fill = this.options.plusStrandColor ? this.options.plusStrandColor : 'blue';
+            let fill = this.options.fillColor ? this.options.fillColor : 'blue';
 
-            if (geneInfo[5] == '-') {
-                fill = this.options.minusStrandColor ? this.options.minusStrandColor : 'red';
-            }
             tile.textWidths = {};
 
             // don't draw texts for the latter entries in the tile
             if (i >= MAX_TEXTS)
                 return;
-            console.log('fill:', fill);
 
             // geneInfo[3] is the gene symbol
             let text = new PIXI.Text(geneInfo[3],  {fontSize: this.textFontSize, 
@@ -85,11 +79,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         // store the scale at while the tile was drawn at so that
         // we only resize it when redrawing
         tile.drawnAtScale = this._xScale.copy();
-        let fill = {};
-
-        fill['+'] = colorToHex(this.options.plusStrandColor ? this.options.plusStrandColor : 'blue');
-        fill['-'] = colorToHex(this.options.minusStrandColor ? this.options.minusStrandColor : 'red');
-
+        let fill = colorToHex(this.options.fillColor ? this.options.fillColor : 'blue');
 
         tile.tileData.forEach((td, i) => {
             let geneInfo = td.fields;
@@ -103,25 +93,14 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
             let txMiddle = (txStart + txEnd) / 2;
 
-            //console.log('geneInfo:', geneInfo);
-
             let yMiddle = this.dimensions[1] / 2;
             let textYMiddle = this.dimensions[1] / 2;
             let geneName = geneInfo[3];
 
-            if (geneInfo[5] == '+') {
-                // genes on the + strand drawn above and in a user-specified color or the default blue
-                yMiddle -= 6;
-                textYMiddle -= 10;
-                tile.rectGraphics.lineStyle(1, fill['+'], 0.3);
-                tile.rectGraphics.beginFill(fill['-'], 0.3);
-            } else {
-                // genes on the - strand drawn below and in a user-specified color or the default red
-                yMiddle += 6;
-                textYMiddle += 23;
-                tile.rectGraphics.lineStyle(1, fill['-'], 0.3);
-                tile.rectGraphics.beginFill(fill['-'], 0.3);
-            }
+            yMiddle -= 8;
+
+            tile.rectGraphics.lineStyle(1, fill, 0.3);
+            tile.rectGraphics.beginFill(fill, 0.3);
 
             //let height = valueScale(Math.log(+geneInfo[4]));
             //let width= height;
@@ -135,9 +114,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             let MIN_SIZE_FOR_EXONS = 10;
 
             //graphics.drawRect(rectX, rectY, width, height);
-            //console.log('rectY', rectY);
             //this.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
-            //console.log('xStartPos:', xStartPos);
 
             tile.rectGraphics.drawRect(xStartPos, rectY, xEndPos - xStartPos, GENE_RECT_HEIGHT);
 
@@ -154,10 +131,10 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             let text = tile.texts[geneName];
 
             text.position.x = this._xScale(txMiddle);
-            text.position.y = textYMiddle;
+            //text.position.y = textYMiddle;
             text.style = {fontSize: this.textFontSize,
                           fontFamily: this.textFontFamily,
-                          fill: fill[geneInfo[5]]};
+                          fill: fill};
 
             if (!(geneInfo[3] in tile.textWidths)) {
                 text.updateTransform();
@@ -203,7 +180,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             tile.rectGraphics.scale.x = tileK;
             tile.rectGraphics.position.x = - posOffset * tileK;
 
-
             // move the texts
 
             let parentInFetched = this.parentInFetched(tile);
@@ -230,27 +206,19 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
                 let txEnd = +geneInfo[2] + chrOffset;
                 let txMiddle = (txStart + txEnd) / 2;
                 let textYMiddle = this.dimensions[1] / 2;
-
-                if (geneInfo[5] == '+') {
-                    // genes on the + strand drawn above and in a user-specified color or the default blue
-                    textYMiddle -= 10;
-                } else {
-                    // genes on the - strand drawn below and in a user-specified color or the default red
-                    textYMiddle += 5;
-                }
+                textYMiddle += 10;
 
                 text.position.x = this._xScale(txMiddle);
                 text.position.y = textYMiddle;
 
+
                 if (!parentInFetched) {
-                    //console.log('visible:', text.position, this.dimensions[1], text.text);
                     text.visible = true;
 
                     let TEXT_MARGIN = 3;
                     this.allBoxes.push([text.position.x - TEXT_MARGIN, textYMiddle - 1, text.position.x + tile.textWidths[geneInfo[3]] + TEXT_MARGIN, textYMiddle+1]);
-                    this.allTexts.push({importance: +geneInfo[4], text: text, caption: geneName, strand: geneInfo[5]});
+                    this.allTexts.push({importance: +geneInfo[5], text: text, caption: geneName, strand: geneInfo[5]});
                 } else {
-                    //console.log('not visible');
                     text.visible = false;
                 }
 
@@ -278,7 +246,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     hideOverlaps(allBoxes, allTexts) {
         // store the bounding boxes of the text objects so we can
         // calculate overlaps
-        //console.log('allTexts.length', allTexts.length);
 
         /*
         let allBoxes = allTexts.map(val => {
@@ -293,11 +260,8 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
         let result = boxIntersect(allBoxes, function(i, j) {
             if (allTexts[i].importance > allTexts[j].importance) {
-                //console.log('hiding1:', allTexts[j].caption)
                 allTexts[j].text.visible = false;
             } else {
-                //console.log('hiding:', allTexts[i].caption)
-                //console.log('hiding2:', allTexts[j].caption)
                 allTexts[i].text.visible = false;
             }
         });
@@ -308,6 +272,18 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
         this.pMain.position.y = this.position[1];
         this.pMain.position.x = this.position[0];
+
+    }
+
+    setDimensions(newDimensions) {
+        super.setDimensions(newDimensions);
+
+        // redraw the contents
+        for (let tile of this.visibleAndFetchedTiles()) {
+            tile.rectGraphics.clear();
+
+            this.renderTile(tile);
+        }
     }
 
     zoomed(newXScale, newYScale) {
