@@ -45,6 +45,8 @@ import {createSymbolIcon} from './symbol.js';
 import {all as icons} from './icons.js';
 import {ViewHeader} from './ViewHeader.jsx';
 import {ChromosomeInfo} from './ChromosomeInfo.js';
+import api from './api';
+import debounce from './debounce';
 
 import '../styles/HiGlassComponent.css';
 
@@ -144,6 +146,21 @@ export class HiGlassComponent extends React.Component {
 
 
           dictValues(viewsByUid).map(view => this.adjustLayoutToTrackSizes(view));
+
+      // Set up API
+      this.api = api(this);
+
+      this.onViewChangeListener = [];
+
+      this.triggerViewChangeDb = debounce(
+        this.triggerViewChange.bind(this), 250
+      );
+    }
+
+    componentWillMount() {
+      if (this.props.getApi) {
+        this.props.getApi(this.api);
+      }
     }
 
     componentDidMount() {
@@ -2308,27 +2325,30 @@ export class HiGlassComponent extends React.Component {
     }
 
   componentWillUpdate(nextProps, nextState) {
-        let width = this.element.clientWidth;
-        let height = this.element.clientHeight;
+    let width = this.element.clientWidth;
+    let height = this.element.clientHeight;
 
+    /*
+    this.pixiRenderer.resize(width, height);
+    this.pixiRenderer.view.style.width = width + 'px';
+    this.pixiRenderer.view.style.height = height + 'px';
+    */
 
-        /*
-        this.pixiRenderer.resize(width, height);
-        this.pixiRenderer.view.style.width = width + 'px';
-        this.pixiRenderer.view.style.height = height + 'px';
-        */
-
-        this.pixiRenderer.render(this.pixiStage);
+    this.pixiRenderer.render(this.pixiStage);
   }
 
-    componentDidUpdate() {
-      this.animate();
-    }
+  componentDidUpdate(prevProps, prevState) {
+    this.animate();
 
-    componentWillUnmount() {
-        window.removeEventListener('focus', this.boundRefreshView);
-        this.resizeSensor.detach();
+    if (prevState.view !== this.state.view) {
+      this.triggerViewChangeDb();
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('focus', this.boundRefreshView);
+    this.resizeSensor.detach();
+  }
 
 
   render() {
@@ -2606,98 +2626,18 @@ export class HiGlassComponent extends React.Component {
     );
   }
 
-  // Public API
-  api() {
-    const self = this;
+  offViewChange(listenerId) {
+    this.onViewChangeListener.splice(listenerId, 1);
+  }
 
-    const _api = {
-      goTo (
-        viewUid,
-        chrom1,
-        start1,
-        end1,
-        chrom2,
-        start2,
-        end2,
-        animate=false,
-        animateTime=3000
-      ) {
-        // Set chromInfo if not available
-        if (!self.chromInfo) {
-          self.setChromInfo(
-            self.state.views[viewUid].chromInfoPath,
-            () => {
-              self.api().goTo(
-                viewUid,
-                chrom1,
-                start1,
-                end1,
-                chrom2,
-                start2,
-                end2,
-                animate,
-                animateTime
-              );
-            }
-          );
-          return;
-        }
+  onViewChange(callback) {
+    return this.onViewChangeListener.push(callback) - 1;
+  }
 
-        const [start1Abs, end1Abs] = relToAbsChromPos(
-          chrom1, start1, end1, self.chromInfo
-        );
-
-        const [start2Abs, end2Abs] = relToAbsChromPos(
-          chrom2, start2, end2, self.chromInfo
-        );
-
-        let [centerX, centerY, k] = scalesCenterAndK(
-          self.xScales[viewUid].copy().domain([start1Abs, end1Abs]),
-          self.yScales[viewUid].copy().domain([start2Abs, end2Abs])
-        );
-
-        self.setCenters[viewUid](
-          centerX, centerY, k, false, animate, animateTime
-        );
-      },
-
-      off(event, viewId, listenerId) {
-        switch (event) {
-          case 'location':
-            self.offLocationChange(viewId, listenerId);
-            break;
-
-          default:
-            // nothing
-            break;
-        }
-      },
-
-      on(event, viewId, callback, callbackId) {
-        switch (event) {
-          case 'location':
-            self.onLocationChange(viewId, callback, callbackId);
-            break;
-
-          default:
-            // nothing
-            break;
-        }
-      },
-
-      refresh() {
-        if (self.props.options.bounded) {
-          self.fitPixiToParentContainer();
-        }
-
-        self.render();
-        self.animate();
-
-        return _api;
-      }
-    };
-
-    return _api;
+  triggerViewChange() {
+    this.onViewChangeListener.forEach(
+      callback => callback(this.getViewsAsString())
+    );
   }
 
   offLocationChange(viewId, listenerId) {
@@ -2757,9 +2697,10 @@ export class HiGlassComponent extends React.Component {
 }
 
 HiGlassComponent.propTypes = {
-    children: PropTypes.array,
-    viewConfig: PropTypes.object,
-    onNewConfig: PropTypes.func,
-    options: PropTypes.object,
-    zoomFixed: PropTypes.bool
-  }
+  children: PropTypes.array,
+  getApi: PropTypes.func,
+  onNewConfig: PropTypes.func,
+  options: PropTypes.object,
+  viewConfig: PropTypes.object,
+  zoomFixed: PropTypes.bool
+}

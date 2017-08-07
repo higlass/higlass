@@ -16,7 +16,7 @@ function launch (element, config, options, callback) {
    * @return  {Object} The instance's public API
    */
   callback((function (higlass) {
-      return higlass.api();
+      return higlass.api;
     } (
       ReactDOM.render(
         (<HiGlassComponent
