@@ -1758,32 +1758,32 @@ export class HiGlassComponent extends React.Component {
   }
 
   serializeLocks(locks) {
-      let locksDict = {};
-      let locksByViewUid = {};
+    let locksDict = {};
+    let locksByViewUid = {};
 
     for (let viewUid of dictKeys(locks)) {
-        if (locks[viewUid].hasOwnProperty('uid')
-                && locksDict.hasOwnProperty(locks[viewUid].uid)) {
-            // we've already encountered this location lock so no need to do anything
-        } else {
-            // otherwise, assign this locationLock its own uid
-            let lockUid = slugid.nice();
-            locks[viewUid].uid = lockUid;
+      let lockUid = locks[viewUid] && locks[viewUid].uid;
 
-            // make a note that we've seen this lock
-            locksDict[lockUid] =  locks[viewUid];
-        }
+      if (!lockUid) {
+        // otherwise, assign this locationLock its own uid
+        lockUid = slugid.nice();
+      }
+      locks[viewUid].uid = lockUid;
 
-        // note that this view has a reference to this lock
-        locksByViewUid[viewUid] = locks[viewUid].uid;
+      // make a note that we've seen this lock
+      locksDict[lockUid] =  locks[viewUid];
+
+      // note that this view has a reference to this lock
+      locksByViewUid[viewUid] = locks[viewUid].uid;
     }
 
     // remove the uids we just added
-    for (let viewUid of dictKeys(locks)) {
-        if (locks[viewUid].hasOwnProperty('uid') )
-            delete locks[viewUid].uid;
-
-    }
+    // for (let viewUid of dictKeys(locks)) {
+    //   if (locks[viewUid].hasOwnProperty('uid')) {
+    //     locks[viewUid].uid = undefined;
+    //     delete locks[viewUid].uid;
+    //   }
+    // }
 
     return {'locksByViewUid': locksByViewUid, 'locksDict': locksDict}
   }
