@@ -150,7 +150,7 @@ export class HiGlassComponent extends React.Component {
       // Set up API
       this.api = api(this);
 
-      this.onViewChangeListener = [];
+      this.viewChangeListener = [];
 
       this.triggerViewChangeDb = debounce(
         this.triggerViewChange.bind(this), 250
@@ -604,6 +604,9 @@ export class HiGlassComponent extends React.Component {
       }
 
       this.animate();
+
+    // Call view change handler
+    this.triggerViewChangeDb();
   }
 
   handleProjectViewport(uid) {
@@ -2340,9 +2343,7 @@ export class HiGlassComponent extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     this.animate();
 
-    if (prevState.view !== this.state.view) {
-      this.triggerViewChangeDb();
-    }
+    this.triggerViewChangeDb();
   }
 
   componentWillUnmount() {
@@ -2627,15 +2628,15 @@ export class HiGlassComponent extends React.Component {
   }
 
   offViewChange(listenerId) {
-    this.onViewChangeListener.splice(listenerId, 1);
+    this.viewChangeListener.splice(listenerId, 1);
   }
 
   onViewChange(callback) {
-    return this.onViewChangeListener.push(callback) - 1;
+    return this.viewChangeListener.push(callback) - 1;
   }
 
   triggerViewChange() {
-    this.onViewChangeListener.forEach(
+    this.viewChangeListener.forEach(
       callback => callback(this.getViewsAsString())
     );
   }
