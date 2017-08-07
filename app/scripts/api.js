@@ -75,7 +75,7 @@ const api = function api(context) {
           break;
 
         case 'view':
-          return self.onViewChange(callback);
+          return self.onViewChange(viewId || callback);
 
         default:
           // nothing
