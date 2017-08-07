@@ -1537,8 +1537,10 @@ export class HiGlassComponent extends React.Component {
 
         let MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
         if (!this.props.options.bounded) {
-            view.layout.h = Math.ceil((totalTrackHeight + MARGIN_HEIGHT)
-                            / (this.state.rowHeight + MARGIN_HEIGHT));
+            view.layout.h = Math.ceil(
+              (totalTrackHeight + MARGIN_HEIGHT) /
+              (this.state.rowHeight + MARGIN_HEIGHT)
+            );
         }
     }
 
