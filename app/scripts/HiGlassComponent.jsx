@@ -32,8 +32,8 @@ import {
 } from './utils.js';
 
 import {
-    usedServer, 
-    tracksInfo, 
+    usedServer,
+    tracksInfo,
     tracksInfoByType,
     defaultServer
 } from './config.js';
@@ -310,7 +310,7 @@ export class HiGlassComponent extends React.Component {
           let lockGroupValues = dictValues(this.valueScaleLocks[uid]);
 
           ///let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
-          let lockedTracks = lockGroupValues.map(x => 
+          let lockedTracks = lockGroupValues.map(x =>
                   this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track))
 
           let minValues = lockedTracks.filter(x => x.minRawValue && x.maxRawValue)  //exclude tracks that don't set min and max values
@@ -330,7 +330,7 @@ export class HiGlassComponent extends React.Component {
                 lockedTrack.maxValue(allMax);
 
             if (!lockedTrack.valueScale) {
-                // this track probably hasn't loaded the tiles to 
+                // this track probably hasn't loaded the tiles to
                 // create a valueScale
                 continue;
             }
@@ -439,8 +439,8 @@ export class HiGlassComponent extends React.Component {
   createSVG() {
     let outputSVG = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n';
     let svg = document.createElement('svg');
-    svg.setAttribute('xmlns:xlink',"http://www.w3.org/1999/xlink"); 
-    svg.setAttribute('xmlns', "http://www.w3.org/2000/svg"); 
+    svg.setAttribute('xmlns:xlink',"http://www.w3.org/1999/xlink");
+    svg.setAttribute('xmlns', "http://www.w3.org/2000/svg");
 
     for (let tiledPlot of dictValues(this.tiledPlots)) {
         for (let trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
@@ -785,8 +785,8 @@ export class HiGlassComponent extends React.Component {
         newTrackUid = slugid.nice();
 
         let projectionTypes = {
-            'top': 'horizontal', 
-            'bottom': 'horizontal', 
+            'top': 'horizontal',
+            'bottom': 'horizontal',
             'center': 'center',
             'left': 'vertical',
             'right': 'vertical'}
@@ -913,10 +913,10 @@ export class HiGlassComponent extends React.Component {
             minNecessaryHeight} = this.calculateViewDimensions(view);
 
              // If the view is bounded, then we always fit everything inside the container
-             // 
+             //
              // It used to be that if the viewconfig was too long, we just let it overflow,
              // but I think it's better that it's always contained.
-             
+
             /*
             if (minNecessaryHeight > view.layout.h * (prospectiveRowHeight + MARGIN_HEIGHT)) {
                 // we don't have space for one of the containers, so let them exceed the bounds
@@ -1179,9 +1179,9 @@ export class HiGlassComponent extends React.Component {
             currHeight += centerHeight;
             currWidth += centerWidth;
         }
-      } else if (((view.tracks.top && dictValues(view.tracks.top).length > 1)  || 
-                  (view.tracks.bottom && dictValues(view.tracks.bottom).length > 1)) && 
-              ((view.tracks.left && dictValues(view.tracks.left).length) || 
+      } else if (((view.tracks.top && dictValues(view.tracks.top).length > 1)  ||
+                  (view.tracks.bottom && dictValues(view.tracks.bottom).length > 1)) &&
+              ((view.tracks.left && dictValues(view.tracks.left).length) ||
                (view.tracks.right && dictValues(view.tracks.right).length))) {
           centerWidth = defaultCenterWidth;
           centerHeight = defaultCenterHeight;
@@ -1524,7 +1524,7 @@ export class HiGlassComponent extends React.Component {
             totalTrackHeight += gpsbHeight;
         }
 
-        // we are not checking for this.viewHeaders because this function may be 
+        // we are not checking for this.viewHeaders because this function may be
         // called before the component is mounted
         if (this.props.viewConfig.editable) {
             totalTrackHeight += VIEW_HEADER_HEIGHT;
@@ -1537,7 +1537,7 @@ export class HiGlassComponent extends React.Component {
 
         let MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
         if (!this.props.options.bounded) {
-            view.layout.h = Math.ceil((totalTrackHeight + MARGIN_HEIGHT)  
+            view.layout.h = Math.ceil((totalTrackHeight + MARGIN_HEIGHT)
                             / (this.state.rowHeight + MARGIN_HEIGHT));
         }
     }
@@ -1576,7 +1576,7 @@ export class HiGlassComponent extends React.Component {
 
     handleLockValueScale(fromViewUid, fromTrackUid) {
         this.setState({
-            chooseTrackHandler: (toViewUid, toTrackUid) => 
+            chooseTrackHandler: (toViewUid, toTrackUid) =>
                 this.handleValueScaleLocked(fromViewUid, fromTrackUid, toViewUid, toTrackUid)
         });
     }
@@ -1649,7 +1649,7 @@ export class HiGlassComponent extends React.Component {
         let fromUid = this.combineViewAndTrackUid(fromViewUid, fromTrackUid);
         let toUid = this.combineViewAndTrackUid(toViewUid, toTrackUid);
 
-        this.addLock(fromUid, toUid, this.valueScaleLocks, (uid) => { 
+        this.addLock(fromUid, toUid, this.valueScaleLocks, (uid) => {
             return this.combinedUidToViewTrack[uid];
         });
 
@@ -1668,7 +1668,7 @@ export class HiGlassComponent extends React.Component {
        *
        * @param track: A view with tracks.
        */
-      if (track.type == 'viewport-projection-center' 
+      if (track.type == 'viewport-projection-center'
           || track.type == 'viewport-projection-horizontal'
           || track.type == 'viewport-projection-vertical'
       ) {
@@ -2048,7 +2048,7 @@ export class HiGlassComponent extends React.Component {
          *
          * Arguments
          * ---------
-         *      
+         *
          * viewUid: string
          *      The uid of the view this genomepositionsearchbox belongs to
          * newAssembly: string
@@ -2071,8 +2071,8 @@ export class HiGlassComponent extends React.Component {
          * then use those. Otherwise use defaults.
          *
          * Arguments:
-         *     existingGenomePositionSearchBox: 
-         *          { 
+         *     existingGenomePositionSearchBox:
+         *          {
          *              autocompleteServer: string (e.g. higlass.io/api/v1),
          *              autocompleteId: string (e.g. Xz1f)
          *              chromInfoServer: string (e.g. higlass.io/api/v1)
@@ -2088,7 +2088,7 @@ export class HiGlassComponent extends React.Component {
          *          but in case they're not, suggest the most common one
          *
          * Return:
-         *      A valid genomePositionSearchBox object 
+         *      A valid genomePositionSearchBox object
          *
          */
         let newGpsb = existingGenomePositionSearchBox;
@@ -2099,14 +2099,14 @@ export class HiGlassComponent extends React.Component {
                 "visible": false
         }
 
-        if (!newGpsb) 
+        if (!newGpsb)
             newGpsb = JSON.parse(JSON.stringify(defaultGpsb));
 
         if (!newGpsb.autocompleteServer)
             newGpsb.autocompleteServer = defaultGpsb.autocompleteServer;
 
-        /* 
-         * If we don't have an autocompleteId, we'll try to look it up in 
+        /*
+         * If we don't have an autocompleteId, we'll try to look it up in
          * the autocomplete server
          */
         /*
@@ -2155,7 +2155,7 @@ export class HiGlassComponent extends React.Component {
         if (sortedAssemblyCounts.length)
             selectedAssembly = sortedAssemblyCounts[0][0];
 
-        view.genomePositionSearchBox = this.createGenomePostionSearchBoxEntry(view.genomePositionSearchBox, 
+        view.genomePositionSearchBox = this.createGenomePostionSearchBoxEntry(view.genomePositionSearchBox,
             selectedAssembly);
         view.genomePositionSearchBox.visible = !view.genomePositionSearchBox.visible;
 
@@ -2336,7 +2336,7 @@ export class HiGlassComponent extends React.Component {
         flexDirection: 'column'
     }
     let tiledAreas = (<div
-                        
+
                             ref={(c) => {this.tiledAreaDiv = c; }}
                             style={tiledAreaStyle}
                       />);
@@ -2421,13 +2421,13 @@ export class HiGlassComponent extends React.Component {
                                      zoomable={!zoomFixed}
                                 />)
 
-                                
+
 
                 let genomePositionSearchBoxUid = slugid.nice();
 
                 this.genomePositionSearchBox = null;
                 let genomePositionSearchBox = view.genomePositionSearchBox ? (
-                    view.genomePositionSearchBox.visible ? 
+                    view.genomePositionSearchBox.visible ?
                     (<GenomePositionSearchBox
                         autocompleteServer={view.genomePositionSearchBox.autocompleteServer}
                         autocompleteId={view.genomePositionSearchBox.autocompleteId}
@@ -2533,7 +2533,7 @@ export class HiGlassComponent extends React.Component {
         layouts[i].blah = slugid.nice();
     */
 
-    let gridLayout = 
+    let gridLayout =
         (<WidthReactGridLayout
           cols={12}
           draggableHandle={'.multitrack-header'}
