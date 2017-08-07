@@ -21,7 +21,7 @@
         <div style="margin: auto; width: 100%;">
         <div
             id="development-demo"
-            style="position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px">
+            style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem">
         </div>
     </div>
 </body>
@@ -284,6 +284,10 @@
             window.hgApi = api;
         }
     );
+
+    window.hgApi.on('view', function (viewConfig) {
+      console.log('View Config changed');
+    });
 
     // setTimeout(function () {
     //   // Go to PTEN
