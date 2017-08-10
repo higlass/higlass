@@ -41,6 +41,7 @@ import {ViewportTrackerHorizontal} from './ViewportTrackerHorizontal.js';
 import {ViewportTrackerVertical} from './ViewportTrackerVertical.js';
 
 import {OSMTilesTrack} from './OSMTilesTrack.js';
+import {MapboxTilesTrack} from './MapboxTilesTrack.js';
 
 let SCROLL_TIMEOUT = 100;
 
@@ -91,7 +92,7 @@ export class TrackRenderer extends React.Component {
                     return false;
                 return true;
             })
-            .on('start', () => { 
+            .on('start', () => {
                 this.zooming = true
             })
             .on('zoom', this.zoomedBound)
@@ -152,7 +153,7 @@ export class TrackRenderer extends React.Component {
         if (this.divTrackAreaSelection) {
             this.divTrackAreaSelection.on('.zoom', null);
         }
-        
+
     }
 
     componentDidMount() {
@@ -171,7 +172,7 @@ export class TrackRenderer extends React.Component {
         //this.divTrackAreaSelection.call(this.zoomBehavior);
         //
         this.addZoom();
-    
+
         this.canvasDom = ReactDOM.findDOMNode(this.currentProps.canvasElement);
 
         // need to be mounted to make sure that all the renderers are
@@ -403,7 +404,7 @@ export class TrackRenderer extends React.Component {
     }
 
     getTrackObject(trackId) {
-        /* 
+        /*
          * Fetch the trackObject for a track with a given ID
          *
          */
@@ -672,7 +673,12 @@ export class TrackRenderer extends React.Component {
         if (!this.currentProps.zoomable)
             this.zoomTransform = zoomIdentity;
         else
-            this.zoomTransform = event.transform;
+            try {
+                this.zoomTransform = event.transform;
+            } catch (error) {
+                console.error(error);
+            }
+
 
         this.applyZoomTransform(true);
     }
@@ -1012,6 +1018,9 @@ export class TrackRenderer extends React.Component {
                     () => this.currentProps.onNewTilesLoaded(track.uid)));
             case 'osm-tiles':
                 return new OSMTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
+            case 'mapbox-tiles':
+                console.log("Here");
+                return new MapboxTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
             default:
                  console.warn('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(

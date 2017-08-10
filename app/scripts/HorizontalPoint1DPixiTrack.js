@@ -120,6 +120,8 @@ export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     }
 
     draw() {
+        super.draw();
+
         for (let tile of dictValues(this.fetchedTiles)) {
             // scaling between tiles
             let tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) / (this._xScale.domain()[1] - this._xScale.domain()[0]);

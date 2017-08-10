@@ -92,6 +92,12 @@ export class OSMTilesTrack extends PixiTrack {
         this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
     }
 
+    removeAllTiles() {
+        let fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
+
+        this.removeTiles([...fetchedTileIDs]);
+    }
+
     refreshTiles() {
         this.calculateVisibleTiles();
 
@@ -478,6 +484,17 @@ export class OSMTilesTrack extends PixiTrack {
        return loadedTileData;
     }
 
+    getTileUrl(tileZxy) {
+        /**
+         * Get the url used to fetch the tile data
+         */
+        let serverPrefixes = ['a','b','c'];
+        let serverPrefixIndex = Math.floor(Math.random() * serverPrefixes.length)
+        let src = "http://" + serverPrefixes[serverPrefixIndex] + ".tile.openstreetmap.org/" + tileZxy[0] + "/" + tileZxy[1] + "/" + tileZxy[2] + ".png"
+
+        return src;
+    }
+
     fetchNewTiles(toFetch) {
         if (toFetch.length > 0) {
             let toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
@@ -500,11 +517,8 @@ export class OSMTilesTrack extends PixiTrack {
 
             for (let tileId of toFetchList) {
                 let parts = tileId.split('.');
-                let serverPrefixes = ['a','b','c'];
-                let serverPrefixIndex = Math.floor(Math.random() * serverPrefixes.length)
+                let src = this.getTileUrl(parts);
 
-
-                let src = "http://" + serverPrefixes[serverPrefixIndex] + ".tile.openstreetmap.org/" + parts[0] + "/" + parts[1] + "/" + parts[2] + ".png"
                 let img = new Image();
                 img.crossOrigin = "Anonymous";
                 img.src = src;
