@@ -397,7 +397,11 @@ export class PixiTrack extends Track {
             // http://stackoverflow.com/a/16701952/899470
 
             text.innerText = lineParts[i];
-            text.setAttribute('dy', ddy + (i * (this.labelTextFontSize + 2)));
+            if (this.labelPosition == 'topLeft')
+                text.setAttribute('dy', ddy + ((i + 1) * (this.labelTextFontSize + 2)) );
+            else if (this.labelPosition == 'bottomLeft')
+                text.setAttribute('dy', ddy + (i * (this.labelTextFontSize + 2)) );
+
             text.setAttribute('fill', this.options.labelColor);
             
             /*

@@ -394,7 +394,12 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
         track.appendChild(output);
 
-        for (let rect of this.allRects) {
+        let allRects = [];
+        for (let tile of this.visibleAndFetchedTiles()) {
+            allRects = allRects.concat(tile.allRects);
+        }
+
+        for (let rect of allRects) {
             let r = document.createElement('rect');
             r.setAttribute('x', rect[0]);
             r.setAttribute('y', rect[1]);
