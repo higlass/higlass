@@ -19,6 +19,7 @@ import {CombinedTrack} from './CombinedTrack.js';
 
 import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
 import {HorizontalPoint1DPixiTrack} from './HorizontalPoint1DPixiTrack.js';
+import {BarTrack} from './BarTrack.js';
 
 import {CNVIntervalTrack} from './CNVIntervalTrack.js';
 import {LeftTrackModifier} from './LeftTrackModifier.js';
@@ -763,6 +764,13 @@ export class TrackRenderer extends React.Component {
                 );
             case 'horizontal-point':
                 return new HorizontalPoint1DPixiTrack(this.pStage,
+                                                     track.server,
+                                                     track.tilesetUid,
+                                                     handleTilesetInfoReceived,
+                                                     track.options,
+                                                     () => this.currentProps.onNewTilesLoaded(track.uid));
+            case 'horizontal-bar':
+                return new BarTrack(this.pStage,
                                                      track.server,
                                                      track.tilesetUid,
                                                      handleTilesetInfoReceived,

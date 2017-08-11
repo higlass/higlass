@@ -132,7 +132,7 @@ export class PixiTrack extends Track {
 
         graphics.clear();
         
-        if (!this.options.labelBackgroundOpacity)
+        if (this.options.labelBackgroundOpacity)
             graphics.beginFill(0xFFFFFF, 0);
         else
             graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);
@@ -196,7 +196,7 @@ export class PixiTrack extends Track {
         this.labelText.style = {fontSize: this.labelTextFontSize + 'px',
                               fontFamily: this.labelTextFontFamily,
                               fill: stroke};
-        this.labelText.alpha = this.options.labelTextOpacity ? this.options.labelTextOpacity : 1;
+        this.labelText.alpha = 'labelTextOpacity' in this.options ? this.options.labelTextOpacity : 1;
 
         this.labelText.visible = true;
 

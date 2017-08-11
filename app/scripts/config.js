@@ -40,6 +40,15 @@ let availableWidths = {
     '8': { name: "8", value: 8}
 }
 
+let opacityOptions = {
+            '0': { name: "0%", value: 0. },
+            '0.2': { name: "20%", value: 0.2 },
+            '0.4': { name: "40%", value: 0.4 },
+            '0.6': { name: "60%", value: 0.6 },
+            '0.8': { name: "80%", value: 0.8 },
+            '1.0': { name: '100%', value: 1.0 },
+        }
+
 export const optionsInfo = {
     valueScaling: {
         name: "Value Scaling",
@@ -88,6 +97,14 @@ export const optionsInfo = {
         name: "Fill color",
         inlineOptions: availableColors
     },
+    barFillColor: {
+        name: "Fill color",
+        inlineOptions: availableColors
+    },
+    barOpacity: {
+        name: "Bar opacity",
+        inlineOptions: opacityOptions
+    },
     rectangleDomainStrokeColor: {
         name: "Stroke color",
         inlineOptions: availableColors
@@ -98,14 +115,7 @@ export const optionsInfo = {
     },
     rectangleDomainOpacity: {
         name: "Opacity",
-        inlineOptions: {
-            '0': { name: "0%", value: 0 },
-            '0.2': { name: "20%", value: 0.2 },
-            '0.4': { name: "40%", value: 0.4 },
-            '0.6': { name: "60%", value: 0.6 },
-            '0.8': { name: "80%", value: 0.8 },
-            '1.0': { name: '100%', value: 1.0 },
-        }
+        inlineOptions: opacityOptions
     },
     mapboxStyle: {
         name: "Map style",
@@ -208,26 +218,12 @@ export const optionsInfo = {
 
     labelTextOpacity: {
         name: "Label Text Opacity",
-        inlineOptions: {
-            '0': { name: "0%", value: 0 },
-            '0.2': { name: "20%", value: 0.2 },
-            '0.4': { name: "40%", value: 0.4 },
-            '0.6': { name: "60%", value: 0.6 },
-            '0.8': { name: "80%", value: 0.8 },
-            '1.0': { name: '100%', value: 1.0 },
-        }
+        inlineOptions: opacityOptions
     },
 
     labelBackgroundOpacity: {
         name: "Label Background Opacity",
-        inlineOptions: {
-            '0': { name: "0%", value: 0 },
-            '0.2': { name: "20%", value: 0.2 },
-            '0.4': { name: "40%", value: 0.4 },
-            '0.6': { name: "60%", value: 0.6 },
-            '0.8': { name: "80%", value: 0.8 },
-            '1.0': { name: '100%', value: 1.0 },
-        }
+        inlineOptions: opacityOptions
     },
 
     // colormaps are mostly taken from here:
@@ -466,6 +462,24 @@ export const tracksInfo = [
             trackBorderWidth: 0,
             trackBorderColor: 'black',
             labelTextOpacity: .4
+        }
+    },
+    {
+        type: 'horizontal-bar',
+        datatype: ['vector'],
+        local: false,
+        orientation: '1d-horizontal',
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'barFillColor', 'valueScaling', "trackBorderWidth", "trackBorderColor", 'barOpacity'],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'topLeft',
+            axisPositionHorizontal: 'right',
+            barFillColor: 'darkgreen',
+            valueScaling: 'linear',
+            trackBorderWidth: 0,
+            trackBorderColor: 'black',
+            labelTextOpacity: .4,
+            barOpacity: 1
         }
     },
     {
