@@ -395,6 +395,15 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     }
 
     renderTile(tile) {
+
+        if (this.options.heatmapValueScaling == 'log') {
+            this.valueScale = scaleLog().range([254, 0])
+            .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
+        } else if (this.options.heatmapValueScaling == 'linear') {
+            this.valueScale = scaleLinear().range([254, 0])
+            .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
+        }
+
         tileProxy.tileDataToPixData(tile,
                                     this.valueScale,
                                     this.valueScale.domain()[0], //used as a pseudocount to prevent taking the log of 0
