@@ -1,4 +1,4 @@
-import {ZOOM_TRANSITION_DURATION} from './config.js'
+import {ZOOM_TRANSITION_DURATION} from './config'
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -9,40 +9,42 @@ import {select,event} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
 import {dictItems} from './utils.js';
 
-import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack.js';
-import {Id2DTiledPixiTrack} from './Id2DTiledPixiTrack.js';
-import {IdHorizontal1DTiledPixiTrack} from './IdHorizontal1DTiledPixiTrack.js';
-import {IdVertical1DTiledPixiTrack} from './IdVertical1DTiledPixiTrack.js';
-import {TopAxisTrack} from './TopAxisTrack.js';
-import {LeftAxisTrack} from './LeftAxisTrack.js';
-import {CombinedTrack} from './CombinedTrack.js';
+import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack';
+import {Id2DTiledPixiTrack} from './Id2DTiledPixiTrack';
+import {IdHorizontal1DTiledPixiTrack} from './IdHorizontal1DTiledPixiTrack';
+import {IdVertical1DTiledPixiTrack} from './IdVertical1DTiledPixiTrack';
+import {TopAxisTrack} from './TopAxisTrack';
+import {LeftAxisTrack} from './LeftAxisTrack';
+import {CombinedTrack} from './CombinedTrack';
 
-import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
-import {HorizontalPoint1DPixiTrack} from './HorizontalPoint1DPixiTrack.js';
-import {BarTrack} from './BarTrack.js';
+import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack';
+import {HorizontalPoint1DPixiTrack} from './HorizontalPoint1DPixiTrack';
+import {BarTrack} from './BarTrack';
 
-import {CNVIntervalTrack} from './CNVIntervalTrack.js';
-import {LeftTrackModifier} from './LeftTrackModifier.js';
-import {Track} from './Track.js';
-import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack.js';
-import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack.js';
+import {CNVIntervalTrack} from './CNVIntervalTrack';
+import {LeftTrackModifier} from './LeftTrackModifier';
+import {Track} from './Track';
+import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack';
+import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack';
 
-import {Horizontal2DDomainsTrack} from './Horizontal2DDomainsTrack.js';
+import {Horizontal2DDomainsTrack} from './Horizontal2DDomainsTrack';
 
-import {SquareMarkersTrack} from './SquareMarkersTrack.js';
-import {Chromosome2DLabels} from './Chromosome2DLabels.js';
-import {Chromosome2DGrid} from './Chromosome2DGrid.js';
-import {Chromosome2DAnnotations} from './Chromosome2DAnnotations.js';
-import {HorizontalChromosomeLabels} from './HorizontalChromosomeLabels.js';
-import {HorizontalHeatmapTrack} from './HorizontalHeatmapTrack.js';
-import {UnknownPixiTrack} from './UnknownPixiTrack.js';
-import {ValueIntervalTrack} from './ValueIntervalTrack.js';
-import {ViewportTracker2D} from './ViewportTracker2D.js';
-import {ViewportTrackerHorizontal} from './ViewportTrackerHorizontal.js';
-import {ViewportTrackerVertical} from './ViewportTrackerVertical.js';
+import {SquareMarkersTrack} from './SquareMarkersTrack';
+import {Chromosome2DLabels} from './Chromosome2DLabels';
+import {Chromosome2DGrid} from './Chromosome2DGrid';
+import {Chromosome2DAnnotations} from './Chromosome2DAnnotations';
+import {HorizontalChromosomeLabels} from './HorizontalChromosomeLabels';
+import {HorizontalHeatmapTrack} from './HorizontalHeatmapTrack';
+import {UnknownPixiTrack} from './UnknownPixiTrack';
+import {ValueIntervalTrack} from './ValueIntervalTrack';
+import {ViewportTracker2D} from './ViewportTracker2D';
+import {ViewportTrackerHorizontal} from './ViewportTrackerHorizontal';
+import {ViewportTrackerVertical} from './ViewportTrackerVertical';
 
-import {OSMTilesTrack} from './OSMTilesTrack.js';
-import {MapboxTilesTrack} from './MapboxTilesTrack.js';
+import {OSMTilesTrack} from './OSMTilesTrack';
+import {MapboxTilesTrack} from './MapboxTilesTrack';
+
+import {domEvent, pubSub} from './services';
 
 let SCROLL_TIMEOUT = 100;
 
@@ -80,8 +82,6 @@ export class TrackRenderer extends React.Component {
         // the old props, so we need to store them in a new variable
         this.currentProps = props;
         this.prevPropsStr = '';
-
-        window.addEventListener("scroll", this.windowScrolledBound);
 
         // catch any zooming behavior within all of the tracks in this plot
         //this.zoomTransform = zoomIdentity();
@@ -125,36 +125,29 @@ export class TrackRenderer extends React.Component {
                                 this.currentProps.initialYDomain);
         this.setUpScales();
 
-
         // maintain a list of trackDefObjects which correspond to the input
         // tracks
         // Each object will contain a trackDef
         // {'top': 100, 'left': 50,... 'track': {'source': 'http:...', 'type': 'heatmap'}}
         // And a trackObject which will be responsible for rendering it
-        this.trackDefObjects = {}
+        this.trackDefObjects = {};
+
+        this.pubSubs = [];
+        this.keyDownHandlerBound = this.keyDownHandler.bind(this);
+        this.keyUpHandlerBound = this.keyUpHandler.bind(this);
     }
 
-    addZoom() {
-        if (!this.divTrackAreaSelection)
-            return;
-
-        // add back the previous transform
-        this.divTrackAreaSelection.call(this.zoomBehavior);
-        this.zoomBehavior.transform(this.divTrackAreaSelection, this.zoomTransform);
-    }
-
-    removeZoom() {
-        /*
-        if (this.gZoom) {
-            this.gZoom.remove();
-            this.gZoom = null;
-        }
-        */
-
-        if (this.divTrackAreaSelection) {
-            this.divTrackAreaSelection.on('.zoom', null);
-        }
-
+    componentWillMount() {
+        this.pubSubs = [];
+        this.pubSubs.push(
+            pubSub.subscribe('keydown', this.keyDownHandlerBound)
+        );
+        this.pubSubs.push(
+            pubSub.subscribe('keyup', this.keyUpHandlerBound)
+        );
+        this.pubSubs.push(
+            pubSub.subscribe('scroll', this.windowScrolledBound)
+        );
     }
 
     componentDidMount() {
@@ -220,7 +213,6 @@ export class TrackRenderer extends React.Component {
         this.setUpScales();
         this.canvasDom = ReactDOM.findDOMNode(nextProps.canvasElement);
 
-
         this.svgElement = nextProps.svgElement;
 
         this.syncTrackObjects(nextProps.positionedTracks);
@@ -252,6 +244,47 @@ export class TrackRenderer extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        /**
+         * This view has been removed so we need to get rid of all the tracks it contains
+         */
+        this.removeTracks(Object.keys(this.trackDefObjects));
+        this.currentProps.removeDraggingChangedListener(this.draggingChanged);
+
+        this.currentProps.pixiStage.removeChild(this.pStage);
+
+        this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+        this.pubSubs = [];
+    }
+
+    /* -------------------------- Custom Moethods --------------------------- */
+
+    addZoom() {
+        if (!this.divTrackAreaSelection) { return; }
+
+        // add back the previous transform
+        this.divTrackAreaSelection.call(this.zoomBehavior);
+        this.zoomBehavior.transform(this.divTrackAreaSelection, this.zoomTransform);
+    }
+
+    keyDownHandler(event) {
+        if (event.key === 'Alt') {
+            this.removeZoom();
+        }
+    }
+
+    keyUpHandler(event) {
+        if (event.key === 'Alt') {
+            this.addZoom();
+        }
+    }
+
+    removeZoom() {
+        if (this.divTrackAreaSelection) {
+            this.divTrackAreaSelection.on('.zoom', null);
+        }
+    }
+
     setMask() {
         /*
          * Add a mask to make sure that the tracks displayed in this view
@@ -264,20 +297,10 @@ export class TrackRenderer extends React.Component {
 
     }
 
-    componentWillUnmount() {
-        /**
-         * This view has been removed so we need to get rid of all the tracks it contains
-         */
-
-        this.removeTracks(Object.keys(this.trackDefObjects));
-        this.currentProps.removeDraggingChangedListener(this.draggingChanged);
-
-        this.currentProps.pixiStage.removeChild(this.pStage);
-        window.removeEventListener('scroll', this.windowScrolledBound);
-    }
-
     windowScrolled() {
         this.removeZoom();
+
+        console.log('windowScrolled');
 
         if (this.scrollTimeout)
             clearTimeout(this.scrollTimeout);
@@ -298,15 +321,13 @@ export class TrackRenderer extends React.Component {
         initialYDomain[0] = yCenter - xWidth / 2,
         initialYDomain[1] = yCenter + xWidth / 2;
 
-        if (initialXDomain == this.initialXDomain &&
-            initialYDomain == this.initialYDomain)
-        /*
-        if (initialXDomain[0] == this.initialXDomain[0] &&
-            initialXDomain[1] == this.initialXDomain[1] &&
-            initialYDomain[1] == this.initialYDomain[1] &&
-            initialYDomain[0] == this.initialYDomain[0])
-            */
+        if (
+            initialXDomain == this.initialXDomain &&
+            initialYDomain == this.initialYDomain
+        ) {
             return;
+        }
+
 
         // only update the initial domain
         this.initialXDomain = initialXDomain;
@@ -343,8 +364,6 @@ export class TrackRenderer extends React.Component {
             dragging: props.dragging
         });
     }
-
-
 
     draggingChanged(draggingStatus) {
         this.dragging = draggingStatus;
@@ -433,7 +452,6 @@ export class TrackRenderer extends React.Component {
                 }
             }
         }
-
     }
 
     timedUpdatePositionAndDimensions() {
@@ -456,7 +474,6 @@ export class TrackRenderer extends React.Component {
             requestAnimationFrame(this.timedUpdatePositionAndDimensions.bind(this));
         }
     }
-
 
     syncTrackObjects(trackDefinitions) {
         /**
@@ -671,15 +688,8 @@ export class TrackRenderer extends React.Component {
          * We need to update our local record of the zoom transform and apply it
          * to all the tracks.
          */
-        if (!this.currentProps.zoomable)
-            this.zoomTransform = zoomIdentity;
-        else
-            try {
-                this.zoomTransform = event.transform;
-            } catch (error) {
-                console.error(error);
-            }
-
+        this.zoomTransform = !this.currentProps.zoomable ?
+            zoomIdentity : event.transform;
 
         this.applyZoomTransform(true);
     }
@@ -735,22 +745,30 @@ export class TrackRenderer extends React.Component {
         switch (track.type) {
             case 'left-axis':
                 return new LeftAxisTrack(this.svgElement);
+
             case 'top-axis':
                 return new TopAxisTrack(this.svgElement);
+
             case 'heatmap':
-                return new HeatmapTiledPixiTrack(this.pStage,
-                                                 track.server,
-                                                 track.tilesetUid,
-                                                 handleTilesetInfoReceived,
-                                                 track.options,
-                                                 () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new HeatmapTiledPixiTrack(
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+
             case 'horizontal-line':
-                return new HorizontalLine1DPixiTrack(this.pStage,
-                                                     track.server,
-                                                     track.tilesetUid,
-                                                     handleTilesetInfoReceived,
-                                                     track.options,
-                                                     () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new HorizontalLine1DPixiTrack(
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+
             case 'vertical-line':
                 return new LeftTrackModifier(
                     new HorizontalLine1DPixiTrack(
@@ -762,64 +780,79 @@ export class TrackRenderer extends React.Component {
                         () => this.currentProps.onNewTilesLoaded(track.uid)
                     )
                 );
+
             case 'horizontal-point':
-                return new HorizontalPoint1DPixiTrack(this.pStage,
-                                                     track.server,
-                                                     track.tilesetUid,
-                                                     handleTilesetInfoReceived,
-                                                     track.options,
-                                                     () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new HorizontalPoint1DPixiTrack(
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+
             case 'horizontal-bar':
-                return new BarTrack(this.pStage,
-                                                     track.server,
-                                                     track.tilesetUid,
-                                                     handleTilesetInfoReceived,
-                                                     track.options,
-                                                     () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new BarTrack(
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+
             case 'vertical-point':
                 return new LeftTrackModifier(
-                    new HorizontalPoint1DPixiTrack(this.pStage,
-                         track.server,
-                         track.tilesetUid,
-                         handleTilesetInfoReceived,
-                         track.options,
-                         () => this.currentProps.onNewTilesLoaded(track.uid)));
+                    new HorizontalPoint1DPixiTrack(
+                        this.pStage,
+                        track.server,
+                        track.tilesetUid,
+                        handleTilesetInfoReceived,
+                        track.options,
+                        () => this.currentProps.onNewTilesLoaded(track.uid)
+                    )
+                );
+
             case 'horizontal-1d-tiles':
                 return new IdHorizontal1DTiledPixiTrack(
-                        this.pStage,
-                        track.server,
-                        track.tilesetUid,
-                        handleTilesetInfoReceived,
-                        track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid)
-                    );
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+
             case 'vertical-1d-tiles':
                 return new IdVertical1DTiledPixiTrack(
-                        this.pStage,
-                        track.server,
-                        track.tilesetUid,
-                        handleTilesetInfoReceived,
-                        track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid)
-                    );
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+
             case '2d-tiles':
                 return new Id2DTiledPixiTrack(
-                        this.pStage,
-                        track.server,
-                        track.tilesetUid,
-                        handleTilesetInfoReceived,
-                        track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid)
-                    );
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+
             case 'top-stacked-interval':
                 return new CNVIntervalTrack(
-                        this.pStage,
-                        track.server,
-                        track.tilesetUid,
-                        handleTilesetInfoReceived,
-                        track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid)
-                    );
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+
             case 'left-stacked-interval':
                 return new LeftTrackModifier(
                     new CNVIntervalTrack(
@@ -831,9 +864,14 @@ export class TrackRenderer extends React.Component {
                         () => this.currentProps.onNewTilesLoaded(track.uid)
                     )
                 );
+
             case 'viewport-projection-center':
                 // TODO: Fix this so that these functions are defined somewhere else
-                if (track.registerViewportChanged && track.removeViewportChanged && track.setDomainsCallback)
+                if (
+                    track.registerViewportChanged &&
+                    track.removeViewportChanged &&
+                    track.setDomainsCallback
+                ) {
                     return new ViewportTracker2D(
                         this.svgElement,
                         track.registerViewportChanged,
@@ -841,11 +879,17 @@ export class TrackRenderer extends React.Component {
                         track.setDomainsCallback,
                         track.options
                     );
-                else
+                } else {
                     return new Track();
+                }
+
             case 'viewport-projection-horizontal':
                 // TODO: Fix this so that these functions are defined somewhere else
-                if (track.registerViewportChanged && track.removeViewportChanged && track.setDomainsCallback)
+                if (
+                    track.registerViewportChanged &&
+                    track.removeViewportChanged &&
+                    track.setDomainsCallback
+                ) {
                     return new ViewportTrackerHorizontal(
                         this.svgElement,
                         track.registerViewportChanged,
@@ -853,11 +897,17 @@ export class TrackRenderer extends React.Component {
                         track.setDomainsCallback,
                         track.options
                     );
-                else
+                } else {
                     return new Track();
+                }
+
             case 'viewport-projection-vertical':
                 // TODO: Fix this so that these functions are defined somewhere else
-                if (track.registerViewportChanged && track.removeViewportChanged && track.setDomainsCallback)
+                if (
+                    track.registerViewportChanged &&
+                    track.removeViewportChanged &&
+                    track.setDomainsCallback
+                ) {
                     return new ViewportTrackerVertical(
                         this.svgElement,
                         track.registerViewportChanged,
@@ -865,8 +915,10 @@ export class TrackRenderer extends React.Component {
                         track.setDomainsCallback,
                         track.options
                     );
-                else
+                } else {
                     return new Track();
+                }
+
             case 'horizontal-gene-annotations':
                 return new HorizontalGeneAnnotationsTrack(
                     this.pStage,
@@ -875,7 +927,8 @@ export class TrackRenderer extends React.Component {
                     handleTilesetInfoReceived,
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid)
-                )
+                );
+
             case 'vertical-gene-annotations':
                 return new LeftTrackModifier(
                     new HorizontalGeneAnnotationsTrack(
@@ -886,7 +939,8 @@ export class TrackRenderer extends React.Component {
                         track.options,
                         () => this.currentProps.onNewTilesLoaded(track.uid)
                     )
-                )
+                );
+
             case '2d-rectangle-domains':
                 return new ArrowheadDomainsTrack(
                     this.pStage,
@@ -896,15 +950,19 @@ export class TrackRenderer extends React.Component {
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid)
                 );
+
             case 'vertical-2d-rectangle-domains':
-                return new LeftTrackModifier(new Horizontal2DDomainsTrack(
-                    this.pStage,
-                    track.server,
-                    track.tilesetUid,
-                    handleTilesetInfoReceived,
-                    track.options,
-                    () => this.currentProps.onNewTilesLoaded(track.uid)
-                ));
+                return new LeftTrackModifier(
+                    new Horizontal2DDomainsTrack(
+                        this.pStage,
+                        track.server,
+                        track.tilesetUid,
+                        handleTilesetInfoReceived,
+                        track.options,
+                        () => this.currentProps.onNewTilesLoaded(track.uid)
+                    )
+                );
+
             case 'horizontal-2d-rectangle-domains':
                 return new Horizontal2DDomainsTrack(
                     this.pStage,
@@ -914,6 +972,7 @@ export class TrackRenderer extends React.Component {
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid)
                 );
+
             case 'arrowhead-domains':
                 return new ArrowheadDomainsTrack(
                     this.pStage,
@@ -923,6 +982,7 @@ export class TrackRenderer extends React.Component {
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid)
                 );
+
             case 'square-markers':
                 return new SquareMarkersTrack(
                     this.pStage,
@@ -932,6 +992,7 @@ export class TrackRenderer extends React.Component {
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid)
                 );
+
             case 'combined':
                 return new CombinedTrack(
                     track.contents,
@@ -939,67 +1000,84 @@ export class TrackRenderer extends React.Component {
                     handleTilesetInfoReceived,
                     track.options
                 );
+
             case '2d-chromosome-labels':
                 return new Chromosome2DLabels(
-                        this.pStage,
-                         track.server,
-                         track.tilesetUid,
-                         handleTilesetInfoReceived,
-                         track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid));
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+
             case '2d-chromosome-grid':
                 return new Chromosome2DGrid(
-                         this.pStage,
-                         track.server,
-                         track.tilesetUid,
-                         handleTilesetInfoReceived,
-                         track.options,
-                         () => this.currentProps.onNewTilesLoaded(track.uid),
-                        track.chromInfoPath
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid),
+                    track.chromInfoPath
                 );
+
             case 'horizontal-chromosome-labels':
                 // chromInfoPath is passed in for backwards compatibility
                 // it can be used to provide custom chromosome sizes
                 return new HorizontalChromosomeLabels(
-                        this.pStage,
-                         track.server,
-                         track.tilesetUid,
-                         handleTilesetInfoReceived,
-                         track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid),
-                         track.chromInfoPath
-                        );
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid),
+                    track.chromInfoPath
+                );
+
             case 'vertical-chromosome-labels':
                 // chromInfoPath is passed in for backwards compatibility
                 // it can be used to provide custom chromosome sizes
-                return new LeftTrackModifier(new HorizontalChromosomeLabels(
-                            this.pStage,
-                         track.server,
-                         track.tilesetUid,
-                         handleTilesetInfoReceived,
-                         track.options,
+                return new LeftTrackModifier(
+                    new HorizontalChromosomeLabels(
+                        this.pStage,
+                        track.server,
+                        track.tilesetUid,
+                        handleTilesetInfoReceived,
+                        track.options,
                         () => this.currentProps.onNewTilesLoaded(track.uid),
-                        track.chromInfoPath)
+                        track.chromInfoPath
+                    )
                 );
             case 'horizontal-heatmap':
-                return new HorizontalHeatmapTrack(this.pStage,
-                                                     track.server,
-                                                     track.tilesetUid,
-                                                     handleTilesetInfoReceived,
-                                                     track.options,
-                                                     () => this.currentProps.onNewTilesLoaded(track.uid)
-                                                 );
+                return new HorizontalHeatmapTrack(
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                 );
+
             case 'vertical-heatmap':
-                return new LeftTrackModifier(new HorizontalHeatmapTrack(this.pStage,
-                                                 track.server,
-                                                 track.tilesetUid,
-                                                 handleTilesetInfoReceived,
-                                                 track.options,
-                                                 () => this.currentProps.onNewTilesLoaded(track.uid)
-                                                ));
+                return new LeftTrackModifier(
+                    new HorizontalHeatmapTrack(
+                        this.pStage,
+                        track.server,
+                        track.tilesetUid,
+                        handleTilesetInfoReceived,
+                        track.options,
+                        () => this.currentProps.onNewTilesLoaded(track.uid)
+                    )
+                );
+
             case '2d-chromosome-annotations':
-                return new Chromosome2DAnnotations(this.pStage,
-                    track.chromInfoPath, track.options);
+                return new Chromosome2DAnnotations(
+                    this.pStage,
+                    track.chromInfoPath,
+                    track.options
+                );
+
             case 'horizontal-1d-value-interval':
                 return new ValueIntervalTrack(
                     this.pStage,
@@ -1007,7 +1085,9 @@ export class TrackRenderer extends React.Component {
                     track.tilesetUid,
                     handleTilesetInfoReceived,
                     track.options,
-                    () => this.currentProps.onNewTilesLoaded(track.uid))
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+
             case 'horizontal-1d-value-interval':
                 return new ValueIntervalTrack(
                     this.pStage,
@@ -1015,7 +1095,9 @@ export class TrackRenderer extends React.Component {
                     track.tilesetUid,
                     handleTilesetInfoReceived,
                     track.options,
-                    () => this.currentProps.onNewTilesLoaded(track.uid))
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+
             case 'vertical-1d-value-interval':
                 return new LeftTrackModifier(new ValueIntervalTrack(
                     this.pStage,
@@ -1023,39 +1105,46 @@ export class TrackRenderer extends React.Component {
                     track.tilesetUid,
                     handleTilesetInfoReceived,
                     track.options,
-                    () => this.currentProps.onNewTilesLoaded(track.uid)));
+                    () => this.currentProps.onNewTilesLoaded(track.uid))
+                );
+
             case 'osm-tiles':
-                return new OSMTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new OSMTilesTrack(
+                    this.pStage,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+
             case 'mapbox-tiles':
-                console.log("Here");
-                return new MapboxTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new MapboxTilesTrack(
+                    this.pStage,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
+
             default:
-                 console.warn('WARNING: unknown track type:', track.type);
+                console.warn('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(
                     this.pStage,
                     {name: 'Unknown Track Type'}
                 );
         }
-
     }
 
     render() {
-        //this.removeZoom();
-        //this.addZoom();
-
         return(
             <div
-                className={"track-renderer"}
+                className="track-renderer"
                 ref={(c) => this.divTrackArea = c}
                 style={{
                     width: this.currentProps.width,
                     height: this.currentProps.height,
-                    position: "absolute"}}
+                    position: "absolute"
+                }}
             >
                 {this.currentProps.children}
             </div>
         );
-
     }
 }
 
