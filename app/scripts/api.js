@@ -52,14 +52,14 @@ const api = function api(context) {
       );
     },
 
-    off(event, viewId, listenerId) {
+    off(event, listenerId, viewId) {
       switch (event) {
         case 'location':
           self.offLocationChange(viewId, listenerId);
           break;
 
         case 'view':
-          self.offViewChange(callbackId);
+          self.offViewChange(listenerId);
           break;
 
         default:
@@ -68,14 +68,14 @@ const api = function api(context) {
       }
     },
 
-    on(event, viewId, callback, callbackId) {
+    on(event, callback, viewId, callbackId) {
       switch (event) {
         case 'location':
           self.onLocationChange(viewId, callback, callbackId);
           break;
 
         case 'view':
-          return self.onViewChange(viewId || callback);
+          return self.onViewChange(callback);
 
         default:
           // nothing
@@ -83,15 +83,18 @@ const api = function api(context) {
       }
     },
 
-    refresh() {
+    refresh(force = false) {
       if (self.props.options.bounded) {
         self.fitPixiToParentContainer();
       }
 
+      self.updateAfterResize();
       self.render();
       self.animate();
 
-      return _api;
+      if (force) {
+        self.forceRefreshView();
+      }
     }
   };
 }
