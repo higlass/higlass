@@ -9,8 +9,31 @@ let GENE_RECT_HEIGHT = 6;
 let MAX_TEXTS = 20;
 
 export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
-        super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, popupCallback) {
+        /**
+         * Create a new track for Gene Annotations
+         *
+         * Arguments:
+         * ----------
+         *  scene: PIXI.js scene (or graphics)
+         *      Where to draw everything.
+         *  server: string
+         *      The server from which to retrieve data
+         *  uid: string
+         *      The uid of the track on the server
+         *  handleTilesetInfoReceived: function 
+         *      A callback to let the caller know that we've received the
+         *      tileset information for this track.
+         *  options: {}
+         *      An object containing all of the options that describe how this track should
+         *      be rendered
+         *  animate: callback
+         *      Function to be called when something in this track changes.
+         *  popupCallback: function
+         *      Callback for when this track wishes to display extra information 
+         *      (e.g. gene information)
+         */
+        super(scene, server, uid, handleTilesetInfoReceived, options, animate, popupCallback);
         this.textFontSize = '10px';
         this.textFontFamily = 'Arial';
     }
@@ -48,6 +71,11 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             let text = new PIXI.Text(geneInfo[3],  {fontSize: this.textFontSize, 
                                                     fontFamily: this.textFontFamily,
                                                     fill: colorToHex(fill)});
+            text.interactive = true;
+            text.click = function(e) {
+                console.log('click');
+            };
+
             if (this.flipText)
                 text.scale.x = -1;
 
@@ -366,7 +394,12 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
         track.appendChild(output);
 
-        for (let rect of this.allRects) {
+        let allRects = [];
+        for (let tile of this.visibleAndFetchedTiles()) {
+            allRects = allRects.concat(tile.allRects);
+        }
+
+        for (let rect of allRects) {
             let r = document.createElement('rect');
             r.setAttribute('x', rect[0]);
             r.setAttribute('y', rect[1]);
