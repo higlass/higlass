@@ -50,6 +50,8 @@ import debounce from './debounce';
 
 import '../styles/HiGlassComponent.css';
 
+import {domEvent} from './services';
+
 let WidthReactGridLayout = WidthProvider(ReactGridLayout);
 
 const NUM_GRID_COLUMNS = 12;
@@ -158,6 +160,10 @@ export class HiGlassComponent extends React.Component {
   }
 
   componentWillMount() {
+    domEvent.register('keydown', document);
+    domEvent.register('keyup', document);
+    domEvent.register('scroll', document);
+
     if (this.props.getApi) {
       this.props.getApi(this.api);
     }
@@ -215,6 +221,44 @@ export class HiGlassComponent extends React.Component {
           icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox)
       );
   }
+
+  componentWillReceiveProps(newProps) {
+    let viewsByUid = this.processViewConfig(newProps.viewConfig);
+
+    this.setState({
+      views: viewsByUid
+    });
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    let width = this.element.clientWidth;
+    let height = this.element.clientHeight;
+
+    /*
+    this.pixiRenderer.resize(width, height);
+    this.pixiRenderer.view.style.width = width + 'px';
+    this.pixiRenderer.view.style.height = height + 'px';
+    */
+
+    this.pixiRenderer.render(this.pixiStage);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.animate();
+
+    this.triggerViewChangeDb();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('focus', this.boundRefreshView);
+    this.resizeSensor.detach();
+
+    domEvent.unregister('keydown', document);
+    domEvent.unregister('keyup', document);
+    domEvent.unregister('scroll', document);
+  }
+
+  /* ---------------------------- Custom Methods ---------------------------- */
 
   fitPixiToParentContainer() {
       if (!this.element.parentNode) {
@@ -2299,40 +2343,6 @@ export class HiGlassComponent extends React.Component {
 
 
     }
-
-
-    componentWillReceiveProps(newProps) {
-        let viewsByUid = this.processViewConfig(newProps.viewConfig);
-
-        this.setState({
-            views: viewsByUid
-        });
-    }
-
-  componentWillUpdate(nextProps, nextState) {
-    let width = this.element.clientWidth;
-    let height = this.element.clientHeight;
-
-    /*
-    this.pixiRenderer.resize(width, height);
-    this.pixiRenderer.view.style.width = width + 'px';
-    this.pixiRenderer.view.style.height = height + 'px';
-    */
-
-    this.pixiRenderer.render(this.pixiStage);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    this.animate();
-
-    this.triggerViewChangeDb();
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('focus', this.boundRefreshView);
-    this.resizeSensor.detach();
-  }
-
 
   render() {
 
