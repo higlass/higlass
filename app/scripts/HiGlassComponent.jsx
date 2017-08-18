@@ -57,215 +57,215 @@ const DEFAULT_NEW_VIEW_HEIGHT = 12;
 const VIEW_HEADER_HEIGHT = 20;
 
 export class HiGlassComponent extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+      super(props);
 
-        this.minHorizontalHeight = 20;
-        this.minVerticalWidth = 20;
-        this.resizeSensor = null;
+      this.minHorizontalHeight = 20;
+      this.minVerticalWidth = 20;
+      this.resizeSensor = null;
 
-        this.uid = slugid.nice();
-        this.rowHeight = 40;
-        this.tiledPlots = {};
-        this.genomePositionSearchBoxes = {};
+      this.uid = slugid.nice();
+      this.rowHeight = 40;
+      this.tiledPlots = {};
+      this.genomePositionSearchBoxes = {};
 
-        // keep track of the xScales of each Track Renderer
-        this.xScales = {};
-        this.yScales = {};
-        this.topDiv = null;
+      // keep track of the xScales of each Track Renderer
+      this.xScales = {};
+      this.yScales = {};
+      this.topDiv = null;
 
-        // a reference of view / track combinations
-        // to be used with combined to viewAndTrackUid
-        this.viewTrackUidsToCombinedUid = {};
-        this.combinedUidToViewTrack = {};
+      // a reference of view / track combinations
+      // to be used with combined to viewAndTrackUid
+      this.viewTrackUidsToCombinedUid = {};
+      this.combinedUidToViewTrack = {};
 
-        // event listeners for when the scales of a view change
-        // bypasses the React event framework because this needs
-        // to be fast
-        // indexed by view uid and then listener uid
-        this.scalesChangedListeners = {};
-        this.draggingChangedListeners = {};
-        this.valueScalesChangedListeners = {};
+      // event listeners for when the scales of a view change
+      // bypasses the React event framework because this needs
+      // to be fast
+      // indexed by view uid and then listener uid
+      this.scalesChangedListeners = {};
+      this.draggingChangedListeners = {};
+      this.valueScalesChangedListeners = {};
 
-        // locks that keep the location and zoom synchronized
-        // between views
-        this.zoomLocks = {};
-        this.locationLocks = {};
+      // locks that keep the location and zoom synchronized
+      // between views
+      this.zoomLocks = {};
+      this.locationLocks = {};
 
-        // locks that keep the value scales synchronized between
-        // *tracks* (which can be in different views)
-        this.valueScaleLocks = {};
+      // locks that keep the value scales synchronized between
+      // *tracks* (which can be in different views)
+      this.valueScaleLocks = {};
 
-        this.setCenters = {};
+      this.setCenters = {};
 
-        this.plusImg = {};
-        this.configImg = {};
+      this.plusImg = {};
+      this.configImg = {};
 
-        this.horizontalMargin = 5;
-        this.verticalMargin = 5;
+      this.horizontalMargin = 5;
+      this.verticalMargin = 5;
 
-        this.genomePositionSearchBox = null;
-        this.viewHeaders = {};
+      this.genomePositionSearchBox = null;
+      this.viewHeaders = {};
 
-        this.boundRefreshView = (() => { this.refreshView(LONG_DRAG_TIMEOUT) }).bind(this);
-        //
+      this.boundRefreshView = (() => { this.refreshView(LONG_DRAG_TIMEOUT) }).bind(this);
+      //
 
-        let localServer = "localhost:8000";
+      let localServer = "localhost:8000";
 
-        //let usedServer = localServer;
-        //let usedServer = remoteServer;
+      //let usedServer = localServer;
+      //let usedServer = remoteServer;
 
-        this.viewConfig = this.props.viewConfig;
+      this.viewConfig = this.props.viewConfig;
 
-          this.pixiStage = new PIXI.Container();
-          this.pixiStage.interactive = true;
-          this.element = null;
+        this.pixiStage = new PIXI.Container();
+        this.pixiStage.interactive = true;
+        this.element = null;
 
-          let viewsByUid = this.processViewConfig(JSON.parse(JSON.stringify(this.props.viewConfig)));
+        let viewsByUid = this.processViewConfig(JSON.parse(JSON.stringify(this.props.viewConfig)));
 
-          this.state = {
-              bounded: this.props.options ? this.props.options.bounded : false,
-            currentBreakpoint: 'lg',
-            mounted: false,
-            width: 0,
-            height: 0,
-            rowHeight: 30,
-            svgElement: null,
-            canvasElement: null,
-            views: viewsByUid,
-            addTrackPositionMenuPosition: null,
+        this.state = {
+            bounded: this.props.options ? this.props.options.bounded : false,
+          currentBreakpoint: 'lg',
+          mounted: false,
+          width: 0,
+          height: 0,
+          rowHeight: 30,
+          svgElement: null,
+          canvasElement: null,
+          views: viewsByUid,
+          addTrackPositionMenuPosition: null,
 
-            //chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
-            //chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
-            //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
-            //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
-            mouseOverOverlayUid: null,
-            exportLinkModalOpen: false,
-            exportLinkLocation: null
+          //chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
+          //chooseViewHandler: uid2 => this.handleZoomLockChosen(views[0].uid, uid2),
+          //chooseViewHandler: uid2 => this.handleCenterSynced(views[0].uid, uid2),
+          //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
+          mouseOverOverlayUid: null,
+          exportLinkModalOpen: false,
+          exportLinkLocation: null
+        }
+
+
+        dictValues(viewsByUid).map(view => this.adjustLayoutToTrackSizes(view));
+
+    // Set up API
+    this.api = api(this);
+
+    this.viewChangeListener = [];
+
+    this.triggerViewChangeDb = debounce(
+      this.triggerViewChange.bind(this), 250
+    );
+  }
+
+  componentWillMount() {
+    if (this.props.getApi) {
+      this.props.getApi(this.api);
+    }
+  }
+
+  componentDidMount() {
+      // the addEventListener is necessary because TrackRenderer determines where to paint
+      // all the elements based on their bounding boxes. If the window isn't
+      // in focus, everything is drawn at the top and overlaps. When it gains
+      // focus we need to redraw everything in its proper place
+      this.element = ReactDOM.findDOMNode(this);
+      window.addEventListener("focus", this.boundRefreshView);
+
+      dictValues(this.state.views).map(v => {
+          if (!v.layout)
+              v.layout = this.generateViewLayout(v)
+          else {
+              v.layout.i = v.uid;
           }
+      });
 
+      this.pixiRenderer = PIXI.autoDetectRenderer(this.state.width,
+                                      this.state.height,
+                                      { view: this.canvasElement,
+                                        antialias: true,
+                                        transparent: true,
+                                        resolution: 2,
+                                        autoResize: true
+                                      } )
 
-          dictValues(viewsByUid).map(view => this.adjustLayoutToTrackSizes(view));
+      //PIXI.RESOLUTION=2;
+      this.fitPixiToParentContainer();
 
-      // Set up API
-      this.api = api(this);
-
-      this.viewChangeListener = [];
-
-      this.triggerViewChangeDb = debounce(
-        this.triggerViewChange.bind(this), 250
+      // keep track of the width and height of this element, because it
+      // needs to be reflected in the size of our drawing surface
+      this.setState({mounted: true,
+          svgElement: this.svgElement,
+          canvasElement: this.canvasElement
+      });
+      ElementQueries.listen();
+      this.resizeSensor = new ResizeSensor(
+        this.element.parentNode, this.updateAfterResize.bind(this)
       );
-    }
 
-    componentWillMount() {
-      if (this.props.getApi) {
-        this.props.getApi(this.api);
+      this.handleDragStart();
+      this.handleDragStop();
+
+      this.animate();
+      //this.handleExportViewsAsLink();
+
+      const baseSvg = select(this.element).append('svg').style('display', 'none');
+
+      // Add SVG Icons
+      icons.forEach(
+          icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox)
+      );
+  }
+
+  fitPixiToParentContainer() {
+      if (!this.element.parentNode) {
+          console.warn('No parentNode:', this.element);
+          return;
       }
-    }
 
-    componentDidMount() {
-        // the addEventListener is necessary because TrackRenderer determines where to paint
-        // all the elements based on their bounding boxes. If the window isn't
-        // in focus, everything is drawn at the top and overlaps. When it gains
-        // focus we need to redraw everything in its proper place
-        this.element = ReactDOM.findDOMNode(this);
-        window.addEventListener("focus", this.boundRefreshView);
+      let width = this.element.parentNode.clientWidth;
+      let height = this.element.parentNode.clientHeight;
 
-        dictValues(this.state.views).map(v => {
-            if (!v.layout)
-                v.layout = this.generateViewLayout(v)
-            else {
-                v.layout.i = v.uid;
-            }
-        });
+       this.pixiRenderer.resize(width, height);
 
-        this.pixiRenderer = PIXI.autoDetectRenderer(this.state.width,
-                                        this.state.height,
-                                        { view: this.canvasElement,
-                                          antialias: true,
-                                          transparent: true,
-                                          resolution: 2,
-                                          autoResize: true
-                                        } )
+      this.pixiRenderer.view.style.width = width + "px";
+      this.pixiRenderer.view.style.height = height + "px";
 
-        //PIXI.RESOLUTION=2;
-        this.fitPixiToParentContainer();
+      this.pixiRenderer.render(this.pixiStage);
+  }
 
-        // keep track of the width and height of this element, because it
-        // needs to be reflected in the size of our drawing surface
-        this.setState({mounted: true,
-            svgElement: this.svgElement,
-            canvasElement: this.canvasElement
-        });
-        ElementQueries.listen();
-        this.resizeSensor = new ResizeSensor(this.element.parentNode, function() {
-            //let heightOffset = this.element.offsetTop - this.element.parentNode.offsetTop
-            let heightOffset = 0;
+  addDefaultOptions(track) {
+      if (!tracksInfoByType.hasOwnProperty(track.type)) {
+          console.error("ERROR: track type not found:", track.type, " (check app/scripts/config.js for a list of defined track types)");
+          return;
+      }
 
-            this.updateRowHeight();
+      let trackOptions = track.options ? track.options : {};
 
-            this.fitPixiToParentContainer();
-            this.refreshView(LONG_DRAG_TIMEOUT);
-         }.bind(this));
+      if (tracksInfoByType[track.type].defaultOptions) {
+          if (!track.options)
+              track.options = JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions));
+          else {
+              for (let optionName in tracksInfoByType[track.type].defaultOptions) {
+                  track.options[optionName] = track.options[optionName] ?
+                      track.options[optionName] : JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions[optionName]));
 
-        this.handleDragStart();
-        this.handleDragStop();
+              }
+          }
+      } else
+          track.options = trackOptions;
+  }
 
-        this.animate();
-        //this.handleExportViewsAsLink();
+  animate() {
+    requestAnimationFrame(() => {
+      this.pixiRenderer.render(this.pixiStage);
+    });
+  }
 
-        const baseSvg = select(this.element).append('svg').style('display', 'none');
-
-        // Add SVG Icons
-        icons.forEach(
-            icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox)
-        );
-    }
-
-    fitPixiToParentContainer() {
-        if (!this.element.parentNode) {
-            console.warn('No parentNode:', this.element);
-            return;
-        }
-
-        let width = this.element.parentNode.clientWidth;
-        let height = this.element.parentNode.clientHeight;
-
-         this.pixiRenderer.resize(width, height);
-
-        this.pixiRenderer.view.style.width = width + "px";
-        this.pixiRenderer.view.style.height = height + "px";
-
-        this.pixiRenderer.render(this.pixiStage);
-    }
-
-    addDefaultOptions(track) {
-        if (!tracksInfoByType.hasOwnProperty(track.type)) {
-            console.error("ERROR: track type not found:", track.type, " (check app/scripts/config.js for a list of defined track types)");
-            return;
-        }
-
-        let trackOptions = track.options ? track.options : {};
-
-        if (tracksInfoByType[track.type].defaultOptions) {
-            if (!track.options)
-                track.options = JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions));
-            else {
-                for (let optionName in tracksInfoByType[track.type].defaultOptions) {
-                    track.options[optionName] = track.options[optionName] ?
-                        track.options[optionName] : JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions[optionName]));
-
-                }
-            }
-        } else
-            track.options = trackOptions;
-    }
-
-    animate() {
-        requestAnimationFrame(() => {
-            this.pixiRenderer.render(this.pixiStage);
-        });
-    }
+  updateAfterResize() {
+    this.updateRowHeight();
+    this.fitPixiToParentContainer();
+    this.refreshView(LONG_DRAG_TIMEOUT);
+  }
 
   onBreakpointChange(breakpoint) {
     this.setState({
@@ -1836,27 +1836,9 @@ export class HiGlassComponent extends React.Component {
 
   handleExportViewAsJSON() {
     const data = this.getViewsAsString();
-    const a = document.createElement("a");
     const file = new Blob([data], {type: 'text/json'});
-    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-      /[xy]/g,
-      (c) => {
-        const r = Math.random()*16|0;
-        const v = c == 'x' ? r : r&0x3|0x8;
-        return v.toString(16);
-      }
-    );
 
     download('viewconf.json', data);
-        /*
-        var a = document.createElement("a");
-        var file = new Blob([data], {type: 'text/json'});
-        a.href = URL.createObjectURL(file);
-        a.download = `higlass-config.${uuid}.json`;  // Filename
-        document.body.appendChild(a); // Necessary for downloads on Firefox.
-        a.click();
-        document.body.removeChild(a);
-        */
   }
 
   handleExportViewsAsLink() {
