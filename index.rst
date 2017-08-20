@@ -49,6 +49,7 @@ This file can be aggregated like so:
         --importance-column 5 \
         sorted_genes_target_db.tsv
 
+
 BedGraph files
 --------------
 
@@ -81,11 +82,11 @@ Assume we have an input file that has ``id chr start end value1 value2`` pairs::
     1:3100001-3200000       1       3100001 3200000 -0.428  -0.495
     1:3200001-3300000       1       3200001 3300000 -0.437  -0.495
 
+
 We can aggregate this file by recursively summing adjacent values. We have to
 indicate which column corresponds to the chromosome (``--chromosome-col 2``),
-the start position (``--from-pos-col 3``), the end position (``--to-pos-col
-
-4``) and the value column (``--value-col 5``). We specify that the first line
+the start position (``--from-pos-col 3``), the end position (``--to-pos-col 4``) 
+and the value column (``--value-col 5``). We specify that the first line
 of the data file contains a header using the (``--has-header``) option.
 
 .. code-block:: bash
@@ -139,11 +140,30 @@ as 0. This makes it possible to display a track showing how many NaN values are
 present in each interval. It also makes it possible to create compound tracks
 which use that information to normalize track values.
 
+bigWig files
+------------
+
+`bigWig files <https://genome.ucsc.edu/goldenpath/help/bigWig.html>`_ store
+genomic data in a compressed, indexed form that allows rapid retrieval and
+visualization. Unfortunately, for the time being, HiGlass does not support
+displaying bigWig files and they must first be converted to hitile files.
+This can be done using clodius's aggregate bigwig function:
+
+.. code-block:: bash
+
+    clodius aggregate bigwig input.bigWig \
+        --output-file output.hitile \
+        --assembly hg19
+
+The resulting file can be loaded into HiGlass as described in the
+:ref:`loading-into-higlass` section below.
+
+.. _loading-into-higlass:
 
 Loading into HiGlass
 --------------------
 
-Too see this dataset in higlass, use the docker container to load it:
+Too see .hitile-typed datasets in higlass, use the docker container to load them:
 
 .. code-block:: bash
 
@@ -164,6 +184,9 @@ It can also be loaded using a curl commands:
         -F "coordSystem=hg19" \
         http://higlass.io:80/api/v1/tilesets/
 
+.. todo:: And navigate to 127.0.0.1:8989, click on the '+' symbol, select a track
+          position, find the dataset in the list of the datasets and click OK to
+          view it. And stuff.
 
 Development
 -----------
