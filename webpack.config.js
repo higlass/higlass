@@ -1,7 +1,8 @@
-var path = require('path');
-var webpack = require('webpack');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const autoprefixer = require('autoprefixer');
+const path = require('path');
+const webpack = require('webpack');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   context: __dirname + '/app',
@@ -19,7 +20,7 @@ module.exports = {
   },
   module: {
     loaders: [
-      { 
+      {
         test: /\.jsx?$/,
         //exclude: /node_modules/,
         include: [path.resolve(__dirname, 'app/scripts'), path.resolve(__dirname, 'test')],
@@ -34,16 +35,44 @@ module.exports = {
             }
           }
         ]
-      }
-      , 
+      },
       {
-          test: /\.css$/,
-          use: ExtractTextPlugin.extract({
-              fallback: "style-loader",
-              use: "css-loader"
-          })
+        test: /\.s?css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 1,
+                minimize: true,
+                sourceMap: true,
+              },
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                // Necessary for external CSS imports to work
+                // https://github.com/facebookincubator/create-react-app/issues/2677
+                ident: 'postcss',
+                plugins: () => [
+                  require('postcss-flexbugs-fixes'),
+                  autoprefixer({
+                    browsers: [
+                      '>1%',
+                      'last 4 versions',
+                      'Firefox ESR',
+                      'not ie < 9', // React doesn't support IE8 anyway
+                    ],
+                    flexbox: 'no-2009',
+                  }),
+                ],
+              },
+            },
+            'sass-loader',  // compiles Sass to CSS
+          ]
+        }),
       }
-
     ],
     noParse: [
         /node_modules\/sinon\//,
