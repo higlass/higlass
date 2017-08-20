@@ -1,21 +1,5 @@
-.. clodius documentation master file, created by
-   sphinx-quickstart on Mon Jul  3 16:40:45 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Clodius: Big data aggregation for visualization
 ===============================================
-
-.. toctree::
-    :maxdepth: 2
-    :caption: Contents:
-
-    higlass_server
-    higlass_client
-    gene_annotations
-
-.. contents:: :local:
-
 
 Displaying large amounts of data often requires first turning it into
 not-so-large amounts of data. Clodius is a program and library designed
@@ -241,6 +225,12 @@ To view the documentation, go to the build directory and start an http server::
 
     cd docs/_build/html
     python -m http 8081
+
+.. toctree::
+    :hidden:
+    :glob:
+
+    *
 
 Indices and tables
 ==================
