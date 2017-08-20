@@ -47,7 +47,12 @@ import {MapboxTilesTrack} from './MapboxTilesTrack';
 
 import {domEvent, pubSub} from './services';
 
-let SCROLL_TIMEOUT = 100;
+// Styles
+import "../styles/TrackRenderer.scss";
+
+
+const SCROLL_TIMEOUT = 100;
+
 
 export class TrackRenderer extends React.Component {
     /**
@@ -91,7 +96,7 @@ export class TrackRenderer extends React.Component {
         this.prevPropsStr = '';
 
         this.brushBehavior = brush()
-            // .filter(() => !event.target.classList.contains('no-brush'))
+            .filter(() => !event.target.classList.contains('no-brush'))
             .on('start', this.brushStartedBound)
             .on('brush', this.brushedBound)
             .on('end', this.brushEndedBound);
@@ -144,6 +149,10 @@ export class TrackRenderer extends React.Component {
         this.pubSubs = [];
         this.keyDownHandlerBound = this.keyDownHandler.bind(this);
         this.keyUpHandlerBound = this.keyUpHandler.bind(this);
+
+        this.state = {
+            selecting: false
+        };
     }
 
     componentWillMount() {
@@ -254,6 +263,18 @@ export class TrackRenderer extends React.Component {
         }
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.selecting !== this.state.selecting) {
+            if (this.state.selecting) {
+                this.removeZoom();
+                this.addBrush();
+            } else {
+                this.removeBrush();
+                this.addZoom();
+            }
+        }
+    }
+
     componentWillUnmount() {
         /**
          * This view has been removed so we need to get rid of all the tracks it contains
@@ -272,10 +293,7 @@ export class TrackRenderer extends React.Component {
     addBrush() {
         if (!this.svgTrackAreaSelection) { return; }
 
-        // add back the previous transform
-        this.svgTrackAreaSelection
-            .call(this.brushBehavior)
-            .call(this.brushBehavior.move, [[307, 167], [611, 539]]);
+        this.svgTrackAreaSelection.call(this.brushBehavior);
     }
 
     addZoom() {
@@ -287,7 +305,19 @@ export class TrackRenderer extends React.Component {
     }
 
     brushed() {
-        console.log(event, this.brushBehavior.extent());
+        if (!event.sourceEvent) return;
+
+        const selection = event.selection;
+        const x0 = selection[0][0];
+        const y0 = selection[0][1];
+        const dx = selection[1][0] - x0;
+        const dy = selection[1][1] - y0;
+        const max = 0;
+
+        console.log(
+            'brushing',
+            x0
+        );
     }
 
     brushStarted() {
@@ -300,29 +330,39 @@ export class TrackRenderer extends React.Component {
 
     keyDownHandler(event) {
         if (event.key === 'Alt') {
-            this.removeZoom();
-            this.addBrush();
+            this.setState({
+                selecting: true
+            });
         }
     }
 
     keyUpHandler(event) {
         if (event.key === 'Alt') {
-            this.removeBrush();
-            this.addZoom();
+            this.setState({
+                selecting: false
+            });
         }
     }
 
     removeBrush() {
         if (this.svgTrackAreaSelection) {
-            this.svgTrackAreaSelection.on('.brush', null);
             this.brushEnded();
+
+            // Reset brush selection
+            this.svgTrackAreaSelection.call(
+                this.brushBehavior.move,
+                null
+            );
+
+            // Remove brush behavior
+            this.svgTrackAreaSelection.on('.brush', null);
         }
     }
 
     removeZoom() {
         if (this.divTrackAreaSelection) {
-            this.divTrackAreaSelection.on('.zoom', null);
             this.zoomEnded();
+            this.divTrackAreaSelection.on('.zoom', null);
         }
     }
 
@@ -340,8 +380,6 @@ export class TrackRenderer extends React.Component {
 
     windowScrolled() {
         this.removeZoom();
-
-        console.log('windowScrolled');
 
         if (this.scrollTimeout)
             clearTimeout(this.scrollTimeout);
@@ -1180,24 +1218,28 @@ export class TrackRenderer extends React.Component {
         }
     }
 
+    /* ------------------------------- Render ------------------------------- */
+
     render() {
+        let classesSelection = 'track-renderer-selection';
+
+        classesSelection += this.state.selecting ? ' is-active' : '';
+
         return(
             <div
                 className="track-renderer"
                 ref={(c) => this.divTrackArea = c}
                 style={{
-                    width: this.currentProps.width,
                     height: this.currentProps.height,
-                    position: "absolute"
+                    width: this.currentProps.width
                 }}
             >
                 <svg
-                    className="track-renderer-brusher"
+                    className={classesSelection}
                     ref={el => this.svgTrackArea = el}
                     style={{
-                        width: this.currentProps.width,
                         height: this.currentProps.height,
-                        position: "absolute"
+                        width: this.currentProps.width
                     }}
                 />
                 {this.currentProps.children}
