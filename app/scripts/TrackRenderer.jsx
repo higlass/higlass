@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
+import {brush} from 'd3-brush';
 import {zoom, zoomIdentity} from 'd3-zoom';
 import {select,event} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
@@ -70,7 +71,13 @@ export class TrackRenderer extends React.Component {
 
         this.zoomTransform = zoomIdentity;
         this.windowScrolledBound = this.windowScrolled.bind(this);
+        this.zoomStartedBound = this.zoomStarted.bind(this);
         this.zoomedBound = this.zoomed.bind(this);
+        this.zoomEndedBound = this.zoomEnded.bind(this);
+
+        this.brushedBound = this.brushed.bind(this);
+        this.brushStartedBound = this.brushStarted.bind(this);
+        this.brushEndedBound = this.brushEnded.bind(this);
 
         // create a zoom behavior that we'll just use to transform selections
         // without having it fire an "onZoom" event
@@ -83,23 +90,25 @@ export class TrackRenderer extends React.Component {
         this.currentProps = props;
         this.prevPropsStr = '';
 
+        this.brushBehavior = brush()
+            // .filter(() => !event.target.classList.contains('no-brush'))
+            .on('start', this.brushStartedBound)
+            .on('brush', this.brushedBound)
+            .on('end', this.brushEndedBound);
+
         // catch any zooming behavior within all of the tracks in this plot
         //this.zoomTransform = zoomIdentity();
         this.zoomBehavior = zoom()
             .filter(() => {
-                if (event.target.classList.contains("no-zoom"))
+                if (event.target.classList.contains('no-zoom'))
                     return false;
                 if (event.target.classList.contains('react-resizable-handle'))
                     return false;
                 return true;
             })
-            .on('start', () => {
-                this.zooming = true
-            })
+            .on('start', this.zoomStartedBound)
             .on('zoom', this.zoomedBound)
-            .on('end', () => {
-                this.zooming = false
-            });
+            .on('end', this.zoomEndedBound);
 
                 /*
         if (!this.props.zoomable)
@@ -153,6 +162,7 @@ export class TrackRenderer extends React.Component {
     componentDidMount() {
         this.element = ReactDOM.findDOMNode(this);
         this.divTrackAreaSelection = select(this.divTrackArea);
+        this.svgTrackAreaSelection = select(this.svgTrackArea);
 
         this.pStage = new PIXI.Graphics();
         this.pMask = new PIXI.Graphics();
@@ -259,6 +269,15 @@ export class TrackRenderer extends React.Component {
 
     /* -------------------------- Custom Moethods --------------------------- */
 
+    addBrush() {
+        if (!this.svgTrackAreaSelection) { return; }
+
+        // add back the previous transform
+        this.svgTrackAreaSelection
+            .call(this.brushBehavior)
+            .call(this.brushBehavior.move, [[307, 167], [611, 539]]);
+    }
+
     addZoom() {
         if (!this.divTrackAreaSelection) { return; }
 
@@ -267,21 +286,43 @@ export class TrackRenderer extends React.Component {
         this.zoomBehavior.transform(this.divTrackAreaSelection, this.zoomTransform);
     }
 
+    brushed() {
+        console.log(event, this.brushBehavior.extent());
+    }
+
+    brushStarted() {
+        this.brushing = true;
+    }
+
+    brushEnded() {
+        this.brushing = false;
+    }
+
     keyDownHandler(event) {
         if (event.key === 'Alt') {
             this.removeZoom();
+            this.addBrush();
         }
     }
 
     keyUpHandler(event) {
         if (event.key === 'Alt') {
+            this.removeBrush();
             this.addZoom();
+        }
+    }
+
+    removeBrush() {
+        if (this.svgTrackAreaSelection) {
+            this.svgTrackAreaSelection.on('.brush', null);
+            this.brushEnded();
         }
     }
 
     removeZoom() {
         if (this.divTrackAreaSelection) {
             this.divTrackAreaSelection.on('.zoom', null);
+            this.zoomEnded();
         }
     }
 
@@ -692,6 +733,14 @@ export class TrackRenderer extends React.Component {
             zoomIdentity : event.transform;
 
         this.applyZoomTransform(true);
+    }
+
+    zoomStarted() {
+        this.zooming = true;
+    }
+
+    zoomEnded() {
+        this.zooming = false;
     }
 
     applyZoomTransform(notify=true) {
@@ -1142,6 +1191,15 @@ export class TrackRenderer extends React.Component {
                     position: "absolute"
                 }}
             >
+                <svg
+                    className="track-renderer-brusher"
+                    ref={el => this.svgTrackArea = el}
+                    style={{
+                        width: this.currentProps.width,
+                        height: this.currentProps.height,
+                        position: "absolute"
+                    }}
+                />
                 {this.currentProps.children}
             </div>
         );
