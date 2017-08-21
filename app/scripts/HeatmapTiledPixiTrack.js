@@ -43,6 +43,10 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             this.colorScale = colorDomainToRgbaArray(options.colorRange);
         }
 
+        this.scaleBrush = brushX()
+            .extent([[0, 0], [width, height]])
+            .on("start brush end", brushmoved);
+
         this.prevOptions = '';
     }
 
