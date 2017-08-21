@@ -22,12 +22,28 @@ module.exports = {
     loaders: [
       {
         test: /\.jsx?$/,
-        //exclude: /node_modules/,
-        include: [path.resolve(__dirname, 'app/scripts'), path.resolve(__dirname, 'test')],
+        include: [
+          path.resolve(__dirname, 'app/scripts'),
+          path.resolve(__dirname, 'test')
+        ],
         use: [
           {
             loader: 'babel-loader',
             options: {
+              plugins: [
+                [
+                  'react-css-modules',
+                  {
+                    context: path.resolve(__dirname, 'app'),
+                    filetypes: {
+                      '.scss': {
+                        syntax: 'postcss-scss'
+                      }
+                    },
+                    generateScopedName: '[name]_[local]-[hash:base64:5]',
+                  }
+                ]
+              ],
               presets: [
                 ['es2015', { modules: false }],
                 'react'
@@ -44,9 +60,11 @@ module.exports = {
             {
               loader: 'css-loader',
               options: {
-                importLoaders: 1,
-                minimize: true,
-                sourceMap: true,
+                importLoaders: 2,
+                localIdentName: '[name]_[local]-[hash:base64:5]',
+                minimize: process.env.NODE_ENV === 'development' ? false : { presets: 'default' },
+                modules: true,
+                sourceMap: process.env.NODE_ENV === 'development' ? false : true,
               },
             },
             {
@@ -67,9 +85,15 @@ module.exports = {
                     flexbox: 'no-2009',
                   }),
                 ],
+                sourceMap: process.env.NODE_ENV === 'development' ? false : true
               },
             },
-            'sass-loader',  // compiles Sass to CSS
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: process.env.NODE_ENV === 'development' ? false : true
+              }
+            }
           ]
         }),
       }
