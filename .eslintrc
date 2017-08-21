@@ -1,13 +1,20 @@
 {
     "parser": "babel-eslint",
+    "presets": [
+        "airbnb"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended"
+    ],
     "plugins": [
         "react"
     ],
     "settings": {
         "react": {
-            "pragma": "React" // Pragma to use, default to "React"
+            "pragma": "React"
         },
-        "ecmascript": 6,
+        "ecmascript": 6
     },
     "parserOptions": {
         "ecmaFeatures": {
@@ -54,6 +61,6 @@
         "react/wrap-multilines": 1
     },
     "syntax_map": {
-      "JavaScript (Babel)": "javascript",
-  }
+      "JavaScript (Babel)": "javascript"
+    }
 }
