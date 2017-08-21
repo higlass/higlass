@@ -310,13 +310,16 @@ export class TrackRenderer extends React.Component {
     const selection = event.selection;
     const x0 = selection[0][0];
     const y0 = selection[0][1];
-    const dx = selection[1][0] - x0;
-    const dy = selection[1][1] - y0;
+    const x1 = selection[1][0];
+    const y1 = selection[1][1];
+    const dx = x1 - x0;
+    const dy = y1 - y0;
     const max = 0;
 
     console.log(
-      'brushing',
-      x0
+      'select:',
+      `|${x0} - ${x1}| = ${dx}`,
+      `|${y0} - ${y1}| = ${dy}`,
     );
   }
 
@@ -1241,6 +1244,7 @@ export class TrackRenderer extends React.Component {
             width: this.currentProps.width
           }}
           styleName={trackRendererSelectionClass}
+          xmlns="http://www.w3.org/2000/svg"
         />
         {this.currentProps.children}
       </div>

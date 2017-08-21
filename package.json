@@ -97,7 +97,7 @@
     "box-intersect": "^1.0.1",
     "css-element-queries": "github:marcj/css-element-queries",
     "d3-axis": "^1.0.4",
-    "d3-brush": "^1.0.4",
+    "d3-brush": "github:flekschas/d3-brush",
     "d3-drag": "^1.0.2",
     "d3-request": "^1.0.3",
     "d3-scale": "^1.0.4",
