@@ -78,6 +78,45 @@ function getTiledPlot(hgc, viewUid) {
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
+    describe("Export SVG properly", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            hgc = mount(<HiGlassComponent 
+                          options={{bounded: false}}
+                          viewConfig={project1D}
+                        />, 
+                {attachTo: div});
+
+            setTimeout(done, tileLoadTime);
+            hgc.update();
+        });
+
+        it ("Exports to SVG", (done) => {
+            let svg = hgc.instance().createSVG();
+            let svgText = new XMLSerializer().serializeToString(svg);
+
+            hgc.instance().handleExportSVG();
+
+            setTimeout(done, shortLoadTime);
+        });
+    });
+
+    return;
+
     describe("Starting with an existing genome position search box", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {

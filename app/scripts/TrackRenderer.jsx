@@ -19,6 +19,7 @@ import {CombinedTrack} from './CombinedTrack.js';
 
 import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
 import {HorizontalPoint1DPixiTrack} from './HorizontalPoint1DPixiTrack.js';
+import {BarTrack} from './BarTrack.js';
 
 import {CNVIntervalTrack} from './CNVIntervalTrack.js';
 import {LeftTrackModifier} from './LeftTrackModifier.js';
@@ -92,7 +93,7 @@ export class TrackRenderer extends React.Component {
                     return false;
                 return true;
             })
-            .on('start', () => { 
+            .on('start', () => {
                 this.zooming = true
             })
             .on('zoom', this.zoomedBound)
@@ -153,7 +154,7 @@ export class TrackRenderer extends React.Component {
         if (this.divTrackAreaSelection) {
             this.divTrackAreaSelection.on('.zoom', null);
         }
-        
+
     }
 
     componentDidMount() {
@@ -172,7 +173,7 @@ export class TrackRenderer extends React.Component {
         //this.divTrackAreaSelection.call(this.zoomBehavior);
         //
         this.addZoom();
-    
+
         this.canvasDom = ReactDOM.findDOMNode(this.currentProps.canvasElement);
 
         // need to be mounted to make sure that all the renderers are
@@ -404,7 +405,7 @@ export class TrackRenderer extends React.Component {
     }
 
     getTrackObject(trackId) {
-        /* 
+        /*
          * Fetch the trackObject for a track with a given ID
          *
          */
@@ -673,7 +674,12 @@ export class TrackRenderer extends React.Component {
         if (!this.currentProps.zoomable)
             this.zoomTransform = zoomIdentity;
         else
-            this.zoomTransform = event.transform;
+            try {
+                this.zoomTransform = event.transform;
+            } catch (error) {
+                console.error(error);
+            }
+
 
         this.applyZoomTransform(true);
     }
@@ -758,6 +764,13 @@ export class TrackRenderer extends React.Component {
                 );
             case 'horizontal-point':
                 return new HorizontalPoint1DPixiTrack(this.pStage,
+                                                     track.server,
+                                                     track.tilesetUid,
+                                                     handleTilesetInfoReceived,
+                                                     track.options,
+                                                     () => this.currentProps.onNewTilesLoaded(track.uid));
+            case 'horizontal-bar':
+                return new BarTrack(this.pStage,
                                                      track.server,
                                                      track.tilesetUid,
                                                      handleTilesetInfoReceived,
