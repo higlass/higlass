@@ -832,6 +832,22 @@ export const tracksInfo = [
         defaultOptions: {
             mapboxStyle: 'mapbox.streets'
         }
+    },
+         {
+        type: 'bedlike',
+        datatype: ['bedlike'],
+        local: false,
+        minHeight: 55 ,
+        orientation: '1d-horizontal',
+        name: 'BED-like track',
+        thumbnail: null,
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', "trackBorderWidth", "trackBorderColor"],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'hidden',
+            trackBorderWidth: 0,
+            trackBorderColor: 'black'
+        }
     }
 ]
 

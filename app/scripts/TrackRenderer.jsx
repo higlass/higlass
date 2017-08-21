@@ -41,6 +41,8 @@ import {ViewportTracker2D} from './ViewportTracker2D.js';
 import {ViewportTrackerHorizontal} from './ViewportTrackerHorizontal.js';
 import {ViewportTrackerVertical} from './ViewportTrackerVertical.js';
 
+import {BedLikeTrack} from './BedLikeTrack.js';
+
 import {OSMTilesTrack} from './OSMTilesTrack.js';
 import {MapboxTilesTrack} from './MapboxTilesTrack.js';
 
@@ -1029,6 +1031,15 @@ export class TrackRenderer extends React.Component {
             case 'mapbox-tiles':
                 console.log("Here");
                 return new MapboxTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
+            case 'bedlike':
+                return new BedLikeTrack(
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                )
             default:
                  console.warn('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(
