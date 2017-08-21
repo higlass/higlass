@@ -13,9 +13,6 @@ Spacing
 
 Code should be indented with 4 spaces. No tabs!
 
-
-
-
 Docstrings
 ----------
 

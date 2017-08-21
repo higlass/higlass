@@ -91,7 +91,9 @@ html_theme_path= ["."]
 # documentation.
 #
 html_theme_options = {
+        "sidebar_collapse": False
         }
+
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
