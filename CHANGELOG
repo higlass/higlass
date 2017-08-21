@@ -1,3 +1,7 @@
+v0.8.30
+
+- Added the horizontal-1d-value-interval track
+
 v0.8.28
 
 - Fixed dependencies (peer and normal)
