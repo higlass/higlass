@@ -5,7 +5,7 @@ import {colorToHex} from './utils.js';
 import boxIntersect from 'box-intersect';
 
 let GENE_RECT_WIDTH = 1;
-let GENE_RECT_HEIGHT = 6;
+let GENE_RECT_HEIGHT = 10;
 let MAX_TEXTS = 20;
 
 export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
@@ -13,6 +13,8 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         super(scene, server, uid, handleTilesetInfoReceived, options, animate);
         this.textFontSize = '10px';
         this.textFontFamily = 'Arial';
+
+        this.drawnRects = new Set();
     }
 
     initTile(tile) {
@@ -82,6 +84,13 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         let fill = colorToHex(this.options.fillColor ? this.options.fillColor : 'blue');
 
         tile.tileData.forEach((td, i) => {
+
+            // don't draw anything that has already been drawn
+            if (this.drawnRects.has(td.uid))
+                return;
+
+            this.drawnRects.add(td.uid);
+
             let geneInfo = td.fields;
             // the returned positions are chromosome-based and they need to
             // be converted to genome-based
@@ -97,7 +106,8 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             let textYMiddle = this.dimensions[1] / 2;
             let geneName = geneInfo[3];
 
-            yMiddle -= 8;
+            // for when there's text
+            //yMiddle -= 8;
 
             tile.rectGraphics.lineStyle(1, fill, 0.3);
             tile.rectGraphics.beginFill(fill, 0.3);
@@ -159,6 +169,9 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
 
     draw() {
+        if (!this.delayDrawing)
+            this.drawnRects.clear();
+
         super.draw();
         //console.trace('drawing', this, this._xScale.domain(), this._xScale.range());
 
@@ -213,7 +226,8 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
 
                 if (!parentInFetched) {
-                    text.visible = true;
+                    // TODO, change the line below to true if texts are desired in the future
+                    text.visible = false;
 
                     let TEXT_MARGIN = 3;
                     this.allBoxes.push([text.position.x - TEXT_MARGIN, textYMiddle - 1, text.position.x + tile.textWidths[geneInfo[3]] + TEXT_MARGIN, textYMiddle+1]);
