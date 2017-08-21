@@ -1,3 +1,8 @@
+import {
+  relToAbsChromPos,
+  scalesCenterAndK
+} from './utils.js';
+
 const api = function api(context) {
   const self = context;
 
