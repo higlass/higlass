@@ -1221,26 +1221,26 @@ export class TrackRenderer extends React.Component {
     /* ------------------------------- Render ------------------------------- */
 
     render() {
-        let classesSelection = 'track-renderer-selection';
-
-        classesSelection += this.state.selecting ? ' is-active' : '';
+        const trackRendererSelectionClass = this.state.selecting ?
+            'track-renderer-selection-active' :
+            'track-renderer-selection';
 
         return(
             <div
-                className="track-renderer"
                 ref={(c) => this.divTrackArea = c}
                 style={{
                     height: this.currentProps.height,
                     width: this.currentProps.width
                 }}
+                styleName="track-renderer"
             >
                 <svg
-                    className={classesSelection}
                     ref={el => this.svgTrackArea = el}
                     style={{
                         height: this.currentProps.height,
                         width: this.currentProps.width
                     }}
+                    styleName={trackRendererSelectionClass}
                 />
                 {this.currentProps.children}
             </div>

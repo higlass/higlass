@@ -2,15 +2,17 @@
 
 .track-renderer {
   position: absolute;
+}
 
-  .track-renderer-selection {
-    position: absolute;
-    z-index: 1;
-    opacity: 0;
-    transition: opacity $fast $ease;
+.track-renderer-selection {
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity $fast $ease;
+}
 
-    &.is-active {
-      opacity: 1;
-    }
-  }
+.track-renderer-selection-active {
+  composes: track-renderer-selection;
+
+  opacity: 1;
 }
