@@ -4,7 +4,6 @@ import slugid from 'slugid';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import {tracksInfo} from './config.js';
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {CenterTrack, VerticalTiledPlot, HorizontalTiledPlot} from './PositionalTiledPlot.jsx';
 import {TrackRenderer} from './TrackRenderer.jsx';
@@ -13,9 +12,9 @@ import {ConfigTrackMenu} from './ConfigTrackMenu.jsx';
 import {CloseTrackMenu} from './CloseTrackMenu.jsx';
 import {PopupMenu} from './PopupMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
-import {HeatmapOptions} from './HeatmapOptions.jsx';
+// import {HeatmapOptions} from './HeatmapOptions.jsx';
 
-import {getTrackPositionByUid, positionedTracksToAllTracks} from './utils.js';
+import {getTrackPositionByUid} from './utils.js';
 import {getTrackByUid} from './utils.js';
 
 export class TiledPlot extends React.Component {
@@ -140,10 +139,6 @@ export class TiledPlot extends React.Component {
   }
 
   measureSize() {
-    let parentTop = this.element.parentNode.getBoundingClientRect().top;
-    let hereTop = this.element.getBoundingClientRect().top;
-
-    //let heightOffset = hereTop - parentTop;
     let heightOffset = 0;
     let height = this.element.clientHeight - heightOffset;
     let width = this.element.clientWidth;
@@ -201,7 +196,7 @@ export class TiledPlot extends React.Component {
   })
   }
 
-  handleOverlayMouseLeave(uid) {
+  handleOverlayMouseLeave() {
   this.setState({
     mouseOverOverlayUid: null
   })
@@ -349,7 +344,7 @@ export class TiledPlot extends React.Component {
   }
 
 
-  handleCloseTrackMenuClosed(evt) {
+  handleCloseTrackMenuClosed() {
     this.setState({
       closeTrackMenuId: null
     });
@@ -364,9 +359,9 @@ export class TiledPlot extends React.Component {
     });
   }
 
-  handleConfigTrackMenuClosed(evt) {
+  handleConfigTrackMenuClosed() {
     this.setState({
-      configTrackMenuId: null,
+      configTrackMenuId: null
     });
   }
 
@@ -381,8 +376,6 @@ export class TiledPlot extends React.Component {
     // some tracks were reordered in the list so we need to reorder them in the original
     // dataset
     let tracks = this.state.tracks;
-
-    let allTracks = {};
 
     // calculate the positions of the sortedTracks
     let positions = {};
@@ -521,24 +514,26 @@ export class TiledPlot extends React.Component {
      * it to the rendering context.
      */
     let positionedTracks = this.positionedTracks();
-    let tracksAndLocations = this.createTracksAndLocations();
+    this.createTracksAndLocations();
 
 
     let trackElements = positionedTracks.map((trackPosition) => {
       let track = trackPosition.track;
 
-      return (<div
-            key={track.uid}
-            style={{
-              left: trackPosition.left,
-              top: trackPosition.top,
-              width: trackPosition.width,
-              height: trackPosition.height,
-              position: 'absolute'
-            }}
-          >
+      return (
+        <div
+          key={track.uid}
+          style={{
+            left: trackPosition.left,
+            top: trackPosition.top,
+            width: trackPosition.width,
+            height: trackPosition.height,
+            position: 'absolute'
+          }}
+        >
           {track.uid.slice(0,2)}
-        </div>)
+        </div>
+      );
     });
 
     return (trackElements)
@@ -657,126 +652,154 @@ export class TiledPlot extends React.Component {
     this.centerHeight = this.state.height - this.topHeight - this.bottomHeight - 2*this.props.verticalMargin;
     this.centerWidth = this.state.width - this.leftWidth - this.rightWidth - 2*this.props.horizontalMargin;
 
-    //let trackOutline = "1px solid black";
     let trackOutline = "none";
 
-    let plusWidth = 18;
-    let plusHeight = 18;
+    let topTracks = (
+      <div key="topTracksDiv"
+        style={{
+            left: this.leftWidth + this.props.horizontalMargin,
+            top: this.props.verticalMargin,
+            width: this.centerWidth,
+            height: this.topHeight,
+            outline: trackOutline,
+            position: "absolute"
+        }}
+      >
+        <HorizontalTiledPlot
+          editable={this.props.editable}
+          handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
+          handleResizeTrack={this.handleResizeTrack.bind(this)}
+          handleSortEnd={this.handleSortEnd.bind(this)}
+          onAddSeries={this.handleAddSeries.bind(this)}
+          onCloseTrack={this.handleCloseTrack.bind(this)}
+          onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+          onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
+          resizeHandles={new Set(['bottom'])}
+          tracks={this.props.tracks['top']}
+          width={this.centerWidth}
+        />
+      </div>
+    );
 
-    let imgStyle = {
-      width: plusWidth,
-      height: plusHeight,
-      opacity: 0.4,
-      display: "block",
-      position: "absolute"
+    let leftTracks = (
+      <div
+        key="leftTracksPlot"
+        style={{
+          left: this.props.horizontalMargin,
+          top: this.topHeight + this.props.verticalMargin,
+          width: this.leftWidth,
+          height: this.centerHeight,
+          outline: trackOutline,
+          position: "absolute"
+        }}
+      >
+        <VerticalTiledPlot
+          editable={this.props.editable}
+          handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
+          handleResizeTrack={this.handleResizeTrack.bind(this)}
+          handleSortEnd={this.handleSortEnd.bind(this)}
+          height={this.centerHeight}
+          onAddSeries={this.handleAddSeries.bind(this)}
+          onCloseTrack={this.handleCloseTrack.bind(this)}
+          onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+          onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
+          resizeHandles={new Set(['right'])}
+          tracks={this.props.tracks['left']}
+        />
+      </div>
+    );
 
-    };
+    let rightTracks = (
+      <div style={{
+            right: this.props.horizontalMargin,
+            top: this.topHeight + this.props.verticalMargin,
+            width: this.rightWidth,
+            height: this.centerHeight,
+            outline: trackOutline,
+            position: "absolute"
+          }}
+      >
+        <VerticalTiledPlot
+          editable={this.props.editable}
+          handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
+          handleResizeTrack={this.handleResizeTrack.bind(this)}
+          handleSortEnd={this.handleSortEnd.bind(this)}
+          height={this.centerHeight}
+          onAddSeries={this.handleAddSeries.bind(this)}
+          onCloseTrack={this.handleCloseTrack.bind(this)}
+          onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+          onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
+          resizeHandles={new Set(['left'])}
+          tracks={this.props.tracks['right']}
+        />
+       </div>
+    );
 
-    let topTracks = (<div key="topTracksDiv"
-                style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin,
-                    width: this.centerWidth, height: this.topHeight,
-                    outline: trackOutline,
-                    position: "absolute",}}
-             >
-              <HorizontalTiledPlot
-                editable={this.props.editable}
-                handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
-                handleResizeTrack={this.handleResizeTrack.bind(this)}
-                handleSortEnd={this.handleSortEnd.bind(this)}
-                onAddSeries={this.handleAddSeries.bind(this)}
-                onCloseTrack={this.handleCloseTrack.bind(this)}
-                onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
-                onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-                resizeHandles={new Set(['bottom'])}
-                tracks={this.props.tracks['top']}
-                width={this.centerWidth}
-              />
-             </div>)
-    let leftTracks = (<div key="leftTracksPlot"
-              style={{left: this.props.horizontalMargin, top: this.topHeight + this.props.verticalMargin,
-                    width: this.leftWidth, height: this.centerHeight,
-                    outline: trackOutline,
-                    position: "absolute",}}
-              >
-              <VerticalTiledPlot
-                editable={this.props.editable}
-                handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
-                handleResizeTrack={this.handleResizeTrack.bind(this)}
-                handleSortEnd={this.handleSortEnd.bind(this)}
-                height={this.centerHeight}
-                onAddSeries={this.handleAddSeries.bind(this)}
-                onCloseTrack={this.handleCloseTrack.bind(this)}
-                onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
-                onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-                resizeHandles={new Set(['right'])}
-                tracks={this.props.tracks['left']}
-              />
-             </div>)
-    let rightTracks = (<div style={{right: this.props.horizontalMargin, top: this.topHeight + this.props.verticalMargin,
-                    width: this.rightWidth, height: this.centerHeight,
-                    outline: trackOutline,
-                    position: "absolute",}}>
-              <VerticalTiledPlot
-                editable={this.props.editable}
-                handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
-                handleResizeTrack={this.handleResizeTrack.bind(this)}
-                handleSortEnd={this.handleSortEnd.bind(this)}
-                height={this.centerHeight}
-                onAddSeries={this.handleAddSeries.bind(this)}
-                onCloseTrack={this.handleCloseTrack.bind(this)}
-                onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
-                onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-                resizeHandles={new Set(['left'])}
-                tracks={this.props.tracks['right']}
-              />
-             </div>)
-    let bottomTracks = (<div style={{left: this.leftWidth + this.props.horizontalMargin, bottom: this.props.verticalMargin,
-                    width: this.centerWidth, height: this.bottomHeight,
-                    outline: trackOutline,
-                    position: "absolute",}}>
-              <HorizontalTiledPlot
-                editable={this.props.editable}
-                handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
-                handleResizeTrack={this.handleResizeTrack.bind(this)}
-                handleSortEnd={this.handleSortEnd.bind(this)}
-                onAddSeries={this.handleAddSeries.bind(this)}
-                onCloseTrack={this.handleCloseTrack.bind(this)}
-                onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
-                onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-                resizeHandles={new Set(['top'])}
-                tracks={this.props.tracks['bottom']}
-                width={this.centerWidth}
-              />
-             </div>)
-    let centerTrack = ( <div
-                id={'center-track-container'}
-                style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
-                    width: this.centerWidth, height: this.bottomHeight,
-                    outline: trackOutline,
-                    position: "absolute"}}
-              />)
+    let bottomTracks = (
+      <div style={{
+          left: this.leftWidth + this.props.horizontalMargin,
+          bottom: this.props.verticalMargin,
+          width: this.centerWidth,
+          height: this.bottomHeight,
+          outline: trackOutline,
+          position: "absolute"
+        }}
+      >
+        <HorizontalTiledPlot
+          editable={this.props.editable}
+          handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
+          handleResizeTrack={this.handleResizeTrack.bind(this)}
+          handleSortEnd={this.handleSortEnd.bind(this)}
+          onAddSeries={this.handleAddSeries.bind(this)}
+          onCloseTrack={this.handleCloseTrack.bind(this)}
+          onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+          onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
+          resizeHandles={new Set(['top'])}
+          tracks={this.props.tracks['bottom']}
+          width={this.centerWidth}
+        />
+      </div>
+    );
+
+    let centerTrack = (
+      <div
+        id="center-track-container"
+        style={{
+            left: this.leftWidth + this.props.horizontalMargin,
+            top: this.props.verticalMargin + this.topHeight ,
+            width: this.centerWidth,
+            height: this.bottomHeight,
+            outline: trackOutline,
+            position: "absolute"
+        }}
+      />
+    )
 
     if (this.props.tracks['center'].length) {
-      centerTrack = ( <div
-                id={'center-track-container'}
-                style={{left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
-                    width: this.centerWidth, height: this.bottomHeight,
-                    outline: trackOutline,
-                    position: "absolute",
-                     }}
-              >
-                 <CenterTrack
-                height={this.centerHeight}
-                onAddSeries={this.handleAddSeries.bind(this)}
-                onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
-                onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-                uid={this.props.tracks['center'][0].uid}
-                width={this.centerWidth}
-                editable={this.props.editable}
-                 />
-              </div> )
+      centerTrack = (
+        <div
+          id="center-track-container"
+          style={{
+            left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
+            width: this.centerWidth, height: this.bottomHeight,
+            outline: trackOutline,
+            position: "absolute"
+          }}
+        >
+          <CenterTrack
+            editable={this.props.editable}
+            height={this.centerHeight}
+            onAddSeries={this.handleAddSeries.bind(this)}
+            onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
+            onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
+            uid={this.props.tracks['center'][0].uid}
+            width={this.centerWidth}
+          />
+        </div>
+      )
     }
-    let trackPositionTexts = this.createTrackPositionTexts();
+
+    this.createTrackPositionTexts();
 
     let positionedTracks = this.positionedTracks();
 
@@ -810,75 +833,58 @@ export class TiledPlot extends React.Component {
           width={this.state.width}
           zoomable={this.props.zoomable}
         >
-
-        {
-          /*
-          <div
-            style={{position: "absolute",
-                 width: this.state.width,
-                 height: this.state.height,
-                 background: "green",
-                 opacity: 0
-                }}
-          />
-          */
-        }
-          {/*trackPositionTexts*/}
-
           {topTracks}
           {leftTracks}
           {rightTracks}
           {bottomTracks}
           {centerTrack}
-
         </TrackRenderer>
       )
     }
 
     let configTrackMenu = null;
     let closeTrackMenu = null;
-    //
+
     if (this.state.configTrackMenuId) {
       configTrackMenu = (
-               <PopupMenu
-                onMenuClosed={this.handleConfigTrackMenuClosed.bind(this)}
-               >
-                  <ConfigTrackMenu
-                  closeMenu={this.handleConfigTrackMenuClosed.bind(this)}
-                  onAddSeries={this.handleAddSeries.bind(this)}
-                  onAddTrack={this.handleAddTrack.bind(this)}
-                  onCloseTrack={this.handleCloseTrack.bind(this)}
-                  onConfigureTrack={this.handleConfigureTrack.bind(this)}
-                  onExportData={this.handleExportTrackData.bind(this)}
-                  onLockValueScale={this.handleLockValueScale.bind(this)}
-                  onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
-                  onReplaceTrack={this.handleReplaceTrack.bind(this)}
-                  onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
-                  position={this.state.configTrackMenuLocation}
-                  track={getTrackByUid(this.props.tracks, this.state.configTrackMenuId)}
-                  trackOrientation={getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
-                  />
-                </PopupMenu>
-                )
+        <PopupMenu
+          onMenuClosed={this.handleConfigTrackMenuClosed.bind(this)}
+        >
+          <ConfigTrackMenu
+            closeMenu={this.handleConfigTrackMenuClosed.bind(this)}
+            onAddSeries={this.handleAddSeries.bind(this)}
+            onAddTrack={this.handleAddTrack.bind(this)}
+            onCloseTrack={this.handleCloseTrack.bind(this)}
+            onConfigureTrack={this.handleConfigureTrack.bind(this)}
+            onExportData={this.handleExportTrackData.bind(this)}
+            onLockValueScale={this.handleLockValueScale.bind(this)}
+            onReplaceTrack={this.handleReplaceTrack.bind(this)}
+            onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
+            onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
+            position={this.state.configTrackMenuLocation}
+            track={getTrackByUid(this.props.tracks, this.state.configTrackMenuId)}
+            trackOrientation={getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
+          />
+         </PopupMenu>
+      )
     }
 
     if (this.state.closeTrackMenuId) {
       closeTrackMenu = (
-         <PopupMenu
+        <PopupMenu
           onMenuClosed={this.handleCloseTrackMenuClosed.bind(this)}
-         >
+        >
           <ContextMenuContainer
             position={this.state.closeTrackMenuLocation}
           >
-                  <CloseTrackMenu
-                  onCloseTrack={this.handleCloseTrack.bind(this)}
-                  track={getTrackByUid(this.props.tracks, this.state.closeTrackMenuId)}
-                  />
+            <CloseTrackMenu
+              onCloseTrack={this.handleCloseTrack.bind(this)}
+              track={getTrackByUid(this.props.tracks, this.state.closeTrackMenuId)}
+            />
           </ContextMenuContainer>
         </PopupMenu>
-                )
+      )
     }
-
 
     let overlays = null;
     if (this.props.chooseTrackHandler) {
@@ -893,32 +899,33 @@ export class TiledPlot extends React.Component {
           border = "1px solid black";
         }
 
-        return ( <div
-                 className={'tiled-plot-track-overlay'}
-                 key={pTrack.track.uid}
+        return (
+          <div
+            className={'tiled-plot-track-overlay'}
+            key={pTrack.track.uid}
 
-                 // we want to remove the mouseOverOverlayUid so that next time we try
-                 // to choose an overlay track, the previously selected one isn't
-                 // automatically highlighted
-                onClick={e => {
-                  this.setState({ mouseOverOverlayUid: null });
-                  this.props.chooseTrackHandler(pTrack.track.uid);
-                }}
-                onMouseEnter={e => this.handleOverlayMouseEnter(pTrack.track.uid)}
-                onMouseLeave={e => this.handleOverlayMouseLeave(pTrack.track.uid)}
-                 style={{
-                   position: 'absolute',
-                   left: pTrack.left,
-                   top: pTrack.top,
-                   width: pTrack.width,
-                   height: pTrack.height,
-                   background: background,
-                   opacity: 0.4,
-                   border: border
-                 }}
-             /> )
+            // we want to remove the mouseOverOverlayUid so that next time we try
+            // to choose an overlay track, the previously selected one isn't
+            // automatically highlighted
+            onClick={() => {
+              this.setState({ mouseOverOverlayUid: null });
+              this.props.chooseTrackHandler(pTrack.track.uid);
+            }}
+            onMouseEnter={() => this.handleOverlayMouseEnter(pTrack.track.uid)}
+            onMouseLeave={() => this.handleOverlayMouseLeave(pTrack.track.uid)}
+            style={{
+              position: 'absolute',
+              left: pTrack.left,
+              top: pTrack.top,
+              width: pTrack.width,
+              height: pTrack.height,
+              background: background,
+              opacity: 0.4,
+              border: border
+            }}
+          />
+        )
       });
-
     }
 
     let trackOptionsElement = null;
@@ -950,6 +957,7 @@ export class TiledPlot extends React.Component {
     let addTrackModal = null;
     let position = this.state.addTrackPosition ?
       this.state.addTrackPosition : this.props.addTrackPosition;
+
     if (this.state.addTrackPosition || this.props.addTrackPosition) {
       addTrackModal =
         (<AddTrackModal
@@ -965,22 +973,23 @@ export class TiledPlot extends React.Component {
 
     // track renderer needs to enclose all the other divs so that it
     // can catch the zoom events
-    return(
+    return (
       <div
+        className="tiled-plot"
         ref={(c) => this.divTiledPlot = c}
-        style={{flex: 1, overflow: "hidden"}}
-        className={"tiled-plot"}
+        style={{
+          flex: 1,
+          overflow: "hidden"
+        }}
       >
         {trackRenderer}
         {overlays}
-
-
         {addTrackModal}
         {configTrackMenu}
         {closeTrackMenu}
         {trackOptionsElement}
       </div>
-      );
+    );
   }
 }
 
