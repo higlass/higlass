@@ -1,3 +1,5 @@
+.. gene_annotations_section:
+
 Gene Annotations Tracks
 =======================
 
