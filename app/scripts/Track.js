@@ -28,7 +28,7 @@ export class Track {
         /**
          * Either get or set the reference xScale
          */
-        if (!arguments.length) 
+        if (!arguments.length)
             return this._refXScale;
 
         this._refXScale = _;
@@ -40,7 +40,7 @@ export class Track {
         /**
          * Either get or set the reference yScale
          */
-        if (!arguments.length) 
+        if (!arguments.length)
             return this._refYScale;
 
         this._refYScale = _;
@@ -52,7 +52,7 @@ export class Track {
         /**
          * Either get or set the xScale
          */
-        if (!arguments.length) 
+        if (!arguments.length)
             return this._xScale;
 
         this._xScale = _;
