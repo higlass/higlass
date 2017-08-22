@@ -948,10 +948,10 @@ export class TiledPlot extends React.Component {
         }
 
         let addTrackModal = null;
-        let position = this.state.addTrackPosition ? 
+        let position = this.state.addTrackPosition ?
             this.state.addTrackPosition : this.props.addTrackPosition;
         if (this.state.addTrackPosition || this.props.addTrackPosition) {
-            addTrackModal = 
+            addTrackModal =
                 (<AddTrackModal
                     host={this.state.addTrackHost}
                     onCancel={this.handleNoTrackAdded.bind(this)}
