@@ -21,6 +21,9 @@
             "jsx": true
         }
     },
+    "globals": {
+      "PIXI": false
+    },
     "rules": {
         "react/display-name": 0,
         "react/forbid-prop-types": 0,
