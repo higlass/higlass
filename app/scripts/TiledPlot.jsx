@@ -5,7 +5,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
-import {CenterTrack, VerticalTiledPlot, HorizontalTiledPlot} from './PositionalTiledPlot.jsx';
+import CenterTrack from './CenterTrack';
+import {VerticalTiledPlot, HorizontalTiledPlot} from './PositionalTiledPlot.jsx';
 import {TrackRenderer} from './TrackRenderer.jsx';
 import {AddTrackModal} from './AddTrackModal.jsx';
 import {ConfigTrackMenu} from './ConfigTrackMenu.jsx';
@@ -595,8 +596,15 @@ export class TiledPlot extends React.Component {
     }
 
     // set the initial domain
-    let newXDomain = [this.trackRenderer.currentProps.marginLeft + this.trackRenderer.currentProps.leftWidth, this.trackRenderer.currentProps.marginLeft + this.trackRenderer.currentProps.leftWidth + this.trackRenderer.currentProps.centerWidth].map(this.trackRenderer.zoomTransform.rescaleX(this.trackRenderer.xScale).invert);
-    let newYDomain = [this.trackRenderer.currentProps.marginTop + this.trackRenderer.currentProps.topHeight, this.trackRenderer.currentProps.marginTop + this.trackRenderer.currentProps.topHeight + this.trackRenderer.currentProps.centerHeight].map(this.trackRenderer.zoomTransform.rescaleY(this.trackRenderer.yScale).invert);
+    let newXDomain = [
+      this.trackRenderer.currentProps.marginLeft + this.trackRenderer.currentProps.leftWidth,
+      this.trackRenderer.currentProps.marginLeft + this.trackRenderer.currentProps.leftWidth + this.trackRenderer.currentProps.centerWidth
+    ].map(this.trackRenderer.zoomTransform.rescaleX(this.trackRenderer.xScale).invert);
+
+    let newYDomain = [
+      this.trackRenderer.currentProps.marginTop + this.trackRenderer.currentProps.topHeight,
+      this.trackRenderer.currentProps.marginTop + this.trackRenderer.currentProps.topHeight + this.trackRenderer.currentProps.centerHeight
+    ].map(this.trackRenderer.zoomTransform.rescaleY(this.trackRenderer.yScale).invert);
 
     // reset the zoom transform
     this.trackRenderer.zoomTransform.k = 1;
@@ -763,7 +771,7 @@ export class TiledPlot extends React.Component {
 
     let centerTrack = (
       <div
-        id="center-track-container"
+        className="center-track-container"
         style={{
             left: this.leftWidth + this.props.horizontalMargin,
             top: this.props.verticalMargin + this.topHeight ,
@@ -778,10 +786,12 @@ export class TiledPlot extends React.Component {
     if (this.props.tracks['center'].length) {
       centerTrack = (
         <div
-          id="center-track-container"
+          className="center-track-container"
           style={{
-            left: this.leftWidth + this.props.horizontalMargin, top: this.props.verticalMargin + this.topHeight ,
-            width: this.centerWidth, height: this.bottomHeight,
+            left: this.leftWidth + this.props.horizontalMargin,
+            top: this.props.verticalMargin + this.topHeight ,
+            width: this.centerWidth,
+            height: this.centerHeight,
             outline: trackOutline,
             position: "absolute"
           }}
