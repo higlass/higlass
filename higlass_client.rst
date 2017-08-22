@@ -10,6 +10,7 @@ Line Tracks
 Scaling
 -------
 
+
 1D tracks can either be linearly or log scaled. Linear scaling denotes a linear
 mapping between the values and their position on the track. Log scaling means
 that we take the log of the values before positioning them. 
