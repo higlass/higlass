@@ -1,7 +1,7 @@
 import {scaleLinear} from 'd3-scale';
-import {tileProxy} from './TileProxy.js';
-import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
-import {colorToHex} from './utils.js';
+import {tileProxy} from './TileProxy';
+import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack';
+import {colorToHex} from './utils';
 import boxIntersect from 'box-intersect';
 
 let GENE_RECT_WIDTH = 1;
@@ -21,7 +21,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
          *      The server from which to retrieve data
          *  uid: string
          *      The uid of the track on the server
-         *  handleTilesetInfoReceived: function 
+         *  handleTilesetInfoReceived: function
          *      A callback to let the caller know that we've received the
          *      tileset information for this track.
          *  options: {}
@@ -30,7 +30,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
          *  animate: callback
          *      Function to be called when something in this track changes.
          *  popupCallback: function
-         *      Callback for when this track wishes to display extra information 
+         *      Callback for when this track wishes to display extra information
          *      (e.g. gene information)
          */
         super(scene, server, uid, handleTilesetInfoReceived, options, animate, popupCallback);
@@ -68,7 +68,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 return;
 
             // geneInfo[3] is the gene symbol
-            let text = new PIXI.Text(geneInfo[3],  {fontSize: this.textFontSize, 
+            let text = new PIXI.Text(geneInfo[3],  {fontSize: this.textFontSize,
                                                     fontFamily: this.textFontFamily,
                                                     fill: colorToHex(fill)});
             text.interactive = true;
@@ -425,7 +425,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             t.setAttribute('font-family', this.textFontFamily);
             t.setAttribute('font-size', this.textFontSize);
             g.setAttribute('transform', `scale(${text.text.scale.x},1)`);
-            
+
 
             if (text.strand == '+') {
                 //t.setAttribute('stroke', this.options.plusStrandColor);

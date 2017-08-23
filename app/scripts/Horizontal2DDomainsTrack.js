@@ -1,6 +1,6 @@
-import {TiledPixiTrack} from './TiledPixiTrack.js';
-import {tileProxy} from './TileProxy.js';
-import {colorToHex} from './utils.js';
+import {TiledPixiTrack} from './TiledPixiTrack';
+import {tileProxy} from './TileProxy';
+import {colorToHex} from './utils';
 
 export class Horizontal2DDomainsTrack extends TiledPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {

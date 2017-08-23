@@ -1,6 +1,6 @@
 import {bisector} from 'd3-array';
 import {format} from 'd3-format';
-import {absoluteToChr} from './utils.js';
+import {absoluteToChr} from './utils';
 
 export class SearchField {
 

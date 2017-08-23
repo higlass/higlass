@@ -1,9 +1,9 @@
-import {PixiTrack} from './PixiTrack.js';
-import {tileProxy} from './TileProxy.js';
-import {ChromosomeInfo} from './ChromosomeInfo.js';
-import {SearchField} from './search_field.js';
+import {PixiTrack} from './PixiTrack';
+import {tileProxy} from './TileProxy';
+import {ChromosomeInfo} from './ChromosomeInfo';
+import {SearchField} from './search_field';
 import boxIntersect from 'box-intersect';
-import {absoluteToChr} from './utils.js';
+import {absoluteToChr} from './utils';
 
 export class Chromosome2DLabels extends PixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {

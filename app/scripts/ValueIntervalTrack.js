@@ -1,11 +1,9 @@
 import {scaleLog} from 'd3-scale';
 import {range} from 'd3-array';
-import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
-import IntervalTree from './interval-tree.js';
-import {
-    colorToHex
-} from './utils.js';
-import {AxisPixi} from './AxisPixi.js';
+import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack';
+import IntervalTree from './interval-tree';
+import {colorToHex} from './utils';
+import {AxisPixi} from './AxisPixi';
 
 export class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
@@ -76,7 +74,7 @@ export class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
              visibleAndFetchedIds = Object.keys(this.fetchedTiles);
          }
 
-         let min = Math.min.apply(null, visibleAndFetchedIds.map(x => 
+         let min = Math.min.apply(null, visibleAndFetchedIds.map(x =>
                      +Math.min(...(this.fetchedTiles[x].tileData
                              .filter(y => !isNaN(y.fields[3]))
                              .map(y => {
@@ -94,7 +92,7 @@ export class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
          }
 
 
-         let max = Math.max.apply(null, visibleAndFetchedIds.map(x => 
+         let max = Math.max.apply(null, visibleAndFetchedIds.map(x =>
                      +Math.max(...(this.fetchedTiles[x].tileData
                              .filter(y => !isNaN(y.fields[3]))
                              .map(y => {

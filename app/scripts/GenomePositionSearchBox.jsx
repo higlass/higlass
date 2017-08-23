@@ -7,15 +7,17 @@ import {select,event} from 'd3-selection';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
-import Autocomplete from './Autocomplete.js';
-import {FormGroup,FormControl,InputGroup,
-    Glyphicon,Button,
-    DropdownButton, MenuItem
+import Autocomplete from './Autocomplete';
+import {
+  FormGroup,
+  FormControl,
+  InputGroup,
+  Glyphicon,Button,
+  DropdownButton, MenuItem
 } from 'react-bootstrap';
-import {ChromosomeInfo} from './ChromosomeInfo.js';
-import {SearchField} from './search_field.js';
-import {scalesCenterAndK, 
-    dictKeys} from './utils.js';
+import {ChromosomeInfo} from './ChromosomeInfo';
+import {SearchField} from './search_field';
+import {scalesCenterAndK, dictKeys} from './utils';
 import {PopupMenu} from './PopupMenu.jsx';
 
 import '../styles/GenomePositionSearchBox.css';
@@ -86,7 +88,7 @@ export class GenomePositionSearchBox extends React.Component {
         if (this.props.autocompleteId) {
             this.availableAutocompletes[this.props.chromInfoId] = new Set([
                 {
-                    server: this.props.autocompleteServer, 
+                    server: this.props.autocompleteServer,
                     acId: this.props.autocompleteId
                 }]);
         }
@@ -101,7 +103,7 @@ export class GenomePositionSearchBox extends React.Component {
     }
 
     fetchChromInfo(chromInfoId) {
-        /** 
+        /**
          * The user has selected an assembly to use for the coordinate search box
          *
          * Parameters
@@ -143,7 +145,7 @@ export class GenomePositionSearchBox extends React.Component {
                         autocompleteId: newAcId
                 });
             } else {
-                this.props.onSelectedAssemblyChanged(chromInfoId, 
+                this.props.onSelectedAssemblyChanged(chromInfoId,
                     this.state.autocompleteId)
             }
         });
@@ -491,7 +493,7 @@ export class GenomePositionSearchBox extends React.Component {
 
     render() {
         let assemblyMenuItems = this.state.availableAssemblies.map(x => {
-            return (<MenuItem 
+            return (<MenuItem
                         key={x}
                         eventKey={x}
                     >
@@ -503,14 +505,14 @@ export class GenomePositionSearchBox extends React.Component {
                 bsSize="small"
                 className="genome-position-search"
             >
-                
-                <DropdownButton 
+
+                <DropdownButton
                     bsSize={"small"}
                     className={'assembly-pick-button'}
                     id={this.uid}
                     onSelect={this.handleAssemblySelect.bind(this)}
                     ref={c => this.assemblyPickButton = c}
-                    title={this.state.selectedAssembly ? this.state.selectedAssembly : "(none)"} 
+                    title={this.state.selectedAssembly ? this.state.selectedAssembly : "(none)"}
                 >
                     {assemblyMenuItems}
                 </DropdownButton>

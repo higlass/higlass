@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
 import {SeriesListMenu} from './SeriesListMenu.jsx';
-import {tracksInfo} from './config.js';
+import {tracksInfo} from './config';
 
 export class ConfigTrackMenu extends ContextMenuContainer {
     constructor(props) {
@@ -42,16 +42,16 @@ export class ConfigTrackMenu extends ContextMenuContainer {
             let thumbnail = trackTypeToInfo[x.type].thumbnail;
             let blankLocation = "images/thumbnails/blank.png";
                 let imgTag = trackTypeToInfo[x.type].thumbnail ?
-                        <div 
-                            dangerouslySetInnerHTML={{__html: thumbnail.outerHTML}} 
-                            style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} 
+                        <div
+                            dangerouslySetInnerHTML={{__html: thumbnail.outerHTML}}
+                            style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}}
                         /> :
-                        <div 
-                            style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} 
+                        <div
+                            style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}}
                         >
-                            <svg 
-                                height={20} 
-                                width={30} 
+                            <svg
+                                height={20}
+                                width={30}
                             />
                         </div>
 
@@ -64,7 +64,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                         ref={c => this.seriesRefs[x.uid] = c}
                     >
                         {imgTag}
-                        <span 
+                        <span
                             className={'context-menu-span'}
                             style={{ whiteSpace: 'nowrap' }}
                         >
@@ -75,8 +75,8 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                             height={"10px"}
                             width={"10px"}
                         >
-                            <use 
-                                xlinkHref={"#play"} 
+                            <use
+                                xlinkHref={"#play"}
                             />
                         </svg>
 

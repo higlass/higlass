@@ -1,10 +1,10 @@
 import {scaleLinear, scaleLog, scaleQuantile} from 'd3-scale';
 import {ticks} from 'd3-array';
-import {tileProxy} from './TileProxy.js';
-import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack.js';
-import {colorToHex} from './utils.js';
-import {AxisPixi} from './AxisPixi.js';
-import {dictValues} from './utils.js';
+import {tileProxy} from './TileProxy';
+import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack';
+import {colorToHex} from './utils';
+import {AxisPixi} from './AxisPixi';
+import {dictValues} from './utils';
 
 export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
@@ -99,7 +99,7 @@ export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
         for (let i = 0; i < tileValues.length; i++) {
             let xPos = this._xScale(tileXScale(i));
             let yPos = this.valueScale(tileValues[i] + pseudocount)
-                
+
             tile.lineXValues[i] = xPos;
             tile.lineYValues[i] = yPos;
 
@@ -112,9 +112,9 @@ export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
             //console.log('drawRect');
             //console.log('xPos:', xPos)
 
-            graphics.drawRect(xPos - (squareSide / 2) / this.pMain.scale.x, 
-                              yPos - (squareSide / 2) / this.pMain.scale.y, 
-                              squareSide / this.pMain.scale.x, 
+            graphics.drawRect(xPos - (squareSide / 2) / this.pMain.scale.x,
+                              yPos - (squareSide / 2) / this.pMain.scale.y,
+                              squareSide / this.pMain.scale.x,
                               squareSide / this.pMain.scale.y);
         }
     }
@@ -125,7 +125,7 @@ export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
         for (let tile of dictValues(this.fetchedTiles)) {
             // scaling between tiles
             let tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) / (this._xScale.domain()[1] - this._xScale.domain()[0]);
-                    
+
             //let posOffset = newRange[0];
 
             let newRange = this._xScale.domain().map(tile.drawnAtScale);

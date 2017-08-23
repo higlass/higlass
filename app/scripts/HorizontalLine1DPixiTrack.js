@@ -1,9 +1,9 @@
 import {scaleLinear, scaleLog, scaleQuantile} from 'd3-scale';
 import {ticks} from 'd3-array';
-import {tileProxy} from './TileProxy.js';
-import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
-import {colorToHex} from './utils.js';
-import {AxisPixi} from './AxisPixi.js';
+import {tileProxy} from './TileProxy';
+import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack';
+import {colorToHex} from './utils';
+import {AxisPixi} from './AxisPixi';
 
 export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
@@ -71,7 +71,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         }
 
 
-        if (this.options.axisPositionHorizontal == 'left' 
+        if (this.options.axisPositionHorizontal == 'left'
             || this.options.axisPositionVertical == 'top') {
             // left axis are shown at the beginning of the plot
 
@@ -79,7 +79,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             this.axis.pAxis.position.y = this.position[1];
 
             this.axis.drawAxisRight(valueScale, this.dimensions[1]);
-        } else if (this.options.axisPositionHorizontal == 'outsideLeft' 
+        } else if (this.options.axisPositionHorizontal == 'outsideLeft'
             || this.options.axisPositionVertical == 'outsideTop') {
             // left axis are shown at the beginning of the plot
 
@@ -87,12 +87,12 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             this.axis.pAxis.position.y = this.position[1];
 
             this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
-        } else if (this.options.axisPositionHorizontal == 'right' 
+        } else if (this.options.axisPositionHorizontal == 'right'
             || this.options.axisPositionVertical == 'bottom') {
             this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
             this.axis.pAxis.position.y = this.position[1];
             this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
-        } else if (this.options.axisPositionHorizontal == 'outsideRight' 
+        } else if (this.options.axisPositionHorizontal == 'outsideRight'
             || this.options.axisPositionVertical == 'outsideBottom') {
             this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
             this.axis.pAxis.position.y = this.position[1];
@@ -101,7 +101,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     }
 
     renderTile(tile) {
-        // this function is just so that we follow the same pattern as 
+        // this function is just so that we follow the same pattern as
         // HeatmapTiledPixiTrack.js
         this.drawTile(tile);
     }
@@ -180,7 +180,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         for (let i = 0; i < tileValues.length; i++) {
             let xPos = this._xScale(tileXScale(i));
             let yPos = this.valueScale(tileValues[i] + pseudocount)
-                
+
             tile.lineXValues[i] = xPos;
             tile.lineYValues[i] = yPos;
 
@@ -263,12 +263,12 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             `translate(${this.axis.pAxis.position.x}, ${this.axis.pAxis.position.y})`);
 
         // add the axis to the export
-        if (this.options.axisPositionHorizontal == 'left' 
+        if (this.options.axisPositionHorizontal == 'left'
             || this.options.axisPositionVertical == 'top') {
             // left axis are shown at the beginning of the plot
             let gDrawnAxis = this.axis.exportAxisLeftSVG(this.valueScale, this.dimensions[1]);
             gAxis.appendChild(gDrawnAxis);
-        } else if (this.options.axisPositionHorizontal == 'right' 
+        } else if (this.options.axisPositionHorizontal == 'right'
             || this.options.axisPositionVertical == 'bottom') {
 
             let gDrawnAxis = this.axis.exportAxisRightSVG(this.valueScale, this.dimensions[1]);

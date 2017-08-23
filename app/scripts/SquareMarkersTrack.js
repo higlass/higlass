@@ -1,8 +1,6 @@
-import {TiledPixiTrack} from './TiledPixiTrack.js';
-import {tileProxy} from './TileProxy.js';
-import {
-    colorToHex
-} from './utils.js';
+import {TiledPixiTrack} from './TiledPixiTrack';
+import {tileProxy} from './TileProxy';
+import {colorToHex} from './utils';
 
 export class SquareMarkersTrack extends TiledPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
@@ -175,9 +173,9 @@ export class SquareMarkersTrack extends TiledPixiTrack {
             if (height < MIN_HEIGHT)
                 height = MIN_HEIGHT
 
-            graphics.drawRect(centerX - width / 2, 
-                              centerY - height / 2, 
-                              width, 
+            graphics.drawRect(centerX - width / 2,
+                              centerY - height / 2,
+                              width,
                               height);
         }
 

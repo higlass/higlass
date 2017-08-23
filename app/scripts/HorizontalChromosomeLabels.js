@@ -1,9 +1,9 @@
-import {PixiTrack} from './PixiTrack.js';
-import {ChromosomeInfo} from './ChromosomeInfo.js';
-import {SearchField} from './search_field.js';
+import {PixiTrack} from './PixiTrack';
+import {ChromosomeInfo} from './ChromosomeInfo';
+import {SearchField} from './search_field';
 import boxIntersect from 'box-intersect';
 import {scaleLinear} from 'd3-scale';
-import {absoluteToChr} from './utils.js';
+import {absoluteToChr} from './utils';
 
 let TICK_WIDTH = 200;
 let TICK_HEIGHT = 6;
@@ -24,7 +24,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         this.textFontColor = '#777777';
 
         this.animate = animate;
-        
+
         let chromSizesPath = chromInfoPath;
 
         if (!chromSizesPath) {
@@ -292,7 +292,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
             t.setAttribute('font-family', this.textFontFamily);
             t.setAttribute('font-size', this.textFontSize);
             g.setAttribute('transform', `scale(${text.text.scale.x},1)`);
-            
+
             t.setAttribute('fill', this.textFontColor);
             t.innerHTML = text.text.text;
 

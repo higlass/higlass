@@ -1,6 +1,6 @@
 import {json} from 'd3-request';
 import {select} from 'd3-selection';
-import {dictValues,dictKeys} from './utils.js';
+import {dictValues, dictKeys} from './utils';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -162,7 +162,7 @@ export class TilesetFinder extends React.Component {
 
         for (let i = 0; i < selectedOptions.length; i++) {
             let selectedOption = selectedOptions[i];
-            selectedOptionsList.push(selectedOption.value);  
+            selectedOptionsList.push(selectedOption.value);
         }
 
         this.handleSelectedOptions(selectedOptionsList);

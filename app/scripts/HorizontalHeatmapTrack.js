@@ -1,9 +1,9 @@
-import {Tiled2DPixiTrack} from './Tiled2DPixiTrack.js';
-import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack.js';
-import {tileProxy} from './TileProxy.js';
-import {heatedObjectMap} from './colormaps.js';
-import {colorDomainToRgbaArray} from './utils.js';
-import {TiledPixiTrack} from './TiledPixiTrack.js';
+import {Tiled2DPixiTrack} from './Tiled2DPixiTrack';
+import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack';
+import {tileProxy} from './TileProxy';
+import {heatedObjectMap} from './colormaps';
+import {colorDomainToRgbaArray} from './utils';
+import {TiledPixiTrack} from './TiledPixiTrack';
 
 export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
@@ -105,7 +105,7 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
 
                     let newTile = [zoomLevel, rows[i], cols[j]];
                     newTile.mirrored = false;
-                    newTile.dataTransform = this.options.dataTransform ? 
+                    newTile.dataTransform = this.options.dataTransform ?
                         this.options.dataTransform : 'default';
 
                     tiles.push(newTile)

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
 import {SeriesListMenu} from './SeriesListMenu.jsx';
-import {tracksInfo} from './config.js';
+import {tracksInfo} from './config';
 
 export class CloseTrackMenu extends React.Component {
     constructor(props) {

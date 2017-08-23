@@ -1,12 +1,12 @@
-import {Tiled2DPixiTrack} from './Tiled2DPixiTrack.js';
-import {tileProxy} from './TileProxy.js';
-import {heatedObjectMap} from './colormaps.js';
+import {Tiled2DPixiTrack} from './Tiled2DPixiTrack';
+import {tileProxy} from './TileProxy';
+import {heatedObjectMap} from './colormaps';
 import slugid from 'slugid';
-import {colorDomainToRgbaArray} from './utils.js';
-import {colorToHex} from './utils.js';
+import {colorDomainToRgbaArray} from './utils';
+import {colorToHex} from './utils';
 import {scaleLinear} from 'd3-scale';
 import {scaleLog} from 'd3-scale';
-import {AxisPixi} from './AxisPixi.js';
+import {AxisPixi} from './AxisPixi';
 
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;
@@ -90,9 +90,9 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         return canvas;
     }
-    
+
     exportData() {
-    
+
     }
 
     setSpriteProperties(sprite, zoomLevel, tilePos, mirrored) {
@@ -145,18 +145,18 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     draw() {
         //console.trace('drawing', this);
         super.draw();
-        
+
         this.drawColorbar();
     }
 
     drawColorbar() {
-        this.pColorbar.clear(); 
+        this.pColorbar.clear();
         // draw a colorbar
 
         if (!this.options.colorbarPosition || this.options.colorbarPosition == 'hidden') {
             this.pColorbarArea.visible = false;
             return;
-        } 
+        }
 
         this.pColorbarArea.visible = true;
 
@@ -242,7 +242,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 this.axis.pAxis.x = COLORBAR_WIDTH;
 
                 this.pColorbar.x = 0;
-            } 
+            }
         }
 
         this.pColorbarArea.clear();
@@ -267,7 +267,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             //console.log('posScale(i)', posScale(i));
             this.pColorbar.drawRect(0, posScale(i), COLORBAR_WIDTH, colorHeight);
         }
-        
+
         // draw an axis on the right side of the colorbar
         this.pAxis.position.x = COLORBAR_WIDTH;
         this.pAxis.position.y = posScale(0);
@@ -288,7 +288,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             } else {
                 this.axis.drawAxisLeft(axisValueScale, colorbarHeight);
             }
-        } 
+        }
     }
 
     exportColorBarSVG() {
@@ -364,7 +364,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             } else {
                 gAxis = this.axis.exportAxisRightSVG(axisValueScale, colorbarHeight);
             }
-        } 
+        }
 
         gAxisHolder.appendChild(gAxis);
 
@@ -484,7 +484,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             //console.log('sprite:', tile.canvas.toDataURL());
             let rotation = tile.sprite.rotation * 180 / Math.PI;
             let g = document.createElement('g');
-            g.setAttribute('transform', 
+            g.setAttribute('transform',
                             `translate(${tile.sprite.x}, ${tile.sprite.y})
                                rotate(${rotation})
                                scale(${tile.sprite.scale.x},${tile.sprite.scale.y})`);

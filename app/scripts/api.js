@@ -1,7 +1,7 @@
 import {
   relToAbsChromPos,
   scalesCenterAndK
-} from './utils.js';
+} from './utils';
 
 const api = function api(context) {
   const self = context;

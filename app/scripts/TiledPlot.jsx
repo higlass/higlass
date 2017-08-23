@@ -6,17 +6,17 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import CenterTrack from './CenterTrack';
-import {VerticalTiledPlot, HorizontalTiledPlot} from './PositionalTiledPlot.jsx';
 import {TrackRenderer} from './TrackRenderer.jsx';
 import {AddTrackModal} from './AddTrackModal.jsx';
 import {ConfigTrackMenu} from './ConfigTrackMenu.jsx';
 import {CloseTrackMenu} from './CloseTrackMenu.jsx';
 import {PopupMenu} from './PopupMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
+import HorizontalTiledPlot from './HorizontalTiledPlot';
+import VerticalTiledPlot from './VerticalTiledPlot';
 // import {HeatmapOptions} from './HeatmapOptions.jsx';
 
-import {getTrackPositionByUid} from './utils.js';
-import {getTrackByUid} from './utils.js';
+import {getTrackByUid, getTrackPositionByUid} from './utils';
 
 export class TiledPlot extends React.Component {
   constructor(props) {
@@ -662,7 +662,7 @@ export class TiledPlot extends React.Component {
 
     let trackOutline = "none";
 
-    let topTracks = (
+    const topTracks = (
       <div key="topTracksDiv"
         style={{
             left: this.leftWidth + this.props.horizontalMargin,
@@ -689,7 +689,7 @@ export class TiledPlot extends React.Component {
       </div>
     );
 
-    let leftTracks = (
+    const leftTracks = (
       <div
         key="leftTracksPlot"
         style={{
@@ -717,7 +717,7 @@ export class TiledPlot extends React.Component {
       </div>
     );
 
-    let rightTracks = (
+    const rightTracks = (
       <div style={{
             right: this.props.horizontalMargin,
             top: this.topHeight + this.props.verticalMargin,
@@ -743,7 +743,7 @@ export class TiledPlot extends React.Component {
        </div>
     );
 
-    let bottomTracks = (
+    const bottomTracks = (
       <div style={{
           left: this.leftWidth + this.props.horizontalMargin,
           bottom: this.props.verticalMargin,

@@ -8,7 +8,7 @@ import {brush} from 'd3-brush';
 import {zoom, zoomIdentity} from 'd3-zoom';
 import {select,event} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
-import {dictItems} from './utils.js';
+import {dictItems} from './utils';
 
 import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack';
 import {Id2DTiledPixiTrack} from './Id2DTiledPixiTrack';
@@ -45,7 +45,11 @@ import {ViewportTrackerVertical} from './ViewportTrackerVertical';
 import {OSMTilesTrack} from './OSMTilesTrack';
 import {MapboxTilesTrack} from './MapboxTilesTrack';
 
-import {domEvent, pubSub} from './services';
+// Utils
+// import {pixelToGenomeLoci} from './utils/';
+
+// Services
+import {pubSub} from './services';
 
 // Styles
 import "../styles/TrackRenderer.scss";
@@ -314,7 +318,8 @@ export class TrackRenderer extends React.Component {
     const y1 = selection[1][1];
     const dx = x1 - x0;
     const dy = y1 - y0;
-    const max = 0;
+
+    // pixelToGenomeLoci(x0, x1, y0, y1);
 
     console.log(
       'select:',

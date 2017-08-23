@@ -27,9 +27,9 @@ import {
   positionedTracksToAllTracks,
   relToAbsChromPos,
   scalesCenterAndK,
-  scalesToGenomeLocations,
+  scalesToGenomeLoci,
   totalTrackPixelHeight
-} from './utils.js';
+} from './utils';
 
 import {
     usedServer,
@@ -2662,7 +2662,7 @@ export class HiGlassComponent extends React.Component {
 
     // Convert scales into genomic locations
     const middleLayerListener = (xScale, yScale) => {
-      callback(scalesToGenomeLocations(xScale, yScale, this.chromInfo));
+      callback(scalesToGenomeLoci(xScale, yScale, this.chromInfo));
     };
 
     const newListenerId = Object.keys(this.scalesChangedListeners[view.uid])

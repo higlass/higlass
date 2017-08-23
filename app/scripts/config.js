@@ -1,17 +1,24 @@
 import {HeatmapOptions} from './HeatmapOptions.jsx';
-import {svgHorizontalLineIcon} from './icons.js';
-import {svgVerticalLineIcon} from './icons.js';
-import {svg2DTilesIcon} from './icons.js';
-import {svg2DHeatmapIcon} from './icons.js';
-import {svg1DAxisIcon} from './icons.js';
-import {svgVertical1DAxisIcon} from './icons.js';
-import {svgGeneAnnotationsIcon} from './icons.js';
-import {svgVerticalGeneAnnotationsIcon} from './icons.js';
-import {svg1DTilesIcon} from './icons.js';
-import {svgVertical1DTilesIcon} from './icons.js';
-import {svgArrowheadDomainsIcon} from './icons.js';
+import {
+  svg1DAxisIcon,
+  svg1DTilesIcon,
+  svg2DHeatmapIcon,
+  svg2DTilesIcon,
+  svgArrowheadDomainsIcon,
+  svgGeneAnnotationsIcon,
+  svgHorizontalLineIcon,
+  svgVertical1DAxisIcon,
+  svgVertical1DTilesIcon,
+  svgVerticalGeneAnnotationsIcon,
+  svgVerticalLineIcon
+} from './icons';
 
-import {format, formatPrefix, precisionRound, precisionPrefix} from 'd3-format';
+import {
+  format,
+  formatPrefix,
+  precisionRound,
+  precisionPrefix
+} from 'd3-format';
 
 let localServer = "localhost:8000";
 let remoteServer = "52.45.229.11";
@@ -508,7 +515,7 @@ export const tracksInfo = [
         name: '2D Tile Outlines',
         thumbnail: svg2DTilesIcon
     },
-    { 
+    {
         type: 'horizontal-1d-value-interval',
         datatype: ['bed-value'],
         local: false,
@@ -523,7 +530,7 @@ export const tracksInfo = [
             valueScaling: 'linear'
         }
     },
-    { 
+    {
         type: 'vertical-1d-value-interval',
         datatype: ['bed-value'],
         local: false,
@@ -682,7 +689,7 @@ export const tracksInfo = [
         orientation: '1d-horizontal',
         name: 'Horizontal 2D Rectangle Domains',
         thumbnail: svgArrowheadDomainsIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
             'trackBorderWidth', 'trackBorderColor',
             'rectangleDomainFillColor', 'rectangleDomainStrokeColor', 'rectangleDomainOpacity'
         ],
@@ -704,7 +711,7 @@ export const tracksInfo = [
         orientation: '2d',
         name: '2D Rectangle Domains',
         thumbnail: svgArrowheadDomainsIcon,
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
             'trackBorderWidth', 'trackBorderColor',
             'rectangleDomainFillColor', 'rectangleDomainStrokeColor', 'rectangleDomainOpacity'],
         defaultOptions: {
@@ -873,7 +880,7 @@ export function datatypeToTrackType(orientation) {
         datatypes.forEach(datatype => {
             if (!(datatype in localDatatypeToTrackType))
                 localDatatypeToTrackType[datatype] = [];
-        
+
 
             localDatatypeToTrackType[datatype].push(ti)
         });
