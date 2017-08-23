@@ -745,7 +745,8 @@ export class TrackRenderer extends React.Component {
                                                  track.tilesetUid,
                                                  handleTilesetInfoReceived,
                                                  track.options,
-                                                 () => this.currentProps.onNewTilesLoaded(track.uid));
+                                                 () => this.currentProps.onNewTilesLoaded(track.uid),
+                                                 this.svgElement);
             case 'horizontal-line':
                 return new HorizontalLine1DPixiTrack(this.pStage,
                                                      track.server,

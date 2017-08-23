@@ -6,15 +6,18 @@ import {colorDomainToRgbaArray} from './utils.js';
 import {colorToHex} from './utils.js';
 import {scaleLinear} from 'd3-scale';
 import {scaleLog} from 'd3-scale';
+import {brush, brushY} from 'd3-brush';
 import {AxisPixi} from './AxisPixi.js';
+import {select,event} from 'd3-selection';
 
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;
 const COLORBAR_LABELS_WIDTH = 40;
-const COLORBAR_MARGIN = 5;
+const COLORBAR_MARGIN = 10;
+const AXIS_TICK_LENGTH = 5;
 
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, svgElement) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
@@ -43,11 +46,29 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             this.colorScale = colorDomainToRgbaArray(options.colorRange);
         }
 
-        this.scaleBrush = brushX()
-            .extent([[0, 0], [width, height]])
-            .on("start brush end", brushmoved);
+        this.gMain = select(svgElement).append('g');
+        this.gColorscaleBrush = this.gMain.append('g');
+
+        /*
+        */
 
         this.prevOptions = '';
+    }
+
+    setPosition(newPosition) {
+        /**
+         * Set the position of this track. Normally this is handled by its ancestors,
+         * but because we're also drawing on the SVG track, we need the function to
+         * adjust the location of this.gSVG
+         *
+         * Arguments
+         * ---------
+         *      newPosition: [x,y]
+         *          The new position of this track
+         */
+        this.gMain.attr('transform', `translate(${newPosition[0]},${newPosition[1]})`);
+
+        super.setPosition(newPosition);
     }
 
     rerender(options, force) {
@@ -153,6 +174,12 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.drawColorbar();
     }
 
+    brushMoved() {
+        console.log('extent', event.selection);
+        this.options.scaleStartPercent = event.selection[0] / this.colorbarHeight;
+        this.options.scaleEndPercent = event.selection[1] / this.colorbarHeight;
+    }
+
     drawColorbar() {
         this.pColorbar.clear(); 
         // draw a colorbar
@@ -167,9 +194,21 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         if (!this.valueScale)
             return;
 
+
         let colorbarAreaHeight = Math.min(this.dimensions[1] / 2, COLORBAR_MAX_HEIGHT);
-        let colorbarHeight = colorbarAreaHeight - 2 * COLORBAR_MARGIN;
+        this.colorbarHeight = colorbarAreaHeight - 2 * COLORBAR_MARGIN;
         let colorbarAreaWidth = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + 2 * COLORBAR_MARGIN;
+
+        this.scaleBrush = brushY()
+            .extent([[0, 0], [COLORBAR_MARGIN, this.colorbarHeight]])
+            .on("start brush end", this.brushMoved.bind(this));
+
+        console.log('this.position:', this.position);
+
+        this.gColorscaleBrush.on('.brush', null);
+        this.gColorscaleBrush.call(this.scaleBrush);
+        this.gColorscaleBrush.select('rect')
+        .style('stroke', 'grey');
 
         if (this.options.colorbarPosition == 'topLeft') {
             // draw the background for the colorbar
@@ -203,12 +242,19 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 this.axis.pAxis.x = COLORBAR_WIDTH;
 
                 this.pColorbar.x = 0;
+
             } else {
                 // default to 'inside'
                 this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
 
                 this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+
+                console.log('pColorbarArea.x', this.pColorbarArea.x);
+                console.log('this.colorbarAreaWidth:', colorbarAreaWidth);
+                this.gColorscaleBrush.attr('transform', 
+                    'translate(' + (this.pColorbarArea.x + AXIS_TICK_LENGTH + COLORBAR_WIDTH ) + ',' + this.pColorbar.y + ")");
             }
+
         }
 
         if (this.options.colorbarPosition == 'bottomRight') {
@@ -251,16 +297,28 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         this.pColorbarArea.clear();
         this.pColorbarArea.beginFill(colorToHex('white'), 0.6);
+        console.log('pColorbarArea.x', this.pColorbarArea.x);
         this.pColorbarArea.drawRect(0, 0, colorbarAreaWidth, colorbarAreaHeight);
 
+        if (!this.options)
+            this.options = {};
+        if (!this.options.scaleStartPercent)
+            this.options.scaleStartPercent = 0;
+        if (!this.options.scaleEndPercent)
+            this.options.scaleEndPercent = 1;
+
+        this.gColorscaleBrush.call(this.scaleBrush.move, 
+            [this.options.scaleStartPercent * this.colorbarHeight,
+             this.options.scaleEndPercent * this.colorbarHeight]);
+
         //let centerY = this.position[1] + this.dimensions[1] / 2;
-        let centerY = colorbarHeight / 2;
+        let centerY = this.colorbarHeight / 2;
 
         let posScale = scaleLinear()
             .domain([0,255])
-            .range([0,colorbarHeight])
+            .range([0,this.colorbarHeight])
 
-        let colorHeight = (colorbarHeight) / 256.;
+        let colorHeight = (this.colorbarHeight) / 256.;
 
         // draw a small rectangle for each color of the colorbar
         for (let i = 0; i < 256; i++) {
@@ -276,21 +334,21 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.pAxis.position.x = COLORBAR_WIDTH;
         this.pAxis.position.y = posScale(0);
 
-        let axisValueScale = this.valueScale.copy().range([colorbarHeight, 0]);
+        let axisValueScale = this.valueScale.copy().range([this.colorbarHeight, 0]);
 
         if (this.options.colorbarPosition == 'topLeft'
             || this.options.colorbarPosition == 'bottomLeft') {
             if (this.options.colorbarLabelsPosition == 'outside') {
-                this.axis.drawAxisLeft(axisValueScale, colorbarHeight);
+                this.axis.drawAxisLeft(axisValueScale, this.colorbarHeight);
             } else {
-                this.axis.drawAxisRight(axisValueScale, colorbarHeight);
+                this.axis.drawAxisRight(axisValueScale, this.colorbarHeight);
             }
         } else if (this.options.colorbarPosition == 'topRight'
                    || this.options.colorbarPosition == 'bottomRight') {
             if (this.options.colorbarLabelsPosition == 'outside') {
-                this.axis.drawAxisRight(axisValueScale, colorbarHeight);
+                this.axis.drawAxisRight(axisValueScale, this.colorbarHeight);
             } else {
-                this.axis.drawAxisLeft(axisValueScale, colorbarHeight);
+                this.axis.drawAxisLeft(axisValueScale, this.colorbarHeight);
             }
         } 
     }
@@ -319,7 +377,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 `translate(${this.pColorbar.x}, ${this.pColorbar.y})`);
 
         let colorbarAreaHeight = Math.min(this.dimensions[1], COLORBAR_MAX_HEIGHT);
-        let colorbarHeight = colorbarAreaHeight - 2 * COLORBAR_MARGIN;
+        this.colorbarHeight = colorbarAreaHeight - 2 * COLORBAR_MARGIN;
         let colorbarAreaWidth = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + 2 * COLORBAR_MARGIN;
 
         rectColorbarArea.setAttribute('x', 0);
@@ -330,8 +388,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         let posScale = scaleLinear()
             .domain([0,255])
-            .range([0,colorbarHeight])
-        let colorHeight = (colorbarHeight) / 256.;
+            .range([0,this.colorbarHeight])
+        let colorHeight = (this.colorbarHeight) / 256.;
 
         for (let i = 0; i < 256; i++) {
             let rectColor = document.createElement('rect');
@@ -352,21 +410,21 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 `translate(${this.axis.pAxis.position.x},${this.axis.pAxis.position.y})`);
 
         let gAxis = null;
-        let axisValueScale = this.valueScale.copy().range([colorbarHeight, 0]);
+        let axisValueScale = this.valueScale.copy().range([this.colorbarHeight, 0]);
 
         if (this.options.colorbarPosition == 'topLeft'
             || this.options.colorbarPosition == 'bottomLeft') {
             if (this.options.colorbarLabelsPosition == 'inside') {
-                gAxis = this.axis.exportAxisRightSVG(axisValueScale, colorbarHeight);
+                gAxis = this.axis.exportAxisRightSVG(axisValueScale, this.colorbarHeight);
             } else {
-                gAxis = this.axis.exportAxisLeftSVG(axisValueScale, colorbarHeight);
+                gAxis = this.axis.exportAxisLeftSVG(axisValueScale, this.colorbarHeight);
             }
         } else if (this.options.colorbarPosition == 'topRight'
                    || this.options.colorbarPosition == 'bottomRight') {
             if (this.options.colorbarLabelsPosition == 'inside') {
-                gAxis = this.axis.exportAxisLeftSVG(axisValueScale, colorbarHeight);
+                gAxis = this.axis.exportAxisLeftSVG(axisValueScale, this.colorbarHeight);
             } else {
-                gAxis = this.axis.exportAxisRightSVG(axisValueScale, colorbarHeight);
+                gAxis = this.axis.exportAxisRightSVG(axisValueScale, this.colorbarHeight);
             }
         } 
 
@@ -438,6 +496,16 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             graphics.addChild(tile.sprite);
         }.bind(this));
 
+    }
+
+    remove() {
+        /**
+         * Remove this track from the view
+         */
+        this.gMain.remove();
+        this.gMain = null;
+
+        super.remove();
     }
 
     refScalesChanged(refXScale, refYScale) {
