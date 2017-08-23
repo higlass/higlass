@@ -121,5 +121,5 @@ TrackArea.propTypes = {
   onConfigTrackMenuOpened: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onAddSeries: PropTypes.func,
-  uid: PropTypes.number
+  uid: PropTypes.string
 };
