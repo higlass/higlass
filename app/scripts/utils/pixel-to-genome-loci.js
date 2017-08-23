@@ -1,6 +1,6 @@
 import absToChr from './abs-to-chr';
 
-export function pixelToGenomeLoci(x0, x1, y0, y1, chromInfo) {
+const pixelToGenomeLoci = (x0, x1, y0, y1, chromInfo) => {
   const gX0 = absToChr(x0, chromInfo);
   const gX1 = absToChr(x1, chromInfo);
 
@@ -14,3 +14,5 @@ export function pixelToGenomeLoci(x0, x1, y0, y1, chromInfo) {
     gY1[0], Math.round(gY1[1])
   ];
 }
+
+export default pixelToGenomeLoci;
