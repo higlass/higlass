@@ -5,7 +5,7 @@ import {select} from 'd3-selection';
 import React from 'react';
 import {mouse,event} from 'd3-selection';
 
-export class DraggableDiv extends React.Component {
+export default class DraggableDiv extends React.Component {
     constructor(props) {
         super(props);
 
@@ -53,11 +53,11 @@ export class DraggableDiv extends React.Component {
 
     componentWillReceiveProps(newProps) {
         if ('width' in newProps) {
-            this.setState({width: newProps.width}); 
+            this.setState({width: newProps.width});
         }
 
         if ('height' in newProps) {
-            this.setState({height: newProps.height}); 
+            this.setState({height: newProps.height});
         }
 
     }
@@ -282,32 +282,6 @@ export class DraggableDiv extends React.Component {
                              "boxSizing": "border-box",
                              opacity: this.props.opacity };
 
-            let neStyle = { position: 'absolute',
-                            right: 1,
-                            top: 1,
-                            width: 6,
-                            height: 6,
-                            cursor: 'nesw-resize'};
-            let nwStyle = { position: 'absolute',
-                            left: 1,
-                            top: 1,
-                            width: 6,
-                            height: 6,
-                            cursor: 'nwse-resize'};
-
-            let swStyle = { position: 'absolute',
-                            left: 1,
-                            bottom: 1,
-                            width: 6,
-                            height: 6,
-                            cursor: 'nesw-resize'};
-            let seStyle = { position: 'absolute',
-                            right: 1,
-                            bottom: 1,
-                            width: 6,
-                            height: 6,
-                            cursor: 'nwse-resize'};
-
             let resizeWidth = 10;
             let resizeHeight = 10;
 
@@ -347,30 +321,7 @@ export class DraggableDiv extends React.Component {
                             borderLeft: '1px solid black',
                             borderRight: '1px solid black',
                             cursor: 'col-resize'};
-            /*
-            let bottomStyle = { position: 'absolute',
-                              left: (this.state.width / 2 - this.bottomHandleWidth / 2),
-                              bottom: -4,
-                              width: this.bottomHandleWidth,
-                              height: 6,
-                              cursor: 'move' };
 
-            let closeStyle = { position: 'absolute',
-                               right: 23,
-                               width: 10,
-                               height: 5,
-                               top: 2,
-                               opacity: 0.5 }
-            */
-
-            let iStyle = { display: 'inline', 'marginRight': 3 };
-            /*
-                        <div style={bottomStyle} ref={(c) => this.bottomHandle = c} 
-                            className = 'bottom-handle' />
-
-                        <div style={closeStyle} className = 'close-handle' >
-                        </div>
-                        */
             let resizeHandleDivs = {
                 'bottom': (
                         <div key={'bottom'} className="bottom-draggable-handle" style={bottomStyle} ref={c => this.bottomHandle = c} />
@@ -386,7 +337,6 @@ export class DraggableDiv extends React.Component {
                 )
             }
             let resizeHandles = [...this.props.resizeHandles].map(x => resizeHandleDivs[x]);
-            //console.log('resizeHandles:', this.props.resizeHandles);
 
             return (
                     <div style={divStyle} ref={(c) => this.divContainer = c} className={this.props.className}>
@@ -395,21 +345,5 @@ export class DraggableDiv extends React.Component {
 
                     </div>
                    );
-                            /*
-                            <i className='fa fa-rotate-left' style={iStyle} ref={(c) => this.rotateHandle = c}></i>
-                            <i className='fa fa-close' style={iStyle} ref={(c)=> this.closeHandle = c}></i>
-                            */
     }
 }
-
-
-            /*
-                        <div style={neStyle} ref={(c) => this.neHandle = c }
-                            className="top-right-handle" />
-                        <div style={nwStyle} ref={(c) => this.nwHandle = c} 
-                            className = 'top-left-handle' />
-                        <div style={swStyle} ref={(c) => this.swHandle = c} 
-                            className = 'bottom-left-handle' />
-                        <div style={seStyle} ref={(c) => this.seHandle = c} 
-                            className = 'bottom-right-handle' />
-                            */
