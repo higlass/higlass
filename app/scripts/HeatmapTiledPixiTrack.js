@@ -80,12 +80,14 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         // if force is set, then we force a rerender even if the options
         // haven't changed
 
+        // rerender will force a brush.move
+
         let strOptions = JSON.stringify(options);
 
         if (!force && strOptions === this.prevOptions)
             return;
-        else
-            this.prevOptions = strOptions;
+
+        this.prevOptions = strOptions;
 
         super.rerender(options, force);
 
@@ -100,6 +102,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         for (let tile of this.visibleAndFetchedTiles()) {
             this.renderTile(tile);
         }
+
 
         // hopefully draw isn't rerendering all the tiles
         this.drawColorbar();
@@ -202,6 +205,13 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
     brushMoved() {
         let newOptions = this.newBrushOptions(event.selection);
+
+        let strOptions = JSON.stringify(newOptions);
+
+        if (strOptions == this.prevOptions)
+            return;
+
+        //this.onValueScaleChanged();
 
         //console.log('newOptions:', JSON.stringify(newOptions));
         //console.log('prevOptions:', this.prevOptions);

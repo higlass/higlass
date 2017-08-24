@@ -114,6 +114,31 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(() => done(), tileLoadTime);
         });
 
+        it ("Changes the value scale", (done) => {
+            let heatmapTrack = getTrackObject(hgc, 'aa', 'heatmap1'); 
+
+            console.log('lvs1', heatmapTrack.limitedValueScale.domain());
+
+            // move the brush down to limit the amount of visible data
+            heatmapTrack.gColorscaleBrush.call(heatmapTrack.scaleBrush.move,
+                [0,100]);
+
+            console.log('lvs2', heatmapTrack.limitedValueScale.domain());
+
+            let heatmap2Track = getTrackObject(hgc, 'aa', 'heatmap2');
+
+            setTimeout(done, tileLoadTime);
+        });
+
+        it ("Changes the value scale", (done) => {
+            let heatmapTrack = getTrackObject(hgc, 'aa', 'heatmap1'); 
+
+            console.log('lvs', heatmapTrack.limitedValueScale.domain());
+            console.log('extent:', heatmapTrack.scaleBrush.extent()());
+
+            done();
+        });
+
         return;
 
         it ('ensures that the new track domains are equal and unlocks the scales', (done) => {
@@ -131,6 +156,8 @@ describe("Simple HiGlassComponent", () => {
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
             setTimeout(() => done(), tileLoadTime);
         });
+
+        return;
 
         it ('ensure that new domains are unequal and locks the combined tracks', (done) => {
             let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');

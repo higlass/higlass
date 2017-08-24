@@ -305,9 +305,8 @@ export class HiGlassComponent extends React.Component {
        *    Nothing
        */
       let uid = this.combineViewAndTrackUid(viewUid, trackUid);
-      let track = getTrackByUid(this.state.views[viewUid], trackUid);
-
-      console.log('track:', track);
+      //console.log('this.state.views[viewUid]', this.state.views[viewUid]);
+      let sourceTrack = getTrackByUid(this.state.views[viewUid].tracks, trackUid);
 
       if (this.valueScaleLocks[uid]) {
           let lockGroupValues = dictValues(this.valueScaleLocks[uid]);
@@ -339,6 +338,14 @@ export class HiGlassComponent extends React.Component {
             }
 
             lockedTrack.valueScale.domain([allMin, allMax]);
+
+            //console.log('sourceTrackOptions:', sourceTrack.options);
+            if  (sourceTrack.options 
+                && typeof(sourceTrack.options.scaleStartPercent) != 'undefined'
+                && typeof(sourceTrack.options.scaleEndPercent) != 'undefined') {
+                lockedTrack.options.scaleStartPercent = sourceTrack.options.scaleStartPercent;
+                lockedTrack.options.scaleEndPercent = sourceTrack.options.scaleEndPercent;
+            }
 
             // the second parameter forces a rerender even though
             // the options haven't changed
