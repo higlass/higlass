@@ -24,6 +24,7 @@ import {
   download,
   getTrackByUid,
   getTrackPositionByUid,
+  loadChromInfos,
   positionedTracksToAllTracks,
   relToAbsChromPos,
   scalesCenterAndK,
@@ -220,6 +221,8 @@ export class HiGlassComponent extends React.Component {
       icons.forEach(
           icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox)
       );
+
+      loadChromInfos(this.state.views);
   }
 
   componentWillReceiveProps(newProps) {
@@ -231,8 +234,8 @@ export class HiGlassComponent extends React.Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    let width = this.element.clientWidth;
-    let height = this.element.clientHeight;
+    // let width = this.element.clientWidth;
+    // let height = this.element.clientHeight;
 
     /*
     this.pixiRenderer.resize(width, height);
@@ -241,6 +244,10 @@ export class HiGlassComponent extends React.Component {
     */
 
     this.pixiRenderer.render(this.pixiStage);
+
+    if (this.state.views !== nextState.views) {
+      loadChromInfos(nextState.views);
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -2403,6 +2410,7 @@ export class HiGlassComponent extends React.Component {
                                      addTrackPositionMenuPosition={addTrackPositionMenuPosition}
                                      canvasElement={this.state.canvasElement}
                                      chooseTrackHandler={this.state.chooseTrackHandler ? trackId => this.state.chooseTrackHandler(view.uid, trackId) : null}
+                                     chromInfoPath={view.chromInfoPath}
                                      editable={this.props.viewConfig.editable}
                                      horizontalMargin={this.horizontalMargin}
                                      initialXDomain={view.initialXDomain}
