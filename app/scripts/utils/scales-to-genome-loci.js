@@ -8,5 +8,8 @@ export function scalesToGenomeLoci(xScale, yScale, chromInfo) {
   const y0 = yScale.domain()[0];
   const y1 = yScale.domain()[1];
 
-  return pixelToGenomeLoci(x0, x1, y0, y1, chromInfo);
+  return [
+    ...pixelToGenomeLoci(x0, x1, chromInfo),
+    ...pixelToGenomeLoci(y0, y1, chromInfo)
+  ]
 }
