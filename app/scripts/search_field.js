@@ -1,6 +1,6 @@
 import {bisector} from 'd3-array';
 import {format} from 'd3-format';
-import {absoluteToChr} from './utils';
+import {absToChr} from './utils';
 
 export class SearchField {
 
@@ -16,11 +16,11 @@ export class SearchField {
         if (!xScale || !yScale)
             return "";
 
-        let x1 = absoluteToChr(xScale.domain()[0], this.chromInfo);
-        let x2 = absoluteToChr(xScale.domain()[1], this.chromInfo);
+        let x1 = absToChr(xScale.domain()[0], this.chromInfo);
+        let x2 = absToChr(xScale.domain()[1], this.chromInfo);
 
-        let y1 = absoluteToChr(yScale.domain()[0], this.chromInfo);
-        let y2 = absoluteToChr(yScale.domain()[1], this.chromInfo);
+        let y1 = absToChr(yScale.domain()[0], this.chromInfo);
+        let y2 = absToChr(yScale.domain()[1], this.chromInfo);
 
         let positionString = null;
         let stringFormat = format(",d")

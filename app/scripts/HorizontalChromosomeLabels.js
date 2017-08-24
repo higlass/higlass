@@ -3,7 +3,7 @@ import {ChromosomeInfo} from './ChromosomeInfo';
 import {SearchField} from './search_field';
 import boxIntersect from 'box-intersect';
 import {scaleLinear} from 'd3-scale';
-import {absoluteToChr} from './utils';
+import {absToChr} from './utils';
 
 let TICK_WIDTH = 200;
 let TICK_HEIGHT = 6;
@@ -168,8 +168,8 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         if (!this.searchField)
             return;
 
-        let x1 = absoluteToChr(this._xScale.domain()[0], this.chromInfo);
-        let x2 = absoluteToChr(this._xScale.domain()[1], this.chromInfo);
+        let x1 = absToChr(this._xScale.domain()[0], this.chromInfo);
+        let x2 = absToChr(this._xScale.domain()[1], this.chromInfo);
 
         for (let i = 0; i < this.texts.length; i++) {
             this.texts[i].visible = false;

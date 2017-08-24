@@ -28,7 +28,6 @@ export class GenomePositionSearchBox extends React.Component {
 
         this.uid = slugid.nice();
         this.chromInfo = null;
-        this.chromInfoBisector = bisector((d) => { return d.pos }).left;
         this.searchField = null;
         this.autocompleteMenu = null;
 

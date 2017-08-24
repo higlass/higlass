@@ -1,9 +1,8 @@
 import {PixiTrack} from './PixiTrack';
-import {tileProxy} from './TileProxy';
 import {ChromosomeInfo} from './ChromosomeInfo';
 import {SearchField} from './search_field';
 import boxIntersect from 'box-intersect';
-import {absoluteToChr} from './utils';
+import {absToChr} from './utils';
 
 export class Chromosome2DLabels extends PixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
@@ -68,11 +67,11 @@ export class Chromosome2DLabels extends PixiTrack {
         if (!this.searchField)
             return;
 
-        let x1 = absoluteToChr(this._xScale.domain()[0], this.chromInfo);
-        let x2 = absoluteToChr(this._xScale.domain()[1], this.chromInfo);
+        let x1 = absToChr(this._xScale.domain()[0], this.chromInfo);
+        let x2 = absToChr(this._xScale.domain()[1], this.chromInfo);
 
-        let y1 = absoluteToChr(this._yScale.domain()[0], this.chromInfo);
-        let y2 = absoluteToChr(this._yScale.domain()[1], this.chromInfo);
+        let y1 = absToChr(this._yScale.domain()[0], this.chromInfo);
+        let y2 = absToChr(this._yScale.domain()[1], this.chromInfo);
 
         for (let i = 0; i < this.texts.length; i++) {
             for (let j = 0; j < this.texts.length; j++) {
