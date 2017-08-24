@@ -740,6 +740,8 @@ export class TiledPlot extends React.Component {
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
+          onRangeSelection={this.handleRangeSelection1d.bind(this)}
+          rangeSelection={this.state.rangeSelection}
           resizeHandles={new Set(['right'])}
           tracks={this.props.tracks['left']}
         />
@@ -766,6 +768,8 @@ export class TiledPlot extends React.Component {
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
+          onRangeSelection={this.handleRangeSelection1d.bind(this)}
+          rangeSelection={this.state.rangeSelection}
           resizeHandles={new Set(['left'])}
           tracks={this.props.tracks['right']}
         />
