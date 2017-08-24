@@ -84,10 +84,6 @@ export class TrackRenderer extends React.Component {
     this.zoomedBound = this.zoomed.bind(this);
     this.zoomEndedBound = this.zoomEnded.bind(this);
 
-    this.brushedBound = this.brushed.bind(this);
-    this.brushStartedBound = this.brushStarted.bind(this);
-    this.brushEndedBound = this.brushEnded.bind(this);
-
     // create a zoom behavior that we'll just use to transform selections
     // without having it fire an "onZoom" event
     this.emptyZoomBehavior = zoom()
@@ -98,12 +94,6 @@ export class TrackRenderer extends React.Component {
     // the old props, so we need to store them in a new variable
     this.currentProps = props;
     this.prevPropsStr = '';
-
-    this.brushBehavior = brush()
-      .filter(() => !event.target.classList.contains('no-brush'))
-      .on('start', this.brushStartedBound)
-      .on('brush', this.brushedBound)
-      .on('end', this.brushEndedBound);
 
     // catch any zooming behavior within all of the tracks in this plot
     //this.zoomTransform = zoomIdentity();
@@ -271,9 +261,7 @@ export class TrackRenderer extends React.Component {
     if (prevState.selecting !== this.state.selecting) {
       if (this.state.selecting) {
         this.removeZoom();
-        this.addBrush();
       } else {
-        this.removeBrush();
         this.addZoom();
       }
     }
@@ -294,46 +282,12 @@ export class TrackRenderer extends React.Component {
 
   /* -------------------------- Custom Moethods --------------------------- */
 
-  addBrush() {
-    if (!this.svgTrackAreaSelection) { return; }
-
-    this.svgTrackAreaSelection.call(this.brushBehavior);
-  }
-
   addZoom() {
     if (!this.divTrackAreaSelection) { return; }
 
     // add back the previous transform
     this.divTrackAreaSelection.call(this.zoomBehavior);
     this.zoomBehavior.transform(this.divTrackAreaSelection, this.zoomTransform);
-  }
-
-  brushed() {
-    if (!event.sourceEvent) return;
-
-    const selection = event.selection;
-    const x0 = selection[0][0];
-    const y0 = selection[0][1];
-    const x1 = selection[1][0];
-    const y1 = selection[1][1];
-    const dx = x1 - x0;
-    const dy = y1 - y0;
-
-    // pixelToGenomeLoci(x0, x1, y0, y1);
-
-    console.log(
-      'select:',
-      `|${x0} - ${x1}| = ${dx}`,
-      `|${y0} - ${y1}| = ${dy}`,
-    );
-  }
-
-  brushStarted() {
-    this.brushing = true;
-  }
-
-  brushEnded() {
-    this.brushing = false;
   }
 
   keyDownHandler(event) {
@@ -349,21 +303,6 @@ export class TrackRenderer extends React.Component {
       this.setState({
         selecting: false
       });
-    }
-  }
-
-  removeBrush() {
-    if (this.svgTrackAreaSelection) {
-      this.brushEnded();
-
-      // Reset brush selection
-      this.svgTrackAreaSelection.call(
-        this.brushBehavior.move,
-        null
-      );
-
-      // Remove brush behavior
-      this.svgTrackAreaSelection.on('.brush', null);
     }
   }
 
@@ -1229,10 +1168,6 @@ export class TrackRenderer extends React.Component {
   /* ------------------------------- Render ------------------------------- */
 
   render() {
-    const trackRendererSelectionClass = this.state.selecting ?
-      'track-renderer-selection-active' :
-      'track-renderer-selection';
-
     return(
       <div
         ref={(c) => this.divTrackArea = c}
@@ -1242,15 +1177,6 @@ export class TrackRenderer extends React.Component {
         }}
         styleName="track-renderer"
       >
-        <svg
-          ref={el => this.svgTrackArea = el}
-          style={{
-            height: this.currentProps.height,
-            width: this.currentProps.width
-          }}
-          styleName={trackRendererSelectionClass}
-          xmlns="http://www.w3.org/2000/svg"
-        />
         {this.currentProps.children}
       </div>
     );
