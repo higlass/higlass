@@ -3,20 +3,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {select} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
-import {request,post} from 'd3-request';
+import {request} from 'd3-request';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
 import {WidthProvider} from 'react-grid-layout';
 import ReactGridLayout from 'react-grid-layout';
-import {SearchableTiledPlot} from './SearchableTiledPlot.jsx';
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import {TiledPlot} from './TiledPlot.jsx';
 
-import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {
-  absoluteToChr,
   dictFromTuples,
   dictItems,
   dictKeys,
@@ -26,14 +23,11 @@ import {
   getTrackPositionByUid,
   loadChromInfos,
   positionedTracksToAllTracks,
-  relToAbsChromPos,
   scalesCenterAndK,
-  scalesToGenomeLoci,
-  totalTrackPixelHeight
+  scalesToGenomeLoci
 } from './utils';
 
 import {
-    usedServer,
     tracksInfo,
     tracksInfoByType,
     defaultServer
