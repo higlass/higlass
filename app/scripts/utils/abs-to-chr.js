@@ -1,11 +1,11 @@
-import chromInfoBisector from './chrom-info-bisector';
+import { chromInfoBisector } from './';
 
 const absToChr = (absPosition, chromInfo) => {
   let insertPoint = chromInfoBisector(chromInfo.cumPositions, absPosition);
   const lastChr = chromInfo.cumPositions[chromInfo.cumPositions.length-1].chr;
   const lastLength = chromInfo.chromLengths[lastChr];
 
-  insertPoint -= insertPoint > 0 && -1;
+  insertPoint -= insertPoint > 0 && 1;
 
   let chrPosition = Math.floor(
     absPosition - chromInfo.cumPositions[insertPoint].pos
