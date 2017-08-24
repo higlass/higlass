@@ -1,0 +1,15 @@
+@import './transitions';
+
+.track-range-selection {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity $fast $ease;
+}
+
+.track-range-selection-active {
+  composes: track-range-selection;
+
+  z-index: 1;
+  opacity: 1;
+}
