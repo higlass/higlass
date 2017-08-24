@@ -60,7 +60,12 @@ export class TiledPlot extends React.Component {
       mouseOverOverlayUid: null,
       //trackOptions: null
       //trackOptions: trackOptions
-      forceUpdate: 0   // a random value that will be assigned by crucial functions to force an update
+      forceUpdate: 0,  // a random value that will be assigned by crucial functions to force an update
+
+      rangeSelection: [
+        null,
+        null
+      ]
     }
 
     // these dimensions are computed in the render() function and depend
@@ -640,6 +645,27 @@ export class TiledPlot extends React.Component {
     });
   }
 
+  handleRangeSelection1d(range1d) {
+    const newRangeSelection = this.state.rangeSelection.slice();
+    newRangeSelection[0] = range1d;
+
+    this.setState({
+      rangeSelection: newRangeSelection
+    });
+
+    console.log(
+      'select 1D genome range:',
+      this.state.rangeSelection[0],
+    );
+  }
+
+  handleRangeSelection2d(x0, x1, y0, y1) {
+    console.log(
+      'select 2D genome range:',
+      `${x0} - ${x1}`,
+      `${y0} - ${y1}`,
+    );
+  }
 
   render() {
     // left, top, right, and bottom have fixed heights / widths
@@ -663,7 +689,8 @@ export class TiledPlot extends React.Component {
     let trackOutline = "none";
 
     const topTracks = (
-      <div key="topTracksDiv"
+      <div
+        key="topTracksDiv"
         style={{
             left: this.leftWidth + this.props.horizontalMargin,
             top: this.props.verticalMargin,
@@ -682,6 +709,8 @@ export class TiledPlot extends React.Component {
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
+          onRangeSelection={this.handleRangeSelection1d.bind(this)}
+          rangeSelection={this.state.rangeSelection}
           resizeHandles={new Set(['bottom'])}
           tracks={this.props.tracks['top']}
           width={this.centerWidth}
@@ -762,6 +791,8 @@ export class TiledPlot extends React.Component {
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
+          onRangeSelection={this.handleRangeSelection1d.bind(this)}
+          rangeSelection={this.state.rangeSelection}
           resizeHandles={new Set(['top'])}
           tracks={this.props.tracks['bottom']}
           width={this.centerWidth}
