@@ -741,12 +741,13 @@ export class TrackRenderer extends React.Component {
                 return new TopAxisTrack(this.svgElement);
             case 'heatmap':
                 return new HeatmapTiledPixiTrack(this.pStage,
-                                                 track.server,
-                                                 track.tilesetUid,
-                                                 handleTilesetInfoReceived,
-                                                 track.options,
-                                                 () => this.currentProps.onNewTilesLoaded(track.uid),
-                                                 this.svgElement);
+                             track.server,
+                             track.tilesetUid,
+                             handleTilesetInfoReceived,
+                             track.options,
+                             () => this.currentProps.onNewTilesLoaded(track.uid),
+                             this.svgElement,
+                             (newOptions) => this.currentProps.onTrackOptionsChanged(track.uid, newOptions));
             case 'horizontal-line':
                 return new HorizontalLine1DPixiTrack(this.pStage,
                                                      track.server,

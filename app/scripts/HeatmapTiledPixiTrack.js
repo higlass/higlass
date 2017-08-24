@@ -20,7 +20,8 @@ const BRUSH_MARGIN = 3;
 const AXIS_TICK_LENGTH = 5;
 
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, svgElement) {
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, 
+        svgElement, onTrackOptionsChanged) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
@@ -28,6 +29,9 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
          */
         super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
+        this.onTrackOptionsChanged = onTrackOptionsChanged;
+
+        console.log('this.onTrackOptionsChanged', this.onTrackOptionsChanged);
 
         // Graphics for drawing the colorbar
         this.pColorbarArea = new PIXI.Graphics();
@@ -179,13 +183,13 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.drawColorbar();
     }
 
-    brushMoved() {
+    newBrushOptions(selection) {
         let newOptions = JSON.parse(JSON.stringify(this.options));
 
         let axisValueScale = this.valueScale.copy().range([this.colorbarHeight, 0]);
 
-        let endDomain = axisValueScale.invert(event.selection[0]);
-        let startDomain = axisValueScale.invert(event.selection[1]);
+        let endDomain = axisValueScale.invert(selection[0]);
+        let startDomain = axisValueScale.invert(selection[1]);
 
         let startPercent = (startDomain - axisValueScale.domain()[0]) 
             / (axisValueScale.domain()[1] - axisValueScale.domain()[0])
@@ -195,8 +199,24 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         newOptions.scaleStartPercent = startPercent;
         newOptions.scaleEndPercent = endPercent;
 
+        return newOptions;
+    }
+
+    brushMoved() {
+        let newOptions = this.newBrushOptions(event.selection);
+
         this.rerender(newOptions);
         this.animate();
+    }
+
+    brushEnd() {
+        let newOptions = this.newBrushOptions(event.selection);
+
+        this.rerender(newOptions);
+        this.animate();
+
+        console.log('this.onTrackOptionsChanged', this.onTrackOptionsChanged);
+        this.onTrackOptionsChanged(newOptions);
     }
 
     drawColorbar() {
@@ -222,7 +242,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         this.scaleBrush = brushY()
             .extent([[0, 0], [BRUSH_WIDTH, this.colorbarHeight]])
-            .on("start brush end", this.brushMoved.bind(this));
+            .on("start brush", this.brushMoved.bind(this))
+            .on("end", this.brushEnd.bind(this));
 
         this.gColorscaleBrush.on('.brush', null);
         this.gColorscaleBrush.call(this.scaleBrush);

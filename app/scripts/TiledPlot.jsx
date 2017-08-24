@@ -798,6 +798,7 @@ export class TiledPlot extends React.Component {
                     onNewTilesLoaded={this.props.onNewTilesLoaded}
                     onScalesChanged={this.handleScalesChanged.bind(this)}
                     onTilesetInfoReceived={this.handleTilesetInfoReceived.bind(this)}
+                    onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
                     pixiStage={this.props.pixiStage}
                     positionedTracks={positionedTracks}
                     ref={c => this.trackRenderer = c}
