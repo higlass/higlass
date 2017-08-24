@@ -33,13 +33,12 @@ class HorizontalTiledPlot extends React.Component {
 
     this.pubSubs = [];
 
-    this.brushBehavior = brushX().on('brush end', this.brushed.bind(this));
+    this.brushBehavior = brushX().on('brush', this.brushed.bind(this));
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */
 
   componentWillMount() {
-
     this.pubSubs = [];
     this.pubSubs.push(
       pubSub.subscribe('keydown', this.keyDownHandler.bind(this))
@@ -89,9 +88,9 @@ class HorizontalTiledPlot extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !event.sourceEvent &&
-      !rangeSelectionMoved &&
-      this.props.onRangeSelection
+      !event.sourceEvent ||
+      !this.props.onRangeSelection ||
+      rangeSelectionMoved
     ) return;
 
     this.rangeSelectionTriggered = true;
@@ -156,7 +155,7 @@ class HorizontalTiledPlot extends React.Component {
 
     return (
       <div styleName="styles.horizontal-tiled-plot">
-        {isBrushable &&
+        {this.props.isRangeSelectable && isBrushable &&
           <svg
             ref={el => this.brushEl = select(el)}
             style={{
@@ -203,6 +202,7 @@ HorizontalTiledPlot.propTypes = {
   handleConfigTrack: PropTypes.func,
   handleResizeTrack: PropTypes.func,
   handleSortEnd: PropTypes.func,
+  isRangeSelectable: PropTypes.bool,
   onAddSeries: PropTypes.func,
   onCloseTrack: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,

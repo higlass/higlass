@@ -33,7 +33,7 @@ class VerticalTiledPlot extends React.Component {
 
     this.pubSubs = [];
 
-    this.brushBehavior = brushY().on('brush end', this.brushed.bind(this));
+    this.brushBehavior = brushY().on('brush', this.brushed.bind(this));
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */
@@ -89,9 +89,9 @@ class VerticalTiledPlot extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !event.sourceEvent &&
-      !rangeSelectionMoved &&
-      this.props.onRangeSelection
+      !event.sourceEvent ||
+      !this.props.onRangeSelection ||
+      rangeSelectionMoved
     ) return;
 
     this.rangeSelectionTriggered = true;
@@ -149,7 +149,7 @@ class VerticalTiledPlot extends React.Component {
 
     return (
       <div styleName="styles.vertical-tiled-plot">
-        {isBrushable &&
+        {this.props.isRangeSelectable && isBrushable &&
           <svg
             ref={el => this.brushEl = select(el)}
             style={{
@@ -198,6 +198,7 @@ VerticalTiledPlot.propTypes = {
   handleResizeTrack: PropTypes.func,
   handleSortEnd: PropTypes.func,
   height: PropTypes.number,
+  isRangeSelectable: PropTypes.bool,
   onAddSeries: PropTypes.func,
   onCloseTrack: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
