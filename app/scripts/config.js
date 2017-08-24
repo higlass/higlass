@@ -20,6 +20,8 @@ import {
   precisionPrefix
 } from 'd3-format';
 
+import { or } from './utils';
+
 let localServer = "localhost:8000";
 let remoteServer = "52.45.229.11";
 //export const usedServer = localServer;
@@ -929,3 +931,29 @@ export function availableTrackTypes(datatypes, orientation) {
     return [];
 }
 
+export const isTrackRangeSelectable = (track) => {
+  switch (track.type) {
+    case 'heatmap':
+    case 'horizontal-line':
+    case 'vertical-line':
+    case 'horizontal-1d-tiles':
+    case 'vertical-1d-tiles':
+    case '2d-tiles':
+    case 'horizontal-gene-annotations':
+    case 'vertical-gene-annotations':
+    case 'horizontal-heatmap':
+    case 'vertical-heatmap':
+    case 'osm-tiles':
+    case 'mapbox-tiles':
+      return true;
+
+    case 'combined': {
+      return track.contents
+        .map(track => isTrackRangeSelectable(track))
+        .reduce(or, false);
+    }
+
+    default:
+      return false;
+  }
+}
