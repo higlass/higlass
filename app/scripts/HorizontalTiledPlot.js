@@ -13,7 +13,7 @@ import SortableList from './SortableList';
 import { pubSub } from './services';
 
 // Utils
-import { or, sum } from './utils';
+import { genomeLociToPixels, or, sum } from './utils';
 
 // Configs
 import { isTrackRangeSelectable } from './config';
@@ -53,7 +53,9 @@ class HorizontalTiledPlot extends React.Component {
       this.rangeSelectionTriggered = false;
       return this.state !== nextState;
     } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
-      this.moveBrush(nextProps.rangeSelection);
+      this.moveBrush(
+        genomeLociToPixels(nextProps.rangeSelection[0], this.props.chromInfo)
+      );
       return this.state !== nextState;
     }
     return true;
@@ -107,8 +109,13 @@ class HorizontalTiledPlot extends React.Component {
   moveBrush(rangeSelection) {
     if (!this.brushEl) { return; }
 
+    const relRange = [
+      this.props.scale(rangeSelection[0]),
+      this.props.scale(rangeSelection[1])
+    ]
+
     this.rangeSelectionMoved = true;
-    this.brushEl.call(this.brushBehavior.move, rangeSelection[0]);
+    this.brushEl.call(this.brushBehavior.move, relRange);
   }
 
   keyDownHandler(event) {
@@ -155,7 +162,7 @@ class HorizontalTiledPlot extends React.Component {
 
     return (
       <div styleName="styles.horizontal-tiled-plot">
-        {this.props.isRangeSelectable && isBrushable &&
+        {this.props.chromInfo && isBrushable &&
           <svg
             ref={el => this.brushEl = select(el)}
             style={{
@@ -198,11 +205,11 @@ class HorizontalTiledPlot extends React.Component {
 }
 
 HorizontalTiledPlot.propTypes = {
+  chromInfo: PropTypes.object,
   editable: PropTypes.bool,
   handleConfigTrack: PropTypes.func,
   handleResizeTrack: PropTypes.func,
   handleSortEnd: PropTypes.func,
-  isRangeSelectable: PropTypes.bool,
   onAddSeries: PropTypes.func,
   onCloseTrack: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
@@ -211,6 +218,7 @@ HorizontalTiledPlot.propTypes = {
   rangeSelection: PropTypes.array,
   referenceAncestor: PropTypes.func,
   resizeHandles: PropTypes.object,
+  scale: PropTypes.func,
   tracks: PropTypes.array,
   width: PropTypes.number
 }

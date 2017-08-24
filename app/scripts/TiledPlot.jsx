@@ -16,7 +16,13 @@ import HorizontalTiledPlot from './HorizontalTiledPlot';
 import VerticalTiledPlot from './VerticalTiledPlot';
 // import {HeatmapOptions} from './HeatmapOptions.jsx';
 
-import {getTrackByUid, getTrackPositionByUid} from './utils';
+import { chromInfo } from './services';
+
+import {
+  getTrackByUid,
+  getTrackPositionByUid,
+  pixelToGenomeLoci
+} from './utils';
 
 export class TiledPlot extends React.Component {
   constructor(props) {
@@ -65,7 +71,9 @@ export class TiledPlot extends React.Component {
       rangeSelection: [
         null,
         null
-      ]
+      ],
+
+      chromInfo: null
     }
 
     // these dimensions are computed in the render() function and depend
@@ -81,6 +89,10 @@ export class TiledPlot extends React.Component {
 
     this.dragTimeout = null;
     this.previousPropsStr = '';
+
+    this.getChromInfo = chromInfo.get(this.props.chromInfoPath).then(
+      chromInfo => this.setState({ chromInfo })
+    );
   }
 
 
@@ -169,6 +181,8 @@ export class TiledPlot extends React.Component {
   handleScalesChanged(x,y) {
     this.xScale = x;
     this.yScale = y;
+
+    console.log('scale changed', this.yScale.range());
 
     this.props.onScalesChanged(x,y);
   }
@@ -645,18 +659,32 @@ export class TiledPlot extends React.Component {
     });
   }
 
-  handleRangeSelection1d(range1d) {
-    const newRangeSelection = this.state.rangeSelection.slice();
-    newRangeSelection[0] = range1d;
+  rangeToGenomeLoci(range, scale) {
+    if (!scale) return;
 
-    this.setState({
-      rangeSelection: newRangeSelection
-    });
-
-    console.log(
-      'select 1D genome range:',
-      this.state.rangeSelection[0],
+    return pixelToGenomeLoci(
+      parseInt(scale.invert(range[0]), 10),
+      parseInt(scale.invert(range[1]), 10),
+      this.state.chromInfo
     );
+  }
+
+  handleRangeSelection1d(axis) {
+    const scale = axis === 'x' ? this.xScale : this.yScale;
+
+    return (range) => {
+      const newRangeSelection = this.state.rangeSelection.slice();
+      newRangeSelection[0] = this.rangeToGenomeLoci(range, scale);
+
+      this.setState({
+        rangeSelection: newRangeSelection
+      });
+
+      console.log(
+        `handleRangeSelection1d() [axis: ${axis}]`,
+        this.state.rangeSelection[0],
+      );
+    }
   }
 
   handleRangeSelection2d(x0, x1, y0, y1) {
@@ -701,6 +729,7 @@ export class TiledPlot extends React.Component {
         }}
       >
         <HorizontalTiledPlot
+          chromInfo={this.state.chromInfo}
           editable={this.props.editable}
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
           handleResizeTrack={this.handleResizeTrack.bind(this)}
@@ -709,9 +738,10 @@ export class TiledPlot extends React.Component {
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-          onRangeSelection={this.handleRangeSelection1d.bind(this)}
+          onRangeSelection={this.handleRangeSelection1d('x').bind(this)}
           rangeSelection={this.state.rangeSelection}
           resizeHandles={new Set(['bottom'])}
+          scale={this.xScale}
           tracks={this.props.tracks['top']}
           width={this.centerWidth}
         />
@@ -731,6 +761,7 @@ export class TiledPlot extends React.Component {
         }}
       >
         <VerticalTiledPlot
+          chromInfo={this.state.chromInfo}
           editable={this.props.editable}
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
           handleResizeTrack={this.handleResizeTrack.bind(this)}
@@ -740,9 +771,10 @@ export class TiledPlot extends React.Component {
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-          onRangeSelection={this.handleRangeSelection1d.bind(this)}
+          onRangeSelection={this.handleRangeSelection1d('y').bind(this)}
           rangeSelection={this.state.rangeSelection}
           resizeHandles={new Set(['right'])}
+          scale={this.yScale}
           tracks={this.props.tracks['left']}
         />
       </div>
@@ -759,6 +791,7 @@ export class TiledPlot extends React.Component {
           }}
       >
         <VerticalTiledPlot
+          chromInfo={this.state.chromInfo}
           editable={this.props.editable}
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
           handleResizeTrack={this.handleResizeTrack.bind(this)}
@@ -768,9 +801,10 @@ export class TiledPlot extends React.Component {
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-          onRangeSelection={this.handleRangeSelection1d.bind(this)}
+          onRangeSelection={this.handleRangeSelection1d('y').bind(this)}
           rangeSelection={this.state.rangeSelection}
           resizeHandles={new Set(['left'])}
+          scale={this.yScale}
           tracks={this.props.tracks['right']}
         />
        </div>
@@ -787,6 +821,7 @@ export class TiledPlot extends React.Component {
         }}
       >
         <HorizontalTiledPlot
+          chromInfo={this.state.chromInfo}
           editable={this.props.editable}
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
           handleResizeTrack={this.handleResizeTrack.bind(this)}
@@ -795,9 +830,10 @@ export class TiledPlot extends React.Component {
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-          onRangeSelection={this.handleRangeSelection1d.bind(this)}
+          onRangeSelection={this.handleRangeSelection1d('x').bind(this)}
           rangeSelection={this.state.rangeSelection}
           resizeHandles={new Set(['top'])}
+          scale={this.xScale}
           tracks={this.props.tracks['bottom']}
           width={this.centerWidth}
         />
@@ -1042,6 +1078,7 @@ TiledPlot.propTypes = {
   addTrackPosition: PropTypes.string,
   canvasElement: PropTypes.object,
   chooseTrackHandler: PropTypes.func,
+  chromInfoPath: PropTypes.string,
   dragging: PropTypes.bool,
   editable: PropTypes.bool,
   horizontalMargin: PropTypes.number,
