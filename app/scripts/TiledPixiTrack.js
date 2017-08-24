@@ -10,7 +10,7 @@ export class TiledPixiTrack extends PixiTrack {
     /**
      * A track that must pull remote tiles
      */
-    constructor(scene, server, tilesetUid, handleTilesetInfoReceived, options, animate) {
+    constructor(scene, server, tilesetUid, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
@@ -42,11 +42,13 @@ export class TiledPixiTrack extends PixiTrack {
         this.medianVisibleValue = null;
 
         this.animate = animate;
+        this.onValueScaleChanged = onValueScaleChanged;
 
         // store the server and tileset uid so they can be used in draw()
         // if the tileset info is not found
         this.server = server;
         this.tilesetUid = tilesetUid;
+        this.prevValueScale = null;
 
         tileProxy.trackInfo(server, tilesetUid, tilesetInfo => {
             // console.log('tilesetInfo:', tilesetInfo);
@@ -466,6 +468,23 @@ export class TiledPixiTrack extends PixiTrack {
         this.draw();
 
         // Let HiGlass know we need to re-render
+        // check if the value scale has changed
+        if (this.valueScale) {
+            if (!this.prevValueScale || JSON.stringify(this.valueScale.domain()) != JSON.stringify(this.prevValueScale.domain())) {
+                //console.log('here', this.onValueScaleChanged);
+                //if (this.prevValueScale)
+                    //console.log('this.prevValueScale.domain()', this.prevValueScale.domain());
+                    //console.log('this.valueScale.domain()', this.valueScale.domain());
+                this.prevValueScale = this.valueScale.copy();
+
+                if (this.onValueScaleChanged) {
+                    console.log('value scale changed');
+                    this.onValueScaleChanged();
+                }
+
+            }
+        }
+        //this.animate();
         this.animate();
     }
 
@@ -501,7 +520,6 @@ export class TiledPixiTrack extends PixiTrack {
         for (let uid in this.fetchedTiles)
             this.drawTile(this.fetchedTiles[uid]);
 
-        //this.animate();
     }
 
     drawTile(tileData, graphics) {

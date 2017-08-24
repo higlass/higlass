@@ -305,6 +305,9 @@ export class HiGlassComponent extends React.Component {
        *    Nothing
        */
       let uid = this.combineViewAndTrackUid(viewUid, trackUid);
+      let track = getTrackByUid(this.state.views[viewUid], trackUid);
+
+      console.log('track:', track);
 
       if (this.valueScaleLocks[uid]) {
           let lockGroupValues = dictValues(this.valueScaleLocks[uid]);
@@ -345,7 +348,7 @@ export class HiGlassComponent extends React.Component {
   }
 
   handleNewTilesLoaded(viewUid, trackUid) {
-      this.syncValueScales(viewUid, trackUid);
+      //this.syncValueScales(viewUid, trackUid);
       this.animate();
       //
   }
@@ -2403,7 +2406,10 @@ export class HiGlassComponent extends React.Component {
                                      onTracksAdded={(newTracks, position, host) => this.handleTracksAdded(view.uid, newTracks, position, host)}
                                      onTrackOptionsChanged={(trackId, options) => this.handleTrackOptionsChanged(view.uid, trackId, options)}
                                      onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
+                                    
                                      onUnlockValueScale={uid => this.handleUnlockValueScale(view.uid, uid)}
+                                     onValueScaleChanged={uid => this.syncValueScales(view.uid, uid)}
+
                                      pixiStage={this.pixiStage}
                                      ref={c => this.tiledPlots[view.uid] = c}
                                      registerDraggingChangedListener={listener => {

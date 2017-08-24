@@ -152,8 +152,15 @@ export function getTrackByUid(tracks, uid) {
          *
          * Null or undefined if none.
          */
+        console.log('tracks:', tracks);
+    console.log('uid:', uid)
+
         for (let trackType in tracks) {
             let theseTracks = tracks[trackType];
+
+            if (!theseTracks.filter)
+                // no tracks of this type specified, probably
+                continue;
 
             let filteredTracks = theseTracks.filter((d) => { return d.uid == uid; });
 

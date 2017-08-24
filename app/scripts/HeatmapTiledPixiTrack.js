@@ -21,22 +21,19 @@ const AXIS_TICK_LENGTH = 5;
 
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, 
-        svgElement, onTrackOptionsChanged) {
+        svgElement, onValueScaleChanged, onTrackOptionsChanged) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
          * @param uid: The data set to get the tiles from the server
          */
-        super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+        super(scene, server, uid, handleTilesetInfoReceived, options, animate, onValueScaleChanged);
 
         this.onTrackOptionsChanged = onTrackOptionsChanged;
-
-        console.log('this.onTrackOptionsChanged', this.onTrackOptionsChanged);
 
         // Graphics for drawing the colorbar
         this.pColorbarArea = new PIXI.Graphics();
         this.pMasked.addChild(this.pColorbarArea);
-        
 
         this.pColorbar = new PIXI.Graphics();
         this.pColorbarArea.addChild(this.pColorbar);
@@ -92,6 +89,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         super.rerender(options, force);
 
+        //console.trace('rerender');
         // the normalization method may have changed
         this.calculateVisibleTiles();
 
@@ -205,6 +203,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     brushMoved() {
         let newOptions = this.newBrushOptions(event.selection);
 
+        //console.log('newOptions:', JSON.stringify(newOptions));
+        //console.log('prevOptions:', this.prevOptions);
         this.rerender(newOptions);
         this.animate();
     }
@@ -215,7 +215,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.rerender(newOptions);
         this.animate();
 
-        console.log('this.onTrackOptionsChanged', this.onTrackOptionsChanged);
         this.onTrackOptionsChanged(newOptions);
     }
 
@@ -242,7 +241,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         this.scaleBrush = brushY()
             .extent([[0, 0], [BRUSH_WIDTH, this.colorbarHeight]])
-            .on("start brush", this.brushMoved.bind(this))
+            .on("brush", this.brushMoved.bind(this))
             .on("end", this.brushEnd.bind(this));
 
         this.gColorscaleBrush.on('.brush', null);

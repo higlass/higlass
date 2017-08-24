@@ -797,6 +797,7 @@ export class TiledPlot extends React.Component {
                     marginTop={this.props.verticalMargin}
                     onNewTilesLoaded={this.props.onNewTilesLoaded}
                     onScalesChanged={this.handleScalesChanged.bind(this)}
+                    onValueScaleChanged={this.props.onValueScaleChanged}
                     onTilesetInfoReceived={this.handleTilesetInfoReceived.bind(this)}
                     onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
                     pixiStage={this.props.pixiStage}
