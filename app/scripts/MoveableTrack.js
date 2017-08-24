@@ -4,6 +4,7 @@ import React from 'react';
 import DraggableDiv from './DraggableDiv';
 import TrackArea from './TrackArea';
 
+
 export default class MoveableTrack extends TrackArea {
   constructor(props) {
     super(props);
@@ -30,7 +31,7 @@ export default class MoveableTrack extends TrackArea {
         style={{
           height: this.props.height,
           width: this.props.width,
-          position: "relative",
+          position: 'relative',
           background: 'transparent'
         }}
       >
