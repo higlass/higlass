@@ -1,6 +1,6 @@
-export { default as absoluteToChr } from './absolute-to-chr';
 export { default as absToChr } from './abs-to-chr';
 export { default as chromInfoBisector } from './chrom-info-bisector';
+export { default as chrToAbs } from './chr-to-abs';
 export { default as colorDomainToRgbaArray } from './color-domain-to-rgba-array';
 export { default as colorToHex } from './color-to-hex';
 export { default as dictFromTuples } from './dict-from-tuples';
@@ -8,6 +8,7 @@ export { default as dictItems } from './dict-items';
 export { default as dictKeys } from './dict-keys';
 export { default as dictValues } from './dict-values';
 export { default as download } from './download';
+export { default as genomeLociToPixels } from './genome-loci-to-pixels';
 export { default as getTrackByUid } from './get-track-by-uid';
 export { default as getTrackPositionByUid } from './get-track-position-by-uid';
 export { default as loadChromInfos } from './load-chrom-infos';
