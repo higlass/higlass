@@ -4,7 +4,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-import {brush} from 'd3-brush';
 import {zoom, zoomIdentity} from 'd3-zoom';
 import {select,event} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
@@ -109,16 +108,6 @@ export class TrackRenderer extends React.Component {
       .on('zoom', this.zoomedBound)
       .on('end', this.zoomEndedBound);
 
-        /*
-    if (!this.props.zoomable)
-      this.zoomBehavior.scaleExtent([1,1]);
-      */
-
-    // the center measurements, because those corresponds to the widths
-    // and heights of the actual tracks
-    this.initialWidth = this.currentProps.width;
-    this.initialHeight = this.currentProps.height;
-
     this.initialXDomain = [0,1];
     this.initialYDomain = [0,1];
 
@@ -129,8 +118,11 @@ export class TrackRenderer extends React.Component {
     this.cumCenterXOffset = 0;
     this.cumCenterYOffset = 0;
 
-    this.setUpInitialScales(this.currentProps.initialXDomain,
-                this.currentProps.initialYDomain);
+    this.setUpInitialScales(
+      this.currentProps.initialXDomain,
+      this.currentProps.initialYDomain
+    );
+
     this.setUpScales();
 
     // maintain a list of trackDefObjects which correspond to the input
@@ -176,8 +168,6 @@ export class TrackRenderer extends React.Component {
 
     this.pStage.mask = this.pMask;
 
-    //this.divTrackAreaSelection.call(this.zoomBehavior);
-    //
     this.addZoom();
 
     this.canvasDom = ReactDOM.findDOMNode(this.currentProps.canvasElement);
@@ -220,10 +210,15 @@ export class TrackRenderer extends React.Component {
 
     this.prevPropsStr = nextPropsStr;
 
-    this.setUpInitialScales(nextProps.initialXDomain,
-                nextProps.initialYDomain);
+    this.setUpInitialScales(
+      nextProps.initialXDomain,
+      nextProps.initialYDomain
+    );
 
-    this.setUpScales();
+    this.setUpScales(
+      nextProps.width !== this.props.width ||
+      nextProps.height !== this.props.height
+    );
     this.canvasDom = ReactDOM.findDOMNode(nextProps.canvasElement);
 
     this.svgElement = nextProps.svgElement;
@@ -397,7 +392,7 @@ export class TrackRenderer extends React.Component {
     this.timedUpdatePositionAndDimensions();
   }
 
-  setUpScales() {
+  setUpScales(notify=false) {
     let currentCenterX = this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth / 2;
     let currentCenterY = this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2;
 
@@ -420,8 +415,8 @@ export class TrackRenderer extends React.Component {
     this.prevCenterX = currentCenterX;
 
     // the domain of the visible (not drawable area)
-    let visibleXDomain = [this.drawableToDomainX(0) - this.cumCenterXOffset, this.drawableToDomainX(this.initialWidth) - this.cumCenterXOffset]
-    let visibleYDomain = [this.drawableToDomainY(0) - this.cumCenterYOffset, this.drawableToDomainY(this.initialHeight) - this.cumCenterYOffset]
+    let visibleXDomain = [this.drawableToDomainX(0) - this.cumCenterXOffset, this.drawableToDomainX(this.currentProps.width) - this.cumCenterXOffset]
+    let visibleYDomain = [this.drawableToDomainY(0) - this.cumCenterYOffset, this.drawableToDomainY(this.currentProps.height) - this.cumCenterYOffset]
 
     // [drawableToDomain(0), drawableToDomain(1)]: the domain of the visible area
     // if the screen has been resized, then the domain width should remain the same
@@ -429,10 +424,10 @@ export class TrackRenderer extends React.Component {
     //this.xScale should always span the region that the zoom behavior is being called on
     this.xScale = scaleLinear()
             .domain(visibleXDomain)
-            .range([0, this.initialWidth]);
+            .range([0, this.currentProps.width]);
     this.yScale = scaleLinear()
             .domain(visibleYDomain)
-            .range([0, this.initialHeight]);
+            .range([0, this.currentProps.height]);
 
 
     for (let uid in this.trackDefObjects) {
@@ -446,7 +441,7 @@ export class TrackRenderer extends React.Component {
       //track.draw();
     }
 
-    this.applyZoomTransform(false);
+    this.applyZoomTransform(notify);
   }
 
   getTrackObject(trackId) {
@@ -633,8 +628,8 @@ export class TrackRenderer extends React.Component {
         updated = true;
       }
 
-      let widthDifference = trackDef.width - this.initialWidth;
-      let heightDifference = trackDef.height - this.initialHeight;
+      let widthDifference = trackDef.width - this.currentProps.width;
+      let heightDifference = trackDef.height - this.currentProps.height;
     }
 
     // report on whether any track positions or dimensions have changed
