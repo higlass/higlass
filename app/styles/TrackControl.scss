@@ -1,0 +1,31 @@
+@import './transitions';
+
+.track-control {
+  position: absolute;
+  z-index: -1;
+  background: rgba(255, 255, 255, 0.7);
+  right: 0.125rem;
+  top: 0.125rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.075),
+              0 0 3px 0 rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transition: opacity $fast $ease,
+              background $fast $ease,
+              box-shadow $fast $ease;
+}
+
+.track-control-active {
+  composes: track-control;
+
+  opacity: 1;
+  z-index: 1;
+
+  &:hover {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1),
+                0 0 3px 0 rgba(0, 0, 0, 0.2);
+  }
+}
