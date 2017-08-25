@@ -1,30 +1,88 @@
-const React = require('react')
-const { findDOMNode } = require('react-dom')
-const scrollIntoView = require('dom-scroll-into-view')
-const PropTypes = require('prop-types');
+import React from 'react';
+import { findDOMNode } from 'react-dom';
+import scrollIntoView from 'dom-scroll-into-view';
+import PropTypes from 'prop-types';
 
-let _debugStates = []
+let _debugStates = [];
 
-let Autocomplete = React.createClass({
 
-  propTypes: {
-    value: PropTypes.any,
-    onChange: PropTypes.func,
-    onSelect: PropTypes.func,
-    shouldItemRender: PropTypes.func,
-    sortItems: PropTypes.func,
-    getItemValue: PropTypes.func.isRequired,
-    renderItem: PropTypes.func.isRequired,
-    renderMenu: PropTypes.func,
-    menuStyle: PropTypes.object,
-    inputProps: PropTypes.object,
-    wrapperProps: PropTypes.object,
-    wrapperStyle: PropTypes.object,
-    autoHighlight: PropTypes.bool,
-    onMenuVisibilityChange: PropTypes.func,
-    open: PropTypes.bool,
-    debug: PropTypes.bool,
-  },
+export class Autocomplete extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.keyDownHandlers = {
+      ArrowDown (event) {
+        event.preventDefault()
+        const itemsLength = this.getFilteredItems().length
+        if (!itemsLength) return
+        var { highlightedIndex } = this.state
+        var index = (
+          highlightedIndex === null ||
+          highlightedIndex === itemsLength - 1
+        ) ?  0 : highlightedIndex + 1
+        this._performAutoCompleteOnKeyUp = true
+        this.setState({
+          highlightedIndex: index,
+          isOpen: true,
+        })
+      },
+
+      ArrowUp (event) {
+        event.preventDefault()
+        const itemsLength = this.getFilteredItems().length
+        if (!itemsLength) return
+        var { highlightedIndex } = this.state
+        var index = (
+          highlightedIndex === 0 ||
+          highlightedIndex === null
+        ) ? itemsLength - 1 : highlightedIndex - 1
+        this._performAutoCompleteOnKeyUp = true
+        this.setState({
+          highlightedIndex: index,
+          isOpen: true,
+        })
+      },
+
+      Enter (event) {
+        if (this.state.isOpen === false) {
+          // menu is closed so there is no selection to accept -> do nothing
+          return
+        }
+        else if (this.state.highlightedIndex == null) {
+          // input has focus but no menu item is selected + enter is hit -> close the menu, highlight whatever's in input
+          this.setState({
+            isOpen: false
+          }, () => {
+            this.refs.input.select()
+          })
+        }
+        else {
+          // text entered + menu item has been highlighted + enter is hit -> update value to that of selected menu item, close the menu
+          event.preventDefault()
+          var item = this.getFilteredItems()[this.state.highlightedIndex]
+          var value = this.props.getItemValue(item)
+          this.setState({
+            isOpen: false,
+            highlightedIndex: null
+          }, () => {
+            //this.refs.input.focus() // TODO: file issue
+            this.refs.input.setSelectionRange(
+              value.length,
+              value.length
+            )
+            this.props.onSelect(value, item)
+          })
+        }
+      },
+
+      Escape (event) {
+        this.setState({
+          highlightedIndex: null,
+          isOpen: false
+        })
+      }
+    };
+  }
 
   getDefaultProps () {
     return {
@@ -53,20 +111,20 @@ let Autocomplete = React.createClass({
       autoHighlight: true,
       onMenuVisibilityChange () {},
     }
-  },
+  }
 
   getInitialState () {
     return {
       isOpen: false,
       highlightedIndex: null,
     }
-  },
+  }
 
   componentWillMount () {
     this._ignoreBlur = false
     this._performAutoCompleteOnUpdate = false
     this._performAutoCompleteOnKeyUp = false
-  },
+  }
 
   componentWillReceiveProps (nextProps) {
     this._performAutoCompleteOnUpdate = true
@@ -79,7 +137,7 @@ let Autocomplete = React.createClass({
       this.state.highlightedIndex >= nextProps.items.length) {
       this.setState({ highlightedIndex: null })
     }
-  },
+  }
 
   componentDidUpdate (prevProps, prevState) {
     if (this.state.isOpen === true && prevState.isOpen === false)
@@ -94,7 +152,7 @@ let Autocomplete = React.createClass({
     if (prevState.isOpen !== this.state.isOpen) {
       this.props.onMenuVisibilityChange(this.state.isOpen)
     }
-  },
+  }
 
   maybeScrollItemIntoView () {
     if (this.state.isOpen === true && this.state.highlightedIndex !== null) {
@@ -108,7 +166,7 @@ let Autocomplete = React.createClass({
         )
       }
     }
-  },
+  }
 
   handleKeyDown (event) {
     if (this.keyDownHandlers[event.key])
@@ -119,92 +177,21 @@ let Autocomplete = React.createClass({
         isOpen: true
       })
     }
-  },
+  }
 
   handleChange (event) {
     this._performAutoCompleteOnKeyUp = true
     this.props.onChange(event, event.target.value)
-  },
+  }
 
   handleKeyUp () {
     if (this._performAutoCompleteOnKeyUp) {
       this._performAutoCompleteOnKeyUp = false
       this.maybeAutoCompleteText()
     }
-  },
+  }
 
-  keyDownHandlers: {
-    ArrowDown (event) {
-      event.preventDefault()
-      const itemsLength = this.getFilteredItems().length
-      if (!itemsLength) return
-      var { highlightedIndex } = this.state
-      var index = (
-        highlightedIndex === null ||
-        highlightedIndex === itemsLength - 1
-      ) ?  0 : highlightedIndex + 1
-      this._performAutoCompleteOnKeyUp = true
-      this.setState({
-        highlightedIndex: index,
-        isOpen: true,
-      })
-    },
 
-    ArrowUp (event) {
-      event.preventDefault()
-      const itemsLength = this.getFilteredItems().length
-      if (!itemsLength) return
-      var { highlightedIndex } = this.state
-      var index = (
-        highlightedIndex === 0 ||
-        highlightedIndex === null
-      ) ? itemsLength - 1 : highlightedIndex - 1
-      this._performAutoCompleteOnKeyUp = true
-      this.setState({
-        highlightedIndex: index,
-        isOpen: true,
-      })
-    },
-
-    Enter (event) {
-      if (this.state.isOpen === false) {
-        // menu is closed so there is no selection to accept -> do nothing
-        return
-      }
-      else if (this.state.highlightedIndex == null) {
-        // input has focus but no menu item is selected + enter is hit -> close the menu, highlight whatever's in input
-        this.setState({
-          isOpen: false
-        }, () => {
-          this.refs.input.select()
-        })
-      }
-      else {
-        // text entered + menu item has been highlighted + enter is hit -> update value to that of selected menu item, close the menu
-        event.preventDefault()
-        var item = this.getFilteredItems()[this.state.highlightedIndex]
-        var value = this.props.getItemValue(item)
-        this.setState({
-          isOpen: false,
-          highlightedIndex: null
-        }, () => {
-          //this.refs.input.focus() // TODO: file issue
-          this.refs.input.setSelectionRange(
-            value.length,
-            value.length
-          )
-          this.props.onSelect(value, item)
-        })
-      }
-    },
-
-    Escape (event) {
-      this.setState({
-        highlightedIndex: null,
-        isOpen: false
-      })
-    }
-  },
 
   getFilteredItems () {
     let items = this.props.items
@@ -222,7 +209,7 @@ let Autocomplete = React.createClass({
     }
 
     return items
-  },
+  }
 
   maybeAutoCompleteText () {
     if (!this.props.autoHighlight || this.props.value === '')
@@ -239,7 +226,7 @@ let Autocomplete = React.createClass({
     ) === 0)
     if (itemValueDoesMatch && highlightedIndex === null)
       this.setState({ highlightedIndex: 0 })
-  },
+  }
 
   setMenuPositions () {
     var node = this.refs.input
@@ -253,11 +240,11 @@ let Autocomplete = React.createClass({
       menuLeft: rect.left + marginLeft,
       menuWidth: rect.width + marginLeft + marginRight
     })
-  },
+  }
 
   highlightItemFromMouse (index) {
     this.setState({ highlightedIndex: index })
-  },
+  }
 
   selectItemFromMouse (item) {
     var value = this.props.getItemValue(item);
@@ -268,11 +255,11 @@ let Autocomplete = React.createClass({
       this.props.onSelect(value, item)
       this.refs.input.focus()
     })
-  },
+  }
 
   setIgnoreBlur (ignore) {
     this._ignoreBlur = ignore
-  },
+  }
 
   renderMenu () {
     var items = this.getFilteredItems().map((item, index) => {
@@ -295,7 +282,7 @@ let Autocomplete = React.createClass({
     }
     var menu = this.props.renderMenu(items, this.props.value, style)
     return React.cloneElement(menu, { ref: 'menu' })
-  },
+  }
 
   handleInputBlur () {
     if (this._ignoreBlur)
@@ -304,7 +291,7 @@ let Autocomplete = React.createClass({
       isOpen: false,
       highlightedIndex: null
     })
-  },
+  }
 
   handleInputFocus () {
     if (this._ignoreBlur) {
@@ -317,12 +304,12 @@ let Autocomplete = React.createClass({
     // The event order is:  MouseDown -> Focus -> MouseUp -> Click
     this._ignoreClick = true
     this.setState({ isOpen: true })
-  },
+  }
 
   isInputFocused () {
     var el = this.refs.input
     return el.ownerDocument && (el === el.ownerDocument.activeElement)
-  },
+  }
 
   handleInputClick () {
     // Input will not be focused if it's disabled
@@ -331,13 +318,15 @@ let Autocomplete = React.createClass({
     else if (this.state.highlightedIndex !== null && !this._ignoreClick)
       this.selectItemFromMouse(this.getFilteredItems()[this.state.highlightedIndex])
     this._ignoreClick = false
-  },
+  }
 
   composeEventHandlers (internal, external) {
     return external
       ? e => { internal(e); external(e); }
       : internal
-  },
+  }
+
+  /* ------------------------------ Rendering ------------------------------- */
 
   render () {
     if (this.props.debug) { // you don't like it, you love it
@@ -347,7 +336,7 @@ let Autocomplete = React.createClass({
       })
     }
 
-    const { inputProps } = this.props
+    const { inputProps } = this.props;
     return (
       <div style={{...this.props.wrapperStyle}} {...this.props.wrapperProps}>
         <input
@@ -373,7 +362,25 @@ let Autocomplete = React.createClass({
       </div>
     )
   }
-})
+}
 
-module.exports = Autocomplete
+Autocomplete.propTypes = {
+  autoHighlight: PropTypes.bool,
+  debug: PropTypes.bool,
+  getItemValue: PropTypes.func.isRequired,
+  inputProps: PropTypes.object,
+  menuStyle: PropTypes.object,
+  onChange: PropTypes.func,
+  onMenuVisibilityChange: PropTypes.func,
+  onSelect: PropTypes.func,
+  open: PropTypes.bool,
+  renderItem: PropTypes.func.isRequired,
+  renderMenu: PropTypes.func,
+  shouldItemRender: PropTypes.func,
+  sortItems: PropTypes.func,
+  value: PropTypes.any,
+  wrapperProps: PropTypes.object,
+  wrapperStyle: PropTypes.object
+};
 
+export default Autocomplete;
