@@ -4,7 +4,7 @@ export class LeftTrackModifier {
 
         this.originalTrack = originalTrack;
         this.pBase = new PIXI.Graphics();
-        
+
         this.scene.removeChild(originalTrack.pBase);
         this.scene.addChild(this.pBase);
 
@@ -53,7 +53,7 @@ export class LeftTrackModifier {
         /**
          * Either get or set the reference xScale
          */
-        if (!arguments.length) 
+        if (!arguments.length)
             return this.originalTrack._refYScale;
 
         this.originalTrack._refXScale = _;
@@ -65,7 +65,7 @@ export class LeftTrackModifier {
         /**
          * Either get or set the reference yScale
          */
-        if (!arguments.length) 
+        if (!arguments.length)
             return this.originalTrack._refXScale;
 
         this.originalTrack._refYScale = _;
@@ -77,7 +77,7 @@ export class LeftTrackModifier {
         /**
          * Either get or set the xScale
          */
-        if (!arguments.length) 
+        if (!arguments.length)
             return this.originalTrack._xScale;
 
         this.originalTrack._yScale = _;
@@ -113,14 +113,14 @@ export class LeftTrackModifier {
 
         this.originalTrack.pMobile.scale.x = k;
         this.originalTrack.pMobile.scale.y = k;
-        
+
         if (this.originalTrack.options.oneDHeatmapFlipped) {
             this.originalTrack.pMobile.scale.y = -k;
             this.originalTrack.pMobile.position.y = this.originalTrack.position[1];
         }
 
         this.originalTrack.draw();
-    
+
     }
 
     refScalesChanged(refXScale, refYScale) {
@@ -128,7 +128,7 @@ export class LeftTrackModifier {
     }
 
     rerender(options) {
-        this.originalTrack.rerender(options); 
+        this.originalTrack.rerender(options);
     }
 
     exportSVG() {
@@ -150,3 +150,5 @@ export class LeftTrackModifier {
         return [output, output];
     }
 }
+
+export default LeftTrackModifier;

@@ -16,7 +16,7 @@ const EXTENDED_STYLE = Object.assign({}, STYLE, {
   marginRight: '5px'
 })
 
-export default class CenterTrack extends React.Component {
+export class CenterTrack extends React.Component {
   constructor(props) {
     super(props);
 
@@ -91,3 +91,5 @@ CenterTrack.propTypes = {
   uid: PropTypes.string,
   width: PropTypes.number
 }
+
+export default CenterTrack;

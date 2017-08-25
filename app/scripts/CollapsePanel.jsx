@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Panel, Collapse, Row } from 'react-bootstrap';
 import {ControlLabel} from 'react-bootstrap';
 
-export default class CollapsePanel extends React.Component {
+export class CollapsePanel extends React.Component {
     render() {
         const { collapsed, toggleCollapse, name } = this.props
         const collapsedClass = (boolean) => {
@@ -38,3 +38,5 @@ CollapsePanel.propTypes = {
 CollapsePanel.defaultProps = {
     name: 'Advanced Options'
 }
+
+export default CollapsePanel;

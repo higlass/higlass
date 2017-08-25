@@ -30,7 +30,7 @@ export class AddTrackModal extends React.Component {
 
 
     handleSubmit() {
-        this.props.onTracksChosen(this.state.selectedTilesets, 
+        this.props.onTracksChosen(this.state.selectedTilesets,
                                  this.props.position,
                                  this.props.host);
 
@@ -53,7 +53,7 @@ export class AddTrackModal extends React.Component {
             // more than one dataype present, we assign the default track type
             // to each tileset
             for (let tileset of selectedTilesets) {
-                tileset.type = availableTrackTypes([tileset.datatype], 
+                tileset.type = availableTrackTypes([tileset.datatype],
                     this.getOrientation(this.props.position))[0].type;
             }
         }
@@ -75,7 +75,7 @@ export class AddTrackModal extends React.Component {
         this.selectedTilesetsChanged([tileset]);
 
         // should iterate over the selected tilesets
-        this.props.onTracksChosen(this.state.selectedTilesets, 
+        this.props.onTracksChosen(this.state.selectedTilesets,
                                   this.props.position,
                                   this.props.host);
     }
@@ -143,16 +143,16 @@ export class AddTrackModal extends React.Component {
                     </div>
                 )
 
-        return(<Modal 
+        return(<Modal
                 onHide={this.props.onCancel}
                 show={this.props.show}
                >
                     <Modal.Header closeButton>
-                    <Modal.Title>{'Add Track'}</Modal.Title> 
+                    <Modal.Title>{'Add Track'}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         { form }
-                        <PlotTypeChooser 
+                        <PlotTypeChooser
                             ref = {c => this.plotTypeChooser = c}
                             datatypes={this.state.selectedTilesets.map(x => x.datatype)}
                             onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
@@ -175,3 +175,5 @@ AddTrackModal.propTypes = {
     position: PropTypes.string,
     trackSourceServers: PropTypes.array
 }
+
+export default AddTrackModal;

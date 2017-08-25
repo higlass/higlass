@@ -57,3 +57,5 @@ export class HiGlassInput extends React.Component {
                );
     }
 }
+
+export default HiGlassInput;

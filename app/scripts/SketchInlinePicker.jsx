@@ -5,12 +5,12 @@ import React from 'react'
 import reactCSS from 'reactcss'
 import { SketchPicker } from 'react-color'
 
-class SketchInlinePicker extends React.Component {
+export class SketchInlinePicker extends React.Component {
     constructor(props) {
       super(props);
 
       let startColor = rgb(props.color);
-      
+
       this.state = {
         displayColorPicker: false,
         color: {

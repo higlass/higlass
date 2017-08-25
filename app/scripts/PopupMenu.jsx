@@ -51,6 +51,8 @@ export class PopupMenu extends React.Component {
 
   render() {
     // Render a placeholder
-    return(<div ref={(c) => this.area=c } />) 
+    return(<div ref={(c) => this.area=c } />)
   }
 }
+
+export default PopupMenu;

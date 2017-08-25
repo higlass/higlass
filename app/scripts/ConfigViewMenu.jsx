@@ -145,3 +145,5 @@ ConfigViewMenu.propTypes = {
     onYankZoomAndLocation: PropTypes.func,
     onTogglePositionSearchBox: PropTypes.func,
 }
+
+export default ConfigViewMenu;

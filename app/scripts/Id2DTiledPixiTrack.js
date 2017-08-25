@@ -1,5 +1,4 @@
-import {Tiled2DPixiTrack} from './Tiled2DPixiTrack.js';
-import {tileProxy} from './TileProxy.js';
+import Tiled2DPixiTrack from './Tiled2DPixiTrack';
 
 export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
@@ -128,3 +127,5 @@ export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
         this.synchronizeTilesAndGraphics();
     }
 }
+
+export default Id2DTiledPixiTrack;

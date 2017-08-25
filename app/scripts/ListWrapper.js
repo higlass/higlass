@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { arrayMove } from 'react-sortable-hoc';
 
-export default class ListWrapper extends React.Component {
+export class ListWrapper extends React.Component {
   constructor({items}) {
     super();
     this.state = {
@@ -86,3 +86,5 @@ ListWrapper.defaultProps = {
   width: 400,
   height: 600
 };
+
+export default ListWrapper;

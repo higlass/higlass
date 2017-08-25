@@ -233,3 +233,5 @@ export class TilesetFinder extends React.Component {
                 )
     }
 }
+
+export default TilesetFinder;

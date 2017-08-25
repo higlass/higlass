@@ -1,11 +1,4 @@
-import {ZOOM_DEBOUNCE} from './config.js';
-import debounce from './debounce.js';
-import {PixiTrack} from './PixiTrack.js';
-import {tileProxy} from './TileProxy.js';
-import {median} from 'd3-array';
-import slugid from 'slugid';
 import {OSMTilesTrack} from './OSMTilesTrack.js';
-//import {LRUCache} from './lru.js';
 
 export class MapboxTilesTrack extends OSMTilesTrack {
     /**
@@ -51,3 +44,5 @@ export class MapboxTilesTrack extends OSMTilesTrack {
     }
 
 }
+
+export default MapboxTilesTrack;

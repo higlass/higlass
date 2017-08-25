@@ -1,5 +1,4 @@
-import {scaleLinear} from 'd3-scale';
-import {tileProxy} from './TileProxy';
+import {tileProxy} from './services';
 import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack';
 import {colorToHex} from './utils';
 import boxIntersect from 'box-intersect';
@@ -445,3 +444,5 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         return [base, base];
     }
 }
+
+export default HorizontalGeneAnnotationsTrack;

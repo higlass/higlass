@@ -1,12 +1,13 @@
-import {Tiled2DPixiTrack} from './Tiled2DPixiTrack';
-import {tileProxy} from './TileProxy';
-import {heatedObjectMap} from './colormaps';
-import slugid from 'slugid';
-import {colorDomainToRgbaArray} from './utils';
-import {colorToHex} from './utils';
 import {scaleLinear} from 'd3-scale';
 import {scaleLog} from 'd3-scale';
+
+import {Tiled2DPixiTrack} from './Tiled2DPixiTrack';
+import {heatedObjectMap} from './colormaps';
 import {AxisPixi} from './AxisPixi';
+
+import {tileProxy} from './services';
+
+import {colorDomainToRgbaArray, colorToHex} from './utils';
 
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;
@@ -506,3 +507,5 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         return [base, base];
     }
 }
+
+export default HeatmapTiledPixiTrack;

@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Collapse,Panel,Checkbox} from 'react-bootstrap';
+
 import CollapsePanel from './CollapsePanel.jsx';
-import {TilesetFinder} from './TilesetFinder.jsx';
+import TilesetFinder from './TilesetFinder.jsx';
 
 export class SeriesOptions extends React.Component {
     constructor(props) {
@@ -65,3 +66,5 @@ export class SeriesOptions extends React.Component {
         );
     }
 }
+
+export default SeriesOptions;

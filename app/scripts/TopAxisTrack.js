@@ -1,5 +1,5 @@
 import {axisTop} from 'd3-axis';
-import {SVGTrack} from './SVGTrack.js';
+import SVGTrack from './SVGTrack.js';
 
 export class TopAxisTrack extends SVGTrack {
     constructor(svgElement) {
@@ -34,3 +34,5 @@ export class TopAxisTrack extends SVGTrack {
         this.draw();
     }
 }
+
+export default TopAxisTrack;

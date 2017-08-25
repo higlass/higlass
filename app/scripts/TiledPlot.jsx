@@ -2,14 +2,15 @@ import slugid from 'slugid';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import {ResizeSensor,ElementQueries} from 'css-element-queries';
+import {ResizeSensor, ElementQueries} from 'css-element-queries';
+
 import CenterTrack from './CenterTrack';
-import {TrackRenderer} from './TrackRenderer.jsx';
-import {AddTrackModal} from './AddTrackModal.jsx';
-import {ConfigTrackMenu} from './ConfigTrackMenu.jsx';
-import {CloseTrackMenu} from './CloseTrackMenu.jsx';
-import {PopupMenu} from './PopupMenu.jsx';
-import {ContextMenuContainer} from './ContextMenuContainer.jsx';
+import TrackRenderer from './TrackRenderer.jsx';
+import AddTrackModal from './AddTrackModal.jsx';
+import ConfigTrackMenu from './ConfigTrackMenu.jsx';
+import CloseTrackMenu from './CloseTrackMenu.jsx';
+import PopupMenu from './PopupMenu.jsx';
+import { ContextMenuContainer } from './ContextMenuContainer.jsx';
 import HorizontalTiledPlot from './HorizontalTiledPlot';
 import VerticalTiledPlot from './VerticalTiledPlot';
 // import {HeatmapOptions} from './HeatmapOptions.jsx';
@@ -1114,3 +1115,5 @@ TiledPlot.propTypes = {
   uid: PropTypes.string,
   zoomable: PropTypes.bool
 }
+
+export default TiledPlot;

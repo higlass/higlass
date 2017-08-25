@@ -23,7 +23,7 @@ import styles from '../styles/HorizontalTiledPlot.scss';  // eslint-disable-line
 import stylesTrack from '../styles/Track.scss';  // eslint-disable-line no-unused-vars
 
 
-class HorizontalTiledPlot extends React.Component {
+export class HorizontalTiledPlot extends React.Component {
   constructor(props) {
     super(props);
 

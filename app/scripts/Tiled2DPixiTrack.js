@@ -1,5 +1,6 @@
-import {TiledPixiTrack} from './TiledPixiTrack.js';
-import {tileProxy} from './TileProxy.js';
+import TiledPixiTrack from './TiledPixiTrack';
+
+import {tileProxy} from './services';
 
 export class Tiled2DPixiTrack extends TiledPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived,options, animate) {
@@ -97,14 +98,14 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
                         // a mirrored tile
                         let newTile = [zoomLevel, cols[j], rows[i]];
                         newTile.mirrored = true;
-                        newTile.dataTransform = this.options.dataTransform ? 
+                        newTile.dataTransform = this.options.dataTransform ?
                             this.options.dataTransform : 'default';
                         tiles.push(newTile);
                     } else {
                         // otherwise, load an original tile
                         let newTile = [zoomLevel, rows[i], cols[j]];
                         newTile.mirrored = false;
-                        newTile.dataTransform = this.options.dataTransform ? 
+                        newTile.dataTransform = this.options.dataTransform ?
                             this.options.dataTransform : 'default';
                         tiles.push(newTile);
 
@@ -114,7 +115,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
                         // on the diagonal, load original tiles
                         let newTile = [zoomLevel, rows[i], cols[j]];
                         newTile.mirrored = false;
-                        newTile.dataTransform = this.options.dataTransform ? 
+                        newTile.dataTransform = this.options.dataTransform ?
                             this.options.dataTransform : 'default';
                         tiles.push(newTile);
                     }
@@ -122,7 +123,7 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
                 } else {
                     let newTile = [zoomLevel, rows[i], cols[j]];
                     newTile.mirrored = false;
-                    newTile.dataTransform = this.options.dataTransform ? 
+                    newTile.dataTransform = this.options.dataTransform ?
                         this.options.dataTransform : 'default';
 
                     tiles.push(newTile)
@@ -175,3 +176,5 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
         return;
     }
 }
+
+export default Tiled2DPixiTrack;

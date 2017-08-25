@@ -6,7 +6,7 @@ import { SortableHandle } from 'react-sortable-hoc';
 // Styles
 import '../styles/TrackControl.scss';
 
-export default class TrackControl extends React.Component {
+export class TrackControl extends React.Component {
   render() {
     let Handle = null;
 
@@ -90,3 +90,5 @@ TrackControl.propTypes = {
   onAddSeries: PropTypes.func,
   uid: PropTypes.string
 };
+
+export default TrackControl;

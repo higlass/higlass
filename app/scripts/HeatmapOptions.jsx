@@ -223,3 +223,5 @@ export class HeatmapOptions extends React.Component {
 
     }
 }
+
+export default HeatmapOptions;

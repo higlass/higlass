@@ -436,3 +436,5 @@ export class PixiTrack extends Track {
         return [gBase, gTrack];
     }
 }
+
+export default PixiTrack;

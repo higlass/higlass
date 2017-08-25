@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {SortableHandle} from 'react-sortable-hoc';
+import { SortableHandle } from 'react-sortable-hoc';
 
-export default class TrackArea extends React.Component {
+export class TrackArea extends React.Component {
   constructor(props) {
     super(props);
 
@@ -123,3 +123,5 @@ TrackArea.propTypes = {
   onAddSeries: PropTypes.func,
   uid: PropTypes.string
 };
+
+export default TrackArea;

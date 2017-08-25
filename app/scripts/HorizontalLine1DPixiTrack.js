@@ -1,6 +1,4 @@
-import {scaleLinear, scaleLog, scaleQuantile} from 'd3-scale';
-import {ticks} from 'd3-array';
-import {tileProxy} from './TileProxy';
+import {scaleLinear, scaleLog} from 'd3-scale';
 import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack';
 import {colorToHex} from './utils';
 import {AxisPixi} from './AxisPixi';
@@ -278,3 +276,5 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         return [base,track];
     }
 }
+
+export default HorizontalLine1DPixiTrack;

@@ -10,7 +10,7 @@ const EXTENDED_STYLE = Object.assign(STYLE, {
   marginRight: '5px'
 })
 
-export default class HorizontalTrack extends MoveableTrack {
+export class HorizontalTrack extends MoveableTrack {
   getCloseImgStyle() {
     return STYLE
   }
@@ -27,3 +27,5 @@ export default class HorizontalTrack extends MoveableTrack {
     return EXTENDED_STYLE
   }
 }
+
+export default HorizontalTrack;

@@ -38,9 +38,9 @@ export class AxisPixi  {
             let tick = this.tickValues[i];
 
             while (this.axisTexts.length <= i) {
-                let newText = new PIXI.Text(tick, 
-                        {fontSize: this.axisTextFontSize + "px", 
-                         fontFamily: this.axisTextFontFamily, 
+                let newText = new PIXI.Text(tick,
+                        {fontSize: this.axisTextFontSize + "px",
+                         fontFamily: this.axisTextFontFamily,
                          fill: "black"});
                 this.axisTexts.push(newText);
 
@@ -61,7 +61,7 @@ export class AxisPixi  {
 
     calculateAxisTickValues(valueScale, axisHeight) {
         let tickCount = Math.max(Math.ceil(axisHeight / TICK_HEIGHT), 1);
-        let i = 0; 
+        let i = 0;
 
 
         // create scale ticks but not all the way to the top
@@ -79,8 +79,8 @@ export class AxisPixi  {
         }
 
         /*
-            ticks(valueScale.invert(MARGIN_BOTTOM), 
-                          valueScale.invert(this.dimensions[1] - MARGIN_TOP), 
+            ticks(valueScale.invert(MARGIN_BOTTOM),
+                          valueScale.invert(this.dimensions[1] - MARGIN_TOP),
                           tickCount);
         */
 
@@ -88,7 +88,7 @@ export class AxisPixi  {
             tickValues = valueScale.ticks(tickCount + 1);
             /*
             tickValues = ticks(valueScale.invert(MARGIN_BOTTOM),
-                          valueScale.invert(axisHeight - MARGIN_TOP), 
+                          valueScale.invert(axisHeight - MARGIN_TOP),
                           tickCount + 1);
             */
 
@@ -174,7 +174,7 @@ export class AxisPixi  {
             this.axisTexts[i].visible = true;
 
         for (let i = this.axisTexts.length-1; i >= 0; i--) {
-            // if this tick mark is invisible, it's not going to 
+            // if this tick mark is invisible, it's not going to
             // overlap with any others
             if (!this.axisTexts[i].visible)
                 continue;
@@ -186,9 +186,9 @@ export class AxisPixi  {
                 if ((this.axisTexts[i].y + this.axisTexts[i].height / 2) > (this.axisTexts[j].y - this.axisTexts[j].height / 2)) {
 
                     this.axisTexts[j].visible = false;
-                } else { 
+                } else {
                     // because the tick marks are ordered from top to bottom, if this
-                    // one doesn't overlap, then the ones below it won't either, so 
+                    // one doesn't overlap, then the ones below it won't either, so
                     // we can stop looking
                     break;
                 }
@@ -227,7 +227,7 @@ export class AxisPixi  {
     createAxisSVGLine() {
         // factor out the styling for axis lines
         let stroke = 'black';
-        
+
         if (this.track)
             stroke = this.track.options.lineStrokeColor ? this.track.options.lineStrokeColor : 'blue';
 
@@ -242,7 +242,7 @@ export class AxisPixi  {
     createAxisSVGText(text) {
         // factor out the creation of axis texts
         let t = document.createElement('text');
-        
+
         t.innerHTML = text;
         t.setAttribute('id', 'axis-text');
         t.setAttribute('text-anchor', 'middle');
@@ -334,3 +334,5 @@ export class AxisPixi  {
         graphics.clear();
     }
 }
+
+export default AxisPixi;

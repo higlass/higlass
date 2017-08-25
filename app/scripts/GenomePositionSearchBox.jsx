@@ -18,7 +18,7 @@ import {
 import {ChromosomeInfo} from './ChromosomeInfo';
 import {SearchField} from './search_field';
 import {scalesCenterAndK, dictKeys} from './utils';
-import {PopupMenu} from './PopupMenu.jsx';
+import PopupMenu from './PopupMenu.jsx';
 
 import '../styles/GenomePositionSearchBox.css';
 
@@ -550,3 +550,5 @@ export class GenomePositionSearchBox extends React.Component {
     }
 
 }
+
+export default GenomePositionSearchBox;

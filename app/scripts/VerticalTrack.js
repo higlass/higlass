@@ -12,7 +12,7 @@ const STYLES = {
   position: 'relative'
 };
 
-export default class VerticalTrack extends MoveableTrack {
+export class VerticalTrack extends MoveableTrack {
   // each image should be 13 pixels below the next one
   getCloseImgStyle() { return STYLES; }
 
@@ -105,3 +105,5 @@ export default class VerticalTrack extends MoveableTrack {
     return controls;
   }
 }
+
+export default VerticalTrack;

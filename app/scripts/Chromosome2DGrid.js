@@ -1,8 +1,7 @@
 import {PixiTrack} from './PixiTrack';
-import {tileProxy} from './TileProxy';
 import {ChromosomeInfo} from './ChromosomeInfo';
 import {SearchField} from './search_field';
-import boxIntersect from 'box-intersect';
+
 import {colorToHex} from './utils';
 
 export class Chromosome2DGrid extends PixiTrack {
@@ -180,3 +179,5 @@ export class Chromosome2DGrid extends PixiTrack {
         return [base,track];
     }
 }
+
+export default Chromosome2DGrid;

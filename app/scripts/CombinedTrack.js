@@ -182,3 +182,5 @@ export class CombinedTrack {
         }
     }
 }
+
+export default CombinedTrack;

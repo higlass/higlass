@@ -31,3 +31,5 @@ export class LeftAxisTrack extends SVGTrack {
         this.draw();
     }
 }
+
+export default LeftAxisTrack;

@@ -1,5 +1,7 @@
-import {TiledPixiTrack} from './TiledPixiTrack';
-import {tileProxy} from './TileProxy';
+import TiledPixiTrack from './TiledPixiTrack';
+
+import {tileProxy} from './services';
+
 import {colorToHex} from './utils';
 
 export class SquareMarkersTrack extends TiledPixiTrack {
@@ -199,3 +201,5 @@ export class SquareMarkersTrack extends TiledPixiTrack {
 
     }
 }
+
+export default SquareMarkersTrack;

@@ -7,48 +7,47 @@ import PropTypes from 'prop-types';
 import {zoom, zoomIdentity} from 'd3-zoom';
 import {select,event} from 'd3-selection';
 import {scaleLinear} from 'd3-scale';
-import {dictItems} from './utils';
 
-import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack';
-import {Id2DTiledPixiTrack} from './Id2DTiledPixiTrack';
-import {IdHorizontal1DTiledPixiTrack} from './IdHorizontal1DTiledPixiTrack';
-import {IdVertical1DTiledPixiTrack} from './IdVertical1DTiledPixiTrack';
-import {TopAxisTrack} from './TopAxisTrack';
-import {LeftAxisTrack} from './LeftAxisTrack';
-import {CombinedTrack} from './CombinedTrack';
+import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
+import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
+import IdHorizontal1DTiledPixiTrack from './IdHorizontal1DTiledPixiTrack';
+import IdVertical1DTiledPixiTrack from './IdVertical1DTiledPixiTrack';
+import TopAxisTrack from './TopAxisTrack';
+import LeftAxisTrack from './LeftAxisTrack';
+import CombinedTrack from './CombinedTrack';
 
-import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack';
-import {HorizontalPoint1DPixiTrack} from './HorizontalPoint1DPixiTrack';
-import {BarTrack} from './BarTrack';
+import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
+import HorizontalPoint1DPixiTrack from './HorizontalPoint1DPixiTrack';
+import BarTrack from './BarTrack';
 
-import {CNVIntervalTrack} from './CNVIntervalTrack';
-import {LeftTrackModifier} from './LeftTrackModifier';
-import {Track} from './Track';
-import {HorizontalGeneAnnotationsTrack} from './HorizontalGeneAnnotationsTrack';
-import {ArrowheadDomainsTrack} from './ArrowheadDomainsTrack';
+import CNVIntervalTrack from './CNVIntervalTrack';
+import LeftTrackModifier from './LeftTrackModifier';
+import Track from './Track';
+import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
+import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
 
-import {Horizontal2DDomainsTrack} from './Horizontal2DDomainsTrack';
+import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
-import {SquareMarkersTrack} from './SquareMarkersTrack';
-import {Chromosome2DLabels} from './Chromosome2DLabels';
-import {Chromosome2DGrid} from './Chromosome2DGrid';
-import {Chromosome2DAnnotations} from './Chromosome2DAnnotations';
-import {HorizontalChromosomeLabels} from './HorizontalChromosomeLabels';
-import {HorizontalHeatmapTrack} from './HorizontalHeatmapTrack';
-import {UnknownPixiTrack} from './UnknownPixiTrack';
-import {ValueIntervalTrack} from './ValueIntervalTrack';
-import {ViewportTracker2D} from './ViewportTracker2D';
-import {ViewportTrackerHorizontal} from './ViewportTrackerHorizontal';
-import {ViewportTrackerVertical} from './ViewportTrackerVertical';
+import SquareMarkersTrack from './SquareMarkersTrack';
+import Chromosome2DLabels from './Chromosome2DLabels';
+import Chromosome2DGrid from './Chromosome2DGrid';
+import Chromosome2DAnnotations from './Chromosome2DAnnotations';
+import HorizontalChromosomeLabels from './HorizontalChromosomeLabels';
+import HorizontalHeatmapTrack from './HorizontalHeatmapTrack';
+import UnknownPixiTrack from './UnknownPixiTrack';
+import ValueIntervalTrack from './ValueIntervalTrack';
+import ViewportTracker2D from './ViewportTracker2D';
+import ViewportTrackerHorizontal from './ViewportTrackerHorizontal';
+import ViewportTrackerVertical from './ViewportTrackerVertical';
 
-import {OSMTilesTrack} from './OSMTilesTrack';
-import {MapboxTilesTrack} from './MapboxTilesTrack';
+import OSMTilesTrack from './OSMTilesTrack';
+import MapboxTilesTrack from './MapboxTilesTrack';
 
 // Utils
-// import {pixelToGenomeLoci} from './utils/';
+import { dictItems } from './utils';
 
 // Services
-import {pubSub} from './services';
+import { pubSub } from './services';
 
 // Styles
 import "../styles/TrackRenderer.scss";
@@ -1196,3 +1195,5 @@ TrackRenderer.propTypes = {
   topHeight: PropTypes.number,
   width: PropTypes.number
 }
+
+export default TrackRenderer;

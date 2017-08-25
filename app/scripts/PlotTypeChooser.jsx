@@ -1,7 +1,5 @@
 import "../styles/PlotTypeChooser.css";
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {select} from 'd3-selection';
 import {
     tracksInfo,
     datatypeToTrackType,
@@ -59,8 +57,8 @@ export class PlotTypeChooser extends React.Component {
                 .map(x => {
                 let thumbnail = trackTypeToInfo[x.type].thumbnail;
                 let plotTypeClass = this.state.selectedPlotType.type == x.type ? 'plot-type-selected' : 'unselected'
-                let imgTag = trackTypeToInfo[x.type].thumbnail ? 
-                        <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} 
+                let imgTag = trackTypeToInfo[x.type].thumbnail ?
+                        <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}}
                             dangerouslySetInnerHTML={{__html: thumbnail.outerHTML}}
                         /> :
                         <div style={{display: 'inline-block', marginRight: 10, verticalAlign: "middle"}} >
@@ -69,7 +67,7 @@ export class PlotTypeChooser extends React.Component {
                 return (<li
                             className={plotTypeClass}
                             key={x.type}
-                            onClick={ 
+                            onClick={
                                 (e) => {
                                     this.setState({selectedPlotType: x});
                                     this.props.onPlotTypeSelected(x.type);
@@ -93,3 +91,5 @@ export class PlotTypeChooser extends React.Component {
                 </div>)
     }
 }
+
+export default PlotTypeChooser;

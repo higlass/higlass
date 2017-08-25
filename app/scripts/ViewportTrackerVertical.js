@@ -1,6 +1,6 @@
-import {SVGTrack} from './SVGTrack.js';
+import SVGTrack from './SVGTrack.js';
 import slugid from 'slugid';
-import brush from './d3v4-brush-no-modifier-keys.js';
+import {brush} from 'd3-brush';
 import {event} from 'd3-selection';
 
 export class ViewportTrackerVertical extends SVGTrack {
@@ -93,7 +93,7 @@ export class ViewportTrackerVertical extends SVGTrack {
 
     remove() {
         // remove the event handler that updates this viewport tracker
-        this.removeViewportChanged(this.uid); 
+        this.removeViewportChanged(this.uid);
 
         super.remove();
     }
@@ -145,3 +145,5 @@ export class ViewportTrackerVertical extends SVGTrack {
         this.draw();
     }
 }
+
+export default ViewportTrackerVertical;

@@ -278,3 +278,5 @@ export function contextMenu(menu, opts) {
         return uid;
     };
 };
+
+export default contextMenu;

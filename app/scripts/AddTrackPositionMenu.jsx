@@ -52,3 +52,5 @@ export class AddTrackPositionMenu extends React.Component {
         )
     }
 }
+
+export default AddTrackPositionMenu;

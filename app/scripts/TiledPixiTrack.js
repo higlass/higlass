@@ -1,10 +1,14 @@
-import {ZOOM_DEBOUNCE} from './config.js';
-import debounce from './debounce.js';
-import {PixiTrack} from './PixiTrack.js';
-import {tileProxy} from './TileProxy.js';
 import {median} from 'd3-array';
 import slugid from 'slugid';
-//import {LRUCache} from './lru.js';
+
+import debounce from './debounce';
+import PixiTrack from './PixiTrack';
+
+// Services
+import { tileProxy } from './services';
+
+// Configs
+import { ZOOM_DEBOUNCE } from './config';
 
 export class TiledPixiTrack extends PixiTrack {
     /**
@@ -563,3 +567,5 @@ export class TiledPixiTrack extends PixiTrack {
     }
 
 }
+
+export default TiledPixiTrack;

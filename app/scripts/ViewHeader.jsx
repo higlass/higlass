@@ -1,12 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {PropTypes} from 'prop-types';
 import {PopupMenu} from './PopupMenu.jsx';
 import {ContextMenuContainer} from './ContextMenuContainer.jsx';
 import {ConfigViewMenu} from './ConfigViewMenu.jsx';
 import {AddTrackPositionMenu} from './AddTrackPositionMenu.jsx';
-
-import {all as icons} from './icons.js';
 
 export class ViewHeader extends React.Component {
 
@@ -246,19 +243,21 @@ ViewHeader.propTypes = {
     onExportSVG: PropTypes.func,
     onExportViewsAsJSON: PropTypes.func,
     onExportViewsAsLink: PropTypes.func,
-    onLockLocation: PropTypes.func, 
-    onLockZoom: PropTypes.func, 
-    onLockZoomAndLocation: PropTypes.func, 
-    onProjectViewport: PropTypes.func, 
-    onTakeAndLockZoomAndLocation: PropTypes.func, 
-    onTogglePositionSearchBox: PropTypes.func, 
+    onLockLocation: PropTypes.func,
+    onLockZoom: PropTypes.func,
+    onLockZoomAndLocation: PropTypes.func,
+    onProjectViewport: PropTypes.func,
+    onTakeAndLockZoomAndLocation: PropTypes.func,
+    onTogglePositionSearchBox: PropTypes.func,
     onTrackPositionChosen: PropTypes.func,
-    onUnlockLocation: PropTypes.func, 
-    onUnlockZoom: PropTypes.func, 
-    onUnlockZoomAndLocation: PropTypes.func, 
-    onYankLocation: PropTypes.func, 
-    onYankZoom: PropTypes.func, 
-    onYankZoomAndLocation: PropTypes.func, 
+    onUnlockLocation: PropTypes.func,
+    onUnlockZoom: PropTypes.func,
+    onUnlockZoomAndLocation: PropTypes.func,
+    onYankLocation: PropTypes.func,
+    onYankZoom: PropTypes.func,
+    onYankZoomAndLocation: PropTypes.func,
     onZoomToData: PropTypes.func,
     viewUid: PropTypes.string
 }
+
+export default ViewHeader;

@@ -81,3 +81,5 @@ export class CloseTrackMenu extends React.Component {
                 )
     }
 }
+
+export default CloseTrackMenu;

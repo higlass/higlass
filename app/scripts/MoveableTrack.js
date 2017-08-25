@@ -5,7 +5,7 @@ import DraggableDiv from './DraggableDiv';
 import TrackArea from './TrackArea';
 
 
-export default class MoveableTrack extends TrackArea {
+export class MoveableTrack extends TrackArea {
   constructor(props) {
     super(props);
 
@@ -66,3 +66,5 @@ MoveableTrack.propTypes = {
   height: PropTypes.number,
   width: PropTypes.number
 }
+
+export default MoveableTrack;

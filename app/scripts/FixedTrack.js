@@ -1,7 +1,7 @@
 import React from 'react';
 import TrackArea from './TrackArea';
 
-export default class FixedTrack extends TrackArea {
+export class FixedTrack extends TrackArea {
   render() {
     let controls = null;
 
@@ -37,3 +37,5 @@ export default class FixedTrack extends TrackArea {
     )
   }
 }
+
+export default FixedTrack;

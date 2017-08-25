@@ -1,5 +1,4 @@
-import {PixiTrack} from './PixiTrack.js';
-import PIXI from 'pixi.js';
+import PixiTrack from './PixiTrack.js';
 
 export class UnknownPixiTrack extends PixiTrack {
     constructor(scene) {
@@ -9,3 +8,5 @@ export class UnknownPixiTrack extends PixiTrack {
         super(scene);
     }
 }
+
+export default UnknownPixiTrack;

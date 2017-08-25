@@ -23,7 +23,7 @@ import styles from '../styles/VerticalTiledPlot.scss';  // eslint-disable-line n
 import stylesTrack from '../styles/Track.scss';  // eslint-disable-line no-unused-vars
 
 
-class VerticalTiledPlot extends React.Component {
+export class VerticalTiledPlot extends React.Component {
   constructor(props) {
     super(props);
 

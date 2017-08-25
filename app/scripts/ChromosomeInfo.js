@@ -27,3 +27,5 @@ export function ChromosomeInfo(filepath, success) {
         success(chromInfo);
     });
 }
+
+export default ChromosomeInfo;

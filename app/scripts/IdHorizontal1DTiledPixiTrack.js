@@ -1,5 +1,4 @@
-import {tileProxy} from './TileProxy.js';
-import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack.js';
+import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
@@ -123,3 +122,5 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     }
 
 }
+
+export default IdHorizontal1DTiledPixiTrack;

@@ -230,3 +230,5 @@ export class SearchField {
     }
 
 }
+
+export default SearchField;

@@ -1,5 +1,6 @@
-import {Tiled1DPixiTrack} from './Tiled1DPixiTrack.js';
-import {tileProxy} from './TileProxy.js';
+import Tiled1DPixiTrack from './Tiled1DPixiTrack';
+
+import {tileProxy} from './services';
 
 export class VerticalTiled1DPixiTrack extends Tiled1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
@@ -47,3 +48,5 @@ export class VerticalTiled1DPixiTrack extends Tiled1DPixiTrack {
         this.pMain.scale.y = scaleY;
     }
 }
+
+export default VerticalTiled1DPixiTrack;

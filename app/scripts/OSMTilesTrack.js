@@ -1,10 +1,11 @@
-import {ZOOM_DEBOUNCE} from './config.js';
-import debounce from './debounce.js';
-import {PixiTrack} from './PixiTrack.js';
-import {tileProxy} from './TileProxy.js';
-import {median} from 'd3-array';
 import slugid from 'slugid';
-//import {LRUCache} from './lru.js';
+
+import debounce from './debounce';
+import {PixiTrack} from './PixiTrack';
+
+import {tileProxy} from './services';
+
+import {ZOOM_DEBOUNCE} from './config';
 
 export class OSMTilesTrack extends PixiTrack {
     /**
@@ -525,8 +526,8 @@ export class OSMTilesTrack extends PixiTrack {
 
                 img.onload = () => {
                     let loadedTiles = {}
-                    loadedTiles[tileId] = {tileId: tileId, 
-                        img: img, 
+                    loadedTiles[tileId] = {tileId: tileId,
+                        img: img,
                         zoomLevel: +parts[0],
                         tilePos: [+parts[1], +parts[2]],
                         tileSrc: src}
@@ -536,7 +537,7 @@ export class OSMTilesTrack extends PixiTrack {
 
 
             }
-            //for (let tileId 
+            //for (let tileId
             //let img = new Image();
             //img.src = "http://a.tile.openstreetmap.org/
         }
@@ -623,3 +624,5 @@ export class OSMTilesTrack extends PixiTrack {
         }
     }
 }
+
+export default OSMTilesTrack;

@@ -89,3 +89,5 @@ export class Chromosome2DAnnotations extends PixiTrack {
         this.draw();
     }
 }
+
+export default Chromosome2DAnnotations;

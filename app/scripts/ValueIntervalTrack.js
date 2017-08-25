@@ -1,9 +1,9 @@
 import {scaleLog} from 'd3-scale';
-import {range} from 'd3-array';
-import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack';
-import IntervalTree from './interval-tree';
+
+import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
+import AxisPixi from './AxisPixi';
+
 import {colorToHex} from './utils';
-import {AxisPixi} from './AxisPixi';
 
 export class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
@@ -103,3 +103,5 @@ export class ValueIntervalTrack extends HorizontalLine1DPixiTrack {
     }
 
 }
+
+export default ValueIntervalTrack;

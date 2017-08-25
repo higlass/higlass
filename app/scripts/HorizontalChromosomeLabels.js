@@ -304,3 +304,5 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         return [base, track];
     }
 }
+
+export default HorizontalChromosomeLabels;

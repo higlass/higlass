@@ -1,10 +1,10 @@
-import {Track} from './Track.js';
-import {select, selectAll} from 'd3-selection';
-import {scaleLinear} from 'd3-scale';
+import { select } from 'd3-selection';
 import slugid from 'slugid';
 
+import Track from './Track.js';
+
 export class SVGTrack extends Track {
-    constructor(svgElement, clipped=false) {
+    constructor(svgElement) {
         super();
         /**
          * Create a new SVG track. It will contain a g element
@@ -56,3 +56,5 @@ export class SVGTrack extends Track {
         return this;
     }
 }
+
+export default SVGTrack;

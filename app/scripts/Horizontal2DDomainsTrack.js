@@ -1,5 +1,5 @@
 import {TiledPixiTrack} from './TiledPixiTrack';
-import {tileProxy} from './TileProxy';
+import {tileProxy} from './services';
 import {colorToHex} from './utils';
 
 export class Horizontal2DDomainsTrack extends TiledPixiTrack {
@@ -256,3 +256,5 @@ export class Horizontal2DDomainsTrack extends TiledPixiTrack {
         this.draw();
     }
 }
+
+export default Horizontal2DDomainsTrack;

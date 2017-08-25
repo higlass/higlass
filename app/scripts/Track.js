@@ -89,3 +89,5 @@ export class Track {
 
   rerender() {}
 }
+
+export default Track;

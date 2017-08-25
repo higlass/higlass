@@ -88,3 +88,5 @@ export class NestedContextMenu extends ContextMenuContainer {
                 </div>)
     }
 }
+
+export default NestedContextMenu;

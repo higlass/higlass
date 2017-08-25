@@ -165,3 +165,5 @@ export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
 
     }
 }
+
+export default CNVIntervalTrack;

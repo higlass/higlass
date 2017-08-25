@@ -1,5 +1,5 @@
 import {Tiled1DPixiTrack} from './Tiled1DPixiTrack';
-import {tileProxy} from './TileProxy';
+import {tileProxy} from './services';
 
 export class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
@@ -33,3 +33,5 @@ export class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     }
 
 }
+
+export default HorizontalTiled1DPixiTrack;

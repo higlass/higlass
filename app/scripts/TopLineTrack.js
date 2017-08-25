@@ -1,5 +1,5 @@
-import {PixiTrack} from './PixiTrack.js';
-import {load1DTileData} from './TileData.js';
+import PixiTrack from './PixiTrack.js';
+import { load1DTileData } from './TileData.js';
 
 export class TopLineTrack extends PixiTrack {
     constructor(stage, xScale, dims, valueScale = null) {
@@ -34,3 +34,5 @@ export class TopLineTrack extends PixiTrack {
 
     }
 }
+
+export default TopLineTrack;

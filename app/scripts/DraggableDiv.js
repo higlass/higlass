@@ -5,7 +5,7 @@ import {select} from 'd3-selection';
 import React from 'react';
 import {mouse,event} from 'd3-selection';
 
-export default class DraggableDiv extends React.Component {
+export class DraggableDiv extends React.Component {
     constructor(props) {
         super(props);
 
@@ -347,3 +347,5 @@ export default class DraggableDiv extends React.Component {
                    );
     }
 }
+
+export default DraggableDiv;

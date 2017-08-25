@@ -1,10 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import slugid from 'slugid';
-
-import {ResizeSensor,ElementQueries} from 'css-element-queries';
-import {TiledPlot} from './TiledPlot.jsx';
 
 export class SearchableTiledPlot extends React.Component {
     constructor(props) {
@@ -24,7 +20,7 @@ export class SearchableTiledPlot extends React.Component {
     render() {
 
         return (
-                <div 
+                <div
                 ref={c => this.div = c}
                 style={{flex: 1, display: "flex", flexDirection: "column"}} >
                     { this.props.children }
@@ -37,3 +33,5 @@ SearchableTiledPlot.propTypes = {
     height: PropTypes.number,
     width: PropTypes.number
 }
+
+export default SearchableTiledPlot;

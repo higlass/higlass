@@ -11,17 +11,17 @@ export class ExportLinkModal extends React.Component {
     constructor(props) {
         super(props);
         // props should include the definition of the heatmap data series
-        
-        
+
+
         this.state = {
-            
+
         }
 
     }
 
     render() {
         let linkLocation = this.props.linkLocation ?
-            (<input 
+            (<input
                 style={{width: 500}}
                 value={this.props.linkLocation}
                 readOnly={true}
@@ -48,14 +48,14 @@ export class ExportLinkModal extends React.Component {
                     }}
                 >
 
-                    <Modal 
+                    <Modal
                     onHide={this.props.onDone}
                     container={this}
                     className={'hg-modal'}
                     show={true}
                     >
                         <Modal.Header closeButton>
-                        <Modal.Title>{'Share view link'}</Modal.Title> 
+                        <Modal.Title>{'Share view link'}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             {linkLocation}
@@ -67,3 +67,6 @@ export class ExportLinkModal extends React.Component {
             </div>)
     }
 }
+
+
+export default ExportLinkModal;

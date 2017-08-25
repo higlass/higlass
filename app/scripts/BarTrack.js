@@ -1,10 +1,9 @@
-import {scaleLinear, scaleLog, scaleQuantile} from 'd3-scale';
-import {ticks} from 'd3-array';
-import {tileProxy} from './TileProxy';
+import {scaleLinear, scaleLog} from 'd3-scale';
+
 import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack';
-import {colorToHex} from './utils';
-import {AxisPixi} from './AxisPixi';
-import {dictValues} from './utils';
+
+// Utils
+import {colorToHex, dictValues} from './utils';
 
 export class BarTrack extends HorizontalLine1DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
@@ -143,3 +142,5 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
         super.zoomed(newXScale, newYScale);
     }
 }
+
+export default BarTrack;

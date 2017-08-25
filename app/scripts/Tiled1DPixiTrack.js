@@ -1,5 +1,6 @@
-import {TiledPixiTrack} from './TiledPixiTrack.js';
-import {tileProxy} from './TileProxy.js';
+import TiledPixiTrack from './TiledPixiTrack';
+
+import {tileProxy} from './services';
 
 export class Tiled1DPixiTrack extends TiledPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
@@ -127,3 +128,5 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
     }
 
 }
+
+export default Tiled1DPixiTrack;

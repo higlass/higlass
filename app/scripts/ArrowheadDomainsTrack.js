@@ -1,5 +1,9 @@
 import {TiledPixiTrack} from './TiledPixiTrack';
-import {tileProxy} from './TileProxy';
+
+// Services
+import {tileProxy} from './services';
+
+// Utils
 import {colorToHex} from './utils';
 
 export class ArrowheadDomainsTrack extends TiledPixiTrack {
@@ -180,3 +184,5 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
 
     }
 }
+
+export default ArrowheadDomainsTrack;

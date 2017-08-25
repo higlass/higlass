@@ -189,3 +189,5 @@ export class ConfigTrackMenu extends ContextMenuContainer {
                 )
     }
 }
+
+export default ConfigTrackMenu;

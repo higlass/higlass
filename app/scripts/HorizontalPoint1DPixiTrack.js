@@ -1,9 +1,6 @@
-import {scaleLinear, scaleLog, scaleQuantile} from 'd3-scale';
-import {ticks} from 'd3-array';
-import {tileProxy} from './TileProxy';
+import {scaleLinear, scaleLog} from 'd3-scale';
 import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack';
 import {colorToHex} from './utils';
-import {AxisPixi} from './AxisPixi';
 import {dictValues} from './utils';
 
 export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
@@ -140,3 +137,5 @@ export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
         super.zoomed(newXScale, newYScale);
     }
 }
+
+export default HorizontalPoint1DPixiTrack;

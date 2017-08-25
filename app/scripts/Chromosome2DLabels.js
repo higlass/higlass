@@ -159,3 +159,5 @@ export class Chromosome2DLabels extends PixiTrack {
     }
 
 }
+
+export default Chromosome2DLabels;

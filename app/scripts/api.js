@@ -3,7 +3,7 @@ import {
   scalesCenterAndK
 } from './utils';
 
-const api = function api(context) {
+export const api = function api(context) {
   const self = context;
 
   return {
