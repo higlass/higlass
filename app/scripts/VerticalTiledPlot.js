@@ -33,7 +33,9 @@ export class VerticalTiledPlot extends React.Component {
 
     this.pubSubs = [];
 
-    this.brushBehavior = brushY(true).on('brush', this.brushed.bind(this));
+    this.brushBehavior = brushY(true)
+      .on('start', this.brushStarted.bind(this))
+      .on('brush', this.brushed.bind(this));
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */
@@ -54,8 +56,13 @@ export class VerticalTiledPlot extends React.Component {
       this.rangeSelectionTriggered = false;
       return this.state !== nextState;
     } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
+      const accessor = this.props.is1dRangeSelection ? 0 : 1;
+
       this.moveBrush(
-        genomeLociToPixels(nextProps.rangeSelection[0], this.props.chromInfo)
+        genomeLociToPixels(
+          nextProps.rangeSelection[accessor],
+          this.props.chromInfo
+        )
       );
       return this.state !== nextState;
     }
@@ -100,6 +107,12 @@ export class VerticalTiledPlot extends React.Component {
     this.props.onRangeSelection(event.selection);
   }
 
+  brushStarted() {
+    if (!event.sourceEvent) return;
+
+    this.props.onRangeSelectionStart();
+  }
+
   moveBrush(rangeSelection) {
     if (!this.brushEl) { return; }
 
@@ -139,6 +152,8 @@ export class VerticalTiledPlot extends React.Component {
 
       // Remove brush behavior
       this.brushEl.on('.brush', null);
+
+      this.props.onRangeSelectionEnd();
     }
   }
 
@@ -206,12 +221,15 @@ VerticalTiledPlot.propTypes = {
   handleConfigTrack: PropTypes.func,
   handleResizeTrack: PropTypes.func,
   handleSortEnd: PropTypes.func,
+  is1dRangeSelection: PropTypes.bool,
   height: PropTypes.number,
   onAddSeries: PropTypes.func,
   onCloseTrack: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onConfigTrackMenuOpened: PropTypes.func,
   onRangeSelection: PropTypes.func,
+  onRangeSelectionEnd: PropTypes.func,
+  onRangeSelectionStart: PropTypes.func,
   rangeSelection: PropTypes.array,
   referenceAncestor: PropTypes.func,
   resizeHandles: PropTypes.object,

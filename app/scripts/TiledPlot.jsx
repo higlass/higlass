@@ -187,8 +187,6 @@ export class TiledPlot extends React.Component {
     this.xScale = x;
     this.yScale = y;
 
-    console.log('scale changed', this.yScale.range());
-
     this.props.onScalesChanged(x,y);
   }
 
@@ -674,30 +672,70 @@ export class TiledPlot extends React.Component {
     );
   }
 
-  handleRangeSelection1d(axis) {
+  rangeSelectionEndHandler() {
+    if (this.state.rangeSelectionMaster) {
+      console.log('SELECTION ENDED');
+      this.setState({
+        is1dRangeSelection: null,
+        rangeSelectionMaster: null
+      });
+    }
+  }
+
+  rangeSelection1dHandler(axis) {
     const scale = axis === 'x' ? this.xScale : this.yScale;
 
     return (range) => {
+      const accessor = !this.state.is1dRangeSelection && axis === 'y' ? 1 : 0;
+
       const newRangeSelection = this.state.rangeSelection.slice();
-      newRangeSelection[0] = this.rangeToGenomeLoci(range, scale);
+      newRangeSelection[accessor] = this.rangeToGenomeLoci(range, scale);
 
       this.setState({
         rangeSelection: newRangeSelection
       });
 
       console.log(
-        `handleRangeSelection1d() [axis: ${axis}]`,
+        `rangeSelection1dHandler() [axis: ${axis}]`,
         this.state.rangeSelection[0],
+        this.state.rangeSelection[1],
       );
     }
   }
 
-  handleRangeSelection2d(x0, x1, y0, y1) {
+  rangeSelection1dStartHandler(master) {
+    if (!this.state.rangeSelectionMaster) {
+      console.log('SET MASTER 1D');
+      this.setState({
+        is1dRangeSelection: true,
+        rangeSelectionMaster: true
+      });
+    }
+  }
+
+  rangeSelection2dHandler(range) {
+    this.setState({
+      rangeSelection: [
+        this.rangeToGenomeLoci(range[0], this.xScale),
+        this.rangeToGenomeLoci(range[1], this.yScale)
+      ]
+    });
+
     console.log(
-      'select 2D genome range:',
-      `${x0} - ${x1}`,
-      `${y0} - ${y1}`,
+      'rangeSelection2dHandler()',
+      this.state.rangeSelection[0],
+      this.state.rangeSelection[1],
     );
+  }
+
+  rangeSelection2dStartHandler(master) {
+    if (!this.state.rangeSelectionMaster) {
+      console.log('SET MASTER 2D');
+      this.setState({
+        is1dRangeSelection: false,
+        rangeSelectionMaster: true
+      });
+    }
   }
 
   render() {
@@ -739,11 +777,14 @@ export class TiledPlot extends React.Component {
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
           handleResizeTrack={this.handleResizeTrack.bind(this)}
           handleSortEnd={this.handleSortEnd.bind(this)}
+          is1dRangeSelection={this.state.is1dRangeSelection}
           onAddSeries={this.handleAddSeries.bind(this)}
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-          onRangeSelection={this.handleRangeSelection1d('x').bind(this)}
+          onRangeSelection={this.rangeSelection1dHandler('x').bind(this)}
+          onRangeSelectionEnd={this.rangeSelectionEndHandler.bind(this)}
+          onRangeSelectionStart={this.rangeSelection1dStartHandler.bind(this)}
           rangeSelection={this.state.rangeSelection}
           resizeHandles={new Set(['bottom'])}
           scale={this.xScale}
@@ -772,11 +813,14 @@ export class TiledPlot extends React.Component {
           handleResizeTrack={this.handleResizeTrack.bind(this)}
           handleSortEnd={this.handleSortEnd.bind(this)}
           height={this.centerHeight}
+          is1dRangeSelection={this.state.is1dRangeSelection}
           onAddSeries={this.handleAddSeries.bind(this)}
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-          onRangeSelection={this.handleRangeSelection1d('y').bind(this)}
+          onRangeSelection={this.rangeSelection1dHandler('y').bind(this)}
+          onRangeSelectionEnd={this.rangeSelectionEndHandler.bind(this)}
+          onRangeSelectionStart={this.rangeSelection1dStartHandler.bind(this)}
           rangeSelection={this.state.rangeSelection}
           resizeHandles={new Set(['right'])}
           scale={this.yScale}
@@ -802,11 +846,14 @@ export class TiledPlot extends React.Component {
           handleResizeTrack={this.handleResizeTrack.bind(this)}
           handleSortEnd={this.handleSortEnd.bind(this)}
           height={this.centerHeight}
+          is1dRangeSelection={this.state.is1dRangeSelection}
           onAddSeries={this.handleAddSeries.bind(this)}
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-          onRangeSelection={this.handleRangeSelection1d('y').bind(this)}
+          onRangeSelection={this.rangeSelection1dHandler('y').bind(this)}
+          onRangeSelectionEnd={this.rangeSelectionEndHandler.bind(this)}
+          onRangeSelectionStart={this.rangeSelection1dStartHandler.bind(this)}
           rangeSelection={this.state.rangeSelection}
           resizeHandles={new Set(['left'])}
           scale={this.yScale}
@@ -831,11 +878,14 @@ export class TiledPlot extends React.Component {
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
           handleResizeTrack={this.handleResizeTrack.bind(this)}
           handleSortEnd={this.handleSortEnd.bind(this)}
+          is1dRangeSelection={this.state.is1dRangeSelection}
           onAddSeries={this.handleAddSeries.bind(this)}
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
           onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-          onRangeSelection={this.handleRangeSelection1d('x').bind(this)}
+          onRangeSelection={this.rangeSelection1dHandler('x').bind(this)}
+          onRangeSelectionEnd={this.rangeSelectionEndHandler.bind(this)}
+          onRangeSelectionStart={this.rangeSelection1dStartHandler.bind(this)}
           rangeSelection={this.state.rangeSelection}
           resizeHandles={new Set(['top'])}
           scale={this.xScale}
@@ -874,11 +924,17 @@ export class TiledPlot extends React.Component {
             chromInfo={this.state.chromInfo}
             editable={this.props.editable}
             height={this.centerHeight}
+            is1dRangeSelection={this.state.is1dRangeSelection}
             onAddSeries={this.handleAddSeries.bind(this)}
             onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
             onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-            onRangeSelection={this.handleRangeSelection2d.bind(this)}
+            onRangeSelection={this.rangeSelection2dHandler.bind(this)}
+            onRangeSelectionEnd={this.rangeSelectionEndHandler.bind(this)}
+            onRangeSelectionStart={this.rangeSelection2dStartHandler.bind(this)}
             rangeSelection={this.state.rangeSelection}
+            scaleX={this.xScale}
+            scaleY={this.yScale}
+            tracks={this.props.tracks['center']}
             uid={this.props.tracks['center'][0].uid}
             width={this.centerWidth}
           />

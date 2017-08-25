@@ -32,7 +32,9 @@ export class HorizontalTiledPlot extends React.Component {
 
     this.pubSubs = [];
 
-    this.brushBehavior = brushX(true).on('brush', this.brushed.bind(this));
+    this.brushBehavior = brushX(true)
+      .on('start', this.brushStarted.bind(this))
+      .on('brush', this.brushed.bind(this));
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */
@@ -96,13 +98,12 @@ export class HorizontalTiledPlot extends React.Component {
 
     this.rangeSelectionTriggered = true;
     this.props.onRangeSelection(event.selection);
+  }
 
-    // const x0 = selection[0][0];
-    // const y0 = selection[0][1];
-    // const x1 = selection[1][0];
-    // const y1 = selection[1][1];
-    // const dx = x1 - x0;
-    // const dy = y1 - y0;
+  brushStarted() {
+    if (!event.sourceEvent) return;
+
+    this.props.onRangeSelectionStart();
   }
 
   moveBrush(rangeSelection) {
@@ -143,6 +144,8 @@ export class HorizontalTiledPlot extends React.Component {
 
       // Remove brush behavior
       this.brushEl.on('.brush', null);
+
+      this.props.onRangeSelectionEnd();
     }
   }
 
@@ -209,11 +212,14 @@ HorizontalTiledPlot.propTypes = {
   handleConfigTrack: PropTypes.func,
   handleResizeTrack: PropTypes.func,
   handleSortEnd: PropTypes.func,
+  is1dRangeSelection: PropTypes.bool,
   onAddSeries: PropTypes.func,
   onCloseTrack: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onConfigTrackMenuOpened: PropTypes.func,
   onRangeSelection: PropTypes.func,
+  onRangeSelectionEnd: PropTypes.func,
+  onRangeSelectionStart: PropTypes.func,
   rangeSelection: PropTypes.array,
   referenceAncestor: PropTypes.func,
   resizeHandles: PropTypes.object,
