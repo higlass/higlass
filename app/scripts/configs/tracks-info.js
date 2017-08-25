@@ -10,7 +10,7 @@ import {
   svgVertical1DTilesIcon,
   svgVerticalGeneAnnotationsIcon,
   svgVerticalLineIcon
-} from './icons';
+} from '../icons';
 
 export const TRACKS_INFO = [
   {
