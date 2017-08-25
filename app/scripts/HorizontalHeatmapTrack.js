@@ -1,7 +1,13 @@
 import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack';
-import {tileProxy} from './services';
-import {heatedObjectMap} from './colormaps';
-import {colorDomainToRgbaArray} from './utils';
+
+// Services
+import { tileProxy } from './services';
+
+// Utils
+import { colorDomainToRgbaArray } from './utils';
+
+// Configs
+import { heatedObjectMap } from './configs';
 
 export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {

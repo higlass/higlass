@@ -1,13 +1,16 @@
-import {scaleLinear} from 'd3-scale';
-import {scaleLog} from 'd3-scale';
+import {scaleLinear, scaleLog} from 'd3-scale';
 
-import {Tiled2DPixiTrack} from './Tiled2DPixiTrack';
-import {heatedObjectMap} from './colormaps';
-import {AxisPixi} from './AxisPixi';
+import Tiled2DPixiTrack from './Tiled2DPixiTrack';
+import AxisPixi from './AxisPixi';
 
-import {tileProxy} from './services';
+// Services
+import { tileProxy } from './services';
 
-import {colorDomainToRgbaArray, colorToHex} from './utils';
+// Utils
+import { colorDomainToRgbaArray, colorToHex } from './utils';
+
+// Configs
+import { heatedObjectMap } from './configs';
 
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;
