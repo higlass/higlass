@@ -1,22 +1,26 @@
-import {json} from 'd3-request';
-import {select} from 'd3-selection';
-import {dictValues, dictKeys} from './utils';
-
+import { json } from 'd3-request';
 import React from 'react';
+import {
+  Col,
+  ControlLabel,
+  Form,
+  FormControl,
+  FormGroup
+} from 'react-bootstrap';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
-import {tracksInfo,localTracks} from './config.js'
 
-import {Form, Row,Col, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
+// Configs
+import { TRACKS_INFO } from './configs';
 
 export class TilesetFinder extends React.Component {
     constructor(props) {
         super(props);
 
-        //this.localTracks = tracksInfo.filter
+        //this.localTracks = TRACKS_INFO.filter
 
         // local tracks are ones that don't have a filetype associated with them
-        this.localTracks = tracksInfo
+        this.localTracks = TRACKS_INFO
             .filter(x => x.local && !x.hidden)
             .filter(x => x.orientation == this.props.orientation)
             .filter(x => !x.hidden)
@@ -85,7 +89,7 @@ export class TilesetFinder extends React.Component {
     }
 
     requestTilesetLists() {
-        let datatypes = new Set(tracksInfo
+        let datatypes = new Set(TRACKS_INFO
                                 .filter(x => x.datatype)
                                 .filter(x => x.orientation == this.props.orientation)
                                 .map(x => x.datatype))

@@ -1,11 +1,16 @@
 import React from 'react';
 
-import ReactDOM from 'react-dom';
+import {
+  ContextMenuContainer,
+  ContextMenuItem
+} from './ContextMenuContainer.jsx';
+import NestedContextMenu from './NestedContextMenu.jsx';
 
-import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
-import {NestedContextMenu} from './NestedContextMenu.jsx';
-
-import {optionsInfo,tracksInfoByType} from './config.js';
+// Configs
+import {
+  OPTIONS_INFO,
+  TRACKS_INFO_BY_TYPE
+} from './configs';
 
 export class ConfigureSeriesMenu extends ContextMenuContainer {
     constructor(props) {
@@ -68,17 +73,17 @@ export class SeriesListMenu extends ContextMenuContainer {
             let menuItems = {};
             let options = track.options;
 
-            if (!tracksInfoByType[track.type].availableOptions)
+            if (!TRACKS_INFO_BY_TYPE[track.type].availableOptions)
                 return null;
 
-            for (let optionType of tracksInfoByType[track.type].availableOptions) {
-                if (optionsInfo.hasOwnProperty(optionType)) {
-                   menuItems[optionType] = {'name': optionsInfo[optionType].name}
+            for (let optionType of TRACKS_INFO_BY_TYPE[track.type].availableOptions) {
+                if (OPTIONS_INFO.hasOwnProperty(optionType)) {
+                   menuItems[optionType] = {'name': OPTIONS_INFO[optionType].name}
 
                    // can we dynamically generate some options?
                    // should be used if the options depend on tileset info or other current state
-                   if (optionsInfo[optionType].generateOptions) {
-                       let generatedOptions = optionsInfo[optionType].generateOptions(track);
+                   if (OPTIONS_INFO[optionType].generateOptions) {
+                       let generatedOptions = OPTIONS_INFO[optionType].generateOptions(track);
 
                        if (!menuItems[optionType].children)
                            menuItems[optionType].children = {};
@@ -98,11 +103,11 @@ export class SeriesListMenu extends ContextMenuContainer {
                        }
                    }
 
-                   if (optionsInfo[optionType].inlineOptions) {
+                   if (OPTIONS_INFO[optionType].inlineOptions) {
                        // we can simply select this option from the menu
-                       for (let inlineOptionKey in optionsInfo[optionType].inlineOptions) {
+                       for (let inlineOptionKey in OPTIONS_INFO[optionType].inlineOptions) {
 
-                           let inlineOption = optionsInfo[optionType].inlineOptions[inlineOptionKey];
+                           let inlineOption = OPTIONS_INFO[optionType].inlineOptions[inlineOptionKey];
 
                            // check if there's already available options (e.g.
                            // "Top right") for this option type (e.g. "Label
@@ -138,11 +143,11 @@ export class SeriesListMenu extends ContextMenuContainer {
 
                            menuItems[optionType].children[inlineOptionKey] = optionSelectorSettings;
                         }
-                   } else if (optionsInfo[optionType].componentPickers &&
-                              optionsInfo[optionType].componentPickers[track.type]) {
+                   } else if (OPTIONS_INFO[optionType].componentPickers &&
+                              OPTIONS_INFO[optionType].componentPickers[track.type]) {
                        // there's an option picker registered
                         menuItems[optionType].handler = () => {
-                            this.props.onConfigureTrack(track, optionsInfo[optionType].componentPickers[track.type]);
+                            this.props.onConfigureTrack(track, OPTIONS_INFO[optionType].componentPickers[track.type]);
                             this.props.closeMenu();
                         }
                    }
@@ -166,7 +171,7 @@ export class SeriesListMenu extends ContextMenuContainer {
     render() {
         let exportDataMenuItem = null;
 
-        if (tracksInfoByType[this.props.hostTrack.type]) {
+        if (TRACKS_INFO_BY_TYPE[this.props.hostTrack.type]) {
             exportDataMenuItem = (<ContextMenuItem
                 className={"context-menu-item"}
                 onClick={x => this.props.onExportData(this.props.hostTrack.uid, this.props.track.uid)}

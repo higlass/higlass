@@ -1,13 +1,16 @@
-import '../styles/AddTrackModal.css';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import slugid from 'slugid';
-import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-bootstrap';
-import {Form, Panel,Collapse} from 'react-bootstrap';
+import {Modal, Button} from 'react-bootstrap';
 import {TilesetFinder} from './TilesetFinder.jsx';
 import {PlotTypeChooser} from './PlotTypeChooser.jsx';
-import {availableTrackTypes} from './config.js';
+
+// Configs
+import {
+  AVAILABLE_TRACK_TYPES
+} from './configs';
+
+// Styles
+import '../styles/AddTrackModal.css';
 
 export class AddTrackModal extends React.Component {
     constructor(props) {
@@ -16,7 +19,7 @@ export class AddTrackModal extends React.Component {
         this.tilesetFinder = null;
         this.multiSelect = null;
 
-        options: {};
+        this.options = {};
 
         this.state = {
             selectedTilesets: [{datatype: 'none'}],
@@ -53,7 +56,7 @@ export class AddTrackModal extends React.Component {
             // more than one dataype present, we assign the default track type
             // to each tileset
             for (let tileset of selectedTilesets) {
-                tileset.type = availableTrackTypes([tileset.datatype],
+                tileset.type = AVAILABLE_TRACK_TYPES([tileset.datatype],
                     this.getOrientation(this.props.position))[0].type;
             }
         }

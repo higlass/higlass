@@ -1,4 +1,3 @@
-import '../styles/MultiViewContainer.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {select} from 'd3-selection';
@@ -8,12 +7,24 @@ import slugid from 'slugid';
 import ReactDOM from 'react-dom';
 import {WidthProvider} from 'react-grid-layout';
 import ReactGridLayout from 'react-grid-layout';
-import "react-grid-layout/css/styles.css";
-import "react-resizable/css/styles.css";
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
-import {TiledPlot} from './TiledPlot.jsx';
 
+import {TiledPlot} from './TiledPlot.jsx';
+import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
+import {ExportLinkModal} from './ExportLinkModal.jsx';
+import {createSymbolIcon} from './symbol';
+import {all as icons} from './icons';
+import {ViewHeader} from './ViewHeader.jsx';
+import {ChromosomeInfo} from './ChromosomeInfo';
+import api from './api';
+
+
+// Services
+import { domEvent } from './services';
+
+// Utils
 import {
+  debounce,
   dictFromTuples,
   dictItems,
   dictKeys,
@@ -27,28 +38,21 @@ import {
   scalesToGenomeLoci
 } from './utils';
 
+// Configs
 import {
-    tracksInfo,
-    tracksInfoByType,
-    defaultServer
-} from './config.js';
+  DEFAULT_SERVER,
+  LOCATION_LISTENER_PREFIX,
+  LONG_DRAG_TIMEOUT,
+  SHORT_DRAG_TIMEOUT,
+  TRACKS_INFO,
+  TRACKS_INFO_BY_TYPE
+} from './configs';
 
-import {SHORT_DRAG_TIMEOUT, LONG_DRAG_TIMEOUT, LOCATION_LISTENER_PREFIX} from './config.js';
-import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
-import {ExportLinkModal} from './ExportLinkModal.jsx';
-import {createSymbolIcon} from './symbol.js';
-import {all as icons} from './icons.js';
-import {ViewHeader} from './ViewHeader.jsx';
-import {ChromosomeInfo} from './ChromosomeInfo.js';
-import api from './api';
-
+// Styles
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
 import '../styles/HiGlassComponent.css';
-
-// Services
-import {domEvent} from './services';
-
-// Utils
-import { debounce } from './utils';
+import '../styles/MultiViewContainer.css';
 
 let WidthReactGridLayout = WidthProvider(ReactGridLayout);
 
@@ -282,20 +286,20 @@ export class HiGlassComponent extends React.Component {
   }
 
   addDefaultOptions(track) {
-      if (!tracksInfoByType.hasOwnProperty(track.type)) {
-          console.error("ERROR: track type not found:", track.type, " (check app/scripts/config.js for a list of defined track types)");
+      if (!TRACKS_INFO_BY_TYPE.hasOwnProperty(track.type)) {
+          console.error("ERROR: track type not found:", track.type, " (check app/scripts/config/ for a list of defined track types)");
           return;
       }
 
       let trackOptions = track.options ? track.options : {};
 
-      if (tracksInfoByType[track.type].defaultOptions) {
+      if (TRACKS_INFO_BY_TYPE[track.type].defaultOptions) {
           if (!track.options)
-              track.options = JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions));
+              track.options = JSON.parse(JSON.stringify(TRACKS_INFO_BY_TYPE[track.type].defaultOptions));
           else {
-              for (let optionName in tracksInfoByType[track.type].defaultOptions) {
+              for (let optionName in TRACKS_INFO_BY_TYPE[track.type].defaultOptions) {
                   track.options[optionName] = track.options[optionName] ?
-                      track.options[optionName] : JSON.parse(JSON.stringify(tracksInfoByType[track.type].defaultOptions[optionName]));
+                      track.options[optionName] : JSON.parse(JSON.stringify(TRACKS_INFO_BY_TYPE[track.type].defaultOptions[optionName]));
 
               }
           }
@@ -1114,7 +1118,7 @@ export class HiGlassComponent extends React.Component {
                 continue;
 
             for (let i = 0; i < tracks.length; i++) {
-                let trackInfo = tracksInfoByType[tracks[i].type];
+                let trackInfo = TRACKS_INFO_BY_TYPE[tracks[i].type];
 
                 if (!('height' in tracks[i]) || (trackInfo && tracks[i].height < trackInfo.minHeight)) {
                     if (trackInfo && trackInfo.minHeight) {
@@ -1135,7 +1139,7 @@ export class HiGlassComponent extends React.Component {
                 continue;
 
             for (let i = 0; i < tracks.length; i++) {
-                let trackInfo = tracksInfoByType[tracks[i].type];
+                let trackInfo = TRACKS_INFO_BY_TYPE[tracks[i].type];
 
                 if (!('width' in tracks[i]) || (trackInfo && tracks[i].width < trackInfo.minWidth)) {
                     //
@@ -1482,9 +1486,9 @@ export class HiGlassComponent extends React.Component {
             return;
         }
 
-        newTrack.width = tracksInfoByType[newTrack.type].minWidth ? tracksInfoByType[newTrack.type].minWidth
+        newTrack.width = TRACKS_INFO_BY_TYPE[newTrack.type].minWidth ? TRACKS_INFO_BY_TYPE[newTrack.type].minWidth
             : this.minVerticalWidth;
-        newTrack.height = tracksInfoByType[newTrack.type].minHeight ? tracksInfoByType[newTrack.type].minHeight
+        newTrack.height = TRACKS_INFO_BY_TYPE[newTrack.type].minHeight ? TRACKS_INFO_BY_TYPE[newTrack.type].minHeight
             : this.minHorizontalHeight;
 
         let tracks = this.state.views[viewId].tracks;
@@ -2053,10 +2057,10 @@ export class HiGlassComponent extends React.Component {
        *
        * Name is added in-place.
        *
-       * The list of track information can be found in config.js:tracksInfo
+       * The list of track information can be found in config.js:TRACKS_INFO
        */
         let typeToName = {}
-        tracksInfo.forEach(x => {
+        TRACKS_INFO.forEach(x => {
             if (x.name)
                 typeToName[x.type] = x.name;
         });
@@ -2145,9 +2149,9 @@ export class HiGlassComponent extends React.Component {
          */
         let newGpsb = existingGenomePositionSearchBox;
         let defaultGpsb = {
-                "autocompleteServer": defaultServer,
+                "autocompleteServer": DEFAULT_SERVER,
                 //"autocompleteId": "OHJakQICQD6gTD7skx4EWA",
-                "chromInfoServer": defaultServer,
+                "chromInfoServer": DEFAULT_SERVER,
                 "visible": false
         }
 

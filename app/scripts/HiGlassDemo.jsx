@@ -7,7 +7,11 @@ import slugid from 'slugid';
 import {HiGlassComponent} from './HiGlassComponent.jsx';
 import {HiGlassInput} from './HiGlassInput.jsx';
 import {Button, Panel, FormGroup, ControlLabel, FormControl, SafeAnchor} from 'react-bootstrap';
-import {usedServer, tracksInfo, tracksInfoByType} from './config.js';
+
+// Configs
+import {
+  USED_SERVER
+} from './configs';
 
 export class HiGlassDemo extends React.Component {
     constructor(props) {
@@ -16,12 +20,12 @@ export class HiGlassDemo extends React.Component {
           this.views = {
               'editable': true,
               zoomFixed: false,
-              exportViewUrl: "//" + usedServer + "/viewconfs/",
+              exportViewUrl: "//" + USED_SERVER + "/viewconfs/",
               'views': [{
               uid: "aa",
               initialXDomain: [1200000000,1210000000],
               initialYDomain: [0,3000000000],
-              autocompleteSource: "//" + usedServer + '/suggest/?d=dd&',
+              autocompleteSource: "//" + USED_SERVER + '/suggest/?d=dd&',
               genomePositionSearchBoxVisible: true,
               chromInfoPath: "//s3.amazonaws.com/pkerp/data/hg19/chromInfo.txt",
               'tracks': {
@@ -32,34 +36,34 @@ export class HiGlassDemo extends React.Component {
             */
 
                     {
-                        'uid': slugid.nice(), 
+                        'uid': slugid.nice(),
                         type:'horizontal-gene-annotations',
                         height: 60,
                       tilesetUid: 'dd',
-                      server: usedServer 
+                      server: USED_SERVER
                     }
                       ,
             ],
             'left': [
                     {
-                        'uid': slugid.nice(), 
+                        'uid': slugid.nice(),
                         type:'vertical-gene-annotations',
                         width: 60,
                       tilesetUid: 'dd',
-                      server: usedServer 
+                      server: USED_SERVER
                     }
             ],
             'center': [
-                {   
+                {
                     uid: 'c1',
                     type: 'combined',
                     height: 200,
-                    contents: 
+                    contents:
                     [
 
-                        { 
+                        {
                             'uid': 'hm1',
-                           'server': usedServer ,
+                           'server': USED_SERVER ,
                           'tilesetUid': 'ma',
                           'type': 'heatmap'
                         },
@@ -68,7 +72,7 @@ export class HiGlassDemo extends React.Component {
                               type:'arrowhead-domains',
                               height: 60,
                             tilesetUid: 'f',
-                            server: usedServer
+                            server: USED_SERVER
                           }
                     ,
 
@@ -77,7 +81,7 @@ export class HiGlassDemo extends React.Component {
                               type:'arrowhead-domains',
                               height: 60,
                             tilesetUid: 'i',
-                            server: usedServer
+                            server: USED_SERVER
                           }
                     ]
                 }
@@ -96,17 +100,17 @@ export class HiGlassDemo extends React.Component {
                 {'uid': slugid.nice(), type:'top-axis'}
             ,
 
-                    {'uid': slugid.nice(), 
+                    {'uid': slugid.nice(),
                         type:'horizontal-1d-tiles',
                         height: 20,
                       tilesetUid: 'bb',
-                      server: usedServer }
+                      server: USED_SERVER }
                       ,
-                    {'uid': slugid.nice(), 
+                    {'uid': slugid.nice(),
                         type:'horizontal-line',
                         height: 20,
                       tilesetUid: 'bb',
-                      server: usedServer }
+                      server: USED_SERVER }
                     /*
                       ,
                 {'uid': slugid.nice(),
@@ -114,25 +118,25 @@ export class HiGlassDemo extends React.Component {
                  height: 100,
                  contents:
                      [
-                    {'uid': slugid.nice(), 
+                    {'uid': slugid.nice(),
                         type:'horizontal-line',
                         height: 30,
                         width: 20,
                       tilesetUid: 'bb',
-                      server: usedServer }
+                      server: USED_SERVER }
                       ,
                     {'uid': slugid.nice(),
                         type: 'top-stacked-interval',
                         height: 30,
                         tilesetUid: 'cc',
-                        server:  usedServer 
+                        server:  USED_SERVER
                     }
                     ,
-                    {'uid': slugid.nice(), 
+                    {'uid': slugid.nice(),
                         type:'horizontal-1d-tiles',
                         height: 30,
                       tilesetUid: 'cc',
-                      server: usedServer }
+                      server: USED_SERVER }
 
                      ]
                 }
@@ -152,40 +156,40 @@ export class HiGlassDemo extends React.Component {
                         type: 'left-stacked-interval',
                         height: 30,
                         tilesetUid: 'cc',
-                        server:  usedServer 
+                        server:  USED_SERVER
                     }
                     ,
-                    {'uid': slugid.nice(), 
+                    {'uid': slugid.nice(),
                         type:'vertical-line',
                         height: 30,
                         width: 20,
                       tilesetUid: 'bb',
-                      server: usedServer }
+                      server: USED_SERVER }
                      ]
                 }
                       ,
                 ,
-                {'uid': slugid.nice(), 
+                {'uid': slugid.nice(),
                     type:'vertical-1d-tiles',
                   tilesetUid: '5aa265c9-2005-4ffe-9d1c-fe59a6d0e768',
                   server: '52.45.229.11'}
                   */
             ],
             'center': [
-                {   
+                {
                     uid: slugid.nice(),
                     type: 'combined',
                     height: 200,
-                    contents: 
+                    contents:
                     [
 
-                        { 'server': usedServer ,
+                        { 'server': USED_SERVER ,
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': 'heatmap'
                         }
                         ,
-                        { 'server': usedServer ,
+                        { 'server': USED_SERVER ,
                           'uid': slugid.nice(),
                           'tilesetUid': 'aa',
                           'type': '2d-tiles'
@@ -203,7 +207,7 @@ export class HiGlassDemo extends React.Component {
             layout: {x: 3, y: 0, w: 3, h: 10}
 
           }
-          
+
           ]
           }
 
@@ -230,12 +234,12 @@ export class HiGlassDemo extends React.Component {
         return (
                 <div style={divStyle}>
 
-                <Panel 
+                <Panel
                     className="higlass-display"
                     ref='displayPanel'
                 >
-                    <HiGlassComponent 
-                        viewConfig={this.views} 
+                    <HiGlassComponent
+                        viewConfig={this.views}
                     />
 
                 </Panel>
