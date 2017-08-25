@@ -1,5 +1,3 @@
-import "../styles/TiledPlot.css";
-
 import slugid from 'slugid';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -16,13 +14,19 @@ import HorizontalTiledPlot from './HorizontalTiledPlot';
 import VerticalTiledPlot from './VerticalTiledPlot';
 // import {HeatmapOptions} from './HeatmapOptions.jsx';
 
+// Services
 import { chromInfo } from './services';
 
+// Utils
 import {
   getTrackByUid,
   getTrackPositionByUid,
   pixelToGenomeLoci
 } from './utils';
+
+// Styles
+import '../styles/TiledPlot.css';
+import stylesCenterTrack from '../styles/CenterTrack.scss';  // eslint-disable-line no-unused-vars
 
 export class TiledPlot extends React.Component {
   constructor(props) {
@@ -842,37 +846,38 @@ export class TiledPlot extends React.Component {
 
     let centerTrack = (
       <div
-        className="center-track-container"
         style={{
             left: this.leftWidth + this.props.horizontalMargin,
             top: this.props.verticalMargin + this.topHeight ,
             width: this.centerWidth,
             height: this.bottomHeight,
-            outline: trackOutline,
-            position: "absolute"
+            outline: trackOutline
         }}
+        styleName="stylesCenterTrack.center-track-container"
       />
     )
 
     if (this.props.tracks['center'].length) {
       centerTrack = (
         <div
-          className="center-track-container"
           style={{
             left: this.leftWidth + this.props.horizontalMargin,
             top: this.props.verticalMargin + this.topHeight ,
             width: this.centerWidth,
             height: this.centerHeight,
-            outline: trackOutline,
-            position: "absolute"
+            outline: trackOutline
           }}
+          styleName="stylesCenterTrack.center-track-container"
         >
           <CenterTrack
+            chromInfo={this.state.chromInfo}
             editable={this.props.editable}
             height={this.centerHeight}
             onAddSeries={this.handleAddSeries.bind(this)}
             onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
             onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
+            onRangeSelection={this.handleRangeSelection2d.bind(this)}
+            rangeSelection={this.state.rangeSelection}
             uid={this.props.tracks['center'][0].uid}
             width={this.centerWidth}
           />
