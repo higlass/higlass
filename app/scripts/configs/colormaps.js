@@ -1,4 +1,4 @@
-export const heatedObjectMap = [
+export const HEATED_OBJECT_MAP = [
   [  0,   0,   0, 255],
   [ 35,   0,   0, 255],
   [ 52,   0,   0, 255],

@@ -12,7 +12,7 @@ import {
   svgVerticalLineIcon
 } from './icons';
 
-export const tracksInfo = [
+export const TRACKS_INFO = [
   {
     type: 'left-axis',
     datatype: ['axis'],
@@ -690,4 +690,4 @@ export const tracksInfo = [
   }
 ];
 
-export default tracksInfo;
+export default TRACKS_INFO;

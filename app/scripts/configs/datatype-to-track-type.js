@@ -1,9 +1,9 @@
-import { tracksInfo } from '.';
+import { TRACKS_INFO } from '.';
 
-export const datatypeToTrackType = (orientation) => {
+export const DATATYPE_TO_TRACK_TYPE = (orientation) => {
   let localDatatypeToTrackType = {};
 
-  tracksInfo
+  TRACKS_INFO
     .filter(x => x.orientation == orientation)
     .forEach(ti => {
       let datatypes = ti.datatype;
@@ -25,4 +25,4 @@ export const datatypeToTrackType = (orientation) => {
   return localDatatypeToTrackType;
 }
 
-export default datatypeToTrackType;
+export default DATATYPE_TO_TRACK_TYPE;

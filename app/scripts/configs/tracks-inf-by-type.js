@@ -1,8 +1,8 @@
-import { tracksInfo } from '.';
+import { TRACKS_INFO } from '.';
 
-export const tracksInfoByType = tracksInfo.reduce(
+export const TRACKS_INFO_BY_TYPE = TRACKS_INFO.reduce(
   (tracksByType, track) => tracksByType[track.type] = track,
   {}
 );
 
-export default tracksInfoByType;
+export default TRACKS_INFO_BY_TYPE;

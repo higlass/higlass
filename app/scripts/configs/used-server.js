@@ -1,5 +1,5 @@
 // const localServer = 'localhost:8000';
-const remoteServer = '52.45.229.11';
+const REMOTE_SERVER = '52.45.229.11';
 
-//export const usedServer = localServer;
-export const usedServer = remoteServer;
+//export const USED_SERVER = localServer;
+export const USED_SERVER = REMOTE_SERVER;

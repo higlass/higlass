@@ -1,4 +1,4 @@
-import { datatypeToTrackType } from '.';
+import { DATATYPE_TO_TRACK_TYPE } from '.';
 
 /**
  * Return a list of the available track types, given a set of data types
@@ -19,8 +19,8 @@ import { datatypeToTrackType } from '.';
  *  A list of track-types:
  *      E.g. ['top-line', 'top-rectangle']
  */
-export const availableTrackTypes = (datatypes, orientation) => {
-  const datatypesToTrackTypes = datatypeToTrackType(orientation);
+export const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
+  const datatypesToTrackTypes = DATATYPE_TO_TRACK_TYPE(orientation);
 
   const firstDatatype = datatypes[0];
   let allSame = true;
@@ -37,4 +37,4 @@ export const availableTrackTypes = (datatypes, orientation) => {
   return [];
 }
 
-export default availableTrackTypes;
+export default AVAILABLE_TRACK_TYPES;

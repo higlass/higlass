@@ -5,7 +5,7 @@ import {
   precisionPrefix
 } from 'd3-format';
 
-const availableColors = {
+const AVAILABLE_COLORS = {
   'black': { name: 'Black', value: 'black'},
   'blue': { name: 'Blue', value: 'blue'},
   'brown': { name: 'Brown', value: 'brown'},
@@ -19,7 +19,7 @@ const availableColors = {
   'white': { name: 'White', value: 'white'}
 }
 
-const availableWidths = {
+const AVAILABLE_WIDTHS = {
   '1': { name: '1', value: 1},
   '2': { name: '2', value: 2},
   '3': { name: '3', value: 3},
@@ -27,7 +27,7 @@ const availableWidths = {
   '8': { name: '8', value: 8}
 }
 
-const opacityOptions = {
+const OPACITY_OPTIONS = {
   '0': { name: '0%', value: 0. },
   '0.2': { name: '20%', value: 0.2 },
   '0.4': { name: '40%', value: 0.4 },
@@ -36,7 +36,7 @@ const opacityOptions = {
   '1.0': { name: '100%', value: 1.0 }
 }
 
-export const optionsInfo = {
+export const OPTIONS_INFO = {
   valueScaling: {
     name: 'Value Scaling',
     inlineOptions: {
@@ -46,63 +46,63 @@ export const optionsInfo = {
   },
   lineStrokeWidth: {
     name: 'Stroke Width',
-    inlineOptions: availableWidths
+    inlineOptions: AVAILABLE_WIDTHS
   },
   trackBorderWidth: {
     name: 'Track Border Width',
-    inlineOptions: availableWidths
+    inlineOptions: AVAILABLE_WIDTHS
   },
   pointSize: {
     name: 'Point Size',
-    inlineOptions: availableWidths
+    inlineOptions: AVAILABLE_WIDTHS
   },
   pointColor: {
     name: 'Point Color',
-    inlineOptions: availableColors
+    inlineOptions: AVAILABLE_COLORS
   },
   trackBorderColor: {
     name: 'Track Border Color',
-    inlineOptions: availableColors
+    inlineOptions: AVAILABLE_COLORS
   },
   minusStrandColor:  {
     name: '- Strand Color',
-    inlineOptions: availableColors
+    inlineOptions: AVAILABLE_COLORS
   },
   plusStrandColor:  {
     name: '+ Strand Color',
-    inlineOptions: availableColors
+    inlineOptions: AVAILABLE_COLORS
   },
   lineStrokeColor:  {
     name: 'Stroke color',
-    inlineOptions: availableColors
+    inlineOptions: AVAILABLE_COLORS
   },
   projectionStrokeColor:  {
     name: 'Stroke color',
-    inlineOptions: availableColors
+    inlineOptions: AVAILABLE_COLORS
   },
   projectionFillColor:  {
     name: 'Fill color',
-    inlineOptions: availableColors
+    inlineOptions: AVAILABLE_COLORS
   },
   barFillColor: {
     name: 'Fill color',
-    inlineOptions: availableColors
+    inlineOptions: AVAILABLE_COLORS
   },
   barOpacity: {
     name: 'Bar opacity',
-    inlineOptions: opacityOptions
+    inlineOptions: OPACITY_OPTIONS
   },
   rectangleDomainStrokeColor: {
     name: 'Stroke color',
-    inlineOptions: availableColors
+    inlineOptions: AVAILABLE_COLORS
   },
   rectangleDomainFillColor: {
     name: 'Fill color',
-    inlineOptions: availableColors
+    inlineOptions: AVAILABLE_COLORS
   },
   rectangleDomainOpacity: {
     name: 'Opacity',
-    inlineOptions: opacityOptions
+    inlineOptions: OPACITY_OPTIONS
   },
   mapboxStyle: {
     name: 'Map style',
@@ -227,7 +227,7 @@ export const optionsInfo = {
 
   labelColor: {
     name: 'Label Color',
-    inlineOptions: availableColors
+    inlineOptions: AVAILABLE_COLORS
   },
 
   labelPosition: {
@@ -247,12 +247,12 @@ export const optionsInfo = {
 
   labelTextOpacity: {
     name: 'Label Text Opacity',
-    inlineOptions: opacityOptions
+    inlineOptions: OPACITY_OPTIONS
   },
 
   labelBackgroundOpacity: {
     name: 'Label Background Opacity',
-    inlineOptions: opacityOptions
+    inlineOptions: OPACITY_OPTIONS
   },
 
   // colormaps are mostly taken from here:
@@ -443,4 +443,4 @@ export const optionsInfo = {
   }
 }
 
-export default optionsInfo;
+export default OPTIONS_INFO;
