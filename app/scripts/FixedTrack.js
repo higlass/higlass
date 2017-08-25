@@ -34,7 +34,7 @@ export class FixedTrack extends TrackArea {
         />
         {controls}
       </div>
-    )
+    );
   }
 }
 

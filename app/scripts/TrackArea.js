@@ -39,7 +39,7 @@ export class TrackArea extends React.Component {
     let Handle = null;
 
     if (this.moveable) {
-      Handle = SortableHandle(() =>
+      Handle = SortableHandle(() => (
         <svg
           className="no-zoom"
           height="10px"
@@ -49,7 +49,7 @@ export class TrackArea extends React.Component {
         >
           <use xlinkHref="#move"></use>
         </svg>
-      )
+      ));
     } else {
       Handle = SortableHandle(() => <div />)
     }

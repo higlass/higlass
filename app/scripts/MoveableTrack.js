@@ -54,8 +54,7 @@ export class MoveableTrack extends TrackArea {
         />
         {controls}
       </div>
-    )
-
+    );
   }
 }
 

@@ -74,7 +74,7 @@ export class CenterTrack extends React.Component {
           />
         }
       </div>
-    )
+    );
   }
 }
 
