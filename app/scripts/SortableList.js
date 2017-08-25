@@ -8,7 +8,8 @@ export const SortableList = SortableContainer(
     itemClass,
     sortingIndex,
     useDragHandle,
-    sortableHandlers,height,
+    sortableHandlers,
+    height,
     width,
     onCloseTrack,
     onCloseTrackMenuOpened,
@@ -20,29 +21,29 @@ export const SortableList = SortableContainer(
     handleResizeTrack,
     resizeHandles
   }) => {
-    let itemElements = items.map((item, index) => {
-        return React.createElement(
-          itemReactClass,
-          {
-            key: "sci-" + item.uid,
-            className: itemClass,
-            sortingIndex: sortingIndex,
-            index: index,
-            uid: item.uid,
-            height: item.height,
-            width: item.width,
-            item: item,
-            useDragHandle: useDragHandle,
-            onCloseTrack: onCloseTrack,
-            onCloseTrackMenuOpened: onCloseTrackMenuOpened,
-            onConfigTrackMenuOpened: onConfigTrackMenuOpened,
-            onAddSeries: onAddSeries,
-            handleConfigTrack: handleConfigTrack,
-            editable: editable,
-            handleResizeTrack: handleResizeTrack,
-            resizeHandles: resizeHandles
-          })
-        })
+    const itemElements = items.map((item, index) => React.createElement(
+      itemReactClass,
+      {
+        key: "sci-" + item.uid,
+        className: itemClass,
+        sortingIndex: sortingIndex,
+        index: index,
+        uid: item.uid,
+        height: item.height,
+        width: item.width,
+        item: item,
+        useDragHandle: useDragHandle,
+        onCloseTrack: onCloseTrack,
+        onCloseTrackMenuOpened: onCloseTrackMenuOpened,
+        onConfigTrackMenuOpened: onConfigTrackMenuOpened,
+        onAddSeries: onAddSeries,
+        handleConfigTrack: handleConfigTrack,
+        editable: editable,
+        handleResizeTrack: handleResizeTrack,
+        resizeHandles: resizeHandles
+      })
+    );
+
     return (
       <div
         className={className}

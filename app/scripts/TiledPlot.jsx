@@ -1021,24 +1021,29 @@ export class TiledPlot extends React.Component {
       let configComponent = this.state.trackOptions.configComponent;
       let track = this.state.trackOptions.track;
 
-      trackOptionsElement = React.createElement(configComponent,
-          {track: track,
-            xScale: this.xScale,
-            yScale: this.yScale,
-            onCancel:  () =>  {
-              this.setState({
-                  trackOptions: null
-                }
-            )},
-            onTrackOptionsChanged: (newOptions) => newOptions,
-            onSubmit: (newOptions) => {
-                this.handleTrackOptionsChanged(this.state.trackOptions.track.uid,
-                    newOptions);
-                this.setState({
-                  trackOptions: null });
-
-              }
-          });
+      trackOptionsElement = React.createElement(
+        configComponent,
+        {
+          track: track,
+          xScale: this.xScale,
+          yScale: this.yScale,
+          onCancel: () => {
+            this.setState({
+              trackOptions: null
+            }
+          )},
+          onTrackOptionsChanged: (newOptions) => newOptions,
+          onSubmit: (newOptions) => {
+            this.handleTrackOptionsChanged(
+              this.state.trackOptions.track.uid,
+              newOptions
+            );
+            this.setState({
+              trackOptions: null
+            });
+          }
+        }
+      );
     }
 
     let addTrackModal = null;

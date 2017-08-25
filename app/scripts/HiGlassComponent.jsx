@@ -2352,6 +2352,75 @@ export class HiGlassComponent extends React.Component {
 
     }
 
+  offViewChange(listenerId) {
+    this.viewChangeListener.splice(listenerId, 1);
+  }
+
+  onViewChange(callback) {
+    return this.viewChangeListener.push(callback) - 1;
+  }
+
+  triggerViewChange() {
+    this.viewChangeListener.forEach(
+      callback => callback(this.getViewsAsString())
+    );
+  }
+
+  offLocationChange(viewId, listenerId) {
+    this.removeScalesChangedListener(viewId, listenerId);
+  }
+
+  onLocationChange(viewId, callback, callbackId) {
+    if (
+      typeof viewId === 'undefined' ||
+      Object.keys(this.state.views).indexOf(viewId) === -1
+    ) {
+      console.error(
+        '🦄 listen to me: you forgot to give me a propper view ID. '+
+        'I can\'t do nothing without that. 💩'
+      );
+      return;
+    }
+
+    const view = this.state.views[viewId];
+
+    // Set chromInfo if not available
+    if (!this.chromInfo) {
+      this.setChromInfo(
+        view.chromInfoPath,
+        () => { this.onLocationChange(viewId, callback, callbackId); }
+      );
+      return;
+    }
+
+    // Convert scales into genomic locations
+    const middleLayerListener = (xScale, yScale) => {
+      callback(scalesToGenomeLoci(xScale, yScale, this.chromInfo));
+    };
+
+    const newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
+      .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
+      .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
+      .reduce((max, value) => Math.max(max, value), 0) + 1;
+
+    const scaleListener = this.addScalesChangedListener(
+      view.uid,
+      `${LOCATION_LISTENER_PREFIX}.${newListenerId}`,
+      middleLayerListener
+    );
+
+    if (callbackId) {
+      callbackId(`${LOCATION_LISTENER_PREFIX}.${newListenerId}`);
+    }
+  }
+
+  setChromInfo(chromInfoPath, callback) {
+    ChromosomeInfo(chromInfoPath, (chromInfo) => {
+      this.chromInfo = chromInfo;
+      callback();
+    });
+  }
+
   render() {
 
     let tiledAreaStyle = {
@@ -2626,75 +2695,6 @@ export class HiGlassComponent extends React.Component {
         {exportLinkModal}
       </div>
     );
-  }
-
-  offViewChange(listenerId) {
-    this.viewChangeListener.splice(listenerId, 1);
-  }
-
-  onViewChange(callback) {
-    return this.viewChangeListener.push(callback) - 1;
-  }
-
-  triggerViewChange() {
-    this.viewChangeListener.forEach(
-      callback => callback(this.getViewsAsString())
-    );
-  }
-
-  offLocationChange(viewId, listenerId) {
-    this.removeScalesChangedListener(viewId, listenerId);
-  }
-
-  onLocationChange(viewId, callback, callbackId) {
-    if (
-      typeof viewId === 'undefined' ||
-      Object.keys(this.state.views).indexOf(viewId) === -1
-    ) {
-      console.error(
-        '🦄 listen to me: you forgot to give me a propper view ID. '+
-        'I can\'t do nothing without that. 💩'
-      );
-      return;
-    }
-
-    const view = this.state.views[viewId];
-
-    // Set chromInfo if not available
-    if (!this.chromInfo) {
-      this.setChromInfo(
-        view.chromInfoPath,
-        () => { this.onLocationChange(viewId, callback, callbackId); }
-      );
-      return;
-    }
-
-    // Convert scales into genomic locations
-    const middleLayerListener = (xScale, yScale) => {
-      callback(scalesToGenomeLoci(xScale, yScale, this.chromInfo));
-    };
-
-    const newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
-      .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
-      .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
-      .reduce((max, value) => Math.max(max, value), 0) + 1;
-
-    const scaleListener = this.addScalesChangedListener(
-      view.uid,
-      `${LOCATION_LISTENER_PREFIX}.${newListenerId}`,
-      middleLayerListener
-    );
-
-    if (callbackId) {
-      callbackId(`${LOCATION_LISTENER_PREFIX}.${newListenerId}`);
-    }
-  }
-
-  setChromInfo(chromInfoPath, callback) {
-    ChromosomeInfo(chromInfoPath, (chromInfo) => {
-      this.chromInfo = chromInfo;
-      callback();
-    });
   }
 }
 
