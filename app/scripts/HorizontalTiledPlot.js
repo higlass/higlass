@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-
 import { brushX } from 'd3-brush';
 import { select, event } from 'd3-selection';
 import slugid from 'slugid';
@@ -33,7 +32,7 @@ export class HorizontalTiledPlot extends React.Component {
 
     this.pubSubs = [];
 
-    this.brushBehavior = brushX().on('brush', this.brushed.bind(this));
+    this.brushBehavior = brushX(true).on('brush', this.brushed.bind(this));
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */

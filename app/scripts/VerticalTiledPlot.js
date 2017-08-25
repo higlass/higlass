@@ -33,7 +33,7 @@ export class VerticalTiledPlot extends React.Component {
 
     this.pubSubs = [];
 
-    this.brushBehavior = brushY().on('brush', this.brushed.bind(this));
+    this.brushBehavior = brushY(true).on('brush', this.brushed.bind(this));
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */

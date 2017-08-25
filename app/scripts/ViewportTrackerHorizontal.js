@@ -1,6 +1,6 @@
-import {SVGTrack} from './SVGTrack.js';
+import SVGTrack from './SVGTrack.js';
 import slugid from 'slugid';
-import brush from './d3v4-brush-no-modifier-keys.js';
+import {brush} from 'd3-brush';
 import {event} from 'd3-selection';
 
 export class ViewportTrackerHorizontal extends SVGTrack {
@@ -18,7 +18,7 @@ export class ViewportTrackerHorizontal extends SVGTrack {
         this.viewportXDomain = null;
         this.viewportYDomain = null;
 
-        this.brush = brush()
+        this.brush = brush(true)
             .extent([[-Number.MAX_VALUE, -Number.MAX_VALUE],
                      [Number.MAX_VALUE, Number.MAX_VALUE]])
             .on('brush', this.brushed.bind(this))
@@ -69,7 +69,7 @@ export class ViewportTrackerHorizontal extends SVGTrack {
         if (!this._xScale || !this._yScale)
             return;
 
-        let xDomain = [this._xScale.invert(s[0][0]), 
+        let xDomain = [this._xScale.invert(s[0][0]),
                        this._xScale.invert(s[1][0])];
 
         let yDomain = this.viewportYDomain;
@@ -93,7 +93,7 @@ export class ViewportTrackerHorizontal extends SVGTrack {
 
     remove() {
         // remove the event handler that updates this viewport tracker
-        this.removeViewportChanged(this.uid); 
+        this.removeViewportChanged(this.uid);
 
         super.remove();
     }
@@ -115,11 +115,11 @@ export class ViewportTrackerHorizontal extends SVGTrack {
             return;
 
         let x0 = this._xScale(this.viewportXDomain[0]);
-        let y0 = 0; 
+        let y0 = 0;
 
         let x1 = this._xScale(this.viewportXDomain[1]);
         let y1 = this.dimensions[1];
-         
+
         let dest = [[x0,y0],[x1,y1]];
 
         //console.log('dest:', dest[0], dest[1]);
@@ -145,3 +145,5 @@ export class ViewportTrackerHorizontal extends SVGTrack {
         this.draw();
     }
 }
+
+export default ViewportTrackerHorizontal;
