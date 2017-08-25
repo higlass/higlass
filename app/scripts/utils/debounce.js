@@ -18,7 +18,7 @@
  * @param   {Boolean}    immediate  If `true` function is not debounced.
  * @return  {Functiomn}             Debounced function.
  */
-export default function debounce (func, wait, immediate) {
+export const debounce = (func, wait, immediate) => {
   let timeout;
 
   const debounced = (...args) => {
@@ -44,4 +44,6 @@ export default function debounce (func, wait, immediate) {
   };
 
   return debounced;
-};
+}
+
+export default debounce;

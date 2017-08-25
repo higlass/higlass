@@ -1,11 +1,13 @@
 import {median} from 'd3-array';
 import slugid from 'slugid';
 
-import debounce from './debounce';
 import PixiTrack from './PixiTrack';
 
 // Services
 import { tileProxy } from './services';
+
+// Utils
+import { debounce } from './utils';
 
 // Configs
 import { ZOOM_DEBOUNCE } from './config';

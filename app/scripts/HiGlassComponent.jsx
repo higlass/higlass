@@ -41,11 +41,14 @@ import {all as icons} from './icons.js';
 import {ViewHeader} from './ViewHeader.jsx';
 import {ChromosomeInfo} from './ChromosomeInfo.js';
 import api from './api';
-import debounce from './debounce';
 
 import '../styles/HiGlassComponent.css';
 
+// Services
 import {domEvent} from './services';
+
+// Utils
+import { debounce } from './utils';
 
 let WidthReactGridLayout = WidthProvider(ReactGridLayout);
 

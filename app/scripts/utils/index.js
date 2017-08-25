@@ -3,6 +3,7 @@ export { default as chromInfoBisector } from './chrom-info-bisector';
 export { default as chrToAbs } from './chr-to-abs';
 export { default as colorDomainToRgbaArray } from './color-domain-to-rgba-array';
 export { default as colorToHex } from './color-to-hex';
+export { default as debounce } from './debounce';
 export { default as dictFromTuples } from './dict-from-tuples';
 export { default as dictItems } from './dict-items';
 export { default as dictKeys } from './dict-keys';
