@@ -76,3 +76,5 @@ export class ViewportTracker2D extends PixiTrack {
         this.draw();
     }
 }
+
+export default ViewportTracker2D;
