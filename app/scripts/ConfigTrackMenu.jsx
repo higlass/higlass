@@ -1,9 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
 import {SeriesListMenu} from './SeriesListMenu.jsx';
-import {tracksInfo} from './config';
+import {TRACKS_INFO} from './configs';
 
 export class ConfigTrackMenu extends ContextMenuContainer {
     constructor(props) {
@@ -31,7 +30,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
 
         let trackTypeToInfo = {};
 
-        tracksInfo.forEach(ti => {
+        TRACKS_INFO.forEach(ti => {
             trackTypeToInfo[ti.type] = ti;
         });
 

@@ -1,5 +1,3 @@
-import {ZOOM_TRANSITION_DURATION} from './config'
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
@@ -49,8 +47,11 @@ import { dictItems } from './utils';
 // Services
 import { pubSub } from './services';
 
+// Configs
+import { ZOOM_TRANSITION_DURATION } from './configs';
+
 // Styles
-import "../styles/TrackRenderer.scss";
+import '../styles/TrackRenderer.scss';
 
 
 const SCROLL_TIMEOUT = 100;

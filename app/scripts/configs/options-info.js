@@ -1,9 +1,9 @@
-import { HeatmapOptions } from './HeatmapOptions.jsx';
-
 import {
   formatPrefix,
   precisionPrefix
 } from 'd3-format';
+
+import { HeatmapOptions } from '../HeatmapOptions.jsx';
 
 const AVAILABLE_COLORS = {
   'black': { name: 'Black', value: 'black'},

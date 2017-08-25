@@ -15,7 +15,7 @@ import { pubSub } from './services';
 import { genomeLociToPixels, or, sum } from './utils';
 
 // Configs
-import { isTrackRangeSelectable } from './config';
+import { IS_TRACK_RANGE_SELECTABLE } from './configs';
 
 // Styles
 import styles from '../styles/HorizontalTiledPlot.scss';  // eslint-disable-line no-unused-vars
@@ -152,7 +152,7 @@ export class HorizontalTiledPlot extends React.Component {
     const height = this.props.tracks.map(x => x.height).reduce(sum, 0);
 
     const isBrushable = this.props.tracks
-      .map(track => isTrackRangeSelectable(track))
+      .map(track => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
     const rangeSelectorClass = this.state.rangeSelecting ?

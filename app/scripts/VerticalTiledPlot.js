@@ -16,7 +16,7 @@ import { pubSub } from './services';
 import { genomeLociToPixels, or, sum } from './utils';
 
 // Configs
-import { isTrackRangeSelectable } from './config';
+import { IS_TRACK_RANGE_SELECTABLE } from './configs';
 
 // Styles
 import styles from '../styles/VerticalTiledPlot.scss';  // eslint-disable-line no-unused-vars
@@ -148,7 +148,7 @@ export class VerticalTiledPlot extends React.Component {
     const width = this.props.tracks.map(x => x.width).reduce(sum, 0);
 
     const isBrushable = this.props.tracks
-      .map(track => isTrackRangeSelectable(track))
+      .map(track => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
     const rangeSelectorClass = this.state.rangeSelecting ?

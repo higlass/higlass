@@ -10,7 +10,7 @@ import { tileProxy } from './services';
 import { colorDomainToRgbaArray, colorToHex } from './utils';
 
 // Configs
-import { heatedObjectMap } from './configs';
+import { HEATED_OBJECT_MAP } from './configs';
 
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;
@@ -40,8 +40,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         // [[255,255,255,0], [237,218,10,4] ...
         // a 256 element array mapping the values 0-255 to rgba values
         // not a d3 color scale for speed
-        //this.colorScale = heatedObjectMap;
-        this.colorScale = heatedObjectMap;
+        //this.colorScale = HEATED_OBJECT_MAP;
+        this.colorScale = HEATED_OBJECT_MAP;
 
         if (options && options.colorRange) {
             this.colorScale = colorDomainToRgbaArray(options.colorRange);

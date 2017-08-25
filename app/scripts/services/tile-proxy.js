@@ -9,7 +9,7 @@ import {
 } from '../worker';
 
 // Config
-import { TILE_FETCH_DEBOUNCE } from '../config';
+import { TILE_FETCH_DEBOUNCE } from '../configs';
 
 const sessionId = slugid.nice();
 
