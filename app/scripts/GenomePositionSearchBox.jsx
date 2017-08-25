@@ -1,19 +1,14 @@
-import {bisector} from 'd3-array';
-import {format} from 'd3-format';
 import {json} from 'd3-request';
 import {queue} from 'd3-queue';
-import {scaleLinear} from 'd3-scale';
 import {select,event} from 'd3-selection';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 import Autocomplete from './Autocomplete';
 import {
   FormGroup,
-  FormControl,
-  InputGroup,
   Glyphicon,Button,
-  DropdownButton, MenuItem
+  DropdownButton,
+  MenuItem
 } from 'react-bootstrap';
 import {ChromosomeInfo} from './ChromosomeInfo';
 import {SearchField} from './search_field';
