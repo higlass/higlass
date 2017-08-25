@@ -103,6 +103,43 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(done, pageLoadTime);
         });
 
+
+        it ("Locks line and combined scales", (done) => {
+            hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'c2');
+            hgc.instance().handleValueScaleLocked('aa', 'line1', 'view2', 'line2');
+
+            // lock the scales of two combined views
+            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(2268041199.8615317, 2267986087.2543955, 15.803061962127686);
+            setTimeout(() => done(), tileLoadTime);
+        });
+
+        it ('ensures that the new track domains are equal and unlock the combined tracks', (done) => {
+            let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
+            let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('heatmap2');
+
+            let domain1 = track1.valueScale.domain();
+            let domain2 = track2.valueScale.domain();
+
+            expect(domain1[1]).to.be.above(1000);
+            expect(domain1[1]).to.eql(domain2[1]);
+            done();
+        });
+
+        it ('ensures that the lines have the same valueScale', (done) => {
+            let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('line1');
+            let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('line2');
+
+            let domain1 = track1.valueScale.domain();
+            let domain2 = track2.valueScale.domain();
+
+            // add the track1 medianVisibleValue to account for the offset that is
+            // added to log-scaled tracks
+            expect(domain1[1]).to.eql(domain2[1] + track1.medianVisibleValue);
+
+            done();
+        });
+        return;
+
         it ("locks the scales and recenters the page", (done) => {
             hgc.instance().handleValueScaleLocked('aa', 'heatmap1', 'view2', 'heatmap2');
             let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
@@ -139,7 +176,6 @@ describe("Simple HiGlassComponent", () => {
             done();
         });
 
-        return;
 
         it ('ensures that the new track domains are equal and unlocks the scales', (done) => {
             let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
@@ -157,7 +193,6 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(() => done(), tileLoadTime);
         });
 
-        return;
 
         it ('ensure that new domains are unequal and locks the combined tracks', (done) => {
             let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
@@ -167,41 +202,6 @@ describe("Simple HiGlassComponent", () => {
             let domain2 = track2.valueScale.domain();
 
             expect(domain1[1]).to.not.eql(domain2[1]);
-
-            done();
-        });
-
-        it ("Locks line and combined scales", (done) => {
-            hgc.instance().handleValueScaleLocked('aa', 'c1', 'view2', 'c2');
-            hgc.instance().handleValueScaleLocked('aa', 'line1', 'view2', 'line2');
-
-            // lock the scales of two combined views
-            hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(2268041199.8615317, 2267986087.2543955, 15.803061962127686);
-            setTimeout(() => done(), tileLoadTime);
-        });
-
-        it ('ensures that the new track domains are equal and unlock the combined tracks', (done) => {
-            let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('heatmap1');
-            let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('heatmap2');
-
-            let domain1 = track1.valueScale.domain();
-            let domain2 = track2.valueScale.domain();
-
-            expect(domain1[1]).to.be.above(1000);
-            expect(domain1[1]).to.eql(domain2[1]);
-            done();
-        });
-
-        it ('ensures that the lines have the same valueScale', (done) => {
-            let track1 = hgc.instance().tiledPlots['aa'].trackRenderer.getTrackObject('line1');
-            let track2 = hgc.instance().tiledPlots['view2'].trackRenderer.getTrackObject('line2');
-
-            let domain1 = track1.valueScale.domain();
-            let domain2 = track2.valueScale.domain();
-
-            // add the track1 medianVisibleValue to account for the offset that is
-            // added to log-scaled tracks
-            expect(domain1[1]).to.eql(domain2[1] + track1.medianVisibleValue);
 
             done();
         });
