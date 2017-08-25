@@ -345,7 +345,7 @@ export class HiGlassComponent extends React.Component {
                 && typeof(sourceTrack.options.scaleEndPercent) != 'undefined') {
                 lockedTrack.options.scaleStartPercent = sourceTrack.options.scaleStartPercent;
                 lockedTrack.options.scaleEndPercent = sourceTrack.options.scaleEndPercent;
-            }
+            } 
 
             // the second parameter forces a rerender even though
             // the options haven't changed

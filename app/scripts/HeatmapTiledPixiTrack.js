@@ -16,8 +16,9 @@ const COLORBAR_MARGIN = 10;
 const BRUSH_WIDTH = COLORBAR_MARGIN;
 const BRUSH_COLORBAR_GAP = 1;
 const BRUSH_MARGIN = 3; 
-
 const AXIS_TICK_LENGTH = 5;
+
+const SCALE_LIMIT_PRECISION = 5;
 
 export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, 
@@ -197,8 +198,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         let endPercent = (endDomain - axisValueScale.domain()[0]) 
             / (axisValueScale.domain()[1] - axisValueScale.domain()[0])
 
-        newOptions.scaleStartPercent = startPercent;
-        newOptions.scaleEndPercent = endPercent;
+        newOptions.scaleStartPercent = startPercent.toFixed(SCALE_LIMIT_PRECISION);
+        newOptions.scaleEndPercent = endPercent.toFixed(SCALE_LIMIT_PRECISION);
 
         return newOptions;
     }
@@ -211,21 +212,26 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         if (strOptions == this.prevOptions)
             return;
 
-        //this.onValueScaleChanged();
+        console.log('brush move', strOptions, this.prevOptions);
+
+        this.prevOptions = strOptions;
+
+        this.onTrackOptionsChanged(newOptions);
+        this.onValueScaleChanged();
 
         //console.log('newOptions:', JSON.stringify(newOptions));
         //console.log('prevOptions:', this.prevOptions);
-        this.rerender(newOptions);
-        this.animate();
+        //this.rerender(newOptions);
+        //this.animate();
     }
 
     brushEnd() {
-        let newOptions = this.newBrushOptions(event.selection);
+        console.log('brush end');
+        //let newOptions = this.newBrushOptions(event.selection);
 
-        this.rerender(newOptions);
-        this.animate();
+        //this.rerender(newOptions);
+        //this.animate();
 
-        this.onTrackOptionsChanged(newOptions);
     }
 
     drawColorbar() {
@@ -253,6 +259,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             .extent([[0, 0], [BRUSH_WIDTH, this.colorbarHeight]])
             .on("brush", this.brushMoved.bind(this))
             .on("end", this.brushEnd.bind(this));
+        //
 
         this.gColorscaleBrush.on('.brush', null);
         this.gColorscaleBrush.call(this.scaleBrush);
