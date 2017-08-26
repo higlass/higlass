@@ -212,7 +212,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         if (strOptions == this.prevOptions)
             return;
 
-        console.log('brush move', strOptions, this.prevOptions);
+        //console.log('brush move', strOptions, this.prevOptions);
 
         this.prevOptions = strOptions;
 
@@ -226,7 +226,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     }
 
     brushEnd() {
-        console.log('brush end');
         //let newOptions = this.newBrushOptions(event.selection);
 
         //this.rerender(newOptions);
@@ -528,7 +527,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         } else if (this.options.heatmapValueScaling == 'linear') {
             this.valueScale = scaleLinear().range([254, 0])
             .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-        } /*
+        } 
+        /*
         else if (this.options.heatmapValueScaling == 'quantile') {
             this.valueScale = scaleQuantile().range([254, 0])
             .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);

@@ -478,10 +478,8 @@ export class TiledPixiTrack extends PixiTrack {
                 this.prevValueScale = this.valueScale.copy();
 
                 if (this.onValueScaleChanged) {
-                    console.log('value scale changed');
                     this.onValueScaleChanged();
                 }
-
             }
         }
         //this.animate();

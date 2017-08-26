@@ -339,7 +339,6 @@ export class HiGlassComponent extends React.Component {
 
             lockedTrack.valueScale.domain([allMin, allMax]);
 
-            //console.log('sourceTrackOptions:', sourceTrack.options);
             if  (sourceTrack.options 
                 && typeof(sourceTrack.options.scaleStartPercent) != 'undefined'
                 && typeof(sourceTrack.options.scaleEndPercent) != 'undefined') {

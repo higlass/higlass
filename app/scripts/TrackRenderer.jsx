@@ -1047,10 +1047,15 @@ export class TrackRenderer extends React.Component {
                     () => this.currentProps.onNewTilesLoaded(track.uid))
                 );
             case 'osm-tiles':
-                return new OSMTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new OSMTilesTrack(this.pStage, 
+                    track.options, 
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
             case 'mapbox-tiles':
                 console.log("Here");
-                return new MapboxTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new MapboxTilesTrack(this.pStage, 
+                    track.options, () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
             case 'bedlike':
                 return new BedLikeTrack(
                     this.pStage,
@@ -1059,7 +1064,7 @@ export class TrackRenderer extends React.Component {
                     handleTilesetInfoReceived,
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid)
-                )
+                );
             default:
                  console.warn('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(
