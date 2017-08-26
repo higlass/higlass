@@ -312,8 +312,11 @@ export class HiGlassComponent extends React.Component {
           let lockGroupValues = dictValues(this.valueScaleLocks[uid]);
 
           ///let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
-          let lockedTracks = lockGroupValues.map(x => 
-                  this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track))
+          let lockedTracks = lockGroupValues.map(x => {
+              console.log('this.tiledPlots:', this.tiledPlots);
+              console.log('sdfsd:', this.tiledPlots[x.view]);
+                return this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track)
+          })
 
           let minValues = lockedTracks.filter(x => x.minRawValue && x.maxRawValue)  //exclude tracks that don't set min and max values
                                       .map(x => x.minRawValue());

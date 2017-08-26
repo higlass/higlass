@@ -209,12 +209,22 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         let strOptions = JSON.stringify(newOptions);
 
+        //console.log('equal:', strOptions == this.prevOptions);
+        //console.log('strOptions:', strOptions, newOptions)
+
+
         if (strOptions == this.prevOptions)
             return;
 
         //console.log('brush move', strOptions, this.prevOptions);
 
         this.prevOptions = strOptions;
+
+        // force a rerender because we've already set prevOptions
+        // to the new options
+        // this is necessary for when value scales are synced between
+        // tracks
+        this.rerender(newOptions, true);
 
         this.onTrackOptionsChanged(newOptions);
         this.onValueScaleChanged();
