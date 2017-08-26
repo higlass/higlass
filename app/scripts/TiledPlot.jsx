@@ -148,6 +148,15 @@ export class TiledPlot extends React.Component {
      */
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      (prevState.rangeSelection !== this.state.rangeSelection) &&
+      this.props.onRangeSelection
+    ) {
+      this.props.onRangeSelection(this.state.rangeSelection);
+    }
+  }
+
   componentWillUnmount() {
     this.closing = true;
   }
@@ -674,7 +683,6 @@ export class TiledPlot extends React.Component {
 
   rangeSelectionEndHandler() {
     if (this.state.rangeSelectionMaster) {
-      console.log('SELECTION ENDED');
       this.setState({
         is1dRangeSelection: null,
         rangeSelectionMaster: null
@@ -694,18 +702,11 @@ export class TiledPlot extends React.Component {
       this.setState({
         rangeSelection: newRangeSelection
       });
-
-      console.log(
-        `rangeSelection1dHandler() [axis: ${axis}]`,
-        this.state.rangeSelection[0],
-        this.state.rangeSelection[1],
-      );
     }
   }
 
-  rangeSelection1dStartHandler(master) {
+  rangeSelection1dStartHandler() {
     if (!this.state.rangeSelectionMaster) {
-      console.log('SET MASTER 1D');
       this.setState({
         is1dRangeSelection: true,
         rangeSelectionMaster: true
@@ -720,17 +721,10 @@ export class TiledPlot extends React.Component {
         this.rangeToGenomeLoci(range[1], this.yScale)
       ]
     });
-
-    console.log(
-      'rangeSelection2dHandler()',
-      this.state.rangeSelection[0],
-      this.state.rangeSelection[1],
-    );
   }
 
-  rangeSelection2dStartHandler(master) {
+  rangeSelection2dStartHandler() {
     if (!this.state.rangeSelectionMaster) {
-      console.log('SET MASTER 2D');
       this.setState({
         is1dRangeSelection: false,
         rangeSelectionMaster: true
@@ -928,11 +922,11 @@ export class TiledPlot extends React.Component {
             onAddSeries={this.handleAddSeries.bind(this)}
             onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
             onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-            onRangeSelectionX={this.rangeSelection1dHandler('x').bind(this)}
-            onRangeSelectionY={this.rangeSelection1dHandler('y').bind(this)}
-            onRangeSelectionXY={this.rangeSelection2dHandler.bind(this)}
             onRangeSelectionEnd={this.rangeSelectionEndHandler.bind(this)}
             onRangeSelectionStart={this.rangeSelection2dStartHandler.bind(this)}
+            onRangeSelectionX={this.rangeSelection1dHandler('x').bind(this)}
+            onRangeSelectionXY={this.rangeSelection2dHandler.bind(this)}
+            onRangeSelectionY={this.rangeSelection1dHandler('y').bind(this)}
             rangeSelection={this.state.rangeSelection}
             scaleX={this.xScale}
             scaleY={this.yScale}
@@ -1158,6 +1152,7 @@ TiledPlot.propTypes = {
   onLockValueScale: PropTypes.func,
   onNoTrackAdded: PropTypes.func,
   onNewTilesLoaded: PropTypes.func,
+  onRangeSelection: PropTypes.func,
   onScalesChanged: PropTypes.func,
   onTracksAdded: PropTypes.func,
   onTrackOptionsChanged: PropTypes.func,
