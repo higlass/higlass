@@ -154,6 +154,7 @@ export class HiGlassComponent extends React.Component {
     // Set up API
     this.api = api(this);
 
+    this.rangeSelectionListener = [];
     this.viewChangeListener = [];
 
     this.triggerViewChangeDb = debounce(
@@ -2352,6 +2353,20 @@ export class HiGlassComponent extends React.Component {
 
     }
 
+  offRangeSelection(listenerId) {
+    this.rangeSelectionListener.splice(listenerId, 1);
+  }
+
+  onRangeSelection(callback) {
+    return this.rangeSelectionListener.push(callback) - 1;
+  }
+
+  rangeSelectionHandler(range) {
+    this.rangeSelectionListener.forEach(
+      callback => callback(range)
+    );
+  }
+
   offViewChange(listenerId) {
     this.viewChangeListener.splice(listenerId, 1);
   }
@@ -2473,46 +2488,48 @@ export class HiGlassComponent extends React.Component {
                 }
 
                 let tiledPlot = (
-                                <TiledPlot
-                                     addTrackPosition={
-                                        this.state.addTrackPositionView == view.uid ? this.state.addTrackPosition : null
-                                     }
-                                     addTrackPositionMenuPosition={addTrackPositionMenuPosition}
-                                     canvasElement={this.state.canvasElement}
-                                     chooseTrackHandler={this.state.chooseTrackHandler ? trackId => this.state.chooseTrackHandler(view.uid, trackId) : null}
-                                     chromInfoPath={view.chromInfoPath}
-                                     editable={this.props.viewConfig.editable}
-                                     horizontalMargin={this.horizontalMargin}
-                                     initialXDomain={view.initialXDomain}
-                                     initialYDomain={view.initialYDomain}
-                                     key={'tp' + view.uid}
-                                     onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
-                                     onDataDomainChanged={(xDomain, yDomain) => this.handleDataDomainChanged(view.uid, xDomain, yDomain)}
-                                     onLockValueScale={uid => this.handleLockValueScale(view.uid, uid)}
-
-                                     onNewTilesLoaded={(trackUid) => this.handleNewTilesLoaded(view.uid, trackUid)}
-                                     onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
-                                     onScalesChanged={(x,y) => this.handleScalesChanged(view.uid, x, y)}
-                                     onTracksAdded={(newTracks, position, host) => this.handleTracksAdded(view.uid, newTracks, position, host)}
-                                     onTrackOptionsChanged={(trackId, options) => this.handleTrackOptionsChanged(view.uid, trackId, options)}
-                                     onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
-                                     onUnlockValueScale={uid => this.handleUnlockValueScale(view.uid, uid)}
-                                     pixiStage={this.pixiStage}
-                                     ref={c => this.tiledPlots[view.uid] = c}
-                                     registerDraggingChangedListener={listener => {
-                                         this.addDraggingChangedListener(view.uid, view.uid, listener)
-                                        }
-                                     }
-                                     removeDraggingChangedListener={listener => this.removeDraggingChangedListener(view.uid, view.uid, listener)}
-                                     setCentersFunction={c => this.setCenters[view.uid] = c}
-                                     svgElement={this.state.svgElement}
-                                     trackSourceServers={this.props.viewConfig.trackSourceServers}
-                                     tracks={view.tracks}
-                                     uid={view.uid}
-                                     verticalMargin={this.verticalMargin}
-                                     //dragging={this.state.dragging}
-                                     zoomable={!zoomFixed}
-                                />)
+                  <TiledPlot
+                      addTrackPosition={
+                        this.state.addTrackPositionView == view.uid ? this.state.addTrackPosition : null
+                      }
+                      addTrackPositionMenuPosition={addTrackPositionMenuPosition}
+                      canvasElement={this.state.canvasElement}
+                      chooseTrackHandler={this.state.chooseTrackHandler ? trackId => this.state.chooseTrackHandler(view.uid, trackId) : null}
+                      chromInfoPath={view.chromInfoPath}
+                      editable={this.props.viewConfig.editable}
+                      horizontalMargin={this.horizontalMargin}
+                      initialXDomain={view.initialXDomain}
+                      initialYDomain={view.initialYDomain}
+                      key={'tp' + view.uid}
+                      onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
+                      onDataDomainChanged={(xDomain, yDomain) => this.handleDataDomainChanged(view.uid, xDomain, yDomain)}
+                      onLockValueScale={uid => this.handleLockValueScale(view.uid, uid)}
+                      onNewTilesLoaded={(trackUid) => this.handleNewTilesLoaded(view.uid, trackUid)}
+                      onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
+                      onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
+                      onRangeSelection={this.rangeSelectionHandler.bind(this)}
+                      onScalesChanged={(x,y) => this.handleScalesChanged(view.uid, x, y)}
+                      onTracksAdded={(newTracks, position, host) => this.handleTracksAdded(view.uid, newTracks, position, host)}
+                      onTrackOptionsChanged={(trackId, options) => this.handleTrackOptionsChanged(view.uid, trackId, options)}
+                      onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
+                      onUnlockValueScale={uid => this.handleUnlockValueScale(view.uid, uid)}
+                      pixiStage={this.pixiStage}
+                      ref={c => this.tiledPlots[view.uid] = c}
+                      registerDraggingChangedListener={listener => {
+                          this.addDraggingChangedListener(view.uid, view.uid, listener)
+                        }
+                      }
+                      removeDraggingChangedListener={listener => this.removeDraggingChangedListener(view.uid, view.uid, listener)}
+                      setCentersFunction={c => this.setCenters[view.uid] = c}
+                      svgElement={this.state.svgElement}
+                      trackSourceServers={this.props.viewConfig.trackSourceServers}
+                      tracks={view.tracks}
+                      uid={view.uid}
+                      verticalMargin={this.verticalMargin}
+                      //dragging={this.state.dragging}
+                      zoomable={!zoomFixed}
+                  />
+                )
 
 
 

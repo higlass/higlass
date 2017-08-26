@@ -63,6 +63,10 @@ export const api = function api(context) {
           self.offLocationChange(viewId, listenerId);
           break;
 
+        case 'rangeSelection':
+          self.offViewChange(listenerId);
+          break;
+
         case 'view':
           self.offViewChange(listenerId);
           break;
@@ -78,6 +82,9 @@ export const api = function api(context) {
         case 'location':
           self.onLocationChange(viewId, callback, callbackId);
           break;
+
+        case 'rangeSelection':
+          return self.onViewChange(callback);
 
         case 'view':
           return self.onViewChange(callback);
