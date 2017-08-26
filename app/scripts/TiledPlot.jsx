@@ -928,7 +928,9 @@ export class TiledPlot extends React.Component {
             onAddSeries={this.handleAddSeries.bind(this)}
             onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
             onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}
-            onRangeSelection={this.rangeSelection2dHandler.bind(this)}
+            onRangeSelectionX={this.rangeSelection1dHandler('x').bind(this)}
+            onRangeSelectionY={this.rangeSelection1dHandler('y').bind(this)}
+            onRangeSelectionXY={this.rangeSelection2dHandler.bind(this)}
             onRangeSelectionEnd={this.rangeSelectionEndHandler.bind(this)}
             onRangeSelectionStart={this.rangeSelection2dStartHandler.bind(this)}
             rangeSelection={this.state.rangeSelection}
