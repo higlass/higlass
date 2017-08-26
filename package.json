@@ -120,6 +120,7 @@
     "react-sortable-hoc": "^0.1.1",
     "threads": "^0.7.2",
     "transform-loader": "^0.2.3",
-    "url-join": "^1.1.0"
+    "url-join": "^1.1.0",
+    "whatwg-fetch": "^2.0.3"
   }
 }
