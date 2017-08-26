@@ -12,4 +12,21 @@
 
   z-index: 1;
   opacity: 1;
+  background: rgba(0, 255, 0, 0.5);
+}
+
+.track-range-selection-active-primary {
+  composes: track-range-selection-active;
+
+  background: rgba(0, 255, 0, 0.5);
+}
+
+.track-range-selection-active-secondary {
+  composes: track-range-selection-active;
+
+  background: rgba(255, 255, 0, 0.33);
+}
+
+.track-range-selection-group-inactive {
+  display: none;
 }
