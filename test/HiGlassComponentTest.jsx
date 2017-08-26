@@ -114,7 +114,7 @@ describe("Simple HiGlassComponent", () => {
             setTimeout(() => done(), tileLoadTime);
         });
 
-        it ("Changes the value scale", (done) => {
+        it ("Moves the brush on one view and makes sure it moves on the other", (done) => {
             let heatmapTrack = getTrackObject(hgc, 'aa', 'heatmap1'); 
 
             console.log('lvs1', heatmapTrack.limitedValueScale.domain());
@@ -125,10 +125,15 @@ describe("Simple HiGlassComponent", () => {
 
             console.log('lvs2', heatmapTrack.limitedValueScale.domain());
 
-            let heatmap2Track = getTrackObject(hgc, 'aa', 'heatmap2');
+            let heatmap2Track = getTrackObject(hgc, 'view2', 'heatmap2');
+
+            expect(heatmapTrack.options.scaleStartPercent).to.eql(heatmap2Track.options.scaleStartPercent);
+            expect(heatmapTrack.options.scaleEndPercent).to.eql(heatmap2Track.options.scaleEndPercent);
 
             setTimeout(done, tileLoadTime);
         });
+
+        return;
 
         it ("Changes the value scale", (done) => {
             let heatmapTrack = getTrackObject(hgc, 'aa', 'heatmap1'); 
