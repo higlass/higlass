@@ -6,9 +6,9 @@ import {colorToHex} from './utils.js';
 import {AxisPixi} from './AxisPixi.js';
 
 export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
+    constructor(scene, server, uid, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
 
-        super(scene, server, uid, handleTilesetInfoReceived, option, animate);
+        super(scene, server, uid, handleTilesetInfoReceived, option, animate, onValueScaleChanged);
 
         this.axis = new AxisPixi(this);
         this.pBase.addChild(this.axis.pAxis);

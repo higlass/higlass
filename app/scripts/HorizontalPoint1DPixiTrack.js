@@ -7,9 +7,9 @@ import {AxisPixi} from './AxisPixi.js';
 import {dictValues} from './utils.js';
 
 export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
+    constructor(scene, server, uid, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
 
-        super(scene, server, uid, handleTilesetInfoReceived, option, animate);
+        super(scene, server, uid, handleTilesetInfoReceived, option, animate, onValueScaleChanged);
 
     }
 

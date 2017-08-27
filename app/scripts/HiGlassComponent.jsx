@@ -289,6 +289,43 @@ export class HiGlassComponent extends React.Component {
     let lockGroup = this.valueScaleLocks[this.combineViewAndTrackUid(viewUid, trackUid)];
   }
 
+    iterateOverViews() {
+        /*
+         * Iteratate over all of the views in this component
+         */
+        let viewIds = [];
+        
+        for (let viewId in this.state.views) {
+            viewIds.push(viewId);
+        }
+
+        return viewIds;
+    }
+
+    iterateOverTracks() {
+        /**
+         * Iterate over all the tracks in this component.
+         */
+        let allTracks = [];
+        for (let viewId in this.state.views) {
+            let tracks = this.state.views[viewId].tracks;
+
+            for (let trackType in tracks) {
+                for (let track of tracks[trackType]) {
+                    if (track.type == 'combined' && track.contents) {
+                        for (let subTrack of track.contents) {
+                            allTracks.push({ viewId: viewId, trackId: subTrack.uid});
+                        }
+                    } else {
+                        allTracks.push({ viewId: viewId, trackId: track.uid });
+                    }
+                }
+            }
+        }
+
+        return allTracks;
+    }
+
   syncValueScales(viewUid, trackUid) {
       /**
        * Syncing the values of locked scales
@@ -305,13 +342,15 @@ export class HiGlassComponent extends React.Component {
        *    Nothing
        */
       let uid = this.combineViewAndTrackUid(viewUid, trackUid);
+      let sourceTrack = getTrackByUid(this.state.views[viewUid].tracks, trackUid);
 
       if (this.valueScaleLocks[uid]) {
           let lockGroupValues = dictValues(this.valueScaleLocks[uid]);
 
           ///let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
-          let lockedTracks = lockGroupValues.map(x => 
-                  this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track))
+          let lockedTracks = lockGroupValues.map(x => {
+                return this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track)
+          })
 
           let minValues = lockedTracks.filter(x => x.minRawValue && x.maxRawValue)  //exclude tracks that don't set min and max values
                                       .map(x => x.minRawValue());
@@ -337,6 +376,13 @@ export class HiGlassComponent extends React.Component {
 
             lockedTrack.valueScale.domain([allMin, allMax]);
 
+            if  (sourceTrack.options 
+                && typeof(sourceTrack.options.scaleStartPercent) != 'undefined'
+                && typeof(sourceTrack.options.scaleEndPercent) != 'undefined') {
+                lockedTrack.options.scaleStartPercent = sourceTrack.options.scaleStartPercent;
+                lockedTrack.options.scaleEndPercent = sourceTrack.options.scaleEndPercent;
+            } 
+
             // the second parameter forces a rerender even though
             // the options haven't changed
             lockedTrack.rerender(lockedTrack.options, true);
@@ -345,7 +391,7 @@ export class HiGlassComponent extends React.Component {
   }
 
   handleNewTilesLoaded(viewUid, trackUid) {
-      this.syncValueScales(viewUid, trackUid);
+      //this.syncValueScales(viewUid, trackUid);
       this.animate();
       //
   }
@@ -2403,7 +2449,10 @@ export class HiGlassComponent extends React.Component {
                                      onTracksAdded={(newTracks, position, host) => this.handleTracksAdded(view.uid, newTracks, position, host)}
                                      onTrackOptionsChanged={(trackId, options) => this.handleTrackOptionsChanged(view.uid, trackId, options)}
                                      onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
+                                    
                                      onUnlockValueScale={uid => this.handleUnlockValueScale(view.uid, uid)}
+                                     onValueScaleChanged={uid => this.syncValueScales(view.uid, uid)}
+
                                      pixiStage={this.pixiStage}
                                      ref={c => this.tiledPlots[view.uid] = c}
                                      registerDraggingChangedListener={listener => {

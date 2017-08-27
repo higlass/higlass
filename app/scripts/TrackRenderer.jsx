@@ -741,18 +741,23 @@ export class TrackRenderer extends React.Component {
                 return new TopAxisTrack(this.svgElement);
             case 'heatmap':
                 return new HeatmapTiledPixiTrack(this.pStage,
-                                                 track.server,
-                                                 track.tilesetUid,
-                                                 handleTilesetInfoReceived,
-                                                 track.options,
-                                                 () => this.currentProps.onNewTilesLoaded(track.uid));
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid),
+                    this.svgElement,
+                    () => this.currentProps.onValueScaleChanged(track.uid),
+                    (newOptions) => this.currentProps.onTrackOptionsChanged(track.uid, newOptions));
             case 'horizontal-line':
-                return new HorizontalLine1DPixiTrack(this.pStage,
-                                                     track.server,
-                                                     track.tilesetUid,
-                                                     handleTilesetInfoReceived,
-                                                     track.options,
-                                                     () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new HorizontalLine1DPixiTrack(this.pStage, 
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid),
+                    () => this.currentProps.onValueScaleChanged(track.uid)
+                );
             case 'vertical-line':
                 return new LeftTrackModifier(
                     new HorizontalLine1DPixiTrack(
@@ -761,67 +766,76 @@ export class TrackRenderer extends React.Component {
                         track.tilesetUid,
                         handleTilesetInfoReceived,
                         track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid)
+                        () => this.currentProps.onNewTilesLoaded(track.uid),
+                        () => this.currentProps.onValueScaleChanged(track.uid)
                     )
                 );
             case 'horizontal-point':
                 return new HorizontalPoint1DPixiTrack(this.pStage,
-                                                     track.server,
-                                                     track.tilesetUid,
-                                                     handleTilesetInfoReceived,
-                                                     track.options,
-                                                     () => this.currentProps.onNewTilesLoaded(track.uid));
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid),
+                    () => this.currentProps.onValueScaleChanged(track.uid)
+                );
             case 'horizontal-bar':
                 return new BarTrack(this.pStage,
-                                                     track.server,
-                                                     track.tilesetUid,
-                                                     handleTilesetInfoReceived,
-                                                     track.options,
-                                                     () => this.currentProps.onNewTilesLoaded(track.uid));
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid),
+                    () => this.currentProps.onValueScaleChanged(track.uid)
+                );
             case 'vertical-point':
                 return new LeftTrackModifier(
                     new HorizontalPoint1DPixiTrack(this.pStage,
-                         track.server,
-                         track.tilesetUid,
-                         handleTilesetInfoReceived,
-                         track.options,
-                         () => this.currentProps.onNewTilesLoaded(track.uid)));
+                        track.server,
+                        track.tilesetUid,
+                        handleTilesetInfoReceived,
+                        track.options,
+                        () => this.currentProps.onNewTilesLoaded(track.uid),
+                        () => this.currentProps.onValueScaleChanged(track.uid)
+                    )
+                );
             case 'horizontal-1d-tiles':
                 return new IdHorizontal1DTiledPixiTrack(
-                        this.pStage,
-                        track.server,
-                        track.tilesetUid,
-                        handleTilesetInfoReceived,
-                        track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid)
-                    );
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
             case 'vertical-1d-tiles':
                 return new IdVertical1DTiledPixiTrack(
-                        this.pStage,
-                        track.server,
-                        track.tilesetUid,
-                        handleTilesetInfoReceived,
-                        track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid)
-                    );
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
             case '2d-tiles':
                 return new Id2DTiledPixiTrack(
-                        this.pStage,
-                        track.server,
-                        track.tilesetUid,
-                        handleTilesetInfoReceived,
-                        track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid)
-                    );
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
             case 'top-stacked-interval':
                 return new CNVIntervalTrack(
-                        this.pStage,
-                        track.server,
-                        track.tilesetUid,
-                        handleTilesetInfoReceived,
-                        track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid)
-                    );
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid),
+                    () => this.currentProps.onValueScaleChanged(track.uid)
+                );
             case 'left-stacked-interval':
                 return new LeftTrackModifier(
                     new CNVIntervalTrack(
@@ -830,7 +844,8 @@ export class TrackRenderer extends React.Component {
                         track.tilesetUid,
                         handleTilesetInfoReceived,
                         track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid)
+                        () => this.currentProps.onNewTilesLoaded(track.uid),
+                        () => this.currentProps.onValueScaleChanged(track.uid)
                     )
                 );
             case 'viewport-projection-center':
@@ -943,62 +958,64 @@ export class TrackRenderer extends React.Component {
                 );
             case '2d-chromosome-labels':
                 return new Chromosome2DLabels(
-                        this.pStage,
-                         track.server,
-                         track.tilesetUid,
-                         handleTilesetInfoReceived,
-                         track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid));
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid));
             case '2d-chromosome-grid':
                 return new Chromosome2DGrid(
-                         this.pStage,
-                         track.server,
-                         track.tilesetUid,
-                         handleTilesetInfoReceived,
-                         track.options,
-                         () => this.currentProps.onNewTilesLoaded(track.uid),
-                        track.chromInfoPath
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid),
+                    track.chromInfoPath
                 );
             case 'horizontal-chromosome-labels':
                 // chromInfoPath is passed in for backwards compatibility
                 // it can be used to provide custom chromosome sizes
                 return new HorizontalChromosomeLabels(
-                        this.pStage,
-                         track.server,
-                         track.tilesetUid,
-                         handleTilesetInfoReceived,
-                         track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid),
-                         track.chromInfoPath
-                        );
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid),
+                    track.chromInfoPath
+                );
             case 'vertical-chromosome-labels':
                 // chromInfoPath is passed in for backwards compatibility
                 // it can be used to provide custom chromosome sizes
                 return new LeftTrackModifier(new HorizontalChromosomeLabels(
-                            this.pStage,
-                         track.server,
-                         track.tilesetUid,
-                         handleTilesetInfoReceived,
-                         track.options,
-                        () => this.currentProps.onNewTilesLoaded(track.uid),
-                        track.chromInfoPath)
+                    this.pStage,
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid),
+                    track.chromInfoPath)
                 );
             case 'horizontal-heatmap':
                 return new HorizontalHeatmapTrack(this.pStage,
-                                                     track.server,
-                                                     track.tilesetUid,
-                                                     handleTilesetInfoReceived,
-                                                     track.options,
-                                                     () => this.currentProps.onNewTilesLoaded(track.uid)
-                                                 );
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid),
+                    () => this.currentProps.onValueScaleChanged(track.uid)
+                );
             case 'vertical-heatmap':
                 return new LeftTrackModifier(new HorizontalHeatmapTrack(this.pStage,
-                                                 track.server,
-                                                 track.tilesetUid,
-                                                 handleTilesetInfoReceived,
-                                                 track.options,
-                                                 () => this.currentProps.onNewTilesLoaded(track.uid)
-                                                ));
+                    track.server,
+                    track.tilesetUid,
+                    handleTilesetInfoReceived,
+                    track.options,
+                    () => this.currentProps.onNewTilesLoaded(track.uid),
+                    () => this.currentProps.onValueScaleChanged(track.uid)
+                ));
             case '2d-chromosome-annotations':
                 return new Chromosome2DAnnotations(this.pStage,
                     track.chromInfoPath, track.options);
@@ -1009,7 +1026,8 @@ export class TrackRenderer extends React.Component {
                     track.tilesetUid,
                     handleTilesetInfoReceived,
                     track.options,
-                    () => this.currentProps.onNewTilesLoaded(track.uid))
+                    () => this.currentProps.onNewTilesLoaded(track.uid),
+                )
             case 'horizontal-1d-value-interval':
                 return new ValueIntervalTrack(
                     this.pStage,
@@ -1017,7 +1035,8 @@ export class TrackRenderer extends React.Component {
                     track.tilesetUid,
                     handleTilesetInfoReceived,
                     track.options,
-                    () => this.currentProps.onNewTilesLoaded(track.uid))
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                )
             case 'vertical-1d-value-interval':
                 return new LeftTrackModifier(new ValueIntervalTrack(
                     this.pStage,
@@ -1025,12 +1044,17 @@ export class TrackRenderer extends React.Component {
                     track.tilesetUid,
                     handleTilesetInfoReceived,
                     track.options,
-                    () => this.currentProps.onNewTilesLoaded(track.uid)));
+                    () => this.currentProps.onNewTilesLoaded(track.uid))
+                );
             case 'osm-tiles':
-                return new OSMTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new OSMTilesTrack(this.pStage, 
+                    track.options, 
+                    () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
             case 'mapbox-tiles':
-                console.log("Here");
-                return new MapboxTilesTrack(this.pStage, track.options, () => this.currentProps.onNewTilesLoaded(track.uid));
+                return new MapboxTilesTrack(this.pStage, 
+                    track.options, () => this.currentProps.onNewTilesLoaded(track.uid)
+                );
             case 'bedlike':
                 return new BedLikeTrack(
                     this.pStage,
@@ -1039,7 +1063,7 @@ export class TrackRenderer extends React.Component {
                     handleTilesetInfoReceived,
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid)
-                )
+                );
             default:
                  console.warn('WARNING: unknown track type:', track.type);
                 return new UnknownPixiTrack(

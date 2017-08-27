@@ -1,3 +1,7 @@
+v0.8.31
+
+- Add a color limit selection to the Heatmap track in HiGlass
+
 v0.8.30
 
 - Cherry picked the BedLikeTrack from the circle branch
