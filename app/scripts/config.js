@@ -49,13 +49,19 @@ let opacityOptions = {
             '1.0': { name: '100%', value: 1.0 },
         }
 
-export const optionsInfo = {
-    valueScaling: {
-        name: "Value Scaling",
-        inlineOptions: {
+const valueScalingOptions = {
             'linear': { name: "Linear", value: 'linear' },
             'log': {name: "Log", value: 'log' }
         }
+
+export const optionsInfo = {
+    valueScaling: {
+        name: "Value Scaling",
+        inlineOptions: valueScalingOptions
+    },
+    heatmapValueScaling: {
+        name: "Value Scaling",
+        inlineOptions: valueScalingOptions
     },
     lineStrokeWidth: {
         name: "Stroke Width",
@@ -361,10 +367,12 @@ export const tracksInfo = [
             colorbarLabelsPosition: 'inside',
             colorbarPosition: 'topRight',
             trackBorderWidth: 0,
-            trackBorderColor: 'black'
+            trackBorderColor: 'black',
+            heatmapValueScaling: 'log'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'dataTransform',
-        'colorbarPosition', 'colorbarLabelsPosition', "trackBorderWidth", "trackBorderColor"],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 
+            'colorRange', 'maxZoom', 'dataTransform', 'colorbarPosition', 'colorbarLabelsPosition',
+            "trackBorderWidth", "trackBorderColor", 'heatmapValueScaling'],
         //exportable: true
     },
     {
@@ -384,8 +392,9 @@ export const tracksInfo = [
             trackBorderWidth: 0,
             trackBorderColor: 'black'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped',
-                            'colorbarPosition', 'colorbarLabelsPosition', "trackBorderWidth", "trackBorderColor"],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
+            'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped',
+            'colorbarPosition', 'colorbarLabelsPosition', "trackBorderWidth", "trackBorderColor"],
     },
     {
         type: 'vertical-heatmap',
@@ -831,6 +840,22 @@ export const tracksInfo = [
         availableOptions: ['mapboxStyle'],
         defaultOptions: {
             mapboxStyle: 'mapbox.streets'
+        }
+    },
+         {
+        type: 'bedlike',
+        datatype: ['bedlike'],
+        local: false,
+        minHeight: 55 ,
+        orientation: '1d-horizontal',
+        name: 'BED-like track',
+        thumbnail: null,
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', "trackBorderWidth", "trackBorderColor"],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'hidden',
+            trackBorderWidth: 0,
+            trackBorderColor: 'black'
         }
     }
 ]

@@ -149,7 +149,6 @@ export class TiledPlot extends React.Component {
         let width = this.element.clientWidth;
 
             if (width > 0 && height > 0) {
-
                 this.setState({
                     sizeMeasured: true,
                     width: width,
@@ -637,7 +636,6 @@ export class TiledPlot extends React.Component {
         });
     }
 
-
     render() {
         // left, top, right, and bottom have fixed heights / widths
         // the center will vary to accomodate their dimensions
@@ -797,7 +795,9 @@ export class TiledPlot extends React.Component {
                     marginTop={this.props.verticalMargin}
                     onNewTilesLoaded={this.props.onNewTilesLoaded}
                     onScalesChanged={this.handleScalesChanged.bind(this)}
+                    onValueScaleChanged={this.props.onValueScaleChanged}
                     onTilesetInfoReceived={this.handleTilesetInfoReceived.bind(this)}
+                    onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
                     pixiStage={this.props.pixiStage}
                     positionedTracks={positionedTracks}
                     ref={c => this.trackRenderer = c}

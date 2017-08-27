@@ -6,13 +6,13 @@ import {colorDomainToRgbaArray} from './utils.js';
 import {TiledPixiTrack} from './TiledPixiTrack.js';
 
 export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
          * @param uid: The data set to get the tiles from the server
          */
-        super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+        super(scene, server, uid, handleTilesetInfoReceived, options, animate, onValueScaleChanged);
 
         this.pMain = this.pMobile;
 

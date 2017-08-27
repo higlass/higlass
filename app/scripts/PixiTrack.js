@@ -124,6 +124,7 @@ export class PixiTrack extends Track {
     drawLabel() {
         let graphics = this.pLabel;
 
+        //console.trace('drawLabel');
         if (!this.options || !this.options.labelPosition) {
             // don't display the track label
             this.labelText.opacity = 0;
