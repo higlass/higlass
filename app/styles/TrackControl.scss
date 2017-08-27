@@ -1,13 +1,14 @@
 @import './transitions';
 
-.track-control {
+.track-control,
+.track-control-vertical {
   position: absolute;
   z-index: -1;
+  display: flex;
   background: rgba(255, 255, 255, 0.7);
   right: 0.125rem;
   top: 0.125rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding: 0.5rem;
   border-radius: 0.25rem;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.075),
               0 0 3px 0 rgba(0, 0, 0, 0.15);
@@ -17,9 +18,17 @@
               box-shadow $fast $ease;
 }
 
-.track-control-active {
-  composes: track-control;
+.track-control-vertical {
+  flex-direction: column-reverse;
+}
 
+.track-control-left {
+  left: 0.125rem;
+  right: auto;
+}
+
+.track-control-active,
+.track-control-vertical-active {
   opacity: 1;
   z-index: 1;
 
@@ -28,4 +37,8 @@
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1),
                 0 0 3px 0 rgba(0, 0, 0, 0.2);
   }
+}
+
+.track-control-active {
+  composes: track-control;
 }

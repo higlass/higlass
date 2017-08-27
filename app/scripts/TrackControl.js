@@ -7,31 +7,37 @@ import { SortableHandle } from 'react-sortable-hoc';
 import '../styles/TrackControl.scss';
 
 export class TrackControl extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.Handle = SortableHandle(() => (
+      <svg
+        className="no-zoom"
+        height="10px"
+        onClick={() => {}}
+        style={this.props.imgStyleMove}
+        width="10px"
+      >
+        <use xlinkHref="#move"></use>
+      </svg>
+    ));
+  }
   render() {
-    let Handle = null;
+    const Handle = this.Handle;
 
-    if (this.props.isMoveable) {
-      Handle = SortableHandle(() => (
-        <svg
-          className="no-zoom"
-          height="10px"
-          onClick={() => {}}
-          style={this.props.imgStyleMove}
-          width="10px"
-        >
-          <use xlinkHref="#move"></use>
-        </svg>
-      ));
-    } else {
-      Handle = SortableHandle(() => <div />)
-    }
-
-    const className = this.props.isVisible ?
+    let className = this.props.isVisible ?
       'track-control-active' : 'track-control';
+
+    className += this.props.isAlignLeft ?
+      ' track-control-left' : '';
+
+    className += this.props.isVertical ?
+      ' track-control-vertical' : '';
 
     return (
       <div styleName={className}>
-        <Handle />
+
+        {this.props.isMoveable && <Handle />}
 
         <svg
           className="no-zoom"
@@ -83,7 +89,9 @@ TrackControl.propTypes = {
   imgStyleClose: PropTypes.object,
   imgStyleMove: PropTypes.object,
   imgStyleSettings: PropTypes.object,
+  isAlignLeft: PropTypes.bool,
   isMoveable: PropTypes.bool,
+  isVertical: PropTypes.bool,
   isVisible: PropTypes.bool,
   onConfigTrackMenuOpened: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
