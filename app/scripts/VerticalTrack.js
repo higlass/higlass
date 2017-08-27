@@ -23,24 +23,25 @@ export class VerticalTrack extends MoveableTrack {
   getSettingsImgStyle() { return STYLES; }
 
   getControls() {
-    const Handle = SortableHandle(() =>
-      {this.moveable ? (
-          <svg
-            className="no-zoom"
-            height="10px"
-            onClick={() => {}}
-            style={this.getMoveImgStyle()}
-            width="10px"
-          >
-            <use xlinkHref="#move"></use>
-          </svg>
-        ) : (
-          <div />
-        )
-      }
-    );
+    let Handle = null;
 
-    let controls = (
+    if (this.moveable) {
+      Handle = SortableHandle(() => (
+        <svg
+          className="no-zoom"
+          height="10px"
+          onClick={() => {}}
+          style={this.getMoveImgStyle()}
+          width="10px"
+        >
+          <use xlinkHref="#move"></use>
+        </svg>
+      ));
+    } else {
+      Handle = SortableHandle(() => <div />)
+    }
+
+    return (
       <div
         style={{
           position: 'absolute',
@@ -101,8 +102,6 @@ export class VerticalTrack extends MoveableTrack {
         <Handle />
       </div>
     );
-
-    return controls;
   }
 }
 
