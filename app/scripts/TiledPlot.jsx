@@ -854,6 +854,7 @@ export class TiledPlot extends React.Component {
           resizeHandles={new Set(['left'])}
           scale={this.yScale}
           tracks={this.props.tracks['right']}
+          tracksControlAlignLeft={true}
         />
        </div>
     );
