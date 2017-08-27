@@ -79,6 +79,7 @@ ListWrapper.propTypes = {
   height: PropTypes.number,
   helperClass: PropTypes.string,
   itemClass: PropTypes.string,
+  itemControlAlignLeft: PropTypes.bool,
   itemReactClass: PropTypes.func,
   items: PropTypes.array,
   onAddSeries: PropTypes.func,

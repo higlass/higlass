@@ -6,6 +6,7 @@ export const SortableList = SortableContainer(
     className,
     items,
     itemClass,
+    itemControlAlignLeft,
     sortingIndex,
     useDragHandle,
     sortableHandlers,
@@ -26,6 +27,7 @@ export const SortableList = SortableContainer(
       {
         key: `sci-${item.uid}`,
         className: itemClass,
+        controlAlignLeft: itemControlAlignLeft,
         sortingIndex,
         index,
         uid: item.uid,
