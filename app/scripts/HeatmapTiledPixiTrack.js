@@ -14,6 +14,7 @@ const COLORBAR_WIDTH = 10;
 const COLORBAR_LABELS_WIDTH = 40;
 const COLORBAR_MARGIN = 10;
 const BRUSH_WIDTH = COLORBAR_MARGIN;
+const BRUSH_HEIGHT = 4;
 const BRUSH_COLORBAR_GAP = 1;
 const BRUSH_MARGIN = 3; 
 const AXIS_TICK_LENGTH = 5;
@@ -212,11 +213,12 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         //console.log('equal:', strOptions == this.prevOptions);
         //console.log('strOptions:', strOptions, newOptions)
 
+        this.gColorscaleBrush.selectAll('.handle--custom').attr('y',
+            (d,i) => { return d.type == 'n' ? event.selection[0] : event.selection[1] - BRUSH_HEIGHT / 2 });
 
         if (strOptions == this.prevOptions)
             return;
 
-        //console.log('brush move', strOptions, this.prevOptions);
 
         this.prevOptions = strOptions;
 
@@ -228,6 +230,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         this.onTrackOptionsChanged(newOptions);
         this.onValueScaleChanged();
+
 
         //console.log('newOptions:', JSON.stringify(newOptions));
         //console.log('prevOptions:', this.prevOptions);
@@ -262,16 +265,42 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.colorbarHeight = colorbarAreaHeight - 2 * COLORBAR_MARGIN;
         let colorbarAreaWidth = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN + BRUSH_COLORBAR_GAP + BRUSH_WIDTH + BRUSH_MARGIN ;
 
+        let BRUSH_MARGIN=4
         let axisValueScale = this.valueScale.copy().range([this.colorbarHeight, 0]);
 
         this.scaleBrush = brushY()
-            .extent([[0, 0], [BRUSH_WIDTH, this.colorbarHeight]])
+            .extent([[BRUSH_MARGIN, 0], [BRUSH_WIDTH, this.colorbarHeight]])
             .on("brush", this.brushMoved.bind(this))
-            .on("end", this.brushEnd.bind(this));
+            .on("end", this.brushEnd.bind(this))
+            //.handleSize(BRUSH_WIDTH-2*BRUSH_MARGIN);
+        ;
         //
-
+        //
         this.gColorscaleBrush.on('.brush', null);
         this.gColorscaleBrush.call(this.scaleBrush);
+
+        this.northHandle = this.gColorscaleBrush.selectAll('.handle--custom')
+        .data([{'type': 'n'}, {'type': 's'}])
+        .enter()
+        .append('rect')
+        .classed('handle--custom', true)
+        .attr('cursor', 'ns-resize')
+        .attr('width', BRUSH_WIDTH)
+        .attr('height', BRUSH_HEIGHT)
+        .style('fill', '#666')
+        .style('stroke', 'white');
+
+        /*
+        this.gColorscaleBrush.selectAll('.handle--n')
+        .style('stroke', 'black')
+        .style('fill', '#444')
+        ;
+
+        this.gColorscaleBrush.selectAll('.handle--s')
+        .style('stroke', 'black')
+        ;
+        */
+
         /*
         this.gColorscaleBrush.select('rect')
         .style('stroke', 'grey');
