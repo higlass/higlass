@@ -146,8 +146,9 @@ export class TiledPixiTrack extends PixiTrack {
     }
 
     refreshTiles() {
-        if (!this.tilesetInfo)
+        if (!this.tilesetInfo) {
             return;
+        }
 
         this.calculateVisibleTiles();
 
@@ -407,6 +408,7 @@ export class TiledPixiTrack extends PixiTrack {
     }
 
     fetchNewTiles(toFetch) {
+        //console.log('fetch new tiles', toFetch);
         if (toFetch.length > 0) {
             let toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
             //console.log('fetching:', toFetchList.join(' '));

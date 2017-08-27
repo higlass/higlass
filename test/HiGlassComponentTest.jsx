@@ -23,6 +23,7 @@ import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
 import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
+import {TiledPlot} from '../app/scripts/TiledPlot.jsx';
 import {HeatmapOptions} from '../app/scripts/HeatmapOptions.jsx';
 import {
     paperFigure1,
@@ -75,6 +76,71 @@ function getTiledPlot(hgc, viewUid) {
     return hgc.instance().tiledPlots[viewUid];
 }
 
+function isWaitingOnTiles(hgc) {
+    /**
+     * Check if a HiGlassComponent is still waiting on tiles from a remote
+     * server.
+     *
+     * Arguments
+     * ---------
+     *  hgc: enzyme wrapper for a HiGlassComponent
+     *
+     * Returns
+     * -------
+     *  True if any of the tracks are waiting for tiles, false otherwise.
+     */
+
+    for (let track of hgc.instance().iterateOverTracks()) {
+        let trackObj = getTrackObject(hgc, track.viewId, track.trackId);
+
+        //console.log('trackObj', trackObj);
+        if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
+            //console.log('not done ti:', trackObj);
+            return true;
+        }
+
+        //if (trackObj.fetching) 
+        //   console.log('trackObj.fetching.size:', trackObj.fetching);
+
+        if (trackObj.fetching && trackObj.fetching.size) {
+            //console.log('not done to.fetching:', trackObj, trackObj.fetching);
+            return true;
+        }
+    }
+
+    return false;
+
+}
+
+function waitForTilesLoaded(hgc, tilesLoadedCallback) {
+    /**
+     * Wait until all of the tiles in the HiGlassComponent are loaded
+     * until calling the callback
+     *
+     * Arguments
+     * ---------
+     *  hgc: Enzyme wrapper for a HiGlassComponent
+     *      The componentthat we're waiting on
+     *  tilesLoadedCallback: function
+     *      The callback to call whenever all of the tiles
+     *      have been loaded.
+     * Returns
+     * -------
+     *  Nothing
+     */
+    const TILE_LOADING_CHECK_INTERVAL = 100;
+    //console.log('here');
+
+    if (isWaitingOnTiles(hgc)) {
+        setTimeout(() => { 
+            waitForTilesLoaded(hgc, tilesLoadedCallback);
+        }, TILE_LOADING_CHECK_INTERVAL);
+    } else {
+        //console.log('finished');
+        tilesLoadedCallback();
+    }
+}
+
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
@@ -100,9 +166,24 @@ describe("Simple HiGlassComponent", () => {
                         />, 
                 {attachTo: div});
 
+            /*
+            for (let viewId of hgc.instance().iterateOverViews()) {
+                let tp = getTiledPlot(hgc, viewId);
+                //let tpWrapper = new ReactWrapper(getTiledPlot(hgc, viewId), true);
+                console.log('measured size');
+                tp.measureSize();
+                hgc.update();
+                tp.trackRenderer.syncTrackObjects(tp.positionedTracks());
+                console.log('positionedTracks', tp.positionedTracks());
+                tp.trackRenderer.applyZoomTransform(false);
+                //tpWrapper.setState(tp.state);
+            }
+            */
 
+            //hgc.update();
 
-            setTimeout(done, pageLoadTime);
+            //console.log('starting wait');
+            waitForTilesLoaded(hgc, done);
         });
 
         it ("Moves the brush on one of the views", (done) => {
@@ -117,6 +198,7 @@ describe("Simple HiGlassComponent", () => {
 
             let domain2 = heatmapTrack.limitedValueScale.domain();
 
+            // we don't expect the other view to change
             expect(domain1[0]).to.not.eql(domain2[0]);
 
             console.log('domain1:', domain1);
@@ -124,8 +206,6 @@ describe("Simple HiGlassComponent", () => {
 
             done();
         });
-
-        return;
 
         it ("locks the scales and recenters the page", (done) => {
             hgc.instance().handleValueScaleLocked('aa', 'heatmap1', 'view2', 'heatmap2');
@@ -135,26 +215,27 @@ describe("Simple HiGlassComponent", () => {
             // zoom out a little bit
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 28874.21283197403);
             
-            setTimeout(() => done(), tileLoadTime);
+            //setTimeout(() => done(), tileLoadTime);
+            waitForTilesLoaded(hgc, done);
         });
 
         it ("Moves the brush on one view and makes sure it moves on the other", (done) => {
             let heatmapTrack = getTrackObject(hgc, 'aa', 'heatmap1'); 
 
-            console.log('lvs1', heatmapTrack.limitedValueScale.domain());
+            //console.log('lvs1', heatmapTrack.limitedValueScale.domain());
 
             // move the brush down to limit the amount of visible data
             heatmapTrack.gColorscaleBrush.call(heatmapTrack.scaleBrush.move,
                 [0,100]);
 
-            console.log('lvs2', heatmapTrack.limitedValueScale.domain());
+            //console.log('lvs2', heatmapTrack.limitedValueScale.domain());
 
             let heatmap2Track = getTrackObject(hgc, 'view2', 'heatmap2');
 
             expect(heatmapTrack.options.scaleStartPercent).to.eql(heatmap2Track.options.scaleStartPercent);
             expect(heatmapTrack.options.scaleEndPercent).to.eql(heatmap2Track.options.scaleEndPercent);
 
-            setTimeout(done, tileLoadTime);
+            done();
         });
 
     });
@@ -181,7 +262,7 @@ describe("Simple HiGlassComponent", () => {
                         />, 
                 {attachTo: div});
 
-            setTimeout(done, pageLoadTime);
+            waitForTilesLoaded(hgc, done);
         });
 
         it ("locks the scales and recenters the page", (done) => {
@@ -192,29 +273,30 @@ describe("Simple HiGlassComponent", () => {
             // zoom out a little bit
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 28874.21283197403);
             
-            setTimeout(() => done(), tileLoadTime);
+            //setTimeout(() => done(), tileLoadTime);
+            waitForTilesLoaded(hgc,done);
         });
 
         it ("Moves the brush on one view and makes sure it moves on the other", (done) => {
             let heatmapTrack = getTrackObject(hgc, 'aa', 'heatmap1'); 
 
-            console.log('lvs1', heatmapTrack.limitedValueScale.domain());
+            //console.log('lvs1', heatmapTrack.limitedValueScale.domain());
 
             // move the brush down to limit the amount of visible data
             heatmapTrack.gColorscaleBrush.call(heatmapTrack.scaleBrush.move,
                 [0,100]);
 
-            console.log('lvs2', heatmapTrack.limitedValueScale.domain());
+            //console.log('lvs2', heatmapTrack.limitedValueScale.domain());
 
             let heatmap2Track = getTrackObject(hgc, 'view2', 'heatmap2');
 
             expect(heatmapTrack.options.scaleStartPercent).to.eql(heatmap2Track.options.scaleStartPercent);
             expect(heatmapTrack.options.scaleEndPercent).to.eql(heatmap2Track.options.scaleEndPercent);
 
-            setTimeout(done, tileLoadTime);
+            //setTimeout(done, tileLoadTime);
+            waitForTilesLoaded(hgc, done);
         });
 
-        return;
 
 
 
@@ -226,7 +308,7 @@ describe("Simple HiGlassComponent", () => {
 
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(179943234.8692136, 180201760.5768778, 2887.21283197403);
 
-            done();
+            waitForTilesLoaded(hgc, done);
         });
 
 
@@ -243,7 +325,8 @@ describe("Simple HiGlassComponent", () => {
 
             //unlock the scales and zoom out
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
-            setTimeout(() => done(), tileLoadTime);
+
+            waitForTilesLoaded(hgc, done);
         });
 
         it ('ensure that new domains are unequal and locks the combined tracks', (done) => {
@@ -255,7 +338,7 @@ describe("Simple HiGlassComponent", () => {
 
             expect(domain1[1]).to.not.eql(domain2[1]);
 
-            done();
+            waitForTilesLoaded(hgc, done);
         });
 
 
@@ -265,7 +348,8 @@ describe("Simple HiGlassComponent", () => {
 
             // lock the scales of two combined views
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(2268041199.8615317, 2267986087.2543955, 15.803061962127686);
-            setTimeout(() => done(), tileLoadTime);
+
+            waitForTilesLoaded(hgc, done);
         });
 
         it ('ensures that the new track domains are equal and unlock the combined tracks', (done) => {
@@ -277,7 +361,8 @@ describe("Simple HiGlassComponent", () => {
 
             expect(domain1[1]).to.be.above(1000);
             expect(domain1[1]).to.eql(domain2[1]);
-            done();
+
+            waitForTilesLoaded(hgc, done);
         });
 
         it ('ensures that the lines have the same valueScale', (done) => {
@@ -291,13 +376,13 @@ describe("Simple HiGlassComponent", () => {
             // added to log-scaled tracks
             expect(domain1[1]).to.eql(domain2[1] + track1.medianVisibleValue);
 
-            done();
+            waitForTilesLoaded(hgc, done);
         });
 
         it ("zooms out", (done) => {
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(2268233532.6257076, 2268099618.396191, 1710.4168190956116);
-            setTimeout(() => done(), tileLoadTime);
-
+            
+            waitForTilesLoaded(hgc, done);
         });
 
         it ("ensures that the domain changed", (done) => {
@@ -310,7 +395,7 @@ describe("Simple HiGlassComponent", () => {
             expect(domain1[1]).to.be.below(1);
             expect(domain1[1]).to.eql(domain2[1]);
 
-            done();
+            waitForTilesLoaded(hgc, done);
         });
 
         it ('Unlocks the scales and moves to a different location', (done) => {
@@ -318,7 +403,8 @@ describe("Simple HiGlassComponent", () => {
 
             //unlock the scales and zoom out
             hgc.instance().tiledPlots['aa'].trackRenderer.setCenter(1799432348.8692136, 1802017603.5768778, 2887.21283197403);
-            setTimeout(() => done(), tileLoadTime);
+
+            waitForTilesLoaded(hgc, done);
         });
 
         it ('ensures that the new track domains are not equal', (done) => {
@@ -338,6 +424,7 @@ describe("Simple HiGlassComponent", () => {
 
             done();
         });
+
         it ('Lock view scales ', (done) => {
             hgc.instance().handleZoomLockChosen('aa', 'view2');
             hgc.instance().handleLocationLockChosen('aa', 'view2');
@@ -365,7 +452,6 @@ describe("Simple HiGlassComponent", () => {
                 .trackRenderer.syncTrackObjects(
                         hgc.instance().tiledPlots['view2'].positionedTracks());
 
-            //setTimeout(() => done(), 200);
             done();
         });
 
@@ -385,7 +471,8 @@ describe("Simple HiGlassComponent", () => {
             expect(track.pMain.position.x).to.be.above(404);
             expect(track.pMain.position.x).to.be.below(406);
 
-            setTimeout(() => done(), tileLoadTime);
+            //setTimeout(() => done(), tileLoadTime);
+            waitForTilesLoaded(hgc, done);
         });
 
         it ('Locks the scales again (after waiting for the previous tiles to load)', (done) => {

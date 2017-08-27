@@ -1052,7 +1052,6 @@ export class TrackRenderer extends React.Component {
                     () => this.currentProps.onNewTilesLoaded(track.uid)
                 );
             case 'mapbox-tiles':
-                console.log("Here");
                 return new MapboxTilesTrack(this.pStage, 
                     track.options, () => this.currentProps.onNewTilesLoaded(track.uid)
                 );

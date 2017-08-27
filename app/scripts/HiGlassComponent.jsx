@@ -289,6 +289,43 @@ export class HiGlassComponent extends React.Component {
     let lockGroup = this.valueScaleLocks[this.combineViewAndTrackUid(viewUid, trackUid)];
   }
 
+    iterateOverViews() {
+        /*
+         * Iteratate over all of the views in this component
+         */
+        let viewIds = [];
+        
+        for (let viewId in this.state.views) {
+            viewIds.push(viewId);
+        }
+
+        return viewIds;
+    }
+
+    iterateOverTracks() {
+        /**
+         * Iterate over all the tracks in this component.
+         */
+        let allTracks = [];
+        for (let viewId in this.state.views) {
+            let tracks = this.state.views[viewId].tracks;
+
+            for (let trackType in tracks) {
+                for (let track of tracks[trackType]) {
+                    if (track.type == 'combined' && track.contents) {
+                        for (let subTrack of track.contents) {
+                            allTracks.push({ viewId: viewId, trackId: subTrack.uid});
+                        }
+                    } else {
+                        allTracks.push({ viewId: viewId, trackId: track.uid });
+                    }
+                }
+            }
+        }
+
+        return allTracks;
+    }
+
   syncValueScales(viewUid, trackUid) {
       /**
        * Syncing the values of locked scales
@@ -305,7 +342,6 @@ export class HiGlassComponent extends React.Component {
        *    Nothing
        */
       let uid = this.combineViewAndTrackUid(viewUid, trackUid);
-      //console.log('this.state.views[viewUid]', this.state.views[viewUid]);
       let sourceTrack = getTrackByUid(this.state.views[viewUid].tracks, trackUid);
 
       if (this.valueScaleLocks[uid]) {
@@ -313,8 +349,6 @@ export class HiGlassComponent extends React.Component {
 
           ///let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
           let lockedTracks = lockGroupValues.map(x => {
-              console.log('this.tiledPlots:', this.tiledPlots);
-              console.log('sdfsd:', this.tiledPlots[x.view]);
                 return this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track)
           })
 

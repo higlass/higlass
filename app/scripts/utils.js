@@ -146,6 +146,16 @@ export function getTrackPositionByUid(allTracks, uid) {
         return thisTrack[0].position;
     }
 
+export function listAllTracks(tracks) {
+    let allTracks = []
+
+    for (let trackType in tracks) {
+        allTracks = allTracks.concat[trackType];
+    }
+
+    return allTracks;
+}
+
 export function getTrackByUid(tracks, uid) {
         /**
          * Return the track object for the track corresponding to this uid

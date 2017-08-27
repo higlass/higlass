@@ -149,7 +149,6 @@ export class TiledPlot extends React.Component {
         let width = this.element.clientWidth;
 
             if (width > 0 && height > 0) {
-
                 this.setState({
                     sizeMeasured: true,
                     width: width,
@@ -636,7 +635,6 @@ export class TiledPlot extends React.Component {
             zoomable: props.zoomable
         });
     }
-
 
     render() {
         // left, top, right, and bottom have fixed heights / widths
