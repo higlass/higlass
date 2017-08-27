@@ -70,13 +70,26 @@ export class ListWrapper extends React.Component {
 }
 
 ListWrapper.propTypes = {
+  axis: PropTypes.string,
   className: PropTypes.string,
   component: PropTypes.func,
+  editable: PropTypes.bool,
+  handleConfigTrack: PropTypes.func,
+  handleResizeTrack: PropTypes.func,
   height: PropTypes.number,
+  helperClass: PropTypes.string,
   itemClass: PropTypes.string,
+  itemReactClass: PropTypes.func,
   items: PropTypes.array,
+  onAddSeries: PropTypes.func,
+  onCloseTrack: PropTypes.func,
+  onCloseTrackMenuOpened: PropTypes.func,
+  onConfigTrackMenuOpened: PropTypes.func,
   onSortEnd: PropTypes.func,
   onSortStart: PropTypes.func,
+  referenceAncestor: PropTypes.string,
+  resizeHandles: PropTypes.object,
+  useDragHandle: PropTypes.bool,
   width: PropTypes.number
 }
 
