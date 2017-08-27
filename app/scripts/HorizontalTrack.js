@@ -1,30 +1,34 @@
-import MoveableTrack from './MoveableTrack';
+import React from 'react';
 
-const STYLE = {
+import MoveableTrack from './MoveableTrack';
+import TrackControl from './TrackControl';
+
+const STYLES = {
   opacity: .7,
   pointerEvents: 'all',
   position: 'relative'
 };
 
-const EXTENDED_STYLE = Object.assign(STYLE, {
+const EXTENDED_STYLE = Object.assign({}, STYLES, {
   marginRight: '5px'
-})
+});
 
 export class HorizontalTrack extends MoveableTrack {
-  getCloseImgStyle() {
-    return STYLE
-  }
-
-  getMoveImgStyle() {
-    return EXTENDED_STYLE
-  }
-
-  getAddImgStyle() {
-    return EXTENDED_STYLE
-  }
-
-  getSettingsImgStyle() {
-    return EXTENDED_STYLE
+  getControls(isVisible) {
+    return (
+      <TrackControl
+        imgStyleAdd={EXTENDED_STYLE}
+        imgStyleClose={STYLES}
+        imgStyleMove={EXTENDED_STYLE}
+        imgStyleSettings={EXTENDED_STYLE}
+        isMoveable={this.moveable}
+        isVisible={isVisible}
+        onAddSeries={this.props.onAddSeries}
+        onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
+        onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
+        uid={this.props.uid}
+      />
+    );
   }
 }
 
