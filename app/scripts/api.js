@@ -64,7 +64,7 @@ export const api = function api(context) {
           break;
 
         case 'rangeSelection':
-          self.offViewChange(listenerId);
+          self.offRangeSelection(listenerId);
           break;
 
         case 'view':
@@ -84,7 +84,7 @@ export const api = function api(context) {
           break;
 
         case 'rangeSelection':
-          return self.onViewChange(callback);
+          return self.onRangeSelection(callback);
 
         case 'view':
           return self.onViewChange(callback);
