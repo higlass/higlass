@@ -185,14 +185,15 @@ export class VerticalTiledPlot extends React.Component {
         }
         <ListWrapper
           axis="x"
-          className="list stylizedList horizontalList"
+          className="list stylizedList verticalList"
           component={SortableList}
           editable={this.props.editable}
           handleConfigTrack={this.props.handleConfigTrack}
           handleResizeTrack={this.props.handleResizeTrack}
           height={this.props.height}
           helperClass="stylizedHelper"
-          itemClass="stylizedItem horizontalItem"
+          itemClass="stylizedItem verticalItem"
+          itemControlAlignLeft={this.props.tracksControlAlignLeft}
           itemReactClass={VerticalItem}
           items={this.props.tracks.map(d => ({
             uid: d.uid || slugid.nice(),
@@ -234,7 +235,8 @@ VerticalTiledPlot.propTypes = {
   referenceAncestor: PropTypes.func,
   resizeHandles: PropTypes.object,
   scale: PropTypes.func,
-  tracks: PropTypes.array
+  tracks: PropTypes.array,
+  tracksControlAlignLeft: PropTypes.bool
 }
 
 export default VerticalTiledPlot;

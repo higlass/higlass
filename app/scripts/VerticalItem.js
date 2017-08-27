@@ -6,6 +6,7 @@ import VerticalTrack from './VerticalTrack';
 export const VerticalItem = SortableElement(props => (
   <VerticalTrack
     className={props.className}
+    controlAlignLeft={props.controlAlignLeft}
     editable={props.editable}
     handleConfigTrack={props.handleConfigTrack}
     handleResizeTrack={props.handleResizeTrack}
