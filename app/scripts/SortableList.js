@@ -24,23 +24,23 @@ export const SortableList = SortableContainer(
     const itemElements = items.map((item, index) => React.createElement(
       itemReactClass,
       {
-        key: "sci-" + item.uid,
+        key: `sci-${item.uid}`,
         className: itemClass,
-        sortingIndex: sortingIndex,
-        index: index,
+        sortingIndex,
+        index,
         uid: item.uid,
         height: item.height,
         width: item.width,
-        item: item,
-        useDragHandle: useDragHandle,
-        onCloseTrack: onCloseTrack,
-        onCloseTrackMenuOpened: onCloseTrackMenuOpened,
-        onConfigTrackMenuOpened: onConfigTrackMenuOpened,
-        onAddSeries: onAddSeries,
-        handleConfigTrack: handleConfigTrack,
-        editable: editable,
-        handleResizeTrack: handleResizeTrack,
-        resizeHandles: resizeHandles
+        item,
+        useDragHandle,
+        onCloseTrack,
+        onCloseTrackMenuOpened,
+        onConfigTrackMenuOpened,
+        onAddSeries,
+        handleConfigTrack,
+        editable,
+        handleResizeTrack,
+        resizeHandles
       })
     );
 

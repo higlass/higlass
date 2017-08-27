@@ -13,16 +13,6 @@ export class MoveableTrack extends TrackArea {
   }
 
   render() {
-    let controls = null;
-
-    if (this.props.editable && this.state.controlsVisible) {
-      controls = (
-        <div>
-          {this.getControls()}
-        </div>
-      )
-    }
-
     return (
       <div
         className={this.props.className}
@@ -52,7 +42,11 @@ export class MoveableTrack extends TrackArea {
           uid={this.props.uid}
           width={this.props.width}
         />
-        {controls}
+        {this.props.editable && this.state.controlsVisible &&
+          <div>
+            {this.getControls()}
+          </div>
+        }
       </div>
     );
   }
