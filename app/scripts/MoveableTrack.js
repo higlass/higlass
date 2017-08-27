@@ -42,9 +42,9 @@ export class MoveableTrack extends TrackArea {
           uid={this.props.uid}
           width={this.props.width}
         />
-        {this.props.editable && this.state.controlsVisible &&
+        {this.props.editable &&
           <div>
-            {this.getControls()}
+            {this.getControls(this.state.controlsVisible)}
           </div>
         }
       </div>
