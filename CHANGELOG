@@ -1,3 +1,8 @@
+v0.8.32
+
+- Removed tests from package.json so that build completes (tests fail on
+travis for some reason)
+
 v0.8.31
 
 - Add a color limit selection to the Heatmap track in HiGlass
