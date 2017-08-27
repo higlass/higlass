@@ -9,11 +9,11 @@ export class TrackArea extends React.Component {
 
     this.state = {
       controlsVisible: false
-    }
+    };
   }
 
   shouldComponentUpdate() {
-    return ! this.resizing;
+    return !this.resizing;
   }
 
   handleMouseEnter() {
@@ -54,7 +54,7 @@ export class TrackArea extends React.Component {
       Handle = SortableHandle(() => <div />)
     }
 
-    let controls = (
+    return (
       <div
         style={{
           position: 'absolute',
@@ -112,8 +112,6 @@ export class TrackArea extends React.Component {
         </svg>
       </div>
     );
-
-    return controls;
   }
 }
 
