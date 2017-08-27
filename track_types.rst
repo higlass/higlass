@@ -15,7 +15,7 @@ The bedlike track is intended to display generic interval data. It is used to
 render tracks with a `bedlike` datatype. This usually comes from the `beddb`
 filetype.
 
-Gene-annotations
+Gene Annotations
 ================
 
 .. image:: img/gene-annotations-track-thumb.png
@@ -89,3 +89,36 @@ datatype: ``vector``
 
 Point tracks display 1D vector data. Unlike :ref:`line tracks <line-track>`, they are well suited to
 data with NaNs because they do not require two points to draw something.
+
+Chromosome Labels
+=================
+
+.. image:: img/chromosome-labels-thumb.png
+    :align: right
+
+track-type: ``horizontal-chromosome-labes``
+datatype: ``chromsizes``
+filetypes: ``chromsizes-tsv``
+
+The chromosome labels track shows the names of the chromosomes. Its data is
+sourced from a standard chromSizes file containing chromosome names and
+chromosome files. The file can be ingested by the higlass server like any other
+tileset. As long as the `datatype` is set to `chromsizes` this track should be
+selectable from the "Add Track Dialog".
+
+Chromosome Grid
+===============
+
+.. image:: img/chromosome-grid-thumb.png
+    :align: right
+
+track-type: ``2d-chromosome-grid``
+datatype: ``chromsizes``
+filetypes: ``chromsizes-tsv``
+
+A chromsome grid displays the boundaries of chromosomes on the 2D area. Its
+data is sourced from a standard chromSizes file containing chromosome names and
+chromosome files. The file can be ingested by the higlass server like any other
+tileset. As long as the `datatype` is set to `chromsizes` this track should be
+selectable from the "Add Track Dialog".
+
