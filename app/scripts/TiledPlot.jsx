@@ -694,9 +694,11 @@ export class TiledPlot extends React.Component {
     const scale = axis === 'x' ? this.xScale : this.yScale;
 
     return (range) => {
+      const newRangeSelection = this.state.is1dRangeSelection ?
+        [null, null] : this.state.rangeSelection.slice();
+
       const accessor = !this.state.is1dRangeSelection && axis === 'y' ? 1 : 0;
 
-      const newRangeSelection = this.state.rangeSelection.slice();
       newRangeSelection[accessor] = this.rangeToGenomeLoci(range, scale);
 
       this.setState({
