@@ -1,7 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
-import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
+import ContextMenuContainer from './ContextMenuContainer';
+import ContextMenuItem from './ContextMenuItem';
 
 export class NestedContextMenu extends ContextMenuContainer {
     constructor(props) {

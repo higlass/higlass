@@ -1,7 +1,7 @@
 import React from 'react';
 import {PropTypes} from 'prop-types';
 import {PopupMenu} from './PopupMenu.jsx';
-import {ContextMenuContainer} from './ContextMenuContainer.jsx';
+import ContextMenuContainer from './ContextMenuContainer';
 import {ConfigViewMenu} from './ConfigViewMenu.jsx';
 import {AddTrackPositionMenu} from './AddTrackPositionMenu.jsx';
 

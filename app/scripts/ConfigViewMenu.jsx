@@ -1,8 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
+import ContextMenuItem from './ContextMenuItem';
 
 export class ConfigViewMenu extends React.Component {
     constructor(props) {

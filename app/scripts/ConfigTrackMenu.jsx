@@ -1,6 +1,7 @@
 import React from 'react';
 
-import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
+import ContextMenuContainer from './ContextMenuContainer';
+import ContextMenuItem from './ContextMenuItem';
 import {SeriesListMenu} from './SeriesListMenu.jsx';
 import {TRACKS_INFO} from './configs';
 

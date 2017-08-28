@@ -10,7 +10,7 @@ import AddTrackModal from './AddTrackModal.jsx';
 import ConfigTrackMenu from './ConfigTrackMenu.jsx';
 import CloseTrackMenu from './CloseTrackMenu.jsx';
 import PopupMenu from './PopupMenu.jsx';
-import { ContextMenuContainer } from './ContextMenuContainer.jsx';
+import ContextMenuContainer from './ContextMenuContainer';
 import HorizontalTiledPlot from './HorizontalTiledPlot';
 import VerticalTiledPlot from './VerticalTiledPlot';
 // import {HeatmapOptions} from './HeatmapOptions.jsx';

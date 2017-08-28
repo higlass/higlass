@@ -1,9 +1,6 @@
 import '../styles/AddTrackPositionMenu.css';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
-
-import {ContextMenuContainer, ContextMenuItem} from './ContextMenuContainer.jsx';
 
 export class AddTrackPositionMenu extends React.Component {
     constructor(props) {

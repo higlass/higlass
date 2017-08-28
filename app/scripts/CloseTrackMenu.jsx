@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ContextMenuItem} from './ContextMenuContainer.jsx';
+import ContextMenuItem from './ContextMenuItem';
 import {TRACKS_INFO} from './configs';
 
 export class CloseTrackMenu extends React.Component {
