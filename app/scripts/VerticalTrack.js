@@ -4,24 +4,17 @@ import MoveableTrack from './MoveableTrack';
 import TrackControl from './TrackControl';
 
 const STYLES = {
-  display: 'block',
-  opacity: .7,
-  pointerEvents: 'all',
-  position: 'relative'
+  pointerEvents: 'all'
 };
-
-const EXTENDED_STYLE = Object.assign({}, STYLES, {
-  marginTop: '5px'
-});
 
 export class VerticalTrack extends MoveableTrack {
   getControls(isVisible) {
     return (
       <TrackControl
-        imgStyleAdd={EXTENDED_STYLE}
+        imgStyleAdd={STYLES}
         imgStyleClose={STYLES}
-        imgStyleMove={EXTENDED_STYLE}
-        imgStyleSettings={EXTENDED_STYLE}
+        imgStyleMove={STYLES}
+        imgStyleSettings={STYLES}
         isAlignLeft={this.props.controlAlignLeft}
         isMoveable={this.moveable}
         isVertical={true}

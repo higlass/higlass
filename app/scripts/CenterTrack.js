@@ -19,14 +19,8 @@ import styles from '../styles/CenterTrack.scss';  // eslint-disable-line no-unus
 import stylesTrack from '../styles/Track.scss';  // eslint-disable-line no-unused-vars
 
 const STYLES = {
-  opacity: .7,
-  pointerEvents: 'all',
-  position: 'relative'
+  pointerEvents: 'all'
 };
-
-const EXTENDED_STYLE = Object.assign({}, STYLES, {
-  marginRight: '5px'
-});
 
 export class CenterTrack extends React.Component {
   constructor(props) {
@@ -361,10 +355,10 @@ export class CenterTrack extends React.Component {
         }
         {this.props.editable &&
           <TrackControl
-            imgStyleAdd={EXTENDED_STYLE}
+            imgStyleAdd={STYLES}
             imgStyleClose={STYLES}
-            imgStyleMove={EXTENDED_STYLE}
-            imgStyleSettings={EXTENDED_STYLE}
+            imgStyleMove={STYLES}
+            imgStyleSettings={STYLES}
             isMoveable={false}
             isVisible={this.state.isVisible}
             onAddSeries={this.props.onAddSeries}
