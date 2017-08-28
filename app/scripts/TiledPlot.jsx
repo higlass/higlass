@@ -26,7 +26,7 @@ import {
 } from './utils';
 
 // Styles
-import '../styles/TiledPlot.css';
+import '../styles/TiledPlot.scss';
 import stylesCenterTrack from '../styles/CenterTrack.scss';  // eslint-disable-line no-unused-vars
 
 export class TiledPlot extends React.Component {
