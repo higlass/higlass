@@ -192,16 +192,6 @@ export const optionsInfo = {
     },
     */
 
-    // This will default to "inside" if it's not set when colorbarPosition
-    // is set
-    colorbarLabelsPosition: {
-        name: "Colorbar Labels Position",
-        inlineOptions: {
-            'inside': { name: 'Inside', value: 'inside'},
-            'outside': { name: 'Outside', value: 'outside'}
-        }
-    },
-
     labelColor: {
         name: "Label Color",
         inlineOptions: availableColors
@@ -364,14 +354,13 @@ export const tracksInfo = [
             labelPosition: 'bottomRight',
             colorRange: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], //corresponding to the fall colormap
             maxZoom: null,
-            colorbarLabelsPosition: 'inside',
             colorbarPosition: 'topRight',
             trackBorderWidth: 0,
             trackBorderColor: 'black',
             heatmapValueScaling: 'log'
         },
         availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 
-            'colorRange', 'maxZoom', 'dataTransform', 'colorbarPosition', 'colorbarLabelsPosition',
+            'colorRange', 'maxZoom', 'dataTransform', 'colorbarPosition', 
             "trackBorderWidth", "trackBorderColor", 'heatmapValueScaling'],
         //exportable: true
     },
@@ -394,7 +383,7 @@ export const tracksInfo = [
         },
         availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
             'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped',
-            'colorbarPosition', 'colorbarLabelsPosition', "trackBorderWidth", "trackBorderColor"],
+            'colorbarPosition', "trackBorderWidth", "trackBorderColor"],
     },
     {
         type: 'vertical-heatmap',
@@ -409,12 +398,11 @@ export const tracksInfo = [
             labelColor: 'black',
             colorRange: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], //corresponding to the fall colormap
             maxZoom: null,
-            colorbarLabelsPosition: 'inside',
             colorbarPosition: 'topRight',
             trackBorderWidth: 0,
             trackBorderColor: 'black'
         },
-        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped', 'colorbarPosition', 'colorbarLabelsPosition', "trackBorderWidth", "trackBorderColor"],
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped', 'colorbarPosition', "trackBorderWidth", "trackBorderColor"],
     },
     {
         type: 'horizontal-line',

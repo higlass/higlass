@@ -1,3 +1,9 @@
+v0.8.33
+
+- Removed the outside colorbar labels option (it's a little
+ambiguous on the right side since the labels will be adjacent
+to the other axis elements.
+
 v0.8.32
 
 - Removed tests from package.json so that build completes (tests fail on

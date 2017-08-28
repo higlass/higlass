@@ -16,7 +16,7 @@ const COLORBAR_MARGIN = 10;
 const BRUSH_WIDTH = COLORBAR_MARGIN;
 const BRUSH_HEIGHT = 4;
 const BRUSH_COLORBAR_GAP = 1;
-const BRUSH_MARGIN = 3; 
+const BRUSH_MARGIN = 4; 
 const AXIS_TICK_LENGTH = 5;
 
 const SCALE_LIMIT_PRECISION = 5;
@@ -265,15 +265,21 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.colorbarHeight = colorbarAreaHeight - 2 * COLORBAR_MARGIN;
         let colorbarAreaWidth = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN + BRUSH_COLORBAR_GAP + BRUSH_WIDTH + BRUSH_MARGIN ;
 
-        let BRUSH_MARGIN=4
         let axisValueScale = this.valueScale.copy().range([this.colorbarHeight, 0]);
 
         this.scaleBrush = brushY()
-            .extent([[BRUSH_MARGIN, 0], [BRUSH_WIDTH, this.colorbarHeight]])
+
+        // this is to make the handles of the scale brush stick out away
+        // from the colorbar
+        if (this.options.colorbarPosition == 'topLeft' ||
+            this.options.colorbarPosition == 'bottomLeft')
+            this.scaleBrush.extent([[BRUSH_MARGIN, 0], [BRUSH_WIDTH, this.colorbarHeight]])
+        else 
+            this.scaleBrush.extent([[0, 0], [BRUSH_WIDTH - BRUSH_MARGIN, this.colorbarHeight]])
+
+        this.scaleBrush
             .on("brush", this.brushMoved.bind(this))
-            .on("end", this.brushEnd.bind(this))
-            //.handleSize(BRUSH_WIDTH-2*BRUSH_MARGIN);
-        ;
+            .on("end", this.brushEnd.bind(this));
         //
         //
         this.gColorscaleBrush.on('.brush', null);
@@ -314,17 +320,11 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             this.pColorbar.y = COLORBAR_MARGIN;
             this.axis.pAxis.y = COLORBAR_MARGIN;
 
-            if (this.options.colorbarLabelsPosition == 'outside') {
-                this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+            this.axis.pAxis.x = BRUSH_MARGIN + BRUSH_WIDTH + BRUSH_COLORBAR_GAP + COLORBAR_WIDTH;
+            this.pColorbar.x = BRUSH_MARGIN + BRUSH_WIDTH + BRUSH_COLORBAR_GAP;
 
-                this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
-            } else {
-                this.axis.pAxis.x = BRUSH_MARGIN + BRUSH_WIDTH + BRUSH_COLORBAR_GAP + COLORBAR_WIDTH;
-                this.pColorbar.x = BRUSH_MARGIN + BRUSH_WIDTH + BRUSH_COLORBAR_GAP;
-
-                this.gColorscaleBrush.attr('transform', 
-                    'translate(' + (this.pColorbarArea.x + BRUSH_MARGIN ) + ',' + (this.pColorbarArea.y + this.pColorbar.y  - 1) + ")");
-            }
+            this.gColorscaleBrush.attr('transform', 
+                'translate(' + (this.pColorbarArea.x + BRUSH_MARGIN ) + ',' + (this.pColorbarArea.y + this.pColorbar.y  - 1) + ")");
         }
 
         if (this.options.colorbarPosition == 'topRight') {
@@ -335,20 +335,13 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             this.pColorbar.y = COLORBAR_MARGIN;
             this.axis.pAxis.y = COLORBAR_MARGIN;
 
-            if (this.options.colorbarLabelsPosition == 'outside') {
-                this.axis.pAxis.x = COLORBAR_WIDTH;
+            // default to 'inside'
+            this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
 
-                this.pColorbar.x = 0;
+            this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
 
-            } else {
-                // default to 'inside'
-                this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
-
-                this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
-
-                this.gColorscaleBrush.attr('transform', 
-                    'translate(' + (this.pColorbarArea.x + this.pColorbar.x + COLORBAR_WIDTH + 2) + ',' + (this.pColorbarArea.y + this.pColorbar.y  - 1) + ")");
-            }
+            this.gColorscaleBrush.attr('transform', 
+                'translate(' + (this.pColorbarArea.x + this.pColorbar.x + COLORBAR_WIDTH + 2) + ',' + (this.pColorbarArea.y + this.pColorbar.y  - 1) + ")");
         }
 
         if (this.options.colorbarPosition == 'bottomRight') {
@@ -358,18 +351,12 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             this.pColorbar.y = COLORBAR_MARGIN;
             this.axis.pAxis.y = COLORBAR_MARGIN;
 
-            if (this.options.colorbarLabelsPosition == 'outside') {
-                this.axis.pAxis.x = COLORBAR_WIDTH;
+            // default to "inside"
+            this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+            this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
 
-                this.pColorbar.x = 0;
-            } else {
-                // default to "inside"
-                this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
-                this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
-
-                this.gColorscaleBrush.attr('transform', 
-                    'translate(' + (this.pColorbarArea.x + this.pColorbar.x + COLORBAR_WIDTH + BRUSH_COLORBAR_GAP) + ',' + (this.pColorbarArea.y + this.pColorbar.y  - 1) + ")");
-            }
+            this.gColorscaleBrush.attr('transform', 
+                'translate(' + (this.pColorbarArea.x + this.pColorbar.x + COLORBAR_WIDTH + BRUSH_COLORBAR_GAP) + ',' + (this.pColorbarArea.y + this.pColorbar.y  - 1) + ")");
         }
 
         if (this.options.colorbarPosition == 'bottomLeft') {
@@ -379,18 +366,12 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             this.pColorbar.y = COLORBAR_MARGIN;
             this.axis.pAxis.y = COLORBAR_MARGIN;
 
-            if (this.options.colorbarLabelsPosition == 'outside') {
-                this.axis.pAxis.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
+            // default to "inside"
+            this.axis.pAxis.x = BRUSH_MARGIN + BRUSH_WIDTH + BRUSH_COLORBAR_GAP + COLORBAR_WIDTH;
+            this.pColorbar.x = BRUSH_MARGIN + BRUSH_WIDTH + BRUSH_COLORBAR_GAP;
 
-                this.pColorbar.x = COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN;
-            } else {
-                // default to "inside"
-                this.axis.pAxis.x = BRUSH_MARGIN + BRUSH_WIDTH + BRUSH_COLORBAR_GAP + COLORBAR_WIDTH;
-                this.pColorbar.x = BRUSH_MARGIN + BRUSH_WIDTH + BRUSH_COLORBAR_GAP;
-
-                this.gColorscaleBrush.attr('transform', 
-                    'translate(' + (this.pColorbarArea.x + 2 ) + ',' + (this.pColorbarArea.y + this.pColorbar.y  - 1) + ")");
-            } 
+            this.gColorscaleBrush.attr('transform', 
+                'translate(' + (this.pColorbarArea.x + 2 ) + ',' + (this.pColorbarArea.y + this.pColorbar.y  - 1) + ")");
         }
 
         this.pColorbarArea.clear();
@@ -440,18 +421,10 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         if (this.options.colorbarPosition == 'topLeft'
             || this.options.colorbarPosition == 'bottomLeft') {
-            if (this.options.colorbarLabelsPosition == 'outside') {
-                this.axis.drawAxisLeft(axisValueScale, this.colorbarHeight);
-            } else {
-                this.axis.drawAxisRight(axisValueScale, this.colorbarHeight);
-            }
+            this.axis.drawAxisRight(axisValueScale, this.colorbarHeight);
         } else if (this.options.colorbarPosition == 'topRight'
                    || this.options.colorbarPosition == 'bottomRight') {
-            if (this.options.colorbarLabelsPosition == 'outside') {
-                this.axis.drawAxisRight(axisValueScale, this.colorbarHeight);
-            } else {
-                this.axis.drawAxisLeft(axisValueScale, this.colorbarHeight);
-            }
+            this.axis.drawAxisLeft(axisValueScale, this.colorbarHeight);
         } 
     }
 
@@ -516,18 +489,10 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         if (this.options.colorbarPosition == 'topLeft'
             || this.options.colorbarPosition == 'bottomLeft') {
-            if (this.options.colorbarLabelsPosition == 'inside') {
-                gAxis = this.axis.exportAxisRightSVG(axisValueScale, this.colorbarHeight);
-            } else {
-                gAxis = this.axis.exportAxisLeftSVG(axisValueScale, this.colorbarHeight);
-            }
+            gAxis = this.axis.exportAxisRightSVG(axisValueScale, this.colorbarHeight);
         } else if (this.options.colorbarPosition == 'topRight'
                    || this.options.colorbarPosition == 'bottomRight') {
-            if (this.options.colorbarLabelsPosition == 'inside') {
-                gAxis = this.axis.exportAxisLeftSVG(axisValueScale, this.colorbarHeight);
-            } else {
-                gAxis = this.axis.exportAxisRightSVG(axisValueScale, this.colorbarHeight);
-            }
+            gAxis = this.axis.exportAxisLeftSVG(axisValueScale, this.colorbarHeight);
         } 
 
         gAxisHolder.appendChild(gAxis);
