@@ -1,11 +1,16 @@
+@import './colors';
+@import './transitions';
+
 .context-menu {
+  position: fixed;
   background-color: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid $gray-lighter-rgba;
   border-radius: 3px;
   font-size: 12px;
   cursor: default;
   padding: 3px;
-  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.125), 0 1px 5px 0 rgba(0, 0, 0, 0.075);
+  box-shadow: 0 0 3px 0 $gray-lighter-rgba,
+              0 1px 5px 0 $gray-lightest-rgba;
 }
 
 .context-menu-item {
@@ -37,6 +42,7 @@ svg.play-icon {
   vertical-align: middle;
   display: inline-block;
   line-height: normal;
+  white-space: nowrap;
 }
 
 .context-menu-item:hover {

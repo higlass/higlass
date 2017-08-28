@@ -7,7 +7,7 @@ import {ResizeSensor, ElementQueries} from 'css-element-queries';
 import CenterTrack from './CenterTrack';
 import TrackRenderer from './TrackRenderer.jsx';
 import AddTrackModal from './AddTrackModal.jsx';
-import ConfigTrackMenu from './ConfigTrackMenu.jsx';
+import ConfigTrackMenu from './ConfigTrackMenu';
 import CloseTrackMenu from './CloseTrackMenu.jsx';
 import PopupMenu from './PopupMenu.jsx';
 import ContextMenuContainer from './ContextMenuContainer';
