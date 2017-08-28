@@ -20,6 +20,7 @@ import { IS_TRACK_RANGE_SELECTABLE } from './configs';
 
 // Styles
 import styles from '../styles/VerticalTiledPlot.scss';  // eslint-disable-line no-unused-vars
+import stylesPlot from '../styles/TiledPlot.scss';  // eslint-disable-line no-unused-vars
 import stylesTrack from '../styles/Track.scss';  // eslint-disable-line no-unused-vars
 
 
@@ -185,14 +186,14 @@ export class VerticalTiledPlot extends React.Component {
         }
         <ListWrapper
           axis="x"
-          className="list stylizedList verticalList"
+          className={`${stylesPlot.list} ${stylesPlot.stylizedList} ${stylesPlot.horizontalList}`}
           component={SortableList}
           editable={this.props.editable}
           handleConfigTrack={this.props.handleConfigTrack}
           handleResizeTrack={this.props.handleResizeTrack}
           height={this.props.height}
-          helperClass="stylizedHelper"
-          itemClass="stylizedItem verticalItem"
+          helperClass={stylesPlot.stylizedHelper}
+          itemClass={`${stylesPlot.stylizedItem} ${stylesPlot.horizontalItem}`}
           itemControlAlignLeft={this.props.tracksControlAlignLeft}
           itemReactClass={VerticalItem}
           items={this.props.tracks.map(d => ({
