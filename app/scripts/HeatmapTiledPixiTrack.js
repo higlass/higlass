@@ -56,6 +56,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         this.gMain = select(svgElement).append('g');
         this.gColorscaleBrush = this.gMain.append('g');
 
+        this.brushing = false;
+
         /*
         */
 
@@ -205,6 +207,10 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         return newOptions;
     }
 
+    brushStart() {
+        this.brushing = true;
+    }
+
     brushMoved() {
         let newOptions = this.newBrushOptions(event.selection);
 
@@ -243,6 +249,7 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         //this.rerender(newOptions);
         //this.animate();
+        this.brushing = false;
 
     }
 
@@ -276,25 +283,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             this.scaleBrush.extent([[BRUSH_MARGIN, 0], [BRUSH_WIDTH, this.colorbarHeight]])
         else 
             this.scaleBrush.extent([[0, 0], [BRUSH_WIDTH - BRUSH_MARGIN, this.colorbarHeight]])
-
-        this.scaleBrush
-            .on("brush", this.brushMoved.bind(this))
-            .on("end", this.brushEnd.bind(this));
-        //
-        //
-        this.gColorscaleBrush.on('.brush', null);
-        this.gColorscaleBrush.call(this.scaleBrush);
-
-        this.northHandle = this.gColorscaleBrush.selectAll('.handle--custom')
-        .data([{'type': 'n'}, {'type': 's'}])
-        .enter()
-        .append('rect')
-        .classed('handle--custom', true)
-        .attr('cursor', 'ns-resize')
-        .attr('width', BRUSH_WIDTH)
-        .attr('height', BRUSH_HEIGHT)
-        .style('fill', '#666')
-        .style('stroke', 'white');
 
         /*
         this.gColorscaleBrush.selectAll('.handle--n')
@@ -391,8 +379,32 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         let endBrush = axisValueScale(this.options.scaleEndPercent * domainWidth + axisValueScale.domain()[0])
 
         // endBrush and startBrush are reversed because lower values come first
-        this.gColorscaleBrush.call(this.scaleBrush.move, 
-            [endBrush, startBrush]);
+        // only set if the user isn't brushing at the moment
+        if (!this.brushing) {
+            this.scaleBrush
+                .on("start", this.brushStart.bind(this))
+                .on("brush", this.brushMoved.bind(this))
+                .on("end", this.brushEnd.bind(this));
+            //
+            //
+            console.log('drawing colorbar...');
+            this.gColorscaleBrush.on('.brush', null);
+            this.gColorscaleBrush.call(this.scaleBrush);
+
+            this.northHandle = this.gColorscaleBrush.selectAll('.handle--custom')
+                .data([{'type': 'n'}, {'type': 's'}])
+                .enter()
+                .append('rect')
+                .classed('handle--custom', true)
+                .attr('cursor', 'ns-resize')
+                .attr('width', BRUSH_WIDTH)
+                .attr('height', BRUSH_HEIGHT)
+                .style('fill', '#666')
+                .style('stroke', 'white');
+
+            this.gColorscaleBrush.call(this.scaleBrush.move, 
+                [endBrush, startBrush]);
+        }
 
         //let centerY = this.position[1] + this.dimensions[1] / 2;
         let centerY = this.colorbarHeight / 2;
