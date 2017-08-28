@@ -2,7 +2,7 @@ import React from 'react';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
-import {SeriesListMenu} from './SeriesListMenu.jsx';
+import {SeriesListMenu} from './SeriesListMenu';
 
 // Configs
 import {TRACKS_INFO} from './configs';
