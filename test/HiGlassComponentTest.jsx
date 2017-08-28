@@ -144,6 +144,182 @@ function waitForTilesLoaded(hgc, tilesLoadedCallback) {
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
+    describe("Double view", () => {
+
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'height:800px; width:800px');
+            div.setAttribute('id', 'single-view');
+            hgc = mount(<HiGlassComponent 
+                          options={{bounded: true}}
+                          viewConfig={twoViewConfig}
+                        />, 
+                {attachTo: div});
+
+            hgc.update()
+            waitForTilesLoaded(hgc, done);
+        });
+
+        it ('has a colorbar', () => {
+            let heatmap = hgc.instance().tiledPlots['aa'].trackRenderer
+                .trackDefObjects['c1'].trackObject.createdTracks['heatmap1'];
+            expect(heatmap.pColorbarArea.x).to.be.below(heatmap.dimensions[0] / 2);
+
+            // make sure the labels are drawn on the outside
+            // expect(heatmap.axis.pAxis.getBounds().x).to.be.below(heatmap.pColorbar.getBounds().x);
+            //hgc.instance().handleExportSVG(); 
+        });
+
+        return;
+
+        it ('changes the colorbar color when the heatmap colormap is changed', () => {
+            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
+            let newOptions = {
+                  "colorRange": [
+                    "white",
+                    "black"
+                  ],
+                };
+
+            hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', newOptions);
+
+            let svg = getTrackObject(hgc, 'aa', 'heatmap1').exportSVG()[0];
+            //hgc.instance().handleExportSVG();
+            
+            // how do we test for what's drawn in Pixi?'
+            
+            let oldOptions = {
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ]
+            }
+
+            hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', oldOptions);
+
+        });
+
+        it ('switches between log and linear scales', () => {
+            let newOptions = {
+              "labelColor": "red",
+              "labelPosition": "hidden",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "linear"
+            };
+
+            expect(getTrackObject(hgc, 'aa', 'line1').options.valueScaling).to.eql('log');
+            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
+            expect(getTrackObject(hgc, 'aa', 'line1').options.valueScaling).to.eql('linear');
+
+            newOptions.valueScaling = 'log';
+            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
+
+            //hgc.update();
+        });
+
+        it ('exports SVG', () => {
+            let svg = hgc.instance().createSVG();
+            let svgText = new XMLSerializer().serializeToString(svg);
+
+            //hgc.instance().handleExportSVG();
+
+            // Make sure we have an axis that is offset from the origin
+            //expect(svgText.indexOf('id="axis" transform="translate(390, 68)"')).to.be.above(0);
+
+            // make sure that we have this color in the colorbar (this is part of the custard
+            // color map)
+            expect(svgText.indexOf('rgb(231, 104, 32)')).to.be.above(0);
+
+            // make sure that this color, which is part of the afmhot colormap is not exported
+            expect(svgText.indexOf('rgb(171, 43, 0)')).to.be.below(0);
+
+            
+            let tdo = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects;
+
+            let line1 = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects['line1'].trackObject;
+
+            let axis = line1.axis.exportAxisRightSVG(line1.valueScale, line1.dimensions[1]);
+            let axisText = new XMLSerializer().serializeToString(axis);
+
+            //hgc.instance().handleExportSVG();
+
+            //let axis = svg.getElementById('axis');
+            // make sure we have a tick mark for 200000
+            expect(axisText.indexOf('1e+5')).to.be.above(0);
+        })
+
+        it ("Adds a chromInfo track", (done) => {
+            // this test was here to visually make sure that the HorizontalChromosomeAxis
+            // was rendered after being drawn
+            hgc.instance().handleTrackAdded('view2', chromInfoTrack, 'top');
+
+            hgc.instance().tiledPlots['view2'].render();
+            hgc.instance().tiledPlots['view2']
+                .trackRenderer.syncTrackObjects(
+                        hgc.instance().tiledPlots['view2'].positionedTracks());
+
+            // make sure that the chromInfo is displayed
+            setTimeout(() => done(), tileLoadTime);
+        });
+
+        it ("replaces a track", (done) => {
+            done();
+        });
+    })
+
+
+    describe("Export SVG properly", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            hgc = mount(<HiGlassComponent 
+                          options={{bounded: false}}
+                          viewConfig={project1D}
+                        />, 
+                {attachTo: div});
+
+            hgc.update();
+            waitForTilesLoaded(hgc, done);
+        });
+
+        it ("Exports to SVG", (done) => {
+            let svg = hgc.instance().createSVG();
+            let svgText = new XMLSerializer().serializeToString(svg);
+
+            //hgc.instance().handleExportSVG();
+
+            done();
+        });
+    });
+
     describe("Color scale limiting", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
@@ -500,182 +676,6 @@ describe("Simple HiGlassComponent", () => {
             done();
         });
 
-    });
-
-    return;
-
-    describe("Double view", () => {
-
-        it ('Cleans up previously created instances and mounts a new component', (done) => {
-            if (hgc) {
-                hgc.unmount();
-                hgc.detach();
-            }
-
-            if (div) {
-                global.document.body.removeChild(div);
-            }
-
-            div = global.document.createElement('div');
-            global.document.body.appendChild(div);
-
-            div.setAttribute('style', 'height:800px; width:800px');
-            div.setAttribute('id', 'single-view');
-            hgc = mount(<HiGlassComponent 
-                          options={{bounded: true}}
-                          viewConfig={twoViewConfig}
-                        />, 
-                {attachTo: div});
-
-            setTimeout(done, pageLoadTime);
-        });
-
-        it ('changes the colorbar color when the heatmap colormap is changed', () => {
-            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
-            let newOptions = {
-                  "colorRange": [
-                    "white",
-                    "black"
-                  ],
-                };
-
-            hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', newOptions);
-
-            let svg = getTrackObject(hgc, 'aa', 'heatmap1').exportSVG()[0];
-            //hgc.instance().handleExportSVG();
-            
-            // how do we test for what's drawn in Pixi?'
-            
-            let oldOptions = {
-                  "colorRange": [
-                    "white",
-                    "rgba(245,166,35,1.0)",
-                    "rgba(208,2,27,1.0)",
-                    "black"
-                  ]
-            }
-
-            hgc.instance().handleTrackOptionsChanged('aa', 'heatmap1', oldOptions);
-
-        });
-
-        it ('switches between log and linear scales', () => {
-            let newOptions = {
-              "labelColor": "red",
-              "labelPosition": "hidden",
-              "axisPositionHorizontal": "right",
-              "lineStrokeColor": "blue",
-              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-              "valueScaling": "linear"
-            };
-
-            expect(getTrackObject(hgc, 'aa', 'line1').options.valueScaling).to.eql('log');
-            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
-            expect(getTrackObject(hgc, 'aa', 'line1').options.valueScaling).to.eql('linear');
-
-            newOptions.valueScaling = 'log';
-            hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
-
-            //hgc.update();
-        });
-
-        it ('exports SVG', () => {
-            let svg = hgc.instance().createSVG();
-            let svgText = new XMLSerializer().serializeToString(svg);
-
-            //hgc.instance().handleExportSVG();
-
-            // Make sure we have an axis that is offset from the origin
-            //expect(svgText.indexOf('id="axis" transform="translate(390, 68)"')).to.be.above(0);
-
-            // make sure that we have this color in the colorbar (this is part of the custard
-            // color map)
-            expect(svgText.indexOf('rgb(231, 104, 32)')).to.be.above(0);
-
-            // make sure that this color, which is part of the afmhot colormap is not exported
-            expect(svgText.indexOf('rgb(171, 43, 0)')).to.be.below(0);
-
-            
-            let tdo = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects;
-
-            let line1 = hgc.instance().tiledPlots['aa'].trackRenderer.trackDefObjects['line1'].trackObject;
-
-            let axis = line1.axis.exportAxisRightSVG(line1.valueScale, line1.dimensions[1]);
-            let axisText = new XMLSerializer().serializeToString(axis);
-
-            //hgc.instance().handleExportSVG();
-
-            //let axis = svg.getElementById('axis');
-            // make sure we have a tick mark for 200000
-            expect(axisText.indexOf('1e+5')).to.be.above(0);
-        })
-
-        it ('has a colorbar', () => {
-            let heatmap = hgc.instance().tiledPlots['aa'].trackRenderer
-                .trackDefObjects['c1'].trackObject.createdTracks['heatmap1'];
-            expect(heatmap.pColorbarArea.x).to.be.below(heatmap.dimensions[0] / 2);
-
-            // make sure the labels are drawn on the outside
-            expect(heatmap.axis.pAxis.getBounds().x).to.be.below(heatmap.pColorbar.getBounds().x);
-            //hgc.instance().handleExportSVG(); 
-        });
-
-
-
-        it ("Adds a chromInfo track", (done) => {
-            // this test was here to visually make sure that the HorizontalChromosomeAxis
-            // was rendered after being drawn
-            hgc.instance().handleTrackAdded('view2', chromInfoTrack, 'top');
-
-            hgc.instance().tiledPlots['view2'].render();
-            hgc.instance().tiledPlots['view2']
-                .trackRenderer.syncTrackObjects(
-                        hgc.instance().tiledPlots['view2'].positionedTracks());
-
-            // make sure that the chromInfo is displayed
-            setTimeout(() => done(), tileLoadTime);
-        });
-
-        it ("replaces a track", (done) => {
-            done();
-        });
-    })
-
-    describe("Export SVG properly", () => {
-        it ('Cleans up previously created instances and mounts a new component', (done) => {
-            if (hgc) {
-                hgc.unmount();
-                hgc.detach();
-            }
-
-            if (div) {
-                global.document.body.removeChild(div);
-            }
-
-            div = global.document.createElement('div');
-            global.document.body.appendChild(div);
-
-            div.setAttribute('style', 'width:800px;background-color: lightgreen');
-            div.setAttribute('id', 'simple-hg-component');
-
-            hgc = mount(<HiGlassComponent 
-                          options={{bounded: false}}
-                          viewConfig={project1D}
-                        />, 
-                {attachTo: div});
-
-            setTimeout(done, tileLoadTime);
-            hgc.update();
-        });
-
-        it ("Exports to SVG", (done) => {
-            let svg = hgc.instance().createSVG();
-            let svgText = new XMLSerializer().serializeToString(svg);
-
-            //hgc.instance().handleExportSVG();
-
-            setTimeout(done, shortLoadTime);
-        });
     });
 
     return;
