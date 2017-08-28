@@ -1,3 +1,4 @@
+@import './colors';
 @import './transitions';
 
 .track-control,
@@ -5,13 +6,12 @@
   position: absolute;
   z-index: -1;
   display: flex;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.75);
   right: 0.125rem;
   top: 0.125rem;
-  padding: 0.5rem;
   border-radius: 0.25rem;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.075),
-              0 0 3px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 0 1px $gray-lightest-rgba,
+              0 0 3px 0 $gray-lighter-rgba;
   opacity: 0;
   transition: opacity $fast $ease,
               background $fast $ease,
@@ -41,4 +41,39 @@
 
 .track-control-active {
   composes: track-control;
+}
+
+.track-control-button {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  opacity: 0.66;
+  transition: background $fast $ease,
+              color $fast $ease,
+              opacity $fast $ease;
+
+  &:hover {
+    color: $white;
+    background: $active;
+    opacity: 1;
+  }
+
+  &:first-child {
+    border-radius: 0.25rem 0 0 0.25rem;
+  }
+
+  &:last-child {
+    border-radius: 0 0.25rem 0.25rem 0;
+  }
+}
+
+.track-control-button-vertical {
+  &:first-child {
+    border-radius: 0 0 0.25rem 0.25rem;
+  }
+
+  &:last-child {
+    border-radius: 0.25rem 0.25rem 0 0;
+  }
 }
