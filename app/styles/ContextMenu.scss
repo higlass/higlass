@@ -17,17 +17,19 @@
   padding: 2px;
   white-space: nowrap;
   border-radius: 2px;
+  transition: background $fast $ease,
+              color $fast $ease;
+
+  &:hover {
+    background: $active;
+    color: $white;
+  }
 }
 
-.context-menu-item:hover {
-  background-color: #4677f8;
-  color: #fff;
-}
-
-hr {
+.contect-menu-hr {
   margin-top: 5px;
   margin-bottom: 5px;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid $gray-lighter-rgba;
 }
 
 .play-icon {
@@ -43,11 +45,6 @@ hr {
   display: inline-block;
   line-height: normal;
   white-space: nowrap;
-}
-
-.context-menu-item:hover {
-  background-color: #4677f8;
-  color: #fefefe;
 }
 
 .context-menu-thumbnail {

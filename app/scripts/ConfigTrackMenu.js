@@ -149,7 +149,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
       >
         {this.getSeriesItems()}
 
-        <hr />
+        <hr styleName="contect-menu-hr" />
 
         <ContextMenuItem
           contextMenu={this}
@@ -167,7 +167,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
           {'Unlock Value Scale'}
         </ContextMenuItem>
 
-        <hr />
+        <hr styleName="contect-menu-hr" />
 
         <ContextMenuItem
           contextMenu={this}
