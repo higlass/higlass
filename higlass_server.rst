@@ -14,6 +14,23 @@ Running the server locally:
     
     python manage.py runserver 8000
 
+Testing
+-------
+
+There are test in ``tilesets/views.py`` which can be run
+from the command line:
+
+.. code-block:: bash
+
+    python manage.py test tilesets
+
+More specific tests can be run by specifying the class and function
+that contain the test:
+
+.. code-block:: bash
+
+    python manage.py test tilesets.tests.CoolerTest.test_get_multi_tiles
+
 Importing data
 --------------
 
