@@ -1,29 +1,10 @@
-import '../styles/ContextMenuContainer.css';
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-export class ContextMenuItem extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+// Styles
+import '../styles/ContextMenu.scss';
 
-  render() {
-    return (
-        <div
-          className={"context-menu-item"}
-          onMouseEnter={(e) => this.props.onMouseEnter ? this.props.onMouseEnter(e) : null }
-          onMouseLeave={(e) => this.props.onMouseLeave ? this.props.onMouseLeave(e) : null }
-          onClick={e => this.props.onClick(e)}
-        >
-          <span className='context-menu-span'
-            style={{ whiteSpace: 'nowrap' }}
-          >
-            {this.props.children}
-          </span>
-        </div>
-         );
-  }
-}
 
 export class ContextMenuContainer extends React.Component {
   constructor(props) {
@@ -42,6 +23,12 @@ export class ContextMenuContainer extends React.Component {
     }
   }
 
+  /* -------------------------- Life Cycle Methods -------------------------- */
+
+  componentDidMount() {
+    this.updateOrientation();
+  }
+
   componentWillReceiveProps(newProps) {
     this.adjusted = false;
 
@@ -51,91 +38,24 @@ export class ContextMenuContainer extends React.Component {
     });
   }
 
-  updateOrientation() {
-    if (this.adjusted)
-      return;
-
-    this.adjusted = true;
-    this.divDom = ReactDOM.findDOMNode(this.div);
-    let bbox = this.divDom.getBoundingClientRect();
-
-    let parentBbox = this.props.parentBbox ?  this.props.parentBbox :
-      {'top': this.props.position.top,
-       'left': this.props.position.left,
-       'width': 0, 'height': 0};
-
-    let orientation = this.state.orientation;
-
-    if (this.state.orientation == 'left') {
-      let leftPosition = parentBbox.left - bbox.width;
-      if (leftPosition < 0)  {
-        if (parentBbox.left + parentBbox.width + bbox.width > window.innerWidth) {
-          leftPosition = 0;  // goes off the side either way
-        } else {
-          // switch to the right
-          leftPosition = parentBbox.left + parentBbox.width;
-          orientation = 'right';
-        }
-      }
-
-      // we're fine keeping it left oriented
-
-      this.setState({
-        left: leftPosition,
-        top: this.props.position.top,
-        orientation: orientation
-      });
-    }  else {
-      let leftPosition = parentBbox.left + parentBbox.width;
-
-      if ((parentBbox.left + parentBbox.width + bbox.width) > window.innerWidth) {
-        if (parentBbox.left - bbox.width < 0) {
-          // goes off both sides
-          leftPosition = 0;
-          orientation = 'right';
-        } else {
-          leftPosition = parentBbox.left - bbox.width;
-          orientation = 'left';
-
-        }
-        /*
-        leftPosition = leftPosition < 0 ? 0 : leftPosition;
-
-        */
-      }
-      this.setState({
-        left: leftPosition,
-        top: this.props.position.top,
-        orientation: orientation
-      });
-    }
-  }
-
   componentDidUpdate() {
     this.updateOrientation();
   }
 
-  componentDidMount() {
-    this.updateOrientation();
-  }
+  /* ---------------------------- Custom Methods ---------------------------- */
 
   handleItemMouseEnter(evt, series) {
-    let domNode = evt.currentTarget;
-    let boundingRect = domNode.getBoundingClientRect();
-    //console.log('seriesMouseEnter:', domNode);
-    //console.log('boundingRect:', boundingRect);
-
     this.setState({
       submenuShown: series,
-      submenuSourceBbox: boundingRect
+      submenuSourceBbox: evt.currentTarget.getBoundingClientRect()
     });
   }
 
-  handleMouseLeave(evt) {
+  handleMouseLeave() {
     return;
   }
 
-  handleOtherMouseEnter(evt) {
+  handleOtherMouseEnter() {
     this.setState({
       submenuShown: null
     });
@@ -162,6 +82,68 @@ export class ContextMenuContainer extends React.Component {
   }
   */
 
+  updateOrientation() {
+    if (this.adjusted) return;
+
+    this.adjusted = true;
+    this.divDom = ReactDOM.findDOMNode(this.div);
+    const bbox = this.divDom.getBoundingClientRect();
+
+    const parentBbox = this.props.parentBbox ?
+      this.props.parentBbox :
+      {
+        top: this.props.position.top,
+        left: this.props.position.left,
+        width: 0,
+        height: 0
+      };
+
+    let orientation = this.state.orientation;
+
+    if (this.state.orientation === 'left') {
+      let leftPosition = parentBbox.left - bbox.width;
+
+      if (leftPosition < 0)  {
+        if (parentBbox.left + parentBbox.width + bbox.width > window.innerWidth) {
+          leftPosition = 0;  // goes off the side either way
+        } else {
+          // switch to the right
+          leftPosition = parentBbox.left + parentBbox.width;
+          orientation = 'right';
+        }
+      }
+
+      // we're fine keeping it left oriented
+      this.setState({
+        left: leftPosition,
+        top: this.props.position.top,
+        orientation: orientation
+      });
+    }  else {
+      let leftPosition = parentBbox.left + parentBbox.width;
+
+      if ((parentBbox.left + parentBbox.width + bbox.width) > window.innerWidth) {
+        if (parentBbox.left - bbox.width < 0) {
+          // goes off both sides
+          leftPosition = 0;
+          orientation = 'right';
+        } else {
+          leftPosition = parentBbox.left - bbox.width;
+          orientation = 'left';
+
+        }
+      }
+
+      this.setState({
+        left: leftPosition,
+        top: this.props.position.top,
+        orientation: orientation
+      });
+    }
+  }
+
+  /* ------------------------------ Rendering ------------------------------- */
+
   render() {
     let stylePosition = {'left': this.state.left}
 
@@ -175,12 +157,22 @@ export class ContextMenuContainer extends React.Component {
     let wholeStyle = Object.assign(stylePosition, otherStyle);
 
     return(
-      <div className={'context-menu'}
-          ref={c => this.div = c}
-          style={ wholeStyle }
-        >
+      <div
+        className="context-menu"
+        ref={c => this.div = c}
+        style={wholeStyle}
+      >
         {this.props.children}
       </div>
     )
   }
 }
+
+ContextMenuContainer.propTypes = {
+  children: PropTypes.node,
+  orientation: PropTypes.string,
+  parentBbox: PropTypes.object,
+  position: PropTypes.object
+}
+
+export default ContextMenuContainer;
