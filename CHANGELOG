@@ -1,3 +1,9 @@
+v0.8.34
+
+- Fixed horizontal heatmap loading after the adjustable color scale changes
+- Fixed vertical heatmap loading
+- Fixed vertical heatmap colorscale brush in LeftTrackModifier
+
 v0.8.33
 
 - Removed the outside colorbar labels option (it's a little

@@ -4,15 +4,17 @@ import {tileProxy} from './TileProxy.js';
 import {heatedObjectMap} from './colormaps.js';
 import {colorDomainToRgbaArray} from './utils.js';
 import {TiledPixiTrack} from './TiledPixiTrack.js';
+import {scaleLinear, scaleLog, scaleQuantile} from 'd3-scale';
 
 export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
-    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
+    constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, 
+        svgElement, onValueScaleChanged, onTrackOptionsChanged) {
         /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
          * @param uid: The data set to get the tiles from the server
          */
-        super(scene, server, uid, handleTilesetInfoReceived, options, animate, onValueScaleChanged);
+        super(scene, server, uid, handleTilesetInfoReceived, options, animate, svgElement, onValueScaleChanged, onTrackOptionsChanged);
 
         this.pMain = this.pMobile;
 
@@ -158,8 +160,25 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
          *              this function are tile.tileData = {'dense': [...], ...}
          *              and tile.graphics
          */
+        if (this.options.heatmapValueScaling == 'log') {
+            this.valueScale = scaleLog().range([254, 0])
+            .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
+        } else if (this.options.heatmapValueScaling == 'linear') {
+            this.valueScale = scaleLinear().range([254, 0])
+            .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
+        }
+
+        this.limitedValueScale = this.valueScale.copy();
+        if (this.options 
+            && typeof(this.options.scaleStartPercent) != 'undefined' 
+            && typeof(this.options.scaleEndPercent) != 'undefined') {
+            this.limitedValueScale.domain(
+                [this.valueScale.domain()[0] + (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * ( this.options.scaleStartPercent),
+                this.valueScale.domain()[0] + (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * ( this.options.scaleEndPercent)])
+        }
+
         tileProxy.tileDataToPixData(tile,
-                                        this.valueScale,
+                                        this.limitedValueScale,
                                         this.valueScale.domain()[0], //used as a pseudocount to prevent taking the log of 0
                                                   this.colorScale,
                                                   function(pixData) {

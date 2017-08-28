@@ -53,7 +53,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             this.colorScale = colorDomainToRgbaArray(options.colorRange);
         }
 
-        this.gMain = select(svgElement).append('g');
+        this.gBase = select(svgElement).append('g');
+        this.gMain = this.gBase.append('g');
         this.gColorscaleBrush = this.gMain.append('g');
 
         this.brushing = false;
@@ -384,7 +385,8 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
             this.scaleBrush
                 .on("start", this.brushStart.bind(this))
                 .on("brush", this.brushMoved.bind(this))
-                .on("end", this.brushEnd.bind(this));
+                .on("end", this.brushEnd.bind(this))
+                .handleSize(0);
             //
             //
             this.gColorscaleBrush.on('.brush', null);
@@ -400,6 +402,9 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 .attr('height', BRUSH_HEIGHT)
                 .style('fill', '#666')
                 .style('stroke', 'white');
+
+            if (this.flipText)
+                this.northHandle.attr('cursor', 'ew-resize')
 
             this.gColorscaleBrush.call(this.scaleBrush.move, 
                 [endBrush, startBrush]);

@@ -1005,7 +1005,9 @@ export class TrackRenderer extends React.Component {
                     handleTilesetInfoReceived,
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid),
-                    () => this.currentProps.onValueScaleChanged(track.uid)
+                    this.svgElement,
+                    () => this.currentProps.onValueScaleChanged(track.uid),
+                    (newOptions) => this.currentProps.onTrackOptionsChanged(track.uid, newOptions)
                 );
             case 'vertical-heatmap':
                 return new LeftTrackModifier(new HorizontalHeatmapTrack(this.pStage,
@@ -1014,7 +1016,9 @@ export class TrackRenderer extends React.Component {
                     handleTilesetInfoReceived,
                     track.options,
                     () => this.currentProps.onNewTilesLoaded(track.uid),
-                    () => this.currentProps.onValueScaleChanged(track.uid)
+                    this.svgElement,
+                    () => this.currentProps.onValueScaleChanged(track.uid),
+                    (newOptions) => this.currentProps.onTrackOptionsChanged(track.uid, newOptions)
                 ));
             case '2d-chromosome-annotations':
                 return new Chromosome2DAnnotations(this.pStage,
