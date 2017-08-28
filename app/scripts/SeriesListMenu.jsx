@@ -2,7 +2,7 @@ import React from 'react';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
-import NestedContextMenu from './NestedContextMenu.jsx';
+import NestedContextMenu from './NestedContextMenu';
 
 // Configs
 import {
