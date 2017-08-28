@@ -1,0 +1,75 @@
+@import './colors';
+@import './transitions';
+
+.multitrack-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  height: 20px;
+  margin-bottom: 3px;
+  color: $gray;
+  font-size: 12px;
+  line-height: 20px;
+  vertical-align: middle;
+  border: 0;
+  border-radius: 3px;
+  background: $gray-lighter;
+}
+
+.multitrack-header-id {
+  padding-left: 3px;
+
+  &:before {
+    content: 'ID:';
+    font-weight: bold;
+    padding-right: 5px;
+  }
+}
+
+.multitrack-header-left {
+  display: flex;
+  flex-grow: 1;
+}
+
+.multitrack-header-grabber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 100%;
+  cursor: move;
+
+  div {
+    width: 1px;
+    height: 50%;
+    margin: 1px;
+    background: $gray;
+  }
+}
+
+.multitrack-header-search {
+  flex-grow: 1;
+}
+
+.multitrack-header-nav-list {
+  display: flex;
+}
+
+.multitrack-header-icon {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.4rem;
+  transition: background $fast $ease,
+              color $fast $ease;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: $white;
+    background: $active;
+  }
+
+  &:last-child {
+    border-radius: 0 0.25rem 0.25rem 0;
+  }
+}

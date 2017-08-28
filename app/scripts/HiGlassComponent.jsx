@@ -14,7 +14,7 @@ import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
 import {ExportLinkModal} from './ExportLinkModal.jsx';
 import {createSymbolIcon} from './symbol';
 import {all as icons} from './icons';
-import {ViewHeader} from './ViewHeader.jsx';
+import ViewHeader from './ViewHeader';
 import {ChromosomeInfo} from './ChromosomeInfo';
 import api from './api';
 
@@ -51,7 +51,6 @@ import {
 // Styles
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import '../styles/HiGlassComponent.css';
 import '../styles/MultiViewContainer.css';
 
 let WidthReactGridLayout = WidthProvider(ReactGridLayout);
