@@ -387,7 +387,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
                 .on("end", this.brushEnd.bind(this));
             //
             //
-            console.log('drawing colorbar...');
             this.gColorscaleBrush.on('.brush', null);
             this.gColorscaleBrush.call(this.scaleBrush);
 

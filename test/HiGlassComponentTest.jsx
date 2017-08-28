@@ -253,8 +253,6 @@ describe("Simple HiGlassComponent", () => {
 
     });
 
-    return;
-
     describe("Value scale locking", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {
