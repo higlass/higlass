@@ -186,6 +186,19 @@ describe("Simple HiGlassComponent", () => {
             waitForTilesLoaded(hgc, done);
         });
 
+        it ("Changes the position of the brush to the top right", (done) => {
+            let views = hgc.instance().state.views;
+            console.log('views:', views);
+            views['aa'].tracks['center'][0].contents[0].options.colorbarPosition = 'topRight';
+
+            hgc.instance().setState({'views': views})
+
+            done();
+
+        });
+
+        return;
+
         it ("Moves the brush on one of the views", (done) => {
             let heatmapTrack = getTrackObject(hgc, 'aa', 'heatmap1'); 
 
@@ -239,6 +252,8 @@ describe("Simple HiGlassComponent", () => {
         });
 
     });
+
+    return;
 
     describe("Value scale locking", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
