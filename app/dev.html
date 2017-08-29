@@ -10,7 +10,7 @@
 </style>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles/page.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="hglib.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.js"></script>
@@ -288,6 +288,22 @@
     window.hgApi.on('view', function (viewConfig) {
       console.log('View Config changed');
     });
+
+    window.hgApi.on('rangeSelection', function (rangeSelection) {
+      console.log(
+        'Selected the following range:',
+        rangeSelection[0],
+        rangeSelection[1],
+      );
+    });
+
+    setTimeout(function() {
+      window.hgApi.activateTool('select');
+    }, 2000);
+
+    setTimeout(function() {
+      window.hgApi.activateTool('move');
+    }, 10000);
 
     // setTimeout(function () {
     //   // Go to PTEN
