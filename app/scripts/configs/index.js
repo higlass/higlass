@@ -2,7 +2,7 @@
 
 export const MOUSE_TOOL_MOVE = 'move';
 
-export const MOUSE_TOOL_SELECT = 'move';
+export const MOUSE_TOOL_SELECT = 'select';
 
 export const TILE_FETCH_DEBOUNCE = 100;
 
