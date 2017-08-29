@@ -274,8 +274,6 @@ export class Autocomplete extends React.Component {
   }
 
   handleInputFocus () {
-    console.log('handleInputFocus', this);
-
     this.props.onFocus && this.props.onFocus(true);
     if (this._ignoreBlur) {
       this.setIgnoreBlur(false)
