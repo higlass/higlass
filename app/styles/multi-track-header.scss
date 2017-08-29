@@ -1,19 +1,30 @@
 @import './colors';
 @import './transitions';
 
+$unit: 24px;
+
 .multitrack-header {
   position: relative;
   display: flex;
   justify-content: space-between;
-  height: 20px;
-  margin-bottom: 3px;
+  height: $unit;
+  margin-top: $unit / 4;
+  margin-bottom: $unit / 4;
   color: $gray;
-  font-size: 12px;
-  line-height: 20px;
+  font-size: $unit / 2;
+  line-height: $unit;
   vertical-align: middle;
   border: 0;
-  border-radius: 3px;
+  border-radius: $unit / 8;
   background: $gray-lighter;
+  transition: height $fast $ease,
+              margin $fast $ease;
+}
+
+.multitrack-header-active {
+  height: $unit + ($unit / 2);
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .multitrack-header-id {
@@ -35,15 +46,26 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
+  width: $unit;
   height: 100%;
   cursor: move;
+  border-radius: $unit / 8 0 0 $unit / 8;
+  transition: background $fast $ease;
+
+  &:hover {
+    background: $gray;
+
+    div {
+      background: $white;
+    }
+  }
 
   div {
     width: 1px;
     height: 50%;
     margin: 1px;
     background: $gray;
+    transition: background $fast $ease;
   }
 }
 
@@ -56,9 +78,9 @@
 }
 
 .multitrack-header-icon {
-  width: 2rem;
-  height: 2rem;
-  padding: 0.4rem;
+  width: $unit;
+  height: $unit;
+  padding: $unit / 4;
   transition: background $fast $ease,
               color $fast $ease;
 
@@ -70,6 +92,6 @@
   }
 
   &:last-child {
-    border-radius: 0 0.25rem 0.25rem 0;
+    border-radius: 0 $unit / 8 $unit / 8 0;
   }
 }
