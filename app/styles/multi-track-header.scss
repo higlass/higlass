@@ -3,13 +3,14 @@
 
 $unit: 24px;
 
-.multitrack-header {
+.multitrack-header,
+.multitrack-header-focus {
   position: relative;
   display: flex;
   justify-content: space-between;
   height: $unit;
-  margin-top: $unit / 4;
-  margin-bottom: $unit / 4;
+  margin-top: $unit / 6;
+  margin-bottom: $unit / 6;
   color: $gray;
   font-size: $unit / 2;
   line-height: $unit;
@@ -21,8 +22,8 @@ $unit: 24px;
               margin $fast $ease;
 }
 
-.multitrack-header-active {
-  height: $unit + ($unit / 2);
+.multitrack-header-focus {
+  height: $unit + ($unit / 3);
   margin-top: 0;
   margin-bottom: 0;
 }
@@ -70,7 +71,22 @@ $unit: 24px;
 }
 
 .multitrack-header-search {
+  position: relative;
   flex-grow: 1;
+  height: 100%;
+  margin-right: $unit / 2;
+
+  &:after {
+    position: absolute;
+    top: $unit / 8;
+    bottom: $unit / 8;
+    right: -($unit / 2);
+    display: block;
+    content: '';
+    width: 1px;
+    margin: 0 $unit / 4;
+    background: $gray-light;
+  }
 }
 
 .multitrack-header-nav-list {
@@ -79,7 +95,7 @@ $unit: 24px;
 
 .multitrack-header-icon {
   width: $unit;
-  height: $unit;
+  height: 100%;
   padding: $unit / 4;
   transition: background $fast $ease,
               color $fast $ease;
