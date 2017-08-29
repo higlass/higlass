@@ -1,4 +1,4 @@
-import PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js';
 
 import VerticalTiled1DPixiTrack from './VerticalTiled1DPixiTrack';
 

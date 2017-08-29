@@ -1,5 +1,5 @@
 import slugid from 'slugid';
-import PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js';
 
 import {PixiTrack} from './PixiTrack';
 

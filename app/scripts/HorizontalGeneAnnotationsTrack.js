@@ -2,7 +2,7 @@ import {tileProxy} from './services';
 import {HorizontalTiled1DPixiTrack} from './HorizontalTiled1DPixiTrack';
 import {colorToHex} from './utils';
 import boxIntersect from 'box-intersect';
-import PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js';
 
 let GENE_RECT_WIDTH = 1;
 let GENE_RECT_HEIGHT = 6;

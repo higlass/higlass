@@ -1,5 +1,5 @@
 import {formatPrefix, precisionPrefix} from 'd3-format';
-import PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js';
 import slugid from 'slugid';
 
 import {Track} from './Track.js';

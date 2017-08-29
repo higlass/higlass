@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom';
 import {WidthProvider} from 'react-grid-layout';
 import ReactGridLayout from 'react-grid-layout';
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
-import PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js';
 
 import {TiledPlot} from './TiledPlot.jsx';
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';

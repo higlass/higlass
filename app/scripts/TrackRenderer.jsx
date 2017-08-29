@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js';
 
 import {zoom, zoomIdentity} from 'd3-zoom';
 import {select,event} from 'd3-selection';

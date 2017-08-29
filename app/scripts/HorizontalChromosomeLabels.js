@@ -1,6 +1,6 @@
 import boxIntersect from 'box-intersect';
 import {scaleLinear} from 'd3-scale';
-import PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js';
 
 import {PixiTrack} from './PixiTrack';
 import {ChromosomeInfo} from './ChromosomeInfo';

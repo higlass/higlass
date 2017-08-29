@@ -1,5 +1,5 @@
 import {format} from 'd3-format';
-import PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js';
 
 const TICK_HEIGHT = 40;
 const TICK_MARGIN = 0;
