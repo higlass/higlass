@@ -11,6 +11,79 @@ inspired by modern online maps (so-called `slippy maps
 <http://wiki.openstreetmap.org/wiki/Slippy_Map>`_) to form a fast, extensible
 and responsive viewer for diverse types of genomic data.
 
+Track types
+~~~~~~~~~~~
+
+HiGlass supports both 1D and 2D track types that can be arranged in views to show desired
+combinations of data.
+
+.. raw:: html
+
+    <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap">
+
+.. figure:: img/bedlike-track-thumb.png
+    :height: 72px
+    :align: center
+    :figwidth: 100px
+    
+    Bed-like intervals
+
+.. figure:: img/gene-annotations-track-thumb.png
+    :height: 72px
+    :align: center
+    :figwidth: 100px
+
+    Gene annotations
+
+.. figure:: img/chromosome-labels-thumb.png
+    :align: center
+    :figwidth: 100px
+
+    Chromosome labels
+
+.. figure:: img/line-track-thumb.png
+    :align: center
+    :figwidth: 100px
+
+    Line
+
+.. figure:: img/point-track-thumb.png
+    :align: center
+    :figwidth: 100px
+
+    Point
+
+.. figure:: img/horizontal-heatmap-thumb.png
+    :align: center
+    :figwidth: 100px
+
+    Horizontal heatmap
+
+.. figure:: img/horizontal-2d-rectangle-domains-thumb.png
+    :align: center
+    :figwidth: 100px
+
+    Horizontal rectangle domains
+
+.. figure:: img/heatmap-track-thumb.png
+    :height: 72px
+    :align: center
+    :figwidth: 100px
+
+    Heatmap
+
+.. figure:: img/chromosome-grid-thumb.png
+    :height: 72px
+    :align: center
+    :figwidth: 100px
+
+    Chromosome grid
+
+
+
+.. raw:: html
+
+    </div>
 
 It can be used to display a variety of `track types <track_types.html>`_ populated with data from
 different file formats.
