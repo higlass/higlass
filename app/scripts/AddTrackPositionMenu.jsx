@@ -1,53 +1,50 @@
-import '../styles/AddTrackPositionMenu.css';
-
+import PropTypes from 'prop-types';
 import React from 'react';
 
-export class AddTrackPositionMenu extends React.Component {
-    constructor(props) {
-        super(props);
+import '../styles/AddTrackPositionMenu.scss';
 
-        // console.log('props:', props);
+export const AddTrackPositionMenu = props => (
+  <div>
+    <div styleName="add-track-position-span">{'Add Track...'}</div>
+    <table styleName="add-track-position-table">
+      <tbody>
+        <tr>
+          <td styleName="add-track-position-other"></td>
+          <td
+            onClick={() => props.onTrackPositionChosen('top')}
+            styleName="add-track-position-top-center"
+          >{"top"}</td>
+          <td styleName="add-track-position-other"></td>
+        </tr>
+        <tr style={{height: "80px"}}>
+          <td
+            onClick={() => props.onTrackPositionChosen('left')}
+            styleName="add-track-position-middle-left"
+          >{"left"}</td>
+          <td
+            onClick={() => props.onTrackPositionChosen('center')}
+            styleName="add-track-position-middle-middle"
+          >{"center"}</td>
+          <td
+            onClick={() => props.onTrackPositionChosen('right')}
+            styleName="add-track-position-middle-right"
+          >{"right"}</td>
+        </tr>
+        <tr>
+          <td styleName="add-track-position-other"></td>
+          <td
+            onClick={() => props.onTrackPositionChosen('bottom')}
+            styleName="add-track-position-bottom-middle"
+          >{"bottom"}</td>
+          <td styleName="add-track-position-other"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+);
 
-    }
-
-    render() {
-        return(
-            <div>
-            <div className="add-track-position-span">Add Track...</div>
-                <table className="add-track-position-table">
-                    <tbody>
-                        <tr>
-                            <td className='add-track-position-other'></td>
-                            <td
-                                className="add-track-position-top-center"
-                                onClick={e => this.props.onTrackPositionChosen('top') }
-                            >{"top"}</td>
-                            <td className='add-track-position-other'></td>
-                        </tr>
-                        <tr style={{height: "80px"}}>
-                            <td
-                                onClick={e => this.props.onTrackPositionChosen('left')}
-                                className="add-track-position-middle-left"
-                            >{"left"}</td>
-                            <td className="add-track-position-middle-middle"
-                                onClick={e => this.props.onTrackPositionChosen('center')}
-                            >{"center"}</td>
-                            <td className="add-track-position-middle-right"
-                                onClick={e => this.props.onTrackPositionChosen('right')}
-                            >{"right"}</td>
-                        </tr>
-                        <tr>
-                            <td className='add-track-position-other'></td>
-                            <td className="add-track-position-bottom-middle"
-                                onClick={e => this.props.onTrackPositionChosen('bottom')}
-                            >{"bottom"}</td>
-                            <td className='add-track-position-other'></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        )
-    }
-}
+AddTrackPositionMenu.propTypes = {
+  onTrackPositionChosen: PropTypes.func
+};
 
 export default AddTrackPositionMenu;
