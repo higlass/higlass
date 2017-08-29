@@ -255,6 +255,8 @@ export class CenterTrack extends React.Component {
   }
 
   mouseEnterHandler() {
+    if (this.props.isRangeSelectionActive) return;
+
     this.setState({
       isVisible: true
     });
