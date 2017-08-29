@@ -1,6 +1,7 @@
 @import url("alabaster.css");
 @import url('https://fonts.googleapis.com/css?family=Merriweather:300');
 @import url('https://fonts.googleapis.com/css?family=Francois+One');
+@import url('https://fonts.googleapis.com/css?family=Merriweather+Sans');
 
 div.body h1 { margin-bottom: 0.8em; font-size: 210%; }
 div.body h2 { font-size: 160%; }
@@ -17,11 +18,21 @@ div.body h4, div.body h5, div.body h6,
 }
 
 div.sphinxsidebar ul li.toctree-l2 > a {
+    line-height: 1.5em;
     font-size: 100%;
+    color: #666;
+    border-bottom: none;
+}
+
+h1.logo a {
+    /* color: #666; */
+    border-bottom: none;
 }
 
 div.sphinxsidebar ul li.toctree-l1 > a {
-    font-size: 100%;
+    line-height: 2.5em;
+    font-size: 110%;
+    border-bottom: none;
 }
 
 div.body p {

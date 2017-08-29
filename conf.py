@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# clodius documentation build configuration file, created by
+# higlass documentation build configuration file, created by
 # sphinx-quickstart on Mon Jul  3 16:40:45 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -46,7 +46,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'clodius'
+project = 'HiGlass'
 copyright = '2017, Peter Kerpedjiev'
 author = 'Peter Kerpedjiev'
 
@@ -83,7 +83,7 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'clodius_theme'
+html_theme = 'higlass_theme'
 html_theme_path= ["."]
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -119,7 +119,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'clodiusdoc'
+htmlhelp_basename = 'higlassdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -146,7 +146,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'clodius.tex', 'clodius Documentation',
+    (master_doc, 'higlass.tex', 'HiGlass Documentation',
      'Peter Kerpedjiev', 'manual'),
 ]
 
@@ -156,7 +156,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'clodius', 'clodius Documentation',
+    (master_doc, 'higlass', 'HiGlass Documentation',
      [author], 1)
 ]
 
@@ -167,8 +167,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'clodius', 'clodius Documentation',
-     author, 'clodius', 'One line description of project.',
+    (master_doc, 'higlass', 'HiGlass Documentation',
+     author, 'HiGlass', 'A visual explorer for large genomic data.',
      'Miscellaneous'),
 ]
 
