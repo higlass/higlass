@@ -53,6 +53,10 @@ h1.logo a {
     border-bottom: none;
 }
 
+div.body li {
+    line-height: 1.5em;
+}
+
 
 div.body p {
     line-height: 1.5em;
