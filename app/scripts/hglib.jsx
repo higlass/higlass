@@ -9,9 +9,6 @@ function launch (element, config, options, callback) {
   /**
    * The instance's public API will be passed into the callback
    *
-   * @method
-   * @author  Fritz Lekschas
-   * @date    2017-01-31
    * @param   {Object} higlass - HiGlass instance
    * @return  {Object} The instance's public API
    */
