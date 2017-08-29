@@ -1,10 +1,10 @@
-import {Track} from './Track.js';
-import {ticks} from 'd3-array';
-import {format, formatPrefix, precisionRound, precisionPrefix} from 'd3-format';
-import {colorToHex} from './utils';
+import {formatPrefix, precisionPrefix} from 'd3-format';
+import PIXI from 'pixi.js';
 import slugid from 'slugid';
-//import {LRUCache} from './lru.js';
-//
+
+import {Track} from './Track.js';
+
+import {colorToHex} from './utils';
 
 
 export class PixiTrack extends Track {

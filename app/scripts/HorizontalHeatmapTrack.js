@@ -1,3 +1,5 @@
+import PIXI from 'pixi.js';
+
 import {HeatmapTiledPixiTrack} from './HeatmapTiledPixiTrack';
 
 // Services

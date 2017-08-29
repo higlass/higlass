@@ -1,3 +1,5 @@
+import PIXI from 'pixi.js';
+
 import VerticalTiled1DPixiTrack from './VerticalTiled1DPixiTrack';
 
 export class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {

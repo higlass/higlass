@@ -1,8 +1,11 @@
+import boxIntersect from 'box-intersect';
+import {scaleLinear} from 'd3-scale';
+import PIXI from 'pixi.js';
+
 import {PixiTrack} from './PixiTrack';
 import {ChromosomeInfo} from './ChromosomeInfo';
 import {SearchField} from './search_field';
-import boxIntersect from 'box-intersect';
-import {scaleLinear} from 'd3-scale';
+
 import {absToChr} from './utils';
 
 let TICK_WIDTH = 200;

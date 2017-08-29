@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom';
 import {WidthProvider} from 'react-grid-layout';
 import ReactGridLayout from 'react-grid-layout';
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
+import PIXI from 'pixi.js';
 
 import {TiledPlot} from './TiledPlot.jsx';
 import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
@@ -112,12 +113,6 @@ export class HiGlassComponent extends React.Component {
       this.viewHeaders = {};
 
       this.boundRefreshView = (() => { this.refreshView(LONG_DRAG_TIMEOUT) }).bind(this);
-      //
-
-      let localServer = "localhost:8000";
-
-      //let usedServer = localServer;
-      //let usedServer = remoteServer;
 
       this.viewConfig = this.props.viewConfig;
 

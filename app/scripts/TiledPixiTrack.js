@@ -1,5 +1,6 @@
 import {median} from 'd3-array';
 import slugid from 'slugid';
+import PIXI from 'pixi.js';
 
 import PixiTrack from './PixiTrack';
 

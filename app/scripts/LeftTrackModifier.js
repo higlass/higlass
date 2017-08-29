@@ -1,3 +1,5 @@
+import PIXI from 'pixi.js';
+
 export class LeftTrackModifier {
     constructor(originalTrack) {
         this.scene = originalTrack.scene;

@@ -1,4 +1,6 @@
 import {color} from 'd3-color';
+import PIXI from 'pixi.js';
+
 import {PixiTrack} from './PixiTrack';
 import {ChromosomeInfo} from './ChromosomeInfo';
 

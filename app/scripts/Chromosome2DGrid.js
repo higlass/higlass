@@ -1,3 +1,5 @@
+import PIXI from 'pixi.js';
+
 import {PixiTrack} from './PixiTrack';
 import {ChromosomeInfo} from './ChromosomeInfo';
 import {SearchField} from './search_field';

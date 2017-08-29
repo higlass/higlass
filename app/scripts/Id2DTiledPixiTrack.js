@@ -1,3 +1,5 @@
+import PIXI from 'pixi.js';
+
 import Tiled2DPixiTrack from './Tiled2DPixiTrack';
 
 export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
