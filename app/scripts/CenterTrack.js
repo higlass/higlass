@@ -40,6 +40,12 @@ export class CenterTrack extends React.Component {
 
   /* -------------------------- Life Cycle Methods -------------------------- */
 
+  componentDidMount() {
+    if (this.props.isRangeSelectionActive) {
+      this.addBrush2d();
+    }
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (this.rangeSelectionTriggeredXY) {
       this.rangeSelectionTriggeredXY = false;
@@ -49,58 +55,81 @@ export class CenterTrack extends React.Component {
         nextProps.rangeSelection[0], this.props.chromInfo
       );
 
-      if (this.props.is1dRangeSelection) {
-        if (!this.rangeSelectionTriggeredX) {
-          this.moveBrushX(dim1);
+      if (this.props.chromInfo) {
+        if (this.props.is1dRangeSelection) {
+          if (!this.rangeSelectionTriggeredX) {
+            this.moveBrushX(dim1);
+          }
+          if (!this.rangeSelectionTriggeredY) {
+            this.moveBrushY(dim1);
+          }
+          this.rangeSelectionTriggeredX = false;
+          this.rangeSelectionTriggeredY = false;
+        } else {
+          this.moveBrushXY(
+            [
+              dim1,
+              genomeLociToPixels(
+                nextProps.rangeSelection[1], this.props.chromInfo
+              )
+            ]
+          );
         }
-        if (!this.rangeSelectionTriggeredY) {
-          this.moveBrushY(dim1);
-        }
-        this.rangeSelectionTriggeredX = false;
-        this.rangeSelectionTriggeredY = false;
-      } else {
-        this.moveBrushXY(
-          [
-            dim1,
-            genomeLociToPixels(
-              nextProps.rangeSelection[1], this.props.chromInfo
-            )
-          ]
-        );
       }
       return this.state !== nextState;
     }
     return true;
   }
 
-  componentDidUpdate(prevProps) {
-    if (
-      prevProps.isRangeSelectionActive !== this.props.isRangeSelectionActive
-    ) {
-      if (this.props.isRangeSelectionActive) {
-        this.addBrush2d();
-      } else {
-        this.removeBrush1d();
-        this.removeBrush2d();
-      }
+  componentDidUpdate() {
+    if (this.props.isRangeSelectionActive) {
+      this.addBrush2d();
+    } else {
+      this.removeBrush1d();
+      this.removeBrush2d();
     }
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
 
   addBrush1d() {
-    if (!this.brushElX && !this.brushElY) { return; }
+    if (
+      !this.brushElX ||
+      !this.brushElY || (
+        this.brushElXOld === this.brushElX &&
+        this.brushElYOld === this.brushElY
+      )
+    ) { return; }
+
+    if (this.brushElXOld) {
+      // Remove event listener on old element to avoid memory leaks
+      this.brushElXOld.on('.brush', null);
+    }
+
+    if (this.brushElYOld) {
+      // Remove event listener on old element to avoid memory leaks
+      this.brushElYOld.on('.brush', null);
+    }
 
     this.brushElX.call(this.brushBehaviorX);
     this.brushElY.call(this.brushBehaviorY);
+
+    this.brushElXOld = this.brushElX;
+    this.brushElYOld = this.brushElY;
 
     this.brushIs1dBound = true;
   }
 
   addBrush2d() {
-    if (!this.brushElXY) { return; }
+    if (!this.brushElXY || this.brushElXYOld === this.brushElXY) { return; }
+
+    if (this.brushElXYOld) {
+      // Remove event listener on old element to avoid memory leaks
+      this.brushElXYOld.on('.brush', null);
+    }
 
     this.brushElXY.call(this.brushBehaviorXY);
+    this.brushElXYOld = this.brushElXY;
     this.brushIs2dBound = true;
   }
 
@@ -256,6 +285,7 @@ export class CenterTrack extends React.Component {
 
       // Remove brush behavior
       this.brushElXY.on('.brush', null);
+      this.brushElXYOld = undefined;
 
       this.brushIs2dBound = false;
 
@@ -295,7 +325,7 @@ export class CenterTrack extends React.Component {
         }}
         styleName="styles.center-track"
       >
-        {this.props.chromInfo && isBrushable &&
+        {isBrushable &&
           <svg
             style={{
               height: this.props.height,

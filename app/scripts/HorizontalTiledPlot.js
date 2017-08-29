@@ -31,35 +31,47 @@ export class HorizontalTiledPlot extends React.Component {
 
   /* -------------------------- Life Cycle Methods -------------------------- */
 
+  componentDidMount() {
+    if (this.props.isRangeSelectionActive) {
+      this.addBrush();
+    }
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (this.rangeSelectionTriggered) {
       this.rangeSelectionTriggered = false;
       return this.state !== nextState;
     } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
-      this.moveBrush(
-        genomeLociToPixels(nextProps.rangeSelection[0], this.props.chromInfo)
-      );
+      if (this.props.chromInfo) {
+        this.moveBrush(
+          genomeLociToPixels(nextProps.rangeSelection[0], this.props.chromInfo)
+        );
+      }
       return this.state !== nextState;
     }
     return true;
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.isRangeSelectionActive !== this.props.isRangeSelectionActive) {
-      if (this.props.isRangeSelectionActive) {
-        this.addBrush();
-      } else {
-        this.removeBrush();
-      }
+  componentDidUpdate() {
+    if (this.props.isRangeSelectionActive) {
+      this.addBrush();
+    } else {
+      this.removeBrush();
     }
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
 
   addBrush() {
-    if (!this.brushEl) { return; }
+    if (!this.brushEl || this.brushElOld === this.brushEl) { return; }
+
+    if (this.brushElOld) {
+      // Remove event listener on old element to avoid memory leaks
+      this.brushElOld.on('.brush', null);
+    }
 
     this.brushEl.call(this.brushBehavior);
+    this.brushElOld = this.brushEl;
   }
 
   brushed() {
@@ -105,6 +117,7 @@ export class HorizontalTiledPlot extends React.Component {
 
       // Remove brush behavior
       this.brushEl.on('.brush', null);
+      this.brushElOld = undefined;
 
       this.props.onRangeSelectionEnd();
     }
@@ -125,7 +138,7 @@ export class HorizontalTiledPlot extends React.Component {
 
     return (
       <div styleName="styles.horizontal-tiled-plot">
-        {this.props.chromInfo && isBrushable &&
+        {isBrushable &&
           <svg
             ref={el => this.brushEl = select(el)}
             style={{
@@ -174,6 +187,7 @@ HorizontalTiledPlot.propTypes = {
   handleResizeTrack: PropTypes.func,
   handleSortEnd: PropTypes.func,
   is1dRangeSelection: PropTypes.bool,
+  isRangeSelectionActive: PropTypes.bool,
   onAddSeries: PropTypes.func,
   onCloseTrack: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
