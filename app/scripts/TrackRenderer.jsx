@@ -133,22 +133,10 @@ export class TrackRenderer extends React.Component {
     this.trackDefObjects = {};
 
     this.pubSubs = [];
-    this.keyDownHandlerBound = this.keyDownHandler.bind(this);
-    this.keyUpHandlerBound = this.keyUpHandler.bind(this);
-
-    this.state = {
-      selecting: false
-    };
   }
 
   componentWillMount() {
     this.pubSubs = [];
-    this.pubSubs.push(
-      pubSub.subscribe('keydown', this.keyDownHandlerBound)
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('keyup', this.keyUpHandlerBound)
-    );
     this.pubSubs.push(
       pubSub.subscribe('scroll', this.windowScrolledBound)
     );
@@ -252,9 +240,9 @@ export class TrackRenderer extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.selecting !== this.state.selecting) {
-      if (this.state.selecting) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.isRangeSelection !== this.props.isRangeSelection) {
+      if (this.props.isRangeSelection) {
         this.removeZoom();
       } else {
         this.addZoom();
@@ -275,7 +263,7 @@ export class TrackRenderer extends React.Component {
     this.pubSubs = [];
   }
 
-  /* -------------------------- Custom Moethods --------------------------- */
+  /* --------------------------- Custom Methods ----------------------------- */
 
   addZoom() {
     if (!this.divTrackAreaSelection) { return; }
@@ -283,22 +271,6 @@ export class TrackRenderer extends React.Component {
     // add back the previous transform
     this.divTrackAreaSelection.call(this.zoomBehavior);
     this.zoomBehavior.transform(this.divTrackAreaSelection, this.zoomTransform);
-  }
-
-  keyDownHandler(event) {
-    if (event.key === 'Alt') {
-      this.setState({
-        selecting: true
-      });
-    }
-  }
-
-  keyUpHandler(event) {
-    if (event.key === 'Alt') {
-      this.setState({
-        selecting: false
-      });
-    }
   }
 
   removeZoom() {
@@ -1186,6 +1158,7 @@ TrackRenderer.propTypes = {
   height: PropTypes.number,
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
+  isRangeSelection: PropTypes.bool,
   leftWidth: PropTypes.number,
   marginLeft: PropTypes.number,
   marginTop: PropTypes.number,

@@ -25,6 +25,9 @@ import {
   pixelToGenomeLoci
 } from './utils';
 
+// Configs
+import { MOUSE_TOOL_SELECT } from './configs';
+
 // Styles
 import '../styles/TiledPlot.scss';
 import stylesCenterTrack from '../styles/CenterTrack.scss';  // eslint-disable-line no-unused-vars
@@ -99,7 +102,6 @@ export class TiledPlot extends React.Component {
       chromInfo => this.setState({ chromInfo })
     );
   }
-
 
   componentDidMount() {
     this.element = ReactDOM.findDOMNode(this);
@@ -957,6 +959,7 @@ export class TiledPlot extends React.Component {
           height={this.state.height}
           initialXDomain={this.props.initialXDomain}
           initialYDomain={this.props.initialYDomain}
+          isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
           leftWidth={this.leftWidth}
           marginLeft={this.props.horizontalMargin}
           marginTop={this.props.verticalMargin}
@@ -1150,6 +1153,7 @@ TiledPlot.propTypes = {
   horizontalMargin: PropTypes.number,
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
+  mouseTool: PropTypes.string,
   onCloseTrack: PropTypes.func,
   onDataDomainChanged: PropTypes.func,
   onLockValueScale: PropTypes.func,

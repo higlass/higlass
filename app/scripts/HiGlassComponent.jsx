@@ -18,9 +18,8 @@ import ViewHeader from './ViewHeader';
 import {ChromosomeInfo} from './ChromosomeInfo';
 import api from './api';
 
-
 // Services
-import { domEvent } from './services';
+import { domEvent, pubSub } from './services';
 
 // Utils
 import {
@@ -41,6 +40,8 @@ import {
 // Configs
 import {
   DEFAULT_SERVER,
+  MOUSE_TOOL_MOVE,
+  MOUSE_TOOL_SELECT,
   LOCATION_LISTENER_PREFIX,
   LONG_DRAG_TIMEOUT,
   SHORT_DRAG_TIMEOUT,
@@ -127,7 +128,7 @@ export class HiGlassComponent extends React.Component {
         let viewsByUid = this.processViewConfig(JSON.parse(JSON.stringify(this.props.viewConfig)));
 
         this.state = {
-            bounded: this.props.options ? this.props.options.bounded : false,
+          bounded: this.props.options ? this.props.options.bounded : false,
           currentBreakpoint: 'lg',
           mounted: false,
           width: 0,
@@ -144,7 +145,8 @@ export class HiGlassComponent extends React.Component {
           //chooseTrackHandler: (viewUid, trackUid) => this.handleViewportProjected(views[0].uid, viewUid, trackUid),
           mouseOverOverlayUid: null,
           exportLinkModalOpen: false,
-          exportLinkLocation: null
+          exportLinkLocation: null,
+          mouseTool: MOUSE_TOOL_MOVE
         }
 
 
@@ -159,12 +161,22 @@ export class HiGlassComponent extends React.Component {
     this.triggerViewChangeDb = debounce(
       this.triggerViewChange.bind(this), 250
     );
+
+    this.pubSubs = [];
   }
 
   componentWillMount() {
     domEvent.register('keydown', document);
     domEvent.register('keyup', document);
     domEvent.register('scroll', document);
+
+    this.pubSubs = [];
+    this.pubSubs.push(
+      pubSub.subscribe('keydown', this.keyDownHandler.bind(this))
+    );
+    this.pubSubs.push(
+      pubSub.subscribe('keyup', this.keyUpHandler.bind(this))
+    );
 
     if (this.props.getApi) {
       this.props.getApi(this.api);
@@ -251,7 +263,7 @@ export class HiGlassComponent extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     this.animate();
 
     this.triggerViewChangeDb();
@@ -264,6 +276,9 @@ export class HiGlassComponent extends React.Component {
     domEvent.unregister('keydown', document);
     domEvent.unregister('keyup', document);
     domEvent.unregister('scroll', document);
+
+    this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+    this.pubSubs = [];
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
@@ -305,6 +320,22 @@ export class HiGlassComponent extends React.Component {
           }
       } else
           track.options = trackOptions;
+  }
+
+  keyDownHandler(event) {
+    if (event.key === 'Alt') {
+      this.setState({
+        mouseTool: MOUSE_TOOL_SELECT
+      });
+    }
+  }
+
+  keyUpHandler(event) {
+    if (event.key === 'Alt') {
+      this.setState({
+        mouseTool: MOUSE_TOOL_MOVE
+      });
+    }
   }
 
   animate() {
@@ -2500,6 +2531,7 @@ export class HiGlassComponent extends React.Component {
                       initialXDomain={view.initialXDomain}
                       initialYDomain={view.initialYDomain}
                       key={'tp' + view.uid}
+                      mouseTool={this.state.mouseTool}
                       onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
                       onDataDomainChanged={(xDomain, yDomain) => this.handleDataDomainChanged(view.uid, xDomain, yDomain)}
                       onLockValueScale={uid => this.handleLockValueScale(view.uid, uid)}
