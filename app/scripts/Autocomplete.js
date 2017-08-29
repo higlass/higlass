@@ -254,12 +254,13 @@ export class Autocomplete extends React.Component {
         ref: `item-${index}`
       })
     })
-    var style = {
+    let style = {
       left: this.state.menuLeft,
       top: this.state.menuTop,
       minWidth: this.state.menuWidth
     }
-    var menu = this.props.renderMenu(items, this.props.value, style)
+    if (!items.length) return null;
+    let menu = this.props.renderMenu(items, this.props.value, style)
     return React.cloneElement(menu, { ref: 'menu' })
   }
 
