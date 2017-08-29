@@ -323,7 +323,7 @@ export class HiGlassComponent extends React.Component {
   }
 
   keyDownHandler(event) {
-    if (event.key === 'Alt') {
+    if (this.props.options.rangeSelectionOnAlt && event.key === 'Alt') {
       this.setState({
         mouseTool: MOUSE_TOOL_SELECT
       });
@@ -331,7 +331,7 @@ export class HiGlassComponent extends React.Component {
   }
 
   keyUpHandler(event) {
-    if (event.key === 'Alt') {
+    if (this.props.options.rangeSelectionOnAlt && event.key === 'Alt') {
       this.setState({
         mouseTool: MOUSE_TOOL_MOVE
       });
@@ -387,6 +387,10 @@ export class HiGlassComponent extends React.Component {
 
   updateLockedValueScales(viewUid, trackUid) {
     let lockGroup = this.valueScaleLocks[this.combineViewAndTrackUid(viewUid, trackUid)];
+  }
+
+  setMouseTool(mouseTool) {
+    this.setState({ mouseTool });
   }
 
   syncValueScales(viewUid, trackUid) {
