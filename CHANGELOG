@@ -1,8 +1,9 @@
 v0.9.0
 
-- Add brushing behavior on holding down ALT
+- Add 1D and 2D range selection
 - Add support for SASS
 - Add support for CSS Modules
+- Update visuals of the context menu and view header
 
 v0.8.28
 
