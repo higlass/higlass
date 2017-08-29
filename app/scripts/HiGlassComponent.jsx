@@ -141,7 +141,7 @@ export class HiGlassComponent extends React.Component {
           mouseOverOverlayUid: null,
           exportLinkModalOpen: false,
           exportLinkLocation: null,
-          mouseTool: MOUSE_TOOL_MOVE
+          mouseTool: this.props.options ? this.props.options.mouseTool : MOUSE_TOOL_MOVE,
         }
 
 

@@ -675,7 +675,7 @@ export class TiledPlot extends React.Component {
   }
 
   rangeToGenomeLoci(range, scale) {
-    if (!scale) return;
+    if (!scale || !this.state.chromInfo) return null;
 
     return pixelToGenomeLoci(
       parseInt(scale.invert(range[0]), 10),

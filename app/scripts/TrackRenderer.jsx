@@ -157,7 +157,7 @@ export class TrackRenderer extends React.Component {
 
     this.pStage.mask = this.pMask;
 
-    this.addZoom();
+    if (!this.props.isRangeSelection) this.addZoom();
 
     this.canvasDom = ReactDOM.findDOMNode(this.currentProps.canvasElement);
 
