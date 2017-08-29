@@ -68,15 +68,15 @@ export class HorizontalTiledPlot extends React.Component {
   /* ---------------------------- Custom Methods ---------------------------- */
 
   addBrush() {
-    if (!this.brushEl || this.brushElOld === this.brushEl) { return; }
+    if (!this.brushEl || this.brushElAddedBefore === this.brushEl) { return; }
 
-    if (this.brushElOld) {
+    if (this.brushElAddedBefore) {
       // Remove event listener on old element to avoid memory leaks
-      this.brushElOld.on('.brush', null);
+      this.brushElAddedBefore.on('.brush', null);
     }
 
     this.brushEl.call(this.brushBehavior);
-    this.brushElOld = this.brushEl;
+    this.brushElAddedBefore = this.brushEl;
   }
 
   brushed() {
@@ -120,16 +120,16 @@ export class HorizontalTiledPlot extends React.Component {
   }
 
   removeBrush() {
-    if (this.brushEl) {
+    if (this.brushElAddedBefore) {
       // Reset brush selection
-      this.brushEl.call(
+      this.brushElAddedBefore.call(
         this.brushBehavior.move,
         null
       );
 
       // Remove brush behavior
-      this.brushEl.on('.brush', null);
-      this.brushElOld = undefined;
+      this.brushElAddedBefore.on('.brush', null);
+      this.brushElAddedBefore = undefined;
 
       this.props.onRangeSelectionEnd();
     }
