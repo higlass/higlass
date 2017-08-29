@@ -122,6 +122,16 @@ export class HiGlassComponent extends React.Component {
 
         let viewsByUid = this.processViewConfig(JSON.parse(JSON.stringify(this.props.viewConfig)));
 
+        let mouseTool = MOUSE_TOOL_MOVE;
+
+        if (this.props.options) {
+          switch (this.props.options.mouseTool) {
+            case MOUSE_TOOL_SELECT:
+              mouseTool = MOUSE_TOOL_SELECT;
+              break;
+          }
+        }
+
         this.state = {
           bounded: this.props.options ? this.props.options.bounded : false,
           currentBreakpoint: 'lg',
@@ -141,9 +151,8 @@ export class HiGlassComponent extends React.Component {
           mouseOverOverlayUid: null,
           exportLinkModalOpen: false,
           exportLinkLocation: null,
-          mouseTool: this.props.options ? this.props.options.mouseTool : MOUSE_TOOL_MOVE,
+          mouseTool: mouseTool
         }
-
 
         dictValues(viewsByUid).map(view => this.adjustLayoutToTrackSizes(view));
 
