@@ -10,6 +10,14 @@ export class Autocomplete extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      highlightedIndex: null,
+      menuTop: 0,
+      menuLeft: 0,
+      menuWidth: 0,
+      isOpen: false
+    }
+
     this.keyDownHandlers = {
       ArrowDown (event) {
         event.preventDefault()
@@ -23,7 +31,7 @@ export class Autocomplete extends React.Component {
         this._performAutoCompleteOnKeyUp = true
         this.setState({
           highlightedIndex: index,
-          isOpen: true,
+          isOpen: true
         })
       },
 
@@ -39,7 +47,7 @@ export class Autocomplete extends React.Component {
         this._performAutoCompleteOnKeyUp = true
         this.setState({
           highlightedIndex: index,
-          isOpen: true,
+          isOpen: true
         })
       },
 
@@ -53,7 +61,7 @@ export class Autocomplete extends React.Component {
           this.setState({
             isOpen: false
           }, () => {
-            this.refs.input.select()
+            this.inputEl.select()
           })
         }
         else {
@@ -66,7 +74,7 @@ export class Autocomplete extends React.Component {
             highlightedIndex: null
           }, () => {
             //this.refs.input.focus() // TODO: file issue
-            this.refs.input.setSelectionRange(
+            this.inputEl.setSelectionRange(
               value.length,
               value.length
             )
@@ -75,7 +83,7 @@ export class Autocomplete extends React.Component {
         }
       },
 
-      Escape (event) {
+      Escape () {
         this.setState({
           highlightedIndex: null,
           isOpen: false
@@ -84,39 +92,10 @@ export class Autocomplete extends React.Component {
     };
   }
 
-  getDefaultProps () {
-    return {
-      value: '',
-      wrapperProps: {},
-      wrapperStyle: {
-        display: 'inline-block'
-      },
-      inputProps: {},
-      onChange () {},
-      onSelect (value, item) {},
-      renderMenu (items, value, style) {
-        return <div style={{...style, ...this.menuStyle}} children={items}/>
-      },
-      shouldItemRender () { return true },
-      menuStyle: {
-        borderRadius: '3px',
-        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
-        background: 'rgba(255, 255, 255, 0.9)',
-        padding: '2px 0',
-        fontSize: '90%',
-        position: 'fixed',
-        overflow: 'auto',
-        maxHeight: '50%', // TODO: don't cheat, let it flow to the bottom
-      },
-      autoHighlight: true,
-      onMenuVisibilityChange () {},
-    }
-  }
-
   getInitialState () {
     return {
       isOpen: false,
-      highlightedIndex: null,
+      highlightedIndex: null
     }
   }
 
@@ -229,7 +208,7 @@ export class Autocomplete extends React.Component {
   }
 
   setMenuPositions () {
-    var node = this.refs.input
+    var node = this.inputEl
     var rect = node.getBoundingClientRect()
     var computedStyle = global.window.getComputedStyle(node)
     var marginBottom = parseInt(computedStyle.marginBottom, 10) || 0;
@@ -253,7 +232,7 @@ export class Autocomplete extends React.Component {
       highlightedIndex: null
     }, () => {
       this.props.onSelect(value, item)
-      this.refs.input.focus()
+      this.inputEl.focus()
     })
   }
 
@@ -272,19 +251,20 @@ export class Autocomplete extends React.Component {
         onMouseDown: () => this.setIgnoreBlur(true), // Ignore blur to prevent menu from de-rendering before we can process click
         onMouseEnter: () => this.highlightItemFromMouse(index),
         onClick: () => this.selectItemFromMouse(item),
-        ref: `item-${index}`,
+        ref: `item-${index}`
       })
     })
     var style = {
       left: this.state.menuLeft,
       top: this.state.menuTop,
-      minWidth: this.state.menuWidth,
+      minWidth: this.state.menuWidth
     }
     var menu = this.props.renderMenu(items, this.props.value, style)
     return React.cloneElement(menu, { ref: 'menu' })
   }
 
   handleInputBlur () {
+    this.props.onFocus && this.props.onFocus();
     if (this._ignoreBlur)
       return
     this.setState({
@@ -294,6 +274,9 @@ export class Autocomplete extends React.Component {
   }
 
   handleInputFocus () {
+    console.log('handleInputFocus', this);
+
+    this.props.onFocus && this.props.onFocus(true);
     if (this._ignoreBlur) {
       this.setIgnoreBlur(false)
       return
@@ -307,8 +290,10 @@ export class Autocomplete extends React.Component {
   }
 
   isInputFocused () {
-    var el = this.refs.input
-    return el.ownerDocument && (el === el.ownerDocument.activeElement)
+    return (
+      this.inputEl.ownerDocument &&
+      (this.inputEl === this.inputEl.ownerDocument.activeElement)
+    );
   }
 
   handleInputClick () {
@@ -338,19 +323,37 @@ export class Autocomplete extends React.Component {
 
     const { inputProps } = this.props;
     return (
-      <div style={{...this.props.wrapperStyle}} {...this.props.wrapperProps}>
+      <div
+        style={{...this.props.wrapperStyle}}
+        {...this.props.wrapperProps}
+      >
         <input
           {...inputProps}
-          role="combobox"
           aria-autocomplete="list"
           autoComplete="off"
-          ref="input"
-          onFocus={this.composeEventHandlers(this.handleInputFocus, inputProps.onFocus)}
-          onBlur={this.composeEventHandlers(this.handleInputBlur, inputProps.onBlur)}
-          onChange={this.handleChange}
-          onKeyDown={this.composeEventHandlers(this.handleKeyDown, inputProps.onKeyDown)}
-          onKeyUp={this.composeEventHandlers(this.handleKeyUp, inputProps.onKeyUp)}
-          onClick={this.composeEventHandlers(this.handleInputClick, inputProps.onClick)}
+          onBlur={this.composeEventHandlers(
+            this.handleInputBlur.bind(this),
+            inputProps.onBlur && inputProps.onBlur.bind(this)
+          )}
+          onChange={this.handleChange.bind(this)}
+          onClick={this.composeEventHandlers(
+            this.handleInputClick.bind(this),
+            inputProps.onClick && inputProps.onClick.bind(this)
+          )}
+          onFocus={this.composeEventHandlers(
+            this.handleInputFocus.bind(this),
+            inputProps.onFocus && inputProps.onFocus.bind(this)
+          )}
+          onKeyDown={this.composeEventHandlers(
+            this.handleKeyDown.bind(this),
+            inputProps.onKeyDown && inputProps.onKeyDown.bind(this)
+          )}
+          onKeyUp={this.composeEventHandlers(
+            this.handleKeyUp.bind(this),
+            inputProps.onKeyUp && inputProps.onKeyUp.bind(this)
+          )}
+          ref={el => this.inputEl = el}
+          role="combobox"
           value={this.props.value}
         />
         {('open' in this.props ? this.props.open : this.state.isOpen) && this.renderMenu()}
@@ -364,13 +367,47 @@ export class Autocomplete extends React.Component {
   }
 }
 
+Autocomplete.defaultProps = {
+  value: '',
+  wrapperProps: {},
+  wrapperStyle: {
+    display: 'inline-block'
+  },
+  inputProps: {},
+  onChange () {},
+  onSelect () {},
+  renderMenu (items, value, style) {
+    return (
+      <div
+        children={items}
+        style={{...style, ...this.menuStyle}}
+      />
+    )
+  },
+  shouldItemRender () { return true },
+  menuStyle: {
+    borderRadius: '3px',
+    boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
+    background: 'rgba(255, 255, 255, 0.9)',
+    padding: '2px 0',
+    fontSize: '90%',
+    position: 'fixed',
+    overflow: 'auto',
+    maxHeight: '50%'  // TODO: don't cheat, let it flow to the bottom
+  },
+  autoHighlight: true,
+  onMenuVisibilityChange () {}
+};
+
 Autocomplete.propTypes = {
   autoHighlight: PropTypes.bool,
   debug: PropTypes.bool,
   getItemValue: PropTypes.func.isRequired,
   inputProps: PropTypes.object,
+  items: PropTypes.array,
   menuStyle: PropTypes.object,
   onChange: PropTypes.func,
+  onFocus: PropTypes.func,
   onMenuVisibilityChange: PropTypes.func,
   onSelect: PropTypes.func,
   open: PropTypes.bool,
