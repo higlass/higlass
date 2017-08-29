@@ -688,6 +688,7 @@ export class TiledPlot extends React.Component {
     if (this.state.rangeSelectionMaster) {
       this.setState({
         is1dRangeSelection: null,
+        rangeSelection: [null, null],
         rangeSelectionMaster: null
       });
     }

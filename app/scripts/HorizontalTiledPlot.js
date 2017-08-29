@@ -26,7 +26,8 @@ export class HorizontalTiledPlot extends React.Component {
 
     this.brushBehavior = brushX(true)
       .on('start', this.brushStarted.bind(this))
-      .on('brush', this.brushed.bind(this));
+      .on('brush', this.brushed.bind(this))
+      .on('end', this.brushedEnded.bind(this));
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */
@@ -44,7 +45,11 @@ export class HorizontalTiledPlot extends React.Component {
     } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
       if (this.props.chromInfo) {
         this.moveBrush(
-          genomeLociToPixels(nextProps.rangeSelection[0], this.props.chromInfo)
+          nextProps.rangeSelection[0] ?
+            genomeLociToPixels(
+              nextProps.rangeSelection[0], this.props.chromInfo
+            ) :
+            null
         );
       }
       return this.state !== nextState;
@@ -90,18 +95,25 @@ export class HorizontalTiledPlot extends React.Component {
   }
 
   brushStarted() {
-    if (!event.sourceEvent) return;
+    if (!event.sourceEvent || !event.selection) return;
 
     this.props.onRangeSelectionStart();
+  }
+
+  brushedEnded() {
+    if (!event.selection && this.props.is1dRangeSelection) {
+      this.rangeSelectionTriggered = true;
+      this.props.onRangeSelectionEnd();
+    }
   }
 
   moveBrush(rangeSelection) {
     if (!this.brushEl) { return; }
 
-    const relRange = [
+    const relRange = rangeSelection ? [
       this.props.scale(rangeSelection[0]),
       this.props.scale(rangeSelection[1])
-    ]
+    ] : null;
 
     this.rangeSelectionMoved = true;
     this.brushEl.call(this.brushBehavior.move, relRange);

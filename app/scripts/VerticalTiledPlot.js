@@ -27,7 +27,8 @@ export class VerticalTiledPlot extends React.Component {
 
     this.brushBehavior = brushY(true)
       .on('start', this.brushStarted.bind(this))
-      .on('brush', this.brushed.bind(this));
+      .on('brush', this.brushed.bind(this))
+      .on('end', this.brushedEnded.bind(this));
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */
@@ -47,10 +48,11 @@ export class VerticalTiledPlot extends React.Component {
 
       if (this.props.chromInfo) {
         this.moveBrush(
-          genomeLociToPixels(
-            nextProps.rangeSelection[accessor],
-            this.props.chromInfo
-          )
+          nextProps.rangeSelection[accessor] ?
+            genomeLociToPixels(
+              nextProps.rangeSelection[accessor], this.props.chromInfo
+            ) :
+            null
         );
       }
       return this.state !== nextState;
@@ -96,22 +98,28 @@ export class VerticalTiledPlot extends React.Component {
   }
 
   brushStarted() {
-    if (!event.sourceEvent) return;
+    if (!event.sourceEvent || !event.selection) return;
 
     this.props.onRangeSelectionStart();
+  }
+
+  brushedEnded() {
+    if (!event.selection && this.props.is1dRangeSelection) {
+      this.rangeSelectionTriggered = true;
+      this.props.onRangeSelectionEnd();
+    }
   }
 
   moveBrush(rangeSelection) {
     if (!this.brushEl) { return; }
 
+    const relRange = rangeSelection ? [
+      this.props.scale(rangeSelection[0]),
+      this.props.scale(rangeSelection[1])
+    ] : null;
+
     this.rangeSelectionMoved = true;
-    this.brushEl.call(
-      this.brushBehavior.move,
-      [
-        this.props.scale(rangeSelection[0]),
-        this.props.scale(rangeSelection[1])
-      ]
-    );
+    this.brushEl.call(this.brushBehavior.move, relRange);
   }
 
   removeBrush() {

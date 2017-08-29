@@ -35,7 +35,8 @@ export class CenterTrack extends React.Component {
 
     this.brushBehaviorXY = brush(true)
       .on('start', this.brushStarted.bind(this))
-      .on('brush', this.brushedXY.bind(this));
+      .on('brush', this.brushedXY.bind(this))
+      .on('end', this.brushedXYEnded.bind(this));
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */
@@ -51,9 +52,10 @@ export class CenterTrack extends React.Component {
       this.rangeSelectionTriggeredXY = false;
       return this.state !== nextState;
     } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
-      const dim1 = genomeLociToPixels(
+
+      const dim1 = nextProps.rangeSelection[0] ? genomeLociToPixels(
         nextProps.rangeSelection[0], this.props.chromInfo
-      );
+      ) : null;
 
       if (this.props.chromInfo) {
         if (this.props.is1dRangeSelection) {
@@ -76,7 +78,10 @@ export class CenterTrack extends React.Component {
           );
         }
       }
-      return this.state !== nextState;
+
+      const isUnset = this.props.is1dRangeSelection && !nextProps.is1dRangeSelection && dim1 === null;
+
+      return this.state !== nextState || isUnset;
     }
     return true;
   }
@@ -184,6 +189,13 @@ export class CenterTrack extends React.Component {
     ]);
   }
 
+  brushedXYEnded() {
+    if (!event.selection && !this.props.is1dRangeSelection) {
+      this.rangeSelectionTriggeredXY = true;
+      this.props.onRangeSelectionEnd();
+    }
+  }
+
   brushStarted() {
     if (!event.sourceEvent) return;
 
@@ -198,10 +210,10 @@ export class CenterTrack extends React.Component {
       this.addBrush1d();
     }
 
-    const relRangeX = [
+    const relRangeX = rangeSelection ? [
       this.props.scaleX(rangeSelection[0]),
       this.props.scaleX(rangeSelection[1])
-    ];
+    ] : null;
 
     this.rangeSelectionMoved = true;
     this.brushElX.call(this.brushBehaviorX.move, relRangeX);
@@ -215,10 +227,10 @@ export class CenterTrack extends React.Component {
       this.addBrush1d();
     }
 
-    const relRangeY = [
+    const relRangeY = rangeSelection ? [
       this.props.scaleY(rangeSelection[0]),
       this.props.scaleY(rangeSelection[1])
-    ];
+    ] : null;
 
     this.rangeSelectionMoved = true;
     this.brushElY.call(this.brushBehaviorY.move, relRangeY);
