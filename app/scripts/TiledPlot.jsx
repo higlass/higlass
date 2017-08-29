@@ -665,6 +665,7 @@ export class TiledPlot extends React.Component {
       addTrackPosition: props.addTrackPosition,
       editable: props.editable,
       horizontalMargin: props.horizontalMargin,
+      mouseTool: props.mouseTool,
       verticalTiledPlot: props.verticalMargin,
       initialXDomain: props.initialXDomain,
       initialYDomain: props.initialYDomain,
@@ -776,6 +777,7 @@ export class TiledPlot extends React.Component {
           handleResizeTrack={this.handleResizeTrack.bind(this)}
           handleSortEnd={this.handleSortEnd.bind(this)}
           is1dRangeSelection={this.state.is1dRangeSelection}
+          isRangeSelectionActive={this.props.mouseTool === MOUSE_TOOL_SELECT}
           onAddSeries={this.handleAddSeries.bind(this)}
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
@@ -812,6 +814,7 @@ export class TiledPlot extends React.Component {
           handleSortEnd={this.handleSortEnd.bind(this)}
           height={this.centerHeight}
           is1dRangeSelection={this.state.is1dRangeSelection}
+          isRangeSelectionActive={this.props.mouseTool === MOUSE_TOOL_SELECT}
           onAddSeries={this.handleAddSeries.bind(this)}
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
@@ -845,6 +848,7 @@ export class TiledPlot extends React.Component {
           handleSortEnd={this.handleSortEnd.bind(this)}
           height={this.centerHeight}
           is1dRangeSelection={this.state.is1dRangeSelection}
+          isRangeSelectionActive={this.props.mouseTool === MOUSE_TOOL_SELECT}
           onAddSeries={this.handleAddSeries.bind(this)}
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
@@ -878,6 +882,7 @@ export class TiledPlot extends React.Component {
           handleResizeTrack={this.handleResizeTrack.bind(this)}
           handleSortEnd={this.handleSortEnd.bind(this)}
           is1dRangeSelection={this.state.is1dRangeSelection}
+          isRangeSelectionActive={this.props.mouseTool === MOUSE_TOOL_SELECT}
           onAddSeries={this.handleAddSeries.bind(this)}
           onCloseTrack={this.handleCloseTrack.bind(this)}
           onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
@@ -924,6 +929,7 @@ export class TiledPlot extends React.Component {
             editable={this.props.editable}
             height={this.centerHeight}
             is1dRangeSelection={this.state.is1dRangeSelection}
+            isRangeSelectionActive={this.props.mouseTool === MOUSE_TOOL_SELECT}
             onAddSeries={this.handleAddSeries.bind(this)}
             onCloseTrackMenuOpened={this.handleCloseTrackMenuOpened.bind(this)}
             onConfigTrackMenuOpened={this.handleConfigTrackMenuOpened.bind(this)}

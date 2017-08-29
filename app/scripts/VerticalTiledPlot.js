@@ -9,9 +9,6 @@ import ListWrapper from './ListWrapper';
 import VerticalItem from './VerticalItem';
 import SortableList from './SortableList';
 
-// Services
-import { pubSub } from './services';
-
 // Utils
 import { genomeLociToPixels, or, sum } from './utils';
 
@@ -28,29 +25,12 @@ export class VerticalTiledPlot extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      rangeSelecting: false
-    };
-
-    this.pubSubs = [];
-
     this.brushBehavior = brushY(true)
       .on('start', this.brushStarted.bind(this))
       .on('brush', this.brushed.bind(this));
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */
-
-  componentWillMount() {
-
-    this.pubSubs = [];
-    this.pubSubs.push(
-      pubSub.subscribe('keydown', this.keyDownHandler.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('keyup', this.keyUpHandler.bind(this))
-    );
-  }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.rangeSelectionTriggered) {
@@ -70,19 +50,14 @@ export class VerticalTiledPlot extends React.Component {
     return true;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.rangeSelecting !== this.state.rangeSelecting) {
-      if (this.state.rangeSelecting) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.isRangeSelectionActive !== this.props.isRangeSelectionActive) {
+      if (this.props.isRangeSelectionActive) {
         this.addBrush();
       } else {
         this.removeBrush();
       }
     }
-  }
-
-  componentWillUnmount() {
-    this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
-    this.pubSubs = [];
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
@@ -127,22 +102,6 @@ export class VerticalTiledPlot extends React.Component {
     );
   }
 
-  keyDownHandler(event) {
-    if (event.key === 'Alt') {
-      this.setState({
-        rangeSelecting: true
-      });
-    }
-  }
-
-  keyUpHandler(event) {
-    if (event.key === 'Alt') {
-      this.setState({
-        rangeSelecting: false
-      });
-    }
-  }
-
   removeBrush() {
     if (this.brushEl) {
       // Reset brush selection
@@ -167,7 +126,7 @@ export class VerticalTiledPlot extends React.Component {
       .map(track => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
-    const rangeSelectorClass = this.state.rangeSelecting ?
+    const rangeSelectorClass = this.props.isRangeSelectionActive ?
       'stylesTrack.track-range-selection-active' :
       'stylesTrack.track-range-selection';
 
@@ -224,6 +183,7 @@ VerticalTiledPlot.propTypes = {
   handleResizeTrack: PropTypes.func,
   handleSortEnd: PropTypes.func,
   is1dRangeSelection: PropTypes.bool,
+  isRangeSelectionActive: PropTypes.bool,
   height: PropTypes.number,
   onAddSeries: PropTypes.func,
   onCloseTrack: PropTypes.func,

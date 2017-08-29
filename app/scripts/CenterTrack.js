@@ -5,9 +5,6 @@ import { select, event } from 'd3-selection';
 
 import TrackControl from './TrackControl';
 
-// Services
-import { pubSub } from './services';
-
 // Utils
 import { genomeLociToPixels, or } from './utils';
 
@@ -27,11 +24,8 @@ export class CenterTrack extends React.Component {
     super(props);
 
     this.state = {
-      isVisible: false,
-      rangeSelecting: false
+      isVisible: false
     };
-
-    this.pubSubs = [];
 
     this.brushBehaviorX = brushX(true, true)
       .on('brush', this.brushedX.bind(this));
@@ -45,16 +39,6 @@ export class CenterTrack extends React.Component {
   }
 
   /* -------------------------- Life Cycle Methods -------------------------- */
-
-  componentWillMount() {
-    this.pubSubs = [];
-    this.pubSubs.push(
-      pubSub.subscribe('keydown', this.keyDownHandler.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('keyup', this.keyUpHandler.bind(this))
-    );
-  }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.rangeSelectionTriggeredXY) {
@@ -89,20 +73,17 @@ export class CenterTrack extends React.Component {
     return true;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.rangeSelecting !== this.state.rangeSelecting) {
-      if (this.state.rangeSelecting) {
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.isRangeSelectionActive !== this.props.isRangeSelectionActive
+    ) {
+      if (this.props.isRangeSelectionActive) {
         this.addBrush2d();
       } else {
         this.removeBrush1d();
         this.removeBrush2d();
       }
     }
-  }
-
-  componentWillUnmount() {
-    this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
-    this.pubSubs = [];
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
@@ -232,22 +213,6 @@ export class CenterTrack extends React.Component {
     this.brushElXY.call(this.brushBehaviorXY.move, relRange);
   }
 
-  keyDownHandler(event) {
-    if (event.key === 'Alt') {
-      this.setState({
-        rangeSelecting: true
-      });
-    }
-  }
-
-  keyUpHandler(event) {
-    if (event.key === 'Alt') {
-      this.setState({
-        rangeSelecting: false
-      });
-    }
-  }
-
   mouseEnterHandler() {
     this.setState({
       isVisible: true
@@ -305,7 +270,7 @@ export class CenterTrack extends React.Component {
       .map(track => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
-    const rangeSelectorClass = this.state.rangeSelecting ? (
+    const rangeSelectorClass = this.props.isRangeSelectionActive ? (
         this.props.is1dRangeSelection ?
           'stylesTrack.track-range-selection-active-secondary' :
           'stylesTrack.track-range-selection-active-primary'
@@ -378,6 +343,7 @@ CenterTrack.propTypes = {
   editable: PropTypes.bool,
   height: PropTypes.number,
   is1dRangeSelection: PropTypes.bool,
+  isRangeSelectionActive: PropTypes.bool,
   onAddSeries: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onConfigTrackMenuOpened: PropTypes.func,
