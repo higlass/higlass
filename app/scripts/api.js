@@ -3,10 +3,27 @@ import {
   scalesCenterAndK
 } from './utils';
 
+import {
+  MOUSE_TOOL_MOVE,
+  MOUSE_TOOL_SELECT
+} from './configs';
+
 export const api = function api(context) {
   const self = context;
 
   return {
+    activateTool(tool) {
+      switch (tool) {
+        case 'select':
+          self.setMouseTool(MOUSE_TOOL_SELECT);
+          break;
+
+        default:
+          self.setMouseTool(MOUSE_TOOL_MOVE);
+          break;
+      }
+    },
+
     goTo (
       viewUid,
       chrom1,
