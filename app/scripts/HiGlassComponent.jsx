@@ -11,7 +11,7 @@ import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import * as PIXI from 'pixi.js';
 
 import {TiledPlot} from './TiledPlot.jsx';
-import {GenomePositionSearchBox} from './GenomePositionSearchBox.jsx';
+import GenomePositionSearchBox from './GenomePositionSearchBox.js';
 import {ExportLinkModal} from './ExportLinkModal.jsx';
 import {createSymbolIcon} from './symbol';
 import {all as icons} from './icons';
@@ -1200,7 +1200,7 @@ export class HiGlassComponent extends React.Component {
       let currHeight = this.horizontalMargin * 2;
       let currWidth = this.verticalMargin * 2;    //currWidth will generally be ignored because it will just be set to
                             //the width of the enclosing container
-      let minNecessaryHeight = view.genomePositionSearchBoxVisible ? 30 : 0;
+      let minNecessaryHeight = 0;
       minNecessaryHeight += 10; // the header
 
       let MIN_VERTICAL_HEIGHT = 20;
@@ -1615,16 +1615,6 @@ export class HiGlassComponent extends React.Component {
             return;
 
         let totalTrackHeight = 0;
-
-        let gpsbHeight = 0;
-
-        if (view.genomePositionSearchBoxVisible) {
-            // have to take into account the position of the genome position search box
-            //let gpsbHeight = ReactDOM.findDOMNode(this.genomePositionSearchBox).clientHeight;
-            let gpsbHeight = 30;
-
-            totalTrackHeight += gpsbHeight;
-        }
 
         // we are not checking for this.viewHeaders because this function may be
         // called before the component is mounted
@@ -2561,39 +2551,34 @@ export class HiGlassComponent extends React.Component {
                   />
                 )
 
-
-
-                let genomePositionSearchBoxUid = slugid.nice();
-
-                this.genomePositionSearchBox = null;
-                let genomePositionSearchBox = view.genomePositionSearchBox ? (
-                    view.genomePositionSearchBox.visible ?
-                    (<GenomePositionSearchBox
-                        autocompleteServer={view.genomePositionSearchBox.autocompleteServer}
+                let getGenomePositionSearchBox = (isFocused, onFocus) => (
+                    <GenomePositionSearchBox
                         autocompleteId={view.genomePositionSearchBox.autocompleteId}
+                        autocompleteServer={view.genomePositionSearchBox.autocompleteServer}
+                        chromInfoId={view.genomePositionSearchBox.chromInfoId}
                         chromInfoServer={view.genomePositionSearchBox.chromInfoServer}
-
+                        isFocused={isFocused}
                         // the chromInfoId is either specified in the viewconfig or guessed based on
                         // the visible tracks (see createGenomePositionSearchBoxEntry)
-
-                        chromInfoId={view.genomePositionSearchBox.chromInfoId}
                         key={'gpsb' + view.uid}
+                        onFocus={onFocus}
                         onSelectedAssemblyChanged={(x,y) => this.handleSelectedAssemblyChanged(view.uid, x, y)}
                         ref={c => { this.genomePositionSearchBoxes[view.uid] = c }}
                         registerViewportChangedListener={listener => this.addScalesChangedListener(view.uid, view.uid, listener)}
                         removeViewportChangedListener={() => this.removeScalesChangedListener(view.uid, view.uid)}
                         setCenters={(centerX, centerY, k, animate, animateTime) => this.setCenters[view.uid](centerX, centerY, k, false, animate, animateTime)}
-                        twoD={true}
-
                         trackSourceServers={this.props.viewConfig.trackSourceServers}
-                     />) : null) : null;
-                //genomePositionSearchBox = null;
+                        twoD={true}
+                    />
+                )
 
                 let multiTrackHeader = this.props.viewConfig.editable ?
                     (
                          <ViewHeader
-                            onAddView={e=>this.handleAddView(view)}
-                            onCloseView={e=>this.handleCloseView(view.uid)}
+                            getGenomePositionSearchBox={getGenomePositionSearchBox}
+                            isGenomePositionSearchBoxVisible={view.genomePositionSearchBox.visible}
+                            onAddView={() =>this.handleAddView(view)}
+                            onCloseView={() =>this.handleCloseView(view.uid)}
                             onExportSVG={this.handleExportSVG.bind(this)}
                             onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
                             onExportViewsAsLink={this.handleExportViewsAsLink.bind(this)}
@@ -2608,7 +2593,6 @@ export class HiGlassComponent extends React.Component {
                             onProjectViewport={this.handleProjectViewport.bind(this)}
                             onTakeAndLockZoomAndLocation={uid => {
                                     this.handleYankFunction(uid, (a,b) => {
-
                                         this.handleZoomYanked(a,b);
                                         this.handleLocationYanked(a,b);
                                         this.handleZoomLockChosen(a,b);
@@ -2616,7 +2600,6 @@ export class HiGlassComponent extends React.Component {
                                     });
                                 }
                             }
-
                             onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
                             onTrackPositionChosen={position => this.handleTrackPositionChosen(view.uid, position)}
                             onUnlockLocation={uid => { this.handleUnlock(uid, this.locationLocks) }}
@@ -2635,22 +2618,21 @@ export class HiGlassComponent extends React.Component {
                             onZoomToData={uid => this.handleZoomToData(uid)}
                             ref={c => {this.viewHeaders[view.uid] = c}}
                             viewUid={view.uid}
-
                          />
                     ) : null; // this.editable ?
 
                             // data-grid={layout}
-                return (<div
-                            key={view.uid}
-                            ref={(c) => {this.tiledAreaDiv = c; }}
-                            style={tiledAreaStyle}
-
-                        >
-                                {multiTrackHeader}
-                                {genomePositionSearchBox}
-                                {tiledPlot}
-                            {overlay}
-                        </div>)
+                return (
+                    <div
+                        key={view.uid}
+                        ref={(c) => {this.tiledAreaDiv = c; }}
+                        style={tiledAreaStyle}
+                    >
+                        {multiTrackHeader}
+                        {tiledPlot}
+                        {overlay}
+                    </div>
+                )
 
             }.bind(this))   //end tiledAreas =
     }

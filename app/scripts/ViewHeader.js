@@ -17,10 +17,11 @@ export class ViewHeader extends React.Component {
     this.plusImg = null;
 
     this.state = {
+      addTrackPositionMenuUid: null,
+      addTrackPositionMenuPosition: null,
       configMenuUid: null,
       configMenuPosition: null,
-      addTrackPositionMenuUid: null,
-      addTrackPositionMenuPosition: null
+      isFocused: false
     }
   }
 
@@ -170,13 +171,27 @@ export class ViewHeader extends React.Component {
       );
     }
 
+    const GenomePositionSearchBox = this.props.getGenomePositionSearchBox(
+      this.state.isFocused,
+      (focus) => {
+        this.setState({
+          isFocused: focus
+        });
+      }
+    );
+
+    const className = this.state.isFocused ?
+      'multitrack-header-focus' : 'multitrack-header';
+
     return(
-      <div styleName="multitrack-header">
+      <div styleName={className}>
         <div styleName="multitrack-header-left">
           <div styleName="multitrack-header-grabber">
             <div /><div /><div />
           </div>
-          <div styleName="multitrack-header-search"></div>
+          <div styleName="multitrack-header-search">
+            {this.props.isGenomePositionSearchBoxVisible && GenomePositionSearchBox}
+          </div>
         </div>
         <nav styleName="multitrack-header-nav-list">
           <svg
@@ -218,6 +233,8 @@ export class ViewHeader extends React.Component {
 }
 
 ViewHeader.propTypes = {
+  getGenomePositionSearchBox: PropTypes.func,
+  isGenomePositionSearchBoxVisible: PropTypes.bool,
   onAddView: PropTypes.func,
   onCloseView: PropTypes.func,
   onExportSVG: PropTypes.func,

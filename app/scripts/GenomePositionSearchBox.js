@@ -469,17 +469,10 @@ export class GenomePositionSearchBox extends React.Component {
         <div
            children={items}
            style={{
-            position: 'fixed',
             left: this.menuPosition.left,
-            top: this.menuPosition.top,
-            borderRadius: '3px',
-            boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
-            background: 'rgba(255, 255, 255, 0.9)',
-            padding: '2px 0',
-            fontSize: '90%',
-            overflow: 'auto',
-            maxHeight: '50%'  // TODO: don't cheat, let it flow to the bottom
+            top: this.menuPosition.top
           }}
+          styleName="styles.genome-position-search-bar-suggestions"
         />
 
       </PopupMenu>
@@ -506,15 +499,21 @@ export class GenomePositionSearchBox extends React.Component {
       );
     });
 
+    const className = this.props.isFocused ?
+      'styles.genome-position-search-focus' : 'styles.genome-position-search';
+
     return(
       <FormGroup
         bsSize="small"
-        styleName="styles.genome-position-search"
+        styleName={className}
       >
+        <div styleName="styles.genome-position-search-bar-icon">
+          <Glyphicon glyph="search" />
+        </div>
 
         <DropdownButton
           bsSize="small"
-          className="assembly-pick-button"
+          className={styles['genome-position-search-bar-button']}
           id={this.uid}
           onSelect={this.handleAssemblySelect.bind(this)}
           ref={c => this.assemblyPickButton = c}
@@ -536,7 +535,6 @@ export class GenomePositionSearchBox extends React.Component {
             border: '1px solid black'
           }}
           onChange={this.onAutocompleteChange.bind(this)}
-          onFocus={this.props.onFocus}
           onMenuVisibilityChange={this.handleMenuVisibilityChange.bind(this)}
           onSelect={(value, objct) => this.geneSelected(value, objct)}
           onSubmit={this.searchFieldSubmit.bind(this)}
@@ -556,8 +554,9 @@ export class GenomePositionSearchBox extends React.Component {
         <Button
           bsSize="small"
           onClick={this.buttonClick.bind(this)}
+          styleName="genome-position-search-bar-button"
         >
-          <Glyphicon glyph="search" />
+          {'GO'}
         </Button>
       </FormGroup>
       );
@@ -568,6 +567,7 @@ GenomePositionSearchBox.propTypes = {
   autocompleteId: PropTypes.string,
   autocompleteServer: PropTypes.string,
   chromInfoId: PropTypes.string,
+  isFocused: PropTypes.bool,
   onFocus: PropTypes.func,
   onSelectedAssemblyChanged: PropTypes.func,
   registerViewportChangedListener: PropTypes.func,

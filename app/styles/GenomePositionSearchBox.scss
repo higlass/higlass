@@ -1,0 +1,127 @@
+@import './colors';
+@import './transitions';
+
+$unit: 24px;
+
+.genome-position-search,
+.genome-position-search-focus {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  margin-bottom: 0px;
+  font-size: $unit / 1.75;
+  transition: font-size $fast $ease;
+}
+
+.genome-position-search-focus {
+  font-size: $unit / 1.5;
+}
+
+.genome-position-search-bar {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: $unit / 8;
+  color: #666;
+  font-size: inherit;
+  line-height: $unit;
+  border: 0;
+  border-radius: $unit / 8 0 0 $unit / 8;
+  background: transparent;
+}
+
+.genome-position-search-bar-button {
+  display: block;
+  height: 100%;
+  padding: 0 $unit / 3 !important;
+  color: $gray;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent;
+
+  &:active,
+  &:focus,
+  &:hover {
+    color: $white;
+    background: $active;
+  }
+}
+
+.genome-position-search-bar-icon {
+  display: flex;
+  align-items: center;
+
+  &:first-child {
+    margin-left: $unit / 4;
+    margin-right: 2px;
+  }
+
+  span {
+    display: block;
+    margin-top: -2px;
+  }
+}
+
+.genome-position-search-bar-suggestions {
+  position: fixed;
+  border-radius: 3px;
+  box-shadow: 0 0 3px 0 $gray-lighter-rgba,
+              0 1px 5px 0 $gray-lightest-rgba;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid $gray-lighter-rgba;
+  padding: 2px 0;
+  font-size: 90%;
+  overflow: auto;
+  max-height: 50%;
+}
+
+.btn {
+  display: inline-block;
+  margin-bottom: 0;
+  font-size: $unit / 1.75;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.btn-sm {
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 3px;
+}
+
+.btn-default {
+  color: #666;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.btn-default:hover {
+  color: #000;
+  background: #ccc;
+}
+
+.btn-default:active,
+.btn-default:focus {
+  color: #fff;
+  border-color: #000;
+  background: #000;
+}
+
+.genome-position-search .btn {
+  border-radius: 0 3px 3px 0;
+}
