@@ -551,13 +551,12 @@ export class GenomePositionSearchBox extends React.Component {
           wrapperStyle={{width: "100%"}}
         />
 
-        <Button
-          bsSize="small"
+        <button
           onClick={this.buttonClick.bind(this)}
           styleName="genome-position-search-bar-button"
         >
           {'GO'}
-        </Button>
+        </button>
       </FormGroup>
       );
   }
