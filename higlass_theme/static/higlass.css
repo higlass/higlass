@@ -3,6 +3,16 @@
 @import url('https://fonts.googleapis.com/css?family=Francois+One');
 @import url('https://fonts.googleapis.com/css?family=Merriweather+Sans');
 
+li {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+p.caption {
+    font-size: 90%;
+    font-family: "Merriweather Sans";
+}
+
 div.body h1 { margin-bottom: 0.8em; font-size: 210%; }
 div.body h2 { font-size: 160%; }
 div.body h3 { font-size: 130%; }
@@ -17,11 +27,25 @@ div.body h4, div.body h5, div.body h6,
     line-height: 1.1em;
 }
 
+div.sphinxsidebar ul li.toctree-l2 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
 div.sphinxsidebar ul li.toctree-l2 > a {
-    line-height: 1.5em;
     font-size: 100%;
     color: #666;
     border-bottom: none;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+div.sphinxsidebar ul li.toctree-l1 > a {
+    line-height: 1.8em;
+    font-size: 110%;
+    border-bottom: none;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 
 h1.logo a {
@@ -29,11 +53,6 @@ h1.logo a {
     border-bottom: none;
 }
 
-div.sphinxsidebar ul li.toctree-l1 > a {
-    line-height: 2.5em;
-    font-size: 110%;
-    border-bottom: none;
-}
 
 div.body p {
     line-height: 1.5em;

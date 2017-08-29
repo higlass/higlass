@@ -1,3 +1,5 @@
+.. _track-types
+
 =======================
 HiGlass Track Types
 =======================
@@ -59,6 +61,23 @@ datatype: ``matrix``
 degrees. The base of the 1D heatmap is always the diagonal of the 2D heatmap.
 This is useful for displaying data, such as HiC, which has prominent features
 along the diagonal.
+
+.. _horizontal-2d-rectangle-domain
+
+Horizontal 2D Rectangle Domain
+==============================
+
+.. image:: img/horizontal-2d-rectangle-domains-thumb.png
+    :align: right
+
+track-type: ``horizontal-2d-rectangle-domains``
+datatype: ``2d-rectangle-domains``
+
+Horizontal rectangle domains show a 45 degree rotation of rectangular domains
+on a 1D track. This track is most commonly used with domains that are close to
+the diagonal of the heatmap. Because the track is oriented so that the diagonal
+of the 2D view is situated along its base, rectangles far from the diagonal may
+be outside of the bounds of the track.
 
 .. _line-track:
 
