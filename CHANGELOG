@@ -4,6 +4,7 @@ v0.9.0
 - Add support for SASS
 - Add support for CSS Modules
 - Update visuals of the context menu and view header
+- Integrate search bar into view header
 
 v0.8.28
 
