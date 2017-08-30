@@ -51,11 +51,13 @@ import {
 } from './configs';
 
 // Styles
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
-import '../styles/MultiViewContainer.css';
+// import 'react-grid-layout/css/styles.css';
+// import 'react-resizable/css/styles.css';
+// import '../styles/MultiViewContainer.css';
+import styles from '../styles/HiGlass.scss';
+import stylesMTHeader from '../styles/multi-track-header.scss';  // eslint-disable-line no-unused-vars
 
-let WidthReactGridLayout = WidthProvider(ReactGridLayout);
+const WidthReactGridLayout = WidthProvider(ReactGridLayout);
 
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
@@ -2664,12 +2666,13 @@ export class HiGlassComponent extends React.Component {
         layouts[i].blah = slugid.nice();
     */
 
-    let gridLayout =
-        (<WidthReactGridLayout
+    let gridLayout =(
+      <WidthReactGridLayout
           cols={12}
-          draggableHandle={'.multitrack-header'}
+          draggableHandle={stylesMTHeader['.multitrack-header-grabber']}
           isDraggable={this.props.viewConfig.editable}
           isResizable={this.props.viewConfig.editable}
+          layout={layouts}
           margin={this.props.viewConfig.editable ? [10,10] : [0,0]}
           measureBeforeMount={false}
           onBreakpointChange={this.onBreakpointChange.bind(this)}
@@ -2679,7 +2682,6 @@ export class HiGlassComponent extends React.Component {
           onResize={this.handleResize.bind(this)}
           ref={(c) => { this.gridLayout = c }}
           rowHeight={this.state.rowHeight}
-          layout={layouts}
           // for some reason, this becomes 40 within the react-grid component
           // (try resizing the component to see how much the height changes)
           // Programming by coincidence FTW :-/
@@ -2687,48 +2689,31 @@ export class HiGlassComponent extends React.Component {
           // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
           // and set `measureBeforeMount={true}`.
           useCSSTransforms={this.state.mounted}
-         >
-        { tiledAreas }
-        </WidthReactGridLayout>)
+      >
+        {tiledAreas}
+      </WidthReactGridLayout>
+    );
 
     return (
       <div
+        className="higlass"
         key={this.uid}
         ref={(c) => this.topDiv = c}
-        style={{position: "relative"}}
+        styleName="styles.higlass"
       >
         <canvas
-            key={this.uid}
-            ref={(c) => {
-                this.canvasElement = c}}
-            style={{
-                position: "absolute",
-                width: "100%",
-                height: "100%"
-            }}
+          key={this.uid}
+          ref={c => this.canvasElement = c}
+          styleName="styles.higlass-canvas"
         />
         <div
-            className="drawing-surface"
-            ref={(c) => this.divDrawingSurface=c}
-            style={{
-                    position: "absolute",
-                    background: 'yellow',
-                    opacity: 0.00,
-            }}
+          ref={(c) => this.divDrawingSurface=c}
+          styleName="styles.higlass-drawing-surface"
         />
-
-    {gridLayout}
-
+        {gridLayout}
         <svg
-            ref={(c) => this.svgElement = c}
-            style={{
-                position: "absolute",
-                width: "100%",
-                height: "100%",
-                left: 0,
-                top: 0,
-                pointerEvents: 'none'
-            }}
+          ref={(c) => this.svgElement = c}
+          styleName="styles.higlass-svg"
         />
         {exportLinkModal}
       </div>
