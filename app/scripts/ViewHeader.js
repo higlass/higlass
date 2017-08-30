@@ -6,8 +6,7 @@ import {ConfigViewMenu} from './ConfigViewMenu.jsx';
 import {AddTrackPositionMenu} from './AddTrackPositionMenu.jsx';
 
 // Styles
-import '../styles/multi-track-header.scss';  // eslint-disable-line no-unused-vars
-// import stylesContainer from '../styles/MultiViewContainer.css';  // eslint-disable-line no-unused-vars
+import '../styles/multi-track-header.scss';
 
 export class ViewHeader extends React.Component {
   constructor(props) {
