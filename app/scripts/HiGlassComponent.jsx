@@ -20,7 +20,7 @@ import {ChromosomeInfo} from './ChromosomeInfo';
 import api from './api';
 
 // Services
-import { domEvent, pubSub } from './services';
+import { chromInfo, domEvent, pubSub } from './services';
 
 // Utils
 import {
@@ -166,6 +166,7 @@ export class HiGlassComponent extends React.Component {
     );
 
     this.pubSubs = [];
+    this.rangeSelection = [null, null];
   }
 
   componentWillMount() {
@@ -2389,6 +2390,7 @@ export class HiGlassComponent extends React.Component {
   }
 
   rangeSelectionHandler(range) {
+    this.rangeSelection = range;
     this.rangeSelectionListener.forEach(
       callback => callback(range)
     );
@@ -2406,6 +2408,16 @@ export class HiGlassComponent extends React.Component {
     this.viewChangeListener.forEach(
       callback => callback(this.getViewsAsString())
     );
+  }
+
+  getGenomeLocation(viewId) {
+    return chromInfo
+      .get(this.state.views[viewId].chromInfoPath)
+      .then((chromInfo) => {
+        return scalesToGenomeLoci(
+          this.xScales[viewId], this.yScales[viewId], chromInfo
+        );
+      });
   }
 
   offLocationChange(viewId, listenerId) {
