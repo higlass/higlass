@@ -129,7 +129,7 @@ export class Autocomplete extends React.Component {
 
     this.maybeScrollItemIntoView()
     if (prevState.isOpen !== this.state.isOpen) {
-      this.props.onMenuVisibilityChange(this.state.isOpen)
+      this.props.onMenuVisibilityChange(this.state.isOpen, this.inputEl)
     }
   }
 

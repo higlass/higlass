@@ -5,7 +5,7 @@ import React from 'react';
 import slugid from 'slugid';
 import {
   FormGroup,
-  Glyphicon,Button,
+  Glyphicon,
   DropdownButton,
   MenuItem
 } from 'react-bootstrap';
@@ -56,6 +56,7 @@ export class GenomePositionSearchBox extends React.Component {
       loading: false,
       menuPosition: [0,0],
       genes: [],
+      isFocused: false,
       menuOpened: false,
       autocompleteServer: this.props.autocompleteServer,
       autocompleteId: this.props.autocompleteId,
@@ -448,8 +449,8 @@ export class GenomePositionSearchBox extends React.Component {
     this.setState({value: parts.join(' '), genes: []});
   }
 
-  handleMenuVisibilityChange(isOpen) {
-    const box = this.autocompleteMenu.inputEl.getBoundingClientRect();
+  handleMenuVisibilityChange(isOpen, inputEl) {
+    const box = inputEl.getBoundingClientRect();
 
     this.menuPosition = {
       left: box.left,
@@ -487,6 +488,12 @@ export class GenomePositionSearchBox extends React.Component {
     });
   }
 
+  focusHandler(isFocused) {
+    this.setState({
+      isFocused
+    });
+  }
+
   render() {
     let assemblyMenuItems = this.state.availableAssemblies.map(x => {
       return (
@@ -499,8 +506,16 @@ export class GenomePositionSearchBox extends React.Component {
       );
     });
 
-    const className = this.props.isFocused ?
+    const className = this.state.isFocused ?
       'styles.genome-position-search-focus' : 'styles.genome-position-search';
+
+    const classNameButton = this.state.isFocused ?
+      'styles.genome-position-search-bar-button-focus' :
+      'styles.genome-position-search-bar-button';
+
+    const classNameIcon = this.state.isFocused ?
+      'styles.genome-position-search-bar-icon-focus' :
+      'styles.genome-position-search-bar-icon';
 
     return(
       <FormGroup
@@ -509,7 +524,7 @@ export class GenomePositionSearchBox extends React.Component {
       >
         <div
           onClick={() => this.autocompleteMenu.inputEl.focus()}
-          styleName="styles.genome-position-search-bar-icon"
+          styleName={classNameIcon}
         >
           <Glyphicon glyph="search" />
         </div>
@@ -528,7 +543,7 @@ export class GenomePositionSearchBox extends React.Component {
         <Autocomplete
           getItemValue={(item) => item.geneName}
           inputProps={{
-            "className": styles['genome-position-search-bar']
+            className: styles['genome-position-search-bar']
           }}
           items={this.state.genes}
           menuStyle={{
@@ -538,6 +553,7 @@ export class GenomePositionSearchBox extends React.Component {
             border: '1px solid black'
           }}
           onChange={this.onAutocompleteChange.bind(this)}
+          onFocus={this.focusHandler.bind(this)}
           onMenuVisibilityChange={this.handleMenuVisibilityChange.bind(this)}
           onSelect={(value, objct) => this.geneSelected(value, objct)}
           onSubmit={this.searchFieldSubmit.bind(this)}
@@ -556,7 +572,7 @@ export class GenomePositionSearchBox extends React.Component {
 
         <button
           onClick={this.buttonClick.bind(this)}
-          styleName="genome-position-search-bar-button"
+          styleName={classNameButton}
         >
           {'GO'}
         </button>

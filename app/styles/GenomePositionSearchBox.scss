@@ -11,11 +11,13 @@ $unit: 24px;
   height: 100%;
   margin-bottom: 0px;
   font-size: $unit / 1.75;
-  transition: font-size $fast $ease;
+  transition: box-shadow $fast $ease,
+              font-size $fast $ease;
 }
 
 .genome-position-search-focus {
-  font-size: $unit / 1.5;
+  box-shadow: 0 0 0 1px $active,
+              0 0 3px 1px $active;
 }
 
 .genome-position-search-bar {
@@ -30,9 +32,15 @@ $unit: 24px;
   border: 0;
   border-radius: $unit / 8 0 0 $unit / 8;
   background: transparent;
+
+  &:focus {
+    outline: none;
+    color: $black;
+  }
 }
 
-.genome-position-search-bar-button {
+.genome-position-search-bar-button,
+.genome-position-search-bar-button-focus {
   display: block;
   height: 100%;
   padding: 0 $unit / 3 !important;
@@ -40,6 +48,8 @@ $unit: 24px;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent;
+  transition: background $fast $ease,
+              color $fast $ease;
 
   &:active,
   &:focus,
@@ -49,9 +59,16 @@ $unit: 24px;
   }
 }
 
-.genome-position-search-bar-icon {
+.genome-position-search-bar-button-focus {
+  color: $white;
+  background: $active;
+}
+
+.genome-position-search-bar-icon,
+.genome-position-search-bar-icon-focus {
   display: flex;
   align-items: center;
+  transition: color $fast $ease;
 
   &:first-child {
     margin-left: $unit / 4;
@@ -62,6 +79,10 @@ $unit: 24px;
     display: block;
     margin-top: -2px;
   }
+}
+
+.genome-position-search-bar-icon-focus {
+  color: $active;
 }
 
 .genome-position-search-bar-suggestions {
