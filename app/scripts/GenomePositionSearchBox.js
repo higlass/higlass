@@ -507,7 +507,10 @@ export class GenomePositionSearchBox extends React.Component {
         bsSize="small"
         styleName={className}
       >
-        <div styleName="styles.genome-position-search-bar-icon">
+        <div
+          onClick={() => this.autocompleteMenu.inputEl.focus()}
+          styleName="styles.genome-position-search-bar-icon"
+        >
           <Glyphicon glyph="search" />
         </div>
 
@@ -545,7 +548,7 @@ export class GenomePositionSearchBox extends React.Component {
               key={item.refseqid}
               style={isHighlighted ? this.styles.highlightedItem : this.styles.item}
             >{item.geneName}</div>
-            )}
+          )}
           renderMenu={this.handleRenderMenu.bind(this)}
           value={this.state.value}
           wrapperStyle={{width: "100%"}}
