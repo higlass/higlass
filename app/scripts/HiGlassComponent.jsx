@@ -51,10 +51,7 @@ import {
 } from './configs';
 
 // Styles
-// import 'react-grid-layout/css/styles.css';
-// import 'react-resizable/css/styles.css';
-// import '../styles/MultiViewContainer.css';
-import styles from '../styles/HiGlass.scss';
+import styles from '../styles/HiGlass.scss';  // eslint-disable-line no-unused-vars
 import stylesMTHeader from '../styles/multi-track-header.scss';  // eslint-disable-line no-unused-vars
 
 const WidthReactGridLayout = WidthProvider(ReactGridLayout);
@@ -2537,12 +2534,11 @@ export class HiGlassComponent extends React.Component {
                       onLockValueScale={uid => this.handleLockValueScale(view.uid, uid)}
                       onNewTilesLoaded={(trackUid) => this.handleNewTilesLoaded(view.uid, trackUid)}
                       onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
-                      onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
                       onRangeSelection={this.rangeSelectionHandler.bind(this)}
                       onScalesChanged={(x,y) => this.handleScalesChanged(view.uid, x, y)}
-                      onTracksAdded={(newTracks, position, host) => this.handleTracksAdded(view.uid, newTracks, position, host)}
                       onTrackOptionsChanged={(trackId, options) => this.handleTrackOptionsChanged(view.uid, trackId, options)}
                       onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
+                      onTracksAdded={(newTracks, position, host) => this.handleTracksAdded(view.uid, newTracks, position, host)}
                       onUnlockValueScale={uid => this.handleUnlockValueScale(view.uid, uid)}
                       pixiStage={this.pixiStage}
                       ref={c => this.tiledPlots[view.uid] = c}
