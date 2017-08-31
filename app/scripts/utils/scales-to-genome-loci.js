@@ -1,6 +1,6 @@
 import pixelToGenomeLoci from './pixel-to-genome-loci';
 
-export function scalesToGenomeLoci(xScale, yScale, chromInfo) {
+export const scalesToGenomeLoci = (xScale, yScale, chromInfo) => {
   if (chromInfo === null || (!xScale || !yScale)) { return; }
 
   const x0 = xScale.domain()[0];
@@ -13,3 +13,5 @@ export function scalesToGenomeLoci(xScale, yScale, chromInfo) {
     ...pixelToGenomeLoci(y0, y1, chromInfo)
   ]
 }
+
+export default scalesToGenomeLoci;
