@@ -24,7 +24,40 @@ export const api = function api(context) {
       }
     },
 
-    goTo (
+  /**
+   * Get a property of HiGlass.
+   *
+   * @description
+   * Returns the current value for any of the available listeners, e.g.,
+   * `get(rangeSelection)` will return the current range selection without
+   * requiring that a range selection event is fired.
+   *
+   * @param {string} prop - Name of the property.
+   * @param {string} viewId - UUID of the view `prop` relates to.
+   * @return {object} Promise resolving to the value.
+   */
+    get(prop, viewId) {
+      switch (prop) {
+        case 'location':
+          if(typeof viewId === 'undefined') {
+            return Promise.reject(
+              'Please provide the view UUID sweetheart 😙'
+            );
+          }
+          return self.getGenomeLocation(viewId);
+
+        case 'rangeSelection':
+          return Promise.resolve(self.rangeSelection);
+
+        case 'viewConfig':
+          return Promise.resolve(self.getViewsAsString());
+
+        default:
+          return Promise.reject(`Propert "${prop}" unknown`);
+      }
+    },
+
+    goTo(
       viewUid,
       chrom1,
       start1,
@@ -84,7 +117,7 @@ export const api = function api(context) {
           self.offRangeSelection(listenerId);
           break;
 
-        case 'view':
+        case 'viewConfig':
           self.offViewChange(listenerId);
           break;
 
@@ -103,7 +136,7 @@ export const api = function api(context) {
         case 'rangeSelection':
           return self.onRangeSelection(callback);
 
-        case 'view':
+        case 'viewConfig':
           return self.onViewChange(callback);
 
         default:
