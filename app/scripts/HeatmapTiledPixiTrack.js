@@ -260,6 +260,14 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         if (!this.options.colorbarPosition || this.options.colorbarPosition == 'hidden') {
             this.pColorbarArea.visible = false;
+
+            if (this.scaleBrush)
+                this.gColorscaleBrush.call(this.scaleBrush.move, null);
+
+            // turn off the color scale brush
+            this.gColorscaleBrush.on('.brush', null);
+            this.gColorscaleBrush.selectAll('rect').remove();
+
             return;
         } 
 

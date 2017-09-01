@@ -1,3 +1,7 @@
+v0.8.35
+
+- Fixed colorbar hiding bug (Issue #131)
+
 v0.8.34
 
 - Fixed horizontal heatmap loading after the adjustable color scale changes

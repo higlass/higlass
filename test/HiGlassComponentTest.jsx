@@ -13,11 +13,13 @@ import {
 import {
   scalesCenterAndK,
   dictValues,
-  totalTrackPixelHeight
+  totalTrackPixelHeight,
+  getTrackByUid
 } from '../app/scripts/utils.js';
 
 import { expect } from 'chai';
 import {scaleLinear} from 'd3-scale';
+import {select} from 'd3-selection';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
@@ -93,7 +95,13 @@ function isWaitingOnTiles(hgc) {
     for (let track of hgc.instance().iterateOverTracks()) {
         let trackObj = getTrackObject(hgc, track.viewId, track.trackId);
 
-        //console.log('trackObj', trackObj);
+        if (trackObj.originalTrack)
+            trackObj = trackObj.originalTrack;
+
+        if (!trackObj) {
+            console.warn('no track obj', getTrackObject(hgc, track.viewId, track.trackId));
+        }
+
         if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
             //console.log('not done ti:', trackObj);
             return true;
@@ -129,7 +137,7 @@ function waitForTilesLoaded(hgc, tilesLoadedCallback) {
      *  Nothing
      */
     const TILE_LOADING_CHECK_INTERVAL = 100;
-    //console.log('here');
+    //console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
 
     if (isWaitingOnTiles(hgc)) {
         setTimeout(() => { 
@@ -143,6 +151,8 @@ function waitForTilesLoaded(hgc, tilesLoadedCallback) {
 
 describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
+
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
     describe("Double view", () => {
 
@@ -176,12 +186,38 @@ describe("Simple HiGlassComponent", () => {
                 .trackDefObjects['c1'].trackObject.createdTracks['heatmap1'];
             expect(heatmap.pColorbarArea.x).to.be.below(heatmap.dimensions[0] / 2);
 
-            // make sure the labels are drawn on the outside
-            // expect(heatmap.axis.pAxis.getBounds().x).to.be.below(heatmap.pColorbar.getBounds().x);
-            //hgc.instance().handleExportSVG(); 
+            let selection  = select(ReactDOM.findDOMNode(hgc.instance()))
+            .selectAll('.selection');
+
+            // we expect a colorbar selector brush to be visible
+            // in both views
+            expect(selection.size()).to.eql(2);
         });
 
-        return;
+        it ("hides the colorbar", () => {
+            let views = hgc.instance().state.views;
+
+            let track = getTrackByUid(views['aa'].tracks, 'heatmap1');
+            console.log('track:', track);
+            track.options.colorbarPosition = 'hidden';
+
+            hgc.instance().setState(
+                views: views
+            );
+
+            let selection  = select(ReactDOM.findDOMNode(hgc.instance()))
+            .selectAll('.selection');
+
+            // we expect a colorbar selector brush to be hidden
+            // in one of the views
+            expect(selection.size()).to.be.eql(1);
+
+            track.options.colorbarPosition = 'topLeft';
+            hgc.instance().setState(
+                views: views
+            );
+        });
+
 
         it ('changes the colorbar color when the heatmap colormap is changed', () => {
             hgc.instance().handleTrackOptionsChanged('aa', 'line1', newOptions);
@@ -281,7 +317,7 @@ describe("Simple HiGlassComponent", () => {
             done();
         });
     })
-
+    return;
 
     describe("Export SVG properly", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -309,6 +345,7 @@ describe("Simple HiGlassComponent", () => {
             hgc.update();
             waitForTilesLoaded(hgc, done);
         });
+        return;
 
         it ("Exports to SVG", (done) => {
             let svg = hgc.instance().createSVG();

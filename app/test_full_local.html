@@ -34,20 +34,19 @@
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://localhost:8000/api/v1",
-    "http://higlass.io/api/v1"
+    "http://test2.higlass.io/api/v1"
   ],
   "exportViewUrl": "http://localhost:8000/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
       "initialXDomain": [
-        445541437.56973654,
-        2927865304.0072403
+        1749088633.5920825,
+        1771300591.4621453
       ],
       "initialYDomain": [
-        477488822.3109758,
-        2950301869.3003616
+        836001821.5685089,
+        848989720.561744
       ],
       "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
@@ -55,133 +54,113 @@
       "tracks": {
         "top": [
           {
-            "name": "test.bed.multires",
-            "created": "2017-08-21T16:40:47.066703Z",
-            "server": "http://localhost:8000/api/v1",
-            "tilesetUid": "MnEyAGLeRW62PgFW0G1O9w",
-            "uid": "egq7OmERRjmp4IxSk4Rszg",
-            "type": "bedlike",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "hidden",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "name": "test.bed.multires"
-            },
-            "width": 1452,
-            "height": 55,
+            "name": "Chromosome Axis",
+            "created": "2017-06-06T17:03:01.273116Z",
+            "server": "http://test2.higlass.io/api/v1",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
+            "uid": "a1zPP2Z0RT2_nkJRJrwsZg",
+            "type": "horizontal-chromosome-labels",
+            "options": {},
+            "width": 20,
+            "height": 30,
             "position": "top"
           },
           {
-            "name": "test.bed.multires",
-            "created": "2017-08-21T15:32:53.306851Z",
-            "server": "http://localhost:8000/api/v1",
-            "tilesetUid": "TDjbqcXkTb6JRF8usG8Iqw",
-            "uid": "WCnqhcCyQK2JjdyhE3d_DQ",
-            "type": "horizontal-1d-value-interval",
+            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+            "created": "2017-02-03T00:28:06.909619Z",
+            "server": "http://test2.higlass.io/api/v1",
+            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+            "uid": "XAInSEM4Q4KUFhJyINjgWg",
+            "type": "horizontal-heatmap",
+            "options": {
+              "labelPosition": "bottomRight",
+              "labelColor": "black",
+              "colorRange": [
+                "white",
+                "rgba(245,166,35,1.0)",
+                "rgba(208,2,27,1.0)",
+                "black"
+              ],
+              "maxZoom": null,
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+            },
+            "width": 1257,
+            "height": 238,
+            "transforms": [
+              {
+                "name": "ICE",
+                "value": "weight"
+              }
+            ],
+            "position": "top"
+          },
+          {
+            "name": "Forcato et al (2017) Rao_RepH_GM12878_TADBit.txt.multires.db",
+            "created": "2017-07-14T00:05:55.533166Z",
+            "server": "http://test2.higlass.io/api/v1",
+            "tilesetUid": "LOxv7UeDStqa14RG0FOirQ",
+            "uid": "G_YTgUSpS2CX5vXAyQ7A6Q",
+            "type": "horizontal-2d-rectangle-domains",
             "options": {
               "labelColor": "black",
               "labelPosition": "bottomLeft",
-              "axisPositionHorizontal": "left",
-              "lineStrokeColor": "blue",
-              "valueScaling": "linear",
-              "name": "test.bed.multires"
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "rectangleDomainFillColor": "grey",
+              "rectangleDomainStrokeColor": "black",
+              "rectangleDomainOpacity": 0.6,
+              "name": "Forcato et al (2017) Rao_RepH_GM12878_TADBit.txt.multires.db"
             },
-            "width": 1452,
-            "height": 20,
+            "width": 1257,
+            "height": 105,
             "position": "top"
           },
           {
-            "name": "Chromosome Axis",
-            "created": "2017-06-06T17:03:01.273116Z",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
-            "uid": "CWohAxjzQMOhtseg_NxbiQ",
-            "type": "horizontal-chromosome-labels",
-            "options": {},
-            "width": 1452,
-            "height": 30,
+            "name": "Forcato et al (2017) Rao_RepA1_GM12878_HiCseg.txt.multires.db",
+            "created": "2017-07-14T00:03:33.945759Z",
+            "server": "http://test2.higlass.io/api/v1",
+            "tilesetUid": "cs3PLbfDTKO0fso6UewTPQ",
+            "uid": "UOURRbTHSqCM0Lq-nThHyA",
+            "type": "horizontal-2d-rectangle-domains",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "bottomLeft",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "rectangleDomainFillColor": "grey",
+              "rectangleDomainStrokeColor": "black",
+              "rectangleDomainOpacity": 0.6,
+              "name": "Forcato et al (2017) Rao_RepA1_GM12878_HiCseg.txt.multires.db"
+            },
+            "width": 1257,
+            "height": 26,
+            "position": "top"
+          },
+          {
+            "name": "Gene Annotations (hg19)",
+            "created": "2017-02-05T19:31:52.412319Z",
+            "server": "http://test2.higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "KwS-FewsRi-7VbZj9hZLFw",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "name": "Gene Annotations (hg19)"
+            },
+            "width": 1257,
+            "height": 55,
             "position": "top"
           }
         ],
-        "left": [
-        {
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                "type": "vertical-heatmap",
-                "position": "left",
-                "options": {
-                  "maxZoom": null,
-                  "labelPosition": "bottomRight",
-                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                  "colorRange": [
-                    "white",
-                    "rgba(245,166,35,1.0)",
-                    "rgba(208,2,27,1.0)",
-                    "black"
-                  ],
-                  "colorbarLabelsPosition": "inside",
-                  "colorbarPosition": "topRight",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "heatmapValueScaling": "log",
-                  "scaleStartPercent": 0,
-                  "scaleEndPercent": 1
-                },
-                "uid": "GjuZed1ySGW1IzZZqFB9BA",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
-                "width": 200
-            }
-        ],
-        "center": [
-          {
-            "uid": "B3yWPkz0SWGXJV-HMGLKdw",
-            "type": "combined",
-            "contents": [
-              {
-                "name": "Dixon2012-J1-NcoI-R1-filtered.1000kb.multires.cool",
-                "created": "2017-06-16T14:48:15.369849Z",
-                "server": "http://localhost:8000/api/v1",
-                "tilesetUid": "W8MXDXQnTN-zT2WRhqdhIA",
-                "uid": "VOiNJ1TJQP-rAgcaF96zZw",
-                "type": "heatmap",
-                "options": {
-                  "labelPosition": "bottomRight",
-                  "colorRange": [
-                    "white",
-                    "rgba(245,166,35,1.0)",
-                    "rgba(208,2,27,1.0)",
-                    "black"
-                  ],
-                  "maxZoom": null,
-                  "colorbarPosition": "topRight",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "heatmapValueScaling": "log",
-                  "name": "Dixon2012-J1-NcoI-R1-filtered.1000kb.multires.cool",
-                  "scaleStartPercent": "0.00000",
-                  "scaleEndPercent": "1.00000"
-                },
-                "width": 100,
-                "height": 100,
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
-                "position": "center"
-              }
-            ],
-            "position": "center"
-          }
-        ],
+        "left": [],
+        "center": [],
         "right": [],
         "bottom": []
       },
