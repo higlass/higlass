@@ -213,9 +213,14 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     }
 
     brushMoved() {
+        if (!event.selection)
+            return;
+
+        //console.log('event.selection:', event.selection);
         let newOptions = this.newBrushOptions(event.selection);
 
         let strOptions = JSON.stringify(newOptions);
+
 
         //console.log('equal:', strOptions == this.prevOptions);
         //console.log('strOptions:', strOptions, newOptions)
