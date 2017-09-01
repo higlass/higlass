@@ -2570,8 +2570,10 @@ export class HiGlassComponent extends React.Component {
                   />
                 )
 
-                let getGenomePositionSearchBox = (isFocused, onFocus) => (
-                    <GenomePositionSearchBox
+                let getGenomePositionSearchBox = (isFocused, onFocus) => {
+                    if (!view.genomePositionSearchBox) return null;
+
+                    return <GenomePositionSearchBox
                         autocompleteId={view.genomePositionSearchBox.autocompleteId}
                         autocompleteServer={view.genomePositionSearchBox.autocompleteServer}
                         chromInfoId={view.genomePositionSearchBox.chromInfoId}
@@ -2589,13 +2591,13 @@ export class HiGlassComponent extends React.Component {
                         trackSourceServers={this.props.viewConfig.trackSourceServers}
                         twoD={true}
                     />
-                )
+                };
 
                 let multiTrackHeader = this.props.viewConfig.editable ?
                     (
                          <ViewHeader
                             getGenomePositionSearchBox={getGenomePositionSearchBox}
-                            isGenomePositionSearchBoxVisible={view.genomePositionSearchBox.visible}
+                            isGenomePositionSearchBoxVisible={view.genomePositionSearchBox && view.genomePositionSearchBox.visible}
                             onAddView={() =>this.handleAddView(view)}
                             onCloseView={() =>this.handleCloseView(view.uid)}
                             onExportSVG={this.handleExportSVG.bind(this)}
