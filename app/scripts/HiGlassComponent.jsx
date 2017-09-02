@@ -51,8 +51,10 @@ import {
 } from './configs';
 
 // Styles
-import styles from '../styles/HiGlass.scss';  // eslint-disable-line no-unused-vars
-import stylesMTHeader from '../styles/multi-track-header.scss';  // eslint-disable-line no-unused-vars
+import styles from '../styles/HiGlass.module.scss';  // eslint-disable-line no-unused-vars
+import stylesMTHeader from '../styles/ViewHeader.module.scss';  // eslint-disable-line no-unused-vars
+
+import stylesGlobal from '../styles/HiGlass.scss';  // eslint-disable-line no-unused-vars
 
 const WidthReactGridLayout = WidthProvider(ReactGridLayout);
 

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ContextMenuItem from './ContextMenuItem';
 
 // Styles
-import '../styles/ContextMenu.scss';
+import '../styles/ContextMenu.module.scss';
 
 export class ConfigViewMenu extends React.Component {
   render() {

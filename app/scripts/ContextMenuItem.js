@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 // Styles
-import '../styles/ContextMenu.scss';
+import '../styles/ContextMenu.module.scss';
 
 export class ContextMenuItem extends React.Component {
   render() {

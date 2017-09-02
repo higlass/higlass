@@ -16,9 +16,9 @@ import { genomeLociToPixels, or, sum } from './utils';
 import { IS_TRACK_RANGE_SELECTABLE } from './configs';
 
 // Styles
-import styles from '../styles/VerticalTiledPlot.scss';  // eslint-disable-line no-unused-vars
-import stylesPlot from '../styles/TiledPlot.scss';  // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.scss';  // eslint-disable-line no-unused-vars
+import styles from '../styles/VerticalTiledPlot.module.scss';  // eslint-disable-line no-unused-vars
+import stylesPlot from '../styles/TiledPlot.module.scss';  // eslint-disable-line no-unused-vars
+import stylesTrack from '../styles/Track.module.scss';  // eslint-disable-line no-unused-vars
 
 
 export class VerticalTiledPlot extends React.Component {

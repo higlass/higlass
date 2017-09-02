@@ -29,8 +29,8 @@ import {
 import { MOUSE_TOOL_SELECT } from './configs';
 
 // Styles
-import '../styles/TiledPlot.scss';
-import stylesCenterTrack from '../styles/CenterTrack.scss';  // eslint-disable-line no-unused-vars
+import '../styles/TiledPlot.module.scss';
+import stylesCenterTrack from '../styles/CenterTrack.module.scss';  // eslint-disable-line no-unused-vars
 
 export class TiledPlot extends React.Component {
   constructor(props) {

@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 // Styles
-import '../styles/ContextMenu.scss';
+import '../styles/ContextMenu.module.scss';
 
 
 export class ContextMenuContainer extends React.Component {

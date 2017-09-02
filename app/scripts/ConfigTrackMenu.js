@@ -8,7 +8,7 @@ import {SeriesListMenu} from './SeriesListMenu';
 import {TRACKS_INFO} from './configs';
 
 // Styles
-import '../styles/ContextMenu.scss';
+import '../styles/ContextMenu.module.scss';
 
 export class ConfigTrackMenu extends ContextMenuContainer {
   constructor(props) {

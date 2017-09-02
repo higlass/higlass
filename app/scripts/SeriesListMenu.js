@@ -11,7 +11,7 @@ import {
 } from './configs';
 
 // Styles
-import '../styles/ContextMenu.scss';
+import '../styles/ContextMenu.module.scss';
 
 export class ConfigureSeriesMenu extends ContextMenuContainer {
   render() {

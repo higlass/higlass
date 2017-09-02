@@ -20,7 +20,7 @@ import PopupMenu from './PopupMenu.jsx';
 import {scalesCenterAndK, dictKeys} from './utils';
 
 // Styles
-import styles from '../styles/GenomePositionSearchBox.scss';  // eslint-disable-line no-unused-vars
+import styles from '../styles/GenomePositionSearchBox.module.scss';  // eslint-disable-line no-unused-vars
 
 export class GenomePositionSearchBox extends React.Component {
   constructor(props) {

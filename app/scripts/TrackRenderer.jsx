@@ -52,7 +52,7 @@ import { pubSub } from './services';
 import { ZOOM_TRANSITION_DURATION } from './configs';
 
 // Styles
-import '../styles/TrackRenderer.scss';
+import '../styles/TrackRenderer.module.scss';
 
 
 const SCROLL_TIMEOUT = 100;

@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { SortableHandle } from 'react-sortable-hoc';
 
 // Styles
-import '../styles/TrackControl.scss';
+import '../styles/TrackControl.module.scss';
 
 export class TrackControl extends React.Component {
   render() {

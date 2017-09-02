@@ -4,7 +4,7 @@ import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
 
 // Styles
-import '../styles/ContextMenu.scss';
+import '../styles/ContextMenu.module.scss';
 
 export class NestedContextMenu extends ContextMenuContainer {
   getSubmenu() {

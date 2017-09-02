@@ -12,8 +12,8 @@ import { genomeLociToPixels, or } from './utils';
 import { IS_TRACK_RANGE_SELECTABLE } from './configs';
 
 // Styles
-import styles from '../styles/CenterTrack.scss';  // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.scss';  // eslint-disable-line no-unused-vars
+import styles from '../styles/CenterTrack.module.scss';  // eslint-disable-line no-unused-vars
+import stylesTrack from '../styles/Track.module.scss';  // eslint-disable-line no-unused-vars
 
 const STYLES = {
   pointerEvents: 'all'

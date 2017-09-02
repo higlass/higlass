@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import '../styles/AddTrackPositionMenu.scss';
+import '../styles/AddTrackPositionMenu.module.scss';
 
 export const AddTrackPositionMenu = props => (
   <div>

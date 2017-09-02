@@ -6,7 +6,7 @@ import {ConfigViewMenu} from './ConfigViewMenu.jsx';
 import {AddTrackPositionMenu} from './AddTrackPositionMenu.jsx';
 
 // Styles
-import '../styles/multi-track-header.scss';
+import '../styles/ViewHeader.module.scss';
 
 export class ViewHeader extends React.Component {
   constructor(props) {
