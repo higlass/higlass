@@ -143,20 +143,6 @@ export const api = function api(context) {
           // nothing
           break;
       }
-    },
-
-    refresh(force = false) {
-      if (self.props.options.bounded) {
-        self.fitPixiToParentContainer();
-      }
-
-      self.updateAfterResize();
-      self.render();
-      self.animate();
-
-      if (force) {
-        self.forceRefreshView();
-      }
     }
   };
 }
