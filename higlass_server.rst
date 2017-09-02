@@ -5,6 +5,28 @@ HiGlass Server
     :maxdepth: 2
     :caption: Contents:
 
+Configuration
+-------------
+
+The HiGlass server accepts a number of options to customize its use.
+Most of these options are set using environment variables before the
+server is started:
+
+.. code-block:: bash
+
+    export OPTION=value; python manage.py runserver
+
+``BASE_DIR`` - Set the Django base directory. This is where Django will 
+look for the database and the media directories.
+
+``REDIS_HOST`` - The host name for the redis server to use for tile caching.  If
+it's not specified, then no in-memory tile caching will be performed.
+
+``REDIS_PORT`` - The port for redis server to use for tile caching. If it's not
+set and a host is provided, the default port will be used.
+
+
+
 Development
 -----------
 

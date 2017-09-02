@@ -1,5 +1,5 @@
-HiGlass Client
-##############
+HiGlass Client (Developer)
+##########################
 
 1D Tracks
 *********
