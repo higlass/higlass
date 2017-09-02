@@ -2679,7 +2679,7 @@ export class HiGlassComponent extends React.Component {
     let gridLayout =(
       <WidthReactGridLayout
           cols={12}
-          draggableHandle={stylesMTHeader['.multitrack-header-grabber']}
+          draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
           isDraggable={this.props.viewConfig.editable}
           isResizable={this.props.viewConfig.editable}
           layout={layouts}
