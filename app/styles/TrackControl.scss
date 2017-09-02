@@ -1,7 +1,7 @@
 @import './colors';
 @import './transitions';
 
-$unit: 20px;
+$buttonSize: 20px;
 
 .track-control,
 .track-control-vertical {
@@ -9,9 +9,9 @@ $unit: 20px;
   z-index: -1;
   display: flex;
   background: rgba(255, 255, 255, 0.75);
-  right: $unit / 10;
-  top: $unit / 10;
-  border-radius: $unit / 8;
+  right: $buttonSize / 10;
+  top: $buttonSize / 10;
+  border-radius: $buttonSize / 8;
   box-shadow: 0 0 0 1px $gray-lightest-rgba,
               0 0 3px 0 $gray-lighter-rgba;
   opacity: 0;
@@ -25,7 +25,7 @@ $unit: 20px;
 }
 
 .track-control-left {
-  left: $unit / 10;
+  left: $buttonSize / 10;
   right: auto;
 }
 
@@ -46,9 +46,9 @@ $unit: 20px;
 }
 
 .track-control-button {
-  width: $unit;
-  height: $unit;
-  padding: $unit / 5;
+  width: $buttonSize;
+  height: $buttonSize;
+  padding: $buttonSize / 5;
   cursor: pointer;
   opacity: 0.66;
   transition: background $fast $ease,
@@ -62,20 +62,20 @@ $unit: 20px;
   }
 
   &:first-child {
-    border-radius: $unit / 8 0 0 $unit / 8;
+    border-radius: $buttonSize / 8 0 0 $buttonSize / 8;
   }
 
   &:last-child {
-    border-radius: 0 $unit / 8 $unit / 8 0;
+    border-radius: 0 $buttonSize / 8 $buttonSize / 8 0;
   }
 }
 
 .track-control-button-vertical {
   &:first-child {
-    border-radius: 0 0 $unit / 8 $unit / 8;
+    border-radius: 0 0 $buttonSize / 8 $buttonSize / 8;
   }
 
   &:last-child {
-    border-radius: $unit / 8 $unit / 8 0 0;
+    border-radius: $buttonSize / 8 $buttonSize / 8 0 0;
   }
 }
