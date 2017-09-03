@@ -1,11 +1,11 @@
-import {range} from 'd3-array';
+import { range } from 'd3-array';
 import slugid from 'slugid';
 
 import {
   workerFetchTiles,
   workerFetchMultiRequestTiles,
   workerGetTilesetInfo,
-  workerSetPix
+  workerSetPix,
 } from '../worker';
 
 // Config
@@ -40,8 +40,8 @@ const debounce = (func, wait) => {
 
     const later = () => {
       func({
-        sessionId: sessionId,
-        requests: bundledRequest
+        sessionId,
+        requests: bundledRequest,
       });
       reset();
     };
@@ -57,13 +57,13 @@ const debounce = (func, wait) => {
 
   debounced.immediate = () => {
     func({
-      sessionId: sessionId,
-      requests: bundledRequest
+      sessionId,
+      requests: bundledRequest,
     });
   };
 
   return debounced;
-}
+};
 
 const workerFetchTilesDebounced = debounce(workerFetchMultiRequestTiles, TILE_FETCH_DEBOUNCE);
 
@@ -75,7 +75,7 @@ const workerFetchTilesDebounced = debounce(workerFetchMultiRequestTiles, TILE_FE
  * @param server: A string with the server's url (e.g. "http://127.0.0.1")
  * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
  */
-export const fetchTilesDebounced = (request) =>
+export const fetchTilesDebounced = request =>
   workerFetchTilesDebounced(request);
 
 /**
@@ -98,18 +98,18 @@ export const calculateZoomLevel = (scale, minX, maxX) => {
   const rangeWidth = scale.range()[1] - scale.range()[0];
   const zoomScale = Math.max(
     (maxX - minX) / (scale.domain()[1] - scale.domain()[0]),
-    1
+    1,
   );
 
   // fun fact: the number 384 is halfway between 256 and 512
   const addedZoom = Math.max(
     0,
-    Math.ceil(Math.log(rangeWidth / 384) / Math.LN2)
+    Math.ceil(Math.log(rangeWidth / 384) / Math.LN2),
   );
   const zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + addedZoom;
 
-  return zoomLevel
-}
+  return zoomLevel;
+};
 
 /**
  * Calculate the tiles that should be visible get a data domain
@@ -125,35 +125,36 @@ export const calculateZoomLevel = (scale, minX, maxX) => {
  * @param minX: The minimum possible value in the dataset
  * @param maxX: The maximum possible value in the dataset
  * @param maxZoom: The maximum zoom value in this dataset
- * @param maxWidth: The width of the largest (roughlty equal to 2 ** maxZoom * tileSize * tileResolution)
+ * @param maxWidth: The width of the largest
+ *   (roughlty equal to 2 ** maxZoom * tileSize * tileResolution)
  */
 export const calculateTiles = (
-  zoomLevel, scale, minX, maxX, maxZoom, maxWidth
+  zoomLevel, scale, minX, maxX, maxZoom, maxWidth,
 ) => {
-  if (zoomLevel > maxZoom) zoomLevel = maxZoom;
+  const zoomLevelFinal = zoomLevel > maxZoom ? maxZoom : zoomLevel;
 
   // the ski areas are positioned according to their
   // cumulative widths, which means the tiles need to also
   // be calculated according to cumulative width
 
-  const tileWidth = maxWidth /  Math.pow(2, zoomLevel);
+  const tileWidth = maxWidth / (2 ** zoomLevelFinal);
 
   const epsilon = 0.0000001;
 
   return range(
-    Math.max(0,Math.floor((scale.domain()[0] - minX) / tileWidth)),
+    Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
     Math.min(
-      Math.pow(2, zoomLevel),
-      Math.ceil(((scale.domain()[1] - minX) - epsilon) / tileWidth)
-    )
+      2 ** zoomLevelFinal,
+      Math.ceil(((scale.domain()[1] - minX) - epsilon) / tileWidth),
+    ),
   );
-}
+};
 
 export const trackInfo = (server, tilesetUid, done) => {
-  let outUrl = server + '/tileset_info/?d=' + tilesetUid + '&s=' + this.sessionId;
+  const outUrl = `${server}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
 
   workerGetTilesetInfo(outUrl, done);
-}
+};
 
 /**
  * Render 2D tile data. Convert the raw values to an array of
@@ -166,27 +167,27 @@ export const trackInfo = (server, tilesetUid, done) => {
  * @param colorScale: a 255 x 4 rgba array used as a color scale
  */
 export const tileDataToPixData = (
-  tile, valueScale, pseudocount, colorScale, finished
-) =>{
-    const tileData = tile.tileData;
+  tile, valueScale, pseudocount, colorScale, finished,
+) => {
+  const tileData = tile.tileData;
 
-    // clone the tileData so that the original array doesn't get neutered
-    // when being passed to the worker script
-    const newTileData = new Float32Array(tileData.dense.length);
-    newTileData.set(tileData.dense);
+  // clone the tileData so that the original array doesn't get neutered
+  // when being passed to the worker script
+  const newTileData = new Float32Array(tileData.dense.length);
+  newTileData.set(tileData.dense);
 
-    // comment this and uncomment the code afterwards to enable threading
-    const pixData = workerSetPix(
-      newTileData.length,
-      newTileData,
-      valueScale,
-      pseudocount,
-      colorScale
-    );
+  // comment this and uncomment the code afterwards to enable threading
+  const pixData = workerSetPix(
+    newTileData.length,
+    newTileData,
+    valueScale,
+    pseudocount,
+    colorScale,
+  );
 
-    finished(pixData);
+  finished(pixData);
 
-      /*
+  /*
     this.threadPool.run(function(input, done) {
           let tileData = input.tileData;
           importScripts(input.scriptPath + '/scripts/worker.js');
@@ -203,9 +204,15 @@ export const tileDataToPixData = (
        .on('error', function(job, error) {
         //console.log('error', error);
        })
-    .send({scriptPath: scriptPath, tileData: newTileData, minVisibleValue: minVisibleValue, maxVisibleValue: maxVisibleValue}, [newTileData.buffer]);
+    .send({
+      scriptPath: scriptPath,
+      tileData: newTileData,
+      minVisibleValue: minVisibleValue,
+      maxVisibleValue: maxVisibleValue},
+      [newTileData.buffer]
+    );
     */
-}
+};
 
 const api = {
   calculateTiles,
@@ -213,7 +220,7 @@ const api = {
   fetchTiles,
   fetchTilesDebounced,
   tileDataToPixData,
-  trackInfo
+  trackInfo,
 };
 
 export default api;
