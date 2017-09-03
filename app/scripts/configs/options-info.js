@@ -3,7 +3,7 @@ import {
   precisionPrefix
 } from 'd3-format';
 
-import { HeatmapOptions } from '../HeatmapOptions.jsx';
+import { HeatmapOptions } from '../HeatmapOptions';
 
 const AVAILABLE_COLORS = {
   'black': { name: 'Black', value: 'black'},

@@ -10,9 +10,9 @@ import ReactGridLayout from 'react-grid-layout';
 import {ResizeSensor,ElementQueries} from 'css-element-queries';
 import * as PIXI from 'pixi.js';
 
-import {TiledPlot} from './TiledPlot.jsx';
-import GenomePositionSearchBox from './GenomePositionSearchBox.js';
-import {ExportLinkModal} from './ExportLinkModal.jsx';
+import {TiledPlot} from './TiledPlot';
+import GenomePositionSearchBox from './GenomePositionSearchBox';
+import {ExportLinkModal} from './ExportLinkModal';
 import {createSymbolIcon} from './symbol';
 import {all as icons} from './icons';
 import ViewHeader from './ViewHeader';

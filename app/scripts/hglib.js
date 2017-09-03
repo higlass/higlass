@@ -1,9 +1,9 @@
 import { json } from 'd3-request';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HiGlassComponent } from './HiGlassComponent.jsx';
+import { HiGlassComponent } from './HiGlassComponent';
 
-export {HiGlassComponent} from './HiGlassComponent.jsx';
+export {HiGlassComponent} from './HiGlassComponent';
 
 function launch (element, config, options, callback) {
   /**

@@ -2,8 +2,8 @@ import '../styles/TrackOptions.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { CompactPicker } from 'react-color';
-import {HiGlassComponent} from './HiGlassComponent.jsx';
-import SketchInlinePicker from './SketchInlinePicker.jsx';
+import {HiGlassComponent} from './HiGlassComponent';
+import SketchInlinePicker from './SketchInlinePicker';
 import slugid from 'slugid';
 
 import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-bootstrap';

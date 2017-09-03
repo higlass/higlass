@@ -1,9 +1,9 @@
 import React from 'react';
 import {PropTypes} from 'prop-types';
-import {PopupMenu} from './PopupMenu.jsx';
+import {PopupMenu} from './PopupMenu';
 import ContextMenuContainer from './ContextMenuContainer';
-import {ConfigViewMenu} from './ConfigViewMenu.jsx';
-import {AddTrackPositionMenu} from './AddTrackPositionMenu.jsx';
+import {ConfigViewMenu} from './ConfigViewMenu';
+import {AddTrackPositionMenu} from './AddTrackPositionMenu';
 
 // Styles
 import '../styles/ViewHeader.module.scss';

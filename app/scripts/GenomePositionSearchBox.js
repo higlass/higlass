@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import Autocomplete from './Autocomplete';
 import {ChromosomeInfo} from './ChromosomeInfo';
 import {SearchField} from './search_field';
-import PopupMenu from './PopupMenu.jsx';
+import PopupMenu from './PopupMenu';
 
 // Utils
 import {scalesCenterAndK, dictKeys} from './utils';

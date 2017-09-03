@@ -5,15 +5,15 @@ import PropTypes from 'prop-types';
 import {ResizeSensor, ElementQueries} from 'css-element-queries';
 
 import CenterTrack from './CenterTrack';
-import TrackRenderer from './TrackRenderer.jsx';
-import AddTrackModal from './AddTrackModal.jsx';
+import TrackRenderer from './TrackRenderer';
+import AddTrackModal from './AddTrackModal';
 import ConfigTrackMenu from './ConfigTrackMenu';
-import CloseTrackMenu from './CloseTrackMenu.jsx';
-import PopupMenu from './PopupMenu.jsx';
+import CloseTrackMenu from './CloseTrackMenu';
+import PopupMenu from './PopupMenu';
 import ContextMenuContainer from './ContextMenuContainer';
 import HorizontalTiledPlot from './HorizontalTiledPlot';
 import VerticalTiledPlot from './VerticalTiledPlot';
-// import {HeatmapOptions} from './HeatmapOptions.jsx';
+// import {HeatmapOptions} from './HeatmapOptions';
 
 // Services
 import { chromInfo } from './services';

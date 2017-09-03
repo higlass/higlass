@@ -2,7 +2,7 @@ import '../styles/TrackOptions.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { CompactPicker } from 'react-color';
-import SketchInlinePicker from './SketchInlinePicker.jsx';
+import SketchInlinePicker from './SketchInlinePicker';
 import slugid from 'slugid';
 
 import {Modal,Button,FormGroup,FormControl,ControlLabel,HelpBlock} from 'react-bootstrap';

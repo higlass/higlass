@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 //import d3 from 'd3';
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
-import {HiGlassComponent} from './HiGlassComponent.jsx';
-import {HiGlassInput} from './HiGlassInput.jsx';
+import {HiGlassComponent} from './HiGlassComponent';
+import {HiGlassInput} from './HiGlassInput';
 import {Button, Panel, FormGroup, ControlLabel, FormControl, SafeAnchor} from 'react-bootstrap';
 
 // Configs

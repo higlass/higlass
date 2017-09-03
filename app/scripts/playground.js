@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {HiGlassDemo} from './HiGlassDemo.jsx';
+import {HiGlassDemo} from './HiGlassDemo';
 
 try {
 ReactDOM.render(
