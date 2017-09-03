@@ -3,7 +3,9 @@ import {ChromosomeInfo} from './ChromosomeInfo.js';
 import {SearchField} from './search_field.js';
 import boxIntersect from 'box-intersect';
 import {scaleLinear} from 'd3-scale';
-import {absoluteToChr} from './utils.js';
+
+import {absoluteToChr,
+PIXITextToSvg} from './utils.js';
 
 let TICK_WIDTH = 200;
 let TICK_HEIGHT = 6;
@@ -274,7 +276,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
             base = document.createElement('g');
             track = base;
         }
-        base.setAttribute('id', 'HorizontalChromosomeLabels');
+        base.setAttribute('class', 'chromosome-labels');
 
         let output = document.createElement('g');
         track.appendChild(output);
@@ -286,19 +288,16 @@ export class HorizontalChromosomeLabels extends PixiTrack {
             if (!text.text.visible)
                 continue;
 
-            let g = document.createElement('g');
-            let t = document.createElement('text');
-            t.setAttribute('text-anchor', 'middle');
-            t.setAttribute('font-family', this.textFontFamily);
-            t.setAttribute('font-size', this.textFontSize);
-            g.setAttribute('transform', `scale(${text.text.scale.x},1)`);
-            
-            t.setAttribute('fill', this.textFontColor);
-            t.innerHTML = text.text.text;
-
-            g.appendChild(t);
-            g.setAttribute('transform', `translate(${text.text.x},${text.text.y})scale(${text.text.scale.x},1)`);
+            let g = PIXITextToSvg(text.text);
             output.appendChild(g);
+        }
+
+        for (let key in this.tickTexts) {
+            for (let text of this.tickTexts[key]) {
+                let g = PIXITextToSvg(text);
+
+                output.appendChild(g);
+            }
         }
 
         return [base, track];

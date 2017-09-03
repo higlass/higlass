@@ -338,6 +338,14 @@ export class PixiTrack extends Track {
     }
 
 
+    /** 
+     * Export an SVG representation of this track
+     *
+     * @returns {[DOMNode,DOMNode]} The two returned DOM nodes are both SVG
+     * elements [base,track]. Base is a parent which contains track as a
+     * child. Track is clipped with a clipping rectangle contained in base.
+     *  
+     */
     exportSVG() {
         let gBase = document.createElement('g');
 
@@ -398,10 +406,15 @@ export class PixiTrack extends Track {
             // http://stackoverflow.com/a/16701952/899470
 
             text.innerText = lineParts[i];
-            if (this.labelPosition == 'topLeft')
-                text.setAttribute('dy', ddy + ((i + 1) * (this.labelTextFontSize + 2)) );
-            else if (this.labelPosition == 'bottomLeft')
+            if (this.options.labelPosition == 'topLeft' || 
+                this.options.labelPosition == 'topRight') {
+                let dy = ddy + ((i + 1) * (this.labelTextFontSize + 2)) ;
+                text.setAttribute('dy', dy);
+            }
+            else if (this.labelPosition == 'bottomLeft' || 
+                     this.labelPosition == 'bottomRight') {
                 text.setAttribute('dy', ddy + (i * (this.labelTextFontSize + 2)) );
+            }
 
             text.setAttribute('fill', this.options.labelColor);
             
@@ -428,9 +441,10 @@ export class PixiTrack extends Track {
         //text.setAttribute('y', this.labelText.y);
 
 
-
         gLabels.setAttribute('transform', `translate(${this.labelText.x},${this.labelText.y})scale(${this.labelText.scale.x},1)`);
-        gBase.appendChild(gLabels);
+
+        // labels should be clipped so they're added to track rather than base
+        gTrack.appendChild(gLabels);
 
         // return the whole SVG and where the specific track should draw its
         // contents

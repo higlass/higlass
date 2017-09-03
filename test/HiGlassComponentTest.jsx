@@ -154,6 +154,52 @@ describe("Simple HiGlassComponent", () => {
 
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
+    describe("Export SVG properly", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            hgc = mount(<HiGlassComponent 
+                          options={{bounded: false}}
+                          viewConfig={project1D}
+                        />, 
+                {attachTo: div});
+
+            hgc.update();
+            waitForTilesLoaded(hgc, done);
+        });
+
+        it ("Exports to SVG", (done) => {
+            let svg = hgc.instance().createSVG();
+            let svgText = new XMLSerializer().serializeToString(svg);
+
+            //check to make sure that the horizontal labels shifted down
+            // the horizontal lines' labels should be shifted down
+            expect(svgText.indexOf('dy="14"')).to.be.above(0);
+
+            // check to make sure that chromosome ticks are there
+            expect(svgText.indexOf('chr17:40,500,000')).to.be.above(0);
+
+            hgc.instance().handleExportSVG();
+
+            done();
+        });
+    });
+
+    return;
+
     // wait a bit of time for the data to be loaded from the server
     describe("Track positioning", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -403,8 +449,6 @@ describe("Simple HiGlassComponent", () => {
         });
     });
 
-    return;
-
     describe("Double view", () => {
 
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -570,44 +614,6 @@ describe("Simple HiGlassComponent", () => {
         });
     })
     return;
-
-    describe("Export SVG properly", () => {
-        it ('Cleans up previously created instances and mounts a new component', (done) => {
-            if (hgc) {
-                hgc.unmount();
-                hgc.detach();
-            }
-
-            if (div) {
-                global.document.body.removeChild(div);
-            }
-
-            div = global.document.createElement('div');
-            global.document.body.appendChild(div);
-
-            div.setAttribute('style', 'width:800px;background-color: lightgreen');
-            div.setAttribute('id', 'simple-hg-component');
-
-            hgc = mount(<HiGlassComponent 
-                          options={{bounded: false}}
-                          viewConfig={project1D}
-                        />, 
-                {attachTo: div});
-
-            hgc.update();
-            waitForTilesLoaded(hgc, done);
-        });
-        return;
-
-        it ("Exports to SVG", (done) => {
-            let svg = hgc.instance().createSVG();
-            let svgText = new XMLSerializer().serializeToString(svg);
-
-            //hgc.instance().handleExportSVG();
-
-            done();
-        });
-    });
 
     describe("Color scale limiting", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
