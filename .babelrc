@@ -1,5 +1,5 @@
 {
-    "presets": ["es2016", "react"],
+    "presets": ["es2016", "airbnb", "react"],
     "plugins": ["transform-object-rest-spread"]
 
 }
