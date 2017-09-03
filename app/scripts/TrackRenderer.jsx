@@ -105,6 +105,10 @@ export class TrackRenderer extends React.Component {
           return false;
         return true;
       })
+      // Limit max zoomout level to 0.25
+      // .scaleExtent([0.25, Infinity])
+      // Define translate extend
+      // .translateExtent([[-2000, -2000], [2000, 2000]])
       .on('start', this.zoomStartedBound)
       .on('zoom', this.zoomedBound)
       .on('end', this.zoomEndedBound);
@@ -331,16 +335,17 @@ export class TrackRenderer extends React.Component {
     this.cumCenterXOffset = 0;
 
     this.drawableToDomainX = scaleLinear()
-      .domain([this.currentProps.marginLeft + this.currentProps.leftWidth,
-          this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth])
+      .domain([
+        this.currentProps.marginLeft + this.currentProps.leftWidth,
+        this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth
+      ])
       .range([initialXDomain[0], initialXDomain[1]]);
 
-    let midXDomain = (initialXDomain[0] + initialXDomain[0]) / 2;
-    let yDomainWidth = (initialXDomain[1] - initialXDomain[0]) * (this.currentProps.centerHeight / this.currentProps.centerWidth);
-
     this.drawableToDomainY = scaleLinear()
-      .domain([this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 - this.currentProps.centerWidth / 2,
-          this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2])
+      .domain([
+        this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 - this.currentProps.centerWidth / 2,
+        this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2
+      ])
       .range([initialYDomain[0], initialYDomain[1]]);
   }
 
@@ -396,12 +401,12 @@ export class TrackRenderer extends React.Component {
 
     //this.xScale should always span the region that the zoom behavior is being called on
     this.xScale = scaleLinear()
-            .domain(visibleXDomain)
-            .range([0, this.currentProps.width]);
-    this.yScale = scaleLinear()
-            .domain(visibleYDomain)
-            .range([0, this.currentProps.height]);
+      .domain(visibleXDomain)
+      .range([0, this.currentProps.width]);
 
+    this.yScale = scaleLinear()
+      .domain(visibleYDomain)
+      .range([0, this.currentProps.height]);
 
     for (let uid in this.trackDefObjects) {
       let track = this.trackDefObjects[uid].trackObject;
