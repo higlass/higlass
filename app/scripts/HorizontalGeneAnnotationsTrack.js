@@ -31,7 +31,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
          *      Function to be called when something in this track changes.
          *  popupCallback: function
          *      Callback for when this track wishes to display extra information 
-         *      (e.g. gene information)
+         *      (e.g. gene information
          */
         super(scene, server, uid, handleTilesetInfoReceived, options, animate, popupCallback);
         this.textFontSize = '10px';
@@ -170,6 +170,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
                 //console.log('rectY', rectY);
                 //this.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
                 tile.rectGraphics.drawRect(rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT);
+                tile.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
             }
 
             if (!tile.texts) {
@@ -229,6 +230,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         let yExonPos = yMiddle - exonHeight / 2;
 
         graphics.drawRect(xStartPos, yPos, width, lineHeight);
+        rects.push([xStartPos, yPos, width, lineHeight]);
 
         for (let j = 0; j < exonStarts.length; j++) {
             let exonStart = exonStarts[j];
@@ -435,8 +437,11 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
             t.setAttribute('text-anchor', 'middle');
             t.setAttribute('font-family', this.textFontFamily);
             t.setAttribute('font-size', this.textFontSize);
+
+            // this small adjustment of .2em is to place the text better
+            // in relation to the rectangles used for the genes and exons
+            t.setAttribute('dy', "-.2em");
             g.setAttribute('transform', `scale(${text.text.scale.x},1)`);
-            
 
             if (text.strand == '+') {
                 //t.setAttribute('stroke', this.options.plusStrandColor);
