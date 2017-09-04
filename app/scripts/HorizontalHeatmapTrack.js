@@ -193,10 +193,10 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
    *              and tile.graphics
    */
   renderTile(tile) {
-    if (this.options.heatmapValueScaling == 'log') {
+    if (this.options.heatmapValueScaling === 'log') {
       this.valueScale = scaleLog().range([254, 0])
         .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-    } else if (this.options.heatmapValueScaling == 'linear') {
+    } else if (this.options.heatmapValueScaling === 'linear') {
       this.valueScale = scaleLinear().range([254, 0])
         .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
     }
@@ -205,16 +205,30 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     if (this.options
             && typeof (this.options.scaleStartPercent) !== 'undefined'
             && typeof (this.options.scaleEndPercent) !== 'undefined') {
-      this.limitedValueScale.domain(
-        [this.valueScale.domain()[0] + (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * (this.options.scaleStartPercent),
-          this.valueScale.domain()[0] + (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * (this.options.scaleEndPercent)]);
+      this.limitedValueScale.domain([
+        (
+          this.valueScale.domain()[0] +
+          (
+            (this.valueScale.domain()[1] - this.valueScale.domain()[0]) *
+            this.options.scaleStartPercent
+          )
+        ),
+        (
+          this.valueScale.domain()[0] +
+          (
+            (this.valueScale.domain()[1] - this.valueScale.domain()[0]) *
+            this.options.scaleEndPercent
+          )
+        ),
+      ]);
     }
 
-    tileProxy.tileDataToPixData(tile,
+    tileProxy.tileDataToPixData(
+      tile,
       this.limitedValueScale,
       this.valueScale.domain()[0], // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
-      function (pixData) {
+      (pixData) => {
         // the tileData has been converted to pixData by the worker script and needs to be loaded
         // as a sprite
         const graphics = tile.graphics;
@@ -223,12 +237,21 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
 
         let sprite = null;
 
-        if (tile.tileData.zoomLevel == this.maxZoom) { sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)); } else { sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas)); }
+        if (tile.tileData.zoomLevel === this.maxZoom) {
+          sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+        } else {
+          sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+        }
 
         tile.sprite = sprite;
         tile.canvas = canvas;
 
-        this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
+        this.setSpriteProperties(
+          tile.sprite,
+          tile.tileData.zoomLevel,
+          tile.tileData.tilePos,
+          tile.mirrored,
+        );
 
         graphics.pivot.x = this._refXScale(0);
         graphics.pivot.y = this._refYScale(0);
@@ -251,7 +274,12 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       const tile = this.fetchedTiles[uid];
 
       if (tile.sprite) {
-        this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
+        this.setSpriteProperties(
+          tile.sprite,
+          tile.tileData.zoomLevel,
+          tile.tileData.tilePos,
+          tile.mirrored,
+        );
 
         const graphics = tile.graphics;
 
@@ -272,7 +300,6 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   zoomed(newXScale, newYScale, k, tx, ty) {
     super.zoomed(newXScale, newYScale, k, tx, ty);
     super.draw();
-    // console.log('zoomed this.pMain.position:', this.pMain.position.x, this.pMain.position.y, this.pMain.scale.x, this.pMain.scale.y);
 
     this.pMain.position.x = tx;
     this.pMain.position.y = this.position[1] + this.dimensions[1]; // translateY;
