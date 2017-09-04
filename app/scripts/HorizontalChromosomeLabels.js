@@ -6,13 +6,14 @@ import { PixiTrack } from './PixiTrack';
 import { ChromosomeInfo } from './ChromosomeInfo';
 import { SearchField } from './search_field';
 
-import { absToChr, pixiTextToSvg } from './utils';
+import { absToChr, pixiTextToSvg, svgLine } from './utils';
 
 const TICK_WIDTH = 200;
 const TICK_HEIGHT = 6;
 const TICK_TEXT_SEPARATION = 2;
+const TICK_COLOR = '#777777';
 
-export class HorizontalChromosomeLabels extends PixiTrack {
+class HorizontalChromosomeLabels extends PixiTrack {
   constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, chromInfoPath) {
     super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 
@@ -120,7 +121,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
 
       if (ticks[i] == 0) { tickTexts[i].text = `${cumPos.chr}:1`; } else { tickTexts[i].text = `${cumPos.chr}:${tickFormat(ticks[i])}`; }
 
-      graphics.lineStyle(1, 0x777777, 1);
+      graphics.lineStyle(1, TICK_COLOR, 1);
 
       // draw the tick lines
       graphics.moveTo(this._xScale(cumPos.pos + ticks[i]), this.dimensions[1]);
@@ -285,11 +286,27 @@ export class HorizontalChromosomeLabels extends PixiTrack {
       for (const text of this.tickTexts[key]) {
         const g = pixiTextToSvg(text);
 
-        output.appendChild(g);
-      }
-    }
+        for (let key in this.tickTexts) {
+          for (let text of this.tickTexts[key]) {
+            let g = PIXITextToSvg(text);
+            output.appendChild(g);
 
-    return [base, track];
+            g = svgLine(
+              text.x,
+              this.dimensions[1],
+              text.x,
+              this.dimensions[1] - TICK_HEIGHT,
+              1,
+              TICK_COLOR
+            );
+
+            output.appendChild(g);
+          }
+        }
+      }
+
+      return [base, track];
+    }
   }
 }
 
