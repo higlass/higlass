@@ -1,8 +1,12 @@
-import { scaleLinear } from 'd3-scale';
-import { tileProxy } from './TileProxy.js';
-import { HorizontalTiled1DPixiTrack } from './HorizontalTiled1DPixiTrack.js';
-import { colorToHex } from './utils.js';
 import boxIntersect from 'box-intersect';
+
+import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
+
+// Services
+import { tileProxy } from './services';
+
+// Utils
+import { colorToHex } from './utils';
 
 const GENE_RECT_WIDTH = 1;
 const GENE_RECT_HEIGHT = 10;

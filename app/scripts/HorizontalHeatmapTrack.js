@@ -18,8 +18,27 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
    * @param server: The server to pull tiles from.
    * @param uid: The data set to get the tiles from the server
    */
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, svgElement, onValueScaleChanged, onTrackOptionsChanged) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate, svgElement, onValueScaleChanged, onTrackOptionsChanged);
+  constructor(
+    scene,
+    server,
+    uid,
+    handleTilesetInfoReceived,
+    options,
+    animate,
+    svgElement,
+    onValueScaleChanged,
+    onTrackOptionsChanged,
+  ) {
+    super(scene,
+      server,
+      uid,
+      handleTilesetInfoReceived,
+      options,
+      animate,
+      svgElement,
+      onValueScaleChanged,
+      onTrackOptionsChanged,
+    );
 
     this.pMain = this.pMobile;
 
@@ -43,19 +62,17 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   }
 
   calculateZoomLevel() {
-    const xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+    const xZoomLevel = tileProxy.calculateZoomLevel(
+      this._xScale,
       this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0]);
-    const yZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+      this.tilesetInfo.max_pos[0],
+    );
+
+    const yZoomLevel = tileProxy.calculateZoomLevel(
+      this._xScale,
       this.tilesetInfo.min_pos[1],
-      this.tilesetInfo.max_pos[1]);
-
-    let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
-    zoomLevel = Math.min(zoomLevel, this.maxZoom);
-
-    if (this.options && this.options.maxZoom) {
-      if (this.options.maxZoom >= 0) { zoomLevel = Math.min(this.options.maxZoom, zoomLevel); } else { console.error('Invalid maxZoom on track:', this); }
-    }
+      this.tilesetInfo.max_pos[1],
+    );
 
     let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
     zoomLevel = Math.min(zoomLevel, this.maxZoom);

@@ -1,8 +1,14 @@
-import { tileProxy } from './services';
-import { HorizontalTiled1DPixiTrack } from './HorizontalTiled1DPixiTrack';
-import { colorToHex } from './utils';
 import boxIntersect from 'box-intersect';
 import * as PIXI from 'pixi.js';
+
+// Components
+import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
+
+// Services
+import { tileProxy } from './services';
+
+// Utils
+import { colorToHex } from './utils';
 
 const GENE_RECT_WIDTH = 1;
 const GENE_RECT_HEIGHT = 6;
