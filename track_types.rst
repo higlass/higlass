@@ -1,8 +1,8 @@
 .. _track-types
 
-=======================
-HiGlass Track Types
-=======================
+===========
+Track Types
+===========
 
 Bed-like
 =================
@@ -106,8 +106,11 @@ Point
 track-type: ``horizontal-point``
 datatype: ``vector``
 
-Point tracks display 1D vector data. Unlike :ref:`line tracks <line-track>`, they are well suited to
-data with NaNs because they do not require two points to draw something.
+Point tracks display 1D vector data. Unlike :ref:`line tracks <line-track>`,
+they are well suited to data with NaNs because they do not require two points
+to draw something.
+
+.. _chromosome-labels:
 
 Chromosome Labels
 =================
