@@ -4,12 +4,16 @@ import {SearchField} from './search_field.js';
 import boxIntersect from 'box-intersect';
 import {scaleLinear} from 'd3-scale';
 
-import {absoluteToChr,
-PIXITextToSvg} from './utils.js';
+import {
+    absoluteToChr,
+    SVGLine,
+    PIXITextToSvg
+} from './utils.js';
 
 let TICK_WIDTH = 200;
 let TICK_HEIGHT = 6;
 let TICK_TEXT_SEPARATION = 2;
+let TICK_COLOR = '#777777';
 
 export class HorizontalChromosomeLabels extends PixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, chromInfoPath) {
@@ -125,7 +129,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
             else
                 tickTexts[i].text = cumPos.chr + ":" + tickFormat(ticks[i]);
 
-            graphics.lineStyle(1, 0x777777, 1);
+            graphics.lineStyle(1, TICK_COLOR, 1);
 
             // draw the tick lines
             graphics.moveTo(this._xScale(cumPos.pos + ticks[i]), this.dimensions[1]);
@@ -295,7 +299,10 @@ export class HorizontalChromosomeLabels extends PixiTrack {
         for (let key in this.tickTexts) {
             for (let text of this.tickTexts[key]) {
                 let g = PIXITextToSvg(text);
+                output.appendChild(g);
 
+                g = SVGLine(text.x, this.dimensions[1], text.x, 
+                    this.dimensions[1] - TICK_HEIGHT, 1, TICK_COLOR);
                 output.appendChild(g);
             }
         }

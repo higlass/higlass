@@ -189,8 +189,12 @@ describe("Simple HiGlassComponent", () => {
             // the horizontal lines' labels should be shifted down
             expect(svgText.indexOf('dy="14"')).to.be.above(0);
 
-            // check to make sure that chromosome ticks are there
+            // check to make sure that chromosome tick labels are there
             expect(svgText.indexOf('chr17:40,500,000')).to.be.above(0);
+
+            // check to make sure that the chromosome ticks are present
+            expect(svgText.indexOf('line x1')).to.be.above(0);
+            expect(svgText.indexOf('#777777')).to.be.above(0);
 
             hgc.instance().handleExportSVG();
 

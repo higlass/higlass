@@ -329,9 +329,6 @@ export function totalTrackPixelHeight(view) {
  * the given text.
  */
 export function PIXITextToSvg(pixiText) {
-    console.log('pixiText', pixiText);
-    console.log('style:', pixiText.style);
-
     let g = document.createElement('g');
     let t = document.createElement('text');
     t.setAttribute('text-anchor', 'middle');
@@ -346,4 +343,26 @@ export function PIXITextToSvg(pixiText) {
     g.setAttribute('transform', `translate(${pixiText.x},${pixiText.y})scale(${pixiText.scale.x},1)`);
 
     return g;
+}
+
+/**
+ * Create a line as a SVG element
+ *
+ * @param {int,int} x1,y1 The coordinates for the start of the line
+ * @param {int,int} x2,y2 The coordinates for the end of the line
+ */
+export function SVGLine(x1, y1, x2, y2, strokeWidth, strokeColor) {
+    let line = document.createElement('line');
+
+    line.setAttribute('x1', x1);
+    line.setAttribute('x2', x2);
+    line.setAttribute('y1', y1);
+    line.setAttribute('y2', y2);
+
+    if (strokeWidth)
+        line.setAttribute('stroke-width', strokeWidth);
+    if (strokeColor)
+        line.setAttribute('stroke', strokeColor)
+
+    return line;
 }
