@@ -66,6 +66,7 @@
     "threads": "^0.7.2",
     "transform-loader": "^0.2.3",
     "url-join": "^1.1.0",
+    "vkbeautify": "^0.99.3",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {

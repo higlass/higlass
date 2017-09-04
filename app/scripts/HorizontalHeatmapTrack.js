@@ -29,7 +29,8 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     onValueScaleChanged,
     onTrackOptionsChanged,
   ) {
-    super(scene,
+    super(
+      scene,
       server,
       uid,
       handleTilesetInfoReceived,

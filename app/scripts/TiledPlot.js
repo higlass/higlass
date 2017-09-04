@@ -938,6 +938,10 @@ export class TiledPlot extends React.Component {
     if (this.state.sizeMeasured) {
       trackRenderer = (
         <TrackRenderer
+          // Reserved props
+          ref={(c) => { this.trackRenderer = c; }}
+
+          // Custom props
           canvasElement={this.props.canvasElement}
           centerHeight={this.centerHeight}
           centerWidth={this.centerWidth}
@@ -952,9 +956,10 @@ export class TiledPlot extends React.Component {
           onNewTilesLoaded={this.props.onNewTilesLoaded}
           onScalesChanged={this.handleScalesChanged.bind(this)}
           onTilesetInfoReceived={this.handleTilesetInfoReceived.bind(this)}
+          onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
+          onValueScaleChanged={this.props.onValueScaleChanged}
           pixiStage={this.props.pixiStage}
           positionedTracks={positionedTracks}
-          ref={c => this.trackRenderer = c}
           registerDraggingChangedListener={this.props.registerDraggingChangedListener}
           removeDraggingChangedListener={this.props.removeDraggingChangedListener}
           setCentersFunction={this.props.setCentersFunction}
@@ -1151,6 +1156,7 @@ TiledPlot.propTypes = {
   onTracksAdded: PropTypes.func,
   onTrackOptionsChanged: PropTypes.func,
   onTrackPositionChosen: PropTypes.func,
+  onValueScaleChanged: PropTypes.func,
   onUnlockValueScale: PropTypes.func,
   registerDraggingChangedListener: PropTypes.func,
   removeDraggingChangedListener: PropTypes.func,

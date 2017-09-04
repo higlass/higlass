@@ -7,6 +7,9 @@ const getTrackByUid = (tracks, uid) => {
   for (const trackType in tracks) {
     const theseTracks = tracks[trackType];
 
+    // no tracks of this type specified, probably
+    if (!theseTracks.filter) continue;
+
     const filteredTracks = theseTracks.filter(d => d.uid == uid);
 
     if (filteredTracks.length) { return filteredTracks[0]; }

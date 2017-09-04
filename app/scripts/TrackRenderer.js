@@ -754,6 +754,10 @@ export class TrackRenderer extends React.Component {
           handleTilesetInfoReceived,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
+          this.svgElement,
+          () => this.currentProps.onValueScaleChanged(track.uid),
+          newOptions =>
+            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
         );
 
       case 'horizontal-line':
@@ -764,6 +768,7 @@ export class TrackRenderer extends React.Component {
           handleTilesetInfoReceived,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
+          () => this.currentProps.onValueScaleChanged(track.uid),
         );
 
       case 'vertical-line':
@@ -775,6 +780,7 @@ export class TrackRenderer extends React.Component {
             handleTilesetInfoReceived,
             track.options,
             () => this.currentProps.onNewTilesLoaded(track.uid),
+            () => this.currentProps.onValueScaleChanged(track.uid),
           ),
         );
 
@@ -786,6 +792,7 @@ export class TrackRenderer extends React.Component {
           handleTilesetInfoReceived,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
+          () => this.currentProps.onValueScaleChanged(track.uid),
         );
 
       case 'horizontal-bar':
@@ -796,6 +803,7 @@ export class TrackRenderer extends React.Component {
           handleTilesetInfoReceived,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
+          () => this.currentProps.onValueScaleChanged(track.uid),
         );
 
       case 'vertical-point':
@@ -807,6 +815,7 @@ export class TrackRenderer extends React.Component {
             handleTilesetInfoReceived,
             track.options,
             () => this.currentProps.onNewTilesLoaded(track.uid),
+            () => this.currentProps.onValueScaleChanged(track.uid),
           ),
         );
 
@@ -848,6 +857,7 @@ export class TrackRenderer extends React.Component {
           handleTilesetInfoReceived,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
+          () => this.currentProps.onValueScaleChanged(track.uid),
         );
 
       case 'left-stacked-interval':
@@ -859,6 +869,7 @@ export class TrackRenderer extends React.Component {
             handleTilesetInfoReceived,
             track.options,
             () => this.currentProps.onNewTilesLoaded(track.uid),
+            () => this.currentProps.onValueScaleChanged(track.uid),
           ),
         );
 
@@ -879,7 +890,6 @@ export class TrackRenderer extends React.Component {
         }
         return new Track();
 
-
       case 'viewport-projection-horizontal':
         // TODO: Fix this so that these functions are defined somewhere else
         if (
@@ -897,7 +907,6 @@ export class TrackRenderer extends React.Component {
         }
         return new Track();
 
-
       case 'viewport-projection-vertical':
         // TODO: Fix this so that these functions are defined somewhere else
         if (
@@ -914,7 +923,6 @@ export class TrackRenderer extends React.Component {
           );
         }
         return new Track();
-
 
       case 'horizontal-gene-annotations':
         return new HorizontalGeneAnnotationsTrack(
@@ -1054,6 +1062,10 @@ export class TrackRenderer extends React.Component {
           handleTilesetInfoReceived,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
+          this.svgElement,
+          () => this.currentProps.onValueScaleChanged(track.uid),
+          newOptions =>
+            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
         );
 
       case 'vertical-heatmap':
@@ -1065,6 +1077,10 @@ export class TrackRenderer extends React.Component {
             handleTilesetInfoReceived,
             track.options,
             () => this.currentProps.onNewTilesLoaded(track.uid),
+            this.svgElement,
+            () => this.currentProps.onValueScaleChanged(track.uid),
+            newOptions =>
+              this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
           ),
         );
 
@@ -1073,16 +1089,6 @@ export class TrackRenderer extends React.Component {
           this.pStage,
           track.chromInfoPath,
           track.options,
-        );
-
-      case 'horizontal-1d-value-interval':
-        return new ValueIntervalTrack(
-          this.pStage,
-          track.server,
-          track.tilesetUid,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
       case 'horizontal-1d-value-interval':

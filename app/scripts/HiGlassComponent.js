@@ -5,10 +5,10 @@ import { scaleLinear } from 'd3-scale';
 import { request } from 'd3-request';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
-import { WidthProvider } from 'react-grid-layout';
-import ReactGridLayout from 'react-grid-layout';
+import ReactGridLayout, { WidthProvider } from 'react-grid-layout';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
 import * as PIXI from 'pixi.js';
+import vkbeautify from 'vkbeautify';
 
 import { TiledPlot } from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
@@ -62,7 +62,7 @@ const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
 const VIEW_HEADER_HEIGHT = 20;
 
-export class HiGlassComponent extends React.Component {
+class HiGlassComponent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -389,26 +389,64 @@ export class HiGlassComponent extends React.Component {
     const lockGroup = this.valueScaleLocks[this.combineViewAndTrackUid(viewUid, trackUid)];
   }
 
+  /*
+   * Iteratate over all of the views in this component
+   */
+  iterateOverViews() {
+    const viewIds = [];
+
+    for (const viewId in this.state.views) {
+      viewIds.push(viewId);
+    }
+
+    return viewIds;
+  }
+
+  /**
+   * Iterate over all the tracks in this component.
+   */
+  iterateOverTracks() {
+    const allTracks = [];
+    for (const viewId in this.state.views) {
+      const tracks = this.state.views[viewId].tracks;
+
+      for (const trackType in tracks) {
+        for (const track of tracks[trackType]) {
+          if (track.type === 'combined' && track.contents) {
+            for (const subTrack of track.contents) {
+              allTracks.push({ viewId, trackId: subTrack.uid });
+            }
+          } else {
+            allTracks.push({ viewId, trackId: track.uid });
+          }
+        }
+      }
+    }
+
+    return allTracks;
+  }
+
   setMouseTool(mouseTool) {
     this.setState({ mouseTool });
   }
 
+  /**
+   * Syncing the values of locked scales
+   *
+   * Arguments
+   * ---------
+   *  viewUid: string
+   *    The id of the view containing the track whose value scale initially changed
+   *  trackUid: string
+   *    The id of the track that whose value scale changed
+   *
+   * Returns
+   * -------
+   *    Nothing
+   */
   syncValueScales(viewUid, trackUid) {
-    /**
-       * Syncing the values of locked scales
-       *
-       * Arguments
-       * ---------
-       *  viewUid: string
-       *    The id of the view containing the track whose value scale initially changed
-       *  trackUid: string
-       *    The id of the track that whose value scale changed
-       *
-       * Returns
-       * -------
-       *    Nothing
-       */
     const uid = this.combineViewAndTrackUid(viewUid, trackUid);
+    const sourceTrack = getTrackByUid(this.state.views[viewUid].tracks, trackUid);
 
     if (this.valueScaleLocks[uid]) {
       const lockGroupValues = dictValues(this.valueScaleLocks[uid]);
@@ -417,9 +455,14 @@ export class HiGlassComponent extends React.Component {
       const lockedTracks = lockGroupValues.map(x =>
         this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track));
 
-      const minValues = lockedTracks.filter(x => x.minRawValue && x.maxRawValue) // exclude tracks that don't set min and max values
+      const minValues = lockedTracks
+        // exclude tracks that don't set min and max values
+        .filter(x => x.minRawValue && x.maxRawValue)
         .map(x => x.minRawValue());
-      const maxValues = lockedTracks.filter(x => x.minRawValue && x.maxRawValue) // exclude tracks that don't set min and max values
+
+      const maxValues = lockedTracks
+        // exclude tracks that don't set min and max values
+        .filter(x => x.minRawValue && x.maxRawValue)
         .map(x => x.maxRawValue());
 
       const allMin = Math.min(...minValues);
@@ -439,6 +482,15 @@ export class HiGlassComponent extends React.Component {
 
         lockedTrack.valueScale.domain([allMin, allMax]);
 
+        if  (
+          sourceTrack.options &&
+          typeof sourceTrack.options.scaleStartPercent !== 'undefined' &&
+          typeof sourceTrack.options.scaleEndPercent !== 'undefined'
+        ) {
+          lockedTrack.options.scaleStartPercent = sourceTrack.options.scaleStartPercent;
+          lockedTrack.options.scaleEndPercent = sourceTrack.options.scaleEndPercent;
+        }
+
         // the second parameter forces a rerender even though
         // the options haven't changed
         lockedTrack.rerender(lockedTrack.options, true);
@@ -447,9 +499,8 @@ export class HiGlassComponent extends React.Component {
   }
 
   handleNewTilesLoaded(viewUid, trackUid) {
-    this.syncValueScales(viewUid, trackUid);
+    // this.syncValueScales(viewUid, trackUid);
     this.animate();
-    //
   }
 
   notifyDragChangedListeners(dragging) {
@@ -557,7 +608,7 @@ export class HiGlassComponent extends React.Component {
     const svg = this.createSVG();
 
     const svgText = new XMLSerializer().serializeToString(svg);
-    download('export.svg', svgText);
+    download('export.svg', vkbeautify.xml(svgText));
     return svg;
   }
 
@@ -2433,38 +2484,58 @@ export class HiGlassComponent extends React.Component {
 
         const tiledPlot = (
           <TiledPlot
+            // Reserved props
+            key={`tp${view.uid}`}
+            ref={(c) => { this.tiledPlots[view.uid] = c; }}
+
+            // Custom props
             addTrackPosition={
-              this.state.addTrackPositionView == view.uid ? this.state.addTrackPosition : null
+              this.state.addTrackPositionView === view.uid ?
+                this.state.addTrackPosition : null
             }
             addTrackPositionMenuPosition={addTrackPositionMenuPosition}
             canvasElement={this.state.canvasElement}
-            chooseTrackHandler={this.state.chooseTrackHandler ? trackId => this.state.chooseTrackHandler(view.uid, trackId) : null}
+            chooseTrackHandler={
+              this.state.chooseTrackHandler ?
+                trackId => this.state.chooseTrackHandler(view.uid, trackId) :
+                null
+            }
             chromInfoPath={view.chromInfoPath}
             editable={this.props.viewConfig.editable}
             horizontalMargin={this.horizontalMargin}
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
-            key={`tp${view.uid}`}
             mouseTool={this.state.mouseTool}
             onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
-            onDataDomainChanged={(xDomain, yDomain) => this.handleDataDomainChanged(view.uid, xDomain, yDomain)}
+            onDataDomainChanged={
+              (xDomain, yDomain) =>
+                this.handleDataDomainChanged(view.uid, xDomain, yDomain)
+            }
             onLockValueScale={uid => this.handleLockValueScale(view.uid, uid)}
             onNewTilesLoaded={trackUid => this.handleNewTilesLoaded(view.uid, trackUid)}
             onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
             onRangeSelection={this.rangeSelectionHandler.bind(this)}
             onScalesChanged={(x, y) => this.handleScalesChanged(view.uid, x, y)}
-            onTrackOptionsChanged={(trackId, options) => this.handleTrackOptionsChanged(view.uid, trackId, options)}
+            onTrackOptionsChanged={
+              (trackId, options) =>
+                this.handleTrackOptionsChanged(view.uid, trackId, options)
+            }
             onTrackPositionChosen={this.handleTrackPositionChosen.bind(this)}
-            onTracksAdded={(newTracks, position, host) => this.handleTracksAdded(view.uid, newTracks, position, host)}
+            onTracksAdded={
+              (newTracks, position, host) =>
+                this.handleTracksAdded(view.uid, newTracks, position, host)
+            }
             onUnlockValueScale={uid => this.handleUnlockValueScale(view.uid, uid)}
+            onValueScaleChanged={uid => this.syncValueScales(view.uid, uid)}
             pixiStage={this.pixiStage}
-            ref={c => this.tiledPlots[view.uid] = c}
             registerDraggingChangedListener={(listener) => {
               this.addDraggingChangedListener(view.uid, view.uid, listener);
+            }}
+            removeDraggingChangedListener={
+              listener =>
+                this.removeDraggingChangedListener(view.uid, view.uid, listener)
             }
-            }
-            removeDraggingChangedListener={listener => this.removeDraggingChangedListener(view.uid, view.uid, listener)}
-            setCentersFunction={c => this.setCenters[view.uid] = c}
+            setCentersFunction={(c) => { this.setCenters[view.uid] = c; }}
             svgElement={this.state.svgElement}
             trackSourceServers={this.props.viewConfig.trackSourceServers}
             tracks={view.tracks}
@@ -2635,11 +2706,17 @@ export class HiGlassComponent extends React.Component {
   }
 }
 
+HiGlassComponent.defaultProps = {
+  getApi: null,
+  options: {},
+  zoomFixed: false,
+};
+
 HiGlassComponent.propTypes = {
-  children: PropTypes.array,
   getApi: PropTypes.func,
-  onNewConfig: PropTypes.func,
   options: PropTypes.object,
-  viewConfig: PropTypes.object,
+  viewConfig: PropTypes.object.isRequired,
   zoomFixed: PropTypes.bool,
 };
+
+export default HiGlassComponent;
