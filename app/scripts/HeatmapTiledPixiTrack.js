@@ -225,13 +225,13 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
     this.gColorscaleBrush.selectAll('.handle--custom').attr(
       'y',
-      (d) => (
+      d => (
         d.type === 'n' ?
           event.selection[0] :
-          event.selection[1] - (BRUSH_HEIGHT / 2))
-      );
+          event.selection[1] - (BRUSH_HEIGHT / 2)
+      ));
 
-    if (strOptions === this.prevOptions) { return; }
+    if (strOptions === this.prevOptions) return;
 
 
     this.prevOptions = strOptions;
@@ -466,7 +466,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
   }
 
   exportColorBarSVG() {
-
     const gColorbarArea = document.createElement('g');
 
     // no value scale, no colorbar
