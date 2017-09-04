@@ -23,7 +23,7 @@ const BRUSH_MARGIN = 4;
 const SCALE_LIMIT_PRECISION = 5;
 
 
-class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
+export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
   constructor(scene, server, uid, handleTilesetInfoReceived, options, animate,
     svgElement, onValueScaleChanged, onTrackOptionsChanged) {
     /**

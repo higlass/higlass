@@ -25,6 +25,6 @@ export const IS_TRACK_RANGE_SELECTABLE = (track) => {
     default:
       return false;
   }
-}
+};
 
 export default IS_TRACK_RANGE_SELECTABLE;

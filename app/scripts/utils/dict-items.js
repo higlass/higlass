@@ -3,15 +3,15 @@
  * dictionary
  */
 const dictItems = (dictionary) => {
-  let keyValues = [];
+  const keyValues = [];
 
-  for (let key in dictionary) {
+  for (const key in dictionary) {
     if (dictionary.hasOwnProperty(key)) {
       keyValues.push([key, dictionary[key]]);
     }
   }
 
   return keyValues;
-}
+};
 
 export default dictItems;

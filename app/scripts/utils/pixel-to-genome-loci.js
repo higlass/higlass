@@ -6,8 +6,8 @@ const pixelToGenomeLoci = (x0, x1, chromInfo) => {
 
   return [
     gX0[0], Math.round(gX0[1]),
-    gX1[0], Math.round(gX1[1])
+    gX1[0], Math.round(gX1[1]),
   ];
-}
+};
 
 export default pixelToGenomeLoci;

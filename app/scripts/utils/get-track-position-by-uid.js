@@ -8,6 +8,6 @@ const getTrackPositionByUid = (allTracks, uid) => {
   const thisTrack = tracks.filter(x => x.uid == uid);
 
   return thisTrack[0].position;
-}
+};
 
 export default getTrackPositionByUid;

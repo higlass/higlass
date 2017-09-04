@@ -24,9 +24,9 @@ export const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
 
   const firstDatatype = datatypes[0];
   let allSame = true;
-  for (let datatype of datatypes)
-    if (datatype != firstDatatype)
-      allSame = false;
+  for (const datatype of datatypes) {
+    if (datatype !== firstDatatype) { allSame = false; }
+  }
 
   if (allSame) {
     // only display available track types if all of the selected datasets are
@@ -35,6 +35,6 @@ export const AVAILABLE_TRACK_TYPES = (datatypes, orientation) => {
   }
 
   return [];
-}
+};
 
 export default AVAILABLE_TRACK_TYPES;

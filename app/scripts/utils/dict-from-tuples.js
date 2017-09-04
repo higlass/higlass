@@ -4,13 +4,13 @@
  * @return: A dictionary
  */
 const dictFromTuples = (tuples) => {
-  let dict = {};
+  const dict = {};
 
-  tuples.forEach(x => {
+  tuples.forEach((x) => {
     dict[x[0]] = x[1];
   });
 
   return dict;
-}
+};
 
 export default dictFromTuples;

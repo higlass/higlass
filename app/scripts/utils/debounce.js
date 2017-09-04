@@ -44,6 +44,6 @@ export const debounce = (func, wait, immediate) => {
   };
 
   return debounced;
-}
+};
 
 export default debounce;

@@ -14,6 +14,6 @@ const scalesCenterAndK = (xScale, yScale) => {
   const k = xScale.invert(1) - xScale.invert(0);
 
   return [xCenter, yCenter, k];
-}
+};
 
 export default scalesCenterAndK;

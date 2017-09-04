@@ -2,13 +2,13 @@ import { chromInfoBisector } from './';
 
 const absToChr = (absPosition, chromInfo) => {
   let insertPoint = chromInfoBisector(chromInfo.cumPositions, absPosition);
-  const lastChr = chromInfo.cumPositions[chromInfo.cumPositions.length-1].chr;
+  const lastChr = chromInfo.cumPositions[chromInfo.cumPositions.length - 1].chr;
   const lastLength = chromInfo.chromLengths[lastChr];
 
   insertPoint -= insertPoint > 0 && 1;
 
   let chrPosition = Math.floor(
-    absPosition - chromInfo.cumPositions[insertPoint].pos
+    absPosition - chromInfo.cumPositions[insertPoint].pos,
   );
   let offset = 0;
 
@@ -31,8 +31,8 @@ const absToChr = (absPosition, chromInfo) => {
     chromInfo.cumPositions[insertPoint].chr,
     chrPosition,
     offset,
-    insertPoint
-  ]
-}
+    insertPoint,
+  ];
+};
 
 export default absToChr;

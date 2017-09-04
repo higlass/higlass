@@ -18,7 +18,7 @@ export const LOCATION_LISTENER_PREFIX = 'locationListenerPrefix';
 
 export const ZOOM_TRANSITION_DURATION = 1000;
 
-export const DEFAULT_SERVER = 'http://higlass.io/api/v1'
+export const DEFAULT_SERVER = 'http://higlass.io/api/v1';
 
 
 /* --------------------------------- Complex -------------------------------- */

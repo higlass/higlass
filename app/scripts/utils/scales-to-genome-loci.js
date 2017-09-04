@@ -10,8 +10,8 @@ export const scalesToGenomeLoci = (xScale, yScale, chromInfo) => {
 
   return [
     ...pixelToGenomeLoci(x0, x1, chromInfo),
-    ...pixelToGenomeLoci(y0, y1, chromInfo)
-  ]
-}
+    ...pixelToGenomeLoci(y0, y1, chromInfo),
+  ];
+};
 
 export default scalesToGenomeLoci;
