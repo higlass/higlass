@@ -1,4 +1,4 @@
-import {scaleLinear} from 'd3-scale';
+import { scaleLinear } from 'd3-scale';
 
 export class Track {
   constructor() {
@@ -12,8 +12,8 @@ export class Track {
     this._refXScale = scaleLinear();
     this._refYScale = scaleLinear();
 
-    this.position = [0,0];
-    this.dimensions = [1,1];
+    this.position = [0, 0];
+    this.dimensions = [1, 1];
     this.options = {};
   }
 
@@ -61,8 +61,7 @@ export class Track {
    * Either get or set the yScale
    */
   yScale(_) {
-    if (!arguments.length)
-      return this._yScale;
+    if (!arguments.length) { return this._yScale; }
 
     this._yScale = _;
 

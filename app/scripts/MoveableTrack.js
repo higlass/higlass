@@ -20,7 +20,7 @@ export class MoveableTrack extends TrackArea {
         onMouseLeave={this.handleMouseLeave.bind(this)}
         style={{
           height: this.props.height,
-          width: this.props.width
+          width: this.props.width,
         }}
       >
         <DraggableDiv
@@ -33,10 +33,10 @@ export class MoveableTrack extends TrackArea {
             this.props.handleResizeTrack(
               this.props.uid,
               stuff.width,
-              stuff.height
+              stuff.height,
             )
           }
-          style={{background: 'transparent'}}
+          style={{ background: 'transparent' }}
           uid={this.props.uid}
           width={this.props.width}
         />
@@ -55,7 +55,7 @@ MoveableTrack.propTypes = {
   uid: PropTypes.string,
   item: PropTypes.object,
   height: PropTypes.number,
-  width: PropTypes.number
-}
+  width: PropTypes.number,
+};
 
 export default MoveableTrack;

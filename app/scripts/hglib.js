@@ -3,9 +3,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HiGlassComponent } from './HiGlassComponent';
 
-export {HiGlassComponent} from './HiGlassComponent';
+export { HiGlassComponent } from './HiGlassComponent';
 
-function launch (element, config, options, callback) {
+function launch(element, config, options, callback) {
   /**
    * The instance's public API will be passed into the callback
    *
@@ -13,20 +13,20 @@ function launch (element, config, options, callback) {
    * @return  {Object} The instance's public API
    */
   callback((function (higlass) {
-      return higlass.api;
-    } (
-      ReactDOM.render(
-        (<HiGlassComponent
-            options={options || {}}
-            viewConfig={config}
-         />),
-        element
-      )
-    )
+    return higlass.api;
+  }(
+    ReactDOM.render(
+      (<HiGlassComponent
+        options={options || {}}
+        viewConfig={config}
+      />),
+      element,
+    ),
+  )
   ));
 }
 
-export function createHgComponent (element, config, options, callback) {
+export function createHgComponent(element, config, options, callback) {
   /**
    * Available options:
    *
@@ -38,10 +38,10 @@ export function createHgComponent (element, config, options, callback) {
     json(config, (error, data) => {
       if (error) throw error;
 
-     launch(element, data, options, callback);
+      launch(element, data, options, callback);
     });
   } else {
-   launch(element, config, options, callback);
+    launch(element, config, options, callback);
   }
 }
 

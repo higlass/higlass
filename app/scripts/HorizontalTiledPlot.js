@@ -15,9 +15,9 @@ import { genomeLociToPixels, or, sum } from './utils';
 import { IS_TRACK_RANGE_SELECTABLE } from './configs';
 
 // Styles
-import styles from '../styles/HorizontalTiledPlot.module.scss';  // eslint-disable-line no-unused-vars
-import stylesPlot from '../styles/TiledPlot.module.scss';  // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss';  // eslint-disable-line no-unused-vars
+import styles from '../styles/HorizontalTiledPlot.module.scss'; // eslint-disable-line no-unused-vars
+import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
+import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
 
 
 export class HorizontalTiledPlot extends React.Component {
@@ -47,9 +47,9 @@ export class HorizontalTiledPlot extends React.Component {
         this.moveBrush(
           nextProps.rangeSelection[0] ?
             genomeLociToPixels(
-              nextProps.rangeSelection[0], this.props.chromInfo
+              nextProps.rangeSelection[0], this.props.chromInfo,
             ) :
-            null
+            null,
         );
       }
       return this.state !== nextState;
@@ -112,7 +112,7 @@ export class HorizontalTiledPlot extends React.Component {
 
     const relRange = rangeSelection ? [
       this.props.scale(rangeSelection[0]),
-      this.props.scale(rangeSelection[1])
+      this.props.scale(rangeSelection[1]),
     ] : null;
 
     this.rangeSelectionMoved = true;
@@ -124,7 +124,7 @@ export class HorizontalTiledPlot extends React.Component {
       // Reset brush selection
       this.brushElAddedBefore.call(
         this.brushBehavior.move,
-        null
+        null,
       );
 
       // Remove brush behavior
@@ -154,8 +154,8 @@ export class HorizontalTiledPlot extends React.Component {
           <svg
             ref={el => this.brushEl = select(el)}
             style={{
-              height: height,
-              width: this.props.width
+              height,
+              width: this.props.width,
             }}
             styleName={rangeSelectorClass}
             xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +175,7 @@ export class HorizontalTiledPlot extends React.Component {
             uid: d.uid || slugid.nice(),
             width: this.props.width,
             height: d.height,
-            value: d.value
+            value: d.value,
           }))}
           onAddSeries={this.props.onAddSeries}
           onCloseTrack={this.props.onCloseTrack}
@@ -212,7 +212,7 @@ HorizontalTiledPlot.propTypes = {
   resizeHandles: PropTypes.object,
   scale: PropTypes.func,
   tracks: PropTypes.array,
-  width: PropTypes.number
-}
+  width: PropTypes.number,
+};
 
 export default HorizontalTiledPlot;

@@ -3,23 +3,23 @@ import React from 'react';
 import { arrayMove } from 'react-sortable-hoc';
 
 export class ListWrapper extends React.Component {
-  constructor({items}) {
+  constructor({ items }) {
     super();
     this.state = {
-      items, isSorting: false
+      items, isSorting: false,
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState ({
-      items: nextProps.items
-    })
+    this.setState({
+      items: nextProps.items,
+    });
   }
 
-  onSortStart({node, index, collection}, e) {
+  onSortStart({ node, index, collection }, e) {
     e.stopImmediatePropagation();
-    let {onSortStart} = this.props;
-    this.setState({isSorting: true});
+    const { onSortStart } = this.props;
+    this.setState({ isSorting: true });
 
     if (onSortStart) {
       onSortStart(this.ref);
@@ -33,13 +33,13 @@ export class ListWrapper extends React.Component {
 
   onSortMove() {}
 
-  onSortEnd({oldIndex, newIndex}) {
-    let {onSortEnd} = this.props;
-    let {items} = this.state;
+  onSortEnd({ oldIndex, newIndex }) {
+    const { onSortEnd } = this.props;
+    const { items } = this.state;
 
     this.setState({
       items: arrayMove(items, oldIndex, newIndex),
-      isSorting: false
+      isSorting: false,
     });
 
     if (onSortEnd) {
@@ -51,13 +51,14 @@ export class ListWrapper extends React.Component {
 
   render() {
     const Component = this.props.component;
-    const {items, isSorting} = this.state;
+    const { items, isSorting } = this.state;
     const props = {
-      isSorting, items,
+      isSorting,
+      items,
       onSortEnd: this.onSortEnd.bind(this),
       onSortStart: this.onSortStart.bind(this),
-      onSortMove: this.onSortMove.bind(this)
-    }
+      onSortMove: this.onSortMove.bind(this),
+    };
 
     return (
       <Component
@@ -91,14 +92,14 @@ ListWrapper.propTypes = {
   referenceAncestor: PropTypes.string,
   resizeHandles: PropTypes.object,
   useDragHandle: PropTypes.bool,
-  width: PropTypes.number
-}
+  width: PropTypes.number,
+};
 
 ListWrapper.defaultProps = {
   className: 'list stylizedList',
   itemClass: 'item stylizedItem',
   width: 400,
-  height: 600
+  height: 600,
 };
 
 export default ListWrapper;

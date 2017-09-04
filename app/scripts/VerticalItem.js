@@ -1,5 +1,5 @@
 import React from 'react';
-import {SortableElement} from 'react-sortable-hoc';
+import { SortableElement } from 'react-sortable-hoc';
 
 import VerticalTrack from './VerticalTrack';
 

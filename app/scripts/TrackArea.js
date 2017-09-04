@@ -8,7 +8,7 @@ export class TrackArea extends React.Component {
     super(props);
 
     this.state = {
-      controlsVisible: false
+      controlsVisible: false,
     };
   }
 
@@ -18,21 +18,20 @@ export class TrackArea extends React.Component {
 
   handleMouseEnter() {
     this.setState({
-      controlsVisible: true
+      controlsVisible: true,
     });
   }
 
   handleMouseLeave() {
     this.setState({
-      controlsVisible: false
+      controlsVisible: false,
     });
   }
 
   handleMouseMove() {
     this.setState({
-      controlsVisible: true
+      controlsVisible: true,
     });
-
   }
 
   getControls() {
@@ -47,11 +46,11 @@ export class TrackArea extends React.Component {
           style={this.getMoveImgStyle()}
           width="10px"
         >
-          <use xlinkHref="#move"></use>
+          <use xlinkHref="#move" />
         </svg>
       ));
     } else {
-      Handle = SortableHandle(() => <div />)
+      Handle = SortableHandle(() => <div />);
     }
 
     return (
@@ -65,7 +64,7 @@ export class TrackArea extends React.Component {
           paddingLeft: '5px',
           paddingRight: '5px',
           borderRadius: '5px',
-          border: '1px solid #dddddd'
+          border: '1px solid #dddddd',
         }}
       >
         <Handle />
@@ -74,15 +73,15 @@ export class TrackArea extends React.Component {
           className="no-zoom"
           height="10px"
           onClick={() => {
-            let imgDom = ReactDOM.findDOMNode(this.imgConfig);
-            let bbox = imgDom.getBoundingClientRect();
+            const imgDom = ReactDOM.findDOMNode(this.imgConfig);
+            const bbox = imgDom.getBoundingClientRect();
             this.props.onConfigTrackMenuOpened(this.props.uid, bbox);
           }}
           ref={(c) => { this.imgConfig = c; }}
           style={this.getSettingsImgStyle()}
           width="10px"
         >
-          <use xlinkHref="#cog"></use>
+          <use xlinkHref="#cog" />
         </svg>
 
         <svg
@@ -93,22 +92,22 @@ export class TrackArea extends React.Component {
           style={this.getAddImgStyle()}
           width="10px"
         >
-          <use xlinkHref="#plus"></use>
+          <use xlinkHref="#plus" />
         </svg>
 
         <svg
           className="no-zoom"
           height="10px"
           onClick={() => {
-            let imgDom = ReactDOM.findDOMNode(this.imgClose);
-            let bbox = imgDom.getBoundingClientRect();
+            const imgDom = ReactDOM.findDOMNode(this.imgClose);
+            const bbox = imgDom.getBoundingClientRect();
             this.props.onCloseTrackMenuOpened(this.props.uid, bbox);
           }}
           ref={(c) => { this.imgClose = c; }}
           style={this.getCloseImgStyle()}
           width="10px"
         >
-          <use xlinkHref="#cross"></use>
+          <use xlinkHref="#cross" />
         </svg>
       </div>
     );
@@ -119,7 +118,7 @@ TrackArea.propTypes = {
   onConfigTrackMenuOpened: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onAddSeries: PropTypes.func,
-  uid: PropTypes.string
+  uid: PropTypes.string,
 };
 
 export default TrackArea;

@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 export class PopupMenu extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+  }
 
   componentDidMount() {
-    this.popup = document.createElement("div");
+    this.popup = document.createElement('div');
     document.body.appendChild(this.popup);
 
     this.boundHandleDocumentClick = this.handleDocumentClick.bind(this);
@@ -37,21 +37,19 @@ export class PopupMenu extends React.Component {
   }
 
   handleDocumentResize() {
-    if (this.props.onMenuClosed)
-        this.props.onMenuClosed(null)
+    if (this.props.onMenuClosed) { this.props.onMenuClosed(null); }
   }
 
   handleDocumentClick(evt) {
-      if (!this.popup.contains(evt.target)) {
-          if (this.props.onMenuClosed)
-            this.props.onMenuClosed(evt)
-      }
+    if (!this.popup.contains(evt.target)) {
+      if (this.props.onMenuClosed) { this.props.onMenuClosed(evt); }
+    }
   }
 
 
   render() {
     // Render a placeholder
-    return(<div ref={(c) => this.area=c } />)
+    return (<div ref={c => this.area = c} />);
   }
 }
 

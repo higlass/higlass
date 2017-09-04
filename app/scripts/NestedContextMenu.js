@@ -13,15 +13,15 @@ export class NestedContextMenu extends ContextMenuContainer {
       // necessary so that we can position the submenu next to the initiating
       // element
       const bbox = this.state.submenuSourceBbox;
-      let position = this.state.orientation === 'left' ? (
+      const position = this.state.orientation === 'left' ? (
         {
           left: this.state.left,
-          top: bbox.top
+          top: bbox.top,
         }
       ) : (
         {
           left: this.state.left + bbox.width + 7,
-          top: bbox.top
+          top: bbox.top,
         }
       );
 
@@ -35,17 +35,16 @@ export class NestedContextMenu extends ContextMenuContainer {
           position={position}
         />
       );
-    } else {
-      return (<div />);
     }
+    return (<div />);
   }
 
   render() {
-    let menuItems = [];
+    const menuItems = [];
 
     // iterate over the list
-    for (let menuItemKey in this.props.menuItems) {
-      let menuItem = this.props.menuItems[menuItemKey];
+    for (const menuItemKey in this.props.menuItems) {
+      const menuItem = this.props.menuItems[menuItemKey];
 
       menuItems.push(
         <ContextMenuItem
@@ -59,19 +58,19 @@ export class NestedContextMenu extends ContextMenuContainer {
             <svg
               styleName="play-icon"
             >
-              <use xlinkHref="#play"></use>
+              <use xlinkHref="#play" />
             </svg>
           }
-        </ContextMenuItem>
+        </ContextMenuItem>,
       );
     }
 
-    return(
+    return (
       <div
         ref={c => this.div = c}
         style={{
           left: this.state.left,
-          top: this.state.top
+          top: this.state.top,
         }}
         styleName="context-menu"
       >

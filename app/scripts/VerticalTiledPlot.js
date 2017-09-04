@@ -16,9 +16,9 @@ import { genomeLociToPixels, or, sum } from './utils';
 import { IS_TRACK_RANGE_SELECTABLE } from './configs';
 
 // Styles
-import styles from '../styles/VerticalTiledPlot.module.scss';  // eslint-disable-line no-unused-vars
-import stylesPlot from '../styles/TiledPlot.module.scss';  // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss';  // eslint-disable-line no-unused-vars
+import styles from '../styles/VerticalTiledPlot.module.scss'; // eslint-disable-line no-unused-vars
+import stylesPlot from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
+import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
 
 
 export class VerticalTiledPlot extends React.Component {
@@ -50,9 +50,9 @@ export class VerticalTiledPlot extends React.Component {
         this.moveBrush(
           nextProps.rangeSelection[accessor] ?
             genomeLociToPixels(
-              nextProps.rangeSelection[accessor], this.props.chromInfo
+              nextProps.rangeSelection[accessor], this.props.chromInfo,
             ) :
-            null
+            null,
         );
       }
       return this.state !== nextState;
@@ -115,7 +115,7 @@ export class VerticalTiledPlot extends React.Component {
 
     const relRange = rangeSelection ? [
       this.props.scale(rangeSelection[0]),
-      this.props.scale(rangeSelection[1])
+      this.props.scale(rangeSelection[1]),
     ] : null;
 
     this.rangeSelectionMoved = true;
@@ -127,7 +127,7 @@ export class VerticalTiledPlot extends React.Component {
       // Reset brush selection
       this.brushElAddedBefore.call(
         this.brushBehavior.move,
-        null
+        null,
       );
 
       // Remove brush behavior
@@ -158,7 +158,7 @@ export class VerticalTiledPlot extends React.Component {
             ref={el => this.brushEl = select(el)}
             style={{
               height: this.props.height,
-              width: width
+              width,
             }}
             styleName={rangeSelectorClass}
             xmlns="http://www.w3.org/2000/svg"
@@ -180,7 +180,7 @@ export class VerticalTiledPlot extends React.Component {
             uid: d.uid || slugid.nice(),
             height: this.props.height,
             width: d.width,
-            value: d.value
+            value: d.value,
           }))}
           onAddSeries={this.props.onAddSeries}
           onCloseTrack={this.props.onCloseTrack}
@@ -218,7 +218,7 @@ VerticalTiledPlot.propTypes = {
   resizeHandles: PropTypes.object,
   scale: PropTypes.func,
   tracks: PropTypes.array,
-  tracksControlAlignLeft: PropTypes.bool
-}
+  tracksControlAlignLeft: PropTypes.bool,
+};
 
 export default VerticalTiledPlot;

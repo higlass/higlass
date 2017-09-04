@@ -2,10 +2,10 @@ import React from 'react';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
-import {SeriesListMenu} from './SeriesListMenu';
+import { SeriesListMenu } from './SeriesListMenu';
 
 // Configs
-import {TRACKS_INFO} from './configs';
+import { TRACKS_INFO } from './configs';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
@@ -30,30 +30,30 @@ export class ConfigTrackMenu extends ContextMenuContainer {
 
     const trackTypeToInfo = {};
 
-    TRACKS_INFO.forEach(ti => {
+    TRACKS_INFO.forEach((ti) => {
       trackTypeToInfo[ti.type] = ti;
     });
 
     // check if this is a combined track (has contents)
-    let series = this.props.track.contents ? this.props.track.contents : [this.props.track];
+    const series = this.props.track.contents ? this.props.track.contents : [this.props.track];
 
-    return series.map(x => {
+    return series.map((x) => {
       const thumbnail = trackTypeToInfo[x.type].thumbnail;
       const imgTag = trackTypeToInfo[x.type].thumbnail ? (
         <div
-          dangerouslySetInnerHTML={{__html: thumbnail.outerHTML}}
+          dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
           style={{
             display: 'inline-block',
             marginRight: 10,
-            verticalAlign: 'middle'
+            verticalAlign: 'middle',
           }}
         />
-      ): (
+      ) : (
         <div
           style={{
             display: 'inline-block',
             marginRight: 10,
-            verticalAlign: 'middle'
+            verticalAlign: 'middle',
           }}
         >
           <svg
@@ -63,30 +63,29 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         </div>
       );
 
-        return (
-          <ContextMenuItem
-            key={x.uid}
-            onMouseEnter={e => this.handleItemMouseEnter(e, x)}
-            onMouseLeave={e => this.handleMouseLeave(e)}
-            ref={c => this.seriesRefs[x.uid] = c}
-            styleName="context-menu-item"
+      return (
+        <ContextMenuItem
+          key={x.uid}
+          onMouseEnter={e => this.handleItemMouseEnter(e, x)}
+          onMouseLeave={e => this.handleMouseLeave(e)}
+          ref={c => this.seriesRefs[x.uid] = c}
+          styleName="context-menu-item"
+        >
+          {imgTag}
+          <span
+            styleName="context-menu-span"
           >
-            {imgTag}
-            <span
-              styleName="context-menu-span"
+            {(x.name && x.name.length) ? x.name : x.uid}
+            <svg
+              className="play-icon"
+              height="10px"
+              width="10px"
             >
-              {(x.name && x.name.length) ? x.name : x.uid}
-              <svg
-                className="play-icon"
-                height="10px"
-                width="10px"
-              >
-                <use xlinkHref="#play" />
-              </svg>
-            </span>
-          </ContextMenuItem>
-        )
-
+              <use xlinkHref="#play" />
+            </svg>
+          </span>
+        </ContextMenuItem>
+      );
     });
   }
 
@@ -95,22 +94,22 @@ export class ConfigTrackMenu extends ContextMenuContainer {
       // the bounding box of the element which initiated the subMenu
       // necessary so that we can position the submenu next to the initiating
       // element
-      let bbox = this.state.submenuSourceBbox;
+      const bbox = this.state.submenuSourceBbox;
       let position = null;
 
       if (this.state.orientation == 'left') {
-         position = {
+        position = {
           left: this.state.left,
-          top: bbox.top
+          top: bbox.top,
         };
       } else {
         position = {
           left: this.state.left + bbox.width + 7,
-          top: bbox.top
-        }
+          top: bbox.top,
+        };
       }
 
-      let selectedTrack = this.props.track.contents ?
+      const selectedTrack = this.props.track.contents ?
         this.props.track.contents.filter(t => t.uid == this.state.submenuShown.uid)[0] :
         this.props.track;
 
@@ -132,18 +131,17 @@ export class ConfigTrackMenu extends ContextMenuContainer {
           trackOrientation={this.props.trackOrientation}
         />
       );
-    } else {
-      return (<div />);
     }
+    return (<div />);
   }
 
   render() {
-    return(
+    return (
       <div
         ref={c => this.div = c}
         style={{
           left: this.state.left,
-          top: this.state.top
+          top: this.state.top,
         }}
         styleName="context-menu"
       >
@@ -154,7 +152,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         <ContextMenuItem
           contextMenu={this}
           onClick={() => this.props.onLockValueScale(this.props.track.uid)}
-          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+          onMouseEnter={e => this.handleOtherMouseEnter(e)}
         >
           {'Lock Value Scale With'}
         </ContextMenuItem>
@@ -162,7 +160,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         <ContextMenuItem
           contextMenu={this}
           onClick={() => this.props.onUnlockValueScale(this.props.track.uid)}
-          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+          onMouseEnter={e => this.handleOtherMouseEnter(e)}
         >
           {'Unlock Value Scale'}
         </ContextMenuItem>
@@ -172,7 +170,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         <ContextMenuItem
           contextMenu={this}
           onClick={() => this.props.onAddSeries(this.props.track.uid)}
-          onMouseEnter={(e) => this.handleOtherMouseEnter(e)}
+          onMouseEnter={e => this.handleOtherMouseEnter(e)}
         >
           {'Add Series'}
         </ContextMenuItem>
@@ -186,7 +184,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         <ContextMenuItem
           onClick={() => {
             this.props.onReplaceTrack(this.props.track.uid,
-                          this.props.trackOrientation);
+              this.props.trackOrientation);
           }}
         >
           {'Replace Track'}

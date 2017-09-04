@@ -11,7 +11,7 @@ export class FixedTrack extends TrackArea {
 
     let classNames = 'track';
 
-    classNames += this.props.className ? ` ${this.props.className}`: '';
+    classNames += this.props.className ? ` ${this.props.className}` : '';
 
     return (
       <div
@@ -21,15 +21,15 @@ export class FixedTrack extends TrackArea {
         style={{
           height: this.props.height,
           width: this.props.width,
-          position: "relative",
-          background: 'transparent'
+          position: 'relative',
+          background: 'transparent',
         }}
       >
         <div
           key={this.props.uid}
           style={{
             height: this.props.height,
-            width: this.props.width
+            width: this.props.width,
           }}
         />
         {controls}

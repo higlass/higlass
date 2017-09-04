@@ -4,7 +4,7 @@ import MoveableTrack from './MoveableTrack';
 import TrackControl from './TrackControl';
 
 const STYLES = {
-  pointerEvents: 'all'
+  pointerEvents: 'all',
 };
 
 export class VerticalTrack extends MoveableTrack {

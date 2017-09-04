@@ -1,9 +1,9 @@
 import React from 'react';
-import {PropTypes} from 'prop-types';
-import {PopupMenu} from './PopupMenu';
+import { PropTypes } from 'prop-types';
+import { PopupMenu } from './PopupMenu';
 import ContextMenuContainer from './ContextMenuContainer';
-import {ConfigViewMenu} from './ConfigViewMenu';
-import {AddTrackPositionMenu} from './AddTrackPositionMenu';
+import { ConfigViewMenu } from './ConfigViewMenu';
+import { AddTrackPositionMenu } from './AddTrackPositionMenu';
 
 // Styles
 import '../styles/ViewHeader.module.scss';
@@ -20,8 +20,8 @@ export class ViewHeader extends React.Component {
       addTrackPositionMenuPosition: null,
       configMenuUid: null,
       configMenuPosition: null,
-      isFocused: false
-    }
+      isFocused: false,
+    };
   }
 
   /**
@@ -31,7 +31,7 @@ export class ViewHeader extends React.Component {
   handleConfigMenuOpened(uid) {
     this.setState({
       configMenuUid: uid,
-      configMenuPosition: this.configImg.getBoundingClientRect()
+      configMenuPosition: this.configImg.getBoundingClientRect(),
     });
   }
 
@@ -42,7 +42,7 @@ export class ViewHeader extends React.Component {
   handleAddTrackPositionMenuOpened(uid) {
     this.setState({
       addTrackPositionMenuUid: uid,
-      addTrackPositionMenuPosition: this.plusImg.getBoundingClientRect()
+      addTrackPositionMenuPosition: this.plusImg.getBoundingClientRect(),
     });
   }
 
@@ -57,7 +57,7 @@ export class ViewHeader extends React.Component {
 
     this.setState({
       addTrackPositionMenuUid: null,
-      addTrackPositionMenuPosition: null
+      addTrackPositionMenuPosition: null,
     });
   }
 
@@ -72,7 +72,7 @@ export class ViewHeader extends React.Component {
             () => {
               this.setState({
                 addTrackPositionMenuUid: null,
-                addTrackPositionMenuPosition: null
+                addTrackPositionMenuPosition: null,
               });
             }
           }
@@ -86,14 +86,13 @@ export class ViewHeader extends React.Component {
             />
           </ContextMenuContainer>
         </PopupMenu>
-      )
-
+      );
     }
 
     if (this.state.configMenuUid) {
       configMenu = (
         <PopupMenu
-          onMenuClosed={() => this.setState({configMenuUid: null})}
+          onMenuClosed={() => this.setState({ configMenuUid: null })}
         >
           <ContextMenuContainer
             orientation="left"
@@ -101,67 +100,67 @@ export class ViewHeader extends React.Component {
           >
             <ConfigViewMenu
               onExportSVG={() => {
-                this.setState({configMenuUid: null});
+                this.setState({ configMenuUid: null });
                 this.props.onExportSVG();
               }}
               onExportViewAsJSON={() => {
-                this.setState({configMenuUid: null});  // hide the menu
-                this.props.onExportViewsAsJSON()
+                this.setState({ configMenuUid: null }); // hide the menu
+                this.props.onExportViewsAsJSON();
               }}
               onExportViewAsLink={() => {
-                this.setState({configMenuUid: null});  // hide the menu
-                this.props.onExportViewsAsLink()
+                this.setState({ configMenuUid: null }); // hide the menu
+                this.props.onExportViewsAsLink();
               }}
               onLockLocation={() => {
-                this.setState({configMenuUid: null});  // hide the menu
+                this.setState({ configMenuUid: null }); // hide the menu
                 this.props.onLockLocation(this.state.configMenuUid);
               }}
               onLockZoom={() => {
-                this.setState({configMenuUid: null});  // hide the menu
+                this.setState({ configMenuUid: null }); // hide the menu
                 this.props.onLockZoom(this.state.configMenuUid);
               }}
               onLockZoomAndLocation={() => {
-                this.setState({configMenuUid: null});  // hide the menu
+                this.setState({ configMenuUid: null }); // hide the menu
                 this.props.onLockZoomAndLocation(this.state.configMenuUid);
               }}
               onProjectViewport={() => {
-                this.setState({configMenuUid: null});  // hide the menu
-                this.props.onProjectViewport(this.state.configMenuUid)
+                this.setState({ configMenuUid: null }); // hide the menu
+                this.props.onProjectViewport(this.state.configMenuUid);
               }}
               onTakeAndLockZoomAndLocation={() => {
-                this.setState({configMenuUid: null}); // hide the menu
+                this.setState({ configMenuUid: null }); // hide the menu
                 this.props.onTakeAndLockZoomAndLocation(this.state.configMenuUid);
               }}
               onTogglePositionSearchBox={() => {
-                this.setState({configMenuUid: null});  // hide the menu
-                this.props.onTogglePositionSearchBox(this.state.configMenuUid)
+                this.setState({ configMenuUid: null }); // hide the menu
+                this.props.onTogglePositionSearchBox(this.state.configMenuUid);
               }}
               onUnlockLocation={() => {
-                this.setState({configMenuUid: null});  // hide the menu
+                this.setState({ configMenuUid: null }); // hide the menu
                 this.props.onUnlockLocation(this.state.configMenuUid);
               }}
               onUnlockZoom={() => {
-                this.setState({configMenuUid: null});  // hide the menu
+                this.setState({ configMenuUid: null }); // hide the menu
                 this.props.onUnlockZoom(this.state.configMenuUid);
               }}
               onUnlockZoomAndLocation={() => {
-                this.setState({configMenuUid: null});  // hide the menu
+                this.setState({ configMenuUid: null }); // hide the menu
                 this.props.onUnlockZoomAndLocation(this.state.configMenuUid);
               }}
               onYankLocation={() => {
-                this.setState({configMenuUid: null});  // hide the menu
+                this.setState({ configMenuUid: null }); // hide the menu
                 this.props.onYankLocation(this.state.configMenuUid);
               }}
               onYankZoom={() => {
-                this.setState({configMenuUid: null});  // hide the menu
+                this.setState({ configMenuUid: null }); // hide the menu
                 this.props.onYankZoom(this.state.configMenuUid);
               }}
               onYankZoomAndLocation={() => {
-                this.setState({configMenuUid: null});  // hide the menu
+                this.setState({ configMenuUid: null }); // hide the menu
                 this.props.onYankZoomAndLocation(this.state.configMenuUid);
               }}
               onZoomToData={() => {
-                this.setState({configMenuUid: null});  // hide the menu
+                this.setState({ configMenuUid: null }); // hide the menu
                 this.props.onZoomToData(this.state.configMenuUid);
               }}
             />
@@ -174,15 +173,15 @@ export class ViewHeader extends React.Component {
       this.state.isFocused,
       (focus) => {
         this.setState({
-          isFocused: focus
+          isFocused: focus,
         });
-      }
+      },
     );
 
     const className = this.state.isFocused ?
       'multitrack-header-focus' : 'multitrack-header';
 
-    return(
+    return (
       <div styleName={className}>
         <div styleName="multitrack-header-left">
           <div styleName="multitrack-header-grabber">
@@ -227,7 +226,7 @@ export class ViewHeader extends React.Component {
         {configMenu}
         {addTrackPositionMenu}
       </div>
-    )
+    );
   }
 }
 
@@ -253,7 +252,7 @@ ViewHeader.propTypes = {
   onYankZoom: PropTypes.func,
   onYankZoomAndLocation: PropTypes.func,
   onZoomToData: PropTypes.func,
-  viewUid: PropTypes.string
-}
+  viewUid: PropTypes.string,
+};
 
 export default ViewHeader;

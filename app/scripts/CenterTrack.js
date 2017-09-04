@@ -12,11 +12,11 @@ import { genomeLociToPixels, or } from './utils';
 import { IS_TRACK_RANGE_SELECTABLE } from './configs';
 
 // Styles
-import styles from '../styles/CenterTrack.module.scss';  // eslint-disable-line no-unused-vars
-import stylesTrack from '../styles/Track.module.scss';  // eslint-disable-line no-unused-vars
+import styles from '../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
+import stylesTrack from '../styles/Track.module.scss'; // eslint-disable-line no-unused-vars
 
 const STYLES = {
-  pointerEvents: 'all'
+  pointerEvents: 'all',
 };
 
 export class CenterTrack extends React.Component {
@@ -24,7 +24,7 @@ export class CenterTrack extends React.Component {
     super(props);
 
     this.state = {
-      isVisible: false
+      isVisible: false,
     };
 
     this.brushBehaviorX = brushX(true, true)
@@ -52,9 +52,8 @@ export class CenterTrack extends React.Component {
       this.rangeSelectionTriggeredXY = false;
       return this.state !== nextState;
     } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
-
       const dim1 = nextProps.rangeSelection[0] ? genomeLociToPixels(
-        nextProps.rangeSelection[0], this.props.chromInfo
+        nextProps.rangeSelection[0], this.props.chromInfo,
       ) : null;
 
       if (this.props.chromInfo) {
@@ -72,9 +71,9 @@ export class CenterTrack extends React.Component {
             [
               dim1,
               genomeLociToPixels(
-                nextProps.rangeSelection[1], this.props.chromInfo
-              )
-            ]
+                nextProps.rangeSelection[1], this.props.chromInfo,
+              ),
+            ],
           );
         }
       }
@@ -185,7 +184,7 @@ export class CenterTrack extends React.Component {
     this.rangeSelectionTriggeredXY = true;
     this.props.onRangeSelectionXY([
       [event.selection[0][0], event.selection[1][0]],
-      [event.selection[0][1], event.selection[1][1]]
+      [event.selection[0][1], event.selection[1][1]],
     ]);
   }
 
@@ -212,7 +211,7 @@ export class CenterTrack extends React.Component {
 
     const relRangeX = rangeSelection ? [
       this.props.scaleX(rangeSelection[0]),
-      this.props.scaleX(rangeSelection[1])
+      this.props.scaleX(rangeSelection[1]),
     ] : null;
 
     this.rangeSelectionMoved = true;
@@ -229,7 +228,7 @@ export class CenterTrack extends React.Component {
 
     const relRangeY = rangeSelection ? [
       this.props.scaleY(rangeSelection[0]),
-      this.props.scaleY(rangeSelection[1])
+      this.props.scaleY(rangeSelection[1]),
     ] : null;
 
     this.rangeSelectionMoved = true;
@@ -242,12 +241,12 @@ export class CenterTrack extends React.Component {
     const relRange = [
       [
         this.props.scaleX(rangeSelection[0][0]),
-        this.props.scaleY(rangeSelection[1][0])
+        this.props.scaleY(rangeSelection[1][0]),
       ],
       [
         this.props.scaleX(rangeSelection[0][1]),
-        this.props.scaleY(rangeSelection[1][1])
-      ]
+        this.props.scaleY(rangeSelection[1][1]),
+      ],
     ];
 
     this.rangeSelectionMoved = true;
@@ -258,13 +257,13 @@ export class CenterTrack extends React.Component {
     if (this.props.isRangeSelectionActive) return;
 
     this.setState({
-      isVisible: true
+      isVisible: true,
     });
   }
 
   mouseLeaveHandler() {
     this.setState({
-      isVisible: false
+      isVisible: false,
     });
   }
 
@@ -315,10 +314,10 @@ export class CenterTrack extends React.Component {
       .reduce(or, false);
 
     const rangeSelectorClass = this.props.isRangeSelectionActive ? (
-        this.props.is1dRangeSelection ?
-          'stylesTrack.track-range-selection-active-secondary' :
-          'stylesTrack.track-range-selection-active-primary'
-      ) : 'stylesTrack.track-range-selection';
+      this.props.is1dRangeSelection ?
+        'stylesTrack.track-range-selection-active-secondary' :
+        'stylesTrack.track-range-selection-active-primary'
+    ) : 'stylesTrack.track-range-selection';
 
     const rangeSelectorGroup1dClass = !this.props.is1dRangeSelection ?
       'stylesTrack.track-range-selection-group-inactive' :
@@ -335,7 +334,7 @@ export class CenterTrack extends React.Component {
         onMouseLeave={this.mouseLeaveHandler.bind(this)}
         style={{
           height: this.props.height,
-          width: this.props.width
+          width: this.props.width,
         }}
         styleName="styles.center-track"
       >
@@ -343,7 +342,7 @@ export class CenterTrack extends React.Component {
           <svg
             style={{
               height: this.props.height,
-              width: this.props.width
+              width: this.props.width,
             }}
             styleName={rangeSelectorClass}
             xmlns="http://www.w3.org/2000/svg"
@@ -401,7 +400,7 @@ CenterTrack.propTypes = {
   scaleY: PropTypes.func,
   tracks: PropTypes.array,
   uid: PropTypes.string,
-  width: PropTypes.number
-}
+  width: PropTypes.number,
+};
 
 export default CenterTrack;

@@ -1,52 +1,49 @@
-'use strict'
+import { rgb } from 'd3-color';
+import React from 'react';
+import reactCSS from 'reactcss';
+import { SketchPicker } from 'react-color';
 
-import {rgb} from 'd3-color';
-import React from 'react'
-import reactCSS from 'reactcss'
-import { SketchPicker } from 'react-color'
+class SketchInlinePicker extends React.Component {
+  constructor(props) {
+    super(props);
 
-export class SketchInlinePicker extends React.Component {
-    constructor(props) {
-      super(props);
+    const startColor = rgb(props.color);
 
-      let startColor = rgb(props.color);
-
-      this.state = {
-        displayColorPicker: false,
-        color: {
-          r: startColor.r,
-          g: startColor.g,
-          b: startColor.b,
-          a: startColor.opacity
-        },
-      };
-    }
+    this.state = {
+      displayColorPicker: false,
+      color: {
+        r: startColor.r,
+        g: startColor.g,
+        b: startColor.b,
+        a: startColor.opacity,
+      },
+    };
+  }
 
   handleClick() {
-    this.setState({ displayColorPicker: !this.state.displayColorPicker })
-  };
+    this.setState({ displayColorPicker: !this.state.displayColorPicker });
+  }
 
   handleClose() {
-    this.setState({ displayColorPicker: false })
-  };
+    this.setState({ displayColorPicker: false });
+  }
 
   handleChange(color) {
-      let rgb = color.rgb;
-      let colorString = `rgba(${rgb.r},${rgb.g},${rgb.b},${rgb.a})`;
+    const rgb = color.rgb;
+    const colorString = `rgba(${rgb.r},${rgb.g},${rgb.b},${rgb.a})`;
 
     this.props.onChange(colorString);
-    this.setState({ color: color.rgb })
-  };
+    this.setState({ color: color.rgb });
+  }
 
   render() {
-
     const styles = reactCSS({
-      'default': {
+      default: {
         color: {
           width: '36px',
           height: '14px',
           borderRadius: '2px',
-          background: `rgba(${ this.state.color.r }, ${ this.state.color.g }, ${ this.state.color.b }, ${ this.state.color.a })`,
+          background: `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`,
         },
         swatch: {
           padding: '5px',
@@ -72,16 +69,16 @@ export class SketchInlinePicker extends React.Component {
 
     return (
       <div>
-        <div style={ styles.swatch } onClick={ this.handleClick.bind(this) }>
-          <div style={ styles.color } />
+        <div style={styles.swatch} onClick={this.handleClick.bind(this)}>
+          <div style={styles.color} />
         </div>
-        { this.state.displayColorPicker ? <div style={ styles.popover }>
-          <div style={ styles.cover } onClick={ this.handleClose.bind(this) }/>
-          <SketchPicker color={ this.state.color } onChange={ this.handleChange.bind(this) } />
+        { this.state.displayColorPicker ? <div style={styles.popover}>
+          <div style={styles.cover} onClick={this.handleClose.bind(this)} />
+          <SketchPicker color={this.state.color} onChange={this.handleChange.bind(this)} />
         </div> : null }
 
       </div>
-    )
+    );
   }
 }
 

@@ -28,7 +28,7 @@ export class TrackControl extends React.Component {
         style={this.props.imgStyleMove}
         styleName={buttonClassName}
       >
-        <use xlinkHref="#move"></use>
+        <use xlinkHref="#move" />
       </svg>
     ));
 
@@ -40,15 +40,15 @@ export class TrackControl extends React.Component {
         <svg
           className="no-zoom"
           onClick={() => {
-            let imgDom = ReactDOM.findDOMNode(this.imgConfig);
-            let bbox = imgDom.getBoundingClientRect();
+            const imgDom = ReactDOM.findDOMNode(this.imgConfig);
+            const bbox = imgDom.getBoundingClientRect();
             this.props.onConfigTrackMenuOpened(this.props.uid, bbox);
           }}
           ref={(c) => { this.imgConfig = c; }}
           style={this.props.imgStyleSettings}
           styleName={buttonClassName}
         >
-          <use xlinkHref="#cog"></use>
+          <use xlinkHref="#cog" />
         </svg>
 
         <svg
@@ -58,21 +58,21 @@ export class TrackControl extends React.Component {
           style={this.props.imgStyleAdd}
           styleName={buttonClassName}
         >
-          <use xlinkHref="#plus"></use>
+          <use xlinkHref="#plus" />
         </svg>
 
         <svg
           className="no-zoom"
           onClick={() => {
-            let imgDom = ReactDOM.findDOMNode(this.imgClose);
-            let bbox = imgDom.getBoundingClientRect();
+            const imgDom = ReactDOM.findDOMNode(this.imgClose);
+            const bbox = imgDom.getBoundingClientRect();
             this.props.onCloseTrackMenuOpened(this.props.uid, bbox);
           }}
           ref={(c) => { this.imgClose = c; }}
           style={this.props.imgStyleClose}
           styleName={buttonClassName}
         >
-          <use xlinkHref="#cross"></use>
+          <use xlinkHref="#cross" />
         </svg>
       </div>
     );
@@ -91,7 +91,7 @@ TrackControl.propTypes = {
   onConfigTrackMenuOpened: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onAddSeries: PropTypes.func,
-  uid: PropTypes.string
+  uid: PropTypes.string,
 };
 
 export default TrackControl;
