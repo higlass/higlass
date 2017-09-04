@@ -4,8 +4,8 @@ import { colorToHex } from './utils';
 import { AxisPixi } from './AxisPixi';
 
 export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, option, animate);
+  constructor(scene, server, uid, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
+    super(scene, server, uid, handleTilesetInfoReceived, option, animate, onValueScaleChanged);
 
     this.axis = new AxisPixi(this);
     this.pBase.addChild(this.axis.pAxis);
@@ -216,6 +216,14 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     this.draw();
   }
 
+  /**
+   * Export an SVG representation of this track
+   *
+   * @returns {[DOMNode,DOMNode]} The two returned DOM nodes are both SVG
+   * elements [base,track]. Base is a parent which contains track as a
+   * child. Track is clipped with a clipping rectangle contained in base.
+   *
+   */
   exportSVG() {
     let track = null,
       base = null;
@@ -226,6 +234,8 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       base = document.createElement('g');
       track = base;
     }
+
+    base.setAttribute('class', 'exported-line-track');
     const output = document.createElement('g');
 
     track.appendChild(output);

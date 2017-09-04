@@ -16,13 +16,12 @@ import { ZOOM_DEBOUNCE } from './configs';
 export class TiledPixiTrack extends PixiTrack {
   /**
    * A track that must pull remote tiles
+   *
+   * @param scene: A PIXI.js scene to draw everything to.
+   * @param server: The server to pull tiles from.
+   * @param tilesetUid: The data set to get the tiles from the server
    */
-  constructor(scene, server, tilesetUid, handleTilesetInfoReceived, options, animate) {
-    /**
-         * @param scene: A PIXI.js scene to draw everything to.
-         * @param server: The server to pull tiles from.
-         * @param tilesetUid: The data set to get the tiles from the server
-         */
+  constructor(scene, server, tilesetUid, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
     super(scene, options);
 
     // the tiles which should be visible (although they're not necessarily fetched)
@@ -49,11 +48,14 @@ export class TiledPixiTrack extends PixiTrack {
     this.medianVisibleValue = null;
 
     this.animate = animate;
+    this.onValueScaleChanged = onValueScaleChanged;
 
     // store the server and tileset uid so they can be used in draw()
     // if the tileset info is not found
     this.server = server;
     this.tilesetUid = tilesetUid;
+    this.prevValueScale = null;
+
 
     tileProxy.trackInfo(server, tilesetUid, (tilesetInfo) => {
       // console.log('tilesetInfo:', tilesetInfo);
@@ -135,6 +137,7 @@ export class TiledPixiTrack extends PixiTrack {
       remoteId: this.tileToRemoteId(x),
       mirrored: x.mirrored,
     }));
+
 
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
   }
@@ -353,10 +356,10 @@ export class TiledPixiTrack extends PixiTrack {
 
   synchronizeTilesAndGraphics() {
     /**
-         * Make sure that we have a one to one mapping between tiles
-         * and graphics objects
-         *
-         */
+     * Make sure that we have a one to one mapping between tiles
+     * and graphics objects
+     *
+     */
 
     // keep track of which tiles are visible at the moment
     this.addMissingGraphics();
@@ -366,13 +369,13 @@ export class TiledPixiTrack extends PixiTrack {
 
   loadTileData(tile, dataLoader) {
     /**
-         * Extract drawable data from a tile loaded by a generic tile loader
-         *
-         * @param tile: A tile returned by a TiledArea.
-         * @param dataLoader: A function for extracting drawable data from a tile. This
-         *                    usually means differentiating the between dense and sparse
-         *                    tiles and putting the data into an array.
-         */
+     * Extract drawable data from a tile loaded by a generic tile loader
+     *
+     * @param tile: A tile returned by a TiledArea.
+     * @param dataLoader: A function for extracting drawable data from a tile. This
+     *                    usually means differentiating the between dense and sparse
+     *                    tiles and putting the data into an array.
+     */
 
     // see if the data is already cached
     let loadedTileData = this.lruCache.get(tile.tileId);
@@ -389,8 +392,6 @@ export class TiledPixiTrack extends PixiTrack {
   fetchNewTiles(toFetch) {
     if (toFetch.length > 0) {
       const toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
-      // console.log('fetching:', toFetchList.join(' '));
-      // tileProxy.fetchTiles(this.tilesetServer, toFetchList, this.receivedTiles.bind(this));
 
       tileProxy.fetchTilesDebounced({
         id: this.uuid,
@@ -444,9 +445,23 @@ export class TiledPixiTrack extends PixiTrack {
     this.draw();
 
     // Let HiGlass know we need to re-render
+    // check if the value scale has changed
+    if (this.valueScale) {
+      if (!this.prevValueScale || JSON.stringify(this.valueScale.domain()) != JSON.stringify(this.prevValueScale.domain())) {
+        // console.log('here', this.onValueScaleChanged);
+        // if (this.prevValueScale)
+        // console.log('this.prevValueScale.domain()', this.prevValueScale.domain());
+        // console.log('this.valueScale.domain()', this.valueScale.domain());
+        this.prevValueScale = this.valueScale.copy();
+
+        if (this.onValueScaleChanged) {
+          this.onValueScaleChanged();
+        }
+      }
+    }
+
     this.animate();
   }
-
 
   draw() {
     if (this.delayDrawing) { return; }
@@ -475,16 +490,15 @@ export class TiledPixiTrack extends PixiTrack {
 
     super.draw();
 
-    for (const uid in this.fetchedTiles) { this.drawTile(this.fetchedTiles[uid]); }
-
-    // this.animate();
+    for (const uid in this.fetchedTiles) {
+      this.drawTile(this.fetchedTiles[uid]);
+    }
   }
 
   drawTile(tileData, graphics) {
     /**
-         * Draw a tile on some graphics
-         */
-
+     * Draw a tile on some graphics
+     */
   }
 
   calculateMedianVisibleValue() {

@@ -6779,7 +6779,6 @@ export const twoViewConfig =
                   ],
                   "colorbarPosition": "topLeft",
                   "colorbarOrientation": "vertical",
-                  "colorbarLabelsPosition": "outside",
                   "maxZoom": null,
                   "labelPosition": "bottomRight",
                   "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"

@@ -20,6 +20,16 @@ export class LeftTrackModifier {
     // If the original track has text labels, we need to flip
     // them horizontally, otherwise they'll be mirrored.
     originalTrack.flipText = true;
+    this.svgOutput = null;
+
+    if (originalTrack.gBase && originalTrack.gMain) {
+      this.originalTrack.gBase.attr('transform',
+        `translate(${this.moveToOrigin.position.x},${this.moveToOrigin.position.y})
+                             rotate(90)
+                             scale(${this.moveToOrigin.scale.x},${this.moveToOrigin.scale.y})`);
+      this.originalTrack.gMain.attr('transform',
+        `translate(${this.originalTrack.pBase.position.x},${this.originalTrack.pBase.position.y})`);
+    }
   }
 
   remove() {
@@ -49,6 +59,15 @@ export class LeftTrackModifier {
     this.moveToOrigin.scale.x = 1;
     this.moveToOrigin.position.x = this.originalTrack.position[0];
     this.moveToOrigin.position.y = this.originalTrack.position[1];
+
+    if (this.originalTrack.gMain) {
+      this.originalTrack.gBase.attr('transform',
+        `translate(${this.moveToOrigin.position.x},${this.moveToOrigin.position.y})
+                                 rotate(90)
+                                 scale(${this.moveToOrigin.scale.x},${this.moveToOrigin.scale.y})`);
+      this.originalTrack.gMain.attr('transform',
+        `translate(${this.originalTrack.pBase.position.x},${this.originalTrack.pBase.position.y})`);
+    }
   }
 
   refXScale(_) {

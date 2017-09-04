@@ -17,6 +17,7 @@ export { default as map } from './map';
 export { default as objVals } from './obj-vals';
 export { default as or } from './or';
 export { default as pixelToGenomeLoci } from './pixel-to-genome-loci';
+export { default as pixiTextToSvg } from './pixi-text-to-svg';
 export { default as positionedTracksToAllTracks } from './positioned-tracks-to-all-tracks';
 export { default as relToAbsChromPos } from './rel-to-abs-chrom-pos';
 export { default as scalesCenterAndK } from './scales-center-and-k';

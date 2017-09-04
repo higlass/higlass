@@ -14,6 +14,7 @@ import IdVertical1DTiledPixiTrack from './IdVertical1DTiledPixiTrack';
 import TopAxisTrack from './TopAxisTrack';
 import LeftAxisTrack from './LeftAxisTrack';
 import CombinedTrack from './CombinedTrack';
+import BedLikeTrack from './BedLikeTrack';
 
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 import HorizontalPoint1DPixiTrack from './HorizontalPoint1DPixiTrack';
@@ -1114,6 +1115,16 @@ export class TrackRenderer extends React.Component {
       case 'mapbox-tiles':
         return new MapboxTilesTrack(
           this.pStage,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      case 'bedlike':
+        return new BedLikeTrack(
+          this.pStage,
+          track.server,
+          track.tilesetUid,
+          handleTilesetInfoReceived,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );

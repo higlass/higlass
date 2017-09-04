@@ -6,10 +6,6 @@ import { HorizontalLine1DPixiTrack } from './HorizontalLine1DPixiTrack';
 import { colorToHex, dictValues } from './utils';
 
 export class BarTrack extends HorizontalLine1DPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, option, animate);
-  }
-
   initTile(tile) {
     /**
          * Create whatever is needed to draw this tile.

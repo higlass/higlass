@@ -10,9 +10,12 @@ function countTransform(count) {
 }
 */
 const epsilon = 0.0000001;
+
 const MAX_FETCH_TILES = 20;
 
-export function workerSetPix(size, data, valueScale, pseudocount, colorScale, passedCountTransform) {
+export function workerSetPix(
+  size, data, valueScale, pseudocount, colorScale, passedCountTransform
+) {
   /**
    * The pseudocount is generally the minimum non-zero value and is
    * used so that our log scaling doesn't lead to NaN values.
@@ -71,27 +74,27 @@ export function workerGetTilesetInfo(url, done) {
   });
 }
 
-function float32(in_uint16) {
+function float32(inUint16) {
   /**
-         * Yanked from https://gist.github.com/martinkallman/5049614
-         *
-         * Does not support infinities or NaN. All requests with such
-         * values should be encoded as float32
-         */
+   * Yanked from https://gist.github.com/martinkallman/5049614
+   *
+   * Does not support infinities or NaN. All requests with such
+   * values should be encoded as float32
+   */
   let t1;
   let t2;
   let t3;
 
-  t1 = in_uint16 & 0x7fff; // Non-sign bits
-  t2 = in_uint16 & 0x8000; // Sign bit
-  t3 = in_uint16 & 0x7c00; // Exponent
+  t1 = inUint16 & 0x7fff; // Non-sign bits
+  t2 = inUint16 & 0x8000; // Sign bit
+  t3 = inUint16 & 0x7c00; // Exponent
 
   t1 <<= 13; // Align mantissa on MSB
   t2 <<= 16; // Shift sign bit into position
 
   t1 += 0x38000000; // Adjust bias
 
-  t1 = (t3 == 0 ? 0 : t1); // Denormals-as-zero
+  t1 = (t3 === 0 ? 0 : t1); // Denormals-as-zero
 
   t1 |= t2; // Re-insert sign bit
 

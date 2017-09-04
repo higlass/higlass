@@ -1,6 +1,6 @@
 {
   "name": "higlass",
-  "version": "0.8.28",
+  "version": "0.8.34",
   "description": "Massive matrix viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/scripts/hglib.js",
@@ -13,8 +13,8 @@
   "scripts": {
     "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --content-base app --profile --inline | grep -v '\\[\\d*\\]'",
     "build": "npm run compile",
-    "compile": "rm -rf dist/*; mkdir -p dist/scripts; mkdir -p dist/styles; cp -r app/images dist/; NODE_ENV=production ./node_modules/webpack/bin/webpack.js -p; cp build/hglib.js dist/scripts; cp build/hglib.js.map dist/scripts; cp app/index.html dist/; cp build/hglib.css dist/styles/; cp build/hglib.css.map dist/styles/; cp doc/favicon.ico dist/; cp app/styles/page.css dist/styles/; zip -r dist.zip dist",
-    "test": "./node_modules/karma/bin/karma start karma.conf.js"
+    "compile": "rm -rf dist/*; mkdir -p dist/scripts; mkdir -p dist/styles; cp -r app/images dist/; NODE_ENV=production ./node_modules/webpack/bin/webpack.js -p; cp build/hglib.js dist/scripts; cp app/index.html dist/; cp app/hglib.html dist/; cp build/styles.css dist/styles/hglib.css; cp doc/favicon.ico dist/; cp app/styles/page.css dist/styles/; zip -r dist.zip dist",
+    "test-watch": "./node_modules/karma/bin/karma start karma.conf.js"
   },
   "repository": {
     "type": "git",

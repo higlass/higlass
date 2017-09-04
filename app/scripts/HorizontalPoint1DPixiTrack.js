@@ -4,19 +4,15 @@ import { colorToHex } from './utils';
 import { dictValues } from './utils';
 
 export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, option, animate);
+  constructor(scene, server, uid, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
+    super(scene, server, uid, handleTilesetInfoReceived, option, animate, onValueScaleChanged);
   }
 
+  /**
+   * Create whatever is needed to draw this tile.
+   */
   initTile(tile) {
-    /**
-         * Create whatever is needed to draw this tile.
-         */
     super.initTile(tile);
-
-    // console.log('initializing tile');
-
-    // this.drawTile(tile);
     this.renderTile(tile);
   }
 

@@ -360,6 +360,17 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     this.pMain.position.x = this.position[0];
   }
 
+  setDimensions(newDimensions) {
+    super.setDimensions(newDimensions);
+
+    // redraw the contents
+    for (const tile of this.visibleAndFetchedTiles()) {
+      tile.rectGraphics.clear();
+
+      this.renderTile(tile);
+    }
+  }
+
   zoomed(newXScale, newYScale) {
     this.xScale(newXScale);
     this.yScale(newYScale);
@@ -417,7 +428,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       g.setAttribute('transform', `scale(${text.text.scale.x},1)`);
 
 
-      if (text.strand == '+') {
+      if (text.strand === '+') {
         // t.setAttribute('stroke', this.options.plusStrandColor);
         t.setAttribute('fill', this.options.plusStrandColor);
       } else {

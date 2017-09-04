@@ -3,14 +3,10 @@ import TiledPixiTrack from './TiledPixiTrack';
 import { tileProxy } from './services';
 
 export class Tiled2DPixiTrack extends TiledPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate);
-  }
-
   tileToLocalId(tile) {
     /*
-         * The local tile identifier
-         */
+     * The local tile identifier
+     */
 
     // tile contains [zoomLevel, xPos, yPos]
     if (tile.dataTransform && tile.dataTransform != 'default') { return `${this.tilesetUid}.${tile.join('.')}.${tile.mirrored}.${tile.dataTransform}`; }
@@ -19,8 +15,8 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
 
   tileToRemoteId(tile) {
     /**
-         * The tile identifier used on the server
-         */
+     * The tile identifier used on the server
+     */
 
     // tile contains [zoomLevel, xPos, yPos]
     if (tile.dataTransform && tile.dataTransform != 'default') { return `${this.tilesetUid}.${tile.join('.')}.${tile.dataTransform}`; }

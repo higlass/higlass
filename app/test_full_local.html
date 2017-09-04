@@ -34,26 +34,130 @@
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://localhost:8000/api/v1",
-    "http://higlass.io/api/v1"
+    "http://test2.higlass.io/api/v1"
   ],
   "exportViewUrl": "http://localhost:8000/api/v1/viewconfs/",
   "views": [
     {
       "uid": "aa",
       "initialXDomain": [
-        289402652.5071903,
-        296277822.478003
+        1749088633.5920825,
+        1771300591.4621453
       ],
       "initialYDomain": [
-        1716358367.8688352,
-        1718712657.7418363
+        836001821.5685089,
+        848989720.561744
       ],
       "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
+          {
+            "name": "Chromosome Axis",
+            "created": "2017-06-06T17:03:01.273116Z",
+            "server": "http://test2.higlass.io/api/v1",
+            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
+            "uid": "a1zPP2Z0RT2_nkJRJrwsZg",
+            "type": "horizontal-chromosome-labels",
+            "options": {},
+            "width": 20,
+            "height": 30,
+            "position": "top"
+          },
+          {
+            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+            "created": "2017-02-03T00:28:06.909619Z",
+            "server": "http://test2.higlass.io/api/v1",
+            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+            "uid": "XAInSEM4Q4KUFhJyINjgWg",
+            "type": "horizontal-heatmap",
+            "options": {
+              "labelPosition": "bottomRight",
+              "labelColor": "black",
+              "colorRange": [
+                "white",
+                "rgba(245,166,35,1.0)",
+                "rgba(208,2,27,1.0)",
+                "black"
+              ],
+              "maxZoom": null,
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+            },
+            "width": 1257,
+            "height": 238,
+            "transforms": [
+              {
+                "name": "ICE",
+                "value": "weight"
+              }
+            ],
+            "position": "top"
+          },
+          {
+            "name": "Forcato et al (2017) Rao_RepH_GM12878_TADBit.txt.multires.db",
+            "created": "2017-07-14T00:05:55.533166Z",
+            "server": "http://test2.higlass.io/api/v1",
+            "tilesetUid": "LOxv7UeDStqa14RG0FOirQ",
+            "uid": "G_YTgUSpS2CX5vXAyQ7A6Q",
+            "type": "horizontal-2d-rectangle-domains",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "bottomLeft",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "rectangleDomainFillColor": "grey",
+              "rectangleDomainStrokeColor": "black",
+              "rectangleDomainOpacity": 0.6,
+              "name": "Forcato et al (2017) Rao_RepH_GM12878_TADBit.txt.multires.db"
+            },
+            "width": 1257,
+            "height": 105,
+            "position": "top"
+          },
+          {
+            "name": "Forcato et al (2017) Rao_RepA1_GM12878_HiCseg.txt.multires.db",
+            "created": "2017-07-14T00:03:33.945759Z",
+            "server": "http://test2.higlass.io/api/v1",
+            "tilesetUid": "cs3PLbfDTKO0fso6UewTPQ",
+            "uid": "UOURRbTHSqCM0Lq-nThHyA",
+            "type": "horizontal-2d-rectangle-domains",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "bottomLeft",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "rectangleDomainFillColor": "grey",
+              "rectangleDomainStrokeColor": "black",
+              "rectangleDomainOpacity": 0.6,
+              "name": "Forcato et al (2017) Rao_RepA1_GM12878_HiCseg.txt.multires.db"
+            },
+            "width": 1257,
+            "height": 26,
+            "position": "top"
+          },
+          {
+            "name": "Gene Annotations (hg19)",
+            "created": "2017-02-05T19:31:52.412319Z",
+            "server": "http://test2.higlass.io/api/v1",
+            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
+            "uid": "KwS-FewsRi-7VbZj9hZLFw",
+            "type": "horizontal-gene-annotations",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "hidden",
+              "plusStrandColor": "blue",
+              "minusStrandColor": "red",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "name": "Gene Annotations (hg19)"
+            },
+            "width": 1257,
+            "height": 55,
+            "position": "top"
+          }
         ],
         "left": [],
         "center": [],

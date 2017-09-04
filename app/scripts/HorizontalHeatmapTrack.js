@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
+import { scaleLinear, scaleLog } from 'd3-scale';
 
-import { HeatmapTiledPixiTrack } from './HeatmapTiledPixiTrack';
+import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
 // Services
 import { tileProxy } from './services';
@@ -17,8 +18,8 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
    * @param server: The server to pull tiles from.
    * @param uid: The data set to get the tiles from the server
    */
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, svgElement, onValueScaleChanged, onTrackOptionsChanged) {
+    super(scene, server, uid, handleTilesetInfoReceived, options, animate, svgElement, onValueScaleChanged, onTrackOptionsChanged);
 
     this.pMain = this.pMobile;
 
@@ -33,6 +34,14 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     }
   }
 
+  rerender(options, force) {
+    super.rerender(options, force);
+
+    // zoom so that if the heatmap is flipped, the scale of this.pMain changes
+    this.zoomed(this.xScale(), this.yScale(),
+      this.pMain.scale.x, this.pMain.position.x, this.pMain.position.y);
+  }
+
   calculateZoomLevel() {
     const xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
       this.tilesetInfo.min_pos[0],
@@ -40,6 +49,13 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     const yZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
       this.tilesetInfo.min_pos[1],
       this.tilesetInfo.max_pos[1]);
+
+    let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
+    zoomLevel = Math.min(zoomLevel, this.maxZoom);
+
+    if (this.options && this.options.maxZoom) {
+      if (this.options.maxZoom >= 0) { zoomLevel = Math.min(this.options.maxZoom, zoomLevel); } else { console.error('Invalid maxZoom on track:', this); }
+    }
 
     let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
     zoomLevel = Math.min(zoomLevel, this.maxZoom);
@@ -152,19 +168,36 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     sprite.y = this._refYScale(tileY);
   }
 
+  /**
+   * Convert the raw tile data to a rendered array of values which can be represented as a sprite.
+   *
+   * @param tile: The data structure containing all the tile information. Relevant to
+   *              this function are tile.tileData = {'dense': [...], ...}
+   *              and tile.graphics
+   */
   renderTile(tile) {
-    /**
-         * Convert the raw tile data to a rendered array of values which can be represented as a sprite.
-         *
-         * @param tile: The data structure containing all the tile information. Relevant to
-         *              this function are tile.tileData = {'dense': [...], ...}
-         *              and tile.graphics
-         */
+    if (this.options.heatmapValueScaling == 'log') {
+      this.valueScale = scaleLog().range([254, 0])
+        .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
+    } else if (this.options.heatmapValueScaling == 'linear') {
+      this.valueScale = scaleLinear().range([254, 0])
+        .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
+    }
+
+    this.limitedValueScale = this.valueScale.copy();
+    if (this.options
+            && typeof (this.options.scaleStartPercent) !== 'undefined'
+            && typeof (this.options.scaleEndPercent) !== 'undefined') {
+      this.limitedValueScale.domain(
+        [this.valueScale.domain()[0] + (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * (this.options.scaleStartPercent),
+          this.valueScale.domain()[0] + (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * (this.options.scaleEndPercent)]);
+    }
+
     tileProxy.tileDataToPixData(tile,
-      this.valueScale,
+      this.limitedValueScale,
       this.valueScale.domain()[0], // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
-      (pixData) => {
+      function (pixData) {
         // the tileData has been converted to pixData by the worker script and needs to be loaded
         // as a sprite
         const graphics = tile.graphics;

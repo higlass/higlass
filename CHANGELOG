@@ -5,6 +5,36 @@ v0.9.0
 - Add support for CSS Modules
 - Update visuals of the context menu and view header
 - Integrate search bar into view header
+- Add ESLint and adhere to consistent code style
+
+v0.8.35
+
+- Fixed colorbar hiding bug (Issue #131)
+
+v0.8.34
+
+- Fixed horizontal heatmap loading after the adjustable color scale changes
+- Fixed vertical heatmap loading
+- Fixed vertical heatmap colorscale brush in LeftTrackModifier
+
+v0.8.33
+
+- Removed the outside colorbar labels option (it's a little
+ambiguous on the right side since the labels will be adjacent
+to the other axis elements.
+
+v0.8.32
+
+- Removed tests from package.json so that build completes (tests fail on
+travis for some reason)
+
+v0.8.31
+
+- Add a color limit selection to the Heatmap track in HiGlass
+
+v0.8.30
+
+- Cherry picked the BedLikeTrack from the circle branch
 
 v0.8.28
 

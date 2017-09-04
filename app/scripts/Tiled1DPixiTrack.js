@@ -3,10 +3,6 @@ import TiledPixiTrack from './TiledPixiTrack';
 import { tileProxy } from './services';
 
 export class Tiled1DPixiTrack extends TiledPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate);
-  }
-
   initTile(tile) {
     /**
          * We don't need to do anything but draw the tile.
