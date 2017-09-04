@@ -48,7 +48,13 @@
                 1000000000,3000000000
                                           ],
       "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "genomePositionSearchBoxVisible": true,
+      "genomePositionSearchBox": {
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "visible": true
+      },
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
@@ -285,7 +291,7 @@
         }
     );
 
-    window.hgApi.on('view', function (viewConfig) {
+    window.hgApi.on('viewConfig', function (viewConfig) {
       console.log('View Config changed');
     });
 
@@ -297,13 +303,40 @@
       );
     });
 
-    setTimeout(function() {
-      window.hgApi.activateTool('select');
-    }, 2000);
+    window.hgApi.get('yes')
+      .then(() => console.log('yes!'))
+      .catch(() => console.warn('no!'));
 
-    setTimeout(function() {
-      window.hgApi.activateTool('move');
-    }, 10000);
+    window.hgApi.get('location')
+      .then((loc) => console.log('Location', loc))
+      .catch((e) => console.warn('No location!', e));
+
+    window.hgApi.get('viewConfig')
+      .then((viewConfig) => {
+        var vc = JSON.parse(viewConfig);
+        console.log('viewConfig', vc);
+
+        return vc.views[0].uid;
+      })
+      .then(function(viewId) {
+        return window.hgApi.get('location', viewId);
+      })
+      .then(function(loc) { console.log('Location', loc) })
+      .catch(function(e) { console.warn('Arghhh!', e) });
+
+    // setTimeout(function() {
+    //   window.hgApi.activateTool('select');
+    // }, 2000);
+
+    // setTimeout(function() {
+    //   window.hgApi.get('rangeSelection').then(
+    //     rangeSelection => console.log('GET range selection', rangeSelection)
+    //   );
+    // }, 5000);
+
+    // setTimeout(function() {
+    //   window.hgApi.activateTool('move');
+    // }, 10000);
 
     // setTimeout(function () {
     //   // Go to PTEN
