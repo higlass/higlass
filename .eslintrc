@@ -26,6 +26,7 @@
   },
   "rules": {
     "jsx-quotes": 1,
+    "no-mixed-operators": ["error", {"allowSamePrecedence": true}],
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
     "react/display-name": 0,
     "react/forbid-prop-types": 0,
