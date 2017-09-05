@@ -68,6 +68,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         fill = this.options.minusStrandColor ? this.options.minusStrandColor : 'red';
       }
       tile.textWidths = {};
+      tile.textHeights = {};
 
       // don't draw texts for the latter entries in the tile
       if (i >= MAX_TEXTS) { return; }
@@ -195,8 +196,10 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       if (!(geneInfo[3] in tile.textWidths)) {
         text.updateTransform();
         const textWidth = text.getBounds().width;
+        const textHeight = text.getBounds().height;
 
         tile.textWidths[geneInfo[3]] = textWidth;
+        tile.textHeights[geneInfo[3]] = textHeight;
       }
     });
   }
@@ -309,7 +312,14 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           text.visible = true;
 
           const TEXT_MARGIN = 3;
-          this.allBoxes.push([text.position.x - TEXT_MARGIN, textYMiddle - 1, text.position.x + tile.textWidths[geneInfo[3]] + TEXT_MARGIN, textYMiddle + 1]);
+
+          if (this.flipText) {
+            // when flipText is set, that means that the track is being displayed vertically so we need to use
+            // the stored text height rather than width
+            this.allBoxes.push([text.position.x, textYMiddle - 1, text.position.x + tile.textHeights[geneInfo[3]] + TEXT_MARGIN, textYMiddle + 1]);
+          } else
+            this.allBoxes.push([text.position.x, textYMiddle - 1, text.position.x + tile.textWidths[geneInfo[3]] + TEXT_MARGIN, textYMiddle + 1]);
+
           this.allTexts.push({ importance: +geneInfo[4], text, caption: geneName, strand: geneInfo[5] });
         } else {
           text.visible = false;
