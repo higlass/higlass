@@ -16,7 +16,7 @@ export class ConfigViewMenu extends React.Component {
           {'Toggle position search box'}
         </ContextMenuItem>
 
-        <hr styleName="contect-menu-hr" />
+        <hr styleName="context-menu-hr" />
 
         <ContextMenuItem
           onClick={e => this.props.onZoomToData(e)}
@@ -24,7 +24,7 @@ export class ConfigViewMenu extends React.Component {
         {'Zoom to data extent'}
         </ContextMenuItem>
 
-        <hr styleName="contect-menu-hr" />
+        <hr styleName="context-menu-hr" />
 
         <ContextMenuItem
           onClick={e => this.props.onYankZoom(e)}
@@ -44,7 +44,7 @@ export class ConfigViewMenu extends React.Component {
           {'Take zoom and location from'}
         </ContextMenuItem>
 
-        <hr styleName="contect-menu-hr" />
+        <hr styleName="context-menu-hr" />
 
         <ContextMenuItem
           onClick={this.props.onLockZoom}
@@ -64,7 +64,7 @@ export class ConfigViewMenu extends React.Component {
           {'Lock zoom and location with'}
         </ContextMenuItem>
 
-        <hr styleName="contect-menu-hr" />
+        <hr styleName="context-menu-hr" />
 
         <ContextMenuItem
           onClick={this.props.onTakeAndLockZoomAndLocation}
@@ -72,7 +72,7 @@ export class ConfigViewMenu extends React.Component {
           {'Take and lock zoom and location with'}
         </ContextMenuItem>
 
-        <hr styleName="contect-menu-hr" />
+        <hr styleName="context-menu-hr" />
 
         <ContextMenuItem
           onClick={e => this.props.onUnlockZoom(e)}
@@ -92,7 +92,7 @@ export class ConfigViewMenu extends React.Component {
           {'Unlock zoom and location'}
         </ContextMenuItem>
 
-        <hr styleName="contect-menu-hr" />
+        <hr styleName="context-menu-hr" />
 
         <ContextMenuItem
           onClick={e => this.props.onProjectViewport(e)}
@@ -100,7 +100,7 @@ export class ConfigViewMenu extends React.Component {
         {'Show this viewport on'}
         </ContextMenuItem>
 
-        <hr styleName="contect-menu-hr" />
+        <hr styleName="context-menu-hr" />
 
         <ContextMenuItem
           onClick={() => this.props.onExportSVG()}
