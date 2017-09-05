@@ -20,6 +20,10 @@ export const ZOOM_TRANSITION_DURATION = 1000;
 
 export const DEFAULT_SERVER = 'http://higlass.io/api/v1';
 
+export const VIEW_HEADER_MED_WIDTH_SEARCH_BAR = 400;
+
+export const VIEW_HEADER_MIN_WIDTH_SEARCH_BAR = 300;
+
 
 /* --------------------------------- Complex -------------------------------- */
 
