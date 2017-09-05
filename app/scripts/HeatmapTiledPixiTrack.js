@@ -669,6 +669,12 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
     return [base, base];
   }
+
+  zoomed(newXScale, newYScale, k, tx, ty) {
+    super.zoomed(newXScale, newYScale, k, tx, ty);
+
+    this.drawColorbar();
+  }
 }
 
 export default HeatmapTiledPixiTrack;
