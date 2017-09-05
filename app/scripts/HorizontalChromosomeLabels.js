@@ -276,37 +276,31 @@ class HorizontalChromosomeLabels extends PixiTrack {
       `translate(${this.position[0]},${this.position[1]})`);
 
     for (const text of this.allTexts) {
-      if (!text.text.visible) { continue; }
+      if (!text.text.visible) continue;
 
       const g = pixiTextToSvg(text.text);
       output.appendChild(g);
     }
 
-    for (const key in this.tickTexts) {
-      for (const text of this.tickTexts[key]) {
-        const g = pixiTextToSvg(text);
+    for (let key in this.tickTexts) {
+      for (let text of this.tickTexts[key]) {
+        let g = pixiTextToSvg(text);
+        output.appendChild(g);
 
-        for (let key in this.tickTexts) {
-          for (let text of this.tickTexts[key]) {
-            let g = PIXITextToSvg(text);
-            output.appendChild(g);
+        g = svgLine(
+          text.x,
+          this.dimensions[1],
+          text.x,
+          this.dimensions[1] - TICK_HEIGHT,
+          1,
+          TICK_COLOR,
+        );
 
-            g = svgLine(
-              text.x,
-              this.dimensions[1],
-              text.x,
-              this.dimensions[1] - TICK_HEIGHT,
-              1,
-              TICK_COLOR
-            );
-
-            output.appendChild(g);
-          }
-        }
+        output.appendChild(g);
       }
-
-      return [base, track];
     }
+
+    return [base, track];
   }
 }
 
