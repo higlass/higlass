@@ -33,6 +33,7 @@ import {
   getTrackByUid,
   getTrackPositionByUid,
   loadChromInfos,
+  objVals,
   positionedTracksToAllTracks,
   scalesCenterAndK,
   scalesToGenomeLoci,
@@ -175,6 +176,8 @@ class HiGlassComponent extends React.Component {
     domEvent.register('keydown', document);
     domEvent.register('keyup', document);
     domEvent.register('scroll', document);
+    domEvent.register('resize', window);
+    domEvent.register('orientationchange', window);
 
     this.pubSubs = [];
     this.pubSubs.push(
@@ -182,6 +185,12 @@ class HiGlassComponent extends React.Component {
     );
     this.pubSubs.push(
       pubSub.subscribe('keyup', this.keyUpHandler.bind(this)),
+    );
+    this.pubSubs.push(
+      pubSub.subscribe('resize', this.resizeHandler.bind(this)),
+    );
+    this.pubSubs.push(
+      pubSub.subscribe('orientationchange', this.resizeHandler.bind(this)),
     );
 
     if (this.props.getApi) {
@@ -1144,12 +1153,8 @@ class HiGlassComponent extends React.Component {
     }, LONG_DRAG_TIMEOUT);
   }
 
-  onNewLayout() {
-
-  }
-
-  handleResize(layout, oldItem, newItem, placeholder, e, element) {
-
+  resizeHandler() {
+    objVals(this.viewHeaders).forEach(viewHeader => viewHeader.checkWidth());
   }
 
   fillInMinWidths(tracksDict) {
@@ -1924,7 +1929,7 @@ class HiGlassComponent extends React.Component {
           const content = JSON.parse(response.response);
           this.setState({
             // exportLinkLocation: this.props.viewConfig.exportViewUrl + "?d=" + content.uid
-            exportLinkLocation: `http://${window.location.hostname}/app/` + `?config=${content.uid}`,
+            exportLinkLocation: `http://${window.location.hostname}/app/?config=${content.uid}`,
           });
         } else {
           console.error('error:', error);
@@ -2549,76 +2554,90 @@ class HiGlassComponent extends React.Component {
         const getGenomePositionSearchBox = (isFocused, onFocus) => {
           if (!view.genomePositionSearchBox) return null;
 
-          return (<GenomePositionSearchBox
-            autocompleteId={view.genomePositionSearchBox.autocompleteId}
-            autocompleteServer={view.genomePositionSearchBox.autocompleteServer}
-            chromInfoId={view.genomePositionSearchBox.chromInfoId}
-            chromInfoServer={view.genomePositionSearchBox.chromInfoServer}
-            isFocused={isFocused}
-            // the chromInfoId is either specified in the viewconfig or guessed based on
-            // the visible tracks (see createGenomePositionSearchBoxEntry)
-            key={`gpsb${view.uid}`}
-            onFocus={onFocus}
-            onSelectedAssemblyChanged={(x, y) => this.handleSelectedAssemblyChanged(view.uid, x, y)}
-            ref={(c) => { this.genomePositionSearchBoxes[view.uid] = c; }}
-            registerViewportChangedListener={listener => this.addScalesChangedListener(view.uid, view.uid, listener)}
-            removeViewportChangedListener={() => this.removeScalesChangedListener(view.uid, view.uid)}
-            setCenters={(centerX, centerY, k, animate, animateTime) => this.setCenters[view.uid](centerX, centerY, k, false, animate, animateTime)}
-            trackSourceServers={this.props.viewConfig.trackSourceServers}
-            twoD={true}
-          />);
+          return (
+            <GenomePositionSearchBox
+              // Reserved props
+              key={`gpsb${view.uid}`}
+              ref={(c) => { this.genomePositionSearchBoxes[view.uid] = c; }}
+
+              // Custom props
+              autocompleteId={view.genomePositionSearchBox.autocompleteId}
+              autocompleteServer={view.genomePositionSearchBox.autocompleteServer}
+              chromInfoId={view.genomePositionSearchBox.chromInfoId}
+              chromInfoServer={view.genomePositionSearchBox.chromInfoServer}
+              isFocused={isFocused}
+              // the chromInfoId is either specified in the viewconfig or guessed based on
+              // the visible tracks (see createGenomePositionSearchBoxEntry)
+              onFocus={onFocus}
+              onSelectedAssemblyChanged={(x, y) =>
+                this.handleSelectedAssemblyChanged(view.uid, x, y)}
+              registerViewportChangedListener={listener =>
+                this.addScalesChangedListener(view.uid, view.uid, listener)}
+              removeViewportChangedListener={() =>
+                this.removeScalesChangedListener(view.uid, view.uid)}
+              setCenters={(centerX, centerY, k, animate, animateTime) =>
+                this.setCenters[view.uid](centerX, centerY, k, false, animate, animateTime)}
+              trackSourceServers={this.props.viewConfig.trackSourceServers}
+              twoD={true}
+            />
+          );
         };
 
-        const multiTrackHeader = this.props.viewConfig.editable ?
-          (
-            <ViewHeader
-              getGenomePositionSearchBox={getGenomePositionSearchBox}
-              isGenomePositionSearchBoxVisible={view.genomePositionSearchBox && view.genomePositionSearchBox.visible}
-              onAddView={() => this.handleAddView(view)}
-              onCloseView={() => this.handleCloseView(view.uid)}
-              onExportSVG={this.handleExportSVG.bind(this)}
-              onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
-              onExportViewsAsLink={this.handleExportViewsAsLink.bind(this)}
-              onLockLocation={uid =>
-                this.handleYankFunction(uid, this.handleLocationLockChosen.bind(this))}
-              onLockZoom={uid =>
-                this.handleYankFunction(uid, this.handleZoomLockChosen.bind(this))}
-              onLockZoomAndLocation={uid => this.handleYankFunction(uid, (a, b) => {
+        const multiTrackHeader = this.props.viewConfig.editable ? (
+          <ViewHeader
+            // Reserved props
+            ref={(c) => { this.viewHeaders[view.uid] = c; }}
+
+            // Custom props
+            getGenomePositionSearchBox={getGenomePositionSearchBox}
+            isGenomePositionSearchBoxVisible={
+              view.genomePositionSearchBox &&
+              view.genomePositionSearchBox.visible
+            }
+            onAddView={() => this.handleAddView(view)}
+            onCloseView={() => this.handleCloseView(view.uid)}
+            onExportSVG={this.handleExportSVG.bind(this)}
+            onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
+            onExportViewsAsLink={this.handleExportViewsAsLink.bind(this)}
+            onLockLocation={uid =>
+              this.handleYankFunction(uid, this.handleLocationLockChosen.bind(this))}
+            onLockZoom={uid =>
+              this.handleYankFunction(uid, this.handleZoomLockChosen.bind(this))}
+            onLockZoomAndLocation={uid => this.handleYankFunction(uid, (a, b) => {
+              this.handleZoomLockChosen(a, b);
+              this.handleLocationLockChosen(a, b);
+            })}
+            onProjectViewport={this.handleProjectViewport.bind(this)}
+            onTakeAndLockZoomAndLocation={(uid) => {
+              this.handleYankFunction(uid, (a, b) => {
+                this.handleZoomYanked(a, b);
+                this.handleLocationYanked(a, b);
                 this.handleZoomLockChosen(a, b);
                 this.handleLocationLockChosen(a, b);
-              })}
-              onProjectViewport={this.handleProjectViewport.bind(this)}
-              onTakeAndLockZoomAndLocation={(uid) => {
-                this.handleYankFunction(uid, (a, b) => {
-                  this.handleZoomYanked(a, b);
-                  this.handleLocationYanked(a, b);
-                  this.handleZoomLockChosen(a, b);
-                  this.handleLocationLockChosen(a, b);
-                });
-              }
-              }
-              onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
-              onTrackPositionChosen={position => this.handleTrackPositionChosen(view.uid, position)}
-              onUnlockLocation={(uid) => { this.handleUnlock(uid, this.locationLocks); }}
-              onUnlockZoom={(uid) => { this.handleUnlock(uid, this.zoomLocks); }}
-              onUnlockZoomAndLocation={(uid) => {
-                this.handleUnlock(uid, this.zoomLocks);
-                this.handleUnlock(uid, this.locationLocks);
-              }}
-              onYankLocation={uid => this.handleYankFunction(uid, this.handleLocationYanked.bind(this))}
-              onYankZoom={uid => this.handleYankFunction(uid, this.handleZoomYanked.bind(this))}
-              onYankZoomAndLocation={uid => this.handleYankFunction(uid, (a, b) => {
+              });
+            }}
+            onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
+            onTrackPositionChosen={position => this.handleTrackPositionChosen(view.uid, position)}
+            onUnlockLocation={uid => this.handleUnlock(uid, this.locationLocks)}
+            onUnlockZoom={uid => this.handleUnlock(uid, this.zoomLocks)}
+            onUnlockZoomAndLocation={(uid) => {
+              this.handleUnlock(uid, this.zoomLocks);
+              this.handleUnlock(uid, this.locationLocks);
+            }}
+            onYankLocation={uid =>
+              this.handleYankFunction(uid, this.handleLocationYanked.bind(this))}
+            onYankZoom={uid => this.handleYankFunction(uid, this.handleZoomYanked.bind(this))}
+            onYankZoomAndLocation={uid =>
+              this.handleYankFunction(uid, (a, b) => {
                 this.handleZoomYanked(a, b);
                 this.handleLocationYanked(a, b);
               })
-              }
-              onZoomToData={uid => this.handleZoomToData(uid)}
-              ref={(c) => { this.viewHeaders[view.uid] = c; }}
-              viewUid={view.uid}
-            />
-          ) : null; // this.editable ?
+            }
+            onZoomToData={uid => this.handleZoomToData(uid)}
+            viewUid={view.uid}
+          />
+        ) : null;
 
-        // data-grid={layout}
         return (
           <div
             key={view.uid}
@@ -2630,7 +2649,7 @@ class HiGlassComponent extends React.Component {
             {overlay}
           </div>
         );
-      }); // end tiledAreas =
+      });
     }
 
     const exportLinkModal = this.state.exportLinkModalOpen ?
@@ -2653,6 +2672,10 @@ class HiGlassComponent extends React.Component {
 
     const gridLayout = (
       <WidthReactGridLayout
+        // Reserved props
+        ref={(c) => { this.gridLayout = c; }}
+
+        // Custom props
         cols={12}
         draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
         isDraggable={this.props.viewConfig.editable}
@@ -2664,14 +2687,14 @@ class HiGlassComponent extends React.Component {
         onDragStart={this.handleDragStart.bind(this)}
         onDragStop={this.handleDragStop.bind(this)}
         onLayoutChange={this.handleLayoutChange.bind(this)}
-        onResize={this.handleResize.bind(this)}
-        ref={(c) => { this.gridLayout = c; }}
+        onResize={this.resizeHandler.bind(this)}
         rowHeight={this.state.rowHeight}
         // for some reason, this becomes 40 within the react-grid component
         // (try resizing the component to see how much the height changes)
         // Programming by coincidence FTW :-/
         // WidthProvider option
-        // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
+        // I like to have it animate on mount. If you don't, delete
+        // `useCSSTransforms` (it's default `true`)
         // and set `measureBeforeMount={true}`.
         useCSSTransforms={this.state.mounted}
       >
@@ -2681,23 +2704,23 @@ class HiGlassComponent extends React.Component {
 
     return (
       <div
-        className="higlass"
         key={this.uid}
-        ref={c => this.topDiv = c}
+        ref={(c) => { this.topDiv = c; }}
+        className="higlass"
         styleName="styles.higlass"
       >
         <canvas
           key={this.uid}
-          ref={c => this.canvasElement = c}
+          ref={(c) => { this.canvasElement = c; }}
           styleName="styles.higlass-canvas"
         />
         <div
-          ref={c => this.divDrawingSurface = c}
+          ref={(c) => { this.divDrawingSurface = c; }}
           styleName="styles.higlass-drawing-surface"
         />
         {gridLayout}
         <svg
-          ref={c => this.svgElement = c}
+          ref={(c) => { this.svgElement = c; }}
           styleName="styles.higlass-svg"
         />
         {exportLinkModal}
