@@ -1,30 +1,26 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import ContextMenuItem from './ContextMenuItem';
 import { TRACKS_INFO } from './configs';
 
+// Styles
+import '../styles/ContextMenu.module.scss';
+
 export class CloseTrackMenu extends React.Component {
+  /**
+   * A window that is opened when a user clicks on the track configuration icon.
+   */
   constructor(props) {
-    /**
-         * A window that is opened when a user clicks on the track configuration icon.
-         */
     super(props);
-
-
     this.seriesRefs = {};
   }
 
-  componentDidMount() {
-    // super.componentDidMount();
-  }
-
-
   getSeriesItems() {
     // this code is duplicated in ConfigTrackMenu, needs to be consolidated
-    //
+
     // check if this is a combined track (has contents)
     if (!this.props.track) { return null; }
-
 
     const trackTypeToInfo = {};
 
@@ -36,25 +32,26 @@ export class CloseTrackMenu extends React.Component {
 
     return series.map((x) => {
       const thumbnail = trackTypeToInfo[x.type].thumbnail;
-      const blankLocation = 'images/thumbnails/blank.png';
-      const imgTag = trackTypeToInfo[x.type].thumbnail ?
-        <div style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle' }} dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }} /> :
-        (<div style={{ display: 'inline-block', marginRight: 10, verticalAlign: 'middle' }} >
+      const imgTag = trackTypeToInfo[x.type].thumbnail ? (
+        <div
+          dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
+          styleName="context-menu-thumbnail-inline"
+        />
+      ) : (
+        <div styleName="context-menu-thumbnail-inline" >
           <svg width={30} height={20} />
-        </div>);
+        </div>
+      );
 
       return (
         <div
-          ref={c => this.seriesRefs[x.uid] = c}
-          className={'context-menu-item'}
           key={x.uid}
-          onClick={e => this.props.onCloseTrack(x.uid)}
+          ref={(c) => { this.seriesRefs[x.uid] = c; }}
+          onClick={() => this.props.onCloseTrack(x.uid)}
+          styleName="context-menu-item"
         >
           {imgTag}
-          <span
-            className="context-menu-span"
-            style={{ whiteSpace: 'nowrap' }}
-          >
+          <span styleName="context-menu-span">
             {(x.name && x.name.length) ? x.name : x.uid}
           </span>
         </div>
@@ -66,9 +63,9 @@ export class CloseTrackMenu extends React.Component {
     return (
       <div>
         {this.getSeriesItems()}
-        <hr />
+        <hr styleName="context-menu-hr" />
         <ContextMenuItem
-          onClick={e => this.props.onCloseTrack(this.props.track.uid)}
+          onClick={() => this.props.onCloseTrack(this.props.track.uid)}
         >
           {'Close track'}
         </ContextMenuItem>
@@ -76,5 +73,10 @@ export class CloseTrackMenu extends React.Component {
     );
   }
 }
+
+CloseTrackMenu.propTypes = {
+  onCloseTrack: PropTypes.func.isRequired,
+  track: PropTypes.object.isRequired,
+};
 
 export default CloseTrackMenu;
