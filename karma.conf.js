@@ -1,4 +1,3 @@
-var path = require('path');
 var webpackConfig = require('./webpack.config.js');
 require('babel-polyfill');
 
@@ -14,20 +13,19 @@ module.exports = function(config) {
       'node_modules/pixi.js/dist/pixi.js',
       'node_modules/react-bootstrap/dist/react-bootstrap.js',
       'test/**/*.+(js|jsx)',
-      'node_modules/bootstrap/dist/css/bootstrap.min.css',
-      'app/styles/*.css'
+      'build/hglib.css',
     ],
 
     preprocessors: {
       // add webpack as preprocessor
       'app/scripts/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
-      'test/**/*.+(js|jsx)': ['webpack', 'sourcemap']
+      'test/**/*.+(js|jsx)': ['webpack', 'sourcemap'],
     },
 
     webpack: webpackConfig,
 
     webpackServer: {
-      noInfo: true //please don't spam the console when running in karma!
+      noInfo: true, // please don't spam the console when running in karma!
     },
 
     plugins: [
@@ -35,14 +33,13 @@ module.exports = function(config) {
       'karma-jasmine',
       'karma-sourcemap-loader',
       'karma-chrome-launcher',
-      'karma-phantomjs2-launcher'
+      'karma-phantomjs2-launcher',
     ],
-
 
     babelPreprocessor: {
       options: {
-        presets: ['airbnb']
-      }
+        presets: ['airbnb'],
+      },
     },
     reporters: ['progress'],
     port: 9876,
@@ -54,12 +51,12 @@ module.exports = function(config) {
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
-        flags: ['--no-sandbox']
-      }
+        flags: ['--no-sandbox'],
+      },
     },
-  })
+  });
 
-  if(process.env.TRAVIS){
+  if (process.env.TRAVIS) {
     config.browsers = ['Chrome_travis_ci'];
   }
 };
