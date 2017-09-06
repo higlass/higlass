@@ -1,6 +1,7 @@
 import TiledPixiTrack from './TiledPixiTrack';
 
 import { tileProxy } from './services';
+import indexOfMax from './utils/index-of-max.js'
 
 export class Tiled2DPixiTrack extends TiledPixiTrack {
   tileToLocalId(tile) {
@@ -29,9 +30,40 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
   }
 
   calculateZoomLevel() {
+    let minX = this.tilesetInfo.min_pos[0];
+    let maxX = this.tilesetInfo.max_pos[0];
+
+    if (this.tilesetInfo.resolutions) {
+      const sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
+
+      const trackWidth = this._xScale.range()[1] - this._xScale.range()[0];
+      console.log('trackWidth:', trackWidth, 'scale:', this._xScale.domain()[1] - this._xScale.domain()[0]);
+
+      let binsDisplayed = sortedResolutions.map(r => (this._xScale.domain()[1] - this._xScale.domain()[0]) / r)
+      let binsPerPixel = binsDisplayed.map(b => b / trackWidth);
+
+      console.log('trackWidth:', trackWidth);
+      console.log('resolutions:', sortedResolutions);
+      console.log('binsDisplayed:', binsDisplayed);
+      console.log('binsPerPixel:', binsPerPixel);
+
+      // we're going to show the highest resolution that requires more than one pixel per bin
+      let displayableBinsPerPixel = binsPerPixel.filter(b => b < 1);
+
+      if (displayableBinsPerPixel.length == 0)
+        return 0;
+
+      let zoomIndex = binsPerPixel.indexOf(displayableBinsPerPixel[displayableBinsPerPixel.length-1]);
+      console.log('displayableBinsPerPixel', displayableBinsPerPixel);
+      console.log('zoomIndex:', zoomIndex);
+
+      return zoomIndex;
+    }
+
     const xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
       this.tilesetInfo.min_pos[0],
       this.tilesetInfo.max_pos[0]);
+
     const yZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
       this.tilesetInfo.min_pos[1],
       this.tilesetInfo.max_pos[1]);
@@ -53,20 +85,29 @@ export class Tiled2DPixiTrack extends TiledPixiTrack {
 
     this.zoomLevel = this.calculateZoomLevel();
 
-
     // this.zoomLevel = 0;
+    if (this.tilesetInfo.resolutions) {
+      const sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
+      this.xTiles = tileProxy.calculateTilesFromResolution(
+        sortedResolutions[this.zoomLevel], 
+        this._xScale,
+        this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
+      console.log('this.xTiles:', this.xTiles);
+    } else {
+      this.xTiles = tileProxy.calculateTiles(this.zoomLevel, this._xScale,
+        this.tilesetInfo.min_pos[0],
+        this.tilesetInfo.max_pos[0],
+        this.tilesetInfo.max_zoom,
+        this.tilesetInfo.max_width);
 
-    this.xTiles = tileProxy.calculateTiles(this.zoomLevel, this._xScale,
-      this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0],
-      this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width);
+      this.yTiles = tileProxy.calculateTiles(this.zoomLevel, this._yScale,
+        this.tilesetInfo.min_pos[1],
+        this.tilesetInfo.max_pos[1],
+        this.tilesetInfo.max_zoom,
+        this.tilesetInfo.max_width);
+    }
 
-    this.yTiles = tileProxy.calculateTiles(this.zoomLevel, this._yScale,
-      this.tilesetInfo.min_pos[1],
-      this.tilesetInfo.max_pos[1],
-      this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width);
+    console.log('this.xTiles', this.xTiles);
 
     const rows = this.xTiles;
     const cols = this.yTiles;
