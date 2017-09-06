@@ -144,3 +144,6 @@ chromosome files. The file can be ingested by the higlass server like any other
 tileset. As long as the `datatype` is set to `chromsizes` this track should be
 selectable from the "Add Track Dialog".
 
+To find the chromosome grid in the list of tracks, search for "chromosomes" when
+adding a track to the *center* view.
+
