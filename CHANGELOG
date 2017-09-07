@@ -1,6 +1,8 @@
 v0.8.36
 
 - (fix #146) Fixed value scale locking serialization bug
+- Fixed gene annotation SVG export
+- Fixed chromosome ticks SVG export
 
 v0.8.35
 
