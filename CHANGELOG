@@ -1,3 +1,7 @@
+v0.8.37
+
+- Merged Fritz's label bug fix
+
 v0.8.36
 
 - (fix #146) Fixed value scale locking serialization bug
