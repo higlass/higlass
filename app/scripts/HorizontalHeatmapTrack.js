@@ -29,6 +29,14 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         }
     }
 
+    rerender(options, force) {
+        super.rerender(options, force);
+
+        // zoom so that if the heatmap is flipped, the scale of this.pMain changes
+        this.zoomed(this.xScale(), this.yScale(), 
+            this.pMain.scale.x, this.pMain.position.x, this.pMain.position.y)
+    }
+
     calculateZoomLevel() {
         let xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
                                                       this.tilesetInfo.min_pos[0],
@@ -252,6 +260,7 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
         this.pMain.scale.x = k; //scaleX;
         this.pMain.scale.y = k; //scaleY;
 
+        //console.trace('zoomed:', this.options.oneDHeatmapFlipped);
         if (this.options.oneDHeatmapFlipped) {
             this.pMain.scale.y = -k;
             this.pMain.position.y = this.position[1];

@@ -14,6 +14,7 @@ function countTransform(count) {
     return Math.log(count+0.0001);
 }
 */
+
 let epsilon = 0.0000001;
 const MAX_FETCH_TILES = 20;
 

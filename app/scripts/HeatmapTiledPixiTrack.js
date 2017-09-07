@@ -213,9 +213,14 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
     }
 
     brushMoved() {
+        if (!event.selection)
+            return;
+
+        //console.log('event.selection:', event.selection);
         let newOptions = this.newBrushOptions(event.selection);
 
         let strOptions = JSON.stringify(newOptions);
+
 
         //console.log('equal:', strOptions == this.prevOptions);
         //console.log('strOptions:', strOptions, newOptions)
@@ -260,6 +265,14 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
 
         if (!this.options.colorbarPosition || this.options.colorbarPosition == 'hidden') {
             this.pColorbarArea.visible = false;
+
+            if (this.scaleBrush)
+                this.gColorscaleBrush.call(this.scaleBrush.move, null);
+
+            // turn off the color scale brush
+            this.gColorscaleBrush.on('.brush', null);
+            this.gColorscaleBrush.selectAll('rect').remove();
+
             return;
         } 
 
