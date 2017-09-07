@@ -15,13 +15,12 @@ before_script:
 before_deploy:
 - npm run compile
 deploy:
-    skip_cleanup: true
     - provider: npm
+      skip_cleanup: true
       email: pkerpedjiev@gmail.com
       api_key:
           secure: lX+QiVA0uWWAD5FajOC2nJGRI4CjSh/MoPY9KTSsJBVATmyms5nNHB8FfYT2PBAikRR65ap5QbTnia5TajgstTduWj5AG7MnBblexB6Y/T7kPX7fKf0iknWex55ZU+FP6RnwZCyyxhORd7FstO3gf8IjulTYNyztK2jAQ4yAapWOdLbvgpo/OHdDVVxFWNqH0PbdFyAQs9KEZaR2IwtpV4KgVUSMKY6vUC+lPvUE8gp//GqKjizdLT/GXnaabXZqcljp3zrhENmOI+525dbYXz0ApCJw7MVS+2quo2j0NqrvVAUey8zmh9+nt5dAX8Vsv2wCZmAe8hUNsWujX48E2v9T5ibeP1SrzhDybGtzCxSY1WjnK23SXPL9w9kfVxUqQAn76OqpQeTGIjgM3ubyNxS/QE4iocQ6YPUrdJLFQL0eG2P9lrvBaBftoM8RtoY6GKDIFxrnE2HKKBwqngEdj7ujuagRbk6MCFlaCvjSQQ6ev1LNc/GFwAHiOW68HDjKJQGxi0VpVUuwgvOaYaE/hUXaMeHOPdYUnDxpDHBDP3QHz2cXhWwsF7HTV8ej/P9LCbjSd8Rs9cfzfQZtFBSzygMUX/ilIVF+WUpdHxV25aUPZsjm4GqEgkTV5gdDlxeTrrB4GMNwCkJQBiigAY8nhbu5UxalhhbH6zwhkEcqBTg=
       on:
-        tags: true
         branch: master
     - provider: releases
       file: dist.zip
