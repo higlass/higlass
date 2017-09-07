@@ -22,7 +22,7 @@ export class PixiTrack extends Track {
         // pMain will have transforms applied to it as users scroll to and fro
         this.scene = scene;
 
-        // this option is used to temporarily prevent drawing so that 
+        // this option is used to temporarily prevent drawing so that
         // updates can be batched (e.g. zoomed and options changed)
         this.delayDrawing = false;
 
@@ -58,13 +58,13 @@ export class PixiTrack extends Track {
 
         this.options = Object.assign(this.options, options);
 
-        let labelTextText = this.options.name ? this.options.name : 
+        let labelTextText = this.options.name ? this.options.name :
             (this.tilesetInfo ? this.tilesetInfo.name : '');
         this.labelTextFontFamily = 'Arial';
         this.labelTextFontSize = 12;
 
-        this.labelText = new PIXI.Text(labelTextText, {fontSize: this.labelTextFontSize + 'px', 
-                                                       fontFamily: this.labelTextFontFamily, 
+        this.labelText = new PIXI.Text(labelTextText, {fontSize: this.labelTextFontSize + 'px',
+                                                       fontFamily: this.labelTextFontFamily,
                                                        fill: "black"});
 
         this.pLabel.addChild(this.labelText);
@@ -132,11 +132,11 @@ export class PixiTrack extends Track {
         }
 
         graphics.clear();
-        
+
         if (this.options.labelBackgroundOpacity)
-            graphics.beginFill(0xFFFFFF, 0);
-        else
             graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);
+        else
+            graphics.beginFill(0xFFFFFF, 0);
 
         let stroke = colorToHex(this.options.labelColor ? this.options.labelColor : 'black');
         let labelBackgroundMargin = 2;
@@ -149,7 +149,7 @@ export class PixiTrack extends Track {
         if (this.tilesetInfo)
             labelTextText += this.tilesetInfo.coordSystem ? this.tilesetInfo.coordSystem + " | " : '';
 
-        labelTextText += this.options.name ? this.options.name : 
+        labelTextText += this.options.name ? this.options.name :
             (this.tilesetInfo ? this.tilesetInfo.name : '');
 
         if (this.tilesetInfo && this.tilesetInfo.max_width && this.tilesetInfo.bins_per_dimension) {
@@ -215,7 +215,7 @@ export class PixiTrack extends Track {
 
             graphics.drawRect(this.position[0],
                               this.position[1],
-                              this.labelText.width + labelBackgroundMargin, 
+                              this.labelText.width + labelBackgroundMargin,
                               this.labelText.height + labelBackgroundMargin)
         } else if ((this.options.labelPosition == 'bottomLeft' && !this.flipText ) ||
                    (this.options.labelPosition == 'topRight' && this.flipText)) {
@@ -227,7 +227,7 @@ export class PixiTrack extends Track {
             this.labelText.x += this.labelText.width / 2;
             graphics.drawRect(this.position[0],
                               this.position[1] + this.dimensions[1] - this.labelText.height - labelBackgroundMargin,
-                              this.labelText.width + labelBackgroundMargin, 
+                              this.labelText.width + labelBackgroundMargin,
                               this.labelText.height + labelBackgroundMargin)
         } else if ((this.options.labelPosition == 'topRight' && !this.flipText) ||
                    (this.options.labelPosition == 'bottomLeft' && this.flipText)) {
@@ -240,7 +240,7 @@ export class PixiTrack extends Track {
 
             graphics.drawRect(this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin,
                               this.position[1],
-                              this.labelText.width + labelBackgroundMargin, 
+                              this.labelText.width + labelBackgroundMargin,
                               this.labelText.height + labelBackgroundMargin)
         } else if (this.options.labelPosition == 'bottomRight') {
 
@@ -255,7 +255,7 @@ export class PixiTrack extends Track {
 
             graphics.drawRect(this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin,
                               this.position[1] + this.dimensions[1] - this.labelText.height - labelBackgroundMargin,
-                              this.labelText.width + labelBackgroundMargin, 
+                              this.labelText.width + labelBackgroundMargin,
                               this.labelText.height + labelBackgroundMargin)
         } else if ((this.options.labelPosition == 'outerLeft' && !this.flipText) ||
                    (this.options.labelPosition == 'outerTop' && this.flipText)) {
@@ -299,7 +299,7 @@ export class PixiTrack extends Track {
         }
 
         if (this.options.labelPosition == 'outerLeft' ||
-            this.options.labelPosition == 'outerRight' || 
+            this.options.labelPosition == 'outerRight' ||
             this.options.labelPosition == 'outerTop' ||
             this.options.labelPosition == 'outerBottom') {
                 this.pLabel.setParent(this.pBase);
@@ -332,19 +332,19 @@ export class PixiTrack extends Track {
         graphics.lineStyle(0, 0x0000FF, 1);
         graphics.beginFill(0xFF700B, 1);
 
-        this.pMain.drawRect(this.position[0], this.position[1], 
+        this.pMain.drawRect(this.position[0], this.position[1],
                             this.dimensions[0], this.dimensions[1]);
         */
     }
 
 
-    /** 
+    /**
      * Export an SVG representation of this track
      *
      * @returns {[DOMNode,DOMNode]} The two returned DOM nodes are both SVG
      * elements [base,track]. Base is a parent which contains track as a
      * child. Track is clipped with a clipping rectangle contained in base.
-     *  
+     *
      */
     exportSVG() {
         let gBase = document.createElement('g');
@@ -384,8 +384,8 @@ export class PixiTrack extends Track {
 
         // SVG text alignment is wonky, just adjust the dy values of the tspans
         // instead
-        
-        let textHeight = 12; 
+
+        let textHeight = 12;
         let labelTextHeight = textHeight + ((this.labelTextFontSize+2) * (lineParts.length -1));
 
         if (this.labelText.anchor.y == 0.5) {
@@ -406,21 +406,21 @@ export class PixiTrack extends Track {
             // http://stackoverflow.com/a/16701952/899470
 
             text.innerText = lineParts[i];
-            if (this.options.labelPosition == 'topLeft' || 
+            if (this.options.labelPosition == 'topLeft' ||
                 this.options.labelPosition == 'topRight') {
                 let dy = ddy + ((i + 1) * (this.labelTextFontSize + 2)) ;
                 text.setAttribute('dy', dy);
             }
-            else if (this.labelPosition == 'bottomLeft' || 
+            else if (this.labelPosition == 'bottomLeft' ||
                      this.labelPosition == 'bottomRight') {
                 text.setAttribute('dy', ddy + (i * (this.labelTextFontSize + 2)) );
             }
 
             text.setAttribute('fill', this.options.labelColor);
-            
+
             /*
             // fuck SVG
-            if (i == 0) 
+            if (i == 0)
                 tspan.setAttribute('dy', ddy + "px");
             else
                 tspan.setAttribute('dy', (i * this.labelTextFontSize + 2) + "px");
