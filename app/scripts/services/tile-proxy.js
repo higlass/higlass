@@ -92,6 +92,40 @@ export const fetchTiles = (tilesetServer, tilesetIds, done) =>
   });
 
 /**
+ * Calculate the zoom level from a list of available resolutions
+ */
+export const calculateZoomLevelFromResolutions = (resolutions, scale, minX, maxX) => {
+  const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
+
+  const trackWidth = scale.range()[1] - scale.range()[0];
+  //console.log('trackWidth:', trackWidth, 'scale:', this._xScale.domain()[1] - this._xScale.domain()[0]);
+
+  let binsDisplayed = sortedResolutions.map(r => (scale.domain()[1] - scale.domain()[0]) / r)
+  let binsPerPixel = binsDisplayed.map(b => b / trackWidth);
+
+  /*
+      console.log('trackWidth:', trackWidth);
+      console.log('resolutions:', sortedResolutions);
+      console.log('binsDisplayed:', binsDisplayed);
+      console.log('binsPerPixel:', binsPerPixel);
+      */
+
+  // we're going to show the highest resolution that requires more than one pixel per bin
+  let displayableBinsPerPixel = binsPerPixel.filter(b => b < 1);
+
+  if (displayableBinsPerPixel.length == 0)
+    return 0;
+
+  let zoomIndex = binsPerPixel.indexOf(displayableBinsPerPixel[displayableBinsPerPixel.length-1]);
+  /*
+      console.log('displayableBinsPerPixel', displayableBinsPerPixel);
+      console.log('zoomIndex:', zoomIndex);
+      */
+
+  return zoomIndex;
+}
+
+/**
  * Calculate the current zoom level.
  */
 export const calculateZoomLevel = (scale, minX, maxX) => {
@@ -161,18 +195,23 @@ export const calculateTiles = (
  */
 export const calculateTilesFromResolution = (resolution, scale, minX, maxX) => {
   const epsilon = 0.0000001;
-  const PIXELS_PER_TILE = 384;
+  const PIXELS_PER_TILE = 256;
   const tileWidth = resolution * PIXELS_PER_TILE;
+  console.log('scale.domain', scale.domain())
   console.log('resolution:', (scale.domain()[1] - scale.domain()[0]), resolution, (scale.domain()[1] - scale.domain()[0]) / resolution)
 
+  console.log('tileWidth', tileWidth);
   console.log('maxX', maxX)
+  console.log('min:', Math.min(
+          maxX,
+          Math.ceil(((scale.domain()[1] - minX) - epsilon))) / tileWidth
+        );
 
   return range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
-    Math.min(
+    Math.ceil(Math.min(
       maxX,
-      Math.ceil(((scale.domain()[1] - minX) - epsilon) / tileWidth),
-    ),
+      ((scale.domain()[1] - minX) - epsilon)) / tileWidth),
   );
 }
 
@@ -244,6 +283,7 @@ const api = {
   calculateTiles,
   calculateTilesFromResolution,
   calculateZoomLevel,
+  calculateZoomLevelFromResolutions,
   fetchTiles,
   fetchTilesDebounced,
   tileDataToPixData,

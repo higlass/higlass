@@ -41,19 +41,51 @@
     {
       "uid": "aa",
       "initialXDomain": [
-        1630493958.6002588,
-        1864964791.58667
+        -4174258792.544269,
+        5718381082.537768
       ],
       "initialYDomain": [
-        678465275.4566431,
-        1017191153.6900913
+        -7652506401.92736,
+        15862141555.112885
       ],
       "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
-        "top": [],
-        "left": [],
+        "top": [
+          {
+            "type": "top-axis",
+            "local": true,
+            "orientation": "1d-horizontal",
+            "name": "Top Axis",
+            "thumbnail": {},
+            "defaultOptions": {},
+            "server": "",
+            "tilesetUid": "ao2KKMk4ShWrPhFFHkeE1Q",
+            "uid": "JKBLKpFhSTGw0Bu7tNGCcA",
+            "options": {},
+            "width": 604,
+            "height": 20,
+            "position": "top"
+          }
+        ],
+        "left": [
+          {
+            "type": "left-axis",
+            "local": true,
+            "orientation": "1d-vertical",
+            "name": "Left Axis",
+            "thumbnail": {},
+            "minWidth": 100,
+            "server": "",
+            "tilesetUid": "LztTBV25S_uNtEyPjHCeSQ",
+            "uid": "PBaeJ5jsQcGplnQ3qG_l7A",
+            "options": {},
+            "width": 100,
+            "height": 20,
+            "position": "left"
+          }
+        ],
         "center": [
           {
             "uid": "RF46xYAoR1mjO7srnFl16A",
@@ -78,15 +110,26 @@
                   "colorbarPosition": "topRight",
                   "trackBorderWidth": 0,
                   "trackBorderColor": "black",
-                  "heatmapValueScaling": "log"
+                  "heatmapValueScaling": "log",
+                  "name": "hic-resolutions.cool",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
                 },
-                "width": 100,
-                "height": 100,
-                "position": "center"
+                "width": 604,
+                "height": 1198,
+                "position": "center",
+                "transforms": [
+                  {
+                    "name": "ICE",
+                    "value": "weight"
+                  }
+                ]
               }
             ],
             "position": "center",
-            "options": {}
+            "options": {},
+            "width": 604,
+            "height": 1198
           }
         ],
         "right": [],
@@ -112,7 +155,6 @@
     "locksDict": {}
   }
 }
-
     window.higlassApi;
 
     hglib.createHgComponent(
