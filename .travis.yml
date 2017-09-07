@@ -15,6 +15,7 @@ before_script:
 before_deploy:
 - npm run compile
 deploy:
+    skip_cleanup: true
     - provider: npm
       email: pkerpedjiev@gmail.com
       api_key:
