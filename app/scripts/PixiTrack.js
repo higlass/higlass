@@ -134,9 +134,9 @@ export class PixiTrack extends Track {
         graphics.clear();
 
         if (this.options.labelBackgroundOpacity)
-            graphics.beginFill(0xFFFFFF, 0);
-        else
             graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);
+        else
+            graphics.beginFill(0xFFFFFF, 0);
 
         let stroke = colorToHex(this.options.labelColor ? this.options.labelColor : 'black');
         let labelBackgroundMargin = 2;
