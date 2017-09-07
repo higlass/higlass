@@ -1781,6 +1781,15 @@ export class HiGlassComponent extends React.Component {
     }
   }
 
+  deserializeValueScaleLocks(viewConfig) {
+    if (viewConfig.valueScaleLocks) {
+        for (let viewUid of dictKeys(viewConfig.valueScaleLocks.locksByViewUid)) {
+            this.valueScaleLocks[viewUid] = viewConfig.valueScaleLocks
+                .locksDict[viewConfig.valueScaleLocks.locksByViewUid[viewUid]];
+        }
+    }
+  }
+
   serializeLocks(locks) {
       let locksDict = {};
       let locksByViewUid = {};
@@ -1853,6 +1862,7 @@ export class HiGlassComponent extends React.Component {
 
     newJson.zoomLocks = this.serializeLocks(this.zoomLocks);
     newJson.locationLocks = this.serializeLocks(this.locationLocks);
+    newJson.valueScaleLocks = this.serializeLocks(this.valueScaleLocks);
 
     let data = JSON.stringify(newJson, null, 2);
     return data;
@@ -2300,6 +2310,7 @@ export class HiGlassComponent extends React.Component {
 
             this.deserializeZoomLocks(viewConfig);
             this.deserializeLocationLocks(viewConfig);
+            this.deserializeValueScaleLocks(viewConfig);
 
             // give tracks their default names (e.g. 'type': 'top-axis'
             // will get a name of 'Top Axis'

@@ -34,128 +34,48 @@
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://test2.higlass.io/api/v1"
+    "http://higlass.io/api/v1"
   ],
-  "exportViewUrl": "http://localhost:8000/api/v1/viewconfs/",
+  "exportViewUrl": "/api/v1/viewconfs",
   "views": [
     {
       "uid": "aa",
       "initialXDomain": [
-        1749088633.5920825,
-        1771300591.4621453
+        606703294.999142,
+        2649107220.1870575
       ],
-      "initialYDomain": [
-        836001821.5685089,
-        848989720.561744
-      ],
-      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "genomePositionSearchBoxVisible": true,
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": true
+      },
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
           {
-            "name": "Chromosome Axis",
-            "created": "2017-06-06T17:03:01.273116Z",
-            "server": "http://test2.higlass.io/api/v1",
-            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
-            "uid": "a1zPP2Z0RT2_nkJRJrwsZg",
-            "type": "horizontal-chromosome-labels",
-            "options": {},
+            "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig",
+            "created": "2017-02-03T17:46:58.349271Z",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
+            "uid": "dNMceIEPS5Kptu6_434hvw",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "lineStrokeWidth": 1,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig"
+            },
             "width": 20,
-            "height": 30,
-            "position": "top"
-          },
-          {
-            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-            "created": "2017-02-03T00:28:06.909619Z",
-            "server": "http://test2.higlass.io/api/v1",
-            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-            "uid": "XAInSEM4Q4KUFhJyINjgWg",
-            "type": "horizontal-heatmap",
-            "options": {
-              "labelPosition": "bottomRight",
-              "labelColor": "black",
-              "colorRange": [
-                "white",
-                "rgba(245,166,35,1.0)",
-                "rgba(208,2,27,1.0)",
-                "black"
-              ],
-              "maxZoom": null,
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
-            },
-            "width": 1257,
-            "height": 238,
-            "transforms": [
-              {
-                "name": "ICE",
-                "value": "weight"
-              }
-            ],
-            "position": "top"
-          },
-          {
-            "name": "Forcato et al (2017) Rao_RepH_GM12878_TADBit.txt.multires.db",
-            "created": "2017-07-14T00:05:55.533166Z",
-            "server": "http://test2.higlass.io/api/v1",
-            "tilesetUid": "LOxv7UeDStqa14RG0FOirQ",
-            "uid": "G_YTgUSpS2CX5vXAyQ7A6Q",
-            "type": "horizontal-2d-rectangle-domains",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "bottomLeft",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "rectangleDomainFillColor": "grey",
-              "rectangleDomainStrokeColor": "black",
-              "rectangleDomainOpacity": 0.6,
-              "name": "Forcato et al (2017) Rao_RepH_GM12878_TADBit.txt.multires.db"
-            },
-            "width": 1257,
-            "height": 105,
-            "position": "top"
-          },
-          {
-            "name": "Forcato et al (2017) Rao_RepA1_GM12878_HiCseg.txt.multires.db",
-            "created": "2017-07-14T00:03:33.945759Z",
-            "server": "http://test2.higlass.io/api/v1",
-            "tilesetUid": "cs3PLbfDTKO0fso6UewTPQ",
-            "uid": "UOURRbTHSqCM0Lq-nThHyA",
-            "type": "horizontal-2d-rectangle-domains",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "bottomLeft",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "rectangleDomainFillColor": "grey",
-              "rectangleDomainStrokeColor": "black",
-              "rectangleDomainOpacity": 0.6,
-              "name": "Forcato et al (2017) Rao_RepA1_GM12878_HiCseg.txt.multires.db"
-            },
-            "width": 1257,
-            "height": 26,
-            "position": "top"
-          },
-          {
-            "name": "Gene Annotations (hg19)",
-            "created": "2017-02-05T19:31:52.412319Z",
-            "server": "http://test2.higlass.io/api/v1",
-            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "uid": "KwS-FewsRi-7VbZj9hZLFw",
-            "type": "horizontal-gene-annotations",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "hidden",
-              "plusStrandColor": "blue",
-              "minusStrandColor": "red",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "name": "Gene Annotations (hg19)"
-            },
-            "width": 1257,
-            "height": 55,
+            "height": 20,
             "position": "top"
           }
         ],
@@ -165,14 +85,78 @@
         "bottom": []
       },
       "layout": {
-        "w": 12,
-        "h": 11,
+        "w": 5,
+        "h": 12,
         "x": 0,
         "y": 0,
         "i": "aa",
         "moved": false,
         "static": false
-      }
+      },
+      "initialYDomain": [
+        -4459215634.749169,
+        3435847407.2067385
+      ]
+    },
+    {
+      "uid": "MCd0o2eoQ_m893--QZ71aQ",
+      "initialXDomain": [
+        1505389135.4847932,
+        1800692196.3631227
+      ],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": true
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "name": "wgEncodeSydhTfbsGm12878Pol2s2IggmusSig",
+            "created": "2017-02-03T17:48:20.530462Z",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "fhng_PTMRNekrUXp738MMQ",
+            "uid": "DBEEi8t5St2h4et4Slltzw",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "lineStrokeWidth": 1,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "name": "wgEncodeSydhTfbsGm12878Pol2s2IggmusSig"
+            },
+            "width": 20,
+            "height": 20,
+            "position": "top"
+          }
+        ],
+        "left": [],
+        "center": [],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 5,
+        "h": 12,
+        "x": 5,
+        "y": 0,
+        "i": "MCd0o2eoQ_m893--QZ71aQ",
+        "moved": false,
+        "static": false
+      },
+      "initialYDomain": [
+        -4552197437.29092,
+        -3410681670.8137045
+      ]
     }
   ],
   "zoomLocks": {
@@ -182,6 +166,24 @@
   "locationLocks": {
     "locksByViewUid": {},
     "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {
+      "MCd0o2eoQ_m893--QZ71aQ.DBEEi8t5St2h4et4Slltzw": "EQeyUEfuSDa9doN4Ne0MPQ",
+      "aa.dNMceIEPS5Kptu6_434hvw": "EQeyUEfuSDa9doN4Ne0MPQ"
+    },
+    "locksDict": {
+      "EQeyUEfuSDa9doN4Ne0MPQ": {
+        "MCd0o2eoQ_m893--QZ71aQ.DBEEi8t5St2h4et4Slltzw": {
+          "view": "MCd0o2eoQ_m893--QZ71aQ",
+          "track": "DBEEi8t5St2h4et4Slltzw"
+        },
+        "aa.dNMceIEPS5Kptu6_434hvw": {
+          "view": "aa",
+          "track": "dNMceIEPS5Kptu6_434hvw"
+        }
+      }
+    }
   }
 }
 
