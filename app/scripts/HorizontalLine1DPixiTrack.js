@@ -225,7 +225,15 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     }
 
-    exportSVG() {
+    /** 
+     * Export an SVG representation of this track
+     *
+     * @returns {[DOMNode,DOMNode]} The two returned DOM nodes are both SVG
+     * elements [base,track]. Base is a parent which contains track as a
+     * child. Track is clipped with a clipping rectangle contained in base.
+     *  
+     */
+    exportSVG() { 
         let track=null, base=null;
 
         if (super.exportSVG) {
@@ -234,6 +242,8 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
             base = document.createElement('g');
             track = base;
         }
+
+        base.setAttribute('class', 'exported-line-track');
         let output = document.createElement('g');
 
         track.appendChild(output);

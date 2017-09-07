@@ -1,4 +1,5 @@
 import '../styles/MultiViewContainer.css';
+import vkbeautify from 'vkbeautify';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {select} from 'd3-selection';
@@ -505,7 +506,7 @@ export class HiGlassComponent extends React.Component {
     let svg = this.createSVG();
 
     let svgText = new XMLSerializer().serializeToString(svg);
-    download('export.svg', svgText);
+    download('export.svg', vkbeautify.xml(svgText));
     return svg;
   }
 

@@ -3,11 +3,17 @@ import {ChromosomeInfo} from './ChromosomeInfo.js';
 import {SearchField} from './search_field.js';
 import boxIntersect from 'box-intersect';
 import {scaleLinear} from 'd3-scale';
-import {absoluteToChr} from './utils.js';
+
+import {
+    absoluteToChr,
+    SVGLine,
+    PIXITextToSvg
+} from './utils.js';
 
 let TICK_WIDTH = 200;
 let TICK_HEIGHT = 6;
 let TICK_TEXT_SEPARATION = 2;
+let TICK_COLOR = '#777777';
 
 export class HorizontalChromosomeLabels extends PixiTrack {
     constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, chromInfoPath) {
@@ -123,7 +129,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
             else
                 tickTexts[i].text = cumPos.chr + ":" + tickFormat(ticks[i]);
 
-            graphics.lineStyle(1, 0x777777, 1);
+            graphics.lineStyle(1, TICK_COLOR, 1);
 
             // draw the tick lines
             graphics.moveTo(this._xScale(cumPos.pos + ticks[i]), this.dimensions[1]);
@@ -274,7 +280,7 @@ export class HorizontalChromosomeLabels extends PixiTrack {
             base = document.createElement('g');
             track = base;
         }
-        base.setAttribute('id', 'HorizontalChromosomeLabels');
+        base.setAttribute('class', 'chromosome-labels');
 
         let output = document.createElement('g');
         track.appendChild(output);
@@ -286,19 +292,19 @@ export class HorizontalChromosomeLabels extends PixiTrack {
             if (!text.text.visible)
                 continue;
 
-            let g = document.createElement('g');
-            let t = document.createElement('text');
-            t.setAttribute('text-anchor', 'middle');
-            t.setAttribute('font-family', this.textFontFamily);
-            t.setAttribute('font-size', this.textFontSize);
-            g.setAttribute('transform', `scale(${text.text.scale.x},1)`);
-            
-            t.setAttribute('fill', this.textFontColor);
-            t.innerHTML = text.text.text;
-
-            g.appendChild(t);
-            g.setAttribute('transform', `translate(${text.text.x},${text.text.y})scale(${text.text.scale.x},1)`);
+            let g = PIXITextToSvg(text.text);
             output.appendChild(g);
+        }
+
+        for (let key in this.tickTexts) {
+            for (let text of this.tickTexts[key]) {
+                let g = PIXITextToSvg(text);
+                output.appendChild(g);
+
+                g = SVGLine(text.x, this.dimensions[1], text.x, 
+                    this.dimensions[1] - TICK_HEIGHT, 1, TICK_COLOR);
+                output.appendChild(g);
+            }
         }
 
         return [base, track];
