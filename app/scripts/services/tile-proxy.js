@@ -197,6 +197,7 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX) => {
   const epsilon = 0.0000001;
   const PIXELS_PER_TILE = 256;
   const tileWidth = resolution * PIXELS_PER_TILE;
+  /*
   console.log('scale.domain', scale.domain())
   console.log('resolution:', (scale.domain()[1] - scale.domain()[0]), resolution, (scale.domain()[1] - scale.domain()[0]) / resolution)
 
@@ -206,6 +207,7 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX) => {
           maxX,
           Math.ceil(((scale.domain()[1] - minX) - epsilon))) / tileWidth
         );
+  */
 
   return range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),

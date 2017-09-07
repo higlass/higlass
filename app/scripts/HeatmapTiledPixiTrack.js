@@ -21,6 +21,7 @@ const BRUSH_HEIGHT = 4;
 const BRUSH_COLORBAR_GAP = 1;
 const BRUSH_MARGIN = 4;
 const SCALE_LIMIT_PRECISION = 5;
+const BINS_PER_TILE=256;
 
 
 export class HeatmapTiledPixiTrack extends TiledPixiTrack {
@@ -696,18 +697,19 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     // this.zoomLevel = 0;
     if (this.tilesetInfo.resolutions) {
-      const sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
+      let sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
+
       this.xTiles = tileProxy.calculateTilesFromResolution(
         sortedResolutions[this.zoomLevel], 
         this._xScale,
         this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
       this.yTiles = tileProxy.calculateTilesFromResolution(
         sortedResolutions[this.zoomLevel], 
-        this._xScale,
+        this._yScale,
         this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
 
-      console.log('res', sortedResolutions[this.zoomLevel]);
-      console.log('this.xTiles:', this.xTiles);
+      //console.log('res', sortedResolutions[this.zoomLevel]);
+      //console.log('this.xTiles:', this.xTiles);
     } else {
       this.xTiles = tileProxy.calculateTiles(this.zoomLevel, this._xScale,
         this.tilesetInfo.min_pos[0],
@@ -721,8 +723,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         this.tilesetInfo.max_zoom,
         this.tilesetInfo.max_width);
     }
-
-    console.log('this.xTiles', this.xTiles);
 
     const rows = this.xTiles;
     const cols = this.yTiles;
@@ -779,6 +779,24 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     /**
          * Get the tile's position in its coordinate system.
          */
+
+    if (this.tilesetInfo.resolutions) {
+      let sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
+
+      let chosenResolution = sortedResolutions[zoomLevel];
+
+      let tileWidth =  chosenResolution * BINS_PER_TILE;
+      let tileHeight = tileWidth;
+
+      let tileX = chosenResolution * BINS_PER_TILE * tilePos[0];
+      let tileY = chosenResolution * BINS_PER_TILE * tilePos[1];
+
+      return { tileX,
+        tileY,
+        tileWidth,
+        tileHeight };
+    }
+
     let xTilePos = tilePos[0],
       yTilePos = tilePos[1];
 
@@ -800,7 +818,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       tileHeight };
   }
 
-
   calculateZoomLevel() {
     let minX = this.tilesetInfo.min_pos[0];
     let maxX = this.tilesetInfo.max_pos[0];
@@ -811,8 +828,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     if (this.tilesetInfo.resolutions) {
       let zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(this.tilesetInfo.resolutions, this._xScale, minX, maxX);
       let zoomIndexY = tileProxy.calculateZoomLevelFromResolutions(this.tilesetInfo.resolutions, this._yScale, minY, maxY);
-
-      console.log('zoomIndexX:', zoomIndexX, 'zoomIndexY', zoomIndexY);
 
       return Math.min(zoomIndexX, zoomIndexY);
     }
