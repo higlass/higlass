@@ -354,9 +354,9 @@ export class HiGlassComponent extends React.Component {
           })
 
           let minValues = lockedTracks.filter(x => x.minRawValue && x.maxRawValue)  //exclude tracks that don't set min and max values
-                                      .map(x => x.minRawValue());
+                                      .map(x => x.minRawValue()).filter(x => x);
           let maxValues = lockedTracks.filter(x => x.minRawValue && x.maxRawValue) //exclude tracks that don't set min and max values
-              .map(x => x.maxRawValue());
+              .map(x => x.maxRawValue()).filter(x => x);
 
           let allMin = Math.min(...minValues);
           let allMax = Math.max(...maxValues);
