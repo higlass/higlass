@@ -910,6 +910,7 @@ export class TiledPlot extends React.Component {
           styleName="stylesCenterTrack.center-track-container"
         >
           <CenterTrack
+            configTrackMenuId={this.state.configTrackMenuId}
             chromInfo={this.state.chromInfo}
             editable={this.props.editable}
             height={this.centerHeight}

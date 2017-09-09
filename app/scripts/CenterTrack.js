@@ -362,13 +362,15 @@ export class CenterTrack extends React.Component {
           </svg>
         }
         {this.props.editable &&
+            // show track controls if config menu is visible or
+            // mouse is within the bounds of the track
           <TrackControl
             imgStyleAdd={STYLES}
             imgStyleClose={STYLES}
             imgStyleMove={STYLES}
             imgStyleSettings={STYLES}
             isMoveable={false}
-            isVisible={this.state.isVisible}
+            isVisible={this.state.isVisible || this.props.uid == this.props.configTrackMenuId}  
             onAddSeries={this.props.onAddSeries}
             onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
             onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
