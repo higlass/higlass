@@ -4,6 +4,20 @@
 Track Types
 ===========
 
+Linking value scales
+====================
+
+The scaling of values in quantitative tracks is done from lowest to highest
+values. Two tracks displaying different data will likely have different axis
+scales based on the extent of the data visible in each. To enable comparison
+between the two tracks, HiGlass supports locking value scales such that they
+both display the same axes. This can be done using the track configuration
+menu:
+
+.. image:: img/lock-value-scales.png
+    :align: center
+
+
 Bed-like
 =================
 

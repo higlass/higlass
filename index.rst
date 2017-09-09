@@ -11,6 +11,41 @@ inspired by modern online maps (so-called `slippy maps
 <http://wiki.openstreetmap.org/wiki/Slippy_Map>`_) to form a fast, extensible
 and responsive viewer for diverse types of genomic data.
 
+The HiGlass application actually consists of four distinct components:
+
+|higlass-client|_ - This is the Javascript
+library that displays heatmaps, tracks, etc. In a sense, this is the meat of
+the application. The vast majority of the updates are on this component.
+
+.. |higlass-client| replace:: **higlass-client**
+.. _higlass-client: https://github.com/hms-dbmi/higlass 
+
+|higlass-website|_  - This is the
+website that embeds the higlass-client. It can contain multiple higlass clients
+(as on the front page of higlass.io).
+
+.. |higlass-website| replace:: **higlass-website**
+.. _higlass-website: https://github.com/hms-dbmi/higlass-website
+
+|higlass-server|_ - The server manages data and serves it to the client in
+small chunks that match the current zoom level and location. It is a python
+django application that exposes an API.  For example,
+http://higlass.io/api/v1/tilesets lists the tilesets that the server knows
+about.
+
+.. |higlass-server| replace:: **higlass-server**
+.. _higlass-server: https://github.com/hms-dbmi/higlass-server
+
+|higlass-docker|_  - This docker
+container contains all three of the above repositories and packages them so
+that they can be easily run without having to install and run each separately.
+An update in any of the above repositories will be reflected in an update in
+the docker container. The versions of all the components is accessible at
+http://higlass.io/version.txt
+
+.. |higlass-docker| replace:: **higlass-docker**
+.. _higlass-docker: https://github.com/hms-dbmi/higlass-docker
+
 Track types
 ~~~~~~~~~~~
 
