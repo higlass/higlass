@@ -6,6 +6,10 @@ import ReactDOM from 'react-dom';
 import '../styles/ContextMenu.module.scss';
 
 
+// the size of the track controls
+// taken from ../styles/TrackControl.module.css
+const TRACK_CONTROL_HEIGHT = 20;
+
 export class ContextMenuContainer extends React.Component {
   constructor(props) {
     /**
@@ -106,7 +110,7 @@ export class ContextMenuContainer extends React.Component {
       // goes off the bottom
       if (parentBbox.top - bbox.height > 0) {
         // will fit on top
-        topPosition = parentBbox.top - bbox.height; 
+        topPosition = parentBbox.top - bbox.height + TRACK_CONTROL_HEIGHT; 
       }
     }
 
