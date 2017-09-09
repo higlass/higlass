@@ -318,12 +318,15 @@ export class PixiTrack extends Track {
     const gBase = document.createElement('g');
 
     const gClipped = document.createElement('g');
+    gClipped.setAttribute('class', 'g-clipped');
     gBase.appendChild(gClipped);
 
     const gTrack = document.createElement('g');
+    gClipped.setAttribute('class', 'g-track');
     gClipped.appendChild(gTrack);
 
     const gLabels = document.createElement('g');
+    gClipped.setAttribute('class', 'g-labels');
     gClipped.appendChild(gLabels); // labels should always appear on top of the track
 
     // define the clipping area as a polygon defined by the track's
@@ -352,8 +355,8 @@ export class PixiTrack extends Track {
     // SVG text alignment is wonky, just adjust the dy values of the tspans
     // instead
 
-    const textHeight = 12;
-    const labelTextHeight = textHeight + ((this.labelTextFontSize + 2) * (lineParts.length - 1));
+    const paddingBottom = 3;
+    const labelTextHeight = textHeight + ((this.labelTextFontSize+2) * (lineParts.length -1));
 
     if (this.labelText.anchor.y == 0.5) {
       ddy = labelTextHeight / 2;
@@ -373,14 +376,14 @@ export class PixiTrack extends Track {
       // http://stackoverflow.com/a/16701952/899470
 
       text.innerText = lineParts[i];
-      if (this.options.labelPosition == 'topLeft' ||
-        this.options.labelPosition == 'topRight') {
+      if (this.options.labelPosition === 'topLeft' ||
+        this.options.labelPosition === 'topRight') {
         let dy = ddy + ((i + 1) * (this.labelTextFontSize + 2)) ;
         text.setAttribute('dy', dy);
       }
       else if (
-        this.labelPosition == 'bottomLeft' ||
-        this.labelPosition == 'bottomRight'
+        this.options.labelPosition === 'bottomLeft' ||
+        this.options.labelPosition === 'bottomRight'
       ) {
         text.setAttribute('dy', ddy + (i * (this.labelTextFontSize + 2)) );
       }
@@ -397,9 +400,6 @@ export class PixiTrack extends Track {
     }
 
     gLabels.setAttribute('transform', `translate(${this.labelText.x},${this.labelText.y})scale(${this.labelText.scale.x},1)`);
-
-    // labels should be clipped so they're added to track rather than base
-    gBase.appendChild(gLabels);
 
     // return the whole SVG and where the specific track should draw its
     // contents
