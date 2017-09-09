@@ -1,6 +1,10 @@
+v0.8.40
+
+- Fixed value scale locking bug
+
 v0.8.37
 
-- Merged Fritz's label bug fix
+- Fixed center track label background oddness (#144)
 
 v0.8.36
 

@@ -281,7 +281,6 @@ export class HeatmapTiledPixiTrack extends Tiled2DPixiTrack {
         if (!this.valueScale)
             return;
 
-
         let colorbarAreaHeight = Math.min(this.dimensions[1] / 2, COLORBAR_MAX_HEIGHT);
         this.colorbarHeight = colorbarAreaHeight - 2 * COLORBAR_MARGIN;
         let colorbarAreaWidth = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + COLORBAR_MARGIN + BRUSH_COLORBAR_GAP + BRUSH_WIDTH + BRUSH_MARGIN ;
