@@ -5,7 +5,7 @@ export class FixedTrack extends TrackArea {
   render() {
     let controls = null;
 
-    if (this.props.editable && this.state.controlsVisible) {
+    if (this.props.editable && (this.state.controlsVisible || this.props.configMenuOpen)) {
       controls = this.getControls();
     }
 

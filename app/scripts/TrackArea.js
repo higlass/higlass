@@ -115,6 +115,7 @@ export class TrackArea extends React.Component {
 }
 
 TrackArea.propTypes = {
+  configMenuOpen: PropTypes.bool,
   onConfigTrackMenuOpened: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onAddSeries: PropTypes.func,

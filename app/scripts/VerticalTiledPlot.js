@@ -177,6 +177,7 @@ export class VerticalTiledPlot extends React.Component {
           itemControlAlignLeft={this.props.tracksControlAlignLeft}
           itemReactClass={VerticalItem}
           items={this.props.tracks.map(d => ({
+            configMenuVisible: d.uid === this.props.configTrackMenuId,
             uid: d.uid || slugid.nice(),
             height: this.props.height,
             width: d.width,
@@ -198,6 +199,7 @@ export class VerticalTiledPlot extends React.Component {
 }
 
 VerticalTiledPlot.propTypes = {
+  configTrackMenuId: PropTypes.string,
   chromInfo: PropTypes.object,
   editable: PropTypes.bool,
   handleConfigTrack: PropTypes.func,

@@ -11,6 +11,7 @@ export class HorizontalTrack extends MoveableTrack {
   getControls(isVisible) {
     return (
       <TrackControl
+        configMenuVisible={this.props.item.configMenuVisible}
         imgStyleAdd={STYLES}
         imgStyleClose={STYLES}
         imgStyleMove={STYLES}

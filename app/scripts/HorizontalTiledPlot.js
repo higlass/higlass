@@ -172,6 +172,7 @@ export class HorizontalTiledPlot extends React.Component {
           itemClass={stylesPlot.stylizedItem}
           itemReactClass={HorizontalItem}
           items={this.props.tracks.map(d => ({
+            configMenuVisible: d.uid === this.props.configTrackMenuId,
             uid: d.uid || slugid.nice(),
             width: this.props.width,
             height: d.height,
@@ -193,6 +194,7 @@ export class HorizontalTiledPlot extends React.Component {
 }
 
 HorizontalTiledPlot.propTypes = {
+  configTrackMenuId: PropTypes.string,
   chromInfo: PropTypes.object,
   editable: PropTypes.bool,
   handleConfigTrack: PropTypes.func,

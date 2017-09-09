@@ -752,6 +752,7 @@ export class TiledPlot extends React.Component {
         }}
       >
         <HorizontalTiledPlot
+          configTrackMenuId={this.state.configTrackMenuId}
           chromInfo={this.state.chromInfo}
           editable={this.props.editable}
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
@@ -788,6 +789,7 @@ export class TiledPlot extends React.Component {
         }}
       >
         <VerticalTiledPlot
+          configTrackMenuId={this.state.configTrackMenuId}
           chromInfo={this.state.chromInfo}
           editable={this.props.editable}
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
@@ -822,6 +824,7 @@ export class TiledPlot extends React.Component {
       }}
       >
         <VerticalTiledPlot
+          configTrackMenuId={this.state.configTrackMenuId}
           chromInfo={this.state.chromInfo}
           editable={this.props.editable}
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
@@ -857,6 +860,7 @@ export class TiledPlot extends React.Component {
       }}
       >
         <HorizontalTiledPlot
+          configTrackMenuId={this.state.configTrackMenuId}
           chromInfo={this.state.chromInfo}
           editable={this.props.editable}
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}

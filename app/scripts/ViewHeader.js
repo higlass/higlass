@@ -5,6 +5,12 @@ import ContextMenuContainer from './ContextMenuContainer';
 import { ConfigViewMenu } from './ConfigViewMenu';
 import { AddTrackPositionMenu } from './AddTrackPositionMenu';
 
+// Configs
+import {
+  VIEW_HEADER_MED_WIDTH_SEARCH_BAR,
+  VIEW_HEADER_MIN_WIDTH_SEARCH_BAR,
+} from './configs';
+
 // Styles
 import '../styles/ViewHeader.module.scss';
 
@@ -21,7 +27,20 @@ export class ViewHeader extends React.Component {
       configMenuUid: null,
       configMenuPosition: null,
       isFocused: false,
+      width: -1,
     };
+  }
+
+  componentDidMount() {
+    this.setState({ width: this.el.clientWidth });
+  }
+
+  checkWidth() {
+    const width = this.el.clientWidth;
+
+    console.log(width);
+
+    if (width !== this.state.width) this.setState({ width });
   }
 
   /**
@@ -181,43 +200,57 @@ export class ViewHeader extends React.Component {
     const className = this.state.isFocused ?
       'multitrack-header-focus' : 'multitrack-header';
 
+    const classNameIcon = this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR ?
+      'multitrack-header-icon-squeazed' : 'multitrack-header-icon';
+
+    const classNameGrabber = this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR ?
+      'multitrack-header-grabber-squeazed' : 'multitrack-header-grabber';
+
     return (
-      <div styleName={className}>
+      <div
+        ref={(c) => { this.el = c; }}
+        styleName={className}
+      >
         <div styleName="multitrack-header-left">
-          <div styleName="multitrack-header-grabber">
+          <div styleName={classNameGrabber}>
             <div /><div /><div />
           </div>
-          <div styleName="multitrack-header-search">
-            {this.props.isGenomePositionSearchBoxVisible && GenomePositionSearchBox}
-          </div>
+          {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR &&
+            <div styleName="multitrack-header-search">
+              {
+                this.props.isGenomePositionSearchBoxVisible &&
+                GenomePositionSearchBox
+              }
+            </div>
+          }
         </div>
         <nav styleName="multitrack-header-nav-list">
           <svg
             onClick={this.props.onAddView}
-            styleName="multitrack-header-icon"
+            styleName={classNameIcon}
           >
             <use xlinkHref="#copy" />
           </svg>
 
           <svg
+            ref={(c) => { this.configImg = c; }}
             onClick={() => this.handleConfigMenuOpened(this.props.viewUid)}
-            ref={c => this.configImg = c}
-            styleName="multitrack-header-icon"
+            styleName={classNameIcon}
           >
             <use xlinkHref="#cog" />
           </svg>
 
           <svg
+            ref={(c) => { this.plusImg = c; }}
             onClick={() => this.handleAddTrackPositionMenuOpened(this.props.viewUid)}
-            ref={c => this.plusImg = c}
-            styleName="multitrack-header-icon"
+            styleName={classNameIcon}
           >
             <use xlinkHref="#plus" />
           </svg>
 
           <svg
             onClick={this.props.onCloseView}
-            styleName="multitrack-header-icon"
+            styleName={classNameIcon}
           >
             <use xlinkHref="#cross" />
           </svg>
@@ -230,29 +263,33 @@ export class ViewHeader extends React.Component {
   }
 }
 
+ViewHeader.defaultProps = {
+  isGenomePositionSearchBoxVisible: false,
+};
+
 ViewHeader.propTypes = {
-  getGenomePositionSearchBox: PropTypes.func,
+  getGenomePositionSearchBox: PropTypes.func.isRequired,
   isGenomePositionSearchBoxVisible: PropTypes.bool,
-  onAddView: PropTypes.func,
-  onCloseView: PropTypes.func,
-  onExportSVG: PropTypes.func,
-  onExportViewsAsJSON: PropTypes.func,
-  onExportViewsAsLink: PropTypes.func,
-  onLockLocation: PropTypes.func,
-  onLockZoom: PropTypes.func,
-  onLockZoomAndLocation: PropTypes.func,
-  onProjectViewport: PropTypes.func,
-  onTakeAndLockZoomAndLocation: PropTypes.func,
-  onTogglePositionSearchBox: PropTypes.func,
-  onTrackPositionChosen: PropTypes.func,
-  onUnlockLocation: PropTypes.func,
-  onUnlockZoom: PropTypes.func,
-  onUnlockZoomAndLocation: PropTypes.func,
-  onYankLocation: PropTypes.func,
-  onYankZoom: PropTypes.func,
-  onYankZoomAndLocation: PropTypes.func,
-  onZoomToData: PropTypes.func,
-  viewUid: PropTypes.string,
+  onAddView: PropTypes.func.isRequired,
+  onCloseView: PropTypes.func.isRequired,
+  onExportSVG: PropTypes.func.isRequired,
+  onExportViewsAsJSON: PropTypes.func.isRequired,
+  onExportViewsAsLink: PropTypes.func.isRequired,
+  onLockLocation: PropTypes.func.isRequired,
+  onLockZoom: PropTypes.func.isRequired,
+  onLockZoomAndLocation: PropTypes.func.isRequired,
+  onProjectViewport: PropTypes.func.isRequired,
+  onTakeAndLockZoomAndLocation: PropTypes.func.isRequired,
+  onTogglePositionSearchBox: PropTypes.func.isRequired,
+  onTrackPositionChosen: PropTypes.func.isRequired,
+  onUnlockLocation: PropTypes.func.isRequired,
+  onUnlockZoom: PropTypes.func.isRequired,
+  onUnlockZoomAndLocation: PropTypes.func.isRequired,
+  onYankLocation: PropTypes.func.isRequired,
+  onYankZoom: PropTypes.func.isRequired,
+  onYankZoomAndLocation: PropTypes.func.isRequired,
+  onZoomToData: PropTypes.func.isRequired,
+  viewUid: PropTypes.string.isRequired,
 };
 
 export default ViewHeader;

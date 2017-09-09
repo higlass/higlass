@@ -100,6 +100,21 @@ export class ContextMenuContainer extends React.Component {
 
     let orientation = this.state.orientation;
 
+    let topPosition = parentBbox.top;
+    console.log('parentBbox.top', parentBbox.top, 'bbox.height:', bbox.height, window.innerHeight);
+    console.log('aaa  topPosition:', topPosition);
+
+    if (parentBbox.top + bbox.height > window.innerHeight) {
+      console.log('here');
+      // goes off the bottom
+      if (parentBbox.top - bbox.height > 0) {
+        console.log('there');
+        // will fit on top
+        topPosition = parentBbox.top - bbox.height; 
+      }
+    }
+    console.log('bbb topPosition:', topPosition);
+
     if (this.state.orientation === 'left') {
       let leftPosition = parentBbox.left - bbox.width;
 
@@ -116,7 +131,7 @@ export class ContextMenuContainer extends React.Component {
       // we're fine keeping it left oriented
       this.setState({
         left: leftPosition,
-        top: this.props.position.top,
+        top: topPosition,
         orientation: orientation
       });
     }  else {
@@ -136,7 +151,7 @@ export class ContextMenuContainer extends React.Component {
 
       this.setState({
         left: leftPosition,
-        top: this.props.position.top,
+        top: topPosition,
         orientation: orientation
       });
     }
