@@ -29,42 +29,16 @@ export class Chromosome2DGrid extends PixiTrack {
 
             this.pMain.addChild(this.lineGraphics);
             
-            for (let i = 0; i < this.chromInfo.cumPositions.length; i++) {
-                let thisTexts = [];
-
-                for (let j = 0; j < this.chromInfo.cumPositions.length; j++) {
-                    let textStr = this.chromInfo.cumPositions[i].chr + "/" + this.chromInfo.cumPositions[j].chr;
-                    let text = new PIXI.Text(textStr, 
-                                {fontSize: "14px", fontFamily: "Arial", fill: "red"}
-                                );
-
-                    text.anchor.x = 0.5;
-                    text.anchor.y = 0.5;
-                    text.visible = false;
-
-                    //give each string a random hash so that some get hidden 
-                    // when there's overlaps
-                    text.hashValue = Math.random();
-
-                    thisTexts.push(text);
-
-                    this.pMain.addChild(text);
-                }
-
-                this.texts.push(thisTexts);
-            }
-
             this.draw();
             this.animate();
         });
-
     }
 
     drawLines() {
         let graphics = this.lineGraphics;
-        let strokeColor = colorToHex(this.options.gridStrokeColor ? this.options.gridStrokeColor : 'blue');
 
-        let strokeWidth = this.options.gridStrokeWidth ? this.options.gridStrokeWidth : 1;
+        let strokeColor = colorToHex(this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue');
+        let strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
 
         graphics.clear();
         graphics.lineStyle( strokeWidth, strokeColor, 1.);

@@ -1,3 +1,8 @@
+v0.8.41
+
+- Fixed chromosome grid color bug
+- Fixed chromosome grid loading with many values bug
+
 v0.8.40
 
 - Fixed value scale locking bug
