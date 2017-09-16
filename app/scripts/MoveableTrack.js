@@ -42,7 +42,7 @@ export class MoveableTrack extends TrackArea {
         />
         {this.props.editable &&
           <div>
-            {this.getControls(this.state.controlsVisible)}
+            {this.getControls(this.state.controlsVisible || this.props.item.configMenuVisible)}
           </div>
         }
       </div>

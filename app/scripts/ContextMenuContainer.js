@@ -6,6 +6,10 @@ import ReactDOM from 'react-dom';
 import '../styles/ContextMenu.module.scss';
 
 
+// the size of the track controls
+// taken from ../styles/TrackControl.module.css
+const TRACK_CONTROL_HEIGHT = 20;
+
 export class ContextMenuContainer extends React.Component {
   constructor(props) {
     /**
@@ -100,6 +104,16 @@ export class ContextMenuContainer extends React.Component {
 
     let orientation = this.state.orientation;
 
+    let topPosition = parentBbox.top;
+
+    if (parentBbox.top + bbox.height > window.innerHeight) {
+      // goes off the bottom
+      if (parentBbox.top - bbox.height > 0) {
+        // will fit on top
+        topPosition = parentBbox.top - bbox.height + TRACK_CONTROL_HEIGHT; 
+      }
+    }
+
     if (this.state.orientation === 'left') {
       let leftPosition = parentBbox.left - bbox.width;
 
@@ -116,7 +130,7 @@ export class ContextMenuContainer extends React.Component {
       // we're fine keeping it left oriented
       this.setState({
         left: leftPosition,
-        top: this.props.position.top,
+        top: topPosition,
         orientation: orientation
       });
     }  else {
@@ -136,7 +150,7 @@ export class ContextMenuContainer extends React.Component {
 
       this.setState({
         left: leftPosition,
-        top: this.props.position.top,
+        top: topPosition,
         orientation: orientation
       });
     }

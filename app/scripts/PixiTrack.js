@@ -93,32 +93,38 @@ export class PixiTrack extends Track {
     this.pMask.endFill();
   }
 
+  /**
+   * We're going to destroy this object, so we need to detach its
+   * graphics from the scene
+   */
   remove() {
-    /**
-         * We're going to destroy this object, so we need to detach its
-         * graphics from the scene
-         */
     this.pBase.clear();
     this.scene.removeChild(this.pBase);
   }
 
+  /**
+   * Draw a border around each track.
+   */
   drawBorder() {
-    /**
-         * Draw a border around each track.
-         */
     const graphics = this.pBorder;
 
     graphics.clear();
 
-    if (!this.options || !this.options.trackBorderWidth) {
-      // don't display the track label
-      return;
-    }
+    // don't display the track label
+    if (!this.options || !this.options.trackBorderWidth) return;
 
-    const stroke = colorToHex(this.options.trackBorderColor ? this.options.trackBorderColor : 'white');
+    const stroke = colorToHex(
+      this.options.trackBorderColor ? this.options.trackBorderColor : 'white',
+    );
+
     graphics.lineStyle(this.options.trackBorderWidth, stroke);
 
-    graphics.drawRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1]);
+    graphics.drawRect(
+      this.position[0],
+      this.position[1],
+      this.dimensions[0],
+      this.dimensions[1],
+    );
   }
 
   drawLabel() {
@@ -132,31 +138,42 @@ export class PixiTrack extends Track {
 
     graphics.clear();
 
-    if (this.options.labelBackgroundOpacity) { graphics.beginFill(0xFFFFFF, 0); } else { graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity); }
+    if (this.options.labelBackgroundOpacity) {
+      graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);
+    } else {
+      graphics.beginFill(0xFFFFFF, 0);
+    }
 
-    const stroke = colorToHex(this.options.labelColor ? this.options.labelColor : 'black');
+    const stroke = colorToHex(
+      this.options.labelColor ? this.options.labelColor : 'black',
+    );
     const labelBackgroundMargin = 2;
 
     // we can't draw a label if there's no space
     if (this.dimensions[0] < 0) { return; }
 
-    let labelTextText = '';
-    if (this.tilesetInfo) { labelTextText += this.tilesetInfo.coordSystem ? `${this.tilesetInfo.coordSystem} | ` : ''; }
+    let labelTextText = this.tilesetInfo && this.tilesetInfo.coordSystem
+      ? `${this.tilesetInfo.coordSystem} | `
+      : '';
 
-    labelTextText += this.options.name ? this.options.name :
-      (this.tilesetInfo ? this.tilesetInfo.name : '');
+    labelTextText += this.options.name
+      ? this.options.name
+      : (this.tilesetInfo ? this.tilesetInfo.name : '');
 
-    if (this.tilesetInfo && this.tilesetInfo.max_width && this.tilesetInfo.bins_per_dimension) {
+    if (
+      this.tilesetInfo &&
+      this.tilesetInfo.max_width &&
+      this.tilesetInfo.bins_per_dimension
+    ) {
       const maxWidth = this.tilesetInfo.max_width;
       const binsPerDimension = this.tilesetInfo.bins_per_dimension;
       const maxZoom = this.tilesetInfo.max_zoom;
 
-      const resolution = maxWidth / (2 ** this.calculateZoomLevel() * binsPerDimension);
+      const resolution = maxWidth / ((2 ** this.calculateZoomLevel()) * binsPerDimension);
 
       // we can't display a NaN resolution
       if (!isNaN(resolution)) {
         const maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
-        const minResolution = maxWidth / binsPerDimension;
 
         const pp = precisionPrefix(maxResolutionSize, resolution);
         const f = formatPrefix(`.${pp}`, resolution);
@@ -164,7 +181,10 @@ export class PixiTrack extends Track {
 
         labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
       } else {
-        console.warn('NaN resolution, screen is probably too small. Dimensions:', this.dimensions);
+        console.warn(
+          'NaN resolution, screen is probably too small. Dimensions:',
+          this.dimensions,
+        );
       }
     }
 
@@ -173,24 +193,36 @@ export class PixiTrack extends Track {
 
       if (this.tilesetInfo && this.tilesetInfo.transforms) {
         for (const transform of this.tilesetInfo.transforms) {
-          if (transform.value == this.options.dataTransform) { chosenTransform = transform; }
+          if (transform.value === this.options.dataTransform) {
+            chosenTransform = transform;
+          }
         }
       }
 
-      if (chosenTransform) { labelTextText += `\n[Transform: ${chosenTransform.name}]`; } else if (this.options.dataTransform == 'None') { labelTextText += '\n[Transform: None ]'; } else { labelTextText += '\n[Transform: Default ]'; }
+      if (chosenTransform) {
+        labelTextText += `\n[Transform: ${chosenTransform.name}]`;
+      } else if (this.options.dataTransform === 'None') {
+        labelTextText += '\n[Transform: None ]';
+      } else {
+        labelTextText += '\n[Transform: Default ]';
+      }
     }
 
     this.labelText.text = labelTextText;
-    this.labelText.style = { fontSize: `${this.labelTextFontSize}px`,
+    this.labelText.style = {
+      fontSize: `${this.labelTextFontSize}px`,
       fontFamily: this.labelTextFontFamily,
-      fill: stroke };
-    this.labelText.alpha = 'labelTextOpacity' in this.options ? this.options.labelTextOpacity : 1;
+      fill: stroke,
+    };
+    this.labelText.alpha = typeof this.options.labelTextOpacity !== 'undefined'
+      ? this.options.labelTextOpacity
+      : 1;
 
     this.labelText.visible = true;
 
     if (this.flipText) { this.labelText.scale.x = -1; }
 
-    if (this.options.labelPosition == 'topLeft') {
+    if (this.options.labelPosition === 'topLeft') {
       this.labelText.x = this.position[0];
       this.labelText.y = this.position[1];
 
@@ -203,8 +235,8 @@ export class PixiTrack extends Track {
         this.position[1],
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin);
-    } else if ((this.options.labelPosition == 'bottomLeft' && !this.flipText) ||
-                   (this.options.labelPosition == 'topRight' && this.flipText)) {
+    } else if ((this.options.labelPosition === 'bottomLeft' && !this.flipText) ||
+                   (this.options.labelPosition === 'topRight' && this.flipText)) {
       this.labelText.x = this.position[0];
       this.labelText.y = this.position[1] + this.dimensions[1];
       this.labelText.anchor.x = 0.5;
@@ -215,8 +247,8 @@ export class PixiTrack extends Track {
         this.position[1] + this.dimensions[1] - this.labelText.height - labelBackgroundMargin,
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin);
-    } else if ((this.options.labelPosition == 'topRight' && !this.flipText) ||
-                   (this.options.labelPosition == 'bottomLeft' && this.flipText)) {
+    } else if ((this.options.labelPosition === 'topRight' && !this.flipText) ||
+                   (this.options.labelPosition === 'bottomLeft' && this.flipText)) {
       this.labelText.x = this.position[0] + this.dimensions[0];
       this.labelText.y = this.position[1];
       this.labelText.anchor.x = 0.5;
@@ -228,7 +260,7 @@ export class PixiTrack extends Track {
         this.position[1],
         this.labelText.width + labelBackgroundMargin,
         this.labelText.height + labelBackgroundMargin);
-    } else if (this.options.labelPosition == 'bottomRight') {
+    } else if (this.options.labelPosition === 'bottomRight') {
       this.labelText.x = this.position[0] + this.dimensions[0];
       this.labelText.y = this.position[1] + this.dimensions[1];
       this.labelText.anchor.x = 0.5;
@@ -238,12 +270,14 @@ export class PixiTrack extends Track {
       // is rotated but that means we have to adjust its position
       this.labelText.x -= this.labelText.width / 2;
 
-      graphics.drawRect(this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin,
+      graphics.drawRect(
+        this.position[0] + this.dimensions[0] - this.labelText.width - labelBackgroundMargin,
         this.position[1] + this.dimensions[1] - this.labelText.height - labelBackgroundMargin,
         this.labelText.width + labelBackgroundMargin,
-        this.labelText.height + labelBackgroundMargin);
-    } else if ((this.options.labelPosition == 'outerLeft' && !this.flipText) ||
-                   (this.options.labelPosition == 'outerTop' && this.flipText)) {
+        this.labelText.height + labelBackgroundMargin,
+      );
+    } else if ((this.options.labelPosition === 'outerLeft' && !this.flipText) ||
+                   (this.options.labelPosition === 'outerTop' && this.flipText)) {
       this.labelText.x = this.position[0];
       this.labelText.y = this.position[1] + this.dimensions[1] / 2;
 
@@ -251,8 +285,8 @@ export class PixiTrack extends Track {
       this.labelText.anchor.y = 0.5;
 
       this.labelText.x -= this.labelText.width / 2 + 3;
-    } else if ((this.options.labelPosition == 'outerTop' && !this.flipText) ||
-                   (this.options.labelPosition == 'outerLeft' && this.flipText)) {
+    } else if ((this.options.labelPosition === 'outerTop' && !this.flipText) ||
+                   (this.options.labelPosition === 'outerLeft' && this.flipText)) {
       this.labelText.x = this.position[0] + this.dimensions[0] / 2;
       this.labelText.y = this.position[1];
 
@@ -260,8 +294,8 @@ export class PixiTrack extends Track {
       this.labelText.anchor.y = 0.5;
 
       this.labelText.y -= this.labelText.height / 2 + 3;
-    } else if ((this.options.labelPosition == 'outerBottom' && !this.flipText) ||
-                   (this.options.labelPosition == 'outerRight' && this.flipText)) {
+    } else if ((this.options.labelPosition === 'outerBottom' && !this.flipText) ||
+                   (this.options.labelPosition === 'outerRight' && this.flipText)) {
       this.labelText.x = this.position[0] + this.dimensions[0] / 2;
       this.labelText.y = this.position[1] + this.dimensions[1];
 
@@ -318,12 +352,15 @@ export class PixiTrack extends Track {
     const gBase = document.createElement('g');
 
     const gClipped = document.createElement('g');
+    gClipped.setAttribute('class', 'g-clipped');
     gBase.appendChild(gClipped);
 
     const gTrack = document.createElement('g');
+    gClipped.setAttribute('class', 'g-track');
     gClipped.appendChild(gTrack);
 
     const gLabels = document.createElement('g');
+    gClipped.setAttribute('class', 'g-labels');
     gClipped.appendChild(gLabels); // labels should always appear on top of the track
 
     // define the clipping area as a polygon defined by the track's
@@ -352,8 +389,8 @@ export class PixiTrack extends Track {
     // SVG text alignment is wonky, just adjust the dy values of the tspans
     // instead
 
-    const textHeight = 12;
-    const labelTextHeight = textHeight + ((this.labelTextFontSize + 2) * (lineParts.length - 1));
+    const paddingBottom = 3;
+    const labelTextHeight = textHeight + ((this.labelTextFontSize+2) * (lineParts.length -1));
 
     if (this.labelText.anchor.y == 0.5) {
       ddy = labelTextHeight / 2;
@@ -373,14 +410,14 @@ export class PixiTrack extends Track {
       // http://stackoverflow.com/a/16701952/899470
 
       text.innerText = lineParts[i];
-      if (this.options.labelPosition == 'topLeft' ||
-        this.options.labelPosition == 'topRight') {
+      if (this.options.labelPosition === 'topLeft' ||
+        this.options.labelPosition === 'topRight') {
         let dy = ddy + ((i + 1) * (this.labelTextFontSize + 2)) ;
         text.setAttribute('dy', dy);
       }
       else if (
-        this.labelPosition == 'bottomLeft' ||
-        this.labelPosition == 'bottomRight'
+        this.options.labelPosition === 'bottomLeft' ||
+        this.options.labelPosition === 'bottomRight'
       ) {
         text.setAttribute('dy', ddy + (i * (this.labelTextFontSize + 2)) );
       }
@@ -397,9 +434,6 @@ export class PixiTrack extends Track {
     }
 
     gLabels.setAttribute('transform', `translate(${this.labelText.x},${this.labelText.y})scale(${this.labelText.scale.x},1)`);
-
-    // labels should be clipped so they're added to track rather than base
-    gBase.appendChild(gLabels);
 
     // return the whole SVG and where the specific track should draw its
     // contents
