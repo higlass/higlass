@@ -324,19 +324,32 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
         track.appendChild(output);
 
-        for (let uid in this.drawnRects) {
-          let rect = this.drawnRects[uid];
+        for (let tile of this.visibleAndFetchedTiles()) {
+          tile.tileData.forEach((td, i) => {
+            let gTile = document.createElement('g')
+            gTile.setAttribute('transform',
+                                `translate(${tile.rectGraphics.position.x},${tile.rectGraphics.position.y})scale(${tile.rectGraphics.scale.x},${tile.rectGraphics.scale.y})`);
+            output.appendChild(gTile);
 
-          let r = document.createElement('rect');
-          r.setAttribute('x', rect[0]);
-          r.setAttribute('y', rect[1]);
-          r.setAttribute('width', rect[2]);
-          r.setAttribute('height', rect[3]);
+            if (td.uid in this.drawnRects) {
+              let rect = this.drawnRects[td.uid];
 
-          r.setAttribute('fill', this.options.fillColor ? this.options.fillColor : 'blue');
-          r.setAttribute('opacity', 0.3);
+              let r = document.createElement('rect');
+              r.setAttribute('x', rect[0]);
+              r.setAttribute('y', rect[1]);
+              r.setAttribute('width', rect[2]);
+              r.setAttribute('height', rect[3]);
 
-          output.appendChild(r);
+              r.setAttribute('fill',  this.options.fillColor ? this.options.fillColor : 'blue')
+              r.setAttribute('opacity', 0.3);
+
+              r.style.stroke = this.options.fillColor ? this.options.fillColor : 'blue';
+              r.style.strokeWidth = "1px";
+
+              gTile.appendChild(r);
+            }
+
+          });
         }
 
         return [base, base];

@@ -506,6 +506,8 @@ export class HiGlassComponent extends React.Component {
     let svg = this.createSVG();
 
     let svgText = new XMLSerializer().serializeToString(svg);
+    let beautyText = vkbeautify.xml(svgText);
+
     download('export.svg', vkbeautify.xml(svgText));
     return svg;
   }
