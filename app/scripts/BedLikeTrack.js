@@ -14,7 +14,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         this.textFontSize = '10px';
         this.textFontFamily = 'Arial';
 
-        this.drawnRects = new Set();
+        this.drawnRects = {};
     }
 
     initTile(tile) {
@@ -63,9 +63,12 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         //this.draw();
     }
 
+
     destroyTile(tile) {
         //remove texts
-
+      tile.tileData.forEach((td, i) => {
+       delete this.drawnRects[td.uid];
+      });
     }
 
     drawTile(tile) {
@@ -86,10 +89,9 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         tile.tileData.forEach((td, i) => {
 
             // don't draw anything that has already been drawn
-            if (this.drawnRects.has(td.uid))
+            if (td.uid in this.drawnRects)
                 return;
 
-            this.drawnRects.add(td.uid);
 
             let geneInfo = td.fields;
             // the returned positions are chromosome-based and they need to
@@ -127,6 +129,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
             //this.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
 
             tile.rectGraphics.drawRect(xStartPos, rectY, xEndPos - xStartPos, GENE_RECT_HEIGHT);
+            this.drawnRects[td.uid] = [xStartPos, rectY, xEndPos - xStartPos, GENE_RECT_HEIGHT];
 
             if (!tile.texts) {
                 // tile probably hasn't been initialized yet
@@ -169,9 +172,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
 
     draw() {
-        if (!this.delayDrawing)
-            this.drawnRects.clear();
-
         super.draw();
         //console.trace('drawing', this, this._xScale.domain(), this._xScale.range());
 
@@ -324,47 +324,19 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
         track.appendChild(output);
 
-        for (let rect of this.allRects) {
-            let r = document.createElement('rect');
-            r.setAttribute('x', rect[0]);
-            r.setAttribute('y', rect[1]);
-            r.setAttribute('width', rect[2]);
-            r.setAttribute('height', rect[3]);
+        for (let uid in this.drawnRects) {
+          let rect = this.drawnRects[uid];
 
-            if (rect[4] == '+') {
-                r.setAttribute('fill', this.options.plusStrandColor);
-            } else {
-                r.setAttribute('fill', this.options.minusStrandColor);
-            }
+          let r = document.createElement('rect');
+          r.setAttribute('x', rect[0]);
+          r.setAttribute('y', rect[1]);
+          r.setAttribute('width', rect[2]);
+          r.setAttribute('height', rect[3]);
 
-            output.appendChild(r);
-        }
+          r.setAttribute('fill', this.options.fillColor ? this.options.fillColor : 'blue');
+          r.setAttribute('opacity', 0.3);
 
-        for (let text of this.allTexts) {
-            if (!text.text.visible)
-                continue;
-
-            let g = document.createElement('g');
-            let t = document.createElement('text');
-            t.setAttribute('text-anchor', 'middle');
-            t.setAttribute('font-family', this.textFontFamily);
-            t.setAttribute('font-size', this.textFontSize);
-            g.setAttribute('transform', `scale(${text.text.scale.x},1)`);
-            
-
-            if (text.strand == '+') {
-                //t.setAttribute('stroke', this.options.plusStrandColor);
-                t.setAttribute('fill', this.options.plusStrandColor);
-            } else {
-                //t.setAttribute('stroke', this.options.minusStrandColor);
-                t.setAttribute('fill', this.options.minusStrandColor);
-            }
-
-            t.innerHTML = text.text.text;
-
-            g.appendChild(t);
-            g.setAttribute('transform', `translate(${text.text.x},${text.text.y})scale(${text.text.scale.x},1)`);
-            output.appendChild(g);
+          output.appendChild(r);
         }
 
         return [base, base];

@@ -1,3 +1,7 @@
+v0.8.42
+
+- Fixed SVG output for bedlike tracks
+
 v0.8.41
 
 - Fixed chromosome grid color bug
