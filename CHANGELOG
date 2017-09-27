@@ -11,6 +11,37 @@ v0.9.0
 - Keep track controls visible if config menu is active
 - Show child menus above the parent if there isn't enough space on the bottom
 
+v0.8.44
+
+- Redraw TiledPixiTracks after the tileset info has been received
+
+v0.8.43
+
+- More fixes for SVG output for bedlike tracks
+
+v0.8.42
+
+- Fixed SVG output for bedlike tracks
+
+v0.8.41
+
+- Fixed chromosome grid color bug
+- Fixed chromosome grid loading with many values bug
+
+v0.8.40
+
+- Fixed value scale locking bug
+
+v0.8.37
+
+- Fixed center track label background oddness (#144)
+
+v0.8.36
+
+- (fix #146) Fixed value scale locking serialization bug
+- Fixed gene annotation SVG export
+- Fixed chromosome ticks SVG export
+
 v0.8.35
 
 - Fixed colorbar hiding bug (Issue #131)

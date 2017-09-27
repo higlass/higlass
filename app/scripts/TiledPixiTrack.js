@@ -66,6 +66,7 @@ export class TiledPixiTrack extends PixiTrack {
         // no tileset info for this track
         this.tilesetInfo = null;
         this.draw();
+        this.animate();
         return;
       }
 
@@ -84,6 +85,7 @@ export class TiledPixiTrack extends PixiTrack {
       this.options.name = this.options.name ? this.options.name : tilesetInfo[tilesetUid].name;
 
       this.draw();
+      this.animate();
     });
 
     this.uuid = slugid.nice();
