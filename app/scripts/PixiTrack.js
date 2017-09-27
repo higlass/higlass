@@ -390,7 +390,7 @@ export class PixiTrack extends Track {
     // instead
 
     const paddingBottom = 3;
-    const labelTextHeight = textHeight + ((this.labelTextFontSize+2) * (lineParts.length -1));
+    const labelTextHeight = (this.labelTextFontSize+2) * (lineParts.length) + paddingBottom;
 
     if (this.labelText.anchor.y == 0.5) {
       ddy = labelTextHeight / 2;

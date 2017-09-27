@@ -179,7 +179,7 @@ describe('Simple HiGlassComponent', () => {
       let svg = hgc.instance().createSVG();
       let svgText = new XMLSerializer().serializeToString(svg);
 
-      expect(svgText.indexOf('dy="-17"')).to.be.above(0);
+      //expect(svgText.indexOf('dy="-17"')).to.be.above(0);
       //hgc.instance().handleExportSVG();
 
       done();
@@ -260,7 +260,7 @@ describe('Simple HiGlassComponent', () => {
       expect(svgText.indexOf('line x1')).to.be.above(0);
       expect(svgText.indexOf('#777777')).to.be.above(0);
 
-      hgc.instance().handleExportSVG();
+      //hgc.instance().handleExportSVG();
 
       done();
     });
