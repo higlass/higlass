@@ -1,6 +1,10 @@
 v0.8.44
 
 - Redraw TiledPixiTracks after the tileset info has been received
+- Remove value scale locks on handleCloseTrack
+- Check that tiledPlot is defined in createSVG to fix the export
+failing when there's two side-by-side by views created after closing
+one
 
 v0.8.43
 
