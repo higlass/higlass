@@ -174,7 +174,7 @@ describe("Simple HiGlassComponent", () => {
 
             hgc = mount(<HiGlassComponent 
                           options={{bounded: false}}
-                          viewConfig={oneZoomedOutViewConf}
+                          viewConfig={twoViewConfig}
                         />, 
                 {attachTo: div});
 
@@ -192,6 +192,31 @@ describe("Simple HiGlassComponent", () => {
             done();
         });
 
+        it ("Replaces one of the views and tries to export again", (done) => {
+            let views = hgc.instance().state.views;
+
+          let newView = JSON.parse(JSON.stringify(views['aa']));
+
+          hgc.instance().handleCloseView('aa');
+            views = hgc.instance().state.views;
+            
+         newView.uid = 'a2';
+          newView.layout.i = 'a2';
+
+          views['a2'] = newView;
+
+          hgc.instance().setState({views: views});
+
+          // this used to raise an error because the hgc.instance().tiledPlots
+          // would maintain a reference to the closed view and we would try
+          // to export it as SVG
+          hgc.instance().createSVG();
+
+          done();
+
+          //hgc.instance().createSVG();
+
+        });
       
         it ('Cleans up previously created instances and mounts a new component', (done) => {
             if (hgc) {

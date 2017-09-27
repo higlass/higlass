@@ -303,6 +303,28 @@ export class HiGlassComponent extends React.Component {
         return viewIds;
     }
 
+    iterateOverTracksInView(viewId) {
+        /**
+         * Iterate over all the tracks in this component.
+         */
+        let allTracks = [];
+            let tracks = this.state.views[viewId].tracks;
+
+            for (let trackType in tracks) {
+                for (let track of tracks[trackType]) {
+                    if (track.type == 'combined' && track.contents) {
+                        for (let subTrack of track.contents) {
+                            allTracks.push({ viewId: viewId, trackId: subTrack.uid});
+                        }
+                    } else {
+                        allTracks.push({ viewId: viewId, trackId: track.uid });
+                    }
+                }
+            }
+
+        return allTracks;
+    }
+
     iterateOverTracks() {
         /**
          * Iterate over all the tracks in this component.
@@ -490,6 +512,9 @@ export class HiGlassComponent extends React.Component {
     svg.setAttribute('xmlns', "http://www.w3.org/2000/svg"); 
 
     for (let tiledPlot of dictValues(this.tiledPlots)) {
+      if (!tiledPlot)   // probably opened and closed
+        continue;
+
         for (let trackDefObject of dictValues(tiledPlot.trackRenderer.trackDefObjects)) {
 
             if (trackDefObject.trackObject.exportSVG) {

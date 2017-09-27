@@ -37,15 +37,15 @@
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://127.0.0.1:8000/api/v1"
+    "http://127.0.0.1:8990/api/v1"
   ],
   "exportViewUrl": "/api/v1/viewconfs",
   "views": [
     {
       "uid": "aa",
       "initialXDomain": [
-        2548965401.43052,
-        2593012475.9738636
+        -35718834.39903343,
+        1677116413.6144052
       ],
       "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBox": {
@@ -59,32 +59,86 @@
       "tracks": {
         "top": [
           {
-            "name": "sampletrack.db",
-            "created": "2017-09-27T02:28:32.714627Z",
-            "owner": null,
-            "server": "http://127.0.0.1:8000/api/v1",
-            "tilesetUid": "WQ2AOVP9SjOPztLuJmq0Nw",
-            "uid": "LtEiJRwPT_KpUcgUMhnzOA",
-            "type": "bedlike",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "hidden",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "name": "sampletrack.db"
-            },
-            "width": 20,
-            "height": 55,
+            "type": "top-axis",
+            "local": true,
+            "orientation": "1d-horizontal",
+            "name": "Top Axis",
+            "thumbnail": {},
+            "defaultOptions": {},
+            "server": "",
+            "tilesetUid": "JOb3pX6pR-qoQzeK_JZRzg",
+            "uid": "DeHOLDMITp-4HRSLzGykTA",
+            "options": {},
+            "width": 468,
+            "height": 20,
             "position": "top"
           }
         ],
-        "left": [],
-        "center": [],
+        "left": [
+          {
+            "type": "left-axis",
+            "local": true,
+            "orientation": "1d-vertical",
+            "name": "Left Axis",
+            "thumbnail": {},
+            "minWidth": 100,
+            "server": "",
+            "tilesetUid": "Zn8-m62tSNi8V3OTrls4Yw",
+            "uid": "FyOr9eZPRqGEkZbZBLXdxQ",
+            "options": {},
+            "width": 100,
+            "height": 495,
+            "position": "left"
+          }
+        ],
+        "center": [
+          {
+            "uid": "evtyWIfCQBq5SdYgvXQtTw",
+            "type": "combined",
+            "contents": [
+              {
+                "name": "MB-Fly-DpnII-CD2m-R1-R2_dm3.1000.multires.balanced.cool",
+                "created": "2017-09-27T15:23:22.369416Z",
+                "server": "http://127.0.0.1:8990/api/v1",
+                "tilesetUid": "PKmi9DdrTJ2IVrp4M3Lvqw",
+                "uid": "Vhm9KyoDThiGOrTWPndHcQ",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "name": "MB-Fly-DpnII-CD2m-R1-R2_dm3.1000.multires.balanced.cool",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "width": 100,
+                "height": 100,
+                "transforms": [
+                  {
+                    "name": "ICE",
+                    "value": "weight"
+                  }
+                ],
+                "position": "center"
+              }
+            ],
+            "position": "center"
+          }
+        ],
         "right": [],
         "bottom": []
       },
       "layout": {
-        "w": 12,
+        "w": 6,
         "h": 12,
         "x": 0,
         "y": 0,
@@ -93,8 +147,118 @@
         "static": false
       },
       "initialYDomain": [
-        2528958359.857363,
-        2564630286.42436
+        -313290238.1227219,
+        1606266505.340615
+      ]
+    },
+    {
+      "uid": "SpMwHQyxSoCWP-R9sG4fOQ",
+      "initialXDomain": [
+        -1482769302.548318,
+        3124166881.7636905
+      ],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": true
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "type": "top-axis",
+            "local": true,
+            "orientation": "1d-horizontal",
+            "name": "Top Axis",
+            "thumbnail": {},
+            "defaultOptions": {},
+            "server": "",
+            "tilesetUid": "JOb3pX6pR-qoQzeK_JZRzg",
+            "uid": "DeHOLDMITp-4HRSLzGykTA",
+            "options": {},
+            "width": 468,
+            "height": 20,
+            "position": "top"
+          }
+        ],
+        "left": [
+          {
+            "type": "left-axis",
+            "local": true,
+            "orientation": "1d-vertical",
+            "name": "Left Axis",
+            "thumbnail": {},
+            "minWidth": 100,
+            "server": "",
+            "tilesetUid": "Zn8-m62tSNi8V3OTrls4Yw",
+            "uid": "FyOr9eZPRqGEkZbZBLXdxQ",
+            "options": {},
+            "width": 100,
+            "height": 495,
+            "position": "left"
+          }
+        ],
+        "center": [
+          {
+            "uid": "evtyWIfCQBq5SdYgvXQtTw",
+            "type": "combined",
+            "contents": [
+              {
+                "name": "MB-Fly-DpnII-CD2m-R1-R2_dm3.1000.multires.balanced.cool",
+                "created": "2017-09-27T15:23:22.369416Z",
+                "server": "http://127.0.0.1:8990/api/v1",
+                "tilesetUid": "PKmi9DdrTJ2IVrp4M3Lvqw",
+                "uid": "Vhm9KyoDThiGOrTWPndHcQ",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "name": "MB-Fly-DpnII-CD2m-R1-R2_dm3.1000.multires.balanced.cool",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "width": 100,
+                "height": 100,
+                "transforms": [
+                  {
+                    "name": "ICE",
+                    "value": "weight"
+                  }
+                ],
+                "position": "center"
+              }
+            ],
+            "position": "center"
+          }
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 6,
+        "h": 12,
+        "x": 6,
+        "y": 0,
+        "i": "SpMwHQyxSoCWP-R9sG4fOQ",
+        "moved": false,
+        "static": false
+      },
+      "initialYDomain": [
+        -5906481438.903824,
+        7199457706.121716
       ]
     }
   ],
@@ -111,9 +275,6 @@
     "locksDict": {}
   }
 }
-
-
-
     window.higlassApi;
 
     hglib.createHgComponent(

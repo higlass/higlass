@@ -82,6 +82,7 @@ export class TiledPixiTrack extends PixiTrack {
             this.options.name = this.options.name ? this.options.name : tilesetInfo[tilesetUid].name;
 
             this.draw();
+            this.animate();
         });
 
         this.uuid = slugid.nice();
