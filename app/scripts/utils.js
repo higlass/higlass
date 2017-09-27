@@ -3,18 +3,18 @@ import {bisector, range} from 'd3-array';
 import {rgb, color} from 'd3-color';
 import {format} from 'd3-format';
 
-export function download(filename, text) {
-    var pom = document.createElement('a');
-    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-    pom.setAttribute('download', filename);
-
-    if (document.createEvent) {
-        var event = document.createEvent('MouseEvents');
-        event.initEvent('click', true, true);
-        pom.dispatchEvent(event);
+export function download(filename, data) {
+      var blob = new Blob([data], {type: 'text/csv'});
+    if(window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveBlob(blob, filename);
     }
-    else {
-        pom.click();
+    else{
+        var elem = window.document.createElement('a');
+        elem.href = window.URL.createObjectURL(blob);
+        elem.download = filename;        
+        document.body.appendChild(elem);
+        elem.click();        
+        document.body.removeChild(elem);
     }
 }
 

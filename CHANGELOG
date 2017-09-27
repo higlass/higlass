@@ -5,6 +5,8 @@ v0.8.44
 - Check that tiledPlot is defined in createSVG to fix the export
 failing when there's two side-by-side by views created after closing
 one
+- Fixed the "Failed: network error" issue in chrome by changing the
+"download" function in utils.js
 
 v0.8.43
 
