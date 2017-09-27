@@ -4,6 +4,8 @@ import {rgb, color} from 'd3-color';
 import {format} from 'd3-format';
 
 export function download(filename, data) {
+  // yanked from here
+  // https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
       var blob = new Blob([data], {type: 'text/csv'});
     if(window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveBlob(blob, filename);
