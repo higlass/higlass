@@ -46,6 +46,24 @@ ideas introduced in genome browsers such as the <a class="reference external" hr
 recent HiC data browsers such as <a class="reference external" href="http://www.aidenlab.org/juicebox/">Juicebox</a> and implements them in a framework
 inspired by modern online maps (so-called <a class="reference external" href="http://wiki.openstreetmap.org/wiki/Slippy_Map">slippy maps</a>) to form a fast, extensible
 and responsive viewer for diverse types of genomic data.</p>
+<p>The HiGlass application actually consists of four distinct components:</p>
+<p><a class="reference external" href="https://github.com/hms-dbmi/higlass"><strong>higlass-client</strong></a> - This is the Javascript
+library that displays heatmaps, tracks, etc. In a sense, this is the meat of
+the application. The vast majority of the updates are on this component.</p>
+<p><a class="reference external" href="https://github.com/hms-dbmi/higlass-website"><strong>higlass-website</strong></a>  - This is the
+website that embeds the higlass-client. It can contain multiple higlass clients
+(as on the front page of higlass.io).</p>
+<p><a class="reference external" href="https://github.com/hms-dbmi/higlass-server"><strong>higlass-server</strong></a> - The server manages data and serves it to the client in
+small chunks that match the current zoom level and location. It is a python
+django application that exposes an API.  For example,
+<a class="reference external" href="http://higlass.io/api/v1/tilesets">http://higlass.io/api/v1/tilesets</a> lists the tilesets that the server knows
+about.</p>
+<p><a class="reference external" href="https://github.com/hms-dbmi/higlass-docker"><strong>higlass-docker</strong></a>  - This docker
+container contains all three of the above repositories and packages them so
+that they can be easily run without having to install and run each separately.
+An update in any of the above repositories will be reflected in an update in
+the docker container. The versions of all the components is accessible at
+<a class="reference external" href="http://higlass.io/version.txt">http://higlass.io/version.txt</a></p>
 <div class="section" id="track-types">
 <h2>Track types<a class="headerlink" href="#track-types" title="Permalink to this headline">¶</a></h2>
 <p>HiGlass supports both 1D and 2D track types that can be arranged in views to show desired
@@ -183,6 +201,7 @@ user-interface components and lay out the positions of the views and tracks.</li
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="track_types.html">Track Types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#linking-value-scales">Linking value scales</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#bed-like">Bed-like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#gene-annotations">Gene Annotations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#heatmap">Heatmap</a></li>
