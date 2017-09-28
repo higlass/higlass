@@ -1,4 +1,11 @@
-v0.8.44
+v0.8.45 (2017-09-27)
+
+- Allow selection of chromsizes that don't have autocomplete settings
+associated with them.
+- Refactored the GenomePositionSearchBox tests so they aren't dependent
+on timeouts
+
+v0.8.44 (2017-09-27)
 
 - Redraw TiledPixiTracks after the tileset info has been received
 - Remove value scale locks on handleCloseTrack
@@ -8,7 +15,7 @@ one
 - Fixed the "Failed: network error" issue in chrome by changing the
 "download" function in utils.js
 
-v0.8.43
+v0.8.43 (2017-08-26)
 
 - More fixes for SVG output for bedlike tracks
 

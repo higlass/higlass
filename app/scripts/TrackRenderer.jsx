@@ -68,6 +68,7 @@ export class TrackRenderer extends React.Component {
 
         this.scrollTimeout = null;
 
+        this.activeTransitions = 0;
         this.zoomTransform = zoomIdentity;
         this.windowScrolledBound = this.windowScrolled.bind(this);
         this.zoomedBound = this.zoomed.bind(this);
@@ -645,19 +646,26 @@ export class TrackRenderer extends React.Component {
 
         if (animate) {
             let selection = this.divTrackAreaSelection;
+            this.activeTransitions += 1;
 
             if (!document.hidden) {
                 // only transition if the window is hidden
+
                 selection = selection
                     .transition()
                     .duration(animateTime)
+
             }
+
 
             selection.call(
                     this.zoomBehavior.transform,
                     zoomIdentity.translate(translateX, translateY).scale(k)
                 )
-                .on('end', setZoom);
+            .on('end', () => {
+              setZoom();
+              this.activeTransitions -= 1;
+            });
 
         } else {
             setZoom();

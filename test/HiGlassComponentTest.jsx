@@ -26,6 +26,7 @@ import slugid from 'slugid';
 import {AddTrackModal} from '../app/scripts/AddTrackModal.jsx';
 import {HiGlassComponent} from '../app/scripts/HiGlassComponent.jsx';
 import {TiledPlot} from '../app/scripts/TiledPlot.jsx';
+import {tileProxy} from '../app/scripts/TileProxy.js';
 import {HeatmapOptions} from '../app/scripts/HeatmapOptions.jsx';
 import {
   scaleLockingBug,
@@ -75,8 +76,34 @@ function getTrackObject(hgc, viewUid, trackUid) {
     return hgc.instance().tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
 }
 
+function getTrackRenderer(hgc, viewUid, trackUid) {
+    return hgc.instance().tiledPlots[viewUid].trackRenderer
+}
+
 function getTiledPlot(hgc, viewUid) {
     return hgc.instance().tiledPlots[viewUid];
+}
+
+function areTransitionsActive(hgc) {
+  /**
+   * Check if there are any active transitions that we
+   * need to wait on
+   * 
+   * Parameters
+   * ----------
+     *  hgc: enzyme wrapper for a HiGlassComponent
+     *
+     * Returns
+     * -------
+     *  True if any of the tracks have active transtions. False otherwise.
+     */
+    for (let track of hgc.instance().iterateOverTracks()) {
+      let trackRenderer = getTrackRenderer(hgc, track.viewId, track.trackId);
+
+      if (trackRenderer.activeTransitions > 0)
+        return true;
+    }
+  return false;
 }
 
 function isWaitingOnTiles(hgc) {
@@ -121,6 +148,55 @@ function isWaitingOnTiles(hgc) {
 
 }
 
+const TILE_LOADING_CHECK_INTERVAL = 100;
+
+function waitForJsonComplete(finished) {
+  /*
+   * Wait until all open JSON requests are finished
+   *
+   * Parameters
+   * ----------
+   *  finished: function
+   *    A callback to call when there's no more JSON requests
+   *    open
+   *
+   */
+  if (tileProxy.requestsInFlight > 0) {
+    setTimeout(() => waitForJsonComplete(finished),
+      TILE_LOADING_CHECK_INTERVAL);
+  } else {
+    finished();
+  }
+}
+
+function waitForTransitionsFinished(hgc, callback) {
+    /**
+     * Wait until all transitions have finished before
+     * calling the callback
+     *
+     * Arguments
+     * ---------
+     *  hgc: Enzyme wrapper for a HiGlassComponent
+     *      The componentthat we're waiting on
+     *  tilesLoadedCallback: function
+     *      The callback to call whenever all of the tiles
+     *      have been loaded.
+     * Returns
+     * -------
+     *  Nothing
+     */
+    //console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
+
+    if (areTransitionsActive(hgc)) {
+        setTimeout(() => { 
+            waitForTransitionsFinished(hgc, callback);
+        }, TILE_LOADING_CHECK_INTERVAL);
+    } else {
+        //console.log('finished');
+        callback();
+    }
+}
+
 function waitForTilesLoaded(hgc, tilesLoadedCallback) {
     /**
      * Wait until all of the tiles in the HiGlassComponent are loaded
@@ -137,7 +213,6 @@ function waitForTilesLoaded(hgc, tilesLoadedCallback) {
      * -------
      *  Nothing
      */
-    const TILE_LOADING_CHECK_INTERVAL = 100;
     //console.log('jasmine.DEFAULT_TIMEOUT_INTERVAL', jasmine.DEFAULT_TIMEOUT_INTERVAL);
 
     if (isWaitingOnTiles(hgc)) {
@@ -154,6 +229,205 @@ describe("Simple HiGlassComponent", () => {
     let hgc = null, div = null, atm=null;
 
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
+    describe("Starting with no genome position search box", () => {
+        it ('Cleans up previously created instances and mounts a new component', (done) => {
+            if (hgc) {
+                hgc.unmount();
+                hgc.detach();
+            }
+
+            if (div) {
+                global.document.body.removeChild(div);
+            }
+
+            div = global.document.createElement('div');
+            global.document.body.appendChild(div);
+
+            div.setAttribute('style', 'width:800px;background-color: lightgreen');
+            div.setAttribute('id', 'simple-hg-component');
+
+            hgc = mount(<HiGlassComponent 
+                          options={{bounded: false}}
+                          viewConfig={noGPSB}
+                        />, 
+                {attachTo: div});
+
+            hgc.update();
+            waitForTilesLoaded(hgc, done);
+        });
+
+        it ("Makes the search box visible", (done) => {
+            let assemblyPickButton = hgc.find('.assembly-pick-button');
+            expect(assemblyPickButton.length).to.eql(0);
+
+            hgc.instance().handleTogglePositionSearchBox('aa');
+            hgc.update();
+
+            assemblyPickButton = hgc.find('.assembly-pick-button');
+            expect(assemblyPickButton.length).to.eql(1);
+
+          waitForJsonComplete(done);
+        });
+
+        it ("Makes sure that the search box points to mm9", (done) => {
+          hgc.update();
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('mm9');
+
+          done();
+        });
+
+        it ("Searches for the Clock gene", (done) => {
+            // this gene previously did nothing when searching for it
+            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'Clock');
+
+          //setTimeout(done, tileLoadTime);
+          waitForJsonComplete(done);
+        });
+
+        it ("Clicks the search positions", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].buttonClick();
+
+            waitForJsonComplete(() => {
+              waitForTransitionsFinished(hgc, () => {
+              waitForTilesLoaded(hgc, done);
+            });
+          });
+        });
+
+        it ("Expects the view to have changed location", (done) => {
+            let zoomTransform = hgc.instance().tiledPlots['aa'].trackRenderer.zoomTransform;
+
+            expect(zoomTransform.k - 47).to.be.below(1);
+            expect(zoomTransform.x - 2224932).to.be.below(1);
+
+            done();
+        });
+
+        it ("Checks that autocomplete fetches some genes", (done) => {
+            //hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, "t");
+            //new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'].autocompleteMenu, true).simulate('change', { value: 't'});
+            //new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'], true).setState({value: 't'});
+            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'T');
+            hgc.update();
+
+            waitForJsonComplete(done);
+        });
+
+        it ("Checks the selected genes", (done) => {
+            // don't use the human autocomplete id
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.autocompleteId).to.not.eql('OHJakQICQD6gTD7skx4EWA')
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('Gt(ROSA)26Sor');
+
+            waitForJsonComplete(done);
+        });
+
+
+        it ("Switch the selected genome to hg19", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('hg19');
+            hgc.update();
+
+            waitForJsonComplete(done);
+        });
+
+        it ("Sets the text to TP53", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'TP53');
+            hgc.update();
+
+            waitForJsonComplete(done);
+        });
+
+        it ("Clicks on the search button", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].buttonClick();
+
+          waitForJsonComplete(() => {
+          waitForTransitionsFinished(hgc, () => {
+              waitForTilesLoaded(hgc, done);
+            });
+          });
+        });
+
+        it ("Expects the view to have changed location", (done) => {
+            let zoomTransform = hgc.instance().tiledPlots['aa'].trackRenderer.zoomTransform;
+
+            expect(zoomTransform.k - 234).to.be.below(1);
+            expect(zoomTransform.x + 7656469).to.be.below(1);
+
+            done();
+        });
+
+
+        it ("Ensures that the autocomplete has changed", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, '');
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.autocompleteId).to.eql('OHJakQICQD6gTD7skx4EWA')
+
+            waitForJsonComplete(done);
+        });
+
+        it ("Ensure that newly loaded genes are from hg19", (done) => {
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('TP53');
+
+            done();
+        });
+
+        it ("Switches back to mm9", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('mm9');
+            hgc.update();
+
+            waitForJsonComplete(done);
+        });
+
+        it ("Mock type something", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, '');
+
+            waitForJsonComplete(done);
+        });
+
+        it ("Make sure it has mouse genes", (done) => {
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('Gt(ROSA)26Sor');
+
+            done();
+        });
+
+        it ("Switches back to hg19", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('hg19');
+            hgc.update();
+
+            waitForJsonComplete(done);
+        });
+
+        it ("Makes the search box invisible", (done) => {
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('hg19');
+            hgc.instance().handleTogglePositionSearchBox('aa');
+            hgc.update();
+
+            let assemblyPickButton = hgc.find('.assembly-pick-button');
+            expect(assemblyPickButton.length).to.eql(0);
+
+            waitForJsonComplete(done);
+        });
+
+        it ("Makes the search box visible again", (done) => {
+            hgc.instance().handleTogglePositionSearchBox('aa');
+            hgc.update();
+
+            waitForJsonComplete(done);
+        });
+
+        it ("Ensures that selected assembly is hg19", (done) => {
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('hg19');
+            
+            done();
+        });
+
+        it ("checks that the div hasn't grown too much", (done) => {
+            expect(div.clientHeight).to.be.below(500);
+
+            done();
+        });
+
+    });
+  return;
 
     describe("Export SVG properly", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {
@@ -1806,193 +2080,6 @@ describe("Simple HiGlassComponent", () => {
 
     });
 
-    describe("Starting with no genome position search box", () => {
-        it ('Cleans up previously created instances and mounts a new component', (done) => {
-            if (hgc) {
-                hgc.unmount();
-                hgc.detach();
-            }
-
-            if (div) {
-                global.document.body.removeChild(div);
-            }
-
-            div = global.document.createElement('div');
-            global.document.body.appendChild(div);
-
-            div.setAttribute('style', 'width:800px;background-color: lightgreen');
-            div.setAttribute('id', 'simple-hg-component');
-
-            hgc = mount(<HiGlassComponent 
-                          options={{bounded: false}}
-                          viewConfig={noGPSB}
-                        />, 
-                {attachTo: div});
-
-            setTimeout(done, tileLoadTime);
-            hgc.update();
-        });
-
-        it ("Makes the search box visible", (done) => {
-            let assemblyPickButton = hgc.find('.assembly-pick-button');
-            expect(assemblyPickButton.length).to.eql(0);
-
-            hgc.instance().handleTogglePositionSearchBox('aa');
-            hgc.update();
-
-            assemblyPickButton = hgc.find('.assembly-pick-button');
-            expect(assemblyPickButton.length).to.eql(1);
-
-            setTimeout(done, tileLoadTime);
-        });
-
-        it ("Makes sure that the search box points to mm9", (done) => {
-            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('mm9');
-
-            done();
-        });
-
-        it ("Searches for the Clock gene", (done) => {
-            // this gene previously did nothing when searching for it
-            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'Clock');
-
-            setTimeout(done, tileLoadTime);
-        });
-
-        it ("Clicks the search positions", (done) => {
-            hgc.instance().genomePositionSearchBoxes['aa'].buttonClick();
-
-            setTimeout(done, tileLoadTime + ZOOM_TRANSITION_DURATION + 2*shortLoadTime);
-        });
-
-        it ("Expects the view to have changed location", (done) => {
-            let zoomTransform = hgc.instance().tiledPlots['aa'].trackRenderer.zoomTransform;
-
-            expect(zoomTransform.k - 47).to.be.below(1);
-            expect(zoomTransform.x - 2224932).to.be.below(1);
-
-            done();
-        });
-
-        it ("Checks that autocomplete fetches some genes", (done) => {
-            //hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, "t");
-            //new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'].autocompleteMenu, true).simulate('change', { value: 't'});
-            //new ReactWrapper(hgc.instance().genomePositionSearchBoxes['aa'], true).setState({value: 't'});
-            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'T');
-            hgc.update();
-
-            setTimeout(done, tileLoadTime);
-        });
-
-        it ("Checks the selected genes", (done) => {
-            // don't use the human autocomplete id
-            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.autocompleteId).to.not.eql('OHJakQICQD6gTD7skx4EWA')
-            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('Gt(ROSA)26Sor');
-
-            setTimeout(done, shortLoadTime);
-        });
-
-
-        it ("Switch the selected genome to hg19", (done) => {
-            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('hg19');
-            hgc.update();
-
-            setTimeout(done, shortLoadTime);
-        });
-
-        it ("Sets the text to TP53", (done) => {
-            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'TP53');
-            hgc.update();
-
-            setTimeout(done, shortLoadTime);
-        });
-
-        it ("Clicks on the search button", (done) => {
-            hgc.instance().genomePositionSearchBoxes['aa'].buttonClick();
-
-            setTimeout(done, tileLoadTime + ZOOM_TRANSITION_DURATION + 2*shortLoadTime);
-        });
-
-        it ("Expects the view to have changed location", (done) => {
-            let zoomTransform = hgc.instance().tiledPlots['aa'].trackRenderer.zoomTransform;
-
-            expect(zoomTransform.k - 234).to.be.below(1);
-            expect(zoomTransform.x + 7656469).to.be.below(1);
-
-            done();
-        });
-
-
-        it ("Ensures that the autocomplete has changed", (done) => {
-            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, '');
-            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.autocompleteId).to.eql('OHJakQICQD6gTD7skx4EWA')
-
-            setTimeout(done, tileLoadTime);
-        });
-
-        it ("Ensure that newly loaded genes are from hg19", (done) => {
-            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('TP53');
-
-            done();
-        });
-
-        it ("Switches back to mm9", (done) => {
-            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('mm9');
-            hgc.update();
-
-            setTimeout(done, tileLoadTime);
-        });
-
-        it ("Mock type something", (done) => {
-            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, '');
-
-            setTimeout(done, tileLoadTime);
-        });
-
-        it ("Make sure it has mouse genes", (done) => {
-            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes[0].geneName).to.eql('Gt(ROSA)26Sor');
-
-            done();
-        });
-
-        it ("Switches back to hg19", (done) => {
-            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('hg19');
-            hgc.update();
-
-            setTimeout(done, tileLoadTime);
-        });
-
-        it ("Makes the search box invisible", (done) => {
-            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('hg19');
-            hgc.instance().handleTogglePositionSearchBox('aa');
-            hgc.update();
-
-            let assemblyPickButton = hgc.find('.assembly-pick-button');
-            expect(assemblyPickButton.length).to.eql(0);
-
-            setTimeout(done, shortLoadTime);
-        });
-
-        it ("Makes the search box visible again", (done) => {
-            hgc.instance().handleTogglePositionSearchBox('aa');
-            hgc.update();
-
-            setTimeout(done, tileLoadTime);
-        });
-
-        it ("Ensures that selected assembly is hg19", (done) => {
-            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.selectedAssembly).to.eql('hg19');
-            
-            done();
-        });
-
-        it ("checks that the div hasn't grown too much", (done) => {
-            expect(div.clientHeight).to.be.below(500);
-
-            done();
-        });
-
-    });
 
     describe("Single view", () => {
         it ('Cleans up previously created instances and mounts a new component', (done) => {

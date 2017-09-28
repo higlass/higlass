@@ -17,6 +17,7 @@ import {SearchField} from './search_field.js';
 import {scalesCenterAndK, 
     dictKeys} from './utils.js';
 import {PopupMenu} from './PopupMenu.jsx';
+import {tileProxy} from './TileProxy.js';
 
 import '../styles/GenomePositionSearchBox.css';
 
@@ -144,14 +145,19 @@ export class GenomePositionSearchBox extends React.Component {
                 });
             } else {
                 this.props.onSelectedAssemblyChanged(chromInfoId, 
-                    this.state.autocompleteId)
+                  null);
+
+              this.setState({
+                autocompleteId: null
+              });
+                  //this.state.autocompleteId)
             }
         });
     }
 
     findAvailableAutocompleteSources() {
         this.props.trackSourceServers.forEach( sourceServer => {
-            json(sourceServer + "/tilesets/?limit=100&dt=gene-annotation", (error, data) => {
+            tileProxy.json(sourceServer + "/tilesets/?limit=100&dt=gene-annotation", (error, data) => {
                 if (error) {
                     console.error(error);
                 } else {
@@ -179,7 +185,7 @@ export class GenomePositionSearchBox extends React.Component {
 
     findAvailableChromSizes() {
         this.props.trackSourceServers.forEach( sourceServer => {
-            json(sourceServer + "/available-chrom-sizes/", (error, data) => {
+            tileProxy.json(sourceServer + "/available-chrom-sizes/", (error, data) => {
                 if (error) {
                     console.error(error);
                 } else {
@@ -207,7 +213,8 @@ export class GenomePositionSearchBox extends React.Component {
         let autocompleteKeys = new Set(dictKeys(this.availableAutocompletes));
         let chromsizeKeys = new Set(dictKeys(this.availableChromSizes));
 
-        let commonKeys = new Set([...autocompleteKeys].filter(x => chromsizeKeys.has(x)));
+        //let commonKeys = new Set([...autocompleteKeys].filter(x => chromsizeKeys.has(x)));
+        let commonKeys = new Set([...chromsizeKeys]);
 
         this.setState({
             availableAssemblies: [...commonKeys]
@@ -307,7 +314,7 @@ export class GenomePositionSearchBox extends React.Component {
             if (retPos == null || isNaN(retPos)) {
                 // not a chromsome position, let's see if it's a gene name
                let url = this.state.autocompleteServer + "/suggest/?d=" + this.state.autocompleteId  + "&ac=" + value_parts[i].toLowerCase();
-               q = q.defer(json, url);
+               q = q.defer(tileProxy.json.bind(tileProxy), url);
 
             }
         }
@@ -394,15 +401,16 @@ export class GenomePositionSearchBox extends React.Component {
         this.prevParts = parts;
 
         // no autocomplete repository is provided, so we don't try to autcomplete anything
-        if (!(this.state.autocompleteServer && this.state.autocompleteId))
+        if (!(this.state.autocompleteServer && this.state.autocompleteId)) {
             return;
+        }
 
         if (this.changedPart != null) {
             // if something has changed in the input text
             this.setState({loading: true});
             // send out a request for the autcomplete suggestions
             let url = this.state.autocompleteServer + "/suggest/?d=" + this.state.autocompleteId +  "&ac=" + parts[this.changedPart].toLowerCase();
-            json(url, (error, data) => {
+            tileProxy.json(url, (error, data) => {
                 if (error) {
                     this.setState({loading: false, genes: []});
                     return;

@@ -6,6 +6,7 @@ import urljoin from 'url-join';
 import {workerGetTilesetInfo} from './worker.js';
 import {workerFetchTiles, workerFetchMultiRequestTiles} from './worker.js';
 import {workerSetPix} from './worker.js';
+import {json,text} from 'd3-request';
 
 class TileProxy  {
     constructor() {
@@ -15,6 +16,8 @@ class TileProxy  {
 
         this.workerFetchTilesDebounced = this.debounce(workerFetchMultiRequestTiles, TILE_FETCH_DEBOUNCE);
         //this.workerFetchTilesDebounced = workerFetchMultiRequestTiles;
+      
+      this.requestsInFlight = 0;
         
     }
 
@@ -209,6 +212,28 @@ class TileProxy  {
             .send({scriptPath: scriptPath, tileData: newTileData, minVisibleValue: minVisibleValue, maxVisibleValue: maxVisibleValue}, [newTileData.buffer]);
             */
     }
+
+  text(url, callback) {
+    /**
+     * Send a JSON request mark it so that we can tell how many are in flight
+     */
+    this.requestsInFlight += 1;
+    text(url, (error, done) => {
+      callback(error, done);
+      this.requestsInFlight -= 1;
+    });
+  }
+
+  json(url, callback) {
+    /**
+     * Send a JSON request mark it so that we can tell how many are in flight
+     */
+    this.requestsInFlight += 1;
+    json(url, (error, done) => {
+      callback(error, done);
+      this.requestsInFlight -= 1;
+    });
+  }
 }
 
 export let tileProxy = new TileProxy();
