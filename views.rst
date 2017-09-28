@@ -47,7 +47,8 @@ and a filetype of ``chromsizes-tsv``:
         higlass-server/manage.py ingest_tileset \
         --filename /tmp/chromSizes_dm3.tsv \
         --filetype chromsizes-tsv \
-        --datatype chromsizes
+        --datatype chromsizes \
+        --name dm3
 
 The new assembly can chosen from the dropdown in the genome position search box:
 
