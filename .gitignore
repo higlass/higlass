@@ -1,3 +1,5 @@
 *~
 *.sw*
-_build
+_build/html/_sources
+_build/html/.buildinfo
+_build/html/objects.inv

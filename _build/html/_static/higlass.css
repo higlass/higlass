@@ -1,0 +1,85 @@
+@import url("alabaster.css");
+@import url('https://fonts.googleapis.com/css?family=Merriweather:300');
+@import url('https://fonts.googleapis.com/css?family=Francois+One');
+@import url('https://fonts.googleapis.com/css?family=Merriweather+Sans');
+
+li {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+p.caption {
+    font-size: 90%;
+    font-family: "Merriweather Sans";
+}
+
+div.body h1 { margin-bottom: 0.8em; font-size: 210%; }
+div.body h2 { font-size: 160%; }
+div.body h3 { font-size: 130%; }
+div.body h4 { font-size: 125%; }
+div.body h5 { font-size: 100%; }
+div.body h6 { font-size: 100%; }
+
+div.body h1, div.body h2, div.body h3, 
+div.body h4, div.body h5, div.body h6,
+.sphinxsidebar {
+    font-family: 'Francois One', sans-serif;
+    line-height: 1.1em;
+}
+
+div.sphinxsidebar ul li.toctree-l2 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+div.sphinxsidebar ul li.toctree-l2 > a {
+    font-size: 100%;
+    color: #666;
+    border-bottom: none;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+div.sphinxsidebar ul li.toctree-l1 > a {
+    line-height: 1.8em;
+    font-size: 110%;
+    border-bottom: none;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+h1.logo a {
+    /* color: #666; */
+    border-bottom: none;
+}
+
+div.body li {
+    line-height: 1.5em;
+}
+
+
+div.body p {
+    line-height: 1.5em;
+}
+
+body {
+    font-family: 'Merriweather', serif;
+    font-size: 14px;
+    line-height: 1.5em;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a:active {
+    text-decoration: none;
+}

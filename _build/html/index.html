@@ -1,0 +1,242 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>HiGlass: A Multiscale Genomic Data Browser &#8212; HiGlass v0.4.8 documentation</title>
+    <link rel="stylesheet" href="_static/higlass.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'v0.4.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data Preparation" href="data_preparation.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="higlass-a-multiscale-genomic-data-browser">
+<h1>HiGlass: A Multiscale Genomic Data Browser<a class="headerlink" href="#higlass-a-multiscale-genomic-data-browser" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="higlass.io">HiGlass</a> is a viewer for large-scale genomic data. It takes
+ideas introduced in genome browsers such as the <a class="reference external" href="https://genome.ucsc.edu/">UCSC Genome Browser</a> and combines them with inspirations from more
+recent HiC data browsers such as <a class="reference external" href="http://www.aidenlab.org/juicebox/">Juicebox</a> and implements them in a framework
+inspired by modern online maps (so-called <a class="reference external" href="http://wiki.openstreetmap.org/wiki/Slippy_Map">slippy maps</a>) to form a fast, extensible
+and responsive viewer for diverse types of genomic data.</p>
+<div class="section" id="track-types">
+<h2>Track types<a class="headerlink" href="#track-types" title="Permalink to this headline">¶</a></h2>
+<p>HiGlass supports both 1D and 2D track types that can be arranged in views to show desired
+combinations of data.</p>
+<div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap"><div class="figure align-center" id="id5" style="width: 100px">
+<a class="reference internal image-reference" href="_images/bedlike-track-thumb.png"><img alt="_images/bedlike-track-thumb.png" src="_images/bedlike-track-thumb.png" style="height: 72px;" /></a>
+<p class="caption"><span class="caption-text">Bed-like intervals</span></p>
+</div>
+<div class="figure align-center" id="id6" style="width: 100px">
+<a class="reference internal image-reference" href="_images/gene-annotations-track-thumb.png"><img alt="_images/gene-annotations-track-thumb.png" src="_images/gene-annotations-track-thumb.png" style="height: 72px;" /></a>
+<p class="caption"><span class="caption-text">Gene annotations</span></p>
+</div>
+<div class="figure align-center" id="id7" style="width: 100px">
+<img alt="_images/chromosome-labels-thumb.png" src="_images/chromosome-labels-thumb.png" />
+<p class="caption"><span class="caption-text">Chromosome labels</span></p>
+</div>
+<div class="figure align-center" id="id8" style="width: 100px">
+<img alt="_images/line-track-thumb.png" src="_images/line-track-thumb.png" />
+<p class="caption"><span class="caption-text">Line</span></p>
+</div>
+<div class="figure align-center" id="id9" style="width: 100px">
+<img alt="_images/point-track-thumb.png" src="_images/point-track-thumb.png" />
+<p class="caption"><span class="caption-text">Point</span></p>
+</div>
+<div class="figure align-center" id="id10" style="width: 100px">
+<img alt="_images/horizontal-heatmap-thumb.png" src="_images/horizontal-heatmap-thumb.png" />
+<p class="caption"><span class="caption-text">Horizontal heatmap</span></p>
+</div>
+<div class="figure align-center" id="id11" style="width: 100px">
+<img alt="_images/horizontal-2d-rectangle-domains-thumb.png" src="_images/horizontal-2d-rectangle-domains-thumb.png" />
+<p class="caption"><span class="caption-text">Horizontal rectangle domains</span></p>
+</div>
+<div class="figure align-center" id="id12" style="width: 100px">
+<a class="reference internal image-reference" href="_images/heatmap-track-thumb.png"><img alt="_images/heatmap-track-thumb.png" src="_images/heatmap-track-thumb.png" style="height: 72px;" /></a>
+<p class="caption"><span class="caption-text">Heatmap</span></p>
+</div>
+<div class="figure align-center" id="id13" style="width: 100px">
+<a class="reference internal image-reference" href="_images/chromosome-grid-thumb.png"><img alt="_images/chromosome-grid-thumb.png" src="_images/chromosome-grid-thumb.png" style="height: 72px;" /></a>
+<p class="caption"><span class="caption-text">Chromosome grid</span></p>
+</div>
+</div><p>It can be used to display a variety of <a class="reference external" href="track_types.html">track types</a> populated with data from
+different file formats.</p>
+<div class="figure align-right" id="id14" style="width: 300px">
+<img alt="_images/higlass-heatmap-screenshot.png" src="_images/higlass-heatmap-screenshot.png" />
+<p class="caption"><span class="caption-text">A screenshot of HiGlass displaying a Hi-C contact matrix along with tracks
+for gene annotations chromosome labels.</span></p>
+</div>
+<div class="figure align-right" id="id15" style="width: 300px">
+<img alt="_images/higlass-dual-genome-browser-screenshot.png" src="_images/higlass-dual-genome-browser-screenshot.png" />
+<p class="caption"><span class="caption-text">A screenshot of HiGlass displaying a context-detail type view of two
+regions of the mouse genome. The locations of the two detail regions on the
+bottom are highlighted in the context view on top.</span></p>
+</div>
+</div>
+<div class="section" id="influences">
+<h2>Influences<a class="headerlink" href="#influences" title="Permalink to this headline">¶</a></h2>
+<p>As with most other pursuits, software is an iterative process. Our work does
+not exist in a vacuum, nor was it developed completely independently. We owe an
+enormous debt of gratitude to our ideological forebearers who have doubtlessly
+tried many ideas and stuck with the ones that worked for them.</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.aidenlab.org/juicebox/">Juicebox</a> - software for viewing Hi-C
+contact matrices</li>
+<li><a class="reference external" href="http://genome.ucsc.edu/">UCSC Genome Browser</a> - one of the first tools for
+viewing genomic data along a scrollable and zoomable axis</li>
+<li><a class="reference external" href="http://wiki.openstreetmap.org/wiki/Slippy_Map">Slippy maps</a> - commonly
+referred to as “Google Maps” style maps, the technology for online maps went
+through a rapid transformation with the introduction of tile-based rendering
+and draggable scrolling.</li>
+</ul>
+</div>
+<div class="section" id="technology">
+<h2>Technology<a class="headerlink" href="#technology" title="Permalink to this headline">¶</a></h2>
+<p>HiGlass is built with a variety of different open source components. The most
+crucial are listed below.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://d3js.org/">D3.js</a> - an outstanding library for online data
+visualization. We make heavy use of D3’s <a class="reference external" href="https://github.com/d3/d3-scale">scales</a>, <a class="reference external" href="https://github.com/d3/d3-zoom">zoom behavior</a> and <a class="reference external" href="https://github.com/d3/d3-brush">brush behavior</a>.</li>
+<li><a class="reference external" href="http://www.pixijs.com/">Pixi.js</a> - a fast, easy to use and most
+importantly, well-documented library for drawing scene graphs on html
+canvases. Oh, and it has WebGL support. We use Pixi to quickly render track
+data and perform updates on zooming and panning.</li>
+<li><a class="reference external" href="https://facebook.github.io/react/">React</a> - a widely used library for
+managing state within web applications. We use React to manage the
+user-interface components and lay out the positions of the views and tracks.</li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">HiGlass</a></h1>
+
+
+
+
+
+
+
+
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bed-files">Bed Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedgraph-files">BedGraph files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bigwig-files">bigWig files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#loading-into-higlass">Loading into HiGlass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer.html#coding-guidelines">Coding Guidelines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gene_annotations.html">Gene Annotations Tracks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#creating-the-track">Creating the track</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#importing-into-higlass">Importing into HiGlass</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_client.html">HiGlass Client (Developer)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#d-tracks">1D Tracks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_server.html">Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#development">Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#importing-data">Importing data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="track_types.html">Track Types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#bed-like">Bed-like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#gene-annotations">Gene Annotations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#heatmap">Heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#d-heatmap">1D Heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#horizontal-2d-rectangle-domain">Horizontal 2D Rectangle Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#line">Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#point">Point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#chromosome-labels">Chromosome Labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#chromosome-grid">Chromosome Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="views.html">Views</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="views.html#genome-position-search-box">Genome Position Search Box</a></li>
+<li class="toctree-l2"><a class="reference internal" href="views.html#view-synchronization">View synchronization</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="data_preparation.html" title="next chapter">Data Preparation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Peter Kerpedjiev.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
