@@ -2291,6 +2291,9 @@ class HiGlassComponent extends React.Component {
     const views = viewConfig.views;
     let viewsByUid = {};
 
+    if (!viewConfig.views || viewConfig.views.length == 0)
+      throw 'No views provided in viewConfig';
+
     views.forEach((v) => {
       this.fillInMinWidths(v.tracks);
 
@@ -2298,6 +2301,9 @@ class HiGlassComponent extends React.Component {
       if (!v.uid) { v.uid = slugid.nice(); }
 
       viewsByUid[v.uid] = v;
+
+      if (!v.initialXDomain)
+        throw 'No initialXDomain in provided viewconf';
 
       // if there's no y domain specified just use the x domain instead
       // effectively centers the view on the diagonal
