@@ -507,13 +507,6 @@ export class GenomePositionSearchBox extends React.Component {
         bsSize="small"
         styleName={className}
       >
-        <div
-          onClick={() => this.autocompleteMenu.inputEl.focus()}
-          styleName={classNameIcon}
-        >
-          <Glyphicon glyph="search" />
-        </div>
-
         <DropdownButton
           bsSize="small"
           className={styles['genome-position-search-bar-button']}
@@ -559,7 +552,7 @@ export class GenomePositionSearchBox extends React.Component {
           onClick={this.buttonClick.bind(this)}
           styleName={classNameButton}
         >
-          {'GO'}
+          <Glyphicon glyph="search" />
         </button>
       </FormGroup>
     );

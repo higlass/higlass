@@ -38,8 +38,6 @@ export class ViewHeader extends React.Component {
   checkWidth() {
     const width = this.el.clientWidth;
 
-    console.log(width);
-
     if (width !== this.state.width) this.setState({ width });
   }
 
