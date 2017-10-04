@@ -1,8 +1,7 @@
 import * as PIXI from 'pixi.js';
+import { HeatmapTiledPixiTrack } from './HeatmapTiledPixiTrack';
 
-import Tiled2DPixiTrack from './Tiled2DPixiTrack';
-
-export class Id2DTiledPixiTrack extends Tiled2DPixiTrack {
+export class Id2DTiledPixiTrack extends HeatmapTiledPixiTrack {
   constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
     super(scene, server, uid, handleTilesetInfoReceived, options, animate);
   }
