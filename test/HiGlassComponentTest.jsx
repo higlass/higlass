@@ -277,6 +277,34 @@ describe("Simple HiGlassComponent", () => {
           done();
         });
 
+        it ("Switch the selected genome to dm3", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('dm3');
+            hgc.update();
+
+            waitForJsonComplete(done);
+        });
+
+        it ("Searches for the w gene", (done) => {
+            // this gene previously did nothing when searching for it
+            hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'w');
+
+          //setTimeout(done, tileLoadTime);
+          waitForJsonComplete(done);
+        });
+
+        it ("Makes sure that no genes are loaded", (done) => {
+            expect(hgc.instance().genomePositionSearchBoxes['aa'].state.genes.length).to.eql(0)
+
+          done();
+        });
+
+        it ("Switch the selected genome to mm9", (done) => {
+            hgc.instance().genomePositionSearchBoxes['aa'].handleAssemblySelect('mm9');
+            hgc.update();
+
+            waitForJsonComplete(done);
+        });
+
         it ("Searches for the Clock gene", (done) => {
             // this gene previously did nothing when searching for it
             hgc.instance().genomePositionSearchBoxes['aa'].onAutocompleteChange({}, 'Clock');
