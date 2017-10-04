@@ -1,4 +1,8 @@
 import { range } from 'd3-array';
+import {
+  json as d3Json, 
+  text as d3Text
+} from 'd3-request';
 import slugid from 'slugid';
 
 import {
@@ -12,6 +16,7 @@ import {
 import { TILE_FETCH_DEBOUNCE } from '../configs';
 
 const sessionId = slugid.nice();
+export let requestsInFlight = 0;
 
 const debounce = (func, wait) => {
   let timeout;
@@ -281,6 +286,30 @@ export const tileDataToPixData = (
     */
 };
 
+function text(url, callback) {
+  /**
+   * Send a JSON request mark it so that we can tell how many are in flight
+   */
+  requestsInFlight += 1;
+  d3Text(url, (error, done) => {
+    callback(error, done);
+    requestsInFlight -= 1;
+  });
+}
+
+function json(url, callback) {
+  /**
+   * Send a JSON request mark it so that we can tell how many are in flight
+   */
+  requestsInFlight += 1;
+  console.log('json: rif', requestsInFlight);
+  d3Json(url, (error, done) => {
+    callback(error, done);
+    requestsInFlight -= 1;
+  });
+}
+
+
 const api = {
   calculateTiles,
   calculateTilesFromResolution,
@@ -288,6 +317,8 @@ const api = {
   calculateZoomLevelFromResolutions,
   fetchTiles,
   fetchTilesDebounced,
+  json,
+  text,
   tileDataToPixData,
   trackInfo,
 };

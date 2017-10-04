@@ -98,9 +98,11 @@ export class TiledPlot extends React.Component {
     this.dragTimeout = null;
     this.previousPropsStr = '';
 
+    /*
     this.getChromInfo = chromInfo.get(this.props.chromInfoPath).then(
       chromInfo => this.setState({ chromInfo }),
     );
+    */
   }
 
   componentDidMount() {

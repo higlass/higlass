@@ -248,7 +248,7 @@ class HiGlassComponent extends React.Component {
       icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox),
     );
 
-    loadChromInfos(this.state.views);
+    //loadChromInfos(this.state.views);
   }
 
   componentWillReceiveProps(newProps) {
@@ -271,9 +271,11 @@ class HiGlassComponent extends React.Component {
 
     this.pixiRenderer.render(this.pixiStage);
 
+    /*
     if (this.state.views !== nextState.views) {
       loadChromInfos(nextState.views);
     }
+    */
   }
 
   componentDidUpdate() {
