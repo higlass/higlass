@@ -1,0 +1,130 @@
+@import './colors';
+@import './transitions';
+
+$unit: 24px;
+
+.multitrack-header,
+.multitrack-header-focus,
+.multitrack-header-squeazed {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  height: $unit;
+  margin-top: $unit / 6;
+  margin-bottom: $unit / 6;
+  color: $gray;
+  font-size: $unit / 2;
+  line-height: $unit;
+  vertical-align: middle;
+  border: 0;
+  border-radius: $unit / 8;
+  background: $gray-lighter;
+  transition: height $fast $ease,
+              margin $fast $ease;
+}
+
+.multitrack-header-focus {
+  height: $unit + ($unit / 3);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.multitrack-header-squeazed {
+
+}
+
+.multitrack-header-id {
+  padding-left: 3px;
+
+  &:before {
+    content: 'ID:';
+    font-weight: bold;
+    padding-right: 5px;
+  }
+}
+
+.multitrack-header-left {
+  display: flex;
+  flex-grow: 1;
+}
+
+.multitrack-header-grabber,
+.multitrack-header-grabber-squeazed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $unit;
+  height: 100%;
+  cursor: move;
+  border-radius: $unit / 8 0 0 $unit / 8;
+  transition: background $fast $ease;
+
+  &:hover {
+    background: $gray;
+
+    div {
+      background: $white;
+    }
+  }
+
+  div {
+    width: 1px;
+    height: 50%;
+    margin: 1px;
+    background: $gray;
+    transition: background $fast $ease;
+  }
+}
+
+.multitrack-header-grabber-squeazed {
+  width: $unit / 1.25;
+}
+
+.multitrack-header-search {
+  position: relative;
+  flex-grow: 1;
+  height: 100%;
+  margin-right: $unit / 2;
+
+  &:after {
+    position: absolute;
+    top: $unit / 8;
+    bottom: $unit / 8;
+    right: -($unit / 2);
+    display: block;
+    content: '';
+    width: 1px;
+    margin: 0 $unit / 4;
+    background: $gray-light;
+  }
+}
+
+.multitrack-header-nav-list {
+  display: flex;
+}
+
+.multitrack-header-icon,
+.multitrack-header-icon-squeazed {
+  width: $unit;
+  height: 100%;
+  padding: $unit / 4;
+  transition: background $fast $ease,
+              color $fast $ease;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: $white;
+    background: $active;
+  }
+
+  &:last-child {
+    border-radius: 0 $unit / 8 $unit / 8 0;
+  }
+}
+
+.multitrack-header-icon-squeazed {
+  width: $unit / 1.2  5;
+  padding-left: $unit / 8;
+  padding-right: $unit / 8;
+}

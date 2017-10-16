@@ -1,3 +1,16 @@
+v0.9.0
+
+- Add 1D and 2D range selection
+- Add support for SASS
+- Add support for CSS Modules
+- Update visuals of the context menu and view header
+- Integrate search bar into view header
+- Add ESLint and adhere to consistent code style
+- (Fix #135) - Colorbar moves with the track when it's being resized
+- (Fix #126) - Gene annotations shouldn't overlap on vertical tracks anymore
+- Keep track controls visible if config menu is active
+- Show child menus above the parent if there isn't enough space on the bottom
+
 v0.8.44
 
 - Redraw TiledPixiTracks after the tileset info has been received

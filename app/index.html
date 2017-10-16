@@ -10,7 +10,7 @@
 </style>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles/page.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="hglib.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.min.js"></script>
@@ -21,7 +21,7 @@
         <div style="margin: auto; width: 100%;">
         <div
             id="development-demo"
-            style="position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px">
+            style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem">
         </div>
     </div>
 </body>
@@ -34,7 +34,7 @@
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://test.higlass.io/api/v1",
+    "http://higlass.io/api/v1",
     "http://localhost:8989/api/v1"
   ],
   "exportViewUrl": "http://localhost:8000/api/v1/viewconfs/",
@@ -47,7 +47,7 @@
             "initialYDomain": [
                 1000000000,3000000000
                                           ],
-      "autocompleteSource": "http://test.higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBoxVisible": true,
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
@@ -60,9 +60,9 @@
             "name": "Gene Annotations (hg19)",
             "coordSystem": "hg19",
             "coordSystem2": "",
-            "server": "http://test.higlass.io/api/v1",
+            "server": "http://higlass.io/api/v1",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "serverUidKey": "http://test.higlass.io/api/v1/OHJakQICQD6gTD7skx4EWA",
+            "serverUidKey": "http://higlass.io/api/v1/OHJakQICQD6gTD7skx4EWA",
             "uid": "BEEMEjU7QCa2krDO9C0yOQ",
             "type": "horizontal-gene-annotations",
             "options": {
@@ -81,9 +81,9 @@
             "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
             "coordSystem": "hg19",
             "coordSystem2": "",
-            "server": "http://test.higlass.io/api/v1",
+            "server": "http://higlass.io/api/v1",
             "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
-            "serverUidKey": "http://test.higlass.io/api/v1/F2vbUeqhS86XkxuO1j2rPA",
+            "serverUidKey": "http://higlass.io/api/v1/F2vbUeqhS86XkxuO1j2rPA",
             "type": "horizontal-line",
             "options": {
               "labelColor": "red",
@@ -111,7 +111,7 @@
         "left": [
          {
             "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-            "server": "http://test.higlass.io/api/v1",
+            "server": "http://higlass.io/api/v1",
             "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
             "type": "vertical-line",
             "options": {
@@ -127,7 +127,7 @@
             "type": "vertical-gene-annotations",
             "width": 60,
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "server": "http://test.higlass.io/api/v1",
+            "server": "http://higlass.io/api/v1",
             "position": "left",
             "name": "Gene Annotations (hg19)",
             "options": {
@@ -155,7 +155,7 @@
             "height": 200,
             "contents": [
               {
-                "server": "http://test.higlass.io/api/v1",
+                "server": "http://higlass.io/api/v1",
                 "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
                 "type": "heatmap",
                 "position": "center",
@@ -206,7 +206,7 @@
             "type": "vertical-gene-annotations",
             "width": 60,
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "server": "http://test.higlass.io/api/v1",
+            "server": "http://higlass.io/api/v1",
             "name": "Gene Annotations (hg19)",
             "options": {
               "labelPosition": "outerBottom",
@@ -234,9 +234,9 @@
             "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
             "coordSystem": "hg19",
             "coordSystem2": "",
-            "server": "http://test.higlass.io/api/v1",
+            "server": "http://higlass.io/api/v1",
             "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
-            "serverUidKey": "http://test.higlass.io/api/v1/F2vbUeqhS86XkxuO1j2rPA",
+            "serverUidKey": "http://higlass.io/api/v1/F2vbUeqhS86XkxuO1j2rPA",
             "type": "horizontal-line",
             "options": {
               "labelPosition": "outerLeft",
@@ -284,6 +284,10 @@
             window.hgApi = api;
         }
     );
+
+    window.hgApi.on('view', function (viewConfig) {
+      console.log('View Config changed');
+    });
 
     // setTimeout(function () {
     //   // Go to PTEN
