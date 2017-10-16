@@ -10,7 +10,7 @@
 </style>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles/page.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="hglib.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js"></script>
@@ -19,10 +19,9 @@
 </head>
 <body >
     Here's some text
-    <div style="height:200px" ></div>
         <div style=""></div>
         <div style="margin: auto">
-        <div style="height: 400px; width: 600px; border: 1px solid black;"
+        <div style="height: 600px; width: 600px; border: 1px solid black;"
              id="development-demo">
         </div>
         </div>
@@ -35,105 +34,108 @@
 
  var testViewConfig =
 {
+  "editable": true,
   "zoomFixed": false,
+  "trackSourceServers": [
+    "http://localhost:8000/api/v1"
+  ],
+  "exportViewUrl": "/api/v1/viewconfs",
   "views": [
     {
+      "uid": "aa",
+      "initialXDomain": [
+        -16924830.04252711,
+        93654108.00985804
+      ],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": true
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [],
+        "left": [],
+        "center": [
+          {
+            "uid": "ViKHfSTRQ9G38wE3xlL51w",
+            "type": "combined",
+            "contents": [
+              {
+                "name": "Kc167combined_randomized.mcool",
+                "created": "2017-10-16T16:54:56.872405Z",
+                "server": "http://localhost:8000/api/v1",
+                "tilesetUid": "LoNTSo2QQISs9k5YpP4umQ",
+                "uid": "VuHAr0roRC-NhF6ebyEhiQ",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "name": "Kc167combined_randomized.mcool",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "width": 538,
+                "height": 536,
+                "transforms": [
+                  {
+                    "name": "ICE",
+                    "value": "weight"
+                  }
+                ],
+                "position": "center"
+              }
+            ],
+            "position": "center",
+            "width": 538,
+            "height": 536
+          }
+        ],
+        "right": [],
+        "bottom": []
+      },
       "layout": {
         "w": 12,
-        "h": 4,
+        "h": 12,
         "x": 0,
         "y": 0,
         "i": "aa",
         "moved": false,
         "static": false
       },
-      "uid": "aa",
       "initialYDomain": [
-        2793273296.916467,
-        2795935531.207685
-      ],
-      "initialXDomain": [
-        213425510.08920822,
-        260680168.75832096
-      ],
-      "tracks": {
-        "bottom": [],
-        "top": [
-          {
-            "name": "Gene Annotations (hg19)",
-            "server": "http://localhost:8000/api/v1",
-            "tilesetUid": "TXTs7eCtRfKAM1Zzm5Oeug",
-            "uid": "eUKZbJHzT_2PKxCE-6cYFA",
-            "type": "horizontal-gene-annotations",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "hidden",
-              "plusStrandColor": "blue",
-              "minusStrandColor": "red",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "name": "Gene Annotations (hg19)"
-            },
-            "width": 20,
-            "height": 55,
-            "position": "top"
-          },
-          {
-            "name": "Chromosome Sizes (hg19)",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
-            "uid": "aX2yT_vzSPiPATVQExr74g",
-            "type": "horizontal-chromosome-labels",
-            "options": {
-              "name": "Chromosome Sizes (hg19)"
-            },
-            "width": 568,
-            "height": 30,
-            "position": "top"
-          }
-        ],
-        "right": [],
-        "center": [],
-        "left": []
-      },
-      "genomePositionSearchBox": {
-        "autocompleteServer": "http://higlass.io/api/v1",
-        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
-        "chromInfoServer": "http://higlass.io/api/v1",
-        "chromInfoId": "hg19"
-      }
+        -770232.9781686368,
+        103578905.74732175
+      ]
     }
   ],
-  "editable": true,
-  "exportViewUrl": "http://localhost:8000/api/v1/viewconfs",
   "zoomLocks": {
     "locksByViewUid": {},
     "locksDict": {}
   },
-  "trackSourceServers": [
-    "http://localhost:8000/api/v1"
-  ],
   "locationLocks": {
-    "locksByViewUid": {
-      "aa": "A5gzlCX8SxK1dK1JCdCQJA",
-      "ewZvJwlDSei_dbpIAkGMlg": "A5gzlCX8SxK1dK1JCdCQJA"
-    },
-    "locksDict": {
-      "A5gzlCX8SxK1dK1JCdCQJA": {
-        "aa": [
-          1550000000,
-          1550000000,
-          3380588.876772046
-        ],
-        "ewZvJwlDSei_dbpIAkGMlg": [
-          1550000000.0000002,
-          1549999999.9999993,
-          3380588.876772046
-        ]
-      }
-    }
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
   }
 }
+
 
 
     window.higlassApi;
@@ -141,7 +143,7 @@
     hglib.createHgComponent(
         document.getElementById('development-demo'),
         testViewConfig,
-        { bounded: false },
+        { bounded: true },
         function (api) {
             window.hgApi = api;
         }
