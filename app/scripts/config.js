@@ -480,6 +480,24 @@ export const tracksInfo = [
         }
     },
     {
+        type: 'vertical-bar',
+        datatype: ['vector'],
+        local: false,
+        orientation: '1d-vertical',
+        availableOptions: [ 'labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'barFillColor', 'valueScaling', "trackBorderWidth", "trackBorderColor", 'barOpacity'],
+        defaultOptions: {
+            labelColor: 'black',
+            labelPosition: 'topLeft',
+            axisPositionHorizontal: 'right',
+            barFillColor: 'darkgreen',
+            valueScaling: 'linear',
+            trackBorderWidth: 0,
+            trackBorderColor: 'black',
+            labelTextOpacity: .4,
+            barOpacity: 1
+        }
+    },
+    {
         type: 'vertical-point',
         datatype: ['vector'],
         local: false,
