@@ -1952,9 +1952,10 @@ class HiGlassComponent extends React.Component {
       .post(wrapper, (error, response) => {
         if (response) {
           const content = JSON.parse(response.response);
+          const portString = window.location.port == 80 ? '' : `:${window.location.port}`;
           this.setState({
             // exportLinkLocation: this.props.viewConfig.exportViewUrl + "?d=" + content.uid
-            exportLinkLocation: `http://${window.location.hostname}/app/?config=${content.uid}`,
+            exportLinkLocation: `http://${window.location.hostname}${portString}/app/?config=${content.uid}`,
           });
         } else {
           console.error('error:', error);
