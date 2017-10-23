@@ -1,4 +1,9 @@
-v0.9.0
+v0.9.1 (2017-10-23)
+
+- Add support for vertical bar tracks
+- Fixed .travis.yml release issue
+
+v0.9.0 (2017-10-21)
 
 - Add 1D and 2D range selection
 - Add support for SASS
