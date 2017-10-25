@@ -470,6 +470,9 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   exportColorBarSVG() {
     const gColorbarArea = document.createElement('g');
 
+    if (!this.options.colorbarPosition || this.options.colorbarPosition === 'hidden')
+      return gColorbarArea;
+
     // no value scale, no colorbar
     if (!this.valueScale) return gColorbarArea;
 
