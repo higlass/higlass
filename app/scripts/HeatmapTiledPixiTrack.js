@@ -469,6 +469,11 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   exportColorBarSVG() {
     const gColorbarArea = document.createElement('g');
 
+    if (!this.options.colorbarPosition || this.options.colorbarPosition === 'hidden') {
+      // if there's no visible colorbar, we don't need to export anything
+      return gColorbarArea;
+    }
+
     // no value scale, no colorbar
     if (!this.valueScale) return gColorbarArea;
 
@@ -673,6 +678,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const gColorbar = this.exportColorBarSVG();
     track.appendChild(gColorbar);
 
+    console.log('export SVG:', [base, base]);
     return [base, base];
   }
 
@@ -874,7 +880,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const idParts = remoteId.split('.');
     return idParts.slice(0, idParts.length - 1).join('.');
   }
-
 }
 
 export default HeatmapTiledPixiTrack;
