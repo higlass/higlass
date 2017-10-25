@@ -275,7 +275,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.pColorbarArea.visible = true;
 
     if (!this.valueScale) { return; }
-    console.log("vs:", this.valueScale.domain());
 
     const colorbarAreaHeight = Math.min(this.dimensions[1] / 2, COLORBAR_MAX_HEIGHT);
     this.colorbarHeight = colorbarAreaHeight - (2 * COLORBAR_MARGIN);
@@ -470,8 +469,10 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   exportColorBarSVG() {
     const gColorbarArea = document.createElement('g');
 
-    if (!this.options.colorbarPosition || this.options.colorbarPosition === 'hidden')
+    if (!this.options.colorbarPosition || this.options.colorbarPosition === 'hidden') {
+      // if there's no visible colorbar, we don't need to export anything
       return gColorbarArea;
+    }
 
     // no value scale, no colorbar
     if (!this.valueScale) return gColorbarArea;
@@ -638,6 +639,13 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
   }
 
+  superSVG() {
+    /**
+     * Bypass this track's exportSVG function
+     */
+    return super.exportSVG();
+  }
+
   exportSVG() {
     let track = null;
     let base = null;
@@ -677,6 +685,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const gColorbar = this.exportColorBarSVG();
     track.appendChild(gColorbar);
 
+    console.log('export SVG:', [base, base]);
     return [base, base];
   }
 
@@ -878,7 +887,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const idParts = remoteId.split('.');
     return idParts.slice(0, idParts.length - 1).join('.');
   }
-
 }
 
 export default HeatmapTiledPixiTrack;

@@ -800,17 +800,6 @@ export class TrackRenderer extends React.Component {
           () => this.currentProps.onValueScaleChanged(track.uid),
         );
 
-      case 'horizontal-bar':
-        return new BarTrack(
-          this.pStage,
-          track.server,
-          track.tilesetUid,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-          () => this.currentProps.onValueScaleChanged(track.uid),
-        );
-
       case 'vertical-point':
         return new LeftTrackModifier(
           new HorizontalPoint1DPixiTrack(
@@ -823,6 +812,28 @@ export class TrackRenderer extends React.Component {
             () => this.currentProps.onValueScaleChanged(track.uid),
           ),
         );
+
+      case 'horizontal-bar':
+        return new BarTrack(
+          this.pStage,
+          track.server,
+          track.tilesetUid,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          () => this.currentProps.onValueScaleChanged(track.uid),
+        );
+
+      case 'vertical-bar':
+        return new LeftTrackModifier(new BarTrack(
+          this.pStage,
+          track.server,
+          track.tilesetUid,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          () => this.currentProps.onValueScaleChanged(track.uid),
+        ));
 
       case 'horizontal-1d-tiles':
         return new IdHorizontal1DTiledPixiTrack(
