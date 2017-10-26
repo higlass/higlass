@@ -6332,7 +6332,7 @@ export const testViewConfX1 = {
     {
       "layout": {
         "w": 12,
-        "h": 3,
+        "h": 8,
         "x": 0,
         "y": 0,
         "i": "aa",
@@ -6341,13 +6341,13 @@ export const testViewConfX1 = {
       },
       "uid": "aa",
       "initialYDomain": [
-        2541491788.413425,
-        2541475056.730041
+        1096121668.3853111,
+        1134280885.3796637
       ],
       "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "initialXDomain": [
-        2540437604.62585,
-        2540875417.007728
+        1118855399.4455326,
+        1892081638.541622
       ],
       "tracks": {
         "bottom": [],
@@ -6358,7 +6358,7 @@ export const testViewConfX1 = {
             "server": "http://higlass.io/api/v1",
             "width": 1007,
             "position": "top",
-            "height": 132,
+            "height": 230,
             "type": "horizontal-heatmap",
             "options": {
               "maxZoom": "13",

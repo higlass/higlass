@@ -318,12 +318,7 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     let track = null;
     let base = null;
 
-    if (super.exportSVG) {
-      [base, track] = super.exportSVG();
-    } else {
-      base = document.createElement('g');
-      track = base;
-    }
+    [base,track] = super.superSVG();
 
     const output = document.createElement('g');
     track.appendChild(output);
@@ -336,9 +331,13 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     for (const tile of this.visibleAndFetchedTiles()) {
 		  const gGraphics = document.createElement('g');
       let graphics = tile.graphics;
+      let graphicsRotation = graphics.rotation * 180 / Math.PI;
+      let transformText = `translate(${graphics.position.x},${graphics.position.y}) rotate(${graphicsRotation}) scale(${graphics.scale.x},${graphics.scale.y}) translate(${-graphics.pivot.x},${-graphics.pivot.y})`
       gGraphics.setAttribute(
-        'transform',
-        `translate(${graphics.position.x},${graphics.position.y}) rotate(${graphics.rotation},${graphics.pivot.x},${graphics.pivot.y}) scale(${graphics.scale.x},${graphics.scale.y})`);
+        'transform',transformText);
+
+      console.log('transformText:', transformText);
+        
 
       const rotation = tile.sprite.rotation * 180 / Math.PI;
       const g = document.createElement('g');

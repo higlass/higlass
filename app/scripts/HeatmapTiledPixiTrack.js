@@ -639,6 +639,10 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
   }
 
+  superSVG() {
+    return super.exportSVG();
+  }
+
   exportSVG() {
     let track = null;
     let base = null;
