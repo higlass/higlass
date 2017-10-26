@@ -640,6 +640,9 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   superSVG() {
+    /**
+     * Bypass this track's exportSVG function
+     */
     return super.exportSVG();
   }
 
@@ -682,7 +685,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const gColorbar = this.exportColorBarSVG();
     track.appendChild(gColorbar);
 
-    console.log('export SVG:', [base, base]);
     return [base, base];
   }
 

@@ -25,7 +25,10 @@ const AVAILABLE_WIDTHS = {
   3: { name: '3', value: 3 },
   5: { name: '5', value: 5 },
   8: { name: '8', value: 8 },
+  13: { name: '13', value: 13 },
 };
+const AVAILABLE_WIDTHS_AND_NONE = Object.assign(AVAILABLE_WIDTHS, {
+  'none': { name: 'none', value: 'none'}});
 
 const OPACITY_OPTIONS = {
   0: { name: '0%', value: 0.0 },
@@ -51,6 +54,10 @@ export const OPTIONS_INFO = {
   trackBorderWidth: {
     name: 'Track Border Width',
     inlineOptions: AVAILABLE_WIDTHS,
+  },
+  minSquareSize: {
+    name: 'Minimum size',
+    inlineOptions: AVAILABLE_WIDTHS_AND_NONE,
   },
   pointSize: {
     name: 'Point Size',

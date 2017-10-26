@@ -314,6 +314,7 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     }
   }
 
+
   exportSVG() {
     let track = null;
     let base = null;

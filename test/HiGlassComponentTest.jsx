@@ -30,6 +30,7 @@ import {
 // View configs
 import {
   // paperFigure1,
+  rectangleDomains,
   threeViews,
   fritzBug1,
   fritzBug2,
@@ -95,7 +96,6 @@ function areTransitionsActive(hgc) {
     for (let track of hgc.instance().iterateOverTracks()) {
       let trackRenderer = getTrackRenderer(hgc, track.viewId, track.trackId);
 
-      console.log('active transitions:', trackRenderer.activeTransitions);
       if (trackRenderer.activeTransitions > 0)
         return true;
     }
@@ -183,7 +183,6 @@ function waitForJsonComplete(finished) {
    *    open
    *
    */
-  console.log('requestsInFlight:', requestsInFlight);
   if (requestsInFlight > 0) {
     setTimeout(() => waitForJsonComplete(finished),
       TILE_LOADING_CHECK_INTERVAL);
@@ -226,6 +225,90 @@ describe('Simple HiGlassComponent', () => {
     atm = null;
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+  describe('2D Rectangle Annotations', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={rectangleDomains}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc, done);
+    });
+
+    it ("Check to make sure that the rectangles are initially small ", (done) => {
+      let track = getTrackObject(hgc, 'aa', 'rectangles1');
+
+      hasSmaller = false;
+      for (let uid of Object.keys(track.drawnRects)) {
+        if (track.drawnRects[uid].width <  5) {
+          hasSmaller = true;
+          break;
+        }
+      }
+
+      expect(hasSmaller).to.eql(true);
+
+      const views = hgc.instance().state.views;
+      track = getTrackByUid(views.aa.tracks, 'rectangles1');
+
+      track.options.minSquareSize = '8';
+
+      hgc.setState({
+        views,
+      });
+
+      waitForTilesLoaded(hgc, done);
+    });
+
+    it ("Make sure that the rectangles are large", (done) => {
+      let track = getTrackObject(hgc, 'aa', 'rectangles1');
+
+      hasSmaller = false;
+      for (let uid of Object.keys(track.drawnRects)) {
+        if (track.drawnRects[uid].width <  5) {
+          hasSmaller = true;
+          break;
+        }
+      }
+
+      expect(hasSmaller).to.eql(false);
+
+      const views = hgc.instance().state.views;
+      track = getTrackByUid(views.aa.tracks, 'rectangles1');
+
+      track.options.minSquareSize = '5';
+
+      hgc.setState({
+        views,
+      });
+
+      waitForTilesLoaded(hgc, done);
+    });
+
+    it ("Exports to SVG", (done) => {
+      hgc.instance().createSVG();
+
+      done();
+    });
+  });
+
+  return;
 
   describe('Export SVG properly', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -262,8 +345,6 @@ describe('Simple HiGlassComponent', () => {
 
       done();
     });
-
-    return;
 
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
@@ -901,7 +982,6 @@ describe('Simple HiGlassComponent', () => {
       const views = hgc.instance().state.views;
 
       const track = getTrackByUid(views.aa.tracks, 'heatmap1');
-      console.log('track:', track);
       track.options.colorbarPosition = 'hidden';
 
       hgc.instance().setState(

@@ -389,6 +389,7 @@ export const TRACKS_INFO = [
     availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
       'trackBorderWidth', 'trackBorderColor',
       'rectangleDomainFillColor', 'rectangleDomainStrokeColor', 'rectangleDomainOpacity',
+      'minSquareSize',
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -398,6 +399,7 @@ export const TRACKS_INFO = [
       rectangleDomainFillColor: 'grey',
       rectangleDomainStrokeColor: 'black',
       rectangleDomainOpacity: 0.6,
+      minSquareSize: 'none',
     },
   },
 
@@ -410,7 +412,8 @@ export const TRACKS_INFO = [
     thumbnail: svgArrowheadDomainsIcon,
     availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
       'trackBorderWidth', 'trackBorderColor',
-      'rectangleDomainFillColor', 'rectangleDomainStrokeColor', 'rectangleDomainOpacity'],
+      'rectangleDomainFillColor', 'rectangleDomainStrokeColor', 'rectangleDomainOpacity',
+    'minSquareSize'],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'hidden',
@@ -419,6 +422,7 @@ export const TRACKS_INFO = [
       rectangleDomainFillColor: 'grey',
       rectangleDomainStrokeColor: 'black',
       rectangleDomainOpacity: 0.6,
+      minSquareSize: 'none',
     },
   },
 

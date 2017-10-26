@@ -2,8 +2,6 @@ import { tileProxy } from './services';
 import { tsvParseRows } from 'd3-dsv';
 
 export function ChromosomeInfo(filepath, success) {
-  console.log('filepath:', filepath);
-
   tileProxy.text(filepath, (error, chrInfoText) => {
     const data = tsvParseRows(chrInfoText);
     const cumValues = [];
