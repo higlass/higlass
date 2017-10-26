@@ -45,6 +45,10 @@ $buttonSize: 20px;
   composes: track-control;
 }
 
+.track-control-padding-right {
+  right: 4 * $buttonSize;
+}
+
 .track-control-button {
   width: $buttonSize;
   height: $buttonSize;
