@@ -6332,7 +6332,7 @@ export const testViewConfX1 = {
     {
       "layout": {
         "w": 12,
-        "h": 8,
+        "h": 16,
         "x": 0,
         "y": 0,
         "i": "aa",
@@ -6358,8 +6358,32 @@ export const testViewConfX1 = {
             "server": "http://higlass.io/api/v1",
             "width": 1007,
             "position": "top",
-            "height": 230,
+            "height": 130,
             "type": "horizontal-heatmap",
+            "options": {
+              "maxZoom": "13",
+              "labelColor": "black",
+              "labelPosition": "bottomRight",
+              "colorRange": [
+                "white",
+                "rgba(245,166,35,1.0)",
+                "rgba(208,2,27,1.0)",
+                "black"
+              ],
+              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+            },
+            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb"
+          }
+        ],
+        "left": [
+          {
+            "uid": "N5Y",
+            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+            "server": "http://higlass.io/api/v1",
+            "width": 130,
+            "position": "top",
+            "height": 230,
+            "type": "vertical-heatmap",
             "options": {
               "maxZoom": "13",
               "labelColor": "black",
@@ -6377,7 +6401,6 @@ export const testViewConfX1 = {
         ],
         "right": [],
         "center": [],
-        "left": []
       },
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "genomePositionSearchBoxVisible": true

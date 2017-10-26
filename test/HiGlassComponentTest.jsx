@@ -258,7 +258,7 @@ describe('Simple HiGlassComponent', () => {
       let svgText = new XMLSerializer().serializeToString(svg);
 
       //expect(svgText.indexOf('dy="-17"')).to.be.above(0);
-      hgc.instance().handleExportSVG();
+      //hgc.instance().handleExportSVG();
 
       done();
     });

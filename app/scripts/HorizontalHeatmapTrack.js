@@ -336,9 +336,6 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       gGraphics.setAttribute(
         'transform',transformText);
 
-      console.log('transformText:', transformText);
-        
-
       const rotation = tile.sprite.rotation * 180 / Math.PI;
       const g = document.createElement('g');
       g.setAttribute(
@@ -360,7 +357,6 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     const gColorbar = this.exportColorBarSVG();
     track.appendChild(gColorbar);
 
-    console.log('export SVG:', [base, base]);
     return [base, base];
   }
 }
