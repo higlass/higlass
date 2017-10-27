@@ -1,5 +1,6 @@
-v0.9.4 (
+v0.9.4 (2017-20-26)
 
+- Reintroduced value scale serialization fix
 - Fixed HorizontalHeatmapExport
 - Added a minimum width to 2D annotations
 - Added SVG export for 2d-rectangle-domains track
