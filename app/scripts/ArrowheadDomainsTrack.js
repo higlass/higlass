@@ -132,12 +132,26 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
     const graphics = tile.graphics;
     graphics.clear();
 
-    const stroke = colorToHex(this.options.rectangleDomainStrokeColor ? this.options.rectangleDomainStrokeColor : 'black');
-    const fill = colorToHex(this.options.rectangleDomainFillColor ? this.options.rectangleDomainFillColor : 'grey');
+    const stroke = colorToHex(this.options.rectangleDomainStrokeColor || 'black');
+    const fill = colorToHex(this.options.rectangleDomainFillColor || 'grey');
 
-    graphics.lineStyle(1, stroke, 1);
-    graphics.beginFill(fill, 0.4);
-    graphics.alpha = this.options.rectangleDomainOpacity ? this.options.rectangleDomainOpacity : 0.5;
+    graphics.lineStyle(
+      typeof this.options.rectangleDomainStrokeWidth !== 'undefined'
+        ? this.options.rectangleDomainStrokeWidth
+        : 1,
+      stroke,
+      typeof this.options.rectangleDomainStrokeOpacity !== 'undefined'
+        ? this.options.rectangleDomainStrokeOpacity
+        : 1,
+    );
+    graphics.beginFill(
+      fill,
+      typeof this.options.rectangleDomainFillOpacity !== 'undefined'
+        ? this.options.rectangleDomainFillOpacity
+        : 0.4,
+    );
+
+    graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
 
     // line needs to be scaled down so that it doesn't become huge
     for (const td of tile.tileData) {

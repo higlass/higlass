@@ -712,11 +712,11 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       let sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
 
       this.xTiles = tileProxy.calculateTilesFromResolution(
-        sortedResolutions[this.zoomLevel], 
+        sortedResolutions[this.zoomLevel],
         this._xScale,
         this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
       this.yTiles = tileProxy.calculateTilesFromResolution(
-        sortedResolutions[this.zoomLevel], 
+        sortedResolutions[this.zoomLevel],
         this._yScale,
         this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
 

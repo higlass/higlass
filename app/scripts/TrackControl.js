@@ -17,6 +17,9 @@ export class TrackControl extends React.Component {
     className += this.props.isVertical ?
       ' track-control-vertical' : '';
 
+    className += this.props.paddingRight ?
+      ' track-control-padding-right' : '';
+
     let buttonClassName = 'track-control-button';
 
     buttonClassName += this.props.isVertical ?
@@ -91,6 +94,7 @@ TrackControl.propTypes = {
   onConfigTrackMenuOpened: PropTypes.func,
   onCloseTrackMenuOpened: PropTypes.func,
   onAddSeries: PropTypes.func,
+  paddingRight: PropTypes.bool,
   uid: PropTypes.string,
 };
 
