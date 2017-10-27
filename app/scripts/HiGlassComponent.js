@@ -482,7 +482,9 @@ class HiGlassComponent extends React.Component {
       const lockGroupValues = dictValues(this.valueScaleLocks[uid]);
 
       // /let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
-      const lockedTracks = lockGroupValues.map(x =>
+      const lockedTracks = lockGroupValues
+        .filter(x => this.tiledPlots[x.view])
+        .map(x =>
         this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track));
 
       const minValues = lockedTracks
@@ -1862,6 +1864,15 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  deserializeValueScaleLocks(viewConfig) {
+    if (viewConfig.valueScaleLocks) {
+        for (let viewUid of dictKeys(viewConfig.valueScaleLocks.locksByViewUid)) {
+            this.valueScaleLocks[viewUid] = viewConfig.valueScaleLocks
+                .locksDict[viewConfig.valueScaleLocks.locksByViewUid[viewUid]];
+        }
+    }
+  }
+
   serializeLocks(locks) {
     const locksDict = {};
     const locksByViewUid = {};
@@ -1923,6 +1934,7 @@ class HiGlassComponent extends React.Component {
 
     newJson.zoomLocks = this.serializeLocks(this.zoomLocks);
     newJson.locationLocks = this.serializeLocks(this.locationLocks);
+    newJson.valueScaleLocks = this.serializeLocks(this.valueScaleLocks);
 
     const data = JSON.stringify(newJson, null, 2);
     return data;
@@ -2340,6 +2352,7 @@ class HiGlassComponent extends React.Component {
 
       this.deserializeZoomLocks(viewConfig);
       this.deserializeLocationLocks(viewConfig);
+      this.deserializeValueScaleLocks(viewConfig);
 
       // give tracks their default names (e.g. 'type': 'top-axis'
       // will get a name of 'Top Axis'
