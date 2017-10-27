@@ -169,6 +169,24 @@ export const TRACKS_INFO = [
     },
   },
   {
+    type: 'vertical-bar',
+    datatype: ['vector'],
+    local: false,
+    orientation: '1d-vertical',
+    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'barFillColor', 'valueScaling', 'trackBorderWidth', 'trackBorderColor', 'barOpacity'],
+    defaultOptions: {
+      labelColor: 'black',
+      labelPosition: 'topLeft',
+      axisPositionHorizontal: 'right',
+      barFillColor: 'darkgreen',
+      valueScaling: 'linear',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+      labelTextOpacity: 0.4,
+      barOpacity: 1,
+    },
+  },
+  {
     type: 'vertical-point',
     datatype: ['vector'],
     local: false,
@@ -371,6 +389,7 @@ export const TRACKS_INFO = [
     availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
       'trackBorderWidth', 'trackBorderColor',
       'rectangleDomainFillColor', 'rectangleDomainStrokeColor', 'rectangleDomainOpacity',
+      'minSquareSize',
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -380,6 +399,7 @@ export const TRACKS_INFO = [
       rectangleDomainFillColor: 'grey',
       rectangleDomainStrokeColor: 'black',
       rectangleDomainOpacity: 0.6,
+      minSquareSize: 'none',
     },
   },
 
@@ -392,7 +412,8 @@ export const TRACKS_INFO = [
     thumbnail: svgArrowheadDomainsIcon,
     availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
       'trackBorderWidth', 'trackBorderColor',
-      'rectangleDomainFillColor', 'rectangleDomainStrokeColor', 'rectangleDomainOpacity'],
+      'rectangleDomainFillColor', 'rectangleDomainStrokeColor', 'rectangleDomainOpacity',
+    'minSquareSize'],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'hidden',
@@ -401,6 +422,7 @@ export const TRACKS_INFO = [
       rectangleDomainFillColor: 'grey',
       rectangleDomainStrokeColor: 'black',
       rectangleDomainOpacity: 0.6,
+      minSquareSize: 'none',
     },
   },
 

@@ -469,6 +469,11 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   exportColorBarSVG() {
     const gColorbarArea = document.createElement('g');
 
+    if (!this.options.colorbarPosition || this.options.colorbarPosition === 'hidden') {
+      // if there's no visible colorbar, we don't need to export anything
+      return gColorbarArea;
+    }
+
     // no value scale, no colorbar
     if (!this.valueScale) return gColorbarArea;
 
@@ -632,6 +637,13 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
       }
     }
+  }
+
+  superSVG() {
+    /**
+     * Bypass this track's exportSVG function
+     */
+    return super.exportSVG();
   }
 
   exportSVG() {
@@ -874,7 +886,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const idParts = remoteId.split('.');
     return idParts.slice(0, idParts.length - 1).join('.');
   }
-
 }
 
 export default HeatmapTiledPixiTrack;

@@ -10,7 +10,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
   constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
     super(scene, server, uid, handleTilesetInfoReceived, option, animate);
 
-    this.drawnRects = new Set();
+    this.drawnRects = {};
   }
 
   tileToLocalId(tile) {
@@ -119,7 +119,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
   }
 
   draw() {
-    this.drawnRects.clear();
+    this.drawnRects = {};
 
     super.draw();
   }
@@ -130,7 +130,6 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
     // console.log('tile:', tile);
     // console.log('Id2DTiled drawTile...');
     const graphics = tile.graphics;
-
     graphics.clear();
 
     const stroke = colorToHex(this.options.rectangleDomainStrokeColor || 'black');
@@ -166,11 +165,74 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
 
       const uid = td.uid;
 
-      if (this.drawnRects.has(uid)) { continue; } // we've already drawn this rectangle in another tile
+      const width = endX - startX;
+      const height = endY - startY;
 
-      this.drawnRects.add(uid);
-      graphics.drawRect(startX, startY, endY - startY, endX - startX);
+      if (uid in this.drawnRects) { continue; } // we've already drawn this rectangle in another tile
+
+
+      let drawnRect = { x: startX, y: startY, width: endY - startY, height: endX - startX };
+
+      if (this.options.minSquareSize && this.options.minSquareSize != 'none') {
+        if (width < +this.options.minSquareSize || height < +this.options.minSquareSize) {
+          const newWidth = this.options.minSquareSize;
+          const newHeight = this.options.minSquareSize;
+          
+          drawnRect = {x: (startX + endX) / 2, y: (startY + endY) / 2,
+            width: newWidth, height: newHeight};
+        }
+      } 
+
+      this.drawnRects[uid] = drawnRect;
+
+      graphics.drawRect(drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height);
     }
+  }
+
+  exportSVG() {
+    let track = null,
+      base = null;
+
+    if (super.exportSVG) {
+      [base, track] = super.exportSVG();
+    } else {
+      base = document.createElement('g');
+      track = base;
+    }
+    const output = document.createElement('g');
+    output.setAttribute('transform',
+      `translate(${this.position[0]},${this.position[1]})`);
+
+    track.appendChild(output);
+
+    for (let tile of this.visibleAndFetchedTiles()) {
+      tile.tileData.forEach((td, i) => {
+        let gTile = document.createElement('g')
+        gTile.setAttribute('transform',
+          `translate(${tile.graphics.position.x},${tile.graphics.position.y})scale(${tile.graphics.scale.x},${tile.graphics.scale.y})`);
+        output.appendChild(gTile);
+
+        if (td.uid in this.drawnRects) {
+          let rect = this.drawnRects[td.uid];
+
+          let r = document.createElement('rect');
+          r.setAttribute('x', rect.x);
+          r.setAttribute('y', rect.y);
+          r.setAttribute('width', rect.width);
+          r.setAttribute('height', rect.height);
+
+          r.setAttribute('fill',  this.options.fillColor ? this.options.fillColor : 'grey')
+          r.setAttribute('opacity', 0.3);
+
+          r.style.stroke = this.options.fillColor ? this.options.fillColor : 'grey';
+          r.style.strokeWidth = "1px";
+
+          gTile.appendChild(r);
+        }
+      });
+    }
+
+    return [base, base];
   }
 
   setPosition(newPosition) {
