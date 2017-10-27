@@ -275,7 +275,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.pColorbarArea.visible = true;
 
     if (!this.valueScale) { return; }
-    console.log("vs:", this.valueScale.domain());
 
     const colorbarAreaHeight = Math.min(this.dimensions[1] / 2, COLORBAR_MAX_HEIGHT);
     this.colorbarHeight = colorbarAreaHeight - (2 * COLORBAR_MARGIN);
@@ -701,11 +700,11 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       let sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
 
       this.xTiles = tileProxy.calculateTilesFromResolution(
-        sortedResolutions[this.zoomLevel], 
+        sortedResolutions[this.zoomLevel],
         this._xScale,
         this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
       this.yTiles = tileProxy.calculateTilesFromResolution(
-        sortedResolutions[this.zoomLevel], 
+        sortedResolutions[this.zoomLevel],
         this._yScale,
         this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
 
