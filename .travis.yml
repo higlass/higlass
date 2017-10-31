@@ -13,7 +13,7 @@ before_script:
 - npm install --quiet -g gulp
 - npm install
 before_deploy:
-- npm run compile-debug
+- npm run compile
 deploy:
     - provider: npm
       skip_cleanup: true

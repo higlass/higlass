@@ -1,7 +1,15 @@
-v0.9.6 (2017-10-31)
+v0.9.8 (2017-10-31)
+
+- Switch back to minified build
+
+v0.9.7 (2017-10-31)
 
 - Initialize scales when viewconfig is loaded rather than on
 handleScalesChanged
+
+v0.9.6 (2017-10-31)
+
+- Faulty build (package.json wasn't there)
 
 v0.9.5 (2017-10-31)
 
