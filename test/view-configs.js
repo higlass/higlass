@@ -6584,7 +6584,43 @@ export const testViewConfX1 = {
           }
         ],
         "right": [],
-        "center": [],
+        "center": [
+          {
+            "uid": "c1",
+            "type": "combined",
+            "height": 1088,
+            "contents": [
+              {
+                "filetype": "cooler",
+                "name": "Dixon et al. (2015) H1_TB HindIII (allreps) 1kb",
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "B2LevKBtRNiCMX372rRPLQ",
+                "uid": "heatmap3",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarLabelsPosition": "outside",
+                  "colorbarPosition": "topLeft",
+                  "name": "New tileset"
+                },
+                "width": 20,
+                "height": 20,
+                "binsPerDimension": 256,
+                "position": "center"
+              }
+            ],
+            "position": "center",
+            "options": {},
+            "width": 961
+          }
+        ],
       },
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "genomePositionSearchBoxVisible": true
