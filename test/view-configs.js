@@ -6484,6 +6484,42 @@ export const testViewConfX1 = {
         "bottom": [],
         "top": [
           {
+            "filetype": "hitile",
+            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "red",
+              "labelPosition": "hidden",
+              "axisPositionHorizontal": "right",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log"
+            },
+            "width": 20,
+            "height": 20,
+            "position": "top",
+            "uid": "hline1"
+          },
+          {
+            "filetype": "hitile",
+            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "horizontal-bar",
+            "options": {
+              "labelColor": "red",
+              "labelPosition": "hidden",
+              "axisPositionHorizontal": "right",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log"
+            },
+            "width": 20,
+            "height": 20,
+            "position": "top",
+            "uid": "hbar1"
+          },
+          {
             "uid": "N5Ylzin9TLGToeJs3BKVLA",
             "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
             "server": "http://higlass.io/api/v1",
@@ -6508,6 +6544,23 @@ export const testViewConfX1 = {
         ],
         "left": [
           {
+            "filetype": "hitile",
+            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "vertical-bar",
+            "options": {
+              "labelColor": "red",
+              "labelPosition": "hidden",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log"
+            },
+            "width": 20,
+            "height": 20,
+            "position": "top",
+            "uid": "vbar1"
+          },
+          {
             "uid": "N5Y",
             "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
             "server": "http://higlass.io/api/v1",
@@ -6531,7 +6584,43 @@ export const testViewConfX1 = {
           }
         ],
         "right": [],
-        "center": [],
+        "center": [
+          {
+            "uid": "c1",
+            "type": "combined",
+            "height": 1088,
+            "contents": [
+              {
+                "filetype": "cooler",
+                "name": "Dixon et al. (2015) H1_TB HindIII (allreps) 1kb",
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "B2LevKBtRNiCMX372rRPLQ",
+                "uid": "heatmap3",
+                "type": "heatmap",
+                "options": {
+                  "labelPosition": "bottomRight",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "maxZoom": null,
+                  "colorbarLabelsPosition": "outside",
+                  "colorbarPosition": "topLeft",
+                  "name": "New tileset"
+                },
+                "width": 20,
+                "height": 20,
+                "binsPerDimension": 256,
+                "position": "center"
+              }
+            ],
+            "position": "center",
+            "options": {},
+            "width": 961
+          }
+        ],
       },
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "genomePositionSearchBoxVisible": true

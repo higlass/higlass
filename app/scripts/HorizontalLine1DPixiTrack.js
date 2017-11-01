@@ -211,6 +211,13 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     this.draw();
   }
 
+  superSVG() {
+    /*
+     * Bypass this track's exportSVG and call its parent's directly.
+     */
+    return super.exportSVG();
+  }
+
   /**
    * Export an SVG representation of this track
    *

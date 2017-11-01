@@ -1,3 +1,8 @@
+v0.9.9 (2017-11-01)
+
+- Fix SVG bar chart export
+- Fixed network error on SVG export again (from v0.8.44)
+
 v0.9.8 (2017-10-31)
 
 - Switch back to minified build
