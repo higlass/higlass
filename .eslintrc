@@ -25,6 +25,7 @@
     "ecmaVersion": 6
   },
   "rules": {
+    "comma-dangle": 0,
     "jsx-quotes": 1,
     "no-mixed-operators": ["error", {"allowSamePrecedence": true}],
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
@@ -62,6 +63,6 @@
     "react/prop-types": 1,
     "react/react-in-jsx-scope": 1,
     "react/self-closing-comp": 1,
-    "react/sort-comp": 1,
+    "react/sort-comp": 1
   }
 }
