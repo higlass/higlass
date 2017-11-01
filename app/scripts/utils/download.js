@@ -1,15 +1,18 @@
-const download = (filename, text) => {
-  const pom = document.createElement('a');
-  pom.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`);
-  pom.setAttribute('download', filename);
-
-  if (document.createEvent) {
-    const event = document.createEvent('MouseEvents');
-    event.initEvent('click', true, true);
-    pom.dispatchEvent(event);
-  } else {
-    pom.click();
+export function download(filename, data) {
+  // yanked from here
+  // https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
+  var blob = new Blob([data], {type: 'text/csv'});
+  if(window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveBlob(blob, filename);
   }
-};
+  else{
+    var elem = window.document.createElement('a');
+    elem.href = window.URL.createObjectURL(blob);
+    elem.download = filename;
+    document.body.appendChild(elem);
+    elem.click();
+    document.body.removeChild(elem);
+  }
+}
 
 export default download;

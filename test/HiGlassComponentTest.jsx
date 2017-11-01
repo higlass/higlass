@@ -226,6 +226,163 @@ describe('Simple HiGlassComponent', () => {
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
+  describe('Export SVG properly', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={testViewConfX1}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc, done);
+    });
+
+    it ("Exports to SVG", (done) => {
+      let svg = hgc.instance().createSVG();
+      let svgText = new XMLSerializer().serializeToString(svg);
+
+      expect(svgText.indexOf('rect')).to.be.above(0);
+      //hgc.instance().handleExportSVG();
+      //
+
+      done();
+    });
+
+    return;
+
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={project1D}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc, done);
+    });
+
+    it ("Exports to SVG", (done) => {
+      let svg = hgc.instance().createSVG();
+      let svgText = new XMLSerializer().serializeToString(svg);
+
+      //expect(svgText.indexOf('dy="-17"')).to.be.above(0);
+      //hgc.instance().handleExportSVG();
+
+      done();
+    });
+
+    it ("Replaces one of the views and tries to export again", (done) => {
+      let views = hgc.instance().state.views;
+
+      let newView = JSON.parse(JSON.stringify(views['aa']));
+
+      hgc.instance().handleCloseView('aa');
+      views = hgc.instance().state.views;
+
+      newView.uid = 'a2';
+      newView.layout.i = 'a2';
+
+      views['a2'] = newView;
+
+      hgc.instance().setState({views: views});
+
+      // this used to raise an error because the hgc.instance().tiledPlots
+      // would maintain a reference to the closed view and we would try
+      // to export it as SVG
+      hgc.instance().createSVG();
+
+      done();
+
+      //hgc.instance().createSVG();
+
+    });
+
+    it ('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent 
+        options={{bounded: false}}
+        viewConfig={project1D}
+      />, 
+        {attachTo: div});
+
+      hgc.update();
+      waitForTilesLoaded(hgc, done);
+    });
+
+    it('Exports to SVG', (done) => {
+      const svg = hgc.instance().createSVG();
+      const svgText = new XMLSerializer().serializeToString(svg);
+
+      console.log(
+        'Exports to SVG',
+        svgText.indexOf('dy="14"'),
+        svgText.indexOf('chr17:40,500,000'),
+        svgText.indexOf('line x1'),
+        svgText.indexOf('#777777'),
+      );
+
+      // check to make sure that the horizontal labels shifted down
+      // the horizontal lines' labels should be shifted down
+      expect(svgText.indexOf('dy="14"')).to.be.above(0);
+
+      // check to make sure that chromosome tick labels are there
+      expect(svgText.indexOf('chr17:40,500,000')).to.be.above(0);
+
+      // check to make sure that the chromosome ticks are present
+      expect(svgText.indexOf('line x1')).to.be.above(0);
+      expect(svgText.indexOf('#777777')).to.be.above(0);
+
+      //hgc.instance().handleExportSVG();
+
+      done();
+    });
+  });
+
+  return;
+
   describe('Value scale locking', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
@@ -563,159 +720,6 @@ describe('Simple HiGlassComponent', () => {
 
   return;
 
-  describe('Export SVG properly', () => {
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: false }}
-        viewConfig={testViewConfX1}
-      />, { attachTo: div });
-
-      hgc.update();
-      waitForTilesLoaded(hgc, done);
-    });
-
-    it ("Exports to SVG", (done) => {
-      let svg = hgc.instance().createSVG();
-      let svgText = new XMLSerializer().serializeToString(svg);
-
-      //expect(svgText.indexOf('dy="-17"')).to.be.above(0);
-      //hgc.instance().handleExportSVG();
-
-      done();
-    });
-
-    it('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent
-        options={{ bounded: false }}
-        viewConfig={project1D}
-      />, { attachTo: div });
-
-      hgc.update();
-      waitForTilesLoaded(hgc, done);
-    });
-
-    it ("Exports to SVG", (done) => {
-      let svg = hgc.instance().createSVG();
-      let svgText = new XMLSerializer().serializeToString(svg);
-
-      //expect(svgText.indexOf('dy="-17"')).to.be.above(0);
-      //hgc.instance().handleExportSVG();
-
-      done();
-    });
-
-    it ("Replaces one of the views and tries to export again", (done) => {
-      let views = hgc.instance().state.views;
-
-      let newView = JSON.parse(JSON.stringify(views['aa']));
-
-      hgc.instance().handleCloseView('aa');
-      views = hgc.instance().state.views;
-
-      newView.uid = 'a2';
-      newView.layout.i = 'a2';
-
-      views['a2'] = newView;
-
-      hgc.instance().setState({views: views});
-
-      // this used to raise an error because the hgc.instance().tiledPlots
-      // would maintain a reference to the closed view and we would try
-      // to export it as SVG
-      hgc.instance().createSVG();
-
-      done();
-
-      //hgc.instance().createSVG();
-
-    });
-
-    it ('Cleans up previously created instances and mounts a new component', (done) => {
-      if (hgc) {
-        hgc.unmount();
-        hgc.detach();
-      }
-
-      if (div) {
-        global.document.body.removeChild(div);
-      }
-
-      div = global.document.createElement('div');
-      global.document.body.appendChild(div);
-
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
-      div.setAttribute('id', 'simple-hg-component');
-
-      hgc = mount(<HiGlassComponent 
-        options={{bounded: false}}
-        viewConfig={project1D}
-      />, 
-        {attachTo: div});
-
-      hgc.update();
-      waitForTilesLoaded(hgc, done);
-    });
-
-    it('Exports to SVG', (done) => {
-      const svg = hgc.instance().createSVG();
-      const svgText = new XMLSerializer().serializeToString(svg);
-
-      console.log(
-        'Exports to SVG',
-        svgText.indexOf('dy="14"'),
-        svgText.indexOf('chr17:40,500,000'),
-        svgText.indexOf('line x1'),
-        svgText.indexOf('#777777'),
-      );
-
-      // check to make sure that the horizontal labels shifted down
-      // the horizontal lines' labels should be shifted down
-      expect(svgText.indexOf('dy="14"')).to.be.above(0);
-
-      // check to make sure that chromosome tick labels are there
-      expect(svgText.indexOf('chr17:40,500,000')).to.be.above(0);
-
-      // check to make sure that the chromosome ticks are present
-      expect(svgText.indexOf('line x1')).to.be.above(0);
-      expect(svgText.indexOf('#777777')).to.be.above(0);
-
-      //hgc.instance().handleExportSVG();
-
-      done();
-    });
-  });
-
-  return;
 
   describe("Starting with no genome position search box", () => {
     it ('Cleans up previously created instances and mounts a new component', (done) => {

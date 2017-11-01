@@ -6484,6 +6484,42 @@ export const testViewConfX1 = {
         "bottom": [],
         "top": [
           {
+            "filetype": "hitile",
+            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "red",
+              "labelPosition": "hidden",
+              "axisPositionHorizontal": "right",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log"
+            },
+            "width": 20,
+            "height": 20,
+            "position": "top",
+            "uid": "hline1"
+          },
+          {
+            "filetype": "hitile",
+            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "horizontal-bar",
+            "options": {
+              "labelColor": "red",
+              "labelPosition": "hidden",
+              "axisPositionHorizontal": "right",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log"
+            },
+            "width": 20,
+            "height": 20,
+            "position": "top",
+            "uid": "hbar1"
+          },
+          {
             "uid": "N5Ylzin9TLGToeJs3BKVLA",
             "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
             "server": "http://higlass.io/api/v1",
@@ -6507,6 +6543,23 @@ export const testViewConfX1 = {
           }
         ],
         "left": [
+          {
+            "filetype": "hitile",
+            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "vertical-bar",
+            "options": {
+              "labelColor": "red",
+              "labelPosition": "hidden",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log"
+            },
+            "width": 20,
+            "height": 20,
+            "position": "top",
+            "uid": "vbar1"
+          },
           {
             "uid": "N5Y",
             "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
