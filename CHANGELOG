@@ -1,3 +1,7 @@
+v0.9.10 (2017-11-??)
+
+- Fix Infinity brush error
+
 v0.9.9 (2017-11-01)
 
 - Fix SVG bar chart export
