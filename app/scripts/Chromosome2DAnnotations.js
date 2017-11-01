@@ -58,17 +58,17 @@ export class Chromosome2DAnnotations extends PixiTrack {
       let height = endY - startY;
 
       const _minRectWidth = typeof region[8] !== 'undefined' ? region[8] : minRectWidth;
-      const _minRectHeight = typeof region[9] !== 'undefined' ? region[9] : minRectWidth;
+      const _minRectHeight = typeof region[9] !== 'undefined' ? region[9] : minRectHeight;
 
       if (width < _minRectWidth) {
         // this region is too small to draw so center it on the location
         // where it would be drawn
-        startX = (startX + endX) / 2 - _minRectWidth / 2;
+        startX = ((startX + endX) / 2) - (_minRectWidth / 2);
         width = _minRectWidth;
       }
 
       if (height < _minRectHeight) {
-        startY = (startY + endY) / 2 - _minRectHeight / 2;
+        startY = ((startY + endY) / 2) - (_minRectHeight / 2);
         height = _minRectHeight;
       }
 
