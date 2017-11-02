@@ -72,7 +72,7 @@ export const TRACKS_INFO = [
     },
     availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
       'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped',
-      'colorbarPosition', 'trackBorderWidth', 'trackBorderColor'],
+      'colorbarPosition', 'trackBorderWidth', 'trackBorderColor', 'heatmapValueScaling'],
   },
   {
     type: 'vertical-heatmap',
@@ -91,7 +91,7 @@ export const TRACKS_INFO = [
       trackBorderWidth: 0,
       trackBorderColor: 'black',
     },
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped', 'colorbarPosition', 'trackBorderWidth', 'trackBorderColor'],
+    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'maxZoom', 'dataTransform', 'oneDHeatmapFlipped', 'colorbarPosition', 'trackBorderWidth', 'trackBorderColor', 'heatmapValueScaling'],
   },
   {
     type: 'horizontal-line',

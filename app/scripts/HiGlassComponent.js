@@ -2349,8 +2349,10 @@ class HiGlassComponent extends React.Component {
         v.initialYDomain = [v.initialXDomain[0], v.initialXDomain[1]];
       }
 
-      this.xScales[v.uid] = scaleLinear().domain(v.initialXDomain);
-      this.yScales[v.uid] = scaleLinear().domain(v.initialYDomain);
+      if (!this.xScales[v.uid])
+        this.xScales[v.uid] = scaleLinear().domain(v.initialXDomain);
+      if (!this.yScales[v.uid])
+        this.yScales[v.uid] = scaleLinear().domain(v.initialYDomain);
 
       // Add names to all the tracks
       let looseTracks = positionedTracksToAllTracks(v.tracks);

@@ -19,8 +19,6 @@ export class ViewportTrackerHorizontal extends SVGTrack {
     this.viewportYDomain = null;
 
     this.brush = brush(true)
-      .extent([[-Number.MAX_VALUE, -Number.MAX_VALUE],
-        [Number.MAX_VALUE, Number.MAX_VALUE]])
       .on('brush', this.brushed.bind(this))
     ;
 

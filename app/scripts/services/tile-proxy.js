@@ -302,7 +302,6 @@ function json(url, callback) {
    * Send a JSON request mark it so that we can tell how many are in flight
    */
   requestsInFlight += 1;
-  console.log('json: rif', requestsInFlight);
   d3Json(url, (error, done) => {
     callback(error, done);
     requestsInFlight -= 1;

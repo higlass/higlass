@@ -1,3 +1,10 @@
+v0.9.10 (2017-11-01)
+
+- Fixed d3 brush Error: <rect> attribute height: Expected length, "Infinity"
+error
+- Fixed scale initialization error
+- Added back heatmap value scaling
+
 v0.9.9 (2017-11-01)
 
 - Fix SVG bar chart export
