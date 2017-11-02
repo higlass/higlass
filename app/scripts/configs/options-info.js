@@ -40,6 +40,13 @@ const OPACITY_OPTIONS = {
 };
 
 export const OPTIONS_INFO = {
+  heatmapValueScaling: {
+    name: 'Value Scaling',
+    inlineOptions: {
+      linear: { name: 'Linear', value: 'linear' },
+      log: { name: 'Log', value: 'log' },
+    },
+  },
   valueScaling: {
     name: 'Value Scaling',
     inlineOptions: {
