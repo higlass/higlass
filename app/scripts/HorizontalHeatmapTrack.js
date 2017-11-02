@@ -63,6 +63,22 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   }
 
   calculateZoomLevel() {
+    if (this.tilesetInfo.resolutions) {
+      let zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
+        this.tilesetInfo.resolutions, 
+        this._xScale, 
+        this.tilesetInfo.min_pos[0],
+        this.tilesetInfo.max_pos[0]);
+
+      let zoomIndexY = tileProxy.calculateZoomLevelFromResolutions(
+        this.tilesetInfo.resolutions, 
+        this._xScale, 
+        this.tilesetInfo.min_pos[1],
+        this.tilesetInfo.max_pos[1]);
+
+      return Math.min(zoomIndexX, zoomIndexY);
+    }
+
     const xZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.tilesetInfo.min_pos[0],
@@ -105,17 +121,31 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     expandedXScale.domain([this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
       this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))]);
 
-    this.xTiles = tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
-      this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0],
-      this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width);
+    if (this.tilesetInfo.resolutions) {
+      let sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
 
-    this.yTiles = tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
-      this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0],
-      this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width);
+      this.xTiles = tileProxy.calculateTilesFromResolution(
+        sortedResolutions[this.zoomLevel],
+        expandedXScale,
+        this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
+      this.yTiles = tileProxy.calculateTilesFromResolution(
+        sortedResolutions[this.zoomLevel],
+        expandedXScale,
+        this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
+
+    } else {
+      this.xTiles = tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
+        this.tilesetInfo.min_pos[0],
+        this.tilesetInfo.max_pos[0],
+        this.tilesetInfo.max_zoom,
+        this.tilesetInfo.max_width);
+
+      this.yTiles = tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
+        this.tilesetInfo.min_pos[0],
+        this.tilesetInfo.max_pos[0],
+        this.tilesetInfo.max_zoom,
+        this.tilesetInfo.max_width);
+    }
 
     const rows = this.xTiles;
     const cols = this.yTiles;
