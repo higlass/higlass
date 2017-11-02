@@ -1,6 +1,6 @@
 import { range } from 'd3-array';
 import {
-  json as d3Json, 
+  json as d3Json,
   text as d3Text
 } from 'd3-request';
 import slugid from 'slugid';
@@ -202,17 +202,6 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX) => {
   const epsilon = 0.0000001;
   const PIXELS_PER_TILE = 256;
   const tileWidth = resolution * PIXELS_PER_TILE;
-  /*
-  console.log('scale.domain', scale.domain())
-  console.log('resolution:', (scale.domain()[1] - scale.domain()[0]), resolution, (scale.domain()[1] - scale.domain()[0]) / resolution)
-
-  console.log('tileWidth', tileWidth);
-  console.log('maxX', maxX)
-  console.log('min:', Math.min(
-          maxX,
-          Math.ceil(((scale.domain()[1] - minX) - epsilon))) / tileWidth
-        );
-  */
 
   return range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
@@ -220,7 +209,7 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX) => {
       maxX,
       ((scale.domain()[1] - minX) - epsilon)) / tileWidth),
   );
-}
+};
 
 export const trackInfo = (server, tilesetUid, done) => {
   const outUrl = `${server}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
