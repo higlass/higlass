@@ -288,6 +288,12 @@ class HiGlassComponent extends React.Component {
   }
 
   componentWillUnmount() {
+    // Destroy PIXI renderer, stages, and assets
+    this.pixiStage.destroy(true);
+    this.pixiStage = null;
+    this.pixiRenderer.destroy(true);
+    this.pixiRenderer = null;
+
     window.removeEventListener('focus', this.boundRefreshView);
     this.resizeSensor.detach();
 

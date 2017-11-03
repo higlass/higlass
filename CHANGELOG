@@ -1,3 +1,8 @@
+v0.9.11 (2017-11-??)
+
+- Free up webgl renderer resources when unmount
+- Minor CSS cleanup
+
 v0.9.10 (2017-11-01)
 
 - Fixed d3 brush Error: <rect> attribute height: Expected length, "Infinity"
