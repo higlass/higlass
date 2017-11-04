@@ -34,6 +34,27 @@ for gene names within the selected assembly.
 
 The genome position search box can be enabled from the view menu.
 
+Adding new assemblies (chromSizes)
+----------------------------------
+
+New assemblies have to be loaded into the higlass server in the same manner as
+as :ref:`chromosome labels <chromosome-labels>` with a datatype of ``chromsizes``
+and a filetype of ``chromsizes-tsv``:
+
+.. code-block:: bash
+
+    docker exec higlass-container python \
+        higlass-server/manage.py ingest_tileset \
+        --filename /tmp/chromSizes_dm3.tsv \
+        --filetype chromsizes-tsv \
+        --datatype chromsizes \
+        --name dm3
+
+The new assembly can chosen from the dropdown in the genome position search box:
+
+.. image:: img/assembly-selection.png
+    :align: center
+
 
 View synchronization
 ====================

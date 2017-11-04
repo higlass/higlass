@@ -1,0 +1,333 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Data Preparation &#8212; HiGlass v0.4.8 documentation</title>
+    <link rel="stylesheet" href="_static/higlass.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'v0.4.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Developer Documentation" href="developer.html" />
+    <link rel="prev" title="HiGlass: A Multiscale Genomic Data Browser" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="data-preparation">
+<h1>Data Preparation<a class="headerlink" href="#data-preparation" title="Permalink to this headline">¶</a></h1>
+<p>Displaying large amounts of data often requires first turning it into
+not-so-large amounts of data. Clodius is a program and library designed
+to aggregate large datasets to make them easy to display at different
+resolutions.</p>
+<div class="section" id="bed-files">
+<h2>Bed Files<a class="headerlink" href="#bed-files" title="Permalink to this headline">¶</a></h2>
+<p>BED files specify genomic intervals. They are aggregated according to an
+importance function that determines which values should be visible at lower
+zoom levels. This importance function is user specified. In the absence of
+any clear ranking of the different lines in the BED file, a random value
+can be used in lieu of the importance function.</p>
+<p>Example BED file:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>chr9    <span class="m">135766734</span>       <span class="m">135820020</span>       TSC1    Biallelic inactivation may predict sensitivity to MTOR inhibitors
+chr16   <span class="m">2097895</span> <span class="m">2138721</span> TSC2    Biallelic inactivation may predict sensitivity to MTOR inhibitors
+chr3    <span class="m">10183318</span>        <span class="m">10195354</span>        VHL     May signal the presence of a germline mutation.
+chr11   <span class="m">32409321</span>        <span class="m">32457081</span>        WT1     May signal the presence of a germline mutation.
+</pre></div>
+</div>
+<p>This file can be aggregated like so:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>clodius aggregate bedfile <span class="se">\</span>
+    --assembly hg19 <span class="se">\</span>
+    --importance-column <span class="m">5</span> <span class="se">\</span>
+    sorted_genes_target_db.tsv
+</pre></div>
+</div>
+</div>
+<div class="section" id="bedgraph-files">
+<h2>BedGraph files<a class="headerlink" href="#bedgraph-files" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The order of the chromosomes in the bedgraph file have to
+be consistent with the order specified for the assembly in
+<a class="reference external" href="https://github.com/pkerpedjiev/negspy/tree/master/negspy/data">the negspy repository</a>.</p>
+</div>
+<div class="section" id="ordering-the-chromosomes-in-the-input-file">
+<h3>Ordering the chromosomes in the input file<a class="headerlink" href="#ordering-the-chromosomes-in-the-input-file" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nv">input_file</span><span class="o">=</span>~/Downloads/phastCons100way.txt.gz<span class="p">;</span>
+<span class="nv">output_file</span><span class="o">=</span>~/Downloads/phastConst100way_ordered.txt<span class="p">;</span>
+<span class="nv">chromnames</span><span class="o">=</span><span class="k">$(</span>awk <span class="s1">&#39;{print $1}&#39;</span> ~/projects/negspy/negspy/data/hg19/chromInfo.txt<span class="k">)</span><span class="p">;</span>
+<span class="k">for</span> chr in <span class="nv">$chromnames</span><span class="p">;</span>
+    <span class="k">do</span> <span class="nb">echo</span> <span class="si">${</span><span class="nv">chr</span><span class="si">}</span><span class="p">;</span>
+    zcat <span class="nv">$input_file</span> <span class="p">|</span> grep <span class="s2">&quot;\t</span><span class="si">${</span><span class="nv">chr</span><span class="si">}</span><span class="s2">\t&quot;</span> &gt;&gt; <span class="nv">$output_file</span><span class="p">;</span>
+<span class="k">done</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="aggregation-by-addition">
+<h3>Aggregation by addition<a class="headerlink" href="#aggregation-by-addition" title="Permalink to this headline">¶</a></h3>
+<p>Assume we have an input file that has <code class="docutils literal"><span class="pre">id</span> <span class="pre">chr</span> <span class="pre">start</span> <span class="pre">end</span> <span class="pre">value1</span> <span class="pre">value2</span></code> pairs:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">location</span>        <span class="n">chrom</span>   <span class="n">start</span>   <span class="n">end</span>     <span class="n">copynumber</span>      <span class="n">segmented</span>
+<span class="mi">1</span><span class="p">:</span><span class="mi">2900001</span><span class="o">-</span><span class="mi">3000000</span>       <span class="mi">1</span>       <span class="mi">2900001</span> <span class="mi">3000000</span> <span class="o">-</span><span class="mf">0.614</span>  <span class="o">-</span><span class="mf">0.495</span>
+<span class="mi">1</span><span class="p">:</span><span class="mi">3000001</span><span class="o">-</span><span class="mi">3100000</span>       <span class="mi">1</span>       <span class="mi">3000001</span> <span class="mi">3100000</span> <span class="o">-</span><span class="mf">0.407</span>  <span class="o">-</span><span class="mf">0.495</span>
+<span class="mi">1</span><span class="p">:</span><span class="mi">3100001</span><span class="o">-</span><span class="mi">3200000</span>       <span class="mi">1</span>       <span class="mi">3100001</span> <span class="mi">3200000</span> <span class="o">-</span><span class="mf">0.428</span>  <span class="o">-</span><span class="mf">0.495</span>
+<span class="mi">1</span><span class="p">:</span><span class="mi">3200001</span><span class="o">-</span><span class="mi">3300000</span>       <span class="mi">1</span>       <span class="mi">3200001</span> <span class="mi">3300000</span> <span class="o">-</span><span class="mf">0.437</span>  <span class="o">-</span><span class="mf">0.495</span>
+</pre></div>
+</div>
+<p>We can aggregate this file by recursively summing adjacent values. We have to
+indicate which column corresponds to the chromosome (<code class="docutils literal"><span class="pre">--chromosome-col</span> <span class="pre">2</span></code>),
+the start position (<code class="docutils literal"><span class="pre">--from-pos-col</span> <span class="pre">3</span></code>), the end position (<code class="docutils literal"><span class="pre">--to-pos-col</span> <span class="pre">4</span></code>)
+and the value column (<code class="docutils literal"><span class="pre">--value-col</span> <span class="pre">5</span></code>). We specify that the first line
+of the data file contains a header using the (<code class="docutils literal"><span class="pre">--has-header</span></code>) option.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>clodius aggregate bedgraph          <span class="se">\</span>
+    test/sample_data/cnvs_hw.tsv    <span class="se">\</span>
+    --output-file ~/tmp/cnvs_hw.hitile <span class="se">\</span>
+    --chromosome-col <span class="m">2</span>              <span class="se">\</span>
+    --from-pos-col <span class="m">3</span>                <span class="se">\</span>
+    --to-pos-col <span class="m">4</span>                  <span class="se">\</span>
+    --value-col <span class="m">5</span>                   <span class="se">\</span>
+    --assembly grch37               <span class="se">\</span>
+    --nan-value NA                  <span class="se">\</span>
+    --transform exp2                <span class="se">\</span>
+    --has-header
+</pre></div>
+</div>
+<div class="section" id="data-transform">
+<h4>Data Transform<a class="headerlink" href="#data-transform" title="Permalink to this headline">¶</a></h4>
+<p>The dataset used in this example contains copy number data that has been log2
+transformed. That is, the copy number given for each bin is the log2 of the
+computed value. This is a problem for HiGlass’s default aggregation method of
+summing adjacent values since <img class="math" src="_images/math/4e9125b9e00c5072d6f3577f7c356a015ed9ca82.png" alt="\log_2 a + \log_2 b \neq \log_2 ab"/>.</p>
+<p>Using the <code class="docutils literal"><span class="pre">--transform</span> <span class="pre">exp2</span></code> option tells clodius to raise two to the
+power of the provided value before doing the transformation and storing. As
+an added benefit, NaN values become apparent in the resulting because they
+have values of 0.</p>
+</div>
+<div class="section" id="nan-value-identification">
+<h4>NaN Value Identification<a class="headerlink" href="#nan-value-identification" title="Permalink to this headline">¶</a></h4>
+<p>NaN (not a number) values in the input file can be specified using the
+<code class="docutils literal"><span class="pre">--nan-value</span></code> option.  For example, <code class="docutils literal"><span class="pre">--nan-value</span> <span class="pre">NA</span></code> indicates that
+whenever <em>NA</em> is encountered as a value it should be treated as NaN. In the
+current implementation, NaN values are simply treated as 0. In the future, they
+should be assigned a special value so that they are ignored by <a class="reference external" href="http://higlass.io">HiGlass</a>.</p>
+<p>When NaN values are aggregated by summing, they are treated as 0 when added to
+another number. When two NaN values are added to each other, however, the
+result is Nan.</p>
+</div>
+<div class="section" id="nan-value-counting">
+<h4>NaN Value Counting<a class="headerlink" href="#nan-value-counting" title="Permalink to this headline">¶</a></h4>
+<p>Sometimes, we just want to count the number of NaN values in the file. The
+<code class="docutils literal"><span class="pre">--count-nan</span></code> option effectively treats NaN values as 1 and all other values
+as 0. This makes it possible to display a track showing how many NaN values are
+present in each interval. It also makes it possible to create compound tracks
+which use that information to normalize track values.</p>
+</div>
+</div>
+</div>
+<div class="section" id="bigwig-files">
+<h2>bigWig files<a class="headerlink" href="#bigwig-files" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://genome.ucsc.edu/goldenpath/help/bigWig.html">bigWig files</a> store
+genomic data in a compressed, indexed form that allows rapid retrieval and
+visualization. Unfortunately, for the time being, HiGlass does not support
+displaying bigWig files and they must first be converted to hitile files.
+This can be done using clodius’s aggregate bigwig function:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>clodius aggregate bigwig input.bigWig <span class="se">\</span>
+    --output-file output.hitile <span class="se">\</span>
+    --assembly hg19
+</pre></div>
+</div>
+<p>The resulting file can be loaded into HiGlass as described in the
+<a class="reference internal" href="#loading-into-higlass"><span class="std std-ref">Loading into HiGlass</span></a> section below.</p>
+</div>
+<div class="section" id="loading-into-higlass">
+<span id="id2"></span><h2>Loading into HiGlass<a class="headerlink" href="#loading-into-higlass" title="Permalink to this headline">¶</a></h2>
+<p>Too see .hitile-typed datasets in higlass, use the docker container to load them:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> higlass-container python <span class="se">\</span>
+        higlass-server/manage.py ingest_tileset <span class="se">\</span>
+        --filename /tmp/cnvs_hw.hitile <span class="se">\</span>
+        --filetype hitile <span class="se">\</span>
+        --datatype vector
+</pre></div>
+</div>
+<p>It can also be loaded using a curl commands:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl -u <span class="sb">`</span>cat ~/.higlass-server-login<span class="sb">`</span>  <span class="se">\</span>
+    -F <span class="s2">&quot;datafile=@cnvs_hw.hitile&quot;</span> <span class="se">\</span>
+    -F <span class="s2">&quot;filetype=hitile&quot;</span> <span class="se">\</span>
+    -F <span class="s2">&quot;datatype=vector&quot;</span> <span class="se">\</span>
+    -F <span class="s2">&quot;coordSystem=hg19&quot;</span> <span class="se">\</span>
+    http://higlass.io:80/api/v1/tilesets/
+</pre></div>
+</div>
+</div>
+<div class="section" id="development">
+<h2>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="building-for-development">
+<h3>Building for development<a class="headerlink" href="#building-for-development" title="Permalink to this headline">¶</a></h3>
+<p>The recommended way to develop <code class="docutils literal"><span class="pre">clodius</span></code> is to use a <a class="reference external" href="https://conda.io/docs/intro.html">conda</a> environment and
+install <code class="docutils literal"><span class="pre">clodius</span></code> with develop mode:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>python setup.py develop
+</pre></div>
+</div>
+<p>Note that making changes to the <code class="docutils literal"><span class="pre">clodius/fast.pyx</span></code> <a class="reference external" href="http://docs.cython.org/en/latest/src/quickstart/cythonize.html">cython</a> module requires an
+explicit recompile step:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>python setup.py build_ext --inplace
+</pre></div>
+</div>
+</div>
+<div class="section" id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h3>
+<p>The unit tests for clodius can be run using <a class="reference external" href="http://nose.readthedocs.io/en/latest/">nosetests</a>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nosetests</span> <span class="n">tests</span>
+</pre></div>
+</div>
+<p>Individual unit tests can be specified by indicating the file and function
+they are defined in:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nosetests</span> <span class="n">test</span><span class="o">/</span><span class="n">cli_test</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="n">test_clodius_aggregate_bedgraph</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-the-documentation">
+<h3>Building the documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h3>
+<p>Building the documentation from the root directory is a matter of running
+<code class="docutils literal"><span class="pre">sphinx-build</span></code>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sphinx</span><span class="o">-</span><span class="n">build</span> <span class="n">docs</span> <span class="o">-</span><span class="n">b</span> <span class="n">html</span> <span class="n">docs</span><span class="o">/</span><span class="n">_build</span><span class="o">/</span><span class="n">html</span>
+</pre></div>
+</div>
+<p>To view the documentation, go to the build directory and start an http server:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">docs</span><span class="o">/</span><span class="n">_build</span><span class="o">/</span><span class="n">html</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">http</span> <span class="mi">8081</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">HiGlass</a></h1>
+
+
+
+
+
+
+
+
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Preparation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#bed-files">Bed Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bedgraph-files">BedGraph files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bigwig-files">bigWig files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#loading-into-higlass">Loading into HiGlass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer.html#coding-guidelines">Coding Guidelines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gene_annotations.html">Gene Annotations Tracks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#creating-the-track">Creating the track</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#importing-into-higlass">Importing into HiGlass</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_client.html">HiGlass Client (Developer)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#d-tracks">1D Tracks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_server.html">Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#development">Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#importing-data">Importing data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="track_types.html">Track Types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#linking-value-scales">Linking value scales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#bed-like">Bed-like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#gene-annotations">Gene Annotations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#heatmap">Heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#d-heatmap">1D Heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#horizontal-2d-rectangle-domain">Horizontal 2D Rectangle Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#line">Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#point">Point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#chromosome-labels">Chromosome Labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#chromosome-grid">Chromosome Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="views.html">Views</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="views.html#genome-position-search-box">Genome Position Search Box</a></li>
+<li class="toctree-l2"><a class="reference internal" href="views.html#view-synchronization">View synchronization</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">HiGlass: A Multiscale Genomic Data Browser</a></li>
+      <li>Next: <a href="developer.html" title="next chapter">Developer Documentation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Peter Kerpedjiev.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/data_preparation.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

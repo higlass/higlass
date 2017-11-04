@@ -1,3 +1,4 @@
-sphinx-build -b html . _build/html
+sphinx-build -b html . _build/html; 
 
-git subtree push --prefix _build/html origin gh-pages
+cp _config.yml _build/html
+git subtree push --prefix _build/html/ origin gh-pages
