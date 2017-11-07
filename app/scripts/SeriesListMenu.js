@@ -145,6 +145,7 @@ export class SeriesListMenu extends ContextMenuContainer {
   render() {
     let exportDataMenuItem = null;
 
+    /*
     if (TRACKS_INFO_BY_TYPE[this.props.hostTrack.type]) {
       exportDataMenuItem = (
         <ContextMenuItem
@@ -160,6 +161,7 @@ export class SeriesListMenu extends ContextMenuContainer {
         </ContextMenuItem>
       );
     }
+    */
 
     return (
       <div
