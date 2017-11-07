@@ -1,3 +1,8 @@
+v0.9.11 (2017-
+
+- Fix menu clash error that occurs when a center track is specified
+without a combined track
+
 v0.9.10 (2017-11-01)
 
 - Fixed d3 brush Error: <rect> attribute height: Expected length, "Infinity"

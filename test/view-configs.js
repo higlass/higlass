@@ -1,3 +1,65 @@
+export const simpleCenterViewConfig = 
+    {
+      editable: true,
+      zoomFixed: false,
+      views: [
+        {
+          uid: 'a',
+          initialXDomain: [0, 3000000000],
+          initialYDomain: [0, 3000000000],
+          tracks: {
+            top: [],
+            left: [],
+            center: [
+              {
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "type": "heatmap",
+                "position": "center",
+                "options": {
+                  "colorRange": [
+                    "#FFFFFF",
+                    "#F8E71C",
+                    "#F5A623",
+                    "#D0021B"
+                  ],
+                  "colorbarPosition": "topRight",
+                  "colorbarLabelsPosition": "outside",
+                  "maxZoom": null,
+                  "labelPosition": "bottomLeft",
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "uid": "heatmap1",
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                "transforms": [
+                  {
+                    "name": "ICE",
+                    "value": "weight"
+                  }
+                ],
+                "width": 961,
+                "height": 1088
+              }
+            ],
+            bottom: [],
+            right: [],
+          },
+          layout: {
+            i: 'a',
+            w: 12,
+            h: 6,
+            x: 0,
+            y: 0,
+          },
+        },
+      ],
+    };
+
 export const rectangleDomains = 
   {
   "editable": true,
