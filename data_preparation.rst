@@ -31,7 +31,6 @@ This file can be aggregated like so:
 
     clodius aggregate bedfile \
         --assembly hg19 \
-        --importance-column 5 \
         sorted_genes_target_db.tsv
 
 
