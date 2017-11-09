@@ -320,7 +320,7 @@ export class CenterTrack extends React.Component {
         // if this is a combined track, iterate over children
         return track.contents.some((subTrack) => {
           if (subTrack.type === 'heatmap') {
-            return track.options.colorbarPosition === 'topRight';
+            return subTrack.options.colorbarPosition === 'topRight';
           }
           return false;
         });

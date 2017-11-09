@@ -143,7 +143,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         yMiddle -= 6;
         textYMiddle -= 10;
         tile.rectGraphics.lineStyle(1, fill['+'], 0.3);
-        tile.rectGraphics.beginFill(fill['-'], 0.3);
+        tile.rectGraphics.beginFill(fill['+'], 0.3);
       } else {
         // genes on the - strand drawn below and in a user-specified color or the default red
         yMiddle += 6;

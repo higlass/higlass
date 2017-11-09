@@ -115,7 +115,8 @@ export class SearchField {
 
     if (term.length == 0) { return null; }
 
-    // shitty ass regex to deal with negative positions (which aren't even valid genomic coordinates)
+    // shitty ass regex to deal with negative positions 
+    // (which aren't even valid genomic coordinates)
     let parts = term.split(/([0-9,a-z:A-Z-]+?[0-9]+)-([0-9,a-z:A-Z-]+)/); // split on a
     parts = parts.filter(d => d.length > 0);
 
@@ -135,9 +136,23 @@ export class SearchField {
       range = [genomePos1, genomePos2];
     } else {
       // only a locus specified and no range
-      pos1 = this.parsePosition(parts[0]);
+      // is the locus an entire chromosome?
+      // console.log('parts[0]', parts[0], this.chromInfo);
 
-      range = [pos1 - 8000000, pos1 + 8000000];
+      if (parts[0] in this.chromInfo.chrPositions) {
+        let chromPosition = this.chromInfo.chrPositions[parts[0]].pos;
+
+        // if somebody has entered an entire chromosome, we return
+        // it's length as the range
+        range = [+chromPosition,
+          +chromPosition + +this.chromInfo.chromLengths[parts[0]]];
+
+      } else {
+        // e.g. ("chr1:540340")
+        const [chr1, chrPos1, pos1] = this.parsePosition(parts[0]);
+
+        range = [pos1 - 8000000, pos1 + 8000000];
+      }
     }
 
     if (range[0] > range[1]) { return [range[1], range[0]]; }
