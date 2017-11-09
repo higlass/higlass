@@ -214,7 +214,6 @@ export class TrackRenderer extends React.Component {
     this.svgElement = nextProps.svgElement;
 
     this.syncTrackObjects(nextProps.positionedTracks);
-    console.log('this.trackDefObjects', this.trackDefObjects);
 
     for (const track of nextProps.positionedTracks) {
       // tracks all the way down
