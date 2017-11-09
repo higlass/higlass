@@ -3,6 +3,7 @@ v0.9.11 (2017-
 - Fix gene annotation coloring bug
 - Fix menu clash error that occurs when a center track is specified
 without a combined track
+- Zoom into entire chromosomes by just entering its name
 
 v0.9.10 (2017-11-01)
 
