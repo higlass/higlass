@@ -83,6 +83,9 @@ export class SearchField {
         // no it's just a position without a chromosome
         pos = +positionParts[0].replace(/,/g, ''); // no chromosome specified
         chr = null;
+
+        if (prevChr)
+          chr = prevChr;
       }
     }
 
@@ -158,6 +161,14 @@ export class SearchField {
       [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1]);
       [chr2, chrPos2, genomePos2] = this.parsePosition(parts[0], chr1);
 
+      if (chr1 == null && chr2 != null) {
+        // somembody entered a string like chr17:1000-2000
+        // and when we try to search the rever, the first chromosome
+        // is null
+        // we have to pass in the previous chromosome as a prevChrom
+        [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1], chr2);
+      }
+
       let tempRange2 = [genomePos1, genomePos2];
 
       // return the wider of the two ranges
@@ -169,7 +180,6 @@ export class SearchField {
     } else {
       // only a locus specified and no range
       // is the locus an entire chromosome?
-      // console.log('parts[0]', parts[0], this.chromInfo);
 
       if (parts[0] in this.chromInfo.chrPositions) {
         let chromPosition = this.chromInfo.chrPositions[parts[0]].pos;
