@@ -25,6 +25,10 @@ import {
   pixelToGenomeLoci,
 } from './utils';
 
+import {
+  TRACKS_INFO_BY_TYPE,
+} from './configs';
+
 // Configs
 import { MOUSE_TOOL_SELECT } from './configs';
 
@@ -432,6 +436,12 @@ export class TiledPlot extends React.Component {
     });
   }
 
+  createOverlays(overlays) {
+    for (const trackType in overlays) {
+      for (let i = 0; i < tracks[trackType].length; i++) { tracksAndLocations.push({ track: tracks[trackType][i], location: trackType }); }
+    }
+  }
+
   createTracksAndLocations() {
     const tracksAndLocations = [];
     const tracks = this.state.tracks;
@@ -515,6 +525,69 @@ export class TiledPlot extends React.Component {
         width: this.centerWidth,
         height: this.centerHeight,
         track };
+    }
+  }
+
+  trackUuidToOrientation(trackUuid) {
+    /**
+     * Obtain the orientation of the track defined
+     * by the Uuid and return it.
+     *
+     * Parameters
+     * ----------
+     *  trackUuid: 'xsdfsd'
+     *
+     * Returns
+     * -------
+     *  orientation: '1d-horizontal'
+     */
+
+  }
+
+  overlayTracks(positionedTracks) {
+    /**
+     * Return the current set of overlay tracks.
+     * 
+     * These have no positions of their own because
+     * they depend on other tracks to be drawn first.
+     *
+     * Parameters
+     * ----------
+     *  positionedTracks: The tracks along with their positions
+     *
+     * Returns
+     * -------
+     *  overlaysWithOrientationsAndPositions: []
+     *
+     */
+    if (this.props.overlays) {
+      const overlayTracks = this.props.overlays.map((overlayTrack) => {
+        console.log('positionedTracks:', positionedTracks);
+          
+        const overlayDef = {
+          extent: overlayTrack.extent,
+          includes: overlayTrack.includes,
+          orientations: overlayTrack.includes.map((trackUuid) => {
+            // translate a trackUuid into that track's orientation
+            const includedTrack = getTrackByUid(this.props.tracks, trackUuid);
+            return TRACKS_INFO_BY_TYPE[includedTrack.type].orientation;
+          }),
+          positions: overlayTrack.includes.map((trackUuid) => {
+            const positionedTrack = positionedTracks.filter(
+              track => track.track.uid == trackUuid);
+
+            if (!positionedTrack.length)
+              // couldn't find a matching track, somebody must have included
+              // an invalid uuid
+              return null;
+
+            return positionedTrack[0]; 
+          }),
+        }
+
+        console.log('overlayDef:', overlayDef);
+
+      });
     }
   }
 
@@ -940,6 +1013,7 @@ export class TiledPlot extends React.Component {
     this.createTrackPositionTexts();
 
     const positionedTracks = this.positionedTracks();
+    const overlayTracks = this.overlayTracks(positionedTracks);
 
     let trackRenderer = null;
     if (this.state.sizeMeasured) {
@@ -967,6 +1041,7 @@ export class TiledPlot extends React.Component {
           onValueScaleChanged={this.props.onValueScaleChanged}
           pixiStage={this.props.pixiStage}
           positionedTracks={positionedTracks}
+          overlayTracks={overlayTracks}
           registerDraggingChangedListener={this.props.registerDraggingChangedListener}
           removeDraggingChangedListener={this.props.removeDraggingChangedListener}
           setCentersFunction={this.props.setCentersFunction}

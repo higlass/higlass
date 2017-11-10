@@ -2595,6 +2595,7 @@ class HiGlassComponent extends React.Component {
             setCentersFunction={(c) => { this.setCenters[view.uid] = c; }}
             svgElement={this.state.svgElement}
             trackSourceServers={this.props.viewConfig.trackSourceServers}
+            overlays={view.overlays}
             tracks={view.tracks}
             uid={view.uid}
             verticalMargin={this.verticalMargin}

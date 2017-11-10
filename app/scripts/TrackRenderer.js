@@ -1153,6 +1153,13 @@ export class TrackRenderer extends React.Component {
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
+      case 'horizontal-overlay':
+        console.log('horizontal-overlay-track');
+        return new UnknownPixiTrack(
+          this.pStage,
+          { name: 'Unknown Track Type' },
+        );
+
       default:
         console.warn('WARNING: unknown track type:', track.type);
         return new UnknownPixiTrack(
