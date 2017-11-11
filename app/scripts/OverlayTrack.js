@@ -29,20 +29,28 @@ export class OverlayTrack extends PixiTrack {
     graphics.clear();
     graphics.beginFill(fill, 0.3);
 
+    //console.log('_xScale', this._xScale.range());
+
     for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
       let orientation = this.options.orientationsAndPositions[i].orientation;
       let position = this.options.orientationsAndPositions[i].position;
 
+      /*
+      console.log('this.position:', this.position);
+      console.log('position.left:', position.left);
+      */
+
       if (orientation === '1d-horizontal') {
-        let xPos = position.left + this._xScale(this.options.extent[0][0]);
+        let xPos = this.position[0] + position.left + 
+          this._xScale(this.options.extent[0][0]);
         let yPos = this.position[1] + position.top;
         let height = position.height;
-        let width = this._xScale(this.options.extent[0][1]) - xPos + position.left;
+        let width = this._xScale(this.options.extent[0][1]) - 
+          xPos + position.left + this.position[0];
 
         /*
         console.log('top:', yPos);
         console.log('height:', position.height);
-        console.log('xPos:', xPos);
         console.log('yPos:', yPos);
         console.log('width:', width);
         console.log('height:', height);
