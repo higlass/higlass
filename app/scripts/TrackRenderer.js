@@ -15,6 +15,7 @@ import TopAxisTrack from './TopAxisTrack';
 import LeftAxisTrack from './LeftAxisTrack';
 import CombinedTrack from './CombinedTrack';
 import BedLikeTrack from './BedLikeTrack';
+import OverlayTrack from './OverlayTrack';
 
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 import HorizontalPoint1DPixiTrack from './HorizontalPoint1DPixiTrack';
@@ -590,6 +591,10 @@ export class TrackRenderer extends React.Component {
       // check if any of the track's positions have changed
       // before trying to update them
 
+      /*
+      console.log('yPositionOffset:', this.yPositionOffset);
+      console.log('uid:', uid, 'newPosition', newPosition, newDimensions);
+      */
       if (!prevPosition || newPosition[0] != prevPosition[0] || newPosition[1] != prevPosition[1]) {
         trackObject.setPosition(newPosition);
         updated = true;
@@ -1153,12 +1158,14 @@ export class TrackRenderer extends React.Component {
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
-      case 'horizontal-overlay':
-        console.log('horizontal-overlay-track');
-        return new UnknownPixiTrack(
+      case 'overlay-track':
+        //console.log('horizontal-overlay-track');
+        return new OverlayTrack(
           this.pStage,
-          { name: 'Unknown Track Type' },
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
         );
+
 
       default:
         console.warn('WARNING: unknown track type:', track.type);

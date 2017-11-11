@@ -561,34 +561,58 @@ export class TiledPlot extends React.Component {
      *
      */
     if (this.props.overlays) {
-      const overlayTracks = this.props.overlays.map((overlayTrack) => {
-        console.log('positionedTracks:', positionedTracks);
+      const overlayDefs = this.props.overlays.map((overlayTrack) => {
           
         const overlayDef = {
-          extent: overlayTrack.extent,
+          uid: overlayTrack.uid || slugid.nice(),
           includes: overlayTrack.includes,
-          orientations: overlayTrack.includes.map((trackUuid) => {
-            // translate a trackUuid into that track's orientation
-            const includedTrack = getTrackByUid(this.props.tracks, trackUuid);
-            return TRACKS_INFO_BY_TYPE[includedTrack.type].orientation;
-          }),
-          positions: overlayTrack.includes.map((trackUuid) => {
-            const positionedTrack = positionedTracks.filter(
-              track => track.track.uid == trackUuid);
+          type: 'overlay-track',
+          options: Object.assign(overlayTrack.options, {
+            orientationsAndPositions: overlayTrack.includes.map((trackUuid) => {
+              // translate a trackUuid into that track's orientation
+              const includedTrack = getTrackByUid(this.props.tracks, trackUuid);
+              if (!includedTrack) {
+                console.warn(`OverlayTrack included uid (${trackUuid}) not found in the track list`);
+                return null;
+              }
+              const orientation =  TRACKS_INFO_BY_TYPE[includedTrack.type].orientation;
 
-            if (!positionedTrack.length)
-              // couldn't find a matching track, somebody must have included
-              // an invalid uuid
-              return null;
+              const positionedTrack = positionedTracks.filter(
+                track => track.track.uid == trackUuid);
 
-            return positionedTrack[0]; 
-          }),
+              if (!positionedTrack.length)
+                // couldn't find a matching track, somebody must have included
+                // an invalid uuid
+                return null;
+              const position = {
+                left: positionedTrack[0].left,
+                top: positionedTrack[0].top,
+                width: positionedTrack[0].width,
+                height: positionedTrack[0].height,
+              };
+
+              return {
+                orientation: orientation,
+                position: position
+              };
+            })
+            .filter(x => x) //filter out null entries
+          })
         }
 
-        console.log('overlayDef:', overlayDef);
-
+        return {
+          top: 0,
+          left: 0,
+          width: this.leftWidth + this.centerWidth + this.rightWidth,
+          height: this.topHeight + this.centerHeight + this.bottomHeight,
+          track: overlayDef,
+        };
       });
+
+      return overlayDefs;
     }
+
+    return [];
   }
 
   positionedTracks() {
@@ -1012,8 +1036,8 @@ export class TiledPlot extends React.Component {
 
     this.createTrackPositionTexts();
 
-    const positionedTracks = this.positionedTracks();
-    const overlayTracks = this.overlayTracks(positionedTracks);
+    let positionedTracks = this.positionedTracks();
+    positionedTracks = positionedTracks.concat(this.overlayTracks(positionedTracks));
 
     let trackRenderer = null;
     if (this.state.sizeMeasured) {
@@ -1041,7 +1065,6 @@ export class TiledPlot extends React.Component {
           onValueScaleChanged={this.props.onValueScaleChanged}
           pixiStage={this.props.pixiStage}
           positionedTracks={positionedTracks}
-          overlayTracks={overlayTracks}
           registerDraggingChangedListener={this.props.registerDraggingChangedListener}
           removeDraggingChangedListener={this.props.removeDraggingChangedListener}
           setCentersFunction={this.props.setCentersFunction}

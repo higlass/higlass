@@ -6,7 +6,6 @@ import { Track } from './Track.js';
 
 import { colorToHex } from './utils';
 
-
 export class PixiTrack extends Track {
   /**
    * @param scene: A PIXI.js scene to draw everything to.
@@ -327,7 +326,7 @@ export class PixiTrack extends Track {
   }
 
   rerender(options) {
-    this.options = options;
+    this.options = options || {};
     this.draw();
   }
 
