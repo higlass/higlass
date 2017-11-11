@@ -30,7 +30,7 @@ export class OverlayTrack extends PixiTrack {
     graphics.beginFill(fill, 0.3);
 
     //console.log('_xScale', this._xScale.range());
-    console.log('this.dimensions:', this.dimensions);
+    // console.log('this.dimensions:', this.dimensions);
 
     for (let i = 0; i < this.options.orientationsAndPositions.length; i++) {
       let orientation = this.options.orientationsAndPositions[i].orientation;

@@ -108,8 +108,9 @@ class HiGlassComponent extends React.Component {
     this.plusImg = {};
     this.configImg = {};
 
-    this.horizontalMargin = 5;
-    this.verticalMargin = 5;
+    this.horizontalMargin = 7; // nice uncommon number we can search for
+                               // when some height is off by 7
+    this.verticalMargin = 7;
 
     this.genomePositionSearchBox = null;
     this.viewHeaders = {};
@@ -311,8 +312,6 @@ class HiGlassComponent extends React.Component {
 
     this.pixiRenderer.view.style.width = `${width}px`;
     this.pixiRenderer.view.style.height = `${height}px`;
-
-    console.log('height:', height);
 
     this.pixiRenderer.render(this.pixiStage);
   }

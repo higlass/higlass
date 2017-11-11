@@ -600,14 +600,15 @@ export class TiledPlot extends React.Component {
           })
         }
 
-        console.log('topHeight:', this.topHeight);
+        // the 2 * verticalMargin is to make up for the space taken away
+        // in render(): this.centerHeight = this.state.height...
         return {
           top: 0,
           left: 0,
           width: this.leftWidth + this.centerWidth + this.rightWidth,
           height: this.topHeight + this.centerHeight 
           + this.bottomHeight 
-          + this.props.verticalMargin,
+          + 2 * this.props.verticalMargin,
           track: overlayDef,
         };
       });

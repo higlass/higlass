@@ -155,8 +155,10 @@ export class TrackRenderer extends React.Component {
 
     this.pStage = new PIXI.Graphics();
     this.pMask = new PIXI.Graphics();
+    this.pOutline = new PIXI.Graphics();
 
     this.pStage.addChild(this.pMask);
+    this.pStage.addChild(this.pOutline);
 
     this.currentProps.pixiStage.addChild(this.pStage);
 
@@ -292,6 +294,13 @@ export class TrackRenderer extends React.Component {
     this.pMask.beginFill();
     this.pMask.drawRect(this.xPositionOffset, this.yPositionOffset, this.currentProps.width, this.currentProps.height);
     this.pMask.endFill();
+
+    // show the bounds of this view
+    /*
+    this.pOutline.clear();
+    this.pOutline.lineStyle(1, '#000', 1);
+    this.pOutline.drawRect(this.xPositionOffset, this.yPositionOffset, this.currentProps.width, this.currentProps.height);
+    */
   }
 
   windowScrolled() {
