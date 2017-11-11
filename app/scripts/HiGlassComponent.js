@@ -312,6 +312,8 @@ class HiGlassComponent extends React.Component {
     this.pixiRenderer.view.style.width = `${width}px`;
     this.pixiRenderer.view.style.height = `${height}px`;
 
+    console.log('height:', height);
+
     this.pixiRenderer.render(this.pixiStage);
   }
 

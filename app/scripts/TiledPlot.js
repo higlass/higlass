@@ -600,11 +600,14 @@ export class TiledPlot extends React.Component {
           })
         }
 
+        console.log('topHeight:', this.topHeight);
         return {
           top: 0,
           left: 0,
           width: this.leftWidth + this.centerWidth + this.rightWidth,
-          height: this.topHeight + this.centerHeight + this.bottomHeight,
+          height: this.topHeight + this.centerHeight 
+          + this.bottomHeight 
+          + this.props.verticalMargin,
           track: overlayDef,
         };
       });
@@ -740,6 +743,7 @@ export class TiledPlot extends React.Component {
   updatablePropsToString(props) {
     return JSON.stringify({
       tracks: props.tracks,
+      overlays: props.overlays,
       uid: props.uid,
       addTrackPosition: props.addTrackPosition,
       editable: props.editable,
