@@ -6,6 +6,15 @@ import { HorizontalLine1DPixiTrack } from './HorizontalLine1DPixiTrack';
 import { colorToHex, dictValues } from './utils';
 
 export class BarTrack extends HorizontalLine1DPixiTrack {
+  constructor( scene, server, uid, handleTilesetInfoReceived, option,
+    animate,
+    onValueScaleChanged,
+  ) {
+    super( scene, server, uid, handleTilesetInfoReceived, option, animate,
+      onValueScaleChanged,
+    );
+  }
+
   initTile(tile) {
     /**
          * Create whatever is needed to draw this tile.
@@ -20,6 +29,11 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
 
     // this.drawTile(tile);
     this.renderTile(tile);
+  }
+
+  drawTile(tile) {
+    // empty function so that the superclass's drawTile
+    // doesn't do anything
   }
 
   renderTile(tile) {
@@ -109,6 +123,10 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   draw() {
+    // we don't want to call HorizontalLine1DPixiTrack's draw function
+    // but rather its parent's
+    super.draw();
+
     for (const tile of dictValues(this.fetchedTiles)) {
       // scaling between tiles
       const tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) / (this._xScale.domain()[1] - this._xScale.domain()[0]);
