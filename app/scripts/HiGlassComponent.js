@@ -67,6 +67,7 @@ class HiGlassComponent extends React.Component {
   constructor(props) {
     super(props);
 
+    console.log('constructing...');
     this.minHorizontalHeight = 20;
     this.minVerticalWidth = 20;
     this.resizeSensor = null;
@@ -1123,6 +1124,7 @@ class HiGlassComponent extends React.Component {
 
       if (view) {
         view.layout = l;
+        console.log('handle layout change', l);
       }
     }
 
@@ -1662,7 +1664,11 @@ class HiGlassComponent extends React.Component {
          *      The definition from the viewconf
          */
     // if the view is too short, expand the view so that it fits this track
-    if (!view.layout) { return; }
+    console.log('adjusting layout to track sizes');
+
+    if (!view.layout) { 
+      return; 
+    }
 
     let totalTrackHeight = 0;
 
@@ -1679,10 +1685,12 @@ class HiGlassComponent extends React.Component {
 
     const MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
     if (!this.props.options.bounded) {
+      console.log('prev layout h:', view.layout.h);
       view.layout.h = Math.ceil(
         (totalTrackHeight + MARGIN_HEIGHT) /
               (this.state.rowHeight + MARGIN_HEIGHT),
       );
+      console.log('next layout h:', view.layout.h);
     }
   }
 

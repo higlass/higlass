@@ -139,6 +139,7 @@ export class TiledPlot extends React.Component {
 
     if (toUpdate) { this.previousPropsStr = nextPropsStr; }
 
+    console.log('tiled plot update:', toUpdate);
     return toUpdate;
   }
 
