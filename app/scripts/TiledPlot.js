@@ -139,7 +139,6 @@ export class TiledPlot extends React.Component {
 
     if (toUpdate) { this.previousPropsStr = nextPropsStr; }
 
-    console.log('tiled plot update:', toUpdate);
     return toUpdate;
   }
 
@@ -208,6 +207,11 @@ export class TiledPlot extends React.Component {
      *                              its name.
      */
     const track = getTrackByUid(this.props.tracks, trackUid);
+
+    if (!track)
+      // track was probably removed between when we requested the tilesetInfo
+      // and when we received it
+      return;
 
     if (!track.options) { track.options = {}; }
 

@@ -67,7 +67,6 @@ class HiGlassComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    console.log('constructing...');
     this.minHorizontalHeight = 20;
     this.minVerticalWidth = 20;
     this.resizeSensor = null;
@@ -254,6 +253,12 @@ class HiGlassComponent extends React.Component {
 
   componentWillReceiveProps(newProps) {
     const viewsByUid = this.processViewConfig(newProps.viewConfig);
+
+    // make sure that the current view is tall enough to display
+    // all the tracks (if unbounded, which is checked in adjustLayout...)
+    for (let view of dictValues(viewsByUid)) {
+      this.adjustLayoutToTrackSizes(view);
+    }
 
     this.setState({
       views: viewsByUid,
@@ -1124,7 +1129,6 @@ class HiGlassComponent extends React.Component {
 
       if (view) {
         view.layout = l;
-        console.log('handle layout change', l);
       }
     }
 
@@ -1401,6 +1405,7 @@ class HiGlassComponent extends React.Component {
         leftWidth, rightWidth,
         centerWidth, centerHeight } = this.calculateViewDimensions(view);
 
+
       if (view.searchBox) { totalHeight += 30; }
 
       const heightGrid = Math.ceil(totalHeight / this.rowHeight);
@@ -1664,8 +1669,6 @@ class HiGlassComponent extends React.Component {
          *      The definition from the viewconf
          */
     // if the view is too short, expand the view so that it fits this track
-    console.log('adjusting layout to track sizes');
-
     if (!view.layout) { 
       return; 
     }
@@ -1685,12 +1688,10 @@ class HiGlassComponent extends React.Component {
 
     const MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
     if (!this.props.options.bounded) {
-      console.log('prev layout h:', view.layout.h);
       view.layout.h = Math.ceil(
         (totalTrackHeight + MARGIN_HEIGHT) /
               (this.state.rowHeight + MARGIN_HEIGHT),
       );
-      console.log('next layout h:', view.layout.h);
     }
   }
 
@@ -2277,6 +2278,11 @@ class HiGlassComponent extends React.Component {
     // redraw the track  and store the changes in the config file
     const view = this.state.views[viewUid];
     const track = getTrackByUid(view.tracks, trackUid);
+
+    if (!track)
+      // track was probably removed between when we requested the tilesetInfo
+      // and when we received it
+      return;
 
     track.options = Object.assign(track.options, newOptions);
 

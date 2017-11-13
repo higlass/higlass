@@ -255,41 +255,39 @@ describe('Simple HiGlassComponent', () => {
 
     it('should add a horizontal heatmap', (done) => {
       let prevSize = hgc.instance().state.views.aa.layout.h;
-      console.log('prevSize:', prevSize);
 
       let newViewConfig = JSON.parse(JSON.stringify(horizontalDiagonalTrackViewConf));
 
       newViewConfig.views[0].tracks.top.push(horizontalHeatmapTrack);
-      console.log('newViewConfig',newViewConfig);
 
       hgc.setProps({
         options: { bounded: false },
         viewConfig: newViewConfig
       });
 
-      console.log('nextSize:', hgc.instance().state.views.aa.layout.h);
+      let nextSize = hgc.instance().state.views.aa.layout.h;
+      expect(nextSize).to.be.above(prevSize + 2);
 
-      /*
-      hgc.setState(hgc.instance().state);
-      hgc.instance().tiledPlots.aa.measureSize();
-      */
-
+      // we need to wait until all tiles are loaded so
+      // that when we delete a track in the next test
+      // the newly received tiles don't end up getting 
+      // sent to a null receiver.
+      waitForTilesLoaded(hgc, done);
       done();
 
     });
 
     it ("should remove the horizontal heatmap", (done) => {
       let prevSize = hgc.instance().state.views.aa.layout.h;
-      console.log('prevSize:', prevSize);
 
-      /*
       hgc.setProps({
         options: { bounded: false },
         viewConfig: horizontalDiagonalTrackViewConf
       });
-      */
 
-      console.log('nextSize:', hgc.instance().state.views.aa.layout.h);
+      let nextSize = hgc.instance().state.views.aa.layout.h;
+      expect(nextSize).to.be.below(prevSize - 2);
+      //console.log('nextSize:', hgc.instance().state.views.aa.layout.h);
 
       /*
       hgc.setState(hgc.instance().state);
@@ -298,7 +296,6 @@ describe('Simple HiGlassComponent', () => {
 
       done()
     });
-    return;
 
     it('should add and resize a vertical heatmp', (done) => {
       hgc.instance().handleTrackAdded('aa', verticalHeatmapTrack, 'left');

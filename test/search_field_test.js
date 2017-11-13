@@ -13,13 +13,11 @@ describe("A search field", function() {
 
     it ("should search for ranges", function() {
         [range1, range2] = searchField.searchPosition('chr17:7566932-7595655');
-        console.log('range1:', range1);
 
        expect(range1[0]).to.be.above(2000000000);
        expect(range1[1]).to.be.above(2000000000);
 
         [range1, range2] = searchField.searchPosition('chr17:7566932-chr19:7595655');
-        console.log('range1:', range1);
 
        expect(range1[0]).to.be.above(2000000000);
        expect(range1[1]).to.be.above(2000000000);
