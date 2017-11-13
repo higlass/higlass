@@ -143,8 +143,6 @@ export class TiledPlot extends React.Component {
 
     if (toUpdate) { this.previousPropsStr = nextPropsStr; }
 
-    console.log('tiledplot update:', toUpdate);
-
     return toUpdate;
   }
 
@@ -181,7 +179,6 @@ export class TiledPlot extends React.Component {
     const height = this.element.clientHeight - heightOffset;
     const width = this.element.clientWidth;
 
-    console.log('size measured:', width, height);
     if (width > 0 && height > 0) {
       this.setState({
         sizeMeasured: true,
@@ -888,7 +885,6 @@ export class TiledPlot extends React.Component {
       </div>
     );
 
-    console.log('topHeight:', this.topHeight, this.centerHeight);
 
     const leftTracks = (
       <div

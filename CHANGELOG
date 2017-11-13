@@ -1,6 +1,8 @@
-v0.10.1-1 (2017-11-13)
+v0.10.0-2 (2017-11-13)
 
 - Change component height when a new viewconf is passed in
+- Add a fudge factor to ensure that the entire view is shown in the
+grid layout
 
 v0.10.0-1 (2017-11-13)
 

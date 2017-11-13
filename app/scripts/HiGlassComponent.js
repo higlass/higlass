@@ -1688,9 +1688,11 @@ class HiGlassComponent extends React.Component {
     totalTrackHeight += totalHeight;
 
     const MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
+    const FUDGE = 10;
+
     if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(
-        (totalTrackHeight + MARGIN_HEIGHT) /
+        (totalTrackHeight + MARGIN_HEIGHT + FUDGE) /
               (this.state.rowHeight + MARGIN_HEIGHT),
       );
     }
