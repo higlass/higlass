@@ -255,6 +255,12 @@ class HiGlassComponent extends React.Component {
   componentWillReceiveProps(newProps) {
     const viewsByUid = this.processViewConfig(newProps.viewConfig);
 
+    // make sure that the current view is tall enough to display
+    // all the tracks (if unbounded, which is checked in adjustLayout...)
+    for (let view of dictValues(viewsByUid)) {
+      this.adjustLayoutToTrackSizes(view);
+    }
+
     this.setState({
       views: viewsByUid,
     });
@@ -1400,6 +1406,7 @@ class HiGlassComponent extends React.Component {
         leftWidth, rightWidth,
         centerWidth, centerHeight } = this.calculateViewDimensions(view);
 
+
       if (view.searchBox) { totalHeight += 30; }
 
       const heightGrid = Math.ceil(totalHeight / this.rowHeight);
@@ -1663,7 +1670,9 @@ class HiGlassComponent extends React.Component {
          *      The definition from the viewconf
          */
     // if the view is too short, expand the view so that it fits this track
-    if (!view.layout) { return; }
+    if (!view.layout) { 
+      return; 
+    }
 
     let totalTrackHeight = 0;
 
@@ -2270,6 +2279,11 @@ class HiGlassComponent extends React.Component {
     // redraw the track  and store the changes in the config file
     const view = this.state.views[viewUid];
     const track = getTrackByUid(view.tracks, trackUid);
+
+    if (!track)
+      // track was probably removed between when we requested the tilesetInfo
+      // and when we received it
+      return;
 
     track.options = Object.assign(track.options, newOptions);
 
