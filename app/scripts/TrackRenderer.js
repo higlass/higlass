@@ -488,7 +488,9 @@ export class TrackRenderer extends React.Component {
      * @return: Nothing
      */
     const receivedTracksDict = {};
-    for (let i = 0; i < trackDefinitions.length; i++) { receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i]; }
+    for (let i = 0; i < trackDefinitions.length; i++) { 
+      receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i]; 
+    }
 
     const knownTracks = new Set(Object.keys(this.trackDefObjects));
     const receivedTracks = new Set(Object.keys(receivedTracksDict));

@@ -30,6 +30,7 @@ import {
 // View configs
 import {
   // paperFigure1,
+  simpleCenterViewConfig,
   rectangleDomains,
   threeViews,
   fritzBug1,
@@ -225,6 +226,38 @@ describe('Simple HiGlassComponent', () => {
     atm = null;
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
+  describe('Check for menu clashing in the center track ', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={simpleCenterViewConfig}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc, done);
+
+      // visual check that the heatmap track config menu is moved
+      // to the left
+    });
+  });
+  return;
+
 
   describe('Export SVG properly', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {

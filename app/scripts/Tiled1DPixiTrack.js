@@ -93,6 +93,7 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
     const xTilePos = tilePos[0];
     const yTilePos = tilePos[0];
 
+    // max_width should be substitutable with 2 ** tilesetInfo.max_zoom
     const totalWidth = this.tilesetInfo.max_width;
     const totalHeight = this.tilesetInfo.max_width;
 

@@ -68,21 +68,43 @@ export class SearchField {
       chr = positionParts[0];
       pos = +positionParts[1].replace(/,/g, ''); // chromosome specified
     } else {
-      pos = +positionParts[0].replace(/,/g, ''); // no chromosome specified
-      chr = null;
+      if (positionParts[0] in this.chromInfo.chrPositions) {
+        // is this an entire chromosome
+        chr = positionParts[0];
+        pos = 0;
+
+        if (prevChr != null) {
+          // this chromosome is part of a range so we actually
+          // want to search to the end of it
+          pos = +this.chromInfo.chromLengths[chr];
+        }
+
+      } else {
+        // no it's just a position without a chromosome
+        pos = +positionParts[0].replace(/,/g, ''); // no chromosome specified
+        chr = null;
+
+        if (prevChr)
+          chr = prevChr;
+      }
     }
 
     let retPos = null;
 
     if (isNaN(pos)) { retPos = null; }
 
+    // queries like chr1:1000-2000
     if (chr == null) { chr = prevChr; }
 
     if (chr == null) {
+      // no chromosome provided, so this is just a number
       retPos = pos;
     } else if (chr in this.chromInfo.chrPositions) {
+      // chromosome provided, everything is fine
       retPos = this.chromInfo.chrPositions[chr].pos + pos;
     } else {
+      // provided chromosome doesn't exit
+
       // console.log("Search error: No chromInfo specified or chromosome (" + chr + ") not in chromInfo");
       retPos = null;
     }
@@ -115,8 +137,9 @@ export class SearchField {
 
     if (term.length == 0) { return null; }
 
-    // shitty ass regex to deal with negative positions (which aren't even valid genomic coordinates)
-    let parts = term.split(/([0-9,a-z:A-Z-]+?[0-9]+)-([0-9,a-z:A-Z-]+)/); // split on a
+    // shitty ass regex to deal with negative positions 
+    // (which aren't even valid genomic coordinates)
+    let parts = term.split('-'); // split on a
     parts = parts.filter(d => d.length > 0);
 
     let pos1 = null,
@@ -129,15 +152,49 @@ export class SearchField {
     }
 
     if (parts.length > 1) {
-      const [chr1, chrPos1, genomePos1] = this.parsePosition(parts[0]);
-      const [chr2, chrPos2, genomePos2] = this.parsePosition(parts[1], chr1);
+      // calculate the range in one direction
+      let [chr1, chrPos1, genomePos1] = this.parsePosition(parts[0]);
+      let [chr2, chrPos2, genomePos2] = this.parsePosition(parts[1], chr1);
 
-      range = [genomePos1, genomePos2];
+      let tempRange1 = [genomePos1, genomePos2];
+
+      [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1]);
+      [chr2, chrPos2, genomePos2] = this.parsePosition(parts[0], chr1);
+
+      if (chr1 == null && chr2 != null) {
+        // somembody entered a string like chr17:1000-2000
+        // and when we try to search the rever, the first chromosome
+        // is null
+        // we have to pass in the previous chromosome as a prevChrom
+        [chr1, chrPos1, genomePos1] = this.parsePosition(parts[1], chr2);
+      }
+
+      let tempRange2 = [genomePos1, genomePos2];
+
+      // return the wider of the two ranges
+      // e.g. searching for chr1-chr2 vs chr2-chr1
+      if (tempRange2[1] - tempRange2[0] > tempRange1[1] - tempRange1[0])
+        return tempRange2
+      else
+        return tempRange1
     } else {
       // only a locus specified and no range
-      pos1 = this.parsePosition(parts[0]);
+      // is the locus an entire chromosome?
 
-      range = [pos1 - 8000000, pos1 + 8000000];
+      if (parts[0] in this.chromInfo.chrPositions) {
+        let chromPosition = this.chromInfo.chrPositions[parts[0]].pos;
+
+        // if somebody has entered an entire chromosome, we return
+        // it's length as the range
+        range = [+chromPosition,
+          +chromPosition + +this.chromInfo.chromLengths[parts[0]]];
+
+      } else {
+        // e.g. ("chr1:540340")
+        const [chr1, chrPos1, pos1] = this.parsePosition(parts[0]);
+
+        range = [pos1 - 8000000, pos1 + 8000000];
+      }
     }
 
     if (range[0] > range[1]) { return [range[1], range[0]]; }

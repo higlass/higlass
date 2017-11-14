@@ -1,13 +1,34 @@
-v0.9.11 (2017-11-??)
+v0.9.15 (2017-11-??)
 
 - Free up webgl renderer resources when unmount
 - Minor CSS cleanup
+
+v0.9.14 (2017-11-11)
+
+- Show labels on bar chart
+
+v0.9.13 (2017-11-09)
+
+- Fixed gene position searching regression
+
+v0.9.12 (2017-11-08)
+
+- Fix inter-chromosomal searches (chr1-chr2)
+
+v0.9.11 (2017-11-08)
+
+- Fix gene annotation coloring bug
+- Fix menu clash error that occurs when a center track is specified
+without a combined track
+- Zoom into entire chromosomes by just entering its name
 
 v0.9.10 (2017-11-01)
 
 - Fixed d3 brush Error: <rect> attribute height: Expected length, "Infinity"
 - Fixed scale initialization error
 - Added back heatmap value scaling
+- Fixed horizontal heatmap multires tile loading
+- Better point export
 
 v0.9.9 (2017-11-01)
 
