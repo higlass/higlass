@@ -2,6 +2,7 @@ v0.9.15 (2017-11-??)
 
 - Free up webgl renderer resources when unmount
 - Minor CSS cleanup
+- Fix resizing bug that appears after closing a view
 
 v0.9.14 (2017-11-11)
 

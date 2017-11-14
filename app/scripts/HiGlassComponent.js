@@ -1197,7 +1197,8 @@ class HiGlassComponent extends React.Component {
   }
 
   resizeHandler() {
-    objVals(this.viewHeaders).forEach(viewHeader => viewHeader.checkWidth());
+    console.log('this.viewHeaders:', this.viewHeaders);
+    objVals(this.viewHeaders).filter(x => x).forEach(viewHeader => viewHeader.checkWidth());
   }
 
   fillInMinWidths(tracksDict) {
