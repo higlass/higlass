@@ -510,17 +510,25 @@ export class TiledPixiTrack extends PixiTrack {
 
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
-    if (visibleAndFetchedIds.length == 0) {
+    if (visibleAndFetchedIds.length === 0) {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    const values = [].concat.apply([], visibleAndFetchedIds.filter(x => this.fetchedTiles[x].tileData.dense).map(x => Array.from(this.fetchedTiles[x].tileData.dense))).filter(x => x > 0);
+    const values = [].concat.apply(
+      [],
+      visibleAndFetchedIds
+        .filter(x => this.fetchedTiles[x].tileData.dense)
+        .map(x => Array.from(this.fetchedTiles[x].tileData.dense))
+    ).filter(x => x > 0);
 
     this.medianVisibleValue = median(values);
   }
 
   allVisibleValues() {
-    return [].concat.apply([], this.visibleAndFetchedIds().map(x => Array.from(this.fetchedTiles[x].tileData.dense)));
+    return [].concat.apply(
+      [],
+      this.visibleAndFetchedIds().map(x => Array.from(this.fetchedTiles[x].tileData.dense))
+    );
   }
 
   minVisibleValue() {
@@ -530,10 +538,13 @@ export class TiledPixiTrack extends PixiTrack {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    let min = Math.min.apply(null, visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.minNonZero));
+    let min = Math.min.apply(
+      null,
+      visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.minNonZero)
+    );
 
     // if there's no data, use null
-    if (min == Number.MAX_SAFE_INTEGER) { min = null; }
+    if (min === Number.MAX_SAFE_INTEGER) { min = null; }
 
     return min;
   }
@@ -541,14 +552,17 @@ export class TiledPixiTrack extends PixiTrack {
   maxVisibleValue() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 
-    if (visibleAndFetchedIds.length == 0) {
+    if (visibleAndFetchedIds.length === 0) {
       visibleAndFetchedIds = Object.keys(this.fetchedTiles);
     }
 
-    let max = Math.max.apply(null, visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero));
+    let max = Math.max.apply(
+      null,
+      visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero)
+    );
 
     // if there's no data, use null
-    if (max == Number.MIN_SAFE_INTEGER) { max = null; }
+    if (max === Number.MIN_SAFE_INTEGER) { max = null; }
 
     return max;
   }

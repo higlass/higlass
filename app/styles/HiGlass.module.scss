@@ -21,3 +21,8 @@
   top: 0;
   pointer-events: none;
 }
+
+.tiled-area {
+  display: flex;
+  flex-direction: column;
+}
