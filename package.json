@@ -52,6 +52,7 @@
     "path": "^0.12.7",
     "pixi.js": "^4.5.2",
     "prop-types": "^15.5.10",
+    "rbush": "^2.0.1",
     "react": "^15.5.4",
     "react-autocomplete": "tiemevanveen/react-autocomplete#fix-176",
     "react-bootstrap": "^0.31.0",
