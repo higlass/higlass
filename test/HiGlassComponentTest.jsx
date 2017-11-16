@@ -226,6 +226,50 @@ describe('Simple HiGlassComponent', () => {
     atm = null;
 
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+
+  describe('View config buttons', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={oneViewConfig}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc, done);
+
+      console.log('finished');
+      // visual check that the heatmap track config menu is moved
+      // to the left
+    });
+
+    it('Disables the add track button on the first view', (done) => {
+      let newViewConfig = JSON.parse(JSON.stringify(oneViewConfig));
+      console.log('here');
+
+      newViewConfig.views[0].disableAddTracks = true;
+      hgc.setProps({
+        options: { bounded: false },
+        viewConfig: newViewConfig
+      });
+      done();
+    });
+  });
+  return;
   //
   // wait a bit of time for the data to be loaded from the server
   describe('Track positioning', () => {
@@ -248,9 +292,13 @@ describe('Simple HiGlassComponent', () => {
       hgc = mount(<HiGlassComponent
         options={{ bounded: false }}
         viewConfig={horizontalDiagonalTrackViewConf}
-      />,
-        { attachTo: div });
-      setTimeout(done, pageLoadTime);
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc, done);
+
+      // visual check that the heatmap track config menu is moved
+      // to the left
     });
 
     it('should add a horizontal heatmap', (done) => {
