@@ -21,7 +21,15 @@ export class TiledPixiTrack extends PixiTrack {
    * @param server: The server to pull tiles from.
    * @param tilesetUid: The data set to get the tiles from the server
    */
-  constructor(scene, server, tilesetUid, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
+  constructor(
+    scene,
+    server,
+    tilesetUid,
+    handleTilesetInfoReceived,
+    options,
+    animate,
+    onValueScaleChanged
+  ) {
     super(scene, options);
 
     // the tiles which should be visible (although they're not necessarily fetched)
@@ -78,7 +86,9 @@ export class TiledPixiTrack extends PixiTrack {
 
       this.refreshTiles();
 
-      if (handleTilesetInfoReceived) { handleTilesetInfoReceived(tilesetInfo[tilesetUid]); }
+      if (handleTilesetInfoReceived) {
+        handleTilesetInfoReceived(tilesetInfo[tilesetUid]);
+      }
 
       if (!this.options) { this.options = {}; }
 
@@ -89,7 +99,6 @@ export class TiledPixiTrack extends PixiTrack {
     });
 
     this.uuid = slugid.nice();
-
 
     this.refreshTilesDebounced = debounce(this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
 
@@ -326,14 +335,12 @@ export class TiledPixiTrack extends PixiTrack {
     for (let i = 0; i < fetchedTileIDs.length; i++) {
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
         const newGraphics = new PIXI.Graphics();
-        // console.log('adding:', fetchedTileIDs[i]);
         this.pMain.addChild(newGraphics);
 
         this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;
-        // console.log('fetchedTiles:', this.fetchedTiles[fetchedTileIDs[i]]);
+
         this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
 
-        // console.log('adding graphics...', fetchedTileIDs[i]);
         this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
         added = true;
       }
@@ -492,9 +499,9 @@ export class TiledPixiTrack extends PixiTrack {
 
     super.draw();
 
-    for (const uid in this.fetchedTiles) {
-      this.drawTile(this.fetchedTiles[uid]);
-    }
+    Object.keys(this.fetchedTiles).forEach(
+      tilesetUid => this.drawTile(this.fetchedTiles[tilesetUid])
+    );
   }
 
   drawTile(tileData, graphics) {
