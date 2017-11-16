@@ -198,14 +198,14 @@ export class TiledPlot extends React.Component {
     this.props.onScalesChanged(x, y);
   }
 
+  /**
+   * We've received information about a tileset from the server. Register it
+   * with the track definition.
+   * @param trackUid (string): The identifier for the track
+   * @param tilesetInfo (object): Information about the track (hopefully including
+   *                              its name.
+   */
   handleTilesetInfoReceived(trackUid, tilesetInfo) {
-    /**
-     * We've received information about a tileset from the server. Register it
-     * with the track definition.
-     * @param trackUid (string): The identifier for the track
-     * @param tilesetInfo (object): Information about the track (hopefully including
-     *                              its name.
-     */
     const track = getTrackByUid(this.props.tracks, trackUid);
 
     if (!track.options) { track.options = {}; }
