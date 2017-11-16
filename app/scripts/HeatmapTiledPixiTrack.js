@@ -8,7 +8,7 @@ import { AxisPixi } from './AxisPixi';
 
 import { tileProxy } from './services';
 
-import { colorDomainToRgbaArray, colorToHex } from './utils';
+import { colorDomainToRgbaArray, colorToHex, tileToCanvas } from './utils';
 
 import { heatedObjectMap } from './configs';
 
@@ -21,7 +21,7 @@ const BRUSH_HEIGHT = 4;
 const BRUSH_COLORBAR_GAP = 1;
 const BRUSH_MARGIN = 4;
 const SCALE_LIMIT_PRECISION = 5;
-const BINS_PER_TILE=256;
+const BINS_PER_TILE = 256;
 
 
 export class HeatmapTiledPixiTrack extends TiledPixiTrack {
@@ -122,24 +122,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.drawColorbar();
   }
 
-  tileDataToCanvas(pixData) {
-    const canvas = document.createElement('canvas');
-
-    canvas.width = 256;
-    canvas.height = 256;
-
-    const ctx = canvas.getContext('2d');
-
-    ctx.fillStyle = 'transparent';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    const pix = new ImageData(pixData, canvas.width, canvas.height);
-
-    ctx.putImageData(pix, 0, 0);
-
-    return canvas;
-  }
-
   exportData() {}
 
   setSpriteProperties(sprite, zoomLevel, tilePos, mirrored) {
@@ -174,7 +156,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       sprite.y = this._refYScale(tileY);
     }
   }
-
 
   refXScale(_) {
     super.refXScale(_);
@@ -600,7 +581,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         // the tileData has been converted to pixData by the worker script and needs to be loaded
         // as a sprite
         const graphics = tile.graphics;
-        const canvas = this.tileDataToCanvas(pixData);
+        const canvas = tileToCanvas(pixData);
 
         let sprite = null;
 
