@@ -120,35 +120,29 @@ export class TiledPixiTrack extends PixiTrack {
     }
   }
 
-
+  /**
+   * Return the set of ids of all tiles which are both visible and fetched.
+   */
   visibleAndFetchedIds() {
-    /**
-         * Return the set of ids of all tiles which are both visible and fetched.
-         */
-
-    const ret = Object.keys(this.fetchedTiles).filter(x => this.visibleTileIds.has(x));
-    return ret;
+    return Object.keys(this.fetchedTiles).filter(x => this.visibleTileIds.has(x));
   }
 
   visibleAndFetchedTiles() {
-    const ids = this.visibleAndFetchedIds();
-
-    return ids.map(x => this.fetchedTiles[x]);
+    return this.visibleAndFetchedIds().map(x => this.fetchedTiles[x]);
   }
 
+  /**
+   * Set which tiles are visible right now.
+   *
+   * @param tiles: A set of tiles which will be considered the currently visible
+   * tile positions.
+   */
   setVisibleTiles(tilePositions) {
-    /**
-         * Set which tiles are visible right now.
-         *
-         * @param tiles: A set of tiles which will be considered the currently visible
-         * tile positions.
-         */
     this.visibleTiles = tilePositions.map(x => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
       mirrored: x.mirrored,
     }));
-
 
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
   }
@@ -163,9 +157,10 @@ export class TiledPixiTrack extends PixiTrack {
 
     // fetch the tiles that should be visible but haven't been fetched
     // and aren't in the process of being fetched
-    const toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId));
+    const toFetch = [...this.visibleTiles]
+      .filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId));
 
-    for (let i = 0; i < toFetch.length; i++) { this.fetching.add(toFetch[i].remoteId); }
+    toFetch.forEach(tile => this.fetching.add(tile.remoteId));
 
     // calculate which tiles are obsolete and remove them
     // fetchedTileID are remote ids
