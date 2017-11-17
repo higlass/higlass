@@ -14,7 +14,7 @@ const epsilon = 0.0000001;
 const MAX_FETCH_TILES = 20;
 
 export function workerSetPix(
-  size, data, valueScale, pseudocount, colorScale, passedCountTransform
+  data, valueScale, pseudocount, colorScale, passedCountTransform
 ) {
   /**
    * The pseudocount is generally the minimum non-zero value and is
@@ -22,7 +22,7 @@ export function workerSetPix(
    */
   const epsilon = 0.000001;
 
-  const pixData = new Uint8ClampedArray(size * 4);
+  const pixData = new Uint8ClampedArray(data.length * 4);
 
   let rgbIdx = 0;
   let e = 0;
@@ -32,7 +32,7 @@ export function workerSetPix(
       const d = data[i];
       e = d; // for debugging
 
-      rgbIdx = 255;
+      rgbIdx = 255; // transparent
 
       if (d > epsilon) {
         // values less than espilon are considered NaNs and made transparent (rgbIdx 255)

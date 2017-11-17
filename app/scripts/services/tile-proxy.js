@@ -16,7 +16,9 @@ import {
 import { TILE_FETCH_DEBOUNCE } from '../configs';
 
 const sessionId = slugid.nice();
-export let requestsInFlight = 0;
+let requestsInFlight = 0;
+
+export const getRequestsInFlight = () => requestsInFlight;
 
 const debounce = (func, wait) => {
   let timeout;
@@ -99,36 +101,27 @@ export const fetchTiles = (tilesetServer, tilesetIds, done) =>
 /**
  * Calculate the zoom level from a list of available resolutions
  */
-export const calculateZoomLevelFromResolutions = (resolutions, scale, minX, maxX) => {
-  const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
+export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
+  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
 
   const trackWidth = scale.range()[1] - scale.range()[0];
-  //console.log('trackWidth:', trackWidth, 'scale:', this._xScale.domain()[1] - this._xScale.domain()[0]);
 
-  let binsDisplayed = sortedResolutions.map(r => (scale.domain()[1] - scale.domain()[0]) / r)
-  let binsPerPixel = binsDisplayed.map(b => b / trackWidth);
-
-  /*
-      console.log('trackWidth:', trackWidth);
-      console.log('resolutions:', sortedResolutions);
-      console.log('binsDisplayed:', binsDisplayed);
-      console.log('binsPerPixel:', binsPerPixel);
-      */
+  const binsDisplayed = sortedResolutions.map(
+    r => (scale.domain()[1] - scale.domain()[0]) / r
+  );
+  const binsPerPixel = binsDisplayed.map(b => b / trackWidth);
 
   // we're going to show the highest resolution that requires more than one pixel per bin
-  let displayableBinsPerPixel = binsPerPixel.filter(b => b < 1);
+  const displayableBinsPerPixel = binsPerPixel.filter(b => b < 1);
 
-  if (displayableBinsPerPixel.length == 0)
-    return 0;
+  if (displayableBinsPerPixel.length === 0) return 0;
 
-  let zoomIndex = binsPerPixel.indexOf(displayableBinsPerPixel[displayableBinsPerPixel.length-1]);
-  /*
-      console.log('displayableBinsPerPixel', displayableBinsPerPixel);
-      console.log('zoomIndex:', zoomIndex);
-      */
+  const zoomIndex = binsPerPixel.indexOf(
+    displayableBinsPerPixel[displayableBinsPerPixel.length - 1]
+  );
 
   return zoomIndex;
-}
+};
 
 /**
  * Calculate the current zoom level.
@@ -150,6 +143,28 @@ export const calculateZoomLevel = (scale, minX, maxX) => {
   return zoomLevel;
 };
 
+export const calculateTilesPure = (
+  zoomLevel, start, end, minX, maxX, maxZoom, maxWidth,
+) => {
+  const zoomLevelFinal = zoomLevel > maxZoom ? maxZoom : zoomLevel;
+
+  // the ski areas are positioned according to their
+  // cumulative widths, which means the tiles need to also
+  // be calculated according to cumulative width
+
+  const tileWidth = maxWidth / (2 ** zoomLevelFinal);
+
+  const epsilon = 0.0000001;
+
+  return range(
+    Math.max(0, Math.floor((start - minX) / tileWidth)),
+    Math.min(
+      2 ** zoomLevelFinal,
+      Math.ceil(((end - minX) - epsilon) / tileWidth),
+    ),
+  );
+};
+
 /**
  * Calculate the tiles that should be visible get a data domain
  * and a tileset info
@@ -169,25 +184,15 @@ export const calculateZoomLevel = (scale, minX, maxX) => {
  */
 export const calculateTiles = (
   zoomLevel, scale, minX, maxX, maxZoom, maxWidth,
-) => {
-  const zoomLevelFinal = zoomLevel > maxZoom ? maxZoom : zoomLevel;
-
-  // the ski areas are positioned according to their
-  // cumulative widths, which means the tiles need to also
-  // be calculated according to cumulative width
-
-  const tileWidth = maxWidth / (2 ** zoomLevelFinal);
-
-  const epsilon = 0.0000001;
-
-  return range(
-    Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
-    Math.min(
-      2 ** zoomLevelFinal,
-      Math.ceil(((scale.domain()[1] - minX) - epsilon) / tileWidth),
-    ),
-  );
-};
+) => calculateTilesPure(
+  zoomLevel,
+  scale.domain()[0],
+  scale.domain()[1],
+  minX,
+  maxX,
+  maxZoom,
+  maxWidth,
+);
 
 /**
  * Calculate the tiles that sould be visisble given the resolution and
@@ -239,7 +244,6 @@ export const tileDataToPixData = (
 
   // comment this and uncomment the code afterwards to enable threading
   const pixData = workerSetPix(
-    newTileData.length,
     newTileData,
     valueScale,
     pseudocount,
@@ -275,10 +279,10 @@ export const tileDataToPixData = (
     */
 };
 
+/**
+ * Send a JSON request mark it so that we can tell how many are in flight
+ */
 function text(url, callback) {
-  /**
-   * Send a JSON request mark it so that we can tell how many are in flight
-   */
   requestsInFlight += 1;
   d3Text(url, (error, done) => {
     callback(error, done);
@@ -286,10 +290,10 @@ function text(url, callback) {
   });
 }
 
+/**
+ * Send a JSON request mark it so that we can tell how many are in flight
+ */
 function json(url, callback) {
-  /**
-   * Send a JSON request mark it so that we can tell how many are in flight
-   */
   requestsInFlight += 1;
   d3Json(url, (error, done) => {
     callback(error, done);
