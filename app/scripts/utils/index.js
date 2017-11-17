@@ -11,6 +11,7 @@ export { default as dictValues } from './dict-values';
 export { default as download } from './download';
 export { default as euclidianDist } from './euclidian-dist';
 export { default as flatten } from './flatten';
+export { default as findNearest2dPoint } from './find-nearest-2d-point';
 export { default as genomeLociToPixels } from './genome-loci-to-pixels';
 export { default as getTrackByUid } from './get-track-by-uid';
 export { default as getTrackPositionByUid } from './get-track-position-by-uid';
