@@ -555,25 +555,29 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   renderTile(tile) {
-    if (this.options.heatmapValueScaling == 'log') {
+    if (this.options.heatmapValueScaling === 'log') {
       this.valueScale = scaleLog().range([254, 0])
         .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-    } else if (this.options.heatmapValueScaling == 'linear') {
+    } else if (this.options.heatmapValueScaling === 'linear') {
       this.valueScale = scaleLinear().range([254, 0])
         .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
     }
 
     this.limitedValueScale = this.valueScale.copy();
 
-    if (this.options
-            && typeof (this.options.scaleStartPercent) !== 'undefined'
-            && typeof (this.options.scaleEndPercent) !== 'undefined') {
-      this.limitedValueScale.domain(
-        [this.valueScale.domain()[0] + (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * (this.options.scaleStartPercent),
-          this.valueScale.domain()[0] + (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * (this.options.scaleEndPercent)]);
+    if (
+      this.options &&
+      typeof (this.options.scaleStartPercent) !== 'undefined' &&
+      typeof (this.options.scaleEndPercent) !== 'undefined'
+    ) {
+      this.limitedValueScale.domain([
+        this.valueScale.domain()[0] + (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * (this.options.scaleStartPercent),
+        this.valueScale.domain()[0] + (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * (this.options.scaleEndPercent)
+      ]);
     }
 
-    tileProxy.tileDataToPixData(tile,
+    tileProxy.tileDataToPixData(
+      tile,
       this.limitedValueScale,
       this.valueScale.domain()[0], // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
@@ -585,13 +589,20 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
         let sprite = null;
 
-        sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+        sprite = new PIXI.Sprite(
+          PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
+        );
 
         tile.sprite = sprite;
 
         // store the pixData so that we can export it
         tile.canvas = canvas;
-        this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
+        this.setSpriteProperties(
+          tile.sprite,
+          tile.tileData.zoomLevel,
+          tile.tileData.tilePos,
+          tile.mirrored
+        );
 
         graphics.removeChildren();
         graphics.addChild(tile.sprite);
