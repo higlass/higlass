@@ -6,9 +6,9 @@ import Insets2dTrack from './Insets2dTrack';
 // Utils
 import { colorToHex, findNearest2dPoint } from './utils';
 
-export class Combined2dAnnotationsTrack {
+class Combined2dAnnotationsTrack {
   constructor(scene, trackDefs, options, trackCreator, animate) {
-    this.childTracks = trackDefs.map((trackDef) => {
+    this.annotationTracks = trackDefs.map((trackDef) => {
       const track = trackCreator(trackDef);
 
       // Augment track options
@@ -18,9 +18,16 @@ export class Combined2dAnnotationsTrack {
       return track;
     });
 
+    if (this.annotationTracks.some(childTrack => !childTrack)) {
+      console.error('Empty child track in Combined2dAnnotationsTrack:', this);
+    }
+
     this.animate = animate;
 
     this.insetsTrack = new Insets2dTrack(scene, {
+      server: options.server,
+      chromInfoPath: options.chromInfoPath,
+      heatmapUuid: options.heatmapUuid,
       fill: colorToHex(options.insetFill || 'black'),
       fillOpacity: +options.insetFillOpacity || 0.5,
       strokeWidth: +options.insetStrokeWidth || 1,
@@ -35,9 +42,7 @@ export class Combined2dAnnotationsTrack {
       opacity: +options.opacity || 1
     });
 
-    if (this.childTracks.some(childTrack => !childTrack)) {
-      console.error('Empty child track in Combined2dAnnotationsTrack:', this);
-    }
+    this.childTracks = [...this.annotationTracks, this.insetsTrack];
 
     this.options = options;
 
@@ -51,8 +56,17 @@ export class Combined2dAnnotationsTrack {
     this.createInsets();
   }
 
-  annotationDrawn(x, y, w, h) {
-    const locus = { minX: x, minY: y, maxX: x + w, maxY: y + h };
+  annotationDrawn(x, y, w, h, cX1, cX2, cY1, cY2) {
+    const locus = {
+      minX: x,
+      minY: y,
+      maxX: x + w,
+      maxY: y + h,
+      cX1,
+      cX2,
+      cY1,
+      cY2
+    };
 
     this.drawnAnnotations.push(locus);
 
@@ -69,12 +83,12 @@ export class Combined2dAnnotationsTrack {
    * building of the spatial RTree.
    *
    * @description
-   * Simple counter that call `this.buildTree()` once the number of childtracks
-   * is reached. This might need to be improved!=
+   * Simple counter that call `this.buildTree()` once the number of annotation
+   * tracks is reached. This might need to be improved!=
    */
   trackDrawn() {
     this.numTracksDrawn += 1;
-    if (this.numTracksDrawn === this.childTracks.length) this.buildTree();
+    if (this.numTracksDrawn === this.annotationTracks.length) this.buildTree();
   }
 
   createInsets() {
@@ -130,14 +144,33 @@ export class Combined2dAnnotationsTrack {
 
       const closest = findNearest2dPoint([inset.minX, inset.maxY], targets);
 
-      return [...closest, inset.minX, inset.maxY];
+      return [
+        ...closest,
+        inset.minX,
+        inset.maxY,
+        inset.cX1,
+        inset.cX2,
+        inset.cY1,
+        inset.cY2
+      ];
     });
   }
 
   drawInsets(insets) {
     insets.forEach(
       inset => this.insetsTrack
-        .drawInset(inset[0], inset[1], 64, 64, inset[2], inset[3])
+        .drawInset(
+          inset[0],
+          inset[1],
+          64,
+          64,
+          inset[2],
+          inset[3],
+          inset[4],
+          inset[5],
+          inset[6],
+          inset[7],
+        )
     );
     this.animate();
   }
@@ -163,7 +196,7 @@ export class Combined2dAnnotationsTrack {
       }
     });
 
-    this.childTracks = newTracks;
+    this.annotationTracks = newTracks;
 
     // remove the ones that were previously, but no longer, present
     const knownTracks = new Set(Object.keys(this.createdTracks));
@@ -185,7 +218,6 @@ export class Combined2dAnnotationsTrack {
     this.childTracks.forEach(
       childTracks => childTracks.setPosition(newPosition)
     );
-    this.insetsTrack.setPosition(newPosition);
   }
 
   setDimensions(newDimensions) {
@@ -193,7 +225,6 @@ export class Combined2dAnnotationsTrack {
     this.childTracks.forEach(
       childTracks => childTracks.setDimensions(newDimensions)
     );
-    this.insetsTrack.setDimensions(newDimensions);
   }
 
   /**

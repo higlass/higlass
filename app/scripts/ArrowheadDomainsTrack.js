@@ -234,7 +234,8 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
           );
 
           this.annotationDrawn(
-            drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height
+            drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height,
+            td.xStart, td.xEnd, td.yStart, td.yEnd
           );
         }
       }
