@@ -173,10 +173,10 @@
                 "position": "center",
                 "options": {
                   "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "#F5A623",
-                    "#D0021B"
+                    "#fff",
+                    "#bbb",
+                    "#666",
+                    "#333"
                   ],
                   "colorbarPosition": "topRight",
                   "colorbarLabelsPosition": "outside",
@@ -223,13 +223,22 @@
                 "type": "combined-2d-annotations",
                 "height": 592,
                 "options": {
+                  server: 'http://higlass.io/api/v1',
+                  chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+                  heatmapUuid: 'CQMd6V_cRw6iCI_-Unl3PQ',
                   heatmapTrack: 'heatmap1',
                   insetThreshold: 16,
-                  insetFill: 'pink',
-                  insetFillOpacity: 0.2,
-                  insetStroke: 'black',
+                  insetFill: 'white',
+                  insetFillOpacity: 1,
+                  insetStroke: 'red',
                   insetStrokeWidth: 2,
                   insetStrokeOpacity: 1,
+                  insetLeaderLineStroke: 'red',
+                  insetLeaderLineStrokeWidth: 1,
+                  insetLeaderLineStrokeOpacity: 1,
+                  insetDropDistance: 1,
+                  insetDropBlur: 3,
+                  insetDropOpacity: 0.8,
                   opacity: 1
                 },
                 "contents": [{
