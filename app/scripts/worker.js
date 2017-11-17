@@ -102,13 +102,13 @@ function float32(inUint16) {
 }
 
 function _base64ToArrayBuffer(base64) {
-  const binary_string = window.atob(base64);
-  const len = binary_string.length;
+  const binaryString = window.atob(base64);
+  const len = binaryString.length;
 
   const bytes = new Uint8Array(len);
 
   for (let i = 0; i < len; i++) {
-    bytes[i] = binary_string.charCodeAt(i);
+    bytes[i] = binaryString.charCodeAt(i);
   }
 
   return bytes.buffer;
@@ -326,33 +326,32 @@ export function workerFetchMultiRequestTiles(req) {
   });
 }
 
-function workerLoadTileData(tile_value, tile_type) {
+function workerLoadTileData(tileValue, tileType) {
   const resolution = 256;
 
-  const t1 = new Date().getTime();
-  if (tile_type == 'dense') { return tile_value; } else if (tile_type == 'sparse') {
+  if (tileType === 'dense') { return tileValue; }
+  else if (tileType === 'sparse') {
     const values = [];
     for (let i = 0; i < resolution * resolution; i++) { values.push(0); }
 
     let i = 0;
-    while (i < tile_value.length) {
-      const value = tile_value[i];
-      let num_poss = tile_value[i + 1];
+    while (i < tileValue.length) {
+      const value = tileValue[i];
+      let numPoss = tileValue[i + 1];
       i += 2;
 
-      let xs = [],
-        ys = [];
+      const xs = [];
+      const ys = [];
 
-      for (let j = 0; j < num_poss; j++) { xs.push(tile_value[i + j]); }
+      for (let j = 0; j < numPoss; j++) { xs.push(tileValue[i + j]); }
 
-      for (let j = 0; j < num_poss; j++) { ys.push(tile_value[i + num_poss + j]); }
+      for (let j = 0; j < numPoss; j++) { ys.push(tileValue[i + numPoss + j]); }
 
-      for (let j = 0; j < num_poss; j++) {
-        values[ys[j] * resolution +
-                xs[j]] = value;
+      for (let j = 0; j < numPoss; j++) {
+        values[(ys[j] * resolution) + xs[j]] = value;
       }
 
-      i += num_poss *= 2;
+      i += numPoss *= 2;
     }
 
     return values;
