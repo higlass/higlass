@@ -7,6 +7,7 @@ import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 
+import Combined2dAnnotationsTrack from './Combined2dAnnotationsTrack';
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
 import IdHorizontal1DTiledPixiTrack from './IdHorizontal1DTiledPixiTrack';
@@ -417,18 +418,19 @@ export class TrackRenderer extends React.Component {
     this.applyZoomTransform(notify);
   }
 
+  /*
+   * Fetch the trackObject for a track with a given ID
+   */
   getTrackObject(trackId) {
-    /*
-     * Fetch the trackObject for a track with a given ID
-     *
-     */
     const trackDefItems = dictItems(this.trackDefObjects);
+
+    console.log('getTrackObject', trackId, Object.keys(this.trackDefObjects), trackDefItems);
 
     for (let i = 0; i < trackDefItems.length; i++) {
       const uid = trackDefItems[i][0];
       const trackObject = trackDefItems[i][1].trackObject;
 
-      if (uid == trackId) {
+      if (uid === trackId) {
         return trackObject;
       }
 
@@ -436,16 +438,18 @@ export class TrackRenderer extends React.Component {
       if (trackObject.createdTracks) {
         const createdTrackItems = dictItems(trackObject.createdTracks);
 
-        for (let i = 0; i < createdTrackItems.length; i++) {
-          const createdTrackUid = createdTrackItems[i][0];
-          const createdTrackObject = createdTrackItems[i][1];
+        for (let j = 0; j < createdTrackItems.length; j++) {
+          const createdTrackUid = createdTrackItems[j][0];
+          const createdTrackObject = createdTrackItems[j][1];
 
-          if (createdTrackUid == trackId) {
+          if (createdTrackUid === trackId) {
             return createdTrackObject;
           }
         }
       }
     }
+
+    return undefined;
   }
 
   timedUpdatePositionAndDimensions() {
@@ -488,8 +492,8 @@ export class TrackRenderer extends React.Component {
      * @return: Nothing
      */
     const receivedTracksDict = {};
-    for (let i = 0; i < trackDefinitions.length; i++) { 
-      receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i]; 
+    for (let i = 0; i < trackDefinitions.length; i++) {
+      receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i];
     }
 
     const knownTracks = new Set(Object.keys(this.trackDefObjects));
@@ -537,8 +541,10 @@ export class TrackRenderer extends React.Component {
 
       newTrackObj.refScalesChanged(this.xScale, this.yScale);
 
-      this.trackDefObjects[newTrackDef.track.uid] = { trackDef: newTrackDef,
-        trackObject: newTrackObj };
+      this.trackDefObjects[newTrackDef.track.uid] = {
+        trackDef: newTrackDef,
+        trackObject: newTrackObj
+      };
 
       const zoomedXScale = this.zoomTransform.rescaleX(this.xScale);
       const zoomedYScale = this.zoomTransform.rescaleY(this.yScale);
@@ -971,7 +977,7 @@ export class TrackRenderer extends React.Component {
           track.tilesetUid,
           handleTilesetInfoReceived,
           track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
+          () => this.currentProps.onNewTilesLoaded(track.uid)
         );
 
       case 'vertical-2d-rectangle-domains':
@@ -1020,8 +1026,15 @@ export class TrackRenderer extends React.Component {
         return new CombinedTrack(
           track.contents,
           this.createTrackObject.bind(this),
-          handleTilesetInfoReceived,
+        );
+
+      case 'combined-2d-annotations':
+        return new Combined2dAnnotationsTrack(
+          this.pStage,
+          track.contents,
           track.options,
+          this.createTrackObject.bind(this),
+          () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
       case '2d-chromosome-labels':

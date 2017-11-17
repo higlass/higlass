@@ -617,12 +617,35 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
     },
   },
-
   {
     type: 'combined',
     datatype: 'any',
     local: true,
     orientation: 'any',
+  },
+  {
+    type: 'combined-2d-annotations',
+    datatype: 'any',
+    local: true,
+    orientation: '2d',
+    name: 'Combined 2D Annotations',
+    thumbnail: svgArrowheadDomainsIcon,
+    availableOptions: [
+      'heatmapTrack',
+      'insetThreshold',
+      'insetFill',
+      'insetFillOpacity',
+      'insetStroke',
+      'insetStrokeWidth',
+      'insetStrokeOpacity',
+      'insetLeaderLineStroke',
+      'insetLeaderLineStrokeWidth',
+      'insetLeaderLineStrokeOpacity',
+      'insetDropDistance',
+      'insetDropBlur',
+      'insetDropOpacity',
+      'opacity',
+    ]
   },
   {
     type: '2d-chromosome-grid',
