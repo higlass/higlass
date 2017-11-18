@@ -144,6 +144,7 @@ export class SeriesListMenu extends ContextMenuContainer {
 
   render() {
     let exportDataMenuItem = null;
+    console.log('series props:', this.props);
 
     /*
     if (TRACKS_INFO_BY_TYPE[this.props.hostTrack.type]) {
@@ -208,6 +209,26 @@ export class SeriesListMenu extends ContextMenuContainer {
             {'Replace Series'}
           </span>
         </ContextMenuItem>
+
+        { 
+          this.props.series.type == 'heatmap' ? 
+          <ContextMenuItem
+            onClick={() => {
+              this.props.onDivideSeries(this.props.series.uid);
+              /*
+              this.props.onCloseTrack(this.props.series.uid);
+              this.props.onAddSeries(this.props.hostTrack.uid);
+              */
+            }}
+            onMouseEnter={e => this.handleOtherMouseEnter(e)}
+            styleName="context-menu-item"
+          >
+            <span styleName="context-menu-span">
+              {'Divide Series By'}
+            </span>
+          </ContextMenuItem>
+          : null
+        }
 
         {this.getSubmenu()}
       </div>

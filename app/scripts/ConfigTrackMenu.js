@@ -123,6 +123,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
           onExportData={this.props.onExportData}
           onLockScales={this.props.onLockScales}
           onTrackOptionsChanged={this.props.onTrackOptionsChanged}
+          onDivideSeries={this.props.onDivideSeries}
           orientation={this.state.orientation}
           parentBbox={bbox}
           position={position}

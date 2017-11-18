@@ -256,6 +256,19 @@ export class TiledPlot extends React.Component {
     });
   }
 
+  handleDivideSeries(seriesUid) {
+    /*
+     * We want to create a new series that consists of this series
+     * being divided by another. Useful for comparing two tracks
+     * by division.
+     *
+     * Will start working with just heatmaps and then progress to
+     * other track types.
+     */
+    
+
+  }
+
   handleAddSeries(trackUid) {
     const trackPosition = getTrackPositionByUid(this.props.tracks, trackUid);
     const track = getTrackByUid(this.props.tracks, trackUid);
