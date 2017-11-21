@@ -34,8 +34,7 @@
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
-    "http://higlass.io/api/v1",
-    "http://localhost:8989/api/v1"
+    "http://higlass.io/api/v1"
   ],
   "exportViewUrl": "http://localhost:8000/api/v1/viewconfs/",
   "views": [
@@ -86,15 +85,16 @@
               {
                 "data": {
                   "type": "divided",
-                  "op1": {
-                    "server": "http://higlass.io/api/v1",
-                    "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                  },
-                  "op2": {
-                    "server": "http://higlass.io/api/v1",
-                    "tilesetUid": "ZCvntCKST0KUvQPGcCbJGA",
-                  }
-
+                  'children': [ 
+                    {
+                      "server": "http://higlass.io/api/v1",
+                      "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                    },
+                    {
+                      "server": "http://higlass.io/api/v1",
+                      "tilesetUid": "ZCvntCKST0KUvQPGcCbJGA",
+                    }
+                  ]
                 },
                 "type": "heatmap",
                 "position": "center",
@@ -162,13 +162,6 @@
         "i": "aa",
         "moved": false,
         "static": false
-      },
-      "genomePositionSearchBox": {
-        "autocompleteServer": "http://higlass.io/api/v1",
-        "chromInfoServer": "http://higlass.io/api/v1",
-        "visible": true,
-        "chromInfoId": "hg19",
-        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
       }
     }
   ],

@@ -13,6 +13,8 @@ import { debounce } from './utils';
 // Configs
 import { ZOOM_DEBOUNCE } from './configs';
 
+import DataFetcher from './DataFetcher';
+
 export class TiledPixiTrack extends PixiTrack {
   /**
    * A track that must pull remote tiles
@@ -21,7 +23,7 @@ export class TiledPixiTrack extends PixiTrack {
    * @param server: The server to pull tiles from.
    * @param tilesetUid: The data set to get the tiles from the server
    */
-  constructor(scene, server, tilesetUid, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
     super(scene, options);
 
     // the tiles which should be visible (although they're not necessarily fetched)
@@ -37,10 +39,6 @@ export class TiledPixiTrack extends PixiTrack {
 
     const tilesetInfo = null;
 
-    this.tilesetUid = tilesetUid;
-    this.tilesetServer = server;
-    this.tilesetInfoLoading = true;
-
     // the graphics that have already been drawn for this track
     this.tileGraphics = {};
 
@@ -52,15 +50,14 @@ export class TiledPixiTrack extends PixiTrack {
 
     // store the server and tileset uid so they can be used in draw()
     // if the tileset info is not found
-    this.server = server;
-    this.tilesetUid = tilesetUid;
     this.prevValueScale = null;
 
+    this.dataFetcher = new DataFetcher(dataConfig);
 
-    tileProxy.trackInfo(server, tilesetUid, (tilesetInfo) => {
+    this.dataFetcher.tilesetInfo((tilesetInfo) => {
       // console.log('tilesetInfo:', tilesetInfo);
-      this.tilesetInfo = tilesetInfo[tilesetUid];
-      this.tilesetInfoLoading = false;
+      this.tilesetInfo = tilesetInfo;
+      console.log('this.tilesetInfo:', this.tilesetInfo);
 
       if ('error' in this.tilesetInfo) {
         // no tileset info for this track
@@ -78,19 +75,17 @@ export class TiledPixiTrack extends PixiTrack {
 
       this.refreshTiles();
 
-      if (handleTilesetInfoReceived) { handleTilesetInfoReceived(tilesetInfo[tilesetUid]); }
+      if (handleTilesetInfoReceived) { handleTilesetInfoReceived(tilesetInfo); }
 
       if (!this.options) { this.options = {}; }
 
-      this.options.name = this.options.name ? this.options.name : tilesetInfo[tilesetUid].name;
+      this.options.name = this.options.name ? this.options.name : tilesetInfo.name;
 
       this.draw();
       this.animate();
     });
 
     this.uuid = slugid.nice();
-
-
     this.refreshTilesDebounced = debounce(this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
 
     this.trackNotFoundText = new PIXI.Text('',
@@ -395,12 +390,20 @@ export class TiledPixiTrack extends PixiTrack {
     if (toFetch.length > 0) {
       const toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
 
+      console.log('ids:', toFetchList);
+
+      this.dataFetcher.fetchTilesDebounced(
+        this.receivedTiles.bind(this),
+        toFetchList
+      );
+      /*
       tileProxy.fetchTilesDebounced({
         id: this.uuid,
         server: this.tilesetServer,
         done: this.receivedTiles.bind(this),
         ids: toFetchList,
       });
+      */
     }
   }
 
@@ -469,7 +472,7 @@ export class TiledPixiTrack extends PixiTrack {
     if (this.delayDrawing) { return; }
 
     if (!this.tilesetInfo) {
-      if (this.tilesetInfoLoading) {
+      if (this.dataFetcher.tilesetInfoLoading) {
         this.trackNotFoundText.text = 'Loading...';
       } else {
         this.trackNotFoundText.text = `Tileset info not found. Server: [${

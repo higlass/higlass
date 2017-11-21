@@ -746,6 +746,19 @@ export class TrackRenderer extends React.Component {
       this.currentProps.onTilesetInfoReceived(track.uid, x);
     };
 
+    // See if this track has a data config section.
+    // If it doesn't, we assume that it has the standard 
+    // server / tilesetUid sections
+    // if the track has no data server, then this will just
+    // be blank and we can go on our merry way
+    let dataConfig = track.data;
+    if (!dataConfig) {
+      dataConfig = {
+        server: track.server,
+        tilesetUid: track.tilesetUid
+      }
+    }
+
     switch (track.type) {
       case 'left-axis':
         return new LeftAxisTrack(this.svgElement);
@@ -756,8 +769,7 @@ export class TrackRenderer extends React.Component {
       case 'heatmap':
         return new HeatmapTiledPixiTrack(
           this.pStage,
-          track.server,
-          track.tilesetUid,
+          dataConfig,
           handleTilesetInfoReceived,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),

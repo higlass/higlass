@@ -27,8 +27,7 @@ const BINS_PER_TILE=256;
 export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   constructor(
     scene,
-    server,
-    uid,
+    dataConfig,
     handleTilesetInfoReceived,
     options,
     animate,
@@ -43,8 +42,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
      */
     super(
       scene,
-      server,
-      uid,
+      dataConfig,
       handleTilesetInfoReceived,
       options,
       animate,
@@ -868,8 +866,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
      */
 
     // tile contains [zoomLevel, xPos, yPos]
-    if (tile.dataTransform && tile.dataTransform != 'default') { return `${this.tilesetUid}.${tile.join('.')}.${tile.mirrored}.${tile.dataTransform}`; }
-    return `${this.tilesetUid}.${tile.join('.')}.${tile.mirrored}`;
+    if (tile.dataTransform && tile.dataTransform != 'default') { return `${tile.join('.')}.${tile.mirrored}.${tile.dataTransform}`; }
+    return `${tile.join('.')}.${tile.mirrored}`;
   }
 
   tileToRemoteId(tile) {
@@ -878,8 +876,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
      */
 
     // tile contains [zoomLevel, xPos, yPos]
-    if (tile.dataTransform && tile.dataTransform != 'default') { return `${this.tilesetUid}.${tile.join('.')}.${tile.dataTransform}`; }
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    if (tile.dataTransform && tile.dataTransform != 'default') { return `${tile.join('.')}.${tile.dataTransform}`; }
+    return `${tile.join('.')}`;
   }
 
   localToRemoteId(remoteId) {
