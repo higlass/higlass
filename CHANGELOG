@@ -4,6 +4,7 @@ v0.9.15 (2017-
 - Added a warning for malformed gene annotations
 - Free up webgl renderer resources when unmount
 - Minor CSS cleanup
+- Warn if there are no track source servers specified in the viewconf
 
 v0.9.14 (2017-11-11)
 
