@@ -64,6 +64,9 @@ export class TiledPixiTrack extends PixiTrack {
 
       if ('error' in this.tilesetInfo) {
         // no tileset info for this track
+        console.warn('Error retrieving tilesetInfo:', server, tilesetUid, this.tilesetInfo.error);
+
+        this.error = this.tilesetInfo.error;
         this.tilesetInfo = null;
         this.draw();
         this.animate();
@@ -424,6 +427,10 @@ export class TiledPixiTrack extends PixiTrack {
 
 
         this.fetchedTiles[tileId].tileData = loadedTiles[this.visibleTiles[i].remoteId];
+
+        if (this.fetchedTiles[tileId].tileData.error) {
+          console.warn('Error in loaded tile', tileId, this.fetchedTiles[tileId].tileData);
+        }
       }
     }
 

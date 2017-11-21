@@ -164,10 +164,15 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       const MIN_SIZE_FOR_EXONS = 10;
 
       if (xEndPos - xStartPos > MIN_SIZE_FOR_EXONS) {
-        tile.allRects = tile.allRects.concat(
-          this.drawExons(tile.rectGraphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
-            .map(x => x.concat([geneInfo[5]])),
-        );
+        if (geneInfo.length < 14) {
+          // don't draw if the input is invalid
+          console.warn("Gene annotations have less than 14 columns (chrName, chrStart, chrEnd, symbol, importance, transcript_name, geneId, transcript_type, '-', txStart, txEnd, exonStarts, exonEnds:", geneInfo);
+        } else {
+          tile.allRects = tile.allRects.concat(
+            this.drawExons(tile.rectGraphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
+              .map(x => x.concat([geneInfo[5]])),
+          );
+        }
         // this.drawExons(tile.textGraphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
       } else {
         // graphics.drawRect(rectX, rectY, width, height);

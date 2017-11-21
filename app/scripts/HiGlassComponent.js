@@ -2635,7 +2635,7 @@ class HiGlassComponent extends React.Component {
           );
         };
 
-        const multiTrackHeader = this.props.viewConfig.editable ? (
+        const multiTrackHeader = this.props.viewConfig.editable && !this.props.viewConfig.hideHeader ? (
           <ViewHeader
             // Reserved props
             ref={(c) => { this.viewHeaders[view.uid] = c; }}

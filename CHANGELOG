@@ -1,3 +1,8 @@
+v0.9.15 (2017-
+
+- Added the hideHeader option
+- Added a warning for malformed gene annotations
+
 v0.9.14 (2017-11-11)
 
 - Show labels on bar chart
