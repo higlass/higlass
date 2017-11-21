@@ -29,7 +29,7 @@ import {
 import { MOUSE_TOOL_SELECT } from './configs';
 
 // Styles
-import '../styles/TiledPlot.module.scss';
+import styles from '../styles/TiledPlot.module.scss';
 import stylesCenterTrack from '../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
 
 export class TiledPlot extends React.Component {
@@ -736,8 +736,18 @@ export class TiledPlot extends React.Component {
       .map(x => x.width)
       .reduce((a, b) => a + b, 0);
 
-    this.centerHeight = this.state.height - this.topHeight - this.bottomHeight - 2 * this.props.verticalMargin;
-    this.centerWidth = this.state.width - this.leftWidth - this.rightWidth - 2 * this.props.horizontalMargin;
+    this.centerHeight = (
+      this.state.height -
+      this.topHeight -
+      this.bottomHeight -
+      (2 * this.props.verticalMargin)
+    );
+    this.centerWidth = (
+      this.state.width -
+      this.leftWidth -
+      this.rightWidth -
+      (2 * this.props.horizontalMargin)
+    );
 
     const trackOutline = 'none';
 
@@ -1114,7 +1124,7 @@ export class TiledPlot extends React.Component {
           onCancel={this.handleNoTrackAdded.bind(this)}
           onTracksChosen={this.handleTracksAdded.bind(this)}
           position={position}
-          ref={c => this.addTrackModal = c}
+          ref={(c) => { this.addTrackModal = c; }}
           show={this.state.addTrackPosition != null || this.props.addTrackPosition != null}
           trackSourceServers={this.props.trackSourceServers}
         />);
@@ -1124,12 +1134,8 @@ export class TiledPlot extends React.Component {
     // can catch the zoom events
     return (
       <div
-        className="tiled-plot"
-        ref={c => this.divTiledPlot = c}
-        style={{
-          flex: 1,
-          overflow: 'hidden',
-        }}
+        ref={(c) => { this.divTiledPlot = c; }}
+        styleName="styles.tiled-plot"
       >
         {trackRenderer}
         {overlays}

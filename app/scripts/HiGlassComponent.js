@@ -206,15 +206,17 @@ class HiGlassComponent extends React.Component {
     this.element = ReactDOM.findDOMNode(this);
     window.addEventListener('focus', this.boundRefreshView);
 
-    dictValues(this.state.views).map((v) => {
-      if (!v.layout) { v.layout = this.generateViewLayout(v); } else {
+    dictValues(this.state.views).forEach((v) => {
+      if (!v.layout) {
+        v.layout = this.generateViewLayout(v);
+      } else {
         v.layout.i = v.uid;
       }
     });
 
     this.pixiRenderer = PIXI.autoDetectRenderer(this.state.width,
-      this.state.height,
-      { view: this.canvasElement,
+      this.state.height, {
+        view: this.canvasElement,
         antialias: true,
         transparent: true,
         resolution: 2,
@@ -226,7 +228,8 @@ class HiGlassComponent extends React.Component {
 
     // keep track of the width and height of this element, because it
     // needs to be reflected in the size of our drawing surface
-    this.setState({ mounted: true,
+    this.setState({
+      mounted: true,
       svgElement: this.svgElement,
       canvasElement: this.canvasElement,
     });
@@ -285,6 +288,12 @@ class HiGlassComponent extends React.Component {
   }
 
   componentWillUnmount() {
+    // Destroy PIXI renderer, stages, and assets
+    this.pixiStage.destroy(true);
+    this.pixiStage = null;
+    this.pixiRenderer.destroy(true);
+    this.pixiRenderer = null;
+
     window.removeEventListener('focus', this.boundRefreshView);
     this.resizeSensor.detach();
 
@@ -1050,18 +1059,17 @@ class HiGlassComponent extends React.Component {
     });
   }
 
-
+  /**
+   * Update the height of each row in the layout so that it takes up all
+   * of the available space in the div.
+   */
   updateRowHeight() {
-    /**
-       * Update the height of each row in the layout so that it takes up all
-       * of the available space in the div.
-       */
-    if (!(this.props.options ? this.props.options.bounded : false)) {
+    if (!(this.props.options && this.props.options.bounded)) {
       // not bounded so we don't need to update the row height
       return;
     }
 
-    const width = this.element.parentNode.clientWidth;
+    // const width = this.element.parentNode.clientWidth;
     const height = this.element.parentNode.clientHeight;
 
     let maxHeight = 0;
@@ -1074,36 +1082,42 @@ class HiGlassComponent extends React.Component {
 
     const MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
 
-    const marginHeight = MARGIN_HEIGHT * maxHeight - 1;
+    const marginHeight = (MARGIN_HEIGHT * maxHeight) - 1;
     const availableHeight = height - marginHeight;
 
-    const currentRowHeight = this.state.rowHeight;
+    // const currentRowHeight = this.state.rowHeight;
     const prospectiveRowHeight = availableHeight / maxHeight; // maxHeight is the number of
     // rows necessary to display this view
 
     const chosenRowHeight = Math.floor(prospectiveRowHeight);
 
-    for (const view of dictValues(this.state.views)) {
-      const { totalWidth, totalHeight,
-        topHeight, bottomHeight,
-        leftWidth, rightWidth,
-        centerWidth, centerHeight,
-        minNecessaryHeight } = this.calculateViewDimensions(view);
+    // for (const view of dictValues(this.state.views)) {
+    //   const {
+    //     totalWidth,
+    //     totalHeight,
+    //     topHeight,
+    //     bottomHeight,
+    //     leftWidth,
+    //     rightWidth,
+    //     centerWidth,
+    //     centerHeight,
+    //     minNecessaryHeight
+    //   } = this.calculateViewDimensions(view);
 
-      // If the view is bounded, then we always fit everything inside the container
-      //
-      // It used to be that if the viewconfig was too long, we just let it overflow,
-      // but I think it's better that it's always contained.
+    //   // If the view is bounded, then we always fit everything inside the container
+    //   //
+    //   // It used to be that if the viewconfig was too long, we just let it overflow,
+    //   // but I think it's better that it's always contained.
 
-      /*
-            if (minNecessaryHeight > view.layout.h * (prospectiveRowHeight + MARGIN_HEIGHT)) {
-                // we don't have space for one of the containers, so let them exceed the bounds
-                // of the box
-                chosenRowHeight = currentRowHeight;
-                break;
-            }
-            */
-    }
+    //   /*
+    //         if (minNecessaryHeight > view.layout.h * (prospectiveRowHeight + MARGIN_HEIGHT)) {
+    //             // we don't have space for one of the containers, so let them exceed the bounds
+    //             // of the box
+    //             chosenRowHeight = currentRowHeight;
+    //             break;
+    //         }
+    //         */
+    // }
 
     this.setState({
       rowHeight: chosenRowHeight,
@@ -1678,6 +1692,7 @@ class HiGlassComponent extends React.Component {
     totalTrackHeight += totalHeight;
 
     const MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
+
     if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(
         (totalTrackHeight + MARGIN_HEIGHT) /
@@ -2491,52 +2506,47 @@ class HiGlassComponent extends React.Component {
   }
 
   render() {
-    const tiledAreaStyle = {
-      display: 'flex',
-      flexDirection: 'column',
-    };
-    let tiledAreas = (<div
-
-      ref={(c) => { this.tiledAreaDiv = c; }}
-      style={tiledAreaStyle}
-    />);
+    let tiledAreas = (
+      <div
+        ref={(c) => { this.tiledAreaDiv = c; }}
+        styleName="styles.tiled-area"
+      />
+    );
 
     // The component needs to be mounted in order for the initial view to have the right
     // width
     if (this.state.mounted) {
-      tiledAreas = dictValues(this.state.views).map((view, i) => {
+      tiledAreas = dictValues(this.state.views).map((view) => {
         const zoomFixed = typeof view.zoomFixed !== 'undefined' ? view.zoomFixed : this.props.zoomFixed;
-
-        const layout = view.layout;
-
-        const itemUid = view.uid;
 
         // only show the add track menu for the tiled plot it was selected
         // for
         const addTrackPositionMenuPosition =
-                    view.uid == this.state.addTrackPositionMenuUid ?
-                      this.state.addTrackPositionMenuPosition :
-                      null;
+          view.uid === this.state.addTrackPositionMenuUid
+            ? this.state.addTrackPositionMenuPosition
+            : null;
 
         let overlay = null;
         if (this.state.chooseViewHandler) {
           let background = 'transparent';
 
-          if (this.state.mouseOverOverlayUid == view.uid) { background = 'green'; }
-          overlay = (<div
-            className="tiled-plot-overlay"
-            onClick={e => this.state.chooseViewHandler(view.uid)}
-            onMouseEnter={e => this.handleOverlayMouseEnter(view.uid)}
-            onMouseLeave={e => this.handleOverlayMouseLeave(view.uid)}
-            onMouseMove={e => this.handleOverlayMouseEnter(view.uid)}
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              background,
-              opacity: 0.3,
-            }}
-          />);
+          if (this.state.mouseOverOverlayUid === view.uid) background = 'green';
+
+          overlay = (
+            <div
+              className="tiled-plot-overlay"
+              onClick={() => this.state.chooseViewHandler(view.uid)}
+              onMouseEnter={() => this.handleOverlayMouseEnter(view.uid)}
+              onMouseLeave={() => this.handleOverlayMouseLeave(view.uid)}
+              onMouseMove={() => this.handleOverlayMouseEnter(view.uid)}
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                background,
+                opacity: 0.3,
+              }}
+            />);
         }
 
         const tiledPlot = (
@@ -2694,7 +2704,7 @@ class HiGlassComponent extends React.Component {
           <div
             key={view.uid}
             ref={(c) => { this.tiledAreaDiv = c; }}
-            style={tiledAreaStyle}
+            styleName="styles.tiled-area"
           >
             {multiTrackHeader}
             {tiledPlot}
@@ -2716,11 +2726,6 @@ class HiGlassComponent extends React.Component {
     let layouts = this.state.mounted ? dictValues(this.state.views)
       .filter(x => x.layout).map(x => x.layout) : [];
     layouts = JSON.parse(JSON.stringify(layouts)); // make sure to copy the layouts
-
-    /*
-    for (let i = 0; i < layouts.length; i++)
-        layouts[i].blah = slugid.nice();
-    */
 
     const gridLayout = (
       <WidthReactGridLayout
