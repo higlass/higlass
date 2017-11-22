@@ -200,9 +200,11 @@ export class GenomePositionSearchBox extends React.Component {
             // assembly
             if (this.gpsbForm) {
               // only set the state if this component is mounted
-              this.setState({
-                autocompleteId: [...this.availableAutocompletes[this.props.chromInfoId]][0].acId,
-              });
+              if (this.availableAutocompletes[this.props.chromInfoId]) {
+                this.setState({
+                  autocompleteId: [...this.availableAutocompletes[this.props.chromInfoId]][0].acId,
+                });
+              }
             }
           }
         }
