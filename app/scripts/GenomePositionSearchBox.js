@@ -136,6 +136,9 @@ export class GenomePositionSearchBox extends React.Component {
 
     // use the first available server that we have on record for this chromInfoId
     const serverAndChromInfoToUse = [...this.availableChromSizes[chromInfoId]][0];
+    this.setState({
+      autocompleteServer: serverAndChromInfoToUse.server,
+    });
 
     ChromosomeInfo(`${serverAndChromInfoToUse.server}/chrom-sizes/?id=${serverAndChromInfoToUse.uuid}`, (newChromInfo) => {
       this.chromInfo = newChromInfo;
@@ -154,7 +157,8 @@ export class GenomePositionSearchBox extends React.Component {
       // that was received, but if none has been retrieved yet...
       if (this.availableAutocompletes[chromInfoId]) {
         const newAcId = [...this.availableAutocompletes[chromInfoId]][0].acId;
-        this.props.onSelectedAssemblyChanged(chromInfoId, newAcId);
+        this.props.onSelectedAssemblyChanged(chromInfoId, newAcId, 
+          serverAndChromInfoToUse.server);
 
         if (this.gpsbForm) {
           this.setState({
@@ -163,7 +167,7 @@ export class GenomePositionSearchBox extends React.Component {
         }
       } else {
         this.props.onSelectedAssemblyChanged(chromInfoId,
-          null);
+          null, serverAndChromInfoToUse.server);
 
         console.log('here');
 

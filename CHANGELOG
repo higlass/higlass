@@ -1,5 +1,6 @@
 v0.9.15 (2017-
 
+- Fixed bug where newly selected annotations weren't being used
 - Added the hideHeader option
 - Added a warning for malformed gene annotations
 - Free up webgl renderer resources when unmount
