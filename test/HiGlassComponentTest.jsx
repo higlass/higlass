@@ -325,6 +325,9 @@ describe('Simple HiGlassComponent', () => {
       let trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
       console.log('trackTypeItems:', trackTypeItems);
 
+      expect(trackTypeItems.props.menuItems).to.have.property('horizontal-line');
+      expect(trackTypeItems.props.menuItems).to.have.property('horizontal-point');
+
       done();
     });
   });

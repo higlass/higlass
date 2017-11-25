@@ -154,9 +154,27 @@ export class SeriesListMenu extends ContextMenuContainer {
       .filter(x => x.orientation == orientation)
       .map(x => x.type);
 
+    let menuItems = {};
+    for (let i = 0; i < availableTrackTypes.length; i++) {
+      menuItems[availableTrackTypes[i]] = {
+        value: availableTrackTypes[i],
+        name: availableTrackTypes[i],
+        handler: () => {
+          console.log('clicked: ', availableTrackTypes[i]); 
+        },
+      }
+    }
     console.log('availableTrackTypes:', availableTrackTypes);
 
-    return [];
+    return (
+      <NestedContextMenu
+        closeMenu={this.props.closeMenu}
+        menuItems={menuItems}
+        orientation={this.state.orientation}
+        parentBbox={bbox}
+        position={position}
+      />
+    );
   }
 
   getSubmenu() {
@@ -189,8 +207,7 @@ export class SeriesListMenu extends ContextMenuContainer {
       const track = subMenuData.value;
 
       if (subMenuData.option == 'track-type') {
-        this.getTrackTypeItems(position, bbox, track);
-        return null;
+        return this.getTrackTypeItems(position, bbox, track);
       } else {
         return this.getConfigureSeriesMenu(position, bbox, track);
       }
