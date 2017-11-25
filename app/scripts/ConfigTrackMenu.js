@@ -18,6 +18,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
     super(props);
 
     this.seriesRefs = {};
+    this.seriesListMenu = null;
   }
 
   componentDidMount() {
@@ -76,11 +77,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
             styleName="context-menu-span"
           >
             {(x.name && x.name.length) ? x.name : x.uid}
-            <svg
-              className="play-icon"
-              height="10px"
-              width="10px"
-            >
+            <svg styleName="play-icon" >
               <use xlinkHref="#play" />
             </svg>
           </span>
@@ -124,6 +121,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
           onLockScales={this.props.onLockScales}
           onTrackOptionsChanged={this.props.onTrackOptionsChanged}
           orientation={this.state.orientation}
+          ref={c => this.seriesListMenu = c}
           parentBbox={bbox}
           position={position}
           series={this.state.submenuShown}
