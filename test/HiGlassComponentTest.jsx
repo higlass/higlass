@@ -331,7 +331,6 @@ describe('Simple HiGlassComponent', () => {
       done();
     });
   });
-  return;
 
   describe('Check for menu clashing in the center track ', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -362,6 +361,8 @@ describe('Simple HiGlassComponent', () => {
       // to the left
     });
   });
+
+  return;
 
   describe('Export SVG properly', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -400,7 +401,6 @@ describe('Simple HiGlassComponent', () => {
       done();
     });
 
-    return;
 
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
@@ -518,7 +518,6 @@ describe('Simple HiGlassComponent', () => {
     });
   });
 
-  return;
 
   describe('Value scale locking', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -770,7 +769,6 @@ describe('Simple HiGlassComponent', () => {
       done();
     });
   });
-  return;
 
   describe('2D Rectangle Annotations', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -855,7 +853,6 @@ describe('Simple HiGlassComponent', () => {
     });
   });
 
-  return;
 
 
   describe("Starting with no genome position search box", () => {
@@ -1083,7 +1080,6 @@ describe('Simple HiGlassComponent', () => {
     });
 
   });
-  return;
 
 
   // wait a bit of time for the data to be loaded from the server
@@ -1547,7 +1543,6 @@ it('Changes the position of the brush to the top right', (done) => {
   done();
 });
 
-return;
 
 it('Moves the brush on one of the views', (done) => {
   const heatmapTrack = getTrackObject(hgc, 'aa', 'heatmap1');

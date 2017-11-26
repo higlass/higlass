@@ -86,6 +86,8 @@ export class TrackRenderer extends React.Component {
     this.zoomedBound = this.zoomed.bind(this);
     this.zoomEndedBound = this.zoomEnded.bind(this);
 
+    this.mounted = false;
+
     // create a zoom behavior that we'll just use to transform selections
     // without having it fire an "onZoom" event
     this.emptyZoomBehavior = zoom();
@@ -164,6 +166,10 @@ export class TrackRenderer extends React.Component {
     if (!this.props.isRangeSelection) this.addZoom();
 
     this.canvasDom = ReactDOM.findDOMNode(this.currentProps.canvasElement);
+
+    // used to determine whether to update the graphics of the 
+    // child tracks
+    this.mounted = true;
 
     // need to be mounted to make sure that all the renderers are
     // created before starting to draw tracks
@@ -256,10 +262,16 @@ export class TrackRenderer extends React.Component {
     /**
      * This view has been removed so we need to get rid of all the tracks it contains
      */
+    console.log('pixiStage:', this.currentProps.pixiStage);
+
+    this.mounted = false;
     this.removeTracks(Object.keys(this.trackDefObjects));
     this.currentProps.removeDraggingChangedListener(this.draggingChanged);
 
     this.currentProps.pixiStage.removeChild(this.pStage);
+
+    this.pMask.destroy(true);
+    this.pStage.destroy(true);
 
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
@@ -450,6 +462,7 @@ export class TrackRenderer extends React.Component {
 
   timedUpdatePositionAndDimensions() {
     if (this.closing) { return; }
+    if (!this.mounted) { return; }
 
     if (this.dragging) {
       this.yPositionOffset = this.element.getBoundingClientRect().top - this.canvasDom.getBoundingClientRect().top;
