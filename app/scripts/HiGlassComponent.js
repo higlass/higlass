@@ -289,7 +289,7 @@ class HiGlassComponent extends React.Component {
 
   componentWillUnmount() {
     // Destroy PIXI renderer, stages, and assets
-    this.pixiStage.destroy(true);
+    this.pixiStage.destroy(false);
     this.pixiStage = null;
     this.pixiRenderer.destroy(true);
     this.pixiRenderer = null;
