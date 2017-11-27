@@ -115,6 +115,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
           closeMenu={this.props.closeMenu}
           hostTrack={this.props.track}
           onAddSeries={this.props.onAddSeries}
+          onChangeTrackType={this.props.onChangeTrackType}
           onCloseTrack={() => this.props.onCloseTrack(this.state.submenuShown.uid)}
           onConfigureTrack={this.props.onConfigureTrack}
           onExportData={this.props.onExportData}

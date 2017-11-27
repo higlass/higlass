@@ -332,6 +332,17 @@ export class TiledPlot extends React.Component {
     });
   }
 
+  handleChangeTrackType(uid, newType) {
+    // close the config track menu
+    this.setState({
+      closeTrackMenuId: null,
+      configTrackMenuId: null,
+    });
+
+    // change the track type
+    this.props.onChangeTrackType(uid, newType);
+  }
+
   handleTracksAdded(newTracks, position, host) {
     /**
      * Arguments
@@ -381,7 +392,6 @@ export class TiledPlot extends React.Component {
 
   handleConfigTrackMenuOpened(uid, clickPosition) {
     // let orientation = getTrackPositionByUid(uid);
-    console.log('handleConfigTrackMenuOpened', uid, clickPosition);
 
     this.setState({
       configTrackMenuId: uid,
@@ -1009,6 +1019,7 @@ export class TiledPlot extends React.Component {
             closeMenu={this.handleConfigTrackMenuClosed.bind(this)}
             onAddSeries={this.handleAddSeries.bind(this)}
             onAddTrack={this.handleAddTrack.bind(this)}
+            onChangeTrackType={this.handleChangeTrackType.bind(this)}
             onCloseTrack={this.handleCloseTrack.bind(this)}
             onConfigureTrack={this.handleConfigureTrack.bind(this)}
             onExportData={this.handleExportTrackData.bind(this)}

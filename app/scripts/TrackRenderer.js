@@ -262,8 +262,6 @@ export class TrackRenderer extends React.Component {
     /**
      * This view has been removed so we need to get rid of all the tracks it contains
      */
-    console.log('pixiStage:', this.currentProps.pixiStage);
-
     this.mounted = false;
     this.removeTracks(Object.keys(this.trackDefObjects));
     this.currentProps.removeDraggingChangedListener(this.draggingChanged);

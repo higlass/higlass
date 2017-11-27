@@ -110,8 +110,6 @@ export class SeriesListMenu extends ContextMenuContainer {
       }
     }
 
-    console.log('menuItems:', menuItems);
-
     return (
       <NestedContextMenu
         closeMenu={this.props.closeMenu}
@@ -160,11 +158,10 @@ export class SeriesListMenu extends ContextMenuContainer {
         value: availableTrackTypes[i],
         name: availableTrackTypes[i],
         handler: () => {
-          console.log('clicked: ', availableTrackTypes[i]); 
+          this.props.onChangeTrackType(track.uid, availableTrackTypes[i]);
         },
       }
     }
-    console.log('availableTrackTypes:', availableTrackTypes);
 
     return (
       <NestedContextMenu
@@ -201,8 +198,6 @@ export class SeriesListMenu extends ContextMenuContainer {
       // picked as well as some data associated with it
       // e.g. {"option": "configure-series", data: track}
       const subMenuData = this.state.submenuShown;
-
-      console.log('subMenuData:', subMenuData);
 
       const track = subMenuData.value;
 
