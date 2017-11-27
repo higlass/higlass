@@ -30,6 +30,7 @@ import {
 // View configs
 import {
   // paperFigure1,
+  divisionViewConfig,
   simpleCenterViewConfig,
   rectangleDomains,
   threeViews,
@@ -256,6 +257,44 @@ describe('Simple HiGlassComponent', () => {
       // to the left
     });
   });
+
+
+  describe('Division track', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={divisionViewConfig}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc, done);
+
+      // visual check that the heatmap track config menu is moved
+      // to the left
+    });
+
+    it ('clones itself', (done) => {
+      hgc.instance().handleAddView(hgc.instance().state.views.aa);
+
+      done();
+    });
+  });
+
   return;
 
 

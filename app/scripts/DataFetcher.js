@@ -38,7 +38,7 @@ export default class DataFetcher {
 
     if (!this.dataConfig.children) {
       if (!this.dataConfig.server && !this.dataConfig.tilesetUid) {
-        console.warn('No dataConfig children, server or tilesetUid:', dataConfig);
+        console.warn('No dataConfig children, server or tilesetUid:', this.dataConfig);
         finished(null);
       } else {
         // pass in the callback
