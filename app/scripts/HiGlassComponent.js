@@ -289,7 +289,7 @@ class HiGlassComponent extends React.Component {
 
   componentWillUnmount() {
     // Destroy PIXI renderer, stages, and assets
-    this.pixiStage.destroy(true);
+    this.pixiStage.destroy(false);
     this.pixiStage = null;
     this.pixiRenderer.destroy(true);
     this.pixiRenderer = null;
@@ -360,6 +360,10 @@ class HiGlassComponent extends React.Component {
 
   animate() {
     requestAnimationFrame(() => {
+      if (!this.pixiRenderer)
+        // component was probably unmounted
+        return;
+
       this.pixiRenderer.render(this.pixiStage);
     });
   }
@@ -1545,6 +1549,31 @@ class HiGlassComponent extends React.Component {
     for (const newTrack of newTracks) { this.handleTrackAdded(viewId, newTrack, position, host); }
   }
 
+  handleChangeTrackType(viewUid, trackUid, newType) {
+    /**
+     * Change the type of a track. For example, convert a line to a bar track.
+     *
+     * Parameters
+     * ----------
+     *  viewUid: string
+     *    The view containing the track to be changed
+     *  trackUid: string
+     *    The uid identifying the existin track
+     *  newType: string
+     *    The type to switch this track to.
+     */
+    const view = this.state.views[viewUid];
+    let trackConfig = getTrackByUid(view.tracks, trackUid);
+
+    // this track needs a new uid so that it will be rerendered
+    trackConfig.uid = slugid.nice();
+    trackConfig.type = newType;
+
+    this.setState({
+      views: this.state.views,
+    });
+  }
+
   handleTrackAdded(viewId, newTrack, position, host = null) {
     /**
          * A track was added from the AddTrackModal dialog.
@@ -2160,28 +2189,30 @@ class HiGlassComponent extends React.Component {
     return allTracks;
   }
 
-  handleSelectedAssemblyChanged(viewUid, newAssembly, newAutocompleteId) {
+  handleSelectedAssemblyChanged(viewUid, newAssembly, newAutocompleteId, newServer) {
     /*
-         * A new assembly was selected in the GenomePositionSearchBox. Update the corresponding
-         * view's entry
-         *
-         * Arguments
-         * ---------
-         *
-         * viewUid: string
-         *      The uid of the view this genomepositionsearchbox belongs to
-         * newAssembly: string
-         *      The new assembly it should display coordinates for
-         *
-         * Returns
-         * -------
-         *
-         *  Nothing
-         */
+     * A new assembly was selected in the GenomePositionSearchBox. 
+     * Update the corresponding
+     * view's entry
+     *
+     * Arguments
+     * ---------
+     *
+     * viewUid: string
+     *      The uid of the view this genomepositionsearchbox belongs to
+     * newAssembly: string
+     *      The new assembly it should display coordinates for
+     *
+     * Returns
+     * -------
+     *
+     *  Nothing
+     */
     const views = this.state.views;
 
     views[viewUid].genomePositionSearchBox.chromInfoId = newAssembly;
     views[viewUid].genomePositionSearchBox.autocompleteId = newAutocompleteId;
+    views[viewUid].genomePositionSearchBox.autocompleteServer = newServer;
   }
 
   createGenomePostionSearchBoxEntry(existingGenomePositionSearchBox, suggestedAssembly) {
@@ -2573,6 +2604,8 @@ class HiGlassComponent extends React.Component {
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
             mouseTool={this.state.mouseTool}
+            onChangeTrackType={(trackId, newType) => 
+              this.handleChangeTrackType(view.uid, trackId, newType)}
             onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
             onDataDomainChanged={
               (xDomain, yDomain) =>
@@ -2631,8 +2664,8 @@ class HiGlassComponent extends React.Component {
               // the chromInfoId is either specified in the viewconfig or guessed based on
               // the visible tracks (see createGenomePositionSearchBoxEntry)
               onFocus={onFocus}
-              onSelectedAssemblyChanged={(x, y) =>
-                this.handleSelectedAssemblyChanged(view.uid, x, y)}
+              onSelectedAssemblyChanged={(x, y, server) =>
+                this.handleSelectedAssemblyChanged(view.uid, x, y, server)}
               registerViewportChangedListener={listener =>
                 this.addScalesChangedListener(view.uid, view.uid, listener)}
               removeViewportChangedListener={() =>
@@ -2645,7 +2678,7 @@ class HiGlassComponent extends React.Component {
           );
         };
 
-        const multiTrackHeader = this.props.viewConfig.editable ? (
+        const multiTrackHeader = this.props.viewConfig.editable && !this.props.viewConfig.hideHeader ? (
           <ViewHeader
             // Reserved props
             ref={(c) => { this.viewHeaders[view.uid] = c; }}

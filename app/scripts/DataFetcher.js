@@ -107,12 +107,29 @@ export default class DataFetcher {
 
     if (!this.dataConfig.children) {
       // no children, just return the fetched tiles as is
-      tileProxy.fetchTilesDebounced({
-        id: this.uuid,
-        server: this.dataConfig.server,
-        done: receivedTiles,
-        ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
+      const promise = new Promise((resolve, reject) => 
+        tileProxy.fetchTilesDebounced({
+          id: this.uuid,
+          server: this.dataConfig.server,
+          done: resolve,
+          ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
+        }));
+      promise.then((returnedTiles) => {
+        console.log('returnedTiles:', returnedTiles);
+        const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
+        console.log('tilesetUid:', tilesetUid);
+        let newTiles = {};
+
+        for (let i = 0; i < tileIds.length; i++) {
+          const fullTileId = this.fullTileId(tilesetUid, tileIds[i]);
+
+          returnedTiles[fullTileId].tilePositionId = tileIds[i];
+          newTiles[tileIds[i]] = returnedTiles[fullTileId];
+        }
+
+        receivedTiles(newTiles);
       });
+
     } else {
        // multiple child tracks, need to wait for all of them to
        // fetch their data before returning to the parent
@@ -143,11 +160,11 @@ export default class DataFetcher {
             const numeratorUid = this.fullTileId(numeratorTilesetUid, tileIds[i]);
             const denominatorUid = this.fullTileId(denominatorTilesetUid, tileIds[i]);
 
-            newData = this.divideData(returnedTiles[0][numeratorUid].dense,
-              returnedTiles[1][denominatorUid].dense);
+            newData = this.divideData(returnedTiles[0][tileIds[i]].dense,
+              returnedTiles[1][tileIds[i]].dense);
 
-            const zoomLevel = returnedTiles[0][numeratorUid].zoomLevel;
-            const tilePos = returnedTiles[0][numeratorUid].tilePos;
+            const zoomLevel = returnedTiles[0][tileIds[i]].zoomLevel;
+            const tilePos = returnedTiles[0][tileIds[i]].tilePos;
 
             const newTile = {
               dense: newData,

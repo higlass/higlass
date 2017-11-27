@@ -52,6 +52,7 @@ export class TiledPlot extends React.Component {
     this.trackToReplace = null;
 
     this.addTrackModal = null;
+    this.configTrackMenu = null;
 
     /*
     let trackOptions = this.props.editable ?
@@ -342,6 +343,17 @@ export class TiledPlot extends React.Component {
       closeTrackMenuId: null,
       configTrackMenuId: null,
     });
+  }
+
+  handleChangeTrackType(uid, newType) {
+    // close the config track menu
+    this.setState({
+      closeTrackMenuId: null,
+      configTrackMenuId: null,
+    });
+
+    // change the track type
+    this.props.onChangeTrackType(uid, newType);
   }
 
   handleTracksAdded(newTracks, position, host) {
@@ -1020,6 +1032,7 @@ export class TiledPlot extends React.Component {
             closeMenu={this.handleConfigTrackMenuClosed.bind(this)}
             onAddSeries={this.handleAddSeries.bind(this)}
             onAddTrack={this.handleAddTrack.bind(this)}
+            onChangeTrackType={this.handleChangeTrackType.bind(this)}
             onCloseTrack={this.handleCloseTrack.bind(this)}
             onConfigureTrack={this.handleConfigureTrack.bind(this)}
             onExportData={this.handleExportTrackData.bind(this)}
@@ -1027,6 +1040,7 @@ export class TiledPlot extends React.Component {
             onReplaceTrack={this.handleReplaceTrack.bind(this)}
             onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
             onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
+            ref={c => this.configTrackMenu = c}
             position={this.state.configTrackMenuLocation}
             track={getTrackByUid(this.props.tracks, this.state.configTrackMenuId)}
             trackOrientation={getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}

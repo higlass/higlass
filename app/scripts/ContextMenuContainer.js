@@ -48,11 +48,16 @@ export class ContextMenuContainer extends React.Component {
 
   /* ---------------------------- Custom Methods ---------------------------- */
 
-  handleItemMouseEnter(evt, series) {
+  handleItemMouseEnterWithRect(clientRect, series) {
     this.setState({
       submenuShown: series,
-      submenuSourceBbox: evt.currentTarget.getBoundingClientRect()
+      submenuSourceBbox: clientRect,
     });
+  }
+
+  handleItemMouseEnter(evt, series) {
+    this.handleItemMouseEnterWithRect(
+      evt.currentTarget.getBoundingClientRect(), series)
   }
 
   handleMouseLeave() {
@@ -174,6 +179,7 @@ export class ContextMenuContainer extends React.Component {
 
     return(
       <div
+        className={'context-menu-item'}
         ref={c => this.div = c}
         style={wholeStyle}
         styleName="context-menu"
