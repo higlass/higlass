@@ -13,6 +13,60 @@ const epsilon = 0.0000001;
 
 const MAX_FETCH_TILES = 20;
 
+export function minNonZero(data) {
+  /**
+   * Calculate the minimum non-zero value in the data
+   *
+   * Parameters
+   * ----------
+   *  data: Float32Array
+   *    An array of values
+   *
+   * Returns
+   * -------
+   *  minNonZero: float
+   *    The minimum non-zero value in the array
+   */
+   let minNonZero = Number.MAX_SAFE_INTEGER;
+
+  for (let i = 0; i < data.length; i++) {
+    const x = data[i];
+
+    if (x < epsilon && x > -epsilon) { continue; }
+
+    if (x < minNonZero) { minNonZero = x; }
+  }
+
+  return  minNonZero;
+}
+
+export function maxNonZero(data) {
+  /**
+   * Calculate the minimum non-zero value in the data
+   *
+   * Parameters
+   * ----------
+   *  data: Float32Array
+   *    An array of values
+   *
+   * Returns
+   * -------
+   *  minNonZero: float
+   *    The minimum non-zero value in the array
+   */
+  let maxNonZero = Number.MIN_SAFE_INTEGER;
+
+  for (let i = 0; i < data.length; i++) {
+    const x = data[i];
+
+    if (x < epsilon && x > -epsilon) { continue; }
+
+    if (x > maxNonZero) { maxNonZero = x; }
+  }
+
+  return maxNonZero;
+}
+
 export function workerSetPix(
   size, data, valueScale, pseudocount, colorScale, passedCountTransform
 ) {
@@ -259,23 +313,11 @@ export function workerFetchMultiRequestTiles(req) {
                   a = new Float32Array(arrayBuffer);
                 }
 
-                let minNonZero = Number.MAX_SAFE_INTEGER;
-                let maxNonZero = Number.MIN_SAFE_INTEGER;
 
                 data[key].dense = a;
 
-                // find the minimum and maximum non-zero values
-                for (let i = 0; i < a.length; i++) {
-                  const x = a[i];
-
-                  if (x < epsilon && x > -epsilon) { continue; }
-
-                  if (x < minNonZero) { minNonZero = x; }
-                  if (x > maxNonZero) { maxNonZero = x; }
-                }
-
-                data[key].minNonZero = minNonZero;
-                data[key].maxNonZero = maxNonZero;
+                data[key].minNonZero = minNonZero(a);
+                data[key].maxNonZero = maxNonZero(a);
 
                 /*
                                 if (data[key]['minNonZero'] == Number.MAX_SAFE_INTEGER &&

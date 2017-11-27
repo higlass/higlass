@@ -1,11 +1,16 @@
 import slugid from 'slugid';
+import {dictKeys, dictValues} from './utils';
 
 // Services
 import { tileProxy } from './services';
+import {
+  minNonZero,
+  maxNonZero,
+} from './worker';
 
 export default class DataFetcher {
   constructor(dataConfig) {
-    console.log('data fetcher config:',  dataConfig);
+    //console.log('data fetcher config:',  dataConfig);
     this.tilesetInfoLoading = true;
     this.dataConfig = dataConfig;
     this.uuid = slugid.nice();
@@ -61,6 +66,29 @@ export default class DataFetcher {
     }
   }
 
+  fullTileId(tilesetUid, tileId) {
+    /**
+     * Convert a tilesetUid and tileId into a full tile
+     * identifier
+     *
+     * Parameters
+     * ----------
+     *  tilesetUid: string
+     *    Uid of the tileset on the server
+     *
+     *  tileId: string
+     *    The tileId of the tile
+     *
+     *  Returns
+     *  -------
+     *    fullTileId: string
+     *      The full tile id that the server will parse.
+     *      E.g. xyxx.0.0.0.default
+     */
+
+    return `${tilesetUid}.${tileId}`
+  }
+
   fetchTilesDebounced(receivedTiles, tileIds) {
     /**
      * Fetch a set of tiles.
@@ -96,8 +124,83 @@ export default class DataFetcher {
 
 
       Promise.all(promises).then(returnedTiles => {
-        console.log('returnedTiles:', returnedTiles);
+        //console.log('returnedTiles:', returnedTiles);
+
+        // if we're trying to divide two datasets, 
+        if (this.dataConfig.type == 'divided') {
+          if (returnedTiles.length < 2) {
+            console.warn("Only one tileset specified for a divided datafetcher:", this.dataConfig);
+          }
+
+          //console.log('tileUids:', tileIds);
+
+          const numeratorTilesetUid = dictValues(returnedTiles[0])[0].tilesetUid;
+          const denominatorTilesetUid = dictValues(returnedTiles[1])[0].tilesetUid;
+
+          let newTiles = {};
+
+          for (let i = 0; i < tileIds.length; i++) {
+            const numeratorUid = this.fullTileId(numeratorTilesetUid, tileIds[i]);
+            const denominatorUid = this.fullTileId(denominatorTilesetUid, tileIds[i]);
+
+            newData = this.divideData(returnedTiles[0][numeratorUid].dense,
+              returnedTiles[1][denominatorUid].dense);
+
+            const zoomLevel = returnedTiles[0][numeratorUid].zoomLevel;
+            const tilePos = returnedTiles[0][numeratorUid].tilePos;
+
+            const newTile = {
+              dense: newData,
+              minNonZero: minNonZero(newData),
+              maxNonZero: maxNonZero(newData),
+              zoomLevel: zoomLevel,
+              tilePos: tilePos,
+            }
+
+            // returned ids will be indexed by the tile id and won't include the 
+            // tileset uid
+            newTiles[tileIds[i]] = newTile;
+          }
+
+          receivedTiles(newTiles);
+        } else {
+          // assume we're just returning raw tiles
+          console.warn('Unimplemented dataConfig type. Returning first data source.', this.dataConfig);
+          
+          
+          receivedTiles(returnedTiles[0]);
+        }
       });
     }
+  }
+
+  divideData(numeratorData, denominatorData) {
+    /**
+     * Return an array consisting of the division of the numerator
+     * array by the denominator array
+     *
+     * Parameters
+     * ----------
+     *  numeratorData: array
+     *    An array of numerical values
+     *  denominatorData:
+     *    An array of numerical values
+     *
+     * Returns
+     * -------
+     *  divided: array
+     *    An array consisting of the division of the
+     *    numerator by the denominator
+     */
+    let result = new Float32Array(numeratorData.length);
+
+    for (let i = 0; i < result.length; i++) {
+      if (denominatorData[i] == 0.)
+        result[i] = NaN;
+      else
+        result[i] = numeratorData[i] / denominatorData[i];
+    }
+
+    return result;
   }
 }

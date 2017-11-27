@@ -57,7 +57,7 @@ export class TiledPixiTrack extends PixiTrack {
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
       // console.log('tilesetInfo:', tilesetInfo);
       this.tilesetInfo = tilesetInfo;
-      console.log('this.tilesetInfo:', this.tilesetInfo);
+      // console.log('this.tilesetInfo:', this.tilesetInfo);
 
       if ('error' in this.tilesetInfo) {
         // no tileset info for this track
@@ -390,8 +390,6 @@ export class TiledPixiTrack extends PixiTrack {
     if (toFetch.length > 0) {
       const toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
 
-      console.log('ids:', toFetchList);
-
       this.dataFetcher.fetchTilesDebounced(
         this.receivedTiles.bind(this),
         toFetchList
@@ -412,7 +410,6 @@ export class TiledPixiTrack extends PixiTrack {
          * We've gotten a bunch of tiles from the server in
          * response to a request from fetchTiles.
          */
-    // console.log('received:', loadedTiles);
     for (let i = 0; i < this.visibleTiles.length; i++) {
       const tileId = this.visibleTiles[i].tileId;
 
