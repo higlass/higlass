@@ -13,8 +13,8 @@ const GENE_RECT_HEIGHT = 10;
 const MAX_TEXTS = 20;
 
 export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
+    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
     this.textFontSize = '10px';
     this.textFontFamily = 'Arial';
 

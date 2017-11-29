@@ -21,7 +21,7 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
          */
 
     // tile contains [zoomLevel, xPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
   tileToRemoteId(tile) {
@@ -30,7 +30,7 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
          */
 
     // tile contains [zoomLevel, xPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
 

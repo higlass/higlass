@@ -8,8 +8,7 @@ import { colorToHex } from './utils';
 export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(
     scene,
-    server,
-    uid,
+    dataConfig,
     handleTilesetInfoReceived,
     option,
     animate,
@@ -17,8 +16,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   ) {
     super(
       scene,
-      server,
-      uid,
+      dataConfig,
       handleTilesetInfoReceived,
       option,
       animate,

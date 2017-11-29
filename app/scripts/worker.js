@@ -272,6 +272,7 @@ export function workerFetchMultiRequestTiles(req) {
 
   for (const server of servers) {
     const ids = Object.keys(requestsByServer[server]);
+    // console.log('ids:', ids);
 
     // if we request too many tiles, then the URL can get too long and fail
     // so we'll break up the requests into smaller subsets
@@ -286,8 +287,14 @@ export function workerFetchMultiRequestTiles(req) {
           if (error) {
             resolve({});
           } else {
+            // console.log('data:', data);
             // check if we have array data to convert from base64 to float32
-            for (const key in data) {
+            for (const thisId of theseTileIds) {
+              if (!(thisId in data)) {
+                // the server didn't return any data for this tile
+                data[thisId] = {};
+              }
+              const key = thisId;
               // let's hope the payload doesn't contain a tileId field
               const keyParts = key.split('.');
 

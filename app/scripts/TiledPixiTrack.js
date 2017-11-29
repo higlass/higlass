@@ -393,7 +393,7 @@ export class TiledPixiTrack extends PixiTrack {
     if (toFetch.length > 0) {
       const toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
 
-      console.log('toFetchList:', toFetchList);
+      // console.log('toFetchList:', toFetchList);
       this.dataFetcher.fetchTilesDebounced(
         this.receivedTiles.bind(this),
         toFetchList
@@ -414,7 +414,7 @@ export class TiledPixiTrack extends PixiTrack {
          * We've gotten a bunch of tiles from the server in
          * response to a request from fetchTiles.
          */
-    console.log('received:', loadedTiles);
+    // console.log('received:', loadedTiles);
     for (let i = 0; i < this.visibleTiles.length; i++) {
       const tileId = this.visibleTiles[i].tileId;
 
@@ -437,16 +437,16 @@ export class TiledPixiTrack extends PixiTrack {
     }
 
     const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
-    console.log('fetchedTileIDs:', fetchedTileIDs);
-    console.log('fetching:', this.fetching);
+    // console.log('fetchedTileIDs:', fetchedTileIDs);
+    // console.log('fetching:', this.fetching);
 
     for (const key in loadedTiles) {
       if (loadedTiles[key]) {
         const tileId = loadedTiles[key].tilePositionId;
-        console.log('tileId:', tileId);
+        // console.log('tileId:', tileId);
 
         if (this.fetching.has(tileId)) { 
-          console.log('removing:', tileId);
+          // console.log('removing:', tileId);
           this.fetching.delete(tileId); 
         }
       }

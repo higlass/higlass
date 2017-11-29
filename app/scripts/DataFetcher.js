@@ -12,7 +12,11 @@ export default class DataFetcher {
   constructor(dataConfig) {
     //console.log('data fetcher config:',  dataConfig);
     this.tilesetInfoLoading = true;
-    this.dataConfig = dataConfig;
+
+    // copy the dataConfig so that it doesn't dirty so that
+    // it doesn't get modified when we make objects of its
+    // children below
+    this.dataConfig = JSON.parse(JSON.stringify(dataConfig));
     this.uuid = slugid.nice();
 
     if (this.dataConfig.children) {
@@ -115,9 +119,9 @@ export default class DataFetcher {
           ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
         }));
       promise.then((returnedTiles) => {
-        console.log('returnedTiles:', returnedTiles);
+        // console.log('returnedTiles:', returnedTiles);
         const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
-        console.log('tilesetUid:', tilesetUid);
+        // console.log('tilesetUid:', tilesetUid);
         let newTiles = {};
 
         for (let i = 0; i < tileIds.length; i++) {
@@ -172,6 +176,7 @@ export default class DataFetcher {
               maxNonZero: maxNonZero(newData),
               zoomLevel: zoomLevel,
               tilePos: tilePos,
+              tilePositionId: tileIds[i],
             }
 
             // returned ids will be indexed by the tile id and won't include the 
