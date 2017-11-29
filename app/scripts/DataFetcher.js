@@ -113,12 +113,13 @@ export default class DataFetcher {
       // no children, just return the fetched tiles as is
       const promise = new Promise((resolve, reject) => 
         tileProxy.fetchTilesDebounced({
-          id: this.uuid,
+          id: slugid.nice(),
           server: this.dataConfig.server,
           done: resolve,
           ids: tileIds.map(x => `${this.dataConfig.tilesetUid}.${x}`),
         }));
       promise.then((returnedTiles) => {
+        // console.log('tileIds:', tileIds);
         // console.log('returnedTiles:', returnedTiles);
         const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
         // console.log('tilesetUid:', tilesetUid);

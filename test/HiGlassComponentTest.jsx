@@ -127,6 +127,7 @@ function isWaitingOnTiles(hgc) {
     }
 
     if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
+      console.log('no tilesetInfo or chromInfo')
       return true;
     }
 
@@ -134,7 +135,7 @@ function isWaitingOnTiles(hgc) {
     //   console.log('trackObj.fetching.size:', trackObj.fetching);
 
     if (trackObj.fetching && trackObj.fetching.size) {
-      // console.log('not done to.fetching:', trackObj, trackObj.fetching);
+      //console.log('not done to.fetching:', trackObj, trackObj.fetching);
       return true;
     }
   }
@@ -301,7 +302,6 @@ describe('Simple HiGlassComponent', () => {
       console.log('waiting:');
       waitForTilesLoaded(hgc, done);
     });
-    return;
 
 
     it('ensures that the new track domains are equal and unlocks the scales', (done) => {
@@ -479,7 +479,6 @@ describe('Simple HiGlassComponent', () => {
       done();
     });
   });
-  return;
 
   describe('Export SVG properly', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -634,7 +633,6 @@ describe('Simple HiGlassComponent', () => {
       done();
     });
   });
-  return;
 
   describe('Track type menu tests', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -1124,6 +1122,7 @@ describe('Simple HiGlassComponent', () => {
     });
 
   });
+  return;
 
 
   // wait a bit of time for the data to be loaded from the server

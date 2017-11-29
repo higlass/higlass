@@ -154,7 +154,10 @@ export class TiledPixiTrack extends PixiTrack {
     // and aren't in the process of being fetched
     const toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId));
 
-    for (let i = 0; i < toFetch.length; i++) { this.fetching.add(toFetch[i].remoteId); }
+    for (let i = 0; i < toFetch.length; i++) { 
+      // console.log('to fetch:', toFetch[i]);
+      this.fetching.add(toFetch[i].remoteId); 
+    }
 
     // calculate which tiles are obsolete and remove them
     // fetchedTileID are remote ids
@@ -392,6 +395,7 @@ export class TiledPixiTrack extends PixiTrack {
   fetchNewTiles(toFetch) {
     if (toFetch.length > 0) {
       const toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
+      // console.log('fetchNewTiles', toFetchList);
 
       // console.log('toFetchList:', toFetchList);
       this.dataFetcher.fetchTilesDebounced(
@@ -443,10 +447,10 @@ export class TiledPixiTrack extends PixiTrack {
     for (const key in loadedTiles) {
       if (loadedTiles[key]) {
         const tileId = loadedTiles[key].tilePositionId;
-        // console.log('tileId:', tileId);
+        // console.log('tileId:', tileId, 'fetching:', this.fetching);
 
         if (this.fetching.has(tileId)) { 
-          // console.log('removing:', tileId);
+          // console.log('removing:', tileId, 'fetching:', this.fetching);
           this.fetching.delete(tileId); 
         }
       }
