@@ -289,7 +289,7 @@ class HiGlassComponent extends React.Component {
 
   componentWillUnmount() {
     // Destroy PIXI renderer, stages, and assets
-    this.pixiStage.destroy(true);
+    this.pixiStage.destroy(false);
     this.pixiStage = null;
     this.pixiRenderer.destroy(true);
     this.pixiRenderer = null;
@@ -2161,28 +2161,30 @@ class HiGlassComponent extends React.Component {
     return allTracks;
   }
 
-  handleSelectedAssemblyChanged(viewUid, newAssembly, newAutocompleteId) {
+  handleSelectedAssemblyChanged(viewUid, newAssembly, newAutocompleteId, newServer) {
     /*
-         * A new assembly was selected in the GenomePositionSearchBox. Update the corresponding
-         * view's entry
-         *
-         * Arguments
-         * ---------
-         *
-         * viewUid: string
-         *      The uid of the view this genomepositionsearchbox belongs to
-         * newAssembly: string
-         *      The new assembly it should display coordinates for
-         *
-         * Returns
-         * -------
-         *
-         *  Nothing
-         */
+     * A new assembly was selected in the GenomePositionSearchBox. 
+     * Update the corresponding
+     * view's entry
+     *
+     * Arguments
+     * ---------
+     *
+     * viewUid: string
+     *      The uid of the view this genomepositionsearchbox belongs to
+     * newAssembly: string
+     *      The new assembly it should display coordinates for
+     *
+     * Returns
+     * -------
+     *
+     *  Nothing
+     */
     const views = this.state.views;
 
     views[viewUid].genomePositionSearchBox.chromInfoId = newAssembly;
     views[viewUid].genomePositionSearchBox.autocompleteId = newAutocompleteId;
+    views[viewUid].genomePositionSearchBox.autocompleteServer = newServer;
   }
 
   createGenomePostionSearchBoxEntry(existingGenomePositionSearchBox, suggestedAssembly) {
@@ -2632,8 +2634,8 @@ class HiGlassComponent extends React.Component {
               // the chromInfoId is either specified in the viewconfig or guessed based on
               // the visible tracks (see createGenomePositionSearchBoxEntry)
               onFocus={onFocus}
-              onSelectedAssemblyChanged={(x, y) =>
-                this.handleSelectedAssemblyChanged(view.uid, x, y)}
+              onSelectedAssemblyChanged={(x, y, server) =>
+                this.handleSelectedAssemblyChanged(view.uid, x, y, server)}
               registerViewportChangedListener={listener =>
                 this.addScalesChangedListener(view.uid, view.uid, listener)}
               removeViewportChangedListener={() =>
@@ -2646,7 +2648,7 @@ class HiGlassComponent extends React.Component {
           );
         };
 
-        const multiTrackHeader = this.props.viewConfig.editable ? (
+        const multiTrackHeader = this.props.viewConfig.editable && !this.props.viewConfig.hideHeader ? (
           <ViewHeader
             // Reserved props
             ref={(c) => { this.viewHeaders[view.uid] = c; }}

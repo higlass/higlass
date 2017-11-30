@@ -261,6 +261,9 @@ export class TrackRenderer extends React.Component {
 
     this.currentProps.pixiStage.removeChild(this.pStage);
 
+    this.pMask.destroy(true);
+    this.pStage.destroy(true);
+
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
   }

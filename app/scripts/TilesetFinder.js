@@ -93,6 +93,11 @@ export class TilesetFinder extends React.Component {
       .map(x => x.datatype));
     const datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
 
+    if (!this.props.trackSourceServers) {
+      console.warn("No track source servers specified in the viewconf");
+      return;
+    }
+
     this.props.trackSourceServers.forEach((sourceServer) => {
       json(`${sourceServer}/tilesets/?limit=10000&${datatypesQuery}`,
         (error, data) => {

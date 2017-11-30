@@ -256,7 +256,6 @@ describe('Simple HiGlassComponent', () => {
       // to the left
     });
   });
-  return;
 
 
   describe('Export SVG properly', () => {
