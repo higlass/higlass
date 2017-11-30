@@ -90,9 +90,9 @@ Preprocess data
         > ~/data/genbank-data/${ASSEMBLY}/gene2pubmed
     head ~/data/genbank-data/${ASSEMBLY}/gene2pubmed
 
-    awk '{print $2}' ~/data/genbank-data/hg19/gene_info \
-    | xargs python scripts/gene_info_by_id.py \
-    | tee ~/data/genbank-data/hg19/gene_summaries.tsv
+    # awk '{print $2}' ~/data/genbank-data/hg19/gene_info \
+    # | xargs python scripts/gene_info_by_id.py \
+    # | tee ~/data/genbank-data/hg19/gene_summaries.tsv
 
     # output -> geneid \t citation_count
 

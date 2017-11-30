@@ -29,7 +29,8 @@ datatype: ``bedlike``
 
 The bedlike track is intended to display generic interval data. It is used to
 render tracks with a `bedlike` datatype. This usually comes from the `beddb`
-filetype.
+filetype. Regular bed-like files can be converted to beddb using the instructions
+in the `data preparation section <data_preparation.html#bed-files>`_.
 
 Gene Annotations
 ================

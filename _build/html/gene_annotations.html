@@ -108,9 +108,9 @@ zgrep ^<span class="si">${</span><span class="nv">TAXID</span><span class="si">}
     &gt; ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene2pubmed
 head ~/data/genbank-data/<span class="si">${</span><span class="nv">ASSEMBLY</span><span class="si">}</span>/gene2pubmed
 
-awk <span class="s1">&#39;{print $2}&#39;</span> ~/data/genbank-data/hg19/gene_info <span class="se">\</span>
-<span class="p">|</span> xargs python scripts/gene_info_by_id.py <span class="se">\</span>
-<span class="p">|</span> tee ~/data/genbank-data/hg19/gene_summaries.tsv
+<span class="c1"># awk &#39;{print $2}&#39; ~/data/genbank-data/hg19/gene_info \</span>
+<span class="c1"># | xargs python scripts/gene_info_by_id.py \</span>
+<span class="c1"># | tee ~/data/genbank-data/hg19/gene_summaries.tsv</span>
 
 <span class="c1"># output -&gt; geneid \t citation_count</span>
 </pre></div>
@@ -278,6 +278,7 @@ aws s3 cp ~/data/tiled-data/gene-annotations-<span class="si">${</span><span cla
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer.html#higlass-api">HiGlass API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer.html#coding-guidelines">Coding Guidelines</a></li>
 </ul>
 </li>

@@ -42,6 +42,38 @@
             
   <div class="section" id="developer-documentation">
 <h1>Developer Documentation<a class="headerlink" href="#developer-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="higlass-api">
+<h2>HiGlass API<a class="headerlink" href="#higlass-api" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="creating-an-inline-higlass-component">
+<h3>Creating an inline HiGlass component<a class="headerlink" href="#creating-an-inline-higlass-component" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">createHgComponent</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">config</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create a new HiGlass component within a web page. This initializes a
+HiGlassComponent inside the element <code class="docutils literal"><span class="pre">element</span></code> with a viewconfig passed in as
+<code class="docutils literal"><span class="pre">config</span></code>. If <code class="docutils literal"><span class="pre">config</span></code> is a string, it is interpreted as a url and used
+to try to fetch a remote viewconfig.</p>
+<p>The <code class="docutils literal"><span class="pre">options</span></code> parameter can currently only specify the
+<code class="docutils literal"><span class="pre">bounded</span></code> property which tells the HiGlass component to fill all the space in
+the containing element. Note that if <code class="docutils literal"><span class="pre">bounded</span></code> is set to true, then
+<code class="docutils literal"><span class="pre">element</span></code> must have a fixed height. <code class="docutils literal"><span class="pre">callback</span></code> is used to return
+an api variable which can be used to access HiGlass events.</p>
+<p>A full example of an inline HiGlass component can be found in
+the <a class="reference external" href="https://github.com/hms-dbmi/higlass/blob/develop/app/test.html">HiGlass GitHub repository</a>.</p>
+<p><strong>Example</strong></p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nx">hgApi</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+<span class="nx">hglib</span><span class="p">.</span><span class="nx">createHgComponent</span><span class="p">(</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;development-demo&#39;</span><span class="p">),</span>
+    <span class="nx">testViewConfig</span><span class="p">,</span>
+    <span class="p">{</span> <span class="nx">bounded</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
+    <span class="kd">function</span> <span class="p">(</span><span class="nx">api</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">hgApi</span> <span class="o">=</span> <span class="nx">api</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="section" id="coding-guidelines">
 <h2>Coding Guidelines<a class="headerlink" href="#coding-guidelines" title="Permalink to this headline">¶</a></h2>
 <p>To ensure uniformity within the code base, we suggest the following
@@ -82,6 +114,7 @@ guidelines for style and documentation within the HiGlass ecosystem.</p>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Developer Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#higlass-api">HiGlass API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#coding-guidelines">Coding Guidelines</a></li>
 </ul>
 </li>

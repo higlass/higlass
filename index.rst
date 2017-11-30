@@ -138,25 +138,6 @@ different file formats.
     regions of the mouse genome. The locations of the two detail regions on the
     bottom are highlighted in the context view on top.
 
-Influences
-~~~~~~~~~~
-
-As with most other pursuits, software is an iterative process. Our work does
-not exist in a vacuum, nor was it developed completely independently. We owe an
-enormous debt of gratitude to our ideological forebearers who have doubtlessly
-tried many ideas and stuck with the ones that worked for them.
-
-- `Juicebox <http://www.aidenlab.org/juicebox/>`_ - software for viewing Hi-C
-  contact matrices 
-
-- `UCSC Genome Browser <http://genome.ucsc.edu/>`_ - one of the first tools for
-  viewing genomic data along a scrollable and zoomable axis
-
-- `Slippy maps <http://wiki.openstreetmap.org/wiki/Slippy_Map>`_ - commonly
-  referred to as "Google Maps" style maps, the technology for online maps went
-  through a rapid transformation with the introduction of tile-based rendering
-  and draggable scrolling.
-
 Technology
 ~~~~~~~~~~
 
