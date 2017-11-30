@@ -176,6 +176,59 @@ It can also be loaded using a curl commands:
 Development
 -----------
 
+In order ot display large datasets at multiple resolutions, HiGlass requires
+the input data to be aggregated at multiple resolutions. For Hi-C data, this is
+done using the `cooler <https://github.com/mirnylab/cooler/>`_ package. For
+other types of data it is done using the `clodius
+<https://github.com/hms-dbmi/clodius>`_ package.
+
+Example
+^^^^^^^
+
+Let's say that we have a new datatype that we want to use in higlass. In this
+example, we'll use HDF5 to store an array of length 100000 at multiple
+resolutions. Each resolution will be half of the previous one and will be stored
+as an array in the HDF5 file.
+
+To begin, we'll create an HDF5 and add a group that will store the 
+different resolutions:
+
+.. code-block:: python
+
+    import h5py
+    import numpy as np
+
+    f = h5py.File('/tmp/my_file.multires', 'w')
+
+    f.create_group('resolutions')
+
+We'll add our highest resolution data directly:
+
+.. code-block:: python
+
+    array_length = 100000 
+    f['resolutions'].create_dataset('1', (array_length,))
+    f['resolutions']['1'][:] = np.array(range(array_length))
+
+    print(f['resolutions']['1'][:5])
+
+This should output ``[ 0.  1.  2.  3.  4.]``. Next we want to recursively
+aggregate this data so that adjacent entries are summed. This can be
+accomplished in a concise manner using numpy's ``.resize(-1,2).sum(axis=1)``
+function. 
+
+How many recursions do we need? In the end, we want to be able to fit all
+the data into one 1024 element tile. This means that after n aggregations,
+we need to have less than 1024 elements. 
+
+.. code-block:: python
+
+    tile_size = 1024
+    max_zoom = math.ceil(math.log(array_length / tile_size) / math.log(2))
+
+
+
+
 Building for development
 ^^^^^^^^^^^^^^^^^^^^^^^^
 

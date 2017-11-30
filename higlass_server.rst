@@ -1,5 +1,5 @@
-Server
-======
+HiGlass Server
+==============
 
 .. toctree::
     :maxdepth: 2
