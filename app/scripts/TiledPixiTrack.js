@@ -1,3 +1,4 @@
+import { scaleLinear, scaleLog } from 'd3-scale';
 import { median } from 'd3-array';
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
@@ -588,6 +589,33 @@ export class TiledPixiTrack extends PixiTrack {
     if (max === Number.MIN_SAFE_INTEGER) { max = null; }
 
     return max;
+  }
+
+  makeValueScale(minValue, medianValue,  maxValue) {
+    let valueScale = null;
+    // console.log('valueScaling:', this.options.valueScaling);
+    if (this.options.valueScaling === 'log') {
+      let offsetValue = medianValue;
+
+      if (!this.medianVisibleValue) { offsetValue = minValue; }
+
+      const PLOT_MARGIN = 6;
+      // console.log('offsetValue:', offsetValue);
+
+      valueScale = scaleLog()
+        // .base(Math.E)
+        .domain([offsetValue, maxValue + offsetValue])
+        // .domain([offsetValue, this.maxValue()])
+        .range([this.dimensions[1] - PLOT_MARGIN, PLOT_MARGIN]);
+      pseudocount = offsetValue;
+    } else {
+      // linear scale
+      valueScale = scaleLinear()
+        .domain([minValue, maxValue])
+        .range([this.dimensions[1], 0]);
+    }
+
+    return valueScale;
   }
 }
 
