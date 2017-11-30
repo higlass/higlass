@@ -24,3 +24,4 @@ export { default as scalesCenterAndK } from './scales-center-and-k';
 export { default as scalesToGenomeLoci } from './scales-to-genome-loci';
 export { default as sum } from './sum';
 export { default as svgLine } from './svg-line';
+export { default as totalTrackPixelHeight } from './total-track-pixel-height';
