@@ -80,7 +80,9 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   drawTile(tile) {
-
+    if (this.options && this.options.yPosColumn) {
+      this.drawAxis(this.valueScale);
+    }
   }
 
   renderTile(tile) {
@@ -109,19 +111,27 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         let exonStarts = geneInfo[12],
           exonEnds = geneInfo[13];
 
+        const txMiddle = (txStart + txEnd) / 2;
+
+        let yMiddle = this.dimensions[1] / 2;
+        let textYMiddle = this.dimensions[1] / 2;
+        const geneName = geneInfo[3];
+        let rectHeight = GENE_RECT_HEIGHT;
+
         if (this.options && this.options.yPosColumn) {
+          /**
+           * These intervals come with some y-value that we want to plot
+           */
           this.valueScale = this.makeValueScale(
             this.minVisibleValue(),
             this.calculateMedianVisibleValue(),
             this.maxVisibleValue()
           );
+
+
+          yMiddle = this.valueScale( +geneInfo[+this.options.yPosColumn-1]);
+          rectHeight = GENE_RECT_HEIGHT / 2;
         }
-
-        const txMiddle = (txStart + txEnd) / 2;
-
-        const yMiddle = this.dimensions[1] / 2;
-        const textYMiddle = this.dimensions[1] / 2;
-        const geneName = geneInfo[3];
 
         // for when there's text
         // yMiddle -= 8;
@@ -132,8 +142,8 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         // let height = valueScale(Math.log(+geneInfo[4]));
         // let width= height;
 
-        const rectX = this._xScale(txMiddle) - GENE_RECT_WIDTH / 2;
-        const rectY = yMiddle - GENE_RECT_HEIGHT / 2;
+        const rectX = this._xScale(txMiddle) - rectHeight / 2;
+        const rectY = yMiddle - rectHeight / 2;
 
         const xStartPos = this._xScale(txStart);
         const xEndPos = this._xScale(txEnd);
@@ -143,7 +153,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         // graphics.drawRect(rectX, rectY, width, height);
         // this.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
 
-        tile.rectGraphics.drawRect(xStartPos, rectY, xEndPos - xStartPos, GENE_RECT_HEIGHT);
+        tile.rectGraphics.drawRect(xStartPos, rectY, xEndPos - xStartPos, rectHeight);
 
         if (!this.drawnRects[zoomLevel])
           this.drawnRects[zoomLevel] = {}
@@ -207,8 +217,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       })
     );
 
-    console.log('min:', min);
-
     // if there's no data, use null
     if (min === Number.MAX_SAFE_INTEGER) { min = null; }
 
@@ -232,8 +240,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           x.tileData.map(y => +y.fields[+this.options.yPosColumn - 1]));
       })
     );
-
-    console.log('max:', max);
 
     // if there's no data, use null
     if (max === Number.MIN_SAFE_INTEGER) { max = null; }
@@ -261,7 +267,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     ).filter(x => x > 0);
 
     this.medianVisibleValue = median(values);
-    console.log('medianVisibleValue:', this.medianVisibleValue);
   }
 
   draw() {

@@ -1,7 +1,6 @@
 import { scaleLinear, scaleLog } from 'd3-scale';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
-import { AxisPixi } from './AxisPixi';
 
 import { colorToHex } from './utils';
 
@@ -23,8 +22,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       onValueScaleChanged,
     );
 
-    this.axis = new AxisPixi(this);
-    this.pBase.addChild(this.axis.pAxis);
   }
 
   initTile(tile) {
@@ -50,53 +47,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     for (const tile of this.visibleAndFetchedTiles()) {
       this.renderTile(tile);
-    }
-  }
-
-  drawAxis(valueScale) {
-    // either no axis position is specified
-    if (!this.options.axisPositionVertical && !this.options.axisPositionHorizontal) {
-      this.axis.clearAxis();
-      return;
-    }
-
-    if (this.options.axisPositionVertical && this.options.axisPositionVertical === 'hidden') {
-      this.axis.clearAxis();
-      return;
-    }
-
-    if (this.options.axisPositionHorizontal && this.options.axisPositionHorizontal === 'hidden') {
-      this.axis.clearAxis();
-      return;
-    }
-
-
-    if (this.options.axisPositionHorizontal === 'left'
-            || this.options.axisPositionVertical === 'top') {
-      // left axis are shown at the beginning of the plot
-
-      this.axis.pAxis.position.x = this.position[0];
-      this.axis.pAxis.position.y = this.position[1];
-
-      this.axis.drawAxisRight(valueScale, this.dimensions[1]);
-    } else if (this.options.axisPositionHorizontal === 'outsideLeft'
-            || this.options.axisPositionVertical === 'outsideTop') {
-      // left axis are shown at the beginning of the plot
-
-      this.axis.pAxis.position.x = this.position[0];
-      this.axis.pAxis.position.y = this.position[1];
-
-      this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
-    } else if (this.options.axisPositionHorizontal === 'right'
-            || this.options.axisPositionVertical === 'bottom') {
-      this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
-      this.axis.pAxis.position.y = this.position[1];
-      this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
-    } else if (this.options.axisPositionHorizontal === 'outsideRight'
-            || this.options.axisPositionVertical === 'outsideBottom') {
-      this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
-      this.axis.pAxis.position.y = this.position[1];
-      this.axis.drawAxisRight(valueScale, this.dimensions[1]);
     }
   }
 

@@ -554,6 +554,7 @@ export const TRACKS_INFO = [
       'trackBorderColor',
     ],
     defaultOptions: {
+      axisPositionHorizontal: 'right',
       labelColor: 'black',
       labelPosition: 'hidden',
       trackBorderWidth: 0,
