@@ -452,6 +452,17 @@ export const OPTIONS_INFO = {
       } return [];
     },
   },
+
+  valueColumn: {
+    name: 'Value column',
+    inlineOptions: {
+      none: { name: 'None', value: null },
+    },
+    generateOptions: (track) => {
+      console.log('track', track);
+      return [];
+    }
+  }
 };
 
 export default OPTIONS_INFO;

@@ -552,6 +552,7 @@ export const TRACKS_INFO = [
       'labelBackgroundOpacity',
       'trackBorderWidth',
       'trackBorderColor',
+      'valueColumn',
     ],
     defaultOptions: {
       axisPositionHorizontal: 'right',
@@ -559,6 +560,7 @@ export const TRACKS_INFO = [
       labelPosition: 'hidden',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
+      valueColumn: null
     },
   },
 ];
