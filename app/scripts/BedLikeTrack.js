@@ -67,9 +67,11 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   destroyTile(tile) {
     // remove texts
+    const parts = tile.tileId.split('.');
+    const zoomLevel = +parts[parts.length-2];
 
     tile.tileData.forEach((td, i) => {
-      delete this.drawnRects[td.uid];
+      delete this.drawnRects[zoomLevel][td.uid];
     });
 
   }
@@ -80,6 +82,8 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   renderTile(tile) {
     if (!tile.initialized) { return; }
+    const parts = tile.tileId.split('.');
+    const zoomLevel = +parts[parts.length-2];
 
     tile.allRects = [];
 
@@ -90,7 +94,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     tile.tileData.forEach((td, i) => {
       // don't draw anything that has already been drawn
-      if (td.uid in this.drawnRects) return;
+      if (zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel]) return;
 
       const geneInfo = td.fields;
       // the returned positions are chromosome-based and they need to
@@ -129,7 +133,10 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       // this.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
 
       tile.rectGraphics.drawRect(xStartPos, rectY, xEndPos - xStartPos, GENE_RECT_HEIGHT);
-      this.drawnRects[td.uid] = [xStartPos, rectY, xEndPos - xStartPos, GENE_RECT_HEIGHT];
+      if (!(zoomLevel in this.drawnRects))
+        this.drawnRects[zoomLevel] = {};
+
+      this.drawnRects[zoomLevel][td.uid] = [xStartPos, rectY, xEndPos - xStartPos, GENE_RECT_HEIGHT];
 
       if (!tile.texts) {
         // tile probably hasn't been initialized yet

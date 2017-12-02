@@ -1,7 +1,16 @@
-v0.9.15 (2017-11-??)
+v0.9.16 (2017-
 
+- Fixed undefined error when toggling genome position search box
+
+v0.9.15 (2017-11-22)
+
+- Fixed bug where newly selected annotations weren't being used
+- Added the hideHeader option
+- Added a warning for malformed gene annotations
 - Free up webgl renderer resources when unmount
 - Minor CSS cleanup
+- Fix resizing bug that appears after closing a view
+- Warn if there are no track source servers specified in the viewconf
 
 v0.9.14 (2017-11-11)
 
