@@ -460,7 +460,23 @@ export const OPTIONS_INFO = {
     },
     generateOptions: (track) => {
       console.log('track', track);
-      return [];
+      if (!track.header)
+        return null;
+
+      let headerParts = track.header.split('\t');
+      let options = [];
+
+      for (let i = 0; i < headerParts.length; i++) {
+        options.push({
+          name: headerParts[i],
+          value: i+1,
+        });
+      }
+
+      console.log('headerParts:', headerParts);
+      console.log('options:', options);
+
+      return options;
     }
   }
 };

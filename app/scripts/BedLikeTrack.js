@@ -12,6 +12,7 @@ import { colorToHex } from './utils';
 const GENE_RECT_WIDTH = 1;
 const GENE_RECT_HEIGHT = 10;
 const MAX_TEXTS = 20;
+const MAX_TILE_ENTRIES = 1000;
 
 export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
@@ -32,7 +33,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     tile.graphics.addChild(tile.rectGraphics);
     tile.graphics.addChild(tile.textGraphics);
 
-    const MAX_TILE_ENTRIES = 50;
 
     if (tile.tileData && tile.tileData.length) {
       tile.tileData.sort((a, b) => b.importance - a.importance);
@@ -80,8 +80,22 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   drawTile(tile) {
-    if (this.options && this.options.yPosColumn) {
-      this.drawAxis(this.valueScale);
+    if (this.options && this.options.valueColumn) {
+      if (this.valueScale)
+        // there might no be a value scale if no valueColumn
+        // was specified
+        this.drawAxis(this.valueScale);
+    }
+  }
+
+  rerender(options, force) {
+    super.rerender(options, force);
+
+    this.drawnRects = {};
+
+    for (const tile of this.visibleAndFetchedTiles()) {
+      tile.rectGraphics.clear();
+      this.renderTile(tile);
     }
   }
 
@@ -95,6 +109,17 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // we only resize it when redrawing
     tile.drawnAtScale = this._xScale.copy();
     const fill = colorToHex(this.options.fillColor ? this.options.fillColor : 'blue');
+
+    if (this.options && this.options.valueColumn) { 
+      /**
+       * These intervals come with some y-value that we want to plot
+       */
+      this.valueScale = this.makeValueScale(
+        this.minVisibleValue(),
+        this.calculateMedianVisibleValue(),
+        this.maxVisibleValue()
+      );
+    }
 
     if (tile.tileData && tile.tileData.length) {
       tile.tileData.forEach((td, i) => {
@@ -118,18 +143,12 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         const geneName = geneInfo[3];
         let rectHeight = GENE_RECT_HEIGHT;
 
-        if (this.options && this.options.yPosColumn) {
-          /**
-           * These intervals come with some y-value that we want to plot
-           */
-          this.valueScale = this.makeValueScale(
-            this.minVisibleValue(),
-            this.calculateMedianVisibleValue(),
-            this.maxVisibleValue()
-          );
+        if (this.options && this.options.valueColumn) { 
+          // These intervals come with some y-value that we want to plot
 
-
-          yMiddle = this.valueScale( +geneInfo[+this.options.yPosColumn-1]);
+          yMiddle = this.valueScale( +geneInfo[+this.options.valueColumn-1]);
+          // console.log('valueScale:', this.valueScale.domain() );
+          // console.log('yMiddle:', +geneInfo[+this.options.valueColumn-1], yMiddle);
           rectHeight = GENE_RECT_HEIGHT / 2;
         }
 
@@ -153,6 +172,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         // graphics.drawRect(rectX, rectY, width, height);
         // this.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
 
+        // console.log('rectY:', rectY);
         tile.rectGraphics.drawRect(xStartPos, rectY, xEndPos - xStartPos, rectHeight);
 
         if (!this.drawnRects[zoomLevel])
@@ -212,8 +232,14 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       .map(x => this.fetchedTiles[x])
       .filter(x => x.tileData && x.tileData.length)
       .map((x) => {
+        return x;
+      })
+      .map((x) => {
         return Math.min.apply(null,
-          x.tileData.map(y => +y.fields[+this.options.yPosColumn - 1]));
+          x.tileData
+          .sort((a,b) => b.importance - a.importance)
+          .slice(0, MAX_TILE_ENTRIES)
+          .map(y => +y.fields[+this.options.valueColumn - 1]));
       })
     );
 
@@ -237,7 +263,10 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       .filter(x => x.tileData && x.tileData.length)
       .map((x) => {
         return Math.max.apply(null,
-          x.tileData.map(y => +y.fields[+this.options.yPosColumn - 1]));
+          x.tileData
+          .sort((a,b) => b.importance - a.importance)
+          .slice(0, MAX_TILE_ENTRIES)
+          .map(y => +y.fields[+this.options.valueColumn - 1]));
       })
     );
 
@@ -263,7 +292,10 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       visibleAndFetchedIds
       .map(x => this.fetchedTiles[x])
       .filter(x => x.tileData && x.tileData.length)
-      .map((x) => { return x.tileData.map(y => +y.fields[+this.options.yPosColumn - 1]); })
+      .map((x) => { return x.tileData
+          .sort((a,b) => b.importance - a.importance)
+          .slice(0, MAX_TILE_ENTRIES)
+          .map(y => +y.fields[+this.options.valueColumn - 1]); })
     ).filter(x => x > 0);
 
     this.medianVisibleValue = median(values);

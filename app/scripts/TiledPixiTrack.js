@@ -591,28 +591,54 @@ export class TiledPixiTrack extends PixiTrack {
     return max;
   }
 
-  makeValueScale(minValue, medianValue,  maxValue) {
+  makeValueScale(minValue, medianValue,  maxValue, margin) {
+    /*
+     * Create a value scale that will be used to position values
+     * along the y axis.
+     *
+     * Parameters
+     * ----------
+     *  minValue: number
+     *    The minimum value of the data
+     *  medianValue: number
+     *    The median value of the data. Potentially used for adding
+     *    a pseudocount
+     *  maxValue: number
+     *    The maximum value of the data
+     *  margin: number
+     *    A number of pixels to be left free on the top and bottom
+     *    of the track. For example if the glyphs have a certain
+     *    width and we want all of them to fit into the space.
+     *
+     * Returns
+     * -------
+     *  valueScale: d3.scale
+     *      A d3 value scale
+    */
     let valueScale = null;
+
+    if (!margin)
+      margin = 6;  // set a default value
+
     // console.log('valueScaling:', this.options.valueScaling);
     if (this.options.valueScaling === 'log') {
       let offsetValue = medianValue;
 
       if (!this.medianVisibleValue) { offsetValue = minValue; }
 
-      const PLOT_MARGIN = 6;
       // console.log('offsetValue:', offsetValue);
 
       valueScale = scaleLog()
         // .base(Math.E)
         .domain([offsetValue, maxValue + offsetValue])
         // .domain([offsetValue, this.maxValue()])
-        .range([this.dimensions[1] - PLOT_MARGIN, PLOT_MARGIN]);
+        .range([this.dimensions[1] - margin, margin]);
       pseudocount = offsetValue;
     } else {
       // linear scale
       valueScale = scaleLinear()
         .domain([minValue, maxValue])
-        .range([this.dimensions[1], 0]);
+        .range([this.dimensions[1] - margin, margin]);
     }
 
     return valueScale;
