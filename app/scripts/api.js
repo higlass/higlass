@@ -130,7 +130,7 @@ export const api = function api(context) {
     on(event, callback, viewId, callbackId) {
       switch (event) {
         case 'location':
-          self.onLocationChange(viewId, callback, callbackId);
+          return self.onLocationChange(viewId, callback, callbackId);
           break;
 
         case 'rangeSelection':
@@ -140,8 +140,7 @@ export const api = function api(context) {
           return self.onViewChange(callback);
 
         default:
-          // nothing
-          break;
+          return;
       }
     },
   };

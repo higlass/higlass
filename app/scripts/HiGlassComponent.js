@@ -2163,7 +2163,7 @@ class HiGlassComponent extends React.Component {
 
   handleSelectedAssemblyChanged(viewUid, newAssembly, newAutocompleteId, newServer) {
     /*
-     * A new assembly was selected in the GenomePositionSearchBox. 
+     * A new assembly was selected in the GenomePositionSearchBox.
      * Update the corresponding
      * view's entry
      *
@@ -2457,7 +2457,7 @@ class HiGlassComponent extends React.Component {
     this.removeScalesChangedListener(viewId, listenerId);
   }
 
-  onLocationChange(viewId, callback, callbackId) {
+onLocationChange(viewId, callback, callbackId) {
     if (
       typeof viewId === 'undefined' ||
       Object.keys(this.state.views).indexOf(viewId) === -1
@@ -2485,12 +2485,15 @@ class HiGlassComponent extends React.Component {
       callback(scalesToGenomeLoci(xScale, yScale, this.chromInfo));
     };
 
-    const newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
-      .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
-      .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
-      .reduce((max, value) => Math.max(max, value), 0) + 1;
+    let newListenerId = 1;
+    if (this.scalesChangedListeners[view.uid]) {
+      newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
+        .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
+        .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
+        .reduce((max, value) => Math.max(max, value), 0) + 1;
+    }
 
-    const scaleListener = this.addScalesChangedListener(
+    this.addScalesChangedListener(
       view.uid,
       `${LOCATION_LISTENER_PREFIX}.${newListenerId}`,
       middleLayerListener,
