@@ -1,12 +1,12 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-import { HiGlassComponent } from './HiGlassComponent';
+import HiGlassComponent from './HiGlassComponent';
 import SketchInlinePicker from './SketchInlinePicker';
 
 import '../styles/TrackOptions.css';
 
-export class HeatmapOptions extends React.Component {
+export default class HeatmapOptions extends React.Component {
   constructor(props) {
     super(props);
     // props should include the definition of the heatmap data series
@@ -211,5 +211,3 @@ export class HeatmapOptions extends React.Component {
     </Modal>);
   }
 }
-
-export default HeatmapOptions;

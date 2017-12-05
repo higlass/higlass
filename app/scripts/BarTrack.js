@@ -6,11 +6,11 @@ import { HorizontalLine1DPixiTrack } from './HorizontalLine1DPixiTrack';
 import { colorToHex, dictValues } from './utils';
 
 export class BarTrack extends HorizontalLine1DPixiTrack {
-  constructor( scene, server, uid, handleTilesetInfoReceived, option,
+  constructor( scene, dataConfig, handleTilesetInfoReceived, option,
     animate,
     onValueScaleChanged,
   ) {
-    super( scene, server, uid, handleTilesetInfoReceived, option, animate,
+    super( scene, dataConfig, handleTilesetInfoReceived, option, animate,
       onValueScaleChanged,
     );
   }

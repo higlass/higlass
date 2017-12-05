@@ -99,7 +99,7 @@ export const TRACKS_INFO = [
     local: false,
     orientation: '1d-horizontal',
     thumbnail: svgHorizontalLineIcon,
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling', 'trackBorderWidth', 'trackBorderColor'],
+    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'topLeft',
@@ -552,12 +552,15 @@ export const TRACKS_INFO = [
       'labelBackgroundOpacity',
       'trackBorderWidth',
       'trackBorderColor',
+      'valueColumn',
     ],
     defaultOptions: {
+      axisPositionHorizontal: 'right',
       labelColor: 'black',
       labelPosition: 'hidden',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
+      valueColumn: null
     },
   },
 ];

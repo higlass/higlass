@@ -13,6 +13,60 @@ const epsilon = 0.0000001;
 
 const MAX_FETCH_TILES = 20;
 
+export function minNonZero(data) {
+  /**
+   * Calculate the minimum non-zero value in the data
+   *
+   * Parameters
+   * ----------
+   *  data: Float32Array
+   *    An array of values
+   *
+   * Returns
+   * -------
+   *  minNonZero: float
+   *    The minimum non-zero value in the array
+   */
+   let minNonZero = Number.MAX_SAFE_INTEGER;
+
+  for (let i = 0; i < data.length; i++) {
+    const x = data[i];
+
+    if (x < epsilon && x > -epsilon) { continue; }
+
+    if (x < minNonZero) { minNonZero = x; }
+  }
+
+  return  minNonZero;
+}
+
+export function maxNonZero(data) {
+  /**
+   * Calculate the minimum non-zero value in the data
+   *
+   * Parameters
+   * ----------
+   *  data: Float32Array
+   *    An array of values
+   *
+   * Returns
+   * -------
+   *  minNonZero: float
+   *    The minimum non-zero value in the array
+   */
+  let maxNonZero = Number.MIN_SAFE_INTEGER;
+
+  for (let i = 0; i < data.length; i++) {
+    const x = data[i];
+
+    if (x < epsilon && x > -epsilon) { continue; }
+
+    if (x > maxNonZero) { maxNonZero = x; }
+  }
+
+  return maxNonZero;
+}
+
 export function workerSetPix(
   size, data, valueScale, pseudocount, colorScale, passedCountTransform
 ) {
@@ -218,6 +272,7 @@ export function workerFetchMultiRequestTiles(req) {
 
   for (const server of servers) {
     const ids = Object.keys(requestsByServer[server]);
+    // console.log('ids:', ids);
 
     // if we request too many tiles, then the URL can get too long and fail
     // so we'll break up the requests into smaller subsets
@@ -232,8 +287,14 @@ export function workerFetchMultiRequestTiles(req) {
           if (error) {
             resolve({});
           } else {
+            // console.log('data:', data);
             // check if we have array data to convert from base64 to float32
-            for (const key in data) {
+            for (const thisId of theseTileIds) {
+              if (!(thisId in data)) {
+                // the server didn't return any data for this tile
+                data[thisId] = {};
+              }
+              const key = thisId;
               // let's hope the payload doesn't contain a tileId field
               const keyParts = key.split('.');
 
@@ -259,23 +320,11 @@ export function workerFetchMultiRequestTiles(req) {
                   a = new Float32Array(arrayBuffer);
                 }
 
-                let minNonZero = Number.MAX_SAFE_INTEGER;
-                let maxNonZero = Number.MIN_SAFE_INTEGER;
 
                 data[key].dense = a;
 
-                // find the minimum and maximum non-zero values
-                for (let i = 0; i < a.length; i++) {
-                  const x = a[i];
-
-                  if (x < epsilon && x > -epsilon) { continue; }
-
-                  if (x < minNonZero) { minNonZero = x; }
-                  if (x > maxNonZero) { maxNonZero = x; }
-                }
-
-                data[key].minNonZero = minNonZero;
-                data[key].maxNonZero = maxNonZero;
+                data[key].minNonZero = minNonZero(a);
+                data[key].maxNonZero = maxNonZero(a);
 
                 /*
                                 if (data[key]['minNonZero'] == Number.MAX_SAFE_INTEGER &&

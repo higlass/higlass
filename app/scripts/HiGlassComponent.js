@@ -360,6 +360,10 @@ class HiGlassComponent extends React.Component {
 
   animate() {
     requestAnimationFrame(() => {
+      if (!this.pixiRenderer)
+        // component was probably unmounted
+        return;
+
       this.pixiRenderer.render(this.pixiStage);
     });
   }
@@ -430,10 +434,10 @@ class HiGlassComponent extends React.Component {
       for (const track of tracks[trackType]) {
         if (track.type === 'combined' && track.contents) {
           for (const subTrack of track.contents) {
-            allTracks.push({ viewId, trackId: subTrack.uid });
+            allTracks.push({ viewId, trackId: subTrack.uid, track: subTrack });
           }
         } else {
-          allTracks.push({ viewId, trackId: track.uid });
+          allTracks.push({ viewId, trackId: track.uid, track: track});
         }
       }
     }
@@ -453,10 +457,10 @@ class HiGlassComponent extends React.Component {
         for (const track of tracks[trackType]) {
           if (track.type === 'combined' && track.contents) {
             for (const subTrack of track.contents) {
-              allTracks.push({ viewId, trackId: subTrack.uid });
+              allTracks.push({ viewId, trackId: subTrack.uid, track: subTrack });
             }
           } else {
-            allTracks.push({ viewId, trackId: track.uid });
+            allTracks.push({ viewId, trackId: track.uid, track: track });
           }
         }
       }
@@ -1197,7 +1201,6 @@ class HiGlassComponent extends React.Component {
   }
 
   resizeHandler() {
-    console.log('this.viewHeaders:', this.viewHeaders);
     objVals(this.viewHeaders).filter(x => x).forEach(viewHeader => viewHeader.checkWidth());
   }
 
@@ -1544,6 +1547,31 @@ class HiGlassComponent extends React.Component {
     this.storeTrackSizes(viewId);
 
     for (const newTrack of newTracks) { this.handleTrackAdded(viewId, newTrack, position, host); }
+  }
+
+  handleChangeTrackType(viewUid, trackUid, newType) {
+    /**
+     * Change the type of a track. For example, convert a line to a bar track.
+     *
+     * Parameters
+     * ----------
+     *  viewUid: string
+     *    The view containing the track to be changed
+     *  trackUid: string
+     *    The uid identifying the existin track
+     *  newType: string
+     *    The type to switch this track to.
+     */
+    const view = this.state.views[viewUid];
+    let trackConfig = getTrackByUid(view.tracks, trackUid);
+
+    // this track needs a new uid so that it will be rerendered
+    trackConfig.uid = slugid.nice();
+    trackConfig.type = newType;
+
+    this.setState({
+      views: this.state.views,
+    });
   }
 
   handleTrackAdded(viewId, newTrack, position, host = null) {
@@ -2576,6 +2604,8 @@ class HiGlassComponent extends React.Component {
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
             mouseTool={this.state.mouseTool}
+            onChangeTrackType={(trackId, newType) => 
+              this.handleChangeTrackType(view.uid, trackId, newType)}
             onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
             onDataDomainChanged={
               (xDomain, yDomain) =>

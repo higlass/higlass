@@ -2,8 +2,9 @@ import * as PIXI from 'pixi.js';
 import { HeatmapTiledPixiTrack } from './HeatmapTiledPixiTrack';
 
 export class Id2DTiledPixiTrack extends HeatmapTiledPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
+    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
+
   }
 
   areAllVisibleTilesLoaded() {
@@ -50,10 +51,12 @@ export class Id2DTiledPixiTrack extends HeatmapTiledPixiTrack {
   drawTile(tile) {
     if (!tile.graphics) { return; }
 
-    // console.log('Id2DTiled drawTile...');
+    // console.log('Id2DTiled drawTile...', tile);
     const graphics = tile.graphics;
     const { tileX, tileY, tileWidth, tileHeight } = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
       tile.tileData.tilePos);
+
+    // console.log('tileX:', tileX, 'tileY:', tileY, 'tileWidth:', tileWidth, 'tileHeight:', tileHeight);
 
     // the text needs to be scaled down so that it doesn't become huge
     // when we zoom in
@@ -107,8 +110,8 @@ export class Id2DTiledPixiTrack extends HeatmapTiledPixiTrack {
       const keyParts = key.split('.');
 
       const data = {
-        zoomLevel: keyParts[1],
-        tilePos: keyParts.slice(2, keyParts.length).map(x => +x),
+        zoomLevel: keyParts[0],
+        tilePos: keyParts.slice(1, keyParts.length).map(x => +x),
       };
 
       this.fetchedTiles[x.tileId] = x;

@@ -52,6 +52,7 @@ export class TiledPlot extends React.Component {
     this.trackToReplace = null;
 
     this.addTrackModal = null;
+    this.configTrackMenu = null;
 
     /*
     let trackOptions = this.props.editable ?
@@ -214,6 +215,7 @@ export class TiledPlot extends React.Component {
     track.name = tilesetInfo.name;
     track.maxWidth = tilesetInfo.max_width;
     track.transforms = tilesetInfo.transforms;
+    track.header = tilesetInfo.header;
     track.binsPerDimension = tilesetInfo.bins_per_dimension;
     track.maxZoom = tilesetInfo.max_zoom;
     track.coordSystem = tilesetInfo.coordSystem;
@@ -254,6 +256,19 @@ export class TiledPlot extends React.Component {
       addTrackPosition: null,
       addTrackHost: null,
     });
+  }
+
+  handleDivideSeries(seriesUid) {
+    /*
+     * We want to create a new series that consists of this series
+     * being divided by another. Useful for comparing two tracks
+     * by division.
+     *
+     * Will start working with just heatmaps and then progress to
+     * other track types.
+     */
+    
+
   }
 
   handleAddSeries(trackUid) {
@@ -329,6 +344,17 @@ export class TiledPlot extends React.Component {
       closeTrackMenuId: null,
       configTrackMenuId: null,
     });
+  }
+
+  handleChangeTrackType(uid, newType) {
+    // close the config track menu
+    this.setState({
+      closeTrackMenuId: null,
+      configTrackMenuId: null,
+    });
+
+    // change the track type
+    this.props.onChangeTrackType(uid, newType);
   }
 
   handleTracksAdded(newTracks, position, host) {
@@ -1007,6 +1033,7 @@ export class TiledPlot extends React.Component {
             closeMenu={this.handleConfigTrackMenuClosed.bind(this)}
             onAddSeries={this.handleAddSeries.bind(this)}
             onAddTrack={this.handleAddTrack.bind(this)}
+            onChangeTrackType={this.handleChangeTrackType.bind(this)}
             onCloseTrack={this.handleCloseTrack.bind(this)}
             onConfigureTrack={this.handleConfigureTrack.bind(this)}
             onExportData={this.handleExportTrackData.bind(this)}
@@ -1014,6 +1041,7 @@ export class TiledPlot extends React.Component {
             onReplaceTrack={this.handleReplaceTrack.bind(this)}
             onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
             onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
+            ref={c => this.configTrackMenu = c}
             position={this.state.configTrackMenuLocation}
             track={getTrackByUid(this.props.tracks, this.state.configTrackMenuId)}
             trackOrientation={getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}

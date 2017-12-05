@@ -14,8 +14,8 @@ const TICK_TEXT_SEPARATION = 2;
 const TICK_COLOR = '#777777';
 
 class HorizontalChromosomeLabels extends PixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, chromInfoPath) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, chromInfoPath) {
+    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
 
     this.searchField = null;
     this.chromInfo = null;
@@ -32,7 +32,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
     let chromSizesPath = chromInfoPath;
 
     if (!chromSizesPath) {
-      chromSizesPath = `${server}/chrom-sizes/?id=${uid}`;
+      chromSizesPath = `${dataConfig.server}/chrom-sizes/?id=${dataConfig.tilesetUid}`;
     }
 
     ChromosomeInfo(chromSizesPath, (newChromInfo) => {

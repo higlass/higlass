@@ -1,3 +1,9 @@
+v0.10.0 (2017-12-05)
+
+- Change track type from the config menu
+- Initial framework for divided by tracks
+- Y-positioned bed-like tracks
+
 v0.9.16 (2017-
 
 - Fixed undefined error when toggling genome position search box
