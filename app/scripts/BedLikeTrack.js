@@ -74,9 +74,20 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     if (tile.tileData && tile.tileData.length) {
       tile.tileData.forEach((td, i) => {
-        delete this.drawnRects[zoomLevel][td.uid];
+
+        if (this.drawnRects[zoomLevel] && this.drawnRects[zoomLevel][td.uid])
+          delete this.drawnRects[zoomLevel][td.uid];
       });
     }
+  }
+
+  removeTiles(toRemoveIds) {
+    super.removeTiles(toRemoveIds);
+
+    // we're going to rerender after destroying tiles to make sure
+    // any rectangles that were listed under 'drawnRects' don't get
+    // ignored
+    this.rerender(this.options);
   }
 
   drawTile(tile) {
