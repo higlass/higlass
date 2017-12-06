@@ -1,3 +1,7 @@
+v0.10.1 (2017-12-
+
+- Fixed bug in Bedlike tracks that don't have a header
+
 v0.10.0 (2017-12-05)
 
 - Change track type from the config menu

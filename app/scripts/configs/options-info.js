@@ -459,9 +459,8 @@ export const OPTIONS_INFO = {
       none: { name: 'None', value: null },
     },
     generateOptions: (track) => {
-      console.log('track', track);
       if (!track.header)
-        return null;
+        return [];
 
       let headerParts = track.header.split('\t');
       let options = [];
@@ -473,8 +472,10 @@ export const OPTIONS_INFO = {
         });
       }
 
+        /*
       console.log('headerParts:', headerParts);
       console.log('options:', options);
+      */
 
       return options;
     }
