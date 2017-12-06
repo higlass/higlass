@@ -134,10 +134,10 @@ class HiGlassComponent extends React.Component {
       }
     }
 
+    this.mounted = false;
     this.state = {
       bounded: this.props.options ? this.props.options.bounded : false,
       currentBreakpoint: 'lg',
-      mounted: false,
       width: 0,
       height: 0,
       rowHeight: 30,
@@ -203,6 +203,7 @@ class HiGlassComponent extends React.Component {
     // all the elements based on their bounding boxes. If the window isn't
     // in focus, everything is drawn at the top and overlaps. When it gains
     // focus we need to redraw everything in its proper place
+    this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
     window.addEventListener('focus', this.boundRefreshView);
 
@@ -229,7 +230,6 @@ class HiGlassComponent extends React.Component {
     // keep track of the width and height of this element, because it
     // needs to be reflected in the size of our drawing surface
     this.setState({
-      mounted: true,
       svgElement: this.svgElement,
       canvasElement: this.canvasElement,
     });
@@ -289,6 +289,7 @@ class HiGlassComponent extends React.Component {
 
   componentWillUnmount() {
     // Destroy PIXI renderer, stages, and assets
+    this.mounted = false;
     this.pixiStage.destroy(false);
     this.pixiStage = null;
     this.pixiRenderer.destroy(true);
@@ -2318,9 +2319,11 @@ class HiGlassComponent extends React.Component {
 
     track.options = Object.assign(track.options, newOptions);
 
-    this.setState({
-      views: this.state.views,
-    });
+    if (this.mounted) {
+      this.setState({
+        views: this.state.views,
+      });
+    }
   }
 
   isTrackValid(track, viewUidsPresent) {
@@ -2546,7 +2549,7 @@ class HiGlassComponent extends React.Component {
 
     // The component needs to be mounted in order for the initial view to have the right
     // width
-    if (this.state.mounted) {
+    if (this.mounted) {
       tiledAreas = dictValues(this.state.views).map((view) => {
         const zoomFixed = typeof view.zoomFixed !== 'undefined' ? view.zoomFixed : this.props.zoomFixed;
 
@@ -2756,7 +2759,7 @@ class HiGlassComponent extends React.Component {
       />)
       : null;
 
-    let layouts = this.state.mounted ? dictValues(this.state.views)
+    let layouts = this.mounted ? dictValues(this.state.views)
       .filter(x => x.layout).map(x => x.layout) : [];
     layouts = JSON.parse(JSON.stringify(layouts)); // make sure to copy the layouts
 
@@ -2786,7 +2789,7 @@ class HiGlassComponent extends React.Component {
         // I like to have it animate on mount. If you don't, delete
         // `useCSSTransforms` (it's default `true`)
         // and set `measureBeforeMount={true}`.
-        useCSSTransforms={this.state.mounted}
+        useCSSTransforms={this.mounted}
       >
         {tiledAreas}
       </WidthReactGridLayout>
