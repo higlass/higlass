@@ -284,63 +284,72 @@ export function workerFetchMultiRequestTiles(req) {
 
       const p = new Promise(((resolve, reject) => {
         json(outUrl, (error, data) => {
+          if (!data)  {
+            // probably an error
+            data = {}
+          }
+
           if (error) {
-            resolve({});
-          } else {
-            // console.log('data:', data);
-            // check if we have array data to convert from base64 to float32
-            for (const thisId of theseTileIds) {
-              if (!(thisId in data)) {
-                // the server didn't return any data for this tile
-                data[thisId] = {};
-              }
-              const key = thisId;
-              // let's hope the payload doesn't contain a tileId field
-              const keyParts = key.split('.');
+            console.warn('Error fetching data:', error);
+          }
 
-              data[key].server = server;
-              data[key].tileId = key;
-              data[key].zoomLevel = +keyParts[1];
-              data[key].tilePos = keyParts.slice(2, keyParts.length).map(x => +x);
-              data[key].tilesetUid = keyParts[0];
+          for (const thisId of theseTileIds) {
+            if (!(thisId in data)) {
+              // the server didn't return any data for this tile
+              data[thisId] = {};
+            }
+            const key = thisId;
+            // let's hope the payload doesn't contain a tileId field
+            const keyParts = key.split('.');
 
-              if ('dense' in data[key]) {
-                const arrayBuffer = _base64ToArrayBuffer(data[key].dense);
-                let a;
+            data[key].server = server;
+            data[key].tileId = key;
+            data[key].zoomLevel = +keyParts[1];
+            data[key].tilePos = keyParts.slice(2, keyParts.length).map(x => +x);
+            data[key].tilesetUid = keyParts[0];
 
-
-                if (data[key].dtype == 'float16') {
-                  // data is encoded as float16s
-                  /* comment out until next empty line for 32 bit arrays */
-                  const uint16Array = new Uint16Array(arrayBuffer);
-                  const newDense = _uint16ArrayToFloat32Array(uint16Array);
-                  a = newDense;
-                } else {
-                  // data is encoded as float32s
-                  a = new Float32Array(arrayBuffer);
-                }
-
-
-                data[key].dense = a;
-
-                data[key].minNonZero = minNonZero(a);
-                data[key].maxNonZero = maxNonZero(a);
-
-                /*
-                                if (data[key]['minNonZero'] == Number.MAX_SAFE_INTEGER &&
-                                    data[key]['maxNonZero'] == Number.MIN_SAFE_INTEGER) {
-                                    // if there's no values except 0,
-                                    // then do use it as the min value
-
-                                    data[key]['minNonZero'] = 0;
-                                    data[key]['maxNonZero'] = 1;
-                                }
-                                */
-              }
+            if (error) {
+              // if there's an error, we have no data to fill in
+              data[key].error = error;
+              continue;
             }
 
-            resolve(data);
+            if ('dense' in data[key]) {
+              const arrayBuffer = _base64ToArrayBuffer(data[key].dense);
+              let a;
+
+
+              if (data[key].dtype == 'float16') {
+                // data is encoded as float16s
+                /* comment out until next empty line for 32 bit arrays */
+                const uint16Array = new Uint16Array(arrayBuffer);
+                const newDense = _uint16ArrayToFloat32Array(uint16Array);
+                a = newDense;
+              } else {
+                // data is encoded as float32s
+                a = new Float32Array(arrayBuffer);
+              }
+
+
+              data[key].dense = a;
+
+              data[key].minNonZero = minNonZero(a);
+              data[key].maxNonZero = maxNonZero(a);
+
+              /*
+                              if (data[key]['minNonZero'] == Number.MAX_SAFE_INTEGER &&
+                                  data[key]['maxNonZero'] == Number.MIN_SAFE_INTEGER) {
+                                  // if there's no values except 0,
+                                  // then do use it as the min value
+
+                                  data[key]['minNonZero'] = 0;
+                                  data[key]['maxNonZero'] = 1;
+                              }
+                              */
+            }
           }
+
+          resolve(data);
         });
       }));
 

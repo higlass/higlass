@@ -120,7 +120,6 @@ export default class DataFetcher {
         }));
       promise.then((returnedTiles) => {
         // console.log('tileIds:', tileIds);
-        // console.log('returnedTiles:', returnedTiles);
         const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
         // console.log('tilesetUid:', tilesetUid);
         let newTiles = {};
