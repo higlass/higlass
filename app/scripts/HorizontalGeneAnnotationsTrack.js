@@ -57,6 +57,11 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     const MAX_TILE_ENTRIES = 50;
 
+    if (!tile.tileData.sort) {
+      console.warn('Strange tileData', tile);
+      return;
+    }
+
     tile.tileData.sort((a, b) => b.importance - a.importance);
     tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
 
@@ -267,6 +272,13 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     for (const fetchedTileId in this.fetchedTiles) {
       const tile = this.fetchedTiles[fetchedTileId];
+
+      if (!tile.drawnAtScale) {
+        // tile hasn't been drawn properly because we likely got some
+        // bogus data from the server
+        console.warn("Tile without drawnAtScale:", tile);
+        continue;
+      }
 
       // scale the rectangles
 
