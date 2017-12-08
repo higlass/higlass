@@ -40,6 +40,44 @@ the `HiGlass GitHub repository <https://github.com/hms-dbmi/higlass/blob/develop
         }
     );
 
+Obtaining ordered chromosome info
+---------------------------------
+
+HiGlass provides an API for obtaining information about chromosomes
+and the order they are listed in a chromSizes file:
+
+.. code-block:: javascript
+
+    import {ChromosomeInfo} from 'higlass';
+
+    ChromosomeInfo(
+      'http://higlass.io/api/v1/chrom-sizes/?id=Ajn_ttUUQbqgtOD4nOt-IA',
+      (chromInfo) => {
+        console.log('chromInfo:', chromInfo);
+      });
+
+This will return a data structure with information about the chromosomes
+listed:
+
+.. code-block:: json
+
+    {
+        chrPositions: {
+            chr1 : {id: 0, chr: "chr1", pos: 0},
+            chr2 : {id: 1, chr: "chr2", pos: 249250621} ,
+            ...
+        },
+        chromLengths: {
+            chr1: "249250621",
+            chr2: "243199373",
+            ...
+        },
+        cumPositions: [
+            {id: 0, chr: "chr1", pos: 0},
+            {id: 1, chr: "chr2", pos: 249250621},
+            ...
+         ]
+    }
 
 Coding Guidelines
 =================

@@ -73,6 +73,41 @@ the <a class="reference external" href="https://github.com/hms-dbmi/higlass/blob
 </pre></div>
 </div>
 </div>
+<div class="section" id="obtaining-ordered-chromosome-info">
+<h3>Obtaining ordered chromosome info<a class="headerlink" href="#obtaining-ordered-chromosome-info" title="Permalink to this headline">¶</a></h3>
+<p>HiGlass provides an API for obtaining information about chromosomes
+and the order they are listed in a chromSizes file:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span><span class="nx">ChromosomeInfo</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;higlass&#39;</span><span class="p">;</span>
+
+<span class="nx">ChromosomeInfo</span><span class="p">(</span>
+  <span class="s1">&#39;http://higlass.io/api/v1/chrom-sizes/?id=Ajn_ttUUQbqgtOD4nOt-IA&#39;</span><span class="p">,</span>
+  <span class="p">(</span><span class="nx">chromInfo</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;chromInfo:&#39;</span><span class="p">,</span> <span class="nx">chromInfo</span><span class="p">);</span>
+  <span class="p">});</span>
+</pre></div>
+</div>
+<p>This will return a data structure with information about the chromosomes
+listed:</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span>{
+    chrPositions: {
+        chr1 : {id: 0, chr: &quot;chr1&quot;, pos: 0},
+        chr2 : {id: 1, chr: &quot;chr2&quot;, pos: 249250621} ,
+        ...
+    },
+    chromLengths: {
+        chr1: &quot;249250621&quot;,
+        chr2: &quot;243199373&quot;,
+        ...
+    },
+    cumPositions: [
+        {id: 0, chr: &quot;chr1&quot;, pos: 0},
+        {id: 1, chr: &quot;chr2&quot;, pos: 249250621},
+        ...
+     ]
+}
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="coding-guidelines">
 <h2>Coding Guidelines<a class="headerlink" href="#coding-guidelines" title="Permalink to this headline">¶</a></h2>
@@ -128,7 +163,7 @@ guidelines for style and documentation within the HiGlass ecosystem.</p>
 <li class="toctree-l2"><a class="reference internal" href="higlass_client.html#d-tracks">1D Tracks</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_server.html">Server</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="higlass_server.html">HiGlass Server</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#development">Development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#testing">Testing</a></li>
