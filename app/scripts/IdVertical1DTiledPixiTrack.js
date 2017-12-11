@@ -3,8 +3,8 @@ import * as PIXI from 'pixi.js';
 import VerticalTiled1DPixiTrack from './VerticalTiled1DPixiTrack';
 
 export class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
+    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
   }
 
   areAllVisibleTilesLoaded() {

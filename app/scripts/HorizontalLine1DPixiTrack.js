@@ -1,15 +1,13 @@
 import { scaleLinear, scaleLog } from 'd3-scale';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
-import { AxisPixi } from './AxisPixi';
 
 import { colorToHex } from './utils';
 
 export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(
     scene,
-    server,
-    uid,
+    dataConfig,
     handleTilesetInfoReceived,
     option,
     animate,
@@ -17,16 +15,13 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   ) {
     super(
       scene,
-      server,
-      uid,
+      dataConfig,
       handleTilesetInfoReceived,
       option,
       animate,
       onValueScaleChanged,
     );
 
-    this.axis = new AxisPixi(this);
-    this.pBase.addChild(this.axis.pAxis);
   }
 
   initTile(tile) {
@@ -55,53 +50,6 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     }
   }
 
-  drawAxis(valueScale) {
-    // either no axis position is specified
-    if (!this.options.axisPositionVertical && !this.options.axisPositionHorizontal) {
-      this.axis.clearAxis();
-      return;
-    }
-
-    if (this.options.axisPositionVertical && this.options.axisPositionVertical === 'hidden') {
-      this.axis.clearAxis();
-      return;
-    }
-
-    if (this.options.axisPositionHorizontal && this.options.axisPositionHorizontal === 'hidden') {
-      this.axis.clearAxis();
-      return;
-    }
-
-
-    if (this.options.axisPositionHorizontal === 'left'
-            || this.options.axisPositionVertical === 'top') {
-      // left axis are shown at the beginning of the plot
-
-      this.axis.pAxis.position.x = this.position[0];
-      this.axis.pAxis.position.y = this.position[1];
-
-      this.axis.drawAxisRight(valueScale, this.dimensions[1]);
-    } else if (this.options.axisPositionHorizontal === 'outsideLeft'
-            || this.options.axisPositionVertical === 'outsideTop') {
-      // left axis are shown at the beginning of the plot
-
-      this.axis.pAxis.position.x = this.position[0];
-      this.axis.pAxis.position.y = this.position[1];
-
-      this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
-    } else if (this.options.axisPositionHorizontal === 'right'
-            || this.options.axisPositionVertical === 'bottom') {
-      this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
-      this.axis.pAxis.position.y = this.position[1];
-      this.axis.drawAxisLeft(valueScale, this.dimensions[1]);
-    } else if (this.options.axisPositionHorizontal === 'outsideRight'
-            || this.options.axisPositionVertical === 'outsideBottom') {
-      this.axis.pAxis.position.x = this.position[0] + this.dimensions[0];
-      this.axis.pAxis.position.y = this.position[1];
-      this.axis.drawAxisRight(valueScale, this.dimensions[1]);
-    }
-  }
-
   renderTile(tile) {
     // this function is just so that we follow the same pattern as
     // HeatmapTiledPixiTrack.js
@@ -125,29 +73,11 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     let pseudocount = 0; // if we use a log scale, then we'll set a pseudocount
     // equal to the smallest non-zero value
-    this.valueScale = null;
-
-    // console.log('valueScaling:', this.options.valueScaling);
-    if (this.options.valueScaling === 'log') {
-      let offsetValue = this.medianVisibleValue;
-
-      if (!this.medianVisibleValue) { offsetValue = this.minVisibleValue(); }
-
-      const PLOT_MARGIN = 6;
-      // console.log('offsetValue:', offsetValue);
-
-      this.valueScale = scaleLog()
-        // .base(Math.E)
-        .domain([offsetValue, this.maxValue() + offsetValue])
-        // .domain([offsetValue, this.maxValue()])
-        .range([this.dimensions[1] - PLOT_MARGIN, PLOT_MARGIN]);
-      pseudocount = offsetValue;
-    } else {
-      // linear scale
-      this.valueScale = scaleLinear()
-        .domain([this.minValue(), this.maxValue()])
-        .range([this.dimensions[1], 0]);
-    }
+    this.valueScale = this.makeValueScale(
+      this.minValue(),
+      this.calculateMedianVisibleValue(),
+      this.maxValue()
+    );
 
     graphics.clear();
 

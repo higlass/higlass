@@ -39,6 +39,7 @@ export class AddTrackModal extends React.Component {
 
   selectedTilesetsChanged(selectedTilesets) {
     let allSame = true;
+
     const firstDatatype = selectedTilesets[0].datatype;
     for (const tileset of selectedTilesets) {
       if (tileset.datatype !== firstDatatype) { allSame = false; }
@@ -172,7 +173,7 @@ AddTrackModal.defaultProps = {
 };
 
 AddTrackModal.propTypes = {
-  host: PropTypes.object.isRequired,
+  host: PropTypes.object,
   onCancel: PropTypes.func.isRequired,
   onTracksChosen: PropTypes.func.isRequired,
   position: PropTypes.string,

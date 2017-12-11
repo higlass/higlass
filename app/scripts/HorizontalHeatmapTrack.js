@@ -15,13 +15,11 @@ import { HEATED_OBJECT_MAP } from './configs';
 export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   /**
    * @param scene: A PIXI.js scene to draw everything to.
-   * @param server: The server to pull tiles from.
-   * @param uid: The data set to get the tiles from the server
+   * @param dataConfig: An object defining where the data should be pulled from
    */
   constructor(
     scene,
-    server,
-    uid,
+    dataConfig,
     handleTilesetInfoReceived,
     options,
     animate,
@@ -31,8 +29,7 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   ) {
     super(
       scene,
-      server,
-      uid,
+      dataConfig,
       handleTilesetInfoReceived,
       options,
       animate,
