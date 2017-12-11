@@ -452,6 +452,34 @@ export const OPTIONS_INFO = {
       } return [];
     },
   },
+
+  valueColumn: {
+    name: 'Value column',
+    inlineOptions: {
+      none: { name: 'None', value: null },
+    },
+    generateOptions: (track) => {
+      if (!track.header)
+        return [];
+
+      let headerParts = track.header.split('\t');
+      let options = [];
+
+      for (let i = 0; i < headerParts.length; i++) {
+        options.push({
+          name: headerParts[i],
+          value: i+1,
+        });
+      }
+
+        /*
+      console.log('headerParts:', headerParts);
+      console.log('options:', options);
+      */
+
+      return options;
+    }
+  }
 };
 
 export default OPTIONS_INFO;

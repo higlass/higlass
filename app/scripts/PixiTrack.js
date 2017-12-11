@@ -98,6 +98,8 @@ export class PixiTrack extends Track {
    * graphics from the scene
    */
   remove() {
+    //console.trace('removing track');
+    // the entire PIXI stage was probably removed
     this.pBase.clear();
     this.scene.removeChild(this.pBase);
   }

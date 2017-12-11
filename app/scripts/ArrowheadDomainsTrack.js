@@ -7,8 +7,8 @@ import { tileProxy } from './services';
 import { colorToHex } from './utils';
 
 export class ArrowheadDomainsTrack extends TiledPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, option, animate);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
+    super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
 
     this.drawnRects = {};
   }
@@ -19,7 +19,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
          */
 
     // tile contains [zoomLevel, xPos, yPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
   tileToRemoteId(tile) {
@@ -28,7 +28,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
          */
 
     // tile contains [zoomLevel, xPos, yPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
   localToRemoteId(remoteId) {
@@ -153,6 +153,9 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
 
     graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
 
+    if (!tile.tileData.length)
+      return;
+
     // line needs to be scaled down so that it doesn't become huge
     for (const td of tile.tileData) {
       const line = td.fields;
@@ -206,6 +209,10 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
     track.appendChild(output);
 
     for (let tile of this.visibleAndFetchedTiles()) {
+      if (!tile.tileData || !tile.tileData.length)
+        // this tile has no data
+        continue;
+
       tile.tileData.forEach((td, i) => {
         let gTile = document.createElement('g')
         gTile.setAttribute('transform',

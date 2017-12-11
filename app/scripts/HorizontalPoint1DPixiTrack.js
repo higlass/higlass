@@ -4,8 +4,8 @@ import { colorToHex } from './utils';
 import { dictValues } from './utils';
 
 export class HorizontalPoint1DPixiTrack extends HorizontalLine1DPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
-    super(scene, server, uid, handleTilesetInfoReceived, option, animate, onValueScaleChanged);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
+    super(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged);
   }
 
   /**

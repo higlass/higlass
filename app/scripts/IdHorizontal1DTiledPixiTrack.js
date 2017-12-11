@@ -1,8 +1,8 @@
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
+    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
 
     this.pMain = this.pMobile;
   }
