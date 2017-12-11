@@ -167,6 +167,58 @@ we have no way of accessing tiles right now:
     pete@twok:~/projects/higlass-server [master|!SP]$ curl localhost:8000/api/v1/tiles/?d=RAh2nvU9THezcVuxBU3ioQ.0.0
     {"RAh2nvU9THezcVuxBU3ioQ.0.0": {"error": "Unknown tileset filetype: multivec"}}
 
+We need to add a function that will return tile data for this
+filetype. First we need to let the loader know about the new filetype.
+This is done in ``tilesets/generate_tiles.py:generate_tiles``. Simply
+add an additional else if clause for the multivec filetype:
+
+.. code-block:: python
+
+      elif tileset.filetype == 'multivec':
+          return generate_1d_tiles(
+                  tut.get_datapath(tileset.datafile.url),
+                  tile_ids,
+                  get_single_multivec_tile)
+
+Now we just need to the function that will actually generate the tiles:
+
+.. code-block:: python
+
+    def get_single_multivec_tile(filename, tile_pos):
+        '''
+        Retrieve a single multivec tile from a multires file
+
+        Parameters
+        ----------
+        filename: string
+          The multires file containing the multivec data
+        tile_pos: (z, x)
+          The zoom level and position of this tile
+        '''
+        tileset_info = generate_multivec_tileset_info(filename)
+        f = h5py.File(filename, 'r')
+
+        # which resolution does this zoom level correspond to?
+        resolution = tileset_info['resolutions'][tile_pos[0]]
+        tile_size = tileset_info['tile_size']
+
+        # where in the data does the tile start and end
+        tile_start = tile_pos[1] * tile_size
+        tile_end = tile_start + tile_size
+
+        dense = f['resolutions'][str(resolution)][tile_start:tile_end]
+        f.close()
+
+        return dense
+
+With this code in place, we should be able to call the tiles API and get back data:
+
+.. code-block:: bash
+
+    curl localhost:8000/api/v1/tiles/?d=RAh2nvU9THezcVuxBU3ioQ.0.0
+    {"dense": "...", "dtype": "float16", "shape": [762, 1544]}}
+
+Note that the data has been omitted in this example in lieu of an ellipsis.
 
 Chromosome sizes
 ~~~~~~~~~~~~~~~~
