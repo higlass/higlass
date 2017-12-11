@@ -10,7 +10,7 @@ import { tileProxy } from './services';
 
 import { colorDomainToRgbaArray, colorToHex } from './utils';
 
-import { heatedObjectMap } from './configs';
+import { HEATED_OBJECT_MAP } from './configs';
 
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;
@@ -65,7 +65,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // a 256 element array mapping the values 0-255 to rgba values
     // not a d3 color scale for speed
     // this.colorScale = heatedObjectMap;
-    this.colorScale = heatedObjectMap;
+    console.log('HEATED_OBJECT_MAP:', HEATED_OBJECT_MAP);
+    this.colorScale = HEATED_OBJECT_MAP;
 
     if (options && options.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
@@ -790,21 +791,22 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.setVisibleTiles(tiles);
   }
 
-  getTilePosAndDimensions(zoomLevel, tilePos) {
+  getTilePosAndDimensions(zoomLevel, tilePos, binsPerTileIn) {
     /**
          * Get the tile's position in its coordinate system.
          */
+    let binsPerTile = binsPerTileIn || BINS_PER_TILE;
 
     if (this.tilesetInfo.resolutions) {
       let sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
 
       let chosenResolution = sortedResolutions[zoomLevel];
 
-      let tileWidth =  chosenResolution * BINS_PER_TILE;
+      let tileWidth =  chosenResolution * binsPerTile;
       let tileHeight = tileWidth;
 
-      let tileX = chosenResolution * BINS_PER_TILE * tilePos[0];
-      let tileY = chosenResolution * BINS_PER_TILE * tilePos[1];
+      let tileX = chosenResolution * binsPerTile * tilePos[0];
+      let tileY = chosenResolution * binsPerTile * tilePos[1];
 
       return { tileX,
         tileY,
