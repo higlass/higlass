@@ -95,8 +95,17 @@ degrees. The base of the 1D heatmap is always the diagonal of the 2D heatmap.
 This is useful for displaying data, such as HiC, which has prominent features
 along the diagonal.</p>
 </div>
+<div class="section" id="d-rectangle-domain">
+<h2>2D Rectangle Domain<a class="headerlink" href="#d-rectangle-domain" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/2d-rectangles-track-thumb.png" class="align-right" src="_images/2d-rectangles-track-thumb.png" />
+<p>track-type: <code class="docutils literal"><span class="pre">2d-rectangle-domains</span></code>
+datatype: <code class="docutils literal"><span class="pre">2d-rectangle-domains</span></code></p>
+<p>The rectangle domains track shows rectangular regions on the heatmap. These are
+commonly aggregated using clodius based on some importance using the <code class="docutils literal"><span class="pre">clodius</span>
+<span class="pre">bedpe</span></code> command.</p>
+</div>
 <div class="section" id="horizontal-2d-rectangle-domain">
-<h2>Horizontal 2D Rectangle Domain<a class="headerlink" href="#horizontal-2d-rectangle-domain" title="Permalink to this headline">¶</a></h2>
+<span id="line-track"></span><h2>Horizontal 2D Rectangle Domain<a class="headerlink" href="#horizontal-2d-rectangle-domain" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/horizontal-2d-rectangle-domains-thumb.png" class="align-right" src="_images/horizontal-2d-rectangle-domains-thumb.png" />
 <p>track-type: <code class="docutils literal"><span class="pre">horizontal-2d-rectangle-domains</span></code>
 datatype: <code class="docutils literal"><span class="pre">2d-rectangle-domains</span></code></p>
@@ -107,7 +116,7 @@ of the 2D view is situated along its base, rectangles far from the diagonal may
 be outside of the bounds of the track.</p>
 </div>
 <div class="section" id="line">
-<span id="line-track"></span><h2>Line<a class="headerlink" href="#line" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>Line<a class="headerlink" href="#line" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/line-track-thumb.png" class="align-right" src="_images/line-track-thumb.png" />
 <p>track-type: <code class="docutils literal"><span class="pre">horizontal-line</span></code>
 datatype: <code class="docutils literal"><span class="pre">vector</span></code></p>
@@ -121,12 +130,12 @@ appropriate.</p>
 <img alt="_images/point-track-thumb.png" class="align-right" src="_images/point-track-thumb.png" />
 <p>track-type: <code class="docutils literal"><span class="pre">horizontal-point</span></code>
 datatype: <code class="docutils literal"><span class="pre">vector</span></code></p>
-<p>Point tracks display 1D vector data. Unlike <a class="reference internal" href="#line-track"><span class="std std-ref">line tracks</span></a>,
+<p>Point tracks display 1D vector data. Unlike <span class="xref std std-ref">line tracks</span>,
 they are well suited to data with NaNs because they do not require two points
 to draw something.</p>
 </div>
 <div class="section" id="chromosome-labels">
-<span id="id1"></span><h2>Chromosome Labels<a class="headerlink" href="#chromosome-labels" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>Chromosome Labels<a class="headerlink" href="#chromosome-labels" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/chromosome-labels-thumb.png" class="align-right" src="_images/chromosome-labels-thumb.png" />
 <p>track-type: <code class="docutils literal"><span class="pre">horizontal-chromosome-labes</span></code>
 datatype: <code class="docutils literal"><span class="pre">chromsizes</span></code>
@@ -205,6 +214,7 @@ adding a track to the <em>center</em> view.</p>
 <li class="toctree-l2"><a class="reference internal" href="#gene-annotations">Gene Annotations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#heatmap">Heatmap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#d-heatmap">1D Heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#d-rectangle-domain">2D Rectangle Domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#horizontal-2d-rectangle-domain">Horizontal 2D Rectangle Domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#line">Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#point">Point</a></li>

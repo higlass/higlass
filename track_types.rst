@@ -79,6 +79,21 @@ along the diagonal.
 
 .. _horizontal-2d-rectangle-domain
 
+2D Rectangle Domain
+==============================
+
+.. image:: img/2d-rectangles-track-thumb.png
+    :align: right
+
+track-type: ``2d-rectangle-domains``
+datatype: ``2d-rectangle-domains``
+
+The rectangle domains track shows rectangular regions on the heatmap. These are
+commonly aggregated using clodius based on some importance using the ``clodius
+bedpe`` command.
+
+.. _line-track:
+
 Horizontal 2D Rectangle Domain
 ==============================
 
