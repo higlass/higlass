@@ -2360,11 +2360,19 @@ class HiGlassComponent extends React.Component {
 
       if (!v.initialXDomain)
         throw 'No initialXDomain in provided viewconf';
+      else {
+        v.initialXDomain[0] = +v.initialXDomain[0];
+        v.initialXDomain[1] = +v.initialXDomain[1];
+
+      }
 
       // if there's no y domain specified just use the x domain instead
       // effectively centers the view on the diagonal
       if (!v.initialYDomain) {
         v.initialYDomain = [v.initialXDomain[0], v.initialXDomain[1]];
+      } else {
+        v.initialXDomain[0] = +v.initialXDomain[0];
+        v.initialXDomain[1] = +v.initialXDomain[1];
       }
 
       if (!this.xScales[v.uid])
