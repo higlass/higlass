@@ -82,6 +82,147 @@ that contain the test:</p>
 <div class="section" id="importing-data">
 <h2>Importing data<a class="headerlink" href="#importing-data" title="Permalink to this headline">¶</a></h2>
 <p>Different types of data can be imported into the higlass server.</p>
+</div>
+<div class="section" id="new-filetypes">
+<span id="id1"></span><h2>New filetypes<a class="headerlink" href="#new-filetypes" title="Permalink to this headline">¶</a></h2>
+<p>For this example, we’ll start in the <code class="docutils literal"><span class="pre">higlass-server</span></code> directory. The server
+needs to be running using this command:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>python manage.py runserver
+</pre></div>
+</div>
+<p>The first step in creating a new filetype is to name it. The name shouldn’t
+overlap with an existing filetype. In this example we’ll call our file type
+<code class="docutils literal"><span class="pre">multivec</span></code>. This is technically a matrix, but it’s only zoomable across
+one dimension.</p>
+<p>Next we need to ingest the file into the server:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>python manage.py   ingest_tileset   --filename tmp/my_file.multires   --datatype multi-vector   --filetype multivec   --coordSystem hg19 --uid RAh2nvU9THezcVuxBU3ioQ
+</pre></div>
+</div>
+<p>Under normal circumstances, we don’t need to speicfy a uid, but in this case
+we’ll do it so that the example below can be reproduced. If it’s omitted, a
+random one will be generated.  Now, we can query the server to get the uuid of
+the dataset:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pete@twok:~/projects/higlass-server <span class="o">[</span>master<span class="p">|</span>!SP<span class="o">]</span>$ curl <span class="m">127</span>.0.0.1:8000/api/v1/tilesets/?t<span class="o">=</span>multivec
+
+<span class="o">{</span><span class="s2">&quot;count&quot;</span>:1,<span class="s2">&quot;next&quot;</span>:null,<span class="s2">&quot;previous&quot;</span>:null,<span class="s2">&quot;results&quot;</span>:<span class="o">[{</span><span class="s2">&quot;uuid&quot;</span>:<span class="s2">&quot;RAh2nvU9THezcVuxBU3ioQ&quot;</span>,<span class="s2">&quot;datafile&quot;</span>:<span class="s2">&quot;http://127.0.0.1:8000/api/v1/tilesets/media/uploads/my_file.multires&quot;</span>,<span class="s2">&quot;filetype&quot;</span>:<span class="s2">&quot;multivec&quot;</span>,<span class="s2">&quot;datatype&quot;</span>:<span class="s2">&quot;multi-vector&quot;</span>,<span class="s2">&quot;private&quot;</span>:false,<span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;my_file.multires&quot;</span>,<span class="s2">&quot;coordSystem&quot;</span>:<span class="s2">&quot;hg19&quot;</span>,<span class="s2">&quot;coordSystem2&quot;</span>:<span class="s2">&quot;&quot;</span>,<span class="s2">&quot;created&quot;</span>:<span class="s2">&quot;2017-12-09T15:07:04.890027Z&quot;</span><span class="o">}]}</span>
+</pre></div>
+</div>
+<p>So now we know that our file as a uuid of <code class="docutils literal"><span class="pre">RAh2nvU9THezcVuxBU3ioQ</span></code>. We can use that to try to retrieve the tileset info.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pete@twok:~/projects/higlass-server <span class="o">[</span>master<span class="p">|</span>!SP<span class="o">]</span>$ curl <span class="m">127</span>.0.0.1:8000/api/v1/tileset_info/?d<span class="o">=</span>RAh2nvU9THezcVuxBU3ioQ<span class="p">&amp;</span>
+
+<span class="o">{</span><span class="s2">&quot;RAh2nvU9THezcVuxBU3ioQ&quot;</span>: <span class="o">{</span><span class="s2">&quot;message&quot;</span>: <span class="s2">&quot;Unknown filetype multivec&quot;</span>, <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;my_file.multires&quot;</span>, <span class="s2">&quot;coordSystem&quot;</span>: <span class="s2">&quot;hg19&quot;</span>, <span class="s2">&quot;coordSystem2&quot;</span>: <span class="s2">&quot;&quot;</span><span class="o">}}</span>
+</pre></div>
+</div>
+<p>Since we haven’t implemented this filetype, the server doesn’t know how to
+handle it.  To let it know, we need to add a hook in the <code class="docutils literal"><span class="pre">tileset_info</span></code>
+function in <code class="docutils literal"><span class="pre">tilesets/views.py</span></code>. Simply add an extra if clause:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="k">elif</span> tileset_object.filetype <span class="o">==</span> <span class="s1">&#39;multivec&#39;</span>:
+    tileset_infos<span class="o">[</span>tileset_uuid<span class="o">]</span> <span class="o">=</span> tgt.generate_multivec_tileset_info<span class="o">(</span>
+            tut.get_datapath<span class="o">(</span>tileset_object.datafile.url<span class="o">))</span>
+</pre></div>
+</div>
+<p>In the above snipped <code class="docutils literal"><span class="pre">tileset_object</span></code> is the database object which describes
+the file. If it is of type <code class="docutils literal"><span class="pre">multived</span></code> we need to return a special type of
+<code class="docutils literal"><span class="pre">tileset_info</span></code>. This should be placed in <code class="docutils literal"><span class="pre">tilesets/generate_tiles.py</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_multivec_tileset_info</span><span class="p">(</span><span class="n">ffilename</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Return some information about this tileset that will</span>
+<span class="sd">    help render it in on the client.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename: str</span>
+<span class="sd">        The filename of the h5py file containing the tileset info</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tileset_info: {}</span>
+<span class="sd">        A dictionary containing the information describing</span>
+<span class="sd">        this dataset</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="c1"># a sorted list of resolutions, lowest to highest</span>
+    <span class="c1"># awkward to write because a the numbers representing resolution</span>
+    <span class="c1"># are datapoints / pixel so lower resolution is actually a higher</span>
+    <span class="c1"># number</span>
+    <span class="n">resolutions</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="s1">&#39;resolutions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()])[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># the &quot;leftmost&quot; datapoint position</span>
+    <span class="c1"># an array because higlass can display multi-dimensional</span>
+    <span class="c1"># data</span>
+    <span class="n">min_pos</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># the &quot;rightmost&quot; datapoint position</span>
+    <span class="n">max_pos</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;resolutions&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">resolutions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])])]</span>
+    <span class="n">tile_size</span> <span class="o">=</span> <span class="mi">1024</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;resolutions&#39;</span><span class="p">:</span> <span class="n">resolutions</span><span class="p">,</span>
+        <span class="s1">&#39;min_pos&#39;</span><span class="p">:</span> <span class="n">min_pos</span><span class="p">,</span>
+        <span class="s1">&#39;tile_size&#39;</span><span class="p">:</span> <span class="n">tile_size</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+<p>Now when we hit the <cite>/api/v1/tileset_info/?d=`</cite> endpoint, we should get a valid
+response:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pete@twok:~/projects/higlass-server <span class="o">[</span>master<span class="p">|</span>!SP<span class="o">]</span>$ curl localhost:8000/api/v1/tileset_info/?d<span class="o">=</span>RAh2nvU9THezcVuxBU3ioQ
+<span class="o">{</span><span class="s2">&quot;RAh2nvU9THezcVuxBU3ioQ&quot;</span>: <span class="o">{</span><span class="s2">&quot;resolutions&quot;</span>: <span class="o">[</span><span class="m">128</span>, <span class="m">64</span>, <span class="m">32</span>, <span class="m">16</span>, <span class="m">8</span>, <span class="m">4</span>, <span class="m">2</span>, <span class="m">1</span><span class="o">]</span>, <span class="s2">&quot;min_pos&quot;</span>: <span class="o">[</span><span class="m">0</span><span class="o">]</span>, <span class="s2">&quot;tile_size&quot;</span>: <span class="m">1024</span>, <span class="s2">&quot;name&quot;</span>: <span class="s2">&quot;my_file.multires&quot;</span>, <span class="s2">&quot;coordSystem&quot;</span>: <span class="s2">&quot;hg19&quot;</span>, <span class="s2">&quot;coordSystem2&quot;</span>: <span class="s2">&quot;&quot;</span><span class="o">}}</span>
+</pre></div>
+</div>
+<p>Now that we have the tileset info, we just need the tiles. We can verify that
+we have no way of accessing tiles right now:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pete@twok:~/projects/higlass-server <span class="o">[</span>master<span class="p">|</span>!SP<span class="o">]</span>$ curl localhost:8000/api/v1/tiles/?d<span class="o">=</span>RAh2nvU9THezcVuxBU3ioQ.0.0
+<span class="o">{</span><span class="s2">&quot;RAh2nvU9THezcVuxBU3ioQ.0.0&quot;</span>: <span class="o">{</span><span class="s2">&quot;error&quot;</span>: <span class="s2">&quot;Unknown tileset filetype: multivec&quot;</span><span class="o">}}</span>
+</pre></div>
+</div>
+<p>We need to add a function that will return tile data for this
+filetype. First we need to let the loader know about the new filetype.
+This is done in <code class="docutils literal"><span class="pre">tilesets/generate_tiles.py:generate_tiles</span></code>. Simply
+add an additional else if clause for the multivec filetype:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">elif</span> <span class="n">tileset</span><span class="o">.</span><span class="n">filetype</span> <span class="o">==</span> <span class="s1">&#39;multivec&#39;</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">generate_1d_tiles</span><span class="p">(</span>
+            <span class="n">tut</span><span class="o">.</span><span class="n">get_datapath</span><span class="p">(</span><span class="n">tileset</span><span class="o">.</span><span class="n">datafile</span><span class="o">.</span><span class="n">url</span><span class="p">),</span>
+            <span class="n">tile_ids</span><span class="p">,</span>
+            <span class="n">get_single_multivec_tile</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we just need to the function that will actually generate the tiles:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_single_multivec_tile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">tile_pos</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Retrieve a single multivec tile from a multires file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename: string</span>
+<span class="sd">      The multires file containing the multivec data</span>
+<span class="sd">    tile_pos: (z, x)</span>
+<span class="sd">      The zoom level and position of this tile</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">tileset_info</span> <span class="o">=</span> <span class="n">generate_multivec_tileset_info</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+    <span class="c1"># which resolution does this zoom level correspond to?</span>
+    <span class="n">resolution</span> <span class="o">=</span> <span class="n">tileset_info</span><span class="p">[</span><span class="s1">&#39;resolutions&#39;</span><span class="p">][</span><span class="n">tile_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">tile_size</span> <span class="o">=</span> <span class="n">tileset_info</span><span class="p">[</span><span class="s1">&#39;tile_size&#39;</span><span class="p">]</span>
+
+    <span class="c1"># where in the data does the tile start and end</span>
+    <span class="n">tile_start</span> <span class="o">=</span> <span class="n">tile_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">tile_size</span>
+    <span class="n">tile_end</span> <span class="o">=</span> <span class="n">tile_start</span> <span class="o">+</span> <span class="n">tile_size</span>
+
+    <span class="n">dense</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s1">&#39;resolutions&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">resolution</span><span class="p">)][</span><span class="n">tile_start</span><span class="p">:</span><span class="n">tile_end</span><span class="p">]</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">dense</span>
+</pre></div>
+</div>
+<p>With this code in place, we should be able to call the tiles API and get back data:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl localhost:8000/api/v1/tiles/?d<span class="o">=</span>RAh2nvU9THezcVuxBU3ioQ.0.0
+<span class="o">{</span><span class="s2">&quot;dense&quot;</span>: <span class="s2">&quot;...&quot;</span>, <span class="s2">&quot;dtype&quot;</span>: <span class="s2">&quot;float16&quot;</span>, <span class="s2">&quot;shape&quot;</span>: <span class="o">[</span><span class="m">762</span>, <span class="m">1544</span><span class="o">]}}</span>
+</pre></div>
+</div>
+<p>Note that the data has been omitted in this example in lieu of an ellipsis.</p>
 <div class="section" id="chromosome-sizes">
 <h3>Chromosome sizes<a class="headerlink" href="#chromosome-sizes" title="Permalink to this headline">¶</a></h3>
 <p>Chromosome sizes specify the lengths of the chromosomes that make up an
@@ -122,8 +263,8 @@ added to the server:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<div class="section" id="id1">
-<h4>Testing<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id2">
+<h4>Testing<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>python manage.py <span class="nb">test</span> tilesets --failfast
 </pre></div>
 </div>
@@ -172,6 +313,7 @@ added to the server:</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_client.html">HiGlass Client (Developer)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-new-track-types">Adding new track types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_client.html#d-tracks">1D Tracks</a></li>
 </ul>
 </li>
@@ -180,6 +322,7 @@ added to the server:</p>
 <li class="toctree-l2"><a class="reference internal" href="#development">Development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#importing-data">Importing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#new-filetypes">New filetypes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="track_types.html">Track Types</a><ul>

@@ -58,6 +58,8 @@ Importing data
 
 Different types of data can be imported into the higlass server.
 
+.. _new-filetypes:
+
 New filetypes
 -------------
 
@@ -77,9 +79,12 @@ Next we need to ingest the file into the server:
 
 .. code-block:: bash
     
-    python manage.py   ingest_tileset   --filename tmp/my_file.multires   --datatype multi-vector   --filetype multivec   --coordSystem hg19
+    python manage.py   ingest_tileset   --filename tmp/my_file.multires   --datatype multi-vector   --filetype multivec   --coordSystem hg19 --uid RAh2nvU9THezcVuxBU3ioQ
 
-Now, we can query the server to get the uuid of the dataset:
+Under normal circumstances, we don't need to speicfy a uid, but in this case
+we'll do it so that the example below can be reproduced. If it's omitted, a
+random one will be generated.  Now, we can query the server to get the uuid of
+the dataset:
 
 .. code-block:: bash
 

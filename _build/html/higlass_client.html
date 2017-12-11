@@ -42,6 +42,31 @@
             
   <div class="section" id="higlass-client-developer">
 <h1>HiGlass Client (Developer)<a class="headerlink" href="#higlass-client-developer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="adding-new-track-types">
+<h2>Adding new track types<a class="headerlink" href="#adding-new-track-types" title="Permalink to this headline">¶</a></h2>
+<p>To add a new track type, we first need a data source and a new
+definition. To being, we can create a new test page to work
+with.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cp app/test2.html app/testx.html
+</pre></div>
+</div>
+<p>Within this page will be a sample viewconfig, that we need to add our new track
+definition to. In this example, we’ll be adding a 1D track. This just means
+that it can only be zoomed into in one dimension. We’ll add it to the list of
+top tracks with the bare minimum of attributes. The tilesetUid was taken from
+the <a class="reference external" href="higlass_server.html#new-filetypes">higlass server new filetypes section</a>.</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span>&quot;top&quot;: [
+          {
+    &quot;server&quot;: &quot;http://localhost:8000/api/v1&quot;,
+    &quot;tilesetUid&quot;: &quot;RAh2nvU9THezcVuxBU3ioQ&quot;,
+    &quot;type&quot;: &quot;horizontal-multivec&quot;,
+    &quot;height&quot;: 200,
+    &quot;position&quot;: &quot;top&quot;
+  }
+],
+</pre></div>
+</div>
+</div>
 <div class="section" id="d-tracks">
 <h2>1D Tracks<a class="headerlink" href="#d-tracks" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="line-tracks">
@@ -103,6 +128,7 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">HiGlass Client (Developer)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-new-track-types">Adding new track types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#d-tracks">1D Tracks</a></li>
 </ul>
 </li>
@@ -111,6 +137,7 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#development">Development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#testing">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#importing-data">Importing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#new-filetypes">New filetypes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="track_types.html">Track Types</a><ul>
