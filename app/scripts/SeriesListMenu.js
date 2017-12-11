@@ -303,14 +303,13 @@ export class SeriesListMenu extends ContextMenuContainer {
         </ContextMenuItem>
 
         { 
+        /*
           this.props.series.type == 'heatmap' ? 
           <ContextMenuItem
             onClick={() => {
               this.props.onDivideSeries(this.props.series.uid);
-              /*
-              this.props.onCloseTrack(this.props.series.uid);
-              this.props.onAddSeries(this.props.hostTrack.uid);
-              */
+              // this.props.onCloseTrack(this.props.series.uid);
+              // this.props.onAddSeries(this.props.hostTrack.uid);
             }}
             onMouseEnter={e => this.handleOtherMouseEnter(e)}
             styleName="context-menu-item"
@@ -320,6 +319,7 @@ export class SeriesListMenu extends ContextMenuContainer {
             </span>
           </ContextMenuItem>
           : null
+        */
         }
 
         {this.getSubmenu()}

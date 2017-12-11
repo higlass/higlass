@@ -2,6 +2,7 @@ v0.10.2 (2017-12-
 
 - Fixed a bug in loading tileset info that isn't there
 - Better error handling on internal server error
+- Removed functionless menu item
 
 v0.10.1 (2017-12-05)
 
