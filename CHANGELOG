@@ -1,4 +1,4 @@
-v0.10.2 (2017-12-
+v0.10.2 (2017-12-12)
 
 - Fixed a bug in loading tileset info that isn't there
 - Better error handling on internal server error
