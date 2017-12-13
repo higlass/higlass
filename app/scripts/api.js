@@ -52,6 +52,9 @@ export const api = function api(context) {
         case 'viewConfig':
           return Promise.resolve(self.getViewsAsString());
 
+        case 'svgString':
+          return Promise.resolve(self.createSVGString());
+
         default:
           return Promise.reject(`Propert "${prop}" unknown`);
       }

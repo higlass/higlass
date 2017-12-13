@@ -222,6 +222,7 @@ class HiGlassComponent extends React.Component {
         transparent: true,
         resolution: 2,
         autoResize: true,
+        preserveDrawingBuffer: true,
       });
 
     // PIXI.RESOLUTION=2;
@@ -654,13 +655,18 @@ class HiGlassComponent extends React.Component {
     return svg;
   }
 
-  handleExportSVG() {
+  createSVGString() {
     const svg = this.createSVG();
 
     const svgText = new XMLSerializer().serializeToString(svg);
     const beautyText = vkbeautify.xml(svgText);
 
-    download('export.svg', vkbeautify.xml(svgText));
+    return vkbeautify.xml(svgText);
+  }
+
+  handleExportSVG() {
+    download('export.svg', this.createSVGString());
+
     return svg;
   }
 
