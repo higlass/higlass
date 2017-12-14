@@ -99,7 +99,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     super.zoomed(newXScale, newYScale);
 
     this.pMain.position.x = tx; // translateX;
-    this.pMain.position.y = 0; // translateY;
+    this.pMain.position.y = this.position[1]; // translateY;
 
     this.pMain.scale.x = k; // scaleX;
     this.pMain.scale.y = 1; // scaleY;

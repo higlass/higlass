@@ -118,7 +118,7 @@ export const TRACKS_INFO = [
     local: false,
     orientation: '1d-horizontal',
     thumbnail: null,
-    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
+    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
     defaultOptions: {
       labelPosition: 'topLeft',
       labelColor: 'black',

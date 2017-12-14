@@ -101,10 +101,10 @@ export const fetchTiles = (tilesetServer, tilesetIds, done) =>
  */
 export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
   const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
-  console.log('sortedResolutions:', sortedResolutions);
+  // console.log('sortedResolutions:', sortedResolutions);
 
   const trackWidth = scale.range()[1] - scale.range()[0];
-  //console.log('trackWidth:', trackWidth, 'scale:', this._xScale.domain()[1] - this._xScale.domain()[0]);
+  // console.log('trackWidth:', trackWidth, 'scale:', this._xScale.domain()[1] - this._xScale.domain()[0]);
 
   let binsDisplayed = sortedResolutions.map(r => (scale.domain()[1] - scale.domain()[0]) / r)
   let binsPerPixel = binsDisplayed.map(b => b / trackWidth);
@@ -204,7 +204,7 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
   const PIXELS_PER_TILE = pixelsPerTile || 256;
   const tileWidth = resolution * PIXELS_PER_TILE;
   const MAX_TILES = 20;
-  console.log('PIXELS_PER_TILE:', PIXELS_PER_TILE);
+  // console.log('PIXELS_PER_TILE:', PIXELS_PER_TILE);
 
   if (!maxX)
     maxX = Number.MAX_VALUE;
@@ -221,7 +221,7 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
     console.warn(`Too many visible tiles: ${tileRange.length} truncating to ${MAX_TILES}`);
     tileRange = tileRange.slice(0, MAX_TILES);
   }
-  console.log('tileRange:', tileRange);
+  // console.log('tileRange:', tileRange);
 
   return tileRange;
 };
