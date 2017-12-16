@@ -1,3 +1,8 @@
+v0.10.3 (2017-12-13)
+
+- Don't include a colon if the port is 80
+- 
+
 v0.10.2 (2017-12-12)
 
 - Fixed a bug in loading tileset info that isn't there

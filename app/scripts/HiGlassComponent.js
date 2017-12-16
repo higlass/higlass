@@ -1462,6 +1462,25 @@ class HiGlassComponent extends React.Component {
     return layout;
   }
 
+  handleClearView(viewUid) {
+    /**
+     * Remove all the tracks from a view
+     *
+     * @param {viewUid} Thie view's identifier
+     */
+    const views = this.state.views;
+
+    views[viewUid].tracks.top = [];
+    views[viewUid].tracks.bottom = [];
+    views[viewUid].tracks.center = [];
+    views[viewUid].tracks.left = [];
+    views[viewUid].tracks.right = [];
+
+    this.setState({
+      views: views,
+    });
+  }
+
   handleCloseView(uid) {
     /**
        * A view needs to be closed. Remove it from from the viewConfig and then clean
@@ -2011,7 +2030,7 @@ class HiGlassComponent extends React.Component {
       .post(wrapper, (error, response) => {
         if (response) {
           const content = JSON.parse(response.response);
-          const portString = window.location.port == 80 ? '' : `:${window.location.port}`;
+          const portString = window.location.port === '' ? '' : `:${window.location.port}`;
           this.setState({
             // exportLinkLocation: this.props.viewConfig.exportViewUrl + "?d=" + content.uid
             exportLinkLocation: `http://${window.location.hostname}${portString}/app/?config=${content.uid}`,
@@ -2316,6 +2335,9 @@ class HiGlassComponent extends React.Component {
     // redraw the track  and store the changes in the config file
     const view = this.state.views[viewUid];
     const track = getTrackByUid(view.tracks, trackUid);
+
+    if (!track)
+      return;
 
     track.options = Object.assign(track.options, newOptions);
 
@@ -2701,6 +2723,7 @@ class HiGlassComponent extends React.Component {
               view.genomePositionSearchBox.visible
             }
             onAddView={() => this.handleAddView(view)}
+            onClearView={() => this.handleClearView(view.uid)}
             onCloseView={() => this.handleCloseView(view.uid)}
             onExportSVG={this.handleExportSVG.bind(this)}
             onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
