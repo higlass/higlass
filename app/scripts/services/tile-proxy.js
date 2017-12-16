@@ -232,6 +232,11 @@ export const tileDataToPixData = (
 ) => {
   const tileData = tile.tileData;
 
+  if  (!tileData.dense) {
+    // if we didn't get any data from the server, don't do anything
+    return;
+  }
+
   // clone the tileData so that the original array doesn't get neutered
   // when being passed to the worker script
   const newTileData = new Float32Array(tileData.dense.length);
