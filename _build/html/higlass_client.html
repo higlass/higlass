@@ -42,12 +42,110 @@
             
   <div class="section" id="higlass-client-developer">
 <h1>HiGlass Client (Developer)<a class="headerlink" href="#higlass-client-developer" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="d-tracks">
-<h2>1D Tracks<a class="headerlink" href="#d-tracks" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="line-tracks">
-<h3>Line Tracks<a class="headerlink" href="#line-tracks" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="scaling">
-<h4>Scaling<a class="headerlink" href="#scaling" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="higlass-api">
+<h2>HiGlass API<a class="headerlink" href="#higlass-api" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="creating-an-inline-higlass-component">
+<h3>Creating an inline HiGlass component<a class="headerlink" href="#creating-an-inline-higlass-component" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">createHgComponent</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">config</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create a new HiGlass component within a web page. This initializes a
+HiGlassComponent inside the element <code class="docutils literal"><span class="pre">element</span></code> with a viewconfig passed in as
+<code class="docutils literal"><span class="pre">config</span></code>. If <code class="docutils literal"><span class="pre">config</span></code> is a string, it is interpreted as a url and used to
+try to fetch a remote viewconfig.</p>
+<p>The <code class="docutils literal"><span class="pre">options</span></code> parameter can currently only specify the <code class="docutils literal"><span class="pre">bounded</span></code> property
+which tells the HiGlass component to fill all the space in the containing
+element. Note that if <code class="docutils literal"><span class="pre">bounded</span></code> is set to true, then <code class="docutils literal"><span class="pre">element</span></code> must have a
+fixed height. <code class="docutils literal"><span class="pre">callback</span></code> is used to return an api variable which can be used
+to access HiGlass events.</p>
+<p>A full example of an inline HiGlass component can be found in the <a class="reference external" href="https://github.com/hms-dbmi/higlass/blob/develop/app/test.html">HiGlass
+GitHub repository</a>.</p>
+<p><strong>Example</strong></p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nx">hgApi</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+<span class="nx">hglib</span><span class="p">.</span><span class="nx">createHgComponent</span><span class="p">(</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;development-demo&#39;</span><span class="p">),</span>
+    <span class="nx">testViewConfig</span><span class="p">,</span>
+    <span class="p">{</span> <span class="nx">bounded</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
+    <span class="kd">function</span> <span class="p">(</span><span class="nx">api</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">hgApi</span> <span class="o">=</span> <span class="nx">api</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="setting-a-view-config">
+<h3>Setting a view config<a class="headerlink" href="#setting-a-view-config" title="Permalink to this headline">¶</a></h3>
+<p>The HiGlass API can be used to set a new viewconfig. This returns a Promise
+which is fulfilled when all of the data for the view is loaded.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">hgApi</span><span class="p">.</span><span class="nx">setViewConfig</span><span class="p">(</span><span class="nx">newViewConfig</span><span class="p">);</span>
+<span class="nx">p</span><span class="p">.</span><span class="nx">then</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// the initial set of tiles has been loaded</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="zooming-to-show-all-of-the-data">
+<h3>Zooming to show all of the data<a class="headerlink" href="#zooming-to-show-all-of-the-data" title="Permalink to this headline">¶</a></h3>
+<p>One may set a view config pointing to a dataset which is either out of the
+bounds of the view, too small, or too zoomed in. To fit the data inside of
+the view, the HiGlass API exposes the  <code class="docutils literal"><span class="pre">zoomToDataExtent</span></code> function.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">api</span><span class="p">.</span><span class="nx">zoomToDataExtent</span><span class="p">(</span><span class="s1">&#39;viewUid&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The passed in <code class="docutils literal"><span class="pre">viewUid</span></code> should refer to a view which is present. If it
+doesn’t, an exception will be thrown.</p>
+</div>
+<div class="section" id="obtaining-ordered-chromosome-info">
+<h3>Obtaining ordered chromosome info<a class="headerlink" href="#obtaining-ordered-chromosome-info" title="Permalink to this headline">¶</a></h3>
+<p>HiGlass provides an API for obtaining information about chromosomes
+and the order they are listed in a chromSizes file:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span><span class="nx">ChromosomeInfo</span><span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;higlass&#39;</span><span class="p">;</span>
+
+<span class="nx">ChromosomeInfo</span><span class="p">(</span>
+  <span class="s1">&#39;http://higlass.io/api/v1/chrom-sizes/?id=Ajn_ttUUQbqgtOD4nOt-IA&#39;</span><span class="p">,</span>
+  <span class="p">(</span><span class="nx">chromInfo</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;chromInfo:&#39;</span><span class="p">,</span> <span class="nx">chromInfo</span><span class="p">);</span>
+  <span class="p">});</span>
+</pre></div>
+</div>
+<p>This will return a data structure with information about the chromosomes
+listed:</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span>{
+    chrPositions: {
+        chr1 : {id: 0, chr: &quot;chr1&quot;, pos: 0},
+        chr2 : {id: 1, chr: &quot;chr2&quot;, pos: 249250621} ,
+        ...
+    },
+    chromLengths: {
+        chr1: &quot;249250621&quot;,
+        chr2: &quot;243199373&quot;,
+        ...
+    },
+    cumPositions: [
+        {id: 0, chr: &quot;chr1&quot;, pos: 0},
+        {id: 1, chr: &quot;chr2&quot;, pos: 249250621},
+        ...
+     ]
+}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="coding-guidelines">
+<h2>Coding Guidelines<a class="headerlink" href="#coding-guidelines" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="spacing">
+<h3>Spacing<a class="headerlink" href="#spacing" title="Permalink to this headline">¶</a></h3>
+<p>Code should be indented with 2 spaces. No tabs!</p>
+</div>
+<div class="section" id="docstrings">
+<h3>Docstrings<a class="headerlink" href="#docstrings" title="Permalink to this headline">¶</a></h3>
+<p>All functions should be annotated with a docstring in the <a class="reference external" href="http://usejsdoc.org/">JSDoc style</a>.</p>
+</div>
+</div>
+<div class="section" id="other-documentation">
+<h2>Other Documentation<a class="headerlink" href="#other-documentation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="line-track-scaling">
+<h3>Line Track Scaling<a class="headerlink" href="#line-track-scaling" title="Permalink to this headline">¶</a></h3>
 <p>1D tracks can either be linearly or log scaled. Linear scaling denotes a linear
 mapping between the values and their position on the track. Log scaling means
 that we take the log of the values before positioning them.</p>
@@ -57,12 +155,11 @@ the data are not drowned out by extreme small values.</p>
 <p>The code for this can be found in <code class="docutils literal"><span class="pre">HorizontalLine1DPixiTrack.drawTile</span></code>.</p>
 </div>
 <div class="section" id="interface">
-<h4>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h4>
+<h3>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h3>
 <p>visibleAndFetchedIds: Tile ids that correspond to tiles which are both visible
 in the current viewport as well as fetched from the server.</p>
 <p>visibleTileIds: Tiles which should be visible in the current viewport based on
 the current viewport. Usually set by <code class="docutils literal"><span class="pre">calculateVisibleTiles</span></code>.</p>
-</div>
 </div>
 </div>
 </div>
@@ -91,11 +188,6 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#development">Development</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="developer.html#higlass-api">HiGlass API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developer.html#coding-guidelines">Coding Guidelines</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="gene_annotations.html">Gene Annotations Tracks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#creating-the-track">Creating the track</a></li>
@@ -103,7 +195,9 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">HiGlass Client (Developer)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#d-tracks">1D Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#higlass-api">HiGlass API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#coding-guidelines">Coding Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other-documentation">Other Documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_server.html">HiGlass Server</a><ul>
@@ -119,6 +213,7 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#gene-annotations">Gene Annotations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#heatmap">Heatmap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#d-heatmap">1D Heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#d-rectangle-domain">2D Rectangle Domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#horizontal-2d-rectangle-domain">Horizontal 2D Rectangle Domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#line">Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#point">Point</a></li>
