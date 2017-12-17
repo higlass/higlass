@@ -2411,9 +2411,9 @@ class HiGlassComponent extends React.Component {
 
       viewsByUid[v.uid] = v;
 
-      if (!v.initialXDomain)
+      if (!v.initialXDomain) {
         throw 'No initialXDomain in provided viewconf';
-      else {
+      } else {
         v.initialXDomain[0] = +v.initialXDomain[0];
         v.initialXDomain[1] = +v.initialXDomain[1];
 
