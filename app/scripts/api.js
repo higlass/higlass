@@ -8,10 +8,71 @@ import {
   MOUSE_TOOL_SELECT,
 } from './configs';
 
+import pubSub from './services/pub-sub';
+
 export const api = function api(context) {
   const self = context;
 
   return {
+    setViewConfig(newViewConfig) {
+      /**
+       * Set a new view config to define the layout and data
+       * of this component
+       *
+       * Parameters
+       * ----------
+       *  newViewConfig: {}
+       *    A JSON object that defines the state of the HiGlassComponent
+       *
+       * Returns
+       * -------
+       *  dataLoaded: Promise
+       *    A promise that resolves when all of the data for this viewconfig
+       *    is loaded
+       */
+      const viewsByUid = self.processViewConfig(newViewConfig);
+      const p = new Promise((resolve, reject) => {
+
+        this.requestsInFlight = 0;
+
+        const requestsSent = pubSub.subscribe('requestSent', (url) => {
+          this.requestsInFlight += 1;
+        });
+
+        const requestsReceived = pubSub.subscribe('requestReceived', (url) => {
+          this.requestsInFlight -= 1;
+
+          if (this.requestsInFlight == 0) {
+            resolve();
+          }
+        });
+
+        self.setState({
+          views: viewsByUid,
+        }, () => {
+          console.log('setstate finished'); 
+        });
+      });
+
+      return p;
+    },
+
+    zoomToDataExtent(viewUid) {
+      /**
+       * Zoom so that the entire dataset is visible
+       *
+       * Parameters
+       * ----------
+       *  viewUid: string
+       *    The view uid to zoom to extent to
+       *
+       * Returns
+       * -------
+       *  nothing
+       */
+      self.handleZoomToData(viewUid);
+    },
+    
     activateTool(tool) {
       switch (tool) {
         case 'select':

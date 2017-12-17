@@ -806,6 +806,9 @@ class HiGlassComponent extends React.Component {
      *
      * @param viewUid: The view uid for which to adjust the zoom level
      */
+    if (!this.tiledPlots[viewUid])
+      throw `View uid ${viewUid} does not exist in the current viewConfig`;
+
     this.tiledPlots[viewUid].handleZoomToData();
   }
 
