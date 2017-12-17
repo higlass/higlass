@@ -234,6 +234,59 @@ describe('Simple HiGlassComponent', () => {
   //
   // wait a bit of time for the data to be loaded from the server
 
+  describe('The API', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={simpleCenterViewConfig}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc, done);
+
+      // visual check that the heatmap track config menu is moved
+      // to the left
+    });
+
+    it ('Sets a new viewconfig', (done) => {
+      const p = hgc.instance().api.setViewConfig(twoViewConfig);
+
+      p.then(() => {
+        // should only be called when all the tiles are loaded
+        done();
+      });
+    });
+
+    it ('Zooms one of the views to the center', (done) => {
+      hgc.instance().api.zoomToDataExtent('view2');
+
+      done();
+    });
+
+    it ('Zooms a nonexistant view to the center', (done) => {
+      const badFn = () => hgc.instance().api.zoomToDataExtent('xxx');
+
+      expect(badFn).to.throw();
+      done();
+    });
+  });
+  return;
+
   describe('Double view', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
       if (hgc) {
