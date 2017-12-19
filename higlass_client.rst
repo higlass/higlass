@@ -106,6 +106,16 @@ listed:
          ]
     }
 
+Exporting the view as a Data URI
+--------------------------------
+
+The current view can be programmatically exported as a data URI:
+
+.. code-block:: javascript
+
+    api.createDataURI()
+
+
 Coding Guidelines
 =================
 
