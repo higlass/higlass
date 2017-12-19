@@ -12,6 +12,8 @@ import {
   workerSetPix,
 } from '../worker';
 
+import pubSub from './pub-sub';
+
 // Config
 import { TILE_FETCH_DEBOUNCE } from '../configs';
 
@@ -232,6 +234,11 @@ export const tileDataToPixData = (
 ) => {
   const tileData = tile.tileData;
 
+  if  (!tileData.dense) {
+    // if we didn't get any data from the server, don't do anything
+    return;
+  }
+
   // clone the tileData so that the original array doesn't get neutered
   // when being passed to the worker script
   const newTileData = new Float32Array(tileData.dense.length);
@@ -280,8 +287,11 @@ function text(url, callback) {
    * Send a JSON request mark it so that we can tell how many are in flight
    */
   requestsInFlight += 1;
+  pubSub.publish('requestSent', url);
+  
   d3Text(url, (error, done) => {
     callback(error, done);
+    pubSub.publish('requestReceived', url);
     requestsInFlight -= 1;
   });
 }
@@ -291,7 +301,10 @@ function json(url, callback) {
    * Send a JSON request mark it so that we can tell how many are in flight
    */
   requestsInFlight += 1;
+  pubSub.publish('requestSent', url);
+
   d3Json(url, (error, done) => {
+    pubSub.publish('requestReceived', url);
     callback(error, done);
     requestsInFlight -= 1;
   });

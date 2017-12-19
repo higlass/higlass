@@ -617,16 +617,17 @@ export class TiledPlot extends React.Component {
     // go through every track definition
     for (const uid in this.trackRenderer.trackDefObjects) {
       const tdo = this.trackRenderer.trackDefObjects[uid];
+      const trackObjectsToCheck = [tdo.trackObject];
 
-      // and every instantiated track object (e.g. HeatmapTiledPixiTrack)
-      // noting that trackObjects may have more createdTracks because of
-      // things like CombinedTracks
+      // if this is a combined track then we need to recurse into its
+      // subtracks
       for (const uid1 in tdo.trackObject.createdTracks) {
         const trackObject = tdo.trackObject.createdTracks[uid1];
+        trackObjectsToCheck.push(trackObject);
+      }
 
-        // we need to have a tilesetInfo (for now)
-        // some other track types may not defined the extent of their
-        // data in the tilesetInfo (e.g. Chromosome2DAnnotations)
+      for (const trackObject of trackObjectsToCheck) {
+        // get the minimum and maximum positions of all the subtracks
         if (trackObject.tilesetInfo) {
           if (trackObject.tilesetInfo.min_pos) {
             for (let j = 0; j < trackObject.tilesetInfo.min_pos.length; j++) {

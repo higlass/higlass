@@ -1,3 +1,16 @@
+v0.10.4 (2017-12-
+
+- Fixed a bug in zoomToData
+- New API call for setViewConfig
+- New API call for zoomToDataExtent
+
+v0.10.3 (2017-12-13)
+
+- Don't include a colon if the port is 80
+- Added an option to clear the view
+- Exclude NaN values when setting the valueScale
+- Fixed bug related to displaying empty matrix tiles
+
 v0.10.2 (2017-12-12)
 
 - Fixed a bug in loading tileset info that isn't there

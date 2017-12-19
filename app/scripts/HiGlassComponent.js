@@ -664,10 +664,14 @@ class HiGlassComponent extends React.Component {
     return vkbeautify.xml(svgText);
   }
 
+  createDataURI() {
+    let pngString = this.canvasElement.toDataURL();
+
+    return pngString;
+  }
+
   handleExportSVG() {
     download('export.svg', this.createSVGString());
-
-    return svg;
   }
 
   handleScalesChanged(uid, xScale, yScale, notify = true) {
@@ -812,6 +816,9 @@ class HiGlassComponent extends React.Component {
      *
      * @param viewUid: The view uid for which to adjust the zoom level
      */
+    if (!this.tiledPlots[viewUid])
+      throw `View uid ${viewUid} does not exist in the current viewConfig`;
+
     this.tiledPlots[viewUid].handleZoomToData();
   }
 
@@ -1468,6 +1475,25 @@ class HiGlassComponent extends React.Component {
     return layout;
   }
 
+  handleClearView(viewUid) {
+    /**
+     * Remove all the tracks from a view
+     *
+     * @param {viewUid} Thie view's identifier
+     */
+    const views = this.state.views;
+
+    views[viewUid].tracks.top = [];
+    views[viewUid].tracks.bottom = [];
+    views[viewUid].tracks.center = [];
+    views[viewUid].tracks.left = [];
+    views[viewUid].tracks.right = [];
+
+    this.setState({
+      views: views,
+    });
+  }
+
   handleCloseView(uid) {
     /**
        * A view needs to be closed. Remove it from from the viewConfig and then clean
@@ -2017,7 +2043,7 @@ class HiGlassComponent extends React.Component {
       .post(wrapper, (error, response) => {
         if (response) {
           const content = JSON.parse(response.response);
-          const portString = window.location.port == 80 ? '' : `:${window.location.port}`;
+          const portString = window.location.port === '' ? '' : `:${window.location.port}`;
           this.setState({
             // exportLinkLocation: this.props.viewConfig.exportViewUrl + "?d=" + content.uid
             exportLinkLocation: `http://${window.location.hostname}${portString}/app/?config=${content.uid}`,
@@ -2323,6 +2349,9 @@ class HiGlassComponent extends React.Component {
     const view = this.state.views[viewUid];
     const track = getTrackByUid(view.tracks, trackUid);
 
+    if (!track)
+      return;
+
     track.options = Object.assign(track.options, newOptions);
 
     if (this.mounted) {
@@ -2395,9 +2424,9 @@ class HiGlassComponent extends React.Component {
 
       viewsByUid[v.uid] = v;
 
-      if (!v.initialXDomain)
+      if (!v.initialXDomain) {
         throw 'No initialXDomain in provided viewconf';
-      else {
+      } else {
         v.initialXDomain[0] = +v.initialXDomain[0];
         v.initialXDomain[1] = +v.initialXDomain[1];
 
@@ -2707,6 +2736,7 @@ class HiGlassComponent extends React.Component {
               view.genomePositionSearchBox.visible
             }
             onAddView={() => this.handleAddView(view)}
+            onClearView={() => this.handleClearView(view.uid)}
             onCloseView={() => this.handleCloseView(view.uid)}
             onExportSVG={this.handleExportSVG.bind(this)}
             onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
