@@ -53,6 +53,19 @@ which is fulfilled when all of the data for the view is loaded.
         // the initial set of tiles has been loaded
     });
 
+Getting a view config
+---------------------
+
+.. code-block:: javascript
+    
+    const p = hgApi.get('viewConfig');
+    p.then((viewConfig) => {
+        console.log('viewConfig:', viewConfig)
+    });
+
+The `get` function for retrieving a viewConf returns a promise which is
+fulfilled whenever the viewconfig is returned. 
+
 Zooming to show all of the data
 -------------------------------
 
