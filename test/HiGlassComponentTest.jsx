@@ -139,7 +139,6 @@ function isWaitingOnTiles(hgc) {
     //   console.log('trackObj.fetching.size:', trackObj.fetching);
 
     if (trackObj.fetching && trackObj.fetching.size) {
-      // console.log('not done to.fetching:', trackObj, trackObj.fetching);
       return true;
     }
   }
@@ -233,6 +232,49 @@ describe('Simple HiGlassComponent', () => {
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
   //
   // wait a bit of time for the data to be loaded from the server
+
+  describe('View positioning', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={simpleCenterViewConfig}
+      />, { attachTo: div });
+
+      //hgc.update();
+      waitForTilesLoaded(hgc, done);
+
+      // visual check that the heatmap track config menu is moved
+      // to the left
+    });
+
+    it ('Gets and sets the viewconfig', (done) => {
+      const viewConf = hgc.instance().getViewsAsString();
+
+      const newViews = hgc.instance().processViewConfig(JSON.parse(viewConf));
+      hgc.setState({
+        viewsByUid: newViews,
+      });
+
+      done();
+    });
+
+  });
+  return;
 
   describe('The API', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {

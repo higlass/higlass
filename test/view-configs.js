@@ -149,66 +149,118 @@ export const divisionViewConfig =
 };
 
 export const simpleCenterViewConfig = 
+{
+  "editable": true,
+  "zoomFixed": false,
+  "views": [
     {
-      editable: true,
-      zoomFixed: false,
-      views: [
-        {
-          uid: 'a',
-          initialXDomain: [0, 3000000000],
-          initialYDomain: [0, 3000000000],
-          tracks: {
-            top: [],
-            left: [],
-            center: [
+      "uid": "a",
+      "initialXDomain": [
+        1480820463.833503,
+        2550144059.1286707
+      ],
+      "initialYDomain": [
+        1569819845.1080737,
+        2433776657.2008576
+      ],
+      "tracks": {
+        "top": [
+          {
+            "type": "top-axis",
+            "local": true,
+            "orientation": "1d-horizontal",
+            "name": "Top Axis",
+            "thumbnail": {},
+            "defaultOptions": {},
+            "server": "",
+            "tilesetUid": "UKZhWC_FSCG1xHlN0c2bqQ",
+            "uid": "d8focpO5TKKd2TB8QONd9w",
+            "options": {},
+            "width": 20,
+            "height": 20,
+            "position": "top"
+          }
+        ],
+        "left": [
+          {
+            "type": "left-axis",
+            "local": true,
+            "orientation": "1d-vertical",
+            "name": "Left Axis",
+            "thumbnail": {},
+            "minWidth": 100,
+            "server": "",
+            "tilesetUid": "Np6Sa4zwQa6bERCm5xBnGA",
+            "uid": "RhdSji35SgOOJyqcy81zcg",
+            "options": {},
+            "width": 100,
+            "height": 400,
+            "position": "left"
+          }
+        ],
+        "center": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+            "type": "heatmap",
+            "position": "center",
+            "options": {
+              "colorRange": [
+                "#FFFFFF",
+                "#F8E71C",
+                "#F5A623",
+                "#D0021B"
+              ],
+              "colorbarPosition": "topRight",
+              "colorbarLabelsPosition": "outside",
+              "maxZoom": null,
+              "labelPosition": "bottomLeft",
+              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "heatmapValueScaling": "log",
+              "scaleStartPercent": "0.00000",
+              "scaleEndPercent": "1.00000"
+            },
+            "uid": "heatmap1",
+            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+            "transforms": [
               {
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                "type": "heatmap",
-                "position": "center",
-                "options": {
-                  "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "#F5A623",
-                    "#D0021B"
-                  ],
-                  "colorbarPosition": "topRight",
-                  "colorbarLabelsPosition": "outside",
-                  "maxZoom": null,
-                  "labelPosition": "bottomLeft",
-                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "heatmapValueScaling": "log",
-                  "scaleStartPercent": "0.00000",
-                  "scaleEndPercent": "1.00000"
-                },
-                "uid": "heatmap1",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
-                "width": 961,
-                "height": 1088
+                "name": "ICE",
+                "value": "weight"
               }
             ],
-            bottom: [],
-            right: [],
-          },
-          layout: {
-            i: 'a',
-            w: 12,
-            h: 6,
-            x: 0,
-            y: 0,
-          },
-        },
-      ],
-    };
+            "width": 670,
+            "height": 400
+          }
+        ],
+        "bottom": [],
+        "right": []
+      },
+      "layout": {
+        "w": 11,
+        "h": 14,
+        "x": 0,
+        "y": 0,
+        "i": "a",
+        "moved": false,
+        "static": false
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}
 
 export const rectangleDomains = 
   {

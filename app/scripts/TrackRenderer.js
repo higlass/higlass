@@ -390,6 +390,7 @@ export class TrackRenderer extends React.Component {
     // this needs to be tempered by the zoom factor so that we keep the visible center point in the center
     const centerDomainXOffset = (this.drawableToDomainX(currentCenterX) - this.drawableToDomainX(this.prevCenterX)) / this.zoomTransform.k;
     const centerDomainYOffset = (this.drawableToDomainY(currentCenterY) - this.drawableToDomainY(this.prevCenterY)) / this.zoomTransform.k;
+    //const centerDomainYOffset = 0;
 
     this.cumCenterYOffset += centerDomainYOffset;
     this.cumCenterXOffset += centerDomainXOffset;
