@@ -50,7 +50,7 @@ export const api = function api(context) {
         self.setState({
           views: viewsByUid,
         }, () => {
-          console.log('setstate finished'); 
+
         });
       });
 
