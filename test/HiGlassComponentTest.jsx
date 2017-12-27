@@ -247,15 +247,26 @@ describe('Simple HiGlassComponent', () => {
       div = global.document.createElement('div');
       global.document.body.appendChild(div);
 
-      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('style', 'height:300px;width:300px;background-color: lightgreen');
       div.setAttribute('id', 'simple-hg-component');
 
       hgc = mount(<HiGlassComponent
-        options={{ bounded: false }}
+        options={{ bounded: true }}
         viewConfig={simpleCenterViewConfig}
       />, { attachTo: div });
 
-      //hgc.update();
+      const view = simpleCenterViewConfig.views[0];
+      const midY = (view.initialYDomain[0] + view.initialYDomain[1]) / 2;
+      console.log('midY:', midY);
+      console.log('view:', view.initialYDomain);
+
+      hgc.instance().onViewChange((viewconf) => {
+        const view = JSON.parse(viewconf).views[0];
+        const midY = (view.initialYDomain[0] + view.initialYDomain[1]) / 2;
+        console.log('hgvc midY:', midY);
+        console.log('view:', view.initialYDomain);
+      });
+      hgc.update();
       waitForTilesLoaded(hgc, done);
 
       // visual check that the heatmap track config menu is moved

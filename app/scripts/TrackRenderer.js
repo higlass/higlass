@@ -352,6 +352,8 @@ export class TrackRenderer extends React.Component {
         this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2,
       ])
       .range([initialYDomain[0], initialYDomain[1]]);
+
+    console.log('currentProps.centerHeight', this.currentProps.centerHeight);
   }
 
   updatablePropsToString(props) {
