@@ -159,6 +159,10 @@ class HiGlassComponent extends React.Component {
 
     dictValues(viewsByUid).map(view => this.adjustLayoutToTrackSizes(view));
 
+    // monitor whether this element is attached to the DOM so that
+    // we can determine whether to add the resizesensor
+    this.attachedToDOM = false;
+
     // Set up API
     this.api = api(this);
 
@@ -199,6 +203,19 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  waitForDOMAttachment(callback) {
+    if (!this.mounted)
+      return;
+
+    const thisElement = ReactDOM.findDOMNode(this);
+
+    if (document.body.contains(thisElement)) {
+      callback();
+    } else {
+      requestAnimationFrame(() => this.waitForDOMAttachment(callback)); 
+    }
+  }
+
   componentDidMount() {
     // the addEventListener is necessary because TrackRenderer determines where to paint
     // all the elements based on their bounding boxes. If the window isn't
@@ -234,10 +251,16 @@ class HiGlassComponent extends React.Component {
       svgElement: this.svgElement,
       canvasElement: this.canvasElement,
     });
-    ElementQueries.listen();
-    this.resizeSensor = new ResizeSensor(
-      this.element.parentNode, this.updateAfterResize.bind(this),
-    );
+
+    this.waitForDOMAttachment(() => {
+      ElementQueries.listen();
+      this.resizeSensor = new ResizeSensor(
+        this.element.parentNode, this.updateAfterResize.bind(this),
+      );
+
+      // this.forceUpdate();
+      this.updateAfterResize();
+    });
 
     this.handleDragStart();
     this.handleDragStop();
@@ -297,7 +320,11 @@ class HiGlassComponent extends React.Component {
     this.pixiRenderer = null;
 
     window.removeEventListener('focus', this.boundRefreshView);
-    this.resizeSensor.detach();
+
+    // if this element was never attached to the DOM
+    // then the resize sensor will never have been initiated
+    if (this.resizeSensor)
+      this.resizeSensor.detach();
 
     domEvent.unregister('keydown', document);
     domEvent.unregister('keyup', document);
@@ -370,7 +397,22 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  measureSize() {
+    const heightOffset = 0;
+    const height = this.element.clientHeight - heightOffset;
+    const width = this.element.clientWidth;
+
+    if (width > 0 && height > 0) {
+      this.setState({
+        sizeMeasured: true,
+        width,
+        height,
+      });
+    }
+  }
+
   updateAfterResize() {
+    this.measureSize();
     this.updateRowHeight();
     this.fitPixiToParentContainer();
     this.refreshView(LONG_DRAG_TIMEOUT);
@@ -2574,6 +2616,7 @@ class HiGlassComponent extends React.Component {
   }
 
   render() {
+    // console.log('rendering');
     let tiledAreas = (
       <div
         ref={(c) => { this.tiledAreaDiv = c; }}
@@ -2799,12 +2842,13 @@ class HiGlassComponent extends React.Component {
     layouts = JSON.parse(JSON.stringify(layouts)); // make sure to copy the layouts
 
     const gridLayout = (
-      <WidthReactGridLayout
+      <ReactGridLayout
         // Reserved props
         ref={(c) => { this.gridLayout = c; }}
 
         // Custom props
         cols={12}
+        width={this.state.width}
         draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
         isDraggable={this.props.viewConfig.editable}
         isResizable={this.props.viewConfig.editable}
@@ -2827,7 +2871,7 @@ class HiGlassComponent extends React.Component {
         useCSSTransforms={this.mounted}
       >
         {tiledAreas}
-      </WidthReactGridLayout>
+      </ReactGridLayout>
     );
 
     return (
