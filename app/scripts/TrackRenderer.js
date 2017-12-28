@@ -19,6 +19,7 @@ import BedLikeTrack from './BedLikeTrack';
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 import HorizontalPoint1DPixiTrack from './HorizontalPoint1DPixiTrack';
 import BarTrack from './BarTrack';
+import DivergentBarTrack from './DivergentBarTrack';
 
 import CNVIntervalTrack from './CNVIntervalTrack';
 import LeftTrackModifier from './LeftTrackModifier';
@@ -848,6 +849,16 @@ export class TrackRenderer extends React.Component {
 
       case 'horizontal-bar':
         return new BarTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          () => this.currentProps.onValueScaleChanged(track.uid),
+        );
+
+      case 'horizontal-divergent-bar':
+        return new DivergentBarTrack(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
