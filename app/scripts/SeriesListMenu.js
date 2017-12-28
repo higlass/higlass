@@ -112,13 +112,14 @@ export class SeriesListMenu extends ContextMenuContainer {
 
     return (
       <NestedContextMenu
+        key='config-series-menu'
         closeMenu={this.props.closeMenu}
         menuItems={menuItems}
         orientation={this.state.orientation}
         parentBbox={bbox}
         position={position}
       />
-      );
+    );
   }
 
   getTrackTypeItems(position, bbox, track) {
@@ -165,6 +166,7 @@ export class SeriesListMenu extends ContextMenuContainer {
 
     return (
       <NestedContextMenu
+        key='track-type-items'
         closeMenu={this.props.closeMenu}
         menuItems={menuItems}
         orientation={this.state.orientation}
@@ -198,7 +200,6 @@ export class SeriesListMenu extends ContextMenuContainer {
       // picked as well as some data associated with it
       // e.g. {"option": "configure-series", data: track}
       const subMenuData = this.state.submenuShown;
-
       const track = subMenuData.value;
 
       if (subMenuData.option == 'track-type') {

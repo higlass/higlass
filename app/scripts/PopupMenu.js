@@ -50,9 +50,7 @@ export class PopupMenu extends React.Component {
     }
   }
 
-
   render() {
-    console.log('popup menu render');
     // Render a placeholder
     return (<div 
       ref={c => this.area = c} 
