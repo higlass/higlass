@@ -106,13 +106,32 @@ export class TiledPlot extends React.Component {
     */
   }
 
+  waitForDOMAttachment(callback) {
+    if (!this.mounted)
+      return;
+
+    const thisElement = ReactDOM.findDOMNode(this);
+
+    if (document.body.contains(thisElement)) {
+      callback();
+    } else {
+      requestAnimationFrame(() => this.waitForDOMAttachment(callback)); 
+    }
+  }
+
   componentDidMount() {
+    this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
 
-    ElementQueries.listen();
-    new ResizeSensor(this.element, this.measureSize.bind(this));
+    //new ResizeSensor(this.element, this.measureSize.bind(this));
+    this.waitForDOMAttachment(() => {
+      ElementQueries.listen();
+      this.resizeSensor = new ResizeSensor(
+        this.element.parentNode, this.measureSize.bind(this),
+      );
 
-    this.measureSize();
+      this.measureSize();
+    });
   }
 
   componentWillReceiveProps(newProps) {
@@ -175,6 +194,8 @@ export class TiledPlot extends React.Component {
     const heightOffset = 0;
     const height = this.element.clientHeight - heightOffset;
     const width = this.element.clientWidth;
+
+    // console.log('TiledPlot height:', height, 'width:', width);
 
     if (width > 0 && height > 0) {
       this.setState({
