@@ -66,6 +66,7 @@ const VIEW_HEADER_HEIGHT = 20;
 class HiGlassComponent extends React.Component {
   constructor(props) {
     super(props);
+    console.log('heeeeyaa');
 
     this.minHorizontalHeight = 20;
     this.minVerticalWidth = 20;
