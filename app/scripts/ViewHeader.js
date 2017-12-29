@@ -120,6 +120,10 @@ export class ViewHeader extends React.Component {
                 this.setState({ configMenuUid: null });
                 this.props.onExportSVG();
               }}
+              onClearView = {() => {
+                this.setState({ configMenuUid: null }); // hide the menu
+                this.props.onClearView();
+              }}
               onExportViewAsJSON={() => {
                 this.setState({ configMenuUid: null }); // hide the menu
                 this.props.onExportViewsAsJSON();
@@ -269,6 +273,7 @@ ViewHeader.propTypes = {
   getGenomePositionSearchBox: PropTypes.func.isRequired,
   isGenomePositionSearchBoxVisible: PropTypes.bool,
   onAddView: PropTypes.func.isRequired,
+  onClearView: PropTypes.func.isRequired,
   onCloseView: PropTypes.func.isRequired,
   onExportSVG: PropTypes.func.isRequired,
   onExportViewsAsJSON: PropTypes.func.isRequired,

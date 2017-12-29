@@ -10,6 +10,10 @@ export class PopupMenu extends React.Component {
     this.popup = document.createElement('div');
     document.body.appendChild(this.popup);
 
+    this.popup.style.zIndex = 99;
+    this.popup.style.position = 'absolute';
+    this.popup.className = 'hg-popup';
+
     this.boundHandleDocumentClick = this.handleDocumentClick.bind(this);
     this.boundHandleDocumentResize = this.handleDocumentResize.bind(this);
 
@@ -46,10 +50,11 @@ export class PopupMenu extends React.Component {
     }
   }
 
-
   render() {
     // Render a placeholder
-    return (<div ref={c => this.area = c} />);
+    return (<div 
+      ref={c => this.area = c} 
+    />);
   }
 }
 

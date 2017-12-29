@@ -26,6 +26,7 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
     tile.barYValues = new Array(tile.tileData.dense.length);
     tile.barWidths = new Array(tile.tileData.dense.length);
     tile.barHeights = new Array(tile.tileData.dense.length);
+    tile.barColors = new Array(tile.tileData.dense.length);
 
     // this.drawTile(tile);
     this.renderTile(tile);
@@ -90,10 +91,12 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
     const strokeWidth = 0;
     graphics.lineStyle(strokeWidth, stroke, 1);
 
-    const color = colorToHex(this.options.barFillColor ? this.options.barFillColor : 'grey');
+    const color = this.options.barFillColor ? this.options.barFillColor : 'grey'
+    const colorHex = colorToHex(color);
+
     const opacity = 'barOpacity' in this.options ? this.options.barOpacity : 1;
 
-    graphics.beginFill(color, opacity);
+    graphics.beginFill(colorHex, opacity);
 
     const j = 0;
     tile.drawnAtScale = this._xScale.copy();
@@ -105,6 +108,7 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
       const width = this._xScale(tileXScale(i + 1)) - xPos;
       const height = this.dimensions[1] - yPos;
 
+      tile.barColors[i] = color;
       tile.barXValues[i] = xPos;
       tile.barYValues[i] = yPos;
       tile.barWidths[i] = width;
@@ -172,8 +176,8 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
       for (let i = 0; i < tile.barXValues.length; i++) {
         const rect = document.createElement('rect');
         const color = this.options.barFillColor ? this.options.barFillColor : 'grey';
-        rect.setAttribute('fill', color);
-        rect.setAttribute('stroke', color);
+        rect.setAttribute('fill', tile.barColors[i]);
+        rect.setAttribute('stroke', tile.barColors[i]);
 
         rect.setAttribute('x', tile.barXValues[i]);
         rect.setAttribute('y', tile.barYValues[i]);

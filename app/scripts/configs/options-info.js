@@ -102,6 +102,14 @@ export const OPTIONS_INFO = {
     name: 'Fill color',
     inlineOptions: AVAILABLE_COLORS,
   },
+  barFillColorTop: {
+    name: 'Top Fill color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+  barFillColorBottom: {
+    name: 'Bottom Fill color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
   barOpacity: {
     name: 'Bar opacity',
     inlineOptions: OPACITY_OPTIONS,

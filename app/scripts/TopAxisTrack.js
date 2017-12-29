@@ -7,6 +7,10 @@ export class TopAxisTrack extends SVGTrack {
 
     this.axis = axisTop(this._xScale);
     this.gAxis = this.gMain.append('g');
+
+    // to make sure that the isWaitingOnTiles functions
+    // return immediately
+    this.tilesetInfo = true;
   }
 
   setDimensions(newDimensions) {

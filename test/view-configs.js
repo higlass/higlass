@@ -1,3 +1,245 @@
+export const divergentTrackConfig = 
+{
+  "zoomFixed": false,
+  "views": [
+    {
+      "layout": {
+        "w": 12,
+        "h": 3,
+        "x": 0,
+        "y": 0,
+        "i": "eJLMGjH7Qm-zm_F_hqjXkw",
+        "moved": false,
+        "static": false
+      },
+      "uid": "aa",
+      "initialYDomain": [
+        398147254.7335776,
+        464208495.9452947
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "initialXDomain": [
+        315288478.9357108,
+        445731438.27749157
+      ],
+      "tracks": {
+        "left": [],
+        "top": [
+          {
+                "name": "Schwarzer et al (2017) TAM Eigenvectors 20K",
+                "created": "2017-08-01T18:26:26.907896Z",
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "ZsjN4ZkJSu6PASiw_kVIrw",
+                "uid": "t1",
+                "type": "horizontal-bar",
+                "options": {
+                  "labelColor": "blue",
+                  "labelPosition": "bottomLeft",
+                  "axisPositionHorizontal": "right",
+                  "lineStrokeColor": "blue",
+                  "lineStrokeWidth": 1,
+                  "valueScaling": "linear",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "labelTextOpacity": 0.4,
+                  "name": "Schwarzer et al (2017) TAM Eigenvectors 20K",
+                  "barFillColor": "darkgreen",
+                  "barOpacity": 1
+                },
+                "position": "top",
+                "width": 844,
+                "height": 73
+          },
+          {
+            "type": "combined",
+            "uid": "P09yHHiYTkitbhz_tc2p-g",
+            "height": 73,
+            "width": 844,
+            "contents": [
+              {
+                "name": "Schwarzer et al (2017) TAM Eigenvectors 20K",
+                "created": "2017-08-01T18:26:26.907896Z",
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "ZsjN4ZkJSu6PASiw_kVIrw",
+                "uid": "T49eQBUaTuuk_B_eiISbbA",
+                "type": "horizontal-divergent-bar",
+                "options": {
+                  "labelColor": "blue",
+                  "labelPosition": "bottomLeft",
+                  "axisPositionHorizontal": "right",
+                  "lineStrokeColor": "blue",
+                  "lineStrokeWidth": 1,
+                  "valueScaling": "linear",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "labelTextOpacity": 0.4,
+                  "name": "Schwarzer et al (2017) TAM Eigenvectors 20K",
+                  "barFillColor": "darkgreen",
+                  "barOpacity": 1
+                },
+                "position": "top",
+                "width": 844,
+                "height": 73
+              }
+            ],
+            "position": "top",
+            "options": {}
+          }
+        ],
+        "right": [],
+        "center": [],
+        "bottom": []
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
+      "genomePositionSearchBoxVisible": true,
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "visible": true,
+        "chromInfoId": "mm9",
+        "autocompleteId": "GUm5aBiLRCyz2PsBea7Yzg"
+      }
+    }
+  ],
+  "editable": true,
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs",
+  "zoomLocks": {
+    "locksByViewUid": {
+      "eJLMGjH7Qm-zm_F_hqjXkw": "J2fJb-tpQk20O8-5Oi5Kpw",
+      "XsfNzSHTRI2DVLwXF9AFcw": "J2fJb-tpQk20O8-5Oi5Kpw"
+    },
+    "locksDict": {
+      "J2fJb-tpQk20O8-5Oi5Kpw": {
+        "XsfNzSHTRI2DVLwXF9AFcw": [
+          1826729704.5668445,
+          1841443958.534043,
+          243964.41801404953
+        ],
+        "eJLMGjH7Qm-zm_F_hqjXkw": [
+          1826729704.5668445,
+          1841443958.534043,
+          243964.4180135727
+        ],
+        "uid": "J2fJb-tpQk20O8-5Oi5Kpw"
+      }
+    }
+  },
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"
+  ],
+  "locationLocks": {
+    "locksByViewUid": {
+      "aa": "K9lRZ74jRaeiifJ_O_s5fw",
+      "Kq_XUAkFQjmMjoMJ8ocYNA": "MdeK02yiSJWNS9RJAJ3EiA",
+      "eJLMGjH7Qm-zm_F_hqjXkw": "YaCP8lH7SuimjsCqGXdDPA",
+      "CxSCeaTbQbmmz2_3MX23Sw": "K9lRZ74jRaeiifJ_O_s5fw",
+      "BI8YmooFSCuI9zluz_ehnA": "YaCP8lH7SuimjsCqGXdDPA",
+      "KrP5zcaVSxqCj6mEI8WA2A": "K9lRZ74jRaeiifJ_O_s5fw",
+      "XYOBq1xqTUy1I1xiU6O0AA": "YaCP8lH7SuimjsCqGXdDPA",
+      "Mn_SlyIARcqhfHGKUFvUdQ": "YaCP8lH7SuimjsCqGXdDPA",
+      "XsfNzSHTRI2DVLwXF9AFcw": "YaCP8lH7SuimjsCqGXdDPA"
+    },
+    "locksDict": {
+      "K9lRZ74jRaeiifJ_O_s5fw": {
+        "aa": [
+          1974905964.0722282,
+          1957723677.6934438,
+          406590.3164639473
+        ],
+        "KrP5zcaVSxqCj6mEI8WA2A": [
+          1974905964.0722282,
+          1957723677.693444,
+          406590.3164639473
+        ],
+        "CxSCeaTbQbmmz2_3MX23Sw": [
+          1974905964.0722282,
+          1957723677.693444,
+          406590.3164639473
+        ],
+        "uid": "K9lRZ74jRaeiifJ_O_s5fw"
+      },
+      "MdeK02yiSJWNS9RJAJ3EiA": {
+        "eJLMGjH7Qm-zm_F_hqjXkw": [
+          1966916755.7812533,
+          1972013566.595924,
+          79705.25699186325
+        ],
+        "Kq_XUAkFQjmMjoMJ8ocYNA": [
+          1966916755.7812533,
+          1972013566.595924,
+          79705.25699186325
+        ],
+        "BI8YmooFSCuI9zluz_ehnA": [
+          1966916755.7812533,
+          1972013566.595924,
+          79705.25699186325
+        ],
+        "uid": "MdeK02yiSJWNS9RJAJ3EiA"
+      },
+      "YaCP8lH7SuimjsCqGXdDPA": {
+        "XsfNzSHTRI2DVLwXF9AFcw": [
+          1826729704.5668445,
+          1841443958.534043,
+          243964.41801404953
+        ],
+        "Mn_SlyIARcqhfHGKUFvUdQ": [
+          1826729704.5668445,
+          1841443958.5340428,
+          243964.41801404953
+        ],
+        "XYOBq1xqTUy1I1xiU6O0AA": [
+          1826729704.5668442,
+          1841443958.5340428,
+          243964.41801404953
+        ],
+        "eJLMGjH7Qm-zm_F_hqjXkw": [
+          1826729704.5668445,
+          1841443958.534043,
+          243964.4180135727
+        ],
+        "BI8YmooFSCuI9zluz_ehnA": [
+          1826729704.5668442,
+          1841443958.5340421,
+          243964.41801309586
+        ],
+        "uid": "YaCP8lH7SuimjsCqGXdDPA"
+      }
+    }
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {
+      "XsfNzSHTRI2DVLwXF9AFcw.MNtX6PNHRJmhOYOhQi8Fjw": "S0egKN6kSg6cSrv5T_lVCg",
+      "XsfNzSHTRI2DVLwXF9AFcw.brnABQIxQk-mVd6qkmMFsg": "S0egKN6kSg6cSrv5T_lVCg",
+      "XsfNzSHTRI2DVLwXF9AFcw.MkQpCTWwRkWgGFRu3pCrlA": "WTa324AkSEiRtqoIiIhvNw",
+      "XsfNzSHTRI2DVLwXF9AFcw.ceu6Ikv9Q52laESIf_FtiA": "WTa324AkSEiRtqoIiIhvNw"
+    },
+    "locksDict": {
+      "S0egKN6kSg6cSrv5T_lVCg": {
+        "XsfNzSHTRI2DVLwXF9AFcw.brnABQIxQk-mVd6qkmMFsg": {
+          "view": "XsfNzSHTRI2DVLwXF9AFcw",
+          "track": "brnABQIxQk-mVd6qkmMFsg"
+        },
+        "XsfNzSHTRI2DVLwXF9AFcw.MNtX6PNHRJmhOYOhQi8Fjw": {
+          "view": "XsfNzSHTRI2DVLwXF9AFcw",
+          "track": "MNtX6PNHRJmhOYOhQi8Fjw"
+        },
+        "uid": "S0egKN6kSg6cSrv5T_lVCg"
+      },
+      "WTa324AkSEiRtqoIiIhvNw": {
+        "XsfNzSHTRI2DVLwXF9AFcw.MkQpCTWwRkWgGFRu3pCrlA": {
+          "view": "XsfNzSHTRI2DVLwXF9AFcw",
+          "track": "MkQpCTWwRkWgGFRu3pCrlA"
+        },
+        "XsfNzSHTRI2DVLwXF9AFcw.ceu6Ikv9Q52laESIf_FtiA": {
+          "view": "XsfNzSHTRI2DVLwXF9AFcw",
+          "track": "ceu6Ikv9Q52laESIf_FtiA"
+        },
+        "uid": "WTa324AkSEiRtqoIiIhvNw"
+      }
+    }
+  }
+}
+
 export const divisionViewConfig = 
 {
   "editable": true,
@@ -149,66 +391,118 @@ export const divisionViewConfig =
 };
 
 export const simpleCenterViewConfig = 
+{
+  "editable": true,
+  "zoomFixed": false,
+  "views": [
     {
-      editable: true,
-      zoomFixed: false,
-      views: [
-        {
-          uid: 'a',
-          initialXDomain: [0, 3000000000],
-          initialYDomain: [0, 3000000000],
-          tracks: {
-            top: [],
-            left: [],
-            center: [
+      "uid": "a",
+      "initialXDomain": [
+        1480820463.833503,
+        2550144059.1286707
+      ],
+      "initialYDomain": [
+        1569819845.1080737,
+        2433776657.2008576
+      ],
+      "tracks": {
+        "top": [
+          {
+            "type": "top-axis",
+            "local": true,
+            "orientation": "1d-horizontal",
+            "name": "Top Axis",
+            "thumbnail": {},
+            "defaultOptions": {},
+            "server": "",
+            "tilesetUid": "UKZhWC_FSCG1xHlN0c2bqQ",
+            "uid": "d8focpO5TKKd2TB8QONd9w",
+            "options": {},
+            "width": 20,
+            "height": 20,
+            "position": "top"
+          }
+        ],
+        "left": [
+          {
+            "type": "left-axis",
+            "local": true,
+            "orientation": "1d-vertical",
+            "name": "Left Axis",
+            "thumbnail": {},
+            "minWidth": 100,
+            "server": "",
+            "tilesetUid": "Np6Sa4zwQa6bERCm5xBnGA",
+            "uid": "RhdSji35SgOOJyqcy81zcg",
+            "options": {},
+            "width": 100,
+            "height": 400,
+            "position": "left"
+          }
+        ],
+        "center": [
+          {
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+            "type": "heatmap",
+            "position": "center",
+            "options": {
+              "colorRange": [
+                "#FFFFFF",
+                "#F8E71C",
+                "#F5A623",
+                "#D0021B"
+              ],
+              "colorbarPosition": "topRight",
+              "colorbarLabelsPosition": "outside",
+              "maxZoom": null,
+              "labelPosition": "bottomLeft",
+              "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "heatmapValueScaling": "log",
+              "scaleStartPercent": "0.00000",
+              "scaleEndPercent": "1.00000"
+            },
+            "uid": "heatmap1",
+            "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+            "transforms": [
               {
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                "type": "heatmap",
-                "position": "center",
-                "options": {
-                  "colorRange": [
-                    "#FFFFFF",
-                    "#F8E71C",
-                    "#F5A623",
-                    "#D0021B"
-                  ],
-                  "colorbarPosition": "topRight",
-                  "colorbarLabelsPosition": "outside",
-                  "maxZoom": null,
-                  "labelPosition": "bottomLeft",
-                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "heatmapValueScaling": "log",
-                  "scaleStartPercent": "0.00000",
-                  "scaleEndPercent": "1.00000"
-                },
-                "uid": "heatmap1",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
-                "width": 961,
-                "height": 1088
+                "name": "ICE",
+                "value": "weight"
               }
             ],
-            bottom: [],
-            right: [],
-          },
-          layout: {
-            i: 'a',
-            w: 12,
-            h: 6,
-            x: 0,
-            y: 0,
-          },
-        },
-      ],
-    };
+            "width": 670,
+            "height": 400
+          }
+        ],
+        "bottom": [],
+        "right": []
+      },
+      "layout": {
+        "w": 11,
+        "h": 14,
+        "x": 0,
+        "y": 0,
+        "i": "a",
+        "moved": false,
+        "static": false
+      }
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}
 
 export const rectangleDomains = 
   {
