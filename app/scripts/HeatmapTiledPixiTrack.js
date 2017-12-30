@@ -21,7 +21,7 @@ const BRUSH_HEIGHT = 4;
 const BRUSH_COLORBAR_GAP = 1;
 const BRUSH_MARGIN = 4;
 const SCALE_LIMIT_PRECISION = 5;
-const BINS_PER_TILE=256;
+const BINS_PER_TILE = 256;
 
 
 export class HeatmapTiledPixiTrack extends TiledPixiTrack {
@@ -141,7 +141,9 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   exportData() {}
 
   setSpriteProperties(sprite, zoomLevel, tilePos, mirrored) {
-    const { tileX, tileY, tileWidth, tileHeight } = this.getTilePosAndDimensions(zoomLevel, tilePos);
+    const {
+      tileX, tileY, tileWidth, tileHeight
+    } = this.getTilePosAndDimensions(zoomLevel, tilePos);
 
     const tileEndX = tileX + tileWidth;
     const tileEndY = tileY + tileHeight;
@@ -200,10 +202,14 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const endDomain = axisValueScale.invert(selection[0]);
     const startDomain = axisValueScale.invert(selection[1]);
 
-    const startPercent = (startDomain - axisValueScale.domain()[0])
-            / (axisValueScale.domain()[1] - axisValueScale.domain()[0]);
-    const endPercent = (endDomain - axisValueScale.domain()[0])
-            / (axisValueScale.domain()[1] - axisValueScale.domain()[0]);
+    const startPercent = (
+      (startDomain - axisValueScale.domain()[0]) /
+      (axisValueScale.domain()[1] - axisValueScale.domain()[0])
+    );
+    const endPercent = (
+      (endDomain - axisValueScale.domain()[0]) /
+      (axisValueScale.domain()[1] - axisValueScale.domain()[0])
+    );
 
     newOptions.scaleStartPercent = startPercent.toFixed(SCALE_LIMIT_PRECISION);
     newOptions.scaleEndPercent = endPercent.toFixed(SCALE_LIMIT_PRECISION);
@@ -256,7 +262,10 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   drawColorbar() {
     this.pColorbar.clear();
 
-    if (!this.options.colorbarPosition || this.options.colorbarPosition === 'hidden') {
+    if (
+      !this.options.colorbarPosition
+      || this.options.colorbarPosition === 'hidden'
+    ) {
       this.pColorbarArea.visible = false;
 
       if (this.scaleBrush) {
@@ -277,12 +286,13 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         isNaN(this.valueScale.domain()[1])) { return; }
 
 
-    const colorbarAreaHeight = Math.min(this.dimensions[1] / 2, COLORBAR_MAX_HEIGHT);
+    const colorbarAreaHeight = Math.min(
+      this.dimensions[1] / 2, COLORBAR_MAX_HEIGHT
+    );
     this.colorbarHeight = colorbarAreaHeight - (2 * COLORBAR_MARGIN);
 
-    if (this.colorbarHeight < 0)
-      //  no point in drawing the colorbar if it's not going to be visible
-      return;
+    //  no point in drawing the colorbar if it's not going to be visible
+    if (this.colorbarHeight < 0) return;
 
     const colorbarAreaWidth = (
       COLORBAR_WIDTH +
@@ -293,7 +303,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       BRUSH_MARGIN
     );
 
-    const axisValueScale = this.valueScale.copy().range([this.colorbarHeight, 0]);
+    const axisValueScale = this.valueScale.copy()
+      .range([this.colorbarHeight, 0]);
 
     this.scaleBrush = brushY();
 
@@ -475,7 +486,10 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   exportColorBarSVG() {
     const gColorbarArea = document.createElement('g');
 
-    if (!this.options.colorbarPosition || this.options.colorbarPosition === 'hidden') {
+    if (
+      !this.options.colorbarPosition
+      || this.options.colorbarPosition === 'hidden'
+    ) {
       // if there's no visible colorbar, we don't need to export anything
       return gColorbarArea;
     }
@@ -569,9 +583,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   initTile(tile) {
     super.initTile(tile);
 
-    if (this.scale.minValue == null || this.scale.maxValue == null)
-      // no data present
-      return;
+    // no data present
+    if (this.scale.minValue == null || this.scale.maxValue == null) return;
 
     this.valueScale = scaleLog().range([254, 0])
       .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
@@ -580,22 +593,31 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   renderTile(tile) {
-    if (this.options.heatmapValueScaling == 'log') {
+    if (this.options.heatmapValueScaling === 'log') {
       this.valueScale = scaleLog().range([254, 0])
         .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-    } else if (this.options.heatmapValueScaling == 'linear') {
+    } else if (this.options.heatmapValueScaling === 'linear') {
       this.valueScale = scaleLinear().range([254, 0])
         .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
     }
 
     this.limitedValueScale = this.valueScale.copy();
 
-    if (this.options
-            && typeof (this.options.scaleStartPercent) !== 'undefined'
-            && typeof (this.options.scaleEndPercent) !== 'undefined') {
-      this.limitedValueScale.domain(
-        [this.valueScale.domain()[0] + (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * (this.options.scaleStartPercent),
-          this.valueScale.domain()[0] + (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * (this.options.scaleEndPercent)]);
+    if (
+      this.options
+      && typeof (this.options.scaleStartPercent) !== 'undefined'
+      && typeof (this.options.scaleEndPercent) !== 'undefined'
+    ) {
+      this.limitedValueScale.domain([
+        this.valueScale.domain()[0] + (
+          (this.valueScale.domain()[1] - this.valueScale.domain()[0]) *
+          this.options.scaleStartPercent
+        ),
+        this.valueScale.domain()[0] + (
+          (this.valueScale.domain()[1] - this.valueScale.domain()[0]) *
+          this.options.scaleEndPercent
+        )
+      ]);
     }
 
     tileProxy.tileDataToPixData(tile,
@@ -610,13 +632,20 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
         let sprite = null;
 
-        sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+        sprite = new PIXI.Sprite(
+          PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
+        );
 
         tile.sprite = sprite;
 
         // store the pixData so that we can export it
         tile.canvas = canvas;
-        this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
+        this.setSpriteProperties(
+          tile.sprite,
+          tile.tileData.zoomLevel,
+          tile.tileData.tilePos,
+          tile.mirrored
+        );
 
         graphics.removeChildren();
         graphics.addChild(tile.sprite);
@@ -640,7 +669,12 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       const tile = this.fetchedTiles[uid];
 
       if (tile.sprite) {
-        this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
+        this.setSpriteProperties(
+          tile.sprite,
+          tile.tileData.zoomLevel,
+          tile.tileData.tilePos,
+          tile.mirrored
+        );
       }
     }
   }
@@ -715,31 +749,38 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     // this.zoomLevel = 0;
     if (this.tilesetInfo.resolutions) {
-      let sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
+      const sortedResolutions = this.tilesetInfo.resolutions
+        .map(x => +x)
+        .sort((a, b) => b - a);
 
       this.xTiles = tileProxy.calculateTilesFromResolution(
         sortedResolutions[this.zoomLevel],
         this._xScale,
-        this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
+        this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]
+      );
       this.yTiles = tileProxy.calculateTilesFromResolution(
         sortedResolutions[this.zoomLevel],
         this._yScale,
-        this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
-
-      //console.log('res', sortedResolutions[this.zoomLevel]);
-      //console.log('this.xTiles:', this.xTiles);
+        this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]
+      );
     } else {
-      this.xTiles = tileProxy.calculateTiles(this.zoomLevel, this._xScale,
+      this.xTiles = tileProxy.calculateTiles(
+        this.zoomLevel,
+        this._xScale,
         this.tilesetInfo.min_pos[0],
         this.tilesetInfo.max_pos[0],
         this.tilesetInfo.max_zoom,
-        this.tilesetInfo.max_width);
+        this.tilesetInfo.max_width
+      );
 
-      this.yTiles = tileProxy.calculateTiles(this.zoomLevel, this._yScale,
+      this.yTiles = tileProxy.calculateTiles(
+        this.zoomLevel,
+        this._yScale,
         this.tilesetInfo.min_pos[1],
         this.tilesetInfo.max_pos[1],
         this.tilesetInfo.max_zoom,
-        this.tilesetInfo.max_width);
+        this.tilesetInfo.max_width
+      );
     }
 
     const rows = this.xTiles;
@@ -755,8 +796,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       for (let j = 0; j < cols.length; j++) {
         if (mirrorTiles) {
           if (rows[i] >= cols[j]) {
-            // if we're in the upper triangular part of the matrix, then we need to load
-            // a mirrored tile
+            // if we're in the upper triangular part of the matrix, then we need
+            // to load a mirrored tile
             const newTile = [zoomLevel, cols[j], rows[i]];
             newTile.mirrored = true;
             newTile.dataTransform = this.options.dataTransform ?
@@ -771,7 +812,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
             tiles.push(newTile);
           }
 
-          if (rows[i] == cols[j]) {
+          if (rows[i] === cols[j]) {
             // on the diagonal, load original tiles
             const newTile = [zoomLevel, rows[i], cols[j]];
             newTile.mirrored = false;
@@ -799,15 +840,17 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
          */
 
     if (this.tilesetInfo.resolutions) {
-      let sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
+      const sortedResolutions = this.tilesetInfo.resolutions
+        .map(x => +x)
+        .sort((a, b) => b - a);
 
-      let chosenResolution = sortedResolutions[zoomLevel];
+      const chosenResolution = sortedResolutions[zoomLevel];
 
-      let tileWidth =  chosenResolution * BINS_PER_TILE;
-      let tileHeight = tileWidth;
+      const tileWidth = chosenResolution * BINS_PER_TILE;
+      const tileHeight = tileWidth;
 
-      let tileX = chosenResolution * BINS_PER_TILE * tilePos[0];
-      let tileY = chosenResolution * BINS_PER_TILE * tilePos[1];
+      const tileX = chosenResolution * BINS_PER_TILE * tilePos[0];
+      const tileY = chosenResolution * BINS_PER_TILE * tilePos[1];
 
       return { tileX,
         tileY,
@@ -815,8 +858,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         tileHeight };
     }
 
-    let xTilePos = tilePos[0],
-      yTilePos = tilePos[1];
+    const xTilePos = tilePos[0];
+    const yTilePos = tilePos[1];
 
     const totalWidth = this.tilesetInfo.max_width;
     const totalHeight = this.tilesetInfo.max_width;
@@ -824,11 +867,11 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const minX = 0;
     const minY = 0;
 
-    const tileWidth = totalWidth / Math.pow(2, zoomLevel);
-    const tileHeight = totalHeight / Math.pow(2, zoomLevel);
+    const tileWidth = totalWidth / (zoomLevel ** 2);
+    const tileHeight = totalHeight / (zoomLevel ** 2);
 
-    const tileX = minX + xTilePos * tileWidth;
-    const tileY = minY + yTilePos * tileHeight;
+    const tileX = minX + (xTilePos * tileWidth);
+    const tileY = minY + (yTilePos * tileHeight);
 
     return { tileX,
       tileY,
@@ -837,26 +880,34 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   calculateZoomLevel() {
-    let minX = this.tilesetInfo.min_pos[0];
-    let maxX = this.tilesetInfo.max_pos[0];
+    const minX = this.tilesetInfo.min_pos[0];
+    const maxX = this.tilesetInfo.max_pos[0];
 
-    let minY = this.tilesetInfo.min_pos[1];
-    let maxY = this.tilesetInfo.max_pos[1];
+    const minY = this.tilesetInfo.min_pos[1];
+    const maxY = this.tilesetInfo.max_pos[1];
 
     if (this.tilesetInfo.resolutions) {
-      let zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(this.tilesetInfo.resolutions, this._xScale, minX, maxX);
-      let zoomIndexY = tileProxy.calculateZoomLevelFromResolutions(this.tilesetInfo.resolutions, this._yScale, minY, maxY);
+      const zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
+        this.tilesetInfo.resolutions, this._xScale, minX, maxX
+      );
+      const zoomIndexY = tileProxy.calculateZoomLevelFromResolutions(
+        this.tilesetInfo.resolutions, this._yScale, minY, maxY
+      );
 
       return Math.min(zoomIndexX, zoomIndexY);
     }
 
-    const xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+    const xZoomLevel = tileProxy.calculateZoomLevel(
+      this._xScale,
       this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0]);
+      this.tilesetInfo.max_pos[0]
+    );
 
-    const yZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
+    const yZoomLevel = tileProxy.calculateZoomLevel(
+      this._xScale,
       this.tilesetInfo.min_pos[1],
-      this.tilesetInfo.max_pos[1]);
+      this.tilesetInfo.max_pos[1]
+    );
 
     let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
     zoomLevel = Math.min(zoomLevel, this.maxZoom);
@@ -868,23 +919,25 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     return zoomLevel;
   }
 
+  /**
+   * The local tile identifier
+   */
   tileToLocalId(tile) {
-    /*
-     * The local tile identifier
-     */
-
     // tile contains [zoomLevel, xPos, yPos]
-    if (tile.dataTransform && tile.dataTransform != 'default') { return `${tile.join('.')}.${tile.mirrored}.${tile.dataTransform}`; }
+    if (tile.dataTransform && tile.dataTransform !== 'default') {
+      return `${tile.join('.')}.${tile.mirrored}.${tile.dataTransform}`;
+    }
     return `${tile.join('.')}.${tile.mirrored}`;
   }
 
+  /**
+   * The tile identifier used on the server
+   */
   tileToRemoteId(tile) {
-    /**
-     * The tile identifier used on the server
-     */
-
     // tile contains [zoomLevel, xPos, yPos]
-    if (tile.dataTransform && tile.dataTransform != 'default') { return `${tile.join('.')}.${tile.dataTransform}`; }
+    if (tile.dataTransform && tile.dataTransform !== 'default') {
+      return `${tile.join('.')}.${tile.dataTransform}`;
+    }
     return `${tile.join('.')}`;
   }
 
