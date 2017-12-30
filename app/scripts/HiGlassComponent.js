@@ -66,7 +66,6 @@ const VIEW_HEADER_HEIGHT = 20;
 class HiGlassComponent extends React.Component {
   constructor(props) {
     super(props);
-    console.log('heeeeyaa');
 
     this.minHorizontalHeight = 20;
     this.minVerticalWidth = 20;
@@ -212,7 +211,7 @@ class HiGlassComponent extends React.Component {
     if (document.body.contains(thisElement)) {
       callback();
     } else {
-      requestAnimationFrame(() => this.waitForDOMAttachment(callback)); 
+      requestAnimationFrame(() => this.waitForDOMAttachment(callback));
     }
   }
 
@@ -2687,7 +2686,7 @@ onLocationChange(viewId, callback, callbackId) {
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
             mouseTool={this.state.mouseTool}
-            onChangeTrackType={(trackId, newType) => 
+            onChangeTrackType={(trackId, newType) =>
               this.handleChangeTrackType(view.uid, trackId, newType)}
             onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
             onDataDomainChanged={
