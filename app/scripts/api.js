@@ -31,18 +31,17 @@ export const api = function api(context) {
        *    is loaded
        */
       const viewsByUid = self.processViewConfig(newViewConfig);
-      const p = new Promise((resolve, reject) => {
-
+      const p = new Promise((resolve) => {
         this.requestsInFlight = 0;
 
-        const requestsSent = pubSub.subscribe('requestSent', (url) => {
+        pubSub.subscribe('requestSent', () => {
           this.requestsInFlight += 1;
         });
 
-        const requestsReceived = pubSub.subscribe('requestReceived', (url) => {
+        pubSub.subscribe('requestReceived', () => {
           this.requestsInFlight -= 1;
 
-          if (this.requestsInFlight == 0) {
+          if (this.requestsInFlight === 0) {
             resolve();
           }
         });
@@ -72,7 +71,19 @@ export const api = function api(context) {
        */
       self.handleZoomToData(viewUid);
     },
-    
+
+    /**
+     * Activate a specific mouse tool.
+     *
+     * @description
+     * Mouse tools enable different behaviors which would otherwise clash. For
+     *
+     * @method  activateTool
+     * @author  Fritz Lekschas
+     * @date    2017-12-30
+     * @param   {[type]}      tool  [description]
+     * @return  {[type]}            [description]
+     */
     activateTool(tool) {
       switch (tool) {
         case 'select':
@@ -192,7 +203,6 @@ export const api = function api(context) {
       switch (event) {
         case 'location':
           return self.onLocationChange(viewId, callback, callbackId);
-          break;
 
         case 'rangeSelection':
           return self.onRangeSelection(callback);
@@ -201,7 +211,7 @@ export const api = function api(context) {
           return self.onViewChange(callback);
 
         default:
-          return;
+          return undefined;
       }
     },
   };
