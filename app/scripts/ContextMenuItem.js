@@ -5,6 +5,10 @@ import React from 'react';
 import '../styles/ContextMenu.module.scss';
 
 export class ContextMenuItem extends React.Component {
+  componentWillUnmount() {
+
+  }
+
   render() {
     return (
       <div

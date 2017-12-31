@@ -8,10 +8,84 @@ import {
   MOUSE_TOOL_SELECT,
 } from './configs';
 
+import pubSub from './services/pub-sub';
+
 export const api = function api(context) {
   const self = context;
 
   return {
+    setViewConfig(newViewConfig) {
+      /**
+       * Set a new view config to define the layout and data
+       * of this component
+       *
+       * Parameters
+       * ----------
+       *  newViewConfig: {}
+       *    A JSON object that defines the state of the HiGlassComponent
+       *
+       * Returns
+       * -------
+       *  dataLoaded: Promise
+       *    A promise that resolves when all of the data for this viewconfig
+       *    is loaded
+       */
+      const viewsByUid = self.processViewConfig(newViewConfig);
+      const p = new Promise((resolve, reject) => {
+
+        this.requestsInFlight = 0;
+
+        const requestsSent = pubSub.subscribe('requestSent', (url) => {
+          this.requestsInFlight += 1;
+        });
+
+        const requestsReceived = pubSub.subscribe('requestReceived', (url) => {
+          this.requestsInFlight -= 1;
+
+          if (this.requestsInFlight == 0) {
+            resolve();
+          }
+        });
+
+        self.setState({
+          views: viewsByUid,
+        }, () => {
+
+        });
+      });
+
+      return p;
+    },
+
+    zoomToDataExtent(viewUid) {
+      /**
+       * Zoom so that the entire dataset is visible
+       *
+       * Parameters
+       * ----------
+       *  viewUid: string
+       *    The view uid to zoom to extent to
+       *
+       * Returns
+       * -------
+       *  nothing
+       */
+      self.handleZoomToData(viewUid);
+    },
+
+    getDataURI() {
+      /**
+       * Export the current canvas as a PNG string so that
+       * it can be saved
+       *
+       * Return
+       * ------
+       *  pngString: string
+       *    A data URI
+       */
+      return self.createDataURI();
+    },
+    
     activateTool(tool) {
       switch (tool) {
         case 'select':
@@ -51,6 +125,9 @@ export const api = function api(context) {
 
         case 'viewConfig':
           return Promise.resolve(self.getViewsAsString());
+
+        case 'svgString':
+          return Promise.resolve(self.createSVGString());
 
         default:
           return Promise.reject(`Propert "${prop}" unknown`);
@@ -130,7 +207,7 @@ export const api = function api(context) {
     on(event, callback, viewId, callbackId) {
       switch (event) {
         case 'location':
-          self.onLocationChange(viewId, callback, callbackId);
+          return self.onLocationChange(viewId, callback, callbackId);
           break;
 
         case 'rangeSelection':
@@ -140,8 +217,7 @@ export const api = function api(context) {
           return self.onViewChange(callback);
 
         default:
-          // nothing
-          break;
+          return;
       }
     },
   };

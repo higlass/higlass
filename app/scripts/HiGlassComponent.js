@@ -66,6 +66,7 @@ const VIEW_HEADER_HEIGHT = 20;
 class HiGlassComponent extends React.Component {
   constructor(props) {
     super(props);
+    console.log('heeeeyaa');
 
     this.minHorizontalHeight = 20;
     this.minVerticalWidth = 20;
@@ -158,6 +159,10 @@ class HiGlassComponent extends React.Component {
 
     dictValues(viewsByUid).map(view => this.adjustLayoutToTrackSizes(view));
 
+    // monitor whether this element is attached to the DOM so that
+    // we can determine whether to add the resizesensor
+    this.attachedToDOM = false;
+
     // Set up API
     this.api = api(this);
 
@@ -198,6 +203,19 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  waitForDOMAttachment(callback) {
+    if (!this.mounted)
+      return;
+
+    const thisElement = ReactDOM.findDOMNode(this);
+
+    if (document.body.contains(thisElement)) {
+      callback();
+    } else {
+      requestAnimationFrame(() => this.waitForDOMAttachment(callback)); 
+    }
+  }
+
   componentDidMount() {
     // the addEventListener is necessary because TrackRenderer determines where to paint
     // all the elements based on their bounding boxes. If the window isn't
@@ -222,6 +240,7 @@ class HiGlassComponent extends React.Component {
         transparent: true,
         resolution: 2,
         autoResize: true,
+        preserveDrawingBuffer: true,
       });
 
     // PIXI.RESOLUTION=2;
@@ -233,10 +252,16 @@ class HiGlassComponent extends React.Component {
       svgElement: this.svgElement,
       canvasElement: this.canvasElement,
     });
-    ElementQueries.listen();
-    this.resizeSensor = new ResizeSensor(
-      this.element.parentNode, this.updateAfterResize.bind(this),
-    );
+
+    this.waitForDOMAttachment(() => {
+      ElementQueries.listen();
+      this.resizeSensor = new ResizeSensor(
+        this.element.parentNode, this.updateAfterResize.bind(this),
+      );
+
+      // this.forceUpdate();
+      this.updateAfterResize();
+    });
 
     this.handleDragStart();
     this.handleDragStop();
@@ -296,7 +321,11 @@ class HiGlassComponent extends React.Component {
     this.pixiRenderer = null;
 
     window.removeEventListener('focus', this.boundRefreshView);
-    this.resizeSensor.detach();
+
+    // if this element was never attached to the DOM
+    // then the resize sensor will never have been initiated
+    if (this.resizeSensor)
+      this.resizeSensor.detach();
 
     domEvent.unregister('keydown', document);
     domEvent.unregister('keyup', document);
@@ -369,7 +398,22 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  measureSize() {
+    const heightOffset = 0;
+    const height = this.element.clientHeight - heightOffset;
+    const width = this.element.clientWidth;
+
+    if (width > 0 && height > 0) {
+      this.setState({
+        sizeMeasured: true,
+        width,
+        height,
+      });
+    }
+  }
+
   updateAfterResize() {
+    this.measureSize();
     this.updateRowHeight();
     this.fitPixiToParentContainer();
     this.refreshView(LONG_DRAG_TIMEOUT);
@@ -654,14 +698,23 @@ class HiGlassComponent extends React.Component {
     return svg;
   }
 
-  handleExportSVG() {
+  createSVGString() {
     const svg = this.createSVG();
 
     const svgText = new XMLSerializer().serializeToString(svg);
     const beautyText = vkbeautify.xml(svgText);
 
-    download('export.svg', vkbeautify.xml(svgText));
-    return svg;
+    return vkbeautify.xml(svgText);
+  }
+
+  createDataURI() {
+    let pngString = this.canvasElement.toDataURL();
+
+    return pngString;
+  }
+
+  handleExportSVG() {
+    download('export.svg', this.createSVGString());
   }
 
   handleScalesChanged(uid, xScale, yScale, notify = true) {
@@ -806,6 +859,9 @@ class HiGlassComponent extends React.Component {
      *
      * @param viewUid: The view uid for which to adjust the zoom level
      */
+    if (!this.tiledPlots[viewUid])
+      throw `View uid ${viewUid} does not exist in the current viewConfig`;
+
     this.tiledPlots[viewUid].handleZoomToData();
   }
 
@@ -1462,6 +1518,25 @@ class HiGlassComponent extends React.Component {
     return layout;
   }
 
+  handleClearView(viewUid) {
+    /**
+     * Remove all the tracks from a view
+     *
+     * @param {viewUid} Thie view's identifier
+     */
+    const views = this.state.views;
+
+    views[viewUid].tracks.top = [];
+    views[viewUid].tracks.bottom = [];
+    views[viewUid].tracks.center = [];
+    views[viewUid].tracks.left = [];
+    views[viewUid].tracks.right = [];
+
+    this.setState({
+      views: views,
+    });
+  }
+
   handleCloseView(uid) {
     /**
        * A view needs to be closed. Remove it from from the viewConfig and then clean
@@ -2011,7 +2086,7 @@ class HiGlassComponent extends React.Component {
       .post(wrapper, (error, response) => {
         if (response) {
           const content = JSON.parse(response.response);
-          const portString = window.location.port == 80 ? '' : `:${window.location.port}`;
+          const portString = window.location.port === '' ? '' : `:${window.location.port}`;
           this.setState({
             // exportLinkLocation: this.props.viewConfig.exportViewUrl + "?d=" + content.uid
             exportLinkLocation: `http://${window.location.hostname}${portString}/app/?config=${content.uid}`,
@@ -2192,7 +2267,7 @@ class HiGlassComponent extends React.Component {
 
   handleSelectedAssemblyChanged(viewUid, newAssembly, newAutocompleteId, newServer) {
     /*
-     * A new assembly was selected in the GenomePositionSearchBox. 
+     * A new assembly was selected in the GenomePositionSearchBox.
      * Update the corresponding
      * view's entry
      *
@@ -2317,6 +2392,9 @@ class HiGlassComponent extends React.Component {
     const view = this.state.views[viewUid];
     const track = getTrackByUid(view.tracks, trackUid);
 
+    if (!track)
+      return;
+
     track.options = Object.assign(track.options, newOptions);
 
     if (this.mounted) {
@@ -2389,9 +2467,9 @@ class HiGlassComponent extends React.Component {
 
       viewsByUid[v.uid] = v;
 
-      if (!v.initialXDomain)
+      if (!v.initialXDomain) {
         throw 'No initialXDomain in provided viewconf';
-      else {
+      } else {
         v.initialXDomain[0] = +v.initialXDomain[0];
         v.initialXDomain[1] = +v.initialXDomain[1];
 
@@ -2496,7 +2574,7 @@ class HiGlassComponent extends React.Component {
     this.removeScalesChangedListener(viewId, listenerId);
   }
 
-  onLocationChange(viewId, callback, callbackId) {
+onLocationChange(viewId, callback, callbackId) {
     if (
       typeof viewId === 'undefined' ||
       Object.keys(this.state.views).indexOf(viewId) === -1
@@ -2524,12 +2602,15 @@ class HiGlassComponent extends React.Component {
       callback(scalesToGenomeLoci(xScale, yScale, this.chromInfo));
     };
 
-    const newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
-      .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
-      .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
-      .reduce((max, value) => Math.max(max, value), 0) + 1;
+    let newListenerId = 1;
+    if (this.scalesChangedListeners[view.uid]) {
+      newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
+        .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
+        .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
+        .reduce((max, value) => Math.max(max, value), 0) + 1;
+    }
 
-    const scaleListener = this.addScalesChangedListener(
+    this.addScalesChangedListener(
       view.uid,
       `${LOCATION_LISTENER_PREFIX}.${newListenerId}`,
       middleLayerListener,
@@ -2548,6 +2629,7 @@ class HiGlassComponent extends React.Component {
   }
 
   render() {
+    // console.log('rendering');
     let tiledAreas = (
       <div
         ref={(c) => { this.tiledAreaDiv = c; }}
@@ -2701,6 +2783,7 @@ class HiGlassComponent extends React.Component {
               view.genomePositionSearchBox.visible
             }
             onAddView={() => this.handleAddView(view)}
+            onClearView={() => this.handleClearView(view.uid)}
             onCloseView={() => this.handleCloseView(view.uid)}
             onExportSVG={this.handleExportSVG.bind(this)}
             onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
@@ -2772,12 +2855,13 @@ class HiGlassComponent extends React.Component {
     layouts = JSON.parse(JSON.stringify(layouts)); // make sure to copy the layouts
 
     const gridLayout = (
-      <WidthReactGridLayout
+      <ReactGridLayout
         // Reserved props
         ref={(c) => { this.gridLayout = c; }}
 
         // Custom props
         cols={12}
+        width={this.state.width}
         draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
         isDraggable={this.props.viewConfig.editable}
         isResizable={this.props.viewConfig.editable}
@@ -2800,7 +2884,7 @@ class HiGlassComponent extends React.Component {
         useCSSTransforms={this.mounted}
       >
         {tiledAreas}
-      </WidthReactGridLayout>
+      </ReactGridLayout>
     );
 
     return (

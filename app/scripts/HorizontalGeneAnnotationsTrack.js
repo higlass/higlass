@@ -276,7 +276,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       if (!tile.drawnAtScale) {
         // tile hasn't been drawn properly because we likely got some
         // bogus data from the server
-        console.warn("Tile without drawnAtScale:", tile);
+        // console.warn("Tile without drawnAtScale:", tile);
         continue;
       }
 

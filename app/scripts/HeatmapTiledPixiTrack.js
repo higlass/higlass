@@ -274,6 +274,9 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.pColorbarArea.visible = true;
 
     if (!this.valueScale) { return; }
+    if (isNaN(this.valueScale.domain()[0]) ||
+        isNaN(this.valueScale.domain()[1])) { return; }
+
 
     const colorbarAreaHeight = Math.min(this.dimensions[1] / 2, COLORBAR_MAX_HEIGHT);
     this.colorbarHeight = colorbarAreaHeight - (2 * COLORBAR_MARGIN);

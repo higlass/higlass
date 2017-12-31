@@ -1,4 +1,5 @@
 import { json } from 'd3-request';
+import pubSub from './services/pub-sub';
 
 /*
 function countTransform(count) {
@@ -119,7 +120,9 @@ export function workerSetPix(
 }
 
 export function workerGetTilesetInfo(url, done) {
+  pubSub.publish('requestSent', url);
   json(url, (error, data) => {
+    pubSub.publish('requestReceived', url);
     if (error) {
       // console.log('error:', error);
       // don't do anything
@@ -195,7 +198,9 @@ export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
     const outUrl = `${tilesetServer}/tiles/?${renderParams}&s=${sessionId}`;
 
     const p = new Promise(((resolve, reject) => {
+      pubSub.publish('requestSent', outUrl);
       json(outUrl, (error, data) => {
+        pubSub.publish('requestReceived', outUrl);
         if (error) {
           resolve({});
         } else {
@@ -286,7 +291,9 @@ export function workerFetchMultiRequestTiles(req) {
       const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
 
       const p = new Promise(((resolve, reject) => {
+        pubSub.publish('requestSent', outUrl);
         json(outUrl, (error, data) => {
+          pubSub.publish('requestReceived', outUrl);
           if (!data)  {
             // probably an error
             data = {}

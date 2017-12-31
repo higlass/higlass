@@ -39,6 +39,10 @@ export class NestedContextMenu extends ContextMenuContainer {
     return (<div />);
   }
 
+  componentWillUnmount() {
+
+  }
+
   render() {
     const menuItems = [];
 
