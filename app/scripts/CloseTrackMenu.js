@@ -31,8 +31,14 @@ export class CloseTrackMenu extends React.Component {
     const series = this.props.track.contents ? this.props.track.contents : [this.props.track];
 
     return series.map((x) => {
-      const thumbnail = trackTypeToInfo[x.type].thumbnail;
-      const imgTag = trackTypeToInfo[x.type].thumbnail ? (
+      let thumbnail = null;
+
+      // if the track is of an unknown type, we won't show any thumbnail
+      if (trackTypeToInfo[x.type]) {
+        thumbnail = trackTypeToInfo[x.type].thumbnail;
+      }
+
+      const imgTag = thumbnail ? (
         <div
           dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
           styleName="context-menu-thumbnail-inline"

@@ -313,6 +313,26 @@ describe('Simple HiGlassComponent', () => {
       expect(trackTypeItems.props.menuItems).to.not.have.property('horizontal-line');
       expect(trackTypeItems.props.menuItems).to.not.have.property('horizontal-point');
 
+      let configMenuItems = seriesObj.getConfigureSeriesMenu(position, bbox, series);
+
+      done();
+    });
+
+    it('Opens the close track menu', (done) => {
+      const clickPosition = {
+        bottom : 85,
+        height : 28,
+        left : 246,
+        right : 274,
+        top : 57,
+        width : 28,
+        x : 246,
+        y : 57,
+      }
+      const uid = 'line1';
+
+      hgc.instance().tiledPlots.aa.handleCloseTrackMenuOpened(uid, clickPosition);
+
       done();
     });
   });
@@ -2388,25 +2408,7 @@ describe('Simple HiGlassComponent', () => {
         y : 61,
       }
 
-      const series = {
-        "filetype": "hitile",
-        "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-        "server": "http://higlass.io/api/v1",
-        "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
-        "type": "horizontal-line",
-        "options": {
-          "labelColor": "red",
-          "labelPosition": "hidden",
-          "axisPositionHorizontal": "right",
-          "lineStrokeColor": "blue",
-          "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-          "valueScaling": "log"
-        },
-        "width": 20,
-        "height": 20,
-        "position": "top",
-        "uid": "line1"
-      }
+      const series = invalidTrackConfig.views[0].tracks.top;
 
       // get the object corresponding to the series
       cftm.handleItemMouseEnterWithRect(subMenuRect, series);

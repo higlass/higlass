@@ -34,7 +34,8 @@ export class SeriesListMenu extends ContextMenuContainer {
   getConfigureSeriesMenu(position, bbox, track) {
     const menuItems = {};
 
-    if (!TRACKS_INFO_BY_TYPE[track.type].availableOptions) { return null; }
+    if (!TRACKS_INFO_BY_TYPE[track.type] 
+      || !TRACKS_INFO_BY_TYPE[track.type].availableOptions) { return null; }
 
     for (const optionType of TRACKS_INFO_BY_TYPE[track.type].availableOptions) {
       if (OPTIONS_INFO.hasOwnProperty(optionType)) {
