@@ -39,8 +39,11 @@ export class ConfigTrackMenu extends ContextMenuContainer {
     const series = this.props.track.contents ? this.props.track.contents : [this.props.track];
 
     return series.map((x) => {
-      const thumbnail = trackTypeToInfo[x.type].thumbnail;
-      const imgTag = trackTypeToInfo[x.type].thumbnail ? (
+      let thumbnail = null;
+      if (x.type in trackTypeToInfo) {
+        thumbnail = trackTypeToInfo[x.type].thumbnail;
+      }
+      const imgTag = thumbnail ? (
         <div
           dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
           style={{
