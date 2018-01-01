@@ -64,7 +64,8 @@ export class TiledPixiTrack extends PixiTrack {
         // no tileset info for this track
         console.warn('Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error);
 
-        this.error = this.tilesetInfo.error;
+        this.trackNotFoundText = '';
+        this.errorTextText = this.tilesetInfo.error;
         this.tilesetInfo = null;
         this.draw();
         this.animate();
