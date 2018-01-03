@@ -1,4 +1,4 @@
-const stack = {};
+const STACK = {};
 
 /**
  * Publish an event.
@@ -6,7 +6,7 @@ const stack = {};
  * @param {string} event - Event type to be published.
  * @param {any} news - The news to be published.
  */
-const publish = (event, news) => {
+const publish = (stack = STACK) => (event, news) => {
   if (!stack[event]) { return; }
 
   stack[event].forEach(listener => listener(news));
@@ -21,7 +21,7 @@ const publish = (event, news) => {
  * @return {object} Object with the event name and index of the callback
  *   function on the event stack. The object can be used to unsubscribe.
  */
-const subscribe = (event, callback) => {
+const subscribe = (stack = STACK) => (event, callback) => {
   if (!stack[event]) {
     stack[event] = [];
   }
@@ -42,7 +42,7 @@ const subscribe = (event, callback) => {
  * @param {int} id - Index of the callback function to be removed from the
  *   event stack. The index is returned by `subscribe()`.
  */
-const unsubscribe = (event, callback, id) => {
+const unsubscribe = (stack = STACK) => (event, callback, id) => {
   let eventName = event;
   let listenerId = id;
 
@@ -59,10 +59,10 @@ const unsubscribe = (event, callback, id) => {
   stack[eventName].splice(listenerId, 1);
 };
 
-const pubSub = {
-  publish,
-  subscribe,
-  unsubscribe,
-};
+export const create = stack => ({
+  publish: publish(stack),
+  subscribe: subscribe(stack),
+  unsubscribe: unsubscribe(stack),
+});
 
-export default pubSub;
+export default create();
