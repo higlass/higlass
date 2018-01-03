@@ -8,11 +8,23 @@ import {
   MOUSE_TOOL_SELECT,
 } from './configs';
 
-import pubSub from './services/pub-sub';
+import pubSub, { create } from './services/pub-sub';
 
-export const api = function api(context) {
+let stack = {};
+let pubSubs = [];
+
+const apiPubSub = create(stack);
+
+export const destroy = () => {
+  pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+  pubSubs = [];
+  stack = {};
+};
+
+const api = function api(context) {
   const self = context;
 
+  // Public API
   return {
     setViewConfig(newViewConfig) {
       /**
@@ -34,17 +46,17 @@ export const api = function api(context) {
       const p = new Promise((resolve) => {
         this.requestsInFlight = 0;
 
-        pubSub.subscribe('requestSent', () => {
+        pubSubs.push(pubSub.subscribe('requestSent', () => {
           this.requestsInFlight += 1;
-        });
+        }));
 
-        pubSub.subscribe('requestReceived', () => {
+        pubSubs.push(pubSub.subscribe('requestReceived', () => {
           this.requestsInFlight -= 1;
 
           if (this.requestsInFlight === 0) {
             resolve();
           }
-        });
+        }));
 
         self.setState({
           views: viewsByUid,
@@ -78,11 +90,7 @@ export const api = function api(context) {
      * @description
      * Mouse tools enable different behaviors which would otherwise clash. For
      *
-     * @method  activateTool
-     * @author  Fritz Lekschas
-     * @date    2017-12-30
-     * @param   {[type]}      tool  [description]
-     * @return  {[type]}            [description]
+     * @param {string}  tool  Mouse tool name to be selected.
      */
     activateTool(tool) {
       switch (tool) {
@@ -185,6 +193,10 @@ export const api = function api(context) {
           self.offLocationChange(viewId, listenerId);
           break;
 
+        case 'mouseMoveZoom':
+          apiPubSub.unsubscribe('mouseMoveZoom', listenerId);
+          break;
+
         case 'rangeSelection':
           self.offRangeSelection(listenerId);
           break;
@@ -204,6 +216,10 @@ export const api = function api(context) {
         case 'location':
           return self.onLocationChange(viewId, callback, callbackId);
 
+        case 'mouseMoveZoom': {
+          return apiPubSub.subscribe('mouseMoveZoom', callback);
+        }
+
         case 'rangeSelection':
           return self.onRangeSelection(callback);
 
@@ -218,3 +234,4 @@ export const api = function api(context) {
 };
 
 export default api;
+export const publish = apiPubSub.publish;
