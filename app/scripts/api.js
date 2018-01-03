@@ -194,7 +194,13 @@ const api = function api(context) {
           break;
 
         case 'mouseMoveZoom':
-          apiPubSub.unsubscribe('mouseMoveZoom', listenerId);
+          apiPubSub.unsubscribe(
+            'mouseMoveZoom', (
+              typeof listenerId === 'object'
+                ? listenerId.callback
+                : listenerId
+            )
+          );
           break;
 
         case 'rangeSelection':
