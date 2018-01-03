@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="HiGlass Server" href="higlass_server.html" />
+    <link rel="next" title="HiGlass Docker" href="higlass_docker.html" />
     <link rel="prev" title="Gene Annotations Tracks" href="gene_annotations.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -42,6 +42,111 @@
             
   <div class="section" id="higlass-client-developer">
 <h1>HiGlass Client (Developer)<a class="headerlink" href="#higlass-client-developer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="adding-new-track-types">
+<h2>Adding new track types<a class="headerlink" href="#adding-new-track-types" title="Permalink to this headline">¶</a></h2>
+<p>To add a new track type, we first need a data source and a new
+definition. To begin, we can create a new test page to work
+with.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cp app/test2.html app/testx.html
+</pre></div>
+</div>
+<p>Within this page will be a sample viewconfig, that we need to add our new track
+definition to. In this example, we’ll be adding a 1D track. This just means
+that it can only be zoomed into in one dimension. We’ll give it a type of
+<code class="docutils literal"><span class="pre">horizontal-multivec</span></code> and add it to the list of top tracks with the bare
+minimum of attributes. The tilesetUid was taken from the <a class="reference external" href="higlass_server.html#new-filetypes">higlass server new
+filetypes section</a>.</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span>&quot;top&quot;: [
+          {
+    &quot;server&quot;: &quot;http://localhost:8000/api/v1&quot;,
+    &quot;tilesetUid&quot;: &quot;RAh2nvU9THezcVuxBU3ioQ&quot;,
+    &quot;type&quot;: &quot;horizontal-multivec&quot;,
+    &quot;height&quot;: 200,
+    &quot;position&quot;: &quot;top&quot;
+  }
+],
+</pre></div>
+</div>
+<p>We can start higlass:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>npm install
+npm start
+</pre></div>
+</div>
+<p>And then navigate to the test web page: <a class="reference external" href="http://localhost:8080/testx.html">http://localhost:8080/testx.html</a>
+Upon opening the developer console, we’ll see an error message:</p>
+<p><code class="docutils literal"><span class="pre">`</span>
+<span class="pre">WARNING:</span> <span class="pre">unknown</span> <span class="pre">track</span> <span class="pre">type:</span> <span class="pre">horizontal-multivec</span>
+<span class="pre">`</span></code></p>
+<p>This is because HiGlass doesn’t know how to handle this track type. In
+this example, we’ll give it a way of handling it.</p>
+<p>First, we need to define this track type:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;horizontal-multivec&#39;</span><span class="p">,</span>
+  <span class="nx">datatype</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;multivec&#39;</span><span class="p">],</span>
+  <span class="nx">local</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">orientation</span><span class="o">:</span> <span class="s1">&#39;1d-horizontal&#39;</span><span class="p">,</span>
+  <span class="nx">thumbnail</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="nx">availableOptions</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;labelPosition&#39;</span><span class="p">,</span> <span class="s1">&#39;labelColor&#39;</span><span class="p">,</span> <span class="s1">&#39;valueScaling&#39;</span><span class="p">,</span> <span class="s1">&#39;labelTextOpacity&#39;</span><span class="p">,</span> <span class="s1">&#39;labelBackgroundOpacity&#39;</span><span class="p">,</span> <span class="s1">&#39;trackBorderWidth&#39;</span><span class="p">,</span> <span class="s1">&#39;trackBorderColor&#39;</span><span class="p">,</span> <span class="s1">&#39;trackType&#39;</span><span class="p">],</span>
+  <span class="nx">defaultOptions</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">labelPosition</span><span class="o">:</span> <span class="s1">&#39;topLeft&#39;</span><span class="p">,</span>
+    <span class="nx">labelColor</span><span class="o">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span>
+    <span class="nx">labelTextOpacity</span><span class="o">:</span> <span class="mf">0.4</span><span class="p">,</span>
+    <span class="nx">valueScaling</span><span class="o">:</span> <span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+    <span class="nx">trackBorderWidth</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nx">trackBorderColor</span><span class="o">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span>
+  <span class="p">},</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+<p>It has all of the standard track options, is horizontal, etc…</p>
+<p>Now if we reload our test page, we still get the same warning. This is because
+we don’t actually know how to draw this track. We need to create a class which
+knows how to draw this track type. We can do that by creating a new file in
+<code class="docutils literal"><span class="pre">app/scripts</span></code> called <code class="docutils literal"><span class="pre">HorizontalMultivecTrack.js</span></code>.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cp app/scripts/HeatmapTiledPixiTrack.js app/scripts/HorizontalMultivecTrack.js
+</pre></div>
+</div>
+<p>Here we need to change the name of the track and have it extend the HeatmapTrack:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">export</span> class HorizontalMultivecTrack extends HeatmapTiledPixiTrack
+</pre></div>
+</div>
+<p>Now we can register the new track type in <cite>TrackRenderer.js:createTrackObject</cite>:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="k">case</span> <span class="s1">&#39;horizontal-multivec&#39;</span><span class="o">:</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="nx">HorizontalMultivecTrack</span><span class="p">(</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">pStage</span><span class="p">,</span>
+    <span class="nx">dataConfig</span><span class="p">,</span>
+    <span class="nx">handleTilesetInfoReceived</span><span class="p">,</span>
+    <span class="nx">track</span><span class="p">.</span><span class="nx">options</span><span class="p">,</span>
+    <span class="p">()</span> <span class="p">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">currentProps</span><span class="p">.</span><span class="nx">onNewTilesLoaded</span><span class="p">(</span><span class="nx">track</span><span class="p">.</span><span class="nx">uid</span><span class="p">),</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">svgElement</span><span class="p">,</span>
+    <span class="p">()</span> <span class="p">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">currentProps</span><span class="p">.</span><span class="nx">onValueScaleChanged</span><span class="p">(</span><span class="nx">track</span><span class="p">.</span><span class="nx">uid</span><span class="p">),</span>
+    <span class="nx">newOptions</span> <span class="p">=&gt;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">currentProps</span><span class="p">.</span><span class="nx">onTrackOptionsChanged</span><span class="p">(</span><span class="nx">track</span><span class="p">.</span><span class="nx">uid</span><span class="p">,</span> <span class="nx">newOptions</span><span class="p">),</span>
+  <span class="p">);</span>
+</pre></div>
+</div>
+<p>And add it to the imports at the top:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="nx">HorizontalMultivecTrack</span> <span class="nx">from</span> <span class="s1">&#39;./HorizontalMultivecTrack&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Reloading our test page will now output a series of errors which we will fix
+in <cite>HorizontalMultivecTrack</cite>. Here’s the steps.</p>
+<ol class="arabic simple">
+<li>Replace <code class="docutils literal"><span class="pre">tileToLocalId</span></code> and <code class="docutils literal"><span class="pre">tileToRemoteId</span></code> with those from
+<code class="docutils literal"><span class="pre">HorizontalLine1DPixiTrack</span></code>.  We do this because the ones we copied from
+the HeatmapTrack assume that there will be a data transform associated with
+the ID. This simple datatype has no associated transforms and thus only
+needs to encode the tile position in the ID.</li>
+<li>Change <code class="docutils literal"><span class="pre">calculateZoomLevel</span></code> to only use the x domain in calculating the zoom
+level.</li>
+<li>Change <code class="docutils literal"><span class="pre">calculateVisibleTiles</span></code> to only use the x domain in calculating the
+visible tiles.</li>
+<li>Change <code class="docutils literal"><span class="pre">tileDataToCanvas</span></code> to change the width of the data to match that
+returned in the tileset info.</li>
+<li>Change the <code class="docutils literal"><span class="pre">zoomed</span></code> function to maintain the the view at the origin.</li>
+<li>Change <code class="docutils literal"><span class="pre">setSpriteProperties</span></code> to position the sprite on only the x axis.</li>
+</ol>
+</div>
 <div class="section" id="higlass-api">
 <h2>HiGlass API<a class="headerlink" href="#higlass-api" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="creating-an-inline-higlass-component">
@@ -130,6 +235,13 @@ listed:</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="exporting-the-view-as-a-data-uri">
+<h3>Exporting the view as a Data URI<a class="headerlink" href="#exporting-the-view-as-a-data-uri" title="Permalink to this headline">¶</a></h3>
+<p>The current view can be programmatically exported as a data URI:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">api</span><span class="p">.</span><span class="nx">createDataURI</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="coding-guidelines">
 <h2>Coding Guidelines<a class="headerlink" href="#coding-guidelines" title="Permalink to this headline">¶</a></h2>
@@ -195,9 +307,14 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">HiGlass Client (Developer)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-new-track-types">Adding new track types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#higlass-api">HiGlass API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#coding-guidelines">Coding Guidelines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#other-documentation">Other Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_docker.html">HiGlass Docker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_docker.html#dropping-individual-cache-entries">Dropping individual cache entries</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_server.html">HiGlass Server</a><ul>
@@ -205,6 +322,7 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#development">Development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#testing">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#importing-data">Importing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#new-filetypes">New filetypes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="track_types.html">Track Types</a><ul>
@@ -233,7 +351,7 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="gene_annotations.html" title="previous chapter">Gene Annotations Tracks</a></li>
-      <li>Next: <a href="higlass_server.html" title="next chapter">HiGlass Server</a></li>
+      <li>Next: <a href="higlass_docker.html" title="next chapter">HiGlass Docker</a></li>
   </ul></li>
 </ul>
 </div>
