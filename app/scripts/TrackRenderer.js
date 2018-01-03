@@ -168,7 +168,7 @@ export class TrackRenderer extends React.Component {
 
     this.canvasDom = ReactDOM.findDOMNode(this.currentProps.canvasElement);
 
-    // used to determine whether to update the graphics of the 
+    // used to determine whether to update the graphics of the
     // child tracks
     this.mounted = true;
 
@@ -385,21 +385,39 @@ export class TrackRenderer extends React.Component {
   }
 
   setUpScales(notify = false) {
-    const currentCenterX = this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth / 2;
-    const currentCenterY = this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2;
+    const currentCenterX = (
+      this.currentProps.marginLeft
+      + this.currentProps.leftWidth
+      + (this.currentProps.centerWidth / 2)
+    );
+    const currentCenterY = (
+      this.currentProps.marginTop
+      + this.currentProps.topHeight
+      + (this.currentProps.centerHeight / 2)
+    );
 
     // we need to maintain two scales:
     // 1. the scale that is shown
     // 2. the scale that the zooming behavior acts on
     //
-    // These need to be separated because the zoom behavior acts on a larger region
-    // than the visible scale shows
+    // These need to be separated because the zoom behavior acts on a larger
+    // region than the visible scale shows
 
-    // if the window is resized, we don't want to change the scale, but we do want to move the center point
-    // this needs to be tempered by the zoom factor so that we keep the visible center point in the center
-    const centerDomainXOffset = (this.drawableToDomainX(currentCenterX) - this.drawableToDomainX(this.prevCenterX)) / this.zoomTransform.k;
-    const centerDomainYOffset = (this.drawableToDomainY(currentCenterY) - this.drawableToDomainY(this.prevCenterY)) / this.zoomTransform.k;
-    //const centerDomainYOffset = 0;
+    // if the window is resized, we don't want to change the scale, but we do
+    // want to move the center point. this needs to be tempered by the zoom
+    // factor so that we keep the visible center point in the center
+    const centerDomainXOffset = (
+      (
+        this.drawableToDomainX(currentCenterX)
+        - this.drawableToDomainX(this.prevCenterX)
+      ) / this.zoomTransform.k
+    );
+    const centerDomainYOffset = (
+      (
+        this.drawableToDomainY(currentCenterY)
+        - this.drawableToDomainY(this.prevCenterY)
+      ) / this.zoomTransform.k
+    );
 
     this.cumCenterYOffset += centerDomainYOffset;
     this.cumCenterXOffset += centerDomainXOffset;
@@ -408,8 +426,14 @@ export class TrackRenderer extends React.Component {
     this.prevCenterX = currentCenterX;
 
     // the domain of the visible (not drawable area)
-    const visibleXDomain = [this.drawableToDomainX(0) - this.cumCenterXOffset, this.drawableToDomainX(this.currentProps.width) - this.cumCenterXOffset];
-    const visibleYDomain = [this.drawableToDomainY(0) - this.cumCenterYOffset, this.drawableToDomainY(this.currentProps.height) - this.cumCenterYOffset];
+    const visibleXDomain = [
+      this.drawableToDomainX(0) - this.cumCenterXOffset,
+      this.drawableToDomainX(this.currentProps.width) - this.cumCenterXOffset
+    ];
+    const visibleYDomain = [
+      this.drawableToDomainY(0) - this.cumCenterYOffset,
+      this.drawableToDomainY(this.currentProps.height) - this.cumCenterYOffset
+    ];
 
     // [drawableToDomain(0), drawableToDomain(1)]: the domain of the visible area
     // if the screen has been resized, then the domain width should remain the same
@@ -509,8 +533,8 @@ export class TrackRenderer extends React.Component {
      * @return: Nothing
      */
     const receivedTracksDict = {};
-    for (let i = 0; i < trackDefinitions.length; i++) { 
-      receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i]; 
+    for (let i = 0; i < trackDefinitions.length; i++) {
+      receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i];
     }
 
     const knownTracks = new Set(Object.keys(this.trackDefObjects));
@@ -768,7 +792,7 @@ export class TrackRenderer extends React.Component {
     };
 
     // See if this track has a data config section.
-    // If it doesn't, we assume that it has the standard 
+    // If it doesn't, we assume that it has the standard
     // server / tilesetUid sections
     // if the track has no data server, then this will just
     // be blank and we can go on our merry way
@@ -801,6 +825,7 @@ export class TrackRenderer extends React.Component {
           () => this.currentProps.onValueScaleChanged(track.uid),
           newOptions =>
             this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
+          this.props.onMouseMoveZoom
         );
 
       case 'horizontal-line':
@@ -1211,6 +1236,7 @@ TrackRenderer.propTypes = {
   leftWidth: PropTypes.number,
   marginLeft: PropTypes.number,
   marginTop: PropTypes.number,
+  onMouseMoveZoom: PropTypes.func,
   onScalesChanged: PropTypes.func,
   pixiStage: PropTypes.object,
   positionedTracks: PropTypes.array,

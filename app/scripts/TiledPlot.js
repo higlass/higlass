@@ -115,7 +115,7 @@ export class TiledPlot extends React.Component {
     if (document.body.contains(thisElement)) {
       callback();
     } else {
-      requestAnimationFrame(() => this.waitForDOMAttachment(callback)); 
+      requestAnimationFrame(() => this.waitForDOMAttachment(callback));
     }
   }
 
@@ -288,7 +288,7 @@ export class TiledPlot extends React.Component {
      * Will start working with just heatmaps and then progress to
      * other track types.
      */
-    
+
 
   }
 
@@ -1018,6 +1018,7 @@ export class TiledPlot extends React.Component {
           leftWidth={this.leftWidth}
           marginLeft={this.props.horizontalMargin}
           marginTop={this.props.verticalMargin}
+          onMouseMoveZoom={this.props.onMouseMoveZoom}
           onNewTilesLoaded={this.props.onNewTilesLoaded}
           onScalesChanged={this.handleScalesChanged.bind(this)}
           onTilesetInfoReceived={this.handleTilesetInfoReceived.bind(this)}
@@ -1212,6 +1213,7 @@ TiledPlot.propTypes = {
   onCloseTrack: PropTypes.func,
   onDataDomainChanged: PropTypes.func,
   onLockValueScale: PropTypes.func,
+  onMouseMoveZoom: PropTypes.func,
   onNoTrackAdded: PropTypes.func,
   onNewTilesLoaded: PropTypes.func,
   onRangeSelection: PropTypes.func,

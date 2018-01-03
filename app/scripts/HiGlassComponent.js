@@ -17,7 +17,7 @@ import { createSymbolIcon } from './symbol';
 import { all as icons } from './icons';
 import ViewHeader from './ViewHeader';
 import { ChromosomeInfo } from './ChromosomeInfo';
-import api from './api';
+import api, { destroy as apiDestroy, publish as apiPublish } from './api';
 
 // Services
 import { chromInfo, domEvent, pubSub } from './services';
@@ -212,7 +212,7 @@ class HiGlassComponent extends React.Component {
     if (document.body.contains(thisElement)) {
       callback();
     } else {
-      requestAnimationFrame(() => this.waitForDOMAttachment(callback)); 
+      requestAnimationFrame(() => this.waitForDOMAttachment(callback));
     }
   }
 
@@ -332,6 +332,7 @@ class HiGlassComponent extends React.Component {
 
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
+    apiDestroy();
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
@@ -2611,9 +2612,32 @@ onLocationChange(viewId, callback, callbackId) {
     }
   }
 
+  /**
+   * Handle mousemove events by republishing the event using pubSub.
+   *
+   * @param {object}  e  Event object.
+   */
+  mouseMoveHandler(e) {
+    const offset = this.topDiv
+      ? this.topDiv.getBoundingClientRect()
+      : { top: 0, left: 0 };
+
+    pubSub.publish(
+      'app.mouseMove',
+      { x: e.pageX - offset.left, y: e.pageY - offset.top }
+    );
+  }
+
+  /**
+   * Handle mousemove and zoom events.
+   */
+  mouseMoveZoomHandler(data) {
+    apiPublish('mouseMoveZoom', data);
+  }
+
   setChromInfo(chromInfoPath, callback) {
-    ChromosomeInfo(chromInfoPath, (chromInfo) => {
-      this.chromInfo = chromInfo;
+    ChromosomeInfo(chromInfoPath, (newChromInfo) => {
+      this.chromInfo = newChromInfo;
       callback();
     });
   }
@@ -2687,7 +2711,7 @@ onLocationChange(viewId, callback, callbackId) {
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
             mouseTool={this.state.mouseTool}
-            onChangeTrackType={(trackId, newType) => 
+            onChangeTrackType={(trackId, newType) =>
               this.handleChangeTrackType(view.uid, trackId, newType)}
             onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
             onDataDomainChanged={
@@ -2695,6 +2719,7 @@ onLocationChange(viewId, callback, callbackId) {
                 this.handleDataDomainChanged(view.uid, xDomain, yDomain)
             }
             onLockValueScale={uid => this.handleLockValueScale(view.uid, uid)}
+            onMouseMoveZoom={this.mouseMoveZoomHandler.bind(this)}
             onNewTilesLoaded={trackUid => this.handleNewTilesLoaded(view.uid, trackUid)}
             onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
             onRangeSelection={this.rangeSelectionHandler.bind(this)}
@@ -2883,6 +2908,7 @@ onLocationChange(viewId, callback, callbackId) {
         ref={(c) => { this.topDiv = c; }}
         className="higlass"
         styleName="styles.higlass"
+        onMouseMove={this.mouseMoveHandler.bind(this)}
       >
         <canvas
           key={this.uid}
