@@ -106,7 +106,11 @@ export class TiledPixiTrack extends PixiTrack {
     this.maxZoom = +this.tilesetInfo.max_zoom;
 
     if (this.options && this.options.maxZoom) {
-      if (this.options.maxZoom >= 0) { this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom); } else { console.error('Invalid maxZoom on track:', this); }
+      if (this.options.maxZoom >= 0) {
+        this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
+      } else {
+        console.error('Invalid maxZoom on track:', this);
+      }
     }
   }
 
@@ -126,20 +130,22 @@ export class TiledPixiTrack extends PixiTrack {
     return ids.map(x => this.fetchedTiles[x]);
   }
 
+  /**
+   * Set which tiles are visible right now.
+   *
+   * @param tiles: A set of tiles which will be considered the currently visible
+   * tile positions.
+   */
   setVisibleTiles(tilePositions) {
-    /**
-         * Set which tiles are visible right now.
-         *
-         * @param tiles: A set of tiles which will be considered the currently visible
-         * tile positions.
-         */
     this.visibleTiles = tilePositions.map(x => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
       mirrored: x.mirrored,
     }));
-
-
+    this.visibleTilesIdx = {};
+    this.visibleTiles.forEach((tile, index) => {
+      this.visibleTilesIdx[tile.tileId] = index;
+    });
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
   }
 
@@ -155,9 +161,9 @@ export class TiledPixiTrack extends PixiTrack {
     // and aren't in the process of being fetched
     const toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId));
 
-    for (let i = 0; i < toFetch.length; i++) { 
+    for (let i = 0; i < toFetch.length; i++) {
       // console.log('to fetch:', toFetch[i]);
-      this.fetching.add(toFetch[i].remoteId); 
+      this.fetching.add(toFetch[i].remoteId);
     }
 
     // calculate which tiles are obsolete and remove them
@@ -447,9 +453,9 @@ export class TiledPixiTrack extends PixiTrack {
         const tileId = loadedTiles[key].tilePositionId;
         // console.log('tileId:', tileId, 'fetching:', this.fetching);
 
-        if (this.fetching.has(tileId)) { 
+        if (this.fetching.has(tileId)) {
           // console.log('removing:', tileId, 'fetching:', this.fetching);
-          this.fetching.delete(tileId); 
+          this.fetching.delete(tileId);
         }
       }
     }
@@ -584,7 +590,7 @@ export class TiledPixiTrack extends PixiTrack {
       visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero)
       .filter(x => x)
     );
-    
+
 
     // if there's no data, use null
     if (max === Number.MIN_SAFE_INTEGER) { max = null; }
