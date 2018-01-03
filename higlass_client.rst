@@ -266,7 +266,7 @@ Other Documentation
 
 
 Line Track Scaling
--------
+------------------
 
 
 1D tracks can either be linearly or log scaled. Linear scaling denotes a linear
