@@ -668,6 +668,14 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * @return  {Array}  Float32Array with the raw data.
    */
   getData(x, y) {
+    // Init data
+    let data = new this.dataLens.constructor(this.dataLensSize ** 2);
+
+    if (!this.tilesetInfo) {
+      console.warn('Tileset info not available yet');
+      return data;
+    }
+
     const lPad = this.dataLensLPad;
     const rPad = this.dataLensRPad;
 
@@ -714,9 +722,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         mirrored: availableTiles[this.visibleTilesIdx[id]].mirrored
       })
     );
-
-    // Init data
-    let data = new this.dataLens.constructor(this.dataLensSize ** 2);
 
     if (
       tileData.length === 1
