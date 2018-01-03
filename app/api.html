@@ -137,7 +137,7 @@ const testViewConfig = {
         2343023255.8139534
       ],
       layout: {
-        w: 6,
+        w: 12,
         h: 12,
         x: 0,
         y: 0,
@@ -184,6 +184,15 @@ higlassApi.on('location', (yeahCool) => {
 setTimeout(() => {
   higlassApi.off('location', secondId, 'aa');
   console.log('Second event listener is offline');
+}, 5000);
+
+const mmz = higlassApi.on('mouseMoveZoom', (data) => {
+  console.log('Yuuhuu', data);
+});
+
+setTimeout(() => {
+  higlassApi.off('mouseMoveZoom', mmz);
+  console.log('mouseMoveZoom is offline', mmz);
 }, 5000);
 
 </script>
