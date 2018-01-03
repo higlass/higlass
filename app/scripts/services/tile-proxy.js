@@ -191,6 +191,8 @@ export const calculateTiles = (
   );
 };
 
+export const calculateTileWidth = (maxWidth, zoomLevel) => maxWidth / (2 ** zoomLevel);
+
 /**
  * Calculate the tiles that sould be visisble given the resolution and
  * the minX and maxX values for the region
@@ -288,7 +290,7 @@ function text(url, callback) {
    */
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
-  
+
   d3Text(url, (error, done) => {
     callback(error, done);
     pubSub.publish('requestReceived', url);
@@ -314,6 +316,7 @@ function json(url, callback) {
 const api = {
   calculateTiles,
   calculateTilesFromResolution,
+  calculateTileWidth,
   calculateZoomLevel,
   calculateZoomLevelFromResolutions,
   fetchTiles,
