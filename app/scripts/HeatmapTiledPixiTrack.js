@@ -757,23 +757,14 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       )
     ) {
       tileData.forEach((tile) => {
-        if (tile.mirrored) {
-          data = rangeQuery2d(
-            tile.data.dense,
-            BINS_PER_TILE,
-            [dataRelY - lPad, dataRelY + rPad],
-            [dataRelX - lPad, dataRelX + rPad],
-            data
-          );
-        } else {
-          data = rangeQuery2d(
-            tile.data.dense,
-            BINS_PER_TILE,
-            [dataRelX - lPad, dataRelX + rPad],
-            [dataRelY - lPad, dataRelY + rPad],
-            data
-          );
-        }
+        data = rangeQuery2d(
+          tile.data.dense,
+          BINS_PER_TILE,
+          [dataRelX - lPad, dataRelX + rPad],
+          [dataRelY - lPad, dataRelY + rPad],
+          tile.mirrored,
+          data,
+        );
       });
     } else if (tileData.length <= 3) {
       tileData.forEach((tile) => {
@@ -800,23 +791,14 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
           ? Math.min(BINS_PER_TILE - 1, dataRelY + rPad)
           : yClosest === 0 ? BINS_PER_TILE - 1 : mod(dataRelY + rPad, BINS_PER_TILE);
 
-        if (tile.mirrored) {
-          data = rangeQuery2d(
-            tile.data.dense,
-            BINS_PER_TILE,
-            [dataRelYMin, dataRelYMax],
-            [dataRelXMin, dataRelXMax],
-            data
-          );
-        } else {
-          data = rangeQuery2d(
-            tile.data.dense,
-            BINS_PER_TILE,
-            [dataRelXMin, dataRelXMax],
-            [dataRelYMin, dataRelYMax],
-            data
-          );
-        }
+        data = rangeQuery2d(
+          tile.data.dense,
+          BINS_PER_TILE,
+          [dataRelX - lPad, dataRelX + rPad],
+          [dataRelY - lPad, dataRelY + rPad],
+          tile.mirrored,
+          data,
+        );
       });
     } else if (tileData.length <= 5) {
       tileData.forEach((tile) => {
@@ -855,23 +837,14 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
             ? BINS_PER_TILE - 1 : mod(dataRelY + rPad, BINS_PER_TILE);
         }
 
-        if (tile.mirrored) {
-          data = rangeQuery2d(
-            tile.data.dense,
-            BINS_PER_TILE,
-            [dataRelYMin, dataRelYMax],
-            [dataRelXMin, dataRelXMax],
-            data
-          );
-        } else {
-          data = rangeQuery2d(
-            tile.data.dense,
-            BINS_PER_TILE,
-            [dataRelXMin, dataRelXMax],
-            [dataRelYMin, dataRelYMax],
-            data
-          );
-        }
+        data = rangeQuery2d(
+          tile.data.dense,
+          BINS_PER_TILE,
+          [dataRelX - lPad, dataRelX + rPad],
+          [dataRelY - lPad, dataRelY + rPad],
+          tile.mirrored,
+          data,
+        );
       });
     }
 

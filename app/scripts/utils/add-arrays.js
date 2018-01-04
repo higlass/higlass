@@ -1,3 +1,5 @@
+const STD_ACC = i => i;
+
 /**
  * Add two 1D arrays
  *
@@ -11,8 +13,11 @@
  *
  * @param  {Array}  a1  First array of numbers
  * @param  {Array}  a2  Second array of numbers
+ * @param  {Function}  accessor  Allows to use custom accessors. This can be
+ *   useful when a2 represents a transformed (e.g., transposed matrix).
  * @return  {Array}  Combination of both arrays.
  */
-const addArrays = (a1, a2) => a1.map((val, i) => val + a2[i]);
+const addArrays = (a1, a2, accessor = STD_ACC) =>
+  a1.map((val, i) => val + a2[accessor(i)]);
 
 export default addArrays;
