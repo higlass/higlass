@@ -785,14 +785,14 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
           ? Math.max(0, dataRelX - lPad)
           : xClosest === 0 ? mod(dataRelX - lPad, BINS_PER_TILE) : 0;
         const dataRelXMax = midpointXTile
-          ? Math.min(BINS_PER_TILE - 1, dataRelX + rPad)
-          : xClosest === 0 ? BINS_PER_TILE - 1 : mod(dataRelX + rPad, BINS_PER_TILE);
+          ? Math.min(BINS_PER_TILE, dataRelX + rPad)
+          : xClosest === 0 ? BINS_PER_TILE : mod(dataRelX + rPad, BINS_PER_TILE);
         const dataRelYMin = midpointYTile
           ? Math.max(0, dataRelY - lPad)
           : yClosest === 0 ? mod(dataRelY - lPad, BINS_PER_TILE) : 0;
         const dataRelYMax = midpointYTile
-          ? Math.min(BINS_PER_TILE - 1, dataRelY + rPad)
-          : yClosest === 0 ? BINS_PER_TILE - 1 : mod(dataRelY + rPad, BINS_PER_TILE);
+          ? Math.min(BINS_PER_TILE, dataRelY + rPad)
+          : yClosest === 0 ? BINS_PER_TILE : mod(dataRelY + rPad, BINS_PER_TILE);
 
         const xOff = midpointXTile
           ? xClosest === 0 ? Math.max(0, this.dataLensSize - dataRelXMax) : 0
@@ -814,7 +814,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         );
       });
     } else if (tileData.length <= 5) {
-      tileData.forEach((tile) => {
+      tileData.forEach((tile, idx) => {
         const midpointXTile = tile.mirrored
           ? xTile === tile.data.tilePos[1]
           : xTile === tile.data.tilePos[0];
@@ -822,40 +822,48 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
           ? yTile === tile.data.tilePos[0]
           : yTile === tile.data.tilePos[1];
 
-        const xClosest = Math.round(dataRelX / BINS_PER_TILE) * BINS_PER_TILE;
-        const yClosest = Math.round(dataRelY / BINS_PER_TILE) * BINS_PER_TILE;
+        const xClosest = Math.round(dataRelX / BINS_PER_TILE);
+        const yClosest = Math.round(dataRelY / BINS_PER_TILE);
 
         let dataRelXMin = Math.max(0, dataRelX - lPad);
-        let dataRelXMax = Math.min(BINS_PER_TILE - 1, dataRelX + rPad);
+        let dataRelXMax = Math.min(BINS_PER_TILE, dataRelX + rPad);
         let dataRelYMin = Math.max(0, dataRelY - lPad);
-        let dataRelYMax = Math.min(BINS_PER_TILE - 1, dataRelY + rPad);
+        let dataRelYMax = Math.min(BINS_PER_TILE, dataRelY + rPad);
 
-        if (!midpointXTile && !midpointYTile) {
-          const xMin = xClosest === 0 ? 0 : BINS_PER_TILE;
-          const yMin = yClosest === 0 ? 0 : BINS_PER_TILE;
+        const xOff = midpointXTile
+          ? xClosest === 0
+            ? Math.max(0, this.dataLensSize - dataRelXMax) : 0
+          : xClosest === 0
+            ? 0 : Math.max(0, dataRelXMax - dataRelXMin);
+        const yOff = midpointYTile
+          ? yClosest === 0
+            ? Math.max(0, this.dataLensSize - dataRelYMax) : 0
+          : yClosest === 0
+            ? 0 : Math.max(0, dataRelYMax - dataRelYMin);
 
-          dataRelXMin = mod(Math.min(xMin, dataRelX - lPad), BINS_PER_TILE);
-          dataRelXMax = mod(Math.max(xMin, dataRelX + rPad), BINS_PER_TILE);
-          dataRelYMin = mod(Math.min(yMin, dataRelY - lPad), BINS_PER_TILE);
-          dataRelYMax = mod(Math.max(yMin, dataRelY + rPad), BINS_PER_TILE);
-        } else if (!midpointXTile && midpointYTile) {
+        if (!midpointXTile) {
           dataRelXMin = xClosest === 0
             ? mod(dataRelX - lPad, BINS_PER_TILE) : 0;
           dataRelXMax = xClosest === 0
-            ? BINS_PER_TILE - 1 : mod(dataRelX + rPad, BINS_PER_TILE);
-        } else if (midpointXTile && !midpointYTile) {
+            ? BINS_PER_TILE : mod(dataRelX + rPad, BINS_PER_TILE);
+        }
+
+        if (!midpointYTile) {
           dataRelYMin = yClosest === 0
             ? mod(dataRelY - lPad, BINS_PER_TILE) : 0;
           dataRelYMax = yClosest === 0
-            ? BINS_PER_TILE - 1 : mod(dataRelY + rPad, BINS_PER_TILE);
+            ? BINS_PER_TILE : mod(dataRelY + rPad, BINS_PER_TILE);
         }
 
         data = rangeQuery2d(
           tile.data.dense,
           BINS_PER_TILE,
-          [dataRelX - lPad, dataRelX + rPad],
-          [dataRelY - lPad, dataRelY + rPad],
+          this.dataLensSize,
+          [dataRelXMin, dataRelXMax],
+          [dataRelYMin, dataRelYMax],
           tile.mirrored,
+          xOff,
+          yOff,
           data,
         );
       });
