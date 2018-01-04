@@ -760,14 +760,17 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         data = rangeQuery2d(
           tile.data.dense,
           BINS_PER_TILE,
+          this.dataLensSize,
           [dataRelX - lPad, dataRelX + rPad],
           [dataRelY - lPad, dataRelY + rPad],
           tile.mirrored,
+          0,
+          0,
           data,
         );
       });
     } else if (tileData.length <= 3) {
-      tileData.forEach((tile) => {
+      tileData.forEach((tile, idx) => {
         const midpointXTile = tile.mirrored
           ? xTile === tile.data.tilePos[1]
           : xTile === tile.data.tilePos[0];
@@ -775,8 +778,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
           ? yTile === tile.data.tilePos[0]
           : yTile === tile.data.tilePos[1];
 
-        const xClosest = Math.round(dataRelX / BINS_PER_TILE) * BINS_PER_TILE;
-        const yClosest = Math.round(dataRelY / BINS_PER_TILE) * BINS_PER_TILE;
+        const xClosest = Math.round(dataRelX / BINS_PER_TILE);
+        const yClosest = Math.round(dataRelY / BINS_PER_TILE);
 
         const dataRelXMin = midpointXTile
           ? Math.max(0, dataRelX - lPad)
@@ -791,12 +794,31 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
           ? Math.min(BINS_PER_TILE - 1, dataRelY + rPad)
           : yClosest === 0 ? BINS_PER_TILE - 1 : mod(dataRelY + rPad, BINS_PER_TILE);
 
+        const xOff = midpointXTile
+          ? xClosest === 0 ? Math.max(0, this.dataLensSize - dataRelXMax) : 0
+          : xClosest === 0 ? 0 : Math.max(0, this.dataLensSize - dataRelXMax);
+        const yOff = midpointYTile
+          ? yClosest === 0 ? Math.max(0, this.dataLensSize - dataRelYMax) : 0
+          : yClosest === 0 ? 0 : Math.max(0, this.dataLensSize - dataRelYMax);
+
+        // console.log('OFF', xOff, yOff, xClosest, yClosest, midpointXTile, midpointYTile);
+
+        // console.log(
+        //   `${tileData.length} tiles`,
+        //   idx, tile.data.tilePos, midpointXTile, midpointYTile,
+        //   [dataRelXMin, dataRelXMax],
+        //   [dataRelYMin, dataRelYMax],
+        // );
+
         data = rangeQuery2d(
           tile.data.dense,
           BINS_PER_TILE,
-          [dataRelX - lPad, dataRelX + rPad],
-          [dataRelY - lPad, dataRelY + rPad],
+          this.dataLensSize,
+          [dataRelXMin, dataRelXMax],
+          [dataRelYMin, dataRelYMax],
           tile.mirrored,
+          xOff,
+          yOff,
           data,
         );
       });
