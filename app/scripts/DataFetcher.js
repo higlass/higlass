@@ -1,5 +1,5 @@
 import slugid from 'slugid';
-import { dictKeys, dictValues } from './utils';
+import { dictValues } from './utils';
 
 // Services
 import { tileProxy } from './services';
@@ -113,7 +113,7 @@ export default class DataFetcher {
 
     if (!this.dataConfig.children) {
       // no children, just return the fetched tiles as is
-      const promise = new Promise((resolve, reject) =>
+      const promise = new Promise(resolve =>
         tileProxy.fetchTilesDebounced({
           id: slugid.nice(),
           server: this.dataConfig.server,
