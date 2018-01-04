@@ -710,8 +710,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const tileRes = tileWidth / BINS_PER_TILE;
 
     // Absolute tile array (i.e., data) position
-    const dataX = Math.round(this._xScale.invert(x) / tileRes);
-    const dataY = Math.round(this._yScale.invert(y) / tileRes);
+    const dataX = Math.floor(this._xScale.invert(x) / tileRes);
+    const dataY = Math.floor(this._yScale.invert(y) / tileRes);
 
     // Relative tile array (i.e., data) position within hovering tile
     const dataRelX = dataX % BINS_PER_TILE;
