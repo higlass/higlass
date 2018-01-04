@@ -770,7 +770,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         );
       });
     } else if (tileData.length <= 3) {
-      tileData.forEach((tile, idx) => {
+      tileData.forEach((tile) => {
         const midpointXTile = tile.mirrored
           ? xTile === tile.data.tilePos[1]
           : xTile === tile.data.tilePos[0];
@@ -800,15 +800,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         const yOff = midpointYTile
           ? yClosest === 0 ? Math.max(0, this.dataLensSize - dataRelYMax) : 0
           : yClosest === 0 ? 0 : Math.max(0, this.dataLensSize - dataRelYMax);
-
-        // console.log('OFF', xOff, yOff, xClosest, yClosest, midpointXTile, midpointYTile);
-
-        // console.log(
-        //   `${tileData.length} tiles`,
-        //   idx, tile.data.tilePos, midpointXTile, midpointYTile,
-        //   [dataRelXMin, dataRelXMax],
-        //   [dataRelYMin, dataRelYMax],
-        // );
 
         data = rangeQuery2d(
           tile.data.dense,
