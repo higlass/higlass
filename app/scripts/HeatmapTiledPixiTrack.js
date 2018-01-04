@@ -7,9 +7,11 @@ import * as PIXI from 'pixi.js';
 import { TiledPixiTrack } from './TiledPixiTrack';
 import { AxisPixi } from './AxisPixi';
 
-import { pubSub, tileProxy } from './services';
+// Services
+import { chromInfo as chromInfoService, pubSub, tileProxy } from './services';
 
 import {
+  absToChr,
   colorDomainToRgbaArray,
   colorToHex,
   mod,
@@ -46,8 +48,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   ) {
     /**
      * @param scene: A PIXI.js scene to draw everything to.
-     * @param server: The server to pull tiles from.
-     * @param uid: The data set to get the tiles from the server
      */
     super(
       scene,
@@ -87,6 +87,10 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.brushing = false;
     this.prevOptions = '';
 
+    chromInfoService
+      .get(`${dataConfig.server}/chrom-sizes/?id=${dataConfig.tilesetUid}`)
+      .then((chromInfo) => { this.chromInfo = chromInfo; });
+
     this.onMouseMoveZoom = onMouseMoveZoom;
     this.setDataLensSize(11);
     this.dataLens = new Float32Array(this.dataLensSize ** 2);
@@ -109,27 +113,42 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const relX = e.x - this.position[0];
     const relY = e.y - this.position[1];
     const data = this.getData(relX, relY);
+    const dim = this.dataLensSize;
 
-    this.onMouseMoveZoom({
-      data,
-      dataDim: this.dataLensSize,
-      getRgb: valueToColor(
+    let toRgb;
+    try {
+      toRgb = valueToColor(
         this.limitedValueScale,
         this.colorScale,
         this.valueScale.domain()[0]
-      ),
-      center: [
-        Math.round(this._xScale.invert(relX)),
-        Math.round(this._yScale.invert(relY))
-      ],
-      xRange: [
-        Math.round(this._xScale.invert(relX - this.dataLensLPad)),
-        Math.round(this._xScale.invert(relX + this.dataLensRPad))
-      ],
-      yRange: [
-        Math.round(this._yScale.invert(relY - this.dataLensLPad)),
-        Math.round(this._yScale.invert(relY + this.dataLensRPad))
-      ]
+      );
+    } catch (err) {
+      // Nothing
+    }
+
+    if (!data.length || !toRgb) return;
+
+    let center = [
+      Math.round(this._xScale.invert(relX)),
+      Math.round(this._yScale.invert(relY))
+    ];
+    let xRange = [
+      Math.round(this._xScale.invert(relX - this.dataLensLPad)),
+      Math.round(this._xScale.invert(relX + this.dataLensRPad))
+    ];
+    let yRange = [
+      Math.round(this._yScale.invert(relY - this.dataLensLPad)),
+      Math.round(this._yScale.invert(relY + this.dataLensRPad))
+    ];
+
+    if (this.chromInfo) {
+      center = center.map(pos => absToChr(pos, this.chromInfo).slice(0, 2));
+      xRange = xRange.map(pos => absToChr(pos, this.chromInfo).slice(0, 2));
+      yRange = yRange.map(pos => absToChr(pos, this.chromInfo).slice(0, 2));
+    }
+
+    this.onMouseMoveZoom({
+      data, dim, toRgb, center, xRange, yRange, rel: !!this.chromInfo
     });
   }
 
@@ -716,12 +735,19 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       xTiles, yTiles, this.zoomLevel, true
     ).map(tile => this.tileToLocalId(tile));
 
-    const tileData = tileIds.map(
-      id => ({
-        data: availableTiles[this.visibleTilesIdx[id]].tileData,
-        mirrored: availableTiles[this.visibleTilesIdx[id]].mirrored
-      })
-    );
+    let tileData = [];
+
+    try {
+      tileData = tileIds.map(
+        id => ({
+          data: availableTiles[this.visibleTilesIdx[id]].tileData,
+          mirrored: availableTiles[this.visibleTilesIdx[id]].mirrored
+        })
+      );
+    } catch (e) {
+      // Nothing: probably `availableTiles[this.visibleTilesIdx[id]]` is not
+      // available yet
+    }
 
     if (
       tileData.length === 1
