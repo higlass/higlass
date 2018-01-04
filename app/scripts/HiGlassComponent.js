@@ -2640,7 +2640,6 @@ onLocationChange(viewId, callback, callbackId) {
   }
 
   render() {
-    // console.log('rendering');
     let tiledAreas = (
       <div
         ref={(c) => { this.tiledAreaDiv = c; }}
@@ -2648,14 +2647,15 @@ onLocationChange(viewId, callback, callbackId) {
       />
     );
 
-    // The component needs to be mounted in order for the initial view to have the right
-    // width
+    // The component needs to be mounted in order for the initial view to have
+    // the right width
     if (this.mounted) {
       tiledAreas = dictValues(this.state.views).map((view) => {
-        const zoomFixed = typeof view.zoomFixed !== 'undefined' ? view.zoomFixed : this.props.zoomFixed;
+        const zoomFixed = typeof view.zoomFixed !== 'undefined'
+          ? view.zoomFixed
+          : this.props.zoomFixed;
 
-        // only show the add track menu for the tiled plot it was selected
-        // for
+        // only show the add track menu for the tiled plot it was selected for
         const addTrackPositionMenuPosition =
           view.uid === this.state.addTrackPositionMenuUid
             ? this.state.addTrackPositionMenuPosition
@@ -2681,7 +2681,8 @@ onLocationChange(viewId, callback, callbackId) {
                 background,
                 opacity: 0.3,
               }}
-            />);
+            />
+          );
         }
 
         const tiledPlot = (
