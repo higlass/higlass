@@ -185,6 +185,7 @@ module.exports = {
     new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
     new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
     new ExtractTextPlugin('hglib.css'),
+    new webpack.optimize.ModuleConcatenationPlugin(),
   /*
   ,
   new BundleAnalyzerPlugin({

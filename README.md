@@ -16,3 +16,12 @@ For documentation about how to use and install HiGlass, please see the [wiki](ht
 <p align="center">
   <img src="https://cloud.githubusercontent.com/assets/2143629/24535936/37ee60ee-15a5-11e7-89aa-434d93cda91d.gif" />
 </p>
+
+### Development
+
+To run higlass from its source code simply run the following:
+
+```
+npm install
+npm run start
+```
