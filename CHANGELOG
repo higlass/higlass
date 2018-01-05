@@ -1,3 +1,8 @@
+v0.10.7 (2018-01-??)
+
+- Simplified `hglib` api
+- Updated third-party libs to get rid of deprecation warnings for React v16
+
 v0.10.6 (2017-12-28)
 
 - Load ResizeSensors after the element is attached to the DOM tree
