@@ -814,7 +814,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         );
       });
     } else if (tileData.length <= 5) {
-      tileData.forEach((tile, idx) => {
+      tileData.forEach((tile) => {
         const midpointXTile = tile.mirrored
           ? xTile === tile.data.tilePos[1]
           : xTile === tile.data.tilePos[0];
@@ -888,27 +888,28 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.renderTile(tile);
   }
 
-  addBorder(pixData) {
-    for (let i = 0; i < 256; i++) {
-      if (i === 0 || i === 255) {
-        const prefix = i * 256 * 4;
-        for (let j = 0; j < 255; j++) {
-          pixData[prefix + (j * 4)] = 0;
-          pixData[prefix + (j * 4) + 1] = 0;
-          pixData[prefix + (j * 4) + 2] = 255;
-          pixData[prefix + (j * 4) + 3] = 255;
-        }
-      }
-      pixData[(i * 256 * 4)] = 0;
-      pixData[(i * 256 * 4) + 1] = 0;
-      pixData[(i * 256 * 4) + 2] = 255;
-      pixData[(i * 256 * 4) + 3] = 255;
-      pixData[((i + 1) * 256 * 4) - 4] = 0;
-      pixData[((i + 1) * 256 * 4) - 3] = 0;
-      pixData[((i + 1) * 256 * 4) - 2] = 255;
-      pixData[((i + 1) * 256 * 4) - 1] = 255;
-    }
-  }
+  // /**
+  //  * Draw a border around tiles
+  //  *
+  //  * @param  {Array}  pixData  Pixel data to be adjusted
+  //  */
+  // addBorder(pixData) {
+  //   for (let i = 0; i < 256; i++) {
+  //     if (i === 0) {
+  //       const prefix = i * 256 * 4;
+  //       for (let j = 0; j < 255; j++) {
+  //         pixData[prefix + (j * 4)] = 0;
+  //         pixData[prefix + (j * 4) + 1] = 0;
+  //         pixData[prefix + (j * 4) + 2] = 255;
+  //         pixData[prefix + (j * 4) + 3] = 255;
+  //       }
+  //     }
+  //     pixData[(i * 256 * 4)] = 0;
+  //     pixData[(i * 256 * 4) + 1] = 0;
+  //     pixData[(i * 256 * 4) + 2] = 255;
+  //     pixData[(i * 256 * 4) + 3] = 255;
+  //   }
+  // }
 
   /**
    * Render / draw a tile.
@@ -954,7 +955,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         // the tileData has been converted to pixData by the worker script and needs to be loaded
         // as a sprite
         const graphics = tile.graphics;
-        this.addBorder(pixData);
+        // this.addBorder(pixData);
 
         const canvas = this.tileDataToCanvas(pixData);
         let sprite = null;
