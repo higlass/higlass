@@ -28,7 +28,7 @@
   "peerDependencies": {
     "pixi.js": "^4.6.2",
     "react": "^15.6.2",
-    "react-bootstrap": "^0.31.5",
+    "react-bootstrap": "^0.32.0",
     "react-dom": "^15.6.2"
   },
   "dependencies": {
@@ -61,7 +61,7 @@
     "react-dom": "^15.5.4",
     "react-grid-layout": "^0.16.0",
     "react-resizable": "^1.4.5",
-    "react-sortable-hoc": "^0.1.1",
+    "react-sortable-hoc": "^0.6.7",
     "reactcss": "^1.2.2",
     "slugid": "^1.1.0",
     "threads": "^0.7.2",
