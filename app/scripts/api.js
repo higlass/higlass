@@ -72,6 +72,19 @@ export const api = function api(context) {
        */
       self.handleZoomToData(viewUid);
     },
+
+    getDataURI() {
+      /**
+       * Export the current canvas as a PNG string so that
+       * it can be saved
+       *
+       * Return
+       * ------
+       *  pngString: string
+       *    A data URI
+       */
+      return self.createDataURI();
+    },
     
     activateTool(tool) {
       switch (tool) {
@@ -112,6 +125,9 @@ export const api = function api(context) {
 
         case 'viewConfig':
           return Promise.resolve(self.getViewsAsString());
+
+        case 'svgString':
+          return Promise.resolve(self.createSVGString());
 
         default:
           return Promise.reject(`Propert "${prop}" unknown`);
@@ -191,7 +207,7 @@ export const api = function api(context) {
     on(event, callback, viewId, callbackId) {
       switch (event) {
         case 'location':
-          self.onLocationChange(viewId, callback, callbackId);
+          return self.onLocationChange(viewId, callback, callbackId);
           break;
 
         case 'rangeSelection':
@@ -201,8 +217,7 @@ export const api = function api(context) {
           return self.onViewChange(callback);
 
         default:
-          // nothing
-          break;
+          return;
       }
     },
   };

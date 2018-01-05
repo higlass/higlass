@@ -5,7 +5,7 @@ import { scaleLinear } from 'd3-scale';
 import { request } from 'd3-request';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
-import ReactGridLayout, { WidthProvider } from 'react-grid-layout';
+import ReactGridLayout from 'react-grid-layout';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
 import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
@@ -57,8 +57,6 @@ import stylesMTHeader from '../styles/ViewHeader.module.scss'; // eslint-disable
 
 import stylesGlobal from '../styles/HiGlass.scss'; // eslint-disable-line no-unused-vars
 
-const WidthReactGridLayout = WidthProvider(ReactGridLayout);
-
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
 const VIEW_HEADER_HEIGHT = 20;
@@ -66,7 +64,6 @@ const VIEW_HEADER_HEIGHT = 20;
 class HiGlassComponent extends React.Component {
   constructor(props) {
     super(props);
-    console.log('heeeeyaa');
 
     this.minHorizontalHeight = 20;
     this.minVerticalWidth = 20;
@@ -212,7 +209,7 @@ class HiGlassComponent extends React.Component {
     if (document.body.contains(thisElement)) {
       callback();
     } else {
-      requestAnimationFrame(() => this.waitForDOMAttachment(callback)); 
+      requestAnimationFrame(() => this.waitForDOMAttachment(callback));
     }
   }
 
@@ -240,6 +237,7 @@ class HiGlassComponent extends React.Component {
         transparent: true,
         resolution: 2,
         autoResize: true,
+        preserveDrawingBuffer: true,
       });
 
     // PIXI.RESOLUTION=2;
@@ -697,14 +695,23 @@ class HiGlassComponent extends React.Component {
     return svg;
   }
 
-  handleExportSVG() {
+  createSVGString() {
     const svg = this.createSVG();
 
     const svgText = new XMLSerializer().serializeToString(svg);
     const beautyText = vkbeautify.xml(svgText);
 
-    download('export.svg', vkbeautify.xml(svgText));
-    return svg;
+    return vkbeautify.xml(svgText);
+  }
+
+  createDataURI() {
+    let pngString = this.canvasElement.toDataURL();
+
+    return pngString;
+  }
+
+  handleExportSVG() {
+    download('export.svg', this.createSVGString());
   }
 
   handleScalesChanged(uid, xScale, yScale, notify = true) {
@@ -2257,7 +2264,7 @@ class HiGlassComponent extends React.Component {
 
   handleSelectedAssemblyChanged(viewUid, newAssembly, newAutocompleteId, newServer) {
     /*
-     * A new assembly was selected in the GenomePositionSearchBox. 
+     * A new assembly was selected in the GenomePositionSearchBox.
      * Update the corresponding
      * view's entry
      *
@@ -2564,7 +2571,7 @@ class HiGlassComponent extends React.Component {
     this.removeScalesChangedListener(viewId, listenerId);
   }
 
-  onLocationChange(viewId, callback, callbackId) {
+onLocationChange(viewId, callback, callbackId) {
     if (
       typeof viewId === 'undefined' ||
       Object.keys(this.state.views).indexOf(viewId) === -1
@@ -2592,12 +2599,15 @@ class HiGlassComponent extends React.Component {
       callback(scalesToGenomeLoci(xScale, yScale, this.chromInfo));
     };
 
-    const newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
-      .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
-      .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
-      .reduce((max, value) => Math.max(max, value), 0) + 1;
+    let newListenerId = 1;
+    if (this.scalesChangedListeners[view.uid]) {
+      newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
+        .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
+        .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
+        .reduce((max, value) => Math.max(max, value), 0) + 1;
+    }
 
-    const scaleListener = this.addScalesChangedListener(
+    this.addScalesChangedListener(
       view.uid,
       `${LOCATION_LISTENER_PREFIX}.${newListenerId}`,
       middleLayerListener,
@@ -2684,7 +2694,7 @@ class HiGlassComponent extends React.Component {
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
             mouseTool={this.state.mouseTool}
-            onChangeTrackType={(trackId, newType) => 
+            onChangeTrackType={(trackId, newType) =>
               this.handleChangeTrackType(view.uid, trackId, newType)}
             onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
             onDataDomainChanged={
