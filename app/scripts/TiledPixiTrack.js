@@ -5,9 +5,6 @@ import * as PIXI from 'pixi.js';
 
 import PixiTrack from './PixiTrack';
 
-// Services
-import { tileProxy } from './services';
-
 // Utils
 import { debounce } from './utils';
 
@@ -38,8 +35,6 @@ export class TiledPixiTrack extends PixiTrack {
     // tiles we have fetched and ready to be rendered
     this.fetchedTiles = {};
 
-    const tilesetInfo = null;
-
     // the graphics that have already been drawn for this track
     this.tileGraphics = {};
 
@@ -56,13 +51,13 @@ export class TiledPixiTrack extends PixiTrack {
     this.dataFetcher = new DataFetcher(dataConfig);
 
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
-      // console.log('tilesetInfo:', tilesetInfo);
       this.tilesetInfo = tilesetInfo;
-      // console.log('this.tilesetInfo:', this.tilesetInfo);
 
       if ('error' in this.tilesetInfo) {
         // no tileset info for this track
-        console.warn('Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error);
+        console.warn(
+          'Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error
+        );
 
         this.error = this.tilesetInfo.error;
         this.tilesetInfo = null;
@@ -74,14 +69,18 @@ export class TiledPixiTrack extends PixiTrack {
       this.maxZoom = +this.tilesetInfo.max_zoom;
 
       if (this.options && this.options.maxZoom) {
-        if (this.options.maxZoom >= 0) { this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom); } else { console.error('Invalid maxZoom on track:', this); }
+        if (this.options.maxZoom >= 0) {
+          this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
+        } else {
+          console.error('Invalid maxZoom on track:', this);
+        }
       }
 
       this.refreshTiles();
 
-      if (handleTilesetInfoReceived) { handleTilesetInfoReceived(tilesetInfo); }
+      if (handleTilesetInfoReceived) handleTilesetInfoReceived(tilesetInfo);
 
-      if (!this.options) { this.options = {}; }
+      if (!this.options) this.options = {};
 
       this.options.name = this.options.name ? this.options.name : tilesetInfo.name;
 
@@ -92,8 +91,9 @@ export class TiledPixiTrack extends PixiTrack {
     this.uuid = slugid.nice();
     this.refreshTilesDebounced = debounce(this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
 
-    this.trackNotFoundText = new PIXI.Text('',
-      { fontSize: '12px', fontFamily: 'Arial', fill: 'black' });
+    this.trackNotFoundText = new PIXI.Text(
+      '', { fontSize: '12px', fontFamily: 'Arial', fill: 'black' }
+    );
 
     this.pLabel.addChild(this.trackNotFoundText);
   }
@@ -106,7 +106,11 @@ export class TiledPixiTrack extends PixiTrack {
     this.maxZoom = +this.tilesetInfo.max_zoom;
 
     if (this.options && this.options.maxZoom) {
-      if (this.options.maxZoom >= 0) { this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom); } else { console.error('Invalid maxZoom on track:', this); }
+      if (this.options.maxZoom >= 0) {
+        this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
+      } else {
+        console.error('Invalid maxZoom on track:', this);
+      }
     }
   }
 
@@ -126,20 +130,22 @@ export class TiledPixiTrack extends PixiTrack {
     return ids.map(x => this.fetchedTiles[x]);
   }
 
+  /**
+   * Set which tiles are visible right now.
+   *
+   * @param tiles: A set of tiles which will be considered the currently visible
+   * tile positions.
+   */
   setVisibleTiles(tilePositions) {
-    /**
-         * Set which tiles are visible right now.
-         *
-         * @param tiles: A set of tiles which will be considered the currently visible
-         * tile positions.
-         */
     this.visibleTiles = tilePositions.map(x => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
       mirrored: x.mirrored,
     }));
-
-
+    this.visibleTilesIdx = {};
+    this.visibleTiles.forEach((tile, index) => {
+      this.visibleTilesIdx[tile.tileId] = index;
+    });
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
   }
 
@@ -155,9 +161,9 @@ export class TiledPixiTrack extends PixiTrack {
     // and aren't in the process of being fetched
     const toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId));
 
-    for (let i = 0; i < toFetch.length; i++) { 
+    for (let i = 0; i < toFetch.length; i++) {
       // console.log('to fetch:', toFetch[i]);
-      this.fetching.add(toFetch[i].remoteId); 
+      this.fetching.add(toFetch[i].remoteId);
     }
 
     // calculate which tiles are obsolete and remove them
@@ -393,21 +399,11 @@ export class TiledPixiTrack extends PixiTrack {
   fetchNewTiles(toFetch) {
     if (toFetch.length > 0) {
       const toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
-      // console.log('fetchNewTiles', toFetchList);
 
-      // console.log('toFetchList:', toFetchList);
       this.dataFetcher.fetchTilesDebounced(
         this.receivedTiles.bind(this),
         toFetchList
       );
-      /*
-      tileProxy.fetchTilesDebounced({
-        id: this.uuid,
-        server: this.tilesetServer,
-        done: this.receivedTiles.bind(this),
-        ids: toFetchList,
-      });
-      */
     }
   }
 
@@ -447,9 +443,9 @@ export class TiledPixiTrack extends PixiTrack {
         const tileId = loadedTiles[key].tilePositionId;
         // console.log('tileId:', tileId, 'fetching:', this.fetching);
 
-        if (this.fetching.has(tileId)) { 
+        if (this.fetching.has(tileId)) {
           // console.log('removing:', tileId, 'fetching:', this.fetching);
-          this.fetching.delete(tileId); 
+          this.fetching.delete(tileId);
         }
       }
     }
@@ -584,7 +580,7 @@ export class TiledPixiTrack extends PixiTrack {
       visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero)
       .filter(x => x)
     );
-    
+
 
     // if there's no data, use null
     if (max === Number.MIN_SAFE_INTEGER) { max = null; }

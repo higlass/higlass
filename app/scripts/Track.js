@@ -1,5 +1,8 @@
 import { scaleLinear } from 'd3-scale';
 
+// Services
+import { pubSub } from './services';
+
 export class Track {
   constructor() {
     this._xScale = scaleLinear();
@@ -15,7 +18,23 @@ export class Track {
     this.position = [0, 0];
     this.dimensions = [1, 1];
     this.options = {};
+    this.pubSubs = [];
   }
+
+  /**
+   * Check if a 2d location (x, y) is within the bounds of this track.
+   *
+   * @param {Number}  x  X position to be tested.
+   * @param {Number}  y  Y position to be tested.
+   * @return {Boolean}  If `true` location is within the track.
+   */
+  isWithin(x, y) {
+    const withinX = x >= this.position[0] && x <= this.dimensions[0] + this.position[0];
+    const withinY = y >= this.position[1] && y <= this.dimensions[1] + this.position[1];
+    return withinX && withinY;
+  }
+
+  getData() {}
 
   setDimensions(newDimensions) {
     this.dimensions = newDimensions;
@@ -84,7 +103,11 @@ export class Track {
     this.position = newPosition;
   }
 
-  remove() {}
+  remove() {
+    // Clear all pubSub subscriptions
+    this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+    this.pubSubs = [];
+  }
 
   rerender() {}
 }

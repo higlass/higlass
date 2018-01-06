@@ -1,4 +1,4 @@
-const stack = {};
+const STACK = {};
 
 /**
  * Publish an event.
@@ -6,7 +6,7 @@ const stack = {};
  * @param {string} event - Event type to be published.
  * @param {any} news - The news to be published.
  */
-const publish = (event, news) => {
+const publish = (stack = STACK) => (event, news) => {
   if (!stack[event]) { return; }
 
   stack[event].forEach(listener => listener(news));
@@ -21,7 +21,7 @@ const publish = (event, news) => {
  * @return {object} Object with the event name and the callback. The object can
  *   be used to unsubscribe.
  */
-const subscribe = (event, callback) => {
+const subscribe = (stack = STACK) => (event, callback) => {
   if (!stack[event]) { stack[event] = []; }
 
   stack[event].push(callback);
@@ -37,7 +37,7 @@ const subscribe = (event, callback) => {
  * @param {function} callback - Callback function to be unsubscribed. It is
  *   ignored if `id` is provided.
  */
-const unsubscribe = (event, callback) => {
+const unsubscribe = (stack = STACK) => (event, callback) => {
   if (typeof event === 'object') {
     event = event.event; // eslint-disable-line no-param-reassign
     callback = event.callback; // eslint-disable-line no-param-reassign
@@ -51,10 +51,10 @@ const unsubscribe = (event, callback) => {
   stack[event].splice(id, 1);
 };
 
-const pubSub = {
-  publish,
-  subscribe,
-  unsubscribe,
-};
+export const create = stack => ({
+  publish: publish(stack),
+  subscribe: subscribe(stack),
+  unsubscribe: unsubscribe(stack),
+});
 
-export default pubSub;
+export default create();
