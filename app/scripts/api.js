@@ -96,7 +96,7 @@ const api = function api(context) {
        */
       return self.createDataURI();
     },
-    
+
     /**
      * Activate a specific mouse tool.
      *
@@ -238,9 +238,8 @@ const api = function api(context) {
         case 'location':
           return self.onLocationChange(viewId, callback, callbackId);
 
-        case 'mouseMoveZoom': {
+        case 'mouseMoveZoom':
           return apiPubSub.subscribe('mouseMoveZoom', callback);
-        }
 
         case 'rangeSelection':
           return self.onRangeSelection(callback);
