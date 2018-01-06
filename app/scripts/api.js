@@ -84,6 +84,19 @@ const api = function api(context) {
       self.handleZoomToData(viewUid);
     },
 
+    getDataURI() {
+      /**
+       * Export the current canvas as a PNG string so that
+       * it can be saved
+       *
+       * Return
+       * ------
+       *  pngString: string
+       *    A data URI
+       */
+      return self.createDataURI();
+    },
+
     /**
      * Activate a specific mouse tool.
      *
@@ -131,6 +144,9 @@ const api = function api(context) {
 
         case 'viewConfig':
           return Promise.resolve(self.getViewsAsString());
+
+        case 'svgString':
+          return Promise.resolve(self.createSVGString());
 
         default:
           return Promise.reject(`Propert "${prop}" unknown`);
@@ -222,9 +238,8 @@ const api = function api(context) {
         case 'location':
           return self.onLocationChange(viewId, callback, callbackId);
 
-        case 'mouseMoveZoom': {
+        case 'mouseMoveZoom':
           return apiPubSub.subscribe('mouseMoveZoom', callback);
-        }
 
         case 'rangeSelection':
           return self.onRangeSelection(callback);
