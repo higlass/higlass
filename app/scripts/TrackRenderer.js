@@ -41,6 +41,8 @@ import ViewportTracker2D from './ViewportTracker2D';
 import ViewportTrackerHorizontal from './ViewportTrackerHorizontal';
 import ViewportTrackerVertical from './ViewportTrackerVertical';
 
+import HorizontalRule from './HorizontalRule';
+
 import OSMTilesTrack from './OSMTilesTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
 
@@ -742,6 +744,27 @@ export class TrackRenderer extends React.Component {
       .range([0, this.currentProps.centerHeight]);
 
     for (const uid in this.trackDefObjects) {
+      if (this.trackDefObjects[uid].trackDef.track.position == 'whole') {
+        // whole tracks need different scales which go beyond the ends of
+        // center track and encompass the whole view
+        console.log('here:', this.currentProps.height);
+        const track = this.trackDefObjects[uid].trackObject;
+        track.zoomed(
+          scaleLinear()
+          .domain([
+            this.currentProps.marginLeft,
+            this.currentProps.width - this.currentProps.marginLeft]
+            .map(zoomedXScale.invert))
+          .range([0, this.currentProps.width - 2*this.currentProps.marginLeft]),
+          scaleLinear()
+          .domain([
+            this.currentProps.marginTop,
+            this.currentProps.height - this.currentProps.marginTop]
+            .map(zoomedYScale.invert))
+          .range([0, this.currentProps.height - 2*this.currentProps.marginTop])
+        );
+        continue;
+      }
       const track = this.trackDefObjects[uid].trackObject;
 
       track.zoomed(
@@ -1172,6 +1195,13 @@ export class TrackRenderer extends React.Component {
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
+      case 'horizontal-rule':
+        return new HorizontalRule(
+          this.pStage,
+          track.y,
+          track.options
+        );
+
       default:
         console.warn('WARNING: unknown track type:', track.type);
         return new UnknownPixiTrack(
@@ -1192,6 +1222,7 @@ export class TrackRenderer extends React.Component {
           width: this.currentProps.width,
         }}
         styleName="track-renderer"
+        className='track-renderer-div'
       >
         {this.currentProps.children}
       </div>

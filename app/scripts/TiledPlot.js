@@ -1,3 +1,5 @@
+import { select, event, mouse } from 'd3-selection';
+
 import slugid from 'slugid';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -13,6 +15,7 @@ import PopupMenu from './PopupMenu';
 import ContextMenuContainer from './ContextMenuContainer';
 import HorizontalTiledPlot from './HorizontalTiledPlot';
 import VerticalTiledPlot from './VerticalTiledPlot';
+import ViewContextMenu from './ViewContextMenu.js';
 // import {HeatmapOptions} from './HeatmapOptions';
 
 // Services
@@ -83,6 +86,7 @@ export class TiledPlot extends React.Component {
       ],
 
       chromInfo: null,
+      contextMenuPosition: null,
     };
 
     // these dimensions are computed in the render() function and depend
@@ -122,6 +126,19 @@ export class TiledPlot extends React.Component {
   componentDidMount() {
     this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
+
+    this.divTiledPlotSelection = select(this.divTiledPlot);
+    this.divTiledPlotSelection.on('contextmenu', (evt) => {
+      event.preventDefault();
+      console.log(event);
+      const mousePos = [event.clientX, event.clientY];
+      this.setState({
+        contextMenuPosition: {
+          left: mousePos[0],
+          top: mousePos[1],
+        },
+      });
+    });
 
     //new ResizeSensor(this.element, this.measureSize.bind(this));
     this.waitForDOMAttachment(() => {
@@ -483,7 +500,10 @@ export class TiledPlot extends React.Component {
     const tracksAndLocations = [];
     const tracks = this.state.tracks;
 
-    for (const trackType in tracks) {
+    for (const trackType of ['top', 'left', 'right', 'bottom', 'center', 'whole']) {
+      if (!(trackType in tracks))
+        continue;
+
       for (let i = 0; i < tracks[trackType].length; i++) { tracksAndLocations.push({ track: tracks[trackType][i], location: trackType }); }
     }
 
@@ -562,6 +582,19 @@ export class TiledPlot extends React.Component {
         width: this.centerWidth,
         height: this.centerHeight,
         track };
+    } else {
+      // fall back on 'whole' tracks
+      if (location != 'whole') {
+        console.warn('Track with unknown position present:', location, track);
+      }
+
+      return {
+        top: this.props.verticalMargin,
+        left: this.props.horizontalMargin,
+        width: this.leftWidth + this.centerWidth + this.rightWidth, 
+        height: this.topHeight + this.centerHeight + this.bottomHeight,
+        track
+      }
     }
   }
 
@@ -766,6 +799,28 @@ export class TiledPlot extends React.Component {
         rangeSelectionMaster: true,
       });
     }
+  }
+
+  getContextMenu() {
+    let menu = null;
+
+    if (this.state.contextMenuPosition) {
+      return (
+        <PopupMenu
+          onMenuClosed={() => this.setState({ contextMenuPosition: null })}
+        >
+          <ContextMenuContainer
+            orientation="left"
+            position={this.state.contextMenuPosition}
+          >
+            <ViewContextMenu 
+            />
+          </ContextMenuContainer>
+        </PopupMenu>
+        );
+    }
+
+    return null;
   }
 
   render() {
@@ -1186,6 +1241,7 @@ export class TiledPlot extends React.Component {
       <div
         ref={(c) => { this.divTiledPlot = c; }}
         styleName="styles.tiled-plot"
+        className='tiled-plot-div'
       >
         {trackRenderer}
         {overlays}
@@ -1193,6 +1249,7 @@ export class TiledPlot extends React.Component {
         {configTrackMenu}
         {closeTrackMenu}
         {trackOptionsElement}
+        {this.getContextMenu()}
       </div>
     );
   }

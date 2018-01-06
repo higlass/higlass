@@ -32,6 +32,15 @@ export const TRACKS_INFO = [
     defaultOptions: {},
   },
   {
+    type: 'horizontal-rule',
+    datatype: ['constant'],
+    local: true,
+    orientation: 'whole',
+    name: 'Horizontal Rule',
+    thumbnail: null,
+    defaultOptions: {},
+  },
+  {
     type: 'heatmap',
     datatype: ['matrix'],
     local: false,
