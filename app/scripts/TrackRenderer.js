@@ -42,6 +42,8 @@ import ViewportTrackerHorizontal from './ViewportTrackerHorizontal';
 import ViewportTrackerVertical from './ViewportTrackerVertical';
 
 import HorizontalRule from './HorizontalRule';
+import VerticalRule from './VerticalRule';
+import CrossRule from './CrossRule';
 
 import OSMTilesTrack from './OSMTilesTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
@@ -199,7 +201,12 @@ export class TrackRenderer extends React.Component {
     const nextPropsStr = this.updatablePropsToString(nextProps);
     this.currentProps = nextProps;
 
-    if (this.prevPropsStr === nextPropsStr) { return; }
+    if (this.prevPropsStr === nextPropsStr) { 
+      console.log('not updating...');
+      return; 
+    }
+
+    console.log('updating');
 
     for (const uid in this.trackDefObjects) {
       const track = this.trackDefObjects[uid].trackObject;
@@ -749,6 +756,9 @@ export class TrackRenderer extends React.Component {
     const zoomedXScale = this.zoomTransform.rescaleX(this.xScale);
     const zoomedYScale = this.zoomTransform.rescaleY(this.yScale);
 
+    this.zoomedXScale = zoomedXScale;
+    this.zoomedYScale = zoomedYScale;
+
     const newXScale = scaleLinear()
       .domain(
         [
@@ -771,21 +781,27 @@ export class TrackRenderer extends React.Component {
       if (this.trackDefObjects[uid].trackDef.track.position == 'whole') {
         // whole tracks need different scales which go beyond the ends of
         // center track and encompass the whole view
-        console.log('here:', this.currentProps.height);
         const track = this.trackDefObjects[uid].trackObject;
-        track.zoomed(
-          scaleLinear()
+
+        const trackXScale = scaleLinear()
           .domain([
             this.currentProps.marginLeft,
             this.currentProps.width - this.currentProps.marginLeft]
             .map(zoomedXScale.invert))
-          .range([0, this.currentProps.width - 2*this.currentProps.marginLeft]),
-          scaleLinear()
+          .range([0, this.currentProps.width - 2*this.currentProps.marginLeft]);
+
+        const trackYScale = scaleLinear()
           .domain([
             this.currentProps.marginTop,
             this.currentProps.height - this.currentProps.marginTop]
             .map(zoomedYScale.invert))
-          .range([0, this.currentProps.height - 2*this.currentProps.marginTop])
+          .range([0, this.currentProps.height - 2*this.currentProps.marginTop]);
+
+        // console.log('track.yPosition:', track.yPosition, 'trackYScale.range():', trackYScale.range());
+
+        track.zoomed(
+          trackXScale, 
+          trackYScale,
         );
         continue;
       }
@@ -1223,6 +1239,21 @@ export class TrackRenderer extends React.Component {
       case 'horizontal-rule':
         return new HorizontalRule(
           this.pStage,
+          track.y,
+          track.options
+        );
+
+      case 'vertical-rule':
+        return new VerticalRule(
+          this.pStage,
+          track.x,
+          track.options
+        );
+
+      case 'cross-rule':
+        return new CrossRule(
+          this.pStage,
+          track.x,
           track.y,
           track.options
         );

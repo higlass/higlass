@@ -1,10 +1,10 @@
-import {mix, Mixin} from 'mixwith';
+import { mix, Mixin } from 'mixwith';
 
 import PixiTrack from './PixiTrack.js';
 import { colorToHex } from './utils';
 
-export const HorizontalRuleMixin = Mixin((superclass) => class extends superclass {
-  drawHorizontalRule(graphics) {
+export const VerticalRuleMixin = Mixin((superclass) => class extends superclass {
+  drawVerticalRule(graphics) {
     const strokeWidth = 1;
     const stroke = colorToHex('black');
 
@@ -17,27 +17,27 @@ export const HorizontalRuleMixin = Mixin((superclass) => class extends superclas
 
     // console.log('this._yScale.range()', this._yScale.range());
 
-    while (pos < this.dimensions[0]) {
-      graphics.moveTo(pos, this._yScale(this.yPosition));
-      graphics.lineTo(pos + dashLength, this._yScale(this.yPosition));
+    while (pos < this.dimensions[1]) {
+      graphics.moveTo(this._xScale(this.xPosition), pos);
+      graphics.lineTo(this._xScale(this.xPosition), pos + dashLength);
 
       pos += dashLength + dashGap;
     }
   }
 });
 
-export class HorizontalRule extends mix(PixiTrack).with(HorizontalRuleMixin) {
-  constructor(stage, yPosition, options) {
+export class VerticalRule extends mix(PixiTrack).with(VerticalRuleMixin) {
+  constructor(stage, xPosition, options) {
     super(stage, options);
 
-    this.yPosition = yPosition;
+    this.xPosition = xPosition;
   }
 
   draw() {
     const graphics = this.pMain; 
     graphics.clear();
 
-    this.drawHorizontalRule(graphics);
+    this.drawVerticalRule(graphics);
   }
 
   setPosition(newPosition) {
@@ -55,4 +55,4 @@ export class HorizontalRule extends mix(PixiTrack).with(HorizontalRuleMixin) {
   }
 }
 
-export default HorizontalRule;
+export default VerticalRule;

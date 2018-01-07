@@ -51,8 +51,8 @@ export class TiledPlot extends React.Component {
     this.addUidsToTracks(tracks);
 
     // Add names to all the tracks
-    this.trackRenderers = {};
     this.trackToReplace = null;
+    this.trackRenderer = null;
 
     this.addTrackModal = null;
     this.configTrackMenu = null;
@@ -132,11 +132,22 @@ export class TiledPlot extends React.Component {
       event.preventDefault();
       console.log(event);
       const mousePos = [event.clientX, event.clientY];
+      const canvasMousePos = mouse(this.divTiledPlot);
+
+      // the x and y values of the rendered plots
+      // will be used if someone decides to draw a horizontal or vertical
+      // rule
+      const xVal = this.trackRenderer.zoomedXScale.invert(canvasMousePos[0]);
+      const yVal = this.trackRenderer.zoomedYScale.invert(canvasMousePos[1]);
+
       this.setState({
         contextMenuPosition: {
           left: mousePos[0],
           top: mousePos[1],
         },
+
+        contextMenuX: xVal,
+        contextMenuY: yVal,
       });
     });
 
@@ -404,6 +415,8 @@ export class TiledPlot extends React.Component {
      *      and data source.
      *  position: string
      *      Where to place this track
+     *  host: track
+     *    The existing track that we're adding the new one to
      *
      * Returns
      * -------
@@ -418,6 +431,8 @@ export class TiledPlot extends React.Component {
       this.trackToReplace = null;
     }
 
+    // if host is defined, then we're adding a new series
+    // further down the chain a combined track will be created
     this.props.onTracksAdded(newTracks, position, host);
 
     this.setState({
@@ -432,6 +447,14 @@ export class TiledPlot extends React.Component {
     this.setState({
       closeTrackMenuId: uid,
       closeTrackMenuLocation: clickPosition,
+    });
+  }
+
+  handleCloseContextMenu() {
+    this.setState({
+      contextMenuPosition: null,
+      contextMenuX: null,
+      contextMenuY: null,
     });
   }
 
@@ -620,6 +643,7 @@ export class TiledPlot extends React.Component {
     this.createTracksAndLocations();
 
 
+    console.log('positionedTracks:', positionedTracks);
     const trackElements = positionedTracks.map((trackPosition) => {
       const track = trackPosition.track;
 
@@ -814,6 +838,14 @@ export class TiledPlot extends React.Component {
             position={this.state.contextMenuPosition}
           >
             <ViewContextMenu 
+              // Can only add one new track at a time
+              // because "whole" tracks are always drawn on top of each other,
+              // the notion of Series is unnecessary and so 'host' is null
+              onAddTrack={(newTrack) => { 
+                this.props.onTracksAdded([newTrack], 'whole', null)
+                this.handleCloseContextMenu();
+              }}
+              coords={[this.state.contextMenuX, this.state.contextMenuY]}
             />
           </ContextMenuContainer>
         </PopupMenu>

@@ -8,125 +8,37 @@ import '../styles/ContextMenu.module.scss';
 
 export class ViewContextMenu extends React.Component {
   render() {
-    console.log('rendering vcm');
+    console.log('rendering vcm', this.props.coords);
     return (
       <div>
         <ContextMenuItem
-          onClick={e => this.props.onTogglePositionSearchBox(e)}
+          onClick={() => this.props.onAddTrack({
+            type: 'horizontal-rule',
+            y: this.props.coords[1], 
+            position: 'whole',
+          })}
         >
-          {'Toggle position search box'}
+          {'Add Horizontal Rule'}
         </ContextMenuItem>
-
-        <hr styleName="context-menu-hr" />
-
         <ContextMenuItem
-          onClick={e => this.props.onZoomToData(e)}
+          onClick={() => this.props.onAddTrack({
+            type: 'vertical-rule',
+            x: this.props.coords[0], 
+            position: 'whole',
+          })}
         >
-        {'Zoom to data extent'}
-        </ContextMenuItem>
-
-        <hr styleName="context-menu-hr" />
-
-        <ContextMenuItem
-          onClick={e => this.props.onClearView(e)}
-        >
-        {'Clear View'}
-        </ContextMenuItem>
-
-        <hr styleName="context-menu-hr" />
-
-        <ContextMenuItem
-          onClick={e => this.props.onYankZoom(e)}
-        >
-          {'Take zoom from'}
+          {'Add Vertical Rule'}
         </ContextMenuItem>
 
         <ContextMenuItem
-          onClick={e => this.props.onYankLocation(e)}
+          onClick={() => this.props.onAddTrack({
+            type: 'cross-rule',
+            x: this.props.coords[0], 
+            y: this.props.coords[1], 
+            position: 'whole',
+          })}
         >
-          {'Take location from'}
-        </ContextMenuItem>
-
-        <ContextMenuItem
-          onClick={e => this.props.onYankZoomAndLocation(e)}
-        >
-          {'Take zoom and location from'}
-        </ContextMenuItem>
-
-        <hr styleName="context-menu-hr" />
-
-        <ContextMenuItem
-          onClick={this.props.onLockZoom}
-        >
-          {'Lock zoom with'}
-        </ContextMenuItem>
-
-        <ContextMenuItem
-          onClick={this.props.onLockLocation}
-        >
-          {'Lock location with'}
-        </ContextMenuItem>
-
-        <ContextMenuItem
-          onClick={this.props.onLockZoomAndLocation}
-        >
-          {'Lock zoom and location with'}
-        </ContextMenuItem>
-
-        <hr styleName="context-menu-hr" />
-
-        <ContextMenuItem
-          onClick={this.props.onTakeAndLockZoomAndLocation}
-        >
-          {'Take and lock zoom and location with'}
-        </ContextMenuItem>
-
-        <hr styleName="context-menu-hr" />
-
-        <ContextMenuItem
-          onClick={e => this.props.onUnlockZoom(e)}
-        >
-          {'Unlock zoom'}
-        </ContextMenuItem>
-
-        <ContextMenuItem
-          onClick={e => this.props.onUnlockLocation(e)}
-        >
-          {'Unlock location'}
-        </ContextMenuItem>
-
-        <ContextMenuItem
-          onClick={e => this.props.onUnlockZoomAndLocation(e)}
-        >
-          {'Unlock zoom and location'}
-        </ContextMenuItem>
-
-        <hr styleName="context-menu-hr" />
-
-        <ContextMenuItem
-          onClick={e => this.props.onProjectViewport(e)}
-        >
-        {'Show this viewport on'}
-        </ContextMenuItem>
-
-        <hr styleName="context-menu-hr" />
-
-        <ContextMenuItem
-          onClick={() => this.props.onExportSVG()}
-        >
-        {'Export views as SVG'}
-        </ContextMenuItem>
-
-        <ContextMenuItem
-          onClick={() => this.props.onExportViewAsJSON()}
-        >
-        {'Export views as JSON'}
-        </ContextMenuItem>
-
-        <ContextMenuItem
-          onClick={() => this.props.onExportViewAsLink()}
-        >
-        {'Export views as Link'}
+          {'Add Cross Rule'}
         </ContextMenuItem>
 
       </div>
@@ -135,6 +47,8 @@ export class ViewContextMenu extends React.Component {
 }
 
 ViewContextMenu.propTypes = {
+  coords: PropTypes.array,  // the data coordinates where this context menu
+                            // was initiated
 }
 
 export default ViewContextMenu;

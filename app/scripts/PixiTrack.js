@@ -90,7 +90,6 @@ export class PixiTrack extends Track {
   setMask(position, dimensions) {
     this.pMask.clear();
     this.pMask.beginFill();
-    console.log('p', position, 'd', dimensions);
 
     this.pMask.drawRect(position[0], position[1], dimensions[0], dimensions[1]);
     this.pMask.endFill();
