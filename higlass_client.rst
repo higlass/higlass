@@ -1,6 +1,20 @@
 HiGlass Client (Developer)
 ##########################
 
+Track Documentation
+*******************
+
+Each track in HiGlass is written in a Javascript class. This class is
+responsible for requesting data from the server as well as for rendering it.
+The interface between the `viewconfig` definition of the views and the actual
+track rendering is the `track-type`. In `app/scripts/TrackRenderer.js`, the
+value of `track-type` is used to instantiate a TrackObject. `TrackRenderer`
+then interacts with this track object to let it know when it has been resized
+and what the current zoom level is.
+
+Due to the variety of `track types <track_types.html`_ available in HiGlass,
+there are different ways in which data can be rendered and manipulated.
+
 Adding new track types
 **********************
 
@@ -49,7 +63,7 @@ WARNING: unknown track type: horizontal-multivec
 This is because HiGlass doesn't know how to handle this track type. In
 this example, we'll give it a way of handling it.
 
-First, we need to define this track type:
+First, we need to define this track type in the ``TRACKS_INFO`` array in ``app/scripts/tracks-info.js``:
 
 .. code-block:: javascript
 
@@ -76,6 +90,12 @@ Now if we reload our test page, we still get the same warning. This is because
 we don't actually know how to draw this track. We need to create a class which
 knows how to draw this track type. We can do that by creating a new file in 
 ``app/scripts`` called ``HorizontalMultivecTrack.js``.
+
+The easiest way to do this is to start with an existing track type and copy it.
+This example uses a HeatmapTrack as a template. For other types of data, it's
+best to start with a track that is similar to the type that you are trying to
+create. A list of track types can be found in the `track types section of this
+documentation <track_types.html>`_.
 
 .. code-block:: bash
 
@@ -131,6 +151,9 @@ in `HorizontalMultivecTrack`. Here's the steps.
 5. Change the ``zoomed`` function to maintain the the view at the origin.
 
 6. Change ``setSpriteProperties`` to position the sprite on only the x axis.
+
+
+
 
 HiGlass API
 ***********

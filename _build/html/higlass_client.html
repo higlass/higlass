@@ -79,7 +79,7 @@ Upon opening the developer console, we’ll see an error message:</p>
 <span class="pre">`</span></code></p>
 <p>This is because HiGlass doesn’t know how to handle this track type. In
 this example, we’ll give it a way of handling it.</p>
-<p>First, we need to define this track type:</p>
+<p>First, we need to define this track type in the <code class="docutils literal"><span class="pre">TRACKS_INFO</span></code> array in <code class="docutils literal"><span class="pre">app/scripts/tracks-info.js</span></code>:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;horizontal-multivec&#39;</span><span class="p">,</span>
   <span class="nx">datatype</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;multivec&#39;</span><span class="p">],</span>
@@ -103,6 +103,11 @@ this example, we’ll give it a way of handling it.</p>
 we don’t actually know how to draw this track. We need to create a class which
 knows how to draw this track type. We can do that by creating a new file in
 <code class="docutils literal"><span class="pre">app/scripts</span></code> called <code class="docutils literal"><span class="pre">HorizontalMultivecTrack.js</span></code>.</p>
+<p>The easiest way to do this is to start with an existing track type and copy it.
+This example uses a HeatmapTrack as a template. For other types of data, it’s
+best to start with a track that is similar to the type that you are trying to
+create. A list of track types can be found in the <a class="reference external" href="track_types.html">track types section of this
+documentation</a>.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>cp app/scripts/HeatmapTiledPixiTrack.js app/scripts/HorizontalMultivecTrack.js
 </pre></div>
 </div>
