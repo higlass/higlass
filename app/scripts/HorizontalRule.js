@@ -3,10 +3,20 @@ import {mix, Mixin} from 'mixwith';
 import PixiTrack from './PixiTrack.js';
 import { colorToHex } from './utils';
 
+import { pubSub } from './services';
+
+const MOUSEOVER_RADIUS = 4;
+
 export const HorizontalRuleMixin = Mixin((superclass) => class extends superclass {
   drawHorizontalRule(graphics) {
     const strokeWidth = 1;
-    const stroke = colorToHex('black');
+
+    let stroke = colorToHex('black');
+
+    if (this.highlighted) {
+      stroke = colorToHex('red');
+    }
+    console.log('stroke:', stroke);
 
     graphics.lineStyle(2, stroke, 1);
 
@@ -27,10 +37,32 @@ export const HorizontalRuleMixin = Mixin((superclass) => class extends superclas
 });
 
 export class HorizontalRule extends mix(PixiTrack).with(HorizontalRuleMixin) {
-  constructor(stage, yPosition, options) {
+  constructor(stage, yPosition, options, animate) {
     super(stage, options);
 
+    this.pubSubs.push(pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this)));
+
+    this.highlighted = false;
     this.yPosition = yPosition;
+    this.animate = animate;
+  }
+
+  mouseMoveHandler(mousePos) {
+    if (mousePos.x > this.position[0] && mousePos.x < this.dimensions[0] &&
+        mousePos.y > this.position[1] && mousePos.y < this.dimensions[1]) {
+      if (Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) < MOUSEOVER_RADIUS) {
+        console.log('highlighted');
+        this.highlighted = true;
+        this.draw();
+        return;
+      }
+    } else {
+
+    }
+
+    console.log('unhighlighted')
+    this.highlighted = false;
+    this.draw();
   }
 
   draw() {
@@ -38,6 +70,7 @@ export class HorizontalRule extends mix(PixiTrack).with(HorizontalRuleMixin) {
     graphics.clear();
 
     this.drawHorizontalRule(graphics);
+    this.animate();
   }
 
   setPosition(newPosition) {

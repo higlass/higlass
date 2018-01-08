@@ -684,15 +684,21 @@ export class TiledPlot extends React.Component {
     trackObject.exportData();
   }
 
-  handleZoomToData() {
+  listAllTrackObjects() {
     /**
-     * Try to zoom in or out so that the bounds of the view correspond to the
-     * extent of the data.
+     * Get a list of all the track objects in this
+     * view.
+     *
+     * These are the objects that do the drawing, not the track
+     * definitions in the viewconf.
+     *
+     * Returns
+     * -------
+     *  trackObjects: []
+     *    A list of the track objects in this view
      */
-    const minPos = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
-    const maxPos = [Number.MIN_SAFE_INTEGER, Number.MIN_SAFE_INTEGER];
+    const trackObjectsToCheck = [];
 
-    // go through every track definition
     for (const uid in this.trackRenderer.trackDefObjects) {
       const tdo = this.trackRenderer.trackDefObjects[uid];
       const trackObjectsToCheck = [tdo.trackObject];
@@ -703,16 +709,30 @@ export class TiledPlot extends React.Component {
         const trackObject = tdo.trackObject.createdTracks[uid1];
         trackObjectsToCheck.push(trackObject);
       }
+    }
 
-      for (const trackObject of trackObjectsToCheck) {
-        // get the minimum and maximum positions of all the subtracks
-        if (trackObject.tilesetInfo) {
-          if (trackObject.tilesetInfo.min_pos) {
-            for (let j = 0; j < trackObject.tilesetInfo.min_pos.length; j++) {
-              if (trackObject.tilesetInfo.min_pos[j] < minPos[j]) { minPos[j] = trackObject.tilesetInfo.min_pos[j]; }
+    return trackObjectsToCheck;
+  }
 
-              if (trackObject.tilesetInfo.max_pos[j] > maxPos[j]) { maxPos[j] = trackObject.tilesetInfo.max_pos[j]; }
-            }
+  handleZoomToData() {
+    /**
+     * Try to zoom in or out so that the bounds of the view correspond to the
+     * extent of the data.
+     */
+    const minPos = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
+    const maxPos = [Number.MIN_SAFE_INTEGER, Number.MIN_SAFE_INTEGER];
+
+    const trackObjectsToCheck = this.listAllTrackObjects();
+
+    // go through every track definition
+    for (const trackObject of trackObjectsToCheck) {
+      // get the minimum and maximum positions of all the subtracks
+      if (trackObject.tilesetInfo) {
+        if (trackObject.tilesetInfo.min_pos) {
+          for (let j = 0; j < trackObject.tilesetInfo.min_pos.length; j++) {
+            if (trackObject.tilesetInfo.min_pos[j] < minPos[j]) { minPos[j] = trackObject.tilesetInfo.min_pos[j]; }
+
+            if (trackObject.tilesetInfo.max_pos[j] > maxPos[j]) { maxPos[j] = trackObject.tilesetInfo.max_pos[j]; }
           }
         }
       }

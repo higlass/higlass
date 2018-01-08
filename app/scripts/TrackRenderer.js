@@ -1240,7 +1240,8 @@ export class TrackRenderer extends React.Component {
         return new HorizontalRule(
           this.pStage,
           track.y,
-          track.options
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
       case 'vertical-rule':
