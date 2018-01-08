@@ -135,6 +135,10 @@ export const api = function api(context) {
         case 'viewConfig':
           return Promise.resolve(self.getViewsAsString());
 
+        case 'png':
+          return Promise.resolve(self.createDataURI());
+
+        case 'svg':
         case 'svgString':
           return Promise.resolve(self.createSVGString());
 

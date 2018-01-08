@@ -186,10 +186,17 @@ setTimeout(() => {
   console.log('Second event listener is offline');
 }, 5000);
 
-
 higlassApi.shareViewConfigAsLink()
   .then(sharedView => console.log('View is shared', sharedView))
   .catch(e => console.warn('View sharing failed', e));
+
+higlassApi.get('svg')
+  .then(svg => console.log('SVG is exported', svg))
+  .catch(e => console.warn('SVG export failed', e));
+
+higlassApi.get('png')
+  .then(png => console.log('PNG is exported', png))
+  .catch(e => console.warn('PNG export failed', e));
 
 </script>
 </html>
