@@ -1,3 +1,7 @@
+v0.10.7 (2018-01-??)
+
+- Added an endpoint for sharing view configs as a link (`shareViewConfigAsLink()`) and exporting them as png and svg (`get('png' || 'svg')`)
+
 v0.10.6 (2017-12-28)
 
 - Load ResizeSensors after the element is attached to the DOM tree
