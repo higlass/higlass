@@ -190,6 +190,10 @@ higlassApi.shareViewConfigAsLink()
   .then(sharedView => console.log('View is shared', sharedView))
   .catch(e => console.warn('View sharing failed', e));
 
+higlassApi.shareViewConfigAsLink('http://localhost:9999')
+  .then(sharedView => console.log('View is shared. W00t?!', sharedView))
+  .catch(e => console.warn('Expected to fail', e));
+
 higlassApi.get('svg')
   .then(svg => console.log('SVG is exported', svg))
   .catch(e => console.warn('SVG export failed', e));
