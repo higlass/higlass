@@ -2066,32 +2066,43 @@ class HiGlassComponent extends React.Component {
     download('viewconf.json', data);
   }
 
-  handleExportViewsAsLink() {
-    const wrapper = `{"viewconf":${this.getViewsAsString()}}`;
-
+  handleExportViewsAsLink(fromApi = false) {
     this.width = this.element.clientWidth;
     this.height = this.element.clientHeight;
 
     this.setState({
-      exportLinkModalOpen: true,
+      exportLinkModalOpen: !fromApi,
       exportLinkLocation: null,
     });
 
-    request(this.props.viewConfig.exportViewUrl)
-      .header('X-Requested-With', 'XMLHttpRequest')
-      .header('Content-Type', 'application/json')
-      .post(wrapper, (error, response) => {
-        if (response) {
-          const content = JSON.parse(response.response);
-          const portString = window.location.port === '' ? '' : `:${window.location.port}`;
-          this.setState({
-            // exportLinkLocation: this.props.viewConfig.exportViewUrl + "?d=" + content.uid
-            exportLinkLocation: `http://${window.location.hostname}${portString}/app/?config=${content.uid}`,
-          });
-        } else {
-          console.error('error:', error);
-        }
+    const port = window.location.port === '' ? '' : `:${window.location.port}`;
+
+    const req = fetch(
+      this.props.viewConfig.exportViewUrl,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: `{"viewconf":${this.getViewsAsString()}}`
+      }
+    )
+      .then(res => res.json())
+      .then(json => ({
+        id: json.uid,
+        url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${json.uid}`
+      }))
+      .catch(e => console.error('Exporting view config as link failed:', e));
+
+    if (!fromApi) {
+      req.then((sharedView) => {
+        this.setState({ exportLinkLocation: sharedView.url });
       });
+    }
+
+    return req;
   }
 
   handleDataDomainChanged(viewUid, newXDomain, newYDomain) {
