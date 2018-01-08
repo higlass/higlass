@@ -57,6 +57,15 @@ export const api = function api(context) {
       return p;
     },
 
+    /**
+     * Retrieve a sharable link for the current view config
+     *
+     * @return  {Object}  Promise resolving to the link ID and URL.
+     */
+    shareViewConfigAsLink() {
+      return self.handleExportViewsAsLink(true);
+    },
+
     zoomToDataExtent(viewUid) {
       /**
        * Zoom so that the entire dataset is visible
@@ -85,7 +94,7 @@ export const api = function api(context) {
        */
       return self.createDataURI();
     },
-    
+
     activateTool(tool) {
       switch (tool) {
         case 'select':

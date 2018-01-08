@@ -33,7 +33,7 @@ const testViewConfig = {
   editable: true,
   zoomFixed: false,
   trackSourceServers: ['http://higlass.io/api/v1'],
-  exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
+  exportViewUrl: 'http://localhost:8001/api/v1/viewconfs/',
   views: [
     {
       uid: 'aa',
@@ -185,6 +185,11 @@ setTimeout(() => {
   higlassApi.off('location', secondId, 'aa');
   console.log('Second event listener is offline');
 }, 5000);
+
+
+higlassApi.shareViewConfigAsLink()
+  .then(sharedView => console.log('View is shared', sharedView))
+  .catch(e => console.warn('View sharing failed', e));
 
 </script>
 </html>
