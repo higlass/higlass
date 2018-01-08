@@ -5,6 +5,27 @@ import React from 'react';
 import { TRACKS_INFO } from './configs';
 
 /**
+ * Return a list of all the tracks and subtracks from
+ * the list of tracks
+ *
+ * @param {array} tracks: A list of tracks to go through
+ */
+export const getAllTracksAndSubtracks = function(tracks) {
+  let series = [];
+
+  // check if this is a combined track (has contents)
+  for (let track of tracks) {
+    if (track.contents) {
+      series = series.concat(track.contents);
+    } else {
+      series.push(track);
+    }
+  }
+
+  return series;
+}
+
+/**
  * Get a list of menu items corresponding to the
  * series present in a set of tracks. If any of 
  * the tracks a combined tracks, this function will
@@ -36,16 +57,7 @@ export const getSeriesItems = function(
     trackTypeToInfo[ti.type] = ti;
   });
 
-  let series = [];
-
-  // check if this is a combined track (has contents)
-  for (let track of tracks) {
-    if (track.contents) {
-      series = series.concat(track.contents);
-    } else {
-      series.push(track);
-    }
-  }
+  series = getAllTracksAndSubtracks(tracks);
 
   return series.map((x) => {
     const thumbnail = trackTypeToInfo[x.type].thumbnail;

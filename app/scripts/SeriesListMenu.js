@@ -213,7 +213,6 @@ export class SeriesListMenu extends ContextMenuContainer {
 
   render() {
     let exportDataMenuItem = null;
-    console.log('series props:', this.props);
 
     /*
     if (TRACKS_INFO_BY_TYPE[this.props.hostTrack.type]) {

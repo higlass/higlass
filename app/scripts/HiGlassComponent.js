@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { select } from 'd3-selection';
+import { select,mouse } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import { request } from 'd3-request';
 import slugid from 'slugid';
@@ -2633,10 +2633,12 @@ onLocationChange(viewId, callback, callbackId) {
     const offset = this.topDiv
       ? this.topDiv.getBoundingClientRect()
       : { top: 0, left: 0 };
+    const publishedPosition = 
+      { x: e.clientX - offset.left, y: e.clientY - offset.top }
 
     pubSub.publish(
       'app.mouseMove',
-      { x: e.pageX - offset.left, y: e.pageY - offset.top }
+      publishedPosition
     );
   }
 

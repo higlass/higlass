@@ -33,7 +33,7 @@ export const TRACKS_INFO = [
   },
   {
     type: 'horizontal-rule',
-    datatype: ['constant'],
+    datatype: ['x-coord'],
     local: true,
     orientation: 'whole',
     name: 'Horizontal Rule',
@@ -42,7 +42,7 @@ export const TRACKS_INFO = [
   },
   {
     type: 'vertical-rule',
-    datatype: ['constant'],
+    datatype: ['y-coord'],
     local: true,
     orientation: 'whole',
     name: 'Vertical Rule',
@@ -51,19 +51,10 @@ export const TRACKS_INFO = [
   },
   {
     type: 'cross-rule',
-    datatype: ['constant'],
+    datatype: ['xy-coord'],
     local: true,
     orientation: 'whole',
     name: 'Cross Rule',
-    thumbnail: null,
-    defaultOptions: {},
-  },
-  {
-    type: 'crosshair-rule',
-    datatype: ['constant'],
-    local: true,
-    orientation: 'whole',
-    name: 'Horizontal Rule',
     thumbnail: null,
     defaultOptions: {},
   },

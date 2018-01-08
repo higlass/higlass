@@ -368,39 +368,34 @@ export class TiledPlot extends React.Component {
   }
 
 
-  handleLockValueScale(uid) {
+  closeMenus() {
     this.setState({
       closeTrackMenuId: null,
       configTrackMenuId: null,
+      contextMenuPosition: null,
     });
+  }
+  handleLockValueScale(uid) {
+    this.closeMenus();
 
     this.props.onLockValueScale(uid);
   }
 
   handleUnlockValueScale(uid) {
-    this.setState({
-      closeTrackMenuId: null,
-      configTrackMenuId: null,
-    });
+    this.closeMenus();
 
     this.props.onUnlockValueScale(uid);
   }
 
   handleCloseTrack(uid) {
-    this.props.onCloseTrack(uid);
+    this.closeMenus();
 
-    this.setState({
-      closeTrackMenuId: null,
-      configTrackMenuId: null,
-    });
+    this.props.onCloseTrack(uid);
   }
 
   handleChangeTrackType(uid, newType) {
     // close the config track menu
-    this.setState({
-      closeTrackMenuId: null,
-      configTrackMenuId: null,
-    });
+    this.closeMenus();
 
     // change the track type
     this.props.onChangeTrackType(uid, newType);
@@ -467,6 +462,7 @@ export class TiledPlot extends React.Component {
 
   handleConfigTrackMenuOpened(uid, clickPosition) {
     // let orientation = getTrackPositionByUid(uid);
+    this.closeMenus();
 
     this.setState({
       configTrackMenuId: uid,
@@ -475,9 +471,7 @@ export class TiledPlot extends React.Component {
   }
 
   handleConfigTrackMenuClosed() {
-    this.setState({
-      configTrackMenuId: null,
-    });
+    this.closeMenus();
   }
 
   handleConfigureTrack(track, configComponent) {
@@ -485,6 +479,8 @@ export class TiledPlot extends React.Component {
       configTrackMenuId: null,
       trackOptions: { track, configComponent },
     });
+
+    this.closeMenus();
   }
 
   handleSortEnd(sortedTracks) {
@@ -880,22 +876,28 @@ export class TiledPlot extends React.Component {
         <PopupMenu
           onMenuClosed={() => this.setState({ contextMenuPosition: null })}
         >
-          <ContextMenuContainer
-            orientation="left"
+          <ViewContextMenu 
+            // Can only add one new track at a time
+            // because "whole" tracks are always drawn on top of each other,
+            // the notion of Series is unnecessary and so 'host' is null
+            onAddTrack={(newTrack) => { 
+              this.props.onTracksAdded([newTrack], 'whole', null)
+              this.handleCloseContextMenu();
+            }}
+            onAddSeries={this.handleAddSeries.bind(this)}
+            onChangeTrackType={this.handleChangeTrackType.bind(this)}
+            onCloseTrack={this.handleCloseTrack.bind(this)}
+            onConfigureTrack={this.handleConfigureTrack.bind(this)}
+            onExportData={this.handleExportTrackData.bind(this)}
+            onLockValueScale={this.handleLockValueScale.bind(this)}
+            onReplaceTrack={this.handleReplaceTrack.bind(this)}
+            onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
+            onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
+            coords={[this.state.contextMenuX, this.state.contextMenuY]}
+            tracks={relevantTracks}
             position={this.state.contextMenuPosition}
-          >
-            <ViewContextMenu 
-              // Can only add one new track at a time
-              // because "whole" tracks are always drawn on top of each other,
-              // the notion of Series is unnecessary and so 'host' is null
-              onAddTrack={(newTrack) => { 
-                this.props.onTracksAdded([newTrack], 'whole', null)
-                this.handleCloseContextMenu();
-              }}
-              coords={[this.state.contextMenuX, this.state.contextMenuY]}
-              tracks={relevantTracks}
-            />
-          </ContextMenuContainer>
+            orientation={'left'}
+          />
         </PopupMenu>
         );
     }
@@ -1201,7 +1203,7 @@ export class TiledPlot extends React.Component {
             onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
             ref={c => this.configTrackMenu = c}
             position={this.state.configTrackMenuLocation}
-            track={getTrackByUid(this.props.tracks, this.state.configTrackMenuId)}
+            tracks={[getTrackByUid(this.props.tracks, this.state.configTrackMenuId)]}
             trackOrientation={getTrackPositionByUid(this.props.tracks, this.state.configTrackMenuId)}
           />
         </PopupMenu>
@@ -1218,7 +1220,7 @@ export class TiledPlot extends React.Component {
           >
             <CloseTrackMenu
               onCloseTrack={this.handleCloseTrack.bind(this)}
-              track={getTrackByUid(this.props.tracks, this.state.closeTrackMenuId)}
+              tracks={[getTrackByUid(this.props.tracks, this.state.closeTrackMenuId)]}
             />
           </ContextMenuContainer>
         </PopupMenu>

@@ -1,18 +1,29 @@
+import {mix} from 'mixwith';
+
 import React from 'react';
 import PropTypes from 'prop-types';
 
 import { getSeriesItems } from './SeriesListItems';
 
 import ContextMenuItem from './ContextMenuItem';
+import ContextMenuContainer from './ContextMenuContainer';
+import { SeriesListSubmenuMixin } from './SeriesListSubmenuMixin';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-export class ViewContextMenu extends React.Component {
+export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
+
   render() {
-    console.log('rendering vcm', this.props.coords);
     return (
-      <div>
+      <div
+        ref={c => this.div = c}
+        style={{
+          left: this.state.left,
+          top: this.state.top,
+        }}
+        styleName="context-menu"
+      >
         <ContextMenuItem
           onClick={() => this.props.onAddTrack({
             type: 'horizontal-rule',
@@ -43,14 +54,16 @@ export class ViewContextMenu extends React.Component {
           {'Add Cross Rule'}
         </ContextMenuItem>
 
-        <hr />
+        <hr styleName="context-menu-hr" />
 
         {getSeriesItems(
           this.props.tracks,
-          null,
-          null,
+          this.handleItemMouseEnter.bind(this),
+          this.handleMouseLeave.bind(this),
           null
         )}
+
+        { this.getSubmenu() }
 
       </div>
     );

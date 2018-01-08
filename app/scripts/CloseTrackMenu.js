@@ -20,10 +20,10 @@ export class CloseTrackMenu extends React.Component {
   render() {
     return (
       <div>
-        {getSeriesItems([this.props.track], null, null, this.props.onCloseTrack)}
+        {getSeriesItems(this.props.tracks, null, null, this.props.onCloseTrack)}
         <hr styleName="context-menu-hr" />
         <ContextMenuItem
-          onClick={() => this.props.onCloseTrack(this.props.track.uid)}
+          onClick={() => this.props.onCloseTrack(this.props.tracks[0].uid)}
         >
           {'Close track'}
         </ContextMenuItem>
@@ -34,7 +34,7 @@ export class CloseTrackMenu extends React.Component {
 
 CloseTrackMenu.propTypes = {
   onCloseTrack: PropTypes.func.isRequired,
-  track: PropTypes.object.isRequired,
+  tracks: PropTypes.array.isRequired,
 };
 
 export default CloseTrackMenu;
