@@ -142,10 +142,7 @@ export class TiledPixiTrack extends PixiTrack {
       remoteId: this.tileToRemoteId(x),
       mirrored: x.mirrored,
     }));
-    this.visibleTilesIdx = {};
-    this.visibleTiles.forEach((tile, index) => {
-      this.visibleTilesIdx[tile.tileId] = index;
-    });
+
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
   }
 

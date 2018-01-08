@@ -110,9 +110,30 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   mouseMoveHandler(e) {
     if (!this.isWithin(e.x, e.y)) return;
 
-    const relX = e.x - this.position[0];
-    const relY = e.y - this.position[1];
-    const data = this.getData(relX, relY);
+    this.mouseX = e.x;
+    this.mouseY = e.y;
+
+    this.mouseMoveZoomHandler();
+  }
+
+  /**
+   * Mouse move and zoom handler. Is triggered on both events.
+   *
+   * @param  {Number}  x  Relative X coordinate.
+   * @param  {Number}  y  Relative Y coordinate
+   * @param  {Number}  z  Zoom level
+   */
+  mouseMoveZoomHandler(
+    x = this.mouseX, y = this.mouseY, z = this.zoomLevel
+  ) {
+    if (
+      typeof x === 'undefined'
+      || typeof y === 'undefined'
+    ) return;
+
+    const relX = x - this.position[0];
+    const relY = y - this.position[1];
+    const data = this.getData(relX, relY, z);
     const dim = this.dataLensSize;
 
     let toRgb;
@@ -122,9 +143,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         this.colorScale,
         this.valueScale.domain()[0]
       );
-    } catch (err) {
-      // Nothing
-    }
+    } catch (err) { /* Nothing */ }
 
     if (!data.length || !toRgb) return;
 
@@ -684,9 +703,10 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
    *
    * @param  {Integer}  x  Relative X display position (i.e., mouse cursor).
    * @param  {Integer}  y  Relative Y display position (i.e., mouse cursor).
+   * @param  {Number}  z  Zoom level.
    * @return  {Array}  Float32Array with the raw data.
    */
-  getData(x, y) {
+  getData(x, y, z = this.zoomLevel) {
     // Init data
     let data = new this.dataLens.constructor(this.dataLensSize ** 2);
 
@@ -698,9 +718,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const lPad = this.dataLensLPad;
     const rPad = this.dataLensRPad;
 
-    const availableTiles = this.visibleAndFetchedTiles();
-
-    const zoomLevel = Math.min(this.tilesetInfo.max_zoom, this.zoomLevel);
+    const zoomLevel = Math.min(this.tilesetInfo.max_zoom, z);
 
     const tileWidth = tileProxy.calculateTileWidth(
       this.tilesetInfo.max_width, zoomLevel
@@ -740,13 +758,12 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     try {
       tileData = tileIds.map(
         id => ({
-          data: availableTiles[this.visibleTilesIdx[id]].tileData,
-          mirrored: availableTiles[this.visibleTilesIdx[id]].mirrored
+          data: this.fetchedTiles[id].tileData,
+          mirrored: this.fetchedTiles[id].mirrored
         })
       );
     } catch (e) {
-      // Nothing: probably `availableTiles[this.visibleTilesIdx[id]]` is not
-      // available yet
+      // Nothing: probably `this.fetchedTiles[id]` is not available yet
     }
 
     if (
@@ -1062,6 +1079,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.pMain.scale.y = k; // scaleY;
 
     this.drawColorbar();
+
+    this.mouseMoveZoomHandler();
   }
 
   /**
