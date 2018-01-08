@@ -29,7 +29,11 @@ const rangeQuery2d = (
 
   let subList = [];
 
-  if (ArrayBuffer.isView(outList)) {
+  if (!ArrayBuffer.isView(outList)) {
+    console.warn('Not supported yet');
+  }
+
+  try {
     const newList = new outList.constructor(outList.length);
     let c = 0 + _yOff;
     for (let i = yFrom; i < yTo; i++) {
@@ -42,10 +46,8 @@ const rangeQuery2d = (
     const acc = mirrored
       ? accessorTransposition(xDimOut, xDimOut) : undefined;
     subList = addArrays(outList, newList, acc);
-  } else {
-    for (let i = yFrom; i < yTo; i++) {
-      subList.push(...src.slice((i * xDimSrc) + xFrom, (i * xDimSrc) + xTo));
-    }
+  } catch (e) {
+    console.warn('Invalid 2D query', e);
   }
 
   return subList;
