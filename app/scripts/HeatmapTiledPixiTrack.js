@@ -129,6 +129,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     if (
       typeof x === 'undefined'
       || typeof y === 'undefined'
+      || !this.areAllVisibleTilesLoaded()
     ) return;
 
     const relX = x - this.position[0];
