@@ -16,7 +16,6 @@ export const HorizontalRuleMixin = Mixin((superclass) => class extends superclas
     if (this.highlighted) {
       stroke = colorToHex('red');
     }
-    console.log('stroke:', stroke);
 
     graphics.lineStyle(2, stroke, 1);
 
@@ -51,7 +50,6 @@ export class HorizontalRule extends mix(PixiTrack).with(HorizontalRuleMixin) {
     if (mousePos.x > this.position[0] && mousePos.x < this.dimensions[0] &&
         mousePos.y > this.position[1] && mousePos.y < this.dimensions[1]) {
       if (Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) < MOUSEOVER_RADIUS) {
-        console.log('highlighted');
         this.highlighted = true;
         this.draw();
         return;
@@ -60,7 +58,6 @@ export class HorizontalRule extends mix(PixiTrack).with(HorizontalRuleMixin) {
 
     }
 
-    console.log('unhighlighted')
     this.highlighted = false;
     this.draw();
   }

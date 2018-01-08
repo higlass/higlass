@@ -698,16 +698,21 @@ export class TiledPlot extends React.Component {
      *    A list of the track objects in this view
      */
     const trackObjectsToCheck = [];
+    console.log('tdo:', this.trackRenderer.trackDefObjects);
 
     for (const uid in this.trackRenderer.trackDefObjects) {
       const tdo = this.trackRenderer.trackDefObjects[uid];
-      const trackObjectsToCheck = [tdo.trackObject];
+      console.log('tdo:', tdo);
 
       // if this is a combined track then we need to recurse into its
       // subtracks
-      for (const uid1 in tdo.trackObject.createdTracks) {
-        const trackObject = tdo.trackObject.createdTracks[uid1];
-        trackObjectsToCheck.push(trackObject);
+      if (tdo.trackObject.createdTracks) {
+        for (const uid1 in tdo.trackObject.createdTracks) {
+          const trackObject = tdo.trackObject.createdTracks[uid1];
+          trackObjectsToCheck.push(trackObject);
+        }
+      } else {
+        trackObjectsToCheck.push(tdo.trackObject);
       }
     }
 
@@ -849,6 +854,10 @@ export class TiledPlot extends React.Component {
     let menu = null;
 
     if (this.state.contextMenuPosition) {
+      const allTracks = this.listAllTrackObjects();
+
+      console.log('allTracks:', allTracks);
+
       return (
         <PopupMenu
           onMenuClosed={() => this.setState({ contextMenuPosition: null })}

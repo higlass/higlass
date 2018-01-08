@@ -109,6 +109,7 @@ export class ConfigTrackMenu extends ContextMenuContainer {
       const selectedTrack = this.props.track.contents ?
         this.props.track.contents.filter(t => t.uid == this.state.submenuShown.uid)[0] :
         this.props.track;
+      console.log('selectedTrack:', selectedTrack);
 
       return (
         <SeriesListMenu
