@@ -786,51 +786,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
           data,
         );
       });
-    } else if (tileData.length <= 3) {
-      tileData.forEach((tile) => {
-        const midpointXTile = tile.mirrored
-          ? xTile === tile.data.tilePos[1]
-          : xTile === tile.data.tilePos[0];
-        const midpointYTile = tile.mirrored
-          ? yTile === tile.data.tilePos[0]
-          : yTile === tile.data.tilePos[1];
-
-        const xClosest = Math.round(dataRelX / BINS_PER_TILE);
-        const yClosest = Math.round(dataRelY / BINS_PER_TILE);
-
-        const dataRelXMin = midpointXTile
-          ? Math.max(0, dataRelX - lPad)
-          : xClosest === 0 ? mod(dataRelX - lPad, BINS_PER_TILE) : 0;
-        const dataRelXMax = midpointXTile
-          ? Math.min(BINS_PER_TILE, dataRelX + rPad)
-          : xClosest === 0 ? BINS_PER_TILE : mod(dataRelX + rPad, BINS_PER_TILE);
-        const dataRelYMin = midpointYTile
-          ? Math.max(0, dataRelY - lPad)
-          : yClosest === 0 ? mod(dataRelY - lPad, BINS_PER_TILE) : 0;
-        const dataRelYMax = midpointYTile
-          ? Math.min(BINS_PER_TILE, dataRelY + rPad)
-          : yClosest === 0 ? BINS_PER_TILE : mod(dataRelY + rPad, BINS_PER_TILE);
-
-        const xOff = midpointXTile
-          ? xClosest === 0 ? Math.max(0, this.dataLensSize - dataRelXMax) : 0
-          : xClosest === 0 ? 0 : Math.max(0, this.dataLensSize - dataRelXMax);
-        const yOff = midpointYTile
-          ? yClosest === 0 ? Math.max(0, this.dataLensSize - dataRelYMax) : 0
-          : yClosest === 0 ? 0 : Math.max(0, this.dataLensSize - dataRelYMax);
-
-        data = rangeQuery2d(
-          tile.data.dense,
-          BINS_PER_TILE,
-          this.dataLensSize,
-          [dataRelXMin, dataRelXMax],
-          [dataRelYMin, dataRelYMax],
-          tile.mirrored,
-          xOff,
-          yOff,
-          data,
-        );
-      });
-    } else if (tileData.length <= 5) {
+    } else if (tileData.length <= 6) {
       tileData.forEach((tile) => {
         const midpointXTile = tile.mirrored
           ? xTile === tile.data.tilePos[1]
@@ -848,15 +804,11 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         let dataRelYMax = Math.min(BINS_PER_TILE, dataRelY + rPad);
 
         const xOff = midpointXTile
-          ? xClosest === 0
-            ? Math.max(0, this.dataLensSize - dataRelXMax) : 0
-          : xClosest === 0
-            ? 0 : Math.max(0, dataRelXMax - dataRelXMin);
+          ? xClosest === 0 ? Math.max(0, this.dataLensSize - dataRelXMax) : 0
+          : xClosest === 0 ? 0 : Math.max(0, dataRelXMax - dataRelXMin);
         const yOff = midpointYTile
-          ? yClosest === 0
-            ? Math.max(0, this.dataLensSize - dataRelYMax) : 0
-          : yClosest === 0
-            ? 0 : Math.max(0, dataRelYMax - dataRelYMin);
+          ? yClosest === 0 ? Math.max(0, this.dataLensSize - dataRelYMax) : 0
+          : yClosest === 0 ? 0 : Math.max(0, dataRelYMax - dataRelYMin);
 
         if (!midpointXTile) {
           dataRelXMin = xClosest === 0
