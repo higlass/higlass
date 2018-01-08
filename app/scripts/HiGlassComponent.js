@@ -2059,7 +2059,10 @@ class HiGlassComponent extends React.Component {
     download('viewconf.json', data);
   }
 
-  handleExportViewsAsLink(fromApi = false) {
+  handleExportViewsAsLink(
+    url = this.props.viewConfig.exportViewUrl,
+    fromApi = false
+  ) {
     this.width = this.element.clientWidth;
     this.height = this.element.clientHeight;
 
@@ -2071,7 +2074,7 @@ class HiGlassComponent extends React.Component {
     const port = window.location.port === '' ? '' : `:${window.location.port}`;
 
     const req = fetch(
-      this.props.viewConfig.exportViewUrl,
+      url,
       {
         method: 'POST',
         headers: {
@@ -2086,13 +2089,14 @@ class HiGlassComponent extends React.Component {
       .then(json => ({
         id: json.uid,
         url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${json.uid}`
-      }))
-      .catch(e => console.error('Exporting view config as link failed:', e));
+      }));
 
     if (!fromApi) {
-      req.then((sharedView) => {
-        this.setState({ exportLinkLocation: sharedView.url });
-      });
+      req
+        .then((sharedView) => {
+          this.setState({ exportLinkLocation: sharedView.url });
+        })
+        .catch(e => console.error('Exporting view config as link failed:', e));
     }
 
     return req;

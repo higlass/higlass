@@ -62,8 +62,8 @@ export const api = function api(context) {
      *
      * @return  {Object}  Promise resolving to the link ID and URL.
      */
-    shareViewConfigAsLink() {
-      return self.handleExportViewsAsLink(true);
+    shareViewConfigAsLink(url) {
+      return self.handleExportViewsAsLink(url, true);
     },
 
     zoomToDataExtent(viewUid) {
