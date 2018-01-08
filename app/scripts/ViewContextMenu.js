@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { getSeriesItems } from './SeriesListItems';
+
 import ContextMenuItem from './ContextMenuItem';
 
 // Styles
@@ -40,6 +42,15 @@ export class ViewContextMenu extends React.Component {
         >
           {'Add Cross Rule'}
         </ContextMenuItem>
+
+        <hr />
+
+        {getSeriesItems(
+          this.props.tracks,
+          null,
+          null,
+          null
+        )}
 
       </div>
     );

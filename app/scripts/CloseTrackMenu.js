@@ -1,8 +1,10 @@
+import { mix } from 'mixwith';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import ContextMenuItem from './ContextMenuItem';
 import { TRACKS_INFO } from './configs';
+import { getSeriesItems } from './SeriesListItems';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
@@ -13,56 +15,12 @@ export class CloseTrackMenu extends React.Component {
    */
   constructor(props) {
     super(props);
-    this.seriesRefs = {};
-  }
-
-  getSeriesItems() {
-    // this code is duplicated in ConfigTrackMenu, needs to be consolidated
-
-    // check if this is a combined track (has contents)
-    if (!this.props.track) { return null; }
-
-    const trackTypeToInfo = {};
-
-    TRACKS_INFO.forEach((ti) => {
-      trackTypeToInfo[ti.type] = ti;
-    });
-
-    const series = this.props.track.contents ? this.props.track.contents : [this.props.track];
-
-    return series.map((x) => {
-      const thumbnail = trackTypeToInfo[x.type].thumbnail;
-      const imgTag = trackTypeToInfo[x.type].thumbnail ? (
-        <div
-          dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
-          styleName="context-menu-thumbnail-inline"
-        />
-      ) : (
-        <div styleName="context-menu-thumbnail-inline" >
-          <svg width={30} height={20} />
-        </div>
-      );
-
-      return (
-        <div
-          key={x.uid}
-          ref={(c) => { this.seriesRefs[x.uid] = c; }}
-          onClick={() => this.props.onCloseTrack(x.uid)}
-          styleName="context-menu-item"
-        >
-          {imgTag}
-          <span styleName="context-menu-span">
-            {(x.name && x.name.length) ? x.name : x.uid}
-          </span>
-        </div>
-      );
-    });
   }
 
   render() {
     return (
       <div>
-        {this.getSeriesItems()}
+        {getSeriesItems([this.props.track], null, null, this.props.onCloseTrack)}
         <hr styleName="context-menu-hr" />
         <ContextMenuItem
           onClick={() => this.props.onCloseTrack(this.props.track.uid)}

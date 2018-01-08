@@ -1,11 +1,10 @@
+import {mix} from 'mixwith';
 import React from 'react';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
 import { SeriesListMenu } from './SeriesListMenu';
-
-// Configs
-import { TRACKS_INFO } from './configs';
+import { getSeriesItems } from './SeriesListItems';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
@@ -19,71 +18,12 @@ export class ConfigTrackMenu extends ContextMenuContainer {
 
     this.seriesRefs = {};
     this.seriesListMenu = null;
+
+    console.log('this:', this);
   }
 
   componentDidMount() {
     super.componentDidMount();
-  }
-
-  getSeriesItems() {
-    // this code is duplicated in CloseTrackMenu, needs to be consolidated
-    if (!this.props.track) return null;
-
-    const trackTypeToInfo = {};
-
-    TRACKS_INFO.forEach((ti) => {
-      trackTypeToInfo[ti.type] = ti;
-    });
-
-    // check if this is a combined track (has contents)
-    const series = this.props.track.contents ? this.props.track.contents : [this.props.track];
-
-    return series.map((x) => {
-      const thumbnail = trackTypeToInfo[x.type].thumbnail;
-      const imgTag = trackTypeToInfo[x.type].thumbnail ? (
-        <div
-          dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
-          style={{
-            display: 'inline-block',
-            marginRight: 10,
-            verticalAlign: 'middle',
-          }}
-        />
-      ) : (
-        <div
-          style={{
-            display: 'inline-block',
-            marginRight: 10,
-            verticalAlign: 'middle',
-          }}
-        >
-          <svg
-            height={20}
-            width={30}
-          />
-        </div>
-      );
-
-      return (
-        <ContextMenuItem
-          key={x.uid}
-          onMouseEnter={e => this.handleItemMouseEnter(e, x)}
-          onMouseLeave={e => this.handleMouseLeave(e)}
-          ref={c => this.seriesRefs[x.uid] = c}
-          styleName="context-menu-item"
-        >
-          {imgTag}
-          <span
-            styleName="context-menu-span"
-          >
-            {(x.name && x.name.length) ? x.name : x.uid}
-            <svg styleName="play-icon" >
-              <use xlinkHref="#play" />
-            </svg>
-          </span>
-        </ContextMenuItem>
-      );
-    });
   }
 
   getSubmenu() {
@@ -146,7 +86,12 @@ export class ConfigTrackMenu extends ContextMenuContainer {
         }}
         styleName="context-menu"
       >
-        {this.getSeriesItems()}
+        {getSeriesItems(
+          [this.props.track],
+          this.handleItemMouseEnter.bind(this),
+          this.handleMouseLeave.bind(this),
+          null
+        )}
 
         <hr styleName="context-menu-hr" />
 

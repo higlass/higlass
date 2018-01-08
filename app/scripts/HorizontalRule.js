@@ -83,6 +83,10 @@ export class HorizontalRule extends mix(PixiTrack).with(HorizontalRuleMixin) {
 
     this.draw();
   }
+
+  respondsToPosition(x,y) {
+    return this.highlighted;
+  }
 }
 
 export default HorizontalRule;

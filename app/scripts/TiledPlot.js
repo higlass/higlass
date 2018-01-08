@@ -642,8 +642,6 @@ export class TiledPlot extends React.Component {
     const positionedTracks = this.positionedTracks();
     this.createTracksAndLocations();
 
-
-    console.log('positionedTracks:', positionedTracks);
     const trackElements = positionedTracks.map((trackPosition) => {
       const track = trackPosition.track;
 
@@ -684,6 +682,27 @@ export class TiledPlot extends React.Component {
     trackObject.exportData();
   }
 
+  /**
+   * List all the tracks that are under this mouse position
+   */
+  listTracksAtPosition(x, y) {
+    const trackObjectsAtPosition = [];
+
+    for (const uid in this.trackRenderer.trackDefObjects) {
+      const trackObj = this.trackRenderer.trackDefObjects[uid].trackObject;
+
+      if (trackObj.respondsToPosition(x,y)) {
+        // check if this track wishes to respond to events at position x,y
+        // by default, this is true
+        // it is false in tracks like the horizontal and vertical rule which only
+        // wish to be identified if the mouse is directly over them
+        trackObjectsAtPosition.push(this.trackRenderer.trackDefObjects[uid].trackDef.track);
+      }
+    }
+
+    return trackObjectsAtPosition;
+  }
+
   listAllTrackObjects() {
     /**
      * Get a list of all the track objects in this
@@ -698,11 +717,9 @@ export class TiledPlot extends React.Component {
      *    A list of the track objects in this view
      */
     const trackObjectsToCheck = [];
-    console.log('tdo:', this.trackRenderer.trackDefObjects);
 
     for (const uid in this.trackRenderer.trackDefObjects) {
       const tdo = this.trackRenderer.trackDefObjects[uid];
-      console.log('tdo:', tdo);
 
       // if this is a combined track then we need to recurse into its
       // subtracks
@@ -855,8 +872,9 @@ export class TiledPlot extends React.Component {
 
     if (this.state.contextMenuPosition) {
       const allTracks = this.listAllTrackObjects();
-
-      console.log('allTracks:', allTracks);
+      const relevantTracks = this.listTracksAtPosition(
+        this.state.contextMenuPosition.left,
+        this.state.contextMenuPosition.top);
 
       return (
         <PopupMenu
@@ -875,6 +893,7 @@ export class TiledPlot extends React.Component {
                 this.handleCloseContextMenu();
               }}
               coords={[this.state.contextMenuX, this.state.contextMenuY]}
+              tracks={relevantTracks}
             />
           </ContextMenuContainer>
         </PopupMenu>
