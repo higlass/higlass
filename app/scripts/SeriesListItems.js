@@ -47,8 +47,6 @@ export const getSeriesItems = function(
   onItemClick,
   omitItem
 ) {
-  console.log('tracks:', tracks);
-
   if (!tracks) return null;
 
   const trackTypeToInfo = {};

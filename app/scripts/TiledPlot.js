@@ -130,7 +130,6 @@ export class TiledPlot extends React.Component {
     this.divTiledPlotSelection = select(this.divTiledPlot);
     this.divTiledPlotSelection.on('contextmenu', (evt) => {
       event.preventDefault();
-      console.log(event);
       const mousePos = [event.clientX, event.clientY];
       const canvasMousePos = mouse(this.divTiledPlot);
 

@@ -63,6 +63,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
           null
         )}
 
+        { /* from the SeriesListSubmenuMixin */ }
         { this.getSubmenu() }
 
       </div>

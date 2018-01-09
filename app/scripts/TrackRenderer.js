@@ -202,11 +202,8 @@ export class TrackRenderer extends React.Component {
     this.currentProps = nextProps;
 
     if (this.prevPropsStr === nextPropsStr) { 
-      console.log('not updating...');
       return; 
     }
-
-    console.log('updating');
 
     for (const uid in this.trackDefObjects) {
       const track = this.trackDefObjects[uid].trackObject;

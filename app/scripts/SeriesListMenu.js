@@ -232,6 +232,25 @@ export class SeriesListMenu extends ContextMenuContainer {
     }
     */
 
+     // if a track can't be replaced, this.props.onAddSeries
+    // will be null so we don't need to display the menu item
+    const replaceSeriesItem = 
+          this.props.onAddSeries ?
+          (<ContextMenuItem
+            onClick={() => {
+              this.props.onCloseTrack(this.props.series.uid);
+              this.props.onAddSeries(this.props.hostTrack.uid);
+            }}
+            onMouseEnter={e => this.handleOtherMouseEnter(e)}
+            styleName="context-menu-item"
+          >
+            <span styleName="context-menu-span">
+              {'Replace Series'}
+            </span>
+          </ContextMenuItem>)
+          :
+          null;
+
     return (
       <div
         onMouseLeave={this.props.handleMouseLeave}
@@ -289,18 +308,7 @@ export class SeriesListMenu extends ContextMenuContainer {
           </span>
         </ContextMenuItem>
 
-        <ContextMenuItem
-          onClick={() => {
-            this.props.onCloseTrack(this.props.series.uid);
-            this.props.onAddSeries(this.props.hostTrack.uid);
-          }}
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
-          styleName="context-menu-item"
-        >
-          <span styleName="context-menu-span">
-            {'Replace Series'}
-          </span>
-        </ContextMenuItem>
+        { replaceSeriesItem }
 
         { 
         /*

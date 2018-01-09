@@ -25,23 +25,17 @@ export const SeriesListSubmenuMixin = Mixin((superclass) => class extends superc
       }
 
       const series = getAllTracksAndSubtracks(this.props.tracks);
-      console.log('series:', series);
       const selectedTrack = series.filter(t => t.uid == this.state.submenuShown.uid)[0];
 
       // for now we can't replace 'whole' tracks because they're
       // just the horizontal and vertical rule tracks
       const canBeReplaced = !(selectedTrack.position == 'whole');
-      console.log('selectedTrack:', selectedTrack);
-      console.log('canBeReplaced:', canBeReplaced);
-
-
-      console.log('selectedTrack:', selectedTrack);
 
       return (
         <SeriesListMenu
           closeMenu={this.props.closeMenu}
           hostTrack={this.props.tracks[0]}
-          onAddSeries={this.props.onAddSeries}
+          onAddSeries={canBeReplaced ? this.props.onAddSeries : null}
           onChangeTrackType={this.props.onChangeTrackType}
           onCloseTrack={() => this.props.onCloseTrack(this.state.submenuShown.uid)}
           onConfigureTrack={this.props.onConfigureTrack}
