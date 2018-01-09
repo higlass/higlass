@@ -19,8 +19,6 @@ export class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSu
 
     this.seriesRefs = {};
     this.seriesListMenu = null;
-
-    console.log('this:', this);
   }
 
   componentDidMount() {

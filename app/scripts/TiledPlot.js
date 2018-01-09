@@ -1212,7 +1212,7 @@ export class TiledPlot extends React.Component {
           onMenuClosed={this.closeMenus.bind(this)}
         >
           <ConfigTrackMenu
-            closeMenu={this.handleConfigTrackMenuClosed.bind(this)}
+            closeMenu={this.closeMenus.bind(this)}
             onAddSeries={this.handleAddSeries.bind(this)}
             onAddTrack={this.handleAddTrack.bind(this)}
             onChangeTrackType={this.handleChangeTrackType.bind(this)}
