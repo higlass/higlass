@@ -112,7 +112,7 @@ export class SeriesListMenu extends ContextMenuContainer {
 
     return (
       <NestedContextMenu
-        key={`config-series-menu-${track.uid}`}
+        key={`config-series-menu`}
         closeMenu={this.props.closeMenu}
         menuItems={menuItems}
         orientation={this.state.orientation}

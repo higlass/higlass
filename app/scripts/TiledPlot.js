@@ -495,10 +495,6 @@ export class TiledPlot extends React.Component {
     });
   }
 
-  handleConfigTrackMenuClosed() {
-    this.closeMenus();
-  }
-
   handleConfigureTrack(track, configComponent) {
     this.setState({
       configTrackMenuId: null,
@@ -899,7 +895,7 @@ export class TiledPlot extends React.Component {
 
       return (
         <PopupMenu
-          onMenuClosed={() => this.setState({ contextMenuPosition: null })}
+          onMenuClosed={this.closeMenus.bind(this)}
         >
           <ViewContextMenu 
             // Can only add one new track at a time
@@ -922,6 +918,7 @@ export class TiledPlot extends React.Component {
             tracks={relevantTracks}
             position={this.state.contextMenuPosition}
             orientation={'left'}
+            closeMenu={this.closeMenus.bind(this)}
           />
         </PopupMenu>
         );
@@ -1212,7 +1209,7 @@ export class TiledPlot extends React.Component {
     if (this.state.configTrackMenuId) {
       configTrackMenu = (
         <PopupMenu
-          onMenuClosed={this.handleConfigTrackMenuClosed.bind(this)}
+          onMenuClosed={this.closeMenus.bind(this)}
         >
           <ConfigTrackMenu
             closeMenu={this.handleConfigTrackMenuClosed.bind(this)}

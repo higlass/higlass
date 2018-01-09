@@ -39,10 +39,6 @@ export class NestedContextMenu extends ContextMenuContainer {
     return (<div />);
   }
 
-  componentDidMount() {
-
-  }
-
   componentWillUnmount() {
 
   }

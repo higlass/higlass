@@ -24,7 +24,18 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
         }}
         styleName="context-menu"
       >
+
+        {getSeriesItems(
+          this.props.tracks,
+          this.handleItemMouseEnter.bind(this),
+          this.handleMouseLeave.bind(this),
+          null
+        )}
+
+        <hr styleName="context-menu-hr" />
+
         <ContextMenuItem
+          onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
             type: 'horizontal-rule',
             y: this.props.coords[1], 
@@ -34,6 +45,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
           {'Add Horizontal Rule'}
         </ContextMenuItem>
         <ContextMenuItem
+          onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
             type: 'vertical-rule',
             x: this.props.coords[0], 
@@ -44,6 +56,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
         </ContextMenuItem>
 
         <ContextMenuItem
+          onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
             type: 'cross-rule',
             x: this.props.coords[0], 
@@ -54,14 +67,6 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
           {'Add Cross Rule'}
         </ContextMenuItem>
 
-        <hr styleName="context-menu-hr" />
-
-        {getSeriesItems(
-          this.props.tracks,
-          this.handleItemMouseEnter.bind(this),
-          this.handleMouseLeave.bind(this),
-          null
-        )}
 
         { /* from the SeriesListSubmenuMixin */ }
         { this.getSubmenu() }

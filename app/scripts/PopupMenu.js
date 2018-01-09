@@ -18,6 +18,7 @@ export class PopupMenu extends React.Component {
     this.boundHandleDocumentResize = this.handleDocumentResize.bind(this);
 
     document.addEventListener('click', this.boundHandleDocumentClick, true);
+    document.addEventListener('contextmenu', this.boundHandleDocumentClick, true);
     window.addEventListener('resize', this.boundHandleDocumentResize, true);
 
     this._renderLayer();
@@ -30,6 +31,7 @@ export class PopupMenu extends React.Component {
 
   componentWillUnmount() {
     document.removeEventListener('click', this.boundHandleDocumentClick, true);
+    document.removeEventListener('contextmenu', this.boundHandleDocumentClick, true);
     window.removeEventListener('resize', this.boundHandleDocumentResize, true);
     ReactDOM.unmountComponentAtNode(this.popup);
     document.body.removeChild(this.popup);
