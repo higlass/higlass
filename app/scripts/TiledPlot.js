@@ -1,4 +1,4 @@
-import { select, event, mouse } from 'd3-selection';
+import { select, event, clientPoint } from 'd3-selection';
 
 import slugid from 'slugid';
 import React from 'react';
@@ -127,31 +127,7 @@ export class TiledPlot extends React.Component {
     this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
 
-    this.divTiledPlotSelection = select(this.divTiledPlot);
-    this.divTiledPlotSelection.on('contextmenu', (evt) => {
-      event.preventDefault();
-      console.log(event);
-      const mousePos = [event.clientX, event.clientY];
-      const canvasMousePos = mouse(this.divTiledPlot);
-
-      // the x and y values of the rendered plots
-      // will be used if someone decides to draw a horizontal or vertical
-      // rule
-      const xVal = this.trackRenderer.zoomedXScale.invert(canvasMousePos[0]);
-      const yVal = this.trackRenderer.zoomedYScale.invert(canvasMousePos[1]);
-
-      this.setState({
-        contextMenuPosition: {
-          left: mousePos[0],
-          top: mousePos[1],
-        },
-
-        contextMenuX: xVal,
-        contextMenuY: yVal,
-      });
-    });
-
-    //new ResizeSensor(this.element, this.measureSize.bind(this));
+    // new ResizeSensor(this.element, this.measureSize.bind(this));
     this.waitForDOMAttachment(() => {
       ElementQueries.listen();
       this.resizeSensor = new ResizeSensor(
@@ -216,6 +192,32 @@ export class TiledPlot extends React.Component {
         tracks[key][i].uid = tracks[key][i].uid ? tracks[key][i].uid : slugid.nice();
       }
     }
+  }
+
+  contextMenuHandler(e) {
+    if (e.altKey) return;
+
+    e.preventDefault();
+
+    const mousePos = [e.clientX, e.clientY];
+    // Relative mouse position
+    const canvasMousePos = clientPoint(this.divTiledPlot, e);
+
+    // the x and y values of the rendered plots
+    // will be used if someone decides to draw a horizontal or vertical
+    // rule
+    const xVal = this.trackRenderer.zoomedXScale.invert(canvasMousePos[0]);
+    const yVal = this.trackRenderer.zoomedYScale.invert(canvasMousePos[1]);
+
+    this.setState({
+      contextMenuPosition: {
+        left: mousePos[0],
+        top: mousePos[1],
+      },
+
+      contextMenuX: xVal,
+      contextMenuY: yVal,
+    });
   }
 
   measureSize() {
@@ -614,7 +616,7 @@ export class TiledPlot extends React.Component {
       return {
         top: this.props.verticalMargin,
         left: this.props.horizontalMargin,
-        width: this.leftWidth + this.centerWidth + this.rightWidth, 
+        width: this.leftWidth + this.centerWidth + this.rightWidth,
         height: this.topHeight + this.centerHeight + this.bottomHeight,
         track
       }
@@ -884,11 +886,11 @@ export class TiledPlot extends React.Component {
             orientation="left"
             position={this.state.contextMenuPosition}
           >
-            <ViewContextMenu 
+            <ViewContextMenu
               // Can only add one new track at a time
               // because "whole" tracks are always drawn on top of each other,
               // the notion of Series is unnecessary and so 'host' is null
-              onAddTrack={(newTrack) => { 
+              onAddTrack={(newTrack) => {
                 this.props.onTracksAdded([newTrack], 'whole', null)
                 this.handleCloseContextMenu();
               }}
@@ -1321,8 +1323,9 @@ export class TiledPlot extends React.Component {
     return (
       <div
         ref={(c) => { this.divTiledPlot = c; }}
+        className="tiled-plot-div"
+        onContextMenu={this.contextMenuHandler.bind(this)}
         styleName="styles.tiled-plot"
-        className='tiled-plot-div'
       >
         {trackRenderer}
         {overlays}
