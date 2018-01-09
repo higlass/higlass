@@ -313,6 +313,27 @@ export class CenterTrack extends React.Component {
       .map(track => IS_TRACK_RANGE_SELECTABLE(track))
       .reduce(or, false);
 
+    // Althought the tracks property is an array and could contain more than one
+    // track, in practice there is only one combined track.
+    const menuClash = this.props.tracks.some((track) => {
+      if (track.contents) {
+        // if this is a combined track, iterate over children
+        return track.contents.some((subTrack) => {
+          if (subTrack.type === 'heatmap') {
+            return subTrack.options.colorbarPosition === 'topRight';
+          }
+          return false;
+        });
+      } else {
+        // if this isn't a combined track, just check if this a heatmap
+        // with a topright colorbar
+        if (track.type === 'heatmap') {
+          return track.options.colorbarPosition === 'topRight';
+        }
+        return false;
+      }
+    });
+
     const rangeSelectorClass = this.props.isRangeSelectionActive ? (
       this.props.is1dRangeSelection ?
         'stylesTrack.track-range-selection-active-secondary' :
@@ -362,18 +383,22 @@ export class CenterTrack extends React.Component {
           </svg>
         }
         {this.props.editable &&
-            // show track controls if config menu is visible or
-            // mouse is within the bounds of the track
+          // show track controls if config menu is visible or
+          // mouse is within the bounds of the track
           <TrackControl
             imgStyleAdd={STYLES}
             imgStyleClose={STYLES}
             imgStyleMove={STYLES}
             imgStyleSettings={STYLES}
             isMoveable={false}
-            isVisible={this.state.isVisible || this.props.uid == this.props.configTrackMenuId}  
+            isVisible={
+              this.state.isVisible ||
+              this.props.uid === this.props.configTrackMenuId
+            }
             onAddSeries={this.props.onAddSeries}
             onCloseTrackMenuOpened={this.props.onCloseTrackMenuOpened}
             onConfigTrackMenuOpened={this.props.onConfigTrackMenuOpened}
+            paddingRight={menuClash}
             uid={this.props.uid}
           />
         }

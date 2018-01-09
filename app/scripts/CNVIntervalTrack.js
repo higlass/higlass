@@ -7,16 +7,14 @@ import IntervalTree from './interval-tree';
 export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
   constructor(
     scene,
-    server,
-    uid,
+    dataConfig,
     handleTilesetInfoReceived,
     options,
     animate,
     onValueScaleChanged,
   ) {
     super(scene,
-      server,
-      uid,
+      dataConfig,
       handleTilesetInfoReceived,
       options,
       animate,

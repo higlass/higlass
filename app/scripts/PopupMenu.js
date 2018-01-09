@@ -10,10 +10,15 @@ export class PopupMenu extends React.Component {
     this.popup = document.createElement('div');
     document.body.appendChild(this.popup);
 
+    this.popup.style.zIndex = 99;
+    this.popup.style.position = 'absolute';
+    this.popup.className = 'hg-popup';
+
     this.boundHandleDocumentClick = this.handleDocumentClick.bind(this);
     this.boundHandleDocumentResize = this.handleDocumentResize.bind(this);
 
     document.addEventListener('click', this.boundHandleDocumentClick, true);
+    document.addEventListener('contextmenu', this.boundHandleDocumentClick, true);
     window.addEventListener('resize', this.boundHandleDocumentResize, true);
 
     this._renderLayer();
@@ -26,6 +31,7 @@ export class PopupMenu extends React.Component {
 
   componentWillUnmount() {
     document.removeEventListener('click', this.boundHandleDocumentClick, true);
+    document.removeEventListener('contextmenu', this.boundHandleDocumentClick, true);
     window.removeEventListener('resize', this.boundHandleDocumentResize, true);
     ReactDOM.unmountComponentAtNode(this.popup);
     document.body.removeChild(this.popup);
@@ -46,10 +52,11 @@ export class PopupMenu extends React.Component {
     }
   }
 
-
   render() {
     // Render a placeholder
-    return (<div ref={c => this.area = c} />);
+    return (<div 
+      ref={c => this.area = c} 
+    />);
   }
 }
 

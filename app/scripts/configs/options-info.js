@@ -25,7 +25,10 @@ const AVAILABLE_WIDTHS = {
   3: { name: '3', value: 3 },
   5: { name: '5', value: 5 },
   8: { name: '8', value: 8 },
+  13: { name: '13', value: 13 },
 };
+const AVAILABLE_WIDTHS_AND_NONE = Object.assign(AVAILABLE_WIDTHS, {
+  'none': { name: 'none', value: 'none'}});
 
 const OPACITY_OPTIONS = {
   0: { name: '0%', value: 0.0 },
@@ -37,6 +40,13 @@ const OPACITY_OPTIONS = {
 };
 
 export const OPTIONS_INFO = {
+  heatmapValueScaling: {
+    name: 'Value Scaling',
+    inlineOptions: {
+      linear: { name: 'Linear', value: 'linear' },
+      log: { name: 'Log', value: 'log' },
+    },
+  },
   valueScaling: {
     name: 'Value Scaling',
     inlineOptions: {
@@ -51,6 +61,10 @@ export const OPTIONS_INFO = {
   trackBorderWidth: {
     name: 'Track Border Width',
     inlineOptions: AVAILABLE_WIDTHS,
+  },
+  minSquareSize: {
+    name: 'Minimum size',
+    inlineOptions: AVAILABLE_WIDTHS_AND_NONE,
   },
   pointSize: {
     name: 'Point Size',
@@ -86,6 +100,14 @@ export const OPTIONS_INFO = {
   },
   barFillColor: {
     name: 'Fill color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+  barFillColorTop: {
+    name: 'Top Fill color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+  barFillColorBottom: {
+    name: 'Bottom Fill color',
     inlineOptions: AVAILABLE_COLORS,
   },
   barOpacity: {
@@ -438,6 +460,34 @@ export const OPTIONS_INFO = {
       } return [];
     },
   },
+
+  valueColumn: {
+    name: 'Value column',
+    inlineOptions: {
+      none: { name: 'None', value: null },
+    },
+    generateOptions: (track) => {
+      if (!track.header)
+        return [];
+
+      let headerParts = track.header.split('\t');
+      let options = [];
+
+      for (let i = 0; i < headerParts.length; i++) {
+        options.push({
+          name: headerParts[i],
+          value: i+1,
+        });
+      }
+
+        /*
+      console.log('headerParts:', headerParts);
+      console.log('options:', options);
+      */
+
+      return options;
+    }
+  }
 };
 
 export default OPTIONS_INFO;

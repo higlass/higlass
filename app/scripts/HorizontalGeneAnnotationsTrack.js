@@ -57,6 +57,11 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     const MAX_TILE_ENTRIES = 50;
 
+    if (!tile.tileData.sort) {
+      console.warn('Strange tileData', tile);
+      return;
+    }
+
     tile.tileData.sort((a, b) => b.importance - a.importance);
     tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
 
@@ -143,7 +148,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         yMiddle -= 6;
         textYMiddle -= 10;
         tile.rectGraphics.lineStyle(1, fill['+'], 0.3);
-        tile.rectGraphics.beginFill(fill['-'], 0.3);
+        tile.rectGraphics.beginFill(fill['+'], 0.3);
       } else {
         // genes on the - strand drawn below and in a user-specified color or the default red
         yMiddle += 6;
@@ -164,10 +169,15 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       const MIN_SIZE_FOR_EXONS = 10;
 
       if (xEndPos - xStartPos > MIN_SIZE_FOR_EXONS) {
-        tile.allRects = tile.allRects.concat(
-          this.drawExons(tile.rectGraphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
-            .map(x => x.concat([geneInfo[5]])),
-        );
+        if (geneInfo.length < 14) {
+          // don't draw if the input is invalid
+          console.warn("Gene annotations have less than 14 columns (chrName, chrStart, chrEnd, symbol, importance, transcript_name, geneId, transcript_type, '-', txStart, txEnd, exonStarts, exonEnds:", geneInfo);
+        } else {
+          tile.allRects = tile.allRects.concat(
+            this.drawExons(tile.rectGraphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
+              .map(x => x.concat([geneInfo[5]])),
+          );
+        }
         // this.drawExons(tile.textGraphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
       } else {
         // graphics.drawRect(rectX, rectY, width, height);
@@ -262,6 +272,13 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     for (const fetchedTileId in this.fetchedTiles) {
       const tile = this.fetchedTiles[fetchedTileId];
+
+      if (!tile.drawnAtScale) {
+        // tile hasn't been drawn properly because we likely got some
+        // bogus data from the server
+        // console.warn("Tile without drawnAtScale:", tile);
+        continue;
+      }
 
       // scale the rectangles
 

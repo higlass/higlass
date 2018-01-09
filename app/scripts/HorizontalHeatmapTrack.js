@@ -15,13 +15,11 @@ import { HEATED_OBJECT_MAP } from './configs';
 export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   /**
    * @param scene: A PIXI.js scene to draw everything to.
-   * @param server: The server to pull tiles from.
-   * @param uid: The data set to get the tiles from the server
+   * @param dataConfig: An object defining where the data should be pulled from
    */
   constructor(
     scene,
-    server,
-    uid,
+    dataConfig,
     handleTilesetInfoReceived,
     options,
     animate,
@@ -31,8 +29,7 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   ) {
     super(
       scene,
-      server,
-      uid,
+      dataConfig,
       handleTilesetInfoReceived,
       options,
       animate,
@@ -63,6 +60,22 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   }
 
   calculateZoomLevel() {
+    if (this.tilesetInfo.resolutions) {
+      let zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
+        this.tilesetInfo.resolutions, 
+        this._xScale, 
+        this.tilesetInfo.min_pos[0],
+        this.tilesetInfo.max_pos[0]);
+
+      let zoomIndexY = tileProxy.calculateZoomLevelFromResolutions(
+        this.tilesetInfo.resolutions, 
+        this._xScale, 
+        this.tilesetInfo.min_pos[1],
+        this.tilesetInfo.max_pos[1]);
+
+      return Math.min(zoomIndexX, zoomIndexY);
+    }
+
     const xZoomLevel = tileProxy.calculateZoomLevel(
       this._xScale,
       this.tilesetInfo.min_pos[0],
@@ -105,17 +118,31 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     expandedXScale.domain([this._xScale.invert(this._xScale.range()[0] - this.dimensions[1] * Math.sqrt(2)),
       this._xScale.invert(this._xScale.range()[1] + this.dimensions[1] * Math.sqrt(2))]);
 
-    this.xTiles = tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
-      this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0],
-      this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width);
+    if (this.tilesetInfo.resolutions) {
+      let sortedResolutions = this.tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
 
-    this.yTiles = tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
-      this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0],
-      this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_width);
+      this.xTiles = tileProxy.calculateTilesFromResolution(
+        sortedResolutions[this.zoomLevel],
+        expandedXScale,
+        this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
+      this.yTiles = tileProxy.calculateTilesFromResolution(
+        sortedResolutions[this.zoomLevel],
+        expandedXScale,
+        this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
+
+    } else {
+      this.xTiles = tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
+        this.tilesetInfo.min_pos[0],
+        this.tilesetInfo.max_pos[0],
+        this.tilesetInfo.max_zoom,
+        this.tilesetInfo.max_width);
+
+      this.yTiles = tileProxy.calculateTiles(this.zoomLevel, expandedXScale,
+        this.tilesetInfo.min_pos[0],
+        this.tilesetInfo.max_pos[0],
+        this.tilesetInfo.max_zoom,
+        this.tilesetInfo.max_width);
+    }
 
     const rows = this.xTiles;
     const cols = this.yTiles;
@@ -312,6 +339,53 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       this.pMain.scale.y = -k;
       this.pMain.position.y = this.position[1];
     }
+  }
+
+
+  exportSVG() {
+    let track = null;
+    let base = null;
+
+    [base,track] = super.superSVG();
+
+    const output = document.createElement('g');
+    track.appendChild(output);
+
+    output.setAttribute(
+      'transform',
+      `translate(${this.pMain.position.x},${this.pMain.position.y}) scale(${this.pMain.scale.x},${this.pMain.scale.y})`,
+    );
+
+    for (const tile of this.visibleAndFetchedTiles()) {
+		  const gGraphics = document.createElement('g');
+      let graphics = tile.graphics;
+      let graphicsRotation = graphics.rotation * 180 / Math.PI;
+      let transformText = `translate(${graphics.position.x},${graphics.position.y}) rotate(${graphicsRotation}) scale(${graphics.scale.x},${graphics.scale.y}) translate(${-graphics.pivot.x},${-graphics.pivot.y})`
+      gGraphics.setAttribute(
+        'transform',transformText);
+
+      const rotation = tile.sprite.rotation * 180 / Math.PI;
+      const g = document.createElement('g');
+      g.setAttribute(
+        'transform',
+        `translate(${tile.sprite.x},${tile.sprite.y}) rotate(${rotation}) scale(${tile.sprite.scale.x},${tile.sprite.scale.y})`,
+      );
+
+      const image = document.createElement('image');
+      image.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', tile.canvas.toDataURL());
+      image.setAttribute('width', 256);
+      image.setAttribute('height', 256);
+
+      g.appendChild(image);
+      gGraphics.appendChild(g);
+
+      output.appendChild(gGraphics);
+    }
+
+    const gColorbar = this.exportColorBarSVG();
+    track.appendChild(gColorbar);
+
+    return [base, base];
   }
 }
 

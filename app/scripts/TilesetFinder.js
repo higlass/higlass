@@ -1,4 +1,5 @@
-import { json } from 'd3-request';
+import { tileProxy } from './services';
+
 import React from 'react';
 import {
   Col,
@@ -30,6 +31,7 @@ export class TilesetFinder extends React.Component {
     const newOptions = this.prepareNewEntries('', this.localTracks, {});
     const availableTilesetKeys = Object.keys(newOptions);
     const selectedUuid = availableTilesetKeys.length ? [availableTilesetKeys[0]] : null;
+    this.mounted = false;
 
     this.state = {
       selectedUuid,
@@ -78,12 +80,17 @@ export class TilesetFinder extends React.Component {
     // we want to query for a list of tracks that are compatible with this
     // track orientation
 
+    this.mounted = true;
 
     this.requestTilesetLists();
 
     const selectedTilesets = [this.state.options[this.state.selectedUuid]];
 
     if (selectedTilesets) { this.props.selectedTilesetChanged(selectedTilesets); }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   requestTilesetLists() {
@@ -93,8 +100,13 @@ export class TilesetFinder extends React.Component {
       .map(x => x.datatype));
     const datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
 
+    if (!this.props.trackSourceServers) {
+      console.warn("No track source servers specified in the viewconf");
+      return;
+    }
+
     this.props.trackSourceServers.forEach((sourceServer) => {
-      json(`${sourceServer}/tilesets/?limit=10000&${datatypesQuery}`,
+      tileProxy.json(`${sourceServer}/tilesets/?limit=10000&${datatypesQuery}`,
         (error, data) => {
           if (error) {
             console.error('ERROR:', error);
@@ -110,10 +122,12 @@ export class TilesetFinder extends React.Component {
               this.props.selectedTilesetChanged(selectedTileset);
             }
 
-            this.setState({
-              selectedUuid,
-              options: newOptions,
-            });
+            if (this.mounted) {
+              this.setState({
+                selectedUuid,
+                options: newOptions,
+              });
+            }
           }
         });
     });

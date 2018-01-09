@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { select } from 'd3-selection';
+import { select,mouse } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import { request } from 'd3-request';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
-import ReactGridLayout, { WidthProvider } from 'react-grid-layout';
+import ReactGridLayout from 'react-grid-layout';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
 import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
@@ -17,7 +17,7 @@ import { createSymbolIcon } from './symbol';
 import { all as icons } from './icons';
 import ViewHeader from './ViewHeader';
 import { ChromosomeInfo } from './ChromosomeInfo';
-import api from './api';
+import api, { destroy as apiDestroy, publish as apiPublish } from './api';
 
 // Services
 import { chromInfo, domEvent, pubSub } from './services';
@@ -56,8 +56,6 @@ import styles from '../styles/HiGlass.module.scss'; // eslint-disable-line no-un
 import stylesMTHeader from '../styles/ViewHeader.module.scss'; // eslint-disable-line no-unused-vars
 
 import stylesGlobal from '../styles/HiGlass.scss'; // eslint-disable-line no-unused-vars
-
-const WidthReactGridLayout = WidthProvider(ReactGridLayout);
 
 const NUM_GRID_COLUMNS = 12;
 const DEFAULT_NEW_VIEW_HEIGHT = 12;
@@ -134,10 +132,10 @@ class HiGlassComponent extends React.Component {
       }
     }
 
+    this.mounted = false;
     this.state = {
       bounded: this.props.options ? this.props.options.bounded : false,
       currentBreakpoint: 'lg',
-      mounted: false,
       width: 0,
       height: 0,
       rowHeight: 30,
@@ -157,6 +155,10 @@ class HiGlassComponent extends React.Component {
     };
 
     dictValues(viewsByUid).map(view => this.adjustLayoutToTrackSizes(view));
+
+    // monitor whether this element is attached to the DOM so that
+    // we can determine whether to add the resizesensor
+    this.attachedToDOM = false;
 
     // Set up API
     this.api = api(this);
@@ -198,27 +200,44 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  waitForDOMAttachment(callback) {
+    if (!this.mounted)
+      return;
+
+    const thisElement = ReactDOM.findDOMNode(this);
+
+    if (document.body.contains(thisElement)) {
+      callback();
+    } else {
+      requestAnimationFrame(() => this.waitForDOMAttachment(callback));
+    }
+  }
+
   componentDidMount() {
     // the addEventListener is necessary because TrackRenderer determines where to paint
     // all the elements based on their bounding boxes. If the window isn't
     // in focus, everything is drawn at the top and overlaps. When it gains
     // focus we need to redraw everything in its proper place
+    this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
     window.addEventListener('focus', this.boundRefreshView);
 
-    dictValues(this.state.views).map((v) => {
-      if (!v.layout) { v.layout = this.generateViewLayout(v); } else {
+    dictValues(this.state.views).forEach((v) => {
+      if (!v.layout) {
+        v.layout = this.generateViewLayout(v);
+      } else {
         v.layout.i = v.uid;
       }
     });
 
     this.pixiRenderer = PIXI.autoDetectRenderer(this.state.width,
-      this.state.height,
-      { view: this.canvasElement,
+      this.state.height, {
+        view: this.canvasElement,
         antialias: true,
         transparent: true,
         resolution: 2,
         autoResize: true,
+        preserveDrawingBuffer: true,
       });
 
     // PIXI.RESOLUTION=2;
@@ -226,14 +245,20 @@ class HiGlassComponent extends React.Component {
 
     // keep track of the width and height of this element, because it
     // needs to be reflected in the size of our drawing surface
-    this.setState({ mounted: true,
+    this.setState({
       svgElement: this.svgElement,
       canvasElement: this.canvasElement,
     });
-    ElementQueries.listen();
-    this.resizeSensor = new ResizeSensor(
-      this.element.parentNode, this.updateAfterResize.bind(this),
-    );
+
+    this.waitForDOMAttachment(() => {
+      ElementQueries.listen();
+      this.resizeSensor = new ResizeSensor(
+        this.element.parentNode, this.updateAfterResize.bind(this),
+      );
+
+      // this.forceUpdate();
+      this.updateAfterResize();
+    });
 
     this.handleDragStart();
     this.handleDragStop();
@@ -285,8 +310,19 @@ class HiGlassComponent extends React.Component {
   }
 
   componentWillUnmount() {
+    // Destroy PIXI renderer, stages, and assets
+    this.mounted = false;
+    this.pixiStage.destroy(false);
+    this.pixiStage = null;
+    this.pixiRenderer.destroy(true);
+    this.pixiRenderer = null;
+
     window.removeEventListener('focus', this.boundRefreshView);
-    this.resizeSensor.detach();
+
+    // if this element was never attached to the DOM
+    // then the resize sensor will never have been initiated
+    if (this.resizeSensor)
+      this.resizeSensor.detach();
 
     domEvent.unregister('keydown', document);
     domEvent.unregister('keyup', document);
@@ -294,6 +330,7 @@ class HiGlassComponent extends React.Component {
 
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
+    apiDestroy();
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
@@ -351,11 +388,30 @@ class HiGlassComponent extends React.Component {
 
   animate() {
     requestAnimationFrame(() => {
+      if (!this.pixiRenderer)
+        // component was probably unmounted
+        return;
+
       this.pixiRenderer.render(this.pixiStage);
     });
   }
 
+  measureSize() {
+    const heightOffset = 0;
+    const height = this.element.clientHeight - heightOffset;
+    const width = this.element.clientWidth;
+
+    if (width > 0 && height > 0) {
+      this.setState({
+        sizeMeasured: true,
+        width,
+        height,
+      });
+    }
+  }
+
   updateAfterResize() {
+    this.measureSize();
     this.updateRowHeight();
     this.fitPixiToParentContainer();
     this.refreshView(LONG_DRAG_TIMEOUT);
@@ -421,10 +477,10 @@ class HiGlassComponent extends React.Component {
       for (const track of tracks[trackType]) {
         if (track.type === 'combined' && track.contents) {
           for (const subTrack of track.contents) {
-            allTracks.push({ viewId, trackId: subTrack.uid });
+            allTracks.push({ viewId, trackId: subTrack.uid, track: subTrack });
           }
         } else {
-          allTracks.push({ viewId, trackId: track.uid });
+          allTracks.push({ viewId, trackId: track.uid, track: track});
         }
       }
     }
@@ -444,10 +500,10 @@ class HiGlassComponent extends React.Component {
         for (const track of tracks[trackType]) {
           if (track.type === 'combined' && track.contents) {
             for (const subTrack of track.contents) {
-              allTracks.push({ viewId, trackId: subTrack.uid });
+              allTracks.push({ viewId, trackId: subTrack.uid, track: subTrack });
             }
           } else {
-            allTracks.push({ viewId, trackId: track.uid });
+            allTracks.push({ viewId, trackId: track.uid, track: track });
           }
         }
       }
@@ -482,7 +538,9 @@ class HiGlassComponent extends React.Component {
       const lockGroupValues = dictValues(this.valueScaleLocks[uid]);
 
       // /let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
-      const lockedTracks = lockGroupValues.map(x =>
+      const lockedTracks = lockGroupValues
+        .filter(x => this.tiledPlots[x.view])
+        .map(x =>
         this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track));
 
       const minValues = lockedTracks
@@ -638,12 +696,23 @@ class HiGlassComponent extends React.Component {
     return svg;
   }
 
-  handleExportSVG() {
+  createSVGString() {
     const svg = this.createSVG();
 
     const svgText = new XMLSerializer().serializeToString(svg);
-    download('export.svg', vkbeautify.xml(svgText));
-    return svg;
+    const beautyText = vkbeautify.xml(svgText);
+
+    return vkbeautify.xml(svgText);
+  }
+
+  createDataURI() {
+    let pngString = this.canvasElement.toDataURL();
+
+    return pngString;
+  }
+
+  handleExportSVG() {
+    download('export.svg', this.createSVGString());
   }
 
   handleScalesChanged(uid, xScale, yScale, notify = true) {
@@ -788,6 +857,9 @@ class HiGlassComponent extends React.Component {
      *
      * @param viewUid: The view uid for which to adjust the zoom level
      */
+    if (!this.tiledPlots[viewUid])
+      throw `View uid ${viewUid} does not exist in the current viewConfig`;
+
     this.tiledPlots[viewUid].handleZoomToData();
   }
 
@@ -1046,18 +1118,17 @@ class HiGlassComponent extends React.Component {
     });
   }
 
-
+  /**
+   * Update the height of each row in the layout so that it takes up all
+   * of the available space in the div.
+   */
   updateRowHeight() {
-    /**
-       * Update the height of each row in the layout so that it takes up all
-       * of the available space in the div.
-       */
-    if (!(this.props.options ? this.props.options.bounded : false)) {
+    if (!(this.props.options && this.props.options.bounded)) {
       // not bounded so we don't need to update the row height
       return;
     }
 
-    const width = this.element.parentNode.clientWidth;
+    // const width = this.element.parentNode.clientWidth;
     const height = this.element.parentNode.clientHeight;
 
     let maxHeight = 0;
@@ -1070,36 +1141,42 @@ class HiGlassComponent extends React.Component {
 
     const MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
 
-    const marginHeight = MARGIN_HEIGHT * maxHeight - 1;
+    const marginHeight = (MARGIN_HEIGHT * maxHeight) - 1;
     const availableHeight = height - marginHeight;
 
-    const currentRowHeight = this.state.rowHeight;
+    // const currentRowHeight = this.state.rowHeight;
     const prospectiveRowHeight = availableHeight / maxHeight; // maxHeight is the number of
     // rows necessary to display this view
 
     const chosenRowHeight = Math.floor(prospectiveRowHeight);
 
-    for (const view of dictValues(this.state.views)) {
-      const { totalWidth, totalHeight,
-        topHeight, bottomHeight,
-        leftWidth, rightWidth,
-        centerWidth, centerHeight,
-        minNecessaryHeight } = this.calculateViewDimensions(view);
+    // for (const view of dictValues(this.state.views)) {
+    //   const {
+    //     totalWidth,
+    //     totalHeight,
+    //     topHeight,
+    //     bottomHeight,
+    //     leftWidth,
+    //     rightWidth,
+    //     centerWidth,
+    //     centerHeight,
+    //     minNecessaryHeight
+    //   } = this.calculateViewDimensions(view);
 
-      // If the view is bounded, then we always fit everything inside the container
-      //
-      // It used to be that if the viewconfig was too long, we just let it overflow,
-      // but I think it's better that it's always contained.
+    //   // If the view is bounded, then we always fit everything inside the container
+    //   //
+    //   // It used to be that if the viewconfig was too long, we just let it overflow,
+    //   // but I think it's better that it's always contained.
 
-      /*
-            if (minNecessaryHeight > view.layout.h * (prospectiveRowHeight + MARGIN_HEIGHT)) {
-                // we don't have space for one of the containers, so let them exceed the bounds
-                // of the box
-                chosenRowHeight = currentRowHeight;
-                break;
-            }
-            */
-    }
+    //   /*
+    //         if (minNecessaryHeight > view.layout.h * (prospectiveRowHeight + MARGIN_HEIGHT)) {
+    //             // we don't have space for one of the containers, so let them exceed the bounds
+    //             // of the box
+    //             chosenRowHeight = currentRowHeight;
+    //             break;
+    //         }
+    //         */
+    // }
 
     this.setState({
       rowHeight: chosenRowHeight,
@@ -1179,7 +1256,7 @@ class HiGlassComponent extends React.Component {
   }
 
   resizeHandler() {
-    objVals(this.viewHeaders).forEach(viewHeader => viewHeader.checkWidth());
+    objVals(this.viewHeaders).filter(x => x).forEach(viewHeader => viewHeader.checkWidth());
   }
 
   fillInMinWidths(tracksDict) {
@@ -1439,6 +1516,25 @@ class HiGlassComponent extends React.Component {
     return layout;
   }
 
+  handleClearView(viewUid) {
+    /**
+     * Remove all the tracks from a view
+     *
+     * @param {viewUid} Thie view's identifier
+     */
+    const views = this.state.views;
+
+    views[viewUid].tracks.top = [];
+    views[viewUid].tracks.bottom = [];
+    views[viewUid].tracks.center = [];
+    views[viewUid].tracks.left = [];
+    views[viewUid].tracks.right = [];
+
+    this.setState({
+      views: views,
+    });
+  }
+
   handleCloseView(uid) {
     /**
        * A view needs to be closed. Remove it from from the viewConfig and then clean
@@ -1527,6 +1623,31 @@ class HiGlassComponent extends React.Component {
     for (const newTrack of newTracks) { this.handleTrackAdded(viewId, newTrack, position, host); }
   }
 
+  handleChangeTrackType(viewUid, trackUid, newType) {
+    /**
+     * Change the type of a track. For example, convert a line to a bar track.
+     *
+     * Parameters
+     * ----------
+     *  viewUid: string
+     *    The view containing the track to be changed
+     *  trackUid: string
+     *    The uid identifying the existin track
+     *  newType: string
+     *    The type to switch this track to.
+     */
+    const view = this.state.views[viewUid];
+    let trackConfig = getTrackByUid(view.tracks, trackUid);
+
+    // this track needs a new uid so that it will be rerendered
+    trackConfig.uid = slugid.nice();
+    trackConfig.type = newType;
+
+    this.setState({
+      views: this.state.views,
+    });
+  }
+
   handleTrackAdded(viewId, newTrack, position, host = null) {
     /**
          * A track was added from the AddTrackModal dialog.
@@ -1543,6 +1664,10 @@ class HiGlassComponent extends React.Component {
          *      The trackConfig object describing this track.
          */
     this.addDefaultOptions(newTrack);
+
+    // make sure the new track has a uid
+    if (!newTrack.uid)
+      newTrack.uid = slugid.nice();
 
     if (newTrack.contents) {
       // add default options to combined tracks
@@ -1674,6 +1799,7 @@ class HiGlassComponent extends React.Component {
     totalTrackHeight += totalHeight;
 
     const MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
+
     if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(
         (totalTrackHeight + MARGIN_HEIGHT) /
@@ -1862,6 +1988,15 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  deserializeValueScaleLocks(viewConfig) {
+    if (viewConfig.valueScaleLocks) {
+        for (let viewUid of dictKeys(viewConfig.valueScaleLocks.locksByViewUid)) {
+            this.valueScaleLocks[viewUid] = viewConfig.valueScaleLocks
+                .locksDict[viewConfig.valueScaleLocks.locksByViewUid[viewUid]];
+        }
+    }
+  }
+
   serializeLocks(locks) {
     const locksDict = {};
     const locksByViewUid = {};
@@ -1923,6 +2058,7 @@ class HiGlassComponent extends React.Component {
 
     newJson.zoomLocks = this.serializeLocks(this.zoomLocks);
     newJson.locationLocks = this.serializeLocks(this.locationLocks);
+    newJson.valueScaleLocks = this.serializeLocks(this.valueScaleLocks);
 
     const data = JSON.stringify(newJson, null, 2);
     return data;
@@ -1952,9 +2088,10 @@ class HiGlassComponent extends React.Component {
       .post(wrapper, (error, response) => {
         if (response) {
           const content = JSON.parse(response.response);
+          const portString = window.location.port === '' ? '' : `:${window.location.port}`;
           this.setState({
             // exportLinkLocation: this.props.viewConfig.exportViewUrl + "?d=" + content.uid
-            exportLinkLocation: `http://${window.location.hostname}/app/?config=${content.uid}`,
+            exportLinkLocation: `http://${window.location.hostname}${portString}/app/?config=${content.uid}`,
           });
         } else {
           console.error('error:', error);
@@ -2130,28 +2267,30 @@ class HiGlassComponent extends React.Component {
     return allTracks;
   }
 
-  handleSelectedAssemblyChanged(viewUid, newAssembly, newAutocompleteId) {
+  handleSelectedAssemblyChanged(viewUid, newAssembly, newAutocompleteId, newServer) {
     /*
-         * A new assembly was selected in the GenomePositionSearchBox. Update the corresponding
-         * view's entry
-         *
-         * Arguments
-         * ---------
-         *
-         * viewUid: string
-         *      The uid of the view this genomepositionsearchbox belongs to
-         * newAssembly: string
-         *      The new assembly it should display coordinates for
-         *
-         * Returns
-         * -------
-         *
-         *  Nothing
-         */
+     * A new assembly was selected in the GenomePositionSearchBox.
+     * Update the corresponding
+     * view's entry
+     *
+     * Arguments
+     * ---------
+     *
+     * viewUid: string
+     *      The uid of the view this genomepositionsearchbox belongs to
+     * newAssembly: string
+     *      The new assembly it should display coordinates for
+     *
+     * Returns
+     * -------
+     *
+     *  Nothing
+     */
     const views = this.state.views;
 
     views[viewUid].genomePositionSearchBox.chromInfoId = newAssembly;
     views[viewUid].genomePositionSearchBox.autocompleteId = newAutocompleteId;
+    views[viewUid].genomePositionSearchBox.autocompleteServer = newServer;
   }
 
   createGenomePostionSearchBoxEntry(existingGenomePositionSearchBox, suggestedAssembly) {
@@ -2255,11 +2394,16 @@ class HiGlassComponent extends React.Component {
     const view = this.state.views[viewUid];
     const track = getTrackByUid(view.tracks, trackUid);
 
+    if (!track)
+      return;
+
     track.options = Object.assign(track.options, newOptions);
 
-    this.setState({
-      views: this.state.views,
-    });
+    if (this.mounted) {
+      this.setState({
+        views: this.state.views,
+      });
+    }
   }
 
   isTrackValid(track, viewUidsPresent) {
@@ -2325,20 +2469,34 @@ class HiGlassComponent extends React.Component {
 
       viewsByUid[v.uid] = v;
 
-      if (!v.initialXDomain)
+      if (!v.initialXDomain) {
         throw 'No initialXDomain in provided viewconf';
+      } else {
+        v.initialXDomain[0] = +v.initialXDomain[0];
+        v.initialXDomain[1] = +v.initialXDomain[1];
+
+      }
 
       // if there's no y domain specified just use the x domain instead
       // effectively centers the view on the diagonal
       if (!v.initialYDomain) {
         v.initialYDomain = [v.initialXDomain[0], v.initialXDomain[1]];
+      } else {
+        v.initialXDomain[0] = +v.initialXDomain[0];
+        v.initialXDomain[1] = +v.initialXDomain[1];
       }
+
+      if (!this.xScales[v.uid])
+        this.xScales[v.uid] = scaleLinear().domain(v.initialXDomain);
+      if (!this.yScales[v.uid])
+        this.yScales[v.uid] = scaleLinear().domain(v.initialYDomain);
 
       // Add names to all the tracks
       let looseTracks = positionedTracksToAllTracks(v.tracks);
 
       this.deserializeZoomLocks(viewConfig);
       this.deserializeLocationLocks(viewConfig);
+      this.deserializeValueScaleLocks(viewConfig);
 
       // give tracks their default names (e.g. 'type': 'top-axis'
       // will get a name of 'Top Axis'
@@ -2418,7 +2576,7 @@ class HiGlassComponent extends React.Component {
     this.removeScalesChangedListener(viewId, listenerId);
   }
 
-  onLocationChange(viewId, callback, callbackId) {
+onLocationChange(viewId, callback, callbackId) {
     if (
       typeof viewId === 'undefined' ||
       Object.keys(this.state.views).indexOf(viewId) === -1
@@ -2446,12 +2604,15 @@ class HiGlassComponent extends React.Component {
       callback(scalesToGenomeLoci(xScale, yScale, this.chromInfo));
     };
 
-    const newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
-      .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
-      .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
-      .reduce((max, value) => Math.max(max, value), 0) + 1;
+    let newListenerId = 1;
+    if (this.scalesChangedListeners[view.uid]) {
+      newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
+        .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
+        .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
+        .reduce((max, value) => Math.max(max, value), 0) + 1;
+    }
 
-    const scaleListener = this.addScalesChangedListener(
+    this.addScalesChangedListener(
       view.uid,
       `${LOCATION_LISTENER_PREFIX}.${newListenerId}`,
       middleLayerListener,
@@ -2462,60 +2623,82 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  /**
+   * Handle mousemove events by republishing the event using pubSub.
+   *
+   * @param {object}  e  Event object.
+   */
+  mouseMoveHandler(e) {
+    const offset = this.topDiv
+      ? this.topDiv.getBoundingClientRect()
+      : { top: 0, left: 0 };
+    const publishedPosition = 
+      { x: e.clientX - offset.left, y: e.clientY - offset.top }
+
+    pubSub.publish(
+      'app.mouseMove',
+      publishedPosition
+    );
+  }
+
+  /**
+   * Handle mousemove and zoom events.
+   */
+  mouseMoveZoomHandler(data) {
+    apiPublish('mouseMoveZoom', data);
+  }
+
   setChromInfo(chromInfoPath, callback) {
-    ChromosomeInfo(chromInfoPath, (chromInfo) => {
-      this.chromInfo = chromInfo;
+    ChromosomeInfo(chromInfoPath, (newChromInfo) => {
+      this.chromInfo = newChromInfo;
       callback();
     });
   }
 
   render() {
-    const tiledAreaStyle = {
-      display: 'flex',
-      flexDirection: 'column',
-    };
-    let tiledAreas = (<div
+    let tiledAreas = (
+      <div
+        ref={(c) => { this.tiledAreaDiv = c; }}
+        styleName="styles.tiled-area"
+      />
+    );
 
-      ref={(c) => { this.tiledAreaDiv = c; }}
-      style={tiledAreaStyle}
-    />);
+    // The component needs to be mounted in order for the initial view to have
+    // the right width
+    if (this.mounted) {
+      tiledAreas = dictValues(this.state.views).map((view) => {
+        const zoomFixed = typeof view.zoomFixed !== 'undefined'
+          ? view.zoomFixed
+          : this.props.zoomFixed;
 
-    // The component needs to be mounted in order for the initial view to have the right
-    // width
-    if (this.state.mounted) {
-      tiledAreas = dictValues(this.state.views).map((view, i) => {
-        const zoomFixed = typeof view.zoomFixed !== 'undefined' ? view.zoomFixed : this.props.zoomFixed;
-
-        const layout = view.layout;
-
-        const itemUid = view.uid;
-
-        // only show the add track menu for the tiled plot it was selected
-        // for
+        // only show the add track menu for the tiled plot it was selected for
         const addTrackPositionMenuPosition =
-                    view.uid == this.state.addTrackPositionMenuUid ?
-                      this.state.addTrackPositionMenuPosition :
-                      null;
+          view.uid === this.state.addTrackPositionMenuUid
+            ? this.state.addTrackPositionMenuPosition
+            : null;
 
         let overlay = null;
         if (this.state.chooseViewHandler) {
           let background = 'transparent';
 
-          if (this.state.mouseOverOverlayUid == view.uid) { background = 'green'; }
-          overlay = (<div
-            className="tiled-plot-overlay"
-            onClick={e => this.state.chooseViewHandler(view.uid)}
-            onMouseEnter={e => this.handleOverlayMouseEnter(view.uid)}
-            onMouseLeave={e => this.handleOverlayMouseLeave(view.uid)}
-            onMouseMove={e => this.handleOverlayMouseEnter(view.uid)}
-            style={{
-              position: 'absolute',
-              width: '100%',
-              height: '100%',
-              background,
-              opacity: 0.3,
-            }}
-          />);
+          if (this.state.mouseOverOverlayUid === view.uid) background = 'green';
+
+          overlay = (
+            <div
+              className="tiled-plot-overlay"
+              onClick={() => this.state.chooseViewHandler(view.uid)}
+              onMouseEnter={() => this.handleOverlayMouseEnter(view.uid)}
+              onMouseLeave={() => this.handleOverlayMouseLeave(view.uid)}
+              onMouseMove={() => this.handleOverlayMouseEnter(view.uid)}
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                background,
+                opacity: 0.3,
+              }}
+            />
+          );
         }
 
         const tiledPlot = (
@@ -2542,12 +2725,15 @@ class HiGlassComponent extends React.Component {
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
             mouseTool={this.state.mouseTool}
+            onChangeTrackType={(trackId, newType) =>
+              this.handleChangeTrackType(view.uid, trackId, newType)}
             onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
             onDataDomainChanged={
               (xDomain, yDomain) =>
                 this.handleDataDomainChanged(view.uid, xDomain, yDomain)
             }
             onLockValueScale={uid => this.handleLockValueScale(view.uid, uid)}
+            onMouseMoveZoom={this.mouseMoveZoomHandler.bind(this)}
             onNewTilesLoaded={trackUid => this.handleNewTilesLoaded(view.uid, trackUid)}
             onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
             onRangeSelection={this.rangeSelectionHandler.bind(this)}
@@ -2600,8 +2786,8 @@ class HiGlassComponent extends React.Component {
               // the chromInfoId is either specified in the viewconfig or guessed based on
               // the visible tracks (see createGenomePositionSearchBoxEntry)
               onFocus={onFocus}
-              onSelectedAssemblyChanged={(x, y) =>
-                this.handleSelectedAssemblyChanged(view.uid, x, y)}
+              onSelectedAssemblyChanged={(x, y, server) =>
+                this.handleSelectedAssemblyChanged(view.uid, x, y, server)}
               registerViewportChangedListener={listener =>
                 this.addScalesChangedListener(view.uid, view.uid, listener)}
               removeViewportChangedListener={() =>
@@ -2614,7 +2800,7 @@ class HiGlassComponent extends React.Component {
           );
         };
 
-        const multiTrackHeader = this.props.viewConfig.editable ? (
+        const multiTrackHeader = this.props.viewConfig.editable && !this.props.viewConfig.hideHeader ? (
           <ViewHeader
             // Reserved props
             ref={(c) => { this.viewHeaders[view.uid] = c; }}
@@ -2626,6 +2812,7 @@ class HiGlassComponent extends React.Component {
               view.genomePositionSearchBox.visible
             }
             onAddView={() => this.handleAddView(view)}
+            onClearView={() => this.handleClearView(view.uid)}
             onCloseView={() => this.handleCloseView(view.uid)}
             onExportSVG={this.handleExportSVG.bind(this)}
             onExportViewsAsJSON={this.handleExportViewAsJSON.bind(this)}
@@ -2673,7 +2860,7 @@ class HiGlassComponent extends React.Component {
           <div
             key={view.uid}
             ref={(c) => { this.tiledAreaDiv = c; }}
-            style={tiledAreaStyle}
+            styleName="styles.tiled-area"
           >
             {multiTrackHeader}
             {tiledPlot}
@@ -2692,22 +2879,18 @@ class HiGlassComponent extends React.Component {
       />)
       : null;
 
-    let layouts = this.state.mounted ? dictValues(this.state.views)
+    let layouts = this.mounted ? dictValues(this.state.views)
       .filter(x => x.layout).map(x => x.layout) : [];
     layouts = JSON.parse(JSON.stringify(layouts)); // make sure to copy the layouts
 
-    /*
-    for (let i = 0; i < layouts.length; i++)
-        layouts[i].blah = slugid.nice();
-    */
-
     const gridLayout = (
-      <WidthReactGridLayout
+      <ReactGridLayout
         // Reserved props
         ref={(c) => { this.gridLayout = c; }}
 
         // Custom props
         cols={12}
+        width={this.state.width}
         draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
         isDraggable={this.props.viewConfig.editable}
         isResizable={this.props.viewConfig.editable}
@@ -2727,10 +2910,10 @@ class HiGlassComponent extends React.Component {
         // I like to have it animate on mount. If you don't, delete
         // `useCSSTransforms` (it's default `true`)
         // and set `measureBeforeMount={true}`.
-        useCSSTransforms={this.state.mounted}
+        useCSSTransforms={this.mounted}
       >
         {tiledAreas}
-      </WidthReactGridLayout>
+      </ReactGridLayout>
     );
 
     return (
@@ -2739,6 +2922,7 @@ class HiGlassComponent extends React.Component {
         ref={(c) => { this.topDiv = c; }}
         className="higlass"
         styleName="styles.higlass"
+        onMouseMove={this.mouseMoveHandler.bind(this)}
       >
         <canvas
           key={this.uid}

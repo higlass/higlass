@@ -7,10 +7,10 @@ import { tileProxy } from './services';
 import { colorToHex } from './utils';
 
 export class ArrowheadDomainsTrack extends TiledPixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, option, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, option, animate);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
+    super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
 
-    this.drawnRects = new Set();
+    this.drawnRects = {};
   }
 
   tileToLocalId(tile) {
@@ -19,7 +19,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
          */
 
     // tile contains [zoomLevel, xPos, yPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
   tileToRemoteId(tile) {
@@ -28,7 +28,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
          */
 
     // tile contains [zoomLevel, xPos, yPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
   localToRemoteId(remoteId) {
@@ -119,7 +119,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
   }
 
   draw() {
-    this.drawnRects.clear();
+    this.drawnRects = {};
 
     super.draw();
   }
@@ -130,15 +130,31 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
     // console.log('tile:', tile);
     // console.log('Id2DTiled drawTile...');
     const graphics = tile.graphics;
-
     graphics.clear();
 
-    const stroke = colorToHex(this.options.rectangleDomainStrokeColor ? this.options.rectangleDomainStrokeColor : 'black');
-    const fill = colorToHex(this.options.rectangleDomainFillColor ? this.options.rectangleDomainFillColor : 'grey');
+    const stroke = colorToHex(this.options.rectangleDomainStrokeColor || 'black');
+    const fill = colorToHex(this.options.rectangleDomainFillColor || 'grey');
 
-    graphics.lineStyle(1, stroke, 1);
-    graphics.beginFill(fill, 0.4);
-    graphics.alpha = this.options.rectangleDomainOpacity ? this.options.rectangleDomainOpacity : 0.5;
+    graphics.lineStyle(
+      typeof this.options.rectangleDomainStrokeWidth !== 'undefined'
+        ? this.options.rectangleDomainStrokeWidth
+        : 1,
+      stroke,
+      typeof this.options.rectangleDomainStrokeOpacity !== 'undefined'
+        ? this.options.rectangleDomainStrokeOpacity
+        : 1,
+    );
+    graphics.beginFill(
+      fill,
+      typeof this.options.rectangleDomainFillOpacity !== 'undefined'
+        ? this.options.rectangleDomainFillOpacity
+        : 0.4,
+    );
+
+    graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
+
+    if (!tile.tileData.length)
+      return;
 
     // line needs to be scaled down so that it doesn't become huge
     for (const td of tile.tileData) {
@@ -152,11 +168,78 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
 
       const uid = td.uid;
 
-      if (this.drawnRects.has(uid)) { continue; } // we've already drawn this rectangle in another tile
+      const width = endX - startX;
+      const height = endY - startY;
 
-      this.drawnRects.add(uid);
-      graphics.drawRect(startX, startY, endY - startY, endX - startX);
+      if (uid in this.drawnRects) { continue; } // we've already drawn this rectangle in another tile
+
+
+      let drawnRect = { x: startX, y: startY, width: endY - startY, height: endX - startX };
+
+      if (this.options.minSquareSize && this.options.minSquareSize != 'none') {
+        if (width < +this.options.minSquareSize || height < +this.options.minSquareSize) {
+          const newWidth = this.options.minSquareSize;
+          const newHeight = this.options.minSquareSize;
+          
+          drawnRect = {x: (startX + endX) / 2, y: (startY + endY) / 2,
+            width: newWidth, height: newHeight};
+        }
+      } 
+
+      this.drawnRects[uid] = drawnRect;
+
+      graphics.drawRect(drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height);
     }
+  }
+
+  exportSVG() {
+    let track = null,
+      base = null;
+
+    if (super.exportSVG) {
+      [base, track] = super.exportSVG();
+    } else {
+      base = document.createElement('g');
+      track = base;
+    }
+    const output = document.createElement('g');
+    output.setAttribute('transform',
+      `translate(${this.position[0]},${this.position[1]})`);
+
+    track.appendChild(output);
+
+    for (let tile of this.visibleAndFetchedTiles()) {
+      if (!tile.tileData || !tile.tileData.length)
+        // this tile has no data
+        continue;
+
+      tile.tileData.forEach((td, i) => {
+        let gTile = document.createElement('g')
+        gTile.setAttribute('transform',
+          `translate(${tile.graphics.position.x},${tile.graphics.position.y})scale(${tile.graphics.scale.x},${tile.graphics.scale.y})`);
+        output.appendChild(gTile);
+
+        if (td.uid in this.drawnRects) {
+          let rect = this.drawnRects[td.uid];
+
+          let r = document.createElement('rect');
+          r.setAttribute('x', rect.x);
+          r.setAttribute('y', rect.y);
+          r.setAttribute('width', rect.width);
+          r.setAttribute('height', rect.height);
+
+          r.setAttribute('fill',  this.options.fillColor ? this.options.fillColor : 'grey')
+          r.setAttribute('opacity', 0.3);
+
+          r.style.stroke = this.options.fillColor ? this.options.fillColor : 'grey';
+          r.style.strokeWidth = "1px";
+
+          gTile.appendChild(r);
+        }
+      });
+    }
+
+    return [base, base];
   }
 
   setPosition(newPosition) {

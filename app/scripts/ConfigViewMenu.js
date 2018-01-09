@@ -27,6 +27,14 @@ export class ConfigViewMenu extends React.Component {
         <hr styleName="context-menu-hr" />
 
         <ContextMenuItem
+          onClick={e => this.props.onClearView(e)}
+        >
+        {'Clear View'}
+        </ContextMenuItem>
+
+        <hr styleName="context-menu-hr" />
+
+        <ContextMenuItem
           onClick={e => this.props.onYankZoom(e)}
         >
           {'Take zoom from'}

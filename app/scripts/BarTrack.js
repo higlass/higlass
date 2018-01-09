@@ -6,6 +6,15 @@ import { HorizontalLine1DPixiTrack } from './HorizontalLine1DPixiTrack';
 import { colorToHex, dictValues } from './utils';
 
 export class BarTrack extends HorizontalLine1DPixiTrack {
+  constructor( scene, dataConfig, handleTilesetInfoReceived, option,
+    animate,
+    onValueScaleChanged,
+  ) {
+    super( scene, dataConfig, handleTilesetInfoReceived, option, animate,
+      onValueScaleChanged,
+    );
+  }
+
   initTile(tile) {
     /**
          * Create whatever is needed to draw this tile.
@@ -13,21 +22,25 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
     super.initTile(tile);
 
     // console.log('initializing tile');
+    tile.barXValues = new Array(tile.tileData.dense.length);
+    tile.barYValues = new Array(tile.tileData.dense.length);
+    tile.barWidths = new Array(tile.tileData.dense.length);
+    tile.barHeights = new Array(tile.tileData.dense.length);
+    tile.barColors = new Array(tile.tileData.dense.length);
 
     // this.drawTile(tile);
     this.renderTile(tile);
   }
 
   drawTile(tile) {
-
+    // empty function so that the superclass's drawTile
+    // doesn't do anything
   }
 
   renderTile(tile) {
-    super.drawTile(tile);
+    //super.drawTile(tile);
 
     if (!tile.graphics) { return; }
-
-    // console.log('renderTile:');
 
     const graphics = tile.graphics;
 
@@ -78,10 +91,12 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
     const strokeWidth = 0;
     graphics.lineStyle(strokeWidth, stroke, 1);
 
-    const color = colorToHex(this.options.barFillColor ? this.options.barFillColor : 'grey');
+    const color = this.options.barFillColor ? this.options.barFillColor : 'grey'
+    const colorHex = colorToHex(color);
+
     const opacity = 'barOpacity' in this.options ? this.options.barOpacity : 1;
 
-    graphics.beginFill(color, opacity);
+    graphics.beginFill(colorHex, opacity);
 
     const j = 0;
     tile.drawnAtScale = this._xScale.copy();
@@ -90,20 +105,19 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
       const xPos = this._xScale(tileXScale(i));
       const yPos = this.valueScale(tileValues[i] + pseudocount);
 
-      tile.lineXValues[i] = xPos;
-      tile.lineYValues[i] = yPos;
-
       const width = this._xScale(tileXScale(i + 1)) - xPos;
       const height = this.dimensions[1] - yPos;
+
+      tile.barColors[i] = color;
+      tile.barXValues[i] = xPos;
+      tile.barYValues[i] = yPos;
+      tile.barWidths[i] = width;
+      tile.barHeights[i] = height;
 
       if (tileXScale(i) > this.tilesetInfo.max_pos[0])
       // this data is in the last tile and extends beyond the length
       // of the coordinate system
       { break; }
-
-
-      // console.log('drawRect');
-      // console.log('xPos:', xPos)
 
       graphics.drawRect(xPos,
         yPos,
@@ -113,6 +127,8 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
   }
 
   draw() {
+    // we don't want to call HorizontalLine1DPixiTrack's draw function
+    // but rather its parent's
     super.draw();
 
     for (const tile of dictValues(this.fetchedTiles)) {
@@ -131,6 +147,72 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
 
   zoomed(newXScale, newYScale, k, tx, ty) {
     super.zoomed(newXScale, newYScale);
+  }
+
+  /**
+   * Export an SVG representation of this track
+   *
+   * @returns {[DOMNode,DOMNode]} The two returned DOM nodes are both SVG
+   * elements [base,track]. Base is a parent which contains track as a
+   * child. Track is clipped with a clipping rectangle contained in base.
+   *
+   */
+  exportSVG() {
+    let track = null;
+    let base = null;
+
+    [base, track] = super.superSVG();
+
+    base.setAttribute('class', 'exported-line-track');
+    const output = document.createElement('g');
+
+    track.appendChild(output);
+    output.setAttribute('transform',
+      `translate(${this.position[0]},${this.position[1]})`);
+
+    const stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
+
+    for (const tile of this.visibleAndFetchedTiles()) {
+      for (let i = 0; i < tile.barXValues.length; i++) {
+        const rect = document.createElement('rect');
+        const color = this.options.barFillColor ? this.options.barFillColor : 'grey';
+        rect.setAttribute('fill', tile.barColors[i]);
+        rect.setAttribute('stroke', tile.barColors[i]);
+
+        rect.setAttribute('x', tile.barXValues[i]);
+        rect.setAttribute('y', tile.barYValues[i]);
+        rect.setAttribute('height', tile.barHeights[i]);
+        rect.setAttribute('width', tile.barWidths[i]);
+
+        output.appendChild(rect);
+      }
+    }
+
+    const gAxis = document.createElement('g');
+    gAxis.setAttribute('id', 'axis');
+
+    // append the axis to base so that it's not clipped
+    base.appendChild(gAxis);
+    gAxis.setAttribute('transform',
+      `translate(${this.axis.pAxis.position.x}, ${this.axis.pAxis.position.y})`);
+
+    // add the axis to the export
+    if (
+      this.options.axisPositionHorizontal === 'left' ||
+      this.options.axisPositionVertical === 'top'
+    ) {
+      // left axis are shown at the beginning of the plot
+      const gDrawnAxis = this.axis.exportAxisLeftSVG(this.valueScale, this.dimensions[1]);
+      gAxis.appendChild(gDrawnAxis);
+    } else if (
+      this.options.axisPositionHorizontal === 'right' ||
+      this.options.axisPositionVertical === 'bottom'
+    ) {
+      const gDrawnAxis = this.axis.exportAxisRightSVG(this.valueScale, this.dimensions[1]);
+      gAxis.appendChild(gDrawnAxis);
+    }
+
+    return [base, track];
   }
 }
 

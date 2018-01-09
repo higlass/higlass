@@ -1,3 +1,9 @@
+.tiled-plot {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
 td {
   outline: 1px solid black;
 }

@@ -1,4 +1,136 @@
-v0.9.0
+v0.10.7 (2018-01-??)
+
+- Added mouseMoveZoom event to public API
+- Fixed and extended pubSub module
+
+v0.10.6 (2017-12-28)
+
+- Load ResizeSensors after the element is attached to the DOM tree
+- Added DivergentBarTrack
+- Fixed submenu hiding bug
+
+v0.10.5 (2017-12-27)
+
+- Fixed bug in TrackRenderer.setUpInitialScales where updating the view with
+new equivalent initial domains and different dimensions led to the view being
+misplaced
+- Added z-index to popup menus
+
+v0.10.4 (2017-12-16)
+
+- Fixed a bug in zoomToData
+- New API call for setViewConfig
+- New API call for zoomToDataExtent
+
+v0.10.3 (2017-12-13)
+
+- Don't include a colon if the port is 80
+- Added an option to clear the view
+- Exclude NaN values when setting the valueScale
+- Fixed bug related to displaying empty matrix tiles
+
+v0.10.2 (2017-12-12)
+
+- Fixed a bug in loading tileset info that isn't there
+- Better error handling on internal server error
+- Removed functionless menu item
+
+v0.10.1 (2017-12-05)
+
+- Fixed bug in Bedlike tracks that don't have a header
+
+v0.10.0 (2017-12-05)
+
+- Change track type from the config menu
+- Initial framework for divided by tracks
+- Y-positioned bed-like tracks
+
+v0.9.16 (2017-
+
+- Fixed undefined error when toggling genome position search box
+
+v0.9.15 (2017-11-22)
+
+- Fixed bug where newly selected annotations weren't being used
+- Added the hideHeader option
+- Added a warning for malformed gene annotations
+- Free up webgl renderer resources when unmount
+- Minor CSS cleanup
+- Fix resizing bug that appears after closing a view
+- Warn if there are no track source servers specified in the viewconf
+
+v0.9.14 (2017-11-11)
+
+- Show labels on bar chart
+
+v0.9.13 (2017-11-09)
+
+- Fixed gene position searching regression
+
+v0.9.12 (2017-11-08)
+
+- Fix inter-chromosomal searches (chr1-chr2)
+
+v0.9.11 (2017-11-08)
+
+- Fix gene annotation coloring bug
+- Fix menu clash error that occurs when a center track is specified
+without a combined track
+- Zoom into entire chromosomes by just entering its name
+
+v0.9.10 (2017-11-01)
+
+- Fixed d3 brush Error: <rect> attribute height: Expected length, "Infinity"
+- Fixed scale initialization error
+- Added back heatmap value scaling
+- Fixed horizontal heatmap multires tile loading
+- Better point export
+
+v0.9.9 (2017-11-01)
+
+- Fix SVG bar chart export
+- Fixed network error on SVG export again (from v0.8.44)
+
+v0.9.8 (2017-10-31)
+
+- Switch back to minified build
+
+v0.9.7 (2017-10-31)
+
+- Initialize scales when viewconfig is loaded rather than on
+handleScalesChanged
+
+v0.9.6 (2017-10-31)
+
+- Faulty build (package.json wasn't there)
+
+v0.9.5 (2017-10-31)
+
+- Fix visual clash of the center track's context menu and the colormap
+- Make visualization of 2D annotations more flexible: stroke width and fill / stroke opacity can be changed
+- Create debug output files
+
+v0.9.4 (2017-10-26)
+
+- Reintroduced value scale serialization fix
+- Fixed HorizontalHeatmapExport
+- Added a minimum width to 2D annotations
+- Added SVG export for 2d-rectangle-domains track
+
+v0.9.3 (2017-10-23)
+
+- Removed console log statement
+
+v0.9.2 (2017-10-23)
+
+- Fixed the build script to copy hglib.css rather than style.css
+
+v0.9.1 (2017-10-23)
+
+- Add support for vertical bar tracks
+- Fixed .travis.yml release issue
+
+v0.9.0 (2017-10-21)
 
 - Add 1D and 2D range selection
 - Add support for SASS
@@ -10,6 +142,8 @@ v0.9.0
 - (Fix #126) - Gene annotations shouldn't overlap on vertical tracks anymore
 - Keep track controls visible if config menu is active
 - Show child menus above the parent if there isn't enough space on the bottom
+- Add port number when exporting viewconfs from a non-standard port
+- Support arbitrary resolutions in heatmaps
 
 v0.8.44
 
