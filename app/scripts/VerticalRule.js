@@ -2,11 +2,16 @@ import { mix, Mixin } from 'mixwith';
 
 import PixiTrack from './PixiTrack.js';
 import { colorToHex } from './utils';
+import { RuleMixin } from './RuleMixin';
 
 export const VerticalRuleMixin = Mixin((superclass) => class extends superclass {
   drawVerticalRule(graphics) {
     const strokeWidth = 1;
-    const stroke = colorToHex('black');
+    let stroke = colorToHex('black');
+
+    if (this.highlighted) {
+      stroke = colorToHex('red');
+    }
 
     graphics.lineStyle(2, stroke, 1);
 
@@ -24,11 +29,18 @@ export const VerticalRuleMixin = Mixin((superclass) => class extends superclass 
       pos += dashLength + dashGap;
     }
   }
+
+  isMouseOverVerticalLine(mousePos) {
+      if (Math.abs(mousePos.x - this.position[0] - this._xScale(this.xPosition)) < this.MOUSEOVER_RADIUS) {
+        return true;
+      }
+    return false;
+  }
 });
 
-export class VerticalRule extends mix(PixiTrack).with(VerticalRuleMixin) {
-  constructor(stage, xPosition, options) {
-    super(stage, options);
+export class VerticalRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
+  constructor(stage, xPosition, options, animate) {
+    super(stage, options, animate);
 
     this.xPosition = xPosition;
   }
@@ -38,19 +50,18 @@ export class VerticalRule extends mix(PixiTrack).with(VerticalRuleMixin) {
     graphics.clear();
 
     this.drawVerticalRule(graphics);
+    this.animate();
   }
 
-  setPosition(newPosition) {
-    super.setPosition(newPosition);
+  mouseMoveHandler(mousePos) {
+    if (this.isPointInsideTrack(mousePos.x, mousePos.y) &&
+      this.isMouseOverVerticalLine(mousePos)) {
+        this.highlighted = true;
+        this.draw();
+        return;
+    }
 
-    // console.log('position', this.position);
-    this.pMain.position.x = this.position[0];
-    this.pMain.position.y = this.position[1];
-  }
-
-  zoomed(newXScale, newYScale, k, tx, ty) {
-    super.zoomed(newXScale, newYScale);
-
+    this.highlighted = false;
     this.draw();
   }
 }

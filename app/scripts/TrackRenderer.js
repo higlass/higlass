@@ -1245,7 +1245,8 @@ export class TrackRenderer extends React.Component {
         return new VerticalRule(
           this.pStage,
           track.x,
-          track.options
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
       case 'cross-rule':
@@ -1253,7 +1254,8 @@ export class TrackRenderer extends React.Component {
           this.pStage,
           track.x,
           track.y,
-          track.options
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
       default:

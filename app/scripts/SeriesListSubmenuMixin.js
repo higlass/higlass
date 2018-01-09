@@ -33,6 +33,7 @@ export const SeriesListSubmenuMixin = Mixin((superclass) => class extends superc
 
       return (
         <SeriesListMenu
+          key={`series-list-menu-${selectedTrack.uid}`}
           closeMenu={this.props.closeMenu}
           hostTrack={this.props.tracks[0]}
           onAddSeries={canBeReplaced ? this.props.onAddSeries : null}

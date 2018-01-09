@@ -33,7 +33,7 @@
 <script>
 
  var testViewConfig =
-{
+ {
   "editable": true,
   "zoomFixed": false,
   "trackSourceServers": [
@@ -44,8 +44,8 @@
     {
       "uid": "aa",
       "initialXDomain": [
-        236428963.84741035,
-        239912204.3873069
+        234746886.15079364,
+        238230126.6906902
       ],
       "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
       "genomePositionSearchBox": {
@@ -57,11 +57,60 @@
       },
       "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
-        "whole" : [
-            {
-                "type": "horizontal-rule",
-                "y": 238500000,
-            },
+        "whole": [
+          {
+            "type": "horizontal-rule",
+            "y": 238500000,
+            "position": "whole",
+            "uid": "EouLrVNPTvWosybAiWqCRw",
+            "name": "Horizontal Rule",
+            "options": {},
+            "width": 568,
+            "height": 546
+          },
+          {
+            "type": "vertical-rule",
+            "x": 237500000,
+            "position": "whole",
+            "uid": "SIW8wRsqRk2U7wjLd6nVLw",
+            "name": "Vertical Rule",
+            "options": {},
+            "width": 568,
+            "height": 546
+          },
+          {
+            "type": "cross-rule",
+            "x": 238386425.94568554,
+            "y": 238043301.87955555,
+            "position": "whole",
+            "options": {},
+            "uid": "bl1aUuXrTBuyrTB7PElrYw",
+            "name": "Cross Rule",
+            "width": 568,
+            "height": 546
+          },
+          {
+            "type": "cross-rule",
+            "x": 236607591.56740505,
+            "y": 236621722.94126442,
+            "position": "whole",
+            "options": {},
+            "uid": "V5HPwt5mT9Gopvf4kN1AOA",
+            "name": "Cross Rule",
+            "width": 568,
+            "height": 546
+          },
+          {
+            "type": "cross-rule",
+            "x": 236079151.2290874,
+            "y": 236078396.9596139,
+            "position": "whole",
+            "options": {},
+            "uid": "CSD_TPSxSaOD3z68O7L6cw",
+            "name": "Cross Rule",
+            "width": 20,
+            "height": 20
+          }
         ],
         "top": [
           {
@@ -80,22 +129,28 @@
               "trackBorderColor": "black",
               "name": "Gene Annotations (mm10)"
             },
-            "width": 568,
+            "width": 468,
             "height": 55,
             "position": "top",
             "header": "1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14"
           }
         ],
         "left": [
-            {
-                "type": "left-axis",
-            }
+          {
+            "type": "left-axis",
+            "width": 100,
+            "position": "left",
+            "uid": "Mz3K-nD2SK-cUvh9eSQ5SA",
+            "name": "Left Axis",
+            "options": {},
+            "height": 491
+          }
         ],
         "center": [
-{
+          {
             "uid": "c1",
             "type": "combined",
-            "height": 459,
+            "height": 491,
             "contents": [
               {
                 "server": "http://higlass.io/api/v1",
@@ -128,8 +183,8 @@
                     "value": "weight"
                   }
                 ],
-                "width": 1179,
-                "height": 459
+                "width": 468,
+                "height": 491
               },
               {
                 "type": "2d-chromosome-grid",
@@ -146,13 +201,13 @@
                   "lineStrokeColor": "grey"
                 },
                 "position": "center",
-                "width": 1179,
-                "height": 459
+                "width": 468,
+                "height": 491
               }
             ],
             "position": "center",
             "options": {},
-            "width": 1179
+            "width": 468
           }
         ],
         "right": [],
@@ -168,8 +223,8 @@
         "static": false
       },
       "initialYDomain": [
-        236586159.8814005,
-        239597200.55937442
+        235200144.00297335,
+        238854569.44119814
       ]
     }
   ],
@@ -265,6 +320,7 @@
     }
   }
 }
+
     window.higlassApi;
 
     hglib.createHgComponent(

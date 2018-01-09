@@ -112,7 +112,7 @@ export class SeriesListMenu extends ContextMenuContainer {
 
     return (
       <NestedContextMenu
-        key='config-series-menu'
+        key={`config-series-menu-${track.uid}`}
         closeMenu={this.props.closeMenu}
         menuItems={menuItems}
         orientation={this.state.orientation}
@@ -209,6 +209,9 @@ export class SeriesListMenu extends ContextMenuContainer {
       }
     }
     return (<div />);
+  }
+
+  componentWillUnmount() {
   }
 
   render() {

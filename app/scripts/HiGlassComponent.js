@@ -1618,7 +1618,6 @@ class HiGlassComponent extends React.Component {
          * @param position: The position the track is being added to
          * @param host: If this track is being added to another track
          */
-    console.log('hta:', newTracks);
     this.storeTrackSizes(viewId);
 
     for (const newTrack of newTracks) { this.handleTrackAdded(viewId, newTrack, position, host); }

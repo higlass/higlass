@@ -3,12 +3,13 @@ import { mix, Mixin } from 'mixwith';
 import PixiTrack from './PixiTrack.js';
 import { colorToHex } from './utils';
 
-import {HorizontalRuleMixin} from './HorizontalRule.js';
-import {VerticalRuleMixin} from './VerticalRule.js';
+import { RuleMixin } from './RuleMixin';
+import { HorizontalRuleMixin } from './HorizontalRule.js';
+import { VerticalRuleMixin } from './VerticalRule.js';
 
-export class CrossRule extends mix(PixiTrack).with(HorizontalRuleMixin, VerticalRuleMixin) {
-  constructor(stage, xPosition, yPosition, options) {
-    super(stage, options);
+export class CrossRule extends mix(PixiTrack).with(RuleMixin, HorizontalRuleMixin, VerticalRuleMixin) {
+  constructor(stage, xPosition, yPosition, options, animate) {
+    super(stage, options, animate);
 
     this.xPosition = xPosition;
     this.yPosition = yPosition;
@@ -22,17 +23,15 @@ export class CrossRule extends mix(PixiTrack).with(HorizontalRuleMixin, Vertical
     this.drawVerticalRule(graphics);
   }
 
-  setPosition(newPosition) {
-    super.setPosition(newPosition);
+  mouseMoveHandler(mousePos) {
+    if (this.isPointInsideTrack(mousePos.x, mousePos.y) &&
+      this.isMouseOverHorizontalLine(mousePos) || this.isMouseOverVerticalLine(mousePos)) {
+        this.highlighted = true;
+        this.draw();
+        return;
+    }
 
-    // console.log('position', this.position);
-    this.pMain.position.x = this.position[0];
-    this.pMain.position.y = this.position[1];
-  }
-
-  zoomed(newXScale, newYScale, k, tx, ty) {
-    super.zoomed(newXScale, newYScale);
-
+    this.highlighted = false;
     this.draw();
   }
 }

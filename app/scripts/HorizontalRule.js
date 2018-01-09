@@ -2,10 +2,7 @@ import {mix, Mixin} from 'mixwith';
 
 import PixiTrack from './PixiTrack.js';
 import { colorToHex } from './utils';
-
-import { pubSub } from './services';
-
-const MOUSEOVER_RADIUS = 4;
+import { RuleMixin } from './RuleMixin';
 
 export const HorizontalRuleMixin = Mixin((superclass) => class extends superclass {
   drawHorizontalRule(graphics) {
@@ -33,29 +30,29 @@ export const HorizontalRuleMixin = Mixin((superclass) => class extends superclas
       pos += dashLength + dashGap;
     }
   }
+
+  isMouseOverHorizontalLine(mousePos) {
+      if (Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) < this.MOUSEOVER_RADIUS) {
+        return true;
+      }
+    return false;
+  }
 });
 
-export class HorizontalRule extends mix(PixiTrack).with(HorizontalRuleMixin) {
+export class HorizontalRule extends mix(PixiTrack).with(RuleMixin, HorizontalRuleMixin) {
   constructor(stage, yPosition, options, animate) {
-    super(stage, options);
+    super(stage, options, animate);
 
-    this.pubSubs.push(pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this)));
-
-    this.highlighted = false;
     this.yPosition = yPosition;
-    this.animate = animate;
   }
 
+
   mouseMoveHandler(mousePos) {
-    if (mousePos.x > this.position[0] && mousePos.x < this.dimensions[0] &&
-        mousePos.y > this.position[1] && mousePos.y < this.dimensions[1]) {
-      if (Math.abs(mousePos.y - this.position[1] - this._yScale(this.yPosition)) < MOUSEOVER_RADIUS) {
+    if (this.isPointInsideTrack(mousePos.x, mousePos.y) &&
+      this.isMouseOverHorizontalLine(mousePos)) {
         this.highlighted = true;
         this.draw();
         return;
-      }
-    } else {
-
     }
 
     this.highlighted = false;
@@ -70,23 +67,6 @@ export class HorizontalRule extends mix(PixiTrack).with(HorizontalRuleMixin) {
     this.animate();
   }
 
-  setPosition(newPosition) {
-    super.setPosition(newPosition);
-
-    // console.log('position', this.position);
-    this.pMain.position.x = this.position[0];
-    this.pMain.position.y = this.position[1];
-  }
-
-  zoomed(newXScale, newYScale, k, tx, ty) {
-    super.zoomed(newXScale, newYScale);
-
-    this.draw();
-  }
-
-  respondsToPosition(x,y) {
-    return this.highlighted;
-  }
 }
 
 export default HorizontalRule;
