@@ -1,5 +1,5 @@
 import slugid from 'slugid';
-import {dictKeys, dictValues} from './utils';
+import { dictValues } from './utils';
 
 // Services
 import { tileProxy } from './services';
@@ -10,7 +10,6 @@ import {
 
 export default class DataFetcher {
   constructor(dataConfig) {
-    //console.log('data fetcher config:',  dataConfig);
     this.tilesetInfoLoading = true;
 
     // copy the dataConfig so that it doesn't dirty so that
@@ -33,7 +32,7 @@ export default class DataFetcher {
      * should (not currently implemented) check if the tileset
      * infos have the same dimensions and then return a common
      * one.
-     * 
+     *
      * Paremeters
      * ----------
      *  finished: function
@@ -42,11 +41,15 @@ export default class DataFetcher {
 
     if (!this.dataConfig.children) {
       if (!this.dataConfig.server && !this.dataConfig.tilesetUid) {
-        console.warn('No dataConfig children, server or tilesetUid:', this.dataConfig);
+        console.warn(
+          'No dataConfig children, server or tilesetUid:', this.dataConfig
+        );
         finished(null);
       } else {
         // pass in the callback
-        tileProxy.trackInfo(this.dataConfig.server, this.dataConfig.tilesetUid, 
+        tileProxy.trackInfo(
+          this.dataConfig.server,
+          this.dataConfig.tilesetUid,
           (tilesetInfo) => {
             // tileset infos are indxed by by tilesetUids, we can just resolve
             // that here before passing it back to the track
@@ -56,13 +59,12 @@ export default class DataFetcher {
     } else {
       // this data source has children, so we need to wait to get
       // all of their tileset infos in order to return them to the track
-      let promises = this.dataConfig.children.map((x) => {
-        return new Promise((resolve, reject) => {
+      const promises = this.dataConfig.children
+        .map(x => new Promise((resolve) => {
           x.tilesetInfo(resolve);
-        });
-      });
+        }));
 
-      Promise.all(promises).then(values => {
+      Promise.all(promises).then((values) => {
         // this is where we should check if all the children's tileset
         // infos match
         finished(values[0]);
@@ -90,7 +92,7 @@ export default class DataFetcher {
      *      E.g. xyxx.0.0.0.default
      */
 
-    return `${tilesetUid}.${tileId}`
+    return `${tilesetUid}.${tileId}`;
   }
 
   fetchTilesDebounced(receivedTiles, tileIds) {
@@ -111,7 +113,7 @@ export default class DataFetcher {
 
     if (!this.dataConfig.children) {
       // no children, just return the fetched tiles as is
-      const promise = new Promise((resolve, reject) => 
+      const promise = new Promise(resolve =>
         tileProxy.fetchTilesDebounced({
           id: slugid.nice(),
           server: this.dataConfig.server,
@@ -122,7 +124,7 @@ export default class DataFetcher {
         // console.log('tileIds:', tileIds);
         const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
         // console.log('tilesetUid:', tilesetUid);
-        let newTiles = {};
+        const newTiles = {};
 
         for (let i = 0; i < tileIds.length; i++) {
           const fullTileId = this.fullTileId(tilesetUid, tileIds[i]);
@@ -133,38 +135,35 @@ export default class DataFetcher {
 
         receivedTiles(newTiles);
       });
-
     } else {
-       // multiple child tracks, need to wait for all of them to
-       // fetch their data before returning to the parent
-      let promises = this.dataConfig.children.map((x) => {
-        return new Promise((resolve, reject) => {
+      // multiple child tracks, need to wait for all of them to
+      // fetch their data before returning to the parent
+      const promises = this.dataConfig.children
+        .map(x => new Promise((resolve) => {
           x.fetchTilesDebounced(resolve, tileIds);
-        });
-      });
+        }));
 
 
-      Promise.all(promises).then(returnedTiles => {
-        //console.log('returnedTiles:', returnedTiles);
-
-        // if we're trying to divide two datasets, 
-        if (this.dataConfig.type == 'divided') {
+      Promise.all(promises).then((returnedTiles) => {
+        // if we're trying to divide two datasets,
+        if (this.dataConfig.type === 'divided') {
           if (returnedTiles.length < 2) {
-            console.warn("Only one tileset specified for a divided datafetcher:", this.dataConfig);
+            console.warn(
+              'Only one tileset specified for a divided datafetcher:',
+              this.dataConfig
+            );
           }
 
-          //console.log('tileUids:', tileIds);
+          // const numeratorTilesetUid = dictValues(returnedTiles[0])[0].tilesetUid;
+          // const denominatorTilesetUid = dictValues(returnedTiles[1])[0].tilesetUid;
 
-          const numeratorTilesetUid = dictValues(returnedTiles[0])[0].tilesetUid;
-          const denominatorTilesetUid = dictValues(returnedTiles[1])[0].tilesetUid;
-
-          let newTiles = {};
+          const newTiles = {};
 
           for (let i = 0; i < tileIds.length; i++) {
-            const numeratorUid = this.fullTileId(numeratorTilesetUid, tileIds[i]);
-            const denominatorUid = this.fullTileId(denominatorTilesetUid, tileIds[i]);
+            // const numeratorUid = this.fullTileId(numeratorTilesetUid, tileIds[i]);
+            // const denominatorUid = this.fullTileId(denominatorTilesetUid, tileIds[i]);
 
-            newData = this.divideData(returnedTiles[0][tileIds[i]].dense,
+            const newData = this.divideData(returnedTiles[0][tileIds[i]].dense,
               returnedTiles[1][tileIds[i]].dense);
 
             const zoomLevel = returnedTiles[0][tileIds[i]].zoomLevel;
@@ -174,12 +173,12 @@ export default class DataFetcher {
               dense: newData,
               minNonZero: minNonZero(newData),
               maxNonZero: maxNonZero(newData),
-              zoomLevel: zoomLevel,
-              tilePos: tilePos,
+              zoomLevel,
+              tilePos,
               tilePositionId: tileIds[i],
-            }
+            };
 
-            // returned ids will be indexed by the tile id and won't include the 
+            // returned ids will be indexed by the tile id and won't include the
             // tileset uid
             newTiles[tileIds[i]] = newTile;
           }
@@ -187,9 +186,11 @@ export default class DataFetcher {
           receivedTiles(newTiles);
         } else {
           // assume we're just returning raw tiles
-          console.warn('Unimplemented dataConfig type. Returning first data source.', this.dataConfig);
-          
-          
+          console.warn(
+            'Unimplemented dataConfig type. Returning first data source.',
+            this.dataConfig
+          );
+
           receivedTiles(returnedTiles[0]);
         }
       });
@@ -214,13 +215,11 @@ export default class DataFetcher {
      *    An array consisting of the division of the
      *    numerator by the denominator
      */
-    let result = new Float32Array(numeratorData.length);
+    const result = new Float32Array(numeratorData.length);
 
     for (let i = 0; i < result.length; i++) {
-      if (denominatorData[i] == 0.)
-        result[i] = NaN;
-      else
-        result[i] = numeratorData[i] / denominatorData[i];
+      if (denominatorData[i] === 0.) result[i] = NaN;
+      else result[i] = numeratorData[i] / denominatorData[i];
     }
 
     return result;

@@ -20,7 +20,7 @@ import { trimTrailingSlash as tts } from '../utils';
 import { TILE_FETCH_DEBOUNCE } from '../configs';
 
 const sessionId = slugid.nice();
-export let requestsInFlight = 0;
+export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
 
 const debounce = (func, wait) => {
   let timeout;
@@ -31,7 +31,8 @@ const debounce = (func, wait) => {
     const requestId = requestMapper[request.id];
 
     if (requestId && bundledRequest[requestId]) {
-      bundledRequest[requestId].ids = bundledRequest[requestId].ids.concat(request.ids);
+      bundledRequest[requestId].ids = bundledRequest[requestId].ids
+        .concat(request.ids);
     } else {
       requestMapper[request.id] = bundledRequest.length;
       bundledRequest.push(request);
@@ -74,7 +75,9 @@ const debounce = (func, wait) => {
   return debounced;
 };
 
-const workerFetchTilesDebounced = debounce(workerFetchMultiRequestTiles, TILE_FETCH_DEBOUNCE);
+const workerFetchTilesDebounced = debounce(
+  workerFetchMultiRequestTiles, TILE_FETCH_DEBOUNCE
+);
 
 /**
  * Retrieve a set of tiles from the server
@@ -103,36 +106,25 @@ export const fetchTiles = (tilesetServer, tilesetIds, done) =>
 /**
  * Calculate the zoom level from a list of available resolutions
  */
-export const calculateZoomLevelFromResolutions = (resolutions, scale, minX, maxX) => {
-  const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
+export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
+  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
 
   const trackWidth = scale.range()[1] - scale.range()[0];
-  //console.log('trackWidth:', trackWidth, 'scale:', this._xScale.domain()[1] - this._xScale.domain()[0]);
 
-  let binsDisplayed = sortedResolutions.map(r => (scale.domain()[1] - scale.domain()[0]) / r)
-  let binsPerPixel = binsDisplayed.map(b => b / trackWidth);
+  const binsDisplayed = sortedResolutions
+    .map(r => (scale.domain()[1] - scale.domain()[0]) / r);
+  const binsPerPixel = binsDisplayed.map(b => b / trackWidth);
 
-  /*
-      console.log('trackWidth:', trackWidth);
-      console.log('resolutions:', sortedResolutions);
-      console.log('binsDisplayed:', binsDisplayed);
-      console.log('binsPerPixel:', binsPerPixel);
-      */
+  // we're going to show the highest resolution that requires more than one
+  // pixel per bin
+  const displayableBinsPerPixel = binsPerPixel.filter(b => b < 1);
 
-  // we're going to show the highest resolution that requires more than one pixel per bin
-  let displayableBinsPerPixel = binsPerPixel.filter(b => b < 1);
+  if (displayableBinsPerPixel.length === 0) return 0;
 
-  if (displayableBinsPerPixel.length == 0)
-    return 0;
-
-  let zoomIndex = binsPerPixel.indexOf(displayableBinsPerPixel[displayableBinsPerPixel.length-1]);
-  /*
-      console.log('displayableBinsPerPixel', displayableBinsPerPixel);
-      console.log('zoomIndex:', zoomIndex);
-      */
-
-  return zoomIndex;
-}
+  return binsPerPixel.indexOf(
+    displayableBinsPerPixel[displayableBinsPerPixel.length - 1]
+  );
+};
 
 /**
  * Calculate the current zoom level.
@@ -161,9 +153,9 @@ export const calculateZoomLevel = (scale, minX, maxX) => {
  * All the parameters except the first should be present in the
  * tileset_info returned by the server.
  *
- * @param zoomLevel: The zoom level at which to find the tiles (can be calculated using
- *                   this.calcaulteZoomLevel, but needs to synchronized across both x
- *                   and y scales so should be calculated externally)
+ * @param zoomLevel: The zoom level at which to find the tiles (can be
+ *   calculated using this.calcaulteZoomLevel, but needs to synchronized across
+ *   both x and y scales so should be calculated externally)
  * @param scale: A d3 scale mapping data domain to visible values
  * @param minX: The minimum possible value in the dataset
  * @param maxX: The maximum possible value in the dataset
@@ -192,6 +184,10 @@ export const calculateTiles = (
     ),
   );
 };
+
+export const calculateTileWidth = (maxWidth, zoomLevel) => (
+  maxWidth / (2 ** zoomLevel)
+);
 
 /**
  * Calculate the tiles that sould be visisble given the resolution and
@@ -227,8 +223,9 @@ export const trackInfo = (server, tilesetUid, done) => {
  * color values
  *
  * @param finished: A callback to let the caller know that the worker thread
- *                  has converted tileData to pixData
- * @param minVisibleValue: The minimum visible value (used for setting the color scale)
+ *   has converted tileData to pixData
+ * @param minVisibleValue: The minimum visible value (used for setting the color
+ *   scale)
  * @param maxVisibleValue: The maximum visible value
  * @param colorScale: a 255 x 4 rgba array used as a color scale
  */
@@ -237,10 +234,8 @@ export const tileDataToPixData = (
 ) => {
   const tileData = tile.tileData;
 
-  if  (!tileData.dense) {
-    // if we didn't get any data from the server, don't do anything
-    return;
-  }
+  // if we didn't get any data from the server, don't do anything
+  if (!tileData.dense) return;
 
   // clone the tileData so that the original array doesn't get neutered
   // when being passed to the worker script
@@ -317,6 +312,7 @@ function json(url, callback) {
 const api = {
   calculateTiles,
   calculateTilesFromResolution,
+  calculateTileWidth,
   calculateZoomLevel,
   calculateZoomLevelFromResolutions,
   fetchTiles,

@@ -11,6 +11,7 @@ export class PixiTrack extends Track {
   /**
    * @param scene: A PIXI.js scene to draw everything to.
    * @param options: A set of options that describe how this track is rendered.
+    this.pMain.position.x = this.position[0];
    *          - labelPosition: If the label is to be drawn, where should it be drawn?
    *          - labelText: What should be drawn in the label. If either labelPosition
    *                  or labelText are false, no label will be drawn.
@@ -89,6 +90,7 @@ export class PixiTrack extends Track {
   setMask(position, dimensions) {
     this.pMask.clear();
     this.pMask.beginFill();
+
     this.pMask.drawRect(position[0], position[1], dimensions[0], dimensions[1]);
     this.pMask.endFill();
   }
