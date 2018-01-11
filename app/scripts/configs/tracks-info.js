@@ -557,6 +557,15 @@ export const TRACKS_INFO = [
     },
   },
   {
+    type: 'image-tiles',
+    datatype: ['image-tiles'],
+    local: true,
+    orientation: '2d',
+    hidden: true,
+    name: 'Image Tiles',
+    thumbnail: null,
+  },
+  {
     type: 'bedlike',
     datatype: ['bedlike'],
     local: false,

@@ -43,6 +43,7 @@ import ViewportTrackerVertical from './ViewportTrackerVertical';
 
 import OSMTilesTrack from './OSMTilesTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
+import ImageTilesTrack from './ImageTilesTrack';
 
 // Utils
 import { dictItems } from './utils';
@@ -168,7 +169,7 @@ export class TrackRenderer extends React.Component {
 
     this.canvasDom = ReactDOM.findDOMNode(this.currentProps.canvasElement);
 
-    // used to determine whether to update the graphics of the 
+    // used to determine whether to update the graphics of the
     // child tracks
     this.mounted = true;
 
@@ -314,7 +315,7 @@ export class TrackRenderer extends React.Component {
     }, SCROLL_TIMEOUT);
   }
 
-  setUpInitialScales(initialXDomain, initialYDomain) {
+  setUpInitialScales(initialXDomain = [0, 1], initialYDomain = [0, 1]) {
     // make sure the two scales are equally wide:
     const xWidth = initialXDomain[1] - initialXDomain[0];
     const yCenter = (initialYDomain[0] + initialYDomain[1]) / 2;
@@ -509,8 +510,8 @@ export class TrackRenderer extends React.Component {
      * @return: Nothing
      */
     const receivedTracksDict = {};
-    for (let i = 0; i < trackDefinitions.length; i++) { 
-      receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i]; 
+    for (let i = 0; i < trackDefinitions.length; i++) {
+      receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i];
     }
 
     const knownTracks = new Set(Object.keys(this.trackDefObjects));
@@ -768,7 +769,7 @@ export class TrackRenderer extends React.Component {
     };
 
     // See if this track has a data config section.
-    // If it doesn't, we assume that it has the standard 
+    // If it doesn't, we assume that it has the standard
     // server / tilesetUid sections
     // if the track has no data server, then this will just
     // be blank and we can go on our merry way
@@ -777,7 +778,7 @@ export class TrackRenderer extends React.Component {
       dataConfig = {
         server: track.server,
         tilesetUid: track.tilesetUid
-      }
+      };
     }
 
     // console.log('track:', track);
@@ -1159,6 +1160,15 @@ export class TrackRenderer extends React.Component {
       case 'mapbox-tiles':
         return new MapboxTilesTrack(
           this.pStage,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      case 'image-tiles':
+        return new ImageTilesTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
