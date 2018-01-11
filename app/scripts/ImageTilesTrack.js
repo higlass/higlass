@@ -80,6 +80,7 @@ export class ImageTilesTrack extends PixiTrack {
       this.maxZoom = +this.tilesetInfo.max_zoom;
       this.maxWidth = +this.tilesetInfo.max_width;
       this.maxHeight = +this.tilesetInfo.max_height;
+      this.maxDim = Math.max(this.maxWidth, this.maxHeight);
 
       maxXPos = this.options.maxXPos || +this.tilesetInfo.max_width;
       maxYPos = this.options.maxYPos || +this.tilesetInfo.max_height;
@@ -182,7 +183,7 @@ export class ImageTilesTrack extends PixiTrack {
       this.minPos[0],
       this.maxPos[0],
       this.maxZoom,
-      this.maxWidth
+      this.maxDim
     );
 
     this.yTiles = tileProxy.calculateTiles(
@@ -191,11 +192,11 @@ export class ImageTilesTrack extends PixiTrack {
       this.minPos[1],
       this.maxPos[1],
       this.maxZoom,
-      this.maxHeight
+      this.maxDim
     );
 
-    const rows = this.xTiles;
-    const cols = this.yTiles;
+    const rows = this.yTiles;
+    const cols = this.xTiles;
     const zoomLevel = this.zoomLevel;
 
     // if we're mirroring tiles, then we only need tiles along the diagonal
