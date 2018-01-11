@@ -160,11 +160,11 @@ export const calculateZoomLevel = (scale, minX, maxX) => {
  * @param minX: The minimum possible value in the dataset
  * @param maxX: The maximum possible value in the dataset
  * @param maxZoom: The maximum zoom value in this dataset
- * @param maxWidth: The width of the largest
+ * @param maxDim: The largest dimension of the tileset (e.g., width or height)
  *   (roughlty equal to 2 ** maxZoom * tileSize * tileResolution)
  */
 export const calculateTiles = (
-  zoomLevel, scale, minX, maxX, maxZoom, maxWidth,
+  zoomLevel, scale, minX, maxX, maxZoom, maxDim
 ) => {
   const zoomLevelFinal = zoomLevel > maxZoom ? maxZoom : zoomLevel;
 
@@ -172,7 +172,7 @@ export const calculateTiles = (
   // cumulative widths, which means the tiles need to also
   // be calculated according to cumulative width
 
-  const tileWidth = maxWidth / (2 ** zoomLevelFinal);
+  const tileWidth = maxDim / (2 ** zoomLevelFinal);
 
   const epsilon = 0.0000001;
 
