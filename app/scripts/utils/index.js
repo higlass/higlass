@@ -25,3 +25,4 @@ export { default as scalesToGenomeLoci } from './scales-to-genome-loci';
 export { default as sum } from './sum';
 export { default as svgLine } from './svg-line';
 export { default as totalTrackPixelHeight } from './total-track-pixel-height';
+export { default as trimTrailingSlash } from './trim-trailing-slash';
