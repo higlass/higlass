@@ -14,6 +14,8 @@ import {
 
 import pubSub from './pub-sub';
 
+import { trimTrailingSlash as tts } from '../utils';
+
 // Config
 import { TILE_FETCH_DEBOUNCE } from '../configs';
 
@@ -214,9 +216,10 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX) => {
 };
 
 export const trackInfo = (server, tilesetUid, done) => {
-  const outUrl = `${server}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
-
-  workerGetTilesetInfo(outUrl, done);
+  workerGetTilesetInfo(
+    `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`,
+    done
+  );
 };
 
 /**
@@ -288,7 +291,7 @@ function text(url, callback) {
    */
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
-  
+
   d3Text(url, (error, done) => {
     callback(error, done);
     pubSub.publish('requestReceived', url);
