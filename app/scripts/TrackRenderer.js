@@ -202,8 +202,8 @@ export class TrackRenderer extends React.Component {
     const nextPropsStr = this.updatablePropsToString(nextProps);
     this.currentProps = nextProps;
 
-    if (this.prevPropsStr === nextPropsStr) { 
-      return; 
+    if (this.prevPropsStr === nextPropsStr) {
+      return;
     }
 
     for (const uid in this.trackDefObjects) {
@@ -798,7 +798,7 @@ export class TrackRenderer extends React.Component {
         // console.log('track.yPosition:', track.yPosition, 'trackYScale.range():', trackYScale.range());
 
         track.zoomed(
-          trackXScale, 
+          trackXScale,
           trackYScale,
         );
         continue;
@@ -1060,6 +1060,7 @@ export class TrackRenderer extends React.Component {
         );
 
       case '2d-rectangle-domains':
+      case 'arrowhead-domains':
         return new ArrowheadDomainsTrack(
           this.pStage,
           dataConfig,
@@ -1081,15 +1082,6 @@ export class TrackRenderer extends React.Component {
 
       case 'horizontal-2d-rectangle-domains':
         return new Horizontal2DDomainsTrack(
-          this.pStage,
-          dataConfig,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-        );
-
-      case 'arrowhead-domains':
-        return new ArrowheadDomainsTrack(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
