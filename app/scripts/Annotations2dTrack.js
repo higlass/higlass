@@ -43,10 +43,10 @@ class Annotations2dTrack extends TiledPixiTrack {
 
   calculateZoomLevel() {
     const xZoomLevel = tileProxy.calculateZoomLevel(
-      this._xScale, 0, this.tilesetInfo.max_width
+      this._xScale, 0, this.tilesetInfo.max_size
     );
     const yZoomLevel = tileProxy.calculateZoomLevel(
-      this._yScale, 0, this.tilesetInfo.max_height
+      this._yScale, 0, this.tilesetInfo.max_size
     );
 
     return Math.min(Math.max(xZoomLevel, yZoomLevel), this.maxZoom);
@@ -74,27 +74,22 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     this.zoomLevel = this.calculateZoomLevel();
 
-    const maxDim = Math.max(
-      this.tilesetInfo.max_width,
-      this.tilesetInfo.max_height
-    );
-
     this.xTiles = tileProxy.calculateTiles(
       this.zoomLevel,
       this._xScale,
       0,
-      this.tilesetInfo.max_width,
+      this.tilesetInfo.max_size,
       this.tilesetInfo.max_zoom,
-      maxDim
+      this.tilesetInfo.max_size
     );
 
     this.yTiles = tileProxy.calculateTiles(
       this.zoomLevel,
       this._yScale,
       0,
-      this.tilesetInfo.max_height,
+      this.tilesetInfo.max_size,
       this.tilesetInfo.max_zoom,
-      maxDim
+      this.tilesetInfo.max_size
     );
 
     const zoomLevel = this.zoomLevel;

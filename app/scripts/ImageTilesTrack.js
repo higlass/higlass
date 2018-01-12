@@ -78,12 +78,12 @@ export class ImageTilesTrack extends PixiTrack {
       }
 
       this.maxZoom = +this.tilesetInfo.max_zoom;
-      this.maxWidth = +this.tilesetInfo.max_width;
-      this.maxHeight = +this.tilesetInfo.max_height;
+      this.maxWidth = +this.tilesetInfo.max_size;
+      this.maxHeight = +this.tilesetInfo.max_size;
       this.maxDim = Math.max(this.maxWidth, this.maxHeight);
 
-      maxXPos = this.options.maxXPos || +this.tilesetInfo.max_width;
-      maxYPos = this.options.maxYPos || +this.tilesetInfo.max_height;
+      maxXPos = this.options.maxXPos || +this.tilesetInfo.max_size;
+      maxYPos = this.options.maxYPos || +this.tilesetInfo.max_size;
 
       this.maxPos = [maxXPos, maxYPos];
 
