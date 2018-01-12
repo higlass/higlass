@@ -26,6 +26,7 @@ import LeftTrackModifier from './LeftTrackModifier';
 import Track from './Track';
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
+import Annotations2dTrack from './Annotations2dTrack';
 
 import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
@@ -1062,6 +1063,15 @@ export class TrackRenderer extends React.Component {
       case '2d-rectangle-domains':
       case 'arrowhead-domains':
         return new ArrowheadDomainsTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      case '2d-annotations':
+        return new Annotations2dTrack(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,

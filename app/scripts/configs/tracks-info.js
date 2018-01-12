@@ -473,6 +473,37 @@ export const TRACKS_INFO = [
   },
 
   {
+    type: '2d-annotations',
+    datatype: ['2d-annotations'],
+    local: false,
+    orientation: '2d',
+    name: '2D Annotations',
+    thumbnail: svgArrowheadDomainsIcon,
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'rectangleDomainFillColor',
+      'rectangleDomainStrokeColor',
+      'rectangleDomainOpacity',
+      'minSquareSize'
+    ],
+    defaultOptions: {
+      labelColor: 'black',
+      labelPosition: 'hidden',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+      rectangleDomainFillColor: 'grey',
+      rectangleDomainStrokeColor: 'black',
+      rectangleDomainOpacity: 0.6,
+      minSquareSize: 'none',
+    },
+  },
+
+  {
     type: 'square-markers',
     datatype: ['bedpe'],
     local: false,
