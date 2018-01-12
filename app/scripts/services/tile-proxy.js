@@ -166,7 +166,7 @@ export const calculateZoomLevel = (scale, minX, maxX) => {
 export const calculateTiles = (
   zoomLevel, scale, minX, maxX, maxZoom, maxDim
 ) => {
-  const zoomLevelFinal = zoomLevel > maxZoom ? maxZoom : zoomLevel;
+  const zoomLevelFinal = Math.min(zoomLevel, maxZoom);
 
   // the ski areas are positioned according to their
   // cumulative widths, which means the tiles need to also
