@@ -573,19 +573,21 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       // no data present
       return;
 
-    this.valueScale = scaleLog().range([254, 0])
-      .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-
     this.renderTile(tile);
   }
 
   renderTile(tile) {
-    if (this.options.heatmapValueScaling == 'log') {
+    if (this.options.heatmapValueScaling == 'log' && this.scale.minValue > 0) {
       this.valueScale = scaleLog().range([254, 0])
         .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-    } else if (this.options.heatmapValueScaling == 'linear') {
+    } else {
+      // implies linear scaling
       this.valueScale = scaleLinear().range([254, 0])
         .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
+
+      if (this.options.heatmapValueScaling == 'log') {
+        console.warn('Negative values present in data. Defaulting to linear scale: ', this.scale.minValue);
+      }
     }
 
     this.limitedValueScale = this.valueScale.copy();

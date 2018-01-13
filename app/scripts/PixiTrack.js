@@ -35,8 +35,6 @@ function formatResolutionText(resolution, maxResolutionSize) {
  * 
  */
 function getResolutionBasedResolutionText(resolutions, zoomLevel) {
-  console.log('resolutions:', resolutions, zoomLevel);
-
   const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
   const resolution = sortedResolutions[zoomLevel];
   const maxResolutionSize = sortedResolutions[sortedResolutions.length-1];
