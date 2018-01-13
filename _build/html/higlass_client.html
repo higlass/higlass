@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="HiGlass Server" href="higlass_server.html" />
+    <link rel="next" title="HiGlass Docker" href="higlass_docker.html" />
     <link rel="prev" title="Gene Annotations Tracks" href="gene_annotations.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -84,6 +84,17 @@ which is fulfilled when all of the data for the view is loaded.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="getting-a-view-config">
+<h3>Getting a view config<a class="headerlink" href="#getting-a-view-config" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">hgApi</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;viewConfig&#39;</span><span class="p">);</span>
+<span class="nx">p</span><span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">viewConfig</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;viewConfig:&#39;</span><span class="p">,</span> <span class="nx">viewConfig</span><span class="p">)</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>The <cite>get</cite> function for retrieving a viewConf returns a promise which is
+fulfilled whenever the viewconfig is returned.</p>
+</div>
 <div class="section" id="zooming-to-show-all-of-the-data">
 <h3>Zooming to show all of the data<a class="headerlink" href="#zooming-to-show-all-of-the-data" title="Permalink to this headline">¶</a></h3>
 <p>One may set a view config pointing to a dataset which is either out of the
@@ -127,6 +138,13 @@ listed:</p>
         ...
      ]
 }
+</pre></div>
+</div>
+</div>
+<div class="section" id="exporting-the-view-as-a-data-uri">
+<h3>Exporting the view as a Data URI<a class="headerlink" href="#exporting-the-view-as-a-data-uri" title="Permalink to this headline">¶</a></h3>
+<p>The current view can be programmatically exported as a data URI:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">api</span><span class="p">.</span><span class="nx">createDataURI</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -200,11 +218,16 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <li class="toctree-l2"><a class="reference internal" href="#other-documentation">Other Documentation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_docker.html">HiGlass Docker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_docker.html#dropping-individual-cache-entries">Dropping individual cache entries</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_server.html">HiGlass Server</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#development">Development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#testing">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#importing-data">Importing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#api">API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="track_types.html">Track Types</a><ul>
@@ -233,7 +256,7 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="gene_annotations.html" title="previous chapter">Gene Annotations Tracks</a></li>
-      <li>Next: <a href="higlass_server.html" title="next chapter">HiGlass Server</a></li>
+      <li>Next: <a href="higlass_docker.html" title="next chapter">HiGlass Docker</a></li>
   </ul></li>
 </ul>
 </div>

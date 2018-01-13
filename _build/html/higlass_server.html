@@ -24,7 +24,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Track Types" href="track_types.html" />
-    <link rel="prev" title="HiGlass Client (Developer)" href="higlass_client.html" />
+    <link rel="prev" title="HiGlass Docker" href="higlass_docker.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -122,16 +122,28 @@ added to the server:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<div class="section" id="id1">
-<h4>Testing<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+</div>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<p>Retrieving a list of available tilesets:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl localhost:8000/api/v1/tilesets
+</pre></div>
+</div>
+<p>To filter by a specific filetype, use the <cite>t=filetype</cite> parameter:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl localhost:8000/api/v1/tilesets?t<span class="o">=</span>cooler
+</pre></div>
+</div>
+<p>To fileter by datatype, use the <cite>dt=datatype</cite> parameter:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>curl localhost:8000/api/v1/tilesets?dt<span class="o">=</span>matrix
+</pre></div>
+</div>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>python manage.py <span class="nb">test</span> tilesets --failfast
 </pre></div>
 </div>
 <p>Or to test a more specific code block:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>python manage.py <span class="nb">test</span> tilesets.tests.CoolerTest.test_transforms --failfast
 </pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -160,11 +172,6 @@ added to the server:</p>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#development">Development</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="developer.html#higlass-api">HiGlass API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developer.html#coding-guidelines">Coding Guidelines</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="gene_annotations.html">Gene Annotations Tracks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#creating-the-track">Creating the track</a></li>
@@ -172,7 +179,13 @@ added to the server:</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_client.html">HiGlass Client (Developer)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#d-tracks">1D Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#higlass-api">HiGlass API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#coding-guidelines">Coding Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#other-documentation">Other Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_docker.html">HiGlass Docker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_docker.html#dropping-individual-cache-entries">Dropping individual cache entries</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">HiGlass Server</a><ul>
@@ -180,6 +193,7 @@ added to the server:</p>
 <li class="toctree-l2"><a class="reference internal" href="#development">Development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#importing-data">Importing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="track_types.html">Track Types</a><ul>
@@ -207,7 +221,7 @@ added to the server:</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="higlass_client.html" title="previous chapter">HiGlass Client (Developer)</a></li>
+      <li>Previous: <a href="higlass_docker.html" title="previous chapter">HiGlass Docker</a></li>
       <li>Next: <a href="track_types.html" title="next chapter">Track Types</a></li>
   </ul></li>
 </ul>
