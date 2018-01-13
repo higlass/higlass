@@ -9,6 +9,7 @@ import ReactGridLayout, { WidthProvider } from 'react-grid-layout';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
 import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
+import parse from 'url-parse';
 
 import { TiledPlot } from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
@@ -2023,6 +2024,21 @@ class HiGlassComponent extends React.Component {
       const uid = k[0];
 
       for (const track of positionedTracksToAllTracks(newView.tracks)) {
+
+        if (track.server) {
+          const url = parse(track.server, {});
+
+          if (!url.hostname.length) {
+            // no hostname specified in the track source servers so we'll add the
+            // current URL's
+            const hostString = window.location.host;
+            const protocol = window.location.protocol;
+            const newUrl = `${protocol}//${hostString}${url.pathname}`
+
+            track.server = newUrl;
+          }
+        }
+
         if ('serverUidKey' in track) { delete track.serverUidKey; }
         if ('uuid' in track) { delete track.uuid; }
         if ('private' in track) { delete track.private; }

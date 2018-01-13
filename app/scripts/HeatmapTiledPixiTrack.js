@@ -24,6 +24,7 @@ const SCALE_LIMIT_PRECISION = 5;
 const BINS_PER_TILE=256;
 
 
+
 export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   constructor(
     scene,
@@ -577,7 +578,9 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   renderTile(tile) {
-    if (this.options.heatmapValueScaling == 'log' && this.scale.minValue > 0) {
+    console.log('this.scale.minValue:', this.scale.minValue);
+
+    if ((!this.options.heatmapValueScaling || this.options.heatmapValueScaling == 'log') && this.scale.minValue > 0) {
       this.valueScale = scaleLog().range([254, 0])
         .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
     } else {
