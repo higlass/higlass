@@ -1,4 +1,14 @@
-v0.10.7 (2018-01-12)
+v0.10.9 (2018-01-13)
+
+- Skipping a version because the latest version wasn't specified in
+package.json
+
+v0.10.8
+
+- Skipping a version because the latest version wasn't specified in
+package.json
+
+v0.10.7 (2018-01-13)
 
 - Show current data resolution in tiled sets containing raw resolutions rather
 than zoom levels
