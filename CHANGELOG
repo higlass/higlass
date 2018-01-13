@@ -2,6 +2,7 @@ v0.10.10 (2018-01-
 
 - Default to log scaling if there are negative values
 - Fixed the custom colormap
+- Fix the gene annotations color changing
 
 v0.10.9 (2018-01-13)
 

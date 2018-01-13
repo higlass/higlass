@@ -108,6 +108,23 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
   }
 
+  rerender(options, force) {
+    /*
+     * Redraw the track because the options
+     * changed
+     */
+    const strOptions = JSON.stringify(options);
+    if (!force && strOptions === this.prevOptions) { return; }
+
+    this.prevOptions = strOptions;
+    super.rerender(options, force);
+
+    for (const tile of this.visibleAndFetchedTiles()) {
+      this.renderTile(tile);
+    }
+
+  }
+
   drawTile(tile) {
 
   }
@@ -124,7 +141,6 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     fill['+'] = colorToHex(this.options.plusStrandColor ? this.options.plusStrandColor : 'blue');
     fill['-'] = colorToHex(this.options.minusStrandColor ? this.options.minusStrandColor : 'red');
-
 
     tile.tileData.forEach((td, i) => {
       const geneInfo = td.fields;
