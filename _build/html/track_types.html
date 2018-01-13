@@ -41,7 +41,7 @@
           <div class="body" role="main">
             
   <div class="section" id="track-types">
-<h1>Track Types<a class="headerlink" href="#track-types" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Track Types<a class="headerlink" href="#track-types" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="linking-value-scales">
 <h2>Linking value scales<a class="headerlink" href="#linking-value-scales" title="Permalink to this headline">¶</a></h2>
 <p>The scaling of values in quantitative tracks is done from lowest to highest
@@ -96,7 +96,7 @@ This is useful for displaying data, such as HiC, which has prominent features
 along the diagonal.</p>
 </div>
 <div class="section" id="d-rectangle-domain">
-<h2>2D Rectangle Domain<a class="headerlink" href="#d-rectangle-domain" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>2D Rectangle Domain<a class="headerlink" href="#d-rectangle-domain" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/2d-rectangles-track-thumb.png" class="align-right" src="_images/2d-rectangles-track-thumb.png" />
 <p>track-type: <code class="docutils literal"><span class="pre">2d-rectangle-domains</span></code>
 datatype: <code class="docutils literal"><span class="pre">2d-rectangle-domains</span></code></p>
@@ -105,7 +105,7 @@ commonly aggregated using clodius based on some importance using the <code class
 <span class="pre">bedpe</span></code> command.</p>
 </div>
 <div class="section" id="horizontal-2d-rectangle-domain">
-<span id="line-track"></span><h2>Horizontal 2D Rectangle Domain<a class="headerlink" href="#horizontal-2d-rectangle-domain" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2>Horizontal 2D Rectangle Domain<a class="headerlink" href="#horizontal-2d-rectangle-domain" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/horizontal-2d-rectangle-domains-thumb.png" class="align-right" src="_images/horizontal-2d-rectangle-domains-thumb.png" />
 <p>track-type: <code class="docutils literal"><span class="pre">horizontal-2d-rectangle-domains</span></code>
 datatype: <code class="docutils literal"><span class="pre">2d-rectangle-domains</span></code></p>
@@ -116,7 +116,7 @@ of the 2D view is situated along its base, rectangles far from the diagonal may
 be outside of the bounds of the track.</p>
 </div>
 <div class="section" id="line">
-<span id="id1"></span><h2>Line<a class="headerlink" href="#line" title="Permalink to this headline">¶</a></h2>
+<span id="line-track"></span><h2>Line<a class="headerlink" href="#line" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/line-track-thumb.png" class="align-right" src="_images/line-track-thumb.png" />
 <p>track-type: <code class="docutils literal"><span class="pre">horizontal-line</span></code>
 datatype: <code class="docutils literal"><span class="pre">vector</span></code></p>
@@ -130,12 +130,12 @@ appropriate.</p>
 <img alt="_images/point-track-thumb.png" class="align-right" src="_images/point-track-thumb.png" />
 <p>track-type: <code class="docutils literal"><span class="pre">horizontal-point</span></code>
 datatype: <code class="docutils literal"><span class="pre">vector</span></code></p>
-<p>Point tracks display 1D vector data. Unlike <span class="xref std std-ref">line tracks</span>,
+<p>Point tracks display 1D vector data. Unlike <a class="reference internal" href="#line-track"><span class="std std-ref">line tracks</span></a>,
 they are well suited to data with NaNs because they do not require two points
 to draw something.</p>
 </div>
 <div class="section" id="chromosome-labels">
-<span id="id2"></span><h2>Chromosome Labels<a class="headerlink" href="#chromosome-labels" title="Permalink to this headline">¶</a></h2>
+<span id="id4"></span><h2>Chromosome Labels<a class="headerlink" href="#chromosome-labels" title="Permalink to this headline">¶</a></h2>
 <img alt="_images/chromosome-labels-thumb.png" class="align-right" src="_images/chromosome-labels-thumb.png" />
 <p>track-type: <code class="docutils literal"><span class="pre">horizontal-chromosome-labes</span></code>
 datatype: <code class="docutils literal"><span class="pre">chromsizes</span></code>
@@ -186,11 +186,6 @@ adding a track to the <em>center</em> view.</p>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#development">Development</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="developer.html#higlass-api">HiGlass API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developer.html#coding-guidelines">Coding Guidelines</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="gene_annotations.html">Gene Annotations Tracks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#creating-the-track">Creating the track</a></li>
@@ -198,14 +193,22 @@ adding a track to the <em>center</em> view.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_client.html">HiGlass Client (Developer)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#d-tracks">1D Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#track-documentation">Track Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-new-track-types">Adding new track types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#higlass-api">HiGlass API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#coding-guidelines">Coding Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#other-documentation">Other Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_docker.html">HiGlass Docker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_docker.html#dropping-individual-cache-entries">Dropping individual cache entries</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_server.html">HiGlass Server</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#development">Development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#testing">Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#importing-data">Importing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#api">API</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Track Types</a><ul>

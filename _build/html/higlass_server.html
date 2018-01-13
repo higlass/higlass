@@ -78,10 +78,6 @@ that contain the test:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>python manage.py <span class="nb">test</span> tilesets.tests.CoolerTest.test_get_multi_tiles
 </pre></div>
 </div>
-</div>
-<div class="section" id="importing-data">
-<h2>Importing data<a class="headerlink" href="#importing-data" title="Permalink to this headline">¶</a></h2>
-<p>Different types of data can be imported into the higlass server.</p>
 <div class="section" id="chromosome-sizes">
 <h3>Chromosome sizes<a class="headerlink" href="#chromosome-sizes" title="Permalink to this headline">¶</a></h3>
 <p>Chromosome sizes specify the lengths of the chromosomes that make up an
@@ -138,12 +134,15 @@ added to the server:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>curl localhost:8000/api/v1/tilesets?dt<span class="o">=</span>matrix
 </pre></div>
 </div>
+<div class="section" id="id1">
+<h3>Testing<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>python manage.py <span class="nb">test</span> tilesets --failfast
 </pre></div>
 </div>
 <p>Or to test a more specific code block:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>python manage.py <span class="nb">test</span> tilesets.tests.CoolerTest.test_transforms --failfast
 </pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -179,6 +178,8 @@ added to the server:</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_client.html">HiGlass Client (Developer)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#track-documentation">Track Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-new-track-types">Adding new track types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_client.html#higlass-api">HiGlass API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_client.html#coding-guidelines">Coding Guidelines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_client.html#other-documentation">Other Documentation</a></li>
@@ -192,7 +193,6 @@ added to the server:</p>
 <li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#development">Development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#importing-data">Importing data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
 </ul>
 </li>

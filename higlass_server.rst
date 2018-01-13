@@ -53,14 +53,8 @@ that contain the test:
 
     python manage.py test tilesets.tests.CoolerTest.test_get_multi_tiles
 
-Importing data
---------------
-
-Different types of data can be imported into the higlass server.
-
 Chromosome sizes
-~~~~~~~~~~~~~~~~
-
+^^^^^^^^^^^^^^^^ 
 Chromosome sizes specify the lengths of the chromosomes that make up an
 assembly. While they have no intrinsic biological order, HiGlass displays all
 chromosomes together on a line so the order of the entries in the file does

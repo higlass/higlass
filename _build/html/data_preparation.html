@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Developer Documentation" href="developer.html" />
+    <link rel="next" title="Gene Annotations Tracks" href="gene_annotations.html" />
     <link rel="prev" title="HiGlass: A Multiscale Genomic Data Browser" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -120,7 +120,7 @@ of the data file contains a header using the (<code class="docutils literal"><sp
 <p>The dataset used in this example contains copy number data that has been log2
 transformed. That is, the copy number given for each bin is the log2 of the
 computed value. This is a problem for HiGlass’s default aggregation method of
-summing adjacent values since <img class="math" src="_images/math/4e9125b9e00c5072d6f3577f7c356a015ed9ca82.png" alt="\log_2 a + \log_2 b \neq \log_2 ab"/>.</p>
+summing adjacent values since <span class="math">\log_2 a + \log_2 b \neq \log_2 ab</span>.</p>
 <p>Using the <code class="docutils literal"><span class="pre">--transform</span> <span class="pre">exp2</span></code> option tells clodius to raise two to the
 power of the provided value before doing the transformation and storing. As
 an added benefit, NaN values become apparent in the resulting because they
@@ -289,11 +289,6 @@ they are defined in:</p>
 <li class="toctree-l2"><a class="reference internal" href="#development">Development</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="developer.html#higlass-api">HiGlass API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developer.html#coding-guidelines">Coding Guidelines</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="gene_annotations.html">Gene Annotations Tracks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#creating-the-track">Creating the track</a></li>
@@ -301,14 +296,22 @@ they are defined in:</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_client.html">HiGlass Client (Developer)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#d-tracks">1D Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#track-documentation">Track Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-new-track-types">Adding new track types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#higlass-api">HiGlass API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#coding-guidelines">Coding Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#other-documentation">Other Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_docker.html">HiGlass Docker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_docker.html#dropping-individual-cache-entries">Dropping individual cache entries</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_server.html">HiGlass Server</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#development">Development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_server.html#testing">Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#importing-data">Importing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#api">API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="track_types.html">Track Types</a><ul>
@@ -317,6 +320,7 @@ they are defined in:</p>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#gene-annotations">Gene Annotations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#heatmap">Heatmap</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#d-heatmap">1D Heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#d-rectangle-domain">2D Rectangle Domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#horizontal-2d-rectangle-domain">Horizontal 2D Rectangle Domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#line">Line</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#point">Point</a></li>
@@ -336,7 +340,7 @@ they are defined in:</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">HiGlass: A Multiscale Genomic Data Browser</a></li>
-      <li>Next: <a href="developer.html" title="next chapter">Developer Documentation</a></li>
+      <li>Next: <a href="gene_annotations.html" title="next chapter">Gene Annotations Tracks</a></li>
   </ul></li>
 </ul>
 </div>

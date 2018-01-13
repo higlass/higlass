@@ -1,4 +1,4 @@
-.. _track-types
+.. _track-types:
 
 ===========
 Track Types
@@ -77,7 +77,7 @@ degrees. The base of the 1D heatmap is always the diagonal of the 2D heatmap.
 This is useful for displaying data, such as HiC, which has prominent features
 along the diagonal.
 
-.. _horizontal-2d-rectangle-domain
+.. _2d-rectangle-domain:
 
 2D Rectangle Domain
 ==============================
@@ -92,7 +92,7 @@ The rectangle domains track shows rectangular regions on the heatmap. These are
 commonly aggregated using clodius based on some importance using the ``clodius
 bedpe`` command.
 
-.. _line-track:
+.. _horizontal-2d-rectangle-domain:
 
 Horizontal 2D Rectangle Domain
 ==============================
