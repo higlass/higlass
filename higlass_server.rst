@@ -58,7 +58,6 @@ Importing data
 
 Different types of data can be imported into the higlass server.
 
-
 Chromosome sizes
 ~~~~~~~~~~~~~~~~
 
@@ -106,6 +105,27 @@ added to the server:
        "coordSystem2":"",
        "created":"2017-08-10T18:44:40.369924Z"
     }
+
+API
+---
+
+Retrieving a list of available tilesets:
+
+.. code-block:: bash
+    
+    curl localhost:8000/api/v1/tilesets
+
+To filter by a specific filetype, use the `t=filetype` parameter:
+
+.. code-block:: bash
+
+    curl localhost:8000/api/v1/tilesets?t=cooler
+
+To fileter by datatype, use the `dt=datatype` parameter:
+
+.. code-block:: bash
+
+    curl localhost:8000/api/v1/tilesets?dt=matrix
 
 Testing
 ^^^^^^^
