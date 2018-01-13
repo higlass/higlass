@@ -3,7 +3,7 @@ import {
   precisionPrefix,
 } from 'd3-format';
 
-import { HeatmapOptions } from '../HeatmapOptions';
+import HeatmapOptions from '../HeatmapOptions';
 
 const AVAILABLE_COLORS = {
   black: { name: 'Black', value: 'black' },
@@ -394,6 +394,7 @@ export const OPTIONS_INFO = {
         name: 'Custom...',
         componentPickers: {
           heatmap: HeatmapOptions,
+          'horizontal-heatmap': HeatmapOptions,
         },
       },
     },

@@ -3,7 +3,7 @@ import { scaleLinear, scaleLog } from 'd3-scale';
 import { select, event } from 'd3-selection';
 import * as PIXI from 'pixi.js';
 
-import { TiledPixiTrack } from './TiledPixiTrack';
+import { TiledPixiTrack, getValueScale } from './TiledPixiTrack';
 import { AxisPixi } from './AxisPixi';
 
 import { tileProxy } from './services';
@@ -22,7 +22,6 @@ const BRUSH_COLORBAR_GAP = 1;
 const BRUSH_MARGIN = 4;
 const SCALE_LIMIT_PRECISION = 5;
 const BINS_PER_TILE=256;
-
 
 
 export class HeatmapTiledPixiTrack extends TiledPixiTrack {
@@ -578,20 +577,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   renderTile(tile) {
-    console.log('this.scale.minValue:', this.scale.minValue);
-
-    if ((!this.options.heatmapValueScaling || this.options.heatmapValueScaling == 'log') && this.scale.minValue > 0) {
-      this.valueScale = scaleLog().range([254, 0])
-        .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-    } else {
-      // implies linear scaling
-      this.valueScale = scaleLinear().range([254, 0])
-        .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-
-      if (this.options.heatmapValueScaling == 'log') {
-        console.warn('Negative values present in data. Defaulting to linear scale: ', this.scale.minValue);
-      }
-    }
+    this.valueScale = getValueScale(this.options.heatmapValueScaling,
+      this.scale.minValue, this.scale.maxValue, 'log');
 
     this.limitedValueScale = this.valueScale.copy();
 
