@@ -102,15 +102,17 @@ class HorizontalChromosomeLabels extends PixiTrack {
    * @param  {Object}  e  Event object.
    */
   mouseMoveHandler(e) {
-    this.mouseX = e.x - this.position[0];
+    this.mousePos = this.flipText
+      ? e.y - this.position[1]
+      : e.x - this.position[0];
     this.drawMousePosition();
   }
 
-  drawMousePosition(x = this.mouseX) {
+  drawMousePosition(mousePos = this.mousePos) {
     this.cursor.clear();
     this.cursor.lineStyle(1, this.options.mousePositionColor);
-    this.cursor.moveTo(x, 0);
-    this.cursor.lineTo(x, this.dimensions[1]);
+    this.cursor.moveTo(mousePos, 0);
+    this.cursor.lineTo(mousePos, this.dimensions[1]);
     this.animate();
   }
 
