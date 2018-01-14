@@ -34,6 +34,10 @@ export class Track {
     return withinX && withinY;
   }
 
+  getProp(prop) {
+    return () => this[prop];
+  }
+
   getData() {}
 
   getDimensions() {
