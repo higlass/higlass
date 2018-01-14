@@ -14,6 +14,7 @@ export { default as download } from './download';
 export { default as genomeLociToPixels } from './genome-loci-to-pixels';
 export { default as getTrackByUid } from './get-track-by-uid';
 export { default as getTrackPositionByUid } from './get-track-position-by-uid';
+export { default as hexStrToInt } from './hex-string-to-int';
 export { default as loadChromInfos } from './load-chrom-infos';
 export { default as map } from './map';
 export { default as mod } from './mod';
