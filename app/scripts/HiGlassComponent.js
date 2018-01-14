@@ -194,6 +194,9 @@ class HiGlassComponent extends React.Component {
     this.pubSubs.push(
       pubSub.subscribe('orientationchange', this.resizeHandler.bind(this)),
     );
+    this.pubSubs.push(
+      pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this)),
+    );
 
     if (this.props.getApi) {
       this.props.getApi(this.api);
@@ -321,8 +324,7 @@ class HiGlassComponent extends React.Component {
 
     // if this element was never attached to the DOM
     // then the resize sensor will never have been initiated
-    if (this.resizeSensor)
-      this.resizeSensor.detach();
+    if (this.resizeSensor) this.resizeSensor.detach();
 
     domEvent.unregister('keydown', document);
     domEvent.unregister('keyup', document);
@@ -334,6 +336,15 @@ class HiGlassComponent extends React.Component {
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
+
+  animateOnMouseMoveHandler(active) {
+    if (active && !this.animateOnMouseMove) {
+      this.pubSubs.push(
+        pubSub.subscribe('app.mouseMove', this.animate.bind(this)),
+      );
+    }
+    this.animateOnMouseMove = active;
+  }
 
   fitPixiToParentContainer() {
     if (!this.element.parentNode) {
@@ -2632,7 +2643,7 @@ onLocationChange(viewId, callback, callbackId) {
     const offset = this.topDiv
       ? this.topDiv.getBoundingClientRect()
       : { top: 0, left: 0 };
-    const publishedPosition = 
+    const publishedPosition =
       { x: e.clientX - offset.left, y: e.clientY - offset.top }
 
     pubSub.publish(
