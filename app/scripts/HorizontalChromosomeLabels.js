@@ -48,12 +48,11 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     if (this.options.showMousePosition) {
       this.pMain.addChild(showMousePosition(
-        this.animate,
         this.pubSubs,
         this.options,
         this.getPosition.bind(this),
         this.getDimensions.bind(this),
-        this.flipText
+        this.getProp('flipText')
       ));
     }
 

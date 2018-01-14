@@ -2,24 +2,43 @@ import { Tiled1DPixiTrack } from './Tiled1DPixiTrack';
 import { tileProxy } from './services';
 import { AxisPixi } from './AxisPixi';
 
+import { showMousePosition } from './utils';
+
 class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
   constructor(
-      scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      option,
-      animate,
-      onValueScaleChanged,
+    scene,
+    dataConfig,
+    handleTilesetInfoReceived,
+    options,
+    animate,
+    onValueScaleChanged,
   ) {
     super(
       scene,
       dataConfig,
       handleTilesetInfoReceived,
-      option,
+      options,
       animate,
-      onValueScaleChanged);
+      onValueScaleChanged
+    );
+
     this.axis = new AxisPixi(this);
     this.pBase.addChild(this.axis.pAxis);
+
+    this.animate = animate;
+    this.options = options;
+
+    this.pubSubs = [];
+
+    if (this.options.showMousePosition) {
+      this.pMain.addChild(showMousePosition(
+        this.pubSubs,
+        this.options,
+        this.getPosition.bind(this),
+        this.getDimensions.bind(this),
+        this.getProp('flipText')
+      ));
+    }
   }
   calculateZoomLevel() {
     // offset by 2 because 1D tiles are more dense than 2D tiles

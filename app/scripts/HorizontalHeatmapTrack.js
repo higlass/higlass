@@ -7,7 +7,7 @@ import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import { tileProxy } from './services';
 
 // Utils
-import { colorDomainToRgbaArray } from './utils';
+import { colorDomainToRgbaArray, showMousePosition } from './utils';
 
 // Configs
 import { HEATED_OBJECT_MAP } from './configs';
@@ -49,6 +49,21 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     if (options && options.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
+
+    this.animate = animate;
+    this.options = options;
+
+    this.pubSubs = [];
+
+    if (this.options.showMousePosition) {
+      this.pMain.addChild(showMousePosition(
+        this.pubSubs,
+        this.options,
+        this.getPosition.bind(this),
+        this.getDimensions.bind(this),
+        this.getProp('flipText')
+      ));
+    }
   }
 
   rerender(options, force) {
@@ -62,14 +77,14 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   calculateZoomLevel() {
     if (this.tilesetInfo.resolutions) {
       let zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
-        this.tilesetInfo.resolutions, 
-        this._xScale, 
+        this.tilesetInfo.resolutions,
+        this._xScale,
         this.tilesetInfo.min_pos[0],
         this.tilesetInfo.max_pos[0]);
 
       let zoomIndexY = tileProxy.calculateZoomLevelFromResolutions(
-        this.tilesetInfo.resolutions, 
-        this._xScale, 
+        this.tilesetInfo.resolutions,
+        this._xScale,
         this.tilesetInfo.min_pos[1],
         this.tilesetInfo.max_pos[1]);
 

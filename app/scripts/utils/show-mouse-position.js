@@ -8,8 +8,10 @@ const COLOR = 0xaaaaaa;
 const ALPHA = 1.0;
 
 const showMousePosition = (
-  animate, pubSubs, options, getPosition, getDimensions, isFlipped
+  pubSubs, options, getPosition, getDimensions, isFlipped
 ) => {
+  pubSub.publish('app.animateOnMouseMove', true);
+
   const color = options.mousePositionColor
     ? hexStrToInt(options.mousePositionColor)
     : COLOR;
@@ -24,7 +26,6 @@ const showMousePosition = (
     graphics.lineStyle(1, color, alpha);
     graphics.moveTo(mousePos, 0);
     graphics.lineTo(mousePos, getDimensions()[1]);
-    animate();
   };
 
   /**
@@ -33,7 +34,7 @@ const showMousePosition = (
    * @param  {Object}  e  Event object.
    */
   const mouseMoveHandler = (event) => {
-    const mousePos = isFlipped
+    const mousePos = isFlipped()
       ? event.y - getPosition()[1]
       : event.x - getPosition()[0];
     drawMousePosition(mousePos);
