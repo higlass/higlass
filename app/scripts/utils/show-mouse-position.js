@@ -20,13 +20,10 @@ const showMousePosition = (
   const graphics = new PIXI.Graphics();
 
   const drawMousePosition = (mousePos) => {
-    const dim = getDimensions();
-
     graphics.clear();
     graphics.lineStyle(1, color, alpha);
     graphics.moveTo(mousePos, 0);
     graphics.lineTo(mousePos, getDimensions()[1]);
-    console.log('Drawn', color, mousePos, dim[1]);
     animate();
   };
 
