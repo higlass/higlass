@@ -8,7 +8,7 @@ import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 import { tileProxy } from './services';
 
 // Utils
-import { colorToHex, showMousePosition } from './utils';
+import { colorToHex } from './utils';
 
 const GENE_RECT_WIDTH = 1;
 const GENE_RECT_HEIGHT = 6;
@@ -40,19 +40,6 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     this.animate = animate;
     this.options = options;
-
-    this.pubSubs = [];
-
-    if (this.options.showMousePosition) {
-      this.pMain.addChild(showMousePosition(
-        this.animate,
-        this.pubSubs,
-        this.options,
-        this.getPosition.bind(this),
-        this.getDimensions.bind(this),
-        this.flipText
-      ));
-    }
   }
 
   initTile(tile) {
