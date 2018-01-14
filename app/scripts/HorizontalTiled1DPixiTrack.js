@@ -30,15 +30,7 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
 
     this.pubSubs = [];
 
-    if (this.options.showMousePosition) {
-      this.pMain.addChild(showMousePosition(
-        this.pubSubs,
-        this.options,
-        this.getPosition.bind(this),
-        this.getDimensions.bind(this),
-        this.getProp('flipText')
-      ));
-    }
+    if (this.options.showMousePosition) showMousePosition(this);
   }
   calculateZoomLevel() {
     // offset by 2 because 1D tiles are more dense than 2D tiles

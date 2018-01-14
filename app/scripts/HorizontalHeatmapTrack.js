@@ -55,15 +55,7 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
 
     this.pubSubs = [];
 
-    if (this.options.showMousePosition) {
-      this.pMain.addChild(showMousePosition(
-        this.pubSubs,
-        this.options,
-        this.getPosition.bind(this),
-        this.getDimensions.bind(this),
-        this.getProp('flipText')
-      ));
-    }
+    if (this.options.showMousePosition) showMousePosition(this);
   }
 
   rerender(options, force) {

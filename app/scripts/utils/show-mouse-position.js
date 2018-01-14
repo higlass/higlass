@@ -45,4 +45,14 @@ const showMousePosition = (
   return graphics;
 };
 
-export default showMousePosition;
+const setupShowMousePosition = (context) => {
+  context.pMain.addChild(showMousePosition(
+    context.pubSubs,
+    context.options,
+    context.getPosition.bind(context),
+    context.getDimensions.bind(context),
+    context.getProp('flipText')
+  ));
+};
+
+export default setupShowMousePosition;
