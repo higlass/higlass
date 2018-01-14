@@ -4,7 +4,7 @@ import { scaleLinear, scaleLog } from 'd3-scale';
 import { select, event } from 'd3-selection';
 import * as PIXI from 'pixi.js';
 
-import { TiledPixiTrack } from './TiledPixiTrack';
+import { TiledPixiTrack, getValueScale } from './TiledPixiTrack';
 import { AxisPixi } from './AxisPixi';
 
 // Services
@@ -857,8 +857,9 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   initTile(tile) {
     super.initTile(tile);
 
-    // no data present
-    if (this.scale.minValue == null || this.scale.maxValue == null) return;
+    if (this.scale.minValue == null || this.scale.maxValue == null)
+      // no data present
+      return;
 
     this.renderTile(tile);
   }
@@ -892,11 +893,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * @param {Object}  tile  Tile data to be rendered.
    */
   renderTile(tile) {
-    if (this.options.heatmapValueScaling === 'log') {
-      this.valueScale = scaleLog();
-    } else if (this.options.heatmapValueScaling === 'linear') {
-      this.valueScale = scaleLinear();
-    }
+    this.valueScale = getValueScale(this.options.heatmapValueScaling,
+      this.scale.minValue, this.scale.maxValue, 'log');
 
     this.valueScale
       .range([254, 0])
