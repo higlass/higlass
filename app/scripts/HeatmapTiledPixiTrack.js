@@ -17,6 +17,7 @@ import {
   mod,
   objVals,
   rangeQuery2d,
+  showMousePosition,
   valueToColor
 } from './utils';
 
@@ -100,6 +101,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this))
       );
     }
+
+    if (this.options.showMousePosition) showMousePosition(this, true, true);
   }
 
   /**
