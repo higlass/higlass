@@ -8,7 +8,7 @@ import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 import { tileProxy } from './services';
 
 // Utils
-import { colorToHex } from './utils';
+import { colorToHex, showMousePosition } from './utils';
 
 const GENE_RECT_WIDTH = 1;
 const GENE_RECT_HEIGHT = 6;
@@ -22,10 +22,8 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
    * ----------
    *  scene: PIXI.js scene (or graphics)
    *      Where to draw everything.
-   *  server: string
-   *      The server from which to retrieve data
-   *  uid: string
-   *      The uid of the track on the server
+   *  dataConfig: object
+   *      Holds the server and tileset UID
    *  handleTilesetInfoReceived: function
    *      A callback to let the caller know that we've received the
    *      tileset information for this track.
@@ -34,14 +32,27 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
    *      be rendered
    *  animate: callback
    *      Function to be called when something in this track changes.
-   *  popupCallback: function
-   *      Callback for when this track wishes to display extra information
-   *      (e.g. gene information)
    */
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, popupCallback) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate, popupCallback);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
+    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
     this.textFontSize = '10px';
     this.textFontFamily = 'Arial';
+
+    this.animate = animate;
+    this.options = options;
+
+    this.pubSubs = [];
+
+    if (this.options.showMousePosition) {
+      this.pMain.addChild(showMousePosition(
+        this.animate,
+        this.pubSubs,
+        this.options,
+        this.getPosition.bind(this),
+        this.getDimensions.bind(this),
+        this.flipText
+      ));
+    }
   }
 
   initTile(tile) {
