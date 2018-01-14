@@ -6,12 +6,15 @@ import { PixiTrack } from './PixiTrack';
 import { ChromosomeInfo } from './ChromosomeInfo';
 import { SearchField } from './search_field';
 
-import { absToChr, pixiTextToSvg, svgLine } from './utils';
+import { pubSub } from './services';
+
+import { absToChr, hexStrToInt, pixiTextToSvg, svgLine } from './utils';
 
 const TICK_WIDTH = 200;
 const TICK_HEIGHT = 6;
 const TICK_TEXT_SEPARATION = 2;
-const TICK_COLOR = '#777777';
+const TICK_COLOR = 0x777777;
+const MOUSE_POSITION_COLOR = 0xaaaaaa;
 
 class HorizontalChromosomeLabels extends PixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, chromInfoPath) {
@@ -33,6 +36,24 @@ class HorizontalChromosomeLabels extends PixiTrack {
     };
 
     this.animate = animate;
+
+    this.pubSubs = [];
+
+    this.options = options;
+    this.options.mousePositionColor = this.options.mousePositionColor
+      ? hexStrToInt(this.options.mousePositionColor)
+      : MOUSE_POSITION_COLOR;
+
+    if (this.options.showMousePosition) {
+      // Graphics for cursor position
+      this.cursor = new PIXI.Graphics();
+
+      this.pMain.addChild(this.cursor);
+
+      this.pubSubs.push(
+        pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this))
+      );
+    }
 
     let chromSizesPath = chromInfoPath;
 
@@ -73,6 +94,24 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.draw();
       this.animate();
     });
+  }
+
+  /**
+   * Mouse move handler
+   *
+   * @param  {Object}  e  Event object.
+   */
+  mouseMoveHandler(e) {
+    this.mouseX = e.x - this.position[0];
+    this.drawMousePosition();
+  }
+
+  drawMousePosition(x = this.mouseX) {
+    this.cursor.clear();
+    this.cursor.lineStyle(1, this.options.mousePositionColor);
+    this.cursor.moveTo(x, 0);
+    this.cursor.lineTo(x, this.dimensions[1]);
+    this.animate();
   }
 
   drawTicks(cumPos) {
@@ -125,7 +164,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
         ? `${cumPos.chr}:1`
         : `${cumPos.chr}:${tickFormat(ticks[i])}`;
 
-      graphics.lineStyle(1, TICK_COLOR, 1);
+      graphics.lineStyle(6, TICK_COLOR);
 
       // draw the tick lines
       graphics.moveTo(this._xScale(cumPos.pos + ticks[i]), this.dimensions[1]);
@@ -219,10 +258,8 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     boxIntersect(allBoxes, (i, j) => {
       if (allTexts[i].importance > allTexts[j].importance) {
-        // console.log('hiding:', allTexts[j].caption)
         allTexts[j].text.visible = 0;
       } else {
-        // console.log('hiding:', allTexts[i].caption)
         allTexts[i].text.visible = 0;
       }
     });
