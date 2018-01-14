@@ -1,3 +1,4 @@
+
 export const divergentTrackConfig = 
 {
   "zoomFixed": false,

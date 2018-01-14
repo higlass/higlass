@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { scaleLinear, scaleLog } from 'd3-scale';
+import { getValueScale } from './TiledPixiTrack.js';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
@@ -221,13 +222,8 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
    *              and tile.graphics
    */
   renderTile(tile) {
-    if (this.options.heatmapValueScaling === 'log') {
-      this.valueScale = scaleLog().range([254, 0])
-        .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-    } else if (this.options.heatmapValueScaling === 'linear') {
-      this.valueScale = scaleLinear().range([254, 0])
-        .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-    }
+    this.valueScale = getValueScale(this.options.heatmapValueScaling,
+      this.scale.minValue, this.scale.maxValue, 'log');
 
     this.limitedValueScale = this.valueScale.copy();
     if (this.options

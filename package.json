@@ -1,6 +1,6 @@
 {
   "name": "higlass",
-  "version": "0.10.6",
+  "version": "0.10.9",
   "description": "Massive matrix viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/scripts/hglib.js",
@@ -68,6 +68,7 @@
     "threads": "^0.7.2",
     "transform-loader": "^0.2.3",
     "url-join": "^1.1.0",
+    "url-parse": "^1.2.0",
     "vkbeautify": "^0.99.3",
     "whatwg-fetch": "^2.0.3"
   },
