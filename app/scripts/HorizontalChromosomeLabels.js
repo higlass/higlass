@@ -6,15 +6,20 @@ import { PixiTrack } from './PixiTrack';
 import { ChromosomeInfo } from './ChromosomeInfo';
 import { SearchField } from './search_field';
 
-import { pubSub } from './services';
+// import { pubSub } from './services';
 
-import { absToChr, hexStrToInt, pixiTextToSvg, svgLine } from './utils';
+import {
+  absToChr,
+  pixiTextToSvg,
+  showMousePosition,
+  svgLine
+} from './utils';
 
 const TICK_WIDTH = 200;
 const TICK_HEIGHT = 6;
 const TICK_TEXT_SEPARATION = 2;
 const TICK_COLOR = 0x777777;
-const MOUSE_POSITION_COLOR = 0xaaaaaa;
+// const MOUSE_POSITION_COLOR = 0xaaaaaa;
 
 class HorizontalChromosomeLabels extends PixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, chromInfoPath) {
@@ -40,19 +45,16 @@ class HorizontalChromosomeLabels extends PixiTrack {
     this.pubSubs = [];
 
     this.options = options;
-    this.options.mousePositionColor = this.options.mousePositionColor
-      ? hexStrToInt(this.options.mousePositionColor)
-      : MOUSE_POSITION_COLOR;
 
     if (this.options.showMousePosition) {
-      // Graphics for cursor position
-      this.cursor = new PIXI.Graphics();
-
-      this.pMain.addChild(this.cursor);
-
-      this.pubSubs.push(
-        pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this))
-      );
+      this.pMain.addChild(showMousePosition(
+        this.animate,
+        this.pubSubs,
+        this.options,
+        this.getPosition.bind(this),
+        this.getDimensions.bind(this),
+        this.flipText
+      ));
     }
 
     let chromSizesPath = chromInfoPath;
@@ -94,26 +96,6 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.draw();
       this.animate();
     });
-  }
-
-  /**
-   * Mouse move handler
-   *
-   * @param  {Object}  e  Event object.
-   */
-  mouseMoveHandler(e) {
-    this.mousePos = this.flipText
-      ? e.y - this.position[1]
-      : e.x - this.position[0];
-    this.drawMousePosition();
-  }
-
-  drawMousePosition(mousePos = this.mousePos) {
-    this.cursor.clear();
-    this.cursor.lineStyle(1, this.options.mousePositionColor);
-    this.cursor.moveTo(mousePos, 0);
-    this.cursor.lineTo(mousePos, this.dimensions[1]);
-    this.animate();
   }
 
   drawTicks(cumPos) {
