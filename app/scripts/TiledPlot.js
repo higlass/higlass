@@ -127,29 +127,6 @@ export class TiledPlot extends React.Component {
     this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
 
-    this.divTiledPlotSelection = select(this.divTiledPlot);
-    this.divTiledPlotSelection.on('contextmenu', (evt) => {
-      event.preventDefault();
-      const mousePos = [event.clientX, event.clientY];
-      const canvasMousePos = mouse(this.divTiledPlot);
-
-      // the x and y values of the rendered plots
-      // will be used if someone decides to draw a horizontal or vertical
-      // rule
-      const xVal = this.trackRenderer.zoomedXScale.invert(canvasMousePos[0]);
-      const yVal = this.trackRenderer.zoomedYScale.invert(canvasMousePos[1]);
-
-      this.setState({
-        contextMenuPosition: {
-          left: mousePos[0],
-          top: mousePos[1],
-        },
-
-        contextMenuX: xVal,
-        contextMenuY: yVal,
-      });
-    });
-
     //new ResizeSensor(this.element, this.measureSize.bind(this));
     this.waitForDOMAttachment(() => {
       ElementQueries.listen();
@@ -236,6 +213,8 @@ export class TiledPlot extends React.Component {
       contextMenuPosition: {
         left: mousePos[0],
         top: mousePos[1],
+        canvasLeft: canvasMousePos[0],
+        canvasTop: canvasMousePos[1],
       },
 
       contextMenuX: xVal,
