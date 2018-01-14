@@ -59,6 +59,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       onValueScaleChanged,
     );
 
+    this.is2d = true;
+
     this.onTrackOptionsChanged = onTrackOptionsChanged;
 
     // Graphics for drawing the colorbar
@@ -102,7 +104,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       );
     }
 
-    if (this.options.showMousePosition) showMousePosition(this, true, true);
+    if (this.options.showMousePosition) showMousePosition(this, this.is2d);
   }
 
   /**
