@@ -205,8 +205,6 @@ export class TiledPlot extends React.Component {
     const xVal = this.trackRenderer.zoomedXScale.invert(canvasMousePos[0]);
     const yVal = this.trackRenderer.zoomedYScale.invert(canvasMousePos[1]);
 
-    console.log('canvasMousePos:', canvasMousePos);
-
     this.setState({
       contextMenuPosition: {
         left: mousePos[0],

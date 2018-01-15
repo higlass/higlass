@@ -139,6 +139,12 @@ export class PixiTrack extends Track {
       fontFamily: this.labelTextFontFamily,
       fill: 'black' });
 
+    this.errorText = new PIXI.Text('',
+      { fontSize: '12px', fontFamily: 'Arial', fill: 'red' });
+    this.errorText.anchor.x = 0.5;
+    this.errorText.anchor.y = 0.5;
+    this.pLabel.addChild(this.errorText);
+
     this.pLabel.addChild(this.labelText);
   }
 
@@ -200,6 +206,29 @@ export class PixiTrack extends Track {
       this.dimensions[0],
       this.dimensions[1],
     );
+  }
+
+  drawError() {
+    this.errorText.x = this.position[0] + this.dimensions[0] / 2;
+    this.errorText.y = this.position[1] + this.dimensions[1] / 2;
+
+    this.errorText.text = this.errorTextText;
+
+    if (this.errorTextText && this.errorTextText.length) {
+      // draw a red border around the track to bring attention to its
+      // error
+      const graphics = this.pBorder;
+
+      graphics.clear();
+      graphics.lineStyle(1, colorToHex('red'));
+
+      graphics.drawRect(
+        this.position[0],
+        this.position[1],
+        this.dimensions[0],
+        this.dimensions[1],
+      );
+    }
   }
 
   drawLabel() {
@@ -409,6 +438,7 @@ export class PixiTrack extends Track {
     // this rectangle is cleared by functions that override this draw method
     this.drawBorder();
     this.drawLabel();
+    this.drawError();
   }
 
   /**

@@ -3,6 +3,9 @@ develop (2018-01-??)
 - Added mouseMoveZoom event to public API
 - Fixed and extended pubSub module
 - Added flexible per-track crosshair
+- Display error message on error
+- Don't error when displaying menus when invalid track type is
+entered
 
 v0.10.10 (2018-01-
 
@@ -24,7 +27,6 @@ v0.10.7 (2018-01-13)
 
 - Show current data resolution in tiled sets containing raw resolutions rather
 than zoom levels
->>>>>>> origin/master
 
 v0.10.6 (2017-12-28)
 

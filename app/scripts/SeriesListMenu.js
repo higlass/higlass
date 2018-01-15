@@ -34,7 +34,8 @@ export class SeriesListMenu extends ContextMenuContainer {
   getConfigureSeriesMenu(position, bbox, track) {
     const menuItems = {};
 
-    if (!TRACKS_INFO_BY_TYPE[track.type].availableOptions) { return null; }
+    if (!TRACKS_INFO_BY_TYPE[track.type] 
+      || !TRACKS_INFO_BY_TYPE[track.type].availableOptions) { return null; }
 
     for (const optionType of TRACKS_INFO_BY_TYPE[track.type].availableOptions) {
       if (OPTIONS_INFO.hasOwnProperty(optionType)) {
@@ -142,8 +143,16 @@ export class SeriesListMenu extends ContextMenuContainer {
      */
 
     // get the datatype of the current track
-    let datatype = TRACKS_INFO_BY_TYPE[track.type].datatype[0];
-    let orientation = TRACKS_INFO_BY_TYPE[track.type].orientation;
+    //
+    let datatype = null;
+    let orientation = null;
+    
+    // make sure that this is a valid track type before trying to
+    // look up other tracks that can substitute for it
+    if (track.type in TRACKS_INFO_BY_TYPE) {
+      datatype = TRACKS_INFO_BY_TYPE[track.type].datatype[0];
+      orientation = TRACKS_INFO_BY_TYPE[track.type].orientation;
+    }
     
     // see which other tracks can display a similar datatype
     let availableTrackTypes = TRACKS_INFO

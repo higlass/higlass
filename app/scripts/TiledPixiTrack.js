@@ -91,7 +91,8 @@ export class TiledPixiTrack extends PixiTrack {
           'Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error
         );
 
-        this.error = this.tilesetInfo.error;
+        this.trackNotFoundText = '';
+        this.errorTextText = this.tilesetInfo.error;
         this.tilesetInfo = null;
         this.draw();
         this.animate();
