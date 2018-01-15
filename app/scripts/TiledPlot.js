@@ -168,19 +168,26 @@ export class TiledPlot extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.rangeSelection !== this.state.rangeSelection) {
-      let genomicRange;
-      if (this.state.defaultChromSizes) {
+      let genomicRange = [null, null];  // Default range
+
+      if (
+        this.state.defaultChromSizes
+        && this.state.rangeSelection.every(range => range && range.length)
+      ) {
+        // Convert data into genomic loci
         genomicRange = this.state.rangeSelection
           .map(range => dataToGenomicLoci(
             ...range,
             this.state.defaultChromSizes
           ));
       }
+
       this.props.onRangeSelection({
         dataRange: this.state.rangeSelection,
         genomicRange
       });
     }
+
     if (prevProps.tracks.center !== this.props.tracks.center) {
       this.getDefaultChromSizes();
     }
