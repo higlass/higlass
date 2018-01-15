@@ -46,15 +46,11 @@ export class VerticalTiledPlot extends React.Component {
     } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
       const accessor = this.props.is1dRangeSelection ? 0 : 1;
 
-      if (this.props.chromInfo) {
-        this.moveBrush(
-          nextProps.rangeSelection[accessor] ?
-            genomeLociToPixels(
-              nextProps.rangeSelection[accessor], this.props.chromInfo,
-            ) :
-            null,
-        );
-      }
+      this.moveBrush(
+        nextProps.rangeSelection[accessor]
+          ? nextProps.rangeSelection[accessor]
+          : null
+      );
       return this.state !== nextState;
     }
     return true;
@@ -200,7 +196,6 @@ export class VerticalTiledPlot extends React.Component {
 
 VerticalTiledPlot.propTypes = {
   configTrackMenuId: PropTypes.string,
-  chromInfo: PropTypes.object,
   editable: PropTypes.bool,
   handleConfigTrack: PropTypes.func,
   handleResizeTrack: PropTypes.func,

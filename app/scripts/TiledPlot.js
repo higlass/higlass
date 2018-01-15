@@ -1015,7 +1015,6 @@ export class TiledPlot extends React.Component {
       >
         <HorizontalTiledPlot
           configTrackMenuId={this.state.configTrackMenuId}
-          chromInfo={this.state.chromInfo}
           editable={this.props.editable}
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
           handleResizeTrack={this.handleResizeTrack.bind(this)}
@@ -1052,7 +1051,6 @@ export class TiledPlot extends React.Component {
       >
         <VerticalTiledPlot
           configTrackMenuId={this.state.configTrackMenuId}
-          chromInfo={this.state.chromInfo}
           editable={this.props.editable}
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
           handleResizeTrack={this.handleResizeTrack.bind(this)}
@@ -1087,7 +1085,6 @@ export class TiledPlot extends React.Component {
       >
         <VerticalTiledPlot
           configTrackMenuId={this.state.configTrackMenuId}
-          chromInfo={this.state.chromInfo}
           editable={this.props.editable}
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
           handleResizeTrack={this.handleResizeTrack.bind(this)}
@@ -1123,7 +1120,6 @@ export class TiledPlot extends React.Component {
       >
         <HorizontalTiledPlot
           configTrackMenuId={this.state.configTrackMenuId}
-          chromInfo={this.state.chromInfo}
           editable={this.props.editable}
           handleConfigTrack={this.handleConfigTrackMenuOpened.bind(this)}
           handleResizeTrack={this.handleResizeTrack.bind(this)}
@@ -1173,7 +1169,6 @@ export class TiledPlot extends React.Component {
         >
           <CenterTrack
             configTrackMenuId={this.state.configTrackMenuId}
-            chromInfo={this.state.chromInfo}
             editable={this.props.editable}
             height={this.centerHeight}
             is1dRangeSelection={this.state.is1dRangeSelection}

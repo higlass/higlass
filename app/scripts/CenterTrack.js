@@ -52,33 +52,28 @@ export class CenterTrack extends React.Component {
       this.rangeSelectionTriggeredXY = false;
       return this.state !== nextState;
     } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
-      const dim1 = nextProps.rangeSelection[0] ? genomeLociToPixels(
-        nextProps.rangeSelection[0], this.props.chromInfo,
-      ) : null;
+      const dim1 = nextProps.rangeSelection[0] || null;
 
-      if (this.props.chromInfo) {
-        if (this.props.is1dRangeSelection) {
-          if (!this.rangeSelectionTriggeredX) {
-            this.moveBrushX(dim1);
-          }
-          if (!this.rangeSelectionTriggeredY) {
-            this.moveBrushY(dim1);
-          }
-          this.rangeSelectionTriggeredX = false;
-          this.rangeSelectionTriggeredY = false;
-        } else {
-          this.moveBrushXY(
-            [
-              dim1,
-              genomeLociToPixels(
-                nextProps.rangeSelection[1], this.props.chromInfo,
-              ),
-            ],
-          );
+      if (this.props.is1dRangeSelection) {
+        if (!this.rangeSelectionTriggeredX) {
+          this.moveBrushX(dim1);
         }
+        if (!this.rangeSelectionTriggeredY) {
+          this.moveBrushY(dim1);
+        }
+        this.rangeSelectionTriggeredX = false;
+        this.rangeSelectionTriggeredY = false;
+      } else {
+        this.moveBrushXY(
+          [dim1, nextProps.rangeSelection[1]]
+        );
       }
 
-      const isUnset = this.props.is1dRangeSelection && !nextProps.is1dRangeSelection && dim1 === null;
+      const isUnset = (
+        this.props.is1dRangeSelection
+        && !nextProps.is1dRangeSelection
+        && dim1 === null
+      );
 
       return this.state !== nextState || isUnset;
     }
@@ -408,7 +403,6 @@ export class CenterTrack extends React.Component {
 }
 
 CenterTrack.propTypes = {
-  chromInfo: PropTypes.object,
   className: PropTypes.string,
   editable: PropTypes.bool,
   height: PropTypes.number,
