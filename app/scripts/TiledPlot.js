@@ -40,7 +40,6 @@ export class TiledPlot extends React.Component {
     super(props);
 
     this.closing = false;
-    this.yPositionOffset = 0; // the offset from the Canvas and SVG elements
     // that the tracks will be drawn on
 
     const tracks = this.props.tracks;
@@ -69,9 +68,6 @@ export class TiledPlot extends React.Component {
       sizeMeasured: false,
       height: 10,
       width: 10,
-
-      yPositionOffset: 0,
-      xPositionOffset: 0,
 
       tracks,
       addTrackPosition: null,
@@ -209,12 +205,14 @@ export class TiledPlot extends React.Component {
     const xVal = this.trackRenderer.zoomedXScale.invert(canvasMousePos[0]);
     const yVal = this.trackRenderer.zoomedYScale.invert(canvasMousePos[1]);
 
+    console.log('canvasMousePos:', canvasMousePos);
+
     this.setState({
       contextMenuPosition: {
         left: mousePos[0],
         top: mousePos[1],
-        canvasLeft: canvasMousePos[0],
-        canvasTop: canvasMousePos[1],
+        canvasLeft: canvasMousePos[0] + this.trackRenderer.xPositionOffset,
+        canvasTop: canvasMousePos[1] + this.trackRenderer.yPositionOffset,
       },
 
       contextMenuX: xVal,
@@ -870,8 +868,8 @@ export class TiledPlot extends React.Component {
     if (this.state.contextMenuPosition) {
       const allTracks = this.listAllTrackObjects();
       const relevantTracks = this.listTracksAtPosition(
-        this.state.contextMenuPosition.left,
-        this.state.contextMenuPosition.top);
+        this.state.contextMenuPosition.canvasLeft,
+        this.state.contextMenuPosition.canvasTop);
 
       return (
         <PopupMenu
