@@ -29,7 +29,7 @@ import {
 } from './utils';
 
 // Configs
-import { MOUSE_TOOL_SELECT } from './configs';
+import { MOUSE_TOOL_SELECT, TRACKS_INFO_BY_TYPE } from './configs';
 
 // Styles
 import styles from '../styles/TiledPlot.module.scss';
@@ -127,7 +127,7 @@ export class TiledPlot extends React.Component {
     this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
 
-    //new ResizeSensor(this.element, this.measureSize.bind(this));
+    // new ResizeSensor(this.element, this.measureSize.bind(this));
     this.waitForDOMAttachment(() => {
       ElementQueries.listen();
       this.resizeSensor = new ResizeSensor(
@@ -475,7 +475,6 @@ export class TiledPlot extends React.Component {
   }
 
   handleConfigureTrack(track, configComponent) {
-    console.log('configComponent:', configComponent);
     this.setState({
       configTrackMenuId: null,
       trackOptions: { track, configComponent },
@@ -682,18 +681,33 @@ export class TiledPlot extends React.Component {
   /**
    * List all the tracks that are under this mouse position
    */
-  listTracksAtPosition(x, y) {
+  listTracksAtPosition(x, y, isReturnTrackObj = false) {
     const trackObjectsAtPosition = [];
 
     for (const uid in this.trackRenderer.trackDefObjects) {
       const trackObj = this.trackRenderer.trackDefObjects[uid].trackObject;
 
-      if (trackObj.respondsToPosition(x,y)) {
+      if (trackObj.respondsToPosition(x, y)) {
         // check if this track wishes to respond to events at position x,y
         // by default, this is true
         // it is false in tracks like the horizontal and vertical rule which only
         // wish to be identified if the mouse is directly over them
-        trackObjectsAtPosition.push(this.trackRenderer.trackDefObjects[uid].trackDef.track);
+
+        if (isReturnTrackObj) {
+          // This should be much simpler to determine...
+          trackObj.is2d = this.trackRenderer.trackDefObjects[uid].trackDef.track.type === 'combined'
+            ? this.trackRenderer.trackDefObjects[uid].trackDef.track.contents
+              .some(track => TRACKS_INFO_BY_TYPE[track.type].orientation)
+            : TRACKS_INFO_BY_TYPE[
+              this.trackRenderer.trackDefObjects[uid].trackDef.track.type
+            ].orientation === '2d';
+
+          trackObjectsAtPosition.push(trackObj);
+        } else {
+          trackObjectsAtPosition.push(
+            this.trackRenderer.trackDefObjects[uid].trackDef.track
+          );
+        }
       }
     }
 
@@ -865,27 +879,27 @@ export class TiledPlot extends React.Component {
   }
 
   getContextMenu() {
-    let menu = null;
-
     if (this.state.contextMenuPosition) {
-      const allTracks = this.listAllTrackObjects();
       const relevantTracks = this.listTracksAtPosition(
-        this.state.contextMenuPosition.left,
-        this.state.contextMenuPosition.top);
+        this.state.contextMenuPosition.canvasLeft,
+        this.state.contextMenuPosition.canvasTop
+      );
 
       return (
         <PopupMenu
           onMenuClosed={this.closeMenus.bind(this)}
         >
-          <ViewContextMenu 
+          <ViewContextMenu
+            closeMenu={this.closeMenus.bind(this)}
+            coords={[this.state.contextMenuX, this.state.contextMenuY]}
+            onAddSeries={this.handleAddSeries.bind(this)}
             // Can only add one new track at a time
             // because "whole" tracks are always drawn on top of each other,
             // the notion of Series is unnecessary and so 'host' is null
-            onAddTrack={(newTrack) => { 
-              this.props.onTracksAdded([newTrack], 'whole', null)
+            onAddTrack={(newTrack) => {
+              this.props.onTracksAdded([newTrack], 'whole', null);
               this.handleCloseContextMenu();
             }}
-            onAddSeries={this.handleAddSeries.bind(this)}
             onChangeTrackType={this.handleChangeTrackType.bind(this)}
             onCloseTrack={this.handleCloseTrack.bind(this)}
             onConfigureTrack={this.handleConfigureTrack.bind(this)}
@@ -894,14 +908,12 @@ export class TiledPlot extends React.Component {
             onReplaceTrack={this.handleReplaceTrack.bind(this)}
             onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
             onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
-            coords={[this.state.contextMenuX, this.state.contextMenuY]}
-            tracks={relevantTracks}
-            position={this.state.contextMenuPosition}
             orientation={'left'}
-            closeMenu={this.closeMenus.bind(this)}
+            position={this.state.contextMenuPosition}
+            tracks={relevantTracks}
           />
         </PopupMenu>
-        );
+      );
     }
 
     return null;

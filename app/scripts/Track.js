@@ -34,7 +34,15 @@ export class Track {
     return withinX && withinY;
   }
 
+  getProp(prop) {
+    return () => this[prop];
+  }
+
   getData() {}
+
+  getDimensions() {
+    return this.dimensions;
+  }
 
   setDimensions(newDimensions) {
     this.dimensions = newDimensions;
@@ -106,6 +114,10 @@ export class Track {
 
   draw() {}
 
+  getPosition() {
+    return this.position;
+  }
+
   setPosition(newPosition) {
     this.position = newPosition;
   }
@@ -119,7 +131,7 @@ export class Track {
   rerender() {}
 
   respondsToPosition(x,y) {
-    if (this.position[0] < x && x <= this.position[0] + this.dimensions[0] 
+    if (this.position[0] < x && x <= this.position[0] + this.dimensions[0]
       && this.position[1] < y && y <= this.position[1] + this.dimensions[1]) {
       return true;
     }
