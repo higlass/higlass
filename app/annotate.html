@@ -288,8 +288,8 @@ setTimeout(() => {
 const rangeSelectionHander = (rangeSelection) => {
   console.log(
     'Selected the following range:',
-    rangeSelection[0],
-    rangeSelection[1],
+    rangeSelection.dataRange,
+    rangeSelection.genomicRange,
   );
 };
 window.hgApi.on('rangeSelection', rangeSelectionHander);
