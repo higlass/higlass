@@ -204,23 +204,21 @@ const api = function api(context) {
     },
 
     off(event, listenerId, viewId) {
+      const callback = typeof listenerId === 'object'
+        ? listenerId.callback
+        : listenerId;
+
       switch (event) {
         case 'location':
           self.offLocationChange(viewId, listenerId);
           break;
 
         case 'mouseMoveZoom':
-          apiPubSub.unsubscribe(
-            'mouseMoveZoom', (
-              typeof listenerId === 'object'
-                ? listenerId.callback
-                : listenerId
-            )
-          );
+          apiPubSub.unsubscribe('mouseMoveZoom', callback);
           break;
 
         case 'rangeSelection':
-          self.offRangeSelection(listenerId);
+          apiPubSub.unsubscribe('rangeSelection', callback);
           break;
 
         case 'viewConfig':
@@ -242,7 +240,7 @@ const api = function api(context) {
           return apiPubSub.subscribe('mouseMoveZoom', callback);
 
         case 'rangeSelection':
-          return self.onRangeSelection(callback);
+          return apiPubSub.subscribe('rangeSelection', callback);
 
         case 'viewConfig':
           return self.onViewChange(callback);

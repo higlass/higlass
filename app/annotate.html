@@ -285,13 +285,18 @@ setTimeout(() => {
   window.hgApi.activateTool('select');
 }, 2000);
 
-window.hgApi.on('rangeSelection', (rangeSelection) => {
+const rangeSelectionHander = (rangeSelection) => {
   console.log(
     'Selected the following range:',
     rangeSelection[0],
     rangeSelection[1],
   );
-});
+};
+window.hgApi.on('rangeSelection', rangeSelectionHander);
+
+setTimeout(() => {
+  window.hgApi.off('rangeSelection', rangeSelectionHander);
+}, 10000);
 
 </script>
 </html>

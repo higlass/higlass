@@ -164,7 +164,6 @@ class HiGlassComponent extends React.Component {
     // Set up API
     this.api = api(this);
 
-    this.rangeSelectionListener = [];
     this.viewChangeListener = [];
 
     this.triggerViewChangeDb = debounce(
@@ -389,9 +388,8 @@ class HiGlassComponent extends React.Component {
 
   animate() {
     requestAnimationFrame(() => {
-      if (!this.pixiRenderer)
-        // component was probably unmounted
-        return;
+      // component was probably unmounted
+      if (!this.pixiRenderer) return;
 
       this.pixiRenderer.render(this.pixiStage);
     });
@@ -2551,19 +2549,18 @@ class HiGlassComponent extends React.Component {
 
   }
 
-  offRangeSelection(listenerId) {
-    this.rangeSelectionListener.splice(listenerId, 1);
-  }
-
-  onRangeSelection(callback) {
-    return this.rangeSelectionListener.push(callback) - 1;
-  }
-
+  /**
+   * Handle range selection events.
+   *
+   * @description
+   * Store active range selectio and forward the range selection event to the
+   * API.
+   *
+   * @param  {Array}  range  Double array of the selected range.
+   */
   rangeSelectionHandler(range) {
     this.rangeSelection = range;
-    this.rangeSelectionListener.forEach(
-      callback => callback(range),
-    );
+    apiPublish('rangeSelection', range);
   }
 
   offViewChange(listenerId) {
@@ -2648,7 +2645,7 @@ onLocationChange(viewId, callback, callbackId) {
     const offset = this.topDiv
       ? this.topDiv.getBoundingClientRect()
       : { top: 0, left: 0 };
-    const publishedPosition = 
+    const publishedPosition =
       { x: e.clientX - offset.left, y: e.clientY - offset.top }
 
     pubSub.publish(
