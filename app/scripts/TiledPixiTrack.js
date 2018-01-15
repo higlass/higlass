@@ -36,10 +36,10 @@ export const getValueScale = function(scalingType, minValue, maxValue, defaultSc
 
   if (scalingTypeToUse == 'log') {
     // warn the users that their desired scaling type couldn't be used
-    console.warn('Negative values present in data. Defaulting to linear scale: ', this.scale.minValue);
+    console.warn('Negative values present in data. Defaulting to linear scale: ', minValue);
   }
 
-  return scaleLog().range([254, 0])
+  return scaleLinear().range([254, 0])
     .domain([minValue, minValue + maxValue]);
 }
 
