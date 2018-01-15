@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { select,mouse } from 'd3-selection';
+import { select, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import { request } from 'd3-request';
 import slugid from 'slugid';
@@ -195,6 +195,9 @@ class HiGlassComponent extends React.Component {
     this.pubSubs.push(
       pubSub.subscribe('orientationchange', this.resizeHandler.bind(this)),
     );
+    this.pubSubs.push(
+      pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this)),
+    );
 
     if (this.props.getApi) {
       this.props.getApi(this.api);
@@ -322,8 +325,7 @@ class HiGlassComponent extends React.Component {
 
     // if this element was never attached to the DOM
     // then the resize sensor will never have been initiated
-    if (this.resizeSensor)
-      this.resizeSensor.detach();
+    if (this.resizeSensor) this.resizeSensor.detach();
 
     domEvent.unregister('keydown', document);
     domEvent.unregister('keyup', document);
@@ -335,6 +337,15 @@ class HiGlassComponent extends React.Component {
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
+
+  animateOnMouseMoveHandler(active) {
+    if (active && !this.animateOnMouseMove) {
+      this.pubSubs.push(
+        pubSub.subscribe('app.mouseMove', this.animate.bind(this)),
+      );
+    }
+    this.animateOnMouseMove = active;
+  }
 
   fitPixiToParentContainer() {
     if (!this.element.parentNode) {
@@ -2643,20 +2654,86 @@ onLocationChange(viewId, callback, callbackId) {
   }
 
   /**
+   * List all the views that are at the given position view position
+   */
+  getTiledPlotAtPosition(x, y) {
+    let foundTiledPlot;
+
+    const views = dictValues(this.state.views);
+
+    for (let i = 0; i < views.length; i++) {
+      const tiledPlot = this.tiledPlots[views[i].uid];
+
+      const area = this.tiledAreasDivs[views[i].uid].getBoundingClientRect();
+
+      const top = area.top;
+      const bottom = top + area.height;
+      const left = area.left;
+      const right = left + area.width;
+
+      const withinX = x >= left && x <= right;
+      const withinY = y >= top && y <= bottom;
+
+      if (withinX && withinY) {
+        foundTiledPlot = tiledPlot;
+        break;
+      }
+    }
+
+    return foundTiledPlot;
+  }
+
+  /**
    * Handle mousemove events by republishing the event using pubSub.
    *
    * @param {object}  e  Event object.
    */
   mouseMoveHandler(e) {
-    const offset = this.topDiv
-      ? this.topDiv.getBoundingClientRect()
-      : { top: 0, left: 0 };
-    const publishedPosition = 
-      { x: e.clientX - offset.left, y: e.clientY - offset.top }
+    if (!this.topDiv) return;
+
+    const relPos = clientPoint(this.topDiv, e);
+    const hoveredTiledPlot = this.getTiledPlotAtPosition(e.clientX, e.clientY);
+
+    const hoveredTracks = hoveredTiledPlot
+      ? hoveredTiledPlot.listTracksAtPosition(relPos[0], relPos[1], true)
+      : undefined;
+
+    const hoveredTrack = hoveredTracks && hoveredTracks.length > 0
+      ? hoveredTracks[0].originalTrack || hoveredTracks[0]
+      : undefined;
+
+    const relTrackPos = hoveredTrack
+      ? [
+        relPos[0] - hoveredTrack.position[0],
+        relPos[1] - hoveredTrack.position[1],
+      ]
+      : relPos;
+
+    let dataX = -1;
+    let dataY = -1;
+
+    if (hoveredTrack) {
+      dataX = !hoveredTrack.flipText
+        ? hoveredTrack._xScale.invert(relTrackPos[0])  // dataX
+        : hoveredTrack._xScale.invert(relTrackPos[1]);  // dataY
+
+      dataY = hoveredTrack.is2d
+        ? hoveredTrack._yScale.invert(relTrackPos[1])
+        : dataX;
+    }
 
     pubSub.publish(
       'app.mouseMove',
-      publishedPosition
+      {
+        x: relPos[0],
+        y: relPos[1],
+        relTrackX: relTrackPos[0],
+        relTrackY: relTrackPos[1],
+        dataX,
+        dataY,
+        isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
+        isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText
+      }
     );
   }
 
@@ -2675,9 +2752,9 @@ onLocationChange(viewId, callback, callbackId) {
   }
 
   render() {
-    let tiledAreas = (
+    this.tiledAreasDivs = {};
+    this.tiledAreas = (
       <div
-        ref={(c) => { this.tiledAreaDiv = c; }}
         styleName="styles.tiled-area"
       />
     );
@@ -2685,7 +2762,7 @@ onLocationChange(viewId, callback, callbackId) {
     // The component needs to be mounted in order for the initial view to have
     // the right width
     if (this.mounted) {
-      tiledAreas = dictValues(this.state.views).map((view) => {
+      this.tiledAreas = dictValues(this.state.views).map((view) => {
         const zoomFixed = typeof view.zoomFixed !== 'undefined'
           ? view.zoomFixed
           : this.props.zoomFixed;
@@ -2878,7 +2955,7 @@ onLocationChange(viewId, callback, callbackId) {
         return (
           <div
             key={view.uid}
-            ref={(c) => { this.tiledAreaDiv = c; }}
+            ref={(c) => { this.tiledAreasDivs[view.uid] = c; }}
             styleName="styles.tiled-area"
           >
             {multiTrackHeader}
@@ -2930,8 +3007,9 @@ onLocationChange(viewId, callback, callbackId) {
         // `useCSSTransforms` (it's default `true`)
         // and set `measureBeforeMount={true}`.
         useCSSTransforms={this.mounted}
+        onLayoutChange={(layout) => console.log('LAYOUT', layout)}
       >
-        {tiledAreas}
+        {this.tiledAreas}
       </ReactGridLayout>
     );
 
