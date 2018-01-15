@@ -83,7 +83,8 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const tileEndY = tileY + tileHeight;
 
     sprite.width = this._refXScale(tileEndX) - this._refXScale(tileX);
-    sprite.height = this.tilesetInfo.shape[1]; //this._refYScale(tileEndY) - this._refYScale(tileY);
+    //sprite.height = this.tilesetInfo.shape[1]; //this._refYScale(tileEndY) - this._refYScale(tileY);
+    sprite.height = this.dimensions[1];
 
     sprite.x = this._refXScale(tileX);
     sprite.y = 0;
