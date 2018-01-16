@@ -7,6 +7,7 @@ import { AddTrackPositionMenu } from './AddTrackPositionMenu';
 
 // Configs
 import {
+  MOUSE_TOOL_SELECT,
   VIEW_HEADER_MED_WIDTH_SEARCH_BAR,
   VIEW_HEADER_MIN_WIDTH_SEARCH_BAR,
 } from './configs';
@@ -214,6 +215,14 @@ export class ViewHeader extends React.Component {
         styleName={className}
       >
         <div styleName="multitrack-header-left">
+          {this.props.mouseTool === MOUSE_TOOL_SELECT && (
+            <svg
+              styleName={`mouse-tool-selection ${classNameIcon}`}
+              title="Selection tool active"
+            >
+              <use xlinkHref="#select" />
+            </svg>
+          )}
           <div styleName={classNameGrabber}>
             <div /><div /><div />
           </div>
@@ -272,6 +281,7 @@ ViewHeader.defaultProps = {
 ViewHeader.propTypes = {
   getGenomePositionSearchBox: PropTypes.func.isRequired,
   isGenomePositionSearchBoxVisible: PropTypes.bool,
+  mouseTool: PropTypes.string.isRequired,
   onAddView: PropTypes.func.isRequired,
   onClearView: PropTypes.func.isRequired,
   onCloseView: PropTypes.func.isRequired,

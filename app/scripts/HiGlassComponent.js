@@ -2901,6 +2901,7 @@ onLocationChange(viewId, callback, callbackId) {
               view.genomePositionSearchBox &&
               view.genomePositionSearchBox.visible
             }
+            mouseTool={this.state.mouseTool}
             onAddView={() => this.handleAddView(view)}
             onClearView={() => this.handleClearView(view.uid)}
             onCloseView={() => this.handleCloseView(view.uid)}

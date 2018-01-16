@@ -123,6 +123,12 @@ $unit: 24px;
   }
 }
 
+.mouse-tool-selection {
+  color: white;
+  border-radius: $unit / 8 0 0 $unit / 8;
+  background: $active;
+}
+
 .multitrack-header-icon-squeazed {
   width: $unit / 1.2  5;
   padding-left: $unit / 8;
