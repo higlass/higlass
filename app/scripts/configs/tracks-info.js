@@ -127,7 +127,20 @@ export const TRACKS_INFO = [
     local: false,
     orientation: '1d-horizontal',
     thumbnail: svgHorizontalLineIcon,
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'axisPositionHorizontal',
+      'lineStrokeWidth',
+      'lineStrokeColor',
+      'valueScaling',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'trackType',
+      'showMousePosition',
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'topLeft',
@@ -138,6 +151,7 @@ export const TRACKS_INFO = [
       trackBorderWidth: 0,
       trackBorderColor: 'black',
       labelTextOpacity: 0.4,
+      showMousePosition: false,
     },
   },
   {
@@ -163,7 +177,20 @@ export const TRACKS_INFO = [
     local: false,
     orientation: '1d-vertical',
     thumbnail: svgVerticalLineIcon,
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionVertical', 'lineStrokeWidth', 'lineStrokeColor', 'valueScaling', 'trackBorderWidth', 'trackBorderColor'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'axisPositionVertical',
+      'lineStrokeWidth',
+      'lineStrokeColor',
+      'valueScaling',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'showMousePosition',
+      'mousePositionColor',
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'bottomLeft',
@@ -174,6 +201,8 @@ export const TRACKS_INFO = [
       trackBorderWidth: 0,
       trackBorderColor: 'black',
       labelTextOpacity: 0.4,
+      showMousePosition: true,
+      mousePositionColor: '#999999'
     },
   },
   {
@@ -377,8 +406,17 @@ export const TRACKS_INFO = [
     orientation: '1d-horizontal',
     name: 'Gene Annotations',
     thumbnail: svgGeneAnnotationsIcon,
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'plusStrandColor', 'minusStrandColor',
-      'trackBorderWidth', 'trackBorderColor'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'plusStrandColor',
+      'minusStrandColor',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'showMousePosition',
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'hidden',
@@ -386,6 +424,7 @@ export const TRACKS_INFO = [
       minusStrandColor: 'red',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
+      showMousePosition: false,
     },
   },
   {
@@ -396,8 +435,18 @@ export const TRACKS_INFO = [
     orientation: '1d-vertical',
     name: 'Gene Annotations',
     thumbnail: svgVerticalGeneAnnotationsIcon,
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'plusStrandColor', 'minusStrandColor',
-      'trackBorderWidth', 'trackBorderColor'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'plusStrandColor',
+      'minusStrandColor',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'showMousePosition',
+      'mousePositionColor',
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'hidden',
@@ -405,6 +454,8 @@ export const TRACKS_INFO = [
       minusStrandColor: 'red',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
+      showMousePosition: false,
+      mousePositionColor: '#999999'
     },
   },
 
@@ -548,6 +599,14 @@ export const TRACKS_INFO = [
     minHeight: 30,
     name: 'Chromosome Axis',
     thumbnail: null,
+    availableOptions: [
+      'showMousePosition',
+      'mousePositionColor',
+    ],
+    defaultOptions: {
+      showMousePosition: true,
+      mousePositionColor: '#999999'
+    },
   },
   {
     type: 'vertical-chromosome-labels',
@@ -557,6 +616,14 @@ export const TRACKS_INFO = [
     minHeight: 30,
     name: 'Chromosome Axis',
     thumbnail: null,
+    availableOptions: [
+      'showMousePosition',
+      'mousePositionColor',
+    ],
+    defaultOptions: {
+      showMousePosition: true,
+      mousePositionColor: '#999999'
+    },
   },
   {
     type: 'vertical-1d-tiles',
