@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { select } from 'd3-selection';
+import { select, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import { json, request } from 'd3-request';
 import slugid from 'slugid';
@@ -9,6 +9,7 @@ import ReactGridLayout from 'react-grid-layout';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
 import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
+import parse from 'url-parse';
 
 import { TiledPlot } from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
@@ -17,7 +18,7 @@ import { createSymbolIcon } from './symbol';
 import { all as icons } from './icons';
 import ViewHeader from './ViewHeader';
 import { ChromosomeInfo } from './ChromosomeInfo';
-import api from './api';
+import api, { destroy as apiDestroy, publish as apiPublish } from './api';
 
 // Services
 import { chromInfo, domEvent, pubSub } from './services';
@@ -215,6 +216,13 @@ class HiGlassComponent extends React.Component {
     this.pubSubs.push(
       pubSub.subscribe('orientationchange', this.resizeHandler.bind(this)),
     );
+    this.pubSubs.push(
+      pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this)),
+    );
+
+    if (this.props.getApi) {
+      this.props.getApi(this.api);
+    }
   }
 
   waitForDOMAttachment(callback) {
@@ -337,8 +345,7 @@ class HiGlassComponent extends React.Component {
 
     // if this element was never attached to the DOM
     // then the resize sensor will never have been initiated
-    if (this.resizeSensor)
-      this.resizeSensor.detach();
+    if (this.resizeSensor) this.resizeSensor.detach();
 
     domEvent.unregister('keydown', document);
     domEvent.unregister('keyup', document);
@@ -346,9 +353,19 @@ class HiGlassComponent extends React.Component {
 
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
+    apiDestroy();
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
+
+  animateOnMouseMoveHandler(active) {
+    if (active && !this.animateOnMouseMove) {
+      this.pubSubs.push(
+        pubSub.subscribe('app.mouseMove', this.animate.bind(this)),
+      );
+    }
+    this.animateOnMouseMove = active;
+  }
 
   fitPixiToParentContainer() {
     if (!this.element.parentNode) {
@@ -369,7 +386,7 @@ class HiGlassComponent extends React.Component {
 
   addDefaultOptions(track) {
     if (!TRACKS_INFO_BY_TYPE.hasOwnProperty(track.type)) {
-      console.error('ERROR: track type not found:', track.type, ' (check app/scripts/config/ for a list of defined track types)');
+      console.warn('Track type not found:', track.type, ' (check app/scripts/config/ for a list of defined track types)');
       return;
     }
 
@@ -1680,6 +1697,10 @@ class HiGlassComponent extends React.Component {
          */
     this.addDefaultOptions(newTrack);
 
+    // make sure the new track has a uid
+    if (!newTrack.uid)
+      newTrack.uid = slugid.nice();
+
     if (newTrack.contents) {
       // add default options to combined tracks
       for (const ct of newTrack.contents) { this.addDefaultOptions(ct); }
@@ -1743,6 +1764,9 @@ class HiGlassComponent extends React.Component {
       }
     } else {
       // otherwise, we want it at the end of the track list
+      if (!tracks[position])
+        // this position wasn't defined in the original viewconf
+        tracks[position] = [];
       tracks[position].push(newTrack);
     }
 
@@ -2046,6 +2070,21 @@ class HiGlassComponent extends React.Component {
       const uid = k[0];
 
       for (const track of positionedTracksToAllTracks(newView.tracks)) {
+
+        if (track.server) {
+          const url = parse(track.server, {});
+
+          if (!url.hostname.length) {
+            // no hostname specified in the track source servers so we'll add the
+            // current URL's
+            const hostString = window.location.host;
+            const protocol = window.location.protocol;
+            const newUrl = `${protocol}//${hostString}${url.pathname}`
+
+            track.server = newUrl;
+          }
+        }
+
         if ('serverUidKey' in track) { delete track.serverUidKey; }
         if ('uuid' in track) { delete track.uuid; }
         if ('private' in track) { delete track.private; }
@@ -2644,30 +2683,121 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  /**
+   * List all the views that are at the given position view position
+   */
+  getTiledPlotAtPosition(x, y) {
+    let foundTiledPlot;
+
+    const views = dictValues(this.state.views);
+
+    for (let i = 0; i < views.length; i++) {
+      const tiledPlot = this.tiledPlots[views[i].uid];
+
+      const area = this.tiledAreasDivs[views[i].uid].getBoundingClientRect();
+
+      const top = area.top;
+      const bottom = top + area.height;
+      const left = area.left;
+      const right = left + area.width;
+
+      const withinX = x >= left && x <= right;
+      const withinY = y >= top && y <= bottom;
+
+      if (withinX && withinY) {
+        foundTiledPlot = tiledPlot;
+        break;
+      }
+    }
+
+    return foundTiledPlot;
+  }
+
+  /**
+   * Handle mousemove events by republishing the event using pubSub.
+   *
+   * @param {object}  e  Event object.
+   */
+  mouseMoveHandler(e) {
+    if (!this.topDiv) return;
+
+    const relPos = clientPoint(this.topDiv, e);
+    const hoveredTiledPlot = this.getTiledPlotAtPosition(e.clientX, e.clientY);
+
+    const hoveredTracks = hoveredTiledPlot
+      ? hoveredTiledPlot.listTracksAtPosition(relPos[0], relPos[1], true)
+      : undefined;
+
+    const hoveredTrack = hoveredTracks && hoveredTracks.length > 0
+      ? hoveredTracks[0].originalTrack || hoveredTracks[0]
+      : undefined;
+
+    const relTrackPos = hoveredTrack
+      ? [
+        relPos[0] - hoveredTrack.position[0],
+        relPos[1] - hoveredTrack.position[1],
+      ]
+      : relPos;
+
+    let dataX = -1;
+    let dataY = -1;
+
+    if (hoveredTrack) {
+      dataX = !hoveredTrack.flipText
+        ? hoveredTrack._xScale.invert(relTrackPos[0])  // dataX
+        : hoveredTrack._xScale.invert(relTrackPos[1]);  // dataY
+
+      dataY = hoveredTrack.is2d
+        ? hoveredTrack._yScale.invert(relTrackPos[1])
+        : dataX;
+    }
+
+    pubSub.publish(
+      'app.mouseMove',
+      {
+        x: relPos[0],
+        y: relPos[1],
+        relTrackX: relTrackPos[0],
+        relTrackY: relTrackPos[1],
+        dataX,
+        dataY,
+        isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
+        isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText
+      }
+    );
+  }
+
+  /**
+   * Handle mousemove and zoom events.
+   */
+  mouseMoveZoomHandler(data) {
+    apiPublish('mouseMoveZoom', data);
+  }
+
   setChromInfo(chromInfoPath, callback) {
-    ChromosomeInfo(chromInfoPath, (chromInfo) => {
-      this.chromInfo = chromInfo;
+    ChromosomeInfo(chromInfoPath, (newChromInfo) => {
+      this.chromInfo = newChromInfo;
       callback();
     });
   }
 
   render() {
-    // console.log('rendering');
-    let tiledAreas = (
+    this.tiledAreasDivs = {};
+    this.tiledAreas = (
       <div
-        ref={(c) => { this.tiledAreaDiv = c; }}
         styleName="styles.tiled-area"
       />
     );
 
-    // The component needs to be mounted in order for the initial view to have the right
-    // width
+    // The component needs to be mounted in order for the initial view to have
+    // the right width
     if (this.mounted) {
-      tiledAreas = dictValues(this.state.views).map((view) => {
-        const zoomFixed = typeof view.zoomFixed !== 'undefined' ? view.zoomFixed : this.props.zoomFixed;
+      this.tiledAreas = dictValues(this.state.views).map((view) => {
+        const zoomFixed = typeof view.zoomFixed !== 'undefined'
+          ? view.zoomFixed
+          : this.props.zoomFixed;
 
-        // only show the add track menu for the tiled plot it was selected
-        // for
+        // only show the add track menu for the tiled plot it was selected for
         const addTrackPositionMenuPosition =
           view.uid === this.state.addTrackPositionMenuUid
             ? this.state.addTrackPositionMenuPosition
@@ -2693,7 +2823,8 @@ class HiGlassComponent extends React.Component {
                 background,
                 opacity: 0.3,
               }}
-            />);
+            />
+          );
         }
 
         const tiledPlot = (
@@ -2728,6 +2859,7 @@ class HiGlassComponent extends React.Component {
                 this.handleDataDomainChanged(view.uid, xDomain, yDomain)
             }
             onLockValueScale={uid => this.handleLockValueScale(view.uid, uid)}
+            onMouseMoveZoom={this.mouseMoveZoomHandler.bind(this)}
             onNewTilesLoaded={trackUid => this.handleNewTilesLoaded(view.uid, trackUid)}
             onNoTrackAdded={this.handleNoTrackAdded.bind(this)}
             onRangeSelection={this.rangeSelectionHandler.bind(this)}
@@ -2853,7 +2985,7 @@ class HiGlassComponent extends React.Component {
         return (
           <div
             key={view.uid}
-            ref={(c) => { this.tiledAreaDiv = c; }}
+            ref={(c) => { this.tiledAreasDivs[view.uid] = c; }}
             styleName="styles.tiled-area"
           >
             {multiTrackHeader}
@@ -2905,8 +3037,9 @@ class HiGlassComponent extends React.Component {
         // `useCSSTransforms` (it's default `true`)
         // and set `measureBeforeMount={true}`.
         useCSSTransforms={this.mounted}
+        onLayoutChange={(layout) => console.log('LAYOUT', layout)}
       >
-        {tiledAreas}
+        {this.tiledAreas}
       </ReactGridLayout>
     );
 
@@ -2916,6 +3049,7 @@ class HiGlassComponent extends React.Component {
         ref={(c) => { this.topDiv = c; }}
         className="higlass"
         styleName="styles.higlass"
+        onMouseMove={this.mouseMoveHandler.bind(this)}
       >
         <canvas
           key={this.uid}

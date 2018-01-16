@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HiGlass</title>
+<style type="text/css">
+    .canvasjs-chart-credit {
+    display:none;
+}
+</style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/page.css">
+    <link rel="stylesheet" href="hglib.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js"></script>
+</head>
+<body >
+    Here's some text
+        <div style=""></div>
+        <div style="margin: auto">
+        <div style="height: 600px; width: 600px; border: 1px solid black;"
+             id="development-demo">
+        </div>
+        </div>
+    And some other text
+    <div style="height: 1500px"> </div>
+</body>
+<script src='hglib.js'>
+</script>
+<script>
+
+ var testViewConfig =
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://localhost:8989/api/v1",
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "http://localhost:8989/api/v1/viewconfs/",
+  "views": [
+    {
+      "tracks": {
+        "top": [
+          {
+            "type": "top-axis",
+            "local": true,
+            "orientation": "1d-horizontal",
+            "name": "Top Axis",
+            "thumbnail": {},
+            "defaultOptions": {},
+            "server": "",
+            "tilesetUid": "VCGr9WY4QT-1noPQjeeXnA",
+            "uid": "KlVIyqQCQO-__WvOL0aXjQ",
+            "options": {},
+            "width": 20,
+            "height": 20,
+            "position": "top"
+          },
+          {
+            "server": "http://localhost:8000/api/v1",
+            "tilesetUid": "LXowxsLbTDmjeDU12ZrwbQ",
+            "type": "horizontal-multivec",
+            "height": 511,
+            "position": "top",
+            "uid": "ZYkBqxv6T-OALieHMjD1Fg",
+            "options": {
+              "labelPosition": "topLeft",
+              "labelColor": "black",
+              "labelTextOpacity": 0.4,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black"
+            },
+            "name": "my_file.multires",
+            "height": 256,
+            "width": 568
+          }
+        ],
+        "left": [],
+        "center": [],
+        "right": [],
+        "bottom": []
+      },
+      "initialXDomain": [
+        5654.2580998491285,
+        15530.266714302776
+      ],
+      "layout": {
+        "w": 12,
+        "h": 14,
+        "x": 0,
+        "y": 0,
+        "i": "dNgRk5dbT6-KU6wJcAILsQ",
+        "moved": false,
+        "static": false
+      },
+      "uid": "dNgRk5dbT6-KU6wJcAILsQ",
+      "initialYDomain": [
+        14026.127717529875,
+        14113.064413079643
+      ]
+    }
+  ],
+  "zoomLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "locationLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
+  }
+}
+    window.higlassApi;
+
+    hglib.createHgComponent(
+        document.getElementById('development-demo'),
+        testViewConfig,
+        { bounded: true },
+        function (api) {
+            window.hgApi = api;
+        }
+    );
+
+
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-77756807-1', 'auto');
+    ga('send', 'pageview');
+
+</script>
+</html>

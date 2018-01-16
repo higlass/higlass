@@ -25,10 +25,13 @@
     "ecmaVersion": 6
   },
   "rules": {
+    "class-methods-use-this": 0,
     "comma-dangle": 0,
     "jsx-quotes": 1,
     "no-mixed-operators": ["error", {"allowSamePrecedence": true}],
+    "no-param-reassign": ["error", { "props": false }],
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+    "no-underscore-dangle": 0,
     "react/display-name": 0,
     "react/forbid-prop-types": 0,
     "react/jsx-boolean-value": 0,

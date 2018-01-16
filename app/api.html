@@ -188,5 +188,14 @@ higlass.on('viewConfig', (newViewConfig) => {
   console.log('And here it is: a new view config! YEAH!', prevViewConfig === newViewConfig);
 });
 
+const mmz = higlass.on('mouseMoveZoom', (data) => {
+  console.log('Yuuhuu', data);
+});
+
+setTimeout(() => {
+  higlass.off('mouseMoveZoom', mmz);
+  console.log('mouseMoveZoom is offline', mmz);
+}, 5000);
+
 </script>
 </html>

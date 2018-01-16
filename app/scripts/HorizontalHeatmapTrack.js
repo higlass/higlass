@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { scaleLinear, scaleLog } from 'd3-scale';
+import { getValueScale } from './TiledPixiTrack.js';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
@@ -7,7 +8,7 @@ import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import { tileProxy } from './services';
 
 // Utils
-import { colorDomainToRgbaArray } from './utils';
+import { colorDomainToRgbaArray, showMousePosition } from './utils';
 
 // Configs
 import { HEATED_OBJECT_MAP } from './configs';
@@ -49,6 +50,13 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     if (options && options.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
+
+    this.animate = animate;
+    this.options = options;
+
+    this.pubSubs = [];
+
+    if (this.options.showMousePosition) showMousePosition(this);
   }
 
   rerender(options, force) {
@@ -62,14 +70,14 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   calculateZoomLevel() {
     if (this.tilesetInfo.resolutions) {
       let zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
-        this.tilesetInfo.resolutions, 
-        this._xScale, 
+        this.tilesetInfo.resolutions,
+        this._xScale,
         this.tilesetInfo.min_pos[0],
         this.tilesetInfo.max_pos[0]);
 
       let zoomIndexY = tileProxy.calculateZoomLevelFromResolutions(
-        this.tilesetInfo.resolutions, 
-        this._xScale, 
+        this.tilesetInfo.resolutions,
+        this._xScale,
         this.tilesetInfo.min_pos[1],
         this.tilesetInfo.max_pos[1]);
 
@@ -221,13 +229,8 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
    *              and tile.graphics
    */
   renderTile(tile) {
-    if (this.options.heatmapValueScaling === 'log') {
-      this.valueScale = scaleLog().range([254, 0])
-        .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-    } else if (this.options.heatmapValueScaling === 'linear') {
-      this.valueScale = scaleLinear().range([254, 0])
-        .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-    }
+    this.valueScale = getValueScale(this.options.heatmapValueScaling,
+      this.scale.minValue, this.scale.maxValue, 'log');
 
     this.limitedValueScale = this.valueScale.copy();
     if (this.options
