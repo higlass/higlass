@@ -201,7 +201,7 @@ export const TRACKS_INFO = [
       trackBorderWidth: 0,
       trackBorderColor: 'black',
       labelTextOpacity: 0.4,
-      showMousePosition: true,
+      showMousePosition: false,
       mousePositionColor: '#999999'
     },
   },
@@ -604,7 +604,7 @@ export const TRACKS_INFO = [
       'mousePositionColor',
     ],
     defaultOptions: {
-      showMousePosition: true,
+      showMousePosition: false,
       mousePositionColor: '#999999'
     },
   },
@@ -621,7 +621,7 @@ export const TRACKS_INFO = [
       'mousePositionColor',
     ],
     defaultOptions: {
-      showMousePosition: true,
+      showMousePosition: false,
       mousePositionColor: '#999999'
     },
   },
