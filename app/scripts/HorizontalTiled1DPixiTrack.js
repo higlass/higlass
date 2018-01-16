@@ -40,13 +40,13 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
 
     if (!force && strOptions === this.prevOptions) return;
 
+    super.rerender(options, force);
+
     this.prevOptions = strOptions;
     this.options = options;
 
-    super.rerender(options, force);
-
     if (this.options.showMousePosition && !this.hideMousePosition) {
-      this.hideMousePosition = showMousePosition(this, this.is2d);
+      this.hideMousePosition = showMousePosition(this);
     }
 
     if (!this.options.showMousePosition && this.hideMousePosition) {
