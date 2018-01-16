@@ -1,3 +1,4 @@
+
 export const divergentTrackConfig = 
 {
   "zoomFixed": false,
@@ -632,6 +633,74 @@ export const rectangleDomains =
   "locationLocks": {
     "locksByViewUid": {},
     "locksDict": {}
+  }
+}
+
+export const invalidTrackConfig = 
+{
+  "editable": true,
+  "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1",
+    "http://127.0.0.1:8989/api/v1"
+  ],
+  "exportViewUrl": "http://higlass.io/api/v1/viewconfs/",
+  "views": [
+    {
+      "uid": "aa",
+      "initialXDomain": [
+        1796142508.3343146,
+        1802874737.269993
+      ],
+      "initialYDomain": [
+        1795888772.6557815,
+        1806579890.9341388
+      ],
+      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "tracks": {
+        "top": [
+          {
+            "filetype": "hitile",
+            "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
+            "type": "garble-invalid-track-garble",
+            "options": {
+              "labelColor": "red",
+              "labelPosition": "hidden",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
+              "valueScaling": "log"
+            },
+            "width": 20,
+            "height": 20,
+            "position": "top",
+            "uid": "line1"
+          }
+        ],
+        "left": [
+        ],
+        "center": [
+        ],
+        "right": [],
+        "bottom": []
+      },
+      "layout": {
+        "w": 5,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      }
+    }
+  ],
+  "zoomLocks": {
+  },
+  "locationLocks": {
   }
 }
 

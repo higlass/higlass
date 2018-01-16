@@ -1,6 +1,33 @@
-v0.10.7 (2018-01-??)
+develop (2018-01-??)
 
+- Added mouseMoveZoom event to public API
+- Fixed and extended pubSub module
+- Added flexible per-track crosshair
+- Display error message on error
+- Don't error when displaying menus when invalid track type is
+entered
 - Added an endpoint for sharing view configs as a link (`shareViewConfigAsLink()`) and exporting them as png and svg (`get('png' || 'svg')`)
+
+v0.10.10 (2018-01-
+
+- Default to log scaling if there are negative values
+- Fixed the custom colormap
+- Fix the gene annotations color changing
+
+v0.10.9 (2018-01-13)
+
+- Skipping a version because the latest version wasn't specified in
+package.json
+
+v0.10.8
+
+- Skipping a version because the latest version wasn't specified in
+package.json
+
+v0.10.7 (2018-01-13)
+
+- Show current data resolution in tiled sets containing raw resolutions rather
+than zoom levels
 
 v0.10.6 (2017-12-28)
 

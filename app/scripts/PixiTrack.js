@@ -6,11 +6,83 @@ import { Track } from './Track.js';
 
 import { colorToHex } from './utils';
 
+/**
+ * Format a resolution relative to the highest possible resolution.
+ *
+ * The highest possible resolution determines the granularity of the
+ * formatting (e.g. 20K vs 20000)
+ * @param {int} resolution The resolution to format (e.g. 30000)
+ * @param {int} maxResolutionSize The maximum possible resolution (e.g. 1000)
+ *
+ * @returns {string} A formatted resolution string (e.g. "30K")
+ */
+function formatResolutionText(resolution, maxResolutionSize) {
+  const pp = precisionPrefix(maxResolutionSize, resolution);
+  const f = formatPrefix(`.${pp}`, resolution);
+  const formattedResolution = f(resolution);
+
+  return formattedResolution;
+}
+
+/**
+ * Get a text description of a resolution based on a zoom level
+ * and a list of resolutions
+ *
+ * @param {list} resolutions: A list of resolutions (e.g. [1000,2000,3000])
+ * @param {int} zoomLevel: The current zoom level (e.g. 4)
+ *
+ * @returns {string} A formatted string representation of the zoom level (e.g. "30K")
+ * 
+ */
+function getResolutionBasedResolutionText(resolutions, zoomLevel) {
+  const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
+  const resolution = sortedResolutions[zoomLevel];
+  const maxResolutionSize = sortedResolutions[sortedResolutions.length-1];
+
+  return formatResolutionText(resolution, maxResolutionSize);
+}
+
+/**
+ * Get a text description of the resolution based on the zoom level
+ * max width of the dataset, the bins per dimension and the maximum
+ * zoom.
+ *
+ * @param {int} zoomLevel The current zoomLevel (e.g. 0)
+ * @param {int} max_width The max width (e.g. 2 ** maxZoom * highestResolution * binsPerDimension)
+ * @param {int} bins_per_dimension The number of bins per tile dimension (e.g. 256)
+ * @param {int} maxZoom The maximum zoom level for this tileset
+ *
+ * @returns {string} A formatted string representation of the zoom level (e.g. "30K")
+ */
+function getWidthBasedResolutionText(zoomLevel, maxWidth, binsPerDimension, maxZoom) {
+  const resolution = maxWidth / ((2 ** zoomLevel) * binsPerDimension);
+
+  // we can't display a NaN resolution
+  if (!isNaN(resolution)) {
+    // what is the maximum possible resolution?
+    // this will determine how we format the lower resolutions
+    const maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+
+    const pp = precisionPrefix(maxResolutionSize, resolution);
+    const f = formatPrefix(`.${pp}`, resolution);
+    const formattedResolution = f(resolution);
+
+    return formattedResolution;
+  } else {
+    console.warn(
+      'NaN resolution, screen is probably too small. Dimensions:',
+      this.dimensions,
+    );
+
+    return '';
+  }
+}
 
 export class PixiTrack extends Track {
   /**
    * @param scene: A PIXI.js scene to draw everything to.
    * @param options: A set of options that describe how this track is rendered.
+    this.pMain.position.x = this.position[0];
    *          - labelPosition: If the label is to be drawn, where should it be drawn?
    *          - labelText: What should be drawn in the label. If either labelPosition
    *                  or labelText are false, no label will be drawn.
@@ -67,6 +139,12 @@ export class PixiTrack extends Track {
       fontFamily: this.labelTextFontFamily,
       fill: 'black' });
 
+    this.errorText = new PIXI.Text('',
+      { fontSize: '12px', fontFamily: 'Arial', fill: 'red' });
+    this.errorText.anchor.x = 0.5;
+    this.errorText.anchor.y = 0.5;
+    this.pLabel.addChild(this.errorText);
+
     this.pLabel.addChild(this.labelText);
   }
 
@@ -89,6 +167,7 @@ export class PixiTrack extends Track {
   setMask(position, dimensions) {
     this.pMask.clear();
     this.pMask.beginFill();
+
     this.pMask.drawRect(position[0], position[1], dimensions[0], dimensions[1]);
     this.pMask.endFill();
   }
@@ -129,6 +208,29 @@ export class PixiTrack extends Track {
     );
   }
 
+  drawError() {
+    this.errorText.x = this.position[0] + this.dimensions[0] / 2;
+    this.errorText.y = this.position[1] + this.dimensions[1] / 2;
+
+    this.errorText.text = this.errorTextText;
+
+    if (this.errorTextText && this.errorTextText.length) {
+      // draw a red border around the track to bring attention to its
+      // error
+      const graphics = this.pBorder;
+
+      graphics.clear();
+      graphics.lineStyle(1, colorToHex('red'));
+
+      graphics.drawRect(
+        this.position[0],
+        this.position[1],
+        this.dimensions[0],
+        this.dimensions[1],
+      );
+    }
+  }
+
   drawLabel() {
     const graphics = this.pLabel;
 
@@ -167,27 +269,23 @@ export class PixiTrack extends Track {
       this.tilesetInfo.max_width &&
       this.tilesetInfo.bins_per_dimension
     ) {
-      const maxWidth = this.tilesetInfo.max_width;
-      const binsPerDimension = this.tilesetInfo.bins_per_dimension;
-      const maxZoom = this.tilesetInfo.max_zoom;
+      const formattedResolution = getWidthBasedResolutionText(
+        this.calculateZoomLevel(),
+        this.tilesetInfo.max_width,
+        this.tilesetInfo.bins_per_dimension,
+        this.tilesetInfo.max_zoom);
 
-      const resolution = maxWidth / ((2 ** this.calculateZoomLevel()) * binsPerDimension);
 
-      // we can't display a NaN resolution
-      if (!isNaN(resolution)) {
-        const maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+      labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
+    } else if (
+      this.tilesetInfo && 
+      this.tilesetInfo.resolutions) {
 
-        const pp = precisionPrefix(maxResolutionSize, resolution);
-        const f = formatPrefix(`.${pp}`, resolution);
-        const formattedResolution = f(resolution);
+      const formattedResolution = getResolutionBasedResolutionText(
+        this.tilesetInfo.resolutions,
+        this.calculateZoomLevel());
 
-        labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
-      } else {
-        console.warn(
-          'NaN resolution, screen is probably too small. Dimensions:',
-          this.dimensions,
-        );
-      }
+      labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     }
 
     if (this.options && this.options.dataTransform) {
@@ -340,6 +438,7 @@ export class PixiTrack extends Track {
     // this rectangle is cleared by functions that override this draw method
     this.drawBorder();
     this.drawLabel();
+    this.drawError();
   }
 
   /**
