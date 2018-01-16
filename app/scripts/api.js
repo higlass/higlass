@@ -71,6 +71,9 @@ const api = function api(context) {
     /**
      * Retrieve a sharable link for the current view config
      *
+     * @param {string}  url  Custom URL that should point to a higlass server's
+     *   view config endpoint, i.e.,
+     *   `http://my-higlass-server.com/api/v1/viewconfs/`.
      * @return  {Object}  Promise resolving to the link ID and URL.
      */
     shareViewConfigAsLink(url) {
