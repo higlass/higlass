@@ -15,9 +15,6 @@ import HorizontalTiledPlot from './HorizontalTiledPlot';
 import VerticalTiledPlot from './VerticalTiledPlot';
 // import {HeatmapOptions} from './HeatmapOptions';
 
-// Services
-import { chromInfo } from './services';
-
 // Utils
 import {
   getTrackByUid,
@@ -29,7 +26,7 @@ import {
 import { MOUSE_TOOL_SELECT } from './configs';
 
 // Styles
-import styles from '../styles/TiledPlot.module.scss';
+import styles from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
 import stylesCenterTrack from '../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
 
 export class TiledPlot extends React.Component {
