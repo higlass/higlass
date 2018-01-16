@@ -18,6 +18,7 @@ import BedLikeTrack from './BedLikeTrack';
 
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 import HorizontalPoint1DPixiTrack from './HorizontalPoint1DPixiTrack';
+import HorizontalMultivecTrack from './HorizontalMultivecTrack';
 import BarTrack from './BarTrack';
 import DivergentBarTrack from './DivergentBarTrack';
 
@@ -864,6 +865,20 @@ export class TrackRenderer extends React.Component {
           this.props.onMouseMoveZoom
         );
 
+      case 'horizontal-multivec':
+        console.log('horizontal multivec');
+        return new HorizontalMultivecTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          this.svgElement,
+          () => this.currentProps.onValueScaleChanged(track.uid),
+          newOptions =>
+            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
+        );
+
       case 'horizontal-line':
         return new HorizontalLine1DPixiTrack(
           this.pStage,
@@ -1262,7 +1277,8 @@ export class TrackRenderer extends React.Component {
         console.warn('WARNING: unknown track type:', track.type);
         return new UnknownPixiTrack(
           this.pStage,
-          { name: 'Unknown Track Type' },
+          { name: 'Unknown Track Type', type: track.type },
+          () => this.currentProps.onNewTilesLoaded(track.uid),
         );
     }
   }

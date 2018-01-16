@@ -21,7 +21,7 @@ import {
   valueToColor
 } from './utils';
 
-import { heatedObjectMap } from './configs';
+import { HEATED_OBJECT_MAP } from './configs';
 
 const COLORBAR_MAX_HEIGHT = 200;
 const COLORBAR_WIDTH = 10;
@@ -77,7 +77,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // a 256 element array mapping the values 0-255 to rgba values
     // not a d3 color scale for speed
     // this.colorScale = heatedObjectMap;
-    this.colorScale = heatedObjectMap;
+    console.log('HEATED_OBJECT_MAP:', HEATED_OBJECT_MAP);
+    this.colorScale = HEATED_OBJECT_MAP;
 
     if (options && options.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
@@ -1153,7 +1154,12 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * @description
    * Normally the absolute coordinate system are the genome basepair positions
    */
-  getTilePosAndDimensions(zoomLevel, tilePos) {
+  getTilePosAndDimensions(zoomLevel, tilePos, binsPerTileIn) {
+    /**
+         * Get the tile's position in its coordinate system.
+         */
+    let binsPerTile = binsPerTileIn || BINS_PER_TILE;
+
     if (this.tilesetInfo.resolutions) {
       const sortedResolutions = this.tilesetInfo.resolutions
         .map(x => +x)
@@ -1161,11 +1167,11 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
       const chosenResolution = sortedResolutions[zoomLevel];
 
-      const tileWidth = chosenResolution * BINS_PER_TILE;
-      const tileHeight = tileWidth;
+      let tileWidth =  chosenResolution * binsPerTile;
+      let tileHeight = tileWidth;
 
-      const tileX = chosenResolution * BINS_PER_TILE * tilePos[0];
-      const tileY = chosenResolution * BINS_PER_TILE * tilePos[1];
+      let tileX = chosenResolution * binsPerTile * tilePos[0];
+      let tileY = chosenResolution * binsPerTile * tilePos[1];
 
       return { tileX, tileY, tileWidth, tileHeight };
     }

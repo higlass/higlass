@@ -1,5 +1,7 @@
 import {Mixin} from 'mixwith';
 
+import React from 'react';
+
 import { SeriesListMenu } from './SeriesListMenu';
 import { getAllTracksAndSubtracks } from './SeriesListItems';
 

@@ -81,6 +81,8 @@ export function workerSetPix(
 
   let rgbIdx = 0;
   let e = 0;
+  console.log('colorScale:', colorScale);
+  console.log('data:', data);
 
   try {
     for (let i = 0; i < data.length; i++) {
@@ -108,6 +110,7 @@ export function workerSetPix(
     console.warn('Odd datapoint');
     console.warn('valueScale.domain():', valueScale.domain());
     console.warn('valueScale.range():', valueScale.range());
+    console.warn('value:', valueScale(e + pseudocount));
     console.warn('pseudocount:', pseudocount);
     console.warn('rgbIdx:', rgbIdx, 'd:', e, 'ct:', valueScale(e));
     console.error('ERROR:', err);

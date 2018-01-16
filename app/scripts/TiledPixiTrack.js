@@ -36,10 +36,10 @@ export const getValueScale = function(scalingType, minValue, maxValue, defaultSc
 
   if (scalingTypeToUse == 'log') {
     // warn the users that their desired scaling type couldn't be used
-    console.warn('Negative values present in data. Defaulting to linear scale: ', this.scale.minValue);
+    console.warn('Negative values present in data. Defaulting to linear scale: ', minValue);
   }
 
-  return scaleLog().range([254, 0])
+  return scaleLinear().range([254, 0])
     .domain([minValue, minValue + maxValue]);
 }
 
@@ -91,7 +91,8 @@ export class TiledPixiTrack extends PixiTrack {
           'Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error
         );
 
-        this.error = this.tilesetInfo.error;
+        this.trackNotFoundText = '';
+        this.errorTextText = this.tilesetInfo.error;
         this.tilesetInfo = null;
         this.draw();
         this.animate();

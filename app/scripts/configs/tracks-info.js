@@ -139,6 +139,22 @@ export const TRACKS_INFO = [
       labelTextOpacity: 0.4,
     },
   },
+  {
+    type: 'horizontal-multivec',
+    datatype: ['multivec'],
+    local: false,
+    orientation: '1d-horizontal',
+    thumbnail: null,
+    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
+    defaultOptions: {
+      labelPosition: 'topLeft',
+      labelColor: 'black',
+      labelTextOpacity: 0.4,
+      valueScaling: 'linear',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+    },
+  },
   //
   {
     type: 'vertical-line',

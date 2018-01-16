@@ -365,7 +365,7 @@ class HiGlassComponent extends React.Component {
 
   addDefaultOptions(track) {
     if (!TRACKS_INFO_BY_TYPE.hasOwnProperty(track.type)) {
-      console.error('ERROR: track type not found:', track.type, ' (check app/scripts/config/ for a list of defined track types)');
+      console.warn('Track type not found:', track.type, ' (check app/scripts/config/ for a list of defined track types)');
       return;
     }
 
@@ -1742,6 +1742,9 @@ class HiGlassComponent extends React.Component {
       }
     } else {
       // otherwise, we want it at the end of the track list
+      if (!tracks[position])
+        // this position wasn't defined in the original viewconf
+        tracks[position] = [];
       tracks[position].push(newTrack);
     }
 
