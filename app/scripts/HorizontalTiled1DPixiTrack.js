@@ -30,8 +30,31 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
 
     this.pubSubs = [];
 
-    if (this.options.showMousePosition) showMousePosition(this);
+    if (this.options.showMousePosition && !this.hideMousePosition) {
+      this.hideMousePosition = showMousePosition(this, this.is2d);
+    }
   }
+
+  rerender(options, force) {
+    const strOptions = JSON.stringify(options);
+
+    if (!force && strOptions === this.prevOptions) return;
+
+    this.prevOptions = strOptions;
+    this.options = options;
+
+    super.rerender(options, force);
+
+    if (this.options.showMousePosition && !this.hideMousePosition) {
+      this.hideMousePosition = showMousePosition(this, this.is2d);
+    }
+
+    if (!this.options.showMousePosition && this.hideMousePosition) {
+      this.hideMousePosition();
+      this.hideMousePosition = undefined;
+    }
+  }
+
   calculateZoomLevel() {
     // offset by 2 because 1D tiles are more dense than 2D tiles
     // 1024 points per tile vs 256 for 2D tiles
