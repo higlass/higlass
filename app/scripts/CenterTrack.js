@@ -6,7 +6,7 @@ import { select, event } from 'd3-selection';
 import TrackControl from './TrackControl';
 
 // Utils
-import { or } from './utils';
+import { or, resetD3BrushStyle } from './utils';
 
 // Configs
 import { IS_TRACK_RANGE_SELECTABLE } from './configs';
@@ -113,6 +113,13 @@ export class CenterTrack extends React.Component {
     this.brushElX.call(this.brushBehaviorX);
     this.brushElY.call(this.brushBehaviorY);
 
+    resetD3BrushStyle(
+      this.brushElX, stylesTrack['track-range-selection-group-brush-selection']
+    );
+    resetD3BrushStyle(
+      this.brushElY, stylesTrack['track-range-selection-group-brush-selection']
+    );
+
     this.brushElXOld = this.brushElX;
     this.brushElYOld = this.brushElY;
 
@@ -130,6 +137,10 @@ export class CenterTrack extends React.Component {
     this.brushElXY.call(this.brushBehaviorXY);
     this.brushElXYOld = this.brushElXY;
     this.brushIs2dBound = true;
+
+    resetD3BrushStyle(
+      this.brushElXY, stylesTrack['track-range-selection-group-brush-selection']
+    );
   }
 
   brushedX() {

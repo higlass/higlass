@@ -10,7 +10,7 @@ import VerticalItem from './VerticalItem';
 import SortableList from './SortableList';
 
 // Utils
-import { genomeLociToPixels, or, sum } from './utils';
+import { or, resetD3BrushStyle, sum } from './utils';
 
 // Configs
 import { IS_TRACK_RANGE_SELECTABLE } from './configs';
@@ -76,6 +76,10 @@ export class VerticalTiledPlot extends React.Component {
 
     this.brushEl.call(this.brushBehavior);
     this.brushElAddedBefore = this.brushEl;
+
+    resetD3BrushStyle(
+      this.brushEl, stylesTrack['track-range-selection-group-brush-selection']
+    );
   }
 
   brushed() {
@@ -151,7 +155,7 @@ export class VerticalTiledPlot extends React.Component {
       <div styleName="styles.vertical-tiled-plot">
         {isBrushable &&
           <svg
-            ref={el => this.brushEl = select(el)}
+            ref={(el) => { this.brushEl = select(el); }}
             style={{
               height: this.props.height,
               width,
