@@ -5,7 +5,7 @@ import * as PIXI from 'pixi.js';
 import PixiTrack from './PixiTrack';
 
 // Services
-import { tileProxy } from './services';
+import { pubSub, tileProxy } from './services';
 
 // Utils
 import { debounce } from './utils';
@@ -73,7 +73,7 @@ export class TiledPixiTrack extends PixiTrack {
       if ('error' in this.tilesetInfo) {
         // no tileset info for this track
         this.tilesetInfo = null;
-        this.draw();
+        // this.draw();
         this.animate();
         return;
       }
@@ -81,7 +81,11 @@ export class TiledPixiTrack extends PixiTrack {
       this.maxZoom = +this.tilesetInfo.max_zoom;
 
       if (this.options && this.options.maxZoom) {
-        if (this.options.maxZoom >= 0) { this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom); } else { console.error('Invalid maxZoom on track:', this); }
+        if (this.options.maxZoom >= 0) {
+          this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
+        } else {
+          console.error('Invalid maxZoom on track:', this);
+        }
       }
 
       this.refreshTiles();
@@ -238,46 +242,29 @@ export class TiledPixiTrack extends PixiTrack {
 
   setPosition(newPosition) {
     super.setPosition(newPosition);
-
-    // this.draw();
   }
 
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
-
-    // this.draw();
   }
 
+  /**
+   * Check to see if all the visible tiles are loaded.
+   *
+   * If they are, remove all other tiles.
+   */
   areAllVisibleTilesLoaded() {
-    /**
-         * Check to see if all the visible tiles are loaded.
-         *
-         * If they are, remove all other tiles.
-         */
-    // tiles that are visible
-
-    // tiles that are fetched
-    const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
-
-    // console.log('this.fetchedTiles:', this.fetchedTiles);
-    const visibleTileIdsList = [...this.visibleTileIds];
-
-    // console.log('fetchedTileIDs:', fetchedTileIDs);
-    // console.log('visibleTileIdsList:', visibleTileIdsList);
-
-    for (let i = 0; i < visibleTileIdsList.length; i++) {
-      if (!fetchedTileIDs.has(visibleTileIdsList[i])) { return false; }
+    for (let i = 0; i < this.visibleTileIds.length; i++) {
+      if (!this.fetchedTiles[this.visibleTileIds[i]]) return false;
     }
-
     return true;
   }
 
-  allTilesLoaded() {
-    /**
-         * Function is called when all tiles that should be visible have
-         * been received.
-         */
-  }
+  /**
+   * Function is called when all tiles that should be visible have
+   * been received.
+   */
+  allTilesLoaded() {}
 
   minValue(_) {
     if (_) { this.scale.minValue = _; } else { return this.scale.minValue; }
@@ -406,12 +393,11 @@ export class TiledPixiTrack extends PixiTrack {
     }
   }
 
+  /**
+   * We've gotten a bunch of tiles from the server in
+   * response to a request from fetchTiles.
+   */
   receivedTiles(loadedTiles) {
-    /**
-         * We've gotten a bunch of tiles from the server in
-         * response to a request from fetchTiles.
-         */
-    // console.log('received:', loadedTiles);
     for (let i = 0; i < this.visibleTiles.length; i++) {
       const tileId = this.visibleTiles[i].tileId;
 
@@ -465,6 +451,12 @@ export class TiledPixiTrack extends PixiTrack {
     }
 
     this.animate();
+
+    // 1. Check if all visible tiles are loaded
+    // 2. If `true` then send out event
+    if (this.areAllVisibleTilesLoaded()) {
+      pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
+    }
   }
 
   draw() {
@@ -497,6 +489,8 @@ export class TiledPixiTrack extends PixiTrack {
     Object.keys(this.fetchedTiles).forEach(
       tilesetUid => this.drawTile(this.fetchedTiles[tilesetUid])
     );
+
+    pubSub.publish('TiledPixiTrack.tilesDrawn', { uuid: this.uuid });
   }
 
   drawTile(tileData, graphics) {
