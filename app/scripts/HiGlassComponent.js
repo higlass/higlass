@@ -3007,7 +3007,6 @@ onLocationChange(viewId, callback, callbackId) {
         // `useCSSTransforms` (it's default `true`)
         // and set `measureBeforeMount={true}`.
         useCSSTransforms={this.mounted}
-        onLayoutChange={(layout) => console.log('LAYOUT', layout)}
       >
         {this.tiledAreas}
       </ReactGridLayout>

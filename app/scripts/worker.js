@@ -81,8 +81,6 @@ export function workerSetPix(
 
   let rgbIdx = 0;
   let e = 0;
-  console.log('colorScale:', colorScale);
-  console.log('data:', data);
 
   try {
     for (let i = 0; i < data.length; i++) {
