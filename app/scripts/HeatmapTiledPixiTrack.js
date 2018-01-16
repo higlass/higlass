@@ -76,8 +76,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // [[255,255,255,0], [237,218,10,4] ...
     // a 256 element array mapping the values 0-255 to rgba values
     // not a d3 color scale for speed
-    // this.colorScale = heatedObjectMap;
-    console.log('HEATED_OBJECT_MAP:', HEATED_OBJECT_MAP);
     this.colorScale = HEATED_OBJECT_MAP;
 
     if (options && options.colorRange) {
