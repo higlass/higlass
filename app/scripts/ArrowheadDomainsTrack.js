@@ -19,7 +19,6 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
 
     this.drawnRects = {};
 
-    this.drawn = () => {};
     this.annotationDrawn = () => {};
   }
 
@@ -137,8 +136,6 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
     this.drawnRects = {};
 
     super.draw();
-
-    this.drawn(this.uuid);
   }
 
   drawTile(tile) {
@@ -234,6 +231,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
           );
 
           this.annotationDrawn(
+            uid,
             drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height,
             td.xStart, td.xEnd, td.yStart, td.yEnd
           );
