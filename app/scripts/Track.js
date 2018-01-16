@@ -131,10 +131,7 @@ export class Track {
   rerender() {}
 
   respondsToPosition(x,y) {
-    if (this.position[0] < x && x <= this.position[0] + this.dimensions[0]
-      && this.position[1] < y && y <= this.position[1] + this.dimensions[1]) {
-      return true;
-    }
+    return this.isWithin(x,y);
   }
 }
 

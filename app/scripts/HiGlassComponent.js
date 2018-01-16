@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { select, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
-import { request } from 'd3-request';
+import { json, request } from 'd3-request';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
 import ReactGridLayout from 'react-grid-layout';
@@ -33,7 +33,7 @@ import {
   download,
   getTrackByUid,
   getTrackPositionByUid,
-  loadChromInfos,
+  // loadChromInfos,
   objVals,
   positionedTracksToAllTracks,
   scalesCenterAndK,
@@ -115,13 +115,33 @@ class HiGlassComponent extends React.Component {
 
     this.boundRefreshView = (() => { this.refreshView(LONG_DRAG_TIMEOUT); });
 
-    this.viewConfig = this.props.viewConfig;
+    this.unsetOnLocationChange = [];
+
+    let viewConfig = {};
+    let views = {};
+    if (typeof this.props.viewConfig === 'string') {
+      // Load external viewConfig
+      json(this.props.viewConfig, (error, viewConfig) => {
+        this.setState({
+          viewConfig,
+          views: this.processViewConfig(
+            JSON.parse(JSON.stringify(viewConfig))
+          )
+        });
+        this.unsetOnLocationChange.forEach(({ viewId, callback, callbackId }) => {
+          this.onLocationChange(viewId, callback, callbackId);
+        });
+      });
+    } else {
+      viewConfig = this.props.viewConfig;
+      views = this.processViewConfig(
+        JSON.parse(JSON.stringify(viewConfig))
+      );
+    }
 
     this.pixiStage = new PIXI.Container();
     this.pixiStage.interactive = true;
     this.element = null;
-
-    const viewsByUid = this.processViewConfig(JSON.parse(JSON.stringify(this.props.viewConfig)));
 
     let mouseTool = MOUSE_TOOL_MOVE;
 
@@ -142,7 +162,8 @@ class HiGlassComponent extends React.Component {
       rowHeight: 30,
       svgElement: null,
       canvasElement: null,
-      views: viewsByUid,
+      views,
+      viewConfig,
       addTrackPositionMenuPosition: null,
 
       // chooseViewHandler: uid2 => this.handleZoomYanked(views[0].uid, uid2),
@@ -155,7 +176,7 @@ class HiGlassComponent extends React.Component {
       mouseTool,
     };
 
-    dictValues(viewsByUid).map(view => this.adjustLayoutToTrackSizes(view));
+    dictValues(views).map(view => this.adjustLayoutToTrackSizes(view));
 
     // monitor whether this element is attached to the DOM so that
     // we can determine whether to add the resizesensor
@@ -205,8 +226,7 @@ class HiGlassComponent extends React.Component {
   }
 
   waitForDOMAttachment(callback) {
-    if (!this.mounted)
-      return;
+    if (!this.mounted) return;
 
     const thisElement = ReactDOM.findDOMNode(this);
 
@@ -1144,7 +1164,7 @@ class HiGlassComponent extends React.Component {
     this.handleDragStart();
     this.handleDragStop();
 
-    const MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
+    const MARGIN_HEIGHT = this.state.viewConfig.editable ? 10 : 0;
 
     const marginHeight = (MARGIN_HEIGHT * maxHeight) - 1;
     const availableHeight = height - marginHeight;
@@ -1797,7 +1817,7 @@ class HiGlassComponent extends React.Component {
 
     // we are not checking for this.viewHeaders because this function may be
     // called before the component is mounted
-    if (this.props.viewConfig.editable) {
+    if (this.state.viewConfig.editable) {
       totalTrackHeight += VIEW_HEADER_HEIGHT;
     }
 
@@ -1806,7 +1826,7 @@ class HiGlassComponent extends React.Component {
     const { totalHeight } = this.calculateViewDimensions(view);
     totalTrackHeight += totalHeight;
 
-    const MARGIN_HEIGHT = this.props.viewConfig.editable ? 10 : 0;
+    const MARGIN_HEIGHT = this.state.viewConfig.editable ? 10 : 0;
 
     if (!this.props.options.bounded) {
       view.layout.h = Math.ceil(
@@ -2037,7 +2057,7 @@ class HiGlassComponent extends React.Component {
   }
 
   getViewsAsString() {
-    const newJson = JSON.parse(JSON.stringify(this.props.viewConfig));
+    const newJson = JSON.parse(JSON.stringify(this.state.viewConfig));
     newJson.views = dictItems(this.state.views).map((k) => {
       const newView = JSON.parse(JSON.stringify(k[1]));
       const uid = k[0];
@@ -2121,8 +2141,8 @@ class HiGlassComponent extends React.Component {
       }
     )
       .then(res => res.json())
-      .then(json => ({
-        id: json.uid,
+      .then(_json => ({
+        id: _json.uid,
         url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${json.uid}`
       }));
 
@@ -2614,10 +2634,20 @@ class HiGlassComponent extends React.Component {
     this.removeScalesChangedListener(viewId, listenerId);
   }
 
-onLocationChange(viewId, callback, callbackId) {
+  onLocationChange(viewId, callback, callbackId) {
+    const viewsIds = Object.keys(this.state.views);
+
+    if (!viewsIds.length) {
+      // HiGlass was probably initialized with an URL instead of a viewconfig
+      // and that remote viewConfig is not yet loaded.
+      this.unsetOnLocationChange.push({
+        viewId, callback, callbackId
+      });
+      return;
+    }
+
     if (
-      typeof viewId === 'undefined' ||
-      Object.keys(this.state.views).indexOf(viewId) === -1
+      typeof viewId === 'undefined' || viewsIds.indexOf(viewId) === -1
     ) {
       console.error(
         '🦄 listen to me: you forgot to give me a propper view ID. ' +
@@ -2824,7 +2854,7 @@ onLocationChange(viewId, callback, callbackId) {
                 null
             }
             chromInfoPath={view.chromInfoPath}
-            editable={this.props.viewConfig.editable}
+            editable={this.state.viewConfig.editable}
             horizontalMargin={this.horizontalMargin}
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
@@ -2863,7 +2893,7 @@ onLocationChange(viewId, callback, callbackId) {
             }
             setCentersFunction={(c) => { this.setCenters[view.uid] = c; }}
             svgElement={this.state.svgElement}
-            trackSourceServers={this.props.viewConfig.trackSourceServers}
+            trackSourceServers={this.state.viewConfig.trackSourceServers}
             tracks={view.tracks}
             uid={view.uid}
             verticalMargin={this.verticalMargin}
@@ -2898,13 +2928,13 @@ onLocationChange(viewId, callback, callbackId) {
                 this.removeScalesChangedListener(view.uid, view.uid)}
               setCenters={(centerX, centerY, k, animate, animateTime) =>
                 this.setCenters[view.uid](centerX, centerY, k, false, animate, animateTime)}
-              trackSourceServers={this.props.viewConfig.trackSourceServers}
+              trackSourceServers={this.state.viewConfig.trackSourceServers}
               twoD={true}
             />
           );
         };
 
-        const multiTrackHeader = this.props.viewConfig.editable && !this.props.viewConfig.hideHeader ? (
+        const multiTrackHeader = this.state.viewConfig.editable && !this.state.viewConfig.hideHeader ? (
           <ViewHeader
             // Reserved props
             ref={(c) => { this.viewHeaders[view.uid] = c; }}
@@ -2996,10 +3026,10 @@ onLocationChange(viewId, callback, callbackId) {
         cols={12}
         width={this.state.width}
         draggableHandle={`.${stylesMTHeader['multitrack-header-grabber']}`}
-        isDraggable={this.props.viewConfig.editable}
-        isResizable={this.props.viewConfig.editable}
+        isDraggable={this.state.viewConfig.editable}
+        isResizable={this.state.viewConfig.editable}
         layout={layouts}
-        margin={this.props.viewConfig.editable ? [10, 10] : [0, 0]}
+        margin={this.state.viewConfig.editable ? [10, 10] : [0, 0]}
         measureBeforeMount={false}
         onBreakpointChange={this.onBreakpointChange.bind(this)}
         onDragStart={this.handleDragStart.bind(this)}
@@ -3015,7 +3045,6 @@ onLocationChange(viewId, callback, callbackId) {
         // `useCSSTransforms` (it's default `true`)
         // and set `measureBeforeMount={true}`.
         useCSSTransforms={this.mounted}
-        onLayoutChange={(layout) => console.log('LAYOUT', layout)}
       >
         {this.tiledAreas}
       </ReactGridLayout>
@@ -3050,15 +3079,16 @@ onLocationChange(viewId, callback, callbackId) {
 }
 
 HiGlassComponent.defaultProps = {
-  getApi: null,
   options: {},
   zoomFixed: false,
 };
 
 HiGlassComponent.propTypes = {
-  getApi: PropTypes.func,
   options: PropTypes.object,
-  viewConfig: PropTypes.object.isRequired,
+  viewConfig: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.object,
+  ]).isRequired,
   zoomFixed: PropTypes.bool,
 };
 

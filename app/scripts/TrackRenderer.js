@@ -27,6 +27,7 @@ import LeftTrackModifier from './LeftTrackModifier';
 import Track from './Track';
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
+import Annotations2dTrack from './Annotations2dTrack';
 
 import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
@@ -48,6 +49,7 @@ import CrossRule from './CrossRule';
 
 import OSMTilesTrack from './OSMTilesTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
+import ImageTilesTrack from './ImageTilesTrack';
 
 // Utils
 import { dictItems } from './utils';
@@ -202,8 +204,8 @@ export class TrackRenderer extends React.Component {
     const nextPropsStr = this.updatablePropsToString(nextProps);
     this.currentProps = nextProps;
 
-    if (this.prevPropsStr === nextPropsStr) { 
-      return; 
+    if (this.prevPropsStr === nextPropsStr) {
+      return;
     }
 
     for (const uid in this.trackDefObjects) {
@@ -321,7 +323,7 @@ export class TrackRenderer extends React.Component {
     }, SCROLL_TIMEOUT);
   }
 
-  setUpInitialScales(initialXDomain, initialYDomain) {
+  setUpInitialScales(initialXDomain = [0, 1], initialYDomain = [0, 1]) {
     // make sure the two scales are equally wide:
     const xWidth = initialXDomain[1] - initialXDomain[0];
     const yCenter = (initialYDomain[0] + initialYDomain[1]) / 2;
@@ -798,7 +800,7 @@ export class TrackRenderer extends React.Component {
         // console.log('track.yPosition:', track.yPosition, 'trackYScale.range():', trackYScale.range());
 
         track.zoomed(
-          trackXScale, 
+          trackXScale,
           trackYScale,
         );
         continue;
@@ -838,7 +840,7 @@ export class TrackRenderer extends React.Component {
       dataConfig = {
         server: track.server,
         tilesetUid: track.tilesetUid
-      }
+      };
     }
 
     // console.log('track:', track);
@@ -1074,7 +1076,17 @@ export class TrackRenderer extends React.Component {
         );
 
       case '2d-rectangle-domains':
+      case 'arrowhead-domains':
         return new ArrowheadDomainsTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      case '2d-annotations':
+        return new Annotations2dTrack(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1095,15 +1107,6 @@ export class TrackRenderer extends React.Component {
 
       case 'horizontal-2d-rectangle-domains':
         return new Horizontal2DDomainsTrack(
-          this.pStage,
-          dataConfig,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-        );
-
-      case 'arrowhead-domains':
-        return new ArrowheadDomainsTrack(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1235,6 +1238,15 @@ export class TrackRenderer extends React.Component {
       case 'mapbox-tiles':
         return new MapboxTilesTrack(
           this.pStage,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      case 'image-tiles':
+        return new ImageTilesTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );

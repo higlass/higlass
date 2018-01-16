@@ -194,6 +194,13 @@ export const OPTIONS_INFO = {
       no: { name: 'No', value: null },
     },
   },
+  showMousePosition: {
+    name: 'Show Mouse Position',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false },
+    },
+  },
   axisPositionHorizontal: {
     name: 'Axis Position',
     inlineOptions: {

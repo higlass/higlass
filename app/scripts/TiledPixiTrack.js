@@ -21,18 +21,18 @@ import DataFetcher from './DataFetcher';
  * @param {string} scalingType: The type of the (e.g. 'linear', or 'log')
  * @param {number} minValue: The minimum data value to which this scale will apply
  * @param {number} maxValue: The maximum data value to which this scale will apply
- * @param {string} defaultScaling: The default scaling type to use in case 
+ * @param {string} defaultScaling: The default scaling type to use in case
  * 'scalingType' is null (e.g. 'linear' or 'log')
  *
  * @returns {d3.scale} A scale with appropriately set domain and range
  */
 export const getValueScale = function(scalingType, minValue, maxValue, defaultScaling) {
   const scalingTypeToUse = scalingType || defaultScaling;
-  
+
   if (scalingTypeToUse == 'log' && minValue > 0) {
     return scaleLog().range([254, 0])
       .domain([minValue, minValue + maxValue]);
-  } 
+  }
 
   if (scalingTypeToUse == 'log') {
     // warn the users that their desired scaling type couldn't be used
@@ -82,8 +82,6 @@ export class TiledPixiTrack extends PixiTrack {
 
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
       this.tilesetInfo = tilesetInfo;
-
-      console.log('tilesetInfo:', tilesetInfo);
 
       if ('error' in this.tilesetInfo) {
         // no tileset info for this track

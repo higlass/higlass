@@ -112,15 +112,15 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
      * changed
      */
     const strOptions = JSON.stringify(options);
-    if (!force && strOptions === this.prevOptions) { return; }
+    if (!force && strOptions === this.prevOptions) return;
+
+    super.rerender(options, force);
 
     this.prevOptions = strOptions;
-    super.rerender(options, force);
 
     for (const tile of this.visibleAndFetchedTiles()) {
       this.renderTile(tile);
     }
-
   }
 
   drawTile(tile) {
