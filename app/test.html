@@ -12,10 +12,10 @@
     <link rel="stylesheet" href="styles/page.css">
     <link rel="stylesheet" href="hglib.css">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.2/react.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/15.6.2/react-dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.2/pixi.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.0/react-bootstrap.min.js"></script>
 </head>
 <body >
     Here's some text
@@ -192,15 +192,10 @@
 }
 
 
-    window.higlassApi;
-
-    hglib.createHgComponent(
+    window.hgApi = hglib.viewer(
         document.getElementById('development-demo'),
         testViewConfig,
         { bounded: true },
-        function (api) {
-            window.hgApi = api;
-        }
     );
 
 

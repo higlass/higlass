@@ -6,6 +6,8 @@ develop (2018-01-??)
 - Display error message on error
 - Don't error when displaying menus when invalid track type is
 entered
+- Simplified `hglib` API
+- Updated third-party libs to get rid of deprecation warnings for React v16
 
 v0.10.10 (2018-01-
 
