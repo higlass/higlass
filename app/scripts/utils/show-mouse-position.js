@@ -111,21 +111,25 @@ const showMousePosition = (
  * @param  {Object}  context  Class context, i.e., `this`.
  * @param  {Boolean}  is2d   If `true` both dimensions of the mouse locaiton
  *   should be shown. E.g., on a central track.
+ * @return  {Function}  Method to remove graphics showing the mouse location.
  */
 const setupShowMousePosition = (context, is2d = false) => {
   const scene = is2d ? context.pMasked : context.pMain;
-  const getScales = function getScales() {
-    return [this.xScale(), this.yScale()];
-  };
-  scene.addChild(showMousePosition(
+  const getScales = () => [context.xScale(), context.yScale()];
+
+  const graphics = showMousePosition(
     context.pubSubs,
     context.options,
-    getScales.bind(context),
+    getScales,
     context.getPosition.bind(context),
     context.getDimensions.bind(context),
     context.getProp('flipText'),
     is2d,
-  ));
+  );
+
+  scene.addChild(graphics);
+
+  return () => { scene.removeChild(graphics); };
 };
 
 export default setupShowMousePosition;

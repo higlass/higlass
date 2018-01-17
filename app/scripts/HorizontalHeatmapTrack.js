@@ -55,16 +55,19 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     this.options = options;
 
     this.pubSubs = [];
-
-    if (this.options.showMousePosition) showMousePosition(this);
   }
 
   rerender(options, force) {
     super.rerender(options, force);
 
     // zoom so that if the heatmap is flipped, the scale of this.pMain changes
-    this.zoomed(this.xScale(), this.yScale(),
-      this.pMain.scale.x, this.pMain.position.x, this.pMain.position.y);
+    this.zoomed(
+      this.xScale(),
+      this.yScale(),
+      this.pMain.scale.x,
+      this.pMain.position.x,
+      this.pMain.position.y
+    );
   }
 
   calculateZoomLevel() {

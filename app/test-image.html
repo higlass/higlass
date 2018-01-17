@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HiGlass</title>
+<style type="text/css">
+.canvasjs-chart-credit {
+  display:none;
+}
+</style>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+<link rel="stylesheet" href="styles/page.css">
+<link rel="stylesheet" href="hglib.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.2/react.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/15.6.2/react-dom.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.2/pixi.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.0/react-bootstrap.min.js"></script>
+</head>
+<body >
+  <div style="height: 50px" />
+    <div style="margin: auto; width: 100%;">
+    <div
+      id="development-demo"
+      style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem">
+    </div>
+  </div>
+</body>
+<script src='hglib.js'>
+</script>
+<script>
+
+const testViewConfig = {
+  editable: true,
+  zoomFixed: false,
+  trackSourceServers: ['http://higlass.io/api/v1'],
+  exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
+  views: [
+    {
+      uid: 'aa',
+      initialXDomain: [0, 454330],
+      initialYDomain: [0, 149278],
+      genomePositionSearchBoxVisible: true,
+      tracks: {
+        top: [],
+        left: [],
+        center: [
+          {
+            uid: 'c1',
+            type: 'combined',
+            options: {},
+            contents: [
+              {
+                uid: 'i1',
+                type: 'image-tiles',
+                server: 'http://localhost:8001/api/v1/',
+                tilesetUid: 'gigapan-54825',
+                options: {
+                  name: 'Gigapan Image 54825'
+                }
+              },
+              {
+                server: 'http://localhost:8001/api/v1',
+                tilesetUid: 'gigapan-54825-snapshots',
+                uid: 'i1a',
+                type: '2d-annotations',
+                options: {
+                  coords: 'pixel',
+                  labelColor: 'pink',
+                  labelPosition: 'hidden',
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'pink',
+                  rectangleDomainFillColor: 'grey',
+                  rectangleDomainFillOpacity: 0.05,
+                  rectangleDomainStrokeColor: 'pink',
+                  rectangleDomainOpacity: 0,
+                  rectanlgeMinSize: 1,
+                  name: 'Gigapan 54825 Snapshots'
+                },
+                position: 'center',
+              },
+            ],
+          }
+        ],
+        right: [],
+        bottom: []
+      },
+      layout: {
+        w: 16,
+        h: 12,
+        x: 0,
+        y: 0,
+        i: 'aa',
+        moved: false,
+        static: false
+      }
+    }
+  ],
+  zoomLocks: {
+    locksByViewUid: {},
+    locksDict: {}
+  },
+  locationLocks: {
+    locksByViewUid: {},
+    locksDict: {}
+  }
+};
+
+window.hglib.createHgComponent(
+  document.getElementById('development-demo'),
+  testViewConfig,
+  { bounded: true },
+  (api) => { window.hgApi = api; }
+);
+</script>
+</html>
