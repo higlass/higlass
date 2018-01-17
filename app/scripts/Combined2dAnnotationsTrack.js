@@ -104,6 +104,7 @@ class Combined2dAnnotationsTrack {
       h <= this.options.insetThreshold
     ) {
       this.insetsToBeDrawn.push(locus);
+      this.insetsToBeDrawnIds.add(uid);
     } else {
       this.drawnAnnotations.push(locus);
     }
@@ -125,8 +126,7 @@ class Combined2dAnnotationsTrack {
   }
 
   createInsets() {
-    this.insetsTrack.init();
-    this.drawInsets(this.positionInsets());
+    this.drawInsets(this.positionInsets(), this.insetsToBeDrawnIds);
   }
 
   positionInsets() {
@@ -198,11 +198,8 @@ class Combined2dAnnotationsTrack {
     return pos;
   }
 
-  drawInsets(insets) {
-    const drawnInsets = insets
-      .map(inset => this.insetsTrack.drawInset(...inset));
-
-    Promise.all(drawnInsets)
+  drawInsets(insets, insetIds) {
+    Promise.all(this.insetsTrack.drawInsets(insets, insetIds))
       .then(() => { this.animate(); })
       .catch((e) => { this.animate(); console.error(e); });
   }
@@ -268,6 +265,7 @@ class Combined2dAnnotationsTrack {
     this.drawnAnnotations = [];
     this.oldInsets = this.insetsToBeDrawn;
     this.insetsToBeDrawn = [];
+    this.insetsToBeDrawnIds = new Set();
     this.drawnAnnoIdxOld = this.drawnAnnoIdx;
     this.drawnAnnoIdx = new Set();
     this.numTracksDrawn = 0;

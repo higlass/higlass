@@ -53,7 +53,7 @@ class Insets2dTrack extends PixiTrack {
     };
   }
 
-  init() {
+  clear() {
     this.pMain.clear();
   }
 
@@ -88,6 +88,35 @@ class Insets2dTrack extends PixiTrack {
     inset.drawLeaderLine();
     inset.drawBorder();
     return inset.drawImage(this.renderImage, this.dataToGenomicLoci);
+  }
+
+  drawInsets(insets, insetIds) {
+    this.cleanUp(insetIds);
+
+    return insets.map(inset => this.drawInset(...inset));
+  }
+
+  /**
+   * Clean up inset instances
+   *
+   * @param  {Set}  insetIds  Set of inset IDs to keep
+   */
+  cleanUp(insetIds) {
+    Object.keys(this.insets)
+      .filter(id => !insetIds.has(id))
+      .forEach(this.destroyInset.bind(this));
+  }
+
+  /**
+   * Destroy an inset, i.e., call the inset's destroy method and remove it from
+   * the cache.
+   *
+   * @param  {String}  uid  UID of the inset to be destroyed.
+   */
+  destroyInset(uid) {
+    this.insets[uid].destroy();
+    this.insets[uid] = undefined;
+    delete this.insets[uid];
   }
 
   clickHandler(event, inset) {
