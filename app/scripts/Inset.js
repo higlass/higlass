@@ -21,6 +21,11 @@ class Inset {
     this.gMain.addChild(this.gLeaderLine);
     this.gMain.addChild(this.gBorder);
 
+    this.scaleExtra = 1;
+    this.offset = 0;
+    this.globalOffsetX = 0;
+    this.globalOffsetY = 0;
+
     this.initGraphics(options);
   }
 
@@ -58,9 +63,9 @@ class Inset {
     );
   }
 
-  offset(x = this.offsetX, y = this.offsetY) {
-    this.offsetX = x;
-    this.offsetY = y;
+  globalOffset(x = this.globalOffsetX, y = this.globalOffsetY) {
+    this.globalOffsetX = x;
+    this.globalOffsetY = y;
     return [x, y];
   }
 
@@ -86,24 +91,24 @@ class Inset {
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
     this.gBorder.drawRect(
-      this.offsetX + x - width,
-      this.offsetY + y,
-      width,
-      height
+      this.globalOffsetX + this.offset + x - width,
+      this.globalOffsetY + this.offset + y,
+      width * this.scaleExtra,
+      height * this.scaleExtra
     );
   }
 
   drawLeaderLine() {
     // Origin
     this.gLeaderLine.moveTo(
-      this.offsetX + this.originX,
-      this.offsetY + this.originY
+      this.globalOffsetX + this.originX,
+      this.globalOffsetY + this.originY
     );
 
     // Inset position
     this.gLeaderLine.lineTo(
-      this.offsetX + this.x - (this.width / 2),
-      this.offsetY + this.y + (this.height / 2)
+      this.globalOffsetX + this.x - (this.width / 2),
+      this.globalOffsetY + this.y + (this.height / 2)
     );
   }
 
@@ -123,17 +128,19 @@ class Inset {
       return this.inFlight;
     }
 
-    const self = this;
-
     if (!this.sprite || force) this.renderImage(this.data, imgRenderer);
 
-    this.sprite.x = this.offsetX + this.x;
-    this.sprite.y = this.offsetY + this.y + this.height;
-
-    this.sprite.scale.x = -1 * BASE_SCALE;
-    this.sprite.scale.y = -1 * BASE_SCALE;
+    this.positionImage();
 
     return Promise.resolve(true);
+  }
+
+  positionImage() {
+    this.sprite.x = this.globalOffsetX - this.offset + this.x;
+    this.sprite.y = this.globalOffsetY - this.offset + this.y + this.height;
+
+    this.sprite.scale.x = -1 * BASE_SCALE * this.scaleExtra;
+    this.sprite.scale.y = -1 * BASE_SCALE * this.scaleExtra;
   }
 
   fetchData(translator) {
@@ -177,13 +184,13 @@ class Inset {
 
   mouseDownHandler(event) {
     this.mouseDown = true;
-    this.scaleUp();
+    this.scale(BASE_SCALE_UP);
     this.mouseHandler.mouseDown(event, this.gMain);
   }
 
   mouseUpHandler(event) {
     if (this.mouseDown) this.clickHandler(event);
-    this.scaleDown();
+    this.scale();
     this.mouseDown = false;
     this.mouseHandler.mouseUp(event, this.gMain);
   }
@@ -207,32 +214,16 @@ class Inset {
     this.gMain.addChild(this.sprite);
   }
 
-  scaleUp(amount = BASE_SCALE_UP) {
-    const offset = BASE_RES * BASE_SCALE * (amount - 1) / 2;
+  /**
+   * Scale the inset.
+   *
+   * @param  {Number}  amount  Amount by which to scale the inset
+   */
+  scale(amount = 1) {
+    this.scaleExtra *= amount;
+    this.offset = BASE_RES * BASE_SCALE * (amount - 1) / -2;
 
-    this.sprite.scale.x *= amount;
-    this.sprite.scale.y *= amount;
-    this.sprite.x += offset;
-    this.sprite.y += offset;
-
-    this.gBorder.clear();
-    this.initGraphics();
-    this.drawBorder(
-      this.x + offset,
-      this.y - offset,
-      this.width + (offset * 2),
-      this.height + (offset * 2),
-    );
-  }
-
-  scaleDown(amount = BASE_SCALE_UP) {
-    const offset = BASE_RES * BASE_SCALE * (amount - 1) / 2;
-
-    this.sprite.scale.x /= amount;
-    this.sprite.scale.y /= amount;
-    this.sprite.x -= offset;
-    this.sprite.y -= offset;
-
+    this.positionImage();
     this.gBorder.clear();
     this.initGraphics();
     this.drawBorder();
