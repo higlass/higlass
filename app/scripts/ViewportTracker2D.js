@@ -33,7 +33,7 @@ export class ViewportTracker2D extends SVGTrack {
       .call(this.brush);
 
     // turn off the ability to select new regions for this brush
-    this.gBrush.selectAll(`.overlay-${this.uid}`)
+    this.gBrush.selectAll('.overlay')
       .style('pointer-events', 'none');
 
     // turn off the ability to modify the aspect ratio of the brush
