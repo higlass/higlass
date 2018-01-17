@@ -220,7 +220,7 @@ class Inset {
    * @param  {Number}  amount  Amount by which to scale the inset
    */
   scale(amount = 1) {
-    this.scaleExtra *= amount;
+    this.scaleExtra = amount;
     this.offset = BASE_RES * BASE_SCALE * (amount - 1) / -2;
 
     this.positionImage();
