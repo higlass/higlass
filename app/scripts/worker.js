@@ -1,4 +1,5 @@
 import { json } from 'd3-request';
+import pubSub from './services/pub-sub';
 
 /*
 function countTransform(count) {
@@ -12,6 +13,60 @@ function countTransform(count) {
 const epsilon = 0.0000001;
 
 const MAX_FETCH_TILES = 20;
+
+export function minNonZero(data) {
+  /**
+   * Calculate the minimum non-zero value in the data
+   *
+   * Parameters
+   * ----------
+   *  data: Float32Array
+   *    An array of values
+   *
+   * Returns
+   * -------
+   *  minNonZero: float
+   *    The minimum non-zero value in the array
+   */
+   let minNonZero = Number.MAX_SAFE_INTEGER;
+
+  for (let i = 0; i < data.length; i++) {
+    const x = data[i];
+
+    if (x < epsilon && x > -epsilon) { continue; }
+
+    if (x < minNonZero) { minNonZero = x; }
+  }
+
+  return  minNonZero;
+}
+
+export function maxNonZero(data) {
+  /**
+   * Calculate the minimum non-zero value in the data
+   *
+   * Parameters
+   * ----------
+   *  data: Float32Array
+   *    An array of values
+   *
+   * Returns
+   * -------
+   *  minNonZero: float
+   *    The minimum non-zero value in the array
+   */
+  let maxNonZero = Number.MIN_SAFE_INTEGER;
+
+  for (let i = 0; i < data.length; i++) {
+    const x = data[i];
+
+    if (x < epsilon && x > -epsilon) { continue; }
+
+    if (x > maxNonZero) { maxNonZero = x; }
+  }
+
+  return maxNonZero;
+}
 
 export function workerSetPix(
   data, valueScale, pseudocount, colorScale, passedCountTransform
@@ -52,6 +107,8 @@ export function workerSetPix(
   } catch (err) {
     console.warn('Odd datapoint');
     console.warn('valueScale.domain():', valueScale.domain());
+    console.warn('valueScale.range():', valueScale.range());
+    console.warn('value:', valueScale(e + pseudocount));
     console.warn('pseudocount:', pseudocount);
     console.warn('rgbIdx:', rgbIdx, 'd:', e, 'ct:', valueScale(e));
     console.error('ERROR:', err);
@@ -62,7 +119,9 @@ export function workerSetPix(
 }
 
 export function workerGetTilesetInfo(url, done) {
+  pubSub.publish('requestSent', url);
   json(url, (error, data) => {
+    pubSub.publish('requestReceived', url);
     if (error) {
       // console.log('error:', error);
       // don't do anything
@@ -138,7 +197,9 @@ export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
     const outUrl = `${tilesetServer}/tiles/?${renderParams}&s=${sessionId}`;
 
     const p = new Promise(((resolve, reject) => {
+      pubSub.publish('requestSent', outUrl);
       json(outUrl, (error, data) => {
+        pubSub.publish('requestReceived', outUrl);
         if (error) {
           resolve({});
         } else {
@@ -218,6 +279,7 @@ export function workerFetchMultiRequestTiles(req) {
 
   for (const server of servers) {
     const ids = Object.keys(requestsByServer[server]);
+    // console.log('ids:', ids);
 
     // if we request too many tiles, then the URL can get too long and fail
     // so we'll break up the requests into smaller subsets
@@ -228,70 +290,75 @@ export function workerFetchMultiRequestTiles(req) {
       const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
 
       const p = new Promise(((resolve, reject) => {
+        pubSub.publish('requestSent', outUrl);
         json(outUrl, (error, data) => {
+          pubSub.publish('requestReceived', outUrl);
+          if (!data)  {
+            // probably an error
+            data = {}
+          }
+
           if (error) {
-            resolve({});
-          } else {
-            // check if we have array data to convert from base64 to float32
-            for (const key in data) {
-              // let's hope the payload doesn't contain a tileId field
-              const keyParts = key.split('.');
+            console.warn('Error fetching data:', error);
+          }
 
-              data[key].server = server;
-              data[key].tileId = key;
-              data[key].zoomLevel = +keyParts[1];
-              data[key].tilePos = keyParts.slice(2, keyParts.length).map(x => +x);
-              data[key].tilesetUid = keyParts[0];
+          for (const thisId of theseTileIds) {
+            if (!(thisId in data)) {
+              // the server didn't return any data for this tile
+              data[thisId] = {};
+            }
+            const key = thisId;
+            // let's hope the payload doesn't contain a tileId field
+            const keyParts = key.split('.');
 
-              if ('dense' in data[key]) {
-                const arrayBuffer = _base64ToArrayBuffer(data[key].dense);
-                let a;
+            data[key].server = server;
+            data[key].tileId = key;
+            data[key].zoomLevel = +keyParts[1];
+            data[key].tilePos = keyParts.slice(2, keyParts.length).map(x => +x);
+            data[key].tilesetUid = keyParts[0];
 
-
-                if (data[key].dtype == 'float16') {
-                  // data is encoded as float16s
-                  /* comment out until next empty line for 32 bit arrays */
-                  const uint16Array = new Uint16Array(arrayBuffer);
-                  const newDense = _uint16ArrayToFloat32Array(uint16Array);
-                  a = newDense;
-                } else {
-                  // data is encoded as float32s
-                  a = new Float32Array(arrayBuffer);
-                }
-
-                let minNonZero = Number.MAX_SAFE_INTEGER;
-                let maxNonZero = Number.MIN_SAFE_INTEGER;
-
-                data[key].dense = a;
-
-                // find the minimum and maximum non-zero values
-                for (let i = 0; i < a.length; i++) {
-                  const x = a[i];
-
-                  if (x < epsilon && x > -epsilon) { continue; }
-
-                  if (x < minNonZero) { minNonZero = x; }
-                  if (x > maxNonZero) { maxNonZero = x; }
-                }
-
-                data[key].minNonZero = minNonZero;
-                data[key].maxNonZero = maxNonZero;
-
-                /*
-                                if (data[key]['minNonZero'] == Number.MAX_SAFE_INTEGER &&
-                                    data[key]['maxNonZero'] == Number.MIN_SAFE_INTEGER) {
-                                    // if there's no values except 0,
-                                    // then do use it as the min value
-
-                                    data[key]['minNonZero'] = 0;
-                                    data[key]['maxNonZero'] = 1;
-                                }
-                                */
-              }
+            if (error) {
+              // if there's an error, we have no data to fill in
+              data[key].error = error;
+              continue;
             }
 
-            resolve(data);
+            if ('dense' in data[key]) {
+              const arrayBuffer = _base64ToArrayBuffer(data[key].dense);
+              let a;
+
+
+              if (data[key].dtype == 'float16') {
+                // data is encoded as float16s
+                /* comment out until next empty line for 32 bit arrays */
+                const uint16Array = new Uint16Array(arrayBuffer);
+                const newDense = _uint16ArrayToFloat32Array(uint16Array);
+                a = newDense;
+              } else {
+                // data is encoded as float32s
+                a = new Float32Array(arrayBuffer);
+              }
+
+
+              data[key].dense = a;
+
+              data[key].minNonZero = minNonZero(a);
+              data[key].maxNonZero = maxNonZero(a);
+
+              /*
+                              if (data[key]['minNonZero'] == Number.MAX_SAFE_INTEGER &&
+                                  data[key]['maxNonZero'] == Number.MIN_SAFE_INTEGER) {
+                                  // if there's no values except 0,
+                                  // then do use it as the min value
+
+                                  data[key]['minNonZero'] = 0;
+                                  data[key]['maxNonZero'] = 1;
+                              }
+                              */
+            }
           }
+
+          resolve(data);
         });
       }));
 

@@ -22,10 +22,8 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
    * ----------
    *  scene: PIXI.js scene (or graphics)
    *      Where to draw everything.
-   *  server: string
-   *      The server from which to retrieve data
-   *  uid: string
-   *      The uid of the track on the server
+   *  dataConfig: object
+   *      Holds the server and tileset UID
    *  handleTilesetInfoReceived: function
    *      A callback to let the caller know that we've received the
    *      tileset information for this track.
@@ -34,14 +32,14 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
    *      be rendered
    *  animate: callback
    *      Function to be called when something in this track changes.
-   *  popupCallback: function
-   *      Callback for when this track wishes to display extra information
-   *      (e.g. gene information)
    */
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, popupCallback) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate, popupCallback);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
+    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
     this.textFontSize = '10px';
     this.textFontFamily = 'Arial';
+
+    this.animate = animate;
+    this.options = options;
   }
 
   initTile(tile) {
@@ -56,6 +54,11 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     tile.graphics.addChild(tile.textGraphics);
 
     const MAX_TILE_ENTRIES = 50;
+
+    if (!tile.tileData.sort) {
+      console.warn('Strange tileData', tile);
+      return;
+    }
 
     tile.tileData.sort((a, b) => b.importance - a.importance);
     tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
@@ -103,6 +106,23 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
   }
 
+  rerender(options, force) {
+    /*
+     * Redraw the track because the options
+     * changed
+     */
+    const strOptions = JSON.stringify(options);
+    if (!force && strOptions === this.prevOptions) return;
+
+    super.rerender(options, force);
+
+    this.prevOptions = strOptions;
+
+    for (const tile of this.visibleAndFetchedTiles()) {
+      this.renderTile(tile);
+    }
+  }
+
   drawTile(tile) {
 
   }
@@ -119,7 +139,6 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     fill['+'] = colorToHex(this.options.plusStrandColor ? this.options.plusStrandColor : 'blue');
     fill['-'] = colorToHex(this.options.minusStrandColor ? this.options.minusStrandColor : 'red');
-
 
     tile.tileData.forEach((td, i) => {
       const geneInfo = td.fields;
@@ -164,10 +183,15 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       const MIN_SIZE_FOR_EXONS = 10;
 
       if (xEndPos - xStartPos > MIN_SIZE_FOR_EXONS) {
-        tile.allRects = tile.allRects.concat(
-          this.drawExons(tile.rectGraphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
-            .map(x => x.concat([geneInfo[5]])),
-        );
+        if (geneInfo.length < 14) {
+          // don't draw if the input is invalid
+          console.warn("Gene annotations have less than 14 columns (chrName, chrStart, chrEnd, symbol, importance, transcript_name, geneId, transcript_type, '-', txStart, txEnd, exonStarts, exonEnds:", geneInfo);
+        } else {
+          tile.allRects = tile.allRects.concat(
+            this.drawExons(tile.rectGraphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
+              .map(x => x.concat([geneInfo[5]])),
+          );
+        }
         // this.drawExons(tile.textGraphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
       } else {
         // graphics.drawRect(rectX, rectY, width, height);
@@ -262,6 +286,13 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     for (const fetchedTileId in this.fetchedTiles) {
       const tile = this.fetchedTiles[fetchedTileId];
+
+      if (!tile.drawnAtScale) {
+        // tile hasn't been drawn properly because we likely got some
+        // bogus data from the server
+        // console.warn("Tile without drawnAtScale:", tile);
+        continue;
+      }
 
       // scale the rectangles
 

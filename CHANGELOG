@@ -1,7 +1,91 @@
-v0.9.15 (2017-11-??)
+develop (2018-01-??)
 
+- Added track for displaying gigapixel images
+- Added mouseMoveZoom event to public API
+- Fixed and extended pubSub module
+- Added flexible per-track crosshair
+- Display error message on error
+- Don't error when displaying menus when invalid track type is
+entered
+- Simplified `hglib` API
+- Updated third-party libs to get rid of deprecation warnings for React v16
+
+v0.10.10 (2018-01-
+
+- Default to log scaling if there are negative values
+- Fixed the custom colormap
+- Fix the gene annotations color changing
+
+v0.10.9 (2018-01-13)
+
+- Skipping a version because the latest version wasn't specified in
+package.json
+
+v0.10.8
+
+- Skipping a version because the latest version wasn't specified in
+package.json
+
+v0.10.7 (2018-01-13)
+
+- Show current data resolution in tiled sets containing raw resolutions rather
+than zoom levels
+
+v0.10.6 (2017-12-28)
+
+- Load ResizeSensors after the element is attached to the DOM tree
+- Added DivergentBarTrack
+- Fixed submenu hiding bug
+
+v0.10.5 (2017-12-27)
+
+- Fixed bug in TrackRenderer.setUpInitialScales where updating the view with
+new equivalent initial domains and different dimensions led to the view being
+misplaced
+- Added z-index to popup menus
+
+v0.10.4 (2017-12-16)
+
+- Fixed a bug in zoomToData
+- New API call for setViewConfig
+- New API call for zoomToDataExtent
+
+v0.10.3 (2017-12-13)
+
+- Don't include a colon if the port is 80
+- Added an option to clear the view
+- Exclude NaN values when setting the valueScale
+- Fixed bug related to displaying empty matrix tiles
+
+v0.10.2 (2017-12-12)
+
+- Fixed a bug in loading tileset info that isn't there
+- Better error handling on internal server error
+- Removed functionless menu item
+
+v0.10.1 (2017-12-05)
+
+- Fixed bug in Bedlike tracks that don't have a header
+
+v0.10.0 (2017-12-05)
+
+- Change track type from the config menu
+- Initial framework for divided by tracks
+- Y-positioned bed-like tracks
+
+v0.9.16 (2017-
+
+- Fixed undefined error when toggling genome position search box
+
+v0.9.15 (2017-11-22)
+
+- Fixed bug where newly selected annotations weren't being used
+- Added the hideHeader option
+- Added a warning for malformed gene annotations
 - Free up webgl renderer resources when unmount
 - Minor CSS cleanup
+- Fix resizing bug that appears after closing a view
+- Warn if there are no track source servers specified in the viewconf
 
 v0.9.14 (2017-11-11)
 

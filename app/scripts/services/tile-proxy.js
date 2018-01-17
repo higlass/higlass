@@ -12,12 +12,16 @@ import {
   workerSetPix,
 } from '../worker';
 
+import pubSub from './pub-sub';
+
+import { trimTrailingSlash as tts } from '../utils';
+
 // Config
 import { TILE_FETCH_DEBOUNCE } from '../configs';
 
 const sessionId = slugid.nice();
-let requestsInFlight = 0;
 
+export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
 export const getRequestsInFlight = () => requestsInFlight;
 
 const debounce = (func, wait) => {
@@ -29,7 +33,8 @@ const debounce = (func, wait) => {
     const requestId = requestMapper[request.id];
 
     if (requestId && bundledRequest[requestId]) {
-      bundledRequest[requestId].ids = bundledRequest[requestId].ids.concat(request.ids);
+      bundledRequest[requestId].ids = bundledRequest[requestId].ids
+        .concat(request.ids);
     } else {
       requestMapper[request.id] = bundledRequest.length;
       bundledRequest.push(request);
@@ -72,7 +77,9 @@ const debounce = (func, wait) => {
   return debounced;
 };
 
-const workerFetchTilesDebounced = debounce(workerFetchMultiRequestTiles, TILE_FETCH_DEBOUNCE);
+const workerFetchTilesDebounced = debounce(
+  workerFetchMultiRequestTiles, TILE_FETCH_DEBOUNCE
+);
 
 /**
  * Retrieve a set of tiles from the server
@@ -102,25 +109,23 @@ export const fetchTiles = (tilesetServer, tilesetIds, done) =>
  * Calculate the zoom level from a list of available resolutions
  */
 export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
-  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
+  const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
 
   const trackWidth = scale.range()[1] - scale.range()[0];
 
-  const binsDisplayed = sortedResolutions.map(
-    r => (scale.domain()[1] - scale.domain()[0]) / r
-  );
+  const binsDisplayed = sortedResolutions
+    .map(r => (scale.domain()[1] - scale.domain()[0]) / r);
   const binsPerPixel = binsDisplayed.map(b => b / trackWidth);
 
-  // we're going to show the highest resolution that requires more than one pixel per bin
+  // we're going to show the highest resolution that requires more than one
+  // pixel per bin
   const displayableBinsPerPixel = binsPerPixel.filter(b => b < 1);
 
   if (displayableBinsPerPixel.length === 0) return 0;
 
-  const zoomIndex = binsPerPixel.indexOf(
+  return binsPerPixel.indexOf(
     displayableBinsPerPixel[displayableBinsPerPixel.length - 1]
   );
-
-  return zoomIndex;
 };
 
 /**
@@ -143,28 +148,6 @@ export const calculateZoomLevel = (scale, minX, maxX) => {
   return zoomLevel;
 };
 
-export const calculateTilesPure = (
-  zoomLevel, start, end, minX, maxX, maxZoom, maxWidth,
-) => {
-  const zoomLevelFinal = zoomLevel > maxZoom ? maxZoom : zoomLevel;
-
-  // the ski areas are positioned according to their
-  // cumulative widths, which means the tiles need to also
-  // be calculated according to cumulative width
-
-  const tileWidth = maxWidth / (2 ** zoomLevelFinal);
-
-  const epsilon = 0.0000001;
-
-  return range(
-    Math.max(0, Math.floor((start - minX) / tileWidth)),
-    Math.min(
-      2 ** zoomLevelFinal,
-      Math.ceil(((end - minX) - epsilon) / tileWidth),
-    ),
-  );
-};
-
 /**
  * Calculate the tiles that should be visible get a data domain
  * and a tileset info
@@ -172,26 +155,40 @@ export const calculateTilesPure = (
  * All the parameters except the first should be present in the
  * tileset_info returned by the server.
  *
- * @param zoomLevel: The zoom level at which to find the tiles (can be calculated using
- *                   this.calcaulteZoomLevel, but needs to synchronized across both x
- *                   and y scales so should be calculated externally)
+ * @param zoomLevel: The zoom level at which to find the tiles (can be
+ *   calculated using this.calcaulteZoomLevel, but needs to synchronized across
+ *   both x and y scales so should be calculated externally)
  * @param scale: A d3 scale mapping data domain to visible values
  * @param minX: The minimum possible value in the dataset
  * @param maxX: The maximum possible value in the dataset
  * @param maxZoom: The maximum zoom value in this dataset
- * @param maxWidth: The width of the largest
+ * @param maxDim: The largest dimension of the tileset (e.g., width or height)
  *   (roughlty equal to 2 ** maxZoom * tileSize * tileResolution)
  */
 export const calculateTiles = (
-  zoomLevel, scale, minX, maxX, maxZoom, maxWidth,
-) => calculateTilesPure(
-  zoomLevel,
-  scale.domain()[0],
-  scale.domain()[1],
-  minX,
-  maxX,
-  maxZoom,
-  maxWidth,
+  zoomLevel, scale, minX, maxX, maxZoom, maxDim
+) => {
+  const zoomLevelFinal = Math.min(zoomLevel, maxZoom);
+
+  // the ski areas are positioned according to their
+  // cumulative widths, which means the tiles need to also
+  // be calculated according to cumulative width
+
+  const tileWidth = maxDim / (2 ** zoomLevelFinal);
+
+  const epsilon = 0.0000001;
+
+  return range(
+    Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
+    Math.min(
+      2 ** zoomLevelFinal,
+      Math.ceil(((scale.domain()[1] - minX) - epsilon) / tileWidth),
+    ),
+  );
+};
+
+export const calculateTileWidth = (maxWidth, zoomLevel) => (
+  maxWidth / (2 ** zoomLevel)
 );
 
 /**
@@ -203,23 +200,38 @@ export const calculateTiles = (
  * @param minX: The minimum x position of the tileset
  * @param maxX: The maximum x position of the tileset
  */
-export const calculateTilesFromResolution = (resolution, scale, minX, maxX) => {
+export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixelsPerTile) => {
   const epsilon = 0.0000001;
-  const PIXELS_PER_TILE = 256;
+  const PIXELS_PER_TILE = pixelsPerTile || 256;
   const tileWidth = resolution * PIXELS_PER_TILE;
+  const MAX_TILES = 20;
+  // console.log('PIXELS_PER_TILE:', PIXELS_PER_TILE);
 
-  return range(
+  if (!maxX)
+    maxX = Number.MAX_VALUE;
+
+  let tileRange = range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
     Math.ceil(Math.min(
       maxX,
       ((scale.domain()[1] - minX) - epsilon)) / tileWidth),
   );
+
+  if (tileRange.length > MAX_TILES) {
+    // too many tiles visible in this range
+    console.warn(`Too many visible tiles: ${tileRange.length} truncating to ${MAX_TILES}`);
+    tileRange = tileRange.slice(0, MAX_TILES);
+  }
+  // console.log('tileRange:', tileRange);
+
+  return tileRange;
 };
 
 export const trackInfo = (server, tilesetUid, done) => {
-  const outUrl = `${server}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
-
-  workerGetTilesetInfo(outUrl, done);
+  workerGetTilesetInfo(
+    `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`,
+    done
+  );
 };
 
 /**
@@ -227,8 +239,9 @@ export const trackInfo = (server, tilesetUid, done) => {
  * color values
  *
  * @param finished: A callback to let the caller know that the worker thread
- *                  has converted tileData to pixData
- * @param minVisibleValue: The minimum visible value (used for setting the color scale)
+ *   has converted tileData to pixData
+ * @param minVisibleValue: The minimum visible value (used for setting the color
+ *   scale)
  * @param maxVisibleValue: The maximum visible value
  * @param colorScale: a 255 x 4 rgba array used as a color scale
  */
@@ -236,6 +249,9 @@ export const tileDataToPixData = (
   tile, valueScale, pseudocount, colorScale, finished,
 ) => {
   const tileData = tile.tileData;
+
+  // if we didn't get any data from the server, don't do anything
+  if (!tileData.dense) return;
 
   // clone the tileData so that the original array doesn't get neutered
   // when being passed to the worker script
@@ -284,8 +300,11 @@ export const tileDataToPixData = (
  */
 function text(url, callback) {
   requestsInFlight += 1;
+  pubSub.publish('requestSent', url);
+
   d3Text(url, (error, done) => {
     callback(error, done);
+    pubSub.publish('requestReceived', url);
     requestsInFlight -= 1;
   });
 }
@@ -295,7 +314,10 @@ function text(url, callback) {
  */
 function json(url, callback) {
   requestsInFlight += 1;
+  pubSub.publish('requestSent', url);
+
   d3Json(url, (error, done) => {
+    pubSub.publish('requestReceived', url);
     callback(error, done);
     requestsInFlight -= 1;
   });
@@ -305,6 +327,7 @@ function json(url, callback) {
 const api = {
   calculateTiles,
   calculateTilesFromResolution,
+  calculateTileWidth,
   calculateZoomLevel,
   calculateZoomLevelFromResolutions,
   fetchTiles,

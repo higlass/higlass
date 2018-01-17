@@ -1,3 +1,4 @@
+import { scaleLinear, scaleLog } from 'd3-scale';
 import { median } from 'd3-array';
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
@@ -13,6 +14,38 @@ import { debounce } from './utils';
 // Configs
 import { ZOOM_DEBOUNCE } from './configs';
 
+import DataFetcher from './DataFetcher';
+
+/**
+ * Get a valueScale for a heatmap.
+ *
+ * If the scalingType isn't specified, then default to the defaultScaling.
+ *
+ * @param {string} scalingType: The type of the (e.g. 'linear', or 'log')
+ * @param {number} minValue: The minimum data value to which this scale will apply
+ * @param {number} maxValue: The maximum data value to which this scale will apply
+ * @param {string} defaultScaling: The default scaling type to use in case
+ * 'scalingType' is null (e.g. 'linear' or 'log')
+ *
+ * @returns {d3.scale} A scale with appropriately set domain and range
+ */
+export const getValueScale = function(scalingType, minValue, maxValue, defaultScaling) {
+  const scalingTypeToUse = scalingType || defaultScaling;
+
+  if (scalingTypeToUse == 'log' && minValue > 0) {
+    return scaleLog().range([254, 0])
+      .domain([minValue, minValue + maxValue]);
+  }
+
+  if (scalingTypeToUse == 'log') {
+    // warn the users that their desired scaling type couldn't be used
+    console.warn('Negative values present in data. Defaulting to linear scale: ', minValue);
+  }
+
+  return scaleLinear().range([254, 0])
+    .domain([minValue, minValue + maxValue]);
+}
+
 export class TiledPixiTrack extends PixiTrack {
   /**
    * A track that must pull remote tiles
@@ -21,15 +54,7 @@ export class TiledPixiTrack extends PixiTrack {
    * @param server: The server to pull tiles from.
    * @param tilesetUid: The data set to get the tiles from the server
    */
-  constructor(
-    scene,
-    server,
-    tilesetUid,
-    handleTilesetInfoReceived,
-    options,
-    animate,
-    onValueScaleChanged
-  ) {
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
     super(scene, options);
 
     // the tiles which should be visible (although they're not necessarily fetched)
@@ -43,12 +68,6 @@ export class TiledPixiTrack extends PixiTrack {
     // tiles we have fetched and ready to be rendered
     this.fetchedTiles = {};
 
-    const tilesetInfo = null;
-
-    this.tilesetUid = tilesetUid;
-    this.tilesetServer = server;
-    this.tilesetInfoLoading = true;
-
     // the graphics that have already been drawn for this track
     this.tileGraphics = {};
 
@@ -60,18 +79,21 @@ export class TiledPixiTrack extends PixiTrack {
 
     // store the server and tileset uid so they can be used in draw()
     // if the tileset info is not found
-    this.server = server;
-    this.tilesetUid = tilesetUid;
     this.prevValueScale = null;
 
+    this.dataFetcher = new DataFetcher(dataConfig);
 
-    tileProxy.trackInfo(server, tilesetUid, (tilesetInfo) => {
-      // console.log('tilesetInfo:', tilesetInfo);
-      this.tilesetInfo = tilesetInfo[tilesetUid];
-      this.tilesetInfoLoading = false;
+    this.dataFetcher.tilesetInfo((tilesetInfo) => {
+      this.tilesetInfo = tilesetInfo;
 
       if ('error' in this.tilesetInfo) {
         // no tileset info for this track
+        console.warn(
+          'Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error
+        );
+
+        this.trackNotFoundText = '';
+        this.errorTextText = this.tilesetInfo.error;
         this.tilesetInfo = null;
         // this.draw();
         this.animate();
@@ -90,13 +112,11 @@ export class TiledPixiTrack extends PixiTrack {
 
       this.refreshTiles();
 
-      if (handleTilesetInfoReceived) {
-        handleTilesetInfoReceived(tilesetInfo[tilesetUid]);
-      }
+      if (handleTilesetInfoReceived) handleTilesetInfoReceived(tilesetInfo);
 
-      if (!this.options) { this.options = {}; }
+      if (!this.options) this.options = {};
 
-      this.options.name = this.options.name ? this.options.name : tilesetInfo[tilesetUid].name;
+      this.options.name = this.options.name ? this.options.name : tilesetInfo.name;
 
       this.draw();
       this.animate();
@@ -106,8 +126,9 @@ export class TiledPixiTrack extends PixiTrack {
 
     this.refreshTilesDebounced = debounce(this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
 
-    this.trackNotFoundText = new PIXI.Text('',
-      { fontSize: '12px', fontFamily: 'Arial', fill: 'black' });
+    this.trackNotFoundText = new PIXI.Text(
+      '', { fontSize: '12px', fontFamily: 'Arial', fill: 'black' }
+    );
 
     this.pLabel.addChild(this.trackNotFoundText);
   }
@@ -120,7 +141,11 @@ export class TiledPixiTrack extends PixiTrack {
     this.maxZoom = +this.tilesetInfo.max_zoom;
 
     if (this.options && this.options.maxZoom) {
-      if (this.options.maxZoom >= 0) { this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom); } else { console.error('Invalid maxZoom on track:', this); }
+      if (this.options.maxZoom >= 0) {
+        this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
+      } else {
+        console.error('Invalid maxZoom on track:', this);
+      }
     }
   }
 
@@ -254,8 +279,14 @@ export class TiledPixiTrack extends PixiTrack {
    * If they are, remove all other tiles.
    */
   areAllVisibleTilesLoaded() {
-    for (let i = 0; i < this.visibleTileIds.length; i++) {
-      if (!this.fetchedTiles[this.visibleTileIds[i]]) return false;
+    // tiles that are fetched
+    const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
+
+    // console.log('this.fetchedTiles:', this.fetchedTiles);
+    const visibleTileIdsList = [...this.visibleTileIds];
+
+    for (let i = 0; i < visibleTileIdsList.length; i++) {
+      if (!fetchedTileIDs.has(visibleTileIdsList[i])) { return false; }
     }
     return true;
   }
@@ -384,12 +415,10 @@ export class TiledPixiTrack extends PixiTrack {
     if (toFetch.length > 0) {
       const toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
 
-      tileProxy.fetchTilesDebounced({
-        id: this.uuid,
-        server: this.tilesetServer,
-        done: this.receivedTiles.bind(this),
-        ids: toFetchList,
-      });
+      this.dataFetcher.fetchTilesDebounced(
+        this.receivedTiles.bind(this),
+        toFetchList
+      );
     }
   }
 
@@ -412,12 +441,26 @@ export class TiledPixiTrack extends PixiTrack {
 
 
         this.fetchedTiles[tileId].tileData = loadedTiles[this.visibleTiles[i].remoteId];
+
+        if (this.fetchedTiles[tileId].tileData.error) {
+          console.warn('Error in loaded tile', tileId, this.fetchedTiles[tileId].tileData);
+        }
       }
     }
 
+    const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
+    // console.log('fetchedTileIDs:', fetchedTileIDs);
+    // console.log('fetching:', this.fetching);
+
     for (const key in loadedTiles) {
       if (loadedTiles[key]) {
-        if (this.fetching.has(key)) { this.fetching.delete(key); }
+        const tileId = loadedTiles[key].tilePositionId;
+        // console.log('tileId:', tileId, 'fetching:', this.fetching);
+
+        if (this.fetching.has(tileId)) {
+          // console.log('removing:', tileId, 'fetching:', this.fetching);
+          this.fetching.delete(tileId);
+        }
       }
     }
 
@@ -463,7 +506,7 @@ export class TiledPixiTrack extends PixiTrack {
     if (this.delayDrawing) { return; }
 
     if (!this.tilesetInfo) {
-      if (this.tilesetInfoLoading) {
+      if (this.dataFetcher.tilesetInfoLoading) {
         this.trackNotFoundText.text = 'Loading...';
       } else {
         this.trackNotFoundText.text = `Tileset info not found. Server: [${
@@ -518,6 +561,7 @@ export class TiledPixiTrack extends PixiTrack {
     ).filter(x => x > 0);
 
     this.medianVisibleValue = median(values);
+    return this.medianVisibleValue;
   }
 
   allVisibleValues() {
@@ -537,6 +581,7 @@ export class TiledPixiTrack extends PixiTrack {
     let min = Math.min.apply(
       null,
       visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.minNonZero)
+      .filter(x => x)
     );
 
     // if there's no data, use null
@@ -555,12 +600,65 @@ export class TiledPixiTrack extends PixiTrack {
     let max = Math.max.apply(
       null,
       visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero)
+      .filter(x => x)
     );
+
 
     // if there's no data, use null
     if (max === Number.MIN_SAFE_INTEGER) { max = null; }
 
     return max;
+  }
+
+  makeValueScale(minValue, medianValue,  maxValue, margin) {
+    /*
+     * Create a value scale that will be used to position values
+     * along the y axis.
+     *
+     * Parameters
+     * ----------
+     *  minValue: number
+     *    The minimum value of the data
+     *  medianValue: number
+     *    The median value of the data. Potentially used for adding
+     *    a pseudocount
+     *  maxValue: number
+     *    The maximum value of the data
+     *  margin: number
+     *    A number of pixels to be left free on the top and bottom
+     *    of the track. For example if the glyphs have a certain
+     *    width and we want all of them to fit into the space.
+     *
+     * Returns
+     * -------
+     *  valueScale: d3.scale
+     *      A d3 value scale
+    */
+    let valueScale = null;
+
+    if (!margin)
+      margin = 6;  // set a default value
+
+    // console.log('valueScaling:', this.options.valueScaling);
+    if (this.options.valueScaling === 'log') {
+      let offsetValue = medianValue;
+
+      if (!offsetValue) { offsetValue = minValue; }
+
+      valueScale = scaleLog()
+        // .base(Math.E)
+        .domain([offsetValue, maxValue + offsetValue])
+        // .domain([offsetValue, this.maxValue()])
+        .range([this.dimensions[1] - margin, margin]);
+      pseudocount = offsetValue;
+    } else {
+      // linear scale
+      valueScale = scaleLinear()
+        .domain([minValue, maxValue])
+        .range([this.dimensions[1] - margin, margin]);
+    }
+
+    return valueScale;
   }
 }
 

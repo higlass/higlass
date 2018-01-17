@@ -3,7 +3,7 @@ import {
   precisionPrefix,
 } from 'd3-format';
 
-import { HeatmapOptions } from '../HeatmapOptions';
+import HeatmapOptions from '../HeatmapOptions';
 
 const AVAILABLE_COLORS = {
   black: { name: 'Black', value: 'black' },
@@ -102,6 +102,14 @@ export const OPTIONS_INFO = {
     name: 'Fill color',
     inlineOptions: AVAILABLE_COLORS,
   },
+  barFillColorTop: {
+    name: 'Top Fill color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+  barFillColorBottom: {
+    name: 'Bottom Fill color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
   barOpacity: {
     name: 'Bar opacity',
     inlineOptions: OPACITY_OPTIONS,
@@ -184,6 +192,13 @@ export const OPTIONS_INFO = {
     inlineOptions: {
       yes: { name: 'Yes', value: 'yes' },
       no: { name: 'No', value: null },
+    },
+  },
+  showMousePosition: {
+    name: 'Show Mouse Position',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false },
     },
   },
   axisPositionHorizontal: {
@@ -386,6 +401,7 @@ export const OPTIONS_INFO = {
         name: 'Custom...',
         componentPickers: {
           heatmap: HeatmapOptions,
+          'horizontal-heatmap': HeatmapOptions,
         },
       },
     },
@@ -452,6 +468,34 @@ export const OPTIONS_INFO = {
       } return [];
     },
   },
+
+  valueColumn: {
+    name: 'Value column',
+    inlineOptions: {
+      none: { name: 'None', value: null },
+    },
+    generateOptions: (track) => {
+      if (!track.header)
+        return [];
+
+      let headerParts = track.header.split('\t');
+      let options = [];
+
+      for (let i = 0; i < headerParts.length; i++) {
+        options.push({
+          name: headerParts[i],
+          value: i+1,
+        });
+      }
+
+        /*
+      console.log('headerParts:', headerParts);
+      console.log('options:', options);
+      */
+
+      return options;
+    }
+  }
 };
 
 export default OPTIONS_INFO;

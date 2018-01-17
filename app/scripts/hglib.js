@@ -1,48 +1,56 @@
-import { json } from 'd3-request';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import HiGlassComponent from './HiGlassComponent';
 
 export { default as HiGlassComponent } from './HiGlassComponent';
 
-function launch(element, config, options, callback) {
+const launch = (element, config, options) => {
   /**
    * The instance's public API will be passed into the callback
    *
    * @param   {Object} higlass - HiGlass instance
    * @return  {Object} The instance's public API
    */
-  callback((function (higlass) {
-    return higlass.api;
-  }(
-    ReactDOM.render(
-      (<HiGlassComponent
-        options={options || {}}
-        viewConfig={config}
-      />),
-      element,
-    ),
-  )
-  ));
-}
+  let component;
+  ReactDOM.render(
+    <HiGlassComponent
+      ref={(c) => { component = c; }}
+      options={options || {}}
+      viewConfig={config}
+    />,
+    element,
+  );
+  return component;
+};
 
-export function createHgComponent(element, config, options, callback) {
+/**
+ * Create a HiGlass component
+ *
+ * @param  {Object}  element  DOM element the HiGlass component should be
+ *   associated to.
+ * @param  {Object|String}  viewConfig  Dictionary or URL of a view config.
+ * @param  {Object}  options  Dictionary of public options.
+ * @param  {Function}  callback  Callback function for the API.
+ * @return  {Object}  Newly created HiGlass component.
+ */
+export const createHgComponent = (element, viewConfig, options, callback) => {
   /**
    * Available options:
    *
    *  bounded: [true/false]
    *      Fit the container to the bounds of the element
    */
-  if (typeof config === 'string') {
-    // Load external config
-    json(config, (error, data) => {
-      if (error) throw error;
+  const hg = launch(element, viewConfig, options);
+  try {
+    console.warn(
+      'Deprecated use of `createHgComponent`. The api is directly returned ' +
+      'now.'
+    );
+    callback(hg.api);
+  } catch (e) { /* Nothing */ }
+  return hg.api;
+};
 
-      launch(element, data, options, callback);
-    });
-  } else {
-    launch(element, config, options, callback);
-  }
-}
+export const viewer = createHgComponent;
 
 export default createHgComponent;
