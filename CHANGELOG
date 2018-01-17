@@ -1,4 +1,4 @@
-v0.10.10 (2018-01-
+v0.10.10 (2018-01-17)
 
 - Default to log scaling if there are negative values
 - Fixed the custom colormap
