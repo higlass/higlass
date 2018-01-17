@@ -109,7 +109,7 @@ export const fetchTiles = (tilesetServer, tilesetIds, done) =>
  * Calculate the zoom level from a list of available resolutions
  */
 export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
-  const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
+  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
 
   const trackWidth = scale.range()[1] - scale.range()[0];
 
@@ -200,20 +200,18 @@ export const calculateTileWidth = (maxWidth, zoomLevel) => (
  * @param minX: The minimum x position of the tileset
  * @param maxX: The maximum x position of the tileset
  */
-export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixelsPerTile) => {
+export const calculateTilesFromResolution = (
+  resolution, scale, minX, maxX, pixelsPerTile
+) => {
   const epsilon = 0.0000001;
   const PIXELS_PER_TILE = pixelsPerTile || 256;
   const tileWidth = resolution * PIXELS_PER_TILE;
   const MAX_TILES = 20;
-  // console.log('PIXELS_PER_TILE:', PIXELS_PER_TILE);
-
-  if (!maxX)
-    maxX = Number.MAX_VALUE;
 
   let tileRange = range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
     Math.ceil(Math.min(
-      maxX,
+      maxX || Number.MAX_VALUE,
       ((scale.domain()[1] - minX) - epsilon)) / tileWidth),
   );
 

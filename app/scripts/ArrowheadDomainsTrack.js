@@ -69,7 +69,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.remoteId));
   }
 
-  calculateVisibleTiles(mirrorTiles = true) {
+  calculateVisibleTiles() {
     // if we don't know anything about this dataset, no point
     // in trying to get tiles
     if (!this.tilesetInfo) { return; }
@@ -121,8 +121,8 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
     // this.drawTile(tile);
   }
 
-  destroyTile(tile, graphics) {
-
+  destroyTile() {
+    // Nothing
   }
 
   draw() {
@@ -159,7 +159,10 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
 
     graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
 
-    const minSquareSize = this.options.minSquareSize && this.options.minSquareSize !== 'none'
+    const minSquareSize = (
+      this.options.minSquareSize
+      && this.options.minSquareSize !== 'none'
+    )
       ? +this.options.minSquareSize
       : 0;
 
@@ -188,7 +191,7 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
       const height = endY - startY;
 
       // we've already drawn this rectangle in another tile
-      if (uid in this.drawnRects) { continue; }
+      if (uid in this.drawnRects) continue;
 
       let drawnRect = {
         x: startX,
@@ -252,30 +255,33 @@ export class ArrowheadDomainsTrack extends TiledPixiTrack {
     track.appendChild(output);
 
     for (let tile of this.visibleAndFetchedTiles()) {
-      if (!tile.tileData || !tile.tileData.length)
-        // this tile has no data
-        continue;
+      // this tile has no data
+      if (!tile.tileData || !tile.tileData.length) continue;
 
-      tile.tileData.forEach((td, i) => {
-        let gTile = document.createElement('g')
+      tile.tileData.forEach((td) => {
+        const gTile = document.createElement('g');
         gTile.setAttribute('transform',
           `translate(${tile.graphics.position.x},${tile.graphics.position.y})scale(${tile.graphics.scale.x},${tile.graphics.scale.y})`);
         output.appendChild(gTile);
 
         if (td.uid in this.drawnRects) {
-          let rect = this.drawnRects[td.uid];
+          const rect = this.drawnRects[td.uid];
 
-          let r = document.createElement('rect');
+          const r = document.createElement('rect');
           r.setAttribute('x', rect.x);
           r.setAttribute('y', rect.y);
           r.setAttribute('width', rect.width);
           r.setAttribute('height', rect.height);
 
-          r.setAttribute('fill',  this.options.fillColor ? this.options.fillColor : 'grey')
+          r.setAttribute(
+            'fill', this.options.fillColor ? this.options.fillColor : 'grey'
+          );
           r.setAttribute('opacity', 0.3);
 
-          r.style.stroke = this.options.fillColor ? this.options.fillColor : 'grey';
-          r.style.strokeWidth = "1px";
+          r.style.stroke = this.options.fillColor
+            ? this.options.fillColor
+            : 'grey';
+          r.style.strokeWidth = '1px';
 
           gTile.appendChild(r);
         }

@@ -1,6 +1,6 @@
 import { brushY } from 'd3-brush';
 import { range } from 'd3-array';
-import { scaleLinear, scaleLog } from 'd3-scale';
+import { scaleLinear } from 'd3-scale';
 import { select, event } from 'd3-selection';
 import * as PIXI from 'pixi.js';
 
@@ -307,7 +307,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   newBrushOptions(selection) {
     const newOptions = JSON.parse(JSON.stringify(this.options));
 
-    const axisValueScale = this.valueScale.copy().range([this.colorbarHeight, 0]);
+    const axisValueScale = this.valueScale.copy()
+      .range([this.colorbarHeight, 0]);
 
     const endDomain = axisValueScale.invert(selection[0]);
     const startDomain = axisValueScale.invert(selection[1]);
@@ -447,7 +448,9 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.pColorbar.y = COLORBAR_MARGIN;
       this.axis.pAxis.y = COLORBAR_MARGIN;
 
-      this.axis.pAxis.x = BRUSH_MARGIN + BRUSH_WIDTH + BRUSH_COLORBAR_GAP + COLORBAR_WIDTH;
+      this.axis.pAxis.x = (
+        BRUSH_MARGIN + BRUSH_WIDTH + BRUSH_COLORBAR_GAP + COLORBAR_WIDTH
+      );
       this.pColorbar.x = BRUSH_MARGIN + BRUSH_WIDTH + BRUSH_COLORBAR_GAP;
 
       this.gColorscaleBrush.attr(
@@ -458,7 +461,9 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     if (this.options.colorbarPosition === 'topRight') {
       // draw the background for the colorbar
-      this.pColorbarArea.x = this.position[0] + this.dimensions[0] - colorbarAreaWidth;
+      this.pColorbarArea.x = (
+        this.position[0] + this.dimensions[0] - colorbarAreaWidth
+      );
       this.pColorbarArea.y = this.position[1];
 
       this.pColorbar.y = COLORBAR_MARGIN;
@@ -476,8 +481,12 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     if (this.options.colorbarPosition === 'bottomRight') {
-      this.pColorbarArea.x = this.position[0] + this.dimensions[0] - colorbarAreaWidth;
-      this.pColorbarArea.y = this.position[1] + this.dimensions[1] - colorbarAreaHeight;
+      this.pColorbarArea.x = (
+        this.position[0] + this.dimensions[0] - colorbarAreaWidth
+      );
+      this.pColorbarArea.y = (
+        this.position[1] + this.dimensions[1] - colorbarAreaHeight
+      );
 
       this.pColorbar.y = COLORBAR_MARGIN;
       this.axis.pAxis.y = COLORBAR_MARGIN;
@@ -513,17 +522,19 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.pColorbarArea.beginFill(colorToHex('white'), 0.6);
     this.pColorbarArea.drawRect(0, 0, colorbarAreaWidth, colorbarAreaHeight);
 
-    if (!this.options) { this.options = {}; }
-    if (!this.options.scaleStartPercent) { this.options.scaleStartPercent = 0; }
-    if (!this.options.scaleEndPercent) { this.options.scaleEndPercent = 1; }
+    if (!this.options) this.options = {};
+    if (!this.options.scaleStartPercent) this.options.scaleStartPercent = 0;
+    if (!this.options.scaleEndPercent) this.options.scaleEndPercent = 1;
 
     const domainWidth = axisValueScale.domain()[1] - axisValueScale.domain()[0];
 
     const startBrush = axisValueScale(
-      (this.options.scaleStartPercent * domainWidth) + axisValueScale.domain()[0],
+      (this.options.scaleStartPercent * domainWidth)
+      + axisValueScale.domain()[0],
     );
     const endBrush = axisValueScale(
-      (this.options.scaleEndPercent * domainWidth) + axisValueScale.domain()[0],
+      (this.options.scaleEndPercent * domainWidth)
+      + axisValueScale.domain()[0],
     );
 
     // endBrush and startBrush are reversed because lower values come first
@@ -567,9 +578,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
       const rgbIdx = Math.max(0, Math.min(254, Math.floor(value)));
       this.pColorbar.beginFill(
-        colorToHex(
-          `rgb(${this.colorScale[rgbIdx][0]},${this.colorScale[rgbIdx][1]},${this.colorScale[rgbIdx][2]})`,
-        ),
+        colorToHex(`rgb(${this.colorScale[rgbIdx].join(',')})`),
       );
 
       // each rectangle in the colorbar will be one pixel high
@@ -632,13 +641,17 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.dimensions[1], COLORBAR_MAX_HEIGHT,
     );
     this.colorbarHeight = colorbarAreaHeight - (2 * COLORBAR_MARGIN);
-    const colorbarAreaWidth = COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + (2 * COLORBAR_MARGIN);
+    const colorbarAreaWidth = (
+      COLORBAR_WIDTH + COLORBAR_LABELS_WIDTH + (2 * COLORBAR_MARGIN)
+    );
 
     rectColorbarArea.setAttribute('x', 0);
     rectColorbarArea.setAttribute('y', 0);
     rectColorbarArea.setAttribute('width', colorbarAreaWidth);
     rectColorbarArea.setAttribute('height', colorbarAreaHeight);
-    rectColorbarArea.setAttribute('style', 'fill: white; stroke-width: 0; opacity: 0.7');
+    rectColorbarArea.setAttribute(
+      'style', 'fill: white; stroke-width: 0; opacity: 0.7'
+    );
 
     const posScale = scaleLinear()
       .domain([0, 255])
@@ -655,7 +668,9 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       rectColor.setAttribute('height', colorHeight);
       rectColor.setAttribute('class', 'color-rect');
 
-      rectColor.setAttribute('style', `fill: rgb(${this.colorScale[i][0]}, ${this.colorScale[i][1]}, ${this.colorScale[i][2]})`);
+      rectColor.setAttribute(
+        'style', `fill: rgb(${this.colorScale[i].join(',')})`
+      );
     }
 
     const gAxisHolder = document.createElement('g');
@@ -841,18 +856,18 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   /**
-   * Convert the raw tile data to a rendered array of values which can be represented as a sprite.
+   * Convert the raw tile data to a rendered array of values which can be
+   * represented as a sprite.
    *
-   * @param tile: The data structure containing all the tile information. Relevant to
-   *              this function are tile.tileData = {'dense': [...], ...}
-   *              and tile.graphics
+   * @param tile: The data structure containing all the tile information.
+   *   Relevant to this function are tile.tileData = {'dense': [...], ...}
+   *   and tile.graphics
    */
   initTile(tile) {
     super.initTile(tile);
 
-    if (this.scale.minValue == null || this.scale.maxValue == null)
-      // no data present
-      return;
+    // no data present
+    if (this.scale.minValue == null || this.scale.maxValue == null) return;
 
     this.renderTile(tile);
   }
@@ -915,11 +930,12 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     tileProxy.tileDataToPixData(
       tile,
       this.limitedValueScale,
-      this.valueScale.domain()[0], // used as a pseudocount to prevent taking the log of 0
+      // used as a pseudocount to prevent taking the log of 0
+      this.valueScale.domain()[0],
       this.colorScale,
       (pixData) => {
-        // the tileData has been converted to pixData by the worker script and needs to be loaded
-        // as a sprite
+        // the tileData has been converted to pixData by the worker script and
+        // needs to be loaded as a sprite
         const graphics = tile.graphics;
         const canvas = tileToCanvas(pixData);
         // this.addBorder(pixData);
@@ -1073,7 +1089,9 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
           if (rows[i] >= cols[j]) {
             // if we're in the upper triangular part of the matrix, then we need
             // to load a mirrored tile
-            this.addTileId(tiles, zoomLevel, cols[j], rows[i], dataTransform, true);
+            this.addTileId(
+              tiles, zoomLevel, cols[j], rows[i], dataTransform, true
+            );
           } else {
             // otherwise, load an original tile
             this.addTileId(tiles, zoomLevel, rows[i], cols[j], dataTransform);

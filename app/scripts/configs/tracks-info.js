@@ -202,7 +202,17 @@ export const TRACKS_INFO = [
     local: false,
     orientation: '1d-horizontal',
     thumbnail: null,
-    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'valueScaling',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'colorRange',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'trackType'
+    ],
     defaultOptions: {
       labelPosition: 'topLeft',
       labelColor: 'black',
@@ -280,7 +290,19 @@ export const TRACKS_INFO = [
     datatype: ['vector'],
     local: false,
     orientation: '1d-horizontal',
-    availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity', 'axisPositionHorizontal', 'barFillColorTop', 'barFillColorBottom', 'valueScaling', 'trackBorderWidth', 'trackBorderColor', 'barOpacity'],
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'axisPositionHorizontal',
+      'barFillColorTop',
+      'barFillColorBottom',
+      'valueScaling',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'barOpacity'
+    ],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'topLeft',
