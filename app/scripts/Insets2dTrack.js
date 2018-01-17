@@ -91,16 +91,16 @@ class Insets2dTrack extends PixiTrack {
   }
 
   clickHandler(event, inset) {
-    console.log('PIXI CLICK', event.type, inset);
+    // console.log('PIXI CLICK', event.type, inset);
   }
 
   mouseOverHandler(event, inset) {
-    console.log('PIXI MOUSE OVER', event.type, inset);
+    // console.log('PIXI MOUSE OVER', event.type, inset);
     this.animate();
   }
 
   mouseOutHandler(event, inset) {
-    console.log('PIXI MOUSE OUT', event.type, inset);
+    // console.log('PIXI MOUSE OUT', event.type, inset);
     this.animate();
   }
 
