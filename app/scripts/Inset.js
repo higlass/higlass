@@ -31,9 +31,12 @@ class Inset {
   }
 
   destroy() {
+    if (this.sprite) this.sprite.removeAllListeners();
+
     this.gBorder.destroy();
     this.gLeaderLine.destroy();
     this.gMain.destroy();
+
     this.data = undefined;
     this.sprite = undefined;
   }
