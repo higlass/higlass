@@ -31,6 +31,8 @@ class Inset {
   }
 
   destroy() {
+    this.gBorder.destroy();
+    this.gLeaderLine.destroy();
     this.gMain.destroy();
     this.data = undefined;
     this.sprite = undefined;
@@ -128,13 +130,6 @@ class Inset {
     this.sprite.scale.x = -1 * BASE_SCALE;
     this.sprite.scale.y = -1 * BASE_SCALE;
 
-    this.sprite.interactive = true;
-    this.sprite
-      .on('mousedown', this.mouseDownHandler.bind(this))
-      .on('mouseover', this.mouseOverHandler.bind(this))
-      .on('mouseout', this.mouseOutHandler.bind(this))
-      .on('mouseup', this.mouseUpHandler.bind(this));
-
     return Promise.resolve(true);
   }
 
@@ -198,6 +193,13 @@ class Inset {
         this.data, PIXI.SCALE_MODES.NEAREST
       )
     );
+
+    this.sprite.interactive = true;
+    this.sprite
+      .on('mousedown', this.mouseDownHandler.bind(this))
+      .on('mouseover', this.mouseOverHandler.bind(this))
+      .on('mouseout', this.mouseOutHandler.bind(this))
+      .on('mouseup', this.mouseUpHandler.bind(this));
 
     this.gMain.addChild(this.sprite);
   }
