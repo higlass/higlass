@@ -205,16 +205,13 @@ export class ViewHeader extends React.Component {
     const classNameIcon = this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR ?
       'multitrack-header-icon-squeazed' : 'multitrack-header-icon';
 
-    const classNameGrabber = this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR ?
-      'multitrack-header-grabber-squeazed' : 'multitrack-header-grabber';
-
     return (
       <div
         ref={(c) => { this.el = c; }}
         styleName={className}
       >
         <div styleName="multitrack-header-left">
-          <div styleName={classNameGrabber}>
+          <div styleName="multitrack-header-grabber">
             <div /><div /><div />
           </div>
           {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR &&
