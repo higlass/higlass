@@ -578,7 +578,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
       const rgbIdx = Math.max(0, Math.min(254, Math.floor(value)));
       this.pColorbar.beginFill(
-        colorToHex(`rgb(${this.colorScale[rgbIdx].join(',')})`),
+        colorToHex(`rgba(${this.colorScale[rgbIdx].join(',')})`),
       );
 
       // each rectangle in the colorbar will be one pixel high
@@ -669,7 +669,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       rectColor.setAttribute('class', 'color-rect');
 
       rectColor.setAttribute(
-        'style', `fill: rgb(${this.colorScale[i].join(',')})`
+        'style', `fill: rgba(${this.colorScale[i].join(',')})`
       );
     }
 
