@@ -24,9 +24,10 @@ export class ViewportTracker2D extends SVGTrack {
     this.viewportXDomain = null;
     this.viewportYDomain = null;
 
+    const maxHalf = Number.MAX_VALUE / 2;
+
     this.brush = brush(true)
-      .extent([[-Number.MAX_VALUE/2, -Number.MAX_VALUE/2],
-        [Number.MAX_VALUE/2, Number.MAX_VALUE/2]])
+      .extent([[-maxHalf, -maxHalf], [maxHalf, maxHalf]])
       .on('brush', this.brushed.bind(this));
 
     this.gBrush = this.gMain
