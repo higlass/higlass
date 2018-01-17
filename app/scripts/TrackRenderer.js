@@ -53,7 +53,7 @@ import MapboxTilesTrack from './MapboxTilesTrack';
 import ImageTilesTrack from './ImageTilesTrack';
 
 // Utils
-import { cloneEvent, forwardEvent, dictItems } from './utils';
+import { forwardEvent, dictItems } from './utils';
 
 // Services
 import { pubSub } from './services';
@@ -170,6 +170,7 @@ export class TrackRenderer extends React.Component {
   }
 
   componentDidMount() {
+    this.elementPos = this.element.getBoundingClientRect();
     this.elementSelection = select(this.element);
     this.svgTrackAreaSelection = select(this.svgTrackArea);
 
@@ -210,9 +211,9 @@ export class TrackRenderer extends React.Component {
     const nextPropsStr = this.updatablePropsToString(nextProps);
     this.currentProps = nextProps;
 
-    if (this.prevPropsStr === nextPropsStr) {
-      return;
-    }
+    if (this.prevPropsStr === nextPropsStr) return;
+
+    this.elementPos = this.element.getBoundingClientRect();
 
     for (const uid in this.trackDefObjects) {
       const track = this.trackDefObjects[uid].trackObject;
@@ -298,9 +299,21 @@ export class TrackRenderer extends React.Component {
   /* --------------------------- Custom Methods ----------------------------- */
 
   dispatchEvent(e) {
-    if (!this.element) return;
+    if (this.isWithin(e.clientX, e.clientY)) forwardEvent(e, this.element);
+  }
 
-    forwardEvent(e, this.element);
+  isWithin(x, y) {
+    if (!this.element) return false;
+
+    const withinX = (
+      x >= this.elementPos.left
+      && x <= this.elementPos.width + this.elementPos.left
+    );
+    const withinY = (
+      y >= this.elementPos.top
+      && y <= this.elementPos.height + this.elementPos.top
+    );
+    return withinX && withinY;
   }
 
   addZoom() {
@@ -1434,12 +1447,12 @@ export class TrackRenderer extends React.Component {
   render() {
     return (
       <div
+        className="track-renderer-div"
         style={{
           height: this.currentProps.height,
           width: this.currentProps.width,
         }}
         styleName="track-renderer"
-        className='track-renderer-div'
       >
         <div
           ref={(c) => { this.element = c; }}
