@@ -25,6 +25,8 @@ export class ViewportTracker2D extends SVGTrack {
     this.viewportYDomain = null;
 
     this.brush = brush(true)
+      .extent([[-Number.MAX_VALUE/2, -Number.MAX_VALUE/2],
+        [Number.MAX_VALUE/2, Number.MAX_VALUE/2]])
       .on('brush', this.brushed.bind(this));
 
     this.gBrush = this.gMain
