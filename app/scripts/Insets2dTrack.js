@@ -1,21 +1,33 @@
-import * as PIXI from 'pixi.js';
 import { DropShadowFilter } from 'pixi-filters';
 
 // Components
 import { PixiTrack } from './PixiTrack';
-import pixiLine from './utils/pixi-line';
+import Inset from './Inset';
+
+// Services
+import { chromInfo } from './services';
+
+// Utils
+import { absToChr, flatten, tileToCanvas } from './utils';
+// import { workerSetPix } from './worker';
+
+// const BASE_RES = 16;
+// const BASE_SCALE = 4;
+// const BASE_SCALE_UP = 4;
 
 class Insets2dTrack extends PixiTrack {
   constructor(
     scene,
+    animate,
     options,
   ) {
     super(scene, options);
 
-    this.graphics = new PIXI.Graphics();
-    this.pMain.addChild(this.graphics);
+    chromInfo.get(options.chromInfoPath).then((_chromInfo) => {
+      this.dataToGenomicLoci = locus => absToChr(locus, _chromInfo);
+    });
+
     this.options = options;
-    this.lines = [];
 
     this.dropShadow = new DropShadowFilter(
       90,
@@ -25,51 +37,101 @@ class Insets2dTrack extends PixiTrack {
       this.options.dropOpacity,
     );
 
-    this.graphics.alpha = this.options.opacity;
-    this.graphics.filters = [this.dropShadow];
+    this.pBase.alpha = this.options.opacity;
+    this.pMain.filters = [this.dropShadow];
+
+    this.insets = {};
+
+    this.animate = animate;
+
+    this.insetMouseHandler = {
+      click: this.clickHandler.bind(this),
+      mouseOver: this.mouseOverHandler.bind(this),
+      mouseOut: this.mouseOutHandler.bind(this),
+      mouseDown: this.mouseDownHandler.bind(this),
+      mouseUp: this.mouseUpHandler.bind(this)
+    };
   }
 
   init() {
-    this.graphics.clear();
-    this.lines.map(
-      (line) => { this.pMain.removeChild(line); return line.destroy(); }
-    );
-    this.lines = [];
-
-    // Fill and line style need to be re-applied after `.clear()`
-    this.graphics.lineStyle(
-      this.options.strokeWidth, this.options.stroke, this.options.strokeOpacity
-    );
-    this.graphics.beginFill(this.options.fill, this.options.fillOpacity);
+    this.pMain.clear();
   }
 
-  drawInset(x, y, w, h, sx, sy) {
-    this.drawBorder(x, y, w, h, sx, sy);
-    this.drawLeaderLine(x, y, sx, sy);
+  initInset(
+    uid,
+    dataPos,
+    options = this.options,
+    mouseHandler = this.insetMouseHandler
+  ) {
+    this.insets[uid] = new Inset(uid, dataPos, options, mouseHandler);
+    this.pMain.addChild(this.insets[uid].graphics());
+    return this.insets[uid];
   }
 
-  drawLeaderLine(x1, y1, x2, y2) {
-    const line = pixiLine(
-      this.position[0] + x1,
-      this.position[1] + y1,
-      this.position[0] + x2,
-      this.position[1] + y2,
-      this.options.leaderLineStrokeWidth,
-      this.options.leaderLineStroke,
-      this.options.leaderLineStrokeOpacity,
+  drawInset(uid, x, y, w, h, sx, sy, dX1, dX2, dY1, dY2) {
+    const inset = (
+      this.insets[uid] ||
+      this.initInset(
+        uid,
+        [dX1, dX2, dY1, dY2],
+        this.options,
+        this.insetMouseHandler
+      )
     );
 
-    this.pMain.addChild(line);
-    this.lines.push(line);
+    inset.clear(this.options);
+
+    inset.offset(...this.position);
+    inset.origin(sx, sy);
+    inset.position(x, y);
+    inset.size(w, h);
+    inset.drawLeaderLine();
+    inset.drawBorder();
+    return inset.drawImage(this.renderImage, this.dataToGenomicLoci);
   }
 
-  drawBorder(x, y, w, h) {
-    this.graphics.drawRect(
-      this.position[0] + x - w,
-      this.position[1] + y,
-      w,
-      h
-    );
+  clickHandler(event, inset) {
+    console.log('PIXI CLICK', event.type, inset);
+  }
+
+  mouseOverHandler(event, inset) {
+    console.log('PIXI MOUSE OVER', event.type, inset);
+    this.animate();
+  }
+
+  mouseOutHandler(event, inset) {
+    console.log('PIXI MOUSE OUT', event.type, inset);
+    this.animate();
+  }
+
+  mouseDownHandler(event, inset) {
+    this.hoveringInsetIdx = this.pMain.getChildIndex(inset);
+    this.pMain.setChildIndex(inset, this.pMain.children.length - 1);
+    this.animate();
+  }
+
+  mouseUpHandler(event, inset) {
+    this.pMain.setChildIndex(inset, this.hoveringInsetIdx);
+    this.animate();
+  }
+
+  renderImage(data, w, h) {
+    const flatImg = flatten(data.fragments[0]);
+
+    const n = flatImg.length;
+
+    const pixData = new Uint8ClampedArray(n * 4);
+
+    for (let i = 0; i < n; i++) {
+      const j = i * 4;
+      const val = 255 - (flatImg[i] * 255);
+      pixData[j] = val;
+      pixData[j + 1] = val;
+      pixData[j + 2] = val;
+      pixData[j + 3] = 255;
+    }
+
+    return tileToCanvas(pixData, w, h);
   }
 }
 

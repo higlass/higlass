@@ -1,3 +1,17 @@
 .track-renderer {
   position: absolute;
 }
+
+.track-renderer-element,
+.track-renderer-events {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.track-renderer-events {
+  z-index: 0;
+}

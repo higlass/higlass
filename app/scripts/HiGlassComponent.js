@@ -30,6 +30,7 @@ import {
   dictKeys,
   dictValues,
   download,
+  forwardEvent,
   getTrackByUid,
   getTrackPositionByUid,
   loadChromInfos,
@@ -120,6 +121,7 @@ class HiGlassComponent extends React.Component {
 
     this.pixiStage = new PIXI.Container();
     this.pixiStage.interactive = true;
+
     this.element = null;
 
     const viewsByUid = this.processViewConfig(JSON.parse(JSON.stringify(this.props.viewConfig)));
@@ -192,6 +194,9 @@ class HiGlassComponent extends React.Component {
     this.pubSubs.push(
       pubSub.subscribe('orientationchange', this.resizeHandler.bind(this)),
     );
+    this.pubSubs.push(
+      pubSub.subscribe('app.event', this.dispatchEvent.bind(this)),
+    );
 
     if (this.props.getApi) {
       this.props.getApi(this.api);
@@ -214,14 +219,17 @@ class HiGlassComponent extends React.Component {
       }
     });
 
-    this.pixiRenderer = PIXI.autoDetectRenderer(this.state.width,
-      this.state.height, {
+    this.pixiRenderer = PIXI.autoDetectRenderer(
+      this.state.width,
+      this.state.height,
+      {
         view: this.canvasElement,
         antialias: true,
         transparent: true,
         resolution: 2,
         autoResize: true,
-      });
+      }
+    );
 
     // PIXI.RESOLUTION=2;
     this.fitPixiToParentContainer();
@@ -251,7 +259,7 @@ class HiGlassComponent extends React.Component {
       icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox),
     );
 
-    //loadChromInfos(this.state.views);
+    // loadChromInfos(this.state.views);
   }
 
   componentWillReceiveProps(newProps) {
@@ -283,7 +291,6 @@ class HiGlassComponent extends React.Component {
 
   componentDidUpdate() {
     this.animate();
-
     this.triggerViewChangeDb();
   }
 
@@ -306,6 +313,12 @@ class HiGlassComponent extends React.Component {
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
+
+  dispatchEvent(e) {
+    if (!this.canvasElement) return;
+
+    forwardEvent(e, this.canvasElement);
+  }
 
   fitPixiToParentContainer() {
     if (!this.element.parentNode) {
@@ -493,8 +506,7 @@ class HiGlassComponent extends React.Component {
       // /let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
       const lockedTracks = lockGroupValues
         .filter(x => this.tiledPlots[x.view])
-        .map(x =>
-        this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track));
+        .map(x => this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track));
 
       const minValues = lockedTracks
         // exclude tracks that don't set min and max values
@@ -593,17 +605,17 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  /**
+   * Add an event listener that will be called every time the scale
+   * of the view with uid viewUid is changed.
+   *
+   * @param viewUid: The uid of the view being observed
+   * @param listenerUid: The uid of the listener
+   * @param eventHandler: The handler to be called when the scales change
+   *    Event handler is called with parameters (xScale, yScale)
+   */
   addScalesChangedListener(viewUid, listenerUid, eventHandler) {
-    /**
-       * Add an event listener that will be called every time the scale
-       * of the view with uid viewUid is changed.
-       *
-       * @param viewUid: The uid of the view being observed
-       * @param listenerUid: The uid of the listener
-       * @param eventHandler: The handler to be called when the scales change
-       *    Event handler is called with parameters (xScale, yScale)
-       */
-    if (!this.scalesChangedListeners.hasOwnProperty(viewUid)) {
+    if (!this.scalesChangedListeners[viewUid]) {
       this.scalesChangedListeners[viewUid] = {};
     }
 
@@ -615,17 +627,17 @@ class HiGlassComponent extends React.Component {
     eventHandler(this.xScales[viewUid], this.yScales[viewUid]);
   }
 
+  /**
+   * Remove a scale change event listener
+   *
+   * @param viewUid: The view that it's listening on.
+   * @param listenerUid: The uid of the listener itself.
+   */
   removeScalesChangedListener(viewUid, listenerUid) {
-    /**
-       * Remove a scale change event listener
-       *
-       * @param viewUid: The view that it's listening on.
-       * @param listenerUid: The uid of the listener itself.
-       */
-    if (this.scalesChangedListeners.hasOwnProperty(viewUid)) {
+    if (this.scalesChangedListeners[viewUid]) {
       const listeners = this.scalesChangedListeners[viewUid];
 
-      if (listeners.hasOwnProperty(listenerUid)) { delete listeners[listenerUid]; }
+      if (listeners[listenerUid]) { delete listeners[listenerUid]; }
     }
   }
 
@@ -2482,12 +2494,15 @@ class HiGlassComponent extends React.Component {
       callback(scalesToGenomeLoci(xScale, yScale, this.chromInfo));
     };
 
-    const newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
-      .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
-      .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
-      .reduce((max, value) => Math.max(max, value), 0) + 1;
+    let newListenerId = 1;
+    if (this.scalesChangedListeners[view.uid]) {
+      newListenerId = Object.keys(this.scalesChangedListeners[view.uid])
+        .filter(listenerId => listenerId.indexOf(LOCATION_LISTENER_PREFIX) === 0)
+        .map(listenerId => parseInt(listenerId.slice(LOCATION_LISTENER_PREFIX.length + 1), 10))
+        .reduce((max, value) => Math.max(max, value), 0) + 1;
+    }
 
-    const scaleListener = this.addScalesChangedListener(
+    this.addScalesChangedListener(
       view.uid,
       `${LOCATION_LISTENER_PREFIX}.${newListenerId}`,
       middleLayerListener,
@@ -2496,6 +2511,8 @@ class HiGlassComponent extends React.Component {
     if (callbackId) {
       callbackId(`${LOCATION_LISTENER_PREFIX}.${newListenerId}`);
     }
+
+    return newListenerId;
   }
 
   setChromInfo(chromInfoPath, callback) {
@@ -2774,8 +2791,9 @@ class HiGlassComponent extends React.Component {
         <div
           ref={(c) => { this.divDrawingSurface = c; }}
           styleName="styles.higlass-drawing-surface"
-        />
-        {gridLayout}
+        >
+          {gridLayout}
+        </div>
         <svg
           ref={(c) => { this.svgElement = c; }}
           styleName="styles.higlass-svg"

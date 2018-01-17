@@ -3,20 +3,31 @@ import rbush from 'rbush';
 // Components
 import Insets2dTrack from './Insets2dTrack';
 
+// Services
+import { pubSub } from './services';
+
 // Utils
-import { colorToHex, findNearest2dPoint } from './utils';
+import { colorToHex, positionLabels } from './utils';
 
 class Combined2dAnnotationsTrack {
   constructor(scene, trackDefs, options, trackCreator, animate) {
+    this.childTrackUuids = {};
     this.annotationTracks = trackDefs.map((trackDef) => {
       const track = trackCreator(trackDef);
 
       // Augment track options
-      track.drawn = this.trackDrawn.bind(this);
       track.annotationDrawn = this.annotationDrawn.bind(this);
+      track.animate = animate;
+      this.childTrackUuids[track.uuid] = true;
 
       return track;
     });
+
+    this.pubSubs = [];
+
+    this.pubSubs.push(
+      pubSub.subscribe('TiledPixiTrack.tilesDrawn', this.trackDrawn.bind(this))
+    );
 
     if (this.annotationTracks.some(childTrack => !childTrack)) {
       console.error('Empty child track in Combined2dAnnotationsTrack:', this);
@@ -24,18 +35,18 @@ class Combined2dAnnotationsTrack {
 
     this.animate = animate;
 
-    this.insetsTrack = new Insets2dTrack(scene, {
+    this.insetsTrack = new Insets2dTrack(scene, animate, {
       server: options.server,
       chromInfoPath: options.chromInfoPath,
       heatmapUuid: options.heatmapUuid,
       fill: colorToHex(options.insetFill || 'black'),
       fillOpacity: +options.insetFillOpacity || 0.5,
-      strokeWidth: +options.insetStrokeWidth || 1,
-      stroke: colorToHex(options.insetStroke || 'black'),
-      strokeOpacity: +options.insetStrokeOpacity || 1,
-      leaderLineStrokeWidth: +options.insetLeaderLineStrokeWidth || 1,
-      leaderLineStroke: colorToHex(options.insetLeaderLineStroke || 'black'),
-      leaderLineStrokeOpacity: +options.insetLeaderLineStrokeOpacity || 1,
+      borderWidth: +options.insetBorderWidth || 1,
+      borderColor: colorToHex(options.insetBorderColor || 'black'),
+      borderOpacity: +options.insetBorderOpacity || 1,
+      leaderLineWidth: +options.insetLeaderLineWidth || 1,
+      leaderLineColor: colorToHex(options.insetLeaderLineColor || 'black'),
+      leaderLineOpacity: +options.insetLeaderLineOpacity || 1,
       dropDistance: +options.insetDropDistance || 3,
       dropBlur: +options.insetDropBlur || 3,
       dropOpacity: +options.insetDropOpacity || 1,
@@ -46,18 +57,35 @@ class Combined2dAnnotationsTrack {
 
     this.options = options;
 
+    this.currK = 1;  // Current scale
+    this.drawnAnnoIdx = new Set();
+    this.insets = {};
+
     this.initTree();
   }
 
+  remove() {
+    super.remove();
+    this.pubSubs.forEach(sub => pubSub.unsubscribe(sub));
+    this.pubSubs = undefined;
+    this.childTracks.forEach(childTracks => childTracks.remove());
+  }
+
   buildTree() {
+    if (!this.drawnAnnotations.length) return;
     // console.log('build tree', this.drawnAnnotations.length);
-    this.tree.load(this.drawnAnnotations);
-    // console.log(this.ass);
+
+    this.drawnAnnotations = [
+      ...this.insetsToBeDrawn,
+      ...this.drawnAnnotations
+    ];
+    if (this.newAnno) this.tree.load(this.drawnAnnotations);
     this.createInsets();
   }
 
-  annotationDrawn(x, y, w, h, cX1, cX2, cY1, cY2) {
+  annotationDrawn(uid, x, y, w, h, cX1, cX2, cY1, cY2) {
     const locus = {
+      uid,
       minX: x,
       minY: y,
       maxX: x + w,
@@ -68,13 +96,16 @@ class Combined2dAnnotationsTrack {
       cY2
     };
 
-    this.drawnAnnotations.push(locus);
+    this.newAnno = !this.drawnAnnoIdxOld.has(uid);
+    this.drawnAnnoIdx.add(uid);
 
     if (
       w <= this.options.insetThreshold ||
       h <= this.options.insetThreshold
     ) {
       this.insetsToBeDrawn.push(locus);
+    } else {
+      this.drawnAnnotations.push(locus);
     }
   }
 
@@ -86,9 +117,11 @@ class Combined2dAnnotationsTrack {
    * Simple counter that call `this.buildTree()` once the number of annotation
    * tracks is reached. This might need to be improved!=
    */
-  trackDrawn() {
+  trackDrawn({ uuid }) {
+    if (!this.childTrackUuids[uuid]) return;
+
     this.numTracksDrawn += 1;
-    if (this.numTracksDrawn === this.annotationTracks.length) this.buildTree();
+    if (!(this.numTracksDrawn % this.annotationTracks.length)) this.buildTree();
   }
 
   createInsets() {
@@ -97,82 +130,81 @@ class Combined2dAnnotationsTrack {
   }
 
   positionInsets() {
-    return this.insetsToBeDrawn.map((inset) => {
-      const collisions = this.tree.search(inset);
-      let distX = -1;
-      let distY = -1;
-      let minX = -1;
-      let minXmaxY = -1;
-      let maxY = -1;
-      let maxYminX = -1;
-      let distXCollisionIdx = -1;
-      let fromSameCollision = true;
+    if (!this.insetsToBeDrawn.length) return [];
 
-      collisions.forEach((collision, index) => {
-        const _distX = inset.minX - collision.minX;
-        const _distY = collision.maxY - inset.maxY;
+    const ancs = this.drawnAnnotations.map(obj => ({
+      x: (obj.maxX + obj.minX) / 2,
+      y: (obj.maxY + obj.minY) / 2,
+      ox: (obj.maxX + obj.minX) / 2,  // Origin x
+      oy: (obj.maxY + obj.minY) / 2,  // Origin y
+      wh: (obj.maxX - obj.minX) / 2,  // Width half
+      hh: (obj.maxY - obj.minY) / 2,  // Heigth half
+      ...obj
+    }));
 
-        if (_distX > distX) {
-          distX = _distX;
-          distXCollisionIdx = index;
-          minX = collision.minX;
-          minXmaxY = collision.maxY;
-          fromSameCollision = false;
-        }
+    const labs = this.insetsToBeDrawn.map((obj) => {
+      if (!this.insets[obj.uid]) {
+        this.insets[obj.uid] = {
+          x: (obj.maxX + obj.minX) / 2,
+          y: (obj.maxY + obj.minY) / 2,
+          ox: (obj.maxX + obj.minX) / 2,  // Origin x
+          oy: (obj.maxY + obj.minY) / 2,  // Origin y
+          width: 64,
+          height: 64,
+          wh: 32,  // Width half
+          hh: 32,  // Heigth half
+          ...obj
+        };
+      } else {
+        const newOx = (obj.maxX + obj.minX) / 2;
+        const newOy = (obj.maxY + obj.minY) / 2;
+        const dX = this.insets[obj.uid].ox - newOx;
+        const dY = this.insets[obj.uid].oy - newOy;
 
-        if (_distY >= distY) {
-          distY = _distY;
-          maxY = collision.maxY;
-          maxYminX = collision.minX;
-          fromSameCollision = distXCollisionIdx === index;
-        }
-      });
+        this.insets[obj.uid].ox = newOx;
+        this.insets[obj.uid].oy = newOy;
 
-      let interX = -1;
-      let interY = -1;
-
-      if (!fromSameCollision) {
-        interX = maxYminX;
-        interY = minXmaxY;
+        this.insets[obj.uid].x += dX;
+        this.insets[obj.uid].y += dY;
       }
 
-      const targets = [
-        [minX, inset.maxY],
-        [inset.minX, maxY],
-        [interX, interY],
-      ];
-
-      const closest = findNearest2dPoint([inset.minX, inset.maxY], targets);
-
-      return [
-        ...closest,
-        inset.minX,
-        inset.maxY,
-        inset.cX1,
-        inset.cX2,
-        inset.cY1,
-        inset.cY2
-      ];
+      return this.insets[obj.uid];
     });
+
+    const t0 = performance.now();
+    positionLabels
+      .label(labs) // insets
+      .anchor(ancs) // Collisions
+      .width(this.dimensions[0])
+      .height(this.dimensions[1])
+      .start(Math.max(2, Math.min(100 / this.insetsToBeDrawn.length)));
+
+    // console.log('Labeling took ' + (performance.now() - t0) + ' msec');
+
+    const pos = labs.map(lab => ([
+      lab.uid,
+      lab.x,
+      lab.y,
+      lab.width,
+      lab.height,
+      lab.ox,
+      lab.oy,
+      lab.cX1,
+      lab.cX2,
+      lab.cY1,
+      lab.cY2
+    ]));
+
+    return pos;
   }
 
   drawInsets(insets) {
-    insets.forEach(
-      inset => this.insetsTrack
-        .drawInset(
-          inset[0],
-          inset[1],
-          64,
-          64,
-          inset[2],
-          inset[3],
-          inset[4],
-          inset[5],
-          inset[6],
-          inset[7],
-        )
-    );
-    this.animate();
+    const drawnInsets = insets
+      .map(inset => this.insetsTrack.drawInset(...inset));
+
+    Promise.all(drawnInsets)
+      .then(() => { this.animate(); })
+      .catch((e) => { this.animate(); console.error(e); });
   }
 
   updateContents(newContents, trackCreator) {
@@ -232,16 +264,28 @@ class Combined2dAnnotationsTrack {
    */
   initTree() {
     this.tree = rbush();
+    this.oldAnnotations = this.drawnAnnotations;
     this.drawnAnnotations = [];
+    this.oldInsets = this.insetsToBeDrawn;
     this.insetsToBeDrawn = [];
+    this.drawnAnnoIdxOld = this.drawnAnnoIdx;
+    this.drawnAnnoIdx = new Set();
     this.numTracksDrawn = 0;
+    this.newAnno = false;
   }
 
   zoomed(newXScale, newYScale, k, x, y, xPositionOffset, yPositionOffset) {
     this.initTree();
+    this.scaleChanged = this.currK !== k;
+
+    // if (this._xScale) {
+    //   const oldDomain = this._xScale.domain();
+    //   const newDomain = newXScale.domain();
+    // }
 
     this._xScale = newXScale;
     this._yScale = newYScale;
+    this.currK = k;
 
     this.childTracks.forEach(
       childTracks => childTracks.zoomed(
@@ -258,10 +302,6 @@ class Combined2dAnnotationsTrack {
     this.childTracks.forEach(
       childTracks => childTracks.refScalesChanged(refXScale, refYScale)
     );
-  }
-
-  remove() {
-    this.childTracks.forEach(childTracks => childTracks.remove());
   }
 
   rerender() {
