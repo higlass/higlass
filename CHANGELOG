@@ -4,6 +4,7 @@ v0.10.10 (2018-01-
 - Fixed the custom colormap
 - Fix the gene annotations color changing
 - Fixed two regressions regarding the viewport projections
+- Fixed non-draggable views bug
 
 v0.10.9 (2018-01-13)
 
