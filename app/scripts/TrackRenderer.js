@@ -298,10 +298,22 @@ export class TrackRenderer extends React.Component {
 
   /* --------------------------- Custom Methods ----------------------------- */
 
+  /**
+   * Dispatch a forwarded event on the main DOM element
+   *
+   * @param  {Object}  e  Event to be dispatched.
+   */
   dispatchEvent(e) {
     if (this.isWithin(e.clientX, e.clientY)) forwardEvent(e, this.element);
   }
 
+  /**
+   * Check of a view position (i.e., pixel coords) is within this view
+   *
+   * @param  {Number}  x  X position to be tested.
+   * @param  {Number}  y  Y position to be tested.
+   * @return  {Boolean}   If `true` position is within this view.
+   */
   isWithin(x, y) {
     if (!this.element) return false;
 
