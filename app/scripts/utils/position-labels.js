@@ -3,7 +3,7 @@ let anc = [];
 let w = 1; // box width
 let h = 1; // box width
 
-const maxMove = 20.0;
+const maxMove = 25.0;
 const maxAngle = 0.5;
 let acc = 0;
 let rej = 0;
@@ -136,8 +136,8 @@ const mcmove = (currT) => {
     : energy(i);
 
   // random translation
-  l.x += (Math.random() - 0.5) * maxMove;
-  l.y += (Math.random() - 0.5) * maxMove;
+  l.x += (Math.random() - 0.5) * maxMove * Math.max(0.5, currT);
+  l.y += (Math.random() - 0.5) * maxMove * Math.max(0.5, currT);
 
   // hard wall boundaries
   if (l.x > w) l.x = xOld;
@@ -229,8 +229,6 @@ labeler.start = (nsweeps, t = 1.0) => {
   const m = lab.length;
   const initialT = t;
   let currT = initialT;
-
-  // console.log('sweeps', nsweeps);
 
   for (let i = 0; i < nsweeps; i++) {
     for (let j = 0; j < m; j++) {
