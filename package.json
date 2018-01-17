@@ -54,6 +54,7 @@
     "pixi-filters": "^2.3.0",
     "pixi.js": "^4.6.2",
     "prop-types": "^15.6.0",
+    "rbush": "^2.0.2",
     "react": "^15.6.2",
     "react-autocomplete": "github:tiemevanveen/react-autocomplete#fix-176",
     "react-bootstrap": "^0.32.0",
