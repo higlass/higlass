@@ -123,6 +123,18 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.mouseMoveZoomHandler();
   }
 
+  getToRgb() {
+    try {
+      return valueToColor(
+        this.limitedValueScale,
+        this.colorScale,
+        this.valueScale.domain()[0]
+      );
+    } catch (e) {
+      return undefined;
+    }
+  }
+
   /**
    * Mouse move and zoom handler. Is triggered on both events.
    *
@@ -144,14 +156,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const data = this.getData(relX, relY, z);
     const dim = this.dataLensSize;
 
-    let toRgb;
-    try {
-      toRgb = valueToColor(
-        this.limitedValueScale,
-        this.colorScale,
-        this.valueScale.domain()[0]
-      );
-    } catch (err) { /* Nothing */ }
+    const toRgb = this.getToRgb();
 
     if (!data.length || !toRgb) return;
 
@@ -175,7 +180,13 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     this.onMouseMoveZoom({
-      data, dim, toRgb, center, xRange, yRange, rel: !!this.chromInfo
+      data,
+      dim,
+      toRgb,
+      center,
+      xRange,
+      yRange,
+      rel: !!this.chromInfo
     });
   }
 
