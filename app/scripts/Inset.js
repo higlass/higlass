@@ -179,13 +179,13 @@ class Inset {
 
   mouseDownHandler(event) {
     this.mouseDown = true;
-    this.scaleUp(this.sprite, BASE_SCALE_UP);
+    this.scaleUp();
     this.mouseHandler.mouseDown(event, this.gMain);
   }
 
   mouseUpHandler(event) {
     if (this.mouseDown) this.clickHandler(event);
-    this.scaleDown(this.sprite, BASE_SCALE_UP);
+    this.scaleDown();
     this.mouseDown = false;
     this.mouseHandler.mouseUp(event, this.gMain);
   }
@@ -202,13 +202,13 @@ class Inset {
     this.gMain.addChild(this.sprite);
   }
 
-  scaleUp(inset, amount) {
+  scaleUp(amount = BASE_SCALE_UP) {
     const offset = BASE_RES * BASE_SCALE * (amount - 1) / 2;
 
-    inset.scale.x *= amount;
-    inset.scale.y *= amount;
-    inset.x += offset;
-    inset.y += offset;
+    this.sprite.scale.x *= amount;
+    this.sprite.scale.y *= amount;
+    this.sprite.x += offset;
+    this.sprite.y += offset;
 
     this.gBorder.clear();
     this.initGraphics();
@@ -220,13 +220,13 @@ class Inset {
     );
   }
 
-  scaleDown(inset, amount) {
+  scaleDown(amount = BASE_SCALE_UP) {
     const offset = BASE_RES * BASE_SCALE * (amount - 1) / 2;
 
-    inset.scale.x /= amount;
-    inset.scale.y /= amount;
-    inset.x -= offset;
-    inset.y -= offset;
+    this.sprite.scale.x /= amount;
+    this.sprite.scale.y /= amount;
+    this.sprite.x -= offset;
+    this.sprite.y -= offset;
 
     this.gBorder.clear();
     this.initGraphics();
