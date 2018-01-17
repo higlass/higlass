@@ -81,7 +81,7 @@ class Insets2dTrack extends PixiTrack {
 
     inset.clear(this.options);
 
-    inset.offset(...this.position);
+    inset.globalOffset(...this.position);
     inset.origin(sx, sy);
     inset.position(x, y);
     inset.size(w, h);
