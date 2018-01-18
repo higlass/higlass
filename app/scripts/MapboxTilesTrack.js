@@ -1,6 +1,6 @@
-import { OSMTilesTrack } from './OSMTilesTrack.js';
+import OSMTilesTrack from './OSMTilesTrack';
 
-export class MapboxTilesTrack extends OSMTilesTrack {
+class MapboxTilesTrack extends OSMTilesTrack {
   /**
      * A track that must pull remote tiles
      */

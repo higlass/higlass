@@ -1,4 +1,4 @@
-import {mix} from 'mixwith';
+import { mix } from 'mixwith';
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -12,8 +12,7 @@ import { SeriesListSubmenuMixin } from './SeriesListSubmenuMixin';
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
-
+class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
   render() {
     return (
       <div
@@ -38,7 +37,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
             type: 'horizontal-rule',
-            y: this.props.coords[1], 
+            y: this.props.coords[1],
             position: 'whole',
           })}
         >
@@ -48,7 +47,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
             type: 'vertical-rule',
-            x: this.props.coords[0], 
+            x: this.props.coords[0],
             position: 'whole',
           })}
         >
@@ -59,8 +58,8 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
             type: 'cross-rule',
-            x: this.props.coords[0], 
-            y: this.props.coords[1], 
+            x: this.props.coords[0],
+            y: this.props.coords[1],
             position: 'whole',
           })}
         >

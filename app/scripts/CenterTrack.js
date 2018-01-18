@@ -19,7 +19,7 @@ const STYLES = {
   pointerEvents: 'all',
 };
 
-export class CenterTrack extends React.Component {
+class CenterTrack extends React.Component {
   constructor(props) {
     super(props);
 

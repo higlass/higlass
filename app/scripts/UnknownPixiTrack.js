@@ -1,7 +1,7 @@
-import PixiTrack from './PixiTrack.js';
+import PixiTrack from './PixiTrack';
 
-export class UnknownPixiTrack extends PixiTrack {
-  constructor(stage, def, animate) {
+class UnknownPixiTrack extends PixiTrack {
+  constructor(stage, def) {
     super(stage, def);
     // so that the tests checking for retrieved tilesetInfo pass
     this.tilesetInfo = {};
@@ -9,7 +9,7 @@ export class UnknownPixiTrack extends PixiTrack {
     this.errorTextText = `Unknown track type: ${def.type}`;
   }
 
-  zoomed(newXScale, newYScale) {
+  zoomed() {
     this.draw();
   }
 }

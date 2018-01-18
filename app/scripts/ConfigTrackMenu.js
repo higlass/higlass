@@ -1,16 +1,15 @@
-import {mix} from 'mixwith';
+import { mix } from 'mixwith';
 import React from 'react';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
-import { SeriesListMenu } from './SeriesListMenu';
 import { getSeriesItems } from './SeriesListItems';
-import { SeriesListSubmenuMixin } from './SeriesListSubmenuMixin.js'
+import { SeriesListSubmenuMixin } from './SeriesListSubmenuMixin';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-export class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
+class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
   constructor(props) {
     /**
      * A window that is opened when a user clicks on the track configuration icon.

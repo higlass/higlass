@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 
 import VerticalTiled1DPixiTrack from './VerticalTiled1DPixiTrack';
 
-export class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
+class IdVertical1DTiledPixiTrack extends VerticalTiled1DPixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
     super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
   }

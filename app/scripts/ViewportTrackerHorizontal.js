@@ -4,7 +4,7 @@ import slugid from 'slugid';
 
 import SVGTrack from './SVGTrack';
 
-export class ViewportTrackerHorizontal extends SVGTrack {
+class ViewportTrackerHorizontal extends SVGTrack {
   constructor(
     svgElement,
     registerViewportChanged,

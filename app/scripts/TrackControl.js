@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { SortableHandle } from 'react-sortable-hoc';
 
 // Styles
 import '../styles/TrackControl.module.scss';
 
-export class TrackControl extends React.Component {
+class TrackControl extends React.Component {
   render() {
     let className = this.props.isVisible ?
       'track-control-active' : 'track-control';
@@ -41,13 +40,14 @@ export class TrackControl extends React.Component {
         {this.props.isMoveable && <Handle />}
 
         <svg
+          ref={(c) => { this.imgConfig = c; }}
           className="no-zoom"
           onClick={() => {
-            const imgDom = ReactDOM.findDOMNode(this.imgConfig);
-            const bbox = imgDom.getBoundingClientRect();
-            this.props.onConfigTrackMenuOpened(this.props.uid, bbox);
+            this.props.onConfigTrackMenuOpened(
+              this.props.uid,
+              this.imgConfig.getBoundingClientRect()
+            );
           }}
-          ref={(c) => { this.imgConfig = c; }}
           style={this.props.imgStyleSettings}
           styleName={buttonClassName}
         >
@@ -55,9 +55,9 @@ export class TrackControl extends React.Component {
         </svg>
 
         <svg
+          ref={(c) => { this.imgAdd = c; }}
           className="no-zoom"
           onClick={() => this.props.onAddSeries(this.props.uid)}
-          ref={(c) => { this.imgAdd = c; }}
           style={this.props.imgStyleAdd}
           styleName={buttonClassName}
         >
@@ -65,13 +65,14 @@ export class TrackControl extends React.Component {
         </svg>
 
         <svg
+          ref={(c) => { this.imgClose = c; }}
           className="no-zoom"
           onClick={() => {
-            const imgDom = ReactDOM.findDOMNode(this.imgClose);
-            const bbox = imgDom.getBoundingClientRect();
-            this.props.onCloseTrackMenuOpened(this.props.uid, bbox);
+            this.props.onCloseTrackMenuOpened(
+              this.props.uid,
+              this.imgClose.getBoundingClientRect()
+            );
           }}
-          ref={(c) => { this.imgClose = c; }}
           style={this.props.imgStyleClose}
           styleName={buttonClassName}
         >

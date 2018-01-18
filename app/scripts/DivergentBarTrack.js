@@ -1,20 +1,11 @@
 import { scaleLinear, scaleLog } from 'd3-scale';
 
-import { BarTrack } from './BarTrack';
+import BarTrack from './BarTrack';
 
 // Utils
-import { colorToHex, dictValues } from './utils';
+import { colorToHex } from './utils';
 
-export class DivergentBarTrack extends BarTrack {
-  constructor( scene, dataConfig, handleTilesetInfoReceived, option,
-    animate,
-    onValueScaleChanged,
-  ) {
-    super( scene, dataConfig, handleTilesetInfoReceived, option, animate,
-      onValueScaleChanged,
-    );
-  }
-
+class DivergentBarTrack extends BarTrack {
   renderTile(tile) {
     //super.drawTile(tile);
 

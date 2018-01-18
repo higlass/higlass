@@ -1,7 +1,8 @@
 import { axisLeft } from 'd3-axis';
-import { SVGTrack } from './SVGTrack.js';
 
-export class LeftAxisTrack extends SVGTrack {
+import SVGTrack from './SVGTrack';
+
+class LeftAxisTrack extends SVGTrack {
   constructor(svgElement) {
     super(svgElement);
 

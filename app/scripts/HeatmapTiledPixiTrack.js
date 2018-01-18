@@ -4,8 +4,8 @@ import { scaleLinear } from 'd3-scale';
 import { select, event } from 'd3-selection';
 import * as PIXI from 'pixi.js';
 
-import { TiledPixiTrack, getValueScale } from './TiledPixiTrack';
-import { AxisPixi } from './AxisPixi';
+import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
+import AxisPixi from './AxisPixi';
 
 // Services
 import { chromInfo as chromInfoService, pubSub, tileProxy } from './services';
@@ -36,7 +36,7 @@ const SCALE_LIMIT_PRECISION = 5;
 const BINS_PER_TILE = 256;
 
 
-export class HeatmapTiledPixiTrack extends TiledPixiTrack {
+class HeatmapTiledPixiTrack extends TiledPixiTrack {
   constructor(
     scene,
     dataConfig,

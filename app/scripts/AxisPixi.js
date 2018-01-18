@@ -6,7 +6,7 @@ const TICK_MARGIN = 0;
 const TICK_LENGTH = 5;
 const TICK_LABEL_MARGIN = 4;
 
-export class AxisPixi {
+class AxisPixi {
   constructor(track) {
     this.pAxis = new PIXI.Graphics();
     this.track = track;

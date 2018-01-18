@@ -3,7 +3,7 @@ import { scaleLinear } from 'd3-scale';
 // Services
 import { pubSub } from './services';
 
-export class Track {
+class Track {
   constructor() {
     this._xScale = scaleLinear();
     this._yScale = scaleLinear();

@@ -2,11 +2,9 @@ import boxIntersect from 'box-intersect';
 import { scaleLinear } from 'd3-scale';
 import * as PIXI from 'pixi.js';
 
-import { PixiTrack } from './PixiTrack';
-import { ChromosomeInfo } from './ChromosomeInfo';
-import { SearchField } from './search_field';
-
-// import { pubSub } from './services';
+import PixiTrack from './PixiTrack';
+import ChromosomeInfo from './ChromosomeInfo';
+import SearchField from './SearchField';
 
 import {
   absToChr,
@@ -19,7 +17,6 @@ const TICK_WIDTH = 200;
 const TICK_HEIGHT = 6;
 const TICK_TEXT_SEPARATION = 2;
 const TICK_COLOR = 0x777777;
-// const MOUSE_POSITION_COLOR = 0xaaaaaa;
 
 class HorizontalChromosomeLabels extends PixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, chromInfoPath) {

@@ -14,7 +14,7 @@ import {
 // Styles
 import '../styles/ViewHeader.module.scss';
 
-export class ViewHeader extends React.Component {
+class ViewHeader extends React.Component {
   constructor(props) {
     super(props);
 

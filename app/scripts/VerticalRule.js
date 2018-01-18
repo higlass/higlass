@@ -1,6 +1,6 @@
 import { mix, Mixin } from 'mixwith';
 
-import PixiTrack from './PixiTrack.js';
+import PixiTrack from './PixiTrack';
 import { colorToHex } from './utils';
 import { RuleMixin } from './RuleMixin';
 
@@ -38,7 +38,7 @@ export const VerticalRuleMixin = Mixin((superclass) => class extends superclass 
   }
 });
 
-export class VerticalRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
+class VerticalRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   constructor(stage, xPosition, options, animate) {
     super(stage, options, animate);
 
@@ -46,7 +46,7 @@ export class VerticalRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMix
   }
 
   draw() {
-    const graphics = this.pMain; 
+    const graphics = this.pMain;
     graphics.clear();
 
     this.drawVerticalRule(graphics);

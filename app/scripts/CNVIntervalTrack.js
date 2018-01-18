@@ -4,7 +4,7 @@ import { range } from 'd3-array';
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 import IntervalTree from './interval-tree';
 
-export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
+class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
   constructor(
     scene,
     dataConfig,

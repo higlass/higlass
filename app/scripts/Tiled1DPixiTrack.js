@@ -2,7 +2,7 @@ import TiledPixiTrack from './TiledPixiTrack';
 
 import { tileProxy } from './services';
 
-export class Tiled1DPixiTrack extends TiledPixiTrack {
+class Tiled1DPixiTrack extends TiledPixiTrack {
   initTile(tile) {
     /**
          * We don't need to do anything but draw the tile.

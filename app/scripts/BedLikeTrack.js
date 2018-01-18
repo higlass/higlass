@@ -1,5 +1,6 @@
 import boxIntersect from 'box-intersect';
 import { median } from 'd3-array';
+import * as PIXI from 'pixi.js';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
@@ -14,7 +15,7 @@ const GENE_RECT_HEIGHT = 10;
 const MAX_TEXTS = 20;
 const MAX_TILE_ENTRIES = 1000;
 
-export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
+class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
     super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
     this.textFontSize = '10px';
@@ -120,7 +121,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     tile.drawnAtScale = this._xScale.copy();
     const fill = colorToHex(this.options.fillColor ? this.options.fillColor : 'blue');
 
-    if (this.options && this.options.valueColumn) { 
+    if (this.options && this.options.valueColumn) {
       /**
        * These intervals come with some y-value that we want to plot
        */
@@ -153,7 +154,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         const geneName = geneInfo[3];
         let rectHeight = GENE_RECT_HEIGHT;
 
-        if (this.options && this.options.valueColumn) { 
+        if (this.options && this.options.valueColumn) {
           // These intervals come with some y-value that we want to plot
 
           yMiddle = this.valueScale( +geneInfo[+this.options.valueColumn-1]);
@@ -257,7 +258,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     return min;
   }
-  
+
   maxVisibleValue() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 

@@ -12,7 +12,7 @@ import {
 // Styles
 import '../styles/AddTrackModal.css';
 
-export class AddTrackModal extends React.Component {
+class AddTrackModal extends React.Component {
   constructor(props) {
     super(props);
 

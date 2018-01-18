@@ -1,4 +1,4 @@
-import { TiledPixiTrack } from './TiledPixiTrack';
+import TiledPixiTrack from './TiledPixiTrack';
 
 // Services
 import { tileProxy } from './services';
@@ -6,7 +6,7 @@ import { tileProxy } from './services';
 // Utils
 import { colorToHex } from './utils';
 
-export class ArrowheadDomainsTrack extends TiledPixiTrack {
+class ArrowheadDomainsTrack extends TiledPixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
     super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
 

@@ -2,7 +2,7 @@ import { json } from 'd3-request';
 import { queue } from 'd3-queue';
 import { select, event } from 'd3-selection';
 import React from 'react';
-import {tileProxy} from './services';
+import { tileProxy } from './services';
 import slugid from 'slugid';
 import {
   FormGroup,
@@ -13,8 +13,8 @@ import {
 import PropTypes from 'prop-types';
 
 import Autocomplete from './Autocomplete';
-import { ChromosomeInfo } from './ChromosomeInfo';
-import { SearchField } from './search_field';
+import ChromosomeInfo from './ChromosomeInfo';
+import SearchField from './SearchField';
 import PopupMenu from './PopupMenu';
 
 // Utils
@@ -23,7 +23,7 @@ import { scalesCenterAndK, dictKeys } from './utils';
 // Styles
 import styles from '../styles/GenomePositionSearchBox.module.scss'; // eslint-disable-line no-unused-vars
 
-export class GenomePositionSearchBox extends React.Component {
+class GenomePositionSearchBox extends React.Component {
   constructor(props) {
     super(props);
 
@@ -167,7 +167,7 @@ export class GenomePositionSearchBox extends React.Component {
       // that was received, but if none has been retrieved yet...
       if (this.availableAutocompletes[chromInfoId]) {
         const newAcId = [...this.availableAutocompletes[chromInfoId]][0].acId;
-        this.props.onSelectedAssemblyChanged(chromInfoId, newAcId, 
+        this.props.onSelectedAssemblyChanged(chromInfoId, newAcId,
           serverAndChromInfoToUse.server);
 
         if (this.gpsbForm) {
@@ -428,8 +428,8 @@ export class GenomePositionSearchBox extends React.Component {
     this.prevParts = parts;
 
     // no autocomplete repository is provided, so we don't try to autcomplete anything
-    if (!(this.state.autocompleteServer && this.state.autocompleteId)) { 
-      return; 
+    if (!(this.state.autocompleteServer && this.state.autocompleteId)) {
+      return;
     }
 
     if (this.changedPart != null) {

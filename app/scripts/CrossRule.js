@@ -1,13 +1,12 @@
-import { mix, Mixin } from 'mixwith';
+import { mix } from 'mixwith';
 
-import PixiTrack from './PixiTrack.js';
-import { colorToHex } from './utils';
+import PixiTrack from './PixiTrack';
 
 import { RuleMixin } from './RuleMixin';
-import { HorizontalRuleMixin } from './HorizontalRule.js';
-import { VerticalRuleMixin } from './VerticalRule.js';
+import { HorizontalRuleMixin } from './HorizontalRule';
+import { VerticalRuleMixin } from './VerticalRule';
 
-export class CrossRule extends mix(PixiTrack).with(RuleMixin, HorizontalRuleMixin, VerticalRuleMixin) {
+class CrossRule extends mix(PixiTrack).with(RuleMixin, HorizontalRuleMixin, VerticalRuleMixin) {
   constructor(stage, xPosition, yPosition, options, animate) {
     super(stage, options, animate);
 
@@ -16,7 +15,7 @@ export class CrossRule extends mix(PixiTrack).with(RuleMixin, HorizontalRuleMixi
   }
 
   draw() {
-    const graphics = this.pMain; 
+    const graphics = this.pMain;
     graphics.clear();
 
     this.drawHorizontalRule(graphics);

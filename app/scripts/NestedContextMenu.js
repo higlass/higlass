@@ -6,7 +6,7 @@ import ContextMenuItem from './ContextMenuItem';
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-export class NestedContextMenu extends ContextMenuContainer {
+class NestedContextMenu extends ContextMenuContainer {
   getSubmenu() {
     if (this.state.submenuShown) {
       // the bounding box of the element which initiated the subMenu

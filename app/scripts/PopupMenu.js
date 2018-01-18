@@ -1,11 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-export class PopupMenu extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
+class PopupMenu extends React.Component {
   componentDidMount() {
     this.popup = document.createElement('div');
     document.body.appendChild(this.popup);
@@ -37,7 +33,6 @@ export class PopupMenu extends React.Component {
     document.body.removeChild(this.popup);
   }
 
-
   _renderLayer() {
     ReactDOM.render(this.props.children, this.popup);
   }
@@ -54,9 +49,11 @@ export class PopupMenu extends React.Component {
 
   render() {
     // Render a placeholder
-    return (<div 
-      ref={c => this.area = c} 
-    />);
+    return (
+      <div
+        ref={(c) => { this.area = c; }}
+      />
+    );
   }
 }
 

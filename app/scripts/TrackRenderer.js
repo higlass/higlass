@@ -64,11 +64,9 @@ import { ZOOM_TRANSITION_DURATION } from './configs';
 // Styles
 import '../styles/TrackRenderer.module.scss';
 
-
 const SCROLL_TIMEOUT = 100;
 
-
-export class TrackRenderer extends React.Component {
+class TrackRenderer extends React.Component {
   /**
    * Maintain a list of tracks, and re-render them whenever either
    * their size changes or the zoom level changes

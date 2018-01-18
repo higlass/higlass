@@ -1,4 +1,4 @@
-import { TiledPixiTrack } from './TiledPixiTrack';
+import TiledPixiTrack from './TiledPixiTrack';
 
 // Services
 import { tileProxy } from './services';

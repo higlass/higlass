@@ -1,4 +1,4 @@
-import { select, event, clientPoint, mouse } from 'd3-selection';
+import { clientPoint } from 'd3-selection';
 
 import slugid from 'slugid';
 import React from 'react';
@@ -15,7 +15,7 @@ import PopupMenu from './PopupMenu';
 import ContextMenuContainer from './ContextMenuContainer';
 import HorizontalTiledPlot from './HorizontalTiledPlot';
 import VerticalTiledPlot from './VerticalTiledPlot';
-import ViewContextMenu from './ViewContextMenu.js';
+import ViewContextMenu from './ViewContextMenu';
 // import {HeatmapOptions} from './HeatmapOptions';
 
 // Utils

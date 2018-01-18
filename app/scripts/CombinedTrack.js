@@ -1,4 +1,4 @@
-export class CombinedTrack {
+class CombinedTrack {
   constructor(trackDefs, trackCreator) {
     this.childTracks = trackDefs.map(trackCreator);
     this.createdTracks = {};
@@ -177,7 +177,7 @@ export class CombinedTrack {
   }
 
   respondsToPosition(x,y) {
-    if (this.position[0] < x && x <= this.position[0] + this.dimensions[0] 
+    if (this.position[0] < x && x <= this.position[0] + this.dimensions[0]
       && this.position[1] < y && y <= this.position[1] + this.dimensions[1]) {
       return true;
     }

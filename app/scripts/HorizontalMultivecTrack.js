@@ -1,58 +1,9 @@
-import { brushY } from 'd3-brush';
-import { scaleLinear, scaleLog } from 'd3-scale';
-import { select, event } from 'd3-selection';
-import * as PIXI from 'pixi.js';
-
-import { TiledPixiTrack } from './TiledPixiTrack';
-import { HeatmapTiledPixiTrack } from './HeatmapTiledPixiTrack.js';
-import { AxisPixi } from './AxisPixi';
+import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
 import { tileProxy } from './services';
 
-import { colorDomainToRgbaArray, colorToHex } from './utils';
-
-import { heatedObjectMap } from './configs';
-
-const COLORBAR_MAX_HEIGHT = 200;
-const COLORBAR_WIDTH = 10;
-const COLORBAR_LABELS_WIDTH = 40;
-const COLORBAR_MARGIN = 10;
-const BRUSH_WIDTH = COLORBAR_MARGIN;
-const BRUSH_HEIGHT = 4;
-const BRUSH_COLORBAR_GAP = 1;
-const BRUSH_MARGIN = 4;
-const SCALE_LIMIT_PRECISION = 5;
-const BINS_PER_TILE=256;
-
 
 export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
-  constructor(
-    scene,
-    dataConfig,
-    handleTilesetInfoReceived,
-    options,
-    animate,
-    svgElement,
-    onValueScaleChanged,
-    onTrackOptionsChanged,
-  ) {
-    /**
-     * @param scene: A PIXI.js scene to draw everything to.
-     * @param server: The server to pull tiles from.
-     * @param uid: The data set to get the tiles from the server
-     */
-    super(
-      scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      options,
-      animate,
-      svgElement,
-      onValueScaleChanged,
-      onTrackOptionsChanged,
-    );
-  }
-
   tileDataToCanvas(pixData) {
     const canvas = document.createElement('canvas');
 
@@ -64,9 +15,6 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     ctx.fillStyle = 'transparent';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    console.log('pixData:', pixData);
-    console.log('canvas.width:', canvas.width, 'canvas.height', canvas.height);
-
     const pix = new ImageData(pixData, canvas.width, canvas.height);
 
     ctx.putImageData(pix, 0, 0);
@@ -75,8 +23,8 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   }
 
   setSpriteProperties(sprite, zoomLevel, tilePos, mirrored) {
-    const { tileX, tileY, tileWidth, tileHeight } = this.getTilePosAndDimensions(zoomLevel, 
-      tilePos, 
+    const { tileX, tileY, tileWidth, tileHeight } = this.getTilePosAndDimensions(zoomLevel,
+      tilePos,
       this.tilesetInfo.tile_size);
 
     const tileEndX = tileX + tileWidth;
@@ -88,12 +36,6 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     sprite.x = this._refXScale(tileX);
     sprite.y = 0;
-
-    console.log('sprite.x:', sprite.x);
-    /*
-    console.log('sprite.y:', sprite.y);
-    console.log('sprite.height:', sprite.height);
-    */
   }
 
   zoomed(newXScale, newYScale, k, tx, ty) {

@@ -1,7 +1,7 @@
-import { Tiled1DPixiTrack } from './Tiled1DPixiTrack';
-import { tileProxy } from './services';
-import { AxisPixi } from './AxisPixi';
+import Tiled1DPixiTrack from './Tiled1DPixiTrack';
+import AxisPixi from './AxisPixi';
 
+import { tileProxy } from './services';
 import { showMousePosition } from './utils';
 
 class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {

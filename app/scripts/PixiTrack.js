@@ -2,7 +2,7 @@ import { formatPrefix, precisionPrefix } from 'd3-format';
 import * as PIXI from 'pixi.js';
 import slugid from 'slugid';
 
-import { Track } from './Track.js';
+import Track from './Track';
 
 import { colorToHex } from './utils';
 
@@ -32,7 +32,7 @@ function formatResolutionText(resolution, maxResolutionSize) {
  * @param {int} zoomLevel: The current zoom level (e.g. 4)
  *
  * @returns {string} A formatted string representation of the zoom level (e.g. "30K")
- * 
+ *
  */
 function getResolutionBasedResolutionText(resolutions, zoomLevel) {
   const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
@@ -78,7 +78,7 @@ function getWidthBasedResolutionText(zoomLevel, maxWidth, binsPerDimension, maxZ
   }
 }
 
-export class PixiTrack extends Track {
+class PixiTrack extends Track {
   /**
    * @param scene: A PIXI.js scene to draw everything to.
    * @param options: A set of options that describe how this track is rendered.
@@ -278,7 +278,7 @@ export class PixiTrack extends Track {
 
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     } else if (
-      this.tilesetInfo && 
+      this.tilesetInfo &&
       this.tilesetInfo.resolutions) {
 
       const formattedResolution = getResolutionBasedResolutionText(

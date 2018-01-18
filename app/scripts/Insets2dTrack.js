@@ -1,7 +1,7 @@
 import { DropShadowFilter } from 'pixi-filters';
 
 // Components
-import { PixiTrack } from './PixiTrack';
+import PixiTrack from './PixiTrack';
 import Inset from './Inset';
 
 // Services

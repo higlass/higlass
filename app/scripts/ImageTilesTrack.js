@@ -14,7 +14,7 @@ import { debounce, trimTrailingSlash as tts } from './utils';
 // Configs
 import { ZOOM_DEBOUNCE } from './configs';
 
-export class ImageTilesTrack extends PixiTrack {
+class ImageTilesTrack extends PixiTrack {
   /**
    * A track that must pull remote tiles
    *

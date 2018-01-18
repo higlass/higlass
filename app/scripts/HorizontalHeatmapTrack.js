@@ -1,6 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { scaleLinear, scaleLog } from 'd3-scale';
-import { getValueScale } from './TiledPixiTrack.js';
+import { getValueScale } from './TiledPixiTrack';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
@@ -8,12 +7,12 @@ import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import { tileProxy } from './services';
 
 // Utils
-import { colorDomainToRgbaArray, showMousePosition } from './utils';
+import { colorDomainToRgbaArray } from './utils';
 
 // Configs
 import { HEATED_OBJECT_MAP } from './configs';
 
-export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
+class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
   /**
    * @param scene: A PIXI.js scene to draw everything to.
    * @param dataConfig: An object defining where the data should be pulled from

@@ -1,10 +1,13 @@
-import { PixiTrack } from './PixiTrack';
-import { ChromosomeInfo } from './ChromosomeInfo';
-import { SearchField } from './search_field';
 import boxIntersect from 'box-intersect';
+import * as PIXI from 'pixi.js';
+
+import PixiTrack from './PixiTrack';
+import ChromosomeInfo from './ChromosomeInfo';
+import SearchField from './SearchField';
+
 import { absToChr } from './utils';
 
-export class Chromosome2DLabels extends PixiTrack {
+class Chromosome2DLabels extends PixiTrack {
   constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
     super(scene, server, uid, handleTilesetInfoReceived, options, animate);
 

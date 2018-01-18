@@ -6,7 +6,7 @@ import * as PIXI from 'pixi.js';
 import PixiTrack from './PixiTrack';
 
 // Services
-import { pubSub, tileProxy } from './services';
+import { pubSub } from './services';
 
 // Utils
 import { debounce } from './utils';
@@ -46,7 +46,7 @@ export const getValueScale = function(scalingType, minValue, maxValue, defaultSc
     .domain([minValue, minValue + maxValue]);
 }
 
-export class TiledPixiTrack extends PixiTrack {
+class TiledPixiTrack extends PixiTrack {
   /**
    * A track that must pull remote tiles
    *
