@@ -7,7 +7,6 @@ import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 
-import Combined2dAnnotationsTrack from './Combined2dAnnotationsTrack';
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
 import IdHorizontal1DTiledPixiTrack from './IdHorizontal1DTiledPixiTrack';
@@ -1279,15 +1278,6 @@ class TrackRenderer extends React.Component {
         return new CombinedTrack(
           track.contents,
           this.createTrackObject.bind(this),
-        );
-
-      case 'combined-2d-annotations':
-        return new Combined2dAnnotationsTrack(
-          this.pStage,
-          track.contents,
-          track.options,
-          this.createTrackObject.bind(this),
-          () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
       case '2d-chromosome-labels':
