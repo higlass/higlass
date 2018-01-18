@@ -23,9 +23,7 @@ class Insets2dTrack extends PixiTrack {
   ) {
     super(scene, options);
 
-    chromInfo.get(options.chromInfoPath).then((_chromInfo) => {
-      this.dataToGenomicLoci = locus => absToChr(locus, _chromInfo);
-    });
+    this.fetchChromInfo = chromInfo.get(options.chromInfoPath);
 
     this.options = options;
 
@@ -69,25 +67,28 @@ class Insets2dTrack extends PixiTrack {
   }
 
   drawInset(uid, x, y, w, h, sx, sy, dX1, dX2, dY1, dY2) {
-    const inset = (
-      this.insets[uid] ||
-      this.initInset(
-        uid,
-        [dX1, dX2, dY1, dY2],
-        this.options,
-        this.insetMouseHandler
-      )
-    );
+    return this.fetchChromInfo.then((_chromInfo) => {
+      const inset = (
+        this.insets[uid] ||
+        this.initInset(
+          uid,
+          [dX1, dX2, dY1, dY2],
+          this.options,
+          this.insetMouseHandler
+        )
+      );
 
-    inset.clear(this.options);
-
-    inset.globalOffset(...this.position);
-    inset.origin(sx, sy);
-    inset.position(x, y);
-    inset.size(w, h);
-    inset.drawLeaderLine();
-    inset.drawBorder();
-    return inset.drawImage(this.renderImage, this.dataToGenomicLoci);
+      inset.clear(this.options);
+      inset.globalOffset(...this.position);
+      inset.origin(sx, sy);
+      inset.position(x, y);
+      inset.size(w, h);
+      inset.drawLeaderLine();
+      inset.drawBorder();
+      return inset.drawImage(
+        this.renderImage, locus => absToChr(locus, _chromInfo)
+      );
+    });
   }
 
   drawInsets(insets, insetIds) {
