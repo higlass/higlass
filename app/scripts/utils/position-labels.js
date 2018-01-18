@@ -10,10 +10,10 @@ let rej = 0;
 
 // weights
 const wLen = 5.0; // leader line length
-const wInter = 10.0; // leader line intersection
-const wLab2 = 50.0; // label-label overlap
-const wLabAnc = 20.0; // label-anchor overlap
-const wLabOther = 10.0; // overlap between label and other objects
+const wInter = 50.0; // leader line intersection
+const wLabLab = 50.0; // label-label overlap
+const wLabOrg = 20.0; // label-origin overlap
+const wLabAnc = 10.0; // overlap between label and other anchors (i.e., annotations)
 const wOrient = 0.1; // orientation bias
 
 // booleans for user defined functions
@@ -43,8 +43,8 @@ const energy = (index) => {
   const n = anc.length;
   const l = lab[index];
   let ener = 0;
-  let dx = l.x - anc[index].x;
-  let dy = anc[index].y - l.y;
+  const dx = l.x - l.ox;
+  const dy = l.y - l.oy;
   const dist = Math.sqrt((dx * dx) + (dy * dy));
   let overlap = true;
   // let amount = 0;
@@ -53,18 +53,18 @@ const energy = (index) => {
   // penalty for length of leader line
   if (dist > 0) ener += dist * wLen;
 
-  // label orientation bias
-  dx /= dist;
-  dy /= dist;
-  if (dx > 0 && dy > 0) ener += 0 * wOrient;
-  else if (dx < 0 && dy > 0) ener += 1 * wOrient;
-  else if (dx < 0 && dy < 0) ener += 2 * wOrient;
-  else ener += 3 * wOrient;
+  // label orientation bias (Fritz: ignored for now)
+  // dx /= dist;
+  // dy /= dist;
+  // if (dx > 0 && dy > 0) ener += 0 * wOrient;
+  // else if (dx < 0 && dy > 0) ener += 1 * wOrient;
+  // else if (dx < 0 && dy < 0) ener += 2 * wOrient;
+  // else ener += 3 * wOrient;
 
-  const x21 = l.x - l.wh - 2.0;
-  const y21 = l.y - l.hh - 2.0;
-  const x22 = l.x + l.wh + 2.0;
-  const y22 = l.y + l.hh + 2.0;
+  const x21 = l.x - l.wh - 1;
+  const y21 = l.y - l.hh - 1;
+  const x22 = l.x + l.wh + 1;
+  const y22 = l.y + l.hh + 1;
   let x11;
   let x12;
   let y11;
@@ -73,49 +73,47 @@ const energy = (index) => {
   let yOverlap;
   let overlapArea;
 
-  // console.log('---');
-
-  // For every label
+  // For every annotation
   for (let i = 0; i < n; i++) {
-    const own = i < m;
-    if (i !== index && own) {
-      const il = lab[i];
-      // penalty for intersection of leader lines
+    // For every other label (m = number of labels)
+    if (i !== index && i < m) {
+      const otherLabel = lab[i];
+      // Test if leader lines intersect...
       overlap = intersect(
         anc[index].x,
         l.x,
         anc[i].x,
-        il.x,
+        otherLabel.x,
         anc[index].y,
         l.y,
         anc[i].y,
-        il.y
+        otherLabel.y
       );
 
+      // ...and add a penalty if they do
       if (overlap) ener += wInter;
 
-      // penalty for label-label overlap
-      x11 = il.x - il.wh - 2.0;
-      y11 = il.y - il.hh - 2.0;
-      x12 = il.x + il.wh + 2.0;
-      y12 = il.y + il.hh + 2.0;
+      // Penalty for label-label overlap
+      x11 = otherLabel.x - otherLabel.wh - 1;
+      y11 = otherLabel.y - otherLabel.hh - 1;
+      x12 = otherLabel.x + otherLabel.wh + 1;
+      y12 = otherLabel.y + otherLabel.hh + 1;
       xOverlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21));
       yOverlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21));
       overlapArea = xOverlap * yOverlap;
-      ener += (overlapArea * wLab2);
-      // console.log(index, i, 'overlapArea lab-lab', overlapArea);
+      ener += (overlapArea * wLabLab);
     }
 
     // penalty for label-anchor overlap
-    x11 = anc[i].x - anc[i].wh - 2.0;
-    y11 = anc[i].y - anc[i].hh - 2.0;
-    x12 = anc[i].x + anc[i].wh + 2.0;
-    y12 = anc[i].y + anc[i].hh + 2.0;
+    x11 = anc[i].x - anc[i].wh - 1;
+    y11 = anc[i].y - anc[i].hh - 1;
+    x12 = anc[i].x + anc[i].wh + 1;
+    y12 = anc[i].y + anc[i].hh + 1;
     xOverlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21));
     yOverlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21));
     overlapArea = xOverlap * yOverlap;
-    ener += (overlapArea * (own ? wLabAnc : wLabOther));
-    // console.log(index, i, 'overlapArea lab-anc', overlapArea);
+    ener += (overlapArea * wLabAnc);
+    // ener += (overlapArea * (i < m ? wLabOrg : wLabAnc));
   }
   return ener;
 };
@@ -140,10 +138,10 @@ const mcmove = (currT) => {
   l.y += (Math.random() - 0.5) * maxMove * Math.max(0.5, currT);
 
   // hard wall boundaries
-  if (l.x > w) l.x = xOld;
-  if (l.x < 0) l.x = xOld;
-  if (l.y > h) l.y = yOld;
-  if (l.y < 0) l.y = yOld;
+  // if (l.x > w) l.x = xOld;
+  // if (l.x < 0) l.x = xOld;
+  // if (l.y > h) l.y = yOld;
+  // if (l.y < 0) l.y = yOld;
 
   // new energy
   const newEnergy = userEnergy
@@ -232,8 +230,10 @@ labeler.start = (nsweeps, t = 1.0) => {
 
   for (let i = 0; i < nsweeps; i++) {
     for (let j = 0; j < m; j++) {
-      if (Math.random() < 0.5) mcmove(currT);
-      else mcrotate(currT);
+      mcmove(currT);
+      // Fritz: ignoring rotations for now
+      // if (Math.random() < 0.5) mcmove(currT);
+      // else mcrotate(currT);
     }
     currT = coolingSchedule(currT, initialT, nsweeps);
   }
