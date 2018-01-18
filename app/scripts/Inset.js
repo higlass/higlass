@@ -91,8 +91,8 @@ class Inset {
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
     this.gBorder.drawRect(
-      this.globalOffsetX + this.offset + x - width,
-      this.globalOffsetY + this.offset + y,
+      this.globalOffsetX + this.offset + x - (width / 2),
+      this.globalOffsetY + this.offset + y - (height / 2),
       width * this.scaleExtra,
       height * this.scaleExtra
     );
@@ -107,8 +107,8 @@ class Inset {
 
     // Inset position
     this.gLeaderLine.lineTo(
-      this.globalOffsetX + this.x - (this.width / 2),
-      this.globalOffsetY + this.y + (this.height / 2)
+      this.globalOffsetX + this.x,
+      this.globalOffsetY + this.y
     );
   }
 
@@ -135,9 +135,11 @@ class Inset {
     return Promise.resolve(true);
   }
 
-  positionImage() {
-    this.sprite.x = this.globalOffsetX - this.offset + this.x;
-    this.sprite.y = this.globalOffsetY - this.offset + this.y + this.height;
+  positionImage(
+    x = this.x, y = this.y, width = this.width, height = this.height
+  ) {
+    this.sprite.x = this.globalOffsetX - this.offset + x + (width / 2);
+    this.sprite.y = this.globalOffsetY - this.offset + y + (height / 2);
 
     this.sprite.scale.x = -1 * BASE_SCALE * this.scaleExtra;
     this.sprite.scale.y = -1 * BASE_SCALE * this.scaleExtra;
