@@ -301,11 +301,6 @@ class Combined2dAnnotationsTrack {
     this.initTree();
     this.scaleChanged = this.currK !== k;
 
-    // if (this._xScale) {
-    //   const oldDomain = this._xScale.domain();
-    //   const newDomain = newXScale.domain();
-    // }
-
     this._xScale = newXScale;
     this._yScale = newYScale;
     this.currK = k;
@@ -317,19 +312,19 @@ class Combined2dAnnotationsTrack {
     );
   }
 
-  draw() {
-    // this.childTracks.forEach(childTracks => childTracks.draw());
-  }
-
   refScalesChanged(refXScale, refYScale) {
     this.childTracks.forEach(
       childTracks => childTracks.refScalesChanged(refXScale, refYScale)
     );
   }
 
-  rerender() {
-    // Nothing
-  }
+  /**
+   * Rerenderer, which does nothing.
+   *
+   * @description
+   * This methid is required as it's called by the track renderer
+   */
+  rerender() { /* Nothing */ }
 
   exportSVG() {
     const svg = document.createElement('g');
