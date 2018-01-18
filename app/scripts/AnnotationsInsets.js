@@ -204,6 +204,7 @@ class AnnotationsInsets {
 
     if (insetsToBePositioned.length) {
       const t0 = performance.now();
+      const n = insetsToBePositioned.length;
 
       positionLabels
         // Insets, i.e., labels
@@ -213,7 +214,7 @@ class AnnotationsInsets {
         .anchor(anchors)
         .width(this.insetsTrack.dimensions[0])
         .height(this.insetsTrack.dimensions[1])
-        .start(Math.max(2, Math.min(100 / insetsToBePositioned.length)));
+        .start(Math.round(Math.max(2, Math.min(100 * Math.log(n) / n))));
 
       console.log(`Labeling took ${performance.now() - t0} msec`);
     }
