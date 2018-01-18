@@ -2901,6 +2901,7 @@ class HiGlassComponent extends React.Component {
             svgElement={this.state.svgElement}
             trackSourceServers={this.state.viewConfig.trackSourceServers}
             tracks={view.tracks}
+            metaTracks={view.metaTracks}
             uid={view.uid}
             verticalMargin={this.verticalMargin}
             // dragging={this.state.dragging}

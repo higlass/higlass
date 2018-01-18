@@ -5,12 +5,13 @@ const BASE_SCALE = 4;
 const BASE_SCALE_UP = 1.25;
 
 export default class Inset {
-  constructor(uid, dataPos, options, mouseHandler) {
+  constructor(uid, dataPos, dataConfig, options, mouseHandler) {
     this.uid = uid;
     this.dataX1 = dataPos[0];
     this.dataX2 = dataPos[1];
     this.dataY1 = dataPos[2];
     this.dataY2 = dataPos[3];
+    this.dataConfig = dataConfig;
     this.options = options;
     this.mouseHandler = mouseHandler;
 
@@ -151,12 +152,12 @@ export default class Inset {
       y[0],
       y[1],
       y[1] + this.dataY2 - this.dataY1,
-      this.options.heatmapUuid,
+      this.dataConfig.tilesetUid,
       2  // Zoom level
     ];
 
     return fetch(
-      `${this.options.server || ''}/fragments_by_loci/?precision=2&dims=${BASE_RES}`, {
+      `${this.dataConfig.server || ''}/fragments_by_loci/?precision=2&dims=${BASE_RES}`, {
         method: 'POST',
         headers: {
           accept: 'application/json; charset=UTF-8',

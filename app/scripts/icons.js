@@ -266,3 +266,7 @@ const arrowHeadDomainsStr = `
 `;
 
 export const svgArrowheadDomainsIcon = parser.parseFromString(arrowHeadDomainsStr, 'text/xml').documentElement;
+
+const insetsStr = '<svg width="20px" height="20px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="1.414"><path d="M6 26v6H0v-6h6zm-1 1H1v4h4v-4z" fill="#666"/><path d="M4.5 26.086l5.793-5.793 1.414 1.414L5.914 27.5z"/><path d="M32 0v22H10V0h22zm-2 2H12v18h18V2z"/><path fill="#262626" d="M18 8h6v6h-6z"/><path fill="#737373" d="M18 2h6v6h-6zM24 8h6v6h-6zM18 14h6v6h-6z"/><path fill="#BFBFBF" d="M12 14h6v6h-6zM24 14h6v6h-6zM24 2h6v6h-6zM12 2h6v6h-6z"/><path fill="#737373" d="M12 8h6v6h-6z"/></svg>';
+
+export const svgInsetsIcon = parser.parseFromString(insetsStr, 'text/xml').documentElement;

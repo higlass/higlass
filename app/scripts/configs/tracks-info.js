@@ -10,6 +10,7 @@ import {
   svgVertical1DTilesIcon,
   svgVerticalGeneAnnotationsIcon,
   svgVerticalLineIcon,
+  svgInsetsIcon,
 } from '../icons';
 
 export const TRACKS_INFO = [
@@ -759,30 +760,6 @@ export const TRACKS_INFO = [
     orientation: 'any',
   },
   {
-    type: 'combined-2d-annotations',
-    datatype: 'any',
-    local: true,
-    orientation: '2d',
-    name: 'Combined 2D Annotations',
-    thumbnail: svgArrowheadDomainsIcon,
-    availableOptions: [
-      'heatmapTrack',
-      'insetThreshold',
-      'insetFill',
-      'insetFillOpacity',
-      'insetStroke',
-      'insetStrokeWidth',
-      'insetStrokeOpacity',
-      'insetLeaderLineStroke',
-      'insetLeaderLineStrokeWidth',
-      'insetLeaderLineStrokeOpacity',
-      'insetDropDistance',
-      'insetDropBlur',
-      'insetDropOpacity',
-      'opacity',
-    ]
-  },
-  {
     type: '2d-chromosome-grid',
     datatype: ['chromsizes'],
     local: false,
@@ -925,6 +902,43 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       valueColumn: null
     },
+  },
+  {
+    type: 'insets',
+    datatype: ['matrix'],
+    minHeight: 100,
+    minWidth: 100,
+    orientation: '2d',
+    thumbnail: svgInsetsIcon,
+    defaultOptions: {
+      fill: 'white',
+      fillOpacity: 1,
+      borderColor: 'red',
+      borderWidth: 2,
+      borderOpacity: 1,
+      leaderLineColor: 'red',
+      leaderLineWidth: 2,
+      leaderLineOpacity: 1,
+      dropDistance: 1,
+      dropBlur: 3,
+      dropOpacity: 0.8,
+      opacity: 1
+    },
+    availableOptions: [
+      'colorRange',
+      'fill',
+      'fillOpacity',
+      'borderColor',
+      'borderWidth',
+      'borderOpacity',
+      'leaderLineColor',
+      'leaderLineWidth',
+      'leaderLineOpacity',
+      'dropDistance',
+      'dropBlur',
+      'dropOpacity',
+      'opacity',
+    ],
   },
 ];
 

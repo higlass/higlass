@@ -52,6 +52,9 @@ import OSMTilesTrack from './OSMTilesTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
 import ImageTilesTrack from './ImageTilesTrack';
 
+import AnnotationsInsets from './AnnotationsInsets';
+import Insets2dTrack from './Insets2dTrack';
+
 // Utils
 import { forwardEvent, dictItems } from './utils';
 
@@ -154,6 +157,8 @@ class TrackRenderer extends React.Component {
     // And a trackObject which will be responsible for rendering it
     this.trackDefObjects = {};
 
+    this.metaTracks = {};
+
     this.pubSubs = [];
   }
 
@@ -189,6 +194,7 @@ class TrackRenderer extends React.Component {
 
     this.svgElement = this.currentProps.svgElement;
     this.syncTrackObjects(this.currentProps.positionedTracks);
+    this.syncMetaTracks(this.currentProps.metaTracks);
 
     this.currentProps.setCentersFunction(this.setCenter.bind(this));
     this.currentProps.registerDraggingChangedListener(this.draggingChanged.bind(this));
@@ -235,6 +241,7 @@ class TrackRenderer extends React.Component {
     this.svgElement = nextProps.svgElement;
 
     this.syncTrackObjects(nextProps.positionedTracks);
+    this.syncMetaTracks(nextProps.metaTracks);
 
     for (const track of nextProps.positionedTracks) {
       // tracks all the way down
@@ -383,10 +390,10 @@ class TrackRenderer extends React.Component {
     // worry about resetting anything
     // initial domains should only change when loading a new viewconfig
     if (
-      initialXDomain[0] == this.initialXDomain[0] &&
-      initialXDomain[1] == this.initialXDomain[1] &&
-      initialYDomain[0] == this.initialYDomain[0] &&
-      initialYDomain[1] == this.initialYDomain[1]
+      initialXDomain[0] === this.initialXDomain[0] &&
+      initialXDomain[1] === this.initialXDomain[1] &&
+      initialYDomain[0] === this.initialYDomain[0] &&
+      initialYDomain[1] === this.initialYDomain[1]
     ) {
       return;
     }
@@ -572,6 +579,26 @@ class TrackRenderer extends React.Component {
     }
   }
 
+  syncMetaTracks(trackDefinitions) {
+    const knownMetaTrackIds = Object.keys(this.metaTracks);
+    const newMetaTracks = new Set(trackDefinitions.map(def => def.uid));
+
+    // Add new meta tracks
+    this.addMetaTracks(
+      trackDefinitions.filter(def => !this.metaTracks[def.uid])
+    );
+
+    // Update existing meta tracks
+    this.updateMetaTracks(
+      trackDefinitions.filter(def => this.metaTracks[def.uid])
+    );
+
+    // Remove old meta tracks
+    this.removeMetaTracks(
+      knownMetaTrackIds.filter(def => !newMetaTracks.has(def))
+    );
+  }
+
   syncTrackObjects(trackDefinitions) {
     /**
      * Make sure we have a track object for every passed track definition.
@@ -623,6 +650,22 @@ class TrackRenderer extends React.Component {
     this.removeTracks([...exitTracks]);
   }
 
+  /**
+   * Add new meta tracks
+   *
+   * @param  {Array}  metaTrackDefs  Definitions of meta tracks to be added.
+   */
+  addMetaTracks(metaTrackDefs) {
+    metaTrackDefs
+      .filter(metaTrackDef => !this.metaTracks[metaTrackDef.uid])
+      .forEach((metaTrackDef) => {
+        this.metaTracks[metaTrackDef.uid] = {
+          trackDef: metaTrackDef,
+          trackObject: this.createMetaTrack(metaTrackDef)
+        };
+      });
+  }
+
   addNewTracks(newTrackDefinitions) {
     /**
      * We need to create new track objects for the given track
@@ -656,6 +699,10 @@ class TrackRenderer extends React.Component {
     // this could be replaced with a call that only applies the zoom
     // transform to the newly added tracks
     this.applyZoomTransform(false);
+  }
+
+  updateMetaTracks() {
+    // Nothing
   }
 
   updateExistingTrackDefs(newTrackDefs) {
@@ -724,6 +771,14 @@ class TrackRenderer extends React.Component {
     // report on whether any track positions or dimensions have changed
     // so that downstream code can decide whether to redraw
     return updated;
+  }
+
+  removeMetaTracks(trackIds) {
+    trackIds.forEach((id) => {
+      this.metaTracks[id].trackObject.remove();
+      this.metaTracks[id] = undefined;
+      delete this.metaTracks[id];
+    });
   }
 
   removeTracks(trackUids) {
@@ -900,6 +955,26 @@ class TrackRenderer extends React.Component {
     }
 
     return [newXScale, newYScale];
+  }
+
+  createMetaTrack(track) {
+    switch (track.type) {
+      case 'annotations-insets':
+        return new AnnotationsInsets(
+          track.insetsTrack,
+          track.options,
+          this.getTrackObject.bind(this),
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      default:
+        console.warn(`Unknown meta track of type: ${track.type}`);
+        return new UnknownPixiTrack(
+          this.pStage,
+          { name: 'Unknown Track Type', type: track.type },
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+    }
   }
 
   createTrackObject(track) {
@@ -1369,6 +1444,15 @@ class TrackRenderer extends React.Component {
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
+      case 'insets':
+        return new Insets2dTrack(
+          this.pStage,
+          dataConfig,
+          track.chromInfoPath,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
       default:
         console.warn('WARNING: unknown track type:', track.type);
         return new UnknownPixiTrack(
@@ -1494,6 +1578,7 @@ TrackRenderer.defaultProps = {
   positionedTracks: [],
   topHeight: 0,
   width: 0,
+  metaTracks: [],
 };
 
 TrackRenderer.propTypes = {
@@ -1512,6 +1597,7 @@ TrackRenderer.propTypes = {
   onScalesChanged: PropTypes.func.isRequired,
   pixiStage: PropTypes.object.isRequired,
   positionedTracks: PropTypes.array,
+  metaTracks: PropTypes.array,
   svgElement: PropTypes.object.isRequired,
   topHeight: PropTypes.number,
   width: PropTypes.number,

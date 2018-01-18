@@ -1170,6 +1170,7 @@ class TiledPlot extends React.Component {
           onValueScaleChanged={this.props.onValueScaleChanged}
           pixiStage={this.props.pixiStage}
           positionedTracks={positionedTracks}
+          metaTracks={this.props.metaTracks}
           registerDraggingChangedListener={this.props.registerDraggingChangedListener}
           removeDraggingChangedListener={this.props.removeDraggingChangedListener}
           setCentersFunction={this.props.setCentersFunction}
@@ -1346,6 +1347,11 @@ class TiledPlot extends React.Component {
   }
 }
 
+TiledPlot.defaultProps = {
+  metaTracks: [],
+  zoomable: true
+};
+
 TiledPlot.propTypes = {
   addTrackPosition: PropTypes.string,
   canvasElement: PropTypes.object,
@@ -1377,10 +1383,7 @@ TiledPlot.propTypes = {
   svgElement: PropTypes.object,
   trackSourceServers: PropTypes.array,
   tracks: PropTypes.object,
-  'tracks.top': PropTypes.array,
-  'tracks.bottom': PropTypes.array,
-  'tracks.left': PropTypes.array,
-  'tracks.right': PropTypes.array,
+  metaTracks: PropTypes.array,
   verticalMargin: PropTypes.number,
   uid: PropTypes.string,
   zoomable: PropTypes.bool,

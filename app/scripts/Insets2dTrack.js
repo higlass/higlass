@@ -6,9 +6,10 @@ import Inset from './Inset';
 
 // Services
 import { chromInfo } from './services';
+import { create } from './services/pub-sub';
 
 // Utils
-import { absToChr, flatten, tileToCanvas } from './utils';
+import { absToChr, colorToHex, flatten, tileToCanvas } from './utils';
 // import { workerSetPix } from './worker';
 
 // const BASE_RES = 16;
@@ -18,14 +19,18 @@ import { absToChr, flatten, tileToCanvas } from './utils';
 export default class Insets2dTrack extends PixiTrack {
   constructor(
     scene,
-    animate,
+    dataConfig,
+    chromInfoPath,
     options,
+    animate,
   ) {
     super(scene, options);
 
-    this.fetchChromInfo = chromInfo.get(options.chromInfoPath);
-
+    this.dataConfig = dataConfig;
     this.options = options;
+    this.animate = animate;
+
+    this.fetchChromInfo = chromInfo.get(chromInfoPath);
 
     this.dropShadow = new DropShadowFilter(
       90,
@@ -40,8 +45,6 @@ export default class Insets2dTrack extends PixiTrack {
 
     this.insets = {};
 
-    this.animate = animate;
-
     this.insetMouseHandler = {
       click: this.clickHandler.bind(this),
       mouseOver: this.mouseOverHandler.bind(this),
@@ -49,6 +52,16 @@ export default class Insets2dTrack extends PixiTrack {
       mouseDown: this.mouseDownHandler.bind(this),
       mouseUp: this.mouseUpHandler.bind(this)
     };
+
+    // Create a custom pubSub interface
+    const { publish, subscribe, unsubscribe } = create({});
+    this.publish = publish;
+    this.subscribe = subscribe;
+    this.unsubscribe = unsubscribe;
+
+    this.options.fill = colorToHex(this.options.fill);
+    this.options.borderColor = colorToHex(this.options.borderColor);
+    this.options.leaderLineColor = colorToHex(this.options.leaderLineColor);
   }
 
   clear() {
@@ -58,10 +71,11 @@ export default class Insets2dTrack extends PixiTrack {
   initInset(
     uid,
     dataPos,
+    dataConfig = this.dataConfig,
     options = this.options,
     mouseHandler = this.insetMouseHandler
   ) {
-    this.insets[uid] = new Inset(uid, dataPos, options, mouseHandler);
+    this.insets[uid] = new Inset(uid, dataPos, dataConfig, options, mouseHandler);
     this.pMain.addChild(this.insets[uid].graphics);
     return this.insets[uid];
   }
@@ -72,9 +86,7 @@ export default class Insets2dTrack extends PixiTrack {
         this.insets[uid] ||
         this.initInset(
           uid,
-          [dX1, dX2, dY1, dY2],
-          this.options,
-          this.insetMouseHandler
+          [dX1, dX2, dY1, dY2]
         )
       );
 
@@ -162,5 +174,11 @@ export default class Insets2dTrack extends PixiTrack {
     }
 
     return tileToCanvas(pixData, w, h);
+  }
+
+  zoomed(newXScale, newYScale, k) {
+    super.zoomed(newXScale, newYScale, k);
+
+    this.publish('zoom', { newXScale, newYScale, k });
   }
 }

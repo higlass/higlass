@@ -2,6 +2,7 @@ import TiledPixiTrack from './TiledPixiTrack';
 
 // Services
 import { tileProxy } from './services';
+import { create } from './services/pub-sub';
 
 // Utils
 import { colorToHex } from './utils';
@@ -12,7 +13,11 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
 
     this.drawnRects = {};
 
-    this.annotationDrawn = () => {};
+    // Create a custom pubSub interface
+    const { publish, subscribe, unsubscribe } = create({});
+    this.publish = publish;
+    this.subscribe = subscribe;
+    this.unsubscribe = unsubscribe;
   }
 
   /*
@@ -228,11 +233,11 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
             drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height
           );
 
-          this.annotationDrawn(
+          this.publish('annotationDrawn', {
             uid,
-            drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height,
-            td.xStart, td.xEnd, td.yStart, td.yEnd
-          );
+            viewPos: [drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height],
+            dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd]
+          });
         }
       }
     }
