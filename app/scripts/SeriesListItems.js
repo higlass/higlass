@@ -1,8 +1,10 @@
-import '../styles/ContextMenu.module.scss';
-import ContextMenuItem from './ContextMenuItem';
 import React from 'react';
 
+import ContextMenuItem from './ContextMenuItem';
+
 import { TRACKS_INFO } from './configs';
+
+import '../styles/ContextMenu.module.scss';
 
 /**
  * Return a list of all the tracks and subtracks from
@@ -27,9 +29,9 @@ export const getAllTracksAndSubtracks = function(tracks) {
 
 /**
  * Get a list of menu items corresponding to the
- * series present in a set of tracks. If any of 
+ * series present in a set of tracks. If any of
  * the tracks a combined tracks, this function will
- * return individual menu items for each of the 
+ * return individual menu items for each of the
  * combined tracks.
  *
  * @param {object} tracks: An array of track definitions (from the viewconf)
@@ -42,7 +44,7 @@ export const getAllTracksAndSubtracks = function(tracks) {
  */
 export const getSeriesItems = function(
   tracks,
-  onItemMouseEnter, 
+  onItemMouseEnter,
   onItemMouseLeave,
   onItemClick,
   omitItem

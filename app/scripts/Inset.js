@@ -4,7 +4,7 @@ const BASE_RES = 16;
 const BASE_SCALE = 4;
 const BASE_SCALE_UP = 1.25;
 
-class Inset {
+export default class Inset {
   constructor(uid, dataPos, options, mouseHandler) {
     this.uid = uid;
     this.dataX1 = dataPos[0];
@@ -352,5 +352,3 @@ class Inset {
     this.drawBorder();
   }
 }
-
-export default Inset;

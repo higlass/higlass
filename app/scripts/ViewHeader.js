@@ -1,9 +1,10 @@
 import React from 'react';
-import { PropTypes } from 'prop-types';
-import { PopupMenu } from './PopupMenu';
+import PropTypes from 'prop-types';
+
+import PopupMenu from './PopupMenu';
 import ContextMenuContainer from './ContextMenuContainer';
-import { ConfigViewMenu } from './ConfigViewMenu';
-import { AddTrackPositionMenu } from './AddTrackPositionMenu';
+import ConfigViewMenu from './ConfigViewMenu';
+import AddTrackPositionMenu from './AddTrackPositionMenu';
 
 // Configs
 import {

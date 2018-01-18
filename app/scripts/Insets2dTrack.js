@@ -15,7 +15,7 @@ import { absToChr, flatten, tileToCanvas } from './utils';
 // const BASE_SCALE = 4;
 // const BASE_SCALE_UP = 4;
 
-class Insets2dTrack extends PixiTrack {
+export default class Insets2dTrack extends PixiTrack {
   constructor(
     scene,
     animate,
@@ -164,5 +164,3 @@ class Insets2dTrack extends PixiTrack {
     return tileToCanvas(pixData, w, h);
   }
 }
-
-export default Insets2dTrack;

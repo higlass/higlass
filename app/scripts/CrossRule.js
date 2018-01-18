@@ -2,7 +2,7 @@ import { mix } from 'mixwith';
 
 import PixiTrack from './PixiTrack';
 
-import { RuleMixin } from './RuleMixin';
+import RuleMixin from './RuleMixin';
 import { HorizontalRuleMixin } from './HorizontalRule';
 import { VerticalRuleMixin } from './VerticalRule';
 

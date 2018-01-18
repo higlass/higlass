@@ -3,8 +3,9 @@ import React from 'react';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
+import SeriesListSubmenuMixin from './SeriesListSubmenuMixin';
+
 import { getSeriesItems } from './SeriesListItems';
-import { SeriesListSubmenuMixin } from './SeriesListSubmenuMixin';
 
 // Styles
 import '../styles/ContextMenu.module.scss';

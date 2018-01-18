@@ -1,8 +1,6 @@
-import { json } from 'd3-request';
 import { queue } from 'd3-queue';
 import { select, event } from 'd3-selection';
 import React from 'react';
-import { tileProxy } from './services';
 import slugid from 'slugid';
 import {
   FormGroup,
@@ -16,6 +14,9 @@ import Autocomplete from './Autocomplete';
 import ChromosomeInfo from './ChromosomeInfo';
 import SearchField from './SearchField';
 import PopupMenu from './PopupMenu';
+
+
+import { tileProxy } from './services';
 
 // Utils
 import { scalesCenterAndK, dictKeys } from './utils';

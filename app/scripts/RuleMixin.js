@@ -1,7 +1,7 @@
-import {mix, Mixin} from 'mixwith';
+import { Mixin } from 'mixwith';
 import { pubSub } from './services';
 
-export const RuleMixin = Mixin((superclass) => class extends superclass {
+const RuleMixin = Mixin(superclass => class extends superclass {
   constructor(stage, options, animate) {
     super(stage, options);
 
@@ -21,17 +21,19 @@ export const RuleMixin = Mixin((superclass) => class extends superclass {
     this.pMain.position.y = this.position[1];
   }
 
-  zoomed(newXScale, newYScale, k, tx, ty) {
+  zoomed(newXScale, newYScale) {
     super.zoomed(newXScale, newYScale);
 
     this.draw();
   }
 
-  respondsToPosition(x,y) {
-    /*
-     * This function is for seeing whether this track should respond
-     * to events at this mouse position.
-     */
+  /*
+   * This function is for seeing whether this track should respond
+   * to events at this mouse position.
+   */
+  respondsToPosition() {
     return this.highlighted;
   }
 });
+
+export default RuleMixin;

@@ -32,7 +32,7 @@ import { MOUSE_TOOL_SELECT, TRACKS_INFO_BY_TYPE } from './configs';
 import styles from '../styles/TiledPlot.module.scss'; // eslint-disable-line no-unused-vars
 import stylesCenterTrack from '../styles/CenterTrack.module.scss'; // eslint-disable-line no-unused-vars
 
-export class TiledPlot extends React.Component {
+class TiledPlot extends React.Component {
   constructor(props) {
     super(props);
 

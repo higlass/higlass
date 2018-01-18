@@ -1,8 +1,9 @@
 import { mix, Mixin } from 'mixwith';
 
 import PixiTrack from './PixiTrack';
+import RuleMixin from './RuleMixin';
+
 import { colorToHex } from './utils';
-import { RuleMixin } from './RuleMixin';
 
 export const HorizontalRuleMixin = Mixin((superclass) => class extends superclass {
   drawHorizontalRule(graphics) {

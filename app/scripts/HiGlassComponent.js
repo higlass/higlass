@@ -11,13 +11,14 @@ import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
 import parse from 'url-parse';
 
-import { TiledPlot } from './TiledPlot';
+import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
-import { ExportLinkModal } from './ExportLinkModal';
+import ExportLinkModal from './ExportLinkModal';
+import ViewHeader from './ViewHeader';
+import ChromosomeInfo from './ChromosomeInfo';
+
 import { createSymbolIcon } from './symbol';
 import { all as icons } from './icons';
-import ViewHeader from './ViewHeader';
-import { ChromosomeInfo } from './ChromosomeInfo';
 import api, { destroy as apiDestroy, publish as apiPublish } from './api';
 
 // Services

@@ -1,7 +1,9 @@
-import { PixiTrack } from './PixiTrack.js';
 import slugid from 'slugid';
 
-export class ViewportTracker2D extends PixiTrack {
+import PixiTrack from './PixiTrack';
+
+
+export default class ViewportTracker2D extends PixiTrack {
   constructor(scene, registerViewportChanged, removeViewportChanged) {
     super(scene);
 
@@ -74,5 +76,3 @@ export class ViewportTracker2D extends PixiTrack {
     this.draw();
   }
 }
-
-export default ViewportTracker2D;

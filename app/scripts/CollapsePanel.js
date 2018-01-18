@@ -1,34 +1,32 @@
 /* jshint esnext: true */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, Collapse, Row } from 'react-bootstrap';
-import { ControlLabel } from 'react-bootstrap';
+import { Collapse, ControlLabel, Panel } from 'react-bootstrap';
 
-export class CollapsePanel extends React.Component {
-  render() {
-    const { collapsed, toggleCollapse, name } = this.props;
-    const collapsedClass = boolean => boolean && 'collapsed';
-    return (
-      <div>
-        <ControlLabel><a
-          className={`collapse-toggle-icon ${collapsedClass(collapsed)}`}
-          role="button"
-          onClick={() => toggleCollapse()}
-        >
-          {name}
-        </a></ControlLabel>
-        <Collapse in={!collapsed}>
-          <Panel>
-            {this.props.children}
-          </Panel>
-        </Collapse>
-      </div>
-    );
-  }
-}
+const CollapsePanel = props => (
+  <div>
+    <ControlLabel>
+      <a
+        className={`collapse-toggle-icon ${props.collapsedClass(props.collapsed)}`}
+        onClick={() => props.toggleCollapse()}
+        role="button"
+        tabIndex={0}
+      >
+        {props.name}
+      </a>
+    </ControlLabel>
+    <Collapse in={!props.collapsed}>
+      <Panel>
+        {props.children}
+      </Panel>
+    </Collapse>
+  </div>
+);
 
 CollapsePanel.propTypes = {
+  children: PropTypes.node.isRequired,
   collapsed: PropTypes.bool.isRequired,
+  collapsedClass: PropTypes.func.isRequired,
   toggleCollapse: PropTypes.func.isRequired,
   name: PropTypes.string,
 };

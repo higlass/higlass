@@ -3,7 +3,7 @@ import React from 'react';
 
 import '../styles/AddTrackPositionMenu.module.scss';
 
-export const AddTrackPositionMenu = props => (
+const AddTrackPositionMenu = props => (
   <div>
     <div styleName="add-track-position-span">{'Add Track...'}</div>
     <table styleName="add-track-position-table">
@@ -44,7 +44,7 @@ export const AddTrackPositionMenu = props => (
 );
 
 AddTrackPositionMenu.propTypes = {
-  onTrackPositionChosen: PropTypes.func,
+  onTrackPositionChosen: PropTypes.func.isRequired,
 };
 
 export default AddTrackPositionMenu;

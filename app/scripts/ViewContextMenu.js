@@ -7,7 +7,7 @@ import { getSeriesItems } from './SeriesListItems';
 
 import ContextMenuItem from './ContextMenuItem';
 import ContextMenuContainer from './ContextMenuContainer';
-import { SeriesListSubmenuMixin } from './SeriesListSubmenuMixin';
+import SeriesListSubmenuMixin from './SeriesListSubmenuMixin';
 
 // Styles
 import '../styles/ContextMenu.module.scss';

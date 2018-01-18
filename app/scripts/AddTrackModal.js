@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Button } from 'react-bootstrap';
-import { TilesetFinder } from './TilesetFinder';
-import { PlotTypeChooser } from './PlotTypeChooser';
+
+import TilesetFinder from './TilesetFinder';
+import PlotTypeChooser from './PlotTypeChooser';
 
 // Configs
 import {
@@ -25,10 +26,6 @@ class AddTrackModal extends React.Component {
       selectedTilesets: [{ datatype: 'none' }],
       normalizeTilesetUuid: null,
     };
-  }
-
-  componentDidMount() {
-
   }
 
   handleSubmit() {
