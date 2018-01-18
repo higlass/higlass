@@ -29,12 +29,32 @@ class Inset {
     this.initGraphics(options);
   }
 
+  /* --------------------------- Getter / Setter ---------------------------- */
+
+  /**
+   * Get main graphics.
+   */
+  get graphics() {
+    return this.gMain;
+  }
+
+  /* ---------------------------- Custom Methods ---------------------------- */
+
+  /**
+   * Clear and initialize graphics.
+   *
+   * @param  {Object}  options  Custom line style for the border and leader line
+   */
   clear(options) {
     this.gBorder.clear();
     this.gLeaderLine.clear();
+    this.gMain.clear();
     this.initGraphics(options);
   }
 
+  /**
+   * Destroy graphics and unset data.
+   */
   destroy() {
     if (this.sprite) this.sprite.removeAllListeners();
 
@@ -46,47 +66,14 @@ class Inset {
     this.sprite = undefined;
   }
 
-  graphics() {
-    return this.gMain;
-  }
-
-  initGraphics(options = this.options) {
-    this.gBorder.lineStyle(
-      options.borderWidth || 1,
-      options.borderColor || 0x000000,
-      options.borderOpacity || 1
-    );
-    this.gLeaderLine.lineStyle(
-      options.leaderLineWidth || 1,
-      options.leaderLineColor || 0x000000,
-      options.leaderLineOpacity || 1
-    );
-  }
-
-  globalOffset(x = this.globalOffsetX, y = this.globalOffsetY) {
-    this.globalOffsetX = x;
-    this.globalOffsetY = y;
-    return [x, y];
-  }
-
-  origin(x = this.originX, y = this.originY) {
-    this.originX = x;
-    this.originY = y;
-    return [x, y];
-  }
-
-  position(x = this.x, y = this.y) {
-    this.x = x;
-    this.y = y;
-    return [x, y];
-  }
-
-  size(width = this.width, height = this.height) {
-    this.width = width;
-    this.height = height;
-    return [width, height];
-  }
-
+  /**
+   * Draw inset border.
+   *
+   * @param  {Number}  x  X position of the inset to be drawn.
+   * @param  {Number}  y  Y position of the inset to be drawn.
+   * @param  {Number}  width  Width of the inset to be drawn.
+   * @param  {Number}  height  Height of the inset to be drawn.
+   */
   drawBorder(
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
@@ -98,6 +85,9 @@ class Inset {
     );
   }
 
+  /**
+   * Draw leader line.
+   */
   drawLeaderLine() {
     // Origin
     this.gLeaderLine.moveTo(
@@ -112,6 +102,15 @@ class Inset {
     );
   }
 
+  /**
+   * Draw the image of the inset (i.e., a matrix snippet or image snippet)
+   *
+   * @param  {Function}  imgRenderer  Image renderer, i.e., function converting
+   *   the data into canvas.
+   * @param  {Function}  translator  Translates data into final coordinates for
+   *   querying for the inset image.
+   * @param  {Boolean}  force  If `true` forces a rerendering of the image.
+   */
   drawImage(imgRenderer, translator, force = false) {
     if (!this.data) {
       if (!this.inFlight) {
@@ -135,16 +134,12 @@ class Inset {
     return Promise.resolve(true);
   }
 
-  positionImage(
-    x = this.x, y = this.y, width = this.width, height = this.height
-  ) {
-    this.sprite.x = this.globalOffsetX - this.offset + x + (width / 2);
-    this.sprite.y = this.globalOffsetY - this.offset + y + (height / 2);
-
-    this.sprite.scale.x = -1 * BASE_SCALE * this.scaleExtra;
-    this.sprite.scale.y = -1 * BASE_SCALE * this.scaleExtra;
-  }
-
+  /**
+   * Fetch data for the image.
+   *
+   * @param  {Function}  translator  [description]
+   * @return  {Object}  Promise resolving to the JSON response
+   */
   fetchData(translator) {
     const x = translator(this.dataX1);
     const y = translator(this.dataY1);
@@ -169,34 +164,160 @@ class Inset {
         },
         body: JSON.stringify([bedpe])
       })
-      .then(response => response.json());
+      .then(response => response.json())
+      .catch((error) => {
+        console.warn(
+          `Could not fetch snippet data for [${bedpe.join(',')}]`, error
+        );
+      });
   }
 
-  clickHandler(event) {
+  /**
+   * Get or set global offset.
+   *
+   * @param  {Number}  x  Global X offset.
+   * @param  {Number}  y  Global Y offset.
+   * @return  {Array}   Tuple holding the global X and Y offset.
+   */
+  globalOffset(x = this.globalOffsetX, y = this.globalOffsetY) {
+    this.globalOffsetX = x;
+    this.globalOffsetY = y;
+    return [x, y];
+  }
+
+
+  /**
+   * Initialize line style of the border and leader line graphics.
+   *
+   * @param  {Object}  options  Line style for the border and leader line.
+   */
+  initGraphics(options = this.options) {
+    this.gBorder.lineStyle(
+      options.borderWidth || 1,
+      options.borderColor || 0x000000,
+      options.borderOpacity || 1
+    );
+    this.gLeaderLine.lineStyle(
+      options.leaderLineWidth || 1,
+      options.leaderLineColor || 0x000000,
+      options.leaderLineOpacity || 1
+    );
+  }
+
+  /**
+   * Mouse click handler.
+   *
+   * @param  {Object}  event  Event object.
+   */
+  mouseclickHandler(event) {
     this.mouseHandler.click(event, this.gMain);
   }
 
+  /**
+   * Mouse over handler.
+   *
+   * @param  {Object}  event  Event object.
+   */
   mouseOverHandler(event) {
     this.mouseHandler.mouseOver(event, this.gMain);
   }
 
+  /**
+   * Mouse out handler.
+   *
+   * @param  {Object}  event  Event object.
+   */
   mouseOutHandler(event) {
     this.mouseHandler.mouseOut(event, this.gMain);
   }
 
+  /**
+   * Mouse down handler.
+   *
+   * @param  {Object}  event  Event object.
+   */
   mouseDownHandler(event) {
     this.mouseDown = true;
     this.scale(BASE_SCALE_UP);
     this.mouseHandler.mouseDown(event, this.gMain);
   }
 
+  /**
+   * Mouse up handler.
+   *
+   * @param  {Object}  event  Event object.
+   */
   mouseUpHandler(event) {
-    if (this.mouseDown) this.clickHandler(event);
+    if (this.mouseDown) this.mouseclickHandler(event);
     this.scale();
     this.mouseDown = false;
     this.mouseHandler.mouseUp(event, this.gMain);
   }
 
+  /**
+   * Get or set origin of the inset.
+   *
+   * @param  {Number}  x  X origin.
+   * @param  {Number}  y  Y origin.
+   * @return  {Array}   Tuple holding the X,Y origin.
+   */
+  origin(x = this.originX, y = this.originY) {
+    this.originX = x;
+    this.originY = y;
+    return [x, y];
+  }
+
+  /**
+   * Get or set the position of the inset.
+   *
+   * @param  {Number}  x  X position.
+   * @param  {Number}  y  Y position.
+   * @return  {Array}   Tuple holding the X,Y position.
+   */
+  position(x = this.x, y = this.y) {
+    this.x = x;
+    this.y = y;
+    return [x, y];
+  }
+
+  /**
+   * Position the image.
+   *
+   * @param  {Number}  x  X position of the inset to be drawn.
+   * @param  {Number}  y  Y position of the inset to be drawn.
+   * @param  {Number}  width  Width of the inset to be drawn.
+   * @param  {Number}  height  Height of the inset to be drawn.
+   */
+  positionImage(
+    x = this.x, y = this.y, width = this.width, height = this.height
+  ) {
+    this.sprite.x = this.globalOffsetX - this.offset + x + (width / 2);
+    this.sprite.y = this.globalOffsetY - this.offset + y + (height / 2);
+
+    this.sprite.scale.x = -1 * BASE_SCALE * this.scaleExtra;
+    this.sprite.scale.y = -1 * BASE_SCALE * this.scaleExtra;
+  }
+
+  /**
+   * Get or set the size of the inset
+   *
+   * @param  {Number}  width  Width of the inset.
+   * @param  {Number}  height  Height of the inset.
+   * @return  {Array}   Tuple holding `[width, height]`.
+   */
+  size(width = this.width, height = this.height) {
+    this.width = width;
+    this.height = height;
+    return [width, height];
+  }
+
+  /**
+   * Render the data to an image and assign event listeners.
+   *
+   * @param  {Array}  data  Data to be rendered
+   * @param  {Function}  imgRenderer  Image renderer converting the data into
+   *   canvas.
+   */
   renderImage(data, imgRenderer) {
     this.data = imgRenderer(data, BASE_RES, BASE_RES);
 

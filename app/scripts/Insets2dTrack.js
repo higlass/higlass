@@ -62,7 +62,7 @@ class Insets2dTrack extends PixiTrack {
     mouseHandler = this.insetMouseHandler
   ) {
     this.insets[uid] = new Inset(uid, dataPos, options, mouseHandler);
-    this.pMain.addChild(this.insets[uid].graphics());
+    this.pMain.addChild(this.insets[uid].graphics);
     return this.insets[uid];
   }
 
