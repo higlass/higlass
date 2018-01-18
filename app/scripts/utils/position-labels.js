@@ -12,7 +12,7 @@ let rej = 0;
 const wLen = 5.0; // leader line length
 const wInter = 50.0; // leader line intersection
 const wLabLab = 50.0; // label-label overlap
-const wLabOrg = 20.0; // label-origin overlap
+const wLabOrg = 50.0; // additional label-origin overlap weights (added to `wLabAnc`)
 const wLabAnc = 10.0; // overlap between label and other anchors (i.e., annotations)
 const wOrient = 0.1; // orientation bias
 
@@ -46,12 +46,13 @@ const energy = (index) => {
   const dx = l.x - l.ox;
   const dy = l.y - l.oy;
   const dist = Math.sqrt((dx * dx) + (dy * dy));
+  const distCenterToBorder = Math.sqrt((l.wh * l.wh) + (l.hh * l.hh));
   let overlap = true;
   // let amount = 0;
   // let theta = 0;
 
   // penalty for length of leader line
-  if (dist > 0) ener += dist * wLen;
+  ener += Math.abs(dist - distCenterToBorder) * wLen;
 
   // label orientation bias (Fritz: ignored for now)
   // dx /= dist;
@@ -74,6 +75,7 @@ const energy = (index) => {
   let overlapArea;
 
   // For every annotation
+  // Note: we know that the first m anchors are the label origins
   for (let i = 0; i < n; i++) {
     // For every other label (m = number of labels)
     if (i !== index && i < m) {
@@ -112,8 +114,7 @@ const energy = (index) => {
     xOverlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21));
     yOverlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21));
     overlapArea = xOverlap * yOverlap;
-    ener += (overlapArea * wLabAnc);
-    // ener += (overlapArea * (i < m ? wLabOrg : wLabAnc));
+    ener += overlapArea * (wLabAnc + (wLabOrg * (i < m)));
   }
   return ener;
 };
