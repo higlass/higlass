@@ -12,9 +12,8 @@ import { create } from './services/pub-sub';
 import { absToChr, colorToHex, flatten, tileToCanvas } from './utils';
 // import { workerSetPix } from './worker';
 
-// const BASE_RES = 16;
-// const BASE_SCALE = 4;
-// const BASE_SCALE_UP = 4;
+const BASE_RES = 16;
+const BASE_SCALE = 4;
 
 export default class Insets2dTrack extends PixiTrack {
   constructor(
@@ -62,6 +61,9 @@ export default class Insets2dTrack extends PixiTrack {
     this.options.fill = colorToHex(this.options.fill);
     this.options.borderColor = colorToHex(this.options.borderColor);
     this.options.leaderLineColor = colorToHex(this.options.leaderLineColor);
+
+    this.insetRes = this.options.resX || BASE_RES;
+    this.insetScale = this.options.scale || BASE_SCALE;
   }
 
   clear() {

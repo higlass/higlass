@@ -154,6 +154,9 @@ class AnnotationsInsets {
       ...obj
     }));
 
+    const insetRes = this.insetsTrack.insetRes * this.insetsTrack.insetScale;
+    const insetResH = insetRes / 2;
+
     const insets = this.insetsToBeDrawn
       .map((inset) => {
         if (!this.insets[inset.uid]) {
@@ -164,10 +167,10 @@ class AnnotationsInsets {
             y: (inset.maxY + inset.minY) / 2,
             ox: (inset.maxX + inset.minX) / 2,  // Origin x
             oy: (inset.maxY + inset.minY) / 2,  // Origin y
-            width: 64,
-            height: 64,
-            wh: 32,  // Width half
-            hh: 32,  // Heigth half
+            width: insetRes,
+            height: insetRes,
+            wh: insetResH,  // Width half
+            hh: insetResH,  // Heigth half
             ...inset
           };
         } else {

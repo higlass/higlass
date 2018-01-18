@@ -22,6 +22,8 @@ export default class Inset {
     this.gMain.addChild(this.gLeaderLine);
     this.gMain.addChild(this.gBorder);
 
+    this.res = this.options.resX || BASE_RES;
+    this.scaleBase = this.options.scale || BASE_SCALE;
     this.scaleExtra = 1;
     this.offset = 0;
     this.globalOffsetX = 0;
@@ -157,7 +159,7 @@ export default class Inset {
     ];
 
     return fetch(
-      `${this.dataConfig.server || ''}/fragments_by_loci/?precision=2&dims=${BASE_RES}`, {
+      `${this.dataConfig.server || ''}/fragments_by_loci/?precision=2&dims=${this.res}`, {
         method: 'POST',
         headers: {
           accept: 'application/json; charset=UTF-8',
@@ -295,8 +297,8 @@ export default class Inset {
     this.sprite.x = this.globalOffsetX - this.offset + x + (width / 2);
     this.sprite.y = this.globalOffsetY - this.offset + y + (height / 2);
 
-    this.sprite.scale.x = -1 * BASE_SCALE * this.scaleExtra;
-    this.sprite.scale.y = -1 * BASE_SCALE * this.scaleExtra;
+    this.sprite.scale.x = -1 * this.scaleBase * this.scaleExtra;
+    this.sprite.scale.y = -1 * this.scaleBase * this.scaleExtra;
   }
 
   /**
@@ -320,7 +322,7 @@ export default class Inset {
    *   canvas.
    */
   renderImage(data, imgRenderer) {
-    this.data = imgRenderer(data, BASE_RES, BASE_RES);
+    this.data = imgRenderer(data, this.res, this.res);
 
     this.sprite = new PIXI.Sprite(
       PIXI.Texture.fromCanvas(
@@ -345,7 +347,7 @@ export default class Inset {
    */
   scale(amount = 1) {
     this.scaleExtra = amount;
-    this.offset = BASE_RES * BASE_SCALE * (amount - 1) / -2;
+    this.offset = this.res * this.scaleBase * (amount - 1) / -2;
 
     this.positionImage();
     this.gBorder.clear();
