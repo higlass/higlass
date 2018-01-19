@@ -116,9 +116,7 @@ class GalleryTracks extends React.Component {
 }
 
 GalleryTracks.propTypes = {
-  configTrackMenuId: PropTypes.string.isRequired,
   editable: PropTypes.bool.isRequired,
-  onCloseTrack: PropTypes.func.isRequired,
   onCloseTrackMenuOpened: PropTypes.func.isRequired,
   onConfigTrackMenuOpened: PropTypes.func.isRequired,
   tracks: PropTypes.array.isRequired,
