@@ -5,85 +5,89 @@ import { SortableHandle } from 'react-sortable-hoc';
 // Styles
 import '../styles/TrackControl.module.scss';
 
-class TrackControl extends React.Component {
-  render() {
-    let className = this.props.isVisible ?
-      'track-control-active' : 'track-control';
+const getClassNames = (props) => {
+  let className = props.isVisible ?
+    'track-control-active' : 'track-control';
 
-    className += this.props.isAlignLeft ?
-      ' track-control-left' : '';
+  className += props.isAlignLeft ?
+    ' track-control-left' : '';
 
-    className += this.props.isVertical ?
-      ' track-control-vertical' : '';
+  className += props.isVertical ?
+    ' track-control-vertical' : '';
 
-    className += this.props.paddingRight ?
-      ' track-control-padding-right' : '';
+  className += props.paddingRight ?
+    ' track-control-padding-right' : '';
 
-    let buttonClassName = 'track-control-button';
+  return className;
+};
 
-    buttonClassName += this.props.isVertical ?
-      ' track-control-button-vertical' : '';
+const getButtonClassNames = (props) => {
+  let buttonClassName = 'track-control-button';
 
-    const Handle = SortableHandle(() => (
+  buttonClassName += props.isVertical ?
+    ' track-control-button-vertical' : '';
+
+  return buttonClassName;
+};
+
+let imgConfig;
+let imgClose;
+
+const TrackControl = props => (
+  <div styleName={getClassNames(props)}>
+
+    {props.isMoveable && SortableHandle(() => (
       <svg
         className="no-zoom"
-        style={this.props.imgStyleMove}
-        styleName={buttonClassName}
+        style={props.imgStyleMove}
+        styleName={getButtonClassNames(props)}
       >
         <use xlinkHref="#move" />
       </svg>
-    ));
+    ))}
 
-    return (
-      <div styleName={className}>
+    <svg
+      ref={(c) => { imgConfig = c; }}
+      className="no-zoom"
+      onClick={() => {
+        props.onConfigTrackMenuOpened(
+          props.uid,
+          imgConfig.getBoundingClientRect()
+        );
+      }}
+      style={props.imgStyleSettings}
+      styleName={getButtonClassNames(props)}
+    >
+      <use xlinkHref="#cog" />
+    </svg>
 
-        {this.props.isMoveable && <Handle />}
+    {props.onAddSeries &&
+      <svg
+        className="no-zoom"
+        onClick={() => props.onAddSeries(props.uid)}
+        style={props.imgStyleAdd}
+        styleName={getButtonClassNames(props)}
+      >
+        <use xlinkHref="#plus" />
+      </svg>
+    }
 
-        <svg
-          ref={(c) => { this.imgConfig = c; }}
-          className="no-zoom"
-          onClick={() => {
-            this.props.onConfigTrackMenuOpened(
-              this.props.uid,
-              this.imgConfig.getBoundingClientRect()
-            );
-          }}
-          style={this.props.imgStyleSettings}
-          styleName={buttonClassName}
-        >
-          <use xlinkHref="#cog" />
-        </svg>
-
-        {this.props.onAddSeries &&
-          <svg
-            ref={(c) => { this.imgAdd = c; }}
-            className="no-zoom"
-            onClick={() => this.props.onAddSeries(this.props.uid)}
-            style={this.props.imgStyleAdd}
-            styleName={buttonClassName}
-          >
-            <use xlinkHref="#plus" />
-          </svg>
-        }
-
-        <svg
-          ref={(c) => { this.imgClose = c; }}
-          className="no-zoom"
-          onClick={() => {
-            this.props.onCloseTrackMenuOpened(
-              this.props.uid,
-              this.imgClose.getBoundingClientRect()
-            );
-          }}
-          style={this.props.imgStyleClose}
-          styleName={buttonClassName}
-        >
-          <use xlinkHref="#cross" />
-        </svg>
-      </div>
-    );
-  }
-}
+    <svg
+      ref={(c) => { imgClose = c; }}
+      className="no-zoom"
+      onClick={() => {
+        props.onCloseTrackMenuOpened(
+          props.uid,
+          imgClose.getBoundingClientRect()
+        );
+      }}
+      style={props.imgStyleClose}
+      styleName={getButtonClassNames(props)}
+    >
+      <use xlinkHref="#cross" />
+    </svg>
+  </div>
+);
 
 TrackControl.propTypes = {
   imgStyleAdd: PropTypes.object,
