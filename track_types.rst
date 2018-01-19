@@ -122,8 +122,21 @@ datatype: ``vector``
 
 Line tracks display 1D vector data. Because each line segment requires two
 adjacent points to be present, data with lots of NaNs may lead to a fragmented
-plot. For such data, the :ref:`point track <point-track>` may be more
+plot. For such data, the :ref:`bar track <bar-track>` or :ref:`point track <point-track>` may be more
 appropriate.
+
+.. _bar-track:
+
+Bar
+====
+
+.. image:: img/bar-track-thumb.png
+    :align: right
+
+track-type: ``horizontal-bar``
+datatype: ``vector``
+
+Bar tracks display 1D vector data as bars.
 
 .. _point-track:
 
