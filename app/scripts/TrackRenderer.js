@@ -909,26 +909,28 @@ class TrackRenderer extends React.Component {
       .range([0, this.currentProps.centerHeight]);
 
     for (const uid in this.trackDefObjects) {
-      if (this.trackDefObjects[uid].trackDef.track.position == 'whole') {
+      if (this.trackDefObjects[uid].trackDef.track.position === 'whole') {
         // whole tracks need different scales which go beyond the ends of
         // center track and encompass the whole view
         const track = this.trackDefObjects[uid].trackObject;
 
         const trackXScale = scaleLinear()
-          .domain([
-            this.currentProps.marginLeft,
-            this.currentProps.width - this.currentProps.marginLeft]
-            .map(zoomedXScale.invert))
-          .range([0, this.currentProps.width - 2*this.currentProps.marginLeft]);
+          .domain(
+            [
+              this.currentProps.marginLeft,
+              this.currentProps.width - this.currentProps.marginLeft
+            ].map(zoomedXScale.invert))
+          .range(
+            [0, this.currentProps.width - (2 * this.currentProps.marginLeft)]
+          );
 
         const trackYScale = scaleLinear()
-          .domain([
-            this.currentProps.marginTop,
-            this.currentProps.height - this.currentProps.marginTop]
-            .map(zoomedYScale.invert))
-          .range([0, this.currentProps.height - 2*this.currentProps.marginTop]);
-
-        // console.log('track.yPosition:', track.yPosition, 'trackYScale.range():', trackYScale.range());
+          .domain(
+            [
+              this.currentProps.marginTop,
+              this.currentProps.height - this.currentProps.marginTop
+            ].map(zoomedYScale.invert))
+          .range([0, this.currentProps.height - (2 * this.currentProps.marginTop)]);
 
         track.zoomed(
           trackXScale,
