@@ -143,6 +143,19 @@ class AnnotationsInsets {
   positionInsets() {
     if (!this.insetsToBeDrawn.length) return [];
 
+    if (this.insetsTrack.positioning.location === 'gallery') {
+      return this.positionInsetsGallery();
+    }
+
+    return this.positionInsetsCenter();
+  }
+  /**
+   * Position insets within the heatmap using simulated annealing
+   *
+   * @param  {Array}  insetsToBeDrawn  Insets to be drawn
+   * @return  {Array}  Position and dimension of the insets.
+   */
+  positionInsetsCenter(insetsToBeDrawn = this.insetsToBeDrawn) {
     const anchors = this.drawnAnnotations.map(obj => ({
       t: 1,
       x: (obj.maxX + obj.minX) / 2,
@@ -157,7 +170,7 @@ class AnnotationsInsets {
     const insetRes = this.insetsTrack.insetRes * this.insetsTrack.insetScale;
     const insetResH = insetRes / 2;
 
-    const insets = this.insetsToBeDrawn
+    const insets = insetsToBeDrawn
       .map((inset) => {
         if (!this.insets[inset.uid]) {
           // Add new inset
@@ -234,6 +247,71 @@ class AnnotationsInsets {
     ]));
 
     return pos;
+  }
+
+  /**
+   * Position insets along the gallery.
+   *
+   * @description
+   * Technically we should not call the snippets insets anymore because they are
+   * not drawn within the matrix anymore
+   *
+   * @param  {Array}  insetsToBeDrawn  Insets to be drawn
+   * @return  {Array}  Position and dimension of the insets.
+   */
+  positionInsetsGallery(insetsToBeDrawn = this.insetsToBeDrawn) {
+    const insetRes = this.insetsTrack.insetRes * this.insetsTrack.insetScale;
+    const trackHeightH = this.insetsTrack.positioning.height / 2;
+    const padding = 6;
+    const insetResWithPad = insetRes + padding;
+    const offset = this.insetsTrack.positioning.offsetX;
+
+    const numPosX = Math.floor(
+      this.insetsTrack.dimensions[0] / insetResWithPad
+    );
+
+    const numPosY = Math.floor(
+      this.insetsTrack.dimensions[1] / insetResWithPad
+    );
+
+    const getPos = (index) => {
+      const numPerSide = (numPosX + numPosY - 2);
+      const lowerLeft = Math.floor(index / (numPosX + numPosY - 2));
+      let x = 0;
+      let y = 0;
+
+      if (lowerLeft) {
+        x = (numPosX - 1) - (index - numPerSide);
+        y = (numPosY - 1) - Math.min(0, (index - numPerSide) - (numPosX - 1));
+      } else {
+        x = Math.min(index, numPosX - 1);
+        y = Math.max(0, index - (numPosX - 1));
+      }
+
+      return [
+        (x * insetResWithPad) + trackHeightH,
+        (y * insetResWithPad) + trackHeightH
+      ];
+    };
+
+    return insetsToBeDrawn
+      .map((inset, index) => {
+        const pos = getPos(index + 1);
+
+        return [
+          inset.uid,
+          pos[0],  // x
+          pos[1],  // y
+          insetRes,  // width
+          insetRes,  // height
+          ((inset.maxX + inset.minX) / 2) + offset,  // Origin x
+          ((inset.maxY + inset.minY) / 2) + offset,  // Origin y
+          inset.cX1,
+          inset.cX2,
+          inset.cY1,
+          inset.cY2
+        ];
+      });
   }
 
   /**
