@@ -890,47 +890,50 @@ class TrackRenderer extends React.Component {
     this.zoomedXScale = zoomedXScale;
     this.zoomedYScale = zoomedYScale;
 
+    const props = this.currentProps;
+
     const newXScale = scaleLinear()
       .domain(
         [
-          this.currentProps.marginLeft + this.currentProps.leftWidth,
-          this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth,
+          props.marginLeft + props.leftWidth,
+          props.marginLeft + props.leftWidth + props.centerWidth,
         ].map(zoomedXScale.invert),
       )
-      .range([0, this.currentProps.centerWidth]);
+      .range([0, props.centerWidth]);
 
     const newYScale = scaleLinear()
       .domain(
         [
-          this.currentProps.marginTop + this.currentProps.topHeight,
-          this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight,
+          props.marginTop + props.topHeight,
+          props.marginTop + props.topHeight + props.centerHeight,
         ].map(zoomedYScale.invert),
       )
-      .range([0, this.currentProps.centerHeight]);
+      .range([0, props.centerHeight]);
 
     for (const uid in this.trackDefObjects) {
+      const track = this.trackDefObjects[uid].trackObject;
+
       if (this.trackDefObjects[uid].trackDef.track.position === 'whole') {
         // whole tracks need different scales which go beyond the ends of
         // center track and encompass the whole view
-        const track = this.trackDefObjects[uid].trackObject;
 
         const trackXScale = scaleLinear()
           .domain(
             [
-              this.currentProps.marginLeft,
-              this.currentProps.width - this.currentProps.marginLeft
+              props.marginLeft,
+              props.width - props.marginLeft
             ].map(zoomedXScale.invert))
           .range(
-            [0, this.currentProps.width - (2 * this.currentProps.marginLeft)]
+            [0, props.width - (2 * props.marginLeft)]
           );
 
         const trackYScale = scaleLinear()
           .domain(
             [
-              this.currentProps.marginTop,
-              this.currentProps.height - this.currentProps.marginTop
+              props.marginTop,
+              props.height - props.marginTop
             ].map(zoomedYScale.invert))
-          .range([0, this.currentProps.height - (2 * this.currentProps.marginTop)]);
+          .range([0, props.height - (2 * props.marginTop)]);
 
         track.zoomed(
           trackXScale,
@@ -938,7 +941,36 @@ class TrackRenderer extends React.Component {
         );
         continue;
       }
-      const track = this.trackDefObjects[uid].trackObject;
+
+      if (this.trackDefObjects[uid].trackDef.track.position === 'gallery') {
+        // gallery tracks need different scales which go beyond the ends of
+        // center track and encompass the center view plus the gallery's width
+
+        const trackXScale = scaleLinear()
+          .domain(
+            [
+              props.marginLeft + props.leftWidthNoGallery,
+              props.marginLeft + props.leftWidth + props.centerWidth + props.galleryDim,
+            ].map(zoomedXScale.invert))
+          .range(
+            [0, props.centerWidth + (2 * props.galleryDim)]
+          );
+
+        const trackYScale = scaleLinear()
+          .domain(
+            [
+              props.marginTop + props.topHeightNoGallery,
+              props.marginTop + props.topHeight + props.centerHeight + props.galleryDim,
+            ].map(zoomedYScale.invert))
+          .range([0, props.centerHeight - (2 * props.galleryDim)]);
+
+        track.zoomed(
+          trackXScale.copy(),
+          trackYScale.copy(),
+          this.zoomTransform.k,
+        );
+        continue;
+      }
 
       track.zoomed(
         newXScale.copy(),
@@ -946,8 +978,8 @@ class TrackRenderer extends React.Component {
         this.zoomTransform.k,
         this.zoomTransform.x + this.xPositionOffset,
         this.zoomTransform.y + this.yPositionOffset,
-        this.currentProps.marginLeft + this.currentProps.leftWidth,
-        this.currentProps.marginTop + this.currentProps.topHeight,
+        props.marginLeft + props.leftWidth,
+        props.marginTop + props.topHeight,
       );
     }
 
@@ -1443,6 +1475,13 @@ class TrackRenderer extends React.Component {
           track.chromInfoPath,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
+          {
+            location: track.position,
+            width: track.width,
+            height: track.height,
+            offsetX: track.offsetX,
+            offsetY: track.offsetY,
+          }
         );
 
       default:
@@ -1560,15 +1599,18 @@ TrackRenderer.defaultProps = {
   centerHeight: 0,
   centerWidth: 0,
   children: [],
+  galleryDim: 0,
   height: 0,
   initialXDomain: [],
   initialYDomain: [],
   isRangeSelection: false,
   leftWidth: 0,
+  leftWidthNoGallery: 0,
   marginLeft: 0,
   marginTop: 0,
   positionedTracks: [],
   topHeight: 0,
+  topHeightNoGallery: 0,
   width: 0,
   metaTracks: [],
 };
@@ -1578,11 +1620,13 @@ TrackRenderer.propTypes = {
   centerHeight: PropTypes.number,
   centerWidth: PropTypes.number,
   children: PropTypes.array,
+  galleryDim: PropTypes.number,
   height: PropTypes.number,
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
   isRangeSelection: PropTypes.bool,
   leftWidth: PropTypes.number,
+  leftWidthNoGallery: PropTypes.number,
   marginLeft: PropTypes.number,
   marginTop: PropTypes.number,
   onMouseMoveZoom: PropTypes.func,
@@ -1592,6 +1636,7 @@ TrackRenderer.propTypes = {
   metaTracks: PropTypes.array,
   svgElement: PropTypes.object.isRequired,
   topHeight: PropTypes.number,
+  topHeightNoGallery: PropTypes.number,
   width: PropTypes.number,
 };
 

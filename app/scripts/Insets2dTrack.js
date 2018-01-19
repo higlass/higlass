@@ -22,12 +22,14 @@ export default class Insets2dTrack extends PixiTrack {
     chromInfoPath,
     options,
     animate,
+    positioning  // Computed track position, location, and offset
   ) {
     super(scene, options);
 
     this.dataConfig = dataConfig;
     this.options = options;
     this.animate = animate;
+    this.positioning = positioning;  // Needed for the gallery view
 
     this.fetchChromInfo = chromInfo.get(chromInfoPath);
 
