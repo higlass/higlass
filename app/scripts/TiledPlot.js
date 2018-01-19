@@ -624,11 +624,6 @@ class TiledPlot extends React.Component {
         height = this.topHeight + this.centerHeight + this.bottomHeight;
     }
 
-    console.log(
-      track.uid, track.position,
-      top, height, left, width,
-    );
-
     if (TRACK_LOCATIONS.indexOf(location) === -1) {
       console.warn('Track with unknown position present:', location, track);
     }
@@ -943,24 +938,24 @@ class TiledPlot extends React.Component {
     // gallery goes around the central view it's dimension takes up twice the
     // space!
     this.galleryDim = this.props.tracks.gallery
-      .map(x => x.height).reduce(sum);
+      .map(x => x.height).reduce(sum, 0);
 
     // left, top, right, and bottom have fixed heights / widths
     // the center will vary to accomodate their dimensions
     this.topHeightNoGallery = this.props.tracks.top
-      .map(x => x.height).reduce(sum);
+      .map(x => x.height).reduce(sum, 0);
     this.topHeight = this.topHeightNoGallery + this.galleryDim;
 
     this.bottomHeightNoGallery = this.props.tracks.bottom
-      .map(x => x.height).reduce(sum);
+      .map(x => x.height).reduce(sum, 0);
     this.bottomHeight = this.bottomHeightNoGallery + this.galleryDim;
 
     this.leftWidthNoGallery = this.props.tracks.left
-      .map(x => x.width).reduce(sum);
+      .map(x => x.width).reduce(sum, 0);
     this.leftWidth = this.leftWidthNoGallery + this.galleryDim;
 
     this.rightWidthNoGallery = this.props.tracks.right
-      .map(x => x.width).reduce(sum);
+      .map(x => x.width).reduce(sum, 0);
     this.rightWidth = this.rightWidthNoGallery + this.galleryDim;
 
 
@@ -975,19 +970,6 @@ class TiledPlot extends React.Component {
       - this.leftWidth
       - this.rightWidth
       - (2 * this.props.horizontalMargin)
-    );
-
-    console.log(
-      'galleryDim', this.galleryDim,
-      'topHeightNoGallery', this.topHeightNoGallery,
-      'bottomHeightNoGallery', this.bottomHeightNoGallery,
-      'leftWidthNoGallery', this.leftWidthNoGallery,
-      'rightWidthNoGallery', this.rightWidthNoGallery,
-      'centerHeight', this.centerHeight,
-      'centerWidth', this.centerWidth,
-      'w', this.state.width, 'h', this.state.height,
-      'vm', (2 * this.props.verticalMargin),
-      'hm', (2 * this.props.horizontalMargin)
     );
 
     const trackOutline = 'none';
