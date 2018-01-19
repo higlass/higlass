@@ -54,15 +54,17 @@ class TrackControl extends React.Component {
           <use xlinkHref="#cog" />
         </svg>
 
-        <svg
-          ref={(c) => { this.imgAdd = c; }}
-          className="no-zoom"
-          onClick={() => this.props.onAddSeries(this.props.uid)}
-          style={this.props.imgStyleAdd}
-          styleName={buttonClassName}
-        >
-          <use xlinkHref="#plus" />
-        </svg>
+        {this.props.onAddSeries &&
+          <svg
+            ref={(c) => { this.imgAdd = c; }}
+            className="no-zoom"
+            onClick={() => this.props.onAddSeries(this.props.uid)}
+            style={this.props.imgStyleAdd}
+            styleName={buttonClassName}
+          >
+            <use xlinkHref="#plus" />
+          </svg>
+        }
 
         <svg
           ref={(c) => { this.imgClose = c; }}
