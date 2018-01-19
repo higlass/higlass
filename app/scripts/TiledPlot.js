@@ -603,16 +603,27 @@ class TiledPlot extends React.Component {
       case 'gallery':
         left += this.leftWidthNoGallery;
         top += this.topHeightNoGallery;
-        height = this.centerHeight;
+        width = (
+          this.state.width
+          - this.leftWidthNoGallery
+          - this.rightWidthNoGallery
+          - (2 * this.props.horizontalMargin)
+        );
+        height = (
+          this.state.height
+          - this.topHeightNoGallery
+          - this.bottomHeightNoGallery
+          - (2 * this.props.verticalMargin)
+        );
 
         for (let i = 0; i < this.state.tracks.gallery.length; i++) {
           if (this.state.tracks.gallery[i].uid === track.uid) {
             break;
           } else {
+            width -= (2 * this.state.tracks.gallery[i].height);
+            height -= (2 * this.state.tracks.gallery[i].height);
             left += this.state.tracks.gallery[i].height;
             top += this.state.tracks.gallery[i].height;
-            width += (2 * this.state.tracks.gallery[i].height);
-            height += (2 * this.state.tracks.gallery[i].height);
           }
         }
 
@@ -1212,11 +1223,13 @@ class TiledPlot extends React.Component {
           centerHeight={this.centerHeight}
           centerWidth={this.centerWidth}
           dragging={this.props.dragging}
+          galleryDim={this.galleryDim}
           height={this.state.height}
           initialXDomain={this.props.initialXDomain}
           initialYDomain={this.props.initialYDomain}
           isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
           leftWidth={this.leftWidth}
+          leftWidthNoGallery={this.leftWidthNoGallery}
           marginLeft={this.props.horizontalMargin}
           marginTop={this.props.verticalMargin}
           metaTracks={this.props.metaTracks}
@@ -1233,6 +1246,7 @@ class TiledPlot extends React.Component {
           setCentersFunction={this.props.setCentersFunction}
           svgElement={this.props.svgElement}
           topHeight={this.topHeight}
+          topHeightNoGallery={this.topHeightNoGallery}
           uid={this.props.uid}
           width={this.state.width}
           zoomable={this.props.zoomable}
