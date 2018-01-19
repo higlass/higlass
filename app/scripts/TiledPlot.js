@@ -533,6 +533,8 @@ class TiledPlot extends React.Component {
     let left = this.props.horizontalMargin;
     let width = this.centerWidth;
     let height = track.height;
+    let offsetX = 0;
+    let offsetY = 0;
 
     switch (location) {
       case 'top':
@@ -615,6 +617,8 @@ class TiledPlot extends React.Component {
           - this.bottomHeightNoGallery
           - (2 * this.props.verticalMargin)
         );
+        offsetX = this.galleryDim;
+        offsetY = this.galleryDim;
 
         for (let i = 0; i < this.state.tracks.gallery.length; i++) {
           if (this.state.tracks.gallery[i].uid === track.uid) {
@@ -624,8 +628,13 @@ class TiledPlot extends React.Component {
             height -= (2 * this.state.tracks.gallery[i].height);
             left += this.state.tracks.gallery[i].height;
             top += this.state.tracks.gallery[i].height;
+            offsetX -= this.state.tracks.gallery[i].height;
+            offsetY -= this.state.tracks.gallery[i].height;
           }
         }
+
+        track.offsetX = offsetX;
+        track.offsetY = offsetY;
 
         break;
 
