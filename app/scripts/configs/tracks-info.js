@@ -906,8 +906,8 @@ export const TRACKS_INFO = [
   {
     type: 'insets',
     datatype: ['matrix'],
-    minHeight: 100,
-    minWidth: 100,
+    minHeight: 24,
+    minWidth: 24,
     orientation: '2d',
     thumbnail: svgInsetsIcon,
     defaultOptions: {
