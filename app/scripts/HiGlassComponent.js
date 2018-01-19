@@ -32,6 +32,7 @@ import {
   dictKeys,
   dictValues,
   download,
+  fillInMinWidths,
   forwardEvent,
   getTrackByUid,
   getTrackPositionByUid,
@@ -1303,13 +1304,13 @@ class HiGlassComponent extends React.Component {
     objVals(this.viewHeaders).filter(x => x).forEach(viewHeader => viewHeader.checkWidth());
   }
 
+  /**
+   * If tracks don't have specified dimensions, add in the known
+   * minimums
+   *
+   * Operates on the tracks stored for this TiledPlot.
+   */
   fillInMinWidths(tracksDict) {
-    /**
-         * If tracks don't have specified dimensions, add in the known
-         * minimums
-         *
-         * Operates on the tracks stored for this TiledPlot.
-         */
     const horizontalLocations = ['top', 'bottom'];
 
     // first make sure all track types are specified
@@ -2520,11 +2521,11 @@ class HiGlassComponent extends React.Component {
     const views = viewConfig.views;
     let viewsByUid = {};
 
-    if (!viewConfig.views || viewConfig.views.length == 0)
+    if (!viewConfig.views || viewConfig.views.length === 0)
       throw 'No views provided in viewConfig';
 
     views.forEach((v) => {
-      this.fillInMinWidths(v.tracks);
+      fillInMinWidths(v.tracks);
 
       // if a view doesn't have a uid, assign it one
       if (!v.uid) { v.uid = slugid.nice(); }
