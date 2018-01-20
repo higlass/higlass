@@ -42,7 +42,7 @@ export const getValueScale = function(scalingType, minValue, maxValue, defaultSc
     console.warn('Negative values present in data. Defaulting to linear scale: ', this.scale.minValue);
   }
 
-  return scaleLog().range([254, 0])
+  return scaleLinear().range([254, 0])
     .domain([minValue, minValue + maxValue]);
 }
 
