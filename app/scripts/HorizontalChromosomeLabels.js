@@ -162,7 +162,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
         ? `${cumPos.chr}:1`
         : `${cumPos.chr}:${tickFormat(ticks[i])}`;
 
-      graphics.lineStyle(6, TICK_COLOR);
+      graphics.lineStyle(1, TICK_COLOR);
 
       // draw the tick lines
       graphics.moveTo(this._xScale(cumPos.pos + ticks[i]), this.dimensions[1]);
