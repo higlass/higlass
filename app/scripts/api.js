@@ -59,6 +59,7 @@ const api = function api(context) {
         }));
 
         self.setState({
+          viewConfig: newViewConfig,
           views: viewsByUid,
         }, () => {
 
