@@ -1,3 +1,7 @@
+v0.10.12 (2017-01-20)
+
+- Fixed get scale bug
+
 v0.10.11 (2017-01-17)
 
 - Fixed non-draggable views bug
