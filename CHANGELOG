@@ -1,3 +1,7 @@
+v0.10.12 (2017-01-21)
+
+- Fixed pseudocounts in linear-scaled heatmaps
+
 v0.10.12 (2017-01-20)
 
 - Fixed get scale bug
