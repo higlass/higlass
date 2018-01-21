@@ -133,6 +133,8 @@ export class TiledPlot extends React.Component {
       this.measureSize();
     });
 
+    // add event listeners for drag and drop events
+    this.addEventListeners();
   }
 
   componentWillReceiveProps(newProps) {
@@ -181,6 +183,9 @@ export class TiledPlot extends React.Component {
 
   componentWillUnmount() {
     this.closing = true;
+
+    this.removeEventListeners();
+
   }
 
   addUidsToTracks(tracks) {
@@ -916,6 +921,72 @@ export class TiledPlot extends React.Component {
     return null;
   }
 
+    /**
+   * Draw an overlay that shows the positions of all the different
+   * track areas
+   */
+  getIdealizedTrackPositionsOverlay() {
+    const topDiv = (
+      <div
+        style={{
+          marginLeft: '25%',
+          marginRight: '25%',
+          background: 'red',
+          border: '1px solid black',
+          width: '50%',
+          height: '25%',
+        }}
+      />
+    );
+
+    const leftDiv = (
+      <div
+        style={{
+          background: 'red',
+          border: '1px solid black',
+          width: '25%',
+          height: '100%',
+        }}
+      />
+    );
+
+    const centerDiv = (
+      <div
+        style={{
+          background: 'red',
+          border: '1px solid black',
+          width: '50%',
+          height: '100%',
+        }}
+      />
+    );
+
+    const rightDiv = React.cloneElement(leftDiv);
+    const bottomDiv = React.cloneElement(topDiv);
+
+    return(
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        { topDiv }
+        <div
+          style={{
+          display: 'flex',
+          height: '50%',
+          width: '100%',
+          }}
+        >
+          { leftDiv }
+          { centerDiv }
+          { rightDiv }
+        </div>
+        { bottomDiv }
+      </div>);
+  }
+
   render() {
     // left, top, right, and bottom have fixed heights / widths
     // the center will vary to accomodate their dimensions
@@ -1337,6 +1408,9 @@ export class TiledPlot extends React.Component {
         className="tiled-plot-div"
         onContextMenu={this.contextMenuHandler.bind(this)}
         styleName="styles.tiled-plot"
+        onDragEnter={(evt) => {
+          console.log('tp dragEnter');
+        }}
       >
         {trackRenderer}
         {overlays}
@@ -1345,10 +1419,27 @@ export class TiledPlot extends React.Component {
         {closeTrackMenu}
         {trackOptionsElement}
         {this.getContextMenu()}
+        {this.getIdealizedTrackPositionsOverlay()}
       </div>
     );
   }
 
+  /*-------------------- Custom Methods -----------------------*/
+
+	addEventListeners() {
+    this.eventListeners = [
+    ];
+
+    this.eventListeners.forEach(
+      event => document.addEventListener(event.name, event.callback, false)
+    );
+  }
+
+  removeEventListeners() {
+    this.eventListeners.forEach(
+      event => document.removeEventListener(event.name, event.fnc)
+    );
+  }
 }
 
 TiledPlot.propTypes = {
