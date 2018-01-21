@@ -232,10 +232,17 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
    *              and tile.graphics
    */
   renderTile(tile) {
-    this.valueScale = getValueScale(this.options.heatmapValueScaling,
-      this.scale.minValue, this.scale.maxValue, 'log');
+    const [scaleType, valueScale] = getValueScale(this.options.heatmapValueScaling,
+      this.scale.minValue, this.medianVisibleValue, this.scale.maxValue, 'log');
+
+    this.valueScale = valueScale;
+    let pseudocount = 0;
+
+    if (scaleType == 'log')
+      pseudocount = this.valueScale.domain()[0];
 
     this.limitedValueScale = this.valueScale.copy();
+
     if (this.options
             && typeof (this.options.scaleStartPercent) !== 'undefined'
             && typeof (this.options.scaleEndPercent) !== 'undefined') {
