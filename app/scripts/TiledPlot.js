@@ -132,6 +132,7 @@ export class TiledPlot extends React.Component {
 
       this.measureSize();
     });
+
   }
 
   componentWillReceiveProps(newProps) {
@@ -1347,6 +1348,7 @@ export class TiledPlot extends React.Component {
       </div>
     );
   }
+
 }
 
 TiledPlot.propTypes = {

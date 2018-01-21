@@ -90,6 +90,7 @@ export class TiledPixiTrack extends PixiTrack {
           'Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error
         );
 
+
         this.trackNotFoundText = '';
         this.errorTextText = this.tilesetInfo.error;
         this.tilesetInfo = null;
@@ -98,6 +99,7 @@ export class TiledPixiTrack extends PixiTrack {
         return;
       }
 
+      console.log('tilesetInfo:', this.tilesetInfo);
       this.maxZoom = +this.tilesetInfo.max_zoom;
 
       if (this.options && this.options.maxZoom) {
@@ -667,6 +669,7 @@ export class TiledPixiTrack extends PixiTrack {
 
     return valueScale;
   }
+
 }
 
 export default TiledPixiTrack;

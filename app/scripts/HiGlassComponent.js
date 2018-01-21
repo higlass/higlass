@@ -297,7 +297,8 @@ class HiGlassComponent extends React.Component {
       icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox),
     );
 
-    //loadChromInfos(this.state.views);
+    // add event listeners for drag and drop events
+    this.addEventListeners();
   }
 
   componentWillReceiveProps(newProps) {
@@ -353,6 +354,9 @@ class HiGlassComponent extends React.Component {
 
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
+
+    this.removeEventListeners();
+
     apiDestroy();
   }
 
@@ -3066,6 +3070,72 @@ class HiGlassComponent extends React.Component {
         />
         {exportLinkModal}
       </div>
+    );
+  }
+
+  /*-------------------- Custom Methods -----------------------*/
+
+	addEventListeners() {
+    this.eventListeners = [
+      {
+        name: 'dragenter',
+        callback: (event) => {
+          console.log('dragenter');
+          console.log('event:', event.dataTransfer);
+          this.setState({
+            isActive: true,
+          });
+
+          event.stopPropagation();
+          event.preventDefault();
+          return false;
+        },
+      },
+      {
+        name: 'dragover',
+        callback: (event) => {
+          console.log('dragover');
+          event.stopPropagation();
+          event.preventDefault();
+          return false;
+        },
+      },
+      {
+        name: 'dragleave',
+        callback: (event) => {
+          console.log('dragleave');
+          event.stopPropagation();
+          if (event.target === this.dropLayer) {
+            this.setState({
+              isActive: false,
+            });
+          }
+
+          event.stopPropagation();
+          event.preventDefault();
+          return false;
+        },
+      },
+      {
+        name: 'drop',
+        callback: (event) => {
+          this.setState({
+            isActive: false,
+          });
+
+          event.preventDefault();
+        },
+      },
+    ];
+
+    this.eventListeners.forEach(
+      event => document.addEventListener(event.name, event.callback, false)
+    );
+  }
+
+  removeEventListeners() {
+    this.eventListeners.forEach(
+      event => document.removeEventListener(event.name, event.fnc)
     );
   }
 }

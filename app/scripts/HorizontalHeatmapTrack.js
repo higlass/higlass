@@ -267,7 +267,7 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     tileProxy.tileDataToPixData(
       tile,
       this.limitedValueScale,
-      this.valueScale.domain()[0], // used as a pseudocount to prevent taking the log of 0
+      pseudocount, // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
       (pixData) => {
         // the tileData has been converted to pixData by the worker script and needs to be loaded
