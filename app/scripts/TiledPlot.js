@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
 
 import CenterTrack from './CenterTrack';
+import DragListeningDiv from './DragListeningDiv.js';
 import TrackRenderer from './TrackRenderer';
 import AddTrackModal from './AddTrackModal';
 import ConfigTrackMenu from './ConfigTrackMenu';
@@ -81,6 +82,7 @@ export class TiledPlot extends React.Component {
         null,
       ],
 
+      draggingHappening: false,
       chromInfo: null,
       contextMenuPosition: null,
     };
@@ -921,17 +923,28 @@ export class TiledPlot extends React.Component {
     return null;
   }
 
+  /**
+   * Return the avilable positions where a track can be placed given it's
+   * type (e.g. 'top', 'middle', 'bottom', 'left', 'right')
+   *
+   * @param {string} trackType: The datatype of track (e.g. 'matrix', 'vector')
+   *
+   * @returns {Set} A set of available track positions (e.g. 'top', 'middle', 'bottom'...)
+   */
+  getAvailablePositions(trackType) {
+
+  }
+
     /**
    * Draw an overlay that shows the positions of all the different
    * track areas
    */
   getIdealizedTrackPositionsOverlay() {
     const topDiv = (
-      <div
+      <DragListeningDiv
         style={{
           marginLeft: '25%',
           marginRight: '25%',
-          background: 'red',
           border: '1px solid black',
           width: '50%',
           height: '25%',
@@ -940,9 +953,8 @@ export class TiledPlot extends React.Component {
     );
 
     const leftDiv = (
-      <div
+      <DragListeningDiv
         style={{
-          background: 'red',
           border: '1px solid black',
           width: '25%',
           height: '100%',
@@ -951,9 +963,8 @@ export class TiledPlot extends React.Component {
     );
 
     const centerDiv = (
-      <div
+      <DragListeningDiv
         style={{
-          background: 'red',
           border: '1px solid black',
           width: '50%',
           height: '100%',
@@ -965,26 +976,39 @@ export class TiledPlot extends React.Component {
     const bottomDiv = React.cloneElement(topDiv);
 
     return(
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-        }}
-      >
-        { topDiv }
+      <div>
         <div
           style={{
-          display: 'flex',
-          height: '50%',
-          width: '100%',
+            position: 'absolute',
+            width: this.state.width,
+            height: this.state.height,
+            background: 'white',
+            opacity: 0.4,
+          }}
+        />
+        <div
+          style={{
+            width: this.state.width,
+            height: this.state.height,
+            position: 'absolute',
           }}
         >
-          { leftDiv }
-          { centerDiv }
-          { rightDiv }
+          { topDiv }
+          <div
+            style={{
+            display: 'flex',
+            height: '50%',
+            width: '100%',
+            }}
+          >
+            { leftDiv }
+            { centerDiv }
+            { rightDiv }
+          </div>
+          { bottomDiv }
         </div>
-        { bottomDiv }
-      </div>);
+      </div>
+    );
   }
 
   render() {
@@ -1419,16 +1443,40 @@ export class TiledPlot extends React.Component {
         {closeTrackMenu}
         {trackOptionsElement}
         {this.getContextMenu()}
-        {this.getIdealizedTrackPositionsOverlay()}
+        {this.state.draggingHappening && this.getIdealizedTrackPositionsOverlay()}
       </div>
     );
   }
 
   /*-------------------- Custom Methods -----------------------*/
 
-	addEventListeners() {
+  addEventListeners() {
     this.eventListeners = [
-    ];
+      {
+        name: 'dragstart',
+        callback: (event) => {
+          console.log('dragstart');
+          const eventData = event.dataTransfer.getData('text/json');
+
+          console.log('eventData:', eventData);
+
+          this.setState({
+            draggingHappening: true,
+          });
+          return false;
+        },
+      },
+      {
+        name: 'dragend',
+        callback: (event) => {
+          this.setState({
+            draggingHappening: false,
+          });
+          console.log('dragend');
+          return false;
+        },
+      },
+    ]
 
     this.eventListeners.forEach(
       event => document.addEventListener(event.name, event.callback, false)
