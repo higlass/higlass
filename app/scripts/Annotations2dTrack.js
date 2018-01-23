@@ -2,6 +2,7 @@ import TiledPixiTrack from './TiledPixiTrack';
 
 // Services
 import { tileProxy } from './services';
+import { create } from './services/pub-sub';
 
 // Utils
 import { colorToHex } from './utils';
@@ -13,6 +14,11 @@ class Annotations2dTrack extends TiledPixiTrack {
     this.drawnRects = {};
 
     this.options.minSquareSize = +this.options.minSquareSize;
+
+    const { publish, subscribe, unsubscribe } = create({});
+    this.publish = publish;
+    this.subscribe = subscribe;
+    this.unsubscribe = unsubscribe;
   }
 
   /**
@@ -186,6 +192,12 @@ class Annotations2dTrack extends TiledPixiTrack {
         graphics.drawRect(
           drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height
         );
+
+        this.publish('annotationDrawn', {
+          uid,
+          viewPos: [drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height],
+          dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd]
+        });
       });
   }
 
