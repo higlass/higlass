@@ -1,6 +1,7 @@
 export { default as absToChr } from './abs-to-chr';
 export { default as accessorTransposition } from './accessor-transposition';
 export { default as addArrays } from './add-arrays';
+export { default as base64ToCanvas } from './base64-to-canvas';
 export { default as chromInfoBisector } from './chrom-info-bisector';
 export { default as chrToAbs } from './chr-to-abs';
 export { default as cloneEvent } from './clone-event';
