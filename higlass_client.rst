@@ -12,7 +12,7 @@ Views can be added by cloning an existing view:
 
     <video autoplay loop src="_static/add-views.mp4" />
 
-Closing And Resizing Videos
+Closing and resizing views
 ***************************
 
 Views can be closed using the cross on the upper-right corner and resized using
