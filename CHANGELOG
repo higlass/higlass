@@ -10,7 +10,7 @@ entered
 - Simplified `hglib` API
 - Updated third-party libs to get rid of deprecation warnings for React v16
 
-v0.10.12 (2017-01-21)
+v0.10.13 (2017-01-21)
 
 - Fixed pseudocounts in linear-scaled heatmaps
 
