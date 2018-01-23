@@ -7,7 +7,7 @@ Genome Position Search Box
 The genome position search box section a view config is specific to each view.
 It is used to search for locations in the view. The full configuration has a
 pointer to a chromSizes file and an autocomplete source which will provide
-suggestions for gene names. The automcomplete source should point to a
+suggestions for gene names. The autocomplete source should point to a
 `gene-annotations` file.
 
 .. code-block:: javascript

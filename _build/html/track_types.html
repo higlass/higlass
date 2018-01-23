@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Views" href="views.html" />
+    <link rel="next" title="View Configs" href="view_config.html" />
     <link rel="prev" title="HiGlass Server" href="higlass_server.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -122,8 +122,15 @@ be outside of the bounds of the track.</p>
 datatype: <code class="docutils literal"><span class="pre">vector</span></code></p>
 <p>Line tracks display 1D vector data. Because each line segment requires two
 adjacent points to be present, data with lots of NaNs may lead to a fragmented
-plot. For such data, the <a class="reference internal" href="#point-track"><span class="std std-ref">point track</span></a> may be more
+plot. For such data, the <a class="reference internal" href="#bar-track"><span class="std std-ref">bar track</span></a> or <a class="reference internal" href="#point-track"><span class="std std-ref">point track</span></a> may be more
 appropriate.</p>
+</div>
+<div class="section" id="bar">
+<span id="bar-track"></span><h2>Bar<a class="headerlink" href="#bar" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/bar-track-thumb.png" class="align-right" src="_images/bar-track-thumb.png" />
+<p>track-type: <code class="docutils literal"><span class="pre">horizontal-bar</span></code>
+datatype: <code class="docutils literal"><span class="pre">vector</span></code></p>
+<p>Bar tracks display 1D vector data as bars.</p>
 </div>
 <div class="section" id="point">
 <span id="point-track"></span><h2>Point<a class="headerlink" href="#point" title="Permalink to this headline">¶</a></h2>
@@ -220,9 +227,14 @@ adding a track to the <em>center</em> view.</p>
 <li class="toctree-l2"><a class="reference internal" href="#d-rectangle-domain">2D Rectangle Domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#horizontal-2d-rectangle-domain">Horizontal 2D Rectangle Domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#line">Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bar">Bar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#point">Point</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#chromosome-labels">Chromosome Labels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#chromosome-grid">Chromosome Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#genome-position-search-box">Genome Position Search Box</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="views.html">Views</a><ul>
@@ -237,7 +249,7 @@ adding a track to the <em>center</em> view.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="higlass_server.html" title="previous chapter">HiGlass Server</a></li>
-      <li>Next: <a href="views.html" title="next chapter">Views</a></li>
+      <li>Next: <a href="view_config.html" title="next chapter">View Configs</a></li>
   </ul></li>
 </ul>
 </div>
