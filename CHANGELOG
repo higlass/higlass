@@ -9,6 +9,7 @@ develop (2018-01-??)
 entered
 - Simplified `hglib` API
 - Updated third-party libs to get rid of deprecation warnings for React v16
+- Fixed small bug in placing rules
 
 v0.10.13 (2017-01-21)
 

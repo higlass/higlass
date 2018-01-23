@@ -27,10 +27,6 @@ const RuleMixin = Mixin(superclass => class extends superclass {
     this.draw();
   }
 
-  /*
-   * This function is for seeing whether this track should respond
-   * to events at this mouse position.
-   */
   respondsToPosition() {
     return this.highlighted;
   }

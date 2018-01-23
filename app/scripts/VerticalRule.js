@@ -53,16 +53,11 @@ export default class VerticalRule extends mix(PixiTrack).with(RuleMixin, Vertica
   }
 
   mouseMoveHandler(mousePos) {
-    if (
-      this.isPointInsideTrack(mousePos.x, mousePos.y)
+    this.highlighted = (
+      this.isWithin(mousePos.x, mousePos.y)
       && this.isMouseOverVerticalLine(mousePos)
-    ) {
-      this.highlighted = true;
-      this.draw();
-      return;
-    }
+    );
 
-    this.highlighted = false;
     this.draw();
   }
 }

@@ -49,7 +49,7 @@ class HorizontalRule extends mix(PixiTrack).with(RuleMixin, HorizontalRuleMixin)
 
 
   mouseMoveHandler(mousePos) {
-    if (this.isPointInsideTrack(mousePos.x, mousePos.y) &&
+    if (this.isWithin(mousePos.x, mousePos.y) &&
       this.isMouseOverHorizontalLine(mousePos)) {
         this.highlighted = true;
         this.draw();
