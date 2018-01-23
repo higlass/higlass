@@ -1,11 +1,10 @@
-import { mix, Mixin } from 'mixwith';
+import { mix } from 'mixwith';
 
-import PixiTrack from './PixiTrack.js';
-import { colorToHex } from './utils';
+import PixiTrack from './PixiTrack';
 
 import { RuleMixin } from './RuleMixin';
-import { HorizontalRuleMixin } from './HorizontalRule.js';
-import { VerticalRuleMixin } from './VerticalRule.js';
+import { HorizontalRuleMixin } from './HorizontalRule';
+import { VerticalRuleMixin } from './VerticalRule';
 
 export class CrossRule extends mix(PixiTrack).with(RuleMixin, HorizontalRuleMixin, VerticalRuleMixin) {
   constructor(stage, xPosition, yPosition, options, animate) {
@@ -24,14 +23,14 @@ export class CrossRule extends mix(PixiTrack).with(RuleMixin, HorizontalRuleMixi
   }
 
   mouseMoveHandler(mousePos) {
-    if (this.isWithin(mousePos.x, mousePos.y) &&
-      this.isMouseOverHorizontalLine(mousePos) || this.isMouseOverVerticalLine(mousePos)) {
-        this.highlighted = true;
-        this.draw();
-        return;
-    }
+    this.highlighted = (
+      this.isWithin(mousePos.x, mousePos.y)
+      && (
+        this.isMouseOverHorizontalLine(mousePos)
+        || this.isMouseOverVerticalLine(mousePos)
+      )
+    );
 
-    this.highlighted = false;
     this.draw();
   }
 }
