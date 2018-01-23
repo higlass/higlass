@@ -16,7 +16,7 @@ export class CrossRule extends mix(PixiTrack).with(RuleMixin, HorizontalRuleMixi
   }
 
   draw() {
-    const graphics = this.pMain; 
+    const graphics = this.pMain;
     graphics.clear();
 
     this.drawHorizontalRule(graphics);
@@ -24,7 +24,7 @@ export class CrossRule extends mix(PixiTrack).with(RuleMixin, HorizontalRuleMixi
   }
 
   mouseMoveHandler(mousePos) {
-    if (this.isPointInsideTrack(mousePos.x, mousePos.y) &&
+    if (this.isWithin(mousePos.x, mousePos.y) &&
       this.isMouseOverHorizontalLine(mousePos) || this.isMouseOverVerticalLine(mousePos)) {
         this.highlighted = true;
         this.draw();
