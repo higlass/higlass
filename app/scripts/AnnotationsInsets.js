@@ -74,6 +74,9 @@ class AnnotationsInsets {
     this.newAnno = !this.drawnAnnoIdxOld.has(uid);
     this.drawnAnnoIdx.add(uid);
 
+    const width = this.insetsTrack.dimensions[0];
+    const height = this.insetsTrack.dimensions[1];
+
     if (
       (
         viewPos[2] <= this.options.insetThreshold
@@ -82,9 +85,9 @@ class AnnotationsInsets {
       &&
       (
         (locus.minX >= 0 || locus.maxX > 0)
-        && (locus.minX < this.width || locus.maxX <= this.width)
+        && (locus.minX < width || locus.maxX <= width)
         && (locus.minY >= 0 || locus.maxY > 0)
-        && (locus.minY < this.height || locus.maxY <= this.height)
+        && (locus.minY < height || locus.maxY <= height)
       )
     ) {
       this.insetsToBeDrawn.push(locus);
