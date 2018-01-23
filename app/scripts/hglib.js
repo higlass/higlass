@@ -42,11 +42,11 @@ export const createHgComponent = (element, viewConfig, options, callback) => {
    */
   const hg = launch(element, viewConfig, options);
   try {
+    callback(hg.api);
     console.warn(
       'Deprecated use of `createHgComponent`. The api is directly returned ' +
       'now.'
     );
-    callback(hg.api);
   } catch (e) { /* Nothing */ }
   return hg.api;
 };

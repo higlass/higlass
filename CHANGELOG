@@ -10,11 +10,24 @@ entered
 - Simplified `hglib` API
 - Updated third-party libs to get rid of deprecation warnings for React v16
 
-v0.10.10 (2018-01-
+v0.10.13 (2017-01-21)
+
+- Fixed pseudocounts in linear-scaled heatmaps
+
+v0.10.12 (2017-01-20)
+
+- Fixed get scale bug
+
+v0.10.11 (2017-01-17)
+
+- Fixed non-draggable views bug
+
+v0.10.10 (2018-01-17)
 
 - Default to log scaling if there are negative values
 - Fixed the custom colormap
 - Fix the gene annotations color changing
+- Fixed two regressions regarding the viewport projections
 
 v0.10.9 (2018-01-13)
 

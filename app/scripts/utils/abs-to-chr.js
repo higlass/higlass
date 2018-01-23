@@ -1,6 +1,10 @@
 import { chromInfoBisector } from './';
 
 const absToChr = (absPosition, chromInfo) => {
+  if (!chromInfo.cumPositions.length) {
+    return null;
+  }
+
   let insertPoint = chromInfoBisector(chromInfo.cumPositions, absPosition);
   const lastChr = chromInfo.cumPositions[chromInfo.cumPositions.length - 1].chr;
   const lastLength = chromInfo.chromLengths[lastChr];
