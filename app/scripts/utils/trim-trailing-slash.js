@@ -1,3 +1,3 @@
-const trimTrailingSlash = url => url.replace(/\/$/, '');
+const trimTrailingSlash = url => (url || '').replace(/\/$/, '');
 
 export default trimTrailingSlash;
