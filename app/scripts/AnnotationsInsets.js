@@ -75,8 +75,17 @@ class AnnotationsInsets {
     this.drawnAnnoIdx.add(uid);
 
     if (
-      viewPos[2] <= this.options.insetThreshold ||
-      viewPos[3] <= this.options.insetThreshold
+      (
+        viewPos[2] <= this.options.insetThreshold
+        || viewPos[3] <= this.options.insetThreshold
+      )
+      &&
+      (
+        (locus.minX >= 0 || locus.maxX > 0)
+        && (locus.minX < this.width || locus.maxX <= this.width)
+        && (locus.minY >= 0 || locus.maxY > 0)
+        && (locus.minY < this.height || locus.maxY <= this.height)
+      )
     ) {
       this.insetsToBeDrawn.push(locus);
       this.insetsToBeDrawnIds.add(uid);
@@ -281,8 +290,8 @@ class AnnotationsInsets {
       let y = 0;
 
       if (lowerLeft) {
-        x = (numPosX - 1) - (index - numPerSide);
-        y = (numPosY - 1) - Math.min(0, (index - numPerSide) - (numPosX - 1));
+        x = Math.max(0, (numPosX - 1) - (index - numPerSide));
+        y = (numPosY - 1) - Math.max(0, (index - numPerSide) - (numPosX - 1));
       } else {
         x = Math.min(index, numPosX - 1);
         y = Math.max(0, index - (numPosX - 1));
