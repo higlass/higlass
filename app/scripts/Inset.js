@@ -5,12 +5,13 @@ const BASE_SCALE = 4;
 const BASE_SCALE_UP = 1.25;
 
 export default class Inset {
-  constructor(uid, dataPos, dataConfig, options, mouseHandler) {
+  constructor(uid, dataPos, remotePos, dataConfig, options, mouseHandler) {
     this.uid = uid;
     this.dataX1 = dataPos[0];
     this.dataX2 = dataPos[1];
     this.dataY1 = dataPos[2];
     this.dataY2 = dataPos[3];
+    this.remotePos = remotePos;
     this.dataConfig = dataConfig;
     this.options = options;
     this.mouseHandler = mouseHandler;
@@ -48,7 +49,7 @@ export default class Inset {
    *
    * @param  {Object}  options  Custom line style for the border and leader line
    */
-  clear(options) {
+  clear(options = this.options) {
     this.gBorder.clear();
     this.gLeaderLine.clear();
     this.gMain.clear();
@@ -110,69 +111,59 @@ export default class Inset {
    *
    * @param  {Function}  imgRenderer  Image renderer, i.e., function converting
    *   the data into canvas.
-   * @param  {Function}  translator  Translates data into final coordinates for
-   *   querying for the inset image.
    * @param  {Boolean}  force  If `true` forces a rerendering of the image.
    */
-  drawImage(imgRenderer, translator, force = false) {
+  drawImage(imgRenderer, force = false) {
     if (!this.data) {
       if (!this.inFlight) {
-        this.inFlight = this.fetchData(translator)
+        this.inFlight = this.fetchData()
           .then((data) => {
             this.data = data;
             this.inFlight = false;
-            return this.drawImage(imgRenderer, translator, force);
+            return this.drawImage(imgRenderer, force);
           })
           .catch((err) => {
-            console.error('Could not load inset', err);
+            console.error(
+              `Could not fetch the inset's image at [${this.remotePos.join(',')}]`,
+              err
+            );
           });
       }
       return this.inFlight;
     }
 
-    if (!this.sprite || force) this.renderImage(this.data, imgRenderer);
-
-    this.positionImage();
-
-    return Promise.resolve(true);
+    return this.renderImage(this.data, imgRenderer, force)
+      .then(() => {
+        this.positionImage();
+        return true;
+      })
+      .catch(err => console.error(err));
   }
 
   /**
    * Fetch data for the image.
    *
-   * @param  {Function}  translator  [description]
    * @return  {Object}  Promise resolving to the JSON response
    */
-  fetchData(translator) {
-    const x = translator(this.dataX1);
-    const y = translator(this.dataY1);
-
-    const bedpe = [
-      x[0],
-      x[1],
-      x[1] + this.dataX2 - this.dataX1,
-      y[0],
-      y[1],
-      y[1] + this.dataY2 - this.dataY1,
-      this.dataConfig.tilesetUid,
-      2  // Zoom level
+  fetchData() {
+    const loci = [
+      [
+        ...this.remotePos,
+        this.dataConfig.tilesetUid,
+        5
+      ]
     ];
 
     return fetch(
-      `${this.dataConfig.server || ''}/fragments_by_loci/?precision=2&dims=${this.res}`, {
+      `${this.dataConfig.server}/fragments_by_loci/?precision=2&dims=${this.res}`, {
         method: 'POST',
         headers: {
           accept: 'application/json; charset=UTF-8',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify([bedpe])
+        body: JSON.stringify(loci)
       })
-      .then(response => response.json())
-      .catch((error) => {
-        console.warn(
-          `Could not fetch snippet data for [${bedpe.join(',')}]`, error
-        );
-      });
+      .then(response => response.json());
   }
 
   /**
@@ -321,23 +312,28 @@ export default class Inset {
    * @param  {Function}  imgRenderer  Image renderer converting the data into
    *   canvas.
    */
-  renderImage(data, imgRenderer) {
-    this.data = imgRenderer(data, this.res, this.res);
+  renderImage(data, imgRenderer, force) {
+    if (this.srpite && !force) return Promise.resolve();
 
-    this.sprite = new PIXI.Sprite(
-      PIXI.Texture.fromCanvas(
-        this.data, PIXI.SCALE_MODES.NEAREST
-      )
-    );
+    return imgRenderer(data, this.res, this.res)
+      .then((renderedData) => {
+        this.data = renderedData;
 
-    this.sprite.interactive = true;
-    this.sprite
-      .on('mousedown', this.mouseDownHandler.bind(this))
-      .on('mouseover', this.mouseOverHandler.bind(this))
-      .on('mouseout', this.mouseOutHandler.bind(this))
-      .on('mouseup', this.mouseUpHandler.bind(this));
+        this.sprite = new PIXI.Sprite(
+          PIXI.Texture.fromCanvas(
+            this.data, PIXI.SCALE_MODES.NEAREST
+          )
+        );
 
-    this.gMain.addChild(this.sprite);
+        this.sprite.interactive = true;
+        this.sprite
+          .on('mousedown', this.mouseDownHandler.bind(this))
+          .on('mouseover', this.mouseOverHandler.bind(this))
+          .on('mouseout', this.mouseOutHandler.bind(this))
+          .on('mouseup', this.mouseUpHandler.bind(this));
+
+        this.gMain.addChild(this.sprite);
+      });
   }
 
   /**

@@ -9,8 +9,9 @@ import { chromInfo } from './services';
 import { create } from './services/pub-sub';
 
 // Utils
-import { absToChr, colorToHex, flatten, tileToCanvas } from './utils';
-// import { workerSetPix } from './worker';
+import {
+  absToChr, base64ToCanvas, colorToHex, flatten, tileToCanvas
+} from './utils';
 
 const BASE_RES = 16;
 const BASE_SCALE = 4;
@@ -19,6 +20,7 @@ export default class Insets2dTrack extends PixiTrack {
   constructor(
     scene,
     dataConfig,
+    dataType,
     chromInfoPath,
     options,
     animate,
@@ -27,11 +29,14 @@ export default class Insets2dTrack extends PixiTrack {
     super(scene, options);
 
     this.dataConfig = dataConfig;
+    this.dataType = dataType;
     this.options = options;
     this.animate = animate;
     this.positioning = positioning;  // Needed for the gallery view
 
-    this.fetchChromInfo = chromInfo.get(chromInfoPath);
+    this.fetchChromInfo = this.dataType === 'cooler'
+      ? chromInfo.get(chromInfoPath)
+      : undefined;
 
     this.dropShadow = new DropShadowFilter(
       90,
@@ -75,42 +80,81 @@ export default class Insets2dTrack extends PixiTrack {
   initInset(
     uid,
     dataPos,
+    remotePos,
     dataConfig = this.dataConfig,
     options = this.options,
     mouseHandler = this.insetMouseHandler
   ) {
-    this.insets[uid] = new Inset(uid, dataPos, dataConfig, options, mouseHandler);
+    this.insets[uid] = new Inset(
+      uid, dataPos, remotePos, dataConfig, options, mouseHandler
+    );
     this.pMain.addChild(this.insets[uid].graphics);
     return this.insets[uid];
   }
 
-  drawInset(uid, x, y, w, h, sx, sy, dX1, dX2, dY1, dY2) {
-    return this.fetchChromInfo.then((_chromInfo) => {
-      const inset = (
-        this.insets[uid] ||
-        this.initInset(
-          uid,
-          [dX1, dX2, dY1, dY2]
-        )
-      );
+  drawInset(inset) {
+    if (this.dataType === 'cooler') {
+      if (!this.fetchChromInfo) return Promise.reject('This is truly odd!');
 
-      inset.clear(this.options);
-      inset.globalOffset(...this.position);
-      inset.origin(sx, sy);
-      inset.position(x, y);
-      inset.size(w, h);
-      inset.drawLeaderLine();
-      inset.drawBorder();
-      return inset.drawImage(
-        this.renderImage, locus => absToChr(locus, _chromInfo)
-      );
-    });
+      return this.fetchChromInfo
+        .then(_chromInfo => this.createFetchRenderInset(
+          ...inset,
+          this.dataToGenomePos(
+            inset[7], inset[8], inset[9], inset[10], _chromInfo
+          )
+        ));
+    }
+
+    return this.createFetchRenderInset(
+      ...inset,
+      this.dataToImPos(inset[7], inset[8], inset[9], inset[10])
+    );
+  }
+
+  createFetchRenderInset(
+    uid, x, y, w, h, sx, sy, dX1, dX2, dY1, dY2, remotePos
+  ) {
+    const inset = (
+      this.insets[uid] ||
+      this.initInset(
+        uid,
+        [dX1, dX2, dY1, dY2],
+        remotePos
+      )
+    );
+
+    inset.clear(this.options);
+    inset.globalOffset(...this.position);
+    inset.origin(sx, sy);
+    inset.position(x, y);
+    inset.size(w, h);
+    inset.drawLeaderLine();
+    inset.drawBorder();
+    return inset.drawImage(this.rendererInset.bind(this));
+  }
+
+  dataToGenomePos(dX1, dX2, dY1, dY2, _chromInfo) {
+    const x = absToChr(dX1, _chromInfo);
+    const y = absToChr(dX2, _chromInfo);
+
+    return [
+      x[0],
+      x[1],
+      x[1] + dX2 - dX1,
+      y[0],
+      y[1],
+      y[1] + dY2 - dY1,
+    ];
+  }
+
+  dataToImPos(dX1, dX2, dY1, dY2) {
+    return [dX1, dX2, dY1, dY2];
   }
 
   drawInsets(insets, insetIds) {
     this.cleanUp(insetIds);
 
-    return insets.map(inset => this.drawInset(...inset));
+    return insets.map(inset => this.drawInset(inset));
   }
 
   /**
@@ -161,8 +205,14 @@ export default class Insets2dTrack extends PixiTrack {
     this.animate();
   }
 
-  renderImage(data, w, h) {
-    const flatImg = flatten(data.fragments[0]);
+  rendererInset(data, w, h) {
+    return data.dataType === 'dataUrl'
+      ? this.rendererImage(data.fragments[0], w, h)
+      : this.rendererHeatmap(data.fragments[0], w, h);
+  }
+
+  rendererHeatmap(data, w, h) {
+    const flatImg = flatten(data);
 
     const n = flatImg.length;
 
@@ -177,7 +227,11 @@ export default class Insets2dTrack extends PixiTrack {
       pixData[j + 3] = 255;
     }
 
-    return tileToCanvas(pixData, w, h);
+    return Promise.resolve(tileToCanvas(pixData, w, h));
+  }
+
+  rendererImage(data, w, h) {
+    return base64ToCanvas(data, w, h);
   }
 
   zoomed(newXScale, newYScale, k) {
