@@ -912,8 +912,14 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * @param {Object}  tile  Tile data to be rendered.
    */
   renderTile(tile) {
-    this.valueScale = getValueScale(this.options.heatmapValueScaling,
-      this.scale.minValue, this.scale.maxValue, 'log');
+    const [scaleType, valueScale] = getValueScale(this.options.heatmapValueScaling,
+            this.scale.minValue, this.medianVisibleValue, this.scale.maxValue, 'log');
+
+    this.valueScale = valueScale;
+    let pseudocount = 0;
+
+    if (scaleType == 'log')
+        pseudocount = this.valueScale.domain()[0];
 
     this.valueScale
       .range([254, 0])
@@ -941,8 +947,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     tileProxy.tileDataToPixData(
       tile,
       this.limitedValueScale,
-      // used as a pseudocount to prevent taking the log of 0
-      this.valueScale.domain()[0],
+      pseudocount, // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
       (pixData) => {
         // the tileData has been converted to pixData by the worker script and

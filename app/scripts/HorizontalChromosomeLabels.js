@@ -20,10 +20,11 @@ const TICK_COLOR = 0x777777;
 
 class HorizontalChromosomeLabels extends PixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, chromInfoPath) {
-    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
+    super(scene, options);
 
     this.searchField = null;
     this.chromInfo = null;
+    this.dataConfig = dataConfig;
 
     this.gTicks = {};
     this.tickTexts = {};
@@ -187,11 +188,17 @@ class HorizontalChromosomeLabels extends PixiTrack {
     const x1 = absToChr(this._xScale.domain()[0], this.chromInfo);
     const x2 = absToChr(this._xScale.domain()[1], this.chromInfo);
 
+    if (!x1 || !x2) {
+      console.warn('Empty chromInfo:', this.dataConfig, this.chromInfo);
+      return;
+    }
+
     for (let i = 0; i < this.texts.length; i++) {
       this.texts[i].visible = false;
       this.gTicks[this.chromInfo.cumPositions[i].chr].visible = false;
     }
 
+    // iterate over each chromosome
     for (let i = x1[3]; i <= x2[3]; i++) {
       const xCumPos = this.chromInfo.cumPositions[i];
 
