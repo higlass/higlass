@@ -905,7 +905,7 @@ export const TRACKS_INFO = [
   },
   {
     type: 'insets',
-    datatype: ['matrix'],
+    datatype: ['cooler', 'image'],
     minHeight: 24,
     minWidth: 24,
     orientation: '2d',
