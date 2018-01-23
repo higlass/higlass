@@ -55,7 +55,7 @@ import AnnotationsInsets from './AnnotationsInsets';
 import Insets2dTrack from './Insets2dTrack';
 
 // Utils
-import { forwardEvent, dictItems } from './utils';
+import { forwardEvent, dictItems, trimTrailingSlash } from './utils';
 
 // Services
 import { pubSub } from './services';
@@ -1023,7 +1023,7 @@ class TrackRenderer extends React.Component {
     let dataConfig = track.data;
     if (!dataConfig) {
       dataConfig = {
-        server: track.server,
+        server: trimTrailingSlash(track.server),
         tilesetUid: track.tilesetUid
       };
     }
@@ -1472,6 +1472,7 @@ class TrackRenderer extends React.Component {
         return new Insets2dTrack(
           this.pStage,
           dataConfig,
+          track.type,
           track.chromInfoPath,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
