@@ -48,7 +48,7 @@ export class HorizontalRule extends mix(PixiTrack).with(RuleMixin, HorizontalRul
 
 
   mouseMoveHandler(mousePos) {
-    if (this.isPointInsideTrack(mousePos.x, mousePos.y) &&
+    if (this.isWithin(mousePos.x, mousePos.y) &&
       this.isMouseOverHorizontalLine(mousePos)) {
         this.highlighted = true;
         this.draw();
@@ -60,7 +60,7 @@ export class HorizontalRule extends mix(PixiTrack).with(RuleMixin, HorizontalRul
   }
 
   draw() {
-    const graphics = this.pMain; 
+    const graphics = this.pMain;
     graphics.clear();
 
     this.drawHorizontalRule(graphics);
