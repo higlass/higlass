@@ -67,6 +67,32 @@ chr11   <span class="m">32409321</span>        <span class="m">32457081</span>  
 </pre></div>
 </div>
 </div>
+<div class="section" id="bedpe-like-files">
+<h2>Bedpe-like Files<a class="headerlink" href="#bedpe-like-files" title="Permalink to this headline">¶</a></h2>
+<p>BEDPE-like files contain two sets of chromosomal coordinates:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>chr10   <span class="m">74160000</span>        <span class="m">74720000</span>    chr10   <span class="m">74165000</span>    <span class="m">74725000</span>
+chr12   <span class="m">120920000</span>       <span class="m">121640000</span>   chr12   <span class="m">120925000</span>   <span class="m">121645000</span>
+chr15   <span class="m">86360000</span>        <span class="m">88840000</span>    chr15   <span class="m">86365000</span>    <span class="m">88845000</span>
+</pre></div>
+</div>
+<p>To view such files in HiGlass, they have to be aggregated so that tiles don’t
+contain too many values and slow down the renderer:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>clodius aggregate bedpe <span class="se">\</span>
+    --assembly hg19 <span class="se">\</span>
+    --chr1-col <span class="m">1</span> --from1-col <span class="m">2</span> --to1-col <span class="m">3</span> <span class="se">\</span>
+    --chr2-col <span class="m">4</span> --from2-col <span class="m">5</span> --to2-col <span class="m">6</span> <span class="se">\</span>
+    --output-file domains.txt.multires <span class="se">\</span>
+    domains.txt
+</pre></div>
+</div>
+<p>This requires the <cite>–chr1-col</cite>, <cite>–from1-col</cite>, <cite>–to1-col</cite>, <cite>–chr2-col</cite>,
+<cite>–from2-col</cite>, <cite>–to2-col</cite> parameters to specify which columns in the datafile
+describe the x-extent and y-extent of the region.</p>
+<p>The priority with which regions are included in lower resolution tiles is
+specified by the <cite>–impotance-column</cite> parameter. This can either provide a
+value, contain <cite>random</cite>, or if it’s not specified, default to the size of the
+region.</p>
+</div>
 <div class="section" id="bedgraph-files">
 <h2>BedGraph files<a class="headerlink" href="#bedgraph-files" title="Permalink to this headline">¶</a></h2>
 <div class="admonition warning">
@@ -283,6 +309,7 @@ they are defined in:</p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data Preparation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#bed-files">Bed Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bedpe-like-files">Bedpe-like Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bedgraph-files">BedGraph files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bigwig-files">bigWig files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#loading-into-higlass">Loading into HiGlass</a></li>
@@ -295,12 +322,19 @@ they are defined in:</p>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#importing-into-higlass">Importing into HiGlass</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_client.html">HiGlass Client (Developer)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#track-documentation">Track Documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-new-track-types">Adding new track types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#higlass-api">HiGlass API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#coding-guidelines">Coding Guidelines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#other-documentation">Other Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_client.html">HiGlass Client User Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-views">Adding views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#closing-and-resizing-views">Closing and resizing views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#replacing-tracks">Replacing Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_developer.html">HiGlass Client (Developer)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#track-documentation">Track Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#adding-new-track-types">Adding new track types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#higlass-api">HiGlass API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#coding-guidelines">Coding Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#other-documentation">Other Documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_docker.html">HiGlass Docker</a><ul>
