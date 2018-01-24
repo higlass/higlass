@@ -1472,7 +1472,7 @@ class TrackRenderer extends React.Component {
         return new Insets2dTrack(
           this.pStage,
           dataConfig,
-          track.type,
+          track.datatype,
           track.chromInfoPath,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
