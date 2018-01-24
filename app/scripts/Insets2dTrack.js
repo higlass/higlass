@@ -192,7 +192,14 @@ export default class Insets2dTrack extends PixiTrack {
     mouseHandler = this.insetMouseHandler
   ) {
     this.insets[uid] = new Inset(
-      uid, dataPos, remotePos, dataConfig, tilesetInfo, options, mouseHandler
+      uid,
+      dataPos,
+      remotePos,
+      dataConfig,
+      tilesetInfo,
+      options,
+      mouseHandler,
+      this.dataType === 'cooler'
     );
     this.pMain.addChild(this.insets[uid].graphics);
     return this.insets[uid];

@@ -7,7 +7,14 @@ const BASE_SCALE_UP = 1.25;
 
 export default class Inset {
   constructor(
-    uid, dataPos, remotePos, dataConfig, tilesetInfo, options, mouseHandler
+    uid,
+    dataPos,
+    remotePos,
+    dataConfig,
+    tilesetInfo,
+    options,
+    mouseHandler,
+    isTransposed
   ) {
     this.uid = uid;
     this.dataX1 = dataPos[0];
@@ -19,6 +26,7 @@ export default class Inset {
     this.tilesetInfo = tilesetInfo;
     this.options = options;
     this.mouseHandler = mouseHandler;
+    this.t = isTransposed ? -1 : 1;
 
     this.gMain = new PIXI.Graphics();
     this.gBorder = new PIXI.Graphics();
@@ -88,8 +96,8 @@ export default class Inset {
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
     this.gBorder.drawRect(
-      this.globalOffsetX + this.offsetX + x - (width / 2),
-      this.globalOffsetY + this.offsetY + y - (height / 2),
+      this.globalOffsetX + (-this.offsetX * this.t) + x - (width / 2 * this.t),
+      this.globalOffsetY + (-this.offsetY * this.t) + y - (height / 2 * this.t),
       width * this.scaleExtra,
       height * this.scaleExtra
     );
@@ -255,6 +263,11 @@ export default class Inset {
     this.mouseDown = true;
     this.scale(BASE_SCALE_UP);
     this.mouseHandler.mouseDown(event, this.gMain);
+    console.log(
+      `Annotation: ${this.uid} |`,
+      `Remote pos: ${this.remotePos.join(', ')} |`,
+      `Ideal zoom level for snippet: ${this.computedZoom()}`
+    );
   }
 
   /**
@@ -306,11 +319,11 @@ export default class Inset {
   positionImage(
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
-    this.sprite.x = this.globalOffsetX - this.offsetX + x + (width / 2);
-    this.sprite.y = this.globalOffsetY - this.offsetY + y + (height / 2);
+    this.sprite.x = this.globalOffsetX - this.offsetX + x + (width / -2 * this.t);
+    this.sprite.y = this.globalOffsetY - this.offsetY + y + (height / -2 * this.t);
 
-    this.sprite.scale.x = -1 * this.scaleBase * this.scaleExtra;
-    this.sprite.scale.y = -1 * this.scaleBase * this.scaleExtra;
+    this.sprite.scale.x = this.t * this.scaleBase * this.scaleExtra;
+    this.sprite.scale.y = this.t * this.scaleBase * this.scaleExtra;
   }
 
   /**
@@ -364,8 +377,8 @@ export default class Inset {
    */
   scale(amount = 1) {
     this.scaleExtra = amount;
-    this.offsetX = this.width * this.scaleBase * (amount - 1) / -2;
-    this.offsetY = this.height * this.scaleBase * (amount - 1) / -2;
+    this.offsetX = this.width * this.scaleBase * (amount - 1) / 2 * this.t;
+    this.offsetY = this.height * this.scaleBase * (amount - 1) / 2 * this.t;
 
     this.positionImage();
     this.gBorder.clear();
