@@ -179,12 +179,22 @@ class AnnotationsInsets {
       ...obj
     }));
 
-    const insetRes = this.insetsTrack.insetRes * this.insetsTrack.insetScale;
-    const insetResH = insetRes / 2;
+    const insetRes = this.insetsTrack.insetMaxRes * this.insetsTrack.insetScale;
 
     const insets = insetsToBeDrawn
       .map((inset) => {
         if (!this.insets[inset.uid]) {
+          const widthAbs = inset.maxX - inset.minX;
+          const heightAbs = inset.maxY - inset.minY;
+
+          const width = widthAbs > heightAbs
+            ? insetRes
+            : widthAbs / heightAbs * insetRes;
+
+          const height = heightAbs > widthAbs
+            ? insetRes
+            : heightAbs / widthAbs * insetRes;
+
           // Add new inset
           this.insets[inset.uid] = {
             t: 1.0,
@@ -192,10 +202,10 @@ class AnnotationsInsets {
             y: (inset.maxY + inset.minY) / 2,
             ox: (inset.maxX + inset.minX) / 2,  // Origin x
             oy: (inset.maxY + inset.minY) / 2,  // Origin y
-            width: insetRes,
-            height: insetRes,
-            wh: insetResH,  // Width half
-            hh: insetResH,  // Heigth half
+            width,
+            height,
+            wh: width / 2,  // Width half
+            hh: height / 2,  // Heigth half
             ...inset
           };
         } else {

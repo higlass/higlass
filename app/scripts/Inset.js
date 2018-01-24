@@ -1,11 +1,14 @@
 import * as PIXI from 'pixi.js';
 
-const BASE_RES = 16;
+const BASE_MIN_RES = 12;
+const BASE_MAX_RES = 24;
 const BASE_SCALE = 4;
 const BASE_SCALE_UP = 1.25;
 
 export default class Inset {
-  constructor(uid, dataPos, remotePos, dataConfig, options, mouseHandler) {
+  constructor(
+    uid, dataPos, remotePos, dataConfig, tilesetInfo, options, mouseHandler
+  ) {
     this.uid = uid;
     this.dataX1 = dataPos[0];
     this.dataX2 = dataPos[1];
@@ -13,6 +16,7 @@ export default class Inset {
     this.dataY2 = dataPos[3];
     this.remotePos = remotePos;
     this.dataConfig = dataConfig;
+    this.tilesetInfo = tilesetInfo;
     this.options = options;
     this.mouseHandler = mouseHandler;
 
@@ -23,10 +27,12 @@ export default class Inset {
     this.gMain.addChild(this.gLeaderLine);
     this.gMain.addChild(this.gBorder);
 
-    this.res = this.options.resX || BASE_RES;
+    this.minRes = this.options.minRes || BASE_MIN_RES;
+    this.maxRes = this.options.maxRes || BASE_MAX_RES;
     this.scaleBase = this.options.scale || BASE_SCALE;
     this.scaleExtra = 1;
-    this.offset = 0;
+    this.offsetX = 0;
+    this.offsetY = 0;
     this.globalOffsetX = 0;
     this.globalOffsetY = 0;
 
@@ -82,8 +88,8 @@ export default class Inset {
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
     this.gBorder.drawRect(
-      this.globalOffsetX + this.offset + x - (width / 2),
-      this.globalOffsetY + this.offset + y - (height / 2),
+      this.globalOffsetX + this.offsetX + x - (width / 2),
+      this.globalOffsetY + this.offsetY + y - (height / 2),
       width * this.scaleExtra,
       height * this.scaleExtra
     );
@@ -141,21 +147,36 @@ export default class Inset {
   }
 
   /**
+   * Compute the closest zoom level providing enough resolution for displaying
+   * the snippet.
+   *
+   * @return  {Number}  Closest zoom level.
+   */
+  computedZoom() {
+    const absXLen = this.remotePos[1] - this.remotePos[0];
+    const absYLen = this.remotePos[3] - this.remotePos[2];
+    return Math.ceil(
+      Math.log2((this.maxRes * (2 ** this.tilesetInfo.max_zoom)) / Math.max(absXLen, absYLen))
+    );
+  }
+
+  /**
    * Fetch data for the image.
    *
    * @return  {Object}  Promise resolving to the JSON response
    */
   fetchData() {
+    this.computedZoom();
     const loci = [
       [
         ...this.remotePos,
         this.dataConfig.tilesetUid,
-        5
+        this.computedZoom()
       ]
     ];
 
     return fetch(
-      `${this.dataConfig.server}/fragments_by_loci/?precision=2&dims=${this.res}`, {
+      `${this.dataConfig.server}/fragments_by_loci/?precision=2&dims=${this.minRes}`, {
         method: 'POST',
         headers: {
           accept: 'application/json; charset=UTF-8',
@@ -285,8 +306,8 @@ export default class Inset {
   positionImage(
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
-    this.sprite.x = this.globalOffsetX - this.offset + x + (width / 2);
-    this.sprite.y = this.globalOffsetY - this.offset + y + (height / 2);
+    this.sprite.x = this.globalOffsetX - this.offsetX + x + (width / 2);
+    this.sprite.y = this.globalOffsetY - this.offsetY + y + (height / 2);
 
     this.sprite.scale.x = -1 * this.scaleBase * this.scaleExtra;
     this.sprite.scale.y = -1 * this.scaleBase * this.scaleExtra;
@@ -315,7 +336,7 @@ export default class Inset {
   renderImage(data, imgRenderer, force) {
     if (this.srpite && !force) return Promise.resolve();
 
-    return imgRenderer(data, this.res, this.res)
+    return imgRenderer(data, this.width, this.height)
       .then((renderedData) => {
         this.data = renderedData;
 
@@ -343,7 +364,8 @@ export default class Inset {
    */
   scale(amount = 1) {
     this.scaleExtra = amount;
-    this.offset = this.res * this.scaleBase * (amount - 1) / -2;
+    this.offsetX = this.width * this.scaleBase * (amount - 1) / -2;
+    this.offsetY = this.height * this.scaleBase * (amount - 1) / -2;
 
     this.positionImage();
     this.gBorder.clear();

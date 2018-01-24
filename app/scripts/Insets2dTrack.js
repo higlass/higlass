@@ -3,6 +3,7 @@ import { DropShadowFilter } from 'pixi-filters';
 // Components
 import PixiTrack from './PixiTrack';
 import Inset from './Inset';
+import DataFetcher from './DataFetcher';
 
 // Services
 import { chromInfo } from './services';
@@ -13,7 +14,8 @@ import {
   absToChr, base64ToCanvas, colorToHex, flatten, tileToCanvas
 } from './utils';
 
-const BASE_RES = 16;
+const BASE_MIN_RES = 12;
+const BASE_MAX_RES = 24;
 const BASE_SCALE = 4;
 
 export default class Insets2dTrack extends PixiTrack {
@@ -69,46 +71,34 @@ export default class Insets2dTrack extends PixiTrack {
     this.options.borderColor = colorToHex(this.options.borderColor);
     this.options.leaderLineColor = colorToHex(this.options.leaderLineColor);
 
-    this.insetRes = this.options.resX || BASE_RES;
+    this.insetMinRes = this.options.minRes || BASE_MIN_RES;
+    this.insetMaxRes = this.options.maxRes || BASE_MAX_RES;
     this.insetScale = this.options.scale || BASE_SCALE;
+
+    this.dataFetcher = new DataFetcher(dataConfig);
+    this.dataFetcher.tilesetInfo((tilesetInfo) => {
+      if (tilesetInfo.error) {
+        console.error(
+          'Error retrieving tileset info:', dataConfig, this.tilesetInfo.error
+        );
+      }
+      this.tilesetInfo = tilesetInfo;
+    });
   }
 
   clear() {
     this.pMain.clear();
   }
 
-  initInset(
-    uid,
-    dataPos,
-    remotePos,
-    dataConfig = this.dataConfig,
-    options = this.options,
-    mouseHandler = this.insetMouseHandler
-  ) {
-    this.insets[uid] = new Inset(
-      uid, dataPos, remotePos, dataConfig, options, mouseHandler
-    );
-    this.pMain.addChild(this.insets[uid].graphics);
-    return this.insets[uid];
-  }
-
-  drawInset(inset) {
-    if (this.dataType === 'cooler') {
-      if (!this.fetchChromInfo) return Promise.reject('This is truly odd!');
-
-      return this.fetchChromInfo
-        .then(_chromInfo => this.createFetchRenderInset(
-          ...inset,
-          this.dataToGenomePos(
-            inset[7], inset[8], inset[9], inset[10], _chromInfo
-          )
-        ));
-    }
-
-    return this.createFetchRenderInset(
-      ...inset,
-      this.dataToImPos(inset[7], inset[8], inset[9], inset[10])
-    );
+  /**
+   * Clean up inset instances
+   *
+   * @param  {Set}  insetIds  Set of inset IDs to keep
+   */
+  cleanUp(insetIds) {
+    Object.keys(this.insets)
+      .filter(id => !insetIds.has(id))
+      .forEach(this.destroyInset.bind(this));
   }
 
   createFetchRenderInset(
@@ -151,21 +141,33 @@ export default class Insets2dTrack extends PixiTrack {
     return [dX1, dX2, dY1, dY2];
   }
 
+  drawInset(inset) {
+    if (this.dataType === 'cooler') {
+      if (!this.fetchChromInfo) return Promise.reject('This is truly odd!');
+
+      return this.fetchChromInfo
+        .then(_chromInfo => this.createFetchRenderInset(
+          ...inset,
+          this.dataToGenomePos(
+            inset[7], inset[8], inset[9], inset[10], _chromInfo
+          )
+        ));
+    }
+
+    return this.createFetchRenderInset(
+      ...inset,
+      this.dataToImPos(inset[7], inset[8], inset[9], inset[10])
+    );
+  }
+
   drawInsets(insets, insetIds) {
+    if (!this.tilesetInfo) {
+      return [Promise.reject('Tileset info not available')];
+    }
+
     this.cleanUp(insetIds);
 
     return insets.map(inset => this.drawInset(inset));
-  }
-
-  /**
-   * Clean up inset instances
-   *
-   * @param  {Set}  insetIds  Set of inset IDs to keep
-   */
-  cleanUp(insetIds) {
-    Object.keys(this.insets)
-      .filter(id => !insetIds.has(id))
-      .forEach(this.destroyInset.bind(this));
   }
 
   /**
@@ -178,6 +180,22 @@ export default class Insets2dTrack extends PixiTrack {
     this.insets[uid].destroy();
     this.insets[uid] = undefined;
     delete this.insets[uid];
+  }
+
+  initInset(
+    uid,
+    dataPos,
+    remotePos,
+    dataConfig = this.dataConfig,
+    tilesetInfo = this.tilesetInfo,
+    options = this.options,
+    mouseHandler = this.insetMouseHandler
+  ) {
+    this.insets[uid] = new Inset(
+      uid, dataPos, remotePos, dataConfig, tilesetInfo, options, mouseHandler
+    );
+    this.pMain.addChild(this.insets[uid].graphics);
+    return this.insets[uid];
   }
 
   clickHandler(event, inset) {
