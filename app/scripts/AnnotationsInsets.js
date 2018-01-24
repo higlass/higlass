@@ -15,7 +15,7 @@ class AnnotationsInsets {
     this.insetsTrack = getTrackByUid(insetsTrack);
 
     if (!this.insetsTrack) {
-      console.warn(`Insets track (uid: ${insetsTrack}) not found`);
+      console.warn(`Insets track (uid: ${insetsTrack}) not found`, insetsTrack);
       return;
     }
 
@@ -35,19 +35,28 @@ class AnnotationsInsets {
 
     // Augment annotation tracks
     this.annotationTracks.forEach((track) => {
-      track.subscribe('annotationDrawn', this.annotationDrawnHandler.bind(this));
+      track.subscribe(
+        'annotationDrawn', this.annotationDrawnHandler.bind(this)
+      );
     });
 
     this.currK = 1;  // Current scale
-    this.drawnAnnoIdx = new Set();
+    this.drawnAnnoIds = new Set();
     this.insets = {};
+
+    this.tracksDrawingTiles = new Set();
 
     this.initTree();
 
     this.pubSubs = [];
-    this.pubSubs.push(
-      pubSub.subscribe('TiledPixiTrack.tilesDrawn', this.tilesDrawnHandler.bind(this))
-    );
+    this.pubSubs.push(pubSub.subscribe(
+      'TiledPixiTrack.tilesDrawnStart',
+      this.tilesDrawnStartHandler.bind(this)
+    ));
+    this.pubSubs.push(pubSub.subscribe(
+      'TiledPixiTrack.tilesDrawnEnd',
+      this.tilesDrawnEndHandler.bind(this)
+    ));
   }
 
   /**
@@ -71,8 +80,8 @@ class AnnotationsInsets {
       cY2: dataPos[3]
     };
 
-    this.newAnno = !this.drawnAnnoIdxOld.has(uid);
-    this.drawnAnnoIdx.add(uid);
+    this.newAnno = !this.drawnAnnoIdsOld.has(uid);
+    this.drawnAnnoIds.add(uid);
 
     const width = this.insetsTrack.dimensions[0];
     const height = this.insetsTrack.dimensions[1];
@@ -101,7 +110,7 @@ class AnnotationsInsets {
    * Build region tree of drawn annotations and trigger the creation of insets.
    */
   buildTree() {
-    if (!this.drawnAnnotations.length) return;
+    if (!this.drawnAnnotations.length && !this.insetsToBeDrawn.length) return;
 
     this.drawnAnnotations = [
       ...this.insetsToBeDrawn,
@@ -141,9 +150,8 @@ class AnnotationsInsets {
     this.oldInsets = this.insetsToBeDrawn;
     this.insetsToBeDrawn = [];
     this.insetsToBeDrawnIds = new Set();
-    this.drawnAnnoIdxOld = this.drawnAnnoIdx;
-    this.drawnAnnoIdx = new Set();
-    this.numTracksDrawn = 0;
+    this.drawnAnnoIdsOld = this.drawnAnnoIds;
+    this.drawnAnnoIds = new Set();
     this.newAnno = false;
   }
 
@@ -184,8 +192,8 @@ class AnnotationsInsets {
     const insets = insetsToBeDrawn
       .map((inset) => {
         if (!this.insets[inset.uid]) {
-          const widthAbs = inset.maxX - inset.minX;
-          const heightAbs = inset.maxY - inset.minY;
+          const widthAbs = inset.cX2 - inset.cX1;
+          const heightAbs = inset.cY2 - inset.cY1;
 
           const width = widthAbs > heightAbs
             ? insetRes
@@ -347,6 +355,14 @@ class AnnotationsInsets {
     });
   }
 
+  tilesDrawnStartHandler({ uuid }) {
+    if (!this.annotationTrackIds.has(uuid)) return;
+
+    if (!this.tracksDrawingTiles.size) this.initTree();
+
+    this.tracksDrawingTiles.add(uuid);
+  }
+
   /**
    * Callback function passed into the annotation tracks to trigger tree
    * building of the spatial RTree.
@@ -355,16 +371,16 @@ class AnnotationsInsets {
    * Simple counter that call `this.buildTree()` once the number of annotation
    * tracks is reached. This might need to be improved!=
    */
-  tilesDrawnHandler({ uuid }) {
+  tilesDrawnEndHandler({ uuid }) {
     if (!this.annotationTrackIds.has(uuid)) return;
 
-    this.numTracksDrawn += 1;
-    if (!(this.numTracksDrawn % this.annotationTracks.length)) this.buildTree();
+    if (!(this.tracksDrawingTiles.size % this.annotationTracks.length)) {
+      this.tracksDrawingTiles = new Set();
+      this.buildTree();
+    }
   }
 
   zoomHandler({ k }) {
-    this.initTree();
-
     this.scaleChanged = this.currK !== k;
     this.currK = k;
   }
