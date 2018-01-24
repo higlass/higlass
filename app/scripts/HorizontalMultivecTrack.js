@@ -1,6 +1,6 @@
 import { brushY } from 'd3-brush';
 import { scaleLinear, scaleLog } from 'd3-scale';
-import { select, event } from 'd3-selection';
+import { select, selectAll, clientPoint } from 'd3-selection';
 import * as PIXI from 'pixi.js';
 
 import { TiledPixiTrack } from './TiledPixiTrack';
@@ -169,5 +169,27 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
     // tile contains [zoomLevel, xPos]
     return `${tile.join('.')}`;
+  }
+
+  /**
+   * A default handler for mouseMoveEvents that just shows a little
+   * panel containing the position and value.
+   */
+  defaultMouseMoveHandler(evt) {
+
+    return;
+
+    console.log('hmt:', evt);
+    const colorHex = colorToHex('black');
+
+    this.pMouseOver.clear();
+
+    const rectWidth = 100;
+    const rectHeight = 100;
+
+    this.pMouseOver.beginFill(colorHex, 1.0);
+    this.pMouseOver.drawRect(evt.x,evt.y, 100,100);
+
+    this.animate();
   }
 }

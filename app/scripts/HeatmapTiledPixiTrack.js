@@ -116,6 +116,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   mouseMoveHandler(e) {
     if (!this.isWithin(e.x, e.y)) return;
 
+    console.log('mousemove');
+
     this.mouseX = e.x;
     this.mouseY = e.y;
 
@@ -716,12 +718,14 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   /**
-   * Get raw data for a relative 2D position
+   * Get raw data for a relative 2D position. Returns a submatrix centered
+   * around the given location.
    *
    * @param  {Integer}  x  Relative X display position (i.e., mouse cursor).
    * @param  {Integer}  y  Relative Y display position (i.e., mouse cursor).
    * @param  {Number}  z  Zoom level.
-   * @return  {Array}  Float32Array with the raw data.
+   * @return  {Array}  Float32Array with the raw data containing a square centered
+   * at the given location.
    */
   getData(x, y, z = this.zoomLevel) {
     // Init data

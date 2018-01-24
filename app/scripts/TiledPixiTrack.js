@@ -30,6 +30,8 @@ import DataFetcher from './DataFetcher';
 export const getValueScale = function(scalingType, minValue, pseudocount, maxValue, defaultScaling) {
   const scalingTypeToUse = scalingType || defaultScaling;
 
+  console.log('pseudocount', pseudocount, 'scalingType:', scalingType);
+
   if (scalingTypeToUse == 'log' && minValue > 0) {
     return ['log', scaleLog().range([254, 0])
       .domain([minValue + pseudocount, maxValue + pseudocount])];

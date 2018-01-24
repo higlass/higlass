@@ -110,6 +110,9 @@ export class PixiTrack extends Track {
     this.pMobile = new PIXI.Graphics();
     this.pAxis = new PIXI.Graphics();
 
+    // for drawing information on mouseover events
+    this.pMouseOver = new PIXI.Graphics();
+
     this.scene.addChild(this.pBase);
 
     this.pBase.addChild(this.pMasked);
@@ -118,6 +121,7 @@ export class PixiTrack extends Track {
     this.pMasked.addChild(this.pMask);
     this.pMasked.addChild(this.pMobile);
     this.pMasked.addChild(this.pBorder);
+    this.pMasked.addChild(this.pMouseOver);
     this.pMasked.addChild(this.pLabel);
     this.pBase.addChild(this.pAxis);
 

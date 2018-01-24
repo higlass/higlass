@@ -2752,8 +2752,7 @@ class HiGlassComponent extends React.Component {
         : dataX;
     }
 
-    pubSub.publish(
-      'app.mouseMove',
+    const evt = 
       {
         x: relPos[0],
         y: relPos[1],
@@ -2762,9 +2761,63 @@ class HiGlassComponent extends React.Component {
         dataX,
         dataY,
         isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
-        isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText
+        isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
+        track: hoveredTrack,
+        origEvt: e
       }
+
+    pubSub.publish(
+      'app.mouseMove', evt
     );
+
+    this.showHoverMenu(evt);
+  }
+
+  /**
+   * Show a menu displaying some information about the track under it
+   */
+  showHoverMenu(evt, track) {
+    // try to select the mouseover div
+    let mouseOverDiv = select('body').selectAll('.track-mouseover-menu')
+      .data([1])
+
+    mouseOverDiv
+      .exit()
+      .remove();
+
+    mouseOverDiv
+      .enter()
+      .append('div')
+    .classed('track-mouseover-menu', true);
+
+    mouseOverDiv = select('body').selectAll('.track-mouseover-menu');
+    const mousePos = clientPoint(select('body').node(), evt.origEvt);
+
+    mouseOverDiv
+    .style('position', 'absolute')
+      .style('left', mousePos[0] + "px")
+      .style('top', mousePos[1] + "px")
+      .style('width', '100px')
+      .style('height', '100px')
+      .style('pointer-events', 'none')
+      .style('background', 'red')
+    ;
+
+    const bbox = mouseOverDiv.node().getBoundingClientRect();
+
+    if (bbox.x + bbox.width > window.innerWidth) {
+      // the overlay box is spilling outside of the track so switch
+      // to showing it on the left
+      mouseOverDiv.style('left', (mousePos[0] - bbox.width) + 'px')
+    }
+
+    if (bbox.y + bbox.height > window.innerHeight) {
+      // the overlay box is spilling outside of the track so switch
+      // to showing it on the left
+      mouseOverDiv.style('top', (mousePos[1] - bbox.height) + 'px')
+    }
+
+    console.log('evt.track:', evt.track);
   }
 
   /**
