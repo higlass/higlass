@@ -68,6 +68,7 @@ export default class Inset {
     this.gLeaderLine.clear();
     this.gMain.clear();
     this.initGraphics(options);
+    this.imageRendering
   }
 
   /**
@@ -349,7 +350,9 @@ export default class Inset {
   renderImage(data, imgRenderer, force) {
     if (this.sprite && !force) return Promise.resolve();
 
-    return imgRenderer(data, this.width, this.height)
+    if (this.imageRendering) return this.imageRendering;
+
+    this.imageRendering = imgRenderer(data, this.width, this.height)
       .then((renderedData) => {
         this.data = renderedData;
 
@@ -368,6 +371,8 @@ export default class Inset {
 
         this.gMain.addChild(this.sprite);
       });
+
+    return this.imageRendering;
   }
 
   /**
