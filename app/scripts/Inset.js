@@ -347,7 +347,7 @@ export default class Inset {
    *   canvas.
    */
   renderImage(data, imgRenderer, force) {
-    if (this.srpite && !force) return Promise.resolve();
+    if (this.sprite && !force) return Promise.resolve();
 
     return imgRenderer(data, this.width, this.height)
       .then((renderedData) => {
