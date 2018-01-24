@@ -231,7 +231,7 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   rendererInset(data, w, h) {
-    return data.dataType === 'dataUrl'
+    return data.dataTypes[0] === 'dataUrl'
       ? this.rendererImage(data.fragments[0], w, h)
       : this.rendererHeatmap(data.fragments[0], w, h);
   }
