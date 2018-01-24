@@ -51,7 +51,7 @@ const testViewConfig = {
             options: {},
             contents: [
               {
-                uid: 'i1',
+                uid: 'imtiles',
                 type: 'image-tiles',
                 server: 'http://localhost:8001/api/v1/',
                 tilesetUid: 'gigapan-54825',
@@ -62,7 +62,7 @@ const testViewConfig = {
               {
                 server: 'http://localhost:8001/api/v1',
                 tilesetUid: 'gigapan-54825-snapshots',
-                uid: 'i1a',
+                uid: 'snapshots',
                 type: '2d-annotations',
                 options: {
                   coords: 'pixel',
@@ -79,14 +79,51 @@ const testViewConfig = {
                 },
                 position: 'center',
               },
+              {
+                server: 'http://localhost:8001/api/v1/',
+                tilesetUid: 'gigapan-54825',
+                uid: 'insets',
+                type: 'insets',
+                options: {
+                  minRes: 24,
+                  maxRes: 64,
+                  scale: 1,
+                  fill: 'white',
+                  fillOpacity: 1,
+                  borderColor: 'red',
+                  borderWidth: 2,
+                  borderOpacity: 1,
+                  leaderLineColor: 'red',
+                  leaderLineWidth: 2,
+                  leaderLineOpacity: 1,
+                  dropDistance: 1,
+                  dropBlur: 3,
+                  dropOpacity: 0.8,
+                  opacity: 1
+                },
+                position: 'center',
+              },
             ],
           }
         ],
         right: [],
         bottom: []
       },
+      metaTracks: [
+        {
+          uid: 'c2a',
+          type: 'annotations-insets',
+          insetsTrack: 'insets',
+          options: {
+            annotationTracks: [
+              'snapshots',
+            ],
+            insetThreshold: 16,
+          }
+        }
+      ],
       layout: {
-        w: 16,
+        w: 12,
         h: 12,
         x: 0,
         y: 0,
@@ -109,8 +146,7 @@ const testViewConfig = {
 window.hglib.createHgComponent(
   document.getElementById('development-demo'),
   testViewConfig,
-  { bounded: true },
-  (api) => { window.hgApi = api; }
+  { bounded: true }
 );
 </script>
 </html>
