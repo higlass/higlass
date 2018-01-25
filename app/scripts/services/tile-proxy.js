@@ -185,9 +185,11 @@ export const calculateTiles = (
   );
 };
 
-export const calculateTileWidth = (maxWidth, zoomLevel) => (
-  maxWidth / (2 ** zoomLevel)
-);
+export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
+  if (tilesetInfo.resolutions)
+    return tilesetInfo.resolutions[zoomLevel] * binsPerTile;
+  return tilesetInfo.max_width / (2 ** zoomLevel)
+};
 
 /**
  * Calculate the tiles that sould be visisble given the resolution and

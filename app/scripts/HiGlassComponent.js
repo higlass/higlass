@@ -2776,10 +2776,18 @@ class HiGlassComponent extends React.Component {
   /**
    * Show a menu displaying some information about the track under it
    */
-  showHoverMenu(evt, track) {
+  showHoverMenu(evt) {
+    // each track should have a function that returns an HTML representation
+    // of the data at a give position
+    // console.log('evt:', evt)
+    const mouseOverHtml = (evt.track && evt.track.getMouseOverHtml) ?
+      evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY) : '';
+
+    const data = mouseOverHtml.length ? [1] : [];
+
     // try to select the mouseover div
     let mouseOverDiv = select('body').selectAll('.track-mouseover-menu')
-      .data([1])
+      .data(data)
 
     mouseOverDiv
       .exit()
@@ -2797,11 +2805,19 @@ class HiGlassComponent extends React.Component {
     .style('position', 'absolute')
       .style('left', mousePos[0] + "px")
       .style('top', mousePos[1] + "px")
-      .style('width', '100px')
-      .style('height', '100px')
       .style('pointer-events', 'none')
-      .style('background', 'red')
+      .style('background', 'rgba(255,255,255,0.7)')
+      .style('margin', '10px')
+      .style('padding', '4px')
+      .style('border-radius', '5px')
+      .style('border', '1px solid black')
+      .html('');
     ;
+
+    if (!mouseOverDiv.node()) {
+      // probably not over a track so there's no mouseover rectangle
+      return;
+    }
 
     const bbox = mouseOverDiv.node().getBoundingClientRect();
 
@@ -2817,7 +2833,7 @@ class HiGlassComponent extends React.Component {
       mouseOverDiv.style('top', (mousePos[1] - bbox.height) + 'px')
     }
 
-    console.log('evt.track:', evt.track);
+    mouseOverDiv.html(mouseOverHtml);
   }
 
   /**
