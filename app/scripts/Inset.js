@@ -49,7 +49,7 @@ export default class Inset {
     this.maxSize = this.options.maxSize || BASE_MAX_SIZE;
     this.padding = this.options.padding || 0;
     this.paddingCustom = this.options.paddingCustom || {};
-    this.resolution = this.options.resolution || 0;
+    this.resolution = this.options.resolution || this.maxSize;
     this.resolutionCustom = this.options.resolutionCustom || {};
     this.scaleBase = this.options.scale || BASE_SCALE;
     this.additionalZoom = this.options.additionalZoom || 0;
