@@ -97,9 +97,9 @@ class AnnotationsInsets {
         && (locus.minY < height || locus.maxY <= height)
       )
     ) {
-      const maxDim = Math.max(locus.cX2 - locus.cX1, locus.cY2 - locus.cY1);
-      this.insetMinRes = Math.min(this.insetMinRes, maxDim);
-      this.insetMaxRes = Math.max(this.insetMinRes, maxDim);
+      const maxRemoteSize = Math.max(locus.cX2 - locus.cX1, locus.cY2 - locus.cY1);
+      this.insetMinRemoteSize = Math.min(this.insetMinRemoteSize, maxRemoteSize);
+      this.insetMaxRemoteSize = Math.max(this.insetMaxRemoteSize, maxRemoteSize);
       this.insetsToBeDrawn.push(locus);
       this.insetsToBeDrawnIds.add(uid);
     } else {
@@ -154,8 +154,8 @@ class AnnotationsInsets {
     this.drawnAnnoIdsOld = this.drawnAnnoIds;
     this.drawnAnnoIds = new Set();
     this.newAnno = false;
-    this.insetMinRes = Infinity;  // Larger dimension of the smallest inset
-    this.insetMaxRes = 0;  // Larger dimension of the largest inset
+    this.insetMinRemoteSize = Infinity;  // Larger dimension of the smallest inset
+    this.insetMaxRemoteSize = 0;  // Larger dimension of the largest inset
     this.tracksDrawingTiles = new Set();
   }
 
@@ -191,28 +191,30 @@ class AnnotationsInsets {
       ...obj
     }));
 
-    const insetMinRes = this.insetsTrack.insetMinRes * this.insetsTrack.insetScale;
-    const insetMaxRes = this.insetsTrack.insetMaxRes * this.insetsTrack.insetScale;
+    const insetMinSize = this.insetsTrack.insetMinSize * this.insetsTrack.insetScale;
+    const insetMaxSize = this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale;
 
     // Convert data (basepair position) to view (display pixel) resolution
     const finalRes = scaleQuantize()
-      .domain([this.insetMinRes, this.insetMaxRes])
+      .domain([this.insetMinRemoteSize, this.insetMaxRemoteSize])
       .range(range(
-        insetMinRes, insetMaxRes + 1, this.insetsTrack.options.resStepSize
+        insetMinSize, insetMaxSize + 1, this.insetsTrack.options.sizeStepSize
       ));
+
+    const newResScale = (
+      this.insetMinRemoteSize !== this.insetMinRemoteSizeOld
+      || this.insetMaxRemoteSize !== this.insetMaxRemoteSizeOld
+    );
+
+    // Update old remote size to avoid wiggling insets that did not change at
+    // all
+    this.insetMinRemoteSizeOld = this.insetMinRemoteSize;
+    this.insetMaxRemoteSizeOld = this.insetMaxRemoteSize;
 
     const insets = insetsToBeDrawn
       .map((inset) => {
         if (!this.insets[inset.uid]) {
-          const widthAbs = inset.cX2 - inset.cX1;
-          const heightAbs = inset.cY2 - inset.cY1;
-
-          const width = widthAbs >= heightAbs
-            ? finalRes(widthAbs)
-            : widthAbs / heightAbs * finalRes(heightAbs);
-          const height = heightAbs >= widthAbs
-            ? finalRes(heightAbs)
-            : heightAbs / widthAbs * width;
+          const { width, height } = this.computeSize(inset, finalRes);
 
           // Add new inset
           this.insets[inset.uid] = {
@@ -241,6 +243,18 @@ class AnnotationsInsets {
           this.insets[inset.uid].y -= dY;
 
           this.insets[inset.uid].t = this.scaleChanged ? 0.5 : 0;
+
+          if (newResScale) {
+            const { width, height } = this.computeSize(inset, finalRes);
+
+            this.insets[inset.uid].width = width;
+            this.insets[inset.uid].height = height;
+            this.insets[inset.uid].wh = width / 2;
+            this.insets[inset.uid].hh = height / 2;
+
+            // Let them wobble a bit because the size changed
+            this.insets[inset.uid].t = 0.25;
+          }
         }
 
         return this.insets[inset.uid];
@@ -288,6 +302,30 @@ class AnnotationsInsets {
     ]));
 
     return pos;
+  }
+
+  /**
+   * Compute the final inset size in pixels from their remote size (e.g., base
+   *   pairs or pixels)
+   *
+   * @param   {object}  inset  Inset definition object holding the remote size
+   *   of the inset.
+   * @param   {function}  scale  Translates between the remote size and the
+   *   pixel size.
+   * @return  {object}  Object holding the final pixel with and height.
+   */
+  computeSize(inset, scale) {
+    const widthAbs = inset.cX2 - inset.cX1;
+    const heightAbs = inset.cY2 - inset.cY1;
+
+    const width = widthAbs >= heightAbs
+      ? scale(widthAbs)
+      : widthAbs / heightAbs * scale(heightAbs);
+    const height = heightAbs >= widthAbs
+      ? scale(heightAbs)
+      : heightAbs / widthAbs * width;
+
+    return { width, height };
   }
 
   /**
@@ -384,6 +422,10 @@ class AnnotationsInsets {
     }
   }
 
+  /**
+   * Hook uo with the zoom event and trigger the r-tree initialization.
+   * @param   {number}  options.k  New zoom level.
+   */
   zoomHandler({ k }) {
     this.initTree();
 

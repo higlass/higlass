@@ -14,8 +14,8 @@ import {
   absToChr, base64ToCanvas, colorToHex, flatten, tileToCanvas
 } from './utils';
 
-const BASE_MIN_RES = 12;
-const BASE_MAX_RES = 24;
+const BASE_MIN_SIZE = 12;
+const BASE_MAX_SIZE = 24;
 const BASE_SCALE = 4;
 
 export default class Insets2dTrack extends PixiTrack {
@@ -71,8 +71,8 @@ export default class Insets2dTrack extends PixiTrack {
     this.options.borderColor = colorToHex(this.options.borderColor);
     this.options.leaderLineColor = colorToHex(this.options.leaderLineColor);
 
-    this.insetMinRes = this.options.minRes || BASE_MIN_RES;
-    this.insetMaxRes = this.options.maxRes || BASE_MAX_RES;
+    this.insetMinSize = this.options.minSize || BASE_MIN_SIZE;
+    this.insetMaxSize = this.options.maxSize || BASE_MAX_SIZE;
     this.insetScale = this.options.scale || BASE_SCALE;
 
     this.dataFetcher = new DataFetcher(dataConfig);

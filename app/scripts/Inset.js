@@ -1,7 +1,8 @@
+import { bisectLeft } from 'd3-array';
 import * as PIXI from 'pixi.js';
 
-const BASE_MIN_RES = 12;
-const BASE_MAX_RES = 24;
+const BASE_MIN_SIZE = 12;
+const BASE_MAX_SIZE = 24;
 const BASE_SCALE = 4;
 const BASE_SCALE_UP = 1.25;
 
@@ -44,17 +45,25 @@ export default class Inset {
     this.gMain.addChild(this.gLeaderLine);
     this.gMain.addChild(this.gBorder);
 
-    this.minRes = this.options.minRes || BASE_MIN_RES;
-    this.maxRes = this.options.maxRes || BASE_MAX_RES;
+    this.minSize = this.options.minSize || BASE_MIN_SIZE;
+    this.maxSize = this.options.maxSize || BASE_MAX_SIZE;
+    this.padding = this.options.padding || 0;
+    this.paddingCustom = this.options.paddingCustom || {};
+    this.resolution = this.options.resolution || 0;
+    this.resolutionCustom = this.options.resolutionCustom || {};
     this.scaleBase = this.options.scale || BASE_SCALE;
+    this.additionalZoom = this.options.additionalZoom || 0;
+    this.onClickScale = this.options.onClickScale || BASE_SCALE_UP;
+
     this.scaleExtra = 1;
     this.offsetX = 0;
     this.offsetY = 0;
     this.globalOffsetX = 0;
     this.globalOffsetY = 0;
 
-    this.additionalZoom = this.options.additionalZoom || 0;
-    this.onClickScale = this.options.onClickScale || BASE_SCALE_UP;
+    // Compute final resolution of inset
+    this.computeResolution();
+    this.computeRemotePaddedSize();
 
     this.initGraphics(options);
   }
@@ -62,11 +71,22 @@ export default class Inset {
   /* --------------------------- Getter / Setter ---------------------------- */
 
   /**
-   * Get main graphics.
+   * Return the main graphics of this class, which is `gMain`.
    */
   get graphics() {
     return this.gMain;
   }
+
+  /**
+   * Return the effective maximal size available for displaying the locus of
+   * interest, e.g., an annotation. This is the maximal size minus twice
+   * the padding as the inset's box model includes the padding into the final
+   * maximum size.
+   * @return  {number}  Maximum available pixels for displaying the locus.
+   */
+  // get maxSizeLocus() {
+  //   return this.maxSize - (2 * this.padding);
+  // }
 
   /* ---------------------------- Custom Methods ---------------------------- */
 
@@ -167,34 +187,77 @@ export default class Inset {
   }
 
   /**
-   * Compute the closest zoom level providing enough resolution for displaying
-   * the snippet.
+   * Compute the padded remote size of the locus defining this inset. This
+   *   method basically expands the remote size by the relative padding.
    *
-   * @return  {Number}  Closest zoom level.
+   * @example Assuming the remote data is given in base pairs (bp) and the
+   *   longest side of the locus is 8000bp with a padding of 0.2 then the
+   *   final padded remote size is `8000 + (8000 * 0.2 * 2) = 11200`.
    */
-  computedZoom() {
+  computeRemotePaddedSize() {
+    const paddingCustomLocSorted = Object.keys(this.paddingCustom)
+      .map(x => +x)
+      .sort((a, b) => a - b);
+
+    const entry = paddingCustomLocSorted[bisectLeft(
+      paddingCustomLocSorted, this.remoteSize
+    )];
+
+    const padding = entry ? this.paddingCustom[entry] : this.padding;
+
+    this.remotePaddedSize = this.remoteSize + (this.remoteSize * padding * 2);
+  }
+
+  /**
+   * Compute the remote size of the locus defining this inset and the final
+   *   resolution.
+   */
+  computeResolution() {
+    const resolutionCustomLocSorted = Object.keys(this.resolutionCustom)
+      .map(x => +x)
+      .sort((a, b) => a - b);
+
     const isBedpe = this.remotePos.length === 6;
     const xStartId = isBedpe ? 1 : 0;
     const xEndId = isBedpe ? 2 : 1;
     const yStartId = isBedpe ? 4 : 2;
     const yEndId = isBedpe ? 5 : 3;
-    const baseRes = isBedpe ? getBaseRes(this.tilesetInfo) : 1;
-
     const absXLen = this.remotePos[xEndId] - this.remotePos[xStartId];
     const absYLen = this.remotePos[yEndId] - this.remotePos[yStartId];
+    this.remoteSize = Math.max(absXLen, absYLen);
 
-    const zoomLevel = Math.max(0, Math.min(this.tilesetInfo.max_zoom, Math.min(
+    const entry = resolutionCustomLocSorted[bisectLeft(
+      resolutionCustomLocSorted, this.remoteSize
+    )];
+
+    this.finalRes = entry ? this.resolutionCustom[entry] : this.resolution;
+  }
+
+  /**
+   * Compute the closest zoom level providing enough resolution for displaying
+   * the snippet at maximum size
+   *
+   * @return  {Number}  Closest zoom level.
+   */
+  computedZoom() {
+    const isBedpe = this.remotePos.length === 6;
+
+    const baseRes = isBedpe ? getBaseRes(this.tilesetInfo) : 1;
+
+    const zoomLevel = Math.max(0, Math.min(
       this.tilesetInfo.max_zoom,
       Math.ceil(Math.log2(
         (
-          this.maxRes * (2 ** this.tilesetInfo.max_zoom)
-        ) / (Math.max(absXLen, absYLen) / baseRes)
+          this.finalRes * (2 ** this.tilesetInfo.max_zoom)
+        ) / (this.remotePaddedSize / baseRes)
       ))
-    ) + this.additionalZoom));
+    ));
 
-    return isBedpe
+    const finalZoom = isBedpe
       ? this.tilesetInfo.max_zoom - zoomLevel
       : zoomLevel;
+
+    return finalZoom;
   }
 
   /**
@@ -213,7 +276,7 @@ export default class Inset {
     ];
 
     return fetch(
-      `${this.dataConfig.server}/fragments_by_loci/?precision=2&dims=${this.width / this.scaleBase}`, {
+      `${this.dataConfig.server}/fragments_by_loci/?precision=2&dims=${this.finalRes}`, {
         method: 'POST',
         headers: {
           accept: 'application/json; charset=UTF-8',
@@ -348,6 +411,9 @@ export default class Inset {
   positionImage(
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
+    // Scale the image down from its raw resolution to the inset's pixel size
+    this.imScale = this.width / this.scaleBase / this.finalRes;
+
     this.sprite.x = (
       this.globalOffsetX + (this.offsetX * this.t) + x - (width / 2 * this.t)
     );
@@ -355,10 +421,10 @@ export default class Inset {
       this.globalOffsetY + (this.offsetY * this.t) + y - (height / 2 * this.t)
     );
     this.sprite.scale.x = (
-      this.t * this.scaleBase * this.scaleExtra / this.imScale
+      this.t * this.scaleBase * this.scaleExtra * this.imScale
     );
     this.sprite.scale.y = (
-      this.t * this.scaleBase * this.scaleExtra / this.imScale
+      this.t * this.scaleBase * this.scaleExtra * this.imScale
     );
   }
 
@@ -387,21 +453,9 @@ export default class Inset {
 
     if (this.imageRendering) return this.imageRendering;
 
-    let w = this.width;
-    let h = this.height;
-
-    // The matrix is upscaled to better show bins while the image snippets are
-    // not.
-    if (this.isMatrix) {
-      w /= this.scaleBase;
-      h /= this.scaleBase;
-    }
-
-    this.imageRendering = imgRenderer(data, w, h)
+    this.imageRendering = imgRenderer(data, this.finalRes, this.finalRes)
       .then((renderedData) => {
         this.data = renderedData;
-
-        this.imScale = renderedData.width / Math.ceil(w);
 
         this.sprite = new PIXI.Sprite(
           PIXI.Texture.fromCanvas(
