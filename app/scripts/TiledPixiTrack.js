@@ -504,7 +504,7 @@ class TiledPixiTrack extends PixiTrack {
   }
 
   draw() {
-    if (this.delayDrawing) { return; }
+    if (this.delayDrawing) return;
 
     if (!this.tilesetInfo) {
       if (this.dataFetcher.tilesetInfoLoading) {
@@ -528,13 +528,15 @@ class TiledPixiTrack extends PixiTrack {
       this.trackNotFoundText.visible = false;
     }
 
+    pubSub.publish('TiledPixiTrack.tilesDrawnStart', { uuid: this.uuid });
+
     super.draw();
 
     Object.keys(this.fetchedTiles).forEach(
       tilesetUid => this.drawTile(this.fetchedTiles[tilesetUid])
     );
 
-    pubSub.publish('TiledPixiTrack.tilesDrawn', { uuid: this.uuid });
+    pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
   }
 
   drawTile(tileData, graphics) {
