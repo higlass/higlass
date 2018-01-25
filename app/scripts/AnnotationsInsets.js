@@ -197,6 +197,7 @@ class AnnotationsInsets {
     const insetMinRes = this.insetsTrack.insetMinRes * this.insetsTrack.insetScale;
     const insetMaxRes = this.insetsTrack.insetMaxRes * this.insetsTrack.insetScale;
 
+    // Convert data (basepair position) to view (display pixel) resolution
     const finalRes = scaleQuantize()
       .domain([this.insetMinRes, this.insetMaxRes])
       .range(range(
@@ -209,10 +210,10 @@ class AnnotationsInsets {
           const widthAbs = inset.cX2 - inset.cX1;
           const heightAbs = inset.cY2 - inset.cY1;
 
-          const width = widthAbs > heightAbs
+          const width = widthAbs >= heightAbs
             ? finalRes(widthAbs)
-            : widthAbs / heightAbs / finalRes(heightAbs);
-          const height = heightAbs > widthAbs
+            : widthAbs / heightAbs * finalRes(heightAbs);
+          const height = heightAbs >= widthAbs
             ? finalRes(heightAbs)
             : heightAbs / widthAbs * width;
 
