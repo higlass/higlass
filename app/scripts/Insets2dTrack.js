@@ -125,7 +125,7 @@ export default class Insets2dTrack extends PixiTrack {
 
   dataToGenomePos(dX1, dX2, dY1, dY2, _chromInfo) {
     const x = absToChr(dX1, _chromInfo);
-    const y = absToChr(dX2, _chromInfo);
+    const y = absToChr(dY1, _chromInfo);
 
     return [
       x[0],
