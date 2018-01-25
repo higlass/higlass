@@ -2843,6 +2843,14 @@ class HiGlassComponent extends React.Component {
     apiPublish('mouseMoveZoom', data);
   }
 
+  /**
+   * Handle mousedown events/
+   */
+  mouseDownHandler(evt) {
+    console.log('mousedown');
+
+  }
+
   setChromInfo(chromInfoPath, callback) {
     ChromosomeInfo(chromInfoPath, (newChromInfo) => {
       this.chromInfo = newChromInfo;

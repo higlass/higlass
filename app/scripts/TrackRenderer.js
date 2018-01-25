@@ -1302,6 +1302,7 @@ export class TrackRenderer extends React.Component {
       <div
         ref={c => this.divTrackArea = c}
         style={{
+          position: "relative",
           height: this.currentProps.height,
           width: this.currentProps.width,
         }}
@@ -1309,6 +1310,20 @@ export class TrackRenderer extends React.Component {
         className='track-renderer-div'
       >
         {this.currentProps.children}
+        <div 
+          className='event-catcher'
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '100%',
+            height: '100%'
+          }}
+          onMouseDown={() => { 
+            console.log('tr mousedown');
+          }}
+          onClick={() => console.log('clickx')}
+        />
       </div>
     );
   }
