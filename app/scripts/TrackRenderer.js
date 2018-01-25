@@ -18,6 +18,7 @@ import BedLikeTrack from './BedLikeTrack';
 
 import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 import HorizontalPoint1DPixiTrack from './HorizontalPoint1DPixiTrack';
+import HorizontalMultivecTrack from './HorizontalMultivecTrack';
 import BarTrack from './BarTrack';
 import DivergentBarTrack from './DivergentBarTrack';
 
@@ -792,6 +793,19 @@ export class TrackRenderer extends React.Component {
 
       case 'heatmap':
         return new HeatmapTiledPixiTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          this.svgElement,
+          () => this.currentProps.onValueScaleChanged(track.uid),
+          newOptions =>
+            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
+        );
+
+      case 'horizontal-multivec':
+        return new HorizontalMultivecTrack(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,

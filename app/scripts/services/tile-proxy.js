@@ -200,17 +200,31 @@ export const calculateTiles = (
  * @param minX: The minimum x position of the tileset
  * @param maxX: The maximum x position of the tileset
  */
-export const calculateTilesFromResolution = (resolution, scale, minX, maxX) => {
+export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixelsPerTile) => {
   const epsilon = 0.0000001;
-  const PIXELS_PER_TILE = 256;
+  const PIXELS_PER_TILE = pixelsPerTile || 256;
   const tileWidth = resolution * PIXELS_PER_TILE;
+  const MAX_TILES = 20;
+  // console.log('PIXELS_PER_TILE:', PIXELS_PER_TILE);
 
-  return range(
+  if (!maxX)
+    maxX = Number.MAX_VALUE;
+
+  let tileRange = range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
     Math.ceil(Math.min(
       maxX,
       ((scale.domain()[1] - minX) - epsilon)) / tileWidth),
   );
+
+  if (tileRange.length > MAX_TILES) {
+    // too many tiles visible in this range
+    console.warn(`Too many visible tiles: ${tileRange.length} truncating to ${MAX_TILES}`);
+    tileRange = tileRange.slice(0, MAX_TILES);
+  }
+  // console.log('tileRange:', tileRange);
+
+  return tileRange;
 };
 
 export const trackInfo = (server, tilesetUid, done) => {
