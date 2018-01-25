@@ -52,10 +52,6 @@ class AnnotationsInsets {
 
     this.pubSubs = [];
     this.pubSubs.push(pubSub.subscribe(
-      'TiledPixiTrack.tilesDrawnStart',
-      this.tilesDrawnStartHandler.bind(this)
-    ));
-    this.pubSubs.push(pubSub.subscribe(
       'TiledPixiTrack.tilesDrawnEnd',
       this.tilesDrawnEndHandler.bind(this)
     ));
@@ -160,6 +156,7 @@ class AnnotationsInsets {
     this.newAnno = false;
     this.insetMinRes = Infinity;  // Larger dimension of the smallest inset
     this.insetMaxRes = 0;  // Larger dimension of the largest inset
+    this.tracksDrawingTiles = new Set();
   }
 
   /**
@@ -369,14 +366,6 @@ class AnnotationsInsets {
     });
   }
 
-  tilesDrawnStartHandler({ uuid }) {
-    if (!this.annotationTrackIds.has(uuid)) return;
-
-    if (!this.tracksDrawingTiles.size) this.initTree();
-
-    this.tracksDrawingTiles.add(uuid);
-  }
-
   /**
    * Callback function passed into the annotation tracks to trigger tree
    * building of the spatial RTree.
@@ -388,13 +377,16 @@ class AnnotationsInsets {
   tilesDrawnEndHandler({ uuid }) {
     if (!this.annotationTrackIds.has(uuid)) return;
 
+    this.tracksDrawingTiles.add(uuid);
+
     if (!(this.tracksDrawingTiles.size % this.annotationTracks.length)) {
-      this.tracksDrawingTiles = new Set();
       this.buildTree();
     }
   }
 
   zoomHandler({ k }) {
+    this.initTree();
+
     this.scaleChanged = this.currK !== k;
     this.currK = k;
   }
