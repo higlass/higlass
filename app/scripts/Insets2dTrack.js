@@ -232,7 +232,7 @@ export default class Insets2dTrack extends PixiTrack {
 
   rendererInset(data, w, h) {
     return data.dataTypes[0] === 'dataUrl'
-      ? this.rendererImage(data.fragments[0], w, h)
+      ? this.rendererImage(data.fragments[0])
       : this.rendererHeatmap(data.fragments[0], w, h);
   }
 
@@ -255,8 +255,8 @@ export default class Insets2dTrack extends PixiTrack {
     return Promise.resolve(tileToCanvas(pixData, w, h));
   }
 
-  rendererImage(data, w, h) {
-    return base64ToCanvas(data, w, h);
+  rendererImage(data) {
+    return base64ToCanvas(data);
   }
 
   zoomed(newXScale, newYScale, k) {
