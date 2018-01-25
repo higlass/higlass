@@ -209,8 +209,12 @@ class AnnotationsInsets {
           const widthAbs = inset.cX2 - inset.cX1;
           const heightAbs = inset.cY2 - inset.cY1;
 
-          const width = finalRes(widthAbs);
-          const height = finalRes(heightAbs);
+          const width = widthAbs > heightAbs
+            ? finalRes(widthAbs)
+            : widthAbs / heightAbs / finalRes(heightAbs);
+          const height = heightAbs > widthAbs
+            ? finalRes(heightAbs)
+            : heightAbs / widthAbs * width;
 
           // Add new inset
           this.insets[inset.uid] = {
