@@ -412,7 +412,11 @@ export default class Inset {
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
     // Scale the image down from its raw resolution to the inset's pixel size
-    this.imScale = this.width / this.scaleBase / this.finalRes;
+    this.imScale = (
+      Math.max(this.width, this.height) /
+      this.scaleBase /
+      Math.max(this.data.width, this.data.height)
+    );
 
     this.sprite.x = (
       this.globalOffsetX + (this.offsetX * this.t) + x - (width / 2 * this.t)
