@@ -340,11 +340,18 @@ export default class Inset {
   positionImage(
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
-    this.sprite.x = this.globalOffsetX + (this.offsetX * this.t) + x - (width / 2 * this.t);
-    this.sprite.y = this.globalOffsetY + (this.offsetY * this.t) + y - (height / 2 * this.t);
-
-    this.sprite.scale.x = this.t * this.scaleBase * this.scaleExtra;
-    this.sprite.scale.y = this.t * this.scaleBase * this.scaleExtra;
+    this.sprite.x = (
+      this.globalOffsetX + (this.offsetX * this.t) + x - (width / 2 * this.t)
+    );
+    this.sprite.y = (
+      this.globalOffsetY + (this.offsetY * this.t) + y - (height / 2 * this.t)
+    );
+    this.sprite.scale.x = (
+      this.t * this.scaleBase * this.scaleExtra / this.imScale
+    );
+    this.sprite.scale.y = (
+      this.t * this.scaleBase * this.scaleExtra / this.imScale
+    );
   }
 
   /**
@@ -385,6 +392,8 @@ export default class Inset {
     this.imageRendering = imgRenderer(data, w, h)
       .then((renderedData) => {
         this.data = renderedData;
+
+        this.imScale = renderedData.width / Math.ceil(w);
 
         this.sprite = new PIXI.Sprite(
           PIXI.Texture.fromCanvas(
