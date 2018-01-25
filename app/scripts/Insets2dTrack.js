@@ -199,7 +199,7 @@ export default class Insets2dTrack extends PixiTrack {
       tilesetInfo,
       options,
       mouseHandler,
-      this.dataType === 'cooler'
+      this.dataType
     );
     this.pMain.addChild(this.insets[uid].graphics);
     return this.insets[uid];

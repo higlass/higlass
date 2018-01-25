@@ -5,6 +5,12 @@ const BASE_MAX_RES = 24;
 const BASE_SCALE = 4;
 const BASE_SCALE_UP = 1.25;
 
+const getBaseRes = tilesetInfo => (
+  tilesetInfo.max_width /
+  (2 ** tilesetInfo.max_zoom) /
+  tilesetInfo.bins_per_dimension
+);
+
 export default class Inset {
   constructor(
     uid,
@@ -14,7 +20,7 @@ export default class Inset {
     tilesetInfo,
     options,
     mouseHandler,
-    isTransposed
+    dataType
   ) {
     this.uid = uid;
     this.dataX1 = dataPos[0];
@@ -26,7 +32,10 @@ export default class Inset {
     this.tilesetInfo = tilesetInfo;
     this.options = options;
     this.mouseHandler = mouseHandler;
-    this.t = isTransposed ? -1 : 1;
+    this.dataType = dataType;
+
+    this.isMatrix = this.dataType === 'cooler';
+    this.t = this.isMatrix ? -1 : 1;
 
     this.gMain = new PIXI.Graphics();
     this.gBorder = new PIXI.Graphics();
@@ -68,7 +77,6 @@ export default class Inset {
     this.gLeaderLine.clear();
     this.gMain.clear();
     this.initGraphics(options);
-    this.imageRendering
   }
 
   /**
@@ -97,8 +105,8 @@ export default class Inset {
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
     this.gBorder.drawRect(
-      this.globalOffsetX + (-this.offsetX * this.t) + x - (width / 2 * this.t),
-      this.globalOffsetY + (-this.offsetY * this.t) + y - (height / 2 * this.t),
+      this.globalOffsetX + this.offsetX + x - (width / 2),
+      this.globalOffsetY + this.offsetY + y - (height / 2),
       width * this.scaleExtra,
       height * this.scaleExtra
     );
@@ -162,11 +170,23 @@ export default class Inset {
    * @return  {Number}  Closest zoom level.
    */
   computedZoom() {
-    const absXLen = this.remotePos[1] - this.remotePos[0];
-    const absYLen = this.remotePos[3] - this.remotePos[2];
-    return Math.ceil(
-      Math.log2((this.maxRes * (2 ** this.tilesetInfo.max_zoom)) / Math.max(absXLen, absYLen))
-    );
+    const isBedpe = this.remotePos.length === 6;
+    const xStartId = isBedpe ? 1 : 0;
+    const xEndId = isBedpe ? 2 : 1;
+    const yStartId = isBedpe ? 4 : 2;
+    const yEndId = isBedpe ? 5 : 3;
+    const baseRes = isBedpe ? getBaseRes(this.tilesetInfo) : 1;
+
+    const absXLen = this.remotePos[xEndId] - this.remotePos[xStartId];
+    const absYLen = this.remotePos[yEndId] - this.remotePos[yStartId];
+
+    const zoomLevel = Math.min(this.tilesetInfo.max_zoom, Math.ceil(Math.log2(
+      (
+        this.maxRes * (2 ** this.tilesetInfo.max_zoom)
+      ) / (Math.max(absXLen, absYLen) / baseRes)
+    )));
+
+    return isBedpe ? this.tilesetInfo.max_zoom - zoomLevel : zoomLevel;
   }
 
   /**
@@ -185,7 +205,7 @@ export default class Inset {
     ];
 
     return fetch(
-      `${this.dataConfig.server}/fragments_by_loci/?precision=2&dims=${this.minRes}`, {
+      `${this.dataConfig.server}/fragments_by_loci/?precision=2&dims=${this.width / this.scaleBase}`, {
         method: 'POST',
         headers: {
           accept: 'application/json; charset=UTF-8',
@@ -288,7 +308,7 @@ export default class Inset {
    *
    * @param  {Number}  x  X origin.
    * @param  {Number}  y  Y origin.
-   * @return  {Array}   Tuple holding the X,Y origin.
+   * @return  {Array}  Tuple holding the X,Y origin.
    */
   origin(x = this.originX, y = this.originY) {
     this.originX = x;
@@ -301,7 +321,7 @@ export default class Inset {
    *
    * @param  {Number}  x  X position.
    * @param  {Number}  y  Y position.
-   * @return  {Array}   Tuple holding the X,Y position.
+   * @return  {Array}  Tuple holding the X,Y position.
    */
   position(x = this.x, y = this.y) {
     this.x = x;
@@ -320,8 +340,8 @@ export default class Inset {
   positionImage(
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
-    this.sprite.x = this.globalOffsetX - this.offsetX + x + (width / -2 * this.t);
-    this.sprite.y = this.globalOffsetY - this.offsetY + y + (height / -2 * this.t);
+    this.sprite.x = this.globalOffsetX + (this.offsetX * this.t) + x - (width / 2 * this.t);
+    this.sprite.y = this.globalOffsetY + (this.offsetY * this.t) + y - (height / 2 * this.t);
 
     this.sprite.scale.x = this.t * this.scaleBase * this.scaleExtra;
     this.sprite.scale.y = this.t * this.scaleBase * this.scaleExtra;
@@ -352,7 +372,17 @@ export default class Inset {
 
     if (this.imageRendering) return this.imageRendering;
 
-    this.imageRendering = imgRenderer(data, this.width, this.height)
+    let w = this.width;
+    let h = this.height;
+
+    // The matrix is upscaled to better show bins while the image snippets are
+    // not.
+    if (this.isMatrix) {
+      w /= this.scaleBase;
+      h /= this.scaleBase;
+    }
+
+    this.imageRendering = imgRenderer(data, w, h)
       .then((renderedData) => {
         this.data = renderedData;
 
@@ -382,8 +412,8 @@ export default class Inset {
    */
   scale(amount = 1) {
     this.scaleExtra = amount;
-    this.offsetX = this.width * this.scaleBase * (amount - 1) / 2 * this.t;
-    this.offsetY = this.height * this.scaleBase * (amount - 1) / 2 * this.t;
+    this.offsetX = this.width * (amount - 1) / -2;
+    this.offsetY = this.height * (amount - 1) / -2;
 
     this.positionImage();
     this.gBorder.clear();

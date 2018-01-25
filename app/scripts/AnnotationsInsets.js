@@ -1,3 +1,5 @@
+import { range } from 'd3-array';
+import { scaleQuantize } from 'd3-scale';
 import rbush from 'rbush';
 
 // Services
@@ -99,6 +101,9 @@ class AnnotationsInsets {
         && (locus.minY < height || locus.maxY <= height)
       )
     ) {
+      const maxDim = Math.max(locus.cX2 - locus.cX1, locus.cY2 - locus.cY1);
+      this.insetMinRes = Math.min(this.insetMinRes, maxDim);
+      this.insetMaxRes = Math.max(this.insetMinRes, maxDim);
       this.insetsToBeDrawn.push(locus);
       this.insetsToBeDrawnIds.add(uid);
     } else {
@@ -153,6 +158,8 @@ class AnnotationsInsets {
     this.drawnAnnoIdsOld = this.drawnAnnoIds;
     this.drawnAnnoIds = new Set();
     this.newAnno = false;
+    this.insetMinRes = Infinity;  // Larger dimension of the smallest inset
+    this.insetMaxRes = 0;  // Larger dimension of the largest inset
   }
 
   /**
@@ -187,7 +194,14 @@ class AnnotationsInsets {
       ...obj
     }));
 
-    const insetRes = this.insetsTrack.insetMaxRes * this.insetsTrack.insetScale;
+    const insetMinRes = this.insetsTrack.insetMinRes * this.insetsTrack.insetScale;
+    const insetMaxRes = this.insetsTrack.insetMaxRes * this.insetsTrack.insetScale;
+
+    const finalRes = scaleQuantize()
+      .domain([this.insetMinRes, this.insetMaxRes])
+      .range(range(
+        insetMinRes, insetMaxRes + 1, this.insetsTrack.options.resStepSize
+      ));
 
     const insets = insetsToBeDrawn
       .map((inset) => {
@@ -195,13 +209,8 @@ class AnnotationsInsets {
           const widthAbs = inset.cX2 - inset.cX1;
           const heightAbs = inset.cY2 - inset.cY1;
 
-          const width = widthAbs > heightAbs
-            ? insetRes
-            : widthAbs / heightAbs * insetRes;
-
-          const height = heightAbs > widthAbs
-            ? insetRes
-            : heightAbs / widthAbs * insetRes;
+          const width = finalRes(widthAbs);
+          const height = finalRes(heightAbs);
 
           // Add new inset
           this.insets[inset.uid] = {
