@@ -911,6 +911,10 @@ export const TRACKS_INFO = [
     orientation: '2d',
     thumbnail: svgInsetsIcon,
     defaultOptions: {
+      minRes: 8,
+      maxRes: 16,
+      resStepSize: 2,
+      scale: 3,
       fill: 'white',
       fillOpacity: 1,
       borderColor: 'red',
@@ -925,6 +929,10 @@ export const TRACKS_INFO = [
       opacity: 1
     },
     availableOptions: [
+      'minRes',
+      'maxRes',
+      'resStepSize',
+      'scale',
       'colorRange',
       'fill',
       'fillOpacity',
