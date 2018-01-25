@@ -1,6 +1,15 @@
-v0.10.12 (2017-01-18)
+v0.10.13 (2017-01-25)
 
 - Added the multivec track
+
+v0.10.12 (2017-01-21)
+
+- Fixed pseudocounts in linear-scaled heatmaps
+
+v0.10.12 (2017-01-20)
+
+- Fixed get scale bug
+>>>>>>> 07c9cc290506301f22eb1ccb3520b6f6a54d0875
 
 v0.10.11 (2017-01-17)
 
