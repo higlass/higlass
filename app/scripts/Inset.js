@@ -53,6 +53,9 @@ export default class Inset {
     this.globalOffsetX = 0;
     this.globalOffsetY = 0;
 
+    this.additionalZoom = this.options.additionalZoom || 0;
+    this.onClickScale = this.options.onClickScale || BASE_SCALE_UP;
+
     this.initGraphics(options);
   }
 
@@ -180,13 +183,18 @@ export default class Inset {
     const absXLen = this.remotePos[xEndId] - this.remotePos[xStartId];
     const absYLen = this.remotePos[yEndId] - this.remotePos[yStartId];
 
-    const zoomLevel = Math.min(this.tilesetInfo.max_zoom, Math.ceil(Math.log2(
-      (
-        this.maxRes * (2 ** this.tilesetInfo.max_zoom)
-      ) / (Math.max(absXLen, absYLen) / baseRes)
-    )));
+    const zoomLevel = Math.max(0, Math.min(this.tilesetInfo.max_zoom, Math.min(
+      this.tilesetInfo.max_zoom,
+      Math.ceil(Math.log2(
+        (
+          this.maxRes * (2 ** this.tilesetInfo.max_zoom)
+        ) / (Math.max(absXLen, absYLen) / baseRes)
+      ))
+    ) + this.additionalZoom));
 
-    return isBedpe ? this.tilesetInfo.max_zoom - zoomLevel : zoomLevel;
+    return isBedpe
+      ? this.tilesetInfo.max_zoom - zoomLevel
+      : zoomLevel;
   }
 
   /**
@@ -282,7 +290,7 @@ export default class Inset {
    */
   mouseDownHandler(event) {
     this.mouseDown = true;
-    this.scale(BASE_SCALE_UP);
+    this.scale(this.onClickScale);
     this.mouseHandler.mouseDown(event, this.gMain);
     console.log(
       `Annotation: ${this.uid} |`,
