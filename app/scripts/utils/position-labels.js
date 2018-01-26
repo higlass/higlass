@@ -141,7 +141,7 @@ const mcmove = (currT) => {
 
   // random translation
   const moveX = +(((is1dOnly * !l.isVerticalOnly) + !is1dOnly) && getRndMove());
-  const moveY = +(((is1dOnly * l.isVerticalOnly) + !is1dOnly) && getRndMove());
+  const moveY = +(((is1dOnly * !!l.isVerticalOnly) + !is1dOnly) && getRndMove());
   l.x += moveX;
   l.y += moveY;
 
