@@ -41,6 +41,7 @@ export default class Inset {
     this.gMain = new PIXI.Graphics();
     this.gBorder = new PIXI.Graphics();
     this.gLeaderLine = new PIXI.Graphics();
+    this.gOriginMask = new PIXI.Graphics();
 
     this.gMain.addChild(this.gLeaderLine);
     this.gMain.addChild(this.gBorder);
@@ -96,6 +97,7 @@ export default class Inset {
    * @param  {Object}  options  Custom line style for the border and leader line
    */
   clear(options = this.options) {
+    this.gOriginMask.clear();
     this.gBorder.clear();
     this.gLeaderLine.clear();
     this.gMain.clear();
@@ -108,6 +110,7 @@ export default class Inset {
   destroy() {
     if (this.sprite) this.sprite.removeAllListeners();
 
+    this.gOriginMask.destroy();
     this.gBorder.destroy();
     this.gLeaderLine.destroy();
     this.gMain.destroy();
@@ -125,9 +128,13 @@ export default class Inset {
    * @param  {Number}  height  Height of the inset to be drawn.
    */
   drawBorder(
-    x = this.x, y = this.y, width = this.width, height = this.height
+    x = this.x,
+    y = this.y,
+    width = this.width,
+    height = this.height,
+    graphics = this.gBorder,
   ) {
-    this.gBorder.drawRect(
+    graphics.drawRect(
       this.globalOffsetX + this.offsetX + x - (width / 2),
       this.globalOffsetY + this.offsetY + y - (height / 2),
       width * this.scaleExtra,
@@ -184,6 +191,87 @@ export default class Inset {
         return true;
       })
       .catch(err => console.error(err));
+  }
+
+  /**
+   * Draw a border around the origin of the inset.
+   */
+  drawOriginBorder() {
+    this.drawBorder(
+      this.originX,
+      this.originY,
+      (this.originWidthHalf + 1) * 2,
+      (this.originHeightHalf + 1) * 2,
+      this.gLeaderLine
+    );
+  }
+
+  /**
+   * Draw inverse border. This is useful for creating inverted masks, which is
+   *   otherwise not possible with canvas.
+   * @param   {number}  x  Central x coordinate of the rectangle around which
+   *   the border should be drawn.
+   * @param   {number}  y  Central y coordinate of the rectangle around which
+   *   the border should be drawn.
+   * @param   {number}  wh  Half width of the rectangle around which the
+   *   border should be drawn.
+   * @param   {number}  hh  Half height of the rectangle around which the
+   *   border should be drawn.
+   * @param   {object}  graphics  PIXI graphics on which should be drawn.
+   */
+  drawBorderInverse(
+    x = this.x,
+    y = this.y,
+    wh = this.width / 2,
+    hh = this.height / 2,
+    graphics = this.gBorder,
+  ) {
+    graphics.beginFill();
+    graphics.moveTo(this.globalOffsetX, this.globalOffsetY);
+    graphics.lineTo(
+      this.globalOffsetX + x - wh,
+      this.globalOffsetY
+    );
+    graphics.lineTo(
+      this.globalOffsetX + x - wh,
+      this.globalOffsetY + y + hh
+    );
+    graphics.lineTo(
+      this.globalOffsetX + x + wh,
+      this.globalOffsetY + y + hh
+    );
+    graphics.lineTo(
+      this.globalOffsetX + x + wh,
+      this.globalOffsetY + y - hh
+    );
+    graphics.lineTo(
+      this.globalOffsetX + x - wh,
+      this.globalOffsetY + y - hh
+    );
+    graphics.lineTo(
+      this.globalOffsetX + x - wh,
+      this.globalOffsetY
+    );
+    graphics.lineTo(this.globalOffsetX + this.globalWidth, this.globalOffsetY);
+    graphics.lineTo(this.globalOffsetX + this.globalWidth, this.globalOffsetY + this.globalHeight);
+    graphics.lineTo(this.globalOffsetX, this.globalOffsetY + this.globalHeight);
+    graphics.lineTo(this.globalOffsetX, this.globalOffsetY);
+    graphics.endFill();
+  }
+
+  /**
+   * Draw mask around the origin. This can be used to cut of leader lines
+   *   pointing to the origin at the boundaries of the original locus.
+   */
+  drawOriginMask() {
+    this.drawBorderInverse(
+      this.originX,
+      this.originY,
+      this.originWidthHalf,
+      this.originHeightHalf,
+      this.gOriginMask
+    );
+    this.gLeaderLine.mask = this.gOriginMask;
   }
 
   /**
@@ -300,6 +388,19 @@ export default class Inset {
     return [x, y];
   }
 
+  /**
+   * Get or set the size of the inset
+   *
+   * @param  {Number}  width  Width of the inset.
+   * @param  {Number}  height  Height of the inset.
+   * @return  {Array}   Tuple holding `[width, height]`.
+   */
+  globalSize(width = this.globalWidth, height = this.globalHeight) {
+    this.globalWidth = width;
+    this.globalHeight = height;
+    return [width, height];
+  }
+
 
   /**
    * Initialize line style of the border and leader line graphics.
@@ -317,6 +418,7 @@ export default class Inset {
       options.leaderLineColor || 0x000000,
       options.leaderLineOpacity || 1
     );
+    this.gOriginMask.lineStyle(0);
   }
 
   /**
@@ -334,6 +436,7 @@ export default class Inset {
    * @param  {Object}  event  Event object.
    */
   mouseOverHandler(event) {
+    this.originFocus();
     this.mouseHandler.mouseOver(event, this.gMain);
   }
 
@@ -343,6 +446,7 @@ export default class Inset {
    * @param  {Object}  event  Event object.
    */
   mouseOutHandler(event) {
+    this.originBlur();
     this.mouseHandler.mouseOut(event, this.gMain);
   }
 
@@ -375,16 +479,44 @@ export default class Inset {
   }
 
   /**
-   * Get or set origin of the inset.
+   * Get or set the center of the origin of the inset.
    *
    * @param  {Number}  x  X origin.
    * @param  {Number}  y  Y origin.
    * @return  {Array}  Tuple holding the X,Y origin.
    */
-  origin(x = this.originX, y = this.originY) {
+  origin(
+    x = this.originX,
+    y = this.originY,
+    wh = this.originWidthHalf,
+    hh = this.originHeightHalf
+  ) {
     this.originX = x;
     this.originY = y;
-    return [x, y];
+    this.originWidthHalf = wh;
+    this.originHeightHalf = hh;
+
+    return [x, y, wh, hh];
+  }
+
+  /**
+   * Focus on the original locus by drawing an extra border around it and
+   *   clipping of the leader line at the boundary of the original locus.
+   */
+  originFocus() {
+    this.drawOriginMask();
+    this.drawOriginBorder();
+  }
+
+  /**
+   * Blur the original locus. This removes the highlighting border and unsets
+   *   the mask.
+   */
+  originBlur() {
+    this.gLeaderLine.mask = null;
+    this.gLeaderLine.clear();
+    this.initGraphics();
+    this.drawLeaderLine();
   }
 
   /**
