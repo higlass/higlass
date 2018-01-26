@@ -376,9 +376,13 @@ class AnnotationsInsets {
    *   pixel size, origin, and remote size.
    */
   positionInsetsGalleryNearestBorder(insetsToBeDrawn, finalRes) {
+    // Maximum inset pixel size
     const insetMaxSize = (
       this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale
     );
+    const insetHalfSize = insetMaxSize / 2;
+
+    // Dimensions and padding of the center track
     const centerWidth = (
       this.insetsTrack.dimensions[0]
       - (2 * this.insetsTrack.positioning.width)
@@ -392,6 +396,15 @@ class AnnotationsInsets {
     const chh = centerHeight / 2;
     const paddingY = (this.insetsTrack.positioning.height - insetMaxSize) / 2;
 
+    // Initialize the border histogram for counting the number of instances
+    // falling within the same border section.
+    const binSizeX = centerWidth / Math.floor(centerWidth / insetMaxSize);
+    const binsTop = Array(Math.floor(centerWidth / insetMaxSize)).fill(0);
+    const binsBottom = Array.from(binsTop);
+    const binSizeY = centerHeight / Math.floor(centerHeight / insetMaxSize);
+    const binsLeft = Array(Math.floor(centerHeight / insetMaxSize)).fill(0);
+    const binsRight = Array.from(binsLeft);
+
     return insetsToBeDrawn.map((inset) => {
       const { width, height } = this.computeSize(inset, finalRes);
       const ox = (inset.maxX + inset.minX) / 2;
@@ -399,24 +412,44 @@ class AnnotationsInsets {
       const offX = this.insetsTrack.positioning.offsetX;
       const offY = this.insetsTrack.positioning.offsetY;
 
+      const xBinId = Math.floor(ox / binSizeX);
+      const yBinId = Math.floor(oy / binSizeY);
+      const penaltyTop = binsTop[xBinId];
+      const penaltyBottom = binsBottom[xBinId];
+      const penaltyLeft = binsLeft[yBinId];
+      const penaltyRight = binsRight[yBinId];
+      const xWithPenalty = ox + penaltyLeft - penaltyRight;
+      const yWithPenalty = oy + penaltyTop - penaltyBottom;
+
       // Determine which border is the closest
-      const isLeftCloser = ox <= cwh;
-      const xDistBorder = isLeftCloser ? ox : centerWidth - ox;
-      const isTopCloser = oy <= chh;
-      const yDistBorder = isTopCloser ? oy : centerHeight - oy;
+      const isLeftCloser = xWithPenalty <= cwh;
+      const xDistBorder = isLeftCloser ? xWithPenalty : centerWidth - xWithPenalty;
+      const isTopCloser = yWithPenalty <= chh;
+      const yDistBorder = isTopCloser ? yWithPenalty : centerHeight - yWithPenalty;
       const isXShorter = xDistBorder < yDistBorder;
 
-      // Position insets to the closest border
-      const x = isXShorter
-        ? isLeftCloser
-          ? offX - (width / 2) - paddingX
-          : offX + centerWidth + (width / 2) + paddingX
-        : offX + inset.minX;
-      const y = isXShorter
-        ? offY + inset.minY
-        : isTopCloser
-          ? offY - (height / 2) - paddingY
-          : offY + centerHeight + (height / 2) + paddingY;
+      // Position insets to the closest border and update histogram
+      let x;
+      let y;
+      if (isXShorter) {
+        if (isLeftCloser) {
+          x = offX - (width / 2) - paddingX;
+          binsLeft[yBinId] += insetHalfSize;
+        } else {
+          x = offX + centerWidth + (width / 2) + paddingX;
+          binsRight[yBinId] += insetHalfSize;
+        }
+        y = offY + inset.minY;
+      } else {
+        if (isTopCloser) {
+          y = offY - (height / 2) - paddingY;
+          binsTop[xBinId] += insetHalfSize;
+        } else {
+          y = offY + centerHeight + (height / 2) + paddingY;
+          binsBottom[xBinId] += insetHalfSize;
+        }
+        x = offX + inset.minX;
+      }
 
       return [
         inset.uid,
