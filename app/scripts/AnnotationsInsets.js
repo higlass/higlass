@@ -475,6 +475,17 @@ class AnnotationsInsets {
           _inset.wh = width / 2;
           _inset.hh = height / 2;
 
+          _inset.x = _inset.isVerticalOnly
+            ? _inset.isLeftCloser
+              ? offX - _inset.wh - paddingX
+              : offX + _inset.wh + paddingX + centerWidth
+            : _inset.x;
+          _inset.y = _inset.isVerticalOnly
+            ? _inset.y
+            : _inset.isTopCloser
+              ? offY - _inset.hh - paddingY
+              : offY + _inset.hh + paddingY + centerHeight;
+
           // Let them wobble a bit because the size changed
           _inset.t = 0.25;
         }
@@ -538,6 +549,8 @@ class AnnotationsInsets {
         wh: width / 2,  // Width half
         hh: height / 2,  // Heigth half
         isVerticalOnly: isXShorter,
+        isLeftCloser,
+        isTopCloser,
         ...inset
       };
 
