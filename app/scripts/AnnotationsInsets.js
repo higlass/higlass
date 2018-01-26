@@ -81,8 +81,8 @@ class AnnotationsInsets {
     this.newAnno = !this.drawnAnnoIdsOld.has(uid);
     this.drawnAnnoIds.add(uid);
 
-    const width = this.insetsTrack.dimensions[0];
-    const height = this.insetsTrack.dimensions[1];
+    const width = this.insetsTrack.dimensions[0] - (2 * this.insetsTrack.positioning.offsetX);
+    const height = this.insetsTrack.dimensions[1] - (2 * this.insetsTrack.positioning.offsetY);
 
     if (
       (

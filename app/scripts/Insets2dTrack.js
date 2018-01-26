@@ -36,6 +36,9 @@ export default class Insets2dTrack extends PixiTrack {
     this.animate = animate;
     this.positioning = positioning;  // Needed for the gallery view
 
+    this.positioning.offsetX = this.positioning.offsetX || 0;
+    this.positioning.offsetY = this.positioning.offsetY || 0;
+
     this.fetchChromInfo = this.dataType === 'cooler'
       ? chromInfo.get(chromInfoPath)
       : undefined;
