@@ -78,17 +78,6 @@ export default class Inset {
     return this.gMain;
   }
 
-  /**
-   * Return the effective maximal size available for displaying the locus of
-   * interest, e.g., an annotation. This is the maximal size minus twice
-   * the padding as the inset's box model includes the padding into the final
-   * maximum size.
-   * @return  {number}  Maximum available pixels for displaying the locus.
-   */
-  // get maxSizeLocus() {
-  //   return this.maxSize - (2 * this.padding);
-  // }
-
   /* ---------------------------- Custom Methods ---------------------------- */
 
   /**
@@ -102,6 +91,58 @@ export default class Inset {
     this.gLeaderLine.clear();
     this.gMain.clear();
     this.initGraphics(options);
+  }
+
+  /**
+   * Compute the remote size of the locus defining this inset and the final
+   *   resolution.
+   */
+  computeResolution() {
+    const resolutionCustomLocSorted = Object.keys(this.resolutionCustom)
+      .map(x => +x)
+      .sort((a, b) => a - b);
+
+    const isBedpe = this.remotePos.length === 6;
+    const xStartId = isBedpe ? 1 : 0;
+    const xEndId = isBedpe ? 2 : 1;
+    const yStartId = isBedpe ? 4 : 2;
+    const yEndId = isBedpe ? 5 : 3;
+    const absXLen = this.remotePos[xEndId] - this.remotePos[xStartId];
+    const absYLen = this.remotePos[yEndId] - this.remotePos[yStartId];
+    this.remoteSize = Math.max(absXLen, absYLen);
+
+    const entry = resolutionCustomLocSorted[bisectLeft(
+      resolutionCustomLocSorted, this.remoteSize
+    )];
+
+    this.finalRes = entry ? this.resolutionCustom[entry] : this.resolution;
+  }
+
+  /**
+   * Compute the closest zoom level providing enough resolution for displaying
+   * the snippet at maximum size
+   *
+   * @return  {Number}  Closest zoom level.
+   */
+  computedZoom() {
+    const isBedpe = this.remotePos.length === 6;
+
+    const baseRes = isBedpe ? getBaseRes(this.tilesetInfo) : 1;
+
+    const zoomLevel = Math.max(0, Math.min(
+      this.tilesetInfo.max_zoom,
+      Math.ceil(Math.log2(
+        (
+          this.finalRes * (2 ** this.tilesetInfo.max_zoom)
+        ) / (this.remotePaddedSize / baseRes)
+      ))
+    ));
+
+    const finalZoom = isBedpe
+      ? this.tilesetInfo.max_zoom - zoomLevel
+      : zoomLevel;
+
+    return finalZoom;
   }
 
   /**
@@ -294,58 +335,6 @@ export default class Inset {
     const padding = entry ? this.paddingCustom[entry] : this.padding;
 
     this.remotePaddedSize = this.remoteSize + (this.remoteSize * padding * 2);
-  }
-
-  /**
-   * Compute the remote size of the locus defining this inset and the final
-   *   resolution.
-   */
-  computeResolution() {
-    const resolutionCustomLocSorted = Object.keys(this.resolutionCustom)
-      .map(x => +x)
-      .sort((a, b) => a - b);
-
-    const isBedpe = this.remotePos.length === 6;
-    const xStartId = isBedpe ? 1 : 0;
-    const xEndId = isBedpe ? 2 : 1;
-    const yStartId = isBedpe ? 4 : 2;
-    const yEndId = isBedpe ? 5 : 3;
-    const absXLen = this.remotePos[xEndId] - this.remotePos[xStartId];
-    const absYLen = this.remotePos[yEndId] - this.remotePos[yStartId];
-    this.remoteSize = Math.max(absXLen, absYLen);
-
-    const entry = resolutionCustomLocSorted[bisectLeft(
-      resolutionCustomLocSorted, this.remoteSize
-    )];
-
-    this.finalRes = entry ? this.resolutionCustom[entry] : this.resolution;
-  }
-
-  /**
-   * Compute the closest zoom level providing enough resolution for displaying
-   * the snippet at maximum size
-   *
-   * @return  {Number}  Closest zoom level.
-   */
-  computedZoom() {
-    const isBedpe = this.remotePos.length === 6;
-
-    const baseRes = isBedpe ? getBaseRes(this.tilesetInfo) : 1;
-
-    const zoomLevel = Math.max(0, Math.min(
-      this.tilesetInfo.max_zoom,
-      Math.ceil(Math.log2(
-        (
-          this.finalRes * (2 ** this.tilesetInfo.max_zoom)
-        ) / (this.remotePaddedSize / baseRes)
-      ))
-    ));
-
-    const finalZoom = isBedpe
-      ? this.tilesetInfo.max_zoom - zoomLevel
-      : zoomLevel;
-
-    return finalZoom;
   }
 
   /**
