@@ -449,36 +449,37 @@ class AnnotationsInsets {
     const offY = this.insetsTrack.positioning.offsetY;
 
     return insetsToBeDrawn.map((inset) => {
-      if (this.insets[inset.uid]) {
+      const _inset = this.insets[inset.uid];
+      if (_inset) {
         // Update existing inset positions
         const newOx = ((inset.maxX + inset.minX) / 2) + offX;
         const newOy = ((inset.maxY + inset.minY) / 2) + offY;
-        const dX = this.insets[inset.uid].ox - newOx;
-        const dY = this.insets[inset.uid].oy - newOy;
+        const dX = _inset.ox - newOx;
+        const dY = _inset.oy - newOy;
 
-        this.insets[inset.uid].ox = newOx;
-        this.insets[inset.uid].oy = newOy;
-        this.insets[inset.uid].owh = (inset.maxX - inset.minX) / 2;
-        this.insets[inset.uid].ohh = (inset.maxY - inset.minY) / 2;
+        _inset.ox = newOx;
+        _inset.oy = newOy;
+        _inset.owh = (inset.maxX - inset.minX) / 2;
+        _inset.ohh = (inset.maxY - inset.minY) / 2;
 
-        this.insets[inset.uid].x -= dX;
-        this.insets[inset.uid].y -= dY;
+        _inset.x -= _inset.isVerticalOnly ? 0 : dX;
+        _inset.y -= _inset.isVerticalOnly ? dY : 0;
 
-        this.insets[inset.uid].t = this.scaleChanged ? 0.5 : 0;
+        _inset.t = this.scaleChanged ? 0.5 : 0;
 
         if (newResScale) {
           const { width, height } = this.computeSize(inset, finalRes);
 
-          this.insets[inset.uid].width = width;
-          this.insets[inset.uid].height = height;
-          this.insets[inset.uid].wh = width / 2;
-          this.insets[inset.uid].hh = height / 2;
+          _inset.width = width;
+          _inset.height = height;
+          _inset.wh = width / 2;
+          _inset.hh = height / 2;
 
           // Let them wobble a bit because the size changed
-          this.insets[inset.uid].t = 0.25;
+          _inset.t = 0.25;
         }
 
-        return this.insets[inset.uid];
+        return _inset;
       }
 
       const { width, height } = this.computeSize(inset, finalRes);
