@@ -191,11 +191,25 @@ class AnnotationsInsets {
   positionInsets() {
     if (!this.insetsToBeDrawn.length) return [];
 
-    if (this.insetsTrack.positioning.location === 'gallery') {
-      return this.positionInsetsGallery();
-    }
+    const insets = this.insetsTrack.positioning.location === 'gallery'
+      ? this.positionInsetsGallery()
+      : this.positionInsetsCenter();
 
-    return this.positionInsetsCenter();
+    return insets.map(inset => ([
+      inset.uid,
+      inset.x,
+      inset.y,
+      inset.width,
+      inset.height,
+      inset.ox,
+      inset.oy,
+      inset.owh,
+      inset.ohh,
+      inset.cX1,
+      inset.cX2,
+      inset.cY1,
+      inset.cY2
+    ]));
   }
 
   computeInsetSizeScale() {
@@ -298,7 +312,7 @@ class AnnotationsInsets {
       .filter((inset) => {
         if (inset.t) return true;
 
-        // Inset has cooled down (i.e., is already positions), hence, it is
+        // Inset has cooled down (i.e., is already positioned), hence, it is
         // filtered out and added to anchors instead.
         anchors.push(inset);
         return false;
@@ -321,23 +335,7 @@ class AnnotationsInsets {
       console.log(`Labeling took ${performance.now() - t0} msec`);
     }
 
-    const pos = insets.map(inset => ([
-      inset.uid,
-      inset.x,
-      inset.y,
-      inset.width,
-      inset.height,
-      inset.ox,
-      inset.oy,
-      inset.owh,
-      inset.ohh,
-      inset.cX1,
-      inset.cX2,
-      inset.cY1,
-      inset.cY2
-    ]));
-
-    return pos;
+    return insets;
   }
 
   /**
@@ -354,11 +352,53 @@ class AnnotationsInsets {
     const { finalRes, newResScale } = this.computeInsetSizeScale();
 
     // 1. Position insets to the closest position on the gallery border
-    return this.positionInsetsGalleryNearestBorder(
-      insetsToBeDrawn, finalRes
+    const insets = this.positionInsetsGalleryNearestBorder(
+      insetsToBeDrawn, finalRes, newResScale
     );
 
+    const offX = this.insetsTrack.positioning.offsetX;
+    const offY = this.insetsTrack.positioning.offsetY;
+    const anchors = this.drawnAnnotations.map(obj => ({
+      t: 1,
+      x: ((obj.maxX + obj.minX) / 2) + offX,
+      y: ((obj.maxY + obj.minY) / 2) + offY,
+      ox: ((obj.maxX + obj.minX) / 2) + offX,  // Origin x
+      oy: ((obj.maxY + obj.minY) / 2) + offY,  // Origin y
+      wh: (obj.maxX - obj.minX) / 2,  // Width half
+      hh: (obj.maxY - obj.minY) / 2,  // Heigth half
+      ...obj
+    }));
+
     // 2. Optimize position using simulated annealing
+    const insetsToBeAnnealed = insets
+      .filter((inset) => {
+        if (inset.t) return true;
+
+        // Inset has cooled down (i.e., is already positioned), hence, it is
+        // filtered out and added to anchors instead.
+        anchors.push(inset);
+        return false;
+      });
+
+    if (insetsToBeAnnealed.length) {
+      const t0 = performance.now();
+      const n = insetsToBeAnnealed.length;
+
+      positionLabels
+        // Insets, i.e., labels
+        .label(insetsToBeAnnealed)
+        // Anchors, i.e., label origins, already positioned labels, and other
+        // annotations
+        .anchor(anchors)
+        .is1dOnly()
+        .width(this.insetsTrack.dimensions[0])
+        .height(this.insetsTrack.dimensions[1] - (2 * this.insetsTrack.positioning.height))
+        .start(Math.round(Math.max(2, Math.min(100 * Math.log(n) / n))));
+
+      console.log(`Labeling took ${performance.now() - t0} msec`);
+    }
+
+    return insets;
   }
 
   /**
@@ -375,7 +415,7 @@ class AnnotationsInsets {
    * @return  {array}  List of inset definitions holding the border position,
    *   pixel size, origin, and remote size.
    */
-  positionInsetsGalleryNearestBorder(insetsToBeDrawn, finalRes) {
+  positionInsetsGalleryNearestBorder(insetsToBeDrawn, finalRes, newResScale) {
     // Maximum inset pixel size
     const insetMaxSize = (
       this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale
@@ -399,18 +439,51 @@ class AnnotationsInsets {
     // Initialize the border histogram for counting the number of instances
     // falling within the same border section.
     const binSizeX = centerWidth / Math.floor(centerWidth / insetMaxSize);
+    const binSizeY = centerHeight / Math.floor(centerHeight / insetMaxSize);
     const binsTop = Array(Math.floor(centerWidth / insetMaxSize)).fill(0);
     const binsBottom = Array.from(binsTop);
-    const binSizeY = centerHeight / Math.floor(centerHeight / insetMaxSize);
     const binsLeft = Array(Math.floor(centerHeight / insetMaxSize)).fill(0);
     const binsRight = Array.from(binsLeft);
 
+    const offX = this.insetsTrack.positioning.offsetX;
+    const offY = this.insetsTrack.positioning.offsetY;
+
     return insetsToBeDrawn.map((inset) => {
+      if (this.insets[inset.uid]) {
+        // Update existing inset positions
+        const newOx = ((inset.maxX + inset.minX) / 2) + offX;
+        const newOy = ((inset.maxY + inset.minY) / 2) + offY;
+        const dX = this.insets[inset.uid].ox - newOx;
+        const dY = this.insets[inset.uid].oy - newOy;
+
+        this.insets[inset.uid].ox = newOx;
+        this.insets[inset.uid].oy = newOy;
+        this.insets[inset.uid].owh = (inset.maxX - inset.minX) / 2;
+        this.insets[inset.uid].ohh = (inset.maxY - inset.minY) / 2;
+
+        this.insets[inset.uid].x -= dX;
+        this.insets[inset.uid].y -= dY;
+
+        this.insets[inset.uid].t = this.scaleChanged ? 0.5 : 0;
+
+        if (newResScale) {
+          const { width, height } = this.computeSize(inset, finalRes);
+
+          this.insets[inset.uid].width = width;
+          this.insets[inset.uid].height = height;
+          this.insets[inset.uid].wh = width / 2;
+          this.insets[inset.uid].hh = height / 2;
+
+          // Let them wobble a bit because the size changed
+          this.insets[inset.uid].t = 0.25;
+        }
+
+        return this.insets[inset.uid];
+      }
+
       const { width, height } = this.computeSize(inset, finalRes);
       const ox = (inset.maxX + inset.minX) / 2;
       const oy = (inset.maxY + inset.minY) / 2;
-      const offX = this.insetsTrack.positioning.offsetX;
-      const offY = this.insetsTrack.positioning.offsetY;
 
       const xBinId = Math.floor(ox / binSizeX);
       const yBinId = Math.floor(oy / binSizeY);
@@ -451,26 +524,24 @@ class AnnotationsInsets {
         x = offX + inset.minX;
       }
 
-      return [
-        inset.uid,
+      this.insets[inset.uid] = {
+        t: 1.0,
         x,
         y,
+        ox: ox + offX,  // Origin x
+        oy: oy + offY,  // Origin y
+        owh: (inset.maxX - inset.minX) / 2,  // Origin width half
+        ohh: (inset.maxY - inset.minY) / 2,  // Origin height half
         width,
         height,
-        ox + offX,  // Origin x
-        oy + offY,  // Origin y
-        (inset.maxX - inset.minX) / 2,  // Origin width half
-        (inset.maxY - inset.minY) / 2,  // Origin height half
-        inset.cX1,
-        inset.cX2,
-        inset.cY1,
-        inset.cY2
-      ];
+        wh: width / 2,  // Width half
+        hh: height / 2,  // Heigth half
+        isVerticalOnly: isXShorter,
+        ...inset
+      };
+
+      return this.insets[inset.uid];
     });
-  }
-
-  computeClosestBorder(x, y, width, height) {
-
   }
 
   /**
