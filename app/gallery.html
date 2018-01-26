@@ -41,12 +41,12 @@ const testViewConfig = {
     {
       uid: 'aa',
       initialXDomain: [
-        2280893739.339021,
-        2283434588.359748
+        2288626814.9215517,
+        2292403756.8728547
       ],
       initialYDomain: [
-        2281516844.1088066,
-        2282168005.416283
+        2289720324.6361523,
+        2291935152.7318683
       ],
       autocompleteSource: 'http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&',
       genomePositionSearchBoxVisible: true,
@@ -456,13 +456,26 @@ const testViewConfig = {
             tilesetUid: 'rao-gm12878-1kbmr',
             uid: 'insets',
             type: 'insets',
+            datatype: 'cooler',
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            width: 38,
-            height: 38,
+            width: 52,
+            height: 52,
             options: {
-              resX: 12,
-              resY: 12,
+              minSize: 8,
+              maxSize: 16,
+              sizeStepSize: 2,
+              padding: 0.2,
+              paddingCustom: {
+                10000: 5,
+              },
+              resolution: 32,
+              resolutionCustom: {
+                10000: 10,
+                100000: 16,
+              },
               scale: 3,
+              additionalZoom: -3,
+              onClickScale: 2,
               fill: 'white',
               fillOpacity: 1,
               borderColor: 'red',
