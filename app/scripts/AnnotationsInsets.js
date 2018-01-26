@@ -122,6 +122,30 @@ class AnnotationsInsets {
   }
 
   /**
+   * Compute the final inset size in pixels from their remote size (e.g., base
+   *   pairs or pixels)
+   *
+   * @param   {object}  inset  Inset definition object holding the remote size
+   *   of the inset.
+   * @param   {function}  scale  Translates between the remote size and the
+   *   pixel size.
+   * @return  {object}  Object holding the final pixel with and height.
+   */
+  computeSize(inset, scale) {
+    const widthAbs = inset.cX2 - inset.cX1;
+    const heightAbs = inset.cY2 - inset.cY1;
+
+    const width = widthAbs >= heightAbs
+      ? scale(widthAbs)
+      : widthAbs / heightAbs * scale(heightAbs);
+    const height = heightAbs >= widthAbs
+      ? scale(heightAbs)
+      : heightAbs / widthAbs * width;
+
+    return { width, height };
+  }
+
+  /**
    * Create insets.
    */
   createInsets() {
@@ -173,6 +197,30 @@ class AnnotationsInsets {
 
     return this.positionInsetsCenter();
   }
+
+  computeInsetSizeScale() {
+    // Convert data (basepair position) to view (display pixel) resolution
+    const finalRes = scaleQuantize()
+      .domain([this.insetMinRemoteSize, this.insetMaxRemoteSize])
+      .range(range(
+        this.insetsTrack.insetMinSize * this.insetsTrack.insetScale,
+        (this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale) + 1,
+        this.insetsTrack.options.sizeStepSize
+      ));
+
+    const newResScale = (
+      this.insetMinRemoteSize !== this.insetMinRemoteSizeOld
+      || this.insetMaxRemoteSize !== this.insetMaxRemoteSizeOld
+    );
+
+    // Update old remote size to avoid wiggling insets that did not change at
+    // all
+    this.insetMinRemoteSizeOld = this.insetMinRemoteSize;
+    this.insetMaxRemoteSizeOld = this.insetMaxRemoteSize;
+
+    return { finalRes, newResScale };
+  }
+
   /**
    * Position insets within the heatmap using simulated annealing
    *
@@ -191,25 +239,7 @@ class AnnotationsInsets {
       ...obj
     }));
 
-    const insetMinSize = this.insetsTrack.insetMinSize * this.insetsTrack.insetScale;
-    const insetMaxSize = this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale;
-
-    // Convert data (basepair position) to view (display pixel) resolution
-    const finalRes = scaleQuantize()
-      .domain([this.insetMinRemoteSize, this.insetMaxRemoteSize])
-      .range(range(
-        insetMinSize, insetMaxSize + 1, this.insetsTrack.options.sizeStepSize
-      ));
-
-    const newResScale = (
-      this.insetMinRemoteSize !== this.insetMinRemoteSizeOld
-      || this.insetMaxRemoteSize !== this.insetMaxRemoteSizeOld
-    );
-
-    // Update old remote size to avoid wiggling insets that did not change at
-    // all
-    this.insetMinRemoteSizeOld = this.insetMinRemoteSize;
-    this.insetMaxRemoteSizeOld = this.insetMaxRemoteSize;
+    const { finalRes, newResScale } = this.computeInsetSizeScale();
 
     const insets = insetsToBeDrawn
       .map((inset) => {
@@ -311,30 +341,6 @@ class AnnotationsInsets {
   }
 
   /**
-   * Compute the final inset size in pixels from their remote size (e.g., base
-   *   pairs or pixels)
-   *
-   * @param   {object}  inset  Inset definition object holding the remote size
-   *   of the inset.
-   * @param   {function}  scale  Translates between the remote size and the
-   *   pixel size.
-   * @return  {object}  Object holding the final pixel with and height.
-   */
-  computeSize(inset, scale) {
-    const widthAbs = inset.cX2 - inset.cX1;
-    const heightAbs = inset.cY2 - inset.cY1;
-
-    const width = widthAbs >= heightAbs
-      ? scale(widthAbs)
-      : widthAbs / heightAbs * scale(heightAbs);
-    const height = heightAbs >= widthAbs
-      ? scale(heightAbs)
-      : heightAbs / widthAbs * width;
-
-    return { width, height };
-  }
-
-  /**
    * Position insets along the gallery.
    *
    * @description
@@ -345,58 +351,93 @@ class AnnotationsInsets {
    * @return  {Array}  Position and dimension of the insets.
    */
   positionInsetsGallery(insetsToBeDrawn = this.insetsToBeDrawn) {
-    const insetRes = this.insetsTrack.insetRes * this.insetsTrack.insetScale;
-    const trackHeightH = this.insetsTrack.positioning.height / 2;
-    const padding = 6;
-    const insetResWithPad = insetRes + padding;
-    const offset = this.insetsTrack.positioning.offsetX;
+    const { finalRes, newResScale } = this.computeInsetSizeScale();
 
-    const numPosX = Math.floor(
-      this.insetsTrack.dimensions[0] / insetResWithPad
+    // 1. Position insets to the closest position on the gallery border
+    return this.positionInsetsGalleryNearestBorder(
+      insetsToBeDrawn, finalRes
     );
 
-    const numPosY = Math.floor(
-      this.insetsTrack.dimensions[1] / insetResWithPad
+    // 2. Optimize position using simulated annealing
+  }
+
+  /**
+   * Position gallery insets to their nearest border location. That is the
+   *   closest [x,y] location on the border of the center track. Count the
+   *   numbr of insets falling within the same local neighborhood on the
+   *   border and other insets close to the same location to spread insets
+   *   out.
+   *
+   * @param   {array}  insetsToBeDrawn  Inset definition olding the position
+   *   and size of the original locus defining the inset.
+   * @param   {function}  finalRes  Translator between remote size and final
+   *   pixel size.
+   * @return  {array}  List of inset definitions holding the border position,
+   *   pixel size, origin, and remote size.
+   */
+  positionInsetsGalleryNearestBorder(insetsToBeDrawn, finalRes) {
+    const insetMaxSize = (
+      this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale
     );
+    const centerWidth = (
+      this.insetsTrack.dimensions[0]
+      - (2 * this.insetsTrack.positioning.width)
+    );
+    const cwh = centerWidth / 2;
+    const paddingX = (this.insetsTrack.positioning.height - insetMaxSize) / 2;
+    const centerHeight = (
+      this.insetsTrack.dimensions[1]
+      - (2 * this.insetsTrack.positioning.height)
+    );
+    const chh = centerHeight / 2;
+    const paddingY = (this.insetsTrack.positioning.height - insetMaxSize) / 2;
 
-    const getPos = (index) => {
-      const numPerSide = (numPosX + numPosY - 2);
-      const lowerLeft = Math.floor(index / (numPosX + numPosY - 2));
-      let x = 0;
-      let y = 0;
+    return insetsToBeDrawn.map((inset) => {
+      const { width, height } = this.computeSize(inset, finalRes);
+      const ox = (inset.maxX + inset.minX) / 2;
+      const oy = (inset.maxY + inset.minY) / 2;
+      const offX = this.insetsTrack.positioning.offsetX;
+      const offY = this.insetsTrack.positioning.offsetY;
 
-      if (lowerLeft) {
-        x = Math.max(0, (numPosX - 1) - (index - numPerSide));
-        y = (numPosY - 1) - Math.max(0, (index - numPerSide) - (numPosX - 1));
-      } else {
-        x = Math.min(index, numPosX - 1);
-        y = Math.max(0, index - (numPosX - 1));
-      }
+      // Determine which border is the closest
+      const isLeftCloser = ox <= cwh;
+      const xDistBorder = isLeftCloser ? ox : centerWidth - ox;
+      const isTopCloser = oy <= chh;
+      const yDistBorder = isTopCloser ? oy : centerHeight - oy;
+      const isXShorter = xDistBorder < yDistBorder;
+
+      // Position insets to the closest border
+      const x = isXShorter
+        ? isLeftCloser
+          ? offX - (width / 2) - paddingX
+          : offX + centerWidth + (width / 2) + paddingX
+        : offX + inset.minX;
+      const y = isXShorter
+        ? offY + inset.minY
+        : isTopCloser
+          ? offY - (height / 2) - paddingY
+          : offY + centerHeight + (height / 2) + paddingY;
 
       return [
-        (x * insetResWithPad) + trackHeightH,
-        (y * insetResWithPad) + trackHeightH
+        inset.uid,
+        x,
+        y,
+        width,
+        height,
+        ox + offX,  // Origin x
+        oy + offY,  // Origin y
+        (inset.maxX - inset.minX) / 2,  // Origin width half
+        (inset.maxY - inset.minY) / 2,  // Origin height half
+        inset.cX1,
+        inset.cX2,
+        inset.cY1,
+        inset.cY2
       ];
-    };
+    });
+  }
 
-    return insetsToBeDrawn
-      .map((inset, index) => {
-        const pos = getPos(index + 1);
+  computeClosestBorder(x, y, width, height) {
 
-        return [
-          inset.uid,
-          pos[0],  // x
-          pos[1],  // y
-          insetRes,  // width
-          insetRes,  // height
-          ((inset.maxX + inset.minX) / 2) + offset,  // Origin x
-          ((inset.maxY + inset.minY) / 2) + offset,  // Origin y
-          inset.cX1,
-          inset.cX2,
-          inset.cY1,
-          inset.cY2
-        ];
-      });
   }
 
   /**
