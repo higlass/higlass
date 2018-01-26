@@ -23,6 +23,8 @@ let userSchedule = false;
 let userDefinedEnergy;
 let userDefinedSchedule;
 
+let is1dOnly = false;
+
 // returns true if two lines intersect, else false
 // from http://paulbourke.net/geometry/lineline2d/
 const intersect = (x1, x2, x3, x4, y1, y2, y3, y4) => {
@@ -41,6 +43,7 @@ const intersect = (x1, x2, x3, x4, y1, y2, y3, y4) => {
 const energy = (index) => {
   const m = lab.length;
   const n = anc.length;
+  const mn = Math.max(m, n);
   const l = lab[index];
   let ener = 0;
   const dx = l.x - l.ox;
@@ -74,9 +77,9 @@ const energy = (index) => {
   let yOverlap;
   let overlapArea;
 
-  // For every annotation
+  // For every annotation or label
   // Note: we know that the first m anchors are the label origins
-  for (let i = 0; i < n; i++) {
+  for (let i = 0; i < mn; i++) {
     // For every other label (m = number of labels)
     if (i !== index && i < m) {
       const otherLabel = lab[i];
@@ -134,9 +137,13 @@ const mcmove = (currT) => {
     ? userDefinedEnergy(i, lab, anc)
     : energy(i);
 
+  const getRndMove = () => (Math.random() - 0.5) * maxMove * Math.max(0.5, currT);
+
   // random translation
-  l.x += (Math.random() - 0.5) * maxMove * Math.max(0.5, currT);
-  l.y += (Math.random() - 0.5) * maxMove * Math.max(0.5, currT);
+  const moveX = +(((is1dOnly * !l.isVerticalOnly) + !is1dOnly) && getRndMove());
+  const moveY = +(((is1dOnly * l.isVerticalOnly) + !is1dOnly) && getRndMove());
+  l.x += moveX;
+  l.y += moveY;
 
   // hard wall boundaries
   // if (l.x > w) l.x = xOld;
@@ -281,6 +288,17 @@ labeler.altSchedule = (x) => {
   if (!arguments.length) return coolingSchedule;
   userDefinedSchedule = x;
   userSchedule = true;
+  return labeler;
+};
+
+/**
+ * Restrict annealing to be one dimensional if `isFalse` is `false`.
+ * @param   {boolean}  isFalse  If `true` deactivate one-dimensional annealing.
+ * @return  {object}  Return the labeler for chaining.
+ */
+labeler.is1dOnly = (isFalse = false) => {
+  if (!arguments.length) return is1dOnly;
+  is1dOnly = !isFalse;
   return labeler;
 };
 
