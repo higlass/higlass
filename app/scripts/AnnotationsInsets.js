@@ -223,6 +223,8 @@ class AnnotationsInsets {
             y: (inset.maxY + inset.minY) / 2,
             ox: (inset.maxX + inset.minX) / 2,  // Origin x
             oy: (inset.maxY + inset.minY) / 2,  // Origin y
+            owh: (inset.maxX - inset.minX) / 2,  // Origin width half
+            ohh: (inset.maxY - inset.minY) / 2,  // Origin height half
             width,
             height,
             wh: width / 2,  // Width half
@@ -238,6 +240,8 @@ class AnnotationsInsets {
 
           this.insets[inset.uid].ox = newOx;
           this.insets[inset.uid].oy = newOy;
+          this.insets[inset.uid].owh = (inset.maxX - inset.minX) / 2;
+          this.insets[inset.uid].ohh = (inset.maxY - inset.minY) / 2;
 
           this.insets[inset.uid].x -= dX;
           this.insets[inset.uid].y -= dY;
@@ -295,6 +299,8 @@ class AnnotationsInsets {
       inset.height,
       inset.ox,
       inset.oy,
+      inset.owh,
+      inset.ohh,
       inset.cX1,
       inset.cX2,
       inset.cY1,

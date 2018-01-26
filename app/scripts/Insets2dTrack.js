@@ -102,7 +102,7 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   createFetchRenderInset(
-    uid, x, y, w, h, sx, sy, dX1, dX2, dY1, dY2, remotePos
+    uid, x, y, w, h, sx, sy, swh, shh, dX1, dX2, dY1, dY2, remotePos
   ) {
     const inset = (
       this.insets[uid] ||
@@ -115,7 +115,8 @@ export default class Insets2dTrack extends PixiTrack {
 
     inset.clear(this.options);
     inset.globalOffset(...this.position);
-    inset.origin(sx, sy);
+    inset.globalSize(...this.dimensions);
+    inset.origin(sx, sy, swh, shh);
     inset.position(x, y);
     inset.size(w, h);
     inset.drawLeaderLine();
@@ -149,14 +150,14 @@ export default class Insets2dTrack extends PixiTrack {
         .then(_chromInfo => this.createFetchRenderInset(
           ...inset,
           this.dataToGenomePos(
-            inset[7], inset[8], inset[9], inset[10], _chromInfo
+            inset[9], inset[10], inset[11], inset[12], _chromInfo
           )
         ));
     }
 
     return this.createFetchRenderInset(
       ...inset,
-      this.dataToImPos(inset[7], inset[8], inset[9], inset[10])
+      this.dataToImPos(inset[9], inset[10], inset[11], inset[12])
     );
   }
 
