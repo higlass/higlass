@@ -36,6 +36,7 @@ import {
   forwardEvent,
   getTrackByUid,
   getTrackPositionByUid,
+  hasParent,
   // loadChromInfos,
   objVals,
   positionedTracksToAllTracks,
@@ -206,6 +207,7 @@ class HiGlassComponent extends React.Component {
     domEvent.register('scroll', document);
     domEvent.register('resize', window);
     domEvent.register('orientationchange', window);
+    domEvent.register('mousewheel', window);
 
     this.pubSubs = [];
     this.pubSubs.push(
@@ -216,6 +218,9 @@ class HiGlassComponent extends React.Component {
     );
     this.pubSubs.push(
       pubSub.subscribe('resize', this.resizeHandler.bind(this))
+    );
+    this.pubSubs.push(
+      pubSub.subscribe('mousewheel', this.mousewheelHandler.bind(this))
     );
     this.pubSubs.push(
       pubSub.subscribe('orientationchange', this.resizeHandler.bind(this))
@@ -252,6 +257,7 @@ class HiGlassComponent extends React.Component {
     this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
     window.addEventListener('focus', this.boundRefreshView);
+    window.addEventListener('mousewheel', this.mousewheelHandler.bind(this), true);
 
     dictValues(this.state.views).forEach((v) => {
       if (!v.layout) {
@@ -358,6 +364,7 @@ class HiGlassComponent extends React.Component {
     domEvent.unregister('keydown', document);
     domEvent.unregister('keyup', document);
     domEvent.unregister('scroll', document);
+    domEvent.unregister('mousewheel', window);
 
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
@@ -370,6 +377,10 @@ class HiGlassComponent extends React.Component {
     if (!this.canvasElement) return;
 
     forwardEvent(e, this.canvasElement);
+  }
+
+  mousewheelHandler(e) {
+    if (hasParent(e.target, this.topDiv)) e.preventDefault();
   }
 
   animateOnMouseMoveHandler(active) {
