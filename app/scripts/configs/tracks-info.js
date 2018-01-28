@@ -696,9 +696,19 @@ export const TRACKS_INFO = [
     hidden: true,
     name: 'OSM Tiles',
     thumbnail: null,
+    availableOptions: [
+      'minX',
+      'maxX',
+      'minY',
+      'maxY',
+      'maxZoom',
+    ],
     defaultOptions: {
-      minPos: 0,
-      maxPos: 3120000000,
+      minX: -180,
+      maxX: 180,
+      minY: -90,
+      maxY: 90,
+      maxZoom: 19,
     },
   },
   {
