@@ -27,10 +27,10 @@ import DataFetcher from './DataFetcher';
  *
  * @returns {array} An array of [string, scale] containin the scale type and a scale with an appropriately set domain and range
  */
-export const getValueScale = function(scalingType, minValue, pseudocount, maxValue, defaultScaling) {
+export const getValueScale = function(scalingType, minValue, pseudocountIn, maxValue, defaultScaling) {
   const scalingTypeToUse = scalingType || defaultScaling;
-
-  console.log('pseudocount', pseudocount, 'scalingType:', scalingType);
+  const pseudocount = 0; //purposely set to not equal pseudocountIn for now
+                         // eventually this will be an option
 
   if (scalingTypeToUse == 'log' && minValue > 0) {
     return ['log', scaleLog().range([254, 0])
@@ -193,7 +193,6 @@ export class TiledPixiTrack extends PixiTrack {
     const toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId));
 
     for (let i = 0; i < toFetch.length; i++) {
-      // console.log('to fetch:', toFetch[i]);
       this.fetching.add(toFetch[i].remoteId);
     }
 
@@ -294,7 +293,6 @@ export class TiledPixiTrack extends PixiTrack {
     // tiles that are fetched
     const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
 
-    // console.log('this.fetchedTiles:', this.fetchedTiles);
     const visibleTileIdsList = [...this.visibleTileIds];
 
     for (let i = 0; i < visibleTileIdsList.length; i++) {
@@ -335,7 +333,6 @@ export class TiledPixiTrack extends PixiTrack {
   initTile(tile) {
     // create the tile
     // should be overwritten by child classes
-    // console.log("ERROR: unimplemented createTile:", this);
     this.scale.minRawValue = this.minVisibleValue();
     this.scale.maxRawValue = this.maxVisibleValue();
 
@@ -482,14 +479,13 @@ export class TiledPixiTrack extends PixiTrack {
     }
 
 
-    this.synchronizeTilesAndGraphics();
-
     /*
          * Mainly called to remove old unnecessary tiles
          */
-    this.refreshTiles();
-
     if (this.options.valueScaling) { this.calculateMedianVisibleValue(); }
+    this.synchronizeTilesAndGraphics();
+
+    this.refreshTiles();
 
     // we need to draw when we receive new data
     this.draw();

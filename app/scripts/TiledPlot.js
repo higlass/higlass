@@ -223,8 +223,6 @@ export class TiledPlot extends React.Component {
     const height = this.element.clientHeight - heightOffset;
     const width = this.element.clientWidth;
 
-    // console.log('TiledPlot height:', height, 'width:', width);
-
     if (width > 0 && height > 0) {
       this.setState({
         sizeMeasured: true,

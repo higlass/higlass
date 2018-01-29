@@ -178,6 +178,9 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
    * @return {array} [zoomLevel, tilePos]
    */
   getTilePosAtPosition(trackX, trackY) {
+    if (!this.tilesetInfo)
+      return;
+
     const zoomLevel = this.calculateZoomLevel();
 
     // the width of the tile in base pairs

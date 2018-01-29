@@ -239,7 +239,7 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     let pseudocount = 0;
 
     if (scaleType == 'log')
-        pseudocount = this.valueScale.domain()[0];
+      pseudocount = 0; // this.medianVisibleValue;
 
     this.limitedValueScale = this.valueScale.copy();
 

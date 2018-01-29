@@ -234,7 +234,6 @@ class HiGlassComponent extends React.Component {
   }
 
   zoomStartHandler() {
-    console.log('zoomStart');
     this.hideHoverMenu();
   }
 
@@ -2796,7 +2795,6 @@ class HiGlassComponent extends React.Component {
   showHoverMenu(evt) {
     // each track should have a function that returns an HTML representation
     // of the data at a give position
-    // console.log('evt:', evt)
     const mouseOverHtml = (evt.track && evt.track.getMouseOverHtml) ?
       evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY) : '';
 
@@ -2871,7 +2869,6 @@ class HiGlassComponent extends React.Component {
    * Handle mousedown events/
    */
   mouseDownHandler(evt) {
-    console.log('mousedown');
 
   }
 

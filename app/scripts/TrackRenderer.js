@@ -801,8 +801,6 @@ export class TrackRenderer extends React.Component {
             .map(zoomedYScale.invert))
           .range([0, this.currentProps.height - 2*this.currentProps.marginTop]);
 
-        // console.log('track.yPosition:', track.yPosition, 'trackYScale.range():', trackYScale.range());
-
         track.zoomed(
           trackXScale,
           trackYScale,
@@ -847,9 +845,6 @@ export class TrackRenderer extends React.Component {
       };
     }
 
-    // console.log('track:', track);
-    // console.log('dataConfig:', dataConfig);
-
     switch (track.type) {
       case 'left-axis':
         return new LeftAxisTrack(this.svgElement);
@@ -872,7 +867,6 @@ export class TrackRenderer extends React.Component {
         );
 
       case 'horizontal-multivec':
-        console.log('horizontal multivec');
         return new HorizontalMultivecTrack(
           this.pStage,
           dataConfig,

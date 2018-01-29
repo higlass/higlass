@@ -916,7 +916,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     let pseudocount = 0;
 
     if (scaleType == 'log')
-        pseudocount = this.valueScale.domain()[0];
+      pseudocount = 0; // this.medianVisibleValue;
 
     this.valueScale
       .range([254, 0])
