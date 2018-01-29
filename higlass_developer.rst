@@ -1,6 +1,190 @@
 HiGlass Client (Developer)
 ##########################
 
+HiGlass API
+***********
+
+Creating an inline HiGlass component
+------------------------------------
+
+.. code-block:: javascript
+
+    createHgComponent(element, config, options, callback)
+
+Create a new HiGlass component within a web page. This initializes a
+HiGlassComponent inside the element ``element`` with a viewconfig passed in as
+``config``. If ``config`` is a string, it is interpreted as a url and used to
+try to fetch a remote viewconfig.
+
+The ``options`` parameter can currently only specify the ``bounded`` property
+which tells the HiGlass component to fill all the space in the containing
+element. Note that if ``bounded`` is set to true, then ``element`` must have a
+fixed height. ``callback`` is used to return an api variable which can be used
+to access HiGlass events.
+
+A full example of an inline HiGlass component can be found in the `HiGlass
+GitHub repository
+<https://github.com/hms-dbmi/higlass/blob/develop/app/test.html>`_.
+
+**Example**
+
+.. code-block:: javascript
+
+    let hgApi = null;
+    hglib.createHgComponent(
+        document.getElementById('development-demo'),
+        testViewConfig,
+        { bounded: true },
+        function (api) {
+            hgApi = api;
+        }
+    );
+
+Setting a view config
+---------------------
+
+The HiGlass API can be used to set a new viewconfig. This returns a Promise
+which is fulfilled when all of the data for the view is loaded.
+
+.. code-block:: javascript
+
+    const p = hgApi.setViewConfig(newViewConfig);
+    p.then(() => {
+        // the initial set of tiles has been loaded
+    });
+
+Getting a view config
+---------------------
+
+.. code-block:: javascript
+    
+    const p = hgApi.get('viewConfig');
+    p.then((viewConfig) => {
+        console.log('viewConfig:', viewConfig)
+    });
+
+The `get` function for retrieving a viewConf returns a promise which is
+fulfilled whenever the viewconfig is returned. 
+
+Zooming to show all of the data
+-------------------------------
+
+One may set a view config pointing to a dataset which is either out of the
+bounds of the view, too small, or too zoomed in. To fit the data inside of 
+the view, the HiGlass API exposes the  ``zoomToDataExtent`` function.
+
+.. code-block:: javascript
+
+    api.zoomToDataExtent('viewUid');
+
+The passed in ``viewUid`` should refer to a view which is present. If it
+doesn't, an exception will be thrown.
+
+Obtaining ordered chromosome info
+---------------------------------
+
+HiGlass provides an API for obtaining information about chromosomes
+and the order they are listed in a chromSizes file:
+
+.. code-block:: javascript
+
+    import {ChromosomeInfo} from 'higlass';
+
+    ChromosomeInfo(
+      'http://higlass.io/api/v1/chrom-sizes/?id=Ajn_ttUUQbqgtOD4nOt-IA',
+      (chromInfo) => {
+        console.log('chromInfo:', chromInfo);
+      });
+
+This will return a data structure with information about the chromosomes
+listed:
+
+.. code-block:: javascript
+
+    {
+        chrPositions: {
+            chr1 : {id: 0, chr: "chr1", pos: 0},
+            chr2 : {id: 1, chr: "chr2", pos: 249250621} ,
+            ...
+        },
+        chromLengths: {
+            chr1: "249250621",
+            chr2: "243199373",
+            ...
+        },
+        cumPositions: [
+            {id: 0, chr: "chr1", pos: 0},
+            {id: 1, chr: "chr2", pos: 249250621},
+            ...
+         ]
+    }
+
+Exporting the view as a Data URI
+--------------------------------
+
+The current view can be programmatically exported as a data URI:
+
+.. code-block:: javascript
+
+    api.createDataURI()
+
+Viewconfs
+*********
+
+Viewconfs specify exactly what a HiGlass view should show. They contain a list
+of the data sources, visualization types, visible region as well as searching
+and styling options.
+
+Show a specific genomic location
+--------------------------------
+
+Say we want to have a viewconf which was centered on the gene OSR1. It's
+location is roughly between positions 19,500,000 and 19,600,000 on chromosome 7
+of the hg19 assembly. So what should ``initialXDomain`` be set to in order to
+show this gene?
+
+Because `initialXDomain` accepts absolute coordinates calculated by
+concatenating chromosomes according to a certain order, we need to calculate
+what chr2:19,500,000 and chr2:196,000,000 are in absolute coordinates.
+
+To do this we will assume a chromosome ordering consisting of chr1, chr2, ...
+This means that we need to take the length of chr1 in hg19, which is
+249,250,621 base pairs, and add our positions to that, yielding
+positions 268,750,621 and 268,850,621 for the ``initialXDomain``.
+
+The chromosome order commonly used in HiGlass for hg19 can be found in the
+`negspy repository
+<https://github.com/pkerpedjiev/negspy/blob/master/negspy/data/hg19/chromInfo.txt>`_.
+
+Upload a viewconf to the server
+-------------------------------
+
+A local viewconf can be sent to the server by sending a ``POST`` request. Make
+sure the actual viewconf is wrapped in the ``viewconf`` section of the posted
+json (e.g. '{"viewconf": myViewConfig}'):
+
+.. code-block:: bash
+
+    curl -H "Content-Type: application/json" \
+         -X POST \
+         -d '{"viewconf": {"editable": true, "zoomFixed": false, "trackSourceServers": ["/api/v2", "http://higlass.io/api/v1"], "exportViewUrl": "/api/v1/viewconfs/", "views": [{"tracks": {"top": [], "left": [], "center": [], "right": [], "bottom": []}, "initialXDomain": [243883495.14563107, 2956116504.854369], "initialYDomain": [804660194.1747572, 2395339805.825243], "layout": {"w": 12, "h": 12, "x": 0, "y": 0, "i": "EwiSznw8ST2HF3CjHx-tCg", "moved": false, "static": false}, "uid": "EwiSznw8ST2HF3CjHx-tCg"}], "zoomLocks": {"locksByViewUid": {}, "locksDict": {}}, "locationLocks": {"locksByViewUid": {}, "locksDict": {}}, "valueScaleLocks": {"locksByViewUid": {}, "locksDict": {}}}}' http://localhost:8989/api/v1/viewconfs/
+
+
+
+Coding Guidelines
+*****************
+
+Spacing
+-------
+
+Code should be indented with 2 spaces. No tabs!
+
+Docstrings
+----------
+
+All functions should be annotated with a docstring in the `JSDoc style <http://usejsdoc.org/>`_.
+
+
 Track Documentation
 *******************
 
@@ -152,149 +336,6 @@ in `HorizontalMultivecTrack`. Here's the steps.
 
 6. Change ``setSpriteProperties`` to position the sprite on only the x axis.
 
-
-
-
-HiGlass API
-***********
-
-Creating an inline HiGlass component
-------------------------------------
-
-.. code-block:: javascript
-
-    createHgComponent(element, config, options, callback)
-
-Create a new HiGlass component within a web page. This initializes a
-HiGlassComponent inside the element ``element`` with a viewconfig passed in as
-``config``. If ``config`` is a string, it is interpreted as a url and used to
-try to fetch a remote viewconfig.
-
-The ``options`` parameter can currently only specify the ``bounded`` property
-which tells the HiGlass component to fill all the space in the containing
-element. Note that if ``bounded`` is set to true, then ``element`` must have a
-fixed height. ``callback`` is used to return an api variable which can be used
-to access HiGlass events.
-
-A full example of an inline HiGlass component can be found in the `HiGlass
-GitHub repository
-<https://github.com/hms-dbmi/higlass/blob/develop/app/test.html>`_.
-
-**Example**
-
-.. code-block:: javascript
-
-    let hgApi = null;
-    hglib.createHgComponent(
-        document.getElementById('development-demo'),
-        testViewConfig,
-        { bounded: true },
-        function (api) {
-            hgApi = api;
-        }
-    );
-
-Setting a view config
----------------------
-
-The HiGlass API can be used to set a new viewconfig. This returns a Promise
-which is fulfilled when all of the data for the view is loaded.
-
-.. code-block:: javascript
-
-    const p = hgApi.setViewConfig(newViewConfig);
-    p.then(() => {
-        // the initial set of tiles has been loaded
-    });
-
-Getting a view config
----------------------
-
-.. code-block:: javascript
-    
-    const p = hgApi.get('viewConfig');
-    p.then((viewConfig) => {
-        console.log('viewConfig:', viewConfig)
-    });
-
-The `get` function for retrieving a viewConf returns a promise which is
-fulfilled whenever the viewconfig is returned. 
-
-Zooming to show all of the data
--------------------------------
-
-One may set a view config pointing to a dataset which is either out of the
-bounds of the view, too small, or too zoomed in. To fit the data inside of 
-the view, the HiGlass API exposes the  ``zoomToDataExtent`` function.
-
-.. code-block:: javascript
-
-    api.zoomToDataExtent('viewUid');
-
-The passed in ``viewUid`` should refer to a view which is present. If it
-doesn't, an exception will be thrown.
-
-Obtaining ordered chromosome info
----------------------------------
-
-HiGlass provides an API for obtaining information about chromosomes
-and the order they are listed in a chromSizes file:
-
-.. code-block:: javascript
-
-    import {ChromosomeInfo} from 'higlass';
-
-    ChromosomeInfo(
-      'http://higlass.io/api/v1/chrom-sizes/?id=Ajn_ttUUQbqgtOD4nOt-IA',
-      (chromInfo) => {
-        console.log('chromInfo:', chromInfo);
-      });
-
-This will return a data structure with information about the chromosomes
-listed:
-
-.. code-block:: javascript
-
-    {
-        chrPositions: {
-            chr1 : {id: 0, chr: "chr1", pos: 0},
-            chr2 : {id: 1, chr: "chr2", pos: 249250621} ,
-            ...
-        },
-        chromLengths: {
-            chr1: "249250621",
-            chr2: "243199373",
-            ...
-        },
-        cumPositions: [
-            {id: 0, chr: "chr1", pos: 0},
-            {id: 1, chr: "chr2", pos: 249250621},
-            ...
-         ]
-    }
-
-Exporting the view as a Data URI
---------------------------------
-
-The current view can be programmatically exported as a data URI:
-
-.. code-block:: javascript
-
-    api.createDataURI()
-
-
-Coding Guidelines
-*****************
-
-Spacing
--------
-
-Code should be indented with 2 spaces. No tabs!
-
-Docstrings
-----------
-
-All functions should be annotated with a docstring in the `JSDoc style <http://usejsdoc.org/>`_.
 
 
 Other Documentation
