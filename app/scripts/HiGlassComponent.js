@@ -220,9 +220,26 @@ class HiGlassComponent extends React.Component {
       pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this)),
     );
 
+    this.pubSubs.push(
+      pubSub.subscribe('app.zoomStart', this.zoomStartHandler.bind(this))
+    );
+
+    this.pubSubs.push(
+      pubSub.subscribe('app.zoomEnd', this.zoomEndHandler.bind(this))
+    );
+
     if (this.props.getApi) {
       this.props.getApi(this.api);
     }
+  }
+
+  zoomStartHandler() {
+    console.log('zoomStart');
+    this.hideHoverMenu();
+  }
+
+  zoomEndHandler() {
+
   }
 
   waitForDOMAttachment(callback) {
@@ -2834,6 +2851,13 @@ class HiGlassComponent extends React.Component {
     }
 
     mouseOverDiv.html(mouseOverHtml);
+  }
+
+  /**
+   * Hide the hover menu when e.g. the user starts zooming
+   */
+  hideHoverMenu() {
+    select('body').selectAll('.track-mouseover-menu').remove();
   }
 
   /**

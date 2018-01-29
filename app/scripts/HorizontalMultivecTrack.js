@@ -129,6 +129,9 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
   }
 
   calculateZoomLevel() {
+    if (!this.tilesetInfo)
+      return;
+
     let minX = this.tilesetInfo.min_pos[0];
 
     let zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(this.tilesetInfo.resolutions, this._xScale, minX);

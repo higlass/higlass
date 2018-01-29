@@ -746,10 +746,14 @@ export class TrackRenderer extends React.Component {
 
   zoomStarted() {
     this.zooming = true;
+
+    pubSub.publish('app.zoomStart');
   }
 
   zoomEnded() {
     this.zooming = false;
+
+    pubSub.publish('app.zoomEnd');
   }
 
   applyZoomTransform(notify = true) {
@@ -1310,20 +1314,6 @@ export class TrackRenderer extends React.Component {
         className='track-renderer-div'
       >
         {this.currentProps.children}
-        <div 
-          className='event-catcher'
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            width: '100%',
-            height: '100%'
-          }}
-          onMouseDown={() => { 
-            console.log('tr mousedown');
-          }}
-          onClick={() => console.log('clickx')}
-        />
       </div>
     );
   }
