@@ -194,8 +194,8 @@ class Annotations2dTrack extends TiledPixiTrack {
         );
 
         this.publish('annotationDrawn', {
-          uid,
-          viewPos: [drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height],
+          uid: td.uid,
+          viewPos: [startX, startY, endX - startX, endY - startY],
           dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd]
         });
       });
