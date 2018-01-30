@@ -1,14 +1,14 @@
 import { range } from 'd3-array';
 import {
   json as d3Json,
-  text as d3Text
+  text as d3Text,
+  request,
 } from 'd3-request';
 import slugid from 'slugid';
 
 import {
   workerFetchTiles,
   workerFetchMultiRequestTiles,
-  workerGetTilesetInfo,
   workerSetPix,
 } from '../worker';
 
@@ -22,7 +22,7 @@ import { TILE_FETCH_DEBOUNCE } from '../configs';
 const sessionId = slugid.nice();
 
 export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
-export const getRequestsInFlight = () => requestsInFlight;
+export let authHeader = null;
 
 const debounce = (func, wait) => {
   let timeout;
@@ -76,6 +76,10 @@ const debounce = (func, wait) => {
 
   return debounced;
 };
+
+export const setTileProxyAuthHeader = (newHeader) => {
+  authHeader = newHeader
+}
 
 const workerFetchTilesDebounced = debounce(
   workerFetchMultiRequestTiles, TILE_FETCH_DEBOUNCE
@@ -226,10 +230,20 @@ export const calculateTilesFromResolution = (
 };
 
 export const trackInfo = (server, tilesetUid, done) => {
-  workerGetTilesetInfo(
-    `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`,
-    done
-  );
+  const url =
+    `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
+    pubSub.publish('requestSent', url);
+    json(url, (error, data) => {
+      pubSub.publish('requestReceived', url);
+      if (error) {
+        // console.log('error:', error);
+        // don't do anything
+        // no tileset info just means we can't do anything with this file...
+      } else {
+        // console.log('got data', data);
+        done(data);
+      }
+    });
 };
 
 /**
@@ -314,11 +328,18 @@ function json(url, callback) {
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
-  d3Json(url, (error, done) => {
-    pubSub.publish('requestReceived', url);
-    callback(error, done);
-    requestsInFlight -= 1;
-  });
+  const r = request(url)
+    .header('Content-Type', 'application/json')
+
+  if (authHeader)
+    r.header('Authorization', `${authHeader}`)
+
+    r.send('GET', (error, data) => {
+      pubSub.publish('requestReceived', url);
+      const j = data && JSON.parse(data.response);
+      callback(error, j);
+      requestsInFlight -= 1;
+    });
 }
 
 

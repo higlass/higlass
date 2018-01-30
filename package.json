@@ -1,6 +1,6 @@
 {
   "name": "higlass",
-  "version": "0.10.13",
+  "version": "0.10.15",
   "description": "Massive matrix viewer",
   "author": "Peter Kerpedjiev <pkerpedjiev@gmail.com>",
   "main": "dist/scripts/hglib.js",
@@ -42,6 +42,7 @@
     "d3-drag": "^1.2.1",
     "d3-dsv": "^1.0.8",
     "d3-format": "^1.2.1",
+    "d3-geo": "^1.9.1",
     "d3-queue": "^3.0.7",
     "d3-request": "^1.0.6",
     "d3-scale": "^1.0.7",

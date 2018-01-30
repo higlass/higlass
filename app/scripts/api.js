@@ -4,6 +4,10 @@ import {
 } from './utils';
 
 import {
+  setTileProxyAuthHeader
+} from './services';
+
+import {
   MOUSE_TOOL_MOVE,
   MOUSE_TOOL_SELECT,
 } from './configs';
@@ -26,6 +30,11 @@ const api = function api(context) {
 
   // Public API
   return {
+    setAuthHeader(newHeader) {
+      console.log('api set auth header', newHeader);
+      setTileProxyAuthHeader(newHeader);
+    },
+
     setViewConfig(newViewConfig) {
       /**
        * Set a new view config to define the layout and data

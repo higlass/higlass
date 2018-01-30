@@ -1,4 +1,5 @@
-import { json } from 'd3-request';
+import { authHeader } from './services';
+import { json, request } from 'd3-request';
 import pubSub from './services/pub-sub';
 
 /*
@@ -118,20 +119,6 @@ export function workerSetPix(
   return pixData;
 }
 
-export function workerGetTilesetInfo(url, done) {
-  pubSub.publish('requestSent', url);
-  json(url, (error, data) => {
-    pubSub.publish('requestReceived', url);
-    if (error) {
-      // console.log('error:', error);
-      // don't do anything
-      // no tileset info just means we can't do anything with this file...
-    } else {
-      // console.log('got data', data);
-      done(data);
-    }
-  });
-}
 
 function float32(inUint16) {
   /**
@@ -198,11 +185,18 @@ export function workerFetchTiles(tilesetServer, tileIds, sessionId, done) {
 
     const p = new Promise(((resolve, reject) => {
       pubSub.publish('requestSent', outUrl);
-      json(outUrl, (error, data) => {
+      const r = request(outUrl)
+      .header('Content-Type', 'application/json')
+
+      if (authHeader)
+        r.header('Authorization', `${authHeader}`)
+
+      r.send('GET', (error, data) => {
         pubSub.publish('requestReceived', outUrl);
         if (error) {
           resolve({});
         } else {
+          data = JSON.parse(data.responseText);
           // check if we have array data to convert from base64 to float32
           for (const key in data) {
             // let's hope the payload doesn't contain a tileId field
@@ -291,11 +285,19 @@ export function workerFetchMultiRequestTiles(req) {
 
       const p = new Promise(((resolve, reject) => {
         pubSub.publish('requestSent', outUrl);
-        json(outUrl, (error, data) => {
+        const r = request(outUrl)
+        .header('Content-Type', 'application/json')
+
+        if (authHeader)
+          r.header('Authorization', `${authHeader}`)
+
+        r.send('GET', (error, data) => {
           pubSub.publish('requestReceived', outUrl);
           if (!data)  {
             // probably an error
             data = {}
+          }  else {
+            data = JSON.parse(data.responseText);
           }
 
           if (error) {
