@@ -1331,6 +1331,17 @@ export class TrackRenderer extends React.Component {
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
+      case 'vertical-bedlike':
+        return new LeftTrackModifier(
+          new BedLikeTrack(
+            this.pStage,
+            dataConfig,
+            handleTilesetInfoReceived,
+            track.options,
+            () => this.currentProps.onNewTilesLoaded(track.uid),
+          )
+        );
+
       default:
         console.warn('WARNING: unknown track type:', track.type);
         return new UnknownPixiTrack(
