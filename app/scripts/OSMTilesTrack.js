@@ -36,13 +36,15 @@ export class OSMTilesTrack extends PixiTrack {
     // the graphics that have already been drawn for this track
     this.tileGraphics = {};
 
-    this.minX = +this.options.minX || -180;
-    this.maxX = +this.options.maxX || 180;
-    this.minY = +this.options.minY || -90;
-    this.maxY = +this.options.maxY || 90;
+    this.minX = +this.options.minPos || -180;
+    this.maxX = +this.options.maxPos || 180;
+    // HiGlass currently only supports squared tile sets but maybe in the
+    // future...
+    this.minY = this.minX;
+    this.maxY = this.maxX;
 
     this.maxZoom = 19;
-    this.maxWidth = Math.max(this.maxX - this.minX, this.maxY - this.minY);
+    this.maxWidth = this.maxX - this.minX;
     this.animate = animate;
 
     this.uuid = slugid.nice();
@@ -204,8 +206,8 @@ export class OSMTilesTrack extends PixiTrack {
     this.yTiles = tileProxy.calculateTiles(
       this.zoomLevel,
       this._yScale,
-      this.minY,
-      this.maxY,
+      this.minX,
+      this.maxX,
       this.maxZoom,
       this.maxWidth
     );
@@ -306,8 +308,8 @@ export class OSMTilesTrack extends PixiTrack {
     const tileWidth = this.maxWidth / (2 ** zoomLevel);
     const tileHeight = tileWidth;
 
-    const tileX = -180 + (tilePos[0] * tileWidth);
-    const tileY = -90 + (tilePos[1] * tileHeight);
+    const tileX = this.minX + (tilePos[0] * tileWidth);
+    const tileY = this.minY + (tilePos[1] * tileHeight);
 
     return { tileX, tileY, tileWidth, tileHeight };
   }
