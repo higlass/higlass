@@ -28,6 +28,7 @@ import Track from './Track';
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
 import Annotations2dTrack from './Annotations2dTrack';
+import GeoJsonTrack from './GeoJsonTrack';
 
 import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
@@ -382,13 +383,6 @@ export class TrackRenderer extends React.Component {
         ),
       ])
       .range([initialYDomain[0], initialYDomain[1]]);
-
-    console.log('A',
-      this.drawableToDomainY.domain(),
-      initialYDomain,
-      this.currentProps.centerHeight,
-      this.currentProps.centerWidth
-    );
 
     this.prevCenterX = (
       this.currentProps.marginLeft +
@@ -1130,6 +1124,15 @@ export class TrackRenderer extends React.Component {
 
       case '2d-annotations':
         return new Annotations2dTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      case 'geo-json':
+        return new GeoJsonTrack(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,

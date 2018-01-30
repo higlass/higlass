@@ -588,6 +588,38 @@ export const TRACKS_INFO = [
   },
 
   {
+    type: 'geo-json',
+    datatype: ['geo-json'],
+    orientation: '2d',
+    name: 'Geo JSON',
+    thumbnail: svgArrowheadDomainsIcon,
+    availableOptions: [
+      'projecton',
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'rectangleDomainFillColor',
+      'rectangleDomainStrokeColor',
+      'rectangleDomainOpacity',
+      'minSquareSize'
+    ],
+    defaultOptions: {
+      projecton: 'mercator',
+      labelColor: 'black',
+      labelPosition: 'hidden',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+      rectangleDomainFillColor: 'grey',
+      rectangleDomainStrokeColor: 'black',
+      rectangleDomainOpacity: 0.6,
+      minSquareSize: 'none',
+    },
+  },
+
+  {
     type: 'square-markers',
     datatype: ['bedpe'],
     local: false,
