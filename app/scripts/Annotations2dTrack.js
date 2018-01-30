@@ -15,6 +15,45 @@ class Annotations2dTrack extends TiledPixiTrack {
     this.options.minSquareSize = +this.options.minSquareSize;
   }
 
+  /* --------------------------- Getter / Setter ---------------------------- */
+
+  get minX() {
+    return this.tilesetInfo && this.tilesetInfo.min_x
+      ? this.tilesetInfo.min_x
+      : 0;
+  }
+
+  get maxX() {
+    return this.tilesetInfo && this.tilesetInfo.max_x
+      ? this.tilesetInfo.max_x
+      : 0;
+  }
+
+  get minY() {
+    // Currently HiGlass only supports squared tile sets
+    return this.minX;
+  }
+
+  get maxY() {
+    // Currently HiGlass only supports squared tile sets
+    return this.maxX;
+  }
+
+  get maxSize() {
+    try {
+      return Math.max(
+        this.tilesetInfo.max_x - this.tilesetInfo.min_x,
+        this.tilesetInfo.max_y - this.tilesetInfo.min_y
+      );
+    } catch (e) { /* Nothing */ }
+
+    try {
+      return this.tilesetInfo.max_size;
+    } catch (e) { /* Nothing */ }
+
+    return 0;
+  }
+
   /**
    * The local tile identifier
    *
@@ -43,10 +82,10 @@ class Annotations2dTrack extends TiledPixiTrack {
 
   calculateZoomLevel() {
     const xZoomLevel = tileProxy.calculateZoomLevel(
-      this._xScale, 0, this.tilesetInfo.max_size
+      this._xScale, this.minX, this.maxX
     );
     const yZoomLevel = tileProxy.calculateZoomLevel(
-      this._yScale, 0, this.tilesetInfo.max_size
+      this._yScale, this.minY, this.maxY
     );
 
     return Math.min(Math.max(xZoomLevel, yZoomLevel), this.maxZoom);
@@ -77,19 +116,19 @@ class Annotations2dTrack extends TiledPixiTrack {
     this.xTiles = tileProxy.calculateTiles(
       this.zoomLevel,
       this._xScale,
-      0,
-      this.tilesetInfo.max_size,
+      this.minX,
+      this.maxX,
       this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_size
+      this.maxSize
     );
 
     this.yTiles = tileProxy.calculateTiles(
       this.zoomLevel,
       this._yScale,
-      0,
-      this.tilesetInfo.max_size,
+      this.minY,
+      this.maxY,
       this.tilesetInfo.max_zoom,
-      this.tilesetInfo.max_size
+      this.maxSize
     );
 
     const zoomLevel = this.zoomLevel;
@@ -106,10 +145,6 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     this.setVisibleTiles(tiles);
   }
-
-  // initTile(tile) {}
-
-  // destroyTile(tile, graphics) {}
 
   draw() {
     this.drawnRects = {};
@@ -254,7 +289,6 @@ class Annotations2dTrack extends TiledPixiTrack {
     this.yScale(newYScale);
 
     this.refreshTiles();
-
     this.draw();
   }
 }

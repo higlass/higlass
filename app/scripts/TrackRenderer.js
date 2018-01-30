@@ -28,6 +28,7 @@ import Track from './Track';
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
 import Annotations2dTrack from './Annotations2dTrack';
+import GeoJsonTrack from './GeoJsonTrack';
 
 import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
@@ -126,8 +127,16 @@ export class TrackRenderer extends React.Component {
     this.initialXDomain = [0, 1];
     this.initialYDomain = [0, 1];
 
-    this.prevCenterX = this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth / 2;
-    this.prevCenterY = this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2;
+    this.prevCenterX = (
+      this.currentProps.marginLeft +
+      this.currentProps.leftWidth +
+      (this.currentProps.centerWidth / 2)
+    );
+    this.prevCenterY = (
+      this.currentProps.marginTop +
+      this.currentProps.topHeight +
+      (this.currentProps.centerHeight / 2)
+    );
 
     // The offset of the center from the original. Used to keep the scales centered on resize events
     this.cumCenterXOffset = 0;
@@ -331,21 +340,18 @@ export class TrackRenderer extends React.Component {
 
     // stretch out the y-scale so that views aren't distorted (i.e. maintain
     // a 1 to 1 ratio)
-    initialYDomain[0] = yCenter - xWidth / 2,
-    initialYDomain[1] = yCenter + xWidth / 2;
-
+    initialYDomain[0] = yCenter - (xWidth / 2);
+    initialYDomain[1] = yCenter + (xWidth / 2);
 
     // if the inital domains haven't changed, then we don't have to
     // worry about resetting anything
     // initial domains should only change when loading a new viewconfig
     if (
-      initialXDomain[0] == this.initialXDomain[0] &&
-      initialXDomain[1] == this.initialXDomain[1] &&
-      initialYDomain[0] == this.initialYDomain[0] &&
-      initialYDomain[1] == this.initialYDomain[1]
-    ) {
-      return;
-    }
+      initialXDomain[0] === this.initialXDomain[0] &&
+      initialXDomain[1] === this.initialXDomain[1] &&
+      initialYDomain[0] === this.initialYDomain[0] &&
+      initialYDomain[1] === this.initialYDomain[1]
+    ) return;
 
     // only update the initial domain
     this.initialXDomain = initialXDomain;
@@ -363,13 +369,31 @@ export class TrackRenderer extends React.Component {
 
     this.drawableToDomainY = scaleLinear()
       .domain([
-        this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 - this.currentProps.centerWidth / 2,
-        this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2,
+        (
+          this.currentProps.marginTop +
+          this.currentProps.topHeight +
+          (this.currentProps.centerHeight / 2) -
+          (this.currentProps.centerWidth / 2)
+        ),
+        (
+          this.currentProps.marginTop +
+          this.currentProps.topHeight +
+          (this.currentProps.centerHeight / 2) +
+          (this.currentProps.centerWidth / 2)
+        ),
       ])
       .range([initialYDomain[0], initialYDomain[1]]);
 
-    this.prevCenterX = this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth / 2;
-    this.prevCenterY = this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2;
+    this.prevCenterX = (
+      this.currentProps.marginLeft +
+      this.currentProps.leftWidth +
+      (this.currentProps.centerWidth / 2)
+    );
+    this.prevCenterY = (
+      this.currentProps.marginTop +
+      this.currentProps.topHeight +
+      (this.currentProps.centerHeight / 2)
+    );
   }
 
   updatablePropsToString(props) {
@@ -1100,6 +1124,15 @@ export class TrackRenderer extends React.Component {
 
       case '2d-annotations':
         return new Annotations2dTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      case 'geo-json':
+        return new GeoJsonTrack(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
