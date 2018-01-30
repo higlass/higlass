@@ -62,33 +62,61 @@ class GeoJsonTrack extends Annotations2dTrack {
         const width = endX - startX;
         const height = endY - startY;
 
-        let drawnRect = {
+        const drawnRect = {
           x: startX,
           y: startY,
           width,
-          height
+          height,
+          geometry: td.geometry
         };
 
-        if (this.options.minSquareSize) {
-          if (
-            width < this.options.minSquareSize
-            || height < this.options.minSquareSize
-          ) {
-            drawnRect = {
-              x: (startX + endX) / 2,
-              y: (startY + endY) / 2,
-              width: this.options.minSquareSize,
-              height: this.options.minSquareSize
-            };
-          }
+        if (
+          width < this.options.polygonMinBoundingSize
+          || height < this.options.polygonMinBoundingSize
+        ) {
+          drawnRect.geometry.type = 'rect';
+        }
+
+        if (
+          width < this.options.rectanlgeMinSize
+          || height < this.options.rectanlgeMinSize
+        ) {
+          drawnRect.x = (startX + endX) / 2;
+          drawnRect.y = (startY + endY) / 2;
+          drawnRect.width = this.options.rectanlgeMinSize;
+          drawnRect.height = this.options.rectanlgeMinSize;
+        }
+
+        switch (drawnRect.geometry.type) {
+          case 'Polygon':
+            this.drawPolygon(graphics, drawnRect.geometry.coordinates);
+            break;
+
+          default:
+            this.drawRect(
+              graphics,
+              drawnRect.x,
+              drawnRect.y,
+              drawnRect.width,
+              drawnRect.height
+            );
+            break;
         }
 
         this.drawnRects[uid] = drawnRect;
-
-        graphics.drawRect(
-          drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height
-        );
       });
+  }
+
+  drawRect(graphics, x, y, width, height) {
+    graphics.drawRect(x, y, width, height);
+  }
+
+  drawPolygon(graphics, coords) {
+    coords.forEach((coordGroup) => {
+      graphics.drawPolygon(coordGroup
+        .reduce((path, coord) => path.concat(this.projection(coord)), [])
+      );
+    });
   }
 
   /**
