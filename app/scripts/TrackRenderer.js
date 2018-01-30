@@ -340,8 +340,8 @@ export class TrackRenderer extends React.Component {
 
     // stretch out the y-scale so that views aren't distorted (i.e. maintain
     // a 1 to 1 ratio)
-    initialYDomain[0] = (yCenter - xWidth) / 2;
-    initialYDomain[1] = (yCenter + xWidth) / 2;
+    initialYDomain[0] = yCenter - (xWidth / 2);
+    initialYDomain[1] = yCenter + (xWidth / 2);
 
     // if the inital domains haven't changed, then we don't have to
     // worry about resetting anything
