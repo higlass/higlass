@@ -598,6 +598,32 @@ export const TRACKS_INFO = [
       valueColumn: null
     },
   },
+  {
+    type: 'vertical-bedlike',
+    datatype: ['bedlike'],
+    local: false,
+    minWidth: 55,
+    orientation: '1d-vertical',
+    name: 'BED-like track',
+    thumbnail: null,
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'valueColumn',
+    ],
+    defaultOptions: {
+      axisPositionHorizontal: 'right',
+      labelColor: 'black',
+      labelPosition: 'hidden',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+      valueColumn: null
+    },
+  },
 ];
 
 export default TRACKS_INFO;
