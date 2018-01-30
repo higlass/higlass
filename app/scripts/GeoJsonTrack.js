@@ -112,10 +112,11 @@ class GeoJsonTrack extends Annotations2dTrack {
   }
 
   drawPolygon(graphics, coords) {
-    coords.forEach((coordGroup) => {
-      graphics.drawPolygon(coordGroup
-        .reduce((path, coord) => path.concat(this.projection(coord)), [])
+    coords.forEach((shape, index) => {
+      graphics.drawPolygon(
+        shape.reduce((path, coord) => path.concat(this.projection(coord)), [])
       );
+      if (index > 0) graphics.addHole();
     });
   }
 
