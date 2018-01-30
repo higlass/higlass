@@ -3,9 +3,6 @@ import { geoMercator } from 'd3-geo';
 // Components
 import Annotations2dTrack from './Annotations2dTrack';
 
-// Utils
-import { colorToHex } from './utils';
-
 class GeoJsonTrack extends Annotations2dTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
     super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
@@ -22,102 +19,101 @@ class GeoJsonTrack extends Annotations2dTrack {
 
   /* --------------------------- Getter / Setter ---------------------------- */
 
-  drawTile(tile) {
-    if (!tile.graphics) return;
-
-    const graphics = tile.graphics;
-    graphics.clear();
-
-    const stroke = colorToHex(this.options.rectangleDomainStrokeColor || 'black');
-    const fill = colorToHex(this.options.rectangleDomainFillColor || 'grey');
-
-    graphics.lineStyle(
-      typeof this.options.rectangleDomainStrokeWidth !== 'undefined'
-        ? this.options.rectangleDomainStrokeWidth
-        : 1,
-      stroke,
-      typeof this.options.rectangleDomainStrokeOpacity !== 'undefined'
-        ? this.options.rectangleDomainStrokeOpacity
-        : 1,
-    );
-    graphics.beginFill(
-      fill,
-      typeof this.options.rectangleDomainFillOpacity !== 'undefined'
-        ? this.options.rectangleDomainFillOpacity
-        : 0.4,
-    );
-
-    graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
-
-    if (!tile.tileData.length) return;
-
-    tile.tileData
-      .filter(td => !(td.uid in this.drawnRects))
-      .forEach((td) => {
-        const [startX, startY] = this.projection([td.xStart, td.yStart]);
-        const [endX, endY] = this.projection([td.xEnd, td.yEnd]);
-
-        const uid = td.uid;
-
-        const width = endX - startX;
-        const height = endY - startY;
-
-        const drawnRect = {
-          x: startX,
-          y: startY,
-          width,
-          height,
-          geometry: td.geometry
-        };
-
-        if (
-          width < this.options.polygonMinBoundingSize
-          || height < this.options.polygonMinBoundingSize
-        ) {
-          drawnRect.geometry.type = 'rect';
-        }
-
-        if (
-          width < this.options.rectanlgeMinSize
-          || height < this.options.rectanlgeMinSize
-        ) {
-          drawnRect.x = (startX + endX) / 2;
-          drawnRect.y = (startY + endY) / 2;
-          drawnRect.width = this.options.rectanlgeMinSize;
-          drawnRect.height = this.options.rectanlgeMinSize;
-        }
-
-        switch (drawnRect.geometry.type) {
-          case 'Polygon':
-            this.drawPolygon(graphics, drawnRect.geometry.coordinates);
-            break;
-
-          default:
-            this.drawRect(
-              graphics,
-              drawnRect.x,
-              drawnRect.y,
-              drawnRect.width,
-              drawnRect.height
-            );
-            break;
-        }
-
-        this.drawnRects[uid] = drawnRect;
-      });
+  prepAnnotation(graphics, uid, startX, startY, width, height, td) {
+    return {
+      graphics,
+      uid,
+      annotation: {
+        x: startX,
+        y: startY,
+        width,
+        height,
+        geometry: td.geometry
+      }
+    };
   }
 
+  drawAnnotation({ graphics, uid, annotation }) {
+    if (
+      annotation.width < this.options.polygonMinBoundingSize
+      || annotation.height < this.options.polygonMinBoundingSize
+    ) {
+      annotation.geometry.type = 'rect';
+    }
+
+    if (this.options.minSquareSize) {
+      if (
+        annotation.width < this.options.minSquareSize
+        || annotation.height < this.options.minSquareSize
+      ) {
+        annotation.x = (annotation.x + annotation.width) / 2;
+        annotation.y = (annotation.y + annotation.height) / 2;
+        annotation.width = this.options.minSquareSize;
+        annotation.height = this.options.minSquareSize;
+      }
+    }
+
+    switch (annotation.geometry.type) {
+      case 'Polygon':
+        this.drawPolygon(graphics, annotation.geometry.coordinates);
+        break;
+
+      default:
+        this.drawRect(
+          graphics,
+          annotation.x,
+          annotation.y,
+          annotation.width,
+          annotation.height
+        );
+        break;
+    }
+
+    this.drawnAnnotations[uid] = annotation;
+  }
+
+  /**
+   * Draw a classic rectangle onto the given graphics object.
+   * @param   {object}  graphics  PIXI graphics object to be drawn on.
+   * @param   {number}  x  Top view coord to start drawing from.
+   * @param   {number}  y  Left view coord to start drawing from.
+   * @param   {number}  width  Width of the rectangle.
+   * @param   {number}  height  Height of the rectangle.
+   */
   drawRect(graphics, x, y, width, height) {
     graphics.drawRect(x, y, width, height);
   }
 
+  /**
+   * Draw a remarkably beautiful polygon onto the beloved PIXI graphics object
+   *   passed to this method.
+   * @param   {object}  graphics  PIXI graphics object to be drawn on.
+   * @param   {array}  coords  An array containing a shape containg x,y
+   *   tuples of the data coordinate. Check GeoJSON for the correct format.
+   */
   drawPolygon(graphics, coords) {
-    coords.forEach((shape, index) => {
-      graphics.drawPolygon(
-        shape.reduce((path, coord) => path.concat(this.projection(coord)), [])
-      );
-      if (index > 0) graphics.addHole();
+    const pxCoords = coords.map(shape => shape.reduce(
+      (path, coord) => path.concat(this.projection(coord)), []
+    ));
+
+    // Draw first polygon normally with fill
+    graphics.drawPolygon(pxCoords.shift());
+
+    // Remove all other polygons from the first filled polygon
+    pxCoords.forEach((shape) => {
+      graphics.drawPolygon(shape);
+      graphics.addHole(shape);
     });
+
+    // For extraordinary sweetness we draw an inner border of the just removed
+    // polygons
+    pxCoords.forEach((shape) => {
+      graphics.endFill();
+      graphics.drawPolygon(shape);
+    });
+
+    // And setup filling again for other beautiful polygons to be drawn
+    this.setFill(graphics);
   }
 
   /**
