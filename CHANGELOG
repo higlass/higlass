@@ -1,6 +1,7 @@
 develop (2018-01-??)
 
 - Added track for displaying gigapixel images
+- Added GeoJSON track and updated OSM track
 - Added mouseMoveZoom event to public API
 - Fixed and extended pubSub module
 - Added flexible per-track crosshair
