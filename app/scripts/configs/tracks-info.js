@@ -604,7 +604,8 @@ export const TRACKS_INFO = [
       'rectangleDomainFillColor',
       'rectangleDomainStrokeColor',
       'rectangleDomainOpacity',
-      'minSquareSize'
+      'rectanlgeMinSize',
+      'polygonMinBoundingSize',
     ],
     defaultOptions: {
       projecton: 'mercator',
@@ -615,7 +616,8 @@ export const TRACKS_INFO = [
       rectangleDomainFillColor: 'grey',
       rectangleDomainStrokeColor: 'black',
       rectangleDomainOpacity: 0.6,
-      minSquareSize: 'none',
+      rectanlgeMinSize: 1,
+      polygonMinBoundingSize: 4
     },
   },
 
