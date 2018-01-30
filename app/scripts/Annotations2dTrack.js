@@ -10,7 +10,7 @@ class Annotations2dTrack extends TiledPixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
     super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
 
-    this.drawnRects = {};
+    this.drawnAnnotations = {};
 
     this.options.minSquareSize = +this.options.minSquareSize;
   }
@@ -52,6 +52,16 @@ class Annotations2dTrack extends TiledPixiTrack {
     } catch (e) { /* Nothing */ }
 
     return 0;
+  }
+
+  /**
+   * Point projection from the data to the view (pixel) coordinates
+   * @param   {number}  x  Data X coordinate
+   * @param   {number}  y  Data Y coordinate
+   * @return  {array}  Tuple [x,y] containing the translated view coordinates.
+   */
+  projection(x, y) {
+    return [this._xScale(x), this._yScale(y)];
   }
 
   /**
@@ -147,7 +157,7 @@ class Annotations2dTrack extends TiledPixiTrack {
   }
 
   draw() {
-    this.drawnRects = {};
+    this.drawnAnnotations = {};
 
     super.draw();
   }
@@ -158,70 +168,53 @@ class Annotations2dTrack extends TiledPixiTrack {
     const graphics = tile.graphics;
     graphics.clear();
 
-    const stroke = colorToHex(this.options.rectangleDomainStrokeColor || 'black');
-    const fill = colorToHex(this.options.rectangleDomainFillColor || 'grey');
-
-    graphics.lineStyle(
-      typeof this.options.rectangleDomainStrokeWidth !== 'undefined'
-        ? this.options.rectangleDomainStrokeWidth
-        : 1,
-      stroke,
-      typeof this.options.rectangleDomainStrokeOpacity !== 'undefined'
-        ? this.options.rectangleDomainStrokeOpacity
-        : 1,
-    );
-    graphics.beginFill(
-      fill,
-      typeof this.options.rectangleDomainFillOpacity !== 'undefined'
-        ? this.options.rectangleDomainFillOpacity
-        : 0.4,
-    );
+    this.setBorderStyle(graphics);
+    this.setFill(graphics);
 
     graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
 
     if (!tile.tileData.length) return;
 
     tile.tileData
-      .filter(td => !(td.uid in this.drawnRects))
+      .filter(td => !(td.uid in this.drawnAnnotations))
       .forEach((td) => {
-        const startX = this._xScale(td.xStart);
-        const endX = this._xScale(td.xEnd);
+        const [startX, startY] = this.projection([td.xStart, td.yStart]);
+        const [endX, endY] = this.projection([td.xEnd, td.yEnd]);
 
-        const startY = this._yScale(td.yStart);
-        const endY = this._yScale(td.yEnd);
-
-        const uid = td.uid;
-
-        const width = endX - startX;
-        const height = endY - startY;
-
-        let drawnRect = {
-          x: startX,
-          y: startY,
-          width,
-          height
-        };
-
-        if (this.options.minSquareSize) {
-          if (
-            width < this.options.minSquareSize
-            || height < this.options.minSquareSize
-          ) {
-            drawnRect = {
-              x: (startX + endX) / 2,
-              y: (startY + endY) / 2,
-              width: this.options.minSquareSize,
-              height: this.options.minSquareSize
-            };
-          }
-        }
-
-        this.drawnRects[uid] = drawnRect;
-
-        graphics.drawRect(
-          drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height
+        this.drawAnnotation(
+          this.prepAnnotation(
+            graphics, td.uid, startX, startY, endX - startX, endY - startY, td
+          )
         );
       });
+  }
+
+  prepAnnotation(graphics, uid, startX, startY, width, height) {
+    return {
+      graphics,
+      uid,
+      annotation: { x: startX, y: startY, width, height }
+    };
+  }
+
+  drawAnnotation({ graphics, uid, annotation }) {
+    if (this.options.minSquareSize) {
+      if (
+        annotation.width < this.options.minSquareSize
+        || annotation.height < this.options.minSquareSize
+      ) {
+        annotation.x = (annotation.x + annotation.width) / 2;
+        annotation.y = (annotation.y + annotation.height) / 2;
+        annotation.width = this.options.minSquareSize;
+        annotation.height = this.options.minSquareSize;
+      }
+    }
+
+    this.drawnAnnotations[uid] = annotation;
+
+    graphics.drawRect(
+      annotation.x, annotation.y, annotation.width, annotation.height
+    );
   }
 
   exportSVG() {
@@ -255,8 +248,8 @@ class Annotations2dTrack extends TiledPixiTrack {
         );
         output.appendChild(gTile);
 
-        if (td.uid in this.drawnRects) {
-          const rect = this.drawnRects[td.uid];
+        if (td.uid in this.drawnAnnotations) {
+          const rect = this.drawnAnnotations[td.uid];
           const r = document.createElement('rect');
 
           r.setAttribute('x', rect.x);
@@ -275,6 +268,30 @@ class Annotations2dTrack extends TiledPixiTrack {
       });
 
     return [base, base];
+  }
+
+  setBorderStyle(
+    graphics,
+    color = this.options.rectangleDomainStrokeColor,
+    width = this.options.rectangleDomainStrokeWidth,
+    alpha = this.options.rectangleDomainStrokeOpacity
+  ) {
+    graphics.lineStyle(
+      typeof width !== 'undefined' ? width : 1,
+      colorToHex(color || 'black'),
+      typeof alpha !== 'undefined' ? alpha : 1,
+    );
+  }
+
+  setFill(
+    graphics,
+    color = this.options.rectangleDomainFillColor,
+    alpha = this.options.rectangleDomainFillOpacity
+  ) {
+    graphics.beginFill(
+      colorToHex(color || 'grey'),
+      typeof alpha !== 'undefined' ? alpha : 0.4,
+    );
   }
 
   setPosition(newPosition) {
