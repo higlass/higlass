@@ -97,9 +97,9 @@ class AnnotationsInsets {
         && (locus.minY < height || locus.maxY <= height)
       )
     ) {
-      const maxRemoteSize = Math.max(locus.cX2 - locus.cX1, locus.cY2 - locus.cY1);
-      this.insetMinRemoteSize = Math.min(this.insetMinRemoteSize, maxRemoteSize);
-      this.insetMaxRemoteSize = Math.max(this.insetMaxRemoteSize, maxRemoteSize);
+      const remoteSize = Math.max(locus.cX2 - locus.cX1, locus.cY2 - locus.cY1);
+      this.insetMinRemoteSize = Math.min(this.insetMinRemoteSize, remoteSize);
+      this.insetMaxRemoteSize = Math.max(this.insetMaxRemoteSize, remoteSize);
       this.insetsToBeDrawn.push(locus);
       this.insetsToBeDrawnIds.add(uid);
     } else {
