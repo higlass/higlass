@@ -78,6 +78,18 @@ const api = function api(context) {
       return p;
     },
 
+    /**
+     * Retrieve a sharable link for the current view config
+     *
+     * @param {string}  url  Custom URL that should point to a higlass server's
+     *   view config endpoint, i.e.,
+     *   `http://my-higlass-server.com/api/v1/viewconfs/`.
+     * @return  {Object}  Promise resolving to the link ID and URL.
+     */
+    shareViewConfigAsLink(url) {
+      return self.handleExportViewsAsLink(url, true);
+    },
+
     zoomToDataExtent(viewUid) {
       /**
        * Zoom so that the entire dataset is visible
@@ -155,6 +167,10 @@ const api = function api(context) {
         case 'viewConfig':
           return Promise.resolve(self.getViewsAsString());
 
+        case 'png':
+          return Promise.resolve(self.createDataURI());
+
+        case 'svg':
         case 'svgString':
           return Promise.resolve(self.createSVGString());
 
