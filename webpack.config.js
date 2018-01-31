@@ -48,7 +48,7 @@ module.exports = {
               ],
               presets: [
                 ['es2015', { modules: false }],
-                'react',
+                'react'
               ],
             },
           },
@@ -174,13 +174,11 @@ module.exports = {
     },
   },
   plugins: [
-  /*
   new webpack.DefinePlugin({
       'process.env': {
       'NODE_ENV': JSON.stringify('production')
       }
   }),
-  */
     new webpack.IgnorePlugin(/react\/addons/),
     new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
     new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
