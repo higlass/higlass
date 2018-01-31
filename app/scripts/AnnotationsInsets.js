@@ -6,7 +6,7 @@ import rbush from 'rbush';
 import { pubSub } from './services';
 
 // Utils
-import { positionLabels } from './utils';
+import { identity, latToY, lngToX, positionLabels } from './utils';
 
 class AnnotationsInsets {
   constructor(insetsTrack, options, getTrackByUid, animate) {
@@ -55,6 +55,21 @@ class AnnotationsInsets {
       'TiledPixiTrack.tilesDrawnEnd',
       this.tilesDrawnEndHandler.bind(this)
     ));
+
+    // Yet another transformation (oh lord please let this be the last one...)
+    // Some coordinate systems (so far only geography) displays the original
+    // coordinates are projected locations. Hence, we end with view coordinates
+    // (pixel location on the screen), data location (longitude and latitude),
+    // and finally projected data locations. Currently we only support mercator
+    // but who know... more might come. Anyway, we need this extra projection to
+    // have zoom-independent data locations at the correct visual ratio.
+    this.projectorX = this.insetsTrack.dataType === 'osm-image'
+      ? lng => lngToX(lng, 19)
+      : identity;
+
+    this.projectorY = this.insetsTrack.dataType === 'osm-image'
+      ? lat => latToY(lat, 19)
+      : identity;
   }
 
   /**
@@ -62,20 +77,29 @@ class AnnotationsInsets {
    *
    * @param  {String}  event.uid  UID of the view that triggered the event.
    * @param  {Array}  event.viewPos  View position (i.e., [x, y, width, height])
-   *   of the drawn annotation.
-   * @param  {Array}  event.dataPos  Data position of the drawn annotation.
+   *   of the drawn annotation on the screen.
+   * @param  {Array}  event.dataPos  Data position of the drawn annotation. For
+   *   example base pairs (Hi-C), or pixels (gigapixel images), or lng-lat
+   *   (geo json).
    */
   annotationDrawnHandler({ uid, viewPos, dataPos }) {
     const locus = {
       uid,
+      // View positions
       minX: viewPos[0],
       minY: viewPos[1],
       maxX: viewPos[0] + viewPos[2],
       maxY: viewPos[1] + viewPos[3],
+      // Original data positions
       cX1: dataPos[0],
       cX2: dataPos[1],
       cY1: dataPos[2],
-      cY2: dataPos[3]
+      cY2: dataPos[3],
+      // Projected data positions
+      pX1: this.projectorX(dataPos[0]),
+      pX2: this.projectorX(dataPos[1]),
+      pY1: this.projectorY(dataPos[2]),
+      pY2: this.projectorY(dataPos[3])
     };
 
     this.newAnno = !this.drawnAnnoIdsOld.has(uid);
@@ -97,7 +121,7 @@ class AnnotationsInsets {
         && (locus.minY < height || locus.maxY <= height)
       )
     ) {
-      const remoteSize = Math.max(locus.cX2 - locus.cX1, locus.cY2 - locus.cY1);
+      const remoteSize = Math.max(locus.pX2 - locus.pX1, locus.pY2 - locus.pY1);
       this.insetMinRemoteSize = Math.min(this.insetMinRemoteSize, remoteSize);
       this.insetMaxRemoteSize = Math.max(this.insetMaxRemoteSize, remoteSize);
       this.insetsToBeDrawn.push(locus);
@@ -132,8 +156,8 @@ class AnnotationsInsets {
    * @return  {object}  Object holding the final pixel with and height.
    */
   computeSize(inset, scale) {
-    const widthAbs = Math.abs(inset.cX2 - inset.cX1);
-    const heightAbs = Math.abs(inset.cY2 - inset.cY1);
+    const widthAbs = Math.abs(inset.pX2 - inset.pX1);
+    const heightAbs = Math.abs(inset.pY2 - inset.pY1);
 
     const width = widthAbs >= heightAbs
       ? scale(widthAbs)
