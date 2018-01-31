@@ -38,8 +38,14 @@ const testViewConfig = {
   views: [
     {
       uid: 'aa',
-      initialXDomain: [-180, 180],
-      initialYDomain: [-180, 180],
+      initialXDomain: [
+        28.441192812218716,
+        29.04222187561571
+      ],
+      initialYDomain: [
+        29.938858684583295,
+        30.312180802010374
+      ],
       tracks: {
         top: [],
         left: [],
@@ -70,38 +76,38 @@ const testViewConfig = {
                   rectangleDomainStrokeColor: 'red',
                   rectangleDomainOpacity: 0,
                   rectanlgeMinSize: 1,
-                  polygonMinBoundingSize: 12,
+                  polygonMinBoundingSize: 5,
                   name: 'Ski resorts'
                 }
               },
-              // {
-              //   server: 'http://localhost:8001/api/v1/',
-              //   tilesetUid: 'gigapan-54825',
-              //   uid: 'insets',
-              //   type: 'insets',
-              //   datatype: 'image',
-              //   options: {
-              //     minSize: 24,
-              //     maxSize: 64,
-              //     sizeStepSize: 2,
-              //     scale: 1,
-              //     additionalZoom: 1,
-              //     onClickScale: 3,
-              //     fill: 'white',
-              //     fillOpacity: 1,
-              //     borderColor: 'red',
-              //     borderWidth: 2,
-              //     borderOpacity: 1,
-              //     leaderLineColor: 'red',
-              //     leaderLineWidth: 2,
-              //     leaderLineOpacity: 1,
-              //     dropDistance: 1,
-              //     dropBlur: 3,
-              //     dropOpacity: 0.8,
-              //     opacity: 1
-              //   },
-              //   position: 'center',
-              // },
+              {
+                server: 'http://localhost:8001/api/v1/',
+                tilesetUid: 'osm-image',
+                uid: 'insets',
+                type: 'insets',
+                datatype: 'osm-image',
+                options: {
+                  minSize: 24,
+                  maxSize: 64,
+                  sizeStepSize: 2,
+                  scale: 1,
+                  additionalZoom: 1,
+                  onClickScale: 3,
+                  fill: 'white',
+                  fillOpacity: 1,
+                  borderColor: 'red',
+                  borderWidth: 2,
+                  borderOpacity: 1,
+                  leaderLineColor: 'red',
+                  leaderLineWidth: 2,
+                  leaderLineOpacity: 1,
+                  dropDistance: 1,
+                  dropBlur: 3,
+                  dropOpacity: 0.8,
+                  opacity: 1
+                },
+                position: 'center',
+              },
             ],
           }
         ],
@@ -115,7 +121,7 @@ const testViewConfig = {
           insetsTrack: 'insets',
           options: {
             annotationTracks: [
-              'snapshots',
+              'ski-resorts',
             ],
             insetThreshold: 16,
           }
