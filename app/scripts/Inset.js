@@ -312,6 +312,18 @@ export default class Inset {
     this.gLeaderLine.mask = this.gOriginMask;
   }
 
+  getPadding() {
+    const paddingCustomLocSorted = Object.keys(this.paddingCustom)
+      .map(x => +x)
+      .sort((a, b) => a - b);
+
+    const entry = paddingCustomLocSorted[bisectLeft(
+      paddingCustomLocSorted, this.remoteSize
+    )];
+
+    return (entry ? this.paddingCustom[entry] : this.padding);
+  }
+
   /**
    * Compute the padded remote size of the locus defining this inset. This
    *   method basically expands the remote size by the relative padding.
@@ -321,17 +333,9 @@ export default class Inset {
    *   final padded remote size is `8000 + (8000 * 0.2 * 2) = 11200`.
    */
   computeRemotePaddedSize() {
-    const paddingCustomLocSorted = Object.keys(this.paddingCustom)
-      .map(x => +x)
-      .sort((a, b) => a - b);
-
-    const entry = paddingCustomLocSorted[bisectLeft(
-      paddingCustomLocSorted, this.remoteSize
-    )];
-
-    const padding = entry ? this.paddingCustom[entry] : this.padding;
-
-    this.remotePaddedSize = this.remoteSize + (this.remoteSize * padding * 2);
+    this.remotePaddedSize = this.remoteSize + (
+      this.remoteSize * this.getPadding() * 2
+    );
   }
 
   /**
@@ -349,8 +353,10 @@ export default class Inset {
       ]
     ];
 
+    const padding = this.options.isAbsPadding ? this.getPadding() : 0;
+
     return fetch(
-      `${this.dataConfig.server}/fragments_by_loci/?precision=2&dims=${this.finalRes}`, {
+      `${this.dataConfig.server}/fragments_by_loci/?precision=2&dims=${this.finalRes}&padding=${padding}`, {
         method: 'POST',
         headers: {
           accept: 'application/json; charset=UTF-8',
