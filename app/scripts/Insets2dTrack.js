@@ -145,7 +145,15 @@ export default class Insets2dTrack extends PixiTrack {
     return [dX1, dX2, dY1, dY2];
   }
 
-  dataToOsmPos(dX1, dX2, dY1, dY2) {
+  /**
+   * Project longitude and latitude to projected Mercator position
+   * @param   {number}  dX1  From longitude
+   * @param   {number}  dX2  To longitude
+   * @param   {number}  dY1  From latitude
+   * @param   {number}  dY2  To latitude
+   * @return  {array}  Projected position in form of `[xFrom, xTo, yFrom, yTo]`
+   */
+  lngLatToProjPos(dX1, dX2, dY1, dY2) {
     return [
       lngToX(dX1, 19) * this.tilesetInfo.tile_size,
       lngToX(dX2, 19) * this.tilesetInfo.tile_size,
@@ -171,7 +179,7 @@ export default class Insets2dTrack extends PixiTrack {
       return this.createFetchRenderInset(
         ...inset,
         [inset[9], inset[10], inset[11], inset[12]],
-        this.dataToOsmPos(inset[9], inset[10], inset[11], inset[12])
+        this.lngLatToProjPos(inset[9], inset[10], inset[11], inset[12])
       );
     }
 
