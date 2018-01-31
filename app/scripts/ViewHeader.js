@@ -221,7 +221,7 @@ class ViewHeader extends React.Component {
               <use xlinkHref="#select" />
             </svg>
           )}
-          <div styleName={classNameGrabber}>
+          <div styleName="multitrack-header-grabber">
 
             <div /><div /><div />
           </div>
