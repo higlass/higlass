@@ -132,8 +132,8 @@ class AnnotationsInsets {
    * @return  {object}  Object holding the final pixel with and height.
    */
   computeSize(inset, scale) {
-    const widthAbs = inset.cX2 - inset.cX1;
-    const heightAbs = inset.cY2 - inset.cY1;
+    const widthAbs = Math.abs(inset.cX2 - inset.cX1);
+    const heightAbs = Math.abs(inset.cY2 - inset.cY1);
 
     const width = widthAbs >= heightAbs
       ? scale(widthAbs)
