@@ -6,7 +6,7 @@ import { select, event } from 'd3-selection';
 import TrackControl from './TrackControl';
 
 // Utils
-import { genomeLociToPixels, or } from './utils';
+import { or, resetD3BrushStyle } from './utils';
 
 // Configs
 import { IS_TRACK_RANGE_SELECTABLE } from './configs';
@@ -52,33 +52,28 @@ class CenterTrack extends React.Component {
       this.rangeSelectionTriggeredXY = false;
       return this.state !== nextState;
     } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
-      const dim1 = nextProps.rangeSelection[0] ? genomeLociToPixels(
-        nextProps.rangeSelection[0], this.props.chromInfo,
-      ) : null;
+      const dim1 = nextProps.rangeSelection[0] || null;
 
-      if (this.props.chromInfo) {
-        if (this.props.is1dRangeSelection) {
-          if (!this.rangeSelectionTriggeredX) {
-            this.moveBrushX(dim1);
-          }
-          if (!this.rangeSelectionTriggeredY) {
-            this.moveBrushY(dim1);
-          }
-          this.rangeSelectionTriggeredX = false;
-          this.rangeSelectionTriggeredY = false;
-        } else {
-          this.moveBrushXY(
-            [
-              dim1,
-              genomeLociToPixels(
-                nextProps.rangeSelection[1], this.props.chromInfo,
-              ),
-            ],
-          );
+      if (this.props.is1dRangeSelection) {
+        if (!this.rangeSelectionTriggeredX) {
+          this.moveBrushX(dim1);
         }
+        if (!this.rangeSelectionTriggeredY) {
+          this.moveBrushY(dim1);
+        }
+        this.rangeSelectionTriggeredX = false;
+        this.rangeSelectionTriggeredY = false;
+      } else {
+        this.moveBrushXY(
+          [dim1, nextProps.rangeSelection[1]]
+        );
       }
 
-      const isUnset = this.props.is1dRangeSelection && !nextProps.is1dRangeSelection && dim1 === null;
+      const isUnset = (
+        this.props.is1dRangeSelection
+        && !nextProps.is1dRangeSelection
+        && dim1 === null
+      );
 
       return this.state !== nextState || isUnset;
     }
@@ -118,6 +113,13 @@ class CenterTrack extends React.Component {
     this.brushElX.call(this.brushBehaviorX);
     this.brushElY.call(this.brushBehaviorY);
 
+    resetD3BrushStyle(
+      this.brushElX, stylesTrack['track-range-selection-group-brush-selection']
+    );
+    resetD3BrushStyle(
+      this.brushElY, stylesTrack['track-range-selection-group-brush-selection']
+    );
+
     this.brushElXOld = this.brushElX;
     this.brushElYOld = this.brushElY;
 
@@ -135,6 +137,10 @@ class CenterTrack extends React.Component {
     this.brushElXY.call(this.brushBehaviorXY);
     this.brushElXYOld = this.brushElXY;
     this.brushIs2dBound = true;
+
+    resetD3BrushStyle(
+      this.brushElXY, stylesTrack['track-range-selection-group-brush-selection']
+    );
   }
 
   brushedX() {
@@ -302,7 +308,7 @@ class CenterTrack extends React.Component {
 
       this.brushIs2dBound = false;
 
-      !this.props.is1dRangeSelection && this.props.onRangeSelectionEnd();
+      if (!this.props.is1dRangeSelection) this.props.onRangeSelectionEnd();
     }
   }
 
@@ -324,14 +330,13 @@ class CenterTrack extends React.Component {
           }
           return false;
         });
-      } else {
-        // if this isn't a combined track, just check if this a heatmap
-        // with a topright colorbar
-        if (track.type === 'heatmap') {
-          return track.options.colorbarPosition === 'topRight';
-        }
-        return false;
       }
+      // if this isn't a combined track, just check if this a heatmap
+      // with a topright colorbar
+      if (track.type === 'heatmap') {
+        return track.options.colorbarPosition === 'topRight';
+      }
+      return false;
     });
 
     const rangeSelectorClass = this.props.isRangeSelectionActive ? (
@@ -350,7 +355,7 @@ class CenterTrack extends React.Component {
 
     return (
       <div
-        className={this.props.className ? this.props.className : ''}
+        className={this.props.className}
         onMouseEnter={this.mouseEnterHandler.bind(this)}
         onMouseLeave={this.mouseLeaveHandler.bind(this)}
         style={{
@@ -369,15 +374,15 @@ class CenterTrack extends React.Component {
             xmlns="http://www.w3.org/2000/svg"
           >
             <g
-              ref={el => this.brushElX = select(el)}
+              ref={(el) => { this.brushElX = select(el); }}
               styleName={rangeSelectorGroup1dClass}
             />
             <g
-              ref={el => this.brushElY = select(el)}
+              ref={(el) => { this.brushElY = select(el); }}
               styleName={rangeSelectorGroup1dClass}
             />
             <g
-              ref={el => this.brushElXY = select(el)}
+              ref={(el) => { this.brushElXY = select(el); }}
               styleName={rangeSelectorGroup2dClass}
             />
           </svg>
@@ -407,27 +412,36 @@ class CenterTrack extends React.Component {
   }
 }
 
+CenterTrack.defaultProps = {
+  className: '',
+  configTrackMenuId: null,
+  is1dRangeSelection: false,
+  isRangeSelectionActive: false,
+  scaleX: x => x,
+  scaleY: x => x,
+};
+
 CenterTrack.propTypes = {
-  chromInfo: PropTypes.object,
   className: PropTypes.string,
-  editable: PropTypes.bool,
-  height: PropTypes.number,
+  configTrackMenuId: PropTypes.string,
+  editable: PropTypes.bool.isRequired,
+  height: PropTypes.number.isRequired,
   is1dRangeSelection: PropTypes.bool,
   isRangeSelectionActive: PropTypes.bool,
-  onAddSeries: PropTypes.func,
-  onCloseTrackMenuOpened: PropTypes.func,
-  onConfigTrackMenuOpened: PropTypes.func,
-  onRangeSelectionX: PropTypes.func,
-  onRangeSelectionY: PropTypes.func,
-  onRangeSelectionXY: PropTypes.func,
-  onRangeSelectionEnd: PropTypes.func,
-  onRangeSelectionStart: PropTypes.func,
-  rangeSelection: PropTypes.array,
+  onAddSeries: PropTypes.func.isRequired,
+  onCloseTrackMenuOpened: PropTypes.func.isRequired,
+  onConfigTrackMenuOpened: PropTypes.func.isRequired,
+  onRangeSelectionX: PropTypes.func.isRequired,
+  onRangeSelectionY: PropTypes.func.isRequired,
+  onRangeSelectionXY: PropTypes.func.isRequired,
+  onRangeSelectionEnd: PropTypes.func.isRequired,
+  onRangeSelectionStart: PropTypes.func.isRequired,
+  rangeSelection: PropTypes.array.isRequired,
   scaleX: PropTypes.func,
   scaleY: PropTypes.func,
-  tracks: PropTypes.array,
-  uid: PropTypes.string,
-  width: PropTypes.number,
+  tracks: PropTypes.array.isRequired,
+  uid: PropTypes.string.isRequired,
+  width: PropTypes.number.isRequired,
 };
 
 export default CenterTrack;
