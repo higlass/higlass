@@ -1,3 +1,4 @@
+app/local
 app/test2.html
 yarn.lock
 build/
@@ -24,4 +25,4 @@ jsons/
 dist
 report.html
 docs/_build
-.package-lock.json
+package-lock.json

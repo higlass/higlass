@@ -4,6 +4,10 @@ import {
 } from './utils';
 
 import {
+  setTileProxyAuthHeader
+} from './services';
+
+import {
   MOUSE_TOOL_MOVE,
   MOUSE_TOOL_SELECT,
 } from './configs';
@@ -26,6 +30,11 @@ const api = function api(context) {
 
   // Public API
   return {
+    setAuthHeader(newHeader) {
+      console.log('api set auth header', newHeader);
+      setTileProxyAuthHeader(newHeader);
+    },
+
     setViewConfig(newViewConfig) {
       /**
        * Set a new view config to define the layout and data
@@ -67,6 +76,18 @@ const api = function api(context) {
       });
 
       return p;
+    },
+
+    /**
+     * Retrieve a sharable link for the current view config
+     *
+     * @param {string}  url  Custom URL that should point to a higlass server's
+     *   view config endpoint, i.e.,
+     *   `http://my-higlass-server.com/api/v1/viewconfs/`.
+     * @return  {Object}  Promise resolving to the link ID and URL.
+     */
+    shareViewConfigAsLink(url) {
+      return self.handleExportViewsAsLink(url, true);
     },
 
     zoomToDataExtent(viewUid) {
@@ -146,6 +167,10 @@ const api = function api(context) {
         case 'viewConfig':
           return Promise.resolve(self.getViewsAsString());
 
+        case 'png':
+          return Promise.resolve(self.createDataURI());
+
+        case 'svg':
         case 'svgString':
           return Promise.resolve(self.createSVGString());
 
@@ -205,23 +230,21 @@ const api = function api(context) {
     },
 
     off(event, listenerId, viewId) {
+      const callback = typeof listenerId === 'object'
+        ? listenerId.callback
+        : listenerId;
+
       switch (event) {
         case 'location':
           self.offLocationChange(viewId, listenerId);
           break;
 
         case 'mouseMoveZoom':
-          apiPubSub.unsubscribe(
-            'mouseMoveZoom', (
-              typeof listenerId === 'object'
-                ? listenerId.callback
-                : listenerId
-            )
-          );
+          apiPubSub.unsubscribe('mouseMoveZoom', callback);
           break;
 
         case 'rangeSelection':
-          self.offRangeSelection(listenerId);
+          apiPubSub.unsubscribe('rangeSelection', callback);
           break;
 
         case 'viewConfig':
@@ -243,7 +266,7 @@ const api = function api(context) {
           return apiPubSub.subscribe('mouseMoveZoom', callback);
 
         case 'rangeSelection':
-          return self.onRangeSelection(callback);
+          return apiPubSub.subscribe('rangeSelection', callback);
 
         case 'viewConfig':
           return self.onViewChange(callback);

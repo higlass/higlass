@@ -31,13 +31,13 @@ function formatResolutionText(resolution, maxResolutionSize) {
  * @param {list} resolutions: A list of resolutions (e.g. [1000,2000,3000])
  * @param {int} zoomLevel: The current zoom level (e.g. 4)
  *
- * @returns {string} A formatted string representation of the zoom level (e.g. "30K")
- * 
+ * @returns {string} A formatted string representation of the zoom level
+ *   (e.g. "30K")
  */
 function getResolutionBasedResolutionText(resolutions, zoomLevel) {
-  const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
+  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
   const resolution = sortedResolutions[zoomLevel];
-  const maxResolutionSize = sortedResolutions[sortedResolutions.length-1];
+  const maxResolutionSize = sortedResolutions[sortedResolutions.length - 1];
 
   return formatResolutionText(resolution, maxResolutionSize);
 }
@@ -48,34 +48,38 @@ function getResolutionBasedResolutionText(resolutions, zoomLevel) {
  * zoom.
  *
  * @param {int} zoomLevel The current zoomLevel (e.g. 0)
- * @param {int} max_width The max width (e.g. 2 ** maxZoom * highestResolution * binsPerDimension)
- * @param {int} bins_per_dimension The number of bins per tile dimension (e.g. 256)
+ * @param {int} max_width The max width
+ *   (e.g. 2 ** maxZoom * highestResolution * binsPerDimension)
+ * @param {int} bins_per_dimension The number of bins per tile dimension
+ *   (e.g. 256)
  * @param {int} maxZoom The maximum zoom level for this tileset
  *
- * @returns {string} A formatted string representation of the zoom level (e.g. "30K")
+ * @returns {string} A formatted string representation of the zoom level
+ *   (e.g. "30K")
  */
-function getWidthBasedResolutionText(zoomLevel, maxWidth, binsPerDimension, maxZoom) {
+function getWidthBasedResolutionText(
+  zoomLevel, maxWidth, binsPerDimension, maxZoom
+) {
   const resolution = maxWidth / ((2 ** zoomLevel) * binsPerDimension);
 
   // we can't display a NaN resolution
   if (!isNaN(resolution)) {
     // what is the maximum possible resolution?
     // this will determine how we format the lower resolutions
-    const maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+    const maxResolutionSize = maxWidth / ((2 ** maxZoom) * binsPerDimension);
 
     const pp = precisionPrefix(maxResolutionSize, resolution);
     const f = formatPrefix(`.${pp}`, resolution);
     const formattedResolution = f(resolution);
 
     return formattedResolution;
-  } else {
-    console.warn(
-      'NaN resolution, screen is probably too small. Dimensions:',
-      this.dimensions,
-    );
-
-    return '';
   }
+  console.warn(
+    'NaN resolution, screen is probably too small. Dimensions:',
+    this.dimensions,
+  );
+
+  return '';
 }
 
 export class PixiTrack extends Track {
@@ -278,7 +282,7 @@ export class PixiTrack extends Track {
 
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     } else if (
-      this.tilesetInfo && 
+      this.tilesetInfo &&
       this.tilesetInfo.resolutions) {
 
       const formattedResolution = getResolutionBasedResolutionText(

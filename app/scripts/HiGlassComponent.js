@@ -185,7 +185,6 @@ class HiGlassComponent extends React.Component {
     // Set up API
     this.api = api(this);
 
-    this.rangeSelectionListener = [];
     this.viewChangeListener = [];
 
     this.triggerViewChangeDb = debounce(
@@ -420,9 +419,8 @@ class HiGlassComponent extends React.Component {
 
   animate() {
     requestAnimationFrame(() => {
-      if (!this.pixiRenderer)
-        // component was probably unmounted
-        return;
+      // component was probably unmounted
+      if (!this.pixiRenderer) return;
 
       this.pixiRenderer.render(this.pixiStage);
     });
@@ -729,18 +727,11 @@ class HiGlassComponent extends React.Component {
   }
 
   createSVGString() {
-    const svg = this.createSVG();
-
-    const svgText = new XMLSerializer().serializeToString(svg);
-    const beautyText = vkbeautify.xml(svgText);
-
-    return vkbeautify.xml(svgText);
+    return vkbeautify.xml(new XMLSerializer().serializeToString(this.createSVG()));
   }
 
   createDataURI() {
-    let pngString = this.canvasElement.toDataURL();
-
-    return pngString;
+    return this.canvasElement.toDataURL();
   }
 
   handleExportSVG() {
@@ -2121,32 +2112,47 @@ class HiGlassComponent extends React.Component {
     download('viewconf.json', data);
   }
 
-  handleExportViewsAsLink() {
-    const wrapper = `{"viewconf":${this.getViewsAsString()}}`;
-
+  handleExportViewsAsLink(
+    url = this.props.viewConfig.exportViewUrl,
+    fromApi = false
+  ) {
     this.width = this.element.clientWidth;
     this.height = this.element.clientHeight;
 
     this.setState({
-      exportLinkModalOpen: true,
+      exportLinkModalOpen: !fromApi,
       exportLinkLocation: null,
     });
 
-    request(this.state.viewConfig.exportViewUrl)
-      .header('X-Requested-With', 'XMLHttpRequest')
-      .header('Content-Type', 'application/json')
-      .post(wrapper, (error, response) => {
-        if (response) {
-          const content = JSON.parse(response.response);
-          const portString = window.location.port === '' ? '' : `:${window.location.port}`;
-          this.setState({
-            // exportLinkLocation: this.state.viewConfig.exportViewUrl + "?d=" + content.uid
-            exportLinkLocation: `http://${window.location.hostname}${portString}/app/?config=${content.uid}`,
-          });
-        } else {
-          console.error('error:', error);
-        }
-      });
+    const port = window.location.port === '' ? '' : `:${window.location.port}`;
+
+    const req = fetch(
+      url,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: `{"viewconf":${this.getViewsAsString()}}`
+      }
+    )
+      .then(res => res.json())
+      .then(_json => ({
+        id: _json.uid,
+        url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${json.uid}`
+      }));
+
+    if (!fromApi) {
+      req
+        .then((sharedView) => {
+          this.setState({ exportLinkLocation: sharedView.url });
+        })
+        .catch(e => console.error('Exporting view config as link failed:', e));
+    }
+
+    return req;
   }
 
   handleDataDomainChanged(viewUid, newXDomain, newYDomain) {
@@ -2585,19 +2591,18 @@ class HiGlassComponent extends React.Component {
 
   }
 
-  offRangeSelection(listenerId) {
-    this.rangeSelectionListener.splice(listenerId, 1);
-  }
-
-  onRangeSelection(callback) {
-    return this.rangeSelectionListener.push(callback) - 1;
-  }
-
+  /**
+   * Handle range selection events.
+   *
+   * @description
+   * Store active range selectio and forward the range selection event to the
+   * API.
+   *
+   * @param  {Array}  range  Double array of the selected range.
+   */
   rangeSelectionHandler(range) {
     this.rangeSelection = range;
-    this.rangeSelectionListener.forEach(
-      callback => callback(range),
-    );
+    apiPublish('rangeSelection', range);
   }
 
   offViewChange(listenerId) {
@@ -2937,6 +2942,7 @@ class HiGlassComponent extends React.Component {
               view.genomePositionSearchBox &&
               view.genomePositionSearchBox.visible
             }
+            mouseTool={this.state.mouseTool}
             onAddView={() => this.handleAddView(view)}
             onClearView={() => this.handleClearView(view.uid)}
             onCloseView={() => this.handleCloseView(view.uid)}

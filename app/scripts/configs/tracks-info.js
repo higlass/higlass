@@ -170,6 +170,22 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
     },
   },
+  {
+    type: 'horizontal-multivec',
+    datatype: ['multivec'],
+    local: false,
+    orientation: '1d-horizontal',
+    thumbnail: null,
+    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
+    defaultOptions: {
+      labelPosition: 'topLeft',
+      labelColor: 'black',
+      labelTextOpacity: 0.4,
+      valueScaling: 'linear',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+    },
+  },
   //
   {
     type: 'vertical-line',
@@ -572,6 +588,40 @@ export const TRACKS_INFO = [
   },
 
   {
+    type: 'geo-json',
+    datatype: ['geo-json'],
+    orientation: '2d',
+    name: 'Geo JSON',
+    thumbnail: svgArrowheadDomainsIcon,
+    availableOptions: [
+      'projecton',
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'rectangleDomainFillColor',
+      'rectangleDomainStrokeColor',
+      'rectangleDomainOpacity',
+      'rectanlgeMinSize',
+      'polygonMinBoundingSize',
+    ],
+    defaultOptions: {
+      projecton: 'mercator',
+      labelColor: 'black',
+      labelPosition: 'hidden',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+      rectangleDomainFillColor: 'grey',
+      rectangleDomainStrokeColor: 'black',
+      rectangleDomainOpacity: 0.6,
+      rectanlgeMinSize: 1,
+      polygonMinBoundingSize: 4
+    },
+  },
+
+  {
     type: 'square-markers',
     datatype: ['bedpe'],
     local: false,
@@ -680,9 +730,15 @@ export const TRACKS_INFO = [
     hidden: true,
     name: 'OSM Tiles',
     thumbnail: null,
+    availableOptions: [
+      'minPos',
+      'maxPos',
+      'maxZoom',
+    ],
     defaultOptions: {
-      minPos: 0,
-      maxPos: 3120000000,
+      minPos: -180,
+      maxPos: 180,
+      maxZoom: 19,
     },
   },
   {
@@ -713,6 +769,32 @@ export const TRACKS_INFO = [
     local: false,
     minHeight: 55,
     orientation: '1d-horizontal',
+    name: 'BED-like track',
+    thumbnail: null,
+    availableOptions: [
+      'labelPosition',
+      'labelColor',
+      'labelTextOpacity',
+      'labelBackgroundOpacity',
+      'trackBorderWidth',
+      'trackBorderColor',
+      'valueColumn',
+    ],
+    defaultOptions: {
+      axisPositionHorizontal: 'right',
+      labelColor: 'black',
+      labelPosition: 'hidden',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+      valueColumn: null
+    },
+  },
+  {
+    type: 'vertical-bedlike',
+    datatype: ['bedlike'],
+    local: false,
+    minWidth: 55,
+    orientation: '1d-vertical',
     name: 'BED-like track',
     thumbnail: null,
     availableOptions: [
