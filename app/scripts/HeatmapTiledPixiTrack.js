@@ -66,6 +66,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // not a d3 color scale for speed
     // this.colorScale = heatedObjectMap;
     this.colorScale = heatedObjectMap;
+    console.log('this.colorScale', this.colorScale);
 
     if (options && options.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
@@ -77,6 +78,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     this.brushing = false;
     this.prevOptions = '';
+
+    console.log('this.colorScale:', this.colorScale);
   }
 
   /**
