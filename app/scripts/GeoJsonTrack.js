@@ -29,11 +29,12 @@ class GeoJsonTrack extends Annotations2dTrack {
         width,
         height,
         geometry: td.geometry
-      }
+      },
+      dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd]
     };
   }
 
-  drawAnnotation({ graphics, uid, annotation }) {
+  drawAnnotation({ graphics, uid, annotation, dataPos }) {
     if (
       annotation.width < this.options.polygonMinBoundingSize
       || annotation.height < this.options.polygonMinBoundingSize
@@ -68,6 +69,14 @@ class GeoJsonTrack extends Annotations2dTrack {
         );
         break;
     }
+
+    this.publish('annotationDrawn', {
+      uid,
+      viewPos: [
+        annotation.x, annotation.y, annotation.width, annotation.height
+      ],
+      dataPos
+    });
 
     this.drawnAnnotations[uid] = annotation;
   }
