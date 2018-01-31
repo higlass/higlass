@@ -95,13 +95,6 @@ export class Track {
     return this;
   }
 
-  isPointInsideTrack(x,y) {
-    if (x > this.position[0] && x < this.dimensions[0] &&
-        y > this.position[1] && y < this.dimensions[1]) {
-      return true;
-    }
-  }
-
   zoomed(newXScale, newYScale) {
     this.xScale(newXScale);
     this.yScale(newYScale);
@@ -130,11 +123,13 @@ export class Track {
 
   rerender() {}
 
-  respondsToPosition(x,y) {
-    if (this.position[0] < x && x <= this.position[0] + this.dimensions[0]
-      && this.position[1] < y && y <= this.position[1] + this.dimensions[1]) {
-      return true;
-    }
+  /*
+   * This function is for seeing whether this track should respond
+   * to events at this mouse position. The difference to `isWithin()` is that it
+   * can be overwritten if a track is inactive for example.
+   */
+  respondsToPosition(x, y) {
+    return this.isWithin(x, y);
   }
 }
 

@@ -1,24 +1,27 @@
 import { range } from 'd3-array';
 import {
   json as d3Json,
-  text as d3Text
+  text as d3Text,
+  request,
 } from 'd3-request';
 import slugid from 'slugid';
 
 import {
   workerFetchTiles,
   workerFetchMultiRequestTiles,
-  workerGetTilesetInfo,
   workerSetPix,
 } from '../worker';
 
 import pubSub from './pub-sub';
+
+import { trimTrailingSlash as tts } from '../utils';
 
 // Config
 import { TILE_FETCH_DEBOUNCE } from '../configs';
 
 const sessionId = slugid.nice();
 export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
+export let authHeader = null;
 
 const debounce = (func, wait) => {
   let timeout;
@@ -72,6 +75,10 @@ const debounce = (func, wait) => {
 
   return debounced;
 };
+
+export const setTileProxyAuthHeader = (newHeader) => {
+  authHeader = newHeader
+}
 
 const workerFetchTilesDebounced = debounce(
   workerFetchMultiRequestTiles, TILE_FETCH_DEBOUNCE
@@ -158,19 +165,19 @@ export const calculateZoomLevel = (scale, minX, maxX) => {
  * @param minX: The minimum possible value in the dataset
  * @param maxX: The maximum possible value in the dataset
  * @param maxZoom: The maximum zoom value in this dataset
- * @param maxWidth: The width of the largest
+ * @param maxDim: The largest dimension of the tileset (e.g., width or height)
  *   (roughlty equal to 2 ** maxZoom * tileSize * tileResolution)
  */
 export const calculateTiles = (
-  zoomLevel, scale, minX, maxX, maxZoom, maxWidth,
+  zoomLevel, scale, minX, maxX, maxZoom, maxDim
 ) => {
-  const zoomLevelFinal = zoomLevel > maxZoom ? maxZoom : zoomLevel;
+  const zoomLevelFinal = Math.min(zoomLevel, maxZoom);
 
   // the ski areas are positioned according to their
   // cumulative widths, which means the tiles need to also
   // be calculated according to cumulative width
 
-  const tileWidth = maxWidth / (2 ** zoomLevelFinal);
+  const tileWidth = maxDim / (2 ** zoomLevelFinal);
 
   const epsilon = 0.0000001;
 
@@ -224,9 +231,20 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
 };
 
 export const trackInfo = (server, tilesetUid, done) => {
-  const outUrl = `${server}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
-
-  workerGetTilesetInfo(outUrl, done);
+  const url = 
+    `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
+    pubSub.publish('requestSent', url);
+    json(url, (error, data) => {
+      pubSub.publish('requestReceived', url);
+      if (error) {
+        // console.log('error:', error);
+        // don't do anything
+        // no tileset info just means we can't do anything with this file...
+      } else {
+        // console.log('got data', data);
+        done(data);
+      }
+    });
 };
 
 /**
@@ -312,11 +330,18 @@ function json(url, callback) {
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
-  d3Json(url, (error, done) => {
-    pubSub.publish('requestReceived', url);
-    callback(error, done);
-    requestsInFlight -= 1;
-  });
+  const r = request(url)
+    .header('Content-Type', 'application/json')
+
+  if (authHeader)
+    r.header('Authorization', `${authHeader}`)
+
+    r.send('GET', (error, data) => {
+      pubSub.publish('requestReceived', url);
+      const j = data && JSON.parse(data.response);
+      callback(error, j);
+      requestsInFlight -= 1;
+    });
 }
 
 

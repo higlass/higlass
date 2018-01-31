@@ -27,6 +27,8 @@ import LeftTrackModifier from './LeftTrackModifier';
 import Track from './Track';
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
+import Annotations2dTrack from './Annotations2dTrack';
+import GeoJsonTrack from './GeoJsonTrack';
 
 import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
@@ -48,6 +50,7 @@ import CrossRule from './CrossRule';
 
 import OSMTilesTrack from './OSMTilesTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
+import ImageTilesTrack from './ImageTilesTrack';
 
 // Utils
 import { dictItems } from './utils';
@@ -124,8 +127,16 @@ export class TrackRenderer extends React.Component {
     this.initialXDomain = [0, 1];
     this.initialYDomain = [0, 1];
 
-    this.prevCenterX = this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth / 2;
-    this.prevCenterY = this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2;
+    this.prevCenterX = (
+      this.currentProps.marginLeft +
+      this.currentProps.leftWidth +
+      (this.currentProps.centerWidth / 2)
+    );
+    this.prevCenterY = (
+      this.currentProps.marginTop +
+      this.currentProps.topHeight +
+      (this.currentProps.centerHeight / 2)
+    );
 
     // The offset of the center from the original. Used to keep the scales centered on resize events
     this.cumCenterXOffset = 0;
@@ -202,8 +213,8 @@ export class TrackRenderer extends React.Component {
     const nextPropsStr = this.updatablePropsToString(nextProps);
     this.currentProps = nextProps;
 
-    if (this.prevPropsStr === nextPropsStr) { 
-      return; 
+    if (this.prevPropsStr === nextPropsStr) {
+      return;
     }
 
     for (const uid in this.trackDefObjects) {
@@ -321,7 +332,7 @@ export class TrackRenderer extends React.Component {
     }, SCROLL_TIMEOUT);
   }
 
-  setUpInitialScales(initialXDomain, initialYDomain) {
+  setUpInitialScales(initialXDomain = [0, 1], initialYDomain = [0, 1]) {
     // make sure the two scales are equally wide:
     const xWidth = initialXDomain[1] - initialXDomain[0];
     const yCenter = (initialYDomain[0] + initialYDomain[1]) / 2;
@@ -329,21 +340,18 @@ export class TrackRenderer extends React.Component {
 
     // stretch out the y-scale so that views aren't distorted (i.e. maintain
     // a 1 to 1 ratio)
-    initialYDomain[0] = yCenter - xWidth / 2,
-    initialYDomain[1] = yCenter + xWidth / 2;
-
+    initialYDomain[0] = yCenter - (xWidth / 2);
+    initialYDomain[1] = yCenter + (xWidth / 2);
 
     // if the inital domains haven't changed, then we don't have to
     // worry about resetting anything
     // initial domains should only change when loading a new viewconfig
     if (
-      initialXDomain[0] == this.initialXDomain[0] &&
-      initialXDomain[1] == this.initialXDomain[1] &&
-      initialYDomain[0] == this.initialYDomain[0] &&
-      initialYDomain[1] == this.initialYDomain[1]
-    ) {
-      return;
-    }
+      initialXDomain[0] === this.initialXDomain[0] &&
+      initialXDomain[1] === this.initialXDomain[1] &&
+      initialYDomain[0] === this.initialYDomain[0] &&
+      initialYDomain[1] === this.initialYDomain[1]
+    ) return;
 
     // only update the initial domain
     this.initialXDomain = initialXDomain;
@@ -361,13 +369,31 @@ export class TrackRenderer extends React.Component {
 
     this.drawableToDomainY = scaleLinear()
       .domain([
-        this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 - this.currentProps.centerWidth / 2,
-        this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2,
+        (
+          this.currentProps.marginTop +
+          this.currentProps.topHeight +
+          (this.currentProps.centerHeight / 2) -
+          (this.currentProps.centerWidth / 2)
+        ),
+        (
+          this.currentProps.marginTop +
+          this.currentProps.topHeight +
+          (this.currentProps.centerHeight / 2) +
+          (this.currentProps.centerWidth / 2)
+        ),
       ])
       .range([initialYDomain[0], initialYDomain[1]]);
 
-    this.prevCenterX = this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth / 2;
-    this.prevCenterY = this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2;
+    this.prevCenterX = (
+      this.currentProps.marginLeft +
+      this.currentProps.leftWidth +
+      (this.currentProps.centerWidth / 2)
+    );
+    this.prevCenterY = (
+      this.currentProps.marginTop +
+      this.currentProps.topHeight +
+      (this.currentProps.centerHeight / 2)
+    );
   }
 
   updatablePropsToString(props) {
@@ -798,7 +824,7 @@ export class TrackRenderer extends React.Component {
         // console.log('track.yPosition:', track.yPosition, 'trackYScale.range():', trackYScale.range());
 
         track.zoomed(
-          trackXScale, 
+          trackXScale,
           trackYScale,
         );
         continue;
@@ -838,7 +864,7 @@ export class TrackRenderer extends React.Component {
       dataConfig = {
         server: track.server,
         tilesetUid: track.tilesetUid
-      }
+      };
     }
 
     // console.log('track:', track);
@@ -867,6 +893,19 @@ export class TrackRenderer extends React.Component {
 
       case 'horizontal-multivec':
         console.log('horizontal multivec');
+        return new HorizontalMultivecTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          this.svgElement,
+          () => this.currentProps.onValueScaleChanged(track.uid),
+          newOptions =>
+            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
+        );
+
+      case 'horizontal-multivec':
         return new HorizontalMultivecTrack(
           this.pStage,
           dataConfig,
@@ -1074,7 +1113,26 @@ export class TrackRenderer extends React.Component {
         );
 
       case '2d-rectangle-domains':
+      case 'arrowhead-domains':
         return new ArrowheadDomainsTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      case '2d-annotations':
+        return new Annotations2dTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      case 'geo-json':
+        return new GeoJsonTrack(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1095,15 +1153,6 @@ export class TrackRenderer extends React.Component {
 
       case 'horizontal-2d-rectangle-domains':
         return new Horizontal2DDomainsTrack(
-          this.pStage,
-          dataConfig,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-        );
-
-      case 'arrowhead-domains':
-        return new ArrowheadDomainsTrack(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1239,6 +1288,15 @@ export class TrackRenderer extends React.Component {
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
+      case 'image-tiles':
+        return new ImageTilesTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
       case 'bedlike':
         return new BedLikeTrack(
           this.pStage,
@@ -1271,6 +1329,17 @@ export class TrackRenderer extends React.Component {
           track.y,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      case 'vertical-bedlike':
+        return new LeftTrackModifier(
+          new BedLikeTrack(
+            this.pStage,
+            dataConfig,
+            handleTilesetInfoReceived,
+            track.options,
+            () => this.currentProps.onNewTilesLoaded(track.uid),
+          )
         );
 
       default:

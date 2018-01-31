@@ -176,11 +176,11 @@ export class CombinedTrack {
     }
   }
 
-  respondsToPosition(x,y) {
-    if (this.position[0] < x && x <= this.position[0] + this.dimensions[0] 
-      && this.position[1] < y && y <= this.position[1] + this.dimensions[1]) {
-      return true;
-    }
+  respondsToPosition(x, y) {
+    return (
+      (x >= this.position[0] && x <= this.dimensions[0] + this.position[0])
+      && (y >= this.position[1] && y <= this.dimensions[1] + this.position[1])
+    );
   }
 }
 

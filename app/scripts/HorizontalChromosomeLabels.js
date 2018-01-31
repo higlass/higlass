@@ -23,10 +23,11 @@ const TICK_COLOR = 0x777777;
 
 class HorizontalChromosomeLabels extends PixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, chromInfoPath) {
-    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
+    super(scene, options);
 
     this.searchField = null;
     this.chromInfo = null;
+    this.dataConfig = dataConfig;
 
     this.gTicks = {};
     this.tickTexts = {};
@@ -46,7 +47,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     this.options = options;
 
-    if (this.options.showMousePosition) showMousePosition(this);
+    if (this.options.showMousePosition && !this.hideMousePosition) {
+      this.hideMousePosition = showMousePosition(this, this.is2d);
+    }
 
     let chromSizesPath = chromInfoPath;
 
@@ -87,6 +90,26 @@ class HorizontalChromosomeLabels extends PixiTrack {
       this.draw();
       this.animate();
     });
+  }
+
+  rerender(options, force) {
+    const strOptions = JSON.stringify(options);
+
+    if (!force && strOptions === this.prevOptions) return;
+
+    this.prevOptions = strOptions;
+    this.options = options;
+
+    super.rerender(options, force);
+
+    if (this.options.showMousePosition && !this.hideMousePosition) {
+      this.hideMousePosition = showMousePosition(this, this.is2d);
+    }
+
+    if (!this.options.showMousePosition && this.hideMousePosition) {
+      this.hideMousePosition();
+      this.hideMousePosition = undefined;
+    }
   }
 
   drawTicks(cumPos) {
@@ -139,7 +162,7 @@ class HorizontalChromosomeLabels extends PixiTrack {
         ? `${cumPos.chr}:1`
         : `${cumPos.chr}:${tickFormat(ticks[i])}`;
 
-      graphics.lineStyle(6, TICK_COLOR);
+      graphics.lineStyle(1, TICK_COLOR);
 
       // draw the tick lines
       graphics.moveTo(this._xScale(cumPos.pos + ticks[i]), this.dimensions[1]);
@@ -168,11 +191,17 @@ class HorizontalChromosomeLabels extends PixiTrack {
     const x1 = absToChr(this._xScale.domain()[0], this.chromInfo);
     const x2 = absToChr(this._xScale.domain()[1], this.chromInfo);
 
+    if (!x1 || !x2) {
+      console.warn('Empty chromInfo:', this.dataConfig, this.chromInfo);
+      return;
+    }
+
     for (let i = 0; i < this.texts.length; i++) {
       this.texts[i].visible = false;
       this.gTicks[this.chromInfo.cumPositions[i].chr].visible = false;
     }
 
+    // iterate over each chromosome
     for (let i = x1[3]; i <= x2[3]; i++) {
       const xCumPos = this.chromInfo.cumPositions[i];
 

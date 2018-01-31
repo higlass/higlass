@@ -55,16 +55,19 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     this.options = options;
 
     this.pubSubs = [];
-
-    if (this.options.showMousePosition) showMousePosition(this);
   }
 
   rerender(options, force) {
     super.rerender(options, force);
 
     // zoom so that if the heatmap is flipped, the scale of this.pMain changes
-    this.zoomed(this.xScale(), this.yScale(),
-      this.pMain.scale.x, this.pMain.position.x, this.pMain.position.y);
+    this.zoomed(
+      this.xScale(),
+      this.yScale(),
+      this.pMain.scale.x,
+      this.pMain.position.x,
+      this.pMain.position.y
+    );
   }
 
   calculateZoomLevel() {
@@ -229,10 +232,17 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
    *              and tile.graphics
    */
   renderTile(tile) {
-    this.valueScale = getValueScale(this.options.heatmapValueScaling,
-      this.scale.minValue, this.scale.maxValue, 'log');
+    const [scaleType, valueScale] = getValueScale(this.options.heatmapValueScaling,
+            this.scale.minValue, this.medianVisibleValue, this.scale.maxValue, 'log');
+
+    this.valueScale = valueScale;
+    let pseudocount = 0;
+
+    if (scaleType == 'log')
+        pseudocount = this.valueScale.domain()[0];
 
     this.limitedValueScale = this.valueScale.copy();
+
     if (this.options
             && typeof (this.options.scaleStartPercent) !== 'undefined'
             && typeof (this.options.scaleEndPercent) !== 'undefined') {
@@ -257,7 +267,7 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     tileProxy.tileDataToPixData(
       tile,
       this.limitedValueScale,
-      this.valueScale.domain()[0], // used as a pseudocount to prevent taking the log of 0
+      pseudocount, // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
       (pixData) => {
         // the tileData has been converted to pixData by the worker script and needs to be loaded

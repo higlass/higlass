@@ -76,8 +76,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // [[255,255,255,0], [237,218,10,4] ...
     // a 256 element array mapping the values 0-255 to rgba values
     // not a d3 color scale for speed
-    // this.colorScale = heatedObjectMap;
-    console.log('HEATED_OBJECT_MAP:', HEATED_OBJECT_MAP);
     this.colorScale = HEATED_OBJECT_MAP;
 
     if (options && options.colorRange) {
@@ -105,7 +103,9 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       );
     }
 
-    if (this.options.showMousePosition) showMousePosition(this, this.is2d);
+    if (this.options.showMousePosition && !this.hideMousePosition) {
+      this.hideMousePosition = showMousePosition(this, this.is2d);
+    }
   }
 
   /**
@@ -228,9 +228,10 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     const strOptions = JSON.stringify(options);
 
-    if (!force && strOptions === this.prevOptions) { return; }
+    if (!force && strOptions === this.prevOptions) return;
 
     this.prevOptions = strOptions;
+    this.options = options;
 
     super.rerender(options, force);
 
@@ -245,6 +246,15 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     // hopefully draw isn't rerendering all the tiles
     this.drawColorbar();
+
+    if (this.options.showMousePosition && !this.hideMousePosition) {
+      this.hideMousePosition = showMousePosition(this, this.is2d);
+    }
+
+    if (!this.options.showMousePosition && this.hideMousePosition) {
+      this.hideMousePosition();
+      this.hideMousePosition = undefined;
+    }
   }
 
   tileDataToCanvas(pixData) {
@@ -894,8 +904,14 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * @param {Object}  tile  Tile data to be rendered.
    */
   renderTile(tile) {
-    this.valueScale = getValueScale(this.options.heatmapValueScaling,
-      this.scale.minValue, this.scale.maxValue, 'log');
+    const [scaleType, valueScale] = getValueScale(this.options.heatmapValueScaling,
+            this.scale.minValue, this.medianVisibleValue, this.scale.maxValue, 'log');
+
+    this.valueScale = valueScale;
+    let pseudocount = 0;
+
+    if (scaleType == 'log')
+        pseudocount = this.valueScale.domain()[0];
 
     this.valueScale
       .range([254, 0])
@@ -923,7 +939,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     tileProxy.tileDataToPixData(
       tile,
       this.limitedValueScale,
-      this.valueScale.domain()[0], // used as a pseudocount to prevent taking the log of 0
+      pseudocount, // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
       (pixData) => {
         // the tileData has been converted to pixData by the worker script and needs to be loaded
