@@ -15,20 +15,17 @@ const getBaseRes = tilesetInfo => (
 export default class Inset {
   constructor(
     uid,
-    dataPos,
     remotePos,
+    renderedPos,
     dataConfig,
     tilesetInfo,
     options,
     mouseHandler,
-    dataType
+    dataType,
   ) {
     this.uid = uid;
-    this.dataX1 = dataPos[0];
-    this.dataX2 = dataPos[1];
-    this.dataY1 = dataPos[2];
-    this.dataY2 = dataPos[3];
     this.remotePos = remotePos;
+    this.renderedPos = renderedPos || this.remotePos;
     this.dataConfig = dataConfig;
     this.tilesetInfo = tilesetInfo;
     this.options = options;
@@ -107,8 +104,8 @@ export default class Inset {
     const xEndId = isBedpe ? 2 : 1;
     const yStartId = isBedpe ? 4 : 2;
     const yEndId = isBedpe ? 5 : 3;
-    const absXLen = this.remotePos[xEndId] - this.remotePos[xStartId];
-    const absYLen = this.remotePos[yEndId] - this.remotePos[yStartId];
+    const absXLen = this.renderedPos[xEndId] - this.renderedPos[xStartId];
+    const absYLen = this.renderedPos[yEndId] - this.renderedPos[yStartId];
     this.remoteSize = Math.max(absXLen, absYLen);
 
     const entry = resolutionCustomLocSorted[bisectLeft(
@@ -534,7 +531,7 @@ export default class Inset {
   ) {
     // Scale the image down from its raw resolution to the inset's pixel size
     this.imScale = (
-      Math.max(this.width, this.height) /
+      Math.max(width, height) /
       this.scaleBase /
       Math.max(this.data.width, this.data.height)
     );

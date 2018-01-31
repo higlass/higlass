@@ -11,7 +11,7 @@ import { create } from './services/pub-sub';
 
 // Utils
 import {
-  absToChr, base64ToCanvas, colorToHex, flatten, tileToCanvas
+  absToChr, base64ToCanvas, colorToHex, flatten, latToY, lngToX, tileToCanvas
 } from './utils';
 
 const BASE_MIN_SIZE = 12;
@@ -82,7 +82,7 @@ export default class Insets2dTrack extends PixiTrack {
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
       if (tilesetInfo.error) {
         console.error(
-          'Error retrieving tileset info:', dataConfig, this.tilesetInfo.error
+          'Error retrieving tileset info:', dataConfig, tilesetInfo.error
         );
       }
       this.tilesetInfo = tilesetInfo;
@@ -105,14 +105,14 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   createFetchRenderInset(
-    uid, x, y, w, h, sx, sy, swh, shh, dX1, dX2, dY1, dY2, remotePos
+    uid, x, y, w, h, sx, sy, swh, shh, dX1, dX2, dY1, dY2, remotePos, renderedPos
   ) {
     const inset = (
       this.insets[uid] ||
       this.initInset(
         uid,
-        [dX1, dX2, dY1, dY2],
-        remotePos
+        remotePos,
+        renderedPos
       )
     );
 
@@ -145,6 +145,15 @@ export default class Insets2dTrack extends PixiTrack {
     return [dX1, dX2, dY1, dY2];
   }
 
+  dataToOsmPos(dX1, dX2, dY1, dY2) {
+    return [
+      lngToX(dX1, 19) * this.tilesetInfo.tile_size,
+      lngToX(dX2, 19) * this.tilesetInfo.tile_size,
+      latToY(dY1, 19) * this.tilesetInfo.tile_size,
+      latToY(dY2, 19) * this.tilesetInfo.tile_size,
+    ];
+  }
+
   drawInset(inset) {
     if (this.dataType === 'cooler') {
       if (!this.fetchChromInfo) return Promise.reject('This is truly odd!');
@@ -156,6 +165,14 @@ export default class Insets2dTrack extends PixiTrack {
             inset[9], inset[10], inset[11], inset[12], _chromInfo
           )
         ));
+    }
+
+    if (this.dataType === 'osm-image') {
+      return this.createFetchRenderInset(
+        ...inset,
+        [inset[9], inset[10], inset[11], inset[12]],
+        this.dataToOsmPos(inset[9], inset[10], inset[11], inset[12])
+      );
     }
 
     return this.createFetchRenderInset(
