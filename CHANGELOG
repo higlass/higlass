@@ -5,6 +5,7 @@ develop (2018-01-??)
 - Added mouseMoveZoom event to public API
 - Fixed and extended pubSub module
 - Added flexible per-track crosshair
+- Fixed and robustified range selection API
 - Display error message on error
 - Don't error when displaying menus when invalid track type is
 entered

@@ -9,7 +9,7 @@ import HorizontalItem from './HorizontalItem';
 import SortableList from './SortableList';
 
 // Utils
-import { genomeLociToPixels, or, sum } from './utils';
+import { or, resetD3BrushStyle, sum } from './utils';
 
 // Configs
 import { IS_TRACK_RANGE_SELECTABLE } from './configs';
@@ -43,15 +43,11 @@ export class HorizontalTiledPlot extends React.Component {
       this.rangeSelectionTriggered = false;
       return this.state !== nextState;
     } else if (this.props.rangeSelection !== nextProps.rangeSelection) {
-      if (this.props.chromInfo) {
-        this.moveBrush(
-          nextProps.rangeSelection[0] ?
-            genomeLociToPixels(
-              nextProps.rangeSelection[0], this.props.chromInfo,
-            ) :
-            null,
-        );
-      }
+      this.moveBrush(
+        nextProps.rangeSelection[0]
+          ? nextProps.rangeSelection[0]
+          : null,
+      );
       return this.state !== nextState;
     }
     return true;
@@ -77,6 +73,10 @@ export class HorizontalTiledPlot extends React.Component {
 
     this.brushEl.call(this.brushBehavior);
     this.brushElAddedBefore = this.brushEl;
+
+    resetD3BrushStyle(
+      this.brushEl, stylesTrack['track-range-selection-group-brush-selection']
+    );
   }
 
   brushed() {
@@ -152,7 +152,7 @@ export class HorizontalTiledPlot extends React.Component {
       <div styleName="styles.horizontal-tiled-plot">
         {isBrushable &&
           <svg
-            ref={el => this.brushEl = select(el)}
+            ref={(el) => { this.brushEl = select(el); }}
             style={{
               height,
               width: this.props.width,
@@ -195,7 +195,6 @@ export class HorizontalTiledPlot extends React.Component {
 
 HorizontalTiledPlot.propTypes = {
   configTrackMenuId: PropTypes.string,
-  chromInfo: PropTypes.object,
   editable: PropTypes.bool,
   handleConfigTrack: PropTypes.func,
   handleResizeTrack: PropTypes.func,
