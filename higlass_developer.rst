@@ -83,15 +83,6 @@ the view, the HiGlass API exposes the  ``zoomToDataExtent`` function.
 The passed in ``viewUid`` should refer to a view which is present. If it
 doesn't, an exception will be thrown.
 
-createDataURI(): Exporting the view as a Data URI
--------------------------------------------------
-
-The current view can be programmatically exported as a data URI:
-
-.. code-block:: javascript
-
-  hgv.createDataURI()
-
 
 goTo(view,chr1,s1,e1,chr2,s2,e2,animate,animateTime): Zoom to a genomic location
 --------------------------------------------------------------------------------
@@ -293,14 +284,6 @@ listed:
         ...
        ]
     }
-Exporting the view as a Data URI
---------------------------------
-
-The current view can be programmatically exported as a data URI:
-
-.. code-block:: javascript
-
-    api.createDataURI()
 
 Viewconfs
 *********
