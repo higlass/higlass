@@ -1,5 +1,9 @@
 import { bisectLeft } from 'd3-array';
+import { color } from 'd3-color';
+import clip from 'liang-barsky';
 import * as PIXI from 'pixi.js';
+
+import { canvasLinearGradient, getAngleBetweenPoints, radToDeg } from './utils';
 
 const BASE_MIN_SIZE = 12;
 const BASE_MAX_SIZE = 24;
@@ -91,6 +95,46 @@ export default class Inset {
   }
 
   /**
+   * Compute the x, y, width, and height of the inset in view coordinates.
+   * @param   {number}  x  X position of the inset at the original position.
+   * @param   {number}  y  Y position of the inset at the original position.
+   * @param   {number}  width  Original width
+   * @param   {number}  height  Original height
+   * @param   {boolean}  isAbs  If `true` return `[xStart, yStart, xEnd, yEnd]`.
+   * @return  {array}  X, y, width, and height of the inset in view coordinates.
+   */
+  computeBorder(
+    x = this.x,
+    y = this.y,
+    width = this.width,
+    height = this.height,
+    isAbs = false,
+  ) {
+    const finalX = this.globalOffsetX + this.offsetX + x - (width / 2);
+    const finalY = this.globalOffsetY + this.offsetY + y - (height / 2);
+    return [
+      finalX,
+      finalY,
+      (isAbs * finalX) + (width * this.scaleExtra),
+      (isAbs * finalY) + (height * this.scaleExtra),
+    ];
+  }
+
+  /**
+   * "Compute" the x, y, width, and height of the border of the origin. This
+   *   is more of a convenience function to save code duplication
+   * @return  {array}  X, y, width, and height of the original annotation.
+   */
+  computeBorderOrigin() {
+    return [
+      this.originX,
+      this.originY,
+      this.originWidthHalf * 2,
+      this.originHeightHalf * 2,
+    ];
+  }
+
+  /**
    * Compute the remote size of the locus defining this inset and the final
    *   resolution.
    */
@@ -172,29 +216,97 @@ export default class Inset {
     height = this.height,
     graphics = this.gBorder,
   ) {
-    graphics.drawRect(
-      this.globalOffsetX + this.offsetX + x - (width / 2),
-      this.globalOffsetY + this.offsetY + y - (height / 2),
-      width * this.scaleExtra,
-      height * this.scaleExtra
-    );
+    graphics.drawRect(...this.computeBorder(x, y, width, height));
   }
 
   /**
    * Draw leader line.
    */
   drawLeaderLine() {
-    // Origin
-    this.gLeaderLine.moveTo(
-      this.globalOffsetX + this.originX,
-      this.globalOffsetY + this.originY
-    );
+    if (this.options.leaderLineFading) {
+      this.renderLeaderLine();
+    } else {
+      // Origin
+      this.gLeaderLine.moveTo(
+        this.globalOffsetX + this.originX,
+        this.globalOffsetY + this.originY
+      );
 
-    // Inset position
-    this.gLeaderLine.lineTo(
+      // Inset position
+      this.gLeaderLine.lineTo(
+        this.globalOffsetX + this.x,
+        this.globalOffsetY + this.y
+      );
+    }
+  }
+
+  renderLeaderLine() {
+    const rectInset = this.computeBorder(
+      this.x, this.y, this.width, this.height, true
+    );
+    const rectOrigin = this.computeBorder(...this.computeBorderOrigin(), true);
+
+    const pInset = [
       this.globalOffsetX + this.x,
       this.globalOffsetY + this.y
+    ];
+    const pOrigin = [
+      this.globalOffsetX + this.originX,
+      this.globalOffsetY + this.originY
+    ];
+
+    // Get the point on the border of the inset that intersects with the leader
+    // line by clipping of the origin, i.e., the point not being within the
+    // inset as illustrated:
+    //  1) ___________                 2) ___________
+    //     |         |     _____          |         |
+    //     |         |     |   |          |         |
+    //     |    i----X-----Y-o |   >>>    |    i----o
+    //     |         |     |   |          |         |
+    //     |         |     ¯¯¯¯¯          |         |
+    //     ¯¯¯¯¯¯¯¯¯¯¯                    ¯¯¯¯¯¯¯¯¯¯¯
+    // where i is the center of the inset (given) and o is the center of the
+    // origin (given) and X and Y are the intersection of the leader line with
+    // the insets and annotation bounding box. In order to get X we clip the
+    // path between i and o such that i remains the same and o gets clipped (2).
+    // Therefore the new location of i is the clipped point o!
+    const pInsetNew = pOrigin.slice();
+    clip(pInset.slice(), pInsetNew, rectInset);
+
+    const pOriginNew = pInset.slice();
+    clip(pOriginNew, pOrigin.slice(), rectOrigin);
+
+    const xLen = pOriginNew[0] - pInsetNew[0];
+    const yLen = pOriginNew[1] - pInsetNew[1];
+    const hex = `#${this.options.leaderLineColor.toString(16)}`;
+    const c = color(hex);
+    const cf = color(hex);
+    cf.opacity = 0.33;
+
+    this.gLeaderLineGrd = new PIXI.Sprite(
+      PIXI.Texture.fromCanvas(canvasLinearGradient(
+        Math.sqrt((xLen ** 2) + (yLen ** 2)),
+        this.options.leaderLineWidth || 2,
+        {
+          0: c,
+          0.3: cf,
+          0.7: cf,
+          1: c,
+        }
+      ))
     );
+
+    this.gLeaderLineGrd.x = pOriginNew[0];
+    this.gLeaderLineGrd.y = pOriginNew[1];
+    this.gLeaderLineGrd.rotation = getAngleBetweenPoints(
+      [this.originX, this.originY],
+      [this.x, this.y]
+    );
+
+    this.gLeaderLine.removeChildren();
+    this.gLeaderLine.addChild(this.gLeaderLineGrd);
+
+    return this.imageRendering;
   }
 
   /**
@@ -236,80 +348,9 @@ export default class Inset {
    */
   drawOriginBorder() {
     this.drawBorder(
-      this.originX,
-      this.originY,
-      (this.originWidthHalf + 1) * 2,
-      (this.originHeightHalf + 1) * 2,
+      ...this.computeBorderOrigin(),
       this.gLeaderLine
     );
-  }
-
-  /**
-   * Draw inverse border. This is useful for creating inverted masks, which is
-   *   otherwise not possible with canvas.
-   * @param   {number}  x  Central x coordinate of the rectangle around which
-   *   the border should be drawn.
-   * @param   {number}  y  Central y coordinate of the rectangle around which
-   *   the border should be drawn.
-   * @param   {number}  wh  Half width of the rectangle around which the
-   *   border should be drawn.
-   * @param   {number}  hh  Half height of the rectangle around which the
-   *   border should be drawn.
-   * @param   {object}  graphics  PIXI graphics on which should be drawn.
-   */
-  drawBorderInverse(
-    x = this.x,
-    y = this.y,
-    wh = this.width / 2,
-    hh = this.height / 2,
-    graphics = this.gBorder,
-  ) {
-    graphics.beginFill();
-    graphics.moveTo(this.globalOffsetX, this.globalOffsetY);
-    graphics.lineTo(
-      this.globalOffsetX + x - wh,
-      this.globalOffsetY
-    );
-    graphics.lineTo(
-      this.globalOffsetX + x - wh,
-      this.globalOffsetY + y + hh
-    );
-    graphics.lineTo(
-      this.globalOffsetX + x + wh,
-      this.globalOffsetY + y + hh
-    );
-    graphics.lineTo(
-      this.globalOffsetX + x + wh,
-      this.globalOffsetY + y - hh
-    );
-    graphics.lineTo(
-      this.globalOffsetX + x - wh,
-      this.globalOffsetY + y - hh
-    );
-    graphics.lineTo(
-      this.globalOffsetX + x - wh,
-      this.globalOffsetY
-    );
-    graphics.lineTo(this.globalOffsetX + this.globalWidth, this.globalOffsetY);
-    graphics.lineTo(this.globalOffsetX + this.globalWidth, this.globalOffsetY + this.globalHeight);
-    graphics.lineTo(this.globalOffsetX, this.globalOffsetY + this.globalHeight);
-    graphics.lineTo(this.globalOffsetX, this.globalOffsetY);
-    graphics.endFill();
-  }
-
-  /**
-   * Draw mask around the origin. This can be used to cut of leader lines
-   *   pointing to the origin at the boundaries of the original locus.
-   */
-  drawOriginMask() {
-    this.drawBorderInverse(
-      this.originX,
-      this.originY,
-      this.originWidthHalf,
-      this.originHeightHalf,
-      this.gOriginMask
-    );
-    this.gLeaderLine.mask = this.gOriginMask;
   }
 
   getPadding() {
@@ -496,7 +537,7 @@ export default class Inset {
    *   clipping of the leader line at the boundary of the original locus.
    */
   originFocus() {
-    this.drawOriginMask();
+    // this.drawOriginMask();
     this.drawOriginBorder();
   }
 

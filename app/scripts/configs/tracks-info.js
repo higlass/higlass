@@ -1022,6 +1022,7 @@ export const TRACKS_INFO = [
       'leaderLineColor',
       'leaderLineWidth',
       'leaderLineOpacity',
+      'leaderLineFading',
       'dropDistance',
       'dropBlur',
       'dropOpacity',
