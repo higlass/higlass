@@ -2793,7 +2793,8 @@ class HiGlassComponent extends React.Component {
         dataX,
         dataY,
         isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
-        isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText
+        isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
+        hoveredTrack
       }
     );
   }
