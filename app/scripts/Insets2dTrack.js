@@ -7,7 +7,7 @@ import DataFetcher from './DataFetcher';
 
 // Services
 import { chromInfo } from './services';
-import { create } from './services/pub-sub';
+import pubSub, { create } from './services/pub-sub';
 
 // Utils
 import {
@@ -15,6 +15,7 @@ import {
   base64ToCanvas,
   colorToHex,
   flatten,
+  isTrackOrChildTrack,
   latToY,
   lngToX,
   tileToCanvas
@@ -72,6 +73,10 @@ export default class Insets2dTrack extends PixiTrack {
       mouseUp: this.mouseUpHandler.bind(this),
       mouseUpRight: this.mouseUpHandler.bind(this),
     };
+
+    this.pubSubs.push(
+      pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this)),
+    );
 
     // Create a custom pubSub interface
     const { publish, subscribe, unsubscribe } = create({});
@@ -268,6 +273,11 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   mouseUpRightHandler(/* event, inset */) {}
+
+  mouseMoveHandler(event) {
+    if (!isTrackOrChildTrack(this, event.hoveredTrack)) return;
+    console.log('Mouse position on the track', event);
+  }
 
   updateDistance() {}
 
