@@ -1,5 +1,5 @@
 import { HeatmapTiledPixiTrack } from './HeatmapTiledPixiTrack';
-
+import { format } from 'd3-format';
 import { tileProxy } from './services';
 
 export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
@@ -128,7 +128,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const zoomLevel = this.calculateZoomLevel();
 
     // the width of the tile in base pairs
-    const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, BINS_PER_TILE);
+    const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
 
     // the position of the tile containing the query position
     const tilePos = this._xScale.invert(trackX) / tileWidth;
@@ -146,13 +146,15 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     const zoomLevel = this.calculateZoomLevel();
 
     // the width of the tile in base pairs
-    const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, BINS_PER_TILE);
+    const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
 
     // the position of the tile containing the query position
     const tilePos = this._xScale.invert(trackX) / tileWidth;
 
+    console.log('tilesetInfo:', this.tilesetInfo);
+
     // the position of query within the tile
-    const posInTileX = BINS_PER_TILE * (tilePos - Math.floor(tilePos));
+    const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
     const posInTileY = (trackY / this.dimensions[1])  * this.tilesetInfo.shape[1];
 
     const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)])
@@ -171,8 +173,16 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
         [Math.floor(posInTileX), Math.floor(posInTileX)],
         [posInTileY, posInTileY],
       */
-      const index = this.tilesetInfo.shape[1] * Math.floor(posInTileY) + Math.floor(posInTileX);
+      const index = this.tilesetInfo.shape[0] * Math.floor(posInTileY) + Math.floor(posInTileX);
       value = format(".3f")(fetchedTile.tileData.dense[index]);
+    }
+
+    console.log('posInTileX:', posInTileX);
+
+    // add information about the row
+    if (this.tilesetInfo.row_infos) {
+      value += "<br/>";
+      value += this.tilesetInfo.row_infos[Math.floor(posInTileY)];
     }
 
     return `${value}`;
