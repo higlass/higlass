@@ -14,6 +14,10 @@ entered
 - Updated third-party libs to get rid of deprecation warnings for React v16
 - Fixed small bug in placing rules
 
+v0.10.16 (2018-02-01)
+
+- Fixed a bug during active range selection when the _select_ mouse tool is deactivated
+
 v0.10.15 (2018-01-30)
 
 - Added the vertical bed-like track
