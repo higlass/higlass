@@ -3,7 +3,7 @@ import { color } from 'd3-color';
 import clip from 'liang-barsky';
 import * as PIXI from 'pixi.js';
 
-import { canvasLinearGradient, getAngleBetweenPoints, radToDeg } from './utils';
+import { canvasLinearGradient, getAngleBetweenPoints } from './utils';
 
 const BASE_MIN_SIZE = 12;
 const BASE_MAX_SIZE = 24;
@@ -459,8 +459,17 @@ export default class Inset {
    *
    * @param  {Object}  event  Event object.
    */
-  mouseclickHandler(event) {
+  mouseClickHandler(event) {
     this.mouseHandler.click(event, this.gMain);
+  }
+
+  /**
+   * Mouse click handler.
+   *
+   * @param  {Object}  event  Event object.
+   */
+  mouseClickRightHandler(event) {
+    this.mouseHandler.clickRight(event, this.gMain);
   }
 
   /**
@@ -492,6 +501,16 @@ export default class Inset {
     this.mouseDown = true;
     this.scale(this.onClickScale);
     this.mouseHandler.mouseDown(event, this.gMain);
+  }
+
+  /**
+   * Mouse down handler for a right click.
+   *
+   * @param  {Object}  event  Event object.
+   */
+  mouseDownRightHandler(event) {
+    this.mouseDownRight = true;
+    this.mouseHandler.mouseDownRight(event, this.gMain);
     console.log(
       `Annotation: ${this.uid} |`,
       `Remote pos: ${this.remotePos.join(', ')} |`,
@@ -505,10 +524,21 @@ export default class Inset {
    * @param  {Object}  event  Event object.
    */
   mouseUpHandler(event) {
-    if (this.mouseDown) this.mouseclickHandler(event);
+    if (this.mouseDown) this.mouseClickHandler(event);
     this.scale();
     this.mouseDown = false;
-    this.mouseHandler.mouseUp(event, this.gMain);
+    this.mouseHandler.contextMenu(event, this.gMain);
+  }
+
+  /**
+   * Mouse up handler for a right click.
+   *
+   * @param  {Object}  event  Event object.
+   */
+  mouseUpRightHandler(event) {
+    if (this.mouseDownRight) this.mouseClickRightHandler(event);
+    this.mouseDownRight = false;
+    this.mouseHandler.mouseUpRight(event, this.gMain);
   }
 
   /**
@@ -637,7 +667,9 @@ export default class Inset {
           .on('mousedown', this.mouseDownHandler.bind(this))
           .on('mouseover', this.mouseOverHandler.bind(this))
           .on('mouseout', this.mouseOutHandler.bind(this))
-          .on('mouseup', this.mouseUpHandler.bind(this));
+          .on('mouseup', this.mouseUpHandler.bind(this))
+          .on('rightdown', this.mouseDownRightHandler.bind(this))
+          .on('rightup', this.mouseUpRightHandler.bind(this));
 
         this.gMain.addChild(this.sprite);
       });

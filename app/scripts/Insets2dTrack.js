@@ -11,7 +11,13 @@ import { create } from './services/pub-sub';
 
 // Utils
 import {
-  absToChr, base64ToCanvas, colorToHex, flatten, latToY, lngToX, tileToCanvas
+  absToChr,
+  base64ToCanvas,
+  colorToHex,
+  flatten,
+  latToY,
+  lngToX,
+  tileToCanvas
 } from './utils';
 
 const BASE_MIN_SIZE = 12;
@@ -58,10 +64,13 @@ export default class Insets2dTrack extends PixiTrack {
 
     this.insetMouseHandler = {
       click: this.clickHandler.bind(this),
+      clickRight: this.clickRightHandler.bind(this),
       mouseOver: this.mouseOverHandler.bind(this),
       mouseOut: this.mouseOutHandler.bind(this),
       mouseDown: this.mouseDownHandler.bind(this),
-      mouseUp: this.mouseUpHandler.bind(this)
+      mouseDownRight: this.mouseDownHandler.bind(this),
+      mouseUp: this.mouseUpHandler.bind(this),
+      mouseUpRight: this.mouseUpHandler.bind(this),
     };
 
     // Create a custom pubSub interface
@@ -234,19 +243,15 @@ export default class Insets2dTrack extends PixiTrack {
     return this.insets[uid];
   }
 
-  clickHandler(event, inset) {
-    // console.log('PIXI CLICK', event.type, inset);
+  clickHandler(/* event, inset */) {}
+
+  clickRightHandler(event, inset) {
+    console.log('PIXI CONTEXT MENU', event.type, inset);
   }
 
-  mouseOverHandler(event, inset) {
-    // console.log('PIXI MOUSE OVER', event.type, inset);
-    this.animate();
-  }
+  mouseOverHandler(/* event, inset */) {}
 
-  mouseOutHandler(event, inset) {
-    // console.log('PIXI MOUSE OUT', event.type, inset);
-    this.animate();
-  }
+  mouseOutHandler(/* event, inset */) {}
 
   mouseDownHandler(event, inset) {
     this.hoveringInsetIdx = this.pMain.getChildIndex(inset);
@@ -254,10 +259,19 @@ export default class Insets2dTrack extends PixiTrack {
     this.animate();
   }
 
+  mouseDownRightHandler(/* event, inset */) {
+  }
+
   mouseUpHandler(event, inset) {
     this.pMain.setChildIndex(inset, this.hoveringInsetIdx);
     this.animate();
   }
+
+  mouseUpRightHandler(/* event, inset */) {}
+
+  updateDistance() {}
+
+  computeDistance() {}
 
   rendererInset(data, w, h) {
     return data.dataTypes[0] === 'dataUrl'
