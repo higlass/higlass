@@ -1,5 +1,5 @@
-HiGlass Docker
-==============
+Docker
+======
 
 .. toctree::
     :maxdepth: 2
