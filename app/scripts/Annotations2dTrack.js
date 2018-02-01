@@ -32,7 +32,7 @@ class Annotations2dTrack extends TiledPixiTrack {
   get maxX() {
     return this.tilesetInfo && this.tilesetInfo.max_x
       ? this.tilesetInfo.max_x
-      : 0;
+      : this.tilesetInfo.max_width || this.tilesetInfo.max_size;
   }
 
   get minY() {
@@ -46,16 +46,14 @@ class Annotations2dTrack extends TiledPixiTrack {
   }
 
   get maxSize() {
-    try {
-      return Math.max(
-        this.tilesetInfo.max_x - this.tilesetInfo.min_x,
-        this.tilesetInfo.max_y - this.tilesetInfo.min_y
-      );
-    } catch (e) { /* Nothing */ }
+    const maxSize = this.tilesetInfo.max_x && Math.max(
+      this.tilesetInfo.max_x - this.tilesetInfo.min_x,
+      this.tilesetInfo.max_y - this.tilesetInfo.min_y
+    );
 
-    try {
-      return this.tilesetInfo.max_size;
-    } catch (e) { /* Nothing */ }
+    if (maxSize) return maxSize;
+
+    if (this.tilesetInfo.max_size) return this.tilesetInfo.max_size;
 
     return 0;
   }
@@ -66,7 +64,7 @@ class Annotations2dTrack extends TiledPixiTrack {
    * @param   {number}  y  Data Y coordinate
    * @return  {array}  Tuple [x,y] containing the translated view coordinates.
    */
-  projection(x, y) {
+  projection([x, y]) {
     return [this._xScale(x), this._yScale(y)];
   }
 
