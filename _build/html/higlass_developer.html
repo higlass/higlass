@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>HiGlass Client (Developer) &#8212; HiGlass v0.4.8 documentation</title>
+    <title>Developer &#8212; HiGlass v0.4.8 documentation</title>
     <link rel="stylesheet" href="_static/higlass.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -24,7 +24,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="HiGlass Docker" href="higlass_docker.html" />
-    <link rel="prev" title="HiGlass Client User Manual" href="higlass_client.html" />
+    <link rel="prev" title="Client Viewer" href="higlass_client.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -40,13 +40,13 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="higlass-client-developer">
-<h1>HiGlass Client (Developer)<a class="headerlink" href="#higlass-client-developer" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="higlass-api">
-<h2>HiGlass API<a class="headerlink" href="#higlass-api" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="developer">
+<h1>Developer<a class="headerlink" href="#developer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="public-api">
+<h2>Public API<a class="headerlink" href="#public-api" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="creating-an-inline-higlass-component">
 <h3>Creating an inline HiGlass component<a class="headerlink" href="#creating-an-inline-higlass-component" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">createHgComponent</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">config</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">hgv</span> <span class="o">=</span> <span class="nx">hglib</span><span class="p">.</span><span class="nx">viewer</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">config</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Create a new HiGlass component within a web page. This initializes a
@@ -58,53 +58,196 @@ which tells the HiGlass component to fill all the space in the containing
 element. Note that if <code class="docutils literal"><span class="pre">bounded</span></code> is set to true, then <code class="docutils literal"><span class="pre">element</span></code> must have a
 fixed height. <code class="docutils literal"><span class="pre">callback</span></code> is used to return an api variable which can be used
 to access HiGlass events.</p>
-<p>A full example of an inline HiGlass component can be found in the <a class="reference external" href="https://github.com/hms-dbmi/higlass/blob/develop/app/test.html">HiGlass
+<p>The function returns an instance of the public API of a HiGLass component.</p>
+<p>A full example of an inline HiGlass component can be found in the <a class="reference external" href="https://github.com/hms-dbmi/higlass/blob/develop/app/api.html">HiGlass
 GitHub repository</a>.</p>
 <p><strong>Example</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nx">hgApi</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-<span class="nx">hglib</span><span class="p">.</span><span class="nx">createHgComponent</span><span class="p">(</span>
-    <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;development-demo&#39;</span><span class="p">),</span>
-    <span class="nx">testViewConfig</span><span class="p">,</span>
-    <span class="p">{</span> <span class="nx">bounded</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
-    <span class="kd">function</span> <span class="p">(</span><span class="nx">api</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">hgApi</span> <span class="o">=</span> <span class="nx">api</span><span class="p">;</span>
-    <span class="p">}</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">hgv</span> <span class="o">=</span> <span class="nx">hglib</span><span class="p">.</span><span class="nx">viewer</span><span class="p">(</span>
+  <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;development-demo&#39;</span><span class="p">),</span>
+  <span class="nx">testViewConfig</span><span class="p">,</span>
+  <span class="p">{</span> <span class="nx">bounded</span><span class="o">:</span> <span class="kc">true</span> <span class="p">},</span>
 <span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="setting-a-view-config">
-<h3>Setting a view config<a class="headerlink" href="#setting-a-view-config" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="reference">
+<h3>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h3>
+<p>The following is a list of the public API methods:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">hgv</span> <span class="o">=</span> <span class="nx">hglib</span><span class="p">.</span><span class="nx">viewer</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="nx">config</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">setViewConfig</span><span class="p">(</span><span class="nx">newViewConfig</span><span class="p">);</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">zoomToDataExtent</span><span class="p">(</span><span class="nx">newViewConfig</span><span class="p">);</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">createDataURI</span><span class="p">();</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">goTo</span><span class="p">(</span><span class="nx">viewUid</span><span class="p">,</span> <span class="nx">chrom1</span><span class="p">,</span> <span class="nx">start1</span><span class="p">,</span> <span class="nx">end1</span><span class="p">,</span> <span class="nx">chrom2</span><span class="p">,</span> <span class="nx">start2</span><span class="p">,</span> <span class="nx">end2</span><span class="p">,</span> <span class="nx">animate</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">animateTime</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">);</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">activateTool</span><span class="p">(</span><span class="nx">mouseTool</span><span class="p">);</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">viewId</span><span class="p">,</span> <span class="nx">callbackId</span><span class="p">);</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">listenerId</span><span class="p">,</span> <span class="nx">viewId</span><span class="p">);</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">prop</span><span class="p">,</span> <span class="nx">viewId</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="setviewconfig-viewconfig-setting-a-view-config">
+<h3>setViewConfig(viewConfig): Setting a view config<a class="headerlink" href="#setviewconfig-viewconfig-setting-a-view-config" title="Permalink to this headline">¶</a></h3>
 <p>The HiGlass API can be used to set a new viewconfig. This returns a Promise
 which is fulfilled when all of the data for the view is loaded.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">hgApi</span><span class="p">.</span><span class="nx">setViewConfig</span><span class="p">(</span><span class="nx">newViewConfig</span><span class="p">);</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">setViewConfig</span><span class="p">(</span><span class="nx">newViewConfig</span><span class="p">);</span>
 <span class="nx">p</span><span class="p">.</span><span class="nx">then</span><span class="p">(()</span> <span class="p">=&gt;</span> <span class="p">{</span>
-    <span class="c1">// the initial set of tiles has been loaded</span>
+  <span class="c1">// the initial set of tiles has been loaded</span>
 <span class="p">});</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="getting-a-view-config">
-<h3>Getting a view config<a class="headerlink" href="#getting-a-view-config" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">hgApi</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;viewConfig&#39;</span><span class="p">);</span>
-<span class="nx">p</span><span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">viewConfig</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;viewConfig:&#39;</span><span class="p">,</span> <span class="nx">viewConfig</span><span class="p">)</span>
-<span class="p">});</span>
-</pre></div>
-</div>
-<p>The <cite>get</cite> function for retrieving a viewConf returns a promise which is
-fulfilled whenever the viewconfig is returned.</p>
-</div>
-<div class="section" id="zooming-to-show-all-of-the-data">
-<h3>Zooming to show all of the data<a class="headerlink" href="#zooming-to-show-all-of-the-data" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="zoomtodataextent-viewid-zooming-to-show-all-of-the-data">
+<h3>zoomToDataExtent(viewId): Zooming to show all of the data<a class="headerlink" href="#zoomtodataextent-viewid-zooming-to-show-all-of-the-data" title="Permalink to this headline">¶</a></h3>
 <p>One may set a view config pointing to a dataset which is either out of the
 bounds of the view, too small, or too zoomed in. To fit the data inside of
 the view, the HiGlass API exposes the  <code class="docutils literal"><span class="pre">zoomToDataExtent</span></code> function.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">api</span><span class="p">.</span><span class="nx">zoomToDataExtent</span><span class="p">(</span><span class="s1">&#39;viewUid&#39;</span><span class="p">);</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">zoomToDataExtent</span><span class="p">(</span><span class="s1">&#39;viewUid&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>The passed in <code class="docutils literal"><span class="pre">viewUid</span></code> should refer to a view which is present. If it
 doesn’t, an exception will be thrown.</p>
+</div>
+<div class="section" id="createdatauri-exporting-the-view-as-a-data-uri">
+<h3>createDataURI(): Exporting the view as a Data URI<a class="headerlink" href="#createdatauri-exporting-the-view-as-a-data-uri" title="Permalink to this headline">¶</a></h3>
+<p>The current view can be programmatically exported as a data URI:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">createDataURI</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="goto-view-chr1-s1-e1-chr2-s2-e2-animate-animatetime-zoom-to-a-genomic-location">
+<h3>goTo(view,chr1,s1,e1,chr2,s2,e2,animate,animateTime): Zoom to a genomic location<a class="headerlink" href="#goto-view-chr1-s1-e1-chr2-s2-e2-animate-animatetime-zoom-to-a-genomic-location" title="Permalink to this headline">¶</a></h3>
+<p>Change the current view port to a certain genomic location. When <code class="docutils literal"><span class="pre">animate</span></code> is true HiGlass transitions from the current to the new location smoothly.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">goTo</span><span class="p">(</span>
+  <span class="nx">viewUid</span><span class="p">,</span>
+  <span class="nx">chrom1</span><span class="p">,</span>
+  <span class="nx">start1</span><span class="p">,</span>
+  <span class="nx">end1</span><span class="p">,</span>
+  <span class="nx">chrom2</span><span class="p">,</span>
+  <span class="nx">start2</span><span class="p">,</span>
+  <span class="nx">end2</span><span class="p">,</span>
+  <span class="nx">animate</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">animateTime</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">,</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Example:</strong></p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">goTo</span><span class="p">(</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;chr2&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="mi">500</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="activatetool-mousetool-select-a-mouse-tool">
+<h3>activateTool(mouseTool): Select a mouse tool<a class="headerlink" href="#activatetool-mousetool-select-a-mouse-tool" title="Permalink to this headline">¶</a></h3>
+<p>Some tools needs conflicting mouse events such as mousedown or mousemove. To avoid complicated triggers for certain actions HiGlass supports different mouse tools for different interactions. The default mouse tool enables pan&amp;zoom. The only other mouse tool available right now is <code class="docutils literal"><span class="pre">select</span></code>, which lets you brush on to a track to select a range for annotating regions.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">activateTool</span><span class="p">(</span><span class="nx">mouseTool</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Examples:</strong></p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">activateTool</span><span class="p">(</span><span class="s1">&#39;select&#39;</span><span class="p">);</span> <span class="c1">// Select tool is active</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">activateTool</span><span class="p">();</span> <span class="c1">// Default pan&amp;zoom tool is active</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="on-event-callback-viewid-callbackid-subscribe-to-an-event">
+<h3>on(event, callback, viewId, callbackId): Subscribe to an event<a class="headerlink" href="#on-event-callback-viewid-callbackid-subscribe-to-an-event" title="Permalink to this headline">¶</a></h3>
+<p>HiGlass exposes the following event, which one can subscribe to via this method:</p>
+<ul class="simple">
+<li>location</li>
+<li>rangeSelection</li>
+<li>viewConfig</li>
+<li>mouseMoveZoom</li>
+</ul>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="nx">eventName</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">viewId</span><span class="p">,</span> <span class="nx">callbackId</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>location:</strong> Returns a BEDPE array of the current view port.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">229372197</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>rangeSelection:</strong> Returns a BED- (1D) or BEDPE (1d) array of the selection.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="c1">// 1D or BED-like array</span>
+<span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">229372197</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">]</span>
+
+<span class="c1">// 2D or BEDPE-like array</span>
+<span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">229372197</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>viewConfig:</strong> Returns the current view config.</p>
+<p><strong>mouseMoveZoom:</strong> Returns the raw data around the mouse cursors screen location and the related genomic location.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nx">data</span><span class="p">,</span> <span class="c1">// Raw Float32Array</span>
+  <span class="nx">dim</span><span class="p">,</span>  <span class="c1">// Dimension of the lens (the lens is squared)</span>
+  <span class="nx">toRgb</span><span class="p">,</span>  <span class="c1">// Current float-to-rgb converter</span>
+  <span class="nx">center</span><span class="p">,</span>  <span class="c1">// BED array of the cursors genomic location</span>
+  <span class="nx">xRange</span><span class="p">,</span>  <span class="c1">// BEDPE array of the x genomic range</span>
+  <span class="nx">yRange</span><span class="p">,</span>  <span class="c1">// BEDPE array of the y genomic range</span>
+  <span class="nx">rel</span>  <span class="c1">// If true the above three genomic locations are relative</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Examples:</strong></p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kd">let</span> <span class="nx">locationListenerId</span><span class="p">;</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span>
+  <span class="s1">&#39;location&#39;</span><span class="p">,</span>
+  <span class="nx">location</span> <span class="p">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Here we are:&#39;</span><span class="p">,</span> <span class="nx">location</span><span class="p">),</span>
+  <span class="s1">&#39;viewId1&#39;</span><span class="p">,</span>
+  <span class="nx">listenerId</span> <span class="p">=&gt;</span> <span class="nx">locationListenerId</span> <span class="o">=</span> <span class="nx">listenerId</span>
+<span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">rangeListenerId</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span>
+  <span class="s1">&#39;rangeSelection&#39;</span><span class="p">,</span>
+  <span class="nx">range</span> <span class="p">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Selected&#39;</span><span class="p">,</span> <span class="nx">range</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">viewConfigListenerId</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span>
+  <span class="s1">&#39;viewConfig&#39;</span><span class="p">,</span>
+  <span class="nx">range</span> <span class="p">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Selected&#39;</span><span class="p">,</span> <span class="nx">range</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">mmz</span> <span class="o">=</span> <span class="nx">event</span> <span class="p">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Moved&#39;</span><span class="p">,</span> <span class="nx">event</span><span class="p">);</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;mouseMoveZoom&#39;</span><span class="p">,</span> <span class="nx">mmz</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="off-event-listenerid-viewid-unsubscribe-from-an-event">
+<h3>off(event, listenerId, viewId): Unsubscribe from an event<a class="headerlink" href="#off-event-listenerid-viewid-unsubscribe-from-an-event" title="Permalink to this headline">¶</a></h3>
+<p>Cancel a subscription.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="nx">eventName</span><span class="p">,</span> <span class="nx">listenerId</span><span class="p">,</span> <span class="nx">viewId</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Examples:</strong></p>
+<p>The variables used in the following examples are coming from the above examples of <code class="docutils literal"><span class="pre">on()</span></code>.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="nx">locationListenerId</span><span class="p">,</span> <span class="s1">&#39;viewId1&#39;</span><span class="p">);</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;rangeSelection&#39;</span><span class="p">,</span> <span class="nx">rangeListenerId</span><span class="p">);</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;viewConfig&#39;</span><span class="p">,</span> <span class="nx">viewConfigListenerId</span><span class="p">);</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;mouseMoveZoom&#39;</span><span class="p">,</span> <span class="nx">mmz</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-prop-viewid-instant-getter-for-event-data">
+<h3>get(prop, viewId): Instant getter for event data<a class="headerlink" href="#get-prop-viewid-instant-getter-for-event-data" title="Permalink to this headline">¶</a></h3>
+<p>Naturally, event listeners only return news once an event has been published but sometimes one needs to get the data at a certain time. The get method returns the current value of an event without having to wait for the event to fire.</p>
+<p>Additionally, it’s possible to retrieve a png or svg snapshot of the current view using <code class="docutils literal"><span class="pre">png</span></code> and <code class="docutils literal"><span class="pre">svg</span></code> as <code class="docutils literal"><span class="pre">prop</span></code> respectively. The png snapshot comes in form of a data URI and the svg snapshot is a XML string.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">currentLocationOfViewId</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="s1">&#39;viewId&#39;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">currentRangeSelection</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;rangeSelection&#39;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">currentViewConfig</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;viewConfig&#39;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">pngSnapshot</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;png&#39;</span><span class="p">);</span>  <span class="c1">// Data URI</span>
+<span class="kr">const</span> <span class="nx">svgSnapshot</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;svg&#39;</span><span class="p">);</span>  <span class="c1">// XML string</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="shareviewconfigaslink-url-get-sharable-link-for-current-view-config">
+<h3>shareViewConfigAsLink(url): Get sharable link for current view config<a class="headerlink" href="#shareviewconfigaslink-url-get-sharable-link-for-current-view-config" title="Permalink to this headline">¶</a></h3>
+<p>Generate a sharable link to the current view config. The <cite>url</cite> parameter should contain
+the API endpoint used to export the view link (e.g. ‘<a class="reference external" href="http://localhost:8989/api/v1/viewconfs">http://localhost:8989/api/v1/viewconfs</a>’).
+If it is not provided, the value is taken from the <cite>exportViewUrl</cite> value of the viewconf.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">shareViewConfigAsLink</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">sharedViewConfig</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Shared view config (ID: </span><span class="si">${</span><span class="nx">sharedViewConfig</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">) is available at </span><span class="si">${</span><span class="nx">sharedViewConfig</span><span class="p">.</span><span class="nx">url</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="k">catch</span><span class="p">((</span><span class="nx">err</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;Something did not work. Sorry&#39;</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span> <span class="p">})</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="obtaining-ordered-chromosome-info">
 <h3>Obtaining ordered chromosome info<a class="headerlink" href="#obtaining-ordered-chromosome-info" title="Permalink to this headline">¶</a></h3>
@@ -122,21 +265,21 @@ and the order they are listed in a chromSizes file:</p>
 <p>This will return a data structure with information about the chromosomes
 listed:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="nx">chrPositions</span><span class="o">:</span> <span class="p">{</span>
-        <span class="nx">chr1</span> <span class="o">:</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">chr</span><span class="o">:</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="nx">pos</span><span class="o">:</span> <span class="mi">0</span><span class="p">},</span>
-        <span class="nx">chr2</span> <span class="o">:</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">chr</span><span class="o">:</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="nx">pos</span><span class="o">:</span> <span class="mi">249250621</span><span class="p">}</span> <span class="p">,</span>
-        <span class="p">...</span>
-    <span class="p">},</span>
-    <span class="nx">chromLengths</span><span class="o">:</span> <span class="p">{</span>
-        <span class="nx">chr1</span><span class="o">:</span> <span class="s2">&quot;249250621&quot;</span><span class="p">,</span>
-        <span class="nx">chr2</span><span class="o">:</span> <span class="s2">&quot;243199373&quot;</span><span class="p">,</span>
-        <span class="p">...</span>
-    <span class="p">},</span>
-    <span class="nx">cumPositions</span><span class="o">:</span> <span class="p">[</span>
-        <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">chr</span><span class="o">:</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="nx">pos</span><span class="o">:</span> <span class="mi">0</span><span class="p">},</span>
-        <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">chr</span><span class="o">:</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="nx">pos</span><span class="o">:</span> <span class="mi">249250621</span><span class="p">},</span>
-        <span class="p">...</span>
-     <span class="p">]</span>
+  <span class="nx">chrPositions</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">chr1</span> <span class="o">:</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">chr</span><span class="o">:</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="nx">pos</span><span class="o">:</span> <span class="mi">0</span><span class="p">},</span>
+    <span class="nx">chr2</span> <span class="o">:</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">chr</span><span class="o">:</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="nx">pos</span><span class="o">:</span> <span class="mi">249250621</span><span class="p">}</span> <span class="p">,</span>
+    <span class="p">...</span>
+  <span class="p">},</span>
+  <span class="nx">chromLengths</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">chr1</span><span class="o">:</span> <span class="s2">&quot;249250621&quot;</span><span class="p">,</span>
+    <span class="nx">chr2</span><span class="o">:</span> <span class="s2">&quot;243199373&quot;</span><span class="p">,</span>
+    <span class="p">...</span>
+  <span class="p">},</span>
+  <span class="nx">cumPositions</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">chr</span><span class="o">:</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="nx">pos</span><span class="o">:</span> <span class="mi">0</span><span class="p">},</span>
+    <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">chr</span><span class="o">:</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="nx">pos</span><span class="o">:</span> <span class="mi">249250621</span><span class="p">},</span>
+    <span class="p">...</span>
+   <span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -368,15 +511,15 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#importing-into-higlass">Importing into HiGlass</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_client.html">HiGlass Client User Manual</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="higlass_client.html">Client Viewer</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-views">Adding views</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_client.html#closing-and-resizing-views">Closing and resizing views</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_client.html#replacing-tracks">Replacing Tracks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_client.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">HiGlass Client (Developer)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#higlass-api">HiGlass API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#public-api">Public API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#viewconfs">Viewconfs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#coding-guidelines">Coding Guidelines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#track-documentation">Track Documentation</a></li>
@@ -425,7 +568,7 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="higlass_client.html" title="previous chapter">HiGlass Client User Manual</a></li>
+      <li>Previous: <a href="higlass_client.html" title="previous chapter">Client Viewer</a></li>
       <li>Next: <a href="higlass_docker.html" title="next chapter">HiGlass Docker</a></li>
   </ul></li>
 </ul>

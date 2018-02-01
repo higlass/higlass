@@ -1,7 +1,7 @@
-HiGlass Client (Developer)
+Developer
 ##########################
 
-HiGlass API
+Public API
 ***********
 
 Creating an inline HiGlass component
@@ -9,7 +9,7 @@ Creating an inline HiGlass component
 
 .. code-block:: javascript
 
-    createHgComponent(element, config, options, callback)
+  const hgv = hglib.viewer(element, config, options);
 
 Create a new HiGlass component within a web page. This initializes a
 HiGlassComponent inside the element ``element`` with a viewconfig passed in as
@@ -22,63 +22,238 @@ element. Note that if ``bounded`` is set to true, then ``element`` must have a
 fixed height. ``callback`` is used to return an api variable which can be used
 to access HiGlass events.
 
+The function returns an instance of the public API of a HiGLass component.
+
 A full example of an inline HiGlass component can be found in the `HiGlass
 GitHub repository
-<https://github.com/hms-dbmi/higlass/blob/develop/app/test.html>`_.
+<https://github.com/hms-dbmi/higlass/blob/develop/app/api.html>`_.
 
 **Example**
 
 .. code-block:: javascript
 
-    let hgApi = null;
-    hglib.createHgComponent(
-        document.getElementById('development-demo'),
-        testViewConfig,
-        { bounded: true },
-        function (api) {
-            hgApi = api;
-        }
-    );
+  const hgv = hglib.viewer(
+    document.getElementById('development-demo'),
+    testViewConfig,
+    { bounded: true },
+  );
 
-Setting a view config
----------------------
+Reference
+---------
+
+The following is a list of the public API methods:
+
+.. code-block:: javascript
+
+  const hgv = hglib.viewer(element, config, options);
+
+  hgv.setViewConfig(newViewConfig);
+  hgv.zoomToDataExtent(newViewConfig);
+  hgv.createDataURI();
+  hgv.goTo(viewUid, chrom1, start1, end1, chrom2, start2, end2, animate = false, animateTime = 3000);
+  hgv.activateTool(mouseTool);
+  hgv.on(event, callback, viewId, callbackId);
+  hgv.off(event, listenerId, viewId);
+  hgv.get(prop, viewId);
+
+setViewConfig(viewConfig): Setting a view config
+------------------------------------------------
 
 The HiGlass API can be used to set a new viewconfig. This returns a Promise
 which is fulfilled when all of the data for the view is loaded.
 
 .. code-block:: javascript
 
-    const p = hgApi.setViewConfig(newViewConfig);
-    p.then(() => {
-        // the initial set of tiles has been loaded
-    });
+  const p = hgv.setViewConfig(newViewConfig);
+  p.then(() => {
+    // the initial set of tiles has been loaded
+  });
 
-Getting a view config
----------------------
-
-.. code-block:: javascript
-    
-    const p = hgApi.get('viewConfig');
-    p.then((viewConfig) => {
-        console.log('viewConfig:', viewConfig)
-    });
-
-The `get` function for retrieving a viewConf returns a promise which is
-fulfilled whenever the viewconfig is returned. 
-
-Zooming to show all of the data
--------------------------------
+zoomToDataExtent(viewId): Zooming to show all of the data
+---------------------------------------------------------
 
 One may set a view config pointing to a dataset which is either out of the
-bounds of the view, too small, or too zoomed in. To fit the data inside of 
+bounds of the view, too small, or too zoomed in. To fit the data inside of
 the view, the HiGlass API exposes the  ``zoomToDataExtent`` function.
 
 .. code-block:: javascript
 
-    api.zoomToDataExtent('viewUid');
+  hgv.zoomToDataExtent('viewUid');
 
 The passed in ``viewUid`` should refer to a view which is present. If it
 doesn't, an exception will be thrown.
+
+createDataURI(): Exporting the view as a Data URI
+-------------------------------------------------
+
+The current view can be programmatically exported as a data URI:
+
+.. code-block:: javascript
+
+  hgv.createDataURI()
+
+
+goTo(view,chr1,s1,e1,chr2,s2,e2,animate,animateTime): Zoom to a genomic location
+--------------------------------------------------------------------------------
+
+Change the current view port to a certain genomic location. When ``animate`` is true HiGlass transitions from the current to the new location smoothly.
+
+.. code-block:: javascript
+
+  hgv.goTo(
+    viewUid,
+    chrom1,
+    start1,
+    end1,
+    chrom2,
+    start2,
+    end2,
+    animate = false,
+    animateTime = 3000,
+  );
+
+**Example:**
+
+.. code-block:: javascript
+
+  hgv.goTo('v1', 'chr1', 0, 1, 'chr2', 0, 1, true, 500);
+
+activateTool(mouseTool): Select a mouse tool
+--------------------------------------------
+
+Some tools needs conflicting mouse events such as mousedown or mousemove. To avoid complicated triggers for certain actions HiGlass supports different mouse tools for different interactions. The default mouse tool enables pan&zoom. The only other mouse tool available right now is ``select``, which lets you brush on to a track to select a range for annotating regions.
+
+.. code-block:: javascript
+
+    hgv.activateTool(mouseTool);
+
+**Examples:**
+
+.. code-block:: javascript
+
+  hgv.activateTool('select'); // Select tool is active
+  hgv.activateTool(); // Default pan&zoom tool is active
+
+on(event, callback, viewId, callbackId): Subscribe to an event
+--------------------------------------------------------------
+
+HiGlass exposes the following event, which one can subscribe to via this method:
+
+- location
+- rangeSelection
+- viewConfig
+- mouseMoveZoom
+
+.. code-block:: javascript
+
+  hgv.on(eventName, callback, viewId, callbackId)
+
+**location:** Returns a BEDPE array of the current view port.
+
+.. code-block:: javascript
+
+  ["chr1", 229372197, "chrM", 16571, "chr1", 1, "chrM", 16571]
+
+**rangeSelection:** Returns a BED- (1D) or BEDPE (1d) array of the selection.
+
+.. code-block:: javascript
+
+  // 1D or BED-like array
+  ["chr1", 229372197, "chrM", 16571, "chr1", 1, "chrM", 16571]
+
+  // 2D or BEDPE-like array
+  ["chr1", 229372197, "chrM", 16571, "chr1", 1, "chrM", 16571]
+
+**viewConfig:** Returns the current view config.
+
+**mouseMoveZoom:** Returns the raw data around the mouse cursors screen location and the related genomic location.
+
+.. code-block:: javascript
+
+  {
+    data, // Raw Float32Array
+    dim,  // Dimension of the lens (the lens is squared)
+    toRgb,  // Current float-to-rgb converter
+    center,  // BED array of the cursors genomic location
+    xRange,  // BEDPE array of the x genomic range
+    yRange,  // BEDPE array of the y genomic range
+    rel  // If true the above three genomic locations are relative
+  }
+
+**Examples:**
+
+.. code-block:: javascript
+
+  let locationListenerId;
+  hgv.on(
+    'location',
+    location => console.log('Here we are:', location),
+    'viewId1',
+    listenerId => locationListenerId = listenerId
+  );
+
+  const rangeListenerId = hgv.on(
+    'rangeSelection',
+    range => console.log('Selected', range)
+  );
+
+  const viewConfigListenerId = hgv.on(
+    'viewConfig',
+    range => console.log('Selected', range)
+  );
+
+  const mmz = event => console.log('Moved', event);
+  hgv.on('mouseMoveZoom', mmz);
+
+off(event, listenerId, viewId): Unsubscribe from an event
+---------------------------------------------------------
+
+Cancel a subscription.
+
+.. code-block:: javascript
+
+  hgv.off(eventName, listenerId, viewId)
+
+**Examples:**
+
+The variables used in the following examples are coming from the above examples of ``on()``.
+
+.. code-block:: javascript
+
+  hgv.off('location', locationListenerId, 'viewId1');
+  hgv.off('rangeSelection', rangeListenerId);
+  hgv.off('viewConfig', viewConfigListenerId);
+  hgv.off('mouseMoveZoom', mmz);
+
+get(prop, viewId): Instant getter for event data
+------------------------------------------------
+
+Naturally, event listeners only return news once an event has been published but sometimes one needs to get the data at a certain time. The get method returns the current value of an event without having to wait for the event to fire.
+
+Additionally, it's possible to retrieve a png or svg snapshot of the current view using ``png`` and ``svg`` as ``prop`` respectively. The png snapshot comes in form of a data URI and the svg snapshot is a XML string.
+
+.. code-block:: javascript
+
+  const currentLocationOfViewId = hgv.get('location', 'viewId');
+  const currentRangeSelection = hgv.get('rangeSelection');
+  const currentViewConfig = hgv.get('viewConfig');
+  const pngSnapshot = hgv.get('png');  // Data URI
+  const svgSnapshot = hgv.get('svg');  // XML string
+
+shareViewConfigAsLink(url): Get sharable link for current view config
+---------------------------------------------------------------------
+
+Generate a sharable link to the current view config. The `url` parameter should contain
+the API endpoint used to export the view link (e.g. 'http://localhost:8989/api/v1/viewconfs').
+If it is not provided, the value is taken from the `exportViewUrl` value of the viewconf.
+
+.. code-block:: javascript
+
+  hgv.shareViewConfigAsLink()
+    .then((sharedViewConfig) => {
+      console.log(`Shared view config (ID: ${sharedViewConfig.id}) is available at ${sharedViewConfig.url}`)
+    })
+    .catch((err) => { console.error('Something did not work. Sorry', err); })
 
 Obtaining ordered chromosome info
 ---------------------------------
@@ -102,23 +277,22 @@ listed:
 .. code-block:: javascript
 
     {
-        chrPositions: {
-            chr1 : {id: 0, chr: "chr1", pos: 0},
-            chr2 : {id: 1, chr: "chr2", pos: 249250621} ,
-            ...
-        },
-        chromLengths: {
-            chr1: "249250621",
-            chr2: "243199373",
-            ...
-        },
-        cumPositions: [
-            {id: 0, chr: "chr1", pos: 0},
-            {id: 1, chr: "chr2", pos: 249250621},
-            ...
-         ]
+      chrPositions: {
+        chr1 : {id: 0, chr: "chr1", pos: 0},
+        chr2 : {id: 1, chr: "chr2", pos: 249250621} ,
+        ...
+      },
+      chromLengths: {
+        chr1: "249250621",
+        chr2: "243199373",
+        ...
+      },
+      cumPositions: [
+        {id: 0, chr: "chr1", pos: 0},
+        {id: 1, chr: "chr2", pos: 249250621},
+        ...
+       ]
     }
-
 Exporting the view as a Data URI
 --------------------------------
 

@@ -1,5 +1,5 @@
-HiGlass Client User Manual
-##########################
+Client Viewer
+#############
 
 
 Adding views
