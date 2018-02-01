@@ -26,6 +26,7 @@ export { default as getTrackByUid } from './get-track-by-uid';
 export { default as getTrackPositionByUid } from './get-track-position-by-uid';
 export { default as hasParent } from './has-parent';
 export { default as hexStrToInt } from './hex-string-to-int';
+export { default as isTrackOrChildTrack } from './is-track-or-child-track';
 export { default as identity } from './identity';
 export { default as latToY } from './lat-to-y';
 export { default as loadChromInfos } from './load-chrom-infos';
