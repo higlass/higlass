@@ -77,12 +77,12 @@ GitHub repository</a>.</p>
 
 <span class="nx">hgv</span><span class="p">.</span><span class="nx">setViewConfig</span><span class="p">(</span><span class="nx">newViewConfig</span><span class="p">);</span>
 <span class="nx">hgv</span><span class="p">.</span><span class="nx">zoomToDataExtent</span><span class="p">(</span><span class="nx">newViewConfig</span><span class="p">);</span>
-<span class="nx">hgv</span><span class="p">.</span><span class="nx">createDataURI</span><span class="p">();</span>
 <span class="nx">hgv</span><span class="p">.</span><span class="nx">goTo</span><span class="p">(</span><span class="nx">viewUid</span><span class="p">,</span> <span class="nx">chrom1</span><span class="p">,</span> <span class="nx">start1</span><span class="p">,</span> <span class="nx">end1</span><span class="p">,</span> <span class="nx">chrom2</span><span class="p">,</span> <span class="nx">start2</span><span class="p">,</span> <span class="nx">end2</span><span class="p">,</span> <span class="nx">animate</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">animateTime</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">);</span>
 <span class="nx">hgv</span><span class="p">.</span><span class="nx">activateTool</span><span class="p">(</span><span class="nx">mouseTool</span><span class="p">);</span>
 <span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">viewId</span><span class="p">,</span> <span class="nx">callbackId</span><span class="p">);</span>
 <span class="nx">hgv</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">listenerId</span><span class="p">,</span> <span class="nx">viewId</span><span class="p">);</span>
 <span class="nx">hgv</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">prop</span><span class="p">,</span> <span class="nx">viewId</span><span class="p">);</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">shareViewConfigAsLink</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -157,12 +157,24 @@ doesn’t, an exception will be thrown.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">229372197</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">]</span>
 </pre></div>
 </div>
-<p><strong>rangeSelection:</strong> Returns a BED- (1D) or BEDPE (1d) array of the selection.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="c1">// 1D or BED-like array</span>
-<span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">229372197</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">]</span>
+<p><strong>rangeSelection:</strong> Returns a BED- (1D) or BEDPE (1d) array of the selected data and genomic range (if chrom-sizes are available)</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="c1">// Global output</span>
+<span class="p">{</span>
+  <span class="nx">dataRange</span><span class="o">:</span> <span class="p">[...]</span>
+  <span class="nx">genomicRange</span><span class="o">:</span> <span class="p">[...]</span>
+<span class="p">}</span>
+
+<span class="c1">// 1D data range</span>
+<span class="p">[[</span><span class="mi">1218210862</span><span class="p">,</span> <span class="mi">1528541001</span><span class="p">],</span> <span class="kc">null</span><span class="p">]</span>
+
+<span class="c1">// 2D data range</span>
+<span class="p">[[</span><span class="mi">1218210862</span><span class="p">,</span> <span class="mi">1528541001</span><span class="p">],</span> <span class="p">[</span><span class="mi">1218210862</span><span class="p">,</span> <span class="mi">1528541001</span><span class="p">]]</span>
+
+<span class="c1">// 1D or BED-like array</span>
+<span class="p">[[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">249200621</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">50000</span><span class="p">],</span> <span class="kc">null</span><span class="p">]</span>
 
 <span class="c1">// 2D or BEDPE-like array</span>
-<span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">229372197</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">]</span>
+<span class="p">[[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">249200621</span><span class="p">,</span> <span class="s2">&quot;chr2&quot;</span><span class="p">,</span> <span class="mi">50000</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;chr3&quot;</span><span class="p">,</span> <span class="mi">197972430</span><span class="p">,</span> <span class="s2">&quot;chr4&quot;</span><span class="p">,</span> <span class="mi">50000</span><span class="p">]]</span>
 </pre></div>
 </div>
 <p><strong>viewConfig:</strong> Returns the current view config.</p>
@@ -577,7 +589,7 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
       &copy;2017, Peter Kerpedjiev.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
