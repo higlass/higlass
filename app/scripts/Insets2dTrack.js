@@ -254,9 +254,13 @@ export default class Insets2dTrack extends PixiTrack {
     console.log('PIXI CONTEXT MENU', event.type, inset);
   }
 
-  mouseOverHandler(/* event, inset */) {}
+  mouseOverHandler(/* event, inset */) {
+    this.animate();
+  }
 
-  mouseOutHandler(/* event, inset */) {}
+  mouseOutHandler(/* event, inset */) {
+    this.animate();
+  }
 
   mouseDownHandler(event, inset) {
     this.hoveringInsetIdx = this.pMain.getChildIndex(inset);

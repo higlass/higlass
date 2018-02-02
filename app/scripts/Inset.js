@@ -527,7 +527,7 @@ export default class Inset {
     if (this.mouseDown) this.mouseClickHandler(event);
     this.scale();
     this.mouseDown = false;
-    this.mouseHandler.contextMenu(event, this.gMain);
+    this.mouseHandler.mouseUp(event, this.gMain);
   }
 
   /**
