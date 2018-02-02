@@ -16,7 +16,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
   render() {
     return (
       <div
-        ref={c => this.div = c}
+        ref={(c) => { this.div = c; }}
         style={{
           left: this.state.left,
           top: this.state.top,
@@ -34,34 +34,34 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
         <hr styleName="context-menu-hr" />
 
         <ContextMenuItem
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
             type: 'horizontal-rule',
             y: this.props.coords[1],
             position: 'whole',
           })}
+          onMouseEnter={e => this.handleOtherMouseEnter(e)}
         >
           {'Add Horizontal Rule'}
         </ContextMenuItem>
         <ContextMenuItem
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
             type: 'vertical-rule',
             x: this.props.coords[0],
             position: 'whole',
           })}
+          onMouseEnter={e => this.handleOtherMouseEnter(e)}
         >
           {'Add Vertical Rule'}
         </ContextMenuItem>
 
         <ContextMenuItem
-          onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
             type: 'cross-rule',
             x: this.props.coords[0],
             y: this.props.coords[1],
             position: 'whole',
           })}
+          onMouseEnter={e => this.handleOtherMouseEnter(e)}
         >
           {'Add Cross Rule'}
         </ContextMenuItem>
@@ -76,8 +76,8 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
 }
 
 ViewContextMenu.propTypes = {
-  coords: PropTypes.array,  // the data coordinates where this context menu
-                            // was initiated
-}
+  // the data coordinates where this context menu was initiated
+  coords: PropTypes.array,
+};
 
 export default ViewContextMenu;
