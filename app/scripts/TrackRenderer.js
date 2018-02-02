@@ -309,7 +309,9 @@ class TrackRenderer extends React.Component {
    * @param  {Object}  e  Event to be dispatched.
    */
   dispatchEvent(e) {
-    if (this.isWithin(e.clientX, e.clientY)) forwardEvent(e, this.element);
+    if (this.isWithin(e.clientX, e.clientY)) {
+      if (e.type !== 'contextmenu') forwardEvent(e, this.element);
+    }
   }
 
   /**
@@ -1044,9 +1046,6 @@ class TrackRenderer extends React.Component {
       };
     }
 
-    // console.log('track:', track);
-    // console.log('dataConfig:', dataConfig);
-
     switch (track.type) {
       case 'left-axis':
         return new LeftAxisTrack(this.svgElement);
@@ -1066,20 +1065,6 @@ class TrackRenderer extends React.Component {
           newOptions =>
             this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
           this.props.onMouseMoveZoom
-        );
-
-      case 'horizontal-multivec':
-        console.log('horizontal multivec');
-        return new HorizontalMultivecTrack(
-          this.pStage,
-          dataConfig,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-          this.svgElement,
-          () => this.currentProps.onValueScaleChanged(track.uid),
-          newOptions =>
-            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
         );
 
       case 'horizontal-multivec':
@@ -1544,6 +1529,15 @@ class TrackRenderer extends React.Component {
     }
   }
 
+  forwardContextMenu(e) {
+    // Do never forward the contextmenu event when ALT is being hold down.
+    if (e.altKey) return;
+
+    e.preventDefault();
+
+    this.forwardEvent(e);
+  }
+
   addEventTracker() {
     if (!this.eventTracker || this.eventTracker === this.eventTrackerOld) return;
     if (!this.eventTrackerOld) this.eventTrackerOld = this.eventTracker;
@@ -1551,7 +1545,7 @@ class TrackRenderer extends React.Component {
     this.eventTracker = this.eventTrackerOld;
 
     this.eventTracker.addEventListener('click', this.forwardEvent.bind(this));
-    this.eventTracker.addEventListener('contextmenu', this.forwardEvent.bind(this));
+    this.eventTracker.addEventListener('contextmenu', this.forwardContextMenu.bind(this));
     this.eventTracker.addEventListener('dblclick', this.forwardEvent.bind(this));
     this.eventTracker.addEventListener('wheel', this.forwardEvent.bind(this));
     this.eventTracker.addEventListener('dragstart', this.forwardEvent.bind(this));
@@ -1584,7 +1578,7 @@ class TrackRenderer extends React.Component {
     if (!this.eventTracker) return;
 
     this.eventTracker.removeEventListener('click', this.forwardEvent.bind(this));
-    this.eventTracker.removeEventListener('contextmenu', this.forwardEvent.bind(this));
+    this.eventTracker.removeEventListener('contextmenu', this.forwardContextMenu.bind(this));
     this.eventTracker.removeEventListener('dblclick', this.forwardEvent.bind(this));
     this.eventTracker.removeEventListener('wheel', this.forwardEvent.bind(this));
     this.eventTracker.removeEventListener('dragstart', this.forwardEvent.bind(this));

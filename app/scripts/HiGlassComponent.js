@@ -378,6 +378,10 @@ class HiGlassComponent extends React.Component {
     forwardEvent(e, this.canvasElement);
   }
 
+  contextMenuHandler(e) {
+    pubSub.publish('contextmenu', e);
+  }
+
   mousewheelHandler(e) {
     if (hasParent(e.target, this.topDiv)) e.preventDefault();
   }
@@ -3087,6 +3091,7 @@ class HiGlassComponent extends React.Component {
         <canvas
           key={this.uid}
           ref={(c) => { this.canvasElement = c; }}
+          onContextMenu={this.contextMenuHandler.bind(this)}
           styleName="styles.higlass-canvas"
         />
         <div
