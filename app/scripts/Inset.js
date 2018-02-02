@@ -511,6 +511,7 @@ export default class Inset {
   mouseDownRightHandler(event) {
     this.mouseDownRight = true;
     this.mouseHandler.mouseDownRight(event, this.gMain);
+    this.mouseClickRightHandler(event)
     console.log(
       `Annotation: ${this.uid} |`,
       `Remote pos: ${this.remotePos.join(', ')} |`,
@@ -536,7 +537,6 @@ export default class Inset {
    * @param  {Object}  event  Event object.
    */
   mouseUpRightHandler(event) {
-    if (this.mouseDownRight) this.mouseClickRightHandler(event);
     this.mouseDownRight = false;
     this.mouseHandler.mouseUpRight(event, this.gMain);
   }
