@@ -1,11 +1,11 @@
 import { clientPoint } from 'd3-selection';
-
 import slugid from 'slugid';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
 
+// Components
 import CenterTrack from './CenterTrack';
 import GalleryTracks from './GalleryTracks';
 import TrackRenderer from './TrackRenderer';
@@ -19,7 +19,8 @@ import VerticalTiledPlot from './VerticalTiledPlot';
 import ViewContextMenu from './ViewContextMenu';
 // import {HeatmapOptions} from './HeatmapOptions';
 
-import { pubSub } from './services';
+// Services
+import { chromInfo, pubSub } from './services';
 
 // Utils
 import {
