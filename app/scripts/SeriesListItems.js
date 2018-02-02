@@ -12,7 +12,7 @@ import '../styles/ContextMenu.module.scss';
  *
  * @param {array} tracks: A list of tracks to go through
  */
-export const getAllTracksAndSubtracks = function(tracks) {
+export const getAllTracksAndSubtracks = (tracks) => {
   let series = [];
 
   // check if this is a combined track (has contents)
@@ -25,7 +25,7 @@ export const getAllTracksAndSubtracks = function(tracks) {
   }
 
   return series;
-}
+};
 
 /**
  * Get a list of menu items corresponding to the
@@ -38,17 +38,15 @@ export const getAllTracksAndSubtracks = function(tracks) {
  * @param {func} onItemMouseEnter: Event handler for mouseEnter
  * @param {func} onItemMouseLeave: Event handler for mouseLeave
  * @param {func} onItemClick: Event handler for mouseLeave
- * @param {func} omitItem: A callback to check if we should omit a particular item
  *
  * @returns {array} A list of ReactComponents for the generated ContextMenuItems
  */
-export const getSeriesItems = function(
+export const getSeriesItems = (
   tracks,
   onItemMouseEnter,
   onItemMouseLeave,
-  onItemClick,
-  omitItem
-) {
+  onItemClick
+) => {
   if (!tracks) return null;
 
   const trackTypeToInfo = {};
@@ -57,9 +55,7 @@ export const getSeriesItems = function(
     trackTypeToInfo[ti.type] = ti;
   });
 
-  series = getAllTracksAndSubtracks(tracks);
-
-  return series.map((x) => {
+  return getAllTracksAndSubtracks(tracks).map((x) => {
     let thumbnail = null;
     if (x.type in trackTypeToInfo) {
       thumbnail = trackTypeToInfo[x.type].thumbnail;
@@ -91,9 +87,9 @@ export const getSeriesItems = function(
     return (
       <ContextMenuItem
         key={x.uid}
-        onMouseEnter={e => onItemMouseEnter ? onItemMouseEnter(e, x) : null}
-        onMouseLeave={e => onItemMouseLeave ? onItemMouseLeave(e) : null}
-        onClick={e => onItemClick ? onItemClick(x.uid) : null}
+        onClick={() => { if (onItemClick) onItemClick(x.uid); }}
+        onMouseEnter={(e) => { if (onItemMouseEnter) onItemMouseEnter(e, x); }}
+        onMouseLeave={(e) => { if (onItemMouseLeave) onItemMouseLeave(e); }}
         styleName="context-menu-item"
       >
         {imgTag}
@@ -112,4 +108,4 @@ export const getSeriesItems = function(
       </ContextMenuItem>
     );
   });
-}
+};
