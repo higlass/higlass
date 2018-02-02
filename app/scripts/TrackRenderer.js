@@ -56,7 +56,12 @@ import AnnotationsInsets from './AnnotationsInsets';
 import Insets2dTrack from './Insets2dTrack';
 
 // Utils
-import { forwardEvent, dictItems, trimTrailingSlash } from './utils';
+import {
+  forwardEvent,
+  dictItems,
+  trimTrailingSlash,
+  scalesCenterAndK
+} from './utils';
 
 // Services
 import { pubSub } from './services';
@@ -805,18 +810,24 @@ class TrackRenderer extends React.Component {
     }
   }
 
-  /*
+  /**
    * Set the center of this view to a paticular X and Y coordinate
-   *
-   * @param notify: Notify listeners that the scales have changed. This
-   *      can be turned off to prevent circular updates when scales are
-   *      locked.
+   * @param  {number}  centerX  Centeral X data? position.
+   * @param  {number}  centerY  Central Y data? position.
+   * @param  {number}  sourceK  Source zoom level? @Pete what's the source?
+   * @param  {boolean}  notify  If `true` notify listeners that the scales
+   *   have changed. This can be turned off to prevent circular updates when
+   *   scales are locked.
+   * @param  {boolean}  animate  If `true` transition smoothly from the
+   *   current to the desired location.
+   * @param  {number}  animateTime  Animation time in milliseconds. Only used
+   *   when `animate` is true.
    */
   setCenter(
     centerX,
     centerY,
     sourceK,
-    notify,
+    notify = false,
     animate = false,
     animateTime = ZOOM_TRANSITION_DURATION
   ) {
@@ -1499,6 +1510,7 @@ class TrackRenderer extends React.Component {
           track.chromInfoPath,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
+          this.zoomToDataPos.bind(this),
           {
             location: track.position,
             width: track.width,
@@ -1527,6 +1539,34 @@ class TrackRenderer extends React.Component {
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
     }
+  }
+
+  /**
+   * Zoom to a location given the data coordinates
+   * @param   {number}  dataXStart  Data start X coordinate.
+   * @param   {number}  dataXEnd  Data end X coordinate.
+   * @param   {number}  dataYStart  Data start Y coordinate.
+   * @param   {number}  dataYEnd  Data end Y coordinate.
+   * @param   {boolean}  animate  If `true` smoothly trnasition between the
+   *   current and the new view.
+   * @param   {number}  animateTime  Animation time in milliseconds.
+   */
+  zoomToDataPos(
+    dataXStart,
+    dataXEnd,
+    dataYStart,
+    dataYEnd,
+    animate = false,
+    animateTime = 3000
+  ) {
+    const [centerX, centerY, k] = scalesCenterAndK(
+      this.xScale.copy().domain([dataXStart, dataXEnd]),
+      this.yScale.copy().domain([dataYStart, dataYEnd]),
+    );
+
+    this.setCenter(
+      centerX, centerY, k, false, animate, animateTime,
+    );
   }
 
   forwardContextMenu(e) {
@@ -1678,6 +1718,7 @@ TrackRenderer.propTypes = {
   pixiStage: PropTypes.object.isRequired,
   positionedTracks: PropTypes.array,
   metaTracks: PropTypes.array,
+  setCentersFunction: PropTypes.func,
   svgElement: PropTypes.object.isRequired,
   topHeight: PropTypes.number,
   topHeightNoGallery: PropTypes.number,
