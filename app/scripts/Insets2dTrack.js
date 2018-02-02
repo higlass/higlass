@@ -1,9 +1,11 @@
+import React from 'react';
 import { DropShadowFilter } from 'pixi-filters';
 
 // Components
-import PixiTrack from './PixiTrack';
-import Inset from './Inset';
+import ContextMenuItem from './ContextMenuItem';
 import DataFetcher from './DataFetcher';
+import Inset from './Inset';
+import PixiTrack from './PixiTrack';
 
 // Services
 import { chromInfo } from './services';
@@ -101,6 +103,33 @@ export default class Insets2dTrack extends PixiTrack {
       }
       this.tilesetInfo = tilesetInfo;
     });
+
+    this.contextMenuGoto = (
+      <ContextMenuItem
+        onClick={() => this.props.onAddTrack({
+          type: 'horizontal-rule',
+          y: this.props.coords[1],
+          position: 'whole',
+        })}
+        onMouseEnter={e => this.handleOtherMouseEnter(e)}
+      >
+        {'Zoom to annotation'}
+      </ContextMenuItem>
+    );
+  }
+
+  getContextMenuGoto(inset) {
+    return (
+      <ContextMenuItem
+        onClick={() => { this.goTo(inset); }}
+      >
+        {'Zoom to annotation'}
+      </ContextMenuItem>
+    );
+  }
+
+  goTo(inset) {
+    console.log('GO TO', inset);
   }
 
   clear() {
@@ -252,6 +281,12 @@ export default class Insets2dTrack extends PixiTrack {
 
   clickRightHandler(event, inset) {
     console.log('PIXI CONTEXT MENU', event.type, inset);
+
+    event.data.originalEvent.hgCustomItems = [
+      this.getContextMenuGoto(inset)
+    ];
+
+    pubSub.publish('contextmenu', event.data.originalEvent);
   }
 
   mouseOverHandler(/* event, inset */) {
@@ -280,7 +315,7 @@ export default class Insets2dTrack extends PixiTrack {
 
   mouseMoveHandler(event) {
     if (!isTrackOrChildTrack(this, event.hoveredTrack)) return;
-    console.log('Mouse position on the track', event);
+    // console.log('Mouse position on the track', event);
   }
 
   updateDistance() {}

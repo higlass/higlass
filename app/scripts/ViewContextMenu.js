@@ -14,6 +14,20 @@ import '../styles/ContextMenu.module.scss';
 
 class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
   render() {
+    const seriesItems = getSeriesItems(
+      this.props.tracks,
+      this.handleItemMouseEnter.bind(this),
+      this.handleMouseLeave.bind(this),
+    );
+
+    const customItemsWrapped = this.props.customItems
+      ? React.Children.map(this.props.customItems,
+        child => React.cloneElement(
+          child, { onMouseEnter: (e) => { this.handleOtherMouseEnter(e); } }
+        )
+      )
+      : null;
+
     return (
       <div
         ref={(c) => { this.div = c; }}
@@ -23,15 +37,13 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
         }}
         styleName="context-menu"
       >
+        {customItemsWrapped}
 
-        {getSeriesItems(
-          this.props.tracks,
-          this.handleItemMouseEnter.bind(this),
-          this.handleMouseLeave.bind(this),
-          null
-        )}
+        {customItemsWrapped && <hr styleName="context-menu-hr" />}
 
-        <hr styleName="context-menu-hr" />
+        {seriesItems}
+
+        {seriesItems && <hr styleName="context-menu-hr" />}
 
         <ContextMenuItem
           onClick={() => this.props.onAddTrack({
@@ -78,6 +90,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
 ViewContextMenu.propTypes = {
   // the data coordinates where this context menu was initiated
   coords: PropTypes.array,
+  customItems: PropTypes.array,
 };
 
 export default ViewContextMenu;

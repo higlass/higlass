@@ -19,6 +19,8 @@ import VerticalTiledPlot from './VerticalTiledPlot';
 import ViewContextMenu from './ViewContextMenu';
 // import {HeatmapOptions} from './HeatmapOptions';
 
+import { pubSub } from './services';
+
 // Utils
 import {
   dataToGenomicLoci,
@@ -83,6 +85,7 @@ class TiledPlot extends React.Component {
       ],
 
       defaultChromSizes: null,
+      contextMenuCustomItems: null,
       contextMenuPosition: null,
     };
 
@@ -128,6 +131,11 @@ class TiledPlot extends React.Component {
     });
 
     this.getDefaultChromSizes();
+
+    this.pubSubs = [];
+    this.pubSubs.push(
+      pubSub.subscribe('contextmenu', this.contextMenuHandler.bind(this))
+    );
   }
 
   componentWillReceiveProps(newProps) {
@@ -192,6 +200,7 @@ class TiledPlot extends React.Component {
 
   componentWillUnmount() {
     this.closing = true;
+    this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
   }
 
   addUidsToTracks(tracks) {
@@ -214,10 +223,6 @@ class TiledPlot extends React.Component {
   }
 
   contextMenuHandler(e) {
-    if (e.altKey) return;
-
-    e.preventDefault();
-
     const mousePos = [e.clientX, e.clientY];
     // Relative mouse position
     const canvasMousePos = clientPoint(this.divTiledPlot, e);
@@ -229,15 +234,15 @@ class TiledPlot extends React.Component {
     const yVal = this.trackRenderer.zoomedYScale.invert(canvasMousePos[1]);
 
     this.setState({
+      contextMenuCustomItems: e.hgCustomItems || null,
       contextMenuPosition: {
         left: mousePos[0],
         top: mousePos[1],
         canvasLeft: canvasMousePos[0] + this.trackRenderer.xPositionOffset,
         canvasTop: canvasMousePos[1] + this.trackRenderer.yPositionOffset,
       },
-
-      contextMenuX: xVal,
-      contextMenuY: yVal,
+      contextMenuDataX: xVal,
+      contextMenuDataY: yVal,
     });
   }
 
@@ -394,6 +399,7 @@ class TiledPlot extends React.Component {
       closeTrackMenuId: null,
       configTrackMenuId: null,
       contextMenuPosition: null,
+      contextMenuCustomItems: null,
     });
   }
   handleLockValueScale(uid) {
@@ -468,9 +474,10 @@ class TiledPlot extends React.Component {
 
   handleCloseContextMenu() {
     this.setState({
+      contextMenuCustomItems: null,
       contextMenuPosition: null,
-      contextMenuX: null,
-      contextMenuY: null,
+      contextMenuDataX: null,
+      contextMenuDataY: null,
     });
   }
 
@@ -981,7 +988,8 @@ class TiledPlot extends React.Component {
         >
           <ViewContextMenu
             closeMenu={this.closeMenus.bind(this)}
-            coords={[this.state.contextMenuX, this.state.contextMenuY]}
+            coords={[this.state.contextMenuDataX, this.state.contextMenuDataY]}
+            customItems={this.state.contextMenuCustomItems}
             onAddSeries={this.handleAddSeries.bind(this)}
             // Can only add one new track at a time
             // because "whole" tracks are always drawn on top of each other,
@@ -999,7 +1007,7 @@ class TiledPlot extends React.Component {
             onReplaceTrack={this.handleReplaceTrack.bind(this)}
             onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
             onUnlockValueScale={this.handleUnlockValueScale.bind(this)}
-            orientation={'left'}
+            orientation={'right'}
             position={this.state.contextMenuPosition}
             tracks={relevantTracks}
           />
@@ -1465,7 +1473,6 @@ class TiledPlot extends React.Component {
       <div
         ref={(c) => { this.divTiledPlot = c; }}
         className="tiled-plot-div"
-        onContextMenu={this.contextMenuHandler.bind(this)}
         styleName="styles.tiled-plot"
       >
         {trackRenderer}
