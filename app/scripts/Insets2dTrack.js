@@ -26,6 +26,7 @@ import {
 const BASE_MIN_SIZE = 12;
 const BASE_MAX_SIZE = 24;
 const BASE_SCALE = 4;
+const ZOOM_TO_ANNO = 1600;
 
 export default class Insets2dTrack extends PixiTrack {
   constructor(
@@ -35,6 +36,7 @@ export default class Insets2dTrack extends PixiTrack {
     chromInfoPath,
     options,
     animate,
+    zoomToDataPos,
     positioning  // Computed track position, location, and offset
   ) {
     super(scene, options);
@@ -43,6 +45,7 @@ export default class Insets2dTrack extends PixiTrack {
     this.dataType = dataType;
     this.options = options;
     this.animate = animate;
+    this.zoomToDataPos = zoomToDataPos;
     this.positioning = positioning;  // Needed for the gallery view
 
     this.positioning.offsetX = this.positioning.offsetX || 0;
@@ -129,7 +132,16 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   goTo(inset) {
-    console.log('GO TO', inset);
+    // Add some padding for context
+    const dataPos = [...inset.dataPos];
+    const width = dataPos[1] - dataPos[0];
+    const height = dataPos[3] - dataPos[2];
+    dataPos[0] -= width * 0.2;
+    dataPos[1] += width * 0.2;
+    dataPos[2] -= height * 0.2;
+    dataPos[3] += height * 0.2;
+
+    this.zoomToDataPos(...dataPos, true, ZOOM_TO_ANNO);
   }
 
   clear() {
@@ -155,7 +167,8 @@ export default class Insets2dTrack extends PixiTrack {
       this.initInset(
         uid,
         remotePos,
-        renderedPos
+        renderedPos,
+        [dX1, dX2, dY1, dY2]
       )
     );
 
@@ -256,8 +269,9 @@ export default class Insets2dTrack extends PixiTrack {
 
   initInset(
     uid,
-    dataPos,
     remotePos,
+    renderedPos,
+    dataPos,
     dataConfig = this.dataConfig,
     tilesetInfo = this.tilesetInfo,
     options = this.options,
@@ -265,8 +279,9 @@ export default class Insets2dTrack extends PixiTrack {
   ) {
     this.insets[uid] = new Inset(
       uid,
-      dataPos,
       remotePos,
+      renderedPos,
+      dataPos,
       dataConfig,
       tilesetInfo,
       options,
@@ -298,8 +313,8 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   mouseDownHandler(event, inset) {
-    this.hoveringInsetIdx = this.pMain.getChildIndex(inset);
-    this.pMain.setChildIndex(inset, this.pMain.children.length - 1);
+    this.hoveringInsetIdx = this.pMain.getChildIndex(inset.gMain);
+    this.pMain.setChildIndex(inset.gMain, this.pMain.children.length - 1);
     this.animate();
   }
 
@@ -307,7 +322,7 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   mouseUpHandler(event, inset) {
-    this.pMain.setChildIndex(inset, this.hoveringInsetIdx);
+    this.pMain.setChildIndex(inset.gMain, this.hoveringInsetIdx);
     this.animate();
   }
 

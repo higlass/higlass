@@ -21,6 +21,7 @@ export default class Inset {
     uid,
     remotePos,
     renderedPos,
+    dataPos,
     dataConfig,
     tilesetInfo,
     options,
@@ -30,6 +31,7 @@ export default class Inset {
     this.uid = uid;
     this.remotePos = remotePos;
     this.renderedPos = renderedPos || this.remotePos;
+    this.dataPos = dataPos;
     this.dataConfig = dataConfig;
     this.tilesetInfo = tilesetInfo;
     this.options = options;
@@ -460,7 +462,7 @@ export default class Inset {
    * @param  {Object}  event  Event object.
    */
   mouseClickHandler(event) {
-    this.mouseHandler.click(event, this.gMain);
+    this.mouseHandler.click(event, this);
   }
 
   /**
@@ -469,7 +471,7 @@ export default class Inset {
    * @param  {Object}  event  Event object.
    */
   mouseClickRightHandler(event) {
-    this.mouseHandler.clickRight(event, this.gMain);
+    this.mouseHandler.clickRight(event, this);
   }
 
   /**
@@ -479,7 +481,7 @@ export default class Inset {
    */
   mouseOverHandler(event) {
     this.originFocus();
-    this.mouseHandler.mouseOver(event, this.gMain);
+    this.mouseHandler.mouseOver(event, this);
   }
 
   /**
@@ -489,7 +491,7 @@ export default class Inset {
    */
   mouseOutHandler(event) {
     this.originBlur();
-    this.mouseHandler.mouseOut(event, this.gMain);
+    this.mouseHandler.mouseOut(event, this);
   }
 
   /**
@@ -500,7 +502,7 @@ export default class Inset {
   mouseDownHandler(event) {
     this.mouseDown = true;
     this.scale(this.onClickScale);
-    this.mouseHandler.mouseDown(event, this.gMain);
+    this.mouseHandler.mouseDown(event, this);
   }
 
   /**
@@ -510,8 +512,8 @@ export default class Inset {
    */
   mouseDownRightHandler(event) {
     this.mouseDownRight = true;
-    this.mouseHandler.mouseDownRight(event, this.gMain);
-    this.mouseClickRightHandler(event)
+    this.mouseHandler.mouseDownRight(event, this);
+    this.mouseClickRightHandler(event);
     console.log(
       `Annotation: ${this.uid} |`,
       `Remote pos: ${this.remotePos.join(', ')} |`,
@@ -528,7 +530,7 @@ export default class Inset {
     if (this.mouseDown) this.mouseClickHandler(event);
     this.scale();
     this.mouseDown = false;
-    this.mouseHandler.mouseUp(event, this.gMain);
+    this.mouseHandler.mouseUp(event, this);
   }
 
   /**
@@ -538,7 +540,7 @@ export default class Inset {
    */
   mouseUpRightHandler(event) {
     this.mouseDownRight = false;
-    this.mouseHandler.mouseUpRight(event, this.gMain);
+    this.mouseHandler.mouseUpRight(event, this);
   }
 
   /**
