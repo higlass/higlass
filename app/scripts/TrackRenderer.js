@@ -894,20 +894,6 @@ export class TrackRenderer extends React.Component {
         );
 
       case 'horizontal-multivec':
-        console.log('horizontal multivec');
-        return new HorizontalMultivecTrack(
-          this.pStage,
-          dataConfig,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-          this.svgElement,
-          () => this.currentProps.onValueScaleChanged(track.uid),
-          newOptions =>
-            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
-        );
-
-      case 'horizontal-multivec':
         return new HorizontalMultivecTrack(
           this.pStage,
           dataConfig,
