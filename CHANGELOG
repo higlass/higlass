@@ -1,5 +1,6 @@
 develop (2018-01-??)
 
+- Preliminary authentication support
 - Added track for displaying gigapixel images
 - Added GeoJSON track and updated OSM track
 - Added mouseMoveZoom event to public API
