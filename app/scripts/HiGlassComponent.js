@@ -103,6 +103,8 @@ class HiGlassComponent extends React.Component {
     this.zoomLocks = {};
     this.locationLocks = {};
 
+    this.prevAuthToken = props.options.authToken;
+
     // locks that keep the value scales synchronized between
     // *tracks* (which can be in different views)
     this.valueScaleLocks = {};
@@ -318,7 +320,7 @@ class HiGlassComponent extends React.Component {
   componentWillReceiveProps(newProps) {
     const viewsByUid = this.processViewConfig(newProps.viewConfig);
 
-    if (newProps.options.authToken != this.props.options.authToken) {
+    if (newProps.options.authToken != this.prevAuthToken) {
       // we go a new auth token so we should reload everything 
       setTileProxyAuthHeader(newProps.options.authToken);
 
@@ -331,6 +333,8 @@ class HiGlassComponent extends React.Component {
         trackRenderer.syncTrackObjects([]);
         trackRenderer.syncTrackObjects(trackDefinitions);
       }
+
+      this.prevAuthToken = newProps.options.authToken;
     }
 
     this.setState({
