@@ -201,6 +201,8 @@ class HiGlassComponent extends React.Component {
 
     this.pubSubs = [];
     this.rangeSelection = [null, null];
+
+    this.repeatingAnimation = new Set();
   }
 
   componentWillMount() {
@@ -395,13 +397,14 @@ class HiGlassComponent extends React.Component {
     if (hasParent(e.target, this.topDiv)) e.preventDefault();
   }
 
-  startRepeatingAnimation() {
-    this.repeatingAnimation = this.repeatingAnimation + 1 || 1;
+  startRepeatingAnimation(tween) {
+    if (!tween || this.repeatingAnimation.has(tween)) return;
+    this.repeatingAnimation.add(tween);
     this.animate();
   }
 
-  stopRepeatingAnimation() {
-    this.repeatingAnimation = Math.max(0, this.repeatingAnimation - 1);
+  stopRepeatingAnimation(tween) {
+    this.repeatingAnimation.delete(tween);
   }
 
   animateOnMouseMoveHandler(active) {
@@ -472,7 +475,8 @@ class HiGlassComponent extends React.Component {
       this.pixiRenderer.render(this.pixiStage);
       PIXI.tweenManager.update();
 
-      if (this.repeatingAnimation) {
+      if (this.repeatingAnimation.size) {
+        console.log('REPEAT');
         pubSub.publish('app.tick');
         this.animate();
       }
