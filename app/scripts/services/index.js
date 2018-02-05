@@ -7,3 +7,4 @@ export {
   setTileProxyAuthHeader,
   authHeader
 } from './tile-proxy';
+export { default as transition } from './transition';
