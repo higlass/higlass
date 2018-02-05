@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { select, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
-import { json, request } from 'd3-request';
+import { json } from 'd3-request';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
 import ReactGridLayout from 'react-grid-layout';
@@ -10,6 +10,9 @@ import { ResizeSensor, ElementQueries } from 'css-element-queries';
 import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
 import parse from 'url-parse';
+// We need to import tweenManager in order to be able to update global tween
+// manager like so: PIXI.tweenManager.update();
+import tweenManager from 'k8w-pixi-tween';  // eslint-disable-line no-unused-vars
 
 import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
@@ -230,6 +233,12 @@ class HiGlassComponent extends React.Component {
     this.pubSubs.push(
       pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this))
     );
+    this.pubSubs.push(
+      pubSub.subscribe('app.startRepeatingAnimation', this.startRepeatingAnimation.bind(this))
+    );
+    this.pubSubs.push(
+      pubSub.subscribe('app.stopRepeatingAnimation', this.stopRepeatingAnimation.bind(this))
+    );
 
     if (this.props.getApi) {
       this.props.getApi(this.api);
@@ -386,6 +395,15 @@ class HiGlassComponent extends React.Component {
     if (hasParent(e.target, this.topDiv)) e.preventDefault();
   }
 
+  startRepeatingAnimation() {
+    this.repeatingAnimation = this.repeatingAnimation + 1 || 1;
+    this.animate();
+  }
+
+  stopRepeatingAnimation() {
+    this.repeatingAnimation = Math.max(0, this.repeatingAnimation - 1);
+  }
+
   animateOnMouseMoveHandler(active) {
     if (active && !this.animateOnMouseMove) {
       this.pubSubs.push(
@@ -452,6 +470,12 @@ class HiGlassComponent extends React.Component {
       if (!this.pixiRenderer) return;
 
       this.pixiRenderer.render(this.pixiStage);
+      PIXI.tweenManager.update();
+
+      if (this.repeatingAnimation) {
+        pubSub.publish('app.tick');
+        this.animate();
+      }
     });
   }
 

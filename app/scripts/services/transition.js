@@ -8,7 +8,7 @@ import { pubSub } from './';
 const transition = (obj, propsTo, time = 160) => {
   const tween = PIXI.tweenManager.createTween(obj);
 
-  pubSub.publish('app.startAnimation', true);
+  pubSub.publish('app.startRepeatingAnimation');
 
   tween.stop().clear();
   tween.time = time;
@@ -21,7 +21,7 @@ const transition = (obj, propsTo, time = 160) => {
       .start()
       .on('end', () => {
         // Stop tick based animation for performance
-        pubSub.publish('app.stopAnimation');
+        pubSub.publish('app.stopRepeatingAnimation');
       });
   };
 
