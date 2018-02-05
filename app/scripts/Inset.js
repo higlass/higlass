@@ -41,6 +41,8 @@ export default class Inset {
     this.isMatrix = this.dataType === 'cooler';
     this.t = this.isMatrix ? -1 : 1;
 
+    this.d = Infinity;
+
     this.gMain = new PIXI.Graphics();
     this.gBorder = new PIXI.Graphics();
     this.gLeaderLine = new PIXI.Graphics();
@@ -201,6 +203,16 @@ export default class Inset {
 
     this.data = undefined;
     this.sprite = undefined;
+  }
+
+  /**
+   * Set or get the distance of the inset to the mouse cursor.
+   * @param   {number}  d  Eucledian distance to the mouse cursor to be set.
+   * @return  {number}  Eucledian distance to the mouse cursor.
+   */
+  distance(d = this.d) {
+    this.d = d;
+    return d;
   }
 
   /**
