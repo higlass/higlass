@@ -188,6 +188,20 @@ export default class Inset {
   }
 
   /**
+   * Compute the padded remote size of the locus defining this inset. This
+   *   method basically expands the remote size by the relative padding.
+   *
+   * @example Assuming the remote data is given in base pairs (bp) and the
+   *   longest side of the locus is 8000bp with a padding of 0.2 then the
+   *   final padded remote size is `8000 + (8000 * 0.2 * 2) = 11200`.
+   */
+  computeRemotePaddedSize() {
+    this.remotePaddedSize = this.remoteSize + (
+      this.remoteSize * this.getPadding() * 2
+    );
+  }
+
+  /**
    * Compute the remote size of the locus defining this inset and the final
    *   resolution.
    */
@@ -237,6 +251,28 @@ export default class Inset {
       : zoomLevel;
 
     return finalZoom;
+  }
+
+  /**
+   * Create a rounded rectangular sprite.
+   * @param   {number}  width  Width of the rectangle in pixel.
+   * @param   {number}  height  Height of the rectangle in pixel.
+   * @param   {number}  radius  Border radius in pixel.
+   * @return  {object}  PIXI.Sprite of the rounded rectangular.
+   */
+  createRect(
+    width = this.width,
+    height = this.height,
+    radius = 0
+  ) {
+    const rect = new PIXI.Graphics()
+      .lineStyle(...this.borderStyle)
+      .beginFill(this.borderFill)
+      .drawRoundedRect(0, 0, width, height, radius)
+      .endFill()
+      .generateTexture();
+
+    return new PIXI.Sprite(rect);
   }
 
   /**
@@ -298,25 +334,6 @@ export default class Inset {
     this.border.height = this.height + this.borderPadding;
   }
 
-  positionBorder() {
-
-  }
-
-  createRect(
-    width = this.width,
-    height = this.height,
-    radius = 0
-  ) {
-    const rect = new PIXI.Graphics()
-      .lineStyle(...this.borderStyle)
-      .beginFill(this.borderFill)
-      .drawRoundedRect(0, 0, width, height, radius)
-      .endFill()
-      .generateTexture();
-
-    return new PIXI.Sprite(rect);
-  }
-
   /**
    * Draw leader line.
    */
@@ -336,75 +353,6 @@ export default class Inset {
         this.globalOffsetY + this.y
       );
     }
-  }
-
-  renderLeaderLine() {
-    const rectInset = this.computeBorder(
-      this.x, this.y, this.width, this.height, 0, true
-    );
-    const rectOrigin = this.computeBorder(...this.computeBorderOrigin(), 0, true);
-
-    const pInset = [
-      this.globalOffsetX + this.x,
-      this.globalOffsetY + this.y
-    ];
-    const pOrigin = [
-      this.globalOffsetX + this.originX,
-      this.globalOffsetY + this.originY
-    ];
-
-    // Get the point on the border of the inset that intersects with the leader
-    // line by clipping of the origin, i.e., the point not being within the
-    // inset as illustrated:
-    //  1) ___________                 2) ___________
-    //     |         |     _____          |         |
-    //     |         |     |   |          |         |
-    //     |    i----X-----Y-o |   >>>    |    i----o
-    //     |         |     |   |          |         |
-    //     |         |     ¯¯¯¯¯          |         |
-    //     ¯¯¯¯¯¯¯¯¯¯¯                    ¯¯¯¯¯¯¯¯¯¯¯
-    // where i is the center of the inset (given) and o is the center of the
-    // origin (given) and X and Y are the intersection of the leader line with
-    // the insets and annotation bounding box. In order to get X we clip the
-    // path between i and o such that i remains the same and o gets clipped (2).
-    // Therefore the new location of i is the clipped point o!
-    const pInsetNew = pOrigin.slice();
-    clip(pInset.slice(), pInsetNew, rectInset);
-
-    const pOriginNew = pInset.slice();
-    clip(pOriginNew, pOrigin.slice(), rectOrigin);
-
-    const xLen = pOriginNew[0] - pInsetNew[0];
-    const yLen = pOriginNew[1] - pInsetNew[1];
-    const hex = `#${this.options.leaderLineColor.toString(16)}`;
-    const c = color(hex);
-    const cf = color(hex);
-    cf.opacity = 0.33;
-
-    this.gLeaderLineGrd = new PIXI.Sprite(
-      PIXI.Texture.fromCanvas(canvasLinearGradient(
-        Math.sqrt((xLen ** 2) + (yLen ** 2)),
-        this.options.leaderLineWidth || 2,
-        {
-          0: c,
-          0.3: cf,
-          0.7: cf,
-          1: c,
-        }
-      ))
-    );
-
-    this.gLeaderLineGrd.x = pOriginNew[0];
-    this.gLeaderLineGrd.y = pOriginNew[1];
-    this.gLeaderLineGrd.rotation = getAngleBetweenPoints(
-      [this.originX, this.originY],
-      [this.x, this.y]
-    );
-
-    this.gLeaderLine.removeChildren();
-    this.gLeaderLine.addChild(this.gLeaderLineGrd);
-
-    return this.imageRendering;
   }
 
   /**
@@ -445,32 +393,8 @@ export default class Inset {
    * Draw a border around the origin of the inset.
    */
   drawOriginBorder() {
-    this.gLeaderLine.drawRect(...this.computeBorder(...this.computeBorderOrigin()));
-  }
-
-  getPadding() {
-    const paddingCustomLocSorted = Object.keys(this.paddingCustom)
-      .map(x => +x)
-      .sort((a, b) => a - b);
-
-    const entry = paddingCustomLocSorted[bisectLeft(
-      paddingCustomLocSorted, this.remoteSize
-    )];
-
-    return (entry ? this.paddingCustom[entry] : this.padding);
-  }
-
-  /**
-   * Compute the padded remote size of the locus defining this inset. This
-   *   method basically expands the remote size by the relative padding.
-   *
-   * @example Assuming the remote data is given in base pairs (bp) and the
-   *   longest side of the locus is 8000bp with a padding of 0.2 then the
-   *   final padded remote size is `8000 + (8000 * 0.2 * 2) = 11200`.
-   */
-  computeRemotePaddedSize() {
-    this.remotePaddedSize = this.remoteSize + (
-      this.remoteSize * this.getPadding() * 2
+    this.gLeaderLine.drawRect(
+      ...this.computeBorder(...this.computeBorderOrigin())
     );
   }
 
@@ -501,6 +425,23 @@ export default class Inset {
         body: JSON.stringify(loci)
       })
       .then(response => response.json());
+  }
+
+  /**
+   * Get location padding for loading the inset.
+   * @return  {number}  Padding to be added to the location to be pulled as a
+   *   snippet.
+   */
+  getPadding() {
+    const paddingCustomLocSorted = Object.keys(this.paddingCustom)
+      .map(x => +x)
+      .sort((a, b) => a - b);
+
+    const entry = paddingCustomLocSorted[bisectLeft(
+      paddingCustomLocSorted, this.remoteSize
+    )];
+
+    return (entry ? this.paddingCustom[entry] : this.padding);
   }
 
   /**
@@ -700,19 +641,6 @@ export default class Inset {
   }
 
   /**
-   * Get or set the size of the inset
-   *
-   * @param  {Number}  width  Width of the inset.
-   * @param  {Number}  height  Height of the inset.
-   * @return  {Array}   Tuple holding `[width, height]`.
-   */
-  size(width = this.width, height = this.height) {
-    this.width = width;
-    this.height = height;
-    return [width, height];
-  }
-
-  /**
    * Render the data to an image and assign event listeners.
    *
    * @param  {Array}  data  Data to be rendered
@@ -745,6 +673,81 @@ export default class Inset {
 
         this.gMain.addChild(this.sprite);
       });
+
+    return this.imageRendering;
+  }
+
+  /**
+   * Render the leader line between the inset and the origin.
+   * @return  {object}  PIXI.Sprite of the leader line.
+   */
+  renderLeaderLine() {
+    const rectInset = this.computeBorder(
+      this.x, this.y, this.width, this.height, 0, true
+    );
+    const rectOrigin = this.computeBorder(
+      ...this.computeBorderOrigin(), 0, true
+    );
+
+    const pInset = [
+      this.globalOffsetX + this.x,
+      this.globalOffsetY + this.y
+    ];
+    const pOrigin = [
+      this.globalOffsetX + this.originX,
+      this.globalOffsetY + this.originY
+    ];
+
+    // Get the point on the border of the inset that intersects with the leader
+    // line by clipping of the origin, i.e., the point not being within the
+    // inset as illustrated:
+    //  1) ___________                 2) ___________
+    //     |         |     _____          |         |
+    //     |         |     |   |          |         |
+    //     |    i----X-----Y-o |   >>>    |    i----o
+    //     |         |     |   |          |         |
+    //     |         |     ¯¯¯¯¯          |         |
+    //     ¯¯¯¯¯¯¯¯¯¯¯                    ¯¯¯¯¯¯¯¯¯¯¯
+    // where i is the center of the inset (given) and o is the center of the
+    // origin (given) and X and Y are the intersection of the leader line with
+    // the insets and annotation bounding box. In order to get X we clip the
+    // path between i and o such that i remains the same and o gets clipped (2).
+    // Therefore the new location of i is the clipped point o!
+    const pInsetNew = pOrigin.slice();
+    clip(pInset.slice(), pInsetNew, rectInset);
+
+    const pOriginNew = pInset.slice();
+    clip(pOriginNew, pOrigin.slice(), rectOrigin);
+
+    const xLen = pOriginNew[0] - pInsetNew[0];
+    const yLen = pOriginNew[1] - pInsetNew[1];
+    const hex = `#${this.options.leaderLineColor.toString(16)}`;
+    const c = color(hex);
+    const cf = color(hex);
+    cf.opacity = 0.33;
+
+    this.gLeaderLineGrd = new PIXI.Sprite(
+      PIXI.Texture.fromCanvas(canvasLinearGradient(
+        Math.sqrt((xLen ** 2) + (yLen ** 2)),
+        this.options.leaderLineWidth || 2,
+        {
+          0: c,
+          0.3: cf,
+          0.7: cf,
+          1: c,
+        }
+      ))
+    );
+
+    this.gLeaderLineGrd.x = pOriginNew[0];
+    this.gLeaderLineGrd.y = pOriginNew[1];
+    this.gLeaderLineGrd.rotation = getAngleBetweenPoints(
+      [this.originX, this.originY],
+      [this.x, this.y]
+    );
+
+    this.gLeaderLine.removeChildren();
+    this.gLeaderLine.addChild(this.gLeaderLineGrd);
 
     return this.imageRendering;
   }
@@ -795,5 +798,18 @@ export default class Inset {
       ],
       80
     );
+  }
+
+  /**
+   * Get or set the size of the inset
+   *
+   * @param  {Number}  width  Width of the inset.
+   * @param  {Number}  height  Height of the inset.
+   * @return  {Array}   Tuple holding `[width, height]`.
+   */
+  size(width = this.width, height = this.height) {
+    this.width = width;
+    this.height = height;
+    return [width, height];
   }
 }
