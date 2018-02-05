@@ -1,6 +1,7 @@
 v0.10.16 (2018-
 
 - Don't show the "Strange tileData" warnings
+- Pegged bootstrap to version 3.3.7
 
 v0.10.15 (2018-01-30)
 
