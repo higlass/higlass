@@ -351,10 +351,10 @@ export default class Insets2dTrack extends PixiTrack {
   updateClosestInset(inset) {
     if (!inset || (this.closestInset && this.closestInset === inset)) return;
 
-    if (this.closestInset) this.closestInset.deselect();
+    if (this.closestInset) this.closestInset.blur();
 
     this.closestInset = inset;
-    this.closestInset.select();
+    this.closestInset.focus();
     this.animate();
   }
 

@@ -101,6 +101,14 @@ export default class Inset {
   /* ---------------------------- Custom Methods ---------------------------- */
 
   /**
+   * Blur visually focused insert by changing back to the default border color.
+   */
+  blur() {
+    this.clearBorder();
+    this.drawBorder();
+  }
+
+  /**
    * Clear and initialize graphics.
    *
    * @param  {Object}  options  Custom line style for the border and leader line
@@ -111,6 +119,15 @@ export default class Inset {
     this.gLeaderLine.clear();
     this.gMain.clear();
     this.initGraphics(options);
+  }
+
+  /**
+   * Remove children and destroy border sprite.
+   */
+  clearBorder() {
+    this.gBorder.removeChildren();
+    this.border.destroy();
+    this.border = undefined;
   }
 
   /**
@@ -278,32 +295,6 @@ export default class Inset {
     return new PIXI.Sprite(rect);
   }
 
-  deselect() {
-    this.clearBorder();
-    this.drawBorder();
-  }
-
-  select() {
-    this.clearBorder();
-    this.drawBorder(
-      this.x,
-      this.y,
-      this.width,
-      this.height,
-      this.gBorder,
-      this.options.borderRadius,
-      this.selectColor,
-    );
-  }
-
-  clearBorder() {
-    this.gBorder.removeChildren();
-    this.gBorder.clear();
-    this.initGraphics();
-    this.border.destroy();
-    this.border = undefined;
-  }
-
   /**
    * Destroy graphics and unset data.
    */
@@ -457,6 +448,23 @@ export default class Inset {
         body: JSON.stringify(loci)
       })
       .then(response => response.json());
+  }
+
+  /**
+   * Visually focus the inset by changing the border color to
+   *   `this.selectColor`.
+   */
+  focus() {
+    this.clearBorder();
+    this.drawBorder(
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+      this.gBorder,
+      this.options.borderRadius,
+      this.selectColor,
+    );
   }
 
   /**
