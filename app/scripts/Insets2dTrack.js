@@ -16,10 +16,12 @@ import {
   absToChr,
   base64ToCanvas,
   colorToHex,
+  lDist,
   flatten,
   isTrackOrChildTrack,
   latToY,
   lngToX,
+  objVals,
   tileToCanvas
 } from './utils';
 
@@ -160,7 +162,7 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   createFetchRenderInset(
-    uid, x, y, w, h, sx, sy, swh, shh, dX1, dX2, dY1, dY2, remotePos, renderedPos
+    uid, x, y, w, h, ox, oy, owh, ohh, dX1, dX2, dY1, dY2, remotePos, renderedPos
   ) {
     const inset = (
       this.insets[uid] ||
@@ -175,7 +177,7 @@ export default class Insets2dTrack extends PixiTrack {
     inset.clear(this.options);
     inset.globalOffset(...this.position);
     inset.globalSize(...this.dimensions);
-    inset.origin(sx, sy, swh, shh);
+    inset.origin(ox, oy, owh, ohh);
     inset.position(x, y);
     inset.size(w, h);
     inset.drawLeaderLine();
@@ -330,12 +332,38 @@ export default class Insets2dTrack extends PixiTrack {
 
   mouseMoveHandler(event) {
     if (!isTrackOrChildTrack(this, event.hoveredTrack)) return;
-    // console.log('Mouse position on the track', event);
+    this.updateDistances(event.relTrackX, event.relTrackY);
   }
 
-  updateDistance() {}
+  updateDistances(x, y) {
+    const closest = { d: Infinity, inset: null };
+    objVals(this.insets).forEach((inset) => {
+      const d = inset.distance(this.computeDistance(x, y, inset));
+      if (closest.d > d) {
+        closest.d = d;
+        closest.inset = inset;
+      }
+    });
+    this.updateClosestInset(closest.inset);
+  }
 
-  computeDistance() {}
+  updateClosestInset(inset) {
+    if (this.closestInset !== inset) this.closestInset.deselect();
+    this.closestInset = inset;
+    this.closestInset.select();
+  }
+
+  computeDistance(x, y, inset) {
+    const distToOrigin = lDist(
+      [inset.originX, inset.originX],
+      [x, y]
+    );
+    const distToInset = lDist(
+      [inset.x, inset.y],
+      [x, y]
+    );
+    return Math.min(distToOrigin, distToInset);
+  }
 
   rendererInset(data, w, h) {
     return data.dataTypes[0] === 'dataUrl'
