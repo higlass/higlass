@@ -476,7 +476,6 @@ class HiGlassComponent extends React.Component {
       PIXI.tweenManager.update();
 
       if (this.repeatingAnimation.size) {
-        console.log('REPEAT');
         pubSub.publish('app.tick');
         this.animate();
       }
