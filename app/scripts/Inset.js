@@ -3,6 +3,8 @@ import { color } from 'd3-color';
 import clip from 'liang-barsky';
 import * as PIXI from 'pixi.js';
 
+import { transition } from './services';
+
 import { canvasLinearGradient, getAngleBetweenPoints } from './utils';
 
 const BASE_MIN_SIZE = 12;
@@ -71,6 +73,17 @@ export default class Inset {
     this.computeResolution();
     this.computeRemotePaddedSize();
 
+    this.borderStyle = [1, 0x000000, 0.33];
+    this.borderPadding = options.borderWidth * 2 || 4;
+    this.borderFill = options.borderColor || 0xffffff;
+    this.borderFillAlpha = options.borderOpacity || 1;
+
+    this.leaderLineStyle = [
+      options.leaderLineWidth || 1,
+      options.leaderLineColor || 0x000000,
+      options.leaderLineOpacity || 1
+    ];
+
     this.initGraphics(options);
   }
 
@@ -105,22 +118,24 @@ export default class Inset {
    * @param   {number}  width  Original width
    * @param   {number}  height  Original height
    * @param   {boolean}  isAbs  If `true` return `[xStart, yStart, xEnd, yEnd]`.
-   * @return  {array}  X, y, width, and height of the inset in view coordinates.
+   * @return  {array}  X, Y, width, and height of the inset in view coordinates.
    */
   computeBorder(
     x = this.x,
     y = this.y,
     width = this.width,
     height = this.height,
+    padding = this.borderPadding,
     isAbs = false,
   ) {
     const finalX = this.globalOffsetX + this.offsetX + x - (width / 2);
     const finalY = this.globalOffsetY + this.offsetY + y - (height / 2);
+
     return [
-      finalX,
-      finalY,
-      (isAbs * finalX) + (width * this.scaleExtra),
-      (isAbs * finalY) + (height * this.scaleExtra),
+      finalX - (padding / 2),
+      finalY - (padding / 2),
+      (isAbs * finalX) + (width * this.scaleExtra) + padding,
+      (isAbs * finalY) + (height * this.scaleExtra) + padding,
     ];
   }
 
@@ -134,8 +149,42 @@ export default class Inset {
       this.originX,
       this.originY,
       this.originWidthHalf * 2,
-      this.originHeightHalf * 2,
+      this.originHeightHalf * 2
     ];
+  }
+
+  /**
+   * Compute view position of the image given a [x,y] location and the width
+   *   and height.
+   * @param  {Number}  x  X position of the inset to be drawn.
+   * @param  {Number}  y  Y position of the inset to be drawn.
+   * @param  {Number}  width  Width of the inset to be drawn.
+   * @param  {Number}  height  Height of the inset to be drawn.
+   */
+  computeImagePosition(
+    x = this.x, y = this.y, width = this.width, height = this.height
+  ) {
+    // Scale the image down from its raw resolution to the inset's pixel size
+    this.imScale = (
+      Math.max(width, height) /
+      this.scaleBase /
+      Math.max(this.data.width, this.data.height)
+    );
+
+    return {
+      x: (
+        this.globalOffsetX + (this.offsetX * this.t) + x - (width / 2 * this.t)
+      ),
+      y: (
+        this.globalOffsetY + (this.offsetY * this.t) + y - (height / 2 * this.t)
+      ),
+      scaleX: (
+        this.t * this.scaleBase * this.scaleExtra * this.imScale
+      ),
+      scaleY: (
+        this.t * this.scaleBase * this.scaleExtra * this.imScale
+      ),
+    };
   }
 
   /**
@@ -230,7 +279,42 @@ export default class Inset {
     height = this.height,
     graphics = this.gBorder,
   ) {
-    graphics.drawRect(...this.computeBorder(x, y, width, height));
+    const [vX, vY] = this.computeBorder(x, y, width, height);
+
+    if (!this.border) {
+      const ratio = width / height;
+      const maxBorderSize = this.maxSize * this.onClickScale;
+      this.border = this.createRect(
+        (ratio >= 1 ? maxBorderSize : maxBorderSize * ratio) + this.borderPadding,
+        (ratio <= 1 ? maxBorderSize : maxBorderSize / ratio) + this.borderPadding,
+        3
+      );
+      graphics.addChild(this.border);
+    }
+
+    this.border.x = vX;
+    this.border.y = vY;
+    this.border.width = this.width + this.borderPadding;
+    this.border.height = this.height + this.borderPadding;
+  }
+
+  positionBorder() {
+
+  }
+
+  createRect(
+    width = this.width,
+    height = this.height,
+    radius = 0
+  ) {
+    const rect = new PIXI.Graphics()
+      .lineStyle(...this.borderStyle)
+      .beginFill(this.borderFill)
+      .drawRoundedRect(0, 0, width, height, radius)
+      .endFill()
+      .generateTexture();
+
+    return new PIXI.Sprite(rect);
   }
 
   /**
@@ -256,9 +340,9 @@ export default class Inset {
 
   renderLeaderLine() {
     const rectInset = this.computeBorder(
-      this.x, this.y, this.width, this.height, true
+      this.x, this.y, this.width, this.height, 0, true
     );
-    const rectOrigin = this.computeBorder(...this.computeBorderOrigin(), true);
+    const rectOrigin = this.computeBorder(...this.computeBorderOrigin(), 0, true);
 
     const pInset = [
       this.globalOffsetX + this.x,
@@ -361,10 +445,7 @@ export default class Inset {
    * Draw a border around the origin of the inset.
    */
   drawOriginBorder() {
-    this.drawBorder(
-      ...this.computeBorderOrigin(),
-      this.gLeaderLine
-    );
+    this.gLeaderLine.drawRect(...this.computeBorder(...this.computeBorderOrigin()));
   }
 
   getPadding() {
@@ -454,18 +535,9 @@ export default class Inset {
    *
    * @param  {Object}  options  Line style for the border and leader line.
    */
-  initGraphics(options = this.options) {
-    this.gBorder.lineStyle(
-      options.borderWidth || 1,
-      options.borderColor || 0x000000,
-      options.borderOpacity || 1
-    );
-    this.gLeaderLine.lineStyle(
-      options.leaderLineWidth || 1,
-      options.leaderLineColor || 0x000000,
-      options.leaderLineOpacity || 1
-    );
-    this.gOriginMask.lineStyle(0);
+  initGraphics() {
+    this.gBorder.lineStyle(...this.borderStyle);
+    this.gLeaderLine.lineStyle(...this.leaderLineStyle);
   }
 
   /**
@@ -581,7 +653,6 @@ export default class Inset {
    *   clipping of the leader line at the boundary of the original locus.
    */
   originFocus() {
-    // this.drawOriginMask();
     this.drawOriginBorder();
   }
 
@@ -610,8 +681,8 @@ export default class Inset {
   }
 
   /**
-   * Position the image.
-   *
+   * Position the image, i.e., apply the view [x,y] position and the final
+   *   image scales.
    * @param  {Number}  x  X position of the inset to be drawn.
    * @param  {Number}  y  Y position of the inset to be drawn.
    * @param  {Number}  width  Width of the inset to be drawn.
@@ -620,25 +691,12 @@ export default class Inset {
   positionImage(
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
-    // Scale the image down from its raw resolution to the inset's pixel size
-    this.imScale = (
-      Math.max(width, height) /
-      this.scaleBase /
-      Math.max(this.data.width, this.data.height)
-    );
+    const pos = this.computeImagePosition(x, y, width, height);
 
-    this.sprite.x = (
-      this.globalOffsetX + (this.offsetX * this.t) + x - (width / 2 * this.t)
-    );
-    this.sprite.y = (
-      this.globalOffsetY + (this.offsetY * this.t) + y - (height / 2 * this.t)
-    );
-    this.sprite.scale.x = (
-      this.t * this.scaleBase * this.scaleExtra * this.imScale
-    );
-    this.sprite.scale.y = (
-      this.t * this.scaleBase * this.scaleExtra * this.imScale
-    );
+    this.sprite.x = pos.x;
+    this.sprite.y = pos.y;
+    this.sprite.scale.x = pos.scaleX;
+    this.sprite.scale.y = pos.scaleY;
   }
 
   /**
@@ -697,13 +755,43 @@ export default class Inset {
    * @param  {Number}  amount  Amount by which to scale the inset
    */
   scale(amount = 1) {
+    if (this.tweenStop) this.tweenStop();
+
     this.scaleExtra = amount;
     this.offsetX = this.width * (amount - 1) / -2;
     this.offsetY = this.height * (amount - 1) / -2;
 
-    this.positionImage();
-    this.gBorder.clear();
-    this.initGraphics();
-    this.drawBorder();
+    const imPos = this.computeImagePosition();
+
+    this.tweenStop = transition(
+      this.sprite,
+      {
+        x: imPos.x,
+        y: imPos.y,
+        scale: {
+          x: imPos.scaleX,
+          y: imPos.scaleY,
+        }
+      },
+      80
+    );
+
+    const [bX, bY] = this.computeBorder(
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+    );
+
+    this.tweenStop = transition(
+      this.border,
+      {
+        x: bX,
+        y: bY,
+        width: (this.data.width * imPos.scaleX) + this.borderPadding,
+        height: (this.data.height * imPos.scaleY) + this.borderPadding,
+      },
+      80
+    );
   }
 }
