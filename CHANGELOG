@@ -14,6 +14,7 @@ entered
 - Simplified `hglib` API
 - Updated third-party libs to get rid of deprecation warnings for React v16
 - Fixed small bug in placing rules
+- Display error when failing to retrieve tilesetInfo
 
 v0.10.15 (2018-01-30)
 

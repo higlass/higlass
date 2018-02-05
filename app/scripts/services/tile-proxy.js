@@ -230,7 +230,15 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
   return tileRange;
 };
 
-export const trackInfo = (server, tilesetUid, done) => {
+/**
+ * Request a tilesetInfo for a track
+ *
+ * @param {string} server: The server where the data resides
+ * @param {string} tilesetUid: The identifier for the dataset
+ * @param {func} doneCb: A callback that gets called when the data is retrieved
+ * @param {func} errorCb: A callback that gets called when there is an error
+ */
+export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
   const url = 
     `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
     pubSub.publish('requestSent', url);
@@ -240,9 +248,14 @@ export const trackInfo = (server, tilesetUid, done) => {
         // console.log('error:', error);
         // don't do anything
         // no tileset info just means we can't do anything with this file...
+        if (errorCb) {
+          errorCb(`Error retrieving tilesetInfo from: ${server}`);
+        }  else {
+          console.warn("Error retrieving: ", url);
+        }
       } else {
         // console.log('got data', data);
-        done(data);
+        doneCb(data);
       }
     });
 };
