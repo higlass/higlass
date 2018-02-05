@@ -15,7 +15,7 @@ export { default as dictItems } from './dict-items';
 export { default as dictKeys } from './dict-keys';
 export { default as dictValues } from './dict-values';
 export { default as download } from './download';
-export { default as euclidianDist } from './euclidian-dist';
+export { default as lDist } from './l-dist';
 export { default as fillInMinWidths } from './fill-in-min-widths';
 export { default as findNearest2dPoint } from './find-nearest-2d-point';
 export { default as flatten } from './flatten';
