@@ -993,13 +993,15 @@ export const TRACKS_INFO = [
       borderColor: 'red',
       borderWidth: 2,
       borderOpacity: 1,
+      borderRadius: 2,
       leaderLineColor: 'red',
       leaderLineWidth: 2,
       leaderLineOpacity: 1,
       dropDistance: 1,
       dropBlur: 3,
       dropOpacity: 0.8,
-      opacity: 1
+      opacity: 1,
+      selectColor: 'red'
     },
     availableOptions: [
       'minSize',
@@ -1019,6 +1021,7 @@ export const TRACKS_INFO = [
       'borderColor',
       'borderWidth',
       'borderOpacity',
+      'borderRadius',
       'leaderLineColor',
       'leaderLineWidth',
       'leaderLineOpacity',
@@ -1027,6 +1030,7 @@ export const TRACKS_INFO = [
       'dropBlur',
       'dropOpacity',
       'opacity',
+      'selectColor'
     ],
   },
 
