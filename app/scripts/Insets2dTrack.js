@@ -94,6 +94,7 @@ export default class Insets2dTrack extends PixiTrack {
     this.options.fill = colorToHex(this.options.fill);
     this.options.borderColor = colorToHex(this.options.borderColor);
     this.options.leaderLineColor = colorToHex(this.options.leaderLineColor);
+    this.options.selectColor = colorToHex(this.options.selectColor);
 
     this.insetMinSize = this.options.minSize || BASE_MIN_SIZE;
     this.insetMaxSize = this.options.maxSize || BASE_MAX_SIZE;
@@ -348,9 +349,13 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   updateClosestInset(inset) {
-    if (this.closestInset !== inset) this.closestInset.deselect();
+    if (!inset || (this.closestInset && this.closestInset === inset)) return;
+
+    if (this.closestInset) this.closestInset.deselect();
+
     this.closestInset = inset;
     this.closestInset.select();
+    this.animate();
   }
 
   computeDistance(x, y, inset) {

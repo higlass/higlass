@@ -78,6 +78,8 @@ export default class Inset {
     this.borderFill = options.borderColor || 0xffffff;
     this.borderFillAlpha = options.borderOpacity || 1;
 
+    this.selectColor = options.selectColor || 0x00ffff;
+
     this.leaderLineStyle = [
       options.leaderLineWidth || 1,
       options.leaderLineColor || 0x000000,
@@ -263,16 +265,43 @@ export default class Inset {
   createRect(
     width = this.width,
     height = this.height,
-    radius = 0
+    radius = 0,
+    fill = this.borderFill,
   ) {
     const rect = new PIXI.Graphics()
       .lineStyle(...this.borderStyle)
-      .beginFill(this.borderFill)
+      .beginFill(fill)
       .drawRoundedRect(0, 0, width, height, radius)
       .endFill()
       .generateTexture();
 
     return new PIXI.Sprite(rect);
+  }
+
+  deselect() {
+    this.clearBorder();
+    this.drawBorder();
+  }
+
+  select() {
+    this.clearBorder();
+    this.drawBorder(
+      this.x,
+      this.y,
+      this.width,
+      this.height,
+      this.gBorder,
+      this.options.borderRadius,
+      this.selectColor,
+    );
+  }
+
+  clearBorder() {
+    this.gBorder.removeChildren();
+    this.gBorder.clear();
+    this.initGraphics();
+    this.border.destroy();
+    this.border = undefined;
   }
 
   /**
@@ -314,6 +343,8 @@ export default class Inset {
     width = this.width,
     height = this.height,
     graphics = this.gBorder,
+    radius = this.options.borderRadius,
+    fill = this.borderFill,
   ) {
     const [vX, vY] = this.computeBorder(x, y, width, height);
 
@@ -323,7 +354,8 @@ export default class Inset {
       this.border = this.createRect(
         (ratio >= 1 ? maxBorderSize : maxBorderSize * ratio) + this.borderPadding,
         (ratio <= 1 ? maxBorderSize : maxBorderSize / ratio) + this.borderPadding,
-        3
+        radius,
+        fill
       );
       graphics.addChild(this.border);
     }
