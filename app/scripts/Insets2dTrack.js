@@ -360,7 +360,7 @@ export default class Insets2dTrack extends PixiTrack {
 
   computeDistance(x, y, inset) {
     const distToOrigin = lDist(
-      [inset.originX, inset.originX],
+      [inset.originX, inset.originY],
       [x, y]
     );
     const distToInset = lDist(
