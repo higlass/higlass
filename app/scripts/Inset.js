@@ -3,7 +3,7 @@ import { color } from 'd3-color';
 import clip from 'liang-barsky';
 import * as PIXI from 'pixi.js';
 
-import { transition } from './services';
+import { transitionGroup } from './services/transition';
 
 import { canvasLinearGradient, getAngleBetweenPoints } from './utils';
 
@@ -763,19 +763,6 @@ export default class Inset {
 
     const imPos = this.computeImagePosition();
 
-    this.tweenStop = transition(
-      this.sprite,
-      {
-        x: imPos.x,
-        y: imPos.y,
-        scale: {
-          x: imPos.scaleX,
-          y: imPos.scaleY,
-        }
-      },
-      80
-    );
-
     const [bX, bY] = this.computeBorder(
       this.x,
       this.y,
@@ -783,14 +770,29 @@ export default class Inset {
       this.height,
     );
 
-    this.tweenStop = transition(
-      this.border,
-      {
-        x: bX,
-        y: bY,
-        width: (this.data.width * imPos.scaleX) + this.borderPadding,
-        height: (this.data.height * imPos.scaleY) + this.borderPadding,
-      },
+    this.tweenStop = transitionGroup(
+      [
+        {
+          obj: this.sprite,
+          propsTo: {
+            x: imPos.x,
+            y: imPos.y,
+            scale: {
+              x: imPos.scaleX,
+              y: imPos.scaleY,
+            }
+          }
+        },
+        {
+          obj: this.border,
+          propsTo: {
+            x: bX,
+            y: bY,
+            width: (this.data.width * imPos.scaleX) + this.borderPadding,
+            height: (this.data.height * imPos.scaleY) + this.borderPadding,
+          }
+        }
+      ],
       80
     );
   }
