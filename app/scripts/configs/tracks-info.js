@@ -92,8 +92,7 @@ export const TRACKS_INFO = [
     defaultOptions: {
       labelPosition: 'bottomRight',
       labelColor: 'black',
-      colorRange:
-                ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], // corresponding to the fall colormap
+      colorRange: ['white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'], // corresponding to the fall colormap
       maxZoom: null,
       trackBorderWidth: 0,
       trackBorderColor: 'black',
@@ -178,7 +177,7 @@ export const TRACKS_INFO = [
     thumbnail: null,
     availableOptions: ['labelPosition', 'labelColor', 'valueScaling',
       'labelTextOpacity', 'labelBackgroundOpacity', 'trackBorderWidth',
-      'trackBorderColor', 'trackType', 'scaledHeight'],
+      'trackBorderColor', 'trackType', 'scaledHeight', 'backgroundColor', 'colorScale'],
     defaultOptions: {
       labelPosition: 'topLeft',
       labelColor: 'black',
@@ -186,7 +185,9 @@ export const TRACKS_INFO = [
       valueScaling: 'linear',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
-      scaledHeight: false
+      scaledHeight: false,
+      backgroundColor: 'white',
+      colorScale: 'category10'
     }
   },
   //
@@ -546,7 +547,7 @@ export const TRACKS_INFO = [
     availableOptions: ['labelPosition', 'labelColor', 'labelTextOpacity', 'labelBackgroundOpacity',
       'trackBorderWidth', 'trackBorderColor',
       'rectangleDomainFillColor', 'rectangleDomainStrokeColor', 'rectangleDomainOpacity',
-    'minSquareSize'],
+      'minSquareSize'],
     defaultOptions: {
       labelColor: 'black',
       labelPosition: 'hidden',
