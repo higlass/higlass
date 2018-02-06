@@ -69,7 +69,6 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
 
     // calculate the zoom level given the scales and the data bounds
     this.zoomLevel = this.calculateZoomLevel();
-    console.log('cvl', this.zoomLevel, this)
 
     if (this.tilesetInfo.resolutions) {
       const sortedResolutions = this.tilesetInfo.resolutions
@@ -86,8 +85,6 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
       this.setVisibleTiles(tiles);
       return;
     }
-
-     //console.log('zoomLevel:', this.zoomLevel);
 
     // x doesn't necessary mean 'x' axis, it just refers to the relevant axis
     // (x if horizontal, y if vertical)
