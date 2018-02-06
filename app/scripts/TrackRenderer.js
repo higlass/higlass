@@ -53,6 +53,8 @@ import OSMTilesTrack from './OSMTilesTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
 import ImageTilesTrack from './ImageTilesTrack';
 
+import StackedBarTrack from './StackedBarTrack';
+
 import HorizontalHelloWorld from './HorizontalHelloWorld';
 import HorizontalHelloWorld2 from './HorizontalHelloWorld2';
 
@@ -899,6 +901,19 @@ export class TrackRenderer extends React.Component {
 
       case 'horizontal-multivec':
         return new HorizontalMultivecTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          this.svgElement,
+          () => this.currentProps.onValueScaleChanged(track.uid),
+          newOptions =>
+            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
+        );
+
+      case 'horizontal-stacked-bar':
+        return new StackedBarTrack(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
