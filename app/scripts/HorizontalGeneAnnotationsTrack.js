@@ -56,7 +56,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const MAX_TILE_ENTRIES = 50;
 
     if (!tile.tileData.sort) {
-      console.warn('Strange tileData', tile);
+      //console.warn('Strange tileData', tile);
       return;
     }
 

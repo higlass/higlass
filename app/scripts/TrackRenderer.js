@@ -640,6 +640,8 @@ class TrackRenderer extends React.Component {
      * @param trackDefinitions: The definition of the track
      * @return: Nothing
      */
+    this.prevTrackDefinitions = JSON.stringify(trackDefinitions);
+
     const receivedTracksDict = {};
     for (let i = 0; i < trackDefinitions.length; i++) {
       receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i];

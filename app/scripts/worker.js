@@ -273,8 +273,6 @@ export function workerFetchMultiRequestTiles(req) {
 
   for (const server of servers) {
     const ids = Object.keys(requestsByServer[server]);
-    // console.log('ids:', ids);
-
     // if we request too many tiles, then the URL can get too long and fail
     // so we'll break up the requests into smaller subsets
     for (let i = 0; i < ids.length; i += MAX_FETCH_TILES) {

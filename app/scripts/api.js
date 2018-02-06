@@ -32,6 +32,16 @@ const api = function api(context) {
   return {
     setAuthHeader(newHeader) {
       setTileProxyAuthHeader(newHeader);
+
+      // we need to re-request all the tiles
+      this.reload();
+    },
+
+    /**
+     * Reload all of the tiles
+     */
+    reload() {
+
     },
 
     setViewConfig(newViewConfig) {

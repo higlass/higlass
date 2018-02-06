@@ -1,5 +1,6 @@
 develop (2018-01-??)
 
+- Preliminary authentication support
 - Added track for displaying gigapixel images
 - Added GeoJSON track and updated OSM track
 - Added mouseMoveZoom event to public API
@@ -13,6 +14,10 @@ entered
 - Simplified `hglib` API
 - Updated third-party libs to get rid of deprecation warnings for React v16
 - Fixed small bug in placing rules
+
+v0.10.16 (2018-
+
+- Don't show the "Strange tileData" warnings
 
 v0.10.15 (2018-01-30)
 

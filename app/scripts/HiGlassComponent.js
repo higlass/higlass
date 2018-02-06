@@ -25,7 +25,12 @@ import { all as icons } from './icons';
 import api, { destroy as apiDestroy, publish as apiPublish } from './api';
 
 // Services
-import { chromInfo, domEvent, pubSub } from './services';
+import { 
+  chromInfo, 
+  domEvent, 
+  pubSub ,
+  setTileProxyAuthHeader
+} from './services';
 
 // Utils
 import {
@@ -105,6 +110,8 @@ class HiGlassComponent extends React.Component {
     this.zoomLocks = {};
     this.locationLocks = {};
 
+    this.prevAuthToken = props.options.authToken;
+
     // locks that keep the value scales synchronized between
     // *tracks* (which can be in different views)
     this.valueScaleLocks = {};
@@ -144,6 +151,10 @@ class HiGlassComponent extends React.Component {
       views = this.processViewConfig(
         JSON.parse(JSON.stringify(viewConfig))
       );
+    }
+
+    if (props.options.authToken) {
+      setTileProxyAuthHeader(props.options.authToken);
     }
 
     this.pixiStage = new PIXI.Container();
@@ -324,9 +335,33 @@ class HiGlassComponent extends React.Component {
 
     // loadChromInfos(this.state.views);
   }
+  getTrackObject(viewUid, trackUid) {
+    return this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
+  }
+
+  getTrackRenderer(viewUid) {
+    return this.tiledPlots[viewUid].trackRenderer;
+  }
 
   componentWillReceiveProps(newProps) {
     const viewsByUid = this.processViewConfig(newProps.viewConfig);
+
+    if (newProps.options.authToken != this.prevAuthToken) {
+      // we go a new auth token so we should reload everything 
+      setTileProxyAuthHeader(newProps.options.authToken);
+
+      for (let viewId of this.iterateOverViews()) {
+        const trackRenderer = this.getTrackRenderer(viewId);
+        const trackDefinitions = JSON.parse(trackRenderer.prevTrackDefinitions);
+
+        // this will remove all the tracks and then recreate them
+        // re-requesting all tiles with the new auth key
+        trackRenderer.syncTrackObjects([]);
+        trackRenderer.syncTrackObjects(trackDefinitions);
+      }
+
+      this.prevAuthToken = newProps.options.authToken;
+    }
 
     this.setState({
       views: viewsByUid,
