@@ -55,9 +55,6 @@ import ImageTilesTrack from './ImageTilesTrack';
 
 import StackedBarTrack from './StackedBarTrack';
 
-import HorizontalHelloWorld from './HorizontalHelloWorld';
-import HorizontalHelloWorld2 from './HorizontalHelloWorld2';
-
 // Utils
 import { dictItems } from './utils';
 
@@ -934,30 +931,7 @@ export class TrackRenderer extends React.Component {
           () => this.currentProps.onNewTilesLoaded(track.uid),
           () => this.currentProps.onValueScaleChanged(track.uid),
         );
-      case 'hello-world':
-        return new HorizontalHelloWorld(
-          this.pStage,
-          dataConfig,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-          this.svgElement,
-          () => this.currentProps.onValueScaleChanged(track.uid),
-          newOptions =>
-            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
-        );
-      case 'hello-world2':
-        return new HorizontalHelloWorld2(
-          this.pStage,
-          dataConfig,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-          this.svgElement,
-          () => this.currentProps.onValueScaleChanged(track.uid),
-          newOptions =>
-            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
-        );
+
       case 'vertical-line':
         return new LeftTrackModifier(
           new HorizontalLine1DPixiTrack(
