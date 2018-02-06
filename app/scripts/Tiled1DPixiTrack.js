@@ -62,7 +62,7 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
   }
 
-  calculateVisibleTiles() {
+ calculateVisibleTiles() {
     // if we don't know anything about this dataset, no point
     // in trying to get tiles
     if (!this.tilesetInfo) { return; }
@@ -70,7 +70,21 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
     // calculate the zoom level given the scales and the data bounds
     this.zoomLevel = this.calculateZoomLevel();
 
-    // console.log('zoomLevel:', this.zoomLevel);
+    if (this.tilesetInfo.resolutions) {
+      const sortedResolutions = this.tilesetInfo.resolutions
+        .map(x => +x)
+        .sort((a, b) => b - a);
+
+      const xTiles = tileProxy.calculateTilesFromResolution(
+        sortedResolutions[this.zoomLevel],
+        this._xScale,
+        this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]
+      );
+
+      const tiles = xTiles.map(x => [this.zoomLevel, x]);
+      this.setVisibleTiles(tiles);
+      return;
+    }
 
     // x doesn't necessary mean 'x' axis, it just refers to the relevant axis
     // (x if horizontal, y if vertical)
@@ -81,17 +95,39 @@ export class Tiled1DPixiTrack extends TiledPixiTrack {
       this.tilesetInfo.max_width);
 
     const tiles = xTiles.map(x => [this.zoomLevel, x]);
-
     this.setVisibleTiles(tiles);
   }
 
 
-  getTilePosAndDimensions(zoomLevel, tilePos) {
+  getTilePosAndDimensions(zoomLevel, tilePos, binsPerTileIn) {
     /**
          * Get the tile's position in its coordinate system.
          */
     const xTilePos = tilePos[0];
     const yTilePos = tilePos[0];
+
+
+    if (this.tilesetInfo.resolutions) {
+      const BINS_PER_TILE = 1024;
+      // the default bins per tile which should
+      // not be used because the right value should be in the tileset info
+
+      let binsPerTile = binsPerTileIn || BINS_PER_TILE;
+
+      const sortedResolutions = this.tilesetInfo.resolutions
+        .map(x => +x)
+        .sort((a, b) => b - a);
+
+      const chosenResolution = sortedResolutions[zoomLevel];
+
+      let tileWidth =  chosenResolution * binsPerTile;
+      let tileHeight = tileWidth;
+
+      let tileX = chosenResolution * binsPerTile * tilePos[0];
+      let tileY = chosenResolution * binsPerTile * tilePos[1];
+
+      return { tileX, tileY, tileWidth, tileHeight };
+    }
 
     // max_width should be substitutable with 2 ** tilesetInfo.max_zoom
     const totalWidth = this.tilesetInfo.max_width;
