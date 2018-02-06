@@ -781,6 +781,13 @@ export default class Inset {
     return this.renderLeaderLineGrd(pInsetNew, pOriginNew, color);
   }
 
+  /**
+   * Render fading leader line a relative multistep color gradient.
+   * @param   {array}  pointFrom  Tuple of form [x,y].
+   * @param   {array}  pointTo  Tuple of form [x,y].
+   * @param   {object}  color  RGBA D3 color object.
+   * @return  {array}  List of PIXI.Sprite objects of the leader line.
+   */
   renderLeaderLineGrd(pointFrom, pointTo, color) {
     const colorSteps = {};
     Object.keys(this.options.leaderLineFading).forEach((step) => {
@@ -813,6 +820,13 @@ export default class Inset {
     return this.gLeaderLineGrd;
   }
 
+  /**
+   * Render leader line stubs consisting of two absolute-sized color gradients.
+   * @param   {array}  pointFrom  Tuple of form [x,y].
+   * @param   {array}  pointTo  Tuple of form [x,y].
+   * @param   {object}  color  RGBA D3 color object.
+   * @return  {array}  List of PIXI.Sprite objects of the leader line.
+   */
   renderLeaderLineStubs(pointFrom, pointTo, color) {
     const colorFrom = color.toString();
     const colorTo = Object.assign(color.rgb(), { opacity: 0 }).toString();
