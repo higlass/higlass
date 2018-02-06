@@ -1,5 +1,6 @@
 import {BarTrack} from './BarTrack';
 import {scaleLinear, scaleOrdinal, schemeCategory10} from 'd3-scale';
+import {range} from 'd3-array';
 import {colorToHex} from './utils';
 
 export class StackedBarTrack extends BarTrack {
@@ -8,7 +9,6 @@ export class StackedBarTrack extends BarTrack {
   }
 
   initTile(tile) {
-    console.log('initTile:', tile)
     this.renderTile(tile);
   }
 
@@ -92,7 +92,10 @@ export class StackedBarTrack extends BarTrack {
     const positiveTrackHeight = (positiveMax * trackHeight) / unscaledHeight;
     const negativeTrackHeight = (negativeMax * trackHeight) / unscaledHeight;
 
-    const colorScale = scaleOrdinal(this.options.colorScale) || scaleOrdinal(schemeCategory10);
+    const colorScale = scaleOrdinal()
+      .range(this.options.colorScale)
+      .domain(range(this.options.colorScale.length)) 
+      || scaleOrdinal(schemeCategory10);
     const valueToPixels = scaleLinear()
       .domain([0, positiveMax])
       .range([0, trackHeight]);
@@ -105,8 +108,6 @@ export class StackedBarTrack extends BarTrack {
       // sorted from largest to smallest
       // we're grouping values along with their index in the column
       const positiveValsSorted = matrix[j].map((x,i) => [x,i]).filter((a) => a[0] >= 0).sort((a, b) => a[0] - b[0]);
-      console.log('positiveValsSorted:', positiveValsSorted);
-      console.log('matrix[i]:', matrix[j]);
 
       for (let i = 0; i < positiveValsSorted.length; i++) {
         const height = valueToPixels(positiveValsSorted[i][0]);
@@ -134,12 +135,7 @@ export class StackedBarTrack extends BarTrack {
       }
       prevStackedBarHeight = 0;
     }
-    //console.log(colorToHex(colorScale[1]));
-
   }
-
-
-
 
   /**
    * Draws graph using normalized values.
