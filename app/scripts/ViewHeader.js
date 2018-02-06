@@ -7,6 +7,7 @@ import { AddTrackPositionMenu } from './AddTrackPositionMenu';
 
 // Configs
 import {
+  MOUSE_TOOL_SELECT,
   VIEW_HEADER_MED_WIDTH_SEARCH_BAR,
   VIEW_HEADER_MIN_WIDTH_SEARCH_BAR,
 } from './configs';
@@ -205,16 +206,22 @@ export class ViewHeader extends React.Component {
     const classNameIcon = this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR ?
       'multitrack-header-icon-squeazed' : 'multitrack-header-icon';
 
-    const classNameGrabber = this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR ?
-      'multitrack-header-grabber-squeazed' : 'multitrack-header-grabber';
-
     return (
       <div
         ref={(c) => { this.el = c; }}
         styleName={className}
       >
         <div styleName="multitrack-header-left">
-          <div styleName={classNameGrabber}>
+          {this.props.mouseTool === MOUSE_TOOL_SELECT && (
+            <svg
+              styleName={`mouse-tool-selection ${classNameIcon}`}
+              title="Selection tool active"
+            >
+              <use xlinkHref="#select" />
+            </svg>
+          )}
+          <div styleName="multitrack-header-grabber">
+
             <div /><div /><div />
           </div>
           {this.state.width > VIEW_HEADER_MIN_WIDTH_SEARCH_BAR &&
@@ -272,6 +279,7 @@ ViewHeader.defaultProps = {
 ViewHeader.propTypes = {
   getGenomePositionSearchBox: PropTypes.func.isRequired,
   isGenomePositionSearchBoxVisible: PropTypes.bool,
+  mouseTool: PropTypes.string.isRequired,
   onAddView: PropTypes.func.isRequired,
   onClearView: PropTypes.func.isRequired,
   onCloseView: PropTypes.func.isRequired,

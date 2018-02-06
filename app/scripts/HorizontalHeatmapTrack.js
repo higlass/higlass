@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { scaleLinear, scaleLog } from 'd3-scale';
+import { getValueScale } from './TiledPixiTrack.js';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
@@ -7,7 +8,7 @@ import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import { tileProxy } from './services';
 
 // Utils
-import { colorDomainToRgbaArray } from './utils';
+import { colorDomainToRgbaArray, showMousePosition } from './utils';
 
 // Configs
 import { HEATED_OBJECT_MAP } from './configs';
@@ -49,27 +50,37 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     if (options && options.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
+
+    this.animate = animate;
+    this.options = options;
+
+    this.pubSubs = [];
   }
 
   rerender(options, force) {
     super.rerender(options, force);
 
     // zoom so that if the heatmap is flipped, the scale of this.pMain changes
-    this.zoomed(this.xScale(), this.yScale(),
-      this.pMain.scale.x, this.pMain.position.x, this.pMain.position.y);
+    this.zoomed(
+      this.xScale(),
+      this.yScale(),
+      this.pMain.scale.x,
+      this.pMain.position.x,
+      this.pMain.position.y
+    );
   }
 
   calculateZoomLevel() {
     if (this.tilesetInfo.resolutions) {
       let zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
-        this.tilesetInfo.resolutions, 
-        this._xScale, 
+        this.tilesetInfo.resolutions,
+        this._xScale,
         this.tilesetInfo.min_pos[0],
         this.tilesetInfo.max_pos[0]);
 
       let zoomIndexY = tileProxy.calculateZoomLevelFromResolutions(
-        this.tilesetInfo.resolutions, 
-        this._xScale, 
+        this.tilesetInfo.resolutions,
+        this._xScale,
         this.tilesetInfo.min_pos[1],
         this.tilesetInfo.max_pos[1]);
 
@@ -221,15 +232,17 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
    *              and tile.graphics
    */
   renderTile(tile) {
-    if (this.options.heatmapValueScaling === 'log') {
-      this.valueScale = scaleLog().range([254, 0])
-        .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-    } else if (this.options.heatmapValueScaling === 'linear') {
-      this.valueScale = scaleLinear().range([254, 0])
-        .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
-    }
+    const [scaleType, valueScale] = getValueScale(this.options.heatmapValueScaling,
+            this.scale.minValue, this.medianVisibleValue, this.scale.maxValue, 'log');
+
+    this.valueScale = valueScale;
+    let pseudocount = 0;
+
+    if (scaleType == 'log')
+        pseudocount = this.valueScale.domain()[0];
 
     this.limitedValueScale = this.valueScale.copy();
+
     if (this.options
             && typeof (this.options.scaleStartPercent) !== 'undefined'
             && typeof (this.options.scaleEndPercent) !== 'undefined') {
@@ -254,7 +267,7 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
     tileProxy.tileDataToPixData(
       tile,
       this.limitedValueScale,
-      this.valueScale.domain()[0], // used as a pseudocount to prevent taking the log of 0
+      pseudocount, // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
       (pixData) => {
         // the tileData has been converted to pixData by the worker script and needs to be loaded

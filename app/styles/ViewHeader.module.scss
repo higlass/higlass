@@ -29,10 +29,6 @@ $unit: 24px;
   margin-bottom: 0;
 }
 
-.multitrack-header-squeazed {
-
-}
-
 .multitrack-header-id {
   padding-left: 3px;
 
@@ -121,6 +117,12 @@ $unit: 24px;
   &:last-child {
     border-radius: 0 $unit / 8 $unit / 8 0;
   }
+}
+
+.mouse-tool-selection {
+  color: white;
+  border-radius: $unit / 8 0 0 $unit / 8;
+  background: $active;
 }
 
 .multitrack-header-icon-squeazed {

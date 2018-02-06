@@ -2,25 +2,59 @@ import { Tiled1DPixiTrack } from './Tiled1DPixiTrack';
 import { tileProxy } from './services';
 import { AxisPixi } from './AxisPixi';
 
+import { showMousePosition } from './utils';
+
 class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
   constructor(
-      scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      option,
-      animate,
-      onValueScaleChanged,
+    scene,
+    dataConfig,
+    handleTilesetInfoReceived,
+    options,
+    animate,
+    onValueScaleChanged,
   ) {
     super(
       scene,
       dataConfig,
       handleTilesetInfoReceived,
-      option,
+      options,
       animate,
-      onValueScaleChanged);
+      onValueScaleChanged
+    );
+
     this.axis = new AxisPixi(this);
     this.pBase.addChild(this.axis.pAxis);
+
+    this.animate = animate;
+    this.options = options;
+
+    this.pubSubs = [];
+
+    if (this.options.showMousePosition && !this.hideMousePosition) {
+      this.hideMousePosition = showMousePosition(this, this.is2d);
+    }
   }
+
+  rerender(options, force) {
+    const strOptions = JSON.stringify(options);
+
+    if (!force && strOptions === this.prevOptions) return;
+
+    super.rerender(options, force);
+
+    this.prevOptions = strOptions;
+    this.options = options;
+
+    if (this.options.showMousePosition && !this.hideMousePosition) {
+      this.hideMousePosition = showMousePosition(this);
+    }
+
+    if (!this.options.showMousePosition && this.hideMousePosition) {
+      this.hideMousePosition();
+      this.hideMousePosition = undefined;
+    }
+  }
+
   calculateZoomLevel() {
     // offset by 2 because 1D tiles are more dense than 2D tiles
     // 1024 points per tile vs 256 for 2D tiles

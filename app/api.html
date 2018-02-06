@@ -11,10 +11,10 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
 <link rel="stylesheet" href="styles/page.css">
 <link rel="stylesheet" href="hglib.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.31.0/react-bootstrap.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.2/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/15.6.2/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.6.2/pixi.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-bootstrap/0.32.0/react-bootstrap.js"></script>
 </head>
 <body >
   <div style="height: 50px" />
@@ -33,7 +33,7 @@ const testViewConfig = {
   editable: true,
   zoomFixed: false,
   trackSourceServers: ['http://higlass.io/api/v1'],
-  exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
+  exportViewUrl: 'http://localhost:8001/api/v1/viewconfs/',
   views: [
     {
       uid: 'aa',
@@ -137,7 +137,7 @@ const testViewConfig = {
         2343023255.8139534
       ],
       layout: {
-        w: 6,
+        w: 12,
         h: 12,
         x: 0,
         y: 0,
@@ -157,16 +157,13 @@ const testViewConfig = {
   }
 };
 
-let higlassApi;
-
-window.hglib.createHgComponent(
+const higlass = window.hglib.viewer(
   document.getElementById('development-demo'),
-  testViewConfig,
-  { bounded: true },
-  (api) => { higlassApi = api; }
+  'http://higlass.io/api/v1/viewconfs/?d=default',
+  { bounded: true }
 );
 
-higlassApi.on('location', (yeahCool) => {
+higlass.on('location', (yeahCool) => {
   console.log('Yuuhuu we are over here', yeahCool);
 }, 'aa', (id) => {
   console.log('First Listener ID', id);
@@ -174,7 +171,7 @@ higlassApi.on('location', (yeahCool) => {
 
 let secondId;
 
-higlassApi.on('location', (yeahCool) => {
+higlass.on('location', (yeahCool) => {
   console.log('Dont forget about us sweetie', yeahCool);
 }, 'aa', (id) => {
   secondId = id;
@@ -182,8 +179,38 @@ higlassApi.on('location', (yeahCool) => {
 });
 
 setTimeout(() => {
-  higlassApi.off('location', secondId, 'aa');
+  higlass.off('location', secondId, 'aa');
   console.log('Second event listener is offline');
+}, 5000);
+
+higlass.shareViewConfigAsLink()
+  .then(sharedView => console.log('View is shared', sharedView))
+  .catch(e => console.warn('View sharing failed', e));
+
+higlass.shareViewConfigAsLink('http://localhost:9999')
+  .then(sharedView => console.warn('View is shared. W00t?!', sharedView))
+  .catch(e => console.log('Expected to fail', e));
+
+higlass.get('svg')
+  .then(svg => console.log('SVG is exported', svg))
+  .catch(e => console.warn('SVG export failed', e));
+
+higlass.get('png')
+  .then(png => console.log('PNG is exported', png))
+  .catch(e => console.warn('PNG export failed', e));
+
+let prevViewConfig;
+higlass.on('viewConfig', (newViewConfig) => {
+  console.log('And here it is: a new view config! YEAH!', prevViewConfig === newViewConfig);
+});
+
+const mmz = higlass.on('mouseMoveZoom', (data) => {
+  console.log('Yuuhuu', data);
+});
+
+setTimeout(() => {
+  higlass.off('mouseMoveZoom', mmz);
+  console.log('mouseMoveZoom is offline', mmz);
 }, 5000);
 
 </script>

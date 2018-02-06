@@ -24,7 +24,10 @@ export class ViewportTracker2D extends SVGTrack {
     this.viewportXDomain = null;
     this.viewportYDomain = null;
 
+    const maxHalf = Number.MAX_VALUE / 2;
+
     this.brush = brush(true)
+      .extent([[-maxHalf, -maxHalf], [maxHalf, maxHalf]])
       .on('brush', this.brushed.bind(this));
 
     this.gBrush = this.gMain
@@ -33,7 +36,7 @@ export class ViewportTracker2D extends SVGTrack {
       .call(this.brush);
 
     // turn off the ability to select new regions for this brush
-    this.gBrush.selectAll(`.overlay-${this.uid}`)
+    this.gBrush.selectAll('.overlay')
       .style('pointer-events', 'none');
 
     // turn off the ability to modify the aspect ratio of the brush

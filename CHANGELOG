@@ -1,3 +1,62 @@
+develop (2018-01-??)
+
+- Preliminary authentication support
+- Added track for displaying gigapixel images
+- Added GeoJSON track and updated OSM track
+- Added mouseMoveZoom event to public API
+- Fixed and extended pubSub module
+- Added flexible per-track crosshair
+- Fixed and robustified range selection API
+- Display error message on error
+- Don't error when displaying menus when invalid track type is
+entered
+- Added an endpoint for sharing view configs as a link (`shareViewConfigAsLink()`) and exporting them as png and svg (`get('png' || 'svg')`)
+- Simplified `hglib` API
+- Updated third-party libs to get rid of deprecation warnings for React v16
+- Fixed small bug in placing rules
+
+v0.10.15 (2018-01-30)
+
+- Added the vertical bed-like track
+
+v0.10.13 (2018-01-25)
+
+- Added the multivec track
+
+v0.10.12 (2018-01-21)
+
+- Fixed pseudocounts in linear-scaled heatmaps
+
+v0.10.12 (2018-01-20)
+
+- Fixed get scale bug
+
+v0.10.11 (2018-01-17)
+
+- Fixed non-draggable views bug
+
+v0.10.10 (2018-01-17)
+
+- Default to log scaling if there are negative values
+- Fixed the custom colormap
+- Fix the gene annotations color changing
+- Fixed two regressions regarding the viewport projections
+
+v0.10.9 (2018-01-13)
+
+- Skipping a version because the latest version wasn't specified in
+package.json
+
+v0.10.8
+
+- Skipping a version because the latest version wasn't specified in
+package.json
+
+v0.10.7 (2018-01-13)
+
+- Show current data resolution in tiled sets containing raw resolutions rather
+than zoom levels
+
 v0.10.6 (2017-12-28)
 
 - Load ResizeSensors after the element is attached to the DOM tree

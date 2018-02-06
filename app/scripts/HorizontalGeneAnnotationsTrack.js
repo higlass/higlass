@@ -22,10 +22,8 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
    * ----------
    *  scene: PIXI.js scene (or graphics)
    *      Where to draw everything.
-   *  server: string
-   *      The server from which to retrieve data
-   *  uid: string
-   *      The uid of the track on the server
+   *  dataConfig: object
+   *      Holds the server and tileset UID
    *  handleTilesetInfoReceived: function
    *      A callback to let the caller know that we've received the
    *      tileset information for this track.
@@ -34,14 +32,14 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
    *      be rendered
    *  animate: callback
    *      Function to be called when something in this track changes.
-   *  popupCallback: function
-   *      Callback for when this track wishes to display extra information
-   *      (e.g. gene information)
    */
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate, popupCallback) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate, popupCallback);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
+    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
     this.textFontSize = '10px';
     this.textFontFamily = 'Arial';
+
+    this.animate = animate;
+    this.options = options;
   }
 
   initTile(tile) {
@@ -108,6 +106,23 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
   }
 
+  rerender(options, force) {
+    /*
+     * Redraw the track because the options
+     * changed
+     */
+    const strOptions = JSON.stringify(options);
+    if (!force && strOptions === this.prevOptions) return;
+
+    super.rerender(options, force);
+
+    this.prevOptions = strOptions;
+
+    for (const tile of this.visibleAndFetchedTiles()) {
+      this.renderTile(tile);
+    }
+  }
+
   drawTile(tile) {
 
   }
@@ -124,7 +139,6 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     fill['+'] = colorToHex(this.options.plusStrandColor ? this.options.plusStrandColor : 'blue');
     fill['-'] = colorToHex(this.options.minusStrandColor ? this.options.minusStrandColor : 'red');
-
 
     tile.tileData.forEach((td, i) => {
       const geneInfo = td.fields;

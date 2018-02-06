@@ -1,6 +1,6 @@
 import { absToChr } from '.';
 
-const pixelToGenomeLoci = (x0, x1, chromInfo) => {
+const dataToGenomicLoci = (x0, x1, chromInfo) => {
   const gX0 = absToChr(x0, chromInfo);
   const gX1 = absToChr(x1, chromInfo);
 
@@ -10,4 +10,4 @@ const pixelToGenomeLoci = (x0, x1, chromInfo) => {
   ];
 };
 
-export default pixelToGenomeLoci;
+export default dataToGenomicLoci;

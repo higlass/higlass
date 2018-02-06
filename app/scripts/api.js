@@ -4,16 +4,47 @@ import {
 } from './utils';
 
 import {
+  setTileProxyAuthHeader
+} from './services';
+
+import {
   MOUSE_TOOL_MOVE,
   MOUSE_TOOL_SELECT,
 } from './configs';
 
-import pubSub from './services/pub-sub';
+import pubSub, { create } from './services/pub-sub';
 
-export const api = function api(context) {
+let stack = {};
+let pubSubs = [];
+
+const apiPubSub = create(stack);
+
+export const destroy = () => {
+  pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+  pubSubs = [];
+  stack = {};
+};
+
+const api = function api(context) {
   const self = context;
 
+  // Public API
   return {
+    setAuthHeader(newHeader) {
+      console.log('api set auth header', newHeader);
+      setTileProxyAuthHeader(newHeader);
+
+      // we need to re-request all the tiles
+      this.reload();
+    },
+
+    /**
+     * Reload all of the tiles
+     */
+    reload() {
+
+    },
+
     setViewConfig(newViewConfig) {
       /**
        * Set a new view config to define the layout and data
@@ -31,23 +62,23 @@ export const api = function api(context) {
        *    is loaded
        */
       const viewsByUid = self.processViewConfig(newViewConfig);
-      const p = new Promise((resolve, reject) => {
-
+      const p = new Promise((resolve) => {
         this.requestsInFlight = 0;
 
-        const requestsSent = pubSub.subscribe('requestSent', (url) => {
+        pubSubs.push(pubSub.subscribe('requestSent', () => {
           this.requestsInFlight += 1;
-        });
+        }));
 
-        const requestsReceived = pubSub.subscribe('requestReceived', (url) => {
+        pubSubs.push(pubSub.subscribe('requestReceived', () => {
           this.requestsInFlight -= 1;
 
-          if (this.requestsInFlight == 0) {
+          if (this.requestsInFlight === 0) {
             resolve();
           }
-        });
+        }));
 
         self.setState({
+          viewConfig: newViewConfig,
           views: viewsByUid,
         }, () => {
 
@@ -55,6 +86,18 @@ export const api = function api(context) {
       });
 
       return p;
+    },
+
+    /**
+     * Retrieve a sharable link for the current view config
+     *
+     * @param {string}  url  Custom URL that should point to a higlass server's
+     *   view config endpoint, i.e.,
+     *   `http://my-higlass-server.com/api/v1/viewconfs/`.
+     * @return  {Object}  Promise resolving to the link ID and URL.
+     */
+    shareViewConfigAsLink(url) {
+      return self.handleExportViewsAsLink(url, true);
     },
 
     zoomToDataExtent(viewUid) {
@@ -72,7 +115,28 @@ export const api = function api(context) {
        */
       self.handleZoomToData(viewUid);
     },
-    
+
+    getDataURI() {
+      /**
+       * Export the current canvas as a PNG string so that
+       * it can be saved
+       *
+       * Return
+       * ------
+       *  pngString: string
+       *    A data URI
+       */
+      return self.createDataURI();
+    },
+
+    /**
+     * Activate a specific mouse tool.
+     *
+     * @description
+     * Mouse tools enable different behaviors which would otherwise clash. For
+     *
+     * @param {string}  tool  Mouse tool name to be selected.
+     */
     activateTool(tool) {
       switch (tool) {
         case 'select':
@@ -112,6 +176,13 @@ export const api = function api(context) {
 
         case 'viewConfig':
           return Promise.resolve(self.getViewsAsString());
+
+        case 'png':
+          return Promise.resolve(self.createDataURI());
+
+        case 'svg':
+        case 'svgString':
+          return Promise.resolve(self.createSVGString());
 
         default:
           return Promise.reject(`Propert "${prop}" unknown`);
@@ -169,13 +240,21 @@ export const api = function api(context) {
     },
 
     off(event, listenerId, viewId) {
+      const callback = typeof listenerId === 'object'
+        ? listenerId.callback
+        : listenerId;
+
       switch (event) {
         case 'location':
           self.offLocationChange(viewId, listenerId);
           break;
 
+        case 'mouseMoveZoom':
+          apiPubSub.unsubscribe('mouseMoveZoom', callback);
+          break;
+
         case 'rangeSelection':
-          self.offRangeSelection(listenerId);
+          apiPubSub.unsubscribe('rangeSelection', callback);
           break;
 
         case 'viewConfig':
@@ -192,19 +271,22 @@ export const api = function api(context) {
       switch (event) {
         case 'location':
           return self.onLocationChange(viewId, callback, callbackId);
-          break;
+
+        case 'mouseMoveZoom':
+          return apiPubSub.subscribe('mouseMoveZoom', callback);
 
         case 'rangeSelection':
-          return self.onRangeSelection(callback);
+          return apiPubSub.subscribe('rangeSelection', callback);
 
         case 'viewConfig':
           return self.onViewChange(callback);
 
         default:
-          return;
+          return undefined;
       }
     },
   };
 };
 
 export default api;
+export const publish = apiPubSub.publish;
