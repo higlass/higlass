@@ -23,38 +23,6 @@ export const TRACKS_INFO = [
     minWidth: 100,
   },
   {
-    type: 'hello-world',
-    datatype: ['multivec'],
-    local: false,
-    orientation: '1d-horizontal',
-    thumbnail: null,
-    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
-    defaultOptions: {
-      labelPosition: 'topLeft',
-      labelColor: 'black',
-      labelTextOpacity: 0.4,
-      valueScaling: 'linear',
-      trackBorderWidth: 0,
-      trackBorderColor: 'black',
-    },
-  },
-  {
-    type: 'hello-world2',
-    datatype: ['multivec'],
-    local: false,
-    orientation: '1d-horizontal',
-    thumbnail: null,
-    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
-    defaultOptions: {
-      labelPosition: 'topLeft',
-      labelColor: 'black',
-      labelTextOpacity: 0.4,
-      valueScaling: 'linear',
-      trackBorderWidth: 0,
-      trackBorderColor: 'black',
-    },
-  },
-  {
     type: 'top-axis',
     datatype: ['axis'],
     local: true,
@@ -203,12 +171,14 @@ export const TRACKS_INFO = [
     },
   },
   {
-    type: 'horizontal-multivec',
+    type: 'horizontal-stacked-bar',
     datatype: ['multivec'],
     local: false,
     orientation: '1d-horizontal',
     thumbnail: null,
-    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
+    availableOptions: ['labelPosition', 'labelColor', 'valueScaling',
+      'labelTextOpacity', 'labelBackgroundOpacity', 'trackBorderWidth',
+      'trackBorderColor', 'trackType', 'scaledHeight'],
     defaultOptions: {
       labelPosition: 'topLeft',
       labelColor: 'black',
@@ -216,7 +186,8 @@ export const TRACKS_INFO = [
       valueScaling: 'linear',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
-    },
+      scaledHeight: false
+    }
   },
   //
   {
