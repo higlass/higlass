@@ -762,20 +762,19 @@ export default class Inset {
     const xLen = pOriginNew[0] - pInsetNew[0];
     const yLen = pOriginNew[1] - pInsetNew[1];
     const hex = `#${this.options.leaderLineColor.toString(16)}`;
-    const c = color(hex);
-    const cf = color(hex);
-    cf.opacity = 0.33;
+
+    const gradient = {};
+    Object.keys(this.options.leaderLineFading).forEach((step) => {
+      const c = color(hex);
+      c.opacity = this.options.leaderLineFading[step];
+      gradient[step] = c;
+    });
 
     this.gLeaderLineGrd = new PIXI.Sprite(
       PIXI.Texture.fromCanvas(canvasLinearGradient(
         Math.sqrt((xLen ** 2) + (yLen ** 2)),
         this.options.leaderLineWidth || 2,
-        {
-          0: c,
-          0.3: cf,
-          0.7: cf,
-          1: c,
-        }
+        gradient
       ))
     );
 
