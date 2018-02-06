@@ -788,7 +788,7 @@ export default class Inset {
     this.gLeaderLine.removeChildren();
     this.gLeaderLine.addChild(this.gLeaderLineGrd);
 
-    return this.imageRendering;
+    return this.gLeaderLineGrd;
   }
 
   /**
