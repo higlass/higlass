@@ -5,7 +5,7 @@ import * as PIXI from 'pixi.js';
 
 import { transitionGroup } from './services/transition';
 
-import { canvasLinearGradient, getAngleBetweenPoints } from './utils';
+import { canvasLinearGradient, getAngleBetweenPoints, lDist } from './utils';
 
 const BASE_MIN_SIZE = 12;
 const BASE_MAX_SIZE = 24;
@@ -547,6 +547,13 @@ export default class Inset {
   mouseOverHandler(event) {
     this.originFocus();
     this.mouseHandler.mouseOver(event, this);
+    console.log(
+      this.gLeaderLineGrd.x,
+      this.gLeaderLineGrd.y,
+      this.globalOffsetX + this.originX,
+      this.globalOffsetY + this.originY,
+      this.gLeaderLineGrd.rotation,
+    );
   }
 
   /**
@@ -759,8 +766,6 @@ export default class Inset {
     const pOriginNew = pInset.slice();
     clip(pOriginNew, pOrigin.slice(), rectOrigin);
 
-    const xLen = pOriginNew[0] - pInsetNew[0];
-    const yLen = pOriginNew[1] - pInsetNew[1];
     const hex = `#${this.options.leaderLineColor.toString(16)}`;
 
     const gradient = {};
@@ -772,11 +777,13 @@ export default class Inset {
 
     this.gLeaderLineGrd = new PIXI.Sprite(
       PIXI.Texture.fromCanvas(canvasLinearGradient(
-        Math.sqrt((xLen ** 2) + (yLen ** 2)),
+        lDist(pOriginNew, pInsetNew),
         this.options.leaderLineWidth || 2,
         gradient
       ))
     );
+    // Set the coration center to [0, half height]
+    this.gLeaderLineGrd.pivot.set(0, this.options.leaderLineWidth / 2);
 
     this.gLeaderLineGrd.x = pOriginNew[0];
     this.gLeaderLineGrd.y = pOriginNew[1];
