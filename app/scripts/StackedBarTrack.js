@@ -92,7 +92,7 @@ export class StackedBarTrack extends BarTrack {
     const positiveTrackHeight = (positiveMax * trackHeight) / unscaledHeight;
     const negativeTrackHeight = (negativeMax * trackHeight) / unscaledHeight;
 
-    const colorScale = scaleOrdinal(schemeCategory10);
+    const colorScale = scaleOrdinal(this.options.colorScale) || scaleOrdinal(schemeCategory10);
     const valueToPixels = scaleLinear()
       .domain([0, positiveMax])
       .range([0, trackHeight]);
@@ -105,6 +105,8 @@ export class StackedBarTrack extends BarTrack {
       // sorted from largest to smallest
       // we're grouping values along with their index in the column
       const positiveValsSorted = matrix[j].map((x,i) => [x,i]).filter((a) => a[0] >= 0).sort((a, b) => a[0] - b[0]);
+      console.log('positiveValsSorted:', positiveValsSorted);
+      console.log('matrix[i]:', matrix[j]);
 
       for (let i = 0; i < positiveValsSorted.length; i++) {
         const height = valueToPixels(positiveValsSorted[i][0]);
@@ -132,6 +134,7 @@ export class StackedBarTrack extends BarTrack {
       }
       prevStackedBarHeight = 0;
     }
+    //console.log(colorToHex(colorScale[1]));
 
   }
 
