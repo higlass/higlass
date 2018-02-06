@@ -171,12 +171,14 @@ export const TRACKS_INFO = [
     },
   },
   {
-    type: 'horizontal-multivec',
+    type: 'horizontal-stacked-bar',
     datatype: ['multivec'],
     local: false,
     orientation: '1d-horizontal',
     thumbnail: null,
-    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
+    availableOptions: ['labelPosition', 'labelColor', 'valueScaling',
+      'labelTextOpacity', 'labelBackgroundOpacity', 'trackBorderWidth',
+      'trackBorderColor', 'trackType', 'scaledHeight'],
     defaultOptions: {
       labelPosition: 'topLeft',
       labelColor: 'black',
@@ -184,7 +186,8 @@ export const TRACKS_INFO = [
       valueScaling: 'linear',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
-    },
+      scaledHeight: false
+    }
   },
   //
   {

@@ -55,9 +55,17 @@ class HorizontalTiled1DPixiTrack extends Tiled1DPixiTrack {
     }
   }
 
-  calculateZoomLevel() {
+calculateZoomLevel() {
     // offset by 2 because 1D tiles are more dense than 2D tiles
     // 1024 points per tile vs 256 for 2D tiles
+    if (this.tilesetInfo.resolutions) {
+      const zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
+        this.tilesetInfo.resolutions, this._xScale,
+        this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0] - 2
+      );
+
+      return zoomIndexX;
+    }
     const xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
       this.tilesetInfo.min_pos[0],
       this.tilesetInfo.max_pos[0]) - 2;
