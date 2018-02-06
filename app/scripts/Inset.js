@@ -1,11 +1,16 @@
 import { bisectLeft } from 'd3-array';
-import { color } from 'd3-color';
+import { color as d3Color } from 'd3-color';
 import clip from 'liang-barsky';
 import * as PIXI from 'pixi.js';
 
 import { transitionGroup } from './services/transition';
 
-import { canvasLinearGradient, getAngleBetweenPoints, lDist } from './utils';
+import {
+  canvasLinearGradient,
+  degToRad,
+  getAngleBetweenPoints,
+  lDist
+} from './utils';
 
 const BASE_MIN_SIZE = 12;
 const BASE_MAX_SIZE = 24;
@@ -361,7 +366,15 @@ export default class Inset {
    * Draw leader line.
    */
   drawLeaderLine() {
-    if (this.options.leaderLineFading) {
+    const dist = lDist(
+      [this.originX, this.originY],
+      [this.x, this.y],
+    );
+
+    if (
+      this.options.leaderLineStubLength * 1.5 < dist ||
+      this.options.leaderLineFading
+    ) {
       this.renderLeaderLine();
     } else {
       // Origin
@@ -547,13 +560,6 @@ export default class Inset {
   mouseOverHandler(event) {
     this.originFocus();
     this.mouseHandler.mouseOver(event, this);
-    console.log(
-      this.gLeaderLineGrd.x,
-      this.gLeaderLineGrd.y,
-      this.globalOffsetX + this.originX,
-      this.globalOffsetY + this.originY,
-      this.gLeaderLineGrd.rotation,
-    );
   }
 
   /**
@@ -726,7 +732,7 @@ export default class Inset {
 
   /**
    * Render the leader line between the inset and the origin.
-   * @return  {object}  PIXI.Sprite of the leader line.
+   * @return  {array}  List of PIXI.Sprite objects of the leader line.
    */
   renderLeaderLine() {
     const rectInset = this.computeBorder(
@@ -766,34 +772,82 @@ export default class Inset {
     const pOriginNew = pInset.slice();
     clip(pOriginNew, pOrigin.slice(), rectOrigin);
 
-    const hex = `#${this.options.leaderLineColor.toString(16)}`;
+    const color = d3Color(`#${this.options.leaderLineColor.toString(16)}`);
 
-    const gradient = {};
+    if (this.options.leaderLineStubLength) {
+      return this.renderLeaderLineStubs(pInsetNew, pOriginNew, color);
+    }
+
+    return this.renderLeaderLineGrd(pInsetNew, pOriginNew, color);
+  }
+
+  renderLeaderLineGrd(pointFrom, pointTo, color) {
+    const colorSteps = {};
     Object.keys(this.options.leaderLineFading).forEach((step) => {
-      const c = color(hex);
-      c.opacity = this.options.leaderLineFading[step];
-      gradient[step] = c;
+      color.opacity = this.options.leaderLineFading[step];
+      colorSteps[step] = color.toString();
     });
 
-    this.gLeaderLineGrd = new PIXI.Sprite(
+    const gradient = new PIXI.Sprite(
       PIXI.Texture.fromCanvas(canvasLinearGradient(
-        lDist(pOriginNew, pInsetNew),
+        lDist(pointFrom, pointTo),
         this.options.leaderLineWidth || 2,
-        gradient
+        colorSteps
       ))
     );
     // Set the coration center to [0, half height]
-    this.gLeaderLineGrd.pivot.set(0, this.options.leaderLineWidth / 2);
+    gradient.pivot.set(0, this.options.leaderLineWidth / 2);
 
-    this.gLeaderLineGrd.x = pOriginNew[0];
-    this.gLeaderLineGrd.y = pOriginNew[1];
-    this.gLeaderLineGrd.rotation = getAngleBetweenPoints(
+    gradient.x = pointFrom[0];
+    gradient.y = pointFrom[1];
+    gradient.rotation = getAngleBetweenPoints(
       [this.originX, this.originY],
       [this.x, this.y]
     );
 
     this.gLeaderLine.removeChildren();
-    this.gLeaderLine.addChild(this.gLeaderLineGrd);
+    this.gLeaderLine.addChild(gradient);
+
+    this.gLeaderLineGrd = [gradient];
+
+    return this.gLeaderLineGrd;
+  }
+
+  renderLeaderLineStubs(pointFrom, pointTo, color) {
+    const colorFrom = color.toString();
+    const colorTo = Object.assign(color.rgb(), { opacity: 0 }).toString();
+
+    const gradient = PIXI.Texture.fromCanvas(canvasLinearGradient(
+      this.options.leaderLineStubLength,
+      this.options.leaderLineStubWidth || 2,
+      { 0: colorFrom, 1: colorTo }
+    ));
+
+    const angle = getAngleBetweenPoints(
+      [this.originX, this.originY],
+      [this.x, this.y]
+    );
+
+    const gradientFrom = new PIXI.Sprite(gradient);
+    const gradientTo = new PIXI.Sprite(gradient);
+
+    // Set the coration center to [0, half height]
+    gradientFrom.pivot.set(0, this.options.leaderLineWidth / 2);
+    gradientTo.pivot.set(0, this.options.leaderLineWidth / 2);
+
+    gradientFrom.x = pointTo[0];
+    gradientFrom.y = pointTo[1];
+    gradientFrom.rotation = angle;
+
+    gradientTo.x = pointFrom[0];
+    gradientTo.y = pointFrom[1];
+    gradientTo.rotation = angle + degToRad(180);
+
+    this.gLeaderLine.removeChildren();
+    this.gLeaderLine.addChild(gradientFrom);
+    this.gLeaderLine.addChild(gradientTo);
+
+    this.gLeaderLineGrd = [gradientFrom, gradientTo];
 
     return this.gLeaderLineGrd;
   }
