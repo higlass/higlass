@@ -92,7 +92,9 @@ export class StackedBarTrack extends BarTrack {
     const positiveTrackHeight = (positiveMax * trackHeight) / unscaledHeight;
     const negativeTrackHeight = (negativeMax * trackHeight) / unscaledHeight;
 
-    const colorScale = scaleOrdinal(schemeCategory10);
+    const colorScale = this.options.colorScale;
+    console.log(colorScale);
+    console.log(colorToHex('#32CD32'));
     const valueToPixels = scaleLinear()
       .domain([0, positiveMax])
       .range([0, trackHeight]);
@@ -102,13 +104,13 @@ export class StackedBarTrack extends BarTrack {
       const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
       const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
 
-      // sorted from largest to smallest
+      // sorted from smallest to largest, but code below makes largest bar go on top
       const positiveValsSorted = matrix[j].filter((a) => a >= 0).sort((a, b) => a - b);
 
       for (let i = 0; i < positiveValsSorted.length; i++) {
         const height = valueToPixels(positiveValsSorted[i]);
         const y = (trackHeight - negativeTrackHeight) - (prevStackedBarHeight + height);
-        graphics.beginFill(colorToHex(colorScale(i)));
+        graphics.beginFill(colorToHex(colorScale[i]));
         graphics.drawRect(x, y, width, height);
         prevStackedBarHeight = prevStackedBarHeight + height;
       }
@@ -123,12 +125,13 @@ export class StackedBarTrack extends BarTrack {
       for (let i = 0; i < negativeValsSorted.length; i++) {
         const height = valueToPixels(negativeValsSorted[i]);
         const y = positiveTrackHeight - (prevStackedBarHeight + height);
-        graphics.beginFill(colorToHex(colorScale(i)));
+        graphics.beginFill(colorToHex(colorScale[i]));
         graphics.drawRect(x, y, width, height);
         prevStackedBarHeight = prevStackedBarHeight - height;
       }
       prevStackedBarHeight = 0;
     }
+    //console.log(colorToHex(colorScale[1]));
 
   }
 
