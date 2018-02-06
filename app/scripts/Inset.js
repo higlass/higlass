@@ -290,7 +290,7 @@ export default class Inset {
       .beginFill(fill)
       .drawRoundedRect(0, 0, width, height, radius)
       .endFill()
-      .generateTexture();
+      .generateCanvasTexture();
 
     return new PIXI.Sprite(rect);
   }
