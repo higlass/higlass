@@ -92,7 +92,7 @@ export class StackedBarTrack extends BarTrack {
     const positiveTrackHeight = (positiveMax * trackHeight) / unscaledHeight;
     const negativeTrackHeight = (negativeMax * trackHeight) / unscaledHeight;
 
-    const colorScale = this.options.colorScale;
+    const colorScale = this.options.colorScale || scaleOrdinal(schemeCategory10);
     console.log(colorScale);
     console.log(colorToHex('#32CD32'));
     const valueToPixels = scaleLinear()
