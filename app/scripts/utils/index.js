@@ -10,6 +10,7 @@ export { default as colorDomainToRgbaArray } from './color-domain-to-rgba-array'
 export { default as colorToHex } from './color-to-hex';
 export { default as dataToGenomicLoci } from './data-to-genomic-loci';
 export { default as debounce } from './debounce';
+export { default as degToRad } from './deg-to-rad';
 export { default as dictFromTuples } from './dict-from-tuples';
 export { default as dictItems } from './dict-items';
 export { default as dictKeys } from './dict-keys';
