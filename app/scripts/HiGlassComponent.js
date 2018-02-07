@@ -2827,11 +2827,10 @@ class HiGlassComponent extends React.Component {
 
     const hoveredTracks = hoveredTiledPlot
       ? hoveredTiledPlot.listTracksAtPosition(relPos[0], relPos[1], true)
-      : undefined;
+        .map(track => track.originalTrack || track)
+      : [];
 
-    const hoveredTrack = hoveredTracks && hoveredTracks.length > 0
-      ? hoveredTracks[0].originalTrack || hoveredTracks[0]
-      : undefined;
+    const hoveredTrack = hoveredTracks.find(track => !track.isAugmentationTrack);
 
     const relTrackPos = hoveredTrack
       ? [
@@ -2864,7 +2863,7 @@ class HiGlassComponent extends React.Component {
         dataY,
         isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
         isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
-        hoveredTrack
+        hoveredTracks
       }
     );
   }
