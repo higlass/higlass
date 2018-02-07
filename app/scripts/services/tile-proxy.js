@@ -152,6 +152,38 @@ export const calculateZoomLevel = (scale, minX, maxX) => {
 };
 
 /**
+ * Calculate the element within this tile containing the given
+ * position.
+ *
+ * Returns the tile position and position within the tile for
+ * the given element.
+ *
+ * @param {object} tilesetInfo: The information about this tileset
+ * @param {Number} maxDim: The maximum width of the dataset (only used for tilesets without resolutions)
+ * @param {Number} dataStartPos: The position where the data begins
+ * @param {int} zoomLevel: The current zoomLevel
+ * @param {Number} position: The position (in absolute coordinates) to caculate the tile and position in tile for
+ */
+export const calculateTileAndPosInTile = function(tilesetInfo, maxDim, dataStartPos, zoomLevel, position) {
+  let tileWidth = null;
+  const PIXELS_PER_TILE = tilesetInfo.bins_per_dimension || 256;
+
+  if (tilesetInfo.resolutions) {
+    tileWidth = tilesetInfo.resolutions[zoomLevel] * PIXELS_PER_TILE;
+  } else {
+    tileWidth = maxDim / (2 ** zoomLevel);
+  }
+  
+  console.log('tileWidth:', tileWidth);
+  const tilePos = Math.floor((position - dataStartPos) / tileWidth);
+
+  const posInTile = Math.floor(PIXELS_PER_TILE * (position - tilePos * tileWidth) / tileWidth);
+
+  console.log('tilePos:', tilePos);
+  console.log('posInTile:', posInTile);
+}
+
+/**
  * Calculate the tiles that should be visible get a data domain
  * and a tileset info
  *
@@ -359,6 +391,7 @@ function json(url, callback) {
 
 
 const api = {
+  calculateTileAndPosInTile,
   calculateTiles,
   calculateTilesFromResolution,
   calculateTileWidth,
