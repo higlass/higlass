@@ -25,9 +25,9 @@ import { all as icons } from './icons';
 import api, { destroy as apiDestroy, publish as apiPublish } from './api';
 
 // Services
-import { 
-  chromInfo, 
-  domEvent, 
+import {
+  chromInfo,
+  domEvent,
   pubSub ,
   setTileProxyAuthHeader
 } from './services';
@@ -347,7 +347,7 @@ class HiGlassComponent extends React.Component {
     const viewsByUid = this.processViewConfig(newProps.viewConfig);
 
     if (newProps.options.authToken != this.prevAuthToken) {
-      // we go a new auth token so we should reload everything 
+      // we go a new auth token so we should reload everything
       setTileProxyAuthHeader(newProps.options.authToken);
 
       for (let viewId of this.iterateOverViews()) {
@@ -503,6 +503,9 @@ class HiGlassComponent extends React.Component {
   }
 
   animate() {
+    if (this.animationFrameIsRequested) return;
+
+    this.animationFrameIsRequested = true;
     requestAnimationFrame(() => {
       // component was probably unmounted
       if (!this.pixiRenderer) return;
@@ -514,6 +517,7 @@ class HiGlassComponent extends React.Component {
         pubSub.publish('app.tick');
         this.animate();
       }
+      this.animationFrameIsRequested = false;
     });
   }
 
