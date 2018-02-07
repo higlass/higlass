@@ -359,7 +359,7 @@ export default class Insets2dTrack extends PixiTrack {
 
       if (this.options.leaderLineDynamic) inset.drawLeaderLine();
     });
-    this.updateClosestInset(closest.inset);
+    // this.updateClosestInset(closest.inset);
     this.animate();
   }
 
