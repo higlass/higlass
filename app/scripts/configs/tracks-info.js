@@ -224,7 +224,7 @@ export const TRACKS_INFO = [
     },
   },
   {
-    type: 'horizontal-multivec',
+    type: 'horizontal-stacked-bar',
     datatype: ['multivec'],
     local: false,
     orientation: '1d-horizontal',
@@ -235,10 +235,12 @@ export const TRACKS_INFO = [
       'valueScaling',
       'labelTextOpacity',
       'labelBackgroundOpacity',
-      'colorRange',
       'trackBorderWidth',
       'trackBorderColor',
-      'trackType'
+      'trackType',
+      'scaledHeight',
+      'backgroundColor',
+      'colorScale'
     ],
     defaultOptions: {
       labelPosition: 'topLeft',
@@ -247,7 +249,10 @@ export const TRACKS_INFO = [
       valueScaling: 'linear',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
-    },
+      scaledHeight: false,
+      backgroundColor: 'white',
+      colorScale: 'category10'
+    }
   },
   {
     type: 'vertical-line',

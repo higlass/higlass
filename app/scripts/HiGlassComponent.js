@@ -503,17 +503,19 @@ class HiGlassComponent extends React.Component {
   }
 
   animate() {
-    if (this.animationFrameIsRequested) return;
+    if (this.isRequestingAnimationFrame) return;
 
-    this.animationFrameIsRequested = true;
+    this.isRequestingAnimationFrame = true;
+
     requestAnimationFrame(() => {
       // component was probably unmounted
       if (!this.pixiRenderer) return;
 
       this.pixiRenderer.render(this.pixiStage);
+
       PIXI.tweenManager.update();
 
-      this.animationFrameIsRequested = false;
+      this.isRequestingAnimationFrame = false;
       if (this.repeatingAnimation.size) {
         pubSub.publish('app.tick');
         this.animate();

@@ -24,7 +24,7 @@ export default class DataFetcher {
     }
   }
 
-  tilesetInfo(finished) {
+  tilesetInfo(finished, errorCb) {
     /**
      * Obtain tileset infos for all of the tilesets listed
      *
@@ -40,6 +40,8 @@ export default class DataFetcher {
      */
 
     if (!this.dataConfig.children) {
+      // this data source has no children so we just need to retrieve one tileset 
+      // info
       if (!this.dataConfig.server && !this.dataConfig.tilesetUid) {
         console.warn(
           'No dataConfig children, server or tilesetUid:', this.dataConfig
@@ -54,7 +56,11 @@ export default class DataFetcher {
             // tileset infos are indxed by by tilesetUids, we can just resolve
             // that here before passing it back to the track
             finished(tilesetInfo[this.dataConfig.tilesetUid]);
-          });
+          },
+          (error) => {
+            finished({'error': error});
+          }
+        );
       }
     } else {
       // this data source has children, so we need to wait to get

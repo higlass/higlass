@@ -78,6 +78,52 @@ export const OPTIONS_INFO = {
     name: 'Track Border Color',
     inlineOptions: AVAILABLE_COLORS,
   },
+  backgroundColor: {
+    name: 'Background Color',
+    inlineOptions: {
+      white: { name: 'White', value: 'white' },
+      black: { name: 'Black', value: 'black' },
+    },
+  },
+  colorScale: {
+    name: 'Color Scale',
+    inlineOptions: {
+      epilogos: { name: 'Epilogos',
+        values: [
+          '#FFFFFF',
+          '#C0C0C0',
+          '#808080',
+          '#BDB76B',
+          '#E9967A',
+          '#CD5C5C',
+          '#8A91D0',
+          '#66CDAA',
+          '#FFFF00',
+          '#FF0000',
+          '#C2E105',
+          '#32CD32',
+          '#006400',
+          '#008000',
+          '#FF4500',
+        ],
+      },
+      category10: {
+        name: 'D3 Category10',
+        values: [
+          '#1F77B4',
+          '#FF7F0E',
+          '#2CA02C',
+          '#D62728',
+          '#9467BD',
+          '#8C564B',
+          '#E377C2',
+          '#7F7F7F',
+          '#BCBD22',
+          '#17BECF'
+        ]
+      }
+    },
+  },
   minusStrandColor: {
     name: '- Strand Color',
     inlineOptions: AVAILABLE_COLORS,

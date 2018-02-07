@@ -24,6 +24,27 @@ const sessionId = slugid.nice();
 export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
 export let authHeader = null;
 
+
+/**
+ * Send a JSON request mark it so that we can tell how many are in flight
+ */
+function json(url, callback) {
+  requestsInFlight += 1;
+  pubSub.publish('requestSent', url);
+
+  const r = request(url).header('Content-Type', 'application/json');
+
+  if (authHeader) r.header('Authorization', `${authHeader}`);
+
+  r.send('GET', (error, data) => {
+    pubSub.publish('requestReceived', url);
+    const j = data && JSON.parse(data.response);
+    callback(error, j);
+    requestsInFlight -= 1;
+  });
+}
+
+
 const debounce = (func, wait) => {
   let timeout;
   let bundledRequest = [];
@@ -229,21 +250,33 @@ export const calculateTilesFromResolution = (
   return tileRange;
 };
 
-export const trackInfo = (server, tilesetUid, done) => {
-  const url =
-    `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
-    pubSub.publish('requestSent', url);
-    json(url, (error, data) => {
-      pubSub.publish('requestReceived', url);
-      if (error) {
-        // console.log('error:', error);
-        // don't do anything
-        // no tileset info just means we can't do anything with this file...
+/**
+ * Request a tilesetInfo for a track
+ *
+ * @param {string} server: The server where the data resides
+ * @param {string} tilesetUid: The identifier for the dataset
+ * @param {func} doneCb: A callback that gets called when the data is retrieved
+ * @param {func} errorCb: A callback that gets called when there is an error
+ */
+export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
+  const url = `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
+  pubSub.publish('requestSent', url);
+  json(url, (error, data) => {
+    pubSub.publish('requestReceived', url);
+    if (error) {
+      // console.log('error:', error);
+      // don't do anything
+      // no tileset info just means we can't do anything with this file...
+      if (errorCb) {
+        errorCb(`Error retrieving tilesetInfo from: ${server}`);
       } else {
-        // console.log('got data', data);
-        done(data);
+        console.warn('Error retrieving: ', url);
       }
-    });
+    } else {
+      // console.log('got data', data);
+      doneCb(data);
+    }
+  });
 };
 
 /**
@@ -319,27 +352,6 @@ function text(url, callback) {
     pubSub.publish('requestReceived', url);
     requestsInFlight -= 1;
   });
-}
-
-/**
- * Send a JSON request mark it so that we can tell how many are in flight
- */
-function json(url, callback) {
-  requestsInFlight += 1;
-  pubSub.publish('requestSent', url);
-
-  const r = request(url)
-    .header('Content-Type', 'application/json')
-
-  if (authHeader)
-    r.header('Authorization', `${authHeader}`)
-
-    r.send('GET', (error, data) => {
-      pubSub.publish('requestReceived', url);
-      const j = data && JSON.parse(data.response);
-      callback(error, j);
-      requestsInFlight -= 1;
-    });
 }
 
 

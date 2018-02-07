@@ -37,6 +37,7 @@ import Chromosome2DLabels from './Chromosome2DLabels';
 import Chromosome2DGrid from './Chromosome2DGrid';
 import Chromosome2DAnnotations from './Chromosome2DAnnotations';
 import HorizontalChromosomeLabels from './HorizontalChromosomeLabels';
+
 import HorizontalHeatmapTrack from './HorizontalHeatmapTrack';
 import UnknownPixiTrack from './UnknownPixiTrack';
 import ValueIntervalTrack from './ValueIntervalTrack';
@@ -54,6 +55,9 @@ import ImageTilesTrack from './ImageTilesTrack';
 
 import AnnotationsInsets from './AnnotationsInsets';
 import Insets2dTrack from './Insets2dTrack';
+
+import StackedBarTrack from './StackedBarTrack';
+
 
 // Utils
 import {
@@ -1082,6 +1086,19 @@ class TrackRenderer extends React.Component {
 
       case 'horizontal-multivec':
         return new HorizontalMultivecTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          this.svgElement,
+          () => this.currentProps.onValueScaleChanged(track.uid),
+          newOptions =>
+            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
+        );
+
+      case 'horizontal-stacked-bar':
+        return new StackedBarTrack(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
