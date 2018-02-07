@@ -1,3 +1,4 @@
+import { scaleLinear } from 'd3-scale';
 import React from 'react';
 import { DropShadowFilter } from 'pixi-filters';
 
@@ -122,6 +123,13 @@ export default class Insets2dTrack extends PixiTrack {
         {'Zoom to annotation'}
       </ContextMenuItem>
     );
+
+    this.relCursorDist = scaleLinear()
+      .domain([
+        this.options.leaderLineDynamicMinDist || 0,
+        this.options.leaderLineDynamicMaxDist || Math.max(...this.dimensions)
+      ])
+      .clamp(true);
   }
 
   getContextMenuGoto(inset) {
@@ -339,13 +347,19 @@ export default class Insets2dTrack extends PixiTrack {
   updateDistances(x, y) {
     const closest = { d: Infinity, inset: null };
     objVals(this.insets).forEach((inset) => {
-      const d = inset.distance(this.computeDistance(x, y, inset));
+      const d = this.computeDistance(x, y, inset);
+
+      inset.distance(d, this.relCursorDist(d));
+
       if (closest.d > d) {
         closest.d = d;
         closest.inset = inset;
       }
+
+      if (this.options.leaderLineDynamic) inset.drawLeaderLine();
     });
     this.updateClosestInset(closest.inset);
+    this.animate();
   }
 
   updateClosestInset(inset) {

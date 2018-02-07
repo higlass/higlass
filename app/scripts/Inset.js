@@ -49,6 +49,7 @@ export default class Inset {
     this.t = this.isMatrix ? -1 : 1;
 
     this.d = Infinity;
+    this.relD = 1;
 
     this.gMain = new PIXI.Graphics();
     this.gBorder = new PIXI.Graphics();
@@ -84,6 +85,16 @@ export default class Inset {
     this.borderFillAlpha = options.borderOpacity || 1;
 
     this.selectColor = options.selectColor || 0x00ffff;
+
+    this.leaderLineColor = d3Color(
+      `#${this.options.leaderLineColor.toString(16)}`
+    );
+    this.leaderLineStubWidthMin = (
+      this.options.leaderLineStubWidthMin || this.options.leaderLineStubWidth
+    );
+    this.leaderLineStubWidthVariance = (
+      this.options.leaderLineStubWidthMax - this.options.leaderLineStubWidthMin
+    ) || 0;
 
     this.leaderLineStyle = [
       options.leaderLineWidth || 1,
@@ -317,12 +328,14 @@ export default class Inset {
 
   /**
    * Set or get the distance of the inset to the mouse cursor.
-   * @param   {number}  d  Eucledian distance to the mouse cursor to be set.
-   * @return  {number}  Eucledian distance to the mouse cursor.
+   * @param   {number}  d  Eucledian distance to the mouse cursor.
+   * @param   {number}  d  Relative distance to the mouse cursor.
+   * @return  {array}  Eucledian and relative distance to the mouse cursor.
    */
-  distance(d = this.d) {
+  distance(d = this.d, relD = this.relD) {
     this.d = d;
-    return d;
+    this.relD = relD;
+    return [d, relD];
   }
 
   /**
@@ -772,13 +785,11 @@ export default class Inset {
     const pOriginNew = pInset.slice();
     clip(pOriginNew, pOrigin.slice(), rectOrigin);
 
-    const color = d3Color(`#${this.options.leaderLineColor.toString(16)}`);
-
     if (this.options.leaderLineStubLength) {
-      return this.renderLeaderLineStubs(pInsetNew, pOriginNew, color);
+      return this.renderLeaderLineStubs(pInsetNew, pOriginNew);
     }
 
-    return this.renderLeaderLineGrd(pInsetNew, pOriginNew, color);
+    return this.renderLeaderLineGrd(pInsetNew, pOriginNew);
   }
 
   /**
@@ -788,7 +799,7 @@ export default class Inset {
    * @param   {object}  color  RGBA D3 color object.
    * @return  {array}  List of PIXI.Sprite objects of the leader line.
    */
-  renderLeaderLineGrd(pointFrom, pointTo, color) {
+  renderLeaderLineGrd(pointFrom, pointTo, color = this.leaderLineColor) {
     const colorSteps = {};
     Object.keys(this.options.leaderLineFading).forEach((step) => {
       color.opacity = this.options.leaderLineFading[step];
@@ -827,13 +838,23 @@ export default class Inset {
    * @param   {object}  color  RGBA D3 color object.
    * @return  {array}  List of PIXI.Sprite objects of the leader line.
    */
-  renderLeaderLineStubs(pointFrom, pointTo, color) {
-    const colorFrom = color.toString();
+  renderLeaderLineStubs(pointFrom, pointTo, color = this.leaderLineColor) {
+    const colorFrom = Object.assign(color.rgb(), { opacity: 1 }).toString();
     const colorTo = Object.assign(color.rgb(), { opacity: 0 }).toString();
 
-    const gradient = PIXI.Texture.fromCanvas(canvasLinearGradient(
+    const dist = lDist(pointFrom, pointTo);
+    const width = Math.max(
       this.options.leaderLineStubLength,
-      this.options.leaderLineStubWidth || 2,
+      dist * (1 - this.relD)
+    );
+    const lineWidth = (
+      this.leaderLineStubWidthMin
+      + (this.leaderLineStubWidthVariance * this.relD)
+    );
+
+    const gradient = PIXI.Texture.fromCanvas(canvasLinearGradient(
+      width,
+      lineWidth || 2,
       { 0: colorFrom, 1: colorTo }
     ));
 
@@ -925,5 +946,12 @@ export default class Inset {
     this.width = width;
     this.height = height;
     return [width, height];
+  }
+
+  updateLeaderLine(relDist) {
+    if (this.options.leaderLineStubLength) {
+
+    }
+    console.log('REEEEEL DIST', relDist);
   }
 }
