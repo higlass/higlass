@@ -135,6 +135,7 @@ export default class Inset {
    * @param  {Object}  options  Custom line style for the border and leader line
    */
   clear(options = this.options) {
+    if (this.tweenStop) this.tweenStop();
     this.gOrigin.clear();
     this.gBorder.clear();
     this.gLeaderLine.clear();
@@ -146,6 +147,7 @@ export default class Inset {
    * Remove children and destroy border sprite.
    */
   clearBorder() {
+    if (this.tweenStop) this.tweenStop();
     this.gBorder.removeChildren();
     this.border.destroy();
     this.border = undefined;
@@ -320,6 +322,7 @@ export default class Inset {
    * Destroy graphics and unset data.
    */
   destroy() {
+    if (this.tweenStop) this.tweenStop();
     if (this.sprite) this.sprite.removeAllListeners();
 
     this.gOrigin.destroy();
@@ -329,6 +332,7 @@ export default class Inset {
 
     this.data = undefined;
     this.sprite = undefined;
+    this.border = undefined;
   }
 
   /**
@@ -365,6 +369,7 @@ export default class Inset {
     if (!this.border) {
       const ratio = width / height;
       const maxBorderSize = this.maxSize * this.onClickScale;
+      if (this.tweenStop) this.tweenStop();
       this.border = this.createRect(
         (ratio >= 1 ? maxBorderSize : maxBorderSize * ratio) + this.borderPadding,
         (ratio <= 1 ? maxBorderSize : maxBorderSize / ratio) + this.borderPadding,
