@@ -17,7 +17,6 @@ import pubSub, { create } from './services/pub-sub';
 import {
   absToChr,
   base64ToCanvas,
-  colorToHex,
   lDist,
   flatten,
   isTrackOrChildTrack,
@@ -44,6 +43,8 @@ export default class Insets2dTrack extends PixiTrack {
     positioning  // Computed track position, location, and offset
   ) {
     super(scene, options);
+
+    this.isAugmentationTrack = true;
 
     this.dataConfig = dataConfig;
     this.dataType = dataType;
@@ -341,8 +342,15 @@ export default class Insets2dTrack extends PixiTrack {
   mouseUpRightHandler(/* event, inset */) {}
 
   mouseMoveHandler(event) {
-    if (!isTrackOrChildTrack(this, event.hoveredTrack)) return;
-    this.updateDistances(event.relTrackX, event.relTrackY);
+    if (event.hoveredTracks.some(track => isTrackOrChildTrack(this, track))) {
+      let x = event.relTrackX;
+      let y = event.relTrackY;
+      if (this.positioning.location === 'gallery') {
+        x = event.x - this.position[0];
+        y = event.y - this.position[0];
+      }
+      this.updateDistances(x, y);
+    }
   }
 
   updateDistances(x, y) {
