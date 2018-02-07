@@ -86,7 +86,7 @@ export default class Inset {
     this.borderFill = colorToHex(options.borderColor) || 0xffffff;
     this.borderFillAlpha = options.borderOpacity || 1;
 
-    this.selectColor = colorToHex(options.selectColor) || 0x00ffff;
+    this.selectColor = colorToHex(options.selectColor) || 0xff0000;
 
     this.leaderLineStubWidthMin = (
       this.options.leaderLineStubWidthMin || this.options.leaderLineStubWidth
@@ -821,9 +821,10 @@ export default class Inset {
    * @return  {array}  List of PIXI.Sprite objects of the leader line.
    */
   renderLeaderLineGrd(pointFrom, pointTo, color = this.options.leaderLineColor) {
-    const _color = this.isHovering
+    const _color = d3Color((this.isHovering
       ? this.options.selectColor
-      : color;
+      : color
+    ));
 
     const colorSteps = {};
     Object.keys(this.options.leaderLineFading).forEach((step) => {
@@ -864,9 +865,11 @@ export default class Inset {
    * @return  {array}  List of PIXI.Sprite objects of the leader line.
    */
   renderLeaderLineStubs(pointFrom, pointTo, color = this.options.leaderLineColor) {
-    const _color = this.isHovering
+    const _color = d3Color((this.isHovering
       ? this.options.selectColor
-      : color;
+      : color
+    ));
+
     const colorFrom = Object.assign(_color.rgb(), { opacity: 1 }).toString();
     const colorTo = Object.assign(_color.rgb(), { opacity: 0 }).toString();
 
