@@ -453,8 +453,15 @@ export default class Inset {
    * Draw a border around the origin of the inset.
    */
   drawOriginBorder() {
+    const borderOrigin = this.computeBorderOrigin();
+
     this.gOrigin.drawRect(
-      ...this.computeBorder(...this.computeBorderOrigin())
+      ...this.computeBorder(
+        borderOrigin[0] + (this.originStyle[0] / 2),
+        borderOrigin[1] + (this.originStyle[0] / 2),
+        borderOrigin[2] - this.originStyle[0],
+        borderOrigin[3] - this.originStyle[0],
+      )
     );
   }
 
@@ -584,6 +591,7 @@ export default class Inset {
    */
   mouseOverHandler(event) {
     this.isHovering = true;
+    this.focus();
     this.originFocus();
     this.mouseHandler.mouseOver(event, this);
   }
@@ -595,6 +603,7 @@ export default class Inset {
    */
   mouseOutHandler(event) {
     this.isHovering = false;
+    this.blur();
     this.originBlur();
     this.mouseHandler.mouseOut(event, this);
   }
