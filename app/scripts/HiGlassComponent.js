@@ -513,11 +513,11 @@ class HiGlassComponent extends React.Component {
       this.pixiRenderer.render(this.pixiStage);
       PIXI.tweenManager.update();
 
+      this.animationFrameIsRequested = false;
       if (this.repeatingAnimation.size) {
         pubSub.publish('app.tick');
         this.animate();
       }
-      this.animationFrameIsRequested = false;
     });
   }
 
