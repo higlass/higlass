@@ -1,3 +1,4 @@
+import { color as d3Color } from 'd3-color';
 import { scaleLinear } from 'd3-scale';
 import React from 'react';
 import { DropShadowFilter } from 'pixi-filters';
@@ -92,10 +93,10 @@ export default class Insets2dTrack extends PixiTrack {
     this.subscribe = subscribe;
     this.unsubscribe = unsubscribe;
 
-    this.options.fill = colorToHex(this.options.fill);
-    this.options.borderColor = colorToHex(this.options.borderColor);
-    this.options.leaderLineColor = colorToHex(this.options.leaderLineColor);
-    this.options.selectColor = colorToHex(this.options.selectColor);
+    this.options.fill = d3Color(this.options.fill);
+    this.options.borderColor = d3Color(this.options.borderColor);
+    this.options.leaderLineColor = d3Color(this.options.leaderLineColor);
+    this.options.selectColor = d3Color(this.options.selectColor);
 
     this.insetMinSize = this.options.minSize || BASE_MIN_SIZE;
     this.insetMaxSize = this.options.maxSize || BASE_MAX_SIZE;
