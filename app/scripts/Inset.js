@@ -162,7 +162,7 @@ export default class Inset {
    * @param   {boolean}  isAbs  If `true` return `[xStart, yStart, xEnd, yEnd]`.
    * @return  {array}  X, Y, width, and height of the inset in view coordinates.
    */
-  computeBorder(
+  computeBorderPosition(
     x = this.x,
     y = this.y,
     width = this.width,
@@ -170,8 +170,8 @@ export default class Inset {
     padding = this.borderPadding,
     isAbs = false,
   ) {
-    const finalX = this.globalOffsetX + this.offsetX + x - (width / 2);
-    const finalY = this.globalOffsetY + this.offsetY + y - (height / 2);
+    const finalX = this.globalOffsetX + x - (width / 2);
+    const finalY = this.globalOffsetY + y - (height / 2);
 
     return [
       finalX - (padding / 2),
@@ -186,7 +186,7 @@ export default class Inset {
    *   is more of a convenience function to save code duplication
    * @return  {array}  X, y, width, and height of the original annotation.
    */
-  computeBorderOrigin() {
+  computeBorderOriginPosition() {
     return [
       this.originX,
       this.originY,
@@ -315,6 +315,8 @@ export default class Inset {
       .endFill()
       .generateCanvasTexture();
 
+    if (this.uid === 'c0IYT0ZBSnqIvO_KLwo8vg') console.log('ASS', width, height);
+
     return new PIXI.Sprite(rect);
   }
 
@@ -364,12 +366,13 @@ export default class Inset {
     radius = this.options.borderRadius,
     fill = this.borderFill,
   ) {
-    const [vX, vY] = this.computeBorder(x, y, width, height);
+    const [vX, vY] = this.computeBorderPosition(x, y, width, height);
 
     if (!this.border) {
       const ratio = width / height;
-      const maxBorderSize = this.maxSize * this.onClickScale;
+      const maxBorderSize = this.maxSize * this.onClickScale * this.scaleBase;
       if (this.tweenStop) this.tweenStop();
+      if (this.uid === 'c0IYT0ZBSnqIvO_KLwo8vg') console.log('maxBorderSize', maxBorderSize, this.scaleBase);
       this.border = this.createRect(
         (ratio >= 1 ? maxBorderSize : maxBorderSize * ratio) + this.borderPadding,
         (ratio <= 1 ? maxBorderSize : maxBorderSize / ratio) + this.borderPadding,
@@ -459,10 +462,10 @@ export default class Inset {
    * Draw a border around the origin of the inset.
    */
   drawOriginBorder() {
-    const borderOrigin = this.computeBorderOrigin();
+    const borderOrigin = this.computeBorderOriginPosition();
 
     this.gOrigin.drawRect(
-      ...this.computeBorder(
+      ...this.computeBorderPosition(
         borderOrigin[0] + (this.originStyle[0] / 2),
         borderOrigin[1] + (this.originStyle[0] / 2),
         borderOrigin[2] - this.originStyle[0],
@@ -777,11 +780,11 @@ export default class Inset {
    * @return  {array}  List of PIXI.Sprite objects of the leader line.
    */
   renderLeaderLine(color = this.options.leaderLineColor) {
-    const rectInset = this.computeBorder(
+    const rectInset = this.computeBorderPosition(
       this.x, this.y, this.width, this.height, 0, true
     );
-    const rectOrigin = this.computeBorder(
-      ...this.computeBorderOrigin(), 0, true
+    const rectOrigin = this.computeBorderPosition(
+      ...this.computeBorderOriginPosition(), 0, true
     );
 
     const pInset = [
@@ -940,12 +943,18 @@ export default class Inset {
 
     const imPos = this.computeImagePosition();
 
-    const [bX, bY] = this.computeBorder(
+    const bWidth = (this.data.width * imPos.scaleX * this.t) + this.borderPadding;
+    const bHeight = (this.data.height * imPos.scaleY * this.t) + this.borderPadding;
+
+    const [bX, bY] = this.computeBorderPosition(
       this.x,
       this.y,
-      this.width,
-      this.height,
+      bWidth,
+      bHeight,
+      true
     );
+
+    if (this.uid === 'c0IYT0ZBSnqIvO_KLwo8vg') console.log(this.sprite.width);
 
     this.tweenStop = transitionGroup(
       [
@@ -965,8 +974,9 @@ export default class Inset {
           propsTo: {
             x: bX,
             y: bY,
-            width: (this.data.width * imPos.scaleX) + this.borderPadding,
-            height: (this.data.height * imPos.scaleY) + this.borderPadding,
+            // Not sure why we need the `+1`. Maybe an interpolation problem?
+            width: bWidth + 1,
+            height: bHeight + 1,
           }
         }
       ],
