@@ -593,6 +593,7 @@ export default class Inset {
     this.isHovering = true;
     this.focus();
     this.originFocus();
+    this.drawLeaderLine(this.options.selectColor);
     this.mouseHandler.mouseOver(event, this);
   }
 
@@ -605,6 +606,7 @@ export default class Inset {
     this.isHovering = false;
     this.blur();
     this.originBlur();
+    this.drawLeaderLine();
     this.mouseHandler.mouseOut(event, this);
   }
 
@@ -839,11 +841,11 @@ export default class Inset {
         colorSteps
       ))
     );
-    // Set the coration center to [0, half height]
+    // Set the rotation center to [0, half height]
     gradient.pivot.set(0, this.options.leaderLineWidth / 2);
 
-    gradient.x = pointFrom[0];
-    gradient.y = pointFrom[1];
+    gradient.x = pointTo[0];
+    gradient.y = pointTo[1];
     gradient.rotation = getAngleBetweenPoints(
       [this.originX, this.originY],
       [this.x, this.y]
