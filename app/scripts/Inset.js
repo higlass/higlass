@@ -7,6 +7,7 @@ import { transitionGroup } from './services/transition';
 
 import {
   canvasLinearGradient,
+  colorToHex,
   degToRad,
   getAngleBetweenPoints,
   lDist
@@ -54,8 +55,9 @@ export default class Inset {
     this.gMain = new PIXI.Graphics();
     this.gBorder = new PIXI.Graphics();
     this.gLeaderLine = new PIXI.Graphics();
-    this.gOriginMask = new PIXI.Graphics();
+    this.gOrigin = new PIXI.Graphics();
 
+    this.gMain.addChild(this.gOrigin);
     this.gMain.addChild(this.gLeaderLine);
     this.gMain.addChild(this.gBorder);
 
@@ -81,14 +83,11 @@ export default class Inset {
 
     this.borderStyle = [1, 0x000000, 0.33];
     this.borderPadding = options.borderWidth * 2 || 4;
-    this.borderFill = options.borderColor || 0xffffff;
+    this.borderFill = colorToHex(options.borderColor) || 0xffffff;
     this.borderFillAlpha = options.borderOpacity || 1;
 
-    this.selectColor = options.selectColor || 0x00ffff;
+    this.selectColor = colorToHex(options.selectColor) || 0x00ffff;
 
-    this.leaderLineColor = d3Color(
-      `#${this.options.leaderLineColor.toString(16)}`
-    );
     this.leaderLineStubWidthMin = (
       this.options.leaderLineStubWidthMin || this.options.leaderLineStubWidth
     );
@@ -98,8 +97,14 @@ export default class Inset {
 
     this.leaderLineStyle = [
       options.leaderLineWidth || 1,
-      options.leaderLineColor || 0x000000,
+      colorToHex(options.leaderLineColor) || 0x000000,
       options.leaderLineOpacity || 1
+    ];
+
+    this.originStyle = [
+      options.leaderLineWidth || 1,
+      colorToHex(options.selectColor) || 0x000000,
+      1
     ];
 
     this.initGraphics(options);
@@ -130,7 +135,7 @@ export default class Inset {
    * @param  {Object}  options  Custom line style for the border and leader line
    */
   clear(options = this.options) {
-    this.gOriginMask.clear();
+    this.gOrigin.clear();
     this.gBorder.clear();
     this.gLeaderLine.clear();
     this.gMain.clear();
@@ -317,7 +322,7 @@ export default class Inset {
   destroy() {
     if (this.sprite) this.sprite.removeAllListeners();
 
-    this.gOriginMask.destroy();
+    this.gOrigin.destroy();
     this.gBorder.destroy();
     this.gLeaderLine.destroy();
     this.gMain.destroy();
@@ -378,7 +383,7 @@ export default class Inset {
   /**
    * Draw leader line.
    */
-  drawLeaderLine() {
+  drawLeaderLine(color = this.leaderLineColor) {
     const dist = lDist(
       [this.originX, this.originY],
       [this.x, this.y],
@@ -388,8 +393,14 @@ export default class Inset {
       this.options.leaderLineStubLength * 1.5 < dist ||
       this.options.leaderLineFading
     ) {
-      this.renderLeaderLine();
+      this.renderLeaderLine(color);
     } else {
+      this.gLeaderLine.lineStyle(
+        this.leaderLineStyle[0],
+        this.isHovering ? this.leaderLineStyle[1] : this.selectColor,
+        this.leaderLineStyle[2]
+      );
+
       // Origin
       this.gLeaderLine.moveTo(
         this.globalOffsetX + this.originX,
@@ -442,7 +453,7 @@ export default class Inset {
    * Draw a border around the origin of the inset.
    */
   drawOriginBorder() {
-    this.gLeaderLine.drawRect(
+    this.gOrigin.drawRect(
       ...this.computeBorder(...this.computeBorderOrigin())
     );
   }
@@ -545,6 +556,7 @@ export default class Inset {
   initGraphics() {
     this.gBorder.lineStyle(...this.borderStyle);
     this.gLeaderLine.lineStyle(...this.leaderLineStyle);
+    this.gOrigin.lineStyle(...this.originStyle);
   }
 
   /**
@@ -571,6 +583,7 @@ export default class Inset {
    * @param  {Object}  event  Event object.
    */
   mouseOverHandler(event) {
+    this.isHovering = true;
     this.originFocus();
     this.mouseHandler.mouseOver(event, this);
   }
@@ -581,6 +594,7 @@ export default class Inset {
    * @param  {Object}  event  Event object.
    */
   mouseOutHandler(event) {
+    this.isHovering = false;
     this.originBlur();
     this.mouseHandler.mouseOut(event, this);
   }
@@ -668,10 +682,8 @@ export default class Inset {
    *   the mask.
    */
   originBlur() {
-    this.gLeaderLine.mask = null;
-    this.gLeaderLine.clear();
+    this.gOrigin.clear();
     this.initGraphics();
-    this.drawLeaderLine();
   }
 
   /**
@@ -747,7 +759,7 @@ export default class Inset {
    * Render the leader line between the inset and the origin.
    * @return  {array}  List of PIXI.Sprite objects of the leader line.
    */
-  renderLeaderLine() {
+  renderLeaderLine(color = this.options.leaderLineColor) {
     const rectInset = this.computeBorder(
       this.x, this.y, this.width, this.height, 0, true
     );
@@ -786,10 +798,10 @@ export default class Inset {
     clip(pOriginNew, pOrigin.slice(), rectOrigin);
 
     if (this.options.leaderLineStubLength) {
-      return this.renderLeaderLineStubs(pInsetNew, pOriginNew);
+      return this.renderLeaderLineStubs(pInsetNew, pOriginNew, color);
     }
 
-    return this.renderLeaderLineGrd(pInsetNew, pOriginNew);
+    return this.renderLeaderLineGrd(pInsetNew, pOriginNew, color);
   }
 
   /**
@@ -799,11 +811,15 @@ export default class Inset {
    * @param   {object}  color  RGBA D3 color object.
    * @return  {array}  List of PIXI.Sprite objects of the leader line.
    */
-  renderLeaderLineGrd(pointFrom, pointTo, color = this.leaderLineColor) {
+  renderLeaderLineGrd(pointFrom, pointTo, color = this.options.leaderLineColor) {
+    const _color = this.isHovering
+      ? this.options.selectColor
+      : color;
+
     const colorSteps = {};
     Object.keys(this.options.leaderLineFading).forEach((step) => {
-      color.opacity = this.options.leaderLineFading[step];
-      colorSteps[step] = color.toString();
+      _color.opacity = this.options.leaderLineFading[step];
+      colorSteps[step] = _color.toString();
     });
 
     const gradient = new PIXI.Sprite(
@@ -838,9 +854,12 @@ export default class Inset {
    * @param   {object}  color  RGBA D3 color object.
    * @return  {array}  List of PIXI.Sprite objects of the leader line.
    */
-  renderLeaderLineStubs(pointFrom, pointTo, color = this.leaderLineColor) {
-    const colorFrom = Object.assign(color.rgb(), { opacity: 1 }).toString();
-    const colorTo = Object.assign(color.rgb(), { opacity: 0 }).toString();
+  renderLeaderLineStubs(pointFrom, pointTo, color = this.options.leaderLineColor) {
+    const _color = this.isHovering
+      ? this.options.selectColor
+      : color;
+    const colorFrom = Object.assign(_color.rgb(), { opacity: 1 }).toString();
+    const colorTo = Object.assign(_color.rgb(), { opacity: 0 }).toString();
 
     const dist = lDist(pointFrom, pointTo);
     const width = Math.max(
@@ -946,12 +965,5 @@ export default class Inset {
     this.width = width;
     this.height = height;
     return [width, height];
-  }
-
-  updateLeaderLine(relDist) {
-    if (this.options.leaderLineStubLength) {
-
-    }
-    console.log('REEEEEL DIST', relDist);
   }
 }
