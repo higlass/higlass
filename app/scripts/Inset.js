@@ -315,8 +315,6 @@ export default class Inset {
       .endFill()
       .generateCanvasTexture();
 
-    if (this.uid === 'c0IYT0ZBSnqIvO_KLwo8vg') console.log('ASS', width, height);
-
     return new PIXI.Sprite(rect);
   }
 
@@ -372,10 +370,13 @@ export default class Inset {
       const ratio = width / height;
       const maxBorderSize = this.maxSize * this.onClickScale * this.scaleBase;
       if (this.tweenStop) this.tweenStop();
-      if (this.uid === 'c0IYT0ZBSnqIvO_KLwo8vg') console.log('maxBorderSize', maxBorderSize, this.scaleBase);
       this.border = this.createRect(
-        (ratio >= 1 ? maxBorderSize : maxBorderSize * ratio) + this.borderPadding,
-        (ratio <= 1 ? maxBorderSize : maxBorderSize / ratio) + this.borderPadding,
+        (ratio >= 1
+          ? maxBorderSize
+          : maxBorderSize * ratio) + this.borderPadding,
+        (ratio <= 1
+          ? maxBorderSize
+          : maxBorderSize / ratio) + this.borderPadding,
         radius,
         fill
       );
@@ -953,8 +954,6 @@ export default class Inset {
       bHeight,
       true
     );
-
-    if (this.uid === 'c0IYT0ZBSnqIvO_KLwo8vg') console.log(this.sprite.width);
 
     this.tweenStop = transitionGroup(
       [
