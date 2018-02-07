@@ -8,12 +8,12 @@ export class StackedBarTrack extends BarTrack {
   }
 
   initTile(tile) {
-    console.log('initTile:', tile)
     this.renderTile(tile);
   }
 
   renderTile(tile) {
     const graphics = tile.graphics;
+    graphics.clear();
     tile.drawnAtScale = this._xScale.copy();
 
     // we're setting the start of the tile to the current zoom level
@@ -84,7 +84,6 @@ export class StackedBarTrack extends BarTrack {
    * @param negativeMax the height of the tallest bar in the negative part of the graph
    */
   drawVerticalBars(graphics, matrix, tileX, tileWidth, positiveMax, negativeMax) {
-    graphics.clear();
     const trackHeight = this.dimensions[1];
 
     // get amount of trackHeight reserved for positive and for negative
@@ -93,8 +92,6 @@ export class StackedBarTrack extends BarTrack {
     const negativeTrackHeight = (negativeMax * trackHeight) / unscaledHeight;
 
     const colorScale = this.options.colorScale || scaleOrdinal(schemeCategory10);
-    console.log(colorScale);
-    console.log(colorToHex('#32CD32'));
     const valueToPixels = scaleLinear()
       .domain([0, positiveMax])
       .range([0, trackHeight]);
@@ -104,7 +101,7 @@ export class StackedBarTrack extends BarTrack {
       const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
       const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
 
-      // sorted from smallest to largest, but code below makes largest bar go on top
+      // sorted from smallest to largest here, but code below this makes largest bar go on top
       const positiveValsSorted = matrix[j].filter((a) => a >= 0).sort((a, b) => a - b);
 
       for (let i = 0; i < positiveValsSorted.length; i++) {
@@ -131,12 +128,8 @@ export class StackedBarTrack extends BarTrack {
       }
       prevStackedBarHeight = 0;
     }
-    //console.log(colorToHex(colorScale[1]));
 
   }
-
-
-
 
   /**
    * Draws graph using normalized values.
@@ -147,7 +140,6 @@ export class StackedBarTrack extends BarTrack {
    * @param tileWidth pre-scaled width of tile
    */
   drawNormalizedBars(graphics, matrix, tileX, tileWidth) {
-    graphics.clear();
     const trackHeight = this.dimensions[1];
     const colorScale = scaleOrdinal(schemeCategory10);
     const valueToPixels = scaleLinear()
