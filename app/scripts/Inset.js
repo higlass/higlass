@@ -395,9 +395,10 @@ export default class Inset {
     ) {
       this.renderLeaderLine(color);
     } else {
+      this.gLeaderLine.clear();
       this.gLeaderLine.lineStyle(
         this.leaderLineStyle[0],
-        this.isHovering ? this.leaderLineStyle[1] : this.selectColor,
+        this.isHovering ? this.selectColor : this.leaderLineStyle[1],
         this.leaderLineStyle[2]
       );
 
