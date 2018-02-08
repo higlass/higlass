@@ -66,9 +66,12 @@ calculateZoomLevel() {
 
       return zoomIndexX;
     }
+
+  // the tileProxy calculateZoomLevel function only cares about the
+  // difference between the minimum and maximum position
     const xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
-      this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0]) - 2;
+      0,
+      this.tilesetInfo.max_width) - 2;
 
     let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
     zoomLevel = Math.max(zoomLevel, 0);

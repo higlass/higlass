@@ -71,13 +71,12 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     if (tileValues.length === 0) { return; }
 
-    let pseudocount = 0; // if we use a log scale, then we'll set a pseudocount
-    // equal to the smallest non-zero value
-    this.valueScale = this.makeValueScale(
+    const [vs, pseudocount] = this.makeValueScale(
       this.minValue(),
       this.calculateMedianVisibleValue(),
       this.maxValue()
     );
+    this.valueScale = vs;
 
     graphics.clear();
 

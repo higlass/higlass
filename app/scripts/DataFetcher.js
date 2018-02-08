@@ -39,8 +39,6 @@ export default class DataFetcher {
      *  finished: function
      *    A callback that will be called when all tileset infos are loaded
      */
-    console.log('requesting tilesetInfo');
-
     if (!this.dataConfig.children) {
       // this data source has no children so we just need to retrieve one tileset 
       // info
@@ -119,10 +117,6 @@ export default class DataFetcher {
      *  tileIds: []
      *    The tile ids to fetch
      */
-    console.log('this.dataConfig', this.dataConfig);
-    console.log('this:', this.dataConfig.tilesetUid);
-    console.log('tileIds:', tileIds);
-
     if (this.dataConfig.type == 'horizontal-section') {
       this.fetchHorizontalSection(receivedTiles, tileIds);
     } else if (!this.dataConfig.children) {
@@ -162,10 +156,6 @@ export default class DataFetcher {
         // if we're trying to divide two datasets,
         if (this.dataConfig.type === 'divided') {
           const newTiles = this.makeDivided(returnedTiles);
-
-          receivedTiles(newTiles);
-        } else if (this.dataConfig.type == 'horizontal-slice') {
-          const newTiles = this.horizontalSlice(returnedTiles);
 
           receivedTiles(newTiles);
         } else {
@@ -220,12 +210,33 @@ export default class DataFetcher {
     return null;
   }
 
+  /**
+   * Extract a slice from a matrix at a given position.
+   *
+   * @param {array} inputData: An array containing a matrix stored row-wise
+   * @param {array} arrayShape: The shape of the array, should be a two element array e.g. [256,256].
+   * @param {int} sliceIndex: The index across which to take the slice
+   * @returns {array} an array corresponding to a slice of this matrix
+  */
+  extractDataSlice(inputData, arrayShape, sliceIndex, axis) {
+    if (!axis) {
+      return inputData.slice(arrayShape[1] * sliceIndex, arrayShape[1] * (sliceIndex + 1));
+    } else {
+      const returnArray = new Array(arrayShape[1]);
+      for (let i = sliceIndex; i < inputData.length; i += arrayShape[0]) {
+        returnArray[Math.floor(i / arrayShape[0])] = inputData[i]
+      }
+      return returnArray;
+    }
+  }
+
   fetchHorizontalSection(receivedTiles, tileIds) {
     // We want to take a horizontal section of a 2D dataset
     // that means that a 1D track is requesting data from a 2D source
     // because the 1D track only requests 1D tiles, we need to calculate
     // the 2D tile from which to take the slice
     const newTileIds = [];
+    const mirrored = [];
 
     for (let tileId of tileIds) {
       const parts = tileId.split('.');
@@ -236,7 +247,8 @@ export default class DataFetcher {
       // this is a dummy scale that we'll use to fetch tile positions
       // along the y-axis of the 2D dataset (we already have the x positions
       // from the track that is querying this data)
-      const scale = scaleLinear().domain([this.dataConfig.ySlicePos, this.dataConfig.ySlicePos]);
+      const scale = scaleLinear()
+        .domain([this.dataConfig.ySlicePos, this.dataConfig.ySlicePos]);
 
       // there's two different ways of calculating tile positions
       // this needs to be consolidated into one function eventually
@@ -261,17 +273,18 @@ export default class DataFetcher {
           this.dataConfig.tilesetInfo.max_width);
 
       }
+      const sortedPosition = [xTilePos, yTiles[0]].sort((a,b) => a - b);
 
-      const newTileId = `${zoomLevel}.${xTilePos}.${yTiles[0]}`
-      console.log('yTiles:', yTiles);
-      console.log('zoomLevel', zoomLevel, 'xTilePos:', xTilePos)
-      console.log('newTileId:', newTileId);
+      // make note of whether we reversed the x and y tile positions
+      if (sortedPosition[0] == xTilePos)
+        mirrored.push(false);
+      else
+        mirrored.push(true);
 
+      const newTileId = `${zoomLevel}.${sortedPosition[0]}.${sortedPosition[1]}`
       newTileIds.push(newTileId);
       // we may need to add something about the data transform
     }
-
-    console.log('newTileIds', newTileIds);
 
     // actually fetch the new tileIds
     const promise = new Promise(resolve =>
@@ -284,7 +297,6 @@ export default class DataFetcher {
     promise.then((returnedTiles) => {
       // we've received some new tiles, but they're 2D
       // we need to extract the row corresponding to the data we need
-      console.log('fetched tileIds:', returnedTiles);
 
       const tilesetUid = dictValues(returnedTiles)[0].tilesetUid;
       // console.log('tilesetUid:', tilesetUid);
@@ -294,17 +306,52 @@ export default class DataFetcher {
         const parts = newTileIds[i].split('.');
         const zoomLevel = +parts[0];
         const xTilePos = +parts[1];
+        const yTilePos = +parts[2];
 
-        tileProxy.calculateTileAndPosInTile(this.dataConfig.tilesetInfo,
+        const [tilePos, sliceIndex] = tileProxy.calculateTileAndPosInTile(this.dataConfig.tilesetInfo,
           this.dataConfig.tilesetInfo.max_width,
           this.dataConfig.tilesetInfo.min_pos[1],
           zoomLevel,
           +this.dataConfig.ySlicePos);
 
-        const fullTileId = this.fullTileId(tilesetUid, tileIds[i]);
+        const fullTileId = this.fullTileId(tilesetUid, newTileIds[i]);
+        const tile = returnedTiles[fullTileId];
 
-        returnedTiles[fullTileId].tilePositionId = tileIds[i];
-        newTiles[tileIds[i]] = returnedTiles[fullTileId];
+        let dataSlice = null;
+
+        if (xTilePos == yTilePos) {
+          // this is tile along the diagonal that we have to mirror
+          dataSlice = this.extractDataSlice(tile.dense, [256,256], sliceIndex);
+          const mirroredDataSlice = this.extractDataSlice(tile.dense, [256,256], sliceIndex, 1);
+          for (let j = 0; j < dataSlice.length; j++) {
+            dataSlice[j] += mirroredDataSlice[j];
+          }
+        } else {
+          // this tile is in the upper right triangle but the data is only available for
+          // the lower left so we have to mirror it
+          if (mirrored[i]) {
+            dataSlice = this.extractDataSlice(tile.dense, [256,256], sliceIndex, 1);
+          }
+        }
+
+        const min_value = Math.min.apply(null, dataSlice);
+        const max_value = Math.max.apply(null, dataSlice);
+
+        const newTile = {
+          min_value: Math.min.apply(null, dataSlice),
+          max_value: Math.max.apply(null, dataSlice),
+          minNonZero: minNonZero(dataSlice),
+          maxNonZero: maxNonZero(dataSlice),
+          dense: dataSlice,
+          dtype: tile.dtype,
+          server: tile.server,
+          tilePos: mirrored[i] ? [yTilePos] : [xTilePos],
+          tilePositionId: tileIds[i],
+          tilesetUid: tilesetUid,
+          zoomLevel: tile.zoomLevel,
+        };
+
+        newTiles[tileIds[i]] = newTile;
       }
 
       receivedTiles(newTiles);

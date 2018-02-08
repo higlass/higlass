@@ -174,13 +174,10 @@ export const calculateTileAndPosInTile = function(tilesetInfo, maxDim, dataStart
     tileWidth = maxDim / (2 ** zoomLevel);
   }
   
-  console.log('tileWidth:', tileWidth);
   const tilePos = Math.floor((position - dataStartPos) / tileWidth);
-
   const posInTile = Math.floor(PIXELS_PER_TILE * (position - tilePos * tileWidth) / tileWidth);
 
-  console.log('tilePos:', tilePos);
-  console.log('posInTile:', posInTile);
+  return [tilePos, posInTile];
 }
 
 /**
