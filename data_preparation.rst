@@ -31,7 +31,18 @@ This file can be aggregated like so:
 
     clodius aggregate bedfile \
         --assembly hg19 \
-        sorted_genes_target_db.tsv
+        short.bed
+
+And then imported into higlass after copying to the docker temp directory (``cp short.bed.multires ~/hg-tmp/``):
+
+.. code-block:: blash
+
+     docker exec higlass-container python \
+        higlass-server/manage.py ingest_tileset \
+            --filename /tmp/short.bed.multires \
+            --filetype beddb \
+            --datatype bedlike \
+            --coordSystem b37
 
 Bedpe-like Files
 ----------------
@@ -202,6 +213,33 @@ It can also be loaded using a curl commands:
 .. todo:: And navigate to 127.0.0.1:8989, click on the '+' symbol, select a track
           position, find the dataset in the list of the datasets and click OK to
           view it. And stuff.
+
+Multivec Files
+--------------
+
+Multivec files store arrays of arrays organized by chromosome. To aggregate this
+data, we need an input file where chromsome is a separate dataset. Example:
+
+.. code-block:: python
+
+    f = h5py.File('/tmp/blah.h5', 'w')
+
+    d = f.create_dataset('chr1', (10000,5), compression='gzip')
+    d[:] = np.random.random((10000,5))
+    f.close()
+
+This can be aggregated to multiple resolutions using `clodius aggregate multivec`:
+
+.. code-block:: bash
+
+    clodius aggregate multivec \
+        --chromsizes-filename ~/projects/negspy/negspy/data/hg38/chromInfo.txt \
+        --starting-resolution 1000 \
+        my_file_genome_wide_hg38_v2.multivec
+
+The `--chromsizes-filename` option lists the chromosomes that are in the input
+file and their sizes.  The `--starting-resolution` option indicates that the
+base resolution for the input data is 1000 base pairs.
 
 Development
 -----------
