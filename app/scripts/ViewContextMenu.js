@@ -67,12 +67,49 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
           {'Add Cross Rule'}
         </ContextMenuItem>
 
+        <hr styleName="context-menu-hr" />
+
+        { 
+          this.props.tracks.filter(track => track.type == 'heatmap').length > 0 &&
+          <ContextMenuItem
+            onMouseEnter={e => this.handleOtherMouseEnter(e)}
+            onClick={ this.handleAddHorizontalSection.bind(this) }
+          >
+            {'Add Horizontal Cross Section'}
+          </ContextMenuItem>
+        }
 
         { /* from the SeriesListSubmenuMixin */ }
         { this.getSubmenu() }
 
       </div>
     );
+  }
+
+
+  handleAddHorizontalSection() {
+    const matrixTrack = this.props.tracks.filter(track => track.type == 'heatmap')[0];
+    console.log('matrixTrack:', matrixTrack);
+
+    this.props.onAddTrack({
+      type: 'horizontal-rule',
+      y: this.props.coords[1], 
+      position: 'whole',
+    });
+    this.props.onAddTrack({
+      "data": {
+        "type": "horizontal-section",
+        "server": "http://test1.resgen.io/api/v1",
+        "tilesetUid": "RGfj99ZPR4eLJM4wVkBmWw",
+        "ySlicePos":this.props.coords[1], 
+      },
+      "options": {
+        valueScaling: 'log',
+      },
+      "type": "horizontal-bar",
+      "height": 30,
+      "position": "top",
+    });
   }
 }
 

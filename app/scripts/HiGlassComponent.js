@@ -1830,6 +1830,9 @@ class HiGlassComponent extends React.Component {
     for (const track of looseTracks) {
       const trackObj = this.tiledPlots[viewId].trackRenderer.getTrackObject(track.uid);
 
+      if (!trackObj)
+        continue;
+
       track.width = trackObj.dimensions[0];
       track.height = trackObj.dimensions[1];
     }
