@@ -46,10 +46,10 @@ const energy = (index) => {
   const mn = Math.max(m, n);
   const l = lab[index];
   let ener = 0;
-  const dx = l.x - l.ox;
-  const dy = l.y - l.oy;
+  const dx = l.x - l.oX;
+  const dy = l.y - l.oY;
   const dist = Math.sqrt((dx * dx) + (dy * dy));
-  const distCenterToBorder = Math.sqrt((l.wh * l.wh) + (l.hh * l.hh));
+  const distCenterToBorder = Math.sqrt((l.wH * l.wH) + (l.hH * l.hH));
   let overlap = true;
   // let amount = 0;
   // let theta = 0;
@@ -65,10 +65,10 @@ const energy = (index) => {
   // else if (dx < 0 && dy < 0) ener += 2 * wOrient;
   // else ener += 3 * wOrient;
 
-  const x21 = l.x - l.wh - 1;
-  const y21 = l.y - l.hh - 1;
-  const x22 = l.x + l.wh + 1;
-  const y22 = l.y + l.hh + 1;
+  const x21 = l.x - l.wH - 1;
+  const y21 = l.y - l.hH - 1;
+  const x22 = l.x + l.wH + 1;
+  const y22 = l.y + l.hH + 1;
   let x11;
   let x12;
   let y11;
@@ -99,10 +99,10 @@ const energy = (index) => {
       if (overlap) ener += wInter;
 
       // Penalty for label-label overlap
-      x11 = otherLabel.x - otherLabel.wh - 1;
-      y11 = otherLabel.y - otherLabel.hh - 1;
-      x12 = otherLabel.x + otherLabel.wh + 1;
-      y12 = otherLabel.y + otherLabel.hh + 1;
+      x11 = otherLabel.x - otherLabel.wH - 1;
+      y11 = otherLabel.y - otherLabel.hH - 1;
+      x12 = otherLabel.x + otherLabel.wH + 1;
+      y12 = otherLabel.y + otherLabel.hH + 1;
       xOverlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21));
       yOverlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21));
       overlapArea = xOverlap * yOverlap;
@@ -110,10 +110,10 @@ const energy = (index) => {
     }
 
     // penalty for label-anchor overlap
-    x11 = anc[i].x - anc[i].wh - 1;
-    y11 = anc[i].y - anc[i].hh - 1;
-    x12 = anc[i].x + anc[i].wh + 1;
-    y12 = anc[i].y + anc[i].hh + 1;
+    x11 = anc[i].x - anc[i].wH - 1;
+    y11 = anc[i].y - anc[i].hH - 1;
+    x12 = anc[i].x + anc[i].wH + 1;
+    y12 = anc[i].y + anc[i].hH + 1;
     xOverlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21));
     yOverlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21));
     overlapArea = xOverlap * yOverlap;
@@ -245,6 +245,8 @@ labeler.start = (nsweeps, t = 1.0) => {
     }
     currT = coolingSchedule(currT, initialT, nsweeps);
   }
+
+  console.log('START', m, nsweeps, acc, rej);
 };
 
 labeler.width = (x) => {

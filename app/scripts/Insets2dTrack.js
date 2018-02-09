@@ -232,29 +232,39 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   drawInset(inset) {
+    if (inset[9].length > 1) {
+      console.warn('Labels with multiple annotations are not yet supported');
+      return Promise.resolve();
+    }
+
+    const dataPos = inset[9][0];
+
     if (this.dataType === 'cooler') {
       if (!this.fetchChromInfo) return Promise.reject('This is truly odd!');
 
       return this.fetchChromInfo
         .then(_chromInfo => this.createFetchRenderInset(
-          ...inset,
+          ...inset.slice(0, -1),
+          ...dataPos,
           this.dataToGenomePos(
-            inset[9], inset[10], inset[11], inset[12], _chromInfo
+            ...dataPos, _chromInfo
           )
         ));
     }
 
     if (this.dataType === 'osm-image') {
       return this.createFetchRenderInset(
-        ...inset,
-        [inset[9], inset[10], inset[11], inset[12]],
-        this.lngLatToProjPos(inset[9], inset[10], inset[11], inset[12])
+        ...inset.slice(0, -1),
+        ...dataPos,
+        [...dataPos],
+        this.lngLatToProjPos(...dataPos)
       );
     }
 
     return this.createFetchRenderInset(
-      ...inset,
-      this.dataToImPos(inset[9], inset[10], inset[11], inset[12])
+      ...inset.slice(0, -1),
+      ...dataPos,
+      this.dataToImPos(...dataPos)
     );
   }
 

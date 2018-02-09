@@ -5,8 +5,12 @@ import rbush from 'rbush';
 // Services
 import { pubSub } from './services';
 
+import { Annotation, GalleryLabel, Label } from './factories';
+
 // Utils
-import { identity, latToY, lngToX, positionLabels } from './utils';
+import {
+  identity, latToY, lngToX, positionLabels
+} from './utils';
 
 class AnnotationsInsets {
   constructor(insetsTrack, options, getTrackByUid, animate) {
@@ -83,24 +87,24 @@ class AnnotationsInsets {
    *   (geo json).
    */
   annotationDrawnHandler({ uid, viewPos, dataPos }) {
-    const locus = {
+    const dataPosProj = [
+      this.projectorX(dataPos[0]),
+      this.projectorX(dataPos[1]),
+      this.projectorY(dataPos[2]),
+      this.projectorY(dataPos[3])
+    ];
+
+    const annotation = new Annotation(
       uid,
-      // View positions
-      minX: viewPos[0],
-      minY: viewPos[1],
-      maxX: viewPos[0] + viewPos[2],
-      maxY: viewPos[1] + viewPos[3],
-      // Original data positions
-      cX1: dataPos[0],
-      cX2: dataPos[1],
-      cY1: dataPos[2],
-      cY2: dataPos[3],
-      // Projected data positions
-      pX1: this.projectorX(dataPos[0]),
-      pX2: this.projectorX(dataPos[1]),
-      pY1: this.projectorY(dataPos[2]),
-      pY2: this.projectorY(dataPos[3])
-    };
+      [
+        viewPos[0],
+        viewPos[0] + viewPos[2],
+        viewPos[1],
+        viewPos[1] + viewPos[3],
+      ],
+      dataPos,
+      dataPosProj
+    );
 
     this.newAnno = !this.drawnAnnoIdsOld.has(uid);
     this.drawnAnnoIds.add(uid);
@@ -115,19 +119,22 @@ class AnnotationsInsets {
       )
       &&
       (
-        (locus.minX >= 0 || locus.maxX > 0)
-        && (locus.minX < width || locus.maxX <= width)
-        && (locus.minY >= 0 || locus.maxY > 0)
-        && (locus.minY < height || locus.maxY <= height)
+        (annotation.minX >= 0 || annotation.maxX > 0)
+        && (annotation.minX < width || annotation.maxX <= width)
+        && (annotation.minY >= 0 || annotation.maxY > 0)
+        && (annotation.minY < height || annotation.maxY <= height)
       )
     ) {
-      const remoteSize = Math.max(locus.pX2 - locus.pX1, locus.pY2 - locus.pY1);
+      const remoteSize = Math.max(
+        annotation.maxXDataProj - annotation.minXDataProj,
+        annotation.maxYDataProj - annotation.minYDataProj
+      );
       this.insetMinRemoteSize = Math.min(this.insetMinRemoteSize, remoteSize);
       this.insetMaxRemoteSize = Math.max(this.insetMaxRemoteSize, remoteSize);
-      this.insetsToBeDrawn.push(locus);
+      this.insetsToBeDrawn.push(annotation);
       this.insetsToBeDrawnIds.add(uid);
     } else {
-      this.drawnAnnotations.push(locus);
+      this.drawnAnnotations.push(annotation);
     }
   }
 
@@ -156,8 +163,8 @@ class AnnotationsInsets {
    * @return  {object}  Object holding the final pixel with and height.
    */
   computeSize(inset, scale) {
-    const widthAbs = Math.abs(inset.pX2 - inset.pX1);
-    const heightAbs = Math.abs(inset.pY2 - inset.pY1);
+    const widthAbs = Math.abs(inset.maxXDataProj - inset.minXDataProj);
+    const heightAbs = Math.abs(inset.maxYDataProj - inset.minYDataProj);
 
     const width = widthAbs >= heightAbs
       ? scale(widthAbs)
@@ -220,19 +227,16 @@ class AnnotationsInsets {
       : this.positionInsetsCenter();
 
     return insets.map(inset => ([
-      inset.uid,
+      inset.id,
       inset.x,
       inset.y,
       inset.width,
       inset.height,
-      inset.ox,
-      inset.oy,
+      inset.oX,
+      inset.oY,
       inset.owh,
       inset.ohh,
-      inset.cX1,
-      inset.cX2,
-      inset.cY1,
-      inset.cY2
+      inset.getDataPositions()
     ]));
   }
 
@@ -266,70 +270,56 @@ class AnnotationsInsets {
    * @return  {Array}  Position and dimension of the insets.
    */
   positionInsetsCenter(insetsToBeDrawn = this.insetsToBeDrawn) {
-    const anchors = this.drawnAnnotations.map(obj => ({
-      t: 1,
-      x: (obj.maxX + obj.minX) / 2,
-      y: (obj.maxY + obj.minY) / 2,
-      ox: (obj.maxX + obj.minX) / 2,  // Origin x
-      oy: (obj.maxY + obj.minY) / 2,  // Origin y
-      wh: (obj.maxX - obj.minX) / 2,  // Width half
-      hh: (obj.maxY - obj.minY) / 2,  // Heigth half
-      ...obj
+    const anchors = this.drawnAnnotations.map(annotation => ({
+      t: 1.0,
+      x: (annotation.maxX + annotation.minX) / 2,
+      y: (annotation.maxY + annotation.minY) / 2,
+      oX: (annotation.maxX + annotation.minX) / 2,  // Origin x
+      oY: (annotation.maxY + annotation.minY) / 2,  // Origin y
+      wH: (annotation.maxX - annotation.minX) / 2,  // Width half
+      hH: (annotation.maxY - annotation.minY) / 2,  // Heigth half
     }));
 
     const { finalRes, newResScale } = this.computeInsetSizeScale();
 
     const insets = insetsToBeDrawn
       .map((inset) => {
-        if (!this.insets[inset.uid]) {
+        if (!this.insets[inset.id]) {
           const { width, height } = this.computeSize(inset, finalRes);
 
           // Add new inset
-          this.insets[inset.uid] = {
-            t: 1.0,
-            x: (inset.maxX + inset.minX) / 2,
-            y: (inset.maxY + inset.minY) / 2,
-            ox: (inset.maxX + inset.minX) / 2,  // Origin x
-            oy: (inset.maxY + inset.minY) / 2,  // Origin y
-            owh: (inset.maxX - inset.minX) / 2,  // Origin width half
-            ohh: (inset.maxY - inset.minY) / 2,  // Origin height half
-            width,
-            height,
-            wh: width / 2,  // Width half
-            hh: height / 2,  // Heigth half
-            ...inset
-          };
+          this.insets[inset.id] = new Label(inset.id, width, height, [inset]);
         } else {
           // Update existing inset positions
           const newOx = (inset.maxX + inset.minX) / 2;
           const newOy = (inset.maxY + inset.minY) / 2;
-          const dX = this.insets[inset.uid].ox - newOx;
-          const dY = this.insets[inset.uid].oy - newOy;
+          const dX = this.insets[inset.id].oX - newOx;
+          const dY = this.insets[inset.id].oY - newOy;
 
-          this.insets[inset.uid].ox = newOx;
-          this.insets[inset.uid].oy = newOy;
-          this.insets[inset.uid].owh = (inset.maxX - inset.minX) / 2;
-          this.insets[inset.uid].ohh = (inset.maxY - inset.minY) / 2;
+          this.insets[inset.id].oX = newOx;
+          this.insets[inset.id].oY = newOy;
+          this.insets[inset.id].owh = (inset.maxX - inset.minX) / 2;
+          this.insets[inset.id].ohh = (inset.maxY - inset.minY) / 2;
 
-          this.insets[inset.uid].x -= dX;
-          this.insets[inset.uid].y -= dY;
+          this.insets[inset.id].x -= dX;
+          this.insets[inset.id].y -= dY;
 
-          this.insets[inset.uid].t = this.scaleChanged ? 0.5 : 0;
+          this.insets[inset.id].t = this.scaleChanged ? 0.5 : 0;
 
           if (newResScale) {
             const { width, height } = this.computeSize(inset, finalRes);
 
-            this.insets[inset.uid].width = width;
-            this.insets[inset.uid].height = height;
-            this.insets[inset.uid].wh = width / 2;
-            this.insets[inset.uid].hh = height / 2;
+            this.insets[inset.id].width = width;
+            this.insets[inset.id].height = height;
+            this.insets[inset.id].wH = width / 2;
+            this.insets[inset.id].hH = height / 2;
 
             // Let them wobble a bit because the size changed
-            this.insets[inset.uid].t = 0.25;
+            this.insets[inset.id].t = 0.25;
           }
         }
 
-        return this.insets[inset.uid];
+        return this.insets[inset.id];
       });
 
     const insetsToBePositioned = insets
@@ -382,15 +372,15 @@ class AnnotationsInsets {
 
     const offX = this.insetsTrack.positioning.offsetX;
     const offY = this.insetsTrack.positioning.offsetY;
-    const anchors = this.drawnAnnotations.map(obj => ({
-      t: 1,
-      x: ((obj.maxX + obj.minX) / 2) + offX,
-      y: ((obj.maxY + obj.minY) / 2) + offY,
-      ox: ((obj.maxX + obj.minX) / 2) + offX,  // Origin x
-      oy: ((obj.maxY + obj.minY) / 2) + offY,  // Origin y
-      wh: (obj.maxX - obj.minX) / 2,  // Width half
-      hh: (obj.maxY - obj.minY) / 2,  // Heigth half
-      ...obj
+    const anchors = this.drawnAnnotations.map(annotation => ({
+      t: 1.0,
+      x: ((annotation.maxX + annotation.minX) / 2) + offX,
+      y: ((annotation.maxY + annotation.minY) / 2) + offY,
+      oX: ((annotation.maxX + annotation.minX) / 2) + offX,  // Origin x
+      oY: ((annotation.maxY + annotation.minY) / 2) + offY,  // Origin y
+      wH: (annotation.maxX - annotation.minX) / 2,  // Width half
+      hH: (annotation.maxY - annotation.minY) / 2,  // Heigth half
+      // ...obj
     }));
 
     // 2. Optimize position using simulated annealing
@@ -473,16 +463,16 @@ class AnnotationsInsets {
     const offY = this.insetsTrack.positioning.offsetY;
 
     return insetsToBeDrawn.map((inset) => {
-      const _inset = this.insets[inset.uid];
+      const _inset = this.insets[inset.id];
       if (_inset) {
         // Update existing inset positions
         const newOx = ((inset.maxX + inset.minX) / 2) + offX;
         const newOy = ((inset.maxY + inset.minY) / 2) + offY;
-        const dX = _inset.ox - newOx;
-        const dY = _inset.oy - newOy;
+        const dX = _inset.oX - newOx;
+        const dY = _inset.oY - newOy;
 
-        _inset.ox = newOx;
-        _inset.oy = newOy;
+        _inset.oX = newOx;
+        _inset.oY = newOy;
         _inset.owh = (inset.maxX - inset.minX) / 2;
         _inset.ohh = (inset.maxY - inset.minY) / 2;
 
@@ -496,19 +486,19 @@ class AnnotationsInsets {
 
           _inset.width = width;
           _inset.height = height;
-          _inset.wh = width / 2;
-          _inset.hh = height / 2;
+          _inset.wH = width / 2;
+          _inset.hH = height / 2;
 
           _inset.x = _inset.isVerticalOnly
             ? _inset.isLeftCloser
-              ? offX - _inset.wh - paddingX
-              : offX + _inset.wh + paddingX + centerWidth
+              ? offX - _inset.wH - paddingX
+              : offX + _inset.wH + paddingX + centerWidth
             : _inset.x;
           _inset.y = _inset.isVerticalOnly
             ? _inset.y
             : _inset.isTopCloser
-              ? offY - _inset.hh - paddingY
-              : offY + _inset.hh + paddingY + centerHeight;
+              ? offY - _inset.hH - paddingY
+              : offY + _inset.hH + paddingY + centerHeight;
 
           // Let them wobble a bit because the size changed
           _inset.t = 0.25;
@@ -518,17 +508,17 @@ class AnnotationsInsets {
       }
 
       const { width, height } = this.computeSize(inset, finalRes);
-      const ox = (inset.maxX + inset.minX) / 2;
-      const oy = (inset.maxY + inset.minY) / 2;
+      const oX = (inset.maxX + inset.minX) / 2;
+      const oY = (inset.maxY + inset.minY) / 2;
 
-      const xBinId = Math.floor(ox / binSizeX);
-      const yBinId = Math.floor(oy / binSizeY);
+      const xBinId = Math.floor(oX / binSizeX);
+      const yBinId = Math.floor(oY / binSizeY);
       const penaltyTop = binsTop[xBinId];
       const penaltyBottom = binsBottom[xBinId];
       const penaltyLeft = binsLeft[yBinId];
       const penaltyRight = binsRight[yBinId];
-      const xWithPenalty = ox + penaltyLeft - penaltyRight;
-      const yWithPenalty = oy + penaltyTop - penaltyBottom;
+      const xWithPenalty = oX + penaltyLeft - penaltyRight;
+      const yWithPenalty = oY + penaltyTop - penaltyBottom;
 
       // Determine which border is the closest
       const isLeftCloser = xWithPenalty <= cwh;
@@ -560,25 +550,18 @@ class AnnotationsInsets {
         x = offX + inset.minX;
       }
 
-      this.insets[inset.uid] = {
-        t: 1.0,
-        x,
-        y,
-        ox: ox + offX,  // Origin x
-        oy: oy + offY,  // Origin y
-        owh: (inset.maxX - inset.minX) / 2,  // Origin width half
-        ohh: (inset.maxY - inset.minY) / 2,  // Origin height half
-        width,
-        height,
-        wh: width / 2,  // Width half
-        hh: height / 2,  // Heigth half
-        isVerticalOnly: isXShorter,
-        isLeftCloser,
-        isTopCloser,
-        ...inset
-      };
+      this.insets[inset.id] = new GalleryLabel(
+        inset.id, width, height, [inset]
+      );
 
-      return this.insets[inset.uid];
+      this.insets[inset.id].setXY(x, y);
+      this.insets[inset.id].setOffSet(offX, offY);
+      this.insets[inset.id].updateOrigin();
+      this.insets[inset.id].setVerticalOnly(isXShorter);
+      this.insets[inset.id].setLeftCloser(isLeftCloser);
+      this.insets[inset.id].setTopCloser(isTopCloser);
+
+      return this.insets[inset.id];
     });
   }
 
