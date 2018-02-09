@@ -49,12 +49,12 @@ The following is a list of the public API methods:
 
   hgv.setViewConfig(newViewConfig);
   hgv.zoomToDataExtent(newViewConfig);
-  hgv.createDataURI();
   hgv.goTo(viewUid, chrom1, start1, end1, chrom2, start2, end2, animate = false, animateTime = 3000);
   hgv.activateTool(mouseTool);
   hgv.on(event, callback, viewId, callbackId);
   hgv.off(event, listenerId, viewId);
   hgv.get(prop, viewId);
+  hgv.shareViewConfigAsLink(url);
 
 setViewConfig(viewConfig): Setting a view config
 ------------------------------------------------
@@ -145,15 +145,27 @@ HiGlass exposes the following event, which one can subscribe to via this method:
 
   ["chr1", 229372197, "chrM", 16571, "chr1", 1, "chrM", 16571]
 
-**rangeSelection:** Returns a BED- (1D) or BEDPE (1d) array of the selection.
+**rangeSelection:** Returns a BED- (1D) or BEDPE (1d) array of the selected data and genomic range (if chrom-sizes are available)
 
 .. code-block:: javascript
 
+  // Global output
+  {
+    dataRange: [...]
+    genomicRange: [...]
+  }
+
+  // 1D data range
+  [[1218210862, 1528541001], null]
+
+  // 2D data range
+  [[1218210862, 1528541001], [1218210862, 1528541001]]
+
   // 1D or BED-like array
-  ["chr1", 229372197, "chrM", 16571, "chr1", 1, "chrM", 16571]
+  [["chr1", 249200621, "chrM", 50000], null]
 
   // 2D or BEDPE-like array
-  ["chr1", 229372197, "chrM", 16571, "chr1", 1, "chrM", 16571]
+  [["chr1", 249200621, "chr2", 50000], ["chr3", 197972430, "chr4", 50000]]
 
 **viewConfig:** Returns the current view config.
 
@@ -360,7 +372,7 @@ Adding new track types
 **********************
 
 To add a new track type, we first need a data source and a new
-definition. To begin, we can create a new test page to work 
+definition. To begin, we can create a new test page to work
 with.
 
 .. code-block:: bash
@@ -429,7 +441,7 @@ It has all of the standard track options, is horizontal, etc...
 
 Now if we reload our test page, we still get the same warning. This is because
 we don't actually know how to draw this track. We need to create a class which
-knows how to draw this track type. We can do that by creating a new file in 
+knows how to draw this track type. We can do that by creating a new file in
 ``app/scripts`` called ``HorizontalMultivecTrack.js``.
 
 The easiest way to do this is to start with an existing track type and copy it.
@@ -505,7 +517,7 @@ Line Track Scaling
 
 1D tracks can either be linearly or log scaled. Linear scaling denotes a linear
 mapping between the values and their position on the track. Log scaling means
-that we take the log of the values before positioning them. 
+that we take the log of the values before positioning them.
 
 Because the dataset may contain very small or even zero values, we add a
 pseudocount equal to the median visible value to ensure that finer details in
