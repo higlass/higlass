@@ -13,8 +13,6 @@ export class StackedBarTrack extends BarTrack {
   }
 
   initTile(tile) {
-
-    // todo findmax and min up here too?
     this.renderTile(tile);
   }
 
@@ -32,7 +30,7 @@ export class StackedBarTrack extends BarTrack {
     for(let i = 0; i < visibleAndFetched.length; i++) {
       const matrix = this.unFlatten(visibleAndFetched[i]);
       const tileMaxAndMin = this.findMaxAndMin(matrix);
-      //todo add mapping from tileId to maxAndMin here
+
       (tileMaxAndMin.max > visibleMax) ? visibleMax = tileMaxAndMin.max : visibleMax;
       (tileMaxAndMin.min < visibleMin) ? visibleMin = tileMaxAndMin.min : visibleMin;
     }
@@ -85,7 +83,6 @@ export class StackedBarTrack extends BarTrack {
     if (flattenedArray.filter((a) => a < 0).length > 0 && this.options.valueScaling === 'linear') {
       console.warn('Negative values present in data. Defaulting to exponential scale.');
       this.options.valueScaling = 'exponential';
-      // todo does anything meaningful even happen here
     }
 
     // matrix[0] will be [flattenedArray[0], flattenedArray[256], flattenedArray[512], etc.]
