@@ -30,6 +30,7 @@ export { default as hexStrToInt } from './hex-string-to-int';
 export { default as identity } from './identity';
 export { default as intoTheVoid } from './into-the-void.js';
 export { default as isTrackOrChildTrack } from './is-track-or-child-track';
+export { default as isWithin } from './is-within';
 export { default as latToY } from './lat-to-y';
 export { default as loadChromInfos } from './load-chrom-infos';
 export { default as lngToX } from './lng-to-x';
