@@ -5,21 +5,78 @@ import {colorToHex} from './utils';
 export class StackedBarTrack extends BarTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
     super(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged);
+
+    this.maxAndMin = {
+      max: 0,
+      min: 0
+    };
   }
 
   initTile(tile) {
+
+    // todo findmax and min up here too?
     this.renderTile(tile);
   }
 
-  renderTile(tile) {
-    const graphics = tile.graphics;
-    graphics.clear();
-    tile.drawnAtScale = this._xScale.copy();
+  updateTile(tile) {
+    const visibleAndFetched = this.visibleAndFetchedTiles();
 
-    // we're setting the start of the tile to the current zoom level
-    const {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
-      tile.tileData.tilePos, this.tilesetInfo.tile_size);
+    this.maxAndMin = {
+      max: 0,
+      min: 0
+    };
 
+    // find total max across all tiles
+    let visibleMax = 0;
+    let visibleMin = 0;
+    for(let i = 0; i < visibleAndFetched.length; i++) {
+      const matrix = this.unFlatten(visibleAndFetched[i]);
+      const tileMaxAndMin = this.findMaxAndMin(matrix);
+      //todo add mapping from tileId to maxAndMin here
+      (tileMaxAndMin.max > visibleMax) ? visibleMax = tileMaxAndMin.max : visibleMax;
+      (tileMaxAndMin.min < visibleMin) ? visibleMin = tileMaxAndMin.min : visibleMin;
+    }
+    this.maxAndMin.max = visibleMax;
+    this.maxAndMin.min = visibleMin;
+
+    for(let i = 0; i < visibleAndFetched.length; i++) {
+      this.renderTile(visibleAndFetched[i]);
+    }
+
+  }
+
+  /**
+   * Find max and min heights for the given tile
+   *
+   * @param matrix 2d array of numbers representing one tile
+   */
+  findMaxAndMin(matrix) {
+    // find max height of bars for scaling in the track
+    let maxAndMin = {
+      max: 0,
+      min: 0
+    };
+
+    for (let i = 0; i < matrix.length; i++) {
+      const temp = matrix[i];
+
+      // find total heights of each positive column and each negative column
+      // and compare to highest overall values above
+      const localPositiveMax = temp.filter((a) => a >= 0).reduce((a, b) => a + b, 0);
+      (localPositiveMax > maxAndMin.max) ? maxAndMin.max = localPositiveMax : maxAndMin.max;
+      const localNegativeMax = Math.abs(temp.filter((a) => a < 0).reduce((a, b) => a + b, 0));
+      (localNegativeMax > maxAndMin.min) ? maxAndMin.min = localNegativeMax : maxAndMin.min;
+    }
+    return maxAndMin;
+  }
+
+  /**
+   * un-flatten data into matrix of tile.tileData.shape[0] x tile.tileData.shape[1]
+   *
+   * @param tile
+   * @returns {Array} 2d array of numerical values for each column
+   */
+  unFlatten(tile) {
     const shapeX = tile.tileData.shape[0]; // number of different nucleotides in each bar
     const shapeY = tile.tileData.shape[1]; // number of bars
     let flattenedArray = tile.tileData.dense;
@@ -31,8 +88,7 @@ export class StackedBarTrack extends BarTrack {
       // todo does anything meaningful even happen here
     }
 
-    // un-flatten data into matrix of tile.tileData.shape[0] x tile.tileData.shape[1]
-    // first array in the matrix will be [flattenedArray[0], flattenedArray[256], flattenedArray[512], etc.]
+    // matrix[0] will be [flattenedArray[0], flattenedArray[256], flattenedArray[512], etc.]
     // because of how flattenedArray comes back from the server.
     const matrix = [];
     for (let i = 0; i < shapeX; i++) {//6
@@ -44,23 +100,28 @@ export class StackedBarTrack extends BarTrack {
       }
     }
 
+    return matrix;
+  }
+
+  /**
+   * Draws exactly one tile.
+   *
+   * @param tile
+   */
+  renderTile(tile) {
+    const graphics = tile.graphics;
+    graphics.clear();
+    tile.drawnAtScale = this._xScale.copy();
+
+    // we're setting the start of the tile to the current zoom level
+    const {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
+      tile.tileData.tilePos, this.tilesetInfo.tile_size);
+
+    const matrix = this.unFlatten(tile);
+
     if (this.options.scaledHeight === true) {
-
-      // find max height of bars for scaling in the track
-      let positiveMax = 0;
-      let negativeMax = 0;
-      for (let i = 0; i < matrix.length; i++) {
-        const temp = matrix[i];
-
-        // find total heights of each positive column and each negative column
-        // and compare to highest overall values above
-        const localPositiveMax = temp.filter((a) => a >= 0).reduce((a, b) => a + b, 0);
-        (localPositiveMax > positiveMax) ? positiveMax = localPositiveMax : positiveMax;
-        const localNegativeMax = Math.abs(temp.filter((a) => a < 0).reduce((a, b) => a + b, 0));
-        (localNegativeMax > negativeMax) ? negativeMax = localNegativeMax : negativeMax;
-
-      }
-      this.drawVerticalBars(graphics, matrix, tileX, tileWidth, positiveMax, negativeMax);
+      this.findMaxAndMin(matrix);
+      this.drawVerticalBars(graphics, matrix, tileX, tileWidth, this.maxAndMin.max, this.maxAndMin.min);
     }
     else {
       // normalize each array in matrix
