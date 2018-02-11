@@ -189,6 +189,10 @@ export class GenomePositionSearchBox extends React.Component {
   }
 
   findAvailableAutocompleteSources() {
+    // if there aren't any track source servers then to hell with it
+    if (!this.props.trackSourceServers)
+      return;
+
     this.props.trackSourceServers.forEach((sourceServer) => {
       tileProxy.json(`${sourceServer}/tilesets/?limit=100&dt=gene-annotation`, (error, data) => {
         if (error) {
@@ -221,6 +225,10 @@ export class GenomePositionSearchBox extends React.Component {
   }
 
   findAvailableChromSizes() {
+    // if there aren't any track source servers then to hell with it
+    if (!this.props.trackSourceServers)
+      return;
+
     this.props.trackSourceServers.forEach((sourceServer) => {
       tileProxy.json(`${sourceServer}/available-chrom-sizes/`, (error, data) => {
         if (error) {
