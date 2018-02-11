@@ -134,7 +134,7 @@ export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
 /**
  * Calculate the current zoom level.
  */
-export const calculateZoomLevel = (scale, minX, maxX) => {
+export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   const rangeWidth = scale.range()[1] - scale.range()[0];
   const zoomScale = Math.max(
     (maxX - minX) / (scale.domain()[1] - scale.domain()[0]),
@@ -146,7 +146,15 @@ export const calculateZoomLevel = (scale, minX, maxX) => {
     0,
     Math.ceil(Math.log(rangeWidth / 384) / Math.LN2),
   );
-  const zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + addedZoom;
+  let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + addedZoom;
+
+  let binsPerTileCorrection = 0;
+
+  if (binsPerTile) {
+    binsPerTileCorrection = Math.floor((Math.log(256) / Math.log(2) - (Math.log(binsPerTile) / Math.log(2))))
+  }
+
+  zoomLevel = zoomLevel + binsPerTileCorrection;
 
   return zoomLevel;
 };

@@ -331,6 +331,8 @@ export default class DataFetcher {
           // the lower left so we have to mirror it
           if (mirrored[i]) {
             dataSlice = this.extractDataSlice(tile.dense, [256,256], sliceIndex, 1);
+          } else {
+            dataSlice = this.extractDataSlice(tile.dense, [256,256], sliceIndex);
           }
         }
 

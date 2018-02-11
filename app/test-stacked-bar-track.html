@@ -35,174 +35,263 @@ And some other text
   var testViewConfig =
 {
   "editable": true,
+  "zoomFixed": false,
   "trackSourceServers": [
     "http://higlass.io/api/v1"
   ],
+  "exportViewUrl": "/api/v1/viewconfs",
   "views": [
     {
-      "uid": "a",
+      "uid": "Nnjcq7aqS12fVCJpJuTzQg",
       "initialXDomain": [
-        2714033299.521446,
-        2714128552.267376
+        -294413502.97582054,
+        543107631.0748881
       ],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": true
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
         "top": [
           {
-            "name": "Chromosome Axis",
-            "created": "2017-06-06T17:03:01.273116Z",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
-            "uid": "OWLVfvnDQCyFzOKQVzItFQ",
-            "type": "horizontal-chromosome-labels",
-            "options": {
-              "showMousePosition": false,
-              "mousePositionColor": "#999999"
+            "data": {
+              "type": "horizontal-section",
+              "server": "http://test1.resgen.io/api/v1",
+              "tilesetUid": "RGfj99ZPR4eLJM4wVkBmWw",
+              "ySlicePos": 123576121.43642867
             },
-            "width": 800,
+            "options": {
+              "valueScaling": "log",
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "right",
+              "barFillColor": "darkgreen",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "barOpacity": 1,
+              "name": "hg38.hg38.10000.32.10M.0.0.mcool"
+            },
+            "type": "horizontal-bar",
+            "height": 20,
+            "position": "top",
+            "uid": "W5YAwRGYTiOTIM_zG-HvCQ",
+            "width": 20,
+            "name": "hg38.hg38.10000.32.10M.0.0.mcool",
+            "transforms": []
+          },
+          {
+            "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig",
+            "created": "2017-02-03T17:46:58.349271Z",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
+            "uid": "O3q8NnsKRrOcjx1LBImB0Q",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "lineStrokeWidth": 1,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig"
+            },
+            "width": 984,
+            "height": 20,
+            "position": "top"
+          },
+          {
+            "type": "top-axis",
+            "local": true,
+            "orientation": "1d-horizontal",
+            "name": "Top Axis",
+            "thumbnail": {},
+            "defaultOptions": {},
+            "server": "",
+            "tilesetUid": "S1NqjWhCRnet5JX7rK1WnQ",
+            "uid": "L5msu6BSQYmml4CzyA3Piw",
+            "options": {},
+            "width": 984,
+            "height": 20,
+            "position": "top"
+          },
+          {
+            "name": "hg38.hg38.10000.32.10M.0.0.mcool",
+            "data": {
+              "type": "horizontal-section",
+              "server": "http://test1.resgen.io/api/v1",
+              "tilesetUid": "RGfj99ZPR4eLJM4wVkBmWw",
+              "ySlicePos": 144281187.45222926
+            },
+            "uid": "I2j5S3qmQ1KnVa9WZavXvA",
+            "type": "horizontal-bar",
             "height": 30,
-            "position": "top"
-          },
-          {
-            "name": "Gene Annotations (hg19)",
-            "created": "2017-02-05T19:31:52.412319Z",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "uid": "EjNDhGCnRsSl1UklA4c1AA",
-            "type": "horizontal-gene-annotations",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "hidden",
-              "plusStrandColor": "blue",
-              "minusStrandColor": "red",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "showMousePosition": false,
-              "name": "Gene Annotations (hg19)"
-            },
-            "width": 800,
-            "height": 55,
-            "header": "",
-            "position": "top"
-          },
-          {
-            "name": "all.KL.bed.multires.mv5",
-            "server": "http://test1.resgen.io/api/v1",
-            "tilesetUid": "bQhKcD0nSdSsCyWvddPduA",
-            "uid": "YyTlGjsGT12zNaVR_9UnRg",
-            "type": "horizontal-stacked-bar",
-            "height": 138,
             "position": "top",
+            "width": 984,
             "options": {
-              "labelPosition": "topLeft",
               "labelColor": "black",
-              "labelTextOpacity": 0.4,
-              "valueScaling": "exponential",
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "right",
+              "barFillColor": "darkgreen",
+              "valueScaling": "setquantile",
               "trackBorderWidth": 0,
               "trackBorderColor": "black",
-              "name": "drosophila.multivec.hdf5",
-              "scaledHeight": true,
-              "backgroundColor": "black",
-              "colorScale": [
-                "#FF0000",
-                "#FF4500",
-                "#32CD32",
-                "#008000",
-                "#006400",
-                "#C2E105",
-                "#FFFF00",
-                "#66CDAA",
-                "#8A91D0",
-                "#CD5C5C",
-                "#E9967A",
-                "#BDB76B",
-                "#808080",
-                "#C0C0C0",
-                "#FFFFFF"
-              ]
+              "labelTextOpacity": 0.4,
+              "barOpacity": 1,
+              "name": "hg38.hg38.10000.32.10M.0.0.mcool"
             },
-            "width": 800
+            "transforms": []
           },
           {
-            "name": "drosophila.multivec.hdf5",
-            "server": "http://test1.resgen.io/api/v1",
-            "tilesetUid": "Fvy0kNjjQviWt7JnX5UZiQ",
-            "uid": "xassd",
-            "type": "horizontal-multivec",
-            "height": 138,
-            "position": "top",
-            "options": {
-              "labelPosition": "topLeft",
-              "labelColor": "black",
-              "labelTextOpacity": 0.4,
-              "valueScaling": "linear",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "name": "drosophila.multivec.hdf5"
+            "name": "hg38.hg38.10000.32.10M.0.0.mcool",
+            "data": {
+              "type": "horizontal-section",
+              "server": "http://test1.resgen.io/api/v1",
+              "tilesetUid": "RGfj99ZPR4eLJM4wVkBmWw",
+              "ySlicePos": 144281187.45222926
             },
-            "width": 800
-          },
-          {
-            "name": "all.KL.bed.multires.mv5",
-            "server": "http://test1.resgen.io/api/v1",
-            "tilesetUid": "bQhKcD0nSdSsCyWvddPduA",
-            "uid": "UWxoYI0KTle99G8kd1iTTA",
-            "type": "horizontal-multivec",
-            "height": 97,
+            "uid": "I2j5S3qmQ1KnVa9WZavXvA1",
+            "type": "horizontal-bar",
+            "height": 30,
             "position": "top",
+            "width": 984,
             "options": {
-              "labelPosition": "topLeft",
               "labelColor": "black",
-              "labelTextOpacity": 0.4,
-              "valueScaling": "linear",
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "right",
+              "barFillColor": "darkgreen",
+              "valueScaling": "log",
               "trackBorderWidth": 0,
               "trackBorderColor": "black",
-              "name": "all.KL.bed.multires.mv5",
+              "labelTextOpacity": 0.4,
+              "barOpacity": 1,
+              "name": "hg38.hg38.10000.32.10M.0.0.mcool"
+            },
+            "transforms": []
+          }
+        ],
+        "left": [],
+        "center": [
+          {
+            "name": "hg38.hg38.10000.32.10M.0.0.mcool",
+            "server": "http://test1.resgen.io/api/v1",
+            "tilesetUid": "RGfj99ZPR4eLJM4wVkBmWw",
+            "uid": "UGnV_Y_0RP2nG4A9I-_pvA",
+            "type": "heatmap",
+            "height": 904,
+            "position": "center",
+            "options": {
+              "labelPosition": "bottomRight",
               "colorRange": [
                 "white",
                 "rgba(245,166,35,1.0)",
                 "rgba(208,2,27,1.0)",
                 "black"
               ],
-              "scaledHeight": true
+              "maxZoom": null,
+              "colorbarPosition": "topRight",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "heatmapValueScaling": "log",
+              "showMousePosition": false,
+              "name": "hg38.hg38.10000.32.10M.0.0.mcool",
+              "scaleStartPercent": "0.00000",
+              "scaleEndPercent": "1.00000"
             },
-            "width": 800
+            "transforms": [],
+            "width": 984
           }
         ],
-        "left": [],
-        "center": [],
         "bottom": [],
-        "right": []
+        "right": [],
+        "whole": [
+          {
+            "type": "horizontal-rule",
+            "y": 144281187.45222926,
+            "position": "whole",
+            "options": {},
+            "uid": "SIevdT0KRJSv8Mp1jB1vOA",
+            "name": "Horizontal Rule",
+            "width": 984,
+            "height": 1004
+          },
+          {
+            "type": "horizontal-rule",
+            "y": 123576121.43642867,
+            "position": "whole",
+            "options": {},
+            "uid": "HMAoRH37SJC1WWuoQ_LxMg",
+            "name": "Horizontal Rule",
+            "width": 20,
+            "height": 20
+          }
+        ]
       },
       "layout": {
         "w": 12,
-        "h": 6,
+        "h": 12,
         "x": 0,
         "y": 0,
-        "i": "a",
+        "i": "Nnjcq7aqS12fVCJpJuTzQg",
         "moved": false,
         "static": false
       },
       "initialYDomain": [
-        2714264250.657608,
-        2714298541.646267
-      ],
-      "genomePositionSearchBoxVisible": true,
-      "genomePositionSearchBox": {
-        "autocompleteServer": "http://higlass.io/api/v1",
-        "chromInfoServer": "http://higlass.io/api/v1",
-        "visible": true,
-        "chromInfoId": "hg19",
-        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
-      }
+        -75499504.44676109,
+        676907693.2166803
+      ]
     }
   ],
   "zoomLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
+    "locksByViewUid": {
+      "aa": "L8zmqneISYS7X-oxfI_svQ",
+      "Nnjcq7aqS12fVCJpJuTzQg": "L8zmqneISYS7X-oxfI_svQ"
+    },
+    "locksDict": {
+      "L8zmqneISYS7X-oxfI_svQ": {
+        "aa": [
+          1549999999.9999998,
+          1549999999.9999986,
+          4360865.7464591265
+        ],
+        "Nnjcq7aqS12fVCJpJuTzQg": [
+          1549999999.9999998,
+          1549999999.9999993,
+          4360865.746459961
+        ],
+        "uid": "L8zmqneISYS7X-oxfI_svQ"
+      }
+    }
   },
   "locationLocks": {
-    "locksByViewUid": {},
-    "locksDict": {}
+    "locksByViewUid": {
+      "aa": "MKcZM09uRJaMgMuKrj-Tmg",
+      "Nnjcq7aqS12fVCJpJuTzQg": "MKcZM09uRJaMgMuKrj-Tmg"
+    },
+    "locksDict": {
+      "MKcZM09uRJaMgMuKrj-Tmg": {
+        "aa": [
+          1549999999.9999998,
+          1549999999.9999986,
+          4360865.7464591265
+        ],
+        "Nnjcq7aqS12fVCJpJuTzQg": [
+          1549999999.9999998,
+          1549999999.9999993,
+          4360865.746459961
+        ],
+        "uid": "MKcZM09uRJaMgMuKrj-Tmg"
+      }
+    }
   },
   "valueScaleLocks": {
     "locksByViewUid": {},

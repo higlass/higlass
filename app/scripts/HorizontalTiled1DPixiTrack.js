@@ -70,11 +70,15 @@ calculateZoomLevel() {
   // the tileProxy calculateZoomLevel function only cares about the
   // difference between the minimum and maximum position
     const xZoomLevel = tileProxy.calculateZoomLevel(this._xScale,
-      0,
-      this.tilesetInfo.max_width) - 2;
+      this.tilesetInfo.min_pos[0],
+      this.tilesetInfo.max_pos[0],
+      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size
+    );
 
     let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
     zoomLevel = Math.max(zoomLevel, 0);
+  //console.log('xScale', this._xScale.domain(), this.maxZoom);
+  //console.log('zoomLevel:', zoomLevel, this.tilesetInfo.min_pos[0], this.tilesetInfo.max_pos[0]);
 
     return zoomLevel;
   }

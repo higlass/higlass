@@ -3,6 +3,7 @@ import {mix} from 'mixwith';
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import {expandCombinedTracks} from './utils';
 import { getSeriesItems } from './SeriesListItems';
 
 import ContextMenuItem from './ContextMenuItem';
@@ -44,6 +45,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
         >
           {'Add Horizontal Rule'}
         </ContextMenuItem>
+
         <ContextMenuItem
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
@@ -70,7 +72,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
         <hr styleName="context-menu-hr" />
 
         { 
-          this.props.tracks.filter(track => track.type == 'heatmap').length > 0 &&
+          this.hasMatrixTrack(this.props.tracks) &&
           <ContextMenuItem
             onMouseEnter={e => this.handleOtherMouseEnter(e)}
             onClick={ this.handleAddHorizontalSection.bind(this) }
@@ -87,8 +89,15 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
   }
 
 
+  hasMatrixTrack(tracks) {
+    const trackList = expandCombinedTracks(this.props.tracks);
+    console.log('trackList:', trackList);
+    return trackList.filter(track => track.type == 'heatmap').length > 0;   
+  }
+
   handleAddHorizontalSection() {
-    const matrixTrack = this.props.tracks.filter(track => track.type == 'heatmap')[0];
+    const trackList = expandCombinedTracks(this.props.tracks);
+    const matrixTrack = trackList.filter(track => track.type == 'heatmap')[0];
     console.log('matrixTrack:', matrixTrack);
 
     this.props.onAddTrack({
@@ -99,8 +108,8 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
     this.props.onAddTrack({
       "data": {
         "type": "horizontal-section",
-        "server": "http://test1.resgen.io/api/v1",
-        "tilesetUid": "RGfj99ZPR4eLJM4wVkBmWw",
+        "server": matrixTrack.server,
+        "tilesetUid": matrixTrack.tilesetUid,
         "ySlicePos":this.props.coords[1], 
       },
       "options": {
