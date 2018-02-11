@@ -1,3 +1,7 @@
+v0.10.18 (2018-02-11)
+
+- Fixed Horizontal2DTilesTrack
+
 v0.10.16 (2018-
 
 - Don't show the "Strange tileData" warnings
