@@ -22,6 +22,22 @@ function Annotation(id, viewPos, dataPos, dataPosProj) {
   this.importance = 0;
 }
 
+Annotation.prototype.getViewPosition = function getViewPosition() {
+  return [
+    this.minX,
+    this.maxX,
+    this.minY,
+    this.maxY,
+  ];
+};
+
+Annotation.prototype.getViewPositionCenter = function getViewPositionCenter() {
+  return [
+    this.cX,
+    this.cY,
+  ];
+};
+
 Annotation.prototype.getDataPosition = function getDataPosition() {
   return [
     this.minXData,
