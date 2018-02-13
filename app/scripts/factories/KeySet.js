@@ -6,7 +6,7 @@
  * @param  {string}  keyProp  Property identifying items.
  * @param  {Array}  items  Items to be added.
  */
-const KeySet = function KeySet(keyProp, items = []) {
+const KeySet = function KeySet(keyProp = 'id', items = []) {
   items.forEach((item) => { this.add(item); });
 
   const store = {};
