@@ -153,54 +153,68 @@ export class StackedBarTrack extends BarTrack {
     const valueToPixels = scaleLinear()
       .domain([0, positiveMax])
       .range([0, trackHeight]);
-    let prevStackedBarHeight = 0;
 
-    // draws positive values
-    for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
-      const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
-      const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
-
-      // filter for positive values only
-      const positiveVals  = matrix[j].filter((a) => a >= 0);
-
-      // mapping colors to unsorted values
-      const originalColors = {};
-      for (let i = 0; i < positiveVals.length; i++) {
-        originalColors[colorToHex(colorScale[i])] = positiveVals[i];
+    // mapping colors to unsorted values
+    const matrixWithColors = [];
+    for (let j = 0; j < matrix.length; j++) {
+      const columnColors = [];
+      for (let i = 0; i < matrix[j].length; i++) {
+        columnColors[i] = {
+          value: matrix[j][i],
+          color: colorToHex(colorScale[i])
+        }
       }
 
-      // sorted from smallest to largest here, but code below this makes largest bar go on top
-      const positiveValsSorted = positiveVals.slice().sort((a, b) => a - b);
-
-      for (let i = 0; i < positiveValsSorted.length; i++) {
-        const height = valueToPixels(positiveValsSorted[i]);
-        const y = (trackHeight - negativeTrackHeight) - (prevStackedBarHeight + height);
-        for (let k = 0; k < Object.keys(originalColors).length; k++) {
-          if (originalColors[Object.keys(originalColors)[k]] === positiveValsSorted[i]) {
-            graphics.beginFill(Object.keys(originalColors)[k]);
-          }
+      // separate positive and negative array values
+      const positive = [];
+      const negative = [];
+      for (let i = 0; i < columnColors.length; i++) {
+        // todo here we discard zeros because I don't think we need them anymore. should we be doing that?
+        if (columnColors[i].value > 0) {
+          positive.push(columnColors[i]);
         }
+        else if (columnColors[i].value < 0) {
+          negative.push(columnColors[i]);
+        }
+      }
+      positive.sort((a, b) => a.value - b.value);
+      negative.sort((a, b) => a.value - b.value);
+
+      matrixWithColors.push([positive, negative]);
+    }
+
+    // draws positive values
+    for (let j = 0; j < matrixWithColors.length; j++) { // jth vertical bar in the graph
+      const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
+      const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
+      const positive = matrixWithColors[j][0];
+      let prevStackedBarHeight = 0;
+      for (let i = 0; i < positive.length; i++) { // 0 contains array of positive values
+        const height = valueToPixels(positive[i].value);
+        const y = (trackHeight - negativeTrackHeight) - (prevStackedBarHeight + height);
+        graphics.beginFill(positive[i].color);
         graphics.drawRect(x, y, width, height);
         prevStackedBarHeight = prevStackedBarHeight + height;
       }
       prevStackedBarHeight = 0;
     }
 
-    // draws negative values
-    for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
-      const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
-      const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
-      const negativeValsSorted = matrix[j].filter((a) => a < 0).sort((a, b) => a - b);
-
-      for (let i = 0; i < negativeValsSorted.length; i++) {
-        const height = valueToPixels(negativeValsSorted[i]);
-        const y = positiveTrackHeight - (prevStackedBarHeight + height);
-        graphics.beginFill(colorToHex(colorScale[i]));
-        graphics.drawRect(x, y, width, height);
-        prevStackedBarHeight = prevStackedBarHeight - height;
-      }
-      prevStackedBarHeight = 0;
-    }
+    //todo this currently bleeds into positives
+    // // draws negative values
+    // for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
+    //   const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
+    //   const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
+    //   const negativeValsSorted = matrix[j].filter((a) => a < 0).sort((a, b) => a - b);
+    //
+    //   for (let i = 0; i < negativeValsSorted.length; i++) {
+    //     const height = valueToPixels(negativeValsSorted[i]);
+    //     const y = positiveTrackHeight - (prevStackedBarHeight + height);
+    //     graphics.beginFill(colorToHex(colorScale[i]));
+    //     graphics.drawRect(x, y, width, height);
+    //     prevStackedBarHeight = prevStackedBarHeight - height;
+    //   }
+    //   prevStackedBarHeight = 0;
+    // }
 
   }
 
