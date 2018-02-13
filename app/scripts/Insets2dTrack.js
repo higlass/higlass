@@ -172,25 +172,23 @@ export default class Insets2dTrack extends PixiTrack {
       .forEach(this.destroyInset.bind(this));
   }
 
-  createFetchRenderInset(
-    uid, x, y, w, h, ox, oy, owh, ohh, dX1, dX2, dY1, dY2, remotePos, renderedPos
-  ) {
+  createFetchRenderInset(label, remotePos, renderedPos) {
     const inset = (
-      this.insets[uid] ||
+      this.insets[label.id] ||
       this.initInset(
-        uid,
+        label.id,
         remotePos,
         renderedPos,
-        [dX1, dX2, dY1, dY2]
+        label.getDataPositions()
       )
     );
 
     inset.clear(this.options);
     inset.globalOffset(...this.position);
     inset.globalSize(...this.dimensions);
-    inset.origin(ox, oy, owh, ohh);
-    inset.position(x, y);
-    inset.size(w, h);
+    inset.origin(label.oX, label.oY, label.oWH, label.oHH);
+    inset.position(label.x, label.y);
+    inset.size(label.width, label.height);
     inset.drawLeaderLine();
     inset.drawBorder();
     return inset.drawImage(this.rendererInset.bind(this));
@@ -231,21 +229,28 @@ export default class Insets2dTrack extends PixiTrack {
     ];
   }
 
-  drawInset(inset) {
-    if (inset[9].length > 1) {
+  /**
+   * Draw an inset.
+   * @description This is the entry point for creating an inset including to
+   *   download the snippet or aggregate it represents.
+   * @param   {Label}  label  Label to be drawn as an inset.
+   * @return  {Promise}  Promise resolving once the inset has been drawn.
+   */
+  drawInset(label) {
+    if (label.annotations.size > 1) {
       console.warn('Labels with multiple annotations are not yet supported');
       return Promise.resolve();
     }
 
-    const dataPos = inset[9][0];
+    const dataPos = label.getDataPositions()[0];
 
     if (this.dataType === 'cooler') {
       if (!this.fetchChromInfo) return Promise.reject('This is truly odd!');
 
       return this.fetchChromInfo
         .then(_chromInfo => this.createFetchRenderInset(
-          ...inset.slice(0, -1),
-          ...dataPos,
+          label,
+          dataPos,
           this.dataToGenomePos(
             ...dataPos, _chromInfo
           )
@@ -254,26 +259,31 @@ export default class Insets2dTrack extends PixiTrack {
 
     if (this.dataType === 'osm-image') {
       return this.createFetchRenderInset(
-        ...inset.slice(0, -1),
-        ...dataPos,
+        label,
         [...dataPos],
         this.lngLatToProjPos(...dataPos)
       );
     }
 
     return this.createFetchRenderInset(
-      ...inset.slice(0, -1),
-      ...dataPos,
+      label,
+      dataPos,
       this.dataToImPos(...dataPos)
     );
   }
 
-  drawInsets(insets, insetIds) {
+  /**
+   * Draw insets
+   * @param   {KeySet}  insets  Insets to be drawn
+   * @return  {Array}  List of promises that resolve one the inset is fully
+   *   drawn.
+   */
+  drawInsets(insets) {
     if (!this.tilesetInfo) {
       return [Promise.reject('Tileset info not available')];
     }
 
-    this.cleanUp(insetIds);
+    this.cleanUp(new Set(insets.keys));
 
     return insets.map(inset => this.drawInset(inset));
   }
@@ -430,6 +440,18 @@ export default class Insets2dTrack extends PixiTrack {
 
   rendererImage(data) {
     return base64ToCanvas(data);
+  }
+
+  setDimensions(newDimensions) {
+    super.setDimensions(newDimensions);
+
+    this.publish('dimensions', newDimensions);
+  }
+
+  setPosition(newPosition) {
+    super.setPosition(newPosition);
+
+    this.publish('position', newPosition);
   }
 
   zoomed(newXScale, newYScale, k) {

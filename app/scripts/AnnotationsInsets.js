@@ -5,7 +5,10 @@ import rbush from 'rbush';
 // Services
 import { pubSub } from './services';
 
-import { Annotation, GalleryLabel, Label } from './factories';
+// Factories
+import {
+  Annotation, AreaClusterer, GalleryLabel, KeySet, Label
+} from './factories';
 
 // Utils
 import {
@@ -25,6 +28,8 @@ class AnnotationsInsets {
       return;
     }
 
+    this.insetsTrack.subscribe('dimensions', this.updateBounds.bind(this));
+    this.insetsTrack.subscribe('position', this.updateBounds.bind(this));
     this.insetsTrack.subscribe('zoom', this.zoomHandler.bind(this));
 
     this.annotationTrackIds = new Set();
@@ -48,6 +53,7 @@ class AnnotationsInsets {
 
     this.currK = 1;  // Current scale
     this.drawnAnnoIds = new Set();
+    this.annosToBeDrawnAsInsets = new KeySet('id');
     this.insets = {};
 
     this.tracksDrawingTiles = new Set();
@@ -74,6 +80,15 @@ class AnnotationsInsets {
     this.projectorY = this.insetsTrack.dataType === 'osm-image'
       ? lat => latToY(lat, 19)
       : identity;
+
+    this.areaClusterer = new AreaClusterer({
+      gridSize: 50,
+      minClusterSize: 3,
+      maxZoom: undefined
+    });
+
+    this.insetsTrackWidth = 0;
+    this.insetsTrackHeight = 0;
   }
 
   /**
@@ -106,11 +121,12 @@ class AnnotationsInsets {
       dataPosProj
     );
 
-    this.newAnno = !this.drawnAnnoIdsOld.has(uid);
     this.drawnAnnoIds.add(uid);
 
-    const width = this.insetsTrack.dimensions[0] - (2 * this.insetsTrack.positioning.offsetX);
-    const height = this.insetsTrack.dimensions[1] - (2 * this.insetsTrack.positioning.offsetY);
+    if (!this.drawnAnnoIdsPrev.has(uid)) {
+      this.newAnno = true;
+      this.drawnAnnoIdsNew.add(uid);
+    }
 
     if (
       (
@@ -120,9 +136,9 @@ class AnnotationsInsets {
       &&
       (
         (annotation.minX >= 0 || annotation.maxX > 0)
-        && (annotation.minX < width || annotation.maxX <= width)
+        && (annotation.minX < this.insetsTrackWidth || annotation.maxX <= this.insetsTrackWidth)
         && (annotation.minY >= 0 || annotation.maxY > 0)
-        && (annotation.minY < height || annotation.maxY <= height)
+        && (annotation.minY < this.insetsTrackHeight || annotation.maxY <= this.insetsTrackHeight)
       )
     ) {
       const remoteSize = Math.max(
@@ -131,25 +147,50 @@ class AnnotationsInsets {
       );
       this.insetMinRemoteSize = Math.min(this.insetMinRemoteSize, remoteSize);
       this.insetMaxRemoteSize = Math.max(this.insetMaxRemoteSize, remoteSize);
-      this.insetsToBeDrawn.push(annotation);
-      this.insetsToBeDrawnIds.add(uid);
-    } else {
-      this.drawnAnnotations.push(annotation);
+      this.annosToBeDrawnAsInsets.add(annotation);
+      if (!this.drawnAnnoIdsPrev.has(uid)) {
+        this.annosToBeDrawnAsInsetsNew.add(annotation);
+      }
     }
+
+    this.drawnAnnotations.push(annotation);
   }
 
   /**
    * Build region tree of drawn annotations and trigger the creation of insets.
    */
   buildTree() {
-    if (!this.drawnAnnotations.length && !this.insetsToBeDrawn.length) return;
+    if (!this.drawnAnnotations.length && !this.annosToBeDrawnAsInsets.size) return;
 
-    this.drawnAnnotations = [
-      ...this.insetsToBeDrawn,
-      ...this.drawnAnnotations
-    ];
+    // this.drawnAnnotations = [
+    //   ...this.annosToBeDrawnAsInsets.values(),
+    //   ...this.drawnAnnotations
+    // ];
     if (this.newAnno) this.tree.load(this.drawnAnnotations);
     this.createInsets();
+  }
+
+  computeInsetSizeScale() {
+    // Convert data (basepair position) to view (display pixel) resolution
+    const finalRes = scaleQuantize()
+      .domain([this.insetMinRemoteSize, this.insetMaxRemoteSize])
+      .range(range(
+        this.insetsTrack.insetMinSize * this.insetsTrack.insetScale,
+        (this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale) + 1,
+        this.insetsTrack.options.sizeStepSize
+      ));
+
+    const newResScale = (
+      this.insetMinRemoteSize !== this.insetMinRemoteSizeOld
+      || this.insetMaxRemoteSize !== this.insetMaxRemoteSizeOld
+    );
+
+    // Update old remote size to avoid wiggling insets that did not change at
+    // all
+    this.insetMinRemoteSizeOld = this.insetMinRemoteSize;
+    this.insetMaxRemoteSizeOld = this.insetMaxRemoteSize;
+
+    return { finalRes, newResScale };
   }
 
   /**
@@ -180,18 +221,30 @@ class AnnotationsInsets {
    * Create insets.
    */
   createInsets() {
-    this.drawInsets(this.positionInsets(), this.insetsToBeDrawnIds);
+    // Determine old annotations
+    this.annosToBeDrawnAsInsetsOld = this.annosToBeDrawnAsInsetsPrev
+      .filter(anno => !this.annosToBeDrawnAsInsets.has(anno));
+
+    this.clusterAnnotations();
+    this.drawInsets(this.positionInsets());
+  }
+
+  clusterAnnotations() {
+    // Update clusterer
+    this.areaClusterer.addMarkers(this.annosToBeDrawnAsInsetsNew, true);
+    this.areaClusterer.removeMarkers(this.annosToBeDrawnAsInsetsOld, true);
+    this.areaClusterer.setReady(true);
+    this.areaClusterer.repaint();
   }
 
   /**
    * Draw positioned insets
    *
-   * @param  {Array}  insets  Inset positions to be drawn.
-   * @param  {Set}  insetIds  Inset IDs to be drawn.
+   * @param  {KeySet}  insets  Inset positions to be drawn.
    * @return  {Object}  Promise resolving once all insets are drawn.
    */
-  drawInsets(insets, insetIds) {
-    return Promise.all(this.insetsTrack.drawInsets(insets, insetIds))
+  drawInsets(insets) {
+    return Promise.all(this.insetsTrack.drawInsets(insets))
       .then(() => { this.animate(); })
       .catch((e) => { this.animate(); console.error(e); });
   }
@@ -203,11 +256,14 @@ class AnnotationsInsets {
     this.tree = rbush();
     this.oldAnnotations = this.drawnAnnotations;
     this.drawnAnnotations = [];
-    this.oldInsets = this.insetsToBeDrawn;
-    this.insetsToBeDrawn = [];
-    this.insetsToBeDrawnIds = new Set();
-    this.drawnAnnoIdsOld = this.drawnAnnoIds;
+    this.annosToBeDrawnAsInsetsPrev = this.annosToBeDrawnAsInsets.clone();
+    this.annosToBeDrawnAsInsets = new KeySet('id');
+    this.annosToBeDrawnAsInsetsNew = new KeySet('id');
+    this.annosToBeDrawnAsInsetsOld = new KeySet('id');
+    this.drawnAnnoIdsNew = new Set();
+    this.drawnAnnoIdsPrev = this.drawnAnnoIds;
     this.drawnAnnoIds = new Set();
+    this.drawnAnnoIdsNew = new Set();
     this.newAnno = false;
     this.insetMinRemoteSize = Infinity;  // Larger dimension of the smallest inset
     this.insetMaxRemoteSize = 0;  // Larger dimension of the largest inset
@@ -220,56 +276,20 @@ class AnnotationsInsets {
    * @return  {Array}  Position and dimension of the insets.
    */
   positionInsets() {
-    if (!this.insetsToBeDrawn.length) return [];
+    if (!this.annosToBeDrawnAsInsets.size) return [];
 
-    const insets = this.insetsTrack.positioning.location === 'gallery'
+    return this.insetsTrack.positioning.location === 'gallery'
       ? this.positionInsetsGallery()
       : this.positionInsetsCenter();
-
-    return insets.map(inset => ([
-      inset.id,
-      inset.x,
-      inset.y,
-      inset.width,
-      inset.height,
-      inset.oX,
-      inset.oY,
-      inset.owh,
-      inset.ohh,
-      inset.getDataPositions()
-    ]));
-  }
-
-  computeInsetSizeScale() {
-    // Convert data (basepair position) to view (display pixel) resolution
-    const finalRes = scaleQuantize()
-      .domain([this.insetMinRemoteSize, this.insetMaxRemoteSize])
-      .range(range(
-        this.insetsTrack.insetMinSize * this.insetsTrack.insetScale,
-        (this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale) + 1,
-        this.insetsTrack.options.sizeStepSize
-      ));
-
-    const newResScale = (
-      this.insetMinRemoteSize !== this.insetMinRemoteSizeOld
-      || this.insetMaxRemoteSize !== this.insetMaxRemoteSizeOld
-    );
-
-    // Update old remote size to avoid wiggling insets that did not change at
-    // all
-    this.insetMinRemoteSizeOld = this.insetMinRemoteSize;
-    this.insetMaxRemoteSizeOld = this.insetMaxRemoteSize;
-
-    return { finalRes, newResScale };
   }
 
   /**
    * Position insets within the heatmap using simulated annealing
    *
-   * @param  {Array}  insetsToBeDrawn  Insets to be drawn
+   * @param  {Array}  annosToBeDrawnAsInsets  Insets to be drawn
    * @return  {Array}  Position and dimension of the insets.
    */
-  positionInsetsCenter(insetsToBeDrawn = this.insetsToBeDrawn) {
+  positionInsetsCenter(annosToBeDrawnAsInsets = this.annosToBeDrawnAsInsets) {
     const anchors = this.drawnAnnotations.map(annotation => ({
       t: 1.0,
       x: (annotation.maxX + annotation.minX) / 2,
@@ -282,7 +302,7 @@ class AnnotationsInsets {
 
     const { finalRes, newResScale } = this.computeInsetSizeScale();
 
-    const insets = insetsToBeDrawn
+    const insets = annosToBeDrawnAsInsets
       .map((inset) => {
         if (!this.insets[inset.id]) {
           const { width, height } = this.computeSize(inset, finalRes);
@@ -332,13 +352,13 @@ class AnnotationsInsets {
         return false;
       });
 
-    if (insetsToBePositioned.length) {
+    if (insetsToBePositioned.size) {
       const t0 = performance.now();
-      const n = insetsToBePositioned.length;
+      const n = insetsToBePositioned.size;
 
       positionLabels
         // Insets, i.e., labels
-        .label(insetsToBePositioned)
+        .label(insetsToBePositioned.values)
         // Anchors, i.e., label origins, already positioned labels, and other
         // annotations
         .anchor(anchors)
@@ -359,15 +379,15 @@ class AnnotationsInsets {
    * Technically we should not call the snippets insets anymore because they are
    * not drawn within the matrix anymore
    *
-   * @param  {Array}  insetsToBeDrawn  Insets to be drawn
+   * @param  {Array}  annosToBeDrawnAsInsets  Insets to be drawn
    * @return  {Array}  Position and dimension of the insets.
    */
-  positionInsetsGallery(insetsToBeDrawn = this.insetsToBeDrawn) {
+  positionInsetsGallery(annosToBeDrawnAsInsets = this.annosToBeDrawnAsInsets) {
     const { finalRes, newResScale } = this.computeInsetSizeScale();
 
     // 1. Position insets to the closest position on the gallery border
     const insets = this.positionInsetsGalleryNearestBorder(
-      insetsToBeDrawn, finalRes, newResScale
+      annosToBeDrawnAsInsets, finalRes, newResScale
     );
 
     const offX = this.insetsTrack.positioning.offsetX;
@@ -422,14 +442,14 @@ class AnnotationsInsets {
    *   border and other insets close to the same location to spread insets
    *   out.
    *
-   * @param   {array}  insetsToBeDrawn  Inset definition olding the position
+   * @param   {array}  annosToBeDrawnAsInsets  Inset definition olding the position
    *   and size of the original locus defining the inset.
    * @param   {function}  finalRes  Translator between remote size and final
    *   pixel size.
    * @return  {array}  List of inset definitions holding the border position,
    *   pixel size, origin, and remote size.
    */
-  positionInsetsGalleryNearestBorder(insetsToBeDrawn, finalRes, newResScale) {
+  positionInsetsGalleryNearestBorder(annosToBeDrawnAsInsets, finalRes, newResScale) {
     // Maximum inset pixel size
     const insetMaxSize = (
       this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale
@@ -462,7 +482,7 @@ class AnnotationsInsets {
     const offX = this.insetsTrack.positioning.offsetX;
     const offY = this.insetsTrack.positioning.offsetY;
 
-    return insetsToBeDrawn.map((inset) => {
+    return annosToBeDrawnAsInsets.map((inset) => {
       const _inset = this.insets[inset.id];
       if (_inset) {
         // Update existing inset positions
@@ -594,8 +614,29 @@ class AnnotationsInsets {
     }
   }
 
+  updateBounds() {
+    const minX = this.insetsTrack.position[0] + this.insetsTrack.positioning.offsetX;
+    const minY = this.insetsTrack.position[1] + this.insetsTrack.positioning.offsetY;
+
+    this.insetsTrackWidth = (
+      this.insetsTrack.dimensions[0] -
+      (2 * this.insetsTrack.positioning.offsetX)
+    );
+    this.insetsTrackHeight = (
+      this.insetsTrack.dimensions[1] -
+      (2 * this.insetsTrack.positioning.offsetY)
+    );
+
+    this.areaClusterer.setBounds([
+      minX,
+      minX + this.insetsTrackWidth,
+      minY,
+      minY + this.insetsTrackHeight,
+    ]);
+  }
+
   /**
-   * Hook uo with the zoom event and trigger the r-tree initialization.
+   * Hook up with the zoom event and trigger the r-tree initialization.
    * @param   {number}  options.k  New zoom level.
    */
   zoomHandler({ k }) {
