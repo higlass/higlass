@@ -234,7 +234,9 @@ class AnnotationsInsets {
     this.areaClusterer.addMarkers(this.annosToBeDrawnAsInsetsNew, true);
     this.areaClusterer.removeMarkers(this.annosToBeDrawnAsInsetsOld, true);
     this.areaClusterer.setReady(true);
+    const t0 = performance.now();
     this.areaClusterer.repaint();
+    console.log(`Clustering took ${performance.now() - t0}ms`);
   }
 
   /**
@@ -308,7 +310,7 @@ class AnnotationsInsets {
           const { width, height } = this.computeSize(inset, finalRes);
 
           // Add new inset
-          this.insets[inset.id] = new Label(inset.id, width, height, [inset]);
+          this.insets[inset.id] = new Label(inset.id, width, height, inset);
         } else {
           // Update existing inset positions
           const newOx = (inset.maxX + inset.minX) / 2;
@@ -627,12 +629,12 @@ class AnnotationsInsets {
       (2 * this.insetsTrack.positioning.offsetY)
     );
 
-    this.areaClusterer.setBounds([
+    this.areaClusterer.setBounds(
       minX,
       minX + this.insetsTrackWidth,
       minY,
       minY + this.insetsTrackHeight,
-    ]);
+    );
   }
 
   /**

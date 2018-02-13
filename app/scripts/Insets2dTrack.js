@@ -179,7 +179,7 @@ export default class Insets2dTrack extends PixiTrack {
         label.id,
         remotePos,
         renderedPos,
-        label.getDataPositions()
+        label.getDataPos
       )
     );
 
@@ -237,22 +237,15 @@ export default class Insets2dTrack extends PixiTrack {
    * @return  {Promise}  Promise resolving once the inset has been drawn.
    */
   drawInset(label) {
-    if (label.annotations.size > 1) {
-      console.warn('Labels with multiple annotations are not yet supported');
-      return Promise.resolve();
-    }
-
-    const dataPos = label.getDataPositions()[0];
-
     if (this.dataType === 'cooler') {
       if (!this.fetchChromInfo) return Promise.reject('This is truly odd!');
 
       return this.fetchChromInfo
         .then(_chromInfo => this.createFetchRenderInset(
           label,
-          dataPos,
+          label.dataPos,
           this.dataToGenomePos(
-            ...dataPos, _chromInfo
+            ...label.dataPos, _chromInfo
           )
         ));
     }
@@ -260,15 +253,15 @@ export default class Insets2dTrack extends PixiTrack {
     if (this.dataType === 'osm-image') {
       return this.createFetchRenderInset(
         label,
-        [...dataPos],
-        this.lngLatToProjPos(...dataPos)
+        [...label.dataPos],
+        this.lngLatToProjPos(...label.dataPos)
       );
     }
 
     return this.createFetchRenderInset(
       label,
-      dataPos,
-      this.dataToImPos(...dataPos)
+      label.dataPos,
+      this.dataToImPos(...label.dataPos)
     );
   }
 
