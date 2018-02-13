@@ -27,7 +27,7 @@ export class StackedBarTrack extends BarTrack {
     // find total max across all tiles
     let visibleMax = 0;
     let visibleMin = 0;
-    for(let i = 0; i < visibleAndFetched.length; i++) {
+    for (let i = 0; i < visibleAndFetched.length; i++) {
       const matrix = this.unFlatten(visibleAndFetched[i]);
       const tileMaxAndMin = this.findMaxAndMin(matrix);
 
@@ -37,7 +37,7 @@ export class StackedBarTrack extends BarTrack {
     this.maxAndMin.max = visibleMax;
     this.maxAndMin.min = visibleMin;
 
-    for(let i = 0; i < visibleAndFetched.length; i++) {
+    for (let i = 0; i < visibleAndFetched.length; i++) {
       this.renderTile(visibleAndFetched[i]);
     }
 
@@ -149,6 +149,12 @@ export class StackedBarTrack extends BarTrack {
     const positiveTrackHeight = (positiveMax * trackHeight) / unscaledHeight;
     const negativeTrackHeight = (negativeMax * trackHeight) / unscaledHeight;
 
+
+    //todo positive and negative track heights are nan to start bc maxes and mins don't happen at init
+    console.log('positiveTrackHeight', positiveTrackHeight);
+    console.log('negativeTrackHeight', negativeTrackHeight);
+    console.log('trackHeight', trackHeight);
+
     const colorScale = this.options.colorScale || scaleOrdinal(schemeCategory10);
     const valueToPixels = scaleLinear()
       .domain([0, positiveMax])
@@ -183,38 +189,34 @@ export class StackedBarTrack extends BarTrack {
       matrixWithColors.push([positive, negative]);
     }
 
-    // draws positive values
     for (let j = 0; j < matrixWithColors.length; j++) { // jth vertical bar in the graph
       const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
       const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
+
+      // draw positive values
       const positive = matrixWithColors[j][0];
-      let prevStackedBarHeight = 0;
+      let positiveStackedHeight = 0;
       for (let i = 0; i < positive.length; i++) { // 0 contains array of positive values
         const height = valueToPixels(positive[i].value);
-        const y = (trackHeight - negativeTrackHeight) - (prevStackedBarHeight + height);
+        const y = (trackHeight - negativeTrackHeight) - (positiveStackedHeight + height);
         graphics.beginFill(positive[i].color);
         graphics.drawRect(x, y, width, height);
-        prevStackedBarHeight = prevStackedBarHeight + height;
+        positiveStackedHeight = positiveStackedHeight + height;
       }
-      prevStackedBarHeight = 0;
-    }
 
-    //todo this currently bleeds into positives
-    // // draws negative values
-    // for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
-    //   const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
-    //   const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
-    //   const negativeValsSorted = matrix[j].filter((a) => a < 0).sort((a, b) => a - b);
-    //
-    //   for (let i = 0; i < negativeValsSorted.length; i++) {
-    //     const height = valueToPixels(negativeValsSorted[i]);
-    //     const y = positiveTrackHeight - (prevStackedBarHeight + height);
-    //     graphics.beginFill(colorToHex(colorScale[i]));
-    //     graphics.drawRect(x, y, width, height);
-    //     prevStackedBarHeight = prevStackedBarHeight - height;
-    //   }
-    //   prevStackedBarHeight = 0;
-    // }
+      // draw negative values // todo still bleeds into positives
+      const negative = matrixWithColors[j][1];
+      let negativeStackedHeight = 0; // todo is this right?
+      for (let i = 0; i < negative.length; i++) {
+        const height = valueToPixels(negative[i].value);
+        const y = positiveTrackHeight - (negativeStackedHeight + height);
+        graphics.beginFill('black');//negative[i].color); //todo black to debug
+        graphics.drawRect(x, y, width, height);
+        negativeStackedHeight = negativeStackedHeight - height;
+      }
+      positiveStackedHeight = 0;
+      negativeStackedHeight = 0;
+    }
 
   }
 
