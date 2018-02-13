@@ -245,8 +245,6 @@ labeler.start = (nsweeps, t = 1.0) => {
     }
     currT = coolingSchedule(currT, initialT, nsweeps);
   }
-
-  console.log('START', m, nsweeps, acc, rej);
 };
 
 labeler.width = (x) => {
