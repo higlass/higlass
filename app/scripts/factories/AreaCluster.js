@@ -1,5 +1,3 @@
-import { isWithin as _isWithin } from '../utils';
-
 /**
  * A cluster that contains annotations.
  *
@@ -8,7 +6,7 @@ import { isWithin as _isWithin } from '../utils';
  * @constructor
  * @ignore
  */
-function AreaCluster(isAverageCenter) {
+function AreaCluster(isAverageCenter, padding = 0) {
   this.isAverageCenter = isAverageCenter;
   this.center = null;
   this.annotations = new Set();
@@ -18,6 +16,8 @@ function AreaCluster(isAverageCenter) {
   this.maxX = 0;
   this.minY = 0;
   this.maxY = 0;
+
+  this.padding = padding;
 }
 
 
@@ -34,7 +34,6 @@ AreaCluster.prototype.add = function add(annotation) {
 
   if (!this.center) {
     this.center = [cX, cY];
-    this.calculateBounds();
   }
 
   const l = this.annotations.size;
@@ -43,7 +42,6 @@ AreaCluster.prototype.add = function add(annotation) {
     const x = ((this.center[0] * l) + cX) / (l + 1);
     const y = ((this.center[1] * l) + cY) / (l + 1);
     this.center = [x, y];
-    this.calculateBounds();
   }
 
   annotation.isAdded = true;
@@ -61,10 +59,10 @@ AreaCluster.prototype.add = function add(annotation) {
  * @return {google.maps.LatLngBounds} the cluster bounds.
  */
 AreaCluster.prototype.updateBounds = function updateBounds(annotation) {
-  this.minX = Math.min(this.minX, annotation.minX);
-  this.maxX = Math.max(this.maxX, annotation.maxX);
-  this.minY = Math.min(this.minY, annotation.minY);
-  this.maxY = Math.max(this.maxY, annotation.maxY);
+  this.minX = Math.min(this.minX, annotation.minX - this.padding);
+  this.maxX = Math.max(this.maxX, annotation.maxX + this.padding);
+  this.minY = Math.min(this.minY, annotation.minY - this.padding);
+  this.maxY = Math.max(this.maxY, annotation.maxY + this.padding);
 };
 
 
@@ -104,8 +102,12 @@ AreaCluster.prototype.getCenter = function getCenter() {
  * @return {boolean} True if the annotation lies in the bounds.
  */
 AreaCluster.prototype.isWithin = function isWithin(annotation) {
-  return _isWithin(
-    ...annotation.getViewPosition(), this.minX, this.maxX, this.minY, this.maxY
+  const [mMinX, mMaxX, mMinY, mMaxY] = annotation.getViewPosition();
+  return (
+    mMinX < this.maxX &&
+    mMaxX > this.minX &&
+    mMinY < this.maxY &&
+    mMaxY > this.minY
   );
 };
 

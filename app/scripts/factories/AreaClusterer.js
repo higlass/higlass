@@ -1,61 +1,71 @@
-import { InsetCluster } from './';
+import { AreaCluster, KeySet } from './';
 
-import { isWithin as _isWithin, lDist } from '../utils';
+import { lDist } from '../utils';
 
 
-function AreaClusterer(options) {
-  this._markers = new Set();
-  this._markersAdded = new Set();
-  this._clusters = new Set();
+const AreaClusterer = function AreaClusterer(options) {
+  this.markers = new KeySet('id');
+  this.markersAdded = new KeySet('id');
+  this.clusters = new Set();
 
   this.sizes = [53, 56, 66, 78, 90];
 
-  this._isReady = false;
+  this.isReady = false;
 
   const _options = options || {};
 
-  this._gridSize = _options.gridSize || 60;
-  this._minClusterSize = _options.minClusterSize || 2;
-  this._maxZoom = _options.maxZoom || null;
-  this._isAverageCenter = !!options.averageCenter || true;
-  this._prevZoom = null;
-  this._minX = 0;
-  this._maxX = 0;
-  this._minY = 0;
-  this._maxY = 0;
-  this._defaultMinDist = _options.defaultMinDist || 40000;
+  this.gridSize = _options.gridSize || 60;
+  this.minClusterSize = _options.minClusterSize || 2;
+  this.maxZoom = _options.maxZoom || null;
+  this.isAverageCenter = !!options.averageCenter || true;
+  this.prevZoom = null;
+  this.minX = 0;
+  this.maxX = 0;
+  this.minY = 0;
+  this.maxY = 0;
+  this.defaultMinDist = _options.defaultMinDist || 40000;
+};
+
+/* ------------------------------- Properties ------------------------------- */
+
+function getSize() {
+  return this.clusters.size;
 }
 
-/**
- * Whether average center is set.
- * @return  {boolean}  `true` if _averageCenter is set.
- */
-AreaClusterer.prototype.isAverageCenter = () => this._isAverageCenter;
+Object.defineProperty(AreaClusterer.prototype, 'size', { get: getSize });
+
+/* --------------------------------- Methods -------------------------------- */
 
 /**
  * Returns the array of markers in the clusterer.
  * @return  {set}  The markers.
  */
-AreaClusterer.prototype.getMarkers = () => this._markers;
+AreaClusterer.prototype.getMarkers = function getMarkers() {
+  return this.markers;
+};
 
 /**
  * Returns the number of markers in the clusterer
  * @return {number} The number of markers.
  */
-AreaClusterer.prototype.getTotalMarkers = () => this._markers.size;
+AreaClusterer.prototype.getTotalMarkers = function getTotalMarkers() {
+  return this.markers.size;
+};
 
 /**
  * Gets the max zoom for the clusterer.
  * @return {number}  The max zoom level.
  */
-AreaClusterer.prototype.getMaxZoom = () => this._maxZoom;
+AreaClusterer.prototype.getMaxZoom = function getMaxZoom() {
+  return this.maxZoom;
+};
 
 /**
  * Sets the max zoom for the clusterer.
  * @param {number}  maxZoom  The max zoom level.
  */
 AreaClusterer.prototype.setMaxZoom = (maxZoom) => {
-  this._maxZoom = maxZoom;
+  this.maxZoom = maxZoom;
 };
 
 /**
@@ -63,7 +73,7 @@ AreaClusterer.prototype.setMaxZoom = (maxZoom) => {
  * @return  {array}  bounds  Quadrupel of form `[minX, maxX, minY, maxY]`.
  */
 AreaClusterer.prototype.getBounds = function getBounds() {
-  return [this._minX, this._maxX, this._minY, this._maxY];
+  return [this.minX, this.maxX, this.minY, this.maxY];
 };
 
 /**
@@ -74,10 +84,10 @@ AreaClusterer.prototype.getBounds = function getBounds() {
  * @param   {number}  maxY  Bottom most Y position.
  */
 AreaClusterer.prototype.setBounds = function setBounds(minX, maxX, minY, maxY) {
-  this._minX = minX || this._minX;
-  this._maxX = maxX || this._maxX;
-  this._minY = minY || this._minY;
-  this._maxY = maxY || this._maxY;
+  this.minX = minX || this.minX;
+  this.maxX = maxX || this.maxX;
+  this.minY = minY || this.minY;
+  this.maxY = maxY || this.maxY;
 };
 
 /**
@@ -88,8 +98,9 @@ AreaClusterer.prototype.setBounds = function setBounds(minX, maxX, minY, maxY) {
  */
 AreaClusterer.prototype.addMarkers = function addMarkers(markers, noDraw) {
   markers.forEach((marker) => {
-    this._markers.add(marker);
+    this.markers.add(marker);
   });
+
   if (!noDraw) this.redraw();
 };
 
@@ -100,7 +111,7 @@ AreaClusterer.prototype.addMarkers = function addMarkers(markers, noDraw) {
  */
 AreaClusterer.prototype.removeMarkers = function removeMarkers(markers, noDraw) {
   const isRemoved = markers
-    .map(marker => this._markers.delete(marker))
+    .map(marker => this.markers.delete(marker))
     .some(markerIsRemoved => markerIsRemoved);
 
   if (isRemoved && !noDraw) {
@@ -116,8 +127,8 @@ AreaClusterer.prototype.removeMarkers = function removeMarkers(markers, noDraw) 
  * @param  {boolean}  ready - The state.
  */
 AreaClusterer.prototype.setReady = function setReady(ready) {
-  if (!this._ready) {
-    this._ready = ready;
+  if (!this.ready) {
+    this.ready = ready;
     this.createClusters();
   }
 };
@@ -127,7 +138,7 @@ AreaClusterer.prototype.setReady = function setReady(ready) {
  * @return  {number}  The number of clusters.
  */
 AreaClusterer.prototype.getTotalClusters = function getTotalClusters() {
-  return this._clusters.size;
+  return this.clusters.size;
 };
 
 /**
@@ -135,7 +146,7 @@ AreaClusterer.prototype.getTotalClusters = function getTotalClusters() {
  * @return  {number}  The grid size.
  */
 AreaClusterer.prototype.getGridSize = function getGridSize() {
-  return this._gridSize;
+  return this.gridSize;
 };
 
 /**
@@ -143,7 +154,7 @@ AreaClusterer.prototype.getGridSize = function getGridSize() {
  * @param  {number}  size - The grid size.
  */
 AreaClusterer.prototype.setGridSize = function setGridSize(size) {
-  this._gridSize = size;
+  this.gridSize = size;
 };
 
 /**
@@ -151,7 +162,7 @@ AreaClusterer.prototype.setGridSize = function setGridSize(size) {
  * @return  {number}  The grid size.
  */
 AreaClusterer.prototype.getMinClusterSize = function getMinClusterSize() {
-  return this._minClusterSize;
+  return this.minClusterSize;
 };
 
 /**
@@ -159,7 +170,7 @@ AreaClusterer.prototype.getMinClusterSize = function getMinClusterSize() {
  * @param  {number}  size - The grid size.
  */
 AreaClusterer.prototype.setMinClusterSize = function setMinClusterSize(size) {
-  this._minClusterSize = size;
+  this.minClusterSize = size;
 };
 
 /**
@@ -183,25 +194,25 @@ AreaClusterer.prototype.clearMarkers = function clearMarkers() {
   this.resetViewport(true);
 
   // Set the markers a new empty set
-  this._markers = new Set();
-  this._markersAdded = new Set();
+  this.markers = new Set();
+  this.markersAdded = new Set();
 };
 
 /**
  * Clears all existing clusters and recreates them.
  */
 AreaClusterer.prototype.resetViewport = function resetViewport() {
-  this._clusters.forEach((cluster) => { cluster.remove(); });
+  this.clusters.forEach((cluster) => { cluster.remove(); });
 
-  this._clusters = new Set();
-  this._markersAdded = new Set();
+  this.clusters = new Set();
+  this.markersAdded = new Set();
 };
 
 /**
  * Repaint
  */
 AreaClusterer.prototype.repaint = function repaint() {
-  const oldClusters = new Set(this._clusters);
+  const oldClusters = new Set(this.clusters);
 
   this.resetViewport();
   this.redraw();
@@ -225,12 +236,12 @@ AreaClusterer.prototype.redraw = function redraw() {
  * @param  {object}  marker - The marker to add.
  */
 AreaClusterer.prototype.addToClosestCluster = function addToClosestCluster(marker) {
-  let distance = this._defaultMinDist;
+  let distance = this.defaultMinDist;
   let clusterToAddTo = null;
   const markerCenter = marker.getViewPositionCenter();
 
-  this._clusters.forEach((cluster) => {
-    const clusterCenter = cluster.getViewPositionCenter();
+  this.clusters.forEach((cluster) => {
+    const clusterCenter = cluster.getCenter();
     if (clusterCenter) {
       const d = lDist(clusterCenter, markerCenter);
       if (d < distance) {
@@ -241,11 +252,11 @@ AreaClusterer.prototype.addToClosestCluster = function addToClosestCluster(marke
   });
 
   if (clusterToAddTo && clusterToAddTo.isWithin(marker)) {
-    clusterToAddTo.addMarker(marker);
+    clusterToAddTo.add(marker);
   } else {
-    const cluster = new InsetCluster(this.isAverageCenter());
-    cluster.addMarker(marker);
-    this._clusters.add(cluster);
+    const cluster = new AreaCluster(this.isAverageCenter, this.gridSize);
+    cluster.add(marker);
+    this.clusters.add(cluster);
   }
 };
 
@@ -253,10 +264,10 @@ AreaClusterer.prototype.addToClosestCluster = function addToClosestCluster(marke
  * Creates the clusters.
  */
 AreaClusterer.prototype.createClusters = function createClusters() {
-  if (!this._ready) return;
+  if (!this.ready) return;
 
-  this._markers.forEach((marker) => {
-    if (!this._markersAdded.has(marker) && this.isWithin(marker)) {
+  this.markers.forEach((marker) => {
+    if (!this.markersAdded.has(marker) && this.isWithin(marker)) {
       this.addToClosestCluster(marker);
     }
   });
@@ -266,9 +277,12 @@ AreaClusterer.prototype.createClusters = function createClusters() {
  * Creates the clusters.
  */
 AreaClusterer.prototype.isWithin = function isWithin(marker) {
-  return _isWithin(
-    ...marker.getViewPosition(),
-    this._minX, this._maxX, this._minY, this._maxY
+  const [mMinX, mMaxX, mMinY, mMaxY] = marker.getViewPosition();
+  return (
+    mMinX < this.maxX &&
+    mMaxX > this.minX &&
+    mMinY < this.maxY &&
+    mMaxY > this.minY
   );
 };
 
