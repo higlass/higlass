@@ -5,6 +5,7 @@ import { isWithin as _isWithin, lDist } from '../utils';
 
 function AreaClusterer(options) {
   this._markers = new Set();
+  this._markersAdded = new Set();
   this._clusters = new Set();
 
   this.sizes = [53, 56, 66, 78, 90];
@@ -22,6 +23,7 @@ function AreaClusterer(options) {
   this._maxX = 0;
   this._minY = 0;
   this._maxY = 0;
+  this._defaultMinDist = _options.defaultMinDist || 40000;
 }
 
 /**
@@ -40,7 +42,7 @@ AreaClusterer.prototype.getMarkers = () => this._markers;
  * Returns the number of markers in the clusterer
  * @return {number} The number of markers.
  */
-AreaClusterer.prototype.getTotalMarkers = () => this._markers.length;
+AreaClusterer.prototype.getTotalMarkers = () => this._markers.size;
 
 /**
  * Gets the max zoom for the clusterer.
@@ -60,14 +62,22 @@ AreaClusterer.prototype.setMaxZoom = (maxZoom) => {
  * Gets the bound for the clusterer.
  * @return  {array}  bounds  Quadrupel of form `[minX, maxX, minY, maxY]`.
  */
-AreaClusterer.prototype.getBounds = () => this._bounds;
+AreaClusterer.prototype.getBounds = function getBounds() {
+  return [this._minX, this._maxX, this._minY, this._maxY];
+};
 
 /**
  * Sets the bounds for the clusterer.
- * @param  {array}  bounds  Quadrupel of form `[minX, maxX, minY, maxY]`.
+ * @param   {number}  minX  Left most X position.
+ * @param   {number}  maxX  Right most X position.
+ * @param   {number}  minY  Top most Y position.
+ * @param   {number}  maxY  Bottom most Y position.
  */
-AreaClusterer.prototype.setBounds = (bounds) => {
-  this._bounds = bounds;
+AreaClusterer.prototype.setBounds = function setBounds(minX, maxX, minY, maxY) {
+  this._minX = minX || this._minX;
+  this._maxX = maxX || this._maxX;
+  this._minY = minY || this._minY;
+  this._maxY = maxY || this._maxY;
 };
 
 /**
@@ -174,6 +184,7 @@ AreaClusterer.prototype.clearMarkers = function clearMarkers() {
 
   // Set the markers a new empty set
   this._markers = new Set();
+  this._markersAdded = new Set();
 };
 
 /**
@@ -181,9 +192,9 @@ AreaClusterer.prototype.clearMarkers = function clearMarkers() {
  */
 AreaClusterer.prototype.resetViewport = function resetViewport() {
   this._clusters.forEach((cluster) => { cluster.remove(); });
-  this._markers.forEach((marker) => { marker.isAdded = false; });
 
   this._clusters = new Set();
+  this._markersAdded = new Set();
 };
 
 /**
@@ -214,7 +225,7 @@ AreaClusterer.prototype.redraw = function redraw() {
  * @param  {object}  marker - The marker to add.
  */
 AreaClusterer.prototype.addToClosestCluster = function addToClosestCluster(marker) {
-  let distance = 40000; // Some large number
+  let distance = this._defaultMinDist;
   let clusterToAddTo = null;
   const markerCenter = marker.getViewPositionCenter();
 
@@ -244,11 +255,11 @@ AreaClusterer.prototype.addToClosestCluster = function addToClosestCluster(marke
 AreaClusterer.prototype.createClusters = function createClusters() {
   if (!this._ready) return;
 
-  this._markers
-    .filter(marker => !marker.isAdded && this.isWithin(marker))
-    .forEach((marker) => {
+  this._markers.forEach((marker) => {
+    if (!this._markersAdded.has(marker) && this.isWithin(marker)) {
       this.addToClosestCluster(marker);
-    });
+    }
+  });
 };
 
 /**
