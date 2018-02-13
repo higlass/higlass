@@ -3,7 +3,7 @@ import { InsetCluster } from './';
 import { isWithin as _isWithin, lDist } from '../utils';
 
 
-function AreaClusterer(markers, options) {
+function AreaClusterer(options) {
   this._markers = new Set();
   this._clusters = new Set();
 
@@ -16,15 +16,12 @@ function AreaClusterer(markers, options) {
   this._gridSize = _options.gridSize || 60;
   this._minClusterSize = _options.minClusterSize || 2;
   this._maxZoom = _options.maxZoom || null;
-  this._isAverageCenter = !!options.averageCenter;
+  this._isAverageCenter = !!options.averageCenter || true;
   this._prevZoom = null;
   this._minX = 0;
   this._maxX = 0;
   this._minY = 0;
   this._maxY = 0;
-
-  // Finally, add the markers
-  this.addMarkers(markers, false);
 }
 
 /**
@@ -87,23 +84,14 @@ AreaClusterer.prototype.addMarkers = function addMarkers(markers, noDraw) {
 };
 
 /**
- * Adds a marker to the clusterer and redraws if needed.
- *
- * @param  {object}  marker - The marker to add.
- * @param  {boolean}  noDraw - If `true` markers are *not* redrawn.
- */
-AreaClusterer.prototype.addMarker = function addMarker(marker, noDraw) {
-  this._markers.add(marker);
-  if (!noDraw) this.redraw();
-};
-
-/**
  * Removes a marker and returns true if removed, false if not
  * @param  {object}  marker - The marker to be remove.
  * @return  {boolean}  If `true` marker has been removed.
  */
-AreaClusterer.prototype.removeMarker = function removeMarker(marker, noDraw) {
-  const isRemoved = this._markers.delete(marker);
+AreaClusterer.prototype.removeMarkers = function removeMarkers(markers, noDraw) {
+  const isRemoved = markers
+    .map(marker => this._markers.delete(marker))
+    .some(markerIsRemoved => markerIsRemoved);
 
   if (isRemoved && !noDraw) {
     this.resetViewport();
