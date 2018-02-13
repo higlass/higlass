@@ -79,7 +79,7 @@ export class StackedBarTrack extends BarTrack {
     const shapeY = tile.tileData.shape[1]; // number of bars
     let flattenedArray = tile.tileData.dense;
 
-    // if any data is negative, switch to exponential scale
+    // if any data is negative, switch to exponential scale //todo does this clash with call in TiledPixiTrack?
     if (flattenedArray.filter((a) => a < 0).length > 0 && this.options.valueScaling === 'linear') {
       console.warn('Negative values present in data. Defaulting to exponential scale.');
       this.options.valueScaling = 'exponential';
@@ -155,23 +155,38 @@ export class StackedBarTrack extends BarTrack {
       .range([0, trackHeight]);
     let prevStackedBarHeight = 0;
 
+    // draws positive values
     for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
       const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
       const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
 
+      // filter for positive values only
+      const positiveVals  = matrix[j].filter((a) => a >= 0);
+
+      // mapping colors to unsorted values
+      const originalColors = {};
+      for (let i = 0; i < positiveVals.length; i++) {
+        originalColors[colorToHex(colorScale[i])] = positiveVals[i];
+      }
+
       // sorted from smallest to largest here, but code below this makes largest bar go on top
-      const positiveValsSorted = matrix[j].filter((a) => a >= 0).sort((a, b) => a - b);
+      const positiveValsSorted = positiveVals.slice().sort((a, b) => a - b);
 
       for (let i = 0; i < positiveValsSorted.length; i++) {
         const height = valueToPixels(positiveValsSorted[i]);
         const y = (trackHeight - negativeTrackHeight) - (prevStackedBarHeight + height);
-        graphics.beginFill(colorToHex(colorScale[i]));
+        for (let k = 0; k < Object.keys(originalColors).length; k++) {
+          if (originalColors[Object.keys(originalColors)[k]] === positiveValsSorted[i]) {
+            graphics.beginFill(Object.keys(originalColors)[k]);
+          }
+        }
         graphics.drawRect(x, y, width, height);
         prevStackedBarHeight = prevStackedBarHeight + height;
       }
       prevStackedBarHeight = 0;
     }
 
+    // draws negative values
     for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
       const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
       const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
