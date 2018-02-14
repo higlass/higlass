@@ -1,28 +1,44 @@
-function Label(id, width, height, annotation, t = 1.0) {
+function Label(id, t = 1.0) {
   this.id = id;
-
-  this.width = width;
-  this.height = height;
-  this.wH = width / 2;
-  this.hH = height / 2;
-
   this.t = t;
+  return this;
+}
 
-  this.annotation = annotation;
+/* ------------------------------- Properties ------------------------------- */
 
-  this.minX = annotation.minX;
-  this.maxX = annotation.maxX;
-  this.minY = annotation.minY;
-  this.maxY = annotation.maxY;
+function getDataPos() {
+  return this.src.getDataPosition();
+}
 
-  this.x = (annotation.minX + annotation.maxX) / 2;
-  this.y = (annotation.minY + annotation.maxY) / 2;
+Object.defineProperty(Label.prototype, 'dataPos', { get: getDataPos });
+
+/* --------------------------------- Methods -------------------------------- */
+
+Label.prototype.setSrc = function setSrc(src) {
+  this.src = src;
+
+  this.minX = src.minX;
+  this.maxX = src.maxX;
+  this.minY = src.minY;
+  this.maxY = src.maxY;
+
+  this.x = (src.minX + src.maxX) / 2;
+  this.y = (src.minY + src.maxY) / 2;
   this.oX = this.x;
   this.oY = this.y;
   this.oWH = (this.maxX - this.minX) / 2;
   this.oHH = (this.maxY - this.minY) / 2;
 
-  this.dataPos = annotation.getDataPosition();
-}
+  return this;
+};
+
+Label.prototype.setDim = function setDim(width, height) {
+  this.width = width;
+  this.height = height;
+  this.wH = width / 2;
+  this.hH = height / 2;
+
+  return this;
+};
 
 export default Label;
