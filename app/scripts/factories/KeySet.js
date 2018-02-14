@@ -50,7 +50,7 @@ KeySet.prototype[Symbol.iterator] = function* iterator() {
 };
 
 KeySet.prototype.add = function add(item) {
-  if (!item[this._keyProp]) return;
+  if (!item || !item[this._keyProp]) return;
 
   this._store[item[this._keyProp]] = item;
 };
@@ -68,7 +68,7 @@ KeySet.prototype.clone = function clone() {
 };
 
 KeySet.prototype.delete = function deleteMethod(item) {
-  if (item[this._keyProp]) return;
+  if (!item || item[this._keyProp]) return;
 
   this._store[item[this._keyProp]] = undefined;
   delete this._store[item[this._keyProp]];
@@ -95,7 +95,7 @@ KeySet.prototype.get = function get(key) {
 };
 
 KeySet.prototype.has = function has(item) {
-  if (!item[this._keyProp]) return false;
+  if (!item || !item[this._keyProp]) return false;
   return !!this._store[item[this._keyProp]];
 };
 
