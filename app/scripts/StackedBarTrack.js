@@ -7,8 +7,8 @@ export class StackedBarTrack extends BarTrack {
     super(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged);
 
     this.maxAndMin = {
-      max: 0,
-      min: 0
+      max: null,
+      min: null
     };
   }
 
@@ -19,23 +19,16 @@ export class StackedBarTrack extends BarTrack {
   updateTile(tile) {
     const visibleAndFetched = this.visibleAndFetchedTiles();
 
+    // reset max and min to null so previous maxes and mins don't carry over //todo save previously calculated maxAndMins
     this.maxAndMin = {
-      max: 0,
-      min: 0
+      max: null,
+      min: null
     };
 
-    // find total max across all tiles
-    let visibleMax = 0;
-    let visibleMin = 0;
     for (let i = 0; i < visibleAndFetched.length; i++) {
       const matrix = this.unFlatten(visibleAndFetched[i]);
-      const tileMaxAndMin = this.findMaxAndMin(matrix);
-
-      (tileMaxAndMin.max > visibleMax) ? visibleMax = tileMaxAndMin.max : visibleMax;
-      (tileMaxAndMin.min < visibleMin) ? visibleMin = tileMaxAndMin.min : visibleMin;
+      this.findMaxAndMin(matrix);
     }
-    this.maxAndMin.max = visibleMax;
-    this.maxAndMin.min = visibleMin;
 
     for (let i = 0; i < visibleAndFetched.length; i++) {
       this.renderTile(visibleAndFetched[i]);
@@ -51,8 +44,8 @@ export class StackedBarTrack extends BarTrack {
   findMaxAndMin(matrix) {
     // find max height of bars for scaling in the track
     let maxAndMin = {
-      max: 0,
-      min: 0
+      max: null,
+      min: null
     };
 
     for (let i = 0; i < matrix.length; i++) {
@@ -62,10 +55,20 @@ export class StackedBarTrack extends BarTrack {
       // and compare to highest overall values above
       const localPositiveMax = temp.filter((a) => a >= 0).reduce((a, b) => a + b, 0);
       (localPositiveMax > maxAndMin.max) ? maxAndMin.max = localPositiveMax : maxAndMin.max;
-      const localNegativeMax = Math.abs(temp.filter((a) => a < 0).reduce((a, b) => a + b, 0));
-      (localNegativeMax > maxAndMin.min) ? maxAndMin.min = localNegativeMax : maxAndMin.min;
+
+      let negativeValues = temp.filter((a) => a < 0);
+      if (negativeValues.length > 0) {
+        negativeValues = negativeValues.map((a) => Math.abs(a));
+        //console.log('negativeValues: ', negativeValues);
+        const localNegativeMax = negativeValues.reduce((a, b) => a + b, 0); // check
+        (maxAndMin.min === null || localNegativeMax > maxAndMin.min) ?
+          maxAndMin.min = localNegativeMax : maxAndMin.min;
+      }
     }
-    return maxAndMin;
+    (this.maxAndMin.max === null || maxAndMin.max > this.maxAndMin.max) ?
+      this.maxAndMin.max = maxAndMin.max : this.maxAndMin.max;
+    (this.maxAndMin.min === null || maxAndMin.min < this.maxAndMin.min) ?
+      this.maxAndMin.min = maxAndMin.min : this.maxAndMin.min;
   }
 
   /**
@@ -132,7 +135,7 @@ export class StackedBarTrack extends BarTrack {
   }
 
   /**
-   * Draws graph using normalized values.
+   * Draws graph without normalizing values.
    *
    * @param graphics PIXI.Graphics instance
    * @param matrix 2d array of numbers representing nucleotides
@@ -149,16 +152,7 @@ export class StackedBarTrack extends BarTrack {
     const positiveTrackHeight = (positiveMax * trackHeight) / unscaledHeight;
     const negativeTrackHeight = (negativeMax * trackHeight) / unscaledHeight;
 
-
-    //todo positive and negative track heights are nan to start bc maxes and mins don't happen at init
-    console.log('positiveTrackHeight', positiveTrackHeight);
-    console.log('negativeTrackHeight', negativeTrackHeight);
-    console.log('trackHeight', trackHeight);
-
     const colorScale = this.options.colorScale || scaleOrdinal(schemeCategory10);
-    const valueToPixels = scaleLinear()
-      .domain([0, positiveMax])
-      .range([0, trackHeight]);
 
     // mapping colors to unsorted values
     const matrixWithColors = [];
@@ -195,26 +189,32 @@ export class StackedBarTrack extends BarTrack {
 
       // draw positive values
       const positive = matrixWithColors[j][0];
+      const valueToPixelsPositive = scaleLinear()
+        .domain([0, positiveMax])
+        .range([0, positiveTrackHeight]);
       let positiveStackedHeight = 0;
       for (let i = 0; i < positive.length; i++) { // 0 contains array of positive values
-        const height = valueToPixels(positive[i].value);
-        const y = (trackHeight - negativeTrackHeight) - (positiveStackedHeight + height);
+        const height = valueToPixelsPositive(positive[i].value);
+        const y = positiveTrackHeight - (positiveStackedHeight + height);
         graphics.beginFill(positive[i].color);
         graphics.drawRect(x, y, width, height);
         positiveStackedHeight = positiveStackedHeight + height;
       }
+      positiveStackedHeight = 0;
 
-      // draw negative values // todo still bleeds into positives
+      // draw negative values
       const negative = matrixWithColors[j][1];
+      const valueToPixelsNegative = scaleLinear()
+        .domain([-Math.abs(negativeMax), 0])
+        .range([negativeTrackHeight, 0]);
       let negativeStackedHeight = 0; // todo is this right?
       for (let i = 0; i < negative.length; i++) {
-        const height = valueToPixels(negative[i].value);
-        const y = positiveTrackHeight - (negativeStackedHeight + height);
-        graphics.beginFill('black');//negative[i].color); //todo black to debug
+        const height = valueToPixelsNegative(negative[i].value);
+        const y = positiveTrackHeight + negativeStackedHeight;
+        graphics.beginFill(0x000000);//negative[i].color); //todo switch from black when black background is implemented
         graphics.drawRect(x, y, width, height);
-        negativeStackedHeight = negativeStackedHeight - height;
+        negativeStackedHeight = negativeStackedHeight + height;
       }
-      positiveStackedHeight = 0;
       negativeStackedHeight = 0;
     }
 
