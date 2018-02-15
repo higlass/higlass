@@ -49,6 +49,10 @@ KeySet.prototype[Symbol.iterator] = function* iterator() {
   }
 };
 
+/**
+ * Add an item to the key set
+ * @param  {object}  item  Item to be added. Needs to have the key property.
+ */
 KeySet.prototype.add = function add(item) {
   if (!item || !item[this._keyProp]) return false;
 
@@ -56,6 +60,9 @@ KeySet.prototype.add = function add(item) {
   return true;
 };
 
+/**
+ * Delete all items in the set
+ */
 KeySet.prototype.clear = function clear() {
   this.keys.forEach((key) => {
     this._store[key] = undefined;
@@ -63,10 +70,20 @@ KeySet.prototype.clear = function clear() {
   });
 };
 
+/**
+ * Shallowly clone the key set, i.e., the key set will be a new instance but
+ *   the items will reference the same objects.
+ * @return  {KeySet}  Shallowly cloned key set.
+ */
 KeySet.prototype.clone = function clone() {
   return new KeySet(this._keyProp, this.values);
 };
 
+/**
+ * Delete an item from the set by its key or by passing in the item itself
+ * @param   {object}  itemOrKey  Either the key property of the item or the
+ *   items itsel.
+ */
 KeySet.prototype.delete = function deleteMethod(itemOrKey) {
   if (!itemOrKey) return;
 
@@ -78,10 +95,24 @@ KeySet.prototype.delete = function deleteMethod(itemOrKey) {
   delete this._store[key];
 };
 
+/**
+ * Evaluate whether every item on the set returns a true value given the
+ *   evaluator function.
+ * @param   {function}  f  Evaluator function. Receives the items as the first
+ *   parameter.
+ * @return  {boolean}  If `true` all items on this set evaluate to `true`.
+ */
 KeySet.prototype.every = function every(f) {
   return this.values.every(f);
 };
 
+/**
+ * Filter items by the filter function and return new KeySet with only the
+ *   filtered items.
+ * @param   {function}  f  Filter function.  Receives the items as the first
+ *   parameter.
+ * @return  {KeySet}  A new KeySet with only the filtered items.
+ */
 KeySet.prototype.filter = function filter(f) {
   const newKeySet = new KeySet(this._keyProp);
   this.keys
@@ -90,23 +121,51 @@ KeySet.prototype.filter = function filter(f) {
   return newKeySet;
 };
 
+/**
+ * Apply the callback function on every item
+ * @param   {function}  f  Function to be applied on every item. Receives the
+ *   items as the first parameter and the index as the second parameter.
+ */
 KeySet.prototype.forEach = function forEach(f) {
   this.values.forEach((val, i) => { f(val, i); });
 };
 
+/**
+ * Get an item by key
+ * @param   {number|string|symbol}  key  Identifier of the item to be retrieved.
+ * @return  {object}  Item to be retrieved if found.
+ */
 KeySet.prototype.get = function get(key) {
   return this._store[key];
 };
 
+/**
+ * Test whether an item is on the set.
+ * @param   {object}  item  Item which membership is to be tested.
+ * @return  {boolean}  If `true` item is on the set.
+ */
 KeySet.prototype.has = function has(item) {
   if (!item || !item[this._keyProp]) return false;
   return !!this._store[item[this._keyProp]];
 };
 
+/**
+ * Reduce the set of items to a single value using the reducer function.
+ * @param   {function}  f  Reducer function like for `Array.reduce`.
+ * @param   {*}  initial  Initial value for the reducer.
+ * @return  {*}  Value created by the reducer
+ */
 KeySet.prototype.reduce = function reduce(f, initial) {
   return this.values.reduce(f, initial);
 };
 
+/**
+ * Evaluate whether some item on the set returns a true value given the
+ *   evaluator function.
+ * @param   {function}  f  Evaluator function. Receives the items as the first
+ *   parameter.
+ * @return  {boolean}  If `true` some item on this set evaluates to `true`.
+ */
 KeySet.prototype.some = function some(f) {
   return this.values.some(f);
 };
