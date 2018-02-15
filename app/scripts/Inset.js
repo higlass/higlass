@@ -758,7 +758,7 @@ export default class Inset {
 
     if (this.imageRendering) return this.imageRendering;
 
-    this.imageRendering = imgRenderer(data, this.finalRes, this.finalRes)
+    this.imageRendering = imgRenderer(data)
       .then((renderedData) => {
         this.data = renderedData;
 

@@ -425,14 +425,17 @@ export default class Insets2dTrack extends PixiTrack {
     return Math.min(distToOrigin, distToInset);
   }
 
-  rendererInset(data, w, h) {
+  rendererInset(data) {
     return data.dataTypes[0] === 'dataUrl'
       ? this.rendererImage(data.fragments[0])
-      : this.rendererHeatmap(data.fragments[0], w, h);
+      : this.rendererHeatmap(data.fragments[0]);
   }
 
-  rendererHeatmap(data, w, h) {
+  rendererHeatmap(data) {
     const flatImg = flatten(data);
+
+    const height = data.length;
+    const width = data[0].length;
 
     const n = flatImg.length;
 
@@ -447,7 +450,7 @@ export default class Insets2dTrack extends PixiTrack {
       pixData[j + 3] = 255;
     }
 
-    return Promise.resolve(tileToCanvas(pixData, w, h));
+    return Promise.resolve(tileToCanvas(pixData, width, height));
   }
 
   rendererImage(data) {
