@@ -75,6 +75,8 @@ export class StackedBarTrack extends BarTrack {
   /**
    * un-flatten data into matrix of tile.tileData.shape[0] x tile.tileData.shape[1]
    *
+   *
+   *
    * @param tile
    * @returns {Array} 2d array of numerical values for each column
    */
@@ -118,11 +120,10 @@ export class StackedBarTrack extends BarTrack {
     const {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
       tile.tileData.tilePos, this.tilesetInfo.tile_size);
 
-    const matrix = this.unFlatten(tile);
+    let matrix = this.unFlatten(tile);
 
     if (this.options.scaledHeight === true) {
-      this.findMaxAndMin(matrix);
-      this.drawVerticalBars(graphics, matrix, tileX, tileWidth, this.maxAndMin.max, this.maxAndMin.min);
+      this.drawVerticalBars(graphics, this.mapOriginalColors(matrix), tileX, tileWidth, this.maxAndMin.max, this.maxAndMin.min);
     }
     else {
       // normalize each array in matrix
@@ -136,23 +137,13 @@ export class StackedBarTrack extends BarTrack {
   }
 
   /**
-   * Draws graph without normalizing values.
+   * Map each value in every array in the matrix to a color depending on position in the array
+   * Divides each array into positive and negative sections and sorts them
    *
-   * @param graphics PIXI.Graphics instance
    * @param matrix 2d array of numbers representing nucleotides
-   * @param tileX starting position of tile
-   * @param tileWidth pre-scaled width of tile
-   * @param positiveMax the height of the tallest bar in the positive part of the graph
-   * @param negativeMax the height of the tallest bar in the negative part of the graph
+   * @return
    */
-  drawVerticalBars(graphics, matrix, tileX, tileWidth, positiveMax, negativeMax) {
-    const trackHeight = this.dimensions[1];
-
-    // get amount of trackHeight reserved for positive and for negative
-    const unscaledHeight = positiveMax + negativeMax;
-    const positiveTrackHeight = (positiveMax * trackHeight) / unscaledHeight;
-    const negativeTrackHeight = (negativeMax * trackHeight) / unscaledHeight;
-
+  mapOriginalColors(matrix) {
     const colorScale = this.options.colorScale || scaleOrdinal(schemeCategory10);
 
     // mapping colors to unsorted values
@@ -183,13 +174,33 @@ export class StackedBarTrack extends BarTrack {
 
       matrixWithColors.push([positive, negative]);
     }
+    return matrixWithColors;
+  }
 
-    for (let j = 0; j < matrixWithColors.length; j++) { // jth vertical bar in the graph
+  /**
+   * Draws graph without normalizing values.
+   *
+   * @param graphics PIXI.Graphics instance
+   * @param matrix 2d array of numbers representing nucleotides
+   * @param tileX starting position of tile
+   * @param tileWidth pre-scaled width of tile
+   * @param positiveMax the height of the tallest bar in the positive part of the graph
+   * @param negativeMax the height of the tallest bar in the negative part of the graph
+   */
+  drawVerticalBars(graphics, matrix, tileX, tileWidth, positiveMax, negativeMax) {
+    const trackHeight = this.dimensions[1];
+
+    // get amount of trackHeight reserved for positive and for negative
+    const unscaledHeight = positiveMax + negativeMax;
+    const positiveTrackHeight = (positiveMax * trackHeight) / unscaledHeight;
+    const negativeTrackHeight = (negativeMax * trackHeight) / unscaledHeight;
+
+    for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
       const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
       const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
 
       // draw positive values
-      const positive = matrixWithColors[j][0];
+      const positive = matrix[j][0];
       const valueToPixelsPositive = scaleLinear()
         .domain([0, positiveMax])
         .range([0, positiveTrackHeight]);
@@ -202,31 +213,33 @@ export class StackedBarTrack extends BarTrack {
         graphics.drawRect(x, y, width, height);
         positiveStackedHeight = positiveStackedHeight + height;
       }
-      //draw black bar above for black background
-      graphics.beginFill('black');
-      graphics.drawRect(x, 0, width, trackHeight - positiveStackedHeight);
-      positiveStackedHeight = 0;
 
       // draw negative values
-      const negative = matrixWithColors[j][1];
+      const negative = matrix[j][1];
       const valueToPixelsNegative = scaleLinear()
         .domain([-Math.abs(negativeMax), 0])
         .range([negativeTrackHeight, 0]);
-      let negativeStackedHeight = 0; // todo is this right?
+      let negativeStackedHeight = 0;
       for (let i = 0; i < negative.length; i++) {
         const height = valueToPixelsNegative(negative[i].value);
         const y = positiveTrackHeight + negativeStackedHeight;
-        graphics.beginFill(negative[i].color); //todo switch from black when black background is implemented
+        graphics.beginFill(negative[i].color);
         graphics.lineStyle(0.1, 'black', 1);
         graphics.drawRect(x, y, width, height);
         negativeStackedHeight = negativeStackedHeight + height;
       }
-      //draw black bar below for black background
-      graphics.beginFill('black');
-      graphics.drawRect(x, negativeStackedHeight + positiveTrackHeight, width, negativeTrackHeight - negativeStackedHeight);
-      negativeStackedHeight = 0;
 
-      // todo new problem: are positive and negative parts of the tracks truly scaled proportionally?
+      // sets background to black if black option enabled
+      const backgroundColor = this.options.backgroundColor;
+      if (backgroundColor === 'black') {
+        graphics.beginFill(backgroundColor);
+        graphics.drawRect(x, 0, width, trackHeight - positiveStackedHeight); // positive background
+        graphics.drawRect(x, negativeStackedHeight + positiveTrackHeight,    // negative background
+          width, negativeTrackHeight - negativeStackedHeight);
+        positiveStackedHeight = 0;
+        negativeStackedHeight = 0;
+
+      }
 
     }
 
