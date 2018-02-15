@@ -52,19 +52,20 @@ export class StackedBarTrack extends BarTrack {
       const temp = matrix[i];
 
       // find total heights of each positive column and each negative column
-      // and compare to highest overall values above
+      // and compare to highest value so far for the tile
       const localPositiveMax = temp.filter((a) => a >= 0).reduce((a, b) => a + b, 0);
       (localPositiveMax > maxAndMin.max) ? maxAndMin.max = localPositiveMax : maxAndMin.max;
 
       let negativeValues = temp.filter((a) => a < 0);
       if (negativeValues.length > 0) {
         negativeValues = negativeValues.map((a) => Math.abs(a));
-        //console.log('negativeValues: ', negativeValues);
         const localNegativeMax = negativeValues.reduce((a, b) => a + b, 0); // check
         (maxAndMin.min === null || localNegativeMax > maxAndMin.min) ?
           maxAndMin.min = localNegativeMax : maxAndMin.min;
       }
     }
+
+    // update global max and min if necessary
     (this.maxAndMin.max === null || maxAndMin.max > this.maxAndMin.max) ?
       this.maxAndMin.max = maxAndMin.max : this.maxAndMin.max;
     (this.maxAndMin.min === null || maxAndMin.min < this.maxAndMin.min) ?
@@ -178,7 +179,7 @@ export class StackedBarTrack extends BarTrack {
         }
       }
       positive.sort((a, b) => a.value - b.value);
-      negative.sort((a, b) => a.value - b.value);
+      negative.sort((a, b) => b.value - a.value);
 
       matrixWithColors.push([positive, negative]);
     }
@@ -197,6 +198,7 @@ export class StackedBarTrack extends BarTrack {
         const height = valueToPixelsPositive(positive[i].value);
         const y = positiveTrackHeight - (positiveStackedHeight + height);
         graphics.beginFill(positive[i].color);
+        graphics.lineStyle(0.1, 'black', 1);
         graphics.drawRect(x, y, width, height);
         positiveStackedHeight = positiveStackedHeight + height;
       }
@@ -215,6 +217,7 @@ export class StackedBarTrack extends BarTrack {
         const height = valueToPixelsNegative(negative[i].value);
         const y = positiveTrackHeight + negativeStackedHeight;
         graphics.beginFill(negative[i].color); //todo switch from black when black background is implemented
+        graphics.lineStyle(0.1, 'black', 1);
         graphics.drawRect(x, y, width, height);
         negativeStackedHeight = negativeStackedHeight + height;
       }
