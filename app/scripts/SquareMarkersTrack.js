@@ -16,7 +16,7 @@ class SquareMarkersTrack extends TiledPixiTrack {
    */
   tileToLocalId(tile) {
     // tile contains [zoomLevel, xPos, yPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
   /**
@@ -24,7 +24,7 @@ class SquareMarkersTrack extends TiledPixiTrack {
    */
   tileToRemoteId(tile) {
     // tile contains [zoomLevel, xPos, yPos]
-    return `${this.tilesetUid}.${tile.join('.')}`;
+    return `${tile.join('.')}`;
   }
 
   localToRemoteId(remoteId) {
