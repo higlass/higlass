@@ -5,12 +5,15 @@ import boxIntersect from 'box-intersect';
 import { absToChr } from './utils';
 
 export class Chromosome2DLabels extends PixiTrack {
-  constructor(scene, server, uid, handleTilesetInfoReceived, options, animate) {
-    super(scene, server, uid, handleTilesetInfoReceived, options, animate);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
+    super(scene, options);
 
     this.searchField = null;
     this.chromInfo = null;
     this.animate = animate;
+
+    const server = dataConfig.server;
+    const uid = dataConfig.tilesetUid;
 
     const chromSizesPath = `${server}/chrom-sizes/?id=${uid}`;
 
