@@ -102,6 +102,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // haven't changed rerender will force a brush.move
 
     const strOptions = JSON.stringify(options);
+    this.drawColorbar();
 
     if (!force && strOptions === this.prevOptions) { return; }
 
@@ -122,7 +123,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     // hopefully draw isn't rerendering all the tiles
     // this.drawColorbar();
-    this.drawColorbar();
   }
 
   tileDataToCanvas(pixData) {
