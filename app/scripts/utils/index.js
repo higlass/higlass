@@ -35,6 +35,7 @@ export { default as latToY } from './lat-to-y';
 export { default as loadChromInfos } from './load-chrom-infos';
 export { default as lngToX } from './lng-to-x';
 export { default as map } from './map';
+export { default as matIdxTriangle } from './mat-idx-triangle';
 export { default as mod } from './mod';
 export { default as objVals } from './obj-vals';
 export { default as or } from './or';
