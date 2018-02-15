@@ -80,7 +80,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.gColorscaleBrush = this.gMain.append('g');
 
     this.brushing = false;
-    this.prevOptions = '';
+    this.prevOptions = JSON.stringify(options);
   }
 
   /**
@@ -236,7 +236,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       ));
 
     if (strOptions === this.prevOptions) return;
-
 
     this.prevOptions = strOptions;
 
