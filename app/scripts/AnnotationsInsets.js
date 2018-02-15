@@ -7,7 +7,7 @@ import { pubSub } from './services';
 
 // Factories
 import {
-  Annotation, AreaClusterer, GalleryLabel, KeySet, Label
+  Annotation, AreaClusterer, GalleryLabel, KeySet, LabelCluster
 } from './factories';
 
 // Utils
@@ -84,7 +84,7 @@ class AnnotationsInsets {
     this.areaClusterer = new AreaClusterer({
       gridSize: 50,
       minClusterSize: 3,
-      maxZoom: undefined
+      maxZoom: undefined,
     });
 
     this.insetsTrackWidth = 0;
@@ -170,7 +170,7 @@ class AnnotationsInsets {
     this.createInsets();
   }
 
-  computeInsetSizeScale() {
+  compInsetSizeScale() {
     // Convert data (basepair position) to view (display pixel) resolution
     const finalRes = scaleQuantize()
       .domain([this.insetMinRemoteSize, this.insetMaxRemoteSize])
@@ -193,8 +193,27 @@ class AnnotationsInsets {
     return { finalRes, newResScale };
   }
 
+  compInsetSizeScaleClustSize(clusters) {
+    // Convert cluster size to view (display pixel) resolution
+    const finalRes = scaleQuantize()
+      .domain([1, clusters.clustersMaxSize])
+      .range(range(
+        this.insetsTrack.insetMinSize * this.insetsTrack.insetScale,
+        (this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale) + 1,
+        this.insetsTrack.options.sizeStepSize
+      ));
+
+    const newResScale = clusters.maxClusterSize !== this.clustersMaxSize;
+
+    // Update old remote size to avoid wiggling insets that did not change at
+    // all
+    this.clustersMaxSizeOld = clusters.maxClusterSize;
+
+    return { finalRes, newResScale };
+  }
+
   /**
-   * Compute the final inset size in pixels from their remote size (e.g., base
+   * Compute the final cluster size in pixels from their remote size (e.g., base
    *   pairs or pixels)
    *
    * @param   {object}  inset  Inset definition object holding the remote size
@@ -203,9 +222,25 @@ class AnnotationsInsets {
    *   pixel size.
    * @return  {object}  Object holding the final pixel with and height.
    */
-  computeSize(inset, scale) {
+  compInsetSize(inset, scale) {
     const widthAbs = Math.abs(inset.maxXDataProj - inset.minXDataProj);
     const heightAbs = Math.abs(inset.maxYDataProj - inset.minYDataProj);
+
+    const width = widthAbs >= heightAbs
+      ? scale(widthAbs)
+      : widthAbs / heightAbs * scale(heightAbs);
+    const height = heightAbs >= widthAbs
+      ? scale(heightAbs)
+      : heightAbs / widthAbs * width;
+
+    return { width, height };
+  }
+
+  compInsetSizeCluster(cluster, scale) {
+    const [minX, maxX, minY, maxY] = cluster.getAvgDataProjPos();
+
+    const widthAbs = Math.abs(maxX - minX);
+    const heightAbs = Math.abs(maxY - minY);
 
     const width = widthAbs >= heightAbs
       ? scale(widthAbs)
@@ -231,12 +266,11 @@ class AnnotationsInsets {
 
   clusterAnnotations() {
     // Update clusterer
-    this.areaClusterer.addMarkers(this.annosToBeDrawnAsInsetsNew, true);
-    this.areaClusterer.removeMarkers(this.annosToBeDrawnAsInsetsOld, true);
-    this.areaClusterer.setReady(true);
+    this.areaClusterer.add(this.annosToBeDrawnAsInsetsNew, true);
+    this.areaClusterer.remove(this.annosToBeDrawnAsInsetsOld, true);
     const t0 = performance.now();
     this.areaClusterer.repaint();
-    console.log(`Clustering took ${performance.now() - t0}ms`);
+    console.log(`Label clustering took ${performance.now() - t0}ms`);
   }
 
   /**
@@ -291,7 +325,7 @@ class AnnotationsInsets {
    * @param  {Array}  annosToBeDrawnAsInsets  Insets to be drawn
    * @return  {Array}  Position and dimension of the insets.
    */
-  positionInsetsCenter(annosToBeDrawnAsInsets = this.annosToBeDrawnAsInsets) {
+  positionInsetsCenter(labelClusteres = this.areaClusterer.clusters) {
     const anchors = this.drawnAnnotations.map(annotation => ({
       t: 1.0,
       x: (annotation.maxX + annotation.minX) / 2,
@@ -302,15 +336,18 @@ class AnnotationsInsets {
       hH: (annotation.maxY - annotation.minY) / 2,  // Heigth half
     }));
 
-    const { finalRes, newResScale } = this.computeInsetSizeScale();
+    const {
+      finalRes, newResScale
+    } = this.compInsetSizeScaleClustSize(labelClusteres);
 
-    const insets = annosToBeDrawnAsInsets
-      .map((inset) => {
+    const insets = new KeySet('id', labelClusteres
+      .translate((inset) => {
         if (!this.insets[inset.id]) {
-          const { width, height } = this.computeSize(inset, finalRes);
+          const { width, height } = this.compInsetSizeCluster(inset, finalRes);
 
-          // Add new inset
-          this.insets[inset.id] = new Label(inset.id, width, height, inset);
+          // Create new Label for the AreaCluster
+          this.insets[inset.id] = new LabelCluster(inset.id)
+            .setDim(width, height).setSrc(inset);
         } else {
           // Update existing inset positions
           const newOx = (inset.maxX + inset.minX) / 2;
@@ -329,7 +366,7 @@ class AnnotationsInsets {
           this.insets[inset.id].t = this.scaleChanged ? 0.5 : 0;
 
           if (newResScale) {
-            const { width, height } = this.computeSize(inset, finalRes);
+            const { width, height } = this.compInsetSizeCluster(inset, finalRes);
 
             this.insets[inset.id].width = width;
             this.insets[inset.id].height = height;
@@ -342,7 +379,7 @@ class AnnotationsInsets {
         }
 
         return this.insets[inset.id];
-      });
+      }));
 
     const insetsToBePositioned = insets
       .filter((inset) => {
@@ -368,7 +405,7 @@ class AnnotationsInsets {
         .height(this.insetsTrack.dimensions[1])
         .start(Math.round(Math.max(2, Math.min(100 * Math.log(n) / n))));
 
-      console.log(`Labeling took ${performance.now() - t0} msec`);
+      console.log(`Label positioning took ${performance.now() - t0} msec`);
     }
 
     return insets;
@@ -385,7 +422,7 @@ class AnnotationsInsets {
    * @return  {Array}  Position and dimension of the insets.
    */
   positionInsetsGallery(annosToBeDrawnAsInsets = this.annosToBeDrawnAsInsets) {
-    const { finalRes, newResScale } = this.computeInsetSizeScale();
+    const { finalRes, newResScale } = this.compInsetSizeScale();
 
     // 1. Position insets to the closest position on the gallery border
     const insets = this.positionInsetsGalleryNearestBorder(
@@ -504,7 +541,7 @@ class AnnotationsInsets {
         _inset.t = this.scaleChanged ? 0.5 : 0;
 
         if (newResScale) {
-          const { width, height } = this.computeSize(inset, finalRes);
+          const { width, height } = this.compInsetSize(inset, finalRes);
 
           _inset.width = width;
           _inset.height = height;
@@ -529,7 +566,7 @@ class AnnotationsInsets {
         return _inset;
       }
 
-      const { width, height } = this.computeSize(inset, finalRes);
+      const { width, height } = this.compInsetSize(inset, finalRes);
       const oX = (inset.maxX + inset.minX) / 2;
       const oY = (inset.maxY + inset.minY) / 2;
 
