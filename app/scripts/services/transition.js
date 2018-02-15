@@ -95,7 +95,10 @@ export const transitionGroup = (tweenDefs, time = 120) => {
   // Wait for the next tick (i.e., animation frame) and start the transition
   pubSub.subscribe('app.tick', startTransition, 1);
 
-  return cancelAll(tweens);
+  const canceler = cancelAll(tweens);
+  canceler.tweens = tweens;
+
+  return canceler;
 };
 
 export default transition;
