@@ -557,6 +557,7 @@ export class TiledPixiTrack extends PixiTrack {
   }
 
   calculateMedianVisibleValue() {
+    //console.trace('medianVisibleValue:');
     if (this.areAllVisibleTilesLoaded()) {
       this.allTilesLoaded();
     }

@@ -398,6 +398,8 @@ export class PixiTrack extends Track {
   rerender(options) {
     this.options = options;
     this.draw();
+    this.drawLabel();
+    this.drawBorder();
   }
 
   /**
@@ -405,8 +407,8 @@ export class PixiTrack extends Track {
    */
   draw() {
     // this rectangle is cleared by functions that override this draw method
-    this.drawBorder();
-    this.drawLabel();
+    // this.drawBorder();
+    // this.drawLabel();
   }
 
   /**

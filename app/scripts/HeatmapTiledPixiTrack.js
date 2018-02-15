@@ -47,7 +47,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       options,
       animate,
       () => {
-        console.log('valueScale changed');
+        //console.log('valueScale changed');
         this.drawColorbar();
         onValueScaleChanged();
       },
@@ -122,6 +122,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     // hopefully draw isn't rerendering all the tiles
     // this.drawColorbar();
+    this.drawColorbar();
   }
 
   tileDataToCanvas(pixData) {
