@@ -67,11 +67,15 @@ KeySet.prototype.clone = function clone() {
   return new KeySet(this._keyProp, this.values);
 };
 
-KeySet.prototype.delete = function deleteMethod(item) {
-  if (!item || item[this._keyProp]) return;
+KeySet.prototype.delete = function deleteMethod(itemOrKey) {
+  if (!itemOrKey) return;
 
-  this._store[item[this._keyProp]] = undefined;
-  delete this._store[item[this._keyProp]];
+  const key = this._store[itemOrKey] ? itemOrKey : itemOrKey[this._keyProp];
+
+  if (typeof key === 'undefined') return;
+
+  this._store[key] = undefined;
+  delete this._store[key];
 };
 
 KeySet.prototype.every = function every(f) {
