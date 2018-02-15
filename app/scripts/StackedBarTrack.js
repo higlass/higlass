@@ -200,6 +200,9 @@ export class StackedBarTrack extends BarTrack {
         graphics.drawRect(x, y, width, height);
         positiveStackedHeight = positiveStackedHeight + height;
       }
+      //draw black bar above for black background
+      graphics.beginFill('black');
+      graphics.drawRect(x, 0, width, trackHeight - positiveStackedHeight);
       positiveStackedHeight = 0;
 
       // draw negative values
@@ -211,11 +214,17 @@ export class StackedBarTrack extends BarTrack {
       for (let i = 0; i < negative.length; i++) {
         const height = valueToPixelsNegative(negative[i].value);
         const y = positiveTrackHeight + negativeStackedHeight;
-        graphics.beginFill(0x000000);//negative[i].color); //todo switch from black when black background is implemented
+        graphics.beginFill(negative[i].color); //todo switch from black when black background is implemented
         graphics.drawRect(x, y, width, height);
         negativeStackedHeight = negativeStackedHeight + height;
       }
+      //draw black bar below for black background
+      graphics.beginFill('black');
+      graphics.drawRect(x, negativeStackedHeight + positiveTrackHeight, width, negativeTrackHeight - negativeStackedHeight);
       negativeStackedHeight = 0;
+
+      // todo new problem: are positive and negative parts of the tracks truly scaled proportionally?
+
     }
 
   }
