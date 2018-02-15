@@ -25,16 +25,22 @@ LabelCluster.prototype.compDimPos = function compDimPos() {
   const size = this.src.size;
 
   // Update centroids
-  this.x = this.src.members.reduce((sum, member) => sum + member.minX + member.maxX, 0) / 2 * size;
-  this.y = this.src.members.reduce((sum, member) => sum + member.minY + member.maxY, 0) / 2 * size;
+  this.x = this.src.members
+    .reduce((sum, member) => sum + member.minX + member.maxX, 0) / (2 * size);
+  this.y = this.src.members
+    .reduce((sum, member) => sum + member.minY + member.maxY, 0) / (2 * size);
   this.oX = this.x;
   this.oY = this.y;
 
   // Update bounding area of the origins
-  this.minX = this.src.members.reduce((a, member) => Math.min(a, member.minX), Infinity);
-  this.maxX = this.src.members.reduce((a, member) => Math.max(a, member.maxX), -Infinity);
-  this.minY = this.src.members.reduce((a, member) => Math.min(a, member.minY), Infinity);
-  this.maxY = this.src.members.reduce((a, member) => Math.max(a, member.maxY), -Infinity);
+  this.minX = this.src.members
+    .reduce((a, member) => Math.min(a, member.minX), Infinity);
+  this.maxX = this.src.members
+    .reduce((a, member) => Math.max(a, member.maxX), -Infinity);
+  this.minY = this.src.members
+    .reduce((a, member) => Math.min(a, member.minY), Infinity);
+  this.maxY = this.src.members
+    .reduce((a, member) => Math.max(a, member.maxY), -Infinity);
 
   // Update width and height halfs of the bounding area of the origin
   this.oWH = (this.maxX - this.minX) / 2;
