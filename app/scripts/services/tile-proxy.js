@@ -14,7 +14,7 @@ import {
 
 import pubSub from './pub-sub';
 
-import { trimTrailingSlash as tts } from '../utils';
+import { matIdxTriangle, trimTrailingSlash as tts } from '../utils';
 
 // Config
 import { TILE_FETCH_DEBOUNCE } from '../configs';
@@ -303,12 +303,21 @@ export const tileDataToPixData = (
   const newTileData = new Float32Array(tileData.dense.length);
   newTileData.set(tileData.dense);
 
+  // Calculate the indices of the cells of the upper right or lower left matrix
+  // in order to force these to be transparent for tiles on the diagonal.
+  let transIdx = [];
+  if (tileData.tilePos[0] === tileData.tilePos[1]) {
+    const dim = parseInt(Math.sqrt(tileData.dense.length), 10);
+    transIdx = matIdxTriangle(dim);
+  }
+
   // comment this and uncomment the code afterwards to enable threading
   const pixData = workerSetPix(
     newTileData,
     valueScale,
     pseudocount,
     colorScale,
+    transIdx
   );
 
   finished(pixData);

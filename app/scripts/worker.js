@@ -70,7 +70,7 @@ export function maxNonZero(data) {
 }
 
 export function workerSetPix(
-  data, valueScale, pseudocount, colorScale, passedCountTransform
+  data, valueScale, pseudocount, colorScale, transIdx
 ) {
   /**
    * The pseudocount is generally the minimum non-zero value and is
@@ -82,7 +82,9 @@ export function workerSetPix(
 
   let rgbIdx = 0;
   let e = 0;
+  let k = 0;
 
+  const isTransIdx = !!transIdx.length;
   try {
     for (let i = 0; i < data.length; i++) {
       const d = data[i];
@@ -100,10 +102,18 @@ export function workerSetPix(
       }
       const rgb = colorScale[rgbIdx];
 
-      pixData[i * 4] = rgb[0];
-      pixData[i * 4 + 1] = rgb[1];
-      pixData[i * 4 + 2] = rgb[2];
-      pixData[i * 4 + 3] = rgb[3];
+      const baseI = i * 4;
+      let alphaColor = rgb[3];
+
+      if (isTransIdx && i === transIdx[k]) {
+        alphaColor = 0;
+        k += 1;
+      }
+
+      pixData[baseI] = rgb[0];
+      pixData[baseI + 1] = rgb[1];
+      pixData[baseI + 2] = rgb[2];
+      pixData[baseI + 3] = alphaColor;
     }
   } catch (err) {
     console.warn('Odd datapoint');
