@@ -7,6 +7,7 @@ import PixiTrack from './PixiTrack';
 
 // Services
 import { pubSub } from './services';
+import { transitionGroup } from './services/transition';
 
 // Utils
 import { debounce } from './utils';
@@ -132,6 +133,8 @@ class TiledPixiTrack extends PixiTrack {
     );
 
     this.pLabel.addChild(this.trackNotFoundText);
+
+    this.toRemoveIds = new Set();
   }
 
   rerender(options) {
@@ -194,10 +197,11 @@ class TiledPixiTrack extends PixiTrack {
 
     // calculate which tiles are obsolete and remove them
     // fetchedTileID are remote ids
-    const toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
+    const toRemoveIds = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
 
+    toRemoveIds.forEach((id) => { this.toRemoveIds.add(id); });
 
-    this.removeTiles(toRemove);
+    // this.removeTiles(toRemoveIds);
     this.fetchNewTiles(toFetch);
   }
 
@@ -225,20 +229,19 @@ class TiledPixiTrack extends PixiTrack {
     return `${parentUid}.${parentZoomLevel}.${parentPos.join('.')}`;
   }
 
-  removeTiles(toRemoveIds) {
-    /**
-         * Remove obsolete tiles
-         *
-         * @param toRemoveIds: An array of tile ids to remove from the list of fetched tiles.
-         */
-
+  /**
+   * Remove obsolete tiles
+   *
+   * @param toRemoveIds: An array of tile ids to remove from the list of fetched tiles.
+   */
+  removeTiles(toRemoveIds = this.toRemoveIds) {
     // if there's nothing to remove, don't bother doing anything
-    if (!toRemoveIds.length) { return; }
+    if (!toRemoveIds.size) return;
 
-    if (!this.areAllVisibleTilesLoaded()) { return; }
+    if (!this.areAllVisibleTilesLoaded()) return;
 
-    toRemoveIds.forEach((x) => {
-      const tileIdStr = x;
+    toRemoveIds.forEach((id) => {
+      const tileIdStr = id;
       this.destroyTile(this.fetchedTiles[tileIdStr]);
 
       if (tileIdStr in this.tileGraphics) {
@@ -247,6 +250,8 @@ class TiledPixiTrack extends PixiTrack {
       }
 
       delete this.fetchedTiles[tileIdStr];
+
+      toRemoveIds.delete(id);
     });
 
     this.synchronizeTilesAndGraphics();
@@ -352,6 +357,7 @@ class TiledPixiTrack extends PixiTrack {
         this.pMain.addChild(newGraphics);
 
         this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;
+        this.fetchedTiles[fetchedTileIDs[i]].new = true;
 
         this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
 
@@ -366,16 +372,16 @@ class TiledPixiTrack extends PixiTrack {
         */
   }
 
-  updateExistingGraphics() {
-    /**
-         * Change the graphics for existing tiles
-         */
-    const fetchedTileIDs = Object.keys(this.fetchedTiles);
+  // updateExistingGraphics() {
+  //   /**
+  //        * Change the graphics for existing tiles
+  //        */
+  //   const fetchedTileIDs = Object.keys(this.fetchedTiles);
 
-    for (let i = 0; i < fetchedTileIDs.length; i++) {
-      this.updateTile(this.fetchedTiles[fetchedTileIDs[i]]);
-    }
-  }
+  //   for (let i = 0; i < fetchedTileIDs.length; i++) {
+  //     this.updateTile(this.fetchedTiles[fetchedTileIDs[i]]);
+  //   }
+  // }
 
   synchronizeTilesAndGraphics() {
     /**
@@ -386,7 +392,7 @@ class TiledPixiTrack extends PixiTrack {
 
     // keep track of which tiles are visible at the moment
     this.addMissingGraphics();
-    this.updateExistingGraphics();
+    // this.updateExistingGraphics();
     // this.removeOldGraphics();
   }
 
@@ -500,6 +506,33 @@ class TiledPixiTrack extends PixiTrack {
     // 2. If `true` then send out event
     if (this.areAllVisibleTilesLoaded()) {
       pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
+    }
+
+    // Fade in new Sprites
+    if (this.tweenStop) this.tweenStop();
+
+    const newTileSprites = Object.keys(this.fetchedTiles)
+      .filter(tilesetId => this.fetchedTiles[tilesetId].graphics.fadeIn)
+      .map((tilesetId) => {
+        const tileset = this.fetchedTiles[tilesetId];
+        tileset.graphics.fadeIn = false;
+        return {
+          obj: tileset.sprite,
+          propsTo: {
+            alpha: 1
+          }
+        };
+      });
+
+    if (newTileSprites.length) {
+      this.tweenStop = transitionGroup(newTileSprites, 250);
+      pubSub.subscribe('app.stopRepeatingAnimation', (tweens) => {
+        if (this.tweenStop.tweens === tweens) {
+          this.removeTiles();
+        }
+      }, 1);
+    } else {
+      this.removeTiles();
     }
   }
 

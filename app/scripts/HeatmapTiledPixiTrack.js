@@ -80,7 +80,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.colorScale = HEATED_OBJECT_MAP;
 
     if (options && options.colorRange) {
-      this.colorScale = colorDomainToRgbaArray(options.colorRange);
+      this.colorScale = colorDomainToRgbaArray(options.colorRange, true);
     }
 
     this.gBase = select(svgElement).append('g');
@@ -251,7 +251,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.calculateVisibleTiles();
 
     if (options && options.colorRange) {
-      this.colorScale = colorDomainToRgbaArray(options.colorRange);
+      this.colorScale = colorDomainToRgbaArray(options.colorRange, true);
     }
 
     this.visibleAndFetchedTiles().forEach(tile => this.renderTile(tile));
@@ -976,6 +976,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
           tile.tileData.tilePos,
           tile.mirrored
         );
+
+        // Tag newly populated graphics objects for fading in.
+        if (tile.new) {
+          sprite.alpha = 0;
+          tile.new = false;
+          graphics.fadeIn = true;
+        }
 
         graphics.removeChildren();
         graphics.addChild(tile.sprite);
