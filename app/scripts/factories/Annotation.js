@@ -6,8 +6,8 @@ function Annotation(id, viewPos, dataPos, dataPosProj) {
   this.minY = viewPos[2];
   this.maxY = viewPos[3];
 
-  this.cX = (this.maxX - this.minX) / 2;
-  this.cY = (this.maxY - this.minY) / 2;
+  this.cX = (this.maxX + this.minX) / 2;
+  this.cY = (this.maxY + this.minY) / 2;
 
   this.minXData = dataPos[0];
   this.maxXData = dataPos[1];
