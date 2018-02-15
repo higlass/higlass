@@ -13,6 +13,9 @@ import PixiTrack from './PixiTrack';
 import { chromInfo } from './services';
 import pubSub, { create } from './services/pub-sub';
 
+// Factories
+import { KeySet } from './factories';
+
 // Utils
 import {
   absToChr,
@@ -71,7 +74,8 @@ export default class Insets2dTrack extends PixiTrack {
     this.pBase.alpha = this.options.opacity;
     this.pMain.filters = [this.dropShadow];
 
-    this.insets = {};
+    this.insets = new KeySet();
+    this.insetsInPreparation = new KeySet();
 
     this.insetMouseHandler = {
       click: this.clickHandler.bind(this),
@@ -162,26 +166,35 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   /**
-   * Clean up inset instances
+   * Clean up rendered inset and insets which are in preparation
    *
    * @param  {Set}  insetIds  Set of inset IDs to keep
    */
   cleanUp(insetIds) {
-    Object.keys(this.insets)
-      .filter(id => !insetIds.has(id))
-      .forEach(this.destroyInset.bind(this));
+    this.insetsInPreparation.forEach((inset) => {
+      if (!insetIds.has(inset.id)) {
+        this.insetsInPreparation.delete(inset);
+      }
+    });
+
+    this.insets.forEach((inset) => {
+      if (!insetIds.has(inset.id)) {
+        this.insets.delete(inset);
+      }
+    });
   }
 
   createFetchRenderInset(label, remotePos, renderedPos) {
     const inset = (
-      this.insets[label.id] ||
+      this.insets.get(label.id) ||
       this.initInset(
         label.id,
         remotePos,
         renderedPos,
-        label.getDataPos
+        label.dataPos
       )
     );
+    this.insetsInPreparation.delete(label);
 
     inset.clear(this.options);
     inset.globalOffset(...this.position);
@@ -191,42 +204,24 @@ export default class Insets2dTrack extends PixiTrack {
     inset.size(label.width, label.height);
     inset.drawLeaderLine();
     inset.drawBorder();
+
     return inset.drawImage(this.rendererInset.bind(this));
   }
 
-  dataToGenomePos(dX1, dX2, dY1, dY2, _chromInfo) {
-    const x = absToChr(dX1, _chromInfo);
-    const y = absToChr(dY1, _chromInfo);
+  dataToGenomePos(dataPos, _chromInfo) {
+    return dataPos.map(([dX1, dX2, dY1, dY2]) => {
+      const x = absToChr(dX1, _chromInfo);
+      const y = absToChr(dY1, _chromInfo);
 
-    return [
-      x[0],
-      x[1],
-      x[1] + dX2 - dX1,
-      y[0],
-      y[1],
-      y[1] + dY2 - dY1,
-    ];
-  }
-
-  dataToImPos(dX1, dX2, dY1, dY2) {
-    return [dX1, dX2, dY1, dY2];
-  }
-
-  /**
-   * Project longitude and latitude to projected Mercator position
-   * @param   {number}  dX1  From longitude
-   * @param   {number}  dX2  To longitude
-   * @param   {number}  dY1  From latitude
-   * @param   {number}  dY2  To latitude
-   * @return  {array}  Projected position in form of `[xFrom, xTo, yFrom, yTo]`
-   */
-  lngLatToProjPos(dX1, dX2, dY1, dY2) {
-    return [
-      lngToX(dX1, 19) * this.tilesetInfo.tile_size,
-      lngToX(dX2, 19) * this.tilesetInfo.tile_size,
-      latToY(dY1, 19) * this.tilesetInfo.tile_size,
-      latToY(dY2, 19) * this.tilesetInfo.tile_size,
-    ];
+      return [
+        x[0],
+        x[1],
+        x[1] + dX2 - dX1,
+        y[0],
+        y[1],
+        y[1] + dY2 - dY1,
+      ];
+    });
   }
 
   /**
@@ -237,31 +232,37 @@ export default class Insets2dTrack extends PixiTrack {
    * @return  {Promise}  Promise resolving once the inset has been drawn.
    */
   drawInset(label) {
+    this.insetsInPreparation.add(label);
+
     if (this.dataType === 'cooler') {
       if (!this.fetchChromInfo) return Promise.reject('This is truly odd!');
 
       return this.fetchChromInfo
-        .then(_chromInfo => this.createFetchRenderInset(
-          label,
-          label.dataPos,
-          this.dataToGenomePos(
-            ...label.dataPos, _chromInfo
-          )
-        ));
+        .then((_chromInfo) => {
+          if (!this.insetsInPreparation.has(label)) {
+            // Label must have been deleted in the meantime
+            return Promise.resolve('Inset has been deleted prior to rendering');
+          }
+
+          return this.createFetchRenderInset(
+            label,
+            this.dataToGenomePos(label.dataPos, _chromInfo)
+          );
+        });
     }
 
     if (this.dataType === 'osm-image') {
       return this.createFetchRenderInset(
         label,
         [...label.dataPos],
-        this.lngLatToProjPos(...label.dataPos)
+        this.lngLatToProjPos(label.dataPos)
       );
     }
 
     return this.createFetchRenderInset(
       label,
       label.dataPos,
-      this.dataToImPos(...label.dataPos)
+      label.dataPos
     );
   }
 
@@ -278,23 +279,22 @@ export default class Insets2dTrack extends PixiTrack {
 
     this.cleanUp(new Set(insets.keys));
 
-    return insets.map(inset => this.drawInset(inset));
+    return insets.translate(inset => this.drawInset(inset));
   }
 
   /**
    * Destroy an inset, i.e., call the inset's destroy method and remove it from
    * the cache.
    *
-   * @param  {String}  uid  UID of the inset to be destroyed.
+   * @param  {String}  id  ID of the inset to be destroyed.
    */
-  destroyInset(uid) {
-    this.insets[uid].destroy();
-    this.insets[uid] = undefined;
-    delete this.insets[uid];
+  destroyInset(id) {
+    this.insets.get(id).destroy();
+    this.insets.delete(id);
   }
 
   initInset(
-    uid,
+    id,
     remotePos,
     renderedPos,
     dataPos,
@@ -303,8 +303,8 @@ export default class Insets2dTrack extends PixiTrack {
     options = this.options,
     mouseHandler = this.insetMouseHandler
   ) {
-    this.insets[uid] = new Inset(
-      uid,
+    const newInset = new Inset(
+      id,
       remotePos,
       renderedPos,
       dataPos,
@@ -314,8 +314,27 @@ export default class Insets2dTrack extends PixiTrack {
       mouseHandler,
       this.dataType
     );
-    this.pMain.addChild(this.insets[uid].graphics);
-    return this.insets[uid];
+    this.insets.add(newInset);
+    this.pMain.addChild(newInset.graphics);
+    return newInset;
+  }
+
+  /**
+   * Project longitude and latitude to projected Mercator position
+   * @param   {array}  dataPos  List of quadruples in form of `[xFrom, xTo,
+   *   yFrom, yTo]` with the X coordinates being in logitude and Y being in
+   *   latitude.
+   * @return  {array}  Projected position in form of `[xFrom, xTo, yFrom,
+   *   yTo]` where X and Y correspond to absolute pixel positions at the
+   *   highest zoom level.
+   */
+  lngLatToProjPos(dataPos) {
+    return dataPos.map(([dX1, dX2, dY1, dY2]) => [
+      lngToX(dX1, 19) * this.tilesetInfo.tile_size,
+      lngToX(dX2, 19) * this.tilesetInfo.tile_size,
+      latToY(dY1, 19) * this.tilesetInfo.tile_size,
+      latToY(dY2, 19) * this.tilesetInfo.tile_size,
+    ]);
   }
 
   clickHandler(/* event, inset */) {}
@@ -368,7 +387,7 @@ export default class Insets2dTrack extends PixiTrack {
 
   updateDistances(x, y) {
     const closest = { d: Infinity, inset: null };
-    objVals(this.insets).forEach((inset) => {
+    this.insets.forEach((inset) => {
       const d = this.computeDistance(x, y, inset);
 
       inset.distance(d, this.relCursorDist(d));

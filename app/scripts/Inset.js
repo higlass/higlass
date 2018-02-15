@@ -238,9 +238,9 @@ export default class Inset {
    *   final padded remote size is `8000 + (8000 * 0.2 * 2) = 11200`.
    */
   computeRemotePaddedSize() {
-    this.remotePaddedSize = this.remoteSize + (
-      this.remoteSize * this.getPadding() * 2
-    );
+    const padding = this.getPadding() * 2;
+    this.remotePaddedSizes = this.remoteSizes
+      .map(size => size + (size * padding));
   }
 
   /**
@@ -252,20 +252,26 @@ export default class Inset {
       .map(x => +x)
       .sort((a, b) => a - b);
 
-    const isBedpe = this.remotePos.length === 6;
+    // Assumption: all remote positions have the same length (either 4 or 6)
+    const isBedpe = this.remotePos[0].length === 6;
     const xStartId = isBedpe ? 1 : 0;
     const xEndId = isBedpe ? 2 : 1;
     const yStartId = isBedpe ? 4 : 2;
     const yEndId = isBedpe ? 5 : 3;
-    const absXLen = this.renderedPos[xEndId] - this.renderedPos[xStartId];
-    const absYLen = this.renderedPos[yEndId] - this.renderedPos[yStartId];
-    this.remoteSize = Math.max(absXLen, absYLen);
 
-    const entry = resolutionCustomLocSorted[bisectLeft(
-      resolutionCustomLocSorted, this.remoteSize
-    )];
+    this.remoteSizes = this.renderedPos.map((pos) => {
+      const absXLen = pos[xEndId] - pos[xStartId];
+      const absYLen = pos[yEndId] - pos[yStartId];
+      return Math.max(absXLen, absYLen);
+    });
 
-    this.finalRes = entry ? this.resolutionCustom[entry] : this.resolution;
+    this.finalRes = this.remoteSizes.map((remoteSize) => {
+      const entry = resolutionCustomLocSorted[bisectLeft(
+        resolutionCustomLocSorted, remoteSize
+      )];
+
+      return (entry ? this.resolutionCustom[entry] : this.resolution);
+    });
   }
 
   /**
@@ -274,17 +280,19 @@ export default class Inset {
    *
    * @return  {Number}  Closest zoom level.
    */
-  computedZoom() {
-    const isBedpe = this.remotePos.length === 6;
-
+  computedZoom(i = 0) {
+    const finalRes = this.finalRes[i];
+    const remotePos = this.remotePos[i];
+    const remotePaddedSize = this.remotePaddedSizes[i];
+    const isBedpe = remotePos === 6;
     const baseRes = isBedpe ? getBaseRes(this.tilesetInfo) : 1;
 
     const zoomLevel = Math.max(0, Math.min(
       this.tilesetInfo.max_zoom,
       Math.ceil(Math.log2(
         (
-          this.finalRes * (2 ** this.tilesetInfo.max_zoom)
-        ) / (this.remotePaddedSize / baseRes)
+          finalRes * (2 ** this.tilesetInfo.max_zoom)
+        ) / (remotePaddedSize / baseRes)
       ))
     ));
 
@@ -481,19 +489,18 @@ export default class Inset {
    * @return  {Object}  Promise resolving to the JSON response
    */
   fetchData() {
-    this.computedZoom();
-    const loci = [
-      [
-        ...this.remotePos,
-        this.dataConfig.tilesetUid,
-        this.computedZoom()
-      ]
-    ];
+    // this.computedZoom();
+    const loci = this.remotePos.map((remotePos, i) => [
+      ...remotePos,
+      this.dataConfig.tilesetUid,
+      this.computedZoom(i),
+      this.finalRes[i]
+    ]);
 
     const padding = this.options.isAbsPadding ? this.getPadding() : 0;
 
     return fetch(
-      `${this.dataConfig.server}/fragments_by_loci/?precision=2&dims=${this.finalRes}&padding=${padding}`, {
+      `${this.dataConfig.server}/fragments_by_loci/?precision=2&aggregate=pile&padding=${padding}`, {
         method: 'POST',
         headers: {
           accept: 'application/json; charset=UTF-8',
@@ -532,7 +539,7 @@ export default class Inset {
       .sort((a, b) => a - b);
 
     const entry = paddingCustomLocSorted[bisectLeft(
-      paddingCustomLocSorted, this.remoteSize
+      paddingCustomLocSorted, this.remoteSizes
     )];
 
     return (entry ? this.paddingCustom[entry] : this.padding);
