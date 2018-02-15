@@ -46,7 +46,11 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       handleTilesetInfoReceived,
       options,
       animate,
-      onValueScaleChanged,
+      () => {
+        console.log('valueScale changed');
+        this.drawColorbar();
+        onValueScaleChanged();
+      },
     );
 
     this.onTrackOptionsChanged = onTrackOptionsChanged;
@@ -66,7 +70,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // not a d3 color scale for speed
     // this.colorScale = heatedObjectMap;
     this.colorScale = heatedObjectMap;
-    console.log('this.colorScale', this.colorScale);
 
     if (options && options.colorRange) {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
@@ -78,8 +81,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     this.brushing = false;
     this.prevOptions = '';
-
-    console.log('this.colorScale:', this.colorScale);
   }
 
   /**
@@ -120,7 +121,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     // hopefully draw isn't rerendering all the tiles
-    this.drawColorbar();
+    // this.drawColorbar();
   }
 
   tileDataToCanvas(pixData) {
@@ -192,7 +193,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   draw() {
     super.draw();
 
-    this.drawColorbar();
+    //this.drawColorbar();
   }
 
   newBrushOptions(selection) {
@@ -704,7 +705,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.pMain.scale.x = k; // scaleX;
     this.pMain.scale.y = k; // scaleY;
 
-    this.drawColorbar();
+    // this.drawColorbar();
   }
 
   calculateVisibleTiles(mirrorTiles = true) {

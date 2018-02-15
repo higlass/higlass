@@ -509,6 +509,7 @@ export class TiledPixiTrack extends PixiTrack {
         this.prevValueScale = this.valueScale.copy();
 
         if (this.onValueScaleChanged) {
+          // this is used to synchronize tracks with locked value scales
           this.onValueScaleChanged();
         }
       }
