@@ -69,7 +69,7 @@ export function maxNonZero(data) {
 }
 
 export function workerSetPix(
-  size, data, valueScale, pseudocount, colorScale, passedCountTransform
+  size, data, valueScale, pseudocount, colorScale
 ) {
   /**
    * The pseudocount is generally the minimum non-zero value and is

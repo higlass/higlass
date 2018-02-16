@@ -1,3 +1,4 @@
+import hamsters from 'hamsters.js';
 import { range } from 'd3-array';
 import {
   json as d3Json,
@@ -11,6 +12,12 @@ import {
   workerGetTilesetInfo,
   workerSetPix,
 } from '../worker';
+
+//const worker = new Worker('./worker.js');
+//console.log('worker:', worker);
+hamsters.init({
+  Worker: Worker
+});
 
 import pubSub from './pub-sub';
 
@@ -266,6 +273,22 @@ export const tileDataToPixData = (
     pseudocount,
     colorScale,
   );
+
+  /*
+    var params = {
+      size: newTileData.length,
+      data: newTileData,
+      valueScale: valueScale,
+      pseudocount: pseudocount,
+      colorScale: colorScale
+    };
+    hamsters.run(params, function() {
+    }, function(output) {
+       return null;
+    }, 1, false);
+    */
+
+
 
   finished(pixData);
 
