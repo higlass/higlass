@@ -149,15 +149,23 @@ export default class Insets2dTrack extends PixiTrack {
 
   goTo(inset) {
     // Add some padding for context
-    const dataPos = [...inset.dataPos];
-    const width = dataPos[1] - dataPos[0];
-    const height = dataPos[3] - dataPos[2];
-    dataPos[0] -= width * 0.2;
-    dataPos[1] += width * 0.2;
-    dataPos[2] -= height * 0.2;
-    dataPos[3] += height * 0.2;
+    const dataPosBounds = [Infinity, 0, Infinity, 0];
 
-    this.zoomToDataPos(...dataPos, true, ZOOM_TO_ANNO);
+    inset.dataPos.forEach((dataPos) => {
+      dataPosBounds[0] = Math.min(dataPosBounds[0], dataPos[0]);
+      dataPosBounds[1] = Math.max(dataPosBounds[1], dataPos[1]);
+      dataPosBounds[2] = Math.min(dataPosBounds[2], dataPos[2]);
+      dataPosBounds[3] = Math.max(dataPosBounds[3], dataPos[3]);
+    });
+
+    const width = dataPosBounds[1] - dataPosBounds[0];
+    const height = dataPosBounds[3] - dataPosBounds[2];
+    dataPosBounds[0] -= width * 0.2;
+    dataPosBounds[1] += width * 0.2;
+    dataPosBounds[2] -= height * 0.2;
+    dataPosBounds[3] += height * 0.2;
+
+    this.zoomToDataPos(...dataPosBounds, true, ZOOM_TO_ANNO);
   }
 
   clear() {
