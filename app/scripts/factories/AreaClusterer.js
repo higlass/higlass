@@ -43,7 +43,7 @@ AreaClusterer.prototype.add = function add(elements, noDraw) {
     this.elements.add(element);
   });
 
-  if (!noDraw) this.createClusters();
+  if (!noDraw) this.clusterElements();
 };
 
 /**
@@ -52,7 +52,7 @@ AreaClusterer.prototype.add = function add(elements, noDraw) {
  */
 AreaClusterer.prototype.addToClosestCluster = function addToClosestCluster(element) {
   let distance = this.defaultMinDist;
-  let clusterToAddTo = null;
+  let closestCluster = null;
   const elementCenter = element.getViewPositionCenter();
 
   this.clusters.forEach((cluster) => {
@@ -61,18 +61,15 @@ AreaClusterer.prototype.addToClosestCluster = function addToClosestCluster(eleme
       const d = lDist(clusterCenter, elementCenter);
       if (d < distance) {
         distance = d;
-        clusterToAddTo = cluster;
+        closestCluster = cluster;
       }
     }
   });
 
-  if (clusterToAddTo && clusterToAddTo.isWithin(element, true)) {
-    clusterToAddTo.add(element);
-    this.clustersMaxSize = clusterToAddTo.size;
+  if (closestCluster && closestCluster.isWithin(element, true)) {
+    this.expandCluster(closestCluster, element);
   } else {
-    const cluster = new AreaCluster(this.isAverageCenter, this.gridSize);
-    cluster.add(element);
-    this.clusters.add(cluster);
+    this.createCluster(element);
   }
 };
 
@@ -112,9 +109,9 @@ AreaClusterer.prototype.clear = function clear() {
 };
 
 /**
- * Creates the clusters.
+ * Assign each element to a cluster or create a new cluster
  */
-AreaClusterer.prototype.createClusters = function createClusters() {
+AreaClusterer.prototype.clusterElements = function clusterElements() {
   this.elements.forEach((element) => {
     if (
       !this.elementsAddedToClusters.has(element) &&
@@ -123,6 +120,25 @@ AreaClusterer.prototype.createClusters = function createClusters() {
       this.addToClosestCluster(element);
     }
   });
+};
+
+/**
+ * Create a new the clusters.
+ */
+AreaClusterer.prototype.createCluster = function createCluster(element) {
+  const cluster = new AreaCluster(this.isAverageCenter, this.gridSize);
+  cluster.add(element);
+  this.elementsAddedToClusters.add(element);
+  this.clusters.add(cluster);
+};
+
+/**
+ * Add an element to an existing cluster
+ */
+AreaClusterer.prototype.expandCluster = function expandCluster(cluster, element) {
+  cluster.add(element);
+  this.clustersMaxSize = cluster.size;
+  this.elementsAddedToClusters.add(element);
 };
 
 /**
@@ -144,7 +160,9 @@ AreaClusterer.prototype.setGridSize = function setGridSize(size) {
 /**
  * Check if an element is within the bounds of this clusterer
  */
-AreaClusterer.prototype.isWithin = function isWithin(element, isExtended = false) {
+AreaClusterer.prototype.isWithin = function isWithin(
+  element, isExtended = false
+) {
   const [mMinX, mMaxX, mMinY, mMaxY] = element.getViewPosition();
   const padding = isExtended ? this.gridSize : 0;
   return (
@@ -153,6 +171,10 @@ AreaClusterer.prototype.isWithin = function isWithin(element, isExtended = false
     mMinY < this.maxY + padding &&
     mMaxY > this.minY - padding
   );
+};
+
+AreaClusterer.prototype.refresh = function refresh() {
+  this.clusters.forEach((cluster) => { cluster.refresh(); });
 };
 
 /**
@@ -167,7 +189,7 @@ AreaClusterer.prototype.remove = function remove(elements, noDraw) {
 
   if (isRemoved && !noDraw) {
     this.resetClusters();
-    this.createClusters();
+    this.clusterElements();
   }
 
   return isRemoved;
@@ -180,7 +202,7 @@ AreaClusterer.prototype.repaint = function repaint() {
   const oldClusters = this.clusters.clone();
 
   this.resetClusters();
-  this.createClusters();
+  this.clusterElements();
 
   // Remove the old clusters.
   // Do it in a timeout so the other clusters have been drawn first.
