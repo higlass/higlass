@@ -25,7 +25,6 @@ import {
   isTrackOrChildTrack,
   latToY,
   lngToX,
-  objVals,
   tileToCanvas
 } from './utils';
 
@@ -168,18 +167,18 @@ export default class Insets2dTrack extends PixiTrack {
   /**
    * Clean up rendered inset and insets which are in preparation
    *
-   * @param  {Set}  insetIds  Set of inset IDs to keep
+   * @param  {array}  insetIds  List of unique inset IDs to keep
    */
   cleanUp(insetIds) {
     this.insetsInPreparation.forEach((inset) => {
-      if (!insetIds.has(inset.id)) {
+      if (!(insetIds.indexOf(inset.id) >= 0)) {
         this.insetsInPreparation.delete(inset);
       }
     });
 
     this.insets.forEach((inset) => {
-      if (!insetIds.has(inset.id)) {
-        this.insets.delete(inset);
+      if (!(insetIds.indexOf(inset.id) >= 0)) {
+        this.destroyInset(inset);
       }
     });
   }
@@ -277,7 +276,7 @@ export default class Insets2dTrack extends PixiTrack {
       return [Promise.reject('Tileset info not available')];
     }
 
-    this.cleanUp(new Set(insets.keys));
+    this.cleanUp(insets.keys);
 
     return insets.translate(inset => this.drawInset(inset));
   }
@@ -289,6 +288,7 @@ export default class Insets2dTrack extends PixiTrack {
    * @param  {String}  id  ID of the inset to be destroyed.
    */
   destroyInset(id) {
+    this.pMain.removeChild(this.insets.get(id).graphics);
     this.insets.get(id).destroy();
     this.insets.delete(id);
   }
