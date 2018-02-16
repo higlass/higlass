@@ -123,7 +123,8 @@ export class StackedBarTrack extends BarTrack {
     let matrix = this.unFlatten(tile);
 
     if (this.options.scaledHeight === true) {
-      this.drawVerticalBars(graphics, this.mapOriginalColors(matrix), tileX, tileWidth, this.maxAndMin.max, this.maxAndMin.min);
+      this.drawVerticalBars(graphics, this.mapOriginalColors(matrix),
+        tileX, tileWidth, this.maxAndMin.max, this.maxAndMin.min);
     }
     else {
       // normalize each array in matrix
@@ -195,6 +196,10 @@ export class StackedBarTrack extends BarTrack {
     const positiveTrackHeight = (positiveMax * trackHeight) / unscaledHeight;
     const negativeTrackHeight = (negativeMax * trackHeight) / unscaledHeight;
 
+    if(this.options.barBorder) {
+      graphics.lineStyle(0.1, 'black', 1);
+    }
+
     for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
       const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
       const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
@@ -205,11 +210,10 @@ export class StackedBarTrack extends BarTrack {
         .domain([0, positiveMax])
         .range([0, positiveTrackHeight]);
       let positiveStackedHeight = 0;
-      for (let i = 0; i < positive.length; i++) { // 0 contains array of positive values
+      for (let i = 0; i < positive.length; i++) {
         const height = valueToPixelsPositive(positive[i].value);
         const y = positiveTrackHeight - (positiveStackedHeight + height);
         graphics.beginFill(positive[i].color);
-        graphics.lineStyle(0.1, 'black', 1);
         graphics.drawRect(x, y, width, height);
         positiveStackedHeight = positiveStackedHeight + height;
       }
@@ -224,7 +228,6 @@ export class StackedBarTrack extends BarTrack {
         const height = valueToPixelsNegative(negative[i].value);
         const y = positiveTrackHeight + negativeStackedHeight;
         graphics.beginFill(negative[i].color);
-        graphics.lineStyle(0.1, 'black', 1);
         graphics.drawRect(x, y, width, height);
         negativeStackedHeight = negativeStackedHeight + height;
       }

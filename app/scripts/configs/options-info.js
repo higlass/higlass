@@ -160,6 +160,13 @@ export const OPTIONS_INFO = {
     name: 'Bar opacity',
     inlineOptions: OPACITY_OPTIONS,
   },
+  barBorder: {
+    name: 'Bar border',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false },
+    },
+  },
   rectangleDomainStrokeColor: {
     name: 'Stroke color',
     inlineOptions: AVAILABLE_COLORS,
