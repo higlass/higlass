@@ -56,16 +56,6 @@ LabelCluster.prototype.compDimPos = function compDimPos() {
   this.oX = this.x;
   this.oY = this.y;
 
-  // Update bounding area of the origins
-  // this.minX = this.src.members
-  //   .reduce((a, member) => Math.min(a, member.minX), Infinity);
-  // this.maxX = this.src.members
-  //   .reduce((a, member) => Math.max(a, member.maxX), -Infinity);
-  // this.minY = this.src.members
-  //   .reduce((a, member) => Math.min(a, member.minY), Infinity);
-  // this.maxY = this.src.members
-  //   .reduce((a, member) => Math.max(a, member.maxY), -Infinity);
-
   // Update width and height halfs of the bounding area of the origin
   this.oWH = (this.maxX - this.minX) / 2;
   this.oHH = (this.maxY - this.minY) / 2;
