@@ -238,9 +238,8 @@ export default class Inset {
    *   final padded remote size is `8000 + (8000 * 0.2 * 2) = 11200`.
    */
   computeRemotePaddedSize() {
-    const padding = this.getPadding() * 2;
     this.remotePaddedSizes = this.remoteSizes
-      .map(size => size + (size * padding));
+      .map(size => size + (size * this.getPadding(size) * 2));
   }
 
   /**
@@ -284,7 +283,7 @@ export default class Inset {
     const finalRes = this.finalRes[i];
     const remotePos = this.remotePos[i];
     const remotePaddedSize = this.remotePaddedSizes[i];
-    const isBedpe = remotePos === 6;
+    const isBedpe = remotePos.length === 6;
     const baseRes = isBedpe ? getBaseRes(this.tilesetInfo) : 1;
 
     const zoomLevel = Math.max(0, Math.min(
@@ -533,13 +532,13 @@ export default class Inset {
    * @return  {number}  Padding to be added to the location to be pulled as a
    *   snippet.
    */
-  getPadding() {
+  getPadding(remoteSize) {
     const paddingCustomLocSorted = Object.keys(this.paddingCustom)
       .map(x => +x)
       .sort((a, b) => a - b);
 
     const entry = paddingCustomLocSorted[bisectLeft(
-      paddingCustomLocSorted, this.remoteSizes
+      paddingCustomLocSorted, remoteSize
     )];
 
     return (entry ? this.paddingCustom[entry] : this.padding);
