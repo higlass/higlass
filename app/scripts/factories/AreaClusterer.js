@@ -41,6 +41,14 @@ Object.defineProperty(AreaClusterer.prototype, 'size', { get: getSize });
 AreaClusterer.prototype.add = function add(elements, noDraw) {
   elements.forEach((element) => {
     this.elements.add(element);
+    if (element.cluster) {
+      if (this.clusters.has(element.cluster)) {
+        element.cluster.show(element);
+      } else {
+        // Something got messed up. Let's clear the cluster assignment.
+        element.cluster = undefined;
+      }
+    }
   });
 
   if (!noDraw) this.clusterElements();
@@ -89,10 +97,10 @@ AreaClusterer.prototype.getBounds = function getBounds() {
  * @param   {number}  maxY  Bottom most Y position.
  */
 AreaClusterer.prototype.setBounds = function setBounds(minX, maxX, minY, maxY) {
-  this.minX = minX || this.minX;
-  this.maxX = maxX || this.maxX;
-  this.minY = minY || this.minY;
-  this.maxY = maxY || this.maxY;
+  this.minX = minX;
+  this.maxX = maxX;
+  this.minY = minY;
+  this.maxY = maxY;
 };
 
 /**
@@ -128,6 +136,7 @@ AreaClusterer.prototype.clusterElements = function clusterElements() {
 AreaClusterer.prototype.createCluster = function createCluster(element) {
   const cluster = new AreaCluster(this.isAverageCenter, this.gridSize);
   cluster.add(element);
+  element.cluster = cluster;
   this.elementsAddedToClusters.add(element);
   this.clusters.add(cluster);
 };
@@ -137,7 +146,8 @@ AreaClusterer.prototype.createCluster = function createCluster(element) {
  */
 AreaClusterer.prototype.expandCluster = function expandCluster(cluster, element) {
   cluster.add(element);
-  this.clustersMaxSize = cluster.size;
+  element.cluster = cluster;
+  this.clustersMaxSize = Math.max(this.clustersMaxSize, cluster.size);
   this.elementsAddedToClusters.add(element);
 };
 
@@ -175,15 +185,16 @@ AreaClusterer.prototype.isWithin = function isWithin(
 
 AreaClusterer.prototype.refresh = function refresh() {
   this.clusters.forEach((cluster) => {
-    if (cluster.size) {
-      cluster.refresh();
-    } else {
-      console.log('Delete cluster', cluster.size);
-      this.clusters.delete(cluster);
+    cluster.refresh();
+
+    // Remove entire cluster of it's out of bounds
+    if (
+      !this.isWithin(cluster.bounds) ||
+      !cluster.size
+    ) {
+      this.removeCluster(cluster);
     }
-    // console.log(this.isWithin(cluster.bounds));
   });
-  console.log('Total clusters', this.clusters.size);
 };
 
 /**
@@ -194,12 +205,23 @@ AreaClusterer.prototype.refresh = function refresh() {
 AreaClusterer.prototype.remove = function remove(elements, noDraw) {
   const isRemoved = elements
     .translate((element) => {
-      // Remove element from the clusterer
-      const removed = this.elements.delete(element);
-      console.log('remove', element.id, this.elements.keys, removed);
+      // We leave the element on `elementsAddedToClusters` because we want to
+      // keep clusters stable until they are fully destroyed but we will mark
+      // this element as invisible.
+      // Setting the element invisible will only update the cluster size, which
+      // we use to determine if a cluster should be deleted. That mean, some
+      // elements of a cluster can be hidden but once all are hidden we destroy
+      // it.
+      if (element.cluster) {
+        const cluster = element.cluster;
+        cluster.hide(element);
+        if (!cluster.size) {
+          this.removeCluster(cluster);
+        }
+      }
 
-      // Remove element from the cluster
-      if (removed) element.cluster.delete(element);
+      // Remove element from the clusterer
+      return this.elements.delete(element);
     })
     .some(elementIsRemoved => elementIsRemoved);
 
@@ -211,6 +233,19 @@ AreaClusterer.prototype.remove = function remove(elements, noDraw) {
   }
 
   return isRemoved;
+};
+
+/**
+ * Remove a cluster
+ */
+AreaClusterer.prototype.removeCluster = function removeCluster(cluster) {
+  cluster.members.forEach((member) => {
+    member.cluster = undefined;
+    this.elementsAddedToClusters.delete(member);
+    this.elements.delete(member);
+  });
+
+  this.clusters.delete(cluster);
 };
 
 /**

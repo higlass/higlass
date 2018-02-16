@@ -267,11 +267,10 @@ class AnnotationsInsets {
   }
 
   clusterAnnotations() {
-    console.log('add', this.annosToBeDrawnAsInsetsNew.size, this.annosToBeDrawnAsInsetsNew);
     // Update clusterer
     const t0 = performance.now();
     this.areaClusterer.add(this.annosToBeDrawnAsInsetsNew, true);
-    // this.areaClusterer.remove(this.annosToBeDrawnAsInsetsOld, true);
+    this.areaClusterer.remove(this.annosToBeDrawnAsInsetsOld, true);
     this.areaClusterer.refresh();
     this.areaClusterer.clusterElements();
     console.log(`Label clustering took ${performance.now() - t0}ms`);
