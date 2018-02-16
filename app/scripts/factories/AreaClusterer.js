@@ -56,7 +56,7 @@ AreaClusterer.prototype.addToClosestCluster = function addToClosestCluster(eleme
   const elementCenter = element.getViewPositionCenter();
 
   this.clusters.forEach((cluster) => {
-    const clusterCenter = cluster.getCenter();
+    const clusterCenter = cluster.center;
     if (clusterCenter) {
       const d = lDist(clusterCenter, elementCenter);
       if (d < distance) {
@@ -66,7 +66,7 @@ AreaClusterer.prototype.addToClosestCluster = function addToClosestCluster(eleme
     }
   });
 
-  if (closestCluster && closestCluster.isWithin(element, true)) {
+  if (closestCluster && closestCluster.isWithin(element.viewPos, true)) {
     this.expandCluster(closestCluster, element);
   } else {
     this.createCluster(element);
@@ -115,7 +115,7 @@ AreaClusterer.prototype.clusterElements = function clusterElements() {
   this.elements.forEach((element) => {
     if (
       !this.elementsAddedToClusters.has(element) &&
-      this.isWithin(element, true)
+      this.isWithin(element.viewPos, true)
     ) {
       this.addToClosestCluster(element);
     }
@@ -161,9 +161,9 @@ AreaClusterer.prototype.setGridSize = function setGridSize(size) {
  * Check if an element is within the bounds of this clusterer
  */
 AreaClusterer.prototype.isWithin = function isWithin(
-  element, isExtended = false
+  viewPos, isExtended = false
 ) {
-  const [mMinX, mMaxX, mMinY, mMaxY] = element.getViewPosition();
+  const [mMinX, mMaxX, mMinY, mMaxY] = viewPos;
   const padding = isExtended ? this.gridSize : 0;
   return (
     mMinX < this.maxX + padding &&
@@ -174,22 +174,40 @@ AreaClusterer.prototype.isWithin = function isWithin(
 };
 
 AreaClusterer.prototype.refresh = function refresh() {
-  this.clusters.forEach((cluster) => { cluster.refresh(); });
+  this.clusters.forEach((cluster) => {
+    if (cluster.size) {
+      cluster.refresh();
+    } else {
+      console.log('Delete cluster', cluster.size);
+      this.clusters.delete(cluster);
+    }
+    // console.log(this.isWithin(cluster.bounds));
+  });
+  console.log('Total clusters', this.clusters.size);
 };
 
 /**
  * Removes a elements from the clusterer
- * @param  {object}  marker - The marker to be remove.
+ * @param  {object}  elements - The markers to be remove.
  * @return  {boolean}  If `true` marker has been removed.
  */
 AreaClusterer.prototype.remove = function remove(elements, noDraw) {
   const isRemoved = elements
-    .translate(marker => this.elements.delete(marker))
+    .translate((element) => {
+      // Remove element from the clusterer
+      const removed = this.elements.delete(element);
+      console.log('remove', element.id, this.elements.keys, removed);
+
+      // Remove element from the cluster
+      if (removed) element.cluster.delete(element);
+    })
     .some(elementIsRemoved => elementIsRemoved);
 
   if (isRemoved && !noDraw) {
     this.resetClusters();
     this.clusterElements();
+  } else {
+    // this.shrinkCluster();
   }
 
   return isRemoved;

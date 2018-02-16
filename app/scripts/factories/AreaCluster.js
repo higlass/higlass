@@ -16,7 +16,6 @@ function AreaCluster(isAverageCenter = true, padding = 0) {
   this.cX = null;
   this.cY = null;
   this.members = new KeySet('id');
-  this.bounds = null;
 
   this.minX = Infinity;
   this.maxX = 0;
@@ -28,6 +27,18 @@ function AreaCluster(isAverageCenter = true, padding = 0) {
 }
 
 /* ------------------------------- Properties ------------------------------- */
+
+function getBounds() {
+  return [this.minX, this.maxX, this.minY, this.maxY];
+}
+
+Object.defineProperty(AreaCluster.prototype, 'bounds', { get: getBounds });
+
+function getCenter() {
+  return [this.cX, this.cY];
+}
+
+Object.defineProperty(AreaCluster.prototype, 'center', { get: getCenter });
 
 function getSize() {
   return this.members.size;
@@ -56,15 +67,25 @@ AreaCluster.prototype.add = function add(annotation) {
   const l = this.members.size;
 
   if (this.isAverageCenter) {
-    const x = ((this.cX * l) + cX) / (l + 1);
-    const y = ((this.cY * l) + cY) / (l + 1);
-    this.center = [x, y];
+    this.cX = ((this.cX * l) + cX) / (l + 1);
+    this.cY = ((this.cY * l) + cY) / (l + 1);
   }
 
-  annotation.isAdded = true;
+  annotation.cluster = this;
   this.members.add(annotation);
 
   this.updateBounds(annotation);
+
+  return true;
+};
+
+AreaCluster.prototype.delete = function deleteMethod(annotation) {
+  if (!this.members.has(annotation)) return false;
+
+  annotation.cluster = undefined;
+  this.members.delete(annotation);
+
+  this.refresh();
 
   return true;
 };
@@ -97,15 +118,6 @@ AreaCluster.prototype.remove = function remove() {
   this.members = new KeySet('id');
 };
 
-/**
- * Returns the center of the cluster.
- *
- * @return {google.maps.LatLng} The cluster center.
- */
-AreaCluster.prototype.getCenter = function getCenter() {
-  return [this.cX, this.cY];
-};
-
 AreaCluster.prototype.refresh = function refresh() {
   this.minX = Infinity;
   this.maxX = 0;
@@ -122,12 +134,12 @@ AreaCluster.prototype.refresh = function refresh() {
 
 /**
  * Determines if an element lies in the clusters bounds.
- *
- * @param {google.maps.Marker} element The element to check.
- * @return {boolean} True if the element lies in the bounds.
+ * @param  {array}  viewPos  View bounds of the element in pixel in form of
+ *   `[fromX, toX, fromY, toY]`
+ * @return {boolean}  True if the element lies in the bounds.
  */
-AreaCluster.prototype.isWithin = function isWithin(element, isExtended = false) {
-  const [eMinX, eMaxX, eMinY, eMaxY] = element.getViewPosition();
+AreaCluster.prototype.isWithin = function isWithin(viewPos, isExtended = false) {
+  const [eMinX, eMaxX, eMinY, eMaxY] = viewPos;
   const padding = isExtended ? this.padding : 0;
   return (
     eMinX < this.maxX + padding &&
