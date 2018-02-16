@@ -16,6 +16,7 @@ function AreaCluster(isAverageCenter = true, padding = 0) {
   this.cX = null;
   this.cY = null;
   this.members = new KeySet('id');
+  this.visibleMembers = new KeySet('id');
 
   this.minX = Infinity;
   this.maxX = 0;
@@ -41,7 +42,7 @@ function getCenter() {
 Object.defineProperty(AreaCluster.prototype, 'center', { get: getCenter });
 
 function getSize() {
-  return this.members.size;
+  return this.visibleMembers.size;
 }
 
 Object.defineProperty(AreaCluster.prototype, 'size', { get: getSize });
@@ -73,6 +74,7 @@ AreaCluster.prototype.add = function add(annotation) {
 
   annotation.cluster = this;
   this.members.add(annotation);
+  this.visibleMembers.add(annotation);
 
   this.updateBounds(annotation);
 
@@ -86,6 +88,22 @@ AreaCluster.prototype.delete = function deleteMethod(annotation) {
   this.members.delete(annotation);
 
   this.refresh();
+
+  return true;
+};
+
+AreaCluster.prototype.hide = function hide(annotation) {
+  if (!this.visibleMembers.has(annotation)) return false;
+
+  this.visibleMembers.delete(annotation);
+
+  return true;
+};
+
+AreaCluster.prototype.show = function show(annotation) {
+  if (this.visibleMembers.has(annotation)) return false;
+
+  this.visibleMembers.add(annotation);
 
   return true;
 };
