@@ -13,7 +13,8 @@ const rndHex = () => Math.floor((1 + Math.random()) * 0x10000000).toString(16);
 function AreaCluster(isAverageCenter = true, padding = 0) {
   this.id = rndHex();
   this.isAverageCenter = isAverageCenter;
-  this.center = null;
+  this.cX = null;
+  this.cY = null;
   this.members = new KeySet('id');
   this.bounds = null;
 
@@ -47,15 +48,16 @@ AreaCluster.prototype.add = function add(annotation) {
 
   const [cX, cY] = annotation.getViewPositionCenter();
 
-  if (!this.center) {
-    this.center = [cX, cY];
+  if (!this.cX || !this.cY) {
+    this.cX = cX;
+    this.cY = cY;
   }
 
   const l = this.members.size;
 
   if (this.isAverageCenter) {
-    const x = ((this.center[0] * l) + cX) / (l + 1);
-    const y = ((this.center[1] * l) + cY) / (l + 1);
+    const x = ((this.cX * l) + cX) / (l + 1);
+    const y = ((this.cY * l) + cY) / (l + 1);
     this.center = [x, y];
   }
 
@@ -101,7 +103,21 @@ AreaCluster.prototype.remove = function remove() {
  * @return {google.maps.LatLng} The cluster center.
  */
 AreaCluster.prototype.getCenter = function getCenter() {
-  return this.center;
+  return [this.cX, this.cY];
+};
+
+AreaCluster.prototype.refresh = function refresh() {
+  this.minX = Infinity;
+  this.maxX = 0;
+  this.minY = Infinity;
+  this.maxY = 0;
+
+  this.members.forEach((member) => {
+    this.updateBounds(member);
+  });
+
+  this.cX = (this.minX + this.maxX) / 2;
+  this.cY = (this.minY + this.maxY) / 2;
 };
 
 /**
