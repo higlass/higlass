@@ -1,4 +1,4 @@
-import hamsters from 'hamsters.js';
+import {Pool} from 'threads';
 import { scaleLog, scaleLinear } from 'd3-scale';
 import { range } from 'd3-array';
 import {
@@ -13,11 +13,25 @@ import {
   workerGetTilesetInfo,
 } from '../worker';
 
+const threadPool = new Pool(1);
+threadPool.run(function(params, done) {
+  console.log('hi');
+  try {
+    importScripts('http://localhost:8080/worker.js');
+    const pixData = worker.workerSetPix(
+      params.size,
+      params.data,
+      params.valueScaleType,
+      params.valueScaleDomain,
+      params.pseudocount,
+      params.colorScale,
+    );
 
-//const worker = new Worker('./worker.js');
-//console.log('worker:', worker);
-hamsters.init({
-  Worker: Worker
+    //console.log('pixData', pixData);
+    done(pixData);
+  } catch (err) {
+    console.log('err:', err);
+  }
 });
 
 import pubSub from './pub-sub';
@@ -269,6 +283,7 @@ export const tileDataToPixData = (
   newTileData.set(tileData.dense);
 
   // comment this and uncomment the code afterwards to enable threading
+  /*
   const pixData = workerSetPix(
     newTileData.length,
     newTileData,
@@ -277,8 +292,51 @@ export const tileDataToPixData = (
     pseudocount,
     colorScale,
   );
+  */
 
-  const pool = new thread.Pool();
+  const scriptPath = document.location.href;
+
+  var params = {
+    scriptPath: scriptPath,
+    size: newTileData.length,
+    data: newTileData,
+    valueScaleType: valueScaleType,
+    valueScaleDomain: valueScaleDomain,
+    pseudocount: pseudocount,
+    colorScale: colorScale
+  };
+
+  threadPool.send(params)
+    .promise()
+    .then(returned => {
+      finished(returned);
+    });
+
+  /*
+  this.threadPool.run(function(input, done) {
+        let tileData = input.tileData;
+        importScripts(input.scriptPath + '/scripts/worker.js');
+        let pixData = worker.workerSetPix(tileData.length, tileData,
+                          input.minVisibleValue,
+                          input.maxVisibleValue);
+        done.transfer({'pixData': pixData}, [pixData.buffer]);
+
+       })
+     .on('done', function(job, message) {
+       //console.log('done...', job);
+       finished(message.pixData);
+     })
+     .on('error', function(job, error) {
+      //console.log('error', error);
+     })
+  .send({
+    scriptPath: scriptPath,
+    tileData: newTileData,
+    minVisibleValue: minVisibleValue,
+    maxVisibleValue: maxVisibleValue},
+    [newTileData.buffer]
+  );
+  */
   
   /*
     var params = {
@@ -304,37 +362,11 @@ export const tileDataToPixData = (
     }, function(output) {
 
     }, 1, false);
-  /*
+
+  */
 
 
 
-  finished(pixData);
-
-  /*
-    this.threadPool.run(function(input, done) {
-          let tileData = input.tileData;
-          importScripts(input.scriptPath + '/scripts/worker.js');
-          let pixData = worker.workerSetPix(tileData.length, tileData,
-                            input.minVisibleValue,
-                            input.maxVisibleValue);
-          done.transfer({'pixData': pixData}, [pixData.buffer]);
-
-         })
-       .on('done', function(job, message) {
-         //console.log('done...', job);
-         finished(message.pixData);
-       })
-       .on('error', function(job, error) {
-        //console.log('error', error);
-       })
-    .send({
-      scriptPath: scriptPath,
-      tileData: newTileData,
-      minVisibleValue: minVisibleValue,
-      maxVisibleValue: maxVisibleValue},
-      [newTileData.buffer]
-    );
-    */
 };
 
 function text(url, callback) {
