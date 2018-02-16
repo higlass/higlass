@@ -26,7 +26,7 @@ const getBaseRes = tilesetInfo => (
 
 export default class Inset {
   constructor(
-    uid,
+    id,
     remotePos,
     renderedPos,
     dataPos,
@@ -36,7 +36,7 @@ export default class Inset {
     mouseHandler,
     dataType,
   ) {
-    this.uid = uid;
+    this.id = id;
     this.remotePos = remotePos;
     this.renderedPos = renderedPos || this.remotePos;
     this.dataPos = dataPos;
@@ -648,7 +648,7 @@ export default class Inset {
     this.mouseHandler.mouseDownRight(event, this);
     this.mouseClickRightHandler(event);
     console.log(
-      `Annotation: ${this.uid} |`,
+      `Annotation: ${this.id} |`,
       `Remote pos: ${this.remotePos.join(', ')} |`,
       `Ideal zoom level for snippet: ${this.computedZoom()}`
     );
