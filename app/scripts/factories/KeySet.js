@@ -85,14 +85,16 @@ KeySet.prototype.clone = function clone() {
  *   items itsel.
  */
 KeySet.prototype.delete = function deleteMethod(itemOrKey) {
-  if (!itemOrKey) return;
+  if (!itemOrKey) return false;
 
   const key = this._store[itemOrKey] ? itemOrKey : itemOrKey[this._keyProp];
 
-  if (typeof key === 'undefined') return;
+  if (typeof key === 'undefined' || !this._store[key]) return false;
 
   this._store[key] = undefined;
   delete this._store[key];
+
+  return true;
 };
 
 /**
