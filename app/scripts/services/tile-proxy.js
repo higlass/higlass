@@ -1,4 +1,5 @@
 import hamsters from 'hamsters.js';
+import { scaleLog, scaleLinear } from 'd3-scale';
 import { range } from 'd3-array';
 import {
   json as d3Json,
@@ -10,8 +11,8 @@ import {
   workerFetchTiles,
   workerFetchMultiRequestTiles,
   workerGetTilesetInfo,
-  workerSetPix,
 } from '../worker';
+
 
 //const worker = new Worker('./worker.js');
 //console.log('worker:', worker);
@@ -248,10 +249,12 @@ export const trackInfo = (server, tilesetUid, done) => {
  *                  has converted tileData to pixData
  * @param minVisibleValue: The minimum visible value (used for setting the color scale)
  * @param maxVisibleValue: The maximum visible value
+ * @param valueScaleType: Either 'log' or 'linear'
+ * @param valueScaleDomain: The domain of the scale (the range is always [254,0])
  * @param colorScale: a 255 x 4 rgba array used as a color scale
  */
 export const tileDataToPixData = (
-  tile, valueScale, pseudocount, colorScale, finished,
+  tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished,
 ) => {
   const tileData = tile.tileData;
 
@@ -269,24 +272,39 @@ export const tileDataToPixData = (
   const pixData = workerSetPix(
     newTileData.length,
     newTileData,
-    valueScale,
+    valueScaleType,
+    valueScaleDomain,
     pseudocount,
     colorScale,
   );
 
+  const pool = new thread.Pool();
+  
   /*
     var params = {
       size: newTileData.length,
       data: newTileData,
-      valueScale: valueScale,
+      valueScaleType: valueScaleType,
+      valueScaleDomain: valueScaleDomain,
       pseudocount: pseudocount,
       colorScale: colorScale
     };
     hamsters.run(params, function() {
+      const pixData = workerSetPix(
+        params.size,
+        params.newTileData,
+        params.valueScaleType,
+        params.valueScaleDomain,
+        params.pseudocount,
+        params.colorScale,
+      );
+      console.log('pd:', pixData);
+      console.log('hi');
+      const s = scaleLinear();
     }, function(output) {
-       return null;
+
     }, 1, false);
-    */
+  /*
 
 
 

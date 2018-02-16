@@ -601,7 +601,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     tileProxy.tileDataToPixData(tile,
-      this.limitedValueScale,
+      scaleType,
+      this.limitedValueScale.domain(),
       pseudocount, // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
       (pixData) => {

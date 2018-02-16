@@ -1,4 +1,5 @@
 import { json } from 'd3-request';
+import { scaleLog, sclaeLinear } from 'd3-scale';
 import pubSub from './services/pub-sub';
 
 /*
@@ -69,13 +70,27 @@ export function maxNonZero(data) {
 }
 
 export function workerSetPix(
-  size, data, valueScale, pseudocount, colorScale
+  size, data, valueScaleType, valueScaleDomain, pseudocount, colorScale
 ) {
   /**
    * The pseudocount is generally the minimum non-zero value and is
    * used so that our log scaling doesn't lead to NaN values.
    */
   const epsilon = 0.000001;
+  let valueScale = null;
+
+  if (valueScaleType == 'log') {
+    valueScale = scaleLog()
+      .range([254,0])
+      .domain(valueScaleDomain)
+  } else {
+    if (valueScaleType != 'linear') {
+      console.warn('Unknown value scale type:', valueScaleType, ' Defaulting to linear');
+    }
+    valueScale = scaleLinear()
+      .range([254,0])
+      .domain(valueScaleDomain)
+  } 
 
   const pixData = new Uint8ClampedArray(size * 4);
 
