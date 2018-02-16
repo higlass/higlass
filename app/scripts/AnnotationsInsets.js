@@ -109,17 +109,19 @@ class AnnotationsInsets {
       this.projectorY(dataPos[3])
     ];
 
-    const annotation = new Annotation(
-      uid,
-      [
-        viewPos[0],
-        viewPos[0] + viewPos[2],
-        viewPos[1],
-        viewPos[1] + viewPos[3],
-      ],
-      dataPos,
-      dataPosProj
-    );
+    const _viewPos = [
+      viewPos[0],
+      viewPos[0] + viewPos[2],
+      viewPos[1],
+      viewPos[1] + viewPos[3],
+    ];
+
+    let annotation = this.areaClusterer.elements.get(uid);
+    if (annotation) {
+      annotation.setViewPosition(_viewPos);
+    } else {
+      annotation = new Annotation(uid, _viewPos, dataPos, dataPosProj);
+    }
 
     this.drawnAnnoIds.add(uid);
 
@@ -268,8 +270,9 @@ class AnnotationsInsets {
     // Update clusterer
     this.areaClusterer.add(this.annosToBeDrawnAsInsetsNew, true);
     this.areaClusterer.remove(this.annosToBeDrawnAsInsetsOld, true);
+    this.areaClusterer.refresh();
     const t0 = performance.now();
-    this.areaClusterer.repaint();
+    this.areaClusterer.clusterElements();
     console.log(`Label clustering took ${performance.now() - t0}ms`);
   }
 
