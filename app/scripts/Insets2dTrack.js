@@ -178,7 +178,7 @@ export default class Insets2dTrack extends PixiTrack {
 
     this.insets.forEach((inset) => {
       if (!(insetIds.indexOf(inset.id) >= 0)) {
-        this.destroyInset(inset);
+        this.destroyInset(inset.id);
       }
     });
   }
