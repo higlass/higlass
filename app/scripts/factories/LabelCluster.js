@@ -1,7 +1,5 @@
 import Label from './Label';
 
-// import { sum } from '../utils';
-
 function LabelCluster(id, t = 1.0) {
   Label.call(this, id, t);
 }
