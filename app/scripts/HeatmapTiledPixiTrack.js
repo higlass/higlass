@@ -53,6 +53,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       },
     );
 
+    this.animate = animate;
     this.onTrackOptionsChanged = onTrackOptionsChanged;
 
     // Graphics for drawing the colorbar
@@ -600,6 +601,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
           this.valueScale.domain()[0] + (this.valueScale.domain()[1] - this.valueScale.domain()[0]) * (this.options.scaleEndPercent)]);
     }
 
+    this.renderingTiles.add(tile.tileId);
     tileProxy.tileDataToPixData(tile,
       scaleType,
       this.limitedValueScale.domain(),
@@ -608,21 +610,30 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       (pixData) => {
         // the tileData has been converted to pixData by the worker script and needs to be loaded
         // as a sprite
-        const graphics = tile.graphics;
-        const canvas = this.tileDataToCanvas(pixData);
+        if (pixData) {
+          const graphics = tile.graphics;
+          const canvas = this.tileDataToCanvas(pixData.pixData);
 
-        let sprite = null;
 
-        sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+          let sprite = null;
 
-        tile.sprite = sprite;
+          sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
 
-        // store the pixData so that we can export it
-        tile.canvas = canvas;
-        this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
+          tile.sprite = sprite;
 
-        graphics.removeChildren();
-        graphics.addChild(tile.sprite);
+          // store the pixData so that we can export it
+          tile.canvas = canvas;
+          this.setSpriteProperties(tile.sprite, tile.tileData.zoomLevel, tile.tileData.tilePos, tile.mirrored);
+
+          graphics.removeChildren();
+          graphics.addChild(tile.sprite);
+
+        }
+
+        this.renderingTiles.delete(tile.tileId);
+        this.animate();
+        // call to check if tiles need removing
+        this.refreshTiles();
       });
   }
 

@@ -254,47 +254,55 @@ export class HorizontalHeatmapTrack extends HeatmapTiledPixiTrack {
       ]);
     }
 
+    this.renderingTiles.add(tile.tileId);
     tileProxy.tileDataToPixData(
       tile,
-      this.limitedValueScale,
+      scaleType,
+      this.limitedValueScale.domain(),
       pseudocount, // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
       (pixData) => {
         // the tileData has been converted to pixData by the worker script and needs to be loaded
         // as a sprite
-        const graphics = tile.graphics;
+        if (pixData) {
+          const graphics = tile.graphics;
 
-        const canvas = this.tileDataToCanvas(pixData);
+          const canvas = this.tileDataToCanvas(pixData.pixData);
 
-        let sprite = null;
+          let sprite = null;
 
-        if (tile.tileData.zoomLevel === this.maxZoom) {
-          sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
-        } else {
-          sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+          if (tile.tileData.zoomLevel === this.maxZoom) {
+            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST));
+          } else {
+            sprite = new PIXI.Sprite(PIXI.Texture.fromCanvas(canvas));
+          }
+
+          tile.sprite = sprite;
+          tile.canvas = canvas;
+
+          this.setSpriteProperties(
+            tile.sprite,
+            tile.tileData.zoomLevel,
+            tile.tileData.tilePos,
+            tile.mirrored,
+          );
+
+          graphics.pivot.x = this._refXScale(0);
+          graphics.pivot.y = this._refYScale(0);
+          graphics.scale.x = -1 / Math.sqrt(2);
+          graphics.rotation = -3 * Math.PI / 4;
+          graphics.scale.y = 1 / Math.sqrt(2);
+
+          graphics.position.x = this._refXScale(0);
+          graphics.position.y = 0;
+
+          graphics.removeChildren();
+          graphics.addChild(tile.sprite);
         }
 
-        tile.sprite = sprite;
-        tile.canvas = canvas;
-
-        this.setSpriteProperties(
-          tile.sprite,
-          tile.tileData.zoomLevel,
-          tile.tileData.tilePos,
-          tile.mirrored,
-        );
-
-        graphics.pivot.x = this._refXScale(0);
-        graphics.pivot.y = this._refYScale(0);
-        graphics.scale.x = -1 / Math.sqrt(2);
-        graphics.rotation = -3 * Math.PI / 4;
-        graphics.scale.y = 1 / Math.sqrt(2);
-
-        graphics.position.x = this._refXScale(0);
-        graphics.position.y = 0;
-
-        graphics.removeChildren();
-        graphics.addChild(tile.sprite);
+        this.renderingTiles.delete(tile.tileId);
+        this.animate();
+        this.refreshTiles();
       });
   }
 

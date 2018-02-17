@@ -62,6 +62,9 @@ export class TiledPixiTrack extends PixiTrack {
     this.visibleTiles = new Set();
     this.visibleTileIds = new Set();
 
+    // keep track of tiles that are currently being rendered
+    this.renderingTiles = new Set();
+
     // the tiles we already have requests out for
     this.fetching = new Set();
     this.scale = {};
@@ -235,6 +238,8 @@ export class TiledPixiTrack extends PixiTrack {
     if (!toRemoveIds.length) { return; }
 
     if (!this.areAllVisibleTilesLoaded()) { return; }
+
+    if (this.renderingTiles.size) { return; }
 
     toRemoveIds.forEach((x) => {
       const tileIdStr = x;

@@ -8,31 +8,50 @@ import {
 import slugid from 'slugid';
 
 import {
+  workerGetTiles,
   workerFetchTiles,
-  workerFetchMultiRequestTiles,
   workerGetTilesetInfo,
+  workerSetPix,
+  tileResponseToData,
 } from '../worker';
 
-const threadPool = new Pool(1);
-threadPool.run(function(params, done) {
-  console.log('hi');
+const MAX_FETCH_TILES = 20;
+
+const setPixPool = new Pool(2);
+setPixPool.run(function(params, done) {
   try {
-    importScripts('http://localhost:8080/worker.js');
+    const array = new Float32Array(params.data);
     const pixData = worker.workerSetPix(
       params.size,
-      params.data,
+      array,
       params.valueScaleType,
       params.valueScaleDomain,
       params.pseudocount,
       params.colorScale,
     );
 
-    //console.log('pixData', pixData);
-    done(pixData);
+    done.transfer({
+      pixData: pixData
+    }, [pixData.buffer]);
   } catch (err) {
     console.log('err:', err);
   }
-});
+}, ['http://localhost:8080/worker.js']);
+
+const fetchTilesPool = new Pool(2);
+fetchTilesPool.run(function(params, done) {
+  try {
+    worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds, done);
+    /*
+    done.transfer({
+      pixData: pixData
+    }, [pixData.buffer]);
+    */
+  } catch (err) {
+    console.log('err:', err);
+  }
+}, ['http://localhost:8080/worker.js']);
+
 
 import pubSub from './pub-sub';
 
@@ -94,7 +113,85 @@ const debounce = (func, wait) => {
   return debounced;
 };
 
-const workerFetchTilesDebounced = debounce(workerFetchMultiRequestTiles, TILE_FETCH_DEBOUNCE);
+
+export function fetchMultiRequestTiles(req) {
+  const sessionId = req.sessionId;
+  const requests = req.requests;
+  const fetchPromises = [];
+
+  const requestsByServer = {};
+
+  // We're converting the array of IDs into an object in order to filter out duplicated requests.
+  // In case different instances request the same data it won't be loaded twice.
+  for (const request of requests) {
+    if (!requestsByServer[request.server]) {
+      requestsByServer[request.server] = {};
+    }
+    for (const id of request.ids) {
+      requestsByServer[request.server][id] = true;
+    }
+  }
+
+  const servers = Object.keys(requestsByServer);
+
+  for (const server of servers) {
+    const ids = Object.keys(requestsByServer[server]);
+    // console.log('ids:', ids);
+
+    // if we request too many tiles, then the URL can get too long and fail
+    // so we'll break up the requests into smaller subsets
+    for (let i = 0; i < ids.length; i += MAX_FETCH_TILES) {
+      const theseTileIds = ids.slice(i, i + Math.min(ids.length - i, MAX_FETCH_TILES));
+
+      const renderParams = theseTileIds.map(x => `d=${x}`).join('&');
+      const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
+
+      const p = new Promise(((resolve, reject) => {
+        pubSub.publish('requestSent', outUrl);
+        const params = {}
+
+        params.outUrl = outUrl;
+        params.server = server;
+        params.theseTileIds = theseTileIds;
+
+        fetchTilesPool.send(params)
+          .promise()
+          .then(ret => {
+            pubSub.publish('requestReceived', outUrl);
+            resolve(ret);
+          });
+      }));
+
+      fetchPromises.push(p);
+    }
+  }
+
+  Promise.all(fetchPromises).then((datas) => {
+    const tiles = {};
+
+    // merge back all the tile requests
+    for (const data of datas) {
+      const tileIds = Object.keys(data);
+
+      for (const tileId of tileIds) {
+        tiles[`${data[tileId].server}/${tileId}`] = data[tileId];
+      }
+    }
+
+    // trigger the callback for every request
+    for (const request of requests) {
+      const reqDate = {};
+      const server = request.server;
+
+      // pull together the data per request
+      for (const id of request.ids) {
+        reqDate[id] = tiles[`${server}/${id}`];
+      }
+
+      request.done(reqDate);
+    }
+  });
+}
 
 /**
  * Retrieve a set of tiles from the server
@@ -104,8 +201,7 @@ const workerFetchTilesDebounced = debounce(workerFetchMultiRequestTiles, TILE_FE
  * @param server: A string with the server's url (e.g. "http://127.0.0.1")
  * @param tileIds: The ids of the tiles to fetch (e.g. asdf-sdfs-sdfs.0.0.0)
  */
-export const fetchTilesDebounced = request =>
-  workerFetchTilesDebounced(request);
+export const fetchTilesDebounced = debounce(fetchMultiRequestTiles, TILE_FETCH_DEBOUNCE);
 
 /**
  * Retrieve a set of tiles from the server
@@ -274,6 +370,7 @@ export const tileDataToPixData = (
 
   if  (!tileData.dense) {
     // if we didn't get any data from the server, don't do anything
+    finished(null);
     return;
   }
 
@@ -283,6 +380,7 @@ export const tileDataToPixData = (
   newTileData.set(tileData.dense);
 
   // comment this and uncomment the code afterwards to enable threading
+
   /*
   const pixData = workerSetPix(
     newTileData.length,
@@ -292,25 +390,29 @@ export const tileDataToPixData = (
     pseudocount,
     colorScale,
   );
+
+  finished({pixData});
+  return;
   */
 
-  const scriptPath = document.location.href;
-
   var params = {
-    scriptPath: scriptPath,
     size: newTileData.length,
-    data: newTileData,
+    data: newTileData.buffer,
     valueScaleType: valueScaleType,
     valueScaleDomain: valueScaleDomain,
     pseudocount: pseudocount,
     colorScale: colorScale
   };
 
-  threadPool.send(params)
+  setPixPool.send(params, [ newTileData.buffer ])
     .promise()
     .then(returned => {
       finished(returned);
+    })
+    .catch(reason => {
+      finished(null);
     });
+  ;
 
   /*
   this.threadPool.run(function(input, done) {
@@ -364,9 +466,6 @@ export const tileDataToPixData = (
     }, 1, false);
 
   */
-
-
-
 };
 
 function text(url, callback) {
