@@ -79,6 +79,8 @@ export function workerSetPix(
   const epsilon = 0.000001;
   let valueScale = null;
 
+  console.log('workerSetPix');
+
   if (valueScaleType == 'log') {
     valueScale = scaleLog()
       .range([254,0])
@@ -136,7 +138,6 @@ export function workerGetTilesetInfo(url, done) {
   json(url, (error, data) => {
     pubSub.publish('requestReceived', url);
     if (error) {
-      // console.log('error:', error);
       // don't do anything
       // no tileset info just means we can't do anything with this file...
     } else {

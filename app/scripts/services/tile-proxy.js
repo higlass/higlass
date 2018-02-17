@@ -379,6 +379,9 @@ export const tileDataToPixData = (
   const newTileData = new Float32Array(tileData.dense.length);
   newTileData.set(tileData.dense);
 
+  console.log('tile.tileId:', tile.tileId);
+  //const newTileData = tileData.dense;
+
   // comment this and uncomment the code afterwards to enable threading
 
   /*
@@ -413,59 +416,6 @@ export const tileDataToPixData = (
       finished(null);
     });
   ;
-
-  /*
-  this.threadPool.run(function(input, done) {
-        let tileData = input.tileData;
-        importScripts(input.scriptPath + '/scripts/worker.js');
-        let pixData = worker.workerSetPix(tileData.length, tileData,
-                          input.minVisibleValue,
-                          input.maxVisibleValue);
-        done.transfer({'pixData': pixData}, [pixData.buffer]);
-
-       })
-     .on('done', function(job, message) {
-       //console.log('done...', job);
-       finished(message.pixData);
-     })
-     .on('error', function(job, error) {
-      //console.log('error', error);
-     })
-  .send({
-    scriptPath: scriptPath,
-    tileData: newTileData,
-    minVisibleValue: minVisibleValue,
-    maxVisibleValue: maxVisibleValue},
-    [newTileData.buffer]
-  );
-  */
-  
-  /*
-    var params = {
-      size: newTileData.length,
-      data: newTileData,
-      valueScaleType: valueScaleType,
-      valueScaleDomain: valueScaleDomain,
-      pseudocount: pseudocount,
-      colorScale: colorScale
-    };
-    hamsters.run(params, function() {
-      const pixData = workerSetPix(
-        params.size,
-        params.newTileData,
-        params.valueScaleType,
-        params.valueScaleDomain,
-        params.pseudocount,
-        params.colorScale,
-      );
-      console.log('pd:', pixData);
-      console.log('hi');
-      const s = scaleLinear();
-    }, function(output) {
-
-    }, 1, false);
-
-  */
 };
 
 function text(url, callback) {
