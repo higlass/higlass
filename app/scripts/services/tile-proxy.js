@@ -378,8 +378,6 @@ export const tileDataToPixData = (
   // when being passed to the worker script
   const newTileData = new Float32Array(tileData.dense.length);
   newTileData.set(tileData.dense);
-
-  console.log('tile.tileId:', tile.tileId);
   //const newTileData = tileData.dense;
 
   // comment this and uncomment the code afterwards to enable threading
