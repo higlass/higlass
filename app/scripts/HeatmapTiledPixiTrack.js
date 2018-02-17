@@ -47,7 +47,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       options,
       animate,
       () => {
-        //console.log('valueScale changed');
         this.drawColorbar();
         onValueScaleChanged();
       },
@@ -101,7 +100,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   rerender(options, force) {
     // if force is set, then we force a rerender even if the options
     // haven't changed rerender will force a brush.move
-
     const strOptions = JSON.stringify(options);
     this.drawColorbar();
 

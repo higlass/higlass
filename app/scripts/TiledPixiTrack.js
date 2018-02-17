@@ -58,6 +58,12 @@ export class TiledPixiTrack extends PixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
     super(scene, options);
 
+    // keep track of which render we're on so that we save ourselves
+    // rerendering all rendering in the same version will have the same
+    // scaling so tiles rendered in the same version will have the same
+    // output. Mostly useful for heatmap tiles.
+    this.renderVersion = 1;
+
     // the tiles which should be visible (although they're not necessarily fetched)
     this.visibleTiles = new Set();
     this.visibleTileIds = new Set();
@@ -134,6 +140,8 @@ export class TiledPixiTrack extends PixiTrack {
 
   rerender(options) {
     super.rerender(options);
+
+    this.renderVersion += 1;
 
     if (!this.tilesetInfo) { return; }
 
@@ -357,6 +365,7 @@ export class TiledPixiTrack extends PixiTrack {
          */
     const fetchedTileIDs = Object.keys(this.fetchedTiles);
     let added = false;
+    this.renderVersion += 1;
 
     for (let i = 0; i < fetchedTileIDs.length; i++) {
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
