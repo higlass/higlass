@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 develop (2018-01-??)
 
 - Preliminary authentication support
@@ -15,6 +16,11 @@ entered
 - Updated third-party libs to get rid of deprecation warnings for React v16
 - Fixed small bug in placing rules
 - Display error when failing to retrieve tilesetInfo
+=======
+v0.10.20 (2018-02-
+
+- Rendering improvements
+>>>>>>> threading
 
 v0.10.19 (2018-02-11)
 
