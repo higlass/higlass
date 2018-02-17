@@ -400,7 +400,7 @@ export const tileDataToPixData = (
 
   var params = {
     size: newTileData.length,
-    data: newTileData.buffer,
+    data: newTileData,
     valueScaleType: valueScaleType,
     valueScaleDomain: valueScaleDomain,
     pseudocount: pseudocount,

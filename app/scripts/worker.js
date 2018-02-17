@@ -79,8 +79,6 @@ export function workerSetPix(
   const epsilon = 0.000001;
   let valueScale = null;
 
-  console.log('workerSetPix');
-
   if (valueScaleType == 'log') {
     valueScale = scaleLog()
       .range([254,0])
