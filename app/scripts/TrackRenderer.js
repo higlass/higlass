@@ -6,6 +6,7 @@ import * as PIXI from 'pixi.js';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
+import { easeLinear } from 'd3-ease';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
@@ -681,6 +682,7 @@ export class TrackRenderer extends React.Component {
         // only transition if the window is hidden
         selection = selection
           .transition()
+          .ease(easeLinear)
           .duration(animateTime);
       }
 

@@ -17,7 +17,7 @@ import {
 
 const MAX_FETCH_TILES = 20;
 
-const setPixPool = new Pool(2);
+const setPixPool = new Pool(1);
 setPixPool.run(function(params, done) {
   try {
     const array = new Float32Array(params.data);
@@ -38,7 +38,7 @@ setPixPool.run(function(params, done) {
   }
 }, ['http://localhost:8080/worker.js']);
 
-const fetchTilesPool = new Pool(2);
+const fetchTilesPool = new Pool(1);
 fetchTilesPool.run(function(params, done) {
   try {
     worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds, done);

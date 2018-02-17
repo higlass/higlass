@@ -135,6 +135,11 @@
 }
  ;
 
+    const chromInfo = hglib.ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+        function(chromInfo) {
+            console.log('got chromInfo:', chromInfo);
+            window.chromInfo = chromInfo;
+        });
     window.higlassApi;
 
     hglib.createHgComponent(
@@ -165,18 +170,22 @@
     //   );
     // }, 3000);
 
-    // setTimeout(function () {
-    //   // Go to Chr1 without animation
-    //   window.hgApi.goTo(
-    //     testViewConfig.views[0].uid,
-    //     'chr1',
-    //     0,
-    //     89758810,
-    //     'chr1',
-    //     0,
-    //     89758810
-    //   );
-    // }, 11000);
+     setTimeout(function () {
+         console.log('going to', window.chromInfo);
+       // Go to Chr1 without animation
+       window.hgApi.goTo(
+         testViewConfig.views[0].uid,
+         'chr6',
+         0,
+         8758810,
+         'chr6',
+         0,
+         8758810,
+           animate = true,
+           5000,
+        window.chromInfo
+       );
+     }, 2000);
 
     function zoomToDetail() {
         console.log('zooming');

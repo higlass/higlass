@@ -9,6 +9,7 @@ import {
 } from './configs';
 
 import pubSub from './services/pub-sub';
+import ChromosomeInfo from './ChromosomeInfo';
 
 export const api = function api(context) {
   const self = context;
@@ -128,11 +129,13 @@ export const api = function api(context) {
       end2,
       animate = false,
       animateTime = 3000,
+      chromInfo = null,
     ) {
-      // Set chromInfo if not available
-      if (!self.chromInfo) {
-        self.setChromInfo(
-          self.state.views[viewUid].chromInfoPath,
+      console.log('goTo:', chromInfo);
+      // if no ChromosomeInfo is passed in, try to load it from the
+      // location specified in the viewconf
+      if (!chromInfo) {
+        ChromosomeInfo(self.state.views[viewUid.chromInfoPath],
           () => {
             self.api().goTo(
               viewUid,
@@ -151,11 +154,11 @@ export const api = function api(context) {
       }
 
       const [start1Abs, end1Abs] = relToAbsChromPos(
-        chrom1, start1, end1, self.chromInfo,
+        chrom1, start1, end1, chromInfo,
       );
 
       const [start2Abs, end2Abs] = relToAbsChromPos(
-        chrom2, start2, end2, self.chromInfo,
+        chrom2, start2, end2, chromInfo,
       );
 
       const [centerX, centerY, k] = scalesCenterAndK(
