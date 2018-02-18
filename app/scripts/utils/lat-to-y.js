@@ -1,3 +1,5 @@
+export const invGudermannian = y => Math.log(Math.tan((y + (Math.PI / 2)) / 2));
+
 const latToY = (lat, zoom) => {
   let latRad = lat * Math.PI / 180.0;
 
@@ -6,7 +8,5 @@ const latToY = (lat, zoom) => {
 
   return (2 ** zoom) * (Math.PI - latRad) / (2 * Math.PI);
 };
-
-export const invGudermannian = y => Math.log(Math.tan((y + (Math.PI / 2)) / 2));
 
 export default latToY;
