@@ -30,7 +30,11 @@ import {
 } from './utils';
 
 // Configs
-import { MOUSE_TOOL_SELECT, TRACKS_INFO_BY_TYPE } from './configs';
+import { 
+  MOUSE_TOOL_SELECT, 
+  TRACKS_INFO_BY_TYPE,
+  DEFAULT_TRACKS_FOR_DATATYPE,
+} from './configs';
 
 // Styles
 import styles from '../styles/TiledPlot.module.scss';
@@ -992,7 +996,7 @@ export class TiledPlot extends React.Component {
    * Draw an overlay that shows the positions of all the different
    * track areas
    */
-  getIdealizedTrackPositionsOverlay() {
+  getLeftRightTopBottomOverlays() {
     const topDiv = (
       <DragListeningDiv
         style={{
@@ -1000,7 +1004,7 @@ export class TiledPlot extends React.Component {
           marginRight: '25%',
           border: '1px solid black',
           width: '50%',
-          height: '25%',
+          height: '30%',
         }}
       />
     );
@@ -1054,7 +1058,7 @@ export class TiledPlot extends React.Component {
           <div
             style={{
             display: 'flex',
-            height: '50%',
+            height: '40%',
             width: '100%',
             }}
           >
@@ -1066,6 +1070,57 @@ export class TiledPlot extends React.Component {
         </div>
       </div>
     );
+  }
+
+    /**
+   * Draw an overlay that shows the positions of all the different
+   * track areas
+   */
+  getIdealizedTrackPositionsOverlay() {
+    const evtJson = this.state.draggingHappening;
+    const datatype = evtJson.higlassTrack.datatype;
+
+    if (!datatype in DEFAULT_TRACKS_FOR_DATATYPE) {
+      console.warn('unknown track type:', evtJson.higlassTrack);
+      return;
+    }
+
+    const defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype];
+    const presentTracks = new Set(['top', 'left', 'right', 'center', 'bottom']
+      .filter(x => (x in this.state.tracks && this.state.tracks[x].length)));
+
+    console.log('presentTracks:', presentTracks);
+    console.log('defaultTracks:', defaultTracks);
+
+    let numVertical = 0;
+    let numHorizontal = 0;
+
+    if (presentTracks.has('center')) {
+      
+    }
+
+    if ('center' in defaultTracks) {
+      // this track can be shown in the center
+      if ('top' in defaultTracks) {
+        // can be shown on top and bottom as well
+        numHorizontal = 3;
+      } else {
+        numHorizontal = 1;
+      }
+
+      if ('left' in defaultTracks) {
+        numVertical = 3;
+      } else {
+        numVertical = 1;
+      }
+    } else {
+      if ('left' in defaultTracks) {
+        // this track can be displayed on the left
+      }
+    }
+
+
+    return this.getLeftRightTopBottomOverlays();
   }
 
   render() {
@@ -1522,7 +1577,7 @@ export class TiledPlot extends React.Component {
           console.log('eventJson:', eventJson);
 
           this.setState({
-            draggingHappening: true,
+            draggingHappening: eventJson,
           });
           return false;
         },
