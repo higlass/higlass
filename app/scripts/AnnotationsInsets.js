@@ -273,7 +273,7 @@ class AnnotationsInsets {
     this.areaClusterer.remove(this.annosToBeDrawnAsInsetsOld, true);
     this.areaClusterer.refresh();
     this.areaClusterer.clusterElements();
-    console.log(`Label clustering took ${performance.now() - t0}ms`);
+    console.log(`Clustering took ${performance.now() - t0}ms`);
   }
 
   /**
@@ -315,7 +315,7 @@ class AnnotationsInsets {
    * @return  {Array}  Position and dimension of the insets.
    */
   positionInsets() {
-    if (!this.annosToBeDrawnAsInsets.size) return [];
+    if (!this.annosToBeDrawnAsInsets.size) return new KeySet();
 
     return this.insetsTrack.positioning.location === 'gallery'
       ? this.positionInsetsGallery()
@@ -408,7 +408,7 @@ class AnnotationsInsets {
         .height(this.insetsTrack.dimensions[1])
         .start(Math.round(Math.max(2, Math.min(100 * Math.log(n) / n))));
 
-      console.log(`Label positioning took ${performance.now() - t0} msec`);
+      console.log(`Positioning took ${performance.now() - t0} msec`);
     }
 
     return insets;
