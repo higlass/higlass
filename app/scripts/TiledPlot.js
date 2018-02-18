@@ -1026,10 +1026,10 @@ export class TiledPlot extends React.Component {
     );
 
     const rightDiv = React.cloneElement(leftDiv);
-    console.log('yay');
     const bottomDiv = React.cloneElement(topDiv, 
       {
         onTrackDropped: track => this.handleTracksAdded([track], 'bottom'),
+        position: 'bottom',
       });
 
     return(
