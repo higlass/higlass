@@ -8,9 +8,9 @@
     display:none;
 }
 </style>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles/page.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="hglib.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.min.js"></script>
@@ -18,10 +18,11 @@
 </head>
 <body >
     <div style="height: 50px" />
+        <button onclick='zoomToDetail()'>hey</button>
         <div style="margin: auto; width: 100%;">
         <div
             id="development-demo"
-            style="position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px">
+            style="position: absolute; left: 4rem; top: 1rem; bottom: 1rem; right: 1rem">
         </div>
     </div>
 </body>
@@ -31,152 +32,146 @@
 
  var testViewConfig =
 {
+  "editable": true,
   "zoomFixed": false,
+  "trackSourceServers": [
+    "http://higlass.io/api/v1"
+  ],
+  "exportViewUrl": "/api/v1/viewconfs",
   "views": [
     {
-      "layout": {
-        "w": 12,
-        "h": 4,
-        "x": 0,
-        "y": 0,
-        "i": "eJLMGjH7Qm-zm_F_hqjXkw",
-        "moved": false,
-        "static": false
-      },
-      "uid": "eJLMGjH7Qm-zm_F_hqjXkw",
-      "initialYDomain": [
-        1884242343.5038795,
-        1886177121.09891
-      ],
-      "autocompleteSource": "http://higlass.io/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "uid": "aa",
       "initialXDomain": [
-        1884337922.5037165,
-        1886218841.1935296
+        71498516.71412492,
+        2949514865.5131903
       ],
+      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
+      "genomePositionSearchBox": {
+        "autocompleteServer": "http://higlass.io/api/v1",
+        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
+        "chromInfoServer": "http://higlass.io/api/v1",
+        "chromInfoId": "hg19",
+        "visible": true
+      },
+      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
       "tracks": {
-        "left": [],
         "top": [
           {
-            "name": "Chromosome Axis",
+            "name": "Dixon et al. (2012) IMR90 HindIII (allreps) 1kb",
+            "created": "2017-02-03T00:01:00.830653Z",
             "server": "http://higlass.io/api/v1",
-            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
-            "uid": "F-d1_lSeTFybXqPENwfq8w",
-            "type": "horizontal-chromosome-labels",
-            "options": {},
-            "width": 908,
-            "height": 30,
-            "position": "top"
-          },
-          {
-            "name": "sorted_genes_target_db.tsv.multires",
-            "server": "http://localhost:8989/api/v1",
-            "tilesetUid": "OAS4TMLATcq9sWWuwH7sYw",
-            "uid": "cinM8sCnRNy7JAU0tUwh2g",
-            "type": "bedlike",
+            "tilesetUid": "AddRuJRtSTqjI9NUwV49XA",
+            "uid": "FAqxfdUXQZCftff35XJxnw",
+            "type": "horizontal-heatmap",
             "options": {
+              "labelPosition": "bottomRight",
               "labelColor": "black",
-              "labelPosition": "hidden",
+              "colorRange": [
+                "white",
+                "rgba(245,166,35,1.0)",
+                "rgba(208,2,27,1.0)",
+                "black"
+              ],
+              "maxZoom": null,
               "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "name": "sorted_genes_target_db.tsv.multires"
+              "trackBorderColor": "black"
             },
-            "width": 908,
-            "height": 55,
+            "width": 704,
+            "height": 103,
+            "transforms": [
+              {
+                "name": "ICE",
+                "value": "weight"
+              }
+            ],
             "position": "top"
           }
         ],
+        "left": [],
+        "center": [
+          {
+            "uid": "c1",
+            "type": "combined",
+            "height": 944,
+            "contents": [
+              {
+                "server": "http://higlass.io/api/v1",
+                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
+                "type": "heatmap",
+                "position": "center",
+                "options": {
+                  "maxZoom": null,
+     
+                  "labelPosition": "bottomRight",
+                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                  "colorRange": [
+                    "white",
+                    "rgba(245,166,35,1.0)",
+                    "rgba(208,2,27,1.0)",
+                    "black"
+                  ],
+                  "colorbarPosition": "topRight",
+                  "trackBorderWidth": 0,
+                  "trackBorderColor": "black",
+                  "heatmapValueScaling": "log",
+                  "scaleStartPercent": "0.00000",
+                  "scaleEndPercent": "1.00000"
+                },
+                "uid": "GjuZed1ySGW1IzZZqFB9BA",
+                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
+                "transforms": [
+                  {
+                    "name": "ICE",
+                    "value": "weight"
+                  }
+                ],
+                "width": 1712,
+                "height": 944
+              }
+            ],
+            "position": "center",
+            "options": {},
+            "width": 1712
+          }
+        ],
         "right": [],
-        "center": [],
         "bottom": []
       },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/mm9/chromSizes.tsv",
-      "genomePositionSearchBoxVisible": true,
-      "genomePositionSearchBox": {
-        "autocompleteServer": "http://higlass.io/api/v1",
-        "chromInfoServer": "http://higlass.io/api/v1",
-        "visible": true,
-        "chromInfoId": "hg19",
-        "autocompleteId": "OHJakQICQD6gTD7skx4EWA"
-      }
+      "layout": {
+        "w": 12,
+        "h": 12,
+        "x": 0,
+        "y": 0,
+        "i": "aa",
+        "moved": false,
+        "static": false
+      },
+      "initialYDomain": [
+        729891629.3129492,
+        2289505540.4876432
+      ]
     }
   ],
-  "editable": true,
-  "exportViewUrl": "http://higlass.io/api/v1/viewconfs",
   "zoomLocks": {
     "locksByViewUid": {},
     "locksDict": {}
   },
-  "trackSourceServers": [
-    "http://higlass.io/api/v1",
-    "http://localhost:8989/api/v1"
-  ],
   "locationLocks": {
-    "locksByViewUid": {
-      "aa": "U5B9_E3NTAmkmpng9s3CcA",
-      "Kq_XUAkFQjmMjoMJ8ocYNA": "WwiSXfQXRiyb05R1eZeHow",
-      "eJLMGjH7Qm-zm_F_hqjXkw": "KtNjnt55T1ezbSUeXZcwZg",
-      "CxSCeaTbQbmmz2_3MX23Sw": "U5B9_E3NTAmkmpng9s3CcA",
-      "BI8YmooFSCuI9zluz_ehnA": "KtNjnt55T1ezbSUeXZcwZg",
-      "KrP5zcaVSxqCj6mEI8WA2A": "U5B9_E3NTAmkmpng9s3CcA",
-      "TGUZVSquRRKHZwDxwuag4w": "KtNjnt55T1ezbSUeXZcwZg"
-    },
-    "locksDict": {
-      "U5B9_E3NTAmkmpng9s3CcA": {
-        "aa": [
-          1974905964.0722282,
-          1957723677.6934438,
-          406590.3164639473
-        ],
-        "KrP5zcaVSxqCj6mEI8WA2A": [
-          1974905964.0722282,
-          1957723677.693444,
-          406590.3164639473
-        ],
-        "CxSCeaTbQbmmz2_3MX23Sw": [
-          1974905964.0722282,
-          1957723677.693444,
-          406590.3164639473
-        ]
-      },
-      "WwiSXfQXRiyb05R1eZeHow": {
-        "eJLMGjH7Qm-zm_F_hqjXkw": [
-          1966916755.7812533,
-          1972013566.595924,
-          79705.25699186325
-        ],
-        "Kq_XUAkFQjmMjoMJ8ocYNA": [
-          1966916755.7812533,
-          1972013566.595924,
-          79705.25699186325
-        ],
-        "BI8YmooFSCuI9zluz_ehnA": [
-          1966916755.7812533,
-          1972013566.595924,
-          79705.25699186325
-        ]
-      },
-      "KtNjnt55T1ezbSUeXZcwZg": {
-        "TGUZVSquRRKHZwDxwuag4w": [
-          2020919130.152039,
-          184884910.1049447,
-          13070.155560016632
-        ],
-        "eJLMGjH7Qm-zm_F_hqjXkw": [
-          2020919130.152039,
-          184884910.1049447,
-          13070.155560016632
-        ],
-        "BI8YmooFSCuI9zluz_ehnA": [
-          2020919130.152039,
-          184884910.1049447,
-          13070.155560016632
-        ]
-      }
-    }
+    "locksByViewUid": {},
+    "locksDict": {}
+  },
+  "valueScaleLocks": {
+    "locksByViewUid": {},
+    "locksDict": {}
   }
 }
  ;
 
+    const chromInfo = hglib.ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
+        function(chromInfo) {
+            console.log('got chromInfo:', chromInfo);
+            window.chromInfo = chromInfo;
+        });
     window.higlassApi;
 
     hglib.createHgComponent(
@@ -187,6 +182,10 @@
             window.hgApi = api;
         }
     );
+
+    window.hgApi.on('view', function (viewConfig) {
+      console.log('View Config changed');
+    });
 
     // setTimeout(function () {
     //   // Go to PTEN
@@ -203,18 +202,30 @@
     //   );
     // }, 3000);
 
-    // setTimeout(function () {
-    //   // Go to Chr1 without animation
-    //   window.hgApi.goTo(
-    //     testViewConfig.views[0].uid,
-    //     'chr1',
-    //     0,
-    //     89758810,
-    //     'chr1',
-    //     0,
-    //     89758810
-    //   );
-    // }, 11000);
+     setTimeout(function () {
+         console.log('going to', window.chromInfo);
+       // Go to Chr1 without animation
+       window.hgApi.goTo(
+         testViewConfig.views[0].uid,
+         'chr6',
+         0,
+         8758810,
+         'chr6',
+         0,
+         8758810,
+           30000,
+        window.chromInfo
+       );
+     }, 2000);
+
+    function zoomToDetail() {
+        console.log('zooming');
+        window.hgApi.goTo('aa', 'chr6',
+            100000,200000, 'chr6',
+            100000,200000,
+            animate=true,
+            animateTime=10000);
+    }
 
 
 </script>

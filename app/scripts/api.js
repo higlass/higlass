@@ -4,6 +4,10 @@ import {
 } from './utils';
 
 import {
+  setTileProxyAuthHeader
+} from './services';
+
+import {
   MOUSE_TOOL_MOVE,
   MOUSE_TOOL_SELECT,
 } from './configs';
@@ -20,12 +24,28 @@ export const destroy = () => {
   pubSubs = [];
   stack = {};
 };
+import ChromosomeInfo from './ChromosomeInfo';
 
 const api = function api(context) {
   const self = context;
 
   // Public API
   return {
+    setAuthHeader(newHeader) {
+      console.log('api set auth header', newHeader);
+      setTileProxyAuthHeader(newHeader);
+
+      // we need to re-request all the tiles
+      this.reload();
+    },
+
+    /**
+     * Reload all of the tiles
+     */
+    reload() {
+
+    },
+
     setViewConfig(newViewConfig) {
       /**
        * Set a new view config to define the layout and data
@@ -67,6 +87,18 @@ const api = function api(context) {
       });
 
       return p;
+    },
+
+    /**
+     * Retrieve a sharable link for the current view config
+     *
+     * @param {string}  url  Custom URL that should point to a higlass server's
+     *   view config endpoint, i.e.,
+     *   `http://my-higlass-server.com/api/v1/viewconfs/`.
+     * @return  {Object}  Promise resolving to the link ID and URL.
+     */
+    shareViewConfigAsLink(url) {
+      return self.handleExportViewsAsLink(url, true);
     },
 
     zoomToDataExtent(viewUid) {
@@ -146,6 +178,10 @@ const api = function api(context) {
         case 'viewConfig':
           return Promise.resolve(self.getViewsAsString());
 
+        case 'png':
+          return Promise.resolve(self.createDataURI());
+
+        case 'svg':
         case 'svgString':
           return Promise.resolve(self.createSVGString());
 
@@ -162,14 +198,14 @@ const api = function api(context) {
       chrom2,
       start2,
       end2,
-      animate = false,
-      animateTime = 3000,
+      animateTime = 0,
+      chromInfo = null,
     ) {
-      // Set chromInfo if not available
-      if (!self.chromInfo) {
-        self.setChromInfo(
-          self.state.views[viewUid].chromInfoPath,
-          () => {
+      // if no ChromosomeInfo is passed in, try to load it from the
+      // location specified in the viewconf
+      if (!chromInfo) {
+        ChromosomeInfo(self.state.views[viewUid.chromInfoPath],
+          (chromInfo) => {
             self.api().goTo(
               viewUid,
               chrom1,
@@ -178,8 +214,8 @@ const api = function api(context) {
               chrom2,
               start2,
               end2,
-              animate,
               animateTime,
+              chromInfo,
             );
           },
         );
@@ -187,11 +223,11 @@ const api = function api(context) {
       }
 
       const [start1Abs, end1Abs] = relToAbsChromPos(
-        chrom1, start1, end1, self.chromInfo,
+        chrom1, start1, end1, chromInfo,
       );
 
       const [start2Abs, end2Abs] = relToAbsChromPos(
-        chrom2, start2, end2, self.chromInfo,
+        chrom2, start2, end2, chromInfo,
       );
 
       const [centerX, centerY, k] = scalesCenterAndK(
@@ -200,28 +236,26 @@ const api = function api(context) {
       );
 
       self.setCenters[viewUid](
-        centerX, centerY, k, false, animate, animateTime,
+        centerX, centerY, k, false, animateTime,
       );
     },
 
     off(event, listenerId, viewId) {
+      const callback = typeof listenerId === 'object'
+        ? listenerId.callback
+        : listenerId;
+
       switch (event) {
         case 'location':
           self.offLocationChange(viewId, listenerId);
           break;
 
         case 'mouseMoveZoom':
-          apiPubSub.unsubscribe(
-            'mouseMoveZoom', (
-              typeof listenerId === 'object'
-                ? listenerId.callback
-                : listenerId
-            )
-          );
+          apiPubSub.unsubscribe('mouseMoveZoom', callback);
           break;
 
         case 'rangeSelection':
-          self.offRangeSelection(listenerId);
+          apiPubSub.unsubscribe('rangeSelection', callback);
           break;
 
         case 'viewConfig':
@@ -243,7 +277,7 @@ const api = function api(context) {
           return apiPubSub.subscribe('mouseMoveZoom', callback);
 
         case 'rangeSelection':
-          return self.onRangeSelection(callback);
+          return apiPubSub.subscribe('rangeSelection', callback);
 
         case 'viewConfig':
           return self.onViewChange(callback);

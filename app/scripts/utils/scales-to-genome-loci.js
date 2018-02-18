@@ -1,7 +1,7 @@
-import pixelToGenomeLoci from './pixel-to-genome-loci';
+import dataToGenomicLoci from './data-to-genomic-loci';
 
 export const scalesToGenomeLoci = (xScale, yScale, chromInfo) => {
-  if (chromInfo === null || (!xScale || !yScale)) { return; }
+  if (chromInfo === null || (!xScale || !yScale)) return undefined;
 
   const x0 = xScale.domain()[0];
   const x1 = xScale.domain()[1];
@@ -9,8 +9,8 @@ export const scalesToGenomeLoci = (xScale, yScale, chromInfo) => {
   const y1 = yScale.domain()[1];
 
   return [
-    ...pixelToGenomeLoci(x0, x1, chromInfo),
-    ...pixelToGenomeLoci(y0, y1, chromInfo),
+    ...dataToGenomicLoci(x0, x1, chromInfo),
+    ...dataToGenomicLoci(y0, y1, chromInfo),
   ];
 };
 

@@ -55,9 +55,18 @@ export class TiledPixiTrack extends PixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
     super(scene, options);
 
+    // keep track of which render we're on so that we save ourselves
+    // rerendering all rendering in the same version will have the same
+    // scaling so tiles rendered in the same version will have the same
+    // output. Mostly useful for heatmap tiles.
+    this.renderVersion = 1;
+
     // the tiles which should be visible (although they're not necessarily fetched)
     this.visibleTiles = new Set();
     this.visibleTileIds = new Set();
+
+    // keep track of tiles that are currently being rendered
+    this.renderingTiles = new Set();
 
     // the tiles we already have requests out for
     this.fetching = new Set();
@@ -134,6 +143,8 @@ export class TiledPixiTrack extends PixiTrack {
 
   rerender(options) {
     super.rerender(options);
+
+    this.renderVersion += 1;
 
     if (!this.tilesetInfo) { return; }
 
@@ -241,6 +252,8 @@ export class TiledPixiTrack extends PixiTrack {
     if (!toRemoveIds.length) { return; }
 
     if (!this.areAllVisibleTilesLoaded()) { return; }
+
+    if (this.renderingTiles.size) { return; }
 
     toRemoveIds.forEach((x) => {
       const tileIdStr = x;
@@ -358,6 +371,7 @@ export class TiledPixiTrack extends PixiTrack {
          */
     const fetchedTileIDs = Object.keys(this.fetchedTiles);
     let added = false;
+    this.renderVersion += 1;
 
     for (let i = 0; i < fetchedTileIDs.length; i++) {
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
@@ -505,6 +519,7 @@ export class TiledPixiTrack extends PixiTrack {
         this.prevValueScale = this.valueScale.copy();
 
         if (this.onValueScaleChanged) {
+          // this is used to synchronize tracks with locked value scales
           this.onValueScaleChanged();
         }
       }
@@ -552,6 +567,7 @@ export class TiledPixiTrack extends PixiTrack {
   }
 
   calculateMedianVisibleValue() {
+    //console.trace('medianVisibleValue:');
     if (this.areAllVisibleTilesLoaded()) {
       this.allTilesLoaded();
     }

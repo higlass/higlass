@@ -46,7 +46,7 @@ export class VerticalRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMix
   }
 
   draw() {
-    const graphics = this.pMain; 
+    const graphics = this.pMain;
     graphics.clear();
 
     this.drawVerticalRule(graphics);
@@ -54,7 +54,7 @@ export class VerticalRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMix
   }
 
   mouseMoveHandler(mousePos) {
-    if (this.isPointInsideTrack(mousePos.x, mousePos.y) &&
+    if (this.isWithin(mousePos.x, mousePos.y) &&
       this.isMouseOverVerticalLine(mousePos)) {
         this.highlighted = true;
         this.draw();

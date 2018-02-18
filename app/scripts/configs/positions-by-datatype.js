@@ -3,6 +3,7 @@ import { TRACKS_INFO } from '.';
 
 export const POSITIONS_BY_DATATYPE = TRACKS_INFO.reduce(
   (positionsByDatatype, track) => {
+    console.log('track:', track);
     for (let i = 0; i < track.datatype.length; i++) {
       const datatype = track.datatype[i];
 
@@ -18,4 +19,4 @@ export const POSITIONS_BY_DATATYPE = TRACKS_INFO.reduce(
   {}
 );
 
-export default TRACKS_INFO_BY_TYPE;
+export default POSITIONS_BY_DATATYPE;

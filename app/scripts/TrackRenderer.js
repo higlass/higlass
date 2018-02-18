@@ -6,6 +6,7 @@ import * as PIXI from 'pixi.js';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
+import { easeLinear } from 'd3-ease';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
@@ -28,6 +29,7 @@ import Track from './Track';
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
 import Annotations2dTrack from './Annotations2dTrack';
+import GeoJsonTrack from './GeoJsonTrack';
 
 import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
@@ -36,6 +38,7 @@ import Chromosome2DLabels from './Chromosome2DLabels';
 import Chromosome2DGrid from './Chromosome2DGrid';
 import Chromosome2DAnnotations from './Chromosome2DAnnotations';
 import HorizontalChromosomeLabels from './HorizontalChromosomeLabels';
+
 import HorizontalHeatmapTrack from './HorizontalHeatmapTrack';
 import UnknownPixiTrack from './UnknownPixiTrack';
 import ValueIntervalTrack from './ValueIntervalTrack';
@@ -50,6 +53,8 @@ import CrossRule from './CrossRule';
 import OSMTilesTrack from './OSMTilesTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
 import ImageTilesTrack from './ImageTilesTrack';
+
+import StackedBarTrack from './StackedBarTrack';
 
 // Utils
 import { dictItems } from './utils';
@@ -126,8 +131,16 @@ export class TrackRenderer extends React.Component {
     this.initialXDomain = [0, 1];
     this.initialYDomain = [0, 1];
 
-    this.prevCenterX = this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth / 2;
-    this.prevCenterY = this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2;
+    this.prevCenterX = (
+      this.currentProps.marginLeft +
+      this.currentProps.leftWidth +
+      (this.currentProps.centerWidth / 2)
+    );
+    this.prevCenterY = (
+      this.currentProps.marginTop +
+      this.currentProps.topHeight +
+      (this.currentProps.centerHeight / 2)
+    );
 
     // The offset of the center from the original. Used to keep the scales centered on resize events
     this.cumCenterXOffset = 0;
@@ -331,21 +344,18 @@ export class TrackRenderer extends React.Component {
 
     // stretch out the y-scale so that views aren't distorted (i.e. maintain
     // a 1 to 1 ratio)
-    initialYDomain[0] = yCenter - xWidth / 2,
-    initialYDomain[1] = yCenter + xWidth / 2;
-
+    initialYDomain[0] = yCenter - (xWidth / 2);
+    initialYDomain[1] = yCenter + (xWidth / 2);
 
     // if the inital domains haven't changed, then we don't have to
     // worry about resetting anything
     // initial domains should only change when loading a new viewconfig
     if (
-      initialXDomain[0] == this.initialXDomain[0] &&
-      initialXDomain[1] == this.initialXDomain[1] &&
-      initialYDomain[0] == this.initialYDomain[0] &&
-      initialYDomain[1] == this.initialYDomain[1]
-    ) {
-      return;
-    }
+      initialXDomain[0] === this.initialXDomain[0] &&
+      initialXDomain[1] === this.initialXDomain[1] &&
+      initialYDomain[0] === this.initialYDomain[0] &&
+      initialYDomain[1] === this.initialYDomain[1]
+    ) return;
 
     // only update the initial domain
     this.initialXDomain = initialXDomain;
@@ -363,13 +373,31 @@ export class TrackRenderer extends React.Component {
 
     this.drawableToDomainY = scaleLinear()
       .domain([
-        this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 - this.currentProps.centerWidth / 2,
-        this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2 + this.currentProps.centerWidth / 2,
+        (
+          this.currentProps.marginTop +
+          this.currentProps.topHeight +
+          (this.currentProps.centerHeight / 2) -
+          (this.currentProps.centerWidth / 2)
+        ),
+        (
+          this.currentProps.marginTop +
+          this.currentProps.topHeight +
+          (this.currentProps.centerHeight / 2) +
+          (this.currentProps.centerWidth / 2)
+        ),
       ])
       .range([initialYDomain[0], initialYDomain[1]]);
 
-    this.prevCenterX = this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth / 2;
-    this.prevCenterY = this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight / 2;
+    this.prevCenterX = (
+      this.currentProps.marginLeft +
+      this.currentProps.leftWidth +
+      (this.currentProps.centerWidth / 2)
+    );
+    this.prevCenterY = (
+      this.currentProps.marginTop +
+      this.currentProps.topHeight +
+      (this.currentProps.centerHeight / 2)
+    );
   }
 
   updatablePropsToString(props) {
@@ -541,6 +569,8 @@ export class TrackRenderer extends React.Component {
      * @param trackDefinitions: The definition of the track
      * @return: Nothing
      */
+    this.prevTrackDefinitions = JSON.stringify(trackDefinitions);
+
     const receivedTracksDict = {};
     for (let i = 0; i < trackDefinitions.length; i++) {
       receivedTracksDict[trackDefinitions[i].track.uid] = trackDefinitions[i];
@@ -671,7 +701,7 @@ export class TrackRenderer extends React.Component {
     }
   }
 
-  setCenter(centerX, centerY, sourceK, notify, animate = false, animateTime = ZOOM_TRANSITION_DURATION) {
+  setCenter(centerX, centerY, sourceK, notify, animateTime = 0) {
     /*
      * Set the center of this view to a paticular X and Y coordinate
      *
@@ -705,7 +735,7 @@ export class TrackRenderer extends React.Component {
       last = this.applyZoomTransform(notify);
     };
 
-    if (animate) {
+    if (animateTime) {
       let selection = this.divTrackAreaSelection;
       this.activeTransitions += 1;
 
@@ -713,6 +743,7 @@ export class TrackRenderer extends React.Component {
         // only transition if the window is hidden
         selection = selection
           .transition()
+          .ease(easeLinear)
           .duration(animateTime);
       }
 
@@ -868,8 +899,20 @@ export class TrackRenderer extends React.Component {
         );
 
       case 'horizontal-multivec':
-        console.log('horizontal multivec');
         return new HorizontalMultivecTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          this.svgElement,
+          () => this.currentProps.onValueScaleChanged(track.uid),
+          newOptions =>
+            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
+        );
+
+      case 'horizontal-stacked-bar':
+        return new StackedBarTrack(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
@@ -1094,6 +1137,15 @@ export class TrackRenderer extends React.Component {
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
+      case 'geo-json':
+        return new GeoJsonTrack(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
       case 'vertical-2d-rectangle-domains':
         return new LeftTrackModifier(
           new Horizontal2DDomainsTrack(
@@ -1283,6 +1335,17 @@ export class TrackRenderer extends React.Component {
           track.y,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
+        );
+
+      case 'vertical-bedlike':
+        return new LeftTrackModifier(
+          new BedLikeTrack(
+            this.pStage,
+            dataConfig,
+            handleTilesetInfoReceived,
+            track.options,
+            () => this.currentProps.onNewTilesLoaded(track.uid),
+          )
         );
 
       default:

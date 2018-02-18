@@ -19,7 +19,10 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       handleTilesetInfoReceived,
       option,
       animate,
-      onValueScaleChanged,
+      () => {
+        this.drawAxis(this.valueScale);
+        onValueScaleChanged();
+      }
     );
 
   }
@@ -75,13 +78,11 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     // equal to the smallest non-zero value
     this.valueScale = this.makeValueScale(
       this.minValue(),
-      this.calculateMedianVisibleValue(),
+      this.medianVisibleValue,
       this.maxValue()
     );
 
     graphics.clear();
-
-    this.drawAxis(this.valueScale);
 
     if (this.options.valueScaling === 'log' && this.valueScale.domain()[1] < 0) {
       console.warn('Negative values present when using a log scale', this.valueScale.domain());
