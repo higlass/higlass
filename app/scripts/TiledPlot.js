@@ -451,6 +451,8 @@ export class TiledPlot extends React.Component {
      *      the newTrack object passed in with some extra information
      *      (such as the uid) added.
      */
+    console.log('newTracks:', newTracks);
+
     if (this.trackToReplace) {
       this.handleCloseTrack(this.trackToReplace);
       this.trackToReplace = null;
@@ -1024,7 +1026,11 @@ export class TiledPlot extends React.Component {
     );
 
     const rightDiv = React.cloneElement(leftDiv);
-    const bottomDiv = React.cloneElement(topDiv);
+    console.log('yay');
+    const bottomDiv = React.cloneElement(topDiv, 
+      {
+        onTrackDropped: track => this.handleTracksAdded([track], 'bottom'),
+      });
 
     return(
       <div>
@@ -1503,8 +1509,17 @@ export class TiledPlot extends React.Component {
         callback: (event) => {
           console.log('dragstart');
           const eventData = event.dataTransfer.getData('text/json');
+          let eventJson = null;
+
+          try {
+            eventJson = JSON.parse(eventData);
+          } catch (ex) {
+            // probably not a JSON file
+            return;
+          }
 
           console.log('eventData:', eventData);
+          console.log('eventJson:', eventJson);
 
           this.setState({
             draggingHappening: true,
