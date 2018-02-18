@@ -158,6 +158,7 @@ export const TRACKS_INFO = [
     datatype: ['multivec'],
     local: false,
     orientation: '1d-horizontal',
+    minHeight: 100,
     thumbnail: null,
     availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
     defaultOptions: {

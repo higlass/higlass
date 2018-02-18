@@ -503,7 +503,8 @@ export class TiledPixiTrack extends PixiTrack {
          */
     this.refreshTiles();
 
-    if (this.options.valueScaling) { this.calculateMedianVisibleValue(); }
+    // console.log('vs:', this.options.valueScaling);
+    //if (this.options.valueScaling) { this.calculateMedianVisibleValue(); }
 
     // we need to draw when we receive new data
     this.draw();
@@ -584,6 +585,8 @@ export class TiledPixiTrack extends PixiTrack {
         .filter(x => this.fetchedTiles[x].tileData.dense)
         .map(x => Array.from(this.fetchedTiles[x].tileData.dense))
     ).filter(x => x > 0);
+
+    console.log('len(values):', values.length);
 
     this.medianVisibleValue = median(values);
     return this.medianVisibleValue;

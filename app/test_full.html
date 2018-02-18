@@ -33,123 +33,57 @@
  var testViewConfig =
 {
   "editable": true,
-  "zoomFixed": false,
   "trackSourceServers": [
+    "/api/v1",
     "http://higlass.io/api/v1"
   ],
   "exportViewUrl": "/api/v1/viewconfs",
   "views": [
     {
-      "uid": "aa",
+      "uid": "a",
       "initialXDomain": [
-        71498516.71412492,
-        2949514865.5131903
+        1506407790.0148478,
+        1507252986.7241044
       ],
-      "autocompleteSource": "/api/v1/suggest/?d=OHJakQICQD6gTD7skx4EWA&",
-      "genomePositionSearchBox": {
-        "autocompleteServer": "http://higlass.io/api/v1",
-        "autocompleteId": "OHJakQICQD6gTD7skx4EWA",
-        "chromInfoServer": "http://higlass.io/api/v1",
-        "chromInfoId": "hg19",
-        "visible": true
-      },
-      "chromInfoPath": "//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv",
+      "initialYDomain": [
+        1509411648.3771815,
+        1509760459.7175097
+      ],
       "tracks": {
-        "top": [
+        "top": [],
+        "left": [],
+        "center": [],
+        "bottom": [
           {
-            "name": "Dixon et al. (2012) IMR90 HindIII (allreps) 1kb",
-            "created": "2017-02-03T00:01:00.830653Z",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "AddRuJRtSTqjI9NUwV49XA",
-            "uid": "FAqxfdUXQZCftff35XJxnw",
-            "type": "horizontal-heatmap",
+            "type": "horizontal-multivec",
+            "uid": "OyMo3U-BQ1Sh0Lesm1dYKg",
+            "tilesetUid": "RXdaVZfkTIWUwv54fDWa2g",
+            "server": "http://test1.resgen.io/api/v1",
             "options": {
-              "labelPosition": "bottomRight",
+              "labelPosition": "topLeft",
               "labelColor": "black",
-              "colorRange": [
-                "white",
-                "rgba(245,166,35,1.0)",
-                "rgba(208,2,27,1.0)",
-                "black"
-              ],
-              "maxZoom": null,
+              "labelTextOpacity": 0.4,
+              "valueScaling": "linear",
               "trackBorderWidth": 0,
               "trackBorderColor": "black"
             },
-            "width": 704,
-            "height": 103,
-            "transforms": [
-              {
-                "name": "ICE",
-                "value": "weight"
-              }
-            ],
-            "position": "top"
+            "width": 1071,
+            "height": 393,
+            "name": "hg38.tiled.multires",
+            "position": "bottom"
           }
         ],
-        "left": [],
-        "center": [
-          {
-            "uid": "c1",
-            "type": "combined",
-            "height": 944,
-            "contents": [
-              {
-                "server": "http://higlass.io/api/v1",
-                "tilesetUid": "CQMd6V_cRw6iCI_-Unl3PQ",
-                "type": "heatmap",
-                "position": "center",
-                "options": {
-                  "maxZoom": null,
-     
-                  "labelPosition": "bottomRight",
-                  "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                  "colorRange": [
-                    "white",
-                    "rgba(245,166,35,1.0)",
-                    "rgba(208,2,27,1.0)",
-                    "black"
-                  ],
-                  "colorbarPosition": "topRight",
-                  "trackBorderWidth": 0,
-                  "trackBorderColor": "black",
-                  "heatmapValueScaling": "log",
-                  "scaleStartPercent": "0.00000",
-                  "scaleEndPercent": "1.00000"
-                },
-                "uid": "GjuZed1ySGW1IzZZqFB9BA",
-                "name": "Rao et al. (2014) GM12878 MboI (allreps) 1kb",
-                "transforms": [
-                  {
-                    "name": "ICE",
-                    "value": "weight"
-                  }
-                ],
-                "width": 1712,
-                "height": 944
-              }
-            ],
-            "position": "center",
-            "options": {},
-            "width": 1712
-          }
-        ],
-        "right": [],
-        "bottom": []
+        "right": []
       },
       "layout": {
         "w": 12,
-        "h": 12,
+        "h": 6,
         "x": 0,
         "y": 0,
-        "i": "aa",
+        "i": "a",
         "moved": false,
         "static": false
-      },
-      "initialYDomain": [
-        729891629.3129492,
-        2289505540.4876432
-      ]
+      }
     }
   ],
   "zoomLocks": {

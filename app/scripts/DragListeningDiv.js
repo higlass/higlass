@@ -37,11 +37,17 @@ export default class DragListeningDiv extends React.Component {
           const defaultTrackType = 
             DEFAULT_TRACKS_FOR_DATATYPE[evtJson.higlassTrack.datatype][this.props.position];
 
+          const newTrack = {
+            type: defaultTrackType,
+            uid: slugid.nice(),
+            tilesetUid: evtJson.higlassTrack.tilesetUid,
+            server: evtJson.higlassTrack.server,
+          }
+
           console.log('defaultTrackType', defaultTrackType);
           console.log('on drop', evtJson);
-          console.log('this.props.onTrackDropped', this.props.onTrackDropped);
-          evtJson.higlassTrack.uid = slugid.nice();
-          this.props.onTrackDropped(evtJson.higlassTrack);
+          console.log('newTrack:', newTrack);
+          this.props.onTrackDropped(newTrack);
         }}
       >
       </div>
