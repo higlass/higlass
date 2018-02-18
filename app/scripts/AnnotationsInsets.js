@@ -150,9 +150,6 @@ class AnnotationsInsets {
       this.insetMinRemoteSize = Math.min(this.insetMinRemoteSize, remoteSize);
       this.insetMaxRemoteSize = Math.max(this.insetMaxRemoteSize, remoteSize);
       this.annosToBeDrawnAsInsets.add(annotation);
-      if (!this.drawnAnnoIdsPrev.has(uid)) {
-        this.annosToBeDrawnAsInsetsNew.add(annotation);
-      }
     }
 
     this.drawnAnnotations.push(annotation);
@@ -164,11 +161,8 @@ class AnnotationsInsets {
   buildTree() {
     if (!this.drawnAnnotations.length && !this.annosToBeDrawnAsInsets.size) return;
 
-    // this.drawnAnnotations = [
-    //   ...this.annosToBeDrawnAsInsets.values(),
-    //   ...this.drawnAnnotations
-    // ];
     if (this.newAnno) this.tree.load(this.drawnAnnotations);
+
     this.createInsets();
   }
 
@@ -268,12 +262,12 @@ class AnnotationsInsets {
 
   clusterAnnotations() {
     // Update clusterer
-    const t0 = performance.now();
-    this.areaClusterer.add(this.annosToBeDrawnAsInsetsNew, true);
+    // const t0 = performance.now();
+    this.areaClusterer.add(this.annosToBeDrawnAsInsets, true);
     this.areaClusterer.remove(this.annosToBeDrawnAsInsetsOld, true);
     this.areaClusterer.refresh();
     this.areaClusterer.clusterElements();
-    console.log(`Clustering took ${performance.now() - t0}ms`);
+    // console.log(`Clustering took ${performance.now() - t0}ms`);
   }
 
   /**
@@ -297,7 +291,6 @@ class AnnotationsInsets {
     this.drawnAnnotations = [];
     this.annosToBeDrawnAsInsetsPrev = this.annosToBeDrawnAsInsets.clone();
     this.annosToBeDrawnAsInsets = new KeySet('id');
-    this.annosToBeDrawnAsInsetsNew = new KeySet('id');
     this.annosToBeDrawnAsInsetsOld = new KeySet('id');
     this.drawnAnnoIdsNew = new Set();
     this.drawnAnnoIdsPrev = this.drawnAnnoIds;
@@ -395,7 +388,7 @@ class AnnotationsInsets {
       });
 
     if (insetsToBePositioned.size) {
-      const t0 = performance.now();
+      // const t0 = performance.now();
       const n = insetsToBePositioned.size;
 
       positionLabels
@@ -408,7 +401,7 @@ class AnnotationsInsets {
         .height(this.insetsTrack.dimensions[1])
         .start(Math.round(Math.max(2, Math.min(100 * Math.log(n) / n))));
 
-      console.log(`Positioning took ${performance.now() - t0} msec`);
+      // console.log(`Positioning took ${performance.now() - t0} msec`);
     }
 
     return insets;
