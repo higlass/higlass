@@ -77,6 +77,8 @@ export default class Inset {
     this.globalOffsetX = 0;
     this.globalOffsetY = 0;
 
+    this.fetchAttempts = 0;
+
     // Compute final resolution of inset
     this.computeResolution();
     this.computeRemotePaddedSize();
@@ -440,6 +442,10 @@ export default class Inset {
    * @param  {Boolean}  force  If `true` forces a rerendering of the image.
    */
   drawImage(imgRenderer, force = false) {
+    if (this.fetchAttempts >= 2) {
+      return Promise.reject('Could not fetch the inset\'s images');
+    }
+
     if (!this.data) {
       if (!this.inFlight) {
         this.inFlight = this.fetchData()
@@ -447,12 +453,6 @@ export default class Inset {
             this.data = data;
             this.inFlight = false;
             return this.drawImage(imgRenderer, force);
-          })
-          .catch((err) => {
-            console.error(
-              `Could not fetch the inset's image at [${this.remotePos.join(',')}]`,
-              err
-            );
           });
       }
       return this.inFlight;
@@ -463,7 +463,7 @@ export default class Inset {
         this.positionImage();
         return true;
       })
-      .catch(err => console.error(err));
+      .catch(err => console.error('Rendering failed', err));
   }
 
   /**
@@ -498,8 +498,18 @@ export default class Inset {
 
     const padding = this.options.isAbsPadding ? this.getPadding() : 0;
 
+    let aggregation = '1';
+    let encoding = 'matrix';
+    let representative = '';
+
+    if (this.dataType.indexOf('image') >= 0) {
+      aggregation = '';
+      encoding = 'b64';
+      representative = '1';
+    }
+
     return fetch(
-      `${this.dataConfig.server}/fragments_by_loci/?precision=2&aggregate=pile&padding=${padding}`, {
+      `${this.dataConfig.server}/fragments_by_loci/?precision=2&aggregate=${aggregation}&padding=${padding}&encoding=${encoding}&representative=${representative}`, {
         method: 'POST',
         headers: {
           accept: 'application/json; charset=UTF-8',
@@ -507,7 +517,10 @@ export default class Inset {
         },
         body: JSON.stringify(loci)
       })
-      .then(response => response.json());
+      .then(response => response.json())
+      .catch(() => {
+        this.fetchAttempts += 1;
+      });
   }
 
   /**
