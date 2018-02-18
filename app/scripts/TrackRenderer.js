@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
+import { geoMercator } from 'd3-geo';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
@@ -835,7 +836,9 @@ class TrackRenderer extends React.Component {
     sourceK,
     notify = false,
     animate = false,
-    animateTime = ZOOM_TRANSITION_DURATION
+    animateTime = ZOOM_TRANSITION_DURATION,
+    xScale = this.xScale,
+    yScale = this.yScale,
   ) {
     const refK = this.xScale.invert(1) - this.xScale.invert(0);
 
@@ -854,11 +857,9 @@ class TrackRenderer extends React.Component {
 
     // After applying the zoom transform, the xScale of the target centerX
     // should be equal to the middle of the viewport
-    // this.xScale(centerX) * k + translate[0] = middleViewX
-    const translateX = middleViewX - (this.xScale(centerX) * k);
-    const translateY = middleViewY - (this.yScale(centerY) * k);
-
-    // the ref scale spans the width of the viewport
+    // xScale(centerX) * k + translate[0] = middleViewX
+    const translateX = middleViewX - (xScale(centerX) * k);
+    const translateY = middleViewY - (yScale(centerY) * k);
 
     let last;
 
@@ -1576,15 +1577,29 @@ class TrackRenderer extends React.Component {
     dataYStart,
     dataYEnd,
     animate = false,
-    animateTime = 3000
+    animateTime = 3000,
+    isMercator = false
   ) {
     const [centerX, centerY, k] = scalesCenterAndK(
       this.xScale.copy().domain([dataXStart, dataXEnd]),
       this.yScale.copy().domain([dataYStart, dataYEnd]),
     );
 
+    let xScale = this.xScale;
+    let yScale = this.yScale;
+
+    if (isMercator) {
+      // Create scaled mercator projection for lng / lat to view coords.
+      const mercator = geoMercator()
+        .scale((this.xScale(180) - this.xScale(-180)) / 2 / Math.PI)
+        .translate([this.xScale(0), this.yScale(0)]);
+
+      xScale = x => mercator([x, 0])[0];
+      yScale = y => mercator([0, y])[1];
+    }
+
     this.setCenter(
-      centerX, centerY, k, false, animate, animateTime,
+      centerX, centerY, k, false, animate, animateTime, xScale, yScale
     );
   }
 

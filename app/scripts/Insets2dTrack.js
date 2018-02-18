@@ -1,4 +1,5 @@
 import { color as d3Color } from 'd3-color';
+import { geoMercator } from 'd3-geo';
 import { scaleLinear } from 'd3-scale';
 import React from 'react';
 import { DropShadowFilter } from 'pixi-filters';
@@ -148,24 +149,52 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   goTo(inset) {
-    // Add some padding for context
-    const dataPosBounds = [Infinity, 0, Infinity, 0];
+    let dataPosBounds;
 
-    inset.dataPos.forEach((dataPos) => {
-      dataPosBounds[0] = Math.min(dataPosBounds[0], dataPos[0]);
-      dataPosBounds[1] = Math.max(dataPosBounds[1], dataPos[1]);
-      dataPosBounds[2] = Math.min(dataPosBounds[2], dataPos[2]);
-      dataPosBounds[3] = Math.max(dataPosBounds[3], dataPos[3]);
-    });
+    if (this.dataType === 'osm-image') {
+      dataPosBounds = [Infinity, -Infinity, -Infinity, Infinity];
 
-    const width = dataPosBounds[1] - dataPosBounds[0];
-    const height = dataPosBounds[3] - dataPosBounds[2];
-    dataPosBounds[0] -= width * 0.2;
-    dataPosBounds[1] += width * 0.2;
-    dataPosBounds[2] -= height * 0.2;
-    dataPosBounds[3] += height * 0.2;
+      inset.dataPos.forEach((dataPos) => {
+        dataPosBounds[0] = Math.min(dataPosBounds[0], dataPos[0]);
+        dataPosBounds[1] = Math.max(dataPosBounds[1], dataPos[1]);
+        dataPosBounds[2] = Math.max(dataPosBounds[2], dataPos[2]);
+        dataPosBounds[3] = Math.min(dataPosBounds[3], dataPos[3]);
+      });
 
-    this.zoomToDataPos(...dataPosBounds, true, ZOOM_TO_ANNO);
+      const width = dataPosBounds[1] - dataPosBounds[0];
+      const height = Math.abs(dataPosBounds[3] - dataPosBounds[2]);
+
+      // Add some padding for context
+      dataPosBounds[0] -= width * 0.25;
+      dataPosBounds[1] += width * 0.25;
+      dataPosBounds[2] += height * 0.25;
+      dataPosBounds[3] -= height * 0.25;
+    } else {
+      dataPosBounds = [Infinity, -Infinity, Infinity, -Infinity];
+
+      inset.dataPos.forEach((dataPos) => {
+        dataPosBounds[0] = Math.min(dataPosBounds[0], dataPos[0]);
+        dataPosBounds[1] = Math.max(dataPosBounds[1], dataPos[1]);
+        dataPosBounds[2] = Math.min(dataPosBounds[2], dataPos[2]);
+        dataPosBounds[3] = Math.max(dataPosBounds[3], dataPos[3]);
+      });
+
+      const width = dataPosBounds[1] - dataPosBounds[0];
+      const height = dataPosBounds[3] - dataPosBounds[2];
+
+      // Add some padding for context
+      dataPosBounds[0] -= width * 0.25;
+      dataPosBounds[1] += width * 0.25;
+      dataPosBounds[2] -= height * 0.25;
+      dataPosBounds[3] += height * 0.25;
+    }
+
+    this.zoomToDataPos(
+      ...dataPosBounds,
+      true,
+      ZOOM_TO_ANNO,
+      this.dataType === 'osm-image'
+    );
   }
 
   clear() {
@@ -348,8 +377,6 @@ export default class Insets2dTrack extends PixiTrack {
   clickHandler(/* event, inset */) {}
 
   clickRightHandler(event, inset) {
-    console.log('PIXI CONTEXT MENU', event.type, inset);
-
     event.data.originalEvent.hgCustomItems = [
       this.getContextMenuGoto(inset)
     ];
