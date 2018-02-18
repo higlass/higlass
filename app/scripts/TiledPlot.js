@@ -455,7 +455,7 @@ export class TiledPlot extends React.Component {
      *      the newTrack object passed in with some extra information
      *      (such as the uid) added.
      */
-    console.log('newTracks:', newTracks);
+    console.log('newTracks:', newTracks, 'position:', position);
 
     if (this.trackToReplace) {
       this.handleCloseTrack(this.trackToReplace);
@@ -980,98 +980,6 @@ export class TiledPlot extends React.Component {
     return null;
   }
 
-  /**
-   * Return the avilable positions where a track can be placed given it's
-   * type (e.g. 'top', 'middle', 'bottom', 'left', 'right')
-   *
-   * @param {string} trackType: The datatype of track (e.g. 'matrix', 'vector')
-   *
-   * @returns {Set} A set of available track positions (e.g. 'top', 'middle', 'bottom'...)
-   */
-  getAvailablePositions(trackType) {
-
-  }
-
-    /**
-   * Draw an overlay that shows the positions of all the different
-   * track areas
-   */
-  getLeftRightTopBottomOverlays() {
-    const topDiv = (
-      <DragListeningDiv
-        style={{
-          marginLeft: '25%',
-          marginRight: '25%',
-          border: '1px solid black',
-          width: '50%',
-          height: '30%',
-        }}
-      />
-    );
-
-    const leftDiv = (
-      <DragListeningDiv
-        style={{
-          border: '1px solid black',
-          width: '25%',
-          height: '100%',
-        }}
-      />
-    );
-
-    const centerDiv = (
-      <DragListeningDiv
-        style={{
-          border: '1px solid black',
-          width: '50%',
-          height: '100%',
-        }}
-      />
-    );
-
-    const rightDiv = React.cloneElement(leftDiv);
-    const bottomDiv = React.cloneElement(topDiv, 
-      {
-        onTrackDropped: track => this.handleTracksAdded([track], 'bottom'),
-        position: 'bottom',
-      });
-
-    return(
-      <div>
-        <div
-          style={{
-            position: 'absolute',
-            width: this.state.width,
-            height: this.state.height,
-            background: 'white',
-            opacity: 0.4,
-          }}
-        />
-        <div
-          style={{
-            width: this.state.width,
-            height: this.state.height,
-            position: 'absolute',
-          }}
-        >
-          { topDiv }
-          <div
-            style={{
-            display: 'flex',
-            height: '40%',
-            width: '100%',
-            }}
-          >
-            { leftDiv }
-            { centerDiv }
-            { rightDiv }
-          </div>
-          { bottomDiv }
-        </div>
-      </div>
-    );
-  }
-
     /**
    * Draw an overlay that shows the positions of all the different
    * track areas
@@ -1095,32 +1003,144 @@ export class TiledPlot extends React.Component {
     let numVertical = 0;
     let numHorizontal = 0;
 
-    if (presentTracks.has('center')) {
-      
-    }
+    const topAllowed = 'top' in defaultTracks;
+    const leftAllowed = 'left' in defaultTracks;
+    const rightAllowed = 'right' in defaultTracks;
+    const bottomAllowed = 'bottom' in defaultTracks;
+    const centerAllowed = 'center' in defaultTracks;
 
-    if ('center' in defaultTracks) {
-      // this track can be shown in the center
-      if ('top' in defaultTracks) {
-        // can be shown on top and bottom as well
-        numHorizontal = 3;
-      } else {
-        numHorizontal = 1;
-      }
+    const topDisplayed = ('top' in defaultTracks)
+    const bottomDisplayed = ('top' in defaultTracks &&
+      (presentTracks.has('center') || 'left' in defaultTracks ||
+        presentTracks.has('left') || presentTracks.has('right')
+      ) );
+    const leftDisplayed = ('left' in defaultTracks)
+    const rightDisplayed = ('left' in defaultTracks &&
+      (presentTracks.has('center') || 'top' in defaultTracks));
+    const centerDisplayed = ('center' in defaultTracks ||
+      presentTracks.has('center') || (topDisplayed && leftDisplayed));
 
-      if ('left' in defaultTracks) {
-        numVertical = 3;
-      } else {
-        numVertical = 1;
-      }
-    } else {
-      if ('left' in defaultTracks) {
-        // this track can be displayed on the left
-      }
-    }
+    const topLeftDiv = (
+      <div
+        style={{
+          flexGrow: 1
+          }}
+      />
+    );
+    const topRightDiv = React.cloneElement(topLeftDiv);
 
+    const topDiv = (
+      <div 
+        style={{
+          display: 'flex',
+          flexGrow: 1,
+        }}
+      >
+        { (topDisplayed && (centerDisplayed || leftDisplayed)) ? topLeftDiv : null }
+        <DragListeningDiv
+          enabled={topAllowed}
+          position={'top'}
+          onTrackDropped={track => this.handleTracksAdded([track], 'top')}
+          style={{
+            border: '1px solid black',
+            flexGrow: 1,
+          }}
+        />
+        { (topDisplayed && (centerDisplayed || leftDisplayed)) ? topRightDiv : null }
+      </div>
+    );
 
-    return this.getLeftRightTopBottomOverlays();
+    const bottomDiv = (
+      <div 
+        style={{
+          display: 'flex',
+          flexGrow: 1,
+        }}
+      >
+        { (topDisplayed && (centerDisplayed || leftDisplayed)) ? topLeftDiv : null }
+        <DragListeningDiv
+          enabled={bottomAllowed}
+          position={'bottom'}
+          onTrackDropped={track => this.handleTracksAdded([track], 'bottom')}
+          style={{
+            border: '1px solid black',
+            flexGrow: 1,
+          }}
+        />
+        { (topDisplayed && (centerDisplayed || leftDisplayed)) ? topRightDiv : null }
+      </div>
+    );
+
+    const leftDiv = (
+      <DragListeningDiv
+        enabled={leftAllowed}
+        position={'left'}
+        onTrackDropped={track => this.handleTracksAdded([track], 'left')}
+        style={{
+          border: '1px solid black',
+          flexGrow: 1,
+        }}
+      />
+    );
+
+    const centerDiv = (
+      <DragListeningDiv
+        enabled={centerAllowed}
+        onTrackDropped={track => this.handleTracksAdded([track], 'left')}
+        position={'center'}
+        enabled={centerAllowed}
+
+        style={{
+          border: '1px solid black',
+          flexGrow: 1
+        }}
+      />
+    );
+
+    const rightDiv = React.cloneElement(leftDiv,
+      {
+        enabled: rightAllowed,
+        onTrackDropped: track => this.handleTracksAdded([track], 'right'),
+        position: 'right',
+      });
+
+    return(
+      <div>
+        <div
+          style={{
+            position: 'absolute',
+            width: this.state.width,
+            height: this.state.height,
+            background: 'white',
+            opacity: 0.4,
+          }}
+        />
+
+        <div
+          style={{
+            width: this.state.width,
+            height: this.state.height,
+            position: 'absolute',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          { topDisplayed ? topDiv : null }
+          <div
+            style={{
+            display: 'flex',
+            height: '40%',
+            width: '100%',
+            }}
+          >
+            { leftDisplayed ? leftDiv : null }
+            { centerDisplayed ? centerDiv : null }
+            { rightDisplayed ? rightDiv : null}
+          </div>
+          { bottomDisplayed ? bottomDiv : null }
+        </div>
+      </div>
+    );
   }
 
   render() {
@@ -1540,7 +1560,6 @@ export class TiledPlot extends React.Component {
         onContextMenu={this.contextMenuHandler.bind(this)}
         styleName="styles.tiled-plot"
         onDragEnter={(evt) => {
-          console.log('tp dragEnter');
         }}
       >
         {trackRenderer}
