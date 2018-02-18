@@ -987,9 +987,11 @@ export class TiledPlot extends React.Component {
   getIdealizedTrackPositionsOverlay() {
     const evtJson = this.state.draggingHappening;
     const datatype = evtJson.higlassTrack.datatype;
+    console.log('datatype:', datatype);
+    console.log('DEFAULT_TRACKS_FOR_DATATYPE', DEFAULT_TRACKS_FOR_DATATYPE);
 
-    if (!datatype in DEFAULT_TRACKS_FOR_DATATYPE) {
-      console.warn('unknown track type:', evtJson.higlassTrack);
+    if (!(datatype in DEFAULT_TRACKS_FOR_DATATYPE)) {
+      console.warn('unknown data type:', evtJson.higlassTrack);
       return;
     }
 
@@ -1086,7 +1088,7 @@ export class TiledPlot extends React.Component {
     const centerDiv = (
       <DragListeningDiv
         enabled={centerAllowed}
-        onTrackDropped={track => this.handleTracksAdded([track], 'left')}
+        onTrackDropped={track => this.handleTracksAdded([track], 'center')}
         position={'center'}
         enabled={centerAllowed}
 
