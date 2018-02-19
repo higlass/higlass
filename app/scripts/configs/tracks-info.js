@@ -1007,7 +1007,11 @@ export const TRACKS_INFO = [
       dropBlur: 3,
       dropOpacity: 0.8,
       opacity: 1,
-      selectColor: 'red'
+      selectColor: 'red',
+      aggregation: false,
+      minClusterSize: 2,
+      maxPreviews: 8,
+      pileOrientation: 'bottom',
     },
     availableOptions: [
       'minSize',
@@ -1043,7 +1047,11 @@ export const TRACKS_INFO = [
       'dropBlur',
       'dropOpacity',
       'opacity',
-      'selectColor'
+      'selectColor',
+      'aggregation',
+      'minClusterSize',
+      'maxPreviews',
+      'pileOrientation',
     ],
   },
 
