@@ -1,5 +1,4 @@
 import { color as d3Color } from 'd3-color';
-import { geoMercator } from 'd3-geo';
 import { scaleLinear } from 'd3-scale';
 import React from 'react';
 import { DropShadowFilter } from 'pixi-filters';
@@ -33,6 +32,7 @@ const BASE_MIN_SIZE = 12;
 const BASE_MAX_SIZE = 24;
 const BASE_SCALE = 4;
 const ZOOM_TO_ANNO = 1600;
+const INSET_MAX_PREVIEWS = 0;
 
 export default class Insets2dTrack extends PixiTrack {
   constructor(
@@ -106,6 +106,7 @@ export default class Insets2dTrack extends PixiTrack {
     this.insetMinSize = this.options.minSize || BASE_MIN_SIZE;
     this.insetMaxSize = this.options.maxSize || BASE_MAX_SIZE;
     this.insetScale = this.options.scale || BASE_SCALE;
+    this.insetMaxPreviews = this.options.maxPreviews || INSET_MAX_PREVIEWS;
 
     this.dataFetcher = new DataFetcher(dataConfig);
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
@@ -224,6 +225,7 @@ export default class Insets2dTrack extends PixiTrack {
     const inset = (
       this.insets.get(label.id) ||
       this.initInset(
+        label,
         label.id,
         remotePos,
         renderedPos,
@@ -331,6 +333,7 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   initInset(
+    label,
     id,
     remotePos,
     renderedPos,
@@ -341,6 +344,7 @@ export default class Insets2dTrack extends PixiTrack {
     mouseHandler = this.insetMouseHandler
   ) {
     const newInset = new Inset(
+      label,
       id,
       remotePos,
       renderedPos,
@@ -460,10 +464,10 @@ export default class Insets2dTrack extends PixiTrack {
     return Math.min(distToOrigin, distToInset);
   }
 
-  rendererInset(data) {
-    return data.dataTypes[0] === 'dataUrl'
-      ? this.rendererImage(data.fragments[0])
-      : this.rendererHeatmap(data.fragments[0]);
+  rendererInset(data, dtype) {
+    return dtype === 'dataUrl'
+      ? this.rendererImage(data)
+      : this.rendererHeatmap(data);
   }
 
   rendererHeatmap(data) {

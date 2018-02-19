@@ -189,21 +189,21 @@ class AnnotationsInsets {
     return { finalRes, newResScale };
   }
 
-  compInsetSizeScaleClustSize(clusters) {
+  compInsetSizeScaleClustSize() {
     // Convert cluster size to view (display pixel) resolution
     const finalRes = scaleQuantize()
-      .domain([1, clusters.clustersMaxSize])
+      .domain([1, this.areaClusterer.clustersMaxSize])
       .range(range(
         this.insetsTrack.insetMinSize * this.insetsTrack.insetScale,
         (this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale) + 1,
         this.insetsTrack.options.sizeStepSize
       ));
 
-    const newResScale = clusters.maxClusterSize !== this.clustersMaxSize;
+    const newResScale = this.areaClusterer.maxClusterSize !== this.clustersMaxSize;
 
     // Update old remote size to avoid wiggling insets that did not change at
     // all
-    this.clustersMaxSizeOld = clusters.maxClusterSize;
+    this.clustersMaxSizeOld = this.areaClusterer.maxClusterSize;
 
     return { finalRes, newResScale };
   }
@@ -237,13 +237,15 @@ class AnnotationsInsets {
 
     const widthAbs = Math.abs(maxX - minX);
     const heightAbs = Math.abs(maxY - minY);
+    const maxDim = scale(cluster.size);
+    const isLandscape = widthAbs >= heightAbs;
 
-    const width = widthAbs >= heightAbs
-      ? scale(widthAbs)
-      : widthAbs / heightAbs * scale(heightAbs);
-    const height = heightAbs >= widthAbs
-      ? scale(heightAbs)
-      : heightAbs / widthAbs * width;
+    const width = isLandscape
+      ? maxDim
+      : widthAbs / heightAbs * maxDim;
+    const height = isLandscape
+      ? heightAbs / widthAbs * width
+      : maxDim;
 
     return { width, height };
   }
@@ -321,7 +323,7 @@ class AnnotationsInsets {
    * @param  {Array}  annosToBeDrawnAsInsets  Insets to be drawn
    * @return  {Array}  Position and dimension of the insets.
    */
-  positionInsetsCenter(labelClusteres = this.areaClusterer.clusters) {
+  positionInsetsCenter(labelClusters = this.areaClusterer.clusters) {
     const anchors = this.drawnAnnotations.map(annotation => ({
       t: 1.0,
       x: (annotation.maxX + annotation.minX) / 2,
@@ -334,9 +336,9 @@ class AnnotationsInsets {
 
     const {
       finalRes, newResScale
-    } = this.compInsetSizeScaleClustSize(labelClusteres);
+    } = this.compInsetSizeScaleClustSize(labelClusters);
 
-    const insets = new KeySet('id', labelClusteres
+    const insets = new KeySet('id', labelClusters
       .translate((inset) => {
         if (!this.insets[inset.id]) {
           const { width, height } = this.compInsetSizeCluster(inset, finalRes);
