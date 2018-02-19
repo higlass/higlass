@@ -246,11 +246,16 @@ export function tileResponseToData(data, server, theseTileIds) {
   return data;
 }
 
-export function workerGetTiles(outUrl, server, theseTileIds, done) {
-  fetch(outUrl, {
-      headers: {
+export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
+  const headers = {
         'content-type': 'application/json'
-      },
+      };
+
+  if (authHeader)
+    headers['Authorization'] = authHeader;
+
+  fetch(outUrl, {
+      headers,
     }
     )
     .then(response => response.json())

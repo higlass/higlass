@@ -376,7 +376,6 @@ export class TiledPixiTrack extends PixiTrack {
     for (let i = 0; i < fetchedTileIDs.length; i++) {
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
         const newGraphics = new PIXI.Graphics();
-        // console.log('adding:', fetchedTileIDs[i]);
         this.pMain.addChild(newGraphics);
 
         this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;

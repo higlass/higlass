@@ -41,7 +41,7 @@ setPixPool.run(function(params, done) {
 const fetchTilesPool = new Pool(10);
 fetchTilesPool.run(function(params, done) {
   try {
-    worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds, done);
+    worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds, params.authHeader, done);
     /*
     done.transfer({
       pixData: pixData
@@ -160,6 +160,7 @@ export function fetchMultiRequestTiles(req) {
         params.outUrl = outUrl;
         params.server = server;
         params.theseTileIds = theseTileIds;
+        params.authHeader = authHeader;
 
         fetchTilesPool.send(params)
           .promise()
