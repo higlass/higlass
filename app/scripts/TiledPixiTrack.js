@@ -1,5 +1,5 @@
-import { scaleLinear, scaleLog } from 'd3-scale';
-import { median } from 'd3-array';
+import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
+import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
 
@@ -455,7 +455,6 @@ export class TiledPixiTrack extends PixiTrack {
          * We've gotten a bunch of tiles from the server in
          * response to a request from fetchTiles.
          */
-    // console.log('received:', loadedTiles);
     for (let i = 0; i < this.visibleTiles.length; i++) {
       const tileId = this.visibleTiles[i].tileId;
 
@@ -494,14 +493,13 @@ export class TiledPixiTrack extends PixiTrack {
     }
 
 
-    this.synchronizeTilesAndGraphics();
+    if (this.options.valueScaling) { this.calculateMedianVisibleValue(); }
 
+    this.synchronizeTilesAndGraphics();
     /*
          * Mainly called to remove old unnecessary tiles
          */
     this.refreshTiles();
-
-    if (this.options.valueScaling) { this.calculateMedianVisibleValue(); }
 
     // we need to draw when we receive new data
     this.draw();
@@ -658,13 +656,14 @@ export class TiledPixiTrack extends PixiTrack {
      *      A d3 value scale
     */
     let valueScale = null;
+    let offsetValue = 0;
 
-    if (!margin)
+    if (margin == null || typeof(margin) == 'undefined')
       margin = 6;  // set a default value
 
     // console.log('valueScaling:', this.options.valueScaling);
     if (this.options.valueScaling === 'log') {
-      let offsetValue = medianValue;
+      offsetValue = medianValue;
 
       if (!offsetValue) { offsetValue = minValue; }
 
@@ -674,6 +673,23 @@ export class TiledPixiTrack extends PixiTrack {
         // .domain([offsetValue, this.maxValue()])
         .range([this.dimensions[1] - margin, margin]);
       pseudocount = offsetValue;
+    } else if (this.options.valueScaling === 'quantile') {
+      const start = this.dimensions[1] - margin;
+      const end = margin;
+      const quantScale = scaleQuantile().domain(this.allVisibleValues())
+        .range(range(start, end, (end-start) / 256));
+      quantScale.ticks = (n) => ticks(start, end, n);
+
+      return [quantScale, 0];
+    } else if (this.options.valueScaling === 'setquantile') {
+      const start = this.dimensions[1] - margin;
+      const end = margin;
+      const s = new Set(this.allVisibleValues());
+      const quantScale = scaleQuantile().domain([...s])
+        .range(range(start, end, (end-start) / 256));
+      quantScale.ticks = (n) => ticks(start, end, n);
+
+      return [quantScale, 0];
     } else {
       // linear scale
       valueScale = scaleLinear()
@@ -681,7 +697,7 @@ export class TiledPixiTrack extends PixiTrack {
         .range([this.dimensions[1] - margin, margin]);
     }
 
-    return valueScale;
+    return [valueScale, offsetValue];
   }
 }
 
