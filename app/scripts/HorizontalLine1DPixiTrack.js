@@ -33,6 +33,10 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
      */
     super.initTile(tile);
 
+    if (!tile.tileData || !tile.tileData.dense)
+      console.warn('emptyTile:', tile);
+      return;
+
     tile.lineXValues = new Array(tile.tileData.dense.length);
     tile.lineYValues = new Array(tile.tileData.dense.length);
 
@@ -63,6 +67,9 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     super.drawTile(tile);
 
     if (!tile.graphics) { return; }
+
+    if (!tile.tileData || !tile.tileData.dense)
+      return;
 
     const graphics = tile.graphics;
 
