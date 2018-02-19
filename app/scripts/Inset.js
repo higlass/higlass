@@ -92,6 +92,7 @@ export default class Inset {
     // Compute final resolution of inset
     this.computeResolution();
     this.computeRemotePaddedSize();
+    this.imScale = 1;
 
     this.borderStyle = [1, 0x000000, 0.33];
     this.borderPadding = options.borderWidth * 2 || 4;
@@ -287,16 +288,18 @@ export default class Inset {
       (this.previewsHeight * scale) +
       ((this.numLabels - 1) * this.previewSpacing)
     );
-    const yOff = orientation === 'bottom'
-      ? (height / 2) + 4
-      : -(height / 2) - 2;
+    // const yOff = orientation === 'bottom'
+    //   ? (height / 2) + 4
+    //   : -(height / 2) - 2;
+
+    const yT = this.t * (1 - (2 * (orientation === 'top')));
 
     return {
       x: (
         this.globalOffsetX + (this.offsetX * this.t) + x - (width / 2 * this.t)
       ),
       y: (
-        this.globalOffsetY + (this.offsetY * this.t) + y - (yOff * this.t)
+        this.globalOffsetY + (this.offsetY * this.t) + y - (height / 2 * yT)
       ),
       scaleX: (
         this.t * scale
@@ -444,11 +447,17 @@ export default class Inset {
     x = this.x,
     y = this.y,
     width = this.width,
-    height = this.heightInclPreviews,
+    height = this.height,
     graphics = this.gBorder,
     radius = this.options.borderRadius,
     fill = this.borderFill,
   ) {
+    const prevHeight = this.spritePreviews.length
+      ? (
+        (this.previewsHeight * this.scaleBase * this.scaleExtra * this.imScale) +
+        ((this.spritePreviews.length - 1) * this.previewSpacing)
+      ) + 2
+      : 0;
     const [vX, vY] = this.computeBorderPosition(x, y, width, height);
 
     if (!this.border) {
@@ -468,12 +477,10 @@ export default class Inset {
       graphics.addChild(this.border);
     }
 
-    const prevHeight = 0.5 * this.prevHeightPx * (1 - (2 * this.pileOrientaton === 'top'));
-
     this.border.x = vX;
-    this.border.y = vY + prevHeight;
+    this.border.y = vY;
     this.border.width = width + this.borderPadding;
-    this.border.height = height + this.borderPadding;
+    this.border.height = height + prevHeight + this.borderPadding;
 
     // Make border interactive baby!
     this.border.interactive = true;
@@ -881,9 +888,10 @@ export default class Inset {
 
     this.spritePreviews.forEach((preview, i) => {
       const prevHeight = Math.abs(pos.scaleY);
+      const yOffset = ((prevHeight + this.previewSpacing) * (i + 1));
 
       preview.x = pos.x;
-      preview.y = pos.y + ((prevHeight + this.previewSpacing) * i);
+      preview.y = pos.y + yOffset;
       preview.scale.x = pos.scaleX;
       preview.scale.y = pos.scaleY;
     });
@@ -1146,19 +1154,19 @@ export default class Inset {
 
     const imPos = this.computeImagePosition();
 
-    const prevHeightPx = this.previewsHeight * imPos.scaleY;
-    const prevOrient = (1 - (2 * this.pileOrientaton === 'top'));
-    const prevSpacing = this.numLabels
-      ? ((this.numLabels - 1) * this.previewSpacing) + 2
+    const prevHeight = this.spritePreviews.length
+      ? (
+        (this.previewsHeight * Math.abs(imPos.scaleY)) +
+        ((this.spritePreviews.length - 1) * this.previewSpacing)
+      ) + 2
       : 0;
-    const prevYOff = 4;
 
-    const bWidth = (this.imData.width * imPos.scaleX * this.t) + this.borderPadding;
+    const bWidth = (
+      this.imData.width * imPos.scaleX * this.t
+    ) + this.borderPadding;
     const bHeight = (
-      (this.imData.height + this.previewsHeight) * Math.abs(imPos.scaleY)
-    ) + this.borderPadding + prevSpacing;
-
-    const prevHeight = (prevHeightPx + prevSpacing - 4) * 0.5 * prevOrient;
+      this.imData.height * Math.abs(imPos.scaleY)
+    ) + this.borderPadding;
 
     const [bX, bY] = this.computeBorderPosition(
       this.x,
@@ -1168,19 +1176,17 @@ export default class Inset {
       true
     );
 
-    const previewTweenDefs = this.spritePreviews.map((sprite, i) => {
-      return {
-        obj: sprite,
-        propsTo: {
-          x: imPos.x,
-          y: imPos.y + ((Math.abs(imPos.scaleY) + this.previewSpacing) * (i + 1)),
-          scale: {
-            x: imPos.scaleX,
-            y: imPos.scaleY,
-          }
+    const previewTweenDefs = this.spritePreviews.map((sprite, i) => ({
+      obj: sprite,
+      propsTo: {
+        x: imPos.x,
+        y: imPos.y + ((Math.abs(imPos.scaleY) + this.previewSpacing) * (i + 1)),
+        scale: {
+          x: imPos.scaleX,
+          y: imPos.scaleY,
         }
-      };
-    });
+      }
+    }));
 
     this.tweenStop = transitionGroup(
       [
@@ -1199,10 +1205,10 @@ export default class Inset {
           obj: this.border,
           propsTo: {
             x: bX,
-            y: bY - prevHeight,
+            y: bY,
             // Not sure why we need the `+1`. Maybe an interpolation problem?
             width: bWidth + 1,
-            height: bHeight + 1,
+            height: bHeight + prevHeight + 1,
           }
         },
         ...previewTweenDefs
