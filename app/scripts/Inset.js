@@ -143,14 +143,6 @@ export default class Inset {
     return this.label.src.size;
   }
 
-  /**
-   * Get the image and preview height
-   * @return  {number}  Image and preview height.
-   */
-  get heightInclPreviews() {
-    return this.height + this.prevHeightPx;
-  }
-
   /* ---------------------------- Custom Methods ---------------------------- */
 
   /**
@@ -646,7 +638,7 @@ export default class Inset {
       this.x,
       this.y,
       this.width,
-      this.heightInclPreviews,
+      this.height,
       this.gBorder,
       this.options.borderRadius,
       this.selectColor,
