@@ -7,7 +7,7 @@ import { pubSub } from './services';
 
 // Factories
 import {
-  Annotation, AreaClusterer, GalleryLabel, KeySet, LabelCluster
+  Annotation, AreaClusterer, KeySet, LabelCluster, LabelClusterGallery
 } from './factories';
 
 // Utils
@@ -320,10 +320,10 @@ class AnnotationsInsets {
   /**
    * Position insets within the heatmap using simulated annealing
    *
-   * @param  {Array}  annosToBeDrawnAsInsets  Insets to be drawn
+   * @param  {KeySet}  areaClusters  Set of area clusters.
    * @return  {Array}  Position and dimension of the insets.
    */
-  positionInsetsCenter(labelClusters = this.areaClusterer.clusters) {
+  positionInsetsCenter(areaClusters = this.areaClusterer.clusters) {
     const anchors = this.drawnAnnotations.map(annotation => ({
       t: 1.0,
       x: (annotation.maxX + annotation.minX) / 2,
@@ -336,47 +336,53 @@ class AnnotationsInsets {
 
     const {
       finalRes, newResScale
-    } = this.compInsetSizeScaleClustSize(labelClusters);
+    } = this.compInsetSizeScaleClustSize(areaClusters);
 
-    const insets = new KeySet('id', labelClusters
-      .translate((inset) => {
-        if (!this.insets[inset.id]) {
-          const { width, height } = this.compInsetSizeCluster(inset, finalRes);
+    const insets = new KeySet('id', areaClusters
+      .translate((cluster) => {
+        const id = cluster.id;
+
+        if (!this.insets[id]) {
+          const {
+            width, height
+          } = this.compInsetSizeCluster(cluster, finalRes);
 
           // Create new Label for the AreaCluster
-          this.insets[inset.id] = new LabelCluster(inset.id)
-            .setDim(width, height).setSrc(inset);
+          this.insets[id] = new LabelCluster(id)
+            .setDim(width, height).setSrc(cluster);
         } else {
           // Update existing inset positions
-          const newOx = (inset.maxX + inset.minX) / 2;
-          const newOy = (inset.maxY + inset.minY) / 2;
-          const dX = this.insets[inset.id].oX - newOx;
-          const dY = this.insets[inset.id].oY - newOy;
+          const newOx = (cluster.maxX + cluster.minX) / 2;
+          const newOy = (cluster.maxY + cluster.minY) / 2;
+          const dX = this.insets[id].oX - newOx;
+          const dY = this.insets[id].oY - newOy;
 
-          this.insets[inset.id].oX = newOx;
-          this.insets[inset.id].oY = newOy;
-          this.insets[inset.id].owh = (inset.maxX - inset.minX) / 2;
-          this.insets[inset.id].ohh = (inset.maxY - inset.minY) / 2;
+          this.insets[id].oX = newOx;
+          this.insets[id].oY = newOy;
+          this.insets[id].owh = (cluster.maxX - cluster.minX) / 2;
+          this.insets[id].ohh = (cluster.maxY - cluster.minY) / 2;
 
-          this.insets[inset.id].x -= dX;
-          this.insets[inset.id].y -= dY;
+          this.insets[id].x -= dX;
+          this.insets[id].y -= dY;
 
-          this.insets[inset.id].t = this.scaleChanged ? 0.5 : 0;
+          this.insets[id].t = this.scaleChanged ? 0.5 : 0;
 
           if (newResScale) {
-            const { width, height } = this.compInsetSizeCluster(inset, finalRes);
+            const {
+              width, height
+            } = this.compInsetSizeCluster(cluster, finalRes);
 
-            this.insets[inset.id].width = width;
-            this.insets[inset.id].height = height;
-            this.insets[inset.id].wH = width / 2;
-            this.insets[inset.id].hH = height / 2;
+            this.insets[id].width = width;
+            this.insets[id].height = height;
+            this.insets[id].wH = width / 2;
+            this.insets[id].hH = height / 2;
 
             // Let them wobble a bit because the size changed
-            this.insets[inset.id].t = 0.25;
+            this.insets[id].t = 0.25;
           }
         }
 
-        return this.insets[inset.id];
+        return this.insets[id];
       }));
 
     const insetsToBePositioned = insets
@@ -416,15 +422,15 @@ class AnnotationsInsets {
    * Technically we should not call the snippets insets anymore because they are
    * not drawn within the matrix anymore
    *
-   * @param  {Array}  annosToBeDrawnAsInsets  Insets to be drawn
+   * @param  {KeySet}  areaClusters  Set of area clusters.
    * @return  {Array}  Position and dimension of the insets.
    */
-  positionInsetsGallery(annosToBeDrawnAsInsets = this.annosToBeDrawnAsInsets) {
+  positionInsetsGallery(areaClusters = this.areaClusterer.clusters) {
     const { finalRes, newResScale } = this.compInsetSizeScale();
 
     // 1. Position insets to the closest position on the gallery border
     const insets = this.positionInsetsGalleryNearestBorder(
-      annosToBeDrawnAsInsets, finalRes, newResScale
+      areaClusters, finalRes, newResScale
     );
 
     const offX = this.insetsTrack.positioning.offsetX;
@@ -451,22 +457,25 @@ class AnnotationsInsets {
         return false;
       });
 
-    if (insetsToBeAnnealed.length) {
+    if (insetsToBeAnnealed.size) {
       const t0 = performance.now();
-      const n = insetsToBeAnnealed.length;
+      const n = insetsToBeAnnealed.size;
 
       positionLabels
         // Insets, i.e., labels
-        .label(insetsToBeAnnealed)
+        .label(insetsToBeAnnealed.values)
         // Anchors, i.e., label origins, already positioned labels, and other
         // annotations
         .anchor(anchors)
         .is1dOnly()
         .width(this.insetsTrack.dimensions[0])
-        .height(this.insetsTrack.dimensions[1] - (2 * this.insetsTrack.positioning.height))
+        .height(
+          this.insetsTrack.dimensions[1] -
+          (2 * this.insetsTrack.positioning.height)
+        )
         .start(Math.round(Math.max(2, Math.min(100 * Math.log(n) / n))));
 
-      console.log(`Labeling took ${performance.now() - t0} msec`);
+      console.log(`Gallery positioning took ${performance.now() - t0} msec`);
     }
 
     return insets;
@@ -478,15 +487,13 @@ class AnnotationsInsets {
    *   numbr of insets falling within the same local neighborhood on the
    *   border and other insets close to the same location to spread insets
    *   out.
-   *
-   * @param   {array}  annosToBeDrawnAsInsets  Inset definition olding the position
-   *   and size of the original locus defining the inset.
+   * @param  {KeySet}  areaClusters  Set of area clusters.
    * @param   {function}  finalRes  Translator between remote size and final
    *   pixel size.
    * @return  {array}  List of inset definitions holding the border position,
    *   pixel size, origin, and remote size.
    */
-  positionInsetsGalleryNearestBorder(annosToBeDrawnAsInsets, finalRes, newResScale) {
+  positionInsetsGalleryNearestBorder(areaClusters, finalRes, newResScale) {
     // Maximum inset pixel size
     const insetMaxSize = (
       this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale
@@ -519,54 +526,54 @@ class AnnotationsInsets {
     const offX = this.insetsTrack.positioning.offsetX;
     const offY = this.insetsTrack.positioning.offsetY;
 
-    return annosToBeDrawnAsInsets.map((inset) => {
-      const _inset = this.insets[inset.id];
-      if (_inset) {
+    return new KeySet('id', areaClusters.translate((cluster) => {
+      const c = this.insets[cluster.id];
+      if (c) {
         // Update existing inset positions
-        const newOx = ((inset.maxX + inset.minX) / 2) + offX;
-        const newOy = ((inset.maxY + inset.minY) / 2) + offY;
-        const dX = _inset.oX - newOx;
-        const dY = _inset.oY - newOy;
+        const newOx = ((cluster.maxX + cluster.minX) / 2) + offX;
+        const newOy = ((cluster.maxY + cluster.minY) / 2) + offY;
+        const dX = c.oX - newOx;
+        const dY = c.oY - newOy;
 
-        _inset.oX = newOx;
-        _inset.oY = newOy;
-        _inset.owh = (inset.maxX - inset.minX) / 2;
-        _inset.ohh = (inset.maxY - inset.minY) / 2;
+        c.oX = newOx;
+        c.oY = newOy;
+        c.owh = (cluster.maxX - cluster.minX) / 2;
+        c.ohh = (cluster.maxY - cluster.minY) / 2;
 
-        _inset.x -= _inset.isVerticalOnly ? 0 : dX;
-        _inset.y -= _inset.isVerticalOnly ? dY : 0;
+        c.x -= c.isVerticalOnly ? 0 : dX;
+        c.y -= c.isVerticalOnly ? dY : 0;
 
-        _inset.t = this.scaleChanged ? 0.5 : 0;
+        c.t = this.scaleChanged ? 0.5 : 0;
 
         if (newResScale) {
-          const { width, height } = this.compInsetSize(inset, finalRes);
+          const { width, height } = this.compInsetSize(cluster, finalRes);
 
-          _inset.width = width;
-          _inset.height = height;
-          _inset.wH = width / 2;
-          _inset.hH = height / 2;
+          c.width = width;
+          c.height = height;
+          c.wH = width / 2;
+          c.hH = height / 2;
 
-          _inset.x = _inset.isVerticalOnly
-            ? _inset.isLeftCloser
-              ? offX - _inset.wH - paddingX
-              : offX + _inset.wH + paddingX + centerWidth
-            : _inset.x;
-          _inset.y = _inset.isVerticalOnly
-            ? _inset.y
-            : _inset.isTopCloser
-              ? offY - _inset.hH - paddingY
-              : offY + _inset.hH + paddingY + centerHeight;
+          c.x = c.isVerticalOnly
+            ? c.isLeftCloser
+              ? offX - c.wH - paddingX
+              : offX + c.wH + paddingX + centerWidth
+            : c.x;
+          c.y = c.isVerticalOnly
+            ? c.y
+            : c.isTopCloser
+              ? offY - c.hH - paddingY
+              : offY + c.hH + paddingY + centerHeight;
 
           // Let them wobble a bit because the size changed
-          _inset.t = 0.25;
+          c.t = 0.25;
         }
 
-        return _inset;
+        return c;
       }
 
-      const { width, height } = this.compInsetSize(inset, finalRes);
-      const oX = (inset.maxX + inset.minX) / 2;
-      const oY = (inset.maxY + inset.minY) / 2;
+      const { width, height } = this.compInsetSize(cluster, finalRes);
+      const oX = (cluster.maxX + cluster.minX) / 2;
+      const oY = (cluster.maxY + cluster.minY) / 2;
 
       const xBinId = Math.floor(oX / binSizeX);
       const yBinId = Math.floor(oY / binSizeY);
@@ -595,7 +602,7 @@ class AnnotationsInsets {
           x = offX + centerWidth + (width / 2) + paddingX;
           binsRight[yBinId] += insetHalfSize;
         }
-        y = offY + inset.minY;
+        y = offY + cluster.minY;
       } else {
         if (isTopCloser) {
           y = offY - (height / 2) - paddingY;
@@ -604,22 +611,25 @@ class AnnotationsInsets {
           y = offY + centerHeight + (height / 2) + paddingY;
           binsBottom[xBinId] += insetHalfSize;
         }
-        x = offX + inset.minX;
+        x = offX + cluster.minX;
       }
 
-      this.insets[inset.id] = new GalleryLabel(
-        inset.id, width, height, [inset]
-      );
+      // Create new Label for the AreaCluster
+      const labelCluster = new LabelClusterGallery(cluster.id)
+        .setDim(width, height)
+        .setSrc(cluster);
 
-      this.insets[inset.id].setXY(x, y);
-      this.insets[inset.id].setOffSet(offX, offY);
-      this.insets[inset.id].updateOrigin();
-      this.insets[inset.id].setVerticalOnly(isXShorter);
-      this.insets[inset.id].setLeftCloser(isLeftCloser);
-      this.insets[inset.id].setTopCloser(isTopCloser);
+      labelCluster.setXY(x, y);
+      labelCluster.setOffSet(offX, offY);
+      labelCluster.updateOrigin();
+      labelCluster.setVerticalOnly(isXShorter);
+      labelCluster.setLeftCloser(isLeftCloser);
+      labelCluster.setTopCloser(isTopCloser);
 
-      return this.insets[inset.id];
-    });
+      this.insets[cluster.id] = labelCluster;
+
+      return labelCluster;
+    }));
   }
 
   /**
