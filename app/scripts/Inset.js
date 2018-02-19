@@ -1148,14 +1148,17 @@ export default class Inset {
 
     const prevHeightPx = this.previewsHeight * imPos.scaleY;
     const prevOrient = (1 - (2 * this.pileOrientaton === 'top'));
-    const prevSpacing = (this.numLabels - 1) * this.previewSpacing;
+    const prevSpacing = this.numLabels
+      ? ((this.numLabels - 1) * this.previewSpacing) + 2
+      : 0;
+    const prevYOff = 4;
 
     const bWidth = (this.imData.width * imPos.scaleX * this.t) + this.borderPadding;
     const bHeight = (
-      (this.imData.height + this.previewsHeight) * imPos.scaleY * this.t
+      (this.imData.height + this.previewsHeight) * Math.abs(imPos.scaleY)
     ) + this.borderPadding + prevSpacing;
 
-    const prevHeight = 0.5 * (prevHeightPx + prevSpacing) * prevOrient;
+    const prevHeight = (prevHeightPx + prevSpacing - 4) * 0.5 * prevOrient;
 
     const [bX, bY] = this.computeBorderPosition(
       this.x,
@@ -1164,6 +1167,20 @@ export default class Inset {
       bHeight,
       true
     );
+
+    const previewTweenDefs = this.spritePreviews.map((sprite, i) => {
+      return {
+        obj: sprite,
+        propsTo: {
+          x: imPos.x,
+          y: imPos.y + ((Math.abs(imPos.scaleY) + this.previewSpacing) * (i + 1)),
+          scale: {
+            x: imPos.scaleX,
+            y: imPos.scaleY,
+          }
+        }
+      };
+    });
 
     this.tweenStop = transitionGroup(
       [
@@ -1187,7 +1204,8 @@ export default class Inset {
             width: bWidth + 1,
             height: bHeight + 1,
           }
-        }
+        },
+        ...previewTweenDefs
       ],
       80
     );
