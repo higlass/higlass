@@ -6,6 +6,30 @@ import tweenManager from 'k8w-pixi-tween';  // eslint-disable-line no-unused-var
 import { pubSub } from './';
 
 /**
+ * Check if something is an object
+ * @param   {*}  v  Variable to be checked.
+ * @return  {boolean}  If `true` the variable is an object.
+ */
+const isObject = v => Object.prototype.toString.call(v) === '[object Object]';
+
+/**
+ * Recursivly apply props without transition.
+ * @param   {object}  target  Target object for which props should be applied.
+ * @param   {object}  props  Target props.
+ */
+function applyProps(target, props) {
+  Object.keys(props).forEach((key) => {
+    const val = props[key];
+
+    if (!isObject(val)) {
+      target[key] = val;
+    } else {
+      applyProps(target[key], val);
+    }
+  });
+}
+
+/**
  * Factory function for canceling a transition.
  * @param   {object}  tween  Transition to be canceled. Needs to be the
  *   original tween object.
@@ -23,8 +47,15 @@ const cancel = tween => () => {
  * @return  {function}  Function which cancels all the transtions when
  *   invoked.
  */
-const cancelAll = tweens => () => {
-  tweens.forEach(tween => tween.stop().clear());
+const cancelAll = tweens => (reset = 0) => {
+  tweens.forEach((tween) => {
+    tween.stop();
+    if (reset && !tween._isEnded) {
+      const targetProps = reset === -1 ? tween._from : tween._to;
+      applyProps(tween.target, targetProps);
+    }
+    tween.clear();
+  });
   pubSub.publish('app.stopRepeatingAnimation', tweens);
 };
 
