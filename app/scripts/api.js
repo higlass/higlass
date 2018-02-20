@@ -134,7 +134,7 @@ export const api = function api(context) {
         self.setChromInfo(
           self.state.views[viewUid].chromInfoPath,
           () => {
-            self.api().goTo(
+            self.api.goTo(
               viewUid,
               chrom1,
               start1,

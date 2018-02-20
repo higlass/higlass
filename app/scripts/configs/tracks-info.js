@@ -301,12 +301,13 @@ export const TRACKS_INFO = [
     orientation: '1d-vertical',
     name: 'Viewport Projection',
     thumbnail: 'viewport-projection-center.png',
-    availableOptions: ['projectionFillColor', 'projectionStrokeColor'],
+    availableOptions: ['projectionFillColor', 'projectionStrokeColor', 'strokeWidth'],
     defaultOptions: {
       projectionFillColor: '#777',
       projectionStrokeColor: '#777',
       projectionFillOpacity: 0.3,
-      projectionStrokeOpacity: 0.3,
+      projectionStrokeOpacity: 0.7,
+      strokeWidth: 1,
     },
   },
   {
@@ -317,12 +318,13 @@ export const TRACKS_INFO = [
     orientation: '1d-horizontal',
     name: 'Viewport Projection',
     thumbnail: 'viewport-projection-center.png',
-    availableOptions: ['projectionFillColor', 'projectionStrokeColor'],
+    availableOptions: ['projectionFillColor', 'projectionStrokeColor', 'strokeWidth'],
     defaultOptions: {
       projectionFillColor: '#777',
       projectionStrokeColor: '#777',
       projectionFillOpacity: 0.3,
-      projectionStrokeOpacity: 0.3,
+      projectionStrokeOpacity: 0.7,
+      strokeWidth: 1,
     },
   },
   {
@@ -333,12 +335,13 @@ export const TRACKS_INFO = [
     orientation: '2d',
     name: 'Viewport Projection',
     thumbnail: 'viewport-projection-center.png',
-    availableOptions: ['projectionFillColor', 'projectionStrokeColor'],
+    availableOptions: ['projectionFillColor', 'projectionStrokeColor', 'strokeWidth'],
     defaultOptions: {
       projectionFillColor: '#777',
       projectionStrokeColor: '#777',
       projectionFillOpacity: 0.3,
-      projectionStrokeOpacity: 0.3,
+      projectionStrokeOpacity: 0.7,
+      strokeWidth: 1,
     },
   },
   {
