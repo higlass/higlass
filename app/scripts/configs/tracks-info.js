@@ -1052,6 +1052,8 @@ export const TRACKS_INFO = [
       'minClusterSize',
       'maxPreviews',
       'pileOrientation',
+      'scaleSizeBy',
+      'scaleBorderBy',
     ],
   },
 
