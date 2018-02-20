@@ -28,7 +28,6 @@ const AreaClusterer = function AreaClusterer(options = {}) {
 
   if (options.propCheck) {
     options.propCheck.forEach((prop) => {
-      console.log(...prop);
       this.propCheck[prop[0]] = {
         min: Infinity,
         max: -Infinity,
