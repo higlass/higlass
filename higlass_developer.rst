@@ -84,7 +84,7 @@ The passed in ``viewUid`` should refer to a view which is present. If it
 doesn't, an exception will be thrown.
 
 
-goTo(view,chr1,s1,e1,chr2,s2,e2,animate,animateTime): Zoom to a genomic location
+goTo(view,chr1,s1,e1,chr2,s2,e2,animateTime): Zoom to a genomic location
 --------------------------------------------------------------------------------
 
 Change the current view port to a certain genomic location. When ``animate`` is true HiGlass transitions from the current to the new location smoothly.
@@ -99,7 +99,6 @@ Change the current view port to a certain genomic location. When ``animate`` is 
     chrom2,
     start2,
     end2,
-    animate = false,
     animateTime = 3000,
   );
 
@@ -107,7 +106,7 @@ Change the current view port to a certain genomic location. When ``animate`` is 
 
 .. code-block:: javascript
 
-  hgv.goTo('v1', 'chr1', 0, 1, 'chr2', 0, 1, true, 500);
+  hgv.goTo('v1', 'chr1', 0, 1, 'chr2', 0, 1, 500);
 
 activateTool(mouseTool): Select a mouse tool
 --------------------------------------------
