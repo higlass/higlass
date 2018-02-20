@@ -19,7 +19,10 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       handleTilesetInfoReceived,
       option,
       animate,
-      onValueScaleChanged,
+      () => {
+        this.drawAxis(this.valueScale);
+        onValueScaleChanged();
+      }
     );
 
   }
@@ -29,6 +32,11 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
      * Create whatever is needed to draw this tile.
      */
     super.initTile(tile);
+
+    if (!tile.tileData || !tile.tileData.dense) {
+      console.warn('emptyTile:', tile);
+      return;
+    }
 
     tile.lineXValues = new Array(tile.tileData.dense.length);
     tile.lineYValues = new Array(tile.tileData.dense.length);
@@ -61,6 +69,10 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     if (!tile.graphics) { return; }
 
+    if (!tile.tileData || !tile.tileData.dense) {
+      return;
+    }
+
     const graphics = tile.graphics;
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
@@ -71,17 +83,14 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     if (tileValues.length === 0) { return; }
 
-    let pseudocount = 0; // if we use a log scale, then we'll set a pseudocount
-    // equal to the smallest non-zero value
-    this.valueScale = this.makeValueScale(
+    const [vs, pseudocount] = this.makeValueScale(
       this.minValue(),
-      this.calculateMedianVisibleValue(),
+      this.medianVisibleValue,
       this.maxValue()
     );
+    this.valueScale = vs;
 
     graphics.clear();
-
-    this.drawAxis(this.valueScale);
 
     if (this.options.valueScaling === 'log' && this.valueScale.domain()[1] < 0) {
       console.warn('Negative values present when using a log scale', this.valueScale.domain());

@@ -15,6 +15,8 @@ entered
 - Updated third-party libs to get rid of deprecation warnings for React v16
 - Fixed small bug in placing rules
 - Display error when failing to retrieve tilesetInfo
+* Added support for cross-section tracks
+- Rendering improvements
 
 v0.10.19 (2018-02-11)
 
