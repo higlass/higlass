@@ -20,6 +20,8 @@ const AreaClusterer = function AreaClusterer(options = {}) {
   this.maxY = 0;
 
   this.clustersMaxSize = 1;
+
+  this.disabled = options.disabled;
 };
 
 /* ------------------------------- Properties ------------------------------- */
@@ -63,16 +65,18 @@ AreaClusterer.prototype.addToClosestCluster = function addToClosestCluster(eleme
   let closestCluster = null;
   const elementCenter = element.getViewPositionCenter();
 
-  this.clusters.forEach((cluster) => {
-    const clusterCenter = cluster.center;
-    if (clusterCenter) {
-      const d = lDist(clusterCenter, elementCenter);
-      if (d < distance) {
-        distance = d;
-        closestCluster = cluster;
+  if (!this.disabled) {
+    this.clusters.forEach((cluster) => {
+      const clusterCenter = cluster.center;
+      if (clusterCenter) {
+        const d = lDist(clusterCenter, elementCenter);
+        if (d < distance) {
+          distance = d;
+          closestCluster = cluster;
+        }
       }
-    }
-  });
+    });
+  }
 
   if (closestCluster && closestCluster.isWithin(element.viewPos, true)) {
     this.expandCluster(closestCluster, element);

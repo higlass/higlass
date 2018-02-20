@@ -85,6 +85,7 @@ class AnnotationsInsets {
       gridSize: 50,
       minClusterSize: 3,
       maxZoom: undefined,
+      disabled: !!this.options.disableClustering
     });
 
     this.insetsTrackWidth = 0;
