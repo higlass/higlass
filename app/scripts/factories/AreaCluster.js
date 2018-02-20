@@ -86,6 +86,7 @@ AreaCluster.prototype.delete = function deleteMethod(annotation) {
 
   annotation.cluster = undefined;
   this.members.delete(annotation);
+  this.visibleMembers.delete(annotation);
 
   this.refresh();
 
@@ -93,18 +94,28 @@ AreaCluster.prototype.delete = function deleteMethod(annotation) {
 };
 
 AreaCluster.prototype.hide = function hide(annotation) {
-  if (!this.visibleMembers.has(annotation)) return false;
+  if (annotation) {
+    if (!this.visibleMembers.has(annotation)) return false;
 
-  this.visibleMembers.delete(annotation);
+    this.visibleMembers.delete(annotation);
 
+    return true;
+  }
+
+  this.isHidden = true;
   return true;
 };
 
 AreaCluster.prototype.show = function show(annotation) {
-  if (this.visibleMembers.has(annotation)) return false;
+  if (annotation) {
+    if (this.visibleMembers.has(annotation)) return false;
 
-  this.visibleMembers.add(annotation);
+    this.visibleMembers.add(annotation);
 
+    return true;
+  }
+
+  this.isHidden = false;
   return true;
 };
 
