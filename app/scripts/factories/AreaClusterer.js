@@ -22,6 +22,21 @@ const AreaClusterer = function AreaClusterer(options = {}) {
   this.clustersMaxSize = 1;
 
   this.disabled = options.disabled;
+
+  this.propCheck = {};
+  this.isPropCheck = false;
+
+  if (options.propCheck) {
+    options.propCheck.forEach((prop) => {
+      console.log(...prop);
+      this.propCheck[prop[0]] = {
+        min: Infinity,
+        max: -Infinity,
+        acc: prop[1]
+      };
+      this.isPropCheck = true;
+    });
+  }
 };
 
 /* ------------------------------- Properties ------------------------------- */
@@ -135,6 +150,25 @@ AreaClusterer.prototype.clusterElements = function clusterElements() {
 };
 
 /**
+ * Check properties on the given cluster
+ */
+AreaClusterer.prototype.propChecking = function propChecking(cluster) {
+  if (!this.isPropCheck) return;
+
+  Object.keys(this.propCheck).forEach((key) => {
+    this.propCheck[key].min = Math.min(
+      this.propCheck[key].min,
+      this.propCheck[key].acc(cluster)
+    );
+
+    this.propCheck[key].max = Math.max(
+      this.propCheck[key].max,
+      this.propCheck[key].acc(cluster)
+    );
+  });
+};
+
+/**
  * Create a new the clusters.
  */
 AreaClusterer.prototype.createCluster = function createCluster(element) {
@@ -143,6 +177,7 @@ AreaClusterer.prototype.createCluster = function createCluster(element) {
   element.cluster = cluster;
   this.elementsAddedToClusters.add(element);
   this.clusters.add(cluster);
+  this.propChecking(cluster);
 };
 
 /**
@@ -153,6 +188,7 @@ AreaClusterer.prototype.expandCluster = function expandCluster(cluster, element)
   element.cluster = cluster;
   this.clustersMaxSize = Math.max(this.clustersMaxSize, cluster.size);
   this.elementsAddedToClusters.add(element);
+  this.propChecking(cluster);
 };
 
 /**
@@ -250,6 +286,8 @@ AreaClusterer.prototype.removeCluster = function removeCluster(cluster) {
   });
 
   this.clusters.delete(cluster);
+
+  this.clusters.forEach(_cluster => this.propChecking(_cluster));
 };
 
 /**
