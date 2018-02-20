@@ -81,15 +81,37 @@ class AnnotationsInsets {
       ? lat => latToY(lat, 19)
       : identity;
 
+    this.insetsTrackWidth = 0;
+    this.insetsTrackHeight = 0;
+
+    // Default is the remote size
+    this.clusterSizePropAcc = cluster => cluster.members
+      .reduce((total, member) => Math.max(
+        member.maxXDataProj - member.minXDataProj,
+        member.maxYDataProj - member.minYDataProj
+      ), 0) / cluster.members.size;
+
+    switch (this.insetsTrack.options.scaleSizeBy) {
+      case 'importance':
+        this.clusterSizePropAcc = cluster => cluster.members
+          .reduce((total, member) => total + member.importance, 0) / cluster.members.size;
+        break;
+
+      case 'clusterSize':
+        this.clusterSizePropAcc = cluster => cluster.size;
+        break;
+
+      default:
+        // Nothing. Already set.
+    }
+
     this.areaClusterer = new AreaClusterer({
       gridSize: 50,
       minClusterSize: 3,
       maxZoom: undefined,
-      disabled: !!this.options.disableClustering
+      disabled: !!this.options.disableClustering,
+      propCheck: [['size', this.clusterSizePropAcc]]
     });
-
-    this.insetsTrackWidth = 0;
-    this.insetsTrackHeight = 0;
   }
 
   /**
@@ -102,7 +124,7 @@ class AnnotationsInsets {
    *   example base pairs (Hi-C), or pixels (gigapixel images), or lng-lat
    *   (geo json).
    */
-  annotationDrawnHandler({ uid, viewPos, dataPos }) {
+  annotationDrawnHandler({ uid, viewPos, dataPos, importance }) {
     const dataPosProj = [
       this.projectorX(dataPos[0]),
       this.projectorX(dataPos[1]),
@@ -121,7 +143,9 @@ class AnnotationsInsets {
     if (annotation) {
       annotation.setViewPosition(_viewPos);
     } else {
-      annotation = new Annotation(uid, _viewPos, dataPos, dataPosProj);
+      annotation = new Annotation(
+        uid, _viewPos, dataPos, dataPosProj, importance
+      );
     }
 
     this.drawnAnnoIds.add(uid);
@@ -143,15 +167,7 @@ class AnnotationsInsets {
         && (annotation.minY >= 0 || annotation.maxY > 0)
         && (annotation.minY < this.insetsTrackHeight || annotation.maxY <= this.insetsTrackHeight)
       )
-    ) {
-      const remoteSize = Math.max(
-        annotation.maxXDataProj - annotation.minXDataProj,
-        annotation.maxYDataProj - annotation.minYDataProj
-      );
-      this.insetMinRemoteSize = Math.min(this.insetMinRemoteSize, remoteSize);
-      this.insetMaxRemoteSize = Math.max(this.insetMaxRemoteSize, remoteSize);
-      this.annosToBeDrawnAsInsets.add(annotation);
-    }
+    ) this.annosToBeDrawnAsInsets.add(annotation);
 
     this.drawnAnnotations.push(annotation);
   }
@@ -167,10 +183,13 @@ class AnnotationsInsets {
     this.createInsets();
   }
 
-  compInsetSizeScale() {
-    // Convert data (basepair position) to view (display pixel) resolution
+  compInsetSizeScaleClustSize() {
+    // Convert cluster size to view (display pixel) resolution
     const finalRes = scaleQuantize()
-      .domain([this.insetMinRemoteSize, this.insetMaxRemoteSize])
+      .domain([
+        this.areaClusterer.propCheck.size.min,
+        this.areaClusterer.propCheck.size.max
+      ])
       .range(range(
         this.insetsTrack.insetMinSize * this.insetsTrack.insetScale,
         (this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale) + 1,
@@ -178,33 +197,14 @@ class AnnotationsInsets {
       ));
 
     const newResScale = (
-      this.insetMinRemoteSize !== this.insetMinRemoteSizeOld
-      || this.insetMaxRemoteSize !== this.insetMaxRemoteSizeOld
+      this.clustersSizeMinValueOld !== this.areaClusterer.propCheck.size.min
+      || this.clustersSizeMaxValueOld !== this.areaClusterer.propCheck.size.max
     );
 
     // Update old remote size to avoid wiggling insets that did not change at
     // all
-    this.insetMinRemoteSizeOld = this.insetMinRemoteSize;
-    this.insetMaxRemoteSizeOld = this.insetMaxRemoteSize;
-
-    return { finalRes, newResScale };
-  }
-
-  compInsetSizeScaleClustSize() {
-    // Convert cluster size to view (display pixel) resolution
-    const finalRes = scaleQuantize()
-      .domain([1, this.areaClusterer.clustersMaxSize])
-      .range(range(
-        this.insetsTrack.insetMinSize * this.insetsTrack.insetScale,
-        (this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale) + 1,
-        this.insetsTrack.options.sizeStepSize
-      ));
-
-    const newResScale = this.areaClusterer.maxClusterSize !== this.clustersMaxSize;
-
-    // Update old remote size to avoid wiggling insets that did not change at
-    // all
-    this.clustersMaxSizeOld = this.areaClusterer.maxClusterSize;
+    this.clustersSizeMinValueOld = this.areaClusterer.propCheck.size.min;
+    this.clustersSizeMaxValueOld = this.areaClusterer.propCheck.size.max;
 
     return { finalRes, newResScale };
   }
@@ -238,7 +238,7 @@ class AnnotationsInsets {
 
     const widthAbs = Math.abs(maxX - minX);
     const heightAbs = Math.abs(maxY - minY);
-    const maxDim = scale(cluster.size);
+    const maxDim = scale(this.clusterSizePropAcc(cluster));
     const isLandscape = widthAbs >= heightAbs;
 
     const width = isLandscape
