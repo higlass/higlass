@@ -426,7 +426,9 @@ class AnnotationsInsets {
    * @return  {Array}  Position and dimension of the insets.
    */
   positionInsetsGallery(areaClusters = this.areaClusterer.clusters) {
-    const { finalRes, newResScale } = this.compInsetSizeScale();
+    const {
+      finalRes, newResScale
+    } = this.compInsetSizeScaleClustSize(areaClusters);
 
     // 1. Position insets to the closest position on the gallery border
     const insets = this.positionInsetsGalleryNearestBorder(
@@ -458,7 +460,7 @@ class AnnotationsInsets {
       });
 
     if (insetsToBeAnnealed.size) {
-      const t0 = performance.now();
+      // const t0 = performance.now();
       const n = insetsToBeAnnealed.size;
 
       positionLabels
@@ -475,7 +477,7 @@ class AnnotationsInsets {
         )
         .start(Math.round(Math.max(2, Math.min(100 * Math.log(n) / n))));
 
-      console.log(`Gallery positioning took ${performance.now() - t0} msec`);
+      // console.log(`Gallery positioning took ${performance.now() - t0} msec`);
     }
 
     return insets;
@@ -546,7 +548,9 @@ class AnnotationsInsets {
         c.t = this.scaleChanged ? 0.5 : 0;
 
         if (newResScale) {
-          const { width, height } = this.compInsetSize(cluster, finalRes);
+          const {
+            width, height
+          } = this.compInsetSizeCluster(cluster, finalRes);
 
           c.width = width;
           c.height = height;
@@ -571,7 +575,7 @@ class AnnotationsInsets {
         return c;
       }
 
-      const { width, height } = this.compInsetSize(cluster, finalRes);
+      const { width, height } = this.compInsetSizeCluster(cluster, finalRes);
       const oX = (cluster.maxX + cluster.minX) / 2;
       const oY = (cluster.maxY + cluster.minY) / 2;
 
