@@ -1,4 +1,4 @@
-function Annotation(id, viewPos, dataPos, dataPosProj) {
+function Annotation(id, viewPos, dataPos, dataPosProj, importance) {
   this.id = id;
 
   this.minX = viewPos[0];
@@ -19,7 +19,9 @@ function Annotation(id, viewPos, dataPos, dataPosProj) {
   this.minYDataProj = dataPosProj[2];
   this.maxYDataProj = dataPosProj[3];
 
-  this.importance = 0;
+  this.importance = importance || (
+    (dataPos[1] - dataPos[0]) * (dataPos[3] - dataPos[2])
+  );
 }
 
 /* ------------------------------- Properties ------------------------------- */
