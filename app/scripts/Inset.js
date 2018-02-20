@@ -937,11 +937,10 @@ export default class Inset {
    */
   renderPreviews(data, imgRenderer, force) {
     if (
+      !data ||
       (this.spritePreviews.length === data.length && !force) ||
       !data.length
-    ) {
-      return Promise.resolve();
-    }
+    ) return Promise.resolve();
 
     if (this.previewsRendering) return this.previewsRendering;
 
