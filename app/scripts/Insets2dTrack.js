@@ -221,7 +221,7 @@ export default class Insets2dTrack extends PixiTrack {
     });
   }
 
-  createFetchRenderInset(label, remotePos, renderedPos) {
+  createFetchRenderInset(label, remotePos, renderedPos, borderScale) {
     const inset = (
       this.insets.get(label.id) ||
       this.initInset(
@@ -240,6 +240,7 @@ export default class Insets2dTrack extends PixiTrack {
     inset.origin(label.oX, label.oY, label.oWH, label.oHH);
     inset.position(label.x, label.y);
     inset.size(label.width, label.height);
+    inset.setBorderScale(borderScale);
     inset.drawLeaderLine();
     inset.drawBorder();
 
@@ -269,7 +270,7 @@ export default class Insets2dTrack extends PixiTrack {
    * @param   {Label}  label  Label to be drawn as an inset.
    * @return  {Promise}  Promise resolving once the inset has been drawn.
    */
-  drawInset(label) {
+  drawInset(label, borderScale) {
     this.insetsInPreparation.add(label);
 
     if (this.dataType === 'cooler') {
@@ -284,7 +285,9 @@ export default class Insets2dTrack extends PixiTrack {
 
           return this.createFetchRenderInset(
             label,
-            this.dataToGenomePos(label.dataPos, _chromInfo)
+            this.dataToGenomePos(label.dataPos, _chromInfo),
+            undefined,
+            borderScale,
           );
         });
     }
@@ -293,14 +296,16 @@ export default class Insets2dTrack extends PixiTrack {
       return this.createFetchRenderInset(
         label,
         [...label.dataPos],
-        this.lngLatToProjPos(label.dataPos)
+        this.lngLatToProjPos(label.dataPos),
+        borderScale,
       );
     }
 
     return this.createFetchRenderInset(
       label,
       label.dataPos,
-      label.dataPos
+      label.dataPos,
+      borderScale,
     );
   }
 
@@ -310,14 +315,14 @@ export default class Insets2dTrack extends PixiTrack {
    * @return  {Array}  List of promises that resolve one the inset is fully
    *   drawn.
    */
-  drawInsets(insets) {
+  drawInsets(insets, borderScale) {
     if (!this.tilesetInfo) {
       return [Promise.reject('Tileset info not available')];
     }
 
     this.cleanUp(insets.keys);
 
-    return insets.translate(inset => this.drawInset(inset));
+    return insets.translate(inset => this.drawInset(inset, borderScale));
   }
 
   /**

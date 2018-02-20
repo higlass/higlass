@@ -12,7 +12,7 @@ import {
 
 // Utils
 import {
-  identity, latToY, lngToX, positionLabels
+  identity, getClusterPropAcc, latToY, lngToX, positionLabels
 } from './utils';
 
 class AnnotationsInsets {
@@ -84,25 +84,18 @@ class AnnotationsInsets {
     this.insetsTrackWidth = 0;
     this.insetsTrackHeight = 0;
 
-    // Default is the remote size
-    this.clusterSizePropAcc = cluster => cluster.members
-      .reduce((total, member) => Math.max(
-        member.maxXDataProj - member.minXDataProj,
-        member.maxYDataProj - member.minYDataProj
-      ), 0) / cluster.members.size;
+    const propChecks = [];
 
-    switch (this.insetsTrack.options.scaleSizeBy) {
-      case 'importance':
-        this.clusterSizePropAcc = cluster => cluster.members
-          .reduce((total, member) => total + member.importance, 0) / cluster.members.size;
-        break;
+    this.clusterSizePropAcc = getClusterPropAcc(
+      this.insetsTrack.options.scaleSizeBy
+    );
+    propChecks.push(['size', this.clusterSizePropAcc]);
 
-      case 'clusterSize':
-        this.clusterSizePropAcc = cluster => cluster.size;
-        break;
-
-      default:
-        // Nothing. Already set.
+    if (this.insetsTrack.options.scaleBorderBy) {
+      this.clusterBorderPropAcc = getClusterPropAcc(
+        this.insetsTrack.options.scaleBorderBy
+      );
+      propChecks.push(['border', this.clusterBorderPropAcc]);
     }
 
     this.areaClusterer = new AreaClusterer({
@@ -110,7 +103,7 @@ class AnnotationsInsets {
       minClusterSize: 3,
       maxZoom: undefined,
       disabled: !!this.options.disableClustering,
-      propCheck: [['size', this.clusterSizePropAcc]]
+      propCheck: propChecks
     });
   }
 
@@ -183,7 +176,22 @@ class AnnotationsInsets {
     this.createInsets();
   }
 
-  compInsetSizeScaleClustSize() {
+  /**
+   * Compute scale for an optional property mapped onto the border of the inset
+   * @return  {object}  [description]
+   */
+  compInsetBorderScale() {
+    const borderScale = scaleQuantize()
+      .domain([
+        this.areaClusterer.propCheck.border.min,
+        this.areaClusterer.propCheck.border.max
+      ])
+      .range(range(1, 10));
+
+    return borderScale;
+  }
+
+  compInsetSizeScale() {
     // Convert cluster size to view (display pixel) resolution
     const finalRes = scaleQuantize()
       .domain([
@@ -280,7 +288,12 @@ class AnnotationsInsets {
    * @return  {Object}  Promise resolving once all insets are drawn.
    */
   drawInsets(insets) {
-    return Promise.all(this.insetsTrack.drawInsets(insets))
+    let borderScale;
+    if (this.insetsTrack.options.scaleBorderBy) {
+      borderScale = this.compInsetBorderScale();
+    }
+
+    return Promise.all(this.insetsTrack.drawInsets(insets, borderScale))
       .then(() => { this.animate(); })
       .catch((e) => { this.animate(); console.error(e); });
   }
@@ -337,7 +350,7 @@ class AnnotationsInsets {
 
     const {
       finalRes, newResScale
-    } = this.compInsetSizeScaleClustSize(areaClusters);
+    } = this.compInsetSizeScale(areaClusters);
 
     const insets = new KeySet('id', areaClusters
       .translate((cluster) => {
@@ -350,7 +363,8 @@ class AnnotationsInsets {
 
           // Create new Label for the AreaCluster
           this.insets[id] = new LabelCluster(id)
-            .setDim(width, height).setSrc(cluster);
+            .setDim(width, height)
+            .setSrc(cluster);
         } else {
           // Update existing inset positions
           const newOx = (cluster.maxX + cluster.minX) / 2;
@@ -429,7 +443,7 @@ class AnnotationsInsets {
   positionInsetsGallery(areaClusters = this.areaClusterer.clusters) {
     const {
       finalRes, newResScale
-    } = this.compInsetSizeScaleClustSize(areaClusters);
+    } = this.compInsetSizeScale(areaClusters);
 
     // 1. Position insets to the closest position on the gallery border
     const insets = this.positionInsetsGalleryNearestBorder(

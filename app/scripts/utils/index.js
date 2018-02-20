@@ -23,6 +23,7 @@ export { default as flatten } from './flatten';
 export { default as forwardEvent } from './forward-event';
 export { default as genomeLociToPixels } from './genome-loci-to-pixels';
 export { default as getAngleBetweenPoints } from './get-angle-between-points';
+export { default as getClusterPropAcc } from './get-cluster-prop-acc';
 export { default as getTrackByUid } from './get-track-by-uid';
 export { default as getTrackPositionByUid } from './get-track-position-by-uid';
 export { default as hasParent } from './has-parent';

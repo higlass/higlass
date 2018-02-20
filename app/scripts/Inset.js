@@ -10,6 +10,7 @@ import {
   colorToHex,
   degToRad,
   getAngleBetweenPoints,
+  getClusterPropAcc,
   lDist
 } from './utils';
 
@@ -121,6 +122,12 @@ export default class Inset {
     ];
 
     this.prevHeightPx = 0;
+
+    if (this.options.scaleBorderBy) {
+      this.borderPropAcc = getClusterPropAcc(
+        this.options.scaleBorderBy
+      );
+    }
 
     this.initGraphics(options);
   }
@@ -389,7 +396,6 @@ export default class Inset {
     fill = this.borderFill,
   ) {
     const rect = new PIXI.Graphics()
-      .lineStyle(...this.borderStyle)
       .beginFill(fill)
       .drawRoundedRect(0, 0, width, height, radius)
       .endFill()
@@ -450,6 +456,7 @@ export default class Inset {
         ((this.spritePreviews.length - 1) * this.previewSpacing)
       ) + 2
       : 0;
+
     const [vX, vY] = this.computeBorderPosition(x, y, width, height);
 
     if (!this.border) {
@@ -469,21 +476,31 @@ export default class Inset {
       graphics.addChild(this.border);
     }
 
-    this.border.x = vX;
-    this.border.y = vY;
-    this.border.width = width + this.borderPadding;
-    this.border.height = height + prevHeight + this.borderPadding;
+    let borderWidthExtra = 0;
+    // Get extra border scale if `scaleBorderBy` option is set
+    if (this.options.scaleBorderBy && this.borderScale) {
+      borderWidthExtra = this.borderScale(this.borderPropAcc(this.label.src)) - 1;
+    }
+
+    const widthFinal = width + (2 * borderWidthExtra);
+    const heightFinal = height + (2 * borderWidthExtra);
+
+    this.border.x = vX - borderWidthExtra;
+    this.border.y = vY - borderWidthExtra;
+    this.border.width = widthFinal + this.borderPadding;
+    this.border.height = heightFinal + prevHeight + this.borderPadding;
 
     // Make border interactive baby!
-    this.border.interactive = true;
+    // MOUSEOUT does not work properly so we disable it for not.
+    // this.border.interactive = true;
 
-    this.border
-      .on('mousedown', this.mouseDownHandler.bind(this))
-      .on('mouseover', this.mouseOverHandler.bind(this))
-      .on('mouseout', this.mouseOutHandler.bind(this))
-      .on('mouseup', this.mouseUpHandler.bind(this))
-      .on('rightdown', this.mouseDownRightHandler.bind(this))
-      .on('rightup', this.mouseUpRightHandler.bind(this));
+    // this.border
+    //   .on('mousedown', this.mouseDownHandler.bind(this))
+    //   .on('mouseover', this.mouseOverHandler.bind(this))
+    //   .on('mouseout', this.mouseOutHandler.bind(this))
+    //   .on('mouseup', this.mouseUpHandler.bind(this))
+    //   .on('rightdown', this.mouseDownRightHandler.bind(this))
+    //   .on('rightup', this.mouseUpRightHandler.bind(this));
   }
 
   /**
@@ -695,7 +712,7 @@ export default class Inset {
    * @param  {Object}  options  Line style for the border and leader line.
    */
   initGraphics() {
-    this.gBorder.lineStyle(...this.borderStyle);
+    // this.gBorder.lineStyle(...this.borderStyle);
     this.gLeaderLine.lineStyle(...this.leaderLineStyle);
     this.gOrigin.lineStyle(...this.originStyle);
   }
@@ -1206,6 +1223,15 @@ export default class Inset {
       ],
       80
     );
+  }
+
+  /**
+   * Set a border scaling
+   * @param   {function}  borderScale  Border scale function. Used for
+   *   adjusting the border witdth.
+   */
+  setBorderScale(borderScale) {
+    this.borderScale = borderScale;
   }
 
   /**
