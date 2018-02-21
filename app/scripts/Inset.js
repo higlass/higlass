@@ -1501,7 +1501,6 @@ export default class Inset {
   scaleHtml(amount = 1) {
     this.border.__transform__.scale = [amount, amount];
     this.border.style.transform = objToTransformStr(this.border.__transform__);
-    console.log('ass', this.border.__transform__, objToTransformStr(this.border.__transform__));
   }
 
   /**
