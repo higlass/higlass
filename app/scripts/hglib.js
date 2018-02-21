@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import HiGlassComponent from './HiGlassComponent';
 
 export { default as HiGlassComponent } from './HiGlassComponent';
+export { ChromosomeInfo } from './ChromosomeInfo';
 
 function launch(element, config, options, callback) {
   /**

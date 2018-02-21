@@ -129,6 +129,7 @@ export const api = function api(context) {
       animate = false,
       animateTime = 3000,
     ) {
+
       // Set chromInfo if not available
       if (!self.chromInfo) {
         self.setChromInfo(
