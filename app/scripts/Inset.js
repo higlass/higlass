@@ -11,7 +11,8 @@ import {
   degToRad,
   getAngleBetweenPoints,
   getClusterPropAcc,
-  lDist
+  lDist,
+  objToTransformStr
 } from './utils';
 
 import style from '../styles/Insets2dTrack.module.scss';
@@ -228,10 +229,10 @@ export default class Inset {
 
   /**
    * Position border for drawing on canvas
-   * @param   {number}  x  X position in pixel.
-   * @param   {number}  y  Y position in pixel.
-   * @param   {number}  width  Width of the border in pixel.
-   * @param   {number}  height  Height of the border in pixel.
+   * @param  {number}  x  X position in pixel.
+   * @param  {number}  y  Y position in pixel.
+   * @param  {number}  width  Width of the border in pixel.
+   * @param  {number}  height  Height of the border in pixel.
    */
   borderPositionCanvas(x, y, width, height) {
     this.border.x = x + this.globalOffsetX;
@@ -242,15 +243,18 @@ export default class Inset {
 
   /**
    * Position border for drawing on HTML
-   * @param   {number}  x  X position in pixel.
-   * @param   {number}  y  Y position in pixel.
-   * @param   {number}  width  Width of the border in pixel.
-   * @param   {number}  height  Height of the border in pixel.
+   * @param  {number}  x  X position in pixel.
+   * @param  {number}  y  Y position in pixel.
+   * @param  {number}  width  Width of the border in pixel.
+   * @param  {number}  height  Height of the border in pixel.
    */
   borderPositionHtml(x, y, width, height) {
     this.border.style.width = `${width}px`;
     this.border.style.height = `${height}px`;
-    this.border.style.transform = `translate(${x}px, ${y}px)`;
+    this.border.__transform__.translate = [
+      { val: x, type: 'px' }, { val: y, type: 'px' }
+    ];
+    this.border.style.transform = objToTransformStr(this.border.__transform__);
   }
 
   /**
@@ -264,13 +268,13 @@ export default class Inset {
 
   /**
    * Render border on canvas
-   * @param   {number}  x  X position in pixel.
-   * @param   {number}  y  Y position in pixel.
-   * @param   {number}  width  Width of the border in pixel.
-   * @param   {number}  height  Height of the border in pixel.
-   * @param   {number}  radius  Radius of the corner in pixel.
-   * @param   {D3.Color}  fill  Fill color.
-   * @param   {PIXI.Graphics}  graphics  Graphics to draw on
+   * @param  {number}  x  X position in pixel.
+   * @param  {number}  y  Y position in pixel.
+   * @param  {number}  width  Width of the border in pixel.
+   * @param  {number}  height  Height of the border in pixel.
+   * @param  {number}  radius  Radius of the corner in pixel.
+   * @param  {D3.Color}  fill  Fill color.
+   * @param  {PIXI.Graphics}  graphics  Graphics to draw on
    */
   borderRenderCanvas(x, y, width, height, radius, fill, graphics) {
     const ratio = width / height;
@@ -300,6 +304,14 @@ export default class Inset {
    */
   borderRenderHtml(x, y, width, height, radius, fill) {
     this.border = document.createElement('div');
+    // The CSS transform rule is annoying because it combines multiple
+    // properties into one definition string so when updating one of those we
+    // need to make sure we don't overwrite existing properties. To make our
+    // lifes easier we'll store things as an object on the DOM element and
+    // convert this object into a transform definition string all the time
+    // instead of setting the string directly.
+    this.border.__transform__ = {};
+
     this.border.className = style.inset;
     this.border.style.background = fill.toString();
     this.border.style.borderRadius = `${radius}px`;
@@ -1396,11 +1408,20 @@ export default class Inset {
   }
 
   /**
+   * Scale the inset. This is just a forwarder to the specific method for the
+   *   canvas or html methods.
+   */
+  scale(...args) {
+    if (this.isRenderToCanvas) return this.scaleCanvas(...args);
+    return this.scaleHtml(...args);
+  }
+
+  /**
    * Scale the inset.
    *
    * @param  {Number}  amount  Amount by which to scale the inset
    */
-  scale(amount = 1) {
+  scaleCanvas(amount = 1) {
     if (this.tweenStop) this.tweenStop();
 
     this.scaleExtra = amount;
@@ -1470,6 +1491,17 @@ export default class Inset {
       ],
       80
     );
+  }
+
+  /**
+   * Scale the inset.
+   *
+   * @param  {Number}  amount  Amount by which to scale the inset
+   */
+  scaleHtml(amount = 1) {
+    this.border.__transform__.scale = [amount, amount];
+    this.border.style.transform = objToTransformStr(this.border.__transform__);
+    console.log('ass', this.border.__transform__, objToTransformStr(this.border.__transform__));
   }
 
   /**
