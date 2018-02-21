@@ -14,6 +14,8 @@ import {
   lDist
 } from './utils';
 
+import style from '../styles/Insets2dTrack.module.scss';
+
 const BASE_MIN_SIZE = 12;
 const BASE_MAX_SIZE = 24;
 const BASE_SCALE = 4;
@@ -50,6 +52,7 @@ export default class Inset {
     this.options = options;
     this.mouseHandler = mouseHandler;
     this.dataType = dataType;
+    this.isRenderToCanvas = true;
 
     this.isMatrix = this.dataType === 'cooler';
     this.t = this.isMatrix ? -1 : 1;
@@ -69,6 +72,8 @@ export default class Inset {
     this.previewsHeight = 0;
     this.spritePreviews = [];
     this.prevData = [];
+
+    this.cssGrads = {};
 
     this.minSize = this.options.minSize || BASE_MIN_SIZE;
     this.maxSize = this.options.maxSize || BASE_MAX_SIZE;
@@ -97,10 +102,10 @@ export default class Inset {
 
     this.borderStyle = [1, 0x000000, 0.33];
     this.borderPadding = options.borderWidth * 2 || 4;
-    this.borderFill = colorToHex(options.borderColor) || 0xffffff;
+    this.borderFill = options.borderColor;
     this.borderFillAlpha = options.borderOpacity || 1;
 
-    this.selectColor = colorToHex(options.selectColor) || 0xff0000;
+    this.selectColor = options.selectColor;
 
     this.leaderLineStubWidthMin = (
       this.options.leaderLineStubWidthMin || this.options.leaderLineStubWidth
@@ -152,12 +157,153 @@ export default class Inset {
 
   /* ---------------------------- Custom Methods ---------------------------- */
 
+  baseEl(parentElement) {
+    this.parentElement = parentElement;
+  }
   /**
    * Blur visually focused insert by changing back to the default border color.
    */
   blur() {
-    this.clearBorder();
-    this.drawBorder();
+    if (this.isRenderToCanvas) this.clearBorder();
+    this.borderDraw();
+  }
+
+  /**
+   * Draw inset border.
+   *
+   * @param  {Number}  x  X position of the inset to be drawn.
+   * @param  {Number}  y  Y position of the inset to be drawn.
+   * @param  {Number}  width  Width of the inset to be drawn.
+   * @param  {Number}  height  Height of the inset to be drawn.
+   */
+  borderDraw(
+    x = this.x,
+    y = this.y,
+    width = this.width,
+    height = this.height,
+    graphics = this.gBorder,
+    radius = this.options.borderRadius,
+    fill = this.borderFill,
+  ) {
+    const prevHeight = this.spritePreviews.length
+      ? (
+        (this.previewsHeight * this.scaleBase * this.scaleExtra * this.imScale) +
+        ((this.spritePreviews.length - 1) * this.previewSpacing)
+      ) + 2
+      : 0;
+
+    const [vX, vY] = this.computeBorderPosition(
+      x, y, width, height, radius, fill, graphics
+    );
+
+    if (!this.border) {
+      this.borderRender(x, y, width, height, radius, fill, graphics);
+    }
+
+    let borderWidthExtra = 0;
+    // Get extra border scale if `scaleBorderBy` option is set
+    if (this.options.scaleBorderBy && this.borderScale) {
+      borderWidthExtra = this.borderScale(this.borderPropAcc(this.label.src)) - 1;
+    }
+
+    const widthFinal = width + (2 * borderWidthExtra);
+    const heightFinal = height + (2 * borderWidthExtra);
+
+    this.borderPosition(
+      vX - borderWidthExtra,
+      vY - borderWidthExtra,
+      widthFinal + this.borderPadding,
+      heightFinal + prevHeight + this.borderPadding
+    );
+  }
+
+  /**
+   * Position border. Just a helper function forwarding the call to the canvas
+   *   or HTML positioner.
+   */
+  borderPosition(...args) {
+    if (this.isRenderToCanvas) return this.borderPositionCanvas(...args);
+    return this.borderPositionHtml(...args);
+  }
+
+  /**
+   * Position border for drawing on canvas
+   * @param   {number}  x  X position in pixel.
+   * @param   {number}  y  Y position in pixel.
+   * @param   {number}  width  Width of the border in pixel.
+   * @param   {number}  height  Height of the border in pixel.
+   */
+  borderPositionCanvas(x, y, width, height) {
+    this.border.x = x + this.globalOffsetX;
+    this.border.y = y + this.globalOffsetY;
+    this.border.width = width;
+    this.border.height = height;
+  }
+
+  /**
+   * Position border for drawing on HTML
+   * @param   {number}  x  X position in pixel.
+   * @param   {number}  y  Y position in pixel.
+   * @param   {number}  width  Width of the border in pixel.
+   * @param   {number}  height  Height of the border in pixel.
+   */
+  borderPositionHtml(x, y, width, height) {
+    this.border.style.width = `${width}px`;
+    this.border.style.height = `${height}px`;
+    this.border.style.transform = `translate(${x}px, ${y}px)`;
+  }
+
+  /**
+   * Render border. Just a helper function forwarding the call to the canvas
+   *   or HTML positioner.
+   */
+  borderRender(...args) {
+    if (this.isRenderToCanvas) return this.borderRenderCanvas(...args);
+    return this.borderRenderHtml(...args);
+  }
+
+  /**
+   * Render border on canvas
+   * @param   {number}  x  X position in pixel.
+   * @param   {number}  y  Y position in pixel.
+   * @param   {number}  width  Width of the border in pixel.
+   * @param   {number}  height  Height of the border in pixel.
+   * @param   {number}  radius  Radius of the corner in pixel.
+   * @param   {D3.Color}  fill  Fill color.
+   * @param   {PIXI.Graphics}  graphics  Graphics to draw on
+   */
+  borderRenderCanvas(x, y, width, height, radius, fill, graphics) {
+    const ratio = width / height;
+    const maxBorderSize = this.maxSize * this.onClickScale * this.scaleBase;
+    if (this.tweenStop) this.tweenStop();
+    this.border = this.createRect(
+      (ratio >= 1
+        ? maxBorderSize
+        : maxBorderSize * ratio) + this.borderPadding,
+      (ratio <= 1
+        ? maxBorderSize
+        : maxBorderSize / ratio) + this.borderPadding,
+      radius,
+      fill
+    );
+    graphics.addChild(this.border);
+  }
+
+  /**
+   * Render border on HTML
+   * @param   {number}  x  X position in pixel.
+   * @param   {number}  y  Y position in pixel.
+   * @param   {number}  width  Width of the border in pixel.
+   * @param   {number}  height  Height of the border in pixel.
+   * @param   {number}  radius  Radius of the corner in pixel.
+   * @param   {D3.Color}  fill  Fill color.
+   */
+  borderRenderHtml(x, y, width, height, radius, fill) {
+    this.border = document.createElement('div');
+    this.border.className = style.inset;
+    this.border.style.background = fill.toString();
+    this.border.style.borderRadius = `${radius}px`;
+    this.parentElement.appendChild(this.border);
   }
 
   /**
@@ -201,8 +347,8 @@ export default class Inset {
     padding = this.borderPadding,
     isAbs = false,
   ) {
-    const finalX = this.globalOffsetX + x - (width / 2);
-    const finalY = this.globalOffsetY + y - (height / 2);
+    const finalX = x - (width / 2);
+    const finalY = y - (height / 2);
 
     return [
       finalX - (padding / 2),
@@ -224,6 +370,30 @@ export default class Inset {
       this.originWidthHalf * 2,
       this.originHeightHalf * 2
     ];
+  }
+
+  /**
+   * Compute and cache CSS gradients
+   * @param   {[type]}  color  [description]
+   * @return  {[type]}  [description]
+   */
+  compCssGrad(color, def, id = 0) {
+    const colorId = `${color.toString()}.${id}`;
+    if (this.cssGrads[colorId]) return this.cssGrads[color];
+
+    const _color = d3Color(color);
+    const colors = [];
+    Object.keys(def)
+      .map(percent => +percent)
+      .sort()
+      .forEach((percent) => {
+        _color.opacity = def[percent];
+        colors.push(`${_color.toString()} ${percent * 100}%`);
+      });
+
+    this.cssGrads[colorId] = `linear-gradient(to right, ${colors.join(', ')})`;
+
+    return this.cssGrads[colorId];
   }
 
   /**
@@ -258,6 +428,45 @@ export default class Inset {
         this.t * this.scaleBase * this.scaleExtra * this.imScale
       ),
     };
+  }
+
+  /**
+   * Compute the truncated endpoints of the leader line
+   * @return  {array}  Tuple of the two end points in form of `[x, y]`
+   */
+  computerLeaderLineEndpoints() {
+    const rectInset = this.computeBorderPosition(
+      this.x, this.y, this.width, this.height, 0, true
+    );
+    const rectOrigin = this.computeBorderPosition(
+      ...this.computeBorderOriginPosition(), 0, true
+    );
+
+    const pInset = [this.x, this.y];
+    const pOrigin = [this.originX, this.originY];
+
+    // Get the point on the border of the inset that intersects with the leader
+    // line by clipping of the origin, i.e., the point not being within the
+    // inset as illustrated:
+    //  1) ___________                 2) ___________
+    //     |         |     _____          |         |
+    //     |         |     |   |          |         |
+    //     |    i----X-----Y-o |   >>>    |    i----o
+    //     |         |     |   |          |         |
+    //     |         |     ¯¯¯¯¯          |         |
+    //     ¯¯¯¯¯¯¯¯¯¯¯                    ¯¯¯¯¯¯¯¯¯¯¯
+    // where i is the center of the inset (given) and o is the center of the
+    // origin (given) and X and Y are the intersection of the leader line with
+    // the insets and annotation bounding box. In order to get X we clip the
+    // path between i and o such that i remains the same and o gets clipped (2).
+    // Therefore the new location of i is the clipped point o!
+    const pInsetNew = pOrigin.slice();
+    clip(pInset.slice(), pInsetNew, rectInset);
+
+    const pOriginNew = pInset.slice();
+    clip(pOriginNew, pOrigin.slice(), rectOrigin);
+
+    return [pInsetNew, pOriginNew];
   }
 
   /**
@@ -396,7 +605,7 @@ export default class Inset {
     fill = this.borderFill,
   ) {
     const rect = new PIXI.Graphics()
-      .beginFill(fill)
+      .beginFill(colorToHex(fill))
       .drawRoundedRect(0, 0, width, height, radius)
       .endFill()
       .generateCanvasTexture();
@@ -418,7 +627,17 @@ export default class Inset {
 
     this.data = undefined;
     this.sprite = undefined;
-    this.border = undefined;
+
+    if (this.isRenderToCanvas) {
+      this.border = undefined;
+    } else {
+      this.parentElement.removeChild(this.border);
+      this.parentElement.removeChild(this.leaderLine);
+      this.border = undefined;
+      this.leaderLine = undefined;
+      this.leaderLineStubA = undefined;
+      this.leaderLineStubB = undefined;
+    }
   }
 
   /**
@@ -434,119 +653,295 @@ export default class Inset {
   }
 
   /**
-   * Draw inset border.
-   *
-   * @param  {Number}  x  X position of the inset to be drawn.
-   * @param  {Number}  y  Y position of the inset to be drawn.
-   * @param  {Number}  width  Width of the inset to be drawn.
-   * @param  {Number}  height  Height of the inset to be drawn.
+   * Wrapper function for complete drawing.
+   * @return  {promise}  Resolving to true once everything has been drawn.
    */
-  drawBorder(
-    x = this.x,
-    y = this.y,
-    width = this.width,
-    height = this.height,
-    graphics = this.gBorder,
-    radius = this.options.borderRadius,
-    fill = this.borderFill,
-  ) {
-    const prevHeight = this.spritePreviews.length
-      ? (
-        (this.previewsHeight * this.scaleBase * this.scaleExtra * this.imScale) +
-        ((this.spritePreviews.length - 1) * this.previewSpacing)
-      ) + 2
-      : 0;
-
-    const [vX, vY] = this.computeBorderPosition(x, y, width, height);
-
-    if (!this.border) {
-      const ratio = width / height;
-      const maxBorderSize = this.maxSize * this.onClickScale * this.scaleBase;
-      if (this.tweenStop) this.tweenStop();
-      this.border = this.createRect(
-        (ratio >= 1
-          ? maxBorderSize
-          : maxBorderSize * ratio) + this.borderPadding,
-        (ratio <= 1
-          ? maxBorderSize
-          : maxBorderSize / ratio) + this.borderPadding,
-        radius,
-        fill
-      );
-      graphics.addChild(this.border);
-    }
-
-    let borderWidthExtra = 0;
-    // Get extra border scale if `scaleBorderBy` option is set
-    if (this.options.scaleBorderBy && this.borderScale) {
-      borderWidthExtra = this.borderScale(this.borderPropAcc(this.label.src)) - 1;
-    }
-
-    const widthFinal = width + (2 * borderWidthExtra);
-    const heightFinal = height + (2 * borderWidthExtra);
-
-    this.border.x = vX - borderWidthExtra;
-    this.border.y = vY - borderWidthExtra;
-    this.border.width = widthFinal + this.borderPadding;
-    this.border.height = heightFinal + prevHeight + this.borderPadding;
-
-    // Make border interactive baby!
-    // MOUSEOUT does not work properly so we disable it for not.
-    // this.border.interactive = true;
-
-    // this.border
-    //   .on('mousedown', this.mouseDownHandler.bind(this))
-    //   .on('mouseover', this.mouseOverHandler.bind(this))
-    //   .on('mouseout', this.mouseOutHandler.bind(this))
-    //   .on('mouseup', this.mouseUpHandler.bind(this))
-    //   .on('rightdown', this.mouseDownRightHandler.bind(this))
-    //   .on('rightup', this.mouseUpRightHandler.bind(this));
+  draw() {
+    this.leaderLineDraw();
+    this.borderDraw();
+    return this.drawImage();
   }
 
   /**
    * Draw leader line.
+   * @param   {D3.Color}  color  Color.
    */
-  drawLeaderLine(color = this.leaderLineColor) {
-    const dist = lDist(
-      [this.originX, this.originY],
-      [this.x, this.y],
-    );
+  leaderLineDraw(color = this.leaderLineColor) {
+    let pointFrom = [this.originX, this.originY];
+    let pointTo = [this.x, this.y];
+    let dist = lDist(pointFrom, pointTo);
 
     if (
       this.options.leaderLineStubLength * 1.5 < dist ||
       this.options.leaderLineFading
     ) {
-      this.renderLeaderLine(color);
-    } else {
-      this.gLeaderLine.clear();
-      this.gLeaderLine.lineStyle(
-        this.leaderLineStyle[0],
-        this.isHovering ? this.selectColor : this.leaderLineStyle[1],
-        this.leaderLineStyle[2]
-      );
-
-      // Origin
-      this.gLeaderLine.moveTo(
-        this.globalOffsetX + this.originX,
-        this.globalOffsetY + this.originY
-      );
-
-      // Inset position
-      this.gLeaderLine.lineTo(
-        this.globalOffsetX + this.x,
-        this.globalOffsetY + this.y
-      );
+      // Calculate the truncated start and end points
+      [pointFrom, pointTo] = this.computerLeaderLineEndpoints();
+      dist = lDist(pointFrom, pointTo);
     }
+
+    this.leaderLineRender(pointFrom, pointTo, dist, color);
+  }
+
+  /**
+   * Render the leader line between the inset and the origin.
+   * @return  {array}  List of PIXI.Sprite objects of the leader line.
+   */
+  leaderLineRender(pointFrom, pointTo, dist, color = this.options.leaderLineColor) {
+    if (this.options.leaderLineStubLength) {
+      return this.leaderLineRenderStubs(pointFrom, pointTo, dist, color);
+    }
+
+    if (this.options.leaderLineFading) {
+      return this.leaderLineRenderGrd(pointFrom, pointTo, dist, color);
+    }
+
+    return this.leaderLineRenderPlain(pointFrom, pointTo, dist, color);
+  }
+
+  /**
+   * Render plain leader line. Just a forwader to the canvas and HTML renderer.
+   */
+  leaderLineRenderPlain(...args) {
+    if (this.isRenderToCanvas) return this.leaderLineRenderPlainCanvas(...args);
+    return this.leaderLineRenderHtml(...args);
+  }
+
+  /**
+   * Render plain leader line on canvas.
+   * @param   {array}  pointFrom  Tuple in form of `[x,y]`.
+   * @param   {array}  pointTo  Tuple in form of `[x,y]`.
+   */
+  leaderLineRenderPlainCanvas(pointFrom, pointTo) {
+    this.gLeaderLine.clear();
+    this.gLeaderLine.lineStyle(
+      this.leaderLineStyle[0],
+      this.isHovering ? colorToHex(this.selectColor) : this.leaderLineStyle[1],
+      this.leaderLineStyle[2]
+    );
+
+    // Origin
+    this.gLeaderLine.moveTo(
+      pointFrom[0] + this.globalOffsetX,
+      pointFrom[1] + this.globalOffsetY
+    );
+
+    // Inset position
+    this.gLeaderLine.lineTo(
+      pointTo[0] + this.globalOffsetX,
+      pointTo[1] + this.globalOffsetY
+    );
+  }
+
+  /**
+   * Render all types of leader lines on HTML.
+   * @param   {array}  pointFrom  Tuple in form of `[x,y]`.
+   * @param   {array}  pointTo  Tuple in form of `[x,y]`.
+   * @param   {number}  dist  [description]
+   * @param   {D3.Color}  color  Color.
+   */
+  leaderLineRenderHtml(pointFrom, pointTo, dist, color) {
+    const ll = this.leaderLine || document.createElement('div');
+
+    ll.className = style['inset-leader-line'];
+    ll.style.width = `${dist}px`;
+    ll.style.height = `${this.leaderLineStyle[0]}px`;
+
+    if (this.options.leaderLineStubLength) {
+      let stubA = this.leaderLineStubA;
+      let stubB = this.leaderLineStubB;
+
+      if (!stubA || !stubB) {
+        stubA = document.createElement('div');
+        stubB = document.createElement('div');
+
+        stubA.className = style['inset-leader-line-stub-left'];
+        stubB.className = style['inset-leader-line-stub-right'];
+      }
+
+      const _color = this.isHovering ? this.options.selectColor : color;
+      const gradientA = this.compCssGrad(_color, { 0: 1, 1: 0 }, 0);
+      const gradientB = this.compCssGrad(_color, { 0: 0, 1: 1 }, 1);
+
+      stubA.style.background = gradientA;
+      stubB.style.background = gradientB;
+
+      const width = Math.max(
+        this.options.leaderLineStubLength,
+        dist * (1 - this.relD)
+      );
+      const lineWidth = (
+        this.leaderLineStubWidthMin
+        + (this.leaderLineStubWidthVariance * this.relD)
+      );
+
+      stubA.style.width = `${Math.round(width)}px`;
+      stubA.style.height = `${lineWidth}px`;
+      stubB.style.width = `${Math.round(width)}px`;
+      stubB.style.height = `${lineWidth}px`;
+
+      if (
+        this.leaderLineStubA !== stubA ||
+        this.leaderLineStubB !== stubB
+      ) {
+        ll.appendChild(stubA);
+        ll.appendChild(stubB);
+        this.leaderLineStubA = stubA;
+        this.leaderLineStubB = stubB;
+      }
+    } else if (this.options.leaderLineFading) {
+      ll.style.background = this.compCssGrad(
+        (this.isHovering ? this.options.selectColor : color),
+        this.options.leaderLineFading
+      );
+    } else {
+      ll.style.background = color.toString();
+    }
+
+    const rotation = getAngleBetweenPoints(pointFrom, pointTo);
+
+    const yOff = Math.round(this.leaderLineStyle[0] / 2);
+
+    ll.style.left = `${pointFrom[0]}px`;
+    ll.style.top = `${pointFrom[1] - yOff}px`;
+    ll.style.transform = `rotate(${rotation}rad)`;
+
+    if (this.leaderLine !== ll) {
+      this.parentElement.appendChild(ll);
+      this.leaderLine = ll;
+    }
+  }
+
+  /**
+   * Render gradient leader line. Just a forwader to the canvas and HTML
+   *   renderer.
+   */
+  leaderLineRenderGrd(...args) {
+    if (this.isRenderToCanvas) return this.leaderLineRenderGrdCanvas(...args);
+    return this.leaderLineRenderHtml(...args);
+  }
+
+  /**
+   * Render fading leader line a relative multistep color gradient.
+   * @param   {array}  pointFrom  Tuple of form [x,y].
+   * @param   {array}  pointTo  Tuple of form [x,y].
+   * @param   {object}  color  RGBA D3 color object.
+   * @return  {array}  List of PIXI.Sprite objects of the leader line.
+   */
+  leaderLineRenderGrdCanvas(pointFrom, pointTo, color = this.options.leaderLineColor) {
+    const _color = d3Color((this.isHovering
+      ? this.options.selectColor
+      : color
+    ));
+
+    const colorSteps = {};
+    Object.keys(this.options.leaderLineFading).forEach((step) => {
+      _color.opacity = this.options.leaderLineFading[step];
+      colorSteps[step] = _color.toString();
+    });
+
+    const gradient = new PIXI.Sprite(
+      PIXI.Texture.fromCanvas(canvasLinearGradient(
+        lDist(pointFrom, pointTo),
+        this.options.leaderLineWidth || 2,
+        colorSteps
+      ))
+    );
+    // Set the rotation center to [0, half height]
+    gradient.pivot.set(0, this.options.leaderLineWidth / 2);
+
+    gradient.x = pointTo[0] + this.globalOffsetX;
+    gradient.y = pointTo[1] + this.globalOffsetY;
+    gradient.rotation = getAngleBetweenPoints(
+      [this.originX, this.originY],
+      [this.x, this.y]
+    );
+
+    this.gLeaderLine.removeChildren();
+    this.gLeaderLine.addChild(gradient);
+
+    this.gLeaderLineGrd = [gradient];
+
+    return this.gLeaderLineGrd;
+  }
+
+  /**
+   * Render stub leader line. Just a forwader to the canvas and HTML renderer.
+   */
+  leaderLineRenderStubs(...args) {
+    if (this.isRenderToCanvas) return this.leaderLineRenderStubsCanvas(...args);
+    return this.leaderLineRenderHtml(...args);
+  }
+
+  /**
+   * Render leader line stubs consisting of two absolute-sized color gradients.
+   * @param   {array}  pointFrom  Tuple of form [x,y].
+   * @param   {array}  pointTo  Tuple of form [x,y].
+   * @param   {object}  color  RGBA D3 color object.
+   * @return  {array}  List of PIXI.Sprite objects of the leader line.
+   */
+  leaderLineRenderStubsCanvas(pointFrom, pointTo, color = this.options.leaderLineColor) {
+    const _color = d3Color((this.isHovering
+      ? this.options.selectColor
+      : color
+    ));
+
+    const colorFrom = Object.assign(_color.rgb(), { opacity: 1 }).toString();
+    const colorTo = Object.assign(_color.rgb(), { opacity: 0 }).toString();
+
+    const dist = lDist(pointFrom, pointTo);
+    const width = Math.max(
+      this.options.leaderLineStubLength,
+      dist * (1 - this.relD)
+    );
+    const lineWidth = (
+      this.leaderLineStubWidthMin
+      + (this.leaderLineStubWidthVariance * this.relD)
+    );
+
+    const gradient = PIXI.Texture.fromCanvas(canvasLinearGradient(
+      width,
+      lineWidth || 2,
+      { 0: colorFrom, 1: colorTo }
+    ));
+
+    const angle = getAngleBetweenPoints(
+      [this.originX, this.originY],
+      [this.x, this.y]
+    );
+
+    const gradientFrom = new PIXI.Sprite(gradient);
+    const gradientTo = new PIXI.Sprite(gradient);
+
+    // Set the rotation center to [0, half height]
+    gradientFrom.pivot.set(0, this.options.leaderLineWidth / 2);
+    gradientTo.pivot.set(0, this.options.leaderLineWidth / 2);
+
+    gradientFrom.x = pointTo[0];
+    gradientFrom.y = pointTo[1];
+    gradientFrom.rotation = angle;
+
+    gradientTo.x = pointFrom[0];
+    gradientTo.y = pointFrom[1];
+    gradientTo.rotation = angle + degToRad(180);
+
+    this.gLeaderLine.removeChildren();
+    this.gLeaderLine.addChild(gradientFrom);
+    this.gLeaderLine.addChild(gradientTo);
+
+    this.gLeaderLineGrd = [gradientFrom, gradientTo];
+
+    return this.gLeaderLineGrd;
   }
 
   /**
    * Draw the image of the inset (i.e., a matrix snippet or image snippet)
    *
-   * @param  {Function}  imgRenderer  Image renderer, i.e., function converting
+   * @param  {Function}  renderer  Image renderer, i.e., function converting
    *   the data into canvas.
    * @param  {Boolean}  force  If `true` forces a rerendering of the image.
    */
-  drawImage(imgRenderer, force = false) {
+  drawImage(force = false) {
     if (this.fetchAttempts >= 2) {
       return Promise.reject('Could not fetch the inset\'s images');
     }
@@ -559,26 +954,24 @@ export default class Inset {
             this.imData = data.fragments;
             this.prevData = data.previews;
             this.inFlight = false;
-            return this.drawImage(imgRenderer, force);
+            return this.drawImage(force);
           });
       }
       return this.inFlight;
     }
 
-    const imageRendered = this.renderImage(this.imData, imgRenderer, force)
+    const imageRendered = this.renderImage(this.imData, force)
       .then(() => {
         this.positionImage();
         return true;
       })
       .catch(err => console.error('Image rendering failed', err));
 
-    const previewsRendered = this.renderPreviews(
-      this.prevData, imgRenderer, force
-    )
+    const previewsRendered = this.renderPreviews(this.prevData, force)
       .then(() => {
         this.positionPreviews();
         // We need to redraw the border because the height has changed
-        this.drawBorder();
+        this.borderDraw();
         return true;
       })
       .catch(err => console.error('Preview rendering failed', err));
@@ -650,8 +1043,8 @@ export default class Inset {
    *   `this.selectColor`.
    */
   focus() {
-    this.clearBorder();
-    this.drawBorder(
+    if (this.isRenderToCanvas) this.clearBorder();
+    this.borderDraw(
       this.x,
       this.y,
       this.width,
@@ -744,7 +1137,7 @@ export default class Inset {
     this.isHovering = true;
     this.focus();
     this.originFocus();
-    this.drawLeaderLine(this.options.selectColor);
+    this.leaderLineDraw();
     this.mouseHandler.mouseOver(event, this);
   }
 
@@ -757,7 +1150,7 @@ export default class Inset {
     this.isHovering = false;
     this.blur();
     this.originBlur();
-    this.drawLeaderLine();
+    this.leaderLineDraw();
     this.mouseHandler.mouseOut(event, this);
   }
 
@@ -910,17 +1303,15 @@ export default class Inset {
    * Render the main image and assign event listeners.
    *
    * @param  {Array}  data  Data to be rendered
-   * @param  {Function}  imgRenderer  Image renderer converting the data into
-   *   canvas.
    */
-  renderImage(data, imgRenderer, force) {
+  renderImage(data, force) {
     if ((this.sprite && !force) || !data.length) {
       return Promise.resolve();
     }
 
     if (this.imageRendering) return this.imageRendering;
 
-    this.imageRendering = imgRenderer(data[0], this.dataTypes[0])
+    this.imageRendering = this.renderer(data[0], this.dataTypes[0])
       .then((renderedData) => {
         this.imData = renderedData;
 
@@ -949,10 +1340,8 @@ export default class Inset {
    * Render the data to an image and assign event listeners.
    *
    * @param  {Array}  data  Data to be rendered
-   * @param  {Function}  imgRenderer  Image renderer converting the data into
-   *   canvas.
    */
-  renderPreviews(data, imgRenderer, force) {
+  renderPreviews(data, force) {
     if (
       !data ||
       (this.spritePreviews.length === data.length && !force) ||
@@ -964,7 +1353,7 @@ export default class Inset {
     this.previewsHeight = 0;
 
     const renderedPreviews = data
-      .map((preview, i) => imgRenderer(preview, this.dataTypes[0])
+      .map((preview, i) => this.renderer(preview, this.dataTypes[0])
         .then((renderedData) => {
           this.prevData[i] = renderedData;
 
@@ -994,158 +1383,16 @@ export default class Inset {
     return this.previewsRendering;
   }
 
-  /**
-   * Render the leader line between the inset and the origin.
-   * @return  {array}  List of PIXI.Sprite objects of the leader line.
-   */
-  renderLeaderLine(color = this.options.leaderLineColor) {
-    const rectInset = this.computeBorderPosition(
-      this.x, this.y, this.width, this.height, 0, true
-    );
-    const rectOrigin = this.computeBorderPosition(
-      ...this.computeBorderOriginPosition(), 0, true
-    );
+  renderTo(target) {
+    switch (target) {
+      case 'html':
+        this.isRenderToCanvas = false;
+        break;
 
-    const pInset = [
-      this.globalOffsetX + this.x,
-      this.globalOffsetY + this.y
-    ];
-    const pOrigin = [
-      this.globalOffsetX + this.originX,
-      this.globalOffsetY + this.originY
-    ];
-
-    // Get the point on the border of the inset that intersects with the leader
-    // line by clipping of the origin, i.e., the point not being within the
-    // inset as illustrated:
-    //  1) ___________                 2) ___________
-    //     |         |     _____          |         |
-    //     |         |     |   |          |         |
-    //     |    i----X-----Y-o |   >>>    |    i----o
-    //     |         |     |   |          |         |
-    //     |         |     ¯¯¯¯¯          |         |
-    //     ¯¯¯¯¯¯¯¯¯¯¯                    ¯¯¯¯¯¯¯¯¯¯¯
-    // where i is the center of the inset (given) and o is the center of the
-    // origin (given) and X and Y are the intersection of the leader line with
-    // the insets and annotation bounding box. In order to get X we clip the
-    // path between i and o such that i remains the same and o gets clipped (2).
-    // Therefore the new location of i is the clipped point o!
-    const pInsetNew = pOrigin.slice();
-    clip(pInset.slice(), pInsetNew, rectInset);
-
-    const pOriginNew = pInset.slice();
-    clip(pOriginNew, pOrigin.slice(), rectOrigin);
-
-    if (this.options.leaderLineStubLength) {
-      return this.renderLeaderLineStubs(pInsetNew, pOriginNew, color);
+      default:
+        this.isRenderToCanvas = true;
+        break;
     }
-
-    return this.renderLeaderLineGrd(pInsetNew, pOriginNew, color);
-  }
-
-  /**
-   * Render fading leader line a relative multistep color gradient.
-   * @param   {array}  pointFrom  Tuple of form [x,y].
-   * @param   {array}  pointTo  Tuple of form [x,y].
-   * @param   {object}  color  RGBA D3 color object.
-   * @return  {array}  List of PIXI.Sprite objects of the leader line.
-   */
-  renderLeaderLineGrd(pointFrom, pointTo, color = this.options.leaderLineColor) {
-    const _color = d3Color((this.isHovering
-      ? this.options.selectColor
-      : color
-    ));
-
-    const colorSteps = {};
-    Object.keys(this.options.leaderLineFading).forEach((step) => {
-      _color.opacity = this.options.leaderLineFading[step];
-      colorSteps[step] = _color.toString();
-    });
-
-    const gradient = new PIXI.Sprite(
-      PIXI.Texture.fromCanvas(canvasLinearGradient(
-        lDist(pointFrom, pointTo),
-        this.options.leaderLineWidth || 2,
-        colorSteps
-      ))
-    );
-    // Set the rotation center to [0, half height]
-    gradient.pivot.set(0, this.options.leaderLineWidth / 2);
-
-    gradient.x = pointTo[0];
-    gradient.y = pointTo[1];
-    gradient.rotation = getAngleBetweenPoints(
-      [this.originX, this.originY],
-      [this.x, this.y]
-    );
-
-    this.gLeaderLine.removeChildren();
-    this.gLeaderLine.addChild(gradient);
-
-    this.gLeaderLineGrd = [gradient];
-
-    return this.gLeaderLineGrd;
-  }
-
-  /**
-   * Render leader line stubs consisting of two absolute-sized color gradients.
-   * @param   {array}  pointFrom  Tuple of form [x,y].
-   * @param   {array}  pointTo  Tuple of form [x,y].
-   * @param   {object}  color  RGBA D3 color object.
-   * @return  {array}  List of PIXI.Sprite objects of the leader line.
-   */
-  renderLeaderLineStubs(pointFrom, pointTo, color = this.options.leaderLineColor) {
-    const _color = d3Color((this.isHovering
-      ? this.options.selectColor
-      : color
-    ));
-
-    const colorFrom = Object.assign(_color.rgb(), { opacity: 1 }).toString();
-    const colorTo = Object.assign(_color.rgb(), { opacity: 0 }).toString();
-
-    const dist = lDist(pointFrom, pointTo);
-    const width = Math.max(
-      this.options.leaderLineStubLength,
-      dist * (1 - this.relD)
-    );
-    const lineWidth = (
-      this.leaderLineStubWidthMin
-      + (this.leaderLineStubWidthVariance * this.relD)
-    );
-
-    const gradient = PIXI.Texture.fromCanvas(canvasLinearGradient(
-      width,
-      lineWidth || 2,
-      { 0: colorFrom, 1: colorTo }
-    ));
-
-    const angle = getAngleBetweenPoints(
-      [this.originX, this.originY],
-      [this.x, this.y]
-    );
-
-    const gradientFrom = new PIXI.Sprite(gradient);
-    const gradientTo = new PIXI.Sprite(gradient);
-
-    // Set the coration center to [0, half height]
-    gradientFrom.pivot.set(0, this.options.leaderLineWidth / 2);
-    gradientTo.pivot.set(0, this.options.leaderLineWidth / 2);
-
-    gradientFrom.x = pointTo[0];
-    gradientFrom.y = pointTo[1];
-    gradientFrom.rotation = angle;
-
-    gradientTo.x = pointFrom[0];
-    gradientTo.y = pointFrom[1];
-    gradientTo.rotation = angle + degToRad(180);
-
-    this.gLeaderLine.removeChildren();
-    this.gLeaderLine.addChild(gradientFrom);
-    this.gLeaderLine.addChild(gradientTo);
-
-    this.gLeaderLineGrd = [gradientFrom, gradientTo];
-
-    return this.gLeaderLineGrd;
   }
 
   /**
@@ -1232,6 +1479,14 @@ export default class Inset {
    */
   setBorderScale(borderScale) {
     this.borderScale = borderScale;
+  }
+
+  /**
+   * Set an inset renderer
+   * @param   {function}  renderer  Inset renderer
+   */
+  setRenderer(renderer) {
+    this.renderer = renderer;
   }
 
   /**
