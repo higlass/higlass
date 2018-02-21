@@ -260,6 +260,7 @@ export class StackedBarTrack extends BarTrack {
       // sets background to black if black option enabled
       const backgroundColor = this.options.backgroundColor;
       if (backgroundColor === 'black') {
+        this.options.labelColor = 'white';
         graphics.beginFill(backgroundColor);
         graphics.drawRect(x, 0, width, trackHeight - positiveStackedHeight); // positive background
         graphics.drawRect(x, negativeStackedHeight + positiveTrackHeight,    // negative background
