@@ -10,6 +10,10 @@ export class StackedBarTrack extends BarTrack {
       max: null,
       min: null
     };
+
+    // stores max/min and unflattened matrix for previously rendered tiles
+    this.localTileData = {};
+
   }
 
   initTile(tile) {
@@ -19,15 +23,23 @@ export class StackedBarTrack extends BarTrack {
   updateTile(tile) {
     const visibleAndFetched = this.visibleAndFetchedTiles();
 
-    // reset max and min to null so previous maxes and mins don't carry over //todo save previously calculated maxAndMins
+    // reset max and min to null so previous maxes and mins don't carry over
     this.maxAndMin = {
       max: null,
       min: null
     };
 
     for (let i = 0; i < visibleAndFetched.length; i++) {
-      const matrix = this.unFlatten(visibleAndFetched[i]);
-      this.findMaxAndMin(matrix);
+      const tile = visibleAndFetched[i];
+      this.unFlatten(tile);
+      if (this.localTileData.hasOwnProperty(tile.tileId)) {
+        const storedTile = this.localTileData[tile.tileId]; // has max and min
+        // update global max and min if necessary
+        (this.maxAndMin.max === null || storedTile.max > this.maxAndMin.max) ?
+          this.maxAndMin.max = storedTile.max : this.maxAndMin.max;
+        (this.maxAndMin.min === null || storedTile.min < this.maxAndMin.min) ?
+          this.maxAndMin.min = storedTile.min : this.maxAndMin.min;
+      }
     }
 
     for (let i = 0; i < visibleAndFetched.length; i++) {
@@ -65,45 +77,53 @@ export class StackedBarTrack extends BarTrack {
       }
     }
 
-    // update global max and min if necessary
-    (this.maxAndMin.max === null || maxAndMin.max > this.maxAndMin.max) ?
-      this.maxAndMin.max = maxAndMin.max : this.maxAndMin.max;
-    (this.maxAndMin.min === null || maxAndMin.min < this.maxAndMin.min) ?
-      this.maxAndMin.min = maxAndMin.min : this.maxAndMin.min;
+    return maxAndMin;
+
   }
 
   /**
    * un-flatten data into matrix of tile.tileData.shape[0] x tile.tileData.shape[1]
    *
-   *
-   *
    * @param tile
    * @returns {Array} 2d array of numerical values for each column
    */
   unFlatten(tile) {
-    const shapeX = tile.tileData.shape[0]; // number of different nucleotides in each bar
-    const shapeY = tile.tileData.shape[1]; // number of bars
-    let flattenedArray = tile.tileData.dense;
-
-    // if any data is negative, switch to exponential scale //todo does this clash with call in TiledPixiTrack?
-    if (flattenedArray.filter((a) => a < 0).length > 0 && this.options.valueScaling === 'linear') {
-      console.warn('Negative values present in data. Defaulting to exponential scale.');
-      this.options.valueScaling = 'exponential';
+    if (this.localTileData.hasOwnProperty(tile.tileId)) {
+      return this.localTileData[tile.tileId].matrix;
     }
+    else {
+      const shapeX = tile.tileData.shape[0]; // number of different nucleotides in each bar
+      const shapeY = tile.tileData.shape[1]; // number of bars
+      let flattenedArray = tile.tileData.dense;
 
-    // matrix[0] will be [flattenedArray[0], flattenedArray[256], flattenedArray[512], etc.]
-    // because of how flattenedArray comes back from the server.
-    const matrix = [];
-    for (let i = 0; i < shapeX; i++) {//6
-      for (let j = 0; j < shapeY; j++) {//256;
-        let singleBar;
-        (matrix[j] === undefined) ? singleBar = [] : singleBar = matrix[j];
-        singleBar.push(flattenedArray[(shapeY * i) + j]);
-        matrix[j] = singleBar;
+      // if any data is negative, switch to exponential scale
+      if (flattenedArray.filter((a) => a < 0).length > 0 && this.options.valueScaling === 'linear') {
+        console.warn('Negative values present in data. Defaulting to exponential scale.');
+        this.options.valueScaling = 'exponential';
       }
-    }
 
-    return matrix;
+      // matrix[0] will be [flattenedArray[0], flattenedArray[256], flattenedArray[512], etc.]
+      // because of how flattenedArray comes back from the server.
+      const matrix = [];
+      for (let i = 0; i < shapeX; i++) {//6
+        for (let j = 0; j < shapeY; j++) {//256;
+          let singleBar;
+          (matrix[j] === undefined) ? singleBar = [] : singleBar = matrix[j];
+          singleBar.push(flattenedArray[(shapeY * i) + j]);
+          matrix[j] = singleBar;
+        }
+      }
+
+      const maxAndMin = this.findMaxAndMin(matrix);
+
+      this.localTileData[tile.tileId] = {
+        matrix: matrix,
+        max: maxAndMin.max,
+        min: maxAndMin.min
+      };
+
+      return matrix;
+    }
   }
 
   /**
@@ -120,7 +140,13 @@ export class StackedBarTrack extends BarTrack {
     const {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
       tile.tileData.tilePos, this.tilesetInfo.tile_size);
 
-    let matrix = this.unFlatten(tile);
+    let matrix;
+    if (this.localTileData.hasOwnProperty(tile.tileId)) {
+      matrix = this.localTileData[tile.tileId].matrix;
+    }
+    else {
+      matrix = this.unFlatten(tile);
+    }
 
     if (this.options.scaledHeight === true) {
       this.drawVerticalBars(graphics, this.mapOriginalColors(matrix),
@@ -162,7 +188,6 @@ export class StackedBarTrack extends BarTrack {
       const positive = [];
       const negative = [];
       for (let i = 0; i < columnColors.length; i++) {
-        // todo here we discard zeros because I don't think we need them anymore. should we be doing that?
         if (columnColors[i].value > 0) {
           positive.push(columnColors[i]);
         }
