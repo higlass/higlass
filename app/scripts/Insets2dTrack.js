@@ -28,6 +28,8 @@ import {
   tileToCanvas
 } from './utils';
 
+import style from '../styles/Insets2dTrack.module.scss';
+
 const BASE_MIN_SIZE = 12;
 const BASE_MAX_SIZE = 24;
 const BASE_SCALE = 4;
@@ -37,24 +39,30 @@ const INSET_MAX_PREVIEWS = 0;
 export default class Insets2dTrack extends PixiTrack {
   constructor(
     scene,
+    parentElement,
     dataConfig,
     dataType,
     chromInfoPath,
     options,
     animate,
     zoomToDataPos,
-    positioning  // Computed track position, location, and offset
+    positioning,  // Computed track position, location, and offset
+    margin
   ) {
     super(scene, options);
 
     this.isAugmentationTrack = true;
 
+    this.parentElement = parentElement;
     this.dataConfig = dataConfig;
     this.dataType = dataType;
     this.options = options;
     this.animate = animate;
     this.zoomToDataPos = zoomToDataPos;
     this.positioning = positioning;  // Needed for the gallery view
+    this.margin = margin;
+
+    this.initBaseEl();
 
     this.positioning.offsetX = this.positioning.offsetX || 0;
     this.positioning.offsetY = this.positioning.offsetY || 0;
@@ -234,6 +242,7 @@ export default class Insets2dTrack extends PixiTrack {
     );
     this.insetsInPreparation.delete(label);
 
+    inset.baseEl(this.baseElement);
     inset.clear(this.options);
     inset.globalOffset(...this.position);
     inset.globalSize(...this.dimensions);
@@ -241,10 +250,10 @@ export default class Insets2dTrack extends PixiTrack {
     inset.position(label.x, label.y);
     inset.size(label.width, label.height);
     inset.setBorderScale(borderScale);
-    inset.drawLeaderLine();
-    inset.drawBorder();
+    inset.setRenderer(this.rendererInset.bind(this));
+    inset.renderTo('html');
 
-    return inset.drawImage(this.rendererInset.bind(this));
+    return inset.draw();
   }
 
   dataToGenomePos(dataPos, _chromInfo) {
@@ -335,6 +344,17 @@ export default class Insets2dTrack extends PixiTrack {
     this.pMain.removeChild(this.insets.get(id).graphics);
     this.insets.get(id).destroy();
     this.insets.delete(id);
+  }
+
+  initBaseEl() {
+    this.baseElement = document.createElement('div');
+    this.baseElement.className = style['insets-track'];
+    this.baseElement.style.top = `${this.margin.top}px`;
+    this.baseElement.style.right = `${this.margin.left}px`;
+    this.baseElement.style.bottom = `${this.margin.top}px`;
+    this.baseElement.style.left = `${this.margin.left}px`;
+
+    this.parentElement.appendChild(this.baseElement);
   }
 
   initInset(

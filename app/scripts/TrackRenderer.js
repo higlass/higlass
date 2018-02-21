@@ -1525,6 +1525,7 @@ class TrackRenderer extends React.Component {
       case 'insets':
         return new Insets2dTrack(
           this.pStage,
+          this.element,
           dataConfig,
           track.datatype,
           track.chromInfoPath,
@@ -1537,7 +1538,11 @@ class TrackRenderer extends React.Component {
             height: track.height,
             offsetX: track.offsetX,
             offsetY: track.offsetY,
-          }
+          },
+          {
+            left: this.props.marginLeft,
+            top: this.props.marginTop,
+          },
         );
 
       case 'vertical-bedlike':
