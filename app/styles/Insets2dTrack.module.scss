@@ -35,6 +35,12 @@
   height: 100%;
 }
 
+.inset-leader-line-stub-left,
+.inset-leader-line-stub-right {
+  transition: width $fast $ease,
+              height $fast $ease;
+}
+
 .inset-leader-line-stub-left {
   left: 0;
 }
