@@ -1,0 +1,44 @@
+@import './colors';
+@import './transitions';
+
+.insets-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.inset {
+  position: absolute;
+  background: white;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5),
+              0 2px 6px 0 rgba(0, 0, 0, 0.33),
+              0 2px 9px 0 rgba(0, 0, 0, 0.2);
+  transition: transform $fast $ease,
+              width $fast $ease,
+              height $fast $ease;
+}
+
+.inset-leader-line {
+  position: absolute;
+  transition: transform $fast $ease;
+  transform-origin: center left;
+}
+
+.inset-leader-line-stub,
+.inset-leader-line-stub-left,
+.inset-leader-line-stub-right {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.inset-leader-line-stub-left {
+  left: 0;
+}
+
+.inset-leader-line-stub-right {
+  right: 0;
+}
