@@ -48,3 +48,24 @@
 .inset-leader-line-stub-right {
   right: 0;
 }
+
+.inset-image-wrapper {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  left: 2px;
+}
+
+.inset-image-ratio {
+  display: block;
+  width: 100%;
+  padding-top: 100%;
+}
+
+.inset-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

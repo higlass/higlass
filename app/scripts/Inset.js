@@ -71,7 +71,7 @@ export default class Inset {
     this.gMain.addChild(this.gBorder);
 
     this.previewsHeight = 0;
-    this.spritePreviews = [];
+    this.imgPreviews = [];
     this.prevData = [];
 
     this.cssGrads = {};
@@ -158,8 +158,12 @@ export default class Inset {
 
   /* ---------------------------- Custom Methods ---------------------------- */
 
-  baseEl(parentElement) {
-    this.parentElement = parentElement;
+  /**
+   * Set the base HTML element
+   * @param   {object}  baseElement  DOM element.
+   */
+  baseEl(baseElement) {
+    this.baseElement = baseElement;
   }
   /**
    * Blur visually focused insert by changing back to the default border color.
@@ -186,10 +190,10 @@ export default class Inset {
     radius = this.options.borderRadius,
     fill = this.borderFill,
   ) {
-    const prevHeight = this.spritePreviews.length
+    const prevHeight = this.imgPreviews.length
       ? (
         (this.previewsHeight * this.scaleBase * this.scaleExtra * this.imScale) +
-        ((this.spritePreviews.length - 1) * this.previewSpacing)
+        ((this.imgPreviews.length - 1) * this.previewSpacing)
       ) + 2
       : 0;
 
@@ -315,7 +319,7 @@ export default class Inset {
     this.border.className = style.inset;
     this.border.style.background = fill.toString();
     this.border.style.borderRadius = `${radius}px`;
-    this.parentElement.appendChild(this.border);
+    this.baseElement.appendChild(this.border);
   }
 
   /**
@@ -423,7 +427,7 @@ export default class Inset {
     this.imScale = (
       Math.max(width, height) /
       this.scaleBase /
-      Math.max(this.imData.width, this.imData.height)
+      Math.max(this.imgData.width, this.imgData.height)
     );
 
     return {
@@ -500,7 +504,7 @@ export default class Inset {
     this.imScale = (
       Math.max(width, height) /
       this.scaleBase /
-      Math.max(this.imData.width, this.imData.height)
+      Math.max(this.imgData.width, this.imgData.height)
     );
 
     const scale = this.scaleBase * this.scaleExtra * this.imScale;
@@ -630,7 +634,7 @@ export default class Inset {
    */
   destroy() {
     if (this.tweenStop) this.tweenStop();
-    if (this.sprite) this.sprite.removeAllListeners();
+    if (this.img) this.img.removeAllListeners();
 
     this.gOrigin.destroy();
     this.gBorder.destroy();
@@ -638,13 +642,13 @@ export default class Inset {
     this.gMain.destroy();
 
     this.data = undefined;
-    this.sprite = undefined;
+    this.img = undefined;
 
     if (this.isRenderToCanvas) {
       this.border = undefined;
     } else {
-      this.parentElement.removeChild(this.border);
-      this.parentElement.removeChild(this.leaderLine);
+      this.baseElement.removeChild(this.border);
+      this.baseElement.removeChild(this.leaderLine);
       this.border = undefined;
       this.leaderLine = undefined;
       this.leaderLineStubA = undefined;
@@ -819,7 +823,7 @@ export default class Inset {
     ll.style.transform = `rotate(${rotation}rad)`;
 
     if (this.leaderLine !== ll) {
-      this.parentElement.appendChild(ll);
+      this.baseElement.appendChild(ll);
       this.leaderLine = ll;
     }
   }
@@ -958,12 +962,12 @@ export default class Inset {
       return Promise.reject('Could not fetch the inset\'s images');
     }
 
-    if (!this.imData) {
+    if (!this.imgData) {
       if (!this.inFlight) {
         this.inFlight = this.fetchData()
           .then((data) => {
             this.dataTypes = data.dataTypes;
-            this.imData = data.fragments;
+            this.imgData = data.fragments;
             this.prevData = data.previews;
             this.inFlight = false;
             return this.drawImage(force);
@@ -972,7 +976,7 @@ export default class Inset {
       return this.inFlight;
     }
 
-    const imageRendered = this.renderImage(this.imData, force)
+    const imageRendered = this.renderImage(this.imgData, force)
       .then(() => {
         this.positionImage();
         return true;
@@ -1267,22 +1271,39 @@ export default class Inset {
   }
 
   /**
-   * Position the image, i.e., apply the view [x,y] position and the final
-   *   image scales.
+   * Position the main image. Forwarder to the respective canvas and HTML
+   *   functions.
+   */
+  positionImage(...args) {
+    if (this.isRenderToCanvas) return this.positionImageCanvas(...args);
+    return this.positionImageHtml(...args);
+  }
+
+  /**
+   * Position the image on the canvas, i.e., apply the view [x,y] position and
+   *   the final image scales.
    * @param  {Number}  x  X position of the inset to be drawn.
    * @param  {Number}  y  Y position of the inset to be drawn.
    * @param  {Number}  width  Width of the inset to be drawn.
    * @param  {Number}  height  Height of the inset to be drawn.
    */
-  positionImage(
+  positionImageCanvas(
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
     const pos = this.computeImagePosition(x, y, width, height);
 
-    this.sprite.x = pos.x;
-    this.sprite.y = pos.y;
-    this.sprite.scale.x = pos.scaleX;
-    this.sprite.scale.y = pos.scaleY;
+    this.img.x = pos.x;
+    this.img.y = pos.y;
+    this.img.scale.x = pos.scaleX;
+    this.img.scale.y = pos.scaleY;
+  }
+
+  /**
+   * Adjusts the ratio of the image
+   */
+  positionImageHtml() {
+    const ratio = (this.imgData.height / this.imgData.width) * 100;
+    this.imgRatio.style.paddingTop = `${ratio}%`;
   }
 
   /**
@@ -1296,11 +1317,11 @@ export default class Inset {
   positionPreviews(
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
-    if (!this.spritePreviews) return;
+    if (!this.imgPreviews) return;
 
     const pos = this.computePreviewsPosition(x, y, width, height);
 
-    this.spritePreviews.forEach((preview, i) => {
+    this.imgPreviews.forEach((preview, i) => {
       const prevHeight = Math.abs(pos.scaleY);
       const yOffset = ((prevHeight + this.previewSpacing) * (i + 1));
 
@@ -1312,29 +1333,38 @@ export default class Inset {
   }
 
   /**
+   * Render the main image and assign event listeners. This is just a
+   *   forwarder to the specific method for the canvas or html methods.
+   */
+  renderImage(...args) {
+    if (this.isRenderToCanvas) return this.renderImageCanvas(...args);
+    return this.renderImageHtml(...args);
+  }
+
+  /**
    * Render the main image and assign event listeners.
    *
    * @param  {Array}  data  Data to be rendered
    */
-  renderImage(data, force) {
-    if ((this.sprite && !force) || !data.length) {
+  renderImageCanvas(data, force) {
+    if ((this.img && !force) || !data.length) {
       return Promise.resolve();
     }
 
-    if (this.imageRendering) return this.imageRendering;
+    if (this.imgRendering) return this.imgRendering;
 
-    this.imageRendering = this.renderer(data[0], this.dataTypes[0])
-      .then((renderedData) => {
-        this.imData = renderedData;
+    this.imgRendering = this.renderer(data[0], this.dataTypes[0])
+      .then((renderedImg) => {
+        this.imgData = renderedImg;
 
-        this.sprite = new PIXI.Sprite(
+        this.img = new PIXI.Sprite(
           PIXI.Texture.fromCanvas(
-            renderedData, PIXI.SCALE_MODES.NEAREST
+            renderedImg, PIXI.SCALE_MODES.NEAREST
           )
         );
 
-        this.sprite.interactive = true;
-        this.sprite
+        this.img.interactive = true;
+        this.img
           .on('mousedown', this.mouseDownHandler.bind(this))
           .on('mouseover', this.mouseOverHandler.bind(this))
           .on('mouseout', this.mouseOutHandler.bind(this))
@@ -1342,10 +1372,67 @@ export default class Inset {
           .on('rightdown', this.mouseDownRightHandler.bind(this))
           .on('rightup', this.mouseUpRightHandler.bind(this));
 
-        this.gMain.addChild(this.sprite);
+        this.gMain.addChild(this.img);
       });
 
-    return this.imageRendering;
+    return this.imgRendering;
+  }
+
+  /**
+   * Render the main image and assign event listeners.
+   *
+   * @param  {Array}  data  Data to be rendered
+   */
+  renderImageHtml(data, force) {
+    if ((this.img && !force) || !data.length) {
+      return Promise.resolve();
+    }
+
+    if (this.imgRendering) return this.imgRendering;
+
+    this.imgRendering = this.renderer(data[0], this.dataTypes[0])
+      .then((renderedImg) => {
+        this.imgData = renderedImg;
+
+        const imgWrapper = this.imgWrapper || document.createElement('div');
+        imgWrapper.className = style['inset-image-wrapper'];
+
+        const imgRatio = this.imgRatio || document.createElement('div');
+        imgRatio.className = style['inset-image-ratio'];
+
+        const img = this.img || document.createElement('img');
+        img.className = style['inset-image'];
+        img.src = renderedImg.toDataURL();
+        img.__transform__ = {};
+
+        if (this.dataType === 'cooler') {
+          // Enable nearest-neighbor scaling
+          img.style.imageRendering = 'pixelated';
+        }
+
+        if (imgWrapper !== this.imgWrapper && this.imgWrapper) {
+          this.border.removeChild(this.imgWrapper);
+        }
+
+        this.imgWrapper = imgWrapper;
+        this.border.appendChild(imgWrapper);
+
+        if (imgRatio !== this.imgRatio && this.imgRatio) {
+          this.imgWrapper.removeChild(this.imgRatio);
+        }
+
+        this.imgRatio = imgRatio;
+        this.imgWrapper.appendChild(imgRatio);
+
+        if (img !== this.img && this.img) {
+          this.imgWrapper.removeChild(this.img);
+        }
+
+        this.img = img;
+        this.imgWrapper.appendChild(img);
+      });
+
+    return this.imgRendering;
   }
 
   /**
@@ -1356,7 +1443,7 @@ export default class Inset {
   renderPreviews(data, force) {
     if (
       !data ||
-      (this.spritePreviews.length === data.length && !force) ||
+      (this.imgPreviews.length === data.length && !force) ||
       !data.length
     ) return Promise.resolve();
 
@@ -1369,14 +1456,14 @@ export default class Inset {
         .then((renderedData) => {
           this.prevData[i] = renderedData;
 
-          this.spritePreviews[i] = new PIXI.Sprite(
+          this.imgPreviews[i] = new PIXI.Sprite(
             PIXI.Texture.fromCanvas(
               renderedData, PIXI.SCALE_MODES.NEAREST
             )
           );
 
-          this.spritePreviews[i].interactive = true;
-          this.spritePreviews[i]
+          this.imgPreviews[i].interactive = true;
+          this.imgPreviews[i]
             .on('mousedown', this.mouseDownHandler.bind(this))
             .on('mouseover', this.mouseOverHandler.bind(this))
             .on('mouseout', this.mouseOutHandler.bind(this))
@@ -1384,9 +1471,9 @@ export default class Inset {
             .on('rightdown', this.mouseDownRightHandler.bind(this))
             .on('rightup', this.mouseUpRightHandler.bind(this));
 
-          this.previewsHeight += this.spritePreviews[i].height;
+          this.previewsHeight += this.imgPreviews[i].height;
 
-          this.gMain.addChild(this.spritePreviews[i]);
+          this.gMain.addChild(this.imgPreviews[i]);
         })
       );
 
@@ -1430,18 +1517,18 @@ export default class Inset {
 
     const imPos = this.computeImagePosition();
 
-    const prevHeight = this.spritePreviews.length
+    const prevHeight = this.imgPreviews.length
       ? (
         (this.previewsHeight * Math.abs(imPos.scaleY)) +
-        ((this.spritePreviews.length - 1) * this.previewSpacing)
+        ((this.imgPreviews.length - 1) * this.previewSpacing)
       ) + 2
       : 0;
 
     const bWidth = (
-      this.imData.width * imPos.scaleX * this.t
+      this.imgData.width * imPos.scaleX * this.t
     ) + this.borderPadding;
     const bHeight = (
-      this.imData.height * Math.abs(imPos.scaleY)
+      this.imgData.height * Math.abs(imPos.scaleY)
     ) + this.borderPadding;
 
     const [bX, bY] = this.computeBorderPosition(
@@ -1452,7 +1539,7 @@ export default class Inset {
       true
     );
 
-    const previewTweenDefs = this.spritePreviews.map((sprite, i) => ({
+    const previewTweenDefs = this.imgPreviews.map((sprite, i) => ({
       obj: sprite,
       propsTo: {
         x: imPos.x,
@@ -1467,7 +1554,7 @@ export default class Inset {
     this.tweenStop = transitionGroup(
       [
         {
-          obj: this.sprite,
+          obj: this.img,
           propsTo: {
             x: imPos.x,
             y: imPos.y,
