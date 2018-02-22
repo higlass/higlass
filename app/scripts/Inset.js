@@ -3,16 +3,19 @@ import { color as d3Color } from 'd3-color';
 import clip from 'liang-barsky';
 import * as PIXI from 'pixi.js';
 
+import { pubSub } from './services';
 import { transitionGroup } from './services/transition';
 
 import {
+  addClass,
   canvasLinearGradient,
   colorToHex,
   degToRad,
   getAngleBetweenPoints,
   getClusterPropAcc,
   lDist,
-  objToTransformStr
+  objToTransformStr,
+  removeClass,
 } from './utils';
 
 import style from '../styles/Insets2dTrack.module.scss';
@@ -29,6 +32,8 @@ const getBaseRes = tilesetInfo => (
   (2 ** tilesetInfo.max_zoom) /
   tilesetInfo.bins_per_dimension
 );
+
+const pixiToOrigEvent = f => event => f(event.data.originalEvent);
 
 export default class Inset {
   constructor(
@@ -169,7 +174,8 @@ export default class Inset {
   /**
    * Blur visually focused insert by changing back to the default border color.
    */
-  blur() {
+  blur(isPermanent = false) {
+    this.isPermanentFocus = isPermanent ? false : this.isPermanentFocus;
     if (this.isRenderToCanvas) this.clearBorder();
     this.drawBorder();
   }
@@ -221,6 +227,30 @@ export default class Inset {
       widthFinal + this.borderPadding,
       heightFinal + prevHeight + this.borderPadding
     );
+    this.styleBorder(fill, radius);
+  }
+
+  styleBorder(...args) {
+    if (this.isRenderToCanvas) return;
+    this.styleBorderHtml(...args);
+  }
+
+  /**
+   * Style the HTML border
+   * @param   {number}  radius  Radius of the corner in pixel.
+   * @param   {D3.Color}  fill  Fill color.
+   */
+  styleBorderHtml(fill, radius) {
+    const _fill = this.isPermanentFocus ? this.selectColor : fill;
+
+    this.border.style.background = _fill.toString();
+    this.border.style.borderRadius = `${radius}px`;
+
+    if (this.isHovering) {
+      addClass(this.border, style['inset-focus']);
+    } else {
+      removeClass(this.border, style['inset-focus']);
+    }
   }
 
   /**
@@ -304,11 +334,9 @@ export default class Inset {
    * @param   {number}  y  Y position in pixel.
    * @param   {number}  width  Width of the border in pixel.
    * @param   {number}  height  Height of the border in pixel.
-   * @param   {number}  radius  Radius of the corner in pixel.
-   * @param   {D3.Color}  fill  Fill color.
    */
-  renderBorderHtml(x, y, width, height, radius, fill) {
-    this.border = document.createElement('div');
+  renderBorderHtml(x, y, width, height) {
+    this.border = this.border || document.createElement('div');
     // The CSS transform rule is annoying because it combines multiple
     // properties into one definition string so when updating one of those we
     // need to make sure we don't overwrite existing properties. To make our
@@ -318,9 +346,36 @@ export default class Inset {
     this.border.__transform__ = {};
 
     this.border.className = style.inset;
-    this.border.style.background = fill.toString();
-    this.border.style.borderRadius = `${radius}px`;
     this.baseElement.appendChild(this.border);
+    this.addEventListeners();
+  }
+
+  addEventListeners() {
+    this.border.addEventListener(
+      'mouseenter', this.mouseOverHandler.bind(this), true
+    );
+    this.border.addEventListener(
+      'mouseleave', this.mouseOutHandler.bind(this), true
+    );
+    this.border.addEventListener(
+      'mousedown', this.mouseDownHandler.bind(this), true
+    );
+    // Unfortunately D3's zoom behavior is too aggressive and kills all local
+    // mouseup event, which is why we have to listen for a global mouse up even
+    // here.
+    pubSub.subscribe('mouseup', this.mouseUpHandler.bind(this));
+    this.border.addEventListener(
+      'contextmenu', this.mouseClickRightHandler.bind(this), true
+    );
+    pubSub.subscribe('click', this.mouseClickGlobalHandler.bind(this));
+  }
+
+  removeEventListeners() {
+    this.border.removeEventListener('mouseenter', this.mouseOverHandler);
+    this.border.removeEventListener('mouseleave', this.mouseOutHandler);
+    this.border.removeEventListener('mousedown', this.mouseDownHandler);
+    pubSub.unsubscribe('mouseup', this.mouseUpHandler);
+    this.border.removeEventListener('contextmenu', this.mouseClickRightHandler);
   }
 
   /**
@@ -396,7 +451,7 @@ export default class Inset {
    */
   compCssGrad(color, def, id = 0) {
     const colorId = `${color.toString()}.${id}`;
-    if (this.cssGrads[colorId]) return this.cssGrads[color];
+    if (this.cssGrads[colorId]) return this.cssGrads[colorId];
 
     const _color = d3Color(color);
     const colors = [];
@@ -656,6 +711,7 @@ export default class Inset {
       this.leaderLine = undefined;
       this.leaderLineStubA = undefined;
       this.leaderLineStubB = undefined;
+      this.removeEventListeners();
     }
   }
 
@@ -1062,7 +1118,8 @@ export default class Inset {
    * Visually focus the inset by changing the border color to
    *   `this.selectColor`.
    */
-  focus() {
+  focus(isPermanent = false) {
+    this.isPermanentFocus = isPermanent ? true : this.isPermanentFocus;
     if (this.isRenderToCanvas) this.clearBorder();
     this.drawBorder(
       this.x,
@@ -1140,6 +1197,14 @@ export default class Inset {
   }
 
   /**
+   * Global mouse click handler.
+   */
+  mouseClickGlobalHandler() {
+    this.isPermanentFocus = false;
+    this.drawBorder();
+  }
+
+  /**
    * Mouse click handler.
    *
    * @param  {Object}  event  Event object.
@@ -1180,9 +1245,14 @@ export default class Inset {
    * @param  {Object}  event  Event object.
    */
   mouseDownHandler(event) {
-    this.mouseDown = true;
-    this.scale(this.onClickScale);
-    this.mouseHandler.mouseDown(event, this);
+    if (event.button === 2) {
+      // Right mouse down
+      this.focus(true);
+    } else {
+      this.mouseDown = true;
+      this.scale(this.onClickScale);
+      this.mouseHandler.mouseDown(event, this);
+    }
   }
 
   /**
@@ -1396,12 +1466,12 @@ export default class Inset {
 
         this.img.interactive = true;
         this.img
-          .on('mousedown', this.mouseDownHandler.bind(this))
-          .on('mouseover', this.mouseOverHandler.bind(this))
-          .on('mouseout', this.mouseOutHandler.bind(this))
-          .on('mouseup', this.mouseUpHandler.bind(this))
-          .on('rightdown', this.mouseDownRightHandler.bind(this))
-          .on('rightup', this.mouseUpRightHandler.bind(this));
+          .on('mousedown', pixiToOrigEvent(this.mouseDownHandler.bind(this)))
+          .on('mouseover', pixiToOrigEvent(this.mouseOverHandler.bind(this)))
+          .on('mouseout', pixiToOrigEvent(this.mouseOutHandler.bind(this)))
+          .on('mouseup', pixiToOrigEvent(this.mouseUpHandler.bind(this)))
+          .on('rightdown', pixiToOrigEvent(this.mouseDownRightHandler.bind(this)))
+          .on('rightup', pixiToOrigEvent(this.mouseUpRightHandler.bind(this)));
 
         this.gMain.addChild(this.img);
       });
@@ -1504,12 +1574,12 @@ export default class Inset {
 
           this.prvImgs[i].interactive = true;
           this.prvImgs[i]
-            .on('mousedown', this.mouseDownHandler.bind(this))
-            .on('mouseover', this.mouseOverHandler.bind(this))
-            .on('mouseout', this.mouseOutHandler.bind(this))
-            .on('mouseup', this.mouseUpHandler.bind(this))
-            .on('rightdown', this.mouseDownRightHandler.bind(this))
-            .on('rightup', this.mouseUpRightHandler.bind(this));
+            .on('mousedown', pixiToOrigEvent(this.mouseDownHandler.bind(this)))
+            .on('mouseover', pixiToOrigEvent(this.mouseOverHandler.bind(this)))
+            .on('mouseout', pixiToOrigEvent(this.mouseOutHandler.bind(this)))
+            .on('mouseup', pixiToOrigEvent(this.mouseUpHandler.bind(this)))
+            .on('rightdown', pixiToOrigEvent(this.mouseDownRightHandler.bind(this)))
+            .on('rightup', pixiToOrigEvent(this.mouseUpRightHandler.bind(this)));
 
           this.previewsHeight += this.prvImgs[i].height;
 
