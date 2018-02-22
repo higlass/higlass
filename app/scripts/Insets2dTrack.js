@@ -244,7 +244,7 @@ export default class Insets2dTrack extends PixiTrack {
 
     inset.baseEl(this.baseElement);
     inset.clear(this.options);
-    inset.globalOffset(...this.position);
+    inset.globalOffset(...this.position, this.positioning.offsetX, this.positioning.offsetY);
     inset.globalSize(...this.dimensions);
     inset.origin(label.oX, label.oY, label.oWH, label.oHH);
     inset.position(label.x, label.y);
