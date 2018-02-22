@@ -824,6 +824,8 @@ export default class Inset {
     ll.style.width = `${dist}px`;
     ll.style.height = `${this.leaderLineStyle[0]}px`;
 
+    const _color = this.isHovering ? this.options.selectColor : color;
+
     if (this.options.leaderLineStubLength) {
       let stubA = this.leaderLineStubA;
       let stubB = this.leaderLineStubB;
@@ -836,7 +838,6 @@ export default class Inset {
         stubB.className = style['inset-leader-line-stub-right'];
       }
 
-      const _color = this.isHovering ? this.options.selectColor : color;
       const gradientA = this.compCssGrad(_color, { 0: 1, 1: 0 }, 0);
       const gradientB = this.compCssGrad(_color, { 0: 0, 1: 1 }, 1);
 
@@ -868,11 +869,10 @@ export default class Inset {
       }
     } else if (this.options.leaderLineFading) {
       ll.style.background = this.compCssGrad(
-        (this.isHovering ? this.options.selectColor : color),
-        this.options.leaderLineFading
+        _color, this.options.leaderLineFading
       );
     } else {
-      ll.style.background = color.toString();
+      ll.style.background = _color.toString();
     }
 
     const rotation = getAngleBetweenPoints(pointFrom, pointTo);
