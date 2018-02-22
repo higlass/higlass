@@ -1061,7 +1061,7 @@ export default class Inset {
    * Draw a border around the origin of the inset.
    */
   drawOriginBorder() {
-    if (this.label.src.size > 2) {
+    if (this.label.src.size > 1) {
       const points = [];
       const padding = 3;
       const xOff = this.globalOffsetX + this.galleryOffsetX;
