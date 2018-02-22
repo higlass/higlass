@@ -1,5 +1,6 @@
 import { bisectLeft } from 'd3-array';
 import { color as d3Color } from 'd3-color';
+import hull from 'hull.js';
 import clip from 'liang-barsky';
 import * as PIXI from 'pixi.js';
 
@@ -11,6 +12,7 @@ import {
   canvasLinearGradient,
   colorToHex,
   degToRad,
+  flatten,
   getAngleBetweenPoints,
   getClusterPropAcc,
   lDist,
@@ -123,13 +125,13 @@ export default class Inset {
 
     this.leaderLineStyle = [
       options.leaderLineWidth || 1,
-      colorToHex(options.leaderLineColor) || 0x000000,
+      colorToHex(options.leaderLineColor),
       options.leaderLineOpacity || 1
     ];
 
     this.originStyle = [
       options.leaderLineWidth || 1,
-      colorToHex(options.selectColor) || 0x000000,
+      colorToHex(options.selectColor),
       1
     ];
 
@@ -1059,16 +1061,50 @@ export default class Inset {
    * Draw a border around the origin of the inset.
    */
   drawOriginBorder() {
-    const borderOrigin = this.computeBorderOriginPosition();
+    if (this.label.src.size > 2) {
+      const points = [];
+      const padding = 3;
+      const xOff = this.globalOffsetX + this.galleryOffsetX;
+      const yOff = this.globalOffsetY + this.galleryOffsetY;
+      this.label.src.members.forEach((annotation) => {
+        points.push(
+          [annotation.minX + xOff - padding, annotation.minY + yOff - padding],
+          [annotation.maxX + xOff + padding, annotation.minY + yOff - padding],
+          [annotation.maxX + xOff + padding, annotation.maxY + yOff + padding],
+          [annotation.minX + xOff - padding, annotation.maxY + yOff + padding],
+        );
+        // Draw original annotations
+        this.gOrigin.drawRect(
+          annotation.minX + xOff,
+          annotation.minY + yOff,
+          annotation.maxX - annotation.minX,
+          annotation.maxY - annotation.minY,
+        );
+      });
 
-    this.gOrigin.drawRect(
-      ...this.computeBorderPosition(
-        borderOrigin[0] + (this.originStyle[0] / 2),
-        borderOrigin[1] + (this.originStyle[0] / 2),
-        borderOrigin[2] - this.originStyle[0],
-        borderOrigin[3] - this.originStyle[0],
-      )
-    );
+      const orgLineWidth = this.gOrigin.lineWidth;
+      const orgLineColor = this.gOrigin.lineColor;
+      const orgLineAlpha = this.gOrigin.lineAlpha;
+
+      // Draw convex hull
+      this.gOrigin
+        .lineStyle(1, orgLineColor, 0.66)
+        .beginFill(colorToHex(this.selectColor), 0.25)
+        .drawPolygon(flatten(hull(points, Infinity)))
+        .endFill()
+        .lineStyle(orgLineWidth, orgLineColor, orgLineAlpha);
+    } else {
+      const borderOrigin = this.computeBorderOriginPosition();
+
+      this.gOrigin.drawRect(
+        ...this.computeBorderPosition(
+          borderOrigin[0] + (this.originStyle[0] / 2) + this.globalOffsetX,
+          borderOrigin[1] + (this.originStyle[0] / 2) + this.globalOffsetY,
+          borderOrigin[2] - this.originStyle[0],
+          borderOrigin[3] - this.originStyle[0],
+        )
+      );
+    }
   }
 
   /**
@@ -1156,10 +1192,17 @@ export default class Inset {
    * @param  {Number}  y  Global Y offset.
    * @return  {Array}   Tuple holding the global X and Y offset.
    */
-  globalOffset(x = this.globalOffsetX, y = this.globalOffsetY) {
+  globalOffset(
+    x = this.globalOffsetX,
+    y = this.globalOffsetY,
+    gX = this.galleryOffsetX,
+    gY = this.galleryOffsetY
+  ) {
     this.globalOffsetX = x;
     this.globalOffsetY = y;
-    return [x, y];
+    this.galleryOffsetX = gX;
+    this.galleryOffsetY = gY;
+    return [x, y, gX, gY];
   }
 
   /**
