@@ -1525,7 +1525,7 @@ class TrackRenderer extends React.Component {
       case 'insets':
         return new Insets2dTrack(
           this.pStage,
-          this.element,
+          this.eventTracker,
           dataConfig,
           track.datatype,
           track.chromInfoPath,
@@ -1614,7 +1614,10 @@ class TrackRenderer extends React.Component {
 
     e.preventDefault();
 
-    this.forwardEvent(e);
+    setTimeout(() => {
+      // For right clicks only. Publish the contextmenu event
+      pubSub.publish('contextmenu', e);
+    }, 0);
   }
 
   addEventTracker() {

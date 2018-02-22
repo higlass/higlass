@@ -406,11 +406,16 @@ export default class Insets2dTrack extends PixiTrack {
   clickHandler(/* event, inset */) {}
 
   clickRightHandler(event, inset) {
-    event.data.originalEvent.hgCustomItems = [
+    // Do never forward the contextmenu event when ALT is being hold down.
+    if (event.altKey) return;
+
+    event.preventDefault();
+
+    event.hgCustomItems = [
       this.getContextMenuGoto(inset)
     ];
 
-    pubSub.publish('contextmenu', event.data.originalEvent);
+    pubSub.publish('contextmenu', event);
   }
 
   mouseOverHandler(/* event, inset */) {

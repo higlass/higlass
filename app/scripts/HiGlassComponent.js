@@ -223,6 +223,8 @@ class HiGlassComponent extends React.Component {
     domEvent.register('resize', window);
     domEvent.register('orientationchange', window);
     domEvent.register('mousewheel', window);
+    domEvent.register('mouseup', window, true);
+    domEvent.register('click', window, true);
 
     this.pubSubs = [];
     this.pubSubs.push(
@@ -279,7 +281,6 @@ class HiGlassComponent extends React.Component {
     this.element = ReactDOM.findDOMNode(this);
     window.addEventListener('focus', this.boundRefreshView);
     window.addEventListener('mousewheel', this.mousewheelHandler.bind(this), true);
-    this.canvasElement.addEventListener('pointerdown', this.pointerDownHandler.bind(this));
 
     dictValues(this.state.views).forEach((v) => {
       if (!v.layout) {
@@ -402,7 +403,6 @@ class HiGlassComponent extends React.Component {
     this.pixiRenderer = null;
 
     window.removeEventListener('focus', this.boundRefreshView);
-    this.canvasElement.removeEventListener('pointerdown', this.pointerDownHandler);
 
     // if this element was never attached to the DOM
     // then the resize sensor will never have been initiated
@@ -412,6 +412,8 @@ class HiGlassComponent extends React.Component {
     domEvent.unregister('keyup', document);
     domEvent.unregister('scroll', document);
     domEvent.unregister('mousewheel', window);
+    domEvent.unregister('mouseup', window);
+    domEvent.unregister('click', window);
 
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
@@ -420,15 +422,6 @@ class HiGlassComponent extends React.Component {
 
   /* ---------------------------- Custom Methods ---------------------------- */
 
-
-  pointerDownHandler(e) {
-    // Wait 1 "execution cycle" for the InsetTrack to potentially add a
-    // customization.
-    setTimeout(() => {
-      // For right clicks only. Publish the contextmenu event
-      if (e.button === 2) pubSub.publish('contextmenu', e);
-    }, 0);
-  }
 
   dispatchEvent(e) {
     if (!this.canvasElement) return;
