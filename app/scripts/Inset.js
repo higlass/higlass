@@ -71,8 +71,9 @@ export default class Inset {
     this.gMain.addChild(this.gBorder);
 
     this.previewsHeight = 0;
-    this.imgPreviews = [];
-    this.prevData = [];
+    this.prvImgs = [];
+    this.prvWrappers = [];
+    this.prvData = [];
 
     this.cssGrads = {};
 
@@ -190,11 +191,11 @@ export default class Inset {
     radius = this.options.borderRadius,
     fill = this.borderFill,
   ) {
-    const prevHeight = this.imgPreviews.length
+    const prevHeight = this.prvImgs.length
       ? (
         (this.previewsHeight * this.scaleBase * this.scaleExtra * this.imScale) +
-        ((this.imgPreviews.length - 1) * this.previewSpacing)
-      ) + 2
+        ((this.prvImgs.length - 1) * this.previewSpacing)
+      )
       : 0;
 
     const [vX, vY] = this.computeBorderPosition(
@@ -412,6 +413,15 @@ export default class Inset {
     return this.cssGrads[colorId];
   }
 
+  compImgScale() {
+    // Scale the image down from its raw resolution to the inset's pixel size
+    this.imScale = (
+      Math.max(this.width, this.height) /
+      this.scaleBase /
+      Math.max(this.imgData.width, this.imgData.height)
+    );
+  }
+
   /**
    * Compute view position of the image given a [x,y] location and the width
    *   and height.
@@ -423,13 +433,6 @@ export default class Inset {
   computeImagePosition(
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
-    // Scale the image down from its raw resolution to the inset's pixel size
-    this.imScale = (
-      Math.max(width, height) /
-      this.scaleBase /
-      Math.max(this.imgData.width, this.imgData.height)
-    );
-
     return {
       x: (
         this.globalOffsetX + (this.offsetX * this.t) + x - (width / 2 * this.t)
@@ -968,7 +971,7 @@ export default class Inset {
           .then((data) => {
             this.dataTypes = data.dataTypes;
             this.imgData = data.fragments;
-            this.prevData = data.previews;
+            this.prvData = data.previews;
             this.inFlight = false;
             return this.drawImage(force);
           });
@@ -978,21 +981,22 @@ export default class Inset {
 
     const imageRendered = this.renderImage(this.imgData, force)
       .then(() => {
+        this.compImgScale();
         this.positionImage();
         return true;
       })
       .catch(err => console.error('Image rendering failed', err));
 
-    const previewsRendered = this.renderPreviews(this.prevData, force)
-      .then(() => {
-        this.positionPreviews();
-        // We need to redraw the border because the height has changed
-        this.borderDraw();
-        return true;
-      })
+    const previewsRendered = this.renderPreviews(this.prvData, force)
       .catch(err => console.error('Preview rendering failed', err));
 
-    return Promise.all([imageRendered, previewsRendered]);
+    const allDrawn = Promise.all([imageRendered, previewsRendered]).then(() => {
+      this.positionPreviews();
+      // We need to redraw the border because the height has changed
+      this.borderDraw();
+    });
+
+    return allDrawn;
   }
 
   /**
@@ -1307,6 +1311,15 @@ export default class Inset {
   }
 
   /**
+   * Position the main image. Forwarder to the respective canvas and HTML
+   *   functions.
+   */
+  positionPreviews(...args) {
+    if (this.isRenderToCanvas) return this.positionPreviewsCanvas(...args);
+    return this.positionPreviewsHtml(...args);
+  }
+
+  /**
    * Position the image of the previews, i.e., apply the view [x,y] position
    *   and the final image scales.
    * @param  {Number}  x  X position of the inset to be drawn.
@@ -1314,14 +1327,14 @@ export default class Inset {
    * @param  {Number}  width  Width of the inset to be drawn.
    * @param  {Number}  height  Height of the inset to be drawn.
    */
-  positionPreviews(
+  positionPreviewsCanvas(
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
-    if (!this.imgPreviews) return;
+    if (!this.prvImgs) return;
 
     const pos = this.computePreviewsPosition(x, y, width, height);
 
-    this.imgPreviews.forEach((preview, i) => {
+    this.prvImgs.forEach((preview, i) => {
       const prevHeight = Math.abs(pos.scaleY);
       const yOffset = ((prevHeight + this.previewSpacing) * (i + 1));
 
@@ -1330,6 +1343,24 @@ export default class Inset {
       preview.scale.x = pos.scaleX;
       preview.scale.y = pos.scaleY;
     });
+  }
+
+  /**
+   * Position the image of the previews, i.e., apply the view [x,y] position
+   *   and the final image scales.
+   * @param  {Number}  x  X position of the inset to be drawn.
+   * @param  {Number}  y  Y position of the inset to be drawn.
+   * @param  {Number}  width  Width of the inset to be drawn.
+   * @param  {Number}  height  Height of the inset to be drawn.
+   */
+  positionPreviewsHtml() {
+    if (!this.prvsWrapper) return;
+
+    const height = (
+      this.previewsHeight * this.scaleBase * this.scaleExtra * this.imScale
+    ) + this.previewsHeight - 1;
+
+    this.prvsWrapper.style.height = `${height}px`;
   }
 
   /**
@@ -1436,14 +1467,23 @@ export default class Inset {
   }
 
   /**
+   * Render the previews and assign event listeners. This is just a
+   *   forwarder to the specific method for the canvas or html methods.
+   */
+  renderPreviews(...args) {
+    if (this.isRenderToCanvas) return this.renderPreviewsCanvas(...args);
+    return this.renderPreviewsHtml(...args);
+  }
+
+  /**
    * Render the data to an image and assign event listeners.
    *
    * @param  {Array}  data  Data to be rendered
    */
-  renderPreviews(data, force) {
+  renderPreviewsCanvas(data, force) {
     if (
       !data ||
-      (this.imgPreviews.length === data.length && !force) ||
+      (this.prvImgs.length === data.length && !force) ||
       !data.length
     ) return Promise.resolve();
 
@@ -1453,17 +1493,17 @@ export default class Inset {
 
     const renderedPreviews = data
       .map((preview, i) => this.renderer(preview, this.dataTypes[0])
-        .then((renderedData) => {
-          this.prevData[i] = renderedData;
+        .then((renderedImg) => {
+          this.prvData[i] = renderedImg;
 
-          this.imgPreviews[i] = new PIXI.Sprite(
+          this.prvImgs[i] = new PIXI.Sprite(
             PIXI.Texture.fromCanvas(
-              renderedData, PIXI.SCALE_MODES.NEAREST
+              renderedImg, PIXI.SCALE_MODES.NEAREST
             )
           );
 
-          this.imgPreviews[i].interactive = true;
-          this.imgPreviews[i]
+          this.prvImgs[i].interactive = true;
+          this.prvImgs[i]
             .on('mousedown', this.mouseDownHandler.bind(this))
             .on('mouseover', this.mouseOverHandler.bind(this))
             .on('mouseout', this.mouseOutHandler.bind(this))
@@ -1471,9 +1511,78 @@ export default class Inset {
             .on('rightdown', this.mouseDownRightHandler.bind(this))
             .on('rightup', this.mouseUpRightHandler.bind(this));
 
-          this.previewsHeight += this.imgPreviews[i].height;
+          this.previewsHeight += this.prvImgs[i].height;
 
-          this.gMain.addChild(this.imgPreviews[i]);
+          this.gMain.addChild(this.prvImgs[i]);
+        })
+      );
+
+    this.previewsRendering = Promise.all(renderedPreviews);
+
+    return this.previewsRendering;
+  }
+
+  /**
+   * Render the data to an image and assign event listeners.
+   *
+   * @param  {Array}  data  Data to be rendered
+   */
+  renderPreviewsHtml(data, force) {
+    if (
+      !data ||
+      (this.prvImgs.length === data.length && !force) ||
+      !data.length
+    ) return Promise.resolve();
+
+    if (this.previewsRendering) return this.previewsRendering;
+
+    this.previewsHeight = 0;
+
+    const prvsWrapper = this.prvsWrapper || document.createElement('div');
+    prvsWrapper.className = this.pileOrientaton === 'top'
+      ? style['inset-previews-wrapper-top']
+      : style['inset-previews-wrapper-bottom'];
+
+    if (prvsWrapper !== this.prvsWrapper && this.prvsWrapper) {
+      this.border.removeChild(this.prvsWrapper);
+    }
+
+    this.prvsWrapper = prvsWrapper;
+    this.border.appendChild(prvsWrapper);
+
+    const renderedPreviews = data
+      .map((preview, i) => this.renderer(preview, this.dataTypes[0])
+        .then((renderedImg) => {
+          this.prvData[i] = renderedImg;
+
+          this.previewsHeight += renderedImg.height;
+
+          const prvWrapper = this.prvWrappers[i] || document.createElement('div');
+          prvWrapper.className = style['inset-preview-wrapper'];
+
+          const img = this.prvImgs[i] || document.createElement('img');
+          img.className = style['inset-preview'];
+          img.src = renderedImg.toDataURL();
+          img.__transform__ = {};
+
+          if (this.dataType === 'cooler') {
+            // Enable nearest-neighbor scaling
+            img.style.imageRendering = 'pixelated';
+          }
+
+          if (prvWrapper !== this.prvWrappers[i] && this.prvWrappers[i]) {
+            this.prvsWrapper.removeChild(this.prvWrappers[i]);
+          }
+
+          this.prvWrappers[i] = prvWrapper;
+          this.prvsWrapper.appendChild(prvWrapper);
+
+          if (img !== this.prvImgs[i] && this.prvImgs[i]) {
+            this.prvWrappers[i].removeChild(this.prvImgs[i]);
+          }
+
+          this.prvImgs[i] = img;
+          this.prvWrappers[i].appendChild(img);
         })
       );
 
@@ -1517,11 +1626,11 @@ export default class Inset {
 
     const imPos = this.computeImagePosition();
 
-    const prevHeight = this.imgPreviews.length
+    const prevHeight = this.prvImgs.length
       ? (
         (this.previewsHeight * Math.abs(imPos.scaleY)) +
-        ((this.imgPreviews.length - 1) * this.previewSpacing)
-      ) + 2
+        ((this.prvImgs.length - 1) * this.previewSpacing)
+      ) + 1
       : 0;
 
     const bWidth = (
@@ -1539,7 +1648,7 @@ export default class Inset {
       true
     );
 
-    const previewTweenDefs = this.imgPreviews.map((sprite, i) => ({
+    const previewTweenDefs = this.prvImgs.map((sprite, i) => ({
       obj: sprite,
       propsTo: {
         x: imPos.x,
