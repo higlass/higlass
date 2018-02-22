@@ -171,7 +171,7 @@ export default class Inset {
    */
   blur() {
     if (this.isRenderToCanvas) this.clearBorder();
-    this.borderDraw();
+    this.drawBorder();
   }
 
   /**
@@ -182,7 +182,7 @@ export default class Inset {
    * @param  {Number}  width  Width of the inset to be drawn.
    * @param  {Number}  height  Height of the inset to be drawn.
    */
-  borderDraw(
+  drawBorder(
     x = this.x,
     y = this.y,
     width = this.width,
@@ -203,7 +203,7 @@ export default class Inset {
     );
 
     if (!this.border) {
-      this.borderRender(x, y, width, height, radius, fill, graphics);
+      this.renderBorder(x, y, width, height, radius, fill, graphics);
     }
 
     let borderWidthExtra = 0;
@@ -215,7 +215,7 @@ export default class Inset {
     const widthFinal = width + (2 * borderWidthExtra);
     const heightFinal = height + (2 * borderWidthExtra);
 
-    this.borderPosition(
+    this.positionBorder(
       vX - borderWidthExtra,
       vY - borderWidthExtra,
       widthFinal + this.borderPadding,
@@ -227,9 +227,9 @@ export default class Inset {
    * Position border. Just a helper function forwarding the call to the canvas
    *   or HTML positioner.
    */
-  borderPosition(...args) {
-    if (this.isRenderToCanvas) return this.borderPositionCanvas(...args);
-    return this.borderPositionHtml(...args);
+  positionBorder(...args) {
+    if (this.isRenderToCanvas) return this.positionBorderCanvas(...args);
+    return this.positionBorderHtml(...args);
   }
 
   /**
@@ -239,7 +239,7 @@ export default class Inset {
    * @param  {number}  width  Width of the border in pixel.
    * @param  {number}  height  Height of the border in pixel.
    */
-  borderPositionCanvas(x, y, width, height) {
+  positionBorderCanvas(x, y, width, height) {
     this.border.x = x + this.globalOffsetX;
     this.border.y = y + this.globalOffsetY;
     this.border.width = width;
@@ -253,7 +253,7 @@ export default class Inset {
    * @param  {number}  width  Width of the border in pixel.
    * @param  {number}  height  Height of the border in pixel.
    */
-  borderPositionHtml(x, y, width, height) {
+  positionBorderHtml(x, y, width, height) {
     this.border.style.width = `${width}px`;
     this.border.style.height = `${height}px`;
     this.border.__transform__.translate = [
@@ -266,9 +266,9 @@ export default class Inset {
    * Render border. Just a helper function forwarding the call to the canvas
    *   or HTML positioner.
    */
-  borderRender(...args) {
-    if (this.isRenderToCanvas) return this.borderRenderCanvas(...args);
-    return this.borderRenderHtml(...args);
+  renderBorder(...args) {
+    if (this.isRenderToCanvas) return this.renderBorderCanvas(...args);
+    return this.renderBorderHtml(...args);
   }
 
   /**
@@ -281,7 +281,7 @@ export default class Inset {
    * @param  {D3.Color}  fill  Fill color.
    * @param  {PIXI.Graphics}  graphics  Graphics to draw on
    */
-  borderRenderCanvas(x, y, width, height, radius, fill, graphics) {
+  renderBorderCanvas(x, y, width, height, radius, fill, graphics) {
     const ratio = width / height;
     const maxBorderSize = this.maxSize * this.onClickScale * this.scaleBase;
     if (this.tweenStop) this.tweenStop();
@@ -307,7 +307,7 @@ export default class Inset {
    * @param   {number}  radius  Radius of the corner in pixel.
    * @param   {D3.Color}  fill  Fill color.
    */
-  borderRenderHtml(x, y, width, height, radius, fill) {
+  renderBorderHtml(x, y, width, height, radius, fill) {
     this.border = document.createElement('div');
     // The CSS transform rule is annoying because it combines multiple
     // properties into one definition string so when updating one of those we
@@ -676,8 +676,8 @@ export default class Inset {
    * @return  {promise}  Resolving to true once everything has been drawn.
    */
   draw() {
-    this.leaderLineDraw();
-    this.borderDraw();
+    this.drawLeaderLine();
+    this.drawBorder();
     return this.drawImage();
   }
 
@@ -685,7 +685,7 @@ export default class Inset {
    * Draw leader line.
    * @param   {D3.Color}  color  Color.
    */
-  leaderLineDraw(color = this.leaderLineColor) {
+  drawLeaderLine(color = this.leaderLineColor) {
     let pointFrom = [this.originX, this.originY];
     let pointTo = [this.x, this.y];
     let dist = lDist(pointFrom, pointTo);
@@ -699,31 +699,31 @@ export default class Inset {
       dist = lDist(pointFrom, pointTo);
     }
 
-    this.leaderLineRender(pointFrom, pointTo, dist, color);
+    this.renderLeaderLine(pointFrom, pointTo, dist, color);
   }
 
   /**
    * Render the leader line between the inset and the origin.
    * @return  {array}  List of PIXI.Sprite objects of the leader line.
    */
-  leaderLineRender(pointFrom, pointTo, dist, color = this.options.leaderLineColor) {
+  renderLeaderLine(pointFrom, pointTo, dist, color = this.options.leaderLineColor) {
     if (this.options.leaderLineStubLength) {
-      return this.leaderLineRenderStubs(pointFrom, pointTo, dist, color);
+      return this.renderLeaderLineStubs(pointFrom, pointTo, dist, color);
     }
 
     if (this.options.leaderLineFading) {
-      return this.leaderLineRenderGrd(pointFrom, pointTo, dist, color);
+      return this.renderLeaderLineGrd(pointFrom, pointTo, dist, color);
     }
 
-    return this.leaderLineRenderPlain(pointFrom, pointTo, dist, color);
+    return this.renderLeaderLinePlain(pointFrom, pointTo, dist, color);
   }
 
   /**
    * Render plain leader line. Just a forwader to the canvas and HTML renderer.
    */
-  leaderLineRenderPlain(...args) {
-    if (this.isRenderToCanvas) return this.leaderLineRenderPlainCanvas(...args);
-    return this.leaderLineRenderHtml(...args);
+  renderLeaderLinePlain(...args) {
+    if (this.isRenderToCanvas) return this.renderLeaderLinePlainCanvas(...args);
+    return this.renderleaderLineHtml(...args);
   }
 
   /**
@@ -731,7 +731,7 @@ export default class Inset {
    * @param   {array}  pointFrom  Tuple in form of `[x,y]`.
    * @param   {array}  pointTo  Tuple in form of `[x,y]`.
    */
-  leaderLineRenderPlainCanvas(pointFrom, pointTo) {
+  renderLeaderLinePlainCanvas(pointFrom, pointTo) {
     this.gLeaderLine.clear();
     this.gLeaderLine.lineStyle(
       this.leaderLineStyle[0],
@@ -759,7 +759,7 @@ export default class Inset {
    * @param   {number}  dist  [description]
    * @param   {D3.Color}  color  Color.
    */
-  leaderLineRenderHtml(pointFrom, pointTo, dist, color) {
+  renderleaderLineHtml(pointFrom, pointTo, dist, color) {
     const ll = this.leaderLine || document.createElement('div');
 
     ll.className = style['inset-leader-line'];
@@ -835,9 +835,9 @@ export default class Inset {
    * Render gradient leader line. Just a forwader to the canvas and HTML
    *   renderer.
    */
-  leaderLineRenderGrd(...args) {
-    if (this.isRenderToCanvas) return this.leaderLineRenderGrdCanvas(...args);
-    return this.leaderLineRenderHtml(...args);
+  renderLeaderLineGrd(...args) {
+    if (this.isRenderToCanvas) return this.renderLeaderLineGrdCanvas(...args);
+    return this.renderleaderLineHtml(...args);
   }
 
   /**
@@ -847,7 +847,7 @@ export default class Inset {
    * @param   {object}  color  RGBA D3 color object.
    * @return  {array}  List of PIXI.Sprite objects of the leader line.
    */
-  leaderLineRenderGrdCanvas(pointFrom, pointTo, color = this.options.leaderLineColor) {
+  renderLeaderLineGrdCanvas(pointFrom, pointTo, color = this.options.leaderLineColor) {
     const _color = d3Color((this.isHovering
       ? this.options.selectColor
       : color
@@ -887,9 +887,9 @@ export default class Inset {
   /**
    * Render stub leader line. Just a forwader to the canvas and HTML renderer.
    */
-  leaderLineRenderStubs(...args) {
-    if (this.isRenderToCanvas) return this.leaderLineRenderStubsCanvas(...args);
-    return this.leaderLineRenderHtml(...args);
+  renderLeaderLineStubs(...args) {
+    if (this.isRenderToCanvas) return this.renderLeaderLineStubsCanvas(...args);
+    return this.renderleaderLineHtml(...args);
   }
 
   /**
@@ -899,7 +899,7 @@ export default class Inset {
    * @param   {object}  color  RGBA D3 color object.
    * @return  {array}  List of PIXI.Sprite objects of the leader line.
    */
-  leaderLineRenderStubsCanvas(pointFrom, pointTo, color = this.options.leaderLineColor) {
+  renderLeaderLineStubsCanvas(pointFrom, pointTo, color = this.options.leaderLineColor) {
     const _color = d3Color((this.isHovering
       ? this.options.selectColor
       : color
@@ -993,7 +993,7 @@ export default class Inset {
     const allDrawn = Promise.all([imageRendered, previewsRendered]).then(() => {
       this.positionPreviews();
       // We need to redraw the border because the height has changed
-      this.borderDraw();
+      this.drawBorder();
     });
 
     return allDrawn;
@@ -1064,7 +1064,7 @@ export default class Inset {
    */
   focus() {
     if (this.isRenderToCanvas) this.clearBorder();
-    this.borderDraw(
+    this.drawBorder(
       this.x,
       this.y,
       this.width,
@@ -1157,7 +1157,7 @@ export default class Inset {
     this.isHovering = true;
     this.focus();
     this.originFocus();
-    this.leaderLineDraw();
+    this.drawLeaderLine();
     this.mouseHandler.mouseOver(event, this);
   }
 
@@ -1170,7 +1170,7 @@ export default class Inset {
     this.isHovering = false;
     this.blur();
     this.originBlur();
-    this.leaderLineDraw();
+    this.drawLeaderLine();
     this.mouseHandler.mouseOut(event, this);
   }
 
@@ -1614,7 +1614,6 @@ export default class Inset {
 
   /**
    * Scale the inset.
-   *
    * @param  {Number}  amount  Amount by which to scale the inset
    */
   scaleCanvas(amount = 1) {
