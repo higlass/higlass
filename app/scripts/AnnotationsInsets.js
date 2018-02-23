@@ -405,7 +405,7 @@ class AnnotationsInsets {
 
           this.insets[id].t = this.scaleChanged ? 0.5 : 0;
 
-          if (newResScale) {
+          if (cluster.reload || newResScale) {
             const {
               width, height
             } = this.compInsetSize(cluster, finalRes);
@@ -414,7 +414,9 @@ class AnnotationsInsets {
             this.insets[id].height = height;
             this.insets[id].wH = width / 2;
             this.insets[id].hH = height / 2;
+          }
 
+          if (newResScale) {
             // Let them wobble a bit because the size changed
             this.insets[id].t = 0.25;
           }
