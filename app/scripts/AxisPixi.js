@@ -47,15 +47,16 @@ class AxisPixi {
         this.pAxis.addChild(newText);
       }
 
-      while (this.axisTexts.length > i + 1) {
-        const lastText = this.axisTexts.pop();
-        this.pAxis.removeChild(lastText);
-      }
 
       this.axisTexts[i].text = this.tickFormat(tick);
       this.axisTexts[i].anchor.y = 0.5;
       this.axisTexts[i].anchor.x = 0.5;
       i++;
+    }
+
+    while (this.axisTexts.length > this.tickValues.length) {
+      const lastText = this.axisTexts.pop();
+      this.pAxis.removeChild(lastText);
     }
   }
 

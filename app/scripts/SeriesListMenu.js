@@ -21,6 +21,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
     if (!TRACKS_INFO_BY_TYPE[track.type]
       || !TRACKS_INFO_BY_TYPE[track.type].availableOptions) { return null; }
 
+    console.log('track.type:', track.type, TRACKS_INFO_BY_TYPE[track.type].availableOptions);
     for (const optionType of TRACKS_INFO_BY_TYPE[track.type].availableOptions) {
       if (OPTIONS_INFO.hasOwnProperty(optionType)) {
         menuItems[optionType] = { name: OPTIONS_INFO[optionType].name };

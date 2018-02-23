@@ -3,6 +3,10 @@ import { tileProxy } from './services';
 
 function ChromosomeInfo(filepath, success) {
   tileProxy.text(filepath, (error, chrInfoText) => {
+    if (error) {
+      console.warn("Chromosome info not found at:", filepath);
+      success(null);
+    } 
     const data = tsvParseRows(chrInfoText);
     const cumValues = [];
     const chromLengths = {};

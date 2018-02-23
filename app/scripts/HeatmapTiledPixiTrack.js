@@ -57,10 +57,14 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       handleTilesetInfoReceived,
       options,
       animate,
-      onValueScaleChanged,
+      () => {
+        this.drawColorbar();
+        onValueScaleChanged();
+      },
     );
 
     this.is2d = true;
+    this.animate = animate;
 
     this.onTrackOptionsChanged = onTrackOptionsChanged;
 
@@ -107,6 +111,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     if (this.options.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(this, this.is2d);
     }
+
+    this.prevOptions = JSON.stringify(options);
   }
 
   /**
@@ -237,8 +243,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   rerender(options, force) {
     // if force is set, then we force a rerender even if the options
     // haven't changed rerender will force a brush.move
-
     const strOptions = JSON.stringify(options);
+    this.drawColorbar();
 
     if (!force && strOptions === this.prevOptions) return;
 
@@ -257,7 +263,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.visibleAndFetchedTiles().forEach(tile => this.renderTile(tile));
 
     // hopefully draw isn't rerendering all the tiles
-    this.drawColorbar();
+    // this.drawColorbar();
 
     if (this.options.showMousePosition && !this.hideMousePosition) {
       this.hideMousePosition = showMousePosition(this, this.is2d);
@@ -312,7 +318,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   draw() {
     super.draw();
 
-    this.drawColorbar();
+    //this.drawColorbar();
   }
 
   newBrushOptions(selection) {
@@ -359,7 +365,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       ));
 
     if (strOptions === this.prevOptions) return;
-
 
     this.prevOptions = strOptions;
 
@@ -948,44 +953,52 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       ]);
     }
 
-    tileProxy.tileDataToPixData(
-      tile,
-      this.limitedValueScale,
+    this.renderingTiles.add(tile.tileId);
+    tileProxy.tileDataToPixData(tile,
+      scaleType,
+      this.limitedValueScale.domain(),
       pseudocount, // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
       (pixData) => {
-        // the tileData has been converted to pixData by the worker script and
-        // needs to be loaded as a sprite
-        const graphics = tile.graphics;
-        const canvas = tileToCanvas(pixData);
-        // this.addBorder(pixData);
+        if (pixData) {
+          // the tileData has been converted to pixData by the worker script and
+          // needs to be loaded as a sprite
+          const graphics = tile.graphics;
+          const canvas = tileToCanvas(pixData);
+          // this.addBorder(pixData);
 
-        let sprite = null;
+          let sprite = null;
 
-        sprite = new PIXI.Sprite(
-          PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
-        );
+          sprite = new PIXI.Sprite(
+            PIXI.Texture.fromCanvas(canvas, PIXI.SCALE_MODES.NEAREST)
+          );
 
-        tile.sprite = sprite;
+          tile.sprite = sprite;
 
-        // store the pixData so that we can export it
-        tile.canvas = canvas;
-        this.setSpriteProperties(
-          tile.sprite,
-          tile.tileData.zoomLevel,
-          tile.tileData.tilePos,
-          tile.mirrored
-        );
+          // store the pixData so that we can export it
+          tile.canvas = canvas;
+          this.setSpriteProperties(
+            tile.sprite,
+            tile.tileData.zoomLevel,
+            tile.tileData.tilePos,
+            tile.mirrored
+          );
 
-        // Tag newly populated graphics objects for fading in.
-        if (tile.new) {
-          sprite.alpha = 0;
-          tile.new = false;
-          graphics.fadeIn = true;
+          // Tag newly populated graphics objects for fading in.
+          if (tile.new) {
+            sprite.alpha = 0;
+            tile.new = false;
+            graphics.fadeIn = true;
+          }
+
+          graphics.removeChildren();
+          graphics.addChild(tile.sprite);
         }
 
-        graphics.removeChildren();
-        graphics.addChild(tile.sprite);
+        this.renderingTiles.delete(tile.tileId);
+        this.animate();
+        // call to check if tiles need removing
+        this.refreshTiles();
       });
   }
 
@@ -1069,8 +1082,6 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     this.pMain.scale.x = k; // scaleX;
     this.pMain.scale.y = k; // scaleY;
-
-    this.drawColorbar();
 
     this.mouseMoveZoomHandler();
   }

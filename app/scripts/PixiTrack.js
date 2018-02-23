@@ -433,6 +433,8 @@ class PixiTrack extends Track {
   rerender(options) {
     this.options = options;
     this.draw();
+    this.drawLabel();
+    this.drawBorder();
   }
 
   /**
@@ -440,9 +442,8 @@ class PixiTrack extends Track {
    */
   draw() {
     // this rectangle is cleared by functions that override this draw method
-    this.drawBorder();
-    this.drawLabel();
-    this.drawError();
+    // this.drawBorder();
+    // this.drawLabel();
   }
 
   /**

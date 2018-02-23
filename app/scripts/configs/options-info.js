@@ -26,6 +26,7 @@ const AVAILABLE_WIDTHS = {
   5: { name: '5', value: 5 },
   8: { name: '8', value: 8 },
   13: { name: '13', value: 13 },
+  21: { name: '21', value: 21 },
 };
 const AVAILABLE_WIDTHS_AND_NONE = Object.assign(AVAILABLE_WIDTHS, {
   'none': { name: 'none', value: 'none'}});
@@ -55,6 +56,10 @@ export const OPTIONS_INFO = {
     },
   },
   lineStrokeWidth: {
+    name: 'Stroke Width',
+    inlineOptions: AVAILABLE_WIDTHS,
+  },
+  strokeWidth: {
     name: 'Stroke Width',
     inlineOptions: AVAILABLE_WIDTHS,
   },

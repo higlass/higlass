@@ -62,6 +62,7 @@ import {
   SHORT_DRAG_TIMEOUT,
   TRACKS_INFO,
   TRACKS_INFO_BY_TYPE,
+  ZOOM_TRANSITION_DURATION,
 } from './configs';
 
 // Styles
@@ -1191,7 +1192,7 @@ class HiGlassComponent extends React.Component {
 
 
     // set target center
-    this.setCenters[uid1](sourceCenterX, sourceCenterY, targetK, true);
+    this.setCenters[uid1](sourceCenterX, sourceCenterY, targetK, true );
 
 
     this.setState({
@@ -1216,8 +1217,7 @@ class HiGlassComponent extends React.Component {
 
 
     // set target center
-    this.setCenters[uid1](targetCenterX, targetCenterY, sourceK, true);
-
+    this.setCenters[uid1](targetCenterX, targetCenterY, sourceK, true );
 
     this.setState({
       chooseViewHandler: null,
@@ -1885,6 +1885,9 @@ class HiGlassComponent extends React.Component {
 
     for (const track of looseTracks) {
       const trackObj = this.tiledPlots[viewId].trackRenderer.getTrackObject(track.uid);
+
+      if (!trackObj)
+        continue;
 
       track.width = trackObj.dimensions[0];
       track.height = trackObj.dimensions[1];
@@ -3023,8 +3026,8 @@ class HiGlassComponent extends React.Component {
                 this.addScalesChangedListener(view.uid, view.uid, listener)}
               removeViewportChangedListener={() =>
                 this.removeScalesChangedListener(view.uid, view.uid)}
-              setCenters={(centerX, centerY, k, animate, animateTime) =>
-                this.setCenters[view.uid](centerX, centerY, k, false, animate, animateTime)}
+              setCenters={(centerX, centerY, k, animateTime) =>
+                this.setCenters[view.uid](centerX, centerY, k, false, animateTime)}
               trackSourceServers={this.state.viewConfig.trackSourceServers}
               twoD={true}
             />

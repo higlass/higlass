@@ -2,6 +2,8 @@ import TiledPixiTrack from './TiledPixiTrack';
 
 import { tileProxy } from './services';
 
+const BINS_PER_TILE = 1024;
+
 class Tiled1DPixiTrack extends TiledPixiTrack {
   initTile(tile) {
     /**
@@ -108,7 +110,6 @@ class Tiled1DPixiTrack extends TiledPixiTrack {
 
 
     if (this.tilesetInfo.resolutions) {
-      const BINS_PER_TILE = 1024;
       // the default bins per tile which should
       // not be used because the right value should be in the tileset info
 

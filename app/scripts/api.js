@@ -24,6 +24,7 @@ export const destroy = () => {
   pubSubs = [];
   stack = {};
 };
+import ChromosomeInfo from './ChromosomeInfo';
 
 const api = function api(context) {
   const self = context;
@@ -196,14 +197,14 @@ const api = function api(context) {
       chrom2,
       start2,
       end2,
-      animate = false,
-      animateTime = 3000,
+      animateTime = 0,
+      chromInfo = null,
     ) {
-      // Set chromInfo if not available
-      if (!self.chromInfo) {
-        self.setChromInfo(
-          self.state.views[viewUid].chromInfoPath,
-          () => {
+      // if no ChromosomeInfo is passed in, try to load it from the
+      // location specified in the viewconf
+      if (!chromInfo) {
+        ChromosomeInfo(self.state.views[viewUid.chromInfoPath],
+          (internalChromInfo) => {
             self.api().goTo(
               viewUid,
               chrom1,
@@ -212,8 +213,8 @@ const api = function api(context) {
               chrom2,
               start2,
               end2,
-              animate,
               animateTime,
+              internalChromInfo,
             );
           },
         );
@@ -221,11 +222,11 @@ const api = function api(context) {
       }
 
       const [start1Abs, end1Abs] = relToAbsChromPos(
-        chrom1, start1, end1, self.chromInfo,
+        chrom1, start1, end1, chromInfo,
       );
 
       const [start2Abs, end2Abs] = relToAbsChromPos(
-        chrom2, start2, end2, self.chromInfo,
+        chrom2, start2, end2, chromInfo,
       );
 
       const [centerX, centerY, k] = scalesCenterAndK(
@@ -234,7 +235,7 @@ const api = function api(context) {
       );
 
       self.setCenters[viewUid](
-        centerX, centerY, k, false, animate, animateTime,
+        centerX, centerY, k, false, animateTime,
       );
     },
 

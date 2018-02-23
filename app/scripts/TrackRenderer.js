@@ -7,6 +7,7 @@ import { geoMercator } from 'd3-geo';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
+import { easeLinear } from 'd3-ease';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
@@ -835,8 +836,7 @@ class TrackRenderer extends React.Component {
     centerY,
     sourceK,
     notify = false,
-    animate = false,
-    animateTime = ZOOM_TRANSITION_DURATION,
+    animateTime = 0,
     xScale = this.xScale,
     yScale = this.yScale,
   ) {
@@ -872,14 +872,16 @@ class TrackRenderer extends React.Component {
       last = this.applyZoomTransform(notify);
     };
 
-    if (animate) {
+    if (animateTime) {
       let selection = this.elementSelection;
+
       this.activeTransitions += 1;
 
       if (!document.hidden) {
         // only transition if the window is hidden
         selection = selection
           .transition()
+          .ease(easeLinear)
           .duration(animateTime);
       }
 

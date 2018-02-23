@@ -996,7 +996,7 @@ class TiledPlot extends React.Component {
             // because "whole" tracks are always drawn on top of each other,
             // the notion of Series is unnecessary and so 'host' is null
             onAddTrack={(newTrack) => {
-              this.props.onTracksAdded([newTrack], 'whole', null);
+              this.props.onTracksAdded([newTrack], newTrack.position, null);
 
               this.handleCloseContextMenu();
             }}

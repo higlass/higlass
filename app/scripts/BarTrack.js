@@ -35,32 +35,17 @@ class BarTrack extends HorizontalLine1DPixiTrack {
 
     const graphics = tile.graphics;
 
-    const { tileX, tileWidth } = this.getTilePosAndDimensions(tile.tileData.zoomLevel, tile.tileData.tilePos);
+    const { tileX, tileWidth } = this.getTilePosAndDimensions(tile.tileData.zoomLevel, 
+      tile.tileData.tilePos, this.tilesetInfo.bins_per_dimension);
     const tileValues = tile.tileData.dense;
 
     if (tileValues.length == 0) { return; }
 
-    let pseudocount = 0; // if we use a log scale, then we'll set a pseudocount
     // equal to the smallest non-zero value
-    this.valueScale = null;
-
-    // console.log('valueScaling:', this.options.valueScaling);
-    if (this.options.valueScaling == 'log') {
-      let offsetValue = this.medianVisibleValue;
-
-      if (!this.medianVisibleValue) { offsetValue = this.minVisibleValue(); }
-
-      this.valueScale = scaleLog()
-        // .base(Math.E)
-        .domain([offsetValue, this.maxValue() + offsetValue])
-        .range([this.dimensions[1], 0]);
-      pseudocount = offsetValue;
-    } else {
-      // linear scale
-      this.valueScale = scaleLinear()
-        .domain([this.minValue(), this.maxValue()])
-        .range([this.dimensions[1], 0]);
-    }
+    const [vs, pseudocount] = this.makeValueScale(this.minVisibleValue(), this.medianVisibleValue,  
+      this.maxValue(), 0);
+    this.valueScale = vs;
+    // console.log('pseudocount:', pseudocount, this.valueScale.domain());
 
     graphics.clear();
 
@@ -74,7 +59,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     const stroke = colorToHex(this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue');
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
-    const tileXScale = scaleLinear().domain([0, this.tilesetInfo.tile_size])
+    const tileXScale = scaleLinear().domain([0, this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension])
       .range([tileX, tileX + tileWidth]);
 
     // let strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
@@ -95,6 +80,7 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     for (let i = 0; i < tileValues.length; i++) {
       const xPos = this._xScale(tileXScale(i));
       const yPos = this.valueScale(tileValues[i] + pseudocount);
+      // console.log('tileValues[i]', tileValues[i], yPos, this.valueScale.domain(), this.valueScale.range());
 
       const width = this._xScale(tileXScale(i + 1)) - xPos;
       const height = this.dimensions[1] - yPos;
