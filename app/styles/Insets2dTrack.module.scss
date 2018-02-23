@@ -54,11 +54,48 @@
   right: 0;
 }
 
-.inset-image-wrapper {
+.inset-images-wrapper {
   position: absolute;
+  display: flex;
   top: 2px;
   right: 2px;
+  bottom: 2px;
   left: 2px;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+.inset-images-wrapper-left {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+
+  > * {
+    position: relative;
+  }
+}
+
+.inset-images-wrapper-left-three {
+  flex-grow: 2;
+}
+
+.inset-images-wrapper-left-four {
+  flex-grow: 3;
+}
+
+.inset-images-wrapper-right {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.inset-images-wrapper-right-grow {
+  flex-grow: 1;
+}
+
+.inset-image-wrapper {
+  position: relative;
+  flex-grow: 1;
 }
 
 .inset-image-ratio {
@@ -70,9 +107,44 @@
 .inset-image {
   position: absolute;
   top: 0;
+  right: 0;
+  bottom: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  border-radius: 2px;
+  background-color: black;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.inset-image-left-half-middle,
+.inset-image-left-full-middle {
+  right: 1px;
+}
+
+.inset-image-right-half-first,
+.inset-image-right-half-middle,
+.inset-image-right-half-last,
+.inset-image-right-full-first,
+.inset-image-right-full-middle,
+.inset-image-right-full-last {
+  left: 1px;
+  right: 0;
+}
+
+.inset-image-right-full-middle {
+  top: 1px;
+  bottom: 1px;
+}
+
+.inset-image-right-full-first  {
+  top: 0;
+  bottom: 1px;
+}
+
+.inset-image-right-full-last  {
+  top: 1px;
+  bottom: 0;
 }
 
 .inset-previews-wrapper-top,

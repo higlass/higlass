@@ -105,6 +105,8 @@ class AnnotationsInsets {
       disabled: !!this.options.disableClustering,
       propCheck: propChecks
     });
+
+    this.isRepresentatives = this.insetsTrack.dataType.indexOf('image') >= 0;
   }
 
   /**
@@ -191,6 +193,65 @@ class AnnotationsInsets {
     return borderScale;
   }
 
+  /**
+   * Compute the final cluster size in pixels from their remote size (e.g., base
+   *   pairs or pixels)
+   *
+   * @param   {object}  inset  Inset definition object holding the remote size
+   *   of the inset.
+   * @param   {function}  scale  Translates between the remote size and the
+   *   pixel size.
+   * @return  {object}  Object holding the final pixel with and height.
+   */
+  compInsetSize(cluster, scale) {
+    const [minX, maxX, minY, maxY] = cluster.getAvgDataProjPos();
+
+    const widthAbs = Math.abs(maxX - minX);
+    const heightAbs = Math.abs(maxY - minY);
+    const maxDim = scale(this.clusterSizePropAcc(cluster));
+    const isLandscape = widthAbs >= heightAbs;
+    const isWithRepresentatives = this.isRepresentatives && cluster.size > 1;
+
+    let width = isLandscape || isWithRepresentatives
+      ? maxDim
+      : widthAbs / heightAbs * maxDim;
+    let height = !isLandscape || isWithRepresentatives
+      ? maxDim
+      : heightAbs / widthAbs * width;
+
+    let addWidth = 0;
+    let addheight = 0;
+    if (isWithRepresentatives) {
+      // The maximum gallery image might be subject to change
+      const effectiveSize = Math.min(4, cluster.size);
+
+      switch (effectiveSize) {
+        case 2:
+          addWidth = width * 0.6;
+          addheight = -height * 0.6;
+          break;
+
+        case 3:
+          addWidth = width * 0.8;
+          addheight = height * 0.2;
+          break;
+
+        case 4:
+          addWidth = (width * 1.75 * 1.3) - width;
+          addheight = height * 0.70625;
+          break;
+
+        default:
+          // Nothing
+      }
+    }
+
+    width += addWidth;
+    height += addheight;
+
+    return { width, height };
+  }
+
   compInsetSizeScale() {
     // Convert cluster size to view (display pixel) resolution
     const finalRes = scaleQuantize()
@@ -218,48 +279,6 @@ class AnnotationsInsets {
   }
 
   /**
-   * Compute the final cluster size in pixels from their remote size (e.g., base
-   *   pairs or pixels)
-   *
-   * @param   {object}  inset  Inset definition object holding the remote size
-   *   of the inset.
-   * @param   {function}  scale  Translates between the remote size and the
-   *   pixel size.
-   * @return  {object}  Object holding the final pixel with and height.
-   */
-  compInsetSize(inset, scale) {
-    const widthAbs = Math.abs(inset.maxXDataProj - inset.minXDataProj);
-    const heightAbs = Math.abs(inset.maxYDataProj - inset.minYDataProj);
-
-    const width = widthAbs >= heightAbs
-      ? scale(widthAbs)
-      : widthAbs / heightAbs * scale(heightAbs);
-    const height = heightAbs >= widthAbs
-      ? scale(heightAbs)
-      : heightAbs / widthAbs * width;
-
-    return { width, height };
-  }
-
-  compInsetSizeCluster(cluster, scale) {
-    const [minX, maxX, minY, maxY] = cluster.getAvgDataProjPos();
-
-    const widthAbs = Math.abs(maxX - minX);
-    const heightAbs = Math.abs(maxY - minY);
-    const maxDim = scale(this.clusterSizePropAcc(cluster));
-    const isLandscape = widthAbs >= heightAbs;
-
-    const width = isLandscape
-      ? maxDim
-      : widthAbs / heightAbs * maxDim;
-    const height = isLandscape
-      ? heightAbs / widthAbs * width
-      : maxDim;
-
-    return { width, height };
-  }
-
-  /**
    * Create insets.
    */
   createInsets() {
@@ -276,6 +295,7 @@ class AnnotationsInsets {
     // const t0 = performance.now();
     this.areaClusterer.add(this.annosToBeDrawnAsInsets, true);
     this.areaClusterer.remove(this.annosToBeDrawnAsInsetsOld, true);
+    // this.areaClusterer.evalClusters();
     this.areaClusterer.refresh();
     this.areaClusterer.clusterElements();
     // console.log(`Clustering took ${performance.now() - t0}ms`);
@@ -359,7 +379,7 @@ class AnnotationsInsets {
         if (!this.insets[id]) {
           const {
             width, height
-          } = this.compInsetSizeCluster(cluster, finalRes);
+          } = this.compInsetSize(cluster, finalRes);
 
           // Create new Label for the AreaCluster
           this.insets[id] = new LabelCluster(id)
@@ -371,6 +391,8 @@ class AnnotationsInsets {
           const newOy = (cluster.maxY + cluster.minY) / 2;
           const dX = this.insets[id].oX - newOx;
           const dY = this.insets[id].oY - newOy;
+
+          this.insets[id].compDimPos();
 
           this.insets[id].oX = newOx;
           this.insets[id].oY = newOy;
@@ -385,7 +407,7 @@ class AnnotationsInsets {
           if (newResScale) {
             const {
               width, height
-            } = this.compInsetSizeCluster(cluster, finalRes);
+            } = this.compInsetSize(cluster, finalRes);
 
             this.insets[id].width = width;
             this.insets[id].height = height;
@@ -565,7 +587,7 @@ class AnnotationsInsets {
         if (newResScale) {
           const {
             width, height
-          } = this.compInsetSizeCluster(cluster, finalRes);
+          } = this.compInsetSize(cluster, finalRes);
 
           c.width = width;
           c.height = height;
@@ -590,7 +612,7 @@ class AnnotationsInsets {
         return c;
       }
 
-      const { width, height } = this.compInsetSizeCluster(cluster, finalRes);
+      const { width, height } = this.compInsetSize(cluster, finalRes);
       const oX = (cluster.maxX + cluster.minX) / 2;
       const oY = (cluster.maxY + cluster.minY) / 2;
 

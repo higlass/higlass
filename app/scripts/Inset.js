@@ -78,9 +78,12 @@ export default class Inset {
     this.gMain.addChild(this.gBorder);
 
     this.previewsHeight = 0;
-    this.prvImgs = [];
-    this.prvWrappers = [];
     this.prvData = [];
+    this.imgs = [];
+    this.prvs = [];
+    this.prvWrappers = [];
+    this.imgWrappers = [];
+    this.imgRatios = [];
 
     this.cssGrads = {};
 
@@ -199,10 +202,10 @@ export default class Inset {
     radius = this.options.borderRadius,
     fill = this.borderFill,
   ) {
-    const prevHeight = this.prvImgs.length
+    const prevHeight = this.prvs.length
       ? (
         (this.previewsHeight * this.scaleBase * this.scaleExtra * this.imScale) +
-        ((this.prvImgs.length - 1) * this.previewSpacing)
+        ((this.prvs.length - 1) * this.previewSpacing)
       )
       : 0;
 
@@ -1419,8 +1422,55 @@ export default class Inset {
    * Adjusts the ratio of the image
    */
   positionImageHtml() {
-    const ratio = (this.imgData.height / this.imgData.width) * 100;
-    this.imgRatio.style.paddingTop = `${ratio}%`;
+    if (!this.imgData.length) return;
+
+    switch (this.imgData.length) {
+      case 1:
+        this.positionImageOneHtml();
+        break;
+
+      case 2:
+        this.positionImageTwoHtml();
+        break;
+
+      case 3:
+        this.positionImageThreeHtml();
+        break;
+
+      case 4:
+        this.positionImageFourHtml();
+        break;
+
+      default:
+        console.warn('Only up to 4 images are supported');
+    }
+  }
+
+  positionImageOneHtml() {
+    const ratio = (this.imgData[0].height / this.imgData[0].width) * 100;
+    this.imgRatios[0].style.paddingTop = `${ratio}%`;
+  }
+
+  positionImageTwoHtml() {
+    this.imgRatios.forEach((el) => { el.style.paddingTop = '100%'; });
+    this.imgsWrapperRight.className =
+      `${style['inset-images-wrapper-right']} ${style['inset-images-wrapper-right-grow']}`;
+  }
+
+  positionImageThreeHtml() {
+    this.imgRatios.forEach((el) => { el.style.paddingTop = '100%'; });
+    this.imgsWrapperLeft.className =
+      `${style['inset-images-wrapper-left']} ${style['inset-images-wrapper-left-three']}`;
+    this.imgsWrapperRight.className =
+      `${style['inset-images-wrapper-right']} ${style['inset-images-wrapper-right-grow']}`;
+  }
+
+  positionImageFourHtml() {
+    this.imgRatios.forEach((el) => { el.style.paddingTop = '100%'; });
+    this.imgsWrapperLeft.className =
+      `${style['inset-images-wrapper-left']} ${style['inset-images-wrapper-left-four']}`;
+    this.imgsWrapperRight.className =
+      `${style['inset-images-wrapper-right']} ${style['inset-images-wrapper-right-grow']}`;
   }
 
   /**
@@ -1443,11 +1493,11 @@ export default class Inset {
   positionPreviewsCanvas(
     x = this.x, y = this.y, width = this.width, height = this.height
   ) {
-    if (!this.prvImgs) return;
+    if (!this.prvs) return;
 
     const pos = this.computePreviewsPosition(x, y, width, height);
 
-    this.prvImgs.forEach((preview, i) => {
+    this.prvs.forEach((preview, i) => {
       const prevHeight = Math.abs(pos.scaleY);
       const yOffset = ((prevHeight + this.previewSpacing) * (i + 1));
 
@@ -1528,55 +1578,113 @@ export default class Inset {
    * @param  {Array}  data  Data to be rendered
    */
   renderImageHtml(data, force) {
-    if ((this.img && !force) || !data.length) {
-      return Promise.resolve();
+    if (
+      !data ||
+      (this.imgs.length === data.length && !force) ||
+      !data.length
+    ) return Promise.resolve();
+
+    if (this.imgsRendering) return this.imgsRendering;
+
+    this.previewsHeight = 0;
+
+    const imgsWrapper = this.imgsWrapper || document.createElement('div');
+    imgsWrapper.className = style['inset-images-wrapper'];
+
+    if (imgsWrapper !== this.imgsWrapper && this.imgsWrapper) {
+      this.border.removeChild(this.imgsWrapper);
     }
 
-    if (this.imgRendering) return this.imgRendering;
+    this.imgsWrapper = imgsWrapper;
+    this.border.appendChild(imgsWrapper);
 
-    this.imgRendering = this.renderer(data[0], this.dataTypes[0])
-      .then((renderedImg) => {
-        this.imgData = renderedImg;
+    const imgsWrapperLeft = this.imgsWrapperLeft || document.createElement('div');
+    imgsWrapperLeft.className = style['inset-images-wrapper-left'];
 
-        const imgWrapper = this.imgWrapper || document.createElement('div');
-        imgWrapper.className = style['inset-image-wrapper'];
+    if (imgsWrapperLeft !== this.imgsWrapperLeft && this.imgsWrapperLeft) {
+      this.imgsWrapper.removeChild(this.imgsWrapperLeft);
+    }
 
-        const imgRatio = this.imgRatio || document.createElement('div');
-        imgRatio.className = style['inset-image-ratio'];
+    this.imgsWrapperLeft = imgsWrapperLeft;
+    this.imgsWrapper.appendChild(imgsWrapperLeft);
 
-        const img = this.img || document.createElement('img');
-        img.className = style['inset-image'];
-        img.src = renderedImg.toDataURL();
-        img.__transform__ = {};
+    const imgsWrapperRight = this.imgsWrapperRight || document.createElement('div');
+    imgsWrapperRight.className = style['inset-images-wrapper-right'];
 
-        if (this.dataType === 'cooler') {
-          // Enable nearest-neighbor scaling
-          img.style.imageRendering = 'pixelated';
-        }
+    if (imgsWrapperRight !== this.imgsWrapperRight && this.imgsWrapperRight) {
+      this.imgsWrapper.removeChild(this.imgsWrapperRight);
+    }
 
-        if (imgWrapper !== this.imgWrapper && this.imgWrapper) {
-          this.border.removeChild(this.imgWrapper);
-        }
+    this.imgsWrapperRight = imgsWrapperRight;
+    this.imgsWrapper.appendChild(imgsWrapperRight);
 
-        this.imgWrapper = imgWrapper;
-        this.border.appendChild(imgWrapper);
+    this.imgsRendering = Promise.all(data
+      .map((imgDataRaw, i) => this.renderer(imgDataRaw, this.dataTypes[0])
+        .then((renderedImg) => {
+          this.imgData[i] = renderedImg;
 
-        if (imgRatio !== this.imgRatio && this.imgRatio) {
-          this.imgWrapper.removeChild(this.imgRatio);
-        }
+          const imgWrapper = this.imgWrappers[i] || document.createElement('div');
+          imgWrapper.className = style['inset-image-wrapper'];
 
-        this.imgRatio = imgRatio;
-        this.imgWrapper.appendChild(imgRatio);
+          let imgRatio;
+          if (data.length === 1) {
+            imgRatio = this.imgRatios[i] || document.createElement('div');
+            imgRatio.className = style['inset-image-ratio'];
+          }
 
-        if (img !== this.img && this.img) {
-          this.imgWrapper.removeChild(this.img);
-        }
+          const img = this.imgs[i] || document.createElement('div');
+          img.className = style['inset-image'];
 
-        this.img = img;
-        this.imgWrapper.appendChild(img);
-      });
+          const orient = i === 0 ? 'left' : 'right';
+          let intense = data.length === 2 ? 'half' : '';
+          let pos = 'middle';
+          if (data.length > 2) {
+            intense = 'full';
+            if (i === 1) pos = 'first';
+            if (i === data.length - 1) pos = 'last';
+          }
 
-    return this.imgRendering;
+          addClass(img, style[`inset-image-${orient}-${intense}-${pos}`]);
+
+          img.style.backgroundImage = `url(${renderedImg.toDataURL()})`;
+          img.__transform__ = {};
+
+          if (this.dataType === 'cooler') {
+            // Enable nearest-neighbor scaling
+            img.style.imageRendering = 'pixelated';
+          }
+
+          const mainWrapper = i === 0
+            ? this.imgsWrapperLeft
+            : this.imgsWrapperRight;
+
+          if (imgWrapper !== this.imgWrappers[i] && this.imgWrappers[i]) {
+            mainWrapper.removeChild(this.imgWrappers[i]);
+          }
+
+          this.imgWrappers[i] = imgWrapper;
+          mainWrapper.appendChild(imgWrapper);
+
+          if (imgRatio) {
+            if (imgRatio !== this.imgRatios[i] && this.imgRatios[i]) {
+              this.imgWrappers[i].removeChild(this.imgRatios[i]);
+            }
+
+            this.imgRatios[i] = imgRatio;
+            this.imgWrappers[i].appendChild(imgRatio);
+          }
+
+          if (img !== this.imgs[i] && this.imgs[i]) {
+            this.imgWrappers[i].removeChild(this.imgs[i]);
+          }
+
+          this.imgs[i] = img;
+          this.imgWrappers[i].appendChild(img);
+        })
+      )
+    );
+
+    return this.imgsRendering;
   }
 
   /**
@@ -1596,7 +1704,7 @@ export default class Inset {
   renderPreviewsCanvas(data, force) {
     if (
       !data ||
-      (this.prvImgs.length === data.length && !force) ||
+      (this.prvs.length === data.length && !force) ||
       !data.length
     ) return Promise.resolve();
 
@@ -1609,14 +1717,14 @@ export default class Inset {
         .then((renderedImg) => {
           this.prvData[i] = renderedImg;
 
-          this.prvImgs[i] = new PIXI.Sprite(
+          this.prvs[i] = new PIXI.Sprite(
             PIXI.Texture.fromCanvas(
               renderedImg, PIXI.SCALE_MODES.NEAREST
             )
           );
 
-          this.prvImgs[i].interactive = true;
-          this.prvImgs[i]
+          this.prvs[i].interactive = true;
+          this.prvs[i]
             .on('mousedown', pixiToOrigEvent(this.mouseDownHandler.bind(this)))
             .on('mouseover', pixiToOrigEvent(this.mouseOverHandler.bind(this)))
             .on('mouseout', pixiToOrigEvent(this.mouseOutHandler.bind(this)))
@@ -1624,9 +1732,9 @@ export default class Inset {
             .on('rightdown', pixiToOrigEvent(this.mouseDownRightHandler.bind(this)))
             .on('rightup', pixiToOrigEvent(this.mouseUpRightHandler.bind(this)));
 
-          this.previewsHeight += this.prvImgs[i].height;
+          this.previewsHeight += this.prvs[i].height;
 
-          this.gMain.addChild(this.prvImgs[i]);
+          this.gMain.addChild(this.prvs[i]);
         })
       );
 
@@ -1643,7 +1751,7 @@ export default class Inset {
   renderPreviewsHtml(data, force) {
     if (
       !data ||
-      (this.prvImgs.length === data.length && !force) ||
+      (this.prvs.length === data.length && !force) ||
       !data.length
     ) return Promise.resolve();
 
@@ -1663,7 +1771,7 @@ export default class Inset {
     this.prvsWrapper = prvsWrapper;
     this.border.appendChild(prvsWrapper);
 
-    const renderedPreviews = data
+    this.previewsRendering = Promise.all(data
       .map((preview, i) => this.renderer(preview, this.dataTypes[0])
         .then((renderedImg) => {
           this.prvData[i] = renderedImg;
@@ -1673,7 +1781,7 @@ export default class Inset {
           const prvWrapper = this.prvWrappers[i] || document.createElement('div');
           prvWrapper.className = style['inset-preview-wrapper'];
 
-          const img = this.prvImgs[i] || document.createElement('img');
+          const img = this.prvs[i] || document.createElement('img');
           img.className = style['inset-preview'];
           img.src = renderedImg.toDataURL();
           img.__transform__ = {};
@@ -1690,16 +1798,15 @@ export default class Inset {
           this.prvWrappers[i] = prvWrapper;
           this.prvsWrapper.appendChild(prvWrapper);
 
-          if (img !== this.prvImgs[i] && this.prvImgs[i]) {
-            this.prvWrappers[i].removeChild(this.prvImgs[i]);
+          if (img !== this.prvs[i] && this.prvs[i]) {
+            this.prvWrappers[i].removeChild(this.prvs[i]);
           }
 
-          this.prvImgs[i] = img;
+          this.prvs[i] = img;
           this.prvWrappers[i].appendChild(img);
         })
-      );
-
-    this.previewsRendering = Promise.all(renderedPreviews);
+      )
+    );
 
     return this.previewsRendering;
   }
@@ -1738,10 +1845,10 @@ export default class Inset {
 
     const imPos = this.computeImagePosition();
 
-    const prevHeight = this.prvImgs.length
+    const prevHeight = this.prvs.length
       ? (
         (this.previewsHeight * Math.abs(imPos.scaleY)) +
-        ((this.prvImgs.length - 1) * this.previewSpacing)
+        ((this.prvs.length - 1) * this.previewSpacing)
       ) + 1
       : 0;
 
@@ -1760,7 +1867,7 @@ export default class Inset {
       true
     );
 
-    const previewTweenDefs = this.prvImgs.map((sprite, i) => ({
+    const previewTweenDefs = this.prvs.map((sprite, i) => ({
       obj: sprite,
       propsTo: {
         x: imPos.x,
