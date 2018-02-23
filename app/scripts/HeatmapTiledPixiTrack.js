@@ -954,17 +954,18 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     this.renderingTiles.add(tile.tileId);
-    tileProxy.tileDataToPixData(tile,
+    tileProxy.tileDataToPixData(
+      tile,
       scaleType,
       this.limitedValueScale.domain(),
       pseudocount, // used as a pseudocount to prevent taking the log of 0
       this.colorScale,
-      (pixData) => {
-        if (pixData) {
+      (data) => {
+        if (data) {
           // the tileData has been converted to pixData by the worker script and
           // needs to be loaded as a sprite
           const graphics = tile.graphics;
-          const canvas = tileToCanvas(pixData);
+          const canvas = tileToCanvas(data.pixData);
           // this.addBorder(pixData);
 
           let sprite = null;
@@ -985,11 +986,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
           );
 
           // Tag newly populated graphics objects for fading in.
-          if (tile.new) {
-            sprite.alpha = 0;
-            tile.new = false;
-            graphics.fadeIn = true;
-          }
+          // if (tile.new) {
+          //   sprite.alpha = 0;
+          //   tile.new = false;
+          //   graphics.fadeIn = true;
+          // }
 
           graphics.removeChildren();
           graphics.addChild(tile.sprite);

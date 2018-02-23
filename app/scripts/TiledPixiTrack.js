@@ -524,31 +524,32 @@ class TiledPixiTrack extends PixiTrack {
     }
 
     // Fade in new Sprites
-    if (this.tweenStop) this.tweenStop();
+    // if (this.tweenStop) this.tweenStop();
 
-    const newTileSprites = Object.keys(this.fetchedTiles)
-      .filter(tilesetId => this.fetchedTiles[tilesetId].graphics.fadeIn)
-      .map((tilesetId) => {
-        const tileset = this.fetchedTiles[tilesetId];
-        tileset.graphics.fadeIn = false;
-        return {
-          obj: tileset.sprite,
-          propsTo: {
-            alpha: 1
-          }
-        };
-      });
+    // const newTileSprites = Object.keys(this.fetchedTiles)
+    //   .filter(tilesetId => this.fetchedTiles[tilesetId].graphics.fadeIn)
+    //   .map((tilesetId) => {
+    //     const tileset = this.fetchedTiles[tilesetId];
+    //     tileset.graphics.fadeIn = false;
+    //     return {
+    //       obj: tileset.sprite,
+    //       propsTo: {
+    //         alpha: 1
+    //       }
+    //     };
+    //   });
 
-    if (newTileSprites.length) {
-      this.tweenStop = transitionGroup(newTileSprites, 250);
-      pubSub.subscribe('app.stopRepeatingAnimation', (tweens) => {
-        if (this.tweenStop.tweens === tweens) {
-          this.removeTiles();
-        }
-      }, 1);
-    } else {
-      this.removeTiles();
-    }
+    // if (newTileSprites.length) {
+    //   this.tweenStop = transitionGroup(newTileSprites, 250);
+    //   pubSub.subscribe('app.stopRepeatingAnimation', (tweens) => {
+    //     if (this.tweenStop.tweens === tweens) {
+    //       this.removeTiles();
+    //     }
+    //   }, 1);
+    // } else {
+    //   this.removeTiles();
+    // }
+    this.removeTiles();
   }
 
   draw() {
