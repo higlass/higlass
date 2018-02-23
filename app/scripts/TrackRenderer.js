@@ -881,7 +881,6 @@ class TrackRenderer extends React.Component {
         // only transition if the window is hidden
         selection = selection
           .transition()
-          .ease(easeLinear)
           .duration(animateTime);
       }
 
@@ -1606,7 +1605,7 @@ class TrackRenderer extends React.Component {
     }
 
     this.setCenter(
-      centerX, centerY, k, false, animate, animateTime, xScale, yScale
+      centerX, centerY, k, false, animateTime, xScale, yScale
     );
   }
 
