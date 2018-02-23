@@ -445,6 +445,7 @@ class AnnotationsInsets {
         .anchor(anchors)
         .width(this.insetsTrack.dimensions[0])
         .height(this.insetsTrack.dimensions[1])
+        .padding(5)
         .start(Math.round(Math.max(2, Math.min(100 * Math.log(n) / n))));
 
       // console.log(`Positioning took ${performance.now() - t0} msec`);

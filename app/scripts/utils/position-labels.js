@@ -1,7 +1,8 @@
 let lab = [];
 let anc = [];
 let w = 1; // box width
-let h = 1; // box width
+let h = 1; // box height
+let padding = 1;
 
 const maxMove = 25.0;
 const maxAngle = 0.5;
@@ -65,10 +66,10 @@ const energy = (index) => {
   // else if (dx < 0 && dy < 0) ener += 2 * wOrient;
   // else ener += 3 * wOrient;
 
-  const x21 = l.x - l.wH - 1;
-  const y21 = l.y - l.hH - 1;
-  const x22 = l.x + l.wH + 1;
-  const y22 = l.y + l.hH + 1;
+  const x21 = l.x - l.wH - padding;
+  const y21 = l.y - l.hH - padding;
+  const x22 = l.x + l.wH + padding;
+  const y22 = l.y + l.hH + padding;
   let x11;
   let x12;
   let y11;
@@ -288,6 +289,13 @@ labeler.altSchedule = (x) => {
   if (!arguments.length) return coolingSchedule;
   userDefinedSchedule = x;
   userSchedule = true;
+  return labeler;
+};
+
+labeler.padding = (x) => {
+// user defined coolingSchedule
+  if (!arguments.length) return padding;
+  padding = x;
   return labeler;
 };
 
