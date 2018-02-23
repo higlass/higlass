@@ -1583,7 +1583,7 @@ export class TiledPlot extends React.Component {
       {
         name: 'dragstart',
         callback: (event) => {
-          console.log('dragstart');
+          console.log('dragstart', event.dataTransfer.getData('text/json'));
           const eventData = event.dataTransfer.getData('text/json');
           let eventJson = null;
 

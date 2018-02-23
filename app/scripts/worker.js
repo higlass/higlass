@@ -258,7 +258,11 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
       headers,
     }
     )
-    .then(response => response.json())
+    .then(response => {
+      console.log('response:', response);
+      return response.json()
+    }
+    )
     .then(data =>  {
       data = tileResponseToData(data, server, theseTileIds); 
 
