@@ -2,6 +2,7 @@ export { default as absToChr } from './abs-to-chr';
 export { default as accessorTransposition } from './accessor-transposition';
 export { default as addArrays } from './add-arrays';
 export { default as addClass } from './add-class';
+export { default as addEventListenerOnce } from './add-event-listener-once';
 export { default as base64ToCanvas } from './base64-to-canvas';
 export { default as canvasLinearGradient } from './canvas-linear-gradient';
 export { default as chromInfoBisector } from './chrom-info-bisector';
