@@ -52,113 +52,8 @@ const testViewConfig = {
       genomePositionSearchBoxVisible: true,
       chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
       tracks: {
-        top: [
-          {
-            name: 'Gene Annotations (hg19)',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            uid: 'BEEMEjU7QCa2krDO9C0yOQ',
-            type: 'horizontal-gene-annotations',
-            options: {
-              labelPosition: 'outerTop',
-              name: 'Gene Annotations (hg19)',
-              labelColor: 'black',
-              plusStrandColor: 'blue',
-              minusStrandColor: 'red',
-              trackBorderWidth: 0,
-              trackBorderColor: 'black'
-            },
-            width: 2310,
-            height: 60,
-            position: 'top'
-          },
-          {
-            name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
-            type: 'horizontal-line',
-            options: {
-              labelColor: 'red',
-              labelPosition: 'outerLeft',
-              axisPositionHorizontal: 'right',
-              lineStrokeColor: 'blue',
-              name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
-              valueScaling: 'log',
-              lineStrokeWidth: 1,
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              labelTextOpacity: 0.4
-            },
-            width: 2310,
-            height: 20,
-            position: 'top',
-            uid: 'Vz12upkzTfOnnx-T4A8mTQ'
-          },
-          {
-            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            type: 'horizontal-chromosome-labels',
-            position: 'top',
-            name: 'Chromosome Labels (hg19)',
-            height: 30,
-            uid: 'I1QUF22JQJuJ38j9PS4iqw',
-            options: {},
-            width: 2310
-          }
-        ],
-        left: [
-          {
-            name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
-            type: 'vertical-line',
-            options: {
-              labelColor: 'red',
-              labelPosition: 'outerLeft',
-              axisPositionHorizontal: 'right',
-              lineStrokeColor: 'blue',
-              name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
-              valueScaling: 'log',
-              axisPositionVertical: 'top',
-              lineStrokeWidth: 1,
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              labelTextOpacity: 0.4
-            },
-            width: 20,
-            position: 'left',
-            uid: 'CRKsGdngTFm4JxH-BGuSfw',
-            height: 592
-          },
-          {
-            type: 'vertical-gene-annotations',
-            width: 60,
-            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            server: 'http://higlass.io/api/v1',
-            position: 'left',
-            name: 'Gene Annotations (hg19)',
-            options: {
-              labelPosition: 'bottomRight',
-              name: 'Gene Annotations (hg19)',
-              labelColor: 'black',
-              plusStrandColor: 'blue',
-              minusStrandColor: 'red',
-              trackBorderWidth: 0,
-              trackBorderColor: 'black'
-            },
-            uid: 'OgnAEKSHRaG-gR1RqPOuBQ',
-            height: 592
-          },
-          {
-            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            type: 'vertical-chromosome-labels',
-            position: 'left',
-            name: 'Chromosome Labels (hg19)',
-            width: 30,
-            uid: 'a-mFiHnBQ8uuI6UG3USWVA',
-            options: {},
-            height: 592
-          }
-        ],
+        top: [],
+        left: [],
         center: [
           {
             uid: 'c1',
@@ -390,63 +285,8 @@ const testViewConfig = {
             options: {},
           }
         ],
-        right: [
-          {
-            type: 'vertical-gene-annotations',
-            width: 60,
-            tilesetUid: 'OHJakQICQD6gTD7skx4EWA',
-            server: 'http://higlass.io/api/v1',
-            name: 'Gene Annotations (hg19)',
-            options: {
-              labelPosition: 'outerBottom',
-              name: 'Gene Annotations (hg19)',
-              labelColor: 'black',
-              plusStrandColor: 'blue',
-              minusStrandColor: 'red',
-              trackBorderWidth: 0,
-              trackBorderColor: 'black'
-            },
-            position: 'right',
-            uid: 'O3KJFOePTtGhWZ9uzkEDvw',
-            height: 592
-          },
-          {
-            chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            type: 'vertical-chromosome-labels',
-            name: 'Chromosome Labels (hg19)',
-            width: 30,
-            options: {
-              labelPosition: 'outerBottom',
-              name: 'Chromosome labels'
-            },
-            position: 'right',
-            uid: 'FjeuD8N1TKec7t_cL6xzSw',
-            height: 592
-          }
-        ],
-        bottom: [
-          {
-            name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig',
-            server: 'http://higlass.io/api/v1',
-            tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
-            type: 'horizontal-line',
-            options: {
-              labelPosition: 'outerLeft',
-              axisPositionHorizontal: 'right',
-              lineStrokeColor: 'blue',
-              name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
-              valueScaling: 'log',
-              labelColor: 'black',
-              lineStrokeWidth: 1,
-              trackBorderWidth: 0,
-              trackBorderColor: 'black',
-              labelTextOpacity: 0.4
-            },
-            width: 2310,
-            position: 'bottom',
-            uid: 'XqEiqg-GTkWL2K50hs_Skg'
-          }
-        ],
+        right: [],
+        bottom: [],
         gallery: [
           {
             server: 'http://localhost:8001/api/v1',
@@ -455,11 +295,11 @@ const testViewConfig = {
             type: 'insets',
             datatype: 'cooler',
             chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-            width: 52,
-            height: 52,
+            width: 76,
+            height: 76,
             options: {
-              minSize: 8,
-              maxSize: 16,
+              minSize: 12,
+              maxSize: 24,
               sizeStepSize: 2,
               padding: 0.2,
               paddingCustom: {
@@ -471,6 +311,7 @@ const testViewConfig = {
                 100000: 16,
               },
               scale: 3,
+              scaleSizeBy: 'clusterSize',
               additionalZoom: -3,
               onClickScale: 2,
               fill: 'white',

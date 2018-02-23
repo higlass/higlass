@@ -38,22 +38,9 @@ const testViewConfig = {
   views: [
     {
       uid: 'aa',
-      // initialXDomain: [
-      //   13.275596052484135,
-      //   36.06728385575285
-      // ],
-      // initialYDomain: [
-      //   20.935258576635313,
-      //   35.09204677313709
-      // ],
-      initialXDomain: [
-        -75.31982705626032,
-        -68.95084281901462
-      ],
-      initialYDomain: [
-        -49.82388274225458,
-        -45.07590434535878
-      ],
+      initialXDomain: [0, 454330],
+      initialYDomain: [0, 149278],
+      genomePositionSearchBoxVisible: true,
       tracks: {
         top: [],
         left: [],
@@ -64,54 +51,71 @@ const testViewConfig = {
             options: {},
             contents: [
               {
-                type: 'osm-tiles',
-                position: 'center',
-                uid: 'BUqu9l7lQOSU55hS-AF5wQ',
-                name: 'OSM Tiles'
-              },
-              {
-                server: 'http://localhost:8001/api/v1',
-                tilesetUid: 'ski-resorts',
-                uid: 'ski-resorts',
-                type: 'geo-json',
+                uid: 'imtiles',
+                type: 'image-tiles',
+                server: 'http://localhost:8001/api/v1/',
+                tilesetUid: 'gigapan-54825',
                 options: {
-                  labelColor: 'red',
-                  labelPosition: 'hidden',
-                  trackBorderWidth: 0,
-                  trackBorderColor: 'red',
-                  rectangleDomainFillColor: 'red',
-                  rectangleDomainFillOpacity: 0.5,
-                  rectangleDomainStrokeColor: 'red',
-                  rectangleDomainOpacity: 0,
-                  rectanlgeMinSize: 1,
-                  polygonMinBoundingSize: 5,
-                  name: 'Ski resorts'
+                  name: 'Gigapan Image 54825'
                 }
               },
               {
+                server: 'http://localhost:8001/api/v1',
+                tilesetUid: 'gigapan-54825-snapshots',
+                uid: 'snapshots',
+                type: '2d-annotations',
+                options: {
+                  coords: 'pixel',
+                  labelColor: 'pink',
+                  labelPosition: 'hidden',
+                  trackBorderWidth: 0,
+                  trackBorderColor: 'pink',
+                  rectangleDomainFillColor: 'grey',
+                  rectangleDomainFillOpacity: 0.05,
+                  rectangleDomainStrokeColor: 'pink',
+                  rectangleDomainOpacity: 0,
+                  rectanlgeMinSize: 1,
+                  name: 'Gigapan 54825 Snapshots'
+                },
+                position: 'center',
+              },
+              {
                 server: 'http://localhost:8001/api/v1/',
-                tilesetUid: 'osm-image',
+                tilesetUid: 'gigapan-54825',
                 uid: 'insets',
                 type: 'insets',
-                datatype: 'osm-image',
+                datatype: 'image',
                 options: {
-                  minSize: 24,
-                  maxSize: 64,
+                  minSize: 32,
+                  maxSize: 72,
                   sizeStepSize: 2,
                   scale: 1,
-                  padding: 0.2,
-                  isAbsPadding: true,
+                  scaleSizeBy: 'size',
+                  scaleBorderBy: 'importance',
                   additionalZoom: 1,
                   onClickScale: 3,
-                  fill: 'black',
+                  fill: 'white',
                   fillOpacity: 1,
-                  borderColor: 'black',
-                  borderWidth: 3,
+                  borderColor: 'white',
+                  borderWidth: 2,
                   borderOpacity: 1,
                   borderRadius: 4,
-                  leaderLineColor: 'black',
-                  leaderLineWidth: 2,
+                  leaderLineColor: 'white',
+                  leaderLineWidth: 3,
                   leaderLineOpacity: 1,
+                  leaderLineFading: {
+                    0: 1,
+                    0.35: 0.33,
+                    0.65: 0.33,
+                    1: 1,
+                  },
+                  leaderLineStubWidthMin: 2,
+                  leaderLineStubWidthMax: 4,
+                  leaderLineStubLength: 12,
+                  leaderLineDynamic: true,
+                  leaderLineDynamicMinDist: 24,
+                  leaderLineDynamicMaxDist: 120,
+                  selectColor: 'red',
                   dropDistance: 1,
                   dropBlur: 3,
                   dropOpacity: 0.8,
@@ -132,9 +136,10 @@ const testViewConfig = {
           insetsTrack: 'insets',
           options: {
             annotationTracks: [
-              'ski-resorts',
+              'snapshots',
             ],
             insetThreshold: 16,
+            disableClustering: true,
           }
         }
       ],
