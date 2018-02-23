@@ -295,7 +295,7 @@ class AnnotationsInsets {
     // const t0 = performance.now();
     this.areaClusterer.add(this.annosToBeDrawnAsInsets, true);
     this.areaClusterer.remove(this.annosToBeDrawnAsInsetsOld, true);
-    // this.areaClusterer.evalClusters();
+    this.areaClusterer.eval(this.isZoomedIn);
     this.areaClusterer.refresh();
     this.areaClusterer.clusterElements();
     // console.log(`Clustering took ${performance.now() - t0}ms`);
@@ -315,7 +315,10 @@ class AnnotationsInsets {
 
     return Promise.all(this.insetsTrack.drawInsets(insets, borderScale))
       .then(() => { this.animate(); })
-      .catch((e) => { this.animate(); console.error(e); });
+      .catch((e) => {
+        this.animate();
+        if (e !== 'hiccup') console.error(e);
+      });
   }
 
   /**
@@ -724,6 +727,8 @@ class AnnotationsInsets {
    */
   zoomHandler({ k }) {
     this.initTree();
+
+    this.isZoomedIn = k > this.currK;
 
     this.scaleChanged = this.currK !== k;
     this.currK = k;
