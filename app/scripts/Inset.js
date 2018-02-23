@@ -9,6 +9,7 @@ import { transitionGroup } from './services/transition';
 
 import {
   addClass,
+  addEventListenerOnce,
   canvasLinearGradient,
   colorToHex,
   degToRad,
@@ -1827,6 +1828,11 @@ export default class Inset {
     }
   }
 
+  smoothTransitions(unset = false) {
+    if (unset) removeClass(this.border, style['inset-smooth-transition']);
+    else addClass(this.border, style['inset-smooth-transition']);
+  }
+
   /**
    * Scale the inset. This is just a forwarder to the specific method for the
    *   canvas or html methods.
@@ -1918,8 +1924,14 @@ export default class Inset {
    * @param  {Number}  amount  Amount by which to scale the inset
    */
   scaleHtml(amount = 1) {
+    if (this.scaleExtra === amount) return;
+    this.smoothTransitions();
+    addEventListenerOnce(
+      this.border, 'transitionend', () => { this.smoothTransitions(true); }
+    );
     this.border.__transform__.scale = [amount, amount];
     this.border.style.transform = objToTransformStr(this.border.__transform__);
+    this.scaleExtra = amount;
   }
 
   /**

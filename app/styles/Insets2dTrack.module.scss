@@ -14,7 +14,8 @@
               0 2px 9px 0 rgba(0, 0, 0, 0.2);
 }
 
-.inset-track-smooth-transitions .inset {
+.inset-track-smooth-transitions .inset,
+.inset-smooth-transition {
   transition: transform $fast $ease,
               width $fast $ease,
               height $fast $ease,
