@@ -19,12 +19,14 @@ import { KeySet } from './factories';
 // Utils
 import {
   absToChr,
+  addClass,
   base64ToCanvas,
   lDist,
   flatten,
   isTrackOrChildTrack,
   latToY,
   lngToX,
+  removeClass,
   tileToCanvas
 } from './utils';
 
@@ -539,7 +541,15 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   zoomed(newXScale, newYScale, k) {
+    if (k === this.oldK) {
+      removeClass(this.baseElement, style['inset-track-smooth-transitions']);
+    } else {
+      addClass(this.baseElement, style['inset-track-smooth-transitions']);
+    }
+
     super.zoomed(newXScale, newYScale, k);
+
+    this.oldK = k;
 
     this.publish('zoom', { newXScale, newYScale, k });
   }
