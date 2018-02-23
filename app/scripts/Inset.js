@@ -146,6 +146,13 @@ export default class Inset {
       );
     }
 
+    this.mouseOverHandlerBound = this.mouseOverHandler.bind(this);
+    this.mouseOutHandlerBound = this.mouseOutHandler.bind(this);
+    this.mouseDownHandlerBound = this.mouseDownHandler.bind(this);
+    this.mouseClickRightHandlerBound = this.mouseClickRightHandler.bind(this);
+    this.mouseUpHandlerBound = this.mouseUpHandler.bind(this);
+    this.mouseClickGlobalHandlerBound = this.mouseClickGlobalHandler.bind(this);
+
     this.initGraphics(options);
   }
 
@@ -334,13 +341,9 @@ export default class Inset {
   }
 
   /**
-   * Render border on HTML
-   * @param   {number}  x  X position in pixel.
-   * @param   {number}  y  Y position in pixel.
-   * @param   {number}  width  Width of the border in pixel.
-   * @param   {number}  height  Height of the border in pixel.
+   * Render border on HTML.
    */
-  renderBorderHtml(x, y, width, height) {
+  renderBorderHtml() {
     this.border = this.border || document.createElement('div');
     // The CSS transform rule is annoying because it combines multiple
     // properties into one definition string so when updating one of those we
@@ -357,30 +360,31 @@ export default class Inset {
 
   addEventListeners() {
     this.border.addEventListener(
-      'mouseenter', this.mouseOverHandler.bind(this), true
+      'mouseenter', this.mouseOverHandlerBound, true
     );
     this.border.addEventListener(
-      'mouseleave', this.mouseOutHandler.bind(this), true
+      'mouseleave', this.mouseOutHandlerBound, true
     );
     this.border.addEventListener(
-      'mousedown', this.mouseDownHandler.bind(this), true
+      'mousedown', this.mouseDownHandlerBound, true
+    );
+    this.border.addEventListener(
+      'contextmenu', this.mouseClickRightHandlerBound, true
     );
     // Unfortunately D3's zoom behavior is too aggressive and kills all local
     // mouseup event, which is why we have to listen for a global mouse up even
     // here.
-    pubSub.subscribe('mouseup', this.mouseUpHandler.bind(this));
-    this.border.addEventListener(
-      'contextmenu', this.mouseClickRightHandler.bind(this), true
-    );
-    pubSub.subscribe('click', this.mouseClickGlobalHandler.bind(this));
+    pubSub.subscribe('mouseup', this.mouseUpHandlerBound);
+    pubSub.subscribe('click', this.mouseClickGlobalHandlerBound);
   }
 
   removeEventListeners() {
-    this.border.removeEventListener('mouseenter', this.mouseOverHandler);
-    this.border.removeEventListener('mouseleave', this.mouseOutHandler);
-    this.border.removeEventListener('mousedown', this.mouseDownHandler);
-    pubSub.unsubscribe('mouseup', this.mouseUpHandler);
-    this.border.removeEventListener('contextmenu', this.mouseClickRightHandler);
+    this.border.removeEventListener('mouseenter', this.mouseOverHandlerBound);
+    this.border.removeEventListener('mouseleave', this.mouseOutHandlerBound);
+    this.border.removeEventListener('mousedown', this.mouseDownHandlerBound);
+    this.border.removeEventListener('contextmenu', this.mouseClickRightHandlerBound);
+    pubSub.unsubscribe('mouseup', this.mouseUpHandlerBound);
+    pubSub.unsubscribe('click', this.mouseClickGlobalHandlerBound);
   }
 
   /**
@@ -710,13 +714,13 @@ export default class Inset {
     if (this.isRenderToCanvas) {
       this.border = undefined;
     } else {
+      this.removeEventListeners();
       this.baseElement.removeChild(this.border);
       this.baseElement.removeChild(this.leaderLine);
       this.border = undefined;
       this.leaderLine = undefined;
       this.leaderLineStubA = undefined;
       this.leaderLineStubB = undefined;
-      this.removeEventListeners();
     }
   }
 
