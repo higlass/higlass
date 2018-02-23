@@ -1,57 +1,14 @@
-import {Pool} from 'threads';
-import { scaleLog, scaleLinear } from 'd3-scale';
+import { Pool } from 'threads';
 import { range } from 'd3-array';
 import {
-  json as d3Json,
   text as d3Text,
   request,
 } from 'd3-request';
 import slugid from 'slugid';
 
 import {
-  workerGetTiles,
   workerFetchTiles,
-  workerSetPix,
-  tileResponseToData,
 } from '../worker';
-
-const MAX_FETCH_TILES = 20;
-
-const setPixPool = new Pool(1);
-setPixPool.run(function(params, done) {
-  try {
-    const array = new Float32Array(params.data);
-    const pixData = worker.workerSetPix(
-      params.size,
-      array,
-      params.valueScaleType,
-      params.valueScaleDomain,
-      params.pseudocount,
-      params.colorScale,
-    );
-
-    done.transfer({
-      pixData: pixData
-    }, [pixData.buffer]);
-  } catch (err) {
-    console.log('err:', err);
-  }
-}, ['http://localhost:8080/worker.js']);
-
-const fetchTilesPool = new Pool(10);
-fetchTilesPool.run(function(params, done) {
-  try {
-    worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds, done);
-    /*
-    done.transfer({
-      pixData: pixData
-    }, [pixData.buffer]);
-    */
-  } catch (err) {
-    console.log('err:', err);
-  }
-}, ['http://localhost:8080/worker.js']);
-
 
 import pubSub from './pub-sub';
 
@@ -64,6 +21,39 @@ const sessionId = slugid.nice();
 
 export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
 export let authHeader = null;
+
+const MAX_FETCH_TILES = 20;
+
+const setPixPool = new Pool(1);
+
+setPixPool.run((params, done) => {
+  try {
+    const array = new Float32Array(params.data);
+    const pixData = worker.workerSetPix(
+      params.size,
+      array,
+      params.valueScaleType,
+      params.valueScaleDomain,
+      params.pseudocount,
+      params.colorScale,
+      params.transIdx
+    );
+
+    done.transfer({ pixData }, [pixData.buffer]);
+  } catch (err) {
+    console.errpr('Set PIX worker failed:', err);
+  }
+}, ['http://localhost:8080/worker.js']);
+
+const fetchTilesPool = new Pool(10);
+
+fetchTilesPool.run((params, done) => {
+  try {
+    worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds, done);
+  } catch (err) {
+    console.error('Fetch tiles worker failed:', err);
+  }
+}, ['http://localhost:8080/worker.js']);
 
 
 /**
@@ -140,8 +130,8 @@ const debounce = (func, wait) => {
 };
 
 export const setTileProxyAuthHeader = (newHeader) => {
-  authHeader = newHeader
-}
+  authHeader = newHeader;
+};
 
 export function fetchMultiRequestTiles(req) {
   const sessionId = req.sessionId;
@@ -175,9 +165,9 @@ export function fetchMultiRequestTiles(req) {
       const renderParams = theseTileIds.map(x => `d=${x}`).join('&');
       const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
 
-      const p = new Promise(((resolve, reject) => {
+      const p = new Promise(((resolve) => {
         pubSub.publish('requestSent', outUrl);
-        const params = {}
+        const params = {};
 
         params.outUrl = outUrl;
         params.server = server;
@@ -185,7 +175,7 @@ export function fetchMultiRequestTiles(req) {
 
         fetchTilesPool.send(params)
           .promise()
-          .then(ret => {
+          .then((ret) => {
             pubSub.publish('requestReceived', outUrl);
             resolve(ret);
           });
@@ -318,7 +308,7 @@ export const calculateTileAndPosInTile = function(tilesetInfo, maxDim, dataStart
   } else {
     tileWidth = maxDim / (2 ** zoomLevel);
   }
-  
+
   const tilePos = Math.floor((position - dataStartPos) / tileWidth);
   const posInTile = Math.floor(PIXELS_PER_TILE * (position - tilePos * tileWidth) / tileWidth);
 
@@ -449,7 +439,7 @@ export const tileDataToPixData = (
 ) => {
   const tileData = tile.tileData;
 
-  if  (!tileData.dense) {
+  if (!tileData.dense) {
     // if we didn't get any data from the server, don't do anything
     finished(null);
     return;
@@ -459,7 +449,7 @@ export const tileDataToPixData = (
   // when being passed to the worker script
   const newTileData = new Float32Array(tileData.dense.length);
   newTileData.set(tileData.dense);
-  //const newTileData = tileData.dense;
+  // const newTileData = tileData.dense;
 
   // Calculate the indices of the cells of the upper right or lower left matrix
   // in order to force these to be transparent for tiles on the diagonal.
@@ -485,24 +475,25 @@ export const tileDataToPixData = (
   return;
   */
 
-  var params = {
+  const params = {
     size: newTileData.length,
     data: newTileData,
-    valueScaleType: valueScaleType,
-    valueScaleDomain: valueScaleDomain,
-    pseudocount: pseudocount,
-    colorScale: colorScale
+    valueScaleType,
+    valueScaleDomain,
+    pseudocount,
+    colorScale,
+    transIdx
   };
 
-  setPixPool.send(params, [ newTileData.buffer ])
+  setPixPool
+    .send(params, [newTileData.buffer])
     .promise()
-    .then(returned => {
+    .then((returned) => {
       finished(returned);
     })
-    .catch(reason => {
+    .catch(() => {
       finished(null);
     });
-  ;
 };
 
 /**

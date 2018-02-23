@@ -11,64 +11,62 @@ function countTransform(count) {
 */
 const epsilon = 0.0000001;
 
-const MAX_FETCH_TILES = 20;
-
+/**
+ * Calculate the minimum non-zero value in the data
+ *
+ * Parameters
+ * ----------
+ *  data: Float32Array
+ *    An array of values
+ *
+ * Returns
+ * -------
+ *  minNonZero: float
+ *    The minimum non-zero value in the array
+ */
 export function minNonZero(data) {
-  /**
-   * Calculate the minimum non-zero value in the data
-   *
-   * Parameters
-   * ----------
-   *  data: Float32Array
-   *    An array of values
-   *
-   * Returns
-   * -------
-   *  minNonZero: float
-   *    The minimum non-zero value in the array
-   */
-   let minNonZero = Number.MAX_SAFE_INTEGER;
+  let minNonZeroVal = Number.MAX_SAFE_INTEGER;
 
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
-    if (x < epsilon && x > -epsilon) { continue; }
+    if (x < epsilon && x > -epsilon) continue;
 
-    if (x < minNonZero) { minNonZero = x; }
+    if (x < minNonZeroVal) { minNonZeroVal = x; }
   }
 
-  return  minNonZero;
+  return minNonZeroVal;
 }
 
+/**
+ * Calculate the minimum non-zero value in the data
+ *
+ * Parameters
+ * ----------
+ *  data: Float32Array
+ *    An array of values
+ *
+ * Returns
+ * -------
+ *  minNonZero: float
+ *    The minimum non-zero value in the array
+ */
 export function maxNonZero(data) {
-  /**
-   * Calculate the minimum non-zero value in the data
-   *
-   * Parameters
-   * ----------
-   *  data: Float32Array
-   *    An array of values
-   *
-   * Returns
-   * -------
-   *  minNonZero: float
-   *    The minimum non-zero value in the array
-   */
-  let maxNonZero = Number.MIN_SAFE_INTEGER;
+  let maxNonZeroVal = Number.MIN_SAFE_INTEGER;
 
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
-    if (x < epsilon && x > -epsilon) { continue; }
+    if (x < epsilon && x > -epsilon) continue;
 
-    if (x > maxNonZero) { maxNonZero = x; }
+    if (x > maxNonZeroVal) { maxNonZeroVal = x; }
   }
 
-  return maxNonZero;
+  return maxNonZeroVal;
 }
 
 export function workerSetPix(
-  size, data, valueScaleType, valueScaleDomain, pseudocount, colorScale
+  size, data, valueScaleType, valueScaleDomain, pseudocount, colorScale, transIdx
 ) {
   /**
    * The pseudocount is generally the minimum non-zero value and is
@@ -77,17 +75,17 @@ export function workerSetPix(
   const epsilon = 0.000001;
   let valueScale = null;
 
-  if (valueScaleType == 'log') {
+  if (valueScaleType === 'log') {
     valueScale = scaleLog()
-      .range([254,0])
-      .domain(valueScaleDomain)
+      .range([254, 0])
+      .domain(valueScaleDomain);
   } else {
-    if (valueScaleType != 'linear') {
+    if (valueScaleType !== 'linear') {
       console.warn('Unknown value scale type:', valueScaleType, ' Defaulting to linear');
     }
     valueScale = scaleLinear()
-      .range([254,0])
-      .domain(valueScaleDomain)
+      .range([254, 0])
+      .domain(valueScaleDomain);
   }
 
   const pixData = new Uint8ClampedArray(data.length * 4);
@@ -169,7 +167,7 @@ function float32(inUint16) {
 }
 
 function _base64ToArrayBuffer(base64) {
-  const binaryString = window.atob(base64);
+  const binaryString = atob(base64);
   const len = binaryString.length;
 
   const bytes = new Uint8Array(len);
@@ -198,9 +196,9 @@ function _uint16ArrayToFloat32Array(uint16array) {
  * data that can be used by higlass
  */
 export function tileResponseToData(data, server, theseTileIds) {
-  if (!data)  {
+  if (!data) {
     // probably an error
-    data = {}
+    data = {};
   }
 
   for (const thisId of theseTileIds) {
@@ -223,7 +221,7 @@ export function tileResponseToData(data, server, theseTileIds) {
       let a;
 
 
-      if (data[key].dtype == 'float16') {
+      if (data[key].dtype === 'float16') {
         // data is encoded as float16s
         /* comment out until next empty line for 32 bit arrays */
         const uint16Array = new Uint16Array(arrayBuffer);
@@ -258,14 +256,13 @@ export function tileResponseToData(data, server, theseTileIds) {
 
 export function workerGetTiles(outUrl, server, theseTileIds, done) {
   fetch(outUrl, {
-      headers: {
-        'content-type': 'application/json'
-      },
-    }
-    )
+    headers: {
+      'content-type': 'application/json'
+    },
+  })
     .then(response => response.json())
-    .then(data =>  {
-      data = tileResponseToData(data, server, theseTileIds);
+    .then((response) => {
+      const data = tileResponseToData(response, server, theseTileIds);
 
       const denses = Object.values(data)
         .filter(x => x.dense)
