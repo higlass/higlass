@@ -704,24 +704,39 @@ export default class Inset {
     if (this.tweenStop) this.tweenStop();
     if (this.img) this.img.removeAllListeners();
 
+    this.isDestroyed = true;
+
     this.gOrigin.destroy();
     this.gBorder.destroy();
     this.gLeaderLine.destroy();
     this.gMain.destroy();
 
-    this.data = undefined;
-    this.img = undefined;
+    this.data = null;
+    this.img = null;
 
     if (this.isRenderToCanvas) {
-      this.border = undefined;
+      this.border = null;
     } else {
       this.removeEventListeners();
       this.baseElement.removeChild(this.border);
       this.baseElement.removeChild(this.leaderLine);
-      this.border = undefined;
-      this.leaderLine = undefined;
-      this.leaderLineStubA = undefined;
-      this.leaderLineStubB = undefined;
+      this.border = null;
+      this.leaderLine = null;
+      this.leaderLineStubA = null;
+      this.leaderLineStubB = null;
+      this.imgsRendering = null;
+      this.previewsRendering = null;
+      this.imgData = null;
+      this.prvData = [];
+      this.imgs = [];
+      this.prvs = [];
+      this.prvWrappers = [];
+      this.imgWrappers = [];
+      this.imgRatios = [];
+      this.imgsWrapper = null;
+      this.imgsWrapperLeft = null;
+      this.imgsWrapperRight = null;
+      this.prvsWrapper = null;
     }
   }
 
@@ -1035,6 +1050,7 @@ export default class Inset {
       if (!this.inFlight) {
         this.inFlight = this.fetchData()
           .then((data) => {
+            if (this.isDestroyed) return Promise.resolve();
             this.dataTypes = data.dataTypes;
             this.imgData = data.fragments;
             this.prvData = data.previews;
@@ -1047,6 +1063,7 @@ export default class Inset {
 
     const imageRendered = this.renderImage(this.imgData, force)
       .then(() => {
+        if (this.isDestroyed) return true;
         this.compImgScale();
         this.positionImage();
         return true;
@@ -1057,6 +1074,7 @@ export default class Inset {
       .catch(err => console.error('Preview rendering failed', err));
 
     const allDrawn = Promise.all([imageRendered, previewsRendered]).then(() => {
+      if (this.isDestroyed) return;
       this.positionPreviews();
       // We need to redraw the border because the height has changed
       this.drawBorder();
@@ -1546,7 +1564,7 @@ export default class Inset {
    * @param  {Array}  data  Data to be rendered
    */
   renderImageCanvas(data, force) {
-    if ((this.img && !force) || !data.length) {
+    if ((this.img && !force) || !data.length || this.isDestroyed) {
       return Promise.resolve();
     }
 
@@ -1554,6 +1572,8 @@ export default class Inset {
 
     this.imgRendering = this.renderer(data[0], this.dataTypes[0])
       .then((renderedImg) => {
+        if (this.isDestroyed) return;
+
         this.imgData = renderedImg;
 
         this.img = new PIXI.Sprite(
@@ -1586,7 +1606,8 @@ export default class Inset {
     if (
       !data ||
       (this.imgs.length === data.length && !force) ||
-      !data.length
+      !data.length ||
+      this.isDestroyed
     ) return Promise.resolve();
 
     if (this.imgsRendering) return this.imgsRendering;
@@ -1626,6 +1647,8 @@ export default class Inset {
     this.imgsRendering = Promise.all(data
       .map((imgDataRaw, i) => this.renderer(imgDataRaw, this.dataTypes[0])
         .then((renderedImg) => {
+          if (this.isDestroyed) return;
+
           this.imgData[i] = renderedImg;
 
           const imgWrapper = this.imgWrappers[i] || document.createElement('div');
@@ -1710,7 +1733,8 @@ export default class Inset {
     if (
       !data ||
       (this.prvs.length === data.length && !force) ||
-      !data.length
+      !data.length ||
+      this.isDestroyed
     ) return Promise.resolve();
 
     if (this.previewsRendering) return this.previewsRendering;
@@ -1720,6 +1744,8 @@ export default class Inset {
     const renderedPreviews = data
       .map((preview, i) => this.renderer(preview, this.dataTypes[0])
         .then((renderedImg) => {
+          if (this.isDestroyed) return;
+
           this.prvData[i] = renderedImg;
 
           this.prvs[i] = new PIXI.Sprite(
@@ -1757,7 +1783,8 @@ export default class Inset {
     if (
       !data ||
       (this.prvs.length === data.length && !force) ||
-      !data.length
+      !data.length ||
+      this.isDestroyed
     ) return Promise.resolve();
 
     if (this.previewsRendering) return this.previewsRendering;
@@ -1779,6 +1806,8 @@ export default class Inset {
     this.previewsRendering = Promise.all(data
       .map((preview, i) => this.renderer(preview, this.dataTypes[0])
         .then((renderedImg) => {
+          if (this.isDestroyed) return;
+
           this.prvData[i] = renderedImg;
 
           this.previewsHeight += renderedImg.height;
