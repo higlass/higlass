@@ -1,6 +1,40 @@
+import FastPriorityQueue from 'fastpriorityqueue';
+
 import { KeySet } from './';
 
+import { lDist } from '../utils';
+
+/**
+ * Generate a random HEX string
+ * @return  {string}  Random HEX string.
+ */
 const rndHex = () => Math.floor((1 + Math.random()) * 0x10000000).toString(16);
+
+/**
+ * Find nearest neighbor in a brute-force fashion. This has been shown to be fasted for up to thousand points. https://github.com/mikolalysenko/static-kdtree#comparisons
+ * @param   {array}  points  Array of `Annotation`s.
+ * @param   {Annotation}  query  A single `Annotation` as the query.
+ * @return  {array}  Tuple holding the nearest neighbor and distance.
+ */
+export const nearestNeighbor = (points, query) => {
+  const q = query.center;
+
+  let minD = Infinity;
+  let minP = null;
+  let d;
+
+  for (let i = 0, m = points.length; i < m; i++) {
+    if (points[i] === q) continue;
+
+    d = lDist(points[i].center, q);
+    if (d < minD) {
+      minD = d;
+      minP = points[i];
+    }
+  }
+
+  return [minP, minD];
+};
 
 /**
  * A cluster that contains annotations.
@@ -16,12 +50,14 @@ function AreaCluster(isAverageCenter = true, padding = 0) {
   this.cX = null;
   this.cY = null;
   this.members = new KeySet('id');
-  this.visibleMembers = new KeySet('id');
 
   this.minX = Infinity;
   this.maxX = 0;
   this.minY = Infinity;
   this.maxY = 0;
+
+  // Farthest nearest neighbors
+  this.fnns = new FastPriorityQueue((a, b) => a.d > b.d);
 
   // Usually this is the grid size of the clusterer
   this.padding = padding;
@@ -42,7 +78,7 @@ function getCenter() {
 Object.defineProperty(AreaCluster.prototype, 'center', { get: getCenter });
 
 function getSize() {
-  return this.visibleMembers.size;
+  return this.members.size;
 }
 
 Object.defineProperty(AreaCluster.prototype, 'size', { get: getSize });
@@ -52,8 +88,8 @@ Object.defineProperty(AreaCluster.prototype, 'size', { get: getSize });
 /**
  * Add an annotation to the cluster.
  *
- * @param {google.maps.Marker} marker The marker to add.
- * @return {boolean} True if the marker was added.
+ * @param  {Annotation}  annotation - The marker to add.
+ * @return {boolean}  If `true` marker was added.
  */
 AreaCluster.prototype.add = function add(annotation) {
   if (this.members.has(annotation)) return false;
@@ -72,9 +108,10 @@ AreaCluster.prototype.add = function add(annotation) {
     this.cY = ((this.cY * l) + cY) / (l + 1);
   }
 
+  this.updateFnns(annotation);
+
   annotation.cluster = this;
   this.members.add(annotation);
-  this.visibleMembers.add(annotation);
 
   this.updateBounds(annotation);
 
@@ -86,36 +123,16 @@ AreaCluster.prototype.delete = function deleteMethod(annotation) {
 
   annotation.cluster = undefined;
   this.members.delete(annotation);
-  this.visibleMembers.delete(annotation);
+
+  let fnn = this.fnns.peek();
+
+  while (fnn && (fnn.a === annotation || fnn.b === annotation)) {
+    this.fnns.poll();
+    fnn = this.fnns.peek();
+  }
 
   this.refresh();
 
-  return true;
-};
-
-AreaCluster.prototype.hide = function hide(annotation) {
-  if (annotation) {
-    if (!this.visibleMembers.has(annotation)) return false;
-
-    this.visibleMembers.delete(annotation);
-
-    return true;
-  }
-
-  this.isHidden = true;
-  return true;
-};
-
-AreaCluster.prototype.show = function show(annotation) {
-  if (annotation) {
-    if (this.visibleMembers.has(annotation)) return false;
-
-    this.visibleMembers.add(annotation);
-
-    return true;
-  }
-
-  this.isHidden = false;
   return true;
 };
 
@@ -128,23 +145,16 @@ AreaCluster.prototype.getAvgDataProjPos = function getAvgDataProjPos() {
   ];
 };
 
-/**
- * Returns the bounds of the cluster.
- *
- * @return {google.maps.LatLngBounds} the cluster bounds.
- */
-AreaCluster.prototype.updateBounds = function updateBounds(area) {
-  this.minX = Math.min(this.minX, area.minX);
-  this.maxX = Math.max(this.maxX, area.maxX);
-  this.minY = Math.min(this.minY, area.minY);
-  this.maxY = Math.max(this.maxY, area.maxY);
+AreaCluster.prototype.hide = function hide() {
+  this.isHidden = true;
 };
 
 /**
  * Removes the cluster
  */
 AreaCluster.prototype.remove = function remove() {
-  this.members = new KeySet('id');
+  this.members = null;
+  this.shortestConnections = null;
 };
 
 AreaCluster.prototype.refresh = function refresh() {
@@ -159,6 +169,56 @@ AreaCluster.prototype.refresh = function refresh() {
 
   this.cX = (this.minX + this.maxX) / 2;
   this.cY = (this.minY + this.maxY) / 2;
+};
+
+AreaCluster.prototype.show = function show() {
+  this.isHidden = false;
+};
+
+/**
+ * Returns the bounds of the cluster.
+ *
+ * @return {google.maps.LatLngBounds} the cluster bounds.
+ */
+AreaCluster.prototype.updateBounds = function updateBounds(area) {
+  this.minX = Math.min(this.minX, area.minX);
+  this.maxX = Math.max(this.maxX, area.maxX);
+  this.minY = Math.min(this.minY, area.minY);
+  this.maxY = Math.max(this.maxY, area.maxY);
+};
+
+AreaCluster.prototype.updateFnns = function updateFnns(annotation) {
+  const [nn, d] = nearestNeighbor(this.members.values, annotation);
+
+  if (!nn) return;
+
+  const fnn = this.fnns.peek();
+
+  this.fnns.add({ d, a: annotation, b: nn });
+
+  if (
+    fnn &&
+    (
+      fnn.a === nn ||
+      fnn.a === annotation ||
+      fnn.b === nn ||
+      fnn.b === annotation
+    ) &&
+    d < fnn.d
+  ) {
+    // The farthest nearest neighbor edge `fnn` shares one vertex with the
+    // newest nearest neighbor to annotation and the distance between this new
+    // edge is smaller than the globally farthest nearest neighbor. Therefore we
+    // need to check if this new connection is a bridge between the endpoints of
+    // `fnn`. If it is we need to update that edge.
+    const evalPt = fnn.a === nn ? fnn.b : fnn.a;
+    const newD = lDist(evalPt.center, annotation.center);
+
+    if (newD < fnn.d) {
+      this.fnns.poll();
+      this.fnns.add({ d: newD, a: annotation, b: evalPt });
+    }
+  }
 };
 
 /**

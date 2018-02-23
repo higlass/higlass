@@ -1,4 +1,5 @@
-import { AreaCluster, KeySet } from './';
+import AreaCluster, { nearestNeighbor } from './AreaCluster';
+import KeySet from './KeySet';
 
 import { lDist } from '../utils';
 
@@ -74,29 +75,35 @@ AreaClusterer.prototype.add = function add(elements, noDraw) {
  * Add an element to the clostest cluster, or creates a new cluster.
  * @param  {object}  element - The element to be added.
  */
-AreaClusterer.prototype.addToClosestCluster = function addToClosestCluster(element) {
+AreaClusterer.prototype.addToOrCreateCluster = function addToOrCreateCluster(element) {
   let distance = this.defaultMinDist;
   let closestCluster = null;
   const elementCenter = element.getViewPositionCenter();
 
   if (!this.disabled) {
-    this.clusters.forEach((cluster) => {
-      const clusterCenter = cluster.center;
-      if (clusterCenter) {
-        const d = lDist(clusterCenter, elementCenter);
-        if (d < distance) {
-          distance = d;
-          closestCluster = cluster;
+    this.clusters
+      .filter(cluster => !cluster.isHidden)
+      .forEach((cluster) => {
+        const clusterCenter = cluster.center;
+        if (clusterCenter) {
+          const d = lDist(clusterCenter, elementCenter);
+          if (d < distance) {
+            distance = d;
+            closestCluster = cluster;
+          }
         }
-      }
-    });
+      });
   }
+
+  let cluster = closestCluster;
 
   if (closestCluster && closestCluster.isWithin(element.viewPos, true)) {
     this.expandCluster(closestCluster, element);
   } else {
-    this.createCluster(element);
+    cluster = this.createCluster(element);
   }
+
+  return cluster;
 };
 
 /**
@@ -143,7 +150,7 @@ AreaClusterer.prototype.clusterElements = function clusterElements() {
       !this.elementsAddedToClusters.has(element) &&
       this.isWithin(element.viewPos, true)
     ) {
-      this.addToClosestCluster(element);
+      this.addToOrCreateCluster(element);
     }
   });
 };
@@ -173,10 +180,12 @@ AreaClusterer.prototype.propChecking = function propChecking(cluster) {
 AreaClusterer.prototype.createCluster = function createCluster(element) {
   const cluster = new AreaCluster(this.isAverageCenter, this.gridSize);
   cluster.add(element);
-  element.cluster = cluster;
+
   this.elementsAddedToClusters.add(element);
   this.clusters.add(cluster);
   this.propChecking(cluster);
+
+  return cluster;
 };
 
 /**
@@ -222,6 +231,170 @@ AreaClusterer.prototype.isWithin = function isWithin(
   );
 };
 
+AreaClusterer.prototype.eval = function evalMethod(isZoomedIn = false) {
+  if (isZoomedIn) {
+    this.evalZoomedIn();
+    return;
+  }
+
+  // this.evalZoomedOut();
+};
+
+AreaClusterer.prototype.evalZoomedOut = function evalZoomedOut() {
+  const clustIds = {};
+  const clustClusters = {};
+
+  // 1. Check which clusters are within bounds. Effectivly cluster the clusters.
+  this.clusters.forEach((clusterCurr) => {
+    let srcClusterId;
+
+    if (clustIds[clusterCurr.id]) {
+      srcClusterId = clustIds[clusterCurr.id];
+    } else {
+      srcClusterId = clusterCurr.id;
+      clustClusters[srcClusterId] = [clusterCurr.id];
+    }
+
+    this.clusters
+      .filter(cluster => cluster !== clusterCurr)
+      .forEach((cluster) => {
+        if (clusterCurr.isWithin(cluster.bounds, true)) {
+          clustIds[cluster.id] = srcClusterId;
+          clustClusters[srcClusterId].push(cluster.id);
+        }
+      });
+  });
+
+  // 2. re-cluster all elements of the cluster of clusters
+  Object.keys(clustClusters).forEach((srcClusterId) => {
+    const clustCluster = clustClusters[srcClusterId];
+    const elements = new Set();
+    const newClusters = new Set();
+
+    // Hide clusters and unset elements
+    clustCluster.forEach((clusterId) => {
+      const cluster = this.clusters.get(clusterId);
+
+      if (!cluster) {
+        console.warn(cluster, clusterId);
+        return;
+      }
+
+      // Hide cluster, i.e., upon cluster assosciation in
+      // `elementsAddedToClusters()` this cluster won't be choosable.
+      cluster.hide();
+
+      // Unset members
+      cluster.members.forEach((element) => {
+        this.elementsAddedToClusters.delete(element);
+        element.prevCluster = element.cluster;
+        element.cluster = undefined;
+        elements.add(element);
+      });
+    });
+
+    // Now we can re-cluster the elements
+    elements.forEach((element) => {
+      const cluster = this.addToOrCreateCluster(element);
+      newClusters.add(cluster);
+    });
+
+    let keepOld = false;
+
+    if (newClusters.size === clustCluster.length) {
+      keepOld = clustCluster.length === 1 || Array.prototype.every.call(
+        newClusters.values,
+        newCluster => clustCluster.some((cluster) => {
+          if (cluster.cX === newCluster.cX && cluster.cY === newCluster.cY) {
+            return true;
+          }
+          return false;
+        }));
+    }
+
+    if (keepOld) {
+      // Delete new clusters
+      newClusters.forEach((cluster) => {
+        this.clusters.delete(cluster);
+      });
+
+      clustCluster
+        .map(clusterId => this.clusters.get(clusterId))
+        .forEach((cluster) => {
+          // Show cluster again
+          cluster.show();
+
+          // Unset members
+          cluster.members.forEach((element) => {
+            this.elementsAddedToClusters.add(element);
+            element.cluster = element.prevCluster;
+            element.prevCluster = undefined;
+          });
+        });
+    } else {
+      // Delete old hidden clusters
+      clustCluster
+        .map(clusterId => this.clusters.get(clusterId))
+        .forEach((cluster) => {
+          this.clusters.delete(cluster);
+        });
+    }
+  });
+};
+
+AreaClusterer.prototype.evalZoomedIn = function evalZoomedIn() {
+  // Since we only check zoomed in. The only thing that can happen are cluster
+  // splits.
+
+  const maxD = this.gridSize * 1.5;
+
+  this.clusters
+    .filter(cluster => cluster.size > 1)
+    .forEach((cluster) => {
+      // Get the farthest nearest neighbor as this is the only potential breaking
+      // point.
+      const fnn = cluster.fnns.peek();
+
+      if (!fnn) return;
+
+      // Re-evaluate distance between farthest nearest neighbors
+      const d = lDist(fnn.a.center, fnn.b.center);
+
+      // To avoid to frequent splitting and merging we only split when the
+      // farthest neighbor is twice as far as allowed for being within the bounds
+      if (d > maxD) {
+        this.splitCluster(cluster, fnn);
+      }
+    });
+};
+
+AreaClusterer.prototype.splitCluster = function splitCluster(cluster, fnn) {
+  if (!this.clusters.has(cluster) || cluster.size === 1) return;
+
+  // Split at the furthest neighbor
+  const _fnn = fnn || cluster.fnns.peek();
+  const maxD = this.gridSize * 1.5;
+  const newCluster = new AreaCluster(this.isAverageCenter, this.gridSize);
+  cluster.delete(_fnn.b);
+  newCluster.add(_fnn.b);
+
+  let srcNode = _fnn.b;
+  let [nn, d] = nearestNeighbor(cluster.members.values, srcNode);
+
+  while (d < maxD && cluster.size > 1) {
+    cluster.delete(nn);
+    newCluster.add(nn);
+
+    srcNode = nn;
+    [nn, d] = nearestNeighbor(cluster.members.values, srcNode);
+  }
+
+  this.clusters.add(newCluster);
+  this.propChecking(newCluster);
+  this.propChecking(cluster);
+  cluster.reload = true;
+};
+
 AreaClusterer.prototype.refresh = function refresh() {
   this.clusters.forEach((cluster) => {
     cluster.refresh();
@@ -241,23 +414,14 @@ AreaClusterer.prototype.refresh = function refresh() {
  * @param  {object}  elements - The markers to be remove.
  * @return  {boolean}  If `true` marker has been removed.
  */
-AreaClusterer.prototype.remove = function remove(elements, noDraw) {
+AreaClusterer.prototype.remove = function remove(elements, noDraw = false) {
   const isRemoved = elements
     .translate((element) => {
-      // We leave the element on `elementsAddedToClusters` because we want to
-      // keep clusters stable until they are fully destroyed but we will mark
-      // this element as invisible.
-      // Setting the element invisible will only update the cluster size, which
-      // we use to determine if a cluster should be deleted. That mean, some
-      // elements of a cluster can be hidden but once all are hidden we destroy
-      // it.
       if (element.cluster) {
-        const cluster = element.cluster;
-        cluster.hide(element);
-        if (!cluster.size) {
-          this.removeCluster(cluster);
-        }
+        this.shrinkCluster(element.cluster, element);
       }
+
+      this.elementsAddedToClusters.delete(element);
 
       // Remove element from the clusterer
       return this.elements.delete(element);
@@ -267,8 +431,6 @@ AreaClusterer.prototype.remove = function remove(elements, noDraw) {
   if (isRemoved && !noDraw) {
     this.resetClusters();
     this.clusterElements();
-  } else {
-    // this.shrinkCluster();
   }
 
   return isRemoved;
@@ -314,6 +476,24 @@ AreaClusterer.prototype.resetClusters = function resetClusters() {
   this.elementsAddedToClusters = new KeySet();
   this.clusters = new KeySet();
   this.clustersMaxSize = 1;
+};
+
+/**
+ * Add an element to an existing cluster
+ */
+AreaClusterer.prototype.shrinkCluster = function shrinkCluster(cluster, element) {
+  cluster.delete(element);
+
+  if (cluster.size) {
+    this.clustersMaxSize = this.clusters.reduce(
+      (maxSize, _cluster) => Math.max(maxSize, _cluster.size), 0
+    );
+    this.elementsAddedToClusters.delete(element);
+    this.propChecking(cluster);
+    cluster.reload = true;
+  } else {
+    this.removeCluster(cluster);
+  }
 };
 
 export default AreaClusterer;
