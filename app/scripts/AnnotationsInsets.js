@@ -392,8 +392,6 @@ class AnnotationsInsets {
           const dX = this.insets[id].oX - newOx;
           const dY = this.insets[id].oY - newOy;
 
-          this.insets[id].compDimPos();
-
           this.insets[id].oX = newOx;
           this.insets[id].oY = newOy;
           this.insets[id].owh = (cluster.maxX - cluster.minX) / 2;
