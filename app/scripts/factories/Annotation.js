@@ -26,6 +26,15 @@ function Annotation(id, viewPos, dataPos, dataPosProj, importance) {
 
 /* ------------------------------- Properties ------------------------------- */
 
+function getCenter() {
+  return [
+    this.cX,
+    this.cY,
+  ];
+}
+
+Object.defineProperty(Annotation.prototype, 'center', { get: getCenter });
+
 function getViewPos() {
   return [
     this.minX,
@@ -46,6 +55,9 @@ Annotation.prototype.setViewPosition = function setViewPosition([minX, maxX, min
   this.maxX = maxX;
   this.minY = minY;
   this.maxY = maxY;
+
+  this.cX = (this.maxX + this.minX) / 2;
+  this.cY = (this.maxY + this.minY) / 2;
 };
 
 Annotation.prototype.getViewPositionCenter = function getViewPositionCenter() {
