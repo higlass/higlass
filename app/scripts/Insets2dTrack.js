@@ -232,21 +232,15 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   createFetchRenderInset(label, remotePos, renderedPos, borderScale) {
-    const inset = (
-      this.insets.get(label.id) ||
-      this.initInset(
-        label,
-        label.id,
-        remotePos,
-        renderedPos,
-        label.dataPos
-      )
-    );
+    const inset = this.insets.get(label.id) || this.initInset(label, label.id);
     this.insetsInPreparation.delete(label);
 
+    inset.setDataPos(remotePos, renderedPos, label.dataPos);
     inset.baseEl(this.baseElement);
     inset.clear(this.options);
-    inset.globalOffset(...this.position, this.positioning.offsetX, this.positioning.offsetY);
+    inset.globalOffset(
+      ...this.position, this.positioning.offsetX, this.positioning.offsetY
+    );
     inset.globalSize(...this.dimensions);
     inset.origin(label.oX, label.oY, label.oWH, label.oHH);
     inset.position(label.x, label.y);
@@ -362,9 +356,6 @@ export default class Insets2dTrack extends PixiTrack {
   initInset(
     label,
     id,
-    remotePos,
-    renderedPos,
-    dataPos,
     dataConfig = this.dataConfig,
     tilesetInfo = this.tilesetInfo,
     options = this.options,
@@ -373,9 +364,6 @@ export default class Insets2dTrack extends PixiTrack {
     const newInset = new Inset(
       label,
       id,
-      remotePos,
-      renderedPos,
-      dataPos,
       dataConfig,
       tilesetInfo,
       options,

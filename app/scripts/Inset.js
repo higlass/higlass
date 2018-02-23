@@ -42,9 +42,6 @@ export default class Inset {
   constructor(
     label,
     id,
-    remotePos,
-    renderedPos,
-    dataPos,
     dataConfig,
     tilesetInfo,
     options,
@@ -53,9 +50,6 @@ export default class Inset {
   ) {
     this.label = label;
     this.id = id;
-    this.remotePos = remotePos;
-    this.renderedPos = renderedPos || this.remotePos;
-    this.dataPos = dataPos;
     this.dataConfig = dataConfig;
     this.tilesetInfo = tilesetInfo;
     this.options = options;
@@ -105,12 +99,7 @@ export default class Inset {
     this.offsetY = 0;
     this.globalOffsetX = 0;
     this.globalOffsetY = 0;
-
     this.fetchAttempts = 0;
-
-    // Compute final resolution of inset
-    this.computeResolution();
-    this.computeRemotePaddedSize();
     this.imScale = 1;
 
     this.borderStyle = [1, 0x000000, 0.33];
@@ -697,6 +686,16 @@ export default class Inset {
     return new PIXI.Sprite(rect);
   }
 
+  setDataPos(remotePos, renderedPos, dataPos) {
+    this.remotePos = remotePos;
+    this.renderedPos = renderedPos || this.remotePos;
+    this.dataPos = dataPos;
+
+    // Compute final resolution of inset
+    this.computeResolution();
+    this.computeRemotePaddedSize();
+  }
+
   /**
    * Destroy graphics and unset data.
    */
@@ -759,7 +758,9 @@ export default class Inset {
   draw() {
     this.drawLeaderLine();
     this.drawBorder();
-    return this.drawImage();
+    return this.drawImage(this.label.src.reload).then(() => {
+      this.label.src.reload = false;
+    });
   }
 
   /**
@@ -1046,16 +1047,30 @@ export default class Inset {
       return Promise.reject('Could not fetch the inset\'s images');
     }
 
-    if (!this.imgData) {
-      if (!this.inFlight) {
+    if (!this.imgData || force) {
+      if (!this.inFlight || force) {
+        this.imgs = [];
+        this.imgsRendering = null;
         this.inFlight = this.fetchData()
           .then((data) => {
             if (this.isDestroyed) return Promise.resolve();
-            this.dataTypes = data.dataTypes;
-            this.imgData = data.fragments;
-            this.prvData = data.previews;
+            if (this.label.src.size === data.fragments.length || !force) {
+              // When reloading insets we might trigger several reloads before
+              // the data arrived. To avoid inconsistencies only render when the
+              // most recent data arrived.
+              this.dataTypes = data.dataTypes;
+              this.imgData = data.fragments;
+              this.prvData = data.previews;
+              this.inFlight = false;
+              return this.drawImage();
+            }
+
+            this.dataTypes = null;
+            this.imgData = null;
+            this.prvData = null;
             this.inFlight = false;
-            return this.drawImage(force);
+
+            return Promise.reject('hiccup');
           });
       }
       return this.inFlight;
@@ -1613,33 +1628,27 @@ export default class Inset {
     if (this.imgsRendering) return this.imgsRendering;
 
     this.previewsHeight = 0;
+    this.imgData = [];
+    this.imgRatios = [];
+    this.imgs = [];
+    this.imgWrappers = [];
 
-    const imgsWrapper = this.imgsWrapper || document.createElement('div');
+    if (this.imgsWrapper) this.border.removeChild(this.imgsWrapper);
+
+    const imgsWrapper = document.createElement('div');
     imgsWrapper.className = style['inset-images-wrapper'];
-
-    if (imgsWrapper !== this.imgsWrapper && this.imgsWrapper) {
-      this.border.removeChild(this.imgsWrapper);
-    }
 
     this.imgsWrapper = imgsWrapper;
     this.border.appendChild(imgsWrapper);
 
-    const imgsWrapperLeft = this.imgsWrapperLeft || document.createElement('div');
+    const imgsWrapperLeft = document.createElement('div');
     imgsWrapperLeft.className = style['inset-images-wrapper-left'];
-
-    if (imgsWrapperLeft !== this.imgsWrapperLeft && this.imgsWrapperLeft) {
-      this.imgsWrapper.removeChild(this.imgsWrapperLeft);
-    }
 
     this.imgsWrapperLeft = imgsWrapperLeft;
     this.imgsWrapper.appendChild(imgsWrapperLeft);
 
-    const imgsWrapperRight = this.imgsWrapperRight || document.createElement('div');
+    const imgsWrapperRight = document.createElement('div');
     imgsWrapperRight.className = style['inset-images-wrapper-right'];
-
-    if (imgsWrapperRight !== this.imgsWrapperRight && this.imgsWrapperRight) {
-      this.imgsWrapper.removeChild(this.imgsWrapperRight);
-    }
 
     this.imgsWrapperRight = imgsWrapperRight;
     this.imgsWrapper.appendChild(imgsWrapperRight);
@@ -1651,16 +1660,16 @@ export default class Inset {
 
           this.imgData[i] = renderedImg;
 
-          const imgWrapper = this.imgWrappers[i] || document.createElement('div');
+          const imgWrapper = document.createElement('div');
           imgWrapper.className = style['inset-image-wrapper'];
 
           let imgRatio;
           if (data.length === 1) {
-            imgRatio = this.imgRatios[i] || document.createElement('div');
+            imgRatio = document.createElement('div');
             imgRatio.className = style['inset-image-ratio'];
           }
 
-          const img = this.imgs[i] || document.createElement('div');
+          const img = document.createElement('div');
           img.className = style['inset-image'];
 
           const orient = i === 0 ? 'left' : 'right';
@@ -1686,24 +1695,12 @@ export default class Inset {
             ? this.imgsWrapperLeft
             : this.imgsWrapperRight;
 
-          if (imgWrapper !== this.imgWrappers[i] && this.imgWrappers[i]) {
-            mainWrapper.removeChild(this.imgWrappers[i]);
-          }
-
           this.imgWrappers[i] = imgWrapper;
           mainWrapper.appendChild(imgWrapper);
 
           if (imgRatio) {
-            if (imgRatio !== this.imgRatios[i] && this.imgRatios[i]) {
-              this.imgWrappers[i].removeChild(this.imgRatios[i]);
-            }
-
             this.imgRatios[i] = imgRatio;
             this.imgWrappers[i].appendChild(imgRatio);
-          }
-
-          if (img !== this.imgs[i] && this.imgs[i]) {
-            this.imgWrappers[i].removeChild(this.imgs[i]);
           }
 
           this.imgs[i] = img;
