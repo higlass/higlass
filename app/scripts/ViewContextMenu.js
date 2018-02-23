@@ -82,7 +82,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
 
         <hr styleName="context-menu-hr" />
 
-        { 
+        {
           this.hasMatrixTrack(this.props.tracks) &&
           <ContextMenuItem
             onMouseEnter={e => this.handleOtherMouseEnter(e)}
@@ -102,18 +102,16 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
 
   hasMatrixTrack(tracks) {
     const trackList = expandCombinedTracks(this.props.tracks);
-    console.log('trackList:', trackList);
-    return trackList.filter(track => track.type == 'heatmap').length > 0;   
+    return trackList.filter(track => track.type == 'heatmap').length > 0;
   }
 
   handleAddHorizontalSection() {
     const trackList = expandCombinedTracks(this.props.tracks);
     const matrixTrack = trackList.filter(track => track.type == 'heatmap')[0];
-    console.log('matrixTrack:', matrixTrack);
 
     this.props.onAddTrack({
       type: 'horizontal-rule',
-      y: this.props.coords[1], 
+      y: this.props.coords[1],
       position: 'whole',
     });
     this.props.onAddTrack({
@@ -121,7 +119,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
         "type": "horizontal-section",
         "server": matrixTrack.server,
         "tilesetUid": matrixTrack.tilesetUid,
-        "ySlicePos":this.props.coords[1], 
+        "ySlicePos":this.props.coords[1],
       },
       "options": {
         valueScaling: 'log',
