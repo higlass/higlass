@@ -1,6 +1,11 @@
 import { format } from 'd3-format';
 import * as PIXI from 'pixi.js';
 
+// Services
+import { getDarkTheme } from './services';
+
+import { colorToHex } from './utils';
+
 const TICK_HEIGHT = 40;
 const TICK_MARGIN = 0;
 const TICK_LENGTH = 5;
@@ -34,14 +39,21 @@ class AxisPixi {
     this.tickValues = this.calculateAxisTickValues(valueScale, axisHeight);
     let i = 0;
 
+    let color = 'black';
+    if (getDarkTheme()) color = '#999999';
+
     while (i < this.tickValues.length) {
       const tick = this.tickValues[i];
 
       while (this.axisTexts.length <= i) {
-        const newText = new PIXI.Text(tick,
-          { fontSize: `${this.axisTextFontSize}px`,
+        const newText = new PIXI.Text(
+          tick,
+          {
+            fontSize: `${this.axisTextFontSize}px`,
             fontFamily: this.axisTextFontFamily,
-            fill: 'black' });
+            fill: getDarkTheme() ? 'white' : 'black'
+          }
+        );
         this.axisTexts.push(newText);
 
         this.pAxis.addChild(newText);

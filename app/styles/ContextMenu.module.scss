@@ -13,6 +13,11 @@
               0 1px 5px 0 $gray-lightest-rgba;
 }
 
+.context-menu-dark {
+  color: $gray-light;
+  background-color: rgba(68, 68, 68, 0.97);
+}
+
 .context-menu-item {
   padding: 2px;
   white-space: nowrap;

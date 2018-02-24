@@ -23,6 +23,10 @@ $unit: 24px;
               margin $fast $ease;
 }
 
+.multitrack-header-dark {
+  background: $gray-darkest;
+}
+
 .multitrack-header-focus {
   height: $unit + ($unit / 3);
   margin-top: 0;

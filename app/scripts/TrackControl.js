@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { SortableHandle } from 'react-sortable-hoc';
 
+import { getDarkTheme } from './services';
+
 // Styles
 import '../styles/TrackControl.module.scss';
 
@@ -17,6 +19,8 @@ const getClassNames = (props) => {
 
   className += props.paddingRight ?
     ' track-control-padding-right' : '';
+
+  if (getDarkTheme()) className += ' track-control-dark';
 
   return className;
 };

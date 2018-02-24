@@ -28,7 +28,9 @@ import api, { destroy as apiDestroy, publish as apiPublish } from './api';
 import {
   chromInfo,
   domEvent,
-  pubSub ,
+  getDarkTheme,
+  setDarkTheme,
+  pubSub,
   setTileProxyAuthHeader
 } from './services';
 
@@ -132,6 +134,8 @@ class HiGlassComponent extends React.Component {
 
     this.unsetOnLocationChange = [];
 
+    if (props.options.isDarkTheme) setDarkTheme();
+
     let viewConfig = {};
     let views = {};
     if (typeof this.props.viewConfig === 'string') {
@@ -194,6 +198,7 @@ class HiGlassComponent extends React.Component {
       exportLinkModalOpen: false,
       exportLinkLocation: null,
       mouseTool,
+      isDarkTheme: false
     };
 
     dictValues(views).map(view => this.adjustLayoutToTrackSizes(view));
@@ -3151,13 +3156,19 @@ class HiGlassComponent extends React.Component {
       </ReactGridLayout>
     );
 
+    let styleNames = 'styles.higlass';
+
+    if (getDarkTheme()) {
+      styleNames += ' styles.higlass-dark-theme';
+    }
+
     return (
       <div
         key={this.uid}
         ref={(c) => { this.topDiv = c; }}
-        className="higlass"
-        styleName="styles.higlass"
+        className='higlass'
         onMouseMove={this.mouseMoveHandler.bind(this)}
+        styleName={styleNames}
       >
         <canvas
           key={this.uid}

@@ -8,7 +8,12 @@ import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
 import AxisPixi from './AxisPixi';
 
 // Services
-import { chromInfo as chromInfoService, pubSub, tileProxy } from './services';
+import {
+  chromInfo as chromInfoService,
+  getDarkTheme,
+  pubSub,
+  tileProxy
+} from './services';
 
 import {
   absToChr,
@@ -534,8 +539,15 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       );
     }
 
+    let pColorbarAreaBg = colorToHex('white');
+    let pColorbarAreaAlpha = 0.6;
+    if (getDarkTheme()) {
+      pColorbarAreaBg = colorToHex('#222222');
+      pColorbarAreaAlpha = 0.75;
+    }
+
     this.pColorbarArea.clear();
-    this.pColorbarArea.beginFill(colorToHex('white'), 0.6);
+    this.pColorbarArea.beginFill(pColorbarAreaBg, pColorbarAreaAlpha);
     this.pColorbarArea.drawRect(0, 0, colorbarAreaWidth, colorbarAreaHeight);
 
     if (!this.options) this.options = {};

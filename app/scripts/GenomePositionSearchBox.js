@@ -16,8 +16,8 @@ import ChromosomeInfo from './ChromosomeInfo';
 import SearchField from './SearchField';
 import PopupMenu from './PopupMenu';
 
-
-import { tileProxy } from './services';
+// Services
+import { getDarkTheme, tileProxy } from './services';
 
 // Utils
 import { scalesCenterAndK, dictKeys } from './utils';
@@ -55,7 +55,7 @@ class GenomePositionSearchBox extends React.Component {
 
     this.menuPosition = { left: 0, top: 0 };
 
-    // the position text is maintained both here and in 
+    // the position text is maintained both here and in
     // in state.value so that it can be quickly updated in
     // response to zoom events
     this.positionText =  'chr4:190,998,876-191,000,255';
@@ -555,7 +555,7 @@ class GenomePositionSearchBox extends React.Component {
       </MenuItem>
     ));
 
-    const className = this.state.isFocused ?
+    let className = this.state.isFocused ?
       'styles.genome-position-search-focus' : 'styles.genome-position-search';
 
     const classNameButton = this.state.isFocused ?
@@ -565,6 +565,8 @@ class GenomePositionSearchBox extends React.Component {
     const classNameIcon = this.state.isFocused ?
       'styles.genome-position-search-bar-icon-focus' :
       'styles.genome-position-search-bar-icon';
+
+    if (getDarkTheme()) className += ' styles.genome-position-search-dark';
 
     return (
       <FormGroup
