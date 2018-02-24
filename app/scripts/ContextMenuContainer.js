@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import { getDarkTheme } from './services';
+
 // Styles
 import '../styles/ContextMenu.module.scss';
 
@@ -115,7 +117,7 @@ export class ContextMenuContainer extends React.Component {
       // goes off the bottom
       if (parentBbox.top - bbox.height > 0) {
         // will fit on top
-        topPosition = parentBbox.top - bbox.height + TRACK_CONTROL_HEIGHT; 
+        topPosition = parentBbox.top - bbox.height + TRACK_CONTROL_HEIGHT;
       }
     }
 
@@ -177,12 +179,16 @@ export class ContextMenuContainer extends React.Component {
 
     const wholeStyle = Object.assign(stylePosition, otherStyle);
 
+    let stylenames = 'context-menu';
+
+    if (getDarkTheme()) stylenames += ' context-menu-dark';
+
     return(
       <div
         className={'context-menu-item'}
         ref={c => this.div = c}
         style={wholeStyle}
-        styleName="context-menu"
+        styleName={stylenames}
       >
         {this.props.children}
       </div>

@@ -3,6 +3,8 @@ import React from 'react';
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
 
+import { getDarkTheme } from './services';
+
 // Styles
 import '../styles/ContextMenu.module.scss';
 
@@ -69,6 +71,9 @@ export class NestedContextMenu extends ContextMenuContainer {
       );
     }
 
+    let styleNames = 'context-menu';
+    if (getDarkTheme()) styleNames += ' context-menu-dark';
+
     return (
       <div
         ref={c => this.div = c}
@@ -76,7 +81,7 @@ export class NestedContextMenu extends ContextMenuContainer {
           left: this.state.left,
           top: this.state.top,
         }}
-        styleName="context-menu"
+        styleName={styleNames}
       >
         {menuItems}
         {this.getSubmenu()}

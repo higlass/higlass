@@ -3,6 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { SortableHandle } from 'react-sortable-hoc';
 
+import { getDarkTheme } from './services';
+
 // Styles
 import '../styles/TrackControl.module.scss';
 
@@ -19,6 +21,10 @@ export class TrackControl extends React.Component {
 
     className += this.props.paddingRight ?
       ' track-control-padding-right' : '';
+
+    if (getDarkTheme()) {
+      className += ' track-control-dark';
+    }
 
     let buttonClassName = 'track-control-button';
 

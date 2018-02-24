@@ -10,12 +10,17 @@ import ContextMenuItem from './ContextMenuItem';
 import ContextMenuContainer from './ContextMenuContainer';
 import { SeriesListSubmenuMixin } from './SeriesListSubmenuMixin';
 
+import { getDarkTheme } from './services';
+
 // Styles
 import '../styles/ContextMenu.module.scss';
 
 export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
 
   render() {
+    let styleNames = 'context-menu';
+    if (getDarkTheme()) styleNames += ' context-menu-dark';
+
     return (
       <div
         ref={c => this.div = c}
@@ -23,7 +28,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
           left: this.state.left,
           top: this.state.top,
         }}
-        styleName="context-menu"
+        styleName={styleNames}
       >
 
         {getSeriesItems(
@@ -39,7 +44,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
             type: 'horizontal-rule',
-            y: this.props.coords[1], 
+            y: this.props.coords[1],
             position: 'whole',
           })}
         >
@@ -50,7 +55,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
             type: 'vertical-rule',
-            x: this.props.coords[0], 
+            x: this.props.coords[0],
             position: 'whole',
           })}
         >
@@ -61,8 +66,8 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
             type: 'cross-rule',
-            x: this.props.coords[0], 
-            y: this.props.coords[1], 
+            x: this.props.coords[0],
+            y: this.props.coords[1],
             position: 'whole',
           })}
         >
@@ -71,7 +76,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
 
         <hr styleName="context-menu-hr" />
 
-        { 
+        {
           this.hasMatrixTrack(this.props.tracks) &&
           <ContextMenuItem
             onMouseEnter={e => this.handleOtherMouseEnter(e)}
@@ -92,7 +97,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
   hasMatrixTrack(tracks) {
     const trackList = expandCombinedTracks(this.props.tracks);
     console.log('trackList:', trackList);
-    return trackList.filter(track => track.type == 'heatmap').length > 0;   
+    return trackList.filter(track => track.type == 'heatmap').length > 0;
   }
 
   handleAddHorizontalSection() {
@@ -102,7 +107,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
 
     this.props.onAddTrack({
       type: 'horizontal-rule',
-      y: this.props.coords[1], 
+      y: this.props.coords[1],
       position: 'whole',
     });
     this.props.onAddTrack({
@@ -110,7 +115,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
         "type": "horizontal-section",
         "server": matrixTrack.server,
         "tilesetUid": matrixTrack.tilesetUid,
-        "ySlicePos":this.props.coords[1], 
+        "ySlicePos":this.props.coords[1],
       },
       "options": {
         valueScaling: 'log',

@@ -4,7 +4,7 @@ import {
 } from './utils';
 
 import {
-  setTileProxyAuthHeader
+  setDarkTheme, setTileProxyAuthHeader
 } from './services';
 
 import {
@@ -13,6 +13,8 @@ import {
 } from './configs';
 
 import pubSub, { create } from './services/pub-sub';
+
+import ChromosomeInfo from './ChromosomeInfo';
 
 let stack = {};
 let pubSubs = [];
@@ -24,7 +26,6 @@ export const destroy = () => {
   pubSubs = [];
   stack = {};
 };
-import ChromosomeInfo from './ChromosomeInfo';
 
 const api = function api(context) {
   const self = context;
@@ -99,6 +100,13 @@ const api = function api(context) {
      */
     shareViewConfigAsLink(url) {
       return self.handleExportViewsAsLink(url, true);
+    },
+
+    /**
+     * Choose a theme.
+     */
+    activateDarkTheme(deactivate = false) {
+      setDarkTheme(deactivate);
     },
 
     zoomToDataExtent(viewUid) {

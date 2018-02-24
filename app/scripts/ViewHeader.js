@@ -12,6 +12,11 @@ import {
   VIEW_HEADER_MIN_WIDTH_SEARCH_BAR,
 } from './configs';
 
+// Services
+import {
+  getDarkTheme,
+} from './services';
+
 // Styles
 import '../styles/ViewHeader.module.scss';
 
@@ -200,11 +205,15 @@ export class ViewHeader extends React.Component {
       },
     );
 
-    const className = this.state.isFocused ?
+    let className = this.state.isFocused ?
       'multitrack-header-focus' : 'multitrack-header';
 
     const classNameIcon = this.state.width <= VIEW_HEADER_MED_WIDTH_SEARCH_BAR ?
       'multitrack-header-icon-squeazed' : 'multitrack-header-icon';
+
+    if (getDarkTheme()) {
+      className += ' multitrack-header-dark';
+    }
 
     return (
       <div
