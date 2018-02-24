@@ -231,114 +231,44 @@ AreaClusterer.prototype.isWithin = function isWithin(
   );
 };
 
-AreaClusterer.prototype.eval = function evalMethod(isZoomedIn = false) {
-  if (isZoomedIn) {
-    this.evalZoomedIn();
-    return;
-  }
+/**
+ * Evaluate clusters
+ * @param   {number}  isZoomed  Determins the zoom stage `-1` refers to zoom
+ *   out, `1` refers to zoom in and `0` is no zoom (only panning).
+ */
+AreaClusterer.prototype.eval = function evalMethod(isZoomed = 0) {
+  if (isZoomed === 1) this.evalZoomedIn();
+  if (isZoomed === -1) this.evalZoomedOut();
+};
 
-  // this.evalZoomedOut();
+
+AreaClusterer.prototype.mergeClusters = function mergeClusters(
+  clusterA, clusterB
+) {
+  console.log('mergeClusters', clusterA.size, clusterB.size);
+  clusterB.members.values.forEach((annotation) => {
+    clusterB.delete(annotation);
+    clusterA.add(annotation);
+  });
+  this.propChecking(clusterA);
+  clusterA.reload = true;
+  this.clusters.delete(clusterB);
+  console.log('mergeClusters', clusterA.size, clusterB.size);
+  clusterB = null;
 };
 
 AreaClusterer.prototype.evalZoomedOut = function evalZoomedOut() {
-  const clustIds = {};
-  const clustClusters = {};
-
+  console.log('evalZoomedOut');
   // 1. Check which clusters are within bounds. Effectivly cluster the clusters.
   this.clusters.forEach((clusterCurr) => {
-    let srcClusterId;
-
-    if (clustIds[clusterCurr.id]) {
-      srcClusterId = clustIds[clusterCurr.id];
-    } else {
-      srcClusterId = clusterCurr.id;
-      clustClusters[srcClusterId] = [clusterCurr.id];
-    }
-
-    this.clusters
-      .filter(cluster => cluster !== clusterCurr)
-      .forEach((cluster) => {
-        if (clusterCurr.isWithin(cluster.bounds, true)) {
-          clustIds[cluster.id] = srcClusterId;
-          clustClusters[srcClusterId].push(cluster.id);
-        }
-      });
-  });
-
-  // 2. re-cluster all elements of the cluster of clusters
-  Object.keys(clustClusters).forEach((srcClusterId) => {
-    const clustCluster = clustClusters[srcClusterId];
-    const elements = new Set();
-    const newClusters = new Set();
-
-    // Hide clusters and unset elements
-    clustCluster.forEach((clusterId) => {
-      const cluster = this.clusters.get(clusterId);
-
-      if (!cluster) {
-        console.warn(cluster, clusterId);
-        return;
+    this.clusters.forEach((cluster) => {
+      if (
+        cluster !== clusterCurr &&
+        clusterCurr.isWithin(cluster.bounds, true, this.gridSize * 0.25)
+      ) {
+        this.mergeClusters(clusterCurr, cluster);
       }
-
-      // Hide cluster, i.e., upon cluster assosciation in
-      // `elementsAddedToClusters()` this cluster won't be choosable.
-      cluster.hide();
-
-      // Unset members
-      cluster.members.forEach((element) => {
-        this.elementsAddedToClusters.delete(element);
-        element.prevCluster = element.cluster;
-        element.cluster = undefined;
-        elements.add(element);
-      });
     });
-
-    // Now we can re-cluster the elements
-    elements.forEach((element) => {
-      const cluster = this.addToOrCreateCluster(element);
-      newClusters.add(cluster);
-    });
-
-    let keepOld = false;
-
-    if (newClusters.size === clustCluster.length) {
-      keepOld = clustCluster.length === 1 || Array.prototype.every.call(
-        newClusters.values,
-        newCluster => clustCluster.some((cluster) => {
-          if (cluster.cX === newCluster.cX && cluster.cY === newCluster.cY) {
-            return true;
-          }
-          return false;
-        }));
-    }
-
-    if (keepOld) {
-      // Delete new clusters
-      newClusters.forEach((cluster) => {
-        this.clusters.delete(cluster);
-      });
-
-      clustCluster
-        .map(clusterId => this.clusters.get(clusterId))
-        .forEach((cluster) => {
-          // Show cluster again
-          cluster.show();
-
-          // Unset members
-          cluster.members.forEach((element) => {
-            this.elementsAddedToClusters.add(element);
-            element.cluster = element.prevCluster;
-            element.prevCluster = undefined;
-          });
-        });
-    } else {
-      // Delete old hidden clusters
-      clustCluster
-        .map(clusterId => this.clusters.get(clusterId))
-        .forEach((cluster) => {
-          this.clusters.delete(cluster);
-        });
-    }
   });
 };
 

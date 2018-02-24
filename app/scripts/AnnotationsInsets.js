@@ -227,8 +227,8 @@ class AnnotationsInsets {
 
       switch (effectiveSize) {
         case 2:
-          addWidth = width * 0.6;
-          addheight = -height * 0.6;
+          addWidth = width * 0.8;
+          addheight = -height * 0.1;
           break;
 
         case 3:
@@ -295,7 +295,7 @@ class AnnotationsInsets {
     // const t0 = performance.now();
     this.areaClusterer.add(this.annosToBeDrawnAsInsets, true);
     this.areaClusterer.remove(this.annosToBeDrawnAsInsetsOld, true);
-    this.areaClusterer.eval(this.isZoomedIn);
+    this.areaClusterer.eval(this.isZoomed);
     this.areaClusterer.refresh();
     this.areaClusterer.clusterElements();
     // console.log(`Clustering took ${performance.now() - t0}ms`);
@@ -731,7 +731,7 @@ class AnnotationsInsets {
   zoomHandler({ k }) {
     this.initTree();
 
-    this.isZoomedIn = k > this.currK;
+    this.isZoomed = ((k > this.currK) * 1) + ((k < this.currK) * -1);
 
     this.scaleChanged = this.currK !== k;
     this.currK = k;
