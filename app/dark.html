@@ -742,10 +742,8 @@ const testViewConfig = {
 window.hgApi = window.hglib.viewer(
   document.getElementById('development-demo'),
   testViewConfig,
-  { bounded: true },
+  { bounded: true, isDarkTheme: true },
 );
-
-window.hgApi.activateDarkTheme();
 
 </script>
 </html>

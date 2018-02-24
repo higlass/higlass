@@ -25,6 +25,7 @@ import {
   chromInfo,
   domEvent,
   getDarkTheme,
+  setDarkTheme,
   pubSub,
   setTileProxyAuthHeader
 } from './services';
@@ -125,6 +126,8 @@ class HiGlassComponent extends React.Component {
     this.boundRefreshView = (() => { this.refreshView(LONG_DRAG_TIMEOUT); });
 
     this.unsetOnLocationChange = [];
+
+    if (props.options.isDarkTheme) setDarkTheme();
 
     let viewConfig = {};
     let views = {};
@@ -3095,8 +3098,6 @@ class HiGlassComponent extends React.Component {
     );
 
     let styleNames = 'styles.higlass';
-
-    console.log('A!!!', getDarkTheme());
 
     if (getDarkTheme()) {
       styleNames += ' styles.higlass-dark-theme';
