@@ -1053,8 +1053,13 @@ export default class Inset {
         this.imgsRendering = null;
         this.inFlight = this.fetchData()
           .then((data) => {
+            const numFrags = data.fragments.length;
             if (this.isDestroyed) return Promise.resolve();
-            if (this.label.src.size === data.fragments.length || !force) {
+            if (
+              this.numLabels === this.remotePos.length ||
+              Math.min(4, this.numLabels) === Math.min(4, numFrags) ||
+              !force
+            ) {
               // When reloading insets we might trigger several reloads before
               // the data arrived. To avoid inconsistencies only render when the
               // most recent data arrived.
