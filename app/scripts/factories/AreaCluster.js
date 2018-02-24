@@ -227,14 +227,16 @@ AreaCluster.prototype.updateFnns = function updateFnns(annotation) {
  *   `[fromX, toX, fromY, toY]`
  * @return {boolean}  True if the element lies in the bounds.
  */
-AreaCluster.prototype.isWithin = function isWithin(viewPos, isExtended = false) {
+AreaCluster.prototype.isWithin = function isWithin(
+  viewPos, isExtended = false, padding = this.padding
+) {
   const [eMinX, eMaxX, eMinY, eMaxY] = viewPos;
-  const padding = isExtended ? this.padding : 0;
+  const _padding = isExtended * padding;
   return (
-    eMinX < this.maxX + padding &&
-    eMaxX > this.minX - padding &&
-    eMinY < this.maxY + padding &&
-    eMaxY > this.minY - padding
+    eMinX < this.maxX + _padding &&
+    eMaxX > this.minX - _padding &&
+    eMinY < this.maxY + _padding &&
+    eMaxY > this.minY - _padding
   );
 };
 
