@@ -245,7 +245,6 @@ AreaClusterer.prototype.eval = function evalMethod(isZoomed = 0) {
 AreaClusterer.prototype.mergeClusters = function mergeClusters(
   clusterA, clusterB
 ) {
-  console.log('mergeClusters', clusterA.size, clusterB.size);
   clusterB.members.values.forEach((annotation) => {
     clusterB.delete(annotation);
     clusterA.add(annotation);
@@ -253,18 +252,15 @@ AreaClusterer.prototype.mergeClusters = function mergeClusters(
   this.propChecking(clusterA);
   clusterA.reload = true;
   this.clusters.delete(clusterB);
-  console.log('mergeClusters', clusterA.size, clusterB.size);
-  clusterB = null;
 };
 
 AreaClusterer.prototype.evalZoomedOut = function evalZoomedOut() {
-  console.log('evalZoomedOut');
   // 1. Check which clusters are within bounds. Effectivly cluster the clusters.
   this.clusters.forEach((clusterCurr) => {
     this.clusters.forEach((cluster) => {
       if (
         cluster !== clusterCurr &&
-        clusterCurr.isWithin(cluster.bounds, true, this.gridSize * 0.25)
+        clusterCurr.isWithin(cluster.bounds, true, this.gridSize * 0.5)
       ) {
         this.mergeClusters(clusterCurr, cluster);
       }
