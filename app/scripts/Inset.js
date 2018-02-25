@@ -760,8 +760,8 @@ export default class Inset {
   draw() {
     this.drawLeaderLine();
     this.drawBorder();
-    return this.drawImage(this.label.src.reload).then(() => {
-      this.label.src.reload = false;
+    return this.drawImage(this.label.src.isChanged).then(() => {
+      this.label.src.changed(false);
     });
   }
 
@@ -1074,6 +1074,10 @@ export default class Inset {
       if (!this.inFlight || force) {
         this.imgs = [];
         this.imgsRendering = null;
+        this.dataTypes = [];
+        this.imgData = [];
+        this.prvData = [];
+
         this.inFlight = this.fetchData()
           .then((data) => {
             const numFrags = data.fragments.length;
@@ -1090,12 +1094,9 @@ export default class Inset {
               this.imgData = data.fragments;
               this.prvData = data.previews;
               this.inFlight = false;
+
               return this.drawImage();
             }
-
-            this.dataTypes = null;
-            this.imgData = null;
-            this.prvData = null;
             this.inFlight = false;
 
             return Promise.reject('hiccup');
