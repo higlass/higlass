@@ -31,7 +31,7 @@
     "no-mixed-operators": ["error", { "allowSamePrecedence": true }],
     "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
     "no-param-reassign": ["error", { "props": false }],
-    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+    "no-plusplus": 0,
     "no-underscore-dangle": 0,
     "react/display-name": 0,
     "react/forbid-prop-types": 0,

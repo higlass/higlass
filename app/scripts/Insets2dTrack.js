@@ -81,6 +81,8 @@ export default class Insets2dTrack extends PixiTrack {
       this.options.dropOpacity,
     );
 
+    this.isRenderToCanvas = this.options.isRenderToCanvas || false;
+
     this.pBase.alpha = this.options.opacity;
     this.pMain.filters = [this.dropShadow];
 
@@ -247,7 +249,7 @@ export default class Insets2dTrack extends PixiTrack {
     inset.size(label.width, label.height);
     inset.setBorderScale(borderScale);
     inset.setRenderer(this.rendererInset.bind(this));
-    inset.renderTo('html');
+    inset.renderTo(this.isRenderToCanvas ? 'canvas' : 'html');
 
     return inset.draw();
   }
@@ -417,17 +419,21 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   mouseDownHandler(event, inset) {
-    this.hoveringInsetIdx = this.pMain.getChildIndex(inset.gMain);
-    this.pMain.setChildIndex(inset.gMain, this.pMain.children.length - 1);
-    this.animate();
+    if (this.isRenderToCanvas) {
+      this.hoveringInsetIdx = this.pMain.getChildIndex(inset.gMain);
+      this.pMain.setChildIndex(inset.gMain, this.pMain.children.length - 1);
+      this.animate();
+    }
   }
 
   mouseDownRightHandler(/* event, inset */) {
   }
 
   mouseUpHandler(event, inset) {
-    this.pMain.setChildIndex(inset.gMain, this.hoveringInsetIdx);
-    this.animate();
+    if (this.isRenderToCanvas) {
+      this.pMain.setChildIndex(inset.gMain, this.hoveringInsetIdx);
+      this.animate();
+    }
   }
 
   mouseUpRightHandler(/* event, inset */) {}
