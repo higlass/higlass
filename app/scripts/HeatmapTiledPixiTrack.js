@@ -248,7 +248,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
 
-    this.visibleAndFetchedTiles().forEach(tile => this.renderTile(tile));
+    this.visibleAndFetchedTiles().forEach(tile => this.renderTile(tile, synchronous=true));
 
     // hopefully draw isn't rerendering all the tiles
     // this.drawColorbar();
@@ -908,7 +908,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
    *
    * @param {Object}  tile  Tile data to be rendered.
    */
-  renderTile(tile) {
+  renderTile(tile,synchronous=false) {
     const [scaleType, valueScale] = getValueScale(this.options.heatmapValueScaling,
             this.scale.minValue, this.medianVisibleValue, this.scale.maxValue, 'log');
 
@@ -970,7 +970,9 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         this.animate();
         // call to check if tiles need removing
         this.refreshTiles();
-      });
+      },
+      synchronous
+    );
   }
 
   /**

@@ -388,10 +388,12 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
  * @param valueScaleType: Either 'log' or 'linear'
  * @param valueScaleDomain: The domain of the scale (the range is always [254,0])
  * @param colorScale: a 255 x 4 rgba array used as a color scale
+ * @param synchronous: Render this tile synchronously or pass it on to the
+ * threadpool
  */
 export const tileDataToPixData = (
   tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished,
-) => {
+synchronous=false) => {
   const tileData = tile.tileData;
 
   if  (!tileData.dense) {
@@ -408,38 +410,38 @@ export const tileDataToPixData = (
 
   // comment this and uncomment the code afterwards to enable threading
 
-  /*
-  const pixData = workerSetPix(
-    newTileData.length,
-    newTileData,
-    valueScaleType,
-    valueScaleDomain,
-    pseudocount,
-    colorScale,
-  );
+  if (synchronous) {
+    const pixData = workerSetPix(
+      newTileData.length,
+      newTileData,
+      valueScaleType,
+      valueScaleDomain,
+      pseudocount,
+      colorScale,
+    );
 
-  finished({pixData});
-  return;
-  */
+    finished({pixData});
+    return;
+  } else {
+    var params = {
+      size: newTileData.length,
+      data: newTileData,
+      valueScaleType: valueScaleType,
+      valueScaleDomain: valueScaleDomain,
+      pseudocount: pseudocount,
+      colorScale: colorScale
+    };
 
-  var params = {
-    size: newTileData.length,
-    data: newTileData,
-    valueScaleType: valueScaleType,
-    valueScaleDomain: valueScaleDomain,
-    pseudocount: pseudocount,
-    colorScale: colorScale
-  };
-
-  setPixPool.send(params, [ newTileData.buffer ])
-    .promise()
-    .then(returned => {
-      finished(returned);
-    })
-    .catch(reason => {
-      finished(null);
-    });
-  ;
+    setPixPool.send(params, [ newTileData.buffer ])
+      .promise()
+      .then(returned => {
+        finished(returned);
+      })
+      .catch(reason => {
+        finished(null);
+      });
+    ;
+  }
 };
 
 function text(url, callback) {

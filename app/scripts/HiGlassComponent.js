@@ -612,6 +612,11 @@ class HiGlassComponent extends React.Component {
    */
   syncValueScales(viewUid, trackUid) {
     const uid = this.combineViewAndTrackUid(viewUid, trackUid);
+
+    if (!this.state.views[viewUid])
+      // the view must have been deleted
+      return;
+
     const sourceTrack = getTrackByUid(this.state.views[viewUid].tracks, trackUid);
 
     if (this.valueScaleLocks[uid]) {
