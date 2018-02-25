@@ -50,6 +50,7 @@ function AreaCluster(isAverageCenter = true, padding = 0) {
   this.cX = null;
   this.cY = null;
   this.members = new KeySet('id');
+  this.isChanged = false;
 
   this.minX = Infinity;
   this.maxX = 0;
@@ -116,6 +117,10 @@ AreaCluster.prototype.add = function add(annotation) {
   this.updateBounds(annotation);
 
   return true;
+};
+
+AreaCluster.prototype.changed = function changed(isChanged = true) {
+  this.isChanged = isChanged;
 };
 
 AreaCluster.prototype.delete = function deleteMethod(annotation) {

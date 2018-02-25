@@ -52,8 +52,8 @@ Object.defineProperty(AreaClusterer.prototype, 'size', { get: getSize });
 /**
  * Add an array of elements to the clusterer.
  *
- * @param  {object}  elements - The elements to be added.
- * @param  {boolean}  noDraw - If `true` markers are *not* redrawn.
+ * @param  {KeySet}  elements - The elements to be added.
+ * @param  {Boolean}  noDraw - If `true` markers are *not* redrawn.
  */
 AreaClusterer.prototype.add = function add(elements, noDraw) {
   elements.forEach((element) => {
@@ -197,6 +197,7 @@ AreaClusterer.prototype.expandCluster = function expandCluster(cluster, element)
   this.clustersMaxSize = Math.max(this.clustersMaxSize, cluster.size);
   this.elementsAddedToClusters.add(element);
   this.propChecking(cluster);
+  cluster.changed();
 };
 
 /**
@@ -233,12 +234,12 @@ AreaClusterer.prototype.isWithin = function isWithin(
 
 /**
  * Evaluate clusters
- * @param   {number}  isZoomed  Determins the zoom stage `-1` refers to zoom
+ * @param   {number}  zoomed  Determins the zoom stage `-1` refers to zoom
  *   out, `1` refers to zoom in and `0` is no zoom (only panning).
  */
-AreaClusterer.prototype.eval = function evalMethod(isZoomed = 0) {
-  if (isZoomed === 1) this.evalZoomedIn();
-  if (isZoomed === -1) this.evalZoomedOut();
+AreaClusterer.prototype.eval = function evalMethod(zoomed = 0) {
+  if (zoomed === 1) this.evalZoomedIn();
+  if (zoomed === -1) this.evalZoomedOut();
 };
 
 
@@ -250,7 +251,7 @@ AreaClusterer.prototype.mergeClusters = function mergeClusters(
     clusterA.add(annotation);
   });
   this.propChecking(clusterA);
-  clusterA.reload = true;
+  clusterA.changed();
   this.clusters.delete(clusterB);
 };
 
@@ -318,7 +319,7 @@ AreaClusterer.prototype.splitCluster = function splitCluster(cluster, fnn) {
   this.clusters.add(newCluster);
   this.propChecking(newCluster);
   this.propChecking(cluster);
-  cluster.reload = true;
+  cluster.changed();
 };
 
 AreaClusterer.prototype.refresh = function refresh() {
@@ -337,8 +338,8 @@ AreaClusterer.prototype.refresh = function refresh() {
 
 /**
  * Removes a elements from the clusterer
- * @param  {object}  elements - The markers to be remove.
- * @return  {boolean}  If `true` marker has been removed.
+ * @param  {KeySet}  elements - The markers to be remove.
+ * @return  {Boolean}  If `true` marker has been removed.
  */
 AreaClusterer.prototype.remove = function remove(elements, noDraw = false) {
   const isRemoved = elements
@@ -416,10 +417,26 @@ AreaClusterer.prototype.shrinkCluster = function shrinkCluster(cluster, element)
     );
     this.elementsAddedToClusters.delete(element);
     this.propChecking(cluster);
-    cluster.reload = true;
+    cluster.changed();
   } else {
     this.removeCluster(cluster);
   }
+};
+
+/**
+ * Update the clustering, i.e., add and remove elements and re-cluster if necessary.
+ * @param  {KeySet}  elements - The elements to be added.
+ * @param  {KeySet}  oldElements - The elements to be added.
+ * @param  {number}  zoomed - Determins the zoom stage `-1` refers to zoom
+ *   out, `1` refers to zoom in and `0` is no zoom (only panning).
+ */
+AreaClusterer.prototype.update = function update(elements, oldElements, zoomed) {
+  this.clusters.forEach((cluster) => { cluster.changed(false); });
+  this.add(elements, true);
+  this.remove(oldElements, true);
+  this.eval(zoomed);
+  this.refresh();
+  this.clusterElements();
 };
 
 export default AreaClusterer;

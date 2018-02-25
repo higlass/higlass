@@ -292,13 +292,11 @@ class AnnotationsInsets {
 
   clusterAnnotations() {
     // Update clusterer
-    // const t0 = performance.now();
-    this.areaClusterer.add(this.annosToBeDrawnAsInsets, true);
-    this.areaClusterer.remove(this.annosToBeDrawnAsInsetsOld, true);
-    this.areaClusterer.eval(this.isZoomed);
-    this.areaClusterer.refresh();
-    this.areaClusterer.clusterElements();
-    // console.log(`Clustering took ${performance.now() - t0}ms`);
+    this.areaClusterer.update(
+      this.annosToBeDrawnAsInsets,
+      this.annosToBeDrawnAsInsetsOld,
+      this.zoomed
+    );
   }
 
   /**
@@ -731,7 +729,7 @@ class AnnotationsInsets {
   zoomHandler({ k }) {
     this.initTree();
 
-    this.isZoomed = ((k > this.currK) * 1) + ((k < this.currK) * -1);
+    this.zoomed = ((k > this.currK) * 1) + ((k < this.currK) * -1);
 
     this.scaleChanged = this.currK !== k;
     this.currK = k;
