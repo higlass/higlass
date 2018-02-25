@@ -1588,41 +1588,15 @@ export class TiledPlot extends React.Component {
   /*-------------------- Custom Methods -----------------------*/
 
   addEventListeners() {
-    return;
     this.eventListeners = [
+      /*
       {
         name: 'dragstart',
         callback: (event) => {
           console.log('dragstart', event.dataTransfer.getData('text/json'));
-          const eventData = event.dataTransfer.getData('text/json');
-          let eventJson = null;
-
-          try {
-            eventJson = JSON.parse(eventData);
-          } catch (ex) {
-            // probably not a JSON file
-            return;
-          }
-
-          console.log('eventData:', eventData);
-          console.log('eventJson:', eventJson);
-
-          this.setState({
-            draggingHappening: eventJson,
-          });
-          return false;
         },
       },
-      {
-        name: 'dragend',
-        callback: (event) => {
-          this.setState({
-            draggingHappening: false,
-          });
-          console.log('dragend');
-          return false;
-        },
-      },
+      */
     ]
 
     this.eventListeners.forEach(
@@ -1632,7 +1606,7 @@ export class TiledPlot extends React.Component {
 
   removeEventListeners() {
     this.eventListeners.forEach(
-      event => document.removeEventListener(event.name, event.fnc)
+      event => document.removeEventListener(event.name, event.callback)
     );
   }
 }
