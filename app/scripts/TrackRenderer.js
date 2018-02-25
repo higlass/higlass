@@ -777,10 +777,14 @@ export class TrackRenderer extends React.Component {
 
   zoomStarted() {
     this.zooming = true;
+
+    pubSub.publish('app.zoomStart');
   }
 
   zoomEnded() {
     this.zooming = false;
+
+    pubSub.publish('app.zoomEnd');
   }
 
   applyZoomTransform(notify = true) {
@@ -828,8 +832,6 @@ export class TrackRenderer extends React.Component {
             .map(zoomedYScale.invert))
           .range([0, this.currentProps.height - 2*this.currentProps.marginTop]);
 
-        // console.log('track.yPosition:', track.yPosition, 'trackYScale.range():', trackYScale.range());
-
         track.zoomed(
           trackXScale,
           trackYScale,
@@ -873,9 +875,6 @@ export class TrackRenderer extends React.Component {
         tilesetUid: track.tilesetUid
       };
     }
-
-    // console.log('track:', track);
-    // console.log('dataConfig:', dataConfig);
 
     switch (track.type) {
       case 'left-axis':
@@ -932,6 +931,7 @@ export class TrackRenderer extends React.Component {
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
           () => this.currentProps.onValueScaleChanged(track.uid),
+          this.props.onMouseMoveZoom,
         );
 
       case 'vertical-line':
@@ -1365,6 +1365,7 @@ export class TrackRenderer extends React.Component {
       <div
         ref={c => this.divTrackArea = c}
         style={{
+          position: "relative",
           height: this.currentProps.height,
           width: this.currentProps.width,
         }}

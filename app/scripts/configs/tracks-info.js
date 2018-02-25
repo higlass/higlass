@@ -160,7 +160,7 @@ export const TRACKS_INFO = [
     orientation: '1d-horizontal',
     minHeight: 100,
     thumbnail: null,
-    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
+    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'colorRange', 'trackBorderWidth', 'trackBorderColor', 'trackType', 'heatmapValueScaling'],
     defaultOptions: {
       labelPosition: 'topLeft',
       labelColor: 'black',
@@ -168,6 +168,7 @@ export const TRACKS_INFO = [
       valueScaling: 'linear',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
+      heatmapValueScaling: 'log',
     },
   },
   {

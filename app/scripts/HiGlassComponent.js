@@ -205,6 +205,8 @@ class HiGlassComponent extends React.Component {
 
     this.pubSubs = [];
     this.rangeSelection = [null, null];
+
+    this.prevMouseHoverTrack = null;
   }
 
   componentWillMount() {
@@ -237,11 +239,24 @@ class HiGlassComponent extends React.Component {
           draggingHappening: null,
         });
       }),
+      pubSub.subscribe('app.zoomStart', this.zoomStartHandler.bind(this))
+    );
+
+    this.pubSubs.push(
+      pubSub.subscribe('app.zoomEnd', this.zoomEndHandler.bind(this))
     );
 
     if (this.props.getApi) {
       this.props.getApi(this.api);
     }
+  }
+
+  zoomStartHandler() {
+    this.hideHoverMenu();
+  }
+
+  zoomEndHandler() {
+
   }
 
   waitForDOMAttachment(callback) {
@@ -2811,8 +2826,7 @@ class HiGlassComponent extends React.Component {
         : dataX;
     }
 
-    pubSub.publish(
-      'app.mouseMove',
+    const evt = 
       {
         x: relPos[0],
         y: relPos[1],
@@ -2821,9 +2835,95 @@ class HiGlassComponent extends React.Component {
         dataX,
         dataY,
         isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
-        isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText
+        isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
+        track: hoveredTrack,
+        origEvt: e
       }
+
+    pubSub.publish(
+      'app.mouseMove', evt
     );
+
+    this.showHoverMenu(evt);
+  }
+
+  /**
+   * Show a menu displaying some information about the track under it
+   */
+  showHoverMenu(evt) {
+    // each track should have a function that returns an HTML representation
+    // of the data at a give position
+    const mouseOverHtml = (evt.track && evt.track.getMouseOverHtml) ?
+      evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY) : '';
+
+    if (evt.track != this.prevMouseHoverTrack) {
+      if (this.prevMouseHoverTrack && this.prevMouseHoverTrack.stopHover) {
+        this.prevMouseHoverTrack.stopHover();
+      }
+    }
+
+    this.prevMouseHoverTrack = evt.track;
+
+    const data = mouseOverHtml.length ? [1] : [];
+
+    // try to select the mouseover div
+    let mouseOverDiv = select('body').selectAll('.track-mouseover-menu')
+      .data(data)
+
+    mouseOverDiv
+      .exit()
+      .remove();
+
+    mouseOverDiv
+      .enter()
+      .append('div')
+      .classed('track-mouseover-menu', true)
+      .classed(styles['track-mouseover-menu'], true);
+
+    mouseOverDiv = select('body').selectAll('.track-mouseover-menu');
+    const mousePos = clientPoint(select('body').node(), evt.origEvt);
+
+    /*
+    mouseOverDiv.selectAll('.mouseover-marker')
+      .data([1])
+      .enter()
+      .append('div')
+      .classed('.mouseover-marker', true)
+    */
+
+    mouseOverDiv
+    .style('position', 'absolute')
+      .style('left', mousePos[0] + "px")
+      .style('top', mousePos[1] + "px")
+    ;
+
+    if (!mouseOverDiv.node()) {
+      // probably not over a track so there's no mouseover rectangle
+      return;
+    }
+
+    const bbox = mouseOverDiv.node().getBoundingClientRect();
+
+    if (bbox.x + bbox.width > window.innerWidth) {
+      // the overlay box is spilling outside of the track so switch
+      // to showing it on the left
+      mouseOverDiv.style('left', (mousePos[0] - bbox.width) + 'px')
+    }
+
+    if (bbox.y + bbox.height > window.innerHeight) {
+      // the overlay box is spilling outside of the track so switch
+      // to showing it on the left
+      mouseOverDiv.style('top', (mousePos[1] - bbox.height) + 'px')
+    }
+
+    mouseOverDiv.html(mouseOverHtml);
+  }
+
+  /**
+   * Hide the hover menu when e.g. the user starts zooming
+   */
+  hideHoverMenu() {
+    select('body').selectAll('.track-mouseover-menu').remove();
   }
 
   /**
@@ -2831,6 +2931,13 @@ class HiGlassComponent extends React.Component {
    */
   mouseMoveZoomHandler(data) {
     apiPublish('mouseMoveZoom', data);
+  }
+
+  /**
+   * Handle mousedown events/
+   */
+  mouseDownHandler(evt) {
+
   }
 
   setChromInfo(chromInfoPath, callback) {

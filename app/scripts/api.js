@@ -32,7 +32,6 @@ const api = function api(context) {
   // Public API
   return {
     setAuthHeader(newHeader) {
-      console.log('api set auth header', newHeader);
       setTileProxyAuthHeader(newHeader);
 
       // we need to re-request all the tiles
