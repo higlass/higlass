@@ -108,7 +108,7 @@ export class TiledPixiTrack extends PixiTrack {
         return;
       }
 
-      console.log('tilesetInfo:', this.tilesetInfo);
+      // console.log('tilesetInfo:', this.tilesetInfo);
       this.maxZoom = +this.tilesetInfo.max_zoom;
 
       if (this.options && this.options.maxZoom) {

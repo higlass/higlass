@@ -259,7 +259,6 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
     }
     )
     .then(response => {
-      console.log('response:', response);
       return response.json()
     }
     )
