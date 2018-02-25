@@ -12,6 +12,7 @@ import {
   addEventListenerOnce,
   canvasLinearGradient,
   colorToHex,
+  coterminalAngleRad,
   degToRad,
   flatten,
   getAngleBetweenPoints,
@@ -101,6 +102,7 @@ export default class Inset {
     this.globalOffsetY = 0;
     this.fetchAttempts = 0;
     this.imScale = 1;
+    this.leaderLineAngle = 0;
 
     this.borderStyle = [1, 0x000000, 0.33];
     this.borderPadding = options.borderWidth * 2 || 4;
@@ -838,7 +840,8 @@ export default class Inset {
    * Render all types of leader lines on HTML.
    * @param   {array}  pointFrom  Tuple in form of `[x,y]`.
    * @param   {array}  pointTo  Tuple in form of `[x,y]`.
-   * @param   {number}  dist  [description]
+   * @param   {number}  dist  Eucledian distance between `pointFrom` and
+   *   `pointTo`.
    * @param   {D3.Color}  color  Color.
    */
   renderleaderLineHtml(pointFrom, pointTo, dist, color) {
@@ -899,18 +902,38 @@ export default class Inset {
       ll.style.background = _color.toString();
     }
 
-    const rotation = getAngleBetweenPoints(pointFrom, pointTo);
+    this.getClosestRadChange(pointFrom, pointTo);
 
     const yOff = Math.round(this.leaderLineStyle[0] / 2);
 
     ll.style.left = `${pointFrom[0]}px`;
     ll.style.top = `${pointFrom[1] - yOff}px`;
-    ll.style.transform = `rotate(${rotation}rad)`;
+    ll.style.transform = `rotate(${this.leaderLineAngle}rad)`;
 
     if (this.leaderLine !== ll) {
       this.baseElement.appendChild(ll);
       this.leaderLine = ll;
     }
+  }
+
+  /**
+   * Compute the closest angle change in radians. Compare the "normal" new
+   *   angle and it's coterminal counterpart.
+   * @param   {array}  pointFrom  Tuple in form of `[x,y]`.
+   * @param   {array}  pointTo  Tuple in form of `[x,y]`.
+   * @return  {number}  Radians of the closest angle in terms of the numerical
+   *   distance between the old and new angle.
+   */
+  getClosestRadChange(pointFrom, pointTo) {
+    const oldAngle = this.leaderLineAngle;
+    const newAngle = getAngleBetweenPoints(pointFrom, pointTo);
+    const ctAngle = coterminalAngleRad(newAngle, newAngle < 0);
+
+    this.leaderLineAngle = (
+      Math.abs(oldAngle - newAngle) > Math.abs(oldAngle - ctAngle)
+    ) ? ctAngle : newAngle;
+
+    return this.leaderLineAngle;
   }
 
   /**
