@@ -64,6 +64,8 @@ export default class Inset {
     this.d = Infinity;
     this.relD = 1;
 
+    this.fetching = -1;
+
     this.gMain = new PIXI.Graphics();
     this.gBorder = new PIXI.Graphics();
     this.gLeaderLine = new PIXI.Graphics();
@@ -1065,7 +1067,7 @@ export default class Inset {
    *   the data into canvas.
    * @param  {Boolean}  force  If `true` forces a rerendering of the image.
    */
-  drawImage(force = false) {
+  drawImage(force = false, requestId = null) {
     if (this.fetchAttempts >= 2) {
       return Promise.reject('Could not fetch the inset\'s images');
     }
@@ -1074,17 +1076,19 @@ export default class Inset {
       if (!this.inFlight || force) {
         this.imgs = [];
         this.imgsRendering = null;
+        this.imgData = null;
         this.dataTypes = [];
-        this.imgData = [];
         this.prvData = [];
 
         this.inFlight = this.fetchData()
           .then((data) => {
-            const numFrags = data.fragments.length;
-            if (this.isDestroyed) return Promise.resolve();
+            if (
+              this.isDestroyed || data.requestId !== this.fetching
+            ) return Promise.resolve();
+
             if (
               this.numLabels === this.remotePos.length ||
-              Math.min(4, this.numLabels) === Math.min(4, numFrags) ||
+              Math.min(4, this.numLabels) === Math.min(4, data.fragments.length) ||
               !force
             ) {
               // When reloading insets we might trigger several reloads before
@@ -1095,27 +1099,39 @@ export default class Inset {
               this.prvData = data.previews;
               this.inFlight = false;
 
-              return this.drawImage();
+              return this.drawImage(false, data.requestId);
             }
+
             this.inFlight = false;
 
-            return Promise.reject('hiccup');
+            return Promise.reject(
+              'Fetch data resulted in a hiccup. Image not rendered.'
+            );
           });
       }
       return this.inFlight;
     }
 
-    const imageRendered = this.renderImage(this.imgData, force)
+    const imageRendered = this.renderImage(this.imgData, force, requestId)
       .then(() => {
-        if (this.isDestroyed) return true;
+        if (
+          this.isDestroyed ||
+          (requestId !== null && requestId !== this.fetching) ||
+          this.imgData === null
+        ) return true;
+
         this.compImgScale();
         this.positionImage();
         return true;
       })
-      .catch(err => console.error('Image rendering failed', err));
+      .catch((err) => {
+        console.error('Image rendering and positioning failed', err);
+      });
 
     const previewsRendered = this.renderPreviews(this.prvData, force)
-      .catch(err => console.error('Preview rendering failed', err));
+      .catch((err) => {
+        console.error('Preview rendering failed', err);
+      });
 
     const allDrawn = Promise.all([imageRendered, previewsRendered]).then(() => {
       if (this.isDestroyed) return;
@@ -1183,7 +1199,6 @@ export default class Inset {
    * @return  {Object}  Promise resolving to the JSON response
    */
   fetchData() {
-    // this.computedZoom();
     const loci = this.remotePos.map((remotePos, i) => [
       ...remotePos,
       this.dataConfig.tilesetUid,
@@ -1205,6 +1220,8 @@ export default class Inset {
       maxPrevs = 0;
     }
 
+    const fetchRequest = ++this.fetching;
+
     return fetch(
       `${this.dataConfig.server}/fragments_by_loci/?ag=${aggregation}&pd=${padding}&en=${encoding}&rp=${representative}&mp=${maxPrevs}`, {
         method: 'POST',
@@ -1215,6 +1232,12 @@ export default class Inset {
         body: JSON.stringify(loci)
       })
       .then(response => response.json())
+      .then((parsedResponse) => {
+        // Add the request ID to the response in order to identify the latest
+        // response value and avoid rendering and positioning hiccups.
+        parsedResponse.requestId = fetchRequest;
+        return parsedResponse;
+      })
       .catch(() => {
         this.fetchAttempts += 1;
       });
@@ -1646,7 +1669,7 @@ export default class Inset {
    *
    * @param  {Array}  data  Data to be rendered
    */
-  renderImageHtml(data, force) {
+  renderImageHtml(data, force, requestId) {
     if (
       !data ||
       (this.imgs.length === data.length && !force) ||
@@ -1657,7 +1680,6 @@ export default class Inset {
     if (this.imgsRendering) return this.imgsRendering;
 
     this.previewsHeight = 0;
-    this.imgData = [];
     this.imgRatios = [];
     this.imgs = [];
     this.imgWrappers = [];
@@ -1685,7 +1707,7 @@ export default class Inset {
     this.imgsRendering = Promise.all(data
       .map((imgDataRaw, i) => this.renderer(imgDataRaw, this.dataTypes[0])
         .then((renderedImg) => {
-          if (this.isDestroyed) return;
+          if (this.isDestroyed || this.imgData === null) return;
 
           this.imgData[i] = renderedImg;
 
