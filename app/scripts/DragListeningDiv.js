@@ -1,6 +1,8 @@
 import React from 'react';
 import slugid from 'slugid';
 
+import { pubSub } from './services';
+
 import { 
   DEFAULT_TRACKS_FOR_DATATYPE,
 } from './configs';
@@ -19,8 +21,6 @@ export default class DragListeningDiv extends React.Component {
     let background = this.props.enabled ? 
       (this.state.dragOnTop ? 'green' : 'blue') : 'red';
 
-    console.log('position:', this.props.position);
-
     return (
       <div
         className='DragListeningDiv'
@@ -37,26 +37,24 @@ export default class DragListeningDiv extends React.Component {
           if (!this.props.enabled) 
             return;
 
-          const evtJson = JSON.parse(evt.dataTransfer.getData('text/json'));
+          const evtJson = this.props.draggingHappening;
 
-          if (!evtJson.higlassTrack.datatype in DEFAULT_TRACKS_FOR_DATATYPE) {
-            console.warn('unknown track type:', evtJson.higlassTrack);
+          if (!evtJson.datatype in DEFAULT_TRACKS_FOR_DATATYPE) {
+            console.warn('unknown track type:', evtJson);
           }
 
           const defaultTrackType = 
-            DEFAULT_TRACKS_FOR_DATATYPE[evtJson.higlassTrack.datatype][this.props.position];
+            DEFAULT_TRACKS_FOR_DATATYPE[evtJson.datatype][this.props.position];
 
           const newTrack = {
             type: defaultTrackType,
             uid: slugid.nice(),
-            tilesetUid: evtJson.higlassTrack.tilesetUid,
-            server: evtJson.higlassTrack.server,
+            tilesetUid: evtJson.tilesetUid,
+            server: evtJson.server,
           }
 
-          console.log('defaultTrackType', defaultTrackType);
-          console.log('on drop', evtJson);
-          console.log('newTrack:', newTrack);
           this.props.onTrackDropped(newTrack);
+          pubSub.publish('trackDropped', newTrack);
         }}
       >
       </div>

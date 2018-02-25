@@ -101,6 +101,26 @@ const api = function api(context) {
       return self.handleExportViewsAsLink(url, true);
     },
 
+    /**
+     * Show overlays where this track can be positioned
+     *
+     * @param {obj} track: { server, tilesetUid, datatype }
+     */
+    showAvailableTrackPositions(track) {
+      self.setState({
+        draggingHappening: track,
+      });
+    },
+
+    /**
+     * Hide the overlay showing wher this track can be positioned
+     */
+    hideAvailableTrackPositions(track) {
+      self.setState({
+        draggingHappening: null,
+      });
+    },
+
     zoomToDataExtent(viewUid) {
       /**
        * Zoom so that the entire dataset is visible

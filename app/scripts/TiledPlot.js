@@ -86,7 +86,6 @@ export class TiledPlot extends React.Component {
         null,
       ],
 
-      draggingHappening: false,
       chromInfo: null,
       defaultChromSizes: null,
       contextMenuPosition: null,
@@ -859,6 +858,7 @@ export class TiledPlot extends React.Component {
       initialYDomain: props.initialYDomain,
       trackSourceServers: props.trackSourceServers,
       zoomable: props.zoomable,
+      draggingHappending: props.draggingHappening,
     });
   }
 
@@ -985,10 +985,13 @@ export class TiledPlot extends React.Component {
    * track areas
    */
   getIdealizedTrackPositionsOverlay() {
-    const evtJson = this.state.draggingHappening;
-    const datatype = evtJson.higlassTrack.datatype;
+    const evtJson = this.props.draggingHappening;
+    const datatype = evtJson.datatype;
+
+    /*
     console.log('datatype:', datatype);
     console.log('DEFAULT_TRACKS_FOR_DATATYPE', DEFAULT_TRACKS_FOR_DATATYPE);
+    */
 
     if (!(datatype in DEFAULT_TRACKS_FOR_DATATYPE)) {
       console.warn('unknown data type:', evtJson.higlassTrack);
@@ -999,8 +1002,8 @@ export class TiledPlot extends React.Component {
     const presentTracks = new Set(['top', 'left', 'right', 'center', 'bottom']
       .filter(x => (x in this.state.tracks && this.state.tracks[x].length)));
 
-    console.log('presentTracks:', presentTracks);
-    console.log('defaultTracks:', defaultTracks);
+    // console.log('presentTracks:', presentTracks);
+    // console.log('defaultTracks:', defaultTracks);
 
     let numVertical = 0;
     let numHorizontal = 0;
@@ -1011,16 +1014,16 @@ export class TiledPlot extends React.Component {
     const bottomAllowed = 'bottom' in defaultTracks;
     const centerAllowed = 'center' in defaultTracks;
 
-    const topDisplayed = ('top' in defaultTracks)
-    const bottomDisplayed = ('top' in defaultTracks &&
-      (presentTracks.has('center') || 'left' in defaultTracks ||
-        presentTracks.has('left') || presentTracks.has('right')
-      ) );
-    const leftDisplayed = ('left' in defaultTracks)
-    const rightDisplayed = ('left' in defaultTracks &&
-      (presentTracks.has('center') || 'top' in defaultTracks));
-    const centerDisplayed = ('center' in defaultTracks ||
-      presentTracks.has('center') || (topDisplayed && leftDisplayed));
+    const hasVerticalComponent = ('center' in defaultTracks ||
+      (presentTracks.has('left') || presentTracks.has('right') || presentTracks.has('center')));
+
+    const topDisplayed = ('top' in defaultTracks);
+    const bottomDisplayed = ('bottom' in defaultTracks && hasVerticalComponent );
+    const leftDisplayed = ('left' in defaultTracks && hasVerticalComponent );
+    const rightDisplayed = ('right' in defaultTracks && hasVerticalComponent );
+    const centerDisplayed = ('center' in defaultTracks || hasVerticalComponent);
+
+    // console.log(topDisplayed, rightDisplayed, bottomDisplayed, leftDisplayed, centerDisplayed);
 
     const topLeftDiv = (
       <div
@@ -1042,6 +1045,7 @@ export class TiledPlot extends React.Component {
         <DragListeningDiv
           enabled={topAllowed}
           position={'top'}
+          draggingHappening={this.props.draggingHappening}
           onTrackDropped={track => this.handleTracksAdded([track], 'top')}
           style={{
             border: '1px solid black',
@@ -1063,6 +1067,7 @@ export class TiledPlot extends React.Component {
         <DragListeningDiv
           enabled={bottomAllowed}
           position={'bottom'}
+          draggingHappening={this.props.draggingHappening}
           onTrackDropped={track => this.handleTracksAdded([track], 'bottom')}
           style={{
             border: '1px solid black',
@@ -1077,6 +1082,7 @@ export class TiledPlot extends React.Component {
       <DragListeningDiv
         enabled={leftAllowed}
         position={'left'}
+        draggingHappening={this.props.draggingHappening}
         onTrackDropped={track => this.handleTracksAdded([track], 'left')}
         style={{
           border: '1px solid black',
@@ -1088,6 +1094,7 @@ export class TiledPlot extends React.Component {
     const centerDiv = (
       <DragListeningDiv
         enabled={centerAllowed}
+        draggingHappening={this.props.draggingHappening}
         onTrackDropped={track => this.handleTracksAdded([track], 'center')}
         position={'center'}
         enabled={centerAllowed}
@@ -1128,17 +1135,19 @@ export class TiledPlot extends React.Component {
           }}
         >
           { topDisplayed ? topDiv : null }
-          <div
-            style={{
-            display: 'flex',
-            height: '40%',
-            width: '100%',
-            }}
-          >
-            { leftDisplayed ? leftDiv : null }
-            { centerDisplayed ? centerDiv : null }
-            { rightDisplayed ? rightDiv : null}
-          </div>
+          { hasVerticalComponent && 
+            <div
+              style={{
+              display: 'flex',
+              height: (topDisplayed || bottomDisplayed) ? '40%' : '100%',
+              width: '100%',
+              }}
+            >
+              { leftDisplayed ? leftDiv : null }
+              { centerDisplayed ? centerDiv : null }
+              { rightDisplayed ? rightDiv : null}
+            </div>
+          }
           { bottomDisplayed ? bottomDiv : null }
         </div>
       </div>
@@ -1571,7 +1580,7 @@ export class TiledPlot extends React.Component {
         {closeTrackMenu}
         {trackOptionsElement}
         {this.getContextMenu()}
-        {this.state.draggingHappening && this.getIdealizedTrackPositionsOverlay()}
+        {this.props.draggingHappening && this.getIdealizedTrackPositionsOverlay()}
       </div>
     );
   }
@@ -1579,6 +1588,7 @@ export class TiledPlot extends React.Component {
   /*-------------------- Custom Methods -----------------------*/
 
   addEventListeners() {
+    return;
     this.eventListeners = [
       {
         name: 'dragstart',

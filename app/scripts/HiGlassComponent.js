@@ -231,6 +231,14 @@ class HiGlassComponent extends React.Component {
       pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this)),
     );
 
+    this.pubSubs.push(
+      pubSub.subscribe('trackDropped', () => { 
+        this.setState({
+          draggingHappening: null,
+        });
+      }),
+    );
+
     if (this.props.getApi) {
       this.props.getApi(this.api);
     }
@@ -2892,6 +2900,7 @@ class HiGlassComponent extends React.Component {
                 null
             }
             chromInfoPath={view.chromInfoPath}
+            draggingHappening={this.state.draggingHappening}
             editable={this.state.viewConfig.editable}
             horizontalMargin={this.horizontalMargin}
             initialXDomain={view.initialXDomain}
