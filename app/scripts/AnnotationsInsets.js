@@ -403,7 +403,7 @@ class AnnotationsInsets {
 
           this.insets[id].t = this.scaleChanged ? 0.5 : 0;
 
-          if (cluster.reload || newResScale) {
+          if (cluster.isChanged || newResScale) {
             const {
               width, height
             } = this.compInsetSize(cluster, finalRes);
