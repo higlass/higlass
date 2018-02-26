@@ -183,6 +183,10 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
         rect.setAttribute('y', tile.barYValues[i]);
         rect.setAttribute('height', tile.barHeights[i]);
         rect.setAttribute('width', tile.barWidths[i]);
+        if (tile.barBorders) {
+          rect.setAttribute('stroke-width', '0.1');
+          rect.setAttribute('stroke', 'black');
+        }
 
         output.appendChild(rect);
       }
