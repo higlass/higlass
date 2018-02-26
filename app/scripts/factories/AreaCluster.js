@@ -17,7 +17,7 @@ const rndHex = () => Math.floor((1 + Math.random()) * 0x10000000).toString(16);
  * @return  {array}  Tuple holding the nearest neighbor and distance.
  */
 export const nearestNeighbor = (points, query) => {
-  const q = query.center;
+  const q = query.dataCenter;
 
   let minD = Infinity;
   let minP = null;
@@ -26,7 +26,7 @@ export const nearestNeighbor = (points, query) => {
   for (let i = 0, m = points.length; i < m; i++) {
     if (points[i] === q) continue;
 
-    d = lDist(points[i].center, q);
+    d = lDist(points[i].dataCenter, q);
     if (d < minD) {
       minD = d;
       minP = points[i];
@@ -219,7 +219,7 @@ AreaCluster.prototype.updateFnns = function updateFnns(annotation) {
     // need to check if this new connection is a bridge between the endpoints of
     // `fnn`. If it is we need to update that edge.
     const evalPt = fnn.a === nn ? fnn.b : fnn.a;
-    const newD = lDist(evalPt.center, annotation.center);
+    const newD = lDist(evalPt.dataCenter, annotation.dataCenter);
 
     if (newD < fnn.d) {
       this.fnns.poll();
