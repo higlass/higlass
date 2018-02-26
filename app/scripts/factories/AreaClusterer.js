@@ -251,7 +251,6 @@ AreaClusterer.prototype.mergeClusters = function mergeClusters(
     clusterA.add(annotation);
   });
   this.propChecking(clusterA);
-  clusterA.changed();
   this.clusters.delete(clusterB);
 };
 
@@ -284,42 +283,54 @@ AreaClusterer.prototype.evalZoomedIn = function evalZoomedIn() {
 
       if (!fnn) return;
 
-      // Re-evaluate distance between farthest nearest neighbors
+      // Compute distance between farthest nearest neighbors in display
+      // coordinates (aka. pixels on the screen)
       const d = lDist(fnn.a.center, fnn.b.center);
 
       // To avoid to frequent splitting and merging we only split when the
       // farthest neighbor is twice as far as allowed for being within the bounds
       if (d > maxD) {
-        this.splitCluster(cluster, fnn);
+        this.splitCluster(cluster);
       }
     });
 };
 
-AreaClusterer.prototype.splitCluster = function splitCluster(cluster, fnn) {
+AreaClusterer.prototype.splitCluster = function splitCluster(cluster) {
   if (!this.clusters.has(cluster) || cluster.size === 1) return;
 
+  const removeIf = nn => (cFnn, i) => {
+    if (cFnn.a === nn || cFnn.b === nn) {
+      cluster.fnns.poll(i);
+    }
+  };
+
   // Split at the furthest neighbor
-  const _fnn = fnn || cluster.fnns.peek();
+  const fnn = cluster.fnns.poll();
   const maxD = this.gridSize * 1.5;
   const newCluster = new AreaCluster(this.isAverageCenter, this.gridSize);
-  cluster.delete(_fnn.b);
-  newCluster.add(_fnn.b);
+  cluster.delete(fnn.a);
+  newCluster.add(fnn.a);
 
-  let srcNode = _fnn.b;
-  let [nn, d] = nearestNeighbor(cluster.members.values, srcNode);
+  let srcNode = fnn.a;
+  let [nn] = nearestNeighbor(cluster.members.values, srcNode);
+  // Re-evaluate distance between nearest neighbor
+  let d = lDist(nn.center, srcNode.center);
 
   while (d < maxD && cluster.size > 1) {
     cluster.delete(nn);
     newCluster.add(nn);
+    const removeIfNn = removeIf(nn);
+    cluster.fnns.array.forEach(removeIfNn);
 
     srcNode = nn;
-    [nn, d] = nearestNeighbor(cluster.members.values, srcNode);
+    [nn] = nearestNeighbor(cluster.members.values, srcNode);
+    d = lDist(nn.center, srcNode);
   }
 
   this.clusters.add(newCluster);
   this.propChecking(newCluster);
   this.propChecking(cluster);
-  cluster.changed();
+  cluster.fnns.trim();
 };
 
 AreaClusterer.prototype.refresh = function refresh() {
@@ -417,7 +428,6 @@ AreaClusterer.prototype.shrinkCluster = function shrinkCluster(cluster, element)
     );
     this.elementsAddedToClusters.delete(element);
     this.propChecking(cluster);
-    cluster.changed();
   } else {
     this.removeCluster(cluster);
   }
