@@ -11,9 +11,6 @@ export class StackedBarTrack extends BarTrack {
       min: null
     };
 
-    // stores max/min and unflattened matrix for previously rendered tiles
-    this.localTileData = {};
-
   }
 
   initTile(tile) {
@@ -32,13 +29,12 @@ export class StackedBarTrack extends BarTrack {
     for (let i = 0; i < visibleAndFetched.length; i++) {
       const tile = visibleAndFetched[i];
       this.unFlatten(tile);
-      if (this.localTileData.hasOwnProperty(tile.tileId)) {
-        const storedTile = this.localTileData[tile.tileId]; // has max and min
+      if (tile.matrix) {
         // update global max and min if necessary
-        (this.maxAndMin.max === null || storedTile.max > this.maxAndMin.max) ?
-          this.maxAndMin.max = storedTile.max : this.maxAndMin.max;
-        (this.maxAndMin.min === null || storedTile.min < this.maxAndMin.min) ?
-          this.maxAndMin.min = storedTile.min : this.maxAndMin.min;
+        (this.maxAndMin.max === null || tile.maxValue > this.maxAndMin.max) ?
+          this.maxAndMin.max = tile.maxValue : this.maxAndMin.max;
+        (this.maxAndMin.min === null || tile.minValue < this.maxAndMin.min) ?
+          this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
       }
     }
 
@@ -88,8 +84,8 @@ export class StackedBarTrack extends BarTrack {
    * @returns {Array} 2d array of numerical values for each column
    */
   unFlatten(tile) {
-    if (this.localTileData.hasOwnProperty(tile.tileId)) {
-      return this.localTileData[tile.tileId].matrix;
+    if (tile.matrix) {
+      return tile.matrix;
     }
     else {
       const shapeX = tile.tileData.shape[0]; // number of different nucleotides in each bar
@@ -116,11 +112,9 @@ export class StackedBarTrack extends BarTrack {
 
       const maxAndMin = this.findMaxAndMin(matrix);
 
-      this.localTileData[tile.tileId] = {
-        matrix: matrix,
-        max: maxAndMin.max,
-        min: maxAndMin.min
-      };
+      tile.matrix = matrix;
+      tile.maxValue = maxAndMin.max;
+      tile.minValue = maxAndMin.min;
 
       return matrix;
     }
@@ -140,13 +134,7 @@ export class StackedBarTrack extends BarTrack {
     const {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
       tile.tileData.tilePos, this.tilesetInfo.tile_size);
 
-    let matrix;
-    if (this.localTileData.hasOwnProperty(tile.tileId)) {
-      matrix = this.localTileData[tile.tileId].matrix;
-    }
-    else {
-      matrix = this.unFlatten(tile);
-    }
+    const matrix = this.unFlatten(tile);
 
     if (this.options.scaledHeight === true) {
       this.drawVerticalBars(graphics, this.mapOriginalColors(matrix),
