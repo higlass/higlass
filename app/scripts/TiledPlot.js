@@ -1032,6 +1032,8 @@ export class TiledPlot extends React.Component {
     );
     const topRightDiv = React.cloneElement(topLeftDiv);
 
+    console.log('dld');
+
     const topDiv = (
       <div 
         style={{

@@ -20,6 +20,7 @@ export default class DragListeningDiv extends React.Component {
     // and red otherwise
     let background = this.props.enabled ? 
       (this.state.dragOnTop ? 'green' : 'blue') : 'red';
+    console.log('dldr');
 
     return (
       <div
