@@ -14,6 +14,9 @@ function Annotation(id, viewPos, dataPos, dataPosProj, importance) {
   this.minYData = dataPos[2];
   this.maxYData = dataPos[3];
 
+  this.dCX = (this.maxXData + this.minXData) / 2;
+  this.dCY = (this.maxYData + this.minYData) / 2;
+
   this.minXDataProj = dataPosProj[0];
   this.maxXDataProj = dataPosProj[1];
   this.minYDataProj = dataPosProj[2];
@@ -34,6 +37,15 @@ function getCenter() {
 }
 
 Object.defineProperty(Annotation.prototype, 'center', { get: getCenter });
+
+function getDataCenter() {
+  return [
+    this.dCX,
+    this.dCY,
+  ];
+}
+
+Object.defineProperty(Annotation.prototype, 'dataCenter', { get: getDataCenter });
 
 function getViewPos() {
   return [
