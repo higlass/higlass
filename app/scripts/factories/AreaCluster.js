@@ -115,6 +115,7 @@ AreaCluster.prototype.add = function add(annotation) {
   this.members.add(annotation);
 
   this.updateBounds(annotation);
+  this.changed();
 
   return true;
 };
@@ -137,6 +138,7 @@ AreaCluster.prototype.delete = function deleteMethod(annotation) {
   }
 
   this.refresh();
+  this.changed();
 
   return true;
 };
