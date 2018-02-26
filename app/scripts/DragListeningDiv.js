@@ -15,12 +15,16 @@ export default class DragListeningDiv extends React.Component {
       dragOnTop: false,
     }
   }
+
+  componentWillUnmount() {
+
+  }
+
   render() {
     // color red if not enabled, green if a track is not top
     // and red otherwise
     let background = this.props.enabled ? 
       (this.state.dragOnTop ? 'green' : 'blue') : 'red';
-    console.log('dldr');
 
     return (
       <div

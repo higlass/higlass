@@ -1032,8 +1032,6 @@ export class TiledPlot extends React.Component {
     );
     const topRightDiv = React.cloneElement(topLeftDiv);
 
-    console.log('dld');
-
     const topDiv = (
       <div 
         style={{
@@ -1114,7 +1112,15 @@ export class TiledPlot extends React.Component {
       });
 
     return(
-      <div>
+      <div
+        style={{
+          position: 'absolute',
+          left: '0px',
+          top: '0px',
+          width: this.state.width,
+          height: this.state.height,
+        }}
+      >
         <div
           style={{
             position: 'absolute',

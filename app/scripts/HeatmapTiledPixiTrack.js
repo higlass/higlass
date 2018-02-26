@@ -745,7 +745,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.calculateZoomLevel());
 
     const tileWidth = tileProxy.calculateTileWidth(
-        this.tilesetInfo.max_width, zoomLevel, BINS_PER_TILE
+        this.tilesetInfo, zoomLevel, BINS_PER_TILE
       );
 
     // BP resolution of a tile's bin (i.e., numbe of base pairs per bin / pixel)
