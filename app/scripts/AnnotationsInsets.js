@@ -395,8 +395,8 @@ class AnnotationsInsets {
 
           this.insets[id].oX = newOx;
           this.insets[id].oY = newOy;
-          this.insets[id].owh = (cluster.maxX - cluster.minX) / 2;
-          this.insets[id].ohh = (cluster.maxY - cluster.minY) / 2;
+          this.insets[id].oWH = (cluster.maxX - cluster.minX) / 2;
+          this.insets[id].oHH = (cluster.maxY - cluster.minY) / 2;
 
           this.insets[id].x -= dX;
           this.insets[id].y -= dY;
