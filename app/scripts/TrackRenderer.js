@@ -6,6 +6,7 @@ import * as PIXI from 'pixi.js';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
+import { easeLinear } from 'd3-ease';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
@@ -700,7 +701,7 @@ export class TrackRenderer extends React.Component {
     }
   }
 
-  setCenter(centerX, centerY, sourceK, notify, animate = false, animateTime = ZOOM_TRANSITION_DURATION) {
+  setCenter(centerX, centerY, sourceK, notify, animateTime = 0) {
     /*
      * Set the center of this view to a paticular X and Y coordinate
      *
@@ -734,7 +735,7 @@ export class TrackRenderer extends React.Component {
       last = this.applyZoomTransform(notify);
     };
 
-    if (animate) {
+    if (animateTime) {
       let selection = this.divTrackAreaSelection;
       this.activeTransitions += 1;
 
@@ -742,6 +743,7 @@ export class TrackRenderer extends React.Component {
         // only transition if the window is hidden
         selection = selection
           .transition()
+          .ease(easeLinear)
           .duration(animateTime);
       }
 

@@ -1,5 +1,6 @@
 import {BarTrack} from './BarTrack';
 import {scaleLinear, scaleOrdinal, schemeCategory10} from 'd3-scale';
+import {range} from 'd3-array';
 import {colorToHex} from './utils';
 
 export class StackedBarTrack extends BarTrack {
@@ -212,11 +213,11 @@ export class StackedBarTrack extends BarTrack {
     if(this.options.barBorder) {
       graphics.lineStyle(0.1, 'black', 1);
     }
-
+    
     for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
       const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
       const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
-
+      
       // draw positive values
       const positive = matrix[j][0];
       const valueToPixelsPositive = scaleLinear()
@@ -261,7 +262,7 @@ export class StackedBarTrack extends BarTrack {
     }
 
   }
-
+  
   /**
    * Draws graph using normalized values.
    *
