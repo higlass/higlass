@@ -1207,6 +1207,9 @@ export class TiledPlot extends React.Component {
           height={this.state.height}
           initialXDomain={this.props.initialXDomain}
           initialYDomain={this.props.initialYDomain}
+          xDomainLimits={this.props.xDomainLimits}
+          yDomainLimits={this.props.yDomainLimits}
+          zoomLimits={this.props.zoomLimits}
           isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
           leftWidth={this.leftWidth}
           marginLeft={this.props.horizontalMargin}

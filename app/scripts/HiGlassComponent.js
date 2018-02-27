@@ -2899,6 +2899,9 @@ class HiGlassComponent extends React.Component {
             horizontalMargin={this.horizontalMargin}
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
+            xDomainLimits={view.xDomainLimits}
+            yDomainLimits={view.yDomainLimits}
+            zoomLimits={view.zoomLimits}
             mouseTool={this.state.mouseTool}
             onChangeTrackType={(trackId, newType) =>
               this.handleChangeTrackType(view.uid, trackId, newType)}
