@@ -94,22 +94,15 @@ export class DivergentBarTrack extends BarTrack {
       const yPos = this.valueScale(tileValues[i] + pseudocount);
 
       const width = this._xScale(tileXScale(i + 1)) - xPos;
-      const height = this.dimensions[1] - yPos;
+      //const height = this.dimensions[1] - yPos;
 
       if (yPos > baseline) {
         graphics.beginFill(bottomColorHex, opacity);
-        tile.barYValues[i] = baseline;
-        tile.barHeights[i] = yPos - baseline;
-        tile.barColors[i] = bottomColor;
+        this.addSVGInfo(tile, xPos, baseline, width, yPos - baseline, bottomColor);
       } else {
         graphics.beginFill(topColorHex, opacity);
-        tile.barYValues[i] = yPos;
-        tile.barHeights[i] = baseline - yPos;
-        tile.barColors[i] = topColor;
+        this.addSVGInfo(tile, xPos, yPos, width, baseline - yPos, topColor);
       }
-
-      tile.barXValues[i] = xPos;
-      tile.barWidths[i] = width;
 
       if (tileXScale(i) > this.tilesetInfo.max_pos[0])
       // this data is in the last tile and extends beyond the length
@@ -117,11 +110,43 @@ export class DivergentBarTrack extends BarTrack {
       { break; }
 
       graphics.drawRect(xPos,
-        tile.barYValues[i],
+        tile.svgData.barYValues[i],
         width,
-        tile.barHeights[i]);
+        tile.svgData.barHeights[i]);
     }
   }
+
+  /**
+   * Adds information to recreate the track in SVG to the tile
+   *
+   * @param tile
+   * @param x x value of bar
+   * @param y y value of bar
+   * @param width width of bar
+   * @param height height of bar
+   * @param color color of bar (not converted to hex)
+   */
+  addSVGInfo(tile, x, y, width, height, color) {
+    if (tile.hasOwnProperty('svgData')) {
+      tile.svgData.barXValues.push(x);
+      tile.svgData.barYValues.push(y);
+      tile.svgData.barWidths.push(width);
+      tile.svgData.barHeights.push(height);
+      tile.svgData.barColors.push(color);
+    }
+    else {
+      tile.svgData  = {
+        barXValues: [x],
+        barYValues: [y],
+        barWidths: [width],
+        barHeights: [height],
+        barColors: [color]
+      };
+    }
+  }
+
 }
+
+
 
 export default DivergentBarTrack;
