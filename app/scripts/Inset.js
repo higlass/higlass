@@ -227,13 +227,16 @@ export default class Inset {
     const widthFinal = width + (2 * borderWidthExtra);
     const heightFinal = height + (2 * borderWidthExtra);
 
+    const finalX = vX - (this.isRenderToCanvas ? borderWidthExtra : 0);
+    const finalY = vY - (this.isRenderToCanvas ? borderWidthExtra : 0);
+
     this.positionBorder(
-      vX - borderWidthExtra,
-      vY - borderWidthExtra,
+      finalX,
+      finalY,
       widthFinal + this.borderPadding,
       heightFinal + prevHeight + this.borderPadding
     );
-    this.styleBorder(fill, radius);
+    this.styleBorder(fill, radius, borderWidthExtra);
   }
 
   styleBorder(...args) {
@@ -246,10 +249,12 @@ export default class Inset {
    * @param   {number}  radius  Radius of the corner in pixel.
    * @param   {D3.Color}  fill  Fill color.
    */
-  styleBorderHtml(fill, radius) {
+  styleBorderHtml(fill, radius, extraWidth = 0) {
     const _fill = this.isPermanentFocus ? this.selectColor : fill;
 
     this.border.style.background = _fill.toString();
+    this.border.style.borderColor = _fill.toString();
+    this.border.style.borderWidth = `${extraWidth}px`;
     this.border.style.borderRadius = `${radius}px`;
 
     if (this.isHovering) {
