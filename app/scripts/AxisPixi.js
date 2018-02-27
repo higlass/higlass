@@ -39,8 +39,7 @@ class AxisPixi {
     this.tickValues = this.calculateAxisTickValues(valueScale, axisHeight);
     let i = 0;
 
-    let color = 'black';
-    if (getDarkTheme()) color = '#999999';
+    const color = getDarkTheme() ? '#cccccc' : 'black';
 
     while (i < this.tickValues.length) {
       const tick = this.tickValues[i];
@@ -51,7 +50,7 @@ class AxisPixi {
           {
             fontSize: `${this.axisTextFontSize}px`,
             fontFamily: this.axisTextFontFamily,
-            fill: getDarkTheme() ? 'white' : 'black'
+            fill: color
           }
         );
         this.axisTexts.push(newText);
@@ -124,9 +123,17 @@ class AxisPixi {
 
     const graphics = this.pAxis;
 
+    if (getDarkTheme()) {
+      graphics.lineStyle(
+        graphics.lineWidth,
+        colorToHex('#ffffff'),
+        0.33
+      );
+    }
+
     // draw the top, potentially unlabelled, ticke
-    graphics.moveTo(0, 0);
-    graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), 0);
+    // graphics.moveTo(0, 0);
+    // graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), 0);
 
     graphics.moveTo(0, axisHeight);
     graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), axisHeight);
@@ -137,7 +144,6 @@ class AxisPixi {
       // draw ticks to the left of the axis
       this.axisTexts[i].x = -(TICK_MARGIN + TICK_LENGTH + TICK_LABEL_MARGIN + this.axisTexts[i].width / 2);
       this.axisTexts[i].y = valueScale(tick);
-
 
       graphics.moveTo(-TICK_MARGIN, valueScale(tick));
       graphics.lineTo(-(TICK_MARGIN + TICK_LENGTH), valueScale(tick));
@@ -215,12 +221,18 @@ class AxisPixi {
 
     let stroke = 'black';
 
-    if (this.track) { stroke = this.track.options.lineStrokeColor ? this.track.options.lineStrokeColor : 'blue'; }
+    if (this.track) {
+      stroke = this.track.options.lineStrokeColor
+        ? this.track.options.lineStrokeColor
+        : 'blue';
+    }
+
+    if (getDarkTheme()) stroke = '#cccccc';
 
     const line = document.createElement('path');
 
     line.setAttribute('fill', 'transparent');
-    line.setAttribute('stroke', 'black');
+    line.setAttribute('stroke', stroke);
     line.setAttribute('id', 'axis-line');
 
     line.setAttribute('d',
@@ -236,7 +248,13 @@ class AxisPixi {
     // factor out the styling for axis lines
     let stroke = 'black';
 
-    if (this.track) { stroke = this.track.options.lineStrokeColor ? this.track.options.lineStrokeColor : 'blue'; }
+    if (this.track) {
+      stroke = this.track.options.lineStrokeColor
+        ? this.track.options.lineStrokeColor
+        : 'blue';
+    }
+
+    if (getDarkTheme()) stroke = '#cccccc';
 
     const line = document.createElement('path');
     line.setAttribute('id', 'tick-mark');
