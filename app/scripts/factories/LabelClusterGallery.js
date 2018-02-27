@@ -18,8 +18,8 @@ LabelClusterGallery.prototype.constructor = LabelClusterGallery;
 
 /* --------------------------------- Methods -------------------------------- */
 
-function setLeftCloser(isLeftCloser) {
-  this.isLeftCloser = isLeftCloser;
+function setLeftCloser(isLeftCloser = false) {
+  this.isLeftCloser = !!isLeftCloser;
 }
 LabelClusterGallery.prototype.setLeftCloser = setLeftCloser;
 
@@ -35,13 +35,13 @@ function setOffSet(x, y) {
 }
 LabelClusterGallery.prototype.setOffSet = setOffSet;
 
-function setTopCloser(isTopCloser) {
-  this.isTopCloser = isTopCloser;
+function setTopCloser(isTopCloser = false) {
+  this.isTopCloser = !!isTopCloser;
 }
 LabelClusterGallery.prototype.setTopCloser = setTopCloser;
 
-function setVerticalOnly(isVerticalOnly) {
-  this.isVerticalOnly = isVerticalOnly;
+function setVerticalOnly(isVerticalOnly = false) {
+  this.isVerticalOnly = !!isVerticalOnly;
 }
 LabelClusterGallery.prototype.setVerticalOnly = setVerticalOnly;
 
