@@ -23,6 +23,22 @@
               box-shadow $fast $ease;
 }
 
+.inset-is-top {
+  transform-origin: center top;
+}
+
+.inset-is-bottom {
+  transform-origin: center bottom;
+}
+
+.inset-is-left {
+  transform-origin: left center;
+}
+
+.inset-is-right {
+  transform-origin: right center;
+}
+
 .inset-focus {
   z-index: 2;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.6),

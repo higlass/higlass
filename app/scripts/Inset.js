@@ -1175,7 +1175,7 @@ export default class Inset {
       // Draw convex hull
       this.gOrigin
         .lineStyle(1, orgLineColor, 0.66)
-        .beginFill(colorToHex(this.selectColor), 0.25)
+        .beginFill(colorToHex(this.selectColor), 0.2)
         .drawPolygon(flatten(hull(points, Infinity)))
         .endFill()
         .lineStyle(orgLineWidth, orgLineColor, orgLineAlpha);
@@ -1357,7 +1357,7 @@ export default class Inset {
   mouseOverHandler(event) {
     this.isHovering = true;
     this.focus();
-    this.originFocus();
+    this.focusOrigin();
     this.drawLeaderLine();
     this.mouseHandler.mouseOver(event, this);
   }
@@ -1454,7 +1454,7 @@ export default class Inset {
    * Focus on the original locus by drawing an extra border around it and
    *   clipping of the leader line at the boundary of the original locus.
    */
-  originFocus() {
+  focusOrigin() {
     this.drawOriginBorder();
   }
 
@@ -1996,6 +1996,49 @@ export default class Inset {
   }
 
   /**
+   * Check if the inset in on the border, i.e., in gallery laylout mode, and
+   *   assign the approariate class for the transform origin.
+   */
+  checkTransformOrigin() {
+    if (typeof this.label.isLeftCloser === 'undefined') return;
+
+    const l = this.label;
+
+    // Assign each position (top, right, bottom, left) a unique number
+    // 0 == bottom, 1 == top, 2 == right, 4 == left
+    const position = (
+      ((l.isVerticalOnly * l.isLeftCloser << 1) + (l.isVerticalOnly * 2)) +
+      (!l.isVerticalOnly * l.isTopCloser)
+    );
+
+    removeClass(this.border, style['inset-is-bottom']);
+    removeClass(this.border, style['inset-is-top']);
+    removeClass(this.border, style['inset-is-right']);
+    removeClass(this.border, style['inset-is-left']);
+
+    switch (position) {
+      case 0:
+        addClass(this.border, style['inset-is-bottom']);
+        break;
+
+      case 1:
+        addClass(this.border, style['inset-is-top']);
+        break;
+
+      case 2:
+        addClass(this.border, style['inset-is-right']);
+        break;
+
+      case 4:
+        addClass(this.border, style['inset-is-left']);
+        break;
+
+      default:
+        // Nothing
+    }
+  }
+
+  /**
    * Scale the inset.
    *
    * @param  {Number}  amount  Amount by which to scale the inset
@@ -2003,9 +2046,12 @@ export default class Inset {
   scaleHtml(amount = 1) {
     if (this.scaleExtra === amount) return;
     this.smoothTransitions();
+    this.checkTransformOrigin();
+
     addEventListenerOnce(
       this.border, 'transitionend', () => { this.smoothTransitions(true); }
     );
+
     this.border.__transform__.scale = [amount, amount];
     this.border.style.transform = objToTransformStr(this.border.__transform__);
     this.scaleExtra = amount;
