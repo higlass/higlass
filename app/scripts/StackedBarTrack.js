@@ -195,7 +195,7 @@ export class StackedBarTrack extends BarTrack {
   }
 
   /**
-   * Adds information to recreate this track in SVG to the tile
+   * Adds information to recreate the track in SVG to the tile
    *
    * @param tile
    * @param x x value of bar
