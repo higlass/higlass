@@ -894,10 +894,6 @@ export class TrackRenderer extends React.Component {
     if (notify) {
       this.currentProps.onScalesChanged(newXScale, newYScale);
     }
-
-    this.currentXScale = newXScale.copy();
-    this.currentYScale = newYScale.copy();
-
     return [newXScale, newYScale];
   }
 
