@@ -120,16 +120,18 @@ export class TrackRenderer extends React.Component {
         if (event.target.classList.contains('react-resizable-handle')) { return false; }
         return true;
       })
-      // Limit max zoomout level to 0.25
-      // .scaleExtent([0.25, Infinity])
-      // Define translate extend
-      // .translateExtent([[-2000, -2000], [2000, 2000]])
       .on('start', this.zoomStartedBound)
       .on('zoom', this.zoomedBound)
       .on('end', this.zoomEndedBound);
 
+    this.zoomTransform = zoomIdentity;
+    this.prevZoomTransform = zoomIdentity;
+
     this.initialXDomain = [0, 1];
     this.initialYDomain = [0, 1];
+    this.xDomainLimits = [-Infinity, Infinity];
+    this.yDomainLimits = [-Infinity, Infinity];
+    this.zoomLimits = [0, Infinity];
 
     this.prevCenterX = (
       this.currentProps.marginLeft +
@@ -149,6 +151,9 @@ export class TrackRenderer extends React.Component {
     this.setUpInitialScales(
       this.currentProps.initialXDomain,
       this.currentProps.initialYDomain,
+      this.currentProps.xDomainLimits,
+      this.currentProps.yDomainLimits,
+      this.currentProps.zoomLimits,
     );
 
     this.setUpScales();
@@ -232,6 +237,9 @@ export class TrackRenderer extends React.Component {
     this.setUpInitialScales(
       nextProps.initialXDomain,
       nextProps.initialYDomain,
+      nextProps.xDomainLimits,
+      nextProps.yDomainLimits,
+      nextProps.zoomLimits,
     );
 
     this.setUpScales(
@@ -241,6 +249,27 @@ export class TrackRenderer extends React.Component {
     this.canvasDom = ReactDOM.findDOMNode(nextProps.canvasElement);
 
     this.svgElement = nextProps.svgElement;
+
+    const transExt = [
+      [this.xScale(this.xDomainLimits[0]), this.yScale(this.yDomainLimits[0])],
+      [this.xScale(this.xDomainLimits[1]), this.yScale(this.yDomainLimits[1])]
+    ];
+
+    const svgBBox = this.svgElement.getBoundingClientRect();
+
+    const ext = [
+      [Math.max(transExt[0][0], 0), Math.max(transExt[0][1], 0)],
+      [Math.min(transExt[1][0], svgBBox.width), Math.min(transExt[1][1], svgBBox.height)],
+    ];
+
+    // if (this.scaleExtent) this.zoomBehavior.scaleExtent(this.zoomLimits);
+    // if (this.xDomainLimits) {
+    //   this.zoomBehavior.translateExtent(this.zoomLimits);
+    // }
+    this.zoomBehavior
+      .extent(ext)
+      .translateExtent(transExt)
+      .scaleExtent(this.zoomLimits);
 
     this.syncTrackObjects(nextProps.positionedTracks);
 
@@ -336,7 +365,17 @@ export class TrackRenderer extends React.Component {
     }, SCROLL_TIMEOUT);
   }
 
-  setUpInitialScales(initialXDomain = [0, 1], initialYDomain = [0, 1]) {
+  setUpInitialScales(
+    initialXDomain = [0, 1],
+    initialYDomain = [0, 1],
+    xDomainLimits = [-Infinity, Infinity],
+    yDomainLimits = [-Infinity, Infinity],
+    zoomLimits = [0, Infinity],
+  ) {
+    // Make sure the initial domain is within the limits first
+    zoomLimits[0] = zoomLimits[0] === null ? 0 : zoomLimits[0];
+    zoomLimits[1] = zoomLimits[1] === null ? Infinity : zoomLimits[1];
+
     // make sure the two scales are equally wide:
     const xWidth = initialXDomain[1] - initialXDomain[0];
     const yCenter = (initialYDomain[0] + initialYDomain[1]) / 2;
@@ -354,12 +393,21 @@ export class TrackRenderer extends React.Component {
       initialXDomain[0] === this.initialXDomain[0] &&
       initialXDomain[1] === this.initialXDomain[1] &&
       initialYDomain[0] === this.initialYDomain[0] &&
-      initialYDomain[1] === this.initialYDomain[1]
+      initialYDomain[1] === this.initialYDomain[1] &&
+      xDomainLimits[0] === this.xDomainLimits[0] &&
+      xDomainLimits[1] === this.xDomainLimits[1] &&
+      yDomainLimits[0] === this.yDomainLimits[0] &&
+      yDomainLimits[1] === this.yDomainLimits[1] &&
+      zoomLimits[0] === this.zoomLimits[0] &&
+      zoomLimits[1] === this.zoomLimits[1]
     ) return;
 
     // only update the initial domain
     this.initialXDomain = initialXDomain;
     this.initialYDomain = initialYDomain;
+    this.xDomainLimits = xDomainLimits;
+    this.yDomainLimits = yDomainLimits;
+    this.zoomLimits = zoomLimits;
 
     this.cumCenterYOffset = 0;
     this.cumCenterXOffset = 0;
@@ -762,15 +810,16 @@ export class TrackRenderer extends React.Component {
     return last;
   }
 
+  /**
+   * Respond to a zoom event.
+   *
+   * We need to update our local record of the zoom transform and apply it
+   * to all the tracks.
+   */
   zoomed() {
-    /**
-     * Respond to a zoom event.
-     *
-     * We need to update our local record of the zoom transform and apply it
-     * to all the tracks.
-     */
-    this.zoomTransform = !this.currentProps.zoomable ?
-      zoomIdentity : event.transform;
+    this.zoomTransform = !this.currentProps.zoomable
+      ? zoomIdentity
+      : event.transform;
 
     this.applyZoomTransform(true);
   }
@@ -784,32 +833,27 @@ export class TrackRenderer extends React.Component {
   }
 
   applyZoomTransform(notify = true) {
-    const zoomedXScale = this.zoomTransform.rescaleX(this.xScale);
-    const zoomedYScale = this.zoomTransform.rescaleY(this.yScale);
+    const marginleft = this.currentProps.marginLeft + this.currentProps.leftWidth;
+    const marginTop = this.currentProps.marginTop + this.currentProps.topHeight;
 
-    this.zoomedXScale = zoomedXScale;
-    this.zoomedYScale = zoomedYScale;
+    // These props are apparently used elsewhere, for example the context menu
+    this.zoomedXScale = this.zoomTransform.rescaleX(this.xScale);
+    this.zoomedYScale = this.zoomTransform.rescaleY(this.yScale);
 
     const newXScale = scaleLinear()
-      .domain(
-        [
-          this.currentProps.marginLeft + this.currentProps.leftWidth,
-          this.currentProps.marginLeft + this.currentProps.leftWidth + this.currentProps.centerWidth,
-        ].map(zoomedXScale.invert),
-      )
+      .domain([
+        marginleft, marginleft + this.currentProps.centerWidth
+      ].map(this.zoomedXScale.invert))
       .range([0, this.currentProps.centerWidth]);
 
     const newYScale = scaleLinear()
-      .domain(
-        [
-          this.currentProps.marginTop + this.currentProps.topHeight,
-          this.currentProps.marginTop + this.currentProps.topHeight + this.currentProps.centerHeight,
-        ].map(zoomedYScale.invert),
-      )
+      .domain([
+        marginTop, marginTop + this.currentProps.centerHeight
+      ].map(this.zoomedYScale.invert))
       .range([0, this.currentProps.centerHeight]);
 
     for (const uid in this.trackDefObjects) {
-      if (this.trackDefObjects[uid].trackDef.track.position == 'whole') {
+      if (this.trackDefObjects[uid].trackDef.track.position === 'whole') {
         // whole tracks need different scales which go beyond the ends of
         // center track and encompass the whole view
         const track = this.trackDefObjects[uid].trackObject;
@@ -818,17 +862,15 @@ export class TrackRenderer extends React.Component {
           .domain([
             this.currentProps.marginLeft,
             this.currentProps.width - this.currentProps.marginLeft]
-            .map(zoomedXScale.invert))
-          .range([0, this.currentProps.width - 2*this.currentProps.marginLeft]);
+            .map(this.zoomedXScale.invert))
+          .range([0, this.currentProps.width - (2 * this.currentProps.marginLeft)]);
 
         const trackYScale = scaleLinear()
           .domain([
             this.currentProps.marginTop,
             this.currentProps.height - this.currentProps.marginTop]
-            .map(zoomedYScale.invert))
-          .range([0, this.currentProps.height - 2*this.currentProps.marginTop]);
-
-        // console.log('track.yPosition:', track.yPosition, 'trackYScale.range():', trackYScale.range());
+            .map(this.zoomedYScale.invert))
+          .range([0, this.currentProps.height - (2 * this.currentProps.marginTop)]);
 
         track.zoomed(
           trackXScale,
@@ -852,6 +894,9 @@ export class TrackRenderer extends React.Component {
     if (notify) {
       this.currentProps.onScalesChanged(newXScale, newYScale);
     }
+
+    this.currentXScale = newXScale.copy();
+    this.currentYScale = newYScale.copy();
 
     return [newXScale, newYScale];
   }
@@ -1385,6 +1430,9 @@ TrackRenderer.propTypes = {
   height: PropTypes.number,
   initialXDomain: PropTypes.array,
   initialYDomain: PropTypes.array,
+  xDomainLimits: PropTypes.array,
+  yDomainLimits: PropTypes.array,
+  zoomDomain: PropTypes.array,
   isRangeSelection: PropTypes.bool,
   leftWidth: PropTypes.number,
   marginLeft: PropTypes.number,
