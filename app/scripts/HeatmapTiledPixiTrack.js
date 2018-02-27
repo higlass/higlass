@@ -581,8 +581,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         .attr('cursor', 'ns-resize')
         .attr('width', BRUSH_WIDTH)
         .attr('height', BRUSH_HEIGHT)
-        .style('fill', '#666')
-        .style('stroke', 'white');
+        .style('fill', getDarkTheme() ? '#fff' : '#666')
+        .style('stroke', getDarkTheme() ? '#fff' : '#666');
 
       if (this.flipText) { this.northHandle.attr('cursor', 'ew-resize'); }
 
@@ -625,6 +625,13 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.options.colorbarPosition === 'bottomRight'
     ) {
       this.axis.drawAxisLeft(axisValueScale, this.colorbarHeight);
+    }
+
+    if (getDarkTheme()) {
+      this.gColorscaleBrush.selectAll('.selection')
+        .attr('x', 4)
+        .attr('width', 2)
+        .attr('opacity', 0.25);
     }
   }
 
