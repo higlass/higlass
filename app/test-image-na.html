@@ -4,6 +4,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HiGlass</title>
 <style type="text/css">
+html,
+body {
+  background: black !important;
+}
 .canvasjs-chart-credit {
   display:none;
 }
@@ -167,7 +171,7 @@ const testViewConfig = {
 window.hglib.createHgComponent(
   document.getElementById('development-demo'),
   testViewConfig,
-  { bounded: true }
+  { bounded: true, isDarkTheme: true }
 );
 </script>
 </html>
