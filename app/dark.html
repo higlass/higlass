@@ -8,7 +8,7 @@ html,
 body {
   background: black !important;
 }
-.canvasjs-chart-credit {
+.canvasjs-chart-#cfdff54it {
   display:none;
 }
 </style>
@@ -72,7 +72,9 @@ const testViewConfig = {
           labelPosition: 'outerTop',
           name: 'Gene Annotations (hg19)',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff',
+          plusStrandColor: '#fdff54',
+          minusStrandColor: '#68bf30',
         },
         width: 20,
         height: 60,
@@ -90,14 +92,14 @@ const testViewConfig = {
         serverUidKey: 'http://higlass.io/api/v1/F2vbUeqhS86XkxuO1j2rPA',
         type: 'horizontal-line',
         options: {
-          labelColor: 'red',
+          labelColor: '#fdff54',
           labelPosition: 'outerLeft',
           axisPositionHorizontal: 'right',
-          lineStrokeColor: 'blue',
+          lineStrokeColor: '#448db2',
           name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
           valueScaling: 'log',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         },
         width: 20,
         height: 20,
@@ -112,7 +114,7 @@ const testViewConfig = {
         uid: 'I1QUF22JQJuJ38j9PS4iqw',
         options: {
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         }
       }],
       left: [{
@@ -121,14 +123,14 @@ const testViewConfig = {
         tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
         type: 'vertical-line',
         options: {
-          labelColor: 'red',
+          labelColor: '#fdff54',
           labelPosition: 'outerLeft',
           axisPositionHorizontal: 'right',
-          lineStrokeColor: 'blue',
+          lineStrokeColor: '#448db2',
           name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
           valueScaling: 'log',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         }
       },
       {
@@ -142,7 +144,9 @@ const testViewConfig = {
           labelPosition: 'bottomRight',
           name: 'Gene Annotations (hg19)',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff',
+          plusStrandColor: '#fdff54',
+          minusStrandColor: '#68bf30',
         },
         uid: 'OgnAEKSHRaG-gR1RqPOuBQ',
         maxWidth: 4294967296,
@@ -157,7 +161,7 @@ const testViewConfig = {
         uid: 'a-mFiHnBQ8uuI6UG3USWVA',
         options: {
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         }
       }],
       center: [{
@@ -171,40 +175,28 @@ const testViewConfig = {
           position: 'center',
           options: {
             colorRange: [
+              '#000000',
+              '#222e54',
+              '#448db2',
+              '#68bf30',
+              '#fdff54',
               '#FFFFFF',
-              '#F8E71C',
-              '#F5A623',
-              '#D0021B'
             ],
             colorbarPosition: 'topRight',
             colorbarLabelsPosition: 'outside',
             maxZoom: null,
             labelPosition: 'bottomLeft',
+            labelColor: '#ffffff',
+            labelTextOpacity: 0.33,
             name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
             showMousePosition: true,
-            mousePositionColor: '#0000ff'
+            mousePositionColor: '#ffffff'
           },
           uid: 'heatmap1',
           name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
           maxWidth: 4194304000,
           binsPerDimension: 256,
           maxZoom: 14
-        }, {
-          type: '2d-chromosome-grid',
-          datatype: [
-            'chromosome-2d-grid'
-          ],
-          local: true,
-          orientation: '2d',
-          name: 'Chromosome Grid (hg19)',
-          chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-          thumbnail: null,
-          uuid: 'TIlwFtqxTX-ndtM7Y9k1bw',
-          server: '',
-          tilesetUid: 'TIlwFtqxTX-ndtM7Y9k1bw',
-          serverUidKey: '/TIlwFtqxTX-ndtM7Y9k1bw',
-          uid: 'LUVqXXu2QYiO8XURIwyUyA',
-          options: {}
         }],
         position: 'center',
         options: {}
@@ -219,7 +211,9 @@ const testViewConfig = {
           labelPosition: 'outerBottom',
           name: 'Gene Annotations (hg19)',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff',
+          plusStrandColor: '#fdff54',
+          minusStrandColor: '#68bf30',
         },
         maxWidth: 4294967296,
         maxZoom: 22
@@ -232,7 +226,7 @@ const testViewConfig = {
           labelPosition: 'outerBottom',
           name: 'Chromosome labels',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         }
       }],
       bottom: [{
@@ -249,11 +243,11 @@ const testViewConfig = {
         options: {
           labelPosition: 'outerLeft',
           axisPositionHorizontal: 'right',
-          lineStrokeColor: 'blue',
+          lineStrokeColor: '#448db2',
           name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
           valueScaling: 'log',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         },
         width: 20,
         height: 50,
@@ -301,7 +295,9 @@ const testViewConfig = {
           labelPosition: 'outerTop',
           name: 'Gene Annotations (hg19)',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff',
+          plusStrandColor: '#fdff54',
+          minusStrandColor: '#68bf30',
         },
         width: 20,
         height: 60,
@@ -319,14 +315,14 @@ const testViewConfig = {
         serverUidKey: 'http://higlass.io/api/v1/F2vbUeqhS86XkxuO1j2rPA',
         type: 'horizontal-line',
         options: {
-          labelColor: 'red',
+          labelColor: '#fdff54',
           labelPosition: 'outerLeft',
           axisPositionHorizontal: 'right',
-          lineStrokeColor: 'blue',
+          lineStrokeColor: '#448db2',
           name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
           valueScaling: 'log',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         },
         width: 20,
         height: 20,
@@ -341,7 +337,7 @@ const testViewConfig = {
         uid: 'I1QUF22JQJuJ38j9PS4iqw',
         options: {
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         }
       }],
       left: [{
@@ -350,14 +346,14 @@ const testViewConfig = {
         tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
         type: 'vertical-line',
         options: {
-          labelColor: 'red',
+          labelColor: '#fdff54',
           labelPosition: 'outerLeft',
           axisPositionHorizontal: 'right',
-          lineStrokeColor: 'blue',
+          lineStrokeColor: '#448db2',
           name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
           valueScaling: 'log',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         }
       },
       {
@@ -371,7 +367,9 @@ const testViewConfig = {
           labelPosition: 'bottomRight',
           name: 'Gene Annotations (hg19)',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff',
+          plusStrandColor: '#fdff54',
+          minusStrandColor: '#68bf30',
         },
         uid: 'OgnAEKSHRaG-gR1RqPOuBQ',
         maxWidth: 4294967296,
@@ -386,7 +384,7 @@ const testViewConfig = {
         uid: 'a-mFiHnBQ8uuI6UG3USWVA',
         options: {
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         }
       }],
       center: [{
@@ -400,40 +398,28 @@ const testViewConfig = {
           position: 'center',
           options: {
             colorRange: [
+              '#000000',
+              '#222e54',
+              '#448db2',
+              '#68bf30',
+              '#fdff54',
               '#FFFFFF',
-              '#F8E71C',
-              '#F5A623',
-              '#D0021B'
             ],
             colorbarPosition: 'topRight',
             colorbarLabelsPosition: 'outside',
             maxZoom: null,
             labelPosition: 'bottomLeft',
+            labelColor: '#ffffff',
+            labelTextOpacity: 0.33,
             name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
             showMousePosition: true,
-            mousePositionColor: '#0000ff'
+            mousePositionColor: '#ffffff'
           },
           uid: 'heatmap1',
           name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
           maxWidth: 4194304000,
           binsPerDimension: 256,
           maxZoom: 14
-        }, {
-          type: '2d-chromosome-grid',
-          datatype: [
-            'chromosome-2d-grid'
-          ],
-          local: true,
-          orientation: '2d',
-          name: 'Chromosome Grid (hg19)',
-          chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-          thumbnail: null,
-          uuid: 'TIlwFtqxTX-ndtM7Y9k1bw',
-          server: '',
-          tilesetUid: 'TIlwFtqxTX-ndtM7Y9k1bw',
-          serverUidKey: '/TIlwFtqxTX-ndtM7Y9k1bw',
-          uid: 'LUVqXXu2QYiO8XURIwyUyA',
-          options: {}
         }],
         position: 'center',
         options: {}
@@ -448,7 +434,9 @@ const testViewConfig = {
           labelPosition: 'outerBottom',
           name: 'Gene Annotations (hg19)',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff',
+          plusStrandColor: '#fdff54',
+          minusStrandColor: '#68bf30',
         },
         maxWidth: 4294967296,
         maxZoom: 22
@@ -461,7 +449,7 @@ const testViewConfig = {
           labelPosition: 'outerBottom',
           name: 'Chromosome labels',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         }
       }],
       bottom: [{
@@ -478,11 +466,11 @@ const testViewConfig = {
         options: {
           labelPosition: 'outerLeft',
           axisPositionHorizontal: 'right',
-          lineStrokeColor: 'blue',
+          lineStrokeColor: '#448db2',
           name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
           valueScaling: 'log',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         },
         width: 20,
         height: 50,
@@ -530,7 +518,9 @@ const testViewConfig = {
           labelPosition: 'outerTop',
           name: 'Gene Annotations (hg19)',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff',
+          plusStrandColor: '#fdff54',
+          minusStrandColor: '#68bf30',
         },
         width: 20,
         height: 60,
@@ -548,14 +538,14 @@ const testViewConfig = {
         serverUidKey: 'http://higlass.io/api/v1/F2vbUeqhS86XkxuO1j2rPA',
         type: 'horizontal-line',
         options: {
-          labelColor: 'red',
+          labelColor: '#fdff54',
           labelPosition: 'outerLeft',
           axisPositionHorizontal: 'right',
-          lineStrokeColor: 'blue',
+          lineStrokeColor: '#448db2',
           name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
           valueScaling: 'log',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         },
         width: 20,
         height: 20,
@@ -570,7 +560,7 @@ const testViewConfig = {
         uid: 'I1QUF22JQJuJ38j9PS4iqw',
         options: {
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         }
       }],
       left: [{
@@ -579,14 +569,14 @@ const testViewConfig = {
         tilesetUid: 'F2vbUeqhS86XkxuO1j2rPA',
         type: 'vertical-line',
         options: {
-          labelColor: 'red',
+          labelColor: '#fdff54',
           labelPosition: 'outerLeft',
           axisPositionHorizontal: 'right',
-          lineStrokeColor: 'blue',
+          lineStrokeColor: '#448db2',
           name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
           valueScaling: 'log',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         }
       },
       {
@@ -600,7 +590,9 @@ const testViewConfig = {
           labelPosition: 'bottomRight',
           name: 'Gene Annotations (hg19)',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff',
+          plusStrandColor: '#fdff54',
+          minusStrandColor: '#68bf30',
         },
         uid: 'OgnAEKSHRaG-gR1RqPOuBQ',
         maxWidth: 4294967296,
@@ -615,7 +607,7 @@ const testViewConfig = {
         uid: 'a-mFiHnBQ8uuI6UG3USWVA',
         options: {
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         }
       }],
       center: [{
@@ -629,40 +621,28 @@ const testViewConfig = {
           position: 'center',
           options: {
             colorRange: [
+              '#000000',
+              '#222e54',
+              '#448db2',
+              '#68bf30',
+              '#fdff54',
               '#FFFFFF',
-              '#F8E71C',
-              '#F5A623',
-              '#D0021B'
             ],
             colorbarPosition: 'topRight',
             colorbarLabelsPosition: 'outside',
             maxZoom: null,
             labelPosition: 'bottomLeft',
+            labelColor: '#ffffff',
+            labelTextOpacity: 0.33,
             name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
             showMousePosition: true,
-            mousePositionColor: '#0000ff'
+            mousePositionColor: '#ffffff'
           },
           uid: 'heatmap1',
           name: 'Rao et al. (2014) GM12878 MboI (allreps) 1kb',
           maxWidth: 4194304000,
           binsPerDimension: 256,
           maxZoom: 14
-        }, {
-          type: '2d-chromosome-grid',
-          datatype: [
-            'chromosome-2d-grid'
-          ],
-          local: true,
-          orientation: '2d',
-          name: 'Chromosome Grid (hg19)',
-          chromInfoPath: '//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-          thumbnail: null,
-          uuid: 'TIlwFtqxTX-ndtM7Y9k1bw',
-          server: '',
-          tilesetUid: 'TIlwFtqxTX-ndtM7Y9k1bw',
-          serverUidKey: '/TIlwFtqxTX-ndtM7Y9k1bw',
-          uid: 'LUVqXXu2QYiO8XURIwyUyA',
-          options: {}
         }],
         position: 'center',
         options: {}
@@ -677,7 +657,9 @@ const testViewConfig = {
           labelPosition: 'outerBottom',
           name: 'Gene Annotations (hg19)',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff',
+          plusStrandColor: '#fdff54',
+          minusStrandColor: '#68bf30',
         },
         maxWidth: 4294967296,
         maxZoom: 22
@@ -690,7 +672,7 @@ const testViewConfig = {
           labelPosition: 'outerBottom',
           name: 'Chromosome labels',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         }
       }],
       bottom: [{
@@ -707,11 +689,11 @@ const testViewConfig = {
         options: {
           labelPosition: 'outerLeft',
           axisPositionHorizontal: 'right',
-          lineStrokeColor: 'blue',
+          lineStrokeColor: '#448db2',
           name: 'wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile',
           valueScaling: 'log',
           showMousePosition: true,
-          mousePositionColor: '#0000ff'
+          mousePositionColor: '#ffffff'
         },
         width: 20,
         height: 50,
