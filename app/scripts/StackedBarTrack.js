@@ -15,6 +15,9 @@ export class StackedBarTrack extends BarTrack {
   }
 
   initTile(tile) {
+    this.unFlatten(tile);
+    this.maxAndMin.max = tile.maxValue;
+    this.maxAndMin.min = tile.minValue;
     this.renderTile(tile);
   }
 
@@ -139,7 +142,7 @@ export class StackedBarTrack extends BarTrack {
 
     if (this.options.scaledHeight === true) {
       this.drawVerticalBars(graphics, this.mapOriginalColors(matrix),
-        tileX, tileWidth, this.maxAndMin.max, this.maxAndMin.min);
+        tileX, tileWidth, this.maxAndMin.max, this.maxAndMin.min, tile);
     }
     else {
       // normalize each array in matrix
@@ -169,7 +172,7 @@ export class StackedBarTrack extends BarTrack {
       for (let i = 0; i < matrix[j].length; i++) {
         columnColors[i] = {
           value: matrix[j][i],
-          color: colorToHex(colorScale[i])
+          color: colorScale[i]
         }
       }
 
@@ -193,6 +196,35 @@ export class StackedBarTrack extends BarTrack {
   }
 
   /**
+   * Adds information to recreate the track in SVG to the tile
+   *
+   * @param tile
+   * @param x x value of bar
+   * @param y y value of bar
+   * @param width width of bar
+   * @param height height of bar
+   * @param color color of bar (not converted to hex)
+   */
+  addSVGInfo(tile, x, y, width, height, color) {
+    if (tile.hasOwnProperty('svgData')) {
+      tile.svgData.barXValues.push(x);
+      tile.svgData.barYValues.push(y);
+      tile.svgData.barWidths.push(width);
+      tile.svgData.barHeights.push(height);
+      tile.svgData.barColors.push(color);
+    }
+    else {
+      tile.svgData  = {
+        barXValues: [x],
+        barYValues: [y],
+        barWidths: [width],
+        barHeights: [height],
+        barColors: [color]
+      };
+    }
+  }
+
+  /**
    * Draws graph without normalizing values.
    *
    * @param graphics PIXI.Graphics instance
@@ -201,8 +233,9 @@ export class StackedBarTrack extends BarTrack {
    * @param tileWidth pre-scaled width of tile
    * @param positiveMax the height of the tallest bar in the positive part of the graph
    * @param negativeMax the height of the tallest bar in the negative part of the graph
+   * @param tile
    */
-  drawVerticalBars(graphics, matrix, tileX, tileWidth, positiveMax, negativeMax) {
+  drawVerticalBars(graphics, matrix, tileX, tileWidth, positiveMax, negativeMax, tile) {
     const trackHeight = this.dimensions[1];
 
     // get amount of trackHeight reserved for positive and for negative
@@ -210,8 +243,9 @@ export class StackedBarTrack extends BarTrack {
     const positiveTrackHeight = (positiveMax * trackHeight) / unscaledHeight;
     const negativeTrackHeight = (negativeMax * trackHeight) / unscaledHeight;
 
-    if(this.options.barBorder) {
+    if (this.options.barBorder) {
       graphics.lineStyle(0.1, 'black', 1);
+      tile.barBorders = true;
     }
     
     for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
@@ -227,7 +261,8 @@ export class StackedBarTrack extends BarTrack {
       for (let i = 0; i < positive.length; i++) {
         const height = valueToPixelsPositive(positive[i].value);
         const y = positiveTrackHeight - (positiveStackedHeight + height);
-        graphics.beginFill(positive[i].color);
+        this.addSVGInfo(tile, x, y, width, height, positive[i].color);
+        graphics.beginFill(colorToHex(positive[i].color));
         graphics.drawRect(x, y, width, height);
         positiveStackedHeight = positiveStackedHeight + height;
       }
@@ -241,9 +276,11 @@ export class StackedBarTrack extends BarTrack {
       for (let i = 0; i < negative.length; i++) {
         const height = valueToPixelsNegative(negative[i].value);
         const y = positiveTrackHeight + negativeStackedHeight;
-        graphics.beginFill(negative[i].color);
+        this.addSVGInfo(tile, x, y, width, height, negative[i].color);
+        graphics.beginFill(colorToHex(negative[i].color));
         graphics.drawRect(x, y, width, height);
         negativeStackedHeight = negativeStackedHeight + height;
+
       }
 
       // sets background to black if black option enabled
@@ -254,9 +291,13 @@ export class StackedBarTrack extends BarTrack {
         graphics.drawRect(x, 0, width, trackHeight - positiveStackedHeight); // positive background
         graphics.drawRect(x, negativeStackedHeight + positiveTrackHeight,    // negative background
           width, negativeTrackHeight - negativeStackedHeight);
+
+        this.addSVGInfo(tile, x, 0, width, trackHeight - positiveStackedHeight, 'black'); // positive
+        this.addSVGInfo(tile, x, negativeStackedHeight + positiveTrackHeight, width,
+          negativeTrackHeight - negativeStackedHeight, 'black'); // negative
+
         positiveStackedHeight = 0;
         negativeStackedHeight = 0;
-
       }
 
     }
