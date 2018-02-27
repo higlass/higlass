@@ -173,16 +173,16 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
     const stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
 
     for (const tile of this.visibleAndFetchedTiles()) {
-      for (let i = 0; i < tile.barXValues.length; i++) {
+      const data = tile.svgData;
+      for (let i = 0; i < data.barXValues.length; i++) {
         const rect = document.createElement('rect');
-        const color = this.options.barFillColor ? this.options.barFillColor : 'grey';
-        rect.setAttribute('fill', tile.barColors[i]);
-        rect.setAttribute('stroke', tile.barColors[i]);
+        rect.setAttribute('fill', data.barColors[i]);
+        rect.setAttribute('stroke', data.barColors[i]);
 
-        rect.setAttribute('x', tile.barXValues[i]);
-        rect.setAttribute('y', tile.barYValues[i]);
-        rect.setAttribute('height', tile.barHeights[i]);
-        rect.setAttribute('width', tile.barWidths[i]);
+        rect.setAttribute('x', data.barXValues[i]);
+        rect.setAttribute('y', data.barYValues[i]);
+        rect.setAttribute('height', data.barHeights[i]);
+        rect.setAttribute('width', data.barWidths[i]);
         if (tile.barBorders) {
           rect.setAttribute('stroke-width', '0.1');
           rect.setAttribute('stroke', 'black');
