@@ -28,6 +28,7 @@
     "class-methods-use-this": 0,
     "comma-dangle": 0,
     "jsx-quotes": 1,
+    "no-bitwise": 0,
     "no-mixed-operators": ["error", { "allowSamePrecedence": true }],
     "no-multi-spaces": ["error", { "ignoreEOLComments": true }],
     "no-param-reassign": ["error", { "props": false }],
