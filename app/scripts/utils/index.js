@@ -23,6 +23,7 @@ export { default as lDist } from './l-dist';
 export { default as fillInMinWidths } from './fill-in-min-widths';
 export { default as findNearest2dPoint } from './find-nearest-2d-point';
 export { default as flatten } from './flatten';
+export { default as forEach } from './for-each';
 export { default as forwardEvent } from './forward-event';
 export { default as genomeLociToPixels } from './genome-loci-to-pixels';
 export { default as getAngleBetweenPoints } from './get-angle-between-points';
