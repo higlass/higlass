@@ -14,6 +14,7 @@ export class StackedBarTrack extends BarTrack {
   }
 
   initTile(tile) {
+    this.localColorToHexScale();
     this.unFlatten(tile);
     this.maxAndMin.max = tile.maxValue;
     this.maxAndMin.min = tile.minValue;
@@ -45,6 +46,18 @@ export class StackedBarTrack extends BarTrack {
       this.renderTile(visibleAndFetched[i]);
     }
 
+  }
+
+  /**
+   *
+   */
+  localColorToHexScale() {
+    const colorScale = this.options.colorScale || scaleOrdinal(schemeCategory10);
+    let colorHexMap = {};
+    for (let i = 0; i < colorScale.length; i++) {
+      colorHexMap[colorScale[i]] = colorToHex(colorScale[i]);
+    }
+    this.colorHexMap = colorHexMap;
   }
 
   /**
@@ -261,7 +274,7 @@ export class StackedBarTrack extends BarTrack {
         const height = valueToPixelsPositive(positive[i].value);
         const y = positiveTrackHeight - (positiveStackedHeight + height);
         this.addSVGInfo(tile, x, y, width, height, positive[i].color);
-        graphics.beginFill(colorToHex(positive[i].color));
+        graphics.beginFill(this.colorHexMap[positive[i].color]);
         graphics.drawRect(x, y, width, height);
         positiveStackedHeight = positiveStackedHeight + height;
       }
@@ -276,7 +289,7 @@ export class StackedBarTrack extends BarTrack {
         const height = valueToPixelsNegative(negative[i].value);
         const y = positiveTrackHeight + negativeStackedHeight;
         this.addSVGInfo(tile, x, y, width, height, negative[i].color);
-        graphics.beginFill(colorToHex(negative[i].color));
+        graphics.beginFill(this.colorHexMap[negative[i].color]);
         graphics.drawRect(x, y, width, height);
         negativeStackedHeight = negativeStackedHeight + height;
 
