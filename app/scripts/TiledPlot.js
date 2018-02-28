@@ -1243,6 +1243,7 @@ class TiledPlot extends React.Component {
     if (this.props.tracks.center.length) {
       centerTrack = (
         <div
+          className="center-track"
           style={{
             left: this.leftWidth + this.props.horizontalMargin,
             top: this.props.verticalMargin + this.topHeight,
@@ -1297,9 +1298,6 @@ class TiledPlot extends React.Component {
           height={this.state.height}
           initialXDomain={this.props.initialXDomain}
           initialYDomain={this.props.initialYDomain}
-          xDomainLimits={this.props.xDomainLimits}
-          yDomainLimits={this.props.yDomainLimits}
-          zoomLimits={this.props.zoomLimits}
           isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
           leftWidth={this.leftWidth}
           leftWidthNoGallery={this.leftWidthNoGallery}
@@ -1322,7 +1320,10 @@ class TiledPlot extends React.Component {
           topHeightNoGallery={this.topHeightNoGallery}
           uid={this.props.uid}
           width={this.state.width}
+          xDomainLimits={this.props.xDomainLimits}
+          yDomainLimits={this.props.yDomainLimits}
           zoomable={this.props.zoomable}
+          zoomLimits={this.props.zoomLimits}
         >
           {topTracks}
           {leftTracks}

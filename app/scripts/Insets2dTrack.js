@@ -23,6 +23,8 @@ import {
   base64ToCanvas,
   lDist,
   flatten,
+  forEach,
+  hasClass,
   isTrackOrChildTrack,
   latToY,
   lngToX,
@@ -63,6 +65,15 @@ export default class Insets2dTrack extends PixiTrack {
     this.zoomToDataPos = zoomToDataPos;
     this.positioning = positioning;  // Needed for the gallery view
     this.margin = margin;
+
+    if (this.positioning.location === 'center') {
+      const updateBaseEl = (el) => {
+        if (hasClass(el, 'center-track')) {
+          this.parentElement = el;
+        }
+      };
+      forEach(updateBaseEl)(this.parentElement.childNodes);
+    }
 
     this.initBaseEl();
 
@@ -347,10 +358,11 @@ export default class Insets2dTrack extends PixiTrack {
   initBaseEl() {
     this.baseElement = document.createElement('div');
     this.baseElement.className = style['insets-track'];
-    this.baseElement.style.top = `${this.margin.top}px`;
-    this.baseElement.style.right = `${this.margin.left}px`;
-    this.baseElement.style.bottom = `${this.margin.top}px`;
-    this.baseElement.style.left = `${this.margin.left}px`;
+
+    if (this.positioning.location !== 'center') {
+      this.baseElement.style.top = `${this.margin.top}px`;
+      this.baseElement.style.left = `${this.margin.left}px`;
+    }
 
     this.parentElement.appendChild(this.baseElement);
   }
