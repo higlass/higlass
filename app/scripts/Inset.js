@@ -224,8 +224,8 @@ export default class Inset {
       borderWidthExtra = this.borderScale(this.borderPropAcc(this.label.src)) - 1;
     }
 
-    const widthFinal = width + (2 * borderWidthExtra);
-    const heightFinal = height + (2 * borderWidthExtra);
+    const finalWidth = width + (2 * borderWidthExtra);
+    const finalHeight = height + (2 * borderWidthExtra);
 
     const finalX = vX - (this.isRenderToCanvas ? borderWidthExtra : 0);
     const finalY = vY - (this.isRenderToCanvas ? borderWidthExtra : 0);
@@ -233,8 +233,8 @@ export default class Inset {
     this.positionBorder(
       finalX,
       finalY,
-      widthFinal + this.borderPadding,
-      heightFinal + prevHeight + this.borderPadding
+      finalWidth + this.borderPadding,
+      finalHeight + prevHeight + this.borderPadding
     );
     this.styleBorder(fill, radius, borderWidthExtra);
   }
@@ -477,11 +477,15 @@ export default class Inset {
   }
 
   compImgScale() {
+    const imData = this.imgData[0] || {};
+    const width = imData.width || 1;
+    const height = imData.height || 1;
+
     // Scale the image down from its raw resolution to the inset's pixel size
     this.imScale = (
       Math.max(this.width, this.height) /
       this.scaleBase /
-      Math.max(this.imgData.width, this.imgData.height)
+      Math.max(width, height)
     );
   }
 
@@ -1684,30 +1688,23 @@ export default class Inset {
 
     if (this.imgsRendering) return this.imgsRendering;
 
-    this.previewsHeight = 0;
     this.imgRatios = [];
     this.imgs = [];
     this.imgWrappers = [];
 
     if (this.imgsWrapper) this.border.removeChild(this.imgsWrapper);
 
-    const imgsWrapper = document.createElement('div');
-    imgsWrapper.className = style['inset-images-wrapper'];
+    this.imgsWrapper = document.createElement('div');
+    this.imgsWrapper.className = style['inset-images-wrapper'];
+    this.border.appendChild(this.imgsWrapper);
 
-    this.imgsWrapper = imgsWrapper;
-    this.border.appendChild(imgsWrapper);
+    this.imgsWrapperLeft = document.createElement('div');
+    this.imgsWrapperLeft.className = style['inset-images-wrapper-left'];
+    this.imgsWrapper.appendChild(this.imgsWrapperLeft);
 
-    const imgsWrapperLeft = document.createElement('div');
-    imgsWrapperLeft.className = style['inset-images-wrapper-left'];
-
-    this.imgsWrapperLeft = imgsWrapperLeft;
-    this.imgsWrapper.appendChild(imgsWrapperLeft);
-
-    const imgsWrapperRight = document.createElement('div');
-    imgsWrapperRight.className = style['inset-images-wrapper-right'];
-
-    this.imgsWrapperRight = imgsWrapperRight;
-    this.imgsWrapper.appendChild(imgsWrapperRight);
+    this.imgsWrapperRight = document.createElement('div');
+    this.imgsWrapperRight.className = style['inset-images-wrapper-right'];
+    this.imgsWrapper.appendChild(this.imgsWrapperRight);
 
     this.imgsRendering = Promise.all(data
       .map((imgDataRaw, i) => this.renderer(imgDataRaw, this.dataTypes[0])
@@ -1843,18 +1840,16 @@ export default class Inset {
     if (this.previewsRendering) return this.previewsRendering;
 
     this.previewsHeight = 0;
+    this.prvs = [];
+    this.prvWrappers = [];
 
-    const prvsWrapper = this.prvsWrapper || document.createElement('div');
-    prvsWrapper.className = this.pileOrientaton === 'top'
+    if (this.prvsWrapper) this.border.removeChild(this.prvsWrapper);
+
+    this.prvsWrapper = document.createElement('div');
+    this.prvsWrapper.className = this.pileOrientaton === 'top'
       ? style['inset-previews-wrapper-top']
       : style['inset-previews-wrapper-bottom'];
-
-    if (prvsWrapper !== this.prvsWrapper && this.prvsWrapper) {
-      this.border.removeChild(this.prvsWrapper);
-    }
-
-    this.prvsWrapper = prvsWrapper;
-    this.border.appendChild(prvsWrapper);
+    this.border.appendChild(this.prvsWrapper);
 
     this.previewsRendering = Promise.all(data
       .map((preview, i) => this.renderer(preview, this.dataTypes[0])
@@ -1865,32 +1860,21 @@ export default class Inset {
 
           this.previewsHeight += renderedImg.height;
 
-          const prvWrapper = this.prvWrappers[i] || document.createElement('div');
-          prvWrapper.className = style['inset-preview-wrapper'];
+          this.prvWrappers[i] = document.createElement('div');
+          this.prvWrappers[i].className = style['inset-preview-wrapper'];
+          this.prvsWrapper.appendChild(this.prvWrappers[i]);
 
-          const img = this.prvs[i] || document.createElement('img');
-          img.className = style['inset-preview'];
-          img.src = renderedImg.toDataURL();
-          img.__transform__ = {};
+          this.prvs[i] = document.createElement('img');
+          this.prvs[i].className = style['inset-preview'];
+          this.prvs[i].src = renderedImg.toDataURL();
+          this.prvs[i].__transform__ = {};
 
           if (this.dataType === 'cooler') {
             // Enable nearest-neighbor scaling
-            img.style.imageRendering = 'pixelated';
+            this.prvs[i].style.imageRendering = 'pixelated';
           }
 
-          if (prvWrapper !== this.prvWrappers[i] && this.prvWrappers[i]) {
-            this.prvsWrapper.removeChild(this.prvWrappers[i]);
-          }
-
-          this.prvWrappers[i] = prvWrapper;
-          this.prvsWrapper.appendChild(prvWrapper);
-
-          if (img !== this.prvs[i] && this.prvs[i]) {
-            this.prvWrappers[i].removeChild(this.prvs[i]);
-          }
-
-          this.prvs[i] = img;
-          this.prvWrappers[i].appendChild(img);
+          this.prvWrappers[i].appendChild(this.prvs[i]);
         })
       )
     );
