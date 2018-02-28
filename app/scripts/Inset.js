@@ -186,6 +186,15 @@ export default class Inset {
     this.drawBorder();
   }
 
+  compPrvsHeight() {
+    return this.prvs.length
+      ? (
+        (this.previewsHeight * this.scaleBase * this.scaleExtra * this.imScale) +
+        ((this.prvs.length - 1) * this.previewSpacing)
+      )
+      : 0;
+  }
+
   /**
    * Draw inset border.
    *
@@ -203,12 +212,7 @@ export default class Inset {
     radius = this.options.borderRadius,
     fill = this.borderFill,
   ) {
-    const prevHeight = this.prvs.length
-      ? (
-        (this.previewsHeight * this.scaleBase * this.scaleExtra * this.imScale) +
-        ((this.prvs.length - 1) * this.previewSpacing)
-      )
-      : 0;
+    const prevHeight = this.compPrvsHeight();
 
     const [vX, vY] = this.computeBorderPosition(
       x, y, width, height, radius, fill, graphics
@@ -1849,7 +1853,6 @@ export default class Inset {
     this.prvsWrapper.className = this.pileOrientaton === 'top'
       ? style['inset-previews-wrapper-top']
       : style['inset-previews-wrapper-bottom'];
-    this.border.appendChild(this.prvsWrapper);
 
     this.previewsRendering = Promise.all(data
       .map((preview, i) => this.renderer(preview, this.dataTypes[0])
@@ -1877,7 +1880,10 @@ export default class Inset {
           this.prvWrappers[i].appendChild(this.prvs[i]);
         })
       )
-    );
+    ).then(() => {
+      this.imgsWrapper.style.bottom = `${this.compPrvsHeight() + 2}px`;
+      this.border.appendChild(this.prvsWrapper);
+    });
 
     return this.previewsRendering;
   }
