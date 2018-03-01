@@ -1738,7 +1738,9 @@ export default class Inset {
             if (i === data.length - 1) pos = 'last';
           }
 
-          addClass(img, style[`inset-image-${orient}-${intense}-${pos}`]);
+          if (orient && intense && pos) {
+            addClass(img, style[`inset-image-${orient}-${intense}-${pos}`]);
+          }
 
           img.style.backgroundImage = `url(${renderedImg.toDataURL()})`;
           img.__transform__ = {};
