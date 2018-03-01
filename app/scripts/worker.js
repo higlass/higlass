@@ -267,8 +267,11 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
 
       const denses = Object.values(data)
         .filter(x => x.dense)
-        .map(x => x.dense.buffer);
+        .map(x => x.dense);
 
-      done.transfer(data, denses);
+      done(data);
+      //.map(x => x.dense.buffer);
+
+      //done.transfer(data, denses);
     });
 }

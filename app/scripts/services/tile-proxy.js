@@ -17,6 +17,7 @@ import {
 
 const MAX_FETCH_TILES = 20;
 
+/*
 const str = document.currentScript.src
 const pathName = str.substring(0, str.lastIndexOf("/"));
 const workerPath = `${pathName}/worker.js`;
@@ -48,15 +49,14 @@ const fetchTilesPool = new Pool(10);
 fetchTilesPool.run(function(params, done) {
   try {
     worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds, params.authHeader, done);
-    /*
-    done.transfer({
-      pixData: pixData
-    }, [pixData.buffer]);
-    */
+    // done.transfer({
+    // pixData: pixData
+    // }, [pixData.buffer]);
   } catch (err) {
     console.log('err:', err);
   }
 }, [workerPath]);
+*/
 
 
 import pubSub from './pub-sub';
@@ -168,12 +168,16 @@ export function fetchMultiRequestTiles(req) {
         params.theseTileIds = theseTileIds;
         params.authHeader = authHeader;
 
+        workerGetTiles(params.outUrl, params.server, params.theseTileIds, params.authHeader, resolve);
+
+        /*
         fetchTilesPool.send(params)
           .promise()
           .then(ret => {
             pubSub.publish('requestReceived', outUrl);
             resolve(ret);
           });
+        */
       }));
 
       fetchPromises.push(p);
@@ -418,7 +422,8 @@ synchronous=false) => {
 
   // comment this and uncomment the code afterwards to enable threading
 
-  if (synchronous) {
+
+  if (true) {
     const pixData = workerSetPix(
       newTileData.length,
       newTileData,
@@ -431,6 +436,7 @@ synchronous=false) => {
     finished({pixData});
     return;
   } else {
+    /*
     var params = {
       size: newTileData.length,
       data: newTileData,
@@ -449,6 +455,7 @@ synchronous=false) => {
         finished(null);
       });
     ;
+    */
   }
 };
 
