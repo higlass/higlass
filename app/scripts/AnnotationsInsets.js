@@ -12,7 +12,7 @@ import {
 
 // Utils
 import {
-  identity, getClusterPropAcc, latToY, lngToX, positionLabels
+  identity, getClusterPropAcc, latToY, lngToX, positionLabels, subToInd
 } from './utils';
 
 class AnnotationsInsets {
@@ -103,10 +103,15 @@ class AnnotationsInsets {
       minClusterSize: 3,
       maxZoom: undefined,
       disabled: !!this.options.disableClustering,
-      propCheck: propChecks
+      propCheck: propChecks,
+      isBinning: true,
     });
 
     this.isRepresentatives = this.insetsTrack.dataType.indexOf('image') >= 0;
+
+    this.minInsetSize = this.insetsTrack.insetMinSize * this.insetsTrack.insetScale;
+    this.maxInsetSize = this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale;
+    this.midInsetSize = (this.minInsetSize + this.maxInsetSize) / 2;
   }
 
   /**
@@ -162,7 +167,13 @@ class AnnotationsInsets {
         && (annotation.minY >= 0 || annotation.maxY > 0)
         && (annotation.minY < this.insetsTrackHeight || annotation.maxY <= this.insetsTrackHeight)
       )
-    ) this.annosToBeDrawnAsInsets.add(annotation);
+    ) {
+      annotation.bin = this.binSubToInd(...this.getBinIds(...annotation.center));
+      if (!this.bins[annotation.bin]) this.bins[annotation.bin] = [];
+      if (!this.bins[annotation.bin].push) console.warn(this.bins, annotation.bin, this.bins[annotation.bin]);
+      this.bins[annotation.bin].push(annotation);
+      this.annosToBeDrawnAsInsets.add(annotation);
+    }
 
     this.drawnAnnotations.push(annotation);
   }
@@ -176,6 +187,39 @@ class AnnotationsInsets {
     if (this.newAnno) this.tree.load(this.drawnAnnotations);
 
     this.createInsets();
+  }
+
+  getBinIds(x, y) {
+    return [this.xBinScale(x), this.yBinScale(y)];
+  }
+
+  /**
+   * Compute the number of bins in each dimension
+   * @param   {array}  dimensions  Holding the inset's track's
+   *   `[width, height]`
+   */
+  compBins(dimensions) {
+    const xOff = (this.insetsTrack.positioning.offsetX || 0) * 2;
+    const yOff = (this.insetsTrack.positioning.offsetY || 0) * 2;
+    const width = (dimensions[0] - xOff);
+    const height = (dimensions[1] - yOff);
+    this.numXBins = Math.round(width / (this.midInsetSize * 2));
+    this.numYBins = Math.round(height / (this.midInsetSize * 2));
+
+    this.xBinScale = scaleQuantize()
+      .domain([0, dimensions[0]])
+      .range(range(0, this.numXBins));
+
+    this.yBinScale = scaleQuantize()
+      .domain([0, dimensions[1]])
+      .range(range(0, this.numYBins));
+
+    this.binSubToInd = subToInd(this.numXBins);
+
+    this.areaClusterer.setBinSize(
+      width / this.numXBins,
+      height / this.numYBins,
+    );
   }
 
   /**
@@ -295,7 +339,8 @@ class AnnotationsInsets {
     this.areaClusterer.update(
       this.annosToBeDrawnAsInsets,
       this.annosToBeDrawnAsInsetsOld,
-      this.zoomed
+      this.zoomed,
+      this.bins
     );
   }
 
@@ -337,6 +382,7 @@ class AnnotationsInsets {
     this.insetMinRemoteSize = Infinity;  // Larger dimension of the smallest inset
     this.insetMaxRemoteSize = 0;  // Larger dimension of the largest inset
     this.tracksDrawingTiles = new Set();
+    this.bins = [];
   }
 
   /**
@@ -720,6 +766,8 @@ class AnnotationsInsets {
       0,
       this.insetsTrackHeight,
     );
+
+    this.compBins(this.insetsTrack.dimensions);
   }
 
   /**
