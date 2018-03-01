@@ -225,7 +225,7 @@ export default class Inset {
     let borderWidthExtra = 0;
     // Get extra border scale if `scaleBorderBy` option is set
     if (this.options.scaleBorderBy && this.borderScale) {
-      borderWidthExtra = this.borderScale(this.borderPropAcc(this.label.src)) - 1;
+      borderWidthExtra = this.borderScale(this.borderPropAcc(this.label.src));
     }
 
     const finalWidth = width + (2 * borderWidthExtra);
@@ -362,17 +362,19 @@ export default class Inset {
   }
 
   addEventListeners() {
+    // To avoid duplicated event listeners
+    this.removeEventListeners();
     this.border.addEventListener(
-      'mouseenter', this.mouseOverHandlerBound, true
+      'mouseenter', this.mouseOverHandlerBound
     );
     this.border.addEventListener(
-      'mouseleave', this.mouseOutHandlerBound, true
+      'mouseleave', this.mouseOutHandlerBound
     );
     this.border.addEventListener(
-      'mousedown', this.mouseDownHandlerBound, true
+      'mousedown', this.mouseDownHandlerBound
     );
     this.border.addEventListener(
-      'contextmenu', this.mouseClickRightHandlerBound, true
+      'contextmenu', this.mouseClickRightHandlerBound
     );
     // Unfortunately D3's zoom behavior is too aggressive and kills all local
     // mouseup event, which is why we have to listen for a global mouse up even
@@ -1187,8 +1189,8 @@ export default class Inset {
 
       // Draw convex hull
       this.gOrigin
-        .lineStyle(1, orgLineColor, 0.66)
-        .beginFill(colorToHex(this.selectColor), 0.2)
+        .lineStyle(1, orgLineColor, 0.75)
+        .beginFill(colorToHex(this.selectColor), 0.5)
         .drawPolygon(flatten(hull(points, Infinity)))
         .endFill()
         .lineStyle(orgLineWidth, orgLineColor, orgLineAlpha);
