@@ -229,25 +229,19 @@ class AnnotationsInsets {
   }
 
   /**
-   * Compute scale for an optional property mapped onto the border of the inset
-   * @return  {object}  [description]
+   * Compute scale for an optional property mapped onto the border of the
+   *   inset. The scale is quantized
+   * @return  {function}  Quantized border width scale.
    */
   compInsetBorderScale() {
-    const min = scoreAtPercentile(this.areaClusterer.propCheck.border.values, 0.1);
-    const max = scoreAtPercentile(this.areaClusterer.propCheck.border.values, 0.9);
-
-    console.log(
-      min,
-      max,
-      this.areaClusterer.propCheck.border.min,
-      this.areaClusterer.propCheck.border.max,
+    const min = scoreAtPercentile(
+      this.areaClusterer.propCheck.border.values, 0.1
+    );
+    const max = scoreAtPercentile(
+      this.areaClusterer.propCheck.border.values, 0.9
     );
 
-    const borderScale = scaleQuantize().domain([min, max]).range(range(0, 9));
-
-    console.log(borderScale(10));
-
-    return borderScale;
+    return scaleQuantize().domain([min, max]).range(range(0, 9));
   }
 
   /**
