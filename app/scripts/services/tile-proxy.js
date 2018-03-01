@@ -17,7 +17,12 @@ import {
 
 const MAX_FETCH_TILES = 20;
 
+const str = document.currentScript.src
+const pathName = str.substring(0, str.lastIndexOf("/"));
+const workerPath = `${pathName}/worker.js`;
+
 const setPixPool = new Pool(1);
+
 setPixPool.run(function(params, done) {
   try {
     const array = new Float32Array(params.data);
@@ -36,7 +41,8 @@ setPixPool.run(function(params, done) {
   } catch (err) {
     console.log('err:', err);
   }
-}, ['http://localhost:8080/worker.js']);
+}, [workerPath]);
+
 
 const fetchTilesPool = new Pool(10);
 fetchTilesPool.run(function(params, done) {
@@ -50,7 +56,7 @@ fetchTilesPool.run(function(params, done) {
   } catch (err) {
     console.log('err:', err);
   }
-}, ['http://localhost:8080/worker.js']);
+}, [workerPath]);
 
 
 import pubSub from './pub-sub';
