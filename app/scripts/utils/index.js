@@ -59,6 +59,7 @@ export { default as resetD3BrushStyle } from './reset-d3-brush-style';
 export { default as scalesCenterAndK } from './scales-center-and-k';
 export { default as scalesToGenomeLoci } from './scales-to-genome-loci';
 export { default as showMousePosition } from './show-mouse-position';
+export { default as subToInd } from './sub-to-ind';
 export { default as sum } from './sum';
 export { default as svgLine } from './svg-line';
 export { default as tileToCanvas } from './tile-to-canvas';
