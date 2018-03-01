@@ -200,16 +200,25 @@ class Annotations2dTrack extends TiledPixiTrack {
   }
 
   prepAnnotation(graphics, uid, startX, startY, width, height, td) {
+    let info;
+
+    try {
+      info = JSON.parse(td.fields);
+    } catch (e) {
+      // Nothing
+    }
+
     return {
       graphics,
       uid,
       annotation: { x: startX, y: startY, width, height },
       dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
-      importance: td.importance
+      importance: td.importance,
+      info
     };
   }
 
-  drawAnnotation({ graphics, uid, annotation, dataPos, importance }) {
+  drawAnnotation({ graphics, uid, annotation, dataPos, importance, info }) {
     if (this.options.minSquareSize) {
       if (
         annotation.width < this.options.minSquareSize
@@ -230,7 +239,9 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     graphics.drawRect(...viewPos);
 
-    this.publish('annotationDrawn', { uid, viewPos, dataPos, importance });
+    this.publish(
+      'annotationDrawn', { uid, viewPos, dataPos, importance, info }
+    );
   }
 
   exportSVG() {

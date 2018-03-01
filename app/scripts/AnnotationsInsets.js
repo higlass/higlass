@@ -12,7 +12,13 @@ import {
 
 // Utils
 import {
-  identity, getClusterPropAcc, latToY, lngToX, positionLabels, subToInd
+  identity,
+  getClusterPropAcc,
+  latToY,
+  lngToX,
+  positionLabels,
+  scoreAtPercentile,
+  subToInd
 } from './utils';
 
 class AnnotationsInsets {
@@ -124,7 +130,7 @@ class AnnotationsInsets {
    *   example base pairs (Hi-C), or pixels (gigapixel images), or lng-lat
    *   (geo json).
    */
-  annotationDrawnHandler({ uid, viewPos, dataPos, importance }) {
+  annotationDrawnHandler({ uid, viewPos, dataPos, importance, info }) {
     const dataPosProj = [
       this.projectorX(dataPos[0]),
       this.projectorX(dataPos[1]),
@@ -144,7 +150,7 @@ class AnnotationsInsets {
       annotation.setViewPosition(_viewPos);
     } else {
       annotation = new Annotation(
-        uid, _viewPos, dataPos, dataPosProj, importance
+        uid, _viewPos, dataPos, dataPosProj, importance, info
       );
     }
 
@@ -227,12 +233,19 @@ class AnnotationsInsets {
    * @return  {object}  [description]
    */
   compInsetBorderScale() {
-    const borderScale = scaleQuantize()
-      .domain([
-        this.areaClusterer.propCheck.border.min,
-        this.areaClusterer.propCheck.border.max
-      ])
-      .range(range(1, 10));
+    const min = scoreAtPercentile(this.areaClusterer.propCheck.border.values, 0.1);
+    const max = scoreAtPercentile(this.areaClusterer.propCheck.border.values, 0.9);
+
+    console.log(
+      min,
+      max,
+      this.areaClusterer.propCheck.border.min,
+      this.areaClusterer.propCheck.border.max,
+    );
+
+    const borderScale = scaleQuantize().domain([min, max]).range(range(0, 9));
+
+    console.log(borderScale(10));
 
     return borderScale;
   }
