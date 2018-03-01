@@ -34,6 +34,8 @@ const subscribe = (stack = STACK) => (event, callback, times = Infinity) => {
  *   ignored if `id` is provided.
  */
 const unsubscribe = (stack = STACK) => (event, callback) => {
+  if (!stack[event]) return;
+
   if (typeof event === 'object') {
     event = event.event; // eslint-disable-line no-param-reassign
     callback = event.callback; // eslint-disable-line no-param-reassign
@@ -41,8 +43,8 @@ const unsubscribe = (stack = STACK) => (event, callback) => {
 
   const id = stack[event].indexOf(callback);
 
-  if (!stack[event]) { return; }
-  if (id === -1 || id >= stack[event].length) { return; }
+  if (!stack[event]) return;
+  if (id === -1 || id >= stack[event].length) return;
 
   stack[event].splice(id, 1);
   stack.__times[event].splice(id, 1);
