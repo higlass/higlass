@@ -222,11 +222,7 @@ export default class Inset {
       this.renderBorder(x, y, width, height, radius, fill, graphics);
     }
 
-    let borderWidthExtra = 0;
-    // Get extra border scale if `scaleBorderBy` option is set
-    if (this.options.scaleBorderBy && this.borderScale) {
-      borderWidthExtra = this.borderScale(this.borderPropAcc(this.label.src));
-    }
+    const borderWidthExtra = this.compBorderExtraWidth();
 
     const finalWidth = width + (2 * borderWidthExtra);
     const finalHeight = height + (2 * borderWidthExtra);
@@ -241,6 +237,15 @@ export default class Inset {
       finalHeight + prevHeight + this.borderPadding
     );
     this.styleBorder(fill, radius, borderWidthExtra);
+  }
+
+  compBorderExtraWidth() {
+    let borderWidthExtra = 0;
+    // Get extra border scale if `scaleBorderBy` option is set
+    if (this.options.scaleBorderBy && this.borderScale) {
+      borderWidthExtra = this.borderScale(this.borderPropAcc(this.label.src));
+    }
+    return borderWidthExtra;
   }
 
   styleBorder(...args) {
@@ -2053,6 +2058,9 @@ export default class Inset {
 
     this.border.__transform__.scale = [amount, amount];
     this.border.style.transform = objToTransformStr(this.border.__transform__);
+    this.border.style.borderWidth = amount > 1
+      ? 0
+      : this.compBorderExtraWidth();
     this.scaleExtra = amount;
   }
 

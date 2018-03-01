@@ -18,7 +18,7 @@
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.5),
               0 2px 6px 0 rgba(0, 0, 0, 0.33),
               0 2px 9px 0 rgba(0, 0, 0, 0.2);
-  transition: border-color $fast $ease,
+  transition: border $fast $ease,
               background $fast $ease,
               box-shadow $fast $ease;
 }
@@ -29,7 +29,7 @@
               width $fast $ease,
               height $fast $ease,
               background $fast $ease,
-              border-color $fast $ease,
+              border $fast $ease,
               box-shadow $fast $ease;
 }
 
