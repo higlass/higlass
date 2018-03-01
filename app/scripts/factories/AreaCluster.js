@@ -66,6 +66,13 @@ function AreaCluster(isAverageCenter = true, padding = 0) {
 
 /* ------------------------------- Properties ------------------------------- */
 
+
+function getBin() {
+  return this.members.values[0].bin;
+}
+
+Object.defineProperty(AreaCluster.prototype, 'bin', { get: getBin });
+
 function getBounds() {
   return [this.minX, this.maxX, this.minY, this.maxY];
 }
