@@ -1,7 +1,7 @@
 import AreaCluster, { nearestNeighbor } from './AreaCluster';
 import KeySet from './KeySet';
 
-import { lDist } from '../utils';
+import { insert, lDist } from '../utils';
 
 
 function AreaClusterer(options = {}) {
@@ -33,7 +33,8 @@ function AreaClusterer(options = {}) {
       this.propCheck[prop[0]] = {
         min: Infinity,
         max: -Infinity,
-        acc: prop[1]
+        acc: prop[1],
+        values: [],
       };
       this.isPropCheck = true;
     });
@@ -193,6 +194,8 @@ function propChecking(cluster) {
   if (!this.isPropCheck) return;
 
   Object.keys(this.propCheck).forEach((key) => {
+    insert(this.propCheck[key].values, this.propCheck[key].acc(cluster));
+
     this.propCheck[key].min = Math.min(
       this.propCheck[key].min,
       this.propCheck[key].acc(cluster)
