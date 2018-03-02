@@ -1140,7 +1140,6 @@ export default class Inset {
           this.imgData === null
         ) return true;
 
-        this.compImgScale();
         this.positionImage();
         return true;
       })
@@ -1689,7 +1688,7 @@ export default class Inset {
    *
    * @param  {Array}  data  Data to be rendered
    */
-  renderImageHtml(data, force) {
+  renderImageHtml(data, force, requestId) {
     if (
       !data ||
       (this.imgs.length === data.length && !force) ||
@@ -1774,29 +1773,41 @@ export default class Inset {
         })
       )
     ).then(() => {
-      if (this.label.src.size > data.length && this.options.showClusterSize) {
-        const i = data.length;
+      if (
+        this.isDestroyed ||
+        (requestId !== null && requestId !== this.fetching) ||
+        this.imgData === null
+      ) return;
 
-        const wrapper = document.createElement('div');
-        wrapper.className = style['inset-cluster-size-wrapper'];
-
-        const clustSize = document.createElement('div');
-        clustSize.className = style['inset-cluster-size'];
-
-        const clustSizeText = document.createElement('div');
-        clustSizeText.className = style['inset-cluster-size-text'];
-        clustSizeText.innerHTML = this.label.src.size;
-        clustSize.appendChild(clustSizeText);
-
-        this.imgWrappers[i] = wrapper;
-        this.imgsWrapperRight.appendChild(wrapper);
-
-        this.imgs[i] = clustSize;
-        this.imgWrappers[i].appendChild(clustSize);
-      }
+      this.compImgScale();
+      this.renderClusterSize(
+        data, this.imgs, this.imgWrappers, this.imgsWrapperRight
+      );
+      this.imgsWrapper.style.bottom = `${this.compPrvsHeight() + 2}px`;
     });
 
     return this.imgsRendering;
+  }
+
+  renderClusterSize(data, imgs, wrappers, parentEl) {
+    if (this.label.src.size > data.length && this.options.showClusterSize) {
+      const wrapper = document.createElement('div');
+      wrapper.className = style['inset-cluster-size-wrapper'];
+
+      const clustSize = document.createElement('div');
+      clustSize.className = style['inset-cluster-size'];
+
+      const clustSizeText = document.createElement('div');
+      clustSizeText.className = style['inset-cluster-size-text'];
+      clustSizeText.innerHTML = this.label.src.size;
+      clustSize.appendChild(clustSizeText);
+
+      wrappers.push(wrapper);
+      parentEl.appendChild(wrapper);
+
+      imgs.push(clustSize);
+      wrapper.appendChild(clustSize);
+    }
   }
 
   /**
