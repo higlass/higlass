@@ -157,8 +157,6 @@ AreaCluster.prototype.delete = function deleteMethod(annotation) {
   this.refresh();
   this.changed();
 
-  if (!this.size) console.error('deleted last member', this.id);
-
   return true;
 };
 
