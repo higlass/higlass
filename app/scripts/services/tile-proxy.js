@@ -1,4 +1,3 @@
-import {Pool} from 'threads';
 import { scaleLog, scaleLinear } from 'd3-scale';
 import { range } from 'd3-array';
 import {
@@ -174,10 +173,10 @@ export function fetchMultiRequestTiles(req) {
         fetchTilesPool.send(params)
           .promise()
           .then(ret => {
-            pubSub.publish('requestReceived', outUrl);
             resolve(ret);
           });
         */
+        pubSub.publish('requestReceived', outUrl);
       }));
 
       fetchPromises.push(p);
@@ -416,8 +415,6 @@ synchronous=false) => {
 
   // clone the tileData so that the original array doesn't get neutered
   // when being passed to the worker script
-  const newTileData = new Float32Array(tileData.dense.length);
-  newTileData.set(tileData.dense);
   //const newTileData = tileData.dense;
 
   // comment this and uncomment the code afterwards to enable threading
@@ -425,8 +422,8 @@ synchronous=false) => {
 
   if (true) {
     const pixData = workerSetPix(
-      newTileData.length,
-      newTileData,
+      tileData.dense.length,
+      tileData.dense,
       valueScaleType,
       valueScaleDomain,
       pseudocount,
@@ -434,8 +431,9 @@ synchronous=false) => {
     );
 
     finished({pixData});
-    return;
   } else {
+    const newTileData = new Float32Array(tileData.dense.length);
+    newTileData.set(tileData.dense);
     /*
     var params = {
       size: newTileData.length,

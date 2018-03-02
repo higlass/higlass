@@ -373,6 +373,7 @@ export class TiledPixiTrack extends PixiTrack {
     this.renderVersion += 1;
 
     for (let i = 0; i < fetchedTileIDs.length; i++) {
+      //console.log('this.tileGraphics', this.tileGraphics);
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
         const newGraphics = new PIXI.Graphics();
         this.pMain.addChild(newGraphics);
@@ -381,7 +382,6 @@ export class TiledPixiTrack extends PixiTrack {
         // console.log('fetchedTiles:', this.fetchedTiles[fetchedTileIDs[i]]);
         this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
 
-        // console.log('adding graphics...', fetchedTileIDs[i]);
         this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
         added = true;
       }
