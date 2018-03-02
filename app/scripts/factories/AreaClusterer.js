@@ -1,7 +1,7 @@
 import AreaCluster, { nearestNeighbor } from './AreaCluster';
 import KeySet from './KeySet';
 
-import { insert, lDist } from '../utils';
+import { insert, lDist, max, min } from '../utils';
 
 
 function AreaClusterer(options = {}) {
@@ -9,11 +9,11 @@ function AreaClusterer(options = {}) {
   this.elementsAddedToClusters = new KeySet();
   this.clusters = new KeySet();
 
-  this.gridSize = options.gridSize || 60;
+  this.gridSize = options.gridSize || 30;
+  this.maxClusterDiameter = options.maxClusterDiameter || 60;
   this.maxZoom = options.maxZoom || null;
   this.isAverageCenter = !!options.averageCenter || true;
   this.defaultMinDist = options.defaultMinDist || 40000;
-  this.isBinning = options.isBinning || false;
   this.clusterAmong = options.clusterAmong || false;
 
   this.prevZoom = null;
@@ -75,16 +75,10 @@ function add(elements, noDraw) {
 }
 
 function isClusterable(a, b) {
-  const ass = (
-    (
-      !this.isBinning ||
-      a.bin === b.bin
-    ) && (
-      !this.clusterAmong ||
-      a.type === b.type
-    )
+  return (
+    !this.clusterAmong ||
+    a.type === b.type
   );
-  return ass;
 }
 
 /**
@@ -100,6 +94,7 @@ function addToOrCreateCluster(element) {
     this.clusters
       .filter(cluster => (
         !cluster.isHidden &&
+        cluster.diameter < this.maxClusterDiameter &&
         this.isClusterable(cluster, element)
       ))
       .forEach((cluster) => {
@@ -213,10 +208,6 @@ function propChecking(cluster) {
  * Create a new the clusters.
  */
 function createCluster(element) {
-  if (this.isBinning && typeof element.bin === 'undefined') {
-    console.warn('Binning is enabled but element has no associated bin');
-  }
-
   const cluster = new AreaCluster(this.isAverageCenter, this.gridSize);
   cluster.add(element);
 
@@ -282,6 +273,15 @@ function evalMethod(zoomed = 0) {
 }
 
 
+function combinedDiameter(clusterA, clusterB) {
+  const minX = min(clusterA.minX, clusterB.minX);
+  const maxX = max(clusterA.maxX, clusterB.maxX);
+  const minY = min(clusterA.minY, clusterB.minY);
+  const maxY = max(clusterA.maxY, clusterB.maxY);
+  return max(maxX - minX, maxY - minY);
+}
+
+
 function mergeClusters(
   clusterA, clusterB
 ) {
@@ -290,19 +290,23 @@ function mergeClusters(
     clusterA.add(annotation);
   });
   this.propChecking(clusterA);
-  this.clusters.delete(clusterB);
+
+  this.removeCluster(clusterB, true);
 }
 
 function evalZoomedOut() {
   // 1. Check which clusters are within bounds. Effectivly cluster the clusters.
-  this.clusters.forEach((clusterCurr) => {
-    this.clusters.forEach((cluster) => {
+  this.clusters.forEach((clusterA) => {
+    this.clusters.forEach((clusterB) => {
       if (
-        cluster !== clusterCurr &&
-        clusterCurr.isWithin(cluster.bounds, true, this.gridSize * 0.5) &&
-        this.isClusterable(clusterCurr, cluster)
+        !clusterA.isRemoved &&
+        !clusterB.isRemoved &&
+        clusterA !== clusterB &&
+        this.isClusterable(clusterA, clusterB) &&
+        clusterA.isWithin(clusterB.bounds, true, this.gridSize * 0.5) &&
+        this.combinedDiameter(clusterA, clusterB) < this.maxClusterDiameter
       ) {
-        this.mergeClusters(clusterCurr, cluster);
+        this.mergeClusters(clusterA, clusterB);
       }
     });
   });
@@ -396,7 +400,7 @@ function refresh() {
 function remove(elements, noDraw = false) {
   const isRemoved = elements
     .translate((element) => {
-      if (element.cluster) {
+      if (element.cluster && !element.cluster.isRemoved) {
         this.shrinkCluster(element.cluster, element);
       }
 
@@ -418,14 +422,17 @@ function remove(elements, noDraw = false) {
 /**
  * Remove a cluster
  */
-function removeCluster(cluster) {
-  cluster.members.forEach((member) => {
-    member.cluster = undefined;
-    this.elementsAddedToClusters.delete(member);
-    this.elements.delete(member);
-  });
+function removeCluster(cluster, keepElements = false) {
+  if (!keepElements) {
+    cluster.members.forEach((member) => {
+      member.cluster = undefined;
+      this.elementsAddedToClusters.delete(member);
+      this.elements.delete(member);
+    });
+  }
 
   this.clusters.delete(cluster);
+  cluster.remove();
 
   this.clusters.forEach(_cluster => this.propChecking(_cluster));
 }
@@ -458,10 +465,10 @@ function resetClusters() {
 }
 
 /**
- * Add an element to an existing cluster
+ * Remove an element from an existing cluster
  */
 function shrinkCluster(cluster, element) {
-  cluster.delete(element);
+  cluster.delete(element, false);
 
   if (cluster.size) {
     this.clustersMaxSize = this.clusters.reduce(
@@ -501,6 +508,7 @@ Object.assign(AreaClusterer.prototype, {
   setBounds,
   clear,
   clusterElements,
+  combinedDiameter,
   propChecking,
   createCluster,
   expandCluster,
