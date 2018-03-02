@@ -91,6 +91,12 @@ function getSize() {
 
 Object.defineProperty(AreaCluster.prototype, 'size', { get: getSize });
 
+function getType() {
+  return this.members.values[0].type;
+}
+
+Object.defineProperty(AreaCluster.prototype, 'type', { get: getType });
+
 /* --------------------------------- Methods -------------------------------- */
 
 /**

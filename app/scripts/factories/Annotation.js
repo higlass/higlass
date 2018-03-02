@@ -1,4 +1,6 @@
-function Annotation(id, viewPos, dataPos, dataPosProj, importance, info) {
+function Annotation(
+  id, viewPos, dataPos, dataPosProj, importance, info = {}, typeProp
+) {
   this.id = id;
 
   this.minX = viewPos[0];
@@ -27,6 +29,7 @@ function Annotation(id, viewPos, dataPos, dataPosProj, importance, info) {
   );
 
   this.info = info;
+  this.type = this.info[typeProp] || 'default';
 }
 
 /* ------------------------------- Properties ------------------------------- */

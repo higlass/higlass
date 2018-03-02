@@ -111,6 +111,7 @@ class AnnotationsInsets {
       disabled: !!this.options.disableClustering,
       propCheck: propChecks,
       isBinning: true,
+      clusterAmong: this.options.clusterAmong || false,
     });
 
     this.isRepresentatives = this.insetsTrack.dataType.indexOf('image') >= 0;
@@ -150,7 +151,13 @@ class AnnotationsInsets {
       annotation.setViewPosition(_viewPos);
     } else {
       annotation = new Annotation(
-        uid, _viewPos, dataPos, dataPosProj, importance, info
+        uid,
+        _viewPos,
+        dataPos,
+        dataPosProj,
+        importance,
+        info,
+        this.options.clusterAmong || false
       );
     }
 

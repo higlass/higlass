@@ -14,6 +14,7 @@ function AreaClusterer(options = {}) {
   this.isAverageCenter = !!options.averageCenter || true;
   this.defaultMinDist = options.defaultMinDist || 40000;
   this.isBinning = options.isBinning || false;
+  this.clusterAmong = options.clusterAmong || false;
 
   this.prevZoom = null;
   this.minX = 0;
@@ -73,6 +74,19 @@ function add(elements, noDraw) {
   if (!noDraw) this.clusterElements();
 }
 
+function isClusterable(a, b) {
+  const ass = (
+    (
+      !this.isBinning ||
+      a.bin === b.bin
+    ) && (
+      !this.clusterAmong ||
+      a.type === b.type
+    )
+  );
+  return ass;
+}
+
 /**
  * Add an element to the clostest cluster, or creates a new cluster.
  * @param  {object}  element - The element to be added.
@@ -86,10 +100,7 @@ function addToOrCreateCluster(element) {
     this.clusters
       .filter(cluster => (
         !cluster.isHidden &&
-        (
-          !this.isBinning ||
-          (cluster.bin === element.bin)
-        )
+        this.isClusterable(cluster, element)
       ))
       .forEach((cluster) => {
         const clusterCenter = cluster.center;
@@ -166,24 +177,14 @@ function clear() {
  * @param  {array}  bins - If length greater than zero only cluster within
  *   bins.
  */
-function clusterElements(bins = []) {
-  // Make a flat copy
-  let _bins = bins.slice();
-
-  // Cluster all elements regardless of their associated bin
-  if (!this.isBinning || (this.isBinning && !_bins.length)) {
-    _bins = [this.elements];
-  }
-
-  _bins.forEach((elements) => {
-    elements.forEach((element) => {
-      if (
-        !this.elementsAddedToClusters.has(element) &&
-        this.isWithin(element.viewPos, true)
-      ) {
-        this.addToOrCreateCluster(element);
-      }
-    });
+function clusterElements() {
+  this.elements.forEach((element) => {
+    if (
+      !this.elementsAddedToClusters.has(element) &&
+      this.isWithin(element.viewPos, true)
+    ) {
+      this.addToOrCreateCluster(element);
+    }
   });
 }
 
@@ -297,9 +298,9 @@ function evalZoomedOut() {
   this.clusters.forEach((clusterCurr) => {
     this.clusters.forEach((cluster) => {
       if (
+        this.isClusterable(clusterCurr, cluster) &&
         cluster !== clusterCurr &&
-        clusterCurr.isWithin(cluster.bounds, true, this.gridSize * 0.5) &&
-        (!this.isBinning || clusterCurr.bin === cluster.bin)
+        clusterCurr.isWithin(cluster.bounds, true, this.gridSize * 0.5)
       ) {
         this.mergeClusters(clusterCurr, cluster);
       }
@@ -505,6 +506,7 @@ Object.assign(AreaClusterer.prototype, {
   expandCluster,
   getGridSize,
   setGridSize,
+  isClusterable,
   isWithin,
   eval: evalMethod,
   mergeClusters,
