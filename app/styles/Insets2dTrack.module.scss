@@ -130,6 +130,21 @@
   flex-grow: 1;
 }
 
+.inset-cluster-size-wrapper-previews {
+  position: absolute;
+  flex-grow: 0;
+  top: -2px;
+  right: -2px;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 2px;
+  transition: opacity $fast $ease;
+}
+
+.inset-focus .inset-cluster-size-wrapper-previews {
+  opacity: 0;
+}
+
 .inset-image-ratio {
   display: block;
   width: 100%;

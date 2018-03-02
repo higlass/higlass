@@ -182,7 +182,11 @@ export default class Inset {
    */
   blur(isPermanent = false) {
     this.isPermanentFocus = isPermanent ? false : this.isPermanentFocus;
-    if (this.isRenderToCanvas) this.clearBorder();
+    if (this.isRenderToCanvas) {
+      this.clearBorder();
+    } else {
+      removeClass(this.border, style['inset-focus']);
+    }
     this.drawBorder();
   }
 
@@ -1147,7 +1151,7 @@ export default class Inset {
         console.error('Image rendering and positioning failed', err);
       });
 
-    const previewsRendered = this.renderPreviews(this.prvData, force)
+    const previewsRendered = this.renderPreviews(this.prvData, force, requestId)
       .catch((err) => {
         console.error('Preview rendering failed', err);
       });
@@ -1268,7 +1272,11 @@ export default class Inset {
    */
   focus(isPermanent = false) {
     this.isPermanentFocus = isPermanent ? true : this.isPermanentFocus;
-    if (this.isRenderToCanvas) this.clearBorder();
+    if (this.isRenderToCanvas) {
+      this.clearBorder();
+    } else {
+      addClass(this.border, style['inset-focus']);
+    }
     this.drawBorder(
       this.x,
       this.y,
@@ -1789,7 +1797,7 @@ export default class Inset {
     return this.imgsRendering;
   }
 
-  renderClusterSize(data, imgs, wrappers, parentEl) {
+  renderClusterSize(data, imgs, wrappers, parentEl, isPrvs = false) {
     if (this.label.src.size > data.length && this.options.showClusterSize) {
       const wrapper = document.createElement('div');
       wrapper.className = style['inset-cluster-size-wrapper'];
@@ -1801,6 +1809,13 @@ export default class Inset {
       clustSizeText.className = style['inset-cluster-size-text'];
       clustSizeText.innerHTML = this.label.src.size;
       clustSize.appendChild(clustSizeText);
+
+      if (isPrvs) {
+        addClass(wrapper, style['inset-cluster-size-wrapper-previews']);
+        clustSize.style.background = this.isPermanentFocus || this.isHovering
+          ? this.selectColor.toString()
+          : this.borderFill.toString();
+      }
 
       wrappers.push(wrapper);
       parentEl.appendChild(wrapper);
@@ -1836,7 +1851,7 @@ export default class Inset {
 
     this.previewsHeight = 0;
 
-    const renderedPreviews = data
+    this.previewsRendering = Promise.all(data
       .map((preview, i) => this.renderer(preview, this.dataTypes[0])
         .then((renderedImg) => {
           if (this.isDestroyed) return;
@@ -1862,9 +1877,8 @@ export default class Inset {
 
           this.gMain.addChild(this.prvs[i]);
         })
-      );
-
-    this.previewsRendering = Promise.all(renderedPreviews);
+      )
+    );
 
     return this.previewsRendering;
   }
@@ -1874,7 +1888,7 @@ export default class Inset {
    *
    * @param  {Array}  data  Data to be rendered
    */
-  renderPreviewsHtml(data, force) {
+  renderPreviewsHtml(data, force, requestId) {
     if (
       !data ||
       (this.prvs.length === data.length && !force) ||
@@ -1922,8 +1936,17 @@ export default class Inset {
         })
       )
     ).then(() => {
+      if (
+        this.isDestroyed ||
+        (requestId !== null && requestId !== this.fetching) ||
+        this.imgData === null
+      ) return;
+
       this.imgsWrapper.style.bottom = `${this.compPrvsHeight() + 2}px`;
       this.border.appendChild(this.prvsWrapper);
+      this.renderClusterSize(
+        this.prvData, this.prvs, this.prvWrappers, this.imgsWrapper, true
+      );
     });
 
     return this.previewsRendering;
