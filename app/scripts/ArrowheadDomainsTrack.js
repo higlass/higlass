@@ -236,7 +236,11 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
           this.publish('annotationDrawn', {
             uid,
             viewPos: [drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height],
-            dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd]
+            dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
+            importance: td.importance,
+            info: {
+              patternType: this.options.patternType
+            }
           });
         }
       }
