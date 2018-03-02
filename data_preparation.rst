@@ -184,6 +184,33 @@ This can be done using clodius's aggregate bigwig function:
 The resulting file can be loaded into HiGlass as described in the
 :ref:`loading-into-higlass` section below.
 
+Loading into HiGlass
+^^^^^^^^^^^^^^^^^^^^
+
+Too see .hitile-typed datasets in higlass, use the docker container to load them:
+
+.. code-block:: bash
+
+    docker exec higlass-container python \
+            higlass-server/manage.py ingest_tileset \
+            --filename /tmp/cnvs_hw.hitile \
+            --filetype hitile \
+            --datatype vector
+
+It can also be loaded using a curl commands:
+
+.. code-block:: bash
+    
+    curl -u `cat ~/.higlass-server-login`  \
+        -F "datafile=@cnvs_hw.hitile" \
+        -F "filetype=hitile" \
+        -F "datatype=vector" \
+        -F "coordSystem=hg19" \
+        http://higlass.io:80/api/v1/tilesets/
+
+.. todo:: And navigate to 127.0.0.1:8989, click on the '+' symbol, select a track
+          position, find the dataset in the list of the datasets and click OK to
+          view it. And stuff.
 
 Cooler files
 ------------
@@ -268,33 +295,6 @@ See the *cooler* `docs <http://cooler.readthedocs.io/>`_ for more information.
 
 .. _loading-into-higlass:
 
-Loading into HiGlass
---------------------
-
-Too see .hitile-typed datasets in higlass, use the docker container to load them:
-
-.. code-block:: bash
-
-    docker exec higlass-container python \
-            higlass-server/manage.py ingest_tileset \
-            --filename /tmp/cnvs_hw.hitile \
-            --filetype hitile \
-            --datatype vector
-
-It can also be loaded using a curl commands:
-
-.. code-block:: bash
-    
-    curl -u `cat ~/.higlass-server-login`  \
-        -F "datafile=@cnvs_hw.hitile" \
-        -F "filetype=hitile" \
-        -F "datatype=vector" \
-        -F "coordSystem=hg19" \
-        http://higlass.io:80/api/v1/tilesets/
-
-.. todo:: And navigate to 127.0.0.1:8989, click on the '+' symbol, select a track
-          position, find the dataset in the list of the datasets and click OK to
-          view it. And stuff.
 
 Multivec Files
 --------------
