@@ -58,7 +58,7 @@ const testViewConfig = {
                 uid: 'imtiles',
                 type: 'image-tiles',
                 server: 'http://localhost:8001/api/v1/',
-                tilesetUid: 'gigapan-54825',
+                tilesetUid: 'gigapan-66020',
                 options: {
                   name: 'Gigapan Image 54825'
                 }
@@ -85,7 +85,7 @@ const testViewConfig = {
               },
               {
                 server: 'http://localhost:8001/api/v1/',
-                tilesetUid: 'gigapan-54825',
+                tilesetUid: 'gigapan-66020',
                 uid: 'insets',
                 type: 'insets',
                 datatype: 'image',
@@ -137,7 +137,10 @@ const testViewConfig = {
             annotationTracks: [
               'snapshots',
             ],
-            insetThreshold: 16,
+            insetThreshold: 24,
+            gridSize: 48,
+            minClusterSize: 3,
+            maxClusterDiameter: 96,
           }
         }
       ],
