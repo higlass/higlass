@@ -1788,10 +1788,17 @@ export default class Inset {
       ) return;
 
       this.compImgScale();
-      this.renderClusterSize(
-        data, this.imgs, this.imgWrappers, this.imgsWrapperRight
-      );
       this.imgsWrapper.style.bottom = `${this.compPrvsHeight() + 2}px`;
+
+      if (this.imgs.length > 1) {
+        this.renderClusterSize(
+          data, this.imgs, this.imgWrappers, this.imgsWrapperRight
+        );
+      } else if (this.label.src.size > 8) {
+        this.renderClusterSize(
+          this.prvData, this.prvs, this.prvWrappers, this.imgsWrapper, true
+        );
+      }
     });
 
     return this.imgsRendering;
@@ -1944,9 +1951,6 @@ export default class Inset {
 
       this.imgsWrapper.style.bottom = `${this.compPrvsHeight() + 2}px`;
       this.border.appendChild(this.prvsWrapper);
-      this.renderClusterSize(
-        this.prvData, this.prvs, this.prvWrappers, this.imgsWrapper, true
-      );
     });
 
     return this.previewsRendering;
