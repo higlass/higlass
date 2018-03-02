@@ -111,7 +111,14 @@ function addToOrCreateCluster(element) {
 
   let cluster = closestCluster;
 
-  if (closestCluster && closestCluster.isWithin(element.viewPos, true)) {
+  if (
+    closestCluster &&
+    closestCluster.isWithin(element.viewPos, true) &&
+    (
+      this.combinedDiameter(closestCluster, element) <= closestCluster.diameter ||
+      cluster.diameter < this.maxClusterDiameter
+    )
+  ) {
     this.expandCluster(closestCluster, element);
   } else {
     cluster = this.createCluster(element);
@@ -273,11 +280,20 @@ function evalMethod(zoomed = 0) {
 }
 
 
-function combinedDiameter(clusterA, clusterB) {
-  const minX = min(clusterA.minX, clusterB.minX);
-  const maxX = max(clusterA.maxX, clusterB.maxX);
-  const minY = min(clusterA.minY, clusterB.minY);
-  const maxY = max(clusterA.maxY, clusterB.maxY);
+/**
+ * Compute the combined diameter of a cluster and cluster or cluster and
+ *   annotation.
+ * @param   {AreaCluster|Annotation}  a  Element having minX, maxX, minY, maxY
+ *   display coordinates in pixel.
+ * @param   {AreaCluster|Annotation}  b  Element having minX, maxX, minY, maxY
+ *   display coordinates in pixel.
+ * @return  {number}  Combined Manhattan diameter.
+ */
+function combinedDiameter(a, b) {
+  const minX = min(a.minX, b.minX);
+  const maxX = max(a.maxX, b.maxX);
+  const minY = min(a.minY, b.minY);
+  const maxY = max(a.maxY, b.maxY);
   return max(maxX - minX, maxY - minY);
 }
 
@@ -304,7 +320,10 @@ function evalZoomedOut() {
         clusterA !== clusterB &&
         this.isClusterable(clusterA, clusterB) &&
         clusterA.isWithin(clusterB.bounds, true, this.gridSize * 0.5) &&
-        this.combinedDiameter(clusterA, clusterB) < this.maxClusterDiameter
+        (
+          this.combinedDiameter(clusterA, clusterB) <= max(clusterA.diameter, clusterB.diameter) ||
+          this.combinedDiameter(clusterA, clusterB) < this.maxClusterDiameter
+        )
       ) {
         this.mergeClusters(clusterA, clusterB);
       }

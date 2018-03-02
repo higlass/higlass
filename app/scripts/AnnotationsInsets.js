@@ -105,8 +105,9 @@ class AnnotationsInsets {
     }
 
     this.areaClusterer = new AreaClusterer({
-      gridSize: 50,
-      minClusterSize: 3,
+      gridSize: this.options.gridSize,
+      maxClusterDiameter: this.options.maxClusterDiameter,
+      minClusterSize: this.options.minClusterSize,
       maxZoom: undefined,
       disabled: !!this.options.disableClustering,
       propCheck: propChecks,
