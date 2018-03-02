@@ -298,9 +298,9 @@ function evalZoomedOut() {
   this.clusters.forEach((clusterCurr) => {
     this.clusters.forEach((cluster) => {
       if (
-        this.isClusterable(clusterCurr, cluster) &&
         cluster !== clusterCurr &&
-        clusterCurr.isWithin(cluster.bounds, true, this.gridSize * 0.5)
+        clusterCurr.isWithin(cluster.bounds, true, this.gridSize * 0.5) &&
+        this.isClusterable(clusterCurr, cluster)
       ) {
         this.mergeClusters(clusterCurr, cluster);
       }
@@ -365,7 +365,7 @@ function splitCluster(cluster) {
 
     srcNode = nn;
     [nn] = nearestNeighbor(cluster.members.values, srcNode);
-    d = lDist(nn.center, srcNode);
+    d = lDist(nn.center, srcNode.center);
   }
 
   this.clusters.add(newCluster);
