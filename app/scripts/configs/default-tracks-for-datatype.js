@@ -19,6 +19,12 @@ export const DEFAULT_TRACKS_FOR_DATATYPE = {
   'geo-json': {
     'center': 'geo-json',
   },
+  'gene-annotations': {
+    'top': 'horizontal-gene-annotations',
+    'bottom': 'horizontal-gene-annotations',
+    'left': 'vertical-gene-annotations',
+    'right': 'horizontal-gene-annotations',
+  },
 };
 
 export default DEFAULT_TRACKS_FOR_DATATYPE;

@@ -199,6 +199,9 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
      *
      */
   getMouseOverHtml(trackX, trackY) {
+    if (!this.tilesetInfo)
+      return '';
+
     const tilePos = this.getTilePosAtPosition(trackX, trackY);
 
     let output = "Data value: " + this.getVisibleData(trackX, trackY) + "</br>";
