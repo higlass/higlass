@@ -955,7 +955,7 @@ export class TiledPlot extends React.Component {
             // because "whole" tracks are always drawn on top of each other,
             // the notion of Series is unnecessary and so 'host' is null
             onAddTrack={(newTrack) => {
-              this.props.onTracksAdded([newTrack], 'whole', null);
+              this.props.onTracksAdded([newTrack], newTrack.position, null);
 
               this.handleCloseContextMenu();
             }}
@@ -1401,6 +1401,9 @@ export class TiledPlot extends React.Component {
           height={this.state.height}
           initialXDomain={this.props.initialXDomain}
           initialYDomain={this.props.initialYDomain}
+          xDomainLimits={this.props.xDomainLimits}
+          yDomainLimits={this.props.yDomainLimits}
+          zoomLimits={this.props.zoomLimits}
           isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
           leftWidth={this.leftWidth}
           marginLeft={this.props.horizontalMargin}

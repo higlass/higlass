@@ -26,6 +26,7 @@ const AVAILABLE_WIDTHS = {
   5: { name: '5', value: 5 },
   8: { name: '8', value: 8 },
   13: { name: '13', value: 13 },
+  21: { name: '21', value: 21 },
 };
 const AVAILABLE_WIDTHS_AND_NONE = Object.assign(AVAILABLE_WIDTHS, {
   'none': { name: 'none', value: 'none'}});
@@ -55,6 +56,10 @@ export const OPTIONS_INFO = {
     },
   },
   lineStrokeWidth: {
+    name: 'Stroke Width',
+    inlineOptions: AVAILABLE_WIDTHS,
+  },
+  strokeWidth: {
     name: 'Stroke Width',
     inlineOptions: AVAILABLE_WIDTHS,
   },
@@ -90,21 +95,21 @@ export const OPTIONS_INFO = {
     inlineOptions: {
       epilogos: { name: 'Epilogos',
         values: [
-          '#FFFFFF',
-          '#C0C0C0',
-          '#808080',
-          '#BDB76B',
-          '#E9967A',
-          '#CD5C5C',
-          '#8A91D0',
-          '#66CDAA',
-          '#FFFF00',
           '#FF0000',
-          '#C2E105',
-          '#32CD32',
-          '#006400',
-          '#008000',
           '#FF4500',
+          '#32CD32',
+          '#008000',
+          '#006400',
+          '#C2E105',
+          '#FFFF00',
+          '#66CDAA',
+          '#8A91D0',
+          '#CD5C5C',
+          '#E9967A',
+          '#BDB76B',
+          '#808080',
+          '#C0C0C0',
+          '#FFFFFF'
         ],
       },
       category10: {
@@ -159,6 +164,13 @@ export const OPTIONS_INFO = {
   barOpacity: {
     name: 'Bar opacity',
     inlineOptions: OPACITY_OPTIONS,
+  },
+  barBorder: {
+    name: 'Bar border',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false },
+    },
   },
   rectangleDomainStrokeColor: {
     name: 'Stroke color',

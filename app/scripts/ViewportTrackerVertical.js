@@ -103,7 +103,8 @@ export class ViewportTrackerVertical extends SVGTrack {
       .attr('fill', this.options.projectionFillColor)
       .attr('stroke', this.options.projectionStrokeColor)
       .attr('fill-opacity', this.options.projectionFillOpacity)
-      .attr('stroke-opacity', this.options.projectionStrokeOpacity);
+      .attr('stroke-opacity', this.options.projectionStrokeOpacity)
+      .attr('stroke-width', this.options.strokeWidth);
   }
 
   draw() {

@@ -21,7 +21,7 @@
 Here's some text
 <div style=""></div>
 <div style="margin: auto">
-  <div style="height: 800px; width: 100%; border: 1px solid black;"
+  <div style="height: 600px; width: 600px; border: 1px solid black;"
        id="development-demo">
   </div>
 </div>
@@ -42,32 +42,17 @@ And some other text
     {
       "uid": "a",
       "initialXDomain": [
-        2714033299.521446,
-        2714128552.267376
+        2714009644.377446,
+        2714165675.3664474
       ],
       "tracks": {
         "top": [
-          {
-            "name": "Chromosome Axis",
-            "created": "2017-06-06T17:03:01.273116Z",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "N12wVGG9SPiTkk03yUayUw",
-            "uid": "OWLVfvnDQCyFzOKQVzItFQ",
-            "type": "horizontal-chromosome-labels",
-            "options": {
-              "showMousePosition": false,
-              "mousePositionColor": "#999999"
-            },
-            "width": 800,
-            "height": 30,
-            "position": "top"
-          },
           {
             "name": "Gene Annotations (hg19)",
             "created": "2017-02-05T19:31:52.412319Z",
             "server": "http://higlass.io/api/v1",
             "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "uid": "EjNDhGCnRsSl1UklA4c1AA",
+            "uid": "COyLjpQKS0qL596834bQuw",
             "type": "horizontal-gene-annotations",
             "options": {
               "labelColor": "black",
@@ -79,7 +64,7 @@ And some other text
               "showMousePosition": false,
               "name": "Gene Annotations (hg19)"
             },
-            "width": 800,
+            "width": 20,
             "height": 55,
             "header": "",
             "position": "top"
@@ -94,7 +79,7 @@ And some other text
             "position": "top",
             "options": {
               "labelPosition": "topLeft",
-              "labelColor": "black",
+              "labelColor": "white",
               "labelTextOpacity": 0.4,
               "valueScaling": "exponential",
               "trackBorderWidth": 0,
@@ -102,6 +87,7 @@ And some other text
               "name": "drosophila.multivec.hdf5",
               "scaledHeight": true,
               "backgroundColor": "black",
+              "barBorder": true,
               "colorScale": [
                 "#FF0000",
                 "#FF4500",
@@ -120,52 +106,7 @@ And some other text
                 "#FFFFFF"
               ]
             },
-            "width": 800
-          },
-          {
-            "name": "drosophila.multivec.hdf5",
-            "server": "http://test1.resgen.io/api/v1",
-            "tilesetUid": "Fvy0kNjjQviWt7JnX5UZiQ",
-            "uid": "xassd",
-            "type": "horizontal-multivec",
-            "height": 138,
-            "position": "top",
-            "options": {
-              "labelPosition": "topLeft",
-              "labelColor": "black",
-              "labelTextOpacity": 0.4,
-              "valueScaling": "linear",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "name": "drosophila.multivec.hdf5"
-            },
-            "width": 800
-          },
-          {
-            "name": "all.KL.bed.multires.mv5",
-            "server": "http://test1.resgen.io/api/v1",
-            "tilesetUid": "bQhKcD0nSdSsCyWvddPduA",
-            "uid": "UWxoYI0KTle99G8kd1iTTA",
-            "type": "horizontal-multivec",
-            "height": 97,
-            "position": "top",
-            "options": {
-              "labelPosition": "topLeft",
-              "labelColor": "black",
-              "labelTextOpacity": 0.4,
-              "valueScaling": "linear",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "name": "all.KL.bed.multires.mv5",
-              "colorRange": [
-                "white",
-                "rgba(245,166,35,1.0)",
-                "rgba(208,2,27,1.0)",
-                "black"
-              ],
-              "scaledHeight": true
-            },
-            "width": 800
+            "width": 568
           }
         ],
         "left": [],
@@ -183,8 +124,8 @@ And some other text
         "static": false
       },
       "initialYDomain": [
-        2714264250.657608,
-        2714298541.646267
+        2714317501.937994,
+        2714428481.7259455
       ],
       "genomePositionSearchBoxVisible": true,
       "genomePositionSearchBox": {
@@ -209,7 +150,6 @@ And some other text
     "locksDict": {}
   }
 }
-
   window.higlassApi;
 
   hglib.createHgComponent(

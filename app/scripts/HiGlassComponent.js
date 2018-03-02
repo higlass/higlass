@@ -453,7 +453,7 @@ class HiGlassComponent extends React.Component {
     if (TRACKS_INFO_BY_TYPE[track.type].defaultOptions) {
       if (!track.options) { track.options = JSON.parse(JSON.stringify(TRACKS_INFO_BY_TYPE[track.type].defaultOptions)); } else {
         for (const optionName in TRACKS_INFO_BY_TYPE[track.type].defaultOptions) {
-          track.options[optionName] = track.options[optionName] ?
+          track.options[optionName] = typeof(track.options[optionName]) !== 'undefined' ?
             track.options[optionName] : JSON.parse(JSON.stringify(TRACKS_INFO_BY_TYPE[track.type].defaultOptions[optionName]));
         }
       }
@@ -1858,6 +1858,9 @@ class HiGlassComponent extends React.Component {
     for (const track of looseTracks) {
       const trackObj = this.tiledPlots[viewId].trackRenderer.getTrackObject(track.uid);
 
+      if (!trackObj)
+        continue;
+
       track.width = trackObj.dimensions[0];
       track.height = trackObj.dimensions[1];
     }
@@ -3017,6 +3020,9 @@ class HiGlassComponent extends React.Component {
             horizontalMargin={this.horizontalMargin}
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
+            xDomainLimits={view.xDomainLimits}
+            yDomainLimits={view.yDomainLimits}
+            zoomLimits={view.zoomLimits}
             mouseTool={this.state.mouseTool}
             onChangeTrackType={(trackId, newType) =>
               this.handleChangeTrackType(view.uid, trackId, newType)}
