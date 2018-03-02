@@ -190,8 +190,25 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       scaledHeight: false,
       backgroundColor: 'white',
-      colorScale: 'category10',
-      barBorder: true
+      colorScale:      [
+                        "#FF0000",
+                        "#FF4500",
+                        "#32CD32",
+                        "#008000",
+                        "#006400",
+                        "#C2E105",
+                        "#FFFF00",
+                        "#66CDAA",
+                        "#8A91D0",
+                        "#CD5C5C",
+                        "#E9967A",
+                        "#BDB76B",
+                        "#808080",
+                        "#C0C0C0",
+                        "#FFFFFF"
+                      ],
+      barBorder: true,
+      scaledHeight: true,
     }
   },
   //

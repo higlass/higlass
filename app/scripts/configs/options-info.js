@@ -172,6 +172,13 @@ export const OPTIONS_INFO = {
       no: { name: 'No', value: false },
     },
   },
+  scaledHeight: {
+    name: 'Scaled height',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false },
+    },
+  },
   rectangleDomainStrokeColor: {
     name: 'Stroke color',
     inlineOptions: AVAILABLE_COLORS,
