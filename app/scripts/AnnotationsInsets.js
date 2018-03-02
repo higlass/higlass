@@ -274,7 +274,7 @@ class AnnotationsInsets {
     let addheight = 0;
     if (isWithRepresentatives) {
       // The maximum gallery image might be subject to change
-      const effectiveSize = Math.min(4, cluster.size);
+      const effectiveSize = Math.min(5, cluster.size);
 
       switch (effectiveSize) {
         case 2:
@@ -290,6 +290,11 @@ class AnnotationsInsets {
         case 4:
           addWidth = (width * 1.75 * 1.3) - width;
           addheight = height * 0.70625;
+          break;
+
+        case 5:
+          addWidth = (width * 2.5 * 1.25) - width;
+          addheight = height * 1.5;
           break;
 
         default:

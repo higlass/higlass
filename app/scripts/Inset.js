@@ -1689,7 +1689,7 @@ export default class Inset {
    *
    * @param  {Array}  data  Data to be rendered
    */
-  renderImageHtml(data, force, requestId) {
+  renderImageHtml(data, force) {
     if (
       !data ||
       (this.imgs.length === data.length && !force) ||
@@ -1773,7 +1773,28 @@ export default class Inset {
           this.imgWrappers[i].appendChild(img);
         })
       )
-    );
+    ).then(() => {
+      if (this.label.src.size > data.length && this.options.showClusterSize) {
+        const i = data.length;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = style['inset-cluster-size-wrapper'];
+
+        const clustSize = document.createElement('div');
+        clustSize.className = style['inset-cluster-size'];
+
+        const clustSizeText = document.createElement('div');
+        clustSizeText.className = style['inset-cluster-size-text'];
+        clustSizeText.innerHTML = this.label.src.size;
+        clustSize.appendChild(clustSizeText);
+
+        this.imgWrappers[i] = wrapper;
+        this.imgsWrapperRight.appendChild(wrapper);
+
+        this.imgs[i] = clustSize;
+        this.imgWrappers[i].appendChild(clustSize);
+      }
+    });
 
     return this.imgsRendering;
   }

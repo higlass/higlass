@@ -124,7 +124,8 @@
   flex-grow: 1;
 }
 
-.inset-image-wrapper {
+.inset-image-wrapper,
+.inset-cluster-size-wrapper {
   position: relative;
   flex-grow: 1;
 }
@@ -147,6 +148,26 @@
   background-position: center center;
   background-repeat: no-repeat;
   animation: fade-in $fast $ease;
+}
+
+.inset-cluster-size {
+  position: absolute;
+  top: 1px;
+  right: 0;
+  bottom: 0;
+  left: 1px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.inset-cluster-size-text {
+  width: 100%;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
 }
 
 .inset-image-left-half-middle,
