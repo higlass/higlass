@@ -2,7 +2,7 @@ import FastPriorityQueue from 'fastpriorityqueue';
 
 import { KeySet } from './';
 
-import { lDist } from '../utils';
+import { lDist, max, min } from '../utils';
 
 /**
  * Generate a random HEX string
@@ -56,16 +56,19 @@ function AreaCluster(isAverageCenter = true, padding = 0) {
   this.maxX = 0;
   this.minY = Infinity;
   this.maxY = 0;
+  // Manhatten diameter
+  this.diameter = 0;
 
   // Farthest nearest neighbors
   this.fnns = new FastPriorityQueue((a, b) => a.d > b.d);
 
   // Usually this is the grid size of the clusterer
   this.padding = padding;
+
+  this.isRemoved = false;
 }
 
 /* ------------------------------- Properties ------------------------------- */
-
 
 function getBin() {
   return this.members.values[0].bin;
@@ -92,6 +95,7 @@ function getSize() {
 Object.defineProperty(AreaCluster.prototype, 'size', { get: getSize });
 
 function getType() {
+  if (!this.members.values[0]) console.warn(this.id, this);
   return this.members.values[0].type;
 }
 
@@ -153,6 +157,8 @@ AreaCluster.prototype.delete = function deleteMethod(annotation) {
   this.refresh();
   this.changed();
 
+  if (!this.size) console.error('deleted last member', this.id);
+
   return true;
 };
 
@@ -173,8 +179,18 @@ AreaCluster.prototype.hide = function hide() {
  * Removes the cluster
  */
 AreaCluster.prototype.remove = function remove() {
+  this.cX = null;
+  this.cY = null;
   this.members = null;
-  this.shortestConnections = null;
+  this.isChanged = null;
+  this.minX = null;
+  this.maxX = null;
+  this.minY = null;
+  this.maxY = null;
+  this.diameter = null;
+  this.fnns = null;
+  this.padding = null;
+  this.isRemoved = true;
 };
 
 AreaCluster.prototype.refresh = function refresh() {
@@ -201,10 +217,11 @@ AreaCluster.prototype.show = function show() {
  * @return {google.maps.LatLngBounds} the cluster bounds.
  */
 AreaCluster.prototype.updateBounds = function updateBounds(area) {
-  this.minX = Math.min(this.minX, area.minX);
-  this.maxX = Math.max(this.maxX, area.maxX);
-  this.minY = Math.min(this.minY, area.minY);
-  this.maxY = Math.max(this.maxY, area.maxY);
+  this.minX = min(this.minX, area.minX);
+  this.maxX = max(this.maxX, area.maxX);
+  this.minY = min(this.minY, area.minY);
+  this.maxY = max(this.maxY, area.maxY);
+  this.diameter = max(this.maxX - this.minX, this.maxY - this.minY);
 };
 
 AreaCluster.prototype.updateFnns = function updateFnns(annotation) {
