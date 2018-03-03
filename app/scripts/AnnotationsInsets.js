@@ -346,10 +346,6 @@ class AnnotationsInsets {
    * Create insets.
    */
   createInsets() {
-    // Determine old annotations
-    this.annosToBeDrawnAsInsetsOld = this.annosToBeDrawnAsInsetsPrev
-      .filter(anno => !this.annosToBeDrawnAsInsets.has(anno));
-
     this.clusterAnnotations();
     this.drawInsets(this.positionInsets());
   }
@@ -358,7 +354,6 @@ class AnnotationsInsets {
     // Update clusterer
     this.areaClusterer.update(
       this.annosToBeDrawnAsInsets,
-      this.annosToBeDrawnAsInsetsOld,
       this.zoomed,
       this.bins
     );
@@ -393,7 +388,6 @@ class AnnotationsInsets {
     this.drawnAnnotations = [];
     this.annosToBeDrawnAsInsetsPrev = this.annosToBeDrawnAsInsets.clone();
     this.annosToBeDrawnAsInsets = new KeySet('id');
-    this.annosToBeDrawnAsInsetsOld = new KeySet('id');
     this.drawnAnnoIdsNew = new Set();
     this.drawnAnnoIdsPrev = this.drawnAnnoIds;
     this.drawnAnnoIds = new Set();

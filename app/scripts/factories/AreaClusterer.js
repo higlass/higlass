@@ -58,7 +58,7 @@ Object.defineProperty(AreaClusterer.prototype, 'size', { get: getSize });
  * @param  {KeySet}  elements - The elements to be added.
  * @param  {Boolean}  noDraw - If `true` markers are *not* redrawn.
  */
-function add(elements, noDraw) {
+function add(elements, reDraw = false) {
   elements.forEach((element) => {
     this.elements.add(element);
     if (element.cluster) {
@@ -71,7 +71,21 @@ function add(elements, noDraw) {
     }
   });
 
-  if (!noDraw) this.clusterElements();
+  if (reDraw) this.clusterElements();
+}
+
+function cleanUp(elementsToKeep, reDraw = false) {
+  this.remove(
+    this.elements.filter(element => !elementsToKeep.has(element)), reDraw
+  );
+
+  this.clusters.forEach((cluster) => {
+    // Remove non-existing annotations from cluster. Not sure where they come
+    // from but they sometime appear.
+    this.remove(
+      cluster.members.filter(element => !elementsToKeep.has(element)), reDraw
+    );
+  });
 }
 
 function isClusterable(a, b) {
@@ -416,11 +430,12 @@ function refresh() {
  * @param  {KeySet}  elements - The markers to be remove.
  * @return  {Boolean}  If `true` marker has been removed.
  */
-function remove(elements, noDraw = false) {
+function remove(elements, reDraw = false) {
   const isRemoved = elements
     .translate((element) => {
-      if (element.cluster && !element.cluster.isRemoved) {
-        this.shrinkCluster(element.cluster, element);
+      const clust = element.cluster;
+      if (clust && !clust.isRemoved) {
+        this.shrinkCluster(clust, element);
       }
 
       this.elementsAddedToClusters.delete(element);
@@ -430,7 +445,7 @@ function remove(elements, noDraw = false) {
     })
     .some(elementIsRemoved => elementIsRemoved);
 
-  if (isRemoved && !noDraw) {
+  if (isRemoved && reDraw) {
     this.resetClusters();
     this.clusterElements();
   }
@@ -487,7 +502,7 @@ function resetClusters() {
  * Remove an element from an existing cluster
  */
 function shrinkCluster(cluster, element) {
-  cluster.delete(element, false);
+  cluster.delete(element);
 
   if (cluster.size) {
     this.clustersMaxSize = this.clusters.reduce(
@@ -504,16 +519,15 @@ function shrinkCluster(cluster, element) {
  * Update the clustering, i.e., add and remove elements and re-cluster if
  *   necessary.
  * @param  {KeySet}  elements - The elements to be added.
- * @param  {KeySet}  oldElements - The elements to be added.
  * @param  {number}  zoomed - Determins the zoom stage `-1` refers to zoom
  *   out, `1` refers to zoom in and `0` is no zoom (only panning).
  * @param  {array}  bins - If length greater than zero only cluster within
  *   bins.
  */
-function update(elements, oldElements, zoomed, bins = []) {
+function update(elements, zoomed, bins = []) {
   this.clusters.forEach((cluster) => { cluster.changed(false); });
-  this.add(elements, true);
-  this.remove(oldElements, true);
+  this.cleanUp(elements);
+  this.add(elements);
   this.eval(zoomed);
   this.refresh();
   this.clusterElements(bins);
@@ -526,6 +540,7 @@ Object.assign(AreaClusterer.prototype, {
   getBounds,
   setBounds,
   clear,
+  cleanUp,
   clusterElements,
   combinedDiameter,
   propChecking,
