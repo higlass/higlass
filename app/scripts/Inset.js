@@ -1749,7 +1749,9 @@ export default class Inset {
           if (data.length > 2) {
             intense = 'full';
             if (i === 1) pos = 'first';
-            if (i === data.length - 1) pos = 'last';
+            if (
+              i === data.length - 1 && !this.options.showClusterSize
+            ) pos = 'last';
           }
 
           if (orient && intense && pos) {
