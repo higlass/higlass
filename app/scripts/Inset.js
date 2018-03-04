@@ -719,7 +719,7 @@ export default class Inset {
       this.tilesetInfo.max_zoom,
       Math.ceil(Math.log2(
         (
-          finalRes * (2 ** this.tilesetInfo.max_zoom)
+          finalRes * this.onClickScale * (2 ** this.tilesetInfo.max_zoom)
         ) / (remotePaddedSize / baseRes)
       ))
     ));
