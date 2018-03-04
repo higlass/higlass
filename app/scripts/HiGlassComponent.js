@@ -231,6 +231,7 @@ class HiGlassComponent extends React.Component {
     domEvent.register('mousewheel', window);
     domEvent.register('mouseup', window, true);
     domEvent.register('click', window, true);
+    domEvent.register('mousemove', window);
 
     this.pubSubs = [];
     this.pubSubs.push(
@@ -420,6 +421,7 @@ class HiGlassComponent extends React.Component {
     domEvent.unregister('mousewheel', window);
     domEvent.unregister('mouseup', window);
     domEvent.unregister('click', window);
+    domEvent.unregister('mousemove', window);
 
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];

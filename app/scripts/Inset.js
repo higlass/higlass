@@ -18,6 +18,8 @@ import {
   getAngleBetweenPoints,
   getClusterPropAcc,
   lDist,
+  min,
+  max,
   objToTransformStr,
   removeClass,
 } from './utils';
@@ -30,6 +32,7 @@ const BASE_SCALE = 4;
 const BASE_SCALE_UP = 1.25;
 const PILE_ORIENTATION = 'bottom';
 const PREVIEW_SPACING = 1;
+const XMLNS = 'http://www.w3.org/2000/svg';
 
 const getBaseRes = tilesetInfo => (
   tilesetInfo.max_width /
@@ -140,12 +143,20 @@ export default class Inset {
       );
     }
 
+    if (this.options.leaderLineFading) {
+      this.leaderLinePercentages = Object
+        .keys(this.options.leaderLineFading)
+        .map(percent => +percent)
+        .sort();
+    }
+
     this.mouseOverHandlerBound = this.mouseOverHandler.bind(this);
     this.mouseOutHandlerBound = this.mouseOutHandler.bind(this);
     this.mouseDownHandlerBound = this.mouseDownHandler.bind(this);
     this.mouseClickRightHandlerBound = this.mouseClickRightHandler.bind(this);
     this.mouseUpHandlerBound = this.mouseUpHandler.bind(this);
     this.mouseClickGlobalHandlerBound = this.mouseClickGlobalHandler.bind(this);
+    this.mouseMoveGlobalHandlerBound = this.mouseMoveGlobalHandler.bind(this);
 
     this.initGraphics(options);
   }
@@ -307,11 +318,11 @@ export default class Inset {
    * @param  {number}  width  Width of the border in pixel.
    * @param  {number}  height  Height of the border in pixel.
    */
-  positionBorderHtml(x, y, width, height) {
-    this.border.style.width = `${width}px`;
-    this.border.style.height = `${height}px`;
+  positionBorderHtml(x, y, width, height, dX = 0, dY = 0) {
+    if (width) this.border.style.width = `${width}px`;
+    if (height) this.border.style.height = `${height}px`;
     this.border.__transform__.translate = [
-      { val: x, type: 'px' }, { val: y, type: 'px' }
+      { val: x + dX, type: 'px' }, { val: y + dY, type: 'px' }
     ];
     this.border.style.transform = objToTransformStr(this.border.__transform__);
   }
@@ -390,6 +401,7 @@ export default class Inset {
     // here.
     pubSub.subscribe('mouseup', this.mouseUpHandlerBound);
     pubSub.subscribe('click', this.mouseClickGlobalHandlerBound);
+    pubSub.subscribe('mousemove', this.mouseMoveGlobalHandlerBound);
   }
 
   removeEventListeners() {
@@ -399,6 +411,7 @@ export default class Inset {
     this.border.removeEventListener('contextmenu', this.mouseClickRightHandlerBound);
     pubSub.unsubscribe('mouseup', this.mouseUpHandlerBound);
     pubSub.unsubscribe('click', this.mouseClickGlobalHandlerBound);
+    pubSub.unsubscribe('mousemove', this.mouseMoveGlobalHandlerBound);
   }
 
   /**
@@ -535,15 +548,15 @@ export default class Inset {
    * Compute the truncated endpoints of the leader line
    * @return  {array}  Tuple of the two end points in form of `[x, y]`
    */
-  computerLeaderLineEndpoints() {
+  computerLeaderLineEndpoints(x = this.x, y = this.y) {
     const rectInset = this.computeBorderPosition(
-      this.x, this.y, this.width, this.height, 0, true
+      x, y, this.width, this.height, 0, true
     );
     const rectOrigin = this.computeBorderPosition(
       ...this.computeBorderOriginPosition(), 0, true
     );
 
-    const pInset = [this.x, this.y];
+    const pInset = [x, y];
     const pOrigin = [this.originX, this.originY];
 
     // Get the point on the border of the inset that intersects with the leader
@@ -764,6 +777,9 @@ export default class Inset {
       this.imgsWrapperLeft = null;
       this.imgsWrapperRight = null;
       this.prvsWrapper = null;
+      this.leaderLineGrad = null;
+      this.leaderLineGradGlobal = null;
+      this.leaderLineGradDef = null;
     }
   }
 
@@ -795,9 +811,9 @@ export default class Inset {
    * Draw leader line.
    * @param   {D3.Color}  color  Color.
    */
-  drawLeaderLine(color = this.leaderLineColor) {
+  drawLeaderLine(x = this.x, y = this.y, color = this.leaderLineColor) {
     let pointFrom = [this.originX, this.originY];
-    let pointTo = [this.x, this.y];
+    let pointTo = [x, y];
     let dist = lDist(pointFrom, pointTo);
 
     if (
@@ -805,7 +821,7 @@ export default class Inset {
       this.options.leaderLineFading
     ) {
       // Calculate the truncated start and end points
-      [pointFrom, pointTo] = this.computerLeaderLineEndpoints();
+      [pointFrom, pointTo] = this.computerLeaderLineEndpoints(x, y);
       dist = lDist(pointFrom, pointTo);
     }
 
@@ -871,13 +887,38 @@ export default class Inset {
    * @param   {D3.Color}  color  Color.
    */
   renderleaderLineHtml(pointFrom, pointTo, dist, color) {
-    const ll = this.leaderLine || document.createElement('div');
+    const svg = this.leaderLine || document.createElementNS(
+      XMLNS, 'svg'
+    );
+    svg.setAttribute('class', style['inset-leader-line-wrapper']);
 
-    ll.className = style['inset-leader-line'];
-    ll.style.width = `${dist}px`;
-    ll.style.height = `${this.leaderLineStyle[0]}px`;
+    const width = Math.abs(pointTo[0] - pointFrom[0]);
+    const height = Math.abs(pointTo[1] - pointFrom[1]);
 
-    const _color = this.isHovering ? this.options.selectColor : color;
+    svg.setAttribute('width', max(width, this.leaderLineStyle[0] + 2));
+    svg.setAttribute('height', max(height, this.leaderLineStyle[0] + 2));
+
+    const line = this.leaderLineLine || document.createElementNS(XMLNS, 'line');
+
+    const pointNE = [
+      min(pointFrom[0], pointTo[0]),
+      min(pointFrom[1], pointTo[1]),
+    ];
+
+    const relX1 = pointFrom[0] < pointTo[0] ? 0 : 1;
+    const relY1 = pointFrom[1] < pointTo[1] ? 0 : 1;
+    const relX2 = pointFrom[0] > pointTo[0] ? 0 : 1;
+    const relY2 = pointFrom[1] > pointTo[1] ? 0 : 1;
+
+    line.setAttribute('x1', relX1 * width);
+    line.setAttribute('y1', relY1 * height);
+    line.setAttribute('x2', relX2 * width);
+    line.setAttribute('y2', relY2 * height);
+    line.setAttribute('stroke-width', this.leaderLineStyle[0]);
+
+    const _color = this.isHovering || this.isDragging
+      ? this.options.selectColor
+      : color;
 
     if (this.options.leaderLineStubLength) {
       let stubA = this.leaderLineStubA;
@@ -897,7 +938,7 @@ export default class Inset {
       stubA.style.background = gradientA;
       stubB.style.background = gradientB;
 
-      const width = Math.max(
+      const stubWidth = Math.max(
         this.options.leaderLineStubLength,
         dist * (1 - this.relD)
       );
@@ -906,40 +947,90 @@ export default class Inset {
         + (this.leaderLineStubWidthVariance * this.relD)
       );
 
-      stubA.style.width = `${Math.round(width)}px`;
+      stubA.style.width = `${Math.round(stubWidth)}px`;
       stubA.style.height = `${lineWidth}px`;
-      stubB.style.width = `${Math.round(width)}px`;
+      stubB.style.width = `${Math.round(stubWidth)}px`;
       stubB.style.height = `${lineWidth}px`;
 
       if (
         this.leaderLineStubA !== stubA ||
         this.leaderLineStubB !== stubB
       ) {
-        ll.appendChild(stubA);
-        ll.appendChild(stubB);
+        line.appendChild(stubA);
+        line.appendChild(stubB);
         this.leaderLineStubA = stubA;
         this.leaderLineStubB = stubB;
       }
     } else if (this.options.leaderLineFading) {
-      ll.style.background = this.compCssGrad(
-        _color, this.options.leaderLineFading
-      );
+      this.renderSvgGrad(svg, _color, relX1, relY1, relX2, relY2);
+      line.setAttribute('stroke', `url(#linGrad-${this.id})`);
     } else {
-      ll.style.background = _color.toString();
+      line.setAttribute('stroke', _color.toString());
     }
 
-    this.getClosestRadChange(pointFrom, pointTo);
+    if (this.leaderLineLine !== line) {
+      if (this.leaderLineLine) svg.removeChild(this.leaderLineLine);
+      svg.appendChild(line);
+      this.leaderLineLine = line;
+    }
 
     const yOff = Math.round(this.leaderLineStyle[0] / 2);
 
-    ll.style.left = `${pointFrom[0]}px`;
-    ll.style.top = `${pointFrom[1] - yOff}px`;
-    ll.style.transform = `rotate(${this.leaderLineAngle}rad)`;
+    svg.style.transform = `translate(${pointNE[0]}px, ${pointNE[1] - yOff}px)`;
 
-    if (this.leaderLine !== ll) {
-      this.baseElement.appendChild(ll);
-      this.leaderLine = ll;
+    if (this.leaderLine !== svg) {
+      if (this.leaderLine) this.baseElement.removeChild(this.leaderLine);
+      this.leaderLine = svg;
+      this.baseElement.appendChild(svg);
     }
+  }
+
+  /**
+   * Render one gradient that can be referenced by other rotated gradients.
+   * @param   {[type]}  color  [description]
+   * @return  {[type]}  [description]
+   */
+  renderSvgGrad(svg, color, x1, y1, x2, y2) {
+    if (!this.leaderLineGrad) {
+      this.leaderLineGrad = document.createElementNS(XMLNS, 'defs');
+      svg.appendChild(this.leaderLineGrad);
+    }
+
+    if (!this.leaderLineGradDef) {
+      this.leaderLineGradDef = document.createElementNS(XMLNS, 'linearGradient');
+      this.leaderLineGrad.appendChild(this.leaderLineGradDef);
+    }
+
+    if (this.leaderLineColor !== color) {
+      const _color = d3Color(color);
+
+      if (!this.leaderLineGradStops) {
+        this.leaderLineGradStops = [];
+        this.leaderLinePercentages.forEach((percent) => {
+          _color.opacity = this.options.leaderLineFading[percent];
+
+          const stop = document.createElementNS(XMLNS, 'stop');
+          stop.setAttribute('offset', `${percent * 100}%`);
+          stop.setAttribute('stop-color', _color.toString());
+
+          this.leaderLineGradStops.push(stop);
+
+          this.leaderLineGradDef.appendChild(stop);
+        });
+      } else {
+        this.leaderLineGradStops.forEach((stop, i) => {
+          const percent = this.leaderLinePercentages[i];
+          _color.opacity = this.options.leaderLineFading[percent];
+          stop.setAttribute('stop-color', _color.toString());
+        });
+      }
+    }
+
+    this.leaderLineGradDef.setAttribute('id', `linGrad-${this.id}`);
+    this.leaderLineGradDef.setAttribute('x1', x1);
+    this.leaderLineGradDef.setAttribute('y1', y1);
+    this.leaderLineGradDef.setAttribute('x2', x2);
+    this.leaderLineGradDef.setAttribute('y2', y2);
   }
 
   /**
@@ -1356,6 +1447,7 @@ export default class Inset {
    * @param  {Object}  event  Event object.
    */
   mouseClickHandler(event) {
+    this.scale(this.onClickScale);
     this.mouseHandler.click(event, this);
   }
 
@@ -1413,9 +1505,49 @@ export default class Inset {
       this.focus(true);
     } else {
       this.mouseDown = true;
-      this.scale(this.onClickScale);
       this.mouseHandler.mouseDown(event, this);
+      if (this.options.isDraggingEnabled) {
+        this.dragStartHandler(event);
+      }
     }
+  }
+
+  mouseMoveGlobalHandler(event) {
+    if (this.isDragging) {
+      this.dragHandler(event);
+    }
+  }
+
+  dragStartHandler(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = true;
+    this.dragStartX = event.clientX;
+    this.dragStartY = event.clientY;
+    addClass(this.border, style['inset-dragging']);
+    addClass(this.leaderLine, style['inset-leader-line-dragging']);
+  }
+
+  dragHandler(event) {
+    const dX = event.clientX - this.dragStartX;
+    const dY = event.clientY - this.dragStartY;
+
+    const [vX, vY] = this.computeBorderPosition(
+      this.x, this.y, this.width, this.height
+    );
+
+    this.positionBorderHtml(vX + dX, vY + dY);
+    this.drawLeaderLine(this.x + dX, this.y + dY);
+  }
+
+  dragEndHandler(event) {
+    const dX = event.clientX - this.dragStartX;
+    const dY = event.clientY - this.dragStartY;
+    this.isDragging = false;
+    this.x += dX;
+    this.y += dY;
+    removeClass(this.border, style['inset-dragging']);
+    removeClass(this.leaderLine, style['inset-leader-line-dragging']);
   }
 
   /**
@@ -1440,8 +1572,11 @@ export default class Inset {
    * @param  {Object}  event  Event object.
    */
   mouseUpHandler(event) {
-    if (this.mouseDown) this.mouseClickHandler(event);
-    this.scale();
+    if (this.isDragging) {
+      this.dragEndHandler(event);
+    } else {
+      this.scale();
+    }
     this.mouseDown = false;
     this.mouseHandler.mouseUp(event, this);
   }
