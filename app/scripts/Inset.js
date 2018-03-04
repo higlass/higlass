@@ -83,6 +83,7 @@ export default class Inset {
 
     this.previewsHeight = 0;
     this.prvData = [];
+    this.prv2dData = [];
     this.imgs = [];
     this.prvs = [];
     this.prvWrappers = [];
@@ -163,6 +164,7 @@ export default class Inset {
     this.mouseMoveGlobalHandlerBound = this.mouseMoveGlobalHandler.bind(this);
     this.mouseWheelHandlerBound = this.mouseWheelHandler.bind(this);
     this.swapImgWithImgBound = this.swapImgWithImg.bind(this);
+    this.swapImgWithPrvBound = this.swapImgWithPrv.bind(this);
     this.revertImgFromImgBound = this.revertImgFromImg.bind(this);
 
     this.initGraphics(options);
@@ -1229,6 +1231,7 @@ export default class Inset {
         this.imgData = null;
         this.dataTypes = [];
         this.prvData = [];
+        this.prv2dData = [];
 
         this.inFlight = this.fetchData()
           .then((data) => {
@@ -1247,6 +1250,7 @@ export default class Inset {
               this.dataTypes = data.dataTypes;
               this.imgData = data.fragments;
               this.prvData = data.previews;
+              this.prv2dData = data.previews2d;
               this.inFlight = false;
 
               return this.drawImage(false, data.requestId);
@@ -1277,7 +1281,9 @@ export default class Inset {
         console.error('Image rendering and positioning failed', err);
       });
 
-    const previewsRendered = this.renderPreviews(this.prvData, force, requestId)
+    const previewsRendered = this.renderPreviews(
+      this.prvData, this.prv2dData, force, requestId
+    )
       .catch((err) => {
         console.error('Preview rendering failed', err);
       });
@@ -1554,7 +1560,7 @@ export default class Inset {
     this.isLeafingEnabled = true;
     if (this.prvs.length) {
       this.prvs.forEach((prv) => {
-        prv.addEventListener('mouseenter', this.swapImgWithImgBound);
+        prv.addEventListener('mouseenter', this.swapImgWithPrvBound);
         prv.addEventListener('mouseleave', this.revertImgFromImgBound);
       });
     } else {
@@ -1570,7 +1576,7 @@ export default class Inset {
 
     if (this.prvs.length) {
       this.prvs.forEach((prv) => {
-        prv.removeEventListener('mouseenter', this.swapImgWithImgBound);
+        prv.removeEventListener('mouseenter', this.swapImgWithPrvBound);
         prv.removeEventListener('mouseleave', this.revertImgFromImgBound);
       });
     } else {
@@ -1586,6 +1592,11 @@ export default class Inset {
   swapImgWithImg(event) {
     this.imgs[0].__backgroundImage__ = this.imgs[0].style.backgroundImage;
     this.imgs[0].style.backgroundImage = event.target.style.backgroundImage;
+  }
+
+  swapImgWithPrv(event) {
+    this.imgs[0].__backgroundImage__ = this.imgs[0].style.backgroundImage;
+    this.imgs[0].style.backgroundImage = event.target.__bg2d__;
   }
 
   revertImgFromImg() {
@@ -2127,11 +2138,11 @@ export default class Inset {
    *
    * @param  {Array}  data  Data to be rendered
    */
-  renderPreviewsHtml(data, force, requestId) {
+  renderPreviewsHtml(data1d, data2d, force, requestId) {
     if (
-      !data ||
-      (this.prvs.length === data.length && !force) ||
-      !data.length ||
+      !data1d ||
+      (this.prvs.length === data1d.length && !force) ||
+      !data1d.length ||
       this.isDestroyed
     ) return Promise.resolve();
 
@@ -2148,32 +2159,36 @@ export default class Inset {
       ? style['inset-previews-wrapper-top']
       : style['inset-previews-wrapper-bottom'];
 
-    this.previewsRendering = Promise.all(data
-      .map((preview, i) => this.renderer(preview, this.dataTypes[0])
-        .then((renderedImg) => {
-          if (this.isDestroyed) return;
+    this.previewsRendering = Promise.all(data1d
+      .map((preview, i) => Promise.all([
+        this.renderer(preview, this.dataTypes[0]),
+        data2d[i]
+          ? this.renderer(data2d[i], this.dataTypes[0])
+          : Promise.resolve(false)
+      ]).then((renderedImgs) => {
+        if (this.isDestroyed) return;
 
-          this.prvData[i] = renderedImg;
+        this.prvData[i] = renderedImgs[0];
 
-          this.previewsHeight += renderedImg.height;
+        this.previewsHeight += renderedImgs[0].height;
 
-          this.prvWrappers[i] = document.createElement('div');
-          this.prvWrappers[i].className = style['inset-preview-wrapper'];
-          this.prvsWrapper.appendChild(this.prvWrappers[i]);
+        this.prvWrappers[i] = document.createElement('div');
+        this.prvWrappers[i].className = style['inset-preview-wrapper'];
+        this.prvsWrapper.appendChild(this.prvWrappers[i]);
 
-          this.prvs[i] = document.createElement('div');
-          this.prvs[i].className = style['inset-preview'];
-          this.prvs[i].style.backgroundImage = `url(${renderedImg.toDataURL()})`;
-          this.prvs[i].__transform__ = {};
+        this.prvs[i] = document.createElement('div');
+        this.prvs[i].className = style['inset-preview'];
+        this.prvs[i].style.backgroundImage = `url(${renderedImgs[0].toDataURL()})`;
+        if (renderedImgs[1]) this.prvs[i].__bg2d__ = `url(${renderedImgs[1].toDataURL()})`;
+        this.prvs[i].__transform__ = {};
 
-          if (this.dataType === 'cooler') {
-            // Enable nearest-neighbor scaling
-            this.prvs[i].style.imageRendering = 'pixelated';
-          }
+        if (this.dataType === 'cooler') {
+          // Enable nearest-neighbor scaling
+          this.prvs[i].style.imageRendering = 'pixelated';
+        }
 
-          this.prvWrappers[i].appendChild(this.prvs[i]);
-        })
-      )
+        this.prvWrappers[i].appendChild(this.prvs[i]);
+      }))
     ).then(() => {
       if (
         this.isDestroyed ||
