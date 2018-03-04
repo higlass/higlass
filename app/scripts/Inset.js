@@ -1037,7 +1037,13 @@ export default class Inset {
     if (!this.dragIndicator) {
       this.dragIndicator = document.createElement('div');
       this.dragIndicator.className = style['drag-indicator'];
-      addEventListenerOnce(this.dragIndicator, 'click', this.unsetDragged.bind(this));
+      addEventListenerOnce(
+        this.dragIndicator, 'click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          this.unsetDragged();
+        }
+      );
 
       const icon = createIcon(BROKEN_LINK);
       icon.setAttribute('class', style['drag-indicator-icon']);
