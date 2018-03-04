@@ -61,6 +61,18 @@ LabelCluster.prototype.compDimPos = function compDimPos() {
   return this;
 };
 
+LabelCluster.prototype.connect = function connect() {
+  Label.prototype.connect.call(this);
+
+  this.src.connect();
+};
+
+LabelCluster.prototype.disconnect = function disconnect() {
+  Label.prototype.disconnect.call(this);
+
+  this.src.disconnect();
+};
+
 LabelCluster.prototype.setDim = function setDim(width, height) {
   this.width = width;
   this.height = height;

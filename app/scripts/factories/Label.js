@@ -7,6 +7,9 @@ function Label(id, t = 1.0) {
   // Between 0 and 1. 0 means there is no penalty for the distance to the origin
   this.locality = 1;
 
+  // Do not cluster element on disconnect
+  this.isDisconnected = false;
+
   return this;
 }
 
@@ -19,6 +22,16 @@ function getDataPos() {
 Object.defineProperty(Label.prototype, 'dataPos', { get: getDataPos });
 
 /* --------------------------------- Methods -------------------------------- */
+
+Label.prototype.connect = function connect() {
+  this.locality = 1;
+  this.isDisconnected = false;
+};
+
+Label.prototype.disconnect = function disconnect() {
+  this.locality = 0;
+  this.isDisconnected = true;
+};
 
 Label.prototype.setLocality = function setLocality(locality) {
   this.locality = max(0, min(1, toInt(locality)));

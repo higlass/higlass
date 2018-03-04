@@ -61,14 +61,6 @@ Object.defineProperty(AreaClusterer.prototype, 'size', { get: getSize });
 function add(elements, reDraw = false) {
   elements.forEach((element) => {
     this.elements.add(element);
-    if (element.cluster) {
-      if (this.clusters.has(element.cluster)) {
-        element.cluster.show(element);
-      } else {
-        // Something got messed up. Let's clear the cluster assignment.
-        element.cluster = undefined;
-      }
-    }
   });
 
   if (reDraw) this.clusterElements();
@@ -107,7 +99,7 @@ function addToOrCreateCluster(element) {
   if (!this.disabled) {
     this.clusters
       .filter(cluster => (
-        !cluster.isHidden &&
+        !cluster.isDisconnected &&
         cluster.diameter < this.maxClusterDiameter &&
         this.isClusterable(cluster, element)
       ))
@@ -331,6 +323,8 @@ function evalZoomedOut() {
       if (
         !clusterA.isRemoved &&
         !clusterB.isRemoved &&
+        !clusterA.isDisconnected &&
+        !clusterB.isDisconnected &&
         clusterA !== clusterB &&
         this.isClusterable(clusterA, clusterB) &&
         clusterA.isWithin(clusterB.bounds, true, this.gridSize * 0.5) &&
@@ -367,7 +361,7 @@ function evalZoomedIn() {
       // To avoid to frequent splitting and merging we only split when the
       // farthest neighbor is twice as far as allowed for being within the
       // bounds
-      if (d > maxD) {
+      if (d > maxD && !cluster.isDisconnected) {
         this.splitCluster(cluster);
       }
     });

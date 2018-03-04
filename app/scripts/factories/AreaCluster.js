@@ -66,6 +66,7 @@ function AreaCluster(isAverageCenter = true, padding = 0) {
   this.padding = padding;
 
   this.isRemoved = false;
+  this.isDisconnected = false;
 }
 
 /* ------------------------------- Properties ------------------------------- */
@@ -141,6 +142,10 @@ AreaCluster.prototype.changed = function changed(isChanged = true) {
   this.isChanged = isChanged;
 };
 
+AreaCluster.prototype.connect = function connect() {
+  this.isDisconnected = false;
+};
+
 AreaCluster.prototype.delete = function deleteMethod(annotation) {
   if (!this.members.has(annotation)) return false;
 
@@ -160,6 +165,10 @@ AreaCluster.prototype.delete = function deleteMethod(annotation) {
   return true;
 };
 
+AreaCluster.prototype.disconnect = function disconnect() {
+  this.isDisconnected = true;
+};
+
 AreaCluster.prototype.getAvgDataProjPos = function getAvgDataProjPos() {
   return [
     this.members.reduce((sum, member) => sum + member.minXDataProj, 0),
@@ -167,10 +176,6 @@ AreaCluster.prototype.getAvgDataProjPos = function getAvgDataProjPos() {
     this.members.reduce((sum, member) => sum + member.minYDataProj, 0),
     this.members.reduce((sum, member) => sum + member.maxYDataProj, 0),
   ];
-};
-
-AreaCluster.prototype.hide = function hide() {
-  this.isHidden = true;
 };
 
 /**
@@ -203,10 +208,6 @@ AreaCluster.prototype.refresh = function refresh() {
 
   this.cX = (this.minX + this.maxX) / 2;
   this.cY = (this.minY + this.maxY) / 2;
-};
-
-AreaCluster.prototype.show = function show() {
-  this.isHidden = false;
 };
 
 /**

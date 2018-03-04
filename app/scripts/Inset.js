@@ -853,7 +853,7 @@ export default class Inset {
 
   setDragged() {
     this.isDragged = true;
-    this.label.setLocality(0);
+    this.label.disconnect();
     this.label.x = this.x;
     this.label.y = this.y;
     this.renderDragIndicator();
@@ -861,7 +861,7 @@ export default class Inset {
 
   unsetDragged() {
     this.isDragged = false;
-    this.label.setLocality(1);
+    this.label.connect();
     this.removeDragIndicator();
   }
 
