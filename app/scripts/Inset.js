@@ -1917,7 +1917,9 @@ export default class Inset {
             intense = 'full';
             if (i === 1) pos = 'first';
             if (
-              i === data.length - 1 && !this.options.showClusterSize
+              i === data.length - 1 && (
+                !this.options.showClusterSize || i === this.label.src.size - 1
+              )
             ) pos = 'last';
           }
 
