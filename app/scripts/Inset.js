@@ -567,9 +567,6 @@ export default class Inset {
     const rectInset = this.computeBorderPosition(
       x, y, this.width, this.height, 0, true
     );
-    const rectOrigin = this.computeBorderPosition(
-      ...this.computeBorderOriginPosition(), 0, true
-    );
 
     const pInset = [x, y];
     const pOrigin = [this.originX, this.originY];
@@ -592,8 +589,17 @@ export default class Inset {
     const pInsetNew = pOrigin.slice();
     clip(pInset.slice(), pInsetNew, rectInset);
 
-    const pOriginNew = pInset.slice();
-    clip(pOriginNew, pOrigin.slice(), rectOrigin);
+    let pOriginNew = pOrigin;
+    if (this.label.src.size === 1) {
+      // Since we display a hull instead of the bounding box for a group of more
+      // than 1 annotation cutting of by the bounding box looks odd, so let's
+      // not do that.
+      const rectOrigin = this.computeBorderPosition(
+        ...this.computeBorderOriginPosition(), 0, true
+      );
+      pOriginNew = pInset.slice();
+      clip(pOriginNew, pOrigin.slice(), rectOrigin);
+    }
 
     return [pInsetNew, pOriginNew];
   }
