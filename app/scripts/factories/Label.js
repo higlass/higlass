@@ -1,6 +1,12 @@
+import { max, min, toInt } from '../utils';
+
 function Label(id, t = 1.0) {
   this.id = id;
   this.t = t;
+
+  // Between 0 and 1. 0 means there is no penalty for the distance to the origin
+  this.locality = 1;
+
   return this;
 }
 
@@ -13,6 +19,10 @@ function getDataPos() {
 Object.defineProperty(Label.prototype, 'dataPos', { get: getDataPos });
 
 /* --------------------------------- Methods -------------------------------- */
+
+Label.prototype.setLocality = function setLocality(locality) {
+  this.locality = max(0, min(1, toInt(locality)));
+};
 
 Label.prototype.setSrc = function setSrc(src) {
   this.src = src;

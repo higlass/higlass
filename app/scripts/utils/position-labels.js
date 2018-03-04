@@ -56,7 +56,7 @@ const energy = (index) => {
   // let theta = 0;
 
   // penalty for length of leader line
-  ener += Math.abs(dist - distCenterToBorder) * wLen;
+  ener += Math.abs(dist - distCenterToBorder) * wLen * l.locality;
 
   // label orientation bias (Fritz: ignored for now)
   // dx /= dist;
