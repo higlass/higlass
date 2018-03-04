@@ -777,9 +777,6 @@ export default class Inset {
       this.imgsWrapperLeft = null;
       this.imgsWrapperRight = null;
       this.prvsWrapper = null;
-      this.leaderLineGrad = null;
-      this.leaderLineGradGlobal = null;
-      this.leaderLineGradDef = null;
     }
   }
 
@@ -811,7 +808,7 @@ export default class Inset {
    * Draw leader line.
    * @param   {D3.Color}  color  Color.
    */
-  drawLeaderLine(x = this.x, y = this.y, color = this.leaderLineColor) {
+  drawLeaderLine(x = this.x, y = this.y, color = this.options.leaderLineColor) {
     let pointFrom = [this.originX, this.originY];
     let pointTo = [x, y];
     let dist = lDist(pointFrom, pointTo);
@@ -887,34 +884,14 @@ export default class Inset {
    * @param   {D3.Color}  color  Color.
    */
   renderleaderLineHtml(pointFrom, pointTo, dist, color) {
-    const svg = this.leaderLine || document.createElementNS(
-      XMLNS, 'svg'
-    );
-    svg.setAttribute('class', style['inset-leader-line-wrapper']);
+    const line = this.leaderLine || document.createElement('div');
 
-    const width = Math.abs(pointTo[0] - pointFrom[0]);
-    const height = Math.abs(pointTo[1] - pointFrom[1]);
+    line.className = style['inset-leader-line'];
+    line.style.width = `${dist}px`;
+    line.style.height = `${this.leaderLineStyle[0]}px`;
 
-    svg.setAttribute('width', max(width, this.leaderLineStyle[0] + 2));
-    svg.setAttribute('height', max(height, this.leaderLineStyle[0] + 2));
-
-    const line = this.leaderLineLine || document.createElementNS(XMLNS, 'line');
-
-    const pointNE = [
-      min(pointFrom[0], pointTo[0]),
-      min(pointFrom[1], pointTo[1]),
-    ];
-
-    const relX1 = pointFrom[0] < pointTo[0] ? 0 : 1;
-    const relY1 = pointFrom[1] < pointTo[1] ? 0 : 1;
-    const relX2 = pointFrom[0] > pointTo[0] ? 0 : 1;
-    const relY2 = pointFrom[1] > pointTo[1] ? 0 : 1;
-
-    line.setAttribute('x1', relX1 * width);
-    line.setAttribute('y1', relY1 * height);
-    line.setAttribute('x2', relX2 * width);
-    line.setAttribute('y2', relY2 * height);
-    line.setAttribute('stroke-width', this.leaderLineStyle[0]);
+    if (this.isDragging) addClass(line, style['inset-leader-line-dragging']);
+    else removeClass(line, style['inset-leader-line-dragging']);
 
     const _color = this.isHovering || this.isDragging
       ? this.options.selectColor
@@ -938,18 +915,19 @@ export default class Inset {
       stubA.style.background = gradientA;
       stubB.style.background = gradientB;
 
-      const stubWidth = Math.max(
+      const relD = this.isDragging ? 0 : this.relD;
+
+      const width = Math.max(
         this.options.leaderLineStubLength,
-        dist * (1 - this.relD)
+        dist * (1 - relD)
       );
       const lineWidth = (
-        this.leaderLineStubWidthMin
-        + (this.leaderLineStubWidthVariance * this.relD)
+        this.leaderLineStubWidthMin + (this.leaderLineStubWidthVariance * relD)
       );
 
-      stubA.style.width = `${Math.round(stubWidth)}px`;
+      stubA.style.width = `${Math.round(width)}px`;
       stubA.style.height = `${lineWidth}px`;
-      stubB.style.width = `${Math.round(stubWidth)}px`;
+      stubB.style.width = `${Math.round(width)}px`;
       stubB.style.height = `${lineWidth}px`;
 
       if (
@@ -962,75 +940,25 @@ export default class Inset {
         this.leaderLineStubB = stubB;
       }
     } else if (this.options.leaderLineFading) {
-      this.renderSvgGrad(svg, _color, relX1, relY1, relX2, relY2);
-      line.setAttribute('stroke', `url(#linGrad-${this.id})`);
+      line.style.background = this.compCssGrad(
+        _color, this.options.leaderLineFading
+      );
     } else {
-      line.setAttribute('stroke', _color.toString());
+      line.style.background = _color.toString();
     }
 
-    if (this.leaderLineLine !== line) {
-      if (this.leaderLineLine) svg.removeChild(this.leaderLineLine);
-      svg.appendChild(line);
-      this.leaderLineLine = line;
-    }
+    this.getClosestRadChange(pointFrom, pointTo);
 
     const yOff = Math.round(this.leaderLineStyle[0] / 2);
 
-    svg.style.transform = `translate(${pointNE[0]}px, ${pointNE[1] - yOff}px)`;
+    line.style.left = `${pointFrom[0]}px`;
+    line.style.top = `${pointFrom[1] - yOff}px`;
+    line.style.transform = `rotate(${this.leaderLineAngle}rad)`;
 
-    if (this.leaderLine !== svg) {
-      if (this.leaderLine) this.baseElement.removeChild(this.leaderLine);
-      this.leaderLine = svg;
-      this.baseElement.appendChild(svg);
+    if (this.leaderLine !== line) {
+      this.baseElement.appendChild(line);
+      this.leaderLine = line;
     }
-  }
-
-  /**
-   * Render one gradient that can be referenced by other rotated gradients.
-   * @param   {[type]}  color  [description]
-   * @return  {[type]}  [description]
-   */
-  renderSvgGrad(svg, color, x1, y1, x2, y2) {
-    if (!this.leaderLineGrad) {
-      this.leaderLineGrad = document.createElementNS(XMLNS, 'defs');
-      svg.appendChild(this.leaderLineGrad);
-    }
-
-    if (!this.leaderLineGradDef) {
-      this.leaderLineGradDef = document.createElementNS(XMLNS, 'linearGradient');
-      this.leaderLineGrad.appendChild(this.leaderLineGradDef);
-    }
-
-    if (this.leaderLineColor !== color) {
-      const _color = d3Color(color);
-
-      if (!this.leaderLineGradStops) {
-        this.leaderLineGradStops = [];
-        this.leaderLinePercentages.forEach((percent) => {
-          _color.opacity = this.options.leaderLineFading[percent];
-
-          const stop = document.createElementNS(XMLNS, 'stop');
-          stop.setAttribute('offset', `${percent * 100}%`);
-          stop.setAttribute('stop-color', _color.toString());
-
-          this.leaderLineGradStops.push(stop);
-
-          this.leaderLineGradDef.appendChild(stop);
-        });
-      } else {
-        this.leaderLineGradStops.forEach((stop, i) => {
-          const percent = this.leaderLinePercentages[i];
-          _color.opacity = this.options.leaderLineFading[percent];
-          stop.setAttribute('stop-color', _color.toString());
-        });
-      }
-    }
-
-    this.leaderLineGradDef.setAttribute('id', `linGrad-${this.id}`);
-    this.leaderLineGradDef.setAttribute('x1', x1);
-    this.leaderLineGradDef.setAttribute('y1', y1);
-    this.leaderLineGradDef.setAttribute('x2', x2);
-    this.leaderLineGradDef.setAttribute('y2', y2);
   }
 
   /**

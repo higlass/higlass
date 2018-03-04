@@ -51,7 +51,7 @@
 
 .inset-focus,
 .inset-dragging {
-  z-index: 2;
+  z-index: 3;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.6),
               0 2px 6px 0 rgba(0, 0, 0, 0.5),
               0 3px 22px 0 rgba(0, 0, 0, 1);
@@ -63,9 +63,15 @@
               box-shadow $fast $ease;
 }
 
-.inset-leader-line-wrapper {
+.inset-leader-line {
   position: absolute;
-  // transition: transform $fast $ease;
+  transition: transform $fast $ease;
+  transform-origin: center left;
+}
+
+.inset-leader-line-dragging {
+  z-index: 2;
+  transition: none;
 }
 
 .inset-leader-line-stub,
@@ -89,10 +95,6 @@
 
 .inset-leader-line-stub-right {
   right: 0;
-}
-
-.inset-leader-line-dragging {
-  transition: none;
 }
 
 .inset-images-wrapper {
