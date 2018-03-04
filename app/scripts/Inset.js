@@ -162,6 +162,8 @@ export default class Inset {
     this.mouseClickGlobalHandlerBound = this.mouseClickGlobalHandler.bind(this);
     this.mouseMoveGlobalHandlerBound = this.mouseMoveGlobalHandler.bind(this);
     this.mouseWheelHandlerBound = this.mouseWheelHandler.bind(this);
+    this.swapImgWithImgBound = this.swapImgWithImg.bind(this);
+    this.revertImgFromImgBound = this.revertImgFromImg.bind(this);
 
     this.initGraphics(options);
   }
@@ -208,9 +210,10 @@ export default class Inset {
   }
 
   compPrvsHeight() {
+    const scaleExtra = this.isRenderToCanvas ? this.scaleExtra : 1;
     return this.prvs.length
       ? (
-        (this.previewsHeight * this.scaleBase * this.scaleExtra * this.imScale) +
+        (this.previewsHeight * this.scaleBase * scaleExtra * this.imScale) +
         ((this.prvs.length - 1) * this.previewSpacing)
       )
       : 0;
@@ -1467,6 +1470,7 @@ export default class Inset {
       this.scale(this.onClickScale);
       this.isScaledUp = true;
       this.border.style.zIndex = 10;
+      this.addLeafListeners();
     }
   }
 
@@ -1542,7 +1546,50 @@ export default class Inset {
     this.focus();
     this.focusOrigin();
     this.drawLeaderLine();
+    if (this.isScaledUp) this.addLeafListeners();
     this.mouseHandler.mouseOver(event, this);
+  }
+
+  addLeafListeners() {
+    this.isLeafingEnabled = true;
+    if (this.prvs.length) {
+      this.prvs.forEach((prv) => {
+        prv.addEventListener('mouseenter', this.swapImgWithImgBound);
+        prv.addEventListener('mouseleave', this.revertImgFromImgBound);
+      });
+    } else {
+      this.imgs.slice(1, 4).forEach((img) => {
+        img.addEventListener('mouseenter', this.swapImgWithImgBound);
+        img.addEventListener('mouseleave', this.revertImgFromImgBound);
+      });
+    }
+  }
+
+  removeLeafListeners() {
+    if (!this.isLeafingEnabled) return;
+
+    if (this.prvs.length) {
+      this.prvs.forEach((prv) => {
+        prv.removeEventListener('mouseenter', this.swapImgWithImgBound);
+        prv.removeEventListener('mouseleave', this.revertImgFromImgBound);
+      });
+    } else {
+      this.imgs.slice(1, 4).forEach((img) => {
+        img.removeEventListener('mouseenter', this.swapImgWithImgBound);
+        img.removeEventListener('mouseleave', this.revertImgFromImgBound);
+      });
+    }
+
+    this.isLeafingEnabled = false;
+  }
+
+  swapImgWithImg(event) {
+    this.imgs[0].__backgroundImage__ = this.imgs[0].style.backgroundImage;
+    this.imgs[0].style.backgroundImage = event.target.style.backgroundImage;
+  }
+
+  revertImgFromImg() {
+    this.imgs[0].style.backgroundImage = this.imgs[0].__backgroundImage__;
   }
 
   /**
@@ -1555,6 +1602,7 @@ export default class Inset {
     this.blur();
     this.originBlur();
     this.drawLeaderLine();
+    this.removeLeafListeners();
     this.mouseHandler.mouseOut(event, this);
   }
 
@@ -2113,9 +2161,9 @@ export default class Inset {
           this.prvWrappers[i].className = style['inset-preview-wrapper'];
           this.prvsWrapper.appendChild(this.prvWrappers[i]);
 
-          this.prvs[i] = document.createElement('img');
+          this.prvs[i] = document.createElement('div');
           this.prvs[i].className = style['inset-preview'];
-          this.prvs[i].src = renderedImg.toDataURL();
+          this.prvs[i].style.backgroundImage = `url(${renderedImg.toDataURL()})`;
           this.prvs[i].__transform__ = {};
 
           if (this.dataType === 'cooler') {
