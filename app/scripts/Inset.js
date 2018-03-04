@@ -18,6 +18,7 @@ import {
   flatten,
   getAngleBetweenPoints,
   getClusterPropAcc,
+  hasParent,
   lDist,
   objToTransformStr,
   removeClass,
@@ -34,6 +35,7 @@ const BASE_SCALE_UP = 1.25;
 const PILE_ORIENTATION = 'bottom';
 const PREVIEW_SPACING = 1;
 const DRAGGED_THRES = 6;
+const MOUSE_CLICK_TIME = 250;
 
 const getBaseRes = tilesetInfo => (
   tilesetInfo.max_width /
@@ -154,6 +156,7 @@ export default class Inset {
     this.mouseOverHandlerBound = this.mouseOverHandler.bind(this);
     this.mouseOutHandlerBound = this.mouseOutHandler.bind(this);
     this.mouseDownHandlerBound = this.mouseDownHandler.bind(this);
+    this.mouseClickHandlerBound = this.mouseClickHandler.bind(this);
     this.mouseClickRightHandlerBound = this.mouseClickRightHandler.bind(this);
     this.mouseUpHandlerBound = this.mouseUpHandler.bind(this);
     this.mouseClickGlobalHandlerBound = this.mouseClickGlobalHandler.bind(this);
@@ -278,10 +281,11 @@ export default class Inset {
    */
   styleBorderHtml(fill, radius, extraWidth = 0) {
     const _fill = this.isPermanentFocus ? this.selectColor : fill;
+    const _extraWidth = this.isScaledUp ? 0 : extraWidth;
 
     this.border.style.background = _fill.toString();
     this.border.style.borderColor = _fill.toString();
-    this.border.style.borderWidth = `${extraWidth}px`;
+    this.border.style.borderWidth = `${_extraWidth}px`;
     this.border.style.borderRadius = `${radius}px`;
 
     if (this.isHovering) {
@@ -397,6 +401,9 @@ export default class Inset {
       'mousedown', this.mouseDownHandlerBound
     );
     this.border.addEventListener(
+      'click', this.mouseClickHandlerBound
+    );
+    this.border.addEventListener(
       'contextmenu', this.mouseClickRightHandlerBound
     );
     this.border.addEventListener(
@@ -414,6 +421,7 @@ export default class Inset {
     this.border.removeEventListener('mouseenter', this.mouseOverHandlerBound);
     this.border.removeEventListener('mouseleave', this.mouseOutHandlerBound);
     this.border.removeEventListener('mousedown', this.mouseDownHandlerBound);
+    this.border.removeEventListener('click', this.mouseClickHandlerBound);
     this.border.removeEventListener('contextmenu', this.mouseClickRightHandlerBound);
     this.border.removeEventListener('wheel', this.mouseWheelHandlerBound);
     pubSub.unsubscribe('mouseup', this.mouseUpHandlerBound);
@@ -1443,6 +1451,20 @@ export default class Inset {
     return [width, height];
   }
 
+  scaleUp() {
+    if (!this.isScaledUp) {
+      this.scale(this.onClickScale);
+      this.isScaledUp = true;
+      this.border.style.zIndex = 10;
+    }
+  }
+
+  scaleDown() {
+    this.scale();
+    this.isScaledUp = false;
+    this.border.style.zIndex = null;
+  }
+
 
   /**
    * Initialize line style of the border and leader line graphics.
@@ -1461,16 +1483,31 @@ export default class Inset {
    * @param  {Object}  event  Event object.
    */
   mouseClickHandler(event) {
-    this.scale(this.onClickScale);
+    event.preventDefault();
+    event.stopPropagation();
+
+    const dT = performance.now() - this.mouseDownTime;
+
+    if (this.isScaledUp) this.scaleDown();
+    else if (dT < MOUSE_CLICK_TIME) this.scaleUp();
+
     this.mouseHandler.click(event, this);
   }
 
   /**
    * Global mouse click handler.
    */
-  mouseClickGlobalHandler() {
-    this.isPermanentFocus = false;
-    this.drawBorder();
+  mouseClickGlobalHandler(event) {
+    if (hasParent(event.target, this.border)) return;
+
+    if (this.isPermanentFocus) {
+      this.isPermanentFocus = false;
+      this.drawBorder();
+    }
+
+    if (this.isScaledUp) {
+      this.scaleDown();
+    }
   }
 
   /**
@@ -1519,11 +1556,14 @@ export default class Inset {
       this.focus(true);
     } else {
       this.mouseDown = true;
+      this.mouseDownTime = performance.now();
       this.mouseHandler.mouseDown(event, this);
       if (this.options.isDraggingEnabled) {
         this.dragStartHandler(event);
       }
     }
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   mouseMoveGlobalHandler(event) {
@@ -1554,11 +1594,7 @@ export default class Inset {
    * @param  {Object}  event  Event object.
    */
   mouseUpHandler(event) {
-    if (this.isDragging) {
-      this.dragEndHandler(event);
-    } else {
-      this.scale();
-    }
+    if (this.isDragging) this.dragEndHandler(event);
     this.mouseDown = false;
     this.mouseHandler.mouseUp(event, this);
     if (this.dragIndicator) this.renderDragIndicator();
@@ -2101,9 +2137,9 @@ export default class Inset {
     }
   }
 
-  smoothTransitions(unset = false) {
-    if (unset) removeClass(this.border, style['inset-smooth-transition']);
-    else addClass(this.border, style['inset-smooth-transition']);
+  fastTransition(unset = false) {
+    if (unset) removeClass(this.border, style['inset-fast-transition']);
+    else addClass(this.border, style['inset-fast-transition']);
   }
 
   /**
@@ -2241,11 +2277,11 @@ export default class Inset {
    */
   scaleHtml(amount = 1) {
     if (this.scaleExtra === amount) return;
-    this.smoothTransitions();
+    this.fastTransition();
     this.checkTransformOrigin();
 
     addEventListenerOnce(
-      this.border, 'transitionend', () => { this.smoothTransitions(true); }
+      this.border, 'transitionend', () => { this.fastTransition(true); }
     );
 
     this.border.__transform__.scale = [amount, amount];

@@ -75,6 +75,8 @@ export default class Insets2dTrack extends PixiTrack {
       forEach(updateBaseEl)(this.parentElement.childNodes);
     }
 
+    this.mouseDownHandlerBound = this.mouseDownHandler.bind(this);
+    this.mouseUpHandlerBound = this.mouseUpHandler.bind(this);
     this.initBaseEl();
 
     this.positioning.offsetX = this.positioning.offsetX || 0;
@@ -101,14 +103,14 @@ export default class Insets2dTrack extends PixiTrack {
     this.insetsInPreparation = new KeySet();
 
     this.insetMouseHandler = {
-      click: this.clickHandler.bind(this),
-      clickRight: this.clickRightHandler.bind(this),
-      mouseOver: this.mouseOverHandler.bind(this),
-      mouseOut: this.mouseOutHandler.bind(this),
-      mouseDown: this.mouseDownHandler.bind(this),
-      mouseDownRight: this.mouseDownHandler.bind(this),
-      mouseUp: this.mouseUpHandler.bind(this),
-      mouseUpRight: this.mouseUpHandler.bind(this),
+      click: this.clickInsetHandler.bind(this),
+      clickRight: this.clickRightInsetHandler.bind(this),
+      mouseOver: this.mouseOverInsetHandler.bind(this),
+      mouseOut: this.mouseOutInsetHandler.bind(this),
+      mouseDown: this.mouseDownInsetHandler.bind(this),
+      mouseDownRight: this.mouseDownInsetHandler.bind(this),
+      mouseUp: this.mouseUpInsetHandler.bind(this),
+      mouseUpRight: this.mouseUpInsetHandler.bind(this),
     };
 
     this.pubSubs.push(
@@ -365,6 +367,9 @@ export default class Insets2dTrack extends PixiTrack {
     }
 
     this.parentElement.appendChild(this.baseElement);
+
+    this.baseElement.addEventListener('mousedown', this.mouseDownHandlerBound);
+    this.baseElement.addEventListener('mouseup', this.mouseUpHandlerBound);
   }
 
   initInset(
@@ -407,9 +412,9 @@ export default class Insets2dTrack extends PixiTrack {
     ]);
   }
 
-  clickHandler(/* event, inset */) {}
+  clickInsetHandler(/* event, inset */) {}
 
-  clickRightHandler(event, inset) {
+  clickRightInsetHandler(event, inset) {
     // Do never forward the contextmenu event when ALT is being hold down.
     if (event.altKey) return;
 
@@ -422,15 +427,19 @@ export default class Insets2dTrack extends PixiTrack {
     pubSub.publish('contextmenu', event);
   }
 
-  mouseOverHandler(/* event, inset */) {
+  mouseOverInsetHandler(/* event, inset */) {
     this.animate();
   }
 
-  mouseOutHandler(/* event, inset */) {
+  mouseOutInsetHandler(/* event, inset */) {
     this.animate();
   }
 
-  mouseDownHandler(event, inset) {
+  mouseDownHandler() {
+    addClass(this.baseElement, style['inset-track-non-smooth-transitions']);
+  }
+
+  mouseDownInsetHandler(event, inset) {
     if (this.isRenderToCanvas) {
       this.hoveringInsetIdx = this.pMain.getChildIndex(inset.gMain);
       this.pMain.setChildIndex(inset.gMain, this.pMain.children.length - 1);
@@ -438,17 +447,21 @@ export default class Insets2dTrack extends PixiTrack {
     }
   }
 
-  mouseDownRightHandler(/* event, inset */) {
+  mouseDownRightInsetHandler(/* event, inset */) {
   }
 
-  mouseUpHandler(event, inset) {
+  mouseUpHandler() {
+    removeClass(this.baseElement, style['inset-track-non-smooth-transitions']);
+  }
+
+  mouseUpInsetHandler(event, inset) {
     if (this.isRenderToCanvas) {
       this.pMain.setChildIndex(inset.gMain, this.hoveringInsetIdx);
       this.animate();
     }
   }
 
-  mouseUpRightHandler(/* event, inset */) {}
+  mouseUpRightInsetHandler(/* event, inset */) {}
 
   mouseMoveHandler(event) {
     if (event.hoveredTracks.some(track => isTrackOrChildTrack(this, track))) {
@@ -547,10 +560,8 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   zoomed(newXScale, newYScale, k) {
-    if (k === this.oldK) {
-      removeClass(this.baseElement, style['inset-track-smooth-transitions']);
-    } else {
-      addClass(this.baseElement, style['inset-track-smooth-transitions']);
+    if (k !== this.oldK) {
+      removeClass(this.baseElement, style['inset-track-non-smooth-transitions']);
     }
 
     super.zoomed(newXScale, newYScale, k);
