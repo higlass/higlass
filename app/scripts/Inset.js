@@ -13,16 +13,17 @@ import {
   canvasLinearGradient,
   colorToHex,
   coterminalAngleRad,
+  createIcon,
   degToRad,
   flatten,
   getAngleBetweenPoints,
   getClusterPropAcc,
   lDist,
-  min,
-  max,
   objToTransformStr,
   removeClass,
 } from './utils';
+
+import { BROKEN_LINK } from './icons';
 
 import style from '../styles/Insets2dTrack.module.scss';
 
@@ -32,7 +33,7 @@ const BASE_SCALE = 4;
 const BASE_SCALE_UP = 1.25;
 const PILE_ORIENTATION = 'bottom';
 const PREVIEW_SPACING = 1;
-const XMLNS = 'http://www.w3.org/2000/svg';
+const DRAGGED_THRES = 6;
 
 const getBaseRes = tilesetInfo => (
   tilesetInfo.max_width /
@@ -157,6 +158,7 @@ export default class Inset {
     this.mouseUpHandlerBound = this.mouseUpHandler.bind(this);
     this.mouseClickGlobalHandlerBound = this.mouseClickGlobalHandler.bind(this);
     this.mouseMoveGlobalHandlerBound = this.mouseMoveGlobalHandler.bind(this);
+    this.mouseWheelHandlerBound = this.mouseWheelHandler.bind(this);
 
     this.initGraphics(options);
   }
@@ -199,6 +201,7 @@ export default class Inset {
       removeClass(this.border, style['inset-focus']);
     }
     this.drawBorder();
+    if (this.dragIndicator) this.renderDragIndicator();
   }
 
   compPrvsHeight() {
@@ -396,6 +399,9 @@ export default class Inset {
     this.border.addEventListener(
       'contextmenu', this.mouseClickRightHandlerBound
     );
+    this.border.addEventListener(
+      'wheel', this.mouseWheelHandlerBound
+    );
     // Unfortunately D3's zoom behavior is too aggressive and kills all local
     // mouseup event, which is why we have to listen for a global mouse up even
     // here.
@@ -409,6 +415,7 @@ export default class Inset {
     this.border.removeEventListener('mouseleave', this.mouseOutHandlerBound);
     this.border.removeEventListener('mousedown', this.mouseDownHandlerBound);
     this.border.removeEventListener('contextmenu', this.mouseClickRightHandlerBound);
+    this.border.removeEventListener('wheel', this.mouseWheelHandlerBound);
     pubSub.unsubscribe('mouseup', this.mouseUpHandlerBound);
     pubSub.unsubscribe('click', this.mouseClickGlobalHandlerBound);
     pubSub.unsubscribe('mousemove', this.mouseMoveGlobalHandlerBound);
@@ -777,6 +784,7 @@ export default class Inset {
       this.imgsWrapperLeft = null;
       this.imgsWrapperRight = null;
       this.prvsWrapper = null;
+      this.dragIndicator = null;
     }
   }
 
@@ -790,6 +798,57 @@ export default class Inset {
     this.d = d;
     this.relD = relD;
     return [d, relD];
+  }
+
+  dragStartHandler(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = true;
+    this.dragStartX = event.clientX;
+    this.dragStartY = event.clientY;
+    addClass(this.border, style['inset-dragging']);
+    addClass(this.leaderLine, style['inset-leader-line-dragging']);
+  }
+
+  dragHandler(event) {
+    const dX = event.clientX - this.dragStartX;
+    const dY = event.clientY - this.dragStartY;
+
+    const [vX, vY] = this.computeBorderPosition(
+      this.x, this.y, this.width, this.height
+    );
+
+    this.positionBorderHtml(vX + dX, vY + dY);
+    this.drawLeaderLine(this.x + dX, this.y + dY);
+  }
+
+  dragEndHandler(event) {
+    const dX = event.clientX - this.dragStartX;
+    const dY = event.clientY - this.dragStartY;
+
+    this.isDragging = false;
+    this.x += dX;
+    this.y += dY;
+
+    if (lDist([dX, dY], [0, 0]) > DRAGGED_THRES) this.setDragged();
+    else this.unsetDragged();
+
+    removeClass(this.border, style['inset-dragging']);
+    removeClass(this.leaderLine, style['inset-leader-line-dragging']);
+  }
+
+  setDragged() {
+    this.isDragged = true;
+    this.label.setLocality(0);
+    this.label.x = this.x;
+    this.label.y = this.y;
+    this.renderDragIndicator();
+  }
+
+  unsetDragged() {
+    this.isDragged = false;
+    this.label.setLocality(1);
+    this.removeDragIndicator();
   }
 
   /**
@@ -959,6 +1018,32 @@ export default class Inset {
       this.baseElement.appendChild(line);
       this.leaderLine = line;
     }
+  }
+
+  renderDragIndicator(color = this.borderFill) {
+    if (!this.dragIndicator) {
+      this.dragIndicator = document.createElement('div');
+      this.dragIndicator.className = style['drag-indicator'];
+      addEventListenerOnce(this.dragIndicator, 'click', this.unsetDragged.bind(this));
+
+      const icon = createIcon(BROKEN_LINK);
+      icon.setAttribute('class', style['drag-indicator-icon']);
+      this.dragIndicator.appendChild(icon);
+
+      this.border.appendChild(this.dragIndicator);
+    }
+
+    const _color = this.isHovering || this.isDragging
+      ? this.options.selectColor
+      : color;
+
+    this.dragIndicator.style.background = _color.toString();
+  }
+
+  removeDragIndicator() {
+    if (!this.dragIndicator) return;
+    this.border.removeChild(this.dragIndicator);
+    this.dragIndicator = null;
   }
 
   /**
@@ -1305,6 +1390,7 @@ export default class Inset {
       this.options.borderRadius,
       this.selectColor,
     );
+    if (this.dragIndicator) this.renderDragIndicator(this.selectColor);
   }
 
   /**
@@ -1446,38 +1532,6 @@ export default class Inset {
     }
   }
 
-  dragStartHandler(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.isDragging = true;
-    this.dragStartX = event.clientX;
-    this.dragStartY = event.clientY;
-    addClass(this.border, style['inset-dragging']);
-    addClass(this.leaderLine, style['inset-leader-line-dragging']);
-  }
-
-  dragHandler(event) {
-    const dX = event.clientX - this.dragStartX;
-    const dY = event.clientY - this.dragStartY;
-
-    const [vX, vY] = this.computeBorderPosition(
-      this.x, this.y, this.width, this.height
-    );
-
-    this.positionBorderHtml(vX + dX, vY + dY);
-    this.drawLeaderLine(this.x + dX, this.y + dY);
-  }
-
-  dragEndHandler(event) {
-    const dX = event.clientX - this.dragStartX;
-    const dY = event.clientY - this.dragStartY;
-    this.isDragging = false;
-    this.x += dX;
-    this.y += dY;
-    removeClass(this.border, style['inset-dragging']);
-    removeClass(this.leaderLine, style['inset-leader-line-dragging']);
-  }
-
   /**
    * Mouse down handler for a right click.
    *
@@ -1507,6 +1561,7 @@ export default class Inset {
     }
     this.mouseDown = false;
     this.mouseHandler.mouseUp(event, this);
+    if (this.dragIndicator) this.renderDragIndicator();
   }
 
   /**
@@ -1517,6 +1572,19 @@ export default class Inset {
   mouseUpRightHandler(event) {
     this.mouseDownRight = false;
     this.mouseHandler.mouseUpRight(event, this);
+  }
+
+  /**
+   * Mouse wheel handler.
+   *
+   * @param  {Object}  event  Event object.
+   */
+  mouseWheelHandler(event) {
+    if (this.isDragging) {
+      // Prevent D3 zoom while dragging
+      event.preventDefault();
+      event.stopPropagation();
+    }
   }
 
   /**
