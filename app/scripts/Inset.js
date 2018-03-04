@@ -845,7 +845,6 @@ export default class Inset {
     this.y += dY;
 
     if (lDist([dX, dY], [0, 0]) > DRAGGED_THRES) this.setDragged();
-    else this.unsetDragged();
 
     removeClass(this.border, style['inset-dragging']);
     removeClass(this.leaderLine, style['inset-leader-line-dragging']);
@@ -1494,8 +1493,10 @@ export default class Inset {
 
     const dT = performance.now() - this.mouseDownTime;
 
-    if (this.isScaledUp) this.scaleDown();
-    else if (dT < MOUSE_CLICK_TIME) this.scaleUp();
+    if (dT < MOUSE_CLICK_TIME) {
+      if (this.isScaledUp) this.scaleDown();
+      else this.scaleUp();
+    }
 
     this.mouseHandler.click(event, this);
   }
