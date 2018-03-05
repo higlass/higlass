@@ -1,3 +1,6 @@
+import max from './max';
+import min from './min';
+
 let lab = [];
 let anc = [];
 let w = 1; // box width
@@ -16,6 +19,7 @@ const wLabLab = 50.0; // label-label overlap
 const wLabOrg = 50.0; // additional label-origin overlap weights (added to `wLabAnc`)
 const wLabAnc = 10.0; // overlap between label and other anchors (i.e., annotations)
 const wOrient = 0.1; // orientation bias
+const wMove = 1.0; // restrict random moves
 
 // booleans for user defined functions
 let userEnergy = false;
@@ -41,10 +45,10 @@ const intersect = (x1, x2, x3, x4, y1, y2, y3, y4) => {
 };
 
 // energy function, tailored for label placement
-const energy = (index) => {
+const energy = (index, moveX, moveY) => {
   const m = lab.length;
   const n = anc.length;
-  const mn = Math.max(m, n);
+  const mn = max(m, n);
   const l = lab[index];
   let ener = 0;
   const dx = l.x - l.oX;
@@ -57,6 +61,9 @@ const energy = (index) => {
 
   // penalty for length of leader line
   ener += Math.abs(dist - distCenterToBorder) * wLen * l.locality;
+
+  // penalty for moving at all
+  ener += Math.sqrt((moveX * moveX) + (moveY * moveY)) * wMove;
 
   // label orientation bias (Fritz: ignored for now)
   // dx /= dist;
@@ -104,8 +111,8 @@ const energy = (index) => {
       y11 = otherLabel.y - otherLabel.hH - 1;
       x12 = otherLabel.x + otherLabel.wH + 1;
       y12 = otherLabel.y + otherLabel.hH + 1;
-      xOverlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21));
-      yOverlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21));
+      xOverlap = max(0, min(x12, x22) - max(x11, x21));
+      yOverlap = max(0, min(y12, y22) - max(y11, y21));
       overlapArea = xOverlap * yOverlap;
       ener += (overlapArea * wLabLab);
     }
@@ -115,8 +122,8 @@ const energy = (index) => {
     y11 = anc[i].y - anc[i].hH - 1;
     x12 = anc[i].x + anc[i].wH + 1;
     y12 = anc[i].y + anc[i].hH + 1;
-    xOverlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21));
-    yOverlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21));
+    xOverlap = max(0, min(x12, x22) - max(x11, x21));
+    yOverlap = max(0, min(y12, y22) - max(y11, y21));
     overlapArea = xOverlap * yOverlap;
     ener += overlapArea * (wLabAnc + (wLabOrg * (i < m)));
   }
@@ -126,7 +133,7 @@ const energy = (index) => {
 // Monte Carlo translation move
 const mcmove = (currT) => {
   // select a random label
-  const i = Math.floor(Math.random() * lab.length);
+  const i = (Math.random() * lab.length) | 0;  // Bit-wise floor()
   const l = lab[i];
 
   // save old coordinates
@@ -136,9 +143,9 @@ const mcmove = (currT) => {
   // old energy
   const oldEnergy = userEnergy
     ? userDefinedEnergy(i, lab, anc)
-    : energy(i);
+    : energy(i, 0, 0);
 
-  const getRndMove = () => (Math.random() - 0.5) * maxMove * Math.max(0.5, currT);
+  const getRndMove = () => (Math.random() - 0.5) * maxMove * max(0.5, currT);
 
   // random translation
   const moveX = +(((is1dOnly * !l.isVerticalOnly) + !is1dOnly) && getRndMove());
@@ -155,7 +162,7 @@ const mcmove = (currT) => {
   // new energy
   const newEnergy = userEnergy
     ? userDefinedEnergy(i, lab, anc)
-    : energy(i);
+    : energy(i, moveX, moveY);
 
   // delta E
   const deltaEnergy = newEnergy - oldEnergy;
@@ -173,7 +180,7 @@ const mcmove = (currT) => {
 // Monte Carlo rotation move
 const mcrotate = (currT) => {
   // select a random label
-  const i = Math.floor(Math.random() * lab.length);
+  const i = (Math.random() * lab.length) | 0;
 
   // save old coordinates
   const xOld = lab[i].x;
