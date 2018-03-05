@@ -1484,6 +1484,7 @@ export default class Inset {
     this.scale();
     this.isScaledUp = false;
     this.border.style.zIndex = null;
+    this.drawBorder();
   }
 
 
@@ -1528,9 +1529,7 @@ export default class Inset {
       this.drawBorder();
     }
 
-    if (this.isScaledUp) {
-      this.scaleDown();
-    }
+    if (this.isScaledUp) this.scaleDown();
   }
 
   /**
