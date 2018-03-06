@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
-import { zoom, zoomIdentity } from 'd3-zoom';
-import { select, event } from 'd3-selection';
-import { scaleLinear } from 'd3-scale';
+import {zoom, zoomIdentity} from 'd3-zoom';
+import {select, event} from 'd3-selection';
+import {scaleLinear} from 'd3-scale';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
@@ -53,16 +53,18 @@ import OSMTilesTrack from './OSMTilesTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
 import ImageTilesTrack from './ImageTilesTrack';
 
+import BasicMultipleLineChart from './BasicMultipleLineChart';
+
 import StackedBarTrack from './StackedBarTrack';
 
 // Utils
-import { dictItems } from './utils';
+import {dictItems} from './utils';
 
 // Services
-import { pubSub } from './services';
+import {pubSub} from './services';
 
 // Configs
-import { ZOOM_TRANSITION_DURATION } from './configs';
+import {ZOOM_TRANSITION_DURATION} from './configs';
 
 // Styles
 import '../styles/TrackRenderer.module.scss';
@@ -115,8 +117,12 @@ export class TrackRenderer extends React.Component {
     // this.zoomTransform = zoomIdentity();
     this.zoomBehavior = zoom()
       .filter(() => {
-        if (event.target.classList.contains('no-zoom')) { return false; }
-        if (event.target.classList.contains('react-resizable-handle')) { return false; }
+        if (event.target.classList.contains('no-zoom')) {
+          return false;
+        }
+        if (event.target.classList.contains('react-resizable-handle')) {
+          return false;
+        }
         return true;
       })
       // Limit max zoomout level to 0.25
@@ -193,7 +199,9 @@ export class TrackRenderer extends React.Component {
 
     // need to be mounted to make sure that all the renderers are
     // created before starting to draw tracks
-    if (!this.currentProps.svgElement || !this.currentProps.canvasElement) { return; }
+    if (!this.currentProps.svgElement || !this.currentProps.canvasElement) {
+      return;
+    }
 
     this.svgElement = this.currentProps.svgElement;
     this.syncTrackObjects(this.currentProps.positionedTracks);
@@ -211,7 +219,9 @@ export class TrackRenderer extends React.Component {
      */
 
     // don't initiate this component if it has nothing to draw on
-    if (!nextProps.svgElement || !nextProps.canvasElement) { return; }
+    if (!nextProps.svgElement || !nextProps.canvasElement) {
+      return;
+    }
 
     const nextPropsStr = this.updatablePropsToString(nextProps);
     this.currentProps = nextProps;
@@ -300,7 +310,9 @@ export class TrackRenderer extends React.Component {
   /* --------------------------- Custom Methods ----------------------------- */
 
   addZoom() {
-    if (!this.divTrackAreaSelection) { return; }
+    if (!this.divTrackAreaSelection) {
+      return;
+    }
 
     // add back the previous transform
     this.divTrackAreaSelection.call(this.zoomBehavior);
@@ -328,7 +340,9 @@ export class TrackRenderer extends React.Component {
   windowScrolled() {
     this.removeZoom();
 
-    if (this.scrollTimeout) { clearTimeout(this.scrollTimeout); }
+    if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
+    }
 
     this.scrollTimeout = setTimeout(() => {
       this.addZoom();
@@ -529,8 +543,12 @@ export class TrackRenderer extends React.Component {
   }
 
   timedUpdatePositionAndDimensions() {
-    if (this.closing) { return; }
-    if (!this.mounted) { return; }
+    if (this.closing) {
+      return;
+    }
+    if (!this.mounted) {
+      return;
+    }
 
     if (this.dragging) {
       this.yPositionOffset = this.element.getBoundingClientRect().top - this.canvasDom.getBoundingClientRect().top;
@@ -607,7 +625,9 @@ export class TrackRenderer extends React.Component {
      * We need to create new track objects for the given track
      * definitions.
      */
-    if (!this.currentProps.pixiStage) { return; } // we need a pixi stage to start rendering
+    if (!this.currentProps.pixiStage) {
+      return;
+    } // we need a pixi stage to start rendering
     // the parent component where it lives probably
     // hasn't been mounted yet
 
@@ -620,8 +640,10 @@ export class TrackRenderer extends React.Component {
 
       newTrackObj.refScalesChanged(this.xScale, this.yScale);
 
-      this.trackDefObjects[newTrackDef.track.uid] = { trackDef: newTrackDef,
-        trackObject: newTrackObj };
+      this.trackDefObjects[newTrackDef.track.uid] = {
+        trackDef: newTrackDef,
+        trackObject: newTrackObj
+      };
 
       const zoomedXScale = this.zoomTransform.rescaleX(this.xScale);
       const zoomedYScale = this.zoomTransform.rescaleY(this.yScale);
@@ -817,14 +839,14 @@ export class TrackRenderer extends React.Component {
             this.currentProps.marginLeft,
             this.currentProps.width - this.currentProps.marginLeft]
             .map(zoomedXScale.invert))
-          .range([0, this.currentProps.width - 2*this.currentProps.marginLeft]);
+          .range([0, this.currentProps.width - 2 * this.currentProps.marginLeft]);
 
         const trackYScale = scaleLinear()
           .domain([
             this.currentProps.marginTop,
             this.currentProps.height - this.currentProps.marginTop]
             .map(zoomedYScale.invert))
-          .range([0, this.currentProps.height - 2*this.currentProps.marginTop]);
+          .range([0, this.currentProps.height - 2 * this.currentProps.marginTop]);
 
         // console.log('track.yPosition:', track.yPosition, 'trackYScale.range():', trackYScale.range());
 
@@ -942,6 +964,19 @@ export class TrackRenderer extends React.Component {
             () => this.currentProps.onNewTilesLoaded(track.uid),
             () => this.currentProps.onValueScaleChanged(track.uid),
           ),
+        );
+
+      case 'basic-multiple-line-chart':
+        return new BasicMultipleLineChart(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          this.svgElement,
+          () => this.currentProps.onValueScaleChanged(track.uid),
+          newOptions =>
+            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
         );
 
       case 'horizontal-point':
@@ -1350,7 +1385,7 @@ export class TrackRenderer extends React.Component {
         console.warn('WARNING: unknown track type:', track.type);
         return new UnknownPixiTrack(
           this.pStage,
-          { name: 'Unknown Track Type', type: track.type },
+          {name: 'Unknown Track Type', type: track.type},
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
     }
