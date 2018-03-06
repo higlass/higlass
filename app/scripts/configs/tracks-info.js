@@ -260,6 +260,22 @@ export const TRACKS_INFO = [
     },
   },
   {
+    type: 'basic-multiple-bar-chart',
+    datatype: ['multivec'],
+    local: false,
+    orientation: '1d-horizontal',
+    thumbnail: null,
+    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
+    defaultOptions: {
+      labelPosition: 'topLeft',
+      labelColor: 'black',
+      labelTextOpacity: 0.4,
+      valueScaling: 'linear',
+      trackBorderWidth: 0,
+      trackBorderColor: 'black',
+    },
+  },
+  {
     type: 'horizontal-point',
     datatype: ['vector'],
     local: false,

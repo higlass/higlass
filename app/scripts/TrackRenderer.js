@@ -54,6 +54,7 @@ import MapboxTilesTrack from './MapboxTilesTrack';
 import ImageTilesTrack from './ImageTilesTrack';
 
 import BasicMultipleLineChart from './BasicMultipleLineChart';
+import BasicMultipleBarChart from './BasicMultipleBarChart';
 import BasicStackedBarChart from './BasicStackedBarChart';
 
 import StackedBarTrack from './StackedBarTrack';
@@ -969,6 +970,19 @@ export class TrackRenderer extends React.Component {
 
       case 'basic-multiple-line-chart':
         return new BasicMultipleLineChart(
+          this.pStage,
+          dataConfig,
+          handleTilesetInfoReceived,
+          track.options,
+          () => this.currentProps.onNewTilesLoaded(track.uid),
+          this.svgElement,
+          () => this.currentProps.onValueScaleChanged(track.uid),
+          newOptions =>
+            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
+        );
+
+      case 'basic-multiple-bar-chart':
+        return new BasicMultipleBarChart(
           this.pStage,
           dataConfig,
           handleTilesetInfoReceived,
