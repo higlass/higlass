@@ -8,8 +8,8 @@ import { create } from './services/pub-sub';
 import { colorToHex } from './utils';
 
 class Annotations2dTrack extends TiledPixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
-    super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
+    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
 
     this.drawnAnnotations = {};
 
@@ -175,7 +175,7 @@ class Annotations2dTrack extends TiledPixiTrack {
     this.setBorderStyle(graphics);
     this.setFill(graphics);
 
-    graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
+    graphics.alpha = +this.options.rectangleDomainOpacity;
 
     if (!tile.tileData.length) return;
 
