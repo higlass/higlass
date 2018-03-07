@@ -188,6 +188,12 @@ export default class Inset {
     return this.label.src.size;
   }
 
+  get scaleInvarientEls() {
+    return [
+      this.dragIndicator,
+    ];
+  }
+
   /* ---------------------------- Custom Methods ---------------------------- */
 
   /**
@@ -2370,6 +2376,11 @@ export default class Inset {
     this.border.style.borderWidth = amount > 1
       ? 0
       : this.compBorderExtraWidth();
+    this.scaleInvarientEls.filter(el => el).forEach((el) => {
+      if (!el.__transform__) el.__transform__ = {};
+      el.__transform__.scale = [1.25 / amount, 1.25 / amount];
+      el.style.transform = objToTransformStr(el.__transform__);
+    });
     this.scaleExtra = amount;
   }
 

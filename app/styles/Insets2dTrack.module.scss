@@ -115,6 +115,7 @@
   border-radius: 2px;
   background: white;
   transition: background $fast $ease;
+  transform-origin: bottom left;
 }
 
 .drag-indicator-icon {
