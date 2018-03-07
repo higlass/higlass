@@ -240,9 +240,7 @@ export default class Inset {
   ) {
     const prevHeight = this.compPrvsHeight();
 
-    const [vX, vY] = this.computeBorderPosition(
-      x, y, width, height, radius, fill, graphics
-    );
+    const [vX, vY] = this.computeBorderPosition(x, y, width, height);
 
     if (!this.border) {
       this.renderBorder(x, y, width, height, radius, fill, graphics);
@@ -474,15 +472,17 @@ export default class Inset {
     height = this.height,
     padding = this.borderPadding,
     isAbs = false,
+    isOrigin = false,
   ) {
     const finalX = x - (width / 2);
     const finalY = y - (height / 2);
+    const scaleExtra = isOrigin ? 1 : this.scaleExtra;
 
     return [
       finalX - (padding / 2),
       finalY - (padding / 2),
-      (isAbs * finalX) + (width * this.scaleExtra) + padding,
-      (isAbs * finalY) + (height * this.scaleExtra) + padding,
+      (isAbs * finalX) + (width * scaleExtra) + padding,
+      (isAbs * finalY) + (height * scaleExtra) + padding,
     ];
   }
 
@@ -600,7 +600,7 @@ export default class Inset {
       // than 1 annotation cutting of by the bounding box looks odd, so let's
       // not do that.
       const rectOrigin = this.computeBorderPosition(
-        ...this.computeBorderOriginPosition(), 0, true
+        ...this.computeBorderOriginPosition(), 0, true, true
       );
       pOriginNew = pInset.slice();
       clip(pOriginNew, pOrigin.slice(), rectOrigin);
@@ -1343,6 +1343,9 @@ export default class Inset {
           borderOrigin[1] + (this.originStyle[0] / 2) + this.globalOffsetY,
           borderOrigin[2] - this.originStyle[0],
           borderOrigin[3] - this.originStyle[0],
+          this.borderPadding,
+          false,
+          true
         )
       );
     }
@@ -2260,6 +2263,7 @@ export default class Inset {
       this.y,
       bWidth,
       bHeight,
+      this.borderPadding,
       true
     );
 
