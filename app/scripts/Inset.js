@@ -36,6 +36,7 @@ const PILE_ORIENTATION = 'bottom';
 const PREVIEW_SPACING = 1;
 const DRAGGED_THRES = 6;
 const MOUSE_CLICK_TIME = 250;
+const INVARIANT_SOFT_BOOST = 1.25;
 
 const getBaseRes = tilesetInfo => (
   tilesetInfo.max_width /
@@ -2376,11 +2377,17 @@ export default class Inset {
     this.border.style.borderWidth = amount > 1
       ? 0
       : this.compBorderExtraWidth();
+
+    const softBoost = amount < INVARIANT_SOFT_BOOST
+      ? 1
+      : INVARIANT_SOFT_BOOST;
+
     this.scaleInvarientEls.filter(el => el).forEach((el) => {
       if (!el.__transform__) el.__transform__ = {};
-      el.__transform__.scale = [1.25 / amount, 1.25 / amount];
+      el.__transform__.scale = [softBoost / amount, softBoost / amount];
       el.style.transform = objToTransformStr(el.__transform__);
     });
+
     this.scaleExtra = amount;
   }
 
