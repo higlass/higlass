@@ -289,6 +289,10 @@ export class TiledPlot extends React.Component {
      */
     const track = getTrackByUid(this.props.tracks, trackUid);
 
+    if (!track) {
+      console.warn("Strange, track not found:", trackUid);
+      return;
+    }
     if (!track.options) { track.options = {}; }
 
     // track.options.name = tilesetInfo.name;
