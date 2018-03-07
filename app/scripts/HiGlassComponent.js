@@ -486,10 +486,21 @@ class HiGlassComponent extends React.Component {
     const trackOptions = track.options ? track.options : {};
 
     if (TRACKS_INFO_BY_TYPE[track.type].defaultOptions) {
-      if (!track.options) { track.options = JSON.parse(JSON.stringify(TRACKS_INFO_BY_TYPE[track.type].defaultOptions)); } else {
+      if (!track.options) {
+        track.options = JSON.parse(
+          JSON.stringify(
+            TRACKS_INFO_BY_TYPE[track.type].defaultOptions
+          )
+        );
+      } else {
         for (const optionName in TRACKS_INFO_BY_TYPE[track.type].defaultOptions) {
-          track.options[optionName] = track.options[optionName] ?
-            track.options[optionName] : JSON.parse(JSON.stringify(TRACKS_INFO_BY_TYPE[track.type].defaultOptions[optionName]));
+          track.options[optionName] = typeof track.options[optionName] !== 'undefined'
+            ? track.options[optionName]
+            : JSON.parse(
+              JSON.stringify(
+                TRACKS_INFO_BY_TYPE[track.type].defaultOptions[optionName]
+              )
+            );
         }
       }
     } else { track.options = trackOptions; }
