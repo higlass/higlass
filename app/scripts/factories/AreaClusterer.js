@@ -120,10 +120,7 @@ function addToOrCreateCluster(element) {
   if (
     closestCluster &&
     closestCluster.isWithin(element.viewPos, true) &&
-    (
-      this.combinedDiameter(closestCluster, element) <= closestCluster.diameter ||
-      cluster.diameter < this.maxClusterDiameter
-    )
+    this.combinedDiameter(closestCluster, element) <= this.maxClusterDiameter
   ) {
     this.expandCluster(closestCluster, element);
   } else {
