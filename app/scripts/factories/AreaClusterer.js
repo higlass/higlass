@@ -134,18 +134,6 @@ function addToOrCreateCluster(element) {
 }
 
 /**
- * Sets the bounds for the clusterer.
- * @param   {number}  minX  Left most X position.
- * @param   {number}  maxX  Right most X position.
- * @param   {number}  minY  Top most Y position.
- * @param   {number}  maxY  Bottom most Y position.
- */
-function setBinSize(width, height) {
-  this.binWidth = width;
-  this.binHeight = height;
-}
-
-/**
  * Gets the bound for the clusterer.
  * @return  {array}  bounds  Quadrupel of form `[minX, maxX, minY, maxY]`.
  */
@@ -530,7 +518,6 @@ function update(elements, zoomed, bins = []) {
 Object.assign(AreaClusterer.prototype, {
   add,
   addToOrCreateCluster,
-  setBinSize,
   getBounds,
   setBounds,
   clear,

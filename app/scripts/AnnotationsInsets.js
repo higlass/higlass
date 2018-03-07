@@ -18,7 +18,6 @@ import {
   lngToX,
   positionLabels,
   scoreAtPercentile,
-  subToInd
 } from './utils';
 
 class AnnotationsInsets {
@@ -34,9 +33,13 @@ class AnnotationsInsets {
       return;
     }
 
-    this.insetsTrack.subscribe('dimensions', this.updateBounds.bind(this));
-    this.insetsTrack.subscribe('position', this.updateBounds.bind(this));
-    this.insetsTrack.subscribe('zoom', this.zoomHandler.bind(this));
+    this.updateBoundsBound = this.updateBounds.bind(this);
+    this.updateBoundsBound = this.updateBounds.bind(this);
+    this.zoomHandlerBound = this.zoomHandler.bind(this);
+
+    this.insetsTrack.subscribe('dimensions', this.updateBoundsBound);
+    this.insetsTrack.subscribe('position', this.updateBoundsBound);
+    this.insetsTrack.subscribe('zoom', this.zoomHandlerBound);
 
     this.annotationTrackIds = new Set();
     this.annotationTracks = options.annotationTracks
@@ -50,11 +53,11 @@ class AnnotationsInsets {
       })
       .filter(track => track);
 
+    this.annotationDrawnHandlerBound = this.annotationDrawnHandler.bind(this);
+
     // Augment annotation tracks
-    this.annotationTracks.forEach((track) => {
-      track.subscribe(
-        'annotationDrawn', this.annotationDrawnHandler.bind(this)
-      );
+    this.annotationTracks.forEach((track, i) => {
+      track.subscribe('annotationDrawn', this.annotationDrawnHandlerBound);
     });
 
     this.currK = 1;  // Current scale
@@ -120,6 +123,8 @@ class AnnotationsInsets {
     this.minInsetSize = this.insetsTrack.insetMinSize * this.insetsTrack.insetScale;
     this.maxInsetSize = this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale;
     this.midInsetSize = (this.minInsetSize + this.maxInsetSize) / 2;
+
+    this.updateBounds();
   }
 
   /**
@@ -181,13 +186,7 @@ class AnnotationsInsets {
         && (annotation.minY >= 0 || annotation.maxY > 0)
         && (annotation.minY < this.insetsTrackHeight || annotation.maxY <= this.insetsTrackHeight)
       )
-    ) {
-      annotation.bin = this.binSubToInd(...this.getBinIds(...annotation.center));
-      if (!this.bins[annotation.bin]) this.bins[annotation.bin] = [];
-      if (!this.bins[annotation.bin].push) console.warn(this.bins, annotation.bin, this.bins[annotation.bin]);
-      this.bins[annotation.bin].push(annotation);
-      this.annosToBeDrawnAsInsets.add(annotation);
-    }
+    ) this.annosToBeDrawnAsInsets.add(annotation);
 
     this.drawnAnnotations.push(annotation);
   }
@@ -201,39 +200,6 @@ class AnnotationsInsets {
     if (this.newAnno) this.tree.load(this.drawnAnnotations);
 
     this.createInsets();
-  }
-
-  getBinIds(x, y) {
-    return [this.xBinScale(x), this.yBinScale(y)];
-  }
-
-  /**
-   * Compute the number of bins in each dimension
-   * @param   {array}  dimensions  Holding the inset's track's
-   *   `[width, height]`
-   */
-  compBins(dimensions) {
-    const xOff = (this.insetsTrack.positioning.offsetX || 0) * 2;
-    const yOff = (this.insetsTrack.positioning.offsetY || 0) * 2;
-    const width = (dimensions[0] - xOff);
-    const height = (dimensions[1] - yOff);
-    this.numXBins = Math.round(width / (this.midInsetSize * 2));
-    this.numYBins = Math.round(height / (this.midInsetSize * 2));
-
-    this.xBinScale = scaleQuantize()
-      .domain([0, dimensions[0]])
-      .range(range(0, this.numXBins));
-
-    this.yBinScale = scaleQuantize()
-      .domain([0, dimensions[1]])
-      .range(range(0, this.numYBins));
-
-    this.binSubToInd = subToInd(this.numXBins);
-
-    this.areaClusterer.setBinSize(
-      width / this.numXBins,
-      height / this.numYBins,
-    );
   }
 
   /**
@@ -742,7 +708,7 @@ class AnnotationsInsets {
     this.pubSubs.forEach(sub => pubSub.unsubscribe(sub));
     this.pubSubs = undefined;
     this.annotationTracks.forEach((track) => {
-      track.unsubscribe('annotationDrawn', this.annotationDrawnHandler.bind(this));
+      track.unsubscribe('annotationDrawn', this.annotationDrawnHandlerBound);
     });
   }
 
@@ -780,8 +746,6 @@ class AnnotationsInsets {
       0,
       this.insetsTrackHeight,
     );
-
-    this.compBins(this.insetsTrack.dimensions);
   }
 
   /**
