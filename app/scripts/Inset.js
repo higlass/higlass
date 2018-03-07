@@ -24,7 +24,7 @@ import {
   removeClass,
 } from './utils';
 
-import { BROKEN_LINK } from './icons';
+import { BROKEN_LINK, RESET } from './icons';
 
 import style from '../styles/Insets2dTrack.module.scss';
 
@@ -113,6 +113,8 @@ export default class Inset {
     this.fetchAttempts = 0;
     this.imScale = 1;
     this.leaderLineAngle = 0;
+
+    this.indicator = {};
 
     this.borderStyle = [1, 0x000000, 0.33];
     this.borderPadding = options.borderWidth * 2 || 4;
@@ -215,7 +217,9 @@ export default class Inset {
       removeClass(this.border, style['inset-focus']);
     }
     this.drawBorder();
-    if (this.dragIndicator) this.renderDragIndicator();
+    Object.keys(this.indicator).forEach((id) => {
+      this.renderIndicator(id);
+    });
   }
 
   compPrvsHeight() {
@@ -852,11 +856,20 @@ export default class Inset {
     const dX = event.clientX - this.dragStartX;
     const dY = event.clientY - this.dragStartY;
 
+    const d = lDist([dX, dY], [0, 0]);
+
     this.isDragging = false;
+
+    if (this.isPositionChanged && d > 0) {
+      this.__x__ = this.x;
+      this.__y__ = this.y;
+      this.isPositionChanged = false;
+    }
+
     this.x += dX;
     this.y += dY;
 
-    if (lDist([dX, dY], [0, 0]) > DRAGGED_THRES) this.setDragged();
+    if (d > DRAGGED_THRES) this.setDragged();
 
     removeClass(this.border, style['inset-dragging']);
     removeClass(this.leaderLine, style['inset-leader-line-dragging']);
@@ -867,13 +880,21 @@ export default class Inset {
     this.label.disconnect();
     this.label.x = this.x;
     this.label.y = this.y;
-    this.renderDragIndicator();
+    this.isPositionChanged = false;
+    this.renderIndicator(
+      'drag', BROKEN_LINK, this.connectHandler.bind(this), this.selectColor
+    );
   }
 
   unsetDragged() {
     this.isDragged = false;
     this.label.connect();
-    this.removeDragIndicator();
+    this.removeIndicator('drag');
+    if (!this.isPositionChanged) {
+      this.renderIndicator(
+        'revert', RESET, this.revertPosHandler.bind(this), this.selectColor
+      );
+    }
   }
 
   /**
@@ -1045,36 +1066,48 @@ export default class Inset {
     }
   }
 
-  renderDragIndicator(color = this.borderFill) {
-    if (!this.dragIndicator) {
-      this.dragIndicator = document.createElement('div');
-      this.dragIndicator.className = style['drag-indicator'];
-      addEventListenerOnce(
-        this.dragIndicator, 'click', (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          this.unsetDragged();
-        }
-      );
+  renderIndicator(name, iconName, action, color = this.borderFill) {
+    if (!this.indicator[name]) {
+      this.indicator[name] = document.createElement('div');
+      this.indicator[name].className = style.indicator;
+      addEventListenerOnce(this.indicator[name], 'click', action);
 
-      const icon = createIcon(BROKEN_LINK);
-      icon.setAttribute('class', style['drag-indicator-icon']);
-      this.dragIndicator.appendChild(icon);
+      const icon = createIcon(iconName);
+      icon.setAttribute('class', style['indicator-icon']);
+      this.indicator[name].appendChild(icon);
 
-      this.border.appendChild(this.dragIndicator);
+      this.border.appendChild(this.indicator[name]);
     }
 
     const _color = this.isHovering || this.isDragging
       ? this.options.selectColor
       : color;
 
-    this.dragIndicator.style.background = _color.toString();
+    this.indicator[name].style.background = _color.toString();
   }
 
-  removeDragIndicator() {
-    if (!this.dragIndicator) return;
-    this.border.removeChild(this.dragIndicator);
-    this.dragIndicator = null;
+  removeIndicator(name) {
+    if (!this.indicator[name]) return;
+    this.border.removeChild(this.indicator[name]);
+    this.indicator[name] = null;
+    delete this.indicator[name];
+  }
+
+  connectHandler(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.unsetDragged();
+  }
+
+  revertPosHandler(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.x = this.__x__;
+    this.y = this.__y__;
+    this.isPositionChanged = true;
+    this.removeIndicator('revert');
+    this.positionBorderHtml();
+    this.drawLeaderLine(this.x, this.y);
   }
 
   /**
@@ -1428,7 +1461,9 @@ export default class Inset {
       this.options.borderRadius,
       this.selectColor,
     );
-    if (this.dragIndicator) this.renderDragIndicator(this.selectColor);
+    Object.keys(this.indicator).forEach((id) => {
+      this.renderIndicator(id, undefined, undefined, this.selectColor);
+    });
   }
 
   /**
@@ -1678,7 +1713,11 @@ export default class Inset {
     if (this.isDragging) this.dragEndHandler(event);
     this.mouseDown = false;
     this.mouseHandler.mouseUp(event, this);
-    if (this.dragIndicator) this.renderDragIndicator();
+    if (this.dragIndicator) {
+      this.renderIndicator(
+        'drag', BROKEN_LINK, this.connectHandler.bind(this), this.selectColor
+      );
+    }
   }
 
   /**
@@ -1750,6 +1789,7 @@ export default class Inset {
    * @return  {Array}  Tuple holding the X,Y position.
    */
   position(x = this.x, y = this.y) {
+    this.isPositionChanged = true;
     this.x = x;
     this.y = y;
     return [x, y];
