@@ -21,8 +21,8 @@ initialXDomain and initialYDomain
 *********************************
 
 The fields contain the initial coordinates which are displayed when HiGlass
-first loads the viewconfig. If the ``initialYDomain`` is not present, it is
-set to equal the ``initialXDomain``. If that isn't present either, both are
+first loads the viewconfig. If the ``initialYDomain`` is not present, it is set
+to equal the ``initialXDomain``. If that isn't present either, both are
 assigned values of ``[0,1]]``.
 
 .. code-block:: javascript
@@ -49,4 +49,19 @@ assigned values of ``[0,1]]``.
         ]
     }
 
+trackSourceServers
+******************
 
+The field `trackSourceServers` at the root level of the viewconf tells higlass
+where it can find tracks to load. If you have a local instance running, then
+`http://localhost/api/v1` should be included. Our public instance at
+`http://higlass.io` also provides access to a number of public datasets.
+
+.. code-block:: javascript
+
+    {
+      "trackSourceServers": [
+        "http://higlass.io/api/v1",
+        "http://localhost:8989/api/v1"
+      ],
+    }
