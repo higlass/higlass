@@ -80,3 +80,29 @@ database, assigns them a uid, and makes them accessible through its API at
         "exportViewUrl": "/api/v1/viewconfs",
     }
 
+Tracks
+******
+
+Tracks can be placed into four distinct areas: top, bottom, left, right or
+center. The location of the track determines what type of data can be shown in
+it. Center tracks are used to show data that can be zoomed along two axes.
+Horizontal (top, bottom) and vertical (left, right) are used to show data that
+can be zoomed along a single axis.
+
+Each set of tracks is placed within a view.
+
+.. code-block:: javascript
+
+    {
+      "views": [
+        {
+          "tracks": {
+            "top": [],
+            "left": [],
+            "center": [],
+            "bottom": [],
+            "right": []
+          },
+        }
+      ],
+    }
