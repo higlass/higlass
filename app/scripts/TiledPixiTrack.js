@@ -193,6 +193,21 @@ export class TiledPixiTrack extends PixiTrack {
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
   }
 
+  removeOldTiles() {
+    this.calculateVisibleTiles();
+
+    // tiles that are fetched
+    const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
+    //
+    // calculate which tiles are obsolete and remove them
+    // fetchedTileID are remote ids
+    const toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
+
+
+    this.removeTiles(toRemove);
+
+  }
+
   refreshTiles() {
     if (!this.tilesetInfo) { return; }
 
@@ -209,12 +224,7 @@ export class TiledPixiTrack extends PixiTrack {
       this.fetching.add(toFetch[i].remoteId);
     }
 
-    // calculate which tiles are obsolete and remove them
-    // fetchedTileID are remote ids
-    const toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
-
-
-    this.removeTiles(toRemove);
+    this.removeOldTiles();
     this.fetchNewTiles(toFetch);
   }
 
@@ -414,7 +424,7 @@ export class TiledPixiTrack extends PixiTrack {
     // keep track of which tiles are visible at the moment
     this.addMissingGraphics();
     this.updateExistingGraphics();
-    // this.removeOldGraphics();
+    this.removeOldTiles();
   }
 
   loadTileData(tile, dataLoader) {
