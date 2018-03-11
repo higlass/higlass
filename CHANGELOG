@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 develop (2018-01-??)
 
 - Preliminary authentication support
@@ -16,11 +15,23 @@ entered
 - Updated third-party libs to get rid of deprecation warnings for React v16
 - Fixed small bug in placing rules
 - Display error when failing to retrieve tilesetInfo
-=======
-v0.10.20 (2018-02-
+* Added support for cross-section tracks
+
+
+?? v0.10.21 (2018-02-21)
+
+- Exposed the ChromosomeInfo structure as part of the hglib API
+
+?? v0.10.20 (2018-02-??
 
 - Rendering improvements
->>>>>>> threading
+
+?? v0.10.20 (2018-02-20)
+
+- Fixed api variable in HiGlassComponent
+- Fixed relToAbsChromPos so that it converts locations to numbers before
+adding
+- Added strokeWidth as an option to the viewport projection track
 
 v0.10.19 (2018-02-11)
 

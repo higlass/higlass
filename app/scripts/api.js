@@ -224,7 +224,7 @@ const api = function api(context) {
       // location specified in the viewconf
       if (!chromInfo) {
         ChromosomeInfo(self.state.views[viewUid.chromInfoPath],
-          (chromInfo) => {
+          (internalChromInfo) => {
             self.api().goTo(
               viewUid,
               chrom1,
@@ -234,7 +234,7 @@ const api = function api(context) {
               start2,
               end2,
               animateTime,
-              chromInfo,
+              internalChromInfo,
             );
           },
         );

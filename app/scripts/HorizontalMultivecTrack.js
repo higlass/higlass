@@ -151,8 +151,6 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     // the position of the tile containing the query position
     const tilePos = this._xScale.invert(trackX) / tileWidth;
 
-    console.log('tilesetInfo:', this.tilesetInfo);
-
     // the position of query within the tile
     const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
     const posInTileY = (trackY / this.dimensions[1])  * this.tilesetInfo.shape[1];
@@ -177,8 +175,6 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
       value = format(".3f")(fetchedTile.tileData.dense[index]);
     }
 
-    console.log('posInTileX:', posInTileX);
-
     // add information about the row
     if (this.tilesetInfo.row_infos) {
       value += "<br/>";
@@ -199,6 +195,9 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
      *
      */
   getMouseOverHtml(trackX, trackY) {
+    if (!this.tilesetInfo)
+      return '';
+
     const tilePos = this.getTilePosAtPosition(trackX, trackY);
 
     let output = "Data value: " + this.getVisibleData(trackX, trackY) + "</br>";

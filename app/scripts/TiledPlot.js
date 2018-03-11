@@ -289,6 +289,10 @@ export class TiledPlot extends React.Component {
      */
     const track = getTrackByUid(this.props.tracks, trackUid);
 
+    if (!track) {
+      console.warn("Strange, track not found:", trackUid);
+      return;
+    }
     if (!track.options) { track.options = {}; }
 
     // track.options.name = tilesetInfo.name;
@@ -955,7 +959,7 @@ export class TiledPlot extends React.Component {
             // because "whole" tracks are always drawn on top of each other,
             // the notion of Series is unnecessary and so 'host' is null
             onAddTrack={(newTrack) => {
-              this.props.onTracksAdded([newTrack], 'whole', null);
+              this.props.onTracksAdded([newTrack], newTrack.position, null);
 
               this.handleCloseContextMenu();
             }}
@@ -1401,6 +1405,9 @@ export class TiledPlot extends React.Component {
           height={this.state.height}
           initialXDomain={this.props.initialXDomain}
           initialYDomain={this.props.initialYDomain}
+          xDomainLimits={this.props.xDomainLimits}
+          yDomainLimits={this.props.yDomainLimits}
+          zoomLimits={this.props.zoomLimits}
           isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
           leftWidth={this.leftWidth}
           marginLeft={this.props.horizontalMargin}

@@ -970,9 +970,6 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         }
 
         this.renderingTiles.delete(tile.tileId);
-        this.animate();
-        // call to check if tiles need removing
-        this.refreshTiles();
       },
       synchronous
     );
