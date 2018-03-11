@@ -841,19 +841,19 @@ export class TrackRenderer extends React.Component {
     const marginTop = this.currentProps.marginTop + this.currentProps.topHeight;
 
     // These props are apparently used elsewhere, for example the context menu
-    this.zoomedXScale = this.zoomTransform.rescaleX(this.xScale);
-    this.zoomedYScale = this.zoomTransform.rescaleY(this.yScale);
+    const zoomedXScale = this.zoomTransform.rescaleX(this.xScale);
+    const zoomedYScale = this.zoomTransform.rescaleY(this.yScale);
 
     const newXScale = scaleLinear()
       .domain([
         marginleft, marginleft + this.currentProps.centerWidth
-      ].map(this.zoomedXScale.invert))
+      ].map(zoomedXScale.invert))
       .range([0, this.currentProps.centerWidth]);
 
     const newYScale = scaleLinear()
       .domain([
         marginTop, marginTop + this.currentProps.centerHeight
-      ].map(this.zoomedYScale.invert))
+      ].map(zoomedYScale.invert))
       .range([0, this.currentProps.centerHeight]);
 
     for (const uid in this.trackDefObjects) {
@@ -866,7 +866,7 @@ export class TrackRenderer extends React.Component {
           .domain([
             this.currentProps.marginLeft,
             this.currentProps.width - this.currentProps.marginLeft]
-            .map(this.zoomedXScale.invert))
+            .map(zoomedXScale.invert))
           .range([0, this.currentProps.width - (2 * this.currentProps.marginLeft)]);
 
         const trackYScale = scaleLinear()
