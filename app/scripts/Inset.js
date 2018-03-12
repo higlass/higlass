@@ -1607,7 +1607,7 @@ export default class Inset {
         prv.addEventListener('mouseenter', this.swapImgWithPrvBound);
         prv.addEventListener('mouseleave', this.revertImgFromImgBound);
       });
-    } else {
+    } else if (this.imgs.length > 2) {
       this.imgs.slice(1, 4).forEach((img) => {
         img.addEventListener('mouseenter', this.swapImgWithImgBound);
         img.addEventListener('mouseleave', this.revertImgFromImgBound);
