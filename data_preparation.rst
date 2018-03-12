@@ -184,10 +184,8 @@ This can be done using clodius's aggregate bigwig function:
 The resulting file can be loaded into HiGlass as described in the
 :ref:`loading-into-higlass` section below.
 
-.. _loading-into-higlass:
-
 Loading into HiGlass
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 Too see .hitile-typed datasets in higlass, use the docker container to load them:
 
@@ -213,6 +211,90 @@ It can also be loaded using a curl commands:
 .. todo:: And navigate to 127.0.0.1:8989, click on the '+' symbol, select a track
           position, find the dataset in the list of the datasets and click OK to
           view it. And stuff.
+
+Cooler files
+------------
+`Cooler files <https://github.com/mirnylab/cooler>`_ (extension .cool) store 
+arbitrarily large 2D genomic matrices, such as those produced via Hi-C and other high 
+throughput proximity ligation experiments. HiGlass can render cooler files containing
+matrices of the same dataset at a range of bin resolutions or *zoom levels*, so called multiresolution 
+cool files (typically denoted .mcool).
+
+From pairs
+^^^^^^^^^^
+
+Often you will start with a list of pairs (e.g. contacts, interactions) that need to be aggregated.
+For example, the 4DN-DCIC developed a `standard pairs format <https://github.com/4dn-dcic/pairix/blob/master/pairs_format_specification.md>`_ for HiC-like data. However, you 
+need only a tab-delimited file with columns representing ``chrom1``, ``pos1``, ``chrom2``, ``pos2``, optionally gzipped.
+
+Currently, these need to be sorted and indexed with either pairix or tabix to be ingested into a cooler. You also need to
+provide a list of chromosomes in semantic order (chr1, chr2, ..., chrX, chrY, ...) in a
+two-column `chromsizes <https://github.com/pkerpedjiev/negspy/blob/master/negspy/data/hg19/chromSizes.tsv>`_ file.
+For example, if ``chrom1`` and ``pos1`` are the first two columns, and ``chrom2`` and ``pos2`` are in columns 4 and 5:
+
+.. code-block:: bash
+
+    cooler csort -c1 1 -p1 2 -c2 4 -p2 5 mypairs.txt hg19.chrom.sizes
+
+This will generate a sorted and compressed pairs file ``mypairs.blksrt.txt.gz`` along with a companion pairix ``.px2`` index file. To aggregate and ingest at a fixed resolution (e.g. 1kb) use the ``cload pairix`` command. 
+
+.. code-block:: bash
+    
+    cooler cload pairix hg19.chrom.sizes:1000 mypairs.blksrt.txt.gz mycooler.1000.cool
+    
+This will be the *base resolution* for the multires cooler you will generate.
+
+From a matrix
+^^^^^^^^^^^^^
+If your base resolution data is already aggregated, you can ingest data in one of two formats. Use ``cooler load`` to ingest.
+
+1. COO: Sparse matrix upper triangle `coordinate list <https://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_(COO)>`_ , i.e. tab-delimited sparse matrix triples (row_id, col_id, count). This is an output of pipelines like HiCPro.
+
+.. code-block:: bash
+    
+    cooler load -f coo hg19.chrom.sizes:1000 mymatrix.coo.txt mycooler.1000.cool
+
+2. BG2: A 2D "extension" of the `bedGraph <https://genome.ucsc.edu/goldenpath/help/bedgraph.html>`_ format. Tab delimited with columns representing ``chrom1``, ``start1``, ``end1``, ``chrom2``, ``start2``, ``end2``, ``count``. Currently, these require sorting and indexing just like pairs files (using start instead of pos columns). 
+
+.. code-block:: bash
+    
+    cooler csort -c1 1 -p1 2 -c2 4 -p2 5 mymatrix.bg2 hg19.chrom.sizes
+    cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.blksrt.bg2.gz mycooler.1000.cool
+    
+Zoomify
+^^^^^^^
+To recursively aggregate your matrix into a multires file, use the `zoomify` command.
+
+.. code-block:: bash
+    
+    cooler zoomify mycooler.1000.cool
+
+The output will be a file called `mycooler.1000.mcool` with zoom levels increasing by factors of 2. You can also 
+request an explicit list of resolutions, as long as they can be obtained via integer multiples starting from the base resolution. HiGlass performs well as long as zoom levels don't differ in resolution by greater than a factor of ~5.
+
+.. code-block:: bash
+
+    cooler zoomify -r 5000,10000,25000,50000,100000,500000,1000000 mycooler.1000.cool
+   
+If this is Hi-C data or similar, you probably want to apply iterative correction (i.e. matrix balancing normalization) by using the ``--balance`` option.
+
+Loading pre-zoomed data
+^^^^^^^^^^^^^^^^^^^^^^^
+If the matrices for the resolutions you wish to visualize are already available, you can ingest each one independently into the right location inside the file using the `Cooler URI <http://cooler.readthedocs.io/en/latest/api.html#uri-string>`_ ``::`` syntax.
+
+HiGlass expects each zoom level to be stored at a location named ``resolutions/{binsize}``.
+
+.. code-block:: bash
+
+    cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.blksrt.bg2.gz mycooler.1000.cool::resolutions/1000
+    cooler load -f bg2 hg19.chrom.sizes:5000 mymatrix.blksrt.bg2.gz mycooler.5000.cool::resolutions/5000
+    cooler load -f bg2 hg19.chrom.sizes:10000 mymatrix.blksrt.bg2.gz mycooler.10000.cool::resolutions/10000
+    ...
+
+See the *cooler* `docs <http://cooler.readthedocs.io/>`_ for more information.
+
+.. _loading-into-higlass:
+
 
 Multivec Files
 --------------
