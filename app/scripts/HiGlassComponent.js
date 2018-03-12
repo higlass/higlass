@@ -1740,6 +1740,34 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  handleChangeTrackData(viewUid, trackUid, newData) {
+    /**
+     * Change the data source for a track. E.g. when adding or
+     * removing a divisor.
+     *
+     * Parameters
+     * ----------
+     *  viewUid: string
+     *    The view containing the track to be changed
+     *  trackUid: string
+     *    The uid identifying the existin track
+     *  newData: object
+     *    The new data source section
+     */
+    const view = this.state.views[viewUid];
+    let trackConfig = getTrackByUid(view.tracks, trackUid);
+
+    // this track needs a new uid so that it will be rerendered
+    trackConfig.uid = slugid.nice();
+    trackConfig.data = newData;
+
+    console.log('trackConfig:', trackConfig);
+
+    this.setState({
+      views: this.state.views,
+    });
+  }
+
   handleTrackAdded(viewId, newTrack, position, host = null) {
     /**
          * A track was added from the AddTrackModal dialog.
@@ -2867,7 +2895,7 @@ class HiGlassComponent extends React.Component {
 
     this.prevMouseHoverTrack = evt.track;
 
-    const data = mouseOverHtml.length ? [1] : [];
+    const data = (mouseOverHtml && mouseOverHtml.length) ? [1] : [];
 
     // try to select the mouseover div
     let mouseOverDiv = select('body').selectAll('.track-mouseover-menu')
@@ -3026,6 +3054,8 @@ class HiGlassComponent extends React.Component {
             mouseTool={this.state.mouseTool}
             onChangeTrackType={(trackId, newType) =>
               this.handleChangeTrackType(view.uid, trackId, newType)}
+            onChangeTrackData={(trackId, newData) =>
+              this.handleChangeTrackData(view.uid, trackId, newData)}
             onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
             onDataDomainChanged={
               (xDomain, yDomain) =>

@@ -89,6 +89,7 @@ export class TiledPlot extends React.Component {
       chromInfo: null,
       defaultChromSizes: null,
       contextMenuPosition: null,
+      addDivisorDialog: null,
     };
 
     // these dimensions are computed in the render() function and depend
@@ -342,6 +343,76 @@ export class TiledPlot extends React.Component {
     });
   }
 
+  handleAddDivisor(series) {
+    this.setState({
+      addDivisorDialog: series
+    });
+  }
+
+  /**
+   * The user has selected a track that they wish to use to normalize another
+   * track.
+   */
+  handleDivisorChosen(series, newTrack) {
+    this.setState({
+      addDivisorDialog: null,
+    });
+
+    const numerator = series.data ? 
+      {
+        server: series.data.server,
+        tilesetUid: series.data.tilesetUid
+      } :
+      { 
+        server: series.server,
+        tilesetUid: series.tilesetUid
+      };
+
+    const denominator = {
+      server: newTrack[0].server,
+      tilesetUid: newTrack[0].uuid
+    }
+
+    this.handleChangeTrackData(series.uid,
+      {
+        type: 'divided',
+        children: [
+          numerator,
+          denominator
+        ]
+      });
+  }
+
+
+
+  getAddDivisorDialog() {
+    if (!this.state.addDivisorDialog) {
+      return null;
+    }
+
+    const series = this.state.addDivisorDialog;
+
+    const datatype = TRACKS_INFO_BY_TYPE[series.type].datatype[0];
+
+    const atm = 
+        (<AddTrackModal
+          host={this.state.addTrackHost}
+          onCancel={()=>{
+            this.setState({
+              addDivisorDialog: null,
+              });
+          }}
+          onTracksChosen={ (newTrack) => this.handleDivisorChosen(series, newTrack) }
+          datatype={datatype}
+          ref={(c) => { this.addTrackModal = c; }}
+          show={this.state.addDivisorDialog != null}
+          trackSourceServers={this.props.trackSourceServers}
+          hidePlotTypeChooser={true}
+        />);
+
+    return atm;
+  }
+
   handleDivideSeries(seriesUid) {
     /*
      * We want to create a new series that consists of this series
@@ -434,6 +505,17 @@ export class TiledPlot extends React.Component {
 
     // change the track type
     this.props.onChangeTrackType(uid, newType);
+  }
+
+  /**
+   * Change this tracks data section so that it
+   * is either of type "divided" or the "divided"
+   * type is removed
+   */
+  handleChangeTrackData(uid, newData) {
+    this.closeMenus();
+
+    this.props.onChangeTrackData(uid, newData);
   }
 
   handleTracksAdded(newTracks, position, host) {
@@ -964,6 +1046,8 @@ export class TiledPlot extends React.Component {
               this.handleCloseContextMenu();
             }}
             onChangeTrackType={this.handleChangeTrackType.bind(this)}
+            onChangeTrackData={this.handleChangeTrackData.bind(this)}
+            onAddDivisor={this.handleAddDivisor.bind(this)}
             onCloseTrack={this.handleCloseTrack.bind(this)}
             onConfigureTrack={this.handleConfigureTrack.bind(this)}
             onExportData={this.handleExportTrackData.bind(this)}
@@ -974,6 +1058,7 @@ export class TiledPlot extends React.Component {
             orientation={'left'}
             position={this.state.contextMenuPosition}
             tracks={relevantTracks}
+            trackSourceServers={this.props.trackSourceServers}
           />
         </PopupMenu>
       );
@@ -1589,6 +1674,7 @@ export class TiledPlot extends React.Component {
         {trackRenderer}
         {overlays}
         {addTrackModal}
+        {this.getAddDivisorDialog()}
         {configTrackMenu}
         {closeTrackMenu}
         {trackOptionsElement}

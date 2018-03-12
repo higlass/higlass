@@ -155,7 +155,7 @@ export default class DataFetcher {
       Promise.all(promises).then((returnedTiles) => {
         // if we're trying to divide two datasets,
         if (this.dataConfig.type === 'divided') {
-          const newTiles = this.makeDivided(returnedTiles);
+          const newTiles = this.makeDivided(returnedTiles, tileIds);
 
           receivedTiles(newTiles);
         } else {
@@ -360,7 +360,7 @@ export default class DataFetcher {
     });
   }
 
-  makeDivided(returnedTiles) {
+  makeDivided(returnedTiles, tileIds) {
       if (returnedTiles.length < 2) {
         console.warn(
           'Only one tileset specified for a divided datafetcher:',
@@ -376,21 +376,29 @@ export default class DataFetcher {
       for (let i = 0; i < tileIds.length; i++) {
         // const numeratorUid = this.fullTileId(numeratorTilesetUid, tileIds[i]);
         // const denominatorUid = this.fullTileId(denominatorTilesetUid, tileIds[i]);
-
-        const newData = this.divideData(returnedTiles[0][tileIds[i]].dense,
-          returnedTiles[1][tileIds[i]].dense);
-
         const zoomLevel = returnedTiles[0][tileIds[i]].zoomLevel;
         const tilePos = returnedTiles[0][tileIds[i]].tilePos;
 
-        const newTile = {
-          dense: newData,
-          minNonZero: minNonZero(newData),
-          maxNonZero: maxNonZero(newData),
-          zoomLevel,
-          tilePos,
-          tilePositionId: tileIds[i],
-        };
+        let newTile = {
+            zoomLevel,
+            tilePos,
+            tilePositionId: tileIds[i],
+          };
+
+        if (returnedTiles[0][tileIds[i]].dense &&
+          returnedTiles[1][tileIds[i]].dense)  {
+          const newData = this.divideData(returnedTiles[0][tileIds[i]].dense,
+            returnedTiles[1][tileIds[i]].dense);
+
+          newTile = {
+            dense: newData,
+            minNonZero: minNonZero(newData),
+            maxNonZero: maxNonZero(newData),
+            zoomLevel,
+            tilePos,
+            tilePositionId: tileIds[i],
+          };
+        }
 
         // returned ids will be indexed by the tile id and won't include the
         // tileset uid

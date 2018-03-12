@@ -38,8 +38,10 @@ export const SeriesListSubmenuMixin = Mixin((superclass) => class extends superc
           key={`series-list-menu-${selectedTrack.uid}`}
           closeMenu={this.props.closeMenu}
           hostTrack={this.props.tracks[0]}
+          onAddDivisor={this.props.onAddDivisor}
           onAddSeries={canBeReplaced ? this.props.onAddSeries : null}
           onChangeTrackType={this.props.onChangeTrackType}
+          onChangeTrackData={this.props.onChangeTrackData}
           onCloseTrack={() => this.props.onCloseTrack(this.state.submenuShown.uid)}
           onConfigureTrack={this.props.onConfigureTrack}
           onExportData={this.props.onExportData}
@@ -53,6 +55,7 @@ export const SeriesListSubmenuMixin = Mixin((superclass) => class extends superc
           series={this.state.submenuShown}
           track={selectedTrack}
           trackOrientation={this.props.trackOrientation}
+          trackSourceServers={this.props.trackSourceServers}
         />
       );
     }

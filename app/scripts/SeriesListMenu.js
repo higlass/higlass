@@ -1,3 +1,5 @@
+import AddTrackModal from './AddTrackModal';
+
 import React from 'react';
 
 import ContextMenuContainer from './ContextMenuContainer';
@@ -37,7 +39,6 @@ export class SeriesListMenu extends ContextMenuContainer {
     if (!TRACKS_INFO_BY_TYPE[track.type] 
       || !TRACKS_INFO_BY_TYPE[track.type].availableOptions) { return null; }
 
-    console.log('track.type:', track.type, TRACKS_INFO_BY_TYPE[track.type].availableOptions);
     for (const optionType of TRACKS_INFO_BY_TYPE[track.type].availableOptions) {
       if (OPTIONS_INFO.hasOwnProperty(optionType)) {
         menuItems[optionType] = { name: OPTIONS_INFO[optionType].name };
@@ -221,7 +222,44 @@ export class SeriesListMenu extends ContextMenuContainer {
     return (<div />);
   }
 
+  getDivideByMenuItem() {
+    if (this.props.series.data && this.props.series.data.type == 'divided') {
+      const newData = {
+        tilesetUid: this.props.series.data.children[0].tilesetUid,
+        server: this.props.series.data.children[0].server,
+      };
+
+      console.log('newData:', newData);
+
+      // this track is already being divided
+      return (
+        <ContextMenuItem
+          onClick={() => this.props.onChangeTrackData(this.props.series.uid, newData)}
+          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          styleName="context-menu-item"
+        >
+          <span styleName="context-menu-span">
+            {'Remove divisor'}
+          </span>
+        </ContextMenuItem>
+      );
+    } else {
+      return (
+        <ContextMenuItem
+          onClick={() => this.props.onAddDivisor(this.props.series)}
+          onMouseEnter={e => this.handleOtherMouseEnter(e)}
+          styleName="context-menu-item"
+        >
+          <span styleName="context-menu-span">
+            {'Divide by'}
+          </span>
+        </ContextMenuItem>
+        );
+    }
+  }
+
   componentWillUnmount() {
+
   }
 
   render() {
@@ -263,6 +301,8 @@ export class SeriesListMenu extends ContextMenuContainer {
           </ContextMenuItem>)
           :
           null;
+
+    console.log('series:', this.props.series);
 
     return (
       <div
@@ -310,6 +350,8 @@ export class SeriesListMenu extends ContextMenuContainer {
         </ContextMenuItem>
 
         {exportDataMenuItem}
+
+        {this.getDivideByMenuItem()}
 
         <ContextMenuItem
           onClick={this.props.onCloseTrack}
