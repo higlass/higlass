@@ -12,6 +12,7 @@
 }
 
 .inset {
+  z-index: 1;
   position: absolute;
   border: 0px solid white;
   background: white;
@@ -73,13 +74,18 @@
 }
 
 .inset-leader-line {
+  z-index: 0;
   position: absolute;
   transition: transform $fast $ease;
   transform-origin: center left;
 }
 
+.inset-leader-line-focus,
 .inset-leader-line-dragging {
   z-index: 2;
+}
+
+.inset-leader-line-dragging {
   transition: none;
 }
 

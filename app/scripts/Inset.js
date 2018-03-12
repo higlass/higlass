@@ -998,9 +998,11 @@ export default class Inset {
     if (this.isDragging) addClass(line, style['inset-leader-line-dragging']);
     else removeClass(line, style['inset-leader-line-dragging']);
 
-    const _color = this.isHovering || this.isDragging
-      ? this.options.selectColor
-      : color;
+    let _color = color;
+    if (this.isHovering || this.isDragging) {
+      _color = this.options.selectColor;
+      addClass(line, style['inset-leader-line-focus']);
+    }
 
     if (this.options.leaderLineStubLength) {
       let stubA = this.leaderLineStubA;
