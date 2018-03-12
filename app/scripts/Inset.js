@@ -161,6 +161,7 @@ export default class Inset {
     this.mouseOutHandlerBound = this.mouseOutHandler.bind(this);
     this.mouseDownHandlerBound = this.mouseDownHandler.bind(this);
     this.mouseClickHandlerBound = this.mouseClickHandler.bind(this);
+    this.mouseDblclickHandlerBound = this.mouseDblclickHandler.bind(this);
     this.mouseClickRightHandlerBound = this.mouseClickRightHandler.bind(this);
     this.mouseUpHandlerBound = this.mouseUpHandler.bind(this);
     this.mouseClickGlobalHandlerBound = this.mouseClickGlobalHandler.bind(this);
@@ -418,6 +419,9 @@ export default class Inset {
       'click', this.mouseClickHandlerBound
     );
     this.border.addEventListener(
+      'dblclick', this.mouseDblclickHandlerBound
+    );
+    this.border.addEventListener(
       'contextmenu', this.mouseClickRightHandlerBound
     );
     this.border.addEventListener(
@@ -436,6 +440,7 @@ export default class Inset {
     this.border.removeEventListener('mouseleave', this.mouseOutHandlerBound);
     this.border.removeEventListener('mousedown', this.mouseDownHandlerBound);
     this.border.removeEventListener('click', this.mouseClickHandlerBound);
+    this.border.removeEventListener('dblclick', this.mouseDblclickHandlerBound);
     this.border.removeEventListener('contextmenu', this.mouseClickRightHandlerBound);
     this.border.removeEventListener('wheel', this.mouseWheelHandlerBound);
     pubSub.unsubscribe('mouseup', this.mouseUpHandlerBound);
@@ -1531,7 +1536,6 @@ export default class Inset {
     this.scale();
     this.isScaledUp = false;
     this.border.style.zIndex = null;
-    this.drawBorder();
   }
 
 
@@ -1555,14 +1559,28 @@ export default class Inset {
     event.preventDefault();
     event.stopPropagation();
 
-    const dT = performance.now() - this.mouseDownTime;
+    const dX = event.clientX - this.dragStartX;
+    const dY = event.clientY - this.dragStartY;
 
-    if (dT < MOUSE_CLICK_TIME) {
+    const dT = performance.now() - this.mouseDownTime;
+    const dL = lDist([0, 0], [dX, dY]);
+
+    if (dT < MOUSE_CLICK_TIME && dL <= 1) {
       if (this.isScaledUp) this.scaleDown();
       else this.scaleUp();
     }
 
     this.mouseHandler.click(event, this);
+  }
+
+  /**
+   * Mouse click handler.
+   *
+   * @param  {Object}  event  Event object.
+   */
+  mouseDblclickHandler(event) {
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   /**
