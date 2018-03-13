@@ -1540,6 +1540,7 @@ export default class Inset {
     if (!this.isScaledUp) {
       this.scale(this.onClickScale);
       this.isScaledUp = true;
+      addClass(this.border, style['inset-scaled-up']);
       this.border.style.zIndex = 10;
       this.addLeafListeners();
     }
@@ -1548,6 +1549,7 @@ export default class Inset {
   scaleDown() {
     this.scale();
     this.isScaledUp = false;
+    removeClass(this.border, style['inset-scaled-up']);
     this.border.style.zIndex = null;
     if (!this.isHovering) this.blur();
   }
