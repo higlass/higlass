@@ -36,7 +36,6 @@ const PILE_ORIENTATION = 'bottom';
 const PREVIEW_SPACING = 1;
 const DRAGGED_THRES = 6;
 const MOUSE_CLICK_TIME = 250;
-const INVARIANT_SOFT_BOOST = 1.25;
 
 const getBaseRes = tilesetInfo => (
   tilesetInfo.max_width /
@@ -192,12 +191,6 @@ export default class Inset {
     return this.label.src.size;
   }
 
-  get scaleInvarientEls() {
-    return [
-      this.dragIndicator,
-    ];
-  }
-
   /* ---------------------------- Custom Methods ---------------------------- */
 
   /**
@@ -207,6 +200,7 @@ export default class Inset {
   baseEl(baseElement) {
     this.baseElement = baseElement;
   }
+
   /**
    * Blur visually focused insert by changing back to the default border color.
    */
@@ -221,6 +215,9 @@ export default class Inset {
     Object.keys(this.indicator).forEach((id) => {
       this.renderIndicator(id);
     });
+    if (!this.isScaledUp) this.originBlur();
+    this.drawLeaderLine();
+    this.removeLeafListeners();
   }
 
   compPrvsHeight() {
@@ -295,7 +292,8 @@ export default class Inset {
    * @param   {D3.Color}  fill  Fill color.
    */
   styleBorderHtml(fill, radius, extraWidth = 0) {
-    const _fill = this.isPermanentFocus ? this.selectColor : fill;
+    const _fill = this.isPermanentFocus || this.isScaledUp
+      ? this.selectColor : fill;
     const _extraWidth = this.isScaledUp ? 0 : extraWidth;
 
     this.border.style.background = _fill.toString();
@@ -819,7 +817,7 @@ export default class Inset {
       this.imgsWrapperLeft = null;
       this.imgsWrapperRight = null;
       this.prvsWrapper = null;
-      this.dragIndicator = null;
+      this.indicator = {};
     }
   }
 
@@ -887,7 +885,7 @@ export default class Inset {
     this.label.y = this.y;
     this.isPositionChanged = false;
     this.renderIndicator(
-      'drag', BROKEN_LINK, this.connectHandler.bind(this), this.selectColor
+      'drag', BROKEN_LINK, this.connectHandler.bind(this)
     );
   }
 
@@ -897,7 +895,7 @@ export default class Inset {
     this.removeIndicator('drag');
     if (!this.isPositionChanged) {
       this.renderIndicator(
-        'revert', RESET, this.revertPosHandler.bind(this), this.selectColor
+        'revert', RESET, this.revertPosHandler.bind(this)
       );
     }
   }
@@ -1004,7 +1002,7 @@ export default class Inset {
     else removeClass(line, style['inset-leader-line-dragging']);
 
     let _color = color;
-    if (this.isHovering || this.isDragging) {
+    if (this.isHovering || this.isDragging || this.isScaledUp) {
       _color = this.options.selectColor;
       addClass(line, style['inset-leader-line-focus']);
     }
@@ -1086,7 +1084,7 @@ export default class Inset {
       this.border.appendChild(this.indicator[name]);
     }
 
-    const _color = this.isHovering || this.isDragging
+    const _color = this.isHovering || this.isDragging || this.isScaledUp
       ? this.options.selectColor
       : color;
 
@@ -1100,20 +1098,35 @@ export default class Inset {
     delete this.indicator[name];
   }
 
+  /**
+   * Connect the inset to the origin again. This will enforce the locality constraint.
+   * @param   {object}  event  Click event object
+   */
   connectHandler(event) {
     event.preventDefault();
     event.stopPropagation();
     this.unsetDragged();
   }
 
+  /**
+   * Revert the manual position
+   * @param   {object}  event  Click event object that triggered this action
+   */
   revertPosHandler(event) {
     event.preventDefault();
     event.stopPropagation();
     this.x = this.__x__;
     this.y = this.__y__;
+    this.label.x = this.x;
+    this.label.y = this.y;
     this.isPositionChanged = true;
     this.removeIndicator('revert');
-    this.positionBorderHtml();
+
+    const [vX, vY] = this.computeBorderPosition(
+      this.x, this.y, this.width, this.height
+    );
+
+    this.positionBorderHtml(vX, vY);
     this.drawLeaderLine(this.x, this.y);
   }
 
@@ -1469,7 +1482,7 @@ export default class Inset {
       this.selectColor,
     );
     Object.keys(this.indicator).forEach((id) => {
-      this.renderIndicator(id, undefined, undefined, this.selectColor);
+      this.renderIndicator(id, undefined, undefined);
     });
   }
 
@@ -1536,6 +1549,7 @@ export default class Inset {
     this.scale();
     this.isScaledUp = false;
     this.border.style.zIndex = null;
+    if (!this.isHovering) this.blur();
   }
 
 
@@ -1595,6 +1609,8 @@ export default class Inset {
     }
 
     if (this.isScaledUp) this.scaleDown();
+
+    this.mouseHandler.clickGlobal(event, this);
   }
 
   /**
@@ -1675,9 +1691,6 @@ export default class Inset {
   mouseOutHandler(event) {
     this.isHovering = false;
     this.blur();
-    this.originBlur();
-    this.drawLeaderLine();
-    this.removeLeafListeners();
     this.mouseHandler.mouseOut(event, this);
   }
 
@@ -1733,9 +1746,9 @@ export default class Inset {
     if (this.isDragging) this.dragEndHandler(event);
     this.mouseDown = false;
     this.mouseHandler.mouseUp(event, this);
-    if (this.dragIndicator) {
+    if (this.indicator.drag) {
       this.renderIndicator(
-        'drag', BROKEN_LINK, this.connectHandler.bind(this), this.selectColor
+        'drag', BROKEN_LINK, this.connectHandler.bind(this)
       );
     }
   }
@@ -2437,16 +2450,6 @@ export default class Inset {
     this.border.style.borderWidth = amount > 1
       ? 0
       : this.compBorderExtraWidth();
-
-    const softBoost = amount < INVARIANT_SOFT_BOOST
-      ? 1
-      : INVARIANT_SOFT_BOOST;
-
-    this.scaleInvarientEls.filter(el => el).forEach((el) => {
-      if (!el.__transform__) el.__transform__ = {};
-      el.__transform__.scale = [softBoost / amount, softBoost / amount];
-      el.style.transform = objToTransformStr(el.__transform__);
-    });
 
     this.scaleExtra = amount;
   }
