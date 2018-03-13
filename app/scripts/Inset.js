@@ -1134,6 +1134,7 @@ export default class Inset {
 
     this.positionBorderHtml(vX, vY);
     this.drawLeaderLine(this.x, this.y);
+    this.blur();
   }
 
   /**
@@ -1703,6 +1704,7 @@ export default class Inset {
       this.swapImgWithImg(event);
     }
 
+    // Point leader line to hovering annotation
     const anno = this.label.src.members.values[event.target.__indice__];
     const xOff = this.globalOffsetX + this.galleryOffsetX;
     const yOff = this.globalOffsetY + this.galleryOffsetY;
