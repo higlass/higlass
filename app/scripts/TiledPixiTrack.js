@@ -130,6 +130,7 @@ export class TiledPixiTrack extends PixiTrack {
       this.options.name = this.options.name ? this.options.name : tilesetInfo.name;
 
       this.draw();
+      this.drawLabel();
       this.animate();
     });
 
