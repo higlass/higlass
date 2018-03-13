@@ -166,9 +166,9 @@ export default class Inset {
     this.mouseClickGlobalHandlerBound = this.mouseClickGlobalHandler.bind(this);
     this.mouseMoveGlobalHandlerBound = this.mouseMoveGlobalHandler.bind(this);
     this.mouseWheelHandlerBound = this.mouseWheelHandler.bind(this);
-    this.swapImgWithImgBound = this.swapImgWithImg.bind(this);
-    this.swapImgWithPrvBound = this.swapImgWithPrv.bind(this);
-    this.revertImgFromImgBound = this.revertImgFromImg.bind(this);
+    this.mouseEnterImgBound = this.mouseEnterImg.bind(this);
+    this.mouseEnterPrvBound = this.mouseEnterPrv.bind(this);
+    this.mouseLeaveImgPrvBound = this.mouseLeaveImgPrv.bind(this);
 
     this.initGraphics(options);
   }
@@ -916,8 +916,14 @@ export default class Inset {
    * Draw leader line.
    * @param   {D3.Color}  color  Color.
    */
-  drawLeaderLine(x = this.x, y = this.y, color = this.options.leaderLineColor) {
-    let pointFrom = [this.originX, this.originY];
+  drawLeaderLine(
+    x = this.x,
+    y = this.y,
+    originX = this.originX,
+    originY = this.originY,
+    color = this.options.leaderLineColor
+  ) {
+    let pointFrom = [originX, originY];
     let pointTo = [x, y];
     let dist = lDist(pointFrom, pointTo);
 
@@ -1309,6 +1315,7 @@ export default class Inset {
               // most recent data arrived.
               this.dataTypes = data.dataTypes;
               this.imgData = data.fragments;
+              this.imgIdx = data.indices;
               this.prvData = data.previews;
               this.prv2dData = data.previews2d;
               this.inFlight = false;
@@ -1326,7 +1333,7 @@ export default class Inset {
       return this.inFlight;
     }
 
-    const imageRendered = this.renderImage(this.imgData, force, requestId)
+    const imageRendered = this.renderImage(this.imgData, this.imgIdx, force, requestId)
       .then(() => {
         if (
           this.isDestroyed ||
@@ -1536,6 +1543,9 @@ export default class Inset {
     return [width, height];
   }
 
+  /**
+   * Scale up routine
+   */
   scaleUp() {
     if (!this.isScaledUp) {
       this.scale(this.onClickScale);
@@ -1546,6 +1556,9 @@ export default class Inset {
     }
   }
 
+  /**
+   * Scale down routine.
+   */
   scaleDown() {
     this.scale();
     this.isScaledUp = false;
@@ -1642,13 +1655,13 @@ export default class Inset {
     this.isLeafingEnabled = true;
     if (this.prvs.length) {
       this.prvs.forEach((prv) => {
-        prv.addEventListener('mouseenter', this.swapImgWithPrvBound);
-        prv.addEventListener('mouseleave', this.revertImgFromImgBound);
+        prv.addEventListener('mouseenter', this.mouseEnterPrvBound);
+        prv.addEventListener('mouseleave', this.mouseLeaveImgPrvBound);
       });
-    } else if (this.imgs.length > 2) {
-      this.imgs.slice(1, 4).forEach((img) => {
-        img.addEventListener('mouseenter', this.swapImgWithImgBound);
-        img.addEventListener('mouseleave', this.revertImgFromImgBound);
+    } else {
+      this.imgs.slice(0, 4).forEach((img) => {
+        img.addEventListener('mouseenter', this.mouseEnterImgBound);
+        img.addEventListener('mouseleave', this.mouseLeaveImgPrvBound);
       });
     }
   }
@@ -1658,13 +1671,13 @@ export default class Inset {
 
     if (this.prvs.length) {
       this.prvs.forEach((prv) => {
-        prv.removeEventListener('mouseenter', this.swapImgWithPrvBound);
-        prv.removeEventListener('mouseleave', this.revertImgFromImgBound);
+        prv.removeEventListener('mouseenter', this.mouseEnterPrvBound);
+        prv.removeEventListener('mouseleave', this.mouseLeaveImgPrvBound);
       });
     } else {
-      this.imgs.slice(1, 4).forEach((img) => {
-        img.removeEventListener('mouseenter', this.swapImgWithImgBound);
-        img.removeEventListener('mouseleave', this.revertImgFromImgBound);
+      this.imgs.slice(0, 4).forEach((img) => {
+        img.removeEventListener('mouseenter', this.mouseEnterImgBound);
+        img.removeEventListener('mouseleave', this.mouseLeaveImgPrvBound);
       });
     }
 
@@ -1683,6 +1696,29 @@ export default class Inset {
 
   revertImgFromImg() {
     this.imgs[0].style.backgroundImage = this.imgs[0].__backgroundImage__;
+  }
+
+  mouseEnterImg(event) {
+    if (this.imgs.length > 2 && event.target !== this.imgs[0]) {
+      this.swapImgWithImg(event);
+    }
+
+    const anno = this.label.src.members.values[event.target.__indice__];
+    const xOff = this.globalOffsetX + this.galleryOffsetX;
+    const yOff = this.globalOffsetY + this.galleryOffsetY;
+    const x = ((anno.maxX - anno.minX) / 2) + xOff + anno.minX;
+    const y = ((anno.maxY - anno.minY) / 2) + yOff + anno.minY;
+
+    this.drawLeaderLine(this.x, this.y, x, y);
+  }
+
+  mouseEnterPrv(event) {
+    this.swapImgWithPrv(event);
+  }
+
+  mouseLeaveImgPrv() {
+    this.drawLeaderLine();
+    this.revertImgFromImg();
   }
 
   /**
@@ -2019,7 +2055,7 @@ export default class Inset {
    *
    * @param  {Array}  data  Data to be rendered
    */
-  renderImageHtml(data, force, requestId) {
+  renderImageHtml(data, idx, force, requestId) {
     if (
       !data ||
       (this.imgs.length === data.length && !force) ||
@@ -2085,6 +2121,7 @@ export default class Inset {
 
           img.style.backgroundImage = `url(${renderedImg.toDataURL()})`;
           img.__transform__ = {};
+          img.__indice__ = idx[i];
 
           if (this.dataType === 'cooler') {
             // Enable nearest-neighbor scaling
