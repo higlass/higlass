@@ -114,14 +114,20 @@
 
 .indicator {
   position: absolute;
-  bottom: 0;
-  left: 0;
+  z-index: -1;
+  top: 50%;
+  left: -6px;
   width: 12px;
   height: 12px;
-  border-radius: 2px;
+  border-radius: 2px 0 0 2px;
   background: white;
-  transition: background $fast $ease;
+  transform: translate(0, -6px);
   transform-origin: bottom left;
+  transition: background $fast $ease, transform $fast $ease;
+}
+
+.inset-focus .indicator {
+  transform: translate(-6px, -6px);
 }
 
 .indicator-icon {
@@ -130,6 +136,12 @@
   left: 0;
   width: 100%;
   height: 100%;
+  opacity: 0;
+  transition: opacity $fast $ease;
+}
+
+.inset-focus .indicator-icon {
+  opacity: 1;
 }
 
 .inset-images-wrapper {
