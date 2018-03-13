@@ -92,6 +92,8 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       return;
     }
 
+    console.log('tile:', tile)
+
     tile.lineXValues = new Array(tile.tileData.dense.length);
     tile.lineYValues = new Array(tile.tileData.dense.length);
 

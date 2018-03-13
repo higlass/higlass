@@ -47,6 +47,8 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     // create texts
     tile.texts = {};
 
+    console.log('tile:', tile)
+
     tile.rectGraphics = new PIXI.Graphics();
     tile.textGraphics = new PIXI.Graphics();
 

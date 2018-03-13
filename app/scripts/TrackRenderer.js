@@ -912,12 +912,28 @@ export class TrackRenderer extends React.Component {
     // if the track has no data server, then this will just
     // be blank and we can go on our merry way
     let dataConfig = track.data;
+    const chromosomeLabels = this.currentProps
+      .positionedTracks
+      .filter(x => x.track.type == 'horizontal-chromosome-labels')[0]
+
+    console.log('chromosomeLabels:', chromosomeLabels);
+    console.log('positionedTracks:', this.currentProps.positionedTracks);
+
+    const chromOrderSource = 
+      chromosomeLabels && ( chromosomeLabels.track.server == track.server ) &&
+      chromosomeLabels.track.tilesetUid;
+
+    console.log('chromOrderSource:', chromOrderSource);
+
     if (!dataConfig) {
       dataConfig = {
         server: track.server,
         tilesetUid: track.tilesetUid
       };
     }
+
+    if (chromOrderSource)
+      dataConfig.chromOrderSource = chromOrderSource;
 
     switch (track.type) {
       case 'left-axis':

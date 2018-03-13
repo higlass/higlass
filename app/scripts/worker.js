@@ -200,7 +200,7 @@ export function tileResponseToData(data, server, theseTileIds) {
     }
     const key = thisId;
     // let's hope the payload doesn't contain a tileId field
-    const keyParts = key.split('.');
+    const keyParts = key.split('|')[0].split('.');
 
     data[key].server = server;
     data[key].tileId = key;
