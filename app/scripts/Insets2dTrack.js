@@ -104,6 +104,7 @@ export default class Insets2dTrack extends PixiTrack {
 
     this.insetMouseHandler = {
       click: this.clickInsetHandler.bind(this),
+      clickGlobal: this.mouseClickGlobalHandler.bind(this),
       clickRight: this.clickRightInsetHandler.bind(this),
       mouseOver: this.mouseOverInsetHandler.bind(this),
       mouseOut: this.mouseOutInsetHandler.bind(this),
@@ -113,8 +114,10 @@ export default class Insets2dTrack extends PixiTrack {
       mouseUpRight: this.mouseUpInsetHandler.bind(this),
     };
 
+    this.mouseMoveHandlerBound = this.mouseMoveHandler.bind(this);
+
     this.pubSubs.push(
-      pubSub.subscribe('app.mouseMove', this.mouseMoveHandler.bind(this)),
+      pubSub.subscribe('app.mouseMove', this.mouseMoveHandlerBound),
     );
 
     // Create a custom pubSub interface
@@ -413,6 +416,10 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   clickInsetHandler(/* event, inset */) {}
+
+  mouseClickGlobalHandler() {
+    this.animate();
+  }
 
   clickRightInsetHandler(event, inset) {
     // Do never forward the contextmenu event when ALT is being hold down.
