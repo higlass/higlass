@@ -1480,9 +1480,6 @@ export default class Inset {
         // response value and avoid rendering and positioning hiccups.
         parsedResponse.requestId = fetchRequest;
         return parsedResponse;
-      })
-      .catch(() => {
-        this.fetchAttempts += 1;
       });
   }
 
