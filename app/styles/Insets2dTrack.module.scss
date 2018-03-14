@@ -165,7 +165,7 @@
 
 .inset-images-wrapper.to-be-removed {
   z-index: 2;
-  transition: opacity $fast $ease;
+  transition: opacity $slow $ease;
 }
 
 .inset-images-wrapper.to-be-removed.removing {
