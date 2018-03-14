@@ -49,7 +49,7 @@ export class StackedBarTrack extends BarTrack {
   }
 
   /**
-   *
+   * Converts all colors in a colorScale to Hex colors.
    */
   localColorToHexScale() {
     const colorScale = this.options.colorScale || scaleOrdinal(schemeCategory10);
