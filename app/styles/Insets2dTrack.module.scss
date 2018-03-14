@@ -162,6 +162,15 @@
   align-items: stretch;
 }
 
+.inset-images-wrapper.to-be-removed {
+  z-index: 2;
+  transition: opacity $fast $ease;
+}
+
+.inset-images-wrapper.to-be-removed.removing {
+  opacity: 0;
+}
+
 .inset-images-wrapper-left {
   position: relative;
   display: flex;

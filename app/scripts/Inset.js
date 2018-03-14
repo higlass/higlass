@@ -722,14 +722,14 @@ export default class Inset {
    *
    * @return  {Number}  Closest zoom level.
    */
-  computedZoom(i = 0, isHiRes = false) {
+  computeZoom(i = 0, isHiRes = false) {
     const finalRes = this.finalRes[i];
     const remotePos = this.remotePos[i];
     const remotePaddedSize = this.remotePaddedSizes[i];
     const isBedpe = remotePos.length === 6;
     const baseRes = isBedpe ? getBaseRes(this.tilesetInfo) : 1;
 
-    const extraScale = isHiRes ? this.onClickScale : 0.8;
+    const extraScale = isHiRes ? this.onClickScale + 1 : 0.75;
 
     const zoomLevel = Math.max(0, Math.min(
       this.tilesetInfo.max_zoom,
@@ -1430,7 +1430,7 @@ export default class Inset {
     const loci = this.remotePos.map((remotePos, i) => [
       ...remotePos,
       this.dataConfig.tilesetUid,
-      this.computedZoom(i, isHiRes),
+      this.computeZoom(i, isHiRes),
       this.finalRes[i]
     ]);
 
@@ -1774,7 +1774,7 @@ export default class Inset {
     console.log(
       `Annotation: ${this.id} |`,
       `Remote pos: ${this.remotePos.join(', ')} |`,
-      `Ideal zoom level for snippet: ${this.computedZoom()}`
+      `Ideal zoom level for snippet: ${this.computeZoom()}`
     );
   }
 
@@ -2071,8 +2071,12 @@ export default class Inset {
     this.imgRatios = [];
     this.imgs = [];
     this.imgWrappers = [];
+    let toBeRemoved = null;
 
-    if (this.imgsWrapper) this.border.removeChild(this.imgsWrapper);
+    if (this.imgsWrapper) {
+      toBeRemoved = this.imgsWrapper;
+      addClass(toBeRemoved, style['to-be-removed']);
+    }
 
     this.imgsWrapper = document.createElement('div');
     this.imgsWrapper.className = style['inset-images-wrapper'];
@@ -2165,6 +2169,19 @@ export default class Inset {
         this.renderClusterSize(
           this.prvData, this.prvs, this.prvWrappers, this.imgsWrapper, true
         );
+      }
+
+      // Remove old image after fading out to avoid flickering
+      if (toBeRemoved) {
+        // We temprarily store the element such that sub sequent draw routines
+        // do not trigger fading out again and again
+        let tmp = toBeRemoved;
+        toBeRemoved = null;
+        addEventListenerOnce(tmp, 'transitionend', () => {
+          this.border.removeChild(tmp);
+          tmp = null;
+        });
+        addClass(tmp, style.removing);
       }
     });
 
