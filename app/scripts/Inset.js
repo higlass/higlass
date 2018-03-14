@@ -20,6 +20,8 @@ import {
   getClusterPropAcc,
   hasParent,
   lDist,
+  max,
+  min,
   objToTransformStr,
   removeClass,
 } from './utils';
@@ -1559,7 +1561,7 @@ export default class Inset {
    */
   scaleUp() {
     if (!this.isScaledUp) {
-      this.scale(this.onClickScale);
+      this.scale(this.onClickScale, true);
       this.isScaledUp = true;
       addClass(this.border, style['inset-scaled-up']);
       this.addLeafListeners();
@@ -2503,10 +2505,15 @@ export default class Inset {
    *
    * @param  {Number}  amount  Amount by which to scale the inset
    */
-  scaleHtml(amount = 1) {
+  scaleHtml(amount = 1, isOriginMinded = false) {
     if (this.scaleExtra === amount) return;
     this.fastTransition();
     this.checkTransformOrigin();
+
+    if (isOriginMinded) {
+      const originOrient = this.compOriginOrient();
+      this.border.style.transformOrigin = originOrient.join(' ');
+    }
 
     addEventListenerOnce(
       this.border, 'transitionend', () => { this.fastTransition(true); }
@@ -2519,6 +2526,44 @@ export default class Inset {
       : this.compBorderExtraWidth();
 
     this.scaleExtra = amount;
+  }
+
+  /**
+   * Get orientation of the origin for scaling up the inset. I.e., this is
+   *   used for `transform-origin`.
+   * @return  {array}  Tuple in the form of e.g. ['left', 'bottom']
+   */
+  compOriginOrient() {
+    let originMinX = Infinity;
+    let originMaxX = -Infinity;
+    let originMinY = Infinity;
+    let originMaxY = -Infinity;
+
+    this.label.src.members.forEach((annotation) => {
+      originMinX = min(originMinX, annotation.minX);
+      originMaxX = max(originMaxX, annotation.maxX);
+      originMinY = min(originMinY, annotation.minY);
+      originMaxY = max(originMaxY, annotation.maxY);
+    });
+
+    const wH = this.width / 2;
+    const hH = this.height / 2;
+
+    const isEast = originMinX < this.x - wH ? 'left' : false;
+    const isWest = originMaxX > this.x + wH ? 'right' : false;
+    const isNorth = originMinY < this.y - hH ? 'top' : false;
+    const isSouth = originMaxY > this.y + hH ? 'bottom' : false;
+
+    const horizontal = (isEast && isWest) || (!isEast && !isWest)
+      ? 'center'
+      : isEast || isWest;
+
+    const vertical = (isNorth && isSouth) || (!isNorth && !isSouth)
+      ? 'center'
+      : isNorth || isSouth;
+
+
+    return [horizontal, vertical];
   }
 
   /**
