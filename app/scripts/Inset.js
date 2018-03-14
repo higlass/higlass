@@ -729,7 +729,10 @@ export default class Inset {
     const isBedpe = remotePos.length === 6;
     const baseRes = isBedpe ? getBaseRes(this.tilesetInfo) : 1;
 
-    const extraScale = isHiRes ? this.onClickScale + 1 : 0.75;
+    let extraScale = 1;
+    if (this.options.isFlexZoom) {
+      extraScale = isHiRes ? this.onClickScale + 1 : 0.75;
+    }
 
     const zoomLevel = Math.max(0, Math.min(
       this.tilesetInfo.max_zoom,
@@ -1427,7 +1430,7 @@ export default class Inset {
    * @return  {Object}  Promise resolving to the JSON response
    */
   fetchData(isHiRes = false) {
-    const loci = this.remotePos.map((remotePos, i) => [
+    let loci = this.remotePos.map((remotePos, i) => [
       ...remotePos,
       this.dataConfig.tilesetUid,
       this.computeZoom(i, isHiRes),
@@ -1446,6 +1449,11 @@ export default class Inset {
       encoding = 'b64';
       representative = 4;
       maxPrevs = 0;
+    }
+
+    if (isHiRes && this.imgIdx) {
+      // Ensure that the order of the representatives is the same
+      loci = { loci, representativeIndices: this.imgIdx };
     }
 
     const fetchRequest = ++this.fetching;
