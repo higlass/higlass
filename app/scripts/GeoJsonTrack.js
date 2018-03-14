@@ -30,11 +30,12 @@ class GeoJsonTrack extends Annotations2dTrack {
         height,
         geometry: td.geometry
       },
-      dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd]
+      dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
+      importance: td.importance,
     };
   }
 
-  drawAnnotation({ graphics, uid, annotation, dataPos }) {
+  drawAnnotation({ graphics, uid, annotation, dataPos, importance }) {
     if (
       annotation.width < this.options.polygonMinBoundingSize
       || annotation.height < this.options.polygonMinBoundingSize
@@ -75,7 +76,8 @@ class GeoJsonTrack extends Annotations2dTrack {
       viewPos: [
         annotation.x, annotation.y, annotation.width, annotation.height
       ],
-      dataPos
+      dataPos,
+      importance,
     });
 
     this.drawnAnnotations[uid] = annotation;
