@@ -722,18 +722,20 @@ export default class Inset {
    *
    * @return  {Number}  Closest zoom level.
    */
-  computedZoom(i = 0) {
+  computedZoom(i = 0, isHiRes = false) {
     const finalRes = this.finalRes[i];
     const remotePos = this.remotePos[i];
     const remotePaddedSize = this.remotePaddedSizes[i];
     const isBedpe = remotePos.length === 6;
     const baseRes = isBedpe ? getBaseRes(this.tilesetInfo) : 1;
 
+    const extraScale = isHiRes ? this.onClickScale : 0.8;
+
     const zoomLevel = Math.max(0, Math.min(
       this.tilesetInfo.max_zoom,
       Math.ceil(Math.log2(
         (
-          finalRes * this.onClickScale * (2 ** this.tilesetInfo.max_zoom)
+          finalRes * extraScale * (2 ** this.tilesetInfo.max_zoom)
         ) / (remotePaddedSize / baseRes)
       ))
     ));
@@ -1286,7 +1288,7 @@ export default class Inset {
    *   the data into canvas.
    * @param  {Boolean}  force  If `true` forces a rerendering of the image.
    */
-  drawImage(force = false, requestId = null) {
+  drawImage(force = false, requestId = null, isHiRes = false) {
     if (this.fetchAttempts >= 2) {
       return Promise.reject('Could not fetch the inset\'s images');
     }
@@ -1300,7 +1302,7 @@ export default class Inset {
         this.prvData = [];
         this.prv2dData = [];
 
-        this.inFlight = this.fetchData()
+        this.inFlight = this.fetchData(isHiRes)
           .then((data) => {
             if (
               this.isDestroyed || data.requestId !== this.fetching
@@ -1424,11 +1426,11 @@ export default class Inset {
    *
    * @return  {Object}  Promise resolving to the JSON response
    */
-  fetchData() {
+  fetchData(isHiRes = false) {
     const loci = this.remotePos.map((remotePos, i) => [
       ...remotePos,
       this.dataConfig.tilesetUid,
-      this.computedZoom(i),
+      this.computedZoom(i, isHiRes),
       this.finalRes[i]
     ]);
 
@@ -1552,8 +1554,8 @@ export default class Inset {
       this.scale(this.onClickScale);
       this.isScaledUp = true;
       addClass(this.border, style['inset-scaled-up']);
-      this.border.style.zIndex = 10;
       this.addLeafListeners();
+      if (this.options.loadHiResOnScaleUp) this.drawImage(true, null, true);
     }
   }
 
@@ -1564,7 +1566,6 @@ export default class Inset {
     this.scale();
     this.isScaledUp = false;
     removeClass(this.border, style['inset-scaled-up']);
-    this.border.style.zIndex = null;
     if (!this.isHovering) this.blur();
   }
 
