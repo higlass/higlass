@@ -114,6 +114,8 @@ export default class Inset {
     this.fetchAttempts = 0;
     this.imScale = 1;
     this.leaderLineAngle = 0;
+    this.dragStartX = -1;
+    this.dragStartY = -1;
 
     this.indicator = {};
 
@@ -866,6 +868,9 @@ export default class Inset {
     const dX = event.clientX - this.dragStartX;
     const dY = event.clientY - this.dragStartY;
 
+    this.dragStartX = -1;
+    this.dragStartY = -1;
+
     const d = lDist([dX, dY], [0, 0]);
 
     this.isDragging = false;
@@ -1600,8 +1605,8 @@ export default class Inset {
     event.preventDefault();
     event.stopPropagation();
 
-    const dX = event.clientX - this.dragStartX;
-    const dY = event.clientY - this.dragStartY;
+    const dX = this.dragStartX === -1 ? 0 : event.clientX - this.dragStartX;
+    const dY = this.dragStartY === -1 ? 0 : event.clientY - this.dragStartY;
 
     const dT = performance.now() - this.mouseDownTime;
     const dL = lDist([0, 0], [dX, dY]);
