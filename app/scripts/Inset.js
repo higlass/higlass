@@ -734,7 +734,7 @@ export default class Inset {
     const baseRes = isBedpe ? getBaseRes(this.tilesetInfo) : 1;
 
     let extraScale = 1;
-    if (this.options.isFlexZoom) {
+    if (this.options.loadHiResOnScaleUp) {
       extraScale = isHiRes ? this.onClickScale + 1 : 0.75;
     }
 
@@ -1736,7 +1736,9 @@ export default class Inset {
 
   mouseLeaveImgPrv() {
     this.drawLeaderLine();
-    this.revertImgFromImg();
+    if (this.imgs.length > 2 && event.target !== this.imgs[0]) {
+      this.revertImgFromImg();
+    }
   }
 
   /**
