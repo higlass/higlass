@@ -1697,16 +1697,19 @@ export default class Inset {
   }
 
   swapImgWithImg(event) {
+    if (this.isTransitioning) return;
     this.imgs[0].__backgroundImage__ = this.imgs[0].style.backgroundImage;
     this.imgs[0].style.backgroundImage = event.target.style.backgroundImage;
   }
 
   swapImgWithPrv(event) {
+    if (this.isTransitioning) return;
     this.imgs[0].__backgroundImage__ = this.imgs[0].style.backgroundImage;
     this.imgs[0].style.backgroundImage = event.target.__bg2d__;
   }
 
   revertImgFromImg() {
+    if (this.isTransitioning) return;
     this.imgs[0].style.backgroundImage = this.imgs[0].__backgroundImage__;
   }
 
@@ -2366,9 +2369,14 @@ export default class Inset {
     }
   }
 
-  fastTransition(unset = false) {
-    if (unset) removeClass(this.border, style['inset-fast-transition']);
-    else addClass(this.border, style['inset-fast-transition']);
+  enableTransition(unset = false) {
+    if (unset) {
+      this.isTransitioning = false;
+      removeClass(this.border, style['inset-fast-transition']);
+    } else {
+      this.isTransitioning = true;
+      addClass(this.border, style['inset-fast-transition']);
+    }
   }
 
   /**
@@ -2507,7 +2515,7 @@ export default class Inset {
    */
   scaleHtml(amount = 1, isOriginMinded = false) {
     if (this.scaleExtra === amount) return;
-    this.fastTransition();
+    this.enableTransition();
     this.checkTransformOrigin();
 
     if (isOriginMinded) {
@@ -2516,7 +2524,7 @@ export default class Inset {
     }
 
     addEventListenerOnce(
-      this.border, 'transitionend', () => { this.fastTransition(true); }
+      this.border, 'transitionend', () => { this.enableTransition(true); }
     );
 
     this.border.__transform__.scale = [amount, amount];
