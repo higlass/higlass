@@ -1,7 +1,6 @@
 import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack';
 import {scaleLinear, scaleOrdinal, schemeCategory10} from 'd3-scale';
 import {colorToHex} from './utils';
-import {range} from 'd3-array';
 
 export class BasicMultipleLineChart extends HorizontalLine1DPixiTrack {
   constructor(scene,
@@ -112,7 +111,6 @@ export class BasicMultipleLineChart extends HorizontalLine1DPixiTrack {
         (j == 0) ? graphics.moveTo(x, y) : graphics.lineTo(x, y);
       }
     }
-    console.log('multipleLineTrack', tile.svgData);
   }
 
   /**
@@ -203,23 +201,33 @@ export class BasicMultipleLineChart extends HorizontalLine1DPixiTrack {
     }
   }
 
-  // todo comments
+  /**
+   * Stores x and y coordinates in 2d arrays in each tile to indicate new lines and line color.
+   *
+   * @param tile
+   * @param x
+   * @param y
+   * @param color
+   */
   addSVGInfo(tile, x, y, color) {
     if (tile.svgData
       && tile.svgData.hasOwnProperty('lineXValues')
       && tile.svgData.hasOwnProperty('lineYValues')
       && tile.svgData.hasOwnProperty('lineColor')) {
-      if (tile.svgData.lineColor[tile.svgData.lineColor.length - 1] !== color) { // new color?
+      // if a new color appears, create a separate array to indicate new line
+      if (tile.svgData.lineColor[tile.svgData.lineColor.length - 1] !== color) {
         tile.svgData.lineXValues.push([x]);
         tile.svgData.lineYValues.push([y]);
         tile.svgData.lineColor.push(color);
       }
+      // else add x y coordinates onto the last array in the list
       else {
         tile.svgData.lineXValues[tile.svgData.lineXValues.length - 1].push(x);
         tile.svgData.lineYValues[tile.svgData.lineYValues.length - 1].push(y);
       }
     }
     else {
+      // create entirely new 2d arrays for x y coordinates
       tile.svgData  = {
         lineXValues: [[x]],
         lineYValues: [[y]],
@@ -247,16 +255,19 @@ export class BasicMultipleLineChart extends HorizontalLine1DPixiTrack {
     output.setAttribute('transform',
       `translate(${this.position[0]},${this.position[1]})`);
 
-    for (const tile of this.visibleAndFetchedTiles()) {
-      const g = document.createElement('path');
-      g.setAttribute('fill', 'transparent');
-      let d = `M${tile.svgData.lineXValues[0]} ${tile.svgData.lineYValues[0]}`;
-      for (let i = 0; i < tile.svgData.lineXValues.length; i++) {
-        g.setAttribute('stroke', tile.svgData.lineColor[i]);
-        d += `L${tile.svgData.lineXValues[i]} ${tile.svgData.lineYValues[i]}`;
+    const tiles = this.visibleAndFetchedTiles();
+    for (let i = 0; i < tiles.length; i++) { // unique tiles
+      for (let j = 0; j < tiles[i].svgData.lineXValues.length; j++) { // unique lines
+        const g = document.createElement('path');
+        g.setAttribute('fill', 'transparent');
+        g.setAttribute('stroke', tiles[i].svgData.lineColor[j]);
+        let d = `M${tiles[i].svgData.lineXValues[j][0]} ${tiles[i].svgData.lineYValues[j][0]}`;
+        for (let k = 0; k < tiles[i].svgData.lineXValues[j].length; k++) { // data points on each line
+          d += `L${tiles[i].svgData.lineXValues[j][k]} ${tiles[i].svgData.lineYValues[j][k]}`;
+        }
+        g.setAttribute('d', d);
+        output.appendChild(g);
       }
-      g.setAttribute('d', d);
-      output.appendChild(g);
     }
 
     const gAxis = document.createElement('g');
