@@ -1,8 +1,11 @@
 import { scaleLinear, scaleLog } from 'd3-scale';
+import { tileProxy } from './services';
+import { format } from 'd3-format';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 import { colorToHex } from './utils';
+import { pubSub } from './services';
 
 export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(
@@ -24,7 +27,58 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
         onValueScaleChanged();
       }
     );
+  }
 
+  stopHover() {
+    this.pMouseOver.clear();
+    this.animate();
+  }
+
+  getMouseOverHtml(trackX, trackY) {
+    if (!this.tilesetInfo)
+      return;
+
+    const zoomLevel = this.calculateZoomLevel();
+    const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
+
+    // the position of the tile containing the query position
+    const tilePos = this._xScale.invert(trackX) / tileWidth;
+
+    const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
+
+    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)])
+    const fetchedTile = this.fetchedTiles[tileId];
+
+    let value = '';
+    let textValue = '';
+
+    if (fetchedTile) {
+      const index =  Math.floor(posInTileX);
+      value = fetchedTile.tileData.dense[index];
+      textValue = format(".3f")(value);
+    } else { 
+      return '';
+    }
+
+    const graphics = this.pMouseOver;
+    //const colorHex = colorToHex('black');
+    const colorHex = 0;
+    const yPos = this.valueScale(value);
+
+    graphics.clear();
+    graphics.beginFill(colorHex, .5);
+    graphics.lineStyle(1, colorHex, 1);
+    const markerWidth = 4;
+    
+    graphics.drawRect(
+      trackX - markerWidth / 2,
+      yPos - markerWidth / 2, 
+      markerWidth,
+      markerWidth);
+
+    this.animate();
+
+    return `${textValue}`;
   }
 
   initTile(tile) {
@@ -139,6 +193,9 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     this.pMain.position.y = this.position[1];
     this.pMain.position.x = this.position[0];
+
+    this.pMouseOver.position.y = this.position[1];
+    this.pMouseOver.position.x = this.position[0];
   }
 
   zoomed(newXScale, newYScale) {

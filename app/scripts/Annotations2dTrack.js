@@ -18,14 +18,14 @@ class Annotations2dTrack extends TiledPixiTrack {
   /* --------------------------- Getter / Setter ---------------------------- */
 
   get minX() {
-    return this.tilesetInfo && this.tilesetInfo.min_x
-      ? this.tilesetInfo.min_x
+    return this.tilesetInfo && this.tilesetInfo.min_pos
+      ? this.tilesetInfo.min_pos[0]
       : 0;
   }
 
   get maxX() {
-    return this.tilesetInfo && this.tilesetInfo.max_x
-      ? this.tilesetInfo.max_x
+    return this.tilesetInfo && this.tilesetInfo.max_pos
+      ? this.tilesetInfo.max_pos[0]
       : 0;
   }
 
@@ -42,8 +42,8 @@ class Annotations2dTrack extends TiledPixiTrack {
   get maxSize() {
     try {
       return Math.max(
-        this.tilesetInfo.max_x - this.tilesetInfo.min_x,
-        this.tilesetInfo.max_y - this.tilesetInfo.min_y
+        this.tilesetInfo.max_pos[0] - this.tilesetInfo.min_pos[0],
+        this.tilesetInfo.max_pos[1] - this.tilesetInfo.min_pos[1]
       );
     } catch (e) { /* Nothing */ }
 

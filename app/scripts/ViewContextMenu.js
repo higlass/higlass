@@ -91,14 +91,12 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
 
   hasMatrixTrack(tracks) {
     const trackList = expandCombinedTracks(this.props.tracks);
-    console.log('trackList:', trackList);
     return trackList.filter(track => track.type == 'heatmap').length > 0;   
   }
 
   handleAddHorizontalSection() {
     const trackList = expandCombinedTracks(this.props.tracks);
     const matrixTrack = trackList.filter(track => track.type == 'heatmap')[0];
-    console.log('matrixTrack:', matrixTrack);
 
     this.props.onAddTrack({
       type: 'horizontal-rule',

@@ -205,6 +205,8 @@ class HiGlassComponent extends React.Component {
 
     this.pubSubs = [];
     this.rangeSelection = [null, null];
+
+    this.prevMouseHoverTrack = null;
   }
 
   componentWillMount() {
@@ -231,9 +233,30 @@ class HiGlassComponent extends React.Component {
       pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this)),
     );
 
+    this.pubSubs.push(
+      pubSub.subscribe('trackDropped', () => { 
+        this.setState({
+          draggingHappening: null,
+        });
+      }),
+      pubSub.subscribe('app.zoomStart', this.zoomStartHandler.bind(this))
+    );
+
+    this.pubSubs.push(
+      pubSub.subscribe('app.zoomEnd', this.zoomEndHandler.bind(this))
+    );
+
     if (this.props.getApi) {
       this.props.getApi(this.api);
     }
+  }
+
+  zoomStartHandler() {
+    this.hideHoverMenu();
+  }
+
+  zoomEndHandler() {
+
   }
 
   waitForDOMAttachment(callback) {
@@ -308,7 +331,6 @@ class HiGlassComponent extends React.Component {
       icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox),
     );
 
-    //loadChromInfos(this.state.views);
   }
   getTrackObject(viewUid, trackUid) {
     return this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
@@ -388,6 +410,7 @@ class HiGlassComponent extends React.Component {
 
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
+
     apiDestroy();
   }
 
@@ -430,7 +453,7 @@ class HiGlassComponent extends React.Component {
     if (TRACKS_INFO_BY_TYPE[track.type].defaultOptions) {
       if (!track.options) { track.options = JSON.parse(JSON.stringify(TRACKS_INFO_BY_TYPE[track.type].defaultOptions)); } else {
         for (const optionName in TRACKS_INFO_BY_TYPE[track.type].defaultOptions) {
-          track.options[optionName] = track.options[optionName] ?
+          track.options[optionName] = typeof(track.options[optionName]) !== 'undefined' ?
             track.options[optionName] : JSON.parse(JSON.stringify(TRACKS_INFO_BY_TYPE[track.type].defaultOptions[optionName]));
         }
       }
@@ -604,6 +627,11 @@ class HiGlassComponent extends React.Component {
    */
   syncValueScales(viewUid, trackUid) {
     const uid = this.combineViewAndTrackUid(viewUid, trackUid);
+
+    if (!this.state.views[viewUid])
+      // the view must have been deleted
+      return;
+
     const sourceTrack = getTrackByUid(this.state.views[viewUid].tracks, trackUid);
 
     if (this.valueScaleLocks[uid]) {
@@ -1712,6 +1740,34 @@ class HiGlassComponent extends React.Component {
     });
   }
 
+  handleChangeTrackData(viewUid, trackUid, newData) {
+    /**
+     * Change the data source for a track. E.g. when adding or
+     * removing a divisor.
+     *
+     * Parameters
+     * ----------
+     *  viewUid: string
+     *    The view containing the track to be changed
+     *  trackUid: string
+     *    The uid identifying the existin track
+     *  newData: object
+     *    The new data source section
+     */
+    const view = this.state.views[viewUid];
+    let trackConfig = getTrackByUid(view.tracks, trackUid);
+
+    // this track needs a new uid so that it will be rerendered
+    trackConfig.uid = slugid.nice();
+    trackConfig.data = newData;
+
+    console.log('trackConfig:', trackConfig);
+
+    this.setState({
+      views: this.state.views,
+    });
+  }
+
   handleTrackAdded(viewId, newTrack, position, host = null) {
     /**
          * A track was added from the AddTrackModal dialog.
@@ -2801,8 +2857,7 @@ class HiGlassComponent extends React.Component {
         : dataX;
     }
 
-    pubSub.publish(
-      'app.mouseMove',
+    const evt = 
       {
         x: relPos[0],
         y: relPos[1],
@@ -2811,9 +2866,95 @@ class HiGlassComponent extends React.Component {
         dataX,
         dataY,
         isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
-        isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText
+        isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
+        track: hoveredTrack,
+        origEvt: e
       }
+
+    pubSub.publish(
+      'app.mouseMove', evt
     );
+
+    this.showHoverMenu(evt);
+  }
+
+  /**
+   * Show a menu displaying some information about the track under it
+   */
+  showHoverMenu(evt) {
+    // each track should have a function that returns an HTML representation
+    // of the data at a give position
+    const mouseOverHtml = (evt.track && evt.track.getMouseOverHtml) ?
+      evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY) : '';
+
+    if (evt.track != this.prevMouseHoverTrack) {
+      if (this.prevMouseHoverTrack && this.prevMouseHoverTrack.stopHover) {
+        this.prevMouseHoverTrack.stopHover();
+      }
+    }
+
+    this.prevMouseHoverTrack = evt.track;
+
+    const data = (mouseOverHtml && mouseOverHtml.length) ? [1] : [];
+
+    // try to select the mouseover div
+    let mouseOverDiv = select('body').selectAll('.track-mouseover-menu')
+      .data(data)
+
+    mouseOverDiv
+      .exit()
+      .remove();
+
+    mouseOverDiv
+      .enter()
+      .append('div')
+      .classed('track-mouseover-menu', true)
+      .classed(styles['track-mouseover-menu'], true);
+
+    mouseOverDiv = select('body').selectAll('.track-mouseover-menu');
+    const mousePos = clientPoint(select('body').node(), evt.origEvt);
+
+    /*
+    mouseOverDiv.selectAll('.mouseover-marker')
+      .data([1])
+      .enter()
+      .append('div')
+      .classed('.mouseover-marker', true)
+    */
+
+    mouseOverDiv
+    .style('position', 'absolute')
+      .style('left', mousePos[0] + "px")
+      .style('top', mousePos[1] + "px")
+    ;
+
+    if (!mouseOverDiv.node()) {
+      // probably not over a track so there's no mouseover rectangle
+      return;
+    }
+
+    const bbox = mouseOverDiv.node().getBoundingClientRect();
+
+    if (bbox.x + bbox.width > window.innerWidth) {
+      // the overlay box is spilling outside of the track so switch
+      // to showing it on the left
+      mouseOverDiv.style('left', (mousePos[0] - bbox.width) + 'px')
+    }
+
+    if (bbox.y + bbox.height > window.innerHeight) {
+      // the overlay box is spilling outside of the track so switch
+      // to showing it on the left
+      mouseOverDiv.style('top', (mousePos[1] - bbox.height) + 'px')
+    }
+
+    mouseOverDiv.html(mouseOverHtml);
+  }
+
+  /**
+   * Hide the hover menu when e.g. the user starts zooming
+   */
+  hideHoverMenu() {
+    select('body').selectAll('.track-mouseover-menu').remove();
   }
 
   /**
@@ -2821,6 +2962,13 @@ class HiGlassComponent extends React.Component {
    */
   mouseMoveZoomHandler(data) {
     apiPublish('mouseMoveZoom', data);
+  }
+
+  /**
+   * Handle mousedown events/
+   */
+  mouseDownHandler(evt) {
+
   }
 
   setChromInfo(chromInfoPath, callback) {
@@ -2895,13 +3043,19 @@ class HiGlassComponent extends React.Component {
                 null
             }
             chromInfoPath={view.chromInfoPath}
+            draggingHappening={this.state.draggingHappening}
             editable={this.state.viewConfig.editable}
             horizontalMargin={this.horizontalMargin}
             initialXDomain={view.initialXDomain}
             initialYDomain={view.initialYDomain}
+            xDomainLimits={view.xDomainLimits}
+            yDomainLimits={view.yDomainLimits}
+            zoomLimits={view.zoomLimits}
             mouseTool={this.state.mouseTool}
             onChangeTrackType={(trackId, newType) =>
               this.handleChangeTrackType(view.uid, trackId, newType)}
+            onChangeTrackData={(trackId, newData) =>
+              this.handleChangeTrackData(view.uid, trackId, newData)}
             onCloseTrack={uid => this.handleCloseTrack(view.uid, uid)}
             onDataDomainChanged={
               (xDomain, yDomain) =>

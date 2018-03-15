@@ -1,4 +1,3 @@
-import {Pool} from 'threads';
 import { scaleLog, scaleLinear } from 'd3-scale';
 import { range } from 'd3-array';
 import {
@@ -17,7 +16,13 @@ import {
 
 const MAX_FETCH_TILES = 20;
 
+/*
+const str = document.currentScript.src
+const pathName = str.substring(0, str.lastIndexOf("/"));
+const workerPath = `${pathName}/worker.js`;
+
 const setPixPool = new Pool(1);
+
 setPixPool.run(function(params, done) {
   try {
     const array = new Float32Array(params.data);
@@ -36,21 +41,21 @@ setPixPool.run(function(params, done) {
   } catch (err) {
     console.log('err:', err);
   }
-}, ['http://localhost:8080/worker.js']);
+}, [workerPath]);
+
 
 const fetchTilesPool = new Pool(10);
 fetchTilesPool.run(function(params, done) {
   try {
-    worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds, done);
-    /*
-    done.transfer({
-      pixData: pixData
-    }, [pixData.buffer]);
-    */
+    worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds, params.authHeader, done);
+    // done.transfer({
+    // pixData: pixData
+    // }, [pixData.buffer]);
   } catch (err) {
     console.log('err:', err);
   }
-}, ['http://localhost:8080/worker.js']);
+}, [workerPath]);
+*/
 
 
 import pubSub from './pub-sub';
@@ -160,13 +165,18 @@ export function fetchMultiRequestTiles(req) {
         params.outUrl = outUrl;
         params.server = server;
         params.theseTileIds = theseTileIds;
+        params.authHeader = authHeader;
 
+        workerGetTiles(params.outUrl, params.server, params.theseTileIds, params.authHeader, resolve);
+
+        /*
         fetchTilesPool.send(params)
           .promise()
           .then(ret => {
-            pubSub.publish('requestReceived', outUrl);
             resolve(ret);
           });
+        */
+        pubSub.publish('requestReceived', outUrl);
       }));
 
       fetchPromises.push(p);
@@ -342,9 +352,11 @@ export const calculateTiles = (
   );
 };
 
-export const calculateTileWidth = (maxWidth, zoomLevel) => (
-  maxWidth / (2 ** zoomLevel)
-);
+export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
+  if (tilesetInfo.resolutions)
+    return tilesetInfo.resolutions[zoomLevel] * binsPerTile;
+  return tilesetInfo.max_width / (2 ** zoomLevel)
+};
 
 /**
  * Calculate the tiles that sould be visisble given the resolution and
@@ -424,10 +436,12 @@ export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
  * @param valueScaleType: Either 'log' or 'linear'
  * @param valueScaleDomain: The domain of the scale (the range is always [254,0])
  * @param colorScale: a 255 x 4 rgba array used as a color scale
+ * @param synchronous: Render this tile synchronously or pass it on to the
+ * threadpool
  */
 export const tileDataToPixData = (
   tile, valueScaleType, valueScaleDomain, pseudocount, colorScale, finished,
-) => {
+synchronous=false) => {
   const tileData = tile.tileData;
 
   if  (!tileData.dense) {
@@ -438,44 +452,46 @@ export const tileDataToPixData = (
 
   // clone the tileData so that the original array doesn't get neutered
   // when being passed to the worker script
-  const newTileData = new Float32Array(tileData.dense.length);
-  newTileData.set(tileData.dense);
   //const newTileData = tileData.dense;
 
   // comment this and uncomment the code afterwards to enable threading
 
-  /*
-  const pixData = workerSetPix(
-    newTileData.length,
-    newTileData,
-    valueScaleType,
-    valueScaleDomain,
-    pseudocount,
-    colorScale,
-  );
 
-  finished({pixData});
-  return;
-  */
+  if (true) {
+    const pixData = workerSetPix(
+      tileData.dense.length,
+      tileData.dense,
+      valueScaleType,
+      valueScaleDomain,
+      pseudocount,
+      colorScale,
+    );
 
-  var params = {
-    size: newTileData.length,
-    data: newTileData,
-    valueScaleType: valueScaleType,
-    valueScaleDomain: valueScaleDomain,
-    pseudocount: pseudocount,
-    colorScale: colorScale
-  };
+    finished({pixData});
+  } else {
+    const newTileData = new Float32Array(tileData.dense.length);
+    newTileData.set(tileData.dense);
+    /*
+    var params = {
+      size: newTileData.length,
+      data: newTileData,
+      valueScaleType: valueScaleType,
+      valueScaleDomain: valueScaleDomain,
+      pseudocount: pseudocount,
+      colorScale: colorScale
+    };
 
-  setPixPool.send(params, [ newTileData.buffer ])
-    .promise()
-    .then(returned => {
-      finished(returned);
-    })
-    .catch(reason => {
-      finished(null);
-    });
-  ;
+    setPixPool.send(params, [ newTileData.buffer ])
+      .promise()
+      .then(returned => {
+        finished(returned);
+      })
+      .catch(reason => {
+        finished(null);
+      });
+    ;
+    */
+  }
 };
 
 function text(url, callback) {

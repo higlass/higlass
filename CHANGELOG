@@ -18,6 +18,21 @@ entered
 * Added support for cross-section tracks
 - Rendering improvements
 
+?? v0.10.21 (2018-02-21)
+
+- Exposed the ChromosomeInfo structure as part of the hglib API
+
+?? v0.10.20 (2018-02-??
+
+- Rendering improvements
+
+?? v0.10.20 (2018-02-20)
+
+- Fixed api variable in HiGlassComponent
+- Fixed relToAbsChromPos so that it converts locations to numbers before
+adding
+- Added strokeWidth as an option to the viewport projection track
+
 v0.10.19 (2018-02-11)
 
 - Fixed the 2D chromosome labels track

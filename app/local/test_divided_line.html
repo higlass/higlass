@@ -10,7 +10,7 @@
 </style>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles/page.css">
-    <link rel="stylesheet" href="hglib.css">
+    <link rel="stylesheet" href="../hglib.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.5.4/react-dom.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.2/pixi.min.js"></script>
@@ -18,15 +18,14 @@
 </head>
 <body >
     <div style="height: 50px" />
-        <button onclick='zoomToDetail()'>hey</button>
         <div style="margin: auto; width: 100%;">
         <div
             id="development-demo"
-            style="position: absolute; left: 4rem; top: 1rem; bottom: 1rem; right: 1rem">
+            style="position: absolute; left: 1rem; top: 1rem; bottom: 1rem; right: 1rem">
         </div>
     </div>
 </body>
-<script src='hglib.js'>
+<script src='../hglib.js'>
 </script>
 <script>
 
@@ -34,7 +33,6 @@
 {
   "editable": true,
   "trackSourceServers": [
-    "/api/v1",
     "http://higlass.io/api/v1"
   ],
   "exportViewUrl": "/api/v1/viewconfs",
@@ -42,38 +40,87 @@
     {
       "uid": "a",
       "initialXDomain": [
-        1506407790.0148478,
-        1507252986.7241044
+        -264073426.5657921,
+        542084978.4271728
       ],
       "initialYDomain": [
-        1509411648.3771815,
-        1509760459.7175097
+        46381037.75127679,
+        892629482.343892
       ],
       "tracks": {
-        "top": [],
-        "left": [],
-        "center": [],
-        "bottom": [
+        "top": [
           {
-            "type": "horizontal-multivec",
-            "uid": "OyMo3U-BQ1Sh0Lesm1dYKg",
-            "tilesetUid": "RXdaVZfkTIWUwv54fDWa2g",
-            "server": "http://test1.resgen.io/api/v1",
+            "name": "wgEncodeSydhTfbsGm12878InputStdSig",
+            "created": "2017-02-03T17:48:00.630172Z",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "Nn8aA4qbTnmaa-oGGbuE-A",
+            "uid": "c6HGtCSTSqOziC0HBuA3cQ",
+            "type": "horizontal-line",
             "options": {
-              "labelPosition": "topLeft",
               "labelColor": "black",
-              "labelTextOpacity": 0.4,
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "lineStrokeWidth": 1,
               "valueScaling": "linear",
               "trackBorderWidth": 0,
-              "trackBorderColor": "black"
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "name": "wgEncodeSydhTfbsGm12878InputStdSig"
             },
-            "width": 1071,
-            "height": 393,
-            "name": "hg38.tiled.multires",
-            "position": "bottom"
+            "width": 925,
+            "height": 100,
+            "position": "top"
+          },
+          {
+            "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig",
+            "created": "2017-02-03T17:46:58.349271Z",
+            "server": "http://higlass.io/api/v1",
+            "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
+            "uid": "GBcitoZ2T9iC73E-jHLyhA",
+            "type": "horizontal-line",
+            "options": {
+              "labelColor": "black",
+              "labelPosition": "topLeft",
+              "axisPositionHorizontal": "right",
+              "lineStrokeColor": "blue",
+              "lineStrokeWidth": 1,
+              "valueScaling": "linear",
+              "trackBorderWidth": 0,
+              "trackBorderColor": "black",
+              "labelTextOpacity": 0.4,
+              "showMousePosition": false,
+              "name": "wgEncodeSydhTfbsGm12878Ctcfsc15914c20StdSig"
+            },
+            "width": 925,
+            "height": 119,
+            "position": "top"
+          },
+          {
+            "data": {
+              "type": "divided",
+              'children': [ 
+                {
+                  "server": "http://higlass.io/api/v1",
+                  "tilesetUid": "b6qFe7fOSnaX-YkP2kzN1w",
+                },
+                {
+                  "server": "http://higlass.io/api/v1",
+                  "tilesetUid": "Nn8aA4qbTnmaa-oGGbuE-A",
+                }
+              ]
+            },
+            "name": "divided",
+            "type": "horizontal-line",
+            "height": 119,
           }
         ],
-        "right": []
+        "left": [],
+        "center": [],
+        "bottom": [],
+        "right": [],
+        "whole": []
       },
       "layout": {
         "w": 12,
@@ -101,11 +148,6 @@
 }
  ;
 
-    const chromInfo = hglib.ChromosomeInfo('//s3.amazonaws.com/pkerp/data/hg19/chromSizes.tsv',
-        function(chromInfo) {
-            console.log('got chromInfo:', chromInfo);
-            window.chromInfo = chromInfo;
-        });
     window.higlassApi;
 
     hglib.createHgComponent(
@@ -136,30 +178,18 @@
     //   );
     // }, 3000);
 
-     setTimeout(function () {
-         console.log('going to', window.chromInfo);
-       // Go to Chr1 without animation
-       window.hgApi.goTo(
-         testViewConfig.views[0].uid,
-         'chr6',
-         0,
-         8758810,
-         'chr6',
-         0,
-         8758810,
-           30000,
-        window.chromInfo
-       );
-     }, 2000);
-
-    function zoomToDetail() {
-        console.log('zooming');
-        window.hgApi.goTo('aa', 'chr6',
-            100000,200000, 'chr6',
-            100000,200000,
-            animate=true,
-            animateTime=10000);
-    }
+    // setTimeout(function () {
+    //   // Go to Chr1 without animation
+    //   window.hgApi.goTo(
+    //     testViewConfig.views[0].uid,
+    //     'chr1',
+    //     0,
+    //     89758810,
+    //     'chr1',
+    //     0,
+    //     89758810
+    //   );
+    // }, 11000);
 
 
 </script>

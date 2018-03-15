@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import HiGlassComponent from './HiGlassComponent';
 
-export { default as ChromosomeInfo } from './ChromosomeInfo.js';
+export { default as ChromosomeInfo } from './ChromosomeInfo';
 export { default as HiGlassComponent } from './HiGlassComponent';
 
 const launch = (element, config, options) => {

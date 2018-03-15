@@ -102,7 +102,7 @@ export function workerSetPix(
 
       rgbIdx = 255;
 
-      if (d > epsilon) {
+      if (Math.abs(d) > epsilon) {
         // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
         rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(d + pseudocount))));
       }
@@ -246,21 +246,36 @@ export function tileResponseToData(data, server, theseTileIds) {
   return data;
 }
 
-export function workerGetTiles(outUrl, server, theseTileIds, done) {
-  fetch(outUrl, {
-      headers: {
+export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
+  const headers = {
         'content-type': 'application/json'
-      },
+      };
+
+  if (authHeader)
+    headers['Authorization'] = authHeader;
+
+  fetch(outUrl, {
+      headers,
     }
     )
-    .then(response => response.json())
+    .then(response => {
+      return response.json()
+    }
+    )
     .then(data =>  {
       data = tileResponseToData(data, server, theseTileIds); 
 
+      done(data);
+
+      /*
       const denses = Object.values(data)
         .filter(x => x.dense)
-        .map(x => x.dense.buffer);
+        .map(x => x.dense);
+      */
+      //.map(x => x.dense.buffer);
 
-      done.transfer(data, denses);
-    });
+      //done.transfer(data, denses);
+    })
+  .catch(err =>
+    console.log('err:', err));
 }

@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
 
 import CenterTrack from './CenterTrack';
+import DragListeningDiv from './DragListeningDiv.js';
 import TrackRenderer from './TrackRenderer';
 import AddTrackModal from './AddTrackModal';
 import ConfigTrackMenu from './ConfigTrackMenu';
@@ -29,7 +30,11 @@ import {
 } from './utils';
 
 // Configs
-import { MOUSE_TOOL_SELECT, TRACKS_INFO_BY_TYPE } from './configs';
+import { 
+  MOUSE_TOOL_SELECT, 
+  TRACKS_INFO_BY_TYPE,
+  DEFAULT_TRACKS_FOR_DATATYPE,
+} from './configs';
 
 // Styles
 import styles from '../styles/TiledPlot.module.scss';
@@ -81,8 +86,10 @@ export class TiledPlot extends React.Component {
         null,
       ],
 
+      chromInfo: null,
       defaultChromSizes: null,
       contextMenuPosition: null,
+      addDivisorDialog: null,
     };
 
     // these dimensions are computed in the render() function and depend
@@ -126,6 +133,8 @@ export class TiledPlot extends React.Component {
       this.measureSize();
     });
 
+    // add event listeners for drag and drop events
+    this.addEventListeners();
     this.getDefaultChromSizes();
   }
 
@@ -191,6 +200,9 @@ export class TiledPlot extends React.Component {
 
   componentWillUnmount() {
     this.closing = true;
+
+    this.removeEventListeners();
+
   }
 
   addUidsToTracks(tracks) {
@@ -245,8 +257,6 @@ export class TiledPlot extends React.Component {
     const height = this.element.clientHeight - heightOffset;
     const width = this.element.clientWidth;
 
-    // console.log('TiledPlot height:', height, 'width:', width);
-
     if (width > 0 && height > 0) {
       this.setState({
         sizeMeasured: true,
@@ -280,6 +290,10 @@ export class TiledPlot extends React.Component {
      */
     const track = getTrackByUid(this.props.tracks, trackUid);
 
+    if (!track) {
+      console.warn("Strange, track not found:", trackUid);
+      return;
+    }
     if (!track.options) { track.options = {}; }
 
     // track.options.name = tilesetInfo.name;
@@ -327,6 +341,76 @@ export class TiledPlot extends React.Component {
       addTrackPosition: null,
       addTrackHost: null,
     });
+  }
+
+  handleAddDivisor(series) {
+    this.setState({
+      addDivisorDialog: series
+    });
+  }
+
+  /**
+   * The user has selected a track that they wish to use to normalize another
+   * track.
+   */
+  handleDivisorChosen(series, newTrack) {
+    this.setState({
+      addDivisorDialog: null,
+    });
+
+    const numerator = series.data ? 
+      {
+        server: series.data.server,
+        tilesetUid: series.data.tilesetUid
+      } :
+      { 
+        server: series.server,
+        tilesetUid: series.tilesetUid
+      };
+
+    const denominator = {
+      server: newTrack[0].server,
+      tilesetUid: newTrack[0].uuid
+    }
+
+    this.handleChangeTrackData(series.uid,
+      {
+        type: 'divided',
+        children: [
+          numerator,
+          denominator
+        ]
+      });
+  }
+
+
+
+  getAddDivisorDialog() {
+    if (!this.state.addDivisorDialog) {
+      return null;
+    }
+
+    const series = this.state.addDivisorDialog;
+
+    const datatype = TRACKS_INFO_BY_TYPE[series.type].datatype[0];
+
+    const atm = 
+        (<AddTrackModal
+          host={this.state.addTrackHost}
+          onCancel={()=>{
+            this.setState({
+              addDivisorDialog: null,
+              });
+          }}
+          onTracksChosen={ (newTrack) => this.handleDivisorChosen(series, newTrack) }
+          datatype={datatype}
+          ref={(c) => { this.addTrackModal = c; }}
+          show={this.state.addDivisorDialog != null}
+          trackSourceServers={this.props.trackSourceServers}
+          hidePlotTypeChooser={true}
+        />);
+
+    return atm;
   }
 
   handleDivideSeries(seriesUid) {
@@ -423,6 +507,17 @@ export class TiledPlot extends React.Component {
     this.props.onChangeTrackType(uid, newType);
   }
 
+  /**
+   * Change this tracks data section so that it
+   * is either of type "divided" or the "divided"
+   * type is removed
+   */
+  handleChangeTrackData(uid, newData) {
+    this.closeMenus();
+
+    this.props.onChangeTrackData(uid, newData);
+  }
+
   handleTracksAdded(newTracks, position, host) {
     /**
      * Arguments
@@ -443,6 +538,8 @@ export class TiledPlot extends React.Component {
      *      the newTrack object passed in with some extra information
      *      (such as the uid) added.
      */
+    console.log('newTracks:', newTracks, 'position:', position);
+
     if (this.trackToReplace) {
       this.handleCloseTrack(this.trackToReplace);
       this.trackToReplace = null;
@@ -845,6 +942,7 @@ export class TiledPlot extends React.Component {
       initialYDomain: props.initialYDomain,
       trackSourceServers: props.trackSourceServers,
       zoomable: props.zoomable,
+      draggingHappending: props.draggingHappening,
     });
   }
 
@@ -948,6 +1046,8 @@ export class TiledPlot extends React.Component {
               this.handleCloseContextMenu();
             }}
             onChangeTrackType={this.handleChangeTrackType.bind(this)}
+            onChangeTrackData={this.handleChangeTrackData.bind(this)}
+            onAddDivisor={this.handleAddDivisor.bind(this)}
             onCloseTrack={this.handleCloseTrack.bind(this)}
             onConfigureTrack={this.handleConfigureTrack.bind(this)}
             onExportData={this.handleExportTrackData.bind(this)}
@@ -958,12 +1058,195 @@ export class TiledPlot extends React.Component {
             orientation={'left'}
             position={this.state.contextMenuPosition}
             tracks={relevantTracks}
+            trackSourceServers={this.props.trackSourceServers}
           />
         </PopupMenu>
       );
     }
 
     return null;
+  }
+
+    /**
+   * Draw an overlay that shows the positions of all the different
+   * track areas
+   */
+  getIdealizedTrackPositionsOverlay() {
+    const evtJson = this.props.draggingHappening;
+    const datatype = evtJson.datatype;
+
+    /*
+    console.log('datatype:', datatype);
+    console.log('DEFAULT_TRACKS_FOR_DATATYPE', DEFAULT_TRACKS_FOR_DATATYPE);
+    */
+
+    if (!(datatype in DEFAULT_TRACKS_FOR_DATATYPE)) {
+      console.warn('unknown data type:', evtJson.higlassTrack);
+      return;
+    }
+
+    const defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype];
+    const presentTracks = new Set(['top', 'left', 'right', 'center', 'bottom']
+      .filter(x => (x in this.state.tracks && this.state.tracks[x].length)));
+
+    // console.log('presentTracks:', presentTracks);
+    // console.log('defaultTracks:', defaultTracks);
+
+    let numVertical = 0;
+    let numHorizontal = 0;
+
+    const topAllowed = 'top' in defaultTracks;
+    const leftAllowed = 'left' in defaultTracks;
+    const rightAllowed = 'right' in defaultTracks;
+    const bottomAllowed = 'bottom' in defaultTracks;
+    const centerAllowed = 'center' in defaultTracks;
+
+    const hasVerticalComponent = ('center' in defaultTracks ||
+      (presentTracks.has('left') || presentTracks.has('right') || presentTracks.has('center')));
+
+    const topDisplayed = ('top' in defaultTracks);
+    const bottomDisplayed = ('bottom' in defaultTracks && hasVerticalComponent );
+    const leftDisplayed = ('left' in defaultTracks && hasVerticalComponent );
+    const rightDisplayed = ('right' in defaultTracks && hasVerticalComponent );
+    const centerDisplayed = ('center' in defaultTracks || hasVerticalComponent);
+
+    // console.log(topDisplayed, rightDisplayed, bottomDisplayed, leftDisplayed, centerDisplayed);
+
+    const topLeftDiv = (
+      <div
+        style={{
+          flexGrow: 1
+          }}
+      />
+    );
+    const topRightDiv = React.cloneElement(topLeftDiv);
+
+    const topDiv = (
+      <div 
+        style={{
+          display: 'flex',
+          flexGrow: 1,
+        }}
+      >
+        { (topDisplayed && (centerDisplayed || leftDisplayed)) ? topLeftDiv : null }
+        <DragListeningDiv
+          enabled={topAllowed}
+          position={'top'}
+          draggingHappening={this.props.draggingHappening}
+          onTrackDropped={track => this.handleTracksAdded([track], 'top')}
+          style={{
+            border: '1px solid black',
+            flexGrow: 1,
+          }}
+        />
+        { (topDisplayed && (centerDisplayed || leftDisplayed)) ? topRightDiv : null }
+      </div>
+    );
+
+    const bottomDiv = (
+      <div 
+        style={{
+          display: 'flex',
+          flexGrow: 1,
+        }}
+      >
+        { (topDisplayed && (centerDisplayed || leftDisplayed)) ? topLeftDiv : null }
+        <DragListeningDiv
+          enabled={bottomAllowed}
+          position={'bottom'}
+          draggingHappening={this.props.draggingHappening}
+          onTrackDropped={track => this.handleTracksAdded([track], 'bottom')}
+          style={{
+            border: '1px solid black',
+            flexGrow: 1,
+          }}
+        />
+        { (topDisplayed && (centerDisplayed || leftDisplayed)) ? topRightDiv : null }
+      </div>
+    );
+
+    const leftDiv = (
+      <DragListeningDiv
+        enabled={leftAllowed}
+        position={'left'}
+        draggingHappening={this.props.draggingHappening}
+        onTrackDropped={track => this.handleTracksAdded([track], 'left')}
+        style={{
+          border: '1px solid black',
+          flexGrow: 1,
+        }}
+      />
+    );
+
+    const centerDiv = (
+      <DragListeningDiv
+        enabled={centerAllowed}
+        draggingHappening={this.props.draggingHappening}
+        onTrackDropped={track => this.handleTracksAdded([track], 'center')}
+        position={'center'}
+        enabled={centerAllowed}
+
+        style={{
+          border: '1px solid black',
+          flexGrow: 1
+        }}
+      />
+    );
+
+    const rightDiv = React.cloneElement(leftDiv,
+      {
+        enabled: rightAllowed,
+        onTrackDropped: track => this.handleTracksAdded([track], 'right'),
+        position: 'right',
+      });
+
+    return(
+      <div
+        style={{
+          position: 'absolute',
+          left: '0px',
+          top: '0px',
+          width: this.state.width,
+          height: this.state.height,
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            width: this.state.width,
+            height: this.state.height,
+            background: 'white',
+            opacity: 0.4,
+          }}
+        />
+
+        <div
+          style={{
+            width: this.state.width,
+            height: this.state.height,
+            position: 'absolute',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          { topDisplayed ? topDiv : null }
+          { hasVerticalComponent && 
+            <div
+              style={{
+              display: 'flex',
+              height: (topDisplayed || bottomDisplayed) ? '40%' : '100%',
+              width: '100%',
+              }}
+            >
+              { leftDisplayed ? leftDiv : null }
+              { centerDisplayed ? centerDiv : null }
+              { rightDisplayed ? rightDiv : null}
+            </div>
+          }
+          { bottomDisplayed ? bottomDiv : null }
+        </div>
+      </div>
+    );
   }
 
   render() {
@@ -1207,6 +1490,9 @@ export class TiledPlot extends React.Component {
           height={this.state.height}
           initialXDomain={this.props.initialXDomain}
           initialYDomain={this.props.initialYDomain}
+          xDomainLimits={this.props.xDomainLimits}
+          yDomainLimits={this.props.yDomainLimits}
+          zoomLimits={this.props.zoomLimits}
           isRangeSelection={this.props.mouseTool === MOUSE_TOOL_SELECT}
           leftWidth={this.leftWidth}
           marginLeft={this.props.horizontalMargin}
@@ -1382,15 +1668,44 @@ export class TiledPlot extends React.Component {
         className="tiled-plot-div"
         onContextMenu={this.contextMenuHandler.bind(this)}
         styleName="styles.tiled-plot"
+        onDragEnter={(evt) => {
+        }}
       >
         {trackRenderer}
         {overlays}
         {addTrackModal}
+        {this.getAddDivisorDialog()}
         {configTrackMenu}
         {closeTrackMenu}
         {trackOptionsElement}
         {this.getContextMenu()}
+        {this.props.draggingHappening && this.getIdealizedTrackPositionsOverlay()}
       </div>
+    );
+  }
+
+  /*-------------------- Custom Methods -----------------------*/
+
+  addEventListeners() {
+    this.eventListeners = [
+      /*
+      {
+        name: 'dragstart',
+        callback: (event) => {
+          console.log('dragstart', event.dataTransfer.getData('text/json'));
+        },
+      },
+      */
+    ]
+
+    this.eventListeners.forEach(
+      event => document.addEventListener(event.name, event.callback, false)
+    );
+  }
+
+  removeEventListeners() {
+    this.eventListeners.forEach(
+      event => document.removeEventListener(event.name, event.callback)
     );
   }
 }

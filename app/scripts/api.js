@@ -32,7 +32,6 @@ const api = function api(context) {
   // Public API
   return {
     setAuthHeader(newHeader) {
-      console.log('api set auth header', newHeader);
       setTileProxyAuthHeader(newHeader);
 
       // we need to re-request all the tiles
@@ -99,6 +98,26 @@ const api = function api(context) {
      */
     shareViewConfigAsLink(url) {
       return self.handleExportViewsAsLink(url, true);
+    },
+
+    /**
+     * Show overlays where this track can be positioned
+     *
+     * @param {obj} track: { server, tilesetUid, datatype }
+     */
+    showAvailableTrackPositions(track) {
+      self.setState({
+        draggingHappening: track,
+      });
+    },
+
+    /**
+     * Hide the overlay showing wher this track can be positioned
+     */
+    hideAvailableTrackPositions(track) {
+      self.setState({
+        draggingHappening: null,
+      });
     },
 
     zoomToDataExtent(viewUid) {
@@ -205,7 +224,7 @@ const api = function api(context) {
       // location specified in the viewconf
       if (!chromInfo) {
         ChromosomeInfo(self.state.views[viewUid.chromInfoPath],
-          (chromInfo) => {
+          (internalChromInfo) => {
             self.api().goTo(
               viewUid,
               chrom1,
@@ -215,7 +234,7 @@ const api = function api(context) {
               start2,
               end2,
               animateTime,
-              chromInfo,
+              internalChromInfo,
             );
           },
         );

@@ -27,8 +27,10 @@ import DataFetcher from './DataFetcher';
  *
  * @returns {array} An array of [string, scale] containin the scale type and a scale with an appropriately set domain and range
  */
-export const getValueScale = function(scalingType, minValue, pseudocount, maxValue, defaultScaling) {
+export const getValueScale = function(scalingType, minValue, pseudocountIn, maxValue, defaultScaling) {
   const scalingTypeToUse = scalingType || defaultScaling;
+  const pseudocount = 0; //purposely set to not equal pseudocountIn for now
+                         // eventually this will be an option
 
   if (scalingTypeToUse == 'log' && minValue > 0) {
     return ['log', scaleLog().range([254, 0])
@@ -99,6 +101,7 @@ export class TiledPixiTrack extends PixiTrack {
           'Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error
         );
 
+
         this.trackNotFoundText = '';
         this.errorTextText = this.tilesetInfo.error;
         this.tilesetInfo = null;
@@ -107,6 +110,7 @@ export class TiledPixiTrack extends PixiTrack {
         return;
       }
 
+      // console.log('tilesetInfo:', this.tilesetInfo);
       this.maxZoom = +this.tilesetInfo.max_zoom;
 
       if (this.options && this.options.maxZoom) {
@@ -189,6 +193,21 @@ export class TiledPixiTrack extends PixiTrack {
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
   }
 
+  removeOldTiles() {
+    this.calculateVisibleTiles();
+
+    // tiles that are fetched
+    const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
+    //
+    // calculate which tiles are obsolete and remove them
+    // fetchedTileID are remote ids
+    const toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
+
+
+    this.removeTiles(toRemove);
+
+  }
+
   refreshTiles() {
     if (!this.tilesetInfo) { return; }
 
@@ -202,16 +221,10 @@ export class TiledPixiTrack extends PixiTrack {
     const toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId));
 
     for (let i = 0; i < toFetch.length; i++) {
-      // console.log('to fetch:', toFetch[i]);
       this.fetching.add(toFetch[i].remoteId);
     }
 
-    // calculate which tiles are obsolete and remove them
-    // fetchedTileID are remote ids
-    const toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
-
-
-    this.removeTiles(toRemove);
+    this.removeOldTiles();
     this.fetchNewTiles(toFetch);
   }
 
@@ -305,7 +318,6 @@ export class TiledPixiTrack extends PixiTrack {
     // tiles that are fetched
     const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
 
-    // console.log('this.fetchedTiles:', this.fetchedTiles);
     const visibleTileIdsList = [...this.visibleTileIds];
 
     for (let i = 0; i < visibleTileIdsList.length; i++) {
@@ -346,7 +358,6 @@ export class TiledPixiTrack extends PixiTrack {
   initTile(tile) {
     // create the tile
     // should be overwritten by child classes
-    // console.log("ERROR: unimplemented createTile:", this);
     this.scale.minRawValue = this.minVisibleValue();
     this.scale.maxRawValue = this.maxVisibleValue();
 
@@ -372,16 +383,15 @@ export class TiledPixiTrack extends PixiTrack {
     this.renderVersion += 1;
 
     for (let i = 0; i < fetchedTileIDs.length; i++) {
+      //console.log('this.tileGraphics', this.tileGraphics);
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
         const newGraphics = new PIXI.Graphics();
-        // console.log('adding:', fetchedTileIDs[i]);
         this.pMain.addChild(newGraphics);
 
         this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;
         // console.log('fetchedTiles:', this.fetchedTiles[fetchedTileIDs[i]]);
         this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
 
-        // console.log('adding graphics...', fetchedTileIDs[i]);
         this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
         added = true;
       }
@@ -414,7 +424,7 @@ export class TiledPixiTrack extends PixiTrack {
     // keep track of which tiles are visible at the moment
     this.addMissingGraphics();
     this.updateExistingGraphics();
-    // this.removeOldGraphics();
+    this.removeOldTiles();
   }
 
   loadTileData(tile, dataLoader) {
@@ -493,13 +503,10 @@ export class TiledPixiTrack extends PixiTrack {
     }
 
 
-    if (this.options.valueScaling) { this.calculateMedianVisibleValue(); }
-
-    this.synchronizeTilesAndGraphics();
     /*
          * Mainly called to remove old unnecessary tiles
          */
-    this.refreshTiles();
+    this.synchronizeTilesAndGraphics();
 
     // we need to draw when we receive new data
     this.draw();
@@ -580,6 +587,8 @@ export class TiledPixiTrack extends PixiTrack {
         .filter(x => this.fetchedTiles[x].tileData.dense)
         .map(x => Array.from(this.fetchedTiles[x].tileData.dense))
     ).filter(x => x > 0);
+
+    console.log('len(values):', values.length);
 
     this.medianVisibleValue = median(values);
     return this.medianVisibleValue;
@@ -699,6 +708,7 @@ export class TiledPixiTrack extends PixiTrack {
 
     return [valueScale, offsetValue];
   }
+
 }
 
 export default TiledPixiTrack;

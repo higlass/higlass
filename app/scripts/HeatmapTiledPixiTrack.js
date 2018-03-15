@@ -146,7 +146,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     const relX = x - this.position[0];
     const relY = y - this.position[1];
-    const data = this.getData(relX, relY, z);
+    const data = this.getVisibleData(relX, relY);
     const dim = this.dataLensSize;
 
     let toRgb;
@@ -248,7 +248,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
 
-    this.visibleAndFetchedTiles().forEach(tile => this.renderTile(tile));
+    this.visibleAndFetchedTiles().forEach(tile => this.renderTile(tile, synchronous=true));
 
     // hopefully draw isn't rerendering all the tiles
     // this.drawColorbar();
@@ -721,14 +721,15 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   /**
-   * Get raw data for a relative 2D position
+   * Get raw data for a relative 2D position. Returns a submatrix centered
+   * around the given location.
    *
    * @param  {Integer}  x  Relative X display position (i.e., mouse cursor).
    * @param  {Integer}  y  Relative Y display position (i.e., mouse cursor).
-   * @param  {Number}  z  Zoom level.
-   * @return  {Array}  Float32Array with the raw data.
+   * @return  {Array}  Float32Array with the raw data containing a square centered
+   * at the given location.
    */
-  getData(x, y, z = this.zoomLevel) {
+  getVisibleData(x, y) {
     // Init data
     let data = new this.dataLens.constructor(this.dataLensSize ** 2);
 
@@ -740,11 +741,12 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const lPad = this.dataLensLPad;
     const rPad = this.dataLensRPad;
 
-    const zoomLevel = Math.min(this.tilesetInfo.max_zoom, z);
+    const zoomLevel = Math.min(this.tilesetInfo.max_zoom, 
+      this.calculateZoomLevel());
 
     const tileWidth = tileProxy.calculateTileWidth(
-      this.tilesetInfo.max_width, zoomLevel
-    );
+        this.tilesetInfo, zoomLevel, BINS_PER_TILE
+      );
 
     // BP resolution of a tile's bin (i.e., numbe of base pairs per bin / pixel)
     const tileRes = tileWidth / BINS_PER_TILE;
@@ -778,6 +780,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     let tileData = [];
 
     try {
+      // fetch the tiles that contain data within this range
       tileData = tileIds.map(
         id => ({
           data: this.fetchedTiles[id].tileData,
@@ -908,7 +911,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
    *
    * @param {Object}  tile  Tile data to be rendered.
    */
-  renderTile(tile) {
+  renderTile(tile,synchronous=false) {
     const [scaleType, valueScale] = getValueScale(this.options.heatmapValueScaling,
             this.scale.minValue, this.medianVisibleValue, this.scale.maxValue, 'log');
 
@@ -916,11 +919,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     let pseudocount = 0;
 
     if (scaleType == 'log')
-        pseudocount = this.valueScale.domain()[0];
-
-    this.valueScale
-      .range([254, 0])
-      .domain([this.scale.minValue, this.scale.minValue + this.scale.maxValue]);
+      pseudocount = 0; // this.medianVisibleValue;
 
     this.limitedValueScale = this.valueScale.copy();
 
@@ -971,10 +970,9 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
         }
 
         this.renderingTiles.delete(tile.tileId);
-        this.animate();
-        // call to check if tiles need removing
-        this.refreshTiles();
-      });
+      },
+      synchronous
+    );
   }
 
   /**
