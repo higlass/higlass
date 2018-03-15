@@ -123,6 +123,7 @@ export default class Inset {
     this.borderPadding = options.borderWidth * 2 || 4;
     this.borderFill = options.borderColor;
     this.borderFillAlpha = options.borderOpacity || 1;
+    this.clusterSizeColor = this.options.clusterSizeColor || 'black';
 
     this.selectColor = options.selectColor;
 
@@ -2212,6 +2213,10 @@ export default class Inset {
 
       const clustSize = document.createElement('div');
       clustSize.className = style['inset-cluster-size'];
+      const c = d3Color(this.clusterSizeColor);
+      clustSize.style.color = c.toString();
+      c.opacity = 0.2;
+      clustSize.style.background = c.toString();
 
       const clustSizeText = document.createElement('div');
       clustSizeText.className = style['inset-cluster-size-text'];
