@@ -86,6 +86,10 @@
   transform-origin: center left;
 }
 
+.inset-track-non-smooth-transitions .inset-leader-line {
+  transition: none;
+}
+
 .inset-leader-line-focus,
 .inset-leader-line-dragging {
   z-index: 2;
