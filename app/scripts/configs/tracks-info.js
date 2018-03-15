@@ -942,10 +942,10 @@ export const TRACKS_INFO = [
     name: 'Mapbox Tiles',
     thumbnail: null,
     availableOptions: [
-      'mapboxStyle'
+      'style'
     ],
     defaultOptions: {
-      mapboxStyle: 'mapbox.streets',
+      style: 'mapbox.streets',
     },
   },
   {

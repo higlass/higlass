@@ -1521,6 +1521,7 @@ class TrackRenderer extends React.Component {
           this.pStage,
           track.options,
           () => this.currentProps.onNewTilesLoaded(track.uid),
+          track.accessToken
         );
 
       case 'image-tiles':
