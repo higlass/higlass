@@ -56,7 +56,7 @@ class AnnotationsInsets {
     this.annotationDrawnHandlerBound = this.annotationDrawnHandler.bind(this);
 
     // Augment annotation tracks
-    this.annotationTracks.forEach((track, i) => {
+    this.annotationTracks.forEach((track) => {
       track.subscribe('annotationDrawn', this.annotationDrawnHandlerBound);
     });
 
