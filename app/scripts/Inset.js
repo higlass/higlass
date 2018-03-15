@@ -973,7 +973,7 @@ export default class Inset {
    */
   renderLeaderLinePlain(...args) {
     if (this.isRenderToCanvas) return this.renderLeaderLinePlainCanvas(...args);
-    return this.renderleaderLineHtml(...args);
+    return this.renderLeaderLineHtml(...args);
   }
 
   /**
@@ -1010,7 +1010,7 @@ export default class Inset {
    *   `pointTo`.
    * @param   {D3.Color}  color  Color.
    */
-  renderleaderLineHtml(pointFrom, pointTo, dist, color) {
+  renderLeaderLineHtml(pointFrom, pointTo, dist, color) {
     const line = this.leaderLine || document.createElement('div');
 
     line.className = style['inset-leader-line'];
@@ -1080,9 +1080,16 @@ export default class Inset {
 
     const yOff = Math.round(this.leaderLineStyle[0] / 2);
 
-    line.style.left = `${pointFrom[0]}px`;
-    line.style.top = `${pointFrom[1] - yOff}px`;
-    line.style.transform = `rotate(${this.leaderLineAngle}rad)`;
+    if (!line.__transform__) line.__transform__ = {};
+    line.__transform__.translate = [
+      { val: pointFrom[0], type: 'px' },
+      { val: pointFrom[1] - yOff, type: 'px' }
+    ];
+    line.__transform__.rotate = {
+      val: this.leaderLineAngle,
+      type: 'rad'
+    };
+    line.style.transform = objToTransformStr(line.__transform__);
 
     if (this.leaderLine !== line) {
       this.baseElement.appendChild(line);
@@ -1176,7 +1183,7 @@ export default class Inset {
    */
   renderLeaderLineGrd(...args) {
     if (this.isRenderToCanvas) return this.renderLeaderLineGrdCanvas(...args);
-    return this.renderleaderLineHtml(...args);
+    return this.renderLeaderLineHtml(...args);
   }
 
   /**
@@ -1228,7 +1235,7 @@ export default class Inset {
    */
   renderLeaderLineStubs(...args) {
     if (this.isRenderToCanvas) return this.renderLeaderLineStubsCanvas(...args);
-    return this.renderleaderLineHtml(...args);
+    return this.renderLeaderLineHtml(...args);
   }
 
   /**
