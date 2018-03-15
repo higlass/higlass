@@ -229,8 +229,6 @@ export class SeriesListMenu extends ContextMenuContainer {
         server: this.props.series.data.children[0].server,
       };
 
-      console.log('newData:', newData);
-
       // this track is already being divided
       return (
         <ContextMenuItem
@@ -301,8 +299,6 @@ export class SeriesListMenu extends ContextMenuContainer {
           </ContextMenuItem>)
           :
           null;
-
-    console.log('series:', this.props.series);
 
     return (
       <div

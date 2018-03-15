@@ -92,7 +92,6 @@ export class TilesetFinder extends React.Component {
       return;
 
     const selectedTilesets = [this.state.options[this.state.selectedUuid]];
-    console.log('selectedTilesets', selectedTilesets);
 
     if (selectedTilesets) { this.props.selectedTilesetChanged(selectedTilesets); }
   }
@@ -115,8 +114,6 @@ export class TilesetFinder extends React.Component {
       datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
     }
 
-    console.log('dt:', datatypesQuery);
-
     if (!this.props.trackSourceServers) {
       console.warn("No track source servers specified in the viewconf");
       return;
@@ -129,7 +126,6 @@ export class TilesetFinder extends React.Component {
             console.error('ERROR:', error);
           } else {
             const newOptions = this.prepareNewEntries(sourceServer, data.results, this.state.options);
-            console.log('newOptions:', newOptions, 'data:', data);
             const availableTilesetKeys = Object.keys(newOptions);
             let selectedUuid = this.state.selectedUuid;
 

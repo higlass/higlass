@@ -25,6 +25,13 @@ export const DEFAULT_TRACKS_FOR_DATATYPE = {
     'left': 'vertical-gene-annotations',
     'right': 'horizontal-gene-annotations',
   },
+  'chromsizes': {
+    'top': 'horizontal-chromosome-labels',
+    'bottom': 'horizontal-chromosome-labels',
+    'center': '2d-chromosome-grid',
+    'left': 'vertical-chromosome-labels',
+    'right': 'vertical-chromosome-labels',
+  },
 };
 
 export default DEFAULT_TRACKS_FOR_DATATYPE;

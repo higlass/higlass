@@ -940,7 +940,9 @@ export class TrackRenderer extends React.Component {
         return new LeftAxisTrack(this.svgElement);
 
       case 'top-axis':
-        return new TopAxisTrack(this.svgElement);
+        return new TopAxisTrack(this.svgElement,
+          track.options
+        );
 
       case 'heatmap':
         return new HeatmapTiledPixiTrack(

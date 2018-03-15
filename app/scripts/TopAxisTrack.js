@@ -2,11 +2,13 @@ import { axisTop } from 'd3-axis';
 import SVGTrack from './SVGTrack.js';
 
 export class TopAxisTrack extends SVGTrack {
-  constructor(svgElement) {
+  constructor(svgElement,options) {
     super(svgElement);
 
     this.axis = axisTop(this._xScale);
     this.gAxis = this.gMain.append('g');
+
+    this.options = options;
 
     // to make sure that the isWaitingOnTiles functions
     // return immediately
@@ -25,8 +27,15 @@ export class TopAxisTrack extends SVGTrack {
 
 
   draw() {
-    this.axis.scale(this._xScale);
+    const xDomain = this._xScale.domain();
+    const newScale = this._xScale.copy()
 
+    if (this.options && this.options.start && this.options.scale) {
+      newScale.domain([+this.options.start + this.options.scale * xDomain[0],
+      +this.options.start + this.options.scale * xDomain[1]]);
+    }
+
+    this.axis.scale(newScale);
     this.gAxis.call(this.axis);
 
     return this;
