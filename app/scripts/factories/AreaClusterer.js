@@ -100,7 +100,6 @@ function addToOrCreateCluster(element) {
     this.clusters
       .filter(cluster => (
         !cluster.isDisconnected &&
-        cluster.diameter < this.maxClusterDiameter &&
         this.isClusterable(cluster, element)
       ))
       .forEach((cluster) => {
@@ -116,11 +115,17 @@ function addToOrCreateCluster(element) {
   }
 
   let cluster = closestCluster;
+  const combClustDia = closestCluster
+    ? this.combinedDiameter(closestCluster, element)
+    : false;
 
   if (
     closestCluster &&
     closestCluster.isWithin(element.viewPos, true) &&
-    this.combinedDiameter(closestCluster, element) <= this.maxClusterDiameter
+    (
+      combClustDia <= this.maxClusterDiameter ||
+      combClustDia <= closestCluster.diameter
+    )
   ) {
     this.expandCluster(closestCluster, element);
   } else {
