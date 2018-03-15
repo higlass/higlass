@@ -25,6 +25,12 @@ export const DEFAULT_TRACKS_FOR_DATATYPE = {
     'left': 'vertical-gene-annotations',
     'right': 'horizontal-gene-annotations',
   },
+  'bedlike': {
+    'top': 'bedlike',
+    'bottom': 'bedlike',
+    'left': 'vertical-bedlike',
+    'right': 'vertical-bedlike',
+  },
 };
 
 export default DEFAULT_TRACKS_FOR_DATATYPE;
