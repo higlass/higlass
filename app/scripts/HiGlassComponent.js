@@ -3097,9 +3097,13 @@ class HiGlassComponent extends React.Component {
           />
         );
 
-        const getGenomePositionSearchBox = (isFocused, onFocus) => {
-          if (!view.genomePositionSearchBox) return null;
+        const looseTracks = positionedTracksToAllTracks(view.tracks);
+        const annotationTracks = looseTracks.filter(x => 
+          x.type == 'horizontal-gene-annotations' || x.type == 'vertical-gene-annotations')
+        const chromSizesTracks = looseTracks.filter(x => 
+          x.type == 'horizontal-chromosome-labels' || x.type == 'vertical-chromosome-labels')
 
+        const getGenomePositionSearchBox = (isFocused, onFocus) => {
           return (
             <GenomePositionSearchBox
               // Reserved props
@@ -3107,10 +3111,10 @@ class HiGlassComponent extends React.Component {
               ref={(c) => { this.genomePositionSearchBoxes[view.uid] = c; }}
 
               // Custom props
-              autocompleteId={view.genomePositionSearchBox.autocompleteId}
-              autocompleteServer={view.genomePositionSearchBox.autocompleteServer}
-              chromInfoId={view.genomePositionSearchBox.chromInfoId}
-              chromInfoServer={view.genomePositionSearchBox.chromInfoServer}
+              autocompleteId={annotationTracks.length ? annotationTracks[0].tilesetUid : null}
+              autocompleteServer={annotationTracks.length ? annotationTracks[0].server : null}
+              chromInfoId={chromSizesTracks.length ? chromSizesTracks[0].tilesetUid : null}
+              chromInfoServer={chromSizesTracks.length ? chromSizesTracks[0].server : null}
               isFocused={isFocused}
               // the chromInfoId is either specified in the viewconfig or guessed based on
               // the visible tracks (see createGenomePositionSearchBoxEntry)
@@ -3136,10 +3140,7 @@ class HiGlassComponent extends React.Component {
 
             // Custom props
             getGenomePositionSearchBox={getGenomePositionSearchBox}
-            isGenomePositionSearchBoxVisible={
-              view.genomePositionSearchBox &&
-              view.genomePositionSearchBox.visible
-            }
+            isGenomePositionSearchBoxVisible={ true }
             mouseTool={this.state.mouseTool}
             onAddView={() => this.handleAddView(view)}
             onClearView={() => this.handleClearView(view.uid)}

@@ -114,8 +114,10 @@ export class GenomePositionSearchBox extends React.Component {
     select(this.autocompleteMenu.inputEl)
       .on('keypress', this.autocompleteKeyPress.bind(this));
 
-    this.findAvailableAutocompleteSources();
-    this.findAvailableChromSizes();
+    //this.findAvailableAutocompleteSources();
+    //this.findAvailableChromSizes();
+    this.fetchChromInfo(this.props.chromInfoServer,
+      this.props.chromInfoId);
 
     this.setPositionText();
   }
@@ -125,7 +127,7 @@ export class GenomePositionSearchBox extends React.Component {
     this.props.removeViewportChangedListener();
   }
 
-  fetchChromInfo(chromInfoId) {
+  fetchChromInfo(chromInfoServer, chromInfoId) {
     /**
      * The user has selected an assembly to use for the coordinate search box
      *
@@ -140,140 +142,21 @@ export class GenomePositionSearchBox extends React.Component {
      *      Once the appropriate ChromInfo file is fetched, it is stored locally
      */
 
+    console.log('fci', this.mounted, this.availableChromSizes, chromInfoId);
     if (!this.mounted)
       // component is probably about to be unmounted
       return;
 
-    if (!this.availableChromSizes[chromInfoId])
-    // we don't know of any available chromosome sizes so just ignore
-    // this function call (usually called from the constructor)
-    { return; }
-
-    // use the first available server that we have on record for this chromInfoId
-    const serverAndChromInfoToUse = [...this.availableChromSizes[chromInfoId]][0];
-
     this.setState({
-      autocompleteServer: serverAndChromInfoToUse.server,
+      autocompleteServer: chromInfoServer,
     });
 
-    ChromosomeInfo(`${serverAndChromInfoToUse.server}/chrom-sizes/?id=${serverAndChromInfoToUse.uuid}`, (newChromInfo) => {
+    ChromosomeInfo(`${chromInfoServer}/chrom-sizes/?id=${chromInfoId}`, (newChromInfo) => {
       this.chromInfo = newChromInfo;
       this.searchField = new SearchField(this.chromInfo);
 
       this.setPositionText();
-
-      if (this.gpsbForm) {
-        // only set the state if this component is mounted
-        this.setState({
-          selectedAssembly: chromInfoId,
-        });
-      }
-
-      // we need to set a an autocompleteId that matches the chromInfo
-      // that was received, but if none has been retrieved yet...
-      if (this.availableAutocompletes[chromInfoId]) {
-        const newAcId = [...this.availableAutocompletes[chromInfoId]][0].acId;
-        this.props.onSelectedAssemblyChanged(chromInfoId, newAcId, 
-          serverAndChromInfoToUse.server);
-
-        if (this.gpsbForm) {
-          this.setState({
-            autocompleteId: newAcId,
-          });
-        }
-      } else {
-        this.props.onSelectedAssemblyChanged(chromInfoId,
-          null, serverAndChromInfoToUse.server);
-
-        if (this.gpsbForm) {
-          this.setState({
-            autocompleteId: null,
-          });
-        }
-      }
     });
-  }
-
-  findAvailableAutocompleteSources() {
-    if (!this.props.trackSourceServers) {
-      // if there's no available track source servers
-      // we can't search for autocomplete sources
-      return;
-    }
-
-    this.props.trackSourceServers.forEach((sourceServer) => {
-      tileProxy.json(`${sourceServer}/tilesets/?limit=100&dt=gene-annotation`, (error, data) => {
-        if (error) {
-          console.error(error);
-        } else {
-          data.results.map((x) => {
-            if (!(x.coordSystem in this.availableAutocompletes)) {
-              this.availableAutocompletes[x.coordSystem] = new Set();
-            }
-
-            this.availableAutocompletes[x.coordSystem].add({ server: sourceServer, acId: x.uuid });
-            this.setAvailableAssemblies();
-          });
-
-          if (!this.state.autocompleteId) {
-            // We don't have an autocomplete source yet, so set the one matching the current
-            // assembly
-            if (this.gpsbForm) {
-              // only set the state if this component is mounted
-              if (this.availableAutocompletes[this.props.chromInfoId]) {
-                this.setState({
-                  autocompleteId: [...this.availableAutocompletes[this.props.chromInfoId]][0].acId,
-                });
-              }
-            }
-          }
-        }
-      });
-    });
-  }
-
-  findAvailableChromSizes() {
-    if (!this.props.trackSourceServers) {
-      // if we don't know where to look for track source servers then
-      // just give up
-      return;
-    }
-
-    this.props.trackSourceServers.forEach((sourceServer) => {
-      tileProxy.json(`${sourceServer}/available-chrom-sizes/`, (error, data) => {
-        if (error) {
-          console.error(error);
-        } else {
-          data.results.map((x) => {
-            if (!(x.uuid in this.availableChromSizes)) {
-              this.availableChromSizes[x.coordSystem] = new Set();
-            }
-
-            this.availableChromSizes[x.coordSystem].add({ server: sourceServer, uuid: x.uuid });
-            this.setAvailableAssemblies();
-          });
-
-          // we haven't set an assembly yet so set it now
-          // props.chromInfoId will be set to the suggested assembly (e.g. "hg19")
-          // this will be mapped to an available chromSize (with its own unique uuid)
-          if (!this.searchField) { this.fetchChromInfo(this.props.chromInfoId); }
-        }
-      });
-    });
-  }
-
-  setAvailableAssemblies() {
-    const autocompleteKeys = new Set(dictKeys(this.availableAutocompletes));
-    const chromsizeKeys = new Set(dictKeys(this.availableChromSizes));
-
-    let commonKeys = new Set([...chromsizeKeys]);
-
-    if (this.gpsbForm) {
-      // only set the state if this comonent is mounted
-      this.setState({
-        availableAssemblies: [...commonKeys],
-      });
-    }
   }
 
   scalesChanged(xScale, yScale) {
@@ -284,8 +167,10 @@ export class GenomePositionSearchBox extends React.Component {
   }
 
   setPositionText() {
+    console.log('spt');
     if (!this.mounted) { return; }
     if (!this.searchField) { return; }
+    console.log('spt1'); 
 
     const positionString = this.searchField.scalesToPositionText(this.xScale,
       this.yScale,
@@ -366,7 +251,7 @@ export class GenomePositionSearchBox extends React.Component {
 
       if (retPos == null || isNaN(retPos)) {
         // not a chromsome position, let's see if it's a gene name
-        const url = `${this.state.autocompleteServer}/suggest/?d=${this.state.autocompleteId}&ac=${value_parts[i].toLowerCase()}`;
+        const url = `${this.props.autocompleteServer}/suggest/?d=${this.props.autocompleteId}&ac=${value_parts[i].toLowerCase()}`;
         q = q.defer(tileProxy.json, url);
       }
     }
@@ -451,8 +336,9 @@ export class GenomePositionSearchBox extends React.Component {
 
     this.prevParts = parts;
 
+    console.log('oac', this.props.autocompleteServer, this.props.autocompleteId);
     // no autocomplete repository is provided, so we don't try to autcomplete anything
-    if (!(this.state.autocompleteServer && this.state.autocompleteId)) { 
+    if (!(this.props.autocompleteServer && this.props.autocompleteId)) { 
       return; 
     }
 
@@ -460,7 +346,7 @@ export class GenomePositionSearchBox extends React.Component {
       // if something has changed in the input text
       this.setState({ loading: true });
       // send out a request for the autcomplete suggestions
-      const url = `${this.state.autocompleteServer}/suggest/?d=${this.state.autocompleteId}&ac=${parts[this.changedPart].toLowerCase()}`;
+      const url = `${this.props.autocompleteServer}/suggest/?d=${this.props.autocompleteId}&ac=${parts[this.changedPart].toLowerCase()}`;
       tileProxy.json(url, (error, data) => {
         if (error) {
           this.setState({ loading: false, genes: [] });
