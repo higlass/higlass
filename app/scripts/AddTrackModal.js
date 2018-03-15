@@ -15,6 +15,7 @@ import '../styles/AddTrackModal.css';
 export class AddTrackModal extends React.Component {
   constructor(props) {
     super(props);
+    console.log('making atm');
 
     this.tilesetFinder = null;
     this.multiSelect = null;
@@ -134,6 +135,7 @@ export class AddTrackModal extends React.Component {
           onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
           onTracksChosen={value => this.props.onTracksChosen(value, this.props.position)}
           orientation={orientation}
+          datatype={this.props.datatype}
           ref={(c) => { this.tilesetFinder = c; }}
           selectedTilesetChanged={this.selectedTilesetsChanged.bind(this)}
           trackSourceServers={this.props.trackSourceServers}
@@ -151,12 +153,15 @@ export class AddTrackModal extends React.Component {
         </Modal.Header>
         <Modal.Body>
           { form }
-          <PlotTypeChooser
-            ref={(c) => { this.plotTypeChooser = c; }}
-            datatypes={this.state.selectedTilesets.map(x => x.datatype)}
-            onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
-            orientation={orientation}
-          />
+          { 
+            this.props.hidePlotTypeChooser ? null : 
+            <PlotTypeChooser
+              ref={(c) => { this.plotTypeChooser = c; }}
+              datatypes={this.state.selectedTilesets.map(x => x.datatype)}
+              onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
+              orientation={orientation}
+            />
+          }
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.props.onCancel}>{'Cancel'}</Button>

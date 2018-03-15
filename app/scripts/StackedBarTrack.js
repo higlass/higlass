@@ -1,5 +1,6 @@
 import {BarTrack} from './BarTrack';
 import {scaleLinear, scaleOrdinal, schemeCategory10} from 'd3-scale';
+import {range} from 'd3-array';
 import {colorToHex} from './utils';
 
 export class StackedBarTrack extends BarTrack {
@@ -15,6 +16,7 @@ export class StackedBarTrack extends BarTrack {
 
   initTile(tile) {
     this.localColorToHexScale();
+
     this.unFlatten(tile);
     this.maxAndMin.max = tile.maxValue;
     this.maxAndMin.min = tile.minValue;
@@ -259,11 +261,11 @@ export class StackedBarTrack extends BarTrack {
       graphics.lineStyle(0.1, 'black', 1);
       tile.barBorders = true;
     }
-
+    
     for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
       const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
       const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
-
+      
       // draw positive values
       const positive = matrix[j][0];
       const valueToPixelsPositive = scaleLinear()
@@ -275,6 +277,7 @@ export class StackedBarTrack extends BarTrack {
         const y = positiveTrackHeight - (positiveStackedHeight + height);
         this.addSVGInfo(tile, x, y, width, height, positive[i].color);
         graphics.beginFill(this.colorHexMap[positive[i].color]);
+
         graphics.drawRect(x, y, width, height);
         positiveStackedHeight = positiveStackedHeight + height;
       }
@@ -290,6 +293,7 @@ export class StackedBarTrack extends BarTrack {
         const y = positiveTrackHeight + negativeStackedHeight;
         this.addSVGInfo(tile, x, y, width, height, negative[i].color);
         graphics.beginFill(this.colorHexMap[negative[i].color]);
+
         graphics.drawRect(x, y, width, height);
         negativeStackedHeight = negativeStackedHeight + height;
 
@@ -315,7 +319,7 @@ export class StackedBarTrack extends BarTrack {
     }
 
   }
-
+  
   /**
    * Draws graph using normalized values.
    *
@@ -363,6 +367,10 @@ export class StackedBarTrack extends BarTrack {
 
   draw() {
     super.draw();
+  }
+
+  getMouseOverHtml(trackX, trackY) {
+    return '';
   }
 }
 

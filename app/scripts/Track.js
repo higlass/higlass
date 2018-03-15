@@ -19,6 +19,11 @@ export class Track {
     this.dimensions = [1, 1];
     this.options = {};
     this.pubSubs = [];
+
+    // subscribe to mouseMove events
+    this.pubSubs.push(
+      pubSub.subscribe('app.mouseMove', this.defaultMouseMoveHandler.bind(this))
+    );
   }
 
   /**
@@ -113,6 +118,18 @@ export class Track {
 
   setPosition(newPosition) {
     this.position = newPosition;
+  }
+
+  /*
+   * A blank handler for MouseMove / Zoom events. Should be overriden
+   * by individual tracks to provide 
+   *
+   * @param {obj} evt: 
+   *
+   * @returns nothing
+   */
+  defaultMouseMoveHandler(evt) {
+
   }
 
   remove() {

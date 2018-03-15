@@ -8,10 +8,11 @@ import { addArrays, accessorTransposition } from '.';
  * @param  {Integer}  xDimOut  X dimension of `outList`.
  * @param  {Array}  xRange  X range array, e.g., `[start, end]`.
  * @param  {Array}  yRange  Y range array, e.g., `[start, end]`.
- * @param  {Boolean}  mirrored  If `true` mirror query.
  * @param  {Integer}  xOff  X offset in regards to `outList`.
  * @param  {Integer}  yOff  Y offset in regards to `outList`.
- * @param  {Array}  outList  Typed array to be set in place.
+ * @param  {Boolean}  mirrored  If `true` mirror query.
+ * @param  {Array}  outList  Typed array to be set in place. 
+ *        1D representation of a 2D array (e.g. ass = new Uint8ClampedArray(10);)
  * @return  {Array}  Sub array.
  */
 const rangeQuery2d = (

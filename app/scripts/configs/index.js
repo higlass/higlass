@@ -7,7 +7,7 @@ export const MOUSE_TOOL_SELECT = 'select';
 export const TILE_FETCH_DEBOUNCE = 100;
 
 // Number of milliseconds zoom-related actions (e.g., tile loading) are debounced
-export const ZOOM_DEBOUNCE = 100;
+export const ZOOM_DEBOUNCE = 10;
 
 // the length of time to keep refreshing the view after a drag event
 export const SHORT_DRAG_TIMEOUT = 110;
@@ -34,4 +34,6 @@ export { default as IS_TRACK_RANGE_SELECTABLE } from './is-track-range-selectabl
 export { default as OPTIONS_INFO } from './options-info';
 export { default as TRACKS_INFO } from './tracks-info';
 export { default as TRACKS_INFO_BY_TYPE } from './tracks-info-by-type';
+export { default as POSITIONS_BY_DATATYPE } from './positions-by-datatype.js';
 export { default as USED_SERVER } from './used-server';
+export { default as DEFAULT_TRACKS_FOR_DATATYPE } from './default-tracks-for-datatype.js';

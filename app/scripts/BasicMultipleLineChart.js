@@ -103,6 +103,7 @@ export class BasicMultipleLineChart extends HorizontalLine1DPixiTrack {
       const lineInterval = (trackHeight / matrixDimensions[0]) * i + (((trackHeight / matrixDimensions[0]) * (i + 1)
         - ((trackHeight / matrixDimensions[0]) * i)) / 2);
       graphics.lineStyle(1, this.colorHexMap[colorScale[i]], 1);
+
       for (let j = 0; j < matrix.length; j++) { // 3070 or something
         const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
         const y = lineInterval + valueToPixels(matrix[j][i]);

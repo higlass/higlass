@@ -114,6 +114,9 @@ export class PixiTrack extends Track {
     this.pMobile = new PIXI.Graphics();
     this.pAxis = new PIXI.Graphics();
 
+    // for drawing information on mouseover events
+    this.pMouseOver = new PIXI.Graphics();
+
     this.scene.addChild(this.pBase);
 
     this.pBase.addChild(this.pMasked);
@@ -123,6 +126,7 @@ export class PixiTrack extends Track {
     this.pMasked.addChild(this.pMobile);
     this.pMasked.addChild(this.pBorder);
     this.pMasked.addChild(this.pLabel);
+    this.pMasked.addChild(this.pMouseOver);
     this.pBase.addChild(this.pAxis);
 
     this.pMasked.mask = this.pMask;
@@ -433,6 +437,8 @@ export class PixiTrack extends Track {
   rerender(options) {
     this.options = options;
     this.draw();
+    this.drawLabel();
+    this.drawBorder();
   }
 
   /**
@@ -440,9 +446,8 @@ export class PixiTrack extends Track {
    */
   draw() {
     // this rectangle is cleared by functions that override this draw method
-    this.drawBorder();
-    this.drawLabel();
-    this.drawError();
+    // this.drawBorder();
+    // this.drawLabel();
   }
 
   /**

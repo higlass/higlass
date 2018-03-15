@@ -3,6 +3,7 @@ import {mix} from 'mixwith';
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import {expandCombinedTracks} from './utils';
 import { getSeriesItems } from './SeriesListItems';
 
 import ContextMenuItem from './ContextMenuItem';
@@ -44,6 +45,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
         >
           {'Add Horizontal Rule'}
         </ContextMenuItem>
+
         <ContextMenuItem
           onMouseEnter={e => this.handleOtherMouseEnter(e)}
           onClick={() => this.props.onAddTrack({
@@ -67,12 +69,54 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
           {'Add Cross Rule'}
         </ContextMenuItem>
 
+        <hr styleName="context-menu-hr" />
+
+        { 
+          this.hasMatrixTrack(this.props.tracks) &&
+          <ContextMenuItem
+            onMouseEnter={e => this.handleOtherMouseEnter(e)}
+            onClick={ this.handleAddHorizontalSection.bind(this) }
+          >
+            {'Add Horizontal Cross Section'}
+          </ContextMenuItem>
+        }
 
         { /* from the SeriesListSubmenuMixin */ }
         { this.getSubmenu() }
 
       </div>
     );
+  }
+
+
+  hasMatrixTrack(tracks) {
+    const trackList = expandCombinedTracks(this.props.tracks);
+    return trackList.filter(track => track.type == 'heatmap').length > 0;   
+  }
+
+  handleAddHorizontalSection() {
+    const trackList = expandCombinedTracks(this.props.tracks);
+    const matrixTrack = trackList.filter(track => track.type == 'heatmap')[0];
+
+    this.props.onAddTrack({
+      type: 'horizontal-rule',
+      y: this.props.coords[1], 
+      position: 'whole',
+    });
+    this.props.onAddTrack({
+      "data": {
+        "type": "horizontal-section",
+        "server": matrixTrack.server,
+        "tilesetUid": matrixTrack.tilesetUid,
+        "ySlicePos":this.props.coords[1], 
+      },
+      "options": {
+        valueScaling: 'log',
+      },
+      "type": "horizontal-bar",
+      "height": 30,
+      "position": "top",
+    });
   }
 }
 
