@@ -229,6 +229,7 @@ class HiGlassComponent extends React.Component {
     domEvent.register('resize', window);
     domEvent.register('orientationchange', window);
     domEvent.register('mousewheel', window);
+    domEvent.register('mousedown', window, true);
     domEvent.register('mouseup', window, true);
     domEvent.register('click', window, true);
     domEvent.register('mousemove', window);
@@ -419,6 +420,7 @@ class HiGlassComponent extends React.Component {
     domEvent.unregister('keyup', document);
     domEvent.unregister('scroll', document);
     domEvent.unregister('mousewheel', window);
+    domEvent.unregister('mousedown', window);
     domEvent.unregister('mouseup', window);
     domEvent.unregister('click', window);
     domEvent.unregister('mousemove', window);

@@ -116,6 +116,8 @@ export default class Inset {
     this.leaderLineAngle = 0;
     this.dragStartX = -1;
     this.dragStartY = -1;
+    this.dragStartGlobalX = -1;
+    this.dragStartGlobalY = -1;
 
     this.indicator = {};
 
@@ -168,6 +170,7 @@ export default class Inset {
     this.mouseDblclickHandlerBound = this.mouseDblclickHandler.bind(this);
     this.mouseClickRightHandlerBound = this.mouseClickRightHandler.bind(this);
     this.mouseUpHandlerBound = this.mouseUpHandler.bind(this);
+    this.mouseDownGlobalHandlerBound = this.mouseDownGlobalHandler.bind(this);
     this.mouseClickGlobalHandlerBound = this.mouseClickGlobalHandler.bind(this);
     this.mouseMoveGlobalHandlerBound = this.mouseMoveGlobalHandler.bind(this);
     this.mouseWheelHandlerBound = this.mouseWheelHandler.bind(this);
@@ -433,6 +436,7 @@ export default class Inset {
     // Unfortunately D3's zoom behavior is too aggressive and kills all local
     // mouseup event, which is why we have to listen for a global mouse up even
     // here.
+    pubSub.subscribe('mousedown', this.mouseDownGlobalHandlerBound);
     pubSub.subscribe('mouseup', this.mouseUpHandlerBound);
     pubSub.subscribe('click', this.mouseClickGlobalHandlerBound);
     pubSub.subscribe('mousemove', this.mouseMoveGlobalHandlerBound);
@@ -446,6 +450,7 @@ export default class Inset {
     this.border.removeEventListener('dblclick', this.mouseDblclickHandlerBound);
     this.border.removeEventListener('contextmenu', this.mouseClickRightHandlerBound);
     this.border.removeEventListener('wheel', this.mouseWheelHandlerBound);
+    pubSub.unsubscribe('mousedown', this.mouseDownGlobalHandlerBound);
     pubSub.unsubscribe('mouseup', this.mouseUpHandlerBound);
     pubSub.unsubscribe('click', this.mouseClickGlobalHandlerBound);
     pubSub.unsubscribe('mousemove', this.mouseMoveGlobalHandlerBound);
@@ -1637,6 +1642,16 @@ export default class Inset {
   /**
    * Global mouse click handler.
    */
+  mouseDownGlobalHandler(event) {
+    this.mouseDownGlobal = true;
+    this.dragStartGlobalX = event.clientX;
+    this.dragStartGlobalY = event.clientY;
+    this.mouseDownGlobalTime = performance.now();
+  }
+
+  /**
+   * Global mouse click handler.
+   */
   mouseClickGlobalHandler(event) {
     if (hasParent(event.target, this.border)) return;
 
@@ -1645,7 +1660,21 @@ export default class Inset {
       this.drawBorder();
     }
 
-    if (this.isScaledUp) this.scaleDown();
+    const dX = this.dragStartGlobalX === -1
+      ? 0 : event.clientX - this.dragStartGlobalX;
+    const dY = this.dragStartGlobalY === -1
+      ? 0 : event.clientY - this.dragStartGlobalY;
+
+    const dT = performance.now() - this.mouseDownGlobalTime;
+    const dL = lDist([0, 0], [dX, dY]);
+
+    if (dT < MOUSE_CLICK_TIME && dL <= 1) {
+      if (this.isScaledUp) this.scaleDown();
+    }
+
+    this.mouseDownGlobal = false;
+    this.dragStartGlobalX = -1;
+    this.dragStartGlobalY = -1;
 
     this.mouseHandler.clickGlobal(event, this);
   }
