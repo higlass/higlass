@@ -321,7 +321,6 @@ class AnnotationsInsets {
     this.areaClusterer.update(
       this.annosToBeDrawnAsInsets,
       this.zoomed,
-      this.bins
     );
   }
 
@@ -362,7 +361,6 @@ class AnnotationsInsets {
     this.insetMinRemoteSize = Infinity;  // Larger dimension of the smallest inset
     this.insetMaxRemoteSize = 0;  // Larger dimension of the largest inset
     this.tracksDrawingTiles = new Set();
-    this.bins = [];
   }
 
   /**

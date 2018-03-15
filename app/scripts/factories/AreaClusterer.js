@@ -505,16 +505,14 @@ function shrinkCluster(cluster, element) {
  * @param  {KeySet}  elements - The elements to be added.
  * @param  {number}  zoomed - Determins the zoom stage `-1` refers to zoom
  *   out, `1` refers to zoom in and `0` is no zoom (only panning).
- * @param  {array}  bins - If length greater than zero only cluster within
- *   bins.
  */
-function update(elements, zoomed, bins = []) {
+function update(elements, zoomed) {
   this.clusters.forEach((cluster) => { cluster.changed(false); });
   this.cleanUp(elements);
   this.add(elements);
   this.eval(zoomed);
   this.refresh();
-  this.clusterElements(bins);
+  this.clusterElements();
 }
 
 Object.assign(AreaClusterer.prototype, {
