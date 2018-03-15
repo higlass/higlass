@@ -1660,7 +1660,7 @@ export default class Inset {
   mouseOverHandler(event) {
     this.isHovering = true;
     this.focus();
-    this.focusOrigin();
+    if (!this.isScaledUp) this.focusOrigin();
     this.drawLeaderLine();
     if (this.isScaledUp) this.addLeafListeners();
     this.mouseHandler.mouseOver(event, this);
