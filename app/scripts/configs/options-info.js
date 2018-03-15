@@ -149,6 +149,14 @@ export const OPTIONS_INFO = {
     name: 'Fill color',
     inlineOptions: AVAILABLE_COLORS,
   },
+  strokeColor: {
+    name: 'Stroke color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
+  fillColor: {
+    name: 'Fill color',
+    inlineOptions: AVAILABLE_COLORS,
+  },
   barFillColor: {
     name: 'Fill color',
     inlineOptions: AVAILABLE_COLORS,
