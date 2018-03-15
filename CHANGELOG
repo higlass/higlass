@@ -1,3 +1,7 @@
+v0.10.22 (2018-02-22)
+
+- Added options to change the fill color of bedlike tracks
+
 v0.10.21 (2018-02-21)
 
 - Exposed the ChromosomeInfo structure as part of the hglib API

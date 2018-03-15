@@ -584,6 +584,7 @@ export const TRACKS_INFO = [
     name: 'BED-like track',
     thumbnail: null,
     availableOptions: [
+      'fillColor',
       'labelPosition',
       'labelColor',
       'labelTextOpacity',
@@ -593,6 +594,7 @@ export const TRACKS_INFO = [
       'valueColumn',
     ],
     defaultOptions: {
+      fillColor: 'blue',
       axisPositionHorizontal: 'right',
       labelColor: 'black',
       labelPosition: 'hidden',
@@ -610,6 +612,7 @@ export const TRACKS_INFO = [
     name: 'BED-like track',
     thumbnail: null,
     availableOptions: [
+      'fillColor',
       'labelPosition',
       'labelColor',
       'labelTextOpacity',
@@ -620,6 +623,7 @@ export const TRACKS_INFO = [
     ],
     defaultOptions: {
       axisPositionHorizontal: 'right',
+      fillColor: 'blue',
       labelColor: 'black',
       labelPosition: 'hidden',
       trackBorderWidth: 0,
