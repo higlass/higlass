@@ -217,6 +217,24 @@ class TrackRenderer extends React.Component {
 
     this.draggingChanged(true);
     this.addEventTracker();
+
+    // Init zoom and scale extent
+    const transExt = [
+      [this.xScale(this.xDomainLimits[0]), this.yScale(this.yDomainLimits[0])],
+      [this.xScale(this.xDomainLimits[1]), this.yScale(this.yDomainLimits[1])]
+    ];
+
+    const svgBBox = this.svgElement.getBoundingClientRect();
+
+    const ext = [
+      [Math.max(transExt[0][0], 0), Math.max(transExt[0][1], 0)],
+      [Math.min(transExt[1][0], svgBBox.width), Math.min(transExt[1][1], svgBBox.height)],
+    ];
+
+    this.zoomBehavior
+      .extent(ext)
+      .translateExtent(transExt)
+      .scaleExtent(this.zoomLimits);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -271,10 +289,6 @@ class TrackRenderer extends React.Component {
       [Math.min(transExt[1][0], svgBBox.width), Math.min(transExt[1][1], svgBBox.height)],
     ];
 
-    // if (this.scaleExtent) this.zoomBehavior.scaleExtent(this.zoomLimits);
-    // if (this.xDomainLimits) {
-    //   this.zoomBehavior.translateExtent(this.zoomLimits);
-    // }
     this.zoomBehavior
       .extent(ext)
       .translateExtent(transExt)
