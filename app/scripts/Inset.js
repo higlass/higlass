@@ -1016,6 +1016,14 @@ export default class Inset {
    * @param   {D3.Color}  color  Color.
    */
   renderLeaderLineHtml(pointFrom, pointTo, dist, color) {
+    if (this.options.leaderLineOnHoverOnly && !this.isHovering) {
+      if (this.leaderLine && this.leaderLine.parentNode === this.baseElement) {
+        this.baseElement.removeChild(this.leaderLine);
+      }
+      this.leaderLine = null;
+      return;
+    }
+
     const line = this.leaderLine || document.createElement('div');
 
     line.className = style['inset-leader-line'];
@@ -2242,8 +2250,8 @@ export default class Inset {
 
   renderClusterSize(data, imgs, wrappers, parentEl, isPrvs = false) {
     if (this.label.src.size > data.length && this.options.showClusterSize) {
-      const wrapper = document.createElement('div');
-      wrapper.className = style['inset-cluster-size-wrapper'];
+      this.clustSizeWrap = document.createElement('div');
+      this.clustSizeWrap.className = style['inset-cluster-size-wrapper'];
 
       const clustSize = document.createElement('div');
       clustSize.className = style['inset-cluster-size'];
@@ -2258,17 +2266,17 @@ export default class Inset {
       clustSize.appendChild(clustSizeText);
 
       if (isPrvs) {
-        addClass(wrapper, style['inset-cluster-size-wrapper-previews']);
+        addClass(this.clustSizeWrap, style['inset-cluster-size-wrapper-previews']);
         clustSize.style.background = this.isPermanentFocus || this.isHovering
           ? this.selectColor.toString()
           : this.borderFill.toString();
       }
 
-      wrappers.push(wrapper);
-      parentEl.appendChild(wrapper);
+      wrappers.push(this.clustSizeWrap);
+      parentEl.appendChild(this.clustSizeWrap);
 
       imgs.push(clustSize);
-      wrapper.appendChild(clustSize);
+      this.clustSizeWrap.appendChild(clustSize);
     }
   }
 
