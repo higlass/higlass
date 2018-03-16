@@ -1,3 +1,5 @@
+import ReactDOM from 'react-dom';
+
 import {
   relToAbsChromPos,
   scalesCenterAndK,
@@ -44,6 +46,10 @@ const api = function api(context) {
      */
     reload() {
 
+    },
+
+    destroy() {
+      ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
     },
 
     setViewConfig(newViewConfig) {
