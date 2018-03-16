@@ -762,7 +762,8 @@ export const TRACKS_INFO = [
       'rectangleDomainFillColor',
       'rectangleDomainStrokeColor',
       'rectangleDomainOpacity',
-      'minSquareSize'
+      'minSquareSize',
+      'isClickable'
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -773,6 +774,7 @@ export const TRACKS_INFO = [
       rectangleDomainStrokeColor: 'black',
       rectangleDomainOpacity: 0.6,
       minSquareSize: 'none',
+      isClickable: false
     },
   },
 
