@@ -277,15 +277,6 @@ const labeler = {};
 // main simulated annealing function
 labeler.start = (nsweeps, t = 1.0) => {
   setFinalWeights();
-  console.log(
-    wLenBoosted,
-    wInterBoosted,
-    wLabLabBoosted,
-    wLabOrgBoosted,
-    wLabAncBoosted,
-    wOrientBoosted,
-    wMoveBoosted,
-  );
 
   const m = lab.length;
   const initialT = t;
