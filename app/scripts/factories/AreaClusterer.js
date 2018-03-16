@@ -10,6 +10,7 @@ function AreaClusterer(options = {}) {
   this.clusters = new KeySet();
 
   this.gridSize = options.gridSize || 30;
+  this.maxClusterSize = options.maxClusterSize || Infinity;
   this.maxClusterDiameter = options.maxClusterDiameter || 60;
   this.maxZoom = options.maxZoom || null;
   this.isAverageCenter = !!options.averageCenter || true;
@@ -121,6 +122,7 @@ function addToOrCreateCluster(element) {
 
   if (
     closestCluster &&
+    closestCluster.size < this.maxClusterSize &&
     closestCluster.isWithin(element.viewPos, true) &&
     (
       combClustDia <= this.maxClusterDiameter ||
@@ -315,6 +317,7 @@ function evalZoomedOut() {
         !clusterB.isRemoved &&
         !clusterA.isDisconnected &&
         !clusterB.isDisconnected &&
+        clusterA.size + clusterB.size <= this.maxClusterSize &&
         clusterA !== clusterB &&
         this.isClusterable(clusterA, clusterB) &&
         clusterA.isWithin(clusterB.bounds, true, this.gridSize * 0.5) &&
