@@ -16,9 +16,13 @@ entered
 - Fixed small bug in placing rules
 - Display error when failing to retrieve tilesetInfo
 * Added support for cross-section tracks
+- Rendering improvements
 
+v0.10.22 (2018-02-22)
 
-?? v0.10.21 (2018-02-21)
+- Added options to change the fill color of bedlike tracks
+
+v0.10.21 (2018-02-21)
 
 - Exposed the ChromosomeInfo structure as part of the hglib API
 
