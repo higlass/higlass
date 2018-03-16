@@ -370,6 +370,7 @@ export class StackedBarTrack extends BarTrack {
   }
 
   getMouseOverHtml(trackX, trackY) {
+    //console.log(this.tilesetInfo);
     return '';
   }
 }

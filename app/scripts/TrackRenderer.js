@@ -3,16 +3,10 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
-<<<<<<< HEAD
-import {zoom, zoomIdentity} from 'd3-zoom';
-import {select, event} from 'd3-selection';
-import {scaleLinear} from 'd3-scale';
-=======
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
 import { easeLinear } from 'd3-ease';
->>>>>>> 134228a15871c1ec7b383619dacdaf18cf66fe91
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
@@ -896,25 +890,17 @@ export class TrackRenderer extends React.Component {
           .domain([
             this.currentProps.marginLeft,
             this.currentProps.width - this.currentProps.marginLeft]
-<<<<<<< HEAD
-            .map(zoomedXScale.invert))
-          .range([0, this.currentProps.width - 2 * this.currentProps.marginLeft]);
-=======
+
             .map(this.zoomedXScale.invert))
           .range([0, this.currentProps.width - (2 * this.currentProps.marginLeft)]);
->>>>>>> 134228a15871c1ec7b383619dacdaf18cf66fe91
 
         const trackYScale = scaleLinear()
           .domain([
             this.currentProps.marginTop,
             this.currentProps.height - this.currentProps.marginTop]
-<<<<<<< HEAD
-            .map(zoomedYScale.invert))
-          .range([0, this.currentProps.height - 2 * this.currentProps.marginTop]);
-=======
+
             .map(this.zoomedYScale.invert))
           .range([0, this.currentProps.height - 2*this.currentProps.marginTop]);
->>>>>>> 134228a15871c1ec7b383619dacdaf18cf66fe91
 
         track.zoomed(
           trackXScale,
