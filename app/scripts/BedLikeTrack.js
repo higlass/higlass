@@ -89,7 +89,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     tile.initialized = true;
 
-    // this.renderTile(tile);
+    this.renderTile(tile);
     // this.draw();
   }
 
@@ -136,21 +136,18 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   updateTile(tile) {
-    this.renderTile(tile);
+    //this.renderTile(tile);
   }
 
   renderTile(tile) {
     let maxRows = 1;
     console.log('renderTile');
 
-    for (const tile of this.visibleAndFetchedTiles()) {
-      if (!tile.initialized)
-        return;
-
-      if (!tile.rows)
+    for (const tile1 of this.visibleAndFetchedTiles()) {
+      if (!tile1.rows)
         continue;
 
-      maxRows = Math.max(tile.rows.length, maxRows);
+      maxRows = Math.max(tile1.rows.length, maxRows);
     }
 
     const zoomLevel = +tile.tileId.split('.')[0];
@@ -383,7 +380,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         console.log('not rendered');
         return;
       }
-      console.log('rendered');
 
       // scale the rectangles
       //
