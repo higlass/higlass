@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import TiledPixiTrack from './TiledPixiTrack';
 
 // Services
-import { tileProxy } from './services';
+import { pubSub, tileProxy } from './services';
 import { create } from './services/pub-sub';
 
 // Utils
@@ -28,6 +28,12 @@ class Annotations2dTrack extends TiledPixiTrack {
     this.unsubscribe = unsubscribe;
 
     this.sT = 0;
+
+    this.annoSelectedBound = this.annoSelected.bind(this);
+
+    this.pubSubs.push(
+      pubSub.subscribe('annoSelected', this.annoSelectedBound)
+    );
   }
 
   /* --------------------------- Getter / Setter ---------------------------- */
@@ -347,7 +353,7 @@ class Annotations2dTrack extends TiledPixiTrack {
     this.animate();
   }
 
-  select(graphics, viewPos, uid) {
+  select(graphics, viewPos, uid, silent = false) {
     let prevGfx = null;
     let prevUid = null;
 
@@ -359,15 +365,28 @@ class Annotations2dTrack extends TiledPixiTrack {
     this.selectedAnno = { graphics, uid };
     this.focus(graphics, viewPos, uid);
 
-    console.log(this.options.onSelect);
-    if (this.options.onSelect) window[this.options.onSelect](uid);
+    if (this.options.onSelect && !silent) {
+      window[this.options.onSelect](uid);
+      pubSub.publish('annoSelected', uid);
+    }
 
     if (prevGfx && prevUid) {
-      this.blur(
-        prevGfx,
-        prevGfx.__viewPos__,
-        prevUid
-      );
+      this.blur(prevGfx, prevGfx.__viewPos__, prevUid);
+    }
+  }
+
+  unselect() {
+    const gfx = this.selectedAnno.graphics;
+    const uid = this.selectedAnno.uid;
+    this.selectedAnno = null;
+    this.blur(gfx, gfx.__viewPos__, uid);
+  }
+
+  annoSelected(uid) {
+    if (!this.selectedAnno || this.selectedAnno.uid !== uid) {
+      if (this.selectedAnno) this.unselect();
+      const gfx = this.drawnAnnoGfx[uid];
+      if (gfx) this.select(gfx, gfx.__viewPos__, uid, true);
     }
   }
 

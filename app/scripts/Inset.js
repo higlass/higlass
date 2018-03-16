@@ -92,6 +92,8 @@ export default class Inset {
     this.imgWrappers = [];
     this.imgRatios = [];
 
+    this.selectedAnno = null;
+
     this.cssGrads = {};
 
     this.minSize = this.options.minSize || BASE_MIN_SIZE;
@@ -127,7 +129,7 @@ export default class Inset {
     this.borderFillAlpha = options.borderOpacity || 1;
     this.clusterSizeColor = this.options.clusterSizeColor || 'black';
 
-    this.selectColor = options.selectColor;
+    this.focusColor = options.focusColor;
 
     this.leaderLineStubWidthMin = (
       this.options.leaderLineStubWidthMin || this.options.leaderLineStubWidth
@@ -144,7 +146,7 @@ export default class Inset {
 
     this.originStyle = [
       options.leaderLineWidth || 1,
-      colorToHex(options.selectColor),
+      colorToHex(options.focusColor),
       1
     ];
 
@@ -177,6 +179,8 @@ export default class Inset {
     this.mouseEnterImgBound = this.mouseEnterImg.bind(this);
     this.mouseEnterPrvBound = this.mouseEnterPrv.bind(this);
     this.mouseLeaveImgPrvBound = this.mouseLeaveImgPrv.bind(this);
+    this.mouseClickImgBound = this.mouseClickImg.bind(this);
+    this.annoSelectedBound = this.annoSelected.bind(this);
 
     this.initGraphics(options);
   }
@@ -225,7 +229,7 @@ export default class Inset {
     });
     if (!this.isScaledUp) this.originBlur();
     this.drawLeaderLine();
-    this.removeLeafListeners();
+    this.removeImgListeners();
   }
 
   compPrvsHeight() {
@@ -301,7 +305,7 @@ export default class Inset {
    */
   styleBorderHtml(fill, radius, extraWidth = 0) {
     const _fill = this.isPermanentFocus || this.isScaledUp
-      ? this.selectColor : fill;
+      ? this.focusColor : fill;
     const _extraWidth = this.isScaledUp ? 0 : extraWidth;
 
     this.border.style.background = _fill.toString();
@@ -440,6 +444,7 @@ export default class Inset {
     pubSub.subscribe('mouseup', this.mouseUpHandlerBound);
     pubSub.subscribe('click', this.mouseClickGlobalHandlerBound);
     pubSub.subscribe('mousemove', this.mouseMoveGlobalHandlerBound);
+    pubSub.subscribe('annoSelected', this.annoSelectedBound);
   }
 
   removeEventListeners() {
@@ -454,6 +459,7 @@ export default class Inset {
     pubSub.unsubscribe('mouseup', this.mouseUpHandlerBound);
     pubSub.unsubscribe('click', this.mouseClickGlobalHandlerBound);
     pubSub.unsubscribe('mousemove', this.mouseMoveGlobalHandlerBound);
+    pubSub.unsubscribe('annoSelected', this.annoSelectedBound);
   }
 
   /**
@@ -990,7 +996,7 @@ export default class Inset {
     this.gLeaderLine.clear();
     this.gLeaderLine.lineStyle(
       this.leaderLineStyle[0],
-      this.isHovering ? colorToHex(this.selectColor) : this.leaderLineStyle[1],
+      this.isHovering ? colorToHex(this.focusColor) : this.leaderLineStyle[1],
       this.leaderLineStyle[2]
     );
 
@@ -1035,7 +1041,7 @@ export default class Inset {
 
     let _color = color;
     if (this.isHovering || this.isDragging || this.isScaledUp) {
-      _color = this.options.selectColor;
+      _color = this.options.focusColor;
       addClass(line, style['inset-leader-line-focus']);
     }
 
@@ -1124,7 +1130,7 @@ export default class Inset {
     }
 
     const _color = this.isHovering || this.isDragging || this.isScaledUp
-      ? this.options.selectColor
+      ? this.options.focusColor
       : color;
 
     this.indicator[name].style.background = _color.toString();
@@ -1208,7 +1214,7 @@ export default class Inset {
    */
   renderLeaderLineGrdCanvas(pointFrom, pointTo, color = this.options.leaderLineColor) {
     const _color = d3Color((this.isHovering
-      ? this.options.selectColor
+      ? this.options.focusColor
       : color
     ));
 
@@ -1260,7 +1266,7 @@ export default class Inset {
    */
   renderLeaderLineStubsCanvas(pointFrom, pointTo, color = this.options.leaderLineColor) {
     const _color = d3Color((this.isHovering
-      ? this.options.selectColor
+      ? this.options.focusColor
       : color
     ));
 
@@ -1431,7 +1437,7 @@ export default class Inset {
       // Draw convex hull
       this.gOrigin
         .lineStyle(1, orgLineColor, 0.75)
-        .beginFill(colorToHex(this.selectColor), 0.5)
+        .beginFill(colorToHex(this.focusColor), 0.5)
         .drawPolygon(flatten(hull(points, Infinity)))
         .endFill()
         .lineStyle(orgLineWidth, orgLineColor, orgLineAlpha);
@@ -1506,7 +1512,7 @@ export default class Inset {
 
   /**
    * Visually focus the inset by changing the border color to
-   *   `this.selectColor`.
+   *   `this.focusColor`.
    */
   focus(isPermanent = false) {
     this.isPermanentFocus = isPermanent ? true : this.isPermanentFocus;
@@ -1522,7 +1528,7 @@ export default class Inset {
       this.height,
       this.gBorder,
       this.options.borderRadius,
-      this.selectColor,
+      this.focusColor,
     );
     Object.keys(this.indicator).forEach((id) => {
       this.renderIndicator(id, undefined, undefined);
@@ -1587,7 +1593,7 @@ export default class Inset {
       this.scale(this.onClickScale, true);
       this.isScaledUp = true;
       addClass(this.border, style['inset-scaled-up']);
-      this.addLeafListeners();
+      this.addImgListeners();
       if (this.options.loadHiResOnScaleUp) this.drawImage(true, null, true);
     }
   }
@@ -1622,6 +1628,8 @@ export default class Inset {
   mouseClickHandler(event) {
     event.preventDefault();
     event.stopPropagation();
+
+    if (this.options.isImgSelectable && this.isScaledUp) return;
 
     const dX = this.dragStartX === -1 ? 0 : event.clientX - this.dragStartX;
     const dY = this.dragStartY === -1 ? 0 : event.clientY - this.dragStartY;
@@ -1706,11 +1714,11 @@ export default class Inset {
     this.focus();
     if (!this.isScaledUp) this.focusOrigin();
     this.drawLeaderLine();
-    if (this.isScaledUp) this.addLeafListeners();
+    if (this.isScaledUp) this.addImgListeners();
     this.mouseHandler.mouseOver(event, this);
   }
 
-  addLeafListeners() {
+  addImgListeners() {
     this.isLeafingEnabled = true;
     if (this.prvs.length) {
       this.prvs.forEach((prv) => {
@@ -1721,11 +1729,12 @@ export default class Inset {
       this.imgs.slice(0, 4).forEach((img) => {
         img.addEventListener('mouseenter', this.mouseEnterImgBound);
         img.addEventListener('mouseleave', this.mouseLeaveImgPrvBound);
+        img.addEventListener('click', this.mouseClickImgBound);
       });
     }
   }
 
-  removeLeafListeners() {
+  removeImgListeners() {
     if (!this.isLeafingEnabled) return;
 
     if (this.prvs.length) {
@@ -1737,6 +1746,7 @@ export default class Inset {
       this.imgs.slice(0, 4).forEach((img) => {
         img.removeEventListener('mouseenter', this.mouseEnterImgBound);
         img.removeEventListener('mouseleave', this.mouseLeaveImgPrvBound);
+        img.removeEventListener('click', this.mouseClickImgBound);
       });
     }
 
@@ -1766,7 +1776,7 @@ export default class Inset {
     }
 
     // Point leader line to hovering annotation
-    const anno = this.label.src.members.values[event.target.__indice__];
+    const anno = this.label.src.members.values[event.target.__index__];
     const x = anno.minX + ((anno.maxX - anno.minX) / 2);
     const y = anno.minY + ((anno.maxY - anno.minY) / 2);
 
@@ -1781,6 +1791,55 @@ export default class Inset {
     this.drawLeaderLine();
     if (this.imgs.length > 2 && event.target !== this.imgs[0]) {
       this.revertImgFromImg();
+    }
+  }
+
+  mouseClickImg(event) {
+    if (this.options.isImgSelectable) {
+      const id = this.label.src.members.values[event.target.__index__].id;
+
+      if (this.selectedAnno && this.selectedAnno.id !== id) {
+        this.unselect();
+      }
+
+      this.selectedAnno = {
+        el: event.target,
+        id
+      };
+
+      event.target.style.boxShadow = `inset 0 0 0 2px ${this.options.selectColor}`;
+
+      if (this.options.onSelect) {
+        window[this.options.onSelect](id);
+        pubSub.publish('annoSelected', id);
+      }
+    }
+  }
+
+  unselect() {
+    this.selectedAnno.el.style.boxShadow = null;
+    this.selectedAnno = null;
+  }
+
+  select(id) {
+    const annos = this.label.src.members.values;
+    this.imgs.some((img) => {
+      if (
+        typeof img.__index__ !== 'undefined' &&
+        annos[img.__index__].id === id
+      ) {
+        this.selectedAnno = { el: img, id };
+        img.style.boxShadow = `inset 0 0 0 2px ${this.options.selectColor}`;
+        return true;
+      }
+      return false;
+    });
+  }
+
+  annoSelected(id) {
+    if (!this.selectedAnno || this.selectedAnno.id !== id) {
+      if (this.selectedAnno) this.unselect();
+      this.select(id);
     }
   }
 
@@ -2188,7 +2247,16 @@ export default class Inset {
 
           img.style.backgroundImage = `url(${renderedImg.toDataURL()})`;
           img.__transform__ = {};
-          img.__indice__ = idx[i];
+          img.__index__ = idx[i];
+
+          const annoId = this.label.src.members.values[idx[i]].id;
+
+          if (this.selectedAnno && this.selectedAnno.id === annoId) {
+            // We need to update the box shadow and assigned el because we're
+            // rerendering on scaleUp.
+            img.style.boxShadow = `inset 0 0 0 2px ${this.options.selectColor}`;
+            this.selectedAnno.el = img;
+          }
 
           if (this.dataType === 'cooler') {
             // Enable nearest-neighbor scaling
@@ -2268,7 +2336,7 @@ export default class Inset {
       if (isPrvs) {
         addClass(this.clustSizeWrap, style['inset-cluster-size-wrapper-previews']);
         clustSize.style.background = this.isPermanentFocus || this.isHovering
-          ? this.selectColor.toString()
+          ? this.focusColor.toString()
           : this.borderFill.toString();
       }
 
