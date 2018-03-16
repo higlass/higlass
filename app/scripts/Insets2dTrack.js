@@ -129,6 +129,7 @@ export default class Insets2dTrack extends PixiTrack {
     this.options.fill = d3Color(this.options.fill);
     this.options.borderColor = d3Color(this.options.borderColor);
     this.options.leaderLineColor = d3Color(this.options.leaderLineColor);
+    this.options.focusColor = d3Color(this.options.focusColor);
     this.options.selectColor = d3Color(this.options.selectColor);
 
     this.insetMinSize = this.options.minSize || BASE_MIN_SIZE;

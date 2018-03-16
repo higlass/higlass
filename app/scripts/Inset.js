@@ -129,7 +129,8 @@ export default class Inset {
     this.borderFillAlpha = options.borderOpacity || 1;
     this.clusterSizeColor = this.options.clusterSizeColor || 'black';
 
-    this.focusColor = options.focusColor;
+    this.focusColor = options.focusColor || 'orange';
+    this.selectColor = options.selectColor || 'fuchsia';
 
     this.leaderLineStubWidthMin = (
       this.options.leaderLineStubWidthMin || this.options.leaderLineStubWidth
