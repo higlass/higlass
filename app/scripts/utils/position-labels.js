@@ -5,6 +5,8 @@ let lab = [];
 let anc = [];
 let w = 1; // box width
 let h = 1; // box height
+let area = w * h; // image area
+let areaQ = area / 4; // image area
 let padding = 1;
 
 const maxMove = 25.0;
@@ -20,6 +22,24 @@ const wLabOrg = 50.0; // additional label-origin overlap weights (added to `wLab
 const wLabAnc = 10.0; // overlap between label and other anchors (i.e., annotations)
 const wOrient = 0.1; // orientation bias
 const wMove = 1.0; // restrict random moves
+
+let wLenBoost = 1.0; // leader line length
+let wInterBoost = 1.0; // leader line intersection
+let wLabLabBoost = 1.0; // label-label overlap
+let wLabOrgBoost = 1.0; // additional label-origin overlap weights (added to `wLabAnc`)
+let wLabAncBoost = 1.0; // overlap between label and other anchors (i.e., annotations)
+let wOrientBoost = 1.0; // orientation bias
+let wMoveBoost = 1.0; // restrict random moves
+let wAncSizeBoost = 1.0;
+let wAncSizeBoostThres = Infinity;
+
+let wLenBoosted = wLen;
+let wInterBoosted = wInter;
+let wLabLabBoosted = wLabLab;
+let wLabOrgBoosted = wLabOrg;
+let wLabAncBoosted = wLabAnc;
+let wOrientBoosted = wOrient;
+let wMoveBoosted = wMove;
 
 // booleans for user defined functions
 let userEnergy = false;
@@ -60,18 +80,18 @@ const energy = (index, moveX, moveY) => {
   // let theta = 0;
 
   // penalty for length of leader line
-  ener += Math.abs(dist - distCenterToBorder) * wLen * l.locality;
+  ener += Math.abs(dist - distCenterToBorder) * wLenBoosted * l.locality;
 
   // penalty for moving at all
-  ener += Math.sqrt((moveX * moveX) + (moveY * moveY)) * wMove;
+  ener += Math.sqrt((moveX * moveX) + (moveY * moveY)) * wMoveBoosted;
 
   // label orientation bias (Fritz: ignored for now)
   // dx /= dist;
   // dy /= dist;
-  // if (dx > 0 && dy > 0) ener += 0 * wOrient;
-  // else if (dx < 0 && dy > 0) ener += 1 * wOrient;
-  // else if (dx < 0 && dy < 0) ener += 2 * wOrient;
-  // else ener += 3 * wOrient;
+  // if (dx > 0 && dy > 0) ener += 0 * wOrientBoosted;
+  // else if (dx < 0 && dy > 0) ener += 1 * wOrientBoosted;
+  // else if (dx < 0 && dy < 0) ener += 2 * wOrientBoosted;
+  // else ener += 3 * wOrientBoosted;
 
   const x21 = l.x - l.wH - padding;
   const y21 = l.y - l.hH - padding;
@@ -104,7 +124,7 @@ const energy = (index, moveX, moveY) => {
       );
 
       // ...and add a penalty if they do
-      if (overlap) ener += wInter;
+      if (overlap) ener += wInterBoosted;
 
       // Penalty for label-label overlap
       x11 = otherLabel.x - otherLabel.wH - 1;
@@ -114,7 +134,7 @@ const energy = (index, moveX, moveY) => {
       xOverlap = max(0, min(x12, x22) - max(x11, x21));
       yOverlap = max(0, min(y12, y22) - max(y11, y21));
       overlapArea = xOverlap * yOverlap;
-      ener += (overlapArea * wLabLab);
+      ener += (overlapArea * wLabLabBoosted);
     }
 
     // penalty for label-anchor overlap
@@ -125,7 +145,13 @@ const energy = (index, moveX, moveY) => {
     xOverlap = max(0, min(x12, x22) - max(x11, x21));
     yOverlap = max(0, min(y12, y22) - max(y11, y21));
     overlapArea = xOverlap * yOverlap;
-    ener += overlapArea * (wLabAnc + (wLabOrg * (i < m)));
+    let wLabAncExtraBoost = 1.0;
+    if (wAncSizeBoost !== 1.0) {
+      const ancArea = anc[i].wH * anc[i].hH * 4;
+      const relArea = min(1, max(0, ancArea - wAncSizeBoostThres) / areaQ);
+      wLabAncExtraBoost = 1 - ((1 - wAncSizeBoost) * relArea);
+    }
+    ener += overlapArea * ((wLabAncBoosted * wLabAncExtraBoost) + (wLabOrgBoosted * (i < m)));
   }
   return ener;
 };
@@ -236,10 +262,31 @@ const mcrotate = (currT) => {
 // linear cooling
 const coolingSchedule = (currT, initialT, nsweeps) => (currT - (initialT / nsweeps));
 
+const setFinalWeights = () => {
+  wLenBoosted = wLen * wLenBoost;
+  wInterBoosted = wInter * wInterBoost;
+  wLabLabBoosted = wLabLab * wLabLabBoost;
+  wLabOrgBoosted = wLabOrg * wLabOrgBoost;
+  wLabAncBoosted = wLabAnc * wLabAncBoost;
+  wOrientBoosted = wOrient * wOrientBoost;
+  wMoveBoosted = wMove * wMoveBoost;
+};
+
 const labeler = {};
 
 // main simulated annealing function
 labeler.start = (nsweeps, t = 1.0) => {
+  setFinalWeights();
+  console.log(
+    wLenBoosted,
+    wInterBoosted,
+    wLabLabBoosted,
+    wLabOrgBoosted,
+    wLabAncBoosted,
+    wOrientBoosted,
+    wMoveBoosted,
+  );
+
   const m = lab.length;
   const initialT = t;
   let currT = initialT;
@@ -259,6 +306,8 @@ labeler.width = (x) => {
 // users insert graph width
   if (!arguments.length) return w;
   w = x;
+  area = w * h;
+  areaQ = area / 4;
   return labeler;
 };
 
@@ -266,6 +315,8 @@ labeler.height = (x) => {
 // users insert graph height
   if (!arguments.length) return h;
   h = x;
+  area = w * h;
+  areaQ = area / 4;
   return labeler;
 };
 
@@ -280,6 +331,31 @@ labeler.label = (x) => {
 labeler.anchor = (x) => {
   if (!arguments.length) return anc;
   anc = x;
+  return labeler;
+};
+
+labeler.boost = (weight, booster, threshold) => {
+  // user-defined weight boosting
+  if (!arguments.length) return labeler;
+  switch (weight) {
+    case 'locality':
+      wLenBoost = booster;
+      break;
+    case 'context':
+      wLabOrgBoost = booster;
+      wLabAncBoost = booster;
+      break;
+    case 'contextAnc':
+      wAncSizeBoost = booster;
+      wAncSizeBoostThres = threshold;
+      break;
+    case 'details':
+      wLabLabBoost = booster;
+      break;
+    default:
+      // Nothing
+  }
+
   return labeler;
 };
 

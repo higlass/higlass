@@ -26,6 +26,13 @@ class AnnotationsInsets {
     this.animate = animate;
     this.options = options;
 
+    this.boostContext = this.options.boostContext || 1;
+    this.boostDetails = this.options.boostDetails || 1;
+    this.boostLocality = this.options.boostLocality || 1;
+    this.boostLayout = this.options.boostLayout || 1;
+    this.bigAnnosBoost = this.options.bigAnnosBoost || 1;
+    this.bigAnnosBoostArea = this.options.bigAnnosBoostArea || Infinity;
+
     this.insetsTrack = getTrackByUid(insetsTrack);
 
     if (!this.insetsTrack) {
@@ -111,6 +118,7 @@ class AnnotationsInsets {
       gridSize: this.options.gridSize,
       maxClusterDiameter: this.options.maxClusterDiameter,
       minClusterSize: this.options.minClusterSize,
+      maxClusterSize: +this.options.maxClusterSize,
       maxZoom: undefined,
       disabled: !!this.options.disableClustering,
       propCheck: propChecks,
@@ -470,7 +478,18 @@ class AnnotationsInsets {
         .width(this.insetsTrack.dimensions[0])
         .height(this.insetsTrack.dimensions[1])
         .padding(5)
-        .start(Math.round(Math.max(2, Math.min(100 * Math.log(n) / n))));
+        .boost('context', this.boostContext)
+        .boost('contextAnc', this.bigAnnosBoost, this.bigAnnosBoostArea)
+        .boost('details', this.boostDetails)
+        .boost('locality', this.boostLocality)
+        .start(
+          Math.round(
+            Math.max(
+              2, // Ensure at least 2 moves per label!
+              100 * this.boostLayout * Math.log(n) / n
+            )
+          )
+        );
 
       // console.log(`Positioning took ${performance.now() - t0} msec`);
     }
