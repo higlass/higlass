@@ -134,22 +134,28 @@ class PixiTrack extends Track {
 
     this.options = Object.assign(this.options, options);
 
-    const labelTextText = this.options.name ? this.options.name :
-      (this.tilesetInfo ? this.tilesetInfo.name : '');
-    this.labelTextFontFamily = 'Arial';
-    this.labelTextFontSize = 12;
+    if (this.options.labelPosition && this.options.labelPosition !== 'hidden') {
+      const labelTextText = this.options.name
+        ? this.options.name
+        : this.tilesetInfo ? this.tilesetInfo.name : '';
+      this.labelTextFontFamily = 'Arial';
+      this.labelTextFontSize = 12;
 
-    this.labelText = new PIXI.Text(labelTextText, { fontSize: `${this.labelTextFontSize}px`,
-      fontFamily: this.labelTextFontFamily,
-      fill: 'black' });
+      this.labelText = new PIXI.Text(
+        labelTextText, {
+          fontSize: `${this.labelTextFontSize}px`,
+          fontFamily: this.labelTextFontFamily,
+          fill: 'black'
+        });
 
-    this.errorText = new PIXI.Text('',
-      { fontSize: '12px', fontFamily: 'Arial', fill: 'red' });
-    this.errorText.anchor.x = 0.5;
-    this.errorText.anchor.y = 0.5;
-    this.pLabel.addChild(this.errorText);
+      this.errorText = new PIXI.Text('',
+        { fontSize: '12px', fontFamily: 'Arial', fill: 'red' });
+      this.errorText.anchor.x = 0.5;
+      this.errorText.anchor.y = 0.5;
+      this.pLabel.addChild(this.errorText);
 
-    this.pLabel.addChild(this.labelText);
+      this.pLabel.addChild(this.labelText);
+    }
   }
 
   setLabelText() {
@@ -238,13 +244,13 @@ class PixiTrack extends Track {
   drawLabel() {
     const graphics = this.pLabel;
 
+    graphics.clear();
+
     if (!this.options || !this.options.labelPosition) {
       // don't display the track label
       this.labelText.opacity = 0;
       return;
     }
-
-    graphics.clear();
 
     if (this.options.labelBackgroundOpacity) {
       graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);
