@@ -763,7 +763,9 @@ export const TRACKS_INFO = [
       'rectangleDomainStrokeColor',
       'rectangleDomainOpacity',
       'minSquareSize',
-      'isClickable'
+      'isClickable',
+      'hoverColor',
+      'selectColor',
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -774,7 +776,9 @@ export const TRACKS_INFO = [
       rectangleDomainStrokeColor: 'black',
       rectangleDomainOpacity: 0.6,
       minSquareSize: 'none',
-      isClickable: false
+      isClickable: false,
+      hoverColor: 'orange',
+      selectColor: 'fuchsia',
     },
   },
 
@@ -850,6 +854,14 @@ export const TRACKS_INFO = [
       lineStrokeWidth: 1,
       lineStrokeColor: 'grey',
     },
+  },
+  {
+    type: '2d-pixel-annotations',
+    local: true,
+    orientation: '2d',
+    name: '2D Pixel Annotations',
+    thumbnail: null,
+    hidden: true,
   },
   {
     type: '2d-chromosome-annotations',
