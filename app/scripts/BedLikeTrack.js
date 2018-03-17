@@ -138,6 +138,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   updateTile(tile) {
+    //this.destroyTile(tile);
     this.renderTile(tile);
     //console.trace('update');
   }
@@ -242,7 +243,12 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           if (!this.drawnRects[zoomLevel])
             this.drawnRects[zoomLevel] = {}
 
-          this.drawnRects[zoomLevel][td.uid] = [xStartPos, rectY, xEndPos - xStartPos, rectHeight];
+          this.drawnRects[zoomLevel][td.uid] = [xStartPos, rectY, xEndPos - xStartPos, rectHeight, 
+            {
+              start: txStart,
+              end: txEnd,
+              value: td,
+            }];
 
           if (!tile.texts) {
             // tile probably hasn't been initialized yet
@@ -560,6 +566,42 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
 
     return [base, base];
+  }
+  getMouseOverHtml(trackX, trackY) {
+    if (!this.tilesetInfo)
+      return;
+
+    const zoomLevel = this.calculateZoomLevel();
+    const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
+
+    // the position of the tile containing the query position
+    const tilePos = this._xScale.invert(trackX) / tileWidth;
+
+    const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
+
+    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)])
+    const fetchedTile = this.fetchedTiles[tileId];
+
+    const dataX = this._xScale.invert(trackX);
+
+    if (this.drawnRects[zoomLevel]) {
+      const visibleRects = Object.values(this.drawnRects[zoomLevel]);
+
+      for (let i = 0; i < visibleRects.length; i++) {
+        const rect = visibleRects[i];
+        if (rect[4].start < dataX &&
+          dataX < rect[4].end) {
+
+          if (rect[1] < trackY && trackY < (rect[1] + rect[3])) {
+            parts = visibleRects[i][4].value.fields.slice(3);
+
+            return parts.join(" ");
+          }
+        }
+      }
+    }
+
+    return '';
   }
 }
 
