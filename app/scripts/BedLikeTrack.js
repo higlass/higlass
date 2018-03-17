@@ -98,6 +98,9 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   destroyTile(tile) {
     // remove texts
     const zoomLevel = +tile.tileId.split('.')[0];
+    tile.rectGraphics.clear();
+    tile.rendered = false;
+    console.log('destroying', tile);
 
     if (tile.tileData && tile.tileData.length) {
       tile.tileData.forEach((td, i) => {
@@ -132,7 +135,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.drawnRects = {};
 
     for (const tile of this.visibleAndFetchedTiles()) {
-      tile.rectGraphics.clear();
+      this.destroyTile(tile);
       this.renderTile(tile);
     }
   }
@@ -157,6 +160,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       maxRows = Math.max(tile1.rows.length, maxRows);
     }
 
+
     const zoomLevel = +tile.tileId.split('.')[0];
 
     // store the scale at while the tile was drawn at so that
@@ -169,6 +173,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     const fill = colorToHex(this.options.fillColor ? this.options.fillColor : 'blue');
 
     tile.rendered = true;
+    console.log('rendering', tile);
 
     if (this.options && this.options.valueColumn) { 
       /**
@@ -382,7 +387,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   draw() {
     super.draw();
-    console.log('drawing', this, this._xScale.domain(), this._xScale.range());
 
     // graphics.clear();
 
@@ -502,12 +506,15 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
 
+    /*
     // redraw the contents
     for (const tile of this.visibleAndFetchedTiles()) {
-      tile.rectGraphics.clear();
-
+      // this.destroyTile(tile);
       this.renderTile(tile);
     }
+
+    this.draw();
+    */
   }
 
   zoomed(newXScale, newYScale) {
