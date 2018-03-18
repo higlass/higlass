@@ -343,6 +343,7 @@ class TrackRenderer extends React.Component {
      */
     this.mounted = false;
     this.removeTracks(Object.keys(this.trackDefObjects));
+    this.removeMetaTracks(Object.keys(this.metaTracks));
     this.currentProps.removeDraggingChangedListener(this.draggingChanged);
 
     this.currentProps.pixiStage.removeChild(this.pStage);
