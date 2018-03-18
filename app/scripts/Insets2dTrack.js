@@ -555,6 +555,13 @@ export default class Insets2dTrack extends PixiTrack {
     return base64ToCanvas(data);
   }
 
+  remove() {
+    // Make sure we remove all insets to avoid memory leaks
+    this.insets.forEach((inset) => {
+      this.destroyInset(inset.id);
+    });
+  }
+
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
 
