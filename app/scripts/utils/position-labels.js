@@ -375,12 +375,19 @@ labeler.padding = (x) => {
 
 /**
  * Restrict annealing to be one dimensional if `isFalse` is `false`.
- * @param   {boolean}  isFalse  If `true` deactivate one-dimensional annealing.
  * @return  {object}  Return the labeler for chaining.
  */
-labeler.is1dOnly = (isFalse = false) => {
-  if (!arguments.length) return is1dOnly;
-  is1dOnly = !isFalse;
+labeler.is1d = () => {
+  is1dOnly = true;
+  return labeler;
+};
+
+/**
+ * Set 2D annealing
+ * @return  {object}  Return the labeler for chaining.
+ */
+labeler.is2d = () => {
+  is1dOnly = false;
   return labeler;
 };
 

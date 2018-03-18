@@ -478,6 +478,7 @@ class AnnotationsInsets {
         .width(this.insetsTrack.dimensions[0])
         .height(this.insetsTrack.dimensions[1])
         .padding(5)
+        .is2d()
         .boost('context', this.boostContext)
         .boost('contextAnc', this.bigAnnosBoost, this.bigAnnosBoostArea)
         .boost('details', this.boostDetails)
@@ -551,7 +552,7 @@ class AnnotationsInsets {
         // Anchors, i.e., label origins, already positioned labels, and other
         // annotations
         .anchor(anchors)
-        .is1dOnly()
+        .is1d()
         .width(this.insetsTrack.dimensions[0])
         .height(
           this.insetsTrack.dimensions[1] -
