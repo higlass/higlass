@@ -590,13 +590,11 @@ class AnnotationsInsets {
       - (2 * this.insetsTrack.positioning.width)
     );
     const cwh = centerWidth / 2;
-    const paddingX = (this.insetsTrack.positioning.height - insetMaxSize) / 2;
     const centerHeight = (
       this.insetsTrack.dimensions[1]
       - (2 * this.insetsTrack.positioning.height)
     );
     const chh = centerHeight / 2;
-    const paddingY = (this.insetsTrack.positioning.height - insetMaxSize) / 2;
 
     // Initialize the border histogram for counting the number of instances
     // falling within the same border section.
@@ -629,7 +627,7 @@ class AnnotationsInsets {
 
         c.t = this.scaleChanged ? 0.5 : 0;
 
-        if (newResScale) {
+        if (cluster.isChanged || newResScale) {
           const {
             width, height
           } = this.compInsetSize(cluster, finalRes);
@@ -641,14 +639,14 @@ class AnnotationsInsets {
 
           c.x = c.isVerticalOnly
             ? c.isLeftCloser
-              ? offX - c.wH - paddingX
-              : offX + c.wH + paddingX + centerWidth
+              ? offX - c.wH
+              : offX + c.wH + centerWidth
             : c.x;
           c.y = c.isVerticalOnly
             ? c.y
             : c.isTopCloser
-              ? offY - c.hH - paddingY
-              : offY + c.hH + paddingY + centerHeight;
+              ? offY - c.hH
+              : offY + c.hH + centerHeight;
 
           // Let them wobble a bit because the size changed
           c.t = 0.25;
@@ -682,19 +680,19 @@ class AnnotationsInsets {
       let y;
       if (isXShorter) {
         if (isLeftCloser) {
-          x = offX - (width / 2) - paddingX;
+          x = offX - (width / 2);
           binsLeft[yBinId] += insetHalfSize;
         } else {
-          x = offX + centerWidth + (width / 2) + paddingX;
+          x = offX + centerWidth + (width / 2);
           binsRight[yBinId] += insetHalfSize;
         }
         y = offY + cluster.minY;
       } else {
         if (isTopCloser) {
-          y = offY - (height / 2) - paddingY;
+          y = offY - (height / 2);
           binsTop[xBinId] += insetHalfSize;
         } else {
-          y = offY + centerHeight + (height / 2) + paddingY;
+          y = offY + centerHeight + (height / 2);
           binsBottom[xBinId] += insetHalfSize;
         }
         x = offX + cluster.minX;
