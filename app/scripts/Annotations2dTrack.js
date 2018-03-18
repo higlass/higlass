@@ -316,6 +316,16 @@ class Annotations2dTrack extends TiledPixiTrack {
     }
 
     graphics.clear();
+    if (this.options.trackBorderBgWidth) {
+      this.setBorderStyle(
+        graphics,
+        this.options.trackBorderBgColor,
+        this.options.trackBorderBgWidth,
+        this.options.trackBorderBgAlpha
+      );
+      this.setFill(graphics, fill, 0);
+      graphics.drawRect(...viewPos);
+    }
     this.setBorderStyle(graphics, stroke, strokeWidth, strokeAlpha);
     this.setFill(graphics, fill, fillAlpha);
     graphics.drawRect(...viewPos);

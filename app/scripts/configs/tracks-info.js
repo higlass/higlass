@@ -767,6 +767,9 @@ export const TRACKS_INFO = [
       'hoverColor',
       'selectColor',
       'exclude',
+      'trackBorderBgWidth',
+      'trackBorderBgColor',
+      'trackBorderBgAlpha',
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -781,6 +784,9 @@ export const TRACKS_INFO = [
       hoverColor: 'orange',
       selectColor: 'fuchsia',
       exclude: [],
+      trackBorderBgWidth: 0,
+      trackBorderBgColor: 'black',
+      trackBorderBgAlpha: 0.33,
     },
   },
 
