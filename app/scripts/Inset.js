@@ -2638,7 +2638,7 @@ export default class Inset {
     this.enableTransition();
     this.checkTransformOrigin();
 
-    if (isOriginMinded) {
+    if (isOriginMinded && typeof this.label.isLeftCloser === 'undefined') {
       const originOrient = this.compOriginOrient();
       this.border.style.transformOrigin = originOrient.join(' ');
     }
