@@ -766,6 +766,7 @@ export const TRACKS_INFO = [
       'isClickable',
       'hoverColor',
       'selectColor',
+      'exclude',
     ],
     defaultOptions: {
       labelColor: 'black',
@@ -779,6 +780,7 @@ export const TRACKS_INFO = [
       isClickable: false,
       hoverColor: 'orange',
       selectColor: 'fuchsia',
+      exclude: [],
     },
   },
 

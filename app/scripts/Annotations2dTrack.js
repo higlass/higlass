@@ -202,6 +202,10 @@ class Annotations2dTrack extends TiledPixiTrack {
         const [startX, startY] = this.projection([td.xStart, td.yStart]);
         const [endX, endY] = this.projection([td.xEnd, td.yEnd]);
 
+        if (this.options.exclude && this.options.exclude.indexOf(td.uid) >= 0) {
+          return;
+        }
+
         this.drawAnnotation(
           this.prepAnnotation(
             graphics,
