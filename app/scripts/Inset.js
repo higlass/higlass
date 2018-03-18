@@ -1121,6 +1121,10 @@ export default class Inset {
     if (!this.indicator[name]) {
       this.indicator[name] = document.createElement('div');
       this.indicator[name].className = style.indicator;
+      this.indicator[name].style.color = this.options.indicatorColor
+        ? d3Color(this.options.indicatorColor)
+        : 'black';
+
       addEventListenerOnce(this.indicator[name], 'click', action);
 
       const icon = createIcon(iconName);

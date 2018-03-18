@@ -1038,6 +1038,7 @@ export const TRACKS_INFO = [
       pileOrientation: 'bottom',
       focusColor: 'orange',
       selectColor: 'fuchsia',
+      indicatorColor: 'black',
     },
     availableOptions: [
       'minSize',
@@ -1081,6 +1082,7 @@ export const TRACKS_INFO = [
       'scaleBorderBy',
       'focusColor',
       'selectColor',
+      'indicatorColor',
     ],
   },
 
