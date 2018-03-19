@@ -100,7 +100,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     const zoomLevel = +tile.tileId.split('.')[0];
     tile.rectGraphics.clear();
     tile.rendered = false;
-    console.log('destroying', tile);
 
     if (tile.tileData && tile.tileData.length) {
       tile.tileData.forEach((td, i) => {
@@ -173,7 +172,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     const fill = colorToHex(this.options.fillColor ? this.options.fillColor : 'blue');
 
     tile.rendered = true;
-    console.log('rendering', tile);
 
     if (this.options && this.options.valueColumn) { 
       /**
