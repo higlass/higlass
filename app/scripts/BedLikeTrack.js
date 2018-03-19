@@ -1,5 +1,6 @@
 import boxIntersect from 'box-intersect';
-import { median } from 'd3-array';
+import { median, range } from 'd3-array';
+import { scaleBand } from 'd3-scale';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
@@ -7,11 +8,11 @@ import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 import { tileProxy } from './services';
 
 // Utils
-import { colorToHex } from './utils';
+import { colorToHex, segmentsToRows } from './utils';
 
 const GENE_RECT_WIDTH = 1;
 const GENE_RECT_HEIGHT = 10;
-const MAX_TEXTS = 20;
+const MAX_TEXTS = 1000;
 const MAX_TILE_ENTRIES = 1000;
 
 export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
@@ -38,6 +39,28 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       tile.tileData.sort((a, b) => b.importance - a.importance);
       tile.tileData = tile.tileData.slice(0, MAX_TILE_ENTRIES);
 
+      let rows = [];
+      if (!this.options || !this.options.valueColumn) {
+        segments = tile.tileData.map(x => {
+          const chrOffset = +x.chrOffset;
+
+          return {
+            from: +x.fields[1] + chrOffset,
+            to: +x.fields[2] + chrOffset,
+            value: x,
+          };
+        });
+
+        rows = segmentsToRows(segments);
+        // console.log('rows', rows);
+      } else {
+        rows = tile.tileData.map(x => {
+          return {value: x,};
+        });
+      }
+
+      tile.rows = rows;
+
       tile.tileData.forEach((td, i) => {
         const geneInfo = td.fields;
         const fill = this.options.fillColor ? this.options.fillColor : 'blue';
@@ -45,7 +68,9 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         tile.textWidths = {};
 
         // don't draw texts for the latter entries in the tile
-        if (i >= MAX_TEXTS) { return; }
+        if (i >= MAX_TEXTS) { 
+          return; 
+        }
 
         // geneInfo[3] is the gene symbol
         const text = new PIXI.Text(geneInfo[3], { fontSize: this.textFontSize,
@@ -64,13 +89,17 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     tile.initialized = true;
 
-    this.renderTile(tile);
+    console.log('init');
+    // console.log('init');
+    // this.renderTile(tile);
     // this.draw();
   }
 
   destroyTile(tile) {
     // remove texts
     const zoomLevel = +tile.tileId.split('.')[0];
+    tile.rectGraphics.clear();
+    tile.rendered = false;
 
     if (tile.tileData && tile.tileData.length) {
       tile.tileData.forEach((td, i) => {
@@ -87,7 +116,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     // we're going to rerender after destroying tiles to make sure
     // any rectangles that were listed under 'drawnRects' don't get
     // ignored
-    this.rerender(this.options);
+    // this.rerender(this.options);
   }
 
   drawTile(tile) {
@@ -105,20 +134,44 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     this.drawnRects = {};
 
     for (const tile of this.visibleAndFetchedTiles()) {
-      tile.rectGraphics.clear();
+      this.destroyTile(tile);
       this.renderTile(tile);
     }
   }
 
+  updateTile(tile) {
+    //this.destroyTile(tile);
+    this.renderTile(tile);
+    //console.trace('update');
+  }
+
   renderTile(tile) {
-    if (!tile.initialized) { return; }
+    let maxRows = 1;
+
+    for (const tile1 of this.visibleAndFetchedTiles()) {
+      if (!tile1.initialized) {
+        return;
+      }
+
+      if (!tile1.rows)
+        continue;
+
+      maxRows = Math.max(tile1.rows.length, maxRows);
+    }
+
 
     const zoomLevel = +tile.tileId.split('.')[0];
 
     // store the scale at while the tile was drawn at so that
     // we only resize it when redrawing
+
+    if (tile.rendered)
+      return;
+
     tile.drawnAtScale = this._xScale.copy();
     const fill = colorToHex(this.options.fillColor ? this.options.fillColor : 'blue');
+
+    tile.rendered = true;
 
     if (this.options && this.options.valueColumn) { 
       /**
@@ -132,85 +185,105 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
 
     if (tile.tileData && tile.tileData.length) {
+      const rows = tile.rows;
+
+      const rowScale = scaleBand()
+        .domain(range(maxRows))
+        .range([0, this.dimensions[1]]);
+
+      for (let j = 0; j < rows.length; j++) {
+        for (let i = 0; i < rows[j].length; i++) {
+          const td = rows[j][i].value;
+
+          // don't draw anything that has already been drawn
+          if (zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel]) return;
+
+          const geneInfo = td.fields;
+          // the returned positions are chromosome-based and they need to
+          // be converted to genome-based
+          const chrOffset = +td.chrOffset;
+
+          const txStart = +geneInfo[1] + chrOffset;
+          const txEnd = +geneInfo[2] + chrOffset;
+          let exonStarts = geneInfo[12],
+            exonEnds = geneInfo[13];
+
+          const txMiddle = (txStart + txEnd) / 2;
+
+          let yMiddle = rowScale(j) + rowScale.step() / 2;
+          let textYMiddle = rowScale(j) + rowScale.step() / 2;
+          const geneName = geneInfo[3];
+          let rectHeight = rowScale.step() / 2;
+
+          if (this.options && this.options.valueColumn) { 
+            // These intervals come with some y-value that we want to plot
+
+            yMiddle = this.valueScale( +geneInfo[+this.options.valueColumn-1]);
+            // console.log('valueScale:', this.valueScale.domain() );
+            // console.log('yMiddle:', +geneInfo[+this.options.valueColumn-1], yMiddle);
+            rectHeight = rectHeight / 2;
+          } else {
+
+          }
+
+          // for when there's text
+          // yMiddle -= 8;
+
+          tile.rectGraphics.lineStyle(1, fill, 0.3);
+          tile.rectGraphics.beginFill(fill, 0.3);
+
+          // let height = valueScale(Math.log(+geneInfo[4]));
+          // let width= height;
+
+          const rectX = this._xScale(txMiddle) - rectHeight / 2;
+          const rectY = yMiddle - rectHeight / 2;
+
+          const xStartPos = this._xScale(txStart);
+          const xEndPos = this._xScale(txEnd);
+
+          tile.rectGraphics.drawRect(xStartPos, rectY, xEndPos - xStartPos, rectHeight);
+
+          if (!this.drawnRects[zoomLevel])
+            this.drawnRects[zoomLevel] = {}
+
+          this.drawnRects[zoomLevel][td.uid] = [xStartPos, rectY, xEndPos - xStartPos, rectHeight, 
+            {
+              start: txStart,
+              end: txEnd,
+              value: td,
+            }];
+
+          if (!tile.texts) {
+            // tile probably hasn't been initialized yet
+            return;
+          }
+
+          // don't draw texts for the latter entries in the tile
+          if (i >= MAX_TEXTS) { return; }
+
+          if (!tile.texts[geneName]) {
+            console.log('skipping', geneName, tile.texts);
+            continue;
+          }
+
+          const text = tile.texts[geneName];
+
+          text.position.x = this._xScale(txMiddle);
+          // text.position.y = textYMiddle;
+          text.style = { fontSize: this.textFontSize,
+            fontFamily: this.textFontFamily,
+            fill };
+
+          if (!(geneInfo[3] in tile.textWidths)) {
+            text.updateTransform();
+            const textWidth = text.getBounds().width;
+
+            tile.textWidths[geneInfo[3]] = textWidth;
+          }
+          }
+        }
+
       tile.tileData.forEach((td, i) => {
-        // don't draw anything that has already been drawn
-        if (zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel]) return;
-
-        const geneInfo = td.fields;
-        // the returned positions are chromosome-based and they need to
-        // be converted to genome-based
-        const chrOffset = +td.chrOffset;
-
-        const txStart = +geneInfo[1] + chrOffset;
-        const txEnd = +geneInfo[2] + chrOffset;
-        let exonStarts = geneInfo[12],
-          exonEnds = geneInfo[13];
-
-        const txMiddle = (txStart + txEnd) / 2;
-
-        let yMiddle = this.dimensions[1] / 2;
-        let textYMiddle = this.dimensions[1] / 2;
-        const geneName = geneInfo[3];
-        let rectHeight = GENE_RECT_HEIGHT;
-
-        if (this.options && this.options.valueColumn) { 
-          // These intervals come with some y-value that we want to plot
-
-          yMiddle = this.valueScale( +geneInfo[+this.options.valueColumn-1]);
-          // console.log('valueScale:', this.valueScale.domain() );
-          // console.log('yMiddle:', +geneInfo[+this.options.valueColumn-1], yMiddle);
-          rectHeight = GENE_RECT_HEIGHT / 2;
-        }
-
-        // for when there's text
-        // yMiddle -= 8;
-
-        tile.rectGraphics.lineStyle(1, fill, 0.3);
-        tile.rectGraphics.beginFill(fill, 0.3);
-
-        // let height = valueScale(Math.log(+geneInfo[4]));
-        // let width= height;
-
-        const rectX = this._xScale(txMiddle) - rectHeight / 2;
-        const rectY = yMiddle - rectHeight / 2;
-
-        const xStartPos = this._xScale(txStart);
-        const xEndPos = this._xScale(txEnd);
-
-        const MIN_SIZE_FOR_EXONS = 10;
-
-        // graphics.drawRect(rectX, rectY, width, height);
-
-        // console.log('rectY:', rectY);
-        tile.rectGraphics.drawRect(xStartPos, rectY, xEndPos - xStartPos, rectHeight);
-
-        if (!this.drawnRects[zoomLevel])
-          this.drawnRects[zoomLevel] = {}
-
-        this.drawnRects[zoomLevel][td.uid] = [xStartPos, rectY, xEndPos - xStartPos, GENE_RECT_HEIGHT];
-
-        if (!tile.texts) {
-          // tile probably hasn't been initialized yet
-          return;
-        }
-
-        // don't draw texts for the latter entries in the tile
-        if (i >= MAX_TEXTS) { return; }
-
-        const text = tile.texts[geneName];
-
-        text.position.x = this._xScale(txMiddle);
-        // text.position.y = textYMiddle;
-        text.style = { fontSize: this.textFontSize,
-          fontFamily: this.textFontFamily,
-          fill };
-
-        if (!(geneInfo[3] in tile.textWidths)) {
-          text.updateTransform();
-          const textWidth = text.getBounds().width;
-
-          tile.textWidths[geneInfo[3]] = textWidth;
-        }
       });
     }
   }
@@ -312,7 +385,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
   draw() {
     super.draw();
-    // console.trace('drawing', this, this._xScale.domain(), this._xScale.range());
 
     // graphics.clear();
 
@@ -323,8 +395,14 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     for (const fetchedTileId in this.fetchedTiles) {
       const tile = this.fetchedTiles[fetchedTileId];
 
-      // scale the rectangles
+      // hasn't been rendered yet
+      if (!tile.drawnAtScale) {
+        console.log('not rendered');
+        return;
+      }
 
+      // scale the rectangles
+      //
       const tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) / (this._xScale.domain()[1] - this._xScale.domain()[0]);
       const newRange = this._xScale.domain().map(tile.drawnAtScale);
 
@@ -426,12 +504,15 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
 
+    /*
     // redraw the contents
     for (const tile of this.visibleAndFetchedTiles()) {
-      tile.rectGraphics.clear();
-
+      // this.destroyTile(tile);
       this.renderTile(tile);
     }
+
+    this.draw();
+    */
   }
 
   zoomed(newXScale, newYScale) {
@@ -490,6 +571,42 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     }
 
     return [base, base];
+  }
+  getMouseOverHtml(trackX, trackY) {
+    if (!this.tilesetInfo)
+      return;
+
+    const zoomLevel = this.calculateZoomLevel();
+    const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
+
+    // the position of the tile containing the query position
+    const tilePos = this._xScale.invert(trackX) / tileWidth;
+
+    const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
+
+    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)])
+    const fetchedTile = this.fetchedTiles[tileId];
+
+    const dataX = this._xScale.invert(trackX);
+
+    if (this.drawnRects[zoomLevel]) {
+      const visibleRects = Object.values(this.drawnRects[zoomLevel]);
+
+      for (let i = 0; i < visibleRects.length; i++) {
+        const rect = visibleRects[i];
+        if (rect[4].start < dataX &&
+          dataX < rect[4].end) {
+
+          if (rect[1] < trackY && trackY < (rect[1] + rect[3])) {
+            parts = visibleRects[i][4].value.fields.slice(3);
+
+            return parts.join(" ");
+          }
+        }
+      }
+    }
+
+    return '';
   }
 }
 
