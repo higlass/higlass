@@ -1,7 +1,6 @@
 import {BarTrack} from './BarTrack';
 import {scaleLinear, scaleOrdinal, schemeCategory10} from 'd3-scale';
 import {colorToHex} from './utils';
-import {range} from 'd3-array';
 
 class BasicMultipleBarChart extends BarTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
@@ -50,6 +49,10 @@ class BasicMultipleBarChart extends BarTrack {
 
   }
 
+  /**
+   * Draws exactly one tile.
+   * @param tile
+   */
   renderTile(tile) {
     const graphics = tile.graphics;
     graphics.clear();
@@ -64,7 +67,7 @@ class BasicMultipleBarChart extends BarTrack {
       tile.barBorders = true;
     }
 
-    const matrix = this.unFlatten(tile);
+    const matrix = tile.matrix;
     const trackHeight = this.dimensions[1];
     const matrixDimensions = tile.tileData.shape;
     const colorScale = this.options.colorScale || scaleOrdinal(schemeCategory10);

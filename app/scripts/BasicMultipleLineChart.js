@@ -1,22 +1,10 @@
-import {HorizontalLine1DPixiTrack} from './HorizontalLine1DPixiTrack';
+import {BarTrack} from './BarTrack';
 import {scaleLinear, scaleOrdinal, schemeCategory10} from 'd3-scale';
 import {colorToHex} from './utils';
 
-export class BasicMultipleLineChart extends HorizontalLine1DPixiTrack {
-  constructor(scene,
-              dataConfig,
-              handleTilesetInfoReceived,
-              options,
-              animate,
-              onValueScaleChanged,) {
-    super(
-      scene,
-      dataConfig,
-      handleTilesetInfoReceived,
-      options,
-      animate,
-      onValueScaleChanged
-    );
+export class BasicMultipleLineChart extends BarTrack {
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
+    super(scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged);
 
     this.maxAndMin = {
       max: null,
@@ -26,11 +14,10 @@ export class BasicMultipleLineChart extends HorizontalLine1DPixiTrack {
   }
 
   initTile(tile) {
-    //super.initTile(tile);
     this.localColorToHexScale();
     this.unFlatten(tile);
-    this.maxAndMin.max = tile.tileData.maxValue;
-    this.maxAndMin.min = tile.tileData.minValue;
+    this.maxAndMin.max = tile.maxValue;
+    this.maxAndMin.min = tile.minValue;
     this.renderTile(tile);
   }
 
@@ -46,12 +33,12 @@ export class BasicMultipleLineChart extends HorizontalLine1DPixiTrack {
       const tile = visibleAndFetched[i];
       tile.svgData = null;
       this.unFlatten(tile);
-      if (tile.tileData.matrix) {
+      if (tile.matrix) {
         // update global max and min if necessary
-        (this.maxAndMin.max === null || tile.tileData.maxValue > this.maxAndMin.max) ?
-          this.maxAndMin.max = tile.tileData.maxValue : this.maxAndMin.max;
-        (this.maxAndMin.min === null || tile.tileData.minValue < this.maxAndMin.min) ?
-          this.maxAndMin.min = tile.tileData.minValue : this.maxAndMin.min;
+        (this.maxAndMin.max === null || tile.maxValue > this.maxAndMin.max) ?
+          this.maxAndMin.max = tile.maxValue : this.maxAndMin.max;
+        (this.maxAndMin.min === null || tile.minValue < this.maxAndMin.min) ?
+          this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
       }
     }
 
@@ -74,31 +61,15 @@ export class BasicMultipleLineChart extends HorizontalLine1DPixiTrack {
     const {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
       tile.tileData.tilePos, this.tilesetInfo.tile_size);
 
-    this.unFlatten(tile);
-
-    // this function is just so that we follow the same pattern as
-    // HeatmapTiledPixiTrack.js
-    this.drawTile(tile, graphics, tileX, tileWidth);
-  }
-
-  /**
-   * Draws tile as separated line graphs
-   *
-   * @param tile
-   * @param graphics PIXI.Graphics instance
-   * @param tileX starting position of tile
-   * @param tileWidth pre-scaled width of tile
-   */
-  drawTile(tile, graphics, tileX, tileWidth) {
+    const matrix = tile.matrix;
     const trackHeight = this.dimensions[1];
-    const matrix = tile.tileData.matrix;
     const matrixDimensions = tile.tileData.shape;
     const colorScale = this.options.colorScale || scaleOrdinal(schemeCategory10);
     const valueToPixels = scaleLinear()
       .domain([0, this.maxAndMin.max])
       .range([0, trackHeight / matrixDimensions[0]]);
 
-    for (let i = 0; i < matrixDimensions[0]; i++) {
+    for (let i = 0; i < matrix[0].length; i++) {
       const intervals = trackHeight / matrixDimensions[0];
       // calculates placement for a line in each interval; we subtract 1 so we can see the last line clearly
       const linePlacement = (intervals * i) + ((intervals * (i + 1) - (intervals * i))) - 1;
@@ -109,9 +80,10 @@ export class BasicMultipleLineChart extends HorizontalLine1DPixiTrack {
         const y = linePlacement - valueToPixels(matrix[j][i]);
         this.addSVGInfo(tile, x, y, colorScale[i]);
         // move draw position back to the start at beginning of each line
-        (j == 0) ? graphics.moveTo(x, y) : graphics.lineTo(x, y);
+        (j === 0) ? graphics.moveTo(x, y) : graphics.lineTo(x, y);
       }
     }
+
   }
 
   /**
@@ -194,9 +166,9 @@ export class BasicMultipleLineChart extends HorizontalLine1DPixiTrack {
 
       const maxAndMin = this.findMaxAndMin(matrix);
 
-      tile.tileData.matrix = matrix;
-      tile.tileData.maxValue = maxAndMin.max;
-      tile.tileData.minValue = maxAndMin.min;
+      tile.matrix = matrix;
+      tile.maxValue = maxAndMin.max;
+      tile.minValue = maxAndMin.min;
 
       return matrix;
     }
@@ -299,13 +271,8 @@ export class BasicMultipleLineChart extends HorizontalLine1DPixiTrack {
   }
 
   getMouseOverHtml(trackX, trackY) {
-    console.log(this.tilesetInfo, trackX, trackY);
+    //console.log(this.tilesetInfo, trackX, trackY);
     return '';
-  }
-
-  // prevent TiledPixiTrack from drawing
-  draw(tile) {
-    this.updateTile(tile);
   }
 
 }
