@@ -89,7 +89,6 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     tile.initialized = true;
 
-    console.log('init');
     // console.log('init');
     // this.renderTile(tile);
     // this.draw();
@@ -262,7 +261,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           if (i >= MAX_TEXTS) { return; }
 
           if (!tile.texts[geneName]) {
-            console.log('skipping', geneName, tile.texts);
+            // console.log('skipping', geneName, tile.texts);
             continue;
           }
 
@@ -397,7 +396,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
       // hasn't been rendered yet
       if (!tile.drawnAtScale) {
-        console.log('not rendered');
+        // console.log('not rendered');
         return;
       }
 

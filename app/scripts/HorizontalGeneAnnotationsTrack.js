@@ -47,8 +47,6 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     // create texts
     tile.texts = {};
 
-    console.log('tile:', tile)
-
     tile.rectGraphics = new PIXI.Graphics();
     tile.textGraphics = new PIXI.Graphics();
 
@@ -84,7 +82,7 @@ export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         fill: colorToHex(fill) });
       text.interactive = true;
       text.click = function (e) {
-        console.log('click');
+        //console.log('click');
       };
 
       if (this.flipText) { text.scale.x = -1; }

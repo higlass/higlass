@@ -7,6 +7,7 @@ export function ChromosomeInfo(filepath, success) {
       console.warn("Chromosome info not found at:", filepath);
       success(null);
     } 
+
     const data = tsvParseRows(chrInfoText);
     const cumValues = [];
     const chromLengths = {};

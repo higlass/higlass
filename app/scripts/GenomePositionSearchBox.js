@@ -54,10 +54,13 @@ export class GenomePositionSearchBox extends React.Component {
 
     this.menuPosition = { left: 0, top: 0 };
 
+    this.currentChromInfoServer = this.props.chromInfoServer;
+    this.currentChromInfoId = this.props.chromInfoId;
+
     // the position text is maintained both here and in 
     // in state.value so that it can be quickly updated in
     // response to zoom events
-    this.positionText =  'chr4:190,998,876-191,000,255';
+    this.positionText =  'no chromosome track present';
 
     this.state = {
       value: this.positionText,
@@ -116,8 +119,8 @@ export class GenomePositionSearchBox extends React.Component {
 
     //this.findAvailableAutocompleteSources();
     //this.findAvailableChromSizes();
-    this.fetchChromInfo(this.props.chromInfoServer,
-      this.props.chromInfoId);
+    //this.fetchChromInfo(this.props.chromInfoServer,
+    //this.props.chromInfoId);
 
     this.setPositionText();
   }
@@ -141,8 +144,16 @@ export class GenomePositionSearchBox extends React.Component {
      *  null
      *      Once the appropriate ChromInfo file is fetched, it is stored locally
      */
+    if (!chromInfoId) {
+      this.positionText =  'no chromosome track present';
 
-    console.log('fci', this.mounted, this.availableChromSizes, chromInfoId);
+      this.setState({
+        value: this.positionText,
+      });
+
+      return;
+    }
+
     if (!this.mounted)
       // component is probably about to be unmounted
       return;
@@ -167,10 +178,8 @@ export class GenomePositionSearchBox extends React.Component {
   }
 
   setPositionText() {
-    console.log('spt');
     if (!this.mounted) { return; }
     if (!this.searchField) { return; }
-    console.log('spt1'); 
 
     const positionString = this.searchField.scalesToPositionText(this.xScale,
       this.yScale,
@@ -336,7 +345,6 @@ export class GenomePositionSearchBox extends React.Component {
 
     this.prevParts = parts;
 
-    console.log('oac', this.props.autocompleteServer, this.props.autocompleteId);
     // no autocomplete repository is provided, so we don't try to autcomplete anything
     if (!(this.props.autocompleteServer && this.props.autocompleteId)) { 
       return; 
@@ -432,6 +440,16 @@ export class GenomePositionSearchBox extends React.Component {
     this.setState({
       isFocused,
     });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.chromInfoId != this.currentChromInfoId ||
+      nextProps.chromInfoServer != this.curentChromInfoServer) {
+      this.currentChromInfoId = nextProps.chromInfoId;
+      this.currentChromInfoServer = nextProps.chromInfoServer;
+
+      this.fetchChromInfo(nextProps.chromInfoServer, nextProps.chromInfoId);
+    }
   }
 
   render() {
