@@ -163,12 +163,14 @@ export class PixiTrack extends Track {
   setPosition(newPosition) {
     this.position = newPosition;
 
+    this.drawBorder();
     this.setMask(this.position, this.dimensions);
   }
 
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
 
+    this.drawBorder();
     this.setMask(this.position, this.dimensions);
   }
 
