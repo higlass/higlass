@@ -479,17 +479,6 @@ export class GenomePositionSearchBox extends React.Component {
         styleName={className}
         ref={c => this.gpsbForm = c}
       >
-        <DropdownButton
-          bsSize="small"
-          className={styles['genome-position-search-bar-button']}
-          id={this.uid}
-          onSelect={this.handleAssemblySelect.bind(this)}
-          ref={c => this.assemblyPickButton = c}
-          title={this.state.selectedAssembly ? this.state.selectedAssembly : '(none)'}
-        >
-          {assemblyMenuItems}
-        </DropdownButton>
-
         <Autocomplete
           getItemValue={item => item.geneName}
           inputProps={{
