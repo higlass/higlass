@@ -48,13 +48,20 @@ class AnnotationsInsets {
     this.insetsTrack.subscribe('position', this.updateBoundsBound);
     this.insetsTrack.subscribe('zoom', this.zoomHandlerBound);
 
+    this.excludeTracks = this.options.excludeTracks || [];
+
     this.annotationTrackIds = new Set();
+    this.annotationTrackIdsExcluded = new Set();
     this.annotationTracks = options.annotationTracks
       .map((uid) => {
         const track = getTrackByUid(uid);
 
         if (!track) console.warn(`Child track (uid: ${uid}) not found`);
         else this.annotationTrackIds.add(track.uuid);
+
+        if (this.excludeTracks.indexOf(uid) >= 0) {
+          this.annotationTrackIdsExcluded.add(track.uuid);
+        }
 
         return track;
       })
@@ -145,7 +152,7 @@ class AnnotationsInsets {
    *   example base pairs (Hi-C), or pixels (gigapixel images), or lng-lat
    *   (geo json).
    */
-  annotationDrawnHandler({ uid, viewPos, dataPos, importance, info }) {
+  annotationDrawnHandler({ trackUuid, annotationUuid, viewPos, dataPos, importance, info }) {
     const dataPosProj = [
       this.projectorX(dataPos[0]),
       this.projectorX(dataPos[1]),
@@ -160,12 +167,12 @@ class AnnotationsInsets {
       viewPos[1] + viewPos[3],
     ];
 
-    let annotation = this.areaClusterer.elements.get(uid);
+    let annotation = this.areaClusterer.elements.get(annotationUuid);
     if (annotation) {
       annotation.setViewPosition(_viewPos);
     } else {
       annotation = new Annotation(
-        uid,
+        annotationUuid,
         _viewPos,
         dataPos,
         dataPosProj,
@@ -175,14 +182,15 @@ class AnnotationsInsets {
       );
     }
 
-    this.drawnAnnoIds.add(uid);
+    this.drawnAnnoIds.add(annotationUuid);
 
-    if (!this.drawnAnnoIdsPrev.has(uid)) {
+    if (!this.drawnAnnoIdsPrev.has(annotationUuid)) {
       this.newAnno = true;
-      this.drawnAnnoIdsNew.add(uid);
+      this.drawnAnnoIdsNew.add(annotationUuid);
     }
 
     if (
+      !this.annotationTrackIdsExcluded.has(trackUuid) &&
       (
         viewPos[2] <= this.options.insetThreshold
         || viewPos[3] <= this.options.insetThreshold
