@@ -2254,9 +2254,10 @@ export default class Inset {
           img.__transform__ = {};
           img.__index__ = idx[i];
 
-          const annoId = this.label.src.members.values[idx[i]].id;
-
-          if (this.selectedAnno && this.selectedAnno.id === annoId) {
+          if (
+            this.selectedAnno &&
+            this.selectedAnno.id === this.label.src.members.values[idx[i]].id
+          ) {
             // We need to update the box shadow and assigned el because we're
             // rerendering on scaleUp.
             img.style.boxShadow = `inset 0 0 0 2px ${this.options.selectColor}`;
