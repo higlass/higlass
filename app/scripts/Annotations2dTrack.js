@@ -287,7 +287,15 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     if (!silent) {
       this.publish(
-        'annotationDrawn', { uid, viewPos, dataPos, importance, info }
+        'annotationDrawn',
+        {
+          trackUuids: this.uuid,
+          annotationUuid: uid,
+          viewPos,
+          dataPos,
+          importance,
+          info
+        }
       );
     }
   }
