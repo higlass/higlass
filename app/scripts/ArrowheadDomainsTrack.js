@@ -183,68 +183,70 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
     if (!tile.tileData.length) return;
 
     // line needs to be scaled down so that it doesn't become huge
-    for (const td of tile.tileData) {
-      const startX = this._xScale(td.xStart);
-      const endX = this._xScale(td.xEnd);
+    tile.tileData
+      .filter(td => !(td.uid in this.drawnRects))
+      .forEach((td) => {
+        const startX = this._xScale(td.xStart);
+        const endX = this._xScale(td.xEnd);
 
-      const startY = this._yScale(td.yStart);
-      const endY = this._yScale(td.yEnd);
+        const startY = this._yScale(td.yStart);
+        const endY = this._yScale(td.yEnd);
 
-      const uid = td.uid;
+        const uid = td.uid;
 
-      const width = endX - startX;
-      const height = endY - startY;
+        const width = endX - startX;
+        const height = endY - startY;
 
-      // we've already drawn this rectangle in another tile
-      if (uid in this.drawnRects) continue;
+        let drawnRect = {
+          x: startX,
+          y: startY,
+          width,
+          height
+        };
 
-      let drawnRect = {
-        x: startX,
-        y: startY,
-        width,
-        height
-      };
-
-      if (minSquareSize) {
-        if (width < minSquareSize || height < minSquareSize) {
-          drawnRect = {
-            x: startX - (minSquareSize / 2),
-            y: startY - (minSquareSize / 2),
-            width: minSquareSize,
-            height: minSquareSize
-          };
+        if (minSquareSize) {
+          if (width < minSquareSize || height < minSquareSize) {
+            drawnRect = {
+              x: startX - (minSquareSize / 2),
+              y: startY - (minSquareSize / 2),
+              width: minSquareSize,
+              height: minSquareSize
+            };
+          }
         }
-      }
 
-      this.drawnRects[uid] = drawnRect;
+        this.drawnRects[uid] = drawnRect;
 
-      const dRxMax = drawnRect.x + drawnRect.width;
-      const dRyMax = drawnRect.y + drawnRect.height;
+        const dRxMax = drawnRect.x + drawnRect.width;
+        const dRyMax = drawnRect.y + drawnRect.height;
 
-      // Only draw annotations that falls somehow within the viewport
-      if (
-        (drawnRect.x > xMin && drawnRect.x < xMax) ||
-        (dRxMax > xMin && dRxMax < xMax) ||
-        (drawnRect.y > yMin && drawnRect.y < yMax) ||
-        (dRyMax > yMin && dRyMax < yMax)
-      ) {
-        if (drawnRect.width > minThres || drawnRect.height > minThres) {
-          graphics.drawRect(
-            drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height
-          );
+        // Only draw annotations that falls somehow within the viewport
+        if (
+          (drawnRect.x > xMin && drawnRect.x < xMax) ||
+          (dRxMax > xMin && dRxMax < xMax) ||
+          (drawnRect.y > yMin && drawnRect.y < yMax) ||
+          (dRyMax > yMin && dRyMax < yMax)
+        ) {
+          if (drawnRect.width > minThres || drawnRect.height > minThres) {
+            graphics.drawRect(
+              drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height
+            );
 
-          this.publish('annotationDrawn', {
-            uid,
-            viewPos: [drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height],
-            dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
-            importance: td.importance,
-            info: {
-              patternType: this.options.patternType
-            }
-          });
+            this.publish('annotationDrawn', {
+              trackUuid: this.uuid,
+              annotationUuid: uid,
+              viewPos: [
+                drawnRect.x, drawnRect.y, drawnRect.width, drawnRect.height
+              ],
+              dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
+              importance: td.importance,
+              info: {
+                patternType: this.options.patternType
+              }
+            });
+          }
         }
-      }
-    }
+      });
   }
 
   exportSVG() {
