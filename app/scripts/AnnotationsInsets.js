@@ -305,6 +305,7 @@ class AnnotationsInsets {
       addHeight = pileSize * (
         this.insetsTrack.options.previewSpacing + this.insetsTrack.options.previewSize
       );
+      console.log('clust sz', cluster.size, addHeight);
     }
 
     width += addWidth;

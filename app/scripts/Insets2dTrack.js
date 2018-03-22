@@ -1,5 +1,5 @@
 import { color as d3Color } from 'd3-color';
-import { scaleLinear } from 'd3-scale';
+import { scaleLinear, scaleLog } from 'd3-scale';
 import React from 'react';
 import { DropShadowFilter } from 'pixi-filters';
 
@@ -166,6 +166,10 @@ export default class Insets2dTrack extends PixiTrack {
         this.options.leaderLineDynamicMaxDist || Math.max(...this.dimensions)
       ])
       .clamp(true);
+
+    const cellValueLogNorm = scaleLinear().domain([0, 1]).range([1, 10]);
+    const cellValueLogTransform = scaleLog();
+    this.toLog = value => cellValueLogTransform(cellValueLogNorm(value));
   }
 
   getContextMenuGoto(inset) {
@@ -530,7 +534,9 @@ export default class Insets2dTrack extends PixiTrack {
   }
 
   rendererHeatmap(data) {
-    const flatImg = flatten(data);
+    let flatImg = flatten(data);
+
+    if (this.options.isLogTransform) flatImg = flatImg.map(this.toLog);
 
     const height = data.length;
     const width = data[0].length;
