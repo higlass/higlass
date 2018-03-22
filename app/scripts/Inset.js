@@ -234,7 +234,6 @@ export default class Inset {
   }
 
   compPrvsHeight() {
-    if (this.prvs.length === 9) console.log('!!!!', this.prvs);
     return this.prvs.length * (this.previewSpacing + this.options.previewSize);
   }
 
@@ -923,7 +922,6 @@ export default class Inset {
   draw() {
     this.drawLeaderLine();
     this.drawBorder();
-    console.log(this.id, this.label.src.isChanged, this.label.src.size);
     return this.drawImage(this.label.src.isChanged).then(() => {
       this.label.src.changed(false);
     });
@@ -1490,8 +1488,6 @@ export default class Inset {
 
     const fetchRequest = ++this.fetching;
 
-    console.log('outgoing', this.id, this.label.src.size, loci.length);
-
     return fetch(
       `${this.dataConfig.server}/fragments_by_loci/?ag=${aggregation}&pd=${padding}&en=${encoding}&rp=${representative}&mp=${maxPrvs}`, {
         method: 'POST',
@@ -1506,7 +1502,6 @@ export default class Inset {
         // Add the request ID to the response in order to identify the latest
         // response value and avoid rendering and positioning hiccups.
         parsedResponse.requestId = fetchRequest;
-        console.log('incoming', this.id, this.label.src.size, parsedResponse.previews.length);
         return parsedResponse;
       });
   }
@@ -1629,8 +1624,6 @@ export default class Inset {
   mouseClickHandler(event) {
     event.preventDefault();
     event.stopPropagation();
-
-    console.log(this.id, this.label.src.id, this.label.src.size);
 
     if (this.options.isImgSelectable && this.isScaledUp) return;
 
