@@ -704,7 +704,6 @@ export default class Inset {
       .map((pos) => {
         const size = max((pos[2] - pos[1]), (pos[5] - pos[4]));
         const pad = this.getPaddingLoci(size);
-        console.log(pad, size);
         const xPad = (pos[2] - pos[1]) * pad;
         const yPad = (pos[5] - pos[4]) * pad;
         return [
@@ -716,7 +715,6 @@ export default class Inset {
           pos[5] + yPad,
         ];
       });
-    console.log('getPadding', this.remotePos, this.remotePaddedPos, this.paddingCustomLocSorted);
   }
 
   /**
@@ -1516,8 +1514,6 @@ export default class Inset {
 
     const ignoreDiag = this.options.isIgnoreDiag
       ? `&nd=${this.options.isIgnoreDiag}&nc=1` : '';
-
-    console.log('ASS', loci);
 
     const fetchRequest = ++this.fetching;
 
