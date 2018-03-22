@@ -302,7 +302,7 @@ export class SeriesListMenu extends ContextMenuContainer {
           :
           null;
 
-    console.log('series:', this.props.series);
+    //console.log('series:', this.props.series);
 
     return (
       <div
