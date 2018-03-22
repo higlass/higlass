@@ -561,19 +561,35 @@ class AnnotationsInsets {
       // const t0 = performance.now();
       const n = insetsToBeAnnealed.size;
 
+      const boostLayoutInit = this.isInit ? this.boostLayoutInit : 1;
+
       positionLabels
         // Insets, i.e., labels
         .label(insetsToBeAnnealed.values)
         // Anchors, i.e., label origins, already positioned labels, and other
         // annotations
         .anchor(anchors)
-        .is1d()
         .width(this.insetsTrack.dimensions[0])
         .height(
           this.insetsTrack.dimensions[1] -
           (2 * this.insetsTrack.positioning.height)
         )
-        .start(Math.round(Math.max(2, Math.min(100 * Math.log(n) / n))));
+        .padding(3)
+        .is1d()
+        .boost('context', this.boostContext)
+        .boost('contextAnc', this.bigAnnosBoost, this.bigAnnosBoostArea)
+        .boost('details', this.boostDetails)
+        .boost('locality', this.boostLocality)
+        .start(
+          Math.round(
+            Math.max(
+              2, // Ensure at least 2 moves per label!
+              100 * this.boostLayout * boostLayoutInit * Math.log(n) / n
+            )
+          )
+        );
+
+      this.isInit = false;
 
       // console.log(`Gallery positioning took ${performance.now() - t0} msec`);
     }
