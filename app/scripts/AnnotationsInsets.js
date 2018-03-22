@@ -16,6 +16,7 @@ import {
   getClusterPropAcc,
   latToY,
   lngToX,
+  min,
   positionLabels,
   scoreAtPercentile,
 } from './utils';
@@ -136,7 +137,7 @@ class AnnotationsInsets {
       clusterAmong: this.options.clusterAmong || false,
     });
 
-    this.isRepresentatives = this.insetsTrack.dataType.indexOf('image') >= 0;
+    this.aggregation = this.insetsTrack.options.aggregation;
 
     this.minInsetSize = this.insetsTrack.insetMinSize * this.insetsTrack.insetScale;
     this.maxInsetSize = this.insetsTrack.insetMaxSize * this.insetsTrack.insetScale;
@@ -254,40 +255,41 @@ class AnnotationsInsets {
     const heightAbs = Math.abs(maxY - minY);
     const maxDim = scale(this.clusterSizePropAcc(cluster));
     const isLandscape = widthAbs >= heightAbs;
-    const isWithRepresentatives = this.isRepresentatives && cluster.size > 1;
+    const isGallery = this.aggregation === 'gallery' && cluster.size > 1;
+    const isPile = this.aggregation === 'pile' && cluster.size > 1;
 
-    let width = isLandscape || isWithRepresentatives
+    let width = isLandscape || isGallery
       ? maxDim
       : widthAbs / heightAbs * maxDim;
-    let height = !isLandscape || isWithRepresentatives
+    let height = !isLandscape || isGallery
       ? maxDim
       : heightAbs / widthAbs * width;
 
     let addWidth = 0;
-    let addheight = 0;
-    if (isWithRepresentatives) {
+    let addHeight = 0;
+    if (isGallery) {
       // The maximum gallery image might be subject to change
       const effectiveSize = Math.min(5, cluster.size);
 
       switch (effectiveSize) {
         case 2:
           addWidth = width * 0.8;
-          addheight = -height * 0.1;
+          addHeight = -height * 0.1;
           break;
 
         case 3:
           addWidth = width * 0.8;
-          addheight = height * 0.2;
+          addHeight = height * 0.2;
           break;
 
         case 4:
           addWidth = (width * 1.75 * 1.3) - width;
-          addheight = height * 0.70625;
+          addHeight = height * 0.70625;
           break;
 
         case 5:
           addWidth = (width * 2.5 * 1.25) - width;
-          addheight = height * 1.5;
+          addHeight = height * 1.5;
           break;
 
         default:
@@ -295,8 +297,18 @@ class AnnotationsInsets {
       }
     }
 
+    if (isPile) {
+      const pileSize = min(
+        this.insetsTrack.options.maxPreviews,
+        cluster.size
+      );
+      addHeight = pileSize * (
+        this.insetsTrack.options.previewSpacing + this.insetsTrack.options.previewSize
+      );
+    }
+
     width += addWidth;
-    height += addheight;
+    height += addHeight;
 
     return { width, height };
   }

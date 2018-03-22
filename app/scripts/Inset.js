@@ -234,13 +234,7 @@ export default class Inset {
   }
 
   compPrvsHeight() {
-    const scaleExtra = this.isRenderToCanvas ? this.scaleExtra : 1;
-    return this.prvs.length
-      ? (
-        (this.previewsHeight * this.scaleBase * scaleExtra * this.imScale) +
-        ((this.prvs.length - 1) * this.previewSpacing)
-      )
-      : 0;
+    return this.prvs.length * (this.previewSpacing + this.options.previewSize);
   }
 
   /**
@@ -260,8 +254,6 @@ export default class Inset {
     radius = this.options.borderRadius,
     fill = this.borderFill,
   ) {
-    const prevHeight = this.compPrvsHeight();
-
     const [vX, vY] = this.computeBorderPosition(x, y, width, height);
 
     if (!this.border) {
@@ -280,7 +272,7 @@ export default class Inset {
       finalX,
       finalY,
       finalWidth + this.borderPadding,
-      finalHeight + prevHeight + this.borderPadding
+      finalHeight + this.borderPadding
     );
     this.styleBorder(fill, radius, borderWidthExtra);
   }
@@ -1481,13 +1473,13 @@ export default class Inset {
     let aggregation = '1';
     let encoding = 'matrix';
     let representative = 0;
-    let maxPrevs = this.options.maxPreviews;
+    let maxPrvs = this.options.maxPreviews;
 
     if (this.dataType.indexOf('image') >= 0) {
       aggregation = '';
       encoding = 'b64';
       representative = 4;
-      maxPrevs = 0;
+      maxPrvs = 0;
     }
 
     if (isHiRes && this.imgIdx) {
@@ -1498,7 +1490,7 @@ export default class Inset {
     const fetchRequest = ++this.fetching;
 
     return fetch(
-      `${this.dataConfig.server}/fragments_by_loci/?ag=${aggregation}&pd=${padding}&en=${encoding}&rp=${representative}&mp=${maxPrevs}`, {
+      `${this.dataConfig.server}/fragments_by_loci/?ag=${aggregation}&pd=${padding}&en=${encoding}&rp=${representative}&mp=${maxPrvs}`, {
         method: 'POST',
         headers: {
           accept: 'application/json; charset=UTF-8',
@@ -2122,11 +2114,7 @@ export default class Inset {
   positionPreviewsHtml() {
     if (!this.prvsWrapper) return;
 
-    const height = (
-      this.previewsHeight * this.scaleBase * this.scaleExtra * this.imScale
-    ) + this.previewsHeight - 1;
-
-    this.prvsWrapper.style.height = `${height}px`;
+    this.prvsWrapper.style.height = `${this.compPrvsHeight()}px`;
   }
 
   /**
@@ -2299,7 +2287,7 @@ export default class Inset {
         this.renderClusterSize(
           data, this.imgs, this.imgWrappers, this.imgsWrapperRight
         );
-      } else if (this.label.src.size > 8) {
+      } else if (this.label.src.size > this.options.maxPreviews) {
         this.renderClusterSize(
           this.prvData, this.prvs, this.prvWrappers, this.imgsWrapper, true
         );
