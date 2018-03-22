@@ -1,9 +1,10 @@
-import {BarTrack} from './BarTrack';
-import {scaleLinear, scaleOrdinal, schemeCategory10} from 'd3-scale';
-import {range} from 'd3-array';
-import {colorToHex} from './utils';
+import { mix } from 'mixwith';
+import { BarTrack } from './BarTrack';
+import { OneDimensionalMixin } from './OneDimensionalMixin';
+import { scaleLinear, scaleOrdinal, schemeCategory10 } from 'd3-scale';
+import { colorToHex } from './utils';
 
-export class StackedBarTrack extends BarTrack {
+export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
   constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
     super(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged);
 
@@ -12,130 +13,6 @@ export class StackedBarTrack extends BarTrack {
       min: null
     };
 
-  }
-
-  initTile(tile) {
-    this.localColorToHexScale();
-
-    this.unFlatten(tile);
-    this.maxAndMin.max = tile.maxValue;
-    this.maxAndMin.min = tile.minValue;
-    this.renderTile(tile);
-  }
-
-  updateTile(tile) {
-    const visibleAndFetched = this.visibleAndFetchedTiles();
-
-    // reset max and min to null so previous maxes and mins don't carry over
-    this.maxAndMin = {
-      max: null,
-      min: null
-    };
-
-    for (let i = 0; i < visibleAndFetched.length; i++) {
-      const tile = visibleAndFetched[i];
-      this.unFlatten(tile);
-      if (tile.matrix) {
-        // update global max and min if necessary
-        (this.maxAndMin.max === null || tile.maxValue > this.maxAndMin.max) ?
-          this.maxAndMin.max = tile.maxValue : this.maxAndMin.max;
-        (this.maxAndMin.min === null || tile.minValue < this.maxAndMin.min) ?
-          this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
-      }
-    }
-
-    for (let i = 0; i < visibleAndFetched.length; i++) {
-      this.renderTile(visibleAndFetched[i]);
-    }
-
-  }
-
-  /**
-   * Converts all colors in a colorScale to Hex colors.
-   */
-  localColorToHexScale() {
-    const colorScale = this.options.colorScale || scaleOrdinal(schemeCategory10);
-    let colorHexMap = {};
-    for (let i = 0; i < colorScale.length; i++) {
-      colorHexMap[colorScale[i]] = colorToHex(colorScale[i]);
-    }
-    this.colorHexMap = colorHexMap;
-  }
-
-  /**
-   * Find max and min heights for the given tile
-   *
-   * @param matrix 2d array of numbers representing one tile
-   */
-  findMaxAndMin(matrix) {
-    // find max height of bars for scaling in the track
-    let maxAndMin = {
-      max: null,
-      min: null
-    };
-
-    for (let i = 0; i < matrix.length; i++) {
-      const temp = matrix[i];
-
-      // find total heights of each positive column and each negative column
-      // and compare to highest value so far for the tile
-      const localPositiveMax = temp.filter((a) => a >= 0).reduce((a, b) => a + b, 0);
-      (localPositiveMax > maxAndMin.max) ? maxAndMin.max = localPositiveMax : maxAndMin.max;
-
-      let negativeValues = temp.filter((a) => a < 0);
-      if (negativeValues.length > 0) {
-        negativeValues = negativeValues.map((a) => Math.abs(a));
-        const localNegativeMax = negativeValues.reduce((a, b) => a + b, 0); // check
-        (maxAndMin.min === null || localNegativeMax > maxAndMin.min) ?
-          maxAndMin.min = localNegativeMax : maxAndMin.min;
-      }
-    }
-
-    return maxAndMin;
-
-  }
-
-  /**
-   * un-flatten data into matrix of tile.tileData.shape[0] x tile.tileData.shape[1]
-   *
-   * @param tile
-   * @returns {Array} 2d array of numerical values for each column
-   */
-  unFlatten(tile) {
-    if (tile.matrix) {
-      return tile.matrix;
-    }
-    else {
-      const shapeX = tile.tileData.shape[0]; // number of different nucleotides in each bar
-      const shapeY = tile.tileData.shape[1]; // number of bars
-      let flattenedArray = tile.tileData.dense;
-
-      // if any data is negative, switch to exponential scale
-      if (flattenedArray.filter((a) => a < 0).length > 0 && this.options.valueScaling === 'linear') {
-        console.warn('Negative values present in data. Defaulting to exponential scale.');
-        this.options.valueScaling = 'exponential';
-      }
-
-      // matrix[0] will be [flattenedArray[0], flattenedArray[256], flattenedArray[512], etc.]
-      // because of how flattenedArray comes back from the server.
-      const matrix = [];
-      for (let i = 0; i < shapeX; i++) {//6
-        for (let j = 0; j < shapeY; j++) {//256;
-          let singleBar;
-          (matrix[j] === undefined) ? singleBar = [] : singleBar = matrix[j];
-          singleBar.push(flattenedArray[(shapeY * i) + j]);
-          matrix[j] = singleBar;
-        }
-      }
-
-      const maxAndMin = this.findMaxAndMin(matrix);
-
-      tile.matrix = matrix;
-      tile.maxValue = maxAndMin.max;
-      tile.minValue = maxAndMin.min;
-
-      return matrix;
-    }
   }
 
   /**
@@ -154,6 +31,7 @@ export class StackedBarTrack extends BarTrack {
 
     const matrix = this.unFlatten(tile);
 
+
     if (this.options.scaledHeight === true) {
       this.drawVerticalBars(graphics, this.mapOriginalColors(matrix),
         tileX, tileWidth, this.maxAndMin.max, this.maxAndMin.min, tile);
@@ -165,8 +43,30 @@ export class StackedBarTrack extends BarTrack {
         const barValuesSum = temp.reduce((a, b) => a + b, 0);
         matrix[i] = temp.map((a) => a / barValuesSum);
       }
-      this.drawNormalizedBars(graphics, matrix, tileX, tileWidth);
+      this.drawNormalizedBars(graphics, this.scaleMatrix(this.mapOriginalColors(matrix)), tileX, tileWidth, tile);
     }
+  }
+
+  /**
+   * Scales positive and negative values in the given matrix so that they each sum to 1.
+   *
+   * @param matrix call mapOriginalColors on this matrix before calling this function on it.
+   */
+  scaleMatrix(matrix) {
+    for(let i = 0; i < matrix.length; i++) {
+      let positives = matrix[i][0];
+      let negatives = matrix[i][1];
+
+      const positiveArray = positives.map((a) => { return a.value; });
+      const negativeArray = negatives.map((a) => { return a.value; });
+
+      let positiveSum = (positiveArray.length > 0) ? positiveArray.reduce((sum, a) => sum + a ) : 0;
+      let negativeSum = (negativeArray.length > 0) ? negativeArray.reduce((sum, a) => sum + a ) : 0;
+
+      positives.map((a) => a.value = a.value / positiveSum );
+      negatives.map((a) => a.value = a.value / negativeSum ); // these will be positive numbers
+    }
+    return matrix;
   }
 
   /**
@@ -207,35 +107,6 @@ export class StackedBarTrack extends BarTrack {
       matrixWithColors.push([positive, negative]);
     }
     return matrixWithColors;
-  }
-
-  /**
-   * Adds information to recreate the track in SVG to the tile
-   *
-   * @param tile
-   * @param x x value of bar
-   * @param y y value of bar
-   * @param width width of bar
-   * @param height height of bar
-   * @param color color of bar (not converted to hex)
-   */
-  addSVGInfo(tile, x, y, width, height, color) {
-    if (tile.hasOwnProperty('svgData')) {
-      tile.svgData.barXValues.push(x);
-      tile.svgData.barYValues.push(y);
-      tile.svgData.barWidths.push(width);
-      tile.svgData.barHeights.push(height);
-      tile.svgData.barColors.push(color);
-    }
-    else {
-      tile.svgData  = {
-        barXValues: [x],
-        barYValues: [y],
-        barWidths: [width],
-        barHeights: [height],
-        barColors: [color]
-      };
-    }
   }
 
   /**
@@ -327,41 +198,77 @@ export class StackedBarTrack extends BarTrack {
    * @param matrix 2d array of numbers representing nucleotides
    * @param tileX starting position of tile
    * @param tileWidth pre-scaled width of tile
+   * @param tile
    */
-  drawNormalizedBars(graphics, matrix, tileX, tileWidth) {
+  drawNormalizedBars(graphics, matrix, tileX, tileWidth, tile) {
     const trackHeight = this.dimensions[1];
-    const colorScale = scaleOrdinal(schemeCategory10);
-    const valueToPixels = scaleLinear()
-      .domain([0, 1])
-      .range([0, trackHeight]);
-    let prevStackedBarHeight = 0;
+
+    if (this.options.barBorder) {
+      graphics.lineStyle(0.1, 'black', 1);
+      tile.barBorders = true;
+    }
+
+    // todo scale positive/negative bars to add up to 1
 
     for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
       const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
       const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
-
-      // mapping each value to its original color. color: value
-      const rowWithOriginalIndices = {};
-      for (let i = 0; i < matrix[j].length; i++) {
-        rowWithOriginalIndices[colorToHex(colorScale(i))] = matrix[j][i];
-      }
-
-      const sorted = matrix[j].sort((a, b) => {
-        return b - a;
-      });
-      for (let i = 0; i < sorted.length; i++) {
-        const y = this.position[0] + (prevStackedBarHeight * trackHeight);
-        const height = valueToPixels(sorted[i]);
-        for (let k in rowWithOriginalIndices) {
-          if (rowWithOriginalIndices[k] !== null
-            && rowWithOriginalIndices[k] === sorted[i]) {
-            graphics.beginFill(k, 1);
-          }
-        }
+      // positives
+      const valueToPixelsPositive = scaleLinear()
+        .domain([0, 1])
+        .range([0, trackHeight / 2]);
+      let positiveStackedHeight = 0;
+      for (let i = 0; i < matrix[j][0].length; i++) {
+        const height = valueToPixelsPositive(matrix[j][0][i].value);
+        const y = trackHeight / 2 - (positiveStackedHeight + height);
+        graphics.beginFill(this.colorHexMap[matrix[j][0][i].color], 1);
         graphics.drawRect(x, y, width, height);
-        prevStackedBarHeight = prevStackedBarHeight + sorted[i];
+        positiveStackedHeight = positiveStackedHeight + height;
       }
-      prevStackedBarHeight = 0;
+      positiveStackedHeight = 0;
+
+      // negatives
+      const valueToPixelsNegative = scaleLinear()
+        .domain([0, 1])
+        .range([0, trackHeight]);
+      let negativeStackedHeight = trackHeight / 2;
+      for (let i = 0; i < matrix[j][1].length; i++) {
+        const height = valueToPixelsNegative(matrix[j][1][i].value);
+        const y = (negativeStackedHeight);
+        graphics.beginFill(this.colorHexMap[matrix[j][1][i].color], 1);
+        graphics.drawRect(x, y, width, height);
+        negativeStackedHeight = negativeStackedHeight + height;
+      }
+      negativeStackedHeight = 0;
+    }
+  }
+
+  /**
+   * Adds information to recreate the track in SVG to the tile
+   *
+   * @param tile
+   * @param x x value of bar
+   * @param y y value of bar
+   * @param width width of bar
+   * @param height height of bar
+   * @param color color of bar (not converted to hex)
+   */
+  addSVGInfo(tile, x, y, width, height, color) {
+    if (tile.hasOwnProperty('svgData')) {
+      tile.svgData.barXValues.push(x);
+      tile.svgData.barYValues.push(y);
+      tile.svgData.barWidths.push(width);
+      tile.svgData.barHeights.push(height);
+      tile.svgData.barColors.push(color);
+    }
+    else {
+      tile.svgData  = {
+        barXValues: [x],
+        barYValues: [y],
+        barWidths: [width],
+        barHeights: [height],
+        barColors: [color]
+      };
     }
   }
 
