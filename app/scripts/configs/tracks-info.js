@@ -1045,6 +1045,11 @@ export const TRACKS_INFO = [
       focusColor: 'orange',
       selectColor: 'fuchsia',
       indicatorColor: 'black',
+      boostContext: 1,
+      boostDetails: 1,
+      boostLocality: 1,
+      boostLayout: 1,
+      boostLayoutInit: 1,
     },
     availableOptions: [
       'minSize',
@@ -1089,6 +1094,11 @@ export const TRACKS_INFO = [
       'focusColor',
       'selectColor',
       'indicatorColor',
+      'boostContext',
+      'boostDetails',
+      'boostLocality',
+      'boostLayout',
+      'boostLayoutInit',
     ],
   },
 

@@ -30,8 +30,11 @@ class AnnotationsInsets {
     this.boostDetails = this.options.boostDetails || 1;
     this.boostLocality = this.options.boostLocality || 1;
     this.boostLayout = this.options.boostLayout || 1;
+    this.boostLayoutInit = this.options.boostLayoutInit || 1;
     this.bigAnnosBoost = this.options.bigAnnosBoost || 1;
     this.bigAnnosBoostArea = this.options.bigAnnosBoostArea || Infinity;
+
+    this.isInit = true;
 
     this.insetsTrack = getTrackByUid(insetsTrack);
 
@@ -477,6 +480,8 @@ class AnnotationsInsets {
       // const t0 = performance.now();
       const n = insetsToBePositioned.size;
 
+      const boostLayoutInit = this.isInit ? this.boostLayoutInit : 1;
+
       positionLabels
         // Insets, i.e., labels
         .label(insetsToBePositioned.values)
@@ -495,10 +500,12 @@ class AnnotationsInsets {
           Math.round(
             Math.max(
               2, // Ensure at least 2 moves per label!
-              100 * this.boostLayout * Math.log(n) / n
+              100 * this.boostLayout * boostLayoutInit * Math.log(n) / n
             )
           )
         );
+
+      this.isInit = false;
 
       // console.log(`Positioning took ${performance.now() - t0} msec`);
     }
@@ -770,6 +777,7 @@ class AnnotationsInsets {
       0,
       this.insetsTrackHeight,
     );
+    this.isInit = true;
   }
 
   /**
