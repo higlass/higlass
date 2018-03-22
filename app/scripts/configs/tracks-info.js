@@ -1051,6 +1051,7 @@ export const TRACKS_INFO = [
       boostLocality: 1,
       boostLayout: 1,
       boostLayoutInit: 1,
+      isFocusBorderOnScale: true,
     },
     availableOptions: [
       'minSize',
@@ -1101,6 +1102,7 @@ export const TRACKS_INFO = [
       'boostLocality',
       'boostLayout',
       'boostLayoutInit',
+      'isFocusBorderOnScale',
     ],
   },
 
