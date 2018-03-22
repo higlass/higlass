@@ -23,6 +23,7 @@ import {
   max,
   min,
   objToTransformStr,
+  removeAllChildNodes,
   removeClass,
 } from './utils';
 
@@ -233,6 +234,7 @@ export default class Inset {
   }
 
   compPrvsHeight() {
+    if (this.prvs.length === 9) console.log('!!!!', this.prvs);
     return this.prvs.length * (this.previewSpacing + this.options.previewSize);
   }
 
@@ -296,7 +298,8 @@ export default class Inset {
    * @param   {D3.Color}  fill  Fill color.
    */
   styleBorderHtml(fill, radius, extraWidth = 0) {
-    const _fill = this.isPermanentFocus || this.isScaledUp
+    const isScaleFocus = this.options.isFocusBorderOnScale && this.isScaledUp;
+    const _fill = this.isPermanentFocus || isScaleFocus
       ? this.focusColor : fill;
     const _extraWidth = this.isScaledUp ? 0 : extraWidth;
 
@@ -920,6 +923,7 @@ export default class Inset {
   draw() {
     this.drawLeaderLine();
     this.drawBorder();
+    console.log(this.id, this.label.src.isChanged, this.label.src.size);
     return this.drawImage(this.label.src.isChanged).then(() => {
       this.label.src.changed(false);
     });
@@ -1626,6 +1630,8 @@ export default class Inset {
     event.preventDefault();
     event.stopPropagation();
 
+    console.log(this.id, this.label.src.id, this.label.src.size);
+
     if (this.options.isImgSelectable && this.isScaledUp) return;
 
     const dX = this.dragStartX === -1 ? 0 : event.clientX - this.dragStartX;
@@ -2295,7 +2301,7 @@ export default class Inset {
         );
       } else if (this.label.src.size > this.options.maxPreviews) {
         this.renderClusterSize(
-          this.prvData, this.prvs, this.prvWrappers, this.imgsWrapper, true
+          this.prvData, this.prvs, this.prvWrappers, this.border, true
         );
       }
 
@@ -2318,8 +2324,14 @@ export default class Inset {
 
   renderClusterSize(data, imgs, wrappers, parentEl, isPrvs = false) {
     if (this.label.src.size > data.length && this.options.showClusterSize) {
-      this.clustSizeWrap = document.createElement('div');
-      this.clustSizeWrap.className = style['inset-cluster-size-wrapper'];
+      if (!this.clustSizeWrap) {
+        this.clustSizeWrap = document.createElement('div');
+        this.clustSizeWrap.className = style['inset-cluster-size-wrapper'];
+        parentEl.appendChild(this.clustSizeWrap);
+        wrappers.push(this.clustSizeWrap);
+      } else {
+        removeAllChildNodes(this.clustSizeWrap);
+      }
 
       const clustSize = document.createElement('div');
       clustSize.className = style['inset-cluster-size'];
@@ -2342,10 +2354,7 @@ export default class Inset {
           : this.borderFill.toString();
       }
 
-      parentEl.appendChild(this.clustSizeWrap);
-      wrappers.push(this.clustSizeWrap);
-
-      imgs.push(clustSize);
+      // imgs.push(clustSize);
       this.clustSizeWrap.appendChild(clustSize);
     }
   }

@@ -163,7 +163,6 @@
   right: 2px;
   bottom: 2px;
   left: 2px;
-  overflow: hidden;
   align-items: stretch;
 }
 
@@ -212,9 +211,10 @@
 
 .inset-cluster-size-wrapper-previews {
   position: absolute;
+  z-index: 1;
   flex-grow: 0;
-  top: -2px;
-  right: -2px;
+  top: 0;
+  right: 0;
   width: 1rem;
   height: 1rem;
   border-radius: 2px;
@@ -253,6 +253,11 @@
   overflow: hidden;
   border-radius: 2px;
   background: rgba(0, 0, 0, 0.1);
+}
+
+.inset-cluster-size-wrapper-previews .inset-cluster-size {
+  top: 0;
+  left: 0;
 }
 
 .inset-cluster-size-text {

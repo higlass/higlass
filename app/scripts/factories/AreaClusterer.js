@@ -510,7 +510,6 @@ function shrinkCluster(cluster, element) {
  *   out, `1` refers to zoom in and `0` is no zoom (only panning).
  */
 function update(elements, zoomed) {
-  this.clusters.forEach((cluster) => { cluster.changed(false); });
   this.cleanUp(elements);
   this.add(elements);
   this.eval(zoomed);

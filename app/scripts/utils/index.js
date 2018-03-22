@@ -59,6 +59,7 @@ export { default as radToDeg } from './rad-to-deg';
 export { default as reduce } from './reduce';
 export { default as rangeQuery2d } from './range-query-2d';
 export { default as relToAbsChromPos } from './rel-to-abs-chrom-pos';
+export { default as removeAllChildNodes } from './remove-all-child-nodes';
 export { default as removeClass } from './remove-class';
 export { default as resetD3BrushStyle } from './reset-d3-brush-style';
 export { default as scalesCenterAndK } from './scales-center-and-k';
