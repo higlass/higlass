@@ -99,7 +99,9 @@ export default class Inset {
     this.minSize = this.options.minSize || BASE_MIN_SIZE;
     this.maxSize = this.options.maxSize || BASE_MAX_SIZE;
     this.padding = this.options.padding || 0;
+    this.paddingLoci = this.options.paddingLoci || 0;
     this.paddingCustom = this.options.paddingCustom || {};
+    this.paddingLociCustom = this.options.paddingLociCustom || {};
     this.resolution = this.options.resolution || this.maxSize;
     this.resolutionCustom = this.options.resolutionCustom || {};
     this.scaleBase = this.options.scale || BASE_SCALE;
@@ -165,6 +167,14 @@ export default class Inset {
         .map(percent => +percent)
         .sort();
     }
+
+    this.paddingCustomLocSorted = Object.keys(this.paddingCustom)
+      .map(x => +x)
+      .sort((a, b) => a - b);
+
+    this.paddingLociCustomLocSorted = Object.keys(this.paddingLociCustom)
+      .map(x => +x)
+      .sort((a, b) => a - b);
 
     this.mouseOverHandlerBound = this.mouseOverHandler.bind(this);
     this.mouseOutHandlerBound = this.mouseOutHandler.bind(this);
@@ -690,6 +700,23 @@ export default class Inset {
   computeRemotePaddedSize() {
     this.remotePaddedSizes = this.remoteSizes
       .map(size => size + (size * this.getPadding(size) * 2));
+    this.remotePaddedPos = this.remotePos
+      .map((pos) => {
+        const size = max((pos[2] - pos[1]), (pos[5] - pos[4]));
+        const pad = this.getPaddingLoci(size);
+        console.log(pad, size);
+        const xPad = (pos[2] - pos[1]) * pad;
+        const yPad = (pos[5] - pos[4]) * pad;
+        return [
+          pos[0],
+          pos[1] - xPad,
+          pos[2] + xPad,
+          pos[3],
+          pos[4] - yPad,
+          pos[5] + yPad,
+        ];
+      });
+    console.log('getPadding', this.remotePos, this.remotePaddedPos, this.paddingCustomLocSorted);
   }
 
   /**
@@ -1124,7 +1151,10 @@ export default class Inset {
       this.border.appendChild(this.indicator[name]);
     }
 
-    const _color = this.isHovering || this.isDragging || this.isScaledUp
+    const _color = (
+      this.isFocusBorderOnScale &&
+      (this.isHovering || this.isDragging || this.isScaledUp)
+    )
       ? this.options.focusColor
       : color;
 
@@ -1460,14 +1490,12 @@ export default class Inset {
    * @return  {Object}  Promise resolving to the JSON response
    */
   fetchData(isHiRes = false) {
-    let loci = this.remotePos.map((remotePos, i) => [
-      ...remotePos,
+    let loci = this.remotePaddedPos.map((remotePaddedPos, i) => [
+      ...remotePaddedPos,
       this.dataConfig.tilesetUid,
       this.computeZoom(i, isHiRes),
       this.finalRes[i]
     ]);
-
-    const padding = this.options.isAbsPadding ? this.getPadding() : 0;
 
     let aggregation = '1';
     let encoding = 'matrix';
@@ -1486,10 +1514,15 @@ export default class Inset {
       loci = { loci, representativeIndices: this.imgIdx };
     }
 
+    const ignoreDiag = this.options.isIgnoreDiag
+      ? `&nd=${this.options.isIgnoreDiag}&nc=1` : '';
+
+    console.log('ASS', loci);
+
     const fetchRequest = ++this.fetching;
 
     return fetch(
-      `${this.dataConfig.server}/fragments_by_loci/?ag=${aggregation}&pd=${padding}&en=${encoding}&rp=${representative}&mp=${maxPrvs}`, {
+      `${this.dataConfig.server}/fragments_by_loci/?ag=${aggregation}&en=${encoding}&rp=${representative}&mp=${maxPrvs}${ignoreDiag}`, {
         method: 'POST',
         headers: {
           accept: 'application/json; charset=UTF-8',
@@ -1524,7 +1557,7 @@ export default class Inset {
       this.height,
       this.gBorder,
       this.options.borderRadius,
-      this.focusColor,
+      this.isFocusBorderOnScale ? this.focusColor : undefined,
     );
     Object.keys(this.indicator).forEach((id) => {
       this.renderIndicator(id, undefined, undefined);
@@ -1536,13 +1569,22 @@ export default class Inset {
    * @return  {number}  Padding to be added to the location to be pulled as a
    *   snippet.
    */
-  getPadding(remoteSize) {
-    const paddingCustomLocSorted = Object.keys(this.paddingCustom)
-      .map(x => +x)
-      .sort((a, b) => a - b);
+  getPaddingLoci(remoteSize) {
+    const entry = this.paddingLociCustomLocSorted[bisectLeft(
+      this.paddingLociCustomLocSorted, remoteSize
+    )];
 
-    const entry = paddingCustomLocSorted[bisectLeft(
-      paddingCustomLocSorted, remoteSize
+    return (entry ? this.paddingLociCustom[entry] : this.paddingLoci);
+  }
+
+  /**
+   * Get location padding for loading the inset.
+   * @return  {number}  Padding to be added to the location to be pulled as a
+   *   snippet.
+   */
+  getPadding(remoteSize) {
+    const entry = this.paddingCustomLocSorted[bisectLeft(
+      this.paddingCustomLocSorted, remoteSize
     )];
 
     return (entry ? this.paddingCustom[entry] : this.padding);
