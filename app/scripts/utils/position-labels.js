@@ -74,6 +74,7 @@ const energy = (index, moveX, moveY) => {
   const dx = l.x - l.oX;
   const dy = l.y - l.oY;
   const dist = Math.sqrt((dx * dx) + (dy * dy));
+  // Used for pushing labels away from their own origin if they are too close
   const distCenterToBorder = Math.sqrt((l.wH * l.wH) + (l.hH * l.hH));
   let overlap = true;
   // let amount = 0;
@@ -103,7 +104,6 @@ const energy = (index, moveX, moveY) => {
   let y12;
   let xOverlap;
   let yOverlap;
-  let overlapArea;
 
   // For every annotation or label
   // Note: we know that the first m anchors are the label origins
@@ -133,8 +133,7 @@ const energy = (index, moveX, moveY) => {
       y12 = otherLabel.y + otherLabel.hH + 1;
       xOverlap = max(0, min(x12, x22) - max(x11, x21));
       yOverlap = max(0, min(y12, y22) - max(y11, y21));
-      overlapArea = xOverlap * yOverlap;
-      ener += (overlapArea * wLabLabBoosted);
+      ener += xOverlap * yOverlap * wLabLabBoosted;
     }
 
     // penalty for label-anchor overlap
@@ -144,14 +143,15 @@ const energy = (index, moveX, moveY) => {
     y12 = anc[i].y + anc[i].hH + 1;
     xOverlap = max(0, min(x12, x22) - max(x11, x21));
     yOverlap = max(0, min(y12, y22) - max(y11, y21));
-    overlapArea = xOverlap * yOverlap;
     let wLabAncExtraBoost = 1.0;
     if (wAncSizeBoost !== 1.0) {
       const ancArea = anc[i].wH * anc[i].hH * 4;
       const relArea = min(1, max(0, ancArea - wAncSizeBoostThres) / areaQ);
       wLabAncExtraBoost = 1 - ((1 - wAncSizeBoost) * relArea);
     }
-    ener += overlapArea * ((wLabAncBoosted * wLabAncExtraBoost) + (wLabOrgBoosted * (i < m)));
+    ener += xOverlap * yOverlap * (
+      (wLabAncBoosted * wLabAncExtraBoost) + (wLabOrgBoosted * (i < m))
+    );
   }
   return ener;
 };
