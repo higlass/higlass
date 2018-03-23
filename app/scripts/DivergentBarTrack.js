@@ -22,7 +22,9 @@ export class DivergentBarTrack extends BarTrack {
 
     const graphics = tile.graphics;
 
-    const { tileX, tileWidth } = this.getTilePosAndDimensions(tile.tileData.zoomLevel, tile.tileData.tilePos);
+    const { tileX, tileWidth } = this.getTilePosAndDimensions(tile.tileData.zoomLevel, 
+      tile.tileData.tilePos, 
+      this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension);
     const tileValues = tile.tileData.dense;
 
     if (tileValues.length == 0) { return; }
