@@ -49,45 +49,21 @@ And some other text
       "tracks": {
         "top": [
           {
-            "name": "Gene Annotations (hg19)",
-            "created": "2017-02-05T19:31:52.412319Z",
-            "server": "http://higlass.io/api/v1",
-            "tilesetUid": "OHJakQICQD6gTD7skx4EWA",
-            "uid": "COyLjpQKS0qL596834bQuw",
-            "type": "horizontal-gene-annotations",
-            "options": {
-              "labelColor": "black",
-              "labelPosition": "hidden",
-              "plusStrandColor": "blue",
-              "minusStrandColor": "red",
-              "trackBorderWidth": 0,
-              "trackBorderColor": "black",
-              "showMousePosition": false,
-              "name": "Gene Annotations (hg19)"
-            },
-            "width": 20,
-            "height": 55,
-            "header": "",
-            "position": "top"
-          },
-          {
-            "name": "all.KL.bed.multires.mv5",
-            "server": "http://test1.resgen.io/api/v1",
-            "tilesetUid": "bQhKcD0nSdSsCyWvddPduA",
-            "uid": "YyTlGjsGT12zNaVR_9UnRg",
             "type": "horizontal-stacked-bar",
-            "height": 138,
-            "position": "top",
+            "uid": "BG1Cmi8MSMyzvNgzW7P3fQ",
+            "tilesetUid": "GIoMpzT4RlOQZ2_7m394Uw",
+            "server": "http://test1.resgen.io/api/v1",
             "options": {
               "labelPosition": "topLeft",
-              "labelColor": "white",
+              "labelColor": "black",
               "labelTextOpacity": 0.4,
               "valueScaling": "exponential",
               "trackBorderWidth": 0,
               "trackBorderColor": "black",
-              "name": "drosophila.multivec.hdf5",
-              "backgroundColor": "black",
-              "barBorder": true,
+              "heatmapValueScaling": "log",
+              "name": "all.KL.bed.multires.mv5",
+              "scaledHeight": true,
+              "backgroundColor": "white",
               "colorScale": [
                 "#FF0000",
                 "#FF4500",
@@ -104,9 +80,9 @@ And some other text
                 "#808080",
                 "#C0C0C0",
                 "#FFFFFF"
-              ]
-            },
-            "width": 568
+              ],
+              "barBorder": true
+            }
           }
         ],
         "left": [],
@@ -149,7 +125,8 @@ And some other text
     "locksByViewUid": {},
     "locksDict": {}
   }
-}
+};
+
   window.higlassApi;
 
   hglib.createHgComponent(
