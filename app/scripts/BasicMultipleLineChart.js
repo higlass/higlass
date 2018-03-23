@@ -38,7 +38,9 @@ export class BasicMultipleLineChart extends mix(BarTrack).with(OneDimensionalMix
     for (let i = 0; i < matrix[0].length; i++) {
       const intervals = trackHeight / matrixDimensions[0];
       // calculates placement for a line in each interval; we subtract 1 so we can see the last line clearly
-      const linePlacement = (intervals * i) + ((intervals * (i + 1) - (intervals * i))) - 1;
+      const linePlacement = (i === matrix[0].length - 1) ?
+        (intervals * i) + ((intervals * (i + 1) - (intervals * i))) - 1 :
+        (intervals * i) + ((intervals * (i + 1) - (intervals * i)));
       graphics.lineStyle(1, this.colorHexMap[colorScale[i]], 1);
 
       for (let j = 0; j < matrix.length; j++) { // 3070 or something
