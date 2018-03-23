@@ -244,7 +244,7 @@ export default class Inset {
   }
 
   compPrvsHeight() {
-    return this.prvs.length * (this.previewSpacing + this.options.previewSize);
+    return this.prvData.length * (this.previewSpacing + this.options.previewSize);
   }
 
   /**
