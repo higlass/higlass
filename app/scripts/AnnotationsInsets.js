@@ -206,18 +206,24 @@ class AnnotationsInsets {
         && (annotation.minY >= 0 || annotation.maxY > 0)
         && (annotation.minY < this.insetsTrackHeight || annotation.maxY <= this.insetsTrackHeight)
       )
-    ) this.annosToBeDrawnAsInsets.add(annotation);
-
-    this.drawnAnnotations.push(annotation);
+    ) {
+      this.annosToBeDrawnAsInsets.add(annotation);
+    } else {
+      this.drawnAnnotations.push(annotation);
+    }
   }
 
   /**
    * Build region tree of drawn annotations and trigger the creation of insets.
    */
   buildTree() {
-    if (!this.drawnAnnotations.length && !this.annosToBeDrawnAsInsets.size) return;
+    if (!this.drawnAnnotations.length && !this.annosToBeDrawnAsInsets.size) {
+      // Remove all exlisting cluisters
+      this.areaClusterer.cleanUp(new KeySet());
+      return;
+    }
 
-    if (this.newAnno) this.tree.load(this.drawnAnnotations);
+    // if (this.newAnno) this.tree.load(this.drawnAnnotations);
 
     this.createInsets();
   }
@@ -228,14 +234,14 @@ class AnnotationsInsets {
    * @return  {function}  Quantized border width scale.
    */
   compInsetBorderScale() {
-    const min = scoreAtPercentile(
+    const minP = scoreAtPercentile(
       this.areaClusterer.propCheck.border.values, 0.1
     );
-    const max = scoreAtPercentile(
+    const maxP = scoreAtPercentile(
       this.areaClusterer.propCheck.border.values, 0.9
     );
 
-    return scaleQuantize().domain([min, max]).range(range(0, 9));
+    return scaleQuantize().domain([minP, maxP]).range(range(0, 9));
   }
 
   /**
@@ -305,7 +311,6 @@ class AnnotationsInsets {
       addHeight = pileSize * (
         this.insetsTrack.options.previewSpacing + this.insetsTrack.options.previewSize
       );
-      console.log('clust sz', cluster.id, cluster.size, addHeight, pileSize, this.insetsTrack.options.previewSpacing + this.insetsTrack.options.previewSize);
     }
 
     width += addWidth;
@@ -415,7 +420,7 @@ class AnnotationsInsets {
    * @return  {Array}  Position and dimension of the insets.
    */
   positionInsetsCenter(areaClusters = this.areaClusterer.clusters) {
-    const anchors = this.drawnAnnotations.map(annotation => ({
+    let anchors = this.drawnAnnotations.map(annotation => ({
       t: 1.0,
       x: (annotation.maxX + annotation.minX) / 2,
       y: (annotation.maxY + annotation.minY) / 2,
@@ -479,15 +484,11 @@ class AnnotationsInsets {
         return this.insets[id];
       }));
 
-    const insetsToBePositioned = insets
-      .filter((inset) => {
-        if (inset.t) return true;
+    const insetsToBePositioned = insets.filter(inset => inset.t);
 
-        // Inset has cooled down (i.e., is already positioned), hence, it is
-        // filtered out and added to anchors instead.
-        anchors.push(inset);
-        return false;
-      });
+    // Prepend insets as the annealer assumes the first i anchors correspond to
+    // the i insets.
+    anchors = [...insets.values, ...anchors];
 
     if (insetsToBePositioned.size) {
       // const t0 = performance.now();
@@ -579,9 +580,9 @@ class AnnotationsInsets {
       positionLabels
         // Insets, i.e., labels
         .label(insetsToBeAnnealed.values)
-        // Anchors, i.e., label origins, already positioned labels, and other
-        // annotations
-        .anchor(anchors)
+        // We only need the labels origin. Other anchors do not matter as the
+        // insets are on the boundary
+        .anchor(anchors.slice(0, insetsToBeAnnealed.size))
         .width(this.insetsTrack.dimensions[0])
         .height(
           this.insetsTrack.dimensions[1] -
