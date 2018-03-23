@@ -180,7 +180,7 @@ export const TRACKS_INFO = [
     availableOptions: ['labelPosition', 'labelColor', 'valueScaling',
       'labelTextOpacity', 'labelBackgroundOpacity', 'trackBorderWidth',
       'trackBorderColor', 'trackType', 'scaledHeight', 'backgroundColor',
-      'colorScale', 'barBorder'],
+      'colorScale', 'barBorder', 'sortLargestOnTop'],
     defaultOptions: {
       labelPosition: 'topLeft',
       labelColor: 'black',
@@ -188,8 +188,10 @@ export const TRACKS_INFO = [
       valueScaling: 'linear',
       trackBorderWidth: 0,
       trackBorderColor: 'black',
-      scaledHeight: false,
       backgroundColor: 'white',
+      barBorder: true,
+      scaledHeight: true,
+      sortLargestOnTop: true,
       colorScale:      [
                         "#FF0000",
                         "#FF4500",
@@ -207,8 +209,6 @@ export const TRACKS_INFO = [
                         "#C0C0C0",
                         "#FFFFFF"
                       ],
-      barBorder: true,
-      scaledHeight: true,
     }
   },
   //

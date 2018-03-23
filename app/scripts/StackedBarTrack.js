@@ -2,7 +2,6 @@ import { mix } from 'mixwith';
 import { BarTrack } from './BarTrack';
 import { OneDimensionalMixin } from './OneDimensionalMixin';
 import { scaleLinear, scaleOrdinal, schemeCategory10 } from 'd3-scale';
-import { colorToHex } from './utils';
 
 export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
   constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
@@ -101,8 +100,15 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
           negative.push(columnColors[i]);
         }
       }
-      positive.sort((a, b) => a.value - b.value);
-      negative.sort((a, b) => b.value - a.value);
+
+      if (this.options.sortLargestOnTop) {
+        positive.sort((a, b) => a.value - b.value);
+        negative.sort((a, b) => b.value - a.value);
+      }
+      else {
+        positive.sort((a, b) => b.value - a.value);
+        negative.sort((a, b) => a.value - b.value);
+      }
 
       matrixWithColors.push([positive, negative]);
     }
@@ -208,8 +214,6 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       tile.barBorders = true;
     }
 
-    // todo scale positive/negative bars to add up to 1
-
     for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
       const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
       const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
@@ -230,11 +234,11 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       // negatives
       const valueToPixelsNegative = scaleLinear()
         .domain([0, 1])
-        .range([0, trackHeight]);
-      let negativeStackedHeight = trackHeight / 2;
+        .range([0, (trackHeight / 2)]);
+      let negativeStackedHeight = 0;
       for (let i = 0; i < matrix[j][1].length; i++) {
         const height = valueToPixelsNegative(matrix[j][1][i].value);
-        const y = (negativeStackedHeight);
+        const y = (trackHeight / 2) + negativeStackedHeight;
         graphics.beginFill(this.colorHexMap[matrix[j][1][i].color], 1);
         graphics.drawRect(x, y, width, height);
         negativeStackedHeight = negativeStackedHeight + height;
