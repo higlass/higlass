@@ -45,7 +45,8 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
     const graphics = tile.graphics;
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(tile.tileData.zoomLevel, 
-      tile.tileData.tilePos, this.tilesetInfo.bins_per_dimension);
+      tile.tileData.tilePos, 
+      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size);
     const tileValues = tile.tileData.dense;
 
     if (tileValues.length == 0) { return; }
