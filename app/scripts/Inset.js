@@ -702,19 +702,34 @@ export default class Inset {
       .map(size => size + (size * this.getPadding(size) * 2));
     this.remotePaddedPos = this.remotePos
       .map((pos) => {
-        const size = max((pos[2] - pos[1]), (pos[5] - pos[4]));
+        const posLen = this.remotePos[0].length;
+        const [
+          xStartId, xEndId, yStartId, yEndId
+        ] = this.getPosIdx(posLen);
+
+        const size = max(
+          (pos[xEndId] - pos[xStartId]), (pos[yEndId] - pos[yStartId])
+        );
         const pad = this.getPaddingLoci(size);
-        const xPad = (pos[2] - pos[1]) * pad;
-        const yPad = (pos[5] - pos[4]) * pad;
+        const xPad = (pos[xEndId] - pos[xStartId]) * pad;
+        const yPad = (pos[yEndId] - pos[yStartId]) * pad;
+        if (posLen === 6) {
+          return [
+            pos[0], pos[xStartId] - xPad, pos[xEndId] + xPad,
+            pos[3], pos[yStartId] - yPad, pos[yEndId] + yPad,
+          ];
+        }
         return [
-          pos[0],
-          pos[1] - xPad,
-          pos[2] + xPad,
-          pos[3],
-          pos[4] - yPad,
-          pos[5] + yPad,
+          pos[xStartId] - xPad, pos[xEndId] + xPad,
+          pos[yStartId] - yPad, pos[yEndId] + yPad,
         ];
       });
+  }
+
+  getPosIdx(size) {
+    // Assumption: all remote positions have the same length (either 4 or 6)
+    if (size === 6) return [1, 2, 4, 5];
+    return [0, 1, 2, 3];
   }
 
   /**
@@ -726,12 +741,9 @@ export default class Inset {
       .map(x => +x)
       .sort((a, b) => a - b);
 
-    // Assumption: all remote positions have the same length (either 4 or 6)
-    const isBedpe = this.remotePos[0].length === 6;
-    const xStartId = isBedpe ? 1 : 0;
-    const xEndId = isBedpe ? 2 : 1;
-    const yStartId = isBedpe ? 4 : 2;
-    const yEndId = isBedpe ? 5 : 3;
+    const [
+      xStartId, xEndId, yStartId, yEndId
+    ] = this.getPosIdx(this.remotePos[0].length);
 
     this.remoteSizes = this.renderedPos.map((pos) => {
       const absXLen = pos[xEndId] - pos[xStartId];
@@ -1380,8 +1392,8 @@ export default class Inset {
               this.dataTypes = data.dataTypes;
               this.imgData = data.fragments;
               this.imgIdx = data.indices;
-              this.prvData = data.previews;
-              this.prv2dData = data.previews2d;
+              this.prvData = data.previews || [];
+              this.prv2dData = data.previews2d || [];
               this.inFlight = false;
 
               return this.drawImage(false, data.requestId);
@@ -1506,6 +1518,8 @@ export default class Inset {
       representative = 4;
       maxPrvs = 0;
     }
+
+    console.log(loci, this.remotePaddedPos);
 
     if (isHiRes && this.imgIdx) {
       // Ensure that the order of the representatives is the same
