@@ -1091,7 +1091,7 @@ export default class Inset {
       stubA.style.background = gradientA;
       stubB.style.background = gradientB;
 
-      const relD = this.isDragging ? 0 : this.relD;
+      const relD = this.isDragging || this.isScaledUp ? 0 : this.relD;
 
       const width = Math.max(
         this.options.leaderLineStubLength,
@@ -1518,8 +1518,6 @@ export default class Inset {
       representative = 4;
       maxPrvs = 0;
     }
-
-    console.log(loci, this.remotePaddedPos);
 
     if (isHiRes && this.imgIdx) {
       // Ensure that the order of the representatives is the same
