@@ -72,7 +72,8 @@ class GeoJsonTrack extends Annotations2dTrack {
     }
 
     this.publish('annotationDrawn', {
-      uid,
+      trackUuids: this.uuid,
+      annotationUuid: uid,
       viewPos: [
         annotation.x, annotation.y, annotation.width, annotation.height
       ],
