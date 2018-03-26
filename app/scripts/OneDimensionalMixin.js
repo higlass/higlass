@@ -25,6 +25,7 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
     for (let i = 0; i < visibleAndFetched.length; i++) {
       const tile = visibleAndFetched[i];
       this.unFlatten(tile);
+      tile.svgData = null;
       if (tile.matrix) {
         // update global max and min if necessary
         (this.maxAndMin.max === null || tile.maxValue > this.maxAndMin.max) ?

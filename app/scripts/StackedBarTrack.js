@@ -34,6 +34,7 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
     if (this.options.scaledHeight === true) {
       this.drawVerticalBars(graphics, this.mapOriginalColors(matrix),
         tileX, tileWidth, this.maxAndMin.max, this.maxAndMin.min, tile);
+      //console.log('svg data', tile.svgData);
     }
     else {
       // normalize each array in matrix
@@ -210,7 +211,7 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
     const trackHeight = this.dimensions[1];
 
     if (this.options.barBorder) {
-      graphics.lineStyle(0.1, 'black', 1);
+      graphics.lineStyle(0.2, 'black', 1);
       tile.barBorders = true;
     }
 
@@ -225,7 +226,9 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       for (let i = 0; i < matrix[j][0].length; i++) {
         const height = valueToPixelsPositive(matrix[j][0][i].value);
         const y = trackHeight / 2 - (positiveStackedHeight + height);
-        graphics.beginFill(this.colorHexMap[matrix[j][0][i].color], 1);
+        const color = matrix[j][0][i].color;
+        this.addSVGInfo(tile, x, y, width, height, color);
+        graphics.beginFill(this.colorHexMap[color], 1);
         graphics.drawRect(x, y, width, height);
         positiveStackedHeight = positiveStackedHeight + height;
       }
@@ -239,7 +242,9 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       for (let i = 0; i < matrix[j][1].length; i++) {
         const height = valueToPixelsNegative(matrix[j][1][i].value);
         const y = (trackHeight / 2) + negativeStackedHeight;
-        graphics.beginFill(this.colorHexMap[matrix[j][1][i].color], 1);
+        const color = matrix[j][1][i].color;
+        this.addSVGInfo(tile, x, y, width, height, color);
+        graphics.beginFill(this.colorHexMap[color], 1);
         graphics.drawRect(x, y, width, height);
         negativeStackedHeight = negativeStackedHeight + height;
       }
@@ -258,7 +263,7 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
    * @param color color of bar (not converted to hex)
    */
   addSVGInfo(tile, x, y, width, height, color) {
-    if (tile.hasOwnProperty('svgData')) {
+    if (tile.hasOwnProperty('svgData') && tile.svgData !== null) {
       tile.svgData.barXValues.push(x);
       tile.svgData.barYValues.push(y);
       tile.svgData.barWidths.push(width);
@@ -281,6 +286,9 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
   }
 
   getMouseOverHtml(trackX, trackY) {
+    //console.log('mouseover', trackX, trackY);
+
+    //console.log(this.xValues, this.yValues);
     //console.log(this.tilesetInfo);
     return '';
   }
