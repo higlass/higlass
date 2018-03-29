@@ -76,6 +76,30 @@ specified by the `--impotance-column` parameter. This can either provide a
 value, contain `random`, or if it's not specified, default to the size of the
 region.
 
+Epilogos Data
+-------------
+
+Epilogos (https://epilogos.altiusinstitute.org/) show the distribution of chromatin states
+over a set of experimental conditions (e.g. cell lines). The data consist of positions and
+states::
+
+    chr1    10000   10200   id:1,qcat:[ [-0.2833,15], [-0.04748,5], [-0.008465,7], [0,2], [0,3], [0,4], [0,6], [0,10], [0,11], [0,12], [0,13], [0,14], [0.0006647,1], [0.436,8], [1.921,9] ]
+    chr1    10200   10400   id:2,qcat:[ [-0.2833,15], [-0.04748,5], [0,3], [0,4], [0,6], [0,7], [0,10], [0,11], [0,12], [0,13], [0,14], [0.0006647,1], [0.004089,2], [0.8141,8], [1.706,9] ]
+    chr1    10400   10600   id:3,qcat:[ [-0.2588,15], [-0.04063,5], [0,2], [0,3], [0,4], [0,6], [0,7], [0,10], [0,11], [0,12], [0,13], [0,14], [0.0006647,1], [0.2881,8], [1.58,9] ]
+    chr1    10600   10800   id:4,qcat:[ [-0.02619,15], [0,1], [0,2], [0,3], [0,4], [0,6], [0,7], [0,8], [0,10], [0,11], [0,12], [0,13], [0,14], [0.1077,5], [0.4857,9] ]
+
+This can be aggregated into multivec format:
+
+.. code-block:: bash
+
+    clodius convert bedfile_to_multivec \
+        hg38/all.KL.bed.gz \
+        --assembly hg38 \
+        --starting-resolution 200 \
+        --row-infos-filename row_infos.txt \
+        --num-rows 15 \
+        --format epilogos
+
 BedGraph files
 --------------
 

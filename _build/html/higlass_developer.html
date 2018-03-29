@@ -108,8 +108,8 @@ the view, the HiGlass API exposes the  <code class="docutils literal"><span clas
 <p>The passed in <code class="docutils literal"><span class="pre">viewUid</span></code> should refer to a view which is present. If it
 doesn’t, an exception will be thrown.</p>
 </div>
-<div class="section" id="goto-view-chr1-s1-e1-chr2-s2-e2-animate-animatetime-zoom-to-a-genomic-location">
-<h3>goTo(view,chr1,s1,e1,chr2,s2,e2,animate,animateTime): Zoom to a genomic location<a class="headerlink" href="#goto-view-chr1-s1-e1-chr2-s2-e2-animate-animatetime-zoom-to-a-genomic-location" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="goto-view-chr1-s1-e1-chr2-s2-e2-animatetime-zoom-to-a-genomic-location">
+<h3>goTo(view,chr1,s1,e1,chr2,s2,e2,animateTime): Zoom to a genomic location<a class="headerlink" href="#goto-view-chr1-s1-e1-chr2-s2-e2-animatetime-zoom-to-a-genomic-location" title="Permalink to this headline">¶</a></h3>
 <p>Change the current view port to a certain genomic location. When <code class="docutils literal"><span class="pre">animate</span></code> is true HiGlass transitions from the current to the new location smoothly.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">goTo</span><span class="p">(</span>
   <span class="nx">viewUid</span><span class="p">,</span>
@@ -119,13 +119,12 @@ doesn’t, an exception will be thrown.</p>
   <span class="nx">chrom2</span><span class="p">,</span>
   <span class="nx">start2</span><span class="p">,</span>
   <span class="nx">end2</span><span class="p">,</span>
-  <span class="nx">animate</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
   <span class="nx">animateTime</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">,</span>
 <span class="p">);</span>
 </pre></div>
 </div>
 <p><strong>Example:</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">goTo</span><span class="p">(</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;chr2&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="mi">500</span><span class="p">);</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">goTo</span><span class="p">(</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;chr2&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -497,6 +496,7 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bed-files">Bed Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedpe-like-files">Bedpe-like Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#epilogos-data">Epilogos Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedgraph-files">BedGraph files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bigwig-files">bigWig files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#loading-into-higlass">Loading into HiGlass</a></li>
