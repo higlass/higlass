@@ -43,6 +43,9 @@ Set the assembly name and species ID
     #ASSEMBLY=hg19
     #TAXID=9606
 
+    #ASSEMBLY=sacCer3
+    #TAXID=559292
+
 Download data from UCSC and NCBI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
