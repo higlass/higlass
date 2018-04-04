@@ -1,7 +1,8 @@
-import { mix } from 'mixwith';
-import { BarTrack } from './BarTrack';
-import { OneDimensionalMixin } from './OneDimensionalMixin';
-import { scaleLinear, scaleOrdinal, schemeCategory10 } from 'd3-scale';
+import {mix} from 'mixwith';
+import {BarTrack} from './BarTrack';
+import {OneDimensionalMixin} from './OneDimensionalMixin';
+import {scaleLinear, scaleOrdinal, schemeCategory10} from 'd3-scale';
+import {tileProxy} from './services';
 
 export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
   constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
@@ -34,7 +35,6 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
     if (this.options.scaledHeight === true) {
       this.drawVerticalBars(graphics, this.mapOriginalColors(matrix),
         tileX, tileWidth, this.maxAndMin.max, this.maxAndMin.min, tile);
-      //console.log('svg data', tile.svgData);
     }
     else {
       // normalize each array in matrix
@@ -45,6 +45,7 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       }
       this.drawNormalizedBars(graphics, this.scaleMatrix(this.mapOriginalColors(matrix)), tileX, tileWidth, tile);
     }
+    this.makeMouseOverData(tile);
   }
 
   /**
@@ -53,18 +54,22 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
    * @param matrix call mapOriginalColors on this matrix before calling this function on it.
    */
   scaleMatrix(matrix) {
-    for(let i = 0; i < matrix.length; i++) {
+    for (let i = 0; i < matrix.length; i++) {
       let positives = matrix[i][0];
       let negatives = matrix[i][1];
 
-      const positiveArray = positives.map((a) => { return a.value; });
-      const negativeArray = negatives.map((a) => { return a.value; });
+      const positiveArray = positives.map((a) => {
+        return a.value;
+      });
+      const negativeArray = negatives.map((a) => {
+        return a.value;
+      });
 
-      let positiveSum = (positiveArray.length > 0) ? positiveArray.reduce((sum, a) => sum + a ) : 0;
-      let negativeSum = (negativeArray.length > 0) ? negativeArray.reduce((sum, a) => sum + a ) : 0;
+      let positiveSum = (positiveArray.length > 0) ? positiveArray.reduce((sum, a) => sum + a) : 0;
+      let negativeSum = (negativeArray.length > 0) ? negativeArray.reduce((sum, a) => sum + a) : 0;
 
-      positives.map((a) => a.value = a.value / positiveSum );
-      negatives.map((a) => a.value = a.value / negativeSum ); // these will be positive numbers
+      positives.map((a) => a.value = a.value / positiveSum);
+      negatives.map((a) => a.value = a.value / negativeSum); // these will be positive numbers
     }
     return matrix;
   }
@@ -94,7 +99,7 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       const positive = [];
       const negative = [];
       for (let i = 0; i < columnColors.length; i++) {
-        if (columnColors[i].value > 0) {
+        if (columnColors[i].value >= 0) {
           positive.push(columnColors[i]);
         }
         else if (columnColors[i].value < 0) {
@@ -139,11 +144,11 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       graphics.lineStyle(0.1, 'black', 1);
       tile.barBorders = true;
     }
-    
+
     for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
       const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
       const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
-      
+
       // draw positive values
       const positive = matrix[j][0];
       const valueToPixelsPositive = scaleLinear()
@@ -165,6 +170,7 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       const valueToPixelsNegative = scaleLinear()
         .domain([-Math.abs(negativeMax), 0])
         .range([negativeTrackHeight, 0]);
+      //this.valuesToPixelsNegative = valueToPixelsNegative;
       let negativeStackedHeight = 0;
       for (let i = 0; i < negative.length; i++) {
         const height = valueToPixelsNegative(negative[i].value);
@@ -197,7 +203,7 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
     }
 
   }
-  
+
   /**
    * Draws graph using normalized values.
    *
@@ -271,7 +277,7 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       tile.svgData.barColors.push(color);
     }
     else {
-      tile.svgData  = {
+      tile.svgData = {
         barXValues: [x],
         barYValues: [y],
         barWidths: [width],
@@ -285,12 +291,93 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
     super.draw();
   }
 
-  getMouseOverHtml(trackX, trackY) {
-    //console.log('mouseover', trackX, trackY);
 
-    //console.log(this.xValues, this.yValues);
-    //console.log(this.tilesetInfo);
-    return '';
+  makeMouseOverData(tile) {
+    if (!tile.hasOwnProperty('mouseOverData')) {
+      const shapeX = tile.tileData.shape[0]; // 15 number of different nucleotides in each bar
+      const shapeY = tile.tileData.shape[1]; // 3840 number of bars
+      let mouseOverData = [];
+
+      if (this.options.scaledHeight === true) {
+        const barYValues = tile.svgData.barYValues;
+        const barColors = tile.svgData.barColors;
+        // make a 2d array already 3840 long
+        // then run through list and the first 256 elements go into the first index in each array, etc.
+        for (let i = 0; i < shapeX; i++){
+          for(let j = 0; j < shapeY; j++) {
+            const index = (j * shapeX) + i;
+            if(mouseOverData[j] === undefined) {
+              mouseOverData[j] = [{
+                y: barYValues[index],
+                color: barColors[index]
+                //originalOrder: i // todo i think this is ordered completely backwards
+              }];
+            }
+            else {
+              mouseOverData[j].push({
+                y: barYValues[index],
+                color: barColors[index]
+                //originalOrder: i
+              });
+            }
+          }
+        }
+        for (let i = 0; i < mouseOverData.length; i++) {
+          mouseOverData[i] = mouseOverData[i].sort((a, b) => { return a.y - b.y });
+        }
+        tile.mouseOverData = mouseOverData;
+      }
+      else {
+
+      }
+    }
+  }
+
+  getMouseOverHtml(trackX, trackY) {
+
+    if (!this.tilesetInfo)
+      return '';
+
+    const colorScale = this.options.colorScale || scaleOrdinal(schemeCategory10);
+
+    const zoomLevel = this.calculateZoomLevel();
+    const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
+
+    // the position of the tile containing the query position
+    const tilePos = this._xScale.invert(trackX) / tileWidth;
+
+    const posInTileX = Math.floor(this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos)));
+
+    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
+    const fetchedTile = this.fetchedTiles[tileId];
+
+    const row = fetchedTile.mouseOverData[posInTileX];
+
+    /**
+     * there will be a future problem with background. make sure
+     * background doesn't get counted as part of top bar in scaled stacked bar track.
+     * the same situation applies for blank negatives in unscaled stacked bar track.
+     * better apply a blanket solution.
+     *
+     * OH MY GOD. YOU ITERATED THROUGH THE WHOLE DATASET WITH j ON THE INSIDE INSTEAD
+     * OF ON THE OUTSIDE. THIS IS WHY YOUR DATA'S MESSED UP.
+     */
+
+
+    if (trackY < row[0].y) {
+      return '';
+    }
+    else if (trackY >= row[row.length - 1].y) { //todo equals is here. is that wise
+      return [row.length - 1].color;
+    }
+    else {
+      for (let i = 0; i < row.length - 1; i++) {
+        if (trackY < row[i + 1].y && trackY >= row[i].y) {
+          return row[i].color;
+        }
+      }
+    }
+
   }
 }
 

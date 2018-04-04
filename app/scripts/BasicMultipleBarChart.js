@@ -53,7 +53,6 @@ class BasicMultipleBarChart extends mix(BarTrack).with(OneDimensionalMixin) {
       }
 
     }
-    console.log(tile.svgData);
 
   }
 

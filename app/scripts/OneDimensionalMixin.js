@@ -97,8 +97,6 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
       return tile.matrix;
     }
     else {
-      const shapeX = tile.tileData.shape[0]; // number of different nucleotides in each bar
-      const shapeY = tile.tileData.shape[1]; // number of bars
       let flattenedArray = tile.tileData.dense;
 
       // if any data is negative, switch to exponential scale
@@ -107,17 +105,7 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
         this.options.valueScaling = 'exponential';
       }
 
-      // matrix[0] will be [flattenedArray[0], flattenedArray[256], flattenedArray[512], etc.]
-      // because of how flattenedArray comes back from the server.
-      const matrix = [];
-      for (let i = 0; i < shapeX; i++) {//6
-        for (let j = 0; j < shapeY; j++) {//256;
-          let singleBar;
-          (matrix[j] === undefined) ? singleBar = [] : singleBar = matrix[j];
-          singleBar.push(flattenedArray[(shapeY * i) + j]);
-          matrix[j] = singleBar;
-        }
-      }
+      const matrix = this.simpleUnFlatten(tile, flattenedArray);
 
       const maxAndMin = this.findMaxAndMin(matrix);
 
@@ -127,6 +115,31 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
 
       return matrix;
     }
+  }
+
+  /**
+   *
+   * @param tile
+   * @param data array of values to reshape
+   * @returns {Array} 2D array representation of data
+   */
+  simpleUnFlatten(tile, data) {
+    const shapeX = tile.tileData.shape[0]; // number of different nucleotides in each bar
+    const shapeY = tile.tileData.shape[1]; // number of bars
+
+    // matrix[0] will be [flattenedArray[0], flattenedArray[256], flattenedArray[512], etc.]
+    // because of how flattenedArray comes back from the server.
+    const matrix = [];
+    for (let i = 0; i < shapeX; i++) {//6
+      for (let j = 0; j < shapeY; j++) {//256;
+        let singleBar;
+        (matrix[j] === undefined) ? singleBar = [] : singleBar = matrix[j];
+        singleBar.push(data[(shapeY * i) + j]);
+        matrix[j] = singleBar;
+      }
+    }
+
+    return matrix;
   }
 
 
