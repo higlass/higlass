@@ -35,7 +35,7 @@ This file can be aggregated like so:
 
 And then imported into higlass after copying to the docker temp directory (``cp short.bed.multires ~/hg-tmp/``):
 
-.. code-block:: blash
+.. code-block:: bash
 
      docker exec higlass-container python \
         higlass-server/manage.py ingest_tileset \
@@ -212,6 +212,7 @@ It can also be loaded using a curl commands:
           position, find the dataset in the list of the datasets and click OK to
           view it. And stuff.
 
+
 Cooler files
 ------------
 `Cooler files <https://github.com/mirnylab/cooler>`_ (extension .cool) store 
@@ -223,30 +224,49 @@ cool files (typically denoted .mcool).
 From pairs
 ^^^^^^^^^^
 
-Often you will start with a list of pairs (e.g. contacts, interactions) that need to be aggregated.
+.. note:: Starting with *cooler* 0.7.9, input pairs data no longer needs to be sorted and indexed.
+
+Often you will start with a **list of pairs** (e.g. contacts, interactions) that need to be aggregated.
 For example, the 4DN-DCIC developed a `standard pairs format <https://github.com/4dn-dcic/pairix/blob/master/pairs_format_specification.md>`_ for HiC-like data. However, you 
 need only a tab-delimited file with columns representing ``chrom1``, ``pos1``, ``chrom2``, ``pos2``, optionally gzipped.
 
-Currently, these need to be sorted and indexed with either pairix or tabix to be ingested into a cooler. You also need to
-provide a list of chromosomes in semantic order (chr1, chr2, ..., chrX, chrY, ...) in a
+You also need to provide a list of chromosomes in semantic order (chr1, chr2, ..., chrX, chrY, ...) in a
 two-column `chromsizes <https://github.com/pkerpedjiev/negspy/blob/master/negspy/data/hg19/chromSizes.tsv>`_ file.
-For example, if ``chrom1`` and ``pos1`` are the first two columns, and ``chrom2`` and ``pos2`` are in columns 4 and 5:
+
+Ingesting pairs is done using the `cooler cload` command. Choose the appropriate loading subcommand. If you pairs file is sorted and indexed with `pairix <https://github.com/4dn-dcic/pairix>`_ or with `tabix <https://davetang.org/muse/2013/02/22/using-tabix/>`_, use ``cooler cload pairix`` or ``cooler cload tabix`` respectively. Otherwise, you can use the new ``cooler cload pairs`` command.
+
+**Raw pairs example**
+
+If you have a raw pairs file or you can stream your data in such a way, you only need to specify the columns that correspond to `chrom1`, `chrom2`, `pos1` and `pos2`. To pipe in a stream, replace the pairs path below with a dash ``-``.
+
+.. code-block:: bash
+
+    cooler cload pairs -c1 1 -p1 2 -c2 4 -p2 5 hg19.chrom.sizes:1000 mypairs.txt mycooler.1000.cool
+
+.. note:: The syntax ``<chromsizes_path>:<binsize_in_bp>`` is a shortcut to specify the table of genomic bins used to aggregate the pairs. Alternatively, you can pass in the path to a 3-column BED file of bins.
+
+
+**Indexed pairs example**
+
+If you want to create a sorted and indexed pairs file, follow this example. For example, if ``chrom1`` and ``pos1`` are the first two columns, and ``chrom2`` and ``pos2`` are in columns 4 and 5:
 
 .. code-block:: bash
 
     cooler csort -c1 1 -p1 2 -c2 4 -p2 5 mypairs.txt hg19.chrom.sizes
 
-This will generate a sorted and compressed pairs file ``mypairs.blksrt.txt.gz`` along with a companion pairix ``.px2`` index file. To aggregate and ingest at a fixed resolution (e.g. 1kb) use the ``cload pairix`` command. 
+will generate a sorted and compressed pairs file ``mypairs.blksrt.txt.gz`` along with a companion pairix ``.px2`` index file. To aggregate and ingest at a fixed resolution (e.g. 1kb) use the ``cload pairix`` command. 
 
 .. code-block:: bash
     
     cooler cload pairix hg19.chrom.sizes:1000 mypairs.blksrt.txt.gz mycooler.1000.cool
-    
-This will be the *base resolution* for the multires cooler you will generate.
+
+The output ``mycooler.1000.cool`` will serve as the *base resolution* for the multires cooler you will generate.
 
 From a matrix
 ^^^^^^^^^^^^^
-If your base resolution data is already aggregated, you can ingest data in one of two formats. Use ``cooler load`` to ingest.
+If your base resolution data is **already aggregated**, you can ingest data in one of two formats. Use ``cooler load`` to ingest.
+
+.. note:: Prior to *cooler* 0.7.9, input BG2 files needed to be sorted and indexed. This is no longer the case.
 
 1. COO: Sparse matrix upper triangle `coordinate list <https://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_(COO)>`_ , i.e. tab-delimited sparse matrix triples (row_id, col_id, count). This is an output of pipelines like HiCPro.
 
@@ -257,10 +277,9 @@ If your base resolution data is already aggregated, you can ingest data in one o
 2. BG2: A 2D "extension" of the `bedGraph <https://genome.ucsc.edu/goldenpath/help/bedgraph.html>`_ format. Tab delimited with columns representing ``chrom1``, ``start1``, ``end1``, ``chrom2``, ``start2``, ``end2``, ``count``. Currently, these require sorting and indexing just like pairs files (using start instead of pos columns). 
 
 .. code-block:: bash
-    
-    cooler csort -c1 1 -p1 2 -c2 4 -p2 5 mymatrix.bg2 hg19.chrom.sizes
-    cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.blksrt.bg2.gz mycooler.1000.cool
-    
+
+    cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.bg2.gz mycooler.1000.cool
+
 Zoomify
 ^^^^^^^
 To recursively aggregate your matrix into a multires file, use the `zoomify` command.
@@ -286,12 +305,13 @@ HiGlass expects each zoom level to be stored at a location named ``resolutions/{
 
 .. code-block:: bash
 
-    cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.blksrt.bg2.gz mycooler.1000.cool::resolutions/1000
-    cooler load -f bg2 hg19.chrom.sizes:5000 mymatrix.blksrt.bg2.gz mycooler.5000.cool::resolutions/5000
-    cooler load -f bg2 hg19.chrom.sizes:10000 mymatrix.blksrt.bg2.gz mycooler.10000.cool::resolutions/10000
+    cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.bg2.gz mycooler.1000.cool::resolutions/1000
+    cooler load -f bg2 hg19.chrom.sizes:5000 mymatrix.bg2.gz mycooler.5000.cool::resolutions/5000
+    cooler load -f bg2 hg19.chrom.sizes:10000 mymatrix.bg2.gz mycooler.10000.cool::resolutions/10000
     ...
 
-See the *cooler* `docs <http://cooler.readthedocs.io/>`_ for more information.
+.. seealso:: The *cooler* `docs <http://cooler.readthedocs.io/>`_ for more information.
+
 
 .. _loading-into-higlass:
 
