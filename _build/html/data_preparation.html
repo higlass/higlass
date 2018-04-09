@@ -231,26 +231,30 @@ cool files (typically denoted .mcool).</p>
 <p class="last">Starting with <em>cooler</em> 0.7.9, input pairs data no longer needs to be sorted and indexed.</p>
 </div>
 <p>Often you will start with a <strong>list of pairs</strong> (e.g. contacts, interactions) that need to be aggregated.
-For example, the 4DN-DCIC developed a <a class="reference external" href="https://github.com/4dn-dcic/pairix/blob/master/pairs_format_specification.md">standard pairs format</a> for HiC-like data. However, you
-need only a tab-delimited file with columns representing <code class="docutils literal"><span class="pre">chrom1</span></code>, <code class="docutils literal"><span class="pre">pos1</span></code>, <code class="docutils literal"><span class="pre">chrom2</span></code>, <code class="docutils literal"><span class="pre">pos2</span></code>, optionally gzipped.</p>
+For example, the 4DN-DCIC developed a <a class="reference external" href="https://github.com/4dn-dcic/pairix/blob/master/pairs_format_specification.md">standard pairs format</a> for HiC-like data. In general, you
+only need a tab-delimited file with columns representing <code class="docutils literal"><span class="pre">chrom1</span></code>, <code class="docutils literal"><span class="pre">pos1</span></code>, <code class="docutils literal"><span class="pre">chrom2</span></code>, <code class="docutils literal"><span class="pre">pos2</span></code>, optionally gzipped. In the case of Hi-C, these would correspond to the mapped locations of the two ends of a Hi-C ligation product.</p>
 <p>You also need to provide a list of chromosomes in semantic order (chr1, chr2, …, chrX, chrY, …) in a
 two-column <a class="reference external" href="https://github.com/pkerpedjiev/negspy/blob/master/negspy/data/hg19/chromSizes.tsv">chromsizes</a> file.</p>
-<p>Ingesting pairs is done using the <cite>cooler cload</cite> command. Choose the appropriate loading subcommand. If you pairs file is sorted and indexed with <a class="reference external" href="https://github.com/4dn-dcic/pairix">pairix</a> or with <a class="reference external" href="https://davetang.org/muse/2013/02/22/using-tabix/">tabix</a>, use <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span> <span class="pre">pairix</span></code> or <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span> <span class="pre">tabix</span></code> respectively. Otherwise, you can use the new <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span> <span class="pre">pairs</span></code> command.</p>
+<p>Ingesting pairs is done using the <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span></code> command. Choose the appropriate loading subcommand. If you pairs file is sorted and indexed with <a class="reference external" href="https://github.com/4dn-dcic/pairix">pairix</a> or with <a class="reference external" href="https://davetang.org/muse/2013/02/22/using-tabix/">tabix</a>, use <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span> <span class="pre">pairix</span></code> or <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span> <span class="pre">tabix</span></code>, respectively. Otherwise, you can use the new <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span> <span class="pre">pairs</span></code> command.</p>
 <p><strong>Raw pairs example</strong></p>
-<p>If you have a raw pairs file or you can stream your data in such a way, you only need to specify the columns that correspond to <cite>chrom1</cite>, <cite>chrom2</cite>, <cite>pos1</cite> and <cite>pos2</cite>. To pipe in a stream, replace the pairs path below with a dash <code class="docutils literal"><span class="pre">-</span></code>.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler cload pairs -c1 <span class="m">1</span> -p1 <span class="m">2</span> -c2 <span class="m">4</span> -p2 <span class="m">5</span> hg19.chrom.sizes:1000 mypairs.txt mycooler.1000.cool
+<p>If you have a raw pairs file or you can stream your data in such a way, you only need to specify the columns that correspond to <cite>chrom1</cite>, <cite>chrom2</cite>, <cite>pos1</cite> and <cite>pos2</cite>. For example, if <code class="docutils literal"><span class="pre">chrom1</span></code> and <code class="docutils literal"><span class="pre">pos1</span></code> are the first two columns, and <code class="docutils literal"><span class="pre">chrom2</span></code> and <code class="docutils literal"><span class="pre">pos2</span></code> are in columns 4 and 5, the following command will aggregate the input pairs at 1kb:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler cload pairs -c1 <span class="m">1</span> -p1 <span class="m">2</span> -c2 <span class="m">4</span> -p2 <span class="m">5</span> <span class="se">\</span>
+    hg19.chrom.sizes:1000 <span class="se">\</span>
+    mypairs.txt <span class="se">\</span>
+    mycooler.1000.cool
 </pre></div>
 </div>
+<p>To pipe in a stream, replace the pairs path above with a dash <code class="docutils literal"><span class="pre">-</span></code>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The syntax <code class="docutils literal"><span class="pre">&lt;chromsizes_path&gt;:&lt;binsize_in_bp&gt;</span></code> is a shortcut to specify the table of genomic bins used to aggregate the pairs. Alternatively, you can pass in the path to a 3-column BED file of bins.</p>
+<p class="last">The syntax <code class="docutils literal"><span class="pre">&lt;chromsizes_path&gt;:&lt;binsize_in_bp&gt;</span></code> is a shortcut to specify the genomic bin segmentation used to aggregate the pairs. Alternatively, you can pass in the path to a 3-column BED file of bins.</p>
 </div>
 <p><strong>Indexed pairs example</strong></p>
-<p>If you want to create a sorted and indexed pairs file, follow this example. For example, if <code class="docutils literal"><span class="pre">chrom1</span></code> and <code class="docutils literal"><span class="pre">pos1</span></code> are the first two columns, and <code class="docutils literal"><span class="pre">chrom2</span></code> and <code class="docutils literal"><span class="pre">pos2</span></code> are in columns 4 and 5:</p>
+<p>If you want to create a sorted and indexed pairs file, follow this example. Because an index provides random access to the pairs, this method can be more efficient and parallelized.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>cooler csort -c1 <span class="m">1</span> -p1 <span class="m">2</span> -c2 <span class="m">4</span> -p2 <span class="m">5</span> mypairs.txt hg19.chrom.sizes
 </pre></div>
 </div>
-<p>will generate a sorted and compressed pairs file <code class="docutils literal"><span class="pre">mypairs.blksrt.txt.gz</span></code> along with a companion pairix <code class="docutils literal"><span class="pre">.px2</span></code> index file. To aggregate and ingest at a fixed resolution (e.g. 1kb) use the <code class="docutils literal"><span class="pre">cload</span> <span class="pre">pairix</span></code> command.</p>
+<p>will generate a sorted and compressed pairs file <code class="docutils literal"><span class="pre">mypairs.blksrt.txt.gz</span></code> along with a companion pairix <code class="docutils literal"><span class="pre">.px2</span></code> index file. To aggregate, use the <code class="docutils literal"><span class="pre">cload</span> <span class="pre">pairix</span></code> command.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>cooler cload pairix hg19.chrom.sizes:1000 mypairs.blksrt.txt.gz mycooler.1000.cool
 </pre></div>
 </div>
@@ -264,44 +268,45 @@ two-column <a class="reference external" href="https://github.com/pkerpedjiev/ne
 <p class="last">Prior to <em>cooler</em> 0.7.9, input BG2 files needed to be sorted and indexed. This is no longer the case.</p>
 </div>
 <ol class="arabic simple">
-<li>COO: Sparse matrix upper triangle <a class="reference external" href="https://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_(COO)">coordinate list</a> , i.e. tab-delimited sparse matrix triples (row_id, col_id, count). This is an output of pipelines like HiCPro.</li>
+<li><strong>COO</strong>: Sparse matrix upper triangle <a class="reference external" href="https://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_(COO)">coordinate list</a> , i.e. tab-delimited sparse matrix triples (<code class="docutils literal"><span class="pre">row_id</span></code>, <code class="docutils literal"><span class="pre">col_id</span></code>, <code class="docutils literal"><span class="pre">count</span></code>). This is an output of pipelines like HiCPro.</li>
 </ol>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f coo hg19.chrom.sizes:1000 mymatrix.coo.txt mycooler.1000.cool
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f coo hg19.chrom.sizes:1000 mymatrix.1kb.coo.txt mycooler.1000.cool
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>BG2: A 2D “extension” of the <a class="reference external" href="https://genome.ucsc.edu/goldenpath/help/bedgraph.html">bedGraph</a> format. Tab delimited with columns representing <code class="docutils literal"><span class="pre">chrom1</span></code>, <code class="docutils literal"><span class="pre">start1</span></code>, <code class="docutils literal"><span class="pre">end1</span></code>, <code class="docutils literal"><span class="pre">chrom2</span></code>, <code class="docutils literal"><span class="pre">start2</span></code>, <code class="docutils literal"><span class="pre">end2</span></code>, <code class="docutils literal"><span class="pre">count</span></code>. Currently, these require sorting and indexing just like pairs files (using start instead of pos columns).</li>
+<li><strong>BG2</strong>: A 2D “extension” of the <a class="reference external" href="https://genome.ucsc.edu/goldenpath/help/bedgraph.html">bedGraph</a> format. Tab delimited with columns representing <code class="docutils literal"><span class="pre">chrom1</span></code>, <code class="docutils literal"><span class="pre">start1</span></code>, <code class="docutils literal"><span class="pre">end1</span></code>, <code class="docutils literal"><span class="pre">chrom2</span></code>, <code class="docutils literal"><span class="pre">start2</span></code>, <code class="docutils literal"><span class="pre">end2</span></code>, and <code class="docutils literal"><span class="pre">count</span></code>.</li>
 </ol>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.bg2.gz mycooler.1000.cool
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.1kb.bg2.gz mycooler.1000.cool
 </pre></div>
 </div>
 </div>
 <div class="section" id="zoomify">
 <h3>Zoomify<a class="headerlink" href="#zoomify" title="Permalink to this headline">¶</a></h3>
-<p>To recursively aggregate your matrix into a multires file, use the <cite>zoomify</cite> command.</p>
+<p>To recursively aggregate your matrix into a multires file, use the <code class="docutils literal"><span class="pre">zoomify</span></code> command.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>cooler zoomify mycooler.1000.cool
 </pre></div>
 </div>
-<p>The output will be a file called <cite>mycooler.1000.mcool</cite> with zoom levels increasing by factors of 2. You can also
+<p>The output will be a file called <code class="docutils literal"><span class="pre">mycooler.1000.mcool</span></code> with zoom levels increasing by factors of 2. You can also
 request an explicit list of resolutions, as long as they can be obtained via integer multiples starting from the base resolution. HiGlass performs well as long as zoom levels don’t differ in resolution by greater than a factor of ~5.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>cooler zoomify -r <span class="m">5000</span>,10000,25000,50000,100000,500000,1000000 mycooler.1000.cool
 </pre></div>
 </div>
-<p>If this is Hi-C data or similar, you probably want to apply iterative correction (i.e. matrix balancing normalization) by using the <code class="docutils literal"><span class="pre">--balance</span></code> option.</p>
+<p>If this is Hi-C data or similar, you probably want to apply iterative correction (i.e. matrix balancing normalization) by including the <code class="docutils literal"><span class="pre">--balance</span></code> option.</p>
 </div>
 <div class="section" id="loading-pre-zoomed-data">
 <h3>Loading pre-zoomed data<a class="headerlink" href="#loading-pre-zoomed-data" title="Permalink to this headline">¶</a></h3>
 <p>If the matrices for the resolutions you wish to visualize are already available, you can ingest each one independently into the right location inside the file using the <a class="reference external" href="http://cooler.readthedocs.io/en/latest/api.html#uri-string">Cooler URI</a> <code class="docutils literal"><span class="pre">::</span></code> syntax.</p>
 <p>HiGlass expects each zoom level to be stored at a location named <code class="docutils literal"><span class="pre">resolutions/{binsize}</span></code>.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.bg2.gz mycooler.1000.cool::resolutions/1000
-cooler load -f bg2 hg19.chrom.sizes:5000 mymatrix.bg2.gz mycooler.5000.cool::resolutions/5000
-cooler load -f bg2 hg19.chrom.sizes:10000 mymatrix.bg2.gz mycooler.10000.cool::resolutions/10000
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.1kb.bg2 mycooler.mcool::resolutions/1000
+cooler load -f bg2 hg19.chrom.sizes:5000 mymatrix.5kb.bg2 mycooler.mcool::resolutions/5000
+cooler load -f bg2 hg19.chrom.sizes:10000 mymatrix.10kb.bg2 mycooler.mcool::resolutions/10000
 ...
 </pre></div>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last">The <em>cooler</em> <a class="reference external" href="http://cooler.readthedocs.io/">docs</a> for more information.</p>
+<p class="last">See the <em>cooler</em> <a class="reference external" href="http://cooler.readthedocs.io/">docs</a> for more information.
+You can also type <code class="docutils literal"><span class="pre">-h</span></code> or <code class="docutils literal"><span class="pre">--help</span></code> after any cooler command for a detailed description.</p>
 </div>
 </div>
 </div>
