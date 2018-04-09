@@ -303,10 +303,10 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
         const barColors = tile.svgData.barColors;
         // make a 2d array already 3840 long
         // then run through list and the first 256 elements go into the first index in each array, etc.
-        for (let i = 0; i < shapeX; i++){
-          for(let j = 0; j < shapeY; j++) {
+        for (let i = 0; i < shapeX; i++) {
+          for (let j = 0; j < shapeY; j++) {
             const index = (j * shapeX) + i;
-            if(mouseOverData[j] === undefined) {
+            if (mouseOverData[j] === undefined) {
               mouseOverData[j] = [{
                 y: barYValues[index],
                 color: barColors[index]
@@ -323,7 +323,9 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
           }
         }
         for (let i = 0; i < mouseOverData.length; i++) {
-          mouseOverData[i] = mouseOverData[i].sort((a, b) => { return a.y - b.y });
+          mouseOverData[i] = mouseOverData[i].sort((a, b) => {
+            return a.y - b.y
+          });
         }
         tile.mouseOverData = mouseOverData;
       }
@@ -350,30 +352,43 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
 
     const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)]);
     const fetchedTile = this.fetchedTiles[tileId];
-
+    const matrixRow = fetchedTile.matrix[posInTileX];
     const row = fetchedTile.mouseOverData[posInTileX];
 
+    const colorScaleMap = {};
+    for (let i = 0; i < colorScale.length; i++) {
+      colorScaleMap[colorScale[i]] = i;
+    }
     /**
      * there will be a future problem with background. make sure
      * background doesn't get counted as part of top bar in scaled stacked bar track.
      * the same situation applies for blank negatives in unscaled stacked bar track.
      * better apply a blanket solution.
      *
-     * OH MY GOD. YOU ITERATED THROUGH THE WHOLE DATASET WITH j ON THE INSIDE INSTEAD
-     * OF ON THE OUTSIDE. THIS IS WHY YOUR DATA'S MESSED UP.
+     * extra problem: zooming/stretching messes up data
      */
-
 
     if (trackY < row[0].y) {
       return '';
     }
-    else if (trackY >= row[row.length - 1].y) { //todo equals is here. is that wise
-      return [row.length - 1].color;
+    else if (trackY >= row[row.length - 1].y) {
+      const color = row[row.length - 1].color;
+      const value = matrixRow[colorScaleMap[color]];
+      return `${value}`;
     }
     else {
       for (let i = 0; i < row.length - 1; i++) {
         if (trackY < row[i + 1].y && trackY >= row[i].y) {
-          return row[i].color;
+          // use color to map back to the array index for correct data
+          const color = row[i].color;
+          const value = Number.parseFloat(matrixRow[colorScaleMap[color]]).toPrecision(4).toString();
+          const type = this.tilesetInfo.row_infos[colorScaleMap[color]];
+          const html = `<svg width="10" height="10"><rect width="10" height="10" rx="2" ry="2" style="fill:${color}"/></svg>`
+            + ` ${type}` + `<br>`+ `${value}`;
+
+          // see if you can make something less gross
+          return html;
+
         }
       }
     }
