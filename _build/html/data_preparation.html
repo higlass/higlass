@@ -67,11 +67,11 @@ chr11   <span class="m">32409321</span>        <span class="m">32457081</span>  
 </pre></div>
 </div>
 <p>And then imported into higlass after copying to the docker temp directory (<code class="docutils literal"><span class="pre">cp</span> <span class="pre">short.bed.multires</span> <span class="pre">~/hg-tmp/</span></code>):</p>
-<div class="highlight-blash"><div class="highlight"><pre><span></span>docker exec higlass-container python \
-   higlass-server/manage.py ingest_tileset \
-       --filename /tmp/short.bed.multires \
-       --filetype beddb \
-       --datatype bedlike \
+<div class="highlight-bash"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> higlass-container python <span class="se">\</span>
+   higlass-server/manage.py ingest_tileset <span class="se">\</span>
+       --filename /tmp/short.bed.multires <span class="se">\</span>
+       --filetype beddb <span class="se">\</span>
+       --datatype bedlike <span class="se">\</span>
        --coordSystem b37
 </pre></div>
 </div>
@@ -155,36 +155,7 @@ of the data file contains a header using the (<code class="docutils literal"><sp
 <p>The dataset used in this example contains copy number data that has been log2
 transformed. That is, the copy number given for each bin is the log2 of the
 computed value. This is a problem for HiGlass’s default aggregation method of
-summing adjacent values since <div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\log_2 a + \log_2 b \neq \log_2 ab</tt>)</p>
-latex exited with error
-[stdout]
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=latex)
- restricted \write18 enabled.
-entering extended mode
-(./math.tex
-LaTeX2e &lt;2017-04-15&gt;
-Babel &lt;3.10&gt; and hyphenation patterns for 22 language(s) loaded.
-(/usr/local/texlive/2017basic/texmf-dist/tex/latex/base/article.cls
-Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
-(/usr/local/texlive/2017basic/texmf-dist/tex/latex/base/size12.clo))
-(/usr/local/texlive/2017basic/texmf-dist/tex/latex/base/inputenc.sty
-
-! LaTeX Error: File `utf8x.def' not found.
-
-Type X to quit or &lt;RETURN&gt; to proceed,
-or enter new name. (Default extension: def)
-
-Enter file name: 
-! Emergency stop.
-&lt;read *&gt; 
-         
-l.158 \endinput
-               ^^M
-No pages of output.
-Transcript written on math.log.
-</div>
-.</p>
+summing adjacent values since <img class="math" src="_images/math/4e9125b9e00c5072d6f3577f7c356a015ed9ca82.png" alt="\log_2 a + \log_2 b \neq \log_2 ab"/>.</p>
 <p>Using the <code class="docutils literal"><span class="pre">--transform</span> <span class="pre">exp2</span></code> option tells clodius to raise two to the
 power of the provided value before doing the transformation and storing. As
 an added benefit, NaN values become apparent in the resulting because they
@@ -255,25 +226,43 @@ matrices of the same dataset at a range of bin resolutions or <em>zoom levels</e
 cool files (typically denoted .mcool).</p>
 <div class="section" id="from-pairs">
 <h3>From pairs<a class="headerlink" href="#from-pairs" title="Permalink to this headline">¶</a></h3>
-<p>Often you will start with a list of pairs (e.g. contacts, interactions) that need to be aggregated.
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Starting with <em>cooler</em> 0.7.9, input pairs data no longer needs to be sorted and indexed.</p>
+</div>
+<p>Often you will start with a <strong>list of pairs</strong> (e.g. contacts, interactions) that need to be aggregated.
 For example, the 4DN-DCIC developed a <a class="reference external" href="https://github.com/4dn-dcic/pairix/blob/master/pairs_format_specification.md">standard pairs format</a> for HiC-like data. However, you
 need only a tab-delimited file with columns representing <code class="docutils literal"><span class="pre">chrom1</span></code>, <code class="docutils literal"><span class="pre">pos1</span></code>, <code class="docutils literal"><span class="pre">chrom2</span></code>, <code class="docutils literal"><span class="pre">pos2</span></code>, optionally gzipped.</p>
-<p>Currently, these need to be sorted and indexed with either pairix or tabix to be ingested into a cooler. You also need to
-provide a list of chromosomes in semantic order (chr1, chr2, …, chrX, chrY, …) in a
-two-column <a class="reference external" href="https://github.com/pkerpedjiev/negspy/blob/master/negspy/data/hg19/chromSizes.tsv">chromsizes</a> file.
-For example, if <code class="docutils literal"><span class="pre">chrom1</span></code> and <code class="docutils literal"><span class="pre">pos1</span></code> are the first two columns, and <code class="docutils literal"><span class="pre">chrom2</span></code> and <code class="docutils literal"><span class="pre">pos2</span></code> are in columns 4 and 5:</p>
+<p>You also need to provide a list of chromosomes in semantic order (chr1, chr2, …, chrX, chrY, …) in a
+two-column <a class="reference external" href="https://github.com/pkerpedjiev/negspy/blob/master/negspy/data/hg19/chromSizes.tsv">chromsizes</a> file.</p>
+<p>Ingesting pairs is done using the <cite>cooler cload</cite> command. Choose the appropriate loading subcommand. If you pairs file is sorted and indexed with <a class="reference external" href="https://github.com/4dn-dcic/pairix">pairix</a> or with <a class="reference external" href="https://davetang.org/muse/2013/02/22/using-tabix/">tabix</a>, use <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span> <span class="pre">pairix</span></code> or <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span> <span class="pre">tabix</span></code> respectively. Otherwise, you can use the new <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span> <span class="pre">pairs</span></code> command.</p>
+<p><strong>Raw pairs example</strong></p>
+<p>If you have a raw pairs file or you can stream your data in such a way, you only need to specify the columns that correspond to <cite>chrom1</cite>, <cite>chrom2</cite>, <cite>pos1</cite> and <cite>pos2</cite>. To pipe in a stream, replace the pairs path below with a dash <code class="docutils literal"><span class="pre">-</span></code>.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler cload pairs -c1 <span class="m">1</span> -p1 <span class="m">2</span> -c2 <span class="m">4</span> -p2 <span class="m">5</span> hg19.chrom.sizes:1000 mypairs.txt mycooler.1000.cool
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The syntax <code class="docutils literal"><span class="pre">&lt;chromsizes_path&gt;:&lt;binsize_in_bp&gt;</span></code> is a shortcut to specify the table of genomic bins used to aggregate the pairs. Alternatively, you can pass in the path to a 3-column BED file of bins.</p>
+</div>
+<p><strong>Indexed pairs example</strong></p>
+<p>If you want to create a sorted and indexed pairs file, follow this example. For example, if <code class="docutils literal"><span class="pre">chrom1</span></code> and <code class="docutils literal"><span class="pre">pos1</span></code> are the first two columns, and <code class="docutils literal"><span class="pre">chrom2</span></code> and <code class="docutils literal"><span class="pre">pos2</span></code> are in columns 4 and 5:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>cooler csort -c1 <span class="m">1</span> -p1 <span class="m">2</span> -c2 <span class="m">4</span> -p2 <span class="m">5</span> mypairs.txt hg19.chrom.sizes
 </pre></div>
 </div>
-<p>This will generate a sorted and compressed pairs file <code class="docutils literal"><span class="pre">mypairs.blksrt.txt.gz</span></code> along with a companion pairix <code class="docutils literal"><span class="pre">.px2</span></code> index file. To aggregate and ingest at a fixed resolution (e.g. 1kb) use the <code class="docutils literal"><span class="pre">cload</span> <span class="pre">pairix</span></code> command.</p>
+<p>will generate a sorted and compressed pairs file <code class="docutils literal"><span class="pre">mypairs.blksrt.txt.gz</span></code> along with a companion pairix <code class="docutils literal"><span class="pre">.px2</span></code> index file. To aggregate and ingest at a fixed resolution (e.g. 1kb) use the <code class="docutils literal"><span class="pre">cload</span> <span class="pre">pairix</span></code> command.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>cooler cload pairix hg19.chrom.sizes:1000 mypairs.blksrt.txt.gz mycooler.1000.cool
 </pre></div>
 </div>
-<p>This will be the <em>base resolution</em> for the multires cooler you will generate.</p>
+<p>The output <code class="docutils literal"><span class="pre">mycooler.1000.cool</span></code> will serve as the <em>base resolution</em> for the multires cooler you will generate.</p>
 </div>
 <div class="section" id="from-a-matrix">
 <h3>From a matrix<a class="headerlink" href="#from-a-matrix" title="Permalink to this headline">¶</a></h3>
-<p>If your base resolution data is already aggregated, you can ingest data in one of two formats. Use <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">load</span></code> to ingest.</p>
+<p>If your base resolution data is <strong>already aggregated</strong>, you can ingest data in one of two formats. Use <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">load</span></code> to ingest.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Prior to <em>cooler</em> 0.7.9, input BG2 files needed to be sorted and indexed. This is no longer the case.</p>
+</div>
 <ol class="arabic simple">
 <li>COO: Sparse matrix upper triangle <a class="reference external" href="https://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_(COO)">coordinate list</a> , i.e. tab-delimited sparse matrix triples (row_id, col_id, count). This is an output of pipelines like HiCPro.</li>
 </ol>
@@ -283,8 +272,7 @@ For example, if <code class="docutils literal"><span class="pre">chrom1</span></
 <ol class="arabic simple" start="2">
 <li>BG2: A 2D “extension” of the <a class="reference external" href="https://genome.ucsc.edu/goldenpath/help/bedgraph.html">bedGraph</a> format. Tab delimited with columns representing <code class="docutils literal"><span class="pre">chrom1</span></code>, <code class="docutils literal"><span class="pre">start1</span></code>, <code class="docutils literal"><span class="pre">end1</span></code>, <code class="docutils literal"><span class="pre">chrom2</span></code>, <code class="docutils literal"><span class="pre">start2</span></code>, <code class="docutils literal"><span class="pre">end2</span></code>, <code class="docutils literal"><span class="pre">count</span></code>. Currently, these require sorting and indexing just like pairs files (using start instead of pos columns).</li>
 </ol>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler csort -c1 <span class="m">1</span> -p1 <span class="m">2</span> -c2 <span class="m">4</span> -p2 <span class="m">5</span> mymatrix.bg2 hg19.chrom.sizes
-cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.blksrt.bg2.gz mycooler.1000.cool
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.bg2.gz mycooler.1000.cool
 </pre></div>
 </div>
 </div>
@@ -305,13 +293,16 @@ request an explicit list of resolutions, as long as they can be obtained via int
 <h3>Loading pre-zoomed data<a class="headerlink" href="#loading-pre-zoomed-data" title="Permalink to this headline">¶</a></h3>
 <p>If the matrices for the resolutions you wish to visualize are already available, you can ingest each one independently into the right location inside the file using the <a class="reference external" href="http://cooler.readthedocs.io/en/latest/api.html#uri-string">Cooler URI</a> <code class="docutils literal"><span class="pre">::</span></code> syntax.</p>
 <p>HiGlass expects each zoom level to be stored at a location named <code class="docutils literal"><span class="pre">resolutions/{binsize}</span></code>.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.blksrt.bg2.gz mycooler.1000.cool::resolutions/1000
-cooler load -f bg2 hg19.chrom.sizes:5000 mymatrix.blksrt.bg2.gz mycooler.5000.cool::resolutions/5000
-cooler load -f bg2 hg19.chrom.sizes:10000 mymatrix.blksrt.bg2.gz mycooler.10000.cool::resolutions/10000
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.bg2.gz mycooler.1000.cool::resolutions/1000
+cooler load -f bg2 hg19.chrom.sizes:5000 mymatrix.bg2.gz mycooler.5000.cool::resolutions/5000
+cooler load -f bg2 hg19.chrom.sizes:10000 mymatrix.bg2.gz mycooler.10000.cool::resolutions/10000
 ...
 </pre></div>
 </div>
-<p>See the <em>cooler</em> <a class="reference external" href="http://cooler.readthedocs.io/">docs</a> for more information.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <em>cooler</em> <a class="reference external" href="http://cooler.readthedocs.io/">docs</a> for more information.</p>
+</div>
 </div>
 </div>
 <div class="section" id="multivec-files">
@@ -495,6 +486,11 @@ they are defined in:</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="view_config.html#genome-position-search-box">Genome Position Search Box</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#uids">UIDs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#initialxdomain-and-initialydomain">initialXDomain and initialYDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#tracksourceservers">trackSourceServers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#exportviewurl">exportViewUrl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#tracks">Tracks</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="views.html">Views</a><ul>
