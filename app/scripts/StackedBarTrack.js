@@ -301,23 +301,25 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       if (this.options.scaledHeight === true) {
         const barYValues = tile.svgData.barYValues;
         const barColors = tile.svgData.barColors;
-        // make a 2d array already 3840 long
-        // then run through list and the first 256 elements go into the first index in each array, etc.
+        const barHeights = tile.svgData.barHeights;
+
+        // make 2d array. run through flat list and the first 256 elements go into the first index in each array, etc.
+        // this reverse engineers the order the values are stored in render method.
         for (let i = 0; i < shapeX; i++) {
           for (let j = 0; j < shapeY; j++) {
             const index = (j * shapeX) + i;
             if (mouseOverData[j] === undefined) {
               mouseOverData[j] = [{
                 y: barYValues[index],
-                color: barColors[index]
-                //originalOrder: i // todo i think this is ordered completely backwards
+                color: barColors[index],
+                height: barHeights[index]
               }];
             }
             else {
               mouseOverData[j].push({
                 y: barYValues[index],
-                color: barColors[index]
-                //originalOrder: i
+                color: barColors[index],
+                height: barHeights[index]
               });
             }
           }
@@ -360,34 +362,33 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       colorScaleMap[colorScale[i]] = i;
     }
     /**
-     * there will be a future problem with background. make sure
-     * background doesn't get counted as part of top bar in scaled stacked bar track.
-     * the same situation applies for blank negatives in unscaled stacked bar track.
-     * better apply a blanket solution.
+     * pull in heights for last value so we can have bottom cutoff
      *
      * extra problem: zooming/stretching messes up data
+     *
+     * use color to map back to the array index for correct data
      */
 
-    if (trackY < row[0].y) {
+    if (trackY < row[0].y || trackY >= (row[row.length - 1].y + row[row.length - 1].height)) {
       return '';
     }
-    else if (trackY >= row[row.length - 1].y) {
-      const color = row[row.length - 1].color;
-      const value = matrixRow[colorScaleMap[color]];
-      return `${value}`;
-    }
+    // else if (trackY >= row[row.length - 1].y) {
+    //   const color = row[row.length - 1].color;
+    //   const height = row[row.length - 1].height;
+    //   const value = matrixRow[colorScaleMap[color]];
+    //   console.log(height);
+    //   return `${value}`;
+    // }
     else {
-      for (let i = 0; i < row.length - 1; i++) {
-        if (trackY < row[i + 1].y && trackY >= row[i].y) {
-          // use color to map back to the array index for correct data
+      for (let i = 0; i < row.length; i++) {
+
+        if (trackY > row[i].y && trackY <= (row[i].y + row[i].height)) {
           const color = row[i].color;
           const value = Number.parseFloat(matrixRow[colorScaleMap[color]]).toPrecision(4).toString();
           const type = this.tilesetInfo.row_infos[colorScaleMap[color]];
-          const html = `<svg width="10" height="10"><rect width="10" height="10" rx="2" ry="2" style="fill:${color}"/></svg>`
-            + ` ${type}` + `<br>`+ `${value}`;
 
-          // see if you can make something less gross
-          return html;
+          return `<svg width="10" height="10"><rect width="10" height="10" rx="2" ry="2" style="fill:${color}"/></svg>`
+            + ` ${type}` + `<br>` + `${value}`;
 
         }
       }
