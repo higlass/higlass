@@ -357,37 +357,28 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
     const matrixRow = fetchedTile.matrix[posInTileX];
     const row = fetchedTile.mouseOverData[posInTileX];
 
+    // use color to map back to the array index for correct data
     const colorScaleMap = {};
     for (let i = 0; i < colorScale.length; i++) {
       colorScaleMap[colorScale[i]] = i;
     }
+
     /**
-     * pull in heights for last value so we can have bottom cutoff
-     *
      * extra problem: zooming/stretching messes up data
-     *
-     * use color to map back to the array index for correct data
      */
 
     if (trackY < row[0].y || trackY >= (row[row.length - 1].y + row[row.length - 1].height)) {
       return '';
     }
-    // else if (trackY >= row[row.length - 1].y) {
-    //   const color = row[row.length - 1].color;
-    //   const height = row[row.length - 1].height;
-    //   const value = matrixRow[colorScaleMap[color]];
-    //   console.log(height);
-    //   return `${value}`;
-    // }
     else {
       for (let i = 0; i < row.length; i++) {
-
         if (trackY > row[i].y && trackY <= (row[i].y + row[i].height)) {
           const color = row[i].color;
           const value = Number.parseFloat(matrixRow[colorScaleMap[color]]).toPrecision(4).toString();
           const type = this.tilesetInfo.row_infos[colorScaleMap[color]];
 
-          return `<svg width="10" height="10"><rect width="10" height="10" rx="2" ry="2" style="fill:${color}"/></svg>`
+          return `<svg width="10" height="10"><rect width="10" height="10" rx="2" ry="2" 
+            style="fill:${color};stroke:black;stroke-width:2;"></svg>`
             + ` ${type}` + `<br>` + `${value}`;
 
         }
