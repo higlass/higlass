@@ -293,49 +293,69 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
 
 
   makeMouseOverData(tile) {
-    if (!tile.hasOwnProperty('mouseOverData')) {
-      const shapeX = tile.tileData.shape[0]; // 15 number of different nucleotides in each bar
-      const shapeY = tile.tileData.shape[1]; // 3840 number of bars
-      let mouseOverData = [];
+    const shapeX = tile.tileData.shape[0]; // 15 number of different nucleotides in each bar
+    const shapeY = tile.tileData.shape[1]; // 3840 number of bars
+    let mouseOverData = [];
 
-      if (this.options.scaledHeight === true) {
-        const barYValues = tile.svgData.barYValues;
-        const barColors = tile.svgData.barColors;
-        const barHeights = tile.svgData.barHeights;
+    const barYValues = tile.svgData.barYValues;
+    const barColors = tile.svgData.barColors;
+    const barHeights = tile.svgData.barHeights;
 
-        // make 2d array. run through flat list and the first 256 elements go into the first index in each array, etc.
-        // this reverse engineers the order the values are stored in render method.
-        for (let i = 0; i < shapeX; i++) {
-          for (let j = 0; j < shapeY; j++) {
-            const index = (j * shapeX) + i;
-            if (mouseOverData[j] === undefined) {
-              mouseOverData[j] = [{
-                y: barYValues[index],
-                color: barColors[index],
-                height: barHeights[index]
-              }];
-            }
-            else {
-              mouseOverData[j].push({
-                y: barYValues[index],
-                color: barColors[index],
-                height: barHeights[index]
-              });
-            }
+
+    // make 2d array. run through flat list and the first 256 elements go into the first index in each array, etc.
+    // this reverse engineers the order the values are stored in render method.
+    if (this.options.scaledHeight) {
+      for (let i = 0; i < shapeX; i++) {
+        for (let j = 0; j < shapeY; j++) {
+          const index = (j * shapeX) + i;
+          if (mouseOverData[j] === undefined) {
+            mouseOverData[j] = [{
+              y: barYValues[index],
+              color: barColors[index],
+              height: barHeights[index]
+            }];
+          }
+          else {
+            mouseOverData[j].push({
+              y: barYValues[index],
+              color: barColors[index],
+              height: barHeights[index]
+            });
           }
         }
-        for (let i = 0; i < mouseOverData.length; i++) {
-          mouseOverData[i] = mouseOverData[i].sort((a, b) => {
-            return a.y - b.y
-          });
-        }
-        tile.mouseOverData = mouseOverData;
-      }
-      else {
-
       }
     }
+    else {
+      for (let i = 0; i < shapeY; i++) {
+        for (let j = 0; j < shapeX; j++) {
+          const index = (i * shapeX) + j;
+          if (mouseOverData[i] === undefined) {
+            mouseOverData[i] = [{
+              y: barYValues[index],
+              color: barColors[index],
+              height: barHeights[index]
+            }];
+          }
+          else {
+            mouseOverData[i].push({
+              y: barYValues[index],
+              color: barColors[index],
+              height: barHeights[index]
+            });
+          }
+        }
+      }
+    }
+    for (let i = 0; i < mouseOverData.length; i++) {
+      mouseOverData[i] = mouseOverData[i].sort((a, b) => {
+        return a.y - b.y
+      });
+    }
+    
+    tile.mouseOverData = mouseOverData;
+
   }
+
 
   getMouseOverHtml(trackX, trackY) {
 
@@ -367,6 +387,7 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
      * extra problem: zooming/stretching messes up data
      */
 
+    // if mousing over a blank area
     if (trackY < row[0].y || trackY >= (row[row.length - 1].y + row[row.length - 1].height)) {
       return '';
     }
