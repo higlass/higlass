@@ -31,20 +31,14 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
 
     const matrix = this.unFlatten(tile);
 
-
     if (this.options.scaledHeight === true) {
       this.drawVerticalBars(graphics, this.mapOriginalColors(matrix),
         tileX, tileWidth, this.maxAndMin.max, this.maxAndMin.min, tile);
     }
     else {
-      // normalize each array in matrix
-      for (let i = 0; i < matrix.length; i++) {
-        const temp = matrix[i];
-        const barValuesSum = temp.reduce((a, b) => a + b, 0);
-        matrix[i] = temp.map((a) => a / barValuesSum);
-      }
       this.drawNormalizedBars(graphics, this.scaleMatrix(this.mapOriginalColors(matrix)), tileX, tileWidth, tile);
     }
+
     this.makeMouseOverData(tile);
   }
 
@@ -58,12 +52,8 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       let positives = matrix[i][0];
       let negatives = matrix[i][1];
 
-      const positiveArray = positives.map((a) => {
-        return a.value;
-      });
-      const negativeArray = negatives.map((a) => {
-        return a.value;
-      });
+      const positiveArray = positives.map((a) => { return a.value; });
+      const negativeArray = negatives.map((a) => { return a.value; });
 
       let positiveSum = (positiveArray.length > 0) ? positiveArray.reduce((sum, a) => sum + a) : 0;
       let negativeSum = (negativeArray.length > 0) ? negativeArray.reduce((sum, a) => sum + a) : 0;
@@ -158,6 +148,7 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       for (let i = 0; i < positive.length; i++) {
         const height = valueToPixelsPositive(positive[i].value);
         const y = positiveTrackHeight - (positiveStackedHeight + height);
+        //console.log('height:', height); //todo a good clue!
         this.addSVGInfo(tile, x, y, width, height, positive[i].color);
         graphics.beginFill(this.colorHexMap[positive[i].color]);
 
@@ -170,7 +161,6 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       const valueToPixelsNegative = scaleLinear()
         .domain([-Math.abs(negativeMax), 0])
         .range([negativeTrackHeight, 0]);
-      //this.valuesToPixelsNegative = valueToPixelsNegative;
       let negativeStackedHeight = 0;
       for (let i = 0; i < negative.length; i++) {
         const height = valueToPixelsNegative(negative[i].value);
@@ -351,7 +341,7 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
         return a.y - b.y
       });
     }
-    
+
     tile.mouseOverData = mouseOverData;
 
   }
