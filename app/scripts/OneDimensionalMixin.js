@@ -13,16 +13,14 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
     this.renderTile(tile);
   }
 
-  // todo pete's right i don't think we need this
-//   rerender(newOptions) {
-//     //super.rerender(newOptions);
-//     this.options = newOptions;
-//     const visibleAndFetched = this.visibleAndFetchedTiles();
-// console.log('rerender');
-//     for (let i = 0; i < visibleAndFetched.length; i++) {
-//       this.renderTile(visibleAndFetched[i]);
-//     }
-//   }
+  rerender(newOptions) {
+    this.options = newOptions;
+    const visibleAndFetched = this.visibleAndFetchedTiles();
+
+    for (let i = 0; i < visibleAndFetched.length; i++) {
+      this.updateTile(visibleAndFetched[i]);
+    }
+  }
 
   updateTile(tile) {
     const visibleAndFetched = this.visibleAndFetchedTiles();
