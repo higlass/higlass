@@ -95,7 +95,7 @@ function isClusterable(a, b) {
 function addToOrCreateCluster(element) {
   let distance = this.defaultMinDist;
   let closestCluster = null;
-  const elementCenter = element.getViewPositionCenter();
+  const elementCenter = element.center;
 
   if (!this.disabled) {
     this.clusters

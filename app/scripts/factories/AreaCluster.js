@@ -113,7 +113,7 @@ Object.defineProperty(AreaCluster.prototype, 'type', { get: getType });
 AreaCluster.prototype.add = function add(annotation) {
   if (this.members.has(annotation)) return false;
 
-  const [cX, cY] = annotation.getViewPositionCenter();
+  const [cX, cY] = annotation.center;
 
   if (!this.cX || !this.cY) {
     this.cX = cX;

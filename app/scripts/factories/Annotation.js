@@ -1,3 +1,14 @@
+/**
+ * Annotation class. An annotation describes a marked-up 2D region
+ * @param  {string}  id  Identifier, usually a UUID.
+ * @param  {array}  viewPos  View coordinates in pixels
+ * @param  {array}  dataPos  Data coordinates in the original coord system.
+ * @param  {array}  dataPosProj  Projected data coordinates. E.g., longitude
+ *   and latitude are translated into Mercator projections.
+ * @param  {number}  importance  Some importance score.
+ * @param  {object}  info  Object holding information about the annotation
+ * @param  {string}  typeProp  Property if `info` holding the annotation type.
+ */
 function Annotation(
   id, viewPos, dataPos, dataPosProj, importance, info = {}, typeProp
 ) {
@@ -24,6 +35,7 @@ function Annotation(
   this.minYDataProj = dataPosProj[2];
   this.maxYDataProj = dataPosProj[3];
 
+  // By default the size of the annotation defines its importance
   this.importance = importance || (
     (dataPos[1] - dataPos[0]) * (dataPos[3] - dataPos[2])
   );
@@ -34,71 +46,71 @@ function Annotation(
 
 /* ------------------------------- Properties ------------------------------- */
 
+/**
+ * Get the center of the view position in pixel
+ * @return  {array}  Center of the view position in pixel.
+ */
 function getCenter() {
-  return [
-    this.cX,
-    this.cY,
-  ];
+  return [this.cX, this.cY];
 }
-
 Object.defineProperty(Annotation.prototype, 'center', { get: getCenter });
 
+/**
+ * Get the center of the data position.
+ * @return  {array}  Center of the data position.
+ */
 function getDataCenter() {
-  return [
-    this.dCX,
-    this.dCY,
-  ];
+  return [this.dCX, this.dCY];
 }
-
 Object.defineProperty(Annotation.prototype, 'dataCenter', { get: getDataCenter });
 
-function getViewPos() {
-  return [
-    this.minX,
-    this.maxX,
-    this.minY,
-    this.maxY,
-  ];
+/**
+ * Get the data position
+ * @return  {array}  Data position.
+ */
+function getDataPosition() {
+  return [this.minXData, this.maxXData, this.minYData, this.maxYData];
 }
+Object.defineProperty(Annotation.prototype, 'dataPos', { get: getDataPosition });
 
+/**
+ * get the view position in pixels
+ * @return  {array}  View position
+ */
+function getViewPos() {
+  return [this.minX, this.maxX, this.minY, this.maxY];
+}
 Object.defineProperty(Annotation.prototype, 'viewPos', { get: getViewPos });
 
 /* --------------------------------- Methods -------------------------------- */
 
-Annotation.prototype.getViewPosition = getViewPos;
-
-Annotation.prototype.setViewPosition = function setViewPosition([minX, maxX, minY, maxY]) {
-  this.minX = minX;
-  this.maxX = maxX;
-  this.minY = minY;
-  this.maxY = maxY;
+/**
+ * Set the view position in pixels
+ * @param  {array}  viewPos  Quadruple of form `[minX, maxX, minY, maxY]`.
+ */
+function setViewPosition(viewPos) {
+  this.minX = viewPos[0];
+  this.maxX = viewPos[1];
+  this.minY = viewPos[2];
+  this.maxY = viewPos[3];
 
   this.cX = (this.maxX + this.minX) / 2;
   this.cY = (this.maxY + this.minY) / 2;
-};
+}
 
-Annotation.prototype.getViewPositionCenter = function getViewPositionCenter() {
-  return [
-    this.cX,
-    this.cY,
-  ];
-};
-
-Annotation.prototype.getDataPosition = function getDataPosition() {
-  return [
-    this.minXData,
-    this.maxXData,
-    this.minYData,
-    this.maxYData,
-  ];
-};
-
-Annotation.prototype.getImportance = function getImportance() {
-  return this.importance;
-};
-
-Annotation.prototype.setImportance = function setImportance(importance) {
+/**
+ * Set importance score of annotation
+ * @param  {number}  importance  Some number. The higher the more important
+ *   the annotation is.
+ */
+function setImportance(importance) {
   this.importance = importance;
-};
+}
+
+Object.assign(Annotation.prototype, {
+  setViewPosition,
+  getDataPosition,
+  setImportance
+});
 
 export default Annotation;

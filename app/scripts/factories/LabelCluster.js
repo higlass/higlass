@@ -36,7 +36,7 @@ function getMaxY() {
 Object.defineProperty(LabelCluster.prototype, 'maxY', { get: getMaxY });
 
 function getDataPos() {
-  return this.src.members.translate(member => member.getDataPosition());
+  return this.src.members.translate(member => member.dataPos);
 }
 
 Object.defineProperty(LabelCluster.prototype, 'dataPos', { get: getDataPos });

@@ -15,10 +15,7 @@ function Label(id, t = 1.0) {
 
 /* ------------------------------- Properties ------------------------------- */
 
-function getDataPos() {
-  return this.src.getDataPosition();
-}
-
+function getDataPos() { return this.src.dataPos; }
 Object.defineProperty(Label.prototype, 'dataPos', { get: getDataPos });
 
 /* --------------------------------- Methods -------------------------------- */
