@@ -21,6 +21,7 @@ import {
   absToChr,
   addClass,
   base64ToCanvas,
+  colorDomainToRgbaArray,
   lDist,
   flatten,
   forEach,
@@ -28,6 +29,8 @@ import {
   isTrackOrChildTrack,
   latToY,
   lngToX,
+  max,
+  min,
   removeClass,
   tileToCanvas
 } from './utils';
@@ -79,8 +82,14 @@ export default class Insets2dTrack extends PixiTrack {
     this.mouseUpHandlerBound = this.mouseUpHandler.bind(this);
     this.initBaseEl();
 
+    this.colorScale = this.options.colorRange
+      ? colorDomainToRgbaArray(this.options.colorRange, true)
+      : [];
+
     this.positioning.offsetX = this.positioning.offsetX || 0;
     this.positioning.offsetY = this.positioning.offsetY || 0;
+    this.positioning.offsetTopTrack = this.positioning.offsetTopTrack || 0;
+    this.positioning.offsetLeftTrack = this.positioning.offsetLeftTrack || 0;
 
     this.fetchChromInfo = this.dataType === 'cooler'
       ? chromInfo.get(chromInfoPath)
@@ -163,7 +172,7 @@ export default class Insets2dTrack extends PixiTrack {
     this.relCursorDist = scaleLinear()
       .domain([
         this.options.leaderLineDynamicMinDist || 0,
-        this.options.leaderLineDynamicMaxDist || Math.max(...this.dimensions)
+        this.options.leaderLineDynamicMaxDist || max(...this.dimensions)
       ])
       .clamp(true);
 
@@ -189,10 +198,10 @@ export default class Insets2dTrack extends PixiTrack {
       dataPosBounds = [Infinity, -Infinity, -Infinity, Infinity];
 
       inset.dataPos.forEach((dataPos) => {
-        dataPosBounds[0] = Math.min(dataPosBounds[0], dataPos[0]);
-        dataPosBounds[1] = Math.max(dataPosBounds[1], dataPos[1]);
-        dataPosBounds[2] = Math.max(dataPosBounds[2], dataPos[2]);
-        dataPosBounds[3] = Math.min(dataPosBounds[3], dataPos[3]);
+        dataPosBounds[0] = min(dataPosBounds[0], dataPos[0]);
+        dataPosBounds[1] = max(dataPosBounds[1], dataPos[1]);
+        dataPosBounds[2] = max(dataPosBounds[2], dataPos[2]);
+        dataPosBounds[3] = min(dataPosBounds[3], dataPos[3]);
       });
 
       const width = dataPosBounds[1] - dataPosBounds[0];
@@ -207,10 +216,10 @@ export default class Insets2dTrack extends PixiTrack {
       dataPosBounds = [Infinity, -Infinity, Infinity, -Infinity];
 
       inset.dataPos.forEach((dataPos) => {
-        dataPosBounds[0] = Math.min(dataPosBounds[0], dataPos[0]);
-        dataPosBounds[1] = Math.max(dataPosBounds[1], dataPos[1]);
-        dataPosBounds[2] = Math.min(dataPosBounds[2], dataPos[2]);
-        dataPosBounds[3] = Math.max(dataPosBounds[3], dataPos[3]);
+        dataPosBounds[0] = min(dataPosBounds[0], dataPos[0]);
+        dataPosBounds[1] = max(dataPosBounds[1], dataPos[1]);
+        dataPosBounds[2] = min(dataPosBounds[2], dataPos[2]);
+        dataPosBounds[3] = max(dataPosBounds[3], dataPos[3]);
       });
 
       const width = dataPosBounds[1] - dataPosBounds[0];
@@ -262,7 +271,11 @@ export default class Insets2dTrack extends PixiTrack {
     inset.baseEl(this.baseElement);
     inset.clear(this.options);
     inset.globalOffset(
-      ...this.position, this.positioning.offsetX, this.positioning.offsetY
+      ...this.position,
+      this.positioning.offsetX,
+      this.positioning.offsetY,
+      this.positioning.offsetTopTrack,
+      this.positioning.offsetLeftTrack
     );
     inset.globalSize(...this.dimensions);
     inset.origin(label.oX, label.oY, label.oWH, label.oHH);
@@ -524,19 +537,19 @@ export default class Insets2dTrack extends PixiTrack {
       [inset.x, inset.y],
       [x, y]
     );
-    return Math.min(distToOrigin, distToInset);
+    return min(distToOrigin, distToInset);
   }
 
-  rendererInset(data, dtype) {
+  rendererInset(data, dtype, isLog) {
     return dtype === 'dataUrl'
       ? this.rendererImage(data)
-      : this.rendererHeatmap(data);
+      : this.rendererHeatmap(data, isLog);
   }
 
-  rendererHeatmap(data) {
+  rendererHeatmap(data, isLog) {
     let flatImg = flatten(data);
 
-    if (this.options.isLogTransform) flatImg = flatImg.map(this.toLog);
+    if (this.options.isLogTransform && isLog) flatImg = flatImg.map(this.toLog);
 
     const height = data.length;
     const width = data[0].length;
@@ -547,10 +560,11 @@ export default class Insets2dTrack extends PixiTrack {
 
     for (let i = 0; i < n; i++) {
       const j = i * 4;
-      const val = 255 - (flatImg[i] * 255);
-      pixData[j] = val;
-      pixData[j + 1] = val;
-      pixData[j + 2] = val;
+      const c = this.colorScale[Math.round(255 - (max(0, flatImg[i]) * 255))];
+
+      pixData[j] = c[0];
+      pixData[j + 1] = c[1];
+      pixData[j + 2] = c[2];
       pixData[j + 3] = 255;
     }
 
