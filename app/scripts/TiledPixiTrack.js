@@ -39,7 +39,7 @@ export const getValueScale = function(scalingType, minValue, pseudocountIn, maxV
 
   if (scalingTypeToUse == 'log') {
     // warn the users that their desired scaling type couldn't be used
-    console.warn('Negative values present in data. Defaulting to linear scale: ', minValue);
+    // console.warn('Negative values present in data. Defaulting to linear scale: ', minValue);
   }
 
   return ['linear', scaleLinear().range([254, 0])
@@ -263,8 +263,6 @@ export class TiledPixiTrack extends PixiTrack {
     if (!this.areAllVisibleTilesLoaded()) { return; }
 
     if (this.renderingTiles.size) { return; }
-
-    console.log('removing:', toRemoveIds);
 
     toRemoveIds.forEach((x) => {
       const tileIdStr = x;
