@@ -437,7 +437,6 @@ export class PixiTrack extends Track {
   }
 
   rerender(options) {
-    console.log('rerendering');
     this.options = options;
     this.draw();
     this.drawLabel();
