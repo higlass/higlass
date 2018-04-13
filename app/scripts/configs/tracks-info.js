@@ -1053,6 +1053,9 @@ export const TRACKS_INFO = [
       boostLayoutInit: 1,
       isFocusBorderOnScale: true,
       insetOriginPadding: 6,
+      colorRange: [ // corresponding to the fall colormap
+        'white', 'rgba(245,166,35,1.0)', 'rgba(208,2,27,1.0)', 'black'
+      ],
     },
     availableOptions: [
       'minSize',
@@ -1105,6 +1108,7 @@ export const TRACKS_INFO = [
       'boostLayoutInit',
       'isFocusBorderOnScale',
       'insetOriginPadding',
+      'colorRange',
     ],
   },
 
