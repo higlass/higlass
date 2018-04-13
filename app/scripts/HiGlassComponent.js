@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { select, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
-import { json, request } from 'd3-request';
+import { json } from 'd3-request';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
 import ReactGridLayout from 'react-grid-layout';
@@ -24,7 +24,7 @@ import api, { destroy as apiDestroy, publish as apiPublish } from './api';
 import {
   chromInfo,
   domEvent,
-  pubSub ,
+  pubSub,
   setTileProxyAuthHeader
 } from './services';
 
@@ -55,7 +55,6 @@ import {
   SHORT_DRAG_TIMEOUT,
   TRACKS_INFO,
   TRACKS_INFO_BY_TYPE,
-  ZOOM_TRANSITION_DURATION,
 } from './configs';
 
 // Styles
@@ -234,7 +233,7 @@ class HiGlassComponent extends React.Component {
     );
 
     this.pubSubs.push(
-      pubSub.subscribe('trackDropped', () => { 
+      pubSub.subscribe('trackDropped', () => {
         this.setState({
           draggingHappening: null,
         });
@@ -2857,7 +2856,7 @@ class HiGlassComponent extends React.Component {
         : dataX;
     }
 
-    const evt = 
+    const evt =
       {
         x: relPos[0],
         y: relPos[1],
