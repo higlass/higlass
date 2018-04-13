@@ -203,9 +203,7 @@ export class TiledPixiTrack extends PixiTrack {
     // fetchedTileID are remote ids
     const toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
 
-
     this.removeTiles(toRemove);
-
   }
 
   refreshTiles() {
@@ -265,6 +263,8 @@ export class TiledPixiTrack extends PixiTrack {
     if (!this.areAllVisibleTilesLoaded()) { return; }
 
     if (this.renderingTiles.size) { return; }
+
+    console.log('removing:', toRemoveIds);
 
     toRemoveIds.forEach((x) => {
       const tileIdStr = x;
