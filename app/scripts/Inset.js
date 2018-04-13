@@ -168,6 +168,19 @@ export default class Inset {
         .sort();
     }
 
+    this.isLogTransform = false;
+    if (this.options.isLogTransform) {
+      if (
+        Array.isArray(this.options.isLogTransform)
+      ) {
+        if (this.label.src.members
+          .some(anno => this.options.isLogTransform.indexOf(anno.type) >= 0)
+        ) this.isLogTransform = true;
+      } else {
+        this.isLogTransform = true;
+      }
+    }
+
     this.paddingCustomLocSorted = Object.keys(this.paddingCustom)
       .map(x => +x)
       .sort((a, b) => a - b);
@@ -2258,7 +2271,9 @@ export default class Inset {
     this.imgsWrapper.appendChild(this.imgsWrapperRight);
 
     this.imgsRendering = Promise.all(data
-      .map((imgDataRaw, i) => this.renderer(imgDataRaw, this.dataTypes[0])
+      .map((imgDataRaw, i) => this.renderer(
+        imgDataRaw, this.dataTypes[0], this.isLogTransform
+      )
         .then((renderedImg) => {
           if (this.isDestroyed || this.imgData === null) return;
 
@@ -2367,14 +2382,12 @@ export default class Inset {
 
   renderClusterSize(data, imgs, wrappers, parentEl, isPrvs = false) {
     if (this.label.src.size > data.length && this.options.showClusterSize) {
-      if (!this.clustSizeWrap) {
-        this.clustSizeWrap = document.createElement('div');
-        this.clustSizeWrap.className = style['inset-cluster-size-wrapper'];
-        parentEl.appendChild(this.clustSizeWrap);
-        wrappers.push(this.clustSizeWrap);
-      } else {
-        removeAllChildNodes(this.clustSizeWrap);
-      }
+      if (this.clustSizeWrap) removeAllChildNodes(this.clustSizeWrap);
+
+      this.clustSizeWrap = document.createElement('div');
+      this.clustSizeWrap.className = style['inset-cluster-size-wrapper'];
+      parentEl.appendChild(this.clustSizeWrap);
+      wrappers.push(this.clustSizeWrap);
 
       const clustSize = document.createElement('div');
       clustSize.className = style['inset-cluster-size'];
