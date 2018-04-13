@@ -186,19 +186,20 @@ which use that information to normalize track values.</p>
 <h2>bigWig files<a class="headerlink" href="#bigwig-files" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://genome.ucsc.edu/goldenpath/help/bigWig.html">bigWig files</a> store
 genomic data in a compressed, indexed form that allows rapid retrieval and
-visualization. Unfortunately, for the time being, HiGlass does not support
-displaying bigWig files and they must first be converted to hitile files.
-This can be done using clodius’s aggregate bigwig function:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>clodius aggregate bigwig input.bigWig <span class="se">\</span>
-    --output-file output.hitile <span class="se">\</span>
-    --assembly hg19
+visualization. bigWig files can be loaded directly into HiGlass using the
+vector datatype and bigwig filetype:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> higlass-container python <span class="se">\</span>
+        higlass-server/manage.py ingest_tileset <span class="se">\</span>
+        --filename /tmp/cnvs_hw.hitile <span class="se">\</span>
+        --filetype bigwig <span class="se">\</span>
+        --datatype vector
 </pre></div>
 </div>
-<p>The resulting file can be loaded into HiGlass as described in the
-<a class="reference internal" href="#id3"><span class="std std-ref">Multivec Files</span></a> section below.</p>
-<div class="section" id="loading-into-higlass">
-<h3>Loading into HiGlass<a class="headerlink" href="#loading-into-higlass" title="Permalink to this headline">¶</a></h3>
-<p>Too see .hitile-typed datasets in higlass, use the docker container to load them:</p>
+</div>
+<div class="section" id="hitile-files">
+<h2>Hitile files<a class="headerlink" href="#hitile-files" title="Permalink to this headline">¶</a></h2>
+<p>Hitile files are HDF5-based 1D vector files containing data at multiple resolutions.</p>
+<p>To see hitile datasets in higlass, use the docker container to load them:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> higlass-container python <span class="se">\</span>
         higlass-server/manage.py ingest_tileset <span class="se">\</span>
         --filename /tmp/cnvs_hw.hitile <span class="se">\</span>
@@ -206,16 +207,10 @@ This can be done using clodius’s aggregate bigwig function:</p>
         --datatype vector
 </pre></div>
 </div>
-<p>It can also be loaded using a curl commands:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>curl -u <span class="sb">`</span>cat ~/.higlass-server-login<span class="sb">`</span>  <span class="se">\</span>
-    -F <span class="s2">&quot;datafile=@cnvs_hw.hitile&quot;</span> <span class="se">\</span>
-    -F <span class="s2">&quot;filetype=hitile&quot;</span> <span class="se">\</span>
-    -F <span class="s2">&quot;datatype=vector&quot;</span> <span class="se">\</span>
-    -F <span class="s2">&quot;coordSystem=hg19&quot;</span> <span class="se">\</span>
-    http://higlass.io:80/api/v1/tilesets/
-</pre></div>
-</div>
-</div>
+<p>Point your browser at 127.0.0.1:8989 (or wherever it is hosted), click on the
+little ‘plus’ icon in the view and select the top position.  You will see a
+listing of available tracks that can be loaded. Select the dataset and then
+choose the plot type to display it as.</p>
 </div>
 <div class="section" id="cooler-files">
 <h2>Cooler files<a class="headerlink" href="#cooler-files" title="Permalink to this headline">¶</a></h2>
@@ -311,7 +306,7 @@ You can also type <code class="docutils literal"><span class="pre">-h</span></co
 </div>
 </div>
 <div class="section" id="multivec-files">
-<span id="id3"></span><h2>Multivec Files<a class="headerlink" href="#multivec-files" title="Permalink to this headline">¶</a></h2>
+<span id="loading-into-higlass"></span><h2>Multivec Files<a class="headerlink" href="#multivec-files" title="Permalink to this headline">¶</a></h2>
 <p>Multivec files store arrays of arrays organized by chromosome. To aggregate this
 data, we need an input file where chromsome is a separate dataset. Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s1">&#39;/tmp/blah.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
@@ -436,6 +431,7 @@ they are defined in:</p>
 <li class="toctree-l2"><a class="reference internal" href="#bedpe-like-files">Bedpe-like Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bedgraph-files">BedGraph files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bigwig-files">bigWig files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hitile-files">Hitile files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cooler-files">Cooler files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#multivec-files">Multivec Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#development">Development</a></li>
