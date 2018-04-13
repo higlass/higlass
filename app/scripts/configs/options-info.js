@@ -67,6 +67,13 @@ export const OPTIONS_INFO = {
     name: 'Track Border Width',
     inlineOptions: AVAILABLE_WIDTHS,
   },
+  sortLargestOnTop: {
+    name: 'Sort Largest On Top',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false }
+    }
+  },
   minSquareSize: {
     name: 'Minimum size',
     inlineOptions: AVAILABLE_WIDTHS_AND_NONE,
