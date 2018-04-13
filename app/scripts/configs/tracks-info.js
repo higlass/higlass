@@ -1052,6 +1052,7 @@ export const TRACKS_INFO = [
       boostLayout: 1,
       boostLayoutInit: 1,
       isFocusBorderOnScale: true,
+      insetOriginPadding: 6,
     },
     availableOptions: [
       'minSize',
@@ -1103,6 +1104,7 @@ export const TRACKS_INFO = [
       'boostLayout',
       'boostLayoutInit',
       'isFocusBorderOnScale',
+      'insetOriginPadding',
     ],
   },
 

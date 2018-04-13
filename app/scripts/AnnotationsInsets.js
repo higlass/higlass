@@ -16,6 +16,7 @@ import {
   getClusterPropAcc,
   latToY,
   lngToX,
+  max,
   min,
   positionLabels,
   scoreAtPercentile,
@@ -34,6 +35,7 @@ class AnnotationsInsets {
     this.boostLayoutInit = this.options.boostLayoutInit || 1;
     this.bigAnnosBoost = this.options.bigAnnosBoost || 1;
     this.bigAnnosBoostArea = this.options.bigAnnosBoostArea || Infinity;
+    this.insetOriginPadding = +this.options.insetOriginPadding || 6;
 
     this.isInit = true;
 
@@ -156,7 +158,9 @@ class AnnotationsInsets {
    *   example base pairs (Hi-C), or pixels (gigapixel images), or lng-lat
    *   (geo json).
    */
-  annotationDrawnHandler({ trackUuid, annotationUuid, viewPos, dataPos, importance, info }) {
+  annotationDrawnHandler({
+    trackUuid, annotationUuid, viewPos, dataPos, importance, info
+  }) {
     const dataPosProj = [
       this.projectorX(dataPos[0]),
       this.projectorX(dataPos[1]),
@@ -275,7 +279,7 @@ class AnnotationsInsets {
     let addHeight = 0;
     if (isGallery) {
       // The maximum gallery image might be subject to change
-      const effectiveSize = Math.min(5, cluster.size);
+      const effectiveSize = min(5, cluster.size);
 
       switch (effectiveSize) {
         case 2:
@@ -485,10 +489,13 @@ class AnnotationsInsets {
       }));
 
     const insetsToBePositioned = insets.filter(inset => inset.t);
+    const anchorInsets = insets.filter(inset => inset.t);
 
     // Prepend insets as the annealer assumes the first i anchors correspond to
     // the i insets.
-    anchors = [...insets.values, ...anchors];
+    anchors = [
+      ...insetsToBePositioned.values, ...anchors, ...anchorInsets.values
+    ];
 
     if (insetsToBePositioned.size) {
       // const t0 = performance.now();
@@ -504,7 +511,7 @@ class AnnotationsInsets {
         .anchor(anchors)
         .width(this.insetsTrack.dimensions[0])
         .height(this.insetsTrack.dimensions[1])
-        .padding(5)
+        .padding(this.insetOriginPadding)
         .is2d()
         .boost('context', this.boostContext)
         .boost('contextAnc', this.bigAnnosBoost, this.bigAnnosBoostArea)
@@ -512,7 +519,7 @@ class AnnotationsInsets {
         .boost('locality', this.boostLocality)
         .start(
           Math.round(
-            Math.max(
+            max(
               2, // Ensure at least 2 moves per label!
               100 * this.boostLayout * boostLayoutInit * Math.log(n) / n
             )
@@ -547,29 +554,8 @@ class AnnotationsInsets {
       areaClusters, finalRes, newResScale
     );
 
-    const offX = this.insetsTrack.positioning.offsetX;
-    const offY = this.insetsTrack.positioning.offsetY;
-    const anchors = this.drawnAnnotations.map(annotation => ({
-      t: 1.0,
-      x: ((annotation.maxX + annotation.minX) / 2) + offX,
-      y: ((annotation.maxY + annotation.minY) / 2) + offY,
-      oX: ((annotation.maxX + annotation.minX) / 2) + offX,  // Origin x
-      oY: ((annotation.maxY + annotation.minY) / 2) + offY,  // Origin y
-      wH: (annotation.maxX - annotation.minX) / 2,  // Width half
-      hH: (annotation.maxY - annotation.minY) / 2,  // Heigth half
-      // ...obj
-    }));
-
     // 2. Optimize position using simulated annealing
-    const insetsToBeAnnealed = insets
-      .filter((inset) => {
-        if (inset.t) return true;
-
-        // Inset has cooled down (i.e., is already positioned), hence, it is
-        // filtered out and added to anchors instead.
-        anchors.push(inset);
-        return false;
-      });
+    const insetsToBeAnnealed = insets.filter(inset => inset.t);
 
     if (insetsToBeAnnealed.size) {
       // const t0 = performance.now();
@@ -582,7 +568,7 @@ class AnnotationsInsets {
         .label(insetsToBeAnnealed.values)
         // We only need the labels origin. Other anchors do not matter as the
         // insets are on the boundary
-        .anchor(anchors.slice(0, insetsToBeAnnealed.size))
+        .anchor(insetsToBeAnnealed.values)
         .width(this.insetsTrack.dimensions[0])
         .height(
           this.insetsTrack.dimensions[1] -
@@ -596,7 +582,7 @@ class AnnotationsInsets {
         .boost('locality', this.boostLocality)
         .start(
           Math.round(
-            Math.max(
+            max(
               2, // Ensure at least 2 moves per label!
               100 * this.boostLayout * boostLayoutInit * Math.log(n) / n
             )
