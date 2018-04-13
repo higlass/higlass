@@ -413,7 +413,7 @@ class CenterTrack extends React.Component {
 }
 
 CenterTrack.defaultProps = {
-  className: '',
+  className: 'center-track',
   configTrackMenuId: null,
   is1dRangeSelection: false,
   isRangeSelectionActive: false,

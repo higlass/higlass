@@ -69,13 +69,15 @@ export default class Insets2dTrack extends PixiTrack {
     this.positioning = positioning;  // Needed for the gallery view
     this.margin = margin;
 
+    // Set the parent track to be the `div` of CenterTrack
     if (this.positioning.location === 'center') {
-      const updateBaseEl = (el) => {
-        if (hasClass(el, 'center-track')) {
+      const updateBaseEl = className => (el) => {
+        if (hasClass(el, className)) {
           this.parentElement = el;
         }
       };
-      forEach(updateBaseEl)(this.parentElement.childNodes);
+      forEach(updateBaseEl('center-track-container'))(this.parentElement.childNodes);
+      forEach(updateBaseEl('center-track'))(this.parentElement.childNodes);
     }
 
     this.mouseDownHandlerBound = this.mouseDownHandler.bind(this);
