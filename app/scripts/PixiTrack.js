@@ -138,7 +138,7 @@ class PixiTrack extends Track {
       ? this.options.name
       : this.tilesetInfo ? this.tilesetInfo.name : '';
 
-    if (this.options.labelPosition && this.options.labelPosition !== 'hidden') {
+    if (!this.options.labelPosition || this.options.labelPosition === 'hidden') {
       labelTextText = '';
     }
 
@@ -190,7 +190,6 @@ class PixiTrack extends Track {
    * graphics from the scene
    */
   remove() {
-    //console.trace('removing track');
     // the entire PIXI stage was probably removed
     this.pBase.clear();
     this.scene.removeChild(this.pBase);
