@@ -1,3 +1,11 @@
+/**
+ * Create a linear gradient using canvas.
+ * @param   {number}  width  Width of the gradient.
+ * @param   {number}  height  Height of the gradient.
+ * @param   {object}  stops  Object defining the color steps. E.g.,
+ *   `{ 0: 'red', 0.5: 'green', 1: 'blue' }`.
+ * @return  {object}  The canvas object showing the linear gradient.
+ */
 const canvasLinearGradient = (width, height, stops) => {
   const canvas = document.createElement('canvas');
 

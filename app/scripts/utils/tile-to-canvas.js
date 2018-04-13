@@ -1,3 +1,10 @@
+/**
+ * Convert a 1D numerical array into a canvas image
+ * @param   {Float32Array}  pixData  1D data array
+ * @param   {number}  w  Width
+ * @param   {number}  h  Height
+ * @return  {object}  Canvas object
+ */
 const tileToCanvas = (pixData, w = 256, h = 256) => {
   const canvas = document.createElement('canvas');
 

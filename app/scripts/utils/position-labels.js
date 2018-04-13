@@ -1,6 +1,14 @@
 import max from './max';
 import min from './min';
 
+/**
+ * Label positioner using simulated annealing.
+ *
+ * This code is heavily based on D3 Labeler
+ *   (https://github.com/tinker10/D3-Labeler) but extended to support
+ *   non-anchor obstacles.
+ */
+
 let lab = [];
 let anc = [];
 let w = 1; // box width
@@ -75,7 +83,9 @@ const energy = (index, moveX, moveY) => {
   const dy = l.y - l.oY;
   const dist = Math.sqrt((dx * dx) + (dy * dy));
   // Used for pushing labels away from their own origin if they are too close
-  const distCenterToBorder = Math.sqrt((l.wH * l.wH) + (l.hH * l.hH));
+  const pWH = (padding / 2) + l.wH;
+  const pHH = (padding / 2) + l.hH;
+  const distCenterToBorder = Math.sqrt((pWH * pWH) + (pHH * pHH));
   let overlap = true;
   // let amount = 0;
   // let theta = 0;

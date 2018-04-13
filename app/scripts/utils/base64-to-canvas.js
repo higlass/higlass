@@ -1,3 +1,10 @@
+/**
+ * Convert a base64 encoded image into a canvas object.
+ * @param   {string}  base64  Base64 string encoding the image.
+ * @param   {number}  width  Custom width for the canvas object.
+ * @param   {number}  height  Custom height for the canvas object.
+ * @return  {object}  The converted canvas object
+ */
 const base64ToCanvas = (base64, width, height) => {
   const canvas = document.createElement('canvas');
 
