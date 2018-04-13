@@ -1836,8 +1836,8 @@ export default class Inset {
 
     // Point leader line to hovering annotation
     const anno = this.label.src.members.values[event.target.__index__];
-    const x = anno.minX + ((anno.maxX - anno.minX) / 2);
-    const y = anno.minY + ((anno.maxY - anno.minY) / 2);
+    const x = this.galleryOffsetX + anno.minX + ((anno.maxX - anno.minX) / 2);
+    const y = this.galleryOffsetY + anno.minY + ((anno.maxY - anno.minY) / 2);
 
     this.drawLeaderLine(this.x, this.y, x, y);
   }
