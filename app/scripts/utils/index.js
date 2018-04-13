@@ -55,6 +55,7 @@ export { default as pixiLine } from './pixi-line';
 export { default as pixiTextToSvg } from './pixi-text-to-svg';
 export { default as positionLabels } from './position-labels';
 export { default as positionedTracksToAllTracks } from './positioned-tracks-to-all-tracks';
+export { default as q } from './q';
 export { default as radToDeg } from './rad-to-deg';
 export { default as reduce } from './reduce';
 export { default as rangeQuery2d } from './range-query-2d';
