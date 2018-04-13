@@ -566,7 +566,9 @@ class TiledPlot extends React.Component {
    */
   calculateTrackPosition(track, location) {
     let top = this.props.verticalMargin;
+    let bottom = this.props.verticalMargin;
     let left = this.props.horizontalMargin;
+    let right = this.props.horizontalMargin;
     let width = this.centerWidth;
     let height = track.height;
     let offsetX = 0;
@@ -669,8 +671,19 @@ class TiledPlot extends React.Component {
           }
         }
 
+        for (let i = 0; i < this.state.tracks.right.length; i++) {
+          right += this.state.tracks.right[i].width;
+        }
+        for (let i = 0; i < this.state.tracks.bottom.length; i++) {
+          bottom += this.state.tracks.bottom[i].height;
+        }
+
         track.offsetX = offsetX;
         track.offsetY = offsetY;
+        track.offsetTop = top;
+        track.offsetRight = right;
+        track.offsetBottom = bottom;
+        track.offsetLeft = left;
 
         break;
 
@@ -1243,7 +1256,7 @@ class TiledPlot extends React.Component {
     if (this.props.tracks.center.length) {
       centerTrack = (
         <div
-          className="center-track"
+          className="center-track-container"
           style={{
             left: this.leftWidth + this.props.horizontalMargin,
             top: this.props.verticalMargin + this.topHeight,

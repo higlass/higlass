@@ -1606,6 +1606,10 @@ class TrackRenderer extends React.Component {
             height: track.height,
             offsetX: track.offsetX,
             offsetY: track.offsetY,
+            offsetTop: track.offsetTop,
+            offsetRight: track.offsetRight,
+            offsetBottom: track.offsetBottom,
+            offsetLeft: track.offsetLeft,
           },
           {
             left: this.props.marginLeft,

@@ -385,8 +385,10 @@ export default class Insets2dTrack extends PixiTrack {
     this.baseElement.className = style['insets-track'];
 
     if (this.positioning.location !== 'center') {
-      this.baseElement.style.top = `${this.margin.top}px`;
-      this.baseElement.style.left = `${this.margin.left}px`;
+      this.baseElement.style.top = `${this.positioning.offsetTop}px`;
+      this.baseElement.style.right = `${this.positioning.offsetRight}px`;
+      this.baseElement.style.bottom = `${this.positioning.offsetBottom}px`;
+      this.baseElement.style.left = `${this.positioning.offsetLeft}px`;
     }
 
     this.parentElement.appendChild(this.baseElement);
