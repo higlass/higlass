@@ -229,6 +229,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   rerender(options, force) {
+    super.rerender(options, force);
+
     // if force is set, then we force a rerender even if the options
     // haven't changed rerender will force a brush.move
     const strOptions = JSON.stringify(options);
