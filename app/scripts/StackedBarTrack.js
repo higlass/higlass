@@ -52,8 +52,12 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       let positives = matrix[i][0];
       let negatives = matrix[i][1];
 
-      const positiveArray = positives.map((a) => { return a.value; });
-      const negativeArray = negatives.map((a) => { return a.value; });
+      const positiveArray = positives.map((a) => {
+        return a.value;
+      });
+      const negativeArray = negatives.map((a) => {
+        return a.value;
+      });
 
       let positiveSum = (positiveArray.length > 0) ? positiveArray.reduce((sum, a) => sum + a) : 0;
       let negativeSum = (negativeArray.length > 0) ? negativeArray.reduce((sum, a) => sum + a) : 0;
@@ -281,59 +285,23 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
     super.draw();
   }
 
-
   makeMouseOverData(tile) {
     const shapeX = tile.tileData.shape[0]; // 15 number of different nucleotides in each bar
     const shapeY = tile.tileData.shape[1]; // 3840 number of bars
-    let mouseOverData = [];
-
     const barYValues = tile.svgData.barYValues;
     const barColors = tile.svgData.barColors;
     const barHeights = tile.svgData.barHeights;
+    let mouseOverData = [];
 
-
-    // make 2d array. run through flat list and the first 256 elements go into the first index in each array, etc.
-    // this reverse engineers the order the values are stored in render method.
-    if (this.options.scaledHeight) {
-      for (let i = 0; i < shapeX; i++) {
-        for (let j = 0; j < shapeY; j++) {
-          const index = (j * shapeX) + i;
-          if (mouseOverData[j] === undefined) {
-            mouseOverData[j] = [{
-              y: barYValues[index],
-              color: barColors[index],
-              height: barHeights[index]
-            }];
-          }
-          else {
-            mouseOverData[j].push({
-              y: barYValues[index],
-              color: barColors[index],
-              height: barHeights[index]
-            });
-          }
-        }
-      }
-    }
-    else {
-      for (let i = 0; i < shapeY; i++) {
-        for (let j = 0; j < shapeX; j++) {
-          const index = (i * shapeX) + j;
-          if (mouseOverData[i] === undefined) {
-            mouseOverData[i] = [{
-              y: barYValues[index],
-              color: barColors[index],
-              height: barHeights[index]
-            }];
-          }
-          else {
-            mouseOverData[i].push({
-              y: barYValues[index],
-              color: barColors[index],
-              height: barHeights[index]
-            });
-          }
-        }
+    for (let i = 0; i < shapeX; i++) {
+      for (let j = 0; j < shapeY; j++) {
+        const index = (j * shapeX) + i;
+        let dataPoint = {
+          y: barYValues[index],
+          color: barColors[index],
+          height: barHeights[index]
+        };
+        (mouseOverData[j] === undefined) ? mouseOverData[j] = [dataPoint] : mouseOverData[j].push(dataPoint);
       }
     }
     for (let i = 0; i < mouseOverData.length; i++) {
@@ -345,7 +313,6 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
     tile.mouseOverData = mouseOverData;
 
   }
-
 
   getMouseOverHtml(trackX, trackY) {
 
@@ -372,10 +339,6 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
     for (let i = 0; i < colorScale.length; i++) {
       colorScaleMap[colorScale[i]] = i;
     }
-
-    /**
-     * extra problem: zooming/stretching messes up data
-     */
 
     // if mousing over a blank area
     if (trackY < row[0].y || trackY >= (row[row.length - 1].y + row[row.length - 1].height)) {
