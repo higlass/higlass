@@ -171,23 +171,23 @@ bigWig files
 
 `bigWig files <https://genome.ucsc.edu/goldenpath/help/bigWig.html>`_ store
 genomic data in a compressed, indexed form that allows rapid retrieval and
-visualization. Unfortunately, for the time being, HiGlass does not support
-displaying bigWig files and they must first be converted to hitile files.
-This can be done using clodius's aggregate bigwig function:
+visualization. bigWig files can be loaded directly into HiGlass using the
+vector datatype and bigwig filetype:
 
 .. code-block:: bash
 
-    clodius aggregate bigwig input.bigWig \
-        --output-file output.hitile \
-        --assembly hg19
+    docker exec higlass-container python \
+            higlass-server/manage.py ingest_tileset \
+            --filename /tmp/cnvs_hw.hitile \
+            --filetype bigwig \
+            --datatype vector
 
-The resulting file can be loaded into HiGlass as described in the
-:ref:`loading-into-higlass` section below.
+Hitile files
+------------
 
-Loading into HiGlass
-^^^^^^^^^^^^^^^^^^^^
+Hitile files are HDF5-based 1D vector files containing data at multiple resolutions.
 
-Too see .hitile-typed datasets in higlass, use the docker container to load them:
+To see hitile datasets in higlass, use the docker container to load them:
 
 .. code-block:: bash
 
@@ -197,20 +197,10 @@ Too see .hitile-typed datasets in higlass, use the docker container to load them
             --filetype hitile \
             --datatype vector
 
-It can also be loaded using a curl commands:
-
-.. code-block:: bash
-    
-    curl -u `cat ~/.higlass-server-login`  \
-        -F "datafile=@cnvs_hw.hitile" \
-        -F "filetype=hitile" \
-        -F "datatype=vector" \
-        -F "coordSystem=hg19" \
-        http://higlass.io:80/api/v1/tilesets/
-
-.. todo:: And navigate to 127.0.0.1:8989, click on the '+' symbol, select a track
-          position, find the dataset in the list of the datasets and click OK to
-          view it. And stuff.
+Point your browser at 127.0.0.1:8989 (or wherever it is hosted), click on the
+little 'plus' icon in the view and select the top position.  You will see a
+listing of available tracks that can be loaded. Select the dataset and then
+choose the plot type to display it as.
 
 
 Cooler files
