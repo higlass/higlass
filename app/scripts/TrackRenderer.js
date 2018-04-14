@@ -29,7 +29,6 @@ import Track from './Track';
 import HorizontalGeneAnnotationsTrack from './HorizontalGeneAnnotationsTrack';
 import ArrowheadDomainsTrack from './ArrowheadDomainsTrack';
 import Annotations2dTrack from './Annotations2dTrack';
-import GeoJsonTrack from './GeoJsonTrack';
 
 import Horizontal2DDomainsTrack from './Horizontal2DDomainsTrack';
 
@@ -67,7 +66,10 @@ import {dictItems} from './utils';
 import {pubSub} from './services';
 
 // Configs
-import {ZOOM_TRANSITION_DURATION} from './configs';
+import {
+  EXTENDABLE_TRACKS,
+  ZOOM_TRANSITION_DURATION
+} from './configs';
 
 // Styles
 import '../styles/TrackRenderer.module.scss';
@@ -1245,15 +1247,6 @@ export class TrackRenderer extends React.Component {
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
-      case 'geo-json':
-        return new GeoJsonTrack(
-          this.pStage,
-          dataConfig,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-        );
-
       case 'vertical-2d-rectangle-domains':
         return new LeftTrackModifier(
           new Horizontal2DDomainsTrack(
@@ -1456,13 +1449,40 @@ export class TrackRenderer extends React.Component {
           )
         );
 
-      default:
-        console.warn('WARNING: unknown track type:', track.type);
+      default: {
+        // Check if a plugin track is available
+        const pluginTrack = this.props.pluginTracks[track.type];
+
+        if (pluginTrack) {
+          const superClass = EXTENDABLE_TRACKS[pluginTrack.extends];
+
+          if (!superClass) {
+            console.warn(
+              'Unknown super class',
+              pluginTrack.extends,
+              'of the plugin track',
+              track.type,
+            );
+          } else {
+            return new pluginTrack.track(
+              superClass,
+              this.pStage,
+              track,
+              dataConfig,
+              handleTilesetInfoReceived,
+              () => this.currentProps.onNewTilesLoaded(track.uid),
+            );
+          }
+        } else {
+          console.warn('Unknown track type:', track.type);
+        }
+
         return new UnknownPixiTrack(
           this.pStage,
-          {name: 'Unknown Track Type', type: track.type},
+          { name: 'Unknown Track Type', type: track.type },
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
+      }
     }
   }
 
@@ -1486,6 +1506,10 @@ export class TrackRenderer extends React.Component {
   }
 }
 
+TrackRenderer.defaultProps = {
+  pluginTracks: {}
+};
+
 TrackRenderer.propTypes = {
   canvasElement: PropTypes.object,
   centerHeight: PropTypes.number,
@@ -1504,6 +1528,7 @@ TrackRenderer.propTypes = {
   onMouseMoveZoom: PropTypes.func,
   onScalesChanged: PropTypes.func,
   pixiStage: PropTypes.object,
+  pluginTracks: PropTypes.object,
   positionedTracks: PropTypes.array,
   svgElement: PropTypes.object,
   topHeight: PropTypes.number,
