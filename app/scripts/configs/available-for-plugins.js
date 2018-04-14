@@ -54,6 +54,9 @@ import * as services from '../services';
 // Utils
 import * as utils from '../utils';
 
+// Configs
+import * as configs from '../configs';
+
 const libraries = {
   PIXI,
 };
@@ -108,5 +111,6 @@ export default {
   tracks,
   facotries,
   services,
-  utils
+  utils,
+  configs
 };
