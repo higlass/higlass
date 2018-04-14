@@ -33,6 +33,7 @@ export { default as HEATED_OBJECT_MAP } from './colormaps';
 export { default as IS_TRACK_RANGE_SELECTABLE } from './is-track-range-selectable';
 export { default as OPTIONS_INFO } from './options-info';
 export { default as TRACKS_INFO } from './tracks-info';
+export { default as EXTENDABLE_TRACKS } from './extendable-tracks';
 export { default as TRACKS_INFO_BY_TYPE } from './tracks-info-by-type';
 export { default as POSITIONS_BY_DATATYPE } from './positions-by-datatype';
 export { default as USED_SERVER } from './used-server';
