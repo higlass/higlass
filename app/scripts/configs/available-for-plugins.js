@@ -1,3 +1,11 @@
+/**
+ * Code that is available to plugin tracks.
+ */
+
+// Libraries
+import * as PIXI from 'pixi.js';
+
+// Tracks
 import Annotations2dTrack from '../Annotations2dTrack';
 import ArrowheadDomainsTrack from '../ArrowheadDomainsTrack';
 import BarTrack from '../BarTrack';
@@ -35,7 +43,22 @@ import ValueIntervalTrack from '../ValueIntervalTrack';
 import VerticalTiled1DPixiTrack from '../VerticalTiled1DPixiTrack';
 import VerticalTrack from '../VerticalTrack';
 
-const EXTENDABLE_TRACKS = {
+// Factories
+import ContextMenuItem from '../ContextMenuItem';
+import DataFetcher from '../DataFetcher';
+import { LruCache } from '../factories';
+
+// Services
+import * as services from '../services';
+
+// Utils
+import * as utils from '../utils';
+
+const libraries = {
+  PIXI,
+};
+
+const tracks = {
   Annotations2dTrack,
   ArrowheadDomainsTrack,
   BarTrack,
@@ -74,4 +97,16 @@ const EXTENDABLE_TRACKS = {
   VerticalTrack,
 };
 
-export default EXTENDABLE_TRACKS;
+const facotries = {
+  ContextMenuItem,
+  DataFetcher,
+  LruCache
+};
+
+export default {
+  libraries,
+  tracks,
+  facotries,
+  services,
+  utils
+};

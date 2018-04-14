@@ -67,7 +67,7 @@ import {pubSub} from './services';
 
 // Configs
 import {
-  EXTENDABLE_TRACKS,
+  AVAILABLE_FOR_PLUGINS,
   ZOOM_TRANSITION_DURATION
 } from './configs';
 
@@ -1453,29 +1453,20 @@ export class TrackRenderer extends React.Component {
         // Check if a plugin track is available
         const pluginTrack = this.props.pluginTracks[track.type];
 
-        if (pluginTrack) {
-          const superClass = EXTENDABLE_TRACKS[pluginTrack.extends];
+        console.log(AVAILABLE_FOR_PLUGINS);
 
-          if (!superClass) {
-            console.warn(
-              'Unknown super class',
-              pluginTrack.extends,
-              'of the plugin track',
-              track.type,
-            );
-          } else {
-            return new pluginTrack.track(
-              superClass,
-              this.pStage,
-              track,
-              dataConfig,
-              handleTilesetInfoReceived,
-              () => this.currentProps.onNewTilesLoaded(track.uid),
-            );
-          }
-        } else {
-          console.warn('Unknown track type:', track.type);
+        if (pluginTrack) {
+          return new pluginTrack.track(
+            AVAILABLE_FOR_PLUGINS,
+            this.pStage,
+            track,
+            dataConfig,
+            handleTilesetInfoReceived,
+            () => this.currentProps.onNewTilesLoaded(track.uid),
+          );
         }
+
+        console.warn('Unknown track type:', track.type);
 
         return new UnknownPixiTrack(
           this.pStage,
