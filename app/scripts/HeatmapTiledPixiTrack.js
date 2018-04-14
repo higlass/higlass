@@ -229,6 +229,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   rerender(options, force) {
+    super.rerender(options, force);
+
     // if force is set, then we force a rerender even if the options
     // haven't changed rerender will force a brush.move
     const strOptions = JSON.stringify(options);
@@ -248,7 +250,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
       this.colorScale = colorDomainToRgbaArray(options.colorRange);
     }
 
-    this.visibleAndFetchedTiles().forEach(tile => this.renderTile(tile, synchronous=true));
+    this.visibleAndFetchedTiles().forEach(
+      tile => this.renderTile(tile, synchronous=true));
 
     // hopefully draw isn't rerendering all the tiles
     // this.drawColorbar();
@@ -905,6 +908,17 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   //     pixData[(i * 256 * 4) + 3] = 255;
   //   }
   // }
+  //
+  updateTile(tile) {
+    if (tile.scale && this.scale && 
+      this.scale.minValue == tile.scale.minValue && 
+      this.scale.maxValue == tile.scale.maxValue) {
+      // already rendered properly, no need to rerender
+    } else {
+      // not rendered using the current scale, so we need to rerender
+      this.renderTile(tile);
+    }
+  }
 
   /**
    * Render / draw a tile.
@@ -917,6 +931,11 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     this.valueScale = valueScale;
     let pseudocount = 0;
+
+    tile.scale = {
+      minValue: this.scale.minValue,
+      maxValue: this.scale.maxValue
+    };
 
     if (scaleType == 'log')
       pseudocount = 0; // this.medianVisibleValue;

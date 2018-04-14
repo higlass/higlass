@@ -281,7 +281,7 @@ export class SeriesListMenu extends ContextMenuContainer {
     }
     */
 
-     // if a track can't be replaced, this.props.onAddSeries
+    // if a track can't be replaced, this.props.onAddSeries
     // will be null so we don't need to display the menu item
     const replaceSeriesItem = 
           this.props.onAddSeries ?
