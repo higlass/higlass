@@ -100,7 +100,7 @@ const tracks = {
   VerticalTrack,
 };
 
-const facotries = {
+const factories = {
   ContextMenuItem,
   DataFetcher,
   LruCache
@@ -109,7 +109,7 @@ const facotries = {
 export default {
   libraries,
   tracks,
-  facotries,
+  factories,
   services,
   utils,
   configs
