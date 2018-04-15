@@ -1395,15 +1395,6 @@ export class TrackRenderer extends React.Component {
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
-      case 'image-tiles':
-        return new ImageTilesTrack(
-          this.pStage,
-          dataConfig,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-        );
-
       case 'bedlike':
         return new BedLikeTrack(
           this.pStage,
@@ -1453,17 +1444,21 @@ export class TrackRenderer extends React.Component {
         // Check if a plugin track is available
         const pluginTrack = this.props.pluginTracks[track.type];
 
-        console.log(AVAILABLE_FOR_PLUGINS);
-
         if (pluginTrack) {
-          return new pluginTrack.track(
-            AVAILABLE_FOR_PLUGINS,
-            this.pStage,
-            track,
-            dataConfig,
-            handleTilesetInfoReceived,
-            () => this.currentProps.onNewTilesLoaded(track.uid),
-          );
+          try {
+            return new pluginTrack.track(
+              AVAILABLE_FOR_PLUGINS,
+              this.pStage,
+              track,
+              dataConfig,
+              handleTilesetInfoReceived,
+              () => this.currentProps.onNewTilesLoaded(track.uid),
+            );
+          } catch (e) {
+            console.error(
+              'Plugin track', track.type, 'failed to instantiate.', e
+            );
+          }
         }
 
         console.warn('Unknown track type:', track.type);
