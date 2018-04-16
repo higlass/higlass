@@ -1,8 +1,12 @@
-import { PixiTrack } from './PixiTrack';
-import { ChromosomeInfo } from './ChromosomeInfo';
-import { SearchField } from './search_field';
 import boxIntersect from 'box-intersect';
+import * as PIXI from 'pixi.js';
+
+import PixiTrack from './PixiTrack';
+import ChromosomeInfo from './ChromosomeInfo';
+import SearchField from './SearchField';
+
 import { absToChr } from './utils';
+
 
 export class Chromosome2DLabels extends PixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
@@ -56,11 +60,6 @@ export class Chromosome2DLabels extends PixiTrack {
   }
 
   draw() {
-    const leftChrom = null;
-    const rightChrom = null;
-    const topChrom = null;
-    const bottomChrom = null;
-
     const allTexts = [];
 
     if (!this.texts) { return; }
@@ -84,8 +83,8 @@ export class Chromosome2DLabels extends PixiTrack {
         const xCumPos = this.chromInfo.cumPositions[i];
         const yCumPos = this.chromInfo.cumPositions[j];
 
-        const midX = xCumPos.pos + this.chromInfo.chromLengths[xCumPos.chr] / 2;
-        const midY = yCumPos.pos + this.chromInfo.chromLengths[yCumPos.chr] / 2;
+        const midX = xCumPos.pos + (this.chromInfo.chromLengths[xCumPos.chr] / 2);
+        const midY = yCumPos.pos + (this.chromInfo.chromLengths[yCumPos.chr] / 2);
 
         const viewportMidX = this._xScale(midX);
         const viewportMidY = this._yScale(midY);
@@ -98,24 +97,31 @@ export class Chromosome2DLabels extends PixiTrack {
 
         const bbox = text.getBounds();
 
+        const bwh = bbox.width / 2;
+        const bhh = bbox.height / 2;
+
         // make sure the chrosome label fits in the x range
-        if (viewportMidX + bbox.width / 2 > this.dimensions[0]) {
-          text.x -= (viewportMidX + bbox.width / 2) - this.dimensions[0];
-        } else if (viewportMidX - bbox.width / 2 < 0) {
+        if (viewportMidX + bwh > this.dimensions[0]) {
+          text.x -= (viewportMidX + bwh) - this.dimensions[0];
+        } else if (viewportMidX - bwh < 0) {
           //
-          text.x -= (viewportMidX - bbox.width / 2);
+          text.x -= (viewportMidX - bwh);
         }
 
         // make sure the chro
-        if (viewportMidY + bbox.height / 2 > this.dimensions[1]) {
-          text.y -= (viewportMidY + bbox.height / 2) - this.dimensions[1];
-        } else if (viewportMidY - bbox.height / 2 < 0) {
-          text.y -= (viewportMidY - bbox.height / 2);
+        if (viewportMidY + bhh > this.dimensions[1]) {
+          text.y -= (viewportMidY + bhh) - this.dimensions[1];
+        } else if (viewportMidY - bhh < 0) {
+          text.y -= (viewportMidY - bhh);
         }
 
         text.visible = true;
 
-        allTexts.push({ importance: this.texts[i][j].hashValue, text: this.texts[i][j], caption: null });
+        allTexts.push({
+          importance: this.texts[i][j].hashValue,
+          text: this.texts[i][j],
+          caption: null
+        });
       }
     }
 
@@ -135,7 +141,7 @@ export class Chromosome2DLabels extends PixiTrack {
       return box;
     });
 
-    const result = boxIntersect(allBoxes, (i, j) => {
+    boxIntersect(allBoxes, (i, j) => {
       if (allTexts[i].importance > allTexts[j].importance) {
         allTexts[j].text.visible = 0;
       } else {

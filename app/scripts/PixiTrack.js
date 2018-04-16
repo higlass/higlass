@@ -2,7 +2,7 @@ import { formatPrefix, precisionPrefix } from 'd3-format';
 import * as PIXI from 'pixi.js';
 import slugid from 'slugid';
 
-import { Track } from './Track.js';
+import Track from './Track';
 
 import { colorToHex } from './utils';
 
@@ -82,7 +82,7 @@ function getWidthBasedResolutionText(
   return '';
 }
 
-export class PixiTrack extends Track {
+class PixiTrack extends Track {
   /**
    * @param scene: A PIXI.js scene to draw everything to.
    * @param options: A set of options that describe how this track is rendered.
@@ -138,14 +138,23 @@ export class PixiTrack extends Track {
 
     this.options = Object.assign(this.options, options);
 
-    const labelTextText = this.options.name ? this.options.name :
-      (this.tilesetInfo ? this.tilesetInfo.name : '');
+    let labelTextText = this.options.name
+      ? this.options.name
+      : this.tilesetInfo ? this.tilesetInfo.name : '';
+
+    if (!this.options.labelPosition || this.options.labelPosition === 'hidden') {
+      labelTextText = '';
+    }
+
     this.labelTextFontFamily = 'Arial';
     this.labelTextFontSize = 12;
 
-    this.labelText = new PIXI.Text(labelTextText, { fontSize: `${this.labelTextFontSize}px`,
-      fontFamily: this.labelTextFontFamily,
-      fill: 'black' });
+    this.labelText = new PIXI.Text(
+      labelTextText, {
+        fontSize: `${this.labelTextFontSize}px`,
+        fontFamily: this.labelTextFontFamily,
+        fill: 'black'
+      });
 
     this.errorText = new PIXI.Text('',
       { fontSize: '12px', fontFamily: 'Arial', fill: 'red' });
@@ -187,7 +196,6 @@ export class PixiTrack extends Track {
    * graphics from the scene
    */
   remove() {
-    //console.trace('removing track');
     // the entire PIXI stage was probably removed
     this.pBase.clear();
     this.scene.removeChild(this.pBase);
@@ -242,15 +250,17 @@ export class PixiTrack extends Track {
   }
 
   drawLabel() {
+    if (!this.labelText) return;
+
     const graphics = this.pLabel;
+
+    graphics.clear();
 
     if (!this.options || !this.options.labelPosition) {
       // don't display the track label
       this.labelText.opacity = 0;
       return;
     }
-
-    graphics.clear();
 
     if (this.options.labelBackgroundOpacity) {
       graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);

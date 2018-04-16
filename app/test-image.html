@@ -4,8 +4,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HiGlass</title>
 <style type="text/css">
+html,
+body {
+  background: black !important;
+}
 .canvasjs-chart-credit {
-  display:none;
+  display: none;
 }
 </style>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
@@ -31,7 +35,7 @@
 <script>
 
 const testViewConfig = {
-  editable: true,
+  editable: false,
   zoomFixed: false,
   trackSourceServers: ['http://higlass.io/api/v1'],
   exportViewUrl: 'http://higlass.io/api/v1/viewconfs/',
@@ -51,31 +55,78 @@ const testViewConfig = {
             options: {},
             contents: [
               {
-                uid: 'i1',
+                uid: 'imtiles',
                 type: 'image-tiles',
                 server: 'http://localhost:8001/api/v1/',
-                tilesetUid: 'gigapan-54825',
+                tilesetUid: 'gigapan-66020',
                 options: {
                   name: 'Gigapan Image 54825'
                 }
               },
               {
                 server: 'http://localhost:8001/api/v1',
-                tilesetUid: 'gigapan-54825-snapshots',
-                uid: 'i1a',
+                tilesetUid: 'gigapan-54825-66020-snapshots',
+                uid: 'snapshots',
                 type: '2d-annotations',
                 options: {
                   coords: 'pixel',
-                  labelColor: 'pink',
+                  labelColor: 'white',
                   labelPosition: 'hidden',
                   trackBorderWidth: 0,
-                  trackBorderColor: 'pink',
+                  trackBorderColor: 'white',
                   rectangleDomainFillColor: 'grey',
-                  rectangleDomainFillOpacity: 0.05,
-                  rectangleDomainStrokeColor: 'pink',
-                  rectangleDomainOpacity: 0,
+                  rectangleDomainFillOpacity: 0,
+                  rectangleDomainStrokeColor: 'white',
+                  rectangleDomainOpacity: 0.1,
                   rectanlgeMinSize: 1,
                   name: 'Gigapan 54825 Snapshots'
+                },
+                position: 'center',
+              },
+              {
+                server: 'http://localhost:8001/api/v1/',
+                tilesetUid: 'gigapan-66020',
+                uid: 'insets',
+                type: 'insets',
+                datatype: 'image',
+                options: {
+                  minSize: 24,
+                  maxSize: 64,
+                  sizeStepSize: 2,
+                  scale: 1,
+                  scaleSizeBy: 'size',
+                  scaleBorderBy: 'importance',
+                  additionalZoom: 1,
+                  onClickScale: 3,
+                  fill: 'white',
+                  fillOpacity: 1,
+                  borderColor: 'white',
+                  borderWidth: 1,
+                  borderOpacity: 1,
+                  borderRadius: 4,
+                  leaderLineColor: 'white',
+                  leaderLineWidth: 2,
+                  leaderLineOpacity: 1,
+                  // leaderLineFading: {
+                  //   0: 1,
+                  //   0.35: 0.33,
+                  //   0.65: 0.33,
+                  //   1: 1,
+                  // },
+                  // leaderLineStubWidthMin: 2,
+                  // leaderLineStubWidthMax: 4,
+                  // leaderLineStubLength: 12,
+                  // leaderLineDynamic: true,
+                  // leaderLineDynamicMinDist: 24,
+                  // leaderLineDynamicMaxDist: 120,
+                  selectColor: 'red',
+                  dropDistance: 1,
+                  dropBlur: 3,
+                  dropOpacity: 0.8,
+                  opacity: 1,
+                  showClusterSize: true,
+                  isDraggingEnabled: true,
+                  loadHiResOnScaleUp: true
                 },
                 position: 'center',
               },
@@ -85,8 +136,24 @@ const testViewConfig = {
         right: [],
         bottom: []
       },
+      metaTracks: [
+        {
+          uid: 'c2a',
+          type: 'annotations-insets',
+          insetsTrack: 'insets',
+          options: {
+            annotationTracks: [
+              'snapshots',
+            ],
+            insetThreshold: 16,
+            gridSize: 72,
+            minClusterSize: 3,
+            maxClusterDiameter: 96,
+          }
+        }
+      ],
       layout: {
-        w: 16,
+        w: 12,
         h: 12,
         x: 0,
         y: 0,
@@ -109,8 +176,7 @@ const testViewConfig = {
 window.hglib.createHgComponent(
   document.getElementById('development-demo'),
   testViewConfig,
-  { bounded: true },
-  (api) => { window.hgApi = api; }
+  { bounded: true, isDarkTheme: true }
 );
 </script>
 </html>

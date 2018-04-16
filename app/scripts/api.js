@@ -1,10 +1,12 @@
+import ReactDOM from 'react-dom';
+
 import {
   relToAbsChromPos,
   scalesCenterAndK,
 } from './utils';
 
 import {
-  setTileProxyAuthHeader
+  setDarkTheme, setTileProxyAuthHeader
 } from './services';
 
 import {
@@ -13,6 +15,8 @@ import {
 } from './configs';
 
 import pubSub, { create } from './services/pub-sub';
+
+import ChromosomeInfo from './ChromosomeInfo';
 
 let stack = {};
 let pubSubs = [];
@@ -24,7 +28,6 @@ export const destroy = () => {
   pubSubs = [];
   stack = {};
 };
-import ChromosomeInfo from './ChromosomeInfo';
 
 const api = function api(context) {
   const self = context;
@@ -43,6 +46,10 @@ const api = function api(context) {
      */
     reload() {
 
+    },
+
+    destroy() {
+      ReactDOM.unmountComponentAtNode(self.topDiv.parentNode);
     },
 
     setViewConfig(newViewConfig) {
@@ -118,6 +125,13 @@ const api = function api(context) {
       self.setState({
         draggingHappening: null,
       });
+    },
+
+    /**
+     * Choose a theme.
+     */
+    activateDarkTheme(deactivate = false) {
+      setDarkTheme(deactivate);
     },
 
     zoomToDataExtent(viewUid) {

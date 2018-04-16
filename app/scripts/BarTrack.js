@@ -1,20 +1,11 @@
 import { scaleLinear, scaleLog } from 'd3-scale';
 
-import { HorizontalLine1DPixiTrack } from './HorizontalLine1DPixiTrack';
+import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 
 // Utils
 import { colorToHex, dictValues } from './utils';
 
-export class BarTrack extends HorizontalLine1DPixiTrack {
-  constructor( scene, dataConfig, handleTilesetInfoReceived, option,
-    animate,
-    onValueScaleChanged,
-  ) {
-    super( scene, dataConfig, handleTilesetInfoReceived, option, animate,
-      onValueScaleChanged,
-    );
-  }
-
+class BarTrack extends HorizontalLine1DPixiTrack {
   initTile(tile) {
     /**
          * Create whatever is needed to draw this tile.

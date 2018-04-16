@@ -1,18 +1,39 @@
-import { TiledPixiTrack } from './TiledPixiTrack';
+import * as PIXI from 'pixi.js';
+
+import TiledPixiTrack from './TiledPixiTrack';
 
 // Services
-import { tileProxy } from './services';
+import { pubSub, tileProxy } from './services';
+import { create } from './services/pub-sub';
 
 // Utils
-import { colorToHex } from './utils';
+import { colorToHex, max, min } from './utils';
+
+const MOUSE_CLICK_TIME = 250;
 
 class Annotations2dTrack extends TiledPixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
-    super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
+  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
+    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
 
     this.drawnAnnotations = {};
+    this.drawnAnnoGfx = {};
+
+    this.selectedAnno = null;
 
     this.options.minSquareSize = +this.options.minSquareSize;
+
+    const { publish, subscribe, unsubscribe } = create({});
+    this.publish = publish;
+    this.subscribe = subscribe;
+    this.unsubscribe = unsubscribe;
+
+    this.sT = 0;
+
+    this.annoSelectedBound = this.annoSelected.bind(this);
+
+    this.pubSubs.push(
+      pubSub.subscribe('annoSelected', this.annoSelectedBound)
+    );
   }
 
   /* --------------------------- Getter / Setter ---------------------------- */
@@ -24,9 +45,9 @@ class Annotations2dTrack extends TiledPixiTrack {
   }
 
   get maxX() {
-    return this.tilesetInfo && this.tilesetInfo.max_pos
-      ? this.tilesetInfo.max_pos[0]
-      : 0;
+    return this.tilesetInfo && this.tilesetInfo.max_x
+      ? this.tilesetInfo.max_x
+      : this.tilesetInfo.max_width || this.tilesetInfo.max_size;
   }
 
   get minY() {
@@ -40,16 +61,14 @@ class Annotations2dTrack extends TiledPixiTrack {
   }
 
   get maxSize() {
-    try {
-      return Math.max(
-        this.tilesetInfo.max_pos[0] - this.tilesetInfo.min_pos[0],
-        this.tilesetInfo.max_pos[1] - this.tilesetInfo.min_pos[1]
-      );
-    } catch (e) { /* Nothing */ }
+    const maxSize = this.tilesetInfo.max_x && Math.max(
+      this.tilesetInfo.max_x - this.tilesetInfo.min_x,
+      this.tilesetInfo.max_y - this.tilesetInfo.min_y
+    );
 
-    try {
-      return this.tilesetInfo.max_size;
-    } catch (e) { /* Nothing */ }
+    if (maxSize) return maxSize;
+
+    if (this.tilesetInfo.max_size) return this.tilesetInfo.max_size;
 
     return 0;
   }
@@ -60,7 +79,7 @@ class Annotations2dTrack extends TiledPixiTrack {
    * @param   {number}  y  Data Y coordinate
    * @return  {array}  Tuple [x,y] containing the translated view coordinates.
    */
-  projection(x, y) {
+  projection([x, y]) {
     return [this._xScale(x), this._yScale(y)];
   }
 
@@ -98,7 +117,7 @@ class Annotations2dTrack extends TiledPixiTrack {
       this._yScale, this.minY, this.maxY
     );
 
-    return Math.min(Math.max(xZoomLevel, yZoomLevel), this.maxZoom);
+    return min(max(xZoomLevel, yZoomLevel), this.maxZoom);
   }
 
   /**
@@ -162,8 +181,10 @@ class Annotations2dTrack extends TiledPixiTrack {
     super.draw();
   }
 
-  drawTile(tile) {
+  drawTile(tile, force = false, silent = false) {
     if (!tile.graphics) return;
+
+    tile.graphics.__tile__ = tile;
 
     const graphics = tile.graphics;
     graphics.clear();
@@ -171,33 +192,55 @@ class Annotations2dTrack extends TiledPixiTrack {
     this.setBorderStyle(graphics);
     this.setFill(graphics);
 
-    graphics.alpha = this.options.rectangleDomainOpacity || 0.5;
+    graphics.alpha = +this.options.rectangleDomainOpacity;
 
     if (!tile.tileData.length) return;
 
     tile.tileData
-      .filter(td => !(td.uid in this.drawnAnnotations))
+      .filter(td => !(td.uid in this.drawnAnnotations) || force)
       .forEach((td) => {
         const [startX, startY] = this.projection([td.xStart, td.yStart]);
         const [endX, endY] = this.projection([td.xEnd, td.yEnd]);
 
+        if (this.options.exclude && this.options.exclude.indexOf(td.uid) >= 0) {
+          return;
+        }
+
         this.drawAnnotation(
           this.prepAnnotation(
-            graphics, td.uid, startX, startY, endX - startX, endY - startY, td
-          )
+            graphics,
+            td.uid,
+            startX,
+            startY,
+            endX - startX,
+            endY - startY,
+            td,
+          ),
+          silent
         );
       });
   }
 
-  prepAnnotation(graphics, uid, startX, startY, width, height) {
+  prepAnnotation(graphics, uid, startX, startY, width, height, td) {
+    let info;
+
+    try {
+      info = JSON.parse(td.fields);
+    } catch (e) {
+      // Nothing
+    }
+
     return {
       graphics,
       uid,
-      annotation: { x: startX, y: startY, width, height }
+      annotation: { x: startX, y: startY, width, height },
+      dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
+      importance: td.importance,
+      info
     };
   }
 
-  drawAnnotation({ graphics, uid, annotation }) {
+  drawAnnotation({ graphics, uid, annotation, dataPos, importance, info }, silent) {
     if (this.options.minSquareSize) {
       if (
         annotation.width < this.options.minSquareSize
@@ -212,9 +255,161 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     this.drawnAnnotations[uid] = annotation;
 
-    graphics.drawRect(
+    const viewPos = [
       annotation.x, annotation.y, annotation.width, annotation.height
-    );
+    ];
+
+    if (this.options.isClickable) {
+      let rectGfx = this.drawnAnnoGfx[uid];
+      if (!rectGfx) {
+        rectGfx = new PIXI.Graphics();
+        this.drawnAnnoGfx[uid] = rectGfx;
+      }
+
+      if (graphics.children.indexOf(rectGfx) === -1) {
+        graphics.addChild(rectGfx);
+      }
+
+      this._drawRect(rectGfx, viewPos, uid);
+
+      graphics.interactive = true;
+      rectGfx.interactive = true;
+      rectGfx.buttonMode = true;
+
+      rectGfx.mouseover = () => this.hover(rectGfx, viewPos, uid);
+      rectGfx.mouseout = () => this.blur(rectGfx, viewPos, uid);
+
+      rectGfx.mousedown = () => this.mouseDown();
+      rectGfx.mouseup = () => this.mouseUp(rectGfx, viewPos, uid);
+    } else {
+      graphics.drawRect(...viewPos);
+    }
+
+    if (!silent) {
+      this.publish(
+        'annotationDrawn',
+        {
+          trackUuids: this.uuid,
+          annotationUuid: uid,
+          viewPos,
+          dataPos,
+          importance,
+          info
+        }
+      );
+    }
+  }
+
+  _drawRect(graphics, viewPos, uid) {
+    let stroke = this.options.rectangleDomainStrokeColor;
+    let strokeWidth = this.options.rectangleDomainStrokeWidth;
+    let strokeAlpha = this.options.rectangleDomainStrokeOpacity;
+    let fill = this.options.rectangleDomainFillColor;
+    let fillAlpha = this.options.rectangleDomainFillOpacity;
+
+    if (this.hoveredAnno === uid) {
+      stroke = this.options.hoverColor;
+      strokeWidth = this.options.rectangleDomainStrokeWidth + 1 || 2;
+      strokeAlpha = 1;
+      fill = this.options.hoverColor;
+      fillAlpha = this.options.rectangleDomainFillOpacity;
+    }
+
+    if (this.selectedAnno && this.selectedAnno.uid === uid) {
+      stroke = this.options.selectColor;
+      strokeWidth = this.options.rectangleDomainStrokeWidth + 1 || 2;
+      strokeAlpha = 1;
+      fill = this.options.selectColor;
+      fillAlpha = max(0.33, this.options.rectangleDomainFillOpacity);
+    }
+
+    graphics.clear();
+    if (this.options.trackBorderBgWidth) {
+      this.setBorderStyle(
+        graphics,
+        this.options.trackBorderBgColor,
+        this.options.trackBorderBgWidth,
+        this.options.trackBorderBgAlpha
+      );
+      this.setFill(graphics, fill, 0);
+      graphics.drawRect(...viewPos);
+    }
+    this.setBorderStyle(graphics, stroke, strokeWidth, strokeAlpha);
+    this.setFill(graphics, fill, fillAlpha);
+    graphics.drawRect(...viewPos);
+    graphics.__viewPos__ = viewPos;
+  }
+
+  context(graphics, viewPos, uid) {
+    return proc => proc(graphics, viewPos, uid);
+  }
+
+  click(graphics, viewPos, uid) {
+    this.select(graphics, viewPos, uid);
+  }
+
+  mouseDown() {
+    this.sT = performance.now();
+  }
+
+  mouseUp(graphics, viewPos, uid) {
+    if (performance.now() - this.sT <= MOUSE_CLICK_TIME) {
+      this.click(graphics, viewPos, uid);
+    }
+  }
+
+  hover(graphics, viewPos, uid) {
+    this.hoveredAnno = uid;
+    this._drawRect(graphics, viewPos, uid);
+    this.animate();
+  }
+
+  focus(graphics, viewPos, uid) {
+    this._drawRect(graphics, viewPos, uid);
+    this.animate();
+  }
+
+  blur(graphics, viewPos, uid) {
+    this.hoveredAnno = null;
+    this._drawRect(graphics, viewPos, uid);
+    this.animate();
+  }
+
+  select(graphics, viewPos, uid, silent = false) {
+    let prevGfx = null;
+    let prevUid = null;
+
+    if (this.selectedAnno) {
+      prevGfx = this.selectedAnno.graphics;
+      prevUid = this.selectedAnno.uid;
+    }
+
+    this.selectedAnno = { graphics, uid };
+    this.focus(graphics, viewPos, uid);
+
+    if (this.options.onSelect && !silent) {
+      window[this.options.onSelect](uid);
+      pubSub.publish('annoSelected', uid);
+    }
+
+    if (prevGfx && prevUid) {
+      this.blur(prevGfx, prevGfx.__viewPos__, prevUid);
+    }
+  }
+
+  unselect() {
+    const gfx = this.selectedAnno.graphics;
+    const uid = this.selectedAnno.uid;
+    this.selectedAnno = null;
+    this.blur(gfx, gfx.__viewPos__, uid);
+  }
+
+  annoSelected(uid) {
+    if (!this.selectedAnno || this.selectedAnno.uid !== uid) {
+      if (this.selectedAnno) this.unselect();
+      const gfx = this.drawnAnnoGfx[uid];
+      if (gfx) this.select(gfx, gfx.__viewPos__, uid, true);
+    }
   }
 
   exportSVG() {
@@ -274,7 +469,7 @@ class Annotations2dTrack extends TiledPixiTrack {
     graphics,
     color = this.options.rectangleDomainStrokeColor,
     width = this.options.rectangleDomainStrokeWidth,
-    alpha = this.options.rectangleDomainStrokeOpacity
+    alpha = this.options.rectangleDomainStrokeOpacity,
   ) {
     graphics.lineStyle(
       typeof width !== 'undefined' ? width : 1,

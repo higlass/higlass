@@ -1,4 +1,4 @@
-export class CombinedTrack {
+class CombinedTrack {
   constructor(trackDefs, trackCreator) {
     this.childTracks = trackDefs.map(trackCreator);
     this.createdTracks = {};
@@ -79,39 +79,39 @@ export class CombinedTrack {
     }
   }
 
-  refXScale(xScale) {
-    for (let i = 0; i < this.childTracks.length; i++) {
-      this.childTracks[i].refXScale(xScale);
-    }
-  }
+  // refXScale(xScale) {
+  //   for (let i = 0; i < this.childTracks.length; i++) {
+  //     this.childTracks[i].refXScale(xScale);
+  //   }
+  // }
 
-  refYScale(yScale) {
-    for (let i = 0; i < this.childTracks.length; i++) {
-      this.childTracks[i].refYScale(yScale);
-    }
-  }
+  // refYScale(yScale) {
+  //   for (let i = 0; i < this.childTracks.length; i++) {
+  //     this.childTracks[i].refYScale(yScale);
+  //   }
+  // }
 
   draw() {
-    for (let i = 0; i < this.childTracks.length; i++) {
-      this.childTracks[i].draw();
-    }
+    // for (let i = 0; i < this.childTracks.length; i++) {
+    //   this.childTracks[i].draw();
+    // }
   }
 
-  xScale(xScale) {
-    this._xScale = xScale;
+  // xScale(xScale) {
+  //   this._xScale = xScale;
 
-    for (let i = 0; i < this.childTracks.length; i++) {
-      this.childTracks[i].xScale(xScale);
-    }
-  }
+  //   for (let i = 0; i < this.childTracks.length; i++) {
+  //     this.childTracks[i].xScale(xScale);
+  //   }
+  // }
 
-  yScale(xScale) {
-    this._yScale = yScale;
+  // yScale(xScale) {
+  //   this._yScale = yScale;
 
-    for (let i = 0; i < this.childTracks.length; i++) {
-      this.childTracks[i].yScale(yScale);
-    }
-  }
+  //   for (let i = 0; i < this.childTracks.length; i++) {
+  //     this.childTracks[i].yScale(yScale);
+  //   }
+  // }
 
   refScalesChanged(refXScale, refYScale) {
     for (let i = 0; i < this.childTracks.length; i++) {

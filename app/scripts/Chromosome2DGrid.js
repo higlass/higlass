@@ -1,12 +1,12 @@
 import * as PIXI from 'pixi.js';
 
-import { PixiTrack } from './PixiTrack';
-import { ChromosomeInfo } from './ChromosomeInfo';
-import { SearchField } from './search_field';
+import PixiTrack from './PixiTrack';
+import ChromosomeInfo from './ChromosomeInfo';
+import SearchField from './SearchField';
 
 import { colorToHex } from './utils';
 
-export class Chromosome2DGrid extends PixiTrack {
+class Chromosome2DGrid extends PixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, chromInfoPath) {
     super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
 

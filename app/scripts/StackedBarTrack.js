@@ -3,7 +3,7 @@ import { BarTrack } from './BarTrack';
 import { OneDimensionalMixin } from './OneDimensionalMixin';
 import { scaleLinear, scaleOrdinal, schemeCategory10 } from 'd3-scale';
 
-export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
+class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
   constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
     super(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged);
 
@@ -138,11 +138,11 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       graphics.lineStyle(0.1, 'black', 1);
       tile.barBorders = true;
     }
-    
+
     for (let j = 0; j < matrix.length; j++) { // jth vertical bar in the graph
       const x = this._xScale(tileX + (j * tileWidth / this.tilesetInfo.tile_size));
       const width = this._xScale(tileX + (tileWidth / this.tilesetInfo.tile_size)) - this._xScale(tileX);
-      
+
       // draw positive values
       const positive = matrix[j][0];
       const valueToPixelsPositive = scaleLinear()
@@ -196,7 +196,7 @@ export class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
     }
 
   }
-  
+
   /**
    * Draws graph using normalized values.
    *

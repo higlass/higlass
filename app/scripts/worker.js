@@ -11,64 +11,62 @@ function countTransform(count) {
 */
 const epsilon = 0.0000001;
 
-const MAX_FETCH_TILES = 20;
-
+/**
+ * Calculate the minimum non-zero value in the data
+ *
+ * Parameters
+ * ----------
+ *  data: Float32Array
+ *    An array of values
+ *
+ * Returns
+ * -------
+ *  minNonZero: float
+ *    The minimum non-zero value in the array
+ */
 export function minNonZero(data) {
-  /**
-   * Calculate the minimum non-zero value in the data
-   *
-   * Parameters
-   * ----------
-   *  data: Float32Array
-   *    An array of values
-   *
-   * Returns
-   * -------
-   *  minNonZero: float
-   *    The minimum non-zero value in the array
-   */
-   let minNonZero = Number.MAX_SAFE_INTEGER;
+  let minNonZeroVal = Number.MAX_SAFE_INTEGER;
 
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
-    if (x < epsilon && x > -epsilon) { continue; }
+    if (x < epsilon && x > -epsilon) continue;
 
-    if (x < minNonZero) { minNonZero = x; }
+    if (x < minNonZeroVal) { minNonZeroVal = x; }
   }
 
-  return  minNonZero;
+  return minNonZeroVal;
 }
 
+/**
+ * Calculate the minimum non-zero value in the data
+ *
+ * Parameters
+ * ----------
+ *  data: Float32Array
+ *    An array of values
+ *
+ * Returns
+ * -------
+ *  minNonZero: float
+ *    The minimum non-zero value in the array
+ */
 export function maxNonZero(data) {
-  /**
-   * Calculate the minimum non-zero value in the data
-   *
-   * Parameters
-   * ----------
-   *  data: Float32Array
-   *    An array of values
-   *
-   * Returns
-   * -------
-   *  minNonZero: float
-   *    The minimum non-zero value in the array
-   */
-  let maxNonZero = Number.MIN_SAFE_INTEGER;
+  let maxNonZeroVal = Number.MIN_SAFE_INTEGER;
 
   for (let i = 0; i < data.length; i++) {
     const x = data[i];
 
-    if (x < epsilon && x > -epsilon) { continue; }
+    if (x < epsilon && x > -epsilon) continue;
 
-    if (x > maxNonZero) { maxNonZero = x; }
+    if (x > maxNonZeroVal) { maxNonZeroVal = x; }
   }
 
-  return maxNonZero;
+  return maxNonZeroVal;
 }
 
 export function workerSetPix(
-  size, data, valueScaleType, valueScaleDomain, pseudocount, colorScale
+  size, data, valueScaleType, valueScaleDomain, pseudocount, colorScale, transIdx
 ) {
   /**
    * The pseudocount is generally the minimum non-zero value and is
@@ -77,30 +75,32 @@ export function workerSetPix(
   const epsilon = 0.000001;
   let valueScale = null;
 
-  if (valueScaleType == 'log') {
+  if (valueScaleType === 'log') {
     valueScale = scaleLog()
-      .range([254,0])
-      .domain(valueScaleDomain)
+      .range([254, 0])
+      .domain(valueScaleDomain);
   } else {
-    if (valueScaleType != 'linear') {
+    if (valueScaleType !== 'linear') {
       console.warn('Unknown value scale type:', valueScaleType, ' Defaulting to linear');
     }
     valueScale = scaleLinear()
-      .range([254,0])
-      .domain(valueScaleDomain)
-  } 
+      .range([254, 0])
+      .domain(valueScaleDomain);
+  }
 
-  const pixData = new Uint8ClampedArray(size * 4);
+  const pixData = new Uint8ClampedArray(data.length * 4);
 
   let rgbIdx = 0;
   let e = 0;
+  let k = 0;
 
+  const isTransIdx = !!transIdx.length;
   try {
     for (let i = 0; i < data.length; i++) {
       const d = data[i];
       e = d; // for debugging
 
-      rgbIdx = 255;
+      rgbIdx = 255; // transparent
 
       if (Math.abs(d) > epsilon) {
         // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
@@ -112,10 +112,18 @@ export function workerSetPix(
       }
       const rgb = colorScale[rgbIdx];
 
-      pixData[i * 4] = rgb[0];
-      pixData[i * 4 + 1] = rgb[1];
-      pixData[i * 4 + 2] = rgb[2];
-      pixData[i * 4 + 3] = rgb[3];
+      const baseI = i * 4;
+      let alphaColor = rgb[3];
+
+      if (isTransIdx && i === transIdx[k]) {
+        alphaColor = 0;
+        k += 1;
+      }
+
+      pixData[baseI] = rgb[0];
+      pixData[baseI + 1] = rgb[1];
+      pixData[baseI + 2] = rgb[2];
+      pixData[baseI + 3] = alphaColor;
     }
   } catch (err) {
     console.warn('Odd datapoint');
@@ -159,13 +167,13 @@ function float32(inUint16) {
 }
 
 function _base64ToArrayBuffer(base64) {
-  const binary_string = atob(base64);
-  const len = binary_string.length;
+  const binaryString = atob(base64);
+  const len = binaryString.length;
 
   const bytes = new Uint8Array(len);
 
   for (let i = 0; i < len; i++) {
-    bytes[i] = binary_string.charCodeAt(i);
+    bytes[i] = binaryString.charCodeAt(i);
   }
 
   return bytes.buffer;
@@ -184,13 +192,13 @@ function _uint16ArrayToFloat32Array(uint16array) {
 }
 
 /**
- * Convert a response from the tile server to 
+ * Convert a response from the tile server to
  * data that can be used by higlass
  */
 export function tileResponseToData(data, server, theseTileIds) {
-  if (!data)  {
+  if (!data) {
     // probably an error
-    data = {}
+    data = {};
   }
 
   for (const thisId of theseTileIds) {
@@ -213,7 +221,7 @@ export function tileResponseToData(data, server, theseTileIds) {
       let a;
 
 
-      if (data[key].dtype == 'float16') {
+      if (data[key].dtype === 'float16') {
         // data is encoded as float16s
         /* comment out until next empty line for 32 bit arrays */
         const uint16Array = new Uint16Array(arrayBuffer);
@@ -263,7 +271,7 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
     }
     )
     .then(data =>  {
-      data = tileResponseToData(data, server, theseTileIds); 
+      data = tileResponseToData(data, server, theseTileIds);
 
       done(data);
 

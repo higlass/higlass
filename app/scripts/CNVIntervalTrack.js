@@ -4,7 +4,7 @@ import { segmentsToRows } from './utils';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
-export class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
+class CNVIntervalTrack extends HorizontalTiled1DPixiTrack {
   constructor(
     scene,
     dataConfig,

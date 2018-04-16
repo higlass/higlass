@@ -1,13 +1,12 @@
-import { scaleLinear, scaleLog } from 'd3-scale';
-import { tileProxy } from './services';
 import { format } from 'd3-format';
+import { scaleLinear } from 'd3-scale';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 import { colorToHex } from './utils';
-import { pubSub } from './services';
+import { pubSub, tileProxy } from './services';
 
-export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
+class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(
     scene,
     dataConfig,
@@ -56,7 +55,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       const index =  Math.floor(posInTileX);
       value = fetchedTile.tileData.dense[index];
       textValue = format(".3f")(value);
-    } else { 
+    } else {
       return '';
     }
 
@@ -69,10 +68,10 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     graphics.beginFill(colorHex, .5);
     graphics.lineStyle(1, colorHex, 1);
     const markerWidth = 4;
-    
+
     graphics.drawRect(
       trackX - markerWidth / 2,
-      yPos - markerWidth / 2, 
+      yPos - markerWidth / 2,
       markerWidth,
       markerWidth);
 

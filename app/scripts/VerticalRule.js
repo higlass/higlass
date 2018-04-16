@@ -1,12 +1,12 @@
 import { mix, Mixin } from 'mixwith';
 
-import PixiTrack from './PixiTrack.js';
-import { colorToHex } from './utils';
-import { RuleMixin } from './RuleMixin';
+import PixiTrack from './PixiTrack';
+import RuleMixin from './RuleMixin';
 
-export const VerticalRuleMixin = Mixin((superclass) => class extends superclass {
+import { colorToHex } from './utils';
+
+export const VerticalRuleMixin = Mixin(superclass => class extends superclass {
   drawVerticalRule(graphics) {
-    const strokeWidth = 1;
     let stroke = colorToHex('black');
 
     if (this.highlighted) {
@@ -17,8 +17,8 @@ export const VerticalRuleMixin = Mixin((superclass) => class extends superclass 
 
     let pos = 0;
 
-    let dashLength = 5;
-    let dashGap = 3;
+    const dashLength = 5;
+    const dashGap = 3;
 
     // console.log('this._yScale.range()', this._yScale.range());
 
@@ -31,14 +31,13 @@ export const VerticalRuleMixin = Mixin((superclass) => class extends superclass 
   }
 
   isMouseOverVerticalLine(mousePos) {
-      if (Math.abs(mousePos.x - this.position[0] - this._xScale(this.xPosition)) < this.MOUSEOVER_RADIUS) {
-        return true;
-      }
-    return false;
+    return Math.abs(
+      mousePos.x - this.position[0] - this._xScale(this.xPosition)
+    ) < this.MOUSEOVER_RADIUS;
   }
 });
 
-export class VerticalRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
+export default class VerticalRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMixin) {
   constructor(stage, xPosition, options, animate) {
     super(stage, options, animate);
 
@@ -54,16 +53,11 @@ export class VerticalRule extends mix(PixiTrack).with(RuleMixin, VerticalRuleMix
   }
 
   mouseMoveHandler(mousePos) {
-    if (this.isWithin(mousePos.x, mousePos.y) &&
-      this.isMouseOverVerticalLine(mousePos)) {
-        this.highlighted = true;
-        this.draw();
-        return;
-    }
+    this.highlighted = (
+      this.isWithin(mousePos.x, mousePos.y)
+      && this.isMouseOverVerticalLine(mousePos)
+    );
 
-    this.highlighted = false;
     this.draw();
   }
 }
-
-export default VerticalRule;

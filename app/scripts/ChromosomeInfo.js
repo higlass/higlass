@@ -1,7 +1,7 @@
 import { tsvParseRows } from 'd3-dsv';
 import { tileProxy } from './services';
 
-export function ChromosomeInfo(filepath, success) {
+function ChromosomeInfo(filepath, success) {
   tileProxy.text(filepath, (error, chrInfoText) => {
     if (error) {
       console.warn("Chromosome info not found at:", filepath);

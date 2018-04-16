@@ -3,7 +3,7 @@ import { SortableElement } from 'react-sortable-hoc';
 
 import VerticalTrack from './VerticalTrack';
 
-export const VerticalItem = SortableElement(props => (
+const VerticalItem = SortableElement(props => (
   <VerticalTrack
     className={props.className}
     controlAlignLeft={props.controlAlignLeft}

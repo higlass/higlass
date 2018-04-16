@@ -1,14 +1,15 @@
-import '../styles/HiGlassInput.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Panel, FormGroup, ControlLabel, FormControl, SafeAnchor } from 'react-bootstrap';
+import {
+  Button, Panel, FormGroup, ControlLabel, FormControl, SafeAnchor
+} from 'react-bootstrap';
 
-export class HiGlassInput extends React.Component {
+import '../styles/HiGlassInput.css';
+
+export default class HiGlassInput extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-    };
+    this.state = {};
   }
 
   handleSubmit(event) {
@@ -17,10 +18,6 @@ export class HiGlassInput extends React.Component {
     const configText = ReactDOM.findDOMNode(this.refs.textConfigInput).value;
 
     this.props.onNewConfig(configText);
-  }
-
-  componentWillReceiveProps(newProps) {
-    // console.log('HGI newProps:', newProps);
   }
 
   render() {
@@ -59,5 +56,3 @@ export class HiGlassInput extends React.Component {
     );
   }
 }
-
-export default HiGlassInput;

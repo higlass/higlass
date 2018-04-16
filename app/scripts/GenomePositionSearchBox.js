@@ -1,8 +1,6 @@
-import { json } from 'd3-request';
 import { queue } from 'd3-queue';
 import { select, event } from 'd3-selection';
 import React from 'react';
-import {tileProxy} from './services';
 import slugid from 'slugid';
 import {
   FormGroup,
@@ -14,9 +12,12 @@ import PropTypes from 'prop-types';
 
 import { ZOOM_TRANSITION_DURATION } from './configs';
 import Autocomplete from './Autocomplete';
-import { ChromosomeInfo } from './ChromosomeInfo';
-import { SearchField } from './search_field';
+import ChromosomeInfo from './ChromosomeInfo';
+import SearchField from './SearchField';
 import PopupMenu from './PopupMenu';
+
+// Services
+import { getDarkTheme, tileProxy } from './services';
 
 // Utils
 import { scalesCenterAndK, dictKeys } from './utils';
@@ -24,7 +25,7 @@ import { scalesCenterAndK, dictKeys } from './utils';
 // Styles
 import styles from '../styles/GenomePositionSearchBox.module.scss'; // eslint-disable-line no-unused-vars
 
-export class GenomePositionSearchBox extends React.Component {
+class GenomePositionSearchBox extends React.Component {
   constructor(props) {
     super(props);
 
@@ -54,7 +55,7 @@ export class GenomePositionSearchBox extends React.Component {
 
     this.menuPosition = { left: 0, top: 0 };
 
-    // the position text is maintained both here and in 
+    // the position text is maintained both here and in
     // in state.value so that it can be quickly updated in
     // response to zoom events
     this.positionText =  'chr4:190,998,876-191,000,255';
@@ -173,7 +174,7 @@ export class GenomePositionSearchBox extends React.Component {
       // that was received, but if none has been retrieved yet...
       if (this.availableAutocompletes[chromInfoId]) {
         const newAcId = [...this.availableAutocompletes[chromInfoId]][0].acId;
-        this.props.onSelectedAssemblyChanged(chromInfoId, newAcId, 
+        this.props.onSelectedAssemblyChanged(chromInfoId, newAcId,
           serverAndChromInfoToUse.server);
 
         if (this.gpsbForm) {
@@ -452,8 +453,8 @@ export class GenomePositionSearchBox extends React.Component {
     this.prevParts = parts;
 
     // no autocomplete repository is provided, so we don't try to autcomplete anything
-    if (!(this.state.autocompleteServer && this.state.autocompleteId)) { 
-      return; 
+    if (!(this.state.autocompleteServer && this.state.autocompleteId)) {
+      return;
     }
 
     if (this.changedPart != null) {
@@ -558,7 +559,7 @@ export class GenomePositionSearchBox extends React.Component {
       </MenuItem>
     ));
 
-    const className = this.state.isFocused ?
+    let className = this.state.isFocused ?
       'styles.genome-position-search-focus' : 'styles.genome-position-search';
 
     const classNameButton = this.state.isFocused ?
@@ -568,6 +569,8 @@ export class GenomePositionSearchBox extends React.Component {
     const classNameIcon = this.state.isFocused ?
       'styles.genome-position-search-bar-icon-focus' :
       'styles.genome-position-search-bar-icon';
+
+    if (getDarkTheme()) className += ' styles.genome-position-search-dark';
 
     return (
       <FormGroup

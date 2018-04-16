@@ -48,7 +48,7 @@ const rangeQuery2d = (
       ? accessorTransposition(xDimOut, xDimOut) : undefined;
     subList = addArrays(outList, newList, acc);
   } catch (e) {
-    console.warn('Invalid 2D query', e);
+    // console.warn('Invalid 2D query', e);
   }
 
   return subList;

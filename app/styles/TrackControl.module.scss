@@ -6,7 +6,7 @@ $buttonSize: 20px;
 .track-control,
 .track-control-vertical {
   position: absolute;
-  z-index: -1;
+  z-index: 1;
   display: flex;
   background: rgba(255, 255, 255, 0.75);
   right: $buttonSize / 10;
@@ -18,6 +18,11 @@ $buttonSize: 20px;
   transition: opacity $fast $ease,
               background $fast $ease,
               box-shadow $fast $ease;
+}
+
+.track-control-dark,
+.track-control-dark .track-control-active {
+  background: rgba(40, 40, 40, 0.85);
 }
 
 .track-control-vertical {
@@ -39,6 +44,10 @@ $buttonSize: 20px;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1),
                 0 0 3px 0 rgba(0, 0, 0, 0.2);
   }
+}
+
+.track-control-dark.track-control-active {
+  &:hover { background: rgba(34, 34, 34, 0.95); }
 }
 
 .track-control-active {
@@ -71,6 +80,16 @@ $buttonSize: 20px;
 
   &:last-child {
     border-radius: 0 $buttonSize / 8 $buttonSize / 8 0;
+  }
+}
+
+.track-control-dark .track-control-button {
+  color: $gray-light;
+
+  &:hover {
+    color: $white;
+    background: $active;
+    opacity: 1;
   }
 }
 

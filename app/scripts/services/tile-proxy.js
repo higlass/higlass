@@ -1,18 +1,25 @@
-import { scaleLog, scaleLinear } from 'd3-scale';
 import { range } from 'd3-array';
 import {
-  json as d3Json,
   text as d3Text,
   request,
 } from 'd3-request';
 import slugid from 'slugid';
 
 import {
-  workerGetTiles,
   workerFetchTiles,
-  workerSetPix,
-  tileResponseToData,
 } from '../worker';
+
+import pubSub from './pub-sub';
+
+import { matIdxTriangle, trimTrailingSlash as tts } from '../utils';
+
+// Config
+import { TILE_FETCH_DEBOUNCE } from '../configs';
+
+const sessionId = slugid.nice();
+
+export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
+export let authHeader = null;
 
 const MAX_FETCH_TILES = 20;
 
@@ -23,7 +30,7 @@ const workerPath = `${pathName}/worker.js`;
 
 const setPixPool = new Pool(1);
 
-setPixPool.run(function(params, done) {
+setPixPool.run((params, done) => {
   try {
     const array = new Float32Array(params.data);
     const pixData = worker.workerSetPix(
@@ -33,41 +40,50 @@ setPixPool.run(function(params, done) {
       params.valueScaleDomain,
       params.pseudocount,
       params.colorScale,
+      params.transIdx
     );
 
-    done.transfer({
-      pixData: pixData
-    }, [pixData.buffer]);
+    done.transfer({ pixData }, [pixData.buffer]);
   } catch (err) {
-    console.log('err:', err);
+    console.errpr('Set PIX worker failed:', err);
   }
 }, [workerPath]);
 
 
 const fetchTilesPool = new Pool(10);
-fetchTilesPool.run(function(params, done) {
+
+fetchTilesPool.run((params, done) => {
   try {
     worker.workerGetTiles(params.outUrl, params.server, params.theseTileIds, params.authHeader, done);
     // done.transfer({
     // pixData: pixData
     // }, [pixData.buffer]);
   } catch (err) {
-    console.log('err:', err);
+    console.error('Fetch tiles worker failed:', err);
   }
 }, [workerPath]);
 */
 
 
-import pubSub from './pub-sub';
+/**
+ * Send a JSON request mark it so that we can tell how many are in flight
+ */
+function json(url, callback) {
+  requestsInFlight += 1;
+  pubSub.publish('requestSent', url);
 
-import { trimTrailingSlash as tts } from '../utils';
+  const r = request(url).header('Content-Type', 'application/json');
 
-// Config
-import { TILE_FETCH_DEBOUNCE } from '../configs';
+  if (authHeader) r.header('Authorization', `${authHeader}`);
 
-const sessionId = slugid.nice();
-export let requestsInFlight = 0; // eslint-disable-line import/no-mutable-exports
-export let authHeader = null;
+  r.send('GET', (error, data) => {
+    pubSub.publish('requestReceived', url);
+    const j = data && JSON.parse(data.response);
+    callback(error, j);
+    requestsInFlight -= 1;
+  });
+}
+
 
 const debounce = (func, wait) => {
   let timeout;
@@ -123,8 +139,8 @@ const debounce = (func, wait) => {
 };
 
 export const setTileProxyAuthHeader = (newHeader) => {
-  authHeader = newHeader
-}
+  authHeader = newHeader;
+};
 
 export function fetchMultiRequestTiles(req) {
   const sessionId = req.sessionId;
@@ -158,9 +174,9 @@ export function fetchMultiRequestTiles(req) {
       const renderParams = theseTileIds.map(x => `d=${x}`).join('&');
       const outUrl = `${server}/tiles/?${renderParams}&s=${sessionId}`;
 
-      const p = new Promise(((resolve, reject) => {
+      const p = new Promise(((resolve) => {
         pubSub.publish('requestSent', outUrl);
-        const params = {}
+        const params = {};
 
         params.outUrl = outUrl;
         params.server = server;
@@ -172,7 +188,8 @@ export function fetchMultiRequestTiles(req) {
         /*
         fetchTilesPool.send(params)
           .promise()
-          .then(ret => {
+          .then((ret) => {
+            pubSub.publish('requestReceived', outUrl);
             resolve(ret);
           });
         */
@@ -237,7 +254,7 @@ export const fetchTiles = (tilesetServer, tilesetIds, done) =>
  * Calculate the zoom level from a list of available resolutions
  */
 export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
-  const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
+  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
 
   const trackWidth = scale.range()[1] - scale.range()[0];
 
@@ -306,7 +323,7 @@ export const calculateTileAndPosInTile = function(tilesetInfo, maxDim, dataStart
   } else {
     tileWidth = maxDim / (2 ** zoomLevel);
   }
-  
+
   const tilePos = Math.floor((position - dataStartPos) / tileWidth);
   const posInTile = Math.floor(PIXELS_PER_TILE * (position - tilePos * tileWidth) / tileWidth);
 
@@ -367,20 +384,18 @@ export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
  * @param minX: The minimum x position of the tileset
  * @param maxX: The maximum x position of the tileset
  */
-export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixelsPerTile) => {
+export const calculateTilesFromResolution = (
+  resolution, scale, minX, maxX, pixelsPerTile
+) => {
   const epsilon = 0.0000001;
   const PIXELS_PER_TILE = pixelsPerTile || 256;
   const tileWidth = resolution * PIXELS_PER_TILE;
   const MAX_TILES = 20;
-  // console.log('PIXELS_PER_TILE:', PIXELS_PER_TILE);
-
-  if (!maxX)
-    maxX = Number.MAX_VALUE;
 
   let tileRange = range(
     Math.max(0, Math.floor((scale.domain()[0] - minX) / tileWidth)),
     Math.ceil(Math.min(
-      maxX,
+      maxX || Number.MAX_VALUE,
       ((scale.domain()[1] - minX) - epsilon)) / tileWidth),
   );
 
@@ -403,25 +418,24 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
  * @param {func} errorCb: A callback that gets called when there is an error
  */
 export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
-  const url = 
-    `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
-    pubSub.publish('requestSent', url);
-    json(url, (error, data) => {
-      pubSub.publish('requestReceived', url);
-      if (error) {
-        // console.log('error:', error);
-        // don't do anything
-        // no tileset info just means we can't do anything with this file...
-        if (errorCb) {
-          errorCb(`Error retrieving tilesetInfo from: ${server}`);
-        }  else {
-          console.warn("Error retrieving: ", url);
-        }
+  const url = `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
+  pubSub.publish('requestSent', url);
+  json(url, (error, data) => {
+    pubSub.publish('requestReceived', url);
+    if (error) {
+      // console.log('error:', error);
+      // don't do anything
+      // no tileset info just means we can't do anything with this file...
+      if (errorCb) {
+        errorCb(`Error retrieving tilesetInfo from: ${server}`);
       } else {
-        // console.log('got data', data);
-        doneCb(data);
+        console.warn('Error retrieving: ', url);
       }
-    });
+    } else {
+      // console.log('got data', data);
+      doneCb(data);
+    }
+  });
 };
 
 /**
@@ -444,7 +458,7 @@ export const tileDataToPixData = (
 synchronous=false) => {
   const tileData = tile.tileData;
 
-  if  (!tileData.dense) {
+  if (!tileData.dense) {
     // if we didn't get any data from the server, don't do anything
     finished(null);
     return;
@@ -494,10 +508,10 @@ synchronous=false) => {
   }
 };
 
+/**
+ * Send a JSON request mark it so that we can tell how many are in flight
+ */
 function text(url, callback) {
-  /**
-   * Send a JSON request mark it so that we can tell how many are in flight
-   */
   requestsInFlight += 1;
   pubSub.publish('requestSent', url);
 
@@ -506,27 +520,6 @@ function text(url, callback) {
     pubSub.publish('requestReceived', url);
     requestsInFlight -= 1;
   });
-}
-
-function json(url, callback) {
-  /**
-   * Send a JSON request mark it so that we can tell how many are in flight
-   */
-  requestsInFlight += 1;
-  pubSub.publish('requestSent', url);
-
-  const r = request(url)
-    .header('Content-Type', 'application/json')
-
-  if (authHeader)
-    r.header('Authorization', `${authHeader}`)
-
-    r.send('GET', (error, data) => {
-      pubSub.publish('requestReceived', url);
-      const j = data && JSON.parse(data.response);
-      callback(error, j);
-      requestsInFlight -= 1;
-    });
 }
 
 

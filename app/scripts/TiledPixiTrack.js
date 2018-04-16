@@ -5,6 +5,10 @@ import * as PIXI from 'pixi.js';
 
 import PixiTrack from './PixiTrack';
 
+// Services
+import { pubSub } from './services';
+import { transitionGroup } from './services/transition';
+
 // Utils
 import { debounce } from './utils';
 
@@ -46,7 +50,7 @@ export const getValueScale = function(scalingType, minValue, pseudocountIn, maxV
     .domain([minValue, maxValue])];
 }
 
-export class TiledPixiTrack extends PixiTrack {
+class TiledPixiTrack extends PixiTrack {
   /**
    * A track that must pull remote tiles
    *
@@ -105,7 +109,7 @@ export class TiledPixiTrack extends PixiTrack {
         this.trackNotFoundText = '';
         this.errorTextText = this.tilesetInfo.error;
         this.tilesetInfo = null;
-        this.draw();
+        // this.draw();
         this.animate();
         return;
       }
@@ -134,6 +138,7 @@ export class TiledPixiTrack extends PixiTrack {
     });
 
     this.uuid = slugid.nice();
+
     this.refreshTilesDebounced = debounce(this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
 
     this.trackNotFoundText = new PIXI.Text(
@@ -141,6 +146,8 @@ export class TiledPixiTrack extends PixiTrack {
     );
 
     this.pLabel.addChild(this.trackNotFoundText);
+
+    this.toRemoveIds = new Set();
   }
 
   rerender(options) {
@@ -161,20 +168,15 @@ export class TiledPixiTrack extends PixiTrack {
     }
   }
 
-
+  /**
+   * Return the set of ids of all tiles which are both visible and fetched.
+   */
   visibleAndFetchedIds() {
-    /**
-         * Return the set of ids of all tiles which are both visible and fetched.
-         */
-
-    const ret = Object.keys(this.fetchedTiles).filter(x => this.visibleTileIds.has(x));
-    return ret;
+    return Object.keys(this.fetchedTiles).filter(x => this.visibleTileIds.has(x));
   }
 
   visibleAndFetchedTiles() {
-    const ids = this.visibleAndFetchedIds();
-
-    return ids.map(x => this.fetchedTiles[x]);
+    return this.visibleAndFetchedIds().map(x => this.fetchedTiles[x]);
   }
 
   /**
@@ -216,7 +218,8 @@ export class TiledPixiTrack extends PixiTrack {
 
     // fetch the tiles that should be visible but haven't been fetched
     // and aren't in the process of being fetched
-    const toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId));
+    const toFetch = [...this.visibleTiles]
+      .filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId));
 
     for (let i = 0; i < toFetch.length; i++) {
       this.fetching.add(toFetch[i].remoteId);
@@ -250,22 +253,22 @@ export class TiledPixiTrack extends PixiTrack {
     return `${parentUid}.${parentZoomLevel}.${parentPos.join('.')}`;
   }
 
-  removeTiles(toRemoveIds) {
-    /**
-         * Remove obsolete tiles
-         *
-         * @param toRemoveIds: An array of tile ids to remove from the list of fetched tiles.
-         */
-
+  /**
+   * Remove obsolete tiles
+   *
+   * @param toRemoveIds: An array of tile ids to remove from the list of fetched tiles.
+   */
+  removeTiles(toRemoveIds = this.toRemoveIds) {
     // if there's nothing to remove, don't bother doing anything
-    if (!toRemoveIds.length) { return; }
+    if (!toRemoveIds.size) return;
 
-    if (!this.areAllVisibleTilesLoaded()) { return; }
+    if (!this.areAllVisibleTilesLoaded()) return;
 
     if (this.renderingTiles.size) { return; }
 
-    toRemoveIds.forEach((x) => {
-      const tileIdStr = x;
+    toRemoveIds.forEach((id) => {
+      const tileIdStr = id;
+
       this.destroyTile(this.fetchedTiles[tileIdStr]);
 
       if (tileIdStr in this.tileGraphics) {
@@ -274,6 +277,8 @@ export class TiledPixiTrack extends PixiTrack {
       }
 
       delete this.fetchedTiles[tileIdStr];
+
+      toRemoveIds.delete(id);
     });
 
     this.synchronizeTilesAndGraphics();
@@ -295,24 +300,18 @@ export class TiledPixiTrack extends PixiTrack {
 
   setPosition(newPosition) {
     super.setPosition(newPosition);
-
-    // this.draw();
   }
 
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
-
-    // this.draw();
   }
 
+  /**
+   * Check to see if all the visible tiles are loaded.
+   *
+   * If they are, remove all other tiles.
+   */
   areAllVisibleTilesLoaded() {
-    /**
-         * Check to see if all the visible tiles are loaded.
-         *
-         * If they are, remove all other tiles.
-         */
-    // tiles that are visible
-
     // tiles that are fetched
     const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
 
@@ -321,16 +320,14 @@ export class TiledPixiTrack extends PixiTrack {
     for (let i = 0; i < visibleTileIdsList.length; i++) {
       if (!fetchedTileIDs.has(visibleTileIdsList[i])) { return false; }
     }
-
     return true;
   }
 
-  allTilesLoaded() {
-    /**
-         * Function is called when all tiles that should be visible have
-         * been received.
-         */
-  }
+  /**
+   * Function is called when all tiles that should be visible have
+   * been received.
+   */
+  allTilesLoaded() {}
 
   minValue(_) {
     if (_) { this.scale.minValue = _; } else { return this.scale.minValue; }
@@ -387,7 +384,8 @@ export class TiledPixiTrack extends PixiTrack {
         this.pMain.addChild(newGraphics);
 
         this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;
-        // console.log('fetchedTiles:', this.fetchedTiles[fetchedTileIDs[i]]);
+        this.fetchedTiles[fetchedTileIDs[i]].new = true;
+
         this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
 
         this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
@@ -401,16 +399,16 @@ export class TiledPixiTrack extends PixiTrack {
         */
   }
 
-  updateExistingGraphics() {
-    /**
-         * Change the graphics for existing tiles
-         */
-    const fetchedTileIDs = Object.keys(this.fetchedTiles);
+  // updateExistingGraphics() {
+  //   /**
+  //        * Change the graphics for existing tiles
+  //        */
+  //   const fetchedTileIDs = Object.keys(this.fetchedTiles);
 
-    for (let i = 0; i < fetchedTileIDs.length; i++) {
-      this.updateTile(this.fetchedTiles[fetchedTileIDs[i]]);
-    }
-  }
+  //   for (let i = 0; i < fetchedTileIDs.length; i++) {
+  //     this.updateTile(this.fetchedTiles[fetchedTileIDs[i]]);
+  //   }
+  // }
 
   synchronizeTilesAndGraphics() {
     /**
@@ -458,11 +456,11 @@ export class TiledPixiTrack extends PixiTrack {
     }
   }
 
+  /**
+   * We've gotten a bunch of tiles from the server in
+   * response to a request from fetchTiles.
+   */
   receivedTiles(loadedTiles) {
-    /**
-         * We've gotten a bunch of tiles from the server in
-         * response to a request from fetchTiles.
-         */
     for (let i = 0; i < this.visibleTiles.length; i++) {
       const tileId = this.visibleTiles[i].tileId;
 
@@ -527,10 +525,44 @@ export class TiledPixiTrack extends PixiTrack {
     }
 
     this.animate();
+
+    // 1. Check if all visible tiles are loaded
+    // 2. If `true` then send out event
+    if (this.areAllVisibleTilesLoaded()) {
+      pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
+    }
+
+    // Fade in new Sprites
+    // if (this.tweenStop) this.tweenStop();
+
+    // const newTileSprites = Object.keys(this.fetchedTiles)
+    //   .filter(tilesetId => this.fetchedTiles[tilesetId].graphics.fadeIn)
+    //   .map((tilesetId) => {
+    //     const tileset = this.fetchedTiles[tilesetId];
+    //     tileset.graphics.fadeIn = false;
+    //     return {
+    //       obj: tileset.sprite,
+    //       propsTo: {
+    //         alpha: 1
+    //       }
+    //     };
+    //   });
+
+    // if (newTileSprites.length) {
+    //   this.tweenStop = transitionGroup(newTileSprites, 250);
+    //   pubSub.subscribe('app.stopRepeatingAnimation', (tweens) => {
+    //     if (this.tweenStop.tweens === tweens) {
+    //       this.removeTiles();
+    //     }
+    //   }, 1);
+    // } else {
+    //   this.removeTiles();
+    // }
+    this.removeTiles();
   }
 
   draw() {
-    if (this.delayDrawing) { return; }
+    if (this.delayDrawing) return;
 
     if (!this.tilesetInfo) {
       if (this.dataFetcher.tilesetInfoLoading) {
@@ -554,11 +586,15 @@ export class TiledPixiTrack extends PixiTrack {
       this.trackNotFoundText.visible = false;
     }
 
+    pubSub.publish('TiledPixiTrack.tilesDrawnStart', { uuid: this.uuid });
+
     super.draw();
 
-    for (const uid in this.fetchedTiles) {
-      this.drawTile(this.fetchedTiles[uid]);
-    }
+    Object.keys(this.fetchedTiles).forEach(
+      tilesetUid => this.drawTile(this.fetchedTiles[tilesetUid])
+    );
+
+    pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
   }
 
   drawTile(tileData, graphics) {
