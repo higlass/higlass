@@ -38,6 +38,9 @@ export const DEFAULT_TRACKS_FOR_DATATYPE = {
     'left': 'vertical-bedlike',
     'right': 'vertical-bedlike',
   },
+  'osm-tiles': {
+    'center': 'osm-tiles',
+  },
 };
 
 export default DEFAULT_TRACKS_FOR_DATATYPE;

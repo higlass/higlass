@@ -693,7 +693,7 @@ export const TRACKS_INFO = [
       rectangleDomainStrokeColor: 'black',
       rectangleDomainOpacity: 0.6,
       rectanlgeMinSize: 1,
-      polygonMinBoundingSize: 4
+      polygonMinBoundingSize: 0
     },
   },
 
@@ -801,7 +801,7 @@ export const TRACKS_INFO = [
   },
   {
     type: 'osm-tiles',
-    datatype: ['map-tiles'],
+    datatype: ['osm-tiles'],
     local: true,
     orientation: '2d',
     hidden: true,
