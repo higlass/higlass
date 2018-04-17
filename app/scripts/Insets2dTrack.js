@@ -97,13 +97,13 @@ export default class Insets2dTrack extends PixiTrack {
       ? chromInfo.get(chromInfoPath)
       : undefined;
 
-    this.dropShadow = new DropShadowFilter(
-      90,
-      this.options.dropDistance,
-      this.options.dropBlur,
-      0x000000,
-      this.options.dropOpacity,
-    );
+    this.dropShadow = new DropShadowFilter({
+      rotation: 90,
+      distance: this.options.dropDistance,
+      blur: this.options.dropBlur,
+      color: 0x000000,
+      alpha: this.options.dropOpacity,
+    });
 
     this.isRenderToCanvas = this.options.isRenderToCanvas || false;
 
