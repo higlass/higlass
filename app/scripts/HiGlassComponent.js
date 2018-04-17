@@ -2923,7 +2923,7 @@ class HiGlassComponent extends React.Component {
     */
 
     mouseOverDiv
-    .style('position', 'absolute')
+    .style('position', 'fixed')
       .style('left', mousePos[0] + "px")
       .style('top', mousePos[1] + "px")
     ;
