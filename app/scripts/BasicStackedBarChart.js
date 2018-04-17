@@ -1,12 +1,11 @@
-import * as PIXI from 'pixi.js';
-
-import {PixiTrack} from './PixiTrack';
-
 import { scaleLinear, scaleOrdinal, schemeCategory10 } from 'd3-scale';
+
+import PixiTrack from './PixiTrack';
+
 import { colorToHex } from './utils';
 
 class BasicStackedBarChart extends PixiTrack {
-  constructor(scene, options, animate) {
+  constructor(scene, options) {
     super(scene, options);
 
     // make a a 2d array of random numbers to use as test data

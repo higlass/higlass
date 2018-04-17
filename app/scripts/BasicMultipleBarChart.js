@@ -1,17 +1,31 @@
+import { scaleLinear, scaleOrdinal, schemeCategory10 } from 'd3-scale';
 import { mix } from 'mixwith';
-import { BarTrack } from './BarTrack';
-import { OneDimensionalMixin } from './OneDimensionalMixin';
-import {scaleLinear, scaleOrdinal, schemeCategory10} from 'd3-scale';
+
+import BarTrack from './BarTrack';
+import OneDimensionalMixin from './OneDimensionalMixin';
 
 class BasicMultipleBarChart extends mix(BarTrack).with(OneDimensionalMixin) {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
-    super(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged);
+  constructor(
+    scene,
+    dataConfig,
+    handleTilesetInfoReceived,
+    option,
+    animate,
+    onValueScaleChanged
+  ) {
+    super(
+      scene,
+      dataConfig,
+      handleTilesetInfoReceived,
+      option,
+      animate,
+      onValueScaleChanged
+    );
 
     this.maxAndMin = {
       max: null,
       min: null
     };
-
   }
 
   /**
@@ -24,8 +38,11 @@ class BasicMultipleBarChart extends mix(BarTrack).with(OneDimensionalMixin) {
     tile.drawnAtScale = this._xScale.copy();
 
     // we're setting the start of the tile to the current zoom level
-    const {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
-      tile.tileData.tilePos, this.tilesetInfo.tile_size);
+    const { tileX, tileWidth } = this.getTilePosAndDimensions(
+      tile.tileData.zoomLevel,
+      tile.tileData.tilePos,
+      this.tilesetInfo.tile_size
+    );
 
     if (this.options.barBorder) {
       graphics.lineStyle(0.1, 'black', 1);
@@ -51,9 +68,7 @@ class BasicMultipleBarChart extends mix(BarTrack).with(OneDimensionalMixin) {
         this.addSVGInfo(tile, x, y, width, height, colorScale[i]);
         graphics.drawRect(x, y, width, height);
       }
-
     }
-
   }
 
   /**
@@ -68,18 +83,18 @@ class BasicMultipleBarChart extends mix(BarTrack).with(OneDimensionalMixin) {
    */
   addSVGInfo(tile, x, y, width, height, color) {
     if (tile.svgData
-      && tile.svgData.hasOwnProperty('barXValues')
-      && tile.svgData.hasOwnProperty('barYValues')
-      && tile.svgData.hasOwnProperty('barWidthValues')
-      && tile.svgData.hasOwnProperty('barHeightValues')
-      && tile.svgData.hasOwnProperty('barColors')) {
+      && tile.svgData.barXValues
+      && tile.svgData.barYValues
+      && tile.svgData.barWidthValues
+      && tile.svgData.barHeightValues
+      && tile.svgData.barColors
+    ) {
       tile.svgData.barXValues.push(x);
       tile.svgData.barYValues.push(y);
       tile.svgData.barWidths.push(width);
       tile.svgData.barHeights.push(height);
       tile.svgData.barColors.push(color);
-    }
-    else {
+    } else {
       // create entirely new 2d arrays for x y coordinates
       tile.svgData = {
         barXValues: [x],
@@ -91,11 +106,9 @@ class BasicMultipleBarChart extends mix(BarTrack).with(OneDimensionalMixin) {
     }
   }
 
-  getMouseOverHtml(trackX, trackY) {
-    //console.log(this.tilesetInfo);
+  getMouseOverHtml(/* trackX, trackY */) {
     return '';
   }
-
 }
 
 export default BasicMultipleBarChart;

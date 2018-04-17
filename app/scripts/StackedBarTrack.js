@@ -1,17 +1,31 @@
-import { mix } from 'mixwith';
-import { BarTrack } from './BarTrack';
-import { OneDimensionalMixin } from './OneDimensionalMixin';
 import { scaleLinear, scaleOrdinal, schemeCategory10 } from 'd3-scale';
+import { mix } from 'mixwith';
+
+import BarTrack from './BarTrack';
+import OneDimensionalMixin from './OneDimensionalMixin';
 
 class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged) {
-    super(scene, dataConfig, handleTilesetInfoReceived, option, animate, onValueScaleChanged);
+  constructor(
+    scene,
+    dataConfig,
+    handleTilesetInfoReceived,
+    option,
+    animate,
+    onValueScaleChanged
+  ) {
+    super(
+      scene,
+      dataConfig,
+      handleTilesetInfoReceived,
+      option,
+      animate,
+      onValueScaleChanged
+    );
 
     this.maxAndMin = {
       max: null,
       min: null
     };
-
   }
 
   /**
@@ -25,8 +39,11 @@ class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
     tile.drawnAtScale = this._xScale.copy();
 
     // we're setting the start of the tile to the current zoom level
-    const {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
-      tile.tileData.tilePos, this.tilesetInfo.tile_size);
+    const { tileX, tileWidth } = this.getTilePosAndDimensions(
+      tile.tileData.zoomLevel,
+      tile.tileData.tilePos,
+      this.tilesetInfo.tile_size
+    );
 
     const matrix = this.unFlatten(tile);
 
@@ -34,15 +51,20 @@ class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
     if (this.options.scaledHeight === true) {
       this.drawVerticalBars(graphics, this.mapOriginalColors(matrix),
         tileX, tileWidth, this.maxAndMin.max, this.maxAndMin.min, tile);
-    }
-    else {
+    } else {
       // normalize each array in matrix
       for (let i = 0; i < matrix.length; i++) {
         const temp = matrix[i];
         const barValuesSum = temp.reduce((a, b) => a + b, 0);
-        matrix[i] = temp.map((a) => a / barValuesSum);
+        matrix[i] = temp.map(a => a / barValuesSum);
       }
-      this.drawNormalizedBars(graphics, this.scaleMatrix(this.mapOriginalColors(matrix)), tileX, tileWidth, tile);
+      this.drawNormalizedBars(
+        graphics,
+        this.scaleMatrix(this.mapOriginalColors(matrix)),
+        tileX,
+        tileWidth,
+        tile
+      );
     }
   }
 
@@ -52,18 +74,23 @@ class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
    * @param matrix call mapOriginalColors on this matrix before calling this function on it.
    */
   scaleMatrix(matrix) {
-    for(let i = 0; i < matrix.length; i++) {
-      let positives = matrix[i][0];
-      let negatives = matrix[i][1];
+    for (let i = 0; i < matrix.length; i++) {
+      const positives = matrix[i][0];
+      const negatives = matrix[i][1];
 
-      const positiveArray = positives.map((a) => { return a.value; });
-      const negativeArray = negatives.map((a) => { return a.value; });
+      const positiveArray = positives.map(a => a.value);
+      const negativeArray = negatives.map(a => a.value);
 
-      let positiveSum = (positiveArray.length > 0) ? positiveArray.reduce((sum, a) => sum + a ) : 0;
-      let negativeSum = (negativeArray.length > 0) ? negativeArray.reduce((sum, a) => sum + a ) : 0;
+      const positiveSum = (positiveArray.length > 0)
+        ? positiveArray.reduce((sum, a) => sum + a)
+        : 0;
+      const negativeSum = (negativeArray.length > 0)
+        ? negativeArray.reduce((sum, a) => sum + a)
+        : 0;
 
-      positives.map((a) => a.value = a.value / positiveSum );
-      negatives.map((a) => a.value = a.value / negativeSum ); // these will be positive numbers
+      positives.map((a) => { a.value /= positiveSum; return a.value; });
+      // these will be positive numbers
+      negatives.map((a) => { a.value /= negativeSum; return a.value; });
     }
     return matrix;
   }
@@ -86,7 +113,7 @@ class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
         columnColors[i] = {
           value: matrix[j][i],
           color: colorScale[i]
-        }
+        };
       }
 
       // separate positive and negative array values
@@ -95,8 +122,7 @@ class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       for (let i = 0; i < columnColors.length; i++) {
         if (columnColors[i].value > 0) {
           positive.push(columnColors[i]);
-        }
-        else if (columnColors[i].value < 0) {
+        } else if (columnColors[i].value < 0) {
           negative.push(columnColors[i]);
         }
       }
@@ -104,8 +130,7 @@ class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       if (this.options.sortLargestOnTop) {
         positive.sort((a, b) => a.value - b.value);
         negative.sort((a, b) => b.value - a.value);
-      }
-      else {
+      } else {
         positive.sort((a, b) => b.value - a.value);
         negative.sort((a, b) => a.value - b.value);
       }
@@ -156,7 +181,7 @@ class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
         graphics.beginFill(this.colorHexMap[positive[i].color]);
 
         graphics.drawRect(x, y, width, height);
-        positiveStackedHeight = positiveStackedHeight + height;
+        positiveStackedHeight += height;
       }
 
       // draw negative values
@@ -172,8 +197,7 @@ class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
         graphics.beginFill(this.colorHexMap[negative[i].color]);
 
         graphics.drawRect(x, y, width, height);
-        negativeStackedHeight = negativeStackedHeight + height;
-
+        negativeStackedHeight += height;
       }
 
       // sets background to black if black option enabled
@@ -192,9 +216,7 @@ class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
         positiveStackedHeight = 0;
         negativeStackedHeight = 0;
       }
-
     }
-
   }
 
   /**
@@ -224,10 +246,10 @@ class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
       let positiveStackedHeight = 0;
       for (let i = 0; i < matrix[j][0].length; i++) {
         const height = valueToPixelsPositive(matrix[j][0][i].value);
-        const y = trackHeight / 2 - (positiveStackedHeight + height);
+        const y = (trackHeight / 2) - (positiveStackedHeight + height);
         graphics.beginFill(this.colorHexMap[matrix[j][0][i].color], 1);
         graphics.drawRect(x, y, width, height);
-        positiveStackedHeight = positiveStackedHeight + height;
+        positiveStackedHeight += height;
       }
       positiveStackedHeight = 0;
 
@@ -241,7 +263,7 @@ class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
         const y = (trackHeight / 2) + negativeStackedHeight;
         graphics.beginFill(this.colorHexMap[matrix[j][1][i].color], 1);
         graphics.drawRect(x, y, width, height);
-        negativeStackedHeight = negativeStackedHeight + height;
+        negativeStackedHeight += height;
       }
       negativeStackedHeight = 0;
     }
@@ -258,15 +280,14 @@ class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
    * @param color color of bar (not converted to hex)
    */
   addSVGInfo(tile, x, y, width, height, color) {
-    if (tile.hasOwnProperty('svgData')) {
+    if (tile.svgData) {
       tile.svgData.barXValues.push(x);
       tile.svgData.barYValues.push(y);
       tile.svgData.barWidths.push(width);
       tile.svgData.barHeights.push(height);
       tile.svgData.barColors.push(color);
-    }
-    else {
-      tile.svgData  = {
+    } else {
+      tile.svgData = {
         barXValues: [x],
         barYValues: [y],
         barWidths: [width],
@@ -280,8 +301,7 @@ class StackedBarTrack extends mix(BarTrack).with(OneDimensionalMixin) {
     super.draw();
   }
 
-  getMouseOverHtml(trackX, trackY) {
-    //console.log(this.tilesetInfo);
+  getMouseOverHtml(/* trackX, trackY */) {
     return '';
   }
 }

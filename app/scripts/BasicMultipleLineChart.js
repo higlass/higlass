@@ -1,17 +1,31 @@
+import { scaleLinear, scaleOrdinal, schemeCategory10 } from 'd3-scale';
 import { mix } from 'mixwith';
-import { BarTrack } from './BarTrack';
-import { OneDimensionalMixin } from './OneDimensionalMixin';
-import {scaleLinear, scaleOrdinal, schemeCategory10} from 'd3-scale';
+
+import BarTrack from './BarTrack';
+import OneDimensionalMixin from './OneDimensionalMixin';
 
 export class BasicMultipleLineChart extends mix(BarTrack).with(OneDimensionalMixin) {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
-    super(scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged);
+  constructor(
+    scene,
+    dataConfig,
+    handleTilesetInfoReceived,
+    options,
+    animate,
+    onValueScaleChanged
+  ) {
+    super(
+      scene,
+      dataConfig,
+      handleTilesetInfoReceived,
+      options,
+      animate,
+      onValueScaleChanged
+    );
 
     this.maxAndMin = {
       max: null,
       min: null
     };
-
   }
 
   /**
@@ -24,8 +38,11 @@ export class BasicMultipleLineChart extends mix(BarTrack).with(OneDimensionalMix
     tile.drawnAtScale = this._xScale.copy();
 
     // we're setting the start of the tile to the current zoom level
-    const {tileX, tileWidth} = this.getTilePosAndDimensions(tile.tileData.zoomLevel,
-      tile.tileData.tilePos, this.tilesetInfo.tile_size);
+    const { tileX, tileWidth } = this.getTilePosAndDimensions(
+      tile.tileData.zoomLevel,
+      tile.tileData.tilePos,
+      this.tilesetInfo.tile_size
+    );
 
     const matrix = tile.matrix;
     const trackHeight = this.dimensions[1];
@@ -37,7 +54,8 @@ export class BasicMultipleLineChart extends mix(BarTrack).with(OneDimensionalMix
 
     for (let i = 0; i < matrix[0].length; i++) {
       const intervals = trackHeight / matrixDimensions[0];
-      // calculates placement for a line in each interval; we subtract 1 so we can see the last line clearly
+      // calculates placement for a line in each interval; we subtract 1 so we
+      // can see the last line clearly
       const linePlacement = (i === matrix[0].length - 1) ?
         (intervals * i) + ((intervals * (i + 1) - (intervals * i))) - 1 :
         (intervals * i) + ((intervals * (i + 1) - (intervals * i)));
@@ -51,7 +69,6 @@ export class BasicMultipleLineChart extends mix(BarTrack).with(OneDimensionalMix
         (j === 0) ? graphics.moveTo(x, y) : graphics.lineTo(x, y);
       }
     }
-
   }
 
   /**
@@ -64,24 +81,23 @@ export class BasicMultipleLineChart extends mix(BarTrack).with(OneDimensionalMix
    */
   addSVGInfo(tile, x, y, color) {
     if (tile.svgData
-      && tile.svgData.hasOwnProperty('lineXValues')
-      && tile.svgData.hasOwnProperty('lineYValues')
-      && tile.svgData.hasOwnProperty('lineColor')) {
+      && tile.svgData.lineXValues
+      && tile.svgData.lineYValues
+      && tile.svgData.lineColor
+    ) {
       // if a new color appears, create a separate array to indicate new line
       if (tile.svgData.lineColor[tile.svgData.lineColor.length - 1] !== color) {
         tile.svgData.lineXValues.push([x]);
         tile.svgData.lineYValues.push([y]);
         tile.svgData.lineColor.push(color);
-      }
-      // else add x y coordinates onto the last array in the list
-      else {
+      } else {
+        // else add x y coordinates onto the last array in the list
         tile.svgData.lineXValues[tile.svgData.lineXValues.length - 1].push(x);
         tile.svgData.lineYValues[tile.svgData.lineYValues.length - 1].push(y);
       }
-    }
-    else {
+    } else {
       // create entirely new 2d arrays for x y coordinates
-      tile.svgData  = {
+      tile.svgData = {
         lineXValues: [[x]],
         lineYValues: [[y]],
         lineColor: [color]
@@ -98,8 +114,8 @@ export class BasicMultipleLineChart extends mix(BarTrack).with(OneDimensionalMix
    *
    */
   exportSVG() {
-    let base = document.createElement('g');
-    let track = base;
+    const base = document.createElement('g');
+    const track = base;
 
     base.setAttribute('class', 'exported-line-track');
     const output = document.createElement('g');
@@ -150,13 +166,9 @@ export class BasicMultipleLineChart extends mix(BarTrack).with(OneDimensionalMix
     return [base, track];
   }
 
-  getMouseOverHtml(trackX, trackY) {
-    //console.log(this.tilesetInfo, trackX, trackY);
+  getMouseOverHtml(/* trackX, trackY */) {
     return '';
   }
-
 }
 
 export default BasicMultipleLineChart;
-
-

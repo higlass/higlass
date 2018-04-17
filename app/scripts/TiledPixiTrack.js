@@ -399,16 +399,16 @@ class TiledPixiTrack extends PixiTrack {
         */
   }
 
-  // updateExistingGraphics() {
-  //   /**
-  //        * Change the graphics for existing tiles
-  //        */
-  //   const fetchedTileIDs = Object.keys(this.fetchedTiles);
+  /**
+   * Change the graphics for existing tiles
+   */
+  updateExistingGraphics() {
+    const fetchedTileIDs = Object.keys(this.fetchedTiles);
 
-  //   for (let i = 0; i < fetchedTileIDs.length; i++) {
-  //     this.updateTile(this.fetchedTiles[fetchedTileIDs[i]]);
-  //   }
-  // }
+    for (let i = 0; i < fetchedTileIDs.length; i++) {
+      this.updateTile(this.fetchedTiles[fetchedTileIDs[i]]);
+    }
+  }
 
   synchronizeTilesAndGraphics() {
     /**

@@ -2,8 +2,7 @@ import { Mixin } from 'mixwith';
 import { scaleOrdinal, schemeCategory10 } from 'd3-scale';
 import { colorToHex } from './utils';
 
-export const OneDimensionalMixin = Mixin(superclass => class extends superclass {
-
+const OneDimensionalMixin = Mixin(superclass => class extends superclass {
   initTile(tile) {
     this.localColorToHexScale();
 
@@ -13,7 +12,7 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
     this.renderTile(tile);
   }
 
-  updateTile(tile) {
+  updateTile() {
     const visibleAndFetched = this.visibleAndFetchedTiles();
 
     // reset max and min to null so previous maxes and mins don't carry over
@@ -37,7 +36,6 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
     for (let i = 0; i < visibleAndFetched.length; i++) {
       this.renderTile(visibleAndFetched[i]);
     }
-
   }
 
   /**
@@ -45,7 +43,7 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
    */
   localColorToHexScale() {
     const colorScale = this.options.colorScale || scaleOrdinal(schemeCategory10);
-    let colorHexMap = {};
+    const colorHexMap = {};
     for (let i = 0; i < colorScale.length; i++) {
       colorHexMap[colorScale[i]] = colorToHex(colorScale[i]);
     }
@@ -59,7 +57,7 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
    */
   findMaxAndMin(matrix) {
     // find max height of bars for scaling in the track
-    let maxAndMin = {
+    const maxAndMin = {
       max: null,
       min: null
     };
@@ -69,12 +67,12 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
 
       // find total heights of each positive column and each negative column
       // and compare to highest value so far for the tile
-      const localPositiveMax = temp.filter((a) => a >= 0).reduce((a, b) => a + b, 0);
+      const localPositiveMax = temp.filter(a => a >= 0).reduce((a, b) => a + b, 0);
       (localPositiveMax > maxAndMin.max) ? maxAndMin.max = localPositiveMax : maxAndMin.max;
 
-      let negativeValues = temp.filter((a) => a < 0);
+      let negativeValues = temp.filter(a => a < 0);
       if (negativeValues.length > 0) {
-        negativeValues = negativeValues.map((a) => Math.abs(a));
+        negativeValues = negativeValues.map(a => Math.abs(a));
         const localNegativeMax = negativeValues.reduce((a, b) => a + b, 0); // check
         (maxAndMin.min === null || localNegativeMax > maxAndMin.min) ?
           maxAndMin.min = localNegativeMax : maxAndMin.min;
@@ -82,7 +80,6 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
     }
 
     return maxAndMin;
-
   }
 
   /**
@@ -95,38 +92,36 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
     if (tile.matrix) {
       return tile.matrix;
     }
-    else {
-      const shapeX = tile.tileData.shape[0]; // number of different nucleotides in each bar
-      const shapeY = tile.tileData.shape[1]; // number of bars
-      let flattenedArray = tile.tileData.dense;
+    const shapeX = tile.tileData.shape[0]; // number of different nucleotides in each bar
+    const shapeY = tile.tileData.shape[1]; // number of bars
+    const flattenedArray = tile.tileData.dense;
 
-      // if any data is negative, switch to exponential scale
-      if (flattenedArray.filter((a) => a < 0).length > 0 && this.options.valueScaling === 'linear') {
-        console.warn('Negative values present in data. Defaulting to exponential scale.');
-        this.options.valueScaling = 'exponential';
-      }
-
-      // matrix[0] will be [flattenedArray[0], flattenedArray[256], flattenedArray[512], etc.]
-      // because of how flattenedArray comes back from the server.
-      const matrix = [];
-      for (let i = 0; i < shapeX; i++) {//6
-        for (let j = 0; j < shapeY; j++) {//256;
-          let singleBar;
-          (matrix[j] === undefined) ? singleBar = [] : singleBar = matrix[j];
-          singleBar.push(flattenedArray[(shapeY * i) + j]);
-          matrix[j] = singleBar;
-        }
-      }
-
-      const maxAndMin = this.findMaxAndMin(matrix);
-
-      tile.matrix = matrix;
-      tile.maxValue = maxAndMin.max;
-      tile.minValue = maxAndMin.min;
-
-      return matrix;
+    // if any data is negative, switch to exponential scale
+    if (flattenedArray.filter(a => a < 0).length > 0 && this.options.valueScaling === 'linear') {
+      console.warn('Negative values present in data. Defaulting to exponential scale.');
+      this.options.valueScaling = 'exponential';
     }
+
+    // matrix[0] will be [flattenedArray[0], flattenedArray[256], flattenedArray[512], etc.]
+    // because of how flattenedArray comes back from the server.
+    const matrix = [];
+    for (let i = 0; i < shapeX; i++) { // 6
+      for (let j = 0; j < shapeY; j++) { // 256;
+        let singleBar;
+        (matrix[j] === undefined) ? singleBar = [] : singleBar = matrix[j];
+        singleBar.push(flattenedArray[(shapeY * i) + j]);
+        matrix[j] = singleBar;
+      }
+    }
+
+    const maxAndMin = this.findMaxAndMin(matrix);
+
+    tile.matrix = matrix;
+    tile.maxValue = maxAndMin.max;
+    tile.minValue = maxAndMin.min;
+
+    return matrix;
   }
-
-
 });
+
+export default OneDimensionalMixin;
