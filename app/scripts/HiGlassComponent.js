@@ -2945,20 +2945,19 @@ class HiGlassComponent extends React.Component {
         : dataX;
     }
 
-    const evt =
-      {
-        x: relPos[0],
-        y: relPos[1],
-        relTrackX: relTrackPos[0],
-        relTrackY: relTrackPos[1],
-        dataX,
-        dataY,
-        isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
-        isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
-        track: hoveredTrack,
-        origEvt: e,
-        hoveredTracks,
-      }
+    const evt = {
+      x: relPos[0],
+      y: relPos[1],
+      relTrackX: relTrackPos[0],
+      relTrackY: relTrackPos[1],
+      dataX,
+      dataY,
+      isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
+      isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
+      track: hoveredTrack,
+      origEvt: e,
+      hoveredTracks,
+    };
 
     pubSub.publish(
       'app.mouseMove', evt
@@ -2973,10 +2972,11 @@ class HiGlassComponent extends React.Component {
   showHoverMenu(evt) {
     // each track should have a function that returns an HTML representation
     // of the data at a give position
-    const mouseOverHtml = (evt.track && evt.track.getMouseOverHtml) ?
-      evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY) : '';
+    const mouseOverHtml = (evt.track && evt.track.getMouseOverHtml)
+      ? evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY)
+      : '';
 
-    if (evt.track != this.prevMouseHoverTrack) {
+    if (evt.track !== this.prevMouseHoverTrack) {
       if (this.prevMouseHoverTrack && this.prevMouseHoverTrack.stopHover) {
         this.prevMouseHoverTrack.stopHover();
       }
@@ -2987,8 +2987,8 @@ class HiGlassComponent extends React.Component {
     const data = (mouseOverHtml && mouseOverHtml.length) ? [1] : [];
 
     // try to select the mouseover div
-    let mouseOverDiv = select('body').selectAll('.track-mouseover-menu')
-      .data(data)
+    let mouseOverDiv = select('body')
+      .selectAll('.track-mouseover-menu').data(data);
 
     mouseOverDiv
       .exit()
@@ -3011,29 +3011,25 @@ class HiGlassComponent extends React.Component {
       .classed('.mouseover-marker', true)
     */
 
-    mouseOverDiv
-    .style('position', 'absolute')
-      .style('left', mousePos[0] + "px")
-      .style('top', mousePos[1] + "px")
-    ;
+    mouseOverDiv.style('position', 'absolute')
+      .style('left', `${mousePos[0]}px`)
+      .style('top', `${mousePos[1]}px`);
 
-    if (!mouseOverDiv.node()) {
-      // probably not over a track so there's no mouseover rectangle
-      return;
-    }
+    // probably not over a track so there's no mouseover rectangle
+    if (!mouseOverDiv.node()) return;
 
     const bbox = mouseOverDiv.node().getBoundingClientRect();
 
     if (bbox.x + bbox.width > window.innerWidth) {
       // the overlay box is spilling outside of the track so switch
       // to showing it on the left
-      mouseOverDiv.style('left', (mousePos[0] - bbox.width) + 'px')
+      mouseOverDiv.style('left', `${(mousePos[0] - bbox.width)}px`);
     }
 
     if (bbox.y + bbox.height > window.innerHeight) {
       // the overlay box is spilling outside of the track so switch
       // to showing it on the left
-      mouseOverDiv.style('top', (mousePos[1] - bbox.height) + 'px')
+      mouseOverDiv.style('top', `${(mousePos[1] - bbox.height)}px`);
     }
 
     mouseOverDiv.html(mouseOverHtml);
