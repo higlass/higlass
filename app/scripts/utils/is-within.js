@@ -10,7 +10,7 @@
  */
 const isWithin = (x, y, minX, maxX, minY, maxY) => (
   x >= minX && x <= maxX &&
-  y >= minX && y <= maxY
+  y >= minY && y <= maxY
 );
 
 export default isWithin;
