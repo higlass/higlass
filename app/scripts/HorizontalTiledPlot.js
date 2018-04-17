@@ -61,6 +61,12 @@ export class HorizontalTiledPlot extends React.Component {
     }
   }
 
+  /* --------------------------- Getter / Setter ---------------------------- */
+
+  get sourceEvent() {
+    return event && event.sourceEvent;
+  }
+
   /* ---------------------------- Custom Methods ---------------------------- */
 
   addBrush() {
@@ -85,7 +91,7 @@ export class HorizontalTiledPlot extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !event.sourceEvent ||
+      !this.sourceEvent ||
       !this.props.onRangeSelection ||
       rangeSelectionMoved
     ) return;
@@ -95,7 +101,7 @@ export class HorizontalTiledPlot extends React.Component {
   }
 
   brushStarted() {
-    if (!event.sourceEvent || !event.selection) return;
+    if (!this.sourceEvent || !event.selection) return;
 
     this.props.onRangeSelectionStart();
   }
