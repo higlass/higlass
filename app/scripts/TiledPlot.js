@@ -544,7 +544,6 @@ class TiledPlot extends React.Component {
      *      the newTrack object passed in with some extra information
      *      (such as the uid) added.
      */
-    console.log('newTracks:', newTracks, 'position:', position);
 
     if (this.trackToReplace) {
       this.handleCloseTrack(this.trackToReplace);
