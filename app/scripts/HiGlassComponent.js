@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { select, clientPoint } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
-import { json, request } from 'd3-request';
+import { json } from 'd3-request';
 import slugid from 'slugid';
 import ReactDOM from 'react-dom';
 import ReactGridLayout from 'react-grid-layout';
@@ -24,7 +24,7 @@ import api, { destroy as apiDestroy, publish as apiPublish } from './api';
 import {
   chromInfo,
   domEvent,
-  pubSub ,
+  pubSub,
   setTileProxyAuthHeader
 } from './services';
 
@@ -53,9 +53,7 @@ import {
   LOCATION_LISTENER_PREFIX,
   LONG_DRAG_TIMEOUT,
   SHORT_DRAG_TIMEOUT,
-  TRACKS_INFO,
   TRACKS_INFO_BY_TYPE,
-  ZOOM_TRANSITION_DURATION,
 } from './configs';
 
 // Styles
@@ -165,9 +163,24 @@ class HiGlassComponent extends React.Component {
       }
     }
 
+    const pluginTracks = {};
+    try {
+      if (this.props.options.tracks && window.higlassTracks) {
+        this.props.options.tracks.forEach((track) => {
+          const trackDef = window.higlassTracks[track];
+          pluginTracks[trackDef.config.type] = trackDef;
+        });
+      }
+    } catch (e) {
+      console.warn(
+        'Broken config of a plugin track', this.props.options.tracks
+      );
+    }
+
     this.mounted = false;
     this.state = {
-      bounded: this.props.options ? this.props.options.bounded : false,
+      bounded: this.props.options.bounded || false,
+      pluginTracks,
       currentBreakpoint: 'lg',
       width: 0,
       height: 0,
@@ -234,7 +247,7 @@ class HiGlassComponent extends React.Component {
     );
 
     this.pubSubs.push(
-      pubSub.subscribe('trackDropped', () => { 
+      pubSub.subscribe('trackDropped', () => {
         this.setState({
           draggingHappening: null,
         });
@@ -443,18 +456,19 @@ class HiGlassComponent extends React.Component {
   }
 
   addDefaultOptions(track) {
-    if (!TRACKS_INFO_BY_TYPE.hasOwnProperty(track.type)) {
-      console.warn('Track type not found:', track.type, ' (check app/scripts/config/ for a list of defined track types)');
-      return;
-    }
+    const trackInfo = this.getTrackInfo(track.type);
+    if (!trackInfo) return;
 
     const trackOptions = track.options ? track.options : {};
 
-    if (TRACKS_INFO_BY_TYPE[track.type].defaultOptions) {
-      if (!track.options) { track.options = JSON.parse(JSON.stringify(TRACKS_INFO_BY_TYPE[track.type].defaultOptions)); } else {
-        for (const optionName in TRACKS_INFO_BY_TYPE[track.type].defaultOptions) {
-          track.options[optionName] = typeof(track.options[optionName]) !== 'undefined' ?
-            track.options[optionName] : JSON.parse(JSON.stringify(TRACKS_INFO_BY_TYPE[track.type].defaultOptions[optionName]));
+    if (trackInfo.defaultOptions) {
+      if (!track.options) {
+        track.options = JSON.parse(JSON.stringify(trackInfo.defaultOptions));
+      } else {
+        for (const optionName in trackInfo.defaultOptions) {
+          track.options[optionName] = typeof(track.options[optionName]) !== 'undefined'
+            ? track.options[optionName]
+            : JSON.parse(JSON.stringify(trackInfo.defaultOptions[optionName]));
         }
       }
     } else { track.options = trackOptions; }
@@ -1315,6 +1329,22 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  getTrackInfo(trackType) {
+    if (TRACKS_INFO_BY_TYPE[trackType]) {
+      return TRACKS_INFO_BY_TYPE[trackType];
+    } else if (
+      window.higlassTracksByType && window.higlassTracksByType[trackType]
+    ) {
+      return window.higlassTracksByType[trackType].config;
+    }
+    console.warn(
+      'Track type not found:',
+      trackType,
+      '(check app/scripts/config/ for a list of defined track types)'
+    );
+    return undefined;
+  }
+
   forceRefreshView() {
     // force everything to rerender
 
@@ -1375,7 +1405,7 @@ class HiGlassComponent extends React.Component {
       if (!tracks) { continue; }
 
       for (let i = 0; i < tracks.length; i++) {
-        const trackInfo = TRACKS_INFO_BY_TYPE[tracks[i].type];
+        const trackInfo = this.getTrackInfo(tracks[i].type);
 
         if (!('height' in tracks[i]) || (trackInfo && tracks[i].height < trackInfo.minHeight)) {
           if (trackInfo && trackInfo.minHeight) {
@@ -1394,7 +1424,7 @@ class HiGlassComponent extends React.Component {
       if (!tracks) { continue; }
 
       for (let i = 0; i < tracks.length; i++) {
-        const trackInfo = TRACKS_INFO_BY_TYPE[tracks[i].type];
+        const trackInfo = this.getTrackInfo(tracks[i].type);
 
         if (!('width' in tracks[i]) || (trackInfo && tracks[i].width < trackInfo.minWidth)) {
           //
@@ -1761,33 +1791,30 @@ class HiGlassComponent extends React.Component {
     trackConfig.uid = slugid.nice();
     trackConfig.data = newData;
 
-    console.log('trackConfig:', trackConfig);
-
     this.setState({
       views: this.state.views,
     });
   }
 
+  /**
+   * A track was added from the AddTrackModal dialog.
+   *
+   * @param trackInfo: A JSON object that can be used as a track
+   *                   definition
+   * @param position: The position the track is being added to
+   * @param host: If this track is being added to another track
+   *
+   * Returns
+   * -------
+   *
+   *  { uid: "", width: }:
+   *      The trackConfig object describing this track.
+   */
   handleTrackAdded(viewId, newTrack, position, host = null) {
-    /**
-         * A track was added from the AddTrackModal dialog.
-         *
-         * @param trackInfo: A JSON object that can be used as a track
-         *                   definition
-         * @param position: The position the track is being added to
-         * @param host: If this track is being added to another track
-         *
-         * Returns
-         * -------
-         *
-         *  { uid: "", width: }:
-         *      The trackConfig object describing this track.
-         */
     this.addDefaultOptions(newTrack);
 
     // make sure the new track has a uid
-    if (!newTrack.uid)
-      newTrack.uid = slugid.nice();
+    if (!newTrack.uid) newTrack.uid = slugid.nice();
 
     if (newTrack.contents) {
       // add default options to combined tracks
@@ -1809,20 +1836,22 @@ class HiGlassComponent extends React.Component {
       return;
     }
 
-    newTrack.width = TRACKS_INFO_BY_TYPE[newTrack.type].minWidth ? TRACKS_INFO_BY_TYPE[newTrack.type].minWidth
+    newTrack.width = this.getTrackInfo(newTrack.type).minWidth
+      ? this.getTrackInfo(newTrack.type).minWidth
       : this.minVerticalWidth;
-    newTrack.height = TRACKS_INFO_BY_TYPE[newTrack.type].minHeight ? TRACKS_INFO_BY_TYPE[newTrack.type].minHeight
+    newTrack.height = this.getTrackInfo(newTrack.type).minHeight
+      ? this.getTrackInfo(newTrack.type).minHeight
       : this.minHorizontalHeight;
 
     const tracks = this.state.views[viewId].tracks;
-    if (position == 'left' || position == 'top') {
+    if (position === 'left' || position === 'top') {
       // if we're adding a track on the left or the top, we want the
       // new track to appear at the begginning of the track list
       tracks[position].unshift(newTrack);
-    } else if (position == 'center') {
+    } else if (position === 'center') {
       // we're going to have to either overlay the existing track with a new one
       // or add another one on top
-      if (tracks.center.length == 0) {
+      if (tracks.center.length === 0) {
         // no existing tracks
         const newCombined = {
           uid: slugid.nice(),
@@ -2381,29 +2410,25 @@ class HiGlassComponent extends React.Component {
       */
   }
 
+  /**
+   * Add a name to this track based on its track type.
+   *
+   * Name is added in-place.
+   *
+   * The list of track information can be found in config.js:TRACKS_INFO
+   */
   addNameToTrack(track) {
-    /**
-       * Add a name to this track based on its track type.
-       *
-       * Name is added in-place.
-       *
-       * The list of track information can be found in config.js:TRACKS_INFO
-       */
-    const typeToName = {};
-    TRACKS_INFO.forEach((x) => {
-      if (x.name) { typeToName[x.type] = x.name; }
-    });
+    const config = this.getTrackInfo(track.type);
 
-    if (track.type in typeToName) { track.name = typeToName[track.type]; }
+    if (config && config.name) track.name = config.name;
 
     return track;
   }
 
+  /**
+   * Add track names to the ones that have known names in config.js
+   */
   addUidsToTracks(allTracks) {
-    /**
-         * Add track names to the ones that have known names in config.js
-         */
-
     allTracks.forEach((t) => {
       if (!t.uid) { t.uid = slugid.nice(); }
     });
@@ -2411,11 +2436,10 @@ class HiGlassComponent extends React.Component {
     return allTracks;
   }
 
+  /**
+   * Add track names to the ones that have known names in config.js
+   */
   addNamesToTracks(allTracks) {
-    /**
-         * Add track names to the ones that have known names in config.js
-         */
-
     allTracks.forEach((t) => {
       if (!t.name) { this.addNameToTrack(t); }
     });
@@ -2857,7 +2881,7 @@ class HiGlassComponent extends React.Component {
         : dataX;
     }
 
-    const evt = 
+    const evt =
       {
         x: relPos[0],
         y: relPos[1],
@@ -3079,6 +3103,7 @@ class HiGlassComponent extends React.Component {
             onUnlockValueScale={uid => this.handleUnlockValueScale(view.uid, uid)}
             onValueScaleChanged={uid => this.syncValueScales(view.uid, uid)}
             pixiStage={this.pixiStage}
+            pluginTracks={this.state.pluginTracks}
             registerDraggingChangedListener={(listener) => {
               this.addDraggingChangedListener(view.uid, view.uid, listener);
             }}
