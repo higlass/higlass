@@ -118,7 +118,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
         "type": "horizontal-section",
         "server": matrixTrack.server,
         "tilesetUid": matrixTrack.tilesetUid,
-        "ySlicePos":this.props.coords[1], 
+        "slicePos":this.props.coords[1], 
       },
       "options": {
         valueScaling: 'log',
@@ -134,7 +134,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
     const matrixTrack = trackList.filter(track => track.type == 'heatmap')[0];
 
     this.props.onAddTrack({
-      type: 'horizontal-rule',
+      type: 'vertical-rule',
       x: this.props.coords[0], 
       position: 'whole',
     });
@@ -143,7 +143,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
         "type": "vertical-section",
         "server": matrixTrack.server,
         "tilesetUid": matrixTrack.tilesetUid,
-        "ySlicePos":this.props.coords[0], 
+        "slicePos":this.props.coords[0], 
       },
       "options": {
         valueScaling: 'log',
