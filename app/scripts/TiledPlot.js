@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { ResizeSensor, ElementQueries } from 'css-element-queries';
 
 // Components
+import ContextMenuItem from './ContextMenuItem';
 import CenterTrack from './CenterTrack';
 import DragListeningDiv from './DragListeningDiv';
 import GalleryTracks from './GalleryTracks';
@@ -244,8 +245,20 @@ class TiledPlot extends React.Component {
     const xVal = this.trackRenderer.zoomedXScale.invert(canvasMousePos[0]);
     const yVal = this.trackRenderer.zoomedYScale.invert(canvasMousePos[1]);
 
+    let contextMenuCustomItems = null;
+    if (e.hgCustomItems) {
+      contextMenuCustomItems = e.hgCustomItems.map(item => (
+        <ContextMenuItem
+          key={item.goTo}
+          onClick={item.onClick()}
+        >
+          {item.text}
+        </ContextMenuItem>
+      ));
+    }
+
     this.setState({
-      contextMenuCustomItems: e.hgCustomItems || null,
+      contextMenuCustomItems,
       contextMenuPosition: {
         left: mousePos[0],
         top: mousePos[1],
