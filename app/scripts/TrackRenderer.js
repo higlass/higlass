@@ -1646,33 +1646,6 @@ class TrackRenderer extends React.Component {
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
 
-      case 'insets':
-        return new Insets2dTrack(
-          this.pStage,
-          this.eventTracker,
-          dataConfig,
-          track.datatype,
-          track.chromInfoPath,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-          this.zoomToDataPos.bind(this),
-          {
-            location: track.position,
-            width: track.width,
-            height: track.height,
-            offsetX: track.offsetX,
-            offsetY: track.offsetY,
-            offsetTop: track.offsetTop,
-            offsetRight: track.offsetRight,
-            offsetBottom: track.offsetBottom,
-            offsetLeft: track.offsetLeft,
-          },
-          {
-            left: this.props.marginLeft,
-            top: this.props.marginTop,
-          },
-        );
-
       case 'vertical-bedlike':
         return new LeftTrackModifier(
           new BedLikeTrack(
