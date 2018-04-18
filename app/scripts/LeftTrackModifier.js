@@ -114,6 +114,10 @@ export class LeftTrackModifier {
     return this;
   }
 
+  getMouseOverHtml(trackX, trackY) {
+    return this.originTrack.getMouseOverHtml(trackY, trackX);
+  }
+
   draw() {
     this.originalTrack.draw();
   }
