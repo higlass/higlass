@@ -17,6 +17,7 @@ export class DivergentBarTrack extends BarTrack {
 
   renderTile(tile) {
     //super.drawTile(tile);
+    console.log('renderTile:');
 
     if (!tile.graphics) { return; }
 
@@ -32,6 +33,7 @@ export class DivergentBarTrack extends BarTrack {
     let pseudocount = 0; // if we use a log scale, then we'll set a pseudocount
     // equal to the smallest non-zero value
     this.valueScale = null;
+    
 
     // console.log('valueScaling:', this.options.valueScaling);
     if (this.options.valueScaling == 'log') {
@@ -51,8 +53,14 @@ export class DivergentBarTrack extends BarTrack {
         .range([this.dimensions[1], 0]);
     }
 
-    graphics.clear();
+      /*
+    tile.scale = {
+      minValue: this.valueScale.domain()[0],
+      maxValue: this.valueScale.domain()[1]
+    };
+    */
 
+    graphics.clear();
     this.drawAxis(this.valueScale);
 
     if (this.options.valueScaling == 'log' && this.valueScale.domain()[1] < 0) {
@@ -90,6 +98,8 @@ export class DivergentBarTrack extends BarTrack {
     } else {
       baseline = this.valueScale(0);
     }
+
+    delete tile.svgData;
 
     for (let i = 0; i < tileValues.length; i++) {
       const xPos = this._xScale(tileXScale(i));
