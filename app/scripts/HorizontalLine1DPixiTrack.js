@@ -116,6 +116,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     // this function is just so that we follow the same pattern as
     // HeatmapTiledPixiTrack.js
     this.drawTile(tile);
+    this.drawAxis(this.valueScale);
   }
 
   drawTile(tile) {

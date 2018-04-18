@@ -37,6 +37,18 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
     // doesn't do anything
   }
 
+  updateTile(tile) {
+    // console.log('tile.valueScale', tile.valueScale, 'this.scale', this.scale);
+    if (tile.valueScale && this.scale && 
+      this.scale.minValue == tile.scale.minValue && 
+      this.scale.maxValue == tile.scale.maxValue) {
+      // already rendered properly, no need to rerender
+    } else {
+      // not rendered using the current scale, so we need to rerender
+      this.renderTile(tile);
+    }
+  }
+
   renderTile(tile) {
     //super.drawTile(tile);
 
