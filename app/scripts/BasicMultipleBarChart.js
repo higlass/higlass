@@ -82,13 +82,7 @@ class BasicMultipleBarChart extends mix(BarTrack).with(OneDimensionalMixin) {
    * @param color
    */
   addSVGInfo(tile, x, y, width, height, color) {
-    if (tile.svgData
-      && tile.svgData.barXValues
-      && tile.svgData.barYValues
-      && tile.svgData.barWidthValues
-      && tile.svgData.barHeightValues
-      && tile.svgData.barColors
-    ) {
+    if (tile.svgData && tile.svgData !== null) {
       tile.svgData.barXValues.push(x);
       tile.svgData.barYValues.push(y);
       tile.svgData.barWidths.push(width);

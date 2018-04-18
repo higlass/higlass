@@ -12,7 +12,17 @@ const OneDimensionalMixin = Mixin(superclass => class extends superclass {
     this.renderTile(tile);
   }
 
-  updateTile() {
+
+  rerender(newOptions) {
+    this.options = newOptions;
+    const visibleAndFetched = this.visibleAndFetchedTiles();
+
+    for (let i = 0; i < visibleAndFetched.length; i++) {
+      this.updateTile(visibleAndFetched[i]);
+    }
+  }
+
+  updateTile(tile) {
     const visibleAndFetched = this.visibleAndFetchedTiles();
 
     // reset max and min to null so previous maxes and mins don't carry over
@@ -24,6 +34,8 @@ const OneDimensionalMixin = Mixin(superclass => class extends superclass {
     for (let i = 0; i < visibleAndFetched.length; i++) {
       const tile = visibleAndFetched[i];
       this.unFlatten(tile);
+      tile.svgData = null;
+      tile.mouseOverData = null;
       if (tile.matrix) {
         // update global max and min if necessary
         (this.maxAndMin.max === null || tile.maxValue > this.maxAndMin.max) ?
@@ -89,36 +101,48 @@ const OneDimensionalMixin = Mixin(superclass => class extends superclass {
    * @returns {Array} 2d array of numerical values for each column
    */
   unFlatten(tile) {
-    if (tile.matrix) {
-      return tile.matrix;
-    }
-    const shapeX = tile.tileData.shape[0]; // number of different nucleotides in each bar
-    const shapeY = tile.tileData.shape[1]; // number of bars
-    const flattenedArray = tile.tileData.dense;
+    if (tile.matrix) return tile.matrix;
+
+    let flattenedArray = tile.tileData.dense;
 
     // if any data is negative, switch to exponential scale
-    if (flattenedArray.filter(a => a < 0).length > 0 && this.options.valueScaling === 'linear') {
+    if (flattenedArray.filter((a) => a < 0).length > 0 && this.options.valueScaling === 'linear') {
       console.warn('Negative values present in data. Defaulting to exponential scale.');
       this.options.valueScaling = 'exponential';
     }
 
-    // matrix[0] will be [flattenedArray[0], flattenedArray[256], flattenedArray[512], etc.]
-    // because of how flattenedArray comes back from the server.
-    const matrix = [];
-    for (let i = 0; i < shapeX; i++) { // 6
-      for (let j = 0; j < shapeY; j++) { // 256;
-        let singleBar;
-        (matrix[j] === undefined) ? singleBar = [] : singleBar = matrix[j];
-        singleBar.push(flattenedArray[(shapeY * i) + j]);
-        matrix[j] = singleBar;
-      }
-    }
+    const matrix = this.simpleUnFlatten(tile, flattenedArray);
 
     const maxAndMin = this.findMaxAndMin(matrix);
 
     tile.matrix = matrix;
     tile.maxValue = maxAndMin.max;
     tile.minValue = maxAndMin.min;
+
+    return matrix;
+  }
+
+  /**
+   *
+   * @param tile
+   * @param data array of values to reshape
+   * @returns {Array} 2D array representation of data
+   */
+  simpleUnFlatten(tile, data) {
+    const shapeX = tile.tileData.shape[0]; // number of different nucleotides in each bar
+    const shapeY = tile.tileData.shape[1]; // number of bars
+
+    // matrix[0] will be [flattenedArray[0], flattenedArray[256], flattenedArray[512], etc.]
+    // because of how flattenedArray comes back from the server.
+    const matrix = [];
+    for (let i = 0; i < shapeX; i++) {//6
+      for (let j = 0; j < shapeY; j++) {//256;
+        let singleBar;
+        (matrix[j] === undefined) ? singleBar = [] : singleBar = matrix[j];
+        singleBar.push(data[(shapeY * i) + j]);
+        matrix[j] = singleBar;
+      }
+    }
 
     return matrix;
   }

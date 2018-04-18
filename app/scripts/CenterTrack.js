@@ -89,6 +89,12 @@ class CenterTrack extends React.Component {
     }
   }
 
+  /* --------------------------- Getter / Setter ---------------------------- */
+
+  get sourceEvent() {
+    return event && event.sourceEvent;
+  }
+
   /* ---------------------------- Custom Methods ---------------------------- */
 
   addBrush1d() {
@@ -149,7 +155,7 @@ class CenterTrack extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !event.sourceEvent ||
+      !this.sourceEvent ||
       !this.props.onRangeSelectionX ||
       !this.props.is1dRangeSelection ||
       rangeSelectionMoved
@@ -165,7 +171,7 @@ class CenterTrack extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !event.sourceEvent ||
+      !this.sourceEvent ||
       !this.props.onRangeSelectionY ||
       !this.props.is1dRangeSelection ||
       rangeSelectionMoved
@@ -181,7 +187,7 @@ class CenterTrack extends React.Component {
     this.rangeSelectionMoved = false;
 
     if (
-      !event.sourceEvent ||
+      !this.sourceEvent ||
       !this.props.onRangeSelectionXY ||
       rangeSelectionMoved ||
       this.props.is1dRangeSelection
@@ -202,13 +208,13 @@ class CenterTrack extends React.Component {
   }
 
   brushStarted() {
-    if (!event.sourceEvent) return;
+    if (!this.sourceEvent) return;
 
     this.props.onRangeSelectionStart();
   }
 
   moveBrushX(rangeSelection) {
-    if (!this.brushEl && !event.sourceEvent) { return; }
+    if (!this.brushEl && !this.sourceEvent) { return; }
 
     if (this.brushIs2dBound) {
       this.removeBrush2d();
@@ -225,7 +231,7 @@ class CenterTrack extends React.Component {
   }
 
   moveBrushY(rangeSelection) {
-    if (!this.brushEl && !event.sourceEvent) { return; }
+    if (!this.brushEl && !this.sourceEvent) { return; }
 
     if (this.brushIs2dBound) {
       this.removeBrush2d();
@@ -242,7 +248,7 @@ class CenterTrack extends React.Component {
   }
 
   moveBrushXY(rangeSelection) {
-    if (!this.brushEl && !event.sourceEvent) { return; }
+    if (!this.brushEl && !this.sourceEvent) { return; }
 
     const relRange = [
       [
