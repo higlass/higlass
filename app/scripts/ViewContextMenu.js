@@ -80,6 +80,16 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
             {'Add Horizontal Cross Section'}
           </ContextMenuItem>
         }
+        {
+          this.hasMatrixTrack(this.props.tracks) &&
+
+          <ContextMenuItem
+            onMouseEnter={e => this.handleOtherMouseEnter(e)}
+            onClick={ this.handleAddVerticalSection.bind(this) }
+          >
+            {'Add Vertical Cross Section'}
+          </ContextMenuItem>
+        }
 
         { /* from the SeriesListSubmenuMixin */ }
         { this.getSubmenu() }
@@ -108,7 +118,7 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
         "type": "horizontal-section",
         "server": matrixTrack.server,
         "tilesetUid": matrixTrack.tilesetUid,
-        "ySlicePos":this.props.coords[1], 
+        "slicePos":this.props.coords[1], 
       },
       "options": {
         valueScaling: 'log',
@@ -116,6 +126,31 @@ export class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSu
       "type": "horizontal-bar",
       "height": 30,
       "position": "top",
+    });
+  }
+
+  handleAddVerticalSection() {
+    const trackList = expandCombinedTracks(this.props.tracks);
+    const matrixTrack = trackList.filter(track => track.type == 'heatmap')[0];
+
+    this.props.onAddTrack({
+      type: 'vertical-rule',
+      x: this.props.coords[0], 
+      position: 'whole',
+    });
+    this.props.onAddTrack({
+      "data": {
+        "type": "vertical-section",
+        "server": matrixTrack.server,
+        "tilesetUid": matrixTrack.tilesetUid,
+        "slicePos":this.props.coords[0], 
+      },
+      "options": {
+        valueScaling: 'log',
+      },
+      "type": "vertical-bar",
+      "height": 30,
+      "position": "left",
     });
   }
 }
