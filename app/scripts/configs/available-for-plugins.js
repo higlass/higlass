@@ -31,10 +31,10 @@ import LeftAxisTrack from '../LeftAxisTrack';
 import MapboxTilesTrack from '../MapboxTilesTrack';
 import MoveableTrack from '../MoveableTrack';
 import OSMTilesTrack from '../OSMTilesTrack';
+import OneDimensionalMixin from '../OneDimensionalMixin';
 import PixiTrack from '../PixiTrack';
 import SVGTrack from '../SVGTrack';
 import SquareMarkersTrack from '../SquareMarkersTrack';
-import StackedBarTrack from '../StackedBarTrack';
 import Tiled1DPixiTrack from '../Tiled1DPixiTrack';
 import TiledPixiTrack from '../TiledPixiTrack';
 import TopAxisTrack from '../TopAxisTrack';
@@ -86,11 +86,11 @@ const tracks = {
   LeftAxisTrack,
   MapboxTilesTrack,
   MoveableTrack,
+  OneDimensionalMixin,
   OSMTilesTrack,
   PixiTrack,
   SVGTrack,
   SquareMarkersTrack,
-  StackedBarTrack,
   Tiled1DPixiTrack,
   TiledPixiTrack,
   TopAxisTrack,
