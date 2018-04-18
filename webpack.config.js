@@ -6,11 +6,17 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-module.exports = {
+module.exports = env => ({
   context: `${__dirname}/app`,
   entry: {
     hglib: ['./scripts/hglib.js'],
     worker: ['./scripts/worker.js'],
+  },
+  watch: env === 'production' ? false : true,
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: 1000,
+    ignored: /node_modules/,
   },
   devtool: 'cheap-source-map',
   output: {
@@ -174,22 +180,21 @@ module.exports = {
     },
   },
   plugins: [
-  new webpack.DefinePlugin({
+    new webpack.DefinePlugin({
       'process.env': {
       'NODE_ENV': JSON.stringify('production')
       }
-  }),
+    }),
     new webpack.IgnorePlugin(/react\/addons/),
     new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
     new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
     new ExtractTextPlugin('hglib.css'),
     new webpack.optimize.ModuleConcatenationPlugin(),
-  /*
-  ,
-  new BundleAnalyzerPlugin({
-    analyzerMode: 'static'
-  })
-  */
+    /*
+    ,
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static'
+    })
+    */
   ],
-};
-
+});
