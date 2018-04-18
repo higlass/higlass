@@ -123,7 +123,6 @@ export class TiledPixiTrack extends PixiTrack {
 
       this.refreshTiles();
 
-      console.log('handleTilesetInfoReceived:', handleTilesetInfoReceived);
       if (handleTilesetInfoReceived) handleTilesetInfoReceived(tilesetInfo);
 
       if (!this.options) this.options = {};

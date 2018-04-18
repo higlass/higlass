@@ -53,12 +53,6 @@ import OSMTilesTrack from './OSMTilesTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
 import ImageTilesTrack from './ImageTilesTrack';
 
-import BasicMultipleLineChart from './BasicMultipleLineChart';
-import BasicMultipleBarChart from './BasicMultipleBarChart';
-import BasicStackedBarChart from './BasicStackedBarChart';
-
-import StackedBarTrack from './StackedBarTrack';
-
 // Utils
 import {dictItems} from './utils';
 
@@ -981,21 +975,6 @@ export class TrackRenderer extends React.Component {
             this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
         );
 
-	/*
-      case 'horizontal-stacked-bar':
-        return new StackedBarTrack(
-          this.pStage,
-          dataConfig,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-          this.svgElement,
-          () => this.currentProps.onValueScaleChanged(track.uid),
-          newOptions =>
-            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
-        );
-	*/
-
       case 'horizontal-line':
         return new HorizontalLine1DPixiTrack(
           this.pStage,
@@ -1018,45 +997,6 @@ export class TrackRenderer extends React.Component {
             () => this.currentProps.onValueScaleChanged(track.uid),
           ),
         );
-
-      // case 'basic-multiple-line-chart':
-      //   return new BasicMultipleLineChart(
-      //     this.pStage,
-      //     dataConfig,
-      //     handleTilesetInfoReceived,
-      //     track.options,
-      //     () => this.currentProps.onNewTilesLoaded(track.uid),
-      //     this.svgElement,
-      //     () => this.currentProps.onValueScaleChanged(track.uid),
-      //     newOptions =>
-      //       this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
-      //   );
-      //
-      // case 'basic-multiple-bar-chart':
-      //   return new BasicMultipleBarChart(
-      //     this.pStage,
-      //     dataConfig,
-      //     handleTilesetInfoReceived,
-      //     track.options,
-      //     () => this.currentProps.onNewTilesLoaded(track.uid),
-      //     this.svgElement,
-      //     () => this.currentProps.onValueScaleChanged(track.uid),
-      //     newOptions =>
-      //       this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
-      //   );
-      //
-      // case 'basic-stacked-bar-chart':
-      //   return new BasicStackedBarChart(
-      //     this.pStage,
-      //     dataConfig,
-      //     handleTilesetInfoReceived,
-      //     track.options,
-      //     () => this.currentProps.onNewTilesLoaded(track.uid),
-      //     this.svgElement,
-      //     () => this.currentProps.onValueScaleChanged(track.uid),
-      //     newOptions =>
-      //       this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
-      //   );
 
       case 'horizontal-point':
         return new HorizontalPoint1DPixiTrack(
