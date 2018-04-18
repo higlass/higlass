@@ -3,19 +3,17 @@ import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
 
+import DataFetcher from './DataFetcher';
 import PixiTrack from './PixiTrack';
 
-// Services
+// Utils
 import { pubSub } from './services';
-import { transitionGroup } from './services/transition';
 
 // Utils
 import { debounce } from './utils';
 
 // Configs
 import { ZOOM_DEBOUNCE } from './configs';
-
-import DataFetcher from './DataFetcher';
 
 /**
  * Get a valueScale for a heatmap.
@@ -109,7 +107,7 @@ class TiledPixiTrack extends PixiTrack {
         this.trackNotFoundText = '';
         this.errorTextText = this.tilesetInfo.error;
         this.tilesetInfo = null;
-        // this.draw();
+        this.draw();
         this.animate();
         return;
       }
@@ -138,7 +136,6 @@ class TiledPixiTrack extends PixiTrack {
     });
 
     this.uuid = slugid.nice();
-
     this.refreshTilesDebounced = debounce(this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
 
     this.trackNotFoundText = new PIXI.Text(
@@ -146,8 +143,6 @@ class TiledPixiTrack extends PixiTrack {
     );
 
     this.pLabel.addChild(this.trackNotFoundText);
-
-    this.toRemoveIds = new Set();
   }
 
   rerender(options) {
@@ -258,17 +253,16 @@ class TiledPixiTrack extends PixiTrack {
    *
    * @param toRemoveIds: An array of tile ids to remove from the list of fetched tiles.
    */
-  removeTiles(toRemoveIds = this.toRemoveIds) {
+  removeTiles(toRemoveIds) {
     // if there's nothing to remove, don't bother doing anything
-    if (!toRemoveIds.size) return;
+    if (
+      !toRemoveIds.length ||
+      !this.areAllVisibleTilesLoaded() ||
+      this.renderingTiles.size
+    ) return;
 
-    if (!this.areAllVisibleTilesLoaded()) return;
-
-    if (this.renderingTiles.size) { return; }
-
-    toRemoveIds.forEach((id) => {
-      const tileIdStr = id;
-
+    toRemoveIds.forEach((x) => {
+      const tileIdStr = x;
       this.destroyTile(this.fetchedTiles[tileIdStr]);
 
       if (tileIdStr in this.tileGraphics) {
@@ -277,8 +271,6 @@ class TiledPixiTrack extends PixiTrack {
       }
 
       delete this.fetchedTiles[tileIdStr];
-
-      toRemoveIds.delete(id);
     });
 
     this.synchronizeTilesAndGraphics();
@@ -300,10 +292,14 @@ class TiledPixiTrack extends PixiTrack {
 
   setPosition(newPosition) {
     super.setPosition(newPosition);
+
+    // this.draw();
   }
 
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
+
+    // this.draw();
   }
 
   /**
@@ -320,6 +316,7 @@ class TiledPixiTrack extends PixiTrack {
     for (let i = 0; i < visibleTileIdsList.length; i++) {
       if (!fetchedTileIDs.has(visibleTileIdsList[i])) { return false; }
     }
+
     return true;
   }
 
@@ -384,8 +381,6 @@ class TiledPixiTrack extends PixiTrack {
         this.pMain.addChild(newGraphics);
 
         this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;
-        this.fetchedTiles[fetchedTileIDs[i]].new = true;
-
         this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
 
         this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
@@ -531,34 +526,6 @@ class TiledPixiTrack extends PixiTrack {
     if (this.areAllVisibleTilesLoaded()) {
       pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
     }
-
-    // Fade in new Sprites
-    // if (this.tweenStop) this.tweenStop();
-
-    // const newTileSprites = Object.keys(this.fetchedTiles)
-    //   .filter(tilesetId => this.fetchedTiles[tilesetId].graphics.fadeIn)
-    //   .map((tilesetId) => {
-    //     const tileset = this.fetchedTiles[tilesetId];
-    //     tileset.graphics.fadeIn = false;
-    //     return {
-    //       obj: tileset.sprite,
-    //       propsTo: {
-    //         alpha: 1
-    //       }
-    //     };
-    //   });
-
-    // if (newTileSprites.length) {
-    //   this.tweenStop = transitionGroup(newTileSprites, 250);
-    //   pubSub.subscribe('app.stopRepeatingAnimation', (tweens) => {
-    //     if (this.tweenStop.tweens === tweens) {
-    //       this.removeTiles();
-    //     }
-    //   }, 1);
-    // } else {
-    //   this.removeTiles();
-    // }
-    this.removeTiles();
   }
 
   draw() {
@@ -597,14 +564,12 @@ class TiledPixiTrack extends PixiTrack {
     pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
   }
 
-  drawTile(tileData, graphics) {
-    /**
-     * Draw a tile on some graphics
-     */
-  }
+  /**
+   * Draw a tile on some graphics
+   */
+  drawTile(tileData, graphics) {}
 
   calculateMedianVisibleValue() {
-    //console.trace('medianVisibleValue:');
     if (this.areAllVisibleTilesLoaded()) {
       this.allTilesLoaded();
     }
@@ -621,8 +586,6 @@ class TiledPixiTrack extends PixiTrack {
         .filter(x => this.fetchedTiles[x].tileData.dense)
         .map(x => Array.from(this.fetchedTiles[x].tileData.dense))
     ).filter(x => x > 0);
-
-    console.log('len(values):', values.length);
 
     this.medianVisibleValue = median(values);
     return this.medianVisibleValue;
@@ -704,7 +667,6 @@ class TiledPixiTrack extends PixiTrack {
     if (margin == null || typeof(margin) == 'undefined')
       margin = 6;  // set a default value
 
-    // console.log('valueScaling:', this.options.valueScaling);
     if (this.options.valueScaling === 'log') {
       offsetValue = medianValue;
 
