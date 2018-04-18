@@ -50,6 +50,10 @@ v0.10.16 (2018-
 - Don't show the "Strange tileData" warnings
 - Pegged bootstrap to version 3.3.7
 
+v0.10.16 (2018-02-01)
+
+- Fixed a bug during active range selection when the _select_ mouse tool is deactivated
+
 v0.10.15 (2018-01-30)
 
 - Added the vertical bed-like track

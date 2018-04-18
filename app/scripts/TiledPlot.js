@@ -30,8 +30,8 @@ import {
 } from './utils';
 
 // Configs
-import { 
-  MOUSE_TOOL_SELECT, 
+import {
+  MOUSE_TOOL_SELECT,
   TRACKS_INFO_BY_TYPE,
   DEFAULT_TRACKS_FOR_DATATYPE,
 } from './configs';
@@ -358,12 +358,12 @@ export class TiledPlot extends React.Component {
       addDivisorDialog: null,
     });
 
-    const numerator = series.data ? 
+    const numerator = series.data ?
       {
         server: series.data.server,
         tilesetUid: series.data.tilesetUid
       } :
-      { 
+      {
         server: series.server,
         tilesetUid: series.tilesetUid
       };
@@ -394,7 +394,7 @@ export class TiledPlot extends React.Component {
 
     const datatype = TRACKS_INFO_BY_TYPE[series.type].datatype[0];
 
-    const atm = 
+    const atm =
         (<AddTrackModal
           host={this.state.addTrackHost}
           onCancel={()=>{
@@ -1122,7 +1122,7 @@ export class TiledPlot extends React.Component {
     const topRightDiv = React.cloneElement(topLeftDiv);
 
     const topDiv = (
-      <div 
+      <div
         style={{
           display: 'flex',
           flexGrow: 1,
@@ -1144,7 +1144,7 @@ export class TiledPlot extends React.Component {
     );
 
     const bottomDiv = (
-      <div 
+      <div
         style={{
           display: 'flex',
           flexGrow: 1,
@@ -1230,7 +1230,7 @@ export class TiledPlot extends React.Component {
           }}
         >
           { topDisplayed ? topDiv : null }
-          { hasVerticalComponent && 
+          { hasVerticalComponent &&
             <div
               style={{
               display: 'flex',
@@ -1504,6 +1504,7 @@ export class TiledPlot extends React.Component {
           onTrackOptionsChanged={this.handleTrackOptionsChanged.bind(this)}
           onValueScaleChanged={this.props.onValueScaleChanged}
           pixiStage={this.props.pixiStage}
+          pluginTracks={this.props.pluginTracks}
           positionedTracks={positionedTracks}
           registerDraggingChangedListener={this.props.registerDraggingChangedListener}
           removeDraggingChangedListener={this.props.removeDraggingChangedListener}
@@ -1710,6 +1711,10 @@ export class TiledPlot extends React.Component {
   }
 }
 
+TiledPlot.defaultProps = {
+  pluginTracks: {}
+};
+
 TiledPlot.propTypes = {
   addTrackPosition: PropTypes.string,
   canvasElement: PropTypes.object,
@@ -1738,6 +1743,7 @@ TiledPlot.propTypes = {
   removeDraggingChangedListener: PropTypes.func,
   setCentersFunction: PropTypes.func,
   pixiStage: PropTypes.object,
+  pluginTracks: PropTypes.object,
   svgElement: PropTypes.object,
   trackSourceServers: PropTypes.array,
   tracks: PropTypes.object,
