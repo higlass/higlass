@@ -154,3 +154,5 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
 
 
 });
+
+export default OneDimensionalMixin;

@@ -10,6 +10,7 @@ import Annotations2dTrack from '../Annotations2dTrack';
 import ArrowheadDomainsTrack from '../ArrowheadDomainsTrack';
 import BarTrack from '../BarTrack';
 import BedLikeTrack from '../BedLikeTrack';
+import BasicMultipleLineChart from '../BasicMultipleLineChart';
 import CNVIntervalTrack from '../CNVIntervalTrack';
 import CombinedTrack from '../CombinedTrack';
 import DivergentBarTrack from '../DivergentBarTrack';
@@ -31,6 +32,7 @@ import LeftAxisTrack from '../LeftAxisTrack';
 import MapboxTilesTrack from '../MapboxTilesTrack';
 import MoveableTrack from '../MoveableTrack';
 import OSMTilesTrack from '../OSMTilesTrack';
+import OneDimensionalMixin from '../OneDimensionalMixin';
 import PixiTrack from '../PixiTrack';
 import SVGTrack from '../SVGTrack';
 import SquareMarkersTrack from '../SquareMarkersTrack';
@@ -66,6 +68,7 @@ const tracks = {
   ArrowheadDomainsTrack,
   BarTrack,
   BedLikeTrack,
+  BasicMultipleLineChart,
   CNVIntervalTrack,
   CombinedTrack,
   DivergentBarTrack,
@@ -86,6 +89,7 @@ const tracks = {
   LeftAxisTrack,
   MapboxTilesTrack,
   MoveableTrack,
+  OneDimensionalMixin,
   OSMTilesTrack,
   PixiTrack,
   SVGTrack,
