@@ -8,7 +8,7 @@ import SearchField from './SearchField';
 import { absToChr } from './utils';
 
 
-export class Chromosome2DLabels extends PixiTrack {
+class Chromosome2DLabels extends PixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
     super(scene, options);
 

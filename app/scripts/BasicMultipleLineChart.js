@@ -4,7 +4,7 @@ import { mix } from 'mixwith';
 import BarTrack from './BarTrack';
 import OneDimensionalMixin from './OneDimensionalMixin';
 
-export class BasicMultipleLineChart extends mix(BarTrack).with(OneDimensionalMixin) {
+class BasicMultipleLineChart extends mix(BarTrack).with(OneDimensionalMixin) {
   constructor(
     scene,
     dataConfig,
