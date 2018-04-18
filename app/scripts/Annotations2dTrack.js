@@ -39,8 +39,8 @@ class Annotations2dTrack extends TiledPixiTrack {
   /* --------------------------- Getter / Setter ---------------------------- */
 
   get minX() {
-    return this.tilesetInfo && this.tilesetInfo.min_pos
-      ? this.tilesetInfo.min_pos[0]
+    return this.tilesetInfo && this.tilesetInfo.min_x
+      ? this.tilesetInfo.min_x
       : 0;
   }
 
