@@ -17,8 +17,6 @@ export class DivergentBarTrack extends BarTrack {
 
   renderTile(tile) {
     //super.drawTile(tile);
-    console.log('renderTile:');
-
     if (!tile.graphics) { return; }
 
     const graphics = tile.graphics;
