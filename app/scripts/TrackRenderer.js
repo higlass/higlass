@@ -7,7 +7,6 @@ import { geoMercator } from 'd3-geo';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
-import { easeLinear } from 'd3-ease';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
@@ -53,14 +52,10 @@ import CrossRule from './CrossRule';
 
 import OSMTilesTrack from './OSMTilesTrack';
 import MapboxTilesTrack from './MapboxTilesTrack';
-import ImageTilesTrack from './ImageTilesTrack';
 
 import BasicMultipleLineChart from './BasicMultipleLineChart';
 import BasicMultipleBarChart from './BasicMultipleBarChart';
 import BasicStackedBarChart from './BasicStackedBarChart';
-
-import AnnotationsInsets from './AnnotationsInsets';
-import Insets2dTrack from './Insets2dTrack';
 
 import StackedBarTrack from './StackedBarTrack';
 
@@ -74,12 +69,11 @@ import {
 } from './utils';
 
 // Services
-import {pubSub} from './services';
+import { pubSub } from './services';
 
 // Configs
 import {
-  AVAILABLE_FOR_PLUGINS,
-  ZOOM_TRANSITION_DURATION
+  AVAILABLE_FOR_PLUGINS
 } from './configs';
 
 // Styles
@@ -196,6 +190,9 @@ class TrackRenderer extends React.Component {
     );
     this.pubSubs.push(
       pubSub.subscribe('app.event', this.dispatchEvent.bind(this)),
+    );
+    this.pubSubs.push(
+      pubSub.subscribe('zoomToDataPos', this.zoomToDataPosHandler.bind(this)),
     );
   }
 
@@ -403,6 +400,10 @@ class TrackRenderer extends React.Component {
       && y <= this.elementPos.height + this.elementPos.top
     );
     return withinX && withinY;
+  }
+
+  zoomToDataPosHandler({ pos, animateTime, isMercator }) {
+    this.zoomToDataPos(...pos, animateTime, isMercator);
   }
 
   addZoom() {
@@ -1110,21 +1111,32 @@ class TrackRenderer extends React.Component {
 
   createMetaTrack(track) {
     switch (track.type) {
-      case 'annotations-insets':
-        return new AnnotationsInsets(
-          track.insetsTrack,
-          track.options,
-          this.getTrackObject.bind(this),
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-        );
+      default: {
+        // Check if a plugin track is available
+        const pluginTrack = this.props.pluginTracks[track.type];
 
-      default:
+        if (pluginTrack && pluginTrack.isMetaTrack) {
+          try {
+            return new pluginTrack.track(
+              AVAILABLE_FOR_PLUGINS,
+              track,
+              this.getTrackObject.bind(this),
+              () => this.currentProps.onNewTilesLoaded(track.uid),
+            );
+          } catch (e) {
+            console.error(
+              'Plugin meta track', track.type, 'failed to instantiate.', e
+            );
+          }
+        }
+
         console.warn(`Unknown meta track of type: ${track.type}`);
         return new UnknownPixiTrack(
           this.pStage,
           { name: 'Unknown Track Type', type: track.type },
           () => this.currentProps.onNewTilesLoaded(track.uid),
         );
+      }
     }
   }
 
@@ -1676,7 +1688,7 @@ class TrackRenderer extends React.Component {
         // Check if a plugin track is available
         const pluginTrack = this.props.pluginTracks[track.type];
 
-        if (pluginTrack) {
+        if (pluginTrack && !pluginTrack.isMetaTrack) {
           try {
             return new pluginTrack.track(
               AVAILABLE_FOR_PLUGINS,
@@ -1685,6 +1697,7 @@ class TrackRenderer extends React.Component {
               dataConfig,
               handleTilesetInfoReceived,
               () => this.currentProps.onNewTilesLoaded(track.uid),
+              this.baseEl,
             );
           } catch (e) {
             console.error(
@@ -1710,16 +1723,14 @@ class TrackRenderer extends React.Component {
    * @param   {number}  dataXEnd  Data end X coordinate.
    * @param   {number}  dataYStart  Data start Y coordinate.
    * @param   {number}  dataYEnd  Data end Y coordinate.
-   * @param   {boolean}  animate  If `true` smoothly trnasition between the
-   *   current and the new view.
    * @param   {number}  animateTime  Animation time in milliseconds.
+   * @param   {boolean}  isMercator  If `true` animate mercator coords
    */
   zoomToDataPos(
     dataXStart,
     dataXEnd,
     dataYStart,
     dataYEnd,
-    animate = false,
     animateTime = 3000,
     isMercator = false
   ) {
@@ -1836,9 +1847,9 @@ class TrackRenderer extends React.Component {
   render() {
     return (
       <div
+        ref={(c) => { this.baseEl = c; }}
         className="track-renderer-div"
         style={{
-          position: "relative",
           height: this.currentProps.height,
           width: this.currentProps.width,
         }}
@@ -1846,10 +1857,12 @@ class TrackRenderer extends React.Component {
       >
         <div
           ref={(c) => { this.element = c; }}
+          className="track-renderer-element"
           styleName="track-renderer-element"
         />
         <div
           ref={(c) => { this.eventTracker = c; }}
+          className="track-renderer-events"
           styleName="track-renderer-events"
         >
           {this.currentProps.children}
