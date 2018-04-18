@@ -6,13 +6,13 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-module.exports = env => ({
+module.exports = {
   context: `${__dirname}/app`,
   entry: {
     hglib: ['./scripts/hglib.js'],
     worker: ['./scripts/worker.js'],
   },
-  watch: env === 'production' ? false : true,
+  watch: process.env.NODE_ENV === 'production' ? false : true,
   watchOptions: {
     aggregateTimeout: 300,
     poll: 1000,
@@ -197,4 +197,4 @@ module.exports = env => ({
     })
     */
   ],
-});
+};
