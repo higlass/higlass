@@ -406,7 +406,7 @@ class TrackRenderer extends React.Component {
   }
 
   addZoom() {
-    if (!this.divTrackAreaSelection || !this.elementSelection) return;
+    if (!this.elementSelection) return;
 
     // add back the previous transform
     this.elementSelection.call(this.zoomBehavior);
