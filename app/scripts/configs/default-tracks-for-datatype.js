@@ -16,6 +16,10 @@ export const DEFAULT_TRACKS_FOR_DATATYPE = {
     'top': 'horizontal-multivec',
     'bottom': 'horizontal-multivec',
   },
+  'epilogos': {
+    'top': 'horizontal-stacked-bar',
+    'bottom': 'horizontal-stacked-bar',
+  },
   'geo-json': {
     'center': 'geo-json',
   },

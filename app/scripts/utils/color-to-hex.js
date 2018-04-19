@@ -6,6 +6,9 @@ import * as PIXI from 'pixi.js';
  * hex value which is legible by PIXI
  */
 const colorToHex = (colorValue) => {
+  if (!colorValue)
+    return PIXI.utils.rgb2hex([0,0,0]);
+
   const c = color(colorValue);
   const hex = PIXI.utils.rgb2hex([c.r / 255.0, c.g / 255.0, c.b / 255.0]);
 
