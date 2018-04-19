@@ -2947,8 +2947,8 @@ class HiGlassComponent extends React.Component {
     const evt = {
       x: relPos[0],
       y: relPos[1],
-      relTrackX: relTrackPos[0],
-      relTrackY: relTrackPos[1],
+      relTrackX: (hoveredTrack && hoveredTrack.flipText) ? relTrackPos[1] : relTrackPos[0],
+      relTrackY: (hoveredTrack && hoveredTrack.flipText) ? relTrackPos[0] : relTrackPos[1],
       dataX,
       dataY,
       isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,

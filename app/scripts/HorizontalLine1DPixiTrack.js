@@ -42,11 +42,10 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     // the position of the tile containing the query position
     const tilePos = this._xScale.invert(trackX) / tileWidth;
-
-    const posInTileX = this.tilesetInfo.tile_size * (tilePos - Math.floor(tilePos));
-
     const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)])
+
     const fetchedTile = this.fetchedTiles[tileId];
+    const posInTileX = fetchedTile.tileData.dense.length * (tilePos - Math.floor(tilePos));
 
     let value = '';
     let textValue = '';
