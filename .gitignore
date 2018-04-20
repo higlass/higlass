@@ -1,5 +1,6 @@
 app/local
 app/test2.html
+app/test3.html
 yarn.lock
 build/
 npm-debug.log
