@@ -2,7 +2,7 @@ import React from 'react';
 
 import ContextMenuItem from './ContextMenuItem';
 
-import { TRACKS_INFO } from './configs';
+import { TRACKS_INFO_BY_TYPE } from './configs';
 
 import '../styles/ContextMenu.module.scss';
 
@@ -51,15 +51,18 @@ export const getSeriesItems = (
 
   const trackTypeToInfo = {};
 
-  TRACKS_INFO.forEach((ti) => {
-    trackTypeToInfo[ti.type] = ti;
-  });
+  if (window.higlassTracksByType) {
+    Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
+      TRACKS_INFO_BY_TYPE[pluginTrackType] =
+        window.higlassTracksByType[pluginTrackType].config;
+    });
+  }
 
   return getAllTracksAndSubtracks(tracks).map((x) => {
-    let thumbnail = null;
-    if (x.type in trackTypeToInfo) {
-      thumbnail = trackTypeToInfo[x.type].thumbnail;
-    }
+    const thumbnail = TRACKS_INFO_BY_TYPE[x.type]
+      ? TRACKS_INFO_BY_TYPE[x.type].thumbnail
+      : null;
+
     const imgTag = thumbnail ? (
       <div
         dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
