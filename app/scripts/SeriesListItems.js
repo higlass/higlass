@@ -66,25 +66,10 @@ export const getSeriesItems = (
     const imgTag = thumbnail ? (
       <div
         dangerouslySetInnerHTML={{ __html: thumbnail.outerHTML }}
-        style={{
-          display: 'inline-block',
-          marginRight: 10,
-          verticalAlign: 'middle',
-        }}
+        styleName='context-menu-icon'
       />
     ) : (
-      <div
-        style={{
-          display: 'inline-block',
-          marginRight: 10,
-          verticalAlign: 'middle',
-        }}
-      >
-        <svg
-          height={20}
-          width={30}
-        />
-      </div>
+      <div styleName='context-menu-icon'><svg /></div>
     );
 
     return (

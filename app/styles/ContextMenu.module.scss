@@ -18,6 +18,16 @@
   background-color: rgba(68, 68, 68, 0.97);
 }
 
+.context-menu-icon {
+  display: inline-block;
+  margin-right: 3px;
+  vertical-align: middle;
+  > svg {
+    width: 30px;
+    height: 20px;
+  }
+}
+
 .context-menu-item {
   padding: 2px;
   white-space: nowrap;
