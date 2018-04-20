@@ -370,140 +370,38 @@ there are different ways in which data can be rendered and manipulated.
 Adding new track types
 **********************
 
-To add a new track type, we first need a data source and a new
-definition. To begin, we can create a new test page to work
-with.
+To get an idea of how to add new tracks to HiGlass, we recommend taking a look
+at some examples of external tracks:
 
-.. code-block:: bash
+`Geo JSON Track <https://github.com/flekschas/higlass-geojson/>`_: This track
+displays GeoJSON data at multiple resolutions.  
 
-    cp app/test2.html app/testx.html
+`Image Track <https://github.com/flekschas/higlass-image/>`_: View large images.  To create
+the underlying data format use the `image-tiles-to-sqlite` repo.  
 
-Within this page will be a sample viewconfig, that we need to add our new track
-definition to. In this example, we'll be adding a 1D track. This just means
-that it can only be zoomed into in one dimension. We'll give it a type of
-``horizontal-multivec`` and add it to the list of top tracks with the bare
-minimum of attributes. The tilesetUid was taken from the `higlass server new
-filetypes section <higlass_server.html#new-filetypes>`_.
+`Multivec Tracks <https://github.com/daniellenguyen/higlass-multivec/>`_:
+Display multivec data. This is data that contains multiple values (vecs) at
+each position in the genome. The underlying file format for this track can be
+created using clodius as described in the `data preparation section
+<data_preparation.html#multivec-files>`_.
 
+The important files that need to be provided are ``src/index.js`` and the
+actual tracks ``src/scripts/MyTrack.js``. ``index.js`` simply lists the tracks
+that this repository provides and registers them with the global namespace.
 
-.. code-block:: javascript
+Each track should implement is functionality in the `MyTrackClass` class,
+accessing the higlass services using the `HGC` variable.
 
-        "top": [
-                  {
-            "server": "http://localhost:8000/api/v1",
-            "tilesetUid": "RAh2nvU9THezcVuxBU3ioQ",
-            "type": "horizontal-multivec",
-            "height": 200,
-            "position": "top"
-          }
-        ],
+Each track should also provide some metadata to describe it and the options
+that it will accept. The available options can be found in the `higlass repository <https://github.com/hms-dbmi/higlass/blob/develop/app/scripts/configs/options-info.js>`_.
 
-We can start higlass:
-
-.. code-block:: bash
-
-    npm install
-    npm start
-
-And then navigate to the test web page: http://localhost:8080/testx.html
-Upon opening the developer console, we'll see an error message:
-
-```
-WARNING: unknown track type: horizontal-multivec
-```
-
-This is because HiGlass doesn't know how to handle this track type. In
-this example, we'll give it a way of handling it.
-
-First, we need to define this track type in the ``TRACKS_INFO`` array in ``app/scripts/tracks-info.js``:
-
-.. code-block:: javascript
-
-  {
-    type: 'horizontal-multivec',
-    datatype: ['multivec'],
-    local: false,
-    orientation: '1d-horizontal',
-    thumbnail: null,
-    availableOptions: ['labelPosition', 'labelColor', 'valueScaling', 'labelTextOpacity', 'labelBackgroundOpacity', 'trackBorderWidth', 'trackBorderColor', 'trackType'],
-    defaultOptions: {
-      labelPosition: 'topLeft',
-      labelColor: 'black',
-      labelTextOpacity: 0.4,
-      valueScaling: 'linear',
-      trackBorderWidth: 0,
-      trackBorderColor: 'black',
-    },
-  },
-
-It has all of the standard track options, is horizontal, etc...
-
-Now if we reload our test page, we still get the same warning. This is because
-we don't actually know how to draw this track. We need to create a class which
-knows how to draw this track type. We can do that by creating a new file in
-``app/scripts`` called ``HorizontalMultivecTrack.js``.
-
-The easiest way to do this is to start with an existing track type and copy it.
-This example uses a HeatmapTrack as a template. For other types of data, it's
-best to start with a track that is similar to the type that you are trying to
-create. A list of track types can be found in the `track types section of this
-documentation <track_types.html>`_.
-
-.. code-block:: bash
-
-    cp app/scripts/HeatmapTiledPixiTrack.js app/scripts/HorizontalMultivecTrack.js
-
-Here we need to change the name of the track and have it extend the HeatmapTrack:
-
-.. code-block:: bash
-
-    export class HorizontalMultivecTrack extends HeatmapTiledPixiTrack
-
-Now we can register the new track type in `TrackRenderer.js:createTrackObject`:
-
-.. code-block:: javascript
-
-      case 'horizontal-multivec':
-        return new HorizontalMultivecTrack(
-          this.pStage,
-          dataConfig,
-          handleTilesetInfoReceived,
-          track.options,
-          () => this.currentProps.onNewTilesLoaded(track.uid),
-          this.svgElement,
-          () => this.currentProps.onValueScaleChanged(track.uid),
-          newOptions =>
-            this.currentProps.onTrackOptionsChanged(track.uid, newOptions),
-        );
-
-And add it to the imports at the top:
-
-.. code-block:: javascript
-
-    import HorizontalMultivecTrack from './HorizontalMultivecTrack';
-
-Reloading our test page will now output a series of errors which we will fix
-in `HorizontalMultivecTrack`. Here's the steps.
-
-1. Replace ``tileToLocalId`` and ``tileToRemoteId`` with those from
-   ``HorizontalLine1DPixiTrack``.  We do this because the ones we copied from
-   the HeatmapTrack assume that there will be a data transform associated with
-   the ID. This simple datatype has no associated transforms and thus only
-   needs to encode the tile position in the ID.
-
-2. Change ``calculateZoomLevel`` to only use the x domain in calculating the zoom
-   level.
-
-3. Change ``calculateVisibleTiles`` to only use the x domain in calculating the
-   visible tiles.
-
-4. Change ``tileDataToCanvas`` to change the width of the data to match that
-   returned in the tileset info.
-
-5. Change the ``zoomed`` function to maintain the the view at the origin.
-
-6. Change ``setSpriteProperties`` to position the sprite on only the x axis.
-
+- The ``type`` identifies this track type (e.g. ``horizontal-bar``).
+- The ``datatype`` identifies which datatypes can be displayed using this track (e.g. ``vector``, ``matrix``, etc)
+- ``local`` describes whether this track requires remote data or can be displayed as is (e.g. axes)
+- ``orientation``: How this track is layed out. The options are `1d-horizontal`, `1d-vertical`, and `2d`.
+- ``thumbnail``: If there's a thumbnail that can be shown that gives the viewer an idea of what the track looks like. More documentation on this to be added later.
+- ``availableOptions``: The set of options that this track can take. These will be displayed in the track config menu.
+- ``defaultOptions``: The default values for the available options.
 
 
 Other Documentation
