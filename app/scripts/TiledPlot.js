@@ -97,9 +97,12 @@ class TiledPlot extends React.Component {
       addDivisorDialog: null,
     };
 
-    if (window.higlassTracksByType) {
-      Object.assign(TRACKS_INFO_BY_TYPE, window.higlassTracksByType);
-    }
+  if (window.higlassTracksByType) {
+    Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
+      TRACKS_INFO_BY_TYPE[pluginTrackType] =
+        window.higlassTracksByType[pluginTrackType].config;
+    });
+  }
 
     // these dimensions are computed in the render() function and depend
     // on the sizes of the tracks in each section
