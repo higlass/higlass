@@ -52,10 +52,6 @@ module.exports = {
                   },
                 ],
               ],
-              presets: [
-                ['es2015', { modules: false }],
-                'react'
-              ],
             },
           },
         ],
@@ -190,11 +186,6 @@ module.exports = {
     new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
     new ExtractTextPlugin('hglib.css'),
     new webpack.optimize.ModuleConcatenationPlugin(),
-    /*
-    ,
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static'
-    })
-    */
+    // new BundleAnalyzerPlugin(),
   ],
 };
