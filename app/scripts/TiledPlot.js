@@ -256,7 +256,7 @@ class TiledPlot extends React.Component {
     if (e.hgCustomItems) {
       contextMenuCustomItems = e.hgCustomItems.map(item => (
         <ContextMenuItem
-          key={item.goTo}
+          key={item.key}
           onClick={item.onClick}
         >
           {item.text}
