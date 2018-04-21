@@ -171,8 +171,8 @@ class ArrowheadDomainsTrack extends TiledPixiTrack {
       ? +this.options.minSquareSize
       : 0;
 
-    const minThres = this.options.rectanlgeMinSize
-      ? +this.options.rectanlgeMinSize
+    const minThres = this.options.rectangleMinSize
+      ? +this.options.rectangleMinSize
       : 0;
 
     const xMin = this._xScale.range()[0];
