@@ -13,7 +13,7 @@ const colorDomainToRgbaArray = (colorRange, noTansparent = false) => {
 
   const d3Scale = scaleLinear().domain(domain).range(colorRange);
 
-  const fromX = noTansp ? 255 : 254;
+  const fromX = noTansparent ? 255 : 254;
 
   const rgbaArray = range(fromX, -1, -1).map(d3Scale)
     .map((x) => {
