@@ -900,15 +900,6 @@ export const TRACKS_INFO = [
     },
   },
   {
-    type: '2d-pixel-annotations',
-    datatype: ['2d-pixel-annotations'],
-    local: true,
-    orientation: '2d',
-    name: '2D Pixel Annotations',
-    thumbnail: null,
-    hidden: true,
-  },
-  {
     type: '2d-chromosome-annotations',
     datatype: ['chromsizes'],
     local: true,

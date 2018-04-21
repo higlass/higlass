@@ -36,7 +36,6 @@ import SquareMarkersTrack from './SquareMarkersTrack';
 import Chromosome2DLabels from './Chromosome2DLabels';
 import Chromosome2DGrid from './Chromosome2DGrid';
 import Chromosome2DAnnotations from './Chromosome2DAnnotations';
-import Pixel2DAnnotations from './Pixel2DAnnotations';
 import HorizontalChromosomeLabels from './HorizontalChromosomeLabels';
 
 import HorizontalHeatmapTrack from './HorizontalHeatmapTrack';
@@ -1508,13 +1507,6 @@ class TrackRenderer extends React.Component {
 
       case '2d-chromosome-annotations':
         return new Chromosome2DAnnotations(
-          this.pStage,
-          track.chromInfoPath,
-          track.options,
-        );
-
-      case '2d-pixel-annotations':
-        return new Pixel2DAnnotations(
           this.pStage,
           track.chromInfoPath,
           track.options,
