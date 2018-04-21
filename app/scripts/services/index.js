@@ -8,5 +8,4 @@ export {
   setTileProxyAuthHeader,
   authHeader
 } from './tile-proxy';
-export { default as transition } from './transition';
 export { getDarkTheme, setDarkTheme } from './is-dark-theme';

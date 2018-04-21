@@ -10,9 +10,6 @@ import { ResizeSensor, ElementQueries } from 'css-element-queries';
 import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
 import parse from 'url-parse';
-// We need to import tweenManager in order to be able to update global tween
-// manager like so: PIXI.tweenManager.update();
-import tweenManager from 'k8w-pixi-tween';  // eslint-disable-line no-unused-vars
 
 import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
@@ -232,7 +229,6 @@ class HiGlassComponent extends React.Component {
     this.rangeSelection = [null, null];
 
     this.prevMouseHoverTrack = null;
-    this.repeatingAnimation = new Set();
   }
 
   componentWillMount() {
@@ -268,12 +264,6 @@ class HiGlassComponent extends React.Component {
     );
     this.pubSubs.push(
       pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('app.startRepeatingAnimation', this.startRepeatingAnimation.bind(this))
-    );
-    this.pubSubs.push(
-      pubSub.subscribe('app.stopRepeatingAnimation', this.stopRepeatingAnimation.bind(this))
     );
 
     this.pubSubs.push(
@@ -476,16 +466,6 @@ class HiGlassComponent extends React.Component {
     if (hasParent(e.target, this.topDiv)) e.preventDefault();
   }
 
-  startRepeatingAnimation(tween) {
-    if (!tween || this.repeatingAnimation.has(tween)) return;
-    this.repeatingAnimation.add(tween);
-    this.animate();
-  }
-
-  stopRepeatingAnimation(tween) {
-    this.repeatingAnimation.delete(tween);
-  }
-
   animateOnMouseMoveHandler(active) {
     if (active && !this.animateOnMouseMove) {
       this.pubSubs.push(
@@ -558,13 +538,7 @@ class HiGlassComponent extends React.Component {
 
       this.pixiRenderer.render(this.pixiStage);
 
-      PIXI.tweenManager.update();
-
       this.isRequestingAnimationFrame = false;
-      if (this.repeatingAnimation.size) {
-        pubSub.publish('app.tick');
-        this.animate();
-      }
     });
   }
 
