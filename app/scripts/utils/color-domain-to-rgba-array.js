@@ -7,7 +7,7 @@ import { rgb } from 'd3-color';
  * values (all from 0 to 255). The last color (255) will always be
  * transparent
  */
-const colorDomainToRgbaArray = (colorRange, noTansp = false) => {
+const colorDomainToRgbaArray = (colorRange, noTansparent = false) => {
   // we should always have at least two values in the color range
   const domain = colorRange.map((x, i) => i * (255 / (colorRange.length - 1)));
 
