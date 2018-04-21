@@ -29,6 +29,7 @@ import {
   dataToGenomicLoci,
   getTrackByUid,
   getTrackPositionByUid,
+  isWithin,
   sum,
 } from './utils';
 
@@ -97,12 +98,12 @@ class TiledPlot extends React.Component {
       addDivisorDialog: null,
     };
 
-  if (window.higlassTracksByType) {
-    Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
-      TRACKS_INFO_BY_TYPE[pluginTrackType] =
-        window.higlassTracksByType[pluginTrackType].config;
-    });
-  }
+    if (window.higlassTracksByType) {
+      Object.keys(window.higlassTracksByType).forEach((pluginTrackType) => {
+        TRACKS_INFO_BY_TYPE[pluginTrackType] =
+          window.higlassTracksByType[pluginTrackType].config;
+      });
+    }
 
     // these dimensions are computed in the render() function and depend
     // on the sizes of the tracks in each section
@@ -117,6 +118,8 @@ class TiledPlot extends React.Component {
 
     this.dragTimeout = null;
     this.previousPropsStr = '';
+
+    this.contextMenuHandlerBound = this.contextMenuHandler.bind(this);
   }
 
   waitForDOMAttachment(callback) {
@@ -149,9 +152,10 @@ class TiledPlot extends React.Component {
     this.addEventListeners();
     this.getDefaultChromSizes();
 
+    console.log('componentDidMount');
     this.pubSubs = [];
     this.pubSubs.push(
-      pubSub.subscribe('contextmenu', this.contextMenuHandler.bind(this))
+      pubSub.subscribe('contextmenu', this.contextMenuHandlerBound)
     );
   }
 
@@ -242,6 +246,17 @@ class TiledPlot extends React.Component {
   }
 
   contextMenuHandler(e) {
+    if (!this.divTiledPlot) return;
+
+    const bBox = this.divTiledPlot.getBoundingClientRect();
+    const isClickWithin = isWithin(
+      e.clientX, e.clientY,
+      bBox.left, bBox.left + bBox.width,
+      bBox.top, bBox.top + bBox.height,
+    )
+
+    if (!isClickWithin) return;
+
     const mousePos = [e.clientX, e.clientY];
     // Relative mouse position
     const canvasMousePos = clientPoint(this.divTiledPlot, e);
