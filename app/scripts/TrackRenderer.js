@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
-import { geoMercator } from 'd3-geo';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
@@ -1630,7 +1629,8 @@ class TrackRenderer extends React.Component {
    * @param   {number}  dataYStart  Data start Y coordinate.
    * @param   {number}  dataYEnd  Data end Y coordinate.
    * @param   {number}  animateTime  Animation time in milliseconds.
-   * @param   {boolean}  isMercator  If `true` animate mercator coords
+   * @param   {function}  projector  If not `null` a projector function that
+   *   provides adjusted x and y scales.
    */
   zoomToDataPos(
     dataXStart,
@@ -1638,28 +1638,25 @@ class TrackRenderer extends React.Component {
     dataYStart,
     dataYEnd,
     animateTime = 3000,
-    isMercator = false
+    projector = null,
   ) {
     const [centerX, centerY, k] = scalesCenterAndK(
       this.xScale.copy().domain([dataXStart, dataXEnd]),
       this.yScale.copy().domain([dataYStart, dataYEnd]),
     );
 
-    let xScale = this.xScale;
-    let yScale = this.yScale;
-
-    if (isMercator) {
-      // Create scaled mercator projection for lng / lat to view coords.
-      const mercator = geoMercator()
-        .scale((this.xScale(180) - this.xScale(-180)) / 2 / Math.PI)
-        .translate([this.xScale(0), this.yScale(0)]);
-
-      xScale = x => mercator([x, 0])[0];
-      yScale = y => mercator([0, y])[1];
-    }
+    const projectedScales = projector
+      ? projector(this.xScale, this.yScale)
+      : [this.xScale, this.yScale];
 
     this.setCenter(
-      centerX, centerY, k, false, animateTime, xScale, yScale
+      centerX,
+      centerY,
+      k,
+      false,
+      animateTime,
+      projectedScales[0],
+      projectedScales[1]
     );
   }
 
