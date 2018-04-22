@@ -130,8 +130,8 @@ const api = function api(context) {
     /**
      * Choose a theme.
      */
-    activateDarkTheme(deactivate = false) {
-      setDarkTheme(deactivate);
+    setDarkTheme(darkTheme) {
+      setDarkTheme(!!darkTheme);
     },
 
     zoomToDataExtent(viewUid) {
