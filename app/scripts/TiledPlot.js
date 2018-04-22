@@ -982,8 +982,11 @@ class TiledPlot extends React.Component {
      * Try to zoom in or out so that the bounds of the view correspond to the
      * extent of the data.
      */
-    const minPos = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
-    const maxPos = [Number.MIN_SAFE_INTEGER, Number.MIN_SAFE_INTEGER];
+    const maxSafeInt = Number.MAX_SAFE_INTEGER;
+    const minSafeInt = Number.MIN_SAFE_INTEGER;
+    console.log(maxSafeInt, minSafeInt);
+    const minPos = [maxSafeInt, maxSafeInt];
+    const maxPos = [minSafeInt, minSafeInt];
 
     const trackObjectsToCheck = this.listAllTrackObjects();
 
