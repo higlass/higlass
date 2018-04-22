@@ -928,11 +928,15 @@ class TiledPlot extends React.Component {
           // This should be much simpler to determine...
           trackObj.is2d = this.trackRenderer.trackDefObjects[uid].trackDef.track.type === 'combined'
             ? this.trackRenderer.trackDefObjects[uid].trackDef.track.contents
-              .some(track => TRACKS_INFO_BY_TYPE[track.type].orientation)
-            : TRACKS_INFO_BY_TYPE[
-              this.trackRenderer.trackDefObjects[uid].trackDef.track.type
-            ].orientation === '2d';
-
+            .some(track => 
+              this.props.pluginTracks[track.type] ? this.props.pluginTracks[track.type].config.orientation :
+              TRACKS_INFO_BY_TYPE[track.type].orientation
+            )
+            : ( this.props.pluginTracks[this.trackRenderer.trackDefObjects[uid].trackDef.track.type] 
+              ? this.props.pluginTracks[this.trackRenderer.trackDefObjects[uid].trackDef.track.type].config.orientation 
+              : TRACKS_INFO_BY_TYPE[this.trackRenderer.trackDefObjects[uid].trackDef.track.type
+            ].orientation) === '2d';
+          
           trackObjectsAtPosition.push(trackObj);
         } else {
           trackObjectsAtPosition.push(
