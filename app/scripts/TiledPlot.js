@@ -153,7 +153,6 @@ class TiledPlot extends React.Component {
     this.addEventListeners();
     this.getDefaultChromSizes();
 
-    console.log('componentDidMount');
     this.pubSubs = [];
     this.pubSubs.push(
       pubSub.subscribe('contextmenu', this.contextMenuHandlerBound)
@@ -928,15 +927,15 @@ class TiledPlot extends React.Component {
           // This should be much simpler to determine...
           trackObj.is2d = this.trackRenderer.trackDefObjects[uid].trackDef.track.type === 'combined'
             ? this.trackRenderer.trackDefObjects[uid].trackDef.track.contents
-            .some(track => 
+            .some(track =>
               this.props.pluginTracks[track.type] ? this.props.pluginTracks[track.type].config.orientation :
               TRACKS_INFO_BY_TYPE[track.type].orientation
             )
-            : ( this.props.pluginTracks[this.trackRenderer.trackDefObjects[uid].trackDef.track.type] 
-              ? this.props.pluginTracks[this.trackRenderer.trackDefObjects[uid].trackDef.track.type].config.orientation 
+            : ( this.props.pluginTracks[this.trackRenderer.trackDefObjects[uid].trackDef.track.type]
+              ? this.props.pluginTracks[this.trackRenderer.trackDefObjects[uid].trackDef.track.type].config.orientation
               : TRACKS_INFO_BY_TYPE[this.trackRenderer.trackDefObjects[uid].trackDef.track.type
             ].orientation) === '2d';
-          
+
           trackObjectsAtPosition.push(trackObj);
         } else {
           trackObjectsAtPosition.push(
@@ -989,7 +988,6 @@ class TiledPlot extends React.Component {
      */
     const maxSafeInt = Number.MAX_SAFE_INTEGER;
     const minSafeInt = Number.MIN_SAFE_INTEGER;
-    console.log(maxSafeInt, minSafeInt);
     const minPos = [maxSafeInt, maxSafeInt];
     const maxPos = [minSafeInt, minSafeInt];
 
@@ -1183,11 +1181,6 @@ class TiledPlot extends React.Component {
     const evtJson = this.props.draggingHappening;
     const datatype = evtJson.datatype;
 
-    /*
-    console.log('datatype:', datatype);
-    console.log('DEFAULT_TRACKS_FOR_DATATYPE', DEFAULT_TRACKS_FOR_DATATYPE);
-    */
-
     if (!(datatype in DEFAULT_TRACKS_FOR_DATATYPE)) {
       console.warn('unknown data type:', evtJson.higlassTrack);
       return;
@@ -1196,9 +1189,6 @@ class TiledPlot extends React.Component {
     const defaultTracks = DEFAULT_TRACKS_FOR_DATATYPE[datatype];
     const presentTracks = new Set(['top', 'left', 'right', 'center', 'bottom']
       .filter(x => (x in this.state.tracks && this.state.tracks[x].length)));
-
-    // console.log('presentTracks:', presentTracks);
-    // console.log('defaultTracks:', defaultTracks);
 
     let numVertical = 0;
     let numHorizontal = 0;
@@ -1217,8 +1207,6 @@ class TiledPlot extends React.Component {
     const leftDisplayed = ('left' in defaultTracks && hasVerticalComponent );
     const rightDisplayed = ('right' in defaultTracks && hasVerticalComponent );
     const centerDisplayed = ('center' in defaultTracks || hasVerticalComponent);
-
-    // console.log(topDisplayed, rightDisplayed, bottomDisplayed, leftDisplayed, centerDisplayed);
 
     const topLeftDiv = (
       <div
