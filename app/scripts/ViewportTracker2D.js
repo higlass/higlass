@@ -1,9 +1,10 @@
-import SVGTrack from './SVGTrack.js';
 import slugid from 'slugid';
 import { brush } from 'd3-brush';
 import { event } from 'd3-selection';
 
-export class ViewportTracker2D extends SVGTrack {
+import SVGTrack from './SVGTrack';
+
+class ViewportTracker2D extends SVGTrack {
   constructor(
     svgElement,
     registerViewportChanged,

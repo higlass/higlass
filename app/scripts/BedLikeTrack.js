@@ -1,6 +1,7 @@
 import boxIntersect from 'box-intersect';
 import { median, range } from 'd3-array';
 import { scaleBand } from 'd3-scale';
+import * as PIXI from 'pixi.js';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
@@ -15,7 +16,7 @@ const GENE_RECT_HEIGHT = 10;
 const MAX_TEXTS = 1000;
 const MAX_TILE_ENTRIES = 1000;
 
-export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
+class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
     super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
     this.textFontSize = '10px';
@@ -68,8 +69,8 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
         tile.textWidths = {};
 
         // don't draw texts for the latter entries in the tile
-        if (i >= MAX_TEXTS) { 
-          return; 
+        if (i >= MAX_TEXTS) {
+          return;
         }
 
         // geneInfo[3] is the gene symbol
@@ -173,7 +174,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     tile.rendered = true;
 
-    if (this.options && this.options.valueColumn) { 
+    if (this.options && this.options.valueColumn) {
       /**
        * These intervals come with some y-value that we want to plot
        */
@@ -215,7 +216,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           const geneName = geneInfo[3];
           let rectHeight = rowScale.step() / 2;
 
-          if (this.options && this.options.valueColumn) { 
+          if (this.options && this.options.valueColumn) {
             // These intervals come with some y-value that we want to plot
 
             yMiddle = this.valueScale( +geneInfo[+this.options.valueColumn-1]);
@@ -246,7 +247,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           if (!this.drawnRects[zoomLevel])
             this.drawnRects[zoomLevel] = {}
 
-          this.drawnRects[zoomLevel][td.uid] = [xStartPos, rectY, xEndPos - xStartPos, rectHeight, 
+          this.drawnRects[zoomLevel][td.uid] = [xStartPos, rectY, xEndPos - xStartPos, rectHeight,
             {
               start: txStart,
               end: txEnd,
@@ -330,7 +331,7 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
     return min;
   }
-  
+
   maxVisibleValue() {
     let visibleAndFetchedIds = this.visibleAndFetchedIds();
 

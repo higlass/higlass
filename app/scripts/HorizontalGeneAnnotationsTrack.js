@@ -14,7 +14,7 @@ const GENE_RECT_WIDTH = 1;
 const GENE_RECT_HEIGHT = 6;
 const MAX_TEXTS = 20;
 
-export class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
+class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
   /**
    * Create a new track for Gene Annotations
    *

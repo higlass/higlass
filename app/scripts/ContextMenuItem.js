@@ -4,32 +4,31 @@ import React from 'react';
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-export class ContextMenuItem extends React.Component {
-  componentWillUnmount() {
+const ContextMenuItem = props => (
+  <div
+    onClick={e => props.onClick(e)}
+    onMouseEnter={e => props.onMouseEnter(e)}
+    onMouseLeave={e => props.onMouseLeave(e)}
+    role="button"
+    styleName="context-menu-item"
+    tabIndex={0}
+  >
+    <span
+      styleName="context-menu-span"
+    >
+      {props.children}
+    </span>
+  </div>
+);
 
-  }
-
-  render() {
-    return (
-      <div
-        onClick={e => this.props.onClick(e)}
-        onMouseEnter={e => this.props.onMouseEnter && this.props.onMouseEnter(e)}
-        onMouseLeave={e => this.props.onMouseLeave && this.props.onMouseLeave(e)}
-        styleName="context-menu-item"
-      >
-        <span
-          styleName="context-menu-span"
-        >
-          {this.props.children}
-        </span>
-      </div>
-    );
-  }
-}
+ContextMenuItem.defaultProps = {
+  onMouseEnter: () => undefined,
+  onMouseLeave: () => undefined
+};
 
 ContextMenuItem.propTypes = {
-  children: PropTypes.node,
-  onClick: PropTypes.func,
+  children: PropTypes.node.isRequired,
+  onClick: PropTypes.func.isRequired,
   onMouseEnter: PropTypes.func,
   onMouseLeave: PropTypes.func
 };

@@ -1,6 +1,6 @@
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
-export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
+class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
     super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
 

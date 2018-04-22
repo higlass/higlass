@@ -1,16 +1,18 @@
-import {mix} from 'mixwith';
+import { mix } from 'mixwith';
 import React from 'react';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
-import { SeriesListMenu } from './SeriesListMenu';
+import SeriesListSubmenuMixin from './SeriesListSubmenuMixin';
+
 import { getSeriesItems } from './SeriesListItems';
-import { SeriesListSubmenuMixin } from './SeriesListSubmenuMixin.js'
+
+import { getDarkTheme } from './services';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-export class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
+class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMixin) {
   constructor(props) {
     /**
      * A window that is opened when a user clicks on the track configuration icon.
@@ -26,6 +28,9 @@ export class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSu
   }
 
   render() {
+    let styleNames = 'context-menu';
+    if (getDarkTheme()) styleNames += ' context-menu-dark';
+
     return (
       <div
         ref={c => this.div = c}
@@ -33,7 +38,7 @@ export class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSu
           left: this.state.left,
           top: this.state.top,
         }}
-        styleName="context-menu"
+        styleName={styleNames}
       >
         {getSeriesItems(
           this.props.tracks,

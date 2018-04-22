@@ -1,5 +1,3 @@
-import { tileProxy } from './services';
-
 import React from 'react';
 import {
   Col,
@@ -11,10 +9,12 @@ import {
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 
+import { tileProxy } from './services';
+
 // Configs
 import { TRACKS_INFO } from './configs';
 
-export class TilesetFinder extends React.Component {
+class TilesetFinder extends React.Component {
   constructor(props) {
     super(props);
 

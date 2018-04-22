@@ -88,7 +88,7 @@ export function workerSetPix(
     valueScale = scaleLinear()
       .range([254,0])
       .domain(valueScaleDomain)
-  } 
+  }
 
   const pixData = new Uint8ClampedArray(size * 4);
 
@@ -184,7 +184,7 @@ function _uint16ArrayToFloat32Array(uint16array) {
 }
 
 /**
- * Convert a response from the tile server to 
+ * Convert a response from the tile server to
  * data that can be used by higlass
  */
 export function tileResponseToData(data, server, theseTileIds) {
@@ -263,7 +263,7 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
     }
     )
     .then(data =>  {
-      data = tileResponseToData(data, server, theseTileIds); 
+      data = tileResponseToData(data, server, theseTileIds);
 
       done(data);
 

@@ -1,10 +1,10 @@
-import { OSMTilesTrack } from './OSMTilesTrack.js';
+import OSMTilesTrack from './OSMTilesTrack';
 
-export class MapboxTilesTrack extends OSMTilesTrack {
+class MapboxTilesTrack extends OSMTilesTrack {
   /**
      * A track that must pull remote tiles
      */
-  constructor(scene, options, animate) {
+  constructor(scene, options, animate, accessToken) {
     /**
          * @param scene: A PIXI.js scene to draw everything to.
          * @param server: The server to pull tiles from.
@@ -12,15 +12,16 @@ export class MapboxTilesTrack extends OSMTilesTrack {
          */
     super(scene, options, animate);
 
-    this.currentStyle = options.mapboxStyle;
+    this.style = options.style;
+    this.accessToken = accessToken;
   }
 
   rerender(newOptions) {
     super.rerender(newOptions);
 
-    if (newOptions.mapboxStyle == this.currentStyle) { return; }
+    if (newOptions.style === this.style) return;
 
-    this.currentStyle = newOptions.mapboxStyle;
+    this.style = newOptions.style;
 
     this.removeAllTiles();
     this.refreshTiles();
@@ -32,12 +33,11 @@ export class MapboxTilesTrack extends OSMTilesTrack {
          */
     let mapStyle = 'mapbox.streets';
 
-    if (this.options && this.options.mapboxStyle) {
-      mapStyle = this.options.mapboxStyle;
+    if (this.options && this.options.style) {
+      mapStyle = this.options.style;
     }
 
-    const accessToken = 'pk.eyJ1IjoicGtlcnBlZGppZXYiLCJhIjoiY2o1OW44dnN0MGFqZDMxcXFoYW04cmh4biJ9.WGEDSUhcn4W4x7IaA8DFRw';
-    const src = `http://api.tiles.mapbox.com/v4/${mapStyle}/${tileZxy[0]}/${tileZxy[1]}/${tileZxy[2]}.png?access_token=${accessToken}`;
+    const src = `http://api.tiles.mapbox.com/v4/${mapStyle}/${tileZxy[0]}/${tileZxy[1]}/${tileZxy[2]}.png?access_token=${this.accessToken}`;
 
     return src;
   }

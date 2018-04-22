@@ -1,11 +1,11 @@
 import { brushY } from 'd3-brush';
 import { range } from 'd3-array';
-import { scaleLinear, scaleLog } from 'd3-scale';
+import { scaleLinear } from 'd3-scale';
 import { select, event } from 'd3-selection';
 import * as PIXI from 'pixi.js';
 
-import { TiledPixiTrack, getValueScale } from './TiledPixiTrack';
-import { AxisPixi } from './AxisPixi';
+import TiledPixiTrack, { getValueScale } from './TiledPixiTrack';
+import AxisPixi from './AxisPixi';
 
 // Services
 import { chromInfo as chromInfoService, pubSub, tileProxy } from './services';
@@ -35,7 +35,7 @@ const SCALE_LIMIT_PRECISION = 5;
 const BINS_PER_TILE = 256;
 
 
-export class HeatmapTiledPixiTrack extends TiledPixiTrack {
+class HeatmapTiledPixiTrack extends TiledPixiTrack {
   constructor(
     scene,
     dataConfig,
@@ -744,7 +744,7 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const lPad = this.dataLensLPad;
     const rPad = this.dataLensRPad;
 
-    const zoomLevel = Math.min(this.tilesetInfo.max_zoom, 
+    const zoomLevel = Math.min(this.tilesetInfo.max_zoom,
       this.calculateZoomLevel());
 
     const tileWidth = tileProxy.calculateTileWidth(
@@ -910,8 +910,8 @@ export class HeatmapTiledPixiTrack extends TiledPixiTrack {
   // }
   //
   updateTile(tile) {
-    if (tile.scale && this.scale && 
-      this.scale.minValue == tile.scale.minValue && 
+    if (tile.scale && this.scale &&
+      this.scale.minValue == tile.scale.minValue &&
       this.scale.maxValue == tile.scale.maxValue) {
       // already rendered properly, no need to rerender
     } else {

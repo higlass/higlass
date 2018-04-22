@@ -1,5 +1,7 @@
-import { HeatmapTiledPixiTrack } from './HeatmapTiledPixiTrack';
 import { format } from 'd3-format';
+
+import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
+
 import { tileProxy } from './services';
 
 export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
@@ -103,7 +105,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
     return `${tile.join('.')}`;
   }
 
-  /** 
+  /**
    * Create the remote tile identifier, which will be used to identify the
    * tile on the server
    *
@@ -115,7 +117,7 @@ export default class HorizontalMultivecTrack extends HeatmapTiledPixiTrack {
 
   /**
    * Calculate the tile position at the given track position
-   * 
+   *
    * @param {Number} trackX: The track's X position
    * @param {Number} trackY: The track's Y position
    *

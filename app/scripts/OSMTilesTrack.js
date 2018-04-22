@@ -1,7 +1,7 @@
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
 
-import { PixiTrack } from './PixiTrack';
+import PixiTrack from './PixiTrack';
 
 // Services
 import { tileProxy } from './services';
@@ -12,7 +12,7 @@ import { debounce } from './utils';
 // Configs
 import { ZOOM_DEBOUNCE } from './configs';
 
-export class OSMTilesTrack extends PixiTrack {
+class OSMTilesTrack extends PixiTrack {
   /**
    * A track that must pull remote tiles
    *

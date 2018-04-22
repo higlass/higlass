@@ -306,7 +306,7 @@ export const calculateTileAndPosInTile = function(tilesetInfo, maxDim, dataStart
   } else {
     tileWidth = maxDim / (2 ** zoomLevel);
   }
-  
+
   const tilePos = Math.floor((position - dataStartPos) / tileWidth);
   const posInTile = Math.floor(PIXELS_PER_TILE * (position - tilePos * tileWidth) / tileWidth);
 
@@ -403,7 +403,7 @@ export const calculateTilesFromResolution = (resolution, scale, minX, maxX, pixe
  * @param {func} errorCb: A callback that gets called when there is an error
  */
 export const trackInfo = (server, tilesetUid, doneCb, errorCb) => {
-  const url = 
+  const url =
     `${tts(server)}/tileset_info/?d=${tilesetUid}&s=${sessionId}`;
     pubSub.publish('requestSent', url);
     json(url, (error, data) => {

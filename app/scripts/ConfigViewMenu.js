@@ -6,7 +6,7 @@ import ContextMenuItem from './ContextMenuItem';
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-export class ConfigViewMenu extends React.Component {
+class ConfigViewMenu extends React.Component {
   render() {
     return (
       <div>

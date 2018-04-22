@@ -71,7 +71,6 @@ export const TRACK_LINE = {
   viewBox: '0 0 60 60',
 };
 
-
 export const SELECT = {
   id: 'select',
   viewBox: '0 0 16 16',

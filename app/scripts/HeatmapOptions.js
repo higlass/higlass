@@ -6,7 +6,7 @@ import SketchInlinePicker from './SketchInlinePicker';
 
 import '../styles/TrackOptions.css';
 
-export default class HeatmapOptions extends React.Component {
+class HeatmapOptions extends React.Component {
   constructor(props) {
     super(props);
     // props should include the definition of the heatmap data series
@@ -211,3 +211,5 @@ export default class HeatmapOptions extends React.Component {
     </Modal>);
   }
 }
+
+export default HeatmapOptions;

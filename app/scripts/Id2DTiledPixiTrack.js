@@ -1,12 +1,7 @@
 import * as PIXI from 'pixi.js';
-import { HeatmapTiledPixiTrack } from './HeatmapTiledPixiTrack';
+import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 
-export class Id2DTiledPixiTrack extends HeatmapTiledPixiTrack {
-  constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
-    super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
-
-  }
-
+class Id2DTiledPixiTrack extends HeatmapTiledPixiTrack {
   areAllVisibleTilesLoaded() {
     // we don't need to wait for any tiles to load before
     // drawing

@@ -58,10 +58,6 @@ module.exports = {
                   },
                 ],
               ],
-              presets: [
-                ['es2015', { modules: false }],
-                'react'
-              ],
             },
           },
         ],
@@ -186,22 +182,16 @@ module.exports = {
     },
   },
   plugins: [
-  new webpack.DefinePlugin({
+    new webpack.DefinePlugin({
       'process.env': {
       'NODE_ENV': JSON.stringify('production')
       }
-  }),
+    }),
     new webpack.IgnorePlugin(/react\/addons/),
     new webpack.IgnorePlugin(/react\/lib\/ReactContext/),
     new webpack.IgnorePlugin(/react\/lib\/ExecutionEnvironment/),
     new ExtractTextPlugin('hglib.css'),
     new webpack.optimize.ModuleConcatenationPlugin(),
-  /*
-  ,
-  new BundleAnalyzerPlugin({
-    analyzerMode: 'static'
-  })
-  */
+    // new BundleAnalyzerPlugin(),
   ],
 };
-

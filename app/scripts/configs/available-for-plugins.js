@@ -26,7 +26,6 @@ import HorizontalTrack from '../HorizontalTrack';
 import Id2DTiledPixiTrack from '../Id2DTiledPixiTrack';
 import IdHorizontal1DTiledPixiTrack from '../IdHorizontal1DTiledPixiTrack';
 import IdVertical1DTiledPixiTrack from '../IdVertical1DTiledPixiTrack';
-import ImageTilesTrack from '../ImageTilesTrack';
 import LeftAxisTrack from '../LeftAxisTrack';
 import MapboxTilesTrack from '../MapboxTilesTrack';
 import MoveableTrack from '../MoveableTrack';
@@ -82,7 +81,6 @@ const tracks = {
   Id2DTiledPixiTrack,
   IdHorizontal1DTiledPixiTrack,
   IdVertical1DTiledPixiTrack,
-  ImageTilesTrack,
   LeftAxisTrack,
   MapboxTilesTrack,
   MoveableTrack,

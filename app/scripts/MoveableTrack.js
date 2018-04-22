@@ -5,7 +5,7 @@ import DraggableDiv from './DraggableDiv';
 import TrackArea from './TrackArea';
 
 
-export class MoveableTrack extends TrackArea {
+class MoveableTrack extends TrackArea {
   constructor(props) {
     super(props);
 

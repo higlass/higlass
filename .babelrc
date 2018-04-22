@@ -1,4 +1,10 @@
 {
-  "presets": ["es2016", "airbnb", "react"],
-  "plugins": ["transform-object-rest-spread"]
+  "presets": [
+    ["env", {
+      "modules": false
+    }],
+    "airbnb",
+    "react"
+  ],
+  "plugins": ["transform-object-rest-spread", "transform-runtime"]
 }

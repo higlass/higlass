@@ -6,6 +6,8 @@ import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
 import NestedContextMenu from './NestedContextMenu';
 
+import { getDarkTheme } from './services';
+
 // Configs
 import {
   OPTIONS_INFO,
@@ -16,27 +18,11 @@ import {
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-export class ConfigureSeriesMenu extends ContextMenuContainer {
-  render() {
-    return (
-      <div
-        onMouseLeave={this.props.handleMouseLeave}
-        ref={c => this.div = c}
-        style={{
-          left: this.state.left,
-          top: this.state.top,
-        }}
-        styleName={'context-menu'}
-      />
-    );
-  }
-}
-
-export class SeriesListMenu extends ContextMenuContainer {
+export default class SeriesListMenu extends ContextMenuContainer {
   getConfigureSeriesMenu(position, bbox, track) {
     const menuItems = {};
 
-    if (!TRACKS_INFO_BY_TYPE[track.type] 
+    if (!TRACKS_INFO_BY_TYPE[track.type]
       || !TRACKS_INFO_BY_TYPE[track.type].availableOptions) { return null; }
 
     for (const optionType of TRACKS_INFO_BY_TYPE[track.type].availableOptions) {
@@ -148,14 +134,14 @@ export class SeriesListMenu extends ContextMenuContainer {
     //
     let datatype = null;
     let orientation = null;
-    
+
     // make sure that this is a valid track type before trying to
     // look up other tracks that can substitute for it
     if (track.type in TRACKS_INFO_BY_TYPE) {
       datatype = TRACKS_INFO_BY_TYPE[track.type].datatype[0];
       orientation = TRACKS_INFO_BY_TYPE[track.type].orientation;
     }
-    
+
     // see which other tracks can display a similar datatype
     let availableTrackTypes = TRACKS_INFO
       .filter(x => x.datatype)
@@ -285,7 +271,7 @@ export class SeriesListMenu extends ContextMenuContainer {
 
     // if a track can't be replaced, this.props.onAddSeries
     // will be null so we don't need to display the menu item
-    const replaceSeriesItem = 
+    const replaceSeriesItem =
           this.props.onAddSeries ?
           (<ContextMenuItem
             onClick={() => {
@@ -302,7 +288,8 @@ export class SeriesListMenu extends ContextMenuContainer {
           :
           null;
 
-    //console.log('series:', this.props.series);
+    let styleNames = 'context-menu';
+    if (getDarkTheme()) styleNames += ' context-menu-dark';
 
     return (
       <div
@@ -312,11 +299,11 @@ export class SeriesListMenu extends ContextMenuContainer {
           left: this.state.left,
           top: this.state.top,
         }}
-        styleName="context-menu"
+        styleName={styleNames}
       >
         <ContextMenuItem
           onClick={this.props.onConfigureTrack}
-          onMouseEnter={e => this.handleItemMouseEnter(e, 
+          onMouseEnter={e => this.handleItemMouseEnter(e,
           {
             option: 'configure-series',
             value: this.props.track
@@ -332,7 +319,7 @@ export class SeriesListMenu extends ContextMenuContainer {
 
         <ContextMenuItem
           onClick={() => {}}
-          onMouseEnter={e => this.handleItemMouseEnter(e, 
+          onMouseEnter={e => this.handleItemMouseEnter(e,
           {
             option: 'track-type',
             value: this.props.track
@@ -365,9 +352,9 @@ export class SeriesListMenu extends ContextMenuContainer {
 
         { replaceSeriesItem }
 
-        { 
+        {
         /*
-          this.props.series.type == 'heatmap' ? 
+          this.props.series.type == 'heatmap' ?
           <ContextMenuItem
             onClick={() => {
               this.props.onDivideSeries(this.props.series.uid);

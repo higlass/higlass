@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 
-export class LeftTrackModifier {
+class LeftTrackModifier {
   constructor(originalTrack) {
     this.scene = originalTrack.scene;
 
@@ -169,6 +169,7 @@ export class LeftTrackModifier {
 
     return [output, output];
   }
+
 
   respondsToPosition(x, y) {
     return (

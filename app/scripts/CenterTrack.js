@@ -19,7 +19,7 @@ const STYLES = {
   pointerEvents: 'all',
 };
 
-export class CenterTrack extends React.Component {
+class CenterTrack extends React.Component {
   constructor(props) {
     super(props);
 
@@ -419,7 +419,7 @@ export class CenterTrack extends React.Component {
 }
 
 CenterTrack.defaultProps = {
-  className: '',
+  className: 'center-track',
   configTrackMenuId: null,
   is1dRangeSelection: false,
   isRangeSelectionActive: false,

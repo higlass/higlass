@@ -11,19 +11,22 @@ import * as PIXI from 'pixi.js';
 import vkbeautify from 'vkbeautify';
 import parse from 'url-parse';
 
-import { TiledPlot } from './TiledPlot';
+import TiledPlot from './TiledPlot';
 import GenomePositionSearchBox from './GenomePositionSearchBox';
-import { ExportLinkModal } from './ExportLinkModal';
+import ExportLinkModal from './ExportLinkModal';
+import ViewHeader from './ViewHeader';
+import ChromosomeInfo from './ChromosomeInfo';
+
 import { createSymbolIcon } from './symbol';
 import { all as icons } from './icons';
-import ViewHeader from './ViewHeader';
-import { ChromosomeInfo } from './ChromosomeInfo';
 import api, { destroy as apiDestroy, publish as apiPublish } from './api';
 
 // Services
 import {
   chromInfo,
   domEvent,
+  getDarkTheme,
+  setDarkTheme,
   pubSub,
   setTileProxyAuthHeader
 } from './services';
@@ -36,8 +39,11 @@ import {
   dictKeys,
   dictValues,
   download,
+  fillInMinWidths,
+  forwardEvent,
   getTrackByUid,
   getTrackPositionByUid,
+  hasParent,
   // loadChromInfos,
   objVals,
   positionedTracksToAllTracks,
@@ -123,6 +129,8 @@ class HiGlassComponent extends React.Component {
 
     this.unsetOnLocationChange = [];
 
+    if (props.options.isDarkTheme) setDarkTheme();
+
     let viewConfig = {};
     let views = {};
     if (typeof this.props.viewConfig === 'string') {
@@ -151,6 +159,7 @@ class HiGlassComponent extends React.Component {
 
     this.pixiStage = new PIXI.Container();
     this.pixiStage.interactive = true;
+
     this.element = null;
 
     let mouseTool = MOUSE_TOOL_MOVE;
@@ -198,6 +207,7 @@ class HiGlassComponent extends React.Component {
       exportLinkModalOpen: false,
       exportLinkLocation: null,
       mouseTool,
+      isDarkTheme: false
     };
 
     dictValues(views).map(view => this.adjustLayoutToTrackSizes(view));
@@ -227,22 +237,33 @@ class HiGlassComponent extends React.Component {
     domEvent.register('scroll', document);
     domEvent.register('resize', window);
     domEvent.register('orientationchange', window);
+    domEvent.register('mousewheel', window);
+    domEvent.register('mousedown', window, true);
+    domEvent.register('mouseup', window, true);
+    domEvent.register('click', window, true);
+    domEvent.register('mousemove', window);
 
     this.pubSubs = [];
     this.pubSubs.push(
-      pubSub.subscribe('keydown', this.keyDownHandler.bind(this)),
+      pubSub.subscribe('keydown', this.keyDownHandler.bind(this))
     );
     this.pubSubs.push(
-      pubSub.subscribe('keyup', this.keyUpHandler.bind(this)),
+      pubSub.subscribe('keyup', this.keyUpHandler.bind(this))
     );
     this.pubSubs.push(
-      pubSub.subscribe('resize', this.resizeHandler.bind(this)),
+      pubSub.subscribe('resize', this.resizeHandler.bind(this))
     );
     this.pubSubs.push(
-      pubSub.subscribe('orientationchange', this.resizeHandler.bind(this)),
+      pubSub.subscribe('mousewheel', this.mousewheelHandler.bind(this))
     );
     this.pubSubs.push(
-      pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this)),
+      pubSub.subscribe('orientationchange', this.resizeHandler.bind(this))
+    );
+    this.pubSubs.push(
+      pubSub.subscribe('app.event', this.dispatchEvent.bind(this))
+    );
+    this.pubSubs.push(
+      pubSub.subscribe('app.animateOnMouseMove', this.animateOnMouseMoveHandler.bind(this))
     );
 
     this.pubSubs.push(
@@ -291,6 +312,7 @@ class HiGlassComponent extends React.Component {
     this.mounted = true;
     this.element = ReactDOM.findDOMNode(this);
     window.addEventListener('focus', this.boundRefreshView);
+    window.addEventListener('mousewheel', this.mousewheelHandler.bind(this), true);
 
     dictValues(this.state.views).forEach((v) => {
       if (!v.layout) {
@@ -300,15 +322,17 @@ class HiGlassComponent extends React.Component {
       }
     });
 
-    this.pixiRenderer = PIXI.autoDetectRenderer(this.state.width,
-      this.state.height, {
+    this.pixiRenderer = PIXI.autoDetectRenderer(
+      this.state.width,
+      this.state.height,
+      {
         view: this.canvasElement,
         antialias: true,
         transparent: true,
         resolution: 2,
         autoResize: true,
-        preserveDrawingBuffer: true,
-      });
+      }
+    );
 
     // PIXI.RESOLUTION=2;
     this.fitPixiToParentContainer();
@@ -342,7 +366,6 @@ class HiGlassComponent extends React.Component {
     icons.forEach(
       icon => createSymbolIcon(baseSvg, icon.id, icon.paths, icon.viewBox),
     );
-
   }
   getTrackObject(viewUid, trackUid) {
     return this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
@@ -398,7 +421,6 @@ class HiGlassComponent extends React.Component {
 
   componentDidUpdate() {
     this.animate();
-
     this.triggerViewChangeDb();
   }
 
@@ -419,6 +441,11 @@ class HiGlassComponent extends React.Component {
     domEvent.unregister('keydown', document);
     domEvent.unregister('keyup', document);
     domEvent.unregister('scroll', document);
+    domEvent.unregister('mousewheel', window);
+    domEvent.unregister('mousedown', window);
+    domEvent.unregister('mouseup', window);
+    domEvent.unregister('click', window);
+    domEvent.unregister('mousemove', window);
 
     this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
     this.pubSubs = [];
@@ -427,6 +454,17 @@ class HiGlassComponent extends React.Component {
   }
 
   /* ---------------------------- Custom Methods ---------------------------- */
+
+
+  dispatchEvent(e) {
+    if (!this.canvasElement) return;
+
+    forwardEvent(e, this.canvasElement);
+  }
+
+  mousewheelHandler(e) {
+    if (hasParent(e.target, this.topDiv)) e.preventDefault();
+  }
 
   animateOnMouseMoveHandler(active) {
     if (active && !this.animateOnMouseMove) {
@@ -653,8 +691,7 @@ class HiGlassComponent extends React.Component {
       // /let trackObj = this.tiledPlots[viewUid].trackRenderer.getTrackObject(trackUid);
       const lockedTracks = lockGroupValues
         .filter(x => this.tiledPlots[x.view])
-        .map(x =>
-        this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track));
+        .map(x => this.tiledPlots[x.view].trackRenderer.getTrackObject(x.track));
 
       const minValues = lockedTracks
         // exclude tracks that don't set min and max values
@@ -753,17 +790,17 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  /**
+   * Add an event listener that will be called every time the scale
+   * of the view with uid viewUid is changed.
+   *
+   * @param viewUid: The uid of the view being observed
+   * @param listenerUid: The uid of the listener
+   * @param eventHandler: The handler to be called when the scales change
+   *    Event handler is called with parameters (xScale, yScale)
+   */
   addScalesChangedListener(viewUid, listenerUid, eventHandler) {
-    /**
-       * Add an event listener that will be called every time the scale
-       * of the view with uid viewUid is changed.
-       *
-       * @param viewUid: The uid of the view being observed
-       * @param listenerUid: The uid of the listener
-       * @param eventHandler: The handler to be called when the scales change
-       *    Event handler is called with parameters (xScale, yScale)
-       */
-    if (!this.scalesChangedListeners.hasOwnProperty(viewUid)) {
+    if (!this.scalesChangedListeners[viewUid]) {
       this.scalesChangedListeners[viewUid] = {};
     }
 
@@ -775,17 +812,17 @@ class HiGlassComponent extends React.Component {
     eventHandler(this.xScales[viewUid], this.yScales[viewUid]);
   }
 
+  /**
+   * Remove a scale change event listener
+   *
+   * @param viewUid: The view that it's listening on.
+   * @param listenerUid: The uid of the listener itself.
+   */
   removeScalesChangedListener(viewUid, listenerUid) {
-    /**
-       * Remove a scale change event listener
-       *
-       * @param viewUid: The view that it's listening on.
-       * @param listenerUid: The uid of the listener itself.
-       */
-    if (this.scalesChangedListeners.hasOwnProperty(viewUid)) {
+    if (this.scalesChangedListeners[viewUid]) {
       const listeners = this.scalesChangedListeners[viewUid];
 
-      if (listeners.hasOwnProperty(listenerUid)) { delete listeners[listenerUid]; }
+      if (listeners[listenerUid]) { delete listeners[listenerUid]; }
     }
   }
 
@@ -1380,13 +1417,13 @@ class HiGlassComponent extends React.Component {
     objVals(this.viewHeaders).filter(x => x).forEach(viewHeader => viewHeader.checkWidth());
   }
 
+  /**
+   * If tracks don't have specified dimensions, add in the known
+   * minimums
+   *
+   * Operates on the tracks stored for this TiledPlot.
+   */
   fillInMinWidths(tracksDict) {
-    /**
-         * If tracks don't have specified dimensions, add in the known
-         * minimums
-         *
-         * Operates on the tracks stored for this TiledPlot.
-         */
     const horizontalLocations = ['top', 'bottom'];
 
     // first make sure all track types are specified
@@ -2637,11 +2674,11 @@ class HiGlassComponent extends React.Component {
     const views = viewConfig.views;
     let viewsByUid = {};
 
-    if (!viewConfig.views || viewConfig.views.length == 0)
+    if (!viewConfig.views || viewConfig.views.length === 0)
       throw 'No views provided in viewConfig';
 
     views.forEach((v) => {
-      this.fillInMinWidths(v.tracks);
+      fillInMinWidths(v.tracks);
 
       // if a view doesn't have a uid, assign it one
       if (!v.uid) { v.uid = slugid.nice(); }
@@ -2809,6 +2846,8 @@ class HiGlassComponent extends React.Component {
     if (callbackId) {
       callbackId(`${LOCATION_LISTENER_PREFIX}.${newListenerId}`);
     }
+
+    return newListenerId;
   }
 
   /**
@@ -2854,11 +2893,10 @@ class HiGlassComponent extends React.Component {
 
     const hoveredTracks = hoveredTiledPlot
       ? hoveredTiledPlot.listTracksAtPosition(relPos[0], relPos[1], true)
-      : undefined;
+        .map(track => track.originalTrack || track)
+      : [];
 
-    const hoveredTrack = hoveredTracks && hoveredTracks.length > 0
-      ? hoveredTracks[0].originalTrack || hoveredTracks[0]
-      : undefined;
+    const hoveredTrack = hoveredTracks.find(track => !track.isAugmentationTrack);
 
     const relTrackPos = hoveredTrack
       ? [
@@ -2880,19 +2918,19 @@ class HiGlassComponent extends React.Component {
         : dataX;
     }
 
-    const evt =
-      {
-        x: relPos[0],
-        y: relPos[1],
-        relTrackX: (hoveredTrack && hoveredTrack.flipText) ? relTrackPos[1] : relTrackPos[0],
-        relTrackY: (hoveredTrack && hoveredTrack.flipText) ? relTrackPos[0] : relTrackPos[1],
-        dataX,
-        dataY,
-        isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
-        isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
-        track: hoveredTrack,
-        origEvt: e
-      }
+    const evt = {
+      x: relPos[0],
+      y: relPos[1],
+      relTrackX: (hoveredTrack && hoveredTrack.flipText) ? relTrackPos[1] : relTrackPos[0],
+      relTrackY: (hoveredTrack && hoveredTrack.flipText) ? relTrackPos[0] : relTrackPos[1],
+      dataX,
+      dataY,
+      isFrom2dTrack: hoveredTrack && hoveredTrack.is2d,
+      isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
+      track: hoveredTrack,
+      origEvt: e,
+      hoveredTracks,
+    };
 
     pubSub.publish(
       'app.mouseMove', evt
@@ -2907,10 +2945,11 @@ class HiGlassComponent extends React.Component {
   showHoverMenu(evt) {
     // each track should have a function that returns an HTML representation
     // of the data at a give position
-    const mouseOverHtml = (evt.track && evt.track.getMouseOverHtml) ?
-      evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY) : '';
+    const mouseOverHtml = (evt.track && evt.track.getMouseOverHtml)
+      ? evt.track.getMouseOverHtml(evt.relTrackX, evt.relTrackY)
+      : '';
 
-    if (evt.track != this.prevMouseHoverTrack) {
+    if (evt.track !== this.prevMouseHoverTrack) {
       if (this.prevMouseHoverTrack && this.prevMouseHoverTrack.stopHover) {
         this.prevMouseHoverTrack.stopHover();
       }
@@ -2921,8 +2960,8 @@ class HiGlassComponent extends React.Component {
     const data = (mouseOverHtml && mouseOverHtml.length) ? [1] : [];
 
     // try to select the mouseover div
-    let mouseOverDiv = select('body').selectAll('.track-mouseover-menu')
-      .data(data)
+    let mouseOverDiv = select('body')
+      .selectAll('.track-mouseover-menu').data(data);
 
     mouseOverDiv
       .exit()
@@ -2945,29 +2984,25 @@ class HiGlassComponent extends React.Component {
       .classed('.mouseover-marker', true)
     */
 
-    mouseOverDiv
-    .style('position', 'fixed')
-      .style('left', mousePos[0] + "px")
-      .style('top', mousePos[1] + "px")
-    ;
+    mouseOverDiv.style('position', 'absolute')
+      .style('left', `${mousePos[0]}px`)
+      .style('top', `${mousePos[1]}px`);
 
-    if (!mouseOverDiv.node()) {
-      // probably not over a track so there's no mouseover rectangle
-      return;
-    }
+    // probably not over a track so there's no mouseover rectangle
+    if (!mouseOverDiv.node()) return;
 
     const bbox = mouseOverDiv.node().getBoundingClientRect();
 
     if (bbox.x + bbox.width > window.innerWidth) {
       // the overlay box is spilling outside of the track so switch
       // to showing it on the left
-      mouseOverDiv.style('left', (mousePos[0] - bbox.width) + 'px')
+      mouseOverDiv.style('left', `${(mousePos[0] - bbox.width)}px`);
     }
 
     if (bbox.y + bbox.height > window.innerHeight) {
       // the overlay box is spilling outside of the track so switch
       // to showing it on the left
-      mouseOverDiv.style('top', (mousePos[1] - bbox.height) + 'px')
+      mouseOverDiv.style('top', `${(mousePos[1] - bbox.height)}px`);
     }
 
     mouseOverDiv.html(mouseOverHtml);
@@ -3114,6 +3149,7 @@ class HiGlassComponent extends React.Component {
             svgElement={this.state.svgElement}
             trackSourceServers={this.state.viewConfig.trackSourceServers}
             tracks={view.tracks}
+            metaTracks={view.metaTracks}
             uid={view.uid}
             verticalMargin={this.verticalMargin}
             // dragging={this.state.dragging}
@@ -3270,13 +3306,19 @@ class HiGlassComponent extends React.Component {
       </ReactGridLayout>
     );
 
+    let styleNames = 'styles.higlass';
+
+    if (getDarkTheme()) {
+      styleNames += ' styles.higlass-dark-theme';
+    }
+
     return (
       <div
         key={this.uid}
         ref={(c) => { this.topDiv = c; }}
-        className="higlass"
-        styleName="styles.higlass"
+        className='higlass'
         onMouseMove={this.mouseMoveHandler.bind(this)}
+        styleName={styleNames}
       >
         <canvas
           key={this.uid}
@@ -3286,8 +3328,9 @@ class HiGlassComponent extends React.Component {
         <div
           ref={(c) => { this.divDrawingSurface = c; }}
           styleName="styles.higlass-drawing-surface"
-        />
-        {gridLayout}
+        >
+          {gridLayout}
+        </div>
         <svg
           ref={(c) => { this.svgElement = c; }}
           styleName="styles.higlass-svg"

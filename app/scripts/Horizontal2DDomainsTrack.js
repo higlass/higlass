@@ -1,8 +1,9 @@
-import { TiledPixiTrack } from './TiledPixiTrack';
+import TiledPixiTrack from './TiledPixiTrack';
+
 import { tileProxy } from './services';
 import { colorToHex } from './utils';
 
-export class Horizontal2DDomainsTrack extends TiledPixiTrack {
+class Horizontal2DDomainsTrack extends TiledPixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, option, animate) {
     super(scene, dataConfig, handleTilesetInfoReceived, option, animate);
 
