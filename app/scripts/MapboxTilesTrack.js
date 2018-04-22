@@ -1,15 +1,17 @@
 import OSMTilesTrack from './OSMTilesTrack';
 
+/**
+ * A track that must pull remote tiles
+ */
 class MapboxTilesTrack extends OSMTilesTrack {
   /**
-     * A track that must pull remote tiles
-     */
+   * @param scene: A PIXI.js scene to draw everything to.
+   * @param server: The server to pull tiles from.
+   * @param tilesetUid: The data set to get the tiles from the server
+   */
   constructor(scene, options, animate, accessToken) {
-    /**
-         * @param scene: A PIXI.js scene to draw everything to.
-         * @param server: The server to pull tiles from.
-         * @param tilesetUid: The data set to get the tiles from the server
-         */
+    // Force Mapbox and OpenStreetMaps copyright
+    options.name = `© Mapbox © OpenStreetMap${options.name ? `\n${options.name}` : ''}`;
     super(scene, options, animate);
 
     this.style = options.style;
