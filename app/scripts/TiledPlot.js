@@ -829,7 +829,7 @@ export class TiledPlot extends React.Component {
           trackObj.is2d = this.trackRenderer.trackDefObjects[uid].trackDef.track.type === 'combined'
             ? this.trackRenderer.trackDefObjects[uid].trackDef.track.contents
             .some(track => 
-              this.props.pluginTrack[track.type] ? this.props.pluginTrack[track.type].config.orientation :
+              this.props.pluginTracks[track.type] ? this.props.pluginTracks[track.type].config.orientation :
               TRACKS_INFO_BY_TYPE[track.type].orientation
             )
             : ( this.props.pluginTracks[this.trackRenderer.trackDefObjects[uid].trackDef.track.type] 
