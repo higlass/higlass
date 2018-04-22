@@ -10,7 +10,7 @@ import {
   svgVertical1DTilesIcon,
   svgVerticalGeneAnnotationsIcon,
   svgVerticalLineIcon,
-  svgInsetsIcon,
+  svgGeoMapIcon,
 } from '../icons';
 
 export const TRACKS_INFO = [
@@ -873,16 +873,19 @@ export const TRACKS_INFO = [
     orientation: '2d',
     hidden: true,
     name: 'OSM Tiles',
-    thumbnail: null,
+    thumbnail: svgGeoMapIcon,
     availableOptions: [
       'minPos',
       'maxPos',
       'maxZoom',
+      'labelPosition',
+      'name',
     ],
     defaultOptions: {
       minPos: -180,
       maxPos: 180,
       maxZoom: 19,
+      labelPosition: 'bottomRight',
     },
   },
   {
@@ -892,12 +895,15 @@ export const TRACKS_INFO = [
     orientation: '2d',
     hidden: true,
     name: 'Mapbox Tiles',
-    thumbnail: null,
+    thumbnail: svgGeoMapIcon,
     availableOptions: [
-      'style'
+      'style',
+      'labelPosition',
+      'name',
     ],
     defaultOptions: {
       style: 'mapbox.streets',
+      labelPosition: 'bottomRight',
     },
   },
   {
