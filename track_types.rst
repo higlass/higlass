@@ -181,7 +181,7 @@ track-type: ``2d-chromosome-grid``
 datatype: ``chromsizes``
 filetypes: ``chromsizes-tsv``
 
-A chromsome grid displays the boundaries of chromosomes on the 2D area. Its
+A chromosome grid displays the boundaries of chromosomes on the 2D area. Its
 data is sourced from a standard chromSizes file containing chromosome names and
 chromosome files. The file can be ingested by the higlass server like any other
 tileset. As long as the `datatype` is set to `chromsizes` this track should be
@@ -190,3 +190,46 @@ selectable from the "Add Track Dialog".
 To find the chromosome grid in the list of tracks, search for "chromosomes" when
 adding a track to the *center* view.
 
+Stacked Bars
+============
+
+.. image:: img/horizontal-stacked-bar-scaled-thumb.png
+    :align: right
+
+.. image:: img/horizontal-stacked-bar-unscaled-thumb.png
+    :align: right
+
+track-type: ``horizontal-stacked-bar``
+datatype: ``multivec``
+
+Stacked bar tracks display 1D multivec data. They show the ratio of different states
+at every location in the data by using a set of differently colored, vertically
+stacked bars. There is an option to pick 'scaled' and 'unscaled' views, which scale
+the height of the bars to the maximum and minimum value in each tile or from 0 to 1
+respectively.
+
+Multiple Lines
+==============
+
+.. image:: img/basic-multiple-line-chart-thumb.png
+    :align: right
+
+track-type: ``basic-multiple-line-chart``
+datatype: ``multivec``
+
+Multiple line charts display 1D multivec data. They show the ratio of different states
+at every location using multiple differently colored line graphs. The line graphs do
+not intersect, and each line shows how much of a different state is present at a particular location.
+
+Multiple Bar Charts
+===================
+
+.. image:: img/basic-multiple-bar-chart-thumb.png
+    :align: right
+
+track-type: ``basic-multiple-bar-chart``
+datatype: ``multivec``
+
+Multiple bar charts display 1D multivec data. They show the ratio of different states at
+every location using multiple differently colored bar graphs. Each bar graph each line shows
+how much of a different state is present at a particular location.
