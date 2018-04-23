@@ -932,7 +932,7 @@ class TiledPlot extends React.Component {
                 }
               }
             } else {
-              if (this.props.tracks.center[0].uid == uid) {
+              if (this.props.tracks.center && this.props.tracks.center.length && this.props.tracks.center[0].uid == uid) {
                 trackObj.is2d = true;
               }
             }
