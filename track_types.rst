@@ -199,11 +199,11 @@ Stacked Bars
 track-type: ``horizontal-stacked-bar``
 datatype: ``multivec``
 
-Stacked bar tracks display 1D multivec data. They show the ratio of different states
-at every location in the data by using a set of differently colored, vertically
-stacked bars. There is an option to pick 'scaled' and 'unscaled' views, which scale
-the height of the bars to the maximum and minimum value in each tile or from 0 to 1
-respectively.
+Stacked bar tracks display multivec data. They show multiple values at every
+location in the data by using a set of vertically stacked bars. There is an
+option to pick 'unscaled' and 'scaled' representations, which scale the height
+of the bars to the maximum and minimum value in all visible tiles or to fit
+the height of the track, respectively.
 
 Multiple Lines
 ==============
@@ -214,9 +214,9 @@ Multiple Lines
 track-type: ``basic-multiple-line-chart``
 datatype: ``multivec``
 
-Multiple line charts display 1D multivec data. They show the ratio of different states
-at every location using multiple differently colored line graphs. The line graphs do
-not intersect, and each line shows how much of a different state is present at a particular location.
+Multiple line charts display multivec data. They show the ratio of different states
+at every location using multiple line graphs. The line graphs do not intersect, and
+each line shows how much of a different state is present at a particular location.
 
 Multiple Bar Charts
 ===================
@@ -228,5 +228,5 @@ track-type: ``basic-multiple-bar-chart``
 datatype: ``multivec``
 
 Multiple bar charts display 1D multivec data. They show the ratio of different states at
-every location using multiple differently colored bar graphs. Each bar graph each line shows
-how much of a different state is present at a particular location.
+every location using multiple bar graphs. Each bar graph each line shows how much of a
+different state is present at a particular location.
