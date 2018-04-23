@@ -215,8 +215,7 @@ track-type: ``basic-multiple-line-chart``
 datatype: ``multivec``
 
 Displays multivec data by showing multiple values at every location using a number
-of line graphs. The line graphs do not intersect, and each line shows how much of
-a type of value is present at a particular location.
+of line graphs.
 
 Multiple Bar Charts
 ===================
@@ -228,5 +227,4 @@ track-type: ``basic-multiple-bar-chart``
 datatype: ``multivec``
 
 Displays multivec data by showing multiple values at every location using a
-number of bar graphs. Each bar graph shows how much of a type of value is
-present at a particular location.
+number of bar graphs.
