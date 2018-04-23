@@ -924,17 +924,20 @@ class TiledPlot extends React.Component {
         // wish to be identified if the mouse is directly over them
 
         if (isReturnTrackObj) {
-          // This should be much simpler to determine...
-          trackObj.is2d = this.trackRenderer.trackDefObjects[uid].trackDef.track.type === 'combined'
-            ? this.trackRenderer.trackDefObjects[uid].trackDef.track.contents
-            .some(track =>
-              this.props.pluginTracks[track.type] ? this.props.pluginTracks[track.type].config.orientation :
-              TRACKS_INFO_BY_TYPE[track.type].orientation
-            )
-            : ( this.props.pluginTracks[this.trackRenderer.trackDefObjects[uid].trackDef.track.type]
-              ? this.props.pluginTracks[this.trackRenderer.trackDefObjects[uid].trackDef.track.type].config.orientation
-              : TRACKS_INFO_BY_TYPE[this.trackRenderer.trackDefObjects[uid].trackDef.track.type
-            ].orientation) === '2d';
+          if (this.props.tracks.center) {
+            if (this.props.tracks.center.contents) {
+              for (let i = 0; i < this.props.tracks.center.contents.length; i++) {
+                if (this.props.tracks.center.contents[i].uid == uid) {
+                  trackObj.is2d = true;
+                }
+              }
+            } else {
+              if (this.props.tracks.center[0].uid == uid) {
+                trackObj.is2d = true;
+              }
+            }
+
+          }
 
           trackObjectsAtPosition.push(trackObj);
         } else {
