@@ -181,7 +181,7 @@ track-type: ``2d-chromosome-grid``
 datatype: ``chromsizes``
 filetypes: ``chromsizes-tsv``
 
-A chromsome grid displays the boundaries of chromosomes on the 2D area. Its
+A chromosome grid displays the boundaries of chromosomes on the 2D area. Its
 data is sourced from a standard chromSizes file containing chromosome names and
 chromosome files. The file can be ingested by the higlass server like any other
 tileset. As long as the `datatype` is set to `chromsizes` this track should be
@@ -190,3 +190,41 @@ selectable from the "Add Track Dialog".
 To find the chromosome grid in the list of tracks, search for "chromosomes" when
 adding a track to the *center* view.
 
+Stacked Bars
+============
+
+.. image:: img/horizontal-stacked-bar-scaled-thumb.png
+    :align: right
+
+track-type: ``horizontal-stacked-bar``
+datatype: ``multivec``
+
+Stacked bar tracks display multivec data. They show multiple values at every
+location in the data by using a set of vertically stacked bars. There is an
+option to pick 'unscaled' and 'scaled' representations, which scale the height
+of the bars to the maximum and minimum value in all visible tiles or to fit
+the height of the track, respectively.
+
+Multiple Lines
+==============
+
+.. image:: img/basic-multiple-line-chart-thumb.png
+    :align: right
+
+track-type: ``basic-multiple-line-chart``
+datatype: ``multivec``
+
+Displays multivec data by showing multiple values at every location using a number
+of line graphs.
+
+Multiple Bar Charts
+===================
+
+.. image:: img/basic-multiple-bar-chart-thumb.png
+    :align: right
+
+track-type: ``basic-multiple-bar-chart``
+datatype: ``multivec``
+
+Displays multivec data by showing multiple values at every location using a
+number of bar graphs.

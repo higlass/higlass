@@ -6,3 +6,4 @@ _build/html/objects.inv
 _build/html/.doctrees
 _build/html/clodius.html
 notebooks/.ipynb_checkpoints/
+.idea/
