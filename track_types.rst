@@ -196,9 +196,6 @@ Stacked Bars
 .. image:: img/horizontal-stacked-bar-scaled-thumb.png
     :align: right
 
-.. image:: img/horizontal-stacked-bar-unscaled-thumb.png
-    :align: right
-
 track-type: ``horizontal-stacked-bar``
 datatype: ``multivec``
 
