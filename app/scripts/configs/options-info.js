@@ -40,6 +40,8 @@ const OPACITY_OPTIONS = {
   '1.0': { name: '100%', value: 1.0 },
 };
 
+// these values define the options that are visible in the track config
+// menu
 export const OPTIONS_INFO = {
   heatmapValueScaling: {
     name: 'Value Scaling',
