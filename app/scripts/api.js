@@ -225,44 +225,12 @@ const api = function api(context) {
 
     goTo(
       viewUid,
-      chrom1,
-      start1,
-      end1,
-      chrom2,
-      start2,
-      end2,
+      start1Abs,
+      end1Abs,
+      start2Abs,
+      end2Abs,
       animateTime = 0,
-      chromInfo = null,
     ) {
-      // if no ChromosomeInfo is passed in, try to load it from the
-      // location specified in the viewconf
-      if (!chromInfo) {
-        ChromosomeInfo(self.state.views[viewUid.chromInfoPath],
-          (internalChromInfo) => {
-            self.api().goTo(
-              viewUid,
-              chrom1,
-              start1,
-              end1,
-              chrom2,
-              start2,
-              end2,
-              animateTime,
-              internalChromInfo,
-            );
-          },
-        );
-        return;
-      }
-
-      const [start1Abs, end1Abs] = relToAbsChromPos(
-        chrom1, start1, end1, chromInfo,
-      );
-
-      const [start2Abs, end2Abs] = relToAbsChromPos(
-        chrom2, start2, end2, chromInfo,
-      );
-
       const [centerX, centerY, k] = scalesCenterAndK(
         self.xScales[viewUid].copy().domain([start1Abs, end1Abs]),
         self.yScales[viewUid].copy().domain([start2Abs, end2Abs]),
@@ -304,6 +272,7 @@ const api = function api(context) {
     on(event, callback, viewId, callbackId) {
       switch (event) {
         case 'location':
+          // returns a set of scales (xScale, yScale) on every zoom event
           return self.onLocationChange(viewId, callback, callbackId);
 
         case 'mouseMoveZoom':
