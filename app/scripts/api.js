@@ -190,7 +190,7 @@ const api = function api(context) {
      */
     exportAsPng() {
       return self.createDataURI();
-    }
+    },
 
     /*
      * Get the current view as an SVG. Relies on all the tracks implementing
@@ -200,7 +200,7 @@ const api = function api(context) {
      */
     exportAsSvg() {
       return self.createSVGString();
-    }
+    },
 
     /*
      * Export the current view as a Viewconf.
@@ -209,7 +209,7 @@ const api = function api(context) {
     */
     exportAsViewConfString() {
       return self.getViewsAsString();
-    }
+    },
 
     /*
      * Get the current range selection
@@ -218,7 +218,7 @@ const api = function api(context) {
      */
     getRangeSelection() {
       return self.rangeSelection;
-    }
+    },
 
     getLocation(viewId) {
       if (typeof viewId === 'undefined') {
@@ -228,7 +228,7 @@ const api = function api(context) {
         xDomain: [self.xScales[viewId].domain()],
         yDomain: [self.yScales[viewId].domain()]
       }
-    }
+    },
 
     zoomTo(
       viewUid,
