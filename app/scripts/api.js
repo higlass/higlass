@@ -1,6 +1,7 @@
 import {
   relToAbsChromPos,
   scalesCenterAndK,
+  dictValues,
 } from './utils';
 
 import {
@@ -118,6 +119,14 @@ const api = function api(context) {
       self.setState({
         draggingHappening: null,
       });
+    },
+
+    measureSize() {
+      self.measureSize();
+      
+      for (const tiledPlot of dictValues(self.tiledPlots)) {
+        tiledPlot.measureSize();
+      }
     },
 
     zoomToDataExtent(viewUid) {
