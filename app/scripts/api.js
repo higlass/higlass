@@ -183,47 +183,54 @@ const api = function api(context) {
       }
     },
 
-    /**
-     * Get a property of HiGlass.
+    /*
+     * Get the current view as a Data URI
      *
-     * @description
-     * Returns the current value for any of the available listeners, e.g.,
-     * `get(rangeSelection)` will return the current range selection without
-     * requiring that a range selection event is fired.
-     *
-     * @param {string} prop - Name of the property.
-     * @param {string} viewId - UUID of the view `prop` relates to.
-     * @return {object} Promise resolving to the value.
+     * @return {string} A data URI describing the current state of the canvas
      */
-    get(prop, viewId) {
-      switch (prop) {
-        case 'location':
-          if (typeof viewId === 'undefined') {
-            return Promise.reject(
-              'Please provide the view UUID sweetheart 😙',
-            );
-          }
-          return self.getGenomeLocation(viewId);
+    exportAsPng() {
+      return self.createDataURI();
+    }
 
-        case 'rangeSelection':
-          return Promise.resolve(self.rangeSelection);
+    /*
+     * Get the current view as an SVG. Relies on all the tracks implementing
+     * their respective exportAsSVG methods.
+     *
+     * @return {string} An SVG string of the current view.
+     */
+    exportAsSvg() {
+      return self.createSVGString();
+    }
 
-        case 'viewConfig':
-          return Promise.resolve(self.getViewsAsString());
+    /*
+     * Export the current view as a Viewconf.
+     *
+     * @return {string} A stringified version of the current viewconf
+    */
+    exportAsViewConfString() {
+      return self.getViewsAsString();
+    }
 
-        case 'png':
-          return Promise.resolve(self.createDataURI());
+    /*
+     * Get the current range selection
+     *
+     * @return {???} What is the return type here??
+     */
+    getRangeSelection() {
+      return self.rangeSelection;
+    }
 
-        case 'svg':
-        case 'svgString':
-          return Promise.resolve(self.createSVGString());
-
-        default:
-          return Promise.reject(`Propert "${prop}" unknown`);
+    getLocation(viewId) {
+      if (typeof viewId === 'undefined') {
+        return 'Please provide the view UUID sweetheart 😙';
       }
-    },
+      return {
+        xDomain: [self.xScales[viewId].domain()],
+        yDomain: [self.yScales[viewId].domain()]
+      }
+    }
 
-    goTo(
+    zoomTo(
       viewUid,
       start1Abs,
       end1Abs,

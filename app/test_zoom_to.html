@@ -383,11 +383,10 @@ hglib.ChromosomeInfo(chromInfoPath, function(chromInfo) {
         var width = (to1 - from1);
         var padding = 40*width;
 
-        window.hgApi.goTo('view1', 
+        window.hgApi.zoomTo('view1', 
           fromDataX - padding, toDataX + padding,
           fromDataY - padding, toDataY + padding,
           2000);
-
       });
 
       window.hgApi.on('location', function(data) {
