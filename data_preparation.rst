@@ -341,6 +341,7 @@ This can be aggregated to multiple resolutions using `clodius aggregate multivec
     clodius aggregate multivec \
         --chromsizes-filename ~/projects/negspy/negspy/data/hg38/chromInfo.txt \
         --starting-resolution 1000 \
+        --row-infos-filename ~/Downloads/sampled_info.txt \
         my_file_genome_wide_hg38_v2.multivec
 
 The `--chromsizes-filename` option lists the chromosomes that are in the input
