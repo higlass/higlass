@@ -138,13 +138,17 @@ HiGlass exposes the following event, which one can subscribe to via this method:
 
   hgv.on(eventName, callback, viewId, callbackId)
 
-**location:** Returns a BEDPE array of the current view port.
+**location:** Returns an object containing the domains and ranges of the
+current x and y scales.  The domain corresponds to the visible data limits
+while the ranges correspond to the pixel limits of the selected view. The
+notation is derived from D3's definition of scale domains and ranges.
 
 .. code-block:: javascript
 
-  ["chr1", 229372197, "chrM", 16571, "chr1", 1, "chrM", 16571]
+    { xDomain: [0,10000], xRange: [0,400], yDomain: [0,10000], yRange: [0,400] }
 
-**rangeSelection:** Returns a BED- (1D) or BEDPE (1d) array of the selected data and genomic range (if chrom-sizes are available)
+**rangeSelection:** Returns a BED- (1D) or BEDPE (1d) array of the selected
+data and genomic range (if chrom-sizes are available)
 
 .. code-block:: javascript
 
@@ -232,15 +236,15 @@ get(prop, viewId): Instant getter for event data
 
 Naturally, event listeners only return news once an event has been published but sometimes one needs to get the data at a certain time. The get method returns the current value of an event without having to wait for the event to fire.
 
-Additionally, it's possible to retrieve a png or svg snapshot of the current view using ``png`` and ``svg`` as ``prop`` respectively. The png snapshot comes in form of a data URI and the svg snapshot is a XML string.
+HiGlass provides a set of accessors and exporters to retrieve data from HiGlass or to export its state as a viewconf, SVG or PNG:
 
 .. code-block:: javascript
 
-  const currentLocationOfViewId = hgv.get('location', 'viewId');
-  const currentRangeSelection = hgv.get('rangeSelection');
-  const currentViewConfig = hgv.get('viewConfig');
-  const pngSnapshot = hgv.get('png');  // Data URI
-  const svgSnapshot = hgv.get('svg');  // XML string
+  const currentLocationOfViewId = hgv.getLocation('viewId');
+  const currentRangeSelection = hgv.getRangeSelection();
+  const currentViewConfig = hgv.exportAsViewConfString();
+  const pngSnapshot = hgv.exportAsPng();  // Data URI
+  const svgSnapshot = hgv.exportAsSvg();  // XML string
 
 shareViewConfigAsLink(url): Get sharable link for current view config
 ---------------------------------------------------------------------

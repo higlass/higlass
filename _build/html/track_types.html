@@ -159,13 +159,40 @@ selectable from the “Add Track Dialog”.</p>
 <p>track-type: <code class="docutils literal"><span class="pre">2d-chromosome-grid</span></code>
 datatype: <code class="docutils literal"><span class="pre">chromsizes</span></code>
 filetypes: <code class="docutils literal"><span class="pre">chromsizes-tsv</span></code></p>
-<p>A chromsome grid displays the boundaries of chromosomes on the 2D area. Its
+<p>A chromosome grid displays the boundaries of chromosomes on the 2D area. Its
 data is sourced from a standard chromSizes file containing chromosome names and
 chromosome files. The file can be ingested by the higlass server like any other
 tileset. As long as the <cite>datatype</cite> is set to <cite>chromsizes</cite> this track should be
 selectable from the “Add Track Dialog”.</p>
 <p>To find the chromosome grid in the list of tracks, search for “chromosomes” when
 adding a track to the <em>center</em> view.</p>
+</div>
+<div class="section" id="stacked-bars">
+<h2>Stacked Bars<a class="headerlink" href="#stacked-bars" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/horizontal-stacked-bar-scaled-thumb.png" class="align-right" src="_images/horizontal-stacked-bar-scaled-thumb.png" />
+<p>track-type: <code class="docutils literal"><span class="pre">horizontal-stacked-bar</span></code>
+datatype: <code class="docutils literal"><span class="pre">multivec</span></code></p>
+<p>Stacked bar tracks display multivec data. They show multiple values at every
+location in the data by using a set of vertically stacked bars. There is an
+option to pick ‘unscaled’ and ‘scaled’ representations, which scale the height
+of the bars to the maximum and minimum value in all visible tiles or to fit
+the height of the track, respectively.</p>
+</div>
+<div class="section" id="multiple-lines">
+<h2>Multiple Lines<a class="headerlink" href="#multiple-lines" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/basic-multiple-line-chart-thumb.png" class="align-right" src="_images/basic-multiple-line-chart-thumb.png" />
+<p>track-type: <code class="docutils literal"><span class="pre">basic-multiple-line-chart</span></code>
+datatype: <code class="docutils literal"><span class="pre">multivec</span></code></p>
+<p>Displays multivec data by showing multiple values at every location using a number
+of line graphs.</p>
+</div>
+<div class="section" id="multiple-bar-charts">
+<h2>Multiple Bar Charts<a class="headerlink" href="#multiple-bar-charts" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/basic-multiple-bar-chart-thumb.png" class="align-right" src="_images/basic-multiple-bar-chart-thumb.png" />
+<p>track-type: <code class="docutils literal"><span class="pre">basic-multiple-bar-chart</span></code>
+datatype: <code class="docutils literal"><span class="pre">multivec</span></code></p>
+<p>Displays multivec data by showing multiple values at every location using a
+number of bar graphs.</p>
 </div>
 </div>
 
@@ -242,6 +269,9 @@ adding a track to the <em>center</em> view.</p>
 <li class="toctree-l2"><a class="reference internal" href="#point">Point</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#chromosome-labels">Chromosome Labels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#chromosome-grid">Chromosome Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#stacked-bars">Stacked Bars</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-lines">Multiple Lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multiple-bar-charts">Multiple Bar Charts</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>

@@ -152,11 +152,15 @@ doesn’t, an exception will be thrown.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="nx">eventName</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">viewId</span><span class="p">,</span> <span class="nx">callbackId</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>location:</strong> Returns a BEDPE array of the current view port.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">229372197</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">,</span> <span class="s2">&quot;chr1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;chrM&quot;</span><span class="p">,</span> <span class="mi">16571</span><span class="p">]</span>
+<p><strong>location:</strong> Returns an object containing the domains and ranges of the
+current x and y scales.  The domain corresponds to the visible data limits
+while the ranges correspond to the pixel limits of the selected view. The
+notation is derived from D3’s definition of scale domains and ranges.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="p">{</span> <span class="nx">xDomain</span><span class="o">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">10000</span><span class="p">],</span> <span class="nx">xRange</span><span class="o">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">400</span><span class="p">],</span> <span class="nx">yDomain</span><span class="o">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">10000</span><span class="p">],</span> <span class="nx">yRange</span><span class="o">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">400</span><span class="p">]</span> <span class="p">}</span>
 </pre></div>
 </div>
-<p><strong>rangeSelection:</strong> Returns a BED- (1D) or BEDPE (1d) array of the selected data and genomic range (if chrom-sizes are available)</p>
+<p><strong>rangeSelection:</strong> Returns a BED- (1D) or BEDPE (1d) array of the selected
+data and genomic range (if chrom-sizes are available)</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="c1">// Global output</span>
 <span class="p">{</span>
   <span class="nx">dataRange</span><span class="o">:</span> <span class="p">[...]</span>
@@ -231,12 +235,12 @@ doesn’t, an exception will be thrown.</p>
 <div class="section" id="get-prop-viewid-instant-getter-for-event-data">
 <h3>get(prop, viewId): Instant getter for event data<a class="headerlink" href="#get-prop-viewid-instant-getter-for-event-data" title="Permalink to this headline">¶</a></h3>
 <p>Naturally, event listeners only return news once an event has been published but sometimes one needs to get the data at a certain time. The get method returns the current value of an event without having to wait for the event to fire.</p>
-<p>Additionally, it’s possible to retrieve a png or svg snapshot of the current view using <code class="docutils literal"><span class="pre">png</span></code> and <code class="docutils literal"><span class="pre">svg</span></code> as <code class="docutils literal"><span class="pre">prop</span></code> respectively. The png snapshot comes in form of a data URI and the svg snapshot is a XML string.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">currentLocationOfViewId</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="s1">&#39;viewId&#39;</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">currentRangeSelection</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;rangeSelection&#39;</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">currentViewConfig</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;viewConfig&#39;</span><span class="p">);</span>
-<span class="kr">const</span> <span class="nx">pngSnapshot</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;png&#39;</span><span class="p">);</span>  <span class="c1">// Data URI</span>
-<span class="kr">const</span> <span class="nx">svgSnapshot</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;svg&#39;</span><span class="p">);</span>  <span class="c1">// XML string</span>
+<p>HiGlass provides a set of accessors and exporters to retrieve data from HiGlass or to export its state as a viewconf, SVG or PNG:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="kr">const</span> <span class="nx">currentLocationOfViewId</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">getLocation</span><span class="p">(</span><span class="s1">&#39;viewId&#39;</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">currentRangeSelection</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">getRangeSelection</span><span class="p">();</span>
+<span class="kr">const</span> <span class="nx">currentViewConfig</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">exportAsViewConfString</span><span class="p">();</span>
+<span class="kr">const</span> <span class="nx">pngSnapshot</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">exportAsPng</span><span class="p">();</span>  <span class="c1">// Data URI</span>
+<span class="kr">const</span> <span class="nx">svgSnapshot</span> <span class="o">=</span> <span class="nx">hgv</span><span class="p">.</span><span class="nx">exportAsSvg</span><span class="p">();</span>  <span class="c1">// XML string</span>
 </pre></div>
 </div>
 </div>
@@ -469,6 +473,9 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#point">Point</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#chromosome-labels">Chromosome Labels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#chromosome-grid">Chromosome Grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#stacked-bars">Stacked Bars</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#multiple-lines">Multiple Lines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#multiple-bar-charts">Multiple Bar Charts</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>
