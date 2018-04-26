@@ -7,7 +7,7 @@ export const MOUSE_TOOL_SELECT = 'select';
 export const TILE_FETCH_DEBOUNCE = 100;
 
 // Number of milliseconds zoom-related actions (e.g., tile loading) are debounced
-export const ZOOM_DEBOUNCE = 10;
+export const ZOOM_DEBOUNCE = 100;
 
 // the length of time to keep refreshing the view after a drag event
 export const SHORT_DRAG_TIMEOUT = 110;

@@ -125,7 +125,9 @@ const api = function api(context) {
       self.measureSize();
       
       for (const tiledPlot of dictValues(self.tiledPlots)) {
-        tiledPlot.measureSize();
+        if (tiledPlot) {
+          tiledPlot.measureSize();
+        }
       }
     },
 
