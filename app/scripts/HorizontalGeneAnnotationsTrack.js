@@ -10,7 +10,7 @@ import { tileProxy } from './services';
 // Utils
 import { colorToHex } from './utils';
 
-const FONT_SIZE = 12;
+const FONT_SIZE = 11;
 const GENE_RECT_WIDTH = 1;
 const GENE_RECT_HEIGHT = 10;
 const TRIANGLE_HEIGHT = 6;
@@ -202,9 +202,9 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         const triangleWidth = GENE_RECT_HEIGHT;
 
         if (geneInfo[5] == '+')
-          tile.rectGraphics.drawPolygon([rectX, rectY, rectX + GENE_RECT_HEIGHT, rectY + GENE_RECT_HEIGHT / 2, rectX, rectY + GENE_RECT_HEIGHT]);
+          tile.rectGraphics.drawPolygon([rectX, rectY, rectX + GENE_RECT_HEIGHT / 2, rectY + GENE_RECT_HEIGHT / 2, rectX, rectY + GENE_RECT_HEIGHT]);
         else
-          tile.rectGraphics.drawPolygon([rectX, rectY, rectX - GENE_RECT_HEIGHT, rectY + GENE_RECT_HEIGHT / 2, rectX, rectY + GENE_RECT_HEIGHT]);
+          tile.rectGraphics.drawPolygon([rectX, rectY, rectX - GENE_RECT_HEIGHT / 2, rectY + GENE_RECT_HEIGHT / 2, rectX, rectY + GENE_RECT_HEIGHT]);
 
         //tile.rectGraphics.drawRect(rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT);
         tile.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
@@ -267,19 +267,20 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     const yExonPos = yMiddle - exonHeight / 2;
 
     graphics.drawRect(xStartPos, yPos, width, lineHeight);
+
     rects.push([xStartPos, yPos, width, lineHeight]);
 
     for (let j = xStartPos; j < xStartPos + width; j += 2 * GENE_RECT_HEIGHT) {
       if (strand === '+') {
         graphics.drawPolygon(
           [j, yExonPos + (GENE_RECT_HEIGHT - TRIANGLE_HEIGHT) / 2,
-          j + TRIANGLE_HEIGHT, yExonPos + GENE_RECT_HEIGHT / 2, 
+            j + TRIANGLE_HEIGHT / 2, yExonPos + GENE_RECT_HEIGHT / 2, 
             j, yExonPos + (GENE_RECT_HEIGHT + TRIANGLE_HEIGHT) / 2]);
       } else {
 
         graphics.drawPolygon(
           [j, yExonPos + (GENE_RECT_HEIGHT - TRIANGLE_HEIGHT) / 2,
-          j - TRIANGLE_HEIGHT, yExonPos + GENE_RECT_HEIGHT / 2, 
+            j - TRIANGLE_HEIGHT / 2, yExonPos + GENE_RECT_HEIGHT / 2, 
             j, yExonPos + (GENE_RECT_HEIGHT + TRIANGLE_HEIGHT) / 2]);
       }
     }

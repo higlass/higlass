@@ -2290,6 +2290,8 @@ class HiGlassComponent extends React.Component {
     });
 
     const port = window.location.port === '' ? '' : `:${window.location.port}`;
+    console.log('viewconfig:', this.props.viewConfig.exportViewUrl);
+    console.log('url:', url);
 
     const req = fetch(
       url,
@@ -2303,11 +2305,15 @@ class HiGlassComponent extends React.Component {
         body: `{"viewconf":${this.getViewsAsString()}}`
       }
     )
-      .then(res => res.json())
-      .then(_json => ({
-        id: _json.uid,
-        url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${json.uid}`
-      }));
+      .then(res => {
+        return res.json()
+      })
+      .then(_json => {
+        return {
+          id: _json.uid,
+          url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
+          };
+      });
 
     if (!fromApi) {
       req
