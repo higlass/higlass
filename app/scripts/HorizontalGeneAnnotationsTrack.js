@@ -10,8 +10,10 @@ import { tileProxy } from './services';
 // Utils
 import { colorToHex } from './utils';
 
+const FONT_SIZE = 12;
 const GENE_RECT_WIDTH = 1;
-const GENE_RECT_HEIGHT = 6;
+const GENE_RECT_HEIGHT = 10;
+const TRIANGLE_HEIGHT = 6;
 const MAX_TEXTS = 20;
 
 class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
@@ -35,7 +37,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
    */
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
     super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
-    this.textFontSize = '10px';
+    this.textFontSize = `${FONT_SIZE}px`;
     this.textFontFamily = 'Arial';
 
     this.animate = animate;
@@ -159,13 +161,13 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
       if (geneInfo[5] == '+') {
         // genes on the + strand drawn above and in a user-specified color or the default blue
-        yMiddle -= 6;
-        textYMiddle -= 10;
+        yMiddle -= GENE_RECT_HEIGHT - 2;
+        textYMiddle -= FONT_SIZE / 2 + GENE_RECT_HEIGHT;
         tile.rectGraphics.lineStyle(1, fill['+'], 0.3);
         tile.rectGraphics.beginFill(fill['+'], 0.3);
       } else {
         // genes on the - strand drawn below and in a user-specified color or the default red
-        yMiddle += 6;
+        yMiddle += GENE_RECT_HEIGHT - 2;
         textYMiddle += 23;
         tile.rectGraphics.lineStyle(1, fill['-'], 0.3);
         tile.rectGraphics.beginFill(fill['-'], 0.3);
@@ -188,7 +190,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
           console.warn("Gene annotations have less than 14 columns (chrName, chrStart, chrEnd, symbol, importance, transcript_name, geneId, transcript_type, '-', txStart, txEnd, exonStarts, exonEnds:", geneInfo);
         } else {
           tile.allRects = tile.allRects.concat(
-            this.drawExons(tile.rectGraphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
+            this.drawExons(tile.rectGraphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle, geneInfo[5])
               .map(x => x.concat([geneInfo[5]])),
           );
         }
@@ -197,7 +199,14 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         // graphics.drawRect(rectX, rectY, width, height);
         // console.log('rectY', rectY);
         // this.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
-        tile.rectGraphics.drawRect(rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT);
+        const triangleWidth = GENE_RECT_HEIGHT;
+
+        if (geneInfo[5] == '+')
+          tile.rectGraphics.drawPolygon([rectX, rectY, rectX + GENE_RECT_HEIGHT, rectY + GENE_RECT_HEIGHT / 2, rectX, rectY + GENE_RECT_HEIGHT]);
+        else
+          tile.rectGraphics.drawPolygon([rectX, rectY, rectX - GENE_RECT_HEIGHT, rectY + GENE_RECT_HEIGHT / 2, rectX, rectY + GENE_RECT_HEIGHT]);
+
+        //tile.rectGraphics.drawRect(rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT);
         tile.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
       }
 
@@ -241,7 +250,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     return zoomLevel;
   }
 
-  drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle) {
+  drawExons(graphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle, strand) {
     exonStarts = exonStarts.split(',').map(x => +x + chrOffset);
     exonEnds = exonEnds.split(',').map(x => +x + chrOffset);
     const rects = [];
@@ -259,6 +268,21 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     graphics.drawRect(xStartPos, yPos, width, lineHeight);
     rects.push([xStartPos, yPos, width, lineHeight]);
+
+    for (let j = xStartPos; j < xStartPos + width; j += 2 * GENE_RECT_HEIGHT) {
+      if (strand === '+') {
+        graphics.drawPolygon(
+          [j, yExonPos + (GENE_RECT_HEIGHT - TRIANGLE_HEIGHT) / 2,
+          j + TRIANGLE_HEIGHT, yExonPos + GENE_RECT_HEIGHT / 2, 
+            j, yExonPos + (GENE_RECT_HEIGHT + TRIANGLE_HEIGHT) / 2]);
+      } else {
+
+        graphics.drawPolygon(
+          [j, yExonPos + (GENE_RECT_HEIGHT - TRIANGLE_HEIGHT) / 2,
+          j - TRIANGLE_HEIGHT, yExonPos + GENE_RECT_HEIGHT / 2, 
+            j, yExonPos + (GENE_RECT_HEIGHT + TRIANGLE_HEIGHT) / 2]);
+      }
+    }
 
     for (let j = 0; j < exonStarts.length; j++) {
       const exonStart = exonStarts[j];
@@ -330,10 +354,11 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
         if (geneInfo[5] == '+') {
           // genes on the + strand drawn above and in a user-specified color or the default blue
-          textYMiddle -= 10;
+          // textYMiddle -= 10;
+          textYMiddle -= FONT_SIZE / 2 + GENE_RECT_HEIGHT - 2;
         } else {
           // genes on the - strand drawn below and in a user-specified color or the default red
-          textYMiddle += 23;
+          textYMiddle += 1.5 * FONT_SIZE + GENE_RECT_HEIGHT + 2;
         }
 
         text.position.x = this._xScale(txMiddle);
