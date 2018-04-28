@@ -753,28 +753,15 @@ window.hgApi.on('rangeSelection', (rangeSelection) => {
   );
 });
 
-window.hgApi.get('yes')
-  .then(() => console.log('yes!'))
-  .catch(() => console.warn('no!'));
+console.log('location:', window.hgApi.getLocation())
+//console.log('viewconf:', window.hgApi.exportAsViewConfString())
 
-window.hgApi.get('location')
-  .then(loc => console.log('Location', loc))
-  .catch(e => console.warn('No location!', e));
-
-window.hgApi.get('viewConfig')
-  .then((viewConfig) => {
-    const vc = JSON.parse(viewConfig);
-    console.log('viewConfig', vc);
-
-    return vc.views[0].uid;
-  })
-  .then(viewId => window.hgApi.get('location', viewId))
-  .then((loc) => { console.log('Location', loc); })
-  .catch((e) => { console.warn('Arghhh!', e); });
-
-// setTimeout(function() {
-//   window.hgApi.activateTool('select');
-// }, 2000);
+/*
+ setTimeout(function() {
+   console.log('activating select tool');
+   window.hgApi.activateTool('select');
+ }, 1000);
+*/
 
 // setTimeout(function() {
 //   window.hgApi.get('rangeSelection').then(
@@ -782,9 +769,11 @@ window.hgApi.get('viewConfig')
 //   );
 // }, 5000);
 
-// setTimeout(function() {
-//   window.hgApi.activateTool('move');
-// }, 10000);
+/*
+ setTimeout(function() {
+   window.hgApi.activateTool('move');
+ }, 10000);
+*/
 
 // setTimeout(function () {
 //   // Go to PTEN

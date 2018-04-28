@@ -2813,7 +2813,7 @@ class HiGlassComponent extends React.Component {
       typeof viewId === 'undefined' || viewsIds.indexOf(viewId) === -1
     ) {
       console.error(
-        '🦄 listen to me: you forgot to give me a propper view ID. ' +
+        '🦄 listen to me: you forgot to give me a proper view ID. ' +
         'I can\'t do nothing without that. 💩',
       );
       return;
@@ -2821,6 +2821,8 @@ class HiGlassComponent extends React.Component {
 
     const view = this.state.views[viewId];
 
+    /*
+    console.log('setting chrominfo');
     // Set chromInfo if not available
     if (!this.chromInfo) {
       this.setChromInfo(
@@ -2829,10 +2831,11 @@ class HiGlassComponent extends React.Component {
       );
       return;
     }
+    */
 
     // Convert scales into genomic locations
     const middleLayerListener = (xScale, yScale) => {
-      callback(scalesToGenomeLoci(xScale, yScale, this.chromInfo));
+      callback({xDomain: xScale.domain(), yDomain: yScale.domain(), xRange: xScale.range(), yRange: yScale.range() });
     };
 
     let newListenerId = 1;
