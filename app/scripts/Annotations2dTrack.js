@@ -61,7 +61,7 @@ class Annotations2dTrack extends TiledPixiTrack {
   }
 
   get maxSize() {
-    const maxSize = this.tilesetInfo.max_x && Math.max(
+    const maxSize = this.tilesetInfo.max_pos && Math.max(
       this.tilesetInfo.max_pos[0] - this.tilesetInfo.min_pos[0],
       this.tilesetInfo.max_pos[1] - this.tilesetInfo.min_pos[1]
     );
