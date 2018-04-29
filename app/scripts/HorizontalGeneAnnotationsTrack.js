@@ -191,7 +191,7 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         } else {
           tile.allRects = tile.allRects.concat(
             this.drawExons(tile.rectGraphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle, geneInfo[5])
-              .map(x => x.concat([geneInfo[5]])),
+              .map(x => [x, geneInfo[5]])
           );
         }
         // this.drawExons(tile.textGraphics, txStart, txEnd, exonStarts, exonEnds, chrOffset, yMiddle)
@@ -200,14 +200,25 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
         // console.log('rectY', rectY);
         // this.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
         const triangleWidth = GENE_RECT_HEIGHT;
+        let poly = [];
 
-        if (geneInfo[5] == '+')
-          tile.rectGraphics.drawPolygon([rectX, rectY, rectX + GENE_RECT_HEIGHT / 2, rectY + GENE_RECT_HEIGHT / 2, rectX, rectY + GENE_RECT_HEIGHT]);
-        else
-          tile.rectGraphics.drawPolygon([rectX, rectY, rectX - GENE_RECT_HEIGHT / 2, rectY + GENE_RECT_HEIGHT / 2, rectX, rectY + GENE_RECT_HEIGHT]);
+        if (geneInfo[5] == '+') {
+          poly = [
+              rectX, rectY, 
+              rectX + GENE_RECT_HEIGHT / 2, rectY + GENE_RECT_HEIGHT / 2, 
+              rectX, rectY + GENE_RECT_HEIGHT
+            ]
+        } else {
+          poly = [
+            rectX, rectY, 
+            rectX - GENE_RECT_HEIGHT / 2, rectY + GENE_RECT_HEIGHT / 2, 
+            rectX, rectY + GENE_RECT_HEIGHT
+          ]
+        }
+        tile.rectGraphics.drawPolygon(poly);
 
         //tile.rectGraphics.drawRect(rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT);
-        tile.allRects.push([rectX, rectY, GENE_RECT_WIDTH, GENE_RECT_HEIGHT, geneInfo[5]]);
+        tile.allRects.push([poly, geneInfo[5]]);
       }
 
       if (!tile.texts) {
@@ -266,37 +277,60 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     const yExonPos = yMiddle - exonHeight / 2;
 
-    graphics.drawRect(xStartPos, yPos, width, lineHeight);
+    const polys = [];
+    let poly = [
+      xStartPos, yPos, 
+      xStartPos + width, yPos,
+      xStartPos + width, yPos + lineHeight,
+      xStartPos, yPos + lineHeight
+    ];
+    
+    graphics.drawPolygon(poly);
 
-    rects.push([xStartPos, yPos, width, lineHeight]);
+    polys.push([
+      xStartPos, yPos, 
+      xStartPos + width, yPos,
+      xStartPos + width, yPos + lineHeight,
+      xStartPos, yPos + lineHeight
+    ]);
 
     for (let j = xStartPos; j < xStartPos + width; j += 2 * GENE_RECT_HEIGHT) {
       if (strand === '+') {
-        graphics.drawPolygon(
-          [j, yExonPos + (GENE_RECT_HEIGHT - TRIANGLE_HEIGHT) / 2,
+        poly = [j, yExonPos + (GENE_RECT_HEIGHT - TRIANGLE_HEIGHT) / 2,
             j + TRIANGLE_HEIGHT / 2, yExonPos + GENE_RECT_HEIGHT / 2, 
-            j, yExonPos + (GENE_RECT_HEIGHT + TRIANGLE_HEIGHT) / 2]);
+            j, yExonPos + (GENE_RECT_HEIGHT + TRIANGLE_HEIGHT) / 2]
       } else {
-
-        graphics.drawPolygon(
-          [j, yExonPos + (GENE_RECT_HEIGHT - TRIANGLE_HEIGHT) / 2,
+        poly = [j, yExonPos + (GENE_RECT_HEIGHT - TRIANGLE_HEIGHT) / 2,
             j - TRIANGLE_HEIGHT / 2, yExonPos + GENE_RECT_HEIGHT / 2, 
-            j, yExonPos + (GENE_RECT_HEIGHT + TRIANGLE_HEIGHT) / 2]);
+            j, yExonPos + (GENE_RECT_HEIGHT + TRIANGLE_HEIGHT) / 2]
       }
+
+      polys.push(poly)
+      graphics.drawPolygon(poly);
     }
 
     for (let j = 0; j < exonStarts.length; j++) {
       const exonStart = exonStarts[j];
       const exonEnd = exonEnds[j];
 
-      rects.push([this._xScale(exonStart), yExonPos,
-        this._xScale(exonEnd) - this._xScale(exonStart), exonHeight]);
+      const xStart = this._xScale(exonStart);
+      const yStart = yExonPos;
+      const width = this._xScale(exonEnd) - this._xScale(exonStart);
+      const height = exonHeight;
 
-      graphics.drawRect(this._xScale(exonStart), yExonPos,
-        this._xScale(exonEnd) - this._xScale(exonStart), exonHeight);
+      const poly = [
+        xStart, yStart,
+        xStart + width, yStart,
+        xStart + width, yStart + height,
+        xStart, yStart + height
+      ];
+
+      polys.push(poly)
+
+      graphics.drawPolygon(poly)    
     }
 
-    return rects;
+    return polys;
   }
 
   draw() {
@@ -327,7 +361,6 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       const posOffset = newRange[0];
       tile.rectGraphics.scale.x = tileK;
       tile.rectGraphics.position.x = -posOffset * tileK;
-
 
       // move the texts
 
@@ -477,13 +510,19 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
     }
 
     for (const rect of allRects) {
-      const r = document.createElement('rect');
-      r.setAttribute('x', rect[0]);
-      r.setAttribute('y', rect[1]);
-      r.setAttribute('width', rect[2]);
-      r.setAttribute('height', rect[3]);
+      const r = document.createElement('path');
 
-      if (rect[4] == '+') {
+      const poly = rect[0];
+
+      let d = `M ${poly[0]} ${poly[1]}`
+
+      for (let i = 2; i < poly.length; i+= 2) {
+        d += ` L ${poly[i]} ${poly[i+1]}`;
+      }
+
+      r.setAttribute('d', d);
+
+      if (rect[1] == '+') {
         r.setAttribute('fill', this.options.plusStrandColor);
       } else {
         r.setAttribute('fill', this.options.minusStrandColor);
