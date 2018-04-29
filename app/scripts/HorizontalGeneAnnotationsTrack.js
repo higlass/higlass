@@ -506,29 +506,36 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
     let allRects = [];
     for (const tile of this.visibleAndFetchedTiles()) {
-      allRects = allRects.concat(tile.allRects);
-    }
+      const gTile = document.createElement('g');
+      gTile.setAttribute('transform',
+        `translate(${tile.rectGraphics.position.x},
+        ${tile.rectGraphics.position.y})
+        scale(${tile.rectGraphics.scale.x},
+        ${tile.rectGraphics.scale.y})`);
 
-    for (const rect of allRects) {
-      const r = document.createElement('path');
+      for (const rect of tile.allRects) {
+        const r = document.createElement('path');
 
-      const poly = rect[0];
+        const poly = rect[0];
 
-      let d = `M ${poly[0]} ${poly[1]}`
+        let d = `M ${poly[0]} ${poly[1]}`
 
-      for (let i = 2; i < poly.length; i+= 2) {
-        d += ` L ${poly[i]} ${poly[i+1]}`;
+        for (let i = 2; i < poly.length; i+= 2) {
+          d += ` L ${poly[i]} ${poly[i+1]}`;
+        }
+
+        r.setAttribute('d', d);
+
+        if (rect[1] == '+') {
+          r.setAttribute('fill', this.options.plusStrandColor);
+        } else {
+          r.setAttribute('fill', this.options.minusStrandColor);
+        }
+
+        gTile.appendChild(r);
       }
 
-      r.setAttribute('d', d);
-
-      if (rect[1] == '+') {
-        r.setAttribute('fill', this.options.plusStrandColor);
-      } else {
-        r.setAttribute('fill', this.options.minusStrandColor);
-      }
-
-      output.appendChild(r);
+      output.appendChild(gTile);
     }
 
     for (const text of this.allTexts) {
