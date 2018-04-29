@@ -129,7 +129,6 @@ class TilesetFinder extends React.Component {
             console.error('ERROR:', error);
           } else {
             const newOptions = this.prepareNewEntries(sourceServer, data.results, this.state.options);
-            console.log('newOptions:', newOptions, 'data:', data);
             const availableTilesetKeys = Object.keys(newOptions);
             let selectedUuid = this.state.selectedUuid;
 

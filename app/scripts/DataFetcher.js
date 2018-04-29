@@ -257,13 +257,13 @@ export default class DataFetcher {
       let yTiles = [];
 
       if (this.dataConfig.tilesetInfo && this.dataConfig.tilesetInfo.resolutions)  {
-        const sortedResolutions = this.tilesetInfo.resolutions
+        const sortedResolutions = this.dataConfig.tilesetInfo.resolutions
           .map(x => +x)
           .sort((a, b) => b - a);
 
         yTiles = tileProxy.calculateTilesFromResolution(
-          scale,
           sortedResolutions[zoomLevel],
+          scale,
           this.dataConfig.tilesetInfo.min_pos[vertical ? 1 : 0], 
           this.dataConfig.tilesetInfo.max_pos[vertical ? 1 : 0]
         )

@@ -144,6 +144,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
       || !this.areAllVisibleTilesLoaded()
     ) return;
 
+    if (!this.tilesetInfo) {
+      return;
+    }
+
     const relX = x - this.position[0];
     const relY = y - this.position[1];
     const data = this.getVisibleData(relX, relY);

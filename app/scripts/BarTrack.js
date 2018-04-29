@@ -163,7 +163,10 @@ class BarTrack extends HorizontalLine1DPixiTrack {
     const stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
 
     for (const tile of this.visibleAndFetchedTiles()) {
-      const data = tile.svgData;
+      const data = tile;
+      if (!data || !data.barXValues)
+        continue;
+
       for (let i = 0; i < data.barXValues.length; i++) {
         const rect = document.createElement('rect');
         rect.setAttribute('fill', data.barColors[i]);
