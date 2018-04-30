@@ -29,10 +29,11 @@ class AddTrackModal extends React.Component {
     };
   }
 
-  handleSubmit() {
+  handleSubmit(evt) {
     this.props.onTracksChosen(this.state.selectedTilesets,
       this.props.position,
       this.props.host);
+    evt.preventDefault();
   }
 
   selectedTilesetsChanged(selectedTilesets) {

@@ -224,8 +224,9 @@ class TilesetFinder extends React.Component {
     const form = (
       <Form
         horizontal
+        onSubmit={(evt) => {evt.preventDefault()}}
       >
-        <FormGroup >
+        <FormGroup>
           <Col sm={3}>
             <ControlLabel>{'Select tileset'}</ControlLabel>
           </Col>
