@@ -311,6 +311,9 @@ class HorizontalChromosomeLabels extends PixiTrack {
 
     for (let key in this.tickTexts) {
       for (let text of this.tickTexts[key]) {
+        if (!text.visible)
+          continue;
+
         let g = pixiTextToSvg(text);
         output.appendChild(g);
 
