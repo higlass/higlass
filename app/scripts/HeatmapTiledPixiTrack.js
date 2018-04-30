@@ -1,5 +1,6 @@
 import { brushY } from 'd3-brush';
 import { range } from 'd3-array';
+import { format } from 'd3-format';
 import { scaleLinear } from 'd3-scale';
 import { select, event } from 'd3-selection';
 import * as PIXI from 'pixi.js';
@@ -1191,7 +1192,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   getMouseOverHtml(trackX, trackY) {
+    this.setDataLensSize(1);
 
+    const data = this.getVisibleData(trackX, trackY);     
+
+    return format(".3f")(data[0]);
   }
 
   /**

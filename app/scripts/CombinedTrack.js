@@ -182,6 +182,19 @@ class CombinedTrack {
       && (y >= this.position[1] && y <= this.dimensions[1] + this.position[1])
     );
   }
+
+  getMouseOverHtml(trackX, trackY) {
+    let mouseOverHtml = ''
+
+    for (const childTrack of this.childTracks) {
+      if (childTrack.getMouseOverHtml) {
+        mouseOverHtml += childTrack.getMouseOverHtml(trackX, trackY);
+        mouseOverHtml += "<br/>"
+      }
+    }
+
+    return mouseOverHtml;
+  };
 }
 
 export default CombinedTrack;
