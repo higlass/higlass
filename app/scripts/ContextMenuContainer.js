@@ -117,6 +117,10 @@ class ContextMenuContainer extends React.Component {
       if (parentBbox.top - bbox.height > 0) {
         // will fit on top
         topPosition = parentBbox.top - bbox.height + TRACK_CONTROL_HEIGHT;
+      } else {
+        // align along the bottom
+        topPosition = parentBbox.top - bbox.height + TRACK_CONTROL_HEIGHT;
+        topPosition -= (topPosition + bbox.height) - window.innerHeight;
       }
     }
 
