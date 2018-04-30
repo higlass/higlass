@@ -229,6 +229,7 @@ class HiGlassComponent extends React.Component {
     this.rangeSelection = [null, null];
 
     this.prevMouseHoverTrack = null;
+    this.zooming = false;
   }
 
   componentWillMount() {
@@ -279,6 +280,10 @@ class HiGlassComponent extends React.Component {
       pubSub.subscribe('app.zoomEnd', this.zoomEndHandler.bind(this))
     );
 
+    this.pubSubs.push(
+      pubSub.subscribe('app.zoom', this.zoomHandler.bind(this))
+    );
+
     if (this.props.getApi) {
       this.props.getApi(this.api);
     }
@@ -286,10 +291,18 @@ class HiGlassComponent extends React.Component {
 
   zoomStartHandler() {
     this.hideHoverMenu();
+    this.zooming = true;
   }
 
   zoomEndHandler() {
+    this.zooming = false;
+  }
 
+  zoomHandler(evt) {
+    if (!evt.sourceEvent)
+      return;
+
+    this.mouseMoveHandler(evt.sourceEvent);
   }
 
   waitForDOMAttachment(callback) {
@@ -2966,6 +2979,9 @@ class HiGlassComponent extends React.Component {
 
     this.prevMouseHoverTrack = evt.track;
 
+    if (this.zooming)
+      return;
+
     const data = (mouseOverHtml && mouseOverHtml.length) ? [1] : [];
 
     // try to select the mouseover div
@@ -3028,6 +3044,7 @@ class HiGlassComponent extends React.Component {
    * Handle mousemove and zoom events.
    */
   mouseMoveZoomHandler(data) {
+    console.log('mmz:');
     apiPublish('mouseMoveZoom', data);
   }
 
