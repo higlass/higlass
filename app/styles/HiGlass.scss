@@ -2,4 +2,8 @@
   // Third party styles should be added here so that they are name spaces
   @import '../../node_modules/react-grid-layout/css/styles.css';
   @import '../../node_modules/react-resizable/css/styles.css';
+
+  .react-resizable-handle {
+    z-index: 1;
+  }
 }
