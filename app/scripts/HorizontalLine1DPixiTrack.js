@@ -134,6 +134,7 @@ class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
     );
+
     const tileValues = tile.tileData.dense;
 
     if (tileValues.length === 0) { return; }

@@ -92,7 +92,6 @@ class TilesetFinder extends React.Component {
       return;
 
     const selectedTilesets = [this.state.options[this.state.selectedUuid]];
-    console.log('selectedTilesets', selectedTilesets);
 
     if (selectedTilesets) { this.props.selectedTilesetChanged(selectedTilesets); }
   }
@@ -114,8 +113,6 @@ class TilesetFinder extends React.Component {
 
       datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
     }
-
-    console.log('dt:', datatypesQuery);
 
     if (!this.props.trackSourceServers) {
       console.warn("No track source servers specified in the viewconf");
@@ -158,8 +155,6 @@ class TilesetFinder extends React.Component {
 
     // this should give the dataset the PlotType that's selected in the parent
     // this.props.selectedTilesetChanged(this.state.options[x.target.value]);
-
-    // console.log('x.target.value:', x.target.value);
 
     const value = this.state.options[x.target.value];
     this.props.onDoubleClick(value);

@@ -16,7 +16,6 @@ import '../styles/AddTrackModal.css';
 class AddTrackModal extends React.Component {
   constructor(props) {
     super(props);
-    console.log('making atm');
 
     this.tilesetFinder = null;
     this.multiSelect = null;

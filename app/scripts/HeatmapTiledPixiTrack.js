@@ -1190,6 +1190,10 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     );
   }
 
+  getMouseOverHtml(trackX, trackY) {
+
+  }
+
   /**
    * Get the tile's position in its coordinate system.
    *

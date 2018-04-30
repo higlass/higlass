@@ -3044,7 +3044,6 @@ class HiGlassComponent extends React.Component {
    * Handle mousemove and zoom events.
    */
   mouseMoveZoomHandler(data) {
-    console.log('mmz:');
     apiPublish('mouseMoveZoom', data);
   }
 
