@@ -385,10 +385,7 @@
     hglib.createHgComponent(
         document.getElementById('development-demo'),
         testViewConfig,
-        { bounded: true },
-        function (api) {
-            window.hgApi = api;
-        }
+        { bounded: true }
     );
 
     window.hgApi.on('view', function (viewConfig) {
