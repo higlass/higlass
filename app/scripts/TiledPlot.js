@@ -151,7 +151,7 @@ class TiledPlot extends React.Component {
 
     // add event listeners for drag and drop events
     this.addEventListeners();
-    this.getDefaultChromSizes();
+    //this.getDefaultChromSizes();
 
     this.pubSubs = [];
     this.pubSubs.push(
@@ -215,7 +215,7 @@ class TiledPlot extends React.Component {
     }
 
     if (prevProps.tracks.center !== this.props.tracks.center) {
-      this.getDefaultChromSizes();
+      //this.getDefaultChromSizes();
     }
   }
 
@@ -234,6 +234,7 @@ class TiledPlot extends React.Component {
     }
   }
 
+    /*
   getDefaultChromSizes() {
     try {
       const centralHeatmap = this.findCentralHeatmapTrack(
@@ -242,8 +243,9 @@ class TiledPlot extends React.Component {
       this.getChromInfo = chromInfo
         .get(`${centralHeatmap.server}/chrom-sizes/?id=${centralHeatmap.tilesetUid}`)
         .then(defaultChromSizes => this.setState({ defaultChromSizes }));
-    } catch (err) { /* Nothing */ }
+    } catch (err) {  }
   }
+  */
 
   contextMenuHandler(e) {
     if (!this.divTiledPlot) return;

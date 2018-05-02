@@ -1196,7 +1196,13 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     const data = this.getVisibleData(trackX, trackY);     
 
-    return format(".3f")(data[0]);
+    if (this.options.heatmapValueScaling == 'log')
+      if (data[0] > 0)
+        return "1e" + format(".3f")(Math.log(data[0]));
+      else
+        return '';
+    else
+      return format(".3f")(data[0]);
   }
 
   /**

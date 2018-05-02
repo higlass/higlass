@@ -269,7 +269,7 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   // fun fact: the number 384 is halfway between 256 and 512
   const addedZoom = Math.max(
     0,
-    Math.ceil(Math.log(rangeWidth / 384) / Math.LN2),
+    Math.ceil(Math.log(rangeWidth / 2048) / Math.LN2),
   );
   let zoomLevel = Math.round(Math.log(zoomScale) / Math.LN2) + addedZoom;
 

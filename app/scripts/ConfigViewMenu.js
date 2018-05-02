@@ -1,27 +1,86 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
 
-class ConfigViewMenu extends React.Component {
+class ConfigViewMenu extends ContextMenuContainer {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      submenuShown: false,
+    };
+  }
+
+  getSubmenu() {
+    if (this.state.submenuShown) {
+      // the bounding box of the element which initiated the subMenu
+      // necessary so that we can position the submenu next to the initiating
+      // element
+      const bbox = this.state.submenuSourceBbox;
+      const position = this.state.orientation === 'left' ? (
+        {
+          left: this.state.left,
+          top: bbox.top,
+        }
+      ) : (
+        {
+          left: this.state.left + bbox.width + 7,
+          top: bbox.top,
+        }
+      );
+
+      const subMenuData = this.state.submenuShown;
+      if (subMenuData.option == 'options') {
+        console.log('options');
+        //return this.getConfigureSeriesMenu(position, bbox, track);
+      }
+
+      return(<div />);
+    }
+
+    return (<div />);
+  }
+
   render() {
+    console.log('render', this.state.submenuShown);
+
+    let styleNames = 'context-menu';
+
     return (
-      <div>
+      <div
+        ref={c => this.div = c}
+        style={{
+          left: this.state.left,
+          top: this.state.top,
+        }}
+        styleName={styleNames}
+      >
         <ContextMenuItem
-          onClick={e => this.props.onTogglePositionSearchBox(e)}
+          onClick={e => this.props.onZoomToData(e)}
         >
-          {'Toggle position search box'}
+        {'Zoom to data extent'}
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
 
         <ContextMenuItem
-          onClick={e => this.props.onZoomToData(e)}
+          onClick={this.props.onConfigureTrack}
+          onMouseEnter={e => this.handleItemMouseEnter(e,
+            {
+              option: 'options',
+            })
+          }
+          onMouseLeave={e => this.handleMouseLeave(e)}
         >
-        {'Zoom to data extent'}
+          {'View options'}
+          <svg styleName="play-icon" >
+            <use xlinkHref="#play" />
+          </svg>
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
@@ -127,6 +186,8 @@ class ConfigViewMenu extends React.Component {
         >
         {'Export views as Link'}
         </ContextMenuItem>
+
+        {this.getSubmenu()}
 
       </div>
     );

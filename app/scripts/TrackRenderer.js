@@ -194,8 +194,10 @@ class TrackRenderer extends React.Component {
 
     this.pStage = new PIXI.Graphics();
     this.pMask = new PIXI.Graphics();
+    this.pBackground = new PIXI.Graphics();
 
     this.pStage.addChild(this.pMask);
+    this.pStage.addChild(this.pBackground);
 
     this.currentProps.pixiStage.addChild(this.pStage);
 
@@ -426,6 +428,18 @@ class TrackRenderer extends React.Component {
       this.currentProps.height
     );
     this.pMask.endFill();
+  }
+
+  setBackground() {
+    this.pBackground.clear();
+    //this.pBackground.beginFill(0xdddddd);
+    this.pBackground.drawRect(
+      this.xPositionOffset,
+      this.yPositionOffset,
+      this.currentProps.width,
+      this.currentProps.height
+    );
+    this.pBackground.endFill();
   }
 
   windowScrolled() {
@@ -667,6 +681,7 @@ class TrackRenderer extends React.Component {
       );
 
       this.setMask();
+      this.setBackground();
 
       const updated = this.updateTrackPositions();
 
