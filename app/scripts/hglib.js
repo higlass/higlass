@@ -12,8 +12,7 @@ const launch = (element, config, options) => {
    * @param   {Object} higlass - HiGlass instance
    * @return  {Object} The instance's public API
    */
-  let component;
-  ReactDOM.render(
+  let component = ReactDOM.render(
     <HiGlassComponent
       ref={(c) => { component = c; }}
       options={options || {}}
