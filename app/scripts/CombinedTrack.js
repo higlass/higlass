@@ -188,8 +188,13 @@ class CombinedTrack {
 
     for (const childTrack of this.childTracks) {
       if (childTrack.getMouseOverHtml) {
-        mouseOverHtml += childTrack.getMouseOverHtml(trackX, trackY);
-        mouseOverHtml += "<br/>"
+        const trackHtml = childTrack.getMouseOverHtml(trackX, trackY);
+
+        if (trackHtml && trackHtml.length) {
+          mouseOverHtml += trackHtml;
+          mouseOverHtml += "<br/>"
+        }
+
       }
     }
 

@@ -131,31 +131,42 @@ export function workerSetPix(
   return pixData;
 }
 
-function float32(inUint16) {
+function float32(h) {
   /**
-   * Yanked from https://gist.github.com/martinkallman/5049614
+   * Yanked from https://github.com/numpy/numpy/blob/master/numpy/core/src/npymath/halffloat.c#L466
    *
    * Does not support infinities or NaN. All requests with such
    * values should be encoded as float32
    */
-  let t1;
-  let t2;
-  let t3;
 
-  t1 = inUint16 & 0x7fff; // Non-sign bits
-  t2 = inUint16 & 0x8000; // Sign bit
-  t3 = inUint16 & 0x7c00; // Exponent
+  let h_exp, h_sig;
+  let f_sgn, f_exp, f_sig;
 
-  t1 <<= 13; // Align mantissa on MSB
-  t2 <<= 16; // Shift sign bit into position
-
-  t1 += 0x38000000; // Adjust bias
-
-  t1 = (t3 === 0 ? 0 : t1); // Denormals-as-zero
-
-  t1 |= t2; // Re-insert sign bit
-
-  return t1;
+  h_exp = (h&0x7c00);
+  f_sgn = (h&0x8000) << 16;
+  switch (h_exp) {
+      case 0x0000: /* 0 or subnormal */
+          h_sig = (h&0x03ff);
+          /* Signed zero */
+          if (h_sig == 0) {
+              return f_sgn;
+          }
+          /* Subnormal */
+          h_sig <<= 1;
+          while ((h_sig&0x0400) == 0) {
+              h_sig <<= 1;
+              h_exp++;
+          }
+          f_exp = ((127 - 15 - h_exp)) << 23;
+          f_sig = ((h_sig&0x03ff)) << 13;
+          return f_sgn + f_exp + f_sig;
+      case 0x7c00: /* inf or NaN */
+          /* All-ones exponent and a copy of the significand */
+          return f_sgn + 0x7f800000 + (((h&0x03ff)) << 13);
+      default: /* normalized */
+          /* Just need to adjust the exponent and shift */
+          return f_sgn + (((h&0x7fff) + 0x1c000) << 13);
+  }
 }
 
 function _base64ToArrayBuffer(base64) {
