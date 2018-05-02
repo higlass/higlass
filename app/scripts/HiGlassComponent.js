@@ -3107,6 +3107,7 @@ class HiGlassComponent extends React.Component {
                 height: '100%',
                 background,
                 opacity: 0.3,
+                zIndex: 1
               }}
             />
           );
