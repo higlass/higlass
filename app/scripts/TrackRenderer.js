@@ -53,10 +53,11 @@ import MapboxTilesTrack from './MapboxTilesTrack';
 
 // Utils
 import {
-  forwardEvent,
+  colorToHex,
   dictItems,
+  forwardEvent,
+  scalesCenterAndK,
   trimTrailingSlash,
-  scalesCenterAndK
 } from './utils';
 
 // Services
@@ -256,6 +257,7 @@ class TrackRenderer extends React.Component {
 
     if (this.prevPropsStr === nextPropsStr) return;
 
+    this.setBackground();
     this.elementPos = this.element.getBoundingClientRect();
 
     for (const uid in this.trackDefObjects) {
@@ -431,8 +433,11 @@ class TrackRenderer extends React.Component {
   }
 
   setBackground() {
+    let backgroundColor = (this.props.viewOptions && this.props.viewOptions.backgroundColor) || 'white';
+    backgroundColor = colorToHex(backgroundColor);
+
     this.pBackground.clear();
-    //this.pBackground.beginFill(0xdddddd);
+    this.pBackground.beginFill(backgroundColor);
     this.pBackground.drawRect(
       this.xPositionOffset,
       this.yPositionOffset,
@@ -549,6 +554,7 @@ class TrackRenderer extends React.Component {
       leftWidth: props.leftWidth,
       topHeight: props.topHeight,
       dragging: props.dragging,
+      viewOptions: props.viewOptions,
     });
   }
 
@@ -1841,6 +1847,7 @@ TrackRenderer.propTypes = {
   svgElement: PropTypes.object.isRequired,
   topHeight: PropTypes.number,
   topHeightNoGallery: PropTypes.number,
+  viewOptions: PropTypes.object,
   width: PropTypes.number,
 };
 

@@ -2646,6 +2646,21 @@ class HiGlassComponent extends React.Component {
     }
   }
 
+  handleViewOptionsChanged(viewUid, newOptions) {
+    const view = this.state.views[viewUid];
+
+    if (!view)
+      return;
+
+    view.options = Object.assign(view.options || {}, newOptions);
+
+    if (this.mounted) {
+      this.setState({
+        views: this.state.views,
+      });
+    }
+  }
+
   isTrackValid(track, viewUidsPresent) {
     /**
          * Determine whether a track is valid and can be displayed.
@@ -3180,6 +3195,7 @@ class HiGlassComponent extends React.Component {
             svgElement={this.state.svgElement}
             trackSourceServers={this.state.viewConfig.trackSourceServers}
             tracks={view.tracks}
+            viewOptions={view.options}
             metaTracks={view.metaTracks}
             uid={view.uid}
             verticalMargin={this.verticalMargin}
@@ -3257,6 +3273,7 @@ class HiGlassComponent extends React.Component {
             }}
             onTogglePositionSearchBox={this.handleTogglePositionSearchBox.bind(this)}
             onTrackPositionChosen={position => this.handleTrackPositionChosen(view.uid, position)}
+            onViewOptionsChanged={(newOptions) => this.handleViewOptionsChanged(view.uid, newOptions)}
             onUnlockLocation={uid => this.handleUnlock(uid, this.locationLocks)}
             onUnlockZoom={uid => this.handleUnlock(uid, this.zoomLocks)}
             onUnlockZoomAndLocation={(uid) => {
@@ -3349,6 +3366,9 @@ class HiGlassComponent extends React.Component {
         ref={(c) => { this.topDiv = c; }}
         className='higlass'
         onMouseMove={this.mouseMoveHandler.bind(this)}
+        onMouseLeave={() => {
+          this.hideHoverMenu();
+        }}
         styleName={styleNames}
       >
         <canvas

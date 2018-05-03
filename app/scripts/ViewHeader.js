@@ -154,6 +154,10 @@ class ViewHeader extends React.Component {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onProjectViewport(this.state.configMenuUid);
             }}
+            onOptionsChanged={(newOptions) => {
+              this.props.onViewOptionsChanged(newOptions);
+              this.setState({ configMenuUid: null }); // hide the menu
+            }}
             onTakeAndLockZoomAndLocation={() => {
               this.setState({ configMenuUid: null }); // hide the menu
               this.props.onTakeAndLockZoomAndLocation(this.state.configMenuUid);

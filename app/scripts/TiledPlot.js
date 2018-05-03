@@ -1042,6 +1042,7 @@ class TiledPlot extends React.Component {
   updatablePropsToString(props) {
     return JSON.stringify({
       tracks: props.tracks,
+      viewOptions: props.viewOptions,
       uid: props.uid,
       addTrackPosition: props.addTrackPosition,
       editable: props.editable,
@@ -1652,6 +1653,7 @@ class TiledPlot extends React.Component {
           topHeightNoGallery={this.topHeightNoGallery}
           uid={this.props.uid}
           width={this.state.width}
+          viewOptions={this.props.viewOptions}
           xDomainLimits={this.props.xDomainLimits}
           yDomainLimits={this.props.yDomainLimits}
           zoomable={this.props.zoomable}
@@ -1893,6 +1895,7 @@ TiledPlot.propTypes = {
   tracks: PropTypes.object,
   metaTracks: PropTypes.array,
   verticalMargin: PropTypes.number,
+  viewOptions: PropTypes.object,
   uid: PropTypes.string,
   zoomable: PropTypes.bool,
 };

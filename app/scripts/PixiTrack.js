@@ -265,7 +265,8 @@ class PixiTrack extends Track {
     if (this.options.labelBackgroundOpacity) {
       graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);
     } else {
-      graphics.beginFill(0xFFFFFF, 0);
+      // default to some label background opacity
+      graphics.beginFill(0xFFFFFF, 0.5);
     }
 
     const stroke = colorToHex(

@@ -79,6 +79,7 @@ export const TRACKS_INFO = [
       heatmapValueScaling: 'log',
       showMousePosition: false,
       mousePositionColor: '#999999',
+      showTooltip: false,
     },
     availableOptions: [
       'labelPosition',
@@ -94,6 +95,7 @@ export const TRACKS_INFO = [
       'heatmapValueScaling',
       'showMousePosition',
       'mousePositionColor',
+      'showTooltip',
     ],
   },
   {

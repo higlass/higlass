@@ -96,6 +96,7 @@ export const OPTIONS_INFO = {
     name: 'Background Color',
     inlineOptions: {
       white: { name: 'White', value: 'white' },
+      grey: { name: 'Grey', value: 'grey' },
       black: { name: 'Black', value: 'black' },
     },
   },
@@ -283,6 +284,13 @@ export const OPTIONS_INFO = {
       no: { name: 'No', value: false },
     },
   },
+  showTooltip: {
+    name: 'Show Tooltip',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false },
+    },
+  },
   axisPositionHorizontal: {
     name: 'Axis Position',
     inlineOptions: {
@@ -364,6 +372,15 @@ export const OPTIONS_INFO = {
   labelBackgroundOpacity: {
     name: 'Label Background Opacity',
     inlineOptions: OPACITY_OPTIONS,
+  },
+
+  viewResolution: {
+    name: 'View Resolution',
+    inlineOptions: {
+      high: { name: 'High', value: 384},
+      medium: { name: 'Medium', value: 1024},
+      low: { name: 'Low', value: 2048},
+    },
   },
 
   // colormaps are mostly taken from here:

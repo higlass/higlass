@@ -51,8 +51,6 @@ class ContextMenuContainer extends React.Component {
   /* ---------------------------- Custom Methods ---------------------------- */
 
   handleItemMouseEnterWithRect(clientRect, series) {
-    console.log('series:', series);
-
     this.setState({
       submenuShown: series,
       submenuSourceBbox: clientRect,

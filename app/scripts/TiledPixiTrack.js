@@ -132,6 +132,7 @@ class TiledPixiTrack extends PixiTrack {
       this.options.name = this.options.name ? this.options.name : tilesetInfo.name;
 
       this.draw();
+      this.drawLabel(); //draw the label so that the current resolution is displayed
       this.animate();
     });
 
@@ -501,6 +502,7 @@ class TiledPixiTrack extends PixiTrack {
 
     // we need to draw when we receive new data
     this.draw();
+    this.drawLabel(); // update the current zoom level
 
     // Let HiGlass know we need to re-render
     // check if the value scale has changed

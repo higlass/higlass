@@ -3,9 +3,14 @@ import PropTypes from 'prop-types';
 
 import ContextMenuContainer from './ContextMenuContainer';
 import ContextMenuItem from './ContextMenuItem';
+import NestedContextMenu from './NestedContextMenu';
 
 // Styles
 import '../styles/ContextMenu.module.scss';
+
+import {
+  OPTIONS_INFO,
+} from './configs';
 
 class ConfigViewMenu extends ContextMenuContainer {
   constructor(props) {
@@ -14,6 +19,56 @@ class ConfigViewMenu extends ContextMenuContainer {
     this.state = {
       submenuShown: false,
     };
+  }
+
+  getConfigureViewMenu(position, bbox) {
+    const availableOptions = ['backgroundColor'];
+    const menuItems = {};
+    newOptions = {};
+
+    for (const optionType of availableOptions) {
+      if (OPTIONS_INFO.hasOwnProperty(optionType)) {
+        menuItems[optionType] = { name: OPTIONS_INFO[optionType].name };
+
+        if (OPTIONS_INFO[optionType].inlineOptions) {
+          // we can simply select this option from the menu
+          for (const inlineOptionKey in OPTIONS_INFO[optionType].inlineOptions) {
+            const inlineOption = OPTIONS_INFO[optionType].inlineOptions[inlineOptionKey];
+
+            // check if there's already available options (e.g.
+            // "Top right") for this option type (e.g. "Label
+            // position")
+            if (!menuItems[optionType].children) { menuItems[optionType].children = {}; }
+
+            const optionSelectorSettings = {
+              name: inlineOption.name,
+              value: inlineOption.value,
+              // missing handler to be filled in below
+            };
+
+            // the menu option defines a potential value for this option
+            // type (e.g. "top right")
+            optionSelectorSettings.handler = () => {
+              newOptions[optionType] = inlineOption.value;
+              this.props.onOptionsChanged(newOptions);
+            };
+
+            menuItems[optionType].children[inlineOptionKey] = optionSelectorSettings;
+          }
+        }       
+      }
+    }
+
+    return (
+      <NestedContextMenu
+        key={`config-series-menu`}
+        closeMenu={this.props.closeMenu}
+        menuItems={menuItems}
+        orientation={this.state.orientation}
+        parentBbox={bbox}
+        position={position}
+      />
+    );
   }
 
   getSubmenu() {
@@ -36,8 +91,7 @@ class ConfigViewMenu extends ContextMenuContainer {
 
       const subMenuData = this.state.submenuShown;
       if (subMenuData.option == 'options') {
-        console.log('options');
-        //return this.getConfigureSeriesMenu(position, bbox, track);
+        return this.getConfigureViewMenu(position, bbox);
       }
 
       return(<div />);
@@ -47,8 +101,6 @@ class ConfigViewMenu extends ContextMenuContainer {
   }
 
   render() {
-    console.log('render', this.state.submenuShown);
-
     let styleNames = 'context-menu';
 
     return (
@@ -61,15 +113,15 @@ class ConfigViewMenu extends ContextMenuContainer {
         styleName={styleNames}
       >
         <ContextMenuItem
-          onClick={e => this.props.onZoomToData(e)}
+          onClick={e => this.props.onTogglePositionSearchBox(e)}
         >
-        {'Zoom to data extent'}
+          {'Toggle position search box'}
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
 
         <ContextMenuItem
-          onClick={this.props.onConfigureTrack}
+          onClick={() => {}}
           onMouseEnter={e => this.handleItemMouseEnter(e,
             {
               option: 'options',
@@ -77,13 +129,19 @@ class ConfigViewMenu extends ContextMenuContainer {
           }
           onMouseLeave={e => this.handleMouseLeave(e)}
         >
-          {'View options'}
+          {'Options'}
           <svg styleName="play-icon" >
             <use xlinkHref="#play" />
           </svg>
         </ContextMenuItem>
 
         <hr styleName="context-menu-hr" />
+
+        <ContextMenuItem
+          onClick={e => this.props.onZoomToData(e)}
+        >
+        {'Zoom to data extent'}
+        </ContextMenuItem>
 
         <ContextMenuItem
           onClick={e => this.props.onClearView(e)}

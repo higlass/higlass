@@ -1192,6 +1192,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
   }
 
   getMouseOverHtml(trackX, trackY) {
+    if (!this.options.showTooltip) 
+      return '';
+
     this.setDataLensSize(1);
 
     const data = this.getVisibleData(trackX, trackY);     
