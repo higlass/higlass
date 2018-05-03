@@ -6,6 +6,7 @@ import * as PIXI from 'pixi.js';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event } from 'd3-selection';
 import { scaleLinear } from 'd3-scale';
+import slugid from 'slugid';
 
 import HeatmapTiledPixiTrack from './HeatmapTiledPixiTrack';
 import Id2DTiledPixiTrack from './Id2DTiledPixiTrack';
@@ -99,6 +100,8 @@ class TrackRenderer extends React.Component {
     this.zoomStartedBound = this.zoomStarted.bind(this);
     this.zoomedBound = this.zoomed.bind(this);
     this.zoomEndedBound = this.zoomEnded.bind(this);
+
+    this.uid = slugid.nice();
 
     this.mounted = false;
 
@@ -258,7 +261,6 @@ class TrackRenderer extends React.Component {
     if (this.prevPropsStr === nextPropsStr) return;
 
     this.setBackground();
-    this.elementPos = this.element.getBoundingClientRect();
 
     for (const uid in this.trackDefObjects) {
       const track = this.trackDefObjects[uid].trackObject;
@@ -371,6 +373,7 @@ class TrackRenderer extends React.Component {
    * @param  {Object}  e  Event to be dispatched.
    */
   dispatchEvent(e) {
+
     if (this.isWithin(e.clientX, e.clientY)) {
       if (e.type !== 'contextmenu') forwardEvent(e, this.element);
     }
@@ -385,6 +388,7 @@ class TrackRenderer extends React.Component {
    */
   isWithin(x, y) {
     if (!this.element) return false;
+
 
     const withinX = (
       x >= this.elementPos.left
@@ -675,6 +679,8 @@ class TrackRenderer extends React.Component {
 
   timedUpdatePositionAndDimensions() {
     if (this.closing || !this.element) return;
+
+    this.elementPos = this.element.getBoundingClientRect();
 
     if (this.dragging) {
       this.yPositionOffset = (
