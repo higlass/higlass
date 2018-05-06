@@ -2713,8 +2713,9 @@ class HiGlassComponent extends React.Component {
     const views = viewConfig.views;
     let viewsByUid = {};
 
-    if (!viewConfig.views || viewConfig.views.length === 0)
+    if (!viewConfig.views || viewConfig.views.length === 0) {
       throw 'No views provided in viewConfig';
+    }
 
     views.forEach((v) => {
       fillInMinWidths(v.tracks);
@@ -2725,11 +2726,12 @@ class HiGlassComponent extends React.Component {
       viewsByUid[v.uid] = v;
 
       if (!v.initialXDomain) {
-        throw 'No initialXDomain in provided viewconf';
+        console.warn('No initialXDomain provided in the view config.');
+        v.initialXDomain = [0, 100];
+        v.zoomToDataExtentOnInit = true;
       } else {
         v.initialXDomain[0] = +v.initialXDomain[0];
         v.initialXDomain[1] = +v.initialXDomain[1];
-
       }
 
       // if there's no y domain specified just use the x domain instead
@@ -2741,10 +2743,12 @@ class HiGlassComponent extends React.Component {
         v.initialXDomain[1] = +v.initialXDomain[1];
       }
 
-      if (!this.xScales[v.uid])
+      if (!this.xScales[v.uid]) {
         this.xScales[v.uid] = scaleLinear().domain(v.initialXDomain);
-      if (!this.yScales[v.uid])
+      }
+      if (!this.yScales[v.uid]) {
         this.yScales[v.uid] = scaleLinear().domain(v.initialYDomain);
+      }
 
       // Add names to all the tracks
       let looseTracks = positionedTracksToAllTracks(v.tracks);
@@ -3155,6 +3159,7 @@ class HiGlassComponent extends React.Component {
             xDomainLimits={view.xDomainLimits}
             yDomainLimits={view.yDomainLimits}
             zoomLimits={view.zoomLimits}
+            zoomToDataExtentOnInit={view.zoomToDataExtentOnInit}
             mouseTool={this.state.mouseTool}
             onChangeTrackType={(trackId, newType) =>
               this.handleChangeTrackType(view.uid, trackId, newType)}
