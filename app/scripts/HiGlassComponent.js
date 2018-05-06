@@ -2354,6 +2354,9 @@ class HiGlassComponent extends React.Component {
     views[viewUid].initialXDomain = newXDomain;
     views[viewUid].initialYDomain = newYDomain;
 
+    this.xScales[viewUid] = scaleLinear().domain(newXDomain);
+    this.yScales[viewUid] = scaleLinear().domain(newYDomain);
+
     this.setState({ views });
   }
 
