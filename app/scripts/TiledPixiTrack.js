@@ -94,6 +94,9 @@ class TiledPixiTrack extends PixiTrack {
 
     this.dataFetcher = new DataFetcher(dataConfig);
 
+    // To indicate that this track is requiring a tileset info
+    this.tilesetInfo = null;
+
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
       this.tilesetInfo = tilesetInfo;
 
@@ -102,7 +105,6 @@ class TiledPixiTrack extends PixiTrack {
         console.warn(
           'Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error
         );
-
 
         this.trackNotFoundText = '';
         this.errorTextText = this.tilesetInfo.error;
