@@ -225,9 +225,9 @@ const api = function api(context) {
         return 'Please provide the view UUID sweetheart 😙';
       }
       return {
-        xDomain: [self.xScales[viewId].domain()],
-        yDomain: [self.yScales[viewId].domain()]
-      }
+        xDomain: self.xScales[viewId].domain(),
+        yDomain: self.yScales[viewId].domain()
+      };
     },
 
     zoomTo(
