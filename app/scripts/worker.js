@@ -104,7 +104,9 @@ export function workerSetPix(
 
       rgbIdx = 255;
 
-      if (Math.abs(d) > epsilon) {
+      //if (Math.abs(d) > epsilon) {
+      //
+      if (!isNaN(d)) {
         // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
         rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(d + pseudocount))));
       }
@@ -239,7 +241,6 @@ export function tileResponseToData(data, server, theseTileIds) {
 
 
       data[key].dense = a;
-
       data[key].minNonZero = minNonZero(a);
       data[key].maxNonZero = maxNonZero(a);
 

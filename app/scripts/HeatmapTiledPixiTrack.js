@@ -307,7 +307,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     sprite.x = dim.x;
     sprite.y = dim.y;
 
-    if (mirrored) {
+    if (mirrored && tilePos[0] != tilePos[1]) {
       // sprite.pivot = [this._refXScale()[1] / 2, this._refYScale()[1] / 2];
 
       // I think PIXIv3 used a different method to set the pivot value
