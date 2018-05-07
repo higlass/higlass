@@ -337,67 +337,6 @@ json (e.g. ‘{“viewconf”: myViewConfig}’):</p>
 <p>All functions should be annotated with a docstring in the <a class="reference external" href="http://usejsdoc.org/">JSDoc style</a>.</p>
 </div>
 </div>
-<div class="section" id="track-documentation">
-<h2>Track Documentation<a class="headerlink" href="#track-documentation" title="Permalink to this headline">¶</a></h2>
-<p>Each track in HiGlass is written in a Javascript class. This class is
-responsible for requesting data from the server as well as for rendering it.
-The interface between the <cite>viewconfig</cite> definition of the views and the actual
-track rendering is the <cite>track-type</cite>. In <cite>app/scripts/TrackRenderer.js</cite>, the
-value of <cite>track-type</cite> is used to instantiate a TrackObject. <cite>TrackRenderer</cite>
-then interacts with this track object to let it know when it has been resized
-and what the current zoom level is.</p>
-<p>Due to the variety of <a class="reference external" href="track_types.html">track types</a> available in HiGlass,
-there are different ways in which data can be rendered and manipulated.</p>
-</div>
-<div class="section" id="adding-new-track-types">
-<h2>Adding new track types<a class="headerlink" href="#adding-new-track-types" title="Permalink to this headline">¶</a></h2>
-<p>To get an idea of how to add new tracks to HiGlass, we recommend taking a look
-at some examples of external tracks:</p>
-<p><a class="reference external" href="https://github.com/flekschas/higlass-geojson/">Geo JSON Track</a>: This track
-displays GeoJSON data at multiple resolutions.</p>
-<p><a class="reference external" href="https://github.com/flekschas/higlass-image/">Image Track</a>: View large images.  To create
-the underlying data format use the <cite>image-tiles-to-sqlite</cite> repo.</p>
-<p><a class="reference external" href="https://github.com/daniellenguyen/higlass-multivec/">Multivec Tracks</a>:
-Display multivec data. This is data that contains multiple values (vecs) at
-each position in the genome. The underlying file format for this track can be
-created using clodius as described in the <a class="reference external" href="data_preparation.html#multivec-files">data preparation section</a>.</p>
-<p>The important files that need to be provided are <code class="docutils literal"><span class="pre">src/index.js</span></code> and the
-actual tracks <code class="docutils literal"><span class="pre">src/scripts/MyTrack.js</span></code>. <code class="docutils literal"><span class="pre">index.js</span></code> simply lists the tracks
-that this repository provides and registers them with the global namespace.</p>
-<p>Each track should implement is functionality in the <cite>MyTrackClass</cite> class,
-accessing the higlass services using the <cite>HGC</cite> variable.</p>
-<p>Each track should also provide some metadata to describe it and the options
-that it will accept. The available options can be found in the <a class="reference external" href="https://github.com/hms-dbmi/higlass/blob/develop/app/scripts/configs/options-info.js">higlass repository</a>.</p>
-<ul class="simple">
-<li>The <code class="docutils literal"><span class="pre">type</span></code> identifies this track type (e.g. <code class="docutils literal"><span class="pre">horizontal-bar</span></code>).</li>
-<li>The <code class="docutils literal"><span class="pre">datatype</span></code> identifies which datatypes can be displayed using this track (e.g. <code class="docutils literal"><span class="pre">vector</span></code>, <code class="docutils literal"><span class="pre">matrix</span></code>, etc)</li>
-<li><code class="docutils literal"><span class="pre">local</span></code> describes whether this track requires remote data or can be displayed as is (e.g. axes)</li>
-<li><code class="docutils literal"><span class="pre">orientation</span></code>: How this track is layed out. The options are <cite>1d-horizontal</cite>, <cite>1d-vertical</cite>, and <cite>2d</cite>.</li>
-<li><code class="docutils literal"><span class="pre">thumbnail</span></code>: If there’s a thumbnail that can be shown that gives the viewer an idea of what the track looks like. More documentation on this to be added later.</li>
-<li><code class="docutils literal"><span class="pre">availableOptions</span></code>: The set of options that this track can take. These will be displayed in the track config menu.</li>
-<li><code class="docutils literal"><span class="pre">defaultOptions</span></code>: The default values for the available options.</li>
-</ul>
-</div>
-<div class="section" id="other-documentation">
-<h2>Other Documentation<a class="headerlink" href="#other-documentation" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="line-track-scaling">
-<h3>Line Track Scaling<a class="headerlink" href="#line-track-scaling" title="Permalink to this headline">¶</a></h3>
-<p>1D tracks can either be linearly or log scaled. Linear scaling denotes a linear
-mapping between the values and their position on the track. Log scaling means
-that we take the log of the values before positioning them.</p>
-<p>Because the dataset may contain very small or even zero values, we add a
-pseudocount equal to the median visible value to ensure that finer details in
-the data are not drowned out by extreme small values.</p>
-<p>The code for this can be found in <code class="docutils literal"><span class="pre">HorizontalLine1DPixiTrack.drawTile</span></code>.</p>
-</div>
-<div class="section" id="interface">
-<h3>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h3>
-<p>visibleAndFetchedIds: Tile ids that correspond to tiles which are both visible
-in the current viewport as well as fetched from the server.</p>
-<p>visibleTileIds: Tiles which should be visible in the current viewport based on
-the current viewport. Usually set by <code class="docutils literal"><span class="pre">calculateVisibleTiles</span></code>.</p>
-</div>
-</div>
 </div>
 
 
@@ -416,6 +355,10 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 
 
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="atutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#running-higlass-locally">Running HiGlass Locally</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bed-files">Bed Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedpe-like-files">Bedpe-like Files</a></li>
@@ -444,9 +387,6 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <li class="toctree-l2"><a class="reference internal" href="#public-api">Public API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#viewconfs">Viewconfs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#coding-guidelines">Coding Guidelines</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#track-documentation">Track Documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#adding-new-track-types">Adding new track types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#other-documentation">Other Documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_docker.html">Docker</a><ul>
@@ -476,6 +416,9 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#stacked-bars">Stacked Bars</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#multiple-lines">Multiple Lines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="track_types.html#multiple-bar-charts">Multiple Bar Charts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>
