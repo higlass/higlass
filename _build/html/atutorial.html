@@ -1,0 +1,254 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Tutorial &#8212; HiGlass v0.4.8 documentation</title>
+    <link rel="stylesheet" href="_static/higlass.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'v0.4.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data Preparation" href="data_preparation.html" />
+    <link rel="prev" title="HiGlass: A Multiscale Genomic Data Browser" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial describes how to set up a local instance of HiGlass and load some common data types.</p>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>To follow the steps in this tutorial you will require the following software packages:</p>
+<ul class="simple">
+<li>Docker (<a class="reference external" href="https://www.docker.com/community-edition">https://www.docker.com/community-edition</a>): Docker is program that
+lets you run “containers” hosting software and its dependencies</li>
+<li>Python</li>
+<li><code class="docutils literal"><span class="pre">higlass-manage</span></code>: This package is a wrapper for the Docker commands used to run a local instance. It can be installed using <code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">higlass-manage</span></code>. Brief documentation can be found <a class="reference external" href="https://github.com/pkerpedjiev/higlass-manage">at its GitHub project page</a></li>
+</ul>
+</div>
+<div class="section" id="running-higlass-locally">
+<h2>Running HiGlass Locally<a class="headerlink" href="#running-higlass-locally" title="Permalink to this headline">¶</a></h2>
+<p>We can start a local HiGlass instance using <code class="docutils literal"><span class="pre">higlass-manage</span></code>:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage start
+</pre></div>
+</div>
+<p>This will create what is essentially a mini virtual machine running on your
+computer. This command creates a data directory at <code class="docutils literal"><span class="pre">~/hg-data</span></code>. All of the
+ingested data data will be stored there. An alternative directory can be specified
+using the <code class="docutils literal"><span class="pre">--data-dir</span></code> parameter.</p>
+<div class="figure align-center" id="id1" style="width: 500px">
+<img alt="_images/higlass-website-screenshot.png" src="_images/higlass-website-screenshot.png" />
+<p class="caption"><span class="caption-text">A screenshot of an empty HiGlass web page</span></p>
+</div>
+<p>This indicates that the Docker container has succesfully started and you have
+a HiGlass instance running on your computer.</p>
+<p>Now to add some data…</p>
+</div>
+<div class="section" id="adding-data">
+<h2>Adding data<a class="headerlink" href="#adding-data" title="Permalink to this headline">¶</a></h2>
+<p>HiGlass supports a number of <a class="reference external" href="data_preparation.html">different data types</a>.</p>
+<p>Use the ingest command to add new data. Generally data requires a filetype and a datatype. This can sometimes (i.e. in the case of cooler and bigwig files) be inferred from the file itself.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage ingest my_data.mcool
+</pre></div>
+</div>
+<p>In other, more ambiguous cases, it needs to be explicitly specified:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage ingest my_file.bed --filetype bedfile <span class="se">\</span>
+    --datatype bedlike --assembly hg19
+</pre></div>
+</div>
+<p>Note that bedfiles don’t store chromosome sizes so they need to be passed in using either the <code class="docutils literal"><span class="pre">--assembly</span></code> or <code class="docutils literal"><span class="pre">--chromsizes-filename</span></code> parameters.</p>
+</div>
+<div class="section" id="viewing-data">
+<h2>Viewing data<a class="headerlink" href="#viewing-data" title="Permalink to this headline">¶</a></h2>
+<p>To view the data we’ve added to our instance, we need to load the HiGlass
+browser. This can be done by either opening a browser and navigating to
+<code class="docutils literal"><span class="pre">http://localhost:8989/app</span></code> (using the port specified), or using:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage browse
+</pre></div>
+</div>
+<p>From there, we need to add the tracks:</p>
+<div class="figure align-center" id="id2" style="width: 500px">
+<img alt="_images/add-tracks-diagram1.png" src="_images/add-tracks-diagram1.png" />
+<p class="caption"><span class="caption-text">To add a track, click on the ‘+’ and select a track position.</span></p>
+</div>
+<p>After selecting a position, we need to select a dataset to add. The dialog
+shows both the local datasets as well as the public data available on
+<a class="reference external" href="http://higlass.io">http://higlass.io</a>.</p>
+<div class="figure align-center" id="id3" style="width: 500px">
+<img alt="_images/add-tracks-diagram2.png" src="_images/add-tracks-diagram2.png" />
+<p class="caption"><span class="caption-text">Select a dataset to add.</span></p>
+</div>
+<p>And we get our results</p>
+<div class="figure align-center" id="id4" style="width: 500px">
+<img alt="_images/add-tracks-diagram3.png" src="_images/add-tracks-diagram3.png" />
+<p class="caption"><span class="caption-text">Behold the added heatmap.</span></p>
+</div>
+<p>The same procedure can be used to add bigwig files on the top, left, right and bottom positions of the view.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">HiGlass</a></h1>
+
+
+
+
+
+
+
+
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-higlass-locally">Running HiGlass Locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-data">Adding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#viewing-data">Viewing data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bed-files">Bed Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedpe-like-files">Bedpe-like Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedgraph-files">BedGraph files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bigwig-files">bigWig files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#hitile-files">Hitile files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#cooler-files">Cooler files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#multivec-files">Multivec Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gene_annotations.html">Gene Annotations Tracks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#creating-the-track">Creating the track</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#importing-into-higlass">Importing into HiGlass</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_client.html">Client Viewer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-views">Adding views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#closing-and-resizing-views">Closing and resizing views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#replacing-tracks">Replacing Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_developer.html">Developer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#public-api">Public API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#viewconfs">Viewconfs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#coding-guidelines">Coding Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#track-documentation">Track Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#adding-new-track-types">Adding new track types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#other-documentation">Other Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_docker.html">Docker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_docker.html#dropping-individual-cache-entries">Dropping individual cache entries</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_server.html">Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#development">Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="higlass_server.html#api">API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="track_types.html">Track Types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#linking-value-scales">Linking value scales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#bed-like">Bed-like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#gene-annotations">Gene Annotations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#heatmap">Heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#d-heatmap">1D Heatmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#d-rectangle-domain">2D Rectangle Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#horizontal-2d-rectangle-domain">Horizontal 2D Rectangle Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#line">Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#bar">Bar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#point">Point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#chromosome-labels">Chromosome Labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="track_types.html#chromosome-grid">Chromosome Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#genome-position-search-box">Genome Position Search Box</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#uids">UIDs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#initialxdomain-and-initialydomain">initialXDomain and initialYDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#tracksourceservers">trackSourceServers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#exportviewurl">exportViewUrl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#tracks">Tracks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="views.html">Views</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="views.html#genome-position-search-box">Genome Position Search Box</a></li>
+<li class="toctree-l2"><a class="reference internal" href="views.html#view-synchronization">View synchronization</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">HiGlass: A Multiscale Genomic Data Browser</a></li>
+      <li>Next: <a href="data_preparation.html" title="next chapter">Data Preparation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Peter Kerpedjiev.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/atutorial.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
