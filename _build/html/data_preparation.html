@@ -327,87 +327,6 @@ data, we need an input file where chromsome is a separate dataset. Example:</p>
 file and their sizes.  The <cite>–starting-resolution</cite> option indicates that the
 base resolution for the input data is 1000 base pairs.</p>
 </div>
-<div class="section" id="development">
-<h2>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h2>
-<p>In order ot display large datasets at multiple resolutions, HiGlass requires
-the input data to be aggregated at multiple resolutions. For Hi-C data, this is
-done using the <a class="reference external" href="https://github.com/mirnylab/cooler/">cooler</a> package. For
-other types of data it is done using the <a class="reference external" href="https://github.com/hms-dbmi/clodius">clodius</a> package.</p>
-<div class="section" id="example">
-<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
-<p>Let’s say that we have a new datatype that we want to use in higlass. In this
-example, we’ll use HDF5 to store an array of length 100000 at multiple
-resolutions. Each resolution will be half of the previous one and will be stored
-as an array in the HDF5 file.</p>
-<p>To begin, we’ll create an HDF5 and add a group that will store the
-different resolutions:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">h5py</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-
-<span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s1">&#39;/tmp/my_file.multires&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
-
-<span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s1">&#39;resolutions&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>We’ll add our highest resolution data directly:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">array_length</span> <span class="o">=</span> <span class="mi">100000</span>
-<span class="n">f</span><span class="p">[</span><span class="s1">&#39;resolutions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">array_length</span><span class="p">,))</span>
-<span class="n">f</span><span class="p">[</span><span class="s1">&#39;resolutions&#39;</span><span class="p">][</span><span class="s1">&#39;1&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">array_length</span><span class="p">))</span>
-
-<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;resolutions&#39;</span><span class="p">][</span><span class="s1">&#39;1&#39;</span><span class="p">][:</span><span class="mi">5</span><span class="p">])</span>
-</pre></div>
-</div>
-<p>This should output <code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">1.</span>&#160; <span class="pre">2.</span>&#160; <span class="pre">3.</span>&#160; <span class="pre">4.]</span></code>. Next we want to recursively
-aggregate this data so that adjacent entries are summed. This can be
-accomplished in a concise manner using numpy’s <code class="docutils literal"><span class="pre">.resize(-1,2).sum(axis=1)</span></code>
-function.</p>
-<p>How many recursions do we need? In the end, we want to be able to fit all
-the data into one 1024 element tile. This means that after n aggregations,
-we need to have less than 1024 elements.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">tile_size</span> <span class="o">=</span> <span class="mi">1024</span>
-<span class="n">max_zoom</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">array_length</span> <span class="o">/</span> <span class="n">tile_size</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="building-for-development">
-<h3>Building for development<a class="headerlink" href="#building-for-development" title="Permalink to this headline">¶</a></h3>
-<p>The recommended way to develop <code class="docutils literal"><span class="pre">clodius</span></code> is to use a <a class="reference external" href="https://conda.io/docs/intro.html">conda</a> environment and
-install <code class="docutils literal"><span class="pre">clodius</span></code> with develop mode:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>python setup.py develop
-</pre></div>
-</div>
-<p>Note that making changes to the <code class="docutils literal"><span class="pre">clodius/fast.pyx</span></code> <a class="reference external" href="http://docs.cython.org/en/latest/src/quickstart/cythonize.html">cython</a> module requires an
-explicit recompile step:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>python setup.py build_ext --inplace
-</pre></div>
-</div>
-</div>
-<div class="section" id="testing">
-<h3>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h3>
-<p>The unit tests for clodius can be run using <a class="reference external" href="http://nose.readthedocs.io/en/latest/">nosetests</a>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nosetests</span> <span class="n">tests</span>
-</pre></div>
-</div>
-<p>Individual unit tests can be specified by indicating the file and function
-they are defined in:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nosetests</span> <span class="n">test</span><span class="o">/</span><span class="n">cli_test</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="n">test_clodius_aggregate_bedgraph</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="building-the-documentation">
-<h3>Building the documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h3>
-<p>Building the documentation from the root directory is a matter of running
-<code class="docutils literal"><span class="pre">sphinx-build</span></code>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sphinx</span><span class="o">-</span><span class="n">build</span> <span class="n">docs</span> <span class="o">-</span><span class="n">b</span> <span class="n">html</span> <span class="n">docs</span><span class="o">/</span><span class="n">_build</span><span class="o">/</span><span class="n">html</span>
-</pre></div>
-</div>
-<p>To view the documentation, go to the build directory and start an http server:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">docs</span><span class="o">/</span><span class="n">_build</span><span class="o">/</span><span class="n">html</span>
-<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">http</span> <span class="mi">8081</span>
-</pre></div>
-</div>
-</div>
-</div>
 </div>
 
 
@@ -430,6 +349,7 @@ they are defined in:</p>
 <li class="toctree-l2"><a class="reference internal" href="atutorial.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atutorial.html#running-higlass-locally">Running HiGlass Locally</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atutorial.html#adding-data">Adding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#viewing-data">Viewing data</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data Preparation</a><ul>
@@ -440,7 +360,6 @@ they are defined in:</p>
 <li class="toctree-l2"><a class="reference internal" href="#hitile-files">Hitile files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cooler-files">Cooler files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#multivec-files">Multivec Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#development">Development</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gene_annotations.html">Gene Annotations Tracks</a><ul>
