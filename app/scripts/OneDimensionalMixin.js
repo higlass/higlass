@@ -5,12 +5,20 @@ import { colorToHex } from './utils';
 export const OneDimensionalMixin = Mixin(superclass => class extends superclass {
 
   initTile(tile) {
+    console.log('init');
     this.localColorToHexScale();
 
     this.unFlatten(tile);
     this.maxAndMin.max = tile.maxValue;
     this.maxAndMin.min = tile.minValue;
     this.renderTile(tile);
+    if (tile.matrix) {
+      // update global max and min if necessary
+      (this.maxAndMin.max === null || tile.maxValue > this.maxAndMin.max) ?
+        this.maxAndMin.max = tile.maxValue : this.maxAndMin.max;
+      (this.maxAndMin.min === null || tile.minValue < this.maxAndMin.min) ?
+        this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
+    }
   }
 
   rerender(newOptions) {
@@ -21,6 +29,7 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
       this.updateTile(visibleAndFetched[i]);
     }
   }
+  // todo it is not rerender's fault update happens so many times
 
   updateTile(tile) {
     const visibleAndFetched = this.visibleAndFetchedTiles();
@@ -45,9 +54,18 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
       }
     }
 
-    for (let i = 0; i < visibleAndFetched.length; i++) {
-      this.renderTile(visibleAndFetched[i]);
-    }
+    // for (let i = 0; i < visibleAndFetched.length; i++) {
+    //   this.renderTile(visibleAndFetched[i]);
+    // }
+
+  }
+
+  /**
+   * Rescales tiles to align with one another
+   *
+   * @param tile
+   */
+  rescaleTile(tile) {
 
   }
 
