@@ -30,6 +30,7 @@ import {
 // View configs
 import {
   // paperFigure1,
+  invalidTrackConfig,
   divergentTrackConfig,
   divisionViewConfig,
   simpleCenterViewConfig,
@@ -133,6 +134,7 @@ function isWaitingOnTiles(hgc) {
     }
 
     if (!(trackObj.tilesetInfo || trackObj.chromInfo)) {
+      console.warn('no tileset info');
       return true;
     }
 
@@ -230,7 +232,111 @@ describe('Simple HiGlassComponent', () => {
     div = null,
     atm = null;
 
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 2000;
+
+  describe('Invalid track type tests', () => {
+    it('Cleans up previously created instances and mounts a new component', (done) => {
+      if (hgc) {
+        hgc.unmount();
+        hgc.detach();
+      }
+
+      if (div) {
+        global.document.body.removeChild(div);
+      }
+
+      div = global.document.createElement('div');
+      global.document.body.appendChild(div);
+
+      div.setAttribute('style', 'width:800px;background-color: lightgreen');
+      div.setAttribute('id', 'simple-hg-component');
+
+      hgc = mount(<HiGlassComponent
+        options={{ bounded: false }}
+        viewConfig={invalidTrackConfig}
+      />, { attachTo: div });
+
+      hgc.update();
+      waitForTilesLoaded(hgc, done);
+
+      // visual check that the heatmap track config menu is moved
+      // to the left
+    });
+
+    it ("Opens the track type menu", (done) => {
+      const clickPosition = {
+        bottom : 85,
+        height : 28,
+        left : 246,
+        right : 274,
+        top : 57,
+        width : 28,
+        x : 246,
+        y : 57,
+      }
+      const uid = 'line1';
+
+      hgc.instance().tiledPlots.aa.handleConfigTrackMenuOpened(uid, clickPosition);
+      let cftm = hgc.instance().tiledPlots.aa.configTrackMenu;
+
+      const subMenuRect = {
+        bottom : 88,
+        height : 27,
+        left : 250,
+        right : 547.984375,
+        top : 61,
+        width : 297.984375,
+        x : 250,
+        y : 61,
+      }
+
+      const series = invalidTrackConfig.views[0].tracks.top;
+
+      // get the object corresponding to the series
+      cftm.handleItemMouseEnterWithRect(subMenuRect, series);
+      let seriesObj = cftm.seriesListMenu;
+
+      const position = {left: 127.03125, top: 84};
+      const bbox = {
+        bottom : 104,
+        height : 20,
+        left : 131.03125,
+        right : 246,
+        top : 84,
+        width : 114.96875,
+        x : 131.03125,
+        y : 84,
+      };
+
+      let trackTypeItems = seriesObj.getTrackTypeItems(position, bbox, series);
+
+      expect(trackTypeItems.props.menuItems).to.not.have.property('horizontal-line');
+      expect(trackTypeItems.props.menuItems).to.not.have.property('horizontal-point');
+
+      let configMenuItems = seriesObj.getConfigureSeriesMenu(position, bbox, series);
+
+      done();
+    });
+
+    it('Opens the close track menu', (done) => {
+      const clickPosition = {
+        bottom : 85,
+        height : 28,
+        left : 246,
+        right : 274,
+        top : 57,
+        width : 28,
+        x : 246,
+        y : 57,
+      }
+      const uid = 'line1';
+
+      hgc.instance().tiledPlots.aa.handleCloseTrackMenuOpened(uid, clickPosition);
+
+      done();
+    });
+  });
+  return;
 
   describe('Colormap tests', () => {
     it('Cleans up previously created instances and mounts a new component', (done) => {
@@ -2340,25 +2446,7 @@ describe('Simple HiGlassComponent', () => {
         y : 61,
       }
 
-      const series = {
-        "filetype": "hitile",
-        "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-        "server": "http://higlass.io/api/v1",
-        "tilesetUid": "F2vbUeqhS86XkxuO1j2rPA",
-        "type": "horizontal-line",
-        "options": {
-          "labelColor": "red",
-          "labelPosition": "hidden",
-          "axisPositionHorizontal": "right",
-          "lineStrokeColor": "blue",
-          "name": "wgEncodeSydhTfbsGm12878Rad21IggrabSig.hitile",
-          "valueScaling": "log"
-        },
-        "width": 20,
-        "height": 20,
-        "position": "top",
-        "uid": "line1"
-      }
+      const series = invalidTrackConfig.views[0].tracks.top;
 
       // get the object corresponding to the series
       cftm.handleItemMouseEnterWithRect(subMenuRect, series);

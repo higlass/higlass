@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Button } from 'react-bootstrap';
-import { TilesetFinder } from './TilesetFinder';
-import { PlotTypeChooser } from './PlotTypeChooser';
+
+import TilesetFinder from './TilesetFinder';
+import PlotTypeChooser from './PlotTypeChooser';
 
 // Configs
 import {
@@ -12,7 +13,7 @@ import {
 // Styles
 import '../styles/AddTrackModal.css';
 
-export class AddTrackModal extends React.Component {
+class AddTrackModal extends React.Component {
   constructor(props) {
     super(props);
 
@@ -27,14 +28,11 @@ export class AddTrackModal extends React.Component {
     };
   }
 
-  componentDidMount() {
-
-  }
-
-  handleSubmit() {
+  handleSubmit(evt) {
     this.props.onTracksChosen(this.state.selectedTilesets,
       this.props.position,
       this.props.host);
+    evt.preventDefault();
   }
 
   selectedTilesetsChanged(selectedTilesets) {
@@ -134,6 +132,7 @@ export class AddTrackModal extends React.Component {
           onDoubleClick={this.handleTilesetPickerDoubleClick.bind(this)}
           onTracksChosen={value => this.props.onTracksChosen(value, this.props.position)}
           orientation={orientation}
+          datatype={this.props.datatype}
           ref={(c) => { this.tilesetFinder = c; }}
           selectedTilesetChanged={this.selectedTilesetsChanged.bind(this)}
           trackSourceServers={this.props.trackSourceServers}
@@ -151,12 +150,15 @@ export class AddTrackModal extends React.Component {
         </Modal.Header>
         <Modal.Body>
           { form }
-          <PlotTypeChooser
-            ref={(c) => { this.plotTypeChooser = c; }}
-            datatypes={this.state.selectedTilesets.map(x => x.datatype)}
-            onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
-            orientation={orientation}
-          />
+          { 
+            this.props.hidePlotTypeChooser ? null : 
+            <PlotTypeChooser
+              ref={(c) => { this.plotTypeChooser = c; }}
+              datatypes={this.state.selectedTilesets.map(x => x.datatype)}
+              onPlotTypeSelected={this.handlePlotTypeSelected.bind(this)}
+              orientation={orientation}
+            />
+          }
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.props.onCancel}>{'Cancel'}</Button>

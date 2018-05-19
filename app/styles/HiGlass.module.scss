@@ -2,6 +2,10 @@
   position: relative;
 }
 
+.higlass-dark-theme {
+  background: black;
+}
+
 .higlass-canvas {
   position: absolute;
   width: 100%;
@@ -9,8 +13,7 @@
 }
 
 .higlass-drawing-surface {
-  position: absolute;
-  opacity: 0;
+  position: relative;
 }
 
 .higlass-svg {
@@ -25,4 +28,14 @@
 .tiled-area {
   display: flex;
   flex-direction: column;
+}
+
+.track-mouseover-menu {
+    position: absolute;
+    pointer-events: none;
+    background: rgba(255,255,255,0.7);
+    margin: 10px;
+    padding: 4px;
+    border-radius: 5px;
+    border: 1px solid black;
 }

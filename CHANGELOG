@@ -1,3 +1,24 @@
+develop (2018-01-??)
+
+- Added triangles to genes
+- Preliminary authentication support
+- Added track for displaying gigapixel images
+- Added GeoJSON track and updated OSM track
+- Added mouseMoveZoom event to public API
+- Fixed and extended pubSub module
+- Added flexible per-track crosshair
+- Fixed and robustified range selection API
+- Display error message on error
+- Don't error when displaying menus when invalid track type is
+entered
+- Added an endpoint for sharing view configs as a link (`shareViewConfigAsLink()`) and exporting them as png and svg (`get('png' || 'svg')`)
+- Simplified `hglib` API
+- Updated third-party libs to get rid of deprecation warnings for React v16
+- Fixed small bug in placing rules
+- Display error when failing to retrieve tilesetInfo
+* Added support for cross-section tracks
+- Rendering improvements
+
 v0.10.22 (2018-02-22)
 
 - Added options to change the fill color of bedlike tracks
@@ -6,7 +27,11 @@ v0.10.21 (2018-02-21)
 
 - Exposed the ChromosomeInfo structure as part of the hglib API
 
-v0.10.20 (2018-02-20)
+?? v0.10.20 (2018-02-??
+
+- Rendering improvements
+
+?? v0.10.20 (2018-02-20)
 
 - Fixed api variable in HiGlassComponent
 - Fixed relToAbsChromPos so that it converts locations to numbers before
@@ -25,6 +50,10 @@ v0.10.16 (2018-
 
 - Don't show the "Strange tileData" warnings
 - Pegged bootstrap to version 3.3.7
+
+v0.10.16 (2018-02-01)
+
+- Fixed a bug during active range selection when the _select_ mouse tool is deactivated
 
 v0.10.15 (2018-01-30)
 

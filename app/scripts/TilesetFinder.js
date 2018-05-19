@@ -1,5 +1,3 @@
-import { tileProxy } from './services';
-
 import React from 'react';
 import {
   Col,
@@ -11,10 +9,12 @@ import {
 import ReactDOM from 'react-dom';
 import slugid from 'slugid';
 
+import { tileProxy } from './services';
+
 // Configs
 import { TRACKS_INFO } from './configs';
 
-export class TilesetFinder extends React.Component {
+class TilesetFinder extends React.Component {
   constructor(props) {
     super(props);
 
@@ -23,8 +23,12 @@ export class TilesetFinder extends React.Component {
     // local tracks are ones that don't have a filetype associated with them
     this.localTracks = TRACKS_INFO
       .filter(x => x.local && !x.hidden)
-      .filter(x => x.orientation == this.props.orientation)
-      .filter(x => !x.hidden);
+
+    if (props.datatype)
+      this.localTracks = this.localTracks.filter(x => x.datatype[0] == props.datatype);
+    else
+      this.localTracks = this.localTracks.filter(x => x.orientation == this.props.orientation);
+
 
     this.localTracks.forEach(x => x.uuid = slugid.nice());
 
@@ -84,6 +88,9 @@ export class TilesetFinder extends React.Component {
 
     this.requestTilesetLists();
 
+    if (!this.state.selectedUuid)
+      return;
+
     const selectedTilesets = [this.state.options[this.state.selectedUuid]];
 
     if (selectedTilesets) { this.props.selectedTilesetChanged(selectedTilesets); }
@@ -94,11 +101,18 @@ export class TilesetFinder extends React.Component {
   }
 
   requestTilesetLists() {
-    const datatypes = new Set(TRACKS_INFO
-      .filter(x => x.datatype)
-      .filter(x => x.orientation == this.props.orientation)
-      .map(x => x.datatype));
-    const datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
+    let datatypesQuery = null;
+
+    if (this.props.datatype) {
+      datatypesQuery = `dt=${this.props.datatype}`;
+    } else {
+      const datatypes = new Set(TRACKS_INFO
+        .filter(x => x.datatype)
+        .filter(x => x.orientation == this.props.orientation)
+        .map(x => x.datatype));
+
+      datatypesQuery = [...datatypes].map(x => `dt=${x}`).join('&');
+    }
 
     if (!this.props.trackSourceServers) {
       console.warn("No track source servers specified in the viewconf");
@@ -118,8 +132,8 @@ export class TilesetFinder extends React.Component {
             // if there isn't a selected tileset, select the first received one
             if (!selectedUuid) {
               selectedUuid = availableTilesetKeys.length ? [availableTilesetKeys[0]] : null;
-              const selectedTileset = this.state.options[selectedUuid];
-              this.props.selectedTilesetChanged(selectedTileset);
+              const selectedTileset = this.state.options[selectedUuid[0]];
+              this.props.selectedTilesetChanged([selectedTileset]);
             }
 
             if (this.mounted) {
@@ -141,8 +155,6 @@ export class TilesetFinder extends React.Component {
 
     // this should give the dataset the PlotType that's selected in the parent
     // this.props.selectedTilesetChanged(this.state.options[x.target.value]);
-
-    // console.log('x.target.value:', x.target.value);
 
     const value = this.state.options[x.target.value];
     this.props.onDoubleClick(value);
@@ -207,8 +219,9 @@ export class TilesetFinder extends React.Component {
     const form = (
       <Form
         horizontal
+        onSubmit={(evt) => {evt.preventDefault()}}
       >
-        <FormGroup >
+        <FormGroup>
           <Col sm={3}>
             <ControlLabel>{'Select tileset'}</ControlLabel>
           </Col>

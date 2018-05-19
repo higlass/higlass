@@ -1,20 +1,11 @@
 import { scaleLinear, scaleLog } from 'd3-scale';
 
-import { HorizontalLine1DPixiTrack } from './HorizontalLine1DPixiTrack';
+import HorizontalLine1DPixiTrack from './HorizontalLine1DPixiTrack';
 
 // Utils
 import { colorToHex, dictValues } from './utils';
 
-export class BarTrack extends HorizontalLine1DPixiTrack {
-  constructor( scene, dataConfig, handleTilesetInfoReceived, option,
-    animate,
-    onValueScaleChanged,
-  ) {
-    super( scene, dataConfig, handleTilesetInfoReceived, option, animate,
-      onValueScaleChanged,
-    );
-  }
-
+class BarTrack extends HorizontalLine1DPixiTrack {
   initTile(tile) {
     /**
          * Create whatever is needed to draw this tile.
@@ -37,6 +28,18 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
     // doesn't do anything
   }
 
+  updateTile(tile) {
+    // console.log('tile.valueScale', tile.valueScale, 'this.scale', this.scale);
+    if (tile.valueScale && this.scale && 
+      this.scale.minValue == tile.scale.minValue && 
+      this.scale.maxValue == tile.scale.maxValue) {
+      // already rendered properly, no need to rerender
+    } else {
+      // not rendered using the current scale, so we need to rerender
+      this.renderTile(tile);
+    }
+  }
+
   renderTile(tile) {
     //super.drawTile(tile);
 
@@ -44,32 +47,18 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
 
     const graphics = tile.graphics;
 
-    const { tileX, tileWidth } = this.getTilePosAndDimensions(tile.tileData.zoomLevel, tile.tileData.tilePos);
+    const { tileX, tileWidth } = this.getTilePosAndDimensions(tile.tileData.zoomLevel, 
+      tile.tileData.tilePos, 
+      this.tilesetInfo.bins_per_dimension || this.tilesetInfo.tile_size);
     const tileValues = tile.tileData.dense;
 
     if (tileValues.length == 0) { return; }
 
-    let pseudocount = 0; // if we use a log scale, then we'll set a pseudocount
     // equal to the smallest non-zero value
-    this.valueScale = null;
-
-    // console.log('valueScaling:', this.options.valueScaling);
-    if (this.options.valueScaling == 'log') {
-      let offsetValue = this.medianVisibleValue;
-
-      if (!this.medianVisibleValue) { offsetValue = this.minVisibleValue(); }
-
-      this.valueScale = scaleLog()
-        // .base(Math.E)
-        .domain([offsetValue, this.maxValue() + offsetValue])
-        .range([this.dimensions[1], 0]);
-      pseudocount = offsetValue;
-    } else {
-      // linear scale
-      this.valueScale = scaleLinear()
-        .domain([this.minValue(), this.maxValue()])
-        .range([this.dimensions[1], 0]);
-    }
+    const [vs, pseudocount] = this.makeValueScale(this.minVisibleValue(), this.medianVisibleValue,  
+      this.maxValue(), 0);
+    this.valueScale = vs;
+    // console.log('pseudocount:', pseudocount, this.valueScale.domain());
 
     graphics.clear();
 
@@ -83,7 +72,7 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
     const stroke = colorToHex(this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue');
     // this scale should go from an index in the data array to
     // a position in the genome coordinates
-    const tileXScale = scaleLinear().domain([0, this.tilesetInfo.tile_size])
+    const tileXScale = scaleLinear().domain([0, this.tilesetInfo.tile_size || this.tilesetInfo.bins_per_dimension])
       .range([tileX, tileX + tileWidth]);
 
     // let strokeWidth = this.options.lineStrokeWidth ? this.options.lineStrokeWidth : 1;
@@ -104,6 +93,7 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
     for (let i = 0; i < tileValues.length; i++) {
       const xPos = this._xScale(tileXScale(i));
       const yPos = this.valueScale(tileValues[i] + pseudocount);
+      // console.log('tileValues[i]', tileValues[i], yPos, this.valueScale.domain(), this.valueScale.range());
 
       const width = this._xScale(tileXScale(i + 1)) - xPos;
       const height = this.dimensions[1] - yPos;
@@ -173,16 +163,23 @@ export class BarTrack extends HorizontalLine1DPixiTrack {
     const stroke = this.options.lineStrokeColor ? this.options.lineStrokeColor : 'blue';
 
     for (const tile of this.visibleAndFetchedTiles()) {
-      for (let i = 0; i < tile.barXValues.length; i++) {
-        const rect = document.createElement('rect');
-        const color = this.options.barFillColor ? this.options.barFillColor : 'grey';
-        rect.setAttribute('fill', tile.barColors[i]);
-        rect.setAttribute('stroke', tile.barColors[i]);
+      const data = tile;
+      if (!data || !data.barXValues)
+        continue;
 
-        rect.setAttribute('x', tile.barXValues[i]);
-        rect.setAttribute('y', tile.barYValues[i]);
-        rect.setAttribute('height', tile.barHeights[i]);
-        rect.setAttribute('width', tile.barWidths[i]);
+      for (let i = 0; i < data.barXValues.length; i++) {
+        const rect = document.createElement('rect');
+        rect.setAttribute('fill', data.barColors[i]);
+        rect.setAttribute('stroke', data.barColors[i]);
+
+        rect.setAttribute('x', data.barXValues[i]);
+        rect.setAttribute('y', data.barYValues[i]);
+        rect.setAttribute('height', data.barHeights[i]);
+        rect.setAttribute('width', data.barWidths[i]);
+        if (tile.barBorders) {
+          rect.setAttribute('stroke-width', '0.1');
+          rect.setAttribute('stroke', 'black');
+        }
 
         output.appendChild(rect);
       }

@@ -1,9 +1,10 @@
-import SVGTrack from './SVGTrack.js';
 import slugid from 'slugid';
 import { brush } from 'd3-brush';
 import { event } from 'd3-selection';
 
-export class ViewportTracker2D extends SVGTrack {
+import SVGTrack from './SVGTrack';
+
+class ViewportTracker2D extends SVGTrack {
   constructor(
     svgElement,
     registerViewportChanged,
@@ -24,9 +25,10 @@ export class ViewportTracker2D extends SVGTrack {
     this.viewportXDomain = null;
     this.viewportYDomain = null;
 
+    const maxHalf = Number.MAX_VALUE / 2;
+
     this.brush = brush(true)
-      .extent([[-Number.MAX_VALUE/2, -Number.MAX_VALUE/2],
-        [Number.MAX_VALUE/2, Number.MAX_VALUE/2]])
+      .extent([[-maxHalf, -maxHalf], [maxHalf, maxHalf]])
       .on('brush', this.brushed.bind(this));
 
     this.gBrush = this.gMain
@@ -43,7 +45,7 @@ export class ViewportTracker2D extends SVGTrack {
     */
 
     // turn off the ability to select new regions for this brush
-    this.gBrush.selectAll(`.overlay`)
+    this.gBrush.selectAll('.overlay')
       .style('pointer-events', 'none');
 
     // turn off the ability to modify the aspect ratio of the brush

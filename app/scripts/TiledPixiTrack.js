@@ -1,20 +1,19 @@
-import { scaleLinear, scaleLog } from 'd3-scale';
-import { median } from 'd3-array';
+import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
+import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
 
+import DataFetcher from './DataFetcher';
 import PixiTrack from './PixiTrack';
 
-// Services
-import { tileProxy } from './services';
+// Utils
+import { pubSub } from './services';
 
 // Utils
 import { debounce } from './utils';
 
 // Configs
 import { ZOOM_DEBOUNCE } from './configs';
-
-import DataFetcher from './DataFetcher';
 
 /**
  * Get a valueScale for a heatmap.
@@ -30,8 +29,10 @@ import DataFetcher from './DataFetcher';
  *
  * @returns {array} An array of [string, scale] containin the scale type and a scale with an appropriately set domain and range
  */
-export const getValueScale = function(scalingType, minValue, pseudocount, maxValue, defaultScaling) {
+export const getValueScale = function(scalingType, minValue, pseudocountIn, maxValue, defaultScaling) {
   const scalingTypeToUse = scalingType || defaultScaling;
+  const pseudocount = 0; //purposely set to not equal pseudocountIn for now
+                         // eventually this will be an option
 
   if (scalingTypeToUse == 'log' && minValue > 0) {
     return ['log', scaleLog().range([254, 0])
@@ -40,14 +41,14 @@ export const getValueScale = function(scalingType, minValue, pseudocount, maxVal
 
   if (scalingTypeToUse == 'log') {
     // warn the users that their desired scaling type couldn't be used
-    console.warn('Negative values present in data. Defaulting to linear scale: ', minValue);
+    // console.warn('Negative values present in data. Defaulting to linear scale: ', minValue);
   }
 
   return ['linear', scaleLinear().range([254, 0])
     .domain([minValue, maxValue])];
 }
 
-export class TiledPixiTrack extends PixiTrack {
+class TiledPixiTrack extends PixiTrack {
   /**
    * A track that must pull remote tiles
    *
@@ -58,9 +59,18 @@ export class TiledPixiTrack extends PixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate, onValueScaleChanged) {
     super(scene, options);
 
+    // keep track of which render we're on so that we save ourselves
+    // rerendering all rendering in the same version will have the same
+    // scaling so tiles rendered in the same version will have the same
+    // output. Mostly useful for heatmap tiles.
+    this.renderVersion = 1;
+
     // the tiles which should be visible (although they're not necessarily fetched)
     this.visibleTiles = new Set();
     this.visibleTileIds = new Set();
+
+    // keep track of tiles that are currently being rendered
+    this.renderingTiles = new Set();
 
     // the tiles we already have requests out for
     this.fetching = new Set();
@@ -68,8 +78,6 @@ export class TiledPixiTrack extends PixiTrack {
 
     // tiles we have fetched and ready to be rendered
     this.fetchedTiles = {};
-
-    const tilesetInfo = null;
 
     // the graphics that have already been drawn for this track
     this.tileGraphics = {};
@@ -87,44 +95,53 @@ export class TiledPixiTrack extends PixiTrack {
     this.dataFetcher = new DataFetcher(dataConfig);
 
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
-      // console.log('tilesetInfo:', tilesetInfo);
       this.tilesetInfo = tilesetInfo;
-      // console.log('this.tilesetInfo:', this.tilesetInfo);
 
       if ('error' in this.tilesetInfo) {
         // no tileset info for this track
-        console.warn('Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error);
+        console.warn(
+          'Error retrieving tilesetInfo:', dataConfig, this.tilesetInfo.error
+        );
 
-        this.error = this.tilesetInfo.error;
+
+        this.trackNotFoundText = '';
+        this.errorTextText = this.tilesetInfo.error;
         this.tilesetInfo = null;
         this.draw();
         this.animate();
         return;
       }
 
+      // console.log('tilesetInfo:', this.tilesetInfo);
       this.maxZoom = +this.tilesetInfo.max_zoom;
 
       if (this.options && this.options.maxZoom) {
-        if (this.options.maxZoom >= 0) { this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom); } else { console.error('Invalid maxZoom on track:', this); }
+        if (this.options.maxZoom >= 0) {
+          this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
+        } else {
+          console.error('Invalid maxZoom on track:', this);
+        }
       }
 
       this.refreshTiles();
 
-      if (handleTilesetInfoReceived) { handleTilesetInfoReceived(tilesetInfo); }
+      if (handleTilesetInfoReceived) handleTilesetInfoReceived(tilesetInfo);
 
-      if (!this.options) { this.options = {}; }
+      if (!this.options) this.options = {};
 
       this.options.name = this.options.name ? this.options.name : tilesetInfo.name;
 
       this.draw();
+      this.drawLabel(); //draw the label so that the current resolution is displayed
       this.animate();
     });
 
     this.uuid = slugid.nice();
     this.refreshTilesDebounced = debounce(this.refreshTiles.bind(this), ZOOM_DEBOUNCE);
 
-    this.trackNotFoundText = new PIXI.Text('',
-      { fontSize: '12px', fontFamily: 'Arial', fill: 'black' });
+    this.trackNotFoundText = new PIXI.Text(
+      '', { fontSize: '12px', fontFamily: 'Arial', fill: 'black' }
+    );
 
     this.pLabel.addChild(this.trackNotFoundText);
   }
@@ -132,46 +149,59 @@ export class TiledPixiTrack extends PixiTrack {
   rerender(options) {
     super.rerender(options);
 
+    this.renderVersion += 1;
+
     if (!this.tilesetInfo) { return; }
 
     this.maxZoom = +this.tilesetInfo.max_zoom;
 
     if (this.options && this.options.maxZoom) {
-      if (this.options.maxZoom >= 0) { this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom); } else { console.error('Invalid maxZoom on track:', this); }
+      if (this.options.maxZoom >= 0) {
+        this.maxZoom = Math.min(this.options.maxZoom, this.maxZoom);
+      } else {
+        console.error('Invalid maxZoom on track:', this);
+      }
     }
   }
 
-
+  /**
+   * Return the set of ids of all tiles which are both visible and fetched.
+   */
   visibleAndFetchedIds() {
-    /**
-         * Return the set of ids of all tiles which are both visible and fetched.
-         */
-
-    const ret = Object.keys(this.fetchedTiles).filter(x => this.visibleTileIds.has(x));
-    return ret;
+    return Object.keys(this.fetchedTiles).filter(x => this.visibleTileIds.has(x));
   }
 
   visibleAndFetchedTiles() {
-    const ids = this.visibleAndFetchedIds();
-
-    return ids.map(x => this.fetchedTiles[x]);
+    return this.visibleAndFetchedIds().map(x => this.fetchedTiles[x]);
   }
 
+  /**
+   * Set which tiles are visible right now.
+   *
+   * @param tiles: A set of tiles which will be considered the currently visible
+   * tile positions.
+   */
   setVisibleTiles(tilePositions) {
-    /**
-         * Set which tiles are visible right now.
-         *
-         * @param tiles: A set of tiles which will be considered the currently visible
-         * tile positions.
-         */
     this.visibleTiles = tilePositions.map(x => ({
       tileId: this.tileToLocalId(x),
       remoteId: this.tileToRemoteId(x),
       mirrored: x.mirrored,
     }));
 
-
     this.visibleTileIds = new Set(this.visibleTiles.map(x => x.tileId));
+  }
+
+  removeOldTiles() {
+    this.calculateVisibleTiles();
+
+    // tiles that are fetched
+    const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
+    //
+    // calculate which tiles are obsolete and remove them
+    // fetchedTileID are remote ids
+    const toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
+
+    this.removeTiles(toRemove);
   }
 
   refreshTiles() {
@@ -184,19 +214,14 @@ export class TiledPixiTrack extends PixiTrack {
 
     // fetch the tiles that should be visible but haven't been fetched
     // and aren't in the process of being fetched
-    const toFetch = [...this.visibleTiles].filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId));
+    const toFetch = [...this.visibleTiles]
+      .filter(x => !this.fetching.has(x.remoteId) && !fetchedTileIDs.has(x.tileId));
 
-    for (let i = 0; i < toFetch.length; i++) { 
-      // console.log('to fetch:', toFetch[i]);
-      this.fetching.add(toFetch[i].remoteId); 
+    for (let i = 0; i < toFetch.length; i++) {
+      this.fetching.add(toFetch[i].remoteId);
     }
 
-    // calculate which tiles are obsolete and remove them
-    // fetchedTileID are remote ids
-    const toRemove = [...fetchedTileIDs].filter(x => !this.visibleTileIds.has(x));
-
-
-    this.removeTiles(toRemove);
+    this.removeOldTiles();
     this.fetchNewTiles(toFetch);
   }
 
@@ -224,17 +249,18 @@ export class TiledPixiTrack extends PixiTrack {
     return `${parentUid}.${parentZoomLevel}.${parentPos.join('.')}`;
   }
 
+  /**
+   * Remove obsolete tiles
+   *
+   * @param toRemoveIds: An array of tile ids to remove from the list of fetched tiles.
+   */
   removeTiles(toRemoveIds) {
-    /**
-         * Remove obsolete tiles
-         *
-         * @param toRemoveIds: An array of tile ids to remove from the list of fetched tiles.
-         */
-
     // if there's nothing to remove, don't bother doing anything
-    if (!toRemoveIds.length) { return; }
-
-    if (!this.areAllVisibleTilesLoaded()) { return; }
+    if (
+      !toRemoveIds.length ||
+      !this.areAllVisibleTilesLoaded() ||
+      this.renderingTiles.size
+    ) return;
 
     toRemoveIds.forEach((x) => {
       const tileIdStr = x;
@@ -277,18 +303,15 @@ export class TiledPixiTrack extends PixiTrack {
     // this.draw();
   }
 
+  /**
+   * Check to see if all the visible tiles are loaded.
+   *
+   * If they are, remove all other tiles.
+   */
   areAllVisibleTilesLoaded() {
-    /**
-         * Check to see if all the visible tiles are loaded.
-         *
-         * If they are, remove all other tiles.
-         */
-    // tiles that are visible
-
     // tiles that are fetched
     const fetchedTileIDs = new Set(Object.keys(this.fetchedTiles));
 
-    // console.log('this.fetchedTiles:', this.fetchedTiles);
     const visibleTileIdsList = [...this.visibleTileIds];
 
     for (let i = 0; i < visibleTileIdsList.length; i++) {
@@ -298,12 +321,11 @@ export class TiledPixiTrack extends PixiTrack {
     return true;
   }
 
-  allTilesLoaded() {
-    /**
-         * Function is called when all tiles that should be visible have
-         * been received.
-         */
-  }
+  /**
+   * Function is called when all tiles that should be visible have
+   * been received.
+   */
+  allTilesLoaded() {}
 
   minValue(_) {
     if (_) { this.scale.minValue = _; } else { return this.scale.minValue; }
@@ -329,7 +351,6 @@ export class TiledPixiTrack extends PixiTrack {
   initTile(tile) {
     // create the tile
     // should be overwritten by child classes
-    // console.log("ERROR: unimplemented createTile:", this);
     this.scale.minRawValue = this.minVisibleValue();
     this.scale.maxRawValue = this.maxVisibleValue();
 
@@ -352,18 +373,17 @@ export class TiledPixiTrack extends PixiTrack {
          */
     const fetchedTileIDs = Object.keys(this.fetchedTiles);
     let added = false;
+    this.renderVersion += 1;
 
     for (let i = 0; i < fetchedTileIDs.length; i++) {
+      //console.log('this.tileGraphics', this.tileGraphics);
       if (!(fetchedTileIDs[i] in this.tileGraphics)) {
         const newGraphics = new PIXI.Graphics();
-        // console.log('adding:', fetchedTileIDs[i]);
         this.pMain.addChild(newGraphics);
 
         this.fetchedTiles[fetchedTileIDs[i]].graphics = newGraphics;
-        // console.log('fetchedTiles:', this.fetchedTiles[fetchedTileIDs[i]]);
         this.initTile(this.fetchedTiles[fetchedTileIDs[i]]);
 
-        // console.log('adding graphics...', fetchedTileIDs[i]);
         this.tileGraphics[fetchedTileIDs[i]] = newGraphics;
         added = true;
       }
@@ -375,10 +395,10 @@ export class TiledPixiTrack extends PixiTrack {
         */
   }
 
+  /**
+   * Change the graphics for existing tiles
+   */
   updateExistingGraphics() {
-    /**
-         * Change the graphics for existing tiles
-         */
     const fetchedTileIDs = Object.keys(this.fetchedTiles);
 
     for (let i = 0; i < fetchedTileIDs.length; i++) {
@@ -396,7 +416,7 @@ export class TiledPixiTrack extends PixiTrack {
     // keep track of which tiles are visible at the moment
     this.addMissingGraphics();
     this.updateExistingGraphics();
-    // this.removeOldGraphics();
+    this.removeOldTiles();
   }
 
   loadTileData(tile, dataLoader) {
@@ -424,30 +444,19 @@ export class TiledPixiTrack extends PixiTrack {
   fetchNewTiles(toFetch) {
     if (toFetch.length > 0) {
       const toFetchList = [...(new Set(toFetch.map(x => x.remoteId)))];
-      // console.log('fetchNewTiles', toFetchList);
 
-      // console.log('toFetchList:', toFetchList);
       this.dataFetcher.fetchTilesDebounced(
         this.receivedTiles.bind(this),
         toFetchList
       );
-      /*
-      tileProxy.fetchTilesDebounced({
-        id: this.uuid,
-        server: this.tilesetServer,
-        done: this.receivedTiles.bind(this),
-        ids: toFetchList,
-      });
-      */
     }
   }
 
+  /**
+   * We've gotten a bunch of tiles from the server in
+   * response to a request from fetchTiles.
+   */
   receivedTiles(loadedTiles) {
-    /**
-         * We've gotten a bunch of tiles from the server in
-         * response to a request from fetchTiles.
-         */
-    // console.log('received:', loadedTiles);
     for (let i = 0; i < this.visibleTiles.length; i++) {
       const tileId = this.visibleTiles[i].tileId;
 
@@ -478,25 +487,22 @@ export class TiledPixiTrack extends PixiTrack {
         const tileId = loadedTiles[key].tilePositionId;
         // console.log('tileId:', tileId, 'fetching:', this.fetching);
 
-        if (this.fetching.has(tileId)) { 
+        if (this.fetching.has(tileId)) {
           // console.log('removing:', tileId, 'fetching:', this.fetching);
-          this.fetching.delete(tileId); 
+          this.fetching.delete(tileId);
         }
       }
     }
 
 
-    this.synchronizeTilesAndGraphics();
-
     /*
          * Mainly called to remove old unnecessary tiles
          */
-    this.refreshTiles();
-
-    if (this.options.valueScaling) { this.calculateMedianVisibleValue(); }
+    this.synchronizeTilesAndGraphics();
 
     // we need to draw when we receive new data
     this.draw();
+    this.drawLabel(); // update the current zoom level
 
     // Let HiGlass know we need to re-render
     // check if the value scale has changed
@@ -509,16 +515,23 @@ export class TiledPixiTrack extends PixiTrack {
         this.prevValueScale = this.valueScale.copy();
 
         if (this.onValueScaleChanged) {
+          // this is used to synchronize tracks with locked value scales
           this.onValueScaleChanged();
         }
       }
     }
 
     this.animate();
+
+    // 1. Check if all visible tiles are loaded
+    // 2. If `true` then send out event
+    if (this.areAllVisibleTilesLoaded()) {
+      pubSub.publish('TiledPixiTrack.tilesLoaded', { uuid: this.uuid });
+    }
   }
 
   draw() {
-    if (this.delayDrawing) { return; }
+    if (this.delayDrawing) return;
 
     if (!this.tilesetInfo) {
       if (this.dataFetcher.tilesetInfoLoading) {
@@ -542,18 +555,21 @@ export class TiledPixiTrack extends PixiTrack {
       this.trackNotFoundText.visible = false;
     }
 
+    pubSub.publish('TiledPixiTrack.tilesDrawnStart', { uuid: this.uuid });
+
     super.draw();
 
-    for (const uid in this.fetchedTiles) {
-      this.drawTile(this.fetchedTiles[uid]);
-    }
+    Object.keys(this.fetchedTiles).forEach(
+      tilesetUid => this.drawTile(this.fetchedTiles[tilesetUid])
+    );
+
+    pubSub.publish('TiledPixiTrack.tilesDrawnEnd', { uuid: this.uuid });
   }
 
-  drawTile(tileData, graphics) {
-    /**
-     * Draw a tile on some graphics
-     */
-  }
+  /**
+   * Draw a tile on some graphics
+   */
+  drawTile(tileData, graphics) {}
 
   calculateMedianVisibleValue() {
     if (this.areAllVisibleTilesLoaded()) {
@@ -615,7 +631,7 @@ export class TiledPixiTrack extends PixiTrack {
       visibleAndFetchedIds.map(x => this.fetchedTiles[x].tileData.maxNonZero)
       .filter(x => x)
     );
-    
+
 
     // if there's no data, use null
     if (max === Number.MIN_SAFE_INTEGER) { max = null; }
@@ -648,13 +664,13 @@ export class TiledPixiTrack extends PixiTrack {
      *      A d3 value scale
     */
     let valueScale = null;
+    let offsetValue = 0;
 
-    if (!margin)
+    if (margin == null || typeof(margin) == 'undefined')
       margin = 6;  // set a default value
 
-    // console.log('valueScaling:', this.options.valueScaling);
     if (this.options.valueScaling === 'log') {
-      let offsetValue = medianValue;
+      offsetValue = medianValue;
 
       if (!offsetValue) { offsetValue = minValue; }
 
@@ -664,6 +680,23 @@ export class TiledPixiTrack extends PixiTrack {
         // .domain([offsetValue, this.maxValue()])
         .range([this.dimensions[1] - margin, margin]);
       pseudocount = offsetValue;
+    } else if (this.options.valueScaling === 'quantile') {
+      const start = this.dimensions[1] - margin;
+      const end = margin;
+      const quantScale = scaleQuantile().domain(this.allVisibleValues())
+        .range(range(start, end, (end-start) / 256));
+      quantScale.ticks = (n) => ticks(start, end, n);
+
+      return [quantScale, 0];
+    } else if (this.options.valueScaling === 'setquantile') {
+      const start = this.dimensions[1] - margin;
+      const end = margin;
+      const s = new Set(this.allVisibleValues());
+      const quantScale = scaleQuantile().domain([...s])
+        .range(range(start, end, (end-start) / 256));
+      quantScale.ticks = (n) => ticks(start, end, n);
+
+      return [quantScale, 0];
     } else {
       // linear scale
       valueScale = scaleLinear()
@@ -671,8 +704,9 @@ export class TiledPixiTrack extends PixiTrack {
         .range([this.dimensions[1] - margin, margin]);
     }
 
-    return valueScale;
+    return [valueScale, offsetValue];
   }
+
 }
 
 export default TiledPixiTrack;

@@ -1,39 +1,32 @@
-import '../styles/TrackOptions.css';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { CompactPicker } from 'react-color';
-import SketchInlinePicker from './SketchInlinePicker';
-import slugid from 'slugid';
 
-import { Modal, Button, FormGroup, FormControl, ControlLabel, HelpBlock } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 
-export class ExportLinkModal extends React.Component {
+import '../styles/TrackOptions.css';
+
+class ExportLinkModal extends React.Component {
   constructor(props) {
     super(props);
-    // props should include the definition of the heatmap data series
-
-
-    this.state = {
-
-    };
+    this.state = {};
   }
 
   render() {
     const linkLocation = this.props.linkLocation ?
       (<input
+        readOnly={true}
         style={{ width: 500 }}
         value={this.props.linkLocation}
-        readOnly={true}
       />) :
 
-      //
       (<div>
-        <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate" aria-hidden="true" />
+        <span
+          className="glyphicon glyphicon-refresh glyphicon-refresh-animate"
+          aria-hidden="true"
+        />
         <span>&nbsp;&nbsp;We are generating your link...</span>
       </div>
       );
 
-    //
     return (
       <div
         className="modal-container"
@@ -47,9 +40,9 @@ export class ExportLinkModal extends React.Component {
       >
 
         <Modal
-          onHide={this.props.onDone}
+          className="hg-modal"
           container={this}
-          className={'hg-modal'}
+          onHide={this.props.onDone}
           show={true}
         >
           <Modal.Header closeButton>

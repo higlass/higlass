@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 
-export class LeftTrackModifier {
+class LeftTrackModifier {
   constructor(originalTrack) {
     this.scene = originalTrack.scene;
 
@@ -114,6 +114,10 @@ export class LeftTrackModifier {
     return this;
   }
 
+  getMouseOverHtml(trackX, trackY) {
+    return this.originTrack.getMouseOverHtml(trackY, trackX);
+  }
+
   draw() {
     this.originalTrack.draw();
   }
@@ -164,6 +168,14 @@ export class LeftTrackModifier {
     }
 
     return [output, output];
+  }
+
+
+  respondsToPosition(x, y) {
+    return (
+      (x >= this.position[0] && x <= this.dimensions[0] + this.position[0])
+      && (y >= this.position[1] && y <= this.dimensions[1] + this.position[1])
+    );
   }
 }
 

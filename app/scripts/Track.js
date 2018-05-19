@@ -1,6 +1,12 @@
 import { scaleLinear } from 'd3-scale';
 
-export class Track {
+// Services
+import { pubSub } from './services';
+
+// Services
+import { isWithin } from './utils';
+
+class Track {
   constructor() {
     this._xScale = scaleLinear();
     this._yScale = scaleLinear();
@@ -15,6 +21,40 @@ export class Track {
     this.position = [0, 0];
     this.dimensions = [1, 1];
     this.options = {};
+    this.pubSubs = [];
+
+    // subscribe to mouseMove events
+    this.pubSubs.push(
+      pubSub.subscribe('app.mouseMove', this.defaultMouseMoveHandler.bind(this))
+    );
+  }
+
+  /**
+   * Check if a 2d location (x, y) is within the bounds of this track.
+   *
+   * @param {Number}  x  X position to be tested.
+   * @param {Number}  y  Y position to be tested.
+   * @return {Boolean}  If `true` location is within the track.
+   */
+  isWithin(x, y) {
+    return isWithin(
+      x,
+      y,
+      this.position[0],
+      this.dimensions[0] + this.position[0],
+      this.position[1],
+      this.dimensions[1] + this.position[1]
+    );
+  }
+
+  getProp(prop) {
+    return () => this[prop];
+  }
+
+  getData() {}
+
+  getDimensions() {
+    return this.dimensions;
   }
 
   setDimensions(newDimensions) {
@@ -80,13 +120,42 @@ export class Track {
 
   draw() {}
 
+  getPosition() {
+    return this.position;
+  }
+
   setPosition(newPosition) {
     this.position = newPosition;
   }
 
-  remove() {}
+  /*
+   * A blank handler for MouseMove / Zoom events. Should be overriden
+   * by individual tracks to provide 
+   *
+   * @param {obj} evt: 
+   *
+   * @returns nothing
+   */
+  defaultMouseMoveHandler(evt) {
+
+  }
+
+  remove() {
+    // Clear all pubSub subscriptions
+    this.pubSubs.forEach(subscription => pubSub.unsubscribe(subscription));
+    this.pubSubs = [];
+  }
 
   rerender() {}
+
+  /*
+   * This function is for seeing whether this track should respond
+   * to events at this mouse position. The difference to `isWithin()` is that it
+   * can be overwritten if a track is inactive for example.
+   */
+  respondsToPosition(x, y) {
+    return this.isWithin(x, y);
+  }
 }
 
 export default Track;

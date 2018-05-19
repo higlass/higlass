@@ -1,10 +1,12 @@
-import { scaleLinear, scaleLog } from 'd3-scale';
+import { format } from 'd3-format';
+import { scaleLinear } from 'd3-scale';
 
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
 import { colorToHex } from './utils';
+import { pubSub, tileProxy } from './services';
 
-export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
+class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(
     scene,
     dataConfig,
@@ -19,9 +21,64 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
       handleTilesetInfoReceived,
       option,
       animate,
-      onValueScaleChanged,
+      () => {
+        this.drawAxis(this.valueScale);
+        onValueScaleChanged();
+      }
     );
+  }
 
+  stopHover() {
+    this.pMouseOver.clear();
+    this.animate();
+  }
+
+  getMouseOverHtml(trackX, trackY) {
+    if (!this.tilesetInfo)
+      return;
+
+    const zoomLevel = this.calculateZoomLevel();
+    const tileWidth = tileProxy.calculateTileWidth(this.tilesetInfo, zoomLevel, this.tilesetInfo.tile_size);
+
+    // the position of the tile containing the query position
+    const tilePos = this._xScale.invert(trackX) / tileWidth;
+    const tileId = this.tileToLocalId([zoomLevel, Math.floor(tilePos)])
+
+    const fetchedTile = this.fetchedTiles[tileId];
+    if (!fetchedTile) return '';
+
+    const posInTileX = fetchedTile.tileData.dense.length * (tilePos - Math.floor(tilePos));
+
+    let value = '';
+    let textValue = '';
+
+    if (fetchedTile) {
+      const index =  Math.floor(posInTileX);
+      value = fetchedTile.tileData.dense[index];
+      textValue = format(".3f")(value);
+    } else {
+      return '';
+    }
+
+    const graphics = this.pMouseOver;
+    //const colorHex = colorToHex('black');
+    const colorHex = 0;
+    const yPos = this.valueScale(value);
+
+    graphics.clear();
+    graphics.beginFill(colorHex, .5);
+    graphics.lineStyle(1, colorHex, 1);
+    const markerWidth = 4;
+
+    graphics.drawRect(
+      trackX - markerWidth / 2,
+      yPos - markerWidth / 2,
+      markerWidth,
+      markerWidth);
+
+    this.animate();
+
+    return `${textValue}`;
   }
 
   initTile(tile) {
@@ -29,6 +86,11 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
      * Create whatever is needed to draw this tile.
      */
     super.initTile(tile);
+
+    if (!tile.tileData || !tile.tileData.dense) {
+      console.warn('emptyTile:', tile);
+      return;
+    }
 
     tile.lineXValues = new Array(tile.tileData.dense.length);
     tile.lineYValues = new Array(tile.tileData.dense.length);
@@ -54,6 +116,7 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
     // this function is just so that we follow the same pattern as
     // HeatmapTiledPixiTrack.js
     this.drawTile(tile);
+    this.drawAxis(this.valueScale);
   }
 
   drawTile(tile) {
@@ -61,27 +124,29 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     if (!tile.graphics) { return; }
 
+    if (!tile.tileData || !tile.tileData.dense) {
+      return;
+    }
+
     const graphics = tile.graphics;
 
     const { tileX, tileWidth } = this.getTilePosAndDimensions(
       tile.tileData.zoomLevel,
       tile.tileData.tilePos,
     );
+
     const tileValues = tile.tileData.dense;
 
     if (tileValues.length === 0) { return; }
 
-    let pseudocount = 0; // if we use a log scale, then we'll set a pseudocount
-    // equal to the smallest non-zero value
-    this.valueScale = this.makeValueScale(
+    const [vs, pseudocount] = this.makeValueScale(
       this.minValue(),
-      this.calculateMedianVisibleValue(),
+      this.medianVisibleValue,
       this.maxValue()
     );
+    this.valueScale = vs;
 
     graphics.clear();
-
-    this.drawAxis(this.valueScale);
 
     if (this.options.valueScaling === 'log' && this.valueScale.domain()[1] < 0) {
       console.warn('Negative values present when using a log scale', this.valueScale.domain());
@@ -130,6 +195,9 @@ export class HorizontalLine1DPixiTrack extends HorizontalTiled1DPixiTrack {
 
     this.pMain.position.y = this.position[1];
     this.pMain.position.x = this.position[0];
+
+    this.pMouseOver.position.y = this.position[1];
+    this.pMouseOver.position.x = this.position[0];
   }
 
   zoomed(newXScale, newYScale) {

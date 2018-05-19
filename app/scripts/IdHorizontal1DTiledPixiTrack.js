@@ -1,6 +1,6 @@
 import HorizontalTiled1DPixiTrack from './HorizontalTiled1DPixiTrack';
 
-export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
+class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
   constructor(scene, dataConfig, handleTilesetInfoReceived, options, animate) {
     super(scene, dataConfig, handleTilesetInfoReceived, options, animate);
 
@@ -32,7 +32,6 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     tile.text.anchor.x = 0.5;
     tile.text.anchor.y = 0.5;
 
-
     graphics.addChild(tile.textGraphics);
 
     this.drawTile(tile);
@@ -60,8 +59,6 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     tile.text.scale.x = tSX;
     // tile.text.scale.y = tSY;
 
-    // console.log('tSX:', tSX, 'tSY:',tSY);
-
     graphics.clear();
 
 
@@ -79,7 +76,6 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     const rectX = this._refXScale(tileX);
     const rectY = 0;
 
-    // console.log('rectX:', rectX, 'rectY:', rectY);
     // position the graphics
     // graphics.drawRect(rectX, 0, tileScaledWidth, tileScaledHeight);
     graphics.lineStyle(4 * tSX, 0x0000FF, 1);
@@ -96,27 +92,6 @@ export class IdHorizontal1DTiledPixiTrack extends HorizontalTiled1DPixiTrack {
     graphics.drawRect(rectX, 0, tileScaledWidth, tileScaledHeight);
   }
 
-  fetchNewTiles(toFetch) {
-    // no real fetching involved... we just need to display the data
-    toFetch.map((x) => {
-      const key = x.remoteId;
-      const keyParts = key.split('.');
-
-      const data = {
-        zoomLevel: keyParts[1],
-        tilePos: keyParts.slice(2, keyParts.length).map(x => +x),
-      };
-
-      this.fetchedTiles[x.tileId] = x;
-      this.fetchedTiles[x.tileId].tileData = data;
-
-      // since we're not actually fetching remote data, we can easily
-      // remove these tiles from the fetching list
-      if (this.fetching.has(x.remoteId)) { this.fetching.delete(x.remoteId); }
-    });
-
-    this.synchronizeTilesAndGraphics();
-  }
 }
 
 export default IdHorizontal1DTiledPixiTrack;

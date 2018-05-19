@@ -38,6 +38,9 @@ $unit: 24px;
     color: $black;
   }
 }
+.genome-position-search-dark .genome-position-search-bar {
+  &:focus { color: $gray-lighter; }
+}
 
 .genome-position-search-bar-button,
 .genome-position-search-bar-button-focus {

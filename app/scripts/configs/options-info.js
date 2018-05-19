@@ -40,6 +40,8 @@ const OPACITY_OPTIONS = {
   '1.0': { name: '100%', value: 1.0 },
 };
 
+// these values define the options that are visible in the track config
+// menu
 export const OPTIONS_INFO = {
   heatmapValueScaling: {
     name: 'Value Scaling',
@@ -67,6 +69,13 @@ export const OPTIONS_INFO = {
     name: 'Track Border Width',
     inlineOptions: AVAILABLE_WIDTHS,
   },
+  sortLargestOnTop: {
+    name: 'Sort Largest On Top',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false }
+    }
+  },
   minSquareSize: {
     name: 'Minimum size',
     inlineOptions: AVAILABLE_WIDTHS_AND_NONE,
@@ -82,6 +91,53 @@ export const OPTIONS_INFO = {
   trackBorderColor: {
     name: 'Track Border Color',
     inlineOptions: AVAILABLE_COLORS,
+  },
+  backgroundColor: {
+    name: 'Background Color',
+    inlineOptions: {
+      white: { name: 'White', value: 'white' },
+      grey: { name: 'Grey', value: 'grey' },
+      black: { name: 'Black', value: 'black' },
+    },
+  },
+  colorScale: {
+    name: 'Color Scale',
+    inlineOptions: {
+      epilogos: { name: 'Epilogos',
+        values: [
+          '#FF0000',
+          '#FF4500',
+          '#32CD32',
+          '#008000',
+          '#006400',
+          '#C2E105',
+          '#FFFF00',
+          '#66CDAA',
+          '#8A91D0',
+          '#CD5C5C',
+          '#E9967A',
+          '#BDB76B',
+          '#808080',
+          '#C0C0C0',
+          '#FFFFFF'
+        ],
+      },
+      category10: {
+        name: 'D3 Category10',
+        values: [
+          '#1F77B4',
+          '#FF7F0E',
+          '#2CA02C',
+          '#D62728',
+          '#9467BD',
+          '#8C564B',
+          '#E377C2',
+          '#7F7F7F',
+          '#BCBD22',
+          '#17BECF'
+        ]
+      }
+    },
   },
   minusStrandColor: {
     name: '- Strand Color',
@@ -126,6 +182,20 @@ export const OPTIONS_INFO = {
   barOpacity: {
     name: 'Bar opacity',
     inlineOptions: OPACITY_OPTIONS,
+  },
+  barBorder: {
+    name: 'Bar border',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false },
+    },
+  },
+  scaledHeight: {
+    name: 'Scaled height',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false },
+    },
   },
   rectangleDomainStrokeColor: {
     name: 'Stroke color',
@@ -205,6 +275,20 @@ export const OPTIONS_INFO = {
     inlineOptions: {
       yes: { name: 'Yes', value: 'yes' },
       no: { name: 'No', value: null },
+    },
+  },
+  showMousePosition: {
+    name: 'Show Mouse Position',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false },
+    },
+  },
+  showTooltip: {
+    name: 'Show Tooltip',
+    inlineOptions: {
+      yes: { name: 'Yes', value: true},
+      no: { name: 'No', value: false },
     },
   },
   axisPositionHorizontal: {
@@ -288,6 +372,15 @@ export const OPTIONS_INFO = {
   labelBackgroundOpacity: {
     name: 'Label Background Opacity',
     inlineOptions: OPACITY_OPTIONS,
+  },
+
+  viewResolution: {
+    name: 'View Resolution',
+    inlineOptions: {
+      high: { name: 'High', value: 384},
+      medium: { name: 'Medium', value: 1024},
+      low: { name: 'Low', value: 2048},
+    },
   },
 
   // colormaps are mostly taken from here:

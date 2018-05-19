@@ -71,6 +71,12 @@ export const TRACK_LINE = {
   viewBox: '0 0 60 60',
 };
 
+export const SELECT = {
+  id: 'select',
+  viewBox: '0 0 16 16',
+  paths: ['M2 14h2v1H1v-3h1v2zm8 1H6v-1h4v1zm5 0h-3v-1h2v-2h1v3zm0-5h-1V6h1v4zM2 10H1V6h1v4zm13-6h-1V2h-2V1h3v3zM4 2H2v2H1V1h3v1zm6 0H6V1h4.03L10 2z'],
+};
+
 export const all = [
   COG,
   CROSS,
@@ -80,9 +86,13 @@ export const all = [
   PLAY,
   PLUS,
   CONTENT_COPY,
+  SELECT,
 ];
 
 const parser = new DOMParser();
+
+const svgGeoMapStr = '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="1.5"><path d="M4 2.1L.5 3.5v12l5-2 5 2 5-2v-12l-5 2-3.17-1.268M10.5 3.5v12" fill="none" stroke="currentColor"/><path d="M5.5 13.5v-7" fill="none" stroke="currentColor" stroke-width=".9969299999999999"/><path d="M5.494 0c-1.803 0-3.26 1.496-3.26 3.35 0 .427.124.97.264 1.343L5.5 11l3.003-6.306c.142-.375.263-.916.263-1.342C8.766 1.496 7.3 0 5.494 0zM5.5 4.64c-.76 0-1.375-.616-1.375-1.374 0-.76.616-1.376 1.375-1.376.76 0 1.374.616 1.374 1.376 0 .758-.614 1.375-1.374 1.375z" fill="currentColor"/></svg>';
+export const svgGeoMapIcon = parser.parseFromString(svgGeoMapStr, 'text/xml').documentElement;
 
 const horizontalLineStr = `
 <svg width="20px" height="20px" viewBox="0 0 135 85" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">

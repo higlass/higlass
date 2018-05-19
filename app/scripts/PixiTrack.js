@@ -2,7 +2,7 @@ import { formatPrefix, precisionPrefix } from 'd3-format';
 import * as PIXI from 'pixi.js';
 import slugid from 'slugid';
 
-import { Track } from './Track.js';
+import Track from './Track';
 
 import { colorToHex } from './utils';
 
@@ -31,13 +31,13 @@ function formatResolutionText(resolution, maxResolutionSize) {
  * @param {list} resolutions: A list of resolutions (e.g. [1000,2000,3000])
  * @param {int} zoomLevel: The current zoom level (e.g. 4)
  *
- * @returns {string} A formatted string representation of the zoom level (e.g. "30K")
- * 
+ * @returns {string} A formatted string representation of the zoom level
+ *   (e.g. "30K")
  */
 function getResolutionBasedResolutionText(resolutions, zoomLevel) {
-  const sortedResolutions = resolutions.map(x => +x).sort((a,b) => b-a)
+  const sortedResolutions = resolutions.map(x => +x).sort((a, b) => b - a);
   const resolution = sortedResolutions[zoomLevel];
-  const maxResolutionSize = sortedResolutions[sortedResolutions.length-1];
+  const maxResolutionSize = sortedResolutions[sortedResolutions.length - 1];
 
   return formatResolutionText(resolution, maxResolutionSize);
 }
@@ -48,40 +48,45 @@ function getResolutionBasedResolutionText(resolutions, zoomLevel) {
  * zoom.
  *
  * @param {int} zoomLevel The current zoomLevel (e.g. 0)
- * @param {int} max_width The max width (e.g. 2 ** maxZoom * highestResolution * binsPerDimension)
- * @param {int} bins_per_dimension The number of bins per tile dimension (e.g. 256)
+ * @param {int} max_width The max width
+ *   (e.g. 2 ** maxZoom * highestResolution * binsPerDimension)
+ * @param {int} bins_per_dimension The number of bins per tile dimension
+ *   (e.g. 256)
  * @param {int} maxZoom The maximum zoom level for this tileset
  *
- * @returns {string} A formatted string representation of the zoom level (e.g. "30K")
+ * @returns {string} A formatted string representation of the zoom level
+ *   (e.g. "30K")
  */
-function getWidthBasedResolutionText(zoomLevel, maxWidth, binsPerDimension, maxZoom) {
+function getWidthBasedResolutionText(
+  zoomLevel, maxWidth, binsPerDimension, maxZoom
+) {
   const resolution = maxWidth / ((2 ** zoomLevel) * binsPerDimension);
 
   // we can't display a NaN resolution
   if (!isNaN(resolution)) {
     // what is the maximum possible resolution?
     // this will determine how we format the lower resolutions
-    const maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+    const maxResolutionSize = maxWidth / ((2 ** maxZoom) * binsPerDimension);
 
     const pp = precisionPrefix(maxResolutionSize, resolution);
     const f = formatPrefix(`.${pp}`, resolution);
     const formattedResolution = f(resolution);
 
     return formattedResolution;
-  } else {
-    console.warn(
-      'NaN resolution, screen is probably too small. Dimensions:',
-      this.dimensions,
-    );
-
-    return '';
   }
+  console.warn(
+    'NaN resolution, screen is probably too small. Dimensions:',
+    this.dimensions,
+  );
+
+  return '';
 }
 
-export class PixiTrack extends Track {
+class PixiTrack extends Track {
   /**
    * @param scene: A PIXI.js scene to draw everything to.
    * @param options: A set of options that describe how this track is rendered.
+    this.pMain.position.x = this.position[0];
    *          - labelPosition: If the label is to be drawn, where should it be drawn?
    *          - labelText: What should be drawn in the label. If either labelPosition
    *                  or labelText are false, no label will be drawn.
@@ -109,6 +114,9 @@ export class PixiTrack extends Track {
     this.pMobile = new PIXI.Graphics();
     this.pAxis = new PIXI.Graphics();
 
+    // for drawing information on mouseover events
+    this.pMouseOver = new PIXI.Graphics();
+
     this.scene.addChild(this.pBase);
 
     this.pBase.addChild(this.pMasked);
@@ -118,6 +126,7 @@ export class PixiTrack extends Track {
     this.pMasked.addChild(this.pMobile);
     this.pMasked.addChild(this.pBorder);
     this.pMasked.addChild(this.pLabel);
+    this.pMasked.addChild(this.pMouseOver);
     this.pBase.addChild(this.pAxis);
 
     this.pMasked.mask = this.pMask;
@@ -129,14 +138,29 @@ export class PixiTrack extends Track {
 
     this.options = Object.assign(this.options, options);
 
-    const labelTextText = this.options.name ? this.options.name :
-      (this.tilesetInfo ? this.tilesetInfo.name : '');
+    let labelTextText = this.options.name
+      ? this.options.name
+      : this.tilesetInfo ? this.tilesetInfo.name : '';
+
+    if (!this.options.labelPosition || this.options.labelPosition === 'hidden') {
+      labelTextText = '';
+    }
+
     this.labelTextFontFamily = 'Arial';
     this.labelTextFontSize = 12;
 
-    this.labelText = new PIXI.Text(labelTextText, { fontSize: `${this.labelTextFontSize}px`,
-      fontFamily: this.labelTextFontFamily,
-      fill: 'black' });
+    this.labelText = new PIXI.Text(
+      labelTextText, {
+        fontSize: `${this.labelTextFontSize}px`,
+        fontFamily: this.labelTextFontFamily,
+        fill: 'black'
+      });
+
+    this.errorText = new PIXI.Text('',
+      { fontSize: '12px', fontFamily: 'Arial', fill: 'red' });
+    this.errorText.anchor.x = 0.5;
+    this.errorText.anchor.y = 0.5;
+    this.pLabel.addChild(this.errorText);
 
     this.pLabel.addChild(this.labelText);
   }
@@ -148,18 +172,21 @@ export class PixiTrack extends Track {
   setPosition(newPosition) {
     this.position = newPosition;
 
+    this.drawBorder();
     this.setMask(this.position, this.dimensions);
   }
 
   setDimensions(newDimensions) {
     super.setDimensions(newDimensions);
 
+    this.drawBorder();
     this.setMask(this.position, this.dimensions);
   }
 
   setMask(position, dimensions) {
     this.pMask.clear();
     this.pMask.beginFill();
+
     this.pMask.drawRect(position[0], position[1], dimensions[0], dimensions[1]);
     this.pMask.endFill();
   }
@@ -169,7 +196,6 @@ export class PixiTrack extends Track {
    * graphics from the scene
    */
   remove() {
-    //console.trace('removing track');
     // the entire PIXI stage was probably removed
     this.pBase.clear();
     this.scene.removeChild(this.pBase);
@@ -200,8 +226,35 @@ export class PixiTrack extends Track {
     );
   }
 
+  drawError() {
+    this.errorText.x = this.position[0] + this.dimensions[0] / 2;
+    this.errorText.y = this.position[1] + this.dimensions[1] / 2;
+
+    this.errorText.text = this.errorTextText;
+
+    if (this.errorTextText && this.errorTextText.length) {
+      // draw a red border around the track to bring attention to its
+      // error
+      const graphics = this.pBorder;
+
+      graphics.clear();
+      graphics.lineStyle(1, colorToHex('red'));
+
+      graphics.drawRect(
+        this.position[0],
+        this.position[1],
+        this.dimensions[0],
+        this.dimensions[1],
+      );
+    }
+  }
+
   drawLabel() {
+    if (!this.labelText) return;
+
     const graphics = this.pLabel;
+
+    graphics.clear();
 
     if (!this.options || !this.options.labelPosition) {
       // don't display the track label
@@ -209,12 +262,11 @@ export class PixiTrack extends Track {
       return;
     }
 
-    graphics.clear();
-
     if (this.options.labelBackgroundOpacity) {
       graphics.beginFill(0xFFFFFF, +this.options.labelBackgroundOpacity);
     } else {
-      graphics.beginFill(0xFFFFFF, 0);
+      // default to some label background opacity
+      graphics.beginFill(0xFFFFFF, 0.5);
     }
 
     const stroke = colorToHex(
@@ -247,7 +299,7 @@ export class PixiTrack extends Track {
 
       labelTextText += `\n[Current data resolution: ${formattedResolution}]`;
     } else if (
-      this.tilesetInfo && 
+      this.tilesetInfo &&
       this.tilesetInfo.resolutions) {
 
       const formattedResolution = getResolutionBasedResolutionText(
@@ -398,6 +450,8 @@ export class PixiTrack extends Track {
   rerender(options) {
     this.options = options;
     this.draw();
+    this.drawLabel();
+    this.drawBorder();
   }
 
   /**
@@ -405,8 +459,8 @@ export class PixiTrack extends Track {
    */
   draw() {
     // this rectangle is cleared by functions that override this draw method
-    this.drawBorder();
-    this.drawLabel();
+    // this.drawBorder();
+    // this.drawLabel();
   }
 
   /**
