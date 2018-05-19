@@ -13,6 +13,13 @@ module.exports = {
     worker: ['./scripts/worker.js'],
   },
   devtool: 'cheap-source-map',
+  devServer: {
+    contentBase: [
+      path.resolve(__dirname, "app"),
+      path.resolve(__dirname, "node_modules"),
+    ],
+    publicPath: "/"
+  },
   output: {
     path: `${__dirname}/build`,
     publicPath: '/',
