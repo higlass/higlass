@@ -1,6 +1,36 @@
 import { tsvParseRows } from 'd3-dsv';
 import { tileProxy } from './services';
 
+const parseChromsizesRows = function(data) {
+  const cumValues = [];
+  const chromLengths = {};
+  const chrPositions = {};
+
+  let totalLength = 0;
+
+  for (let i = 0; i < tsv.length; i++) {
+    const length = Number(tsv[i][1]);
+    totalLength += length;
+
+    const newValue = {
+      id: i,
+      chr: tsv[i][0],
+      pos: totalLength - length,
+    };
+
+    cumValues.push(newValue);
+    chrPositions[newValue.chr] = newValue;
+    chromLengths[tsv[i][0]] = length;
+  }
+
+  return {
+    cumPositions: cumValues,
+    chrPositions,
+    totalLength,
+    chromLengths,
+  };
+}
+
 function ChromosomeInfo(filepath, success) {
   tileProxy.text(filepath, (error, chrInfoText) => {
     if (error) {
@@ -8,6 +38,7 @@ function ChromosomeInfo(filepath, success) {
       success(null);
     } 
     const data = tsvParseRows(chrInfoText);
+
     const cumValues = [];
     const chromLengths = {};
     const chrPositions = {};
@@ -34,4 +65,5 @@ function ChromosomeInfo(filepath, success) {
   });
 }
 
+export parseChromsizesRows;
 export default ChromosomeInfo;

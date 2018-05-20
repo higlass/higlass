@@ -96,6 +96,7 @@ class TiledPixiTrack extends PixiTrack {
 
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
       this.tilesetInfo = tilesetInfo;
+      console.log('tilesetInfo:', tilesetInfo);
 
       if ('error' in this.tilesetInfo) {
         // no tileset info for this track
