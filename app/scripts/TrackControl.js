@@ -37,10 +37,8 @@ const getButtonClassNames = (props) => {
 let imgConfig;
 let imgClose;
 
-const TrackControl = props => (
-  <div styleName={getClassNames(props)}>
-
-    {props.isMoveable && SortableHandle(() => (
+const TrackControl = props => { 
+  const DragHandle = SortableHandle(() => (
       <svg
         className="no-zoom"
         style={props.imgStyleMove}
@@ -48,7 +46,12 @@ const TrackControl = props => (
       >
         <use xlinkHref="#move" />
       </svg>
-    ))}
+      ));
+
+  return (
+  <div styleName={getClassNames(props)}>
+
+    { props.isMoveable  && (<DragHandle />) }
 
     <svg
       ref={(c) => { imgConfig = c; }}
@@ -91,7 +94,7 @@ const TrackControl = props => (
       <use xlinkHref="#cross" />
     </svg>
   </div>
-);
+)};
 
 TrackControl.propTypes = {
   imgStyleAdd: PropTypes.object,
