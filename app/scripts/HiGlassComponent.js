@@ -2649,6 +2649,8 @@ class HiGlassComponent extends React.Component {
   handleViewOptionsChanged(viewUid, newOptions) {
     const view = this.state.views[viewUid];
 
+    console.log('newOptions:', newOptions);
+
     if (!view)
       return;
 

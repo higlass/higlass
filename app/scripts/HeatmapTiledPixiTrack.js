@@ -65,6 +65,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     this.is2d = true;
     this.animate = animate;
+    this.mirrorTiles = true;
 
     this.onTrackOptionsChanged = onTrackOptionsChanged;
 
@@ -995,7 +996,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
         this.renderingTiles.delete(tile.tileId);
       },
-      synchronous
+      synchronous,
+      this.mirrorTiles && !tile.mirrored && tile.tileData.tilePos[0] == tile.tileData.tilePos[1]
     );
   }
 
@@ -1106,10 +1108,9 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
    * @param  {Array}  xTiles  X positions of tiles
    * @param  {Array}  yTiles  Y positions of tiles
    * @param  {Array}  zoomLevel  Current zoom level
-   * @param  {Array}  mirrorTiles  If `true` tiles are mirrored
    * @return  {Array}  List of tile IDs
    */
-  tilesToId(xTiles, yTiles, zoomLevel, mirrorTiles) {
+  tilesToId(xTiles, yTiles, zoomLevel) {
     const rows = xTiles;
     const cols = yTiles;
     const dataTransform = this.options.dataTransform || 'default';
@@ -1120,7 +1121,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     // calculate the ids of the tiles that should be visible
     for (let i = 0; i < rows.length; i++) {
       for (let j = 0; j < cols.length; j++) {
-        if (mirrorTiles) {
+        if (this.mirrorTiles) {
           if (rows[i] >= cols[j]) {
             // if we're in the upper triangular part of the matrix, then we need
             // to load a mirrored tile
@@ -1143,7 +1144,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     return tiles;
   }
 
-  calculateVisibleTiles(mirrorTiles = true) {
+  calculateVisibleTiles() {
     // if we don't know anything about this dataset, no point
     // in trying to get tiles
     if (!this.tilesetInfo) { return; }
@@ -1187,7 +1188,7 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     }
 
     this.setVisibleTiles(
-      this.tilesToId(this.xTiles, this.yTiles, this.zoomLevel, mirrorTiles)
+      this.tilesToId(this.xTiles, this.yTiles, this.zoomLevel, this.mirrorTiles)
     );
   }
 

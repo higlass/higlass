@@ -437,7 +437,7 @@ class TrackRenderer extends React.Component {
   }
 
   setBackground() {
-    let backgroundColor = (this.props.viewOptions && this.props.viewOptions.backgroundColor) || 'white';
+    let backgroundColor = (this.currentProps.viewOptions && this.currentProps.viewOptions.backgroundColor) || 'white';
     backgroundColor = colorToHex(backgroundColor);
 
     this.pBackground.clear();
@@ -449,6 +449,8 @@ class TrackRenderer extends React.Component {
       this.currentProps.height
     );
     this.pBackground.endFill();
+
+
   }
 
   windowScrolled() {
