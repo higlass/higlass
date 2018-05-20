@@ -62,7 +62,7 @@ import {
 } from './utils';
 
 // Services
-import { pubSub } from './services';
+import { getDarkTheme, pubSub } from './services';
 
 // Configs
 import {
@@ -437,11 +437,13 @@ class TrackRenderer extends React.Component {
   }
 
   setBackground() {
-    let backgroundColor = (this.currentProps.viewOptions && this.currentProps.viewOptions.backgroundColor) || 'white';
-    backgroundColor = colorToHex(backgroundColor);
+    const defBgColor = getDarkTheme() ? 'black' : 'white';
+    const bgColor = colorToHex((
+      this.currentProps.viewOptions && this.currentProps.viewOptions.backgroundColor
+    ) || defBgColor);
 
     this.pBackground.clear();
-    this.pBackground.beginFill(backgroundColor);
+    this.pBackground.beginFill(bgColor);
     this.pBackground.drawRect(
       this.xPositionOffset,
       this.yPositionOffset,

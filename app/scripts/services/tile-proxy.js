@@ -267,6 +267,7 @@ export const calculateZoomLevel = (scale, minX, maxX, binsPerTile) => {
   );
 
   const viewResolution = 384;
+  //const viewResolution = 2048;
 
   // fun fact: the number 384 is halfway between 256 and 512
   const addedZoom = Math.max(
@@ -452,6 +453,19 @@ synchronous=false, ignoreUpperRight) => {
     // if we didn't get any data from the server, don't do anything
     finished(null);
     return;
+  }
+
+  if (tile.mirrored && 
+    tile.tileData.tilePos.length > 0 &&
+    tile.tileData.tilePos[0] == tile.tileData.tilePos[1]) {
+
+    // if a center tile is mirrored, we'll just add its transpose
+    const tileWidth = Math.floor(Math.sqrt(tile.tileData.dense.length));
+    for (let i = 0; i < tileWidth; i++) {
+      for (let j = 0; j < tileWidth; j++) {
+        tile.tileData.dense[i * tileWidth + j] = tile.tileData.dense[j * tileWidth + i];
+      }
+    }
   }
 
   // clone the tileData so that the original array doesn't get neutered

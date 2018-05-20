@@ -247,7 +247,6 @@ export function tileResponseToData(data, server, theseTileIds) {
 
 
       data[key].dense = a;
-
       data[key].minNonZero = minNonZero(a);
       data[key].maxNonZero = maxNonZero(a);
 
