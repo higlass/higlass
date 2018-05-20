@@ -1,5 +1,5 @@
 import { tsvParseRows } from 'd3-dsv';
-import { parseChromsizesRows } from 'ChromosomeInfo';
+import { parseChromsizesRows } from '../ChromosomeInfo';
 
 const cache = {};
 
