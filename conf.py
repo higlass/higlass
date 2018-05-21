@@ -47,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'HiGlass'
-copyright = '2017, Peter Kerpedjiev'
+copyright = '2017,2018 HiGlass Developers'
 author = 'Peter Kerpedjiev'
 
 # The version info for the project you're documenting, acts as replacement for

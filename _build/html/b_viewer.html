@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Docker &#8212; HiGlass v0.4.8 documentation</title>
+    <title>Viewer &#8212; HiGlass v0.4.8 documentation</title>
     <link rel="stylesheet" href="_static/higlass.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Server" href="higlass_server.html" />
-    <link rel="prev" title="Developer" href="higlass_developer.html" />
+    <link rel="next" title="Data Preparation" href="data_preparation.html" />
+    <link rel="prev" title="Tutorial" href="atutorial.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -40,14 +40,32 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="docker">
-<h1>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-</div>
-<div class="section" id="dropping-individual-cache-entries">
-<h2>Dropping individual cache entries<a class="headerlink" href="#dropping-individual-cache-entries" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> container-redis-2017-12-16_21-19-59 redis-cli del Lm2XCdYQSVyRDkPABIUKGA.11.112
-</pre></div>
+  <div class="section" id="viewer">
+<h1>Viewer<a class="headerlink" href="#viewer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="adding-views">
+<h2>Adding views<a class="headerlink" href="#adding-views" title="Permalink to this headline">¶</a></h2>
+<p>Views can be added by cloning an existing view:</p>
+<video autoplay loop src="_static/add-views.mp4" /></div>
+<div class="section" id="closing-and-resizing-views">
+<h2>Closing and resizing views<a class="headerlink" href="#closing-and-resizing-views" title="Permalink to this headline">¶</a></h2>
+<p>Views can be closed using the cross on the upper-right corner and resized using
+the handles on the lower left corner.</p>
+<video autoplay loop src="_static/close-and-resize-views.mp4" /></div>
+<div class="section" id="replacing-tracks">
+<h2>Replacing Tracks<a class="headerlink" href="#replacing-tracks" title="Permalink to this headline">¶</a></h2>
+<p>Tracks can be replaced using the track config menu:</p>
+<video autoplay loop src="_static/replace-track.mp4" /></div>
+<div class="section" id="synchronizing-zoom-and-location">
+<h2>Synchronizing zoom and location<a class="headerlink" href="#synchronizing-zoom-and-location" title="Permalink to this headline">¶</a></h2>
+<p>The zoom and location between two views can be synchronized using
+the “Take and lock zoom and location with” option of the view
+config menu:</p>
+<video autoplay loop src="_static/take-and-lock-zoom-and-location.mp4" /></div>
+<div class="section" id="adding-cross-sections">
+<h2>Adding cross sections<a class="headerlink" href="#adding-cross-sections" title="Permalink to this headline">¶</a></h2>
+<div class="figure align-left" id="id1" style="width: 500px">
+<img alt="_images/add-horizontal-cross-section.png" src="_images/add-horizontal-cross-section.png" />
+<p class="caption"><span class="caption-text">How to add a cross section track derived from a heatmap.</span></p>
 </div>
 </div>
 </div>
@@ -75,6 +93,14 @@
 <li class="toctree-l2"><a class="reference internal" href="atutorial.html#viewing-data">Viewing data</a></li>
 </ul>
 </li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Viewer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-views">Adding views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#closing-and-resizing-views">Closing and resizing views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#replacing-tracks">Replacing Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-cross-sections">Adding cross sections</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bed-files">Bed Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedpe-like-files">Bedpe-like Files</a></li>
@@ -91,13 +117,6 @@
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#importing-into-higlass">Importing into HiGlass</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_client.html">Viewer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-views">Adding views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#closing-and-resizing-views">Closing and resizing views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#replacing-tracks">Replacing Tracks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_developer.html">Developer</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#public-api">Public API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#viewconfs">Viewconfs</a></li>
@@ -107,8 +126,8 @@
 <li class="toctree-l2"><a class="reference internal" href="higlass_developer.html#other-documentation">Other Documentation</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Docker</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#dropping-individual-cache-entries">Dropping individual cache entries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="higlass_docker.html">Docker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="higlass_docker.html#dropping-individual-cache-entries">Dropping individual cache entries</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_server.html">Server</a><ul>
@@ -153,8 +172,8 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="higlass_developer.html" title="previous chapter">Developer</a></li>
-      <li>Next: <a href="higlass_server.html" title="next chapter">Server</a></li>
+      <li>Previous: <a href="atutorial.html" title="previous chapter">Tutorial</a></li>
+      <li>Next: <a href="data_preparation.html" title="next chapter">Data Preparation</a></li>
   </ul></li>
 </ul>
 </div>
@@ -180,7 +199,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="_sources/higlass_docker.rst.txt"
+      <a href="_sources/b_viewer.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
