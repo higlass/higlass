@@ -1,17 +1,16 @@
-import { Mixin } from 'mixwith';
-import { scaleOrdinal, schemeCategory10 } from 'd3-scale';
-import { colorToHex } from './utils';
+import {Mixin} from 'mixwith';
+import {scaleLinear, scaleOrdinal, schemeCategory10} from 'd3-scale';
+import {colorToHex} from './utils';
 
 export const OneDimensionalMixin = Mixin(superclass => class extends superclass {
 
   initTile(tile) {
-    console.log('init');
     this.localColorToHexScale();
 
     this.unFlatten(tile);
     this.maxAndMin.max = tile.maxValue;
     this.maxAndMin.min = tile.minValue;
-    this.renderTile(tile);
+
     if (tile.matrix) {
       // update global max and min if necessary
       (this.maxAndMin.max === null || tile.maxValue > this.maxAndMin.max) ?
@@ -19,26 +18,37 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
       (this.maxAndMin.min === null || tile.minValue < this.maxAndMin.min) ?
         this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
     }
+
+    this.renderTile(tile);
+    //this.rescaleTile(tile);
+
+    const visibleAndFetched = this.visibleAndFetchedTiles();
+    visibleAndFetched.map(a => {
+      this.rescaleTile(tile);
+    });
+
   }
 
   rerender(newOptions) {
     this.options = newOptions;
+    //console.log('hello');
     const visibleAndFetched = this.visibleAndFetchedTiles();
 
     for (let i = 0; i < visibleAndFetched.length; i++) {
       this.updateTile(visibleAndFetched[i]);
     }
   }
+
   // todo it is not rerender's fault update happens so many times
 
   updateTile(tile) {
     const visibleAndFetched = this.visibleAndFetchedTiles();
-
     // reset max and min to null so previous maxes and mins don't carry over
     this.maxAndMin = {
       max: null,
       min: null
     };
+
 
     for (let i = 0; i < visibleAndFetched.length; i++) {
       const tile = visibleAndFetched[i];
@@ -51,22 +61,47 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
           this.maxAndMin.max = tile.maxValue : this.maxAndMin.max;
         (this.maxAndMin.min === null || tile.minValue < this.maxAndMin.min) ?
           this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
+        //this.rescaleTile(visibleAndFetched[i]);
       }
     }
-
-    // for (let i = 0; i < visibleAndFetched.length; i++) {
-    //   this.renderTile(visibleAndFetched[i]);
-    // }
+    //const visibleAndFetched = this.visibleAndFetchedTiles();
+    visibleAndFetched.map(a => {
+      this.rescaleTile(tile);
+    });
 
   }
 
-  /**
-   * Rescales tiles to align with one another
-   *
-   * @param tile
-   */
   rescaleTile(tile) {
+    const visibleAndFetched = this.visibleAndFetchedTiles();
+  //console.log('# of tiles', visibleAndFetched.length);
+     const tileMax = tile.minValue + tile.maxValue;
+     const globalMax = this.maxAndMin.max + this.maxAndMin.min;
 
+    const valueToPixelsPositive = scaleLinear()
+      .domain([0, globalMax])
+      .range([0, this.dimensions[1]]);
+    if (tile.tileData.sprite !== undefined) {
+      const sprite = tile.tileData.sprite;
+      //console.log(sprite);
+      sprite.height = valueToPixelsPositive(tileMax);
+    }
+    else{
+      tile.tileData.spriteHeight = valueToPixelsPositive(tileMax);
+    }
+    let negativeMax = null;
+    visibleAndFetched.map(a => {
+      const spriteHeight = a.minValue;
+      (a.minValue > negativeMax || negativeMax === null) ? negativeMax = spriteHeight : negativeMax;
+      if (a.tileData.sprite !== undefined) {
+        a.tileData.sprite.y = negativeMax;
+      }
+      else {
+        tile.tileData.spriteY = negativeMax;
+      }
+    });
+    console.log('negativeMax', negativeMax);
+    tile.tileData.spriteY = negativeMax;
+    //tile.tileData.spriteHeight = valueToPixelsPositive(tileMax);
   }
 
   /**
