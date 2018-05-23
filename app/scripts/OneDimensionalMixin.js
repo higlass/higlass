@@ -19,19 +19,18 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
         this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
     }
 
-    this.renderTile(tile);
+
     //this.rescaleTile(tile);
 
     const visibleAndFetched = this.visibleAndFetchedTiles();
     visibleAndFetched.map(a => {
-      this.rescaleTile(tile);
+      this.rescaleTile(a);
     });
-
+    this.renderTile(tile);
   }
 
   rerender(newOptions) {
     this.options = newOptions;
-    //console.log('hello');
     const visibleAndFetched = this.visibleAndFetchedTiles();
 
     for (let i = 0; i < visibleAndFetched.length; i++) {
@@ -66,42 +65,68 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
     }
     //const visibleAndFetched = this.visibleAndFetchedTiles();
     visibleAndFetched.map(a => {
-      this.rescaleTile(tile);
+      this.rescaleTile(a);
     });
 
   }
 
   rescaleTile(tile) {
     const visibleAndFetched = this.visibleAndFetchedTiles();
-  //console.log('# of tiles', visibleAndFetched.length);
-     const tileMax = tile.minValue + tile.maxValue;
-     const globalMax = this.maxAndMin.max + this.maxAndMin.min;
+    //console.log('# of tiles', visibleAndFetched.length);
+    const tileMax = tile.minValue + tile.maxValue;
+    const globalMax = this.maxAndMin.max + this.maxAndMin.min;
 
-    const valueToPixelsPositive = scaleLinear()
+    const valueToPixels = scaleLinear()
       .domain([0, globalMax])
       .range([0, this.dimensions[1]]);
-    if (tile.tileData.sprite !== undefined) {
-      const sprite = tile.tileData.sprite;
-      //console.log(sprite);
-      sprite.height = valueToPixelsPositive(tileMax);
-    }
-    else{
-      tile.tileData.spriteHeight = valueToPixelsPositive(tileMax);
-    }
-    let negativeMax = null;
+    // const yValToPixels = scaleLinear()
+    //   .domain([0, ])
+    (tile.tileData.sprite !== undefined) ?
+      tile.tileData.sprite.height = valueToPixels(tileMax) :
+      tile.tileData.spriteHeight = valueToPixels(tileMax);
+
     visibleAndFetched.map(a => {
-      const spriteHeight = a.minValue;
-      (a.minValue > negativeMax || negativeMax === null) ? negativeMax = spriteHeight : negativeMax;
-      if (a.tileData.sprite !== undefined) {
-        a.tileData.sprite.y = negativeMax;
+      const tileMaxPixels = valueToPixels(a.minValue + a.maxValue);
+      //console.log(tile.tileId, 'pixels', tileMaxPixels);
+      const height = this.dimensions[1] - tileMaxPixels;//valueToPixels(tileMax);
+      // console.log(tile.tileId, height);
+      // if (a.tileData.sprite === undefined) {
+      //   a.tileData.spriteY = this.dimensions[1] - 180;
+      //   //console.log(a.tileData.spriteY);
+      // }
+      // else {
+      //   a.tileData.sprite.y = this.dimensions[1] - 180;
+      //   console.log(a.tileData.sprite.y);
+      // }
+      if (a.tileData.sprite) {
+        //console.log(tile.tileId, a.tileData.sprite.y);
+        a.tileData.sprite.y = height;
+        //console.log(a.tileData.sprite);
       }
       else {
-        tile.tileData.spriteY = negativeMax;
+        a.tileData.spriteY = height;
       }
+      // if (a.tileData.sprite === undefined) {
+      //   if (Math.trunc(tileMax) === Math.trunc(globalMax)) {
+      //     console.log(tile.tileId, 'max!');
+      //     a.tileData.spriteY = height;
+      //   }
+      //   else {
+      //     console.log(tile.tileId, 'not max', this.dimensions[1] - valueToPixels(tileMax));
+      //     a.tileData.spriteY = height;//this.dimensions[1] - valueToPixels(tileMax);
+      //   }
+      // }
+      // else {
+      //   if (Math.trunc(tileMax) === Math.trunc(globalMax)) {
+      //     console.log(tile.tileId, 'max!');
+      //     a.tileData.sprite.y = height;
+      //   }
+      //   else {
+      //     console.log(tile.tileId, 'not max', this.dimensions[1] - valueToPixels(tileMax));
+      //     a.tileData.sprite.y = height;// this.dimensions[1] - valueToPixels(tileMax);
+      //   }
+      // }
     });
-    console.log('negativeMax', negativeMax);
-    tile.tileData.spriteY = negativeMax;
-    //tile.tileData.spriteHeight = valueToPixelsPositive(tileMax);
   }
 
   /**
