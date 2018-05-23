@@ -37,16 +37,28 @@ const getButtonClassNames = (props) => {
 let imgConfig;
 let imgClose;
 
+let oldProps = null;
+let DragHandle = null;
+
 const TrackControl = (props) => {
-  const DragHandle = SortableHandle(() => (
-    <svg
-      className="no-zoom"
-      style={props.imgStyleMove}
-      styleName={getButtonClassNames(props)}
-    >
-      <use xlinkHref="#move" />
-    </svg>
-  ));
+  // Avoid constant recreating that button when the props didn't change.
+  // Damn React could be a little smarter here...
+  if (
+    !props ||
+    !oldProps ||
+    Object.keys(props).some(key => oldProps[key] !== props[key])
+  ) {
+    oldProps = props;
+    DragHandle = SortableHandle(() => (
+      <svg
+        className="no-zoom"
+        style={props.imgStyleMove}
+        styleName={getButtonClassNames(props)}
+      >
+        <use xlinkHref="#move" />
+      </svg>
+    ));
+  }
 
   return (
     <div styleName={getClassNames(props)}>
