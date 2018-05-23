@@ -68,7 +68,7 @@ export function maxNonZero(data) {
 }
 
 export function workerSetPix(
-  size, data, valueScaleType, valueScaleDomain, pseudocount, colorScale
+  size, data, valueScaleType, valueScaleDomain, pseudocount, colorScale, ignoreUpperRight=false
 ) {
   /**
    * The pseudocount is generally the minimum non-zero value and is
@@ -94,6 +94,7 @@ export function workerSetPix(
 
   let rgbIdx = 0;
   let e = 0;
+  const tileWidth = Math.sqrt(size);
 
   savedScaled = {};
 
@@ -102,11 +103,16 @@ export function workerSetPix(
       const d = data[i];
       e = d; // for debugging
 
+
       rgbIdx = 255;
 
-      //if (Math.abs(d) > epsilon) {
-      //
-      if (!isNaN(d)) {
+      // ignore the upper right portion of a tile because it's on the diagonal
+      // and its mirror will fill in that space
+      if (ignoreUpperRight && Math.floor(i / tileWidth) < i % tileWidth) {
+        rgbIdx = 255;        
+      } else if (isNaN(d)) {
+        rgbIdx = 255;
+      } else {
         // values less than espilon are considered NaNs and made transparent (rgbIdx 255)
         rgbIdx = Math.max(0, Math.min(254, Math.floor(valueScale(d + pseudocount))));
       }
