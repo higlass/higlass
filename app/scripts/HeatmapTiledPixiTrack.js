@@ -95,9 +95,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     this.brushing = false;
     this.prevOptions = '';
 
+    /*
     chromInfoService
       .get(`${dataConfig.server}/chrom-sizes/?id=${dataConfig.tilesetUid}`)
       .then((chromInfo) => { this.chromInfo = chromInfo; });
+    */
 
     this.onMouseMoveZoom = onMouseMoveZoom;
     this.setDataLensSize(11);
@@ -1196,17 +1198,31 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     if (!this.options.showTooltip) 
       return '';
 
+    let returnText = '';
     this.setDataLensSize(1);
+
+    let dataX = this._xScale.invert(trackX);
+    let dataY = this._yScale.invert(trackY);
+
+    let positionText = '';
+
+    if (this.chromInfo) {
+      let atcX = absToChr(dataX, this.chromInfo);
+      let atcY = absToChr(dataY, this.chromInfo);
+
+      positionText += `${atcX[0]}:${atcX[1]} & ${atcY[0]}:${atcY[1]}`;
+      positionText += '<br/>';
+    }
 
     const data = this.getVisibleData(trackX, trackY);     
 
     if (this.options.heatmapValueScaling == 'log')
       if (data[0] > 0)
-        return "1e" + format(".3f")(Math.log(data[0]));
+        return positionText + "1e" + format(".3f")(Math.log(data[0]));
       else
-        return '';
+        return positionText + '';
     else
-      return format(".3f")(data[0]);
+      return positionText + format(".3f")(data[0]);
   }
 
   /**

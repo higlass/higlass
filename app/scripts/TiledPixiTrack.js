@@ -2,6 +2,7 @@ import { scaleLinear, scaleLog, scaleQuantile } from 'd3-scale';
 import { median, range, ticks } from 'd3-array';
 import slugid from 'slugid';
 import * as PIXI from 'pixi.js';
+import {parseChromsizesRows} from './ChromosomeInfo.js';
 
 import DataFetcher from './DataFetcher';
 import PixiTrack from './PixiTrack';
@@ -96,6 +97,10 @@ class TiledPixiTrack extends PixiTrack {
 
     this.dataFetcher.tilesetInfo((tilesetInfo) => {
       this.tilesetInfo = tilesetInfo;
+
+      if (this.tilesetInfo.chromsizes) {
+        this.chromInfo = parseChromsizesRows(this.tilesetInfo.chromsizes);
+      }
 
       if ('error' in this.tilesetInfo) {
         // no tileset info for this track
