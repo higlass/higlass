@@ -4,6 +4,7 @@ import { absToChr } from './utils';
 
 class SearchField {
   constructor(chromInfo) {
+    //console.trace('chromInfo:', chromInfo)
     this.chromInfo = chromInfo;
     this.chromInfoBisector = bisector(d => d.pos).left;
   }

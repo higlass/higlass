@@ -157,6 +157,7 @@ class GenomePositionSearchBox extends React.Component {
       autocompleteServer: serverAndChromInfoToUse.server,
     });
 
+
     ChromosomeInfo(`${serverAndChromInfoToUse.server}/chrom-sizes/?id=${serverAndChromInfoToUse.uuid}`, (newChromInfo) => {
       this.chromInfo = newChromInfo;
       this.searchField = new SearchField(this.chromInfo);

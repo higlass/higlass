@@ -96,8 +96,10 @@ export const OPTIONS_INFO = {
     name: 'Background Color',
     inlineOptions: {
       white: { name: 'White', value: 'white' },
+      lightGrey: { name: 'Light Grey', value: '#eeeeee' },
       grey: { name: 'Grey', value: '#cccccc' },
       black: { name: 'Black', value: 'black' },
+      transparent: { name: 'Transparent', value: 'transparent' },
     },
   },
   colorScale: {
