@@ -1536,6 +1536,7 @@ class TiledPlot extends React.Component {
     const galleryTracks = (
       <div
         key="galleryTracksDiv"
+        className="gallery-track-container"
         style={{
           left: this.leftWidthNoGallery + this.props.horizontalMargin,
           top: this.topHeightNoGallery + this.props.verticalMargin,
