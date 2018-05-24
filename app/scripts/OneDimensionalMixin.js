@@ -15,17 +15,11 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
       // update global max and min if necessary
       (this.maxAndMin.max === null || tile.maxValue > this.maxAndMin.max) ?
         this.maxAndMin.max = tile.maxValue : this.maxAndMin.max;
-      (this.maxAndMin.min === null || tile.minValue < this.maxAndMin.min) ?
+      (this.maxAndMin.min === null || tile.minValue > this.maxAndMin.min) ?
         this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
     }
 
-
-    //this.rescaleTile(tile);
-
-    const visibleAndFetched = this.visibleAndFetchedTiles();
-    visibleAndFetched.map(a => {
-      this.rescaleTile(a);
-    });
+    this.rescaleTiles();
     this.renderTile(tile);
   }
 
@@ -48,84 +42,42 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
       min: null
     };
 
-
     for (let i = 0; i < visibleAndFetched.length; i++) {
       const tile = visibleAndFetched[i];
       this.unFlatten(tile);
       tile.svgData = null;
       tile.mouseOverData = null;
-      if (tile.matrix) {
+      //if (tile.matrix) {
         // update global max and min if necessary
         (this.maxAndMin.max === null || tile.maxValue > this.maxAndMin.max) ?
           this.maxAndMin.max = tile.maxValue : this.maxAndMin.max;
-        (this.maxAndMin.min === null || tile.minValue < this.maxAndMin.min) ?
+        (this.maxAndMin.min === null || tile.minValue > this.maxAndMin.min) ?
           this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
-        //this.rescaleTile(visibleAndFetched[i]);
-      }
+      //}
     }
-    //const visibleAndFetched = this.visibleAndFetchedTiles();
-    visibleAndFetched.map(a => {
-      this.rescaleTile(a);
-    });
-
+    this.rescaleTiles();
   }
 
-  rescaleTile(tile) {
+  rescaleTiles() {
     const visibleAndFetched = this.visibleAndFetchedTiles();
-    //console.log('# of tiles', visibleAndFetched.length);
-    const tileMax = tile.minValue + tile.maxValue;
-    const globalMax = this.maxAndMin.max + this.maxAndMin.min;
-
     const valueToPixels = scaleLinear()
-      .domain([0, globalMax])
+      .domain([0, this.maxAndMin.max + this.maxAndMin.min])
       .range([0, this.dimensions[1]]);
-    // const yValToPixels = scaleLinear()
-    //   .domain([0, ])
-    (tile.tileData.sprite !== undefined) ?
-      tile.tileData.sprite.height = valueToPixels(tileMax) :
-      tile.tileData.spriteHeight = valueToPixels(tileMax);
 
     visibleAndFetched.map(a => {
-      const tileMaxPixels = valueToPixels(a.minValue + a.maxValue);
-      //console.log(tile.tileId, 'pixels', tileMaxPixels);
-      const height = this.dimensions[1] - tileMaxPixels;//valueToPixels(tileMax);
-      // console.log(tile.tileId, height);
-      // if (a.tileData.sprite === undefined) {
-      //   a.tileData.spriteY = this.dimensions[1] - 180;
-      //   //console.log(a.tileData.spriteY);
-      // }
-      // else {
-      //   a.tileData.sprite.y = this.dimensions[1] - 180;
-      //   console.log(a.tileData.sprite.y);
-      // }
+      const height = Math.trunc(valueToPixels(a.minValue + a.maxValue));
       if (a.tileData.sprite) {
-        //console.log(tile.tileId, a.tileData.sprite.y);
-        a.tileData.sprite.y = height;
-        //console.log(a.tileData.sprite);
+        console.log('sprite!');
+        a.tileData.sprite.height = height;
+        a.tileData.sprite.y = this.dimensions[1] - height;
+        console.log(a.tileId, a.minValue + a.maxValue, a.tileData.sprite.y, height);
+        console.log('globalMax', this.maxAndMin.max + this.maxAndMin.min);
+        console.log('this.position[0]', this.position[0]);
       }
       else {
-        a.tileData.spriteY = height;
+        a.tileData.spriteHeight = height;
+        a.tileData.spriteY = this.dimensions[1] - height;
       }
-      // if (a.tileData.sprite === undefined) {
-      //   if (Math.trunc(tileMax) === Math.trunc(globalMax)) {
-      //     console.log(tile.tileId, 'max!');
-      //     a.tileData.spriteY = height;
-      //   }
-      //   else {
-      //     console.log(tile.tileId, 'not max', this.dimensions[1] - valueToPixels(tileMax));
-      //     a.tileData.spriteY = height;//this.dimensions[1] - valueToPixels(tileMax);
-      //   }
-      // }
-      // else {
-      //   if (Math.trunc(tileMax) === Math.trunc(globalMax)) {
-      //     console.log(tile.tileId, 'max!');
-      //     a.tileData.sprite.y = height;
-      //   }
-      //   else {
-      //     console.log(tile.tileId, 'not max', this.dimensions[1] - valueToPixels(tileMax));
-      //     a.tileData.sprite.y = height;// this.dimensions[1] - valueToPixels(tileMax);
-      //   }
-      // }
     });
   }
 
