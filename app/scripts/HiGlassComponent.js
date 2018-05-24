@@ -2296,7 +2296,7 @@ class HiGlassComponent extends React.Component {
   }
 
   handleExportViewsAsLink(
-    url = this.props.viewConfig.exportViewUrl,
+    url = this.state.viewConfig.exportViewUrl,
     fromApi = false
   ) {
     this.width = this.element.clientWidth;
@@ -2308,7 +2308,7 @@ class HiGlassComponent extends React.Component {
     });
 
     const port = window.location.port === '' ? '' : `:${window.location.port}`;
-    console.log('viewconfig:', this.props.viewConfig.exportViewUrl);
+    console.log('viewconfig:', this.state.viewConfig.exportViewUrl);
     console.log('url:', url);
 
     const req = fetch(
@@ -2323,15 +2323,19 @@ class HiGlassComponent extends React.Component {
         body: `{"viewconf":${this.getViewsAsString()}}`
       }
     )
-      .then(res => {
-        return res.json()
+      .then( response => {
+        if (!response.ok) { throw response }
+        return response.json()
+      })
+      .catch(err => {
+        console.log('err:', err)
       })
       .then(_json => {
         return {
           id: _json.uid,
           url: `${window.location.protocol}//${window.location.hostname}${port}/app/?config=${_json.uid}`
-          };
-      });
+        };
+      })
 
     if (!fromApi) {
       req
