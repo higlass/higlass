@@ -32,8 +32,6 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
     }
   }
 
-  // todo it is not rerender's fault update happens so many times
-
   updateTile(tile) {
     const visibleAndFetched = this.visibleAndFetchedTiles();
     // reset max and min to null so previous maxes and mins don't carry over
@@ -47,13 +45,13 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
       this.unFlatten(tile);
       tile.svgData = null;
       tile.mouseOverData = null;
-      //if (tile.matrix) {
+      if (tile.matrix) {
         // update global max and min if necessary
         (this.maxAndMin.max === null || tile.maxValue > this.maxAndMin.max) ?
           this.maxAndMin.max = tile.maxValue : this.maxAndMin.max;
         (this.maxAndMin.min === null || tile.minValue > this.maxAndMin.min) ?
           this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
-      //}
+      }
     }
     this.rescaleTiles();
   }
@@ -63,20 +61,18 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
     const valueToPixels = scaleLinear()
       .domain([0, this.maxAndMin.max + this.maxAndMin.min])
       .range([0, this.dimensions[1]]);
+    const newZero = this.dimensions[1] - valueToPixels(this.maxAndMin.min);
 
     visibleAndFetched.map(a => {
-      const height = Math.trunc(valueToPixels(a.minValue + a.maxValue));
+      const height = valueToPixels(a.minValue + a.maxValue);
+      const y = newZero - valueToPixels(a.maxValue);
       if (a.tileData.sprite) {
-        console.log('sprite!');
         a.tileData.sprite.height = height;
-        a.tileData.sprite.y = this.dimensions[1] - height;
-        console.log(a.tileId, a.minValue + a.maxValue, a.tileData.sprite.y, height);
-        console.log('globalMax', this.maxAndMin.max + this.maxAndMin.min);
-        console.log('this.position[0]', this.position[0]);
+        a.tileData.sprite.y = y;
       }
       else {
         a.tileData.spriteHeight = height;
-        a.tileData.spriteY = this.dimensions[1] - height;
+        a.tileData.spriteY = y;
       }
     });
   }
