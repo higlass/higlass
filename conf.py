@@ -47,8 +47,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'HiGlass'
-copyright = '2017, Peter Kerpedjiev'
-author = 'Peter Kerpedjiev'
+copyright = '2017,2018 HiGlass Authors'
+author = 'HiGlass Authors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
