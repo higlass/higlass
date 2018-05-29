@@ -1,4 +1,9 @@
-develop (2018-01-??)
+v1.0.0-alpha.7
+
+- Fixed scrolling bug when multiple higlass components are on a single page
+- Fixed hover bug in combined tracks
+
+v1.0.0-alpha
 
 - Added triangles to genes
 - Preliminary authentication support
