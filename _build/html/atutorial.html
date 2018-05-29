@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Client Viewer &#8212; HiGlass v1.0 documentation</title>
+    <title>Tutorial &#8212; HiGlass v1.0 documentation</title>
     <link rel="stylesheet" href="_static/higlass.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Developer" href="higlass_developer.html" />
-    <link rel="prev" title="Gene Annotations Tracks" href="gene_annotations.html" />
+    <link rel="next" title="Viewer" href="b_viewer.html" />
+    <link rel="prev" title="HiGlass: A Multiscale Genomic Data Browser" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -40,27 +40,78 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="client-viewer">
-<h1>Client Viewer<a class="headerlink" href="#client-viewer" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="adding-views">
-<h2>Adding views<a class="headerlink" href="#adding-views" title="Permalink to this headline">¶</a></h2>
-<p>Views can be added by cloning an existing view:</p>
-<video autoplay loop src="_static/add-views.mp4" /></div>
-<div class="section" id="closing-and-resizing-views">
-<h2>Closing and resizing views<a class="headerlink" href="#closing-and-resizing-views" title="Permalink to this headline">¶</a></h2>
-<p>Views can be closed using the cross on the upper-right corner and resized using
-the handles on the lower left corner.</p>
-<video autoplay loop src="_static/close-and-resize-views.mp4" /></div>
-<div class="section" id="replacing-tracks">
-<h2>Replacing Tracks<a class="headerlink" href="#replacing-tracks" title="Permalink to this headline">¶</a></h2>
-<p>Tracks can be replaced using the track config menu:</p>
-<video autoplay loop src="_static/replace-track.mp4" /></div>
-<div class="section" id="synchronizing-zoom-and-location">
-<h2>Synchronizing zoom and location<a class="headerlink" href="#synchronizing-zoom-and-location" title="Permalink to this headline">¶</a></h2>
-<p>The zoom and location between two views can be synchronized using
-the “Take and lock zoom and location with” option of the view
-config menu:</p>
-<video autoplay loop src="_static/take-and-lock-zoom-and-location.mp4" /></div>
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial describes how to set up a local instance of HiGlass and load some common data types.</p>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>To follow the steps in this tutorial you will require the following software packages:</p>
+<ul class="simple">
+<li>Docker (<a class="reference external" href="https://www.docker.com/community-edition">https://www.docker.com/community-edition</a>): Docker is program that
+lets you run “containers” hosting software and its dependencies</li>
+<li>Python</li>
+<li><code class="docutils literal"><span class="pre">higlass-manage</span></code>: This package is a wrapper for the Docker commands used to run a local instance. It can be installed using <code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">higlass-manage</span></code>. Brief documentation can be found <a class="reference external" href="https://github.com/pkerpedjiev/higlass-manage">at its GitHub project page</a></li>
+</ul>
+</div>
+<div class="section" id="running-higlass-locally">
+<h2>Running HiGlass Locally<a class="headerlink" href="#running-higlass-locally" title="Permalink to this headline">¶</a></h2>
+<p>We can start a local HiGlass instance using <code class="docutils literal"><span class="pre">higlass-manage</span></code>:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage start
+</pre></div>
+</div>
+<p>This will create what is essentially a mini virtual machine running on your
+computer. This command creates a data directory at <code class="docutils literal"><span class="pre">~/hg-data</span></code>. All of the
+ingested data data will be stored there. An alternative directory can be specified
+using the <code class="docutils literal"><span class="pre">--data-dir</span></code> parameter.</p>
+<div class="figure align-center" id="id1" style="width: 500px">
+<img alt="_images/higlass-website-screenshot.png" src="_images/higlass-website-screenshot.png" />
+<p class="caption"><span class="caption-text">A screenshot of an empty HiGlass web page</span></p>
+</div>
+<p>This indicates that the Docker container has succesfully started and you have
+a HiGlass instance running on your computer.</p>
+<p>Now to add some data…</p>
+</div>
+<div class="section" id="adding-data">
+<h2>Adding data<a class="headerlink" href="#adding-data" title="Permalink to this headline">¶</a></h2>
+<p>HiGlass supports a number of <a class="reference external" href="data_preparation.html">different data types</a>.</p>
+<p>Use the ingest command to add new data. Generally data requires a filetype and a datatype. This can sometimes (i.e. in the case of cooler and bigwig files) be inferred from the file itself.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage ingest my_data.mcool
+</pre></div>
+</div>
+<p>In other, more ambiguous cases, it needs to be explicitly specified:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage ingest my_file.bed --filetype bedfile <span class="se">\</span>
+    --datatype bedlike --assembly hg19
+</pre></div>
+</div>
+<p>Note that bedfiles don’t store chromosome sizes so they need to be passed in using either the <code class="docutils literal"><span class="pre">--assembly</span></code> or <code class="docutils literal"><span class="pre">--chromsizes-filename</span></code> parameters.</p>
+</div>
+<div class="section" id="viewing-data">
+<h2>Viewing data<a class="headerlink" href="#viewing-data" title="Permalink to this headline">¶</a></h2>
+<p>To view the data we’ve added to our instance, we need to load the HiGlass
+browser. This can be done by either opening a browser and navigating to
+<code class="docutils literal"><span class="pre">http://localhost:8989/app</span></code> (using the port specified), or using:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>higlass-manage browse
+</pre></div>
+</div>
+<p>From there, we need to add the tracks:</p>
+<div class="figure align-center" id="id2" style="width: 500px">
+<img alt="_images/add-tracks-diagram1.png" src="_images/add-tracks-diagram1.png" />
+<p class="caption"><span class="caption-text">To add a track, click on the ‘+’ and select a track position.</span></p>
+</div>
+<p>After selecting a position, we need to select a dataset to add. The dialog
+shows both the local datasets as well as the public data available on
+<a class="reference external" href="http://higlass.io">http://higlass.io</a>.</p>
+<div class="figure align-center" id="id3" style="width: 500px">
+<img alt="_images/add-tracks-diagram2.png" src="_images/add-tracks-diagram2.png" />
+<p class="caption"><span class="caption-text">Select a dataset to add.</span></p>
+</div>
+<p>And we get our results</p>
+<div class="figure align-center" id="id4" style="width: 500px">
+<img alt="_images/add-tracks-diagram3.png" src="_images/add-tracks-diagram3.png" />
+<p class="caption"><span class="caption-text">Behold the added heatmap.</span></p>
+</div>
+<p>The same procedure can be used to add bigwig files on the top, left, right and bottom positions of the view.</p>
+</div>
 </div>
 
 
@@ -79,27 +130,35 @@ config menu:</p>
 
 
 <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-higlass-locally">Running HiGlass Locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-data">Adding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#viewing-data">Viewing data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-views">Adding views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#replacing-tracks">Replacing Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-cross-sections">Adding cross sections</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bed-files">Bed Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedpe-like-files">Bedpe-like Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedgraph-files">BedGraph files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bigwig-files">bigWig files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#hitile-files">Hitile files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#cooler-files">Cooler files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#multivec-files">Multivec Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data_preparation.html#development">Development</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gene_annotations.html">Gene Annotations Tracks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#creating-the-track">Creating the track</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#importing-into-higlass">Importing into HiGlass</a></li>
-</ul>
-</li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Client Viewer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#adding-views">Adding views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#closing-and-resizing-views">Closing and resizing views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#replacing-tracks">Replacing Tracks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_developer.html">Developer</a><ul>
@@ -157,8 +216,8 @@ config menu:</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="gene_annotations.html" title="previous chapter">Gene Annotations Tracks</a></li>
-      <li>Next: <a href="higlass_developer.html" title="next chapter">Developer</a></li>
+      <li>Previous: <a href="index.html" title="previous chapter">HiGlass: A Multiscale Genomic Data Browser</a></li>
+      <li>Next: <a href="b_viewer.html" title="next chapter">Viewer</a></li>
   </ul></li>
 </ul>
 </div>
@@ -184,7 +243,7 @@ config menu:</p>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="_sources/higlass_client.rst.txt"
+      <a href="_sources/atutorial.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

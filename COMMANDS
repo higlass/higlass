@@ -3,4 +3,7 @@ sphinx-build -b html . _build/html;
 cp _config.yml _build/html
 git subtree push --prefix _build/html/ origin gh-pages
 
-cd ../../; rm -rf _build; sphinx-build -b html . _build/html; touch _build/html/.nojekyll; cd _build/html/; python -m http.server 8081
+#cd ../../; rm -rf _build; sphinx-build -b html . _build/html; touch _build/html/.nojekyll; cd _build/html/; python -m http.server 8062
+
+rm -rf _build; sphinx-build -b html . _build/html; touch _build/html/.nojekyll;
+sphinx-autobuild -b html . _build/html -p 8062 --ignore "*.swp" -B

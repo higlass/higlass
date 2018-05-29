@@ -24,7 +24,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Gene Annotations Tracks" href="gene_annotations.html" />
-    <link rel="prev" title="HiGlass: A Multiscale Genomic Data Browser" href="index.html" />
+    <link rel="prev" title="Viewer" href="b_viewer.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -67,11 +67,11 @@ chr11   <span class="m">32409321</span>        <span class="m">32457081</span>  
 </pre></div>
 </div>
 <p>And then imported into higlass after copying to the docker temp directory (<code class="docutils literal"><span class="pre">cp</span> <span class="pre">short.bed.multires</span> <span class="pre">~/hg-tmp/</span></code>):</p>
-<div class="highlight-blash"><div class="highlight"><pre><span></span>docker exec higlass-container python \
-   higlass-server/manage.py ingest_tileset \
-       --filename /tmp/short.bed.multires \
-       --filetype beddb \
-       --datatype bedlike \
+<div class="highlight-bash"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> higlass-container python <span class="se">\</span>
+   higlass-server/manage.py ingest_tileset <span class="se">\</span>
+       --filename /tmp/short.bed.multires <span class="se">\</span>
+       --filetype beddb <span class="se">\</span>
+       --datatype bedlike <span class="se">\</span>
        --coordSystem b37
 </pre></div>
 </div>
@@ -186,19 +186,20 @@ which use that information to normalize track values.</p>
 <h2>bigWig files<a class="headerlink" href="#bigwig-files" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://genome.ucsc.edu/goldenpath/help/bigWig.html">bigWig files</a> store
 genomic data in a compressed, indexed form that allows rapid retrieval and
-visualization. Unfortunately, for the time being, HiGlass does not support
-displaying bigWig files and they must first be converted to hitile files.
-This can be done using clodius’s aggregate bigwig function:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>clodius aggregate bigwig input.bigWig <span class="se">\</span>
-    --output-file output.hitile <span class="se">\</span>
-    --assembly hg19
+visualization. bigWig files can be loaded directly into HiGlass using the
+vector datatype and bigwig filetype:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> higlass-container python <span class="se">\</span>
+        higlass-server/manage.py ingest_tileset <span class="se">\</span>
+        --filename /tmp/cnvs_hw.hitile <span class="se">\</span>
+        --filetype bigwig <span class="se">\</span>
+        --datatype vector
 </pre></div>
 </div>
-<p>The resulting file can be loaded into HiGlass as described in the
-<a class="reference internal" href="#id3"><span class="std std-ref">Multivec Files</span></a> section below.</p>
-<div class="section" id="loading-into-higlass">
-<h3>Loading into HiGlass<a class="headerlink" href="#loading-into-higlass" title="Permalink to this headline">¶</a></h3>
-<p>Too see .hitile-typed datasets in higlass, use the docker container to load them:</p>
+</div>
+<div class="section" id="hitile-files">
+<h2>Hitile files<a class="headerlink" href="#hitile-files" title="Permalink to this headline">¶</a></h2>
+<p>Hitile files are HDF5-based 1D vector files containing data at multiple resolutions.</p>
+<p>To see hitile datasets in higlass, use the docker container to load them:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> higlass-container python <span class="se">\</span>
         higlass-server/manage.py ingest_tileset <span class="se">\</span>
         --filename /tmp/cnvs_hw.hitile <span class="se">\</span>
@@ -206,16 +207,10 @@ This can be done using clodius’s aggregate bigwig function:</p>
         --datatype vector
 </pre></div>
 </div>
-<p>It can also be loaded using a curl commands:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>curl -u <span class="sb">`</span>cat ~/.higlass-server-login<span class="sb">`</span>  <span class="se">\</span>
-    -F <span class="s2">&quot;datafile=@cnvs_hw.hitile&quot;</span> <span class="se">\</span>
-    -F <span class="s2">&quot;filetype=hitile&quot;</span> <span class="se">\</span>
-    -F <span class="s2">&quot;datatype=vector&quot;</span> <span class="se">\</span>
-    -F <span class="s2">&quot;coordSystem=hg19&quot;</span> <span class="se">\</span>
-    http://higlass.io:80/api/v1/tilesets/
-</pre></div>
-</div>
-</div>
+<p>Point your browser at 127.0.0.1:8989 (or wherever it is hosted), click on the
+little ‘plus’ icon in the view and select the top position.  You will see a
+listing of available tracks that can be loaded. Select the dataset and then
+choose the plot type to display it as.</p>
 </div>
 <div class="section" id="cooler-files">
 <h2>Cooler files<a class="headerlink" href="#cooler-files" title="Permalink to this headline">¶</a></h2>
@@ -226,67 +221,92 @@ matrices of the same dataset at a range of bin resolutions or <em>zoom levels</e
 cool files (typically denoted .mcool).</p>
 <div class="section" id="from-pairs">
 <h3>From pairs<a class="headerlink" href="#from-pairs" title="Permalink to this headline">¶</a></h3>
-<p>Often you will start with a list of pairs (e.g. contacts, interactions) that need to be aggregated.
-For example, the 4DN-DCIC developed a <a class="reference external" href="https://github.com/4dn-dcic/pairix/blob/master/pairs_format_specification.md">standard pairs format</a> for HiC-like data. However, you
-need only a tab-delimited file with columns representing <code class="docutils literal"><span class="pre">chrom1</span></code>, <code class="docutils literal"><span class="pre">pos1</span></code>, <code class="docutils literal"><span class="pre">chrom2</span></code>, <code class="docutils literal"><span class="pre">pos2</span></code>, optionally gzipped.</p>
-<p>Currently, these need to be sorted and indexed with either pairix or tabix to be ingested into a cooler. You also need to
-provide a list of chromosomes in semantic order (chr1, chr2, …, chrX, chrY, …) in a
-two-column <a class="reference external" href="https://github.com/pkerpedjiev/negspy/blob/master/negspy/data/hg19/chromSizes.tsv">chromsizes</a> file.
-For example, if <code class="docutils literal"><span class="pre">chrom1</span></code> and <code class="docutils literal"><span class="pre">pos1</span></code> are the first two columns, and <code class="docutils literal"><span class="pre">chrom2</span></code> and <code class="docutils literal"><span class="pre">pos2</span></code> are in columns 4 and 5:</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Starting with <em>cooler</em> 0.7.9, input pairs data no longer needs to be sorted and indexed.</p>
+</div>
+<p>Often you will start with a <strong>list of pairs</strong> (e.g. contacts, interactions) that need to be aggregated.
+For example, the 4DN-DCIC developed a <a class="reference external" href="https://github.com/4dn-dcic/pairix/blob/master/pairs_format_specification.md">standard pairs format</a> for HiC-like data. In general, you
+only need a tab-delimited file with columns representing <code class="docutils literal"><span class="pre">chrom1</span></code>, <code class="docutils literal"><span class="pre">pos1</span></code>, <code class="docutils literal"><span class="pre">chrom2</span></code>, <code class="docutils literal"><span class="pre">pos2</span></code>, optionally gzipped. In the case of Hi-C, these would correspond to the mapped locations of the two ends of a Hi-C ligation product.</p>
+<p>You also need to provide a list of chromosomes in semantic order (chr1, chr2, …, chrX, chrY, …) in a
+two-column <a class="reference external" href="https://github.com/pkerpedjiev/negspy/blob/master/negspy/data/hg19/chromSizes.tsv">chromsizes</a> file.</p>
+<p>Ingesting pairs is done using the <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span></code> command. Choose the appropriate loading subcommand. If you pairs file is sorted and indexed with <a class="reference external" href="https://github.com/4dn-dcic/pairix">pairix</a> or with <a class="reference external" href="https://davetang.org/muse/2013/02/22/using-tabix/">tabix</a>, use <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span> <span class="pre">pairix</span></code> or <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span> <span class="pre">tabix</span></code>, respectively. Otherwise, you can use the new <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">cload</span> <span class="pre">pairs</span></code> command.</p>
+<p><strong>Raw pairs example</strong></p>
+<p>If you have a raw pairs file or you can stream your data in such a way, you only need to specify the columns that correspond to <cite>chrom1</cite>, <cite>chrom2</cite>, <cite>pos1</cite> and <cite>pos2</cite>. For example, if <code class="docutils literal"><span class="pre">chrom1</span></code> and <code class="docutils literal"><span class="pre">pos1</span></code> are the first two columns, and <code class="docutils literal"><span class="pre">chrom2</span></code> and <code class="docutils literal"><span class="pre">pos2</span></code> are in columns 4 and 5, the following command will aggregate the input pairs at 1kb:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler cload pairs -c1 <span class="m">1</span> -p1 <span class="m">2</span> -c2 <span class="m">4</span> -p2 <span class="m">5</span> <span class="se">\</span>
+    hg19.chrom.sizes:1000 <span class="se">\</span>
+    mypairs.txt <span class="se">\</span>
+    mycooler.1000.cool
+</pre></div>
+</div>
+<p>To pipe in a stream, replace the pairs path above with a dash <code class="docutils literal"><span class="pre">-</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The syntax <code class="docutils literal"><span class="pre">&lt;chromsizes_path&gt;:&lt;binsize_in_bp&gt;</span></code> is a shortcut to specify the genomic bin segmentation used to aggregate the pairs. Alternatively, you can pass in the path to a 3-column BED file of bins.</p>
+</div>
+<p><strong>Indexed pairs example</strong></p>
+<p>If you want to create a sorted and indexed pairs file, follow this example. Because an index provides random access to the pairs, this method can be more efficient and parallelized.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>cooler csort -c1 <span class="m">1</span> -p1 <span class="m">2</span> -c2 <span class="m">4</span> -p2 <span class="m">5</span> mypairs.txt hg19.chrom.sizes
 </pre></div>
 </div>
-<p>This will generate a sorted and compressed pairs file <code class="docutils literal"><span class="pre">mypairs.blksrt.txt.gz</span></code> along with a companion pairix <code class="docutils literal"><span class="pre">.px2</span></code> index file. To aggregate and ingest at a fixed resolution (e.g. 1kb) use the <code class="docutils literal"><span class="pre">cload</span> <span class="pre">pairix</span></code> command.</p>
+<p>will generate a sorted and compressed pairs file <code class="docutils literal"><span class="pre">mypairs.blksrt.txt.gz</span></code> along with a companion pairix <code class="docutils literal"><span class="pre">.px2</span></code> index file. To aggregate, use the <code class="docutils literal"><span class="pre">cload</span> <span class="pre">pairix</span></code> command.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>cooler cload pairix hg19.chrom.sizes:1000 mypairs.blksrt.txt.gz mycooler.1000.cool
 </pre></div>
 </div>
-<p>This will be the <em>base resolution</em> for the multires cooler you will generate.</p>
+<p>The output <code class="docutils literal"><span class="pre">mycooler.1000.cool</span></code> will serve as the <em>base resolution</em> for the multires cooler you will generate.</p>
 </div>
 <div class="section" id="from-a-matrix">
 <h3>From a matrix<a class="headerlink" href="#from-a-matrix" title="Permalink to this headline">¶</a></h3>
-<p>If your base resolution data is already aggregated, you can ingest data in one of two formats. Use <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">load</span></code> to ingest.</p>
+<p>If your base resolution data is <strong>already aggregated</strong>, you can ingest data in one of two formats. Use <code class="docutils literal"><span class="pre">cooler</span> <span class="pre">load</span></code> to ingest.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Prior to <em>cooler</em> 0.7.9, input BG2 files needed to be sorted and indexed. This is no longer the case.</p>
+</div>
 <ol class="arabic simple">
-<li>COO: Sparse matrix upper triangle <a class="reference external" href="https://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_(COO)">coordinate list</a> , i.e. tab-delimited sparse matrix triples (row_id, col_id, count). This is an output of pipelines like HiCPro.</li>
+<li><strong>COO</strong>: Sparse matrix upper triangle <a class="reference external" href="https://en.wikipedia.org/wiki/Sparse_matrix#Coordinate_list_(COO)">coordinate list</a> , i.e. tab-delimited sparse matrix triples (<code class="docutils literal"><span class="pre">row_id</span></code>, <code class="docutils literal"><span class="pre">col_id</span></code>, <code class="docutils literal"><span class="pre">count</span></code>). This is an output of pipelines like HiCPro.</li>
 </ol>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f coo hg19.chrom.sizes:1000 mymatrix.coo.txt mycooler.1000.cool
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f coo hg19.chrom.sizes:1000 mymatrix.1kb.coo.txt mycooler.1000.cool
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>BG2: A 2D “extension” of the <a class="reference external" href="https://genome.ucsc.edu/goldenpath/help/bedgraph.html">bedGraph</a> format. Tab delimited with columns representing <code class="docutils literal"><span class="pre">chrom1</span></code>, <code class="docutils literal"><span class="pre">start1</span></code>, <code class="docutils literal"><span class="pre">end1</span></code>, <code class="docutils literal"><span class="pre">chrom2</span></code>, <code class="docutils literal"><span class="pre">start2</span></code>, <code class="docutils literal"><span class="pre">end2</span></code>, <code class="docutils literal"><span class="pre">count</span></code>. Currently, these require sorting and indexing just like pairs files (using start instead of pos columns).</li>
+<li><strong>BG2</strong>: A 2D “extension” of the <a class="reference external" href="https://genome.ucsc.edu/goldenpath/help/bedgraph.html">bedGraph</a> format. Tab delimited with columns representing <code class="docutils literal"><span class="pre">chrom1</span></code>, <code class="docutils literal"><span class="pre">start1</span></code>, <code class="docutils literal"><span class="pre">end1</span></code>, <code class="docutils literal"><span class="pre">chrom2</span></code>, <code class="docutils literal"><span class="pre">start2</span></code>, <code class="docutils literal"><span class="pre">end2</span></code>, and <code class="docutils literal"><span class="pre">count</span></code>.</li>
 </ol>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler csort -c1 <span class="m">1</span> -p1 <span class="m">2</span> -c2 <span class="m">4</span> -p2 <span class="m">5</span> mymatrix.bg2 hg19.chrom.sizes
-cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.blksrt.bg2.gz mycooler.1000.cool
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.1kb.bg2.gz mycooler.1000.cool
 </pre></div>
 </div>
 </div>
 <div class="section" id="zoomify">
 <h3>Zoomify<a class="headerlink" href="#zoomify" title="Permalink to this headline">¶</a></h3>
-<p>To recursively aggregate your matrix into a multires file, use the <cite>zoomify</cite> command.</p>
+<p>To recursively aggregate your matrix into a multires file, use the <code class="docutils literal"><span class="pre">zoomify</span></code> command.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>cooler zoomify mycooler.1000.cool
 </pre></div>
 </div>
-<p>The output will be a file called <cite>mycooler.1000.mcool</cite> with zoom levels increasing by factors of 2. You can also
+<p>The output will be a file called <code class="docutils literal"><span class="pre">mycooler.1000.mcool</span></code> with zoom levels increasing by factors of 2. You can also
 request an explicit list of resolutions, as long as they can be obtained via integer multiples starting from the base resolution. HiGlass performs well as long as zoom levels don’t differ in resolution by greater than a factor of ~5.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>cooler zoomify -r <span class="m">5000</span>,10000,25000,50000,100000,500000,1000000 mycooler.1000.cool
 </pre></div>
 </div>
-<p>If this is Hi-C data or similar, you probably want to apply iterative correction (i.e. matrix balancing normalization) by using the <code class="docutils literal"><span class="pre">--balance</span></code> option.</p>
+<p>If this is Hi-C data or similar, you probably want to apply iterative correction (i.e. matrix balancing normalization) by including the <code class="docutils literal"><span class="pre">--balance</span></code> option.</p>
 </div>
 <div class="section" id="loading-pre-zoomed-data">
 <h3>Loading pre-zoomed data<a class="headerlink" href="#loading-pre-zoomed-data" title="Permalink to this headline">¶</a></h3>
 <p>If the matrices for the resolutions you wish to visualize are already available, you can ingest each one independently into the right location inside the file using the <a class="reference external" href="http://cooler.readthedocs.io/en/latest/api.html#uri-string">Cooler URI</a> <code class="docutils literal"><span class="pre">::</span></code> syntax.</p>
 <p>HiGlass expects each zoom level to be stored at a location named <code class="docutils literal"><span class="pre">resolutions/{binsize}</span></code>.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.blksrt.bg2.gz mycooler.1000.cool::resolutions/1000
-cooler load -f bg2 hg19.chrom.sizes:5000 mymatrix.blksrt.bg2.gz mycooler.5000.cool::resolutions/5000
-cooler load -f bg2 hg19.chrom.sizes:10000 mymatrix.blksrt.bg2.gz mycooler.10000.cool::resolutions/10000
+<div class="highlight-bash"><div class="highlight"><pre><span></span>cooler load -f bg2 hg19.chrom.sizes:1000 mymatrix.1kb.bg2 mycooler.mcool::resolutions/1000
+cooler load -f bg2 hg19.chrom.sizes:5000 mymatrix.5kb.bg2 mycooler.mcool::resolutions/5000
+cooler load -f bg2 hg19.chrom.sizes:10000 mymatrix.10kb.bg2 mycooler.mcool::resolutions/10000
 ...
 </pre></div>
 </div>
-<p>See the <em>cooler</em> <a class="reference external" href="http://cooler.readthedocs.io/">docs</a> for more information.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">See the <em>cooler</em> <a class="reference external" href="http://cooler.readthedocs.io/">docs</a> for more information.
+You can also type <code class="docutils literal"><span class="pre">-h</span></code> or <code class="docutils literal"><span class="pre">--help</span></code> after any cooler command for a detailed description.</p>
+</div>
 </div>
 </div>
 <div class="section" id="multivec-files">
-<span id="id3"></span><h2>Multivec Files<a class="headerlink" href="#multivec-files" title="Permalink to this headline">¶</a></h2>
+<span id="loading-into-higlass"></span><h2>Multivec Files<a class="headerlink" href="#multivec-files" title="Permalink to this headline">¶</a></h2>
 <p>Multivec files store arrays of arrays organized by chromosome. To aggregate this
 data, we need an input file where chromsome is a separate dataset. Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s1">&#39;/tmp/blah.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
@@ -307,87 +327,6 @@ data, we need an input file where chromsome is a separate dataset. Example:</p>
 file and their sizes.  The <cite>–starting-resolution</cite> option indicates that the
 base resolution for the input data is 1000 base pairs.</p>
 </div>
-<div class="section" id="development">
-<h2>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h2>
-<p>In order ot display large datasets at multiple resolutions, HiGlass requires
-the input data to be aggregated at multiple resolutions. For Hi-C data, this is
-done using the <a class="reference external" href="https://github.com/mirnylab/cooler/">cooler</a> package. For
-other types of data it is done using the <a class="reference external" href="https://github.com/hms-dbmi/clodius">clodius</a> package.</p>
-<div class="section" id="example">
-<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
-<p>Let’s say that we have a new datatype that we want to use in higlass. In this
-example, we’ll use HDF5 to store an array of length 100000 at multiple
-resolutions. Each resolution will be half of the previous one and will be stored
-as an array in the HDF5 file.</p>
-<p>To begin, we’ll create an HDF5 and add a group that will store the
-different resolutions:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">h5py</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-
-<span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s1">&#39;/tmp/my_file.multires&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
-
-<span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s1">&#39;resolutions&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>We’ll add our highest resolution data directly:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">array_length</span> <span class="o">=</span> <span class="mi">100000</span>
-<span class="n">f</span><span class="p">[</span><span class="s1">&#39;resolutions&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">array_length</span><span class="p">,))</span>
-<span class="n">f</span><span class="p">[</span><span class="s1">&#39;resolutions&#39;</span><span class="p">][</span><span class="s1">&#39;1&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">array_length</span><span class="p">))</span>
-
-<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;resolutions&#39;</span><span class="p">][</span><span class="s1">&#39;1&#39;</span><span class="p">][:</span><span class="mi">5</span><span class="p">])</span>
-</pre></div>
-</div>
-<p>This should output <code class="docutils literal"><span class="pre">[</span> <span class="pre">0.</span>&#160; <span class="pre">1.</span>&#160; <span class="pre">2.</span>&#160; <span class="pre">3.</span>&#160; <span class="pre">4.]</span></code>. Next we want to recursively
-aggregate this data so that adjacent entries are summed. This can be
-accomplished in a concise manner using numpy’s <code class="docutils literal"><span class="pre">.resize(-1,2).sum(axis=1)</span></code>
-function.</p>
-<p>How many recursions do we need? In the end, we want to be able to fit all
-the data into one 1024 element tile. This means that after n aggregations,
-we need to have less than 1024 elements.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">tile_size</span> <span class="o">=</span> <span class="mi">1024</span>
-<span class="n">max_zoom</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">array_length</span> <span class="o">/</span> <span class="n">tile_size</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="building-for-development">
-<h3>Building for development<a class="headerlink" href="#building-for-development" title="Permalink to this headline">¶</a></h3>
-<p>The recommended way to develop <code class="docutils literal"><span class="pre">clodius</span></code> is to use a <a class="reference external" href="https://conda.io/docs/intro.html">conda</a> environment and
-install <code class="docutils literal"><span class="pre">clodius</span></code> with develop mode:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>python setup.py develop
-</pre></div>
-</div>
-<p>Note that making changes to the <code class="docutils literal"><span class="pre">clodius/fast.pyx</span></code> <a class="reference external" href="http://docs.cython.org/en/latest/src/quickstart/cythonize.html">cython</a> module requires an
-explicit recompile step:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>python setup.py build_ext --inplace
-</pre></div>
-</div>
-</div>
-<div class="section" id="testing">
-<h3>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h3>
-<p>The unit tests for clodius can be run using <a class="reference external" href="http://nose.readthedocs.io/en/latest/">nosetests</a>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nosetests</span> <span class="n">tests</span>
-</pre></div>
-</div>
-<p>Individual unit tests can be specified by indicating the file and function
-they are defined in:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nosetests</span> <span class="n">test</span><span class="o">/</span><span class="n">cli_test</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="n">test_clodius_aggregate_bedgraph</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="building-the-documentation">
-<h3>Building the documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h3>
-<p>Building the documentation from the root directory is a matter of running
-<code class="docutils literal"><span class="pre">sphinx-build</span></code>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sphinx</span><span class="o">-</span><span class="n">build</span> <span class="n">docs</span> <span class="o">-</span><span class="n">b</span> <span class="n">html</span> <span class="n">docs</span><span class="o">/</span><span class="n">_build</span><span class="o">/</span><span class="n">html</span>
-</pre></div>
-</div>
-<p>To view the documentation, go to the build directory and start an http server:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">docs</span><span class="o">/</span><span class="n">_build</span><span class="o">/</span><span class="n">html</span>
-<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">http</span> <span class="mi">8081</span>
-</pre></div>
-</div>
-</div>
-</div>
 </div>
 
 
@@ -406,27 +345,35 @@ they are defined in:</p>
 
 
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="atutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#running-higlass-locally">Running HiGlass Locally</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#adding-data">Adding data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atutorial.html#viewing-data">Viewing data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-views">Adding views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#replacing-tracks">Replacing Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-cross-sections">Adding cross sections</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data Preparation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#bed-files">Bed Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bedpe-like-files">Bedpe-like Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bedgraph-files">BedGraph files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#bigwig-files">bigWig files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hitile-files">Hitile files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cooler-files">Cooler files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#multivec-files">Multivec Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#development">Development</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gene_annotations.html">Gene Annotations Tracks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#creating-the-track">Creating the track</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#importing-into-higlass">Importing into HiGlass</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_client.html">Client Viewer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-views">Adding views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#closing-and-resizing-views">Closing and resizing views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#replacing-tracks">Replacing Tracks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_developer.html">Developer</a><ul>
@@ -484,7 +431,7 @@ they are defined in:</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">HiGlass: A Multiscale Genomic Data Browser</a></li>
+      <li>Previous: <a href="b_viewer.html" title="previous chapter">Viewer</a></li>
       <li>Next: <a href="gene_annotations.html" title="next chapter">Gene Annotations Tracks</a></li>
   </ul></li>
 </ul>

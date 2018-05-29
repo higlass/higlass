@@ -47,6 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'HiGlass'
+
 copyright = '2017, HiGlass Authors'
 author = 'HiGlass Authors'
 
