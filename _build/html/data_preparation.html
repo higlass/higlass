@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Data Preparation &#8212; HiGlass v0.4.8 documentation</title>
+    <title>Data Preparation &#8212; HiGlass v1.0 documentation</title>
     <link rel="stylesheet" href="_static/higlass.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     'v0.4.8',
+        VERSION:     'v1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -155,36 +155,7 @@ of the data file contains a header using the (<code class="docutils literal"><sp
 <p>The dataset used in this example contains copy number data that has been log2
 transformed. That is, the copy number given for each bin is the log2 of the
 computed value. This is a problem for HiGlass’s default aggregation method of
-summing adjacent values since <div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">\log_2 a + \log_2 b \neq \log_2 ab</tt>)</p>
-latex exited with error
-[stdout]
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=latex)
- restricted \write18 enabled.
-entering extended mode
-(./math.tex
-LaTeX2e &lt;2017-04-15&gt;
-Babel &lt;3.10&gt; and hyphenation patterns for 22 language(s) loaded.
-(/usr/local/texlive/2017basic/texmf-dist/tex/latex/base/article.cls
-Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
-(/usr/local/texlive/2017basic/texmf-dist/tex/latex/base/size12.clo))
-(/usr/local/texlive/2017basic/texmf-dist/tex/latex/base/inputenc.sty
-
-! LaTeX Error: File `utf8x.def' not found.
-
-Type X to quit or &lt;RETURN&gt; to proceed,
-or enter new name. (Default extension: def)
-
-Enter file name: 
-! Emergency stop.
-&lt;read *&gt; 
-         
-l.158 \endinput
-               ^^M
-No pages of output.
-Transcript written on math.log.
-</div>
-.</p>
+summing adjacent values since <span class="math">\log_2 a + \log_2 b \neq \log_2 ab</span>.</p>
 <p>Using the <code class="docutils literal"><span class="pre">--transform</span> <span class="pre">exp2</span></code> option tells clodius to raise two to the
 power of the provided value before doing the transformation and storing. As
 an added benefit, NaN values become apparent in the resulting because they
@@ -495,6 +466,11 @@ they are defined in:</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="view_config.html">View Configs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="view_config.html#genome-position-search-box">Genome Position Search Box</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#uids">UIDs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#initialxdomain-and-initialydomain">initialXDomain and initialYDomain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#tracksourceservers">trackSourceServers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#exportviewurl">exportViewUrl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="view_config.html#tracks">Tracks</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="views.html">Views</a><ul>
@@ -528,7 +504,7 @@ they are defined in:</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2017, Peter Kerpedjiev.
+      &copy;2017, HiGlass Authors.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
