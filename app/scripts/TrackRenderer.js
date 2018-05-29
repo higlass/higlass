@@ -377,11 +377,11 @@ class TrackRenderer extends React.Component {
    */
   dispatchEvent(e) {
     if (e.sourceUid == this.uid) {
-      if (this.isWithin(e.clientX, e.clientY)) {
-        if (e.type !== 'contextmenu') forwardEvent(e, this.element);
+      if (e.type !== 'contextmenu') {
+        forwardEvent(e, this.element);
       }
     }
-}
+  }
 
   /**
    * Check of a view position (i.e., pixel coords) is within this view
