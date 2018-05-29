@@ -30,6 +30,7 @@ class GalleryTracks extends React.Component {
   render() {
     return (
       <div
+        className="gallery-tracks"
         styleName="styles.gallery-tracks"
       >
         {this.props.tracks.map((track, index) => (

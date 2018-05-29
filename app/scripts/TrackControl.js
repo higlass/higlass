@@ -37,8 +37,19 @@ const getButtonClassNames = (props) => {
 let imgConfig;
 let imgClose;
 
-const TrackControl = props => { 
-  const DragHandle = SortableHandle(() => (
+let oldProps = null;
+let DragHandle = null;
+
+const TrackControl = (props) => {
+  // Avoid constant recreating that button when the props didn't change.
+  // Damn React could be a little smarter here...
+  if (
+    !props ||
+    !oldProps ||
+    Object.keys(props).some(key => oldProps[key] !== props[key])
+  ) {
+    oldProps = props;
+    DragHandle = SortableHandle(() => (
       <svg
         className="no-zoom"
         style={props.imgStyleMove}
@@ -46,55 +57,57 @@ const TrackControl = props => {
       >
         <use xlinkHref="#move" />
       </svg>
-      ));
+    ));
+  }
 
   return (
-  <div styleName={getClassNames(props)}>
+    <div styleName={getClassNames(props)}>
 
-    { props.isMoveable  && (<DragHandle />) }
+      {props.isMoveable && (<DragHandle />) }
 
-    <svg
-      ref={(c) => { imgConfig = c; }}
-      className="no-zoom"
-      onClick={() => {
-        props.onConfigTrackMenuOpened(
-          props.uid,
-          imgConfig.getBoundingClientRect()
-        );
-      }}
-      style={props.imgStyleSettings}
-      styleName={getButtonClassNames(props)}
-    >
-      <use xlinkHref="#cog" />
-    </svg>
-
-    {props.onAddSeries &&
       <svg
+        ref={(c) => { imgConfig = c; }}
         className="no-zoom"
-        onClick={() => props.onAddSeries(props.uid)}
-        style={props.imgStyleAdd}
+        onClick={() => {
+          props.onConfigTrackMenuOpened(
+            props.uid,
+            imgConfig.getBoundingClientRect()
+          );
+        }}
+        style={props.imgStyleSettings}
         styleName={getButtonClassNames(props)}
       >
-        <use xlinkHref="#plus" />
+        <use xlinkHref="#cog" />
       </svg>
-    }
 
-    <svg
-      ref={(c) => { imgClose = c; }}
-      className="no-zoom"
-      onClick={() => {
-        props.onCloseTrackMenuOpened(
-          props.uid,
-          imgClose.getBoundingClientRect()
-        );
-      }}
-      style={props.imgStyleClose}
-      styleName={getButtonClassNames(props)}
-    >
-      <use xlinkHref="#cross" />
-    </svg>
-  </div>
-)};
+      {props.onAddSeries &&
+        <svg
+          className="no-zoom"
+          onClick={() => props.onAddSeries(props.uid)}
+          style={props.imgStyleAdd}
+          styleName={getButtonClassNames(props)}
+        >
+          <use xlinkHref="#plus" />
+        </svg>
+      }
+
+      <svg
+        ref={(c) => { imgClose = c; }}
+        className="no-zoom"
+        onClick={() => {
+          props.onCloseTrackMenuOpened(
+            props.uid,
+            imgClose.getBoundingClientRect()
+          );
+        }}
+        style={props.imgStyleClose}
+        styleName={getButtonClassNames(props)}
+      >
+        <use xlinkHref="#cross" />
+      </svg>
+    </div>
+  );
+};
 
 TrackControl.propTypes = {
   imgStyleAdd: PropTypes.object,
