@@ -1,3 +1,12 @@
+v1.0.0-alpha.9
+
+- Fixed lock value scales
+
+v1.0.0-alpha.8
+
+- Fixed tooltip scrollbar appearance
+- Fixed context menu appearing issue
+
 v1.0.0-alpha.7
 
 - Fixed scrolling bug when multiple higlass components are on a single page
