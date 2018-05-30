@@ -3028,7 +3028,7 @@ class HiGlassComponent extends React.Component {
       .classed('.mouseover-marker', true)
     */
 
-    mouseOverDiv.style('position', 'absolute')
+    mouseOverDiv.style('position', 'fixed')
       .style('left', `${mousePos[0]}px`)
       .style('top', `${mousePos[1]}px`);
 
