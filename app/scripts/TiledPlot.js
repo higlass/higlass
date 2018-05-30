@@ -1809,7 +1809,6 @@ class TiledPlot extends React.Component {
           trackSourceServers={this.props.trackSourceServers}
         />);
     }
-    console.log('overlays:', overlays);
 
     // track renderer needs to enclose all the other divs so that it
     // can catch the zoom events

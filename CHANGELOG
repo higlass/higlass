@@ -1,3 +1,8 @@
+v1.0.0-alpha.10
+
+- Fixed background rendering after resizing
+- Fixed viewconf export link (use state.viewconf vs props.viewconf)
+
 v1.0.0-alpha.9
 
 - Fixed lock value scales

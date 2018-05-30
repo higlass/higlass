@@ -2296,7 +2296,7 @@ class HiGlassComponent extends React.Component {
   }
 
   handleExportViewsAsLink(
-    url = this.props.viewConfig.exportViewUrl,
+    url = this.state.viewConfig.exportViewUrl,
     fromApi = false
   ) {
     this.width = this.element.clientWidth;
