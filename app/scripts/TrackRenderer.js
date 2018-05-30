@@ -179,6 +179,7 @@ class TrackRenderer extends React.Component {
 
     this.boundForwardEvent = this.forwardEvent.bind(this);
     this.boundScrollEvent = this.scrollEvent.bind(this);
+    this.boundForwardContextMenu = this.forwardContextMenu.bind(this);
   }
 
   componentWillMount() {
@@ -1716,7 +1717,7 @@ class TrackRenderer extends React.Component {
     this.eventTracker = this.eventTrackerOld;
 
     this.eventTracker.addEventListener('click', this.boundForwardEvent);
-    this.eventTracker.addEventListener('contextmenu', this.boundForwardEvent);
+    this.eventTracker.addEventListener('contextmenu', this.boundForwardContextMenu);
     this.eventTracker.addEventListener('dblclick', this.boundForwardEvent);
     this.eventTracker.addEventListener('wheel', this.boundForwardEvent);
     this.eventTracker.addEventListener('dragstart', this.boundForwardEvent);
@@ -1751,7 +1752,7 @@ class TrackRenderer extends React.Component {
     if (!this.eventTracker) return;
 
     this.eventTracker.removeEventListener('click', this.boundForwardEvent);
-    this.eventTracker.removeEventListener('contextmenu', this.boundForwardEvent);
+    this.eventTracker.removeEventListener('contextmenu', this.boundForwardContextMenu);
     this.eventTracker.removeEventListener('dblclick', this.boundForwardEvent);
     this.eventTracker.removeEventListener('wheel', this.boundForwardEvent);
     this.eventTracker.removeEventListener('dragstart', this.boundForwardEvent);
