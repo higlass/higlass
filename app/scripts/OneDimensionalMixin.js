@@ -57,6 +57,9 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
     this.rescaleTiles();
   }
 
+  /**
+   * Rescales the sprites of all visible tiles when zooming and panning.
+   */
   rescaleTiles() {}
 
   /**
