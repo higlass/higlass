@@ -2308,8 +2308,6 @@ class HiGlassComponent extends React.Component {
     });
 
     const port = window.location.port === '' ? '' : `:${window.location.port}`;
-    console.log('viewconfig:', this.state.viewConfig.exportViewUrl);
-    console.log('url:', url);
 
     const req = fetch(
       url,
@@ -2653,8 +2651,6 @@ class HiGlassComponent extends React.Component {
   handleViewOptionsChanged(viewUid, newOptions) {
     const view = this.state.views[viewUid];
 
-    console.log('newOptions:', newOptions);
-
     if (!view)
       return;
 
@@ -2977,6 +2973,7 @@ class HiGlassComponent extends React.Component {
       isFromVerticalTrack: hoveredTrack && hoveredTrack.flipText,
       track: hoveredTrack,
       origEvt: e,
+      sourceUid: this.uid,
       hoveredTracks,
     };
 
@@ -3035,7 +3032,7 @@ class HiGlassComponent extends React.Component {
       .classed('.mouseover-marker', true)
     */
 
-    mouseOverDiv.style('position', 'absolute')
+    mouseOverDiv.style('position', 'fixed')
       .style('left', `${mousePos[0]}px`)
       .style('top', `${mousePos[1]}px`);
 

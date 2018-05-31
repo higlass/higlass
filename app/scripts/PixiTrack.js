@@ -175,6 +175,8 @@ class PixiTrack extends Track {
     this.position = newPosition;
 
     this.drawBorder();
+    this.drawLabel();
+    this.drawBackground();
     this.setMask(this.position, this.dimensions);
   }
 
@@ -182,6 +184,8 @@ class PixiTrack extends Track {
     super.setDimensions(newDimensions);
 
     this.drawBorder();
+    this.drawLabel();
+    this.drawBackground();
     this.setMask(this.position, this.dimensions);
   }
 
