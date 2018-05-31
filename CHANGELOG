@@ -1,3 +1,7 @@
+v1.0.0-alpha.11
+
+- Fixed gene stretching issues
+
 v1.0.0-alpha.10
 
 - Fixed background rendering after resizing
