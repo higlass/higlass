@@ -294,7 +294,9 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
       xStartPos, yPos + lineHeight
     ]);
 
-    for (let j = xStartPos; j < xStartPos + width; j += 2 * GENE_RECT_HEIGHT) {
+    for (let j = Math.max(this.position[0], xStartPos); 
+      j < Math.min(this.position[0] + this.dimensions[0], xStartPos + width);
+      j += 2 * GENE_RECT_HEIGHT) {
       if (strand === '+') {
         poly = [j, yExonPos + (GENE_RECT_HEIGHT - TRIANGLE_HEIGHT) / 2,
             j + TRIANGLE_HEIGHT / 2, yExonPos + GENE_RECT_HEIGHT / 2, 
@@ -357,8 +359,9 @@ class HorizontalGeneAnnotationsTrack extends HorizontalTiled1DPixiTrack {
 
       const tileK = (tile.drawnAtScale.domain()[1] - tile.drawnAtScale.domain()[0]) / (this._xScale.domain()[1] - this._xScale.domain()[0]);
 
-      if (tileK > 3)
+      if (tileK > 3) {
         this.renderTile(tile);
+      }
     }
 
     for (const fetchedTileId in this.fetchedTiles) {

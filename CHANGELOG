@@ -1,3 +1,7 @@
+v1.0.0-alpha.12
+
+- Fixed long loading bug on zoomed in genes
+
 v1.0.0-alpha.11
 
 - Fixed gene stretching issues
