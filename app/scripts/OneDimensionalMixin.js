@@ -19,8 +19,8 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
         this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
     }
 
-    this.rescaleTiles();
     this.renderTile(tile);
+    this.rescaleTiles();
   }
 
   rerender(newOptions) {
@@ -53,29 +53,11 @@ export const OneDimensionalMixin = Mixin(superclass => class extends superclass 
           this.maxAndMin.min = tile.minValue : this.maxAndMin.min;
       }
     }
+
     this.rescaleTiles();
   }
 
-  rescaleTiles() {
-    const visibleAndFetched = this.visibleAndFetchedTiles();
-    const valueToPixels = scaleLinear()
-      .domain([0, this.maxAndMin.max + this.maxAndMin.min])
-      .range([0, this.dimensions[1]]);
-    const newZero = this.dimensions[1] - valueToPixels(this.maxAndMin.min);
-
-    visibleAndFetched.map(a => {
-      const height = valueToPixels(a.minValue + a.maxValue);
-      const y = newZero - valueToPixels(a.maxValue);
-      if (a.tileData.sprite) {
-        a.tileData.sprite.height = height;
-        a.tileData.sprite.y = y;
-      }
-      else {
-        a.tileData.spriteHeight = height;
-        a.tileData.spriteY = y;
-      }
-    });
-  }
+  rescaleTiles() {}
 
   /**
    * Converts all colors in a colorScale to Hex colors.
