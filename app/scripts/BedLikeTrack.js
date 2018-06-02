@@ -587,25 +587,42 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
     const fetchedTile = this.fetchedTiles[tileId];
 
     const dataX = this._xScale.invert(trackX);
+    let closestDistance = Number.MAX_SAFE_INTEGER;
+    let closestText = '';
+
+    const MOUSEOVER_NEAR_LIMIT = 3;
 
     if (this.drawnRects[zoomLevel]) {
       const visibleRects = Object.values(this.drawnRects[zoomLevel]);
 
       for (let i = 0; i < visibleRects.length; i++) {
         const rect = visibleRects[i];
-        if (rect[4].start < dataX &&
-          dataX < rect[4].end) {
+        const rectStart = this._xScale(rect[4].start);
+        const rectEnd = this._xScale(rect[4].end);
+
+        if ((rectStart - MOUSEOVER_NEAR_LIMIT) < trackX 
+          && trackX < (rectEnd + MOUSEOVER_NEAR_LIMIT)) {
 
           if (rect[1] < trackY && trackY < (rect[1] + rect[3])) {
-            parts = visibleRects[i][4].value.fields.slice(3);
 
-            return parts.join(" ");
+            // calculate how far away the cursor was from this
+            // rectangle
+            let closestLeft = Math.max(0, rectStart - trackX)
+            let closestRight = Math.max(0, trackX - rectEnd)
+            let distance = Math.max(closestLeft, closestRight);
+
+            if (distance < closestDistance) {
+              parts = visibleRects[i][4].value.fields.slice(3);
+
+              closestDistance = distance;
+              closestText = parts.join(" ");
+            }
           }
         }
       }
     }
 
-    return '';
+    return closestText;
   }
 }
 
