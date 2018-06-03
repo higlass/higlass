@@ -139,8 +139,10 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   updateTile(tile) {
-    this.destroyTile(tile);
-    this.renderTile(tile);
+    if (this.areAllVisibleTilesLoaded()) {
+      this.destroyTile(tile);
+      this.renderTile(tile);
+    }
   }
 
   renderTile(tile) {
@@ -156,6 +158,8 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
 
       maxRows = Math.max(tile1.rows.length, maxRows);
     }
+
+    // console.log('maxRows:', maxRows);
 
     const zoomLevel = +tile.tileId.split('.')[0];
 
@@ -197,6 +201,14 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           if (zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel]) {
             return;
           }
+
+            /* 
+          if (!(zoomLevel in this.drawnRects)) {
+            this.drawnRects[zoomLevel] = {}
+          }
+
+          this.drawnRects[zoomLevel][td.uid] = true;
+          */
 
           const geneInfo = td.fields;
           // the returned positions are chromosome-based and they need to
