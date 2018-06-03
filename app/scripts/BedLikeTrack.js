@@ -139,9 +139,8 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
   }
 
   updateTile(tile) {
-    //this.destroyTile(tile);
+    this.destroyTile(tile);
     this.renderTile(tile);
-    //console.trace('update');
   }
 
   renderTile(tile) {
@@ -158,14 +157,14 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
       maxRows = Math.max(tile1.rows.length, maxRows);
     }
 
-
     const zoomLevel = +tile.tileId.split('.')[0];
 
     // store the scale at while the tile was drawn at so that
     // we only resize it when redrawing
 
-    if (tile.rendered)
+    if (tile.rendered) {
       return;
+    }
 
     tile.drawnAtScale = this._xScale.copy();
     const fill = colorToHex(this.options.fillColor ? this.options.fillColor : 'blue');
@@ -195,7 +194,9 @@ export class BedLikeTrack extends HorizontalTiled1DPixiTrack {
           const td = rows[j][i].value;
 
           // don't draw anything that has already been drawn
-          if (zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel]) return;
+          if (zoomLevel in this.drawnRects && td.uid in this.drawnRects[zoomLevel]) {
+            return;
+          }
 
           const geneInfo = td.fields;
           // the returned positions are chromosome-based and they need to
