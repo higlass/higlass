@@ -349,6 +349,7 @@ class TiledPlot extends React.Component {
   }
 
   handleOverlayMouseEnter(uid) {
+    console.log('mouseenter');
     this.setState({
       mouseOverOverlayUid: uid,
     });
@@ -1737,6 +1738,7 @@ class TiledPlot extends React.Component {
             // we want to remove the mouseOverOverlayUid so that next time we try
             // to choose an overlay track, the previously selected one isn't
             // automatically highlighted
+
             onClick={() => {
               this.setState({ mouseOverOverlayUid: null });
               this.props.chooseTrackHandler(pTrack.track.uid);
@@ -1752,6 +1754,7 @@ class TiledPlot extends React.Component {
               background,
               opacity: 0.4,
               border,
+              zIndex: 1
             }}
           />
         );

@@ -110,6 +110,7 @@ class PixiTrack extends Track {
 
     // for drawing the track label (often its name)
     this.pBorder = new PIXI.Graphics();
+    this.pBackground = new PIXI.Graphics();
     this.pLabel = new PIXI.Graphics();
     this.pMobile = new PIXI.Graphics();
     this.pAxis = new PIXI.Graphics();
@@ -121,6 +122,7 @@ class PixiTrack extends Track {
 
     this.pBase.addChild(this.pMasked);
 
+    this.pMasked.addChild(this.pBackground);
     this.pMasked.addChild(this.pMain);
     this.pMasked.addChild(this.pMask);
     this.pMasked.addChild(this.pMobile);
@@ -173,6 +175,8 @@ class PixiTrack extends Track {
     this.position = newPosition;
 
     this.drawBorder();
+    this.drawLabel();
+    this.drawBackground();
     this.setMask(this.position, this.dimensions);
   }
 
@@ -180,6 +184,8 @@ class PixiTrack extends Track {
     super.setDimensions(newDimensions);
 
     this.drawBorder();
+    this.drawLabel();
+    this.drawBackground();
     this.setMask(this.position, this.dimensions);
   }
 
@@ -247,6 +253,29 @@ class PixiTrack extends Track {
         this.dimensions[1],
       );
     }
+  }
+
+  drawBackground() {
+    const graphics = this.pBackground;
+
+    graphics.clear();
+
+    if (!this.options || !this.options.backgroundColor) {
+      return;
+    }
+
+    let opacity = 1;
+    let color = this.options.backgroundColor;
+
+    if (this.options.backgroundColor == 'transparent') {
+      opacity = 0;
+      color = 'white';
+    }
+    
+    const hexColor = colorToHex(color);
+    graphics.beginFill(hexColor, opacity);
+
+    graphics.drawRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1]);
   }
 
   drawLabel() {
@@ -450,6 +479,7 @@ class PixiTrack extends Track {
   rerender(options) {
     this.options = options;
     this.draw();
+    this.drawBackground();
     this.drawLabel();
     this.drawBorder();
   }
