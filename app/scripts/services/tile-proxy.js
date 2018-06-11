@@ -256,6 +256,21 @@ export const calculateZoomLevelFromResolutions = (resolutions, scale) => {
   );
 };
 
+export const calculateResolution = (tilesetInfo, zoomLevel) => {
+  if (tilesetInfo.resolutions) {
+    const sortedResolutions = tilesetInfo.resolutions.map(x => +x).sort((a, b) => b - a);
+    const resolution = sortedResolutions[zoomLevel];
+
+    return resolution;
+  }
+
+  const maxWidth = tilesetInfo.max_width;
+  const binsPerDimension = +tilesetInfo.bins_per_dimension;
+  const resolution = maxWidth / ((2 ** zoomLevel) * binsPerDimension);
+
+  return resolution;
+}
+
 /**
  * Calculate the current zoom level.
  */
@@ -356,8 +371,10 @@ export const calculateTiles = (
 };
 
 export const calculateTileWidth = (tilesetInfo, zoomLevel, binsPerTile) => {
-  if (tilesetInfo.resolutions)
-    return tilesetInfo.resolutions[zoomLevel] * binsPerTile;
+  if (tilesetInfo.resolutions) {
+    const sortedResolutions = tilesetInfo.resolutions.map(x => +x).sort((a,b) => b-a)
+    return sortedResolutions[zoomLevel] * binsPerTile;
+  }
   return tilesetInfo.max_width / (2 ** zoomLevel)
 };
 
@@ -549,6 +566,7 @@ function json(url, callback) {
 
 
 const api = {
+  calculateResolution,
   calculateTileAndPosInTile,
   calculateTiles,
   calculateTilesFromResolution,

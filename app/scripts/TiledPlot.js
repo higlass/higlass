@@ -344,12 +344,16 @@ class TiledPlot extends React.Component {
     track.transforms = tilesetInfo.transforms;
     track.header = tilesetInfo.header;
     track.binsPerDimension = tilesetInfo.bins_per_dimension;
-    track.maxZoom = tilesetInfo.max_zoom;
+    if (tilesetInfo.resolutions) {
+      track.maxZoom = tilesetInfo.resolutions.length-1;
+      track.resolutions = tilesetInfo.resolutions;
+    } else {
+      track.maxZoom = tilesetInfo.max_zoom;
+    }
     track.coordSystem = tilesetInfo.coordSystem;
   }
 
   handleOverlayMouseEnter(uid) {
-    console.log('mouseenter');
     this.setState({
       mouseOverOverlayUid: uid,
     });

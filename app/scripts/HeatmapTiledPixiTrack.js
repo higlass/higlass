@@ -752,8 +752,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const lPad = this.dataLensLPad;
     const rPad = this.dataLensRPad;
 
-    const zoomLevel = Math.min(this.tilesetInfo.max_zoom,
-      this.calculateZoomLevel());
+    let zoomLevel = this.calculateZoomLevel();
+    zoomLevel = this.tilesetInfo.max_zoom ? Math.min(this.tilesetInfo.max_zoom, zoomLevel) : zoomLevel;
 
     const tileWidth = tileProxy.calculateTileWidth(
         this.tilesetInfo, zoomLevel, BINS_PER_TILE
@@ -1198,19 +1198,32 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     if (!this.options.showTooltip) 
       return '';
 
+    if (!this.tilesetInfo)
+      return '';
+
+    const currentResolution = tileProxy.calculateResolution(this.tilesetInfo,
+      this.zoomLevel);
+
+    const maxWidth = Math.max(this.tilesetInfo.max_pos[1] - this.tilesetInfo.min_pos[1],
+      this.tilesetInfo.max_pos[0] - this.tilesetInfo.min_pos[0]);
+
+    const formatResolution = Math.ceil(Math.log(maxWidth / currentResolution) / Math.log(10));
+
     let returnText = '';
     this.setDataLensSize(1);
 
     let dataX = this._xScale.invert(trackX);
     let dataY = this._yScale.invert(trackY);
 
-    let positionText = '';
+    let positionText = '<b>Position:</b> ';
 
     if (this.chromInfo) {
       let atcX = absToChr(dataX, this.chromInfo);
       let atcY = absToChr(dataY, this.chromInfo);
 
-      positionText += `${atcX[0]}:${atcX[1]} & ${atcY[0]}:${atcY[1]}`;
+      const f = n => format(`.${formatResolution}s`)(n);
+
+      positionText += `${atcX[0]}:${f(atcX[1])} & ${atcY[0]}:${f(atcY[1])}`;
       positionText += '<br/>';
     }
 
@@ -1218,11 +1231,11 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
 
     if (this.options.heatmapValueScaling == 'log')
       if (data[0] > 0)
-        return positionText + "1e" + format(".3f")(Math.log(data[0]));
+        return positionText + "<b>Value:</b> 1e" + format(".3f")(Math.log(data[0]));
       else
-        return positionText + '';
+      return positionText + '<b>Value:</b> N/A';
     else
-      return positionText + format(".3f")(data[0]);
+      return positionText + "<b>Value:</b> " + format(".3f")(data[0]);
   }
 
   /**
@@ -1275,6 +1288,8 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
     const minY = this.tilesetInfo.min_pos[1];
     const maxY = this.tilesetInfo.max_pos[1];
 
+    let zoomLevel = null;
+
     if (this.tilesetInfo.resolutions) {
       const zoomIndexX = tileProxy.calculateZoomLevelFromResolutions(
         this.tilesetInfo.resolutions, this._xScale, minX, maxX
@@ -1283,23 +1298,23 @@ class HeatmapTiledPixiTrack extends TiledPixiTrack {
         this.tilesetInfo.resolutions, this._yScale, minY, maxY
       );
 
-      return Math.min(zoomIndexX, zoomIndexY);
+      zoomLevel =  Math.min(zoomIndexX, zoomIndexY);
+    } else {
+      const xZoomLevel = tileProxy.calculateZoomLevel(
+        this._xScale,
+        this.tilesetInfo.min_pos[0],
+        this.tilesetInfo.max_pos[0]
+      );
+
+      const yZoomLevel = tileProxy.calculateZoomLevel(
+        this._xScale,
+        this.tilesetInfo.min_pos[1],
+        this.tilesetInfo.max_pos[1]
+      );
+
+      zoomLevel = Math.max(xZoomLevel, yZoomLevel);
+      zoomLevel = Math.min(zoomLevel, this.maxZoom);
     }
-
-    const xZoomLevel = tileProxy.calculateZoomLevel(
-      this._xScale,
-      this.tilesetInfo.min_pos[0],
-      this.tilesetInfo.max_pos[0]
-    );
-
-    const yZoomLevel = tileProxy.calculateZoomLevel(
-      this._xScale,
-      this.tilesetInfo.min_pos[1],
-      this.tilesetInfo.max_pos[1]
-    );
-
-    let zoomLevel = Math.max(xZoomLevel, yZoomLevel);
-    zoomLevel = Math.min(zoomLevel, this.maxZoom);
 
     if (this.options && this.options.maxZoom) {
       if (this.options.maxZoom >= 0) {
