@@ -106,6 +106,7 @@ class ConfigViewMenu extends ContextMenuContainer {
     return (
       <div
         ref={c => this.div = c}
+        data-menu-type="ConfigViewMenu"
         style={{
           left: this.state.left,
           top: this.state.top,
