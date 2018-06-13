@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Gene Annotations Tracks &#8212; HiGlass v0.4.8 documentation</title>
+    <title>Gene Annotations Tracks &#8212; HiGlass v1.0 documentation</title>
     <link rel="stylesheet" href="_static/higlass.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     'v0.4.8',
+        VERSION:     'v1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Viewer" href="higlass_client.html" />
+    <link rel="next" title="Developer" href="higlass_developer.html" />
     <link rel="prev" title="Data Preparation" href="data_preparation.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -279,6 +279,14 @@ aws s3 cp ~/data/tiled-data/gene-annotations-<span class="si">${</span><span cla
 <li class="toctree-l2"><a class="reference internal" href="atutorial.html#viewing-data">Viewing data</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-views">Adding views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#replacing-tracks">Replacing Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-cross-sections">Adding cross sections</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bed-files">Bed Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedpe-like-files">Bedpe-like Files</a></li>
@@ -293,13 +301,6 @@ aws s3 cp ~/data/tiled-data/gene-annotations-<span class="si">${</span><span cla
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-the-track">Creating the track</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#importing-into-higlass">Importing into HiGlass</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_client.html">Viewer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-views">Adding views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#closing-and-resizing-views">Closing and resizing views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#replacing-tracks">Replacing Tracks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="higlass_developer.html">Developer</a><ul>
@@ -358,7 +359,7 @@ aws s3 cp ~/data/tiled-data/gene-annotations-<span class="si">${</span><span cla
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="data_preparation.html" title="previous chapter">Data Preparation</a></li>
-      <li>Next: <a href="higlass_client.html" title="next chapter">Viewer</a></li>
+      <li>Next: <a href="higlass_developer.html" title="next chapter">Developer</a></li>
   </ul></li>
 </ul>
 </div>
@@ -377,7 +378,7 @@ aws s3 cp ~/data/tiled-data/gene-annotations-<span class="si">${</span><span cla
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2017,2018 HiGlass Developers.
+      &copy;2017, HiGlass Authors.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
