@@ -37,6 +37,7 @@ class ViewContextMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
     return (
       <div
         ref={(c) => { this.div = c; }}
+        data-menu-type="ViewContextMenu"
         style={{
           left: this.state.left,
           top: this.state.top,
