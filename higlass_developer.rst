@@ -84,30 +84,24 @@ The passed in ``viewUid`` should refer to a view which is present. If it
 doesn't, an exception will be thrown.
 
 
-goTo(view,chr1,s1,e1,chr2,s2,e2,animate,animateTime): Zoom to a genomic location
+zoomTo(viewUid,start1,end1,start2,end2,animateTime): Zoom to a data location
 --------------------------------------------------------------------------------
 
-Change the current view port to a certain genomic location. When ``animate`` is true HiGlass transitions from the current to the new location smoothly.
+Change the current view port to a certain data location.  When ``animateTime`` is
+greater than 0, animate the transition.
+
+If working with genomic data, a chromosome info file will need to be used in
+order to calculate "data" coordinates from chromosome coordinates. "Data"
+coordinates are simply the coordinates as if the chromosomes were placed next
+to each other.
 
 .. code-block:: javascript
-
-  hgv.goTo(
-    viewUid,
-    chrom1,
-    start1,
-    end1,
-    chrom2,
-    start2,
-    end2,
-    animate = false,
-    animateTime = 3000,
-  );
 
 **Example:**
 
 .. code-block:: javascript
 
-  hgv.goTo('v1', 'chr1', 0, 1, 'chr2', 0, 1, true, 500);
+  hgv.goTo('v1', 1000000,1000000,2000000,2000000, 500);
 
 activateTool(mouseTool): Select a mouse tool
 --------------------------------------------

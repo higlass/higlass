@@ -24,7 +24,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Docker" href="higlass_docker.html" />
-    <link rel="prev" title="Viewer" href="higlass_client.html" />
+    <link rel="prev" title="Gene Annotations Tracks" href="gene_annotations.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -108,24 +108,19 @@ the view, the HiGlass API exposes the  <code class="docutils literal"><span clas
 <p>The passed in <code class="docutils literal"><span class="pre">viewUid</span></code> should refer to a view which is present. If it
 doesn’t, an exception will be thrown.</p>
 </div>
-<div class="section" id="goto-view-chr1-s1-e1-chr2-s2-e2-animate-animatetime-zoom-to-a-genomic-location">
-<h3>goTo(view,chr1,s1,e1,chr2,s2,e2,animate,animateTime): Zoom to a genomic location<a class="headerlink" href="#goto-view-chr1-s1-e1-chr2-s2-e2-animate-animatetime-zoom-to-a-genomic-location" title="Permalink to this headline">¶</a></h3>
-<p>Change the current view port to a certain genomic location. When <code class="docutils literal"><span class="pre">animate</span></code> is true HiGlass transitions from the current to the new location smoothly.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">goTo</span><span class="p">(</span>
-  <span class="nx">viewUid</span><span class="p">,</span>
-  <span class="nx">chrom1</span><span class="p">,</span>
-  <span class="nx">start1</span><span class="p">,</span>
-  <span class="nx">end1</span><span class="p">,</span>
-  <span class="nx">chrom2</span><span class="p">,</span>
-  <span class="nx">start2</span><span class="p">,</span>
-  <span class="nx">end2</span><span class="p">,</span>
-  <span class="nx">animate</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
-  <span class="nx">animateTime</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">,</span>
-<span class="p">);</span>
+<div class="section" id="zoomto-viewuid-start1-end1-start2-end2-animatetime-zoom-to-a-data-location">
+<h3>zoomTo(viewUid,start1,end1,start2,end2,animateTime): Zoom to a data location<a class="headerlink" href="#zoomto-viewuid-start1-end1-start2-end2-animatetime-zoom-to-a-data-location" title="Permalink to this headline">¶</a></h3>
+<p>Change the current view port to a certain data location.  When <code class="docutils literal"><span class="pre">animateTime</span></code> is
+greater than 0, animate the transition.</p>
+<p>If working with genomic data, a chromosome info file will need to be used in
+order to calculate “data” coordinates from chromosome coordinates. “Data”
+coordinates are simply the coordinates as if the chromosomes were placed next
+to each other.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 <p><strong>Example:</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">goTo</span><span class="p">(</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;chr2&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="mi">500</span><span class="p">);</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">goTo</span><span class="p">(</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">,</span><span class="mi">1000000</span><span class="p">,</span><span class="mi">2000000</span><span class="p">,</span><span class="mi">2000000</span><span class="p">,</span> <span class="mi">500</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -501,6 +496,14 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <li class="toctree-l2"><a class="reference internal" href="atutorial.html#viewing-data">Viewing data</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="b_viewer.html">Viewer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-views">Adding views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#closing-and-resizing-views">Closing and resizing views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#replacing-tracks">Replacing Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="b_viewer.html#adding-cross-sections">Adding cross sections</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data Preparation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bed-files">Bed Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data_preparation.html#bedpe-like-files">Bedpe-like Files</a></li>
@@ -515,13 +518,6 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#creating-the-track">Creating the track</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gene_annotations.html#importing-into-higlass">Importing into HiGlass</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="higlass_client.html">Viewer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#adding-views">Adding views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#closing-and-resizing-views">Closing and resizing views</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#replacing-tracks">Replacing Tracks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="higlass_client.html#synchronizing-zoom-and-location">Synchronizing zoom and location</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Developer</a><ul>
@@ -579,7 +575,7 @@ the current viewport. Usually set by <code class="docutils literal"><span class=
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="higlass_client.html" title="previous chapter">Viewer</a></li>
+      <li>Previous: <a href="gene_annotations.html" title="previous chapter">Gene Annotations Tracks</a></li>
       <li>Next: <a href="higlass_docker.html" title="next chapter">Docker</a></li>
   </ul></li>
 </ul>
