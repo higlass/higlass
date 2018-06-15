@@ -77,7 +77,7 @@ GitHub repository</a>.</p>
 
 <span class="nx">hgv</span><span class="p">.</span><span class="nx">setViewConfig</span><span class="p">(</span><span class="nx">newViewConfig</span><span class="p">);</span>
 <span class="nx">hgv</span><span class="p">.</span><span class="nx">zoomToDataExtent</span><span class="p">(</span><span class="nx">newViewConfig</span><span class="p">);</span>
-<span class="nx">hgv</span><span class="p">.</span><span class="nx">goTo</span><span class="p">(</span><span class="nx">viewUid</span><span class="p">,</span> <span class="nx">chrom1</span><span class="p">,</span> <span class="nx">start1</span><span class="p">,</span> <span class="nx">end1</span><span class="p">,</span> <span class="nx">chrom2</span><span class="p">,</span> <span class="nx">start2</span><span class="p">,</span> <span class="nx">end2</span><span class="p">,</span> <span class="nx">animate</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">animateTime</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">);</span>
+<span class="nx">hgv</span><span class="p">.</span><span class="nx">zoomTo</span><span class="p">(</span><span class="nx">viewUid</span><span class="p">,</span> <span class="nx">start1</span><span class="p">,</span> <span class="nx">end1</span><span class="p">,</span> <span class="nx">start2</span><span class="p">,</span> <span class="nx">end2</span><span class="p">,</span> <span class="nx">animateTime</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">);</span>
 <span class="nx">hgv</span><span class="p">.</span><span class="nx">activateTool</span><span class="p">(</span><span class="nx">mouseTool</span><span class="p">);</span>
 <span class="nx">hgv</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">viewId</span><span class="p">,</span> <span class="nx">callbackId</span><span class="p">);</span>
 <span class="nx">hgv</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">listenerId</span><span class="p">,</span> <span class="nx">viewId</span><span class="p">);</span>
@@ -116,11 +116,8 @@ greater than 0, animate the transition.</p>
 order to calculate “data” coordinates from chromosome coordinates. “Data”
 coordinates are simply the coordinates as if the chromosomes were placed next
 to each other.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
 <p><strong>Example:</strong></p>
-<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">goTo</span><span class="p">(</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">,</span><span class="mi">1000000</span><span class="p">,</span><span class="mi">2000000</span><span class="p">,</span><span class="mi">2000000</span><span class="p">,</span> <span class="mi">500</span><span class="p">);</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span></span><span class="nx">hgv</span><span class="p">.</span><span class="nx">zoomTo</span><span class="p">(</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">,</span><span class="mi">1000000</span><span class="p">,</span><span class="mi">2000000</span><span class="p">,</span><span class="mi">2000000</span><span class="p">,</span> <span class="mi">500</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>

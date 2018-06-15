@@ -49,7 +49,7 @@ The following is a list of the public API methods:
 
   hgv.setViewConfig(newViewConfig);
   hgv.zoomToDataExtent(newViewConfig);
-  hgv.goTo(viewUid, chrom1, start1, end1, chrom2, start2, end2, animate = false, animateTime = 3000);
+  hgv.zoomTo(viewUid, start1, end1, start2, end2, animateTime = 3000);
   hgv.activateTool(mouseTool);
   hgv.on(event, callback, viewId, callbackId);
   hgv.off(event, listenerId, viewId);
@@ -95,13 +95,11 @@ order to calculate "data" coordinates from chromosome coordinates. "Data"
 coordinates are simply the coordinates as if the chromosomes were placed next
 to each other.
 
-.. code-block:: javascript
-
 **Example:**
 
 .. code-block:: javascript
 
-  hgv.goTo('v1', 1000000,1000000,2000000,2000000, 500);
+  hgv.zoomTo('v1', 1000000,1000000,2000000,2000000, 500);
 
 activateTool(mouseTool): Select a mouse tool
 --------------------------------------------
