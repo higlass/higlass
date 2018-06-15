@@ -2319,7 +2319,8 @@ class HiGlassComponent extends React.Component {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest',
         },
-        body: `{"viewconf":${this.getViewsAsString()}}`
+        body: `{"viewconf":${this.getViewsAsString()}}`,
+        credentials: 'same-origin',
       }
     )
       .then( response => {

@@ -275,7 +275,8 @@ export function workerGetTiles(outUrl, server, theseTileIds, authHeader, done) {
     headers['Authorization'] = authHeader;
 
   fetch(outUrl, {
-      headers,
+      credentials: 'same-origin',
+      headers: headers
     }
     )
     .then(response => {

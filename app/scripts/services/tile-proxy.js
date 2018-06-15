@@ -552,6 +552,7 @@ function json(url, callback) {
 
   const r = request(url)
     .header('Content-Type', 'application/json')
+  // TODO: Check if this preserves same-origin cookies
 
   if (authHeader)
     r.header('Authorization', `${authHeader}`)
