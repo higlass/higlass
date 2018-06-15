@@ -252,6 +252,7 @@ export const TRACKS_INFO = [
       'trackBorderWidth',
       'trackBorderColor',
       'showMousePosition',
+      'showTooltip',
       'mousePositionColor',
     ],
     defaultOptions: {
@@ -265,6 +266,7 @@ export const TRACKS_INFO = [
       trackBorderColor: 'black',
       labelTextOpacity: 0.4,
       showMousePosition: false,
+      showTooltip: false,
       mousePositionColor: '#999999'
     },
   },
