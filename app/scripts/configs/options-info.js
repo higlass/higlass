@@ -548,20 +548,26 @@ export const OPTIONS_INFO = {
           const binsPerDimension = track.binsPerDimension;
           const maxZoom = track.maxZoom;
 
-          const resolution = track.maxWidth / (2 ** i * track.binsPerDimension);
+          let maxResolutionSize = 1;
+          let resolution = 1;
 
-          const maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+          if (track.resolutions) {
+            const sortedResolutions = track.resolutions.map(x => +x).sort((a,b) => b-a)
+            maxResolutionSize = sortedResolutions[0];
+            resolution = sortedResolutions[i];
+          } else {
+            resolution = track.maxWidth / (2 ** i * track.binsPerDimension);
+            maxResolutionSize = maxWidth / (2 ** maxZoom * binsPerDimension);
+          }
 
           const pp = precisionPrefix(maxResolutionSize, resolution);
           const f = formatPrefix(`.${pp}`, resolution);
           const formattedResolution = f(resolution);
 
-          // const formattedName =  ;
           inlineOptions.push({
             name: formattedResolution,
             value: i.toString(),
           });
-
           //
         }
 

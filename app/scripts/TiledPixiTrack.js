@@ -118,7 +118,10 @@ class TiledPixiTrack extends PixiTrack {
       }
 
       // console.log('tilesetInfo:', this.tilesetInfo);
-      this.maxZoom = +this.tilesetInfo.max_zoom;
+      if (this.tilesetInfo.resolutions)
+        this.maxZoom = this.tilesetInfo.resolutions.length;
+      else
+        this.maxZoom = +this.tilesetInfo.max_zoom;
 
       if (this.options && this.options.maxZoom) {
         if (this.options.maxZoom >= 0) {
@@ -158,7 +161,10 @@ class TiledPixiTrack extends PixiTrack {
 
     if (!this.tilesetInfo) { return; }
 
-    this.maxZoom = +this.tilesetInfo.max_zoom;
+    if (this.tilesetInfo.resolutions)
+      this.maxZoom = this.tilesetInfo.resolutions.length;
+    else
+      this.maxZoom = +this.tilesetInfo.max_zoom;
 
     if (this.options && this.options.maxZoom) {
       if (this.options.maxZoom >= 0) {

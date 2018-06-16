@@ -45,7 +45,7 @@ class Annotations2dTrack extends TiledPixiTrack {
   }
 
   get maxX() {
-    return this.tilesetInfo && this.tilesetInfo.max_pos 
+    return this.tilesetInfo && this.tilesetInfo.max_pos
       ? this.tilesetInfo.max_pos[0]
       : this.tilesetInfo.max_width || this.tilesetInfo.max_size;
   }
@@ -232,6 +232,7 @@ class Annotations2dTrack extends TiledPixiTrack {
 
     return {
       graphics,
+      id: td.id,
       uid,
       annotation: { x: startX, y: startY, width, height },
       dataPos: [td.xStart, td.xEnd, td.yStart, td.yEnd],
@@ -240,7 +241,7 @@ class Annotations2dTrack extends TiledPixiTrack {
     };
   }
 
-  drawAnnotation({ graphics, uid, annotation, dataPos, importance, info }, silent) {
+  drawAnnotation({ graphics, id, uid, annotation, dataPos, importance, info }, silent) {
     if (this.options.minSquareSize) {
       if (
         annotation.width < this.options.minSquareSize
@@ -291,6 +292,7 @@ class Annotations2dTrack extends TiledPixiTrack {
         {
           trackUuids: this.uuid,
           annotationUuid: uid,
+          annotationId: id,
           viewPos,
           dataPos,
           importance,

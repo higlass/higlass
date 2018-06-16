@@ -503,10 +503,22 @@ class PixiTrack extends Track {
    */
   exportSVG() {
     const gBase = document.createElement('g');
+    const rectBackground = document.createElement('rect');
+
+    rectBackground.setAttribute('x', `${this.position[0]}`);
+    rectBackground.setAttribute('y', `${this.position[1]}`);
+    rectBackground.setAttribute('width', `${this.dimensions[0]}`);
+    rectBackground.setAttribute('height', `${this.dimensions[1]}`);
+
+    if (this.options && this.options.backgroundColor)
+      rectBackground.setAttribute('fill', this.options.backgroundColor);
+    else
+      rectBackground.setAttribute('fill', 'transparent');
 
     const gClipped = document.createElement('g');
     gClipped.setAttribute('class', 'g-clipped');
     gBase.appendChild(gClipped);
+    gClipped.appendChild(rectBackground);
 
     const gTrack = document.createElement('g');
     gClipped.setAttribute('class', 'g-track');
