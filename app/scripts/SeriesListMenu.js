@@ -295,6 +295,7 @@ export default class SeriesListMenu extends ContextMenuContainer {
       <div
         onMouseLeave={this.props.handleMouseLeave}
         ref={c => this.div = c}
+        data-menu-type="SeriesListMenu"
         style={{
           left: this.state.left,
           top: this.state.top,

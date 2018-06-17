@@ -591,6 +591,7 @@ class HiGlassComponent extends React.Component {
     this.updateRowHeight();
     this.fitPixiToParentContainer();
     this.refreshView(LONG_DRAG_TIMEOUT);
+    this.resizeHandler();
   }
 
   onBreakpointChange(breakpoint) {

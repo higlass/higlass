@@ -34,6 +34,7 @@ class ConfigTrackMenu extends mix(ContextMenuContainer).with(SeriesListSubmenuMi
     return (
       <div
         ref={c => this.div = c}
+        data-menu-type="ConfigTrackMenu"
         style={{
           left: this.state.left,
           top: this.state.top,
